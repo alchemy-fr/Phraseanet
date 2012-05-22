@@ -25,7 +25,7 @@ class Bridge_Api_Auth_Abstract
 
     /**
      *
-     * @param Bridge_AccountSettings $settings
+     * @param  Bridge_AccountSettings   $settings
      * @return Bridge_Api_Auth_Abstract
      */
     public function set_settings(Bridge_AccountSettings $settings)

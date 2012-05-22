@@ -109,11 +109,9 @@ class module_report_add extends module_report
                         $this->result[$i][$value] = $this->pretty_string ? phraseadate::getPrettyString(new DateTime($row[$value])) : $row[$value];
                     } elseif ($value == 'size') {
                         $this->result[$i][$value] = p4string::format_octets($row[$value]);
-                    }
-                    else
+                    } else
                         $this->result[$i][$value] = $row[$value];
-                }
-                else {
+                } else {
                     if ($value == 'comment') {
                         $this->result[$i][$value] = '&nbsp;';
                     } else {

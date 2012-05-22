@@ -102,7 +102,7 @@ class Feed_XML_Cooliris extends Feed_XML_Abstract implements Feed_XML_Interface
 
     /**
      *
-     * @param string $language
+     * @param  string       $language
      * @return Feed_XML_RSS
      */
     public function set_language($language)
@@ -114,7 +114,7 @@ class Feed_XML_Cooliris extends Feed_XML_Abstract implements Feed_XML_Interface
 
     /**
      *
-     * @param string $language
+     * @param  string       $language
      * @return Feed_XML_RSS
      */
     public function set_copyright($copyright)
@@ -126,7 +126,7 @@ class Feed_XML_Cooliris extends Feed_XML_Abstract implements Feed_XML_Interface
 
     /**
      *
-     * @param string $managingEditor
+     * @param  string       $managingEditor
      * @return Feed_XML_RSS
      */
     public function set_managingEditor($managingEditor)
@@ -138,7 +138,7 @@ class Feed_XML_Cooliris extends Feed_XML_Abstract implements Feed_XML_Interface
 
     /**
      *
-     * @param string $webMaster
+     * @param  string       $webMaster
      * @return Feed_XML_RSS
      */
     public function set_webMaster($webMaster)
@@ -150,7 +150,7 @@ class Feed_XML_Cooliris extends Feed_XML_Abstract implements Feed_XML_Interface
 
     /**
      *
-     * @param DateTime $lastBuildDate
+     * @param  DateTime     $lastBuildDate
      * @return Feed_XML_RSS
      */
     public function set_lastBuildDate(DateTime $lastBuildDate)
@@ -162,7 +162,7 @@ class Feed_XML_Cooliris extends Feed_XML_Abstract implements Feed_XML_Interface
 
     /**
      *
-     * @param string $category
+     * @param  string       $category
      * @return Feed_XML_RSS
      */
     public function set_category($category)
@@ -174,7 +174,7 @@ class Feed_XML_Cooliris extends Feed_XML_Abstract implements Feed_XML_Interface
 
     /**
      *
-     * @param string $docs
+     * @param  string       $docs
      * @return Feed_XML_RSS
      */
     public function set_docs($docs)
@@ -186,7 +186,7 @@ class Feed_XML_Cooliris extends Feed_XML_Abstract implements Feed_XML_Interface
 
     /**
      *
-     * @param int $ttl
+     * @param  int          $ttl
      * @return Feed_XML_RSS
      */
     public function set_ttl($ttl)
@@ -198,7 +198,7 @@ class Feed_XML_Cooliris extends Feed_XML_Abstract implements Feed_XML_Interface
 
     /**
      *
-     * @param Feed_XML_RSS_Image $image
+     * @param  Feed_XML_RSS_Image $image
      * @return Feed_XML_RSS
      */
     public function set_image(Feed_XML_RSS_Image $image)
@@ -210,7 +210,7 @@ class Feed_XML_Cooliris extends Feed_XML_Abstract implements Feed_XML_Interface
 
     /**
      *
-     * @param string $skipHours
+     * @param  string       $skipHours
      * @return Feed_XML_RSS
      */
     public function set_skipHour($hour)
@@ -222,7 +222,7 @@ class Feed_XML_Cooliris extends Feed_XML_Abstract implements Feed_XML_Interface
 
     /**
      *
-     * @param string $skipDays
+     * @param  string       $skipDays
      * @return Feed_XML_RSS
      */
     public function set_skipDays($day)
@@ -326,9 +326,9 @@ class Feed_XML_Cooliris extends Feed_XML_Abstract implements Feed_XML_Interface
 
     /**
      *
-     * @param DOMDocument $document
-     * @param DOMNode $node
-     * @param Feed_Entry_Adapter $entry
+     * @param  DOMDocument        $document
+     * @param  DOMNode            $node
+     * @param  Feed_Entry_Adapter $entry
      * @return DOMElement
      */
     protected function add_item(DOMDocument $document, DOMNode $node, Feed_Entry_Adapter $entry)
@@ -342,9 +342,9 @@ class Feed_XML_Cooliris extends Feed_XML_Abstract implements Feed_XML_Interface
 
     /**
      *
-     * @param DOMDocument $document
-     * @param DOMNode $item
-     * @param Feed_Entry_Item $content
+     * @param  DOMDocument        $document
+     * @param  DOMNode            $item
+     * @param  Feed_Entry_Item    $content
      * @return Feed_XML_Interface
      */
     protected function addContent(DOMDocument $document, DOMNode $node, Feed_Entry_Adapter $entry, Feed_Entry_Item $content)

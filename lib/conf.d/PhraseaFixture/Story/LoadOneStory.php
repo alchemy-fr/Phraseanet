@@ -11,7 +11,6 @@
 
 namespace PhraseaFixture\Story;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 

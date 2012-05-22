@@ -6,7 +6,6 @@
  */
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class API_V1_Log
 {
@@ -83,8 +82,8 @@ class API_V1_Log
 
     /**
      *
-     * @param appbox $appbox
-     * @param Request $request
+     * @param appbox             $appbox
+     * @param Request            $request
      * @param API_OAuth2_Account $account
      */
     public function __construct(appbox &$appbox, $log_id)

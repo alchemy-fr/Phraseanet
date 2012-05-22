@@ -31,7 +31,7 @@ class set_selection extends set_abstract
 
     /**
      *
-     * @param \Entities\Basket $basket
+     * @param  \Entities\Basket $basket
      * @return set_selection
      */
     public function load_basket(\Entities\Basket $Basket)
@@ -45,7 +45,7 @@ class set_selection extends set_abstract
 
     /**
      *
-     * @param array $rights
+     * @param  array         $rights
      * @return set_selection
      */
     public function grep_authorized(Array $rights = array(), Array $sbas_rights = array())
@@ -118,7 +118,7 @@ class set_selection extends set_abstract
 
     /**
      *
-     * @param array $lst
+     * @param  array         $lst
      * @return set_selection
      */
     public function load_list(Array $lst, $flatten_groupings = false)

@@ -37,9 +37,9 @@ class Session_Phrasea
 
     /**
      *
-     * @param appbox $appbox
-     * @param User_Adapter $user
-     * @param int $ses_id
+     * @param  appbox          $appbox
+     * @param  User_Adapter    $user
+     * @param  int             $ses_id
      * @return Session_Phrasea
      */
     public function __construct(appbox &$appbox, User_Adapter &$user, $ses_id = null)
@@ -63,7 +63,7 @@ class Session_Phrasea
 
     /**
      *
-     * @param Browser $browser
+     * @param  Browser         $browser
      * @return Session_Phrasea
      */
     public function create(Browser &$browser)
@@ -85,9 +85,9 @@ class Session_Phrasea
 
     /**
      *
-     * @param appbox $appbox
+     * @param appbox  $appbox
      * @param Browser $browser
-     * @param Array $logs
+     * @param Array   $logs
      */
     protected function update_informations(appbox &$appbox, Browser &$browser)
     {

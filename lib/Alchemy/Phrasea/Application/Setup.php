@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\Application;
 
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
 use Alchemy\Phrasea\Controller\Setup as Controller;
 use Alchemy\Phrasea\Controller\Utils as ControllerUtils;
 

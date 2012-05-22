@@ -58,7 +58,7 @@ class gatekeeper
      *
      * @return gatekeeper
      */
-    function __construct(\Alchemy\Phrasea\Core $Core)
+    public function __construct(\Alchemy\Phrasea\Core $Core)
     {
         $this->Core = $Core;
 
@@ -71,7 +71,7 @@ class gatekeeper
      *
      * @return Void
      */
-    function check_directory()
+    public function check_directory()
     {
         $request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
         $appbox = appbox::get_instance($this->Core);

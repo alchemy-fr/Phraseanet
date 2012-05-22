@@ -2,9 +2,9 @@
 
 class logs
 {
-    static $_last_check = array();
+    public static $_last_check = array();
 
-    static function rotate($filepath)
+    public static function rotate($filepath)
     {
         $limit = (1024 * 1024 * 20);
 

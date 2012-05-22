@@ -20,9 +20,9 @@ class set_exportorder extends set_export
 
     /**
      *
-     * @param Int $from_usr_id
-     * @param String $usage
-     * @param String $deadline
+     * @param  Int     $from_usr_id
+     * @param  String  $usage
+     * @param  String  $deadline
      * @return boolean
      * @return $order_id
      */
@@ -120,8 +120,8 @@ class set_exportorder extends set_export
 
     /**
      *
-     * @param Int $admins
-     * @param Int $base_id
+     * @param  Int  $admins
+     * @param  Int  $base_id
      * @return Void
      */
     public static function set_order_admins($admins, $base_id)

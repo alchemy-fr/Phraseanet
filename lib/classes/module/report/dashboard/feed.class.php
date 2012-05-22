@@ -63,10 +63,10 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
     /**
      * @desc return l'objet stockee dans le cache si i l existe sinon instancie
      * un nouveau objet dashboard_feed
-     * @param <int> $sbasid
-     * @param <string> $sbas_coll
-     * @param <string> $dmin
-     * @param <string> $dmax
+     * @param  <int>    $sbasid
+     * @param  <string> $sbas_coll
+     * @param  <string> $dmin
+     * @param  <string> $dmax
      * @return self
      */
     public static function getInstance($sbasid, $sbas_coll, $dmin, $dmax)
@@ -89,7 +89,7 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
 
     /**
      * @desc Remplis les resultats bruts pour valeures passees en param
-     * @param <int> $sbasid
+     * @param <int>    $sbasid
      * @param <string> $sbas_collection, les collection sous forme de string
      * séparés par une virgule
      * @param <string> $dmin, Y-m-d
@@ -109,7 +109,7 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
 
     /**
      * @desc return les date dormate pour les requetes sql;
-     * @param <string> $d, vaut 'dmin' ou 'dmax'
+     * @param  <string> $d, vaut 'dmin' ou 'dmax'
      * @return Datetime
      */
     private function dateToSqlDate($d)

@@ -77,8 +77,8 @@ class random
 
     /**
      *
-     * @param int $length
-     * @param constant $possible
+     * @param  int      $length
+     * @param  constant $possible
      * @return string
      */
     public static function generatePassword($length = 8, $possible = SELF::LETTERS_AND_NUMBERS)
@@ -102,10 +102,10 @@ class random
 
     /**
      *
-     * @param string $type
-     * @param int $usr
-     * @param string $end_date
-     * @param mixed content $datas
+     * @param  string        $type
+     * @param  int           $usr
+     * @param  string        $end_date
+     * @param  mixed content $datas
      * @return boolean
      */
     public static function getUrlToken($type, $usr, DateTime $end_date = null, $datas = '')

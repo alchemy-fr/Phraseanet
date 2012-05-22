@@ -157,7 +157,7 @@ class UsrList
 
     /**
      *
-     * @param \User_Adapter $user
+     * @param  \User_Adapter          $user
      * @return \Entities\UsrListOwner
      */
     public function getOwner(\User_Adapter $user)
@@ -194,7 +194,7 @@ class UsrList
     /**
      * Return true if one of the entry is related to the given user
      *
-     * @param \User_Adapter $user
+     * @param  \User_Adapter $user
      * @return boolean
      */
     public function has(\User_Adapter $user)

@@ -93,9 +93,9 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
 
     /**
      *
-     * @param appbox $appbox
-     * @param Feed_Adapter $feed
-     * @param int $id
+     * @param  appbox             $appbox
+     * @param  Feed_Adapter       $feed
+     * @param  int                $id
      * @return Feed_Entry_Adapter
      */
     public function __construct(appbox &$appbox, Feed_Adapter &$feed, $id)
@@ -217,7 +217,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
 
     /**
      *
-     * @param string $title
+     * @param  string             $title
      * @return Feed_Entry_Adapter
      */
     public function set_title($title)
@@ -240,7 +240,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
 
     /**
      *
-     * @param string $subtitle
+     * @param  string             $subtitle
      * @return Feed_Entry_Adapter
      */
     public function set_subtitle($subtitle)
@@ -262,7 +262,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
 
     /**
      *
-     * @param string $author_name
+     * @param  string             $author_name
      * @return Feed_Entry_Adapter
      */
     public function set_author_name($author_name)
@@ -285,7 +285,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
 
     /**
      *
-     * @param string $author_email
+     * @param  string             $author_email
      * @return Feed_Entry_Adapter
      */
     public function set_author_email($author_email)
@@ -356,7 +356,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
 
     /**
      *
-     * @param User_adapter $user
+     * @param  User_adapter $user
      * @return boolean
      */
     public function is_publisher(User_adapter $user)
@@ -471,13 +471,13 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
 
     /**
      *
-     * @param appbox $appbox
-     * @param Feed_Adapter $feed
-     * @param Feed_Publisher_Adapter $publisher
-     * @param string $title
-     * @param string $subtitle
-     * @param string $author_name
-     * @param string $author_mail
+     * @param  appbox                 $appbox
+     * @param  Feed_Adapter           $feed
+     * @param  Feed_Publisher_Adapter $publisher
+     * @param  string                 $title
+     * @param  string                 $subtitle
+     * @param  string                 $author_name
+     * @param  string                 $author_mail
      * @return Feed_Entry_Adapter
      */
     public static function create(appbox &$appbox, Feed_Adapter $feed
@@ -525,8 +525,8 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
 
     /**
      *
-     * @param appbox $appbox
-     * @param type $id
+     * @param  appbox             $appbox
+     * @param  type               $id
      * @return Feed_Entry_Adapter
      */
     public static function load_from_id(appbox $appbox, $id)

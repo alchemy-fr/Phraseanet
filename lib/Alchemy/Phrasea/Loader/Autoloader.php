@@ -73,8 +73,8 @@ class Autoloader extends UniversalClassLoader
     /**
      * Check whether a class with $class name exists
      * foreach declared paths
-     * @param string $class
-     * @return mixed string|null
+     * @param  string $class
+     * @return mixed  string|null
      */
     private function checkFile($classname)
     {

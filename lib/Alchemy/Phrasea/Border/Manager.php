@@ -42,7 +42,7 @@ class Manager
     /**
      * Constructor
      *
-     * @param \Doctrine\ORM\EntityManager $em   Entity manager
+     * @param \Doctrine\ORM\EntityManager $em Entity manager
      */
     public function __construct(EntityManager $em)
     {
@@ -62,14 +62,14 @@ class Manager
     /**
      * Add a file to Phraseanet after having checked it
      *
-     * @param LazaretSession    $session        The current Lazaret Session
-     * @param File              $file           A File package object
-     * @param type              $callable       A callback to execute after process
+     * @param LazaretSession $session  The current Lazaret Session
+     * @param File           $file     A File package object
+     * @param type           $callable A callback to execute after process
      *                                          (arguments are $element (LazaretFile or \record_adapter),
      *                                          $visa (Visa)
      *                                          and $code (self::RECORD_CREATED or self::LAZARET_CREATED))
-     * @param type              $forceBehavior  Force a behavior, one of the self::FORCE_* constant
-     * @return int              One of the self::RECORD_CREATED or self::LAZARET_CREATED constants
+     * @param  type $forceBehavior Force a behavior, one of the self::FORCE_* constant
+     * @return int  One of the self::RECORD_CREATED or self::LAZARET_CREATED constants
      */
     public function process(LazaretSession $session, File $file, $callable = null, $forceBehavior = null)
     {
@@ -106,8 +106,8 @@ class Manager
     /**
      * Check a File package object against the Checkers, and returns a Visa
      *
-     * @param   File    $file   A File package object
-     * @return  Visa            The Visa
+     * @param  File $file A File package object
+     * @return Visa The Visa
      */
     public function getVisa(File $file)
     {
@@ -123,8 +123,8 @@ class Manager
     /**
      * Registers a checker
      *
-     * @param   Checker\Checker $checker    The checker to register
-     * @return  Manager
+     * @param  Checker\Checker $checker The checker to register
+     * @return Manager
      */
     public function registerChecker(Checker\Checker $checker)
     {
@@ -136,8 +136,8 @@ class Manager
     /**
      * Registers an array of checkers
      *
-     * @param   array   $checkers   Array of checkers
-     * @return  Manager
+     * @param  array   $checkers Array of checkers
+     * @return Manager
      */
     public function registerCheckers(array $checkers)
     {
@@ -151,8 +151,8 @@ class Manager
     /**
      * Unregister a checker
      *
-     * @param   Checker\Checker   $checker  The checker to unregister
-     * @return  Manager
+     * @param  Checker\Checker $checker The checker to unregister
+     * @return Manager
      */
     public function unregisterChecker(Checker\Checker $checker)
     {
@@ -181,8 +181,8 @@ class Manager
     /**
      * Find an available Lazaret filename and creates the empty file.
      *
-     * @param   string  $filename   The desired filename
-     * @return  string              The available filename to use
+     * @param  string $filename The desired filename
+     * @return string The available filename to use
      */
     protected function bookLazaretPathfile($filename)
     {
@@ -205,8 +205,8 @@ class Manager
     /**
      * Adds a record to Phraseanet
      *
-     * @param   File $file      The package file
-     * @return  \record_adater
+     * @param  File           $file The package file
+     * @return \record_adater
      */
     protected function createRecord(File $file)
     {
@@ -373,10 +373,10 @@ class Manager
     /**
      * Send a package file to lazaret
      *
-     * @param File                      $file       The package file
-     * @param Visa                      $visa       The visa related to the package file
-     * @param LazaretSession            $session    The current LazaretSession
-     * @param Boolean                   $forced     True if the file has been forced to quarantine
+     * @param  File                  $file    The package file
+     * @param  Visa                  $visa    The visa related to the package file
+     * @param  LazaretSession        $session The current LazaretSession
+     * @param  Boolean               $forced  True if the file has been forced to quarantine
      * @return \Entities\LazaretFile
      */
     protected function createLazaret(File $file, Visa $visa, LazaretSession $session, $forced)
@@ -440,8 +440,8 @@ class Manager
      * Add technical Metadata attribute to a package file by reference to add it
      * to Phraseanet
      *
-     * @param   File                         $file The file
-     * @return  \Doctrine\ORM\EntityManager
+     * @param  File                        $file The file
+     * @return \Doctrine\ORM\EntityManager
      */
     protected function addMediaAttributes(File &$file)
     {

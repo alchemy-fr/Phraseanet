@@ -43,8 +43,8 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * API constructor
      *
-     * @param string $auth_token Authentification Token
-     * @param appbox $appbox Appbox object
+     * @param  string         $auth_token Authentification Token
+     * @param  appbox         $appbox     Appbox object
      * @return API_V1_adapter
      */
     public function __construct($auth_token, appbox &$appbox, Alchemy\Phrasea\Core $core)
@@ -57,8 +57,8 @@ class API_V1_adapter extends API_V1_Abstract
 
     /**
      * Retrieve  http status error code according to the message
-     * @param Request $request
-     * @param string $error
+     * @param  Request       $request
+     * @param  string        $error
      * @return API_V1_result `
      */
     public function get_error_message(Request $request, $error, $message)
@@ -71,8 +71,8 @@ class API_V1_adapter extends API_V1_Abstract
 
     /**
      * Retrieve  http status error message according to the http status error code
-     * @param Request $request
-     * @param int $code
+     * @param  Request       $request
+     * @param  int           $code
      * @return API_V1_result
      */
     public function get_error_code(Request $request, $code)
@@ -96,7 +96,7 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Get a list of phraseanet tasks
      *
-     * @param \Silex\Application $app The API silex application
+     * @param  \Silex\Application $app The API silex application
      * @return \API_V1_result
      */
     public function get_task_list(Application $app)
@@ -126,8 +126,8 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Get informations about an identified task
      *
-     * @param \Silex\Application $app The API silex application
-     * @param type $task_id
+     * @param  \Silex\Application $app     The API silex application
+     * @param  type               $task_id
      * @return \API_V1_result
      */
     public function get_task(Application $app, $taskId)
@@ -162,8 +162,8 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Start a specified task
      *
-     * @param \Silex\Application $app The API silex application
-     * @param type $task_id The task id
+     * @param  \Silex\Application $app     The API silex application
+     * @param  type               $task_id The task id
      * @return \API_V1_result
      */
     public function start_task(Application $app, $taskId)
@@ -194,8 +194,8 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Stop a specified task
      *
-     * @param \Silex\Application $app The API silex application
-     * @param type $task_id The task id
+     * @param  \Silex\Application $app     The API silex application
+     * @param  type               $task_id The task id
      * @return \API_V1_result
      */
     public function stop_task(Application $app, $taskId)
@@ -228,8 +228,8 @@ class API_V1_adapter extends API_V1_Abstract
      *  - name
      *  - autostart
      *
-     * @param \Silex\Application $app Silex application
-     * @param type $task_id the task id
+     * @param  \Silex\Application         $app     Silex application
+     * @param  type                       $task_id the task id
      * @return \API_V1_result
      * @throws \Exception_InvalidArgument
      */
@@ -280,7 +280,7 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Get Information the cache system used by the instance
      *
-     * @param \Silex\Application $app the silex application
+     * @param  \Silex\Application $app the silex application
      * @return array
      */
     protected function get_cache_info(Application $app)
@@ -314,7 +314,7 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Provide information about phraseanet configuration
      *
-     * @param \Silex\Application $app the silex application
+     * @param  \Silex\Application $app the silex application
      * @return array
      */
     protected function get_config_info(Application $app)
@@ -339,7 +339,7 @@ class API_V1_adapter extends API_V1_Abstract
 
     /**
      * Provide phraseanet global values
-     * @param \Silex\Application $app the silex application
+     * @param  \Silex\Application $app the silex application
      * @return array
      */
     protected function get_gv_info(Application $app)
@@ -511,7 +511,7 @@ class API_V1_adapter extends API_V1_Abstract
      *  - global values informations
      *  - configuration informations
      *
-     * @param \Silex\Application $app the silex application
+     * @param  \Silex\Application $app the silex application
      * @return \API_V1_result
      */
     public function get_phraseanet_monitor(Application $app)
@@ -530,8 +530,8 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Get an API_V1_result containing the databoxes
      *
-     * @param Request $request
-     * @param string $response_type
+     * @param  Request       $request
+     * @param  string        $response_type
      * @return API_V1_result
      */
     public function get_databoxes(Request $request)
@@ -546,9 +546,9 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Get an API_V1_result containing the collections of a databox
      *
-     * @param Request $request
-     * @param int $databox_id
-     * @param string $response_type
+     * @param  Request       $request
+     * @param  int           $databox_id
+     * @param  string        $response_type
      * @return API_V1_result
      */
     public function get_databox_collections(Request $request, $databox_id)
@@ -569,9 +569,9 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Get an API_V1_result containing the status of a databox
      *
-     * @param Request $request
-     * @param int $databox_id
-     * @param string $response_type
+     * @param  Request       $request
+     * @param  int           $databox_id
+     * @param  string        $response_type
      * @return API_V1_result
      */
     public function get_databox_status(Request $request, $databox_id)
@@ -593,9 +593,9 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Get an API_V1_result containing the metadatas of a databox
      *
-     * @param Request $request
-     * @param int $databox_id
-     * @param string $response_type
+     * @param  Request       $request
+     * @param  int           $databox_id
+     * @param  string        $response_type
      * @return API_V1_result
      */
     public function get_databox_metadatas(Request $request, $databox_id)
@@ -618,9 +618,9 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Get an API_V1_result containing the terms of use of a databox
      *
-     * @param Request $request
-     * @param int $databox_id
-     * @param string $response_type
+     * @param  Request       $request
+     * @param  int           $databox_id
+     * @param  string        $response_type
      * @return API_V1_result
      */
     public function get_databox_terms(Request $request, $databox_id)
@@ -792,9 +792,9 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Get an API_V1_result containing the results of a records search
      *
-     * @param Request $request
-     * @param int $databox_id
-     * @param string $response_type
+     * @param  Request       $request
+     * @param  int           $databox_id
+     * @param  string        $response_type
      * @return API_V1_result
      */
     public function search_records(Request $request)
@@ -924,10 +924,10 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Get an API_V1_result containing the baskets where the record is in
      *
-     * @param Request $request
-     * @param int $databox_id
-     * @param int $record_id
-     * @param string $response_type
+     * @param  Request       $request
+     * @param  int           $databox_id
+     * @param  int           $record_id
+     * @param  string        $response_type
      * @return API_V1_result
      */
     public function get_record_related(Request $request, $databox_id, $record_id)
@@ -952,10 +952,10 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Get an API_V1_result containing the record metadatas
      *
-     * @param Request $request
-     * @param int $databox_id
-     * @param int $record_id
-     * @param string $response_type
+     * @param  Request       $request
+     * @param  int           $databox_id
+     * @param  int           $record_id
+     * @param  string        $response_type
      * @return API_V1_result
      */
     public function get_record_metadatas(Request $request, $databox_id, $record_id)
@@ -976,10 +976,10 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Get an API_V1_result containing the record status
      *
-     * @param Request $request
-     * @param int $databox_id
-     * @param int $record_id
-     * @param string $response_type
+     * @param  Request       $request
+     * @param  int           $databox_id
+     * @param  int           $record_id
+     * @param  string        $response_type
      * @return API_V1_result
      */
     public function get_record_status(Request $request, $databox_id, $record_id)
@@ -1006,10 +1006,10 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Get an API_V1_result containing the record embed files
      *
-     * @param Request $request
-     * @param int $databox_id
-     * @param int $record_id
-     * @param string $response_type
+     * @param  Request       $request
+     * @param  int           $databox_id
+     * @param  int           $record_id
+     * @param  string        $response_type
      * @return API_V1_result
      */
     public function get_record_embed(Request $request, $databox_id, $record_id)
@@ -1106,9 +1106,9 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Move a record to another collection
      *
-     * @param Request $request
-     * @param int $databox_id
-     * @param int $record_id
+     * @param  Request       $request
+     * @param  int           $databox_id
+     * @param  int           $record_id
      * @return API_V1_result
      */
     public function set_record_collection(Request $request, $databox_id, $record_id)
@@ -1132,9 +1132,9 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Return detailed informations about one record
      *
-     * @param Request $request
-     * @param int $databox_id
-     * @param int $record_id
+     * @param  Request       $request
+     * @param  int           $databox_id
+     * @param  int           $record_id
      * @return API_V1_result
      */
     public function get_record(Request $request, $databox_id, $record_id)
@@ -1157,8 +1157,8 @@ class API_V1_adapter extends API_V1_Abstract
      * @todo
      *
      * @param Request $request
-     * @param int $databox_id
-     * @param int $record_id
+     * @param int     $databox_id
+     * @param int     $record_id
      */
     public function add_record_tobasket(Request $request, $databox_id, $record_id)
     {
@@ -1168,7 +1168,7 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Return the baskets list of the authenticated user
      *
-     * @param Request $request
+     * @param  Request       $request
      * @return API_V1_result
      */
     public function search_baskets(Request $request)
@@ -1185,7 +1185,7 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Return a baskets list
      *
-     * @param int $usr_id
+     * @param  int   $usr_id
      * @return array
      */
     protected function list_baskets($usr_id)
@@ -1207,7 +1207,7 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Create a new basket
      *
-     * @param Request $request
+     * @param  Request       $request
      * @return API_V1_result
      */
     public function create_basket(Request $request)
@@ -1240,8 +1240,8 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Delete a basket
      *
-     * @param Request $request
-     * @param int $basket_id
+     * @param  Request $request
+     * @param  int     $basket_id
      * @return array
      */
     public function delete_basket(Request $request, $basket_id)
@@ -1264,8 +1264,8 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Retrieve a basket
      *
-     * @param Request $request
-     * @param int $basket_id
+     * @param  Request       $request
+     * @param  int           $basket_id
      * @return API_V1_result
      */
     public function get_basket(Request $request, $basket_id)
@@ -1293,7 +1293,7 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Retrieve elements of one basket
      *
-     * @param \Entities\Basket $Basket
+     * @param  \Entities\Basket $Basket
      * @return type
      */
     protected function list_basket_content(\Entities\Basket $Basket)
@@ -1312,7 +1312,7 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Retrieve detailled informations about a basket element
      *
-     * @param \Entities\BasketElement $basket_element
+     * @param  \Entities\BasketElement $basket_element
      * @return type
      */
     protected function list_basket_element(\Entities\BasketElement $basket_element)
@@ -1357,8 +1357,8 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Change the name of one basket
      *
-     * @param Request $request
-     * @param int $basket_id
+     * @param  Request       $request
+     * @param  int           $basket_id
      * @return API_V1_result
      */
     public function set_basket_title(Request $request, $basket_id)
@@ -1393,8 +1393,8 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Change the description of one basket
      *
-     * @param Request $request
-     * @param type $basket_id
+     * @param  Request       $request
+     * @param  type          $basket_id
      * @return API_V1_result
      */
     public function set_basket_description(Request $request, $basket_id)
@@ -1429,8 +1429,8 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * List all avalaible feeds
      *
-     * @param Request $request
-     * @param User_Adapter $user
+     * @param  Request       $request
+     * @param  User_Adapter  $user
      * @return API_V1_result
      */
     public function search_publications(Request $request, User_Adapter &$user)
@@ -1453,7 +1453,7 @@ class API_V1_adapter extends API_V1_Abstract
      * @todo
      *
      * @param Request $request
-     * @param int $publication_id
+     * @param int     $publication_id
      */
     public function remove_publications(Request $request, $publication_id)
     {
@@ -1463,9 +1463,9 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Retrieve one feed
      *
-     * @param Request $request
-     * @param int $publication_id
-     * @param User_Adapter $user
+     * @param  Request       $request
+     * @param  int           $publication_id
+     * @param  User_Adapter  $user
      * @return API_V1_result
      */
     public function get_publication(Request $request, $publication_id, User_Adapter &$user)
@@ -1494,8 +1494,8 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Retrieve detailled informations about one feed
      *
-     * @param Feed_Adapter $feed
-     * @param type $user
+     * @param  Feed_Adapter $feed
+     * @param  type         $user
      * @return array
      */
     protected function list_publication(Feed_Adapter $feed, $user)
@@ -1516,9 +1516,9 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Retrieve all entries of one feed
      *
-     * @param Feed_Adapter $feed
-     * @param int $offset_start
-     * @param int $how_many
+     * @param  Feed_Adapter $feed
+     * @param  int          $offset_start
+     * @param  int          $how_many
      * @return array
      */
     protected function list_publications_entries(Feed_Adapter $feed, $offset_start = 0, $how_many = 5)
@@ -1540,7 +1540,7 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Retrieve detailled information about one feed entry
      *
-     * @param Feed_Entry_Adapter $entry
+     * @param  Feed_Entry_Adapter $entry
      * @return array
      */
     protected function list_publication_entry(Feed_Entry_Adapter $entry)
@@ -1564,7 +1564,7 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Retrieve detailled informations about one feed  entry item
      *
-     * @param Feed_Entry_Item $item
+     * @param  Feed_Entry_Item $item
      * @return array
      */
     protected function list_publication_entry_item(Feed_Entry_Item $item)
@@ -1589,7 +1589,7 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * @todo
      * @param Request $request
-     * @param int $usr_id
+     * @param int     $usr_id
      */
     public function get_user_acces(Request $request, $usr_id)
     {
@@ -1608,7 +1608,7 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * @retrieve detailled informations about one suddef
      *
-     * @param media_subdef $media
+     * @param  media_subdef $media
      * @return array
      */
     protected function list_embedable_media(media_subdef &$media, registryInterface &$registry)
@@ -1633,8 +1633,8 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Retrieve detailled information about one permalink
      *
-     * @param media_Permalink_Adapter $permalink
-     * @param registryInterface $registry
+     * @param  media_Permalink_Adapter $permalink
+     * @param  registryInterface       $registry
      * @return type
      */
     protected function list_permalink(media_Permalink_Adapter &$permalink, registryInterface &$registry)
@@ -1653,8 +1653,8 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Retrieve detailled information about one status
      *
-     * @param databox $databox
-     * @param string $status
+     * @param  databox $databox
+     * @param  string  $status
      * @return array
      */
     protected function list_record_status(databox $databox, $status)
@@ -1671,7 +1671,7 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * List all field about a specified caption
      *
-     * @param caption_record $caption
+     * @param  caption_record $caption
      * @return array
      */
     protected function list_record_caption(caption_record $caption)
@@ -1689,7 +1689,7 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Retrieve information about a caption field
      *
-     * @param caption_field $field
+     * @param  caption_field $field
      * @return array
      */
     protected function list_record_caption_field(caption_Field_Value $value, caption_field $field)
@@ -1698,6 +1698,7 @@ class API_V1_adapter extends API_V1_Abstract
          * @todo  ajouter une option pour avoir les values serialisées
          *        dans un cas multi
          */
+
         return array(
             'meta_id'           => $value->getId(),
             'meta_structure_id' => $field->get_meta_struct_id(),
@@ -1709,7 +1710,7 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Retirve information about one basket
      *
-     * @param \Entities\Basket $basket
+     * @param  \Entities\Basket $basket
      * @return array
      */
     protected function list_basket(\Entities\Basket $basket)
@@ -1765,7 +1766,7 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Retrieve detailled informations about one record
      *
-     * @param record_adapter $record
+     * @param  record_adapter $record
      * @return array
      */
     protected function list_record(record_adapter $record)
@@ -1807,7 +1808,7 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Retrieve CGU's for the specified databox
      *
-     * @param databox $databox
+     * @param  databox $databox
      * @return array
      */
     protected function list_databox_terms(databox $databox)
@@ -1822,7 +1823,7 @@ class API_V1_adapter extends API_V1_Abstract
 
     /**
      * Retrieve detailled informations about one databox
-     * @param databox $databox
+     * @param  databox $databox
      * @return array
      */
     protected function list_databox(databox $databox)
@@ -1839,7 +1840,7 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * List all available collections for a specified databox
      *
-     * @param databox $databox
+     * @param  databox $databox
      * @return array
      */
     protected function list_databox_collections(databox $databox)
@@ -1856,7 +1857,7 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Retrieve detailled informations about one collection
      *
-     * @param collection $collection
+     * @param  collection $collection
      * @return array
      */
     protected function list_collection(collection $collection)
@@ -1874,7 +1875,7 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Retrieve informations for a list of status
      *
-     * @param array $status
+     * @param  array $status
      * @return array
      */
     protected function list_databox_status(array $status)
@@ -1898,7 +1899,7 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * List all metadatas field using a databox meta structure
      *
-     * @param databox_descriptionStructure $meta_struct
+     * @param  databox_descriptionStructure $meta_struct
      * @return array
      */
     protected function list_databox_metadatas_fields(databox_descriptionStructure $meta_struct)
@@ -1914,7 +1915,7 @@ class API_V1_adapter extends API_V1_Abstract
     /**
      * Retirve informations about one databox metadata field
      *
-     * @param databox_field $databox_field
+     * @param  databox_field $databox_field
      * @return array
      */
     protected function list_databox_metadata_field_properties(databox_field $databox_field)

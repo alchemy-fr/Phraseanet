@@ -34,9 +34,9 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
 
     /**
      *
-     * @param string $event
-     * @param Array $params
-     * @param mixed content $object
+     * @param  string        $event
+     * @param  Array         $params
+     * @param  mixed content $object
      * @return boolean
      */
     public function fire($event, $params, &$object)
@@ -102,8 +102,8 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
 
     /**
      *
-     * @param Array $datas
-     * @param boolean $unread
+     * @param  Array   $datas
+     * @param  boolean $unread
      * @return Array
      */
     public function datas($datas, $unread)
@@ -152,21 +152,21 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
      *
      * @return boolean
      */
-    function is_available()
+    public function is_available()
     {
         return true;
     }
 
     /**
      *
-     * @param Array $to
-     * @param Array $from
-     * @param string $message
-     * @param string $url
-     * @param boolean $accuse
+     * @param  Array   $to
+     * @param  Array   $from
+     * @param  string  $message
+     * @param  string  $url
+     * @param  boolean $accuse
      * @return boolean
      */
-    function mail($to, $from, $message, $url, $accuse)
+    public function mail($to, $from, $message, $url, $accuse)
     {
         $subject = _('push::mail:: Reception de documents');
 

@@ -32,7 +32,7 @@ class patch_320e implements patchInterface
      *
      * @return string
      */
-    function get_release()
+    public function get_release()
     {
         return $this->release;
     }
@@ -46,12 +46,12 @@ class patch_320e implements patchInterface
      *
      * @return Array
      */
-    function concern()
+    public function concern()
     {
         return $this->concern;
     }
 
-    function apply(base &$databox)
+    public function apply(base &$databox)
     {
         $sql = 'UPDATE record r, subdef s
                             SET r.mime = s.mime

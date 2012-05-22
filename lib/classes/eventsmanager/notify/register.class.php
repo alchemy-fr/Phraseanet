@@ -34,9 +34,9 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
 
     /**
      *
-     * @param string $event
-     * @param Array $params
-     * @param mixed content $object
+     * @param  string        $event
+     * @param  Array         $params
+     * @param  mixed content $object
      * @return Void
      */
     public function fire($event, $params, &$object)
@@ -141,8 +141,8 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
 
     /**
      *
-     * @param Array $datas
-     * @param boolean $unread
+     * @param  Array   $datas
+     * @param  boolean $unread
      * @return Array
      */
     public function datas($datas, $unread)
@@ -189,12 +189,12 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
 
     /**
      *
-     * @param Array $to
-     * @param Array $from
-     * @param string $datas
+     * @param  Array   $to
+     * @param  Array   $from
+     * @param  string  $datas
      * @return boolean
      */
-    function mail($to, $from, $datas)
+    public function mail($to, $from, $datas)
     {
         $subject = sprintf(
             _('admin::register: demande d\'inscription sur %s'), $this->registry->get('GV_homeTitle')
@@ -263,7 +263,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
      *
      * @return boolean
      */
-    function is_available()
+    public function is_available()
     {
         $bool = false;
 

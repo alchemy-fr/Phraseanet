@@ -20,8 +20,8 @@ class Feed_TokenAggregate extends Feed_Token
 
     /**
      *
-     * @param appbox $appbox
-     * @param string $token
+     * @param  appbox              $appbox
+     * @param  string              $token
      * @return Feed_TokenAggregate
      */
     public function __construct(appbox &$appbox, $token)

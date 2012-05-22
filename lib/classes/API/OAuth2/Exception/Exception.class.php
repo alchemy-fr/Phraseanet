@@ -54,11 +54,11 @@ class API_OAuth2_Exception_Exception extends Exception implements API_OAuth2_Exc
 
     /**
      *
-     * @param int $http_code
-     * @param string $error
-     * @param string $error_description
-     * @param string $scope
-     * @param string $error_uri
+     * @param  int                            $http_code
+     * @param  string                         $error
+     * @param  string                         $error_description
+     * @param  string                         $scope
+     * @param  string                         $error_uri
      * @return API_OAuth2_Exception_Exception
      */
     public function __construct($http_code, $error, $error_description = null, $scope = null, $error_uri = null)
@@ -83,7 +83,7 @@ class API_OAuth2_Exception_Exception extends Exception implements API_OAuth2_Exc
 
     /**
      *
-     * @param int $http_code
+     * @param  int                            $http_code
      * @return API_OAuth2_Exception_Exception
      */
     public function setHttp_code($http_code)
@@ -104,7 +104,7 @@ class API_OAuth2_Exception_Exception extends Exception implements API_OAuth2_Exc
 
     /**
      *
-     * @param string $scope
+     * @param  string                         $scope
      * @return API_OAuth2_Exception_Exception
      */
     public function setError($error)
@@ -125,7 +125,7 @@ class API_OAuth2_Exception_Exception extends Exception implements API_OAuth2_Exc
 
     /**
      *
-     * @param string $scope
+     * @param  string                         $scope
      * @return API_OAuth2_Exception_Exception
      */
     public function setError_description($error_description)
@@ -146,7 +146,7 @@ class API_OAuth2_Exception_Exception extends Exception implements API_OAuth2_Exc
 
     /**
      *
-     * @param string $scope
+     * @param  string                         $scope
      * @return API_OAuth2_Exception_Exception
      */
     public function setError_uri($error_uri)
@@ -167,7 +167,7 @@ class API_OAuth2_Exception_Exception extends Exception implements API_OAuth2_Exc
 
     /**
      *
-     * @param string $scope
+     * @param  string                         $scope
      * @return API_OAuth2_Exception_Exception
      */
     public function setScope($scope)

@@ -42,8 +42,8 @@ class caption_record implements caption_interface, cache_cacheableInterface
 
     /**
      *
-     * @param record_Interface $record
-     * @param databox $databox
+     * @param  record_Interface $record
+     * @param  databox          $databox
      * @return caption_record
      */
     public function __construct(record_Interface &$record, databox &$databox)
@@ -172,7 +172,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
 
     /**
      *
-     * @param array $grep_fields
+     * @param  array $grep_fields
      * @return array
      */
     public function get_fields(Array $grep_fields = null, $IncludeBusiness = false)
@@ -196,7 +196,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
 
     /**
      *
-     * @param type $fieldname
+     * @param  type           $fieldname
      * @return \caption_field
      * @throws \Exception
      */
@@ -213,7 +213,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
 
     /**
      *
-     * @param type $label
+     * @param  type          $label
      * @return caption_field
      */
     public function get_dc_field($label)
@@ -228,9 +228,9 @@ class caption_record implements caption_interface, cache_cacheableInterface
 
     /**
      *
-     * @param string $highlight
-     * @param array $grep_fields
-     * @param searchEngine_adapter $searchEngine
+     * @param  string               $highlight
+     * @param  array                $grep_fields
+     * @param  searchEngine_adapter $searchEngine
      * @return array
      */
     public function get_highlight_fields($highlight = '', Array $grep_fields = null, searchEngine_adapter $searchEngine = null, $includeBusiness = false)
@@ -240,9 +240,9 @@ class caption_record implements caption_interface, cache_cacheableInterface
 
     /**
      * @todo move this fun in caption_field object
-     * @param string $highlight
-     * @param array $grep_fields
-     * @param searchEngine_adapter $searchEngine
+     * @param  string               $highlight
+     * @param  array                $grep_fields
+     * @param  searchEngine_adapter $searchEngine
      * @return array
      */
     protected function highlight_fields($highlight, Array $grep_fields = null, searchEngine_adapter $searchEngine = null, $includeBusiness = false)
@@ -289,7 +289,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
     /**
      * Part of the cache_cacheableInterface
      *
-     * @param string $option
+     * @param  string $option
      * @return string
      */
     public function get_cache_key($option = null)
@@ -300,7 +300,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
     /**
      * Part of the cache_cacheableInterface
      *
-     * @param string $option
+     * @param  string $option
      * @return mixed
      */
     public function get_data_from_cache($option = null)
@@ -313,9 +313,9 @@ class caption_record implements caption_interface, cache_cacheableInterface
     /**
      * Part of the cache_cacheableInterface
      *
-     * @param mixed $value
-     * @param string $option
-     * @param int $duration
+     * @param  mixed         $value
+     * @param  string        $option
+     * @param  int           $duration
      * @return caption_field
      */
     public function set_data_to_cache($value, $option = null, $duration = 0)
@@ -328,7 +328,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
     /**
      * Part of the cache_cacheableInterface
      *
-     * @param string $option
+     * @param  string        $option
      * @return caption_field
      */
     public function delete_data_from_cache($option = null)

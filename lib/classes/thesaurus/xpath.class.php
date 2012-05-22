@@ -24,9 +24,9 @@ class thesaurus_xpath extends DOMXPath
 
     /**
      *
-     * @param string $xquery
-     * @param DOMNode $context_node
-     * @param string $context_path
+     * @param  string      $xquery
+     * @param  DOMNode     $context_node
+     * @param  string      $context_path
      * @return DOMNodeList
      */
     public function cache_query($xquery, DOMNode $context_node = NULL, $context_path = '')

@@ -401,8 +401,7 @@ class PDF
                             rename($tmp_filename, $tmp_filename . '.png');
                             $miniConv[$RIGHT_IMG] = $tmp_filename . '.png';
                             $RIGHT_IMG = $tmp_filename . '.png';
-                        }
-                        else
+                        } else
                             $RIGHT_IMG = $miniConv[$RIGHT_IMG];
 
                         $wmm = (int) $size[0] * 25.4 / 72;
@@ -416,8 +415,7 @@ class PDF
                         if ($hmm < 6)
                             $tt = (6 - $hmm) / 2;
                         $this->pdf->Image($RIGHT_IMG, 200 - 0.5 - $wmm, $ytmp + 0.5 + $tt);
-                    }
-                    else {
+                    } else {
                         $wmm = (int) $size[0] * 25.4 / 72;
                         $hmm = (int) $size[1] * 25.4 / 72;
                         if ($hmm > 6) {

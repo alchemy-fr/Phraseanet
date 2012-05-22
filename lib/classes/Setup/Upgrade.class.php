@@ -46,7 +46,7 @@ class Setup_Upgrade
 
     /**
      *
-     * @param appbox $appbox
+     * @param  appbox        $appbox
      * @return Setup_Upgrade
      */
     public function __construct(appbox &$appbox)
@@ -80,7 +80,7 @@ class Setup_Upgrade
     /**
      * Add steps to do to the counter
      *
-     * @param int $how_many
+     * @param  int           $how_many
      * @return Setup_Upgrade
      */
     public function add_steps($how_many)
@@ -94,7 +94,7 @@ class Setup_Upgrade
     /**
      * Add completed steps to the counter
      *
-     * @param int $how_many
+     * @param  int           $how_many
      * @return Setup_Upgrade
      */
     public function add_steps_complete($how_many)
@@ -108,7 +108,7 @@ class Setup_Upgrade
     /**
      * Set the current message
      *
-     * @param string $message
+     * @param  string        $message
      * @return Setup_Upgrade
      */
     public function set_current_message($message)

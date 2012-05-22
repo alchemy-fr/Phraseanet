@@ -25,8 +25,8 @@ class Feed_Aggregate extends Feed_Abstract implements Feed_Interface
 
     /**
      *
-     * @param appbox $appbox
-     * @param array $feeds
+     * @param  appbox         $appbox
+     * @param  array          $feeds
      * @return Feed_Aggregate
      */
     public function __construct(appbox &$appbox, Array $feeds)
@@ -75,8 +75,8 @@ class Feed_Aggregate extends Feed_Abstract implements Feed_Interface
 
     /**
      *
-     * @param int $offset_start
-     * @param int $how_many
+     * @param  int                   $offset_start
+     * @param  int                   $how_many
      * @return Feed_Entry_Collection
      */
     public function get_entries($offset_start, $how_many)
@@ -137,9 +137,9 @@ class Feed_Aggregate extends Feed_Abstract implements Feed_Interface
 
     /**
      *
-     * @param registryInterface $registry
-     * @param string $format
-     * @param int $page
+     * @param  registryInterface $registry
+     * @param  string            $format
+     * @param  int               $page
      * @return Feed_Link
      */
     public function get_homepage_link(registryInterface $registry, $format, $page = null)
@@ -181,8 +181,8 @@ class Feed_Aggregate extends Feed_Abstract implements Feed_Interface
 
     /**
      *
-     * @param User_Adapter $user
-     * @param boolean $renew
+     * @param  User_Adapter $user
+     * @param  boolean      $renew
      * @return string
      */
     protected function get_token(User_Adapter $user, $renew = false)
@@ -217,8 +217,8 @@ class Feed_Aggregate extends Feed_Abstract implements Feed_Interface
 
     /**
      *
-     * @param appbox $appbox
-     * @param User_Adapter $user
+     * @param  appbox         $appbox
+     * @param  User_Adapter   $user
      * @return Feed_Aggregate
      */
     public static function load_with_user(appbox &$appbox, User_Adapter &$user)
@@ -230,11 +230,11 @@ class Feed_Aggregate extends Feed_Abstract implements Feed_Interface
 
     /**
      *
-     * @param registryInterface $registry
-     * @param User_Adapter $user
-     * @param string $format
-     * @param int $page
-     * @param boolean $renew_token
+     * @param  registryInterface $registry
+     * @param  User_Adapter      $user
+     * @param  string            $format
+     * @param  int               $page
+     * @param  boolean           $renew_token
      * @return Feed_Link
      */
     public function get_user_link(registryInterface $registry, User_Adapter $user, $format, $page = null, $renew_token = false)

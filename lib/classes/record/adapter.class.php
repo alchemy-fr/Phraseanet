@@ -144,11 +144,11 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param <int> $base_id
-     * @param <int> $record_id
-     * @param <int> $number
-     * @param <string> $xml
-     * @param <string> $status
+     * @param  <int>          $base_id
+     * @param  <int>          $record_id
+     * @param  <int>          $number
+     * @param  <string>       $xml
+     * @param  <string>       $status
      * @return record_adapter
      */
     public function __construct($sbas_id, $record_id, $number = null)
@@ -264,7 +264,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     /**
      * Set a relative number (order) for the vurrent in its set
      *
-     * @param int $number
+     * @param  int            $number
      * @return record_adapter
      */
     public function set_number($number)
@@ -276,7 +276,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param string $type
+     * @param  string         $type
      * @return record_adapter
      */
     public function set_type($type)
@@ -463,8 +463,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param collection $collection
-     * @param appbox $appbox
+     * @param  collection     $collection
+     * @param  appbox         $appbox
      * @return record_adapter
      */
     public function move_to_collection(collection &$collection, appbox &$appbox)
@@ -581,7 +581,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param <type> $name
+     * @param  <type>       $name
      * @return media_subdef
      */
     public function get_subdef($name)
@@ -608,8 +608,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     /**
      * Returns an array of subdef matching
      *
-     * @param string|array  $devices    the matching device (see databox_subdef::DEVICE_*)
-     * @param type          $mimes      the matching mime types
+     * @param  string|array $devices the matching device (see databox_subdef::DEVICE_*)
+     * @param  type         $mimes   the matching mime types
      * @return array
      */
     public function getSubdfefByDeviceAndMime($devices = null, $mimes = null)
@@ -724,7 +724,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param string $data
+     * @param  string $data
      * @return Array
      */
     public function get_technical_infos($data = false)
@@ -1069,7 +1069,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param DOMDocument $dom_doc
+     * @param  DOMDocument    $dom_doc
      * @return record_adapter
      */
     protected function set_xml(DOMDocument $dom_doc)
@@ -1092,7 +1092,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     /**
      *
      * @todo move this function to caption_record
-     * @param Array $params An array containing three keys : meta_struct_id (int), meta_id (int or null) and value (Array)
+     * @param  Array          $params An array containing three keys : meta_struct_id (int), meta_id (int or null) and value (Array)
      * @return record_adapter
      */
     protected function set_metadata(Array $params, databox $databox)
@@ -1152,7 +1152,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     /**
      *
      * @todo move this function to caption_record
-     * @param array $metadatas
+     * @param  array          $metadatas
      * @return record_adapter
      */
     public function set_metadatas(Array $metadatas, $force_readonly = false)
@@ -1234,7 +1234,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param string $status
+     * @param  string         $status
      * @return record_adapter
      */
     public function set_binary_status($status)
@@ -1281,7 +1281,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param \collection $collection
+     * @param  \collection     $collection
      * @return \record_adapter
      */
     public static function createStory(\collection $collection)
@@ -1417,9 +1417,9 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param int $base_id
-     * @param int $record_id
-     * @param string $sha256
+     * @param  int            $base_id
+     * @param  int            $record_id
+     * @param  string         $sha256
      * @return record_adapter
      */
     public static function get_record_by_sha($sbas_id, $sha256, $record_id = null)
@@ -1643,7 +1643,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param string $option optionnal cache name
+     * @param  string $option optionnal cache name
      * @return string
      */
     public function get_cache_key($option = null)
@@ -1721,7 +1721,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      *
      * @todo move to media_subdef class
      * @param databox_subdef $subdef_class
-     * @param string $pathdest
+     * @param string         $pathdest
      */
     protected function generate_subdef(databox_subdef $subdef_class, $pathdest)
     {
@@ -1741,8 +1741,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     /**
      * Generate a subdef pathname depending the databox_subdef and the previous file(if regenerated)
      *
-     * @param databox_subdef $subdef
-     * @param type $oldVersion
+     * @param  databox_subdef $subdef
+     * @param  type           $oldVersion
      * @return type
      */
     protected function generateSubdefPathname(databox_subdef $subdef, $oldVersion = null)
@@ -1759,7 +1759,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     /**
      * Get the extension from MediaAlchemyst specs
      *
-     * @param MediaAlchemyst\Specification\Specification $spec
+     * @param  MediaAlchemyst\Specification\Specification $spec
      * @return string
      */
     protected function getExtensionFromSpec(MediaAlchemyst\Specification\Specification $spec)
@@ -1790,7 +1790,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     /**
      * Get the extension from audiocodec
      *
-     * @param string $audioCodec
+     * @param  string $audioCodec
      * @return string
      */
     protected function getExtensionFromAudioCodec($audioCodec)
@@ -1812,7 +1812,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     /**
      * Get the extension from videocodec
      *
-     * @param string $videoCodec
+     * @param  string $videoCodec
      * @return string
      */
     protected function getExtensionFromVideoCodec($videoCodec)
@@ -1836,7 +1836,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param string $option optionnal cache name
+     * @param  string $option optionnal cache name
      * @return mixed
      */
     public function get_data_from_cache($option = null)
@@ -1933,9 +1933,9 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param databox $databox
-     * @param int $offset_start
-     * @param int $how_many
+     * @param  databox $databox
+     * @param  int     $offset_start
+     * @param  int     $how_many
      * @return type
      */
     public static function get_records_by_originalname(databox $databox, $original_name, $caseSensitive = false, $offset_start = 0, $how_many = 10)

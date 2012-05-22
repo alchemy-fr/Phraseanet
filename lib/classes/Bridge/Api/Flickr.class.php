@@ -161,8 +161,8 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
 
     /**
      *
-     * @param type $element_id
-     * @param type $object
+     * @param  type $element_id
+     * @param  type $object
      * @return type
      */
     public function get_element_from_id($element_id, $object)
@@ -189,8 +189,8 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
 
     /**
      *
-     * @param type $object
-     * @param type $element_id
+     * @param  type $object
+     * @param  type $element_id
      * @return type
      */
     public function get_container_from_id($object, $element_id)
@@ -261,9 +261,9 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
 
     /**
      *
-     * @param string $object
-     * @param string $object_id
-     * @param Request $request
+     * @param  string  $object
+     * @param  string  $object_id
+     * @param  Request $request
      * @return Void
      */
     public function update_element($object, $object_id, Array $datas)
@@ -298,8 +298,8 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
 
     /**
      *
-     * @param string $container_type
-     * @param Request $request
+     * @param  string                      $container_type
+     * @param  Request                     $request
      * @return Bridge_Api_Flickr_Container
      */
     public function create_container($container_type, Request $request)
@@ -337,10 +337,10 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
 
     /**
      *
-     * @param string $element_type
-     * @param string $element_id
-     * @param string $destination
-     * @param string $container_id
+     * @param  string $element_type
+     * @param  string $element_id
+     * @param  string $destination
+     * @param  string $container_id
      * @return Void
      */
     public function add_element_to_container($element_type, $element_id, $destination, $container_id)
@@ -376,8 +376,8 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
 
     /**
      *
-     * @param string $object
-     * @param string $object_id
+     * @param  string $object
+     * @param  string $object_id
      * @return Void
      */
     public function delete_object($object, $object_id)
@@ -409,9 +409,9 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
 
     /**
      *
-     * @param string $type
-     * @param int $offset_start
-     * @param int $quantity
+     * @param  string                       $type
+     * @param  int                          $offset_start
+     * @param  int                          $quantity
      * @return Bridge_Api_ElementCollection
      */
     public function list_elements($type, $offset_start = 0, $quantity = 10)
@@ -507,9 +507,9 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
 
     /**
      *
-     * @param record_adapter $record
-     * @param array $options
-     * @return string  The new distant Id
+     * @param  record_adapter $record
+     * @param  array          $options
+     * @return string         The new distant Id
      */
     public function upload(record_adapter &$record, Array $options = array())
     {
@@ -576,7 +576,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
 
     /**
      *
-     * @param string $type
+     * @param  string $type
      * @return string
      */
     public function get_object_class_from_type($type)
@@ -691,8 +691,8 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
 
     /**
      * Not implmented
-     * @param array $datas
-     * @param record_adapter $record
+     * @param  array          $datas
+     * @param  record_adapter $record
      * @return array
      */
     public function check_upload_constraints(array $datas, record_adapter $record)
@@ -707,8 +707,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
                 if ( ! isset($datas[$name]) || trim($datas[$name]) === '') {
                     if ($required)
                         $errors[$name . '_' . $key] = _("Ce champ est obligatoire");
-                }
-                elseif ($length !== 0) {
+                } elseif ($length !== 0) {
                     if (mb_strlen($datas[$name]) > $length)
                         $errors[$name . '_' . $key] = sprintf(_("Ce champ est trop long %s caracteres max"), $length);
                 }
@@ -730,8 +729,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
                 if ( ! isset($datas[$name]) || trim($datas[$name]) === '') {
                     if ($required)
                         $errors[$name] = _("Ce champ est obligatoire");
-                }
-                elseif ($length !== 0) {
+                } elseif ($length !== 0) {
                     if (mb_strlen($datas[$name]) > $length)
                         $errors[$name] = sprintf(_("Ce champ est trop long %s caracteres max"), $length);
                 }
@@ -744,7 +742,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
 
     /**
      * Returns datas needed for an uploaded record
-     * @param record_adapter $record
+     * @param  record_adapter $record
      * @return array
      */
     public function get_update_datas(Request $request)
@@ -759,7 +757,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
 
     /**
      * Returns datas needed for an uploaded record
-     * @param record_adapter $record
+     * @param  record_adapter $record
      * @return array
      */
     public function get_upload_datas(Request $request, record_adapter $record)
@@ -812,7 +810,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
 
     /**
      *
-     * @param record_adapter $record
+     * @param  record_adapter $record
      * @return array
      */
     private function check_record_constraints(record_adapter $record)

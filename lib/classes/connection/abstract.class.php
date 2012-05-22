@@ -67,8 +67,8 @@ abstract class connection_abstract extends PDO
 
     /**
      *
-     * @param string $statement
-     * @param array $driver_options
+     * @param  string       $statement
+     * @param  array        $driver_options
      * @return PDOStatement
      */
     public function prepare($statement, $driver_options = array())

@@ -68,7 +68,7 @@ class Bridge_Api_Auth_Flickr extends Bridge_Api_Auth_Abstract implements Bridge_
 
     /**
      *
-     * @param string $param
+     * @param  string $param
      * @return Array
      */
     public function connect($param)
@@ -124,7 +124,7 @@ class Bridge_Api_Auth_Flickr extends Bridge_Api_Auth_Abstract implements Bridge_
 
     /**
      *
-     * @param array $parameters
+     * @param  array                  $parameters
      * @return Bridge_Api_Auth_Flickr
      */
     public function set_parameters(Array $parameters)

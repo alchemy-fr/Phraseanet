@@ -20,12 +20,12 @@ class PhraseaPDF extends \TCPDF
 {
     const FONT = 'freesans';
 
-    function Header()
+    public function Header()
     {
 
     }
 
-    function Footer()
+    public function Footer()
     {
         $ml = $this->SetLeftMargin(0);
         $mr = $this->SetRightMargin(0);

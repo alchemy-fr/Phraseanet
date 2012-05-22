@@ -103,7 +103,7 @@ class module_report_nav extends module_report
 
     /**
      * @desc return the filter to generate the good request
-     * @param object $conn the current connexion to appbox
+     * @param  object $conn the current connexion to appbox
      * @return string
      */
     private function getFilter()
@@ -113,7 +113,7 @@ class module_report_nav extends module_report
 
     /**
      * @desc report the browser used by users
-     * @param array $tab config  for the html table
+     * @param  array $tab config  for the html table
      * @return tab
      */
     public function buildTabNav($tab = false)
@@ -178,7 +178,7 @@ class module_report_nav extends module_report
 
     /**
      * @desc report the OS from user
-     * @param array $tab config for the html table
+     * @param  array $tab config for the html table
      * @return array
      */
     public function buildTabOs($tab = false)
@@ -238,7 +238,7 @@ class module_report_nav extends module_report
 
     /**
      * @desc report the resolution that are using the users
-     * @param array $tab config for the html table
+     * @param  array $tab config for the html table
      * @return array
      */
     public function buildTabRes($tab = false)
@@ -362,7 +362,7 @@ class module_report_nav extends module_report
 
     /**
      * @desc report the most consulted module by the users
-     * @param array $tab
+     * @param  array $tab
      * @return array
      */
     public function buildTabModule($tab = false)
@@ -444,9 +444,9 @@ class module_report_nav extends module_report
 
     /**
      * @desc report basic user informations
-     * @param int $val user id
-     * @param array $tab config for the html table
-     * @param string $on the field
+     * @param  int    $val user id
+     * @param  array  $tab config for the html table
+     * @param  string $on  the field
      * @return array
      */
     public function buildTabGrpInfo($req, array $params, $val, $tab = false, $on = false)

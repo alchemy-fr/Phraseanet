@@ -50,9 +50,9 @@ class Session_Authentication_Native implements Session_Authentication_Interface
 
     /**
      *
-     * @param appbox $appbox
-     * @param string $login
-     * @param string $password
+     * @param  appbox                        $appbox
+     * @param  string                        $login
+     * @param  string                        $password
      * @return Session_Authentication_Native
      */
     public function __construct(appbox &$appbox, $login, $password)
@@ -82,7 +82,7 @@ class Session_Authentication_Native implements Session_Authentication_Interface
 
     /**
      *
-     * @param boolean $captcha_challenge_result
+     * @param  boolean                       $captcha_challenge_result
      * @return Session_Authentication_Native
      */
     public function set_captcha_challenge($captcha_challenge_result)
@@ -148,7 +148,7 @@ class Session_Authentication_Native implements Session_Authentication_Interface
 
     /**
      *
-     * @param Browser $browser
+     * @param  Browser                       $browser
      * @return Session_Authentication_Native
      */
     public function challenge_password(Browser $browser = null)
@@ -185,7 +185,7 @@ class Session_Authentication_Native implements Session_Authentication_Interface
 
     /**
      *
-     * @param Browser $browser
+     * @param  Browser                       $browser
      * @return Session_Authentication_Native
      */
     protected function save_badlog(Browser $browser)
@@ -242,7 +242,7 @@ class Session_Authentication_Native implements Session_Authentication_Interface
 
     /**
      *
-     * @param string $ip
+     * @param  string                        $ip
      * @return Session_Authentication_Native
      */
     protected function check_and_revoke_badlogs($ip)
@@ -279,7 +279,7 @@ class Session_Authentication_Native implements Session_Authentication_Interface
 
     /**
      *
-     * @param registryInterface $registry
+     * @param  registryInterface $registry
      * @return boolean
      */
     protected function is_captcha_activated(registryInterface $registry)

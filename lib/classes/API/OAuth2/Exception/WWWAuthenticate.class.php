@@ -36,12 +36,12 @@ class API_OAuth2_Exception_WWWAuthenticate extends API_OAuth2_Exception_Exceptio
 
     /**
      *
-     * @param int $http_code
-     * @param string $realm
-     * @param string $error
-     * @param string $error_description
-     * @param string $error_uri
-     * @param string $scope
+     * @param  int                                  $http_code
+     * @param  string                               $realm
+     * @param  string                               $error
+     * @param  string                               $error_description
+     * @param  string                               $error_uri
+     * @param  string                               $scope
      * @return API_OAuth2_Exception_WWWAuthenticate
      */
     public function __construct($http_code, $realm, $error, $error_description = null, $error_uri = null, $scope = null)
@@ -65,7 +65,7 @@ class API_OAuth2_Exception_WWWAuthenticate extends API_OAuth2_Exception_Exceptio
 
     /**
      *
-     * @param string $realm
+     * @param  string                               $realm
      * @return API_OAuth2_Exception_WWWAuthenticate
      */
     public function setRealm($realm)

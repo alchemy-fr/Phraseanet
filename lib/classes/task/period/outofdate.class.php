@@ -138,12 +138,9 @@ class task_period_outofdate extends task_abstract
                     {'name':"status2",  'val':"<?php echo p4string::MakeString($sxml->status2, "js") ?>"},
                     {'name':"coll2",    'val':"<?php echo p4string::MakeString($sxml->coll2, "js") ?>"}
                 ];
-                for(j in pops)
-                {
-                    for(opts=<?php echo $form ?>[pops[j].name].options, i=0; i<opts.length; i++)
-                    {
-                        if(opts[i].value == pops[j].val)
-                        {
+                for (j in pops) {
+                    for (opts=<?php echo $form ?>[pops[j].name].options, i=0; i<opts.length; i++) {
+                        if (opts[i].value == pops[j].val) {
                             opts[i].selected = true;
                             break;
                         }
@@ -157,6 +154,7 @@ class task_period_outofdate extends task_abstract
                 parent.calcSQL();
             </script>
             <?php
+
             return("");
         } else { // ... so we NEVER come here
             // bad xml
@@ -219,8 +217,7 @@ class task_period_outofdate extends task_abstract
             function chgxmltxt(textinput, fieldname)
             {
                 var limits = { 'period':{min:1, 'max':1440} , 'delay':{min:0} } ;
-                if(typeof(limits[fieldname])!='undefined')
-                {
+                if (typeof(limits[fieldname])!='undefined') {
                     var v = 0|textinput.value;
                     if(limits[fieldname].min && v < limits[fieldname].min)
                         v = limits[fieldname].min;
@@ -255,11 +252,9 @@ class task_period_outofdate extends task_abstract
                     , dataType:'json'
                     , type:"POST"
                     , async:false
-                    , success:function(data)
-                    {
+                    , success:function(data) {
                         var s = "";
-                        for(i in data)
-                        {
+                        for (i in data) {
                             s += (s?"<br/>\n":"");
                             s += "<div class=\"sqlcmd\">" + (data[i]["sql"]+'<br/>\n') + "</div>\n";
                             var ptxt = "";
@@ -282,8 +277,7 @@ class task_period_outofdate extends task_abstract
                     , dataType:'json'
                     , type:"POST"
                     , async:false
-                    , success:function(data)
-                    {
+                    , success:function(data) {
                         var html = "<option value=\"\">...</option>";
                         for(i in data.date_fields)
                             html += "\n<option class=\"jsFilled\" value=\"" + data.date_fields[i] + "\">" + data.date_fields[i] + "</option>";
@@ -315,7 +309,7 @@ class task_period_outofdate extends task_abstract
     // callback : must return the name graphic form to submit
     // if not implemented, assume 'graphicForm'
     // ====================================================================
-    function getGraphicForm()
+    public function getGraphicForm()
     {
         return true;
     }
@@ -437,7 +431,7 @@ class task_period_outofdate extends task_abstract
     // ======================================================================================================
     // ===== help() : text displayed if --help (optional)
     // ======================================================================================================
-    function help()
+    public function help()
     {
         return(_("task::outofdate:deplacement de docs suivant valeurs de champs 'date'"));
     }
@@ -562,7 +556,7 @@ class task_period_outofdate extends task_abstract
         }
     }
 
-    function doRecords()
+    public function doRecords()
     {
         $ndone = 0;
         $ret = 'NORECSTODO';

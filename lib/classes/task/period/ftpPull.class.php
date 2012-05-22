@@ -100,6 +100,7 @@ class task_period_ftpPull extends task_appboxAbstract
             </script>
 
             <?php
+
             return("");
         } else { // ... so we NEVER come here
             // bad xml
@@ -129,7 +130,7 @@ class task_period_ftpPull extends task_appboxAbstract
         <?php
     }
 
-    function getGraphicForm()
+    public function getGraphicForm()
     {
         return true;
     }
@@ -288,7 +289,7 @@ class task_period_ftpPull extends task_appboxAbstract
         }
 
         $core['file-system']->mkdir($this->localpath, 0750);
-        
+
         if ( ! is_dir($this->localpath)) {
             $this->log('\'' . $this->localpath . '\' does not exists');
             $this->running = FALSE;

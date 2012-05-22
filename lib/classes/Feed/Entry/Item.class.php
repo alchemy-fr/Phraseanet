@@ -49,9 +49,9 @@ class Feed_Entry_Item implements Feed_Entry_ItemInterface, cache_cacheableInterf
 
     /**
      *
-     * @param appbox $appbox
-     * @param Feed_Entry_Adapter $entry
-     * @param int $id
+     * @param  appbox             $appbox
+     * @param  Feed_Entry_Adapter $entry
+     * @param  int                $id
      * @return Feed_Entry_Item
      */
     public function __construct(appbox &$appbox, Feed_Entry_Adapter &$entry, $id)
@@ -168,9 +168,9 @@ class Feed_Entry_Item implements Feed_Entry_ItemInterface, cache_cacheableInterf
 
     /**
      *
-     * @param appbox $appbox
-     * @param Feed_Entry_Adapter $entry
-     * @param record_adapter $record
+     * @param  appbox             $appbox
+     * @param  Feed_Entry_Adapter $entry
+     * @param  record_adapter     $record
      * @return Feed_Entry_Item
      */
     public static function create(appbox &$appbox, Feed_Entry_Adapter &$entry, record_adapter &$record)

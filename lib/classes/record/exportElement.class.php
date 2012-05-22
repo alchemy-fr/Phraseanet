@@ -49,13 +49,13 @@ class record_exportElement extends record_adapter
 
     /**
      *
-     * @param int $base_id
-     * @param int $record_id
-     * @param string $directory
-     * @param int $remain_hd
+     * @param  int                  $base_id
+     * @param  int                  $record_id
+     * @param  string               $directory
+     * @param  int                  $remain_hd
      * @return record_exportElement
      */
-    function __construct($sbas_id, $record_id, $directory = '', $remain_hd = false)
+    public function __construct($sbas_id, $record_id, $directory = '', $remain_hd = false)
     {
         $this->directory = $directory;
         $this->remain_hd = $remain_hd;
@@ -136,8 +136,7 @@ class record_exportElement extends record_adapter
                             'class'                   => 'document',
                             'label'                   => _('document original')
                         );
-                }
-                else
+                } else
                     $downloadable['document'] = array(
                         'class' => 'document',
                         'label' => _('document original')
@@ -187,14 +186,12 @@ class record_exportElement extends record_adapter
                                     'class'              => $class,
                                     'label'              => $subdef_label
                                 );
-                        }
-                        else
+                        } else
                             $downloadable[$name] = array(
                                 'class' => $class,
                                 'label' => $subdef_label
                             );
-                    }
-                    else {
+                    } else {
                         $downloadable[$name] = array(
                             'class' => $class,
                             'label' => $subdef_label
@@ -229,16 +226,15 @@ class record_exportElement extends record_adapter
 
     /**
      *
-     * @param string $name
-     * @param int $size
+     * @param  string               $name
+     * @param  int                  $size
      * @return record_exportElement
      */
     private function add_count($name, $size)
     {
         if ( ! $this->size) {
             $objectsize = array();
-        }
-        else
+        } else
             $objectsize = $this->size;
 
         $objectsize[$name] = $size;
@@ -250,8 +246,8 @@ class record_exportElement extends record_adapter
 
     /**
      *
-     * @param string $name
-     * @return mixed content
+     * @param  string $name
+     * @return mixed  content
      */
     public function get_size($name = false)
     {

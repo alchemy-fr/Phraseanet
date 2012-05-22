@@ -52,7 +52,7 @@ class Feed_Entry_Collection implements Feed_Entry_CollectionInterface
 
     /**
      *
-     * @param Feed_Entry_Adapter $entry
+     * @param  Feed_Entry_Adapter    $entry
      * @return Feed_Entry_Collection
      */
     public function add_entry(Feed_Entry_Adapter $entry)

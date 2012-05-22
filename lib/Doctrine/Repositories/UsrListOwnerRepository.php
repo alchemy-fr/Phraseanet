@@ -16,8 +16,8 @@ class UsrListOwnerRepository extends EntityRepository
     /**
      *
      *
-     * @param \Entities\UsrList $list
-     * @param type $owner_id
+     * @param  \Entities\UsrList $list
+     * @param  type              $owner_id
      * @return \Entities\UsrList
      */
     public function findByListAndOwner(\Entities\UsrList $list, $owner_id)
@@ -39,8 +39,8 @@ class UsrListOwnerRepository extends EntityRepository
     /**
      *
      *
-     * @param \Entities\UsrList $list
-     * @param type $usr_id
+     * @param  \Entities\UsrList $list
+     * @param  type              $usr_id
      * @return \Entities\UsrList
      */
     public function findByListAndUsrId(\Entities\UsrList $list, $usr_id)

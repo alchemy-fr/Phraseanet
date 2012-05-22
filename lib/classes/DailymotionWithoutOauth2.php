@@ -21,10 +21,10 @@ class DailymotionWithoutOauth2 extends Dailymotion
      *
      * @return mixed the method response
      *
-     * @throws DailymotionApiException if API return an error
-     * @throws DailymotionAuthException if can't authenticate the request
+     * @throws DailymotionApiException          if API return an error
+     * @throws DailymotionAuthException         if can't authenticate the request
      * @throws DailymotionAuthRequiredException if not authentication info is available
-     * @throws DailymotionTransportException if an error occurs during request.
+     * @throws DailymotionTransportException    if an error occurs during request.
      */
     public function call($method, $args = array(), $access_token = null)
     {

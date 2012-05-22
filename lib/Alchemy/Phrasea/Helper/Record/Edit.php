@@ -77,7 +77,7 @@ class Edit extends RecordHelper
 
     /**
      *
-     * @param \Alchemy\Phrasea\Core $core
+     * @param  \Alchemy\Phrasea\Core $core
      * @return Edit
      */
     public function __construct(Core $core, Request $Request)
@@ -433,7 +433,7 @@ class Edit extends RecordHelper
     /**
      * Substitute Head file of groupings and save new Desc
      *
-     * @param http_request $request
+     * @param  http_request $request
      * @return action_edit
      */
     public function execute(Request $request)

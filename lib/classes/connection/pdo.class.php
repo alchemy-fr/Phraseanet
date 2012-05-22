@@ -21,13 +21,13 @@ class connection_pdo extends connection_abstract implements connection_interface
 
     /**
      *
-     * @param string $name
-     * @param string $hostname
-     * @param int $port
-     * @param string $user
-     * @param string $passwd
-     * @param string $dbname
-     * @param array $options
+     * @param  string         $name
+     * @param  string         $hostname
+     * @param  int            $port
+     * @param  string         $user
+     * @param  string         $passwd
+     * @param  string         $dbname
+     * @param  array          $options
      * @return connection_pdo
      */
     public function __construct($name, $hostname, $port, $user, $passwd, $dbname = false, $options = array(), registryInterface $registry = null)
@@ -59,8 +59,8 @@ class connection_pdo extends connection_abstract implements connection_interface
 
     /**
      *
-     * @param type $statement
-     * @param type $driver_options
+     * @param  type         $statement
+     * @param  type         $driver_options
      * @return PDOStatement
      */
     public function prepare($statement, $driver_options = array())
@@ -83,7 +83,7 @@ class connection_pdo extends connection_abstract implements connection_interface
 
     /**
      *
-     * @param string $message
+     * @param  string         $message
      * @return connection_pdo
      */
     protected function log($message)

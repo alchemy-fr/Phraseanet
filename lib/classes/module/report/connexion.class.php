@@ -63,7 +63,7 @@ class module_report_connexion extends module_report
 
     /**
      * @desc build the list with all distinct result
-     * @param string $field the field from the request displayed in a array
+     * @param  string $field the field from the request displayed in a array
      * @return string $liste
      */
     public function colFilter($field)
@@ -95,8 +95,8 @@ class module_report_connexion extends module_report
 
     /**
      * @desc build the result from the specified sql
-     * @param array $champ all the field from the request displayed in a array
-     * @param string $sql the request from buildreq
+     * @param array  $champ all the field from the request displayed in a array
+     * @param string $sql   the request from buildreq
      * @return $this->result
      */
     protected function buildResult($rs)

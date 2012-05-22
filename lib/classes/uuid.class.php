@@ -11,8 +11,8 @@ class uuid
 
     /**
      * @desc UUID named based version that use MD5(hash)
-     * @param string $namespace
-     * @param string $name
+     * @param  string $namespace
+     * @param  string $name
      * @return string
      */
     public static function generate_v3($namespace, $name)
@@ -77,8 +77,8 @@ class uuid
 
     /**
      * @desc UUID named version that use SHA-1 hashing
-     * @param string $namespace
-     * @param string $name
+     * @param  string $namespace
+     * @param  string $name
      * @return string
      */
     public static function generate_v5($namespace, $name)
@@ -120,7 +120,7 @@ class uuid
 
     /**
      * @desc check if an uuid is a valid one
-     * @param string $uuid
+     * @param  string  $uuid
      * @return boolean
      */
     public static function is_valid($uuid)
@@ -131,8 +131,8 @@ class uuid
 
     /**
      * @desc Compare two UUID's "lexically"
-     * @param stiring $uuid1
-     * @param string $uuid2
+     * @param  stiring $uuid1
+     * @param  string  $uuid2
      * @return int
      * -1 uuid1<uuid2 0 uuid1==uuid2 +1 uuid1>uuid2
      */
@@ -143,7 +143,7 @@ class uuid
 
     /**
      * @desc Check wheter an UUID is the NULL UUID 00000000-0000-0000-0000-000000000000
-     * @return  string
+     * @return string
      */
     public static function is_null($uuid)
     {

@@ -15,7 +15,6 @@ use Symfony\Component\Console\Input\InputArgument,
     Symfony\Component\Console\Output\OutputInterface,
     Symfony\Component\Console\Command\Command;
 use Alchemy\Phrasea\Core;
-use Symfony\Component\Yaml;
 
 /**
  * @todo write tests
@@ -771,8 +770,7 @@ class module_console_fileEnsureProductionSetting extends Command
                     $key = $scope . ":" . $key;
                 $this->printConf($output, $key, $val, $scopage, '');
             }
-        }
-        elseif (is_bool($value)) {
+        } elseif (is_bool($value)) {
             if ($value === false) {
                 $value = 'false';
             } elseif ($value === true) {

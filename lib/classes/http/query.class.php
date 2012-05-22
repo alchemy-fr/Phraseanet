@@ -19,7 +19,7 @@ class http_query
 
     /**
      *
-     * @param string $url
+     * @param  string $url
      * @return int
      */
     public static function getHttpCodeFromUrl($url)
@@ -80,8 +80,8 @@ class http_query
 
     /**
      *
-     * @param string $url
-     * @param array $post_data
+     * @param  string $url
+     * @param  array  $post_data
      * @return string
      */
     public static function getUrl($url, $post_data = false)

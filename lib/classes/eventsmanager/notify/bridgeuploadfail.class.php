@@ -34,9 +34,9 @@ class eventsmanager_notify_bridgeuploadfail extends eventsmanager_notifyAbstract
 
     /**
      *
-     * @param string $event
-     * @param Array $params
-     * @param mixed content $object
+     * @param  string        $event
+     * @param  Array         $params
+     * @param  mixed content $object
      * @return Void
      */
     public function fire($event, $params, &$object)
@@ -102,8 +102,8 @@ class eventsmanager_notify_bridgeuploadfail extends eventsmanager_notifyAbstract
 
     /**
      *
-     * @param Array $datas
-     * @param boolean $unread
+     * @param  Array   $datas
+     * @param  boolean $unread
      * @return Array
      */
     public function datas($datas, $unread)
@@ -152,12 +152,12 @@ class eventsmanager_notify_bridgeuploadfail extends eventsmanager_notifyAbstract
 
     /**
      *
-     * @param Array $to
-     * @param Array $from
-     * @param Array $datas
+     * @param  Array   $to
+     * @param  Array   $from
+     * @param  Array   $datas
      * @return boolean
      */
-    function mail($to, $from, $datas)
+    public function mail($to, $from, $datas)
     {
         $subject = sprintf('Echec upload sur %s'
             , $this->registry->get('GV_homeTitle'));
@@ -175,7 +175,7 @@ class eventsmanager_notify_bridgeuploadfail extends eventsmanager_notifyAbstract
      *
      * @return boolean
      */
-    function is_available()
+    public function is_available()
     {
         return true;
     }

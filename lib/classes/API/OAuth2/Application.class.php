@@ -126,8 +126,8 @@ class API_OAuth2_Application
 
     /**
      *
-     * @param appbox $appbox
-     * @param int $application_id
+     * @param  appbox                 $appbox
+     * @param  int                    $application_id
      * @return API_OAuth2_Application
      */
     public function __construct(appbox &$appbox, $application_id)
@@ -202,7 +202,7 @@ class API_OAuth2_Application
 
     /**
      *
-     * @param string $type
+     * @param  string                 $type
      * @return API_OAuth2_Application
      */
     public function set_type($type)
@@ -241,7 +241,7 @@ class API_OAuth2_Application
 
     /**
      *
-     * @param string $name
+     * @param  string                 $name
      * @return API_OAuth2_Application
      */
     public function set_name($name)
@@ -274,7 +274,7 @@ class API_OAuth2_Application
 
     /**
      *
-     * @param string $description
+     * @param  string                 $description
      * @return API_OAuth2_Application
      */
     public function set_description($description)
@@ -308,7 +308,7 @@ class API_OAuth2_Application
 
     /**
      *
-     * @param string $website
+     * @param  string                 $website
      * @return API_OAuth2_Application
      */
     public function set_website($website)
@@ -342,7 +342,7 @@ class API_OAuth2_Application
 
     /**
      *
-     * @param boolean $activated
+     * @param  boolean                $activated
      * @return API_OAuth2_Application
      */
     public function set_activated($activated)
@@ -376,7 +376,7 @@ class API_OAuth2_Application
 
     /**
      *
-     * @param boolean $grant
+     * @param  boolean                $grant
      * @return API_OAuth2_Application
      */
     public function set_grant_password($grant)
@@ -428,7 +428,7 @@ class API_OAuth2_Application
 
     /**
      *
-     * @param int $client_id
+     * @param  int                    $client_id
      * @return API_OAuth2_Application
      */
     public function set_client_id($client_id)
@@ -462,7 +462,7 @@ class API_OAuth2_Application
 
     /**
      *
-     * @param string $client_secret
+     * @param  string                 $client_secret
      * @return API_OAuth2_Application
      */
     public function set_client_secret($client_secret)
@@ -496,7 +496,7 @@ class API_OAuth2_Application
 
     /**
      *
-     * @param string $redirect_uri
+     * @param  string                 $redirect_uri
      * @return API_OAuth2_Application
      */
     public function set_redirect_uri($redirect_uri)
@@ -520,7 +520,7 @@ class API_OAuth2_Application
 
     /**
      *
-     * @param User_Adapter $user
+     * @param  User_Adapter       $user
      * @return API_OAuth2_Account
      */
     public function get_user_account(user_adapter $user)
@@ -589,9 +589,9 @@ class API_OAuth2_Application
 
     /**
      *
-     * @param appbox $appbox
-     * @param User_Adapter $user
-     * @param type $name
+     * @param  appbox                 $appbox
+     * @param  User_Adapter           $user
+     * @param  type                   $name
      * @return API_OAuth2_Application
      */
     public static function create(appbox &$appbox, User_Adapter $user = null, $name)
@@ -637,8 +637,8 @@ class API_OAuth2_Application
 
     /**
      *
-     * @param appbox $appbox
-     * @param type $client_id
+     * @param  appbox                 $appbox
+     * @param  type                   $client_id
      * @return API_OAuth2_Application
      */
     public static function load_from_client_id(appbox &$appbox, $client_id)
@@ -659,8 +659,8 @@ class API_OAuth2_Application
 
     /**
      *
-     * @param appbox $appbox
-     * @param User_Adapter $user
+     * @param  appbox       $appbox
+     * @param  User_Adapter $user
      * @return array
      */
     public static function load_dev_app_by_user(appbox &$appbox, User_Adapter $user)
@@ -684,8 +684,8 @@ class API_OAuth2_Application
 
     /**
      *
-     * @param appbox $appbox
-     * @param user_adapter $user
+     * @param  appbox                 $appbox
+     * @param  user_adapter           $user
      * @return API_OAuth2_Application
      */
     public static function load_app_by_user(appbox $appbox, user_adapter $user)

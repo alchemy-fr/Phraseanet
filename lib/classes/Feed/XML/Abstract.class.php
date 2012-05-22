@@ -84,7 +84,7 @@ abstract class Feed_XML_Abstract
 
     /**
      *
-     * @param DateTime $datetime
+     * @param  DateTime           $datetime
      * @return Feed_XML_Interface
      */
     public function set_updated_on(DateTime $datetime)
@@ -96,7 +96,7 @@ abstract class Feed_XML_Abstract
 
     /**
      *
-     * @param string $subtitle
+     * @param  string             $subtitle
      * @return Feed_XML_Interface
      */
     public function set_subtitle($subtitle)
@@ -108,7 +108,7 @@ abstract class Feed_XML_Abstract
 
     /**
      *
-     * @param Feed_Link $link
+     * @param  Feed_Link          $link
      * @return Feed_XML_Interface
      */
     public function set_link(Feed_Link $link)
@@ -120,7 +120,7 @@ abstract class Feed_XML_Abstract
 
     /**
      *
-     * @param Feed_Link $next_page
+     * @param  Feed_Link          $next_page
      * @return Feed_XML_Interface
      */
     public function set_next_page(Feed_Link $next_page)
@@ -132,7 +132,7 @@ abstract class Feed_XML_Abstract
 
     /**
      *
-     * @param Feed_Link $previous_page
+     * @param  Feed_Link          $previous_page
      * @return Feed_XML_Interface
      */
     public function set_previous_page(Feed_Link $previous_page)
@@ -144,7 +144,7 @@ abstract class Feed_XML_Abstract
 
     /**
      *
-     * @param Feed_Entry_Adapter $entry
+     * @param  Feed_Entry_Adapter $entry
      * @return Feed_XML_Interface
      */
     public function set_item(Feed_Entry_Adapter $entry)
@@ -156,7 +156,7 @@ abstract class Feed_XML_Abstract
 
     /**
      *
-     * @param string $generator
+     * @param  string             $generator
      * @return Feed_XML_Interface
      */
     public function set_generator($generator)
@@ -168,9 +168,9 @@ abstract class Feed_XML_Abstract
 
     /**
      *
-     * @param DOMDocument $document
-     * @param DOMNode $node
-     * @param boolean $namespaced
+     * @param  DOMDocument        $document
+     * @param  DOMNode            $node
+     * @param  boolean            $namespaced
      * @return Feed_XML_Interface
      */
     public function add_navigation(DOMDocument $document, DOMNode $node, $namespaced)
@@ -194,10 +194,10 @@ abstract class Feed_XML_Abstract
 
     /**
      *
-     * @param DOMDocument $document
-     * @param DOMNode $node
-     * @param string $tagname
-     * @param string $tagcontent
+     * @param  DOMDocument $document
+     * @param  DOMNode     $node
+     * @param  string      $tagname
+     * @param  string      $tagcontent
      * @return DOMElement
      */
     protected function addTag(DOMDocument &$document, DOMNode &$node, $tagname, $tagcontent = null)
@@ -213,9 +213,9 @@ abstract class Feed_XML_Abstract
 
     /**
      *
-     * @param DOMDocument $document
-     * @param DOMNode $item
-     * @param Feed_Entry_Item $content
+     * @param  DOMDocument        $document
+     * @param  DOMNode            $item
+     * @param  Feed_Entry_Item    $content
      * @return Feed_XML_Interface
      */
     protected function addContent(DOMDocument $document, DOMNode $item, Feed_Entry_Item $content)

@@ -83,7 +83,7 @@ class task_manager
 
     /**
      *
-     * @param int $task_id
+     * @param  int           $task_id
      * @return task_abstract
      */
     public function getTask($task_id)

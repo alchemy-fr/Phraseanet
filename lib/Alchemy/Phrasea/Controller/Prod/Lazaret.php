@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Alchemy\Phrasea\Helper;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ControllerCollection;
@@ -32,8 +31,8 @@ class Lazaret implements ControllerProviderInterface
     /**
      * Connect the ControllerCollection to the Silex Application
      *
-     * @param   Application     $app    A silex application
-     * @return  \Silex\ControllerCollection
+     * @param  Application                 $app A silex application
+     * @return \Silex\ControllerCollection
      */
     public function connect(Application $app)
     {
@@ -146,8 +145,8 @@ class Lazaret implements ControllerProviderInterface
     /**
      * List all elements in lazaret
      *
-     * @param Application   $app        A Silex application
-     * @param Request       $request    The current request
+     * @param Application $app     A Silex application
+     * @param Request     $request The current request
      *
      * @return Response
      */
@@ -172,23 +171,23 @@ class Lazaret implements ControllerProviderInterface
     /**
      * Get one lazaret Element
      *
-     * @param Application   $app        A Silex application
-     * @param Request       $request    The current request
-     * @param int           $file_id    A lazaret element id
+     * @param Application $app     A Silex application
+     * @param Request     $request The current request
+     * @param int         $file_id A lazaret element id
      *
      * @return Response
      */
     public function getElement(Application $app, Request $request, $file_id)
     {
-        
+
     }
 
     /**
      * Add an element to phraseanet
      *
-     * @param Application   $app        A Silex application
-     * @param Request       $request    The current request
-     * @param int           $file_id    A lazaret element id
+     * @param Application $app     A Silex application
+     * @param Request     $request The current request
+     * @param int         $file_id A lazaret element id
      *
      * @return Response
      */
@@ -200,9 +199,9 @@ class Lazaret implements ControllerProviderInterface
     /**
      * Delete a lazaret element
      *
-     * @param Application   $app        A Silex application where the controller is mounted on
-     * @param Request       $request    The current request
-     * @param int           $file_id    A lazaret element id
+     * @param Application $app     A Silex application where the controller is mounted on
+     * @param Request     $request The current request
+     * @param int         $file_id A lazaret element id
      *
      * @return Response
      */
@@ -214,9 +213,9 @@ class Lazaret implements ControllerProviderInterface
     /**
      * Substitute a record element by a lazaret element
      *
-     * @param Application   $app        A Silex application where the controller is mounted on
-     * @param Request       $request    The current request
-     * @param int           $file_id    A lazaret element id
+     * @param Application $app     A Silex application where the controller is mounted on
+     * @param Request     $request The current request
+     * @param int         $file_id A lazaret element id
      *
      * @return Response
      */
@@ -228,9 +227,9 @@ class Lazaret implements ControllerProviderInterface
     /**
      * Get the associated lazaret element thumbnail
      *
-     * @param Application   $app        A Silex application where the controller is mounted on
-     * @param Request       $request    The current request
-     * @param int           $file_id    A lazaret element id
+     * @param Application $app     A Silex application where the controller is mounted on
+     * @param Request     $request The current request
+     * @param int         $file_id A lazaret element id
      *
      * @return Response
      */
@@ -242,8 +241,8 @@ class Lazaret implements ControllerProviderInterface
     /**
      * Prefix the method to call with the controller class name
      *
-     * @param   string  $method The method to call
-     * @return  string
+     * @param  string $method The method to call
+     * @return string
      */
     private function call($method)
     {

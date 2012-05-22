@@ -33,9 +33,9 @@ class Bridge_Api_Flickr_Element implements Bridge_Api_ElementInterface
 
     /**
      *
-     * @param SimpleXMLElement $entry
-     * @param string $user_id
-     * @param string $type
+     * @param  SimpleXMLElement          $entry
+     * @param  string                    $user_id
+     * @param  string                    $type
      * @return Bridge_Api_Flickr_Element
      */
     public function __construct(SimpleXMLElement $entry, $user_id, $type, $entry_from_list = true)
@@ -107,9 +107,9 @@ class Bridge_Api_Flickr_Element implements Bridge_Api_ElementInterface
 
     /**
      *
-     * @param type $entry
-     * @param type $size
-     * @param type $extension
+     * @param  type   $entry
+     * @param  type   $size
+     * @param  type   $extension
      * @return string
      */
     private function generate_thumb_url($entry, $size = '', $extension = '')

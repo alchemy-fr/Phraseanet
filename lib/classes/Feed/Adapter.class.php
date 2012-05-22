@@ -59,8 +59,8 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
 
     /**
      *
-     * @param appbox $appbox
-     * @param int $id
+     * @param  appbox       $appbox
+     * @param  int          $id
      * @return Feed_Adapter
      */
     public function __construct(appbox &$appbox, $id)
@@ -150,7 +150,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
 
     /**
      *
-     * @param string $file The path to the file
+     * @param  string       $file The path to the file
      * @return Feed_Adapter
      */
     public function set_icon($file)
@@ -217,7 +217,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
 
     /**
      *
-     * @param User_Adapter $user
+     * @param  User_Adapter $user
      * @return boolean
      */
     public function is_owner(User_Adapter $user)
@@ -229,7 +229,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
 
     /**
      *
-     * @param User_Adapter $user
+     * @param  User_Adapter $user
      * @return boolean
      */
     public function is_publisher(User_Adapter $user)
@@ -240,7 +240,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
     /**
      * Tells if a user has access to the feed
      *
-     * @param User_Adapter $user
+     * @param  User_Adapter $user
      * @return type
      */
     public function has_access(User_Adapter $user)
@@ -285,7 +285,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
 
     /**
      *
-     * @param User_Adapter $user
+     * @param  User_Adapter $user
      * @return Feed_Adapter
      */
     public function add_publisher(User_Adapter $user)
@@ -338,7 +338,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
 
     /**
      *
-     * @param collection $collection
+     * @param  collection   $collection
      * @return Feed_Adapter
      */
     public function set_collection(collection $collection = null)
@@ -362,7 +362,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
 
     /**
      *
-     * @param boolean $boolean
+     * @param  boolean      $boolean
      * @return Feed_Adapter
      */
     public function set_public($boolean)
@@ -390,7 +390,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
 
     /**
      *
-     * @param string $title
+     * @param  string       $title
      * @return Feed_Adapter
      */
     public function set_title($title)
@@ -413,7 +413,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
 
     /**
      *
-     * @param string $subtitle
+     * @param  string       $subtitle
      * @return Feed_Adapter
      */
     public function set_subtitle($subtitle)
@@ -434,10 +434,10 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
 
     /**
      *
-     * @param appbox $appbox
-     * @param User_Adapter $user
-     * @param string $title
-     * @param string $subtitle
+     * @param  appbox       $appbox
+     * @param  User_Adapter $user
+     * @param  string       $title
+     * @param  string       $subtitle
      * @return Feed_Adapter
      */
     public static function create(appbox &$appbox, User_Adapter $user, $title, $subtitle)
@@ -459,9 +459,9 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
 
     /**
      *
-     * @param appbox $appbox
-     * @param User_Adapter $user
-     * @param int $id
+     * @param  appbox       $appbox
+     * @param  User_Adapter $user
+     * @param  int          $id
      * @return Feed_Adapter
      */
     public static function load_with_user(appbox &$appbox, User_Adapter &$user, $id)
@@ -545,8 +545,8 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
 
     /**
      *
-     * @param int $offset_start
-     * @param int $how_many
+     * @param  int                   $offset_start
+     * @param  int                   $how_many
      * @return Feed_Entry_Collection
      */
     public function get_entries($offset_start, $how_many)
@@ -580,9 +580,9 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
 
     /**
      *
-     * @param registryInterface $registry
-     * @param string $format
-     * @param int $page
+     * @param  registryInterface $registry
+     * @param  string            $format
+     * @param  int               $page
      * @return Feed_Link
      */
     public function get_homepage_link(registryInterface $registry, $format, $page = null)
@@ -620,8 +620,8 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
 
     /**
      *
-     * @param User_Adapter $user
-     * @param boolean $renew
+     * @param  User_Adapter $user
+     * @param  boolean      $renew
      * @return string
      */
     protected function get_token(User_Adapter $user, $renew = false)
@@ -675,11 +675,11 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
 
     /**
      *
-     * @param registryInterface $registry
-     * @param User_Adapter $user
-     * @param string $format
-     * @param int $page
-     * @param boolean $renew_token
+     * @param  registryInterface $registry
+     * @param  User_Adapter      $user
+     * @param  string            $format
+     * @param  int               $page
+     * @param  boolean           $renew_token
      * @return Feed_Link
      */
     public function get_user_link(registryInterface $registry, User_Adapter $user, $format, $page = null, $renew_token = false)

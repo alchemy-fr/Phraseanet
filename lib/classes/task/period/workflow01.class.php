@@ -103,12 +103,9 @@ class task_period_workflow01 extends task_databoxAbstract
                     {'name':"status1",  'val':"<?php echo p4string::MakeString($sxml->status1, "js") ?>"},
                     {'name':"coll1",    'val':"<?php echo p4string::MakeString($sxml->coll1, "js") ?>"}
                 ];
-                for(j in pops)
-                {
-                    for(opts=<?php echo $form ?>[pops[j].name].options, i=0; i<opts.length; i++)
-                    {
-                        if(opts[i].value == pops[j].val)
-                        {
+                for (j in pops) {
+                    for (opts=<?php echo $form ?>[pops[j].name].options, i=0; i<opts.length; i++) {
+                        if (opts[i].value == pops[j].val) {
                             opts[i].selected = true;
                             break;
                         }
@@ -121,6 +118,7 @@ class task_period_workflow01 extends task_databoxAbstract
             </script>
 
             <?php
+
             return("");
         } else { // ... so we NEVER come here
             // bad xml
@@ -155,14 +153,12 @@ class task_period_workflow01 extends task_databoxAbstract
                 with(document.forms['graphicForm'])
                 {
                     cmd += "";
-                    if((coll0.value||status0.value) && (coll1.value||status1.value))
-                    {
+                    if ((coll0.value||status0.value) && (coll1.value||status1.value)) {
                         cmd += "UPDATE record SET ";
                         u = "";
                         if(coll1.value)
                             u += (u?", ":"") + "coll_id=" + coll1.value;
-                        if(status1.value)
-                        {
+                        if (status1.value) {
                             x = status1.value.split("_");
                             if(x[1]=="0")
                                 u += (u?", ":"") + "status=status&~(1<<" + x[0] + ")";
@@ -173,8 +169,7 @@ class task_period_workflow01 extends task_databoxAbstract
                         w = "";
                         if(coll0.value)
                             w += (w?" AND ":"") + "coll_id=" + coll0.value;
-                        if(status0.value)
-                        {
+                        if (status0.value) {
                             x = status0.value.split("_");
                             if(x[1]=="0")
                                 w += (w?" AND ":"") + "(status>>" + x[0] + ")&1=0";
@@ -190,8 +185,7 @@ class task_period_workflow01 extends task_databoxAbstract
             function chgxmltxt(textinput, fieldname)
             {
                 var limits = { 'period':{min:1, 'max':1440} , 'delay':{min:0} } ;
-                if(typeof(limits[fieldname])!='undefined')
-                {
+                if (typeof(limits[fieldname])!='undefined') {
                     var v = 0|textinput.value;
                     if(limits[fieldname].min && v < limits[fieldname].min)
                         v = limits[fieldname].min;
@@ -217,8 +211,7 @@ class task_period_workflow01 extends task_databoxAbstract
 
             function chgsbas(sbaspopup)
             {
-                for(fld=0; fld<=1; fld++)
-                {
+                for (fld=0; fld<=1; fld++) {
                     var p = document.getElementById("status"+fld);
                     while( (f=p.firstChild) )
                         p.removeChild(f);
@@ -233,18 +226,15 @@ class task_period_workflow01 extends task_databoxAbstract
                     o.setAttribute('value', '');
                     o.appendChild(document.createTextNode("..."));
                 }
-                if(sbaspopup.value > 0)
-                {
+                if (sbaspopup.value > 0) {
                     $.ajax({
                         url:"/admin/taskfacility.php"
                         , async:false
                         , data:{'cls':'workflow01', 'taskid':<?php echo $this->getID() ?>, 'bid':sbaspopup.value}
                         , success:function(data){
-                            for(fld=0; fld<=1; fld++)
-                            {
+                            for (fld=0; fld<=1; fld++) {
                                 var p = document.getElementById("status"+fld);
-                                for(i in data.status_bits)
-                                {
+                                for (i in data.status_bits) {
                                     var o = p.appendChild(document.createElement('option'));
                                     o.setAttribute('value', data.status_bits[i].n + "_" + data.status_bits[i].value);
                                     o.appendChild(document.createTextNode(data.status_bits[i].label));
@@ -252,11 +242,9 @@ class task_period_workflow01 extends task_databoxAbstract
                                 }
                             }
 
-                            for(fld=0; fld<=1; fld++)
-                            {
+                            for (fld=0; fld<=1; fld++) {
                                 var p = document.getElementById("coll"+fld);
-                                for(i in data.collections)
-                                {
+                                for (i in data.collections) {
                                     var o = p.appendChild(document.createElement('option'));
                                     o.setAttribute('value', ""+data.collections[i].id);
                                     o.appendChild(document.createTextNode(data.collections[i].name));
@@ -271,7 +259,7 @@ class task_period_workflow01 extends task_databoxAbstract
         <?php
     }
 
-    function getGraphicForm()
+    public function getGraphicForm()
     {
         return true;
     }
@@ -344,7 +332,7 @@ class task_period_workflow01 extends task_databoxAbstract
         return $out;
     }
 
-    function help()
+    public function help()
     {
         return(_("task::outofdate:deplacement de docs suivant valeurs de champs 'date'"));
     }

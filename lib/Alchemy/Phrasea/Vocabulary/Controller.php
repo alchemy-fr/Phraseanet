@@ -33,8 +33,7 @@ class Controller
   {
     $classname = __NAMESPACE__ . '\\ControlProvider\\' . $type . 'Provider';
 
-    if (!class_exists($classname))
-    {
+    if (!class_exists($classname)) {
       throw new \Exception('Vocabulary type not found');
     }
 

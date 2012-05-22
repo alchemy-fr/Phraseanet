@@ -32,7 +32,7 @@ class patch_320c implements patchInterface
      *
      * @return string
      */
-    function get_release()
+    public function get_release()
     {
         return $this->release;
     }
@@ -46,12 +46,12 @@ class patch_320c implements patchInterface
      *
      * @return Array
      */
-    function concern()
+    public function concern()
     {
         return $this->concern;
     }
 
-    function apply(base &$databox)
+    public function apply(base &$databox)
     {
         $sql = 'TRUNCATE metadatas';
         $stmt = $databox->get_connection()->prepare($sql);

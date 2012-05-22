@@ -2,7 +2,6 @@
 
 namespace Entities;
 
-use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Entities\LazaretSession
@@ -52,12 +51,13 @@ class LazaretSession
     /**
      * Set usr_id
      *
-     * @param integer $usrId
+     * @param  integer        $usrId
      * @return LazaretSession
      */
     public function setUsrId($usrId)
     {
         $this->usr_id = $usrId;
+
         return $this;
     }
 
@@ -70,10 +70,10 @@ class LazaretSession
     {
         $user = null;
 
-        try{
+        try {
             $appbox = \appbox::get_instance(\bootstrap::getCore());
             $user = \User_Adapter::getInstance($this->usr_id, $appbox);
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
 
         }
 
@@ -83,12 +83,13 @@ class LazaretSession
     /**
      * Set created
      *
-     * @param datetime $created
+     * @param  datetime       $created
      * @return LazaretSession
      */
     public function setCreated($created)
     {
         $this->created = $created;
+
         return $this;
     }
 
@@ -105,12 +106,13 @@ class LazaretSession
     /**
      * Set updated
      *
-     * @param datetime $updated
+     * @param  datetime       $updated
      * @return LazaretSession
      */
     public function setUpdated($updated)
     {
         $this->updated = $updated;
+
         return $this;
     }
 
@@ -127,12 +129,13 @@ class LazaretSession
     /**
      * Add files
      *
-     * @param Entities\LazaretFile $files
+     * @param  Entities\LazaretFile $files
      * @return LazaretSession
      */
     public function addLazaretFiles(\Entities\LazaretFile $files)
     {
         $this->files[] = $files;
+
         return $this;
     }
 
@@ -149,12 +152,13 @@ class LazaretSession
     /**
      * Add files
      *
-     * @param Entities\LazaretFile $files
+     * @param  Entities\LazaretFile $files
      * @return LazaretSession
      */
     public function addLazaretFile(\Entities\LazaretFile $files)
     {
         $this->files[] = $files;
+
         return $this;
     }
 }

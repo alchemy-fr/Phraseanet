@@ -34,7 +34,7 @@ class task_period_subdef extends task_databoxAbstract
      *
      * @return <type>
      */
-    function help()
+    public function help()
     {
         return(
             _("task::subdef:creation des sous definitions des documents d'origine")
@@ -54,7 +54,7 @@ class task_period_subdef extends task_databoxAbstract
     /**
      * must return the xml (text) version of the form
      *
-     * @param string $oldxml
+     * @param  string $oldxml
      * @return string
      */
     public function graphic2xml($oldxml)
@@ -102,8 +102,8 @@ class task_period_subdef extends task_databoxAbstract
     /**
      * must fill the graphic form (using js) from xml
      *
-     * @param string $xml
-     * @param string $form
+     * @param  string $xml
+     * @param  string $form
      * @return string
      */
     public function xml2graphic($xml, $form)
@@ -149,6 +149,7 @@ class task_period_subdef extends task_databoxAbstract
             </script>
 
             <?php
+
             return("");
         } else {
             return("BAD XML");
@@ -167,8 +168,7 @@ class task_period_subdef extends task_databoxAbstract
             function chgxmltxt(textinput, fieldname)
             {
                 var limits = { 'period':{min:1, 'max':300} , 'flush':{min:1, 'max':100} , 'maxrecs':{min:10, 'max':1000} , 'maxmegs':{min:2, 'max':100} } ;
-                if(typeof(limits[fieldname])!='undefined')
-                {
+                if (typeof(limits[fieldname])!='undefined') {
                     var v = 0|textinput.value;
                     if(v < limits[fieldname].min)
                         v = limits[fieldname].min;
@@ -180,16 +180,13 @@ class task_period_subdef extends task_databoxAbstract
             }
             function chgxmlck_die(ck)
             {
-                if(ck.checked)
-                {
+                if (ck.checked) {
                     if(document.forms['graphicForm'].maxrecs.value == "")
                         document.forms['graphicForm'].maxrecs.value = 500;
                     if(document.forms['graphicForm'].maxmegs.value == "")
                         document.forms['graphicForm'].maxmegs.value = 4;
                     document.forms['graphicForm'].maxrecs.disabled = document.forms['graphicForm'].maxmegs.disabled = false;
-                }
-                else
-                {
+                } else {
                     document.forms['graphicForm'].maxrecs.disabled = document.forms['graphicForm'].maxmegs.disabled = true;
                 }
                 setDirty();

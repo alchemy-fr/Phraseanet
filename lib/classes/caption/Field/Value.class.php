@@ -56,9 +56,9 @@ class caption_Field_Value
 
     /**
      *
-     * @param databox_field $databox_field
-     * @param record_adapter $record
-     * @param type $id
+     * @param  databox_field        $databox_field
+     * @param  record_adapter       $record
+     * @param  type                 $id
      * @return \caption_Field_Value
      */
     public function __construct(databox_field $databox_field, record_adapter $record, $id)
@@ -264,7 +264,7 @@ class caption_Field_Value
 
     /**
      *
-     * @param array $value
+     * @param  array         $value
      * @return caption_field
      */
     public function update_cache_value($value)
@@ -476,7 +476,7 @@ class caption_Field_Value
 
     /**
      *
-     * @param string $word
+     * @param  string $word
      * @return array
      */
     protected function splitTermAndContext($word)

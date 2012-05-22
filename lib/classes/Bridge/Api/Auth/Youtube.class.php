@@ -19,7 +19,7 @@ class Bridge_Api_Auth_Youtube extends Bridge_Api_Auth_OAuth2
 
     /**
      * Implements OAuth2.0 youtube specifications
-     * @param array $supp_parameters
+     * @param  array  $supp_parameters
      * @return string
      */
     public function get_auth_url(array $supp_parameters = array())

@@ -32,7 +32,7 @@ class patch_320aa implements patchInterface
      *
      * @return string
      */
-    function get_release()
+    public function get_release()
     {
         return $this->release;
     }
@@ -46,12 +46,12 @@ class patch_320aa implements patchInterface
      *
      * @return Array
      */
-    function concern()
+    public function concern()
     {
         return $this->concern;
     }
 
-    function apply(base &$appbox)
+    public function apply(base &$appbox)
     {
         if (is_file(__DIR__ . '/../../../config/_GV.php'))
             require __DIR__ . '/../../../config/_GV.php';

@@ -181,7 +181,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
     /**
      *
-     * @param string $type
+     * @param  string $type
      * @return string
      */
     public function get_object_class_from_type($type)
@@ -201,9 +201,9 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
     /**
      *
-     * @param string $object
-     * @param int $offset_start
-     * @param int $quantity
+     * @param  string                       $object
+     * @param  int                          $offset_start
+     * @param  int                          $quantity
      * @return Bridge_Api_ElementCollection
      */
     public function list_elements($object, $offset_start = 0, $quantity = 10)
@@ -238,9 +238,9 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
     /**
      *
-     * @param string $object
-     * @param int $offset_start
-     * @param int $quantity
+     * @param  string                         $object
+     * @param  int                            $offset_start
+     * @param  int                            $quantity
      * @return Bridge_Api_ContainerCollection
      */
     public function list_containers($object, $offset_start = 0, $quantity = 10)
@@ -290,9 +290,9 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
     /**
      *
-     * @param string $object
-     * @param string $object_id
-     * @param Request $request
+     * @param  string             $object
+     * @param  string             $object_id
+     * @param  Request            $request
      * @return Bridge_Api_Youtube
      */
     public function update_element($object, $object_id, Array $datas)
@@ -336,8 +336,8 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
     /**
      *
-     * @param string $container_type
-     * @param Request $request
+     * @param  string                       $container_type
+     * @param  Request                      $request
      * @return Bridge_Api_Youtube_Container
      */
     public function create_container($container_type, Request $request)
@@ -366,10 +366,10 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
     /**
      *
-     * @param type $element_type
-     * @param type $element_id
-     * @param type $destination
-     * @param type $container_id
+     * @param  type                         $element_type
+     * @param  type                         $element_id
+     * @param  type                         $destination
+     * @param  type                         $container_id
      * @return Bridge_Api_Youtube_Container
      */
     public function add_element_to_container($element_type, $element_id, $destination, $container_id)
@@ -401,8 +401,8 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
     /**
      *
-     * @param string $object
-     * @param string $object_id
+     * @param  string $object
+     * @param  string $object_id
      * @return Void
      */
     public function delete_object($object, $object_id)
@@ -435,7 +435,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
     /**
      *
-     * @param string $element_id
+     * @param  string $element_id
      * @return string
      */
     public function get_element_status(Bridge_Element $element)
@@ -455,7 +455,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
     /**
      *
-     * @param string $status
+     * @param  string $status
      * @return string
      */
     public function map_connector_to_element_status($status)
@@ -487,7 +487,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
     /**
      *
-     * @param string $connector_status
+     * @param  string $connector_status
      * @return string
      */
     public function get_error_message_from_status($connector_status)
@@ -522,7 +522,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
      * Set The exception to Bridge_Exception_ActionAuthNeedReconnect
      * if exception is instance of Zend_Gdata_App_HttpException and Http code 401
      *
-     * @param Exception $e
+     * @param  Exception $e
      * @return Void
      */
     public function handle_exception(Exception &$e)
@@ -622,7 +622,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
     /**
      *
-     * @param string $string
+     * @param  string $string
      * @return Array
      */
     protected function parse_xml_error($string)
@@ -652,9 +652,9 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
     /**
      *
-     * @param record_adapter $record
-     * @param array $options
-     * @return string  The new distant Id
+     * @param  record_adapter $record
+     * @param  array          $options
+     * @return string         The new distant Id
      */
     public function upload(record_adapter &$record, array $options = array())
     {
@@ -698,8 +698,8 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
     /**
      *
-     * @param string $object
-     * @param string $element_id
+     * @param  string                     $object
+     * @param  string                     $element_id
      * @return Bridge_Api_Youtube_Element
      */
     public function get_element_from_id($element_id, $object)
@@ -741,8 +741,8 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
     /**
      *
-     * @param string $object
-     * @param string $element_id
+     * @param  string                       $object
+     * @param  string                       $element_id
      * @return Bridge_Api_Youtube_Container
      */
     public function get_container_from_id($object, $element_id)
@@ -759,9 +759,9 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
     /**
      *
-     * @param string $object
-     * @param int $offset_start
-     * @param int $quantity
+     * @param  string $object
+     * @param  int    $offset_start
+     * @param  int    $quantity
      * @return string
      */
     protected function get_user_object_list_feed($object, $offset_start, $quantity)
@@ -865,7 +865,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
     /**
      *
-     * @param string $element_id
+     * @param  string                              $element_id
      * @return Zend_Gdata_YouTube_PlaylistListFeed
      */
     protected function get_PlaylistEntry_from_Id($element_id)
@@ -903,8 +903,8 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
     /**
      *
      * Check if data uploaded via the current connector is conform
-     * @param Request $request
-     * @param record_adapter $record
+     * @param  Request        $request
+     * @param  record_adapter $record
      * @return array
      */
     public function check_upload_constraints(Array $datas, record_adapter $record)
@@ -921,12 +921,10 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
                 if ( ! isset($datas[$name])) {
                     if ($required)
                         $errors[$name . '_' . $key] = _("Ce champ est obligatoire");
-                }
-                elseif (trim($datas[$name]) === '') {
+                } elseif (trim($datas[$name]) === '') {
                     if ( ! $empty)
                         $errors[$name . '_' . $key] = _("Ce champ est obligatoire");
-                }
-                elseif ($length !== 0) {
+                } elseif ($length !== 0) {
                     if (mb_strlen($datas[$name]) > $length)
                         $errors[$name . '_' . $key] = sprintf(_("Ce champ est trop long %s caracteres max"), $length);
                 }
@@ -949,12 +947,10 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
                 if ( ! isset($datas[$name])) {
                     if ($required)
                         $errors[$name] = _("Ce champ est obligatoire");
-                }
-                elseif (trim($datas[$name]) === '') {
+                } elseif (trim($datas[$name]) === '') {
                     if ( ! $empty)
                         $errors[$name] = _("Ce champ est obligatoire");
-                }
-                elseif ($length !== 0) {
+                } elseif ($length !== 0) {
                     if (mb_strlen($datas[$name]) > $length)
                         $errors[$name] = sprintf(_("Ce champ est trop long %s caracteres max"), $length);
                 }
@@ -967,7 +963,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
     /**
      * Returns datas needed for an uploaded record
-     * @param record_adapter $record
+     * @param  record_adapter $record
      * @return array
      */
     public function get_update_datas(Request $request)
@@ -985,7 +981,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
     /**
      * Returns datas needed for an uploaded record
-     * @param record_adapter $record
+     * @param  record_adapter $record
      * @return array
      */
     public function get_upload_datas(Request $request, record_adapter $record)
@@ -1015,7 +1011,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
     /**
      *
-     * @param record_adapter $record
+     * @param  record_adapter $record
      * @return array
      */
     private function check_record_constraints(record_adapter $record)

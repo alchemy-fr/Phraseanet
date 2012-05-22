@@ -78,8 +78,8 @@ class API_OAuth2_Account
     /**
      * Constructor
      *
-     * @param appbox $appbox
-     * @param int $account_id
+     * @param  appbox             $appbox
+     * @param  int                $account_id
      * @return API_OAuth2_Account
      */
     public function __construct(appbox &$appbox, $account_id)
@@ -144,7 +144,7 @@ class API_OAuth2_Account
 
     /**
      *
-     * @param boolean $boolean
+     * @param  boolean            $boolean
      * @return API_OAuth2_Account
      */
     public function set_revoked($boolean)
@@ -177,7 +177,7 @@ class API_OAuth2_Account
 
     /**
      *
-     * @return  API_OAuth2_Token
+     * @return API_OAuth2_Token
      */
     public function get_token()
     {
@@ -230,9 +230,9 @@ class API_OAuth2_Account
 
     /**
      *
-     * @param appbox $appbox
-     * @param User_Adapter $user
-     * @param API_OAuth2_Application $application
+     * @param  appbox                 $appbox
+     * @param  User_Adapter           $user
+     * @param  API_OAuth2_Application $application
      * @return API_OAuth2_Account
      */
     public static function create(appbox &$appbox, User_Adapter $user, API_OAuth2_Application $application)
@@ -261,9 +261,9 @@ class API_OAuth2_Account
 
     /**
      *
-     * @param appbox $appbox
-     * @param API_OAuth2_Application $application
-     * @param User_Adapter $user
+     * @param  appbox                 $appbox
+     * @param  API_OAuth2_Application $application
+     * @param  User_Adapter           $user
      * @return API_OAuth2_Account
      */
     public static function load_with_user(appbox &$appbox, API_OAuth2_Application $application, User_Adapter $user)

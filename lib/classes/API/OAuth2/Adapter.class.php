@@ -83,7 +83,7 @@ class API_OAuth2_Adapter extends OAuth2
 
     /**
      *
-     * @param appbox $appbox
+     * @param  appbox             $appbox
      * @return API_OAuth2_Adapter
      */
     public function __construct(appbox $appbox)
@@ -115,7 +115,7 @@ class API_OAuth2_Adapter extends OAuth2
 
     /**
      *
-     * @param array $params
+     * @param  array              $params
      * @return API_OAuth2_Adapter
      */
     public function setParams(array $params)
@@ -170,8 +170,8 @@ class API_OAuth2_Adapter extends OAuth2
 
     /**
      *
-     * @param string $secret
-     * @param string $nonce
+     * @param  string $secret
+     * @param  string $nonce
      * @return string
      */
     protected static function crypt_secret($secret, $nonce)
@@ -185,8 +185,8 @@ class API_OAuth2_Adapter extends OAuth2
      *
      * Implements OAuth2::checkClientCredentials().
      *
-     * @param string $client_id
-     * @param string $client_secret
+     * @param  string  $client_id
+     * @param  string  $client_secret
      * @return boolean
      */
     protected function checkClientCredentials($client_id, $client_secret = NULL)
@@ -212,7 +212,7 @@ class API_OAuth2_Adapter extends OAuth2
      *
      * Implements OAuth2::getRedirectUri().
      *
-     * @param string $client_id
+     * @param  string $client_id
      * @return string
      */
     protected function getRedirectUri($client_id)
@@ -226,7 +226,7 @@ class API_OAuth2_Adapter extends OAuth2
      *
      * Implements OAuth2::getAccessToken().
      *
-     * @param string $oauth_token
+     * @param  string $oauth_token
      * @return array
      */
     protected function getAccessToken($oauth_token)
@@ -258,10 +258,10 @@ class API_OAuth2_Adapter extends OAuth2
 
     /**
      *
-     * @param type $oauth_token
-     * @param type $account_id
-     * @param type $expires
-     * @param string $scope
+     * @param  type               $oauth_token
+     * @param  type               $account_id
+     * @param  type               $expires
+     * @param  string             $scope
      * @return API_OAuth2_Adapter
      */
     protected function setAccessToken($oauth_token, $account_id, $expires, $scope = NULL)
@@ -326,11 +326,11 @@ class API_OAuth2_Adapter extends OAuth2
      *
      * Overrides OAuth2::setAuthCode().
      *
-     * @param string $code
-     * @param int $account_id
-     * @param string $redirect_uri
-     * @param string $expires
-     * @param string $scope
+     * @param  string             $code
+     * @param  int                $account_id
+     * @param  string             $redirect_uri
+     * @param  string             $expires
+     * @param  string             $scope
      * @return API_OAuth2_Adapter
      */
     protected function setAuthCode($code, $account_id, $redirect_uri, $expires, $scope = NULL)
@@ -386,7 +386,7 @@ class API_OAuth2_Adapter extends OAuth2
 
     /**
      *
-     * @param Symfony\Component\HttpFoundation\Request $request
+     * @param  Symfony\Component\HttpFoundation\Request $request
      * @return array
      */
     public function getAuthorizationRequestParameters(Symfony\Component\HttpFoundation\Request $request)
@@ -477,8 +477,7 @@ class API_OAuth2_Adapter extends OAuth2
                 ), $redirect_uri);
             if ($compare !== 0)
                 $this->errorDoRedirectUriCallback($input["redirect_uri"], OAUTH2_ERROR_REDIRECT_URI_MISMATCH, NULL, NULL, $input["state"]);
-        }
-        elseif ($redirect_uri) {
+        } elseif ($redirect_uri) {
             /**
              *  They did not provide a uri from input, so use the stored one
              */
@@ -524,7 +523,7 @@ class API_OAuth2_Adapter extends OAuth2
 
     /**
      *
-     * @param usr_id $usr_id
+     * @param  usr_id             $usr_id
      * @return API_OAuth2_Account
      */
     public function updateAccount($usr_id)
@@ -544,7 +543,7 @@ class API_OAuth2_Adapter extends OAuth2
 
     /**
      *
-     * @param int $usr_id
+     * @param  int                $usr_id
      * @return API_OAuth2_Account
      */
     private function createAccount($usr_id)
@@ -556,8 +555,8 @@ class API_OAuth2_Adapter extends OAuth2
 
     /**
      *
-     * @param <type> $is_authorized
-     * @param array $params
+     * @param  <type> $is_authorized
+     * @param  array  $params
      * @return string
      */
     public function finishNativeClientAuthorization($is_authorized, $params = array())
@@ -587,7 +586,7 @@ class API_OAuth2_Adapter extends OAuth2
 
     /**
      *
-     * @param <type> $redirect_uri
+     * @param  <type> $redirect_uri
      * @return <type>
      */
     public function isNativeApp($redirect_uri)

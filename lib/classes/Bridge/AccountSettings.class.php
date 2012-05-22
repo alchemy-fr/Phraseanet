@@ -31,8 +31,8 @@ class Bridge_AccountSettings
 
     /**
      *
-     * @param appbox $appbox
-     * @param Bridge_Account $account
+     * @param  appbox                 $appbox
+     * @param  Bridge_Account         $account
      * @return Bridge_AccountSettings
      */
     public function __construct(appbox &$appbox, Bridge_Account &$account)
@@ -45,8 +45,8 @@ class Bridge_AccountSettings
 
     /**
      *
-     * @param string $key
-     * @param mixed $default_value
+     * @param  string $key
+     * @param  mixed  $default_value
      * @return mixed
      */
     public function get($key, $default_value = null)
@@ -66,8 +66,8 @@ class Bridge_AccountSettings
 
     /**
      *
-     * @param string $key
-     * @param string $value
+     * @param  string $key
+     * @param  string $value
      * @return string
      */
     public function set($key, $value)
@@ -90,7 +90,7 @@ class Bridge_AccountSettings
 
     /**
      *
-     * @param string $key
+     * @param  string $key
      * @return string
      */
     public function delete($key)

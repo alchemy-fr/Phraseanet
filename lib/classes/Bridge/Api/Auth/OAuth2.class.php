@@ -70,7 +70,7 @@ class Bridge_Api_Auth_OAuth2 extends Bridge_Api_Auth_Abstract implements Bridge_
 
     /**
      *
-     * @param string $request_token
+     * @param  string $request_token
      * @return Array
      */
     public function connect($request_token)
@@ -148,7 +148,7 @@ class Bridge_Api_Auth_OAuth2 extends Bridge_Api_Auth_Abstract implements Bridge_
 
     /**
      *
-     * @param array $parameters
+     * @param  array                  $parameters
      * @return Bridge_Api_Auth_OAuth2
      */
     public function set_parameters(Array $parameters)

@@ -55,9 +55,9 @@ class Feed_XML_RSS_Image implements Feed_XML_RSS_ImageInterface
 
     /**
      *
-     * @param string $url
-     * @param string $title
-     * @param string $link
+     * @param  string             $url
+     * @param  string             $title
+     * @param  string             $link
      * @return Feed_XML_RSS_Image
      */
     public function __construct($url, $title, $link)
@@ -71,7 +71,7 @@ class Feed_XML_RSS_Image implements Feed_XML_RSS_ImageInterface
 
     /**
      *
-     * @param type $description
+     * @param  type               $description
      * @return Feed_XML_RSS_Image
      */
     public function set_description($description)
@@ -83,7 +83,7 @@ class Feed_XML_RSS_Image implements Feed_XML_RSS_ImageInterface
 
     /**
      *
-     * @param int $width
+     * @param  int                $width
      * @return Feed_XML_RSS_Image
      */
     public function set_width($width)
@@ -95,7 +95,7 @@ class Feed_XML_RSS_Image implements Feed_XML_RSS_ImageInterface
 
     /**
      *
-     * @param int $height
+     * @param  int                $height
      * @return Feed_XML_RSS_Image
      */
     public function set_height($height)

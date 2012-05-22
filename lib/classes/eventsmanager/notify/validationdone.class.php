@@ -27,7 +27,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
      *
      * @return notify_validationdone
      */
-    function __construct(appbox &$appbox, \Alchemy\Phrasea\Core $core, eventsmanager_broker &$broker)
+    public function __construct(appbox &$appbox, \Alchemy\Phrasea\Core $core, eventsmanager_broker &$broker)
     {
         $this->group = _('Validation');
         parent::__construct($appbox, $core, $broker);
@@ -46,9 +46,9 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
 
     /**
      *
-     * @param Array $event
-     * @param Array $params
-     * @param mixed content $object
+     * @param  Array         $event
+     * @param  Array         $params
+     * @param  mixed content $object
      * @return boolean
      */
     public function fire($event, $params, &$object)
@@ -114,8 +114,8 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
 
     /**
      *
-     * @param string $datas
-     * @param boolean $unread
+     * @param  string  $datas
+     * @param  boolean $unread
      * @return Array
      */
     public function datas($datas, $unread)
@@ -174,12 +174,12 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
 
     /**
      *
-     * @param Array $to
-     * @param Array $from
-     * @param int $ssel_id
+     * @param  Array   $to
+     * @param  Array   $from
+     * @param  int     $ssel_id
      * @return boolean
      */
-    function mail($to, $from, $ssel_id, $url)
+    public function mail($to, $from, $ssel_id, $url)
     {
         try {
             $em = $this->core->getEntityManager();
@@ -207,7 +207,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
      *
      * @return boolean
      */
-    function is_available()
+    public function is_available()
     {
         $bool = false;
 

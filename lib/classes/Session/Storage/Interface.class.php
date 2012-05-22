@@ -28,7 +28,7 @@ interface Session_Storage_Interface
     /**
      * Return true if the storage contains the key
      *
-     * @param string $key
+     * @param  string  $key
      * @return boolean
      */
     public function has($key);

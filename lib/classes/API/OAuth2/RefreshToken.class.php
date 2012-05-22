@@ -93,8 +93,8 @@ class API_OAuth2_RefreshToken
 
     /**
      *
-     * @param appbox $appbox
-     * @param API_OAuth2_Account $account
+     * @param  appbox             $appbox
+     * @param  API_OAuth2_Account $account
      * @return array
      */
     public static function load_by_account(appbox &$appbox, API_OAuth2_Account $account)
@@ -118,11 +118,11 @@ class API_OAuth2_RefreshToken
 
     /**
      *
-     * @param appbox $appbox
-     * @param API_OAuth2_Account $account
-     * @param int $expires
-     * @param type $refresh_token
-     * @param type $scope
+     * @param  appbox                  $appbox
+     * @param  API_OAuth2_Account      $account
+     * @param  int                     $expires
+     * @param  type                    $refresh_token
+     * @param  type                    $scope
      * @return API_OAuth2_RefreshToken
      */
     public static function create(appbox &$appbox, API_OAuth2_Account $account, $expires, $refresh_token, $scope)

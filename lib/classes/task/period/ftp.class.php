@@ -39,7 +39,7 @@ class task_period_ftp extends task_appboxAbstract
 
     /**
      *
-     * @param string $oldxml
+     * @param  string $oldxml
      * @return string
      */
     public function graphic2xml($oldxml)
@@ -86,8 +86,8 @@ class task_period_ftp extends task_appboxAbstract
 
     /**
      *
-     * @param string $xml
-     * @param string $form
+     * @param  string $xml
+     * @param  string $form
      * @return string
      */
     public function xml2graphic($xml, $form)
@@ -101,6 +101,7 @@ class task_period_ftp extends task_appboxAbstract
             <?php echo $form ?>.period.value = "<?php echo p4string::MakeString($sxml->period, "js", '"') ?>";
             </script>
             <?php
+
             return("");
         } else { // ... so we NEVER come here
             // bad xml
@@ -132,6 +133,7 @@ class task_period_ftp extends task_appboxAbstract
             }
         </script>
         <?php
+
         return;
     }
 
@@ -139,7 +141,7 @@ class task_period_ftp extends task_appboxAbstract
      *
      * @return string
      */
-    function getGraphicForm()
+    public function getGraphicForm()
     {
         return true;
     }
@@ -571,7 +573,7 @@ class task_period_ftp extends task_appboxAbstract
         return $this;
     }
 
-    function finalize(appbox $appbox, $id)
+    public function finalize(appbox $appbox, $id)
     {
         $conn = $appbox->get_connection();
 
@@ -622,7 +624,7 @@ class task_period_ftp extends task_appboxAbstract
         }
     }
 
-    function send_mails(appbox $appbox, $id)
+    public function send_mails(appbox $appbox, $id)
     {
         $conn = $appbox->get_connection();
         $registry = registry::get_instance();
@@ -700,7 +702,7 @@ class task_period_ftp extends task_appboxAbstract
         mail::ftp_receive($mail, $receiver_message);
     }
 
-    function logexport(Session_Handler $session, record_adapter $record, $obj, $ftpLog)
+    public function logexport(Session_Handler $session, record_adapter $record, $obj, $ftpLog)
     {
         foreach ($obj as $oneObj) {
             $session->get_logger($record->get_databox())

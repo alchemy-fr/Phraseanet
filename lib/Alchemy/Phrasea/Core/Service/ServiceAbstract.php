@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\Core\Service;
 
 use Alchemy\Phrasea\Core;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
 /**
  *

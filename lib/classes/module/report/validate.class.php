@@ -114,11 +114,9 @@ class module_report_validate extends module_report
                             $row[$value];
                     } elseif ($value == 'size') {
                         $this->result[$i][$value] = p4string::format_octets($row[$value]);
-                    }
-                    else
+                    } else
                         $this->result[$i][$value] = $row[$value];
-                }
-                else {
+                } else {
                     if ($value == 'comment') {
                         $this->result[$i][$value] = '&nbsp;';
                     } else {

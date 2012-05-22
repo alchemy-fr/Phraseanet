@@ -25,9 +25,9 @@ class eventsmanager_event_test extends eventsmanager_eventAbstract
 
     /**
      *
-     * @param string $event
-     * @param Array $params
-     * @param mixed content $object
+     * @param  string        $event
+     * @param  Array         $params
+     * @param  mixed content $object
      * @return event_test
      */
     public function fire($event, $params, &$object)

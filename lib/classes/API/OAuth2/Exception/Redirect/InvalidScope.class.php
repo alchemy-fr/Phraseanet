@@ -42,10 +42,10 @@ class API_OAuth2_Exception_Redirect_InvalidScope extends API_OAuth2_Exception_Re
 
     /**
      *
-     * @param string $redirect_uri
-     * @param string $scope
-     * @param string $state
-     * @param string $error_uri
+     * @param  string                                     $redirect_uri
+     * @param  string                                     $scope
+     * @param  string                                     $state
+     * @param  string                                     $error_uri
      * @return API_OAuth2_Exception_Redirect_InvalidScope
      */
     public function __construct($redirect_uri, $scope, $state = null, $error_uri = null)
@@ -67,7 +67,7 @@ class API_OAuth2_Exception_Redirect_InvalidScope extends API_OAuth2_Exception_Re
 
     /**
      *
-     * @param string $scope
+     * @param  string                                     $scope
      * @return API_OAuth2_Exception_Redirect_InvalidScope
      */
     public function setScope($scope)

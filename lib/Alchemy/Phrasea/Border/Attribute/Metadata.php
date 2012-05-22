@@ -26,7 +26,7 @@ class Metadata implements Attribute
     /**
      * Constructor
      *
-     * @param ExiftoolMeta $metadata    The metadata
+     * @param ExiftoolMeta $metadata The metadata
      */
     public function __construct(ExiftoolMeta $metadata)
     {

@@ -43,8 +43,8 @@ class Session_Logger
 
     /**
      *
-     * @param databox $databox
-     * @param int $log_id
+     * @param  databox        $databox
+     * @param  int            $log_id
      * @return Session_Logger
      */
     public function __construct(databox &$databox, $log_id)
@@ -88,10 +88,10 @@ class Session_Logger
 
     /**
      *
-     * @param databox $databox
-     * @param Session_Phrasea $session
-     * @param User_Adapter $user
-     * @param Browser $browser
+     * @param  databox         $databox
+     * @param  Session_Phrasea $session
+     * @param  User_Adapter    $user
+     * @param  Browser         $browser
      * @return Session_Logger
      */
     public static function create(databox &$databox, Browser &$browser, Session_Handler $session, User_Adapter &$user = null)

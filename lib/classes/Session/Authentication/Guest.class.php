@@ -32,7 +32,7 @@ class Session_Authentication_Guest implements Session_Authentication_Interface
 
     /**
      *
-     * @param appbox $appbox
+     * @param  appbox                       $appbox
      * @return Session_Authentication_Guest
      */
     public function __construct(appbox &$appbox)

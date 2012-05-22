@@ -145,8 +145,7 @@ class queries
                     var _topics = topics;
                     var zpop;
                     current_popqry = "";
-                    for(i=0; _topics && i<ipop; i++)
-                    {
+                    for (i=0; _topics && i<ipop; i++) {
                         zpop = document.forms["pops"]["popTopic_"+i];
                         if((j = zpop.selectedIndex) > 0)
                             current_popqry = zpop.options[j].value;
@@ -160,8 +159,7 @@ class queries
 
                         return;
                     zpop = document.forms["pops"]["popTopic_"+ipop];
-                    if(_topics)
-                    {
+                    if (_topics) {
                         while(zpop.options[0])
                             zpop.options[0] = null;
                         zpop.options[0] = new Option("All", "");
@@ -169,13 +167,10 @@ class queries
                             zpop.options[j+1] = new Option(_topics[j].label, _topics[j].query);
                         zpop.selectedIndex = 0;
                         document.getElementById("divTopic_"+ipop).style.display = "";
-                    }
-                    else
-                    {
+                    } else {
                         document.getElementById("divTopic_"+ipop).style.display = "none";
                     }
-                    while(++ipop <= ' . $maxdepth . ')
-                    {
+                    while (++ipop <= ' . $maxdepth . ') {
                         document.getElementById("divTopic_"+ipop).style.display = "none";
                     }
                 }

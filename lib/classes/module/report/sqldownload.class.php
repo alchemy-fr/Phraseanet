@@ -72,8 +72,7 @@ class module_report_sqldownload extends module_report_sql implements module_repo
             $stmt->closeCursor();
 
             $this->sql .= $this->filter->getLimitFilter() ? : '';
-        }
-        else {
+        } else {
             $name = $this->groupby;
             $field = $this->getTransQuery($this->groupby);
 

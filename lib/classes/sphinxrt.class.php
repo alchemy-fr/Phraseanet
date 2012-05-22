@@ -35,7 +35,7 @@ class sphinxrt
 
     /**
      *
-     * @param registry $registry
+     * @param  registry $registry
      * @return sphinxrt
      */
     public static function get_instance(registry $registry, $retry_on_failure = false)
@@ -53,9 +53,9 @@ class sphinxrt
     /**
      * Delete an index
      *
-     * @param array $index_ids
-     * @param <type> $rt_id
-     * @param <type> $meta_id
+     * @param  array    $index_ids
+     * @param  <type>   $rt_id
+     * @param  <type>   $meta_id
      * @return sphinxrt
      */
     public function delete(Array $index_ids, $rt_id, $id)

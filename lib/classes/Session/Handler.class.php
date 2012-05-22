@@ -123,7 +123,7 @@ class Session_Handler
     /**
      * Set the locale used in this session
      *
-     * @param string $value under the form i18n_l10n (de_DE, en_US...)
+     * @param  string           $value under the form i18n_l10n (de_DE, en_US...)
      * @return Session_Handler;
      */
     public static function set_locale($value)
@@ -207,8 +207,8 @@ class Session_Handler
     /**
      * Set temporary preference (till the session ends)
      *
-     * @param string $key
-     * @param mixed $value
+     * @param  string          $key
+     * @param  mixed           $value
      * @return Session_Handler
      */
     public function set_session_prefs($key, $value)
@@ -222,7 +222,7 @@ class Session_Handler
 
     /**
      *
-     * @param string $key
+     * @param  string $key
      * @return mixed
      */
     public function get_session_prefs($key)
@@ -237,8 +237,8 @@ class Session_Handler
 
     /**
      *
-     * @param string $name
-     * @param mixed $default_value
+     * @param  string $name
+     * @param  mixed  $default_value
      * @return mixed
      */
     public static function get_cookie($name, $default_value = null)
@@ -256,10 +256,10 @@ class Session_Handler
 
     /**
      *
-     * @param string $name
-     * @param mixed $value
-     * @param int $avalaibility
-     * @param boolean $http_only
+     * @param  string  $name
+     * @param  mixed   $value
+     * @param  int     $avalaibility
+     * @param  boolean $http_only
      * @return boolean
      */
     public static function set_cookie($name, $value, $avalaibility, $http_only)
@@ -277,8 +277,7 @@ class Session_Handler
                 self::$_cookie[$name] = $value;
             else
                 $_COOKIE[$name] = $value;
-        }
-        else {
+        } else {
             if (http_request::is_command_line() && isset(self::$_cookie[$name]))
                 unset(self::$_cookie[$name]);
             else
@@ -293,7 +292,7 @@ class Session_Handler
 
     /**
      *
-     * @param string $name
+     * @param  string  $name
      * @return boolean
      */
     public static function isset_cookie($name)
@@ -342,7 +341,7 @@ class Session_Handler
     /**
      *
      * @param User_Adapter $user
-     * @param type $ses_id
+     * @param type         $ses_id
      */
     public function restore(User_Adapter $user, $ses_id)
     {
@@ -359,7 +358,7 @@ class Session_Handler
     /**
      * Process the authentication
      *
-     * @param Session_Authentication_Interface $auth
+     * @param  Session_Authentication_Interface $auth
      * @return Session_Handler
      */
     public function authenticate(Session_Authentication_Interface $auth)
@@ -543,7 +542,7 @@ class Session_Handler
 
     /**
      *
-     * @param databox $databox
+     * @param  databox        $databox
      * @return Session_Logger
      */
     public function get_logger(databox $databox)
@@ -655,8 +654,7 @@ class Session_Handler
         if ($enter) {
             if ($app && ! in_array($app, $apps))
                 $apps[] = $app;
-        }
-        elseif (in_array($app, $apps)) {
+        } elseif (in_array($app, $apps)) {
             unset($apps[$app]);
         }
 

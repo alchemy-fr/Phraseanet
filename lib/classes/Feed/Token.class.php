@@ -49,9 +49,9 @@ class Feed_Token
 
     /**
      *
-     * @param appbox $appbox
-     * @param string $token
-     * @param int $feed_id
+     * @param  appbox     $appbox
+     * @param  string     $token
+     * @param  int        $feed_id
      * @return Feed_Token
      */
     public function __construct(appbox &$appbox, $token, $feed_id)

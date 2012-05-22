@@ -133,8 +133,8 @@ class API_OAuth2_AuthCode
 
     /**
      *
-     * @param appbox $appbox
-     * @param API_OAuth2_Account $account
+     * @param  appbox             $appbox
+     * @param  API_OAuth2_Account $account
      * @return array
      */
     public static function load_codes_by_account(appbox &$appbox, API_OAuth2_Account $account)
@@ -160,10 +160,10 @@ class API_OAuth2_AuthCode
 
     /**
      *
-     * @param appbox $appbox
-     * @param API_OAuth2_Account $account
-     * @param type $code
-     * @param int $expires
+     * @param  appbox              $appbox
+     * @param  API_OAuth2_Account  $account
+     * @param  type                $code
+     * @param  int                 $expires
      * @return API_OAuth2_AuthCode
      */
     public static function create(appbox &$appbox, API_OAuth2_Account $account, $code, $expires)

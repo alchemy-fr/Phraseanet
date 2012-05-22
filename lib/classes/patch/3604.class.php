@@ -32,7 +32,7 @@ class patch_3604 implements patchInterface
      *
      * @return string
      */
-    function get_release()
+    public function get_release()
     {
         return $this->release;
     }
@@ -46,12 +46,12 @@ class patch_3604 implements patchInterface
      *
      * @return Array
      */
-    function concern()
+    public function concern()
     {
         return $this->concern;
     }
 
-    function apply(base &$databox)
+    public function apply(base &$databox)
     {
         /**
          * Fail if upgrade has previously failed, no problem

@@ -120,8 +120,7 @@ class Query implements ControllerProviderInterface
                             }
                             if ($npages > 4)
                                 $string .= "<a onclick='gotopage(" . ($npages) . ");return false;' class='btn btn-primary btn-mini'>&gt;&gt;</a>";
-                        }
-                        else {
+                        } else {
                             $start = $npages - 4;
                             if (($start) > 0)
                                 $string .= "<a onclick='gotopage(1);return false;' class='btn btn-primary btn-mini'>&lt;&lt;</a>";
@@ -134,8 +133,7 @@ class Query implements ControllerProviderInterface
                                     $string .= "<a onclick='gotopage(" . $i . ");return false;' class='btn btn-primary btn-mini'>" . $i . "</a>";
                             }
                         }
-                    }
-                    else {
+                    } else {
                         $string .= "<a onclick='gotopage(1);return false;' class='btn btn-primary btn-mini'>&lt;&lt;</a>";
 
                         for ($i = ($page - 2); $i <= ($page + 2); $i ++ ) {

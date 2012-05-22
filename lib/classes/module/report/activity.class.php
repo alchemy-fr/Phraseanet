@@ -52,7 +52,7 @@ class module_report_activity extends module_report
 
     /**
      * set top value
-     * @param int $nb_top
+     * @param  int                    $nb_top
      * @return module_report_activity
      */
     public function setTop($nb_top)
@@ -213,8 +213,8 @@ class module_report_activity extends module_report
 
     /**
      * get the most asked question
-     * @param array $tab config for html table
-     * @param bool $no_answer true for question with no answer
+     * @param array $tab       config for html table
+     * @param bool  $no_answer true for question with no answer
      */
     public function getTopQuestion($tab = false, $no_answer = false)
     {
@@ -284,7 +284,7 @@ class module_report_activity extends module_report
     /**
      * @desc get all downloads from one specific user
      * @param $usr user id
-     * @param array $config config for the html table
+     * @param  array $config config for the html table
      * @return array
      */
     public function getAllDownloadByUserBase($usr, $config = false)
@@ -360,7 +360,7 @@ class module_report_activity extends module_report
 
     /**
      * @desc get all download by base by day
-     * @param array $tab config for html table
+     * @param  array $tab config for html table
      * @return array
      */
     public function getDownloadByBaseByDay($tab = false)
@@ -461,8 +461,8 @@ class module_report_activity extends module_report
 
     /**
      * @desc get nb connexion by user , fonction ,societe etc..
-     * @param array $tab config for html table
-     * @param string $on choose the field on what you want the result
+     * @param  array  $tab config for html table
+     * @param  string $on  choose the field on what you want the result
      * @return array
      */
     public function getConnexionBase($tab = false, $on = "")
@@ -555,8 +555,8 @@ class module_report_activity extends module_report
 
     /**
      * @desc get the deail of download by users
-     * @param bool $ext false for your appbox conn, true for external connections
-     * @param array $tab config for the html table
+     * @param  bool  $ext false for your appbox conn, true for external connections
+     * @param  array $tab config for the html table
      * @return array
      */
     public function getDetailDownload($tab = false, $on = "")

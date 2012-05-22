@@ -30,8 +30,8 @@ class set_export extends set_abstract
 
     /**
      *
-     * @param string $lst
-     * @param int $sstid
+     * @param  string     $lst
+     * @param  int        $sstid
      * @return set_export
      */
     public function __construct($lst, $sstid, $storyWZid = null)
@@ -381,8 +381,8 @@ class set_export extends set_abstract
 
     /**
      *
-     * @param Array $subdefs
-     * @param boolean $rename_title
+     * @param  Array   $subdefs
+     * @param  boolean $rename_title
      * @return Array
      */
     public function prepare_export(Array $subdefs, $rename_title, $includeBusinessFields)
@@ -694,9 +694,9 @@ class set_export extends set_abstract
 
     /**
      *
-     * @param String $token
-     * @param Array $list
-     * @param string $zipFile
+     * @param  String $token
+     * @param  Array  $list
+     * @param  string $zipFile
      * @return string
      */
     public static function build_zip($token, Array $list, $zipFile)
@@ -768,10 +768,10 @@ class set_export extends set_abstract
 
     /**
      *
-     * @param string $file
-     * @param string $exportname
-     * @param string $mime
-     * @param string $disposition
+     * @param  string                                     $file
+     * @param  string                                     $exportname
+     * @param  string                                     $mime
+     * @param  string                                     $disposition
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public static function stream_file(
@@ -843,10 +843,10 @@ class set_export extends set_abstract
 
     /**
      *
-     * @param String $data
-     * @param String $exportname
-     * @param String $mime
-     * @param String $disposition
+     * @param  String $data
+     * @param  String $exportname
+     * @param  String $mime
+     * @param  String $disposition
      * @return Void
      */
     public static function stream_data($data, $exportname, $mime, $disposition = 'attachment')
@@ -871,9 +871,9 @@ class set_export extends set_abstract
     /**
      * @todo a revoir le cas anonymous
      *
-     * @param Array $list
-     * @param String> $type
-     * @param boolean $anonymous
+     * @param  Array   $list
+     * @param  String> $type
+     * @param  boolean $anonymous
      * @return Void
      */
     public static function log_download(Array $list, $type, $anonymous = false, $comment = '')

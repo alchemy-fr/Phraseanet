@@ -27,7 +27,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
      *
      * @return notify_orderdeliver
      */
-    function __construct(appbox &$appbox, \Alchemy\Phrasea\Core $core, eventsmanager_broker &$broker)
+    public function __construct(appbox &$appbox, \Alchemy\Phrasea\Core $core, eventsmanager_broker &$broker)
     {
         $this->group = _('Commande');
         parent::__construct($appbox, $core, $broker);
@@ -46,9 +46,9 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
 
     /**
      *
-     * @param string $event
-     * @param Array $params
-     * @param Array $object
+     * @param  string  $event
+     * @param  Array   $params
+     * @param  Array   $object
      * @return boolean
      */
     public function fire($event, $params, &$object)
@@ -117,8 +117,8 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
 
     /**
      *
-     * @param Array $datas
-     * @param boolean $unread
+     * @param  Array   $datas
+     * @param  boolean $unread
      * @return string
      */
     public function datas($datas, $unread)
@@ -177,12 +177,12 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
 
     /**
      *
-     * @param Array $to
-     * @param Array $from
-     * @param int $ssel_id
+     * @param  Array   $to
+     * @param  Array   $from
+     * @param  int     $ssel_id
      * @return boolean
      */
-    function mail($to, $from, $ssel_id)
+    public function mail($to, $from, $ssel_id)
     {
         try {
             $em = $this->core->getEntityManager();
@@ -214,7 +214,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
      *
      * @return boolean
      */
-    function is_available()
+    public function is_available()
     {
         return true;
     }

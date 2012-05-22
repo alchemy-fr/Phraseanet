@@ -74,7 +74,7 @@ abstract class Bridge_Api_AbstractCollection
 
     /**
      *
-     * @param int $items_per_page
+     * @param  int                           $items_per_page
      * @return Bridge_Api_AbstractCollection
      */
     public function set_items_per_page($items_per_page)
@@ -95,7 +95,7 @@ abstract class Bridge_Api_AbstractCollection
 
     /**
      *
-     * @param int $current_page
+     * @param  int                           $current_page
      * @return Bridge_Api_AbstractCollection
      */
     public function set_current_page($current_page)
@@ -117,7 +117,7 @@ abstract class Bridge_Api_AbstractCollection
 
     /**
      *
-     * @param int $total_page
+     * @param  int                           $total_page
      * @return Bridge_Api_AbstractCollection
      */
     public function set_total_page($total_page)

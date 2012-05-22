@@ -128,8 +128,8 @@ class set_ordermanager extends set_abstract
 
     /**
      *
-     * @param string $a
-     * @param string $b
+     * @param  string $a
+     * @param  string $b
      * @return int
      */
     protected static function usage_orders_sort($a, $b)
@@ -145,8 +145,8 @@ class set_ordermanager extends set_abstract
 
     /**
      *
-     * @param string $a
-     * @param string $b
+     * @param  string $a
+     * @param  string $b
      * @return int
      */
     protected static function user_orders_sort($a, $b)
@@ -162,8 +162,8 @@ class set_ordermanager extends set_abstract
 
     /**
      *
-     * @param DateTime $a
-     * @param DateTime $b
+     * @param  DateTime $a
+     * @param  DateTime $b
      * @return int
      */
     protected static function date_orders_sort(DateTime $a, DateTime $b)

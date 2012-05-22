@@ -32,8 +32,8 @@ class Session_Authentication_Token implements Session_Authentication_Interface
 
     /**
      *
-     * @param appbox $appbox
-     * @param type $token
+     * @param  appbox                       $appbox
+     * @param  type                         $token
      * @return Session_Authentication_Token
      */
     public function __construct(appbox &$appbox, $token)

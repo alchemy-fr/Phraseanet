@@ -46,9 +46,9 @@ class File
     /**
      * Constructor
      *
-     * @param Media         $media          The media
-     * @param \collection   $collection     The destination collection
-     * @param string        $originalName   The original name of the file
+     * @param Media       $media        The media
+     * @param \collection $collection   The destination collection
+     * @param string      $originalName The original name of the file
      *                                      (if not provided, original name is
      *                                      extracted from the pathfile)
      */
@@ -77,9 +77,9 @@ class File
      * @todo Check if an UUID is contained in the attributes, replace It if
      *              necessary
      *
-     * @param   boolean $generate   if true, if no uuid found, a valid one is generated
-     * @param   boolean $write      if true, writes uuid in all available metadatas
-     * @return  File
+     * @param  boolean $generate if true, if no uuid found, a valid one is generated
+     * @param  boolean $write    if true, writes uuid in all available metadatas
+     * @return File
      */
     public function getUUID($generate = false, $write = false)
     {
@@ -253,8 +253,8 @@ class File
     /**
      * Adds an attribute to the file package
      *
-     * @param   Attribute\Attribute $attribute  The attribute
-     * @return  File
+     * @param  Attribute\Attribute $attribute The attribute
+     * @return File
      */
     public function addAttribute(Attribute\Attribute $attribute)
     {
@@ -266,9 +266,9 @@ class File
     /**
      * Build the File package object
      *
-     * @param string        $pathfile       The path to the file
-     * @param \collection   $collection     The destination collection
-     * @param string        $originalName   An optionnal original name (if
+     * @param string      $pathfile     The path to the file
+     * @param \collection $collection   The destination collection
+     * @param string      $originalName An optionnal original name (if
      *                                      different from the $pathfile filename)
      * @throws \InvalidArgumentException
      *

@@ -181,7 +181,7 @@ class p4file
 
                     if ( ! $colorSpace || $required == $colorSpace) {
                         $go = true;
-                    } else if ($required == 'rgb' && in_array($colorSpace, array('srgb', 'rgb')) > 0) {
+                    } elseif ($required == 'rgb' && in_array($colorSpace, array('srgb', 'rgb')) > 0) {
                         $go = true;
                     }
 

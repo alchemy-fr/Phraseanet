@@ -45,7 +45,7 @@ class CacheAutoloader extends Autoloader
 
     /**
      * Take a identifier cache key prefix
-     * @param string $prefix
+     * @param  string         $prefix
      * @throws \Exceptionwhen none of the op cache code are available
      */
     public function __construct($prefix, $namespace = null)

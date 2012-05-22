@@ -59,8 +59,8 @@ class API_OAuth2_Token
 
     /**
      *
-     * @param appbox $appbox
-     * @param API_OAuth2_Account $account
+     * @param  appbox             $appbox
+     * @param  API_OAuth2_Account $account
      * @return API_OAuth2_Token
      */
     public function __construct(appbox &$appbox, API_OAuth2_Account &$account)
@@ -99,7 +99,7 @@ class API_OAuth2_Token
 
     /**
      *
-     * @param string $oauth_token
+     * @param  string           $oauth_token
      * @return API_OAuth2_Token
      */
     public function set_value($oauth_token)
@@ -132,7 +132,7 @@ class API_OAuth2_Token
 
     /**
      *
-     * @param int $session_id
+     * @param  int              $session_id
      * @return API_OAuth2_Token
      */
     public function set_session_id($session_id)
@@ -165,7 +165,7 @@ class API_OAuth2_Token
 
     /**
      *
-     * @param int $expires
+     * @param  int              $expires
      * @return API_OAuth2_Token
      */
     public function set_expires($expires)
@@ -266,8 +266,8 @@ class API_OAuth2_Token
 
     /**
      *
-     * @param appbox $appbox
-     * @param type $oauth_token
+     * @param  appbox           $appbox
+     * @param  type             $oauth_token
      * @return API_OAuth2_Token
      */
     public static function load_by_oauth_token(appbox &$appbox, $oauth_token)
@@ -293,9 +293,9 @@ class API_OAuth2_Token
 
     /**
      *
-     * @param appbox $appbox
-     * @param API_OAuth2_Account $account
-     * @param string $scope
+     * @param  appbox             $appbox
+     * @param  API_OAuth2_Account $account
+     * @param  string             $scope
      * @return API_OAuth2_Token
      */
     public static function create(appbox &$appbox, API_OAuth2_Account &$account, $scope = null)

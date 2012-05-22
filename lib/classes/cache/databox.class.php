@@ -21,7 +21,7 @@ class cache_databox
 
     /**
      *
-     * @param int $sbas_id
+     * @param  int           $sbas_id
      * @return cache_databox
      */
     public static function refresh($sbas_id)
@@ -145,9 +145,9 @@ class cache_databox
 
     /**
      *
-     * @param int $sbas_id
-     * @param string $type
-     * @param mixed content $value
+     * @param  int           $sbas_id
+     * @param  string        $type
+     * @param  mixed content $value
      * @return Void
      */
     public static function update($sbas_id, $type, $value = '')

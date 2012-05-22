@@ -31,8 +31,8 @@ class Bridge_Api_Youtube_Element implements Bridge_Api_ElementInterface
 
     /**
      *
-     * @param Zend_Gdata_App_Entry $entry
-     * @param string $type
+     * @param  Zend_Gdata_App_Entry       $entry
+     * @param  string                     $type
      * @return Bridge_Api_Youtube_Element
      */
     public function __construct(Zend_Gdata_App_Entry $entry, $type)

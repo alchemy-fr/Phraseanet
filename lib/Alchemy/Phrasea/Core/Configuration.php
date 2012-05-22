@@ -37,8 +37,8 @@ class Configuration
 
     /**
      *
-     * @param Configuration\ApplicationSpecification $specifications
-     * @param type $environment
+     * @param  Configuration\ApplicationSpecification $specifications
+     * @param  type                                   $environment
      * @return \Alchemy\Phrasea\Core\Configuration
      */
     public static function build($specifications = null, $environment = null)
@@ -52,8 +52,8 @@ class Configuration
 
     /**
      *
-     * @param Configuration\Specification $specifications
-     * @param type $environment
+     * @param  Configuration\Specification         $specifications
+     * @param  type                                $environment
      * @return \Alchemy\Phrasea\Core\Configuration
      */
     public function __construct(Configuration\Specification $specifications, $environment = null)
@@ -336,7 +336,7 @@ class Configuration
     /**
      * Return the selected service configuration
      *
-     * @param type $name
+     * @param  type         $name
      * @return ParameterBag
      */
     public function getService($name)

@@ -42,10 +42,10 @@ class API_OAuth2_Exception_Redirect_UnsupportedResponseType extends API_OAuth2_E
 
     /**
      *
-     * @param string $redirect_uri
-     * @param string $method
-     * @param string $state
-     * @param string $error_uri
+     * @param  string                                                $redirect_uri
+     * @param  string                                                $method
+     * @param  string                                                $state
+     * @param  string                                                $error_uri
      * @return API_OAuth2_Exception_Redirect_UnsupportedResponseType
      */
     public function __construct($redirect_uri, $method, $state = null, $error_uri = null)
@@ -67,7 +67,7 @@ class API_OAuth2_Exception_Redirect_UnsupportedResponseType extends API_OAuth2_E
 
     /**
      *
-     * @param string $method
+     * @param  string                                                $method
      * @return API_OAuth2_Exception_Redirect_UnsupportedResponseType
      */
     public function setMethod($method)

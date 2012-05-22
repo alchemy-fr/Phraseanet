@@ -35,7 +35,7 @@ class Helper
 
     /**
      *
-     * @param Kernel $kernel
+     * @param  Kernel $kernel
      * @return Helper
      */
     public function __construct(Core $core, Request $Request)

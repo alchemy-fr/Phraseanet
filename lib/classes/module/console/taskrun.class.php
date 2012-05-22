@@ -15,7 +15,6 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -54,7 +53,7 @@ class module_console_taskrun extends Command
         return $this;
     }
 
-    function sig_handler($signo)
+    public function sig_handler($signo)
     {
         if ($this->task) {
             $this->task->log(sprintf("signal %s received", $signo));

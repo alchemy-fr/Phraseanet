@@ -81,7 +81,7 @@ class setup
             && is_file(__DIR__ . "/../../config/config.inc"));
     }
 
-    function create_global_values(registryInterface &$registry, $datas = array())
+    public function create_global_values(registryInterface &$registry, $datas = array())
     {
         require(__DIR__ . "/../../lib/conf.d/_GV_template.inc");
 
@@ -106,8 +106,7 @@ class setup
                                 $datas[$variable['name']] = '1';
                             else
                                 $datas[$variable['name']] = '0';
-                        }
-                        else {
+                        } else {
                             $datas[$variable['name']] = $variable['default'];
                         }
                     }
@@ -274,7 +273,7 @@ class setup
         return exec(sprintf('which %s', $binary));
     }
 
-    function check_mod_auth_token()
+    public function check_mod_auth_token()
     {
         $registry = registry::get_instance();
 
@@ -300,7 +299,7 @@ class setup
         <?php
     }
 
-    function check_apache()
+    public function check_apache()
     {
         $registry = registry::get_instance();
         ?>
@@ -356,8 +355,7 @@ class setup
                 function check_apache_mod(el,mod)
                 {
                     var url = '/admin/test-';
-                    switch(mod)
-                    {
+                    switch (mod) {
                         case 'rewrite':
                             url += 'rewrite';
                             break;
@@ -531,8 +529,7 @@ class setup
             foreach ($availables_caches as $ext) {
                 if (extension_loaded($ext) === true) {
                     $constraints[] = new Setup_Constraint(sprintf('Extension %s', $ext), true, sprintf('%s loaded', $ext), false);
-                }
-                else
+                } else
                     $constraints[] = new Setup_Constraint(sprintf('Extension %s', $ext), false, sprintf('%s not loaded', $ext), false);
             }
 

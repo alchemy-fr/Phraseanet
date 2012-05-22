@@ -4,24 +4,24 @@ abstract class eventsmanager_notifyAbstract extends eventsmanager_eventAbstract
 {
     protected $events = array('__EVENT__');
 
-    function fire($event, $params, &$object)
+    public function fire($event, $params, &$object)
     {
 
     }
 
-    abstract function datas($datas, $unread);
+    abstract public function datas($datas, $unread);
 
-    function is_available()
-    {
-        return true;
-    }
-
-    function email()
+    public function is_available()
     {
         return true;
     }
 
-    abstract function icon_url();
+    public function email()
+    {
+        return true;
+    }
+
+    abstract public function icon_url();
 
     protected function get_prefs($class, $usr_id)
     {

@@ -20,15 +20,15 @@ class set_exportftp extends set_export
 
     /**
      *
-     * @param Int $usr_to
-     * @param String $host
-     * @param String $login
-     * @param String $password
-     * @param Int $ssl
-     * @param Int $retry
-     * @param Int $passif
-     * @param String $destfolder
-     * @param String $makedirectory
+     * @param  Int     $usr_to
+     * @param  String  $host
+     * @param  String  $login
+     * @param  String  $password
+     * @param  Int     $ssl
+     * @param  Int     $retry
+     * @param  Int     $passif
+     * @param  String  $destfolder
+     * @param  String  $makedirectory
      * @return boolean
      */
     public function export_ftp($usr_to, $host, $login, $password, $ssl, $retry, $passif, $destfolder, $makedirectory, $logfile)

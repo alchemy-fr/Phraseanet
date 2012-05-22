@@ -34,10 +34,10 @@ class MetaField implements Attribute
     /**
      * Constructor
      *
-     * @param   \databox_field              $databox_field  The databox field
-     * @param   type                        $value          A scalar value
+     * @param \databox_field $databox_field The databox field
+     * @param type           $value         A scalar value
      *
-     * @throws  \InvalidArgumentException   When value is not scalar
+     * @throws \InvalidArgumentException When value is not scalar
      */
     public function __construct(\databox_field $databox_field, $value)
     {

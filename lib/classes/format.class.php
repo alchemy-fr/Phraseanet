@@ -3,7 +3,7 @@
 class format
 {
 
-    static public function arr_to_csv_line($arr, $tri_column = false)
+    public static function arr_to_csv_line($arr, $tri_column = false)
     {
         $line = array();
         $tmp = array();
@@ -17,8 +17,7 @@ class format
                 if (array_key_exists($key, $tri_column)) {
                     $tmp[$key] = $v;
                 }
-            }
-            else
+            } else
                 $line[] = '"' . str_replace('"', '""', strip_tags($v)) . '"';
         }
         if ($tri_column) {
@@ -35,12 +34,11 @@ class format
             return implode(",", $line);
         } elseif (count($arr) == count($line)) {
             return implode(",", $line);
-        }
-        else
+        } else
             throw new Exception('CSV failed');
     }
 
-    static public function arr_to_csv($arr, $tri_column = false)
+    public static function arr_to_csv($arr, $tri_column = false)
     {
         $lines = array();
 

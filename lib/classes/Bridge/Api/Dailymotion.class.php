@@ -197,7 +197,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
 
     /**
      *
-     * @param string $type
+     * @param  string $type
      * @return string
      */
     public function get_object_class_from_type($type)
@@ -219,9 +219,9 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
      * @todo Pagination system
      *
      * @see http://www.dailymotion.com/doc/api/advanced-api.html
-     * @param string $object
-     * @param int $offset_start
-     * @param int $quantity
+     * @param  string                       $object
+     * @param  int                          $offset_start
+     * @param  int                          $quantity
      * @return Bridge_Api_ElementCollection
      */
     public function list_elements($object, $offset_start = 0, $quantity = 10)
@@ -275,9 +275,9 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
     /**
      * @Todo recupérer la thumbnail d'une playlist
      *
-     * @param string $object
-     * @param int $offset_start
-     * @param int $quantity
+     * @param  string                         $object
+     * @param  int                            $offset_start
+     * @param  int                            $quantity
      * @return Bridge_Api_ContainerCollection
      */
     public function list_containers($object, $offset_start = 0, $quantity = 10)
@@ -335,9 +335,9 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
     /**
      *
      * @see http://www.dailymotion.com/doc/api/obj-video.html
-     * @param string $object
-     * @param string $object_id
-     * @param Request $request
+     * @param  string                 $object
+     * @param  string                 $object_id
+     * @param  Request                $request
      * @return Bridge_Api_Dailymotion
      */
     public function update_element($object, $object_id, Array $datas)
@@ -374,8 +374,8 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
     /**
      *
      * @see http://www.dailymotion.com/doc/api/obj-playlist.html
-     * @param string $container_type
-     * @param Request $request
+     * @param  string                           $container_type
+     * @param  Request                          $request
      * @return Bridge_Api_Dailymotion_Container
      */
     public function create_container($container_type, Request $request)
@@ -395,10 +395,10 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
 
     /**
      * @see http://www.dailymotion.com/doc/api/obj-playlist.html
-     * @param type $element_type
-     * @param type $element_id
-     * @param type $destination
-     * @param type $container_id
+     * @param  type                             $element_type
+     * @param  type                             $element_id
+     * @param  type                             $destination
+     * @param  type                             $container_id
      * @return Bridge_Api_Dailymotion_Container
      */
     public function add_element_to_container($element_type, $element_id, $destination, $container_id)
@@ -435,8 +435,8 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
 
     /**
      *
-     * @param string $object
-     * @param string $object_id
+     * @param  string $object
+     * @param  string $object_id
      * @return Void
      */
     public function delete_object($object, $object_id)
@@ -470,7 +470,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
 
     /**
      *
-     * @param string $element_id
+     * @param  string $element_id
      * @return Array
      */
     public function get_element_status(Bridge_Element $element)
@@ -486,7 +486,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
 
     /**
      *
-     * @param string $status
+     * @param  string $status
      * @return string
      */
     public function map_connector_to_element_status($status)
@@ -512,7 +512,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
 
     /**
      *
-     * @param string $connector_status
+     * @param  string $connector_status
      * @return string
      */
     public function get_error_message_from_status($connector_status)
@@ -543,7 +543,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
      * Set The exception to Bridge_Exception_ActionAuthNeedReconnect
      * if exception is instance of Zend_Gdata_App_HttpException and Http code 401
      *
-     * @param Exception $e
+     * @param  Exception $e
      * @return Void
      */
     public function handle_exception(Exception &$e)
@@ -559,8 +559,8 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
 
     /**
      *
-     * @param record_adapter $record
-     * @param array $options
+     * @param  record_adapter $record
+     * @param  array          $options
      * @return string
      */
     public function upload(record_adapter &$record, array $options = array())
@@ -581,8 +581,8 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
 
     /**
      *
-     * @param string $object
-     * @param string $element_id
+     * @param  string                         $object
+     * @param  string                         $element_id
      * @return Bridge_Api_Dailymotion_Element
      */
     public function get_element_from_id($element_id, $object)
@@ -619,8 +619,8 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
 
     /**
      *
-     * @param string $object
-     * @param string $element_id
+     * @param  string                           $object
+     * @param  string                           $element_id
      * @return Bridge_Api_Dailymotion_Container
      */
     public function get_container_from_id($object, $element_id)
@@ -637,6 +637,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
                 /**
                  * @todo Retieve thumb
                  */
+
                 return new Bridge_Api_Dailymotion_Container($entry, $object, '');
                 break;
             default:
@@ -722,7 +723,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
 
     /**
      * @Override get_auth_url
-     * @param type $supp_params
+     * @param  type $supp_params
      * @return type
      */
     public function get_auth_url($supp_params = array())
@@ -734,7 +735,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
 
     /**
      *
-     * @param string $id
+     * @param  string                       $id
      * @return Bridge_Api_ElementCollection
      */
     protected function list_containers_content($object, $id, Array $fields = array(), $iteration = 0)
@@ -766,9 +767,9 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
 
     /**
      *
-     * @param string $id
-     * @param string $playlistname
-     * @param string $username
+     * @param  string $id
+     * @param  string $playlistname
+     * @param  string $username
      * @return string
      */
     protected function get_url_playlist($id, $playlistname, $username)
@@ -780,8 +781,8 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
      * @todo implement in bridge_api°interface
      *
      * Check if data uploaded via the current connector is conform
-     * @param Request $request
-     * @param record_adapter $record
+     * @param  Request        $request
+     * @param  record_adapter $record
      * @return array
      */
     public function check_upload_constraints(Array $datas, record_adapter $record)
@@ -798,8 +799,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
                 if ( ! isset($datas[$name]) || trim($datas[$name]) === '') {
                     if ($required)
                         $errors[$name . '_' . $key] = _("Ce champ est obligatoire");
-                }
-                else {
+                } else {
                     if ($length != 0 && mb_strlen($datas[$name]) > $length)
                         $errors[$name . '_' . $key] = sprintf(_("Ce champ est trop long %s caracteres max"), $length);
                     if ($length_min != 0 && mb_strlen($datas[$name]) < $length_min)
@@ -825,8 +825,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
                 if ( ! isset($datas[$name]) || trim($datas[$name]) === '') {
                     if ($required)
                         $errors[$name] = _("Ce champ est obligatoire");
-                }
-                else {
+                } else {
                     if ($length != 0 && mb_strlen($datas[$name]) > $length)
                         $errors[$name] = sprintf(_("Ce champ est trop long %s caracteres max"), $length);
                     if ($length_min != 0 && mb_strlen($datas[$name]) < $length_min)
@@ -841,7 +840,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
 
     /**
      * Returns dats needed for an uploaded record
-     * @param record_adapter $record
+     * @param  record_adapter $record
      * @return array
      */
     public function get_upload_datas(Request $request, record_adapter $record)
@@ -860,7 +859,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
 
     /**
      * Returns datas needed for an uploaded record
-     * @param record_adapter $record
+     * @param  record_adapter $record
      * @return array
      */
     public function get_update_datas(Request $request)
@@ -889,7 +888,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
 
     /**
      *
-     * @param record_adapter $record
+     * @param  record_adapter $record
      * @return array
      */
     private function check_record_constraints(record_adapter $record)

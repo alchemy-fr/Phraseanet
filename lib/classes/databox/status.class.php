@@ -49,7 +49,7 @@ class databox_status
 
     /**
      *
-     * @param int $sbas_id
+     * @param  int    $sbas_id
      * @return status
      */
     private function __construct($sbas_id)
@@ -411,7 +411,7 @@ class databox_status
 
         $switch = in_array($switch, array('on', 'off')) ? $switch : false;
 
-        if ( ! $switch){
+        if ( ! $switch) {
             throw new Exception_InvalidArgument();
         }
 

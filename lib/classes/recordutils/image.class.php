@@ -20,11 +20,11 @@ class recordutils_image extends recordutils
 
     /**
      *
-     * @param int $fontSize
-     * @param int $angle
-     * @param string $fontFace
-     * @param string $string
-     * @param int $width
+     * @param  int    $fontSize
+     * @param  int    $angle
+     * @param  string $fontFace
+     * @param  string $string
+     * @param  int    $width
      * @return Array
      */
     protected function wrap($fontSize, $angle, $fontFace, $string, $width)
@@ -64,9 +64,9 @@ class recordutils_image extends recordutils
 
     /**
      *
-     * @param int $bas
-     * @param int $rec
-     * @param boolean $hd
+     * @param  int     $bas
+     * @param  int     $rec
+     * @param  boolean $hd
      * @return string
      */
     public static function stamp($bas, $rec, $hd = false)
@@ -340,9 +340,9 @@ class recordutils_image extends recordutils
 
     /**
      *
-     * @param int $bas
-     * @param int $rec
-     * @param boolean $hd
+     * @param  int     $bas
+     * @param  int     $rec
+     * @param  boolean $hd
      * @return string
      */
     public static function watermark($bas, $rec, $hd = false)

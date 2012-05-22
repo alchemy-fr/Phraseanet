@@ -31,8 +31,8 @@ abstract class Bridge_Api_Abstract
 
     /**
      *
-     * @param registryInterface $registry
-     * @param Bridge_Api_Auth_Interface $auth
+     * @param  registryInterface         $registry
+     * @param  Bridge_Api_Auth_Interface $auth
      * @return Bridge_Api_Abstract
      */
     public function __construct(registryInterface $registry, Bridge_Api_Auth_Interface $auth)
@@ -47,7 +47,7 @@ abstract class Bridge_Api_Abstract
 
     /**
      *
-     * @param Bridge_AccountSettings $settings
+     * @param  Bridge_AccountSettings $settings
      * @return Bridge_Api_Abstract
      */
     public function set_auth_settings(Bridge_AccountSettings &$settings)
@@ -117,7 +117,7 @@ abstract class Bridge_Api_Abstract
 
     /**
      *
-     * @param string $locale
+     * @param  string              $locale
      * @return Bridge_Api_Abstract
      */
     public function set_locale($locale)
@@ -138,7 +138,7 @@ abstract class Bridge_Api_Abstract
 
     /**
      *
-     * @param type $object_id
+     * @param  type    $object_id
      * @return boolean
      */
     public function is_valid_object_id($object_id)
@@ -151,7 +151,7 @@ abstract class Bridge_Api_Abstract
      * This allows use to change the exception object.
      * For instance, you can set it to a Bridge_Exception_ActionAuthNeedReconnect
      *
-     * @param Exception $e
+     * @param  Exception $e
      * @return Void
      */
     public function handle_exception(Exception &$e)

@@ -2,7 +2,6 @@
 
 namespace Entities;
 
-use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Entities\LazaretFile
@@ -87,12 +86,13 @@ class LazaretFile
     /**
      * Set pathname
      *
-     * @param string $pathname
+     * @param  string      $pathname
      * @return LazaretFile
      */
     public function setPathname($pathname)
     {
         $this->pathname = $pathname;
+
         return $this;
     }
 
@@ -109,12 +109,13 @@ class LazaretFile
     /**
      * Set base_id
      *
-     * @param integer $baseId
+     * @param  integer     $baseId
      * @return LazaretFile
      */
     public function setBaseId($baseId)
     {
         $this->base_id = $baseId;
+
         return $this;
     }
 
@@ -131,12 +132,13 @@ class LazaretFile
     /**
      * Set uuid
      *
-     * @param string $uuid
+     * @param  string      $uuid
      * @return LazaretFile
      */
     public function setUuid($uuid)
     {
         $this->uuid = $uuid;
+
         return $this;
     }
 
@@ -153,12 +155,13 @@ class LazaretFile
     /**
      * Set sha256
      *
-     * @param string $sha256
+     * @param  string      $sha256
      * @return LazaretFile
      */
     public function setSha256($sha256)
     {
         $this->sha256 = $sha256;
+
         return $this;
     }
 
@@ -175,12 +178,13 @@ class LazaretFile
     /**
      * Set created
      *
-     * @param datetime $created
+     * @param  datetime    $created
      * @return LazaretFile
      */
     public function setCreated($created)
     {
         $this->created = $created;
+
         return $this;
     }
 
@@ -197,12 +201,13 @@ class LazaretFile
     /**
      * Set updated
      *
-     * @param datetime $updated
+     * @param  datetime    $updated
      * @return LazaretFile
      */
     public function setUpdated($updated)
     {
         $this->updated = $updated;
+
         return $this;
     }
 
@@ -219,12 +224,13 @@ class LazaretFile
     /**
      * Add attributes
      *
-     * @param Entities\LazaretAttribute $attributes
+     * @param  Entities\LazaretAttribute $attributes
      * @return LazaretFile
      */
     public function addLazaretAttribute(\Entities\LazaretAttribute $attributes)
     {
         $this->attributes[] = $attributes;
+
         return $this;
     }
 
@@ -241,12 +247,13 @@ class LazaretFile
     /**
      * Set session
      *
-     * @param Entities\LazaretSession $session
+     * @param  Entities\LazaretSession $session
      * @return LazaretFile
      */
     public function setSession(\Entities\LazaretSession $session = null)
     {
         $this->session = $session;
+
         return $this;
     }
 
@@ -263,12 +270,13 @@ class LazaretFile
     /**
      * Set originalName
      *
-     * @param string $originalName
+     * @param  string      $originalName
      * @return LazaretFile
      */
     public function setOriginalName($originalName)
     {
         $this->originalName = $originalName;
+
         return $this;
     }
 
@@ -285,12 +293,13 @@ class LazaretFile
     /**
      * Add checks
      *
-     * @param Entities\LazaretCheck $checks
+     * @param  Entities\LazaretCheck $checks
      * @return LazaretFile
      */
     public function addLazaretCheck(\Entities\LazaretCheck $checks)
     {
         $this->checks[] = $checks;
+
         return $this;
     }
 
@@ -307,12 +316,13 @@ class LazaretFile
     /**
      * Set forced
      *
-     * @param boolean $forced
+     * @param  boolean     $forced
      * @return LazaretFile
      */
     public function setForced($forced)
     {
         $this->forced = $forced;
+
         return $this;
     }
 

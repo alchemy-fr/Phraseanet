@@ -98,8 +98,8 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
 
     /**
      * @desc modifier les date du report
-     * @param Datetime $dmin
-     * @param Datetime $dmax
+     * @param  Datetime $dmin
+     * @param  Datetime $dmax
      * @return <void>
      */
     public function setDate($dmin, $dmax)
@@ -128,7 +128,7 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
 
     /**
      * @desc return le titre de la date
-     * @param <string> $d vaut 'dmin' ou 'dmax'
+     * @param  <string> $d vaut 'dmin' ou 'dmax'
      * @return <string>
      */
     public function getTitleDate($d)
@@ -141,8 +141,7 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
             $datetime = new Datetime($this->dmin);
 
             return phraseadate::getPrettyString($datetime);
-        }
-        else
+        } else
             throw new Exception('argument must be string dmin or dmax');
     }
 
@@ -171,8 +170,8 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
     /**
      * @desc construct the legend for charts
      * if dmax  === false dmax = now();
-     * @param <Datetime> $dmin
-     * @param <Datetime> $dmax
+     * @param  <Datetime> $dmin
+     * @param  <Datetime> $dmax
      * @return <void>
      */
     protected function getPlotLegendDay($dmin, $dmax = false)
@@ -287,7 +286,7 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
 
     /**
      * @desc la liste des base authorisee sous forme de string
-     * @param <string> $separotor
+     * @param  <string> $separotor
      * @return string
      */
     public function getListeBase($separator)

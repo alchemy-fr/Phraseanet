@@ -79,10 +79,10 @@ class record_preview extends record_adapter
 
     /**
      *
-     * @param string $env
-     * @param int $pos
-     * @param mixed content $contId
-     * @param boolean $reload_train
+     * @param  string         $env
+     * @param  int            $pos
+     * @param  mixed content  $contId
+     * @param  boolean        $reload_train
      * @return record_preview
      */
     public function __construct($env, $pos, $contId, $reload_train, searchEngine_adapter $search_engine = null, $query = '')

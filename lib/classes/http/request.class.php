@@ -75,7 +75,7 @@ class http_request
      *
      * @return http_request
      */
-    function __construct()
+    public function __construct()
     {
         return $this;
     }
@@ -121,7 +121,7 @@ class http_request
 
     /**
      *
-     * @param int $code
+     * @param  int          $code
      * @return http_request
      */
     public function set_code($code)
@@ -174,8 +174,8 @@ class http_request
 
     /**
      *
-     * @param array $indexes
-     * @param string $serializeds_datas_index
+     * @param  array  $indexes
+     * @param  string $serializeds_datas_index
      * @return array
      */
     public function get_parms_from_serialized_datas(Array $indexes, $serializeds_datas_index)
@@ -235,9 +235,9 @@ class http_request
 
     /**
      *
-     * @param mixed content $data
-     * @param const $filter
-     * @return mixed content
+     * @param  mixed content $data
+     * @param  const         $filter
+     * @return mixed         content
      */
     public function filter($data, $filter)
     {

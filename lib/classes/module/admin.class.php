@@ -18,7 +18,7 @@
 class module_admin
 {
 
-    function getTree($position = false)
+    public function getTree($position = false)
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $session = $appbox->get_session();

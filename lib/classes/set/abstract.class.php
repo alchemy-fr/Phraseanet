@@ -45,8 +45,8 @@ abstract class set_abstract implements IteratorAggregate
 
     /**
      *
-     * @param string $offset
-     * @param string $value
+     * @param  string $offset
+     * @param  string $value
      * @return Void
      */
     public function offsetSet($offset, $value)
@@ -60,7 +60,7 @@ abstract class set_abstract implements IteratorAggregate
 
     /**
      *
-     * @param string $offset
+     * @param  string  $offset
      * @return boolean
      */
     public function offsetExists($offset)
@@ -70,7 +70,7 @@ abstract class set_abstract implements IteratorAggregate
 
     /**
      *
-     * @param string $offset
+     * @param  string $offset
      * @return Void
      */
     public function offsetUnset($offset)
@@ -80,7 +80,7 @@ abstract class set_abstract implements IteratorAggregate
 
     /**
      *
-     * @param string $offset
+     * @param  string         $offset
      * @return record_adapter
      */
     public function offsetGet($offset)
@@ -145,7 +145,7 @@ abstract class set_abstract implements IteratorAggregate
 
     /**
      *
-     * @param record_Interface $record
+     * @param  record_Interface $record
      * @return set
      */
     public function add_element(record_Interface &$record)
@@ -157,7 +157,7 @@ abstract class set_abstract implements IteratorAggregate
 
     /**
      *
-     * @param record_Interface $record
+     * @param  record_Interface $record
      * @return set
      */
     public function remove_element(record_Interface &$record)

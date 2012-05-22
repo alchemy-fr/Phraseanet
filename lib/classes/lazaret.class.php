@@ -23,7 +23,7 @@ class lazaret extends set_abstract
      *
      * @return lazaret
      */
-    function __construct()
+    public function __construct()
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $session = $appbox->get_session();

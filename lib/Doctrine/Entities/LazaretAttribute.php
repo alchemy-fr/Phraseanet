@@ -2,7 +2,6 @@
 
 namespace Entities;
 
-use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Entities\LazaretAttribute
@@ -53,12 +52,13 @@ class LazaretAttribute
     /**
      * Set name
      *
-     * @param string $name
+     * @param  string           $name
      * @return LazaretAttribute
      */
     public function setName($name)
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -75,12 +75,13 @@ class LazaretAttribute
     /**
      * Set value
      *
-     * @param string $value
+     * @param  string           $value
      * @return LazaretAttribute
      */
     public function setValue($value)
     {
         $this->value = $value;
+
         return $this;
     }
 
@@ -97,12 +98,13 @@ class LazaretAttribute
     /**
      * Set created
      *
-     * @param datetime $created
+     * @param  datetime         $created
      * @return LazaretAttribute
      */
     public function setCreated($created)
     {
         $this->created = $created;
+
         return $this;
     }
 
@@ -119,12 +121,13 @@ class LazaretAttribute
     /**
      * Set updated
      *
-     * @param datetime $updated
+     * @param  datetime         $updated
      * @return LazaretAttribute
      */
     public function setUpdated($updated)
     {
         $this->updated = $updated;
+
         return $this;
     }
 
@@ -141,12 +144,13 @@ class LazaretAttribute
     /**
      * Set lazaretFile
      *
-     * @param Entities\LazaretFile $lazaretFile
+     * @param  Entities\LazaretFile $lazaretFile
      * @return LazaretAttribute
      */
     public function setLazaretFile(\Entities\LazaretFile $lazaretFile = null)
     {
         $this->lazaretFile = $lazaretFile;
+
         return $this;
     }
 

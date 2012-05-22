@@ -37,9 +37,9 @@ class caption_field
 
     /**
      *
-     * @param databox_field $databox_field
-     * @param record_Interface $record
-     * @param int $id
+     * @param  databox_field    $databox_field
+     * @param  record_Interface $record
+     * @param  int              $id
      * @return caption_field
      */
     public function __construct(databox_field &$databox_field, record_Interface $record)
@@ -130,8 +130,8 @@ class caption_field
 
     /**
      *
-     * @param array $values
-     * @param string $separator
+     * @param  array  $values
+     * @param  string $separator
      * @return string
      */
     protected static function serialize_value(Array $values, $separator, $highlight = false)
@@ -167,7 +167,7 @@ class caption_field
 
     /**
      *
-     * @param int $meta_id
+     * @param  int   $meta_id
      * @return array
      */
     public function get_value($meta_id)
@@ -177,7 +177,7 @@ class caption_field
 
     /**
      *
-     * @param string $custom_separator
+     * @param  string $custom_separator
      * @return mixed
      */
     public function get_serialized_values($custom_separator = false, $highlightTheso = false)
@@ -189,8 +189,7 @@ class caption_field
                 $separator = $this->databox_field->get_separator();
 
             return self::serialize_value($this->values, $separator, $highlightTheso);
-        }
-        else {
+        } else {
             foreach ($this->values as $value) {
                 /* @var $value Caption_Field_Value */
 
@@ -250,8 +249,8 @@ class caption_field
 
     /**
      *
-     * @param string $serialized_value
-     * @param string $separator
+     * @param  string $serialized_value
+     * @param  string $separator
      * @return array
      */
     public static function get_multi_values($serialized_value, $separator)

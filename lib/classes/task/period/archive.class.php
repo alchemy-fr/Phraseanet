@@ -86,7 +86,7 @@ class task_period_archive extends task_abstract
 
     /**
      *
-     * @param string $oldxml
+     * @param  string $oldxml
      * @return string
      */
     public function graphic2xml($oldxml)
@@ -141,8 +141,8 @@ class task_period_archive extends task_abstract
     /**
      * xml2graphic : must fill the graphic form (using js) from xml
      *
-     * @param string $xml
-     * @param string $form
+     * @param  string $xml
+     * @param  string $form
      * @return Void
      */
     public function xml2graphic($xml, $form)
@@ -164,8 +164,7 @@ class task_period_archive extends task_abstract
                 var i;
                 var opts = <?php echo $form ?>.base_id.options;
                 var basefound = 0;
-                for(i=1; basefound==0 && i<opts.length; i++)
-                {
+                for (i=1; basefound==0 && i<opts.length; i++) {
                     if(opts[i].value == "<?php echo p4string::MakeString($sxml->base_id, "form") ?>")
                     basefound = i;
                 }
@@ -179,6 +178,7 @@ class task_period_archive extends task_abstract
             <?php echo $form ?>.copy_spe.checked      = <?php echo p4field::isyes($sxml->copy_spe) ? "true" : "false" ?>;
             </script>
             <?php
+
             return("");
         } else { // ... so we NEVER come here
             // bad xml
@@ -209,6 +209,7 @@ class task_period_archive extends task_abstract
             }
         </script>
         <?php
+
         return;
     }
 
@@ -216,7 +217,7 @@ class task_period_archive extends task_abstract
      *
      * @return string
      */
-    function getGraphicForm()
+    public function getGraphicForm()
     {
         return true;
     }
@@ -274,7 +275,7 @@ class task_period_archive extends task_abstract
      *
      * @return string
      */
-    function help()
+    public function help()
     {
         return(_("task::archive:Archiving files found into a 'hotfolder'"));
     }
@@ -348,6 +349,7 @@ class task_period_archive extends task_abstract
                 if ( ! is_dir($pathhd)) {
                     $this->log(sprintf(_('task::archive:Can\'t create or go to folder \'%s\''), $pathhd));
                     $this->running = false;
+
                     return;
                 }
             }
@@ -520,10 +522,10 @@ class task_period_archive extends task_abstract
 
     /**
      *
-     * @param <type> $server_coll_id
+     * @param  <type> $server_coll_id
      * @return <type>
      */
-    function archiveHotFolder($server_coll_id)
+    public function archiveHotFolder($server_coll_id)
     {
         clearstatcache();
 
@@ -571,6 +573,7 @@ class task_period_archive extends task_abstract
             $this->log("=========== listFilesPhase1 ========== (returned " . $nnew . ")\n" . $dom->saveXML());
 
         if ($nnew === 'TOSTOP') { // special case : status has changed to TOSTOP while listing files
+
             return('TOSTOP');
         }
 
@@ -640,10 +643,10 @@ class task_period_archive extends task_abstract
 
     /**
      *
-     * @param <type> $f
+     * @param  <type> $f
      * @return <type>
      */
-    function isIgnoredFile($f)
+    public function isIgnoredFile($f)
     {
         $f = strtolower($f);
 
@@ -653,11 +656,11 @@ class task_period_archive extends task_abstract
     /**
      * check if the file matches any mask, and flag the 'caption' file if found
      *
-     * @param <type> $dom
-     * @param <type> $node
+     * @param  <type> $dom
+     * @param  <type> $node
      * @return <type>
      */
-    function checkMatch($dom, $node)
+    public function checkMatch($dom, $node)
     {
         $file = $node->getAttribute('name');
 
@@ -695,13 +698,13 @@ class task_period_archive extends task_abstract
      *  list every file, all 'hot'
      *  read .phrasea.xml files
      *
-     * @param <type> $dom
-     * @param <type> $node
-     * @param <type> $path
-     * @param <type> $server_coll_id
+     * @param  <type> $dom
+     * @param  <type> $node
+     * @param  <type> $path
+     * @param  <type> $server_coll_id
      * @return <type>
      */
-    function listFilesPhase1($dom, $node, $path, $server_coll_id)
+    public function listFilesPhase1($dom, $node, $path, $server_coll_id)
     {
         // $this->traceRam();
         $nnew = 0;
@@ -789,13 +792,13 @@ class task_period_archive extends task_abstract
      *   list again and flag dead files as 'cold'
      *
      * @staticvar int $iloop
-     * @param <type> $dom
-     * @param <type> $node
-     * @param <type> $path
-     * @param <type> $depth
+     * @param  <type> $dom
+     * @param  <type> $node
+     * @param  <type> $path
+     * @param  <type> $depth
      * @return <type>
      */
-    function listFilesPhase2($dom, $node, $path, $depth = 0)
+    public function listFilesPhase2($dom, $node, $path, $depth = 0)
     {
         static $iloop = 0;
         if ($depth == 0) {
@@ -889,16 +892,16 @@ class task_period_archive extends task_abstract
      *  declare uncomplete grp as error
      *
      * @staticvar int $iloop
-     * @param <type> $dom
-     * @param <type> $node
-     * @param <type> $path
-     * @param <type> $path_archived
-     * @param <type> $path_error
-     * @param <type> $inGrp
-     * @param <type> $depth
+     * @param  <type> $dom
+     * @param  <type> $node
+     * @param  <type> $path
+     * @param  <type> $path_archived
+     * @param  <type> $path_error
+     * @param  <type> $inGrp
+     * @param  <type> $depth
      * @return <type>
      */
-    function makePairs($dom, $node, $path, $path_archived, $path_error, $inGrp = false, $depth = 0)
+    public function makePairs($dom, $node, $path, $path_archived, $path_error, $inGrp = false, $depth = 0)
     {
         static $iloop = 0;
         if ($depth == 0) {
@@ -992,8 +995,7 @@ class task_period_archive extends task_abstract
                             }
                         }
                     }
-                }
-                else {
+                } else {
                     // not a grp folder, recurse
                     $this->makePairs($dom, $n, $path . '/' . $name
                         , $path_archived . '/' . $name
@@ -1030,15 +1032,15 @@ class task_period_archive extends task_abstract
      *   move files to archived or error dir
      *
      * @staticvar int $iloop
-     * @param <type> $dom
-     * @param <type> $node
-     * @param <type> $path
-     * @param <type> $path_archived
-     * @param <type> $path_error
-     * @param <type> $depth
+     * @param  <type> $dom
+     * @param  <type> $node
+     * @param  <type> $path
+     * @param  <type> $path_archived
+     * @param  <type> $path_error
+     * @param  <type> $depth
      * @return <type>
      */
-    function removeBadGroups($dom, $node, $path, $path_archived, $path_error, $depth = 0)
+    public function removeBadGroups($dom, $node, $path, $path_archived, $path_error, $depth = 0)
     {
         static $iloop = 0;
         if ($depth == 0) {
@@ -1048,6 +1050,7 @@ class task_period_archive extends task_abstract
         $ret = false;
 
         if ($depth == 0 && $node->getAttribute('temperature') == 'hot') // if root of hotfolder if hot, die...
+
             return($ret);
 
         $nodesToDel = array();
@@ -1105,15 +1108,15 @@ class task_period_archive extends task_abstract
      *   do special work on grp folders
      *
      * @staticvar int $iloop
-     * @param <type> $dom
-     * @param <type> $node
-     * @param <type> $path
-     * @param <type> $path_archived
-     * @param <type> $path_error
-     * @param <type> $depth
+     * @param  <type> $dom
+     * @param  <type> $node
+     * @param  <type> $path
+     * @param  <type> $path_archived
+     * @param  <type> $path_error
+     * @param  <type> $depth
      * @return <type>
      */
-    function archive($dom, $node, $path, $path_archived, $path_error, $depth = 0)
+    public function archive($dom, $node, $path, $path_archived, $path_error, $depth = 0)
     {
         static $iloop = 0;
         if ($depth == 0) {
@@ -1179,13 +1182,13 @@ class task_period_archive extends task_abstract
      *   to help creation of result folders and cleaning of the hotfolder
      *
      * @staticvar int $iloop
-     * @param <type> $dom
-     * @param <type> $node
-     * @param <type> $path
-     * @param <type> $depth
+     * @param  <type> $dom
+     * @param  <type> $node
+     * @param  <type> $path
+     * @param  <type> $depth
      * @return <type>
      */
-    function bubbleResults($dom, $node, $path, $depth = 0)
+    public function bubbleResults($dom, $node, $path, $depth = 0)
     {
         static $iloop = 0;
         if ($depth == 0) {
@@ -1247,15 +1250,15 @@ class task_period_archive extends task_abstract
      *   move files to archived or error dir
      *
      * @staticvar int $iloop
-     * @param <type> $dom
-     * @param <type> $node
-     * @param <type> $path
-     * @param <type> $path_archived
-     * @param <type> $path_error
-     * @param <type> $depth
+     * @param  <type> $dom
+     * @param  <type> $node
+     * @param  <type> $path
+     * @param  <type> $path_archived
+     * @param  <type> $path_error
+     * @param  <type> $depth
      * @return <type>
      */
-    function moveFiles($dom, $node, $path, $path_archived, $path_error, $depth = 0)
+    public function moveFiles($dom, $node, $path, $path_archived, $path_error, $depth = 0)
     {
         static $iloop = 0;
         if ($depth == 0) {
@@ -1265,6 +1268,7 @@ class task_period_archive extends task_abstract
         $ret = false;
 
         if ($depth == 0 && $node->getAttribute('temperature') == 'hot') { // if root of hotfolder if hot, die...
+
             return($ret);
         }
 
@@ -1341,11 +1345,11 @@ class task_period_archive extends task_abstract
 
     /**
      *
-     * @param <type> $dom
-     * @param <type> $node
+     * @param  <type> $dom
+     * @param  <type> $node
      * @return <type>
      */
-    function setBranchHot($dom, $node)
+    public function setBranchHot($dom, $node)
     {
         for ($n = $node; $n; $n = $n->parentNode) {
             if ($n->nodeType == XML_ELEMENT_NODE) {
@@ -1365,15 +1369,15 @@ class task_period_archive extends task_abstract
      *   create the grp if needed
      *   archive files
      *
-     * @param <type> $dom
-     * @param <type> $node
-     * @param <type> $path
-     * @param <type> $path_archived
-     * @param <type> $path_error
-     * @param <type> $nodesToDel
+     * @param  <type> $dom
+     * @param  <type> $node
+     * @param  <type> $path
+     * @param  <type> $path_archived
+     * @param  <type> $path_error
+     * @param  <type> $nodesToDel
      * @return <type>
      */
-    function archiveGrp($dom, $node, $path, $path_archived, $path_error, &$nodesToDel)
+    public function archiveGrp($dom, $node, $path, $path_archived, $path_error, &$nodesToDel)
     {
         $xpath = new DOMXPath($dom); // useful
 
@@ -1511,9 +1515,9 @@ class task_period_archive extends task_abstract
      *
      * @todo pathfile should be optionnal
      *
-     * @param \collection       $collection     The destination collection
-     * @param sring             $pathfile       The base file
-     * @param string            $captionFile    The optionnal Phrasea XML caption file
+     * @param  \collection     $collection  The destination collection
+     * @param  sring           $pathfile    The base file
+     * @param  string          $captionFile The optionnal Phrasea XML caption file
      * @return \record_adapter
      */
     public function createStory(\collection $collection, $pathfile, $captionFile = null)
@@ -1572,11 +1576,11 @@ class task_period_archive extends task_abstract
     /**
      * Creates a fecord
      *
-     * @param \collection   $collection     The destination collection
-     * @param string        $pathfile       The file to archive
-     * @param string        $captionFile    The Phrasea XML caption file
-     * @param integer       $grp_rid        Add the record to a story
-     * @param integer       $force          Force lazaret or record ; use \Alchemy\Phrasea\Border\Manager::FORCE_* constants
+     * @param  \collection $collection  The destination collection
+     * @param  string      $pathfile    The file to archive
+     * @param  string      $captionFile The Phrasea XML caption file
+     * @param  integer     $grp_rid     Add the record to a story
+     * @param  integer     $force       Force lazaret or record ; use \Alchemy\Phrasea\Border\Manager::FORCE_* constants
      * @return null
      */
     public function createRecord(\collection $collection, $pathfile, $captionFile, $grp_rid, $force = null)
@@ -1652,15 +1656,15 @@ class task_period_archive extends task_abstract
 
     /**
      *
-     * @param <type> $dom
-     * @param <type> $node
-     * @param <type> $path
-     * @param <type> $path_archived
-     * @param <type> $path_error
-     * @param <type> $grp_rid
+     * @param  <type> $dom
+     * @param  <type> $node
+     * @param  <type> $path
+     * @param  <type> $path_archived
+     * @param  <type> $path_error
+     * @param  <type> $grp_rid
      * @return <type>
      */
-    function archiveFilesToGrp($dom, $node, $path, $path_archived, $path_error, $grp_rid)
+    public function archiveFilesToGrp($dom, $node, $path, $path_archived, $path_error, $grp_rid)
     {
         //usleep(1000);
         $nodesToDel = array();
@@ -1687,16 +1691,16 @@ class task_period_archive extends task_abstract
     /**
      * Archive File
      *
-     * @param <type> $dom
-     * @param <type> $node
-     * @param <type> $path
-     * @param <type> $path_archived
-     * @param <type> $path_error
-     * @param <type> $nodesToDel
-     * @param <type> $grp_rid
+     * @param  <type> $dom
+     * @param  <type> $node
+     * @param  <type> $path
+     * @param  <type> $path_archived
+     * @param  <type> $path_error
+     * @param  <type> $nodesToDel
+     * @param  <type> $grp_rid
      * @return <type>
      */
-    function archiveFile($dom, $node, $path, $path_archived, $path_error, &$nodesToDel, $grp_rid = 0)
+    public function archiveFile($dom, $node, $path, $path_archived, $path_error, &$nodesToDel, $grp_rid = 0)
     {
         $match = $node->getAttribute('match');
 
@@ -1744,17 +1748,17 @@ class task_period_archive extends task_abstract
 
     /**
      *
-     * @param <type> $dom
-     * @param <type> $node
-     * @param <type> $captionFileNode
-     * @param <type> $path
-     * @param <type> $path_archived
-     * @param <type> $path_error
-     * @param <type> $grp_rid
-     * @param <type> $nodesToDel
+     * @param  <type> $dom
+     * @param  <type> $node
+     * @param  <type> $captionFileNode
+     * @param  <type> $path
+     * @param  <type> $path_archived
+     * @param  <type> $path_error
+     * @param  <type> $grp_rid
+     * @param  <type> $nodesToDel
      * @return Void
      */
-    function archiveFileAndCaption($dom, $node, $captionFileNode, $path, $path_archived, $path_error, $grp_rid, &$nodesToDel)
+    public function archiveFileAndCaption($dom, $node, $captionFileNode, $path, $path_archived, $path_error, $grp_rid, &$nodesToDel)
     {
         $ret = false;
 
@@ -1868,7 +1872,7 @@ class task_period_archive extends task_abstract
      * @param <type> $attributes
      * @param <type> $depth
      */
-    function setAllChildren($dom, $node, $attributes, $depth = 0)
+    public function setAllChildren($dom, $node, $attributes, $depth = 0)
     {
         static $iloop = 0;
         if ($depth == 0) {
@@ -1890,10 +1894,10 @@ class task_period_archive extends task_abstract
 
     /**
      *
-     * @param string $file
+     * @param  string $file
      * @return <type>
      */
-    function getGrpSettings($file)
+    public function getGrpSettings($file)
     {
         $matched = FALSE;
         foreach ($this->tmaskgrp as $maskgrp) {
@@ -1940,8 +1944,8 @@ class task_period_archive extends task_abstract
      * Map a Bag of metadatas indexed by **Tagnames** to a bag of metadatas
      * indexed by **FieldNames**
      *
-     * @param \databox_descriptionStructure $metadatasStructure The databox structure related
-     * @param MetadataBag                   $bag                The metadata bag
+     * @param  \databox_descriptionStructure            $metadatasStructure The databox structure related
+     * @param  MetadataBag                              $bag                The metadata bag
      * @return \PHPExiftool\Driver\Metadata\MetadataBag
      */
     protected function getIndexByFieldName(\databox_descriptionStructure $metadatasStructure, MetadataBag $bag)
@@ -1961,8 +1965,8 @@ class task_period_archive extends task_abstract
      * Map a bag of metadatas indexed by **FieldNames** to an array ready for
      * \record_adapter metadatas submission
      *
-     * @param \databox_descriptionStructure $metadatasStructure The databox structure related
-     * @param MetadataBag                   $metadatas          The metadata bag
+     * @param  \databox_descriptionStructure $metadatasStructure The databox structure related
+     * @param  MetadataBag                   $metadatas          The metadata bag
      * @return array
      */
     protected function bagToArray(\databox_descriptionStructure $metadatasStructure, MetadataBag $metadatas)
@@ -2028,9 +2032,9 @@ class task_period_archive extends task_abstract
      * Merge two bags of metadatas indexed by **FieldNames**
      * Return a bag indexed by **FieldNames**
      *
-     * @param \databox_descriptionStructure $metadatasStructure The databox structure related
-     * @param MetadataBag                   $bag1               The first metadata bag
-     * @param MetadataBag                   $bag2               The second metadata bag
+     * @param  \databox_descriptionStructure            $metadatasStructure The databox structure related
+     * @param  MetadataBag                              $bag1               The first metadata bag
+     * @param  MetadataBag                              $bag2               The second metadata bag
      * @return \PHPExiftool\Driver\Metadata\MetadataBag
      */
     protected function mergeForDatabox(\databox_descriptionStructure $metadatasStructure, MetadataBag $bag1, MetadataBag $bag2)
@@ -2076,8 +2080,8 @@ class task_period_archive extends task_abstract
      * Read a Phrasea XML file for Phrasea metadatas
      * Returns a MetadataBag indexed by **FieldNames**
      *
-     * @param \databox_descriptionStructure             $metadatasStructure The databox structure related
-     * @param type                                      $pathfile           The path file to the XML
+     * @param  \databox_descriptionStructure            $metadatasStructure The databox structure related
+     * @param  type                                     $pathfile           The path file to the XML
      * @return \PHPExiftool\Driver\Metadata\MetadataBag
      *
      * @throws \InvalidArgumentException When the file is invalid or missing
@@ -2137,7 +2141,7 @@ class task_period_archive extends task_abstract
     /**
      * Parse a Phrasea XML to find status tag
      *
-     * @param \SimpleXMLElement $sxcaption The SimpleXML related to the XML
+     * @param  \SimpleXMLElement $sxcaption The SimpleXML related to the XML
      * @return string
      */
     protected function parseStatusBit(\SimpleXMLElement $sxcaption)

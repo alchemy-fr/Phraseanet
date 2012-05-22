@@ -33,7 +33,7 @@ class patch_310 implements patchInterface
      *
      * @return string
      */
-    function get_release()
+    public function get_release()
     {
         return $this->release;
     }
@@ -47,12 +47,12 @@ class patch_310 implements patchInterface
      *
      * @return Array
      */
-    function concern()
+    public function concern()
     {
         return $this->concern;
     }
 
-    function apply(base &$databox)
+    public function apply(base &$databox)
     {
         $dom_structure = $databox->get_dom_structure();
         $sx_structure = $databox->get_sxml_structure();
@@ -82,8 +82,7 @@ class patch_310 implements patchInterface
                     $media = "audio";
                 else
                     $media = "image";
-            }
-            elseif ($type == 'video') {
+            } elseif ($type == 'video') {
                 if ($v->method == 'AnimGIF')
                     $media = "gif";
                 elseif ($v->method == 'JPG')

@@ -127,6 +127,7 @@ abstract class task_appboxAbstract extends task_abstract
         } catch (Exception $e) {
             $this->log('Error  : ' . $e->getMessage());
         }
+
         return $ret;
 
         /*

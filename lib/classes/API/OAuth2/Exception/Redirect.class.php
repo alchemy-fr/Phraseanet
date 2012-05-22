@@ -42,11 +42,11 @@ class API_OAuth2_Exception_Redirect extends API_OAuth2_Exception_Exception
 
     /**
      *
-     * @param string $redirect_uri
-     * @param string $error
-     * @param string $error_description
-     * @param string $state
-     * @param string $error_uri
+     * @param  string                        $redirect_uri
+     * @param  string                        $error
+     * @param  string                        $error_description
+     * @param  string                        $state
+     * @param  string                        $error_uri
      * @return API_OAuth2_Exception_Redirect
      */
     public function __construct($redirect_uri, $error, $error_description = null, $state = null, $error_uri = null)
@@ -69,7 +69,7 @@ class API_OAuth2_Exception_Redirect extends API_OAuth2_Exception_Exception
 
     /**
      *
-     * @param string $redirect_uri
+     * @param  string                        $redirect_uri
      * @return API_OAuth2_Exception_Redirect
      */
     public function setState($state)
@@ -90,7 +90,7 @@ class API_OAuth2_Exception_Redirect extends API_OAuth2_Exception_Exception
 
     /**
      *
-     * @param string $redirect_uri
+     * @param  string                        $redirect_uri
      * @return API_OAuth2_Exception_Redirect
      */
     public function setRedirect_uri($redirect_uri)

@@ -36,9 +36,9 @@ class API_OAuth2_Exception_WWWAuthenticate_InvalidToken extends API_OAuth2_Excep
 
     /**
      *
-     * @param string $realm
-     * @param string $scope
-     * @param string $error_uri
+     * @param  string                                            $realm
+     * @param  string                                            $scope
+     * @param  string                                            $error_uri
      * @return API_OAuth2_Exception_WWWAuthenticate_InvalidToken
      */
     public function __construct($realm, $scope = null, $error_uri = null)

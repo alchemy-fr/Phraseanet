@@ -27,7 +27,7 @@ class system_server
      *
      * @return system_server
      */
-    function __construct()
+    public function __construct()
     {
         $this->_server_software = isset($_SERVER['SERVER_SOFTWARE']) ?
             strtolower($_SERVER['SERVER_SOFTWARE']) : "";

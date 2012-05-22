@@ -313,8 +313,8 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param type $id
-     * @param appbox $appbox
+     * @param  type         $id
+     * @param  appbox       $appbox
      * @return User_Adapter
      */
     public function __construct($id, appbox &$appbox)
@@ -327,16 +327,15 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param type $id
-     * @param appbox $appbox
+     * @param  type         $id
+     * @param  appbox       $appbox
      * @return User_Adapter
      */
     public static function getInstance($id, appbox &$appbox)
     {
         if (is_int((int) $id) && (int) $id > 0) {
             $id = (int) $id;
-        }
-        else
+        } else
             throw new Exception('Invalid usr_id');
 
         if ( ! isset(self::$_instance[$id])) {
@@ -373,7 +372,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param type $pasword
+     * @param  type         $pasword
      * @return User_Adapter
      */
     public function set_password($pasword)
@@ -392,7 +391,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param string $email
+     * @param  string       $email
      * @return User_Adapter
      */
     public function set_email($email)
@@ -431,7 +430,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param boolean $renew
+     * @param  boolean    $renew
      * @return system_url
      */
     public function get_protected_rss_url($renew = false)
@@ -464,7 +463,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     /**
      * Query in the cache
      *
-     * @param unknown_type $query
+     * @param  unknown_type $query
      * @return boolean
      */
     public static function saveQuery($query)
@@ -510,7 +509,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param string $login
+     * @param  string $login
      * @return int
      */
     public static function get_usr_id_from_login($login)
@@ -529,7 +528,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param int $datas
+     * @param  int          $datas
      * @return User_Adapter
      */
     public function set_defaultftpdatas($datas)
@@ -545,7 +544,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param bollean $boolean
+     * @param  bollean      $boolean
      * @return User_Adapter
      */
     public function set_mail_notifications($boolean)
@@ -563,7 +562,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param boolean $boolean
+     * @param  boolean      $boolean
      * @return User_Adapter
      */
     public function set_activeftp($boolean)
@@ -580,7 +579,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param boolean $boolean
+     * @param  boolean      $boolean
      * @return User_Adapter
      */
     public function set_ldap_created($boolean)
@@ -597,7 +596,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param string $address
+     * @param  string       $address
      * @return User_Adapter
      */
     public function set_ftp_address($address)
@@ -614,7 +613,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param string $login
+     * @param  string       $login
      * @return User_Adapter
      */
     public function set_ftp_login($login)
@@ -630,7 +629,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param type $password
+     * @param  type         $password
      * @return User_Adapter
      */
     public function set_ftp_password($password)
@@ -1034,7 +1033,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param <type> $id
+     * @param  <type> $id
      * @return user
      */
     public function load($id)

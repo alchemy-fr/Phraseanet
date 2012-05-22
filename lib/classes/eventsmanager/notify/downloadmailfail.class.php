@@ -37,9 +37,9 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
 
     /**
      *
-     * @param string $event
-     * @param Array $params
-     * @param mixed content $object
+     * @param  string        $event
+     * @param  Array         $params
+     * @param  mixed content $object
      * @return Void
      */
     public function fire($event, $params, &$object)
@@ -105,8 +105,8 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
 
     /**
      *
-     * @param Array $datas
-     * @param boolean $unread
+     * @param  Array   $datas
+     * @param  boolean $unread
      * @return Array
      */
     public function datas($datas, $unread)
@@ -162,7 +162,7 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
      *
      * @return boolean
      */
-    function is_available()
+    public function is_available()
     {
         return true;
     }

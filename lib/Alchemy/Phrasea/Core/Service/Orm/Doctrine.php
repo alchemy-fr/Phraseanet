@@ -16,7 +16,6 @@ use Alchemy\Phrasea\Core,
     Alchemy\Phrasea\Core\Service\ServiceAbstract,
     Alchemy\Phrasea\Core\Service\ServiceInterface;
 use Doctrine\DBAL\Types\Type;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
 /**
  *

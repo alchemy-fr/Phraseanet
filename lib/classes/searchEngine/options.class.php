@@ -134,8 +134,8 @@ class searchEngine_options implements Serializable
 
     /**
      *
-     * @param const $sort_by
-     * @param const $sort_ord
+     * @param  const                $sort_by
+     * @param  const                $sort_ord
      * @return searchEngine_options
      */
     public function set_sort($sort_by, $sort_ord = self::SORT_MODE_DESC)
@@ -178,7 +178,7 @@ class searchEngine_options implements Serializable
 
     /**
      *
-     * @param boolean $boolean
+     * @param  boolean              $boolean
      * @return searchEngine_options
      */
     public function set_use_stemming($boolean)
@@ -199,7 +199,7 @@ class searchEngine_options implements Serializable
 
     /**
      *
-     * @param int $search_type
+     * @param  int                  $search_type
      * @return searchEngine_options
      */
     public function set_search_type($search_type)
@@ -228,8 +228,8 @@ class searchEngine_options implements Serializable
 
     /**
      *
-     * @param array $base_ids
-     * @param ACL $ACL
+     * @param  array                $base_ids
+     * @param  ACL                  $ACL
      * @return searchEngine_options
      */
     public function set_bases(Array $base_ids, ACL $ACL)
@@ -253,7 +253,7 @@ class searchEngine_options implements Serializable
 
     /**
      *
-     * @param array $fields
+     * @param  array                $fields
      * @return searchEngine_options
      */
     public function set_fields(Array $fields)
@@ -274,7 +274,7 @@ class searchEngine_options implements Serializable
 
     /**
      *
-     * @param array $status
+     * @param  array                $status
      * @return searchEngine_options
      */
     public function set_status(Array $status)
@@ -309,7 +309,7 @@ class searchEngine_options implements Serializable
 
     /**
      *
-     * @param string $record_type
+     * @param  string               $record_type
      * @return searchEngine_options
      */
     public function set_record_type($record_type)
@@ -350,7 +350,7 @@ class searchEngine_options implements Serializable
 
     /**
      *
-     * @param string $min_date
+     * @param  string               $min_date
      * @return searchEngine_options
      */
     public function set_min_date($min_date)
@@ -373,7 +373,7 @@ class searchEngine_options implements Serializable
 
     /**
      *
-     * @param string $max_date
+     * @param  string               $max_date
      * @return searchEngine_options
      */
     public function set_max_date($max_date)
@@ -396,7 +396,7 @@ class searchEngine_options implements Serializable
 
     /**
      *
-     * @param array $fields
+     * @param  array                $fields
      * @return searchEngine_options
      */
     public function set_date_fields(Array $fields)
@@ -434,7 +434,7 @@ class searchEngine_options implements Serializable
 
     /**
      *
-     * @param string $serialized
+     * @param  string               $serialized
      * @return searchEngine_options
      */
     public function unserialize($serialized)

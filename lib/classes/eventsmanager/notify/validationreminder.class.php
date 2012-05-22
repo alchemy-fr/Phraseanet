@@ -27,7 +27,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
      *
      * @return notify_validationreminder
      */
-    function __construct(appbox &$appbox, \Alchemy\Phrasea\Core $core, eventsmanager_broker &$broker)
+    public function __construct(appbox &$appbox, \Alchemy\Phrasea\Core $core, eventsmanager_broker &$broker)
     {
         $this->group = _('Validation');
         parent::__construct($appbox, $core, $broker);
@@ -46,9 +46,9 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
 
     /**
      *
-     * @param string $event
-     * @param Array $params
-     * @param mixed content $object
+     * @param  string        $event
+     * @param  Array         $params
+     * @param  mixed content $object
      * @return boolean
      */
     public function fire($event, $params, &$object)
@@ -124,8 +124,8 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
 
     /**
      *
-     * @param string $datas
-     * @param boolean $unread
+     * @param  string  $datas
+     * @param  boolean $unread
      * @return Array
      */
     public function datas($datas, $unread)
@@ -188,12 +188,12 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
 
     /**
      *
-     * @param Array $to
-     * @param Array $from
-     * @param string $url
+     * @param  Array   $to
+     * @param  Array   $from
+     * @param  string  $url
      * @return boolean
      */
-    function mail($to, $from, $url)
+    public function mail($to, $from, $url)
     {
         $subject = _('push::mail:: Rappel de demande de validation de documents');
 
@@ -224,7 +224,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
      *
      * @return string
      */
-    function is_available()
+    public function is_available()
     {
         return true;
     }

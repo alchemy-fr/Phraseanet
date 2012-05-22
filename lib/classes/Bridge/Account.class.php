@@ -73,9 +73,9 @@ class Bridge_Account
 
     /**
      *
-     * @param appbox $appbox
-     * @param Bridge_Api $api
-     * @param int $id
+     * @param  appbox         $appbox
+     * @param  Bridge_Api     $api
+     * @param  int            $id
      * @return Bridge_Account
      */
     public function __construct(appbox &$appbox, Bridge_Api &$api, $id)
@@ -183,7 +183,7 @@ class Bridge_Account
 
     /**
      *
-     * @param string $name
+     * @param  string         $name
      * @return Bridge_Account
      */
     public function set_name($name)
@@ -231,8 +231,8 @@ class Bridge_Account
 
     /**
      *
-     * @param appbox $appbox
-     * @param int $account_id
+     * @param  appbox         $appbox
+     * @param  int            $account_id
      * @return Bridge_Account
      */
     public static function load_account(appbox &$appbox, $account_id)
@@ -255,10 +255,10 @@ class Bridge_Account
 
     /**
      *
-     * @param appbox $appbox
-     * @param Bridge_Api $api
-     * @param User_Adapter $user
-     * @param string $distant_id
+     * @param  appbox         $appbox
+     * @param  Bridge_Api     $api
+     * @param  User_Adapter   $user
+     * @param  string         $distant_id
      * @return Bridge_Account
      */
     public static function load_account_from_distant_id(appbox $appbox, Bridge_Api $api, User_Adapter $user, $distant_id)
@@ -285,9 +285,9 @@ class Bridge_Account
 
     /**
      *
-     * @param appbox $appbox
-     * @param Bridge_Api $api
-     * @param int $quantity
+     * @param  appbox         $appbox
+     * @param  Bridge_Api     $api
+     * @param  int            $quantity
      * @return Bridge_Account
      */
     public static function get_accounts_by_api(appbox &$appbox, Bridge_Api &$api, $quantity = 50)
@@ -311,8 +311,8 @@ class Bridge_Account
 
     /**
      *
-     * @param appbox $appbox
-     * @param user_adapter $user
+     * @param  appbox         $appbox
+     * @param  user_adapter   $user
      * @return Bridge_Account
      */
     public static function get_accounts_by_user(appbox &$appbox, user_adapter &$user)
@@ -345,11 +345,11 @@ class Bridge_Account
 
     /**
      *
-     * @param appbox $appbox
-     * @param Bridge_Api $api
-     * @param User_Adapter $user
-     * @param string $dist_id
-     * @param string $name
+     * @param  appbox         $appbox
+     * @param  Bridge_Api     $api
+     * @param  User_Adapter   $user
+     * @param  string         $dist_id
+     * @param  string         $name
      * @return Bridge_Account
      */
     public static function create(appbox &$appbox, Bridge_Api &$api, User_Adapter &$user, $dist_id, $name)

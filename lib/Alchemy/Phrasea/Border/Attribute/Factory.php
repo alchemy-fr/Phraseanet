@@ -21,12 +21,12 @@ class Factory
     /**
      * Build a file package Attribute
      *
-     * @param   string      $name       The name of the attribute, one of the
+     * @param string $name The name of the attribute, one of the
      *                                  Attribute::NAME_* constants
-     * @param   string      $serialized The serialized value of the attribute
+     * @param string $serialized The serialized value of the attribute
      *                                  (Attribute::asString result)
-     * @return  Attribute   The attribute
-     * @throws  \InvalidArgumentException
+     * @return Attribute                 The attribute
+     * @throws \InvalidArgumentException
      */
     public static function getFileAttribute($name, $serialized)
     {

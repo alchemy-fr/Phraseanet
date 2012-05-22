@@ -24,7 +24,7 @@ class Story implements Attribute
     /**
      * Constructor
      *
-     * @param \record_adapter $story   The destination story
+     * @param \record_adapter $story The destination story
      */
     public function __construct(\record_adapter $story)
     {
@@ -54,7 +54,7 @@ class Story implements Attribute
     /**
      * {@inheritdoc}
      *
-     * @return \record_adapter  The story
+     * @return \record_adapter The story
      */
     public function getValue()
     {

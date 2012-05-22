@@ -31,7 +31,7 @@ class Session_Storage_PHPSession extends Session_Storage_Abstract implements Ses
 
     /**
      *
-     * @param string $session_name
+     * @param  string                     $session_name
      * @return Session_Storage_PHPSession
      */
     public static function getInstance($session_name)
@@ -45,7 +45,7 @@ class Session_Storage_PHPSession extends Session_Storage_Abstract implements Ses
 
     /**
      *
-     * @param string $session_name
+     * @param  string                     $session_name
      * @return Session_Storage_PHPSession
      */
     protected function __construct($session_name)
@@ -87,7 +87,7 @@ class Session_Storage_PHPSession extends Session_Storage_Abstract implements Ses
 
     /**
      *
-     * @param string $key
+     * @param  string $key
      * @return mixed
      */
     public function has($key)
@@ -97,7 +97,7 @@ class Session_Storage_PHPSession extends Session_Storage_Abstract implements Ses
 
     /**
      *
-     * @param string $key
+     * @param  string $key
      * @return mixed
      */
     public function get($key, $default_value = null)
@@ -127,7 +127,7 @@ class Session_Storage_PHPSession extends Session_Storage_Abstract implements Ses
      *
      * @return string
      */
-    function getName()
+    public function getName()
     {
         return session_name();
     }
@@ -137,7 +137,7 @@ class Session_Storage_PHPSession extends Session_Storage_Abstract implements Ses
      *
      * @return <type>
      */
-    function getId()
+    public function getId()
     {
         return session_id();
     }

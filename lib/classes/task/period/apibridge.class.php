@@ -37,7 +37,7 @@ class task_period_apibridge extends task_appboxAbstract
 
     /**
      *
-     * @param appbox $appbox
+     * @param  appbox $appbox
      * @return Array
      */
     protected function retrieveContent(appbox $appbox)
@@ -65,8 +65,8 @@ class task_period_apibridge extends task_appboxAbstract
 
     /**
      *
-     * @param appbox $appbox
-     * @param array $row
+     * @param  appbox                $appbox
+     * @param  array                 $row
      * @return task_period_apibridge
      */
     protected function processOneContent(appbox $appbox, Array $row)
@@ -100,8 +100,8 @@ class task_period_apibridge extends task_appboxAbstract
 
     /**
      *
-     * @param appbox $appbox
-     * @param array $row
+     * @param  appbox                $appbox
+     * @param  array                 $row
      * @return task_period_apibridge
      */
     protected function postProcessOneContent(appbox $appbox, Array $row)
@@ -111,7 +111,7 @@ class task_period_apibridge extends task_appboxAbstract
 
     /**
      *
-     * @param Bridge_Element $element
+     * @param  Bridge_Element        $element
      * @return task_period_apibridge
      */
     private function upload_element(Bridge_Element $element)
@@ -133,7 +133,7 @@ class task_period_apibridge extends task_appboxAbstract
 
     /**
      *
-     * @param Bridge_Element $element
+     * @param  Bridge_Element        $element
      * @return task_period_apibridge
      */
     protected function update_element(Bridge_Element &$element)

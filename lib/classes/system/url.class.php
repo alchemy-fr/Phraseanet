@@ -19,12 +19,12 @@ class system_url
 {
     protected $url;
 
-    function __construct($url)
+    public function __construct($url)
     {
         $this->url = $url;
     }
 
-    function get_url()
+    public function get_url()
     {
         return $this->url;
     }

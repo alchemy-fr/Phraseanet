@@ -2,7 +2,6 @@
 
 namespace Entities;
 
-use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Entities\LazaretCheck
@@ -37,12 +36,13 @@ class LazaretCheck
     /**
      * Set lazaretFile
      *
-     * @param Entities\LazaretFile $lazaretFile
+     * @param  Entities\LazaretFile $lazaretFile
      * @return LazaretCheck
      */
     public function setLazaretFile(\Entities\LazaretFile $lazaretFile = null)
     {
         $this->lazaretFile = $lazaretFile;
+
         return $this;
     }
 
@@ -59,12 +59,13 @@ class LazaretCheck
     /**
      * Set checkClassname
      *
-     * @param string $checkClassname
+     * @param  string       $checkClassname
      * @return LazaretCheck
      */
     public function setCheckClassname($checkClassname)
     {
         $this->checkClassname = $checkClassname;
+
         return $this;
     }
 

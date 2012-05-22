@@ -144,12 +144,12 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      * @todo    the presence of file is checked on constructor, it would be better
      *          to check it when needed (stop disk access)
      *
-     * @param   record_adapter $record
-     * @param   type $name
-     * @param   type $substitute
-     * @return  media_subdef
+     * @param  record_adapter $record
+     * @param  type           $name
+     * @param  type           $substitute
+     * @return media_subdef
      */
-    function __construct(record_adapter &$record, $name, $substitute = false)
+    public function __construct(record_adapter &$record, $name, $substitute = false)
     {
         $this->name = $name;
         $this->record = $record;
@@ -165,7 +165,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
     /**
      *
-     * @param boolean $substitute
+     * @param  boolean      $substitute
      * @return media_subdef
      */
     protected function load($substitute)
@@ -566,8 +566,8 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
     /**
      *
-     * @param registryInterface $registry
-     * @param int $angle
+     * @param  registryInterface $registry
+     * @param  int               $angle
      * @return media_subdef
      */
     public function rotate($angle)
@@ -759,7 +759,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
     /**
      *
-     * @param boolean $random
+     * @param  boolean $random
      * @return string
      */
     protected function generate_url($random = false)

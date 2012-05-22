@@ -30,7 +30,7 @@ class Printer extends RecordHelper
 
     /**
      *
-     * @param \Alchemy\Phrasea\Core $core
+     * @param  \Alchemy\Phrasea\Core $core
      * @return Printer
      */
     public function __construct(Core $core, Request $Request)

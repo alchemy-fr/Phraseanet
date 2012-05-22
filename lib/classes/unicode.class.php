@@ -1367,7 +1367,7 @@ class unicode
         return($so);
     }
 
-    function remove_diacritics($string)
+    public function remove_diacritics($string)
     {
         $no_diacritics = '';
 
@@ -1417,7 +1417,7 @@ class unicode
      * Removes all digits a the begining of a string
      * @Example : returns 'soleil' for '123soleil' and 'bb2' for '1bb2'
      *
-     * @param type $string
+     * @param  type $string
      * @return type
      */
     public function remove_first_digits($string)
@@ -1432,7 +1432,7 @@ class unicode
     /**
      * Guess the charset of a string and returns the UTF-8 version
      *
-     * @param string $string
+     * @param  string $string
      * @return string
      */
     public function toUTF8($string)
@@ -1467,7 +1467,7 @@ class unicode
      *
      * @staticvar null $a_in
      * @staticvar null $a_out
-     * @param type $s
+     * @param  type $s
      * @return type
      */
     public function substituteCtrlCharacters($string, $substitution = '_')
@@ -1500,7 +1500,7 @@ class unicode
      *
      * @todo timezonify
      *
-     * @param string $date
+     * @param  string $date
      * @return string
      */
     public function parseDate($date)

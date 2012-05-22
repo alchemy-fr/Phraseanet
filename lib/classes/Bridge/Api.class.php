@@ -57,8 +57,8 @@ class Bridge_Api
 
     /**
      *
-     * @param appbox $appbox
-     * @param int $id
+     * @param  appbox     $appbox
+     * @param  int        $id
      * @return Bridge_Api
      */
     public function __construct(appbox &$appbox, $id)
@@ -164,9 +164,9 @@ class Bridge_Api
 
     /**
      *
-     * @param string $type
-     * @param int $offset_start
-     * @param int $quantity
+     * @param  string $type
+     * @param  int    $offset_start
+     * @param  int    $quantity
      * @return array
      */
     public function list_elements($type, $offset_start = 0, $quantity = 10)
@@ -180,9 +180,9 @@ class Bridge_Api
 
     /**
      *
-     * @param string $type
-     * @param int $offset_start
-     * @param int $quantity
+     * @param  string $type
+     * @param  int    $offset_start
+     * @param  int    $quantity
      * @return array
      */
     public function list_containers($type, $offset_start = 0, $quantity = 10)
@@ -196,9 +196,9 @@ class Bridge_Api
 
     /**
      *
-     * @param string $object
-     * @param string $object_id
-     * @param Request $request
+     * @param  string               $object
+     * @param  string               $object_id
+     * @param  Request              $request
      * @return Bridge_Api_Interface
      */
     public function update_element($object, $object_id, Array $datas)
@@ -212,8 +212,8 @@ class Bridge_Api
 
     /**
      *
-     * @param string $container_type
-     * @param Request $request
+     * @param  string                        $container_type
+     * @param  Request                       $request
      * @return Bridge_Api_ContainerInterface
      */
     public function create_container($container_type, Request $request)
@@ -227,10 +227,10 @@ class Bridge_Api
 
     /**
      *
-     * @param string $element_type
-     * @param string $element_id
-     * @param string $destination
-     * @param string $container_id
+     * @param  string                        $element_type
+     * @param  string                        $element_id
+     * @param  string                        $destination
+     * @param  string                        $container_id
      * @return Bridge_Api_ContainerInterface
      */
     public function add_element_to_container($element_type, $element_id, $destination, $container_id)
@@ -244,8 +244,8 @@ class Bridge_Api
 
     /**
      *
-     * @param string $object
-     * @param string $object_id
+     * @param  string $object
+     * @param  string $object_id
      * @return Void
      */
     public function delete_object($object, $object_id)
@@ -272,8 +272,8 @@ class Bridge_Api
 
     /**
      *
-     * @param type $element_id
-     * @param type $type
+     * @param  type                        $element_id
+     * @param  type                        $type
      * @return Bridge_Api_ElementInterface
      */
     public function get_element_from_id($element_id, $type)
@@ -287,8 +287,8 @@ class Bridge_Api
 
     /**
      *
-     * @param int $element_id
-     * @param string $type
+     * @param  int                           $element_id
+     * @param  string                        $type
      * @return Bridge_Api_ContainerInterface
      */
     public function get_container_from_id($element_id, $type)
@@ -315,7 +315,7 @@ class Bridge_Api
 
     /**
      *
-     * @param string $element_id
+     * @param  string $element_id
      * @return string
      */
     public function get_element_status(Bridge_Element $element)
@@ -329,7 +329,7 @@ class Bridge_Api
 
     /**
      *
-     * @param string $status
+     * @param  string $status
      * @return string
      */
     public function map_connector_to_element_status($status)
@@ -343,7 +343,7 @@ class Bridge_Api
 
     /**
      *
-     * @param string $connector_status
+     * @param  string $connector_status
      * @return string
      */
     public function get_error_message_from_status($connector_status)
@@ -357,9 +357,9 @@ class Bridge_Api
 
     /**
      *
-     * @param record_adapter $record
-     * @param array $options specific option, regarding the connector
-     * @return string The distant_id of the created element
+     * @param  record_adapter $record
+     * @param  array          $options specific option, regarding the connector
+     * @return string         The distant_id of the created element
      */
     public function upload(record_adapter &$record, array $options = array())
     {
@@ -418,7 +418,7 @@ class Bridge_Api
 
     /**
      *
-     * @param Closure $action
+     * @param  Closure $action
      * @return mixed
      */
     protected function execute_action(Closure $action)
@@ -454,8 +454,8 @@ class Bridge_Api
 
     /**
      *
-     * @param registryInterface $registry
-     * @param string $api_name
+     * @param  registryInterface $registry
+     * @param  string            $api_name
      * @return string
      */
     public static function generate_callback_url(registryInterface $registry, $api_name)
@@ -469,8 +469,8 @@ class Bridge_Api
 
     /**
      *
-     * @param registryInterface $registry
-     * @param string $api_name
+     * @param  registryInterface $registry
+     * @param  string            $api_name
      * @return string
      */
     public static function generate_login_url(registryInterface $registry, $api_name)
@@ -484,8 +484,8 @@ class Bridge_Api
 
     /**
      *
-     * @param registryInterface $registry
-     * @param string $name
+     * @param  registryInterface    $registry
+     * @param  string               $name
      * @return Bridge_Api_Interface
      */
     public static function get_connector_by_name(registryInterface $registry, $name)
@@ -505,8 +505,8 @@ class Bridge_Api
 
     /**
      *
-     * @param appbox $appbox
-     * @param string $name
+     * @param  appbox     $appbox
+     * @param  string     $name
      * @return Bridge_Api
      */
     public static function get_by_api_name(appbox $appbox, $name)
@@ -527,7 +527,7 @@ class Bridge_Api
 
     /**
      *
-     * @param appbox $appbox
+     * @param  appbox     $appbox
      * @return Bridge_Api
      */
     public static function get_availables(appbox &$appbox)
@@ -553,8 +553,8 @@ class Bridge_Api
 
     /**
      *
-     * @param appbox $appbox
-     * @param string $name
+     * @param  appbox     $appbox
+     * @param  string     $name
      * @return Bridge_Api
      */
     public static function create(appbox &$appbox, $name)

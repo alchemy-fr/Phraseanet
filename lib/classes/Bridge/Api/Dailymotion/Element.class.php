@@ -26,8 +26,8 @@ class Bridge_Api_Dailymotion_Element implements Bridge_Api_ElementInterface
 
     /**
      *
-     * @param array $entry
-     * @param type $type
+     * @param  array                          $entry
+     * @param  type                           $type
      * @return Bridge_Api_Dailymotion_Element
      */
     public function __construct(Array $entry, $type)

@@ -129,14 +129,14 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
      *
      * @return searchEngine_adapter_phrasea_engine
      */
-    function __construct()
+    public function __construct()
     {
         return $this;
     }
 
     /**
      *
-     * @param searchEngine_options $options
+     * @param  searchEngine_options                $options
      * @return searchEngine_adapter_phrasea_engine
      */
     public function set_options(searchEngine_options $options)
@@ -168,7 +168,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
 
     /**
      *
-     * @param <type> $proposals
+     * @param  <type> $proposals
      * @return string
      */
     protected static function proposalsToHTML($proposals)
@@ -214,12 +214,12 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
 
     /**
      *
-     * @param int $query
-     * @param int $offset
-     * @param int $perPage
+     * @param  int                  $query
+     * @param  int                  $offset
+     * @param  int                  $perPage
      * @return searchEngine_results
      */
-    function results($query, $offset, $perPage)
+    public function results($query, $offset, $perPage)
     {
 
         assert(is_int($offset));
@@ -336,7 +336,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
 
     /**
      *
-     * @param Session_Handler $session
+     * @param  Session_Handler $session
      * @return array
      */
     public function get_suggestions(Session_Handler $session)
@@ -464,7 +464,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
 
     /**
      *
-     * @param int $sbas
+     * @param  int                                 $sbas
      * @return searchEngine_adapter_phrasea_engine
      */
     protected function singleParse($sbas)
@@ -490,7 +490,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
 
     /**
      *
-     * @param string $query
+     * @param  string                              $query
      * @return searchEngine_adapter_phrasea_engine
      */
     protected function addQuery($query)
@@ -606,8 +606,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
             $session->get_ses_id(), ($record->get_number() + 1), 1, true, "[[em]]", "[[/em]]"
         );
 
-        if ( ! isset($res['results']) || ! is_array($res['results']))
-        {
+        if ( ! isset($res['results']) || ! is_array($res['results'])) {
             return array();
         }
 

@@ -45,6 +45,7 @@ class task_period_emptyColl extends task_appboxAbstract
     {
         if ( ! $this->base_id) {
             $this->setState(self::STATE_STOPPED);
+
             return array();
         }
         $collection = collection::get_from_base_id($this->base_id);

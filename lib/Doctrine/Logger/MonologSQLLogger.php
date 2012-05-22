@@ -12,7 +12,6 @@
 namespace Doctrine\Logger;
 
 use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
 
 /**
  * Log doctrine sql request with monolog
@@ -39,7 +38,7 @@ class MonologSQLLogger implements \Doctrine\DBAL\Logging\SQLLogger
      * Tell which monolog user to use and which format to output
      *
      * @param \Monolog\Logger $logger A monolog logger instance
-     * @param type $type the output format
+     * @param type            $type   the output format
      */
     public function __construct(\Monolog\Logger $logger, $type = self::YAML)
     {

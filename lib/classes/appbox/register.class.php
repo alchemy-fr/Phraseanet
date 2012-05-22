@@ -27,7 +27,7 @@ class appbox_register
      * Construct an Appbox_Register object which will give use infos
      * about the current registrations on the provided appbox
      *
-     * @param appbox $appbox
+     * @param  appbox          $appbox
      * @return appbox_register
      */
     public function __construct(appbox &$appbox)
@@ -40,8 +40,8 @@ class appbox_register
     /**
      * Add a registration request for a user on a collection
      *
-     * @param User_Interface $user
-     * @param collection $collection
+     * @param  User_Interface  $user
+     * @param  collection      $collection
      * @return appbox_register
      */
     public function add_request(User_Interface $user, collection $collection)
@@ -59,7 +59,7 @@ class appbox_register
      * Return an array of collection objects where provided
      * user is waiting for approbation
      *
-     * @param User_Interface $user
+     * @param  User_Interface $user
      * @return array
      */
     public function get_collection_awaiting_for_user(User_Interface $user)
@@ -80,7 +80,7 @@ class appbox_register
     /**
      * Remove all registration older than a month
      *
-     * @param appbox $appbox
+     * @param  appbox          $appbox
      * @return appbox_register
      */
     public static function clean_old_requests(appbox $appbox)

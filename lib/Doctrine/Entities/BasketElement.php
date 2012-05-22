@@ -234,7 +234,7 @@ class BasketElement
 
     /**
      *
-     * @param \User_Adapter $user
+     * @param  \User_Adapter            $user
      * @return \Entities\ValidationData
      */
     public function getUserValidationDatas(\User_Adapter $user)

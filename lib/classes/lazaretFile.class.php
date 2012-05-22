@@ -15,10 +15,10 @@ class lazaretFile
 
     /**
      *
-     * @param int $lazaret_id
+     * @param  int         $lazaret_id
      * @return lazaretFile
      */
-    function __construct($lazaret_id)
+    public function __construct($lazaret_id)
     {
         $conn = connection::getPDOConnection();
 
@@ -105,8 +105,8 @@ class lazaretFile
 
     /**
      *
-     * @param Int $lazaret_id
-     * @param Int $record_id
+     * @param  Int         $lazaret_id
+     * @param  Int         $record_id
      * @return lazaretFile
      */
     public function substitute($lazaret_id, $record_id)

@@ -3,7 +3,6 @@
 namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\UnitOfWork;
 use Entities;
 
 /**
@@ -68,8 +67,8 @@ class BasketElementRepository extends EntityRepository
 
     /**
      *
-     * @param \record_adapter $record
-     * @param \User_Adapter $user
+     * @param  \record_adapter                              $record
+     * @param  \User_Adapter                                $user
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
     public function findReceivedElementsByRecord(\record_adapter $record, \User_Adapter $user)

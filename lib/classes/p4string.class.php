@@ -85,7 +85,7 @@ class p4string
     /**
      * @deprecated
      *
-     * @param type $s
+     * @param  type $s
      * @return type
      */
     public static function JSstring($s)
@@ -96,9 +96,9 @@ class p4string
     /**
      * @deprecated
      *
-     * @param type $s
-     * @param type $context
-     * @param type $quoted
+     * @param  type $s
+     * @param  type $context
+     * @param  type $quoted
      * @return type
      */
     public static function MakeString($s, $context = 'html', $quoted = '')

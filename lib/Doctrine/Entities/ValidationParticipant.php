@@ -150,7 +150,7 @@ class ValidationParticipant
 
     /**
      *
-     * @param \User_Adapter $user
+     * @param  \User_Adapter         $user
      * @return ValidationParticipant
      */
     public function setUser(\User_Adapter $user)

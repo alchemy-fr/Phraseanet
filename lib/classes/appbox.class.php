@@ -185,8 +185,8 @@ class appbox extends base
 
     /**
      *
-     * @param collection $collection
-     * @param <type> $ordre
+     * @param  collection $collection
+     * @param  <type>     $ordre
      * @return appbox
      */
     public function set_collection_order(collection $collection, $ordre)
@@ -203,8 +203,8 @@ class appbox extends base
 
     /**
      *
-     * @param databox $databox
-     * @param <type> $boolean
+     * @param  databox $databox
+     * @param  <type>  $boolean
      * @return appbox
      */
     public function set_databox_indexable(databox $databox, $boolean)
@@ -224,7 +224,7 @@ class appbox extends base
 
     /**
      *
-     * @param databox $databox
+     * @param  databox $databox
      * @return <type>
      */
     public function is_databox_indexable(databox $databox)
@@ -243,8 +243,8 @@ class appbox extends base
 
     /**
      *
-     * @param databox $databox
-     * @param <type> $viewname
+     * @param  databox $databox
+     * @param  <type>  $viewname
      * @return appbox
      */
     public function set_databox_viewname(databox $databox, $viewname)
@@ -315,7 +315,7 @@ class appbox extends base
         foreach ($finder as $file) {
             $core['file-system']->remove($file);
         }
-        
+
         $upgrader->add_steps_complete(1);
 
         /**
@@ -383,10 +383,10 @@ class appbox extends base
 
     /**
      *
-     * @param registryInterface $registry
-     * @param type $conn
-     * @param type $dbname
-     * @param type $write_file
+     * @param  registryInterface $registry
+     * @param  type              $conn
+     * @param  type              $dbname
+     * @param  type              $write_file
      * @return type
      */
     public static function create(\Alchemy\Phrasea\Core $Core, registryInterface &$registry, connection_interface $conn, $dbname, $write_file = false)
@@ -567,7 +567,7 @@ class appbox extends base
 
     /**
      *
-     * @param <type> $option
+     * @param  <type> $option
      * @return string
      */
     public function get_cache_key($option = null)

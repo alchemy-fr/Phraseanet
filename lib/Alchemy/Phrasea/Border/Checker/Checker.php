@@ -23,9 +23,9 @@ interface Checker
     /**
      * Checks constraints on the file
      *
-     * @param   EntityManager     $em     The entity manager
-     * @param   File              $file   The file package object
-     * @return  Response A Response object
+     * @param  EntityManager $em   The entity manager
+     * @param  File          $file The file package object
+     * @return Response      A Response object
      */
     public function check(EntityManager $em, File $file);
 

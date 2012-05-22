@@ -33,7 +33,7 @@ class patch_305 implements patchInterface
      *
      * @return string
      */
-    function get_release()
+    public function get_release()
     {
         return $this->release;
     }
@@ -47,12 +47,12 @@ class patch_305 implements patchInterface
      *
      * @return Array
      */
-    function concern()
+    public function concern()
     {
         return $this->concern;
     }
 
-    function apply(base &$appbox)
+    public function apply(base &$appbox)
     {
         $sql = 'REPLACE INTO usr_settings
             (SELECT usr_id, "start_page_query" as prop, last_query as value

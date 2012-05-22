@@ -107,7 +107,7 @@ class module_report_dashboard_merge implements module_report_dashboard_component
     }
 
     /**
-     * @return le dashboard trie
+     * @return le     dashboard trie
      * @return <type>
      */
     public function getDash()

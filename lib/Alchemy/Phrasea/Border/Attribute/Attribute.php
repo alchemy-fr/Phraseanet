@@ -43,7 +43,7 @@ interface Attribute
     /**
      * Build the current object with is string value
      *
-     * @throws  \InvalidArgumentException 
+     * @throws \InvalidArgumentException
      */
     public static function loadFromString($string);
 }

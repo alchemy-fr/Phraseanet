@@ -100,8 +100,7 @@ class module_report_question extends module_report
                             $this->pretty_string ? phraseadate::getPrettyString(new DateTime($row[$value])) : $row[$value];
                     else
                         $this->result[$i][$value] = $row[$value];
-                }
-                else
+                } else
                     $this->result[$i][$value] = "<i>" . _('report:: non-renseigne') . "</i>";
             }
             $i ++;

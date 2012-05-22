@@ -33,8 +33,8 @@ class Feed_Collection implements Feed_CollectionInterface, cache_cacheableInterf
 
     /**
      *
-     * @param appbox $appbox
-     * @param array $feeds
+     * @param  appbox          $appbox
+     * @param  array           $feeds
      * @return Feed_Collection
      */
     public function __construct(appbox $appbox, Array $feeds)
@@ -47,8 +47,8 @@ class Feed_Collection implements Feed_CollectionInterface, cache_cacheableInterf
 
     /**
      *
-     * @param appbox $appbox
-     * @param User_Adapter $user
+     * @param  appbox          $appbox
+     * @param  User_Adapter    $user
      * @return Feed_Collection
      */
     public static function load_all(appbox $appbox, User_Adapter $user)
@@ -100,7 +100,7 @@ class Feed_Collection implements Feed_CollectionInterface, cache_cacheableInterf
 
     /**
      *
-     * @param appbox $appbox
+     * @param  appbox          $appbox
      * @return Feed_Collection
      */
     public static function load_public_feeds(appbox $appbox)

@@ -16,7 +16,6 @@ use Alchemy\Phrasea\Core,
     Alchemy\Phrasea\Core\Service\ServiceAbstract,
     Alchemy\Phrasea\Core\Service\ServiceInterface;
 use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
 use Monolog\Handler\FirePHPHandler;
 
 /**

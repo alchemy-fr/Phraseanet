@@ -102,7 +102,7 @@ class databox extends base
 
     /**
      *
-     * @param int $sbas_id
+     * @param  int     $sbas_id
      * @return databox
      */
     protected function __construct($sbas_id)
@@ -172,8 +172,8 @@ class databox extends base
 
     /**
      *
-     * @param int $record_id
-     * @param int $number
+     * @param  int            $record_id
+     * @param  int            $number
      * @return record_adapter
      */
     public function get_record($record_id, $number = null)
@@ -188,7 +188,7 @@ class databox extends base
 
     /**
      *
-     * @param int $sbas_id
+     * @param  int     $sbas_id
      * @return databox
      */
     public static function get_instance($sbas_id)
@@ -476,12 +476,12 @@ class databox extends base
 
     /**
      *
-     * @param string $host
-     * @param int $port
-     * @param string $user
-     * @param string $password
-     * @param string $dbname
-     * @param registry $registry
+     * @param  string   $host
+     * @param  int      $port
+     * @param  string   $user
+     * @param  string   $password
+     * @param  string   $dbname
+     * @param  registry $registry
      * @return databox
      */
     public static function mount(appbox $appbox, $host, $port, $user, $password, $dbname, registry $registry)
@@ -588,8 +588,8 @@ class databox extends base
 
     /**
      *
-     * @param <type> $repository_path
-     * @param <type> $date
+     * @param  <type> $repository_path
+     * @param  <type> $date
      * @return <type>
      */
     public static function dispatch($repository_path, $date = false)
@@ -767,7 +767,7 @@ class databox extends base
 
     /**
      *
-     * @param DOMDocument $dom_struct
+     * @param  DOMDocument $dom_struct
      * @return databox
      */
     public function saveStructure(DOMDocument $dom_struct)
@@ -926,7 +926,7 @@ class databox extends base
 
     /**
      *
-     * @param User_Interface $user
+     * @param  User_Interface $user
      * @return databox
      */
     public function registerAdmin(User_Interface $user)
@@ -988,7 +988,7 @@ class databox extends base
 
     /**
      *
-     * @param <type> $sbas_id
+     * @param  <type> $sbas_id
      * @return <type>
      */
     public static function getPrintLogo($sbas_id)
@@ -1026,7 +1026,7 @@ class databox extends base
 
     /**
      *
-     * @param <type> $sbas_id
+     * @param  <type>      $sbas_id
      * @return DOMDocument
      */
     public function get_dom_thesaurus()
@@ -1048,7 +1048,7 @@ class databox extends base
 
     /**
      *
-     * @param <type> $sbas_id
+     * @param  <type>   $sbas_id
      * @return DOMXpath
      */
     public function get_xpath_thesaurus()
@@ -1070,7 +1070,7 @@ class databox extends base
 
     /**
      *
-     * @param int $sbas_id
+     * @param  int              $sbas_id
      * @return SimpleXMLElement
      */
     public function get_sxml_thesaurus()
@@ -1092,7 +1092,7 @@ class databox extends base
 
     /**
      *
-     * @param int $sbas_id
+     * @param  int    $sbas_id
      * @return string
      */
     public function get_thesaurus()
@@ -1183,7 +1183,7 @@ class databox extends base
 
     /**
      *
-     * @param <type> $sbas_id
+     * @param  <type>      $sbas_id
      * @return DOMDocument
      */
     public function get_dom_structure()
@@ -1210,7 +1210,7 @@ class databox extends base
 
     /**
      *
-     * @param <type> $sbas_id
+     * @param  <type>      $sbas_id
      * @return DOMDocument
      */
     public function get_dom_cterms()
@@ -1257,7 +1257,7 @@ class databox extends base
 
     /**
      *
-     * @param <type> $sbas_id
+     * @param  <type>   $sbas_id
      * @return DOMXpath
      */
     public function get_xpath_structure()
@@ -1278,7 +1278,7 @@ class databox extends base
 
     /**
      *
-     * @param string $structure
+     * @param  string $structure
      * @return Array
      */
     public static function get_structure_errors($structure)

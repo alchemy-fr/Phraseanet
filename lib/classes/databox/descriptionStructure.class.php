@@ -40,7 +40,7 @@ class databox_descriptionStructure implements IteratorAggregate
 
     /**
      *
-     * @param databox_field $field
+     * @param  databox_field                $field
      * @return databox_descriptionStructure
      */
     public function add_element(databox_field $field)
@@ -52,7 +52,7 @@ class databox_descriptionStructure implements IteratorAggregate
 
     /**
      *
-     * @param databox_field $field
+     * @param  databox_field                $field
      * @return databox_descriptionStructure
      */
     public function remove_element(databox_field $field)
@@ -74,7 +74,7 @@ class databox_descriptionStructure implements IteratorAggregate
 
     /**
      *
-     * @param int $id
+     * @param  int           $id
      * @return databox_field
      */
     public function get_element($id)
@@ -87,7 +87,7 @@ class databox_descriptionStructure implements IteratorAggregate
 
     /**
      *
-     * @param string $name
+     * @param  string        $name
      * @return databox_field
      */
     public function get_element_by_name($name)
@@ -111,7 +111,7 @@ class databox_descriptionStructure implements IteratorAggregate
 
     /**
      *
-     * @param string $id
+     * @param  string  $id
      * @return boolean
      */
     public function isset_element($id)

@@ -150,7 +150,7 @@ abstract class task_abstract
     /**
      * set the state of the task (task_abstract::STATE_*)
      *
-     * @param String $status
+     * @param  String                    $status
      * @throws Exception_InvalidArgument
      */
     public function setState($status)
@@ -276,7 +276,7 @@ abstract class task_abstract
 
     abstract public function help();
 
-    function __construct($taskid)
+    public function __construct($taskid)
     {
         $this->taskid = $taskid;
 
@@ -656,7 +656,7 @@ abstract class task_abstract
         }
     }
 
-    function traceRam($msg = '')
+    public function traceRam($msg = '')
     {
         static $lastt = null;
         $t = explode(' ', ($ut = microtime()));
@@ -701,9 +701,9 @@ abstract class task_abstract
 
     /**
      *
-     * @param appbox $appbox
-     * @param type $class_name
-     * @param type $settings
+     * @param  appbox        $appbox
+     * @param  type          $class_name
+     * @param  type          $settings
      * @return task_abstract
      */
     public static function create(appbox $appbox, $class_name, $settings = null)
@@ -757,7 +757,7 @@ abstract class task_abstract
         return $this->taskid;
     }
 
-    function setProgress($done, $todo)
+    public function setProgress($done, $todo)
     {
         $p = ($todo > 0) ? ((100 * $done) / $todo) : -1;
 

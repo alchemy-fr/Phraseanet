@@ -33,7 +33,7 @@ class patch_320 implements patchInterface
      *
      * @return string
      */
-    function get_release()
+    public function get_release()
     {
         return $this->release;
     }
@@ -47,12 +47,12 @@ class patch_320 implements patchInterface
      *
      * @return Array
      */
-    function concern()
+    public function concern()
     {
         return $this->concern;
     }
 
-    function apply(base &$databox)
+    public function apply(base &$databox)
     {
         $sql = 'UPDATE record SET parent_record_id = "1"
                             WHERE parent_record_id != "0"';

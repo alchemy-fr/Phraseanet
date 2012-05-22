@@ -117,7 +117,7 @@ class task_period_cindexer extends task_abstract
 
     /**
      *
-     * @param string $oldxml
+     * @param  string $oldxml
      * @return string
      */
     public function graphic2xml($oldxml)
@@ -162,8 +162,8 @@ class task_period_cindexer extends task_abstract
 
     /**
      *
-     * @param string $xml
-     * @param string $form
+     * @param  string $xml
+     * @param  string $form
      * @return string
      */
     public function xml2graphic($xml, $form)
@@ -187,6 +187,7 @@ class task_period_cindexer extends task_abstract
                 parent.calccmd();
             </script>
             <?php
+
             return("");
         } else { // ... so we NEVER come here
             // bad xml
@@ -256,6 +257,7 @@ class task_period_cindexer extends task_abstract
             }
         </script>
         <?php
+
         return;
     }
 
@@ -263,7 +265,7 @@ class task_period_cindexer extends task_abstract
      *
      * @return string
      */
-    function getGraphicForm()
+    public function getGraphicForm()
     {
         return true;
     }
@@ -338,7 +340,7 @@ class task_period_cindexer extends task_abstract
 
     /**
      *
-     * @param SimpleXMLElement $sx_task_settings
+     * @param  SimpleXMLElement $sx_task_settings
      * @return task_cindexer
      */
     protected function loadSettings(SimpleXMLElement $sx_task_settings)
@@ -387,6 +389,7 @@ class task_period_cindexer extends task_abstract
             $this->setState(self::STATE_STOPPED);
             $this->log(sprintf(_('task::cindexer:file \'%s\' does not exists'), $cmd));
             throw new Exception('cindexer executable not found', self::ERR_EXECUTABLE_NOT_FOUND);
+
             return;
         }
 

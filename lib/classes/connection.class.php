@@ -100,7 +100,7 @@ class connection
 
     /**
      *
-     * @param string $name
+     * @param  string         $name
      * @return connection_pdo
      */
     public static function getPDOConnection($name = null, registryInterface $registry = null)
@@ -159,7 +159,7 @@ class connection
 
     /**
      *
-     * @param type $name
+     * @param  type $name
      * @return type
      */
     public static function close_PDO_connection($name)

@@ -9,7 +9,6 @@
  * file that was distributed with this source code.
  */
 
-use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  *
@@ -34,7 +33,7 @@ class patch_370 implements patchInterface
      *
      * @return string
      */
-    function get_release()
+    public function get_release()
     {
         return $this->release;
     }
@@ -48,12 +47,12 @@ class patch_370 implements patchInterface
      *
      * @return Array
      */
-    function concern()
+    public function concern()
     {
         return $this->concern;
     }
 
-    function apply(base &$databox)
+    public function apply(base &$databox)
     {
         $conn = $databox->get_connection();
 

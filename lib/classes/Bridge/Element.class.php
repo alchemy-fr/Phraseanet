@@ -109,9 +109,9 @@ class Bridge_Element
 
     /**
      *
-     * @param appbox $appbox
-     * @param Bridge_Account $account
-     * @param int $id
+     * @param  appbox         $appbox
+     * @param  Bridge_Account $account
+     * @param  int            $id
      * @return Bridge_Element
      */
     public function __construct(appbox &$appbox, Bridge_Account &$account, $id)
@@ -184,7 +184,7 @@ class Bridge_Element
 
     /**
      *
-     * @param string $dist_id
+     * @param  string         $dist_id
      * @return Bridge_Element
      */
     public function set_dist_id($dist_id)
@@ -219,7 +219,7 @@ class Bridge_Element
 
     /**
      *
-     * @param string $status
+     * @param  string         $status
      * @return Bridge_Element
      */
     public function set_status($status)
@@ -254,7 +254,7 @@ class Bridge_Element
 
     /**
      *
-     * @param string $status
+     * @param  string         $status
      * @return Bridge_Element
      */
     public function set_connector_status($status)
@@ -316,7 +316,7 @@ class Bridge_Element
 
     /**
      *
-     * @param string $title
+     * @param  string         $title
      * @return Bridge_Element
      */
     public function set_title($title)
@@ -352,7 +352,7 @@ class Bridge_Element
 
     /**
      *
-     * @param array $datas
+     * @param  array          $datas
      * @return Bridge_Element
      */
     public function set_datas(Array $datas)
@@ -448,9 +448,9 @@ class Bridge_Element
 
     /**
      *
-     * @param appbox $appbox
-     * @param Bridge_Account $account
-     * @param int $quantity
+     * @param  appbox         $appbox
+     * @param  Bridge_Account $account
+     * @param  int            $quantity
      * @return Bridge_Element
      */
     public static function get_elements_by_account(appbox $appbox, Bridge_Account $account, $offset_start = 0, $quantity = 50)
@@ -475,13 +475,13 @@ class Bridge_Element
 
     /**
      *
-     * @param appbox $appbox
-     * @param Bridge_Account $account
-     * @param record_adapter $record
-     * @param string $title
-     * @param string $status
-     * @param string $type
-     * @param array $datas
+     * @param  appbox         $appbox
+     * @param  Bridge_Account $account
+     * @param  record_adapter $record
+     * @param  string         $title
+     * @param  string         $status
+     * @param  string         $type
+     * @param  array          $datas
      * @return Bridge_Element
      */
     public static function create(appbox &$appbox, Bridge_Account &$account, record_adapter &$record, $title, $status, $type, Array $datas = array())

@@ -37,8 +37,8 @@ class Session_Authentication_PersistentCookie implements Session_Authentication_
 
     /**
      *
-     * @param appbox $appbox
-     * @param type $persistent_cookie
+     * @param  appbox                                  $appbox
+     * @param  type                                    $persistent_cookie
      * @return Session_Authentication_PersistentCookie
      */
     public function __construct(appbox &$appbox, $persistent_cookie)

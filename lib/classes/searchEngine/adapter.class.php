@@ -37,7 +37,7 @@ class searchEngine_adapter
 
     /**
      *
-     * @param registryInterface $registry
+     * @param  registryInterface    $registry
      * @return searchEngine_adapter
      */
     public function __construct(registryInterface $registry)
@@ -55,7 +55,7 @@ class searchEngine_adapter
 
     /**
      *
-     * @param searchEngine_options $options
+     * @param  searchEngine_options $options
      * @return searchEngine_adapter
      */
     public function set_options(searchEngine_options $options)
@@ -68,7 +68,7 @@ class searchEngine_adapter
 
     /**
      *
-     * @param boolean $boolean
+     * @param  boolean              $boolean
      * @return searchEngine_adapter
      */
     public function set_is_first_page($boolean)
@@ -109,9 +109,9 @@ class searchEngine_adapter
 
     /**
      *
-     * @param string $query
-     * @param int $page
-     * @param int $perPage
+     * @param  string               $query
+     * @param  int                  $page
+     * @param  int                  $perPage
      * @return searchEngine_results
      */
     public function query_per_page($query, $page, $perPage)
@@ -127,9 +127,9 @@ class searchEngine_adapter
 
     /**
      *
-     * @param string $query
-     * @param int $offset
-     * @param int $perPage
+     * @param  string               $query
+     * @param  int                  $offset
+     * @param  int                  $perPage
      * @return searchEngine_results
      */
     public function query_per_offset($query, $offset, $perPage)

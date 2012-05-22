@@ -56,7 +56,7 @@ class API_OAuth2_Form_DevAppInternet
 
     /**
      *
-     * @param Request $request
+     * @param  Request                $request
      * @return API_OAuth2_Form_DevApp
      */
     public function __construct(Request $request)
@@ -142,10 +142,10 @@ class API_OAuth2_Form_DevAppInternet
 
     /**
      *
-     * @param ClassMetadata $metadata
+     * @param  ClassMetadata          $metadata
      * @return API_OAuth2_Form_DevApp
      */
-    static public function loadValidatorMetadata(ClassMetadata $metadata)
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
         $blank = array('message' => _('Cette valeur ne peut être vide'));
         $url = array('message' => _('Url non valide'));

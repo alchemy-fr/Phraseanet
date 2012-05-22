@@ -39,7 +39,7 @@ class eventsmanager_broker
         return self::$_instance;
     }
 
-    function start()
+    public function start()
     {
         $iterators_pool = array(
             'event' => (is_array($this->appbox->get_registry()->get('GV_events')) ? $this->appbox->get_registry()->get('GV_events') : array()),
@@ -107,7 +107,7 @@ class eventsmanager_broker
         return $ret;
     }
 
-    function trigger($event, $array_params = array(), &$object = false)
+    public function trigger($event, $array_params = array(), &$object = false)
     {
         if (array_key_exists($event, $this->events)) {
             foreach ($this->events[$event] as $classname) {
@@ -118,7 +118,7 @@ class eventsmanager_broker
         return;
     }
 
-    function bind($event, $object_name)
+    public function bind($event, $object_name)
     {
 
         if ( ! array_key_exists($event, $this->events))
@@ -127,7 +127,7 @@ class eventsmanager_broker
         $this->events[$event][] = $object_name;
     }
 
-    function notify($usr_id, $event_type, $datas, $mailed = false)
+    public function notify($usr_id, $event_type, $datas, $mailed = false)
     {
         try {
             $event_type = str_replace('eventsmanager_', '', $event_type);
@@ -153,7 +153,7 @@ class eventsmanager_broker
         return true;
     }
 
-    function get_json_notifications($page = 0)
+    public function get_json_notifications($page = 0)
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $session = $appbox->get_session();
@@ -226,7 +226,7 @@ class eventsmanager_broker
         return p4string::jsonencode($datas);
     }
 
-    function get_unread_notifications_number()
+    public function get_unread_notifications_number()
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $session = $appbox->get_session();
@@ -248,7 +248,7 @@ class eventsmanager_broker
         return $total;
     }
 
-    function get_notifications()
+    public function get_notifications()
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $session = $appbox->get_session();
@@ -314,7 +314,7 @@ class eventsmanager_broker
         return $ret;
     }
 
-    function read(Array $notifications, $usr_id)
+    public function read(Array $notifications, $usr_id)
     {
         if (count($notifications) == 0) {
             return false;
@@ -331,7 +331,7 @@ class eventsmanager_broker
         return $this;
     }
 
-    function mailed($notification, $usr_id)
+    public function mailed($notification, $usr_id)
     {
         $sql = 'UPDATE notifications SET mailed="0"
             WHERE usr_id = :usr_id AND id = :notif_id';
@@ -343,7 +343,7 @@ class eventsmanager_broker
         return;
     }
 
-    function list_notifications_available($usr_id)
+    public function list_notifications_available($usr_id)
     {
 
         $personnal_notifications = array();

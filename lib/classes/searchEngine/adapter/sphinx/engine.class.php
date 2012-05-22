@@ -67,7 +67,7 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
 
     /**
      *
-     * @param searchEngine_options $options
+     * @param  searchEngine_options               $options
      * @return searchEngine_adapter_sphinx_engine
      */
     public function set_options(searchEngine_options $options)
@@ -254,9 +254,9 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
 
     /**
      *
-     * @param string $query
-     * @param int $offset
-     * @param int $perPage
+     * @param  string               $query
+     * @param  int                  $offset
+     * @param  int                  $perPage
      * @return searchEngine_results
      */
     public function results($query, $offset, $perPage)
@@ -307,8 +307,7 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
                 if ( ! $found)
                     $index .= 'documents' . implode(', documents', $index_keys);
                 $index .= ', docs_realtime' . implode(', docs_realtime', $index_keys);
-            }
-            else {
+            } else {
                 $index = '';
                 $found = false;
                 if ($this->query !== '' && $this->options->get_use_stemming() && $session->get_I18n() == 'fr') {
@@ -372,10 +371,10 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
 
     /**
      *
-     * @param string $keyword
+     * @param  string $keyword
      * @return string
      */
-    function BuildTrigrams($keyword)
+    public function BuildTrigrams($keyword)
     {
         $t = "__" . $keyword . "__";
 
@@ -480,7 +479,7 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
 
     /**
      *
-     * @param Session_Handler $session
+     * @param  Session_Handler $session
      * @return array
      */
     public function get_suggestions(Session_Handler $session, $only_last_word = false)
@@ -645,9 +644,9 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
 
     /**
      *
-     * @param string $query
-     * @param array $fields
-     * @param int $selected_sbas_id
+     * @param  string $query
+     * @param  array  $fields
+     * @param  int    $selected_sbas_id
      * @return array
      */
     public function build_excerpt($query, array $fields, record_adapter $record)
@@ -682,8 +681,7 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
                 }
                 if ( ! $found)
                     $index .= 'documents' . implode(', documents', $index_keys);
-            }
-            else {
+            } else {
                 $index = '';
                 $found = false;
                 if ($this->options->get_use_stemming() && $session->get_I18n() == 'fr') {

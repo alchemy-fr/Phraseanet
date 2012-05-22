@@ -41,73 +41,84 @@ class UsrListEntry extends \Entities\UsrListEntry implements \Doctrine\ORM\Proxy
         return $this->__isInitialized__;
     }
 
-    
+
     public function getId()
     {
         if ($this->__isInitialized__ === false) {
             return (int) $this->_identifier["id"];
         }
         $this->__load();
+
         return parent::getId();
     }
 
     public function setUsrId($usrId)
     {
         $this->__load();
+
         return parent::setUsrId($usrId);
     }
 
     public function getUsrId()
     {
         $this->__load();
+
         return parent::getUsrId();
     }
 
     public function setCreated($created)
     {
         $this->__load();
+
         return parent::setCreated($created);
     }
 
     public function getCreated()
     {
         $this->__load();
+
         return parent::getCreated();
     }
 
     public function setUpdated($updated)
     {
         $this->__load();
+
         return parent::setUpdated($updated);
     }
 
     public function getUpdated()
     {
         $this->__load();
+
         return parent::getUpdated();
     }
 
     public function setList(\Entities\UsrList $list)
     {
         $this->__load();
+
         return parent::setList($list);
     }
 
     public function getList()
     {
         $this->__load();
+
         return parent::getList();
     }
 
     public function getUser()
     {
         $this->__load();
+
         return parent::getUser();
     }
 
     public function setUser(\User_Adapter $user)
     {
         $this->__load();
+
         return parent::setUser($user);
     }
 
@@ -131,6 +142,6 @@ class UsrListEntry extends \Entities\UsrListEntry implements \Doctrine\ORM\Proxy
             }
             unset($this->_entityPersister, $this->_identifier);
         }
-        
+
     }
 }

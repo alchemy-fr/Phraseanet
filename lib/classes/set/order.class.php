@@ -67,7 +67,7 @@ class set_order extends set_abstract
 
     /**
      *
-     * @param int $id
+     * @param  int       $id
      * @return set_order
      */
     public function __construct($id)
@@ -201,8 +201,8 @@ class set_order extends set_abstract
 
     /**
      *
-     * @param Array $elements_ids
-     * @param boolean $force
+     * @param  Array     $elements_ids
+     * @param  boolean   $force
      * @return set_order
      */
     public function send_elements(Array $elements_ids, $force)
@@ -319,7 +319,7 @@ class set_order extends set_abstract
 
     /**
      *
-     * @param Array $elements_ids
+     * @param  Array     $elements_ids
      * @return set_order
      */
     public function deny_elements(Array $elements_ids)

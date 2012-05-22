@@ -94,7 +94,7 @@ class phrasea
                 self::headers(500);
     }
 
-    function getHome($type = 'PUBLI', $context = 'prod')
+    public function getHome($type = 'PUBLI', $context = 'prod')
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $session = $appbox->get_session();

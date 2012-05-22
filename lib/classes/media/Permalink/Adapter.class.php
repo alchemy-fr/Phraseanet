@@ -67,8 +67,8 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
 
     /**
      *
-     * @param databox $databox
-     * @param media_subdef $media_subdef
+     * @param  databox                 $databox
+     * @param  media_subdef            $media_subdef
      * @return media_Permalink_Adapter
      */
     protected function __construct(databox &$databox, media_subdef &$media_subdef)
@@ -156,7 +156,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
 
     /**
      *
-     * @param registryInterface $registry
+     * @param  registryInterface $registry
      * @return string
      */
     public function get_page(registryInterface $registry)
@@ -173,7 +173,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
 
     /**
      *
-     * @param string $token
+     * @param  string                  $token
      * @return media_Permalink_Adapter
      */
     protected function set_token($token)
@@ -193,7 +193,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
 
     /**
      *
-     * @param string $is_activated
+     * @param  string                  $is_activated
      * @return media_Permalink_Adapter
      */
     public function set_is_activated($is_activated)
@@ -219,7 +219,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
 
     /**
      *
-     * @param string $label
+     * @param  string                  $label
      * @return media_Permalink_Adapter
      */
     public function set_label($label)
@@ -300,8 +300,8 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
 
     /**
      *
-     * @param databox $databox
-     * @param media_subdef $media_subdef
+     * @param  databox                 $databox
+     * @param  media_subdef            $media_subdef
      * @return media_Permalink_Adapter
      */
     public static function getPermalink(databox &$databox, media_subdef &$media_subdef)
@@ -317,8 +317,8 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
 
     /**
      *
-     * @param databox $databox
-     * @param media_subdef $media_subdef
+     * @param  databox                 $databox
+     * @param  media_subdef            $media_subdef
      * @return media_Permalink_Adapter
      */
     public static function create(databox &$databox, media_subdef &$media_subdef)
@@ -346,10 +346,10 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
 
     /**
      *
-     * @param databox $databox
-     * @param string $token
-     * @param int $record_id
-     * @param string $name
+     * @param  databox        $databox
+     * @param  string         $token
+     * @param  int            $record_id
+     * @param  string         $name
      * @return record_adapter
      */
     public static function challenge_token(databox &$databox, $token, $record_id, $name)

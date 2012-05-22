@@ -31,8 +31,8 @@ class searchEngine_results
 
     /**
      *
-     * @param set $result
-     * @param searchEngine_adapter_interface $engine
+     * @param  set                            $result
+     * @param  searchEngine_adapter_interface $engine
      * @return searchEngine_results
      */
     public function __construct(set_abstract $result, searchEngine_adapter_interface $engine)

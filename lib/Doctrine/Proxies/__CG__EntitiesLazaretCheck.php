@@ -41,37 +41,42 @@ class LazaretCheck extends \Entities\LazaretCheck implements \Doctrine\ORM\Proxy
         return $this->__isInitialized__;
     }
 
-    
+
     public function getId()
     {
         if ($this->__isInitialized__ === false) {
             return (int) $this->_identifier["id"];
         }
         $this->__load();
+
         return parent::getId();
     }
 
     public function setCheck($check)
     {
         $this->__load();
+
         return parent::setCheck($check);
     }
 
     public function getCheck()
     {
         $this->__load();
+
         return parent::getCheck();
     }
 
     public function setLazaretFile(\Entities\LazaretFile $lazaretFile = NULL)
     {
         $this->__load();
+
         return parent::setLazaretFile($lazaretFile);
     }
 
     public function getLazaretFile()
     {
         $this->__load();
+
         return parent::getLazaretFile();
     }
 
@@ -95,6 +100,6 @@ class LazaretCheck extends \Entities\LazaretCheck implements \Doctrine\ORM\Proxy
             }
             unset($this->_entityPersister, $this->_identifier);
         }
-        
+
     }
 }

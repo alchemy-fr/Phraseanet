@@ -109,8 +109,7 @@ class module_report_dashboard_sort implements module_report_dashboard_componentI
                 foreach ($data as $key => $row)
                     $tmp[$key] = $row[$field];
                 $args[$n] = &$tmp;
-            }
-            else
+            } else
                 $args[$n] = &$field;
         }
         $args[] = &$data;

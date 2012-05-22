@@ -34,7 +34,7 @@ class patch_361 implements patchInterface
      *
      * @return string
      */
-    function get_release()
+    public function get_release()
     {
         return $this->release;
     }
@@ -48,12 +48,12 @@ class patch_361 implements patchInterface
      *
      * @return Array
      */
-    function concern()
+    public function concern()
     {
         return $this->concern;
     }
 
-    function apply(base &$appbox)
+    public function apply(base &$appbox)
     {
         $Core = \bootstrap::getCore();
 

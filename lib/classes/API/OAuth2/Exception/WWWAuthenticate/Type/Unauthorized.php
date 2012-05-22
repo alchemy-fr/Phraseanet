@@ -30,11 +30,11 @@ class API_OAuth2_Exception_WWWAuthenticate_Type_Unauthorized extends API_OAuth2_
 
     /**
      *
-     * @param string $realm
-     * @param string $error
-     * @param string $error_description
-     * @param string $error_uri
-     * @param string $scope
+     * @param  string                                                 $realm
+     * @param  string                                                 $error
+     * @param  string                                                 $error_description
+     * @param  string                                                 $error_uri
+     * @param  string                                                 $scope
      * @return API_OAuth2_Exception_WWWAuthenticate_Type_Unauthorized
      */
     public function __construct($realm, $error, $error_description = null, $error_uri = null, $scope = null)

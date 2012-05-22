@@ -36,9 +36,9 @@ class API_OAuth2_Exception_Redirect_UnauthorizedClient extends API_OAuth2_Except
 
     /**
      *
-     * @param string $redirect_uri
-     * @param string $state
-     * @param string $error_uri
+     * @param  string                                           $redirect_uri
+     * @param  string                                           $state
+     * @param  string                                           $error_uri
      * @return API_OAuth2_Exception_Redirect_UnauthorizedClient
      */
     public function __construct($redirect_uri, $state = null, $error_uri = null)

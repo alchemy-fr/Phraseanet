@@ -33,7 +33,7 @@ class patch_303 implements patchInterface
      *
      * @return string
      */
-    function get_release()
+    public function get_release()
     {
         return $this->release;
     }
@@ -47,12 +47,12 @@ class patch_303 implements patchInterface
      *
      * @return Array
      */
-    function concern()
+    public function concern()
     {
         return $this->concern;
     }
 
-    function apply(base &$appbox)
+    public function apply(base &$appbox)
     {
         $this->update_users_log_datas($appbox);
         $this->update_users_search_datas($appbox);
@@ -64,7 +64,7 @@ class patch_303 implements patchInterface
      *
      * @return patch_303
      */
-    function update_users_log_datas(appbox &$appbox)
+    public function update_users_log_datas(appbox &$appbox)
     {
         $col = array('fonction', 'societe', 'activite', 'pays');
 
@@ -110,7 +110,7 @@ class patch_303 implements patchInterface
      *
      * @return patch_303
      */
-    function update_users_search_datas(appbox &$appbox)
+    public function update_users_search_datas(appbox &$appbox)
     {
         foreach ($appbox->get_databoxes() as $databox) {
             $date_debut = '0000-00-00 00:00:00';

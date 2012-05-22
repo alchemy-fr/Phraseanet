@@ -68,7 +68,7 @@ abstract class base implements cache_cacheableInterface
     /**
      *
      */
-    abstract function get_base_type();
+    abstract public function get_base_type();
 
     /**
      *
@@ -141,7 +141,7 @@ abstract class base implements cache_cacheableInterface
 
     /**
      *
-     * @param registryInterface $registry
+     * @param  registryInterface $registry
      * @return base
      */
     public function set_registry(registryInterface $registry)
@@ -163,7 +163,7 @@ abstract class base implements cache_cacheableInterface
     /**
      * Replaces the connection
      *
-     * @param \connection_pdo $connection
+     * @param  \connection_pdo $connection
      * @return \base
      */
     public function set_connection(\connection_pdo $connection)
@@ -184,7 +184,7 @@ abstract class base implements cache_cacheableInterface
 
     /**
      *
-     * @param <type> $option
+     * @param  <type> $option
      * @return <type>
      */
     public function get_data_from_cache($option = null)
@@ -429,7 +429,7 @@ abstract class base implements cache_cacheableInterface
 
     /**
      *
-     * @param SimpleXMLElement $table
+     * @param  SimpleXMLElement $table
      * @return base
      */
     protected function createTable(SimpleXMLElement $table)

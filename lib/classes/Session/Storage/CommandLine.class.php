@@ -37,7 +37,7 @@ class Session_Storage_CommandLine extends Session_Storage_Abstract implements Se
 
     /**
      *
-     * @param string $session_name
+     * @param  string                      $session_name
      * @return Session_Storage_CommandLine
      */
     public static function getInstance($session_name)
@@ -51,7 +51,7 @@ class Session_Storage_CommandLine extends Session_Storage_Abstract implements Se
 
     /**
      *
-     * @param string $name
+     * @param  string                      $name
      * @return Session_Storage_CommandLine
      */
     protected function __construct($name)
@@ -61,7 +61,7 @@ class Session_Storage_CommandLine extends Session_Storage_Abstract implements Se
 
     /**
      *
-     * @param string $key
+     * @param  string $key
      * @return mixed
      */
     public function get($key, $default_value = null)
@@ -71,7 +71,7 @@ class Session_Storage_CommandLine extends Session_Storage_Abstract implements Se
 
     /**
      *
-     * @param string $key
+     * @param  string $key
      * @return mixed
      */
     public function has($key)
@@ -81,8 +81,8 @@ class Session_Storage_CommandLine extends Session_Storage_Abstract implements Se
 
     /**
      *
-     * @param string $key
-     * @param mixed $value
+     * @param  string  $key
+     * @param  mixed   $value
      * @return boolean
      */
     public function set($key, $value)
@@ -94,7 +94,7 @@ class Session_Storage_CommandLine extends Session_Storage_Abstract implements Se
 
     /**
      *
-     * @param string $key
+     * @param  string  $key
      * @return boolean
      */
     public function remove($key)

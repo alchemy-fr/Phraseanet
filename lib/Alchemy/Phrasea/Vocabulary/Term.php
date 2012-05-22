@@ -49,10 +49,10 @@ class Term
     /**
      * Construct a Term
      *
-     * @param string $value the scalar value of the Term
-     * @param string $context A string defining the context of the Term
-     * @param ControlProviderInterface $type A Vocabulary Controller
-     * @param mixed $id The id of the term in the Vocabulary Controller
+     * @param string                   $value   the scalar value of the Term
+     * @param string                   $context A string defining the context of the Term
+     * @param ControlProviderInterface $type    A Vocabulary Controller
+     * @param mixed                    $id      The id of the term in the Vocabulary Controller
      *
      * @return \Alchemy\Phrasea\Vocabulary\ControlProvider\Term
      * @throws Exception

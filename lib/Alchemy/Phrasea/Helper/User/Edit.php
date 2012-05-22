@@ -417,11 +417,9 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
                     if ($v === '1') {
                         $create_sbas[\phrasea::sbasFromBas($base_id)] = \phrasea::sbasFromBas($base_id);
                         $create[] = $base_id;
-                    }
-                    else
+                    } else
                         $delete[] = $base_id;
-                }
-                else {
+                } else {
                     $create_sbas[\phrasea::sbasFromBas($base_id)] = \phrasea::sbasFromBas($base_id);
                     $update[$base_id][$p] = $v;
                 }

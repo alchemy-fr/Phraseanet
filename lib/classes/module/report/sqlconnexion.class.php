@@ -56,8 +56,7 @@ class module_report_sqlconnexion extends module_report_sql implements module_rep
             $stmt->closeCursor();
             if ($this->enable_limit)
                 $this->sql .= $this->filter->getLimitFilter() ? : '';
-        }
-        else {
+        } else {
             $this->sql = "
        SELECT  TRIM(" . $this->getTransQuery($this->groupby) . ")
               as " . $this->groupby . ", SUM(1) as nb

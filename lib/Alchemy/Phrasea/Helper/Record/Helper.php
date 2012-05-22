@@ -96,7 +96,7 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
 
     /**
      *
-     * @param \Alchemy\Phrasea\Core $core
+     * @param  \Alchemy\Phrasea\Core $core
      * @return Helper
      */
     public function __construct(Core $core, Request $Request)

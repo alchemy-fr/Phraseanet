@@ -32,7 +32,7 @@ class patch_320ab implements patchInterface
      *
      * @return string
      */
-    function get_release()
+    public function get_release()
     {
         return $this->release;
     }
@@ -46,12 +46,12 @@ class patch_320ab implements patchInterface
      *
      * @return Array
      */
-    function concern()
+    public function concern()
     {
         return $this->concern;
     }
 
-    function apply(base &$appbox)
+    public function apply(base &$appbox)
     {
         $sql = 'REPLACE INTO records_rights
                         (SELECT null as id, usr_id, b.sbas_id, record_id, "1" as document

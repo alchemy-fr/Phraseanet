@@ -37,9 +37,9 @@ class Feed_Link implements Feed_LinkInterface
 
     /**
      *
-     * @param string $href
-     * @param string $title
-     * @param string $mimetype
+     * @param  string    $href
+     * @param  string    $title
+     * @param  string    $mimetype
      * @return Feed_Link
      */
     public function __construct($href, $title, $mimetype)

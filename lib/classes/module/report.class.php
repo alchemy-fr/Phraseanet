@@ -564,7 +564,7 @@ class module_report
 
     /**
      * Retourne un objet qui genere la requete selon le type de report
-     * @param string $domain
+     * @param  string                     $domain
      * @return module_report_sqlconnexion
      */
     public function sqlBuilder($domain)
@@ -601,8 +601,8 @@ class module_report
     /**
      * initialise les configuration des columns ex : boundable, linkable orderable
      *  etc .. par defaut ou celle passe en parametre par $tab
-     * @param array $tab
-     * @param string $groupby
+     * @param  array  $tab
+     * @param  string $groupby
      * @return void
      */
     protected function setDisplay($tab, $groupby = false)
@@ -751,7 +751,7 @@ class module_report
 
     /**
      * @desc Initialize the configuration foreach column displayed in the report
-     * @param array $display  contain the conf's variables
+     * @param  array $display contain the conf's variables
      * @return void
      */
     protected function initDefaultConfigColumn($display)
@@ -806,8 +806,8 @@ class module_report
     /**
      * @desc build the final formated array which contains all the result,
      *  we construct the html code from this array
-     * @param array $tab pass the configcolumn parameter to this tab
-     * @return the formated array
+     * @param  array $tab pass the configcolumn parameter to this tab
+     * @return the   formated array
      */
     public function buildReport($tab = false, $groupby = false, $on = false)
     {

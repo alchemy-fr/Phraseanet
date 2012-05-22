@@ -58,7 +58,7 @@ class ZipArchiveImproved extends ZipArchive
      * overwrites ZipArchive::open() to add the archiveFileName functionality.
      *
      * @param string $fileName
-     * @param int $flags
+     * @param int    $flags
      * return mixed
      */
     public function open($fileName, $flags)
@@ -102,8 +102,8 @@ class ZipArchiveImproved extends ZipArchive
      * adds a file to a ZIP archive from the given path. calls the ZipArchive::addFile() internally.
      * overwrites ZipArchive::addFile() to handle maximum file connections in operating systems.
      *
-     * @param string $fileName the path to file to be added to archive
-     * @param string [optional] $localname the name of the file in the ZIP archive
+     * @param  string            $fileName  the path to file to be added to archive
+     * @param  string [optional] $localname the name of the file in the ZIP archive
      * @return bool
      */
     public function addFile($fileName)

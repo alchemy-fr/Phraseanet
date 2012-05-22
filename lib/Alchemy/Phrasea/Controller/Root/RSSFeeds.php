@@ -13,8 +13,6 @@ namespace Alchemy\Phrasea\Controller\Root;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ControllerCollection;
@@ -68,8 +66,7 @@ class RSSFeeds implements ControllerProviderInterface
                         $content->set_previous_page($feed->get_user_link($registry, $user, $format, ($page - 1)));
                     if ($total > ($page * $perPage))
                         $content->set_next_page($feed->get_user_link($registry, $user, $format, ($page + 1)));
-                }
-                else {
+                } else {
                     if ($page > 1)
                         $content->set_previous_page($feed->get_homepage_link($registry, $format, ($page - 1)));
                     if ($total > ($page * $perPage))

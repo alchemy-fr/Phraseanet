@@ -15,8 +15,6 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -65,8 +63,7 @@ class module_console_schedulerStart extends Command
             $scheduler = new task_Scheduler();
             $scheduler->run($input, $output);
         } catch (\Exception $e) {
-            switch($e->getCode())
-            {
+            switch ($e->getCode()) {
                 case task_Scheduler::ERR_ALREADY_RUNNING:   // 114 : aka EALREADY (Operation already in progress)
                     $exitCode = ERR_ALREADY_RUNNING;
                     break;
@@ -74,6 +71,7 @@ class module_console_schedulerStart extends Command
                     $exitCode = 1;   // default exit code (error)
                     break;
             }
+
             return $exitCode;
         }
     }

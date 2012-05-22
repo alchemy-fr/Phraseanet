@@ -18,7 +18,7 @@ class phraseadate
 
     /**
      *
-     * @param DateTime $date
+     * @param  DateTime $date
      * @return string
      */
     public static function getTime(DateTime $date)
@@ -41,7 +41,7 @@ class phraseadate
 
     /**
      *
-     * @param DateTime $date
+     * @param  DateTime $date
      * @return string
      */
     public static function getDate(DateTime $date)
@@ -63,7 +63,7 @@ class phraseadate
 
     /**
      *
-     * @param DateTime $date
+     * @param  DateTime $date
      * @return string
      */
     public static function getPrettyString(DateTime $date = null)
@@ -107,7 +107,7 @@ class phraseadate
 
     /**
      *
-     * @param DateTime $date
+     * @param  DateTime $date
      * @return string
      */
     public static function format_mysql(DateTime $date)
@@ -117,9 +117,9 @@ class phraseadate
 
     /**
      *
-     * @param DateTime $date
-     * @param string $locale
-     * @param string $format
+     * @param  DateTime $date
+     * @param  string   $locale
+     * @param  string   $format
      * @return string
      */
     private function formatDate(DateTime $date, $locale, $format)
@@ -167,8 +167,8 @@ class phraseadate
 
     /**
      *
-     * @param string $isodelimdate
-     * @param string $format
+     * @param  string $isodelimdate
+     * @param  string $format
      * @return string
      */
     public static function isodateToDate($isodelimdate, $format)
@@ -187,8 +187,7 @@ class phraseadate
                             array_push($bal, substr($isodelimdate, 1, $p - 1));
                     }
                     $isodelimdate = substr($isodelimdate, $p + 1);
-                }
-                else {
+                } else {
                     $isodelimdate = "";
                 }
             } else {
@@ -231,8 +230,8 @@ class phraseadate
 
     /**
      *
-     * @param string $strdate
-     * @param string $format
+     * @param  string $strdate
+     * @param  string $format
      * @return string
      */
     public static function dateToIsodate($strdate, $format)

@@ -43,10 +43,10 @@ class Bridge_Api_Flickr_Container implements Bridge_Api_ContainerInterface
 
     /**
      *
-     * @param SimpleXMLElement $entry
-     * @param string $user_id
-     * @param string $type
-     * @param string $thumbnail
+     * @param  SimpleXMLElement            $entry
+     * @param  string                      $user_id
+     * @param  string                      $type
+     * @param  string                      $thumbnail
      * @return Bridge_Api_Flickr_Container
      */
     public function __construct(SimpleXMLElement $entry, $user_id, $type, $thumbnail)

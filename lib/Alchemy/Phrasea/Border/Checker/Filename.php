@@ -24,7 +24,7 @@ class Filename implements Checker
     /**
      * Constructor
      *
-     * @param boolean $sensitive    Toggle case-sensitive mode, default : false
+     * @param boolean $sensitive Toggle case-sensitive mode, default : false
      */
     public function __construct($sensitive = false)
     {

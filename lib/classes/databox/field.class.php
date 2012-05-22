@@ -151,8 +151,8 @@ class databox_field implements cache_cacheableInterface
 
     /**
      *
-     * @param databox $databox
-     * @param <type> $id
+     * @param  databox       $databox
+     * @param  <type>        $id
      * @return databox_field
      */
     protected function __construct(databox &$databox, $id)
@@ -239,8 +239,8 @@ class databox_field implements cache_cacheableInterface
 
     /**
      *
-     * @param \databox $databox
-     * @param int $id
+     * @param  \databox       $databox
+     * @param  int            $id
      * @return \databox_field
      */
     public static function get_instance(databox &$databox, $id)
@@ -414,7 +414,7 @@ class databox_field implements cache_cacheableInterface
 
     /**
      *
-     * @param string $name
+     * @param  string        $name
      * @return databox_field
      */
     public function set_name($name)
@@ -439,7 +439,7 @@ class databox_field implements cache_cacheableInterface
     /**
      * Get a PHPExiftool Tag from tagName
      *
-     * @param type $tagName
+     * @param  type                                          $tagName
      * @return \PHPExiftool\Driver\Tag
      * @throws Exception_Databox_metadataDescriptionNotFound
      */
@@ -523,7 +523,7 @@ class databox_field implements cache_cacheableInterface
 
     /**
      *
-     * @param boolean $bool
+     * @param  boolean       $bool
      * @return databox_field
      */
     public function set_indexable($bool)
@@ -536,7 +536,7 @@ class databox_field implements cache_cacheableInterface
     /**
      * Set a vocabulary
      *
-     * @param Vocabulary\ControlProvider\ControlProviderInterface $vocabulary
+     * @param  Vocabulary\ControlProvider\ControlProviderInterface $vocabulary
      * @return \databox_field
      */
     public function setVocabularyControl(Vocabulary\ControlProvider\ControlProviderInterface $vocabulary = null)
@@ -549,8 +549,8 @@ class databox_field implements cache_cacheableInterface
     /**
      * Set whether or not the vocabulary is restricted to the provider
      *
-     * @param   boolean         $boolean
-     * @return  \databox_field
+     * @param  boolean        $boolean
+     * @return \databox_field
      */
     public function setVocabularyRestricted($boolean)
     {
@@ -561,7 +561,7 @@ class databox_field implements cache_cacheableInterface
 
     /**
      *
-     * @param boolean $bool
+     * @param  boolean       $bool
      * @return databox_field
      */
     public function set_readonly($readonly)
@@ -573,7 +573,7 @@ class databox_field implements cache_cacheableInterface
 
     /**
      *
-     * @param boolean $boolean
+     * @param  boolean       $boolean
      * @return databox_field
      */
     public function set_business($boolean)
@@ -585,7 +585,7 @@ class databox_field implements cache_cacheableInterface
 
     /**
      *
-     * @param boolean $bool
+     * @param  boolean       $bool
      * @return databox_field
      */
     public function set_required($required)
@@ -597,7 +597,7 @@ class databox_field implements cache_cacheableInterface
 
     /**
      *
-     * @param boolean $bool
+     * @param  boolean       $bool
      * @return databox_field
      */
     public function set_multi($multi)
@@ -617,7 +617,7 @@ class databox_field implements cache_cacheableInterface
 
     /**
      *
-     * @param boolean $bool
+     * @param  boolean       $bool
      * @return databox_field
      */
     public function set_report($report)
@@ -629,7 +629,7 @@ class databox_field implements cache_cacheableInterface
 
     /**
      *
-     * @param string $type
+     * @param  string        $type
      * @return databox_field
      */
     public function set_type($type)
@@ -641,7 +641,7 @@ class databox_field implements cache_cacheableInterface
 
     /**
      *
-     * @param string $type
+     * @param  string        $type
      * @return databox_field
      */
     public function set_tbranch($branch)
@@ -653,7 +653,7 @@ class databox_field implements cache_cacheableInterface
 
     /**
      *
-     * @param string $type
+     * @param  string        $type
      * @return databox_field
      */
     public function set_separator($separator)
@@ -666,9 +666,9 @@ class databox_field implements cache_cacheableInterface
     /**
      * Return the separator depending of the multi attribute
      *
-     * @param   string    $separator
-     * @param   boolean   $multi
-     * @return  string
+     * @param  string  $separator
+     * @param  boolean $multi
+     * @return string
      */
     protected static function checkMultiSeparator($separator, $multi)
     {
@@ -685,7 +685,7 @@ class databox_field implements cache_cacheableInterface
 
     /**
      *
-     * @param string $type
+     * @param  string        $type
      * @return databox_field
      */
     public function set_thumbtitle($value)
@@ -881,7 +881,7 @@ class databox_field implements cache_cacheableInterface
     /**
      * Part of the cache_cacheableInterface
      *
-     * @param string $option
+     * @param  string $option
      * @return string
      */
     public function get_cache_key($option = null)
@@ -892,7 +892,7 @@ class databox_field implements cache_cacheableInterface
     /**
      * Part of the cache_cacheableInterface
      *
-     * @param string $option
+     * @param  string $option
      * @return mixed
      */
     public function get_data_from_cache($option = null)
@@ -903,9 +903,9 @@ class databox_field implements cache_cacheableInterface
     /**
      * Part of the cache_cacheableInterface
      *
-     * @param mixed $value
-     * @param string $option
-     * @param int $duration
+     * @param  mixed         $value
+     * @param  string        $option
+     * @param  int           $duration
      * @return caption_field
      */
     public function set_data_to_cache($value, $option = null, $duration = 0)
@@ -916,7 +916,7 @@ class databox_field implements cache_cacheableInterface
     /**
      * Part of the cache_cacheableInterface
      *
-     * @param string $option
+     * @param  string        $option
      * @return caption_field
      */
     public function delete_data_from_cache($option = null)

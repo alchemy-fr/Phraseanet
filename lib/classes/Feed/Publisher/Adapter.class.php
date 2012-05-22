@@ -55,8 +55,8 @@ class Feed_Publisher_Adapter implements Feed_Publisher_Interface, cache_cacheabl
 
     /**
      *
-     * @param appbox $appbox
-     * @param int $id
+     * @param  appbox                 $appbox
+     * @param  int                    $id
      * @return Feed_Publisher_Adapter
      */
     public function __construct(appbox &$appbox, $id)
@@ -175,10 +175,10 @@ class Feed_Publisher_Adapter implements Feed_Publisher_Interface, cache_cacheabl
 
     /**
      *
-     * @param appbox $appbox
-     * @param User_Adapter $user
-     * @param Feed_Adapter $feed
-     * @param boolean $owner
+     * @param  appbox                 $appbox
+     * @param  User_Adapter           $user
+     * @param  Feed_Adapter           $feed
+     * @param  boolean                $owner
      * @return Feed_Publisher_Adapter
      */
     public static function create(appbox &$appbox, User_Adapter &$user, Feed_Adapter &$feed, $owner)
@@ -201,16 +201,15 @@ class Feed_Publisher_Adapter implements Feed_Publisher_Interface, cache_cacheabl
 
     /**
      *
-     * @param appbox $appbox
-     * @param Feed_Adapter $feed
-     * @param User_Adapter $user
+     * @param  appbox                 $appbox
+     * @param  Feed_Adapter           $feed
+     * @param  User_Adapter           $user
      * @return Feed_Publisher_Adapter
      */
     public static function getPublisher(appbox &$appbox, Feed_Adapter &$feed, User_Adapter &$user)
     {
         foreach ($feed->get_publishers() as $publisher) {
-            if ($publisher->get_user()->get_id() === $user->get_id())
-            {
+            if ($publisher->get_user()->get_id() === $user->get_id()) {
                 return $publisher;
             }
         }

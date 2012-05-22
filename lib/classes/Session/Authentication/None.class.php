@@ -25,7 +25,7 @@ class Session_Authentication_None implements Session_Authentication_Interface
 
     /**
      *
-     * @param User_Adapter $user
+     * @param  User_Adapter                $user
      * @return Session_Authentication_None
      */
     public function __construct(User_Adapter $user)

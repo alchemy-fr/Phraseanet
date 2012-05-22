@@ -257,8 +257,7 @@ class User_Query implements User_QueryInterface
         if (count($this->base_ids) == 0) {
             if ($this->bases_restrictions)
                 throw new Exception('No base available for you, not enough rights');
-        }
-        else {
+        } else {
             $extra = $this->include_phantoms ? ' OR base_id IS NULL ' : '';
 
             $not_base_id = array_diff($this->active_bases, $this->base_ids);
@@ -278,8 +277,7 @@ class User_Query implements User_QueryInterface
         if (count($this->sbas_ids) == 0) {
             if ($this->sbas_restrictions)
                 throw new Exception('No base available for you, not enough rights');
-        }
-        else {
+        } else {
             $extra = $this->include_phantoms ? ' OR sbas_id IS NULL ' : '';
 
             $not_sbas_id = array_diff($this->active_sbas, $this->sbas_ids);
@@ -411,7 +409,7 @@ class User_Query implements User_QueryInterface
 
     /**
      *
-     * @param array $rights
+     * @param  array      $rights
      * @return User_Query
      */
     public function who_have_right(Array $rights)
@@ -423,7 +421,7 @@ class User_Query implements User_QueryInterface
 
     /**
      *
-     * @param boolean $boolean
+     * @param  boolean    $boolean
      * @return User_Query
      */
     public function include_templates($boolean)
@@ -435,7 +433,7 @@ class User_Query implements User_QueryInterface
 
     /**
      *
-     * @param boolean $boolean
+     * @param  boolean    $boolean
      * @return User_Query
      */
     public function only_templates($boolean)
@@ -447,7 +445,7 @@ class User_Query implements User_QueryInterface
 
     /**
      *
-     * @param array $rights
+     * @param  array      $rights
      * @return User_Query
      */
     public function who_have_not_right(Array $rights)
@@ -590,8 +588,8 @@ class User_Query implements User_QueryInterface
 
     /**
      *
-     * @param ACL $ACL User's ACLs
-     * @param array $rights An array of base rights you need
+     * @param  ACL        $ACL    User's ACLs
+     * @param  array      $rights An array of base rights you need
      * @return User_Query
      */
     public function on_bases_where_i_am(ACL $ACL, Array $rights)
@@ -611,8 +609,8 @@ class User_Query implements User_QueryInterface
 
     /**
      *
-     * @param ACL $ACL
-     * @param array $rights An array of sbas rights you need
+     * @param  ACL        $ACL
+     * @param  array      $rights An array of sbas rights you need
      * @return User_Query
      */
     public function on_sbas_where_i_am(ACL $ACL, Array $rights)
@@ -632,8 +630,8 @@ class User_Query implements User_QueryInterface
 
     /**
      *
-     * @param int $offset_start
-     * @param int $results_quantity
+     * @param  int        $offset_start
+     * @param  int        $results_quantity
      * @return User_Query
      */
     public function limit($offset_start, $results_quantity)
@@ -648,8 +646,8 @@ class User_Query implements User_QueryInterface
      * Query width a like field
      * like fields are defined as constants of the object
      *
-     * @param const $like_field
-     * @param string $like_value
+     * @param  const      $like_field
+     * @param  string     $like_value
      * @return User_Query
      */
     public function like($like_field, $like_value)
@@ -673,7 +671,7 @@ class User_Query implements User_QueryInterface
     /**
      * Choose whether multiple like will be treated as AND or OR
      *
-     * @param type $like_match
+     * @param  type       $like_match
      * @return User_Query
      */
     public function like_match($like_match)
@@ -694,7 +692,7 @@ class User_Query implements User_QueryInterface
     /**
      * Restrict User search on base_ids
      *
-     * @param array $base_ids
+     * @param  array      $base_ids
      * @return User_Query
      */
     public function on_base_ids(Array $base_ids = null)
@@ -719,7 +717,7 @@ class User_Query implements User_QueryInterface
 
     /**
      *
-     * @param array $sbas_ids
+     * @param  array      $sbas_ids
      * @return User_Query
      */
     public function on_sbas_ids(Array $sbas_ids = null)
@@ -746,8 +744,8 @@ class User_Query implements User_QueryInterface
      * Sort results. Sort field and sort order are defined as constants
      * of this object
      *
-     * @param const $sort
-     * @param const $ord
+     * @param  const      $sort
+     * @param  const      $ord
      * @return User_Query
      */
     public function sort_by($sort, $ord = 'asc')
@@ -876,7 +874,7 @@ class User_Query implements User_QueryInterface
      * Wheter or not retrieve inactive users
      * (inactive users do not have the "access" right)
      *
-     * @param boolean $boolean
+     * @param  boolean    $boolean
      * @return User_Query
      */
     public function get_inactives($boolean = true)

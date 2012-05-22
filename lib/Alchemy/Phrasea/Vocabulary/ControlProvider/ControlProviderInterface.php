@@ -41,13 +41,13 @@ interface ControlProviderInterface
     public function validate($id);
 
     /**
-     * @return string returns the value corresponding to an id
+     * @return string     returns the value corresponding to an id
      * @throws \Exception if the $id is invalid
      */
     public function getValue($id);
 
     /**
-     * @return mixed returns the actual ressource corresponding to an id
+     * @return mixed      returns the actual ressource corresponding to an id
      * @throws \Exception if the $id is invalid
      */
     public function getRessource($id);
@@ -55,9 +55,9 @@ interface ControlProviderInterface
     /**
      * Find matching Term in the vocabulary repository
      *
-     * @param string $query A scalar quaery
-     * @param \User_Adapter $for_user The user doing the query
-     * @param \databox $on_databox The databox where vocabulary should be requested
+     * @param string        $query      A scalar quaery
+     * @param \User_Adapter $for_user   The user doing the query
+     * @param \databox      $on_databox The databox where vocabulary should be requested
      *
      * @return Doctrine\Common\Collections\ArrayCollection
      */

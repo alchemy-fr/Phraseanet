@@ -75,6 +75,7 @@ abstract class task_databoxAbstract extends task_abstract
             } catch (Exception $e) {
                 // failed sql, simply return
                 $this->running = FALSE;
+
                 return;
             }
 

@@ -17,7 +17,7 @@ class UsrListEntryRepository extends EntityRepository
      * Get all lists entries matching a given User
      *
      * @param \User_Adapter $user
-     * @param type $like
+     * @param type          $like
      */
     public function findUserList(\User_Adapter $user)
     {

@@ -22,7 +22,7 @@ class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstrac
      */
     public $events = array('__ORDER_NOT_DELIVERED__');
 
-    function __construct(appbox &$appbox, \Alchemy\Phrasea\Core $core, eventsmanager_broker &$broker)
+    public function __construct(appbox &$appbox, \Alchemy\Phrasea\Core $core, eventsmanager_broker &$broker)
     {
         $this->group = _('Commande');
         parent::__construct($appbox, $core, $broker);
@@ -130,7 +130,7 @@ class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstrac
         return _('Refus d\'elements de commande');
     }
 
-    function mail($to, $from, $n)
+    public function mail($to, $from, $n)
     {
         $subject = sprintf(_('push::mail:: Refus d\'elements de votre commande'));
 
@@ -146,7 +146,7 @@ class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstrac
      *
      * @return boolean
      */
-    function is_available()
+    public function is_available()
     {
         return true;
     }

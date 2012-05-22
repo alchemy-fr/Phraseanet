@@ -789,6 +789,7 @@ return call_user_func(function() {
                         $code = \API_V1_result::ERROR_INTERNALSERVERERROR;
 
                     $result = $app['api']->get_error_message($app['request'], $code, $e->getMessage());
+
                     return $result->get_response();
                 });
 ////

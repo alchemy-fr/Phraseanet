@@ -42,9 +42,9 @@ class UserProvider implements ControlProviderInterface
 
     /**
      *
-     * @param string $query
-     * @param \User_Adapter $for_user
-     * @param \databox $on_databox
+     * @param  string                                       $query
+     * @param  \User_Adapter                                $for_user
+     * @param  \databox                                     $on_databox
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
     public function find($query, \User_Adapter $for_user, \databox $on_databox = null)
@@ -76,7 +76,7 @@ class UserProvider implements ControlProviderInterface
 
     /**
      *
-     * @param mixed $id
+     * @param  mixed   $id
      * @return boolean
      */
     public function validate($id)
@@ -96,7 +96,7 @@ class UserProvider implements ControlProviderInterface
 
     /**
      *
-     * @param mixed $id
+     * @param  mixed  $id
      * @return string
      */
     public function getValue($id)
@@ -110,7 +110,7 @@ class UserProvider implements ControlProviderInterface
 
     /**
      *
-     * @param mixed $id
+     * @param  mixed  $id
      * @return string
      */
     public function getRessource($id)

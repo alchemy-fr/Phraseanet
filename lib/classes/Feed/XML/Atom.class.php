@@ -113,9 +113,9 @@ class Feed_XML_Atom extends Feed_XML_Abstract implements Feed_XML_Interface
 
     /**
      *
-     * @param DOMDocument $document
-     * @param DOMElement $feed
-     * @param Feed_Entry_Adapter $entry
+     * @param  DOMDocument        $document
+     * @param  DOMElement         $feed
+     * @param  Feed_Entry_Adapter $entry
      * @return DOMElement
      */
     protected function add_item(DOMDocument $document, DOMElement $feed, Feed_Entry_Adapter $entry)
@@ -154,7 +154,7 @@ class Feed_XML_Atom extends Feed_XML_Abstract implements Feed_XML_Interface
 
     /**
      *
-     * @param string $author_name
+     * @param  string        $author_name
      * @return Feed_XML_Atom
      */
     public function set_author_name($author_name)
@@ -167,7 +167,7 @@ class Feed_XML_Atom extends Feed_XML_Abstract implements Feed_XML_Interface
 
     /**
      *
-     * @param string $author_name
+     * @param  string        $author_name
      * @return Feed_XML_Atom
      */
     public function set_author_email($author_email)
@@ -180,7 +180,7 @@ class Feed_XML_Atom extends Feed_XML_Abstract implements Feed_XML_Interface
 
     /**
      *
-     * @param string $author_name
+     * @param  string        $author_name
      * @return Feed_XML_Atom
      */
     public function set_author_url($author_url)

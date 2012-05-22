@@ -9,7 +9,6 @@
  * file that was distributed with this source code.
  */
 
-use MediaAlchemyst\Specification\Specification;
 use Alchemy\Phrasea\Media\Subdef\Image;
 use Alchemy\Phrasea\Media\Subdef\Audio;
 use Alchemy\Phrasea\Media\Subdef\Video;
@@ -60,7 +59,7 @@ class databox_subdef
 
     /**
      *
-     * @param SimpleXMLElement $sd
+     * @param  SimpleXMLElement $sd
      * @return databox_subdef
      */
     public function __construct(SubdefType $type, SimpleXMLElement $sd)
@@ -286,7 +285,7 @@ class databox_subdef
     /**
      * Build Image Subdef object depending the SimpleXMLElement
      *
-     * @param SimpleXMLElement $sd
+     * @param  SimpleXMLElement                    $sd
      * @return \Alchemy\Phrasea\Media\Subdef\Video
      */
     protected function buildImageSubdef(SimpleXMLElement $sd)
@@ -312,7 +311,7 @@ class databox_subdef
     /**
      * Build Audio Subdef object depending the SimpleXMLElement
      *
-     * @param SimpleXMLElement $sd
+     * @param  SimpleXMLElement                    $sd
      * @return \Alchemy\Phrasea\Media\Subdef\Video
      */
     protected function buildAudioSubdef(SimpleXMLElement $sd)
@@ -323,7 +322,7 @@ class databox_subdef
     /**
      * Build Flexpaper Subdef object depending the SimpleXMLElement
      *
-     * @param SimpleXMLElement $sd
+     * @param  SimpleXMLElement                    $sd
      * @return \Alchemy\Phrasea\Media\Subdef\Video
      */
     protected function buildFlexPaperSubdef(SimpleXMLElement $sd)
@@ -334,7 +333,7 @@ class databox_subdef
     /**
      * Build GIF Subdef object depending the SimpleXMLElement
      *
-     * @param SimpleXMLElement $sd
+     * @param  SimpleXMLElement                    $sd
      * @return \Alchemy\Phrasea\Media\Subdef\Video
      */
     protected function buildGifSubdef(SimpleXMLElement $sd)
@@ -354,7 +353,7 @@ class databox_subdef
     /**
      * Build Video Subdef object depending the SimpleXMLElement
      *
-     * @param SimpleXMLElement $sd
+     * @param  SimpleXMLElement                    $sd
      * @return \Alchemy\Phrasea\Media\Subdef\Video
      */
     protected function buildVideoSubdef(SimpleXMLElement $sd)

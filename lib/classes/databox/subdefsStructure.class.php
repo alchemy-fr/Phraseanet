@@ -33,7 +33,7 @@ class databox_subdefsStructure implements IteratorAggregate
 
     /**
      *
-     * @param databox $databox
+     * @param  databox $databox
      * @return Array
      */
     public function __construct(databox &$databox)
@@ -122,8 +122,8 @@ class databox_subdefsStructure implements IteratorAggregate
 
     /**
      *
-     * @param type $subdef_type
-     * @param type $subdef_name
+     * @param  type           $subdef_type
+     * @param  type           $subdef_name
      * @return databox_subdef
      */
     public function get_subdef($subdef_type, $subdef_name)
@@ -136,8 +136,8 @@ class databox_subdefsStructure implements IteratorAggregate
 
     /**
      *
-     * @param string $group
-     * @param string $name
+     * @param  string                   $group
+     * @param  string                   $name
      * @return databox_subdefsStructure
      */
     public function delete_subdef($group, $name)
@@ -168,9 +168,9 @@ class databox_subdefsStructure implements IteratorAggregate
 
     /**
      *
-     * @param string $group
-     * @param string $name
-     * @param string $class
+     * @param  string                   $group
+     * @param  string                   $name
+     * @param  string                   $class
      * @return databox_subdefsStructure
      */
     public function add_subdef($groupname, $name, $class)
@@ -204,11 +204,11 @@ class databox_subdefsStructure implements IteratorAggregate
 
     /**
      *
-     * @param string $group
-     * @param string $name
-     * @param string $class
-     * @param boolean $downloadable
-     * @param Array $options
+     * @param  string                   $group
+     * @param  string                   $name
+     * @param  string                   $class
+     * @param  boolean                  $downloadable
+     * @param  Array                    $options
      * @return databox_subdefsStructure
      */
     public function set_subdef($group, $name, $class, $downloadable, $options)

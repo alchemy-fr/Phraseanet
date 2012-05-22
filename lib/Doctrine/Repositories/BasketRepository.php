@@ -29,7 +29,7 @@ class BasketRepository extends EntityRepository
     /**
      * Returns all basket for a given user that are not marked as archived
      *
-     * @param \User_Adapter $user
+     * @param  \User_Adapter                                $user
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
     public function findActiveByUser(\User_Adapter $user, $sort = null)
@@ -55,7 +55,7 @@ class BasketRepository extends EntityRepository
     /**
      * Returns all unread basket for a given user that are not marked as archived
      *
-     * @param \User_Adapter $user
+     * @param  \User_Adapter                                $user
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
     public function findUnreadActiveByUser(\User_Adapter $user)
@@ -90,7 +90,7 @@ class BasketRepository extends EntityRepository
      * Returns all baskets that are in validation session not expired  and
      * where a specified user is participant (not owner)
      *
-     * @param \User_Adapter $user
+     * @param  \User_Adapter                                $user
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
     public function findActiveValidationByUser(\User_Adapter $user, $sort = null)
@@ -121,8 +121,8 @@ class BasketRepository extends EntityRepository
      *
      * @throws \Exception_NotFound
      * @throws \Exception_Forbidden
-     * @param type $basket_id
-     * @param \User_Adapter $user
+     * @param  type                 $basket_id
+     * @param  \User_Adapter        $user
      * @return \Entities\Basket
      */
     public function findUserBasket($basket_id, \User_Adapter $user, $requireOwner)
@@ -271,8 +271,8 @@ class BasketRepository extends EntityRepository
     /**
      * Return all actives validation where current user is involved and user basket
      *
-     * @param \User_Adapter $user
-     * @param type $sort
+     * @param  \User_Adapter $user
+     * @param  type          $sort
      * @return Array
      */
     public function findActiveValidationAndBasketByUser(\User_Adapter $user, $sort = null)
