@@ -454,7 +454,9 @@ class databox_field implements cache_cacheableInterface
 
             $tagName = str_replace('Phraseanet:', '', $tagName);
 
-            $tagName = str_replace('-', '', $tagName);
+            $tagName = explode('-', $tagName);
+            $tagName = array_map('ucfirst', $tagName);
+            $tagName = implode('', $tagName);
 
             $classname = '\\Alchemy\\Phrasea\\Metadata\\Tag\\' . $tagName;
 
