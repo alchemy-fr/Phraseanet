@@ -708,12 +708,7 @@ class API_V1_adapter extends API_V1_Abstract
                     }
                 }
 
-                if ($code == \Alchemy\Phrasea\Border\Manager::RECORD_CREATED) {
-                    $output = $element;
-                }
-                if ($code == \Alchemy\Phrasea\Border\Manager::LAZARET_CREATED) {
-                    $output = $element;
-                }
+                $output = $element;
             };
 
         switch ($request->get('forceBehavior')) {
