@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Media\Subdef;
 
-use ImageSpecification;
+use MediaAlchemyst\Specification\Image as ImageSpecification;
 
 /**
  * Image Subdef
