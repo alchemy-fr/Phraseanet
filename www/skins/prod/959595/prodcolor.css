@@ -444,6 +444,7 @@ span.ww_winTitle {
 #searchForm > button.btn {
     font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 12px;
+    font-weight: bold;
     -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -461,21 +462,19 @@ span.ww_winTitle {
     background-image: -o-linear-gradient(top, #FFFFFF, #D6D6D6);
     background-image: linear-gradient(top, #FFFFFF, #D6D6D6);
     background-image: -moz-linear-gradient(top, #FFFFFF, #D6D6D6);
-    background-repeat: repeat-x;
-    *border: 0;
-    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
     border-color: #D6D6D6 #D6D6D6 #bfbfbf;
     border-bottom-color: #b3b3b3;
     filter: progid:dximagetransform.microsoft.gradient(startColorstr='#ffffff', endColorstr='#D6D6D6', GradientType=0);
     filter: progid:dximagetransform.microsoft.gradient(enabled=false);
-    border: 1px solid #666666;
+    /*border: 1px solid #666666;*/
+    text-shadow: none;
     color: #777777;
-    font-weight: bold;
 }
 
 #searchForm > button.btn-inverse:hover {
     background-color: #D6D6D6;
     *background-color: #D6D6D6;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
     color: #FFFFFF;
 }
 
@@ -612,6 +611,7 @@ div.diapo {
     height: 30px;
     font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 12px;
+    font-weight: bold;
     -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -627,7 +627,7 @@ div.diapo {
     background-image: -o-linear-gradient(top, #B9B9B9, #A4A4A4);
     background-image: -moz-linear-gradient(top, #B9B9B9, #A4A4A4);
     background-image: linear-gradient(top, #B9B9B9, #A4A4A4);
-    border: 1px solid #666666;
+    /*border: 1px solid #666666;*/
     filter: progid:dximagetransform.microsoft.gradient(startColorstr='#B9B9B9', endColorstr='#A4A4A4', GradientType=0);
     filter: progid:dximagetransform.microsoft.gradient(enabled=false);
     color: #EAEAEA;
@@ -649,7 +649,7 @@ div.diapo {
 #idFrameT .tools .dropdown-menu {
     min-width: 95px;
     background-color: #A4A4A4;
-    border: 1px solid #666666;
+    /*border: 1px solid #666666;*/
 }
 
 #idFrameT .tools .dropdown-menu a {
@@ -669,7 +669,7 @@ div.diapo {
 }
 
 .dropdown-menu .divider {
-    background-color: #666666;
+    background-color: #777777;
     border-bottom: 1px solid #B0B0B0;
     margin: 3px 1px;
 }
@@ -1384,6 +1384,7 @@ input.btn-mini {
 
 #look_box .btn {
     margin: 2px;
+    font-weight: bold;
     -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -1399,7 +1400,7 @@ input.btn-mini {
     background-image: -o-linear-gradient(top, #B9B9B9, #A4A4A4);
     background-image: -moz-linear-gradient(top, #B9B9B9, #A4A4A4);
     background-image: linear-gradient(top, #B9B9B9, #A4A4A4);
-    border: 1px solid #666666;
+    /*border: 1px solid #666666;*/
     filter: progid:dximagetransform.microsoft.gradient(startColorstr='#B9B9B9', endColorstr='#A4A4A4', GradientType=0);
     filter: progid:dximagetransform.microsoft.gradient(enabled=false);
     color: #EAEAEA;
@@ -1839,7 +1840,11 @@ BOITES MODALES
     background-image: -o-linear-gradient(top, #FFFFFF, #D6D6D6);
     background-image: linear-gradient(top, #FFFFFF, #D6D6D6);
     background-image: -moz-linear-gradient(top, #FFFFFF, #D6D6D6);
-    border: 1px solid #666666;
+    /*border: 1px solid #666666;*/
+    font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    text-shadow: none;
     color: #555555;
     -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -1848,6 +1853,7 @@ BOITES MODALES
 
 .sbasglob .btn-inverse:hover,
 #sbasfiltercont .btn-inverse:hover {
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
     color: #FFFFFF;
 }
 
@@ -2493,6 +2499,7 @@ DIV.thesaurus U.w
     padding: 2px 9px;
     height: 24px;
     font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-weight: bold;
     -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -2507,20 +2514,19 @@ DIV.thesaurus U.w
     background-image: -o-linear-gradient(top, #FFFFFF, #D6D6D6);
     background-image: linear-gradient(top, #FFFFFF, #D6D6D6);
     background-image: -moz-linear-gradient(top, #FFFFFF, #D6D6D6);
-    background-repeat: repeat-x;
-    *border: 0;
-    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
     border-color: #D6D6D6 #D6D6D6 #bfbfbf;
     border-bottom-color: #b3b3b3;
     filter: progid:dximagetransform.microsoft.gradient(startColorstr='#ffffff', endColorstr='#D6D6D6', GradientType=0);
     filter: progid:dximagetransform.microsoft.gradient(enabled=false);
-    border: 1px solid #666666;
+    /*border: 1px solid #666666;*/
+    text-shadow: none;
     color: #777777;
 }
 
 #buttonEditing .btn-inverse:hover {
     background-color: #D6D6D6;
     *background-color: #D6D6D6;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
     color: #FFFFFF;
 }
 
@@ -2555,6 +2561,7 @@ DIV.thesaurus U.w
     margin-bottom: 20px;
     font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 12px;
+    font-weight: bold;
     -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -2570,14 +2577,12 @@ DIV.thesaurus U.w
     background-image: -o-linear-gradient(top, #FFFFFF, #D6D6D6);
     background-image: linear-gradient(top, #FFFFFF, #D6D6D6);
     background-image: -moz-linear-gradient(top, #FFFFFF, #D6D6D6);
-    background-repeat: repeat-x;
-    *border: 0;
-    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
     border-color: #D6D6D6 #D6D6D6 #bfbfbf;
     border-bottom-color: #b3b3b3;
     filter: progid:dximagetransform.microsoft.gradient(startColorstr='#ffffff', endColorstr='#D6D6D6', GradientType=0);
     filter: progid:dximagetransform.microsoft.gradient(enabled=false);
-    border: 1px solid #666666;
+    /*border: 1px solid #666666;*/
+    text-shadow: none;
     color: #777777;
 }
 
@@ -2585,6 +2590,7 @@ DIV.thesaurus U.w
 #TH_Opresets .btn-inverse:hover {
     background-color: #D6D6D6;
     *background-color: #D6D6D6;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
     color: #FFFFFF;
 }
 
@@ -3775,4 +3781,182 @@ dans l'onglet thesaurus : arbres, menus contextuels
     padding: 5px;
     text-align:center;
     vartical-align:middle;
+}
+
+
+
+/** UPLOAD MANAGER */
+
+#uploadBox .clear {
+    clear: both;
+}
+
+#uploadBox #tab-upload {
+    padding: 10px;
+}
+
+#uploadBoxLeft, #uploadBoxRight {
+    width: 48%;
+    height: 100%;
+    overflow: auto;
+    text-align: center;
+}
+
+#uploadBoxLeft {
+    float: left;
+}
+
+#uploadBoxRight {
+    float: right;
+}
+
+#uploadBox .well {
+    margin: 0;
+    padding: 0.5%;
+    color: #333333;
+}
+
+#uploadBox h5 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    font-weight: bold;
+    text-align: left;
+}
+
+#uploadBox button.btn, #uploadBox span.btn {
+    font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+#uploadBox .btn-inverse {
+    background-color: #D6D6D6;
+    *background-color: #D6D6D6;
+    background-image: -ms-linear-gradient(top, #FFFFFF, #D6D6D6);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FFFFFF), to(#D6D6D6));
+    background-image: -webkit-linear-gradient(top, #FFFFFF, #D6D6D6);
+    background-image: -o-linear-gradient(top, #FFFFFF, #D6D6D6);
+    background-image: linear-gradient(top, #FFFFFF, #D6D6D6);
+    background-image: -moz-linear-gradient(top, #FFFFFF, #D6D6D6);
+    border-color: #D6D6D6 #D6D6D6 #bfbfbf;
+    border-bottom-color: #b3b3b3;
+    filter: progid:dximagetransform.microsoft.gradient(startColorstr='#ffffff', endColorstr='#D6D6D6', GradientType=0);
+    filter: progid:dximagetransform.microsoft.gradient(enabled=false);
+    /*border: 1px solid #666666;*/
+    text-shadow: none;
+    color: #777777;
+    font-weight: bold;
+}
+
+#uploadBox .btn-inverse:hover, #uploadBox .disabled {
+    background-color: #D6D6D6;
+    *background-color: #D6D6D6;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    color: #FFFFFF;
+}
+
+#uploadBox .fileinput-button {
+  position: relative;
+  overflow: hidden;
+}
+
+#uploadBox .fileinput-button input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  border: solid transparent;
+  border-width: 0 0 100px 200px;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  -moz-transform: translate(-300px, 0) scale(4);
+  direction: ltr;
+  cursor: pointer;
+}
+
+#uploadBox .status-tab {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+#uploadBox .status-tab td {
+    padding: 2px;
+}
+
+#uploadBox .status-tab-left {
+    width: 48%;
+    padding-right: 5px;
+    text-align: right;
+}
+
+#uploadBox .status-tab-right {
+    width: 48%;
+    padding-left: 5px;
+    text-align: left;
+}
+
+#uploadBox .status-tab-left input, #uploadBox .status-tab-right input {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#uploadBox .myspan {
+    margin: 0;
+    height: 210px;
+    max-width: 150px;
+}
+
+#uploadBox .upload-record {
+    margin: 5px 15px 5px 0;
+    height: 190px;
+    text-align: center;
+}
+
+#uploadBox .upload-record .thumbnail-content {
+    height: 190px;
+    max-width: 125px;
+    display: table-cell;
+    vertical-align: middle;
+    word-wrap: break-word;
+}
+
+#uploadBox .upload-record .name-doc {
+    font-weight: bold;
+}
+
+#uploadBox .upload-record .infos-doc {
+    color: #777777;
+}
+
+#uploadBox .upload-record .remove-element {
+    margin: 2px 0;
+}
+
+#uploadBox .upload-record .error {
+    padding: 0;
+    width: 100%;
+}
+
+#uploadBox .select-label {
+    font-style: italic;
+    color: #999999;
+}
+
+#uploadBox .select-row {
+    font-weight: normal;
+    font-style: normal;
+}
+
+#uploadBoxRight .progress {
+    margin-top: 4px;
+    margin-bottom: 4px;
+    height: 10px;
+}
+
+#uploadBoxRight .progress .progress-bar {
+    height: 10px;
 }
