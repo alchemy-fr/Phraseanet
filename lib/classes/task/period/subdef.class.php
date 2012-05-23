@@ -222,12 +222,12 @@ class task_period_subdef extends task_databoxAbstract
             <input type="text" name="period" style="width:40px;" onchange="chgxmltxt(this, 'period');" value="">
             <?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
             <br/>
-        <?php echo sprintf(_("task::_common_:passer tous les %s records a l'etape suivante"), '<input type="text" name="flush" style="width:40px;" onchange="chgxmltxt(this, \'flush\');" value="">'); ?>
+            <?php echo sprintf(_("task::_common_:passer tous les %s records a l'etape suivante"), '<input type="text" name="flush" style="width:40px;" onchange="chgxmltxt(this, \'flush\');" value="">'); ?>
             <br/>
             <br/>
-        <?php echo _('task::_common_:relancer la tache tous les') ?>&nbsp;
+            <?php echo _('task::_common_:relancer la tache tous les') ?>&nbsp;
             <input type="text" name="maxrecs" style="width:40px;" onchange="chgxmltxt(this, 'maxrecs');" value="">
-        <?php echo _('task::_common_:records, ou si la memoire depasse') ?>&nbsp;
+            <?php echo _('task::_common_:records, ou si la memoire depasse') ?>&nbsp;
             <input type="text" name="maxmegs" style="width:40px;" onchange="chgxmltxt(this, 'maxmegs');" value="">
             Mo
             <br/>
@@ -262,9 +262,18 @@ class task_period_subdef extends task_databoxAbstract
         $this->log(sprintf(
                 "Generate subdefs for :  sbas_id %s / record %s "
                 , $this->sbas_id, $record_id));
-        $record = new record_adapter($this->sbas_id, $record_id);
 
-        $record->generate_subdefs($databox, null);
+        try {
+            $record = new record_adapter($this->sbas_id, $record_id);
+
+            $record->generate_subdefs($databox, null);
+        } catch (\Exception $e) {
+            $this->log(
+                sprintf(
+                    'Generate failed for record %d on databox %s (%s)', $record_id, $record->get_databox()->get_viewname(), $e->getMessage()
+                )
+            );
+        }
 
         $this->recs_to_write[] = $record->get_record_id();
 
