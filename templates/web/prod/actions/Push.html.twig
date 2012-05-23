@@ -107,8 +107,8 @@
                       {% set recommendation = recommendation %}
                     {% endif %}
                     {% set recommendation = recommendation
-                    ~ ' <a href="#" class="recommended_users" tooltipsrc="/prod/tooltip/user/'
-                    ~ user.get_id() ~ '/" class="UserTips"/">'
+                    ~ ' <a href="#" class="recommended_users UserTips" tooltipsrc="/prod/tooltip/user/'
+                    ~ user.get_id() ~ '/" >'
                     ~ '<input type="hidden" name="usr_id" value="' ~ user.get_id() ~ '" />'
                     ~ user.get_display_name()
                     ~ '</a>' %}
