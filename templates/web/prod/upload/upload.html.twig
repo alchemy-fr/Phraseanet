@@ -19,27 +19,31 @@
         {# upload tab content #}
         <div id="tab-upload">
             <form id="fileupload" enctype="multipart/form-data" method="POST" action="/prod/upload/">
-                {# action bar #}
-                <div>
-                    <input type="file" multiple directory webkitdirectory mozdirectory name="files[]">
-                    <button type="button" class="upload-submitter">{% trans 'Upload' %}</button>
-                    <button type="button" class="clear-queue">{% trans 'Clear queue' %}</button>
-                    <span class='progress-bar-total'></span>
-                </div>
 
-                <div>
-                    {# upload box #}
-                    <div class='upload-box'></div>
+                <div id="uploadBoxLeft" class="well">
+
+                    {# <h5 style="margin-top: 10px;">{% trans 'Choose files to add' %} :</h5> #}
+                    {# action bar #}
+                    <div id="addFileList">
+                        <div class="btn-toolbar">
+                            <span class="btn btn-inverse fileinput-button input-medium">
+                                <span>{% trans 'Select files...' %}</span>
+                                <input type="file" name="files[]" multiple directory webkitdirectory mozdirectory>
+                            </span>
+                        {#    <button type="button" class="upload-submitter btn btn-inverse input-medium">{% trans 'Send' %}</button> #}
+                        </div>
+                    </div>
+
                     {# settings box #}
                     <div class='settings-box'>
-                        <span>{% trans 'upload:: Destination (collection) :' %}</span>
+                        <h5>{% trans 'upload:: Destination (collection) :' %} :</h5>
                         {# collections list #}
                         {% if collections|length > 0 %}
-                            <select name="base_id">
+                            <select name="collection" class="span3" style="margin-left: 10px;">
                             {% for  sbasId, availableCollections in collections %}
-                                <optgroup label="{{ availableCollections['databox'].get_viewname() }}" >
+                                <optgroup label="{{ availableCollections['databox'].get_viewname() }}" class="select-label">
                                 {% for collection in availableCollections['databox_collections'] %}
-                                    <option value="{{ collection.get_base_id() }}">{{ collection.get_name() }}</option>
+                                    <option value="{{ collection.get_base_id() }}" class="select-row">{{ collection.get_name() }}</option>
                                 {% endfor %}
                                 </optgroup>
                             {% endfor %}
@@ -48,36 +52,26 @@
                             {% for availableCollections in collections %}
                                 {% for collection in availableCollections['databox_collections'] %}
                                     <div id="status-{{ collection.get_base_id() }}" class='collection-status' style='{{ loop.first ? "display:block" :"display:none" }}'>
-                                        <table>
-                                            <thead>
-                                                <tr>
-                                                    <th colspan="4">
-                                                        {% trans 'upload:: Status :' %}
-                                                    </th>
-                                                </tr>
-                                            </thead>
+                                        <h5>{% trans 'upload:: Status :' %} :</h5>
+                                        <table class="status-tab">
                                             <tbody>
-                                            {% for bit, status in availableCollections['databox'].get_statusbits() %}
+                                            {% for status in availableCollections['databox'].get_statusbits() %}
                                                 <tr>
-                                                    <td colspan="4">
-                                                        <h2>{{ status['name']|title }}</h2>
+                                                    <td colspan="2">
+                                                        <h6>{{ status['name']|title }}</h6>
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td>
+                                                    <td class="status-tab-left">
                                                         {% if status['img_off'] is not empty %}
                                                             <img src="{{ status['img_off'] }}" width="16" height="16" />
                                                         {% endif %}
+                                                        <span>{{ status['labeloff']|default('off') }}</span>
+                                                        <input type="radio" name="label_{{ collection.get_base_id() }}_{{ status['name'] }}" value="off" checked="checked"/>
                                                     </td>
-                                                    <td>
-                                                        <label for="labeloff">{{ status['labeloff']|default('off') }}</label>
-                                                        <input type="radio" name="status[{{ bit }}]" value="0" checked="checked"/>
-                                                    </td>
-                                                    <td>
-                                                        <input type="radio" name="status[{{ bit }}]" value="1" />
-                                                        <label for="labelon">{{ status['labelon']|default('on') }}</label>
-                                                    </td>
-                                                    <td>
+                                                    <td class="status-tab-right">
+                                                        <input type="radio" name="label_{{ collection.get_base_id() }}_{{ status['name'] }}" value="on" />
+                                                        <span for="labelon">{{ status['labelon']|default('on') }}</span>
                                                         {% if status['img_on'] is not empty %}
                                                             <img src="{{ status['img_on'] }}" width="16" height="16" />
                                                         {% endif %}
@@ -93,9 +87,30 @@
                             {% trans 'You can not upload files' %}
                         {% endif %}
                     </div>
-                    {# download box #}
-                    <div class='download-box' style='width:33%;float:left;height: 100%;overflow:auto;'></div>
+
+                    {# upload box #}
+                    <div class='upload-box' style="display: none;">
+                        <h5>{% trans 'Selected files' %} :</h5>
+                        <button type="button" class="clear-queue btn btn-inverse input-medium" style="margin-bottom: 10px;">{% trans 'Clear list' %}</button>
+                        <button type="button" class="upload-submitter btn btn-inverse input-medium" style="margin-bottom: 10px;">{% trans 'Send' %}</button>
+                        <div class="clear"></div>
+                        <div class='upload-box-addedfiles'></div>
+                        <div class="clear"></div>
+                    </div>
                 </div>
+
+                <div id="uploadBoxRight" class="well">
+                    <h5 style="margin-top: 10px;">{% trans 'Transmited files' %} :
+                        <span class='bitrate-box'></span>
+                    </h5>
+                    <div class="progress progress-striped active">
+                        <div class="progress-bar-total bar" style="width: 0%;"></div>
+                    </div>
+
+                    {# download box #}
+                    <div class='download-box'></div>
+                </div>
+
             </form>
          </div>
     </div>
@@ -106,10 +121,17 @@ $(document).ready(function () {
     //Upload management
     var UploaderManager = new p4.UploaderManager({
         container: $('#uploadBox'),
-        uploadBox: $('#uploadBox .upload-box'),
+        uploadBox: $('#uploadBox .upload-box-addedfiles'),
         settingsBox: $('#uploadBox .settings-box'),
         downloadBox: $('#uploadBox .download-box')
     });
+
+    UploaderManager.Preview.setOptions({
+                        maxWidth: 125,
+                        maxHeight: 75,
+                        minWidth: 80,
+                        minHeight: 40
+                    });
 
     //Init jquery tabs
     $(".upload-tabs", UploaderManager.getContainer()).tabs({
@@ -134,11 +156,12 @@ $(document).ready(function () {
     //Remove all element from upload box
     $("button.clear-queue", UploaderManager.getContainer()).bind("click", function(){
         UploaderManager.clearUploadBox();
+        $('.upload-box').hide();
     });
 
     //Remove an element from the upload box
     $("button.remove-element", UploaderManager.getUploadBox()).live("click", function(){
-        var container = $(this).closest(".upload-record");
+        var container = $(this).closest("li");
         var uploadIndex = container.find("input[name=uploadIndex]").val();
         UploaderManager.removeData(uploadIndex);
         container.remove();
@@ -164,13 +187,14 @@ $(document).ready(function () {
             //Since singleFileUploads &  sequentialUploads are setted to true
             //There is only on file data.files
             $.each(data.files, function (index, file) {
+                $('.upload-box').show();
 
                 if (file.error) {
-                    var params = $.extend({}, file, {error: language.errorFileApi});
+                    var params = $.extend({}, file, {language: language});
                     p4.Mustache.Render('Upload-Items-Error', params, function(html){
                         UploaderManager.getUploadBox().append(html);
                     });
-                }else{
+                } else {
                     // Add data to Queue
                     UploaderManager.addData(data);
 
@@ -179,9 +203,7 @@ $(document).ready(function () {
                         name: file.name,
                         type: file.type,
                         uploadIndex: UploaderManager.getUploadIndex(),
-                        language: {
-                            cancel: language.cancel
-                        }
+                        language: language
                     }
 
                     //Set context in upload-box
@@ -204,9 +226,17 @@ $(document).ready(function () {
         //on success upload
         done: function (e, data) {
             // set progress bar to 100% for preventing mozilla bug which never reach 100%
-            data.context.find('.progress-bar').empty().append('100');
+            data.context.find('.progress-bar').width('100%');
+            data.context.find('div.progress').removeClass('progress-striped active');
+            data.context.find('button.remove-element').removeClass('btn-inverse').addClass('disabled');
             UploaderManager.removeData(data.uploadIndex);
             data.context.find("button.cancel").remove();
+
+            if (UploaderManager.Queue.isEmpty()){
+                progressbarAll.width('100%');
+                bitrateBox.empty();
+                $('#uploadBoxRight .progress').removeClass('progress-striped active');
+            }
             return false;
         }
     });
@@ -229,13 +259,15 @@ $(document).ready(function () {
 
         //Set new context in download-box
         $.each(data.files, function (index, file) {
-            p4.Mustache.Render('Download-Items', file, function(html){
+            var params = $.extend({}, file, {language: language});
+            p4.Mustache.Render('Download-Items', params, function(html){
                 UploaderManager.getDownloadBox().append(html);
 
                 data.context = $(".upload-record", UploaderManager.getDownloadBox()).last();
+                data.contextImage = $(".upload-record .thumbnail-content", UploaderManager.getDownloadBox()).last();
 
                 //copy image
-                data.context.prepend(image);
+                data.contextImage.prepend(image);
 
                 //launch ajax request
                 var jqXHR = $this.fileupload('send', data)
@@ -243,7 +275,7 @@ $(document).ready(function () {
                     //Request is aborted
                     if (errorThrown === 'abort') {
                         data.context.remove();
-                    }else{
+                    } else {
                         data.context.find('.error').append(jqXHR.responseText);
                     }
                     //Remove data
@@ -260,18 +292,19 @@ $(document).ready(function () {
         return false;
     });
 
+    var bitrateBox = $('#uploadBoxRight .bitrate-box');
+
     // Get one file upload progress & bitrate
     $('#fileupload', UploaderManager.getContainer()).bind('fileuploadprogress', function (e, data) {
         var progressbar = data.context.find('.progress-bar');
-        var bitratebox = data.context.find('.bitrate-box');
-        progressbar.empty().append(UploaderManager.Formater.pourcent(data.loaded, data.total));
-        bitratebox.empty().append(UploaderManager.Formater.bitrate(data.bitrate));
+        progressbar.width(Math.round(UploaderManager.Formater.pourcent(data.loaded, data.total)) + '%');
+        bitrateBox.empty().append(UploaderManager.Formater.bitrate(data.bitrate));
     });
 
+    var progressbarAll = $('#uploadBoxRight .progress-bar-total');
     //Get global upload progress
     $('#fileupload', UploaderManager.getContainer()).bind('fileuploadprogressall', function (e, data) {
-        var progressbar = $(this).find('.progress-bar-total');
-        progressbar.empty().append(UploaderManager.Formater.pourcent(data.loaded, data.total));
+        progressbarAll.width(Math.round(UploaderManager.Formater.pourcent(data.loaded, data.total)) + '%');
     });
 
 });

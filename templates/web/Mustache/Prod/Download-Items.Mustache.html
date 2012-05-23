@@ -1,9 +1,13 @@
-<div class='upload-record'>
-    <div>{{ name }}</div>
-    <div>{{ size }}</div>
-    <div>{{ type }}</div>
-    <div class='error'></div>
-    <div class='progress-bar'></div>
-    <div class='bitrate-box'></div>
-    <button class="cancel" type="button">{{ language.cancel }}</button>
-</div>
+<li class="myspan">
+    <div class="upload-record thumbnail">
+        <div class="thumbnail-content">
+            <div class="preview-img"></div>
+            <p class="name-doc">{{ name }}</p>
+            <p class='error'></p>
+            <div class="progress progress-striped active">
+                <div class="progress-bar bar" style="width: 0%;"></div>
+            </div>
+            <button type="button" class="remove-element btn btn-inverse btn-mini">{{ language.cancel }}</button>
+        </div>
+    </div>
+</li>

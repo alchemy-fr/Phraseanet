@@ -52,7 +52,7 @@ class Upload implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $app->get('/upload/', $this->call('getUploadForm'))
+        $controllers->get('/', $this->call('getUploadForm'))
             ->bind('upload_form');
 
         /**
@@ -73,7 +73,7 @@ class Upload implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $app->post('/upload/', $this->call('upload'))
+        $controllers->post('/', $this->call('upload'))
             ->bind('upload');
 
         return $controllers;

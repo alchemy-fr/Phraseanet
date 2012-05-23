@@ -1,10 +1,11 @@
-<li>
-    <div class='upload-record'>
-        <div class='preview-img'></div>
-        <div>{{ name }}</div>
-        <div>{{ size }}</div>
-        <div>{{ type }}</div>
-        <button type='button' class='remove-element'>{{ language.cancel }}</button>
-        <input type='hidden' name='uploadIndex' value='{{ uploadIndex }}'/>
+<li class="myspan">
+    <div class="upload-record thumbnail">
+        <div class="thumbnail-content">
+            <div class="preview-img"></div>
+            <p class="name-doc">{{ name }}</p>
+            <p class="infos-doc">({{ size }}, {{ type }})</p>
+            <button type="button" class="remove-element btn btn-inverse btn-mini">{{ language.cancel }}</button>
+            <input type="hidden" name="uploadIndex" value="{{ uploadIndex }}"/>
+        </div>
     </div>
 </li>
