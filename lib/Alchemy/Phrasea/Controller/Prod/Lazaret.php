@@ -303,7 +303,7 @@ class Lazaret implements ControllerProviderInterface
             $app['Core']['EM']->flush();
         } catch (\Exception $e) {
             $ret['success'] = false;
-            $ret['message'] = $e->getMessage() . ' ' . $e->getFile() . ' ' . $e->getLine() . ' ' . $e->getTraceAsString();
+            $ret['message'] = $e->getMessage() ;
         }
 
         $datas = $app['Core']['Serializer']->serialize($ret, 'json');

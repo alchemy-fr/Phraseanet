@@ -184,18 +184,18 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->method('getId')
             ->will($this->onConsecutiveCalls(1, 2, 3, 4, 5));
 
-        //Provide consecute value for all type of attributes
+        //Provide consecutive value for all type of attributes
         //Expect 4 call since the Fifth attribute is not eligible (see request attributes)
         $lazaretAttribute->expects($this->exactly(4))
             ->method('getName')
             ->will($this->onConsecutiveCalls(
                     Alchemy\Phrasea\Border\Attribute\Attribute::NAME_METADATA, Alchemy\Phrasea\Border\Attribute\Attribute::NAME_STORY, Alchemy\Phrasea\Border\Attribute\Attribute::NAME_STATUS, Alchemy\Phrasea\Border\Attribute\Attribute::NAME_METAFIELD
                 ));
-
+        $story = record_adapter::createStory(self::$collection);
         //Provide some valid test values
         $lazaretAttribute->expects($this->exactly(4))
             ->method('getValue')
-            ->will($this->onConsecutiveCalls('metadataValue', static::$records['record_story_1']->get_serialize_key(), '00001111', 'metafieldValue'));
+            ->will($this->onConsecutiveCalls('metadataValue', $story->get_serialize_key(), '00001111', 'metafieldValue'));
 
         //Add the 5 attribute
         $lazaretFile->addLazaretAttribute($lazaretAttribute);
@@ -231,11 +231,12 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->app['Core']['EM'] = $originalEm;
 
         $response = $this->client->getResponse();
-
         $this->assertResponseOk($response);
         $this->assertGoodJsonContent(json_decode($response->getContent()));
 
-        $em = $lazaretFile = $lazaretSession = $lazaretAttribute = null;
+        $story->delete();
+
+        $em = $lazaretFile = $lazaretSession = $lazaretAttribute = $story = null;
     }
 
     /**
