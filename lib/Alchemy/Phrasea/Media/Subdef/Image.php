@@ -55,7 +55,7 @@ class Image extends Provider
         $size = $this->getOption(self::OPTION_SIZE)->getValue();
         $resolution = $this->getOption(self::OPTION_RESOLUTION)->getValue();
 
-        $this->spec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
+        $this->spec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND);
         $this->spec->setDimensions($size, $size);
         $this->spec->setQuality($this->getOption(self::OPTION_QUALITY)->getValue());
         $this->spec->setStrip($this->getOption(self::OPTION_STRIP)->getValue());
