@@ -149,10 +149,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $this->record = $record;
         $this->load($substitute);
 
-        $nowtime = new DateTime('-3 days');
-        $random = $record->get_modification_date() > $nowtime;
-
-        $this->generate_url($random);
+        $this->generate_url();
 
         return $this;
     }
@@ -349,7 +346,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     public function getEtag()
     {
         if ( ! $this->etag && $this->is_physically_present()) {
-            $this->setEtag(md5_file($this->get_pathfile()));
+            $this->setEtag(md5(time() . $this->get_pathfile()));
         }
 
         return $this->etag;
@@ -363,8 +360,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $stmt = $this->record->get_databox()->get_connection()->prepare($sql);
         $stmt->execute(array(':subdef_id' => $this->subdef_id, ':etag'      => $etag));
         $stmt->closeCursor();
-
-        $this->delete_data_from_cache();
 
         return $this;
     }
@@ -728,6 +723,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $stmt->closeCursor();
 
         $subdef = new self($record, $name);
+        $subdef->delete_data_from_cache();
 
         if ($subdef->get_permalink() instanceof media_Permalink_Adapter) {
             $subdef->get_permalink()->delete_data_from_cache();
@@ -743,7 +739,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      * @param  boolean $random
      * @return string
      */
-    protected function generate_url($random = false)
+    protected function generate_url()
     {
         if (in_array($this->mime, array('video/mp4'))) {
             $token = p4file::apache_tokenize($this->get_pathfile());
@@ -756,8 +752,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
         $this->url = "/datafiles/" . $this->record->get_sbas_id()
             . "/" . $this->record->get_record_id() . "/"
-            . $this->get_name() . "/"
-            . ($random ? '?' . mt_rand(10000, 99999) : '');
+            . $this->get_name() . "/";
 
         return;
     }
@@ -784,6 +779,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
     public function delete_data_from_cache($option = null)
     {
+        $this->setEtag(null);
         $databox = $this->get_record()->get_databox();
 
         return $databox->delete_data_from_cache($this->get_cache_key($option));

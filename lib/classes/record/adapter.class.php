@@ -1016,6 +1016,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                     path = :path,
                     size = :size,
                     substit = 1
+                    updated_on = now()
                 WHERE name = :name AND record_id = :record_id';
 
             $params = array(

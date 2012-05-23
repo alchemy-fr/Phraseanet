@@ -39,7 +39,7 @@
                         <h5>{% trans 'upload:: Destination (collection) :' %} :</h5>
                         {# collections list #}
                         {% if collections|length > 0 %}
-                            <select name="collection" class="span3" style="margin-left: 10px;">
+                            <select name="base_id" class="span3" style="margin-left: 10px;">
                             {% for  sbasId, availableCollections in collections %}
                                 <optgroup label="{{ availableCollections['databox'].get_viewname() }}" class="select-label">
                                 {% for collection in availableCollections['databox_collections'] %}
@@ -55,7 +55,7 @@
                                         <h5>{% trans 'upload:: Status :' %} :</h5>
                                         <table class="status-tab">
                                             <tbody>
-                                            {% for status in availableCollections['databox'].get_statusbits() %}
+                                            {% for bit, status in availableCollections['databox'].get_statusbits() %}
                                                 <tr>
                                                     <td colspan="2">
                                                         <h6>{{ status['name']|title }}</h6>
@@ -67,10 +67,10 @@
                                                             <img src="{{ status['img_off'] }}" width="16" height="16" />
                                                         {% endif %}
                                                         <span>{{ status['labeloff']|default('off') }}</span>
-                                                        <input type="radio" name="label_{{ collection.get_base_id() }}_{{ status['name'] }}" value="off" checked="checked"/>
+                                                        <input type="radio" name="status[{{ bit }}]" value="off" checked="checked"/>
                                                     </td>
                                                     <td class="status-tab-right">
-                                                        <input type="radio" name="label_{{ collection.get_base_id() }}_{{ status['name'] }}" value="on" />
+                                                        <input type="radio" name="status[{{ bit }}]" value="on" />
                                                         <span for="labelon">{{ status['labelon']|default('on') }}</span>
                                                         {% if status['img_on'] is not empty %}
                                                             <img src="{{ status['img_on'] }}" width="16" height="16" />
@@ -108,7 +108,10 @@
                     </div>
 
                     {# download box #}
-                    <div class='download-box'></div>
+                    <div>
+                        <ul class='download-box'>
+                        </ul>
+                    </div>
                 </div>
 
             </form>
