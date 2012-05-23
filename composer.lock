@@ -110,6 +110,11 @@
             "source-reference": "v1.0.0"
         },
         {
+            "package": "pimple/pimple",
+            "version": "dev-master",
+            "source-reference": "v1.0.0"
+        },
+        {
             "package": "silex/silex",
             "version": "dev-master",
             "source-reference": "6dcb25872210c50292516683ba541c1b29624afd"
