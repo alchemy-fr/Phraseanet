@@ -1637,12 +1637,6 @@ EM
     color: white;
 }
 
-#tooltip .descimpair
-{
-    background-color:#C9C9C9;
-}
-
-
 DIV.onglets
 {
     white-space:nowrap;
@@ -2334,7 +2328,7 @@ DIV.thesaurus U.w
     border-radius: 6px;
 }
 
-#EDIT_MID_R{ 
+#EDIT_MID_R{
     width: 400px;
     right: 0;
 }
@@ -2731,16 +2725,8 @@ DIV.thesaurus U.w
 #tooltip{
     position:absolute;
     z-index:32000;
-    border:1px solid #404040;
     overflow:hidden;
-    background-color:#B0B0B0;
-    color:#1a1a1a;
 }
-#tooltip, .fixeddesc
-{
-    padding:5px;
-}
-
 
 #PREVIEWBOX, #EDITWINDOW
 {
