@@ -12,7 +12,6 @@
                 <strip>no</strip>
                 <quality>75</quality>
                 <meta>yes</meta>
-                <baseurl></baseurl>
                 <mediatype>image</mediatype>
                 <label lang="fr">Prévisualisation</label>
                 <label lang="en">Preview</label>
@@ -26,7 +25,6 @@
                 <quality>75</quality>
                 <meta>no</meta>
                 <mediatype>image</mediatype>
-                <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
                 <label lang="fr">Imagette</label>
                 <label lang="en">Thumbnail</label>
             </subdef>
@@ -38,7 +36,6 @@
                 <size>800</size>
                 <mediatype>video</mediatype>
                 <writeDatas>yes</writeDatas>
-                <baseurl></baseurl>
                 <acodec>libfaac</acodec>
                 <vcodec>libx264</vcodec>
                 <bitrate>1000</bitrate>
@@ -53,7 +50,6 @@
                 <mediatype>gif</mediatype>
                 <delay>500</delay>
                 <writeDatas>no</writeDatas>
-                <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
                 <label lang="fr">Animation GIF</label>
                 <label lang="en">GIF Animation</label>
             </subdef>
@@ -62,7 +58,6 @@
                 <size>200</size>
                 <mediatype>image</mediatype>
                 <writeDatas>no</writeDatas>
-                <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
                 <label lang="fr">Imagette</label>
                 <label lang="en">Thumbnail</label>
             </subdef>
@@ -73,7 +68,6 @@
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <mediatype>audio</mediatype>
                 <writeDatas>yes</writeDatas>
-                <baseurl></baseurl>
                 <label lang="fr">Prévisualisation</label>
                 <label lang="en">Preview</label>
             </subdef>
@@ -81,7 +75,6 @@
                 <path>{{datapathweb}}{{basename}}/subdefs</path>
                 <mediatype>image</mediatype>
                 <writeDatas>no</writeDatas>
-                <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
                 <label lang="fr">Imagette</label>
                 <label lang="en">Thumbnail</label>
             </subdef>
@@ -91,7 +84,6 @@
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <mediatype>flexpaper</mediatype>
                 <writeDatas>no</writeDatas>
-                <baseurl></baseurl>
                 <label lang="fr">Prévisualisation</label>
                 <label lang="en">Preview</label>
             </subdef>
@@ -102,7 +94,6 @@
                 <dpi>72</dpi>
                 <size>200</size>
                 <writeDatas>no</writeDatas>
-                <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
                 <label lang="fr">Imagette</label>
                 <label lang="en">Thumbnail</label>
             </subdef>
@@ -115,7 +106,6 @@
                 <writeDatas>no</writeDatas>
                 <method>resample</method>
                 <dpi>72</dpi>
-                <baseurl></baseurl>
                 <label lang="fr">Prévisualisation</label>
                 <label lang="en">Preview</label>
             </subdef>
@@ -125,7 +115,6 @@
                 <writeDatas>no</writeDatas>
                 <method>resample</method>
                 <dpi>72</dpi>
-                <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
                 <label lang="fr">Imagette</label>
                 <label lang="en">Thumbnail</label>
             </subdef>

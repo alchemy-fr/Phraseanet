@@ -630,7 +630,11 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
         $searchDevices = array_merge((array) $devices, (array) databox_subdef::DEVICE_ALL);
 
-        foreach ($this->databox->get_subdef_structure() as $databoxSubdefs) {
+        foreach ($this->databox->get_subdef_structure() as $group => $databoxSubdefs) {
+
+            if ($this->get_type() != $group) {
+                continue;
+            }
 
             foreach ($databoxSubdefs as $databoxSubdef) {
 
@@ -982,14 +986,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 $path_file_dest = $path . $newfilename;
             }
 
-            if (trim($subdef_def->get_baseurl()) !== '') {
-                $base_url = str_replace(
-                    array($subdef_def->get_path(), $newfilename)
-                    , array($subdef_def->get_baseurl(), '')
-                    , $path_file_dest
-                );
-            }
-
             try {
                 $Core = \bootstrap::getCore();
                 $Core['media-alchemyst']->open($media->getFile()->getRealPath())
@@ -1013,8 +1009,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             $connbas = connection::getPDOConnection($this->get_sbas_id());
 
             $sql = 'UPDATE subdef
-                SET baseurl = :baseurl,
-                    file = :filename,
+                SET file = :filename,
                     width = :width,
                     height = :height,
                     mime = :mime,
@@ -1026,7 +1021,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             $params = array(
                 ':record_id' => $this->record_id,
                 ':name'      => $name,
-                ':baseurl'   => $base_url,
                 ':filename'  => $subdefFile->getFilename(),
                 ':mime'      => $subdefFile->getMimeType(),
                 ':path'      => $subdefFile->getPath(),
@@ -1691,9 +1685,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
             if (file_exists($pathdest)) {
                 $media = \MediaVorus\MediaVorus::guess(new \SplFileInfo($pathdest));
-                $baseurl = $subdef->get_baseurl() ? $subdef->get_baseurl() . substr(dirname($pathdest), strlen($subdef->get_path())) : '';
 
-                media_subdef::create($this, $subdef->get_name(), $media, $baseurl);
+                media_subdef::create($this, $subdef->get_name(), $media);
             }
 
             $this->clearSubdefCache($subdefname);
@@ -1728,6 +1721,10 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $Core = \bootstrap::getCore();
 
         try {
+            if (null === $this->get_hd_file()) {
+                return;
+            }
+
             $Core['media-alchemyst']->open($this->get_hd_file()->getPathname());
             $Core['media-alchemyst']->turnInto($pathdest, $subdef_class->getSpecs());
             $Core['media-alchemyst']->close();

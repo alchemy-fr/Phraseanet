@@ -845,7 +845,7 @@ class databox extends base
         return $this;
     }
 
-    public function setNewStructure(\SplFileInfo $data_template, $path_web, $path_doc, $baseurl)
+    public function setNewStructure(\SplFileInfo $data_template, $path_web, $path_doc)
     {
         if ( ! file_exists($data_template->getPathname())) {
             throw new \InvalidArgumentException(sprintf('File %s does not exists'));
@@ -853,11 +853,9 @@ class databox extends base
 
         $contents = file_get_contents($data_template->getPathname());
 
-        $baseurl = $baseurl ? p4string::addEndSlash($baseurl) : '';
-
         $contents = str_replace(
-            array("{{dataurl}}", "{{basename}}", "{{datapathweb}}", "{{datapathnoweb}}")
-            , array($baseurl, $this->dbname, $path_web, $path_doc)
+            array("{{basename}}", "{{datapathweb}}", "{{datapathnoweb}}")
+            , array($this->dbname, $path_web, $path_doc)
             , $contents
         );
 

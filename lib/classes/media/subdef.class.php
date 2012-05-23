@@ -30,12 +30,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      *
      * @var string
      */
-    protected $baseurl;
-
-    /**
-     *
-     * @var string
-     */
     protected $file;
 
     /**
@@ -176,7 +170,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $this->width = $datas['width'];
             $this->height = $datas['height'];
             $this->etag = $datas['etag'];
-            $this->baseurl = $datas['baseurl'];
             $this->path = $datas['path'];
             $this->file = $datas['file'];
             $this->is_physically_present = $datas['physically_present'];
@@ -192,7 +185,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
         $connbas = $this->record->get_databox()->get_connection();
 
-        $sql = 'SELECT subdef_id, name, baseurl, file, width, height, mime,
+        $sql = 'SELECT subdef_id, name, file, width, height, mime,
                 path, size, substit, created_on, updated_on, etag
                 FROM subdef
                 WHERE name = :name AND record_id = :record_id';
@@ -212,7 +205,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $this->width = (int) $row['width'];
             $this->height = (int) $row['height'];
             $this->mime = $row['mime'];
-            $this->baseurl = trim($row['baseurl']);
             $this->file = $row['file'];
             $this->etag = $row['etag'];
             $this->path = p4string::addEndSlash($row['path']);
@@ -239,7 +231,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             'mime'               => $this->mime
             , 'width'              => $this->width
             , 'height'             => $this->height
-            , 'baseurl'            => $this->baseurl
             , 'etag'               => $this->etag
             , 'path'               => $this->path
             , 'file'               => $this->file
@@ -290,7 +281,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $this->mime = 'image/png';
             $this->width = 256;
             $this->height = 256;
-            $this->baseurl = 'skins/icons/substitution/';
             $this->path = $registry->get('GV_RootPath') . 'www/skins/icons/substitution/';
             $this->file = 'regroup_thumb.png';
             $this->is_substituted = true;
@@ -301,7 +291,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $this->mime = 'image/png';
             $this->width = 256;
             $this->height = 256;
-            $this->baseurl = 'skins/icons/substitution/';
             $this->path = $registry->get('GV_RootPath') . 'www/skins/icons/substitution/';
             $this->file = str_replace('+', '%20', $mime) . '.png';
             $this->is_substituted = true;
@@ -310,7 +299,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $this->is_physically_present = false;
 
         if ( ! file_exists($this->path . $this->file)) {
-            $this->baseurl = 'skins/icons/';
             $this->path = $registry->get('GV_RootPath') . 'www/skins/icons/';
             $this->file = 'substitution.png';
             $this->is_substituted = true;
@@ -438,15 +426,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     public function get_path()
     {
         return $this->path;
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function get_baseurl()
-    {
-        return $this->baseurl;
     }
 
     /**
@@ -696,7 +675,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         return $datas;
     }
 
-    public static function create(record_Interface $record, $name, Media $media, $baseurl = '')
+    public static function create(record_Interface $record, $name, Media $media)
     {
         $databox = $record->get_databox();
         $connbas = $databox->get_connection();
@@ -707,7 +686,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $params = array(
             ':path'       => $path,
             ':file'       => $newname,
-            ':baseurl'    => $baseurl,
             ':width'      => 0,
             ':height'     => 0,
             ':mime'       => $media->getFile()->getMimeType(),
@@ -728,7 +706,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             }
 
             $sql = "UPDATE subdef
-              SET path = :path, file = :file, baseurl = :baseurl
+              SET path = :path, file = :file
                   , width = :width , height = :height, mime = :mime
                   , size = :size, dispatched = :dispatched, updated_on = NOW()
               WHERE subdef_id = :subdef_id";
@@ -736,9 +714,9 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $params[':subdef_id'] = $subdef->get_subdef_id();
         } catch (\Exception_Media_SubdefNotFound $e) {
             $sql = "INSERT INTO subdef
-              (record_id, name, path, file, baseurl, width
+              (record_id, name, path, file, width
                 , height, mime, size, dispatched, created_on, updated_on)
-              VALUES (:record_id, :name, :path, :file, :baseurl, :width, :height
+              VALUES (:record_id, :name, :path, :file, :width, :height
                 , :mime, :size, :dispatched, NOW(), NOW())";
 
             $params[':record_id'] = $record->get_record_id();
@@ -767,15 +745,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      */
     protected function generate_url($random = false)
     {
-        if ($this->baseurl !== '') {
-            $registry = registry::get_instance();
-            $this->url = $registry->get('GV_STATIC_URL')
-                . '/' . p4string::addEndSlash($this->baseurl)
-                . $this->file . ($random ? '?rand=' . mt_rand(10000, 99999) : '');
-
-            return;
-        }
-
         if (in_array($this->mime, array('video/mp4'))) {
             $token = p4file::apache_tokenize($this->get_pathfile());
             if ($token) {

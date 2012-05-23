@@ -31,9 +31,6 @@ return call_user_func(
             $deliver_content = function(\Session_Handler $session, \record_adapter $record, $subdef, $watermark, $stamp, $app) {
 
                     $file = $record->get_subdef($subdef);
-                    if ($file->get_baseurl() !== '') {
-                        return $app->redirect($file->get_url());
-                    }
 
                     $pathIn = $pathOut = $file->get_pathfile();
 
