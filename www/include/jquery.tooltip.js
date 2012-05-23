@@ -137,7 +137,7 @@
     if( helper.parent )
       return;
     // create the helper, h3 for title, div for url
-    helper.parent = $('<div id="' + settings.id + '"><div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix"><a class="tooltip_closer ui-dialog-titlebar-close ui-corner-all" style="background-color:black;position:absolute;top:0;right:0;cursor:pointer;display:none;z-index:100;" onclick="unfix_tooltip();return false;" href="#"><span class="ui-icon ui-icon-closethick" unselectable="on" style="-moz-user-select: none;">close</span></a></div><div class="body"></div></div>')
+    helper.parent = $('<div id="' + settings.id + '"><div class="body"></div></div>')
     // add to document
     .appendTo(document.body)
     // hide it at first
@@ -192,29 +192,6 @@
     // save current
     $.tooltip.current = this;
     title = this.tooltipText;
-
-    //		if ( settings(this).bodyHandler ) {
-    //			helper.title.hide();
-    //			var bodyContent = settings(this).bodyHandler.call(this);
-    //			if (bodyContent.nodeType || bodyContent.jquery) {
-    //				helper.body.empty().append(bodyContent);
-    //			} else {
-    //				helper.body.html( bodyContent );
-    //			}
-    //			helper.body.show();
-    //		} else if ( settings(this).showBody ) {
-    //			var parts = title.split(settings(this).showBody);
-    //			helper.title.html(parts.shift()).show();
-    //			helper.body.empty();
-    //			for(var i = 0, part; (part = parts[i]); i++) {
-    //				if(i > 0)
-    //					helper.body.append("<br/>");
-    //				helper.body.append(part);
-    //			}
-    //			helper.body.hideWhenEmpty();
-    //		} else {
-    //			helper.body.html(title).show();
-    //		}
 
     // if element has href or src, add and show it, otherwise hide it
     if( settings(this).showURL && $(this).url() )
@@ -350,9 +327,8 @@
 
         var zH;
 
-        if((Math.abs(ratioSurfaceV - ratioImage) > Math.abs(ratioSurfaceH - ratioImage)))
+        if((Math.abs(ratioSurfaceV - ratioImage) < Math.abs(ratioSurfaceH - ratioImage)))
         {
-          //				width = ($(h).width()>(v.x-40))?(v.x-40):$(h).width();
           var zL = event.pageX;
           var zW = $(h).width();
           zH = $(h).height();
@@ -435,6 +411,9 @@
           }
         }
 
+        top -= 10;
+        height += 20;
+
         helper.parent.css({
           width: width,
           height: height,
@@ -445,8 +424,10 @@
         if(resizeImgTips)
         {
           $imgTips.css({
-            width: width,
-            height: height
+            maxWidth: width,
+            maxHeight: height,
+            width: '100%',
+            height: '100%'
           });
         }
 
@@ -483,7 +464,7 @@
     if(event.stopPropagation)
       event.stopPropagation();
     showOverlay('_tooltip','body',unfix_tooltip, settings(this).fixableIndex);
-    $('#tooltip .tooltip_closer').show();
+    $('#tooltip .tooltip_closer').show().bind('click', unfix_tooltip);
     $.tooltip.blocked = true;
   }
 

@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Media\Subdef;
 
+use MediaAlchemyst\Specification\Image as ImageSpecification;
+
 /**
  * Image Subdef
  *
@@ -47,12 +49,13 @@ class Image extends Provider
     public function getMediaAlchemystSpec()
     {
         if ( ! $this->spec) {
-            $this->spec = new \MediaAlchemyst\Specification\Image();
+            $this->spec = new ImageSpecification();
         }
 
         $size = $this->getOption(self::OPTION_SIZE)->getValue();
         $resolution = $this->getOption(self::OPTION_RESOLUTION)->getValue();
 
+        $this->spec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
         $this->spec->setDimensions($size, $size);
         $this->spec->setQuality($this->getOption(self::OPTION_QUALITY)->getValue());
         $this->spec->setStrip($this->getOption(self::OPTION_STRIP)->getValue());

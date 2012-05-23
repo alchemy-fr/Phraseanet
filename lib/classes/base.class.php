@@ -302,6 +302,10 @@ abstract class base implements cache_cacheableInterface
             'ValidationDatas',
             'ValidationParticipants',
             'ValidationSessions',
+            'LazaretAttributes',
+            'LazaretChecks',
+            'LazaretFiles',
+            'LazaretSessions',
         );
 
         foreach ($rs as $row) {

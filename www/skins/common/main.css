@@ -101,13 +101,14 @@ img{
 
 
 #tooltip{
+    color:black;
     position:absolute;
-    background:black;
-    border:1px solid #666666;
-    color:white;
-    padding:5px;
     z-index:32000;
     overflow:hidden;
+}
+
+#tooltip hr{
+    margin: 8px 0;
 }
 
 

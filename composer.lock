@@ -51,12 +51,12 @@
         {
             "package": "imagine/Imagine",
             "version": "dev-develop",
-            "source-reference": "2637e79e489d728ff59f76fc5ad4748b029702c7"
+            "source-reference": "d5025548b57a5f52a2992405670c5d9f9e8f3ec0"
         },
         {
             "package": "media-alchemyst/media-alchemyst",
             "version": "dev-master",
-            "source-reference": "6070dd85661e699956175d033ae3cb5c580565a4"
+            "source-reference": "0328c5159a2ef33c36dabdeb20fdaaecf4cbdbad"
         },
         {
             "package": "mediavorus/mediavorus",
@@ -100,19 +100,14 @@
         {
             "package": "pimple/pimple",
             "version": "dev-master",
-            "source-reference": "v1.0.0"
-        },
-        {
-            "package": "pimple/pimple",
-            "version": "dev-master",
             "source-reference": "v1.0.0",
             "alias-pretty-version": "1.0.x-dev",
             "alias-version": "1.0.9999999.9999999-dev"
         },
         {
-            "package": "silex/silex",
+            "package": "pimple/pimple",
             "version": "dev-master",
-            "source-reference": "6dcb25872210c50292516683ba541c1b29624afd"
+            "source-reference": "v1.0.0"
         },
         {
             "package": "silex/silex",
@@ -120,6 +115,11 @@
             "source-reference": "6dcb25872210c50292516683ba541c1b29624afd",
             "alias-pretty-version": "1.0.x-dev",
             "alias-version": "1.0.9999999.9999999-dev"
+        },
+        {
+            "package": "silex/silex",
+            "version": "dev-master",
+            "source-reference": "6dcb25872210c50292516683ba541c1b29624afd"
         },
         {
             "package": "swftools/swftools",
@@ -163,12 +163,12 @@
         {
             "package": "twig/twig",
             "version": "dev-master",
-            "source-reference": "0fa26d642994630b2ec19c090149fa56ce84c789"
+            "source-reference": "573a36097146b319e5fb36546a0377c7440bbfe3"
         },
         {
             "package": "twig/twig",
             "version": "dev-master",
-            "source-reference": "0fa26d642994630b2ec19c090149fa56ce84c789",
+            "source-reference": "573a36097146b319e5fb36546a0377c7440bbfe3",
             "alias-pretty-version": "1.8.x-dev",
             "alias-version": "1.8.9999999.9999999-dev"
         },
@@ -178,13 +178,7 @@
             "source-reference": "827dc8696f1e5b70a4c507355877cdbab60fb3fa"
         }
     ],
-    "packages-dev": [
-        {
-            "package": "fabpot/php-cs-fixer",
-            "version": "dev-master",
-            "source-reference": "0c24e56efdaddd63b9f7e74a259952003e37e73f"
-        }
-    ],
+    "packages-dev": null,
     "aliases": [
 
     ],
