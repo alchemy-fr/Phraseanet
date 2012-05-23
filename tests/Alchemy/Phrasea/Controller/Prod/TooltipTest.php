@@ -134,13 +134,19 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $route = '/tooltip/DCESInfos/' . $databox->get_sbas_id()
                 . '/' . $field->get_id() . '/';
 
+            $crawler = $this->client->request('POST', $route);
+            $node = $crawler->filter('div.popover-content');
+            $found = trim($node->count());
+
+            $this->assertEquals(1, $found);
+
+            $node = $crawler->filter('div.popover-content *');
+
             if ($field->get_dces_element() !== null) {
-                $crawler = $this->client->request('POST', $route);
-                $this->assertGreaterThan(0, strlen($this->client->getResponse()->getContent()));
+                $this->assertGreaterThan(0, $node->count());
                 $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
             } else {
-                $crawler = $this->client->request('POST', $route);
-                $this->assertEquals(0, strlen($this->client->getResponse()->getContent()));
+                $this->assertEquals(0, $node->count());
                 $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
             }
         }

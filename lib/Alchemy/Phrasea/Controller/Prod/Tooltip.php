@@ -77,7 +77,7 @@ class Tooltip implements ControllerProviderInterface
                 $twig = $app['Core']->getTwig();
 
                 return new Response($twig->render(
-                            'common/preview.html'
+                            'prod/Tooltip/Preview.html.twig'
                             , array(
                             'record'      => $record
                             , 'not_wrapped' => true
@@ -106,7 +106,7 @@ class Tooltip implements ControllerProviderInterface
 
                 return new Response(
                         $twig->render(
-                            'common/caption.html'
+                            'prod/Tooltip/Caption.html.twig'
                             , array(
                             'record'       => $record
                             , 'view'         => $view
@@ -128,7 +128,7 @@ class Tooltip implements ControllerProviderInterface
 
                 return new Response(
                         $twig->render(
-                            'common/technical_datas.twig'
+                            'prod/Tooltip/TechnicalDatas.html.twig'
                             , array('record'   => $record, 'document' => $document)
                         )
                 );
@@ -145,7 +145,7 @@ class Tooltip implements ControllerProviderInterface
 
                 return new Response(
                         $twig->render(
-                            'common/databox_field.twig'
+                            'prod/Tooltip/DataboxField.html.twig'
                             , array('field' => $field)
                         )
                 );
@@ -162,7 +162,7 @@ class Tooltip implements ControllerProviderInterface
 
                 return new Response(
                         $twig->render(
-                            'common/databox_field_DCES.twig'
+                            'prod/Tooltip/DCESFieldInfo.html.twig'
                             , array('field' => $field)
                         )
                 );
@@ -179,7 +179,7 @@ class Tooltip implements ControllerProviderInterface
 
                 return new Response(
                         $twig->render(
-                            'common/databox_field_restrictions.twig'
+                            'prod/Tooltip/DataboxFieldRestrictions.html.twig'
                             , array('field' => $field)
                         )
                 );

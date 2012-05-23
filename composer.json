@@ -1,49 +1,49 @@
 {
-  "name": "phraseanet/phraseanet",
-  "description": "Phraseanet",
-  "require": {
-    "php": ">=5.3.3",
-    "twig/twig": "1.8.*",
-    "twig/extensions": "master",
-    "doctrine/orm": "2.2.2",
-    "gedmo/doctrine-extensions": "2.2.*",
-    "swiftmailer/swiftmailer": "4.1.*",
-    "doctrine/data-fixtures": "dev-master",
-    "monolog/monolog": "1.0.*",
-    "symfony/symfony": "2.1.*",
-    "phpexiftool/phpexiftool": "dev-master",
-    "dailymotion/sdk": "*",
-    "mediavorus/mediavorus": "dev-master",
-    "media-alchemyst/media-alchemyst": "dev-master",
-    "php-xpdf/php-xpdf": "dev-master",
-    "data-uri/data-uri": "dev-master",
-    "silex/silex": "1.0.*",
-    "alchemy/oauth2php": "master",
-    "alchemy/phlickr": "master",
-    "alchemy/phpmailer": "master",
-    "tcpdf/tcpdf": ">5.9",
-    "zend/gdata": ">1.11"
-  },
-  "require-dev": {
-    "fabpot/php-cs-fixer": "dev-master"
-  },
-  "repositories": [
-  {
-    "type": "vcs",
-    "url": "https://github.com/alchemy-fr/oauth2-php"
-  },
-  {
-    "type": "vcs",
-    "url": "https://github.com/alchemy-fr/Phlickr"
-  },
-  {
-    "type": "vcs",
-    "url": "https://github.com/alchemy-fr/PHPMailer_v5.1"
-  }
-  ],
-  "autoload": {
-    "psr-0": {
-      "Alchemy": "lib"
+    "name": "phraseanet/phraseanet",
+    "description": "Phraseanet",
+    "require": {
+        "php": ">=5.3.3",
+        "twig/twig": "1.8.*",
+        "twig/extensions": "master",
+        "doctrine/orm": "2.2.2",
+        "gedmo/doctrine-extensions": "2.2.*",
+        "swiftmailer/swiftmailer": "4.1.*",
+        "doctrine/data-fixtures": "dev-master",
+        "monolog/monolog": "1.0.*",
+        "symfony/symfony": "2.1.*",
+        "phpexiftool/phpexiftool": "dev-master",
+        "dailymotion/sdk": "*",
+        "mediavorus/mediavorus": "dev-master",
+        "media-alchemyst/media-alchemyst": "dev-master",
+        "php-xpdf/php-xpdf": "dev-master",
+        "data-uri/data-uri": "dev-master",
+        "silex/silex": "1.0.*",
+        "alchemy/oauth2php": "master",
+        "alchemy/phlickr": "master",
+        "alchemy/phpmailer": "master",
+        "tcpdf/tcpdf": ">5.9",
+        "zend/gdata": ">1.11"
+    },
+    "require-dev": {
+        "fabpot/php-cs-fixer": "dev-master"
+    },
+    "repositories": [
+    {
+        "type": "vcs",
+        "url": "https://github.com/alchemy-fr/oauth2-php"
+    },
+    {
+        "type": "vcs",
+        "url": "https://github.com/alchemy-fr/Phlickr"
+    },
+    {
+        "type": "vcs",
+        "url": "https://github.com/alchemy-fr/PHPMailer_v5.1"
     }
-  }
+    ],
+    "autoload": {
+        "psr-0": {
+            "Alchemy": "lib"
+        }
+    }
 }

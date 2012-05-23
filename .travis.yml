@@ -35,4 +35,3 @@ php:
 branches:
   except:
     - master
-
