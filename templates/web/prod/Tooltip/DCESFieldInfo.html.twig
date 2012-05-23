@@ -1,6 +1,10 @@
 {% extends 'prod/Tooltip/Tooltip.html.twig'%}
 
-{% set title %} DC {{ field.get_dces_element().get_label() }} {% endset %}
+{% set title %}
+    {% if field.get_dces_element() %}
+        DC {{ field.get_dces_element().get_label() }}
+    {% endif %}
+{% endset %}
 {% set width = 600 %}
 {% set maxwidth = null %}
 
