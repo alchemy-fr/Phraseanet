@@ -1,5 +1,5 @@
 {
-    "hash": "df16a5217e8608e6a829fed200c83487",
+    "hash": "857b61866e493b8204708d3fd6ca090b",
     "packages": [
         {
             "package": "alchemy/Phlickr",
@@ -51,12 +51,12 @@
         {
             "package": "imagine/Imagine",
             "version": "dev-develop",
-            "source-reference": "d5025548b57a5f52a2992405670c5d9f9e8f3ec0"
+            "source-reference": "44c1e53fa067db51ecca0c5fe21f357c90034096"
         },
         {
             "package": "media-alchemyst/media-alchemyst",
             "version": "dev-master",
-            "source-reference": "0328c5159a2ef33c36dabdeb20fdaaecf4cbdbad"
+            "source-reference": "f092877d1cba8d5693fd4547808be1dc506a3c05"
         },
         {
             "package": "mediavorus/mediavorus",
