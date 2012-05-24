@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use \Monolog\Logger;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -31,13 +33,17 @@ class task_manager
         return $this;
     }
 
-    public function getTasks($refresh = false)
+    public function getTasks($refresh = false, Logger $logger = null)
     {
         if ($this->tasks && ! $refresh) {
             return $this->tasks;
         }
 
         $core = \bootstrap::getCore();
+
+        if ( ! $logger) {
+            $logger = $core['monolog'];
+        }
 
         $sql = "SELECT task2.* FROM task2 ORDER BY task_id ASC";
         $stmt = $this->appbox->get_connection()->prepare($sql);
@@ -55,7 +61,7 @@ class task_manager
                 continue;
             }
             try {
-                $tasks[$row['task_id']] = new $classname($row['task_id'], $core['monolog']);
+                $tasks[$row['task_id']] = new $classname($row['task_id'], $logger);
             } catch (Exception $e) {
 
             }
@@ -71,9 +77,15 @@ class task_manager
      * @param  int           $task_id
      * @return task_abstract
      */
-    public function getTask($task_id)
+    public function getTask($task_id, Logger $logger = null)
     {
-        $tasks = $this->getTasks();
+        $core = \bootstrap::getCore();
+
+        if ( ! $logger) {
+            $logger = $core['monolog'];
+        }
+
+        $tasks = $this->getTasks($logger);
 
         if ( ! isset($tasks[$task_id])) {
             throw new Exception_NotFound('Unknown task_id ' . $task_id);
