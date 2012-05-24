@@ -92,7 +92,7 @@ class Subdefs implements ControllerProviderInterface
                         $class = $request->get($post_sub . '_class');
                         $downloadable = $request->get($post_sub . '_downloadable');
 
-                        $defaults = array('path', 'baseurl', 'meta', 'mediatype');
+                        $defaults = array('path', 'meta', 'mediatype');
 
                         foreach ($defaults as $def) {
                             $parm_loc = $request->get($post_sub . '_' . $def);

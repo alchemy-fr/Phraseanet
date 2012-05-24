@@ -41,8 +41,6 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
 
         $params = array(
             'GV_base_datapath_noweb',
-            'GV_base_datapath_web',
-            'GV_base_dataurl',
             'GV_ServerName',
             'GV_cli',
             'GV_imagick',
@@ -156,8 +154,6 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
             'binary_composite'  => '/path/to/composite',
             'binary_convert'    => '/path/to/convert',
             'binary_php'        => '/path/to/php',
-            'mount_point_web'   => 'web',
-            'datapath_web'      => $dataDir . 'web',
             'datapath_noweb'    => $dataDir . 'noweb',
             'ab_hostname'       => $host,
             'ab_port'           => $port,

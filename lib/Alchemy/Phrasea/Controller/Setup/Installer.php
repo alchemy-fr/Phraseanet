@@ -220,8 +220,6 @@ class Installer implements ControllerProviderInterface
                     $appbox->set_registry($registry);
 
                     $registry->set('GV_base_datapath_noweb', \p4string::addEndSlash($request->get('datapath_noweb')), \registry::TYPE_STRING);
-                    $registry->set('GV_base_datapath_web', \p4string::addEndSlash($request->get('datapath_web')), \registry::TYPE_STRING);
-                    $registry->set('GV_base_dataurl', \p4string::addEndSlash($request->get('mount_point_web')), \registry::TYPE_STRING);
                     $registry->set('GV_ServerName', $servername, \registry::TYPE_STRING);
                     $registry->set('GV_cli', $request->get('binary_php'), \registry::TYPE_STRING);
                     $registry->set('GV_imagick', $request->get('binary_convert'), \registry::TYPE_STRING);

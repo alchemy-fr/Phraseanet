@@ -441,13 +441,9 @@ class setup
                 $root . 'tmp/download',
                 $root . 'tmp/batches');
 
-            if ($registry->is_set('GV_base_datapath_web')) {
-                $pathes[] = $registry->get('GV_base_datapath_web');
-            }
             if ($registry->is_set('GV_base_datapath_noweb')) {
                 $pathes[] = $registry->get('GV_base_datapath_noweb');
             }
-
 
             $constraints = array();
 

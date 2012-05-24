@@ -12,13 +12,12 @@
                 <strip>no</strip>
                 <quality>75</quality>
                 <meta>yes</meta>
-                <baseurl></baseurl>
                 <mediatype>image</mediatype>
                 <label lang="fr">Prévisualisation</label>
                 <label lang="en">Preview</label>
             </subdef>
             <subdef class="thumbnail" name="thumbnail" downloadable="true">
-                <path>{{datapathweb}}{{basename}}/subdefs</path>
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <size>200</size>
                 <method>resample</method>
                 <dpi>72</dpi>
@@ -26,7 +25,6 @@
                 <quality>75</quality>
                 <meta>no</meta>
                 <mediatype>image</mediatype>
-                <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
                 <label lang="fr">Imagette</label>
                 <label lang="en">Thumbnail</label>
             </subdef>
@@ -38,7 +36,6 @@
                 <size>800</size>
                 <mediatype>video</mediatype>
                 <writeDatas>yes</writeDatas>
-                <baseurl></baseurl>
                 <acodec>libfaac</acodec>
                 <vcodec>libx264</vcodec>
                 <bitrate>1000</bitrate>
@@ -48,21 +45,19 @@
                 <label lang="en">Preview</label>
             </subdef>
             <subdef class="thumbnail" name="thumbnailgif" downloadable="true">
-                <path>{{datapathweb}}{{basename}}/subdefs</path>
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <size>200</size>
                 <mediatype>gif</mediatype>
                 <delay>500</delay>
                 <writeDatas>no</writeDatas>
-                <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
                 <label lang="fr">Animation GIF</label>
                 <label lang="en">GIF Animation</label>
             </subdef>
             <subdef class="thumbnail" name="thumbnail" downloadable="true">
-                <path>{{datapathweb}}{{basename}}/subdefs</path>
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <size>200</size>
                 <mediatype>image</mediatype>
                 <writeDatas>no</writeDatas>
-                <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
                 <label lang="fr">Imagette</label>
                 <label lang="en">Thumbnail</label>
             </subdef>
@@ -73,15 +68,13 @@
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <mediatype>audio</mediatype>
                 <writeDatas>yes</writeDatas>
-                <baseurl></baseurl>
                 <label lang="fr">Prévisualisation</label>
                 <label lang="en">Preview</label>
             </subdef>
             <subdef class="thumbnail" name="thumbnail" downloadable="true">
-                <path>{{datapathweb}}{{basename}}/subdefs</path>
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <mediatype>image</mediatype>
                 <writeDatas>no</writeDatas>
-                <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
                 <label lang="fr">Imagette</label>
                 <label lang="en">Thumbnail</label>
             </subdef>
@@ -91,18 +84,16 @@
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <mediatype>flexpaper</mediatype>
                 <writeDatas>no</writeDatas>
-                <baseurl></baseurl>
                 <label lang="fr">Prévisualisation</label>
                 <label lang="en">Preview</label>
             </subdef>
             <subdef class="thumbnail" name="thumbnail" downloadable="false">
-                <path>{{datapathweb}}{{basename}}/subdefs</path>
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <mediatype>image</mediatype>
                 <method>resample</method>
                 <dpi>72</dpi>
                 <size>200</size>
                 <writeDatas>no</writeDatas>
-                <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
                 <label lang="fr">Imagette</label>
                 <label lang="en">Thumbnail</label>
             </subdef>
@@ -115,17 +106,15 @@
                 <writeDatas>no</writeDatas>
                 <method>resample</method>
                 <dpi>72</dpi>
-                <baseurl></baseurl>
                 <label lang="fr">Prévisualisation</label>
                 <label lang="en">Preview</label>
             </subdef>
             <subdef class="thumbnail" name="thumbnail" downloadable="false">
-                <path>{{datapathweb}}{{basename}}/subdefs</path>
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <mediatype>image</mediatype>
                 <writeDatas>no</writeDatas>
                 <method>resample</method>
                 <dpi>72</dpi>
-                <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
                 <label lang="fr">Imagette</label>
                 <label lang="en">Thumbnail</label>
             </subdef>

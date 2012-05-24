@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Application;
 
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  *
@@ -28,12 +29,9 @@ return call_user_func(
             $appbox = \appbox::get_instance($app['Core']);
             $session = $appbox->get_session();
 
-            $deliver_content = function(\Session_Handler $session, \record_adapter $record, $subdef, $watermark, $stamp, $app) {
+            $deliver_content = function(Request $request, \Session_Handler $session, \record_adapter $record, $subdef, $watermark, $stamp, $app) {
 
                     $file = $record->get_subdef($subdef);
-                    if ($file->get_baseurl() !== '') {
-                        return $app->redirect($file->get_url());
-                    }
 
                     $pathIn = $pathOut = $file->get_pathfile();
 
@@ -60,7 +58,16 @@ return call_user_func(
 
                     }
 
-                    return \set_export::stream_file($pathOut, $file->get_file(), $file->get_mime(), 'attachment');
+                    $response = \set_export::stream_file($pathOut, $file->get_file(), $file->get_mime(), 'attachment');
+
+                    /* @var $response \Symfony\Component\HttpFoundation\Response */
+                    if ($file->getEtag()) {
+                        $response->setEtag($file->getEtag());
+                        $response->setLastModified($file->get_modification_date());
+                        $response->isNotModified($request);
+                    }
+
+                    return $response;
                 };
 
             $app->get('/datafiles/{sbas_id}/{record_id}/{subdef}/', function($sbas_id, $record_id, $subdef) use ($app, $session, $deliver_content) {
@@ -112,7 +119,7 @@ return call_user_func(
                         }
                     }
 
-                    return $deliver_content($session, $record, $subdef, $watermark, $stamp, $app);
+                    return $deliver_content($app['request'], $session, $record, $subdef, $watermark, $stamp, $app);
                 })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
 
 
@@ -168,7 +175,7 @@ return call_user_func(
                                 }
                             }
 
-                            return $deliver_content($session, $record, $subdef, $watermark, $stamp, $app);
+                            return $deliver_content($app['request'], $session, $record, $subdef, $watermark, $stamp, $app);
                         } else {
                             $collection = \collection::get_from_base_id($record->get_base_id());
                             switch ($collection->get_pub_wm()) {
@@ -185,7 +192,7 @@ return call_user_func(
                             }
                         }
 
-                        return $deliver_content($session, $record, $subdef, $watermark, $stamp, $app);
+                        return $deliver_content($app['request'], $session, $record, $subdef, $watermark, $stamp, $app);
                     }
                 )
                 ->assert('sbas_id', '\d+')->assert('record_id', '\d+');

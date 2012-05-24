@@ -35,7 +35,6 @@ class databox_subdef
     protected $name;
     protected $path;
     protected $subdef_group;
-    protected $baseurl;
     protected $labels = array();
     protected $write_meta;
     protected $downloadable;
@@ -74,8 +73,6 @@ class databox_subdef
         $this->name = strtolower($sd->attributes()->name);
         $this->downloadable = p4field::isyes($sd->attributes()->downloadable);
         $this->path = trim($sd->path) !== '' ? p4string::addEndSlash(trim($sd->path)) : '';
-
-        $this->baseurl = trim($sd->baseurl) !== '' ? p4string::addEndSlash(trim($sd->baseurl)) : false;
 
         $this->write_meta = p4field::isyes((string) $sd->meta);
 
@@ -135,15 +132,6 @@ class databox_subdef
     public function getDevices()
     {
         return $this->devices;
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function get_baseurl()
-    {
-        return $this->baseurl;
     }
 
     /**
@@ -363,10 +351,10 @@ class databox_subdef
         if ($sd->size) {
             $video->setOptionValue(Video::OPTION_SIZE, (int) $sd->size);
         }
-        if ($sd->a_codec) {
+        if ($sd->acodec) {
             $video->setOptionValue(Video::OPTION_ACODEC, (string) $sd->acodec);
         }
-        if ($sd->v_codec) {
+        if ($sd->vcodec) {
             $video->setOptionValue(Video::OPTION_VCODEC, (string) $sd->vcodec);
         }
         if ($sd->fps) {
