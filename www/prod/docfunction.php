@@ -459,9 +459,9 @@ if ($sbasSet !== null) {
                     <input type="hidden" name="chg_status_son" value="">
                     <input type="hidden" name="act" value="WORK" />
                     <input type="hidden" name="lst" value="<?php echo $parm["lst"] ?>" />
-                    <div style="margin-top : 10px;text-align:center;">
-                        <input type="button" class="input-button" value="<?php echo _('boutton::valider') ?>" onclick="doChgStat(true);" />
-                        <input type="button" class="input-button" value="<?php echo _('boutton::annuler') ?>" onclick="parent.hideDwnl();" />
+                    <div style="margin-top:10px; text-align:center;">
+                        <input type="button" class="edit-btn" value="<?php echo _('boutton::valider') ?>" onclick="doChgStat(true);" />
+                        <input type="button" class="edit-btn" value="<?php echo _('boutton::annuler') ?>" onclick="parent.hideDwnl();" />
                     </div>
                 </form>
             </div>
@@ -517,8 +517,8 @@ foreach ($types as $sbas_id => $typeBR) {
 
                 echo '<div style="with:100%;text-align:center;font-size:10px;float:left;width:100px;height:130px;">Record ' . $rec2[1] . "<br/>";
                 $thumbnail = $record->get_thumbnail();
-                echo '<div style="height:60px;"><img src="' . $thumbnail->get_url() . '" width="' . ($thumbnail->get_width() / 3) . '" height="' . ($thumbnail->get_height() / 3) . '" /></div>';
-                echo '<div style="height:28px;">' . $select . '</div></div>';
+                echo '<div style="height:67px;"><img src="' . $thumbnail->get_url() . '" width="' . ($thumbnail->get_width() / 3) . '" height="' . ($thumbnail->get_height() / 3) . '" /></div>';
+                echo '<div style="height:26px;">' . $select . '</div></div>';
                 flush();
             }
         }
@@ -528,9 +528,9 @@ foreach ($types as $sbas_id => $typeBR) {
 ?>
                         <input type="hidden" name="ACT" value="SEND" />
                         <input type="hidden" name="typelst" id="typelst" value="" />
-                        <div style="margin-top : 5px;text-align:center;">
-                            <input type="button" class="input-button" value="<?php echo _('boutton::valider') ?>" onclick="validChgType();" />
-                            <input type="button" class="input-button" value="<?php echo _('boutton::annuler') ?>" onclick="parent.hideDwnl();" />
+                        <div class="editPropBox" style="margin-top: 5px; text-align: center;">
+                            <input type="button" class="edit-btn" value="<?php echo _('boutton::valider') ?>" onclick="validChgType();" />
+                            <input type="button" class="edit-btn" value="<?php echo _('boutton::annuler') ?>" onclick="parent.hideDwnl();" />
                         </div>
                 </form>
             </div>

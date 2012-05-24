@@ -47,6 +47,10 @@ var p4 = p4 || {};
 
         this.options.uploadBox = this.options.uploadBox.find('ul:first');
 
+        this.options.downloadBox.wrapInner('<ul />');
+
+        this.options.downloadBox = this.options.downloadBox.find('ul:first');
+
         if($.isFunction($.fn.sortable)){
             this.options.uploadBox.sortable();
         }
