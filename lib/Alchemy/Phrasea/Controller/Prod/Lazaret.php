@@ -187,7 +187,7 @@ class Lazaret implements ControllerProviderInterface
      */
     public function getElement(Application $app, Request $request, $file_id)
     {
-        $ret = array('success' => false, 'message' => '', 'result'  => array());
+        $ret = array('success' => false, 'message' => '', 'result' => array());
 
         try {
             $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
@@ -231,7 +231,7 @@ class Lazaret implements ControllerProviderInterface
      */
     public function addElement(Application $app, Request $request, $file_id)
     {
-        $ret = array('success' => false, 'message' => '', 'result'  => array());
+        $ret = array('success' => false, 'message' => '', 'result' => array());
 
         //Optional parameter
         $keepAttributes = ! ! $request->get('keep_attributes', false);
@@ -335,7 +335,7 @@ class Lazaret implements ControllerProviderInterface
      */
     public function denyElement(Application $app, Request $request, $file_id)
     {
-        $ret = array('success' => false, 'message' => '', 'result'  => array());
+        $ret = array('success' => false, 'message' => '', 'result' => array());
 
         try {
             $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
@@ -372,7 +372,7 @@ class Lazaret implements ControllerProviderInterface
      */
     public function acceptElement(Application $app, Request $request, $file_id)
     {
-         $ret = array('success' => false, 'message' => '', 'result'  => array());
+         $ret = array('success' => false, 'message' => '', 'result' => array());
 
         try {
             //Mandatory parameter
