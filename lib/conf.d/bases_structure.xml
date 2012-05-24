@@ -6778,16 +6778,6 @@
           </field>
 
           <field>
-            <name>baseurl</name>
-            <type>char(255)</type>
-            <null></null>
-            <extra></extra>
-
-            <default></default>
-            <comment></comment>
-
-          </field>
-          <field>
             <name>width</name>
             <type>int(10) unsigned</type>
             <null></null>

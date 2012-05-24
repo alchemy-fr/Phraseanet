@@ -23,11 +23,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Application;
 
-$Core = require_once dirname(__FILE__) . '/../lib/bootstrap.php';
-
-$result_code = 1;
-
-$result_code = 1;
+require_once dirname(__FILE__) . '/../lib/bootstrap.php';
 
 try {
     $app = new Application("
@@ -80,8 +76,7 @@ try {
     $app->add(new module_console_fieldsRename('fields:rename'));
     $app->add(new module_console_fieldsMerge('fields:merge'));
 
-
-    $result_code = $app->run() === 0 ? : 1;
+    $result_code = is_int($app->run()) ? : 1;
 } catch (Exception $e) {
     echo sprintf("an error occured : %s", $e->getMessage());
 }

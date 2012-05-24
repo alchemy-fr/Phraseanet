@@ -1,5 +1,5 @@
-nbproject
-config
+/nbproject
+/config
 .DS_Store
-vendor
+/vendor
 composer.phar

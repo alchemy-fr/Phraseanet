@@ -13,7 +13,6 @@ class databox_subdefTest extends PHPUnit_Framework_TestCase
      * @covers databox_subdef::get_labels
      * @covers databox_subdef::getSubdefGroup
      * @covers databox_subdef::getSubdefType
-     * @covers databox_subdef::get_baseurl
      * @covers databox_subdef::get_path
      * @covers databox_subdef::getSpecs
      * @covers databox_subdef::getOptions
@@ -24,7 +23,6 @@ class databox_subdefTest extends PHPUnit_Framework_TestCase
         $xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
                 <subdef class="preview" name="preview_api" downloadable="true">
                     <path>/home/datas/noweb/db_alch_phrasea/subdefs/</path>
-                    <baseurl/>
                     <meta>yes</meta>
                     <mediatype>image</mediatype>
                     <label lang="fr">Prévisualisation</label>
@@ -40,7 +38,6 @@ class databox_subdefTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(databox_subdef::CLASS_PREVIEW, $object->get_class());
         $this->assertEquals('/home/datas/noweb/db_alch_phrasea/subdefs/', $object->get_path());
-        $this->assertEquals('', $object->get_baseurl());
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Media\Subdef\\Subdef', $object->getSubdefType());
         $this->assertEquals($type, $object->getSubdefGroup());
 
@@ -82,7 +79,6 @@ class databox_subdefTest extends PHPUnit_Framework_TestCase
      * @covers databox_subdef::get_labels
      * @covers databox_subdef::getSubdefGroup
      * @covers databox_subdef::getSubdefType
-     * @covers databox_subdef::get_baseurl
      * @covers databox_subdef::get_path
      * @covers databox_subdef::getSpecs
      * @covers databox_subdef::getOptions
@@ -93,7 +89,6 @@ class databox_subdefTest extends PHPUnit_Framework_TestCase
         $xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
                 <subdef class="thumbnail" name="video_api" downloadable="false">
                     <path>/home/datas/noweb/db_alch_phrasea/video/</path>
-                    <baseurl>/video/</baseurl>
                     <meta>no</meta>
                     <mediatype>video</mediatype>
                     <size>196</size>
@@ -112,7 +107,6 @@ class databox_subdefTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(databox_subdef::CLASS_THUMBNAIL, $object->get_class());
         $this->assertEquals('/home/datas/noweb/db_alch_phrasea/video/', $object->get_path());
-        $this->assertEquals('/video/', $object->get_baseurl());
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Media\Subdef\\Subdef', $object->getSubdefType());
         $this->assertEquals($type, $object->getSubdefGroup());
 
@@ -152,7 +146,6 @@ class databox_subdefTest extends PHPUnit_Framework_TestCase
         $xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
                 <subdef class="thumbnail" name="gifou" downloadable="false">
                     <path>/home/datas/noweb/db_alch_phrasea/video/</path>
-                    <baseurl>web//db_alch_beta/subdefs/</baseurl>
                     <meta>no</meta>
                     <mediatype>gif</mediatype>
                     <size>200</size>

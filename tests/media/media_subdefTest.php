@@ -145,15 +145,6 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
     }
 
     /**
-     * @covers media_subdef::get_baseurl
-     */
-    public function testGet_baseurl()
-    {
-        $this->assertInternalType('string', self::$objectPresent->get_baseurl());
-        $this->assertInternalType('string', self::$objectNotPresent->get_baseurl());
-    }
-
-    /**
      * @covers media_subdef::get_file
      */
     public function testGet_file()
