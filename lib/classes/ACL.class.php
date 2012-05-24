@@ -97,7 +97,7 @@ class ACL implements cache_cacheableInterface
     /**
      * Constructor
      *
-     * @param User_Interface $user
+     * @param  User_Interface $user
      * @return ACL
      */
     public function __construct(User_Interface $user, appbox &$appbox)
@@ -111,7 +111,7 @@ class ACL implements cache_cacheableInterface
     /**
      * Check if a hd grant has been received for a record
      *
-     * @param record_Interface $record
+     * @param  record_Interface $record
      * @return boolean
      */
     public function has_hd_grant(record_Interface $record)
@@ -179,7 +179,7 @@ class ACL implements cache_cacheableInterface
     /**
      * Check if a hd grant has been received for a record
      *
-     * @param record_Interface $record
+     * @param  record_Interface $record
      * @return boolean
      */
     public function has_preview_grant(record_Interface $record)
@@ -225,8 +225,8 @@ class ACL implements cache_cacheableInterface
     /**
      * Apply a template on user
      *
-     * @param User_Interface $template_user
-     * @param array $base_ids
+     * @param  User_Interface $template_user
+     * @param  array          $base_ids
      * @return ACL
      */
     public function apply_model(User_Interface $template_user, Array $base_ids)
@@ -373,8 +373,8 @@ class ACL implements cache_cacheableInterface
 
     /**
      *
-     * @param int $base_id
-     * @param string $right
+     * @param  int     $base_id
+     * @param  string  $right
      * @return boolean
      */
     public function has_right_on_base($base_id, $right)
@@ -397,7 +397,7 @@ class ACL implements cache_cacheableInterface
 
     /**
      *
-     * @param <type> $option
+     * @param  <type> $option
      * @return <type>
      */
     public function get_cache_key($option = null)
@@ -407,7 +407,7 @@ class ACL implements cache_cacheableInterface
 
     /**
      *
-     * @param <type> $option
+     * @param  <type> $option
      * @return <type>
      */
     public function delete_data_from_cache($option = null)
@@ -437,7 +437,7 @@ class ACL implements cache_cacheableInterface
 
     /**
      *
-     * @param <type> $option
+     * @param  <type> $option
      * @return <type>
      */
     public function get_data_from_cache($option = null)
@@ -447,9 +447,9 @@ class ACL implements cache_cacheableInterface
 
     /**
      *
-     * @param <type> $value
-     * @param <type> $option
-     * @param <type> $duration
+     * @param  <type> $value
+     * @param  <type> $option
+     * @param  <type> $duration
      * @return <type>
      */
     public function set_data_to_cache($value, $option = null, $duration = 0)
@@ -460,7 +460,7 @@ class ACL implements cache_cacheableInterface
     /**
      * Return true if user is restricted in download on the collection
      *
-     * @param int $base_id
+     * @param  int     $base_id
      * @return boolean
      */
     public function is_restricted_download($base_id)
@@ -477,7 +477,7 @@ class ACL implements cache_cacheableInterface
     /**
      * Return the number of remaining downloads on the collection
      *
-     * @param int $base_id
+     * @param  int $base_id
      * @return int
      */
     public function remaining_download($base_id)
@@ -494,8 +494,8 @@ class ACL implements cache_cacheableInterface
     /**
      * Remove n download from the remainings
      *
-     * @param int $base_id
-     * @param int $n
+     * @param  int $base_id
+     * @param  int $n
      * @return ACL
      */
     public function remove_remaining($base_id, $n = 1)
@@ -518,7 +518,7 @@ class ACL implements cache_cacheableInterface
     /**
      * Check if the user has the right, at least on one collection
      *
-     * @param string $right
+     * @param  string  $right
      * @return boolean
      */
     public function has_right($right)
@@ -534,8 +534,8 @@ class ACL implements cache_cacheableInterface
     /**
      * Check if the user has the required right on a database
      *
-     * @param <type> $sbas_id
-     * @param <type> $right
+     * @param  <type> $sbas_id
+     * @param  <type> $right
      * @return <type>
      */
     public function has_right_on_sbas($sbas_id, $right)
@@ -559,7 +559,7 @@ class ACL implements cache_cacheableInterface
     /**
      * Retrieve mask AND for user on specified base_id
      *
-     * @param int $base_id
+     * @param  int    $base_id
      * @return string
      */
     public function get_mask_and($base_id)
@@ -575,7 +575,7 @@ class ACL implements cache_cacheableInterface
     /**
      * Retrieve mask XOR for user on specified base_id
      *
-     * @param int $base_id
+     * @param  int    $base_id
      * @return string
      */
     public function get_mask_xor($base_id)
@@ -591,7 +591,7 @@ class ACL implements cache_cacheableInterface
     /**
      * Return true if access to base_id is granted
      *
-     * @param int $base_id
+     * @param  int     $base_id
      * @return boolean
      */
     public function has_access_to_base($base_id)
@@ -605,7 +605,7 @@ class ACL implements cache_cacheableInterface
     /**
      * Return true if access to sbas_id is granted
      *
-     * @param int $sbas_id
+     * @param  int     $sbas_id
      * @return boolean
      */
     public function has_access_to_sbas($sbas_id)
@@ -619,7 +619,7 @@ class ACL implements cache_cacheableInterface
      * Return an array of base_id which are granted, with
      * optionnal filter by rights
      *
-     * @param Array $rights
+     * @param  Array $rights
      * @return Array
      */
     public function get_granted_base(Array $rights = array(), array $sbas_ids = null)
@@ -665,7 +665,7 @@ class ACL implements cache_cacheableInterface
      * Return an array of sbas_id which are granted, with
      * optionnal filter by rights
      *
-     * @param Array $rights
+     * @param  Array $rights
      * @return Array
      */
     public function get_granted_sbas($rights = array())
@@ -976,7 +976,7 @@ class ACL implements cache_cacheableInterface
     /**
      * Return whether or not the acces to the specified module is OK
      *
-     * @param String $module_name
+     * @param  String  $module_name
      * @return boolean
      */
     public function has_access_to_module($module_name)
@@ -1009,7 +1009,7 @@ class ACL implements cache_cacheableInterface
 
     /**
      *
-     * @param array $base_ids
+     * @param  array $base_ids
      * @return ACL
      */
     public function revoke_access_from_bases(Array $base_ids)
@@ -1031,7 +1031,7 @@ class ACL implements cache_cacheableInterface
 
     /**
      *
-     * @param array $base_ids
+     * @param  array $base_ids
      * @return ACL
      */
     public function give_access_to_base(Array $base_ids)
@@ -1068,7 +1068,7 @@ class ACL implements cache_cacheableInterface
 
     /**
      *
-     * @param array $sbas_ids
+     * @param  array $sbas_ids
      * @return ACL
      */
     public function give_access_to_sbas(Array $sbas_ids)
@@ -1091,8 +1091,8 @@ class ACL implements cache_cacheableInterface
      * @todo  Create special toggle 'actif' / not a right like others
      *        => nested loops when updating right to actif on an inactif account
      *
-     * @param <type> $base_id
-     * @param <type> $rights
+     * @param  <type> $base_id
+     * @param  <type> $rights
      * @return ACL
      */
     public function update_rights_to_base($base_id, $rights)
@@ -1159,14 +1159,6 @@ class ACL implements cache_cacheableInterface
         $stmt->execute($params);
         $stmt->closeCursor();
 
-//    $sql = 'DELETE FROM sbasusr
-//      WHERE sbas_id NOT IN
-//          (SELECT distinct sbas_id FROM sbas)';
-//
-//    $stmt = $this->appbox->get_connection()->prepare($sql);
-//    $stmt->execute();
-//    $stmt->closeCursor();
-
         $this->delete_data_from_cache(self::CACHE_RIGHTS_SBAS);
 
         return $this;
@@ -1174,8 +1166,8 @@ class ACL implements cache_cacheableInterface
 
     /**
      *
-     * @param <type> $sbas_id
-     * @param <type> $rights
+     * @param  <type> $sbas_id
+     * @param  <type> $rights
      * @return ACL
      */
     public function update_rights_to_sbas($sbas_id, $rights)
@@ -1213,7 +1205,7 @@ class ACL implements cache_cacheableInterface
 
     /**
      *
-     * @param <type> $base_id
+     * @param  <type> $base_id
      * @return ACL
      */
     public function remove_quotas_on_base($base_id)
@@ -1257,9 +1249,9 @@ class ACL implements cache_cacheableInterface
 
     /**
      *
-     * @param <type> $base_id
-     * @param <type> $droits
-     * @param <type> $restes
+     * @param  <type> $base_id
+     * @param  <type> $droits
+     * @param  <type> $restes
      * @return ACL
      */
     public function set_quotas_on_base($base_id, $droits, $restes)

@@ -1650,9 +1650,9 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     /**
      * Generates subdefs
      *
-     * @param  databox          $databox        The databox
-     * @param  \Monolog\Logger  $logger         A logger for binary operation
-     * @param  array            $wanted_subdefs An array of subdef names
+     * @param  databox         $databox        The databox
+     * @param  \Monolog\Logger $logger         A logger for binary operation
+     * @param  array           $wanted_subdefs An array of subdef names
      * @return \record_adapter
      */
     public function generate_subdefs(databox $databox, Logger $logger = null, Array $wanted_subdefs = null)
@@ -1723,9 +1723,9 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     /**
      * Generate a subdef
      *
-     * @param  databox_subdef   $subdef_class  The related databox subdef
-     * @param  type             $pathdest      The destination of the file
-     * @param  Logger           $logger        A logger for binary operation
+     * @param  databox_subdef  $subdef_class The related databox subdef
+     * @param  type            $pathdest     The destination of the file
+     * @param  Logger          $logger       A logger for binary operation
      * @return \record_adapter
      */
     protected function generate_subdef(databox_subdef $subdef_class, $pathdest, Logger $logger)

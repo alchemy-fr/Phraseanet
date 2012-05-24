@@ -99,6 +99,7 @@ class task_period_ftpPull extends task_appboxAbstract
             </script>
 
             <?php
+
             return("");
         } else { // ... so we NEVER come here
             // bad xml

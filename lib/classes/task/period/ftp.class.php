@@ -100,6 +100,7 @@ class task_period_ftp extends task_appboxAbstract
             <?php echo $form ?>.period.value = "<?php echo p4string::MakeString($sxml->period, "js", '"') ?>";
             </script>
             <?php
+
             return("");
         } else { // ... so we NEVER come here
             // bad xml
@@ -131,6 +132,7 @@ class task_period_ftp extends task_appboxAbstract
             }
         </script>
         <?php
+
         return;
     }
 

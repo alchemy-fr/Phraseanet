@@ -178,6 +178,7 @@ class task_period_archive extends task_abstract
             <?php echo $form ?>.copy_spe.checked      = <?php echo p4field::isyes($sxml->copy_spe) ? "true" : "false" ?>;
             </script>
             <?php
+
             return("");
         } else { // ... so we NEVER come here
             // bad xml
@@ -208,6 +209,7 @@ class task_period_archive extends task_abstract
             }
         </script>
         <?php
+
         return;
     }
 
@@ -570,7 +572,8 @@ class task_period_archive extends task_abstract
         if ($this->debug)
             $this->log("=========== listFilesPhase1 ========== (returned " . $nnew . ")\n" . $dom->saveXML());
 
-        if ($nnew === 'TOSTOP') { // special case : status has changed to TOSTOP while listing files
+        // special case : status has changed to TOSTOP while listing files
+        if ($nnew === 'TOSTOP') {
             return('TOSTOP');
         }
 
@@ -1046,8 +1049,10 @@ class task_period_archive extends task_abstract
 
         $ret = false;
 
-        if ($depth == 0 && $node->getAttribute('temperature') == 'hot') // if root of hotfolder if hot, die...
+         // if root of hotfolder if hot, die...
+        if ($depth == 0 && $node->getAttribute('temperature') == 'hot') {
             return($ret);
+        }
 
         $nodesToDel = array();
         for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
@@ -1263,11 +1268,11 @@ class task_period_archive extends task_abstract
 
         $ret = false;
 
-        if ($depth == 0 && $node->getAttribute('temperature') == 'hot') { // if root of hotfolder if hot, die...
+        // if root of hotfolder if hot, die...
+        if ($depth == 0 && $node->getAttribute('temperature') == 'hot') {
             return($ret);
         }
 
-//printf("%s : \n", __LINE__);
         $nodesToDel = array();
         for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
             if (($iloop ++ % 20) == 0) {

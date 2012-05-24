@@ -290,7 +290,7 @@ class task_period_writemeta extends task_databoxAbstract
 
             if ($meta->is_multi()) {
                 $values = array();
-                foreach($datas as $data){
+                foreach ($datas as $data) {
                     $values[] = $data->getValue();
                 }
 
