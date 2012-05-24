@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use \Monolog\Logger;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -31,10 +33,16 @@ class task_manager
         return $this;
     }
 
-    public function getTasks($refresh = false)
+    public function getTasks($refresh = false, Logger $logger = null)
     {
         if ($this->tasks && ! $refresh) {
             return $this->tasks;
+        }
+
+        $core = \bootstrap::getCore();
+
+        if ( ! $logger) {
+            $logger = $core['monolog'];
         }
 
         $sql = "SELECT task2.* FROM task2 ORDER BY task_id ASC";
@@ -45,9 +53,6 @@ class task_manager
 
         $tasks = array();
 
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
-        $lockdir = $appbox->get_registry()->get('GV_RootPath') . 'tmp/locks/';
-
         foreach ($rs as $row) {
             $row['pid'] = NULL;
 
@@ -56,21 +61,7 @@ class task_manager
                 continue;
             }
             try {
-//        if( ($lock = fopen( $lockdir . 'task.'.$row['task_id'].'.lock', 'a+')) )
-//        {
-//          if (flock($lock, LOCK_SH | LOCK_NB) === FALSE)
-//          {
-//            // already locked : running !
-//            $row['pid'] = fgets($lock, 512);
-//          }
-//          else
-//          {
-//            // can lock : not running
-//            flock($lock, LOCK_UN);
-//          }
-//          fclose($lock);
-//        }
-                $tasks[$row['task_id']] = new $classname($row['task_id']);
+                $tasks[$row['task_id']] = new $classname($row['task_id'], $logger);
             } catch (Exception $e) {
 
             }
@@ -86,9 +77,15 @@ class task_manager
      * @param  int           $task_id
      * @return task_abstract
      */
-    public function getTask($task_id)
+    public function getTask($task_id, Logger $logger = null)
     {
-        $tasks = $this->getTasks();
+        $core = \bootstrap::getCore();
+
+        if ( ! $logger) {
+            $logger = $core['monolog'];
+        }
+
+        $tasks = $this->getTasks(false, $logger);
 
         if ( ! isset($tasks[$task_id])) {
             throw new Exception_NotFound('Unknown task_id ' . $task_id);

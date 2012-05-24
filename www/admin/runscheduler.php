@@ -39,43 +39,19 @@ set_time_limit(0);
 session_write_close();
 ignore_user_abort(true);
 
+$nullfile = '/dev/null';
 
-$system = system_server::get_platform();
-if ($system != "DARWIN" && $system != "WINDOWS" && $system != "LINUX") {
-    phrasea::headers(500);
+if (defined('PHP_WINDOWS_VERSION_BUILD')) {
+    $nullfile = 'NUL';
 }
-$logdir = p4string::addEndSlash($registry->get('GV_RootPath') . 'logs');
 
 $phpcli = $registry->get('GV_cli');
 
-$nullfile = '';
-switch ($system) {
-    case "DARWIN":
-        $cmd = $phpcli . ' -f ' . $registry->get('GV_RootPath') . "bin/console scheduler:start";
-        $nullfile = '/dev/null';
-        break;
-    case "LINUX":
-        $cmd = $phpcli . ' -f ' . $registry->get('GV_RootPath') . "bin/console scheduler:start";
-        $nullfile = '/dev/null';
-        break;
-    case "WINDOWS":
-    case "WINDOWS NT":
-        $cmd = $phpcli . ' -f ' . $registry->get('GV_RootPath') . "bin/console scheduler:start";
-        $nullfile = 'NUL';
-        break;
-}
+$cmd = $phpcli . ' -f ' . $registry->get('GV_RootPath') . "bin/console scheduler:start";
 
 
-//if ($logdir)
-//{
-//  $descriptors[1] = array("file", $logdir . "scheduler.log", "a+");
-//  $descriptors[2] = array("file", $logdir . "scheduler.error.log", "a+");
-//}
-//else
-//{
 $descriptors[1] = array("file", $nullfile, "a+");
 $descriptors[2] = array("file", $nullfile, "a+");
-//}
 
 $pipes = null;
 $cwd = $registry->get('GV_RootPath') . "bin/";

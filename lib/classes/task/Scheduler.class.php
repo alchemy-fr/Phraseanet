@@ -9,42 +9,36 @@
  * file that was distributed with this source code.
  */
 
+use Monolog\Logger;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
 class task_Scheduler
 {
     const TASKDELAYTOQUIT = 60;
     // how to schedule tasks (choose in 'run' method)
     const METHOD_FORK = 'METHOD_FORK';
     const METHOD_PROC_OPEN = 'METHOD_PROC_OPEN';
-
     const ERR_ALREADY_RUNNING = 114;   // aka EALREADY (Operation already in progress)
 
+    /**
+     *
+     * @var \Monolog\Logger
+     */
+    private $logger;
     private $method;
-    private $input;
-    protected $output;
+
+    public function __construct(Logger $logger)
+    {
+        $this->logger = $logger;
+    }
 
     protected function log($message)
     {
-        $registry = registry::get_instance();
-        $logdir = $registry->get('GV_RootPath') . 'logs/';
-
-        logs::rotate($logdir . "scheduler_l.log");
-        logs::rotate($logdir . "scheduler_o.log");
-        logs::rotate($logdir . "scheduler_e.log");
-
-        $date_obj = new DateTime();
-        $message = sprintf("%s\t%s", $date_obj->format(DATE_ATOM), $message);
-
-        if ($this->input && ! ($this->input->getOption('nolog'))) {
-            file_put_contents($logdir . "scheduler_l.log", $message . "\n", FILE_APPEND);
-        }
+        $this->logger->addInfo($message);
 
         return $this;
     }
@@ -54,31 +48,25 @@ class task_Scheduler
         return appbox::get_instance(\bootstrap::getCore())->get_connection();
     }
 
-    /*
+    /**
      * @throws Exception if scheduler is already running
      * @todo doc all possible exception
      */
-    public function run(InputInterface $input = null, OutputInterface $output = null)
+    public function run()
     {
-        require_once dirname(__FILE__) . '/../../bootstrap.php';
-        $this->input = $input;
-        $this->output = $output;
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $registry = $appbox->get_registry();
 
-        $nullfile = '';
-        $system = system_server::get_platform();
-        switch ($system) {
-            case "WINDOWS":
-                $nullfile = 'NUL';
-                $this->method = self::METHOD_PROC_OPEN;
-                break;
-            default:
-            case "DARWIN":
-            case "LINUX":
-                $nullfile = '/dev/null';
-                $this->method = self::METHOD_FORK;
-                break;
+        $this->method = self::METHOD_PROC_OPEN;
+
+        $nullfile = '/dev/null';
+
+        if (defined('PHP_WINDOWS_VERSION_BUILD')) {
+            $nullfile = 'NUL';
+        }
+
+        if (function_exists('pcntl_fork')) {
+            $this->method = self::METHOD_FORK;
         }
 
         $lockdir = $registry->get('GV_RootPath') . 'tmp/locks/';
@@ -118,8 +106,6 @@ class task_Scheduler
         if ($this->method == self::METHOD_FORK) {
             pcntl_signal(SIGCHLD, SIG_IGN);
         }
-
-        $logdir = $registry->get('GV_RootPath') . 'logs/';
 
         $conn = appbox::get_instance(\bootstrap::getCore())->get_connection();
 
@@ -216,10 +202,6 @@ class task_Scheduler
                 $this->log("schedstatus == 'stopping', waiting tasks to end");
             }
 
-            logs::rotate($logdir . "scheduler_t.log");
-            logs::rotate($logdir . "scheduler_o.log");
-            logs::rotate($logdir . "scheduler_e.log");
-
             // initialy, all tasks are supposed to be removed from the poll
             foreach ($taskPoll as $tkey => $task) {
                 $taskPoll[$tkey]["todel"] = true;
@@ -229,39 +211,22 @@ class task_Scheduler
                 $tkey = "t_" . $task->getID();
                 $status = $task->getState();
 
-                logs::rotate($logdir . "task_t_" . $task->getID() . ".log");
-                logs::rotate($logdir . "task_o_" . $task->getID() . ".log");
-                logs::rotate($logdir . "task_e_" . $task->getID() . ".log");
-
                 if ( ! isset($taskPoll[$tkey])) {
                     // the task is not in the poll, add it
-                    $phpcli = $registry->get('GV_cli');
-                    switch ($system) {
-                        case "WINDOWS":
-                            $cmd = $phpcli;
-                            $args = array('-f', $registry->get('GV_RootPath') . 'bin/console', '--', '-q', 'task:run', $task->getID(), '--runner=scheduler');
-                            if ($this->input && ($this->input->getOption('notasklog'))) {
-                                $args[] = 'notasklog';
-                            }
-                            break;
-                        default:
-                        case "DARWIN":
-                        case "LINUX":
-                            $cmd = $phpcli;
-                            $args = array('-f', $registry->get('GV_RootPath') . 'bin/console', '--', '-q', 'task:run', $task->getID(), '--runner=scheduler');
-                            if ($this->input && ($this->input->getOption('notasklog'))) {
-                                $args[] = 'notasklog';
-                            }
-                            break;
-                    }
-
                     $taskPoll[$tkey] = array(
                         "task"           => $task,
                         "current_status" => $status,
-                        "cmd"            => $cmd,
-                        "args"           => $args,
-                        "killat"         => null,
-                        "sigterm_sent"   => false
+                        "cmd"            => $registry->get('GV_cli'),
+                        "args"           => array(
+                            '-f',
+                            $registry->get('GV_RootPath') . 'bin/console',
+                            '--',
+                            '-q',
+                            'task:run',
+                            $task->getID(), '--runner=scheduler'
+                        ),
+                        "killat"       => null,
+                        "sigterm_sent" => false
                     );
                     if ($this->method == self::METHOD_PROC_OPEN) {
                         $taskPoll[$tkey]['process'] = NULL;
@@ -344,8 +309,11 @@ class task_Scheduler
 
                         if ($this->method == self::METHOD_PROC_OPEN) {
                             if ( ! $taskPoll[$tkey]["process"]) {
-                                $descriptors[1] = array('file', $logdir . "task_o_" . $taskPoll[$tkey]['task']->getID() . ".log", 'a+');
-                                $descriptors[2] = array('file', $logdir . "task_e_" . $taskPoll[$tkey]['task']->getID() . ".log", 'a+');
+
+                                $nullfile = defined('PHP_WINDOWS_VERSION_BUILD') ? 'NUL' : '/dev/null';
+
+                                $descriptors[1] = array('file', $nullfile, 'a+');
+                                $descriptors[2] = array('file', $nullfile, 'a+');
 
                                 $taskPoll[$tkey]["process"] = proc_open(
                                     $taskPoll[$tkey]["cmd"] . ' ' . implode(' ', $taskPoll[$tkey]["args"])

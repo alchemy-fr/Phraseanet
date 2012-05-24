@@ -266,7 +266,7 @@ class task_period_subdef extends task_databoxAbstract
         try {
             $record = new record_adapter($this->sbas_id, $record_id);
 
-            $record->generate_subdefs($databox, null);
+            $record->generate_subdefs($databox, $this->logger);
         } catch (\Exception $e) {
             $this->log(
                 sprintf(

@@ -180,7 +180,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGenerate_subdefs()
     {
-
+        $this->markTestIncomplete();
     }
 
     public function testGet_sha256()

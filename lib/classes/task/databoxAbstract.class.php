@@ -16,10 +16,6 @@
  */
 abstract class task_databoxAbstract extends task_abstract
 {
-//  abstract public function help();
-//
-//  abstract public function getName();
-
     protected $mono_sbas_id;
 
     abstract protected function retrieveSbasContent(databox $databox);

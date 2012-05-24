@@ -169,6 +169,8 @@
     <link type="text/css" rel="stylesheet" href="{{registry.get('GV_STATIC_URL')}}/include/minify/f=include/jslibs/yui2.8/build/reset/reset.css,include/jslibs/jquery.contextmenu.css,include/jslibs/colorpicker/css/colorpicker.css,include/jslibs/jquery-treeview/jquery.treeview.css,skins/common/main.css,login/geonames.css,include/jquery.image_enhancer.css,include/jslibs/jquery-ui-1.8.17/css/dark-hive/jquery-ui-1.8.17.custom.css" >
     <link id="skinCss" type="text/css" rel="stylesheet" href="{{registry.get('GV_STATIC_URL')}}/include/minify/f=skins/prod/{{cssfile}}/prodcolor.css" >
     <link type="text/css" rel="stylesheet" href="{{registry.get('GV_STATIC_URL')}}/include/minify/f=include/vendor/humane-js/themes/libnotify.css,skins/prod/Prod.css,skins/prod/Basket.css,skins/prod/Push.css" >
+    <link type="text/css" rel="stylesheet" href="{{registry.get('GV_STATIC_URL')}}/include/jslibs/video-js/video-js.css">
+
     <!--[if IE 7]>
             <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/prod/ie7.css" >
     <![endif]-->
@@ -1089,8 +1091,8 @@
     <script type="text/javascript" src="{{registry.get('GV_STATIC_URL')}}/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
     <script type="text/javascript" src="{{registry.get('GV_STATIC_URL')}}/include/minify/f=include/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
     <script type="text/javascript">
-
         $(document).ready(function(){
+            _V_.options.flash.swf = "/include/jslibs/video-js/video-js.swf"
             p4.reg_delete="{% if user.getPrefs("warning_on_delete_story") %}true{% else %}false{% endif %}";
         });
 

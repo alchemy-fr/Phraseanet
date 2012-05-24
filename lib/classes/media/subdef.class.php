@@ -576,15 +576,16 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             ':name'      => $this->get_name(),
         );
 
-        $this->width = $media->getWidth();
-        $this->height = $media->getHeight();
-
-        unset($media);
-
         $stmt = $this->record->get_databox()->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
+
+        $this->width = $media->getWidth();
+        $this->height = $media->getHeight();
+
         $this->delete_data_from_cache();
+
+        unset($media);
 
         return $this;
     }
