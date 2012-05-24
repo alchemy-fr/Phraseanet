@@ -713,6 +713,9 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      */
     private static function generateRecords()
     {
+        $logger = new \Monolog\Logger('tests');
+        $logger->pushHandler(new \Monolog\Handler\NullHandler());
+
         if (self::$recordsInitialized === false) {
 
             self::$recordsInitialized = array();
@@ -736,7 +739,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 };
 
             foreach (range(1, 24) as $i) {
-                static::$records['record_' . $i] = static::$records->share(function() use ($collection, $resolvePathfile, $i) {
+                static::$records['record_' . $i] = static::$records->share(function() use ($logger, $collection, $resolvePathfile, $i) {
 
                         PhraseanetPHPUnitAbstract::$recordsInitialized[] = $i;
 
@@ -744,7 +747,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
                         $record = record_adapter::createFromFile($file);
 
-                        $record->generate_subdefs($record->get_databox());
+                        $record->generate_subdefs($record->get_databox(), $logger);
 
                         return $record;
                     });
