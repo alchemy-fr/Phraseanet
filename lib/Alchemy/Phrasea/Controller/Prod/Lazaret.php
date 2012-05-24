@@ -210,7 +210,7 @@ class Lazaret implements ControllerProviderInterface
             $ret['result'] = $file;
             $ret['success'] = true;
         } catch (\Exception_NotFound $e) {
-            $ret['message'] = _('File is not found');
+            $ret['message'] = _('File is not present in quarantine anymore, please refresh');
         } catch (\Exception $e) {
             $ret['message'] = _('An error occured');
         }
@@ -312,9 +312,9 @@ class Lazaret implements ControllerProviderInterface
             $app['Core']['EM']->flush();
             $ret['success'] = true;
         } catch (\Exception_BadRequest $e) {
-            $ret['message'] = _("The request is malformed");
+            $ret['message'] = _("The request could not be processed, please retry or contact an administrator if the problem persist");
         } catch (\Exception_NotFound $e) {
-            $ret['message'] = _('File is not found');
+            $ret['message'] = _('File is not present in quarantine anymore, please refresh');
         } catch (\Exception $e) {
             $ret['message'] = _('An error occured');
         }
@@ -351,7 +351,7 @@ class Lazaret implements ControllerProviderInterface
 
             $ret['success'] = true;
         } catch (\Exception_NotFound $e) {
-            $ret['message'] = _('File is not found');
+            $ret['message'] = _('File is not present in quarantine anymore, please refresh');
         } catch (\Exception $e) {
             $ret['message'] = _('An error occured');
         }
@@ -416,9 +416,9 @@ class Lazaret implements ControllerProviderInterface
 
             $ret['success'] = true;
         } catch (\Exception_BadRequest $e) {
-            $ret['message'] = _("The request is malformed");
+            $ret['message'] = _("The request could not be processed, please retry or contact an administrator if the problem persist");
         } catch (\Exception_NotFound $e) {
-            $ret['message'] = _('File is not found');
+            $ret['message'] = _('File is not present in quarantine anymore, please refresh');
         } catch (\Exception $e) {
             $ret['message'] = _('An error occured');
         }
