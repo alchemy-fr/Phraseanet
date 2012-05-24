@@ -55,8 +55,9 @@ class module_console_schedulerStart extends Command
             $scheduler->run();
         } catch (\Exception $e) {
             switch ($e->getCode()) {
-                case task_Scheduler::ERR_ALREADY_RUNNING:   // 114 : aka EALREADY (Operation already in progress)
-                    $exitCode = ERR_ALREADY_RUNNING;
+                // 114 : aka EALREADY (Operation already in progress)
+                case task_Scheduler::ERR_ALREADY_RUNNING:
+                    $exitCode = task_Scheduler::ERR_ALREADY_RUNNING;
                     break;
                 default:
                     $exitCode = 1;   // default exit code (error)
