@@ -243,6 +243,30 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         }
     }
 
+    /**
+     * Insert one basket entry ans set current authenticated user as owner
+     *
+     * @return \Entities\Basket
+     */
+    protected function insertOneLazaretFile()
+    {
+        try {
+            $lazaretFixture = new PhraseaFixture\Lazaret\LoadOneFile();
+
+            $lazaretFixture->setUser(self::$user);
+            $lazaretFixture->setCollectionId(self::$collection->get_base_id());
+
+            $loader = new Loader();
+            $loader->addFixture($lazaretFixture);
+
+            $this->insertFixtureInDatabase($loader);
+
+            return $lazaretFixture->file;
+        } catch (\Exception $e) {
+            $this->fail('Fail load one Basket : ' . $e->getMessage());
+        }
+    }
+
     protected function insertOneUsrList(\User_Adapter $user)
     {
         try {
