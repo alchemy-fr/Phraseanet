@@ -29,8 +29,11 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
 
         $file = new Alchemy\Phrasea\Border\File(\MediaVorus\MediaVorus::guess(new \SplFileInfo(__DIR__ . "/../testfiles/iphone_pic.jpg")), self::$collection);
 
+        $logger = new \Monolog\Logger('test');
+        $logger->pushHandler(new \Monolog\Handler\NullHandler());
+
         self::$recordonbleu = record_adapter::createFromFile($file);
-        self::$recordonbleu->generate_subdefs(self::$recordonbleu->get_databox());
+        self::$recordonbleu->generate_subdefs(self::$recordonbleu->get_databox(), $logger);
 
         foreach (self::$recordonbleu->get_subdefs() as $subdef) {
 

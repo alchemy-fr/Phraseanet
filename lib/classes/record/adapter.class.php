@@ -1655,7 +1655,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      * @param  array           $wanted_subdefs An array of subdef names
      * @return \record_adapter
      */
-    public function generate_subdefs(databox $databox, Logger $logger = null, Array $wanted_subdefs = null)
+    public function generate_subdefs(databox $databox, Logger $logger, Array $wanted_subdefs = null)
     {
         $subdefs = $databox->get_subdef_structure()->getSubdefGroup($this->get_type());
 
