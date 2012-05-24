@@ -76,24 +76,4 @@ class system_server
 
         return false;
     }
-
-    /**
-     * Return server platform name
-     *
-     * @staticvar string $_system
-     * @return string
-     */
-    public static function get_platform()
-    {
-        static $_system = NULL;
-        if ($_system === NULL) {
-            $_system = strtoupper(php_uname('s'));
-
-            if ($_system == 'WINDOWS NT') {
-                $_system = 'WINDOWS';
-            }
-        }
-
-        return($_system);
-    }
 }

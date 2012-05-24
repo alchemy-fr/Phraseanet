@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  */
 
+use Monolog\Logger;
 use MediaVorus\Media\Media;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 
@@ -1647,14 +1648,22 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     }
 
     /**
+     * Generates subdefs
      *
-     * @param databox $databox
+     * @param  databox         $databox        The databox
+     * @param  \Monolog\Logger $logger         A logger for binary operation
+     * @param  array           $wanted_subdefs An array of subdef names
+     * @return \record_adapter
      */
-    public function generate_subdefs(databox $databox, Array $wanted_subdefs = null)
+    public function generate_subdefs(databox $databox, Logger $logger, Array $wanted_subdefs = null)
     {
         $subdefs = $databox->get_subdef_structure()->getSubdefGroup($this->get_type());
 
         $Core = bootstrap::getCore();
+
+        if ( ! $logger) {
+            $logger = $Core['monolog'];
+        }
 
         if ( ! $subdefs) {
             $Core['monolog']->addInfo(sprintf('Nothing to do for %s', $this->get_type()));
@@ -1682,7 +1691,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
             $pathdest = $this->generateSubdefPathname($subdef, $pathdest);
 
-            $this->generate_subdef($subdef, $pathdest);
+            $this->generate_subdef($subdef, $pathdest, $logger);
 
             if (file_exists($pathdest)) {
                 $media = \MediaVorus\MediaVorus::guess(new \SplFileInfo($pathdest));
@@ -1712,12 +1721,14 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     }
 
     /**
+     * Generate a subdef
      *
-     * @todo move to media_subdef class
-     * @param databox_subdef $subdef_class
-     * @param string         $pathdest
+     * @param  databox_subdef  $subdef_class The related databox subdef
+     * @param  type            $pathdest     The destination of the file
+     * @param  Logger          $logger       A logger for binary operation
+     * @return \record_adapter
      */
-    protected function generate_subdef(databox_subdef $subdef_class, $pathdest)
+    protected function generate_subdef(databox_subdef $subdef_class, $pathdest, Logger $logger)
     {
         $Core = \bootstrap::getCore();
 
@@ -1730,7 +1741,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             $Core['media-alchemyst']->turnInto($pathdest, $subdef_class->getSpecs());
             $Core['media-alchemyst']->close();
         } catch (\MediaAlchemyst\Exception\Exception $e) {
-            $Core['monolog']->addError(sprintf('Subdef generation failed with message %s', $e->getMessage()));
+            $logger->addError(sprintf('Subdef generation failed for record %d with message %s', $this->get_record_id(), $e->getMessage()));
         }
 
         return $this;
