@@ -1,18 +1,22 @@
 <div id="lazaretBox">
-    {% if lazaretFiles|length > 0%}
-        {% for file in lazaretFiles %}
-            {{ _self.lazaretElement(file) }}
-            <br style='clear:both' />
-        {% endfor %}
+    {% if lazaretFiles is not none %}
+        {% if lazaretFiles|length > 0 %}
+            {% for file in lazaretFiles %}
+                {{ _self.lazaretElement(file) }}
+                <br style='clear:both' />
+            {% endfor %}
+        {% else %}
+            {% trans 'No document in quarantine' %}
+        {% endif %}
     {% else %}
-        {% trans 'Aucun document dans la quarantaine actuellement' %}
+        {% trans 'You do not have enough rights to access quarantine' %}
     {% endif %}
 </div>
 
 {% macro lazaretElement(file) %}
     {% import "common/thumbnail.html" as thumb %}
     {% set records = file.getRecordsToSubstitute() %}
-    <div>{#load image from pathname#}</div>
+<div><img src='/prod/lazaret/{{ file.getId() }}/thumbnail/' width="80px" height="80px"/></div>
     <div class='lazaret-file' style='float:left;width:25%;padding:10px;'>
         <table class='table'>
             <tr>

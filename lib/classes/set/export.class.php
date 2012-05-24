@@ -838,6 +838,7 @@ class set_export extends set_abstract
             }
         }
 
+        $response->setStatusCode(404);
         return $response;
     }
 
