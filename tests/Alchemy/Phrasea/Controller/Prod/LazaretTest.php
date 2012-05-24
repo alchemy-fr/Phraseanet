@@ -77,7 +77,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->app['Core']['EM'] = $em;
 
         $crawler = $this->client->request(
-            'GET', $route, array('base_ids' => array(self::$collection->get_base_id()))
+            'GET', $route
         );
 
         $this->app['Core']['EM'] = $originalEm;
