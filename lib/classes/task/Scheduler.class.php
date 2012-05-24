@@ -213,27 +213,20 @@ class task_Scheduler
 
                 if ( ! isset($taskPoll[$tkey])) {
                     // the task is not in the poll, add it
-                    $phpcli = $registry->get('GV_cli');
-                    switch ($system) {
-                        case "WINDOWS":
-                            $cmd = $phpcli;
-                            $args = array('-f', $registry->get('GV_RootPath') . 'bin/console', '--', '-q', 'task:run', $task->getID(), '--runner=scheduler');
-                            break;
-                        default:
-                        case "DARWIN":
-                        case "LINUX":
-                            $cmd = $phpcli;
-                            $args = array('-f', $registry->get('GV_RootPath') . 'bin/console', '--', '-q', 'task:run', $task->getID(), '--runner=scheduler');
-                            break;
-                    }
-
                     $taskPoll[$tkey] = array(
                         "task"           => $task,
                         "current_status" => $status,
-                        "cmd"            => $cmd,
-                        "args"           => $args,
-                        "killat"         => null,
-                        "sigterm_sent"   => false
+                        "cmd"            => $registry->get('GV_cli'),
+                        "args"           => array(
+                            '-f',
+                            $registry->get('GV_RootPath') . 'bin/console',
+                            '--',
+                            '-q',
+                            'task:run',
+                            $task->getID(), '--runner=scheduler'
+                        ),
+                        "killat"       => null,
+                        "sigterm_sent" => false
                     );
                     if ($this->method == self::METHOD_PROC_OPEN) {
                         $taskPoll[$tkey]['process'] = NULL;

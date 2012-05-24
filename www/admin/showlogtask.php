@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\Finder\Finder;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -19,7 +21,7 @@ $appbox = appbox::get_instance($Core);
 $session = $appbox->get_session();
 
 $request = http_request::getInstance();
-$parm = $request->get_parms('fil', 'log', 'id', 'act');
+$parm = $request->get_parms('fil', 'id', 'act');
 ?>
 <html lang="<?php echo($session->get_I18n()); ?>">
     <head>
@@ -33,53 +35,49 @@ $parm = $request->get_parms('fil', 'log', 'id', 'act');
         </style>
     </head>
     <body>
-        <h1>
-            logfile :
-            <?php
-            foreach (array('l' => 'log', 'o' => 'stdout', 'e' => 'stderr') as $k => $v) {
-                $cls = '';
-                if ($k == $parm['log'])
-                    $cls = 'current';
-                printf("<a class=\"%s\" href=\"/admin/showlogtask.php?fil=%s&log=%s&id=%s\">(%s)</a>\n"
-                    , $cls
-                    , urlencode($parm['fil'])
-                    , urlencode($k)
-                    , urlencode($parm['id'])
-                    , $v);
-            }
-            ?>
-        </h1>
         <?php
         $registry = $appbox->get_registry();
         $logdir = p4string::addEndSlash($registry->get('GV_RootPath') . 'logs');
-        $logfile = $logdir . $parm['fil'];
-        if ($parm['log'])
-            $logfile .= '_' . $parm['log'];
-        if ($parm['id'])
-            $logfile .= '_' . $parm['id'];
-        $logfile .= '.log';
 
-        if (file_exists($logfile)) {
+        $name = str_replace('..', '', $parm['fil']);
+
+        if ($parm['id']) {
+            $name .= '_' . $parm['id'];
+        }
+        $name .= '*.log';
+
+        $finder = new Finder();
+        $finder
+            ->files()->name($name . '*')
+            ->in($logdir)
+            ->date('> now - 1 days')
+            ->sortByModifiedTime()
+            ->sort(function($a, $b) {
+                    return -1;
+                });
+
+        $found = false;
+        foreach ($finder->getIterator() as $file) {
             if ($parm['act'] == 'CLR') {
-                file_put_contents($logfile, '');
+                file_put_contents($file->getRealPath(), '');
 
-                return phrasea::redirect(sprintf("/admin/showlogtask.php?fil=%s&log=%s&id=%s"
+                return phrasea::redirect(sprintf("/admin/showlogtask.php?fil=%s&id=%s"
                             , urlencode($parm['fil'])
-                            , urlencode($parm['log'])
                             , urlencode($parm['id']))
                 );
             } else {
-                printf("<h4>%s\n", $logfile);
-                printf("&nbsp;<a href=\"/admin/showlogtask.php?fil=%s&log=%s&id=%s&act=CLR\">effacer</a>\n"
+                printf("<h4>%s\n", $file->getRealPath());
+                printf("&nbsp;<a href=\"/admin/showlogtask.php?fil=%s&id=%s&act=CLR\">" . _('Clear') . "</a>"
                     , urlencode($parm['fil'])
-                    , urlencode($parm['log'])
                     , urlencode($parm['id']));
                 print("</h4>\n<pre>\n");
-                print(htmlentities(file_get_contents($logfile)));
+                print(htmlentities(file_get_contents($file->getRealPath())));
                 print("</pre>\n");
             }
-        } else {
-            printf("<h4>file <b>%s</b> does not exists</h4>\n", $logfile);
+            $found = true;
+        }
+        if ( ! $found) {
+            printf("<h4>file <b>%s</b> does not exists</h4>\n", $logdir . $name);
         }
         ?>
     </body>

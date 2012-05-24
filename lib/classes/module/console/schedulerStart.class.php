@@ -43,11 +43,11 @@ class module_console_schedulerStart extends Command
 
         $logger = new Logger('Task logger');
 
-        $handler = new Handler\StreamHandler(fopen('php://stdout'), $input->getOption('verbose') ? Logger::DEBUG : Logger::WARNING);
+        $handler = new Handler\StreamHandler(fopen('php://stdout', 'a'), $input->getOption('verbose') ? Logger::DEBUG : Logger::WARNING);
         $logger->pushHandler($handler);
 
-        $logfile = __DIR__ . '/../../../../scheduler.log';
-        $handler = new Handler\RotatingFileHandler($logfile, 10, $level = Logger::WARNING);
+        $logfile = __DIR__ . '/../../../../logs/scheduler.log';
+        $handler = new Handler\RotatingFileHandler($logfile, 10);
         $logger->pushHandler($handler);
 
         try {
