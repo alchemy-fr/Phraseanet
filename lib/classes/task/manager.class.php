@@ -37,6 +37,8 @@ class task_manager
             return $this->tasks;
         }
 
+        $core = \bootstrap::getCore();
+
         $sql = "SELECT task2.* FROM task2 ORDER BY task_id ASC";
         $stmt = $this->appbox->get_connection()->prepare($sql);
         $stmt->execute();
@@ -44,9 +46,6 @@ class task_manager
         $stmt->closeCursor();
 
         $tasks = array();
-
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
-        $lockdir = $appbox->get_registry()->get('GV_RootPath') . 'tmp/locks/';
 
         foreach ($rs as $row) {
             $row['pid'] = NULL;
@@ -56,21 +55,7 @@ class task_manager
                 continue;
             }
             try {
-//        if( ($lock = fopen( $lockdir . 'task.'.$row['task_id'].'.lock', 'a+')) )
-//        {
-//          if (flock($lock, LOCK_SH | LOCK_NB) === FALSE)
-//          {
-//            // already locked : running !
-//            $row['pid'] = fgets($lock, 512);
-//          }
-//          else
-//          {
-//            // can lock : not running
-//            flock($lock, LOCK_UN);
-//          }
-//          fclose($lock);
-//        }
-                $tasks[$row['task_id']] = new $classname($row['task_id']);
+                $tasks[$row['task_id']] = new $classname($row['task_id'], $core['monolog']);
             } catch (Exception $e) {
 
             }

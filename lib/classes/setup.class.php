@@ -237,40 +237,54 @@ class setup
 
     public static function discover_binaries()
     {
-        if (system_server::get_platform() == 'WINDOWS') {
-            $indexer = dirname(dirname(__DIR__)) . '/bin/phraseanet_indexer.exe';
-        } else {
-            $indexer = null;
-        }
+        $finder = new \Symfony\Component\Process\ExecutableFinder();
 
         return array(
-            'php' => array('name'     => 'PHP CLI', 'binary'   => self::discover_binary('php')),
-            'phraseanet_indexer' => array('name'   => 'Indexeur Phrasea', 'binary' => self::discover_binary('phraseanet_indexer', array($indexer))),
-            'convert' => array('name'      => 'ImageMagick (convert)', 'binary'    => self::discover_binary('convert')),
-            'composite' => array('name'    => 'ImageMagick (composite)', 'binary'  => self::discover_binary('composite')),
-            'pdf2swf' => array('name'    => 'PDF 2 SWF', 'binary'  => self::discover_binary('pdf2swf')),
-            'unoconv' => array('name'       => 'Unoconv', 'binary'     => self::discover_binary('unoconv')),
-            'swfextract' => array('name'      => 'SWFextract', 'binary'    => self::discover_binary('swfextract')),
-            'swfrender' => array('name'   => 'SWFrender', 'binary' => self::discover_binary('swfrender')),
-            'MP4Box' => array('name'   => 'MP4Box', 'binary' => self::discover_binary('MP4Box')),
-            'xpdf'   => array('name'   => 'XPDF', 'binary' => self::discover_binary('xpdf')),
-            'ffmpeg' => array('name'    => 'FFmpeg', 'binary'  => self::discover_binary('ffmpeg')),
+            'php' => array(
+                'name'               => 'PHP CLI',
+                'binary'             => $finder->find('php')
+            ),
+            'phraseanet_indexer' => array(
+                'name'    => 'Indexeur Phrasea',
+                'binary'  => $finder->find('phraseanet_indexer')
+            ),
+            'convert' => array(
+                'name'      => 'ImageMagick (convert)',
+                'binary'    => $finder->find('convert')
+            ),
+            'composite' => array(
+                'name'    => 'ImageMagick (composite)',
+                'binary'  => $finder->find('composite')
+            ),
+            'pdf2swf' => array(
+                'name'    => 'PDF 2 SWF',
+                'binary'  => $finder->find('pdf2swf')
+            ),
+            'unoconv' => array(
+                'name'       => 'Unoconv',
+                'binary'     => $finder->find('unoconv')
+            ),
+            'swfextract' => array(
+                'name'      => 'SWFextract',
+                'binary'    => $finder->find('swfextract')
+            ),
+            'swfrender' => array(
+                'name'   => 'SWFrender',
+                'binary' => $finder->find('swfrender')
+            ),
+            'MP4Box' => array(
+                'name'   => 'MP4Box',
+                'binary' => $finder->find('MP4Box')
+            ),
+            'xpdf'   => array(
+                'name'   => 'XPDF',
+                'binary' => $finder->find('xpdf')
+            ),
+            'ffmpeg' => array(
+                'name'   => 'FFmpeg',
+                'binary' => $finder->find('ffmpeg')
+            ),
         );
-    }
-
-    protected static function discover_binary($binary, array $look_here = array())
-    {
-        if (system_server::get_platform() == 'WINDOWS') {
-            return null;
-        }
-
-        foreach ($look_here as $place) {
-            if (is_executable($place)) {
-                return $place;
-            }
-        }
-
-        return exec(sprintf('which %s', $binary));
     }
 
     public function check_mod_auth_token()
@@ -473,7 +487,6 @@ class setup
             </form>
 
             <?php
-
             return;
         }
 

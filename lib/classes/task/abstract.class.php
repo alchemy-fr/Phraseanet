@@ -283,26 +283,15 @@ abstract class task_abstract
 
     abstract public function help();
 
-    public function __construct($taskid)
+    public function __construct($taskid, Logger $logger)
     {
+        $this->logger = $logger;
+
         $this->taskid = $taskid;
 
         phrasea::use_i18n(Session_Handler::get_locale());
 
-        $this->system = system_server::get_platform();
-
         $this->launched_by = array_key_exists("REQUEST_URI", $_SERVER) ? self::LAUCHED_BY_BROWSER : self::LAUCHED_BY_COMMANDLINE;
-        if ($this->system != "DARWIN" && $this->system != "WINDOWS" && $this->system != "LINUX") {
-            if ($this->launched_by == self::LAUCHED_BY_COMMANDLINE) {
-//        printf("Desole, ce programme ne fonctionne pas sous '" . $this->system . "'.\n");
-                flush();
-            }
-            exit(-1);
-        } else {
-            if ($this->launched_by == self::LAUCHED_BY_COMMANDLINE) {
-                flush();
-            }
-        }
 
         try {
             $conn = connection::getPDOConnection();
@@ -496,10 +485,8 @@ abstract class task_abstract
         return $lockFD;
     }
 
-    final public function run($runner, $logger)
+    final public function run($runner)
     {
-        $this->logger = $logger;
-
         $lockFD = $this->lockTask();
 
         $this->setRunner($runner);
@@ -680,7 +667,9 @@ abstract class task_abstract
 
     public function log($message)
     {
-        $this->logger->addInfo($message);
+        if ($this->logger) {
+            $this->logger->addInfo($message);
+        }
 
         return $this;
     }

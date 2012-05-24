@@ -9,21 +9,20 @@
  * file that was distributed with this source code.
  */
 
+use Monolog\Logger;
+use Symfony\Component\Console\Output\OutputInterface;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
 class task_Scheduler
 {
     const TASKDELAYTOQUIT = 60;
     // how to schedule tasks (choose in 'run' method)
     const METHOD_FORK = 'METHOD_FORK';
     const METHOD_PROC_OPEN = 'METHOD_PROC_OPEN';
-
     const ERR_ALREADY_RUNNING = 114;   // aka EALREADY (Operation already in progress)
 
     /**
@@ -32,8 +31,11 @@ class task_Scheduler
      */
     private $logger;
     private $method;
-    private $input;
-    protected $output;
+
+    public function __construct(Logger $logger)
+    {
+        $this->logger = $logger;
+    }
 
     protected function log($message)
     {
@@ -47,30 +49,25 @@ class task_Scheduler
         return appbox::get_instance(\bootstrap::getCore())->get_connection();
     }
 
-    /*
+    /**
      * @throws Exception if scheduler is already running
      * @todo doc all possible exception
      */
-    public function run(\Monolog\Logger $logger)
+    public function run()
     {
-        $this->logger = $logger;
-
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $registry = $appbox->get_registry();
 
-        $nullfile = '';
-        $system = system_server::get_platform();
-        switch ($system) {
-            case "WINDOWS":
-                $nullfile = 'NUL';
-                $this->method = self::METHOD_PROC_OPEN;
-                break;
-            default:
-            case "DARWIN":
-            case "LINUX":
-                $nullfile = '/dev/null';
-                $this->method = self::METHOD_FORK;
-                break;
+        $this->method = self::METHOD_PROC_OPEN;
+
+        $nullfile = '/dev/null';
+
+        if (defined('PHP_WINDOWS_VERSION_BUILD')) {
+            $nullfile = 'NUL';
+        }
+
+        if (function_exists('pcntl_fork')) {
+            $this->method = self::METHOD_FORK;
         }
 
         $lockdir = $registry->get('GV_RootPath') . 'tmp/locks/';
@@ -320,10 +317,11 @@ class task_Scheduler
 
                         if ($this->method == self::METHOD_PROC_OPEN) {
                             if ( ! $taskPoll[$tkey]["process"]) {
-                                $tmpFile = tempnam(sys_get_temp_dir(), 'task');
 
-                                $descriptors[1] = array('file', $tmpFile, 'a+');
-                                $descriptors[2] = array('file', $tmpFile, 'a+');
+                                $nullfile = defined('PHP_WINDOWS_VERSION_BUILD') ? 'NUL' : '/dev/null';
+
+                                $descriptors[1] = array('file', $nullfile, 'a+');
+                                $descriptors[2] = array('file', $nullfile, 'a+');
 
                                 $taskPoll[$tkey]["process"] = proc_open(
                                     $taskPoll[$tkey]["cmd"] . ' ' . implode(' ', $taskPoll[$tkey]["args"])

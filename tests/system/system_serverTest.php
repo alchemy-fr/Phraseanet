@@ -41,9 +41,4 @@ class system_serverTest extends PhraseanetPHPUnitAbstract
         $this->assertFalse($this->objects['lighttpd']->is_apache());
     }
 
-    public function testGet_platform()
-    {
-        $platform = system_server::get_platform();
-        $this->assertRegExp('/[A-Z]+/', $platform);
-    }
 }

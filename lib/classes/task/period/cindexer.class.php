@@ -202,7 +202,7 @@ class task_period_cindexer extends task_abstract
     public function printInterfaceJS()
     {
         $appname = 'phraseanet_indexer';
-        if ($this->system == 'WINDOWS') {
+        if (defined('PHP_WINDOWS_VERSION_BUILD')) {
             $appname .= '.exe';
         }
         ?>
@@ -277,17 +277,17 @@ class task_period_cindexer extends task_abstract
     public function printInterfaceHTML()
     {
         $appname = 'phraseanet_indexer';
-        if ($this->system == 'WINDOWS') {
+        if (defined('PHP_WINDOWS_VERSION_BUILD')) {
             $appname .= '.exe';
         }
         ob_start();
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
             <br/>
-            <?php echo _('task::cindexer:executable') ?>&nbsp;:&nbsp;
+        <?php echo _('task::cindexer:executable') ?>&nbsp;:&nbsp;
             <input type="text" name="binpath" style="width:300px;" onchange="chgxmltxt(this, 'binpath');" value="">&nbsp;/&nbsp;<?php echo $appname ?>
             <br/>
-            <?php echo _('task::cindexer:host') ?>&nbsp;:&nbsp;<input type="text" name="host" style="width:100px;" onchange="chgxmltxt(this, 'host');" value="">
+        <?php echo _('task::cindexer:host') ?>&nbsp;:&nbsp;<input type="text" name="host" style="width:100px;" onchange="chgxmltxt(this, 'host');" value="">
             <br/>
             <?php echo _('task::cindexer:port') ?>&nbsp;:&nbsp;<input type="text" name="port" style="width:100px;" onchange="chgxmltxt(this, 'port');" value="">
             <br/>
@@ -299,7 +299,7 @@ class task_period_cindexer extends task_abstract
             <br/>
             <br/>
 
-            <?php echo _('task::cindexer:control socket') ?>&nbsp;:&nbsp;<input type="text" name="socket" style="width:50px;" onchange="chgxmltxt(this, 'socket');" value="">
+        <?php echo _('task::cindexer:control socket') ?>&nbsp;:&nbsp;<input type="text" name="socket" style="width:50px;" onchange="chgxmltxt(this, 'socket');" value="">
             <br/>
             <?php echo _('task::cindexer:Debug mask') ?>&nbsp;:&nbsp;<input type="text" name="debugmask" style="width:50px;" onchange="chgxmltxt(this, 'debugmask');" value="">
             <br/>
@@ -310,20 +310,20 @@ class task_period_cindexer extends task_abstract
                 <br/>
             </div>
 
-            <?php echo _('task::cindexer:MySQL charset') ?>&nbsp;:&nbsp;<input type="text" name="charset" style="width:100px;" onchange="chgxmltxt(this, 'charset');" value="">
+        <?php echo _('task::cindexer:MySQL charset') ?>&nbsp;:&nbsp;<input type="text" name="charset" style="width:100px;" onchange="chgxmltxt(this, 'charset');" value="">
             <br/>
 
             <input type="checkbox" name="nolog" onclick="chgxmlck(this, 'nolog');">&nbsp;<?php echo _('task::cindexer:do not (sys)log, but out to console)') ?>
             <br/>
 
-            <?php echo _('task::cindexer:default language for new candidates') ?>&nbsp;:&nbsp;<input type="text" name="clng" style="width:50px;" onchange="chgxmltxt(this, 'clng');" value="">
+        <?php echo _('task::cindexer:default language for new candidates') ?>&nbsp;:&nbsp;<input type="text" name="clng" style="width:50px;" onchange="chgxmltxt(this, 'clng');" value="">
             <br/>
             <br/>
 
             <hr/>
 
             <br/>
-            <?php echo _('task::cindexer:windows specific') ?>&nbsp;:<br/>
+        <?php echo _('task::cindexer:windows specific') ?>&nbsp;:<br/>
             <input type="checkbox" name="winsvc_run" onclick="chgxmlck(this, 'run');">&nbsp;<?php echo _('task::cindexer:run as application, not as service') ?>
             <br/>
 
@@ -369,20 +369,12 @@ class task_period_cindexer extends task_abstract
     {
         $cmd = $this->binpath . 'phraseanet_indexer';
 
-        switch ($this->system) {
-            case "WINDOWS":
-                $cmd .= '.exe';
-                $nullfile = 'NUL';
-                $this->method = self::METHOD_PROC_OPEN;
-                break;
-            default:
-            case "DARWIN":
-            case "LINUX":
-                $nullfile = '/dev/null';
-                // $this->method = self::METHOD_FORK;
-                // $this->method = self::METHOD_EXEC;
-                $this->method = self::METHOD_PROC_OPEN;
-                break;
+        $nullfile = '/dev/null';
+        $this->method = self::METHOD_PROC_OPEN;
+
+        if (defined('PHP_WINDOWS_VERSION_BUILD')) {
+            $nullfile = '/dev/null';
+            $cmd .= '.exe';
         }
 
         if ( ! file_exists($cmd) || ! is_executable($cmd)) {
@@ -470,7 +462,7 @@ class task_period_cindexer extends task_abstract
 
     private function run_with_proc_open($cmd, $args, $args_nopwd)
     {
-        $nullfile = $this->system == 'WINDOWS' ? 'NUL' : '/dev/null';
+        $nullfile = defined('PHP_WINDOWS_VERSION_BUILD') ? 'NUL' : '/dev/null';
 
         $descriptors = array();
         $descriptors[1] = array("file", $nullfile, "a+");

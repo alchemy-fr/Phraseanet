@@ -52,8 +52,8 @@ class module_console_schedulerStart extends Command
         $logger->pushHandler($handler);
 
         try {
-            $scheduler = new task_Scheduler();
-            $scheduler->run($logger);
+            $scheduler = new task_Scheduler($logger);
+            $scheduler->run();
         } catch (\Exception $e) {
             switch ($e->getCode()) {
                 case task_Scheduler::ERR_ALREADY_RUNNING:   // 114 : aka EALREADY (Operation already in progress)

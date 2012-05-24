@@ -81,7 +81,6 @@ class module_console_taskrun extends Command
 
         $appbox = \appbox::get_instance(\bootstrap::getCore());
         $task_manager = new task_manager($appbox);
-        $this->task = $task_manager->getTask($task_id);
 
         if ($input->getOption('runner') === task_abstract::RUNNER_MANUAL) {
             $schedStatus = $task_manager->getSchedulerState();
@@ -109,6 +108,8 @@ class module_console_taskrun extends Command
         $handler = new Handler\RotatingFileHandler($logfile, 10, $level = Logger::WARNING);
         $logger->pushHandler($handler);
 
+        $this->task = $task_manager->getTask($task_id, $logger);
+
         register_tick_function(array($this, 'tick_handler'), true);
         declare(ticks = 1);
 
@@ -117,7 +118,7 @@ class module_console_taskrun extends Command
         }
 
         try {
-            $this->task->run($runner, $logger);
+            $this->task->run($runner);
         } catch (Exception $e) {
             $this->task->log(sprintf("taskrun : exception from 'run()', %s \n", $e->getMessage()));
 
