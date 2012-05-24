@@ -421,9 +421,7 @@ class API_V1_adapter extends API_V1_Abstract
                     'allowedFileExtension' => $registry->get('GV_appletAllowedFileEx'),
                 ),
                 'filesystem'           => array(
-                    'web'          => $registry->get('GV_base_datapath_web'),
                     'noWeb'        => $registry->get('GV_base_datapath_noweb'),
-                    'thumbnail'    => $registry->get('GV_base_dataurl'),
                 ),
                 'searchEngine' => array(
                     'configuration' => array(

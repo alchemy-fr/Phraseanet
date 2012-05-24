@@ -468,7 +468,7 @@ class databox extends base
         $databox = self::get_instance($sbas_id);
         $databox->insert_datas();
         $databox->setNewStructure(
-            $data_template, $registry->get('GV_base_datapath_web'), $registry->get('GV_base_datapath_noweb'), $registry->get('GV_base_dataurl')
+            $data_template, $registry->get('GV_base_datapath_noweb')
         );
 
         return $databox;
@@ -845,7 +845,7 @@ class databox extends base
         return $this;
     }
 
-    public function setNewStructure(\SplFileInfo $data_template, $path_web, $path_doc)
+    public function setNewStructure(\SplFileInfo $data_template, $path_doc)
     {
         if ( ! file_exists($data_template->getPathname())) {
             throw new \InvalidArgumentException(sprintf('File %s does not exists'));
@@ -854,8 +854,8 @@ class databox extends base
         $contents = file_get_contents($data_template->getPathname());
 
         $contents = str_replace(
-            array("{{basename}}", "{{datapathweb}}", "{{datapathnoweb}}")
-            , array($this->dbname, $path_web, $path_doc)
+            array("{{basename}}", "{{datapathnoweb}}")
+            , array($this->dbname, $path_doc)
             , $contents
         );
 

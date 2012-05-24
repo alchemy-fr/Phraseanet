@@ -289,26 +289,10 @@ $GV = array(
             ),
             array(
                 'type'      => 'string',
-                'name'      => 'GV_base_datapath_web',
-                'end_slash' => true,
-                'comment'   => _('reglages:: dossier de stockage des vignettes publiees en acces direct'),
-                'default'   => '',
-                'required'  => true
-            ),
-            array(
-                'type'      => 'string',
                 'name'      => 'GV_base_datapath_noweb',
                 'end_slash' => true,
-                'comment'   => _('reglages:: dossier de stockage des fichiers proteges de l\'acces direct'),
+                'comment'   => _('Default path for datas'),
                 'default'   => '',
-                'required'  => true
-            ),
-            array(
-                'type'      => 'string',
-                'name'      => 'GV_base_dataurl',
-                'comment'   => _('reglages:: point de montage des vignettes publiees en acces direct'),
-                'default'   => 'web',
-                'end_slash' => false,
                 'required'  => true
             )
         )
