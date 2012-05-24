@@ -179,6 +179,7 @@ switch ($parm['action']) {
         $output = $ret->saveXML();
         break;
     case 'PINGSCHEDULER_JS':
+        $parm = $request->get_parms('dbps');
         $ret = array('time' => date("H:i:s"));
 
         $task_manager = new task_manager($appbox);
@@ -201,7 +202,7 @@ switch ($parm['action']) {
             );
         }
 
-        if (1) {
+        if ($parm['dbps']) {
             $sql = 'SHOW PROCESSLIST';
             $stmt = $appbox->get_connection()->prepare($sql);
             $stmt->execute();

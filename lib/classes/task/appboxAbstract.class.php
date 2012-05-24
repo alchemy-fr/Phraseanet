@@ -123,106 +123,14 @@ abstract class task_appboxAbstract extends task_abstract
         try {
             // get the records to process
             $rs = $this->retrieveContent($appbox);
+
+            // process the records
             $ret = $this->processLoop($appbox, $rs);
+
         } catch (Exception $e) {
             $this->log('Error  : ' . $e->getMessage());
         }
 
         return $ret;
-
-        /*
-          $ret = self::STATE_OK;
-
-          try {
-          // get the records to process
-          $rs = $this->retrieveContent($appbox);
-          } catch (Exception $e) {
-          $this->log('Error  : ' . $e->getMessage());
-          $rs = array();
-          }
-
-          $rowstodo = count($rs);
-          $rowsdone = 0;
-
-          if ($rowstodo > 0) {
-          $this->setProgress(0, $rowstodo);
-          }
-
-          foreach ($rs as $row) {
-
-          try {
-          // process one record
-          $this->processOneContent($appbox, $row);
-          } catch (Exception $e) {
-          $this->log("Exception : " . $e->getMessage() . " " . basename($e->getFile()) . " " . $e->getLine());
-          }
-
-          $this->records_done ++;
-          $this->setProgress($rowsdone, $rowstodo);
-
-          // post-process
-          $this->postProcessOneContent($appbox, $row);
-
-          $current_memory = memory_get_usage();
-          if ($current_memory >> 20 >= $this->maxmegs) {
-          $this->log(sprintf("Max memory (%s M) reached (actual is %s M)", $this->maxmegs, $current_memory));
-          $this->running = FALSE;
-          $ret = self::STATE_MAXMEGSREACHED;
-          }
-
-          if ($this->records_done >= (int) ($this->maxrecs)) {
-          $this->log(sprintf("Max records done (%s) reached (actual is %s)", $this->maxrecs, $this->records_done));
-          $this->running = FALSE;
-          $ret = self::STATE_MAXRECSDONE;
-          }
-
-          try {
-          $status = $this->getState();
-          if ($status == self::STATE_TOSTOP) {
-          $this->running = FALSE;
-          $ret = self::STATE_TOSTOP;
-          }
-          } catch (Exception $e) {
-          $this->running = FALSE;
-          }
-
-          if ( ! $this->running) {
-          break;
-          }
-          }
-          //
-          // if nothing was done, at least check the status
-          if (count($rs) == 0 && $this->running) {
-
-          $current_memory = memory_get_usage();
-          if ($current_memory >> 20 >= $this->maxmegs) {
-          $this->log(sprintf("Max memory (%s M) reached (current is %s M)", $this->maxmegs, $current_memory));
-          $this->running = FALSE;
-          $ret = self::STATE_MAXMEGSREACHED;
-          }
-
-          if ($this->records_done >= (int) ($this->maxrecs)) {
-          $this->log(sprintf("Max records done (%s) reached (actual is %s)", $this->maxrecs, $this->records_done));
-          $this->running = FALSE;
-          $ret = self::STATE_MAXRECSDONE;
-          }
-
-          try {
-          $status = $this->getState();
-          if ($status == self::STATE_TOSTOP) {
-          $this->running = FALSE;
-          $ret = self::STATE_TOSTOP;
-          }
-          } catch (Exception $e) {
-          $this->running = FALSE;
-          }
-          }
-
-          if ($rowstodo > 0) {
-          $this->setProgress(0, 0);
-          }
-
-          return $ret;
-         */
     }
 }
