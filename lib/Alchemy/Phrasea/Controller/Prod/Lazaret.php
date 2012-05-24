@@ -161,7 +161,7 @@ class Lazaret implements ControllerProviderInterface
 
         $lazaretFiles = null;
 
-        if(count($baseIds) > 0){
+        if (count($baseIds) > 0) {
             $lazaretRepository = $em->getRepository('Entities\LazaretFile');
 
             $lazaretFiles = $lazaretRepository->findPerPage(
@@ -187,7 +187,7 @@ class Lazaret implements ControllerProviderInterface
      */
     public function getElement(Application $app, Request $request, $file_id)
     {
-        $ret = array('success' => false, 'message' => '', 'result' => array());
+        $ret = array('success' => false, 'message' => '', 'result'  => array());
 
         try {
             $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
@@ -215,9 +215,7 @@ class Lazaret implements ControllerProviderInterface
             $ret['message'] = _('An error occured');
         }
 
-        $datas = $app['Core']['Serializer']->serialize($ret, 'json');
-
-        return new Response($datas, 200, array('content-type' => 'application/json'));
+        return self::formatJson($app['Core']['Serializer'], $ret);
     }
 
     /**
@@ -231,18 +229,20 @@ class Lazaret implements ControllerProviderInterface
      */
     public function addElement(Application $app, Request $request, $file_id)
     {
-        $ret = array('success' => false, 'message' => '', 'result' => array());
+        $ret = array('success' => false, 'message' => '', 'result'  => array());
 
         //Optional parameter
         $keepAttributes = ! ! $request->get('keep_attributes', false);
         $attributesToKeep = $request->get('attributes', array());
 
-        try {
-            //Mandatory parameter
-            if (null === $baseId = $request->get('bas_id')) {
-                throw new \Exception_BadRequest('Missing mandatory parameter bas_id');
-            }
+        //Mandatory parameter
+        if (null === $baseId = $request->get('bas_id')) {
+            $ret['message'] = _('You must give a destination collection');
 
+            return self::formatJson($app['Core']['Serializer'], $ret);
+        }
+
+        try {
             $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
 
             /* @var $lazaretFile \Entities\LazaretFile */
@@ -259,8 +259,8 @@ class Lazaret implements ControllerProviderInterface
 
             //Post record creation
             $callBack = function($element, $visa, $code) use (&$record) {
-                $record = $element;
-            };
+                    $record = $element;
+                };
 
             //Force creation record
             $app['Core']['border-manager']->process(
@@ -311,17 +311,13 @@ class Lazaret implements ControllerProviderInterface
             $app['Core']['EM']->remove($lazaretFile);
             $app['Core']['EM']->flush();
             $ret['success'] = true;
-        } catch (\Exception_BadRequest $e) {
-            $ret['message'] = _("The request could not be processed, please retry or contact an administrator if the problem persist");
         } catch (\Exception_NotFound $e) {
             $ret['message'] = _('File is not present in quarantine anymore, please refresh');
         } catch (\Exception $e) {
             $ret['message'] = _('An error occured');
         }
 
-        $datas = $app['Core']['Serializer']->serialize($ret, 'json');
-
-        return new Response($datas, 200, array('content-type' => 'application/json'));
+        return self::formatJson($app['Core']['Serializer'], $ret);
     }
 
     /**
@@ -335,7 +331,7 @@ class Lazaret implements ControllerProviderInterface
      */
     public function denyElement(Application $app, Request $request, $file_id)
     {
-        $ret = array('success' => false, 'message' => '', 'result' => array());
+        $ret = array('success' => false, 'message' => '', 'result'  => array());
 
         try {
             $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
@@ -356,9 +352,7 @@ class Lazaret implements ControllerProviderInterface
             $ret['message'] = _('An error occured');
         }
 
-        $datas = $app['Core']['Serializer']->serialize($ret, 'json');
-
-        return new Response($datas, 200, array('content-type' => 'application/json'));
+        return self::formatJson($app['Core']['Serializer'], $ret);
     }
 
     /**
@@ -372,14 +366,16 @@ class Lazaret implements ControllerProviderInterface
      */
     public function acceptElement(Application $app, Request $request, $file_id)
     {
-         $ret = array('success' => false, 'message' => '', 'result' => array());
+        $ret = array('success' => false, 'message' => '', 'result'  => array());
+
+        //Mandatory parameter
+        if (null === $recordId = $request->get('record_id')) {
+            $ret['message'] = _('You must give a destination record');
+
+            return self::formatJson($app['Core']['Serializer'], $ret);
+        }
 
         try {
-            //Mandatory parameter
-            if (null === $recordId = $request->get('record_id')) {
-                throw new \Exception_BadRequest('Missing mandatory parameter record_id');
-            }
-
             $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
 
             /* @var $lazaretFile \Entities\LazaretFile */
@@ -387,12 +383,10 @@ class Lazaret implements ControllerProviderInterface
                 throw new \Exception_NotFound(sprintf('Lazaret file id %d not found', $file_id));
             }
 
-            //Check if the choosen record is eligible to the substitution
-            $possibleRecords = $lazaretFile->getRecordsToSubstitute();
-
             $found = false;
 
-            foreach ($possibleRecords as $record) {
+            //Check if the choosen record is eligible to the substitution
+            foreach ($lazaretFile->getRecordsToSubstitute() as $record) {
                 if ($record->get_record_id() !== $recordId) {
                     continue;
                 }
@@ -400,11 +394,19 @@ class Lazaret implements ControllerProviderInterface
                 $found = true;
                 break;
             }
+        } catch (\Exception_NotFound $e) {
+            $ret['message'] = _('File is not present in quarantine anymore, please refresh');
+        } catch (\Exception $e) {
+            $ret['message'] = _('An error occured');
+        }
 
-            if ( ! $found) {
-                throw new \Exception(sprintf("Record with id %d can not be substitued", $recordId));
-            }
+        if ( ! $found) {
+            $ret['message'] = _('The destination record provided is not allowed');
 
+            return self::formatJson($app['Core']['Serializer'], $ret);
+        }
+
+        try {
             $media = MediaVorus::guess(new \SplFileInfo($lazaretFile->getPathname()));
 
             $record = $lazaretFile->getCollection()->get_databox()->get_record($recordId);
@@ -415,17 +417,11 @@ class Lazaret implements ControllerProviderInterface
             $app['Core']['EM']->flush();
 
             $ret['success'] = true;
-        } catch (\Exception_BadRequest $e) {
-            $ret['message'] = _("The request could not be processed, please retry or contact an administrator if the problem persist");
-        } catch (\Exception_NotFound $e) {
-            $ret['message'] = _('File is not present in quarantine anymore, please refresh');
         } catch (\Exception $e) {
             $ret['message'] = _('An error occured');
         }
 
-        $datas = $app['Core']['Serializer']->serialize($ret, 'json');
-
-        return new Response($datas, 200, array('content-type' => 'application/json'));
+        return self::formatJson($app['Core']['Serializer'], $ret);
     }
 
     /**
@@ -443,7 +439,7 @@ class Lazaret implements ControllerProviderInterface
 
         /* @var $lazaretFile \Entities\LazaretFile */
         if (null === $lazaretFile) {
-            return new Response();
+            return new Response(null, 404);
         }
 
         $response = \set_export::stream_file(
@@ -451,6 +447,11 @@ class Lazaret implements ControllerProviderInterface
         );
 
         return $response;
+    }
+
+    protected static function formatJson(\Symfony\Component\Serializer\Serializer $serializer, $datas)
+    {
+        return new Response($serializer->serialize($datas, 'json'), 200, array('content-type' => 'application/json'));
     }
 
     /**
