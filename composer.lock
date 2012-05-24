@@ -100,24 +100,26 @@
         {
             "package": "pimple/pimple",
             "version": "dev-master",
+            "source-reference": "v1.0.0"
+        },
+        {
+            "package": "pimple/pimple",
+            "version": "dev-master",
             "source-reference": "v1.0.0",
             "alias-pretty-version": "1.0.x-dev",
             "alias-version": "1.0.9999999.9999999-dev"
         },
         {
-            "package": "pimple/pimple",
+            "package": "silex/silex",
             "version": "dev-master",
-            "source-reference": "v1.0.0"
-        },
-        {
-            "package": "pimple/pimple",
-            "version": "dev-master",
-            "source-reference": "v1.0.0"
+            "source-reference": "e3113f97289c750b2a20bbd17201828f0a2f4cf2"
         },
         {
             "package": "silex/silex",
             "version": "dev-master",
-            "source-reference": "6dcb25872210c50292516683ba541c1b29624afd"
+            "source-reference": "e3113f97289c750b2a20bbd17201828f0a2f4cf2",
+            "alias-pretty-version": "1.0.x-dev",
+            "alias-version": "1.0.9999999.9999999-dev"
         },
         {
             "package": "silex/silex",
@@ -134,14 +136,14 @@
         {
             "package": "swiftmailer/swiftmailer",
             "version": "dev-master",
-            "source-reference": "9895567cec5a13d1a43db5053defbaad260c1b87",
-            "alias-pretty-version": "4.1.x-dev",
-            "alias-version": "4.1.9999999.9999999-dev"
+            "source-reference": "9895567cec5a13d1a43db5053defbaad260c1b87"
         },
         {
             "package": "swiftmailer/swiftmailer",
             "version": "dev-master",
-            "source-reference": "9895567cec5a13d1a43db5053defbaad260c1b87"
+            "source-reference": "9895567cec5a13d1a43db5053defbaad260c1b87",
+            "alias-pretty-version": "4.1.x-dev",
+            "alias-version": "4.1.9999999.9999999-dev"
         },
         {
             "package": "symfony/symfony",
@@ -152,13 +154,6 @@
             "package": "symfony/symfony",
             "version": "dev-master",
             "source-reference": "b07fb3c459b78061d755df20ee3ad9461e5edec4",
-            "alias-pretty-version": "2.1.x-dev",
-            "alias-version": "2.1.9999999.9999999-dev"
-        },
-        {
-            "package": "symfony/symfony",
-            "version": "dev-master",
-            "source-reference": "e0238071d4f07b46a07177066b6dd74ffb50fa5f",
             "alias-pretty-version": "2.1.x-dev",
             "alias-version": "2.1.9999999.9999999-dev"
         },
@@ -175,14 +170,14 @@
         {
             "package": "twig/twig",
             "version": "dev-master",
-            "source-reference": "573a36097146b319e5fb36546a0377c7440bbfe3",
-            "alias-pretty-version": "1.8.x-dev",
-            "alias-version": "1.8.9999999.9999999-dev"
+            "source-reference": "573a36097146b319e5fb36546a0377c7440bbfe3"
         },
         {
             "package": "twig/twig",
             "version": "dev-master",
-            "source-reference": "573a36097146b319e5fb36546a0377c7440bbfe3"
+            "source-reference": "573a36097146b319e5fb36546a0377c7440bbfe3",
+            "alias-pretty-version": "1.8.x-dev",
+            "alias-version": "1.8.9999999.9999999-dev"
         },
         {
             "package": "zend/gdata",
