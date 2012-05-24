@@ -194,7 +194,7 @@ class Lazaret implements ControllerProviderInterface
 
             /* @var $lazaretFile \Entities\LazaretFile */
             if (null === $lazaretFile) {
-                throw new \Exception_NotFound();
+                throw new \Exception_NotFound(sprintf('Lazaret file id %d not found', $file_id));
             }
 
             $file = array(
@@ -240,14 +240,14 @@ class Lazaret implements ControllerProviderInterface
         try {
             //Mandatory parameter
             if (null === $baseId = $request->get('bas_id')) {
-                throw new \Exception_BadRequest();
+                throw new \Exception_BadRequest('Missing mandatory parameter bas_id');
             }
 
             $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
 
             /* @var $lazaretFile \Entities\LazaretFile */
             if (null === $lazaretFile) {
-                throw new \Exception_NotFound();
+                throw new \Exception_NotFound(sprintf('Lazaret file id %d not found', $file_id));
             }
 
             $borderFile = Border\File::buildFromPathfile(
@@ -342,7 +342,7 @@ class Lazaret implements ControllerProviderInterface
 
             /* @var $lazaretFile \Entities\LazaretFile */
             if (null === $lazaretFile) {
-                throw new \Exception_NotFound();
+                throw new \Exception_NotFound(sprintf('Lazaret file id %d not found', $file_id));
             }
 
             //Delete lazaret file
@@ -377,14 +377,14 @@ class Lazaret implements ControllerProviderInterface
         try {
             //Mandatory parameter
             if (null === $recordId = $request->get('record_id')) {
-                throw new \Exception_BadRequest('Missing record_id parameter');
+                throw new \Exception_BadRequest('Missing mandatory parameter record_id');
             }
 
             $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
 
             /* @var $lazaretFile \Entities\LazaretFile */
             if (null === $lazaretFile) {
-                throw new \Exception_NotFound(_('File is not found'));
+                throw new \Exception_NotFound(sprintf('Lazaret file id %d not found', $file_id));
             }
 
             //Check if the choosen record is eligible to the substitution
@@ -402,7 +402,7 @@ class Lazaret implements ControllerProviderInterface
             }
 
             if ( ! $found) {
-                throw new \Exception("Record can not be substitued");
+                throw new \Exception(sprintf("Record with id %d can not be substitued", $recordId));
             }
 
             $media = MediaVorus::guess(new \SplFileInfo($lazaretFile->getPathname()));
