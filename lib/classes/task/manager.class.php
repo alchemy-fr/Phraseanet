@@ -85,7 +85,7 @@ class task_manager
             $logger = $core['monolog'];
         }
 
-        $tasks = $this->getTasks($logger);
+        $tasks = $this->getTasks(false, $logger);
 
         if ( ! isset($tasks[$task_id])) {
             throw new Exception_NotFound('Unknown task_id ' . $task_id);
