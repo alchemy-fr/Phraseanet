@@ -15,7 +15,6 @@
  */
 class task_period_ftpPull extends task_appboxAbstract
 {
-    protected $debug = false;
     protected $proxy;
     protected $proxyport;
     protected $host;
@@ -100,7 +99,6 @@ class task_period_ftpPull extends task_appboxAbstract
             </script>
 
             <?php
-
             return("");
         } else { // ... so we NEVER come here
             // bad xml
@@ -315,9 +313,8 @@ class task_period_ftpPull extends task_appboxAbstract
             $todo = count($list_1);
             $this->setProgress($done, $todo);
 
-            if ($this->debug) {
-                echo "attente de 25sec pour avoir les fichiers froids...\n";
-            }
+
+            $this->logger->addDebug("attente de 25sec pour avoir les fichiers froids...");
 
             $this->sleep(25);
             if ( ! $this->running) {
@@ -335,20 +332,16 @@ class task_period_ftpPull extends task_appboxAbstract
                 $this->setProgress($done, $todo);
 
                 if ( ! isset($list_2[$filepath])) {
-                    if ($this->debug) {
-                        echo "le fichier $filepath a disparu...\n";
-                    }
+                    $this->logger->addDebug("le fichier $filepath a disparu...\n");
                     continue;
                 }
                 if ($list_2[$filepath] !== $timestamp) {
-                    if ($this->debug) {
-                        echo "le fichier $filepath a ete modifie depuis le dernier passage...\n";
-                    }
+                    $this->logger->addDebug("le fichier $filepath a ete modifie depuis le dernier passage...");
                     continue;
                 }
 
                 $finalpath = p4string::addEndSlash($this->localpath) . ($filepath[0] == '/' ? mb_substr($filepath, 1) : $filepath);
-                echo "Ok pour rappatriement de $filepath vers $finalpath\n";
+                $this->logger->addDebug("Ok pour rappatriement de $filepath vers $finalpath\n");
 
                 try {
                     if (file_exists($finalpath)) {
@@ -360,9 +353,7 @@ class task_period_ftpPull extends task_appboxAbstract
                     $ftp->get($finalpath, $filepath);
                     $ftp->delete($filepath);
                 } catch (Exception $e) {
-                    if ($this->debug) {
-                        echo "Erreur lors du rappatriement de $filepath : " . $e->getMessage() . "\n";
-                    }
+                    $this->logger->addDebug("Erreur lors du rappatriement de $filepath : " . $e->getMessage());
                 }
             }
 
@@ -373,7 +364,7 @@ class task_period_ftpPull extends task_appboxAbstract
             if (isset($ftp) && $ftp instanceof ftpclient) {
                 $ftp->close();
             }
-            echo $e->getMessage() . "\n";
+            $this->log('Exception catch : ' . $e->getMessage());
 
             return array();
         }

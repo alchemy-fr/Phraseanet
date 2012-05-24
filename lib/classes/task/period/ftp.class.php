@@ -17,7 +17,6 @@ class task_period_ftp extends task_appboxAbstract
 {
     protected $proxy;
     protected $proxyport;
-    protected $debug;
 
     /**
      *
@@ -101,7 +100,6 @@ class task_period_ftp extends task_appboxAbstract
             <?php echo $form ?>.period.value = "<?php echo p4string::MakeString($sxml->period, "js", '"') ?>";
             </script>
             <?php
-
             return("");
         } else { // ... so we NEVER come here
             // bad xml
@@ -133,7 +131,6 @@ class task_period_ftp extends task_appboxAbstract
             }
         </script>
         <?php
-
         return;
     }
 
@@ -338,10 +335,7 @@ class task_period_ftp extends task_appboxAbstract
                 , $ftp_export["destfolder"]
             );
             $state .= $line;
-
-            if ($this->debug) {
-                echo $line;
-            }
+            $this->logger->addDebug($line);
         }
 
         $state .= $line = sprintf(
@@ -350,17 +344,15 @@ class task_period_ftp extends task_appboxAbstract
                 , "  (" . date('r') . ")"
             ) . PHP_EOL;
 
-        if ($this->debug) {
-            echo $line;
-        }
+        $this->logger->addDebug($line);
 
         if (($ses_id = phrasea_create_session($usr_id)) == null) {
-            echo "Unable to create session\n";
+            $this->logger->addDebug("Unable to create session");
             continue;
         }
 
         if ( ! ($ph_session = phrasea_open_session($ses_id, $usr_id))) {
-            echo "Unable to open session\n";
+            $this->logger->addDebug("Unable to open session");
             phrasea_close_session($ses_id);
             continue;
         }
@@ -374,7 +366,7 @@ class task_period_ftp extends task_appboxAbstract
                 try {
                     $ftp_client->passive(true);
                 } catch (Exception $e) {
-                    echo $e->getMessage();
+                    $this->logger->addDebug($e->getMessage());
                 }
             }
 
@@ -383,7 +375,7 @@ class task_period_ftp extends task_appboxAbstract
                     $ftp_client->chdir($ftp_export["destfolder"]);
                     $ftp_export["destfolder"] = '/' . $ftp_export["destfolder"];
                 } catch (Exception $e) {
-                    echo $e->getMessage();
+                    $this->logger->addDebug($e->getMessage());
                 }
             } else {
                 $ftp_export["destfolder"] = '/';
@@ -393,14 +385,14 @@ class task_period_ftp extends task_appboxAbstract
                 try {
                     $ftp_client->mkdir($ftp_export["foldertocreate"]);
                 } catch (Exception $e) {
-                    echo $e->getMessage();
+                    $this->logger->addDebug($e->getMessage());
                 }
                 try {
                     $new_dir = $ftp_client->add_end_slash($ftp_export["destfolder"])
                         . $ftp_export["foldertocreate"];
                     $ftp_client->chdir($new_dir);
                 } catch (Exception $e) {
-                    echo $e->getMessage();
+                    $this->logger->addDebug($e->getMessage());
                 }
             }
 
@@ -463,7 +455,7 @@ class task_period_ftp extends task_appboxAbstract
                         try {
                             $ftp_client->chdir($current_folder);
                         } catch (Exception $e) {
-                            echo $e->getMessage();
+                            $this->logger->addDebug($e->getMessage());
                         }
                     }
 
@@ -491,9 +483,7 @@ class task_period_ftp extends task_appboxAbstract
                             , basename($localfile), $record_id
                             , phrasea::sbas_names(phrasea::sbasFromBas($base_id))) . "\n<br/>";
 
-                    if ($this->debug) {
-                        echo $line;
-                    }
+                    $this->logger->addDebug($line);
 
                     $done = $file['error'];
 
@@ -506,9 +496,7 @@ class task_period_ftp extends task_appboxAbstract
             }
 
             if ($ftp_export['logfile']) {
-                if ($this->debug) {
-                    echo "\nlogfile \n";
-                }
+                $this->logger->addDebug("logfile ");
 
                 $date = new DateTime();
                 $remote_file = $date->format('U');
@@ -552,9 +540,7 @@ class task_period_ftp extends task_appboxAbstract
         } catch (Exception $e) {
             $state .= $line = $e . "\n";
 
-            if ($this->debug) {
-                echo $line;
-            }
+            $this->logger->addDebug($line);
 
             $sql = "UPDATE ftp_export SET crash=crash+1,date=now()"
                 . " WHERE id = :export_id";

@@ -178,7 +178,6 @@ class task_period_archive extends task_abstract
             <?php echo $form ?>.copy_spe.checked      = <?php echo p4field::isyes($sxml->copy_spe) ? "true" : "false" ?>;
             </script>
             <?php
-
             return("");
         } else { // ... so we NEVER come here
             // bad xml
@@ -209,7 +208,6 @@ class task_period_archive extends task_abstract
             }
         </script>
         <?php
-
         return;
     }
 
@@ -234,27 +232,27 @@ class task_period_archive extends task_abstract
         ob_start();
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
-            <?php echo _('task::archive:archivage sur base/collection/') ?> :
+        <?php echo _('task::archive:archivage sur base/collection/') ?> :
 
             <select onchange="chgxmlpopup(this, 'base_id');" name="base_id">
                 <option value="">...</option>
-                <?php
-                foreach ($appbox->get_databoxes() as $databox) {
-                    foreach ($databox->get_collections() as $collection) {
-                        print("<option value=\"" . $collection->get_base_id() . "\">" . $databox->get_viewname() . " / " . $collection->get_name() . "</option>");
-                    }
-                }
-                ?>
+        <?php
+        foreach ($appbox->get_databoxes() as $databox) {
+            foreach ($databox->get_collections() as $collection) {
+                print("<option value=\"" . $collection->get_base_id() . "\">" . $databox->get_viewname() . " / " . $collection->get_name() . "</option>");
+            }
+        }
+        ?>
             </select>
             <br/>
             <br/>
-            <?php echo _('task::_common_:hotfolder') ?>
+        <?php echo _('task::_common_:hotfolder') ?>
             <input type="text" name="hotfolder" style="width:400px;" onchange="chgxmltxt(this, 'hotfolder');" value=""><br/>
             <br/>
-            <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
+        <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
             <input type="text" name="period" style="width:40px;" onchange="chgxmltxt(this, 'period');" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
             <br/>
-            <?php echo _('task::archive:delai de \'repos\' avant traitement') ?>&nbsp;:&nbsp;
+        <?php echo _('task::archive:delai de \'repos\' avant traitement') ?>&nbsp;:&nbsp;
             <input type="text" name="cold" style="width:40px;" onchange="chgxmltxt(this, 'cold');" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
             <br/>
             <input type="checkbox" name="move_archived" onchange="chgxmlck(this, 'move_archived');">&nbsp;<?php echo _('task::archive:deplacer les fichiers archives dans _archived') ?>
@@ -425,7 +423,7 @@ class task_period_archive extends task_abstract
                 $this->setLastExecTime();
 
                 try {
-                    if (!($this->sxTaskSettings = @simplexml_load_string($this->getSettings()))) {
+                    if ( ! ($this->sxTaskSettings = @simplexml_load_string($this->getSettings()))) {
                         throw new Exception(sprintf('Error fetching or reading settings of the task \'%d\'', $this->getID()));
                     } else {
                         // copy settings to task, so it's easier to get later
@@ -573,7 +571,6 @@ class task_period_archive extends task_abstract
             $this->log("=========== listFilesPhase1 ========== (returned " . $nnew . ")\n" . $dom->saveXML());
 
         if ($nnew === 'TOSTOP') { // special case : status has changed to TOSTOP while listing files
-
             return('TOSTOP');
         }
 
@@ -1050,7 +1047,6 @@ class task_period_archive extends task_abstract
         $ret = false;
 
         if ($depth == 0 && $node->getAttribute('temperature') == 'hot') // if root of hotfolder if hot, die...
-
             return($ret);
 
         $nodesToDel = array();
@@ -1268,7 +1264,6 @@ class task_period_archive extends task_abstract
         $ret = false;
 
         if ($depth == 0 && $node->getAttribute('temperature') == 'hot') { // if root of hotfolder if hot, die...
-
             return($ret);
         }
 
@@ -1485,7 +1480,7 @@ class task_period_archive extends task_abstract
                 //
                 $node->setAttribute('grp', 'tocomplete');
             } catch (Exception $e) {
-                echo $e->getMessage();
+                $this->logger->addDebug($e->getMessage());
             }
         }
 

@@ -94,7 +94,7 @@ class task_period_upgradetov31 extends task_abstract
                     $stmt->execute($params);
                     $stmt->closeCursor();
 
-                    echo "mise a jour du record " . $row['record_id'] . " avec uuid " . $uuid . "\n";
+                    $this->log("mise a jour du record " . $row['record_id'] . " avec uuid " . $uuid);
 
                     $done ++;
                     $this->setProgress($done, $todo);
