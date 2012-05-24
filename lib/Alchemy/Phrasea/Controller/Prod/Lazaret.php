@@ -394,19 +394,13 @@ class Lazaret implements ControllerProviderInterface
                 $found = true;
                 break;
             }
-        } catch (\Exception_NotFound $e) {
-            $ret['message'] = _('File is not present in quarantine anymore, please refresh');
-        } catch (\Exception $e) {
-            $ret['message'] = _('An error occured');
-        }
 
-        if ( ! $found) {
-            $ret['message'] = _('The destination record provided is not allowed');
+            if ( ! $found) {
+                $ret['message'] = _('The destination record provided is not allowed');
 
-            return self::formatJson($app['Core']['Serializer'], $ret);
-        }
+                return self::formatJson($app['Core']['Serializer'], $ret);
+            }
 
-        try {
             $media = MediaVorus::guess(new \SplFileInfo($lazaretFile->getPathname()));
 
             $record = $lazaretFile->getCollection()->get_databox()->get_record($recordId);
@@ -417,6 +411,9 @@ class Lazaret implements ControllerProviderInterface
             $app['Core']['EM']->flush();
 
             $ret['success'] = true;
+
+        } catch (\Exception_NotFound $e) {
+            $ret['message'] = _('File is not present in quarantine anymore, please refresh');
         } catch (\Exception $e) {
             $ret['message'] = _('An error occured');
         }

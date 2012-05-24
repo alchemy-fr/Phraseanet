@@ -561,7 +561,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $response = $this->client->getResponse();
 
-        $this->assertTrue($response->isOk());
+        $this->assertFalse($response->isOk());
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
     }
 
