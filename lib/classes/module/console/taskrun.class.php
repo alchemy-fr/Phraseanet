@@ -9,17 +9,20 @@
  * file that was distributed with this source code.
  */
 
+use Monolog\Handler;
+use Monolog\Logger;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Command\Command;
+
 /**
  * @todo write tests
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
 
 class module_console_taskrun extends Command
 {
@@ -95,14 +98,26 @@ class module_console_taskrun extends Command
             }
         }
 
+        $logger = new Logger('Task logger');
+
+        if ($input->getOption('verbose')) {
+            $handler = new Handler\StreamHandler(fopen('php://stdout', 'a'));
+            $logger->pushHandler($handler);
+        }
+
+        $logfile = __DIR__ . '/../../../../task_l_' . $task_id . '.log';
+        $handler = new Handler\RotatingFileHandler($logfile, 10, $level = Logger::WARNING);
+        $logger->pushHandler($handler);
+
         register_tick_function(array($this, 'tick_handler'), true);
         declare(ticks = 1);
+
         if (function_exists('pcntl_signal')) {
             pcntl_signal(SIGTERM, array($this, 'sig_handler'));
         }
 
         try {
-            $this->task->run($runner, $input, $output);
+            $this->task->run($runner, $logger);
         } catch (Exception $e) {
             $this->task->log(sprintf("taskrun : exception from 'run()', %s \n", $e->getMessage()));
 

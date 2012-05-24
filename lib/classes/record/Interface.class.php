@@ -10,6 +10,7 @@
  */
 
 use MediaVorus\Media\Media;
+use Monolog\Logger;
 
 /**
  *
@@ -99,7 +100,7 @@ interface record_Interface
 
     public function delete();
 
-    public function generate_subdefs(databox $databox, Array $wanted_subdefs = null);
+    public function generate_subdefs(databox $databox, Logger $logger = null, Array $wanted_subdefs = null);
 
     public function log_view($log_id, $referrer, $gv_sit);
 

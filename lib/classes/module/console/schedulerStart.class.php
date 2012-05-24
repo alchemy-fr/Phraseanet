@@ -15,6 +15,8 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
+use Monolog\Handler;
+use Monolog\Logger;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -28,25 +30,6 @@ class module_console_schedulerStart extends Command
         parent::__construct($name);
 
         $this->setDescription('Start the scheduler');
-        $this->addOption(
-            'nolog'
-            , NULL
-            , 1 | InputOption::VALUE_NONE
-            , 'do not log (scheduler) to logfile'
-            , NULL
-        );
-        $this->addOption(
-            'notasklog'
-            , NULL
-            , 1 | InputOption::VALUE_NONE
-            , 'do not log (tasks) to logfiles'
-            , NULL
-        );
-        $this->setHelp(
-            "You should use launch the command and finish it with `&`"
-            . " to return to the console\n\n"
-            . "\tie : <info>bin/console scheduler:start &</info>"
-        );
 
         return $this;
     }
@@ -59,9 +42,18 @@ class module_console_schedulerStart extends Command
             return 1;
         }
 
+        $logger = new Logger('Task logger');
+
+        $handler = new Handler\StreamHandler(fopen('php://stdout'), $input->getOption('verbose') ? Logger::DEBUG : Logger::WARNING);
+        $logger->pushHandler($handler);
+
+        $logfile = __DIR__ . '/../../../../scheduler.log';
+        $handler = new Handler\RotatingFileHandler($logfile, 10, $level = Logger::WARNING);
+        $logger->pushHandler($handler);
+
         try {
             $scheduler = new task_Scheduler();
-            $scheduler->run($input, $output);
+            $scheduler->run($logger);
         } catch (\Exception $e) {
             switch ($e->getCode()) {
                 case task_Scheduler::ERR_ALREADY_RUNNING:   // 114 : aka EALREADY (Operation already in progress)

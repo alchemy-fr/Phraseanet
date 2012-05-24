@@ -1,5 +1,7 @@
 <?php
 
+use Monolog\Logger;
+
 abstract class task_abstract
 {
     const LAUCHED_BY_BROWSER = 1;
@@ -19,6 +21,11 @@ abstract class task_abstract
     const SIGNAL_SCHEDULER_DIED = 'SIGNAL_SCHEDULER_DIED';
     const ERR_ALREADY_RUNNING = 114;   // aka EALREADY (Operation already in progress)
 
+    /**
+     *
+     * @var Logger
+     */
+    protected $logger;
     protected $suicidable = false;
     protected $launched_by = 0;
 
@@ -113,7 +120,7 @@ abstract class task_abstract
         return $row['status'];
     }
 
-    /*
+    /**
      * to be overwritten by tasks : echo text to be included in <head> in task interface
      */
     public function printInterfaceHEAD()
@@ -121,7 +128,7 @@ abstract class task_abstract
         return false;
     }
 
-    /*
+    /**
      * to be overwritten by tasks : echo javascript to be included in <head> in task interface
      */
     public function printInterfaceJS()
@@ -139,9 +146,9 @@ abstract class task_abstract
     }
 
     /**
-    *
-    * @return boolean
-    */
+     *
+     * @return boolean
+     */
     public function getGraphicForm()
     {
         return false;
@@ -489,10 +496,9 @@ abstract class task_abstract
         return $lockFD;
     }
 
-    final public function run($runner, $input = null, $output = null)
+    final public function run($runner, $logger)
     {
-        $this->input = $input;
-        $this->output = $output;
+        $this->logger = $logger;
 
         $lockFD = $this->lockTask();
 
@@ -503,7 +509,7 @@ abstract class task_abstract
         $exception = NULL;
         try {
             $this->run2();
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
 
         }
 
@@ -669,27 +675,12 @@ abstract class task_abstract
         $d = debug_backtrace(false);
 
         $lastt = $t;
-        echo "\n" . memory_get_usage() . " -- " . memory_get_usage(true) . "\n";
+        $this->logger->addDebug(memory_get_usage() . " -- " . memory_get_usage(true));
     }
 
     public function log($message)
     {
-        $registry = registry::get_instance();
-        $logdir = $registry->get('GV_RootPath') . 'logs/';
-
-        logs::rotate($logdir . 'task_l_' . $this->taskid . '.log');
-        logs::rotate($logdir . 'task_o_' . $this->taskid . '.log');
-        logs::rotate($logdir . 'task_e_' . $this->taskid . '.log');
-
-        $date_obj = new DateTime();
-        $message = sprintf("%s\t%s", $date_obj->format(DATE_ATOM), $message);
-
-        if ($this->output) {
-            $this->output->writeln($message);
-        }
-        if ($this->input && ! ($this->input->getOption('nolog'))) {
-            file_put_contents($logdir . 'task_l_' . $this->taskid . '.log', $message . "\n", FILE_APPEND);
-        }
+        $this->logger->addInfo($message);
 
         return $this;
     }
