@@ -718,7 +718,9 @@ abstract class task_abstract
 
         $tid = $appbox->get_connection()->lastInsertId();
 
-        return new $class_name($tid);
+        $core = \bootstrap::getCore();
+
+        return new $class_name($tid, $core['monolog']);
     }
 
     public function getUsage()
