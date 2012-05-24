@@ -460,6 +460,13 @@ span.ww_winTitle {
     color: #FFFFFF;
 }
 
+#searchForm label {
+    color: #FFFFFF;
+}
+
+#searchForm #recordtype_sel {
+    margin-left: 10px;
+}
 
 
 /** PRESENTATION DE MINIATURES **/
@@ -1719,18 +1726,18 @@ H4 {
 /** BOITES MODALES **/
 
 .bodyprofile {
-    background-color:transparent;
-    color:#404040;
+    background-color: transparent;
+    color: #404040;
 }
 
 .bodyprofile .ui-tabs .ui-tabs-panel {
-    background-color:#a3a3a3;
-    color:#404040;
+    background-color: #a3a3a3;
+    color: #333333;
 }
 
 .bodyprofile .ui-tabs .ui-tabs-nav li.ui-tabs-selected {
-    background-color:#a3a3a3;
-    color:#404040;
+    background-color: #a3a3a3;
+    color: #404040;
 }
 
 .bodyprofile .ui-tabs li.ui-state-active a,
@@ -1851,6 +1858,73 @@ H4 {
 
 
 
+/** EXPORT **/
+
+#printBox {
+    background-color: #404040;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+}
+
+#printBox h4,
+#download h4,
+#sendmail h4 {
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 18px;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+#printBox label,
+#download label,
+#sendmail label {
+    line-height: 18px;
+    color: #FFFFFF;
+}
+
+#sendmail p,
+.buttons_line p {
+    margin: 20px 0 10px 0;
+    font-weight: bold;
+}
+
+#printBox .btn,
+#download .btn,
+#sendmail .btn {
+    font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+#printBox .btn-inverse,
+#download .btn-inverse,
+#sendmail .btn-inverse {
+    *background-color: #393939;
+    background-image: -ms-linear-gradient(top, #444444, #393939);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#444444), to(#393939));
+    background-image: -webkit-linear-gradient(top, #444444, #393939);
+    background-image: -o-linear-gradient(top, #444444, #393939);
+    background-image: -moz-linear-gradient(top, #444444, #393939);
+    background-image: linear-gradient(top, #444444, #393939);
+    /*border: 1px solid #515151;*/
+    color: #AAAAAA;
+}
+
+#printBox .btn-inverse:hover,
+#download .btn-inverse:hover,
+#sendmail .btn-inverse:hover {
+    background-color: #393939;
+    *background-color: #393939;
+    color: #FFFFFF;
+}
+
+/** **/
 
 
 
@@ -2466,6 +2540,57 @@ DIV.thesaurus U.w {
 #buttonEditing .btn-inverse:hover {
     color: #FFFFFF;
 }
+
+.edit-btn {
+    margin: 2px;
+    font-weight: bold;
+    font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    display: inline-block;
+    *display: inline;
+    font-size: 13px;
+    line-height: 18px;
+    *line-height: 20px;
+    color: #EAEAEA;
+    text-align: center;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    vertical-align: middle;
+    cursor: pointer;
+    background-color: #B1B1B1;
+    *background-color: #B1B1B1;
+    background-image: -ms-linear-gradient(top, #B9B9B9, #A4A4A4);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#B9B9B9), to(#A4A4A4));
+    background-image: -webkit-linear-gradient(top, #B9B9B9, #A4A4A4);
+    background-image: -o-linear-gradient(top, #B9B9B9, #A4A4A4);
+    background-image: -moz-linear-gradient(top, #B9B9B9, #A4A4A4);
+    background-image: linear-gradient(top, #B9B9B9, #A4A4A4);
+    background-repeat: repeat-x;
+    border: 1px solid #cccccc;
+    *border: 0;
+    border-color: #222222 #222222 #000000;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    filter: progid:dximagetransform.microsoft.gradient(startColorstr='#B9B9B9', endColorstr='#A4A4A4', GradientType=0);
+    filter: progid:dximagetransform.microsoft.gradient(enabled=false);
+    *zoom: 1;
+    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.edit-btn:hover {
+    background-color: #A4A4A4;
+    *background-color: #A4A4A4;
+    color: #FFFFFF;
+    text-decoration: none;
+    background-position: 0 -15px;
+    -webkit-transition: background-position 0.1s linear;
+    -moz-transition: background-position 0.1s linear;
+    -ms-transition: background-position 0.1s linear;
+    -o-transition: background-position 0.1s linear;
+    transition: background-position 0.1s linear;
+}
+
 
 #EDIT_WORKING {
     position: absolute;

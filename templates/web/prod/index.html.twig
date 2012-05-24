@@ -376,23 +376,30 @@
                             <img src="/skins/icons/settings.png" title="{% trans 'Advanced Search' %}"/>
                         </a>
                         <button type="submit" class="btn btn-inverse">{% trans 'boutton::rechercher' %}</button>
-                        <div style="margin:5px 0">
-                            {% if GV_multiAndReport %}
-                                <input type="radio" value="0" class="mode_type_doc_reg checkbox" name="search_type" {% if GV_defaultQuery_type == 0 %}checked="checked"{% endif %} id="mode_type_doc"/><label for="mode_type_doc">{% trans 'phraseanet::type:: documents' %}</label>
-                                <input type="radio" value="1" class="mode_type_doc_reg checkbox" name="search_type" {% if GV_defaultQuery_type != 0 %}checked="checked"{% endif %} id="mode_type_reg"/><label for="mode_type_reg">{% trans 'phraseanet::type:: reportages' %}</label>
-                            {% else %}
-                                <input type="hidden" value="0" name="search_type" />
-                            {% endif %}
-                            <select name="recordtype" id="recordtype_sel" class="input-small">
-                                <option value="">{% trans 'Tout type' %}</option>
-                                <option value="image">{% trans 'Image' %}</option>
-                                <option value="video">{% trans 'Video' %}</option>
-                                <option value="audio">{% trans 'Audio' %}</option>
-                                <option value="document">{% trans 'Document' %}</option>
-                                <option value="flash">{% trans 'Flash' %}</option>
-                            </select>
+                        <div class="control-group" style="margin:5px 0;">
+                            <div class="controls">
+                                {% if GV_multiAndReport %}
+                                    <label for="mode_type_doc" class="radio inline">
+                                        <input type="radio" value="0" class="mode_type_doc_reg" name="search_type" {% if GV_defaultQuery_type == 0 %}checked="checked"{% endif %} id="mode_type_doc"/>
+                                        {% trans 'phraseanet::type:: documents' %}
+                                    </label>
+                                    <label for="mode_type_reg" class="radio inline">
+                                        <input type="radio" value="1" class="mode_type_doc_reg" name="search_type" {% if GV_defaultQuery_type != 0 %}checked="checked"{% endif %} id="mode_type_reg"/>
+                                        {% trans 'phraseanet::type:: reportages' %}
+                                    </label>
+                                {% else %}
+                                    <input type="hidden" value="0" name="search_type" />
+                                {% endif %}
+                                <select name="recordtype" id="recordtype_sel" class="input-small">
+                                    <option value="">{% trans 'Tout type' %}</option>
+                                    <option value="image">{% trans 'Image' %}</option>
+                                    <option value="video">{% trans 'Video' %}</option>
+                                    <option value="audio">{% trans 'Audio' %}</option>
+                                    <option value="document">{% trans 'Document' %}</option>
+                                    <option value="flash">{% trans 'Flash' %}</option>
+                                </select>
+                            </div>
                         </div>
-
                         <input type="hidden" name="pag" id="formAnswerPage" value="">
                         <input type="hidden" name="sel" value="">
 
@@ -545,7 +552,7 @@
             </div>
 
             <div id="idFrameT" class="PNB ui-corner-top" style="top:110px;">
-                <div class="tools PNB10 btn-toolbar" style="font-size:10px;z-index:200;height:28px;">
+                <div class="tools PNB10 btn-toolbar" style="font-size:10px; z-index:100; height:28px;">
 
                     <span class="dropdownButton">
                         <div class="btn-group">
