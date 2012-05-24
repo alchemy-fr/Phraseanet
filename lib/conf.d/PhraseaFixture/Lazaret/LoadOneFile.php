@@ -54,7 +54,7 @@ class LoadOneFile extends \PhraseaFixture\AbstractWZ implements FixtureInterface
 
         $this->file = $lazaretFile;
 
-        $this->addReference('one-laearite-file', $lazaretFile);
+        $this->addReference('one-lazaret-file', $lazaretFile);
     }
 
     public function setCollectionId($collectionId){

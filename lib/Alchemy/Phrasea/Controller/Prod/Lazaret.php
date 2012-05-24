@@ -18,7 +18,6 @@ use Silex\ControllerProviderInterface;
 use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * Lazaret controller collection
@@ -156,12 +155,19 @@ class Lazaret implements ControllerProviderInterface
     public function listElement(Application $app, Request $request)
     {
         $em = $app['Core']->getEntityManager();
+        $user = $app['Core']->getAuthenticatedUser();
+        /* @var $user \User_Adapter */
+        $baseIds = array_keys($user->ACL()->get_granted_base(array('canaddrecord')));
 
-        $lazaretRepository = $em->getRepository('Entities\LazaretFile');
+        $lazaretFiles = null;
 
-        $lazaretFiles = $lazaretRepository->findPerPage(
-            $request->get('base_ids', array()), $request->get('offset', 0), $request->get('limit', 10)
-        );
+        if(count($baseIds) > 0){
+            $lazaretRepository = $em->getRepository('Entities\LazaretFile');
+
+            $lazaretFiles = $lazaretRepository->findPerPage(
+                $baseIds, $request->get('offset', 0), $request->get('limit', 10)
+            );
+        }
 
         $html = $app['Core']['Twig']->render(
             'prod/upload/lazaret.html.twig', array('lazaretFiles' => $lazaretFiles)
@@ -181,14 +187,14 @@ class Lazaret implements ControllerProviderInterface
      */
     public function getElement(Application $app, Request $request, $file_id)
     {
-        $ret = array('success' => true, 'message' => '');
+        $ret = array('success' => false, 'message' => '', 'result'  => array());
 
         try {
             $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
 
             /* @var $lazaretFile \Entities\LazaretFile */
             if (null === $lazaretFile) {
-                throw new \Exception_NotFound(_('File is not found'));
+                throw new \Exception_NotFound();
             }
 
             $file = array(
@@ -202,9 +208,11 @@ class Lazaret implements ControllerProviderInterface
             );
 
             $ret['result'] = $file;
+            $ret['success'] = true;
+        } catch (\Exception_NotFound $e) {
+            $ret['message'] = _('File is not found');
         } catch (\Exception $e) {
-            $ret['success'] = false;
-            $ret['message'] = $e->getMessage();
+            $ret['message'] = _('An error occured');
         }
 
         $datas = $app['Core']['Serializer']->serialize($ret, 'json');
@@ -223,22 +231,23 @@ class Lazaret implements ControllerProviderInterface
      */
     public function addElement(Application $app, Request $request, $file_id)
     {
-        $ret = array('success' => true, 'message' => '');
+        $ret = array('success' => false, 'message' => '', 'result'  => array());
+
+        //Optional parameter
+        $keepAttributes = ! ! $request->get('keep_attributes', false);
+        $attributesToKeep = $request->get('attributes', array());
 
         try {
-            //Optional parameter
-            $keepAttributes = ! ! $request->get('keep_attributes', false);
-            $attributesToKeep = $request->get('attributes', array());
             //Mandatory parameter
             if (null === $baseId = $request->get('bas_id')) {
-                throw new \Exception_BadRequest('Missing base_id parameter');
+                throw new \Exception_BadRequest();
             }
 
             $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
 
             /* @var $lazaretFile \Entities\LazaretFile */
             if (null === $lazaretFile) {
-                throw new \Exception_NotFound(_('File is not found'));
+                throw new \Exception_NotFound();
             }
 
             $borderFile = Border\File::buildFromPathfile(
@@ -250,8 +259,8 @@ class Lazaret implements ControllerProviderInterface
 
             //Post record creation
             $callBack = function($element, $visa, $code) use (&$record) {
-                    $record = $element;
-                };
+                $record = $element;
+            };
 
             //Force creation record
             $app['Core']['border-manager']->process(
@@ -301,9 +310,13 @@ class Lazaret implements ControllerProviderInterface
             //Delete lazaret file
             $app['Core']['EM']->remove($lazaretFile);
             $app['Core']['EM']->flush();
+            $ret['success'] = true;
+        } catch (\Exception_BadRequest $e) {
+            $ret['message'] = _("The request is malformed");
+        } catch (\Exception_NotFound $e) {
+            $ret['message'] = _('File is not found');
         } catch (\Exception $e) {
-            $ret['success'] = false;
-            $ret['message'] = $e->getMessage() ;
+            $ret['message'] = _('An error occured');
         }
 
         $datas = $app['Core']['Serializer']->serialize($ret, 'json');
@@ -322,22 +335,25 @@ class Lazaret implements ControllerProviderInterface
      */
     public function denyElement(Application $app, Request $request, $file_id)
     {
-        $ret = array('success' => true, 'message' => '');
+        $ret = array('success' => false, 'message' => '', 'result'  => array());
 
         try {
             $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
 
             /* @var $lazaretFile \Entities\LazaretFile */
             if (null === $lazaretFile) {
-                throw new \Exception_NotFound(_('File is not found'));
+                throw new \Exception_NotFound();
             }
 
             //Delete lazaret file
             $app['Core']['EM']->remove($lazaretFile);
             $app['Core']['EM']->flush();
+
+            $ret['success'] = true;
+        } catch (\Exception_NotFound $e) {
+            $ret['message'] = _('File is not found');
         } catch (\Exception $e) {
-            $ret['success'] = false;
-            $ret['message'] = $e->getMessage();
+            $ret['message'] = _('An error occured');
         }
 
         $datas = $app['Core']['Serializer']->serialize($ret, 'json');
@@ -356,7 +372,7 @@ class Lazaret implements ControllerProviderInterface
      */
     public function acceptElement(Application $app, Request $request, $file_id)
     {
-        $ret = array('success' => true, 'message' => '');
+         $ret = array('success' => false, 'message' => '', 'result'  => array());
 
         try {
             //Mandatory parameter
@@ -386,7 +402,7 @@ class Lazaret implements ControllerProviderInterface
             }
 
             if ( ! $found) {
-                throw new \Exception(_("Record can not be substitued"));
+                throw new \Exception("Record can not be substitued");
             }
 
             $media = MediaVorus::guess(new \SplFileInfo($lazaretFile->getPathname()));
@@ -397,9 +413,14 @@ class Lazaret implements ControllerProviderInterface
             //Delete lazaret file
             $app['Core']['EM']->remove($lazaretFile);
             $app['Core']['EM']->flush();
+
+            $ret['success'] = true;
+        } catch (\Exception_BadRequest $e) {
+            $ret['message'] = _("The request is malformed");
+        } catch (\Exception_NotFound $e) {
+            $ret['message'] = _('File is not found');
         } catch (\Exception $e) {
-            $ret['success'] = false;
-            $ret['message'] = $e->getMessage();
+            $ret['message'] = _('An error occured');
         }
 
         $datas = $app['Core']['Serializer']->serialize($ret, 'json');
