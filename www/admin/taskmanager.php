@@ -236,10 +236,6 @@ foreach ($tasks as $t) {
             {
                 // theme:'vista',
                 optionsIdx:{'start':0, 'stop':1},
-                doclick:function(item)
-                {
-                    console.log(item);
-                },
                 beforeShow:function()
                 {
                     if(!retPing)
@@ -301,10 +297,6 @@ foreach ($tasks as $t) {
             ],
             {
                 optionsIdx:{'edit':0, 'start':1, 'stop':2, 'delete':3, 'log':5},
-                doclick:function()
-                {
-
-                },
                 beforeShow:function()
                 {
                     var tid = $($(this)[0].target).parent().attr('id').split('_').pop();
@@ -323,7 +315,7 @@ foreach ($tasks as $t) {
                     {
                         $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['edit']+')').removeClass("context-menu-item-disabled");
 
-                        if(retPing.tasks[tid].status == 'started')
+                        if(retPing.tasks[tid].status == 'started' || retPing.tasks[tid].status == 'torestart')
                             $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['stop']+')').removeClass("context-menu-item-disabled");
                         else
                             $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['stop']+')').addClass("context-menu-item-disabled");
@@ -484,7 +476,8 @@ foreach ($tasks as $t) {
                 function pingScheduler(repeat)
                 {
                     $.ajax({
-                        url: '/admin/adminFeedback.php?action=PINGSCHEDULER_JS',
+                        url: '/admin/adminFeedback.php',
+                        data:{action:'PINGSCHEDULER_JS', dbps:0},
                         dataType:'json',
                         success: function(ret)
                         {
