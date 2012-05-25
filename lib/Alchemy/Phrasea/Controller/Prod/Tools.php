@@ -38,18 +38,26 @@ class Tools implements ControllerProviderInterface
                 $selection = $helper->get_elements();
 
                 $metadatas = false;
+
                 $record = null;
 
                 if (count($selection) == 1) {
-                    try {
 
-                        $record = reset($selection);
+                    $record = reset($selection);
 
-                        $reader = new \PHPExiftool\Reader();
-                        $metadatas = $reader->files($record->get_subdef('document')->get_pathfile())
-                                ->first()->getMetadatas();
-                    } catch (\PHPExiftool\Exception\Exception $e) {
+                    if ( ! $record->is_grouping()) {
+                        try {
 
+                            $reader = new \PHPExiftool\Reader();
+
+                            $metadatas = $reader
+                                    ->files($record->get_subdef('document')->get_pathfile())
+                                    ->first()->getMetadatas();
+                        } catch (\PHPExiftool\Exception\Exception $e) {
+
+                        } catch (\Exception_Media_SubdefNotFound $e) {
+
+                        }
                     }
                 }
 
