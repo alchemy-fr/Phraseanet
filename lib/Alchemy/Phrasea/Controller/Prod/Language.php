@@ -92,6 +92,9 @@ class Language implements ControllerProviderInterface
                 $out['nFieldsChanged'] = _('%d fields have been updated');
                 $out['FeedBackNoUsersSelected'] = _('No users selected');
                 $out['errorFileApi'] = _('An error occurred reading this file');
+                $out['selectOneRecord'] = _('Please select one record');
+                $out['onlyOneRecord'] = _('You can choose only one record');
+                $out['errorAjaxRequest'] = _('An error occured, please retry');
 
                 $Serializer = $app['Core']['Serializer'];
 
