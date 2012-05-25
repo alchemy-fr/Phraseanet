@@ -387,7 +387,7 @@ class Lazaret implements ControllerProviderInterface
 
             //Check if the choosen record is eligible to the substitution
             foreach ($lazaretFile->getRecordsToSubstitute() as $record) {
-                if ($record->get_record_id() !== $recordId) {
+                if ($record->get_record_id() !== (int) $recordId) {
                     continue;
                 }
 

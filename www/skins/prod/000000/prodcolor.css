@@ -4028,3 +4028,9 @@ dans l'onglet thesaurus : arbres, menus contextuels
 #uploadBoxRight .progress .progress-bar {
     height: 10px;
 }
+
+#lazaretBox .loading{
+    background-image: url('../../icons/loader404040.gif');
+    background-position: center center;
+    background-repeat: no-repeat;
+}
