@@ -286,8 +286,9 @@ $(document).ready(function () {
                 });
 
                 //cancel request
-                $('button.cancel', data.context).bind('click', function (e) {
+                $('button.remove-element', data.context).bind('click', function (e) {
                     jqXHR.abort();
+                    data.context.remove();
                 });
             });
         });
