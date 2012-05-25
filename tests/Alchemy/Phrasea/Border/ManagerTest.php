@@ -43,7 +43,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new Manager(self::$core['EM']);
+        $this->object = new Manager(self::$core['EM'], self::$core['monolog']);
         $this->session = new \Entities\LazaretSession();
 
         self::$core['EM']->persist($this->session);
@@ -386,7 +386,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
      */
     public function testAddMediaAttributesPDF()
     {
-        $manager = new ManagerTester(self::$core['EM']);
+        $manager = new ManagerTester(self::$core['EM'], self::$core['monolog']);
 
         $file = File::buildFromPathfile(__DIR__ . '/../../../testfiles/HelloWorld.pdf', self::$collection);
 
@@ -434,7 +434,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
      */
     public function testAddMediaAttributesAudio()
     {
-        $manager = new ManagerTester(self::$core['EM']);
+        $manager = new ManagerTester(self::$core['EM'], self::$core['monolog']);
 
         $file = File::buildFromPathfile(__DIR__ . '/../../../testfiles/test012.wav', self::$collection);
 
@@ -481,7 +481,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
      */
     public function testAddMediaAttributes()
     {
-        $manager = new ManagerTester(self::$core['EM']);
+        $manager = new ManagerTester(self::$core['EM'], self::$core['monolog']);
 
         $file = File::buildFromPathfile(self::$file1, self::$collection);
 
@@ -618,7 +618,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
      */
     public function testBookLazaretPathfile()
     {
-        $manager = new ManagerTester(self::$core['EM']);
+        $manager = new ManagerTester(self::$core['EM'], self::$core['monolog']);
 
         $file1 = $manager->bookLazaretPathfileTester('babebibobu.txt');
         $file2 = $manager->bookLazaretPathfileTester('babebibobu.txt');

@@ -17,6 +17,7 @@ use Doctrine\ORM\EntityManager;
 use Entities\LazaretAttribute;
 use Entities\LazaretFile;
 use Entities\LazaretSession;
+use Monolog\Logger;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Value\Mono as MonoValue;
 use Symfony\Component\Filesystem\Filesystem;
@@ -31,8 +32,9 @@ use Symfony\Component\Filesystem\Filesystem;
 class Manager
 {
     protected $checkers = array();
-    protected $core;
+    protected $em;
     protected $filesystem;
+    protected $logger;
 
     const RECORD_CREATED = 1;
     const LAZARET_CREATED = 2;
@@ -42,12 +44,14 @@ class Manager
     /**
      * Constructor
      *
-     * @param \Doctrine\ORM\EntityManager $em Entity manager
+     * @param \Doctrine\ORM\EntityManager $em     Entity manager
+     * @param \Monolog\Logger             $logger A logger
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, Logger $logger)
     {
         $this->em = $em;
         $this->filesystem = new Filesystem();
+        $this->logger = $logger;
     }
 
     /**
@@ -56,7 +60,7 @@ class Manager
      */
     public function __destruct()
     {
-        $this->em = $this->filesystem = null;
+        $this->em = $this->filesystem = $this->logger = null;
     }
 
     /**
@@ -495,7 +499,7 @@ class Manager
         if ($file->getFile()->getMimeType() == 'application/pdf') {
 
             try {
-                $extractor = \XPDF\PdfToText::load();
+                $extractor = \XPDF\PdfToText::load($this->logger);
 
                 $text = $extractor->open($file->getFile()->getRealPath())
                     ->getText();

@@ -165,7 +165,7 @@ class Core extends \Pimple
                 /**
                  * @todo configuration
                  */
-                $borderManager = new \Alchemy\Phrasea\Border\Manager($core['EM']);
+                $borderManager = new \Alchemy\Phrasea\Border\Manager($core['EM'], $core['monolog']);
 
                 $borderManager->registerCheckers(
                     array(
