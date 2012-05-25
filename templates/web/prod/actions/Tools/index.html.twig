@@ -418,6 +418,9 @@
           success : function(data){
             if(!data.success){
               humane.error(data.message);
+            }else{
+                var dialog = p4.Dialog.get(1);
+                dialog.Close();
             }
           }
         });
