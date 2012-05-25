@@ -34,6 +34,7 @@ class setup
         , "libxml"
         , "mbstring"
         , "mysql"
+        , 'pcntl'
         , "PDO"
         , "phrasea2"
         , "SimpleXML"
@@ -516,9 +517,14 @@ class setup
         {
             $constraints = array();
             foreach (self::$PHP_EXT as $ext) {
+
+                if('pcntl' === $ext && 0 === stripos(strtolower(PHP_OS), 'win')){
+                    continue;
+                }
+
                 if (extension_loaded($ext) !== true) {
                     $blocker = true;
-                    if (in_array($ext, array('ftp', 'twig', 'gmagick', 'imagick'))) {
+                    if (in_array($ext, array('ftp', 'twig', 'gmagick', 'imagick', 'pcntl'))) {
                         $blocker = false;
                     }
 
