@@ -118,9 +118,7 @@
         $("button.subtitute-lazaret", scope).bind('click', function(){
             var that = $(this);
             var lazaretId = getLazaretId(that);
-            var nbProposals = $('.records-subititution',$(this).closest('.lazaret-proposals')).length;
-
-            var nbErrors = 0;
+            var nbProposals = $('.records-subititution', $(this).closest('.wrapper-item')).length;
 
             if(nbProposals > 1){ // we got more than one proposals
                 var elements = $(".thumb-selected", $(this).closest('.wrapper-item'));
