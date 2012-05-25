@@ -84,7 +84,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertResponseOk($this->client->getResponse());
 
-        $this->assertEquals(1, $crawler->filter('div.records-subititution')->count());
+        $this->assertEquals(1, $crawler->filter('.records-subititution')->count());
 
         $em = $fileLazaret = $repo = null;
     }

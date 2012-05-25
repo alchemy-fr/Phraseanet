@@ -1,10 +1,13 @@
-<div id="lazaretBox">
+<div id="lazaretBox" class="container-fluid">
     {% if lazaretFiles is not none %}
         {% if lazaretFiles|length > 0 %}
-            {% for file in lazaretFiles %}
-                {{ _self.lazaretElement(file) }}
-                <br style='clear:both' />
-            {% endfor %}
+            <ul>
+                {% for file in lazaretFiles %}
+                    <li class='row-fluid wrapper-item'>
+                       {{ _self.lazaretElement(file) }}
+                    </li>
+                {% endfor %}
+            </ul>
         {% else %}
             {% trans 'No document in quarantine' %}
         {% endif %}
@@ -13,60 +16,238 @@
     {% endif %}
 </div>
 
+<script>
+    $('document').ready(function(){
+        var scope = $('#lazaretBox');
+
+        function getLazaretId(el){
+            return el.closest('div.lazaret-file').find('input[name=lazaret_file]').val();
+        }
+
+        function getDestinationId(el){
+            return el.closest('div.lazaret-file').find('input[name=lazaret_file_destination]').val();
+        }
+
+        function startAjax(button){
+            button.closest(".btn-group").find('button').attr('disabled', true);
+            button.closest(".btn-group").addClass('loading');
+        }
+
+        function stopAjax(button){
+            button.closest(".btn-group").find('button').attr('disabled', false);
+            button.closest(".btn-group").removeClass('loading');
+        }
+
+        $(".records-subititution", scope).bind('click', function(){
+            $(this).closest('.lazaret-proposals').find('.records-subititution').removeClass("thumb-selected");
+            $(this).closest('.lazaret-proposals').find('.thumbnail').css({'border-color': 'white'})
+            $(this).find('.thumbnail').css({'border-color': 'blue'});
+            $(this).addClass("thumb-selected");
+        });
+
+        //add lazaret file click action
+        $("button.add-lazaret", scope).bind('click', function(){
+            var that = $(this);
+            var lazaretId = getLazaretId(that);
+            var destinationCollectionId = getDestinationId(that);
+
+            $.ajax({
+                type : 'POST',
+                url: '/prod/lazaret/'+lazaretId+'/force-add/',
+                dataType: 'json',
+                data : {
+                    bas_id:destinationCollectionId,
+                    keep_attributes: 1
+                },
+                beforeSend: function(){
+                    startAjax(that);
+                },
+                success: function(data){
+                    if(data.success){
+                        that.closest(".wrapper-item").remove();
+                    }else{
+                        p4.Mustache.Render('Alert', {content:data.message}, function(html){
+                            that.closest(".thumbnail").append(html);
+                        });
+                    }
+                },
+                error: function(){
+                    p4.Mustache.Render('Alert', {content:language.errorAjaxRequest}, function(html){
+                        that.closest(".thumbnail").append(html);
+                    });
+                },
+                complete: function(){
+                    stopAjax(that);
+                }
+            });
+        });
+
+        //delete lazaret file click action
+        $("button.delete-lazaret", scope).bind('click', function(){
+            var that = $(this);
+            var lazaretId = getLazaretId(that);
+
+            $.ajax({
+                type : 'POST',
+                url: '/prod/lazaret/'+lazaretId+'/deny/',
+                dataType: 'json',
+                beforeSend: function(){
+                    startAjax(that);
+                },
+                success: function(data){
+                    if(data.success){
+                        that.closest(".wrapper-item").remove();
+                    }else{
+                        p4.Mustache.Render('Alert', {content:data.message}, function(html){
+                            that.closest(".thumbnail").append(html);
+                        });
+                    }
+                },
+                error: function(){
+                    p4.Mustache.Render('Alert', {content:language.errorAjaxRequest}, function(html){
+                        that.closest(".thumbnail").append(html);
+                    });
+                },
+                complete: function(){
+                    stopAjax(that);
+                }
+            });
+        });
+
+        //substitute lazaret file click action
+        $("button.subtitute-lazaret", scope).bind('click', function(){
+            var that = $(this);
+            var lazaretId = getLazaretId(that);
+            var nbProposals = $('.records-subititution', $(this).closest('.wrapper-item')).length;
+
+            if(nbProposals > 1){ // we got more than one proposals
+                var elements = $(".thumb-selected", $(this).closest('.wrapper-item'));
+                var nbElement = elements.length;
+            }else if(nbProposals == 1){
+                var elements = $(this).closest('.wrapper-item').find(".records-subititution");
+                var nbElement = 1
+            }
+            else{
+                return false;
+            }
+
+            if(nbElement === 0){
+                alert(language.selectOneRecord);
+                return false;
+            }else if(nbElement > 1){
+                alert(language.onlyOneRecord);
+                return false;
+            }
+
+            var recorThumb = elements.first().find('.record-thumb');
+            var recordId = recorThumb.attr('id').split('_').pop();
+
+            $.ajax({
+                type : 'POST',
+                url: '/prod/lazaret/'+lazaretId+'/accept/',
+                dataType: 'json',
+                data:{
+                    record_id: recordId
+                },
+                beforeSend: function(){
+                   startAjax(that);
+                },
+                success: function(data){
+                    if(data.success){
+                        that.closest(".wrapper-item").remove();
+                    }else{
+                        p4.Mustache.Render('Alert', {content:data.message}, function(html){
+                            that.closest(".thumbnail").append(html);
+                        });
+                    }
+                },
+                error: function(){
+                    p4.Mustache.Render('Alert', {content:language.errorAjaxRequest}, function(html){
+                        that.closest(".thumbnail").append(html);
+                    });
+                },
+                complete: function(){
+                    stopAjax(that);
+                }
+            });
+        });
+    });
+</script>
+
 {% macro lazaretElement(file) %}
     {% import "common/thumbnail.html" as thumb %}
     {% set records = file.getRecordsToSubstitute() %}
-<div><img src='/prod/lazaret/{{ file.getId() }}/thumbnail/' width="80px" height="80px"/></div>
-    <div class='lazaret-file' style='float:left;width:25%;padding:10px;'>
-        <table class='table'>
-            <tr>
-                <td>{% trans 'Filename' %}</td>
-                <td>{{ file.getOriginalName() }}</td>
-            </tr>
-            <tr>
-                <td>{% trans 'Date' %}</td>
-                <td>{{ file.getCreated()|date('Y-m-d') }}</td>
-            </tr>
-            {% if file.getSession().getUser() is not none %}
-                <tr>
-                    <td>{% trans 'Uploaded by' %}</td>
-                    <td>{{ file.getSession().getUser().get_login() }}</td>
-                </tr>
-            {% endif %}
-            <tr>
-                <td>{% trans 'Collection' %}</td>
-                <td>{{ file.getCollection().get_name() }}</td>
-            </tr>
-        </table>
-
-        <div class="btn-group">
-            <button class="btn"><img src="/skins/icons/add.png"></button>
-            <button class="btn"><img src="/skins/icons/delete.png"></button>
-            {% if records|length > 0 %}
-                <button class="btn"><img src="/skins/icons/reload.png"></button>
-            {% endif %}
-        </div>
-    </div>
-
-    {% if  records|length > 0 %}
-        <div class='lazaret-file' style='float:left;width:70%'>
-        {% for record in records %}
-            {% if user.ACL().has_right_on_base(record.get_base_id(), 'canaddrecord')
-                and user.ACL().has_right_on_base(record.get_base_id(), 'candeleterecord') %}
-                <div class='records-subititution' style='float:left;padding:5px'>
-                    {% if user.ACL().has_access_to_subdef(record, 'preview') %}
-                        {% set preview_obj = record.get_preview() %}
-                    {% else %}
-                        {% set preview_obj = record.get_thumbnail() %}
-                    {% endif %}
-
-                    <div>{{ thumb.format(preview_obj, 80, 80, '', session, false) }}</div>
-                    <div>{{ record.get_title() }}</div>
+    <div class='lazaret-file span4'>
+        <p><h5>{% trans 'Last uploaded version' %}</h5></p>
+        <ul class='thumbnails'>
+            <li class="span12" >
+                <div class='thumbnail'>
+                    <img src='/prod/lazaret/{{ file.getId() }}/thumbnail/'/>
+                    <div class="caption">
+                        <p><b>{% trans 'Filename' %}</b> : {{ file.getOriginalName() }}</p>
+                        <p><b>{% trans 'Date' %}</b> : {{ file.getCreated()|date('Y-m-d') }}</p>
+                        {% if file.getSession().getUser() is not none %}
+                                <p><b>{% trans 'Uploaded by' %}</h5></b> : {{ file.getSession().getUser().get_login() }}</p>
+                        {% endif %}
+                        <p><b>{% trans 'Collection' %}</b> : {{ file.getCollection().get_name() }}</p>
+                    </div>
+                    <div class="btn-group" style='text-align:center; padding:5px'>
+                        <button class="btn add-lazaret" title="{% trans 'Add'%}">
+                            <img src="/skins/icons/add.png">
+                        </button>
+                        <button class="btn delete-lazaret" title="{% trans 'Delete'%}">
+                            <img src="/skins/icons/delete.png">
+                        </button>
+                        {% if records|length > 0 %}
+                            <button class="btn subtitute-lazaret" title="{% trans 'Substitute' %}">
+                                <img src="/skins/icons/reload.png">
+                            </button>
+                        {% endif %}
+                    </div>
                 </div>
-            {% endif %}
-        {% endfor %}
+             </li>
+        </ul>
+        {# Store lazaret file id in hidden input #}
+        <input type="hidden" name="lazaret_file" value="{{ file.getId() }}"/>
+        {# Store lazaret file destination #}
+        <input type="hidden" name="lazaret_file_destination" value="{{ file.getBaseId() }}"/>
+     </div>
+    {% set record_count = records|length %}
+    {% if record_count  > 0 %}
+        <div class='lazaret-proposals span8'>
+            <p>
+                <h5>
+                {% trans %}
+                    {{ record_count }} record match the unique identifier.
+                {% plural record_count %}
+                    {{ record_count }} records match the unique identifier.
+                {% endtrans %}
+                </h5>
+            </p>
+            <ul class="thumbnails">
+                {% for record in records %}
+                    {% if user.ACL().has_right_on_base(record.get_base_id(), 'canaddrecord')
+                        and user.ACL().has_right_on_base(record.get_base_id(), 'candeleterecord') %}
+                        <li class="records-subititution span6">
+                            <div class='thumbnail'>
+                                {% if user.ACL().has_access_to_subdef(record, 'preview') %}
+                                    {% set preview_obj = record.get_preview() %}
+                                {% else %}
+                                    {% set preview_obj = record.get_thumbnail() %}
+                                {% endif %}
+
+                                <div id='thumb_{{record.get_record_id()}}' class='record-thumb span12' style='text-align:center'>
+                                    {{ thumb.format(preview_obj, 260, 180, '', session, false) }}
+                                </div>
+                                <div class="caption">
+                                    <p>{{ record.get_title() }}</p>
+                                </div>
+                            </div>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
         </div>
     {% endif %}
-
 {% endmacro %}
 
