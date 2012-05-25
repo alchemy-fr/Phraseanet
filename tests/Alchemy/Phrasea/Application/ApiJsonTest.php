@@ -773,7 +773,9 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
             $this->assertNotNull($subdef->get_permalink());
             $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_OBJECT, $permalink);
             $this->assertObjectHasAttribute("created_on", $permalink);
-            $this->assertEquals($subdef->get_permalink()->get_created_on()->format(DATE_ATOM), $permalink->created_on);
+            $now = new Datetime($permalink->created_on);
+            $interval = $now->diff($subdef->get_permalink()->get_created_on());
+            $this->assertTrue(abs($interval->format('U')) < 2);
             $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink->created_on);
             $this->assertDateAtom($permalink->created_on);
             $this->assertObjectHasAttribute("id", $permalink);
