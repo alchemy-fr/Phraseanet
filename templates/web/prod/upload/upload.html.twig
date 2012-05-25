@@ -67,10 +67,10 @@
                                                             <img src="{{ status['img_off'] }}" width="16" height="16" />
                                                         {% endif %}
                                                         <span>{{ status['labeloff']|default('off') }}</span>
-                                                        <input type="radio" name="status[{{ bit }}]" value="off" checked="checked"/>
+                                                        <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="off" checked="checked"/>
                                                     </td>
                                                     <td class="status-tab-right">
-                                                        <input type="radio" name="status[{{ bit }}]" value="on" />
+                                                        <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="on" />
                                                         <span for="labelon">{{ status['labelon']|default('on') }}</span>
                                                         {% if status['img_on'] is not empty %}
                                                             <img src="{{ status['img_on'] }}" width="16" height="16" />
