@@ -124,7 +124,7 @@
                 var elements = $(".thumb-selected", $(this).closest('.wrapper-item'));
                 var nbElement = elements.length;
             }else if(nbProposals == 1){
-                var elements = $(".records-substitution:first", $(this).closest('.wrapper-item'));
+                var elements = $(this).closest('.wrapper-item').find(".records-subititution");
                 var nbElement = 1
             }
             else{
