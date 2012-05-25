@@ -54,10 +54,10 @@ try {
 
     $app->add(new module_console_sphinxGenerateSuggestion('sphinx:generate-suggestions'));
 
-    $app->add(new module_console_systemMailCheck('system:mailCheck'));
-    $app->add(new module_console_systemBackupDB('system:backupDB'));
-    $app->add(new module_console_systemClearCache('system:clearCache'));
-    $app->add(new module_console_systemTemplateGenerator('system:templateGenerator'));
+    $app->add(new module_console_systemMailCheck('system:mail:check'));
+    $app->add(new module_console_systemBackupDB('system:backup:db'));
+    $app->add(new module_console_systemClearCache('system:clear:cache'));
+    $app->add(new module_console_systemTemplateGenerator('system:template:generator'));
     $app->add(new module_console_systemExport('system:export'));
 
     $app->add(new module_console_taskrun('task:run'));
@@ -66,8 +66,8 @@ try {
     $app->add(new module_console_schedulerState('scheduler:state'));
     $app->add(new module_console_schedulerStop('scheduler:stop'));
     $app->add(new module_console_schedulerStart('scheduler:start'));
-    $app->add(new module_console_fileEnsureProductionSetting('check:ensureProductionSettings'));
-    $app->add(new module_console_fileEnsureDevSetting('check:ensureDevSettings'));
+    $app->add(new module_console_fileEnsureProductionSetting('check:ensure:production:settings'));
+    $app->add(new module_console_fileEnsureDevSetting('check:ensure:dev:settings'));
     $app->add(new module_console_systemConfigCheck('check:system'));
 
 
