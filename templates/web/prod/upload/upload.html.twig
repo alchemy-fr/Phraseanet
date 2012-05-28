@@ -30,6 +30,9 @@
                                 <span>{% trans 'Select files...' %}</span>
                                 <input type="file" name="files[]" multiple directory webkitdirectory mozdirectory>
                             </span>
+                            <span>
+                                <i>( {% trans %} maximum : {{ maxFileSizeReadable }} {% endtrans %})</i>
+                            </span>
                         {#    <button type="button" class="upload-submitter btn btn-inverse input-medium">{% trans 'Send' %}</button> #}
                         </div>
                     </div>
@@ -128,6 +131,8 @@ $(document).ready(function () {
         downloadBox: $('#uploadBox .download-box')
     });
 
+    var maxFileSize = {{ maxFileSize }};
+
     UploaderManager.Preview.setOptions({
                         maxWidth: 160,
                         maxHeight: 120,
@@ -192,7 +197,12 @@ $(document).ready(function () {
                 $('.upload-box').show();
 
                 if (file.error) {
-                    var params = $.extend({}, file, {language: language});
+                    var params = $.extend({}, file, {error: language.errorFileApi, language: language});
+                    p4.Mustache.Render('Upload-Items-Error', params, function(html){
+                        UploaderManager.getUploadBox().append(html);
+                    });
+                } else if(file.size > maxFileSize){
+                    var params = $.extend({}, file, {error: language.errorFileApiTooBig, language: language});
                     p4.Mustache.Render('Upload-Items-Error', params, function(html){
                         UploaderManager.getUploadBox().append(html);
                     });

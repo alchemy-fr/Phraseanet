@@ -18,6 +18,7 @@ use Silex\ControllerProviderInterface;
 use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Serializer\Serializer;
 
 /**
@@ -104,8 +105,13 @@ class Upload implements ControllerProviderInterface
             $collections[$databox->get_sbas_id()]['databox_collections'][] = $collection;
         }
 
+        $maxFileSize = UploadedFile::getMaxFilesize();
         $html = $app['Core']['Twig']->render(
-            'prod/upload/upload.html.twig', array('collections' => $collections)
+            'prod/upload/upload.html.twig', array(
+                'collections'         => $collections,
+                'maxFileSize'         => $maxFileSize,
+                'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
+            )
         );
 
         return new Response($html);
