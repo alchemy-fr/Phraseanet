@@ -1136,7 +1136,7 @@ $(document).ready(function(){
     }
   });
 
-  $('button.answer_selector').bind('click',function(){
+  $('.tools .answer_selector').bind('click',function(){
     selector($(this));
   }).bind('mouseover',function(event){
     if(is_ctrl_key(event))
@@ -1249,7 +1249,7 @@ $(document).ready(function(){
                 case 65:	// a
                   if(is_ctrl_key(event))
                   {
-                    $('.answer_selector.all_selector').trigger('click');
+                    $('.tools .answer_selector.all_selector').trigger('click');
                     cancelKey = shortCut = true;
                   }
                   break;

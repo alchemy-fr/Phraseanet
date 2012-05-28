@@ -167,8 +167,9 @@ class Upload implements ControllerProviderInterface
 
             $postStatus = $request->get('status');
 
-            if (is_array($postStatus)) {
-
+            if (isset($postStatus[$collection->get_sbas_id()]) && is_array($postStatus[$collection->get_sbas_id()])) {
+                $postStatus = $postStatus[$collection->get_sbas_id()];
+                
                 $status = '';
                 foreach (range(0, 64) as $i) {
                     $status .= isset($postStatus[$i]) ? ($postStatus[$i] ? '1' : '0') : '0';
