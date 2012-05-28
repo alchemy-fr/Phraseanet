@@ -9,6 +9,12 @@
  * file that was distributed with this source code.
  */
 
+use MediaAlchemyst\Driver\Imagine as ImagineDriver;
+use MediaAlchemyst\Specification\Image as ImageSpecification;
+use MediaAlchemyst\Transmuter\Image2Image as ImageTransmuter;
+use MediaVorus\Media\Media;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
+
 /**
  *
  *
@@ -436,7 +442,19 @@ class databox_status
         $custom_path = $registry->get('GV_RootPath') . 'www/custom/status/';
 
         $core['file-system']->mkdir($custom_path, 0750);
-        $core['file-system']->copy($path . $name, $custom_path . basename($path . $name), true);
+
+        //resize status icon 16x16px
+        $imageSpec = new ImageSpecification();
+        $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
+        $imageSpec->setDimensions(16, 16);
+
+        $driverContainer = new MediaAlchemyst\DriversContainer(new ParameterBag());
+
+        $transmuter = new ImageTransmuter($driverContainer);
+
+        $media = MediaVorus\MediaVorus::guess(new \SplFileInfo($path . $name));
+
+        $transmuter->execute($imageSpec, $media, $custom_path . basename($path . $name));
 
         self::$_status[$sbas_id]->status[$bit]['img_' . $switch] = $url . $name;
         self::$_status[$sbas_id]->status[$bit]['path_' . $switch] = $path . $name;
