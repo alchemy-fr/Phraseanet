@@ -182,10 +182,12 @@ class Upload implements ControllerProviderInterface
             $reasons = array();
             $elementCreated = null;
 
-            $callback = function($element, $visa, $code) use (&$reasons, &$elementCreated) {
-                    foreach ($visa->getResponses() as $response) {
-                        if ( ! $response->isOk()) {
-                            $reasons[] = $response->getMessage();
+            $callback = function($element, $visa, $code) use (&$reasons, &$elementCreated, &$forceBehavior) {
+                    if ( ! $forceBehavior) {
+                        foreach ($visa->getResponses() as $response) {
+                            if ( ! $response->isOk()) {
+                                $reasons[] = $response->getMessage();
+                            }
                         }
                     }
                     $elementCreated = $element;
