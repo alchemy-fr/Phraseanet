@@ -43,11 +43,11 @@ var p4 = p4 || {};
 
         this.options = options;
 
-        this.options.uploadBox.wrapInner('<ul />');
+        this.options.uploadBox.wrapInner('<ul class="thumbnails" />');
 
         this.options.uploadBox = this.options.uploadBox.find('ul:first');
 
-        this.options.downloadBox.wrapInner('<ul />');
+        this.options.downloadBox.wrapInner('<ul class="thumbnails" />');
 
         this.options.downloadBox = this.options.downloadBox.find('ul:first');
 
