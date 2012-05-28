@@ -238,32 +238,6 @@
 
             });
 
-            test("render", function() {
-                var UM = getUploadManager();
-
-                var ab, bb, blob, i, ia, _i, _len;
-
-                var byteString = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAyVBMVEUzM2a9pUL90Bzi0phoZH3/6pb/9cytooiEg3v93FhST2vuwhL977qVjGr/++z/1zl0cILPvoj/5X9eW3Xix1/9ywP/7aX/+NyLhnb/88Sfk37NwZ86OWb80ix0bHD/5HZZV3T/8LX//vn/20yFeWr/6I1jYob7zBDGqTrp4MNoZ4j/7J7/9tPNtWCDg4P/4mtSUHT1xwuckWT//fP+2kfpz2r/5oReXYD8zAr/7qz/+uSLhnaflYjPx7Q6Omn70zP977qAeHoAAAAdPTPOAAAAQ3RSTlP///////////////////////////////////////////////////////////////////////////////////////8AQWIE7wAAAM5JREFUGFclj9lywjAMRcWSkIWGVTYppTQMe0JCwA22hzZT//9HVTb3SeeMNJLA2KCNqwxYlJVSeSidIoFCJ5oXqWqtAeLN3YmMrWorpL7vH5r7/S/WyKMBrJLk/OCF35/luzYmwbSmAT/NlNcIXAAqzgviocp3a4FvgN4JfiyzCXyPbEeYXsfDTDHvMwq7cUlb2PL3+hy8Rx8XgR0S2LLeXwTRdi5kHbhLV00zXVehOOCtdL/U2Aox6mJN7IQ5xvRs3AmIX8KY4BaUFo35B3lHJ6UKnYJ8AAAAAElFTkSuQmCC';
-
-                ab = new ArrayBuffer(byteString.length);
-                ia = new Uint8Array(ab);
-
-                for (_i = 0, _len = byteString.length; _i < _len; _i++) {
-                    i = byteString[_i];
-                    ia[i] = byteString.charCodeAt(i);
-                }
-
-                bb = new MozBlobBuilder();
-                bb.append(ab);
-                blob = bb.getBlob('image/png');
-
-                UM.Preview.render(blob, function(img){
-                    //do something
-                });
-            });
-
-
-
         });
         </script>
     </head>
