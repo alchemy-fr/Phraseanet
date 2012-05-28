@@ -274,6 +274,29 @@ $(document).ready(function () {
 
                 //launch ajax request
                 var jqXHR = $this.fileupload('send', data)
+                .success(function(response){
+                    var thumb_content = data.context.find(".thumbnail-content");
+                    thumb_content.find("button").remove();
+
+                    if(response.success){
+                        //case record
+                        if(response.element === 'record'){
+                            p4.Mustache.Render('Download-Finish', {heading:response.message, reasons: response.reasons}, function(html){
+                                thumb_content.find('p.success').append(html);
+                            });
+                        } else { //case quarantine
+                            p4.Mustache.Render('Download-Finish', {heading:response.message, reasons: response.reasons}, function(html){
+                                thumb_content.find('p.error').append(html);
+                            });
+                        }
+                    } else {
+                        //fail
+                        p4.Mustache.Render('Download-Finish', {heading:response.message, reasons: response.reasons}, function(html){
+                                thumb_content.find('p.error').append(html);
+                            });
+                    }
+
+                })
                 .error(function(jqXHR, textStatus, errorThrown) {
                     //Request is aborted
                     if (errorThrown === 'abort') {

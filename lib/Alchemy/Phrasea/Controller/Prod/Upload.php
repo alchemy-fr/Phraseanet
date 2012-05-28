@@ -169,7 +169,7 @@ class Upload implements ControllerProviderInterface
 
             if (isset($postStatus[$collection->get_sbas_id()]) && is_array($postStatus[$collection->get_sbas_id()])) {
                 $postStatus = $postStatus[$collection->get_sbas_id()];
-                
+
                 $status = '';
                 foreach (range(0, 64) as $i) {
                     $status .= isset($postStatus[$i]) ? ($postStatus[$i] ? '1' : '0') : '0';
@@ -179,7 +179,8 @@ class Upload implements ControllerProviderInterface
 
             $forceBehavior = $request->get('forceAction');
 
-            $reasons = $elementCreated = null;
+            $reasons = array();
+            $elementCreated = null;
 
             $callback = function($element, $visa, $code) use (&$reasons, &$elementCreated) {
                     foreach ($visa->getResponses() as $response) {
@@ -198,23 +199,23 @@ class Upload implements ControllerProviderInterface
             if ($elementCreated instanceof \record_adapter) {
                 $id = $elementCreated->get_serialize_key();
                 $element = 'record';
-                $reasons = array();
+                $message = _('The record was successfully created');
             } else {
                 $id = $elementCreated->getId();
                 $element = 'lazaret';
+                $message = _('The file was moved to the quarantine');
             }
 
             $datas = array(
                 'success' => true,
                 'code'    => $code,
-                'message' => '',
+                'message' => $message,
                 'element' => $element,
                 'reasons' => $reasons,
                 'id'      => $id,
             );
         } catch (\Exception $e) {
-
-            $datas['message'] = _('Unable to add file to Phraseanet') . $e->getFile() . ':' . $e->getLine() . $e->getMessage();
+            $datas['message'] = _('Unable to add file to Phraseanet');
         }
 
         return self::getJsonResponse($app['Core']['Serializer'], $datas);
