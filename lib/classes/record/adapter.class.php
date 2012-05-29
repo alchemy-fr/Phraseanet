@@ -1477,7 +1477,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $records = array();
 
         foreach ($rs as $row) {
-            $record = new record_adapter($sbas_id, $row['record_id']);
+            $record = new record_adapter($databox->get_sbas_id(), $row['record_id']);
             $records[$record->get_serialize_key()] = $record;
         }
 
