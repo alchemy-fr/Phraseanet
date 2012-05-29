@@ -4036,32 +4036,35 @@ dans l'onglet thesaurus : arbres, menus contextuels
     margin-right: 5px;
 }
 
-#uploadBox .myspan {
-    margin: 0;
-    height: 210px;
-    max-width: 150px;
+#uploadBox .upload-record {
+    height: 260px;
 }
 
 #uploadBox .upload-record {
-    margin: 5px 15px 5px 0;
-    height: 190px;
-    text-align: center;
+    height: 260px;
 }
 
-#uploadBox .upload-record .thumbnail-content {
-    height: 190px;
-    max-width: 125px;
-    display: table-cell;
-    vertical-align: middle;
-    word-wrap: break-word;
+#uploadBox .upload-record .canva-wrapper {
+    height: 120px;
 }
 
 #uploadBox .upload-record .name-doc {
     font-weight: bold;
+    height:40px;
+    overflow: hidden;
+    -o-text-overflow: ellipsis; /* pour Opera 9 */
+    text-overflow: ellipsis;
 }
 
 #uploadBox .upload-record .infos-doc {
     color: #777777;
+    height:40px;
+}
+
+#uploadBox .upload-record .error, #uploadBox .upload-record .success{
+    height:60px;
+    display:none;
+    overflow:auto;
 }
 
 #uploadBox .upload-record .remove-element {

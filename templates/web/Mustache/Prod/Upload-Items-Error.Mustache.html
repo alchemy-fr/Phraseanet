@@ -1,8 +1,11 @@
-<li class="myspan">
+<li class="span2">
     <div class="upload-record thumbnail">
-        <div class="thumbnail-content error alert alert-error">
-            {{ language.errorFileApi }} :
-            <p>{{ name }}</p>
+        <div class="alert-error">
+            <p>{{ error }}</p>
+
+            <p class="name-doc">{{ name }}</p>
         </div>
+
+        <button type="button" class="remove-element btn btn-inverse btn-mini">{{ language.cancel }}</button>
     </div>
 </li>

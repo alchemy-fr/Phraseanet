@@ -66,13 +66,13 @@
                     if(data.success){
                         that.closest(".wrapper-item").remove();
                     }else{
-                        p4.Mustache.Render('Alert', {content:data.message}, function(html){
+                        p4.Mustache.Render('Alert-Error', {content:data.message}, function(html){
                             that.closest(".thumbnail").append(html);
                         });
                     }
                 },
                 error: function(){
-                    p4.Mustache.Render('Alert', {content:language.errorAjaxRequest}, function(html){
+                    p4.Mustache.Render('Alert-Error', {content:language.errorAjaxRequest}, function(html){
                         that.closest(".thumbnail").append(html);
                     });
                 },

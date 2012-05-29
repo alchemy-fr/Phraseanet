@@ -89,7 +89,7 @@ class module_console_systemTemplateGenerator extends Command
 
 
             $finder = new Symfony\Component\Finder\Finder();
-            foreach ($finder->files()->in(array($tplDir)) as $file) {
+            foreach ($finder->files()->in(array($tplDir))->exclude('Mustache') as $file) {
                 try {
                     $twig->loadTemplate(str_replace($tplDir, '', $file->getPathname()));
                     $output->writeln('' . $file . '');
