@@ -353,8 +353,14 @@ class LazaretFile
      */
     public function getRecordsToSubstitute()
     {
-        return \record_adapter::get_record_by_uuid(
+        $shaRecords = \record_adapter::get_record_by_sha(
+            $this->getCollection()->get_sbas_id(), $this->getSha256()
+        );
+
+        $uuidRecords = \record_adapter::get_record_by_uuid(
             $this->getCollection()->get_databox(), $this->getUuid()
         );
+
+        return array_merge($uuidRecords, $shaRecords);
     }
 }
