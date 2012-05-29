@@ -1,34 +1,34 @@
 {% import 'common/thumbnail.html' as thumbnail %}
-  <div style="top:30px;overflow:auto;" id="reorder_box" class="PNB">
-    <div id="reorder_options" class="PNB" style="top:0; height:30px;bottom:auto;">
+<div id="reorder_box" class="PNB" style="top:10px; overflow:auto; padding:10px;">
+    <div id="reorder_options" style="height:32px; margin-bottom:10px;">
         <span>{% trans 'Reordonner automatiquement' %}</span>
         <select id="auto_order">
             <option value="">{% trans 'Choisir' %}</option>
             <option value="default">{% trans 'Re-initialiser' %}</option>
             <option value="title">{% trans 'Titre' %}</option>
         </select>
-        <button type="button" class="autoorder">{% trans 'Re-ordonner' %}</button>
-        <button type="button" class="reverseorder">{% trans 'Inverser' %}</button>
-        <form name="reorder" method="POST" action="/prod/baskets/{{ basket.getId() }}/reorder/" style="display:inline">
+        <button type="button" class="autoorder btn btn-inverse">{% trans 'Re-ordonner' %}</button>
+        <button type="button" class="reverseorder btn btn-inverse">{% trans 'Inverser' %}</button>
+        <form name="reorder" method="POST" action="/prod/baskets/{{ basket.getId() }}/reorder/" style="display:inline;">
         {% for element in basket.getElements() %}
-            <input type="hidden" name="element[{{ element.getId() }}]" value="{{ element.getOrd() }}"/>
+                <input type="hidden" name="element[{{ element.getId() }}]" value="{{ element.getOrd() }}"/>
         {% endfor %}
-        <button>{% trans 'boutton::valider' %}</button>
+        <button class="btn btn-inverse">{% trans 'boutton::valider' %}</button>
         </form>
     </div>
-    <div class="elements PNB" style="top: 40px;bottom:auto;">
+    <div class="elements">
     {% for element in basket.getElements() %}
-      <div id="ORDER_{{ element.getId() }}" class="CHIM diapo" style="height:130px;overflow:hidden;">
-        <div class="title" title="{{ element.getRecord().get_title() }}" style="position:relative;z-index:1200;height:30px;overflow:visible;text-align:center;">
-          <span>{{ element.getRecord().get_title() }}</span>
-          {{ thumbnail.format(element.getRecord().get_thumbnail(), 80, 80, '', session) }}
-          <form style="display:none;">
-            <input type="hidden" name="id" value="{{ element.getId() }}"/>
-            <input type="hidden" name="title" value="{{ element.getRecord().get_title() }}"/>
-            <input type="hidden" name="default" value="{{ element.getOrd() }}"/>
-          </form>
+        <div id="ORDER_{{ element.getId() }}" class="CHIM diapo" style="height:130px;overflow:hidden;">
+            <div class="title" title="{{ element.getRecord().get_title() }}" style="position:relative;z-index:1200;height:30px;overflow:visible;text-align:center;">
+                <span>{{ element.getRecord().get_title() }}</span>
+                {{ thumbnail.format(element.getRecord().get_thumbnail(), 80, 80, '', session) }}
+                <form style="display:none;">
+                    <input type="hidden" name="id" value="{{ element.getId() }}"/>
+                    <input type="hidden" name="title" value="{{ element.getRecord().get_title() }}"/>
+                    <input type="hidden" name="default" value="{{ element.getOrd() }}"/>
+                </form>
+            </div>
         </div>
-      </div>
     {% endfor %}
     </div>
 </div>

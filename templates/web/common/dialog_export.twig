@@ -2,81 +2,61 @@
 
 {% macro print_ftp_form(datas) %}
     <div class="ftp_form ftp_form_{{datas.usr_id}}">
-        <table cellspacing="0" cellpadding="0" border="0" style="width:100%;">
-            <tr>
-                <td>
-                    <label for="addrFTP_{{datas.usr_id}}">{% trans 'phraseanet:: adresse' %}  ftp://</label>
-                </td>
-                <td>
-                    <input style="width:250px;" type="text" name="addr" id="addrFTP_{{datas.usr_id}}" value="{{datas.addrFTP}}" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="ftpssl_{{datas.usr_id}}">{% trans 'phraseanet:: utiliser SSL' %} </label>
-                </td>
-                <td>
-                    <input class="checkbox" type="checkbox" name="ssl" id="ftpssl_{{datas.usr_id}}" value="1" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="loginFTP_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur identifiant' %} </label>
-                </td>
-                <td>
-                    <input style="width:250px;" type="text" name="login" id="loginFTP_{{datas.usr_id}}" value="{{datas.loginFTP}}" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="pwdFTP_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur mot de passe' %} </label>
-                </td>
-                <td>
-                    <input style="width:250px;" type="password" name="pwd" id="pwdFTP_{{datas.usr_id}}" value="{{datas.pwdFTP}}" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="passifFTP_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur:ftp: Utiliser le mode passif' %} </label>
-                </td>
-                <td>
-                    <input value="1" type="checkbox" class="checkbox" name="passif" id="passifFTP_{{datas.usr_id}}" {% if datas.passifFTP %}checked="checked"{% endif %}  />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="retryFTP_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur:ftp: Nombre d\'essais max' %}   </label>
-                </td>
-                <td>
-                    <input style="width:250px;" type="text" name="nbretry" id="retryFTP_{{datas.usr_id}}" value="{{datas.retryFTP}}" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="destFTP_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur:ftp:  repertoire de destination ftp' %} </label>
-                </td>
-                <td>
-                    <input style="width:250px;" type="text" name="destfolder" id="destFTP_{{datas.usr_id}}" value="{{datas.destFTP}}"" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="idMKDFOLD_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur:ftp: creer un dossier' %}  </label>
-                </td>
-                <td>
-                    <input type="checkbox" class="checkbox ftp_folder_check" {% if datas.prefixFTPfolder != '' %}checked="checked"{% endif %} name="MKDFOLD" id="idMKDFOLD_{{datas.usr_id}}" value="MKDFOLD"  />
-                    <input style="width:250px;" type="text" name="NAMMKDFOLD" id="prefixFTPfolder_{{datas.usr_id}}" value="{{datas.prefixFTPfolder}}" {% if datas.prefixFTPfolder == '' %}disabled="disabled"{% endif %}/>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="logfile_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur:ftp: ecrire un fichier de log' %}  </label>
-                </td>
-                <td>
-                    <input type="checkbox" class="checkbox ftp_logfile_check" name="logfile" id="logfile_{{datas.usr_id}}" value="1"  />
-                </td>
-            </tr>
-        </table>
+        <div class="control-group">
+            <label class="control-label" for="addrFTP_{{datas.usr_id}}">{% trans 'phraseanet:: adresse' %}  ftp://</label>
+            <div class="controls">
+                <input type="text" name="addr" id="addrFTP_{{datas.usr_id}}" value="{{datas.addrFTP}}" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="ftpssl_{{datas.usr_id}}">{% trans 'phraseanet:: utiliser SSL' %}</label>
+            <div class="controls">
+                <input type="checkbox" name="ssl" id="ftpssl_{{datas.usr_id}}" value="1" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="loginFTP_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur identifiant' %}</label>
+            <div class="controls">
+                <input type="text" name="login" id="loginFTP_{{datas.usr_id}}" value="{{datas.loginFTP}}" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="pwdFTP_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur mot de passe' %}</label>
+            <div class="controls">
+                <input type="password" name="pwd" id="pwdFTP_{{datas.usr_id}}" value="{{datas.pwdFTP}}" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="passifFTP_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur:ftp: Utiliser le mode passif' %}</label>
+            <div class="controls">
+                <input value="1" type="checkbox" name="passif" id="passifFTP_{{datas.usr_id}}" {% if datas.passifFTP %}checked="checked"{% endif %}  />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="retryFTP_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur:ftp: Nombre d\'essais max' %}</label>
+            <div class="controls">
+                <input type="text" name="nbretry" id="retryFTP_{{datas.usr_id}}" value="{{datas.retryFTP}}" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="destFTP_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur:ftp:  repertoire de destination ftp' %}</label>
+            <div class="controls">
+                <input type="text" name="destfolder" id="destFTP_{{datas.usr_id}}" value="{{datas.destFTP}}" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="idMKDFOLD_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur:ftp: creer un dossier' %}</label>
+            <div class="controls">
+                <input type="checkbox" class="ftp_folder_check" {% if datas.prefixFTPfolder != '' %}checked="checked"{% endif %} name="MKDFOLD" id="idMKDFOLD_{{datas.usr_id}}" value="MKDFOLD"  />
+                <input type="text" name="NAMMKDFOLD" id="prefixFTPfolder_{{datas.usr_id}}" value="{{datas.prefixFTPfolder}}" {% if datas.prefixFTPfolder == '' %}disabled="disabled"{% endif %} />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="logfile_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur:ftp: ecrire un fichier de log' %}</label>
+            <div class="controls">
+                <input type="checkbox" class=ftp_logfile_check" name="logfile" id="logfile_{{datas.usr_id}}" value="1" />
+            </div>
+        </div>
     </div>
 {% endmacro %}
 
@@ -170,7 +150,7 @@
                     <form action="/include/sendmailpage.php" method="post" target="sendmail_target" style="text-align: left;">
                         <input type="hidden" name="lst" value="{{lst}}"/>
                         <input type="hidden" name="ssttid" value="{{ssttid}}"/>
-                        <div style="margin: 10px 0 20px 0; padding: 0 10px;">
+                        <div>
                             {% trans 'export::mail: destinataire' %}
                             <input type="text" value="" name="destmail" class="required span4">
                             {% set my_email = user.get_email() %}
@@ -218,7 +198,7 @@
                         </div>
                         {% if download.has_business_fields_access() %}
                             <div class="businessfields" style="margin-left:20px;display:none;">
-                                <label for="business_sendmail">
+                                <label for="business_sendmail" class="checkbox">
                                     <input type="checkbox" name="businessfields" id="business_sendmail" value="1"  />
                                     {% trans 'Include Business-fields in caption' %}
                                 </label>
@@ -237,9 +217,9 @@
         {% endif %}
         {% if download.get_total_order() > 0 %}
             <div id="order">
-                <div style="margin:10px;">
-                    <h1>{% trans 'export::commande: bon de commande' %}</h1>
-                    <form method="post">
+                <div style="padding:10px; text-align: center;">
+                    <h4>{% trans 'export::commande: bon de commande' %}</h4>
+                    <form method="post" class="form-horizontal" style="text-align: left;">
                         <input type="hidden" name="lst" value="{{lst}}"/>
                         <input type="hidden" name="ssttid" value="{{ssttid}}"/>
                         <table cellspacing="0" cellpadding="0" border="0" style="width:100%;">
@@ -354,7 +334,7 @@
                         <div>
                             {% for name, values in download.get_display_orderable() %}
                                 {% if values.available > 0 %}
-                                    <div>
+                                    <div style="margin: 10px 0 20px 0; padding: 0 10px;">
                                         {% set docs_orderable = values.available %}
                                         {% trans %}{{docs_orderable}} documents commandes{% endtrans %}
                                         {% set docs_not_orderable = values.total - values.available %}
@@ -378,9 +358,9 @@
                             {% endfor %}
                         </div>
                         <div class="buttons_line">
-                            <button type="button" class="order_button">{% trans 'boutton::commander'%}</button>
+                            <button type="button" class="order_button btn btn-inverse">{% trans 'boutton::commander'%}</button>
                             <img class="order_button_loader" src="/skins/icons/loader404040.gif" style="visibility:hidden;margin:0 5px;"/>
-                            <button type="button" class="close_button">{% trans 'boutton::annuler'%}</button>
+                            <button type="button" class="close_button btn btn-inverse">{% trans 'boutton::annuler'%}</button>
                         </div>
                     </form>
                 </div>
@@ -388,18 +368,22 @@
         {% endif %}
         {% if download.get_total_ftp() > 0 %}
             <div id="ftp">
-                <div style="margin:10px;">
-                    <h1>{% trans 'export:: FTP' %}</h1>
-                    <form action="/include/exportsFTP.php" method="post" target="_blank">
+                <div style="padding:10px; text-align: center;">
+                    <h4>{% trans 'export:: FTP' %}</h4>
+                    <form action="/include/exportsFTP.php" method="post" target="_blank" class="form-horizontal" style="text-align: left;">
                         <input type="hidden" name="lst" value="{{lst}}"/>
                         <input type="hidden" name="ssttid" value="{{ssttid}}"/>
-                        <div>
-                            {% trans 'phraseanet:: prereglages'%}
-                            <select id="ftp_form_selector">
-                            {% for datas in download.get_ftp_datas() %}
-                                <option value="{{datas.usr_id}}">{{datas.name}}</option>
-                            {% endfor %}
-                            </select>
+                        <div class="control-group">
+                            <label class="control-label" for="ftp_form_selector">
+                                {% trans 'phraseanet:: prereglages'%}
+                            </label>
+                            <div class="controls">
+                                <select id="ftp_form_selector" class="span3">
+                                    {% for datas in download.get_ftp_datas() %}
+                                        <option value="{{datas.usr_id}}">{{datas.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
                         </div>
                         <div id="ftp_form">
                             <div id="ftp_form_stock">
@@ -412,9 +396,11 @@
                             <p>{% trans 'export::mail: fichiers joint' %}</p>
                             {% for name, values in download.get_display_ftp() %}
                                 {% if values.available > 0 %}
-                                    <div>
-                                        <input class="checkbox {{values.class}}" type="checkbox" id="ftp_{{name}}" name="obj[]" value="{{name}}" />
-                                        <label for="ftp_{{name}}"> {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size|format_octets}}))</label>
+                                    <div style="margin: 10px 0 20px 0; padding: 0 10px;">
+                                        <label for="ftp_{{name}}" class="checkbox">
+                                            <input class="{{values.class}}" type="checkbox" id="ftp_{{name}}" name="obj[]" value="{{name}}" />
+                                            {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size|format_octets}}))
+                                        </label>
                                         {% set title%}
                                             {% trans 'Documents indisponibles' %}
                                         {% endset %}
@@ -433,16 +419,18 @@
                         </div>
                         {% if download.has_business_fields_access() %}
                             <div class="businessfields" style="margin-left:20px;display:none;">
-                                <input type="checkbox" class="checkbox" name="businessfields" id="business_ftp" value="1"  />
-                                <label for="business_ftp">{% trans 'Include Business-fields in caption' %}</label>
+                                <label for="business_ftp" class="checkbox">
+                                    <input type="checkbox" name="businessfields" id="business_ftp" value="1"  />
+                                    {% trans 'Include Business-fields in caption' %}
+                                </label>
                             </div>
                         {% endif %}
                         <div class="buttons_line">
-                            <button type="button" class="tryftp_button">{% trans 'boutton::essayer'%}</button>
+                            <button type="button" class="tryftp_button btn btn-inverse">{% trans 'boutton::essayer'%}</button>
                             <img class="tryftp_button_loader" src="/skins/icons/loader404040.gif" style="visibility:hidden;margin:0 5px;"/>
-                            <button type="button" class="ftp_button">{% trans 'boutton::envoyer'%}</button>
+                            <button type="button" class="ftp_button btn btn-inverse">{% trans 'boutton::envoyer'%}</button>
                             <img class="ftp_button_loader" src="/skins/icons/loader404040.gif" style="visibility:hidden;margin:0 5px;"/>
-                            <button type="button" class="close_button">{% trans 'boutton::annuler'%}</button>
+                            <button type="button" class="close_button btn btn-inverse">{% trans 'boutton::annuler'%}</button>
                         </div>
                     </form>
                 </div>

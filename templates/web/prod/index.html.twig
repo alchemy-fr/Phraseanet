@@ -376,7 +376,7 @@
                             <img src="/skins/icons/settings.png" title="{% trans 'Advanced Search' %}"/>
                         </a>
                         <button type="submit" class="btn btn-inverse">{% trans 'boutton::rechercher' %}</button>
-                        <div class="control-group" style="margin:5px 0;">
+                        <div class="control-group" style="margin:5px;">
                             <div class="controls">
                                 {% if GV_multiAndReport %}
                                     <label for="mode_type_doc" class="radio inline">
@@ -1099,7 +1099,6 @@
     <script type="text/javascript" src="{{registry.get('GV_STATIC_URL')}}/include/minify/f=include/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
-            _V_.options.flash.swf = "/include/jslibs/video-js/video-js.swf"
             p4.reg_delete="{% if user.getPrefs("warning_on_delete_story") %}true{% else %}false{% endif %}";
         });
 
