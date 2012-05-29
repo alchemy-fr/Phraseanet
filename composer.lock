@@ -56,7 +56,7 @@
         {
             "package": "media-alchemyst/media-alchemyst",
             "version": "dev-master",
-            "source-reference": "0a1722109dc2634de868be410fdaa9e8f64149be"
+            "source-reference": "1beac5668893021f1db9c8854f6f0f914adf0112"
         },
         {
             "package": "mediavorus/mediavorus",
@@ -70,7 +70,7 @@
         {
             "package": "php-ffmpeg/php-ffmpeg",
             "version": "dev-master",
-            "source-reference": "1424af7703b6a1cc055925c5a1785b81ca4e90e8"
+            "source-reference": "96820c5d0fdf2cafd957ffb3184345e59c4d5b59"
         },
         {
             "package": "php-mp4box/php-mp4box",
@@ -138,13 +138,13 @@
         {
             "package": "symfony/symfony",
             "version": "dev-master",
-            "alias-pretty-version": "2.1.x-dev",
-            "alias-version": "2.1.9999999.9999999-dev"
+            "source-reference": "adf07f1e539193ae1975348afc34ed37e1382e0a"
         },
         {
             "package": "symfony/symfony",
             "version": "dev-master",
-            "source-reference": "adf07f1e539193ae1975348afc34ed37e1382e0a"
+            "alias-pretty-version": "2.1.x-dev",
+            "alias-version": "2.1.9999999.9999999-dev"
         },
         {
             "package": "tcpdf/tcpdf",
@@ -159,13 +159,13 @@
         {
             "package": "twig/twig",
             "version": "dev-master",
-            "source-reference": "47e9b95c37d20dd40d94ccbb260bc835b6b1d540"
+            "alias-pretty-version": "1.8.x-dev",
+            "alias-version": "1.8.9999999.9999999-dev"
         },
         {
             "package": "twig/twig",
             "version": "dev-master",
-            "alias-pretty-version": "1.8.x-dev",
-            "alias-version": "1.8.9999999.9999999-dev"
+            "source-reference": "78a935b6ffbcbd8f4e740df895f87a93347b551c"
         },
         {
             "package": "zend/gdata",
