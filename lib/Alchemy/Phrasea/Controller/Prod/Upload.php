@@ -108,9 +108,9 @@ class Upload implements ControllerProviderInterface
         $maxFileSize = UploadedFile::getMaxFilesize();
         $html = $app['Core']['Twig']->render(
             'prod/upload/upload.html.twig', array(
-                'collections'         => $collections,
-                'maxFileSize'         => $maxFileSize,
-                'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
+            'collections'         => $collections,
+            'maxFileSize'         => $maxFileSize,
+            'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
             )
         );
 
@@ -188,14 +188,13 @@ class Upload implements ControllerProviderInterface
             $reasons = array();
             $elementCreated = null;
 
-            $callback = function($element, $visa, $code) use (&$reasons, &$elementCreated, &$forceBehavior) {
-                    if ( ! $forceBehavior) {
-                        foreach ($visa->getResponses() as $response) {
-                            if ( ! $response->isOk()) {
-                                $reasons[] = $response->getMessage();
-                            }
+            $callback = function($element, $visa, $code) use (&$reasons, &$elementCreated) {
+                    foreach ($visa->getResponses() as $response) {
+                        if ( ! $response->isOk()) {
+                            $reasons[] = $response->getMessage();
                         }
                     }
+
                     $elementCreated = $element;
                 };
 
@@ -203,7 +202,10 @@ class Upload implements ControllerProviderInterface
                 $lazaretSession, $packageFile, $callback, $forceBehavior
             );
 
-
+            if ( ! ! $forceBehavior) {
+                $reasons = array();
+            }
+            
             if ($elementCreated instanceof \record_adapter) {
                 $id = $elementCreated->get_serialize_key();
                 $element = 'record';
