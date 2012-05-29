@@ -316,10 +316,10 @@ class task_period_writemeta extends task_databoxAbstract
             try {
                 $writer->write($file, $metadatas);
 
-                $this->log(sprintf('Success writing meta for sbas_id=%1$d - record_id=%2$d (%3$s)'), $this->sbas_id, $record_id, $name);
+                $this->log(sprintf('Success writing meta for sbas_id=%1$d - record_id=%2$d (%3$s)', $this->sbas_id, $record_id, $name));
 
             } catch (\PHPExiftool\Exception\Exception $e) {
-                $this->log(sprintf('Failure writing meta for sbas_id=%1$d - record_id=%2$d (%3$s)'), $this->sbas_id, $record_id, $name);
+                $this->log(sprintf('Failure writing meta for sbas_id=%1$d - record_id=%2$d (%3$s)', $this->sbas_id, $record_id, $name));
             }
         }
 
