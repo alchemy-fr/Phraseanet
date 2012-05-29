@@ -229,27 +229,27 @@ class databox_status
 
     public static function getPath($sbas_id)
     {
-
-        if ( ! isset(self::$_status[$sbas_id]))
+        if ( ! isset(self::$_status[$sbas_id])) {
             self::$_status[$sbas_id] = new databox_status($sbas_id);
+        }
 
         return self::$_status[$sbas_id]->path;
     }
 
     public static function getUrl($sbas_id)
     {
-
-        if ( ! isset(self::$_status[$sbas_id]))
+        if ( ! isset(self::$_status[$sbas_id])) {
             self::$_status[$sbas_id] = new databox_status($sbas_id);
+        }
 
         return self::$_status[$sbas_id]->url;
     }
 
     public static function deleteStatus($sbas_id, $bit)
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
-        $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+        $core = \bootstrap::getCore();
+
+        $user = $core->getAuthenticatedUser();
 
         if ( ! $user->ACL()->has_right_on_sbas($sbas_id, 'bas_modify_struct')) {
             return false;
@@ -282,11 +282,12 @@ class databox_status
 
                 $databox->saveStructure($doc);
 
-                if (self::$_status[$sbas_id]->status[$bit]['img_off']) {
-                    unlink(self::$_status[$sbas_id]->status[$bit]['path_off']);
+                if ($status[$bit]['img_off']) {
+                    $core['file-system']->remove($status[$bit]['path_off']);
                 }
-                if (self::$_status[$sbas_id]->status[$bit]['img_on']) {
-                    unlink(self::$_status[$sbas_id]->status[$bit]['path_on']);
+
+                if ($status[$bit]['img_on']) {
+                    $core['file-system']->remove($status[$bit]['path_on']);
                 }
 
                 unset(self::$_status[$sbas_id]->status[$bit]);
@@ -300,15 +301,15 @@ class databox_status
 
     public static function updateStatus($sbas_id, $bit, $properties)
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
-        $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+        $core = \bootstrap::getCore();
+
+        $user = $core->getAuthenticatedUser();
 
         if ( ! $user->ACL()->has_right_on_sbas($sbas_id, 'bas_modify_struct')) {
             return false;
         }
 
-        $status = self::getStatus($sbas_id);
+        $appbox = \appbox::get_instance($core);
 
         $databox = $appbox->get_databox((int) $sbas_id);
 
@@ -367,10 +368,13 @@ class databox_status
             self::$_status[$sbas_id]->status[$bit]["searchable"] = (int) $properties['searchable'];
             self::$_status[$sbas_id]->status[$bit]["printable"] = (int) $properties['printable'];
 
-            if ( ! isset(self::$_status[$sbas_id]->status[$bit]['img_on']))
+            if ( ! isset(self::$_status[$sbas_id]->status[$bit]['img_on'])) {
                 self::$_status[$sbas_id]->status[$bit]['img_on'] = false;
-            if ( ! isset(self::$_status[$sbas_id]->status[$bit]['img_off']))
+            }
+
+            if ( ! isset(self::$_status[$sbas_id]->status[$bit]['img_off'])) {
                 self::$_status[$sbas_id]->status[$bit]['img_off'] = false;
+            }
         }
 
         return false;
@@ -378,9 +382,9 @@ class databox_status
 
     public static function deleteIcon($sbas_id, $bit, $switch)
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
-        $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+        $core = \bootstrap::getCore();
+
+        $user = $core->getAuthenticatedUser();
 
         if ( ! $user->ACL()->has_right_on_sbas($sbas_id, 'bas_modify_struct')) {
             return false;
@@ -395,8 +399,9 @@ class databox_status
         }
 
         if ($status[$bit]['img_' . $switch]) {
-            if (isset($status[$bit]['path_' . $switch]))
-                unlink($status[$bit]['path_' . $switch]);
+            if (isset($status[$bit]['path_' . $switch])) {
+                $core['file-system']->remove($status[$bit]['path_' . $switch]);
+            }
 
             $status[$bit]['img_' . $switch] = false;
             unset($status[$bit]['path_' . $switch]);
@@ -433,6 +438,7 @@ class databox_status
         }
 
         self::deleteIcon($sbas_id, $bit, $switch);
+
         $name = "-stat_" . $bit . "_" . ($switch == 'on' ? '1' : '0') . ".gif";
 
         if ( ! move_uploaded_file($file["tmp_name"], $path . $name)) {
@@ -445,19 +451,23 @@ class databox_status
 
         //resize status icon 16x16px
         $imageSpec = new ImageSpecification();
-        $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
+        $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_OUTBOUND);
         $imageSpec->setDimensions(16, 16);
 
-        $driverContainer = new MediaAlchemyst\DriversContainer(new ParameterBag());
+        $filePath = sprintf("%s%s", $path, $name);
+        $destPath = sprintf("%s%s", $custom_path, basename($path . $name));
 
-        $transmuter = new ImageTransmuter($driverContainer);
+        try {
+            $core['media-alchemyst']
+                ->open($filePath)
+                ->turninto($destPath, $imageSpec)
+                ->close();
+        } catch (\MediaAlchemyst\Exception $e) {
 
-        $media = MediaVorus\MediaVorus::guess(new \SplFileInfo($path . $name));
-
-        $transmuter->execute($imageSpec, $media, $custom_path . basename($path . $name));
+        }
 
         self::$_status[$sbas_id]->status[$bit]['img_' . $switch] = $url . $name;
-        self::$_status[$sbas_id]->status[$bit]['path_' . $switch] = $path . $name;
+        self::$_status[$sbas_id]->status[$bit]['path_' . $switch] = $filePath;
 
         return true;
     }
