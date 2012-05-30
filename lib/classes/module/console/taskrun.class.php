@@ -97,7 +97,9 @@ class module_console_taskrun extends Command
             }
         }
 
-        $logger = new Logger('Task logger');
+        $core = \bootstrap::getCore();
+
+        $logger = $core['monolog'];
 
         if ($input->getOption('verbose')) {
             $handler = new Handler\StreamHandler(fopen('php://stdout', 'a'));

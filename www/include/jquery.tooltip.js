@@ -228,8 +228,9 @@
       var width = 'auto';
       var height = 'auto';
       var ratio = 1;
-      var resizeImgTips = false;
+      var resizeImgTips = resizeVideoTips = false;
       var $imgTips = $('#' + settings($.tooltip.current).id + ' .imgTips');
+      var $videoTips = $('#' + settings($.tooltip.current).id + ' .videoTips');
 
       if ($imgTips[0] && $('#' + settings($.tooltip.current).id + ' .noToolTipResize').length === 0) {
         resizeImgTips = true;
@@ -237,6 +238,14 @@
         height = parseInt($imgTips[0].style.height);
         ratio = width/height;
         $imgTips.css({top:'0px',left:'0px'});
+      }
+      
+      if ($videoTips[0] && $('#' + settings($.tooltip.current).id + ' .noToolTipResize').length === 0) {
+        resizeVideoTips = true;
+        width = parseInt($videoTips.attr('width'));
+        height = parseInt($videoTips.attr('height'));
+        ratio = width/height;
+        $videoTips.css({top:'0px',left:'0px'});
       }
 
       var v = viewport(),
@@ -415,8 +424,8 @@
         height += 20;
 
         helper.parent.css({
-          width: width,
-          height: height,
+          width: Math.round(width),
+          height: Math.round(height),
           left: left,
           top: top
         });
@@ -424,10 +433,17 @@
         if(resizeImgTips)
         {
           $imgTips.css({
-            maxWidth: width,
-            maxHeight: height,
-            width: '100%',
-            height: '100%'
+            maxWidth: Math.round(width - 50),
+            maxHeight: Math.round(height-70)
+          });
+        }
+        
+        if(resizeVideoTips)
+        {
+            console.log($videoTips, width, height, Math.round(width - 50), Math.round(height-70));
+          $videoTips.css({
+            width: Math.round(width - 50),
+            height: Math.round(height-70)
           });
         }
 

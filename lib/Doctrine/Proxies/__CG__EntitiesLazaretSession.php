@@ -41,77 +41,67 @@ class LazaretSession extends \Entities\LazaretSession implements \Doctrine\ORM\P
         return $this->__isInitialized__;
     }
 
-
+    
     public function getId()
     {
         if ($this->__isInitialized__ === false) {
             return (int) $this->_identifier["id"];
         }
         $this->__load();
-
         return parent::getId();
     }
 
     public function setUsrId($usrId)
     {
         $this->__load();
-
         return parent::setUsrId($usrId);
     }
 
-    public function getUsrId()
+    public function getUser()
     {
         $this->__load();
-
-        return parent::getUsrId();
+        return parent::getUser();
     }
 
     public function setCreated($created)
     {
         $this->__load();
-
         return parent::setCreated($created);
     }
 
     public function getCreated()
     {
         $this->__load();
-
         return parent::getCreated();
     }
 
     public function setUpdated($updated)
     {
         $this->__load();
-
         return parent::setUpdated($updated);
     }
 
     public function getUpdated()
     {
         $this->__load();
-
         return parent::getUpdated();
     }
 
     public function addLazaretFiles(\Entities\LazaretFile $files)
     {
         $this->__load();
-
         return parent::addLazaretFiles($files);
     }
 
     public function getFiles()
     {
         $this->__load();
-
         return parent::getFiles();
     }
 
     public function addLazaretFile(\Entities\LazaretFile $files)
     {
         $this->__load();
-
         return parent::addLazaretFile($files);
     }
 
@@ -135,6 +125,6 @@ class LazaretSession extends \Entities\LazaretSession implements \Doctrine\ORM\P
             }
             unset($this->_entityPersister, $this->_identifier);
         }
-
+        
     }
 }

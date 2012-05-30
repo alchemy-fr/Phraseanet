@@ -23,7 +23,14 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Application;
 
-require_once dirname(__FILE__) . '/../lib/bootstrap.php';
+require_once dirname(__FILE__) . '/../lib/classes/bootstrap.class.php';
+
+bootstrap::register_autoloads();
+
+$configuration = Alchemy\Phrasea\Core\Configuration::build();
+if ($configuration->isInstalled()) {
+    require_once dirname(__FILE__) . '/../lib/bootstrap.php';
+}
 
 try {
     $app = new Application("

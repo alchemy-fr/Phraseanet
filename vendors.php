@@ -29,7 +29,7 @@ if ( ! is_executable($composer)) {
 }
 
 system($composer . ' self-update');
-system($composer . ' update');
+system($composer . ' install');
 
 system('git submodule init');
 system('git submodule update');

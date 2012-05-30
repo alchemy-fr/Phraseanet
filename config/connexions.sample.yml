@@ -15,5 +15,5 @@ main_connexion:
 #Define a connexion to a SQLite database named test_connexion
 test_connexion:
     driver: pdo_sqlite
-    path: /PATH/TO/SQLITE/DATABASE
+    path: :memory:
     charset: UTF8

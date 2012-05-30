@@ -180,7 +180,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
             return $this;
         } catch (Exception $e) {
-
+            
         }
 
         $connbas = $this->databox->get_connection();
@@ -504,7 +504,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         try {
             return $this->get_subdef('thumbnailGIF');
         } catch (Exception $e) {
-
+            
         }
 
         return null;
@@ -550,7 +550,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         try {
             return $this->get_data_from_cache(self::CACHE_STATUS);
         } catch (Exception $e) {
-
+            
         }
         $sql = 'SELECT BIN(status) as status FROM record
               WHERE record_id = :record_id';
@@ -694,7 +694,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         try {
             return $this->get_data_from_cache(self::CACHE_SUBDEFS);
         } catch (Exception $e) {
-
+            
         }
 
         $connbas = $this->get_databox()->get_connection();
@@ -1003,62 +1003,25 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
         $core['file-system']->chmod($subdefFile->getRealPath(), 0760);
 
-        try {
-            $appbox = \appbox::get_instance(\bootstrap::getCore());
-            $session = $appbox->get_session();
+        media_subdef::create($this, $name, $media);
 
-            $connbas = connection::getPDOConnection($this->get_sbas_id());
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $session = $appbox->get_session();
 
-            $sql = 'UPDATE subdef
-                SET file = :filename,
-                    width = :width,
-                    height = :height,
-                    mime = :mime,
-                    path = :path,
-                    size = :size,
-                    substit = 1
-                    updated_on = now()
-                WHERE name = :name AND record_id = :record_id';
+        $this->delete_data_from_cache(self::CACHE_SUBDEFS);
 
-            $params = array(
-                ':record_id' => $this->record_id,
-                ':name'      => $name,
-                ':filename'  => $subdefFile->getFilename(),
-                ':mime'      => $subdefFile->getMimeType(),
-                ':path'      => $subdefFile->getPath(),
-                ':filesize'  => $subdefFile->getSize(),
-            );
-
-            if (method_exists($media, 'getWidth')) {
-                $params[':width'] = $media->getWidth();
-            }
-            if (method_exists($media, 'getHeight')) {
-                $params[':height'] = $media->getHeight();
-            }
-
-            $stmt = $connbas->prepare($sql);
-
-            $stmt->execute($params);
-
-            $subdef = $this->get_subdef($name);
-            $subdef->delete_data_from_cache();
-
-            $this->delete_data_from_cache(self::CACHE_SUBDEFS);
-
-            if ($meta_writable) {
-                $this->write_metas();
-            }
-            if ($name == 'document') {
-                $this->rebuild_subdefs();
-            }
-
-            $type = $name == 'document' ? 'HD' : $name;
-
-            $session->get_logger($this->get_databox())
-                ->log($this, Session_Logger::EVENT_SUBSTITUTE, $type, '');
-        } catch (Exception $e) {
-
+        if ($meta_writable) {
+            $this->write_metas();
         }
+        
+        if ($name == 'document') {
+            $this->rebuild_subdefs();
+        }
+
+        $type = $name == 'document' ? 'HD' : $name;
+
+        $session->get_logger($this->get_databox())
+            ->log($this, Session_Logger::EVENT_SUBSTITUTE, $type, '');
 
         return $this;
     }
@@ -1267,7 +1230,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 $sphinx->update_status(array("metadatas" . $sbas_crc, "metadatas" . $sbas_crc . "_stemmed_en", "metadatas" . $sbas_crc . "_stemmed_fr", "documents" . $sbas_crc), $this->get_sbas_id(), $this->get_record_id(), strrev($status));
             }
         } catch (Exception $e) {
-
+            
         }
         $this->delete_data_from_cache(self::CACHE_STATUS);
 
@@ -1380,7 +1343,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         }
 
         $pathhd = databox::dispatch(trim($databox->get_sxml_structure()->path));
-        $newname = $record->get_record_id() . "_document." . $file->getFile()->getExtension();
+        $newname = $record->get_record_id() . "_document." . pathinfo($file->getOriginalName(), PATHINFO_EXTENSION);
 
         $core['file-system']->copy($file->getFile()->getRealPath(), $pathhd . $newname, true);
 
@@ -1657,14 +1620,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     {
         $subdefs = $databox->get_subdef_structure()->getSubdefGroup($this->get_type());
 
-        $Core = bootstrap::getCore();
-
-        if ( ! $logger) {
-            $logger = $Core['monolog'];
-        }
-
         if ( ! $subdefs) {
-            $Core['monolog']->addInfo(sprintf('Nothing to do for %s', $this->get_type()));
+            $logger->addInfo(sprintf('Nothing to do for %s', $this->get_type()));
 
             return;
         }
@@ -1680,15 +1637,15 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             $pathdest = null;
 
             if ($this->has_subdef($subdefname) && $this->get_subdef($subdefname)->is_physically_present()) {
-
                 $pathdest = $this->get_subdef($subdefname)->get_pathfile();
                 $this->get_subdef($subdefname)->remove_file();
-
+                $logger->addInfo(sprintf('Removed old file for %s', $subdefname));
                 $this->clearSubdefCache($subdefname);
             }
 
             $pathdest = $this->generateSubdefPathname($subdef, $pathdest);
 
+            $logger->addInfo(sprintf('Generating subdef to %s', $pathdest));
             $this->generate_subdef($subdef, $pathdest, $logger);
 
             if (file_exists($pathdest)) {
@@ -1732,6 +1689,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
         try {
             if (null === $this->get_hd_file()) {
+                $logger->addInfo('No HD file found, aborting');
                 return;
             }
 
@@ -1910,7 +1868,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             try {
                 $subdef->rotate($angle);
             } catch (\Exception $e) {
-
+                
             }
         }
 

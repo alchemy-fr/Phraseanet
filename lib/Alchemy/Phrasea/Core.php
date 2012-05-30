@@ -488,6 +488,7 @@ class Core extends \Pimple
         ini_set('session.auto_start', '0');
         ini_set('session.hash_function', '1');
         ini_set('session.hash_bits_per_character', '6');
+        ini_set('session.cache_limiter', '');
         ini_set('allow_url_fopen', 'on');
 
         return;
