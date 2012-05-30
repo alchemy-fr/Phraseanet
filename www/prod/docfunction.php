@@ -320,14 +320,14 @@ $user = $Core->getAuthenticatedUser();
     ?>
     <body class="bodyprofile" onload="loaded();">
         <div class="boxCloser" onclick="parent.hideDwnl();"><?php echo _('boutton::fermer') ?></div>
-        <div id="tabs">
+        <div id="tabs" style="height:384px;">
 
             <ul>
                 <li><a href="#statut"><?php echo _('prod::proprietes:: status') ?></a></li>
                 <li><a href="#type"><?php echo _('prod::proprietes:: type') ?></a></li>
             </ul>
 
-            <div id="statut" class="tabBox">
+            <div id="statut" class="tabBox" style="height: 333px;">
                 <form name="formstatus" id="formstatus" action="chgstatus.php" method="post">
 <?php
 //nbre total de doc modifiables
@@ -459,13 +459,13 @@ if ($sbasSet !== null) {
                     <input type="hidden" name="chg_status_son" value="">
                     <input type="hidden" name="act" value="WORK" />
                     <input type="hidden" name="lst" value="<?php echo $parm["lst"] ?>" />
-                    <div style="margin-top:10px; text-align:center;">
+                    <div style="margin-top:10px; margin-bottom:10px; text-align:center;">
                         <input type="button" class="edit-btn" value="<?php echo _('boutton::valider') ?>" onclick="doChgStat(true);" />
                         <input type="button" class="edit-btn" value="<?php echo _('boutton::annuler') ?>" onclick="parent.hideDwnl();" />
                     </div>
                 </form>
             </div>
-            <div id="type" class="tabBox">
+            <div id="type" class="tabBox" style="height: 333px;">
                 <form name="formtypedoc" action="chgtype.php" method="post">
                     <div style="width:100%;">
 <?php
@@ -528,7 +528,7 @@ foreach ($types as $sbas_id => $typeBR) {
 ?>
                         <input type="hidden" name="ACT" value="SEND" />
                         <input type="hidden" name="typelst" id="typelst" value="" />
-                        <div class="editPropBox" style="margin-top: 5px; text-align: center;">
+                        <div class="editPropBox" style="margin-top:5px; margin-bottom:10px; text-align:center;">
                             <input type="button" class="edit-btn" value="<?php echo _('boutton::valider') ?>" onclick="validChgType();" />
                             <input type="button" class="edit-btn" value="<?php echo _('boutton::annuler') ?>" onclick="parent.hideDwnl();" />
                         </div>

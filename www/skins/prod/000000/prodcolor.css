@@ -23,6 +23,14 @@ input::-moz-selection, textarea::-moz-selection {
     color:white;
 }
 
+label {
+    color: #FFFFFF;
+}
+
+legend {
+    color: #FFFFFF;
+}
+
 .clickable {
     cursor:pointer;
 }
@@ -757,6 +765,7 @@ div.diapo {
 
 
 
+
 #idFrameC .tools {
     text-align:center;
 }
@@ -1024,6 +1033,27 @@ form.phrasea_query input.query {
     width: 370px;
     height: 22px;
 }
+
+
+#basket-rename-box .btn, #reorder_box .btn {
+    font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+#basket-rename-box .btn-inverse, #reorder_box .btn-inverse {
+    /*border: 1px solid #515151;*/
+    color: #AAAAAA;
+}
+
+#basket-rename-box .btn-inverse:hover, #reorder_box .btn-inverse:hover {
+    color: #FFFFFF;
+}
+
+
 
 /* QRY */
 
@@ -1867,9 +1897,8 @@ H4 {
     border-radius: 6px;
 }
 
-#printBox h4,
-#download h4,
-#sendmail h4 {
+#printBox h4, #download h4,
+#sendmail h4, #ftp h4 {
     margin-bottom: 10px;
     font-weight: bold;
     font-size: 14px;
@@ -1878,22 +1907,24 @@ H4 {
     text-decoration: none;
 }
 
-#printBox label,
-#download label,
-#sendmail label {
+#printBox label, #download label,
+#sendmail label, #ftp label {
     line-height: 18px;
     color: #FFFFFF;
 }
 
-#sendmail p,
+#sendmail p, #ftp p,
 .buttons_line p {
     margin: 20px 0 10px 0;
     font-weight: bold;
 }
 
-#printBox .btn,
-#download .btn,
-#sendmail .btn {
+#ftp .form-horizontal .control-group {
+    margin-bottom: 10px;
+}
+
+#printBox .btn, #download .btn,
+#sendmail .btn, #ftp .btn {
     font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 12px;
     font-weight: bold;
@@ -1902,9 +1933,8 @@ H4 {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-#printBox .btn-inverse,
-#download .btn-inverse,
-#sendmail .btn-inverse {
+#printBox .btn-inverse, #download .btn-inverse,
+#sendmail .btn-inverse, #ftp .btn-inverse {
     *background-color: #393939;
     background-image: -ms-linear-gradient(top, #444444, #393939);
     background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#444444), to(#393939));
@@ -1916,9 +1946,8 @@ H4 {
     color: #AAAAAA;
 }
 
-#printBox .btn-inverse:hover,
-#download .btn-inverse:hover,
-#sendmail .btn-inverse:hover {
+#printBox .btn-inverse:hover, #download .btn-inverse:hover,
+#sendmail .btn-inverse:hover, #ftp .btn-inverse:hover {
     background-color: #393939;
     *background-color: #393939;
     color: #FFFFFF;
@@ -2649,22 +2678,6 @@ DIV.thesaurus U.w {
     color: #FFFFFF;
 }
 
-/*
-#EDIT_TOP .diapo {
-    BORDER:  #404040 1px solid;
-    BACKGROUND-COLOR: transparent;
-    OVERFLOW: hidden;
-    MARGIN:1px;
-    position: relative;
-    top: 0px;
-    left: 0px;
-    float: left;
-    text-align: center;
-}
-#EDIT_TOP .diapo.selected,#EDIT_TOP .diapo.ui-selected {
-    BORDER:  #666666 1px solid;
-    BACKGROUND-COLOR: #666666;
-}*/
 
 #ZTextMultiValued_values {
     background-color:#444444;
@@ -3146,8 +3159,6 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
 
 
-
-
 #dialog_dwnl h1 {
     text-align:center;
 }
@@ -3178,8 +3189,6 @@ dans l'onglet thesaurus : arbres, menus contextuels
     float:left;
     position:relative;
 }
-
-
 
 
 
@@ -3220,6 +3229,60 @@ dans l'onglet thesaurus : arbres, menus contextuels
     margin:2px 0;
 }
 
+
+
+/** PUSH (CSS theme-dependant) */
+
+.PushBox .grey-bg .btn {
+    font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    padding: 4px 10px;
+}
+
+.PushBox .grey-bg .btn-inverse {
+    background-color: #444444;
+    *background-color: #393939;
+    background-image: -ms-linear-gradient(top, #444444, #393939);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#444444), to(#393939));
+    background-image: -webkit-linear-gradient(top, #444444, #393939);
+    background-image: -o-linear-gradient(top, #444444, #393939);
+    background-image: -moz-linear-gradient(top, #444444, #393939);
+    background-image: linear-gradient(top, #444444, #393939);
+    /*border: 1px solid #515151;*/
+    color: #aaaaaa;
+}
+
+.PushBox .grey-bg .btn-inverse:hover {
+    background-color: #393939;
+    *background-color: #393939;
+    color: #ffffff;
+}
+
+.PushBox .theme-bg .btn,
+#modal_feed form .btn {
+    font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.PushBox .theme-bg .btn-inverse,
+#modal_feed form .btn-inverse {
+    /*border: 1px solid #515151;*/
+    color: #AAAAAA;
+}
+
+.PushBox .theme-bg .btn-inverse:hover,
+#modal_feed form .btn-inverse:hover {
+    color: #FFFFFF;
+}
+
 #modal_feed form .fields {
     overflow:auto;
 }
@@ -3233,50 +3296,52 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 #modal_feed form .feeds .feed {
-    width:95%;
-    height:18px;
-    padding:5px 0;
-    font-size:13px;
-    border:1px solid #414141;
-    cursor:pointer;
+    width: 95%;
+    height: 18px;
+    padding: 5px 0;
+    border: 1px solid #414141;
+    color: #FFFFFF;
+    font-size: 13px;
+    cursor: pointer;
 }
 
 #modal_feed form .feeds .feed.odd {
-    background-color:#414141;
+    background-color: #414141;
+    color: #FFFFFF;
 }
 
 #modal_feed form .feeds .feed.hover {
-    background-color:#606060;
-    border:1px solid #606060;
+    background-color: #606060;
+    font-weight: bold;
 }
 
 #modal_feed form .feeds .feed.selected {
-    background-color:#959595;
-    color:black;
-    border:1px solid #d00;
+    background-color: #959595;
     font-weight: bold;
 }
 
 #modal_feed form .feeds .feed span {
-    margin:0 10px;
+    margin: 0 10px;
 }
 
 #modal_feed form input.error,
 #modal_feed form textarea.error {
-    border:1px solid red;
+    border: 1px solid red;
 }
 
 #modal_feed form input,
 #modal_feed form textarea {
-    width:90%;
-    height:20px;
-    margin:3px 0 10px 0;
+    width: 90%;
+    height: 20px;
+    margin: 3px 0 10px 0;
 }
 
 #modal_feed form textarea {
     height:60px;
     resize:none;
 }
+
+/** **/
 
 #answers .feed .headblock h1 img {
     margin-right:15px;
@@ -4033,8 +4098,9 @@ dans l'onglet thesaurus : arbres, menus contextuels
     height: 10px;
 }
 
-#lazaretBox .loading{
+#lazaretBox .loading {
     background-image: url('../../icons/loader404040.gif');
     background-position: center center;
     background-repeat: no-repeat;
 }
+

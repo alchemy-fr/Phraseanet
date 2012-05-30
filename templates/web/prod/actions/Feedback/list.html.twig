@@ -1,184 +1,174 @@
 {% import 'prod/actions/Feedback/ListsMacros.html.twig' as ListsMacros %}
 
 <div class="PNB10">
-  <div class="PNB" style="height:40px;bottom:auto;">
-    <table>
-      <tr>
-        <td style="white-space:nowrap;">
-          {% if list.getOwner(user).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
-          <form method="POST" name="SaveName" action="/prod/lists/list/{{ list.getId() }}/update/">
-            <label>{% trans 'List Name' %}</label>
-            <input name="name" value="{{ list.getName() }}"/>
-            <button>
-              {% trans 'Save' %}
-            </button>
-          </form>
-          {% else %}
-            <h1>{{ list.getName() }}</h1>
-          {% endif %}
-        </td>
-        <td style="text-align:right;white-space:nowrap;">
-          {% if list.getOwner(user).getRole() == constant('\\Entities\\UsrListOwner::ROLE_ADMIN') %}
-          <a href="/prod/lists/list/{{ list.getId() }}/share/" title="{% trans 'Share the list' %}" class="list_sharer">
-            <img src="/skins/prod/Push/list-icon.png" />
-            {% trans "Set sharing permission" %}
-          </a>
-          {% endif %}
-        </td>
-        {% if list.getOwner(user).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_ADMIN') %}
-        <td style="text-align:right;white-space:nowrap;">
-          <button class="deleter">
-            {% trans 'Delete' %}
-            <input type="hidden" name="list_id" value="{{ list.getId() }}"/>
-          </button>
-        </td>
-        {% endif %}
-      </tr>
-    </table>
-  </div>
-  <div class="PNB content readonly" style="top:40px;">
-    <div class="PNB10">
-      <div class="PNB" style="height:25px;bottom:auto;">
-        <p>
-          {% set length = '<span class="counter current">' ~ list.getEntries().count() ~ '</span>' %}
-          {% trans %}
-            {{ length }} peoples
-          {% endtrans %}
-          {% if list.getOwner(user).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
-            <button class="EditToggle">{% trans 'Edit' %}</button>
-          {% endif %}
-        </p>
-      </div>
-      <div class="PNB" style="top:35px;overflow:auto;">
-        {% set role = list.getOwner(user).getRole() %}
-        {% for entry in list.getEntries() %}
-          {{ ListsMacros.badgeReadonly(entry, role) }}
-        {% endfor %}
-      </div>
-    </div>
-  </div>
-  {% if list.getOwner(user).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
-  <div class="PNB content readwrite" style="display:none;top:40px;">
-    <form name="list-editor-search" method="POST" action="/prod/push/edit-list/{{ list.getId() }}/">
-      <div class="PNB10" style="height:160px;">
-        <div class="PNB" style="height:40px;bottom:auto;">
-          <button class="Refresher" type="button">&lt;{% trans 'View' %}</button>
-          <select name="like_field">
-            <option value="usr_login">
-              {% trans 'Push::filter on login' %}
-            </option>
-            <option value="name">
-              {% trans 'Push::filter on name' %}
-            </option>
-            <option value="pays">
-              {% trans 'Push::filter on countries' %}
-            </option>
-            <option value="societe">
-              {% trans 'Push::filter on companies' %}
-            </option>
-            <option value="usr_mail">
-              {% trans 'Push::filter on emails' %}
-            </option>
-            <option value="lastModel">
-              {% trans 'Push::filter on templates' %}
-            </option>
-          </select>
-
-          {% trans 'Push::filter starts' %}
-          <input type="text" value="" class="search" name="query">
-          <button type="submit">
-            {% trans 'boutton::chercher' %}
-          </button>
-        </div>
-        <div class="PNB" style="top:40px;height:120px;bottom:auto;">
-          <table style="table-layout:fixed;width:100%;">
+    <div class="PNB theme-bg" style="height:40px; bottom:auto;">
+        <table style="height: 40px;">
             <tr>
-              <td>
-                <label>{% trans 'Activite' %}</label>
-              </td>
-              <td>
-                <label>{% trans 'Template' %}</label>
-              </td>
-              <td >
-                <label>{% trans 'Company' %}</label>
-              </td>
-              <td >
-                <label>{% trans 'Country' %}</label>
-              </td>
-              <td >
-                <label>{% trans 'Position' %}</label>
-              </td>
+                <td style="white-space:nowrap;">
+                    {% if list.getOwner(user).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
+                        <form class="form-inline" method="POST" name="SaveName" action="/prod/lists/list/{{ list.getId() }}/update/">
+                            <label>{% trans 'List Name' %}</label>
+                            <input type="text" name="name" style="margin: 0 5px;" value="{{ list.getName() }}"/>
+                            <button class="btn btn-inverse">{% trans 'Save' %}</button>
+                        </form>
+                    {% else %}
+                        <h1>{{ list.getName() }}</h1>
+                    {% endif %}
+                </td>
+                <td style="text-align:right;white-space:nowrap;">
+                    {% if list.getOwner(user).getRole() == constant('\\Entities\\UsrListOwner::ROLE_ADMIN') %}
+                        <a href="/prod/lists/list/{{ list.getId() }}/share/" title="{% trans 'Share the list' %}" class="list_sharer">
+                            <img src="/skins/prod/Push/list-icon.png" />
+                            {% trans "Set sharing permission" %}
+                        </a>
+                    {% endif %}
+                </td>
+                {% if list.getOwner(user).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_ADMIN') %}
+                    <td style="text-align:right;white-space:nowrap;">
+                        <button class="deleter btn btn-inverse">
+                            {% trans 'Delete' %}
+                            <input type="hidden" name="list_id" value="{{ list.getId() }}"/>
+                        </button>
+                    </td>
+                {% endif %}
             </tr>
-            <tr>
-              <td>
-                <select size="5" multiple="multiple" name="Activity[]" style="width:80%;">
-                  <option value="">{% trans 'All' %}</option>
-                  {% for Activity in query.getRelatedActivities() %}
-                    <option value="{{ Activity }}">{{ Activity }}</option>
-                  {% endfor %}
-                </select>
-              </td>
-              <td>
-                <select size="5" multiple="multiple" name="Template[]" style="width:80%;">
-                  <option value="">{% trans 'All' %}</option>
-                  {% for Template in query.getRelatedTemplates() %}
-                    <option value="{{ Template }}">{{ Template }}</option>
-                  {% endfor %}
-                </select>
-              </td>
-              <td>
-                <select size="5" multiple="multiple" name="Company[]" style="width:80%;">
-                  <option value="">{% trans 'All' %}</option>
-                  {% for Company in query.getRelatedCompanies() %}
-                    <option value="{{ Company }}">{{ Company }}</option>
-                  {% endfor %}
-                </select>
-              </td>
-              <td>
-
-                <select size="5" multiple="multiple" name="Country[]" style="width:80%;">
-                  <option value="">{% trans 'All' %}</option>
-                  {% for Code, Country in query.getRelatedCountries() %}
-                    <option value="{{ Code }}">{{ Country }}</option>
-                  {% endfor %}
-                </select>
-              </td>
-              <td >
-
-                <select size="5" multiple="multiple" name="Position[]" style="width:80%;">
-                  <option value="">{% trans 'All' %}</option>
-                  {% for Position in query.getRelatedPositions() %}
-                    <option value="{{ Position }}">{{ Position }}</option>
-                  {% endfor %}
-                </select>
-              </td>
-            </tr>
-          </table>
-        </div>
-      </div>
-
-      <input type="hidden" name="page" value="" />
-      <input type="hidden" name="srt" value="{{ sort }}" />
-      <input type="hidden" name="ord" value="{{ ord }}" />
-      <input type="hidden" name="type" value="fragment" />
-    </form>
-    <div class="PNB content" style="top:180px;">
-      <div class="PNB10">
-        {{ ListsMacros.ResultTable(query, results, list, sort, ord) }}
-      </div>
+        </table>
     </div>
-  </div>
-  {% endif %}
+    <div class="PNB content readonly grey-bg" style="top:40px;">
+        <div class="PNB10">
+            <div class="PNB" style="height:25px; bottom:auto;">
+                <p>
+                    {% set length = '<span class="counter current">' ~ list.getEntries().count() ~ '</span>' %}
+                    {% trans %}{{ length }} peoples{% endtrans %}
+                    {% if list.getOwner(user).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
+                        <button class="EditToggle btn btn-inverse">{% trans 'Edit' %}</button>
+                    {% endif %}
+                </p>
+            </div>
+            <div class="PNB" style="top:35px;overflow:auto;">
+                {% set role = list.getOwner(user).getRole() %}
+                {% for entry in list.getEntries() %}
+                    {{ ListsMacros.badgeReadonly(entry, role) }}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% if list.getOwner(user).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
+        <div class="PNB content readwrite grey-bg" style="display:none;top:40px;">
+            <form name="list-editor-search" method="POST" action="/prod/push/edit-list/{{ list.getId() }}/">
+                <div class="PNB10" style="height:160px;">
+                    <div class="PNB" style="height:40px;bottom:auto;">
+                        <button class="Refresher btn btn-inverse" type="button">&lt;{% trans 'View' %}</button>
+                        <select name="like_field">
+                            <option value="usr_login">
+                                {% trans 'Push::filter on login' %}
+                            </option>
+                            <option value="name">
+                                {% trans 'Push::filter on name' %}
+                            </option>
+                            <option value="pays">
+                                {% trans 'Push::filter on countries' %}
+                            </option>
+                            <option value="societe">
+                                {% trans 'Push::filter on companies' %}
+                            </option>
+                            <option value="usr_mail">
+                                {% trans 'Push::filter on emails' %}
+                            </option>
+                            <option value="lastModel">
+                                {% trans 'Push::filter on templates' %}
+                            </option>
+                        </select>
+                        {% trans 'Push::filter starts' %}
+                        <input type="text" value="" class="search" name="query">
+                        <button type="submit" class="btn btn-inverse">{% trans 'boutton::chercher' %}</button>
+                    </div>
+                    <div class="PNB" style="top:40px;height:120px;bottom:auto;">
+                        <table style="table-layout:fixed;width:100%;">
+                            <tr>
+                                <td>
+                                    <label>{% trans 'Activite' %}</label>
+                                </td>
+                                <td>
+                                    <label>{% trans 'Template' %}</label>
+                                </td>
+                                <td >
+                                    <label>{% trans 'Company' %}</label>
+                                </td>
+                                <td >
+                                    <label>{% trans 'Country' %}</label>
+                                </td>
+                                <td >
+                                    <label>{% trans 'Position' %}</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <select size="5" multiple="multiple" name="Activity[]" style="width:80%;">
+                                        <option value="">{% trans 'All' %}</option>
+                                        {% for Activity in query.getRelatedActivities() %}
+                                            <option value="{{ Activity }}">{{ Activity }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td>
+                                    <select size="5" multiple="multiple" name="Template[]" style="width:80%;">
+                                        <option value="">{% trans 'All' %}</option>
+                                        {% for Template in query.getRelatedTemplates() %}
+                                            <option value="{{ Template }}">{{ Template }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td>
+                                    <select size="5" multiple="multiple" name="Company[]" style="width:80%;">
+                                        <option value="">{% trans 'All' %}</option>
+                                        {% for Company in query.getRelatedCompanies() %}
+                                            <option value="{{ Company }}">{{ Company }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td>
+                                    <select size="5" multiple="multiple" name="Country[]" style="width:80%;">
+                                        <option value="">{% trans 'All' %}</option>
+                                        {% for Code, Country in query.getRelatedCountries() %}
+                                            <option value="{{ Code }}">{{ Country }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td>
+                                    <select size="5" multiple="multiple" name="Position[]" style="width:80%;">
+                                        <option value="">{% trans 'All' %}</option>
+                                        {% for Position in query.getRelatedPositions() %}
+                                            <option value="{{ Position }}">{{ Position }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <input type="hidden" name="page" value="" />
+                <input type="hidden" name="srt" value="{{ sort }}" />
+                <input type="hidden" name="ord" value="{{ ord }}" />
+                <input type="hidden" name="type" value="fragment" />
+            </form>
+            <div class="PNB content" style="top:180px;">
+                <div class="PNB10">
+                    {{ ListsMacros.ResultTable(query, results, list, sort, ord) }}
+                </div>
+            </div>
+        </div>
+    {% endif %}
 </div>
 <script type="text/javascript">
-  $(document).ready(function(){
-    p4.ListManager.workOn({{ list.getId() }});
-    $("#ListManager .readonly .badge .deleter").click(function(){
-      var badge = $(this).closest(".badge");
-      var usr_id = badge.find('input[name="id"]').val();
-      p4.ListManager.getList().removeUser(usr_id, function(list, data){
-        badge.remove();
-      });
+    $(document).ready(function(){
+        p4.ListManager.workOn({{ list.getId() }});
+        $("#ListManager .readonly .badge .deleter").click(function(){
+            var badge = $(this).closest(".badge");
+            var usr_id = badge.find('input[name="id"]').val();
+            p4.ListManager.getList().removeUser(usr_id, function(list, data){
+            badge.remove();
+            });
+        });
     });
-  });
 </script>
