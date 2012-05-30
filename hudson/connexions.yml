@@ -8,5 +8,5 @@ main_connexion:
     charset: UTF8
 test_connexion:
     driver: pdo_sqlite
-    path: /tmp/tests.sqlite
+    path: :memory:
     charset: UTF8

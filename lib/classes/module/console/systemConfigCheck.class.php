@@ -86,7 +86,7 @@ class module_console_systemConfigCheck extends Command
     {
         $hasError = false;
         foreach ($constraints as $constraint) {
-            if ( ! $hasError && ! $this->processConstraint($constraint, $output)) {
+            if ( ! $this->processConstraint($constraint, $output)) {
                 $hasError = true;
             }
         }

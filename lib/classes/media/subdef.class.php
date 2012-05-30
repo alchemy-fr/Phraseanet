@@ -177,7 +177,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
             return $this;
         } catch (Exception $e) {
-
+            
         }
 
         $connbas = $this->record->get_databox()->get_connection();
@@ -606,59 +606,31 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
         $datas = array();
 
-        if (method_exists($media, 'getWidth')) {
-            $datas[self::TC_DATA_WIDTH] = $media->getWidth();
-        }
-        if (method_exists($media, 'getHeight')) {
-            $datas[self::TC_DATA_HEIGHT] = $media->getHeight();
-        }
-        if (method_exists($media, 'getFocalLength')) {
-            $datas[self::TC_DATA_FOCALLENGTH] = $media->getFocalLength();
-        }
-        if (method_exists($media, 'getChannels')) {
-            $datas[self::TC_DATA_CHANNELS] = $media->getChannels();
-        }
-        if (method_exists($media, 'getColorDepth')) {
-            $datas[self::TC_DATA_COLORDEPTH] = $media->getColorDepth();
-        }
-        if (method_exists($media, 'getCameraModel')) {
-            $datas[self::TC_DATA_CAMERAMODEL] = $media->getCameraModel();
-        }
-        if (method_exists($media, 'getFlashFired')) {
-            $datas[self::TC_DATA_FLASHFIRED] = $media->getFlashFired();
-        }
-        if (method_exists($media, 'getAperture')) {
-            $datas[self::TC_DATA_APERTURE] = $media->getAperture();
-        }
-        if (method_exists($media, 'getShutterSpeed')) {
-            $datas[self::TC_DATA_SHUTTERSPEED] = $media->getShutterSpeed();
-        }
-        if (method_exists($media, 'getHyperfocalDistance')) {
-            $datas[self::TC_DATA_HYPERFOCALDISTANCE] = $media->getHyperfocalDistance();
-        }
-        if (method_exists($media, 'getISO')) {
-            $datas[self::TC_DATA_ISO] = $media->getISO();
-        }
-        if (method_exists($media, 'getLightValue')) {
-            $datas[self::TC_DATA_LIGHTVALUE] = $media->getLightValue();
-        }
-        if (method_exists($media, 'getColorSpace')) {
-            $datas[self::TC_DATA_COLORSPACE] = $media->getColorSpace();
-        }
-        if (method_exists($media, 'getDuration')) {
-            $datas[self::TC_DATA_DURATION] = $media->getDuration();
-        }
-        if (method_exists($media, 'getFrameRate')) {
-            $datas[self::TC_DATA_FRAMERATE] = $media->getFrameRate();
-        }
-        if (method_exists($media, 'getAudioSampleRate')) {
-            $datas[self::TC_DATA_AUDIOSAMPLERATE] = $media->getAudioSampleRate();
-        }
-        if (method_exists($media, 'getVideoCodec')) {
-            $datas[self::TC_DATA_VIDEOCODEC] = $media->getVideoCodec();
-        }
-        if (method_exists($media, 'getAudioCodec')) {
-            $datas[self::TC_DATA_AUDIOCODEC] = $media->getAudioCodec();
+        $methods = array(
+            self::TC_DATA_WIDTH              => 'getWidth',
+            self::TC_DATA_HEIGHT             => 'getHeight',
+            self::TC_DATA_FOCALLENGTH        => 'getFocalLength',
+            self::TC_DATA_CHANNELS           => 'getChannels',
+            self::TC_DATA_COLORDEPTH         => 'getColorDepth',
+            self::TC_DATA_CAMERAMODEL        => 'getCameraModel',
+            self::TC_DATA_FLASHFIRED         => 'getFlashFired',
+            self::TC_DATA_APERTURE           => 'getAperture',
+            self::TC_DATA_SHUTTERSPEED       => 'getShutterSpeed',
+            self::TC_DATA_HYPERFOCALDISTANCE => 'getHyperfocalDistance',
+            self::TC_DATA_ISO                => 'getISO',
+            self::TC_DATA_LIGHTVALUE         => 'getLightValue',
+            self::TC_DATA_COLORSPACE         => 'getColorSpace',
+            self::TC_DATA_DURATION           => 'getDuration',
+            self::TC_DATA_FRAMERATE          => 'getFrameRate',
+            self::TC_DATA_AUDIOSAMPLERATE    => 'getAudioSampleRate',
+            self::TC_DATA_VIDEOCODEC         => 'getVideoCodec',
+            self::TC_DATA_AUDIOCODEC         => 'getAudioCodec',
+        );
+
+        foreach ($methods as $tc_name => $method) {
+            if (method_exists($media, $method)) {
+                $datas[$tc_name] = call_user_method($method, $media);
+            }
         }
 
         $datas[self::TC_DATA_LONGITUDE] = $media->getLongitude();
@@ -689,8 +661,10 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             ':dispatched' => 1,
         );
 
-        if (in_array($media->getType(), array(Media::TYPE_IMAGE, Media::TYPE_VIDEO))) {
+        if (method_exists($media, 'getWidth') && null !== $media->getWidth()) {
             $params[':width'] = $media->getWidth();
+        }
+        if (method_exists($media, 'getHeight') && null !== $media->getHeight()) {
             $params[':height'] = $media->getHeight();
         }
 

@@ -33,7 +33,7 @@ if ( ! file_exists($composer)) {
 }
 
 system($phpDir . 'php ' . $composer . ' self-update');
-system($phpDir . 'php ' . $composer . ' update');
+system($phpDir . 'php ' . $composer . ' install');
 
 system($gitDir . 'git submodule init');
 system($gitDir . 'git submodule update');

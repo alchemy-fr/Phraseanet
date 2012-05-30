@@ -53,7 +53,23 @@ class patch_370a6 implements patchInterface
 
     public function apply(base &$databox)
     {
-
+        $structure = $databox->get_structure();
+        
+        $DOM = new DOMDocument();
+        $DOM->loadXML($structure);
+        
+        $xpath = new DOMXpath($DOM);
+        
+        foreach($xpath->query('/record/subdefs/subdefgroup[@name="video"]/subdef[@name="preview"]/acodec') as $node){
+                $node->nodeValue = 'libfaac';
+        }
+        
+        foreach($xpath->query('/record/subdefs/subdefgroup[@name="video"]/subdef[@name="preview"]/vcodec') as $node){
+                $node->nodeValue = 'libx264';
+        }
+        
+        $databox->saveStructure($DOM);
+        
         $subdefgroups = $databox->get_subdef_structure();
 
         foreach ($subdefgroups as $groupname => $subdefs) {

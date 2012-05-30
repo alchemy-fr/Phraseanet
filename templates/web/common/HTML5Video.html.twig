@@ -1,0 +1,37 @@
+{% macro format(arraySubdefs, displayWidth, displayHeight, extraclass, session, wrap)%}
+
+    {% set displayWidth = displayWidth %}
+    {% set displayHeight = displayHeight|default(displayWidth) %}
+
+    {% if wrap %}
+        <div style="width:{{ displayWidth | round }}px;height:{{ displayHeight | round }}px;" class="thumb_wrapper {{ extraclass | default('') }}">
+    {% endif %}
+                
+    <div class="record record_video imgTips" style="position:relative;width:{{ displayWidth | round }}px;height:{{ displayHeight | round }}px;">
+        <video id="video_preview_tooltip" class="videoTips video-js vjs-default-skin" controls
+        preload="auto" xposter="my_video_poster.png" width="{{ displayWidth|round }}" height="{{ displayHeight | round }}"
+        data-setup="{}">
+        {% for name, subdef in arraySubdefs %}
+            {% if session.is_authenticated() == true %}
+                {% set url = subdef.get_url() %}
+            {% else %}
+                {% set url = subdef.get_permalink().get_url() %}
+            {% endif %}
+            <source src="{{ url }}" type='{{ subdef.get_mime() }}'>
+        {% endfor %}
+        </video>
+    </div>
+
+    <script type="text/javascript">
+        _V_("video_preview_tooltip", {}, function(){
+        
+        });
+    </script>
+
+    {% if wrap %}
+        </div>
+    {% endif %}
+
+{% endmacro %}
+
+

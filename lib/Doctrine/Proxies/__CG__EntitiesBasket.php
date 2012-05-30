@@ -41,203 +41,175 @@ class Basket extends \Entities\Basket implements \Doctrine\ORM\Proxy\Proxy
         return $this->__isInitialized__;
     }
 
-
+    
     public function getId()
     {
         if ($this->__isInitialized__ === false) {
             return (int) $this->_identifier["id"];
         }
         $this->__load();
-
         return parent::getId();
     }
 
     public function setName($name)
     {
         $this->__load();
-
         return parent::setName($name);
     }
 
     public function getName()
     {
         $this->__load();
-
         return parent::getName();
     }
 
     public function setDescription($description)
     {
         $this->__load();
-
         return parent::setDescription($description);
     }
 
     public function getDescription()
     {
         $this->__load();
-
         return parent::getDescription();
     }
 
     public function setUsrId($usrId)
     {
         $this->__load();
-
         return parent::setUsrId($usrId);
     }
 
     public function getUsrId()
     {
         $this->__load();
-
         return parent::getUsrId();
     }
 
     public function setPusherId($pusherId)
     {
         $this->__load();
-
         return parent::setPusherId($pusherId);
     }
 
     public function getPusherId()
     {
         $this->__load();
-
         return parent::getPusherId();
     }
 
     public function setArchived($archived)
     {
         $this->__load();
-
         return parent::setArchived($archived);
     }
 
     public function getArchived()
     {
         $this->__load();
-
         return parent::getArchived();
     }
 
     public function setCreated($created)
     {
         $this->__load();
-
         return parent::setCreated($created);
     }
 
     public function getCreated()
     {
         $this->__load();
-
         return parent::getCreated();
     }
 
     public function setUpdated($updated)
     {
         $this->__load();
-
         return parent::setUpdated($updated);
     }
 
     public function getUpdated()
     {
         $this->__load();
-
         return parent::getUpdated();
     }
 
     public function addBasketElement(\Entities\BasketElement $elements)
     {
         $this->__load();
-
         return parent::addBasketElement($elements);
     }
 
     public function getElements()
     {
         $this->__load();
-
         return parent::getElements();
     }
 
     public function getElementsByOrder($ordre)
     {
         $this->__load();
-
         return parent::getElementsByOrder($ordre);
     }
 
     public function setPusher(\User_Adapter $user)
     {
         $this->__load();
-
         return parent::setPusher($user);
     }
 
     public function getPusher()
     {
         $this->__load();
-
         return parent::getPusher();
     }
 
     public function setOwner(\User_Adapter $user)
     {
         $this->__load();
-
         return parent::setOwner($user);
     }
 
     public function getOwner()
     {
         $this->__load();
-
         return parent::getOwner();
     }
 
     public function setValidation(\Entities\ValidationSession $validation)
     {
         $this->__load();
-
         return parent::setValidation($validation);
     }
 
     public function getValidation()
     {
         $this->__load();
-
         return parent::getValidation();
     }
 
     public function setIsRead($isRead)
     {
         $this->__load();
-
         return parent::setIsRead($isRead);
     }
 
     public function getIsRead()
     {
         $this->__load();
-
         return parent::getIsRead();
     }
 
     public function hasRecord(\record_adapter $record)
     {
         $this->__load();
-
         return parent::hasRecord($record);
     }
 
     public function getSize()
     {
         $this->__load();
-
         return parent::getSize();
     }
 
@@ -261,6 +233,6 @@ class Basket extends \Entities\Basket implements \Doctrine\ORM\Proxy\Proxy
             }
             unset($this->_entityPersister, $this->_identifier);
         }
-
+        
     }
 }
