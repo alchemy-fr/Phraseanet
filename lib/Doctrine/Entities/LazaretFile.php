@@ -2,7 +2,6 @@
 
 namespace Entities;
 
-
 /**
  * Entities\LazaretFile
  */
@@ -353,14 +352,24 @@ class LazaretFile
      */
     public function getRecordsToSubstitute()
     {
+        $ret = array();
+
         $shaRecords = \record_adapter::get_record_by_sha(
-            $this->getCollection()->get_sbas_id(), $this->getSha256()
+                $this->getCollection()->get_sbas_id(), $this->getSha256()
         );
 
         $uuidRecords = \record_adapter::get_record_by_uuid(
-            $this->getCollection()->get_databox(), $this->getUuid()
+                $this->getCollection()->get_databox(), $this->getUuid()
         );
 
-        return array_merge($uuidRecords, $shaRecords);
+        $merged = array_merge($uuidRecords, $shaRecords);
+
+        foreach ($merged as $record) {
+            if (!in_array($record, $ret)) {
+                $ret[] = $record;
+            }
+        }
+
+        return $ret;
     }
 }
