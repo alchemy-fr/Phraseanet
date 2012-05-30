@@ -1442,8 +1442,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $records = array();
 
         foreach ($rs as $row) {
-            $k = count($records);
-            $records[$k] = new record_adapter($sbas_id, $row['record_id']);
+            $records[] = new record_adapter($sbas_id, $row['record_id']);
         }
 
         return $records;
@@ -1477,8 +1476,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $records = array();
 
         foreach ($rs as $row) {
-            $k = count($records);
-            $records[$k] = new record_adapter($databox->get_sbas_id(), $row['record_id']);
+            $records[] = new record_adapter($databox->get_sbas_id(), $row['record_id']);
         }
 
         return $records;
