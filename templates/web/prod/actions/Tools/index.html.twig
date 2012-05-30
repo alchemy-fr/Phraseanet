@@ -121,10 +121,13 @@
             </div>
 
             <div class="PNB frame_video">
+                
+                
+              {% set previewHtml5 = record.getSubdfefByDeviceAndMime(constant('\\databox_subdef::DEVICE_SCREEN'), ['video/ogg', 'video/mp4', 'video/webm']) %}
               <video id="thumb_video" controls="" preload="auto">
-                <source id="mp4" type="video/mp4" src="/web//db_install/ThemeFromShaftb-boyRemix_512kb.mp4" />
-                <source id="ogv" type="video/ogg" src="/web//db_install/ThemeFromShaftb-boyRemix.ogv" />
-                <p>No HTML5.</p>
+                {% for subdef in previewHtml5 %}
+                <source type="{{ subdef.get_mime() }}" src="{{ subdef.get_url() }}" />
+                {% endfor %}
               </video>
             </div>
 

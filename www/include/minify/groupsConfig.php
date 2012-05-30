@@ -22,6 +22,7 @@ $groups = array(
         , '//include/jquery.tooltip.js'
         , '//include/jquery.p4.preview.js'
         , '//include/jquery.image_enhancer.js'
+        , '//include/jslibs/video-js/video.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'),
     'admin' => array(
          '//include/jslibs/jquery.cookie.js'
@@ -76,6 +77,7 @@ $groups = array(
         , '//include/vendor/jquery-file-upload/js/vendor/jquery.ui.widget.js'
         , '//include/vendor/jquery-file-upload/js/jquery.iframe-transport.js'
         , '//include/vendor/jquery-file-upload/js/jquery.fileupload.js'
+        , '//include/jslibs/video-js/video.js'
         , '//login/geonames.js'
         , '//include/jslibs/jquery.form.2.49.js'
         , '//include/jslibs/jquery.vertical.buttonset.js'
@@ -135,6 +137,7 @@ $groups = array(
         , '//include/jslibs/jquery.contextmenu_scroll.js'
         , '//include/jquery.common.js'
         , '//skins/lightbox/jquery.lightbox.js'
+        , '//include/jslibs/video-js/video.js'
         , '//include/jslibs/flowplayer/flowplayer-3.2.6.min.js'
     ),
     'lightboxie6' => array(
@@ -147,6 +150,7 @@ $groups = array(
         , '//include/jslibs/jquery.contextmenu_scroll.js'
         , '//include/jquery.common.js'
         , '//skins/lightbox/jquery.lightbox.ie6.js'
+        , '//include/jslibs/video-js/video.js'
         , '//include/jslibs/flowplayer/flowplayer-3.2.6.min.js'
     )
 );

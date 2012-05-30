@@ -1,16 +1,34 @@
 
 {% import 'common/thumbnail.html' as thumbnail %}
+{% import 'common/HTML5Video.html.twig' as thumbnailHTML5 %}
 
 {% if not_wrapped is defined and not_wrapped %}
-  {% set wrap = false %}
+    {% set wrap = false %}
 {% else %}
-  {% set wrap = true %}
+    {% set wrap = true %}
 {% endif %}
+
+{% set previewHtml5 = null %}
 
 {% if user.ACL().has_access_to_subdef(record, 'preview') %}
-  {% set preview_obj = record.get_preview() %}
+
+    {% if record.get_type() == 'video' %}
+        {% set previewHtml5 = record.getSubdfefByDeviceAndMime(constant('\\databox_subdef::DEVICE_SCREEN'), ['video/ogg', 'video/mp4', 'video/webm']) %}
+        {% if previewHtml5|length < 3 %}
+            {% set previewHtml5 = null %}
+        {% endif %}
+    {% endif %}
+
+    {% set preview_obj = record.get_preview() %}
 {% else %}
-  {% set preview_obj = record.get_thumbnail() %}
+    {% set preview_obj = record.get_thumbnail() %}
 {% endif %}
 
-{{thumbnail.format(preview_obj, preview_obj.get_width(), preview_obj.get_height(), '', session, wrap)}}
+{% set width = preview_obj.get_width() %}
+{% set height = preview_obj.get_height() %}
+
+{% if previewHtml5 %}
+    {{ thumbnailHTML5.format(previewHtml5, preview_obj.get_width(), preview_obj.get_height(), '', session, wrap) }}
+{% else %}
+    {{ thumbnail.format(preview_obj, preview_obj.get_width(), preview_obj.get_height(), '', session, wrap) }}
+{% endif %}

@@ -39,6 +39,7 @@ class setup
         , "phrasea2"
         , "SimpleXML"
         , "sockets"
+        , "sqlite3"
         , "xml"
         , "zip"
         , "zlib"
@@ -49,22 +50,23 @@ class setup
     );
     protected static $PHP_CONF = array(
         'output_buffering'                => '4096'  //INI_ALL
-        , 'memory_limit'                    => '1024M'  //INI_ALL
+        , 'memory_limit'                    => '2048M'  //INI_ALL
         , 'error_reporting'                 => '6143'  //INI_ALL
         , 'default_charset'                 => 'UTF-8'  //INI_ALL
-        , 'session.use_cookies'             => '1'   //INI_ALL
-        , 'session.use_only_cookies'        => '1'   //INI_ALL
-        , 'session.auto_start'              => '0'   //INI_ALL
-        , 'session.hash_function'           => '1'   //INI_ALL
+        , 'session.use_cookies'             => 'on'   //INI_ALL
+        , 'session.use_only_cookies'        => 'on'   //INI_ALL
+        , 'session.auto_start'              => 'off'   //INI_ALL
+        , 'session.hash_function'           => 'on'   //INI_ALL
         , 'session.hash_bits_per_character' => '6'  //INI_ALL
         , 'allow_url_fopen'                 => 'on'  //INI_ALL
         , 'display_errors'                  => 'off'  //INI_ALL
         , 'display_startup_errors'          => 'off'  //INI_ALL
         , 'log_errors'                      => 'off'  //INI_ALL
+        , 'session.cache_limiter'           => ''  //INI_ALL
     );
     protected static $PHP_REQ = array(
         'safe_mode'            => 'off'
-        , 'file_uploads'         => '1'
+        , 'file_uploads'         => 'on'
         , 'magic_quotes_runtime' => 'off'  //INI_ALL
         , 'magic_quotes_gpc'     => 'off'  //INI_PER_DIR -- just for check
     );
@@ -191,17 +193,21 @@ class setup
 
     public static function check_binaries(registryInterface $registry)
     {
+        $finder = new \Symfony\Component\Process\ExecutableFinder();
+
         $binaries = array(
-            'PHP CLI'                 => $registry->get('GV_cli'),
-            'ImageMagick (convert)'   => $registry->get('GV_imagick'),
-            'PDF 2 SWF'               => $registry->get('GV_pdf2swf'),
-            'Unoconv'                 => $registry->get('GV_unoconv'),
-            'SWFextract'              => $registry->get('GV_swf_extract'),
-            'SWFrender'               => $registry->get('GV_swf_render'),
-            'MP4Box'                  => $registry->get('GV_mp4box'),
-            'xpdf (pdf2text)'         => $registry->get('GV_pdftotext'),
-            'ImageMagick (composite)' => $registry->get('GV_pathcomposite'),
-            'FFmpeg'                  => $registry->get('GV_ffmpeg'),
+            'PHP CLI'                 => $registry->get('GV_cli', $finder->find('php')),
+            'ImageMagick (convert)'   => $registry->get('GV_imagick', $finder->find('convert')),
+            'PDF 2 SWF'               => $registry->get('GV_pdf2swf', $finder->find('pdf2swf')),
+            'Unoconv'                 => $registry->get('GV_unoconv', $finder->find('unoconv')),
+            'SWFextract'              => $registry->get('GV_swf_extract', $finder->find('swfextract')),
+            'SWFrender'               => $registry->get('GV_swf_render', $finder->find('swfrender')),
+            'MP4Box'                  => $registry->get('GV_mp4box', $finder->find('MP4Box')),
+            'xpdf (pdf2text)'         => $registry->get('GV_pdftotext', $finder->find('pdftotext')),
+            'ImageMagick (composite)' => $registry->get('GV_pathcomposite', $finder->find('composite')),
+            'FFmpeg'                  => $registry->get('GV_ffmpeg', $finder->find('ffmpeg')),
+            'FFprobe'                 => $registry->get('GV_ffprobe', $finder->find('ffprobe')),
+            'phraseanet_indexer'      => $finder->find('phraseanet_indexer'),
         );
 
         $constraints = array();
@@ -601,21 +607,21 @@ class setup
 
         public static function check_php_configuration()
         {
-            $nonblockers = array('log_errors', 'display_startup_errors', 'display_errors');
+            $nonblockers = array('log_errors', 'display_startup_errors', 'display_errors', 'output_buffering');
 
             $constraints = array();
             foreach (self::$PHP_REQ as $conf => $value) {
-                if (($tmp = self::test_php_conf($conf, $value)) === false) {
+                if (($tmp = self::test_php_conf($conf, $value)) !== $value) {
                     $constraints[] = new Setup_Constraint($conf, false, sprintf(_('setup::Configuration mauvaise : pour la variable %1$s, configuration donnee : %2$s ; attendue : %3$s'), $conf, $tmp, $value), true);
                 } else {
-                    $constraints[] = new Setup_Constraint($conf, true, sprintf('%s = %s => OK', $conf, $value), true);
+                    $constraints[] = new Setup_Constraint($conf, true, sprintf('%s = `%s` => OK', $conf, $value), true);
                 }
             }
             foreach (self::$PHP_CONF as $conf => $value) {
-                if (($tmp = self::test_php_conf($conf, $value)) === false) {
-                    $constraints[] = new Setup_Constraint($conf, false, sprintf('Bad configuration for %1$s var ; %2$s given - %3$s supposed', $conf, $tmp, $value), ! in_array($conf, $nonblockers));
+                if (($tmp = self::test_php_conf($conf, $value)) !== $value) {
+                    $constraints[] = new Setup_Constraint($conf, false, sprintf('Bad configuration for %1$s, found `%2$s`, required `%3$s`', $conf, $tmp, $value), ! in_array($conf, $nonblockers));
                 } else {
-                    $constraints[] = new Setup_Constraint($conf, true, sprintf('%s = %s => OK', $conf, $value), ! in_array($conf, $nonblockers));
+                    $constraints[] = new Setup_Constraint($conf, true, sprintf('%s = `%s` => OK', $conf, $value), ! in_array($conf, $nonblockers));
                 }
             }
 
@@ -674,7 +680,7 @@ class setup
         private static function test_php_conf($conf, $value)
         {
             $is_flag = false;
-            $flags = array('on', 'off', '1', '0', '');
+            $flags = array('on', 'off', '1', '0');
             if (in_array(strtolower($value), $flags))
                 $is_flag = true;
             $current = ini_get($conf);
@@ -683,17 +689,16 @@ class setup
 
             if (($current === '' || $current === 'off' || $current === '0') && $is_flag) {
                 if ($value === 'off' || $value === '0' || $value === '') {
-                    return $current;
+                    return 'off';
                 }
             }
             if (($current === '1' || $current === 'on') && $is_flag) {
                 if ($value === 'on' || $value === '1') {
-                    return $current;
+                    return 'on';
                 }
             }
-            if ($current === $value) {
-                return $current;
-            }
+
+            return $current;
         }
 
         public static function rollback(connection_pdo $conn, connection_pdo $connbas = null)
@@ -714,7 +719,7 @@ class setup
                     $stmt->execute();
                     $stmt->closeCursor();
                 } catch (Exception $e) {
-
+                    
                 }
             }
             if ($connbas) {
@@ -725,7 +730,7 @@ class setup
                         $stmt->execute();
                         $stmt->closeCursor();
                     } catch (Exception $e) {
-
+                        
                     }
                 }
             }
