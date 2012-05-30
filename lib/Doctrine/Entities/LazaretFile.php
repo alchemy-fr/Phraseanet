@@ -355,11 +355,11 @@ class LazaretFile
         $ret = array();
 
         $shaRecords = \record_adapter::get_record_by_sha(
-                $this->getCollection()->get_sbas_id(), $this->getSha256()
+            $this->getCollection()->get_sbas_id(), $this->getSha256()
         );
 
         $uuidRecords = \record_adapter::get_record_by_uuid(
-                $this->getCollection()->get_databox(), $this->getUuid()
+            $this->getCollection()->get_databox(), $this->getUuid()
         );
 
         $merged = array_merge($uuidRecords, $shaRecords);
