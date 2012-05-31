@@ -185,7 +185,7 @@
                     <img src="/prod/lazaret/{{ file.getId() }}/thumbnail/"/>
                     <div class="caption">
                         <p>{% trans "Filename" %} : <span class="info">{{ file.getOriginalName() }}</span></p>
-                        <p>{% trans "Date" %} : <span class="info">{{ file.getCreated()|date("Y-m-d") }}</span></p>
+                        <p>{% trans "Date" %} : <span class="info">{{ file.getCreated() | prettyDate }}</span></p>
                         {% if file.getSession().getUser() is not none %}
                             <p>
                                 {% set username = '<a href="#" class="username userTips" tooltipsrc="/prod/tooltip/user/' ~ file.getSession().getUser().get_id() ~ '/">' ~ file.getSession().getUser().get_display_name() ~ '</a>' %}
