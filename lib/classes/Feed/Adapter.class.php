@@ -140,7 +140,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
             . 'www/custom/feed_' . $this->get_id() . '.jpg';
 
         if (file_exists($file)) {
-            $url = '/custom/feed_' . $this->get_id() . '.jpg?'.  time();
+            $url = '/custom/feed_' . $this->get_id() . '.jpg';
         }
 
         $this->icon_url = $url;

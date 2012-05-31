@@ -3,8 +3,6 @@
 require_once __DIR__ . "/PhraseanetPHPUnitListener.class.inc";
 
 use Silex\WebTestCase;
-use Symfony\Component\HttpKernel\Client;
-use Symfony\Component\HttpFoundation\Response;
 use Doctrine\Common\DataFixtures\Loader;
 
 abstract class PhraseanetPHPUnitAbstract extends WebTestCase
@@ -131,7 +129,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         self::deleteRessources();
 
         if (self::$time_start) {
-            $stop = microtime(true);
             self::$time_start = null;
         }
     }
@@ -428,9 +425,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     protected function insertOneBasketEnv()
     {
         try {
-            $em = self::$core->getEntityManager();
-            /* @var $em \Doctrine\ORM\EntityManager */
-
             $basketFixture = new PhraseaFixture\Basket\LoadOneBasketEnv();
 
             $basketFixture->setUser(self::$user);
@@ -795,11 +789,13 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
         \PhraseanetPHPUnitListener::resetSkipped();
 
-        foreach (self::$recordsInitialized as $i) {
-            static::$records['record_' . $i]->delete();
-        }
+        if (self::$recordsInitialized !== false) {
+            foreach (self::$recordsInitialized as $i) {
+                static::$records['record_' . $i]->delete();
+            }
 
-        self::$recordsInitialized = array();
+            self::$recordsInitialized = array();
+        }
 
         return;
     }
