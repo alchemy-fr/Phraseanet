@@ -31,7 +31,7 @@
                                 <input type="file" name="files[]" multiple directory webkitdirectory mozdirectory>
                             </span>
                             <br />
-                            <span id="span-info">
+                            <span class="comment">
                                 ({% trans %} maximum : {{ maxFileSizeReadable }} {% endtrans %})
                             </span>
                         {#    <button type="button" class="upload-submitter btn btn-inverse input-medium">{% trans 'Send' %}</button> #}
@@ -143,6 +143,11 @@ $(document).ready(function () {
     $(".upload-tabs", UploaderManager.getContainer()).tabs({
         spinner: language.loading + '<img src="/skins/icons/loader404040.gif"/>',
         ajaxOptions: {
+            success: function( xhr, status, index, anchor ) {
+                var lazaretBox = $("#lazaretBox");
+
+                $('.userTips', lazaretBox).tooltip();
+            },
             error: function( xhr, status, index, anchor ) {
                 //display error message if ajax failed
                 $( anchor.hash ).html(language.error);

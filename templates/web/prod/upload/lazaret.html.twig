@@ -184,12 +184,17 @@
                 <div class="thumbnail">
                     <img src="/prod/lazaret/{{ file.getId() }}/thumbnail/"/>
                     <div class="caption">
-                        <p><b>{% trans "Filename" %}</b> : {{ file.getOriginalName() }}</p>
-                        <p><b>{% trans "Date" %}</b> : {{ file.getCreated()|date("Y-m-d") }}</p>
+                        <p>{% trans "Filename" %} : <span class="info">{{ file.getOriginalName() }}</span></p>
+                        <p>{% trans "Date" %} : <span class="info">{{ file.getCreated()|date("Y-m-d") }}</span></p>
                         {% if file.getSession().getUser() is not none %}
-                                <p><b>{% trans "Uploaded by" %}</h5></b> : {{ file.getSession().getUser().get_login() }}</p>
+                            <p>
+                                {% set username = '<a href="#" class="username userTips" tooltipsrc="/prod/tooltip/user/' ~ file.getSession().getUser().get_id() ~ '/">' ~ file.getSession().getUser().get_display_name() ~ '</a>' %}
+                                {% trans %}
+                                    Uploaded by : {{ username }}
+                                {% endtrans %}
+                            </p>
                         {% endif %}
-                        <p><b>{% trans "Collection" %}</b> : {{ file.getCollection().get_name() }}</p>
+                        <p>{% trans "Collection" %} : <span class="info">{{ file.getCollection().get_name() }}</span></p>
                     </div>
                     <div class="btn-group" style="text-align:center; padding:5px;">
                         <button class="btn add-lazaret" title="{% trans "Add"%}">

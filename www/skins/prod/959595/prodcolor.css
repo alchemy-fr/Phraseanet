@@ -4092,7 +4092,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
     text-align: left;
 }
 
-#uploadBox #span-info {
+#uploadBox span.comment {
     font-style: italic;
     color: #999999;
 }
@@ -4286,6 +4286,28 @@ dans l'onglet thesaurus : arbres, menus contextuels
     margin-top: 0;
     margin-bottom: 10px;
 }
+
+#lazaretBox .lazaret-file p,
+#lazaretBox .lazaret-proposals p {
+    font-weight: bold;
+}
+
+#lazaretBox span.info {
+    display: inline;
+    font-weight: normal;
+}
+
+#lazaretBox .lazaret-file a,
+#lazaretBox .lazaret-proposals a {
+    font-weight: normal;
+    color: #333333;
+}
+
+#lazaretBox .lazaret-file a:hover,
+#lazaretBox .lazaret-proposals a:hover {
+    color: #999999;
+}
+
 
 #lazaretBox .lazaret-file .thumbnails,
 #lazaretBox .lazaret-proposals .thumbnails {
