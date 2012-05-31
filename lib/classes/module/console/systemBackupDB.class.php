@@ -17,9 +17,8 @@
  */
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
 
-class module_console_systemBackupDB extends Command
+class module_console_systemBackupDB extends module_console_PhraseanetCommand
 {
 
     public function __construct($name = null)
@@ -38,15 +37,17 @@ class module_console_systemBackupDB extends Command
         return $this;
     }
 
+    public function needPhraseaInstalled()
+    {
+        return true;
+    }
+
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        if ( ! setup::is_installed()) {
-            $output->writeln('Argument must be an Id.');
+        if ( ! $this->checkPhraseaInstall($output)) {
 
             return 1;
         }
-
-        require_once __DIR__ . '/../../../../lib/bootstrap.php';
 
         $output->write('Phraseanet is going to be backup...', true);
 

@@ -18,9 +18,8 @@
  */
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
 
-class module_console_systemUpgrade extends Command
+class module_console_systemUpgrade extends module_console_PhraseanetCommand
 {
 
     public function __construct($name = null)
@@ -32,9 +31,20 @@ class module_console_systemUpgrade extends Command
         return $this;
     }
 
+    public function needPhraseaInstalled()
+    {
+        return false;
+    }
+
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        if ( ! $this->checkPhraseaInstall($output)) {
+
+            return 1;
+        }
+
         $Core = \bootstrap::getCore();
+
         if ( ! setup::is_installed()) {
 
             $output->writeln('This version of Phraseanet requires a config/config.yml, config/connexion.yml, config/service.yml');
@@ -80,7 +90,7 @@ class module_console_systemUpgrade extends Command
                 }
 
                 $upgrader = new Setup_Upgrade($appbox);
-                $advices = $appbox->forceUpgrade($upgrader);
+                $appbox->forceUpgrade($upgrader);
             } catch (\Exception $e) {
 
                 $output->writeln(sprintf('<error>An error occured while upgrading : %s </error>', $e->getMessage()));

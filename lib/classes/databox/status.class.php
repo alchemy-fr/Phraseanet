@@ -9,11 +9,7 @@
  * file that was distributed with this source code.
  */
 
-use MediaAlchemyst\Driver\Imagine as ImagineDriver;
 use MediaAlchemyst\Specification\Image as ImageSpecification;
-use MediaAlchemyst\Transmuter\Image2Image as ImageTransmuter;
-use MediaVorus\Media\Media;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
 /**
  *
@@ -308,6 +304,8 @@ class databox_status
         if ( ! $user->ACL()->has_right_on_sbas($sbas_id, 'bas_modify_struct')) {
             return false;
         }
+
+         self::getStatus($sbas_id);
 
         $appbox = \appbox::get_instance($core);
 

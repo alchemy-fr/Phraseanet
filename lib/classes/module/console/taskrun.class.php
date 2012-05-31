@@ -15,7 +15,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
 
 /**
  * @todo write tests
@@ -23,8 +22,7 @@ use Symfony\Component\Console\Command\Command;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-
-class module_console_taskrun extends Command
+class module_console_taskrun extends module_console_PhraseanetCommand
 {
     private $task;
     private $shedulerPID;
@@ -66,12 +64,16 @@ class module_console_taskrun extends Command
         }
     }
 
+    public function needPhraseaInstalled()
+    {
+        return true;
+    }
+
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        if ( ! setup::is_installed()) {
-            $output->writeln('Phraseanet is not set up');
+        if ( ! $this->checkPhraseaInstall($output)) {
 
-            return 1;
+            return self::EXITCODE_SETUP_ERROR;
         }
 
         $task_id = (int) $input->getArgument('task_id');

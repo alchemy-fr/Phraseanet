@@ -17,9 +17,8 @@
  */
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
 
-class module_console_systemTemplateGenerator extends Command
+class module_console_systemTemplateGenerator extends module_console_PhraseanetCommand
 {
 
     public function __construct($name = null)
@@ -31,8 +30,18 @@ class module_console_systemTemplateGenerator extends Command
         return $this;
     }
 
+    public function needPhraseaInstalled()
+    {
+        return false;
+    }
+
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        if ( ! $this->checkPhraseaInstall($output)) {
+
+            return 1;
+        }
+
         $tplDirs = array(
             realpath(__DIR__ . '/../../../../templates/web/'),
             realpath(__DIR__ . '/../../../../templates/mobile/')
@@ -86,7 +95,6 @@ class module_console_systemTemplateGenerator extends Command
             $twig->addFilter('formatoctet', new Twig_Filter_Function('p4string::format_octet'));
             $twig->addFilter('getDate', new Twig_Filter_Function('phraseadate::getDate'));
             $twig->addFilter('geoname_name_from_id', new Twig_Filter_Function('geonames::name_from_id'));
-
 
             $finder = new Symfony\Component\Finder\Finder();
             foreach ($finder->files()->in(array($tplDir))->exclude('Mustache') as $file) {

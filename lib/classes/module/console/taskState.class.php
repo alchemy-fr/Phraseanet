@@ -19,9 +19,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
 
-class module_console_taskState extends Command
+class module_console_taskState extends module_console_PhraseanetCommand
 {
     const EXITCODE_SETUP_ERROR = 1;
     const EXITCODE_BAD_ARGUMENT = 2;
@@ -57,13 +56,18 @@ class module_console_taskState extends Command
         return $this;
     }
 
+    public function needPhraseaInstalled()
+    {
+        return true;
+    }
+
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        if ( ! setup::is_installed()) {
-            $output->writeln($input->getOption('short') ? 'setup_error' : 'Phraseanet is not set up');
+        if ( ! $this->checkPhraseaInstall($output)) {
 
             return self::EXITCODE_SETUP_ERROR;
         }
+
         $task_id = (int) $input->getArgument('task_id');
         if ($task_id <= 0 || strlen($task_id) !== strlen($input->getArgument('task_id'))) {
             $output->writeln($input->getOption('short') ? 'bad_id' : 'Argument must be an ID');

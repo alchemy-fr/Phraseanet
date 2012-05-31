@@ -19,9 +19,8 @@ use Monolog\Handler;
 use Monolog\Logger;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
 
-class module_console_schedulerStart extends Command
+class module_console_schedulerStart extends module_console_PhraseanetCommand
 {
 
     public function __construct($name = null)
@@ -33,22 +32,25 @@ class module_console_schedulerStart extends Command
         return $this;
     }
 
+    public function needPhraseaInstalled()
+    {
+        return true;
+    }
+
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        if ( ! setup::is_installed()) {
-            $output->writeln('Phraseanet is not set up');
-
+        if ( ! $this->checkPhraseaInstall($output)) {
             return 1;
         }
 
         $logger = new Logger('Task logger');
 
-        $handler = new Handler\StreamHandler(fopen('php://stdout', 'a'), $input->getOption('verbose') ? Logger::DEBUG : Logger::WARNING);
-        $logger->pushHandler($handler);
+        $streamHandler = new Handler\StreamHandler(fopen('php://stdout', 'a'), $input->getOption('verbose') ? Logger::DEBUG : Logger::WARNING);
+        $logger->pushHandler($streamHandler);
 
         $logfile = __DIR__ . '/../../../../logs/scheduler.log';
-        $handler = new Handler\RotatingFileHandler($logfile, 10);
-        $logger->pushHandler($handler);
+        $rotateHandler = new Handler\RotatingFileHandler($logfile, 10);
+        $logger->pushHandler($rotateHandler);
 
         try {
             $scheduler = new task_Scheduler($logger);

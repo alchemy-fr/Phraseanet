@@ -18,9 +18,8 @@
  */
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
 
-class module_console_systemMailCheck extends Command
+class module_console_systemMailCheck extends module_console_PhraseanetCommand
 {
 
     public function __construct($name = null)
@@ -37,8 +36,17 @@ class module_console_systemMailCheck extends Command
         return $this;
     }
 
+    public function needPhraseaInstalled()
+    {
+        return true;
+    }
+
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        if ( ! $this->checkPhraseaInstall($output)) {
+
+            return 1;
+        }
 
         $appbox = appbox::get_instance(\bootstrap::getCore());
 

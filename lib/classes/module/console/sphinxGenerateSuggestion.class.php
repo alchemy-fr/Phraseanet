@@ -17,9 +17,8 @@
  */
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
 
-class module_console_sphinxGenerateSuggestion extends Command
+class module_console_sphinxGenerateSuggestion extends module_console_PhraseanetCommand
 {
 
     public function __construct($name = null)
@@ -32,8 +31,18 @@ class module_console_sphinxGenerateSuggestion extends Command
         return $this;
     }
 
+    public function needPhraseaInstalled()
+    {
+        return true;
+    }
+
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        if ( ! $this->checkPhraseaInstall($output)) {
+
+            return 1;
+        }
+
         define('FREQ_THRESHOLD', 10);
         define('SUGGEST_DEBUG', 0);
 

@@ -18,9 +18,8 @@
  */
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
 
-class module_console_tasklist extends Command
+class module_console_tasklist extends module_console_PhraseanetCommand
 {
 
     public function __construct($name = null)
@@ -32,15 +31,17 @@ class module_console_tasklist extends Command
         return $this;
     }
 
+    public function needPhraseaInstalled()
+    {
+        return true;
+    }
+
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        if ( ! setup::is_installed()) {
-            $output->writeln('Phraseanet is not set up');
+        if ( ! $this->checkPhraseaInstall($output)) {
 
-            return 1;
+            return self::EXITCODE_SETUP_ERROR;
         }
-
-        require_once __DIR__ . '/../../../../lib/bootstrap.php';
 
         try {
             $appbox = appbox::get_instance(\bootstrap::getCore());

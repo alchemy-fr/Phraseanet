@@ -18,9 +18,8 @@
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
 
-class module_console_systemExport extends Command
+class module_console_systemExport extends module_console_PhraseanetCommand
 {
 
     public function __construct($name = null)
@@ -71,8 +70,18 @@ class module_console_systemExport extends Command
         return $this;
     }
 
+    public function needPhraseaInstalled()
+    {
+        return true;
+    }
+
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        if ( ! $this->checkPhraseaInstall($output)) {
+
+            return 1;
+        }
+
         $core = \bootstrap::getCore();
 
         $docPerDir = max(1, (int) $input->getOption('docperdir'));
@@ -96,14 +105,9 @@ class module_console_systemExport extends Command
 
         $sanitize = $input->getOption('sanitize');
 
+        $directory = $input->getArgument('directory');
 
-        $export_directory = $input->getArgument('directory');
-
-        if ( ! $export_directory) {
-            throw new Exception('Missing directory argument');
-        }
-
-        $export_directory = realpath(substr($export_directory, 0, 1) === '/' ? $export_directory : getcwd() . '/' . $export_directory . '/');
+        $export_directory = realpath(substr($directory, 0, 1) === '/' ? $directory : getcwd() . '/' . $directory . '/');
 
         if ( ! $export_directory) {
             throw new Exception('Export directory does not exists or is not accessible');
@@ -119,10 +123,10 @@ class module_console_systemExport extends Command
         foreach ($restrictBaseIds as $key => $base_id) {
             $restrictBaseIds[$key] = (int) $base_id;
         }
+
         foreach ($restrictSbasIds as $key => $sbas_id) {
             $restrictSbasIds[$key] = (int) $sbas_id;
         }
-
 
         if (count($restrictSbasIds) > 0) {
             $output->writeln("Export datas from selected sbas_ids");

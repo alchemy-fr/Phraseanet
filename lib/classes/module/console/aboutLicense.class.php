@@ -17,9 +17,8 @@
  */
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
 
-class module_console_aboutLicense extends Command
+class module_console_aboutLicense extends module_console_PhraseanetCommand
 {
 
     public function __construct($name = null)
@@ -33,8 +32,17 @@ class module_console_aboutLicense extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        if ( ! $this->checkPhraseaInstall($output)) {
+            return 1;
+        }
+
         $output->writeln(file_get_contents(__DIR__ . '/../../../../LICENSE'));
 
         return 0;
+    }
+
+    public function needPhraseaInstalled()
+    {
+        return false;
     }
 }

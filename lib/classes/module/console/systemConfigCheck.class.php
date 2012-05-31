@@ -18,9 +18,8 @@
  */
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
 
-class module_console_systemConfigCheck extends Command
+class module_console_systemConfigCheck extends module_console_PhraseanetCommand
 {
 
     public function __construct($name = null)
@@ -32,8 +31,18 @@ class module_console_systemConfigCheck extends Command
         return $this;
     }
 
+    public function needPhraseaInstalled()
+    {
+        return false;
+    }
+
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        if ( ! $this->checkPhraseaInstall($output)) {
+
+            return 1;
+        }
+
         if ( ! function_exists('_')) {
             $output->writeln('<error>YOU MUST ENABLE GETTEXT SUPPORT TO USE PHRASEANET</error>');
             $output->writeln('Canceled');
@@ -52,8 +61,6 @@ class module_console_systemConfigCheck extends Command
         } else {
             $registry = new Setup_Registry();
         }
-
-
 
         $output->writeln(_('*** FILESYSTEM CONFIGURATION ***'));
         $ok = $this->processConstraints(setup::check_writability($registry), $output) && $ok;

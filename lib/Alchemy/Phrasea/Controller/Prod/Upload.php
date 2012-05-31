@@ -177,7 +177,7 @@ class Upload implements ControllerProviderInterface
                 $postStatus = $postStatus[$collection->get_sbas_id()];
 
                 $status = '';
-                foreach (range(0, 64) as $i) {
+                foreach (range(0, 63) as $i) {
                     $status .= isset($postStatus[$i]) ? ($postStatus[$i] ? '1' : '0') : '0';
                 }
                 $packageFile->addAttribute(new Border\Attribute\Status(strrev($status)));
@@ -205,7 +205,7 @@ class Upload implements ControllerProviderInterface
             if ( ! ! $forceBehavior) {
                 $reasons = array();
             }
-            
+
             if ($elementCreated instanceof \record_adapter) {
                 $id = $elementCreated->get_serialize_key();
                 $element = 'record';

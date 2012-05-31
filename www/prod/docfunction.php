@@ -460,7 +460,13 @@ if ($sbasSet !== null) {
                     <input type="hidden" name="act" value="WORK" />
                     <input type="hidden" name="lst" value="<?php echo $parm["lst"] ?>" />
                     <div style="margin-top:10px; margin-bottom:10px; text-align:center;">
-                        <input type="button" class="edit-btn" value="<?php echo _('boutton::valider') ?>" onclick="doChgStat(true);" />
+                        <?php
+                         if ($ndefined[$sbasid] > 0){
+                        ?>
+                            <input type="button" class="edit-btn" value="<?php echo _('boutton::valider') ?>" onclick="doChgStat(true);" />
+                        <?php
+                         }
+                         ?>
                         <input type="button" class="edit-btn" value="<?php echo _('boutton::annuler') ?>" onclick="parent.hideDwnl();" />
                     </div>
                 </form>
