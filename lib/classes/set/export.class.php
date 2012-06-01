@@ -830,6 +830,7 @@ class set_export extends set_abstract
 
                 $response->headers->set('Content-Type', $mime);
                 $response->headers->makeDisposition($disposition, $exportname);
+                $response->headers->set('Content-Length', filesize($file));
                 $response->setContent(file_get_contents($file));
 
                 return $response;
