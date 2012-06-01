@@ -1666,7 +1666,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
             $pathdest = $this->generateSubdefPathname($subdef, $pathdest);
 
-            $logger->addInfo(sprintf('Generating subdef to %s', $pathdest));
+            $logger->addInfo(sprintf('Generating subdef %s to %s', $subdefname, $pathdest));
             $this->generate_subdef($subdef, $pathdest, $logger);
 
             if (file_exists($pathdest)) {
