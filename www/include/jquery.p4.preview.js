@@ -527,4 +527,8 @@ function closePreview(){
 		cancelPreview();
 		$(this).dequeue();
 	});
+        
+        $.each($('#PREVIEWBOX video'), function(i,el){
+            _V_($(el).attr('id')).destroy();
+        });
 }

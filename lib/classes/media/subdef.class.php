@@ -298,7 +298,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         if ( ! file_exists($this->path . $this->file)) {
             $this->path = $registry->get('GV_RootPath') . 'www/skins/icons/';
             $this->file = 'substitution.png';
-            $this->url = '/skins/icons/substitution/' . $this->file;
+            $this->url = $this->path . $this->file;
         }
 
         return $this;

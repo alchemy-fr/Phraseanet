@@ -585,6 +585,7 @@
     {
       $.tooltip.ajaxRequest.abort();
     }
+    helper.body.empty();
     $.tooltip.current = null;
     function complete() {
       helper.parent.removeClass( tsettings.extraClass ).hide().css("opacity", "");
@@ -609,6 +610,9 @@ function unfix_tooltip()
   $.tooltip.visible = false;
   $.tooltip.current = null;
   $('#tooltip').hide();
+  $.each($('#tooltip video'), function(i,el){
+       _V_($(el).attr('id')).destroy();
+  });
   $('#tooltip .tooltip_closer').hide();
   hideOverlay('_tooltip');
 }
