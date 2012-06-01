@@ -40,8 +40,6 @@ class module_console_schedulerStop extends Command
     {
         $this->checkSetup();
 
-        require_once __DIR__ . '/../../../../lib/bootstrap.php';
-
         try {
             $appbox = appbox::get_instance(\bootstrap::getCore());
             $task_manager = new task_manager($appbox);

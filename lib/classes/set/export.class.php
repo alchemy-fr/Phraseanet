@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use \Symfony\Component\HttpFoundation\ResponseHeaderBag;
+
 /**
  *
  *
@@ -779,10 +781,10 @@ class set_export extends set_abstract
     {
         $registry = registry::get_instance();
 
-        $disposition = in_array($disposition, array('inline', 'attachment')) ?
-            $disposition : 'attachment';
-
         $response = new Symfony\Component\HttpFoundation\Response();
+        
+        $disposition = $disposition != 'attachment' ? ResponseHeaderBag::DISPOSITION_INLINE : ResponseHeaderBag::DISPOSITION_ATTACHMENT;
+        $headerDisposition = $response->headers->makeDisposition($disposition, $exportname);
 
         if (is_file($file)) {
             $testPath = function($file, $registry) {
@@ -809,9 +811,8 @@ class set_export extends set_abstract
                 $response->headers->set('X-Accel-Redirect', $file_xaccel);
                 $response->headers->set('Pragma', 'public', true);
                 $response->headers->set('Content-Type', $mime);
-                $response->headers->set('Content-Name', $exportname);
-                $response->headers->set('Content-Disposition', $disposition . "; filename=" . $exportname . ";");
                 $response->headers->set('Content-Length', filesize($file));
+                $response->headers->set('Content-Disposition', $headerDisposition);
 
                 return $response;
             } else {
@@ -829,9 +830,8 @@ class set_export extends set_abstract
                 }
 
                 $response->headers->set('Content-Type', $mime);
-                $response->headers->set('Content-Name', $exportname);
-                $response->headers->set('Content-Disposition', $disposition . "; filename=" . $exportname . ";");
                 $response->headers->set('Content-Length', filesize($file));
+                $response->headers->set('Content-Disposition', $headerDisposition);
                 $response->setContent(file_get_contents($file));
 
                 return $response;
@@ -884,7 +884,7 @@ class set_export extends set_abstract
         $session = $appbox->get_session();
         $user = false;
         if ($anonymous) {
-
+            
         } else {
             $user = User_Adapter::getInstance($session->get_usr_id(), appbox::get_instance(\bootstrap::getCore()));
         }

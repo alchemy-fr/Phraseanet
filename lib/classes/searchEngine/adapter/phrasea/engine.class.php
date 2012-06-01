@@ -619,7 +619,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
         $sxe = simplexml_load_string($res['xml']);
 
         foreach ($fields as $name => $field) {
-            if ($sxe->description->$name) {
+            if ($sxe && $sxe->description && $sxe->description->$name) {
                 $val = array();
                 foreach ($sxe->description->$name as $value) {
                     $val[] = str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), (string) $value);
