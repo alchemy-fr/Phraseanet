@@ -55,17 +55,27 @@ return call_user_func(
 
                         $record->log_view($log_id, $referrer, $registry->get('GV_sit'));
                     } catch (\Exception $e) {
-
+                        
                     }
 
                     $response = \set_export::stream_file($pathOut, $file->get_file(), $file->get_mime(), 'attachment');
 
+                    $cacheOptions = array(
+                        'max_age'  => 0,
+                        's_maxage' => 0,
+                        'private'  => true,
+                        'public'   => false,
+                    );
+
                     /* @var $response \Symfony\Component\HttpFoundation\Response */
                     if ($file->getEtag()) {
-                        $response->setEtag($file->getEtag());
-                        $response->setLastModified($file->get_modification_date());
-                        $response->isNotModified($request);
+
+                        $cacheOptions['etag'] = $file->getEtag();
+                        $cacheOptions['last_modified'] = $file->get_modification_date();
                     }
+
+                    $response->setCache($cacheOptions);
+                    $response->isNotModified($request);
 
                     return $response;
                 };
