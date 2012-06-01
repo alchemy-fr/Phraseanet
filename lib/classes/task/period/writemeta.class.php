@@ -308,6 +308,7 @@ class task_period_writemeta extends task_databoxAbstract
         }
 
         $writer = new Writer();
+        $writer->setModule(Writer::MODULE_MWG, true);
 
         foreach ($tsub as $name => $file) {
 
