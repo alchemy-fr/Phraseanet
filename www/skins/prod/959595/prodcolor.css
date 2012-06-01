@@ -4041,12 +4041,22 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
 /** UPLOAD MANAGER */
 
+#uploadBox {
+    height: 100%;
+}
+
 #uploadBox .clear {
     clear: both;
 }
 
-#uploadBox #tab-upload {
-    padding: 10px;
+#uploadBox .upload-tabs {
+    height: 100%;
+}
+
+#uploadBox #tab-upload,
+#uploadBox #tab-lazaret {
+    height: 90%;
+    padding: 20px;
 }
 
 #uploadBoxLeft, #uploadBoxRight {
@@ -4070,12 +4080,21 @@ dans l'onglet thesaurus : arbres, menus contextuels
     color: #333333;
 }
 
+#uploadBox #fileupload {
+    height: 97%;
+}
+
 #uploadBox h5 {
     margin-top: 20px;
     margin-bottom: 10px;
     font-size: 13px;
     font-weight: bold;
     text-align: left;
+}
+
+#uploadBox span.comment {
+    font-style: italic;
+    color: #999999;
 }
 
 #uploadBox button.btn, #uploadBox span.btn {
@@ -4158,35 +4177,63 @@ dans l'onglet thesaurus : arbres, menus contextuels
     margin-right: 5px;
 }
 
-#uploadBox .upload-record {
-    height: 260px;
+#uploadBox .thumbnails {
+    margin-left: -20px;
+}
+
+#uploadBox .thumbnails > li {
+    margin-left: 20px;
 }
 
 #uploadBox .upload-record {
     height: 260px;
+    background-color: #FFFFFF;
 }
 
 #uploadBox .upload-record .canva-wrapper {
     height: 120px;
 }
 
+@media (min-width: 768px) and (max-width: 979px) {
+    #uploadBox .upload-record canvas {
+        max-height: 120px;
+        width: 94px;
+    }
+}
+
+@media (min-width: 980px) and (max-width: 1199px) {
+    #uploadBox .upload-record canvas {
+        max-height: 120px;
+        width: 130px;
+    }
+}
+
+@media (min-width: 1200px) {
+    #uploadBox .upload-record canvas {
+        max-height: 120px;
+        width: 160px;
+    }
+}
+
 #uploadBox .upload-record .name-doc {
-    font-weight: bold;
-    height:40px;
+    height: 40px;
     overflow: hidden;
     -o-text-overflow: ellipsis; /* pour Opera 9 */
     text-overflow: ellipsis;
+    font-weight: bold;
 }
 
 #uploadBox .upload-record .infos-doc {
     color: #777777;
-    height:40px;
+    height: 40px;
 }
 
 #uploadBox .upload-record .error, #uploadBox .upload-record .success{
-    height:60px;
-    display:none;
-    overflow:auto;
+    height: 55px;
+    padding-top: 2px;
+    padding-bottom: 3px;
+    display: none;
+    overflow: auto;
 }
 
 #uploadBox .upload-record .remove-element {
@@ -4210,7 +4257,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
 #uploadBoxRight .progress {
     margin-top: 4px;
-    margin-bottom: 4px;
+    margin-bottom: 10px;
     height: 10px;
 }
 
@@ -4224,3 +4271,78 @@ dans l'onglet thesaurus : arbres, menus contextuels
     background-repeat: no-repeat;
 }
 
+#lazaretBox.container-fluid {
+    margin: 0;
+    padding: 0;
+}
+
+#lazaretBox li.wrapper-item {
+    width: 99%;
+    margin-bottom: 20px;
+}
+
+#lazaretBox .lazaret-file h5,
+#lazaretBox .lazaret-proposals h5 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+#lazaretBox .lazaret-file p,
+#lazaretBox .lazaret-proposals p {
+    font-weight: bold;
+}
+
+#lazaretBox span.info {
+    display: inline;
+    font-weight: normal;
+}
+
+#lazaretBox .lazaret-file a,
+#lazaretBox .lazaret-proposals a {
+    font-weight: normal;
+    color: #333333;
+}
+
+#lazaretBox .lazaret-file a:hover,
+#lazaretBox .lazaret-proposals a:hover {
+    color: #999999;
+}
+
+
+#lazaretBox .lazaret-file .thumbnails,
+#lazaretBox .lazaret-proposals .thumbnails {
+    margin-left: 0;
+}
+
+#lazaretBox .lazaret-file .thumbnails li {
+    margin: 0;
+}
+
+#lazaretBox .lazaret-proposals .records-subititution {
+    margin: 0 10px 10px 0;
+}
+
+#lazaretBox .lazaret-file .thumbnail,
+#lazaretBox .lazaret-proposals .thumbnail {
+    background-color: #FFFFFF;
+}
+
+#lazaretBox .lazaret-proposals .thumbnail {
+    min-height: 234px;
+}
+
+#lazaretBox .lazaret-proposals .thumbnail .record-thumb {
+    height: 180px;
+}
+
+#lazaretBox .lazaret-file .thumbnail img {
+    max-height: 480px;
+}
+
+#lazaretBox .lazaret-file .thumbnail button {
+    font-weight: normal;
+}
+
+#lazaretBox .lazaret-file .thumbnail button img {
+    margin-right: 5px;
+}

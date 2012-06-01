@@ -3,16 +3,16 @@
         {% if lazaretFiles|length > 0 %}
             <ul>
                 {% for file in lazaretFiles %}
-                    <li class='row-fluid wrapper-item'>
+                    <li class="row-fluid wrapper-item well">
                        {{ _self.lazaretElement(file) }}
                     </li>
                 {% endfor %}
             </ul>
         {% else %}
-            {% trans 'No document in quarantine' %}
+            {% trans "No document in quarantine" %}
         {% endif %}
     {% else %}
-        {% trans 'You do not have enough rights to access quarantine' %}
+        {% trans "You do not have enough rights to access quarantine" %}
     {% endif %}
 </div>
 
@@ -177,70 +177,72 @@
 {% macro lazaretElement(file) %}
     {% import "common/thumbnail.html" as thumb %}
     {% set records = file.getRecordsToSubstitute() %}
-    <div class='lazaret-file span4'>
-        <p><h5>{% trans 'Last uploaded version' %}</h5></p>
-        <ul class='thumbnails'>
+    <div class="lazaret-file span4">
+        <h5>{% trans "Last uploaded version" %}</h5>
+        <ul class="thumbnails">
             <li class="span12" >
-                <div class='thumbnail'>
-                    <img src='/prod/lazaret/{{ file.getId() }}/thumbnail/'/>
+                <div class="thumbnail">
+                    <img src="/prod/lazaret/{{ file.getId() }}/thumbnail/"/>
                     <div class="caption">
-                        <p><b>{% trans 'Filename' %}</b> : {{ file.getOriginalName() }}</p>
-                        <p><b>{% trans 'Date' %}</b> : {{ file.getCreated()|date('Y-m-d') }}</p>
+                        <p>{% trans "Filename" %} : <span class="info">{{ file.getOriginalName() }}</span></p>
+                        <p>{% trans "Date" %} : <span class="info">{{ file.getCreated() | prettyDate }}</span></p>
                         {% if file.getSession().getUser() is not none %}
-                                <p><b>{% trans 'Uploaded by' %}</h5></b> : {{ file.getSession().getUser().get_login() }}</p>
+                            <p>
+                                {% set username = '<a href="#" class="username userTips" tooltipsrc="/prod/tooltip/user/' ~ file.getSession().getUser().get_id() ~ '/">' ~ file.getSession().getUser().get_display_name() ~ '</a>' %}
+                                {% trans %}
+                                    Uploaded by : {{ username }}
+                                {% endtrans %}
+                            </p>
                         {% endif %}
-                        <p><b>{% trans 'Collection' %}</b> : {{ file.getCollection().get_name() }}</p>
+                        <p>{% trans "Collection" %} : <span class="info">{{ file.getCollection().get_name() }}</span></p>
                     </div>
-                    <div class="btn-group" style='text-align:center; padding:5px'>
-                        <button class="btn add-lazaret" title="{% trans 'Add'%}">
-                            <img src="/skins/icons/add.png">
+                    <div class="btn-group" style="text-align:center; padding:5px;">
+                        <button class="btn add-lazaret" title="{% trans "Add"%}">
+                            <img src="/skins/icons/add.png">{% trans "Add"%}
                         </button>
-                        <button class="btn delete-lazaret" title="{% trans 'Delete'%}">
-                            <img src="/skins/icons/delete.png">
+                        <button class="btn delete-lazaret" title="{% trans "Delete"%}">
+                            <img src="/skins/icons/delete.png">{% trans "Delete"%}
                         </button>
                         {% if records|length > 0 %}
-                            <button class="btn subtitute-lazaret" title="{% trans 'Substitute' %}">
-                                <img src="/skins/icons/reload.png">
+                            <button class="btn subtitute-lazaret" title="{% trans "Substitute" %}">
+                                <img src="/skins/icons/reload.png">{% trans "Substitute" %}
                             </button>
                         {% endif %}
                     </div>
                 </div>
-             </li>
+            </li>
         </ul>
         {# Store lazaret file id in hidden input #}
         <input type="hidden" name="lazaret_file" value="{{ file.getId() }}"/>
         {# Store lazaret file destination #}
         <input type="hidden" name="lazaret_file_destination" value="{{ file.getBaseId() }}"/>
-     </div>
+    </div>
     {% set record_count = records|length %}
     {% if record_count  > 0 %}
-        <div class='lazaret-proposals span8'>
-            <p>
-                <h5>
-                {% trans %}
-                    {{ record_count }} record match the unique identifier.
-                {% plural record_count %}
-                    {{ record_count }} records match the unique identifier.
-                {% endtrans %}
-                </h5>
-            </p>
+        <div class="lazaret-proposals span8">
+            <h5>
+            {% trans %}
+                {{ record_count }} record match the unique identifier :
+            {% plural record_count %}
+                {{ record_count }} records match the unique identifier :
+            {% endtrans %}
+            </h5>
             <ul class="thumbnails">
                 {% for record in records %}
-                    {% if user.ACL().has_right_on_base(record.get_base_id(), 'canaddrecord')
-                        and user.ACL().has_right_on_base(record.get_base_id(), 'candeleterecord') %}
-                        <li class="records-subititution span6">
-                            <div class='thumbnail'>
-                                {% if user.ACL().has_access_to_subdef(record, 'preview') %}
+                    {% if user.ACL().has_right_on_base(record.get_base_id(), "canaddrecord")
+                        and user.ACL().has_right_on_base(record.get_base_id(), "candeleterecord") %}
+                        <li class="records-subititution span3">
+                            <div class="thumbnail">
+                                {% if user.ACL().has_access_to_subdef(record, "preview") %}
                                     {% set preview_obj = record.get_preview() %}
                                 {% else %}
                                     {% set preview_obj = record.get_thumbnail() %}
                                 {% endif %}
-
-                                <div id='thumb_{{record.get_record_id()}}' class='record-thumb span12' style='text-align:center'>
-                                    {{ thumb.format(preview_obj, 260, 180, '', session, false) }}
+                                <div id="thumb_{{record.get_record_id()}}" class="record-thumb" style="text-align:center;">
+                                    {{ thumb.format(preview_obj, 260, 180, "", session, false) }}
                                 </div>
                                 <div class="caption">
-                                    <p>{{ record.get_title() }}</p>
+                                    <p><b>{{ record.get_title() }}</b></p>
                                 </div>
                             </div>
                         </li>
