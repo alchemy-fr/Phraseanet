@@ -280,7 +280,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $this->height = 256;
             $this->path = $registry->get('GV_RootPath') . 'www/skins/icons/substitution/';
             $this->file = 'regroup_thumb.png';
-            $this->is_substituted = true;
+            $this->url = '/skins/icons/substitution/regroup_thumb.png';
         } else {
             $mime = $this->record->get_mime();
             $mime = trim($mime) != '' ? str_replace('/', '_', $mime) : 'application_octet-stream';
@@ -290,7 +290,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $this->height = 256;
             $this->path = $registry->get('GV_RootPath') . 'www/skins/icons/substitution/';
             $this->file = str_replace('+', '%20', $mime) . '.png';
-            $this->is_substituted = true;
+            $this->url = '/skins/icons/substitution/' . $this->file;
         }
 
         $this->is_physically_present = false;
@@ -298,7 +298,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         if ( ! file_exists($this->path . $this->file)) {
             $this->path = $registry->get('GV_RootPath') . 'www/skins/icons/';
             $this->file = 'substitution.png';
-            $this->is_substituted = true;
+            $this->url = '/skins/icons/substitution/' . $this->file;
         }
 
         return $this;
@@ -716,6 +716,10 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      */
     protected function generate_url()
     {
+        if ( ! $this->is_physically_present()) {
+            return;
+        }
+
         if (in_array($this->mime, array('video/mp4'))) {
             $token = p4file::apache_tokenize($this->get_pathfile());
             if ($token) {
