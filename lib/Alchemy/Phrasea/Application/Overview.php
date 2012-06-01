@@ -202,7 +202,6 @@ return call_user_func(
 
 
             $app->error(function (\Exception $e) {
-                var_dump($e->getMessage());
                     if ($e instanceof \Exception_Session_NotAuthenticated) {
                         $code = 403;
                         $message = 'Forbidden';
