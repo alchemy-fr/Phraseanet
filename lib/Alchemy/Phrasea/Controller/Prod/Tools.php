@@ -253,6 +253,9 @@ class Tools implements ControllerProviderInterface
                     $media = MediaVorus::guess(new \SplFileInfo($fileName));
 
                     $record->substitute_subdef('thumbnail', $media);
+                    
+                    unset($media);
+                    $app['Core']['file-system']->remove($fileName);
 
                     $return['success'] = true;
                 } catch (\Exception $e) {
