@@ -84,6 +84,7 @@ try {
     $app->add(new module_console_fieldsMerge('fields:merge'));
 
     $app->add(new Alchemy\Phrasea\Command\RescanTechnicalDatas('records:rescan-technical-datas'));
+    $app->add(new Alchemy\Phrasea\Command\BuildMissingSubdefs('records:build-missing-subdefs'));
     
     $result_code = is_int($app->run()) ? : 1;
 } catch (Exception $e) {
