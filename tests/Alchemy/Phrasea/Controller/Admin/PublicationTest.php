@@ -247,8 +247,6 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
             )
         );
 
-//        $core['file-system']->copy(__DIR__ . '/../../../../testfiles/logocoll.gif', __DIR__ . '/../../../../testfiles/logocoll1.gif');
-
         $this->client->request(
             "POST"
             , "/publications/feed/" . $feed->get_id() . "/iconupload/"
@@ -265,13 +263,6 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
         $this->assertTrue($content->success);
 
         $feed = new Feed_Adapter($appbox, $feed->get_id());
-
-//        try {
-//            $file = new SplFileObject(__DIR__ . '/../../../../testfiles/logocoll1.gif');
-//            $this->fail('logo not deleted');
-//        } catch (\Exception $e) {
-//
-//        }
 
         $feed->delete();
     }
