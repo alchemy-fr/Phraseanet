@@ -78,4 +78,20 @@ class LazaretCheck
     {
         return $this->checkClassname;
     }
+
+    /**
+     * Get checker message
+     *
+     * @return string
+     */
+    public function getMessage()
+    {
+        $className = $this->getCheckClassname();
+
+        if(method_exists($className, "getMessage")) {
+            return $className::getMessage();
+        } else {
+            return '';
+        }
+    }
 }
