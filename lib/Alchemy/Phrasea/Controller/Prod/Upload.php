@@ -105,7 +105,23 @@ class Upload implements ControllerProviderInterface
             $collections[$databox->get_sbas_id()]['databox_collections'][] = $collection;
         }
 
-        $maxFileSize = UploadedFile::getMaxFilesize();
+        $postMaxSize = trim(ini_get('post_max_size'));
+
+        if ('' === $postMaxSize) {
+            $postMaxSize = PHP_INT_MAX;
+        }
+
+        switch (strtolower(substr($postMaxSize, -1))) {
+            case 'g':
+                $postMaxSize *= 1024;
+            case 'm':
+                $postMaxSize *= 1024;
+            case 'k':
+                $postMaxSize *= 1024;
+        }
+
+        $maxFileSize = min(UploadedFile::getMaxFilesize(), (int) $postMaxSize);
+
         $html = $app['Core']['Twig']->render(
             'prod/upload/upload.html.twig', array(
             'collections'         => $collections,
