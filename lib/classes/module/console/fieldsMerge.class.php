@@ -19,7 +19,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
+use Alchemy\Phrasea\Command\Command;
 
 class module_console_fieldsMerge extends Command
 {
@@ -45,12 +45,16 @@ class module_console_fieldsMerge extends Command
         return $this;
     }
 
+    public function requireSetup()
+    {
+        return true;
+    }
+
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln("");
+        $this->checkSetup();
 
-        if ( ! $input->getArgument('sbas_id'))
-            throw new \Exception('Missing argument sbas_id');
+        $output->writeln("");
 
         try {
             $databox = \databox::get_instance((int) $input->getArgument('sbas_id'));
@@ -66,11 +70,9 @@ class module_console_fieldsMerge extends Command
             $sources[] = $databox->get_meta_structure()->get_element($source_id);
         }
 
-        if (count($sources) === 0)
+        if (count($sources) === 0) {
             throw new \Exception('No sources to proceed');
-
-        if ( ! $input->getArgument('destination'))
-            throw new \Exception('Missing argument destination');
+        }
 
         $separator = ' ' . $input->getOption('separator') . ' ';
 
@@ -103,6 +105,7 @@ class module_console_fieldsMerge extends Command
         }
 
         $field_names = array();
+
         foreach ($sources as $source) {
             $field_names[] = $source->get_name();
         }

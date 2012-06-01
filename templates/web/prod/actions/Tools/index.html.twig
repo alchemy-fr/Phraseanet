@@ -107,7 +107,7 @@
       </form>
     </div>
 
-     {% if selectionLength == 1%}
+     {% if selectionLength == 1 %}
       {% for record in selection %}
         {% if record.get_type() == 'video' %}
           <div id="thumbExtractor"  class="tabBox">
@@ -121,8 +121,8 @@
             </div>
 
             <div class="PNB frame_video">
-                
-                
+
+
               {% set previewHtml5 = record.getSubdfefByDeviceAndMime(constant('\\databox_subdef::DEVICE_SCREEN'), ['video/ogg', 'video/mp4', 'video/webm']) %}
               <video id="thumb_video" controls="" preload="auto">
                 {% for subdef in previewHtml5 %}
@@ -412,20 +412,28 @@
     });
 
     $(".action_submiter", scope).bind("click", function(){
-      var form = $(this).closest("form");
-      $.ajax({
-          url : form.attr("action"),
-          type : form.attr("method"),
-          dataType : 'json',
-          data : form.serializeArray(),
-          success : function(data){
-            if(!data.success){
-              humane.error(data.message);
-            }else{
-                var dialog = p4.Dialog.get(1);
-                dialog.Close();
+        var $this = $(this);
+        var form = $(this).closest("form");
+
+        $.ajax({
+            url : form.attr("action"),
+            type : form.attr("method"),
+            dataType : 'json',
+            data : form.serializeArray(),
+            beforeSend: function(){
+                $this.attr('disabled', true);
+            },
+            success : function(data){
+                if(!data.success){
+                    humane.error(data.message);
+                }else{
+                    var dialog = p4.Dialog.get(1);
+                    dialog.Close();
+                }
+            },
+            complete: function(){
+                $this.attr('disabled', false);
             }
-          }
         });
     });
 

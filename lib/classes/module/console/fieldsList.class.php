@@ -17,7 +17,7 @@
  */
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
+use Alchemy\Phrasea\Command\Command;
 
 class module_console_fieldsList extends Command
 {
@@ -31,8 +31,14 @@ class module_console_fieldsList extends Command
         return $this;
     }
 
+    public function requireSetup()
+    {
+        return true;
+    }
+
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->checkSetup();
 
         $appbox = \appbox::get_instance(\bootstrap::getCore());
 

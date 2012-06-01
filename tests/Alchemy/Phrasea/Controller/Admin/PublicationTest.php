@@ -177,8 +177,12 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
         $this->client->request("POST", "/publications/feed/" . $feed->get_id() . "/iconupload/", array(), array());
 
         $response = $this->client->getResponse();
+
         $this->assertTrue($response->isOk());
-        $this->assertRegexp("/ERROR:you are not allowed/", $response->getContent());
+
+        $content = json_decode($response->getContent());
+
+        $this->assertFalse($content->success);
 
         $feed->delete();
     }
@@ -197,7 +201,10 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
         );
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOk());
-        $this->assertRegexp("/ERROR:error while upload/", $response->getContent());
+
+        $content = json_decode($response->getContent());
+
+        $this->assertFalse($content->success);
 
         $feed->delete();
     }
@@ -216,36 +223,46 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
         );
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOk());
-        $this->assertRegexp("/ERROR:bad filetype/", $response->getContent());
+
+        $content = json_decode($response->getContent());
+
+        $this->assertFalse($content->success);
 
         $feed->delete();
     }
 
     public function testIconUpload()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $core = \bootstrap::getCore();
+
+        $appbox = appbox::get_instance($core);
 
         $feed = Feed_Adapter::create($appbox, self::$user, "salut", 'coucou');
 
-        copy(__DIR__ . '/../../../../testfiles/logocoll.gif', __DIR__ . '/../../../../testfiles/logocoll1.gif');
+		$files = array(
+            'files' => array(
+                new \Symfony\Component\HttpFoundation\File\UploadedFile(
+                    __DIR__ . '/../../../../testfiles/logocoll.gif', 'logocoll.gif'
+                )
+            )
+        );
+
         $this->client->request(
             "POST"
             , "/publications/feed/" . $feed->get_id() . "/iconupload/"
             , array()
-            , array('Filedata' => array('error'    => 0, 'tmp_name' => __DIR__ . '/../../../../testfiles/logocoll1.gif'))
+            , $files
         );
+
         $response = $this->client->getResponse();
+
         $this->assertTrue($response->isOk());
 
+        $content = json_decode($response->getContent());
+
+        $this->assertTrue($content->success);
+
         $feed = new Feed_Adapter($appbox, $feed->get_id());
-        try {
-            $file = new SplFileObject(__DIR__ . '/../../../../testfiles/logocoll1.gif');
-            $this->fail('logo not deleted');
-        } catch (\Exception $e) {
-
-        }
-
-        $this->assertRegexp("#FILEHREF:/custom/feed_" . $feed->get_id() . ".jpg?[0-9]*#", $response->getContent());
 
         $feed->delete();
     }

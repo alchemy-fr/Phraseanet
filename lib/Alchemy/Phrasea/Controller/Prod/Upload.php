@@ -105,7 +105,23 @@ class Upload implements ControllerProviderInterface
             $collections[$databox->get_sbas_id()]['databox_collections'][] = $collection;
         }
 
-        $maxFileSize = UploadedFile::getMaxFilesize();
+        $postMaxSize = trim(ini_get('post_max_size'));
+
+        if ('' === $postMaxSize) {
+            $postMaxSize = PHP_INT_MAX;
+        }
+
+        switch (strtolower(substr($postMaxSize, -1))) {
+            case 'g':
+                $postMaxSize *= 1024;
+            case 'm':
+                $postMaxSize *= 1024;
+            case 'k':
+                $postMaxSize *= 1024;
+        }
+
+        $maxFileSize = min(UploadedFile::getMaxFilesize(), (int) $postMaxSize);
+
         $html = $app['Core']['Twig']->render(
             'prod/upload/upload.html.twig', array(
             'collections'         => $collections,
@@ -177,7 +193,7 @@ class Upload implements ControllerProviderInterface
                 $postStatus = $postStatus[$collection->get_sbas_id()];
 
                 $status = '';
-                foreach (range(0, 64) as $i) {
+                foreach (range(0, 63) as $i) {
                     $status .= isset($postStatus[$i]) ? ($postStatus[$i] ? '1' : '0') : '0';
                 }
                 $packageFile->addAttribute(new Border\Attribute\Status(strrev($status)));
@@ -205,7 +221,7 @@ class Upload implements ControllerProviderInterface
             if ( ! ! $forceBehavior) {
                 $reasons = array();
             }
-            
+
             if ($elementCreated instanceof \record_adapter) {
                 $id = $elementCreated->get_serialize_key();
                 $element = 'record';

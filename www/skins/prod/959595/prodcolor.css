@@ -29,6 +29,8 @@ label {
 
 legend {
     #333333;
+    width:auto;
+    border: none;
 }
 
 .clickable {
@@ -3582,6 +3584,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
 .ui-dialog-content label{
     line-height:26px;
+    display: inline;
 }
 
 .ui-dialog-content p{

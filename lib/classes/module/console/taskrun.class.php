@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Command\Command;
 use Monolog\Handler;
 use Monolog\Logger;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
 
 /**
  * @todo write tests
@@ -23,7 +23,6 @@ use Symfony\Component\Console\Command\Command;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-
 class module_console_taskrun extends Command
 {
     private $task;
@@ -66,12 +65,17 @@ class module_console_taskrun extends Command
         }
     }
 
+    public function requireSetup()
+    {
+        return true;
+    }
+
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        if ( ! setup::is_installed()) {
-            $output->writeln('Phraseanet is not set up');
-
-            return 1;
+        try{
+            $this->checkSetup();
+        } catch (\RuntimeException $e){
+            return self::EXITCODE_SETUP_ERROR;
         }
 
         $task_id = (int) $input->getArgument('task_id');

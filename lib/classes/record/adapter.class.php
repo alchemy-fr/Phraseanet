@@ -180,7 +180,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
             return $this;
         } catch (Exception $e) {
-            
+
         }
 
         $connbas = $this->databox->get_connection();
@@ -504,7 +504,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         try {
             return $this->get_subdef('thumbnailGIF');
         } catch (Exception $e) {
-            
+
         }
 
         return null;
@@ -550,7 +550,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         try {
             return $this->get_data_from_cache(self::CACHE_STATUS);
         } catch (Exception $e) {
-            
+
         }
         $sql = 'SELECT BIN(status) as status FROM record
               WHERE record_id = :record_id';
@@ -694,7 +694,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         try {
             return $this->get_data_from_cache(self::CACHE_SUBDEFS);
         } catch (Exception $e) {
-            
+
         }
 
         $connbas = $this->get_databox()->get_connection();
@@ -901,7 +901,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             $title = trim($this->get_original_name($removeExtension));
         }
 
-        $title = $title != "" ? $title : "<i>" . _('reponses::document sans titre') . "</i>";
+        $title = $title != "" ? $title : _('reponses::document sans titre');
 
         return $title;
     }
@@ -1013,7 +1013,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         if ($meta_writable) {
             $this->write_metas();
         }
-        
+
         if ($name == 'document') {
             $this->rebuild_subdefs();
         }
@@ -1230,7 +1230,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 $sphinx->update_status(array("metadatas" . $sbas_crc, "metadatas" . $sbas_crc . "_stemmed_en", "metadatas" . $sbas_crc . "_stemmed_fr", "documents" . $sbas_crc), $this->get_sbas_id(), $this->get_record_id(), strrev($status));
             }
         } catch (Exception $e) {
-            
+
         }
         $this->delete_data_from_cache(self::CACHE_STATUS);
 
@@ -1868,7 +1868,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             try {
                 $subdef->rotate($angle);
             } catch (\Exception $e) {
-                
+
             }
         }
 

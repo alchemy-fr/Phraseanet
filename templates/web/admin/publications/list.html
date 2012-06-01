@@ -58,15 +58,15 @@
         <td>
           <div style="border:1px solid #ccc;width:22px;height:22px;margin:2px">
             <a href="/admin/publications/feed/{{ feed.get_id() }}/">
-              <img src="{{feed.get_icon_url()}}" style="margin:3px;width:16px;height:16px;" id="pub_icon"/>
+              <img src="{{feed.get_icon_url() ~ '?' ~ random(1000) }}" style="margin:3px;width:16px;height:16px;" id="pub_icon"/>
             </a>
           </div>
         </td>
         <td><a href="/admin/publications/feed/{{ feed.get_id() }}/">{{ feed.get_title() }}</a></td>
         <td>{{ feed.get_created_on()|formatdate }}</td>
         <td>
-          {% if feed.get_collection() != null %} 
-            {{ feed.get_collection().get_databox().get_viewname() }} / 
+          {% if feed.get_collection() != null %}
+            {{ feed.get_collection().get_databox().get_viewname() }} /
             {{ feed.get_collection().get_name() }}
           {% endif %}
         </td>

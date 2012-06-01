@@ -16,9 +16,9 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
+use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
 
 class module_console_systemUpgrade extends Command
 {
@@ -32,9 +32,17 @@ class module_console_systemUpgrade extends Command
         return $this;
     }
 
+    public function requireSetup()
+    {
+        return false;
+    }
+
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->checkSetup();
+
         $Core = \bootstrap::getCore();
+
         if ( ! setup::is_installed()) {
 
             $output->writeln('This version of Phraseanet requires a config/config.yml, config/connexion.yml, config/service.yml');
@@ -80,7 +88,7 @@ class module_console_systemUpgrade extends Command
                 }
 
                 $upgrader = new Setup_Upgrade($appbox);
-                $advices = $appbox->forceUpgrade($upgrader);
+                $appbox->forceUpgrade($upgrader);
             } catch (\Exception $e) {
 
                 $output->writeln(sprintf('<error>An error occured while upgrading : %s </error>', $e->getMessage()));
