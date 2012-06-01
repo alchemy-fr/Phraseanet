@@ -119,18 +119,6 @@ $groups = array(
         , '//thesaurus2/xmlhttp.js'
         , '//thesaurus2/thesaurus.js'
     ),
-    'upload' => array(
-         '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
-        , '//include/jslibs/jquery.cookie.js'
-        , '//include/jquery.common.js'
-        , '//include/jslibs/jquery.sprintf.1.0.3.js'
-        , '//include/jquery.tooltip.js'
-        , '//upload/swfupload/swfupload.js'
-        , '//upload/js/swfupload.queue.js'
-        , '//upload/js/fileprogress.js'
-        , '//upload/js/handlers.js'
-        , '//upload/js/main.js'
-        , '//include/jslibs/jquery.contextmenu_scroll.js'),
     'lightbox' => array(
          '//include/jslibs/jquery.mousewheel.js'
         , '//include/jquery.tooltip.js'
