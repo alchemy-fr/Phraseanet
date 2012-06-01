@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use \Symfony\Component\HttpFoundation\ResponseHeaderBag;
+
 /**
  *
  *
@@ -779,8 +781,7 @@ class set_export extends set_abstract
     {
         $registry = registry::get_instance();
 
-        $disposition = in_array($disposition, array('inline', 'attachment')) ?
-            $disposition : 'attachment';
+       $disposition = $disposition != 'attachment' ? ResponseHeaderBag::DISPOSITION_INLINE : ResponseHeaderBag::DISPOSITION_ATTACHMENT;
 
         $response = new Symfony\Component\HttpFoundation\Response();
 
@@ -809,9 +810,8 @@ class set_export extends set_abstract
                 $response->headers->set('X-Accel-Redirect', $file_xaccel);
                 $response->headers->set('Pragma', 'public', true);
                 $response->headers->set('Content-Type', $mime);
-                $response->headers->set('Content-Name', $exportname);
-                $response->headers->set('Content-Disposition', $disposition . "; filename=" . $exportname . ";");
                 $response->headers->set('Content-Length', filesize($file));
+                $response->headers->makeDisposition($disposition, $exportname);
 
                 return $response;
             } else {
@@ -829,9 +829,7 @@ class set_export extends set_abstract
                 }
 
                 $response->headers->set('Content-Type', $mime);
-                $response->headers->set('Content-Name', $exportname);
-                $response->headers->set('Content-Disposition', $disposition . "; filename=" . $exportname . ";");
-                $response->headers->set('Content-Length', filesize($file));
+                $response->headers->makeDisposition($disposition, $exportname);
                 $response->setContent(file_get_contents($file));
 
                 return $response;
