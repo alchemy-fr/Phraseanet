@@ -9,33 +9,36 @@
  * file that was distributed with this source code.
  */
 
+namespace Alchemy\Phrasea\Command;
+
+use Symfony\Component\Console\Command\Command as SymfoCommand;
+use Symfony\Component\Console\Output\OutputInterface;
+
 /**
+ * Abstract command which represents a Phraseanet base command
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Output\OutputInterface;
-
-abstract class module_console_PhraseanetCommand extends Command
+abstract class Command extends SymfoCommand
 {
-
     /**
-     * Tell whether the command requires Phraseanet to be set up to run
-     * @return boolean
+     * Tell whether the command requires Phraseanet to be set-up or not
+     *
+     * @return Boolean
      */
-    abstract public function needPhraseaInstalled();
+    abstract public function requireSetup();
 
     /**
-     * Check if Phraseanet is set up and if the current commands requires
-     * Phraseanet to be installed
+     * Check if Phraseanet is set-up and if the current command requires
+     * Phraseanet to be set-up
      *
      * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @return boolean
+     * @return Boolean
      */
-    public function checkPhraseaInstall(OutputInterface $output)
+    public function checkSetup(OutputInterface $output)
     {
-        if ($this->needPhraseaInstalled()) {
+        if ($this->requireSetup()) {
             $core = \bootstrap::getCore();
 
             if ( ! $core->getConfiguration()->isInstalled()) {
@@ -47,5 +50,4 @@ abstract class module_console_PhraseanetCommand extends Command
 
         return true;
     }
-
 }

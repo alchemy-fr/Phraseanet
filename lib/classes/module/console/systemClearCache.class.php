@@ -14,12 +14,13 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
+use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class module_console_systemClearCache extends module_console_PhraseanetCommand
+class module_console_systemClearCache extends Command
 {
 
     public function __construct($name = null)
@@ -31,14 +32,14 @@ class module_console_systemClearCache extends module_console_PhraseanetCommand
         return $this;
     }
 
-    public function needPhraseaInstalled()
+    public function requireSetup()
     {
         return false;
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        if ( ! $this->checkPhraseaInstall($output)) {
+        if ( ! $this->checkSetup($output)) {
 
             return 1;
         }

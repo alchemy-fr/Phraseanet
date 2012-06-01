@@ -15,12 +15,13 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
+use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class module_console_taskState extends module_console_PhraseanetCommand
+class module_console_taskState extends Command
 {
     const EXITCODE_SETUP_ERROR = 1;
     const EXITCODE_BAD_ARGUMENT = 2;
@@ -56,14 +57,14 @@ class module_console_taskState extends module_console_PhraseanetCommand
         return $this;
     }
 
-    public function needPhraseaInstalled()
+    public function requireSetup()
     {
         return true;
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        if ( ! $this->checkPhraseaInstall($output)) {
+        if ( ! $this->checkSetup($output)) {
 
             return self::EXITCODE_SETUP_ERROR;
         }

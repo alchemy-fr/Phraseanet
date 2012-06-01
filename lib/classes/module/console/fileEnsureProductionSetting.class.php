@@ -13,6 +13,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Core;
 
 /**
@@ -21,7 +22,7 @@ use Alchemy\Phrasea\Core;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class module_console_fileEnsureProductionSetting extends module_console_PhraseanetCommand
+class module_console_fileEnsureProductionSetting extends Command
 {
     const ALERT = 1;
     const ERROR = 0;
@@ -54,14 +55,14 @@ class module_console_fileEnsureProductionSetting extends module_console_Phrasean
         return $this;
     }
 
-    public function needPhraseaInstalled()
+    public function requireSetup()
     {
         return true;
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        if ( ! $this->checkPhraseaInstall($output)) {
+        if ( ! $this->checkSetup($output)) {
             return 1;
         }
 

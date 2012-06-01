@@ -17,8 +17,9 @@
  */
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Alchemy\Phrasea\Command\Command;
 
-class module_console_aboutLicense extends module_console_PhraseanetCommand
+class module_console_aboutLicense extends Command
 {
 
     public function __construct($name = null)
@@ -32,7 +33,7 @@ class module_console_aboutLicense extends module_console_PhraseanetCommand
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        if ( ! $this->checkPhraseaInstall($output)) {
+        if ( ! $this->checkSetup($output)) {
             return 1;
         }
 
@@ -41,7 +42,7 @@ class module_console_aboutLicense extends module_console_PhraseanetCommand
         return 0;
     }
 
-    public function needPhraseaInstalled()
+    public function requireSetup()
     {
         return false;
     }

@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Command\Command;
 use Monolog\Handler;
 use Monolog\Logger;
 use Symfony\Component\Console\Input\InputArgument;
@@ -22,7 +23,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class module_console_taskrun extends module_console_PhraseanetCommand
+class module_console_taskrun extends Command
 {
     private $task;
     private $shedulerPID;
@@ -64,14 +65,14 @@ class module_console_taskrun extends module_console_PhraseanetCommand
         }
     }
 
-    public function needPhraseaInstalled()
+    public function requireSetup()
     {
         return true;
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        if ( ! $this->checkPhraseaInstall($output)) {
+        if ( ! $this->checkSetup($output)) {
 
             return self::EXITCODE_SETUP_ERROR;
         }

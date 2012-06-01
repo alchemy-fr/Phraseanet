@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -21,7 +22,7 @@ use Alchemy\Phrasea\Core;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class module_console_fileEnsureDevSetting extends module_console_PhraseanetCommand
+class module_console_fileEnsureDevSetting extends Command
 {
     const ALERT = 1;
     const ERROR = 0;
@@ -54,14 +55,14 @@ class module_console_fileEnsureDevSetting extends module_console_PhraseanetComma
         return $this;
     }
 
-    public function needPhraseaInstalled()
+    public function requireSetup()
     {
         return true;
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        if ( ! $this->checkPhraseaInstall($output)) {
+        if ( ! $this->checkSetup($output)) {
             return 1;
         }
 
