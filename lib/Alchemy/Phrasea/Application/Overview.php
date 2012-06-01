@@ -59,22 +59,15 @@ return call_user_func(
                     }
 
                     $response = \set_export::stream_file($pathOut, $file->get_file(), $file->get_mime(), 'attachment');
-
-                    $cacheOptions = array(
-                        'max_age'  => 0,
-                        's_maxage' => 0,
-                        'private'  => true,
-                        'public'   => false,
-                    );
+                    $response->setPrivate();
 
                     /* @var $response \Symfony\Component\HttpFoundation\Response */
                     if ($file->getEtag()) {
-
-                        $cacheOptions['etag'] = $file->getEtag();
-                        $cacheOptions['last_modified'] = $file->get_modification_date();
+                        $response->setEtag($file->getEtag());
+                        $response->setLastModified($file->get_modification_date());
                     }
 
-                    $response->setCache($cacheOptions);
+                    $response->headers->addCacheControlDirective('must-revalidate', true);
                     $response->isNotModified($request);
 
                     return $response;
@@ -209,6 +202,7 @@ return call_user_func(
 
 
             $app->error(function (\Exception $e) {
+                var_dump($e->getMessage());
                     if ($e instanceof \Exception_Session_NotAuthenticated) {
                         $code = 403;
                         $message = 'Forbidden';
