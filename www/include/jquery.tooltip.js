@@ -440,7 +440,6 @@
         
         if(resizeVideoTips)
         {
-            console.log($videoTips, width, height, Math.round(width - 50), Math.round(height-70));
           $videoTips.css({
             width: Math.round(width - 50),
             height: Math.round(height-70)
