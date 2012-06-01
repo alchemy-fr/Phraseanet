@@ -781,9 +781,10 @@ class set_export extends set_abstract
     {
         $registry = registry::get_instance();
 
-       $disposition = $disposition != 'attachment' ? ResponseHeaderBag::DISPOSITION_INLINE : ResponseHeaderBag::DISPOSITION_ATTACHMENT;
-
         $response = new Symfony\Component\HttpFoundation\Response();
+        
+        $disposition = $disposition != 'attachment' ? ResponseHeaderBag::DISPOSITION_INLINE : ResponseHeaderBag::DISPOSITION_ATTACHMENT;
+        $headerDisposition = $response->headers->makeDisposition($disposition, $exportname);
 
         if (is_file($file)) {
             $testPath = function($file, $registry) {
@@ -811,7 +812,7 @@ class set_export extends set_abstract
                 $response->headers->set('Pragma', 'public', true);
                 $response->headers->set('Content-Type', $mime);
                 $response->headers->set('Content-Length', filesize($file));
-                $response->headers->makeDisposition($disposition, $exportname);
+                $response->headers->set('Content-Disposition', $headerDisposition);
 
                 return $response;
             } else {
@@ -829,8 +830,8 @@ class set_export extends set_abstract
                 }
 
                 $response->headers->set('Content-Type', $mime);
-                $response->headers->makeDisposition($disposition, $exportname);
                 $response->headers->set('Content-Length', filesize($file));
+                $response->headers->set('Content-Disposition', $headerDisposition);
                 $response->setContent(file_get_contents($file));
 
                 return $response;
@@ -883,7 +884,7 @@ class set_export extends set_abstract
         $session = $appbox->get_session();
         $user = false;
         if ($anonymous) {
-
+            
         } else {
             $user = User_Adapter::getInstance($session->get_usr_id(), appbox::get_instance(\bootstrap::getCore()));
         }
