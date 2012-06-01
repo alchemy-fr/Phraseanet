@@ -55,17 +55,20 @@ return call_user_func(
 
                         $record->log_view($log_id, $referrer, $registry->get('GV_sit'));
                     } catch (\Exception $e) {
-
+                        
                     }
 
                     $response = \set_export::stream_file($pathOut, $file->get_file(), $file->get_mime(), 'attachment');
+                    $response->setPrivate();
 
                     /* @var $response \Symfony\Component\HttpFoundation\Response */
                     if ($file->getEtag()) {
                         $response->setEtag($file->getEtag());
                         $response->setLastModified($file->get_modification_date());
-                        $response->isNotModified($request);
                     }
+
+                    $response->headers->addCacheControlDirective('must-revalidate', true);
+                    $response->isNotModified($request);
 
                     return $response;
                 };

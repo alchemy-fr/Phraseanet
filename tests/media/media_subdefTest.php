@@ -191,7 +191,7 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
     public function testIs_substituted()
     {
         $this->assertFalse(self::$objectPresent->is_substituted());
-        $this->assertTrue(self::$objectNotPresent->is_substituted());
+        $this->assertFalse(self::$objectNotPresent->is_substituted());
     }
 
     /**

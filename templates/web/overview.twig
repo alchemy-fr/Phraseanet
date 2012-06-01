@@ -81,8 +81,24 @@
       <h1>{{record.get_title()}}</h1>
       <div class="preview enhancable">
         {% import 'common/thumbnail.html' as thumbnail %}
+        {% import 'common/HTML5Video.html.twig' as thumbnailHTML5 %}
+              
         {% set subdef = record.get_subdef(subdef_name) %}
-        {{thumbnail.format(subdef, subdef.get_width(), subdef.get_height(), '', session, true)}}
+
+        {% set previewHtml5 = null %}
+
+        {% if subdef_name == 'preview' and record.get_type() == 'video' %}
+            {% set previewHtml5 = record.getSubdfefByDeviceAndMime(constant('\\databox_subdef::DEVICE_SCREEN'), ['video/ogg', 'video/mp4', 'video/webm']) %}
+            {% if previewHtml5|length < 3 %}
+                {% set previewHtml5 = null %}
+            {% endif %}
+        {% endif %}
+
+        {% if previewHtml5 %}
+            {{ thumbnailHTML5.format(previewHtml5, subdef.get_width(), subdef.get_height(), '', session, true) }}
+        {% else %}
+            {{ thumbnail.format(subdef, subdef.get_width(), subdef.get_height(), '', session, true) }}
+        {% endif %}
       </div>
             <div class="caption">
         {% include 'common/caption.html' %}

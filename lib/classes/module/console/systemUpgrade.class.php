@@ -67,8 +67,6 @@ class module_console_systemUpgrade extends Command
             }
         }
 
-        require_once __DIR__ . '/../../../../lib/bootstrap.php';
-
         $output->write('Phraseanet is going to be upgraded', true);
         $dialog = $this->getHelperSet()->get('dialog');
 

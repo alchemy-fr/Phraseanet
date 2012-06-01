@@ -28,7 +28,7 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertEquals(200, $response->getStatusCode());
         $content_disposition = explode(';', $response->headers->get('content-disposition'));
-        $this->assertEquals($content_disposition[0], 'attachment');
+        $this->assertEquals('attachment', $content_disposition[0]);
         $this->assertEquals(static::$records['record_1']->get_preview()->get_mime(), $response->headers->get('content-type'));
         $this->assertEquals(static::$records['record_1']->get_preview()->get_size(), $response->headers->get('content-length'));
 

@@ -54,9 +54,9 @@ class Tools implements ControllerProviderInterface
                                     ->files($record->get_subdef('document')->get_pathfile())
                                     ->first()->getMetadatas();
                         } catch (\PHPExiftool\Exception\Exception $e) {
-
+                            
                         } catch (\Exception_Media_SubdefNotFound $e) {
-
+                            
                         }
                     }
                 }
@@ -105,14 +105,18 @@ class Tools implements ControllerProviderInterface
 
                 $selection = $helper->get_elements();
 
-                if ($request->get('ForceThumbSubstit') == '1') {
-                    foreach ($selection as $record) {
-                        try {
-                            $record->rebuild_subdefs();
-                        } catch (\Exception $e) {
-                            $return['success'] = false;
-                            $return['message'] = _('an error occured');
+                foreach ($selection as $record) {
+
+                    $substituted = false;
+                    foreach ($record->get_subdefs() as $subdef) {
+                        if ($subdef->is_substituted()) {
+                            $substituted = true;
+                            break;
                         }
+                    }
+                    
+                    if ( ! $substituted || $request->get('ForceThumbSubstit') == '1') {
+                        $record->rebuild_subdefs();
                     }
                 }
 
@@ -253,6 +257,9 @@ class Tools implements ControllerProviderInterface
                     $media = MediaVorus::guess(new \SplFileInfo($fileName));
 
                     $record->substitute_subdef('thumbnail', $media);
+
+                    unset($media);
+                    $app['Core']['file-system']->remove($fileName);
 
                     $return['success'] = true;
                 } catch (\Exception $e) {

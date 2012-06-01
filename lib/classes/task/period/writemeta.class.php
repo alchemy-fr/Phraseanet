@@ -253,7 +253,7 @@ class task_period_writemeta extends task_databoxAbstract
             $write_document = (($jeton & JETON_WRITE_META_DOC) && $name == 'document');
             $write_subdef = (($jeton & JETON_WRITE_META_SUBDEF) && isset($this->metasubdefs[$name . '_' . $type]));
 
-            if ($write_document || $write_subdef) {
+            if (($write_document || $write_subdef) && $subdef->is_physically_present()) {
                 $tsub[$name] = $subdef->get_pathfile();
             }
         }
