@@ -196,6 +196,11 @@
                         {% endif %}
                         <p>{% trans "Collection" %} : <span class="info">{{ file.getCollection().get_name() }}</span></p>
                     </div>
+                    <div class="caption">
+                        {% for check in file.getChecks() %}
+                            <p>{{ check.getMessage() }}</p>
+                        {% endfor %}
+                    </div>
                     <div class="btn-group" style="text-align:center; padding:5px;">
                         <button class="btn add-lazaret" title="{% trans "Add"%}">
                             <img src="/skins/icons/add.png">{% trans "Add"%}

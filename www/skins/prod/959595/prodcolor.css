@@ -4293,6 +4293,9 @@ dans l'onglet thesaurus : arbres, menus contextuels
 #lazaretBox .lazaret-file p,
 #lazaretBox .lazaret-proposals p {
     font-weight: bold;
+    overflow: hidden;
+    -o-text-overflow: ellipsis; /* for Opera 9 */
+    text-overflow: ellipsis;
 }
 
 #lazaretBox span.info {
