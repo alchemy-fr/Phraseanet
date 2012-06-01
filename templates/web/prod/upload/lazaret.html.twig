@@ -140,7 +140,7 @@
             }
 
             var recorThumb = elements.first().find('.record-thumb');
-            var recordId = recorThumb.attr('id').split('_').pop();
+            var recordId = recorThumb.find('input[name=record_id]').val();
 
             $.ajax({
                 type : 'POST',
@@ -243,8 +243,9 @@
                                 {% else %}
                                     {% set preview_obj = record.get_thumbnail() %}
                                 {% endif %}
-                                <div id="thumb_{{record.get_record_id()}}" class="record-thumb" style="text-align:center;">
+                                <div class="record-thumb" style="text-align:center;">
                                     {{ thumb.format(preview_obj, 260, 180, "", session, false) }}
+                                    <input name="record_id" value="{{ record.get_record_id() }}" type="hidden"/>
                                 </div>
                                 <div class="caption">
                                     <p><b>{{ record.get_title() }}</b></p>
