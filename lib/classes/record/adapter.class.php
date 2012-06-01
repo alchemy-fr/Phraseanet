@@ -1002,6 +1002,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         }
 
         $core['file-system']->chmod($subdefFile->getRealPath(), 0760);
+        $media = \MediaVorus\MediaVorus::guess($subdefFile);
 
         media_subdef::create($this, $name, $media);
 
