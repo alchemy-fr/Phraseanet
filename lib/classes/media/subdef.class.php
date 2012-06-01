@@ -673,9 +673,18 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         }
 
         try {
-            $subdef = new self($record, $name);
+            
+            $sql = 'SELECT subdef_id FROM subdef 
+                    WHERE record_id = :record_id AND name = :name';
+            $stmt = $connbas->prepare($sql);
+            $stmt->execute(array(
+                ':record_id'=>$record->get_record_id(),
+                ':name'=>$name,
+            ));
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
 
-            if ( ! $subdef->is_physically_present()) {
+            if ( ! $row) {
                 throw new \Exception_Media_SubdefNotFound('Require the real one');
             }
 
@@ -685,7 +694,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
                   , size = :size, dispatched = :dispatched, updated_on = NOW()
               WHERE subdef_id = :subdef_id";
 
-            $params[':subdef_id'] = $subdef->get_subdef_id();
+            $params[':subdef_id'] = $row['subdef_id'];
         } catch (\Exception_Media_SubdefNotFound $e) {
             $sql = "INSERT INTO subdef
               (record_id, name, path, file, width
