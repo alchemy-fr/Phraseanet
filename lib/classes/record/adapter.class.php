@@ -180,7 +180,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
             return $this;
         } catch (Exception $e) {
-
+            
         }
 
         $connbas = $this->databox->get_connection();
@@ -504,7 +504,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         try {
             return $this->get_subdef('thumbnailGIF');
         } catch (Exception $e) {
-
+            
         }
 
         return null;
@@ -550,7 +550,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         try {
             return $this->get_data_from_cache(self::CACHE_STATUS);
         } catch (Exception $e) {
-
+            
         }
         $sql = 'SELECT BIN(status) as status FROM record
               WHERE record_id = :record_id';
@@ -694,7 +694,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         try {
             return $this->get_data_from_cache(self::CACHE_SUBDEFS);
         } catch (Exception $e) {
-
+            
         }
 
         $connbas = $this->get_databox()->get_connection();
@@ -1231,7 +1231,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 $sphinx->update_status(array("metadatas" . $sbas_crc, "metadatas" . $sbas_crc . "_stemmed_en", "metadatas" . $sbas_crc . "_stemmed_fr", "documents" . $sbas_crc), $this->get_sbas_id(), $this->get_record_id(), strrev($status));
             }
         } catch (Exception $e) {
-
+            
         }
         $this->delete_data_from_cache(self::CACHE_STATUS);
 
@@ -1353,26 +1353,46 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
         $record->delete_data_from_cache(record_adapter::CACHE_SUBDEFS);
 
+        $record->insertTechnicalDatas();
+        
+        return $record;
+    }
+
+    /**
+     * Read technical datas an insert them
+     * This method can be long to perform
+     *
+     * @return record_adapter 
+     */
+    public function insertTechnicalDatas()
+    {
+        try {
+            $document = $this->get_subdef('document');
+        } catch (\Exception_Media_SubdefNotFound $e) {
+            return $this;
+        }
+
         $sql = 'REPLACE INTO technical_datas (id, record_id, name, value)
         VALUES (null, :record_id, :name, :value)';
-        $stmt = $databox->get_connection()->prepare($sql);
+        $stmt = $this->get_databox()->get_connection()->prepare($sql);
 
-        foreach ($subdef->readTechnicalDatas() as $name => $value) {
-            if (is_null($value))
+        foreach ($document->readTechnicalDatas() as $name => $value) {
+            if (is_null($value)) {
                 continue;
+            }
 
             $stmt->execute(array(
-                ':record_id' => $record_id
+                ':record_id' => $this->get_record_id()
                 , ':name'      => $name
                 , ':value'     => $value
             ));
         }
 
         $stmt->closeCursor();
+        
+        $this->delete_data_from_cache(self::CACHE_TECHNICAL_DATAS);
 
-        $filessystem = null;
-
-        return $record;
+        return $this;
     }
 
     /**
@@ -1869,7 +1889,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             try {
                 $subdef->rotate($angle);
             } catch (\Exception $e) {
-
+                
             }
         }
 

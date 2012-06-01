@@ -629,7 +629,11 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
         foreach ($methods as $tc_name => $method) {
             if (method_exists($media, $method)) {
-                $datas[$tc_name] = call_user_method($method, $media);
+                $result = call_user_method($method, $media);
+
+                if (null !== $result) {
+                    $datas[$tc_name] = $result;
+                }
             }
         }
 
