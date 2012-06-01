@@ -178,7 +178,6 @@ class task_period_archive extends task_abstract
             <?php echo $form ?>.copy_spe.checked      = <?php echo p4field::isyes($sxml->copy_spe) ? "true" : "false" ?>;
             </script>
             <?php
-
             return("");
         } else { // ... so we NEVER come here
             // bad xml
@@ -209,7 +208,6 @@ class task_period_archive extends task_abstract
             }
         </script>
         <?php
-
         return;
     }
 
@@ -781,7 +779,7 @@ class task_period_archive extends task_abstract
                 $n->setAttribute('temperature', 'hot');
             }
         } catch (Exception $e) {
-
+            
         }
 
         return($nnew);
@@ -879,7 +877,7 @@ class task_period_archive extends task_abstract
                 }
             }
         } catch (Exception $e) {
-
+            
         }
 
         return;
@@ -1049,7 +1047,7 @@ class task_period_archive extends task_abstract
 
         $ret = false;
 
-         // if root of hotfolder if hot, die...
+        // if root of hotfolder if hot, die...
         if ($depth == 0 && $node->getAttribute('temperature') == 'hot') {
             return($ret);
         }
@@ -2153,5 +2151,51 @@ class task_period_archive extends task_abstract
         }
 
         return $statBit;
+    }
+}
+
+class CListFolder
+{
+    /**
+     *
+     * @var Array
+     */
+    protected $list;
+
+    /**
+     *
+     * @param string $path
+     * @param boolean $sorted
+     */
+    function __construct($path, $sorted = true)
+    {
+        $this->list = array();
+        if ($hdir = opendir($path)) {
+            while (false !== ($file = readdir($hdir))) {
+                $this->list[] = $file;
+            }
+            closedir($hdir);
+            if ($sorted) {
+                natcasesort($this->list);
+            }
+        }
+    }
+
+    /**
+     * Destructor
+     *
+     */
+    function __destruct()
+    {
+        unset($this->list);
+    }
+
+    /**
+     *
+     * @return string
+     */
+    function read()
+    {
+        return(array_shift($this->list));
     }
 }
