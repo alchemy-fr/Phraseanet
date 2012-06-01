@@ -58,7 +58,7 @@ class module_console_systemClearCache extends Command
 
         $filesystem->remove($finder);
 
-        if (\setup::is_installed()) {
+        if (setup::is_installed()) {
             $Core = \bootstrap::getCore();
             $Core['CacheService']->flushAll();
         }
