@@ -15,10 +15,10 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
+use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
 
 class module_console_schedulerState extends Command
 {
@@ -45,20 +45,22 @@ class module_console_schedulerState extends Command
             , 'print short result, ie: <info>stopped()</info> | <info>started(12345)</info> | <info>tostop(12345)</info> | <info>stopping(12345)</info>'
             , NULL
         );
-//    $this->setHelp("");
 
         return $this;
     }
 
+    public function requireSetup()
+    {
+        return true;
+    }
+
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        if ( ! setup::is_installed()) {
-            $output->writeln($input->getOption('short') ? 'setup_error' : 'Phraseanet is not set up');
-
+        try{
+            $this->checkSetup();
+        } catch (\RuntimeException $e){
             return self::EXITCODE_SETUP_ERROR;
         }
-
-        require_once __DIR__ . '/../../../../lib/bootstrap.php';
 
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $task_manager = new task_manager($appbox);

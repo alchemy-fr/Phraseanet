@@ -18,7 +18,7 @@
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
+use Alchemy\Phrasea\Command\Command;
 
 class module_console_checkExtension extends Command
 {
@@ -36,14 +36,24 @@ class module_console_checkExtension extends Command
         return $this;
     }
 
+    public function requireSetup()
+    {
+        return true;
+    }
+
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->checkSetup();
 
         if ( ! extension_loaded('phrasea2')) {
-            printf("Missing Extension php-phrasea");
+            $output->writeln("<error>Missing Extension php-phrasea.</error>");
+            return 1;
         }
 
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $Core = \bootstrap::getCore();
+
+        $appbox = \appbox::get_instance($Core);
+
         $registry = $appbox->get_registry();
 
         $usrId = $input->getArgument('usr_id');
@@ -70,7 +80,6 @@ class module_console_checkExtension extends Command
             $output->writeln("<info>$function</info>");
         }
 
-        $Core = \bootstrap::getCore();
         $configuration = $Core->getConfiguration();
         $choosenConnection = $configuration->getPhraseanet()->get('database');
         $connexion = $configuration->getConnexion($choosenConnection);

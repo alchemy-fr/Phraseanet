@@ -18,7 +18,7 @@
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
+use Alchemy\Phrasea\Command\Command;
 
 class module_console_fieldsRename extends Command
 {
@@ -36,17 +36,14 @@ class module_console_fieldsRename extends Command
         return $this;
     }
 
+    public function requireSetup()
+    {
+        return true;
+    }
+
     public function execute(InputInterface $input, OutputInterface $output)
     {
-
-        if ( ! $input->getArgument('sbas_id'))
-            throw new \Exception('Missing argument sbas_id');
-
-        if ( ! $input->getArgument('meta_struct_id'))
-            throw new \Exception('Missing argument meta_struct_id');
-
-        if ( ! $input->getArgument('name'))
-            throw new \Exception('Missing argument name');
+        $this->checkSetup();
 
         $new_name = $input->getArgument('name');
 

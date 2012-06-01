@@ -34,6 +34,7 @@
 
   <script type="text/javascript" src="/include/jslibs/jquery-1.7.1.js"></script>
   <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
+  <script type="text/javascript" src="/include/vendor/javascript-load-image/load-image.min.js"></script>
   <script type="text/javascript" src="/include/minify/g=admin"></script>
   <script type="text/javascript">
 
@@ -49,7 +50,8 @@
         uncheck_all :  '{% trans 'Decocher toute la colonne' %}',
         create_template :  '{% trans 'Creer un model' %}',
         create_user :  '{% trans 'Creer un utilisateur' %}',
-        annuler :  '{% trans 'boutton::annuler' %}'
+        annuler :  '{% trans 'boutton::annuler' %}',
+        errorFileApiTooBig :  '{% trans 'This file is too big' %}'
     };
 
     window.onbeforeunload = function()

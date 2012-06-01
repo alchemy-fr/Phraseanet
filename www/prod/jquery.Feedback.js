@@ -680,7 +680,7 @@
           buttons[language.valider] = function() {
 
             var callbackOK = function () {
-              $('#ListManager .lists a.list_refresh', $container).trigger('click');
+              $('#ListManager .all-lists a.list_refresh').trigger('click');
               p4.Dialog.get(2).Close();
             };
 

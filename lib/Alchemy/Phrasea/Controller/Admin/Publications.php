@@ -66,7 +66,7 @@ class Publications implements ControllerProviderInterface
                 /* @var $twig \Twig_Environment */
                 $twig = $app['Core']->getTwig();
 
-                return $twig->render('admin/publications/fiche.html'
+                return $twig->render('admin/publications/fiche.html.twig'
                         , array(
                         'feed'  => $feed
                         , 'error' => $app['request']->get('error')
@@ -102,54 +102,76 @@ class Publications implements ControllerProviderInterface
 
 
         $controllers->post('/feed/{id}/iconupload/', function($id) use ($app, $appbox) {
-                $feed = new \Feed_Adapter($appbox, $id);
-                $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
-
-                if ( ! $feed->is_owner($user)) {
-                    return new Response('ERROR:you are not allowed');
-                }
-
-                $request = $app["request"];
-
-                $fileData = $request->files->get("Filedata");
-
-                if ($fileData['error'] !== 0) {
-                    return new Response('ERROR:error while upload');
-                }
-
-                $media = \MediaVorus\MediaVorus::guess(new \SplFileInfo($fileData['tmp_name']));
-
-                if ($media->getType() !== \MediaVorus\Media\Media::TYPE_IMAGE) {
-
-                    return new Response('ERROR:bad filetype');
-                }
-
-                $spec = new \MediaAlchemyst\Specification\Image();
-
-                $spec->setResizeMode(\MediaAlchemyst\Specification\Image::RESIZE_MODE_OUTBOUND);
-                $spec->setDimensions(32, 32);
-                $spec->setStrip(true);
-                $spec->setQuality(72);
-
-                $tmpname = tempnam(sys_get_temp_dir(), 'feed_icon');
-
                 try {
-                    $app['Core']['media-alchemyst']
-                        ->open($media->getFile()->getPathname())
-                        ->turnInto($tmpname, $spec)
-                        ->close();
-                } catch (\MediaAlchemyst\Exception\Exception $e) {
-                    return new Response('Error while handling icon');
+                    $datas = array(
+                        'success' => false,
+                        'message' => '',
+                    );
+
+                    $feed = new \Feed_Adapter($appbox, $id);
+
+                    $user = $app['Core']->getAuthenticatedUser();
+
+                    $request = $app["request"];
+
+                    if ( ! $feed->is_owner($user)) {
+                        throw new \Exception_Forbidden('ERROR:you are not allowed');
+                    }
+
+                    if ( ! $request->files->get('files')) {
+                        throw new \Exception_BadRequest('Missing file parameter');
+                    }
+
+                    if (count($request->files->get('files')) > 1) {
+                        throw new \Exception_BadRequest('Upload is limited to 1 file per request');
+                    }
+
+                    $file = current($request->files->get('files'));
+
+                    if ( ! $file->isValid()) {
+                        throw new \Exception_BadRequest('Uploaded file is invalid');
+                    }
+
+                    $media = \MediaVorus\MediaVorus::guess($file);
+
+                    if ($media->getType() !== \MediaVorus\Media\Media::TYPE_IMAGE) {
+                        throw new \Exception_BadRequest('Bad filetype');
+                    }
+
+                    $spec = new \MediaAlchemyst\Specification\Image();
+
+                    $spec->setResizeMode(\MediaAlchemyst\Specification\Image::RESIZE_MODE_OUTBOUND);
+                    $spec->setDimensions(32, 32);
+                    $spec->setStrip(true);
+                    $spec->setQuality(72);
+
+                    $tmpname = tempnam(sys_get_temp_dir(), 'feed_icon');
+
+                    try {
+                        $app['Core']['media-alchemyst']
+                            ->open($media->getFile()->getPathname())
+                            ->turnInto($tmpname, $spec)
+                            ->close();
+                    } catch (\MediaAlchemyst\Exception\Exception $e) {
+                        throw new \Exception_InternalServerError('Error while resizing');
+                    }
+
+                    $feed->set_icon($tmpname);
+
+                    unset($media);
+
+                    $app['Core']['file-system']->remove($tmpname);
+
+                    $datas['success'] = true;
+                } catch (\Exception $e) {
+                    $datas['message'] = _('Unable to add file to Phraseanet');
                 }
 
-                $feed->set_icon($tmpname);
-
-                unset($media);
-
-                unlink($tmpname);
-                unlink($fileData['tmp_name']);
-
-                return new Response('FILEHREF:' . $feed->get_icon_url() . '?' . mt_rand(100000, 999999));
+                return new Response(
+                        $app['Core']['Serializer']->serialize($datas, 'json'),
+                        200,
+                        array('Content-type' => 'application/json')
+                );
             })->assert('id', '\d+');
 
         $controllers->post('/feed/{id}/addpublisher/', function($id) use ($app, $appbox) {

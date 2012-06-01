@@ -35,6 +35,10 @@ $groups = array(
         , '//login/geonames.js'
         , '//include/jquery.tooltip.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
+        , '//include/vendor/javascript-load-image/load-image.js'
+        , '//include/vendor/jquery-file-upload/js/vendor/jquery.ui.widget.js'
+        , '//include/vendor/jquery-file-upload/js/jquery.iframe-transport.js'
+        , '//include/vendor/jquery-file-upload/js/jquery.fileupload.js'
     ),
     'report' => array(
          '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'

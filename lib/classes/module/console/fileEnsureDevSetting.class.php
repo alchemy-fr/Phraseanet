@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-use Symfony\Component\Console\Input\InputArgument,
-    Symfony\Component\Console\Input\InputInterface,
-    Symfony\Component\Console\Input\InputOption,
-    Symfony\Component\Console\Output\OutputInterface,
-    Symfony\Component\Console\Command\Command;
+use Alchemy\Phrasea\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 use Alchemy\Phrasea\Core;
 
 /**
@@ -55,17 +55,20 @@ class module_console_fileEnsureDevSetting extends Command
         return $this;
     }
 
+    public function requireSetup()
+    {
+        return true;
+    }
+
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->checkSetup();
+
         $specifications = new \Alchemy\Phrasea\Core\Configuration\ApplicationSpecification();
 
         $environnement = $input->getArgument('conf');
 
         $this->configuration = \Alchemy\Phrasea\Core\Configuration::build($specifications, $environnement);
-
-        if ( ! $this->configuration->isInstalled()) {
-            $output->writeln(sprintf("\nPhraseanet is not installed\n"));
-        }
 
         $this->checkParse($output);
         $output->writeln(sprintf("Will Ensure Production Settings on <info>%s</info>", $this->configuration->getEnvironnement()));
@@ -73,6 +76,7 @@ class module_console_fileEnsureDevSetting extends Command
         $this->runTests($output);
 
         $retval = $this->errors;
+
         if ($input->getOption('strict')) {
             $retval += $this->alerts;
         }
@@ -82,6 +86,7 @@ class module_console_fileEnsureDevSetting extends Command
         } else {
             $output->writeln("\n<info>Your dev settings are setted correctly ! Enjoy</info>");
         }
+
         $output->writeln('End');
 
         return $retval;
@@ -127,9 +132,11 @@ class module_console_fileEnsureDevSetting extends Command
         if ( ! $this->configuration->getConfigurations()) {
             throw new \Exception("Unable to load configurations\n");
         }
+
         if ( ! $this->configuration->getConnexions()) {
             throw new \Exception("Unable to load connexions\n");
         }
+
         if ( ! $this->configuration->getServices()) {
             throw new \Exception("Unable to load services\n");
         }

@@ -14,10 +14,11 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
+use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
 
 class module_console_systemClearCache extends Command
 {
@@ -31,47 +32,28 @@ class module_console_systemClearCache extends Command
         return $this;
     }
 
+    public function requireSetup()
+    {
+        return false;
+    }
+
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $files = $dirs = array();
+        $this->checkSetup();
+
         $finder = new Finder();
+
         $finder
-            ->files()
             ->exclude('.git')
             ->exclude('.svn')
             ->in(array(
-                __DIR__ . '/../../../../tmp/cache_minify/'
-                , __DIR__ . '/../../../../tmp/cache_twig/'
+                __DIR__ . '/../../../../tmp/cache_minify/',
+                __DIR__ . '/../../../../tmp/cache_twig/'
             ));
 
-        $count = 1;
-        foreach ($finder as $file) {
-            $files[$file->getPathname()] = $file->getPathname();
-            $count ++;
-        }
+        $filesystem = new Filesystem();
 
-        $finder = new Finder();
-        $finder
-            ->directories()
-            ->in(array(
-                __DIR__ . '/../../../../tmp/cache_minify'
-                , __DIR__ . '/../../../../tmp/cache_twig'
-            ))
-            ->exclude('.git')
-            ->exclude('.svn');
-
-        foreach ($finder as $file) {
-            $dirs[$file->getPathname()] = $file->getPathname();
-            printf('%4d) %s' . PHP_EOL, $count, $file->getPathname());
-            $count ++;
-        }
-
-        foreach ($files as $file) {
-            unlink($file);
-        }
-        foreach ($dirs as $dir) {
-            rmdir($dir);
-        }
+        $filesystem->remove($finder);
 
         if (setup::is_installed()) {
             $Core = \bootstrap::getCore();

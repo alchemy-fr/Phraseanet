@@ -71,10 +71,10 @@
                                                             <img src="{{ status['img_off'] }}" width="16" height="16" />
                                                         {% endif %}
                                                         <span>{{ status['labeloff']|default('off') }}</span>
-                                                        <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="off" checked="checked"/>
+                                                        <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="0" checked="checked"/>
                                                     </td>
                                                     <td class="status-tab-right">
-                                                        <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="on" />
+                                                        <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="1" />
                                                         <span for="labelon">{{ status['labelon']|default('on') }}</span>
                                                         {% if status['img_on'] is not empty %}
                                                             <img src="{{ status['img_on'] }}" width="16" height="16" />
@@ -167,7 +167,7 @@ $(document).ready(function () {
     //Remove all element from upload box
     $("button.clear-queue", UploaderManager.getContainer()).bind("click", function(){
         UploaderManager.clearUploadBox();
-        $('.upload-box').remove();
+        $('ul', $(this).closest('.upload-box')).empty();
     });
 
     //Remove an element from the upload box
@@ -193,6 +193,7 @@ $(document).ready(function () {
         // are upload one by one
         singleFileUploads : true,
         sequentialUploads: true,
+        recalculateProgress: true,
         //When a file is added
         add: function (e, data) {
             //Since singleFileUploads &  sequentialUploads are setted to true
@@ -302,7 +303,6 @@ $(document).ready(function () {
                             data.context.find('.upload-record p.error').append(html).show();
                         });
                     }
-
                 })
                 .error(function(jqXHR, textStatus, errorThrown) {
                     //Request is aborted
@@ -336,9 +336,15 @@ $(document).ready(function () {
     });
 
     var progressbarAll = $('#uploadBoxRight .progress-bar-total');
+
     //Get global upload progress
     $('#fileupload', UploaderManager.getContainer()).bind('fileuploadprogressall', function (e, data) {
         progressbarAll.width(Math.round(UploaderManager.Formater.pourcent(data.loaded, data.total)) + '%');
+    });
+
+    $('#fileupload', UploaderManager.getContainer()).bind('fileuploadfail', function (e, data) {
+        //Remove from queue
+        UploaderManager.removeData(data.uploadIndex);
     });
 
 });

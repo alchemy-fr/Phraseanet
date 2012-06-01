@@ -183,8 +183,8 @@
                     {% if story.getId() == selected_id and selected_type == 'story' %}active{% endif %}">
           <a href="/prod/story/{{ story.getRecord().get_sbas_id }}/{{ story.getRecord().get_record_id() }}/">
             <span>
-            {{story.getRecord().get_base_id()|get_collection_logo|raw}}
-            {{story.getRecord().get_title()}}
+            {{ story.getRecord().get_base_id()|get_collection_logo|raw }}
+            <i> {{ story.getRecord().get_title() }} </i>
             </span>
           </a>
           <div class="menu">

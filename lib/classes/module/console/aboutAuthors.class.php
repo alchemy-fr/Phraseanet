@@ -17,7 +17,7 @@
  */
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
+use Alchemy\Phrasea\Command\Command;
 
 class module_console_aboutAuthors extends Command
 {
@@ -33,8 +33,15 @@ class module_console_aboutAuthors extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->checkSetup();
+
         $output->writeln(file_get_contents(__DIR__ . '/../../../../AUTHORS'));
 
         return 0;
+    }
+
+    public function requireSetup()
+    {
+        return false;
     }
 }

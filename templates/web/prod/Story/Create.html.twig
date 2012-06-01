@@ -21,12 +21,18 @@
       $('input[name="lst"]', $dialogBox).val(p4.Results.Selection.serialize());
 
       var buttons = $dialog.getOption('buttons');
-      buttons[language.create] = function(){$('form', $dialogBox).trigger('submit')};
+
+      buttons[language.create] = function(){
+          $('form', $dialogBox).trigger('submit')
+      };
+
       $dialog.setOption('buttons', buttons);
 
       $('form', $dialogBox).bind('submit', function(event){
 
         var $form = $(this);
+        var dialog = $dialogBox.closest('.ui-dialog');
+        var buttonPanel = dialog.find('.ui-dialog-buttonpane');
 
         $.ajax({
           type: $form.attr('method'),
@@ -34,7 +40,8 @@
           data: $form.serializeArray(),
           dataType: 'json',
           beforeSend:function(){
-
+              $(":button:contains('" + language.create + "')", buttonPanel)
+              .attr("disabled", true).addClass("ui-state-disabled");
           },
           success: function(data){
 
@@ -44,7 +51,8 @@
             return;
           },
           error: function(){
-
+              $(":button:contains('" + language.create + "')", buttonPanel)
+              .attr("disabled", false).removeClass("ui-state-disabled");
           },
           timeout: function(){
 
