@@ -33,21 +33,17 @@ abstract class Command extends SymfoCommand
      * Check if Phraseanet is set-up and if the current command requires
      * Phraseanet to be set-up
      *
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @throws \RuntimeException
      * @return Boolean
      */
-    public function checkSetup(OutputInterface $output)
+    public function checkSetup()
     {
         if ($this->requireSetup()) {
             $core = \bootstrap::getCore();
 
             if ( ! $core->getConfiguration()->isInstalled()) {
-                $output->writeln("<error>Phraseanet is not set up</error>");
-
-                return false;
+                throw new \RuntimeException('Phraseanet must be set-up');
             }
         }
-
-        return true;
     }
 }

@@ -43,9 +43,7 @@ class module_console_checkExtension extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        if ( ! $this->checkSetup($output)) {
-            return 1;
-        }
+        $this->checkSetup();
 
         if ( ! extension_loaded('phrasea2')) {
             $output->writeln("<error>Missing Extension php-phrasea.</error>");

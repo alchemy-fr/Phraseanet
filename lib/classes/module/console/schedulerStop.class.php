@@ -38,10 +38,7 @@ class module_console_schedulerStop extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        if ( ! $this->checkSetup($output)) {
-
-            return 1;
-        }
+        $this->checkSetup();
 
         require_once __DIR__ . '/../../../../lib/bootstrap.php';
 

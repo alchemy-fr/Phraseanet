@@ -62,9 +62,7 @@ class module_console_fileEnsureDevSetting extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        if ( ! $this->checkSetup($output)) {
-            return 1;
-        }
+        $this->checkSetup();
 
         $specifications = new \Alchemy\Phrasea\Core\Configuration\ApplicationSpecification();
 

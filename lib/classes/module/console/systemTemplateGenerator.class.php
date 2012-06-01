@@ -38,10 +38,7 @@ class module_console_systemTemplateGenerator extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        if ( ! $this->checkSetup($output)) {
-
-            return 1;
-        }
+        $this->checkSetup();
 
         $tplDirs = array(
             realpath(__DIR__ . '/../../../../templates/web/'),

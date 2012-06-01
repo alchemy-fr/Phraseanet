@@ -56,8 +56,9 @@ class module_console_schedulerState extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        if ( ! $this->checkSetup($output)) {
-
+        try{
+            $this->checkSetup();
+        } catch (\RuntimeException $e){
             return self::EXITCODE_SETUP_ERROR;
         }
 

@@ -39,10 +39,7 @@ class module_console_systemConfigCheck extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        if ( ! $this->checkSetup($output)) {
-
-            return 1;
-        }
+        $this->checkSetup();
 
         if ( ! function_exists('_')) {
             $output->writeln('<error>YOU MUST ENABLE GETTEXT SUPPORT TO USE PHRASEANET</error>');

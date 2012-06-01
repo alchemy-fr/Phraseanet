@@ -38,9 +38,7 @@ class module_console_fieldsList extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        if ( ! $this->checkSetup($output)) {
-            return 1;
-        }
+        $this->checkSetup();
 
         $appbox = \appbox::get_instance(\bootstrap::getCore());
 
