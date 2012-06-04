@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Command;
 
+use Monolog\Handler;
 use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -54,10 +55,15 @@ class BuildMissingSubdefs extends Command
         $core = \bootstrap::getCore();
         $this->appbox = \appbox::get_instance($core);
 
+        if($input->getOption('verbose')){
+            $logger = $this->getLogger();
+            $handler = new Handler\StreamHandler(fopen('php://stdout', 'a'));
+            $logger->pushHandler($handler);
+            $this->setLogger($logger);
+        }
+        
         $start = microtime(true);
         $n = 0;
-
-        $logger = $core['monolog'];
 
         foreach ($this->appbox->get_databoxes() as $databox) {
 
@@ -76,9 +82,23 @@ class BuildMissingSubdefs extends Command
 
                 if ($group) {
                     foreach ($group as $subdef) {
+
+                        $todo = false;
+
                         if ( ! $record->has_subdef($subdef->get_name())) {
-                            $record->generate_subdefs($databox, $logger, array($subdef->get_name()));
-                            $output->writeln("generate " . $subdef->get_name() . " for record " . $record->get_record_id());
+                            $todo = true;
+                        }
+
+                        if (in_array($subdef->get_name(), array('preview', 'thumbnail'))) {
+                            $sub = $record->get_subdef($subdef->get_name());
+                            if ( ! $sub->is_physically_present()) {
+                                $todo = true;
+                            }
+                        }
+
+                        if ($todo) {
+                            $record->generate_subdefs($databox, $this->getLogger(), array($subdef->get_name()));
+                            $this->getLogger()->addInfo("generate " . $subdef->get_name() . " for record " . $record->get_record_id());
                             $n ++;
                         }
                     }
@@ -88,11 +108,11 @@ class BuildMissingSubdefs extends Command
             }
         }
 
-        $output->writeln($n . " subdefs done");
+        $this->getLogger()->addInfo($n . " subdefs done");
         $stop = microtime(true);
         $duration = $stop - $start;
 
-        $output->writeln(sprintf("process took %s, (%f sd/s.)", $this->getFormattedDuration($duration), round($n / $duration, 3)));
+        $this->getLogger()->addInfo(sprintf("process took %s, (%f sd/s.)", $this->getFormattedDuration($duration), round($n / $duration, 3)));
 
         return;
     }
@@ -105,13 +125,13 @@ class BuildMissingSubdefs extends Command
      */
     public function getFormattedDuration($seconds)
     {
-        $duration = round($seconds / (60 * self::AVG_SPEED)) . ' minutes';
+        $duration = round($seconds / 60) . ' minutes';
 
         if ($duration > 60) {
-            $duration = round($duration / (60 * self::AVG_SPEED), 1) . ' hours';
+            $duration = round($duration / 60, 1) . ' hours';
         }
         if ($duration > 24) {
-            $duration = round($duration / (24 * self::AVG_SPEED), 1) . ' days';
+            $duration = round($duration / 24, 1) . ' days';
         }
 
         return $duration;

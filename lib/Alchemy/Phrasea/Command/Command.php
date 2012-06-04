@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Command;
 
+use Monolog\Logger;
 use Symfony\Component\Console\Command\Command as SymfoCommand;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -22,6 +23,40 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 abstract class Command extends SymfoCommand
 {
+
+    /**
+     * Constructor
+     * @param type $name 
+     */
+    public function __construct($name)
+    {
+        parent::__construct($name);
+        $core = \bootstrap::getCore();
+        $this->logger = $core['monolog'];
+    }
+
+    /**
+     * Set a logger to the command
+     *
+     * @param Logger $logger
+     * @return \Alchemy\Phrasea\Command\Command 
+     */
+    public function setLogger(Logger $logger)
+    {
+        $this->logger = $logger;
+
+        return $this;
+    }
+
+    /** Get the current command logger
+     *
+     * @return Logger
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
     /**
      * Tell whether the command requires Phraseanet to be set-up or not
      *
