@@ -78,20 +78,34 @@ return call_user_func(
                     $databox = \databox::get_instance((int) $sbas_id);
                     $record = new \record_adapter($sbas_id, $record_id);
 
-                    $record->get_type();
-
-                    if ( ! $session->is_authenticated())
+                    if ( ! $session->is_authenticated()) {
                         throw new \Exception_Session_NotAuthenticated();
+                    }
+
+
+                    $all_access = false;
+                    $subdefStruct = $databox->get_subdef_structure();
+
+                    if ($subdefStruct->getSubdefGroup($record->get_type())) {
+                        foreach ($subdefStruct->getSubdefGroup($record->get_type()) as $subdefObj) {
+                            if ($subdefObj->get_name() == $subdef) {
+                                if ($subdefObj->get_class() == 'thumbnail') {
+                                    $all_access = true;
+                                }
+                            }
+                        }
+                    }
 
                     $user = \User_Adapter::getInstance($session->get_usr_id(), \appbox::get_instance($app['Core']));
 
-                    if ( ! $user->ACL()->has_access_to_subdef($record, $subdef))
+                    if ( ! $user->ACL()->has_access_to_subdef($record, $subdef)) {
                         throw new \Exception_UnauthorizedAction();
+                    }
 
                     $stamp = false;
                     $watermark = ! $user->ACL()->has_right_on_base($record->get_base_id(), 'nowatermark');
 
-                    if ($watermark) {
+                    if ($watermark && ! $all_access) {
                         $subdef_class = $databox
                             ->get_subdef_structure()
                             ->get_subdef($record->get_type(), $subdef)
@@ -104,7 +118,7 @@ return call_user_func(
                         }
                     }
 
-                    if ($watermark) {
+                    if ($watermark && ! $all_access) {
 
                         $em = $app['Core']->getEntityManager();
 
@@ -115,9 +129,9 @@ return call_user_func(
                         $ValidationByRecord = $repository->findReceivedValidationElementsByRecord($record, $user);
                         $ReceptionByRecord = $repository->findReceivedElementsByRecord($record, $user);
 
-                        if ($ValidationByRecord && $ValidationByRecord->count() > 0) {
+                        if ($ValidationByRecord && count($ValidationByRecord) > 0) {
                             $watermark = false;
-                        } elseif ($ReceptionByRecord && $ReceptionByRecord->count() > 0) {
+                        } elseif ($ReceptionByRecord && count($ReceptionByRecord) > 0) {
                             $watermark = false;
                         }
                     }
