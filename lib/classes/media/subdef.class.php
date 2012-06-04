@@ -168,6 +168,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $this->height = $datas['height'];
             $this->etag = $datas['etag'];
             $this->path = $datas['path'];
+            $this->url = $datas['url'];
             $this->file = $datas['file'];
             $this->is_physically_present = $datas['physically_present'];
             $this->is_substituted = $datas['is_substituted'];
@@ -230,6 +231,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             , 'height'             => $this->height
             , 'etag'               => $this->etag
             , 'path'               => $this->path
+            , 'url'                => $this->url
             , 'file'               => $this->file
             , 'physically_present' => $this->is_physically_present
             , 'is_substituted'     => $this->is_substituted
@@ -673,13 +675,13 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         }
 
         try {
-            
+
             $sql = 'SELECT subdef_id FROM subdef 
                     WHERE record_id = :record_id AND name = :name';
             $stmt = $connbas->prepare($sql);
             $stmt->execute(array(
-                ':record_id'=>$record->get_record_id(),
-                ':name'=>$name,
+                ':record_id' => $record->get_record_id(),
+                ':name'      => $name,
             ));
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
