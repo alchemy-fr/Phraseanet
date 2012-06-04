@@ -596,8 +596,9 @@ abstract class task_abstract
 
         }
 
-        if ($this->getState() === self::STATE_STARTED && $this->runner === self::RUNNER_MANUAL)
+        if ($this->getState() === self::STATE_STARTED && $this->runner === self::RUNNER_MANUAL) {
             $this->setState(self::STATE_STOPPED);
+        }
 
         // in any case, exception or not, the task is ending so unlock the pid file
         $this->unlockTask($lockFD);
