@@ -55,7 +55,7 @@
       {{ record.get_technical_infos(constant('media_subdef::TC_DATA_ISO')) }}
       <br />
     {% endif %}
-    {% if record.get_technical_infos(constant('media_subdef::TC_DATA_FLASHFIRED')) is not null %}
+    {% if record.get_technical_infos(constant('media_subdef::TC_DATA_FLASHFIRED')) is not empty %}
       {% trans 'Flash' %} :
       {% if record.get_technical_infos(constant('media_subdef::TC_DATA_FLASHFIRED')) %}
         {% trans 'yes' %}
