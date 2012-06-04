@@ -585,6 +585,11 @@
     {
       $.tooltip.ajaxRequest.abort();
     }
+    
+    $.each($('#tooltip video'), function(i,el){
+        _V_($(el).attr('id')).destroy();
+    });
+  
     helper.body.empty();
     $.tooltip.current = null;
     function complete() {
