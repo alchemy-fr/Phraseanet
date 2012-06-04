@@ -587,7 +587,11 @@
     }
     
     $.each($('#tooltip video'), function(i,el){
-        _V_($(el).attr('id')).destroy();
+        try {
+            _V_($(el).attr('id')).destroy();
+        } catch(err) {
+            console.error('An error has been catched during the execution of VideoJS', err);
+        }
     });
   
     helper.body.empty();
@@ -616,7 +620,11 @@ function unfix_tooltip()
   $.tooltip.current = null;
   $('#tooltip').hide();
   $.each($('#tooltip video'), function(i,el){
+      try {
        _V_($(el).attr('id')).destroy();
+      } catch(err) {
+          console.error('An error has been catched during the execution of VideoJS', err);
+      }
   });
   $('#tooltip .tooltip_closer').hide();
   hideOverlay('_tooltip');

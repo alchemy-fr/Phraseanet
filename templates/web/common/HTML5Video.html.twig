@@ -23,9 +23,14 @@
     </div>
 
     <script type="text/javascript">
-        _V_("video_preview_tooltip").destroy();
-        _V_("video_preview_tooltip", {}, function(){
-        
+        $(document).ready(function(){
+            try {
+                _V_("video_preview_tooltip", {}, function(){
+
+                });
+            } catch(err) {
+                console.error('An error has been catched during the execution of VideoJS', err);
+            }
         });
     </script>
 
