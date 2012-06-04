@@ -39,8 +39,8 @@ phrasea::headers();
         $ztask = $task_manager->getTask($parm['__tid']);
         switch ($parm['__act']) {
             case 'FORM2XML':
-                if (method_exists($ztask, 'printInterfaceHTML')) {
-                    if ($ztask->getGraphicForm()) {
+                if ($ztask->hasInterfaceHTML()) {
+                    if (1) {
                         $xml = p4string::MakeString($ztask->graphic2xml($parm['__xml']), "js");
                     } else {
                         $xml = p4string::MakeString($parm['__xml'], "js");
@@ -61,9 +61,9 @@ phrasea::headers();
                 break;
 
             case 'XML2FORM':
-                if (method_exists($ztask, 'printInterfaceHTML')) {
+                if ($ztask->hasInterfaceHTML()) {
                     if ((simplexml_load_string($parm['txtareaxml']))) {
-                        if ($ztask->getGraphicForm()) {
+                        if (1) {
                             if (($msg = ($ztask->xml2graphic($parm['txtareaxml'], "parent.document.forms['graphicForm']"))) == "") {
                                 ?>
                                 <script type="text/javascript">

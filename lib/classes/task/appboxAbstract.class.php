@@ -84,6 +84,7 @@ abstract class task_appboxAbstract extends task_abstract
                 switch ($process_ret) {
                     case self::STATE_MAXMEGSREACHED:
                     case self::STATE_MAXRECSDONE:
+                    case self::STATE_OK:
                         if ($this->getRunner() == self::RUNNER_SCHEDULER) {
                             $this->setState(self::STATE_TORESTART);
                             $this->running = FALSE;
@@ -98,9 +99,6 @@ abstract class task_appboxAbstract extends task_abstract
                     case self::STATE_TODELETE: // formal 'suicidable'
                         $this->setState(self::STATE_TODELETE);
                         $this->running = FALSE;
-                        break;
-
-                    case self::STATE_OK:
                         break;
                 }
             } // if(row)
@@ -118,7 +116,7 @@ abstract class task_appboxAbstract extends task_abstract
      */
     protected function process(appbox $appbox)
     {
-                  $ret = self::STATE_OK;
+        $ret = self::STATE_OK;
 
         try {
             // get the records to process
@@ -126,7 +124,6 @@ abstract class task_appboxAbstract extends task_abstract
 
             // process the records
             $ret = $this->processLoop($appbox, $rs);
-
         } catch (Exception $e) {
             $this->log('Error  : ' . $e->getMessage());
         }

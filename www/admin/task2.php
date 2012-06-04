@@ -56,9 +56,8 @@ try {
 $zGraphicForm = 'graphicForm';
 $hasGraphicMode = false;
 
-if (method_exists($task, 'getGraphicForm')) {
+if ($task->hasInterfaceHTML()) {
     $hasGraphicMode = true;
-    $zGraphicForm = $task->getGraphicForm();
 } else {
     $parm['view'] = 'XML';
 }
@@ -67,15 +66,11 @@ function stripdoublequotes($value)
 {
     return str_replace(array("\r\n", "\r", "\n", "\""), array('', '', '', '\"'), $value);
 }
-if ( ! $task->getGraphicForm()) {
     $parm['view'] = 'XML';
-}
 
 $core = \bootstrap::getCore();
 $twig = $core->getTwig();
 
-if ( ! $task->getGraphicForm()) {
     $parm['view'] = 'XML';
-}
 
 echo $twig->render('admin/task.html', array('task' => $task, 'view' => $parm['view']));

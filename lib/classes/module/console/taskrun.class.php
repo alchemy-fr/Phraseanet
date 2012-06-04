@@ -59,7 +59,7 @@ class module_console_taskrun extends Command
     {
         if ($this->task) {
             $this->task->log(sprintf("signal %s received", $signo));
-            if ($signo == SIGTERM) {
+            if ($signo == SIGTERM || $signo == SIGINT) {
                 $this->task->setRunning(false);
             }
         }
@@ -113,7 +113,6 @@ class module_console_taskrun extends Command
         $logfile = __DIR__ . '/../../../../logs/task_' . $task_id . '.log';
         $handler = new Handler\RotatingFileHandler($logfile, 10);
         $logger->pushHandler($handler);
-
         $this->task = $task_manager->getTask($task_id, $logger);
 
         register_tick_function(array($this, 'tick_handler'), true);
@@ -121,6 +120,8 @@ class module_console_taskrun extends Command
 
         if (function_exists('pcntl_signal')) {
             pcntl_signal(SIGTERM, array($this, 'sig_handler'));
+            pcntl_signal(SIGINT, array($this, 'sig_handler'));
+         //   pcntl_signal(SIGKILL, array($this, 'sig_handler'));
         }
 
         try {

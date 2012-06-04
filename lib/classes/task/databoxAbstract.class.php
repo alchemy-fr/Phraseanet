@@ -85,7 +85,7 @@ abstract class task_databoxAbstract extends task_abstract
 
                 try {
                     // get the records to process
-                    $databox = databox::get_instance((int)$row['sbas_id']);
+                    $databox = databox::get_instance((int) $row['sbas_id']);
                 } catch (Exception $e) {
                     $this->log(sprintf('Warning : can\' connect to sbas(%s)', $row['sbas_id']));
                     continue;
@@ -111,6 +111,7 @@ abstract class task_databoxAbstract extends task_abstract
                 switch ($process_ret) {
                     case self::STATE_MAXMEGSREACHED:
                     case self::STATE_MAXRECSDONE:
+                    case self::STATE_OK:
                         if ($this->getRunner() == self::RUNNER_SCHEDULER) {
                             $this->setState(self::STATE_TORESTART);
                             $this->running = FALSE;
@@ -125,9 +126,6 @@ abstract class task_databoxAbstract extends task_abstract
                     case self::STATE_TODELETE: // formal 'suicidable'
                         // DO NOT SUICIDE IN THE LOOP, may have to work on other sbas !!!
                         $task_must_delete = TRUE;
-                        break;
-
-                    case self::STATE_OK:
                         break;
                 }
 
@@ -160,7 +158,6 @@ abstract class task_databoxAbstract extends task_abstract
 
             // process the records
             $ret = $this->processLoop($databox, $rs);
-
         } catch (Exception $e) {
             $this->log('Error  : ' . $e->getMessage());
         }

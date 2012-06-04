@@ -129,12 +129,7 @@ class task_period_ftpPull extends task_appboxAbstract
         <?php
     }
 
-    public function getGraphicForm()
-    {
-        return true;
-    }
-
-    public function printInterfaceHTML()
+    public function getInterfaceHTML()
     {
         global $parm;
         ob_start();
@@ -178,9 +173,8 @@ class task_period_ftpPull extends task_appboxAbstract
             &nbsp;<?php echo('task::_common_:minutes (unite temporelle)') ?><br/>
         </form>
         <?php
-        $out = ob_get_clean();
 
-        return $out;
+        return ob_get_clean();
     }
 
     public function saveChanges(connection_pdo $conn, $taskid, &$taskrow)

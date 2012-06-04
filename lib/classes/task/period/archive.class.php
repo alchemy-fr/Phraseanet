@@ -212,20 +212,11 @@ class task_period_archive extends task_abstract
     }
 
     /**
-     *
-     * @return string
-     */
-    public function getGraphicForm()
-    {
-        return true;
-    }
-
-    /**
-     *  printInterfaceHTML(..) : generer l'interface 'graphic view'
+     *  getInterfaceHTML(..) : retourner l'interface 'graphic view'
      *
      * @return Void
      */
-    public function printInterfaceHTML()
+    public function getInterfaceHTML()
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
 
@@ -264,9 +255,8 @@ class task_period_archive extends task_abstract
             <input type="checkbox" name="delfolder" onchange="chgxmlck(this, 'delfolder');">&nbsp;<?php echo _('task::archive:supprimer les repertoires apres archivage') ?><br/>
         </form>
         <?php
-        $out = ob_get_clean();
 
-        return $out;
+        return ob_get_clean();
     }
 
     /**
@@ -277,6 +267,7 @@ class task_period_archive extends task_abstract
     {
         return(_("task::archive:Archiving files found into a 'hotfolder'"));
     }
+    
     protected $sbas_id;
 
     /**

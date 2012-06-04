@@ -149,7 +149,6 @@ class task_period_subdef extends task_databoxAbstract
             </script>
 
             <?php
-
             return("");
         } else {
             return("BAD XML");
@@ -203,16 +202,12 @@ class task_period_subdef extends task_databoxAbstract
         <?php
     }
 
-    public function getGraphicForm()
-    {
-        return true;
-    }
-
     /**
-     * generates interface 'graphic view'
+     * return interface 'graphic view'
      *
      */
-    public function printInterfaceHTML()
+
+    public function getInterfaceHTML()
     {
         ob_start();
         ?>
@@ -233,9 +228,8 @@ class task_period_subdef extends task_databoxAbstract
             <br/>
         </form>
         <?php
-        $out = ob_get_clean();
 
-        return $out;
+        return ob_get_clean();
     }
 
     public function retrieveSbasContent(databox $databox)
