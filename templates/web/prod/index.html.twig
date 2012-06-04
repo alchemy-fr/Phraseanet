@@ -1058,24 +1058,30 @@
             <h1>{% trans 'Presentation de vignettes de panier' %}</h1>
             <div>
                 {% set basket_status_display = user.getPrefs('basket_status_display') %}
-                <input onchange="setPref('basket_status_display',($(this).attr('checked') ? '1' :'0'))"
+                <label for="basket_status_display" class="checkbox">
+                    <input onchange="setPref('basket_status_display',($(this).attr('checked') ? '1' :'0'))"
                     name="basket_status_display" type="checkbox" class="checkbox" value="1"
                     id="basket_status_display" {% if basket_status_display == '1' %}checked="checked"{% endif %} />
-                    <label for="basket_status_display">{% trans 'Afficher les status' %}</label>
+                    {% trans 'Afficher les status' %}
+                </label>
             </div>
             <div>
                 {% set basket_caption_display = user.getPrefs('basket_caption_display') %}
-                <input onchange="setPref('basket_caption_display',($(this).attr('checked') ? '1' :'0'))"
+                <label for="basket_caption_display" class="checkbox">
+                    <input onchange="setPref('basket_caption_display',($(this).attr('checked') ? '1' :'0'))"
                     name="basket_caption_display" type="checkbox" class="checkbox" value="1"
                     id="basket_caption_display" {% if basket_caption_display == '1' %}checked="checked"{% endif %} />
-                    <label for="basket_caption_display">{% trans 'Afficher la fiche descriptive' %}</label>
+                    {% trans 'Afficher la fiche descriptive' %}
+                </label>
             </div>
             <div>
                 {% set basket_title_display = user.getPrefs('basket_title_display') %}
-                <input onchange="setPref('basket_title_display',($(this).attr('checked') ? '1' :'0'))"
+                <label for="basket_title_display" class="checkbox">
+                    <input onchange="setPref('basket_title_display',($(this).attr('checked') ? '1' :'0'))"
                     name="basket_title_display" type="checkbox" class="checkbox" value="1"
                     id="basket_title_display" {% if basket_title_display == '1' %}checked="checked"{% endif %} />
-                    <label for="basket_title_display">{% trans 'Afficher le titre' %}</label>
+                    {% trans 'Afficher le titre' %}
+                </label>
             </div>
         </div>
     </div>

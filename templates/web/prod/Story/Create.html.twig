@@ -1,17 +1,19 @@
 <form method="POST" action="/prod/story/">
 
-  <label>{% trans 'Collection' %}</label>
-  <select name="base_id">
-    {% for collection in user.ACL().get_granted_base(['canaddrecord']) %}
-     <option value="{{ collection.get_base_id() }}">{{ collection.get_databox().get_viewname() }} / {{ collection.get_name() }}</option>
-    {% endfor %}
-  </select>
+    <label>{% trans 'Collection' %}</label>
+    <select name="base_id">
+        {% for collection in user.ACL().get_granted_base(['canaddrecord']) %}
+            <option value="{{ collection.get_base_id() }}">{{ collection.get_databox().get_viewname() }} / {{ collection.get_name() }}</option>
+        {% endfor %}
+    </select>
 
-  <label>{% trans 'Story name' %}</label>
-  <input name="name" value="" type="text"/>
+    <label>{% trans 'Story name' %}</label>
+    <input name="name" value="" type="text"/>
 
-  <label for="add_sel">{% trans 'Ajouter ma selection courrante' %}</label>
-  <input type="checkbox" name="lst" value=""/>
+    <label for="add_sel" class="checkbox">
+        <input type="checkbox" name="lst" value=""/>
+        {% trans 'Ajouter ma selection courrante' %}
+    </label>
 
   <script type="text/javascript">
     $(document).ready(function(){

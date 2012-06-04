@@ -98,6 +98,7 @@ class Bridge implements ControllerProviderInterface
 
                     $connector->reconnect();
                 } catch (\Exception $e) {
+                    var_dump(get_class($e), $e->getFile(), $e->getLine(), $e->getTraceAsString());
                     $error_message = $e->getMessage();
                 }
 

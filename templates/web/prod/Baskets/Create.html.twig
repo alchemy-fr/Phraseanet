@@ -1,13 +1,15 @@
 <form method="POST" action="/prod/baskets/">
 
-  <label>{% trans 'Nom du nouveau panier' %}</label>
-  <input name="name" value="" type="text"/>
+    <label>{% trans 'Nom du nouveau panier' %}</label>
+    <input name="name" value="" type="text"/>
 
-  <label>{% trans 'paniers::description du nouveau panier' %}</label>
-  <textarea name="description"></textarea>
+    <label>{% trans 'paniers::description du nouveau panier' %}</label>
+    <textarea name="description"></textarea>
 
-  <input type="checkbox" name="lst" value=""/>
-  <label for="add_sel">{% trans 'Ajouter ma selection courrante' %}</label>
+    <label for="add_sel" class="checkbox">
+        <input type="checkbox" name="lst" value=""/>
+        {% trans 'Ajouter ma selection courrante' %}
+    </label>
 
   <script type="text/javascript">
     $(document).ready(function(){

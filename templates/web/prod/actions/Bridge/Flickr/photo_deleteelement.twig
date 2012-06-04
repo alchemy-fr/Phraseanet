@@ -20,7 +20,7 @@
         <input type="hidden" name="elements_list[]" value="{{id}}"/>
       {% endfor %}
       <input type="hidden" name="destination" value="{{ destination }}" />
-      <button class="form_submitter">{% trans 'boutton::valider' %}</button>
-      <button class="back_link">{% trans 'boutton::retour' %}</button>
+      <button class="form_submitter btn btn-inverse">{% trans 'boutton::valider' %}</button>
+      <button class="back_link btn btn-inverse">{% trans 'boutton::retour' %}</button>
     </form>
 {% endblock %}

@@ -2,50 +2,43 @@
 {% import "prod/actions/Bridge/paginator.twig" as pages %}
 
 
-
 {% block menu %}
+<table style="width:100%; height:40px;">
+    <tr>
+        <td style="width:20px;">
+            <form name="bridge_selection">
+                <input class="bridge_all_selector" type="checkbox" value="">
+                <input type="hidden" name="elements_list" value="" />
+            </form>
+        </td>
+        {% if adapter_action == 'load-elements' %}
+            {% set actiontemplate = 'prod/actions/Bridge/' ~ account.get_api().get_connector().get_name() ~ '/actionelements.twig' %}
+        {% elseif adapter_action == 'load-containers' %}
+            {% set actiontemplate = 'prod/actions/Bridge/' ~ account.get_api().get_connector().get_name() ~ '/actioncontainers.twig' %}
+        {% endif %}
 
-<table style="width:100%;height:40px;">
-  <tr>
-    <td style="width:20px;">
-      <form name="bridge_selection">
-        <input class="bridge_all_selector" type="checkbox" value="">
-        <input type="hidden" name="elements_list" value="" />
-      </form>
-    </td>
-      {% if adapter_action == 'load-elements' %}
-      {% set actiontemplate = 'prod/actions/Bridge/' ~ account.get_api().get_connector().get_name() ~ '/actionelements.twig' %}
-      {% elseif adapter_action == 'load-containers' %}
-      {% set actiontemplate = 'prod/actions/Bridge/' ~ account.get_api().get_connector().get_name() ~ '/actioncontainers.twig' %}
-      {% endif %}
+        {% include actiontemplate %}
 
-      {% include actiontemplate %}
-
-      {% if not elements.get_total_items is none %}
-    <!--<td style="width:40px;">
-      <div class="menu_nb_element">
-        {% set nb_elements = elements.get_total_items() %}
-        {% trans %}
-          {{nb_elements}} elements
-        {% endtrans %}
-      </div>
-    </td>-->
-    {% endif %}
-    <td style="text-align:right;">
-
-
-      {% set url = '/prod/bridge/adapter/' ~ account.get_id ~ '/' ~ adapter_action ~ '/' ~ action_type ~ '/' %}
-      {{pages.paginator(elements.get_total_page(), elements.get_current_page(), url) }}
-
-
-    </td>
-  </tr>
+        {% if not elements.get_total_items is none %}
+        <!--<td style="width:40px;">
+        <div class="menu_nb_element">
+            {% set nb_elements = elements.get_total_items() %}
+            {% trans %}
+                {{nb_elements}} elements
+            {% endtrans %}
+        </div>
+        </td>-->
+        {% endif %}
+        <td style="text-align:right;">
+            {% set url = '/prod/bridge/adapter/' ~ account.get_id ~ '/' ~ adapter_action ~ '/' ~ action_type ~ '/' %}
+            {{pages.paginator(elements.get_total_page(), elements.get_current_page(), url) }}
+        </td>
+    </tr>
 </table>
 {% endblock %}
 
 {% block response %}
     {%for element in elements.get_elements%}
-
       <div class="element {{ loop.index is odd ? 'odd' : 'even' }}">
         <table>
           <tr>
@@ -117,9 +110,9 @@
           <tr>
             <td colspan="4" style="text-align:right;">
               {% if adapter_action == 'load-elements' %}
-              {% set actiontemplate = 'prod/actions/Bridge/' ~ account.get_api().get_connector().get_name() ~ '/actionelement.twig' %}
+                  {% set actiontemplate = 'prod/actions/Bridge/' ~ account.get_api().get_connector().get_name() ~ '/actionelement.twig' %}
               {% elseif adapter_action == 'load-containers' %}
-              {% set actiontemplate = 'prod/actions/Bridge/' ~ account.get_api().get_connector().get_name() ~ '/actioncontainer.twig' %}
+                  {% set actiontemplate = 'prod/actions/Bridge/' ~ account.get_api().get_connector().get_name() ~ '/actioncontainer.twig' %}
               {% endif %}
 
               {% include actiontemplate %}
@@ -127,7 +120,5 @@
           </tr>
         </table>
       </div>
-
-
     {% endfor %}
 {% endblock %}
