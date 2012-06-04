@@ -757,23 +757,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                             break;
                     }
                 }
-                /**
-                 * @todo un patch pour ca, et rentrer les infos à l'insert
-                 */
-//        try
-//        {
-//          $hd = $this->get_subdef('document');
-////          if ($hd)
-////          {
-//          $this->technical_datas['size'] = $hd->get_size();
-//          $this->technical_datas['width'] = $hd->get_width();
-//          $this->technical_datas['height'] = $hd->get_height();
-////          }
-//        }
-//        catch (Exception $e)
-//        {
-//
-//        }
                 $this->set_data_to_cache($this->technical_datas, self::CACHE_TECHNICAL_DATAS);
                 unset($e);
             }
