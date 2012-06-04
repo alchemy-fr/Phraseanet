@@ -61,7 +61,7 @@
         {
             "package": "mediavorus/mediavorus",
             "version": "dev-master",
-            "source-reference": "912742640619afd0341d32975653f85184e49798"
+            "source-reference": "c8a764abf50f203d85c9cbc725b7555096e07123"
         },
         {
             "package": "monolog/monolog",
