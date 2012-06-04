@@ -89,7 +89,7 @@ class BuildMissingSubdefs extends Command
                             $todo = true;
                         }
 
-                        if (in_array($subdef->get_name(), array('preview', 'thumbnail'))) {
+                        if (in_array($subdef->get_name(), array('preview', 'thumbnail', 'thumbnailgif'))) {
                             $sub = $record->get_subdef($subdef->get_name());
                             if ( ! $sub->is_physically_present()) {
                                 $todo = true;
