@@ -70,7 +70,7 @@
         {
             "package": "php-ffmpeg/php-ffmpeg",
             "version": "dev-master",
-            "source-reference": "0e30b11436bc925c31f522f4903d626b12f5b75b"
+            "source-reference": "1de9390db3f7d3bec8255b64c919cc0373d82d54"
         },
         {
             "package": "php-mp4box/php-mp4box",
@@ -95,7 +95,7 @@
         {
             "package": "phpexiftool/phpexiftool",
             "version": "dev-master",
-            "source-reference": "4916c7a40820a326a3d524f8cb32ef9ff2007f29"
+            "source-reference": "0a458a069b94b68124f6a66a5c9e1c128605177b"
         },
         {
             "package": "pimple/pimple",
@@ -111,13 +111,13 @@
         {
             "package": "silex/silex",
             "version": "dev-master",
-            "alias-pretty-version": "1.0.x-dev",
-            "alias-version": "1.0.9999999.9999999-dev"
+            "source-reference": "8b7796f94154e0cb51db3733e4262de50114c121"
         },
         {
             "package": "silex/silex",
             "version": "dev-master",
-            "source-reference": "1f90112bad50755de2b3073732adf9f09344d6f8"
+            "alias-pretty-version": "1.0.x-dev",
+            "alias-version": "1.0.9999999.9999999-dev"
         },
         {
             "package": "swftools/swftools",
