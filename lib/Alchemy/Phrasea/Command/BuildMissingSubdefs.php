@@ -69,7 +69,7 @@ class BuildMissingSubdefs extends Command
 
             $subdefStructure = $databox->get_subdef_structure();
 
-            $sql = 'SELECT record_id FROM record WHERE parent_record_id = 0 ORDER BY record_id DESC';
+            $sql = 'SELECT record_id FROM record WHERE parent_record_id = 0';
             $stmt = $databox->get_connection()->prepare($sql);
             $stmt->execute();
             $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -91,13 +91,13 @@ class BuildMissingSubdefs extends Command
 
                         $todo = false;
 
-                        if (!$record->has_subdef($subdef->get_name())) {
+                        if ( ! $record->has_subdef($subdef->get_name())) {
                             $todo = true;
                         }
                         if (in_array($subdef->get_name(), array('preview', 'thumbnail', 'thumbnailgif'))) {
                             try {
                                 $sub = $record->get_subdef($subdef->get_name());
-                                if (!$sub->is_physically_present()) {
+                                if ( ! $sub->is_physically_present()) {
                                     $todo = true;
                                 }
                             } catch (\Exception_Media_SubdefNotFound $e) {
@@ -108,7 +108,7 @@ class BuildMissingSubdefs extends Command
                         if ($todo) {
                             $record->generate_subdefs($databox, $this->getLogger(), array($subdef->get_name()));
                             $this->getLogger()->addInfo("generate " . $subdef->get_name() . " for record " . $record->get_record_id());
-                            $n++;
+                            $n ++;
                         }
                     }
                 }
