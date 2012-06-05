@@ -109,7 +109,12 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         $this->evaluateMetaJsonNotFound($content);
     }
 
-    public function testDatboxListRoute()
+    /**
+     * @covers \API_V1_adapter::get_databoxes
+     * @covers \API_V1_adapter::list_databoxes
+     * @covers \API_V1_adapter::list_databox
+     */
+    public function testDataboxListRoute()
     {
         $this->setToken(self::$token);
         $this->client->request('GET', '/databoxes/list/', array(), array(), array('HTTP_Accept' => 'application/json'));
@@ -170,7 +175,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     }
 
     /**
-     * Cover mustBeAdmin route middleware
+     * Covers mustBeAdmin route middleware
      */
     public function testAdminOnlyShedulerState()
     {
@@ -203,7 +208,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
     /**
      * Route GET /API/V1/monitor/task
-     * @cover API_V1_adapter::getTask_list
+     * @covers API_V1_adapter::get_task_list
      */
     public function testGetMonitorTasks()
     {
@@ -225,7 +230,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
     /**
      * Route GET /API/V1/monitor/task{idTask}
-     * @cover API_V1_adapter::getTask
+     * @covers API_V1_adapter::get_task
      */
     public function testGetMonitorTaskById()
     {
@@ -252,7 +257,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
     /**
      * Route GET /API/V1/monitor/task/{idTask}
-     * @cover API_V1_adapter::getTask
+     * @covers API_V1_adapter::get_task
      */
     public function testUnknowGetMonitorTaskById()
     {
@@ -268,7 +273,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
     /**
      * Route GET /API/V1/monitor/task/{idTask}/start
-     * @cover API_V1_adapter::start_task
+     * @covers API_V1_adapter::start_task
      */
     public function testGetMonitorStartTask()
     {
@@ -298,7 +303,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
     /**
      * Route GET /API/V1/monitor/task/{idTask}/stop
-     * @cover API_V1_adapter::stop_task
+     * @covers API_V1_adapter::stop_task
      */
     public function testGetMonitorStopTask()
     {
@@ -329,7 +334,10 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
     /**
      * Route GET /API/V1/monitor/phraseanet
-     * @cover API_V1_adapter::get_phraseanet_monitor
+     * @covers API_V1_adapter::get_phraseanet_monitor
+     * @covers API_V1_adapter::get_config_info
+     * @covers API_V1_adapter::get_cache_info
+     * @covers API_V1_adapter::get_gv_info
      */
     public function testgetMonitorPhraseanet()
     {
@@ -350,8 +358,8 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     }
 
     /**
-     * Routes /API/V1/databoxes/DATABOX_ID/xxxxxx
-     *
+     * @covers \API_V1_adapter::get_record
+     * @covers \API_V1_adapter::list_record
      */
     public function testDataboxRecordRoute()
     {
@@ -375,6 +383,11 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
 
+    /**
+     * @covers \API_V1_adapter::get_databox_collections
+     * @covers \API_V1_adapter::list_databox_collections
+     * @covers \API_V1_adapter::list_collection
+     */
     public function testDataboxCollectionRoute()
     {
         $this->setToken(self::$token);
@@ -410,6 +423,10 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
 
+    /**
+     * @covers \API_V1_adapter::get_databox_status
+     * @covers \API_V1_adapter::list_databox_status
+     */
     public function testDataboxStatusRoute()
     {
         $this->setToken(self::$token);
@@ -457,6 +474,11 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
 
+    /**
+     * @covers \API_V1_adapter::get_databox_metadatas
+     * @covers \API_V1_adapter::list_databox_metadatas_fields
+     * @covers \API_V1_adapter::list_databox_metadata_field_properties
+     */
     public function testDataboxMetadatasRoute()
     {
         $this->setToken(self::$token);
@@ -535,6 +557,11 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
 
+    /**
+     * @covers \API_V1_adapter::get_databox_terms
+     * @covers \API_V1_adapter::list_databox_terms
+     * 
+     */
     public function testDataboxTermsOfUseRoute()
     {
         $this->setToken(self::$token);
@@ -564,13 +591,8 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     }
 
     /**
-     *
-     * End /API/V1/databoxes/DATABOX_ID/xxxxxx Routes
-     *
-     * **************************************************************************
-     *
-     * Routes /API/V1/records/DATABOX_ID/RECORD_ID/xxxxx
-     *
+     * @covers \API_V1_adapter::search_records
+     * @covers \API_V1_adapter::list_record
      */
     public function testRecordsSearchRoute()
     {
@@ -602,10 +624,8 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         $this->assertTrue(is_int($response->total_results), 'Le nombre de results est un int');
         $this->assertTrue(is_string($response->error), 'Error est une string');
         $this->assertTrue(is_string($response->warning), 'Warning est une string');
-        /**
-         * @todo null quand erreur
-         */
-//    $this->assertTrue(is_string($response->query_time));
+
+//        $this->assertTrue(is_string($response->query_time));
         $this->assertTrue(is_string($response->search_indexes));
         $this->assertTrue(is_array($response->suggestions));
         $this->assertTrue(is_array($response->results));
@@ -616,6 +636,9 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         }
     }
 
+    /**
+     * @covers \API_V1_adapter::caption_records
+     */
     public function testRecordsCaptionRoute()
     {
         $this->setToken(self::$token);
@@ -639,6 +662,9 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
 
+    /**
+     * @covers \API_V1_adapter::set_record_metadatas
+     */
     public function testRecordsMetadatasRoute()
     {
         $this->setToken(self::$token);
@@ -662,6 +688,9 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
 
+    /**
+     * @covers \API_V1_adapter::get_record_status
+     */
     public function testRecordsStatusRoute()
     {
         $this->setToken(self::$token);
@@ -685,6 +714,9 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
 
+    /**
+     * @covers \API_V1_adapter::get_record_embed
+     */
     public function testRecordsEmbedRoute()
     {
         $this->setToken(self::$token);
@@ -714,7 +746,10 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
 
-    public function testRecordsEmbedRouteMime()
+    /**
+     * @covers \API_V1_adapter::get_record_embed
+     */
+    public function testRecordsEmbedRouteMimeType()
     {
         $this->setToken(self::$token);
 
@@ -731,6 +766,9 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         }
     }
 
+    /**
+     * @covers \API_V1_adapter::get_record_related
+     */
     public function testRecordsEmbedRouteDevices()
     {
         $this->setToken(self::$token);
@@ -743,6 +781,420 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         $this->assertEquals(0, count($content->response->embed));
     }
 
+
+    /**
+     * @covers \API_V1_adapter::get_record_related
+     */
+    public function testRecordsRelatedRoute()
+    {
+        $this->setToken(self::$token);
+
+        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/related/';
+        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+
+        $this->client->request('GET', $route);
+        $content = json_decode($this->client->getResponse()->getContent());
+
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaJson200($content);
+        $this->assertObjectHasAttribute("baskets", $content->response);
+        
+        foreach ($content->response->baskets as $basket) {
+            $this->evaluateGoodBasket($basket);
+        }
+
+        $route = '/records/24892534/51654651553/related/';
+        $this->evaluateNotFoundRoute($route, array('GET'));
+        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+        $route = '/records/any_bad_id/sfsd5qfsd5/related/';
+        $this->evaluateBadRequestRoute($route, array('GET'));
+        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+    }
+
+    /**
+     * @covers \API_V1_adapter::set_record_metadatas
+     * @covers \API_V1_adapter::list_record_caption
+     * @covers \API_V1_adapter::list_record_caption_field
+     */
+    public function testRecordsSetMetadatas()
+    {
+        $this->setToken(self::$token);
+
+        $file = new Alchemy\Phrasea\Border\File(\MediaVorus\MediaVorus::guess(new \SplFileInfo(__DIR__ . '/../../../testfiles/test001.CR2')), self::$collection);
+        $record = record_adapter::createFromFile($file);
+
+        $route = '/records/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/setmetadatas/';
+        $caption = $record->get_caption();
+
+        $toupdate = array();
+
+        foreach ($record->get_databox()->get_meta_structure()->get_elements() as $field) {
+            try {
+                $values = $record->get_caption()->get_field($field->get_name())->get_values();
+                $value = array_pop($values);
+                $meta_id = $value->getId();
+            } catch (\Exception $e) {
+                $meta_id = null;
+            }
+
+            $toupdate[$field->get_id()] = array(
+                'meta_id'        => $meta_id
+                , 'meta_struct_id' => $field->get_id()
+                , 'value'          => 'podom pom pom ' . $field->get_id()
+            );
+        }
+
+        $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
+
+        $this->client->request('POST', $route, array('metadatas' => $toupdate));
+        $content = json_decode($this->client->getResponse()->getContent());
+
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaJson200($content);
+
+        $caption = $record->get_caption();
+
+        $this->assertEquals(count($caption->get_fields()), count(get_object_vars($content->response->metadatas)), 'Retrived metadatas are the same');
+
+        foreach ($caption->get_fields() as $field) {
+            foreach ($field->get_values() as $value) {
+                if ($field->is_readonly() === false && $field->is_multi() === false) {
+                    $saved_value = $toupdate[$field->get_meta_struct_id()]['value'];
+                    $this->assertEquals($value->getValue(), $saved_value);
+                }
+            }
+        }
+        $this->evaluateRecordsMetadataResponse($content);
+
+        foreach ($content->response->metadatas as $metadata) {
+            if ( ! in_array($metadata->meta_id, array_keys($toupdate)))
+                continue;
+            $saved_value = $toupdate[$metadata->meta_structure_id]['value'];
+            $this->assertEquals($saved_value, $metadata->value);
+        }
+    }
+
+    /**
+     * @covers \API_V1_adapter::set_record_status
+     * @covers \API_V1_adapter::list_record_status
+     */
+    public function testRecordsSetStatus()
+    {
+        $this->setToken(self::$token);
+
+        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/setstatus/';
+
+        $record_status = strrev(static::$records['record_1']->get_status());
+        $status_bits = static::$records['record_1']->get_databox()->get_statusbits();
+
+        $tochange = array();
+        foreach ($status_bits as $n => $datas) {
+            $tochange[$n] = substr($record_status, ($n - 1), 1) == '0' ? '1' : '0';
+        }
+        $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
+
+
+        $crawler = $this->client->request('POST', $route, array('status' => $tochange));
+        $content = json_decode($this->client->getResponse()->getContent());
+
+        /**
+         * Get fresh record_1
+         */
+        static::$records['record_1'] = static::$records['record_1']->get_databox()->get_record(static::$records['record_1']->get_record_id());
+
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaJson200($content);
+
+        $this->evaluateRecordsStatusResponse(static::$records['record_1'], $content);
+
+        $record_status = strrev(static::$records['record_1']->get_status());
+        foreach ($status_bits as $n => $datas) {
+            $this->assertEquals(substr($record_status, ($n - 1), 1), $tochange[$n]);
+        }
+
+        foreach ($tochange as $n => $value) {
+            $tochange[$n] = $value == '0' ? '1' : '0';
+        }
+
+
+        $crawler = $this->client->request('POST', $route, array('status' => $tochange));
+        $content = json_decode($this->client->getResponse()->getContent());
+
+        /**
+         * Get fresh record_1
+         */
+        static::$records['record_1'] = static::$records['record_1']->get_databox()->get_record(static::$records['record_1']->get_record_id());
+
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaJson200($content);
+
+        $this->evaluateRecordsStatusResponse(static::$records['record_1'], $content);
+
+        $record_status = strrev(static::$records['record_1']->get_status());
+        foreach ($status_bits as $n => $datas) {
+            $this->assertEquals(substr($record_status, ($n - 1), 1), $tochange[$n]);
+        }
+    }
+
+    /**
+     * @covers \API_V1_adapter::set_record_collection
+     */
+    public function testMoveRecordToCollection()
+    {
+        $file = new Alchemy\Phrasea\Border\File(\MediaVorus\MediaVorus::guess(new \SplFileInfo(__DIR__ . '/../../../testfiles/test001.CR2')), self::$collection);
+        $record = record_adapter::createFromFile($file);
+
+        $this->setToken(self::$token);
+
+        $route = '/records/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/setcollection/';
+
+        $base_id = false;
+        foreach ($record->get_databox()->get_collections() as $collection) {
+            if ($collection->get_base_id() != $record->get_base_id()) {
+                $base_id = $collection->get_base_id();
+                break;
+            }
+        }
+        if ( ! $base_id) {
+            continue;
+        }
+
+        $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
+
+        $this->client->request('POST', $route, array('base_id' => $base_id));
+        $content = json_decode($this->client->getResponse()->getContent());
+
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaJson200($content);
+
+        $record->delete();
+    }
+
+    /**
+     * @covers \API_V1_adapter::search_baskets
+     * @covers \API_V1_adapter::list_baskets
+     * @covers \API_V1_adapter::list_basket
+     */
+    public function testSearchBaskets()
+    {
+        $this->insertFiveBasket();
+        $this->insertOneValidationBasket();
+        
+        $this->setToken(self::$token);
+        $route = '/baskets/list/';
+        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+
+        $this->client->request('GET', $route);
+        $content = json_decode($this->client->getResponse()->getContent());
+
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaJson200($content);
+        $this->assertObjectHasAttribute("baskets", $content->response);
+
+        foreach ($content->response->baskets as $basket) {
+            $this->evaluateGoodBasket($basket);
+        }
+    }
+    
+    /**
+     * @covers \API_V1_adapter::create_basket
+     * @covers \API_V1_adapter::list_basket
+     */
+    public function testAddBasket()
+    {
+        $this->setToken(self::$token);
+
+        $route = '/baskets/add/';
+
+        $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
+
+        $this->client->request('POST', $route, array('name'   => 'un Joli Nom'));
+        $content = json_decode($this->client->getResponse()->getContent());
+
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaJson200($content);
+
+        $this->assertEquals(1, count((array) $content->response));
+        $this->assertObjectHasAttribute("basket", $content->response);
+
+        foreach ($content->response->basket as $basket) {
+            $this->evaluateGoodBasket($basket);
+            $this->assertEquals('un Joli Nom', $basket->name);
+        }
+    }
+
+    /**
+     * @covers \API_V1_adapter::get_basket
+     * @covers \API_V1_adapter::list_basket_content
+     */
+    public function testBasketContent()
+    {
+        $this->setToken(self::$token);
+
+        $basketElement = $this->insertOneBasketElement();
+        $basket = $basketElement->getBasket();
+        
+        $route = '/baskets/' . $basket->getId() . '/content/';
+
+        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+
+        $this->client->request('GET', $route);
+        $content = json_decode($this->client->getResponse()->getContent());
+
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaJson200($content);
+
+        $this->assertEquals(1, count((array) $content->response));
+
+        $this->assertObjectHasAttribute("basket_elements", $content->response);
+
+        foreach ($content->response->basket_elements as $basket_str) {
+            $this->evaluateGoodBasket($basket_str);
+
+            $this->assertEquals(count($basket->getElements()), count((array) $basket_str->basket_elements));
+            foreach ($basket_str->basket_elements as $basket_element) {
+                $this->assertObjectHasAttribute('basket_element_id', $basket_element);
+                $this->assertObjectHasAttribute('order', $basket_element);
+                $this->assertObjectHasAttribute('record', $basket_element);
+                $this->assertObjectHasAttribute('validation_item', $basket_element);
+                $this->assertTrue(is_bool($basket_element->validation_item));
+                $this->assertTrue(is_int($basket_element->order));
+                $this->assertTrue(is_int($basket_element->basket_element_id));
+                $this->evaluateGoodRecord($basket_element->record);
+            }
+        }
+    }
+
+    /**
+     * @covers \API_V1_adapter::set_basket_title
+     * @covers \API_V1_adapter::list_basket_content
+     */
+    public function testSetBasketTitle()
+    {
+        $this->setToken(self::$token);
+
+        $basket = $this->insertOneBasket();
+
+        $route = '/baskets/' . $basket->getId() . '/setname/';
+
+        $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
+
+        $crawler = $this->client->request('POST', $route, array('name'   => 'un Joli Nom'));
+        $content = json_decode($this->client->getResponse()->getContent());
+
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaJson200($content);
+
+        $this->assertEquals(1, count((array) $content->response));
+        $this->assertObjectHasAttribute("basket", $content->response);
+        foreach ($content->response->basket as $basket_str) {
+            $this->evaluateGoodBasket($basket_str);
+
+            $this->assertEquals($basket_str->name, 'un Joli Nom');
+        }
+
+        $crawler = $this->client->request('POST', $route, array('name'   => '<i>un Joli Nom<i>'));
+        $content = json_decode($this->client->getResponse()->getContent());
+
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaJson200($content);
+
+        $this->assertEquals(1, count((array) $content->response));
+
+        $this->assertObjectHasAttribute("basket", $content->response);
+
+        foreach ($content->response->basket as $basket) {
+            $this->evaluateGoodBasket($basket_str);
+
+            $this->assertEquals($basket_str->name, 'un Joli Nom');
+        }
+
+        $crawler = $this->client->request('POST', $route, array('name'   => '<strong>aéaa'));
+        $content = json_decode($this->client->getResponse()->getContent());
+
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaJson200($content);
+
+        $this->assertEquals(1, count((array) $content->response));
+        $this->assertObjectHasAttribute("basket", $content->response);
+        foreach ($content->response->basket as $basket_str) {
+            $this->evaluateGoodBasket($basket_str);
+            $this->assertEquals($basket_str->name, '<strong>aéaa');
+        }
+    }
+
+    /**
+     * @covers \API_V1_adapter::set_basket_description
+     * @covers \API_V1_adapter::list_basket_content
+     */
+    public function testSetBasketDescription()
+    {
+        $this->setToken(self::$token);
+
+        $basket = $this->insertOneBasket();
+
+        $route = '/baskets/' . $basket->getId() . '/setdescription/';
+
+        $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
+
+        $this->client->request('POST', $route, array('description' => 'une belle desc'));
+        $content = json_decode($this->client->getResponse()->getContent());
+
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaJson200($content);
+
+        $this->assertEquals(1, count((array) $content->response));
+
+        $this->assertObjectHasAttribute("basket", $content->response);
+        foreach ($content->response->basket as $basket_str) {
+            $this->evaluateGoodBasket($basket_str);
+
+            $this->assertEquals($basket_str->description, 'une belle desc');
+        }
+    }
+
+    /**
+     * @covers \API_V1_adapter::delete_basket
+     */
+    public function testDeleteBasket()
+    {
+        $this->setToken(self::$token);
+
+        $baskets = $this->insertFiveBasket();
+
+        $route = '/baskets/' . $baskets[0]->getId() . '/delete/';
+
+        $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
+
+        $this->client->request('POST', $route);
+        $content = json_decode($this->client->getResponse()->getContent());
+
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaJson200($content);
+
+        $this->assertObjectHasAttribute("baskets", $content->response);
+
+        $found = false;
+        foreach ($content->response->baskets as $basket) {
+            $this->evaluateGoodBasket($basket);
+            $found = true;
+        }
+        if ( ! $found) {
+            $this->fail('There should be four baskets left');
+        }
+    }
+
+    protected function evaluateNotFoundRoute($route, $methods)
+    {
+        foreach ($methods as $method) {
+            $crawler = $this->client->request($method, $route);
+            $content = json_decode($this->client->getResponse()->getContent());
+
+            $this->evaluateResponseNotFound($this->client->getResponse());
+            $this->evaluateMetaJsonNotFound($content);
+        }
+    }
+    
     protected function checkEmbed($subdef_name, $embed, record_adapter $record)
     {
         $this->assertObjectHasAttribute("permalink", $embed);
@@ -830,380 +1282,6 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
         $code = http_query::getHttpCodeFromUrl($url);
         $this->assertEquals(200, $code, sprintf('verification de url %s', $url));
-    }
-
-    public function testRecordsRelatedRoute()
-    {
-        $this->setToken(self::$token);
-
-        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/related/';
-        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-
-        $this->client->request('GET', $route);
-        $content = json_decode($this->client->getResponse()->getContent());
-
-        $this->evaluateResponse200($this->client->getResponse());
-        $this->evaluateMetaJson200($content);
-        $this->assertObjectHasAttribute("baskets", $content->response);
-        foreach ($content->response->baskets as $basket) {
-            $this->evaluateGoodBasket($basket);
-        }
-
-        $route = '/records/24892534/51654651553/related/';
-        $this->evaluateNotFoundRoute($route, array('GET'));
-        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/records/any_bad_id/sfsd5qfsd5/related/';
-        $this->evaluateBadRequestRoute($route, array('GET'));
-        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-    }
-
-    public function testRecordsSetMetadatas()
-    {
-        $this->setToken(self::$token);
-
-        $file = new Alchemy\Phrasea\Border\File(\MediaVorus\MediaVorus::guess(new \SplFileInfo(__DIR__ . '/../../../testfiles/test001.CR2')), self::$collection);
-        $record = record_adapter::createFromFile($file);
-
-        $route = '/records/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/setmetadatas/';
-        $caption = $record->get_caption();
-
-        $toupdate = array();
-
-        foreach ($record->get_databox()->get_meta_structure()->get_elements() as $field) {
-            try {
-                $values = $record->get_caption()->get_field($field->get_name())->get_values();
-                $value = array_pop($values);
-                $meta_id = $value->getId();
-            } catch (\Exception $e) {
-                $meta_id = null;
-            }
-
-            $toupdate[$field->get_id()] = array(
-                'meta_id'        => $meta_id
-                , 'meta_struct_id' => $field->get_id()
-                , 'value'          => 'podom pom pom ' . $field->get_id()
-            );
-        }
-
-        $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
-
-        $this->client->request('POST', $route, array('metadatas' => $toupdate));
-        $content = json_decode($this->client->getResponse()->getContent());
-
-        $this->evaluateResponse200($this->client->getResponse());
-        $this->evaluateMetaJson200($content);
-
-        $caption = $record->get_caption();
-
-        $this->assertEquals(count($caption->get_fields()), count(get_object_vars($content->response->metadatas)), 'Retrived metadatas are the same');
-
-        foreach ($caption->get_fields() as $field) {
-            foreach ($field->get_values() as $value) {
-                if ($field->is_readonly() === false && $field->is_multi() === false) {
-                    $saved_value = $toupdate[$field->get_meta_struct_id()]['value'];
-                    $this->assertEquals($value->getValue(), $saved_value);
-                }
-            }
-        }
-        $this->evaluateRecordsMetadataResponse($content);
-
-        foreach ($content->response->metadatas as $metadata) {
-            if ( ! in_array($metadata->meta_id, array_keys($toupdate)))
-                continue;
-            $saved_value = $toupdate[$metadata->meta_structure_id]['value'];
-            $this->assertEquals($saved_value, $metadata->value);
-        }
-    }
-
-    public function testRecordsSetStatus()
-    {
-        $this->setToken(self::$token);
-
-        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/setstatus/';
-
-        $record_status = strrev(static::$records['record_1']->get_status());
-        $status_bits = static::$records['record_1']->get_databox()->get_statusbits();
-
-        $tochange = array();
-        foreach ($status_bits as $n => $datas) {
-            $tochange[$n] = substr($record_status, ($n - 1), 1) == '0' ? '1' : '0';
-        }
-        $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
-
-
-        $crawler = $this->client->request('POST', $route, array('status' => $tochange));
-        $content = json_decode($this->client->getResponse()->getContent());
-
-        /**
-         * Get fresh record_1
-         */
-        static::$records['record_1'] = static::$records['record_1']->get_databox()->get_record(static::$records['record_1']->get_record_id());
-
-        $this->evaluateResponse200($this->client->getResponse());
-        $this->evaluateMetaJson200($content);
-
-        $this->evaluateRecordsStatusResponse(static::$records['record_1'], $content);
-
-        $record_status = strrev(static::$records['record_1']->get_status());
-        foreach ($status_bits as $n => $datas) {
-            $this->assertEquals(substr($record_status, ($n - 1), 1), $tochange[$n]);
-        }
-
-        foreach ($tochange as $n => $value) {
-            $tochange[$n] = $value == '0' ? '1' : '0';
-        }
-
-
-        $crawler = $this->client->request('POST', $route, array('status' => $tochange));
-        $content = json_decode($this->client->getResponse()->getContent());
-
-        /**
-         * Get fresh record_1
-         */
-        static::$records['record_1'] = static::$records['record_1']->get_databox()->get_record(static::$records['record_1']->get_record_id());
-
-        $this->evaluateResponse200($this->client->getResponse());
-        $this->evaluateMetaJson200($content);
-
-        $this->evaluateRecordsStatusResponse(static::$records['record_1'], $content);
-
-        $record_status = strrev(static::$records['record_1']->get_status());
-        foreach ($status_bits as $n => $datas) {
-            $this->assertEquals(substr($record_status, ($n - 1), 1), $tochange[$n]);
-        }
-    }
-
-    public function testMoveRecordToCollection()
-    {
-        $file = new Alchemy\Phrasea\Border\File(\MediaVorus\MediaVorus::guess(new \SplFileInfo(__DIR__ . '/../../../testfiles/test001.CR2')), self::$collection);
-        $record = record_adapter::createFromFile($file);
-
-        $this->setToken(self::$token);
-
-        $route = '/records/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/setcollection/';
-
-        $base_id = false;
-        foreach ($record->get_databox()->get_collections() as $collection) {
-            if ($collection->get_base_id() != $record->get_base_id()) {
-                $base_id = $collection->get_base_id();
-                break;
-            }
-        }
-        if ( ! $base_id) {
-            continue;
-        }
-
-        $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
-
-        $this->client->request('POST', $route, array('base_id' => $base_id));
-        $content = json_decode($this->client->getResponse()->getContent());
-
-        $this->evaluateResponse200($this->client->getResponse());
-        $this->evaluateMetaJson200($content);
-
-        $record->delete();
-    }
-
-    public function testSearchBaskets()
-    {
-        $this->setToken(self::$token);
-        $route = '/baskets/list/';
-        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-
-        $this->client->request('GET', $route);
-        $content = json_decode($this->client->getResponse()->getContent());
-
-        $this->evaluateResponse200($this->client->getResponse());
-        $this->evaluateMetaJson200($content);
-        $this->assertObjectHasAttribute("baskets", $content->response);
-
-        foreach ($content->response->baskets as $basket) {
-            $this->evaluateGoodBasket($basket);
-        }
-    }
-
-    public function testAddBasket()
-    {
-        $this->setToken(self::$token);
-
-        $route = '/baskets/add/';
-
-        $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
-
-        $this->client->request('POST', $route, array('name'   => 'un Joli Nom'));
-        $content = json_decode($this->client->getResponse()->getContent());
-
-        $this->evaluateResponse200($this->client->getResponse());
-        $this->evaluateMetaJson200($content);
-
-        $this->assertEquals(1, count((array) $content->response));
-        $this->assertObjectHasAttribute("basket", $content->response);
-
-        foreach ($content->response->basket as $basket) {
-            $this->evaluateGoodBasket($basket);
-            $this->assertEquals('un Joli Nom', $basket->name);
-        }
-    }
-
-    public function testBasketContent()
-    {
-        $this->setToken(self::$token);
-
-        $basket = $this->insertOneBasket();
-
-        $route = '/baskets/' . $basket->getId() . '/content/';
-
-        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-
-        $this->client->request('GET', $route);
-        $content = json_decode($this->client->getResponse()->getContent());
-
-        $this->evaluateResponse200($this->client->getResponse());
-        $this->evaluateMetaJson200($content);
-
-        $this->assertEquals(1, count((array) $content->response));
-
-        $this->assertObjectHasAttribute("basket_elements", $content->response);
-
-        foreach ($content->response->basket_elements as $basket_str) {
-            $this->evaluateGoodBasket($basket_str);
-
-            $this->assertEquals(count($basket->getElements()), count((array) $basket_str->basket_elements));
-            foreach ($basket_str->basket_elements as $basket_element) {
-                $this->assertObjectHasAttribute('basket_element_id', $basket_element);
-                $this->assertObjectHasAttribute('order', $basket_element);
-                $this->assertObjectHasAttribute('record', $basket_element);
-                $this->assertObjectHasAttribute('validation_item', $basket_element);
-                $this->assertTrue(is_bool($basket_element->validation_item));
-                $this->assertTrue(is_int($basket_element->order));
-                $this->assertTrue(is_int($basket_element->basket_element_id));
-                $this->evaluateGoodRecord($basket_element->record);
-            }
-        }
-    }
-
-    public function testSetBasketTitle()
-    {
-        $this->setToken(self::$token);
-
-        $basket = $this->insertOneBasket();
-
-        $route = '/baskets/' . $basket->getId() . '/setname/';
-
-        $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
-
-        $crawler = $this->client->request('POST', $route, array('name'   => 'un Joli Nom'));
-        $content = json_decode($this->client->getResponse()->getContent());
-
-        $this->evaluateResponse200($this->client->getResponse());
-        $this->evaluateMetaJson200($content);
-
-        $this->assertEquals(1, count((array) $content->response));
-        $this->assertObjectHasAttribute("basket", $content->response);
-        foreach ($content->response->basket as $basket_str) {
-            $this->evaluateGoodBasket($basket_str);
-
-            $this->assertEquals($basket_str->name, 'un Joli Nom');
-        }
-
-        $crawler = $this->client->request('POST', $route, array('name'   => '<i>un Joli Nom<i>'));
-        $content = json_decode($this->client->getResponse()->getContent());
-
-        $this->evaluateResponse200($this->client->getResponse());
-        $this->evaluateMetaJson200($content);
-
-        $this->assertEquals(1, count((array) $content->response));
-
-        $this->assertObjectHasAttribute("basket", $content->response);
-
-        foreach ($content->response->basket as $basket) {
-            $this->evaluateGoodBasket($basket_str);
-
-            $this->assertEquals($basket_str->name, 'un Joli Nom');
-        }
-
-        $crawler = $this->client->request('POST', $route, array('name'   => '<strong>aéaa'));
-        $content = json_decode($this->client->getResponse()->getContent());
-
-        $this->evaluateResponse200($this->client->getResponse());
-        $this->evaluateMetaJson200($content);
-
-        $this->assertEquals(1, count((array) $content->response));
-        $this->assertObjectHasAttribute("basket", $content->response);
-        foreach ($content->response->basket as $basket_str) {
-            $this->evaluateGoodBasket($basket_str);
-            $this->assertEquals($basket_str->name, '<strong>aéaa');
-        }
-    }
-
-    public function testSetBasketDescription()
-    {
-        $this->setToken(self::$token);
-
-        $basket = $this->insertOneBasket();
-
-        $route = '/baskets/' . $basket->getId() . '/setdescription/';
-
-        $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
-
-        $this->client->request('POST', $route, array('description' => 'une belle desc'));
-        $content = json_decode($this->client->getResponse()->getContent());
-
-        $this->evaluateResponse200($this->client->getResponse());
-        $this->evaluateMetaJson200($content);
-
-        $this->assertEquals(1, count((array) $content->response));
-
-        $this->assertObjectHasAttribute("basket", $content->response);
-        foreach ($content->response->basket as $basket_str) {
-            $this->evaluateGoodBasket($basket_str);
-
-            $this->assertEquals($basket_str->description, 'une belle desc');
-        }
-    }
-
-    public function testDeleteBasket()
-    {
-        $this->setToken(self::$token);
-
-        $baskets = $this->insertFiveBasket();
-
-        $route = '/baskets/' . $baskets[0]->getId() . '/delete/';
-
-        $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
-
-        $this->client->request('POST', $route);
-        $content = json_decode($this->client->getResponse()->getContent());
-
-        $this->evaluateResponse200($this->client->getResponse());
-        $this->evaluateMetaJson200($content);
-
-        $this->assertObjectHasAttribute("baskets", $content->response);
-
-        $found = false;
-        foreach ($content->response->baskets as $basket) {
-            $this->evaluateGoodBasket($basket);
-            $found = true;
-        }
-        if ( ! $found) {
-            $this->fail('There should be four baskets left');
-        }
-    }
-
-    /**
-     *
-     * End /API/V1/records/DATABOX_ID/RECORD_ID/xxxxx Routes
-     *
-     */
-    protected function evaluateNotFoundRoute($route, $methods)
-    {
-        foreach ($methods as $method) {
-            $crawler = $this->client->request($method, $route);
-            $content = json_decode($this->client->getResponse()->getContent());
-
-            $this->evaluateResponseNotFound($this->client->getResponse());
-            $this->evaluateMetaJsonNotFound($content);
-        }
     }
 
     protected function evaluateMethodNotAllowedRoute($route, $methods)
