@@ -523,7 +523,7 @@ foreach ($types as $sbas_id => $typeBR) {
 
                 echo '<div style="with:100%;text-align:center;font-size:10px;float:left;width:100px;height:130px;">Record ' . $rec2[1] . "<br/>";
                 $thumbnail = $record->get_thumbnail();
-                echo '<div style="height:67px;"><img src="' . $thumbnail->get_url() . '" width="' . ($thumbnail->get_width() / 3) . '" height="' . ($thumbnail->get_height() / 3) . '" /></div>';
+                echo '<div style="height:80px;width:100px;display:table-cell;vertical-align:middle;"><img src="' . $thumbnail->get_url() . '" width="' . ($thumbnail->get_width() / 3) . '" height="' . ($thumbnail->get_height() / 3) . '" /></div>';
                 echo '<div style="height:26px;">' . $select . '</div></div>';
                 flush();
             }

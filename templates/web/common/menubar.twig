@@ -119,14 +119,11 @@
           <a href="#" style="font-weight:bold;text-decoration:none;">
             <span>
               {% trans 'Notifications' %}
-
-              <span class="counter" style="visibility:{% if events.get_unread_notifications_number > 0 %}visible{% else %}hidden{% endif %};">
-                <div style="padding:1px 3px 0;">
+              <button class="counter btn btn-danger" style="visibility:{% if events.get_unread_notifications_number > 0 %}visible{% else %}hidden{% endif %};">
                   {% if events.get_unread_notifications_number > 0 %}
                     {{events.get_unread_notifications_number}}
                   {% endif %}
-                </div>
-              </span>
+              </button>
             </span>
           </a>
         </li>
