@@ -4481,7 +4481,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
 #lazaretBox .loading {
     background-image: url('../../icons/loaderB1B1B1.gif');
-    background-position: center center;
+    background-position: center right;
     background-repeat: no-repeat;
 }
 
