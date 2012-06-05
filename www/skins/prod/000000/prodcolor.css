@@ -517,14 +517,16 @@ span.ww_winTitle {
 }
 
 #tool_navigate a {
-    cursor: pointer;
+    padding: 1px 5px;
+    margin: 0 4px;
+    background-color: #0077BC;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border-radius: 4px;
-    padding: 1px 5px;
-    margin: 0 4px;
+    font-size: 12px;
+    line-height: 14px;
     font-weight: bold;
-    background-color: #0077BC;
+    cursor: pointer;
 }
 
 .diapo div.title {
@@ -628,16 +630,16 @@ div.diapo {
     color: #aaaaaa;
 }
 
-#idFrameT .tools .classicButton button.btn-inverse img,
-#idFrameT .tools .dropdownButton button.btn-inverse img {
-    margin: 0 2px;
-}
-
 #idFrameT .tools .classicButton button.btn-inverse:hover,
 #idFrameT .tools .dropdownButton button.btn-inverse:hover {
     background-color: #393939;
     *background-color: #393939;
     color: #ffffff;
+}
+
+#idFrameT .tools .classicButton button.btn-inverse img,
+#idFrameT .tools .dropdownButton button.btn-inverse img {
+    margin: 0 2px;
 }
 
 #idFrameT .tools .dropdown-menu {
@@ -1065,7 +1067,7 @@ form.phrasea_query input.query {
 .phrasea_query .field_filter.danger,
 .phrasea_query .status_filter.danger {
     border-color: #c9c900;
-    background-color: #FFFDDA;
+    background-color: #FCEC98;
     color: #000000;
 }
 
@@ -1390,7 +1392,7 @@ input:radio, input:checkbox, .checkbox {
 input.btn-mini {
     margin: 0 2px;
     height: 12px;
-    width: 11px;
+    width: 9px;
     cursor: default;
     font-size: 12px;
 }
@@ -1456,8 +1458,26 @@ input.btn-mini {
     width: 98%;
 }
 
-
-
+#notification_trigger .counter {
+    position: relative;
+    top: -2px;
+    margin: 0 2px;
+    padding: 1px 4px;
+    background: none repeat scroll 0 0 red;
+    background-color: #DA4F49;
+    background-repeat: repeat-x;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 4px 4px 4px 4px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 2px rgba(0, 0, 0, 0.05);
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 14px;
+    text-align: center;
+    color: #FFFFFF;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
 
 
 
@@ -3473,7 +3493,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 .ui-dialog-content label {
-    line-height: 26px;
+    line-height: 18px;
 }
 
 .ui-dialog-content p {
@@ -3514,8 +3534,89 @@ dans l'onglet thesaurus : arbres, menus contextuels
     font-style: normal;
 }
 
+#publicator_selection {
+    height: 190px;
+    bottom: auto;
+    background-color: #404040;
+}
+
+#publicator_selection > .PNB10 {
+     overflow: auto;
+     bottom: 50px;
+     background-color: #111111;
+}
+
+#publicator_selection .btn {
+    font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+#publicator_selection .btn-inverse {
+    *background-color: #393939;
+    background-image: -ms-linear-gradient(top, #444444, #393939);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#444444), to(#393939));
+    background-image: -webkit-linear-gradient(top, #444444, #393939);
+    background-image: -o-linear-gradient(top, #444444, #393939);
+    background-image: -moz-linear-gradient(top, #444444, #393939);
+    background-image: linear-gradient(top, #444444, #393939);
+    /*border: 1px solid #515151;*/
+    color: #aaaaaa;
+}
+
+#publicator_selection .btn-inverse:hover {
+    background-color: #393939;
+    *background-color: #393939;
+    color: #ffffff;
+}
+
+#pub_tabs .btn {
+    font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+#pub_tabs .btn-inverse {
+    /*border: 1px solid #515151;*/
+    color: #AAAAAA;
+}
+
+#pub_tabs .btn-inverse:hover {
+    color: #FFFFFF;
+}
+
+#pub_tabs .btn-group.open .btn-inverse.dropdown-toggle {
+    background-color: #222222;
+    background-image: none;
+}
+
 #pub_tabs .container {
-    background-color:#111111;
+    width: 660px;
+    background-color: #000000;
+    color: #FFFFFF;
+}
+
+#pub_tabs .container .blockmenu .dropdown-menu {
+    background-clip: padding-box;
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    float: left;
+    left: 0;
+    list-style: none outside none;
+    margin: 0;
+    min-width: 160px;
+    padding: 0;
+    position: absolute;
+    top: 100%;
+    z-index: 1000;
 }
 
 #dialog_publicator .ui-tabs .ui-tabs-panel.loading {
@@ -3564,33 +3665,51 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 #dialog_publicator .api_banner {
-    height:30px;
+    height: 30px;
+    bottom: auto;
+    background-color: #414141;
+}
+
+#dialog_publicator .api_banner button {
+    border: 1px solid #515151;
+    background-color: #404040;
+}
+
+#dialog_publicator .api_banner .submenu.ui-buttonset {
+    z-index: 600;
+}
+
+#dialog_publicator .api_content {
+    top: 30px;
+    bottom: 25px;
+}
+
+#dialog_publicator .api_content .blockresponse {
+    padding: 0 10px;
+    top: 40px;
+    overflow: auto;
+}
+
+#dialog_publicator .api_content .blockmenu {
+    height:100%;
     bottom:auto;
-    background-color:#414141;
+    overflow:hidden;
+    background-repeat: repeat-x;
+    background-position: left bottom;
 }
 
 #dialog_publicator .api_content .blockmenu a.selected,
 #dialog_publicator .api_banner a.selected {
-    font-weight:bold;
-    color:#0099CC;
-}
-
-#dialog_publicator .api_content {
-    top:30px;
-    bottom:25px;
+    font-weight: bold;
+    color: #0099CC;
 }
 
 #dialog_publicator .api_infos {
-    top:auto;
-    height:25px;
+    top: auto;
+    height: 25px;
     background-image: url('/skins/icons/api_info.png');
     background-repeat: repeat-x;
-    background-position:0 0;
-}
-#dialog_publicator .api_content .blockmenu
-{
-  background-repeat: repeat-x;
-  background-position:left bottom;
+    background-position: 0 0;
 }
 
 #dialog_publicator .main_menu {
@@ -3624,6 +3743,10 @@ dans l'onglet thesaurus : arbres, menus contextuels
 #dialog_publicator .diapo .title {
     height:16px;
     overflow:hidden;
+}
+
+#ul_main_pub_tabs {
+    margin-top: -1px;
 }
 
 #ul_main_pub_tabs li {
@@ -3719,25 +3842,26 @@ dans l'onglet thesaurus : arbres, menus contextuels
     background-color: #212121;
 }
 
-#dialog_publicator .api_banner button {
-    border:1px solid #515151;
-    background-color : #404040;
+#dialog_publicator .api_content .element {
+    padding:5px;
 }
 
-#dialog_publicator .api_banner .submenu.ui-buttonset {
-    z-index:600;
+#dialog_publicator .api_content .element.odd {
+    background-color: #414141;
+    -webkit-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25) inset, -2px -2px 4px rgba(0, 0, 0, 0.25) inset;
+    -moz-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25) inset, -2px -2px 4px rgba(0, 0, 0, 0.25) inset;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25) inset, -2px -2px 4px rgba(0, 0, 0, 0.25) inset;
 }
 
-#dialog_publicator .api_content .element{
-  padding:5px;
+#dialog_publicator .api_content .element.even {
+    background-color: #666666;
+    -webkit-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25) inset, -2px -2px 4px rgba(0, 0, 0, 0.25) inset;
+    -moz-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25) inset, -2px -2px 4px rgba(0, 0, 0, 0.25) inset;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25) inset, -2px -2px 4px rgba(0, 0, 0, 0.25) inset;
 }
 
-#dialog_publicator .api_content .element.odd{
-  background-color:#2a2a2a;
-}
-
-#dialog_publicator .api_content .element.selected{
-    background-color:#666666;
+#dialog_publicator .api_content .element.selected {
+    background-color: #999999;
 }
 
 .ui-selectable-helper {
