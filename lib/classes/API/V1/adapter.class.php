@@ -695,14 +695,14 @@ class API_V1_adapter extends API_V1_Abstract
         $app['Core']['EM']->persist($session);
         $app['Core']['EM']->flush();
 
-        $errors = $output = null;
+        $reasons = $output = null;
 
-        $callback = function($element, $visa, $code) use(&$errors, &$output) {
+        $callback = function($element, $visa, $code) use(&$reasons, &$output) {
                 if ( ! $visa->isValid()) {
-                    $errors = array();
+                    $reasons = array();
 
                     foreach ($visa->getResponses() as $response) {
-                        $errors[] = $response->getMessage();
+                        $reasons[] = $response->getMessage();
                     }
                 }
 
@@ -726,14 +726,18 @@ class API_V1_adapter extends API_V1_Abstract
 
         $app['Core']['border-manager']->process($session, $Package, $callback, $behavior);
 
+        $ret = array(
+            'entity' => null,
+        );
+
         if ($output instanceof \record_adapter) {
-            $ret = $this->list_record($output);
+            $ret['entity'] = '0';
+            $ret['record'] = $this->list_record($output);
         }
         if ($output instanceof \Entities\LazaretFile) {
-            $ret = array(
-                'errors'      => $errors,
-                'lazaretFile' => $this->list_lazaret_file($output),
-            );
+            $ret['entity'] = '1';
+            $ret['reasons'] = $reasons;
+            $ret['lazaretFile'] = $this->list_lazaret_file($output);
         }
 
         $result = new API_V1_result($request, $this);
@@ -745,31 +749,23 @@ class API_V1_adapter extends API_V1_Abstract
 
     protected function list_lazaret_file(\Entities\LazaretFile $file)
     {
-        $attributes = $checks = array();
+        $checks = array();
 
-        foreach ($file->getAttributes() as $attr) {
-            $attributes[] = array(
-                'name'  => $attr->getName(),
-                'value' => $attr->asString(),
-            );
+        if ($file->getChecks()) {
+            foreach ($file->getChecks() as $checker) {
+
+                $checks[] = $checker->getMessage();
+            }
         }
 
-        foreach ((array) $file->getChecks() as $checker) {
-
-            if ( ! class_exists($checker)) {
-                continue;
-            }
-
-            if ( ! $checker instanceof \Alchemy\Phrasea\Border\Checker\Checker) {
-                continue;
-            }
-
-            $checks[] = $checker::getMessage();
+        $usr_id = null;
+        if ($file->getSession()->getUser()) {
+            $usr_id = $file->getSession()->getUser()->get_id();
         }
 
         $session = array(
             'id'     => $file->getSession()->getId(),
-            'usr_id' => $file->getSession()->getUsrId(),
+            'usr_id' => $usr_id,
         );
 
         return array(
@@ -780,7 +776,6 @@ class API_V1_adapter extends API_V1_Abstract
             'sha256'        => $file->getSha256(),
             'uuid'          => $file->getUuid(),
             'forced'        => $file->getForced(),
-            'attributes'    => $attributes,
             'checks'        => $checks,
             'created_on'    => $file->getCreated()->format(DATE_ATOM),
             'updated_on'    => $file->getUpdated()->format(DATE_ATOM),
@@ -1152,18 +1147,6 @@ class API_V1_adapter extends API_V1_Abstract
     }
 
     /**
-     * @todo
-     *
-     * @param Request $request
-     * @param int     $databox_id
-     * @param int     $record_id
-     */
-    public function add_record_tobasket(Request $request, $databox_id, $record_id)
-    {
-
-    }
-
-    /**
      * Return the baskets list of the authenticated user
      *
      * @param  Request       $request
@@ -1344,9 +1327,9 @@ class API_V1_adapter extends API_V1_Abstract
                 }
             }
 
-            $ret['choices'] = $choices();
-            $ret['agreement'] = $agreement();
-            $ret['note'] = $note();
+            $ret['choices'] = $choices;
+            $ret['agreement'] = $agreement;
+            $ret['note'] = $note;
         }
 
         return $ret;
@@ -1455,7 +1438,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function remove_publications(Request $request, $publication_id)
     {
-
+        
     }
 
     /**
@@ -1489,6 +1472,48 @@ class API_V1_adapter extends API_V1_Abstract
         return $result;
     }
 
+    public function get_publications(Request $request, User_Adapter &$user)
+    {
+        $result = new API_V1_result($request, $this);
+
+        $feed = Feed_Aggregate::load_with_user($this->appbox, $user);
+
+        $offset_start = (int) ($request->get('offset_start') ? : 0);
+        $per_page = (int) ($request->get('per_page') ? : 5);
+
+        $per_page = (($per_page >= 1) && ($per_page <= 20)) ? $per_page : 5;
+
+        $datas = array(
+            'feed'         => $this->list_aggregate_publications($feed, $user),
+            'offset_start' => $offset_start,
+            'per_page'     => $per_page,
+            'entries'      => $this->list_publications_entries($feed, $offset_start, $per_page),
+        );
+
+        $result->set_datas($datas);
+
+        return $result;
+    }
+
+    public function get_feed_entry(Request $request, $entry, User_Adapter &$user)
+    {
+        $result = new API_V1_result($request, $this);
+
+        $entry = Feed_Entry_Adapter::load_from_id($this->appbox, $id);
+
+        if ( ! $user->ACL()->has_access_to_base($entry->get_feed()->get_collection()->get_base_id())) {
+            throw new \API_V1_exception_forbidden('You have not access to the parent feed');
+        }
+
+        $datas = array(
+            'entry' => $this->list_publication_entry($entry),
+        );
+
+        $result->set_datas($datas);
+
+        return $result;
+    }
+
     /**
      * Retrieve detailled informations about one feed
      *
@@ -1511,6 +1536,13 @@ class API_V1_adapter extends API_V1_Abstract
         );
     }
 
+    protected function list_aggregate_publications(Feed_Aggregate $feed, $user)
+    {
+        return array(
+            'total_entries' => $feed->get_count_total_entries(),
+        );
+    }
+
     /**
      * Retrieve all entries of one feed
      *
@@ -1519,7 +1551,7 @@ class API_V1_adapter extends API_V1_Abstract
      * @param  int          $how_many
      * @return array
      */
-    protected function list_publications_entries(Feed_Adapter $feed, $offset_start = 0, $how_many = 5)
+    protected function list_publications_entries(Feed_Abstract $feed, $offset_start = 0, $how_many = 5)
     {
 
         $entries = $feed->get_entries($offset_start, $how_many)->get_entries();
@@ -1556,6 +1588,7 @@ class API_V1_adapter extends API_V1_Abstract
             'title'        => $entry->get_title(),
             'subtitle'     => $entry->get_subtitle(),
             'items'        => $items,
+            'url'          => '/feeds/entry/' . $entry->getId() . '/',
         );
     }
 
@@ -1581,7 +1614,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function search_users(Request $request)
     {
-
+        
     }
 
     /**
@@ -1591,7 +1624,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function get_user_acces(Request $request, $usr_id)
     {
-
+        
     }
 
     /**
@@ -1600,7 +1633,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function add_user(Request $request)
     {
-
+        
     }
 
     /**
@@ -1692,11 +1725,6 @@ class API_V1_adapter extends API_V1_Abstract
      */
     protected function list_record_caption_field(caption_Field_Value $value, caption_field $field)
     {
-        /**
-         * @todo  ajouter une option pour avoir les values serialisées
-         *        dans un cas multi
-         */
-
         return array(
             'meta_id'           => $value->getId(),
             'meta_structure_id' => $field->get_meta_struct_id(),
