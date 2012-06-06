@@ -51,7 +51,7 @@
         {
             "package": "imagine/Imagine",
             "version": "dev-develop",
-            "source-reference": "4428511d5d84e593b995a7ac8ec72854b5bc7c56"
+            "source-reference": "a3859eccf83c6694e0bf184e276b3a25c16a7a3f"
         },
         {
             "package": "media-alchemyst/media-alchemyst",
@@ -100,24 +100,24 @@
         {
             "package": "pimple/pimple",
             "version": "dev-master",
-            "alias-pretty-version": "1.0.x-dev",
-            "alias-version": "1.0.9999999.9999999-dev"
+            "source-reference": "v1.0.0"
         },
         {
             "package": "pimple/pimple",
             "version": "dev-master",
-            "source-reference": "v1.0.0"
+            "alias-pretty-version": "1.0.x-dev",
+            "alias-version": "1.0.9999999.9999999-dev"
+        },
+        {
+            "package": "silex/silex",
+            "version": "dev-master",
+            "alias-pretty-version": "1.0.x-dev",
+            "alias-version": "1.0.9999999.9999999-dev"
         },
         {
             "package": "silex/silex",
             "version": "dev-master",
             "source-reference": "8b7796f94154e0cb51db3733e4262de50114c121"
-        },
-        {
-            "package": "silex/silex",
-            "version": "dev-master",
-            "alias-pretty-version": "1.0.x-dev",
-            "alias-version": "1.0.9999999.9999999-dev"
         },
         {
             "package": "swftools/swftools",
