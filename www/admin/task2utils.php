@@ -40,11 +40,7 @@ phrasea::headers();
         switch ($parm['__act']) {
             case 'FORM2XML':
                 if ($ztask->hasInterfaceHTML()) {
-                    if (1) {
-                        $xml = p4string::MakeString($ztask->graphic2xml($parm['__xml']), "js");
-                    } else {
-                        $xml = p4string::MakeString($parm['__xml'], "js");
-                    }
+                    $xml = p4string::MakeString($ztask->graphic2xml($parm['__xml']), "js");
                     ?>
                     <script type="text/javascript">
                         var d = parent.document;
@@ -97,7 +93,7 @@ phrasea::headers();
                     } else {
                         ?>
                         <script type="text/javascript">
-                            if(confirm("<?php echo p4string::MakeString(_('admin::tasks: xml invalide, restaurer la version precedente ?'), 'js', '"') // xml invalide, restaurer la v. prec. ?     ?>"))
+                            if(confirm("<?php echo p4string::MakeString(_('admin::tasks: xml invalide, restaurer la version precedente ?'), 'js', '"') // xml invalide, restaurer la v. prec. ?      ?>"))
                             parent.document.forms['fxml'].txtareaxml.value = parent.jsTaskObj.oldXML;
                         </script>
                         <?php

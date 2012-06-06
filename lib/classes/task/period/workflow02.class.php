@@ -115,10 +115,15 @@ class task_period_workflow02 extends task_appboxAbstract
                     , async:true
                     , success:function(data)
                     {
+                        console.log(data);
                         t = "";
                         for(i in data.tasks)
                         {
                             t += "<div class=\"title\">&nbsp;";
+                            if(data.tasks[i].active)
+                                t += "<span class=\"active\">&nbsp;X&nbsp;</span>&nbsp;";
+                            else
+                                t += "<span class=\"notactive\">&nbsp;X&nbsp;</span>&nbsp;";
                             if(data.tasks[i].name_htmlencoded)
                                 t += "<b>" + data.tasks[i].name_htmlencoded + "</b>";
                             else
@@ -135,7 +140,7 @@ class task_period_workflow02 extends task_appboxAbstract
 
                             t += "<div class=\"sql\">";
 
-                            if(data.tasks[i].sql.test.sql_htmlencoded)
+                            if(data.tasks[i].sql && data.tasks[i].sql.test.sql_htmlencoded)
                                 t += "<div class=\"sqltest\">" + data.tasks[i].sql.test.sql_htmlencoded + "</div>";
                             t += "--&gt; <span id=\"SQLRET"+i+"\"><i>wait...</i></span><br/>";
 
@@ -157,18 +162,25 @@ class task_period_workflow02 extends task_appboxAbstract
                             {
                                 for(i in data.tasks)
                                 {
-                                    if(data.tasks[i].sql.test.err)
+                                    if(data.tasks[i].sql)
                                     {
-                                        parent.$("#SQLRET"+i).html("err: " + data.tasks[i].sql.test.err);
+                                        if(data.tasks[i].sql.test.err)
+                                        {
+                                            parent.$("#SQLRET"+i).html("err: " + data.tasks[i].sql.test.err);
+                                        }
+                                        else
+                                        {
+                                            t = '';
+                                            for(j in data.tasks[i].sql.test.result.rids)
+                                                t += (t?', ':'') + data.tasks[i].sql.test.result.rids[j];
+                                            if(data.tasks[i].sql.test.result.rids.length < data.tasks[i].sql.test.result.n)
+                                                t += ', ...';
+                                            parent.$("#SQLRET"+i).html("n=" + data.tasks[i].sql.test.result.n + ", rids:(" + t + ")");
+                                        }
                                     }
                                     else
                                     {
-                                        t = '';
-                                        for(j in data.tasks[i].sql.test.result.rids)
-                                            t += (t?', ':'') + data.tasks[i].sql.test.result.rids[j];
-                                        if(data.tasks[i].sql.test.result.rids.length < data.tasks[i].sql.test.result.n)
-                                            t += ', ...';
-                                        parent.$("#SQLRET"+i).html("n=" + data.tasks[i].sql.test.result.n + ", rids:(" + t + ")");
+                                        parent.$("#SQLRET"+i).html("");
                                     }
                                 }
                             }
@@ -227,6 +239,19 @@ class task_period_workflow02 extends task_appboxAbstract
                 padding-left:45px;
                 padding-right:25px;
             }
+            SPAN.active
+            {
+                font-weight: bold;
+                background-color: #000000;
+                color:#00FF00;
+            }
+            SPAN.notactive
+            {
+                font-weight: bold;
+                background-color: #000000;
+                color:#FF0000;
+            }
+
         </style>
         <?php
     }
@@ -285,7 +310,7 @@ class task_period_workflow02 extends task_appboxAbstract
         <form name="graphicForm" onsubmit="return(false);" method="post">
             P&eacute;riodicit&eacute;&nbsp;:&nbsp;
             <input type="text" name="period" style="width:40px;" onchange="chgxmltxt(this, 'period');" value="" />
-            minutes
+            seconds
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <input type="checkbox" name="logsql" onchange="chgxmlck(this, 'logsql');" />&nbsp;log changes
         </form>
@@ -319,6 +344,10 @@ class task_period_workflow02 extends task_appboxAbstract
             }
 
             $task = $this->calcSQL($sxtask);
+
+            if ( ! $task['active']) {
+                continue;
+            }
 
             if ($logsql) {
                 $this->log(sprintf("playing task '%s' on base '%s'"
@@ -384,7 +413,7 @@ class task_period_workflow02 extends task_appboxAbstract
                 // change collection ?
                 if (array_key_exists('coll', $row)) {
                     $coll = collection::get_from_coll_id($dbox, $row['coll']);
-//                                $rec->move_to_collection($coll, $appbox);
+                    $rec->move_to_collection($coll, $appbox);
                     if ($logsql) {
                         $this->log(sprintf("on sbas %s move rid %s to coll %s \n", $row['sbas_id'], $row['record_id'], $coll->get_coll_id()));
                     }
@@ -399,7 +428,7 @@ class task_period_workflow02 extends task_appboxAbstract
                         }
                     }
                     $status = implode('', $status);
-//                                $rec->set_binary_status($status);
+                    $rec->set_binary_status($status);
                     if ($logsql) {
                         $this->log(sprintf("on sbas %s set rid %s status to %s \n", $row['sbas_id'], $row['record_id'], $status));
                     }
@@ -409,13 +438,13 @@ class task_period_workflow02 extends task_appboxAbstract
             case 'DELETE':
                 if ($row['deletechildren'] && $rec->is_grouping()) {
                     foreach ($rec->get_children() as $child) {
-//                                    $child->delete();
+                        $child->delete();
                         if ($logsql) {
                             $this->log(sprintf("on sbas %s delete (grp child) rid %s \n", $row['sbas_id'], $child->get_record_id()));
                         }
                     }
                 }
-//                            $rec->delete();
+                $rec->delete();
                 if ($logsql) {
                     $this->log(sprintf("on sbas %s delete rid %s \n", $row['sbas_id'], $rec->get_record_id()));
                 }
@@ -439,6 +468,7 @@ class task_period_workflow02 extends task_appboxAbstract
         $ret = array(
             'name'                 => $sxtask['name'] ? (string) $sxtask['name'] : 'sans nom',
             'name_htmlencoded'     => htmlentities($sxtask['name'] ? $sxtask['name'] : 'sans nom'),
+            'active'               => trim($sxtask['active']) === '1',
             'sbas_id'              => $sbas_id,
             'basename'             => '',
             'basename_htmlencoded' => '',

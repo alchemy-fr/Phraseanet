@@ -1105,6 +1105,7 @@
     <script type="text/javascript" src="{{registry.get('GV_STATIC_URL')}}/include/minify/f=include/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
+            _V_.options.flash.swf = "/include/jslibs/video-js/video-js.swf"
             p4.reg_delete="{% if user.getPrefs("warning_on_delete_story") %}true{% else %}false{% endif %}";
         });
 

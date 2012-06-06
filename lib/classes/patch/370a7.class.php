@@ -51,125 +51,203 @@ class patch_370a7 implements patchInterface
         return $this->concern;
     }
 
+    /**
+     * transform tasks 'workflow 01' to 'workflow 02'
+     * will group tasks(01) with same period to a single task(02)
+     *
+     * @param base $appbox
+     * @return boolean
+     */
     public function apply(base &$appbox)
     {
-        $Core = \bootstrap::getCore();
+        $task_manager = new task_manager($appbox);
+        /* @var $task task_abstract */
+        $tdom = array();     // key = period
+        foreach ($task_manager->getTasks() as $task) {
+            $active = true;
+            $warning = array();
 
-        $em = $Core->getEntityManager();
+            /*
+             * migrating task 'workflow01' or 'task_period_ftv'
+             */
+            if (get_class($task) === 'task_period_workflow01' || get_class($task) === 'task_period_ftv') {
+                $x = $task->getSettings();
+                if (($sx = simplexml_load_string($x)) !== FALSE) {
+                    $period = (int) ($sx->period);
 
-        //order matters for foreign keys constraints
-        //truncate all altered tables
-        $this->truncateTable($em, 'Entities\\LazaretFile');
-        $this->truncateTable($em, 'Entities\\LazaretSession');
-        $this->truncateTable($em, 'Entities\\LazaretAttribute');
-        $this->truncateTable($em, 'Entities\\LazaretCheck');
+                    if ( ! array_key_exists('_' . $period, $tdom)) {
+                        $dom = new DOMDocument('1.0', 'UTF-8');
+                        $dom->formatOutput = true;
+                        $dom->preserveWhiteSpace = false;
+                        $ts = $dom->appendChild($dom->createElement('tasksettings'));
+                        $ts->appendChild($dom->createElement('period'))->appendChild($dom->createTextNode(60 * $period));
+                        $ts->appendChild($dom->createElement('logsql'))->appendChild($dom->createTextNode('1'));
+                        $tasks = $ts->appendChild($dom->createElement('tasks'));
+                        $tdom['_' . $period] = array('dom'   => $dom, 'tasks' => $tasks);
+                    } else {
+                        $dom = &$tdom['_' . $period]['dom'];
+                        $tasks = &$tdom['_' . $period]['tasks'];
+                    }
 
-        $conn = $appbox->get_connection();
+                    /*
+                     * migrating task 'workflow01'
+                     */
+                    if (get_class($task) === 'task_period_workflow01') {
+                        $t = $tasks->appendChild($dom->createElement('task'));
+                        $t->setAttribute('active', '0');
+                        $t->setAttribute('name', 'imported from \'' . $task->getTitle() . '\'');
+                        $t->setAttribute('action', 'update');
 
-        //get all old lazaret file & transform them to \Entities\LazaretFile object
-        $sql = 'SELECT * FROM lazaret';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll();
-
-        // suspend auto-commit
-        $em->getConnection()->beginTransaction();
-
-        $transfertLazaretFile = $success = false;
-
-        if ($stmt->rowCount() > 0) {
-            try {
-                foreach ($rs as $row) {
-
-                    $filePath = __DIR__ . '/../../../tmp/lazaret/' . $row['filepath'];
-
-                    if (file_exists($filePath)) {
-                        $media = \MediaVorus\MediaVorus::guess(new \SplFileInfo($filePath));
-
-                        $collection = \collection::get_from_base_id($row['base_id']);
-
-                        $borderFile = new \Alchemy\Phrasea\Border\File($media, $collection);
-
-                        $lazaretSession = new \Entities\LazaretSession();
-                        $lazaretSession->setUsrId($row['usr_id']);
-
-                        $lazaretFile = new \Entities\LazaretFile();
-                        $lazaretFile->setBaseId($row['base_id']);
-
-                        if (null === $row['uuid']) {
-                            $uuid = $borderFile->getUUID(true);
-                            $lazaretFile->setUuid($uuid);
+                        if ($sx->sbas_id) {
+                            $sbas_id = trim($sx->sbas_id);
+                            if ($sbas_id != '' && is_numeric($sbas_id)) {
+                                $t->setAttribute('sbas_id', $sx->sbas_id);
+                            } else {
+                                $warning[] = sprintf("Bad sbas_id '%s'", $sbas_id);
+                                $active = false;
+                            }
                         } else {
-                            $lazaretFile->setUuid($row['uuid']);
+                            $warning[] = sprintf("missing sbas_id");
+                            $active = false;
                         }
 
-                        if (null === $row['sha256']) {
-                            $sha256 = $media->getHash('sha256');
-                            $lazaretFile->setSha256($sha256);
-                        } else {
-                            $lazaretFile->setSha256($row['sha256']);
+                        // 'from' section
+                        $from = $t->appendChild($dom->createElement('from'));
+                        if ($sx->coll0) {
+                            if (($coll0 = trim($sx->coll0)) != '') {
+                                if (is_numeric($coll0)) {
+                                    $n = $from->appendChild($dom->createElement('coll'));
+                                    $n->setAttribute('compare', '=');
+                                    $n->setAttribute('id', $coll0);
+                                } else {
+                                    $warning[] = sprintf("Bad (from) coll_id '%s'", $coll0);
+                                    $active = false;
+                                }
+                            }
+                        }
+                        if ($sx->status0 && trim($sx->status0) != '') {
+                            $st = explode('_', trim($sx->status0));
+                            if (count($st) == 2) {
+                                $bit = (int) ($st[0]);
+                                if ($bit >= 0 && $bit <= 63 && ($st[1] == '0' || $st[1] == '1')) {
+                                    $from->appendChild($dom->createElement('status'))
+                                        ->setAttribute('mask', $st[1] . str_repeat('x', $bit - 1));
+                                } else {
+                                    $warning[] = sprintf("Bad (from) status '%s'", trim($sx->status0));
+                                    $active = false;
+                                }
+                            } else {
+                                $warning[] = sprintf("Bad (from) status '%s'", trim($sx->status0));
+                                $active = false;
+                            }
                         }
 
-                        $lazaretFile->setOriginalName($row['filename']);
-                        $lazaretFile->setPathname(__DIR__ . '/../../../tmp/lazaret/' . $row['filepath']);
-                        $lazaretFile->setCreated(new \DateTime($row['created_on']));
-                        $lazaretFile->setSession($lazaretSession);
+                        // 'to' section
+                        $to = $t->appendChild($dom->createElement('to'));
+                        if ($sx->coll1) {
+                            if (($coll1 = trim($sx->coll1)) != '') {
+                                if (is_numeric($coll1)) {
+                                    $n = $to->appendChild($dom->createElement('coll'));
+                                    $n->setAttribute('id', $coll1);
+                                } else {
+                                    $warning[] = sprintf("Bad (to) coll_id '%s'", $coll1);
+                                    $active = false;
+                                }
+                            }
+                        }
+                        if ($sx->status1 && trim($sx->status1) != '') {
+                            $st = explode('_', trim($sx->status1));
+                            if (count($st) == 2) {
+                                $bit = (int) ($st[0]);
+                                if ($bit >= 0 && $bit <= 63 && ($st[1] == '0' || $st[1] == '1')) {
+                                    $to->appendChild($dom->createElement('status'))
+                                        ->setAttribute('mask', $st[1] . str_repeat('x', $bit - 1));
+                                } else {
+                                    $warning[] = sprintf("Bad (to) status '%s'", trim($sx->status1));
+                                    $active = false;
+                                }
+                            } else {
+                                $warning[] = sprintf("Bad (to) status '%s'", trim($sx->status1));
+                                $active = false;
+                            }
+                        }
 
-                        $em->persist($lazaretFile);
+                        if ($active && $task->isActive()) {
+                            $t->setAttribute('active', '1');
+                        }
+                        foreach ($warning as $w) {
+                            $t->appendChild($dom->createComment($w));
+                        }
+                    }
+
+                    /*
+                     * migrating task 'task_period_ftv'
+                     */
+                    if (get_class($task) === 'task_period_ftv') {
+                        foreach ($sx->tasks->task as $sxt) {
+                            $active = true;
+                            $warning = array();
+
+                            $t = $dom->importNode(dom_import_simplexml($sxt), true);
+                            $t->setAttribute('active', '0');
+                            $t->setAttribute('name', 'imported from \'' . $task->getTitle() . '\'');
+                            $t->setAttribute('action', 'update');
+
+                            if ($sx->sbas_id) {
+                                $sbas_id = trim($sx->sbas_id);
+                                if ($sbas_id != '' && is_numeric($sbas_id)) {
+                                    $t->setAttribute('sbas_id', $sx->sbas_id);
+                                } else {
+                                    $warning[] = sprintf("Bad sbas_id '%s'", $sbas_id);
+                                    $active = false;
+                                }
+                            } else {
+                                $warning[] = sprintf("missing sbas_id");
+                                $active = false;
+                            }
+
+                            if ($active && $task->isActive()) {
+                                $t->setAttribute('active', '1');
+                            }
+                            foreach ($warning as $w) {
+                                $t->appendChild($dom->createComment($w));
+                            }
+
+                            $x = new DOMXPath($dom);
+                            $nlfrom = $x->query('from', $t);
+                            if($nlfrom->length == 1)
+                            {
+                                $nlcoll = $x->query('colls', $nlfrom->item(0));
+                                if( $nlcoll->length > 0 )
+                                {
+                                    $nn = $dom->createElement('coll');
+                                    $nn->setAttribute('compare', '=');
+                                    $nn->setAttribute('id', $nlcoll->item(0)->getAttribute('id'));
+                                    $nlfrom->item(0)->replaceChild($nn, $nlcoll->item(0));
+                                }
+
+                                $tasks->appendChild($t);
+                            }
+                        }
                     }
                 }
-
-                $em->flush();
-
-                $transfertLazaretFile = true;
-            } catch (\Exception $e) {
-                $em->getConnection()->rollback();
-                $em->close();
+                /*
+                * keep old task for reference but do not start
+                */
+                // $task->delete();
+                $task->setTitle("TO DELETE : ".$task->getTitle());
+                $task->setActive(false);
             }
-
-            if ($transfertLazaretFile) {
-                try {
-                    $sql = 'DROP TABLE lazaret';
-                    $stmt = $conn->prepare($sql);
-                    $stmt->execute();
-
-                    //success deletion, commit all changes
-                    $em->getConnection()->commit();
-
-                    $success = true;
-                } catch (\PDOException $e) {
-                    $em->getConnection()->rollback();
-                    $em->close();
-                }
-            }
-        } else {
-            $success = true;
         }
 
-        $stmt->closeCursor();
-
-        if ( ! $success) {
-            throw new \RuntimeException(sprintf("Patch %s failed", __CLASS__));
+        /*
+         * save new tasks
+         */
+        foreach ($tdom as $newtask) {
+            $task = task_abstract::create($appbox, 'task_period_workflow02', $newtask['dom']->saveXML());
         }
 
-        return;
-    }
-
-    private function truncateTable(\Doctrine\ORM\EntityManager $em, $className)
-    {
-        $cmd = $em->getClassMetadata($className);
-        $connection = $em->getConnection();
-        $dbPlatform = $connection->getDatabasePlatform();
-        $connection->beginTransaction();
-        try {
-            $query = $dbPlatform->getTruncateTableSql($cmd->getTableName());
-            $connection->executeUpdate($query);
-            $connection->commit();
-        } catch (\Exception $e) {
-            $connection->rollback();
-            // throw e to stop patch execution if one truncate failed
-            throw $e;
-        }
+        return true;
     }
 }
 
