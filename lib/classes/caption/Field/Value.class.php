@@ -183,6 +183,9 @@ class caption_Field_Value implements cache_cacheableInterface
         $stmt->execute(array(':id' => $this->id));
         $stmt->closeCursor();
 
+        $this->delete_data_from_cache();
+        $this->databox_field->delete_data_from_cache();
+        
         $sbas_id = $this->record->get_sbas_id();
         $this->record->get_caption()->delete_data_from_cache();
 
@@ -223,6 +226,8 @@ class caption_Field_Value implements cache_cacheableInterface
         $stmt_up->closeCursor();
 
         $this->VocabularyId = $this->VocabularyType = null;
+
+        $this->delete_data_from_cache();
 
         return $this;
     }
@@ -265,6 +270,8 @@ class caption_Field_Value implements cache_cacheableInterface
         $stmt_up = $connbas->prepare($sql_up);
         $stmt_up->execute($params);
         $stmt_up->closeCursor();
+
+        $this->delete_data_from_cache();
 
         try {
             $registry = registry::get_instance();
@@ -399,6 +406,7 @@ class caption_Field_Value implements cache_cacheableInterface
         $caption_field_value->update_cache_value($value);
 
         $record->get_caption()->delete_data_from_cache();
+        $this->databox_field->delete_data_from_cache();
 
         return $caption_field_value;
     }

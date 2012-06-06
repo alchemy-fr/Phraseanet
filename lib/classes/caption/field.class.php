@@ -15,7 +15,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class caption_field
+class caption_field implements cache_cacheableInterface
 {
     /**
      *
@@ -48,21 +48,7 @@ class caption_field
         $this->databox_field = $databox_field;
         $this->values = array();
 
-        $connbas = $databox_field->get_connection();
-
-        $sql = 'SELECT id FROM metadatas
-                WHERE record_id = :record_id
-                  AND meta_struct_id = :meta_struct_id';
-
-        $params = array(
-            ':record_id'      => $record->get_record_id()
-            , ':meta_struct_id' => $databox_field->get_id()
-        );
-
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $rs = $this->get_metadatas_ids();
 
         foreach ($rs as $row) {
             $this->values[$row['id']] = new caption_Field_Value($databox_field, $record, $row['id']);
@@ -76,6 +62,35 @@ class caption_field
         }
 
         return $this;
+    }
+
+    protected function get_metadatas_ids()
+    {
+        try {
+            return $this->get_data_from_cache();
+        } catch (\Exception $e) {
+            
+        }
+
+        $connbas = $this->databox_field->get_connection();
+
+        $sql = 'SELECT id FROM metadatas
+                WHERE record_id = :record_id
+                  AND meta_struct_id = :meta_struct_id';
+
+        $params = array(
+            ':record_id'      => $this->record->get_record_id()
+            , ':meta_struct_id' => $this->databox_field->get_id()
+        );
+
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute($params);
+        $ids = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $this->set_data_to_cache($ids);
+
+        return $ids;
     }
 
     /**
@@ -310,7 +325,7 @@ class caption_field
                     $record->set_metadatas(array());
                     unset($record);
                 } catch (Exception $e) {
-
+                    
                 }
             }
 
@@ -360,7 +375,7 @@ class caption_field
 
             unset($record);
         } catch (Exception $e) {
-
+            
         }
 
         return;
@@ -430,7 +445,7 @@ class caption_field
                     unset($caption_field);
                     unset($record);
                 } catch (Exception $e) {
-
+                    
                 }
             }
 
@@ -438,5 +453,57 @@ class caption_field
         }
 
         return;
+    }
+
+    /**
+     * Part of the cache_cacheableInterface
+     *
+     * @param  string $option
+     * @return string
+     */
+    public function get_cache_key($option = null)
+    {
+        return 'caption_field_' . $this->record->get_serialize_key() . ($option ? '_' . $option : '');
+    }
+
+    /**
+     * Part of the cache_cacheableInterface
+     *
+     * @param  string $option
+     * @return mixed
+     */
+    public function get_data_from_cache($option = null)
+    {
+        $databox = $this->record->get_databox();
+
+        return $databox->get_data_from_cache($this->get_cache_key($option));
+    }
+
+    /**
+     * Part of the cache_cacheableInterface
+     *
+     * @param  mixed         $value
+     * @param  string        $option
+     * @param  int           $duration
+     * @return caption_field
+     */
+    public function set_data_to_cache($value, $option = null, $duration = 360000)
+    {
+        $databox = $this->record->get_databox();
+
+        return $databox->set_data_to_cache($value, $this->get_cache_key($option), $duration);
+    }
+
+    /**
+     * Part of the cache_cacheableInterface
+     *
+     * @param  string        $option
+     * @return caption_field
+     */
+    public function delete_data_from_cache($option = null)
+    {
+        $databox = $this->record->get_databox();
+
+        return $databox->delete_data_from_cache($this->get_cache_key($option));
     }
 }
