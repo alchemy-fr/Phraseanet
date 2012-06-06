@@ -16,7 +16,7 @@ use \Alchemy\Phrasea\Vocabulary;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class caption_Field_Value
+class caption_Field_Value implements cache_cacheableInterface
 {
     /**
      *
@@ -67,13 +67,30 @@ class caption_Field_Value
         $this->databox_field = $databox_field;
         $this->record = $record;
 
-        $connbas = $databox_field->get_databox()->get_connection();
+        $this->retrieveValues();
+    }
+
+    protected function retrieveValues()
+    {
+        try {
+            $datas = $this->get_data_from_cache();
+            
+            $this->value = $datas['value'];
+            $this->VocabularyType = $datas['vocabularyType'] ? Vocabulary\Controller::get($datas['vocabularyType']) : null;
+            $this->VocabularyId = $datas['vocabularyId'];
+            
+            return $this;
+        } catch (\Exception $e) {
+            
+        }
+
+        $connbas = $this->databox_field->get_databox()->get_connection();
 
         $sql = 'SELECT record_id, value, VocabularyType, VocabularyId
             FROM metadatas WHERE id = :id';
 
         $stmt = $connbas->prepare($sql);
-        $stmt->execute(array(':id' => $id));
+        $stmt->execute(array(':id' => $this->id));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -83,7 +100,7 @@ class caption_Field_Value
             $this->VocabularyType = $row['VocabularyType'] ? Vocabulary\Controller::get($row['VocabularyType']) : null;
             $this->VocabularyId = $row['VocabularyId'];
         } catch (\Exception $e) {
-
+            
         }
 
 
@@ -110,6 +127,14 @@ class caption_Field_Value
                 $this->set_value($this->VocabularyType->getValue($this->VocabularyId));
             }
         }
+
+        $datas = array(
+            'value'          => $this->value,
+            'vocabularyId'   => $this->VocabularyId,
+            'vocabularyType' => $this->VocabularyType ? $this->VocabularyType->getType() : null,
+        );
+
+        $this->set_data_to_cache($datas);
 
         return $this;
     }
@@ -254,7 +279,7 @@ class caption_Field_Value
                 $sphinx_rt->delete(array("documents" . $sbas_crc, "documents" . $sbas_crc . "_stemmed_fr", "documents" . $sbas_crc . "_stemmed_en"), "", $this->record->get_record_id());
             }
         } catch (Exception $e) {
-
+            
         }
 
         $this->update_cache_value($value);
@@ -347,7 +372,7 @@ class caption_Field_Value
 
                 return $caption_field_value;
             } catch (\Exception $e) {
-
+                
             }
         }
 
@@ -491,5 +516,58 @@ class caption_Field_Value
         }
 
         return array($term, $context);
+    }
+
+    /**
+     * Part of the cache_cacheableInterface
+     *
+     * @param  string $option
+     * @return string
+     */
+    public function get_cache_key($option = null)
+    {
+        return 'caption_fieldvalue_' . $this->record->get_serialize_key() . ($option ? '_' . $option : '');
+    }
+
+    /**
+     * Part of the cache_cacheableInterface
+     *
+     * @param  string $option
+     * @return mixed
+     */
+    public function get_data_from_cache($option = null)
+    {
+        $databox = $this->record->get_databox();
+
+        return $databox->get_data_from_cache($this->get_cache_key($option));
+    }
+
+    /**
+     * Part of the cache_cacheableInterface
+     *
+     * @param  mixed         $value
+     * @param  string        $option
+     * @param  int           $duration
+     * @return caption_field
+     */
+    public function set_data_to_cache($value, $option = null, $duration = 360000)
+    {
+        $databox = $this->record->get_databox();
+
+        return $databox->set_data_to_cache($value, $this->get_cache_key($option), $duration);
+    }
+
+    /**
+     * Part of the cache_cacheableInterface
+     *
+     * @param  string        $option
+     * @return caption_field
+     */
+    public function delete_data_from_cache($option = null)
+    {
+        $databox = $this->record->get_databox();
+        $this->value = $this->VocabularyId = $this->VocabularyType = null;
+
+        return $databox->delete_data_from_cache($this->get_cache_key($option));
     }
 }

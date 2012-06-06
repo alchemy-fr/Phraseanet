@@ -367,8 +367,10 @@ class Feed_XML_Cooliris extends Feed_XML_Abstract implements Feed_XML_Interface
 
         //add item node to channel node
         $item = $this->addTag($document, $node, 'item');
+        
+        $caption =  $content->get_record()->get_caption();
 
-        $title_field = $content->get_record()->get_caption()->get_dc_field(databox_Field_DCESAbstract::Title);
+        $title_field = $caption->get_dc_field(databox_Field_DCESAbstract::Title);
         if ($title_field) {
             $str_title = $title_field->get_serialized_values(' ');
         } else {
@@ -378,7 +380,7 @@ class Feed_XML_Cooliris extends Feed_XML_Abstract implements Feed_XML_Interface
         //attach tile node to item node
         $title = $this->addTag($document, $item, 'title', $str_title);
 
-        $desc_field = $content->get_record()->get_caption()->get_dc_field(databox_Field_DCESAbstract::Description);
+        $desc_field = $caption->get_dc_field(databox_Field_DCESAbstract::Description);
         if ($desc_field) {
             $str_desc = $desc_field->get_serialized_values(' ');
         } else {
