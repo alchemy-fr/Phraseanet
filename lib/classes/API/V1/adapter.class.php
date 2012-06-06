@@ -1588,7 +1588,7 @@ class API_V1_adapter extends API_V1_Abstract
             'title'        => $entry->get_title(),
             'subtitle'     => $entry->get_subtitle(),
             'items'        => $items,
-            'url'          => '/feeds/entry/' . $entry->getId() . '/',
+            'url'          => '/feeds/entry/' . $entry->get_id() . '/',
         );
     }
 
