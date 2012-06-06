@@ -209,6 +209,15 @@
     }
     else
     {
+       title =  '<div class="popover" style="display:block;position:relative;">'+
+            '<div class="arrow"></div>'+
+            '<div class="popover-inner" style="width:auto;">'+
+                '<div class="popover-content">'+
+                    title+
+                '</div>'+
+            '</div>'+
+        '</div>';
+
       positioning.apply(this, arguments);
     }
     return;
