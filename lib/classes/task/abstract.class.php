@@ -297,9 +297,10 @@ abstract class task_abstract
     }
 
     /**
+     * 'active' means 'auto-start when scheduler starts'
      *
      * @return boolean
-     * 'active' means 'auto-start when scheduler starts'
+     *
      */
     public function isActive()
     {
@@ -339,7 +340,7 @@ abstract class task_abstract
 
             $this->running = false;
 
-            return('');
+            return '';
         }
         $sql = 'SELECT crashed, pid, status, active, settings, name, completed, runner
               FROM task2 WHERE task_id = :taskid';
@@ -466,8 +467,8 @@ abstract class task_abstract
 
     /**
      *
-     * @return variant
-     * pid (int) of the task, or NULL if the pid file
+     * @return null|integer
+     * pid (int) of the task
      * NULL : the pid file is not locked (task no running)
      */
     public function getPID()
@@ -491,9 +492,9 @@ abstract class task_abstract
     }
 
     /**
-     *
-     * @param boolean $stat
      * set to false to ask the task to quit its loop
+     * @param boolean $stat
+     *
      */
     public function setRunning($stat)
     {
@@ -546,7 +547,7 @@ abstract class task_abstract
         $lockdir = $core->getRegistry()->get('GV_RootPath') . 'tmp/locks/';
         $lockfilePath = ($lockdir . 'task_' . $this->getID() . '.lock');
 
-        return($lockfilePath);
+        return $lockfilePath;
     }
 
     /**
@@ -836,7 +837,7 @@ abstract class task_abstract
             $t .= "\t" . $n . $v["usage"] . "\n";
         }
 
-        return($t);
+        return $t;
     }
 
     /**

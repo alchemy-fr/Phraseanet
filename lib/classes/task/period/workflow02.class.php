@@ -22,7 +22,7 @@ class task_period_workflow02 extends task_appboxAbstract
      */
     public function getName()
     {
-        return(_("task::workflow02"));
+        return _("task::workflow02");
     }
 
     /**
@@ -34,9 +34,12 @@ class task_period_workflow02 extends task_appboxAbstract
         return '';
     }
 
-    // ====================================================================
-    // graphic2xml : must return the xml (text) version of the form
-    // ====================================================================
+    /**
+     * return the xml (text) version of the form filled by the gui
+     *
+     * @param string $oldxml
+     * @return string
+     */
     public function graphic2xml($oldxml)
     {
         $request = http_request::getInstance();
@@ -58,16 +61,16 @@ class task_period_workflow02 extends task_appboxAbstract
                 $pname = substr($pname, 4);
                 $pvalue = $parm2[$pname];
                 if (($ns = $dom->getElementsByTagName($pname)->item(0))) {
-                    // le champ existait dans le xml, on supprime son ancienne valeur (tout le contenu)
+                    // field did exists, remove thevalue
                     while (($n = $ns->firstChild))
                         $ns->removeChild($n);
                 } else {
-                    // le champ n'existait pas dans le xml, on le cr�e
+                    // field did not exists, create it
                     $dom->documentElement->appendChild($dom->createTextNode("\t"));
                     $ns = $dom->documentElement->appendChild($dom->createElement($pname));
                     $dom->documentElement->appendChild($dom->createTextNode("\n"));
                 }
-                // on fixe sa valeur
+                // set the value
                 switch ($ptype) {
                     case "str":
                         $ns->appendChild($dom->createTextNode($pvalue));
@@ -79,12 +82,16 @@ class task_period_workflow02 extends task_appboxAbstract
                 $xmlchanged = true;
             }
         }
-        return($dom->saveXML());
+        return $dom->saveXML();
     }
 
-    // ====================================================================
-    // xml2graphic : must fill the graphic form (using js) from xml
-    // ====================================================================
+    /**
+     * must fill the gui (using js) from xml
+     *
+     * @param string $xml
+     * @param form-object $form
+     * @return string   "" or error message
+     */
     public function xml2graphic($xml, $form)
     {
         if (($sxml = simplexml_load_string($xml))) { // in fact XML IS always valid here...
@@ -190,17 +197,17 @@ class task_period_workflow02 extends task_appboxAbstract
 
             </script>
             <?php
-            return("");
+            return "";
         }
         else { // ... so we NEVER come here
             // bad xml
-            return("BAD XML");
+            return "BAD XML";
         }
     }
 
-    // ====================================================================
-    // printInterfaceHEAD() :
-    // ====================================================================
+    /**
+     * PRINT head for the gui
+     */
     public function printInterfaceHEAD()
     {
         ?>
@@ -256,9 +263,9 @@ class task_period_workflow02 extends task_appboxAbstract
         <?php
     }
 
-    // ====================================================================
-    // printInterfaceJS() : generer le code js de l'interface 'graphic view'
-    // ====================================================================
+    /**
+     *  PRINT js of the gui
+     */
     public function printInterfaceJS()
     {
         ?>
@@ -300,17 +307,19 @@ class task_period_workflow02 extends task_appboxAbstract
         <?php
     }
 
-    // ====================================================================
-    // getInterfaceHTML(..) : retourner l'interface 'graphic view' !! EN UTF-8 !!
-    // ====================================================================
+    /**
+     * RETURN the html gui
+     *
+     * @return string
+     */
     public function getInterfaceHTML()
     {
         ob_start();
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
-            P&eacute;riodicit&eacute;&nbsp;:&nbsp;
+            <?php echo _('task::_common_:periodicite de la tache') ?>
             <input type="text" name="period" style="width:40px;" onchange="chgxmltxt(this, 'period');" value="" />
-            seconds
+            <?php echo _('task::_common_:secondes (unite temporelle)') ?>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <input type="checkbox" name="logsql" onchange="chgxmlck(this, 'logsql');" />&nbsp;log changes
         </form>
@@ -320,18 +329,26 @@ class task_period_workflow02 extends task_appboxAbstract
         <?php
         return ob_get_clean();
     }
-    // ======================================================================================================
-    // ===== run() : le code d'�x�cution de la t�che proprement dite
-    // ======================================================================================================
+    /**
+     *
+     * retrieveContent & processOneContent : work done by the task
+     */
+    private $sxTaskSettings = null; // settings in simplexml
 
-    private $sxTaskSettings = null; // les settings de la tache en simplexml
+    /**
+     * return array of records to work on, from sql generated by 'from' clause
+     *
+     * @param appbox $appbox
+     * @return array()
+     */
 
     protected function retrieveContent(appbox $appbox)
     {
         $this->maxrecs = 1000;
         $this->sxTaskSettings = @simplexml_load_string($this->getSettings());
-        if ( ! $this->sxTaskSettings)
+        if ( ! $this->sxTaskSettings) {
             return array();
+        }
 
         $ret = array();
 
@@ -401,6 +418,13 @@ class task_period_workflow02 extends task_appboxAbstract
         return $ret;
     }
 
+    /**
+     * work on ONE record
+     *
+     * @param appbox $appbox
+     * @param array $row
+     * @return \task_period_workflow02
+     */
     protected function processOneContent(appbox $appbox, Array $row)
     {
         $logsql = (int) ($this->sxTaskSettings->logsql) > 0;
@@ -454,11 +478,25 @@ class task_period_workflow02 extends task_appboxAbstract
         return $this;
     }
 
+    /**
+     * all work done on processOneContent, so nothing to do here
+     *
+     * @param appbox $appbox
+     * @param array $row
+     * @return \task_period_workflow02
+     */
     protected function postProcessOneContent(appbox $appbox, Array $row)
     {
         return $this;
     }
 
+    /**
+     * compute sql for a task (<task> entry in settings)
+     *
+     * @param simplexml $sxtask
+     * @param boolean $playTest
+     * @return array
+     */
     private function calcSQL($sxtask, $playTest = false)
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
@@ -501,12 +539,17 @@ class task_period_workflow02 extends task_appboxAbstract
             $ret['err_htmlencoded'] = htmlentities($ret['err']);
         }
 
-        return($ret);
+        return $ret;
     }
-    /*
-     * compute entry for a UPDATE query
-     */
 
+    /**
+     * compute entry for a UPDATE query
+     *
+     * @param integer $sbas_id
+     * @param simplexml $sxtask
+     * @param boolean $playTest
+     * @return array
+     */
     private function calcUPDATE($sbas_id, &$sxtask, $playTest)
     {
         $tws = array(); // NEGATION of updates, used to build the 'test' sql
@@ -541,10 +584,9 @@ class task_period_workflow02 extends task_appboxAbstract
             $where = '(' . implode(') AND (', $tw) . ')';
 
         // build the TEST sql (select)
-        $sql_test = 'SELECT SQL_CALC_FOUND_ROWS record_id FROM record' . $join;
+        $sql_test = 'SELECT record_id FROM record' . $join;
         if (count($tw) > 0)
             $sql_test .= ' WHERE ' . ((count($tw) == 1) ? $tw[0] : '(' . implode(') AND (', $tw) . ')');
-        $sql_test .= ' LIMIT 10';
 
         // build the real sql (select)
         $sql = 'SELECT record_id FROM record' . $join;
@@ -568,12 +610,17 @@ class task_period_workflow02 extends task_appboxAbstract
             $ret['test']['result'] = $this->playTest($sbas_id, $sql_test);
         }
 
-        return($ret);
+        return $ret;
     }
-    /*
-     * compute entry for a DELETE task
-     */
 
+    /**
+     * compute entry for a DELETE task
+     *
+     * @param integer $sbas_id
+     * @param simplexml $sxtask
+     * @param boolean $playTest
+     * @return array
+     */
     private function calcDELETE($sbas_id, &$sxtask, $playTest)
     {
         // compute the 'where' clause
@@ -607,14 +654,18 @@ class task_period_workflow02 extends task_appboxAbstract
             $ret['test']['result'] = $this->playTest($sbas_id, $sql_test);
         }
 
-        return($ret);
+        return $ret;
     }
-    /*
+
+    /**
      * compute the 'where' clause
      * returns an array of clauses to be joined by 'and'
      * and a 'join' to needed tables
+     *
+     * @param integer $sbas_id
+     * @param simplecms $sxtask
+     * @return array
      */
-
     private function calcWhere($sbas_id, &$sxtask)
     {
         $connbas = connection::getPDOConnection($sbas_id);
@@ -709,20 +760,25 @@ class task_period_workflow02 extends task_appboxAbstract
             $where = '(' . implode(') AND (', $tw) . ')';
         }
 
-        return(array($tw, $join));
+        return array($tw, $join);
     }
-    /*
-     * play a 'test' sql on sbas, return the number of records and the 10 first rids
-     */
 
+    /**
+     * play a 'test' sql on sbas, return the number of records and the 10 first rids
+     *
+     * @param integer $sbas_id
+     * @param string $sql
+     * @return array
+     */
     private function playTest($sbas_id, $sql)
     {
         $connbas = connection::getPDOConnection($sbas_id);
         $result = array('rids' => array(), 'err' => '', 'n'   => null);
 
-        $stmt = $connbas->prepare($sql);
+        $result['n'] = $connbas->query('SELECT COUNT(*) AS n FROM (' . $sql . ') AS x')->fetchColumn();
+
+        $stmt = $connbas->prepare('SELECT record_id FROM (' . $sql . ') AS x LIMIT 10');
         if ($stmt->execute(array())) {
-            $result['n'] = $connbas->query("SELECT FOUND_ROWS()")->fetchColumn();
             while (($row = $stmt->fetch(PDO::FETCH_ASSOC))) {
                 $result['rids'][] = $row['record_id'];
             }
@@ -731,9 +787,12 @@ class task_period_workflow02 extends task_appboxAbstract
             $result['err'] = $connbas->last_error();
         }
 
-        return($result);
+        return $result;
     }
 
+    /**
+     * facility called by xhttp/jquery from interface for ex. when switching interface from gui<->xml
+     */
     public function facility()
     {
         $request = http_request::getInstance();
@@ -765,7 +824,6 @@ class task_period_workflow02 extends task_appboxAbstract
                 break;
         }
 
-        print(json_encode($ret));
+        return json_encode($ret);
     }
 }
-?>

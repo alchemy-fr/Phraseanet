@@ -59,26 +59,7 @@ phrasea::headers();
             case 'XML2FORM':
                 if ($ztask->hasInterfaceHTML()) {
                     if ((simplexml_load_string($parm['txtareaxml']))) {
-                        if (1) {
-                            if (($msg = ($ztask->xml2graphic($parm['txtareaxml'], "parent.document.forms['graphicForm']"))) == "") {
-                                ?>
-                                <script type="text/javascript">
-                                    var d = parent.document;
-                                    d.getElementById('divGraph').style.display = "";
-                                    d.getElementById('divXml').style.display = "none";
-                                    d.getElementById('linkviewxml').className = "tabBack";
-                                    d.getElementById('linkviewgraph').className = "tabFront";
-                                    parent.jsTaskObj.currentView = "GRAPHIC";
-                                </script>
-                                <?php
-                            } else {
-                                ?>
-                                <script type="text/javascript">
-                                    alert("<?php echo p4string::MakeString($msg, 'js', '"') ?>");
-                                </script>
-                                <?php
-                            }
-                        } else {
+                        if (($msg = ($ztask->xml2graphic($parm['txtareaxml'], "parent.document.forms['graphicForm']"))) == "") {
                             ?>
                             <script type="text/javascript">
                                 var d = parent.document;
@@ -89,12 +70,20 @@ phrasea::headers();
                                 parent.jsTaskObj.currentView = "GRAPHIC";
                             </script>
                             <?php
+                        } else {
+                            ?>
+                            <script type="text/javascript">
+                                alert("<?php echo p4string::MakeString($msg, 'js', '"') ?>");
+                            </script>
+                            <?php
                         }
                     } else {
                         ?>
                         <script type="text/javascript">
-                            if(confirm("<?php echo p4string::MakeString(_('admin::tasks: xml invalide, restaurer la version precedente ?'), 'js', '"') // xml invalide, restaurer la v. prec. ?      ?>"))
-                            parent.document.forms['fxml'].txtareaxml.value = parent.jsTaskObj.oldXML;
+                            if(confirm("<?php echo p4string::MakeString(_('admin::tasks: xml invalide, restaurer la version precedente ?'), 'js', '"') // xml invalide, restaurer la v. prec. ?         ?>"))
+                            {
+                                parent.document.forms['fxml'].txtareaxml.value = parent.jsTaskObj.oldXML;
+                            }
                         </script>
                         <?php
                     }
