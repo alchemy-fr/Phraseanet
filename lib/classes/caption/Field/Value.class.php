@@ -406,7 +406,7 @@ class caption_Field_Value implements cache_cacheableInterface
         $caption_field_value->update_cache_value($value);
 
         $record->get_caption()->delete_data_from_cache();
-        $this->databox_field->delete_data_from_cache();
+        $databox_field->delete_data_from_cache();
 
         return $caption_field_value;
     }
