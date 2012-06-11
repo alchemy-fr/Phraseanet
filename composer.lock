@@ -56,12 +56,12 @@
         {
             "package": "media-alchemyst/media-alchemyst",
             "version": "dev-master",
-            "source-reference": "0bd6ea6f8e8c9e221eaa4d57f0bbacff32f60368"
+            "source-reference": "bf5e52be4bcfbc216c94f21774763097fa9360da"
         },
         {
             "package": "mediavorus/mediavorus",
             "version": "dev-master",
-            "source-reference": "c8a764abf50f203d85c9cbc725b7555096e07123"
+            "source-reference": "1621c3eaa3f08172fdf0100fd4e2152210ad3fd2"
         },
         {
             "package": "monolog/monolog",
@@ -70,7 +70,7 @@
         {
             "package": "php-ffmpeg/php-ffmpeg",
             "version": "dev-master",
-            "source-reference": "1de9390db3f7d3bec8255b64c919cc0373d82d54"
+            "source-reference": "b534d7a8a855ff787399f0726c375803ee52eb6c"
         },
         {
             "package": "php-mp4box/php-mp4box",
@@ -100,7 +100,13 @@
         {
             "package": "pimple/pimple",
             "version": "dev-master",
-            "source-reference": "v1.0.0"
+            "alias-pretty-version": "1.0.x-dev",
+            "alias-version": "1.0.9999999.9999999-dev"
+        },
+        {
+            "package": "pimple/pimple",
+            "version": "dev-master",
+            "source-reference": "694448bdd2b7d802517104bdafe1a6f2591506c8"
         },
         {
             "package": "pimple/pimple",
@@ -117,12 +123,12 @@
         {
             "package": "silex/silex",
             "version": "dev-master",
-            "source-reference": "8b7796f94154e0cb51db3733e4262de50114c121"
+            "source-reference": "ca49749039f3b3d2f9df028109c8f83adb607dc9"
         },
         {
             "package": "swftools/swftools",
             "version": "dev-master",
-            "source-reference": "676d78d7ff36205345af4a6fefb4c1c49caea39e"
+            "source-reference": "72f339293ca74606814f41fd95f8c552257d8c3b"
         },
         {
             "package": "swiftmailer/swiftmailer",
@@ -159,13 +165,13 @@
         {
             "package": "twig/twig",
             "version": "dev-master",
-            "alias-pretty-version": "1.8.x-dev",
-            "alias-version": "1.8.9999999.9999999-dev"
+            "source-reference": "d4511d02b45725a56c8cc49127244bca640c9d13"
         },
         {
             "package": "twig/twig",
             "version": "dev-master",
-            "source-reference": "6d072640c44f1781049afd2d96060c72da80662a"
+            "alias-pretty-version": "1.8.x-dev",
+            "alias-version": "1.8.9999999.9999999-dev"
         },
         {
             "package": "zend/gdata",
