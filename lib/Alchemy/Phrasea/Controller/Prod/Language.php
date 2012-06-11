@@ -96,7 +96,7 @@ class Language implements ControllerProviderInterface
                 $out['selectOneRecord'] = _('Please select one record');
                 $out['onlyOneRecord'] = _('You can choose only one record');
                 $out['errorAjaxRequest'] = _('An error occured, please retry');
-                $out['filBeingDownloaded'] = _('Some files are being downloaded');
+                $out['fileBeingDownloaded'] = _('Some files are being downloaded');
                 $out['warning'] = _('Attention');
 
                 $Serializer = $app['Core']['Serializer'];

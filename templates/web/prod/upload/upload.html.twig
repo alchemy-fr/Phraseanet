@@ -207,7 +207,7 @@ $(document).ready(function () {
             //prevent dialog box from being closed while files are being downloaded
             dialog.getDomElement().bind("dialogbeforeclose", function(event, ui) {
                 if ( ! UploaderManager.Queue.isEmpty()) {
-                    p4.Alerts(language.warning, language.filBeingDownloaded);
+                    p4.Alerts(language.warning, language.fileBeingDownloaded);
                     return false;
                 }
             });
