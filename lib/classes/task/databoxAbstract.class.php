@@ -111,7 +111,6 @@ abstract class task_databoxAbstract extends task_abstract
                 switch ($process_ret) {
                     case self::STATE_MAXMEGSREACHED:
                     case self::STATE_MAXRECSDONE:
-                    case self::STATE_OK:
                         if ($this->getRunner() == self::RUNNER_SCHEDULER) {
                             $this->setState(self::STATE_TORESTART);
                             $this->running = FALSE;
@@ -133,7 +132,10 @@ abstract class task_databoxAbstract extends task_abstract
             }
 
             $this->incrementLoops();
-            $this->pause($duration);
+
+            if ($this->running) {
+                $this->pause($duration);
+            }
         }
 
         if ($task_must_delete) {
