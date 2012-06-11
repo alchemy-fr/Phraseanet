@@ -269,6 +269,9 @@ interface API_V1_Interface
      */
     public function get_publication(Request $request, $publication_id, User_Adapter &$user);
 
+    public function get_publications(Request $request, User_Adapter &$user);
+    
+    public function get_feed_entry(Request $request, $entry, User_Adapter &$user);
     /**
      * Route : /users/search/FORMAT/
      *
@@ -290,6 +293,8 @@ interface API_V1_Interface
      */
     public function get_user_acces(Request $request, $usr_id);
 
+    public function add_record(Application $app, Request $request);
+    
     /**
      * Route : /users/add/FORMAT/
      *

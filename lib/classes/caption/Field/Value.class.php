@@ -74,11 +74,11 @@ class caption_Field_Value implements cache_cacheableInterface
     {
         try {
             $datas = $this->get_data_from_cache();
-            
+
             $this->value = $datas['value'];
             $this->VocabularyType = $datas['vocabularyType'] ? Vocabulary\Controller::get($datas['vocabularyType']) : null;
             $this->VocabularyId = $datas['vocabularyId'];
-            
+
             return $this;
         } catch (\Exception $e) {
             
@@ -534,7 +534,7 @@ class caption_Field_Value implements cache_cacheableInterface
      */
     public function get_cache_key($option = null)
     {
-        return 'caption_fieldvalue_' . $this->record->get_serialize_key() . ($option ? '_' . $option : '');
+        return 'caption_fieldvalue_' . $this->id . '_' . $this->record->get_serialize_key() . ($option ? '_' . $option : '');
     }
 
     /**
