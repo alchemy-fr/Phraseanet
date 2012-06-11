@@ -3500,7 +3500,47 @@ dans l'onglet thesaurus : arbres, menus contextuels
 /** FEEDS **/
 
 #answers .feed {
-    margin:10px 10px 10px 0;
+    margin: 10px;
+}
+
+#answers .feed .btn {
+    font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+#answers .feed .btn-inverse {
+    background-color: #D6D6D6;
+    *background-color: #D6D6D6;
+    background-image: -ms-linear-gradient(top, #FFFFFF, #D6D6D6);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FFFFFF), to(#D6D6D6));
+    background-image: -webkit-linear-gradient(top, #FFFFFF, #D6D6D6);
+    background-image: -o-linear-gradient(top, #FFFFFF, #D6D6D6);
+    background-image: linear-gradient(top, #FFFFFF, #D6D6D6);
+    background-image: -moz-linear-gradient(top, #FFFFFF, #D6D6D6);
+    border-color: #D6D6D6 #D6D6D6 #bfbfbf;
+    border-bottom-color: #b3b3b3;
+    filter: progid:dximagetransform.microsoft.gradient(startColorstr='#ffffff', endColorstr='#D6D6D6', GradientType=0);
+    filter: progid:dximagetransform.microsoft.gradient(enabled=false);
+    /*border: 1px solid #666666;*/
+    text-shadow: none;
+    color: #777777;
+    font-weight: bold;
+}
+
+#answers .feed .btn-inverse:hover {
+    background-color: #D6D6D6;
+    *background-color: #D6D6D6;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    color: #FFFFFF;
+}
+
+#answers .feed .btn-group.open .btn-inverse.dropdown-toggle {
+    background-color: #E6E6E6;
+    background-image: none;
 }
 
 #answers .feed .headblock {
@@ -3528,10 +3568,13 @@ dans l'onglet thesaurus : arbres, menus contextuels
 #answers .feed .entry {
     margin:0 0 30px;
     padding:10px;
-    border:2px solid #212121;
+    border: 3px solid #D9D9D9;
+    background-color: #EEEEEE;
+    float: left;
 }
+
 #answers .feed .entry.hover {
-    border:2px solid #404040;
+    border: 3px solid #666666;
 }
 
 #answers .feed .entry table.head {
@@ -3606,8 +3649,13 @@ dans l'onglet thesaurus : arbres, menus contextuels
     text-align: justify;
 }
 
-#answers .feed .submenu {
-    background-color: #1A1A1A;
+#answers .feed .dropdown-menu {
+    background-color: #E6E6E6;
+    border: 1px solid #B1B1B1;
+}
+
+#answers .feed .dropdown-menu a {
+    color: #333333;
 }
 
 #answers .feed img {
@@ -3752,20 +3800,18 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 #pub_tabs .container .blockmenu .dropdown-menu {
-    background-clip: padding-box;
-    background-color: transparent;
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
-    float: left;
-    left: 0;
-    list-style: none outside none;
-    margin: 0;
-    min-width: 160px;
-    padding: 0;
-    position: absolute;
-    top: 100%;
+    background-color: #E6E6E6;
+    border: 1px solid #D9D9D9;
     z-index: 1000;
+}
+
+#pub_tabs .container .blockmenu .dropdown-menu a {
+    color: #333333;
+}
+
+#pub_tabs .container .blockmenu .dropdown-menu a:hover {
+    background-color: #0088CC;
+    color: #FFFFFF;
 }
 
 #dialog_publicator .ui-tabs .ui-tabs-panel.loading {

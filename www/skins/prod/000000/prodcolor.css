@@ -3388,7 +3388,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 /** FEEDS **/
 
 #answers .feed {
-    margin:10px;
+    margin: 10px;
 }
 
 #answers .feed .btn {
@@ -3441,12 +3441,13 @@ dans l'onglet thesaurus : arbres, menus contextuels
 #answers .feed .entry {
     margin:0 0 30px;
     padding:10px;
-    border:2px solid #212121;
-    float:left;
+    border: 3px solid #212121;
+    background-color: #666666;
+    float: left;
 }
 
 #answers .feed .entry.hover {
-    border:2px solid #404040;
+    border: 3px solid #404040;
 }
 
 #answers .feed .entry table.head {
