@@ -10,9 +10,9 @@
                     <form class="action_works_single_element action_works_many_element" method="GET" action="/prod/bridge/action/{{ account.get_id() }}/moveinto/{{action_type}}/">
                         <input type="hidden" name="elements_list" value="" />
                         <input type="hidden" name="destination" value="{{ constant('Bridge_Api_Dailymotion::CONTAINER_TYPE_PLAYLIST') }}" />
-                        <button  class="form_multiple_submitter btn btn-inverse">
+                        <a class="form_multiple_submitter">
                             {% trans 'Playlist' %}
-                        </button>
+                        </a>
                     </form>
                 </li>
             </ul>
@@ -31,9 +31,9 @@
                     <form class="action_works_single_element action_works_many_element" method="GET" action="/prod/bridge/action/{{ account.get_id() }}/deleteelement/{{action_type}}/">
                         <input type="hidden" name="elements_list" value="" />
                         <input type="hidden" name="destination" value="" />
-                        <button  class="form_multiple_submitter btn btn-inverse">
+                        <a class="form_multiple_submitter">
                             {% trans 'boutton::supprimer' %}
-                        </button>
+                        </a>
                     </form>
                 </li>
             </ul>
