@@ -287,7 +287,7 @@ abstract class task_abstract
     {
         $this->logger = $logger;
 
-        $this->taskid = $taskid;
+        $this->taskid = (integer) $taskid;
 
         phrasea::use_i18n(Session_Handler::get_locale());
 
@@ -315,11 +315,11 @@ abstract class task_abstract
             throw new Exception('Unknown task id');
         }
         $this->title = $row['name'];
-        $this->crash_counter = (int) $row['crashed'];
+        $this->crash_counter = (integer) $row['crashed'];
         $this->active = ! ! $row['active'];
         $this->settings = $row['settings'];
         $this->runner = $row['runner'];
-        $this->completed_percentage = (int) $row['completed'];
+        $this->completed_percentage = (integer) $row['completed'];
         $this->loadSettings(simplexml_load_string($row['settings']));
     }
 
@@ -380,18 +380,25 @@ abstract class task_abstract
 
     /**
      * Return the last time the task was executed
-     * @return string
+     * 
+     * @return null|\DateTime
      */
     public function getLastExecTime()
     {
         $conn = connection::getPDOConnection();
+
         $sql = 'SELECT last_exec_time FROM task2 WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
         $stmt->execute(array(':taskid' => $this->getID()));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        return isset($row['last_exec_time']) ? $row['last_exec_time'] : '';
+        $time = null;
+        if ($row['last_exec_time'] != '0000-00-00 00:00:00') {
+            $time = new \DateTime($row['last_exec_time']);
+        }
+        
+        return $time;
     }
 
     public function getPID()
@@ -403,7 +410,7 @@ abstract class task_abstract
         if (($fd = fopen($lockfile, 'a+')) != FALSE) {
             if (flock($fd, LOCK_EX | LOCK_NB) === FALSE) {
                 // already locked ? : task running
-                $pid = fgets($fd);
+                $pid = (integer) fgets($fd);
             } else {
                 // can lock : not running
                 flock($fd, LOCK_UN);
@@ -440,7 +447,7 @@ abstract class task_abstract
 
     protected function sleep($nsec)
     {
-        $nsec = (int) $nsec;
+        $nsec = (integer) $nsec;
         if ($nsec < 0)
             throw new \InvalidArgumentException(sprintf("(%s) is not > 0"));
         while ($this->running && $nsec -- > 0) {
@@ -497,7 +504,7 @@ abstract class task_abstract
         try {
             $this->run2();
         } catch (\Exception $exception) {
-
+            
         }
 
         // in any case, exception or not, the task is ending so unlock the pid file
@@ -563,7 +570,7 @@ abstract class task_abstract
                 $ret = self::STATE_MAXMEGSREACHED;
             }
 
-            if ($this->records_done >= (int) ($this->maxrecs)) {
+            if ($this->records_done >= (integer) ($this->maxrecs)) {
                 $this->log(sprintf("Max records done (%s) reached (actual is %s)", $this->maxrecs, $this->records_done));
                 $this->running = FALSE;
                 $ret = self::STATE_MAXRECSDONE;
@@ -594,7 +601,7 @@ abstract class task_abstract
                 $ret = self::STATE_MAXMEGSREACHED;
             }
 
-            if ($this->records_done >= (int) ($this->maxrecs)) {
+            if ($this->records_done >= (integer) ($this->maxrecs)) {
                 $this->log(sprintf("Max records done (%s) reached (actual is %s)", $this->maxrecs, $this->records_done));
                 $this->running = FALSE;
                 $ret = self::STATE_MAXRECSDONE;
@@ -620,20 +627,20 @@ abstract class task_abstract
 
     protected function loadSettings(SimpleXMLElement $sx_task_settings)
     {
-        $this->period = (int) $sx_task_settings->period;
+        $this->period = (integer) $sx_task_settings->period;
         if ($this->period <= 0 || $this->period >= 60 * 60) {
             $this->period = 60;
         }
 
-        $this->maxrecs = (int) $sx_task_settings->maxrecs;
+        $this->maxrecs = (integer) $sx_task_settings->maxrecs;
         if ($sx_task_settings->maxrecs < 10 || $sx_task_settings->maxrecs > 1000) {
             $this->maxrecs = 100;
         }
-        $this->maxmegs = (int) $sx_task_settings->maxmegs;
+        $this->maxmegs = (integer) $sx_task_settings->maxmegs;
         if ($sx_task_settings->maxmegs < 16 || $sx_task_settings->maxmegs > 512) {
             $this->maxmegs = 24;
         }
-        $this->record_buffer_size = (int) $sx_task_settings->flush;
+        $this->record_buffer_size = (integer) $sx_task_settings->flush;
         if ($sx_task_settings->flush < 1 || $sx_task_settings->flush > 100) {
             $this->record_buffer_size = 10;
         }
@@ -751,7 +758,7 @@ abstract class task_abstract
             $stmt->closeCursor();
             $this->completed_percentage = $p;
         } catch (Exception $e) {
-
+            
         }
 
         return $this;
