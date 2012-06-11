@@ -597,6 +597,26 @@ div.diapo {
     text-align: left;
 }
 
+
+
+/**************************
+****** Popups infos ******/
+
+.popover-inner {
+    background: none repeat scroll 0 0 #999999;
+    color: #333333;
+}
+
+.popover-inner .popover-title {
+    background-color: #B1B1B1;
+}
+
+.popover-inner .popover-content {
+    background-color: #D9D9D9;
+}
+
+
+
 /**************************
 ****** CSS idFrameT ******/
 
@@ -3444,91 +3464,135 @@ dans l'onglet thesaurus : arbres, menus contextuels
     color: #FFFFFF;
 }
 
-#modal_feed form .feeds .feed.hover{
+#modal_feed form .feeds .feed.hover {
     background-color: #606060;
     font-weight: bold;
 }
 
-#modal_feed form .feeds .feed.selected{
+#modal_feed form .feeds .feed.selected {
     background-color: #959595;
     font-weight: bold;
 }
 
-#modal_feed form .feeds .feed span{
+#modal_feed form .feeds .feed span {
     margin: 0 10px;
 }
 
 #modal_feed form input.error,
-#modal_feed form textarea.error{
+#modal_feed form textarea.error {
     border: 1px solid red;
 }
 
 #modal_feed form input,
-#modal_feed form textarea{
+#modal_feed form textarea {
     width: 90%;
     height: 20px;
     margin: 3px 0 10px 0;
 }
 
-#modal_feed form textarea{
-    height:60px;
-    resize:none;
+#modal_feed form textarea {
+    height: 60px;
+    resize: none;
 }
 
 /** **/
 
-#answers .feed .headblock h1 img{
-    margin-right:15px;
-}
-#answers .feed .headblock{
-    max-width:800px;
-    margin-bottom:20px;
+/** FEEDS **/
+
+#answers .feed {
+    margin: 10px;
 }
 
-#answers .feed .headblock table{
-    width:100%;
+#answers .feed .btn {
+    font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
-#answers .feed .headblock h1{
-    font-size:22px;
+
+#answers .feed .btn-inverse {
+    background-color: #D6D6D6;
+    *background-color: #D6D6D6;
+    background-image: -ms-linear-gradient(top, #FFFFFF, #D6D6D6);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FFFFFF), to(#D6D6D6));
+    background-image: -webkit-linear-gradient(top, #FFFFFF, #D6D6D6);
+    background-image: -o-linear-gradient(top, #FFFFFF, #D6D6D6);
+    background-image: linear-gradient(top, #FFFFFF, #D6D6D6);
+    background-image: -moz-linear-gradient(top, #FFFFFF, #D6D6D6);
+    border-color: #D6D6D6 #D6D6D6 #bfbfbf;
+    border-bottom-color: #b3b3b3;
+    filter: progid:dximagetransform.microsoft.gradient(startColorstr='#ffffff', endColorstr='#D6D6D6', GradientType=0);
+    filter: progid:dximagetransform.microsoft.gradient(enabled=false);
+    /*border: 1px solid #666666;*/
+    text-shadow: none;
+    color: #777777;
+    font-weight: bold;
 }
-#answers .feed .headblock a.subscribe_rss
-{
+
+#answers .feed .btn-inverse:hover {
+    background-color: #D6D6D6;
+    *background-color: #D6D6D6;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    color: #FFFFFF;
+}
+
+#answers .feed .btn-group.open .btn-inverse.dropdown-toggle {
+    background-color: #E6E6E6;
+    background-image: none;
+}
+
+#answers .feed .headblock {
+    max-width: 800px;
+    margin-bottom: 20px;
+}
+
+#answers .feed .headblock table {
+    width: 100%;
+}
+
+#answers .feed .headblock h1 {
+    font-size: 22px;
+}
+
+#answers .feed .headblock h1 img {
+    margin-right: 15px;
+}
+
+#answers .feed .headblock a.subscribe_rss {
     font-size:14px;
     margin-left:15px;
 }
 
-
-#answers .feed
-{
-    margin:10px 10px 10px 0;
+#answers .feed .entry {
+    margin:0 0 30px;
+    padding:10px;
+    border: 3px solid #D9D9D9;
+    background-color: #EEEEEE;
+    float: left;
 }
 
-#answers .feed .entry table.head
-{
+#answers .feed .entry.hover {
+    border: 3px solid #666666;
+}
+
+#answers .feed .entry table.head {
     vertical-align:middle;
     margin:10px 0;
     width:600px;
 }
-#answers .feed .entry table a.tools{
+
+#answers .feed .entry table a.tools {
     display:none;
 }
-#answers .feed .entry.hover table a.tools{
+
+#answers .feed .entry.hover table a.tools {
     display:inline;
 }
 
-#answers .feed .entry
-{
-    margin:0 0 30px;
-    padding:10px;
-    border:2px solid #212121;
-}
-#answers .feed .entry.hover{
-    border:2px solid #404040;
-}
-
 #answers .feed h1,
-#answers .feed .post_date
-{
+#answers .feed .post_date {
     width:100%;
 }
 
@@ -3538,59 +3602,67 @@ dans l'onglet thesaurus : arbres, menus contextuels
 #answers .feed p,
 #answers .feed .contents,
 #answers .feed .see_more,
-#answers .feed .post_date
-{
+#answers .feed .post_date {
     position:relative;
     clear:left;
 }
-#answers .feed .see_more{
-    height:60px;
-    text-align:center;
-    font-weight:bold;
-    font-size:13px;
+
+#answers .feed .see_more {
+    height: 60px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 13px;
     background-position: center bottom;
 }
 
-
-#answers .feed .contents
-{
-    clear:left;
-    margin:20px 0;
+#answers .feed .contents {
+    clear: left;
+    margin: 20px 0;
 }
-#answers .feed .post_date{
-    text-align:right;
+
+#answers .feed .post_date {
+    text-align: right;
     font-style: italic;
-    max-width:600px;
-    margin-bottom:20px;
+    max-width: 600px;
+    margin-bottom: 20px;
 }
 
-#answers .feed h1{
-    font-weight:bold;
-    font-size:20px;
-}
-#answers .feed .entry h1{
-    margin-bottom:0;
-}
-#answers .feed h1 .author{
-    font-size:12px;
-    font-weight:normal;
-    margin-left:15px;
-}
-#answers .feed p{
-    max-width:600px;
-    line-height:18px;
-    margin:5px 0;
-    text-align:justify;
+#answers .feed h1 {
+    font-weight: bold;
+    font-size: 20px;
 }
 
-#answers .feed .submenu
-{
-    background-color:#1A1A1A;
+#answers .feed h1 .author {
+    font-size: 12px;
+    font-weight: normal;
+    margin-left: 15px;
 }
-#answers .feed img
-{
-    vertical-align:middle;
+
+#answers .feed .entry h1 {
+    margin-bottom: 0;
 }
+
+#answers .feed p {
+    max-width: 600px;
+    line-height: 18px;
+    margin: 5px 0;
+    text-align: justify;
+}
+
+#answers .feed .dropdown-menu {
+    background-color: #E6E6E6;
+    border: 1px solid #B1B1B1;
+}
+
+#answers .feed .dropdown-menu a {
+    color: #333333;
+}
+
+#answers .feed img {
+    vertical-align: middle;
+}
+
+/** **/
 
 .ui-dialog-content.dialog-Small select,
 .ui-dialog-content.dialog-Small input[type="text"],
@@ -3608,9 +3680,6 @@ dans l'onglet thesaurus : arbres, menus contextuels
 .ui-dialog-content p{
     line-height:18px;
 }
-
-
-
 
 
 
@@ -3635,7 +3704,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 #dialog_publicator .ui-state-active a{
-    color:#0099CC;
+    color:#0088CC;
 }
 
 #dialog_publicator .ui-state-active.not_configured a{
@@ -3731,20 +3800,18 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 #pub_tabs .container .blockmenu .dropdown-menu {
-    background-clip: padding-box;
-    background-color: transparent;
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
-    float: left;
-    left: 0;
-    list-style: none outside none;
-    margin: 0;
-    min-width: 160px;
-    padding: 0;
-    position: absolute;
-    top: 100%;
+    background-color: #E6E6E6;
+    border: 1px solid #D9D9D9;
     z-index: 1000;
+}
+
+#pub_tabs .container .blockmenu .dropdown-menu a {
+    color: #333333;
+}
+
+#pub_tabs .container .blockmenu .dropdown-menu a:hover {
+    background-color: #0088CC;
+    color: #FFFFFF;
 }
 
 #dialog_publicator .ui-tabs .ui-tabs-panel.loading {
@@ -3828,7 +3895,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 #dialog_publicator .api_content .blockmenu a.selected,
 #dialog_publicator .api_banner a.selected {
     font-weight: bold;
-    color: #0099CC;
+    color: #0088CC;
 }
 
 #dialog_publicator .api_infos {
@@ -3932,7 +3999,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 #dialog_publicator .element table .title{
-    color:#0099CC;
+    color:#0088CC;
     font-weight:bold;
 }
 
@@ -3948,7 +4015,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
 
 #dialog_publicator .ui-tabs-panel .blockresponse a {
-    color:#0099CC;
+    color:#0088CC;
     text-decoration: none;
 }
 
