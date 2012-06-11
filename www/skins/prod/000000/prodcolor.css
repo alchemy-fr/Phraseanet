@@ -577,6 +577,26 @@ div.diapo {
     text-align: left;
 }
 
+
+
+/**************************
+****** Popups infos ******/
+
+.popover-inner {
+    background: none repeat scroll 0 0 #666666;
+    color: #FFFFFF;
+}
+
+.popover-inner .popover-title {
+    background-color: #404040;
+}
+
+.popover-inner .popover-content {
+    background-color: #000000;
+}
+
+
+
 /**************************
 ****** CSS idFrameT ******/
 
