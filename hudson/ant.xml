@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="BuildSourceHudson" default="Main" basedir=".">
-	<property file="build.properties"/>
-	<target name="Main">
-    <delete includeemptydirs="true">
-      <fileset dir="${dir.dest}" >
-        <exclude name="config" />
-				<exclude name="config/**" />
-			</fileset>
-    </delete>
-		<copy todir="${dir.dest}" verbose="false" overwrite="false" >
-			<fileset dir="${dir.src}" >
-				<exclude name="**/test/**" />
-<!--				<exclude name="**/tests/**" /> -->
-				<exclude name="**/example/**" />
-
-				<exclude name="**/examples/**" />
-				<exclude name="**/exemple/**" />
-				<exclude name="**/exemples/**" />
-				<exclude name="**/demo/**" />
-				<exclude name="**/demos/**" />
-			</fileset>
-		</copy>
-        <chmod file="${dir.dest}/vendor/phpexiftool/exiftool/exiftool" perm="755"/>
-	</target>
+    <property file="build.properties"/>
+    <target name="Main">
+        <delete includeemptydirs="true" verbose="false" failonerror="false">
+            <fileset dir="${dir.dest}" >
+                <exclude name="config" />
+                <exclude name="config/**" />
+                <exclude name="**/.git/**" />
+                <exclude name="**/.git*" />
+            </fileset>
+        </delete>
+        <copy todir="${dir.dest}" verbose="false" overwrite="false" >
+            <fileset dir="${dir.src}" >
+                <exclude name="**/test/**" />
+                <exclude name="**/example/**" />
+               <exclude name="**/examples/**" />
+                <exclude name="**/exemple/**" />
+                <exclude name="**/exemples/**" />
+                <exclude name="**/demo/**" />
+                <exclude name="**/demos/**" />
+                <exclude name="**/.git/**" />
+                <exclude name="**/.git*" />
+            </fileset>
+        </copy>
+        <chmod file="${dir.dest}/vendor/phpexiftool/exiftool/exiftool" perm="755" verbose="false" />
+    </target>
 </project>
