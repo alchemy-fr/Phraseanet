@@ -28,17 +28,12 @@
                 </td>
                 <td>
                     <div class="menu_feeds">
-
-
                         <div class="btn-group">
-
                             <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown">
                                 {% trans 'Aller a' %}
                                 <span class="caret"></span>
                             </button>
                             <ul class="submenu dropdown-menu">
-
-                            <!--<div class="submenu" style="display:none;position:absolute;">-->
                                 {% for aval_feed in feeds.get_feeds() %}
                                     <li>
                                         <a class="ajax_answers" href="/prod/feeds/feed/{{ aval_feed.get_id() }}/">
@@ -46,12 +41,8 @@
                                         </a>
                                     </li>
                                 {% endfor %}
-                            <!--</div>-->
-
                             </ul>
                         </div>
-
-
                     </div>
                 </td>
             </tr>
