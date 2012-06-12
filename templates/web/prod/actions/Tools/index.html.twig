@@ -240,7 +240,7 @@
                   <br />
                   <label for="ROTA_C90" class="radio">
                       <input type="radio" name="rotation" id="ROTA_C90" value="-90">
-                    {% trans "rotation 90 degres anti-horaires"%}
+                      {% trans "rotation 90 degres anti-horaires"%}
                   </label>
                   <input type="hidden" name="lst" value="{{helper.get_serialize_list()}}" />
                   <input type="hidden" name="element" value="" />
@@ -278,7 +278,7 @@
                     <br />
                     <label for="CCFNALP" class="checkbox">
                         <input type="checkbox" name="ccfilename" id="CCFNALP" value="1">
-                      {% trans "mettre a jour le nom original de fichier apres substitution"%}
+                        {% trans "mettre a jour le nom original de fichier apres substitution"%}
                     </label>
                     <input type="hidden" name="ACT" value="SEND" />
                     <input type="hidden" name="sbas_id" value="{{record.get_sbas_id()}}"/>
@@ -690,6 +690,5 @@
         }
       });
     });
-     //scope.find('button').button();
   });
 </script>
