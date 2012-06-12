@@ -227,6 +227,13 @@ class Upload implements ControllerProviderInterface
                 $element = 'record';
                 $message = _('The record was successfully created');
             } else {
+                $params = array('lazaret_file' => $elementCreated);
+
+                $appbox = \appbox::get_instance($app['Core']);
+
+                $eventsManager = \eventsmanager_broker::getInstance($appbox, $app['Core']);
+                $eventsManager->trigger('__UPLOAD_QUARANTINE__', $params);
+
                 $id = $elementCreated->getId();
                 $element = 'lazaret';
                 $message = _('The file was moved to the quarantine');
