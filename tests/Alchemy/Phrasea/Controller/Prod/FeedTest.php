@@ -195,11 +195,13 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
         );
 
 
-        $crawler = $this->client->request('GET', '/feeds/entry/' . $entry->get_id() . '/edit/');
-
-        $response = $this->client->getResponse();
-
-        $this->assertFalse($response->isOk());
+        try
+        {
+            $crawler = $this->client->request('GET', '/feeds/entry/' . $entry->get_id() . '/edit/');
+            $this->fail('Should raise an exception');
+        } catch(Exception_UnauthorizedAction $e) {
+            
+        }
 
         $feed->delete();
     }
