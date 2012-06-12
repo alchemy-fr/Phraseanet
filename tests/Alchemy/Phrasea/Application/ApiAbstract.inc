@@ -2186,9 +2186,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             try {
                 $values = $record->get_caption()->get_field($field->get_name())->get_values();
                 $value = array_pop($values);
-                if (!$value) {
-                    throw new \Exception('No value');
-                }
                 $meta_id = $value->getId();
             } catch (\Exception $e) {
                 $meta_id = null;
