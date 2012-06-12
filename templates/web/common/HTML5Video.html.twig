@@ -8,7 +8,7 @@
     {% endif %}
                 
     <div class="record record_video imgTips" style="position:relative;width:{{ displayWidth | round }}px;height:{{ displayHeight | round }}px;">
-        <video id="video_preview_tooltip" class="videoTips video-js vjs-default-skin" controls
+        <video id="video_preview_tooltip" class="videoTips video-js vjs-default-skin" controls autoplay
         preload="auto" xposter="my_video_poster.png" width="{{ displayWidth|round }}" height="{{ displayHeight | round }}"
         data-setup="{}">
         {% for name, subdef in arraySubdefs %}
