@@ -20,6 +20,8 @@
     $('document').ready(function(){
         var scope = $('#lazaretBox');
 
+        $("#tab-lazaret").scrollTop(0);
+
         function getLazaretId(el){
             return el.closest('div.lazaret-file').find('input[name=lazaret_file]').val();
         }

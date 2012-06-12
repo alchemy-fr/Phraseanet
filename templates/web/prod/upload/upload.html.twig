@@ -104,9 +104,14 @@
                 </div>
 
                 <div id="uploadBoxRight" class="well">
-                    <h5 style="margin-top: 10px;">{% trans 'Transmited files' %} :
-                        <span class='bitrate-box'></span>
-                    </h5>
+                    <div>
+                        <h5 style="margin-top: 10px;">{% trans 'Transmited files' %} :
+                            <span class='bitrate-box'></span>
+                        </h5>
+                        <button id="cancel-all" class="btn" type="button" disabled="disabled">
+                            {% trans "Cancel all" %}
+                        </button>
+                    <div>
                     <div class="progress progress-striped active">
                         <div class="progress-bar-total bar" style="width: 0%;"></div>
                     </div>
@@ -170,6 +175,16 @@ $(document).ready(function () {
         $('ul', $(this).closest('.upload-box')).empty();
     });
 
+    //Cancel all upload
+    $("#cancel-all").bind("click", function(){
+        //Remove all cancel
+        $('button.remove-element', UploaderManager.getDownloadBox()).each(function(i, el){
+            $(el).trigger("click");
+        });
+
+        progressbarAll.width('0%');
+    });
+
     //Remove an element from the upload box
     $("button.remove-element", UploaderManager.getUploadBox()).live("click", function(){
         var container = $(this).closest("li");
@@ -180,15 +195,36 @@ $(document).ready(function () {
 
     //Get all elements in the upload box & trigger the submit event
     $("button.upload-submitter", UploaderManager.getContainer()).bind("click", function(){
-        UploaderManager.getUploadBox().find('li').each(function(index, el){
-            var index = $(el).find('input[name=uploadIndex]').val();
-            UploaderManager.getData(index).submit();
-        });
+        //Fetch all valid elements
+        var documents = UploaderManager.getUploadBox().find('li.upload-valid');
+
+        if(documents.length > 0) {
+            var dialog = p4.Dialog.get(1);
+
+            //enabled cancel all button
+            $("#cancel-all").attr("disabled", false);
+
+            //prevent dialog box from being closed while files are being downloaded
+            dialog.getDomElement().bind("dialogbeforeclose", function(event, ui) {
+                if ( ! UploaderManager.Queue.isEmpty()) {
+                    p4.Alerts(language.warning, language.fileBeingDownloaded);
+                    return false;
+                }
+            });
+
+            documents.each(function(index, el){
+                var index = $(el).find('input[name=uploadIndex]').val();
+                UploaderManager.getData(index).submit();
+            });
+        }
     });
 
     $('#fileupload', UploaderManager.getContainer()).fileupload({
         namespace: 'phrasea-upload',
         dataType: 'json',
+        //override "on error" local ajax event to prevent global ajax event from being triggered
+        //as all fileupload options are passed as argument to the $.ajax jquery function
+        error: function(){return false},
         // Set singleFileUploads, sequentialUploads to true so the files
         // are upload one by one
         singleFileUploads : true,
@@ -254,8 +290,20 @@ $(document).ready(function () {
                 progressbarAll.width('100%');
                 bitrateBox.empty();
                 $('#uploadBoxRight .progress').removeClass('progress-striped active');
+                var dialog = p4.Dialog.get(1);
+                //unbind check before close event & disabled button for cancel all download
+                dialog.getDomElement().unbind("dialogbeforeclose");
+                //disabled cancel-all button, if queue is empty and last upload success
+                $("#cancel-all").attr("disabled", true);
             }
+
             return false;
+        },
+        fail: function(){
+            //disabled cancel-all button, if queue is emepty and last upload fail
+            if (UploaderManager.Queue.isEmpty()){
+                $("#cancel-all").attr("disabled", true);
+            }
         }
     });
 
@@ -307,7 +355,7 @@ $(document).ready(function () {
                 .error(function(jqXHR, textStatus, errorThrown) {
                     //Request is aborted
                     if (errorThrown === 'abort') {
-                        //
+                        return false;
                     } else {
                         data.context.find('.upload-record p.error').append(jqXHR.responseText);
                     }

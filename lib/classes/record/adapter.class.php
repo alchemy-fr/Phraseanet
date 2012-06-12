@@ -180,7 +180,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
             return $this;
         } catch (Exception $e) {
-            
+
         }
 
         $connbas = $this->databox->get_connection();
@@ -504,7 +504,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         try {
             return $this->get_subdef('thumbnailGIF');
         } catch (Exception $e) {
-            
+
         }
 
         return null;
@@ -550,7 +550,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         try {
             return $this->get_data_from_cache(self::CACHE_STATUS);
         } catch (Exception $e) {
-            
+
         }
         $sql = 'SELECT BIN(status) as status FROM record
               WHERE record_id = :record_id';
@@ -590,7 +590,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $name = strtolower($name);
 
         if ( ! in_array($name, $this->get_available_subdefs())) {
-            throw new Exception_Media_SubdefNotFound ();
+            throw new Exception_Media_SubdefNotFound (sprintf("subdef `%s` not found", $name));
         }
 
         if (isset($this->subdefs[$name])) {
@@ -694,7 +694,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         try {
             return $this->get_data_from_cache(self::CACHE_SUBDEFS);
         } catch (Exception $e) {
-            
+
         }
 
         $connbas = $this->get_databox()->get_connection();
@@ -1214,7 +1214,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 $sphinx->update_status(array("metadatas" . $sbas_crc, "metadatas" . $sbas_crc . "_stemmed_en", "metadatas" . $sbas_crc . "_stemmed_fr", "documents" . $sbas_crc), $this->get_sbas_id(), $this->get_record_id(), strrev($status));
             }
         } catch (Exception $e) {
-            
+
         }
         $this->delete_data_from_cache(self::CACHE_STATUS);
 
@@ -1346,7 +1346,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      * Read technical datas an insert them
      * This method can be long to perform
      *
-     * @return record_adapter 
+     * @return record_adapter
      */
     public function insertTechnicalDatas()
     {
@@ -1373,7 +1373,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         }
 
         $stmt->closeCursor();
-        
+
         $this->delete_data_from_cache(self::CACHE_TECHNICAL_DATAS);
 
         return $this;
@@ -1873,7 +1873,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             try {
                 $subdef->rotate($angle);
             } catch (\Exception $e) {
-                
+
             }
         }
 

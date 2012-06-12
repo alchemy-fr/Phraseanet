@@ -55,13 +55,13 @@ class BuildMissingSubdefs extends Command
         $core = \bootstrap::getCore();
         $this->appbox = \appbox::get_instance($core);
 
-        if($input->getOption('verbose')){
+        if ($input->getOption('verbose')) {
             $logger = $this->getLogger();
             $handler = new Handler\StreamHandler(fopen('php://stdout', 'a'));
             $logger->pushHandler($handler);
             $this->setLogger($logger);
         }
-        
+
         $start = microtime(true);
         $n = 0;
 
@@ -78,6 +78,12 @@ class BuildMissingSubdefs extends Command
             foreach ($rs as $row) {
                 $record = $databox->get_record($row['record_id']);
 
+                try {
+                    $record->get_hd_file();
+                } catch (\Exception_Media_SubdefNotFound $e) {
+                    continue;
+                }
+
                 $group = $subdefStructure->getSubdefGroup($record->get_type());
 
                 if ($group) {
@@ -88,10 +94,13 @@ class BuildMissingSubdefs extends Command
                         if ( ! $record->has_subdef($subdef->get_name())) {
                             $todo = true;
                         }
-
                         if (in_array($subdef->get_name(), array('preview', 'thumbnail', 'thumbnailgif'))) {
-                            $sub = $record->get_subdef($subdef->get_name());
-                            if ( ! $sub->is_physically_present()) {
+                            try {
+                                $sub = $record->get_subdef($subdef->get_name());
+                                if ( ! $sub->is_physically_present()) {
+                                    $todo = true;
+                                }
+                            } catch (\Exception_Media_SubdefNotFound $e) {
                                 $todo = true;
                             }
                         }
@@ -121,7 +130,7 @@ class BuildMissingSubdefs extends Command
      * Format a duration in seconds to human readable
      *
      * @param type $seconds the time to format
-     * @return string 
+     * @return string
      */
     public function getFormattedDuration($seconds)
     {

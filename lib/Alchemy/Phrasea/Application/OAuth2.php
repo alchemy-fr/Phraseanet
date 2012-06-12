@@ -33,10 +33,6 @@ return call_user_func(function() {
 
             $app['Core'] = \bootstrap::getCore();
 
-            $app->register(new \Silex\Provider\ValidatorServiceProvider(), array(
-                'validator.class_path' => __DIR__ . '/../../../../vendor/symfony/validator',
-            ));
-
             $app['appbox'] = function() use ($app) {
                     return \appbox::get_instance($app['Core']);
                 };
