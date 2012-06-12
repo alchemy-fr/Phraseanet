@@ -524,7 +524,7 @@ class setup
             $constraints = array();
             foreach (self::$PHP_EXT as $ext) {
 
-                if('pcntl' === $ext && 0 === stripos(strtolower(PHP_OS), 'win')){
+                if ('pcntl' === $ext && 0 === stripos(strtolower(PHP_OS), 'win')) {
                     continue;
                 }
 
@@ -618,7 +618,33 @@ class setup
                 }
             }
             foreach (self::$PHP_CONF as $conf => $value) {
-                if (($tmp = self::test_php_conf($conf, $value)) !== $value) {
+                if ($conf == 'memory_limit') {
+                    $memoryFound = self::test_php_conf($conf, $value);
+                    switch (strtolower(substr($memoryFound, -1))) {
+                        case 'g':
+                            $memoryFound *= 1024;
+                        case 'm':
+                            $memoryFound *= 1024;
+                        case 'k':
+                            $memoryFound *= 1024;
+                    }
+
+                    $memoryRequired = $value;
+                    switch (strtolower(substr($memoryRequired, -1))) {
+                        case 'g':
+                            $memoryRequired *= 1024;
+                        case 'm':
+                            $memoryRequired *= 1024;
+                        case 'k':
+                            $memoryRequired *= 1024;
+                    }
+                    
+                    if ($memoryFound >= $memoryRequired) {
+                        $constraints[] = new Setup_Constraint($conf, true, sprintf('%s = `%s` => OK', $conf, $value), ! in_array($conf, $nonblockers));
+                    } else {
+                        $constraints[] = new Setup_Constraint($conf, false, sprintf('Bad configuration for %1$s, found `%2$s`, required `%3$s`', $conf, $tmp, $value), ! in_array($conf, $nonblockers));
+                    }
+                } elseif (($tmp = self::test_php_conf($conf, $value)) !== $value) {
                     $constraints[] = new Setup_Constraint($conf, false, sprintf('Bad configuration for %1$s, found `%2$s`, required `%3$s`', $conf, $tmp, $value), ! in_array($conf, $nonblockers));
                 } else {
                     $constraints[] = new Setup_Constraint($conf, true, sprintf('%s = `%s` => OK', $conf, $value), ! in_array($conf, $nonblockers));
@@ -742,4 +768,3 @@ class setup
             return;
         }
     }
-
