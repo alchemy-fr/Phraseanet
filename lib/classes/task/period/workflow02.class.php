@@ -122,7 +122,6 @@ class task_period_workflow02 extends task_appboxAbstract
                     , async:true
                     , success:function(data)
                     {
-                        console.log(data);
                         t = "";
                         for(i in data.tasks)
                         {
