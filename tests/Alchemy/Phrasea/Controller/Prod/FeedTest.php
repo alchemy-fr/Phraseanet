@@ -4,6 +4,7 @@ require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.
 
 use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\CssSelector\CssSelector;
 
 class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
@@ -389,8 +390,8 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $feeds = Feed_Collection::load_all($appbox, self::$user);
 
         foreach ($feeds->get_feeds() as $one_feed) {
-            $path = "//div[@class='submenu']/a[@href='/prod/feeds/feed/" . $one_feed->get_id() . "/']";
 
+            $path = CssSelector::toXPath("ul.submenu a[href='/prod/feeds/feed/" . $one_feed->get_id() . "/']");
             $msg = sprintf("user %s has access to feed %s", self::$user->get_id(), $one_feed->get_id());
 
             if ($one_feed->has_access(self::$user)) {
@@ -411,8 +412,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $pageContent = $this->client->getResponse()->getContent();
 
         foreach ($feeds->get_feeds() as $one_feed) {
-            $path = "//div[@class='submenu']/a[@href='/prod/feeds/feed/" . $one_feed->get_id() . "/']";
-
+            $path = CssSelector::toXPath("ul.submenu a[href='/prod/feeds/feed/" . $one_feed->get_id() . "/']");
             $msg = sprintf("user %s has access to feed %s", self::$user->get_id(), $one_feed->get_id());
 
             if ($one_feed->has_access(self::$user)) {
