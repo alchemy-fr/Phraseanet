@@ -31,7 +31,12 @@ class BoilerPlate extends \PhraseanetWebTestCaseAbstract
      */
     public function createApplication()
     {
-        return require __DIR__ . '/../../../../Path/To/Application.php';
+        $app = require __DIR__ . '/../../../../Path/To/Application.php';
+        
+        $app['debug'] = true;
+        unset($app['exception_handler']);
+        
+        return $app;
     }
 
     public function setUp()
