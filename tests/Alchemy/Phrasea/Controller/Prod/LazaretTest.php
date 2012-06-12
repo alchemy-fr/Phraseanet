@@ -23,7 +23,12 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function createApplication()
     {
-        return require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Prod.php';
+        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Prod.php';
+        
+        $app['debug'] = true;
+        unset($app['exception_handler']);
+        
+        return $app;
     }
 
     public function tearDown()

@@ -117,6 +117,11 @@
         {
             "package": "silex/silex",
             "version": "dev-master",
+            "source-reference": "ca49749039f3b3d2f9df028109c8f83adb607dc9"
+        },
+        {
+            "package": "silex/silex",
+            "version": "dev-master",
             "alias-pretty-version": "1.0.x-dev",
             "alias-version": "1.0.9999999.9999999-dev"
         },
@@ -133,24 +138,25 @@
         {
             "package": "swiftmailer/swiftmailer",
             "version": "dev-master",
-            "source-reference": "d33d54cc8a081b0b85734744936ede1ba230dd64"
+            "alias-pretty-version": "4.1.x-dev",
+            "alias-version": "4.1.9999999.9999999-dev"
         },
         {
             "package": "swiftmailer/swiftmailer",
             "version": "dev-master",
-            "alias-pretty-version": "4.1.x-dev",
-            "alias-version": "4.1.9999999.9999999-dev"
+            "source-reference": "d33d54cc8a081b0b85734744936ede1ba230dd64"
         },
         {
             "package": "symfony/symfony",
             "version": "dev-master",
             "alias-pretty-version": "2.1.x-dev",
-            "alias-version": "2.1.9999999.9999999-dev"
+            "alias-version": "2.1.9999999.9999999-dev",
+            "source-reference": "6a01d3dd54ab5923b9572c30afdb24b9b9ec4833"
         },
         {
             "package": "symfony/symfony",
             "version": "dev-master",
-            "source-reference": "1541fe26e4d78135ab24ae2edfb1dbc2a9b2fa40"
+            "source-reference": "0995b1f28b80f91cfef7b3201840aa3dbcc66ae1"
         },
         {
             "package": "tcpdf/tcpdf",

@@ -9,7 +9,12 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function createApplication()
     {
-        return require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Admin.php';
+        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Admin.php';
+        
+        $app['debug'] = true;
+        unset($app['exception_handler']);
+        
+        return $app;
     }
 
     public function setUp()

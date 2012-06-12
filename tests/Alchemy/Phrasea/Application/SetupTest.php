@@ -25,7 +25,12 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
 
     public function createApplication()
     {
-        return require __DIR__ . '/../../../../lib/Alchemy/Phrasea/Application/Setup.php';
+        $app = require __DIR__ . '/../../../../lib/Alchemy/Phrasea/Application/Setup.php';
+        
+        $app['debug'] = true;
+        unset($app['exception_handler']);
+        
+        return $app;
     }
 
     public function setUp()

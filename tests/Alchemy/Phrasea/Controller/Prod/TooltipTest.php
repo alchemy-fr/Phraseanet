@@ -19,7 +19,12 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function createApplication()
     {
-        return require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Prod.php';
+        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Prod.php';
+        
+        $app['debug'] = true;
+        unset($app['exception_handler']);
+        
+        return $app;
     }
 
     public function testRouteBasket()
@@ -31,11 +36,24 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $crawler = $this->client->request('POST', '/tooltip/basket/' . $basket->getId() . '/');
         $pageContent = $this->client->getResponse()->getContent();
         $this->assertTrue($this->client->getResponse()->isOk());
-
-        $crawler = $this->client->request('POST', '/tootltip/basket/notanid/');
+    }
+    
+    /**
+     * @expectedException \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     */
+    public function testRouteBasketFail()
+    {
+        $crawler = $this->client->request('POST', '/tooltip/basket/notanid/');
         $pageContent = $this->client->getResponse()->getContent();
         $this->assertFalse($this->client->getResponse()->isOk());
 
+    }
+    
+    /**
+     * @expectedException \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     */
+    public function testRouteBasketFail2()
+    {
         $crawler = $this->client->request('POST', '/tooltip/basket/-5/');
         $pageContent = $this->client->getResponse()->getContent();
         $this->assertFalse($this->client->getResponse()->isOk());
