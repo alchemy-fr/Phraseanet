@@ -11,7 +11,7 @@ class ApcCacheTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        if ( ! extension_loaded('apc')) {
+        if ( ! extension_loaded('apc') || ! ini_get('apc.enable_cli')) {
             $this->markTestSkipped('Apc is not installed');
         }
         $this->object = new \Alchemy\Phrasea\Cache\ApcCache;
