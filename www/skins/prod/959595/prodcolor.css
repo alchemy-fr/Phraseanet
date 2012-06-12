@@ -475,7 +475,7 @@ span.ww_winTitle {
 }
 
 #searchForm label {
-    color: #FFFFFF;
+    color: #333333;
 }
 
 #searchForm #recordtype_sel {
@@ -540,12 +540,13 @@ div.diapo {
     position: relative;
     display: block;
     float: left;
+    margin: 8px 5px;
     border: 1px solid #404040;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border-radius: 4px;
     text-align: center;
-    margin: 8px 5px;
+    color: #333333;
 }
 
 #answers {
@@ -1295,6 +1296,36 @@ form.phrasea_query input.query {
     float: left;
     margin: 2px;
     padding: 0;
+}
+
+#prod-tool-box .btn {
+    font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+#prod-tool-box .btn-inverse {
+    background-color: #B1B1B1;
+    *background-color: #B1B1B1;
+    background-image: -ms-linear-gradient(top, #B9B9B9, #A4A4A4);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#B9B9B9), to(#A4A4A4));
+    background-image: -webkit-linear-gradient(top, #B9B9B9, #A4A4A4);
+    background-image: -o-linear-gradient(top, #B9B9B9, #A4A4A4);
+    background-image: -moz-linear-gradient(top, #B9B9B9, #A4A4A4);
+    background-image: linear-gradient(top, #B9B9B9, #A4A4A4);
+    /*border: 1px solid #666666;*/
+    filter: progid:dximagetransform.microsoft.gradient(startColorstr='#B9B9B9', endColorstr='#A4A4A4', GradientType=0);
+    filter: progid:dximagetransform.microsoft.gradient(enabled=false);
+    color: #EAEAEA;
+}
+
+#prod-tool-box .btn-inverse:hover {
+    background-color: #A4A4A4;
+    *background-color: #A4A4A4;
+    color: #FFFFFF;
 }
 
 /******* DROPDOWN MENU ********************************************************/

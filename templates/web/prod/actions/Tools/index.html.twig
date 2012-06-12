@@ -21,91 +21,90 @@
 
 <div id='prod-tool-box' class="PNB10">
 
-  {# jquery Tabs #}
-  <div id="tool-tabs">
-    {# jquery menu #}
-    <div>
-      <ul>
-        <li>
-          <a href="#subdefs">
-            {% trans "regeneration of sub-definitions" %}
-          </a>
-        </li>
-        {% if selectionLength == 1%}
-          {% for record in selection %}
-            {% if record.get_type() == 'video' %}
-              <li>
-                <a href="#thumbExtractor">
-                  {% trans "video tool" %}
-                </a>
-              </li>
-              {% endif %}
-          {% endfor %}
-        {% endif %}
-        {% if selectionLength == 1%}
-          {% for record in selection %}
-            {% if record.get_type() == 'image' %}
-              <li>
-                <a href="#image">
-                  {% trans "image tool"%}
-                </a>
-              </li>
-           {% endif %}
-          {% endfor %}
-        {% endif %}
-        {% if selectionLength == 1 and registry.get('GV_seeOngChgDoc') %}
-          <li>
-            <a href="#substitution">
-              {% trans "substitution" %}
-            </a>
-          </li>
-        {% endif %}
-        {% if metadatas %}
-          <li>
-            <a href="#exiftool">
-              {% trans "meta-datas" %}
-            </a>
-          </li>
-        {% endif %}
-      </ul>
-    </div>
-    {# subef section #}
-    <div id="subdefs" class="tabBox">
-      <form id="new-img-form" action="/prod/tools/image/" method="post">
-        <fieldset style='border:1px solid #999;padding:20px;'>
-          <legend style='color:#EEE'>&nbsp;<b>{% trans "Reconstruire les sous definitions" %}</b>&nbsp;</legend>
-          {% if nbThumbSubstitute > 0 %}
-            <div style="color:#A00;">
-              {% trans "Attention, certain documents ont des sous-definitions substituees"%}
-            </div>
-            <input type="checkbox" name="ForceThumbSubstit" value="1" id="FTS" />
-            <label for="FTS">
-              {% trans "Forcer la reconstruction sur les enregistrements ayant des thumbnails substituees" %}
-            </label>
-            <br/>
-          {% else %}
-            <input type="hidden" name="ForceThumbSubstit" value="1">
-          {% endif %}
-
-          <div>
-            <select name="rebuild">
-              <option selected="selected" value="none">
-                {% trans "recreer aucune sous-definitions" %}
-              </option>
-              <option value="all">
-                {% trans "recreer toutes les sous-definitions" %}
-              </option>
-            </select>
-
-            <input type="hidden" name="ACT" value="SEND" />
-            <input type="hidden" name="lst" value="{{helper.get_serialize_list()}}" />
-          </fieldset>
-          <div style='text-align:right;padding-top:10px;'>
-            <button class='action_submiter' type="button">{% trans "validate" %}</button>
-            <button class='action_cancel' type="button">{% trans "cancel" %}</button>
-          </div>
-      </form>
-    </div>
+    {# jquery Tabs #}
+    <div id="tool-tabs">
+        {# jquery menu #}
+        <div>
+            <ul>
+                <li>
+                    <a href="#subdefs">
+                        {% trans "regeneration of sub-definitions" %}
+                    </a>
+                </li>
+                {% if selectionLength == 1%}
+                    {% for record in selection %}
+                        {% if record.get_type() == 'video' %}
+                            <li>
+                                <a href="#thumbExtractor">
+                                    {% trans "video tool" %}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                {% if selectionLength == 1%}
+                    {% for record in selection %}
+                        {% if record.get_type() == 'image' %}
+                            <li>
+                                <a href="#image">
+                                    {% trans "image tool"%}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                {% if selectionLength == 1 and registry.get('GV_seeOngChgDoc') %}
+                    <li>
+                        <a href="#substitution">
+                            {% trans "substitution" %}
+                        </a>
+                    </li>
+                {% endif %}
+                {% if metadatas %}
+                    <li>
+                        <a href="#exiftool">
+                            {% trans "meta-datas" %}
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+        {# subef section #}
+        <div id="subdefs" class="tabBox">
+            <form id="new-img-form" action="/prod/tools/image/" method="post">
+                <fieldset style='border:1px solid #999; padding:20px;'>
+                    <legend style='color:#EEE'>&nbsp;<b>{% trans "Reconstruire les sous definitions" %}</b>&nbsp;</legend>
+                    {% if nbThumbSubstitute > 0 %}
+                        <div style="color:#A00;">
+                            {% trans "Attention, certain documents ont des sous-definitions substituees"%}
+                        </div>
+                        <label for="FTS" class="checkbox">
+                            <input type="checkbox" name="ForceThumbSubstit" value="1" id="FTS" />
+                            {% trans "Forcer la reconstruction sur les enregistrements ayant des thumbnails substituees" %}
+                        </label>
+                        <br/>
+                    {% else %}
+                        <input type="hidden" name="ForceThumbSubstit" value="1">
+                    {% endif %}
+                    <div>
+                        <select name="rebuild">
+                            <option selected="selected" value="none">
+                                {% trans "recreer aucune sous-definitions" %}
+                            </option>
+                            <option value="all">
+                                {% trans "recreer toutes les sous-definitions" %}
+                            </option>
+                        </select>
+                    </div>
+                    <input type="hidden" name="ACT" value="SEND" />
+                    <input type="hidden" name="lst" value="{{helper.get_serialize_list()}}" />
+                </fieldset>
+                <div style='text-align:right;padding-top:10px;'>
+                    <button class="action_submiter btn btn-inverse" type="button">{% trans "validate" %}</button>
+                    <button class="action_cancel btn btn-inverse" type="button">{% trans "cancel" %}</button>
+                </div>
+            </form>
+        </div>
 
      {% if selectionLength == 1 %}
       {% for record in selection %}
@@ -116,12 +115,9 @@
               {% trans "screenshot video" %}
             </div>
             <hr style='margin-top:25px;'/>
-            <div class="PNB part_title_left">
-
-            </div>
+            <div class="PNB part_title_left"></div>
 
             <div class="PNB frame_video">
-
 
               {% set previewHtml5 = record.getSubdfefByDeviceAndMime(constant('\\databox_subdef::DEVICE_SCREEN'), ['video/ogg', 'video/mp4', 'video/webm']) %}
               <video id="thumb_video" controls="" preload="auto">
@@ -132,7 +128,6 @@
             </div>
 
             <div class="PNB action_bar_left">
-
             </div>
 
             <div id="thumb_camera_button" class="PNB">
@@ -140,7 +135,6 @@
             </div>
 
             <div class="PNB part_title_right">
-
             </div>
 
             <div class="PNB frame_canva">
@@ -152,7 +146,6 @@
               </div>
               <p id='thumb_info'>{% trans 'To take a screenshot click on camera' %}</p>
               <canvas id="thumb_canvas" >
-
               </canvas>
             </div>
             <div class="PNB action_bar_right">
@@ -172,7 +165,6 @@
 
             <div id="thumb_slider" class="PNB">
               <div id="thumb_wrapper">
-
               </div>
             </div>
 
@@ -195,7 +187,7 @@
                 </tbody>
               </table>
               <div class='PNB' style="top:80px;left:220px;width:90px;height:30px;">
-                <button class="apply-brightness">{% trans 'validate'%}</button>
+                <button class="apply-brightness btn btn-inverse">{% trans 'validate'%}</button>
               </div>
             </div>
 
@@ -219,7 +211,7 @@
                 </tbody>
               </table>
               <div class='PNB' style="top:80px;left:220px;width:90px;height:30px;">
-                <button class="apply-contrast">{% trans 'validate'%}</button>
+                <button class="apply-contrast btn btn-inverse">{% trans 'validate'%}</button>
               </div>
             </div>
 
@@ -241,13 +233,13 @@
             <form name="formpushdoc" action="/prod/tools/rotate/" method="post">
               <fieldset style='border:1px solid #999;padding:20px;'>
                 <legend style='color:#EEE'>&nbsp;<b>{% trans "image rotation" %}</b>&nbsp;</legend>
-                  <input type="radio" name="rotation" id="ROTA_90" value="90" checked="checked">
-                  <label for="ROTA_90">
+                  <label for="ROTA_90" class="radio">
+                      <input type="radio" name="rotation" id="ROTA_90" value="90" checked="checked">
                       {% trans "rotation 90 degres horaire"%}
                   </label>
                   <br />
-                  <input type="radio" name="rotation" id="ROTA_C90" value="-90">
-                  <label for="ROTA_C90">
+                  <label for="ROTA_C90" class="radio">
+                      <input type="radio" name="rotation" id="ROTA_C90" value="-90">
                     {% trans "rotation 90 degres anti-horaires"%}
                   </label>
                   <input type="hidden" name="lst" value="{{helper.get_serialize_list()}}" />
@@ -255,8 +247,8 @@
                   <input type="hidden" name="cchd" value="" />
               </fieldset>
               <div style='text-align:right;padding-top:10px;'>
-                <button class='action_submiter' type="button">{% trans "validate" %}</button>
-                <button class='action_cancel' type="button">{% trans "cancel" %}</button>
+                <button class="action_submiter btn btn-inverse">{% trans "validate" %}</button>
+                <button class="action_cancel btn btn-inverse">{% trans "cancel" %}</button>
               </div>
             </form>
           </div>
@@ -284,8 +276,8 @@
                     <input type="hidden" name="MAX_FILE_SIZE" value="20000000" />
                     <input id='new-hd-file' name="newHD" type="file" />
                     <br />
-                    <input type="checkbox" name="ccfilename" id="CCFNALP" value="1">
-                    <label for="CCFNALP">
+                    <label for="CCFNALP" class="checkbox">
+                        <input type="checkbox" name="ccfilename" id="CCFNALP" value="1">
                       {% trans "mettre a jour le nom original de fichier apres substitution"%}
                     </label>
                     <input type="hidden" name="ACT" value="SEND" />
@@ -295,12 +287,8 @@
                   </div>
                 </fieldset>
                 <div style='text-align:right;padding-top:10px;'>
-                  <button class='iframe_submiter' type="button">
-                    {% trans "validate" %}
-                  </button>
-                  <button type="button" class='action_cancel'>
-                    {% trans "cancel" %}
-                  </button>
+                  <button class="iframe_submiter btn btn-inverse">{% trans "validate" %}</button>
+                  <button class="action_cancel btn btn-inverse">{% trans "cancel" %}</button>
                 </div>
               </form>
               <div class='resultAction'></div>
@@ -326,12 +314,8 @@
                   </div>
                 </fieldset>
                 <div style='text-align:right;padding-top:10px;'>
-                  <button class='iframe_submiter' type="button">
-                    {% trans "validate" %}
-                  </button>
-                  <button type="button" class='action_cancel'>
-                    {% trans "cancel" %}
-                  </button>
+                  <button class="iframe_submiter btn btn-inverse">{% trans "validate" %}</button>
+                  <button class="action_cancel btn btn-inverse">{% trans "cancel" %}</button>
                 </div>
               </form>
               <div class='resultAction'></div>
@@ -358,10 +342,8 @@
             <table>
                 <tbody>
                     <tr>
-                        <td>
-                        </td>
-                        <td>
-                        </td>
+                        <td></td>
+                        <td></td>
                     </tr>
                 {% for metadata in metadatas %}
                     <tr>
@@ -380,7 +362,6 @@
       {% endfor %}
     {% endif %}
   </div>
-
 
   {# hidden iframe to handle upload #}
   <iframe
@@ -709,6 +690,6 @@
         }
       });
     });
-     scope.find('button').button();
+     //scope.find('button').button();
   });
 </script>
