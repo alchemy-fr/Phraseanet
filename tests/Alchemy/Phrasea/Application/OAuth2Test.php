@@ -114,7 +114,12 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
 
     public function createApplication()
     {
-        return require __DIR__ . '/../../../../lib/Alchemy/Phrasea/Application/OAuth2.php';
+        $app = require __DIR__ . '/../../../../lib/Alchemy/Phrasea/Application/OAuth2.php';
+        
+        $app['debug'] = true;
+        unset($app['exception_handler']);
+        
+        return $app;
     }
 
     public function testAuthorizeRedirect()

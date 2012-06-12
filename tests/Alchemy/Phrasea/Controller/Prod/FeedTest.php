@@ -94,7 +94,12 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function createApplication()
     {
-        return require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Prod.php';
+        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Prod.php';
+        
+        $app['debug'] = true;
+        unset($app['exception_handler']);
+        
+        return $app;
     }
 
     public function testRequestAvailable()
@@ -190,11 +195,13 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
         );
 
 
-        $crawler = $this->client->request('GET', '/feeds/entry/' . $entry->get_id() . '/edit/');
-
-        $response = $this->client->getResponse();
-
-        $this->assertFalse($response->isOk());
+        try
+        {
+            $crawler = $this->client->request('GET', '/feeds/entry/' . $entry->get_id() . '/edit/');
+            $this->fail('Should raise an exception');
+        } catch(Exception_UnauthorizedAction $e) {
+            
+        }
 
         $feed->delete();
     }

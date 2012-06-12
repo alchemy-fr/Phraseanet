@@ -413,7 +413,6 @@ return call_user_func(function() {
                 }
             );
 
-            $app->match('/records/add/', $bad_request_exception);
 
             /**
              * Route : /records/search/
@@ -742,6 +741,26 @@ return call_user_func(function() {
                 }
             );
 
+            
+            $route = '/feeds/content/';
+            $app->get(
+                $route, function() use ($app) {
+                    $result = $app['api']->get_publications($app['request'], $app['Core']->getAuthenticatedUser());
+
+                    return $result->get_response();
+                }
+            );
+            
+            $route = '/feeds/entry/{entry_id}/';
+            $app->get(
+                $route, function($entry_id) use ($app) {
+                    $result = $app['api']->get_feed_entry($app['request'], $entry_id, $app['Core']->getAuthenticatedUser());
+
+                    return $result->get_response();
+                }
+            )->assert('entry_id', '\d+');
+            $app->get('/feeds/entry/{entry_id}/', $bad_request_exception);
+            
             /**
              * Route : /feeds/PUBLICATION_ID/content/
              *

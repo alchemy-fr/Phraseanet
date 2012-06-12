@@ -173,7 +173,12 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
     public function createApplication()
     {
-        return require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Root.php';
+        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Root.php';
+        
+        $app['debug'] = true;
+        unset($app['exception_handler']);
+        
+        return $app;
     }
 
     public function testPublicFeedAggregated()
@@ -335,14 +340,20 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
         $this->verifyXML($xml);
     }
 
+    /**
+     * @expectedException \Exception_FeedNotFound
+     */
     public function testUnknowFeedId()
     {
-        $crawler = $this->client->request("GET", "/feeds/feed/0/");
-        $this->assertFalse($this->client->getResponse()->isOk());
-        $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
-        $crawler = $this->client->request("GET", "/feeds/feed/titi/");
-        $this->assertFalse($this->client->getResponse()->isOk());
-        $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
+        $this->client->request("GET", "/feeds/feed/0/rss/");
+    }
+    
+    /**
+     * @expectedException \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     */
+    public function testUnknowFeedId2()
+    {
+        $this->client->request("GET", "/feeds/feed/titi/");
     }
 
     public function testGetFeedId()
@@ -629,7 +640,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
                 'media_field' => array(
                     'name'       => 'media:credit',
                     'attributes' => array(
-                        'role'      => 'creator',
+                        'role'      => 'director',
                         'scheme'    => 'urn:ebu'
                     )
                 ),
@@ -666,10 +677,23 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
 
         foreach ($fields as $key_field => $field) {
-            if ($field["media_field"]["name"] == $node->nodeName) {
+
+            $role = true;
+            
+            if(isset($field["media_field"]['attributes']['role'])){
+                $role = false;
+                foreach($node->attributes as $attr){
+                    if($attr->name == 'role') {
+                        $role = $attr->value == $field["media_field"]['attributes']['role'];
+                        break;
+                    }
+                }
+            }
+            
+            if ($field["media_field"]["name"] == $node->nodeName && $role != false) {
+
                 if ($p4field = $entry_item->get_record()->get_caption()->get_dc_field($field["dc_field"])) {
-                    $this->assertEquals($p4field->get_serialized_values($field["separator"]), $node->nodeValue
-                        , sprintf('Asserting good value for DC %s', $field["dc_field"]));
+                    $this->assertEquals($p4field->get_serialized_values($field["separator"]), $node->nodeValue, sprintf('Asserting good value for DC %s', $field["dc_field"]));
                     if (sizeof($field["media_field"]["attributes"]) > 0) {
                         foreach ($node->attributes as $attribute) {
                             $this->assertTrue(array_key_exists($attribute->name, $field["media_field"]["attributes"]), "Checkin attribute " . $attribute->name . " for " . $field['media_field']['name']);

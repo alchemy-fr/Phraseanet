@@ -11,7 +11,12 @@ class ControllerUpgraderTest extends \PhraseanetWebTestCaseAbstract
 
     public function createApplication()
     {
-        return require __DIR__ . '/FakeUpgradeApplication.inc';
+        $app = require __DIR__ . '/FakeUpgradeApplication.inc';
+        
+        $app['debug'] = true;
+        unset($app['exception_handler']);
+        
+        return $app;
     }
 
     public function setUp()

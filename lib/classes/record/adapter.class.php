@@ -749,6 +749,9 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
                 foreach ($rs as $row) {
                     switch (true) {
+                        case preg_match('/[0-9]?\.[0-9]+/', $row['value']):
+                            $this->technical_datas[$row['name']] = (float) $row['value'];
+                            break;
                         case ctype_digit($row['value']):
                             $this->technical_datas[$row['name']] = (int) $row['value'];
                             break;
@@ -779,7 +782,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      */
     public function get_caption()
     {
-
         return new caption_record($this, $this->get_databox());
     }
 
@@ -1337,8 +1339,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $record->delete_data_from_cache(record_adapter::CACHE_SUBDEFS);
 
         $record->insertTechnicalDatas();
-        $record->rebuild_subdefs();
-        
+
         return $record;
     }
 
@@ -1363,6 +1364,12 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         foreach ($document->readTechnicalDatas() as $name => $value) {
             if (is_null($value)) {
                 continue;
+            } elseif (is_bool($value)) {
+                if ($value) {
+                    $value = 1;
+                } else {
+                    $value = 0;
+                }
             }
 
             $stmt->execute(array(

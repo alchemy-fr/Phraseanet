@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Border\Manager as BorderManager;
 use Symfony\Component\HttpFoundation\Request;
 use Silex\Application;
 
@@ -109,25 +110,31 @@ class API_V1_adapter extends API_V1_Abstract
 
         $ret = array();
         foreach ($tasks as $task) {
-            $ret[$task->getID()] = array(
-                'id'             => $task->getID(),
-                'state'          => $task->getState(),
-                'pid'            => $task->getPID(),
-                'title'          => $task->getTitle(),
-                'last_exec_time' => $task->getLastExecTime()
-            );
+            $ret[] = $this->list_task($task);
         }
 
-        $result->set_datas($ret);
+        $result->set_datas(array('tasks' => $ret));
 
         return $result;
+    }
+
+    protected function list_task(\task_abstract $task)
+    {
+        return array(
+            'id'             => $task->getID(),
+            'name'           => $task->getName(),
+            'state'          => $task->getState(),
+            'pid'            => $task->getPID(),
+            'title'          => $task->getTitle(),
+            'last_exec_time' => $task->getLastExecTime() ? $task->getLastExecTime()->format(DATE_ATOM) : null
+        );
     }
 
     /**
      * Get informations about an identified task
      *
      * @param  \Silex\Application $app     The API silex application
-     * @param  type               $task_id
+     * @param  integer            $task_id
      * @return \API_V1_result
      */
     public function get_task(Application $app, $taskId)
@@ -136,24 +143,11 @@ class API_V1_adapter extends API_V1_Abstract
 
         $appbox = \appbox::get_instance($app['Core']);
         $taskManager = new task_manager($appbox);
-        $ret = array();
-        try {
-            $task = $taskManager->getTask($taskId);
-            $ret['id'] = $task->getID();
-            $ret['state'] = $task->getState();
-            $ret['pid'] = $task->getPID();
-            $ret['title'] = $task->getTitle();
-            $ret['last_exec_time'] = $task->getLastExecTime();
-        } catch (\Exception_NotFound $e) {
-            $result->set_error_code(404);
-            $ret = array('success' => false);
-        } catch (\Exception_InvalidArgument $e) {
-            $result->set_error_code(400);
-            $ret = array('success' => false);
-        } catch (\Exception $e) {
-            $result->set_error_code(500);
-            $ret = array('success' => false);
-        }
+
+        $ret = array(
+            'task' => $this->list_task($taskManager->getTask($taskId))
+        );
+
         $result->set_datas($ret);
 
         return $result;
@@ -163,7 +157,7 @@ class API_V1_adapter extends API_V1_Abstract
      * Start a specified task
      *
      * @param  \Silex\Application $app     The API silex application
-     * @param  type               $task_id The task id
+     * @param  integer            $task_id The task id
      * @return \API_V1_result
      */
     public function start_task(Application $app, $taskId)
@@ -172,21 +166,13 @@ class API_V1_adapter extends API_V1_Abstract
 
         $appbox = \appbox::get_instance($app['Core']);
         $taskManager = new \task_manager($appbox);
-        $ret = array('success' => true);
-        try {
-            $task = $taskManager->getTask($taskId);
+
+        $task = $taskManager->getTask($taskId);
+        if ( ! in_array($task->getState(), array(\task_abstract::STATE_TOSTART, \task_abstract::STATE_STARTED))) {
             $task->setState(\task_abstract::STATE_TOSTART);
-        } catch (\Exception_NotFound $e) {
-            $result->set_error_code(404);
-            $ret = array('success' => false);
-        } catch (\Exception_InvalidArgument $e) {
-            $result->set_error_code(400);
-            $ret = array('success' => false);
-        } catch (\Exception $e) {
-            $result->set_error_code(500);
-            $ret = array('success' => false);
         }
-        $result->set_datas($ret);
+
+        $result->set_datas(array('task' => $this->list_task($task)));
 
         return $result;
     }
@@ -195,7 +181,7 @@ class API_V1_adapter extends API_V1_Abstract
      * Stop a specified task
      *
      * @param  \Silex\Application $app     The API silex application
-     * @param  type               $task_id The task id
+     * @param  integer            $task_id The task id
      * @return \API_V1_result
      */
     public function stop_task(Application $app, $taskId)
@@ -204,21 +190,12 @@ class API_V1_adapter extends API_V1_Abstract
 
         $appbox = \appbox::get_instance($app['Core']);
         $taskManager = new \task_manager($appbox);
-        $ret = array();
-        try {
-            $task = $taskManager->getTask($taskId);
+
+        $task = $taskManager->getTask($taskId);
+        if ( ! in_array($task->getState(), array(\task_abstract::STATE_TOSTOP, \task_abstract::STATE_STOPPED))) {
             $task->setState(\task_abstract::STATE_TOSTOP);
-        } catch (\Exception_NotFound $e) {
-            $result->set_error_code(404);
-            $ret = array('success' => false);
-        } catch (\Exception_InvalidArgument $e) {
-            $result->set_error_code(400);
-            $ret = array('success' => false);
-        } catch (\Exception $e) {
-            $result->set_error_code(500);
-            $ret = array('success' => false);
         }
-        $result->set_datas($ret);
+        $result->set_datas(array('task' => $this->list_task($task)));
 
         return $result;
     }
@@ -229,50 +206,36 @@ class API_V1_adapter extends API_V1_Abstract
      *  - autostart
      *
      * @param  \Silex\Application         $app     Silex application
-     * @param  type                       $task_id the task id
+     * @param  integer                    $task_id the task id
      * @return \API_V1_result
-     * @throws \Exception_InvalidArgument
+     * @throws \API_V1_exception_badrequest
      */
     public function set_task_property(Application $app, $taskId)
     {
         $result = new API_V1_result($app['request'], $this);
 
-        $name = $app['request']->get('name');
+        $title = $app['request']->get('title');
         $autostart = $app['request']->get('autostart');
 
-        $ret = array('success' => false);
-
-        try {
-            if (null === $name && null === $autostart) {
-                throw new \Exception_InvalidArgument();
-            }
-
-            $appbox = \appbox::get_instance($app['Core']);
-
-            $taskManager = new \task_manager($appbox);
-
-            $task = $taskManager->getTask($taskId);
-
-            if ($name) {
-                $task->setTitle($name);
-            }
-
-            if ($autostart) {
-                $task->setActive( ! ! $autostart);
-            }
-
-            $ret = array('success' => true);
-        } catch (\Exception_NotFound $e) {
-            $result->set_error_code(404);
-            $ret = array('success' => false);
-        } catch (\Exception_InvalidArgument $e) {
-            $result->set_error_code(400);
-            $ret = array('success' => false);
-        } catch (\Exception $e) {
-            $result->set_error_code(500);
-            $ret = array('success' => false);
+        if (null === $title && null === $autostart) {
+            throw new \API_V1_exception_badrequest();
         }
-        $result->set_datas($ret);
+
+        $appbox = \appbox::get_instance($app['Core']);
+
+        $taskManager = new \task_manager($appbox);
+
+        $task = $taskManager->getTask($taskId);
+
+        if ($title) {
+            $task->setTitle($title);
+        }
+
+        if ($autostart) {
+            $task->setActive( ! ! $autostart);
+        }
+
+        $result->set_datas(array('task' => $this->list_task($task)));
 
         return $result;
     }
@@ -711,10 +674,10 @@ class API_V1_adapter extends API_V1_Abstract
 
         switch ($request->get('forceBehavior')) {
             case '0' :
-                $behavior = \Alchemy\Phrasea\Border\Manager::FORCE_RECORD;
+                $behavior = BorderManager::FORCE_RECORD;
                 break;
             case '1' :
-                $behavior = \Alchemy\Phrasea\Border\Manager::FORCE_LAZARET;
+                $behavior = BorderManager::FORCE_LAZARET;
                 break;
             case null:
                 $behavior = null;
@@ -736,7 +699,7 @@ class API_V1_adapter extends API_V1_Abstract
         }
         if ($output instanceof \Entities\LazaretFile) {
             $ret['entity'] = '1';
-            $ret['reasons'] = $reasons;
+            $ret['reasons'] = $behavior === BorderManager::FORCE_LAZARET ? array() : $reasons;
             $ret['lazaretFile'] = $this->list_lazaret_file($output);
         }
 
@@ -776,9 +739,9 @@ class API_V1_adapter extends API_V1_Abstract
             'sha256'        => $file->getSha256(),
             'uuid'          => $file->getUuid(),
             'forced'        => $file->getForced(),
-            'checks'        => $checks,
-            'created_on'    => $file->getCreated()->format(DATE_ATOM),
-            'updated_on'    => $file->getUpdated()->format(DATE_ATOM),
+            'checks'        => $file->getForced() ? array() : $checks,
+            'created_on' => $file->getCreated()->format(DATE_ATOM),
+            'updated_on' => $file->getUpdated()->format(DATE_ATOM),
         );
     }
 
@@ -1495,13 +1458,15 @@ class API_V1_adapter extends API_V1_Abstract
         return $result;
     }
 
-    public function get_feed_entry(Request $request, $entry, User_Adapter &$user)
+    public function get_feed_entry(Request $request, $entry_id, User_Adapter &$user)
     {
         $result = new API_V1_result($request, $this);
 
-        $entry = Feed_Entry_Adapter::load_from_id($this->appbox, $id);
+        $entry = Feed_Entry_Adapter::load_from_id($this->appbox, $entry_id);
 
-        if ( ! $user->ACL()->has_access_to_base($entry->get_feed()->get_collection()->get_base_id())) {
+        $collection = $entry->get_feed()->get_collection();
+
+        if (null !== $collection && ! $user->ACL()->has_access_to_base($collection->get_base_id())) {
             throw new \API_V1_exception_forbidden('You have not access to the parent feed');
         }
 
@@ -1561,10 +1526,7 @@ class API_V1_adapter extends API_V1_Abstract
             $out[$entry->get_id()] = $this->list_publication_entry($entry);
         }
 
-        return array(
-            'offset_start' => $offset_start
-            , 'entries'      => $out
-        );
+        return $out;
     }
 
     /**
@@ -1581,6 +1543,7 @@ class API_V1_adapter extends API_V1_Abstract
         }
 
         return array(
+            'id'           => $entry->get_id(),
             'author_email' => $entry->get_author_email(),
             'author_name'  => $entry->get_author_name(),
             'created_on'   => $entry->get_created_on()->format(DATE_ATOM),
@@ -1588,6 +1551,7 @@ class API_V1_adapter extends API_V1_Abstract
             'title'        => $entry->get_title(),
             'subtitle'     => $entry->get_subtitle(),
             'items'        => $items,
+            'feed_url'     => '/feeds/' . $entry->get_feed()->get_id() . '/content/',
             'url'          => '/feeds/entry/' . $entry->get_id() . '/',
         );
     }
@@ -1644,6 +1608,10 @@ class API_V1_adapter extends API_V1_Abstract
      */
     protected function list_embedable_media(media_subdef &$media, registryInterface &$registry)
     {
+        if ( ! $media->is_physically_present()) {
+            return null;
+        }
+
         if ($media->get_permalink() instanceof media_Permalink_Adapter) {
             $permalink = $this->list_permalink($media->get_permalink(), $registry);
         } else {
