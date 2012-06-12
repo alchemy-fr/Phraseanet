@@ -181,7 +181,7 @@ class Upload implements ControllerProviderInterface
             $collection = \collection::get_from_base_id($base_id);
 
             $lazaretSession = new \Entities\LazaretSession();
-            $lazaretSession->setUsrId(null);
+            $lazaretSession->setUsrId($app['Core']->getAuthenticatedUser()->get_id());
 
             $app['Core']['EM']->persist($lazaretSession);
 
