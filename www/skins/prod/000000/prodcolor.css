@@ -1,4 +1,5 @@
-/** GLOBAL PROD **/
+/******* GLOBAL PROD **********************************************************/
+
 html {
     border: medium none;
     height: 100%;
@@ -24,13 +25,18 @@ input::-moz-selection, textarea::-moz-selection {
 }
 
 label {
-    color:  #FFFFFF;
+    color: #FFFFFF;
 }
 
 legend {
-    color:  #FFFFFF;
+    color: #FFFFFF;
     width: auto;
-    border:  none;
+    border: none;
+}
+
+EM {
+    FONT-STYLE: normal;
+    BACKGROUND-COLOR: #D82400;
 }
 
 .clickable {
@@ -160,9 +166,6 @@ span.ww_winTitle {
     padding: 3px 5px 0;
 }
 
-
-
-
 #idFrameC .wrapper {
     background-color: #404040;
     border-top-right-radius: 10px;
@@ -181,8 +184,6 @@ span.ww_winTitle {
     padding: 0px;
 }
 
-
-
 #sizeAns_slider, #nperpage_slider, #EDIT_ZOOMSLIDER {
     background-color: #666666;
     border-color: #666666;
@@ -196,10 +197,6 @@ span.ww_winTitle {
     width: 8px;
     cursor: col-resize;
 }
-
-
-
-
 
 .ui-widget-header {
     background: none;
@@ -357,13 +354,33 @@ span.ww_winTitle {
     background-image: url('../../icons/bask_new_back.png');
 }
 
+#keyboard-dialog h1 {
+    font-size: 14px;
+    font-weight: bold;
+    margin: 0;
+    text-align: left;
+}
 
+#keyboard-dialog ul {
+    list-style-type: none;
+    margin: 5px 0 20px 40px;
+}
 
+#keyboard-dialog ul li {
 
+}
 
+.cgu-dialog blockquote p {
+    margin: 10px 30px 10px 0;
+}
 
+.cgu-dialog blockquote {
+    margin: 10px 30px;
+    overflow: auto;
+    max-height: 400px;
+}
 
-
+/******* .colorpickerbox ******************************************************/
 
 .colorpickerbox .colorpicker_submit .submiter {
     padding: 3px 0 0 0;
@@ -415,38 +432,7 @@ span.ww_winTitle {
     float: left;
 }
 
-
-
-
-#keyboard-dialog h1 {
-    font-size: 14px;
-    font-weight: bold;
-    margin: 0;
-    text-align: left;
-}
-
-#keyboard-dialog ul {
-    list-style-type: none;
-    margin: 5px 0 20px 40px;
-}
-
-#keyboard-dialog ul li {
-
-}
-
-.cgu-dialog blockquote p {
-    margin: 10px 30px 10px 0;
-}
-
-.cgu-dialog blockquote {
-    margin: 10px 30px;
-    overflow: auto;
-    max-height: 400px;
-}
-
-
-
-/** FORMULAIRE DE RECHERCHE **/
+/******* FORMULAIRE DE RECHERCHE **********************************************/
 
 #searchForm > button.btn {
     font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
@@ -478,8 +464,7 @@ span.ww_winTitle {
     margin-left: 10px;
 }
 
-
-/** PRESENTATION DE MINIATURES **/
+/******* PRESENTATION DE MINIATURES *******************************************/
 
 .captionRolloverTips, .previewTips, .infoTips,
 .baskAdder, .printer, .downloader {
@@ -577,10 +562,7 @@ div.diapo {
     text-align: left;
 }
 
-
-
-/**************************
-****** Popups infos ******/
+/******* POPOVERS *************************************************************/
 
 .popover-inner {
     background: none repeat scroll 0 0 #666666;
@@ -595,10 +577,7 @@ div.diapo {
     background-color: #000000;
 }
 
-
-
-/**************************
-****** CSS idFrameT ******/
+/******* idFrameT CSS *********************************************************/
 
 #idFrameT {
     background-color: #404040;
@@ -646,15 +625,15 @@ div.diapo {
     background-image: -moz-linear-gradient(top, #444444, #393939);
     background-image: linear-gradient(top, #444444, #393939);
     /*border: 1px solid #515151;*/
+    color: #AAAAAA;
     padding-left: 5px;
-    color: #aaaaaa;
 }
 
 #idFrameT .tools .classicButton button.btn-inverse:hover,
 #idFrameT .tools .dropdownButton button.btn-inverse:hover {
     background-color: #393939;
     *background-color: #393939;
-    color: #ffffff;
+    color: #FFFFFF;
 }
 
 #idFrameT .tools .classicButton button.btn-inverse img,
@@ -677,7 +656,7 @@ div.diapo {
 
 #idFrameT .tools .dropdown-menu a:hover {
     background-color: #313131;
-    color: #ffffff;
+    color: #FFFFFF;
 }
 
 #idFrameT .tools .dropdown-menu img {
@@ -690,105 +669,7 @@ div.diapo {
     margin: 3px 1px;
 }
 
-
-
-#history-queries ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-}
-
-#history-queries ul li {
-    cursor: pointer;
-}
-
-#history-queries ul li.hover {
-    color: #838383;
-}
-
-
-
-#TOPIC_UL li {
-    float: none;
-    margin: 0;
-}
-
-#choosen-topics UL.opened {
-    margin-left: 5px;
-    padding-left: 10px;
-    list-style-type: none;
-}
-
-#choosen-topics UL.static {
-    margin-left: 5px;
-    padding-left: 10px;
-    list-style-type: none;
-}
-
-#choosen-topics UL.closed {
-    display: none;
-}
-
-#choosen-topics UL.nobox {
-    border-left: 0px none transparent;
-    margin-left: 4px;
-    padding-left: 0px;
-    list-style-type: none;
-}
-
-#choosen-topics LI {
-    position: relative;
-    left: 0px;
-    margin: 0px;
-    padding: 0px;
-}
-
-#choosen-topics LI A {
-    color: #000000;
-    padding: 0px;
-    background-repeat: no-repeat;
-    width: 11px;
-    height: 11px;
-}
-
-#choosen-topics LI A.opened {
-    display: inline-block;
-    background-image: url('../../icons/tri_minus.gif');
-}
-
-#choosen-topics LI A.closed {
-    display: inline-block;
-    background-image: url('../../icons/tri_plus.gif');
-}
-
-#choosen-topics LI SPAN {
-    padding: 0px;
-    background-repeat: no-repeat;
-    width: 11px;
-    height: 11px;
-}
-
-#choosen-topics LI SPAN.static {
-    display: inline-block;
-    background-image: url('../../icons/tri_static.gif');
-}
-
-#choosen-topics LI SPAN.none {
-    display: inline-block;
-    background-image: none;
-}
-
-#choosen-topics div.searchZone {
-    height: 100%;
-}
-
-.alert_datas_changed a {
-    color: #414141;
-    text-decoration: underline;
-}
-
-
-
+/******* BASKETS **************************************************************/
 
 #idFrameC .tools {
     text-align: center;
@@ -981,8 +862,6 @@ div.diapo {
     border: 3px solid #404040;
 }
 
-
-
 .ui-accordion .ui-accordion-header.grouping {
     background-image: url('../../icons/group_back.png');
 }
@@ -1058,7 +937,6 @@ form.phrasea_query input.query {
     height: 22px;
 }
 
-
 #basket-rename-box .btn, #reorder_box .btn {
     font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 12px;
@@ -1077,10 +955,102 @@ form.phrasea_query input.query {
     color: #FFFFFF;
 }
 
+/******* QUERIES HISTORY ******* (currently not used in HTML code )************/
+/*
+#history-queries ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
 
+#history-queries ul li {
+    cursor: pointer;
+}
 
-/* QRY */
+#history-queries ul li.hover {
+    color: #838383;
+}
 
+#choosen-topics UL.opened {
+    margin-left: 5px;
+    padding-left: 10px;
+    list-style-type: none;
+}
+
+#choosen-topics UL.static {
+    margin-left: 5px;
+    padding-left: 10px;
+    list-style-type: none;
+}
+
+#choosen-topics UL.closed {
+    display: none;
+}
+
+#choosen-topics UL.nobox {
+    border-left: 0px none transparent;
+    margin-left: 4px;
+    padding-left: 0px;
+    list-style-type: none;
+}
+
+#choosen-topics LI {
+    position: relative;
+    left: 0px;
+    margin: 0px;
+    padding: 0px;
+}
+
+#choosen-topics LI A {
+    color: #000000;
+    padding: 0px;
+    background-repeat: no-repeat;
+    width: 11px;
+    height: 11px;
+}
+
+#choosen-topics LI A.opened {
+    display: inline-block;
+    background-image: url('../../icons/tri_minus.gif');
+}
+
+#choosen-topics LI A.closed {
+    display: inline-block;
+    background-image: url('../../icons/tri_plus.gif');
+}
+
+#choosen-topics LI SPAN {
+    padding: 0px;
+    background-repeat: no-repeat;
+    width: 11px;
+    height: 11px;
+}
+
+#choosen-topics LI SPAN.static {
+    display: inline-block;
+    background-image: url('../../icons/tri_static.gif');
+}
+
+#choosen-topics LI SPAN.none {
+    display: inline-block;
+    background-image: none;
+}
+
+#choosen-topics div.searchZone {
+    height: 100%;
+}
+*/
+/******* QUERY ****************************************************************/
+
+#TOPIC_UL li {
+    float: none;
+    margin: 0;
+}
+
+.alert_datas_changed a {
+    color: #414141;
+    text-decoration: underline;
+}
 
 .phrasea_query input.danger,
 .phrasea_query .date_filter.danger,
@@ -1159,8 +1129,7 @@ form.phrasea_query input.query {
     min-height: 20px;
 }
 
-/*ACTIONS*/
-
+/******* ACTIONS **************************************************************/
 
 .toolbutton {
     float: left;
@@ -1265,6 +1234,7 @@ form.phrasea_query input.query {
     background-position: center center;
     background-repeat: no-repeat;
 }
+
 #TOOL_imgtools.actif{
     background-image: url('images/imgtools_1.gif');
     background-position: center center;
@@ -1283,10 +1253,6 @@ form.phrasea_query input.query {
     background-repeat: no-repeat;
 }
 
-
-/** Barre outils de reponses **/
-
-
 .colorpicker_box {
     border: 1px solid white;
     cursor: pointer;
@@ -1295,10 +1261,7 @@ form.phrasea_query input.query {
     padding: 0;
 }
 
-
-
-
-/**  DropDown Menu  **/
+/******* DROPDOWN MENU ********************************************************/
 
 .context-menu-theme-vista .context-menu-item .context-menu-item-inner {
     padding: 4px 20px;
@@ -1337,11 +1300,6 @@ form.phrasea_query input.query {
 
 
 
-
-
-
-
-
 .pubchut, .pubchutmine,.regIndicator,.baskIndicator {
     position: relative;
     float: left;
@@ -1365,10 +1323,7 @@ form.phrasea_query input.query {
     background-position: middle left;
 }
 
-
-
-/***********************
-****** CSS Input ******/
+/******* INPUTS ***************************************************************/
 
 input.input-button {
     background-image: url('../../icons/input_back.png');
@@ -1499,8 +1454,7 @@ input.btn-mini {
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
 
-
-
+/******* GUI ******************************************************************/
 
 .gui_grip {
     background-image: url('images/grip.gif');
@@ -1552,157 +1506,78 @@ input.btn-mini {
 }
 
 .gui_hslider {
-    position:absolute;
-    height:0px;
-    border:#959595 1px inset
+    position: absolute;
+    height: 0px;
+    border: #959595 1px inset
 }
 
 .gui_hslider DIV {
-    position:absolute;
-    top:-6px;
-    left:0px;
-    width:4px;
-    height:10px;
-    border:#c0c0c0 1px outset;
-    background-color:#959595;
-    background-image:url('images/vsplitter.gif');
-    cursor:pointer;
+    position: absolute;
+    top: -6px;
+    left: 0px;
+    width: 4px;
+    height: 10px;
+    border: #c0c0c0 1px outset;
+    background-color: #959595;
+    background-image: url('images/vsplitter.gif');
+    cursor: pointer;
 }
 
 .gui_ckbox_0 {
-    display:block;
-    position:relative;
-    width:12px;
-    height:12px;
-    float:left;
-    background-image:url('images/ccoch0.gif');
-    cursor:pointer;
+    display: block;
+    position: relative;
+    width: 12px;
+    height: 12px;
+    float: left;
+    background-image: url('images/ccoch0.gif');
+    cursor: pointer;
 }
 
 .gui_ckbox_1 {
-    display:block;
-    position:relative;
-    width:12px;
-    height:12px;
-    float:left;
-    background-image:url('images/ccoch1.gif');
-    cursor:pointer;
+    display: block;
+    position: relative;
+    width: 12px;
+    height: 12px;
+    float: left;
+    background-image: url('images/ccoch1.gif');
+    cursor: pointer;
 }
 
 .gui_ckbox_2 {
-    display:block;
-    position:relative;
-    width:12px;
-    height:12px;
-    float:left;
-    background-image:url('images/ccoch2.gif');
-    cursor:pointer;
-}
-
-
-
-
-.MenuSG {
-    BORDER-RIGHT: 2px outset;
-    BORDER-TOP: 2px outset;
-    DISPLAY: none;
-    FONT-SIZE: 8pt;
-    Z-INDEX: 100;
-    VISIBILITY: visible;
-    OVERFLOW: hidden;
-    BORDER-LEFT: 2px outset;
-    COLOR: #000000;
-    BORDER-BOTTOM: 2px outset;
-    POSITION: absolute;
-    BACKGROUND-COLOR: #e6e4e0;
-    TEXT-DECORATION: none;
-    LEFT: 500px;
-    TOP: 300px;
-    WIDTH: 220px;
-    COLOR: #222222;
-}
-
-.MenuSG DIV {
-    WIDTH: 220px;
-    overflow:scroll-y;
-    WHITE-SPACE: normal;
-    COLOR: #222222;
-    BORDER-bottom:#CCCCCC 1px solid;
-    margin-top:1px;
-    margin-bottom:1px;
-}
-
-.MenuSG A,.MenuSG A:link,.MenuSG A:active,.MenuSG A:hover {
-
+    display: block;
+    position: relative;
+    width: 12px;
+    height: 12px;
+    float: left;
+    background-image: url('images/ccoch2.gif');
     cursor: pointer;
-    DISPLAY: block;
-    PADDING-LEFT: 5px;
-    COLOR: #000000;
-    PADDING-TOP: 2px;
-    WHITE-SPACE: normal;
-    BACKGROUND-COLOR: #e6e4e0;
-    POSITION: relative;
-    TOP: 0px;
-    LEFT: 0px;
-    TEXT-DECORATION: none;
-    COLOR: #222222;
 }
 
-.MenuSG A:hover {
-    COLOR: #ffffff;
-    BACKGROUND-COLOR: #191970;
-    TEXT-DECORATION: none;
-}
-
-.sugg_val {
-    font-size : 10px;
-    font-color:black;
-    border-bottom : 1px solid black;
-    padding:3px;
-    height:16px;
-    background:white;
-}
-
-.sugg_val_sel {
-    background:#FBFFA8;
-}
-
-.indicator {
-    color:green;
-    float:right;
-    font-size:9px;
-    position:relative;
-    font-style:italic;
-}
-
-EM {
-    FONT-STYLE: normal;
-    BACKGROUND-COLOR: #D82400;
-}
+/******* ONGLETS **************************************************************/
 
 .prevTrainCurrent .doc_infos, .diapo .doc_infos {
     position: absolute;
-    padding:3px;
+    padding: 3px;
     z-index: 97;
 }
 
 .prevTrainCurrent .doc_infos img,.diapo .doc_infos img {
-    vertical-align:middle;
+    vertical-align: middle;
 }
 
 .prevTrainCurrent .duration, .diapo .duration {
-    background-color:black;
+    background-color: black;
     color: white;
 }
 
 DIV.onglets {
-    white-space:nowrap;
+    white-space: nowrap;
 }
 
 DIV.onglets SPAN {
     position: relative;
     border: #212121 1px none;
-    padding:5px 15px;
+    padding: 5px 15px;
     margin-left: 2px;
     margin-right: 2px;
     background-color: #212121;
@@ -1713,13 +1588,13 @@ DIV.onglets SPAN {
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
     color: #888888;
-    cursor:pointer;
+    cursor: pointer;
     Z-INDEX: 2;
 }
 
 DIV.onglets SPAN.actif {
     BORDER:	#404040 1px none;
-    BORDER-BOTTOM: 	#404040 1px solid;
+    BORDER-BOTTOM: #404040 1px solid;
     BACKGROUND-COLOR: #404040;
     COLOR: #949494;
 }
@@ -1736,21 +1611,6 @@ IFRAME {
     BORDER-BOTTOM: #000000 1px solid
 }
 
-DIV.divexport {
-    BORDER-RIGHT: #8b7a5e 1px solid;
-    PADDING-RIGHT: 2px;
-    BORDER-TOP: #8b7a5e 1px solid;
-    PADDING-LEFT: 2px;
-    MARGIN-BOTTOM: 5px;
-    PADDING-BOTTOM: 5px;
-    MARGIN-LEFT: 5px;
-    BORDER-LEFT: #8b7a5e 1px solid;
-    MARGIN-RIGHT: 5px;
-    PADDING-TOP: 5px;
-    BORDER-BOTTOM: #8b7a5e 1px solid;
-    BACKGROUND-COLOR: #ffffff
-}
-
 H4 {
     MARGIN-TOP: 0px;
     FONT-WEIGHT: normal;
@@ -1759,16 +1619,18 @@ H4 {
     MARGIN-LEFT: 5px
 }
 
-.proposals {				/*** page proposals.php ***/
+/******* PROPOSALS ************************************************************/
+
+.proposals {                    /*** page proposals.php ***/
     POSITION: relative;
     LEFT: 5px;
 }
 
-.proposals A {			/*** page proposals.php ***/
+.proposals A {                  /*** page proposals.php ***/
     FONT-SIZE: 11px;
 }
 
-.proposals H1,.proposals H2 {		/*** page proposals.php ***/
+.proposals H1,.proposals H2 {   /*** page proposals.php ***/
     FONT-SIZE: 10px;
     POSITION: relative;
     PADDING: 3px;
@@ -1777,7 +1639,7 @@ H4 {
     MARGIN-BOTTOM: 5px;
 }
 
-.proposals HR {				/*** page proposals.php ***/
+.proposals HR {                 /*** page proposals.php ***/
     POSITION: relative;
     HEIGHT: 1px;
     PADDING: 0px;
@@ -1787,15 +1649,7 @@ H4 {
     TEXT-DECORATION: none;
 }
 
-
-
-
-
-
-
-
-
-/** BOITES MODALES **/
+/******* BOITES MODALES *******************************************************/
 
 .bodyprofile {
     background-color: transparent;
@@ -1814,35 +1668,31 @@ H4 {
 
 .bodyprofile .ui-tabs li.ui-state-active a,
 .ui-state-active a:link, .ui-state-active a:visited {
-    color:#404040;
+    color: #404040;
 }
 
 .bodyprofile .ui-widget-content {
-    color:#404040;
-    background-color:#404040;
+    color: #404040;
+    background-color: #404040;
 }
 
 .overlay, .ui-widget-overlay {
-    background-color:#111111;
-    opacity:0.7;
-    filter:alpha(opacity=70);
+    background-color: #111111;
+    opacity: 0.7;
+    filter: alpha(opacity=70);
 }
 
 .overlay_box {
-    position:absolute;
-    background-color:#999999;
-    display:none;
-    overflow-y:auto;
-    padding:5px;
-    max-width:800px;
-    max-height:400px;
+    position: absolute;
+    background-color: #999999;
+    display: none;
+    overflow-y: auto;
+    padding: 5px;
+    max-width: 800px;
+    max-height: 400px;
 }
 
-
-
-/*******************************************************/
-/*** VERIFIER LA PRESENCE DE adv_search DANS LE CODE ***/
-/*******************************************************/
+/******* SEARCH ***************************************************************/
 
 #adv_search .sbasglob,
 .adv_options .sbasglob,
@@ -1923,14 +1773,11 @@ H4 {
 }
 
 .clkbas img {
-    vertical-align:middle;
-    max-height:22px;
+    vertical-align: middle;
+    max-height: 22px;
 }
 
-
-
-
-/** EXPORT **/
+/******* EXPORT ***************************************************************/
 
 #printBox {
     background-color: #404040;
@@ -1995,15 +1842,10 @@ H4 {
     color: #FFFFFF;
 }
 
-/** **/
-
-
+/******************************************************************************/
 
 DIV.finder {
     WHITE-SPACE: nowrap
-}
-
-DIV.finder DIV.content {
 }
 
 DIV.finder DIV.content DIV.title {
@@ -2013,48 +1855,6 @@ DIV.finder DIV.content DIV.title {
     WHITE-SPACE: nowrap;
     POSITION: relative;
     TOP: 0px
-}
-
-DIV.finder DIV.content DIV.content {
-}
-
-TABLE.ulist THEAD {
-    BACKGROUND-COLOR: #999999;
-    text-align:left;
-}
-
-TABLE.ulist TBODY TR {
-    cursor:pointer;
-    height:18px;
-    height:20px;
-}
-
-TABLE.ulist TBODY TR.selected {
-    COLOR: #ffffff;
-    BACKGROUND-COLOR: #191970
-}
-
-TABLE.ulist TBODY TR.g {
-    BACKGROUND-COLOR: #474747
-}
-
-#search_list_wrapper.loading {
-    background-image:url('../../icons/loader000.gif');
-    background-position:center center;
-    background-repeat:no-repeat;
-}
-
-PRE.xml {
-    FONT-SIZE: 12px;
-    MARGIN: 5px 4px;
-    BACKGROUND-COLOR: #f5f5f5
-}
-
-P.emptyw {
-    PADDING-LEFT: 5px;
-    MARGIN-LEFT: 4px;
-    MARGIN-RIGHT: 4px;
-    BACKGROUND-COLOR: #f5f5f5
 }
 
 DIV.finder DIV.content DIV.title SPAN {
@@ -2080,97 +1880,36 @@ DIV.finder DIV.content DIV.title TABLE TR TD {
     WHITE-SPACE: nowrap
 }
 
-TEXTAREA {
-    FONT-SIZE: 11px;
+TABLE.ulist THEAD {
+    BACKGROUND-COLOR: #999999;
+    text-align: left;
 }
 
-
-
-#idFrameUPL {
-    BORDER-RIGHT: medium none;
-    BORDER-TOP: medium none;
-    LEFT: 0px;
-    OVERFLOW: hidden;
-    BORDER-LEFT: medium none;
-    WIDTH: 300px;
-    BORDER-BOTTOM: medium none;
-    POSITION: relative;
-    TOP: 0px;
-    HEIGHT: 300px;
-    BACKGROUND-COLOR: #ffffff
+TABLE.ulist TBODY TR {
+    cursor: pointer;
+    height: 18px;
+    height: 20px;
 }
 
-.FrameUPL {
-    BORDER-RIGHT: medium none;
-    BORDER-TOP: medium none;
-    LEFT: 10px;
-    BORDER-LEFT: medium none;
-    WIDTH: 300px;
-    BORDER-BOTTOM: medium none;
-    POSITION: absolute;
-    TOP: 10px;
-    HEIGHT: 300px;
-    BACKGROUND-COLOR: #daa520
+TABLE.ulist TBODY TR.selected {
+    COLOR: #FFFFFF;
+    BACKGROUND-COLOR: #191970
 }
 
-#idFrameW0bars {
-    MARGIN-TOP: 10px;
-    MARGIN-LEFT: 10px
+TABLE.ulist TBODY TR.g {
+    BACKGROUND-COLOR: #474747
 }
 
-#idFrameW0bars .task {
-    MARGIN-TOP: 0px;
-    LEFT: 0px;
-    MARGIN-BOTTOM: 0px;
-    PADDING-BOTTOM: 0px;
-    OVERFLOW: hidden;
-    PADDING-TOP: 0px;
-    POSITION: relative;
-    TOP: 0px;
-    HEIGHT: 34px
+PRE.xml {
+    FONT-SIZE: 12px;
+    MARGIN: 5px 4px;
+    BACKGROUND-COLOR: #f5f5f5
 }
 
-#idFrameW0bars .task .pbar {
-    BORDER-RIGHT: 1px outset;
-    BORDER-TOP: 1px outset;
-    LEFT: 0px;
-    BORDER-LEFT: 1px outset;
-    WIDTH: 260px;
-    BORDER-BOTTOM: 1px outset;
-    POSITION: relative;
-    TOP: 0px;
-    HEIGHT: 14px
-}
-
-#idFrameW0bars .task .pbar .pbarFrt {
-    FONT-SIZE: 10px;
-    LEFT: 0px;
-    WIDTH: 100%;
-    CLIP: rect(auto 0px auto 0px);
-    COLOR: #000000;
-    POSITION: absolute;
-    TOP: 0px;
-    HEIGHT: 14px;
-    TEXT-ALIGN: center
-}
-
-#idFrameW0bars .task .pbar .pbarBck {
-    FONT-SIZE: 10px;
-    LEFT: 0px;
-    WIDTH: 100%;
-    COLOR: #000000;
-    POSITION: absolute;
-    TOP: 0px;
-    HEIGHT: 14px;
-    BACKGROUND-COLOR: #f6f3ee;
-    TEXT-ALIGN: center
-}
+/******* EXPLAIN RESULTS ******************************************************/
 
 DIV.myexplain {
     WHITE-SPACE: nowrap;
-}
-
-DIV.myexplain DIV.content {
 }
 
 DIV.myexplain DIV.content DIV.title {
@@ -2180,9 +1919,6 @@ DIV.myexplain DIV.content DIV.title {
     WHITE-SPACE: nowrap;
     POSITION: relative;
     TOP: 0px
-}
-
-DIV.myexplain DIV.content DIV.content {
 }
 
 DIV.myexplain DIV.content DIV.title SPAN {
@@ -2217,6 +1953,7 @@ TABLE.explain3 TR TD {
 
 
 
+
 a {
     COLOR: #b1b1b1;
     TEXT-DECORATION: none
@@ -2227,22 +1964,11 @@ a:hover {
     TEXT-DECORATION: none
 }
 
-.skinTitle {
-    FONT-WEIGHT: bold;
-    COLOR: #8b7a5e;
-    TEXT-DECORATION: none
-}
-
-INPUT.noborder {
-    BORDER-RIGHT: medium none;
-    BORDER-TOP: medium none;
-    BORDER-LEFT: medium none;
-    BORDER-BOTTOM: medium none
-}
-
 .dragover {
     BACKGROUND-COLOR: #fff100
 }
+
+/******* THESAURUS ************************************************************/
 
 DIV.thesaurus {
     MARGIN-LEFT: 2px;
@@ -2258,17 +1984,17 @@ DIV.thesaurus DIV.c {
 }
 
 #idFrameE #TH_Ofull, #idFrameTH #TH_Oprop, #idFrameTH #TH_Oclip {
-    margin:0;
-    padding:0;
-    width:100%;
+    margin: 0;
+    padding: 0;
+    width: 100%;
 }
 
 #idFrameE DIV.searchZone {
-    position:absolute;
-    top:0px;
-    left:0px;
-    width:100%;
-    height:100%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
     PADDING: 0px;
     MARGIN: 0px;
     BACKGROUND: #404040;
@@ -2288,7 +2014,7 @@ DIV.thesaurus DIV.c {
     BORDER-LEFT: #a9a9a9 1px solid;
     BORDER-RIGHT: #a9a9a9 1px solid;
     BORDER-BOTTOM: #a9a9a9 1px solid;
-    BACKGROUND-COLOR:transparent;
+    BACKGROUND-COLOR: transparent;
     COLOR: #a9a9a9;
 }
 
@@ -2316,32 +2042,31 @@ DIV.thesaurus DIV.c {
 
 #idFrameE DIV.thesaurus U {
     width: 9px;
-    height:10px;
-    MARGIN-RIGHT:2px;
-    text-align:center;
-    display:inline-block;
+    height: 10px;
+    MARGIN-RIGHT: 2px;
+    text-align: center;
+    display: inline-block;
     font-size: 8px;
     TEXT-DECORATION: none;
-    BACKGROUND-COLOR:#F0F0F0;
-    cursor:pointer;
-    color:black;
+    BACKGROUND-COLOR: #F0F0F0;
+    cursor: pointer;
+    color: black;
 }
 
 #idFrameE DIV.thesaurus B {
-    cursor:pointer;
+    cursor: pointer;
 }
 
 #idFrameE DIV.thesaurus I {
-    FONT-STYLE:normal;
-    cursor:pointer;
+    FONT-STYLE: normal;
+    cursor: pointer;
 }
 
 DIV.thesaurus U.w {
-    cursor:auto;
+    cursor: auto;
 }
 
-
-/** EDITING **/
+/******* EDITION **************************************************************/
 
 #EDIT_ALL {
     white-space: normal;
@@ -2720,28 +2445,27 @@ DIV.thesaurus U.w {
     color: #FFFFFF;
 }
 
-
 #ZTextMultiValued_values {
-    background-color:#444444;
-    border:1px solid #999999;
-    position:absolute;
-    top:30px;
-    left:4px;
-    right:4px;
-    bottom:4px;
-    overflow-x:auto;
-    overflow-y:scroll;
+    background-color: #444444;
+    border: 1px solid #999999;
+    position: absolute;
+    top: 30px;
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+    overflow-x: auto;
+    overflow-y: scroll;
 }
 
 #idFrameE #ZTextMultiValued_values div {
-    cursor:pointer;
-    height:20px;
-    padding:2px 14px 2px 2px;
+    cursor: pointer;
+    height: 20px;
+    padding: 2px 14px 2px 2px;
 }
 
 #idFrameE #ZTextMultiValued_values div table {
-    width:100%;
-    border:none;
+    width: 100%;
+    border: none;
 }
 
 #idFrameE #ZTextMultiValued_values div table td {
@@ -2749,24 +2473,24 @@ DIV.thesaurus U.w {
 }
 
 #idFrameE #ZTextMultiValued_values div table td.options {
-    width:40px;
-    text-align:right;
+    width: 40px;
+    text-align: right;
 }
 
 #idFrameE #ZTextMultiValued_values div table td.options .add_all {
-    display:none;
+    display: none;
 }
 
 #idFrameE #ZTextMultiValued_values div.hetero table td.options .add_all {
-    display:inline;
+    display: inline;
 }
 
 #idFrameE .hetero {
-    color:#ff8000;
+    color: #ff8000;
 }
 
 #idFrameE #ZTextMultiValued_values DIV.hilighted {
-    background-color:#222222;
+    background-color: #222222;
 }
 
 #idFrameE #ZTextMultiValued_values DIV I {
@@ -2823,457 +2547,459 @@ DIV.thesaurus U.w {
     display: inherit;
 }
 
-
-/**  MAINMENU **/
+/*******  MAINMENU ************************************************************/
 
 #mainMenu, .publi_group {
-    background-color:#404040;
+    background-color: #404040;
 }
 
 .context-menu-item a {
-    color:#75ABFF;
+    color: #75ABFF;
 }
 
 .context-menu-item-hover a {
-    color:#212121;
+    color: #212121;
 }
 
 #tooltip {
-    position:absolute;
-    z-index:32000;
-    overflow:hidden;
+    position: absolute;
+    z-index: 32000;
+    overflow: hidden;
 }
 
 #PREVIEWBOX, #EDITWINDOW {
-    z-index:1200;
-    background-color:#1a1a1a;
-    display:none;
-    top:0;
-    bottom:15px;
-    right:20px;
-    left:20px;
-    border:2px solid #666666;
+    z-index: 1200;
+    background-color: #1a1a1a;
+    display: none;
+    top: 0;
+    bottom: 15px;
+    right: 20px;
+    left: 20px;
+    border: 2px solid #666666;
 }
 
 #PREVIEWBOX img {
-    cursor:pointer;
+    cursor: pointer;
 }
 
 #PREVIEWBOX a.bounce {
-    BORDER-BOTTOM:#ffe000 1px dashed;
-    cursor:pointer;
+    BORDER-BOTTOM: #ffe000 1px dashed;
+    cursor: pointer;
 }
 
 .PREVIEW_PIC,.PREVIEW_HD {
-    position:absolute;
-}
-
-#PREVIEWCURRENT li {
-}
-
-#PREVIEWCURRENT li.current {
+    position: absolute;
 }
 
 #PREVIEWCURRENT li.selected {
-    background-color:white;
-}
-
-#PREVIEWCURRENT li.see-all {
+    background-color: white;
 }
 
 #PREVIEWBOX li {
-    list-style-type:none;
+    list-style-type: none;
 }
 
 #PREVIEWIMGDESC .descBoxes {
-    top:30px;
-    overflow:auto;
-
+    top: 30px;
+    overflow: auto;
 }
 
 #PREVIEWIMGDESCINNER span.fieldName {
-    font-weight:bold;
+    font-weight: bold;
 }
 
 #PREVIEWIMGDESC em {
-    background-color:red;
+    background-color: red;
 }
 
 #PREVIEWOTHERS {
-    background-color:#404040;
-    overflow-x:hidden;
-    overflow-y:auto;
-    left:0;
+    background-color: #404040;
+    overflow-x: hidden;
+    overflow-y: auto;
+    left: 0;
 }
 
 #PREVIEWOTHERSINNER ul {
-    margin:0;
-    padding:0;
-    position:relative;
-    float:left;
-    list-style-type:none;
-    width:100%;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    float: left;
+    list-style-type: none;
+    width: 100%;
 }
 
 #PREVIEWOTHERSINNER li {
-    position:relative;
-    float:left;
-    width:150px;
-    margin:4px 10px;
-    line-height:14px;
+    position: relative;
+    float: left;
+    width: 150px;
+    margin: 4px 10px;
+    line-height: 14px;
 }
 
 #PREVIEWOTHERSINNER li.otherRegToolTip {
-    height:25px;
-    overflow:hidden;
+    height: 25px;
+    overflow: hidden;
 }
 
 #PREVIEWOTHERSINNER li.title {
-    font-weight:bold;
-    font-size:13px;
-    margin:10px 10px 5px;
+    font-weight: bold;
+    font-size: 13px;
+    margin: 10px 10px 5px;
 }
+
 #PREVIEWOTHERSINNER li.otherRegToolTip,
 #PREVIEWOTHERSINNER li.otherBaskToolTip {
-    background-color:#404040;
+    background-color: #404040;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border-radius: 4px;
-    cursor:pointer;
+    cursor: pointer;
 }
 
 #PREVIEWOTHERSINNER li.otherRegToolTip span.title {
-    line-height:25px;
-    margin-left:3px;
+    line-height: 25px;
+    margin-left: 3px;
 }
 
 #PREVIEWOTHERSINNER li .others_img {
-    position:relative;
-    float:left;
-    width:25px;
-    height:25px;
+    position: relative;
+    float: left;
+    width: 25px;
+    height: 25px;
 }
 
 #PREVIEWTITLEWRAPPER {
-    background-color:#404040;
-    bottom:0;
+    background-color: #404040;
+    bottom: 0;
 }
 
 #SPANTITLE {
-    font-size:16px;
-    line-height:25px;
-    font-weight:bold;
+    font-size: 16px;
+    line-height: 25px;
+    font-weight: bold;
 }
 
 #PREVIEWCURRENTGLOB, .preview_col_film {
-    height:96px;
+    height: 96px;
     width: 100%;
 }
 
 #PREVIEWCURRENT {
-    background-color:#404040;
+    background-color: #404040;
 }
 
 #PREVIEWCURRENTCONT.group_case {
-    left:106px;
+    left: 106px;
 }
 
 #PREVIEWCURRENTCONT {
-    right:130px;
-    overflow-x:auto;
-    overflow-y:hidden;
+    right: 130px;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 
 #PREVIEWCURRENTCONT ul {
-    position:relative;
-    height:80px;
-    float:left;
-    margin:0;
-    padding:0;
+    position: relative;
+    height: 80px;
+    float: left;
+    margin: 0;
+    padding: 0;
 }
 
 #PREVIEWCURRENT, #PREVIEWCURRENTGLOB {
-    overflow:hidden;
+    overflow: hidden;
 }
 
 #PREVMAINREG {
-    float:left;
-    position:relative;
-    width:96px;
-    height:96px;
-    text-align:center;
-    background-color:white;
+    float: left;
+    position: relative;
+    width: 96px;
+    height: 96px;
+    text-align: center;
+    background-color: white;
 }
 
 .prevTrainCurrent {
-    text-align:center;
-    position:relative;
-    float:left;
-    height:80px;
-    width:80px;
+    text-align: center;
+    position: relative;
+    float: left;
+    height: 80px;
+    width: 80px;
 }
 
 #PREVIEWHD {
-    position:absolute;
-    width:100%;
-    height:100%;
-    text-align:center;
-    z-index:6000;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    z-index: 6000;
 }
 
 #PREVIEWTOOL {
-    position:absolute;
-    bottom:10px;
-    right:10px;
-    text-align:right;
-    width:56px;
-    height:60px;
-    top:auto;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    text-align: right;
+    width: 56px;
+    height: 60px;
+    top: auto;
 }
 
 .cont_infos {
-    position:absolute;
-    bottom:10px;
-    right:10px;
-    height:60px;
-    top:auto;
-    text-align:center;
-    width:70px;
-    right:60px;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    height: 60px;
+    top: auto;
+    text-align: center;
+    width: 70px;
+    right: 60px;
 }
 
 .cont_infos div {
-    line-height:20px;
-    font-size:10px;
-    font-weight:bold;
+    line-height: 20px;
+    font-size: 10px;
+    font-weight: bold;
 }
 
 .cont_infos span {
-    cursor:pointer;
-    font-size:10px;
+    cursor: pointer;
+    font-size: 10px;
 }
 
 #SPANTITLE img {
     height: 16px;
     vertical-align: middle;
-    margin:0 10px;
+    margin: 0 10px;
 }
 
 #PREVIEWTOOL img, #PREVIEWTOOL span {
-    float:left;
+    float: left;
 }
 
 .otherRegToolTip img {
-    vertical-align:middle;
+    vertical-align: middle;
 }
 
 #ui-datepicker-div {
-    z-index:2000;
-    background-color:#1a1a1a;
-    position:absolute;
+    z-index: 2000;
+    background-color: #1a1a1a;
+    position: absolute;
 }
-
 
 /*
 Menu contextuel
     valeurs suggerees dans l'editing : Classic Windows Theme (default) */
 /* =============================== */
 .context-menu-theme-default {
-    border:2px outset white;
-    background-color:#D4D0C8;
+    border: 2px outset white;
+    background-color: #D4D0C8;
 }
 
 .context-menu-theme-default .context-menu-item {
-    text-align:left;
-    cursor:pointer;
-    padding:2px 20px 2px 5px;
-    color:black;
-    font-family:Tahoma,Arial;
-    font-size:9px;
-    white-space:nowrap;
+    text-align: left;
+    cursor: pointer;
+    padding: 2px 20px 2px 5px;
+    color: black;
+    font-family: Tahoma,Arial;
+    font-size: 9px;
+    white-space: nowrap;
 }
 
 .context-menu-theme-default .context-menu-separator {
-    margin:1px 2px;
-    font-size:0px;
-    border-top:1px solid #808080;
-    border-bottom:1px solid white;
+    margin: 1px 2px;
+    font-size: 0px;
+    border-top: 1px solid #808080;
+    border-bottom: 1px solid white;
 }
 
 .context-menu-theme-default .context-menu-item-disabled {
-    color:#808080;
+    color: #808080;
 }
 
 .context-menu-theme-default .context-menu-item .context-menu-item-inner {
-    background:none no-repeat fixed 999px 999px; /* Make sure icons don't appear */
+    background: none no-repeat fixed 999px 999px; /* Make sure icons don't appear */
 }
 
 .context-menu-theme-default .context-menu-item-hover {
-    background-color:#0A246A;
-    color:white;
+    background-color: #0A246A;
+    color: white;
 }
 
 .context-menu-theme-default .context-menu-item-disabled-hover {
-    background-color:#0A246A;
+    background-color: #0A246A;
 }
 
 /* ==================================
 dans l'onglet thesaurus : arbres, menus contextuels
 ===================================== */
-._tab2 .ui-state-default {
-    background-color:#202020;
-    color:#808080;
-}
-
-._tab2 .ui-tabs-selected {
-    background-color:#404040;
-    color:#ffffff;
-}
-
-._tab2 DIV {
-    background-color:#404040;
-    color:#ffffff;
-
-    position:absolute;
-    top:60px;
-    left:0px;
-    bottom:0px;
-    right:0px;
-    display:block;
-    overflow:hidden;
-}
 
 #THPD_tabs {
-    right:0;
+    right: 0;
 }
 
 #THPD_tabs .ui-tabs-nav .ui-state-default A {
-    color:#c0c0c0;
+    color: #c0c0c0;
 }
 
 #THPD_tabs .ui-tabs-nav .ui-tabs-selected A {
-    color:#FFFFFF;
-    text-decoration:underline;
+    color: #FFFFFF;
+    text-decoration: underline;
 }
 
 #THPD_tabs .treeview UL {
-    background-color:transparent;
+    background-color: transparent;
 }
 
 #THPD_tabs .treeview SPAN {
-    cursor:pointer;
+    cursor: pointer;
 }
 
-#THPD_tabs .treeview SPAN.h		/* highlighted (filtered) */
-{
-    color:#FFFFD0;
+#THPD_tabs .treeview SPAN.h {   /* highlighted (filtered) */
+    color: #FFFFD0;
     font-weight: bold;
 }
 
-#THPD_tabs .treeview I		/* count of hits */
-{
-    color:#80FF80;
-    background-color:#606060;
-    font-style:normal;
-    margin-left:10px;
-    padding-left:3px;
-    padding-right:3px;
-    font-family:courier;
+#THPD_tabs .treeview I {        /* count of hits */
+    color: #80FF80;
+    background-color: #606060;
+    font-style: normal;
+    margin-left: 10px;
+    padding-left: 3px;
+    padding-right: 3px;
+    font-family: courier;
 }
 
 #THPD_tabs .treeview LI.selected SPAN {
-    background-color:#ff0000;
+    background-color: #ff0000;
 }
 
 #THPD_tabs .treeview LI.selected LI SPAN {
-    background-color:transparent;
+    background-color: transparent;
 }
 
 #THPD_tabs .context-menu-item-disabled {
-    background-color:#ff0000;
+    background-color: #ff0000;
 }
 
+/******* DIALOGS **************************************************************/
 
 #dialog_dwnl input.required.error,
 #dialog_dwnl textarea.required.error {
-    border:1px solid red;
+    border: 1px solid red;
 }
 
-
-
 #dialog_dwnl h1 {
-    text-align:center;
+    text-align: center;
 }
 
 #dialog_dwnl .buttons_line {
-    margin:10px 0;
-    text-align:center
+    margin: 10px 0;
+    text-align: center
 }
 
-
 #dialog_dwnl .order_input {
-    width:250px;
+    width: 250px;
 }
 
 #dialog_dwnl .undisposable {
-    float:left;
-    position:relative;
-    width:100%;
+    float: left;
+    position: relative;
+    width: 100%;
 }
 
 #dialog_dwnl .undisposable .thumb_wrapper {
-    float:left;
-    position:relative;
-    margin:10px;
+    float: left;
+    position: relative;
+    margin: 10px;
 }
 
 #dialog_dwnl .undisposable .thumb {
-    float:left;
-    position:relative;
+    float: left;
+    position: relative;
 }
 
+.ui-dialog-content.dialog-Small select,
+.ui-dialog-content.dialog-Small input[type="text"],
+.ui-dialog-content.dialog-Small textarea {
+    width: 100%;
+}
 
+.ui-dialog-content.dialog-Small textarea {
+    height: 60px;
+}
+
+.ui-dialog-content label {
+    line-height: 18px;
+}
+
+.ui-dialog-content p {
+    line-height: 18px;
+}
+
+/******* ORDER MANAGER ********************************************************/
 
 #order_manager tr.order_row {
-    height:28px;
+    height: 28px;
 }
 
 #order_manager .order_row.odd {
-    background-color:#404040;
+    background-color: #404040;
 }
 
 #order_manager .order_list .thumb_wrapper {
-    float:left;
-    position:relative;
-    margin:10px;
+    float: left;
+    position: relative;
+    margin: 10px;
 }
 
 #order_manager .order_list .thumb {
-    float:left;
-    position:relative;
+    float: left;
+    position: relative;
 }
 
 #order_manager .order_list .selectable.selected {
-    background-color:#404040;
+    background-color: #404040;
 }
 
 #order_manager .order_list .selectable {
-    cursor:pointer;
+    cursor: pointer;
 }
 
 #order_manager .order_list .order_wrapper {
     float: left;
     position: relative;
-    margin:5px;
+    margin: 5px;
 }
 
 #order_manager table p {
-    margin:2px 0;
+    margin: 2px 0;
 }
 
+/******* PUSH (CSS theme-dependant) *******************************************/
 
+.PushBox .content {
+    background-color: #404040;
+}
 
-/** PUSH (CSS theme-dependant) */
+#PushBox .btn-inverse {
+    background-color: #444444;
+    *background-color: #393939;
+    background-image: -ms-linear-gradient(top, #444444, #393939);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#444444), to(#393939));
+    background-image: -webkit-linear-gradient(top, #444444, #393939);
+    background-image: -o-linear-gradient(top, #444444, #393939);
+    background-image: -moz-linear-gradient(top, #444444, #393939);
+    background-image: linear-gradient(top, #444444, #393939);
+    /*border: 1px solid #515151;*/
+    color: #aaaaaa;
+}
+
+#PushBox .btn-inverse:hover {
+    background-color: #393939;
+    *background-color: #393939;
+    color: #ffffff;
+}
 
 .PushBox .grey-bg .btn {
     font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
@@ -3301,7 +3027,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 .PushBox .grey-bg .btn-inverse:hover {
     background-color: #393939;
     *background-color: #393939;
-    color: #ffffff;
+    color: #FFFFFF;
 }
 
 .PushBox .theme-bg .btn,
@@ -3326,15 +3052,15 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 #modal_feed form .fields {
-    overflow:auto;
+    overflow: auto;
 }
 
 #modal_feed form .feeds {
-    overflow:auto;
+    overflow: auto;
 }
 
 #modal_feed form .feeds .list {
-    margin:10px 0;
+    margin: 10px 0;
 }
 
 #modal_feed form .feeds .feed {
@@ -3379,13 +3105,11 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 #modal_feed form textarea {
-    height:60px;
-    resize:none;
+    height: 60px;
+    resize: none;
 }
 
-/** **/
-
-/** FEEDS **/
+/******* FEEDS ****************************************************************/
 
 #answers .feed {
     margin: 10px;
@@ -3451,22 +3175,22 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 #answers .feed .entry table.head {
-    vertical-align:middle;
-    margin:10px 0;
-    width:600px;
+    vertical-align: middle;
+    margin: 10px 0;
+    width: 600px;
 }
 
 #answers .feed .entry table a.tools {
-    display:none;
+    display: none;
 }
 
 #answers .feed .entry.hover table a.tools {
-    display:inline;
+    display: inline;
 }
 
 #answers .feed h1,
 #answers .feed .post_date {
-    width:100%;
+    width: 100%;
 }
 
 #answers .feed,
@@ -3476,50 +3200,50 @@ dans l'onglet thesaurus : arbres, menus contextuels
 #answers .feed .contents,
 #answers .feed .see_more,
 #answers .feed .post_date {
-    position:relative;
-    clear:left;
+    position: relative;
+    clear: left;
 }
 
 #answers .feed .see_more{
-    height:60px;
-    text-align:center;
-    font-weight:bold;
-    font-size:13px;
+    height: 60px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 13px;
     background-position: center bottom;
 }
 
 #answers .feed .contents {
-    clear:left;
-    margin:20px 0;
+    clear: left;
+    margin: 20px 0;
 }
 
 #answers .feed .post_date {
-    text-align:right;
+    text-align: right;
     font-style: italic;
-    max-width:600px;
-    margin-bottom:20px;
+    max-width: 600px;
+    margin-bottom: 20px;
 }
 
 #answers .feed h1 {
-    font-weight:bold;
-    font-size:20px;
+    font-weight: bold;
+    font-size: 20px;
 }
 
 #answers .feed h1 .author {
-    font-size:12px;
-    font-weight:normal;
-    margin-left:15px;
+    font-size: 12px;
+    font-weight: normal;
+    margin-left: 15px;
 }
 
 #answers .feed .entry h1 {
-    margin-bottom:0;
+    margin-bottom: 0;
 }
 
 #answers .feed p {
-    max-width:600px;
-    line-height:18px;
-    margin:5px 0;
-    text-align:justify;
+    max-width: 600px;
+    line-height: 18px;
+    margin: 5px 0;
+    text-align: justify;
 }
 
 #answers .feed .dropdown-menu {
@@ -3532,57 +3256,36 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 #answers .feed img {
-    vertical-align:middle;
+    vertical-align: middle;
 }
 
-/** **/
-
-.ui-dialog-content.dialog-Small select,
-.ui-dialog-content.dialog-Small input[type="text"],
-.ui-dialog-content.dialog-Small textarea {
-    width:100%;
-}
-
-.ui-dialog-content.dialog-Small textarea {
-    height:60px;
-}
-
-.ui-dialog-content label {
-    line-height: 18px;
-}
-
-.ui-dialog-content p {
-    line-height:18px;
-}
-
-
-
+/******* PUBLICATOR ***********************************************************/
 
 #dialog_publicator .diapo {
-    width:90px;
-    overflow:hidden;
+    width: 90px;
+    overflow: hidden;
 }
 
 #dialog_publicator .api_thumbnail {
-    max-width:120px;
+    max-width: 120px;
 }
 
 #dialog_publicator .diapo.pending_records {
-    width:50px;
-    overflow:hidden;
+    width: 50px;
+    overflow: hidden;
 }
 
 #dialog_publicator .ui-state-default.not_configured a {
-    color:#888888;
+    color: #888888;
     font-style: italic;
 }
 
 #dialog_publicator .ui-state-active a {
-    color:#0088CC;
+    color: #0088CC;
 }
 
 #dialog_publicator .ui-state-active.not_configured a {
-    color:#CCCCCC;
+    color: #CCCCCC;
     font-style: normal;
 }
 
@@ -3622,7 +3325,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 #publicator_selection .btn-inverse:hover {
     background-color: #393939;
     *background-color: #393939;
-    color: #ffffff;
+    color: #FFFFFF;
 }
 
 #pub_tabs .btn {
@@ -3670,30 +3373,29 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 #dialog_publicator .ui-tabs .ui-tabs-panel.loading {
-    background-image:url('/skins/icons/loader000.gif');
-    background-position:center center;
-    background-repeat:no-repeat;
+    background-image: url('/skins/icons/loader000.gif');
+    background-position: center center;
+    background-repeat: no-repeat;
 }
 
 #dialog_publicator .diapo.ui-selected {
-    background-color:#404040  ;
+    background-color: #404040  ;
 }
 
 #dialog_publicator .diapo.ui-selecting {
-    background-color:#202020  ;
+    background-color: #202020  ;
 }
 
 #ul_main_pub_tabs {
-    width:200px;
-    position:absolute;
-    overflow:hidden;
-    right:auto;
+    width: 200px;
+    position: absolute;
+    overflow: hidden;
+    right: auto;
 }
 
 #dialog_publicator .ui-tabs-panel {
-    left:200px;
+    left: 200px;
 }
-
 
 #dialog_publicator .notice_box,
 #dialog_publicator .error_box {
@@ -3741,9 +3443,9 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 #dialog_publicator .api_content .blockmenu {
-    height:100%;
-    bottom:auto;
-    overflow:hidden;
+    height: 100%;
+    bottom: auto;
+    overflow: hidden;
     background-repeat: repeat-x;
     background-position: left bottom;
 }
@@ -3763,36 +3465,36 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 #dialog_publicator .main_menu {
-    float:left;
+    float: left;
 }
 
 #dialog_publicator .main_menu button {
-    z-index:555;
-    font-size:13px;
-    font-weight:normal;
+    z-index: 555;
+    font-size: 13px;
+    font-weight: normal;
 }
 
 #dialog_publicator .main_menu .submenu button {
-    width:145px;
-    z-index:555;
-    background-color:#111;
-    font-size:13px;
-    font-weight:normal;
-    border-color:#666;
+    width: 145px;
+    z-index: 555;
+    background-color: #111;
+    font-size: 13px;
+    font-weight: normal;
+    border-color: #666;
 }
 
 #dialog_publicator .element_menu .submenu button {
-    width:145px;
-    z-index:555;
-    background-color:#111;
-    font-size:13px;
-    font-weight:normal;
-    border-color:#666;
+    width: 145px;
+    z-index: 555;
+    background-color: #111;
+    font-size: 13px;
+    font-weight: normal;
+    border-color: #666;
 }
 
 #dialog_publicator .diapo .title {
-    height:16px;
-    overflow:hidden;
+    height: 16px;
+    overflow: hidden;
 }
 
 #ul_main_pub_tabs {
@@ -3800,25 +3502,25 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 #ul_main_pub_tabs li {
-    padding-left:20px;
+    padding-left: 20px;
     background-repeat: no-repeat;
     background-position: 6px center;
 }
 
 #ul_main_pub_tabs li.bridge_Youtube {
-    background-image:url('/skins/icons/youtube-small.gif');
+    background-image: url('/skins/icons/youtube-small.gif');
 }
 
 #ul_main_pub_tabs li.bridge_Dailymotion {
-    background-image:url('/skins/icons/dailymotion-small.gif');
+    background-image: url('/skins/icons/dailymotion-small.gif');
 }
 
 #ul_main_pub_tabs li.bridge_Flickr {
-    background-image:url('/skins/icons/flickr-small.gif');
+    background-image: url('/skins/icons/flickr-small.gif');
 }
 
 #dialog_publicator .diapo .thumb_wrapper {
-    padding:5px;
+    padding: 5px;
 }
 
 #dialog_publicator .duration_time {
@@ -3827,25 +3529,25 @@ dans l'onglet thesaurus : arbres, menus contextuels
     font-weight: bold;
     padding: 2px 4px;
     position: absolute;
-    top:0;
-    left:0;
-    font-size:11px;
+    top: 0;
+    left: 0;
+    font-size: 11px;
 }
 
 #dialog_publicator .ui-tabs-panel .PNB10.container {
-    overflow-x:hidden;
-    overflow-y:auto;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 #dialog_publicator .blockresponse .element {
-    margin:5px 10px;
+    margin: 5px 10px;
 }
 
 #dialog_publicator .element table {
-    border:none;
-    padding:0;
-    margin:0;
-    width:100%;
+    border: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
 }
 
 #dialog_publicator .element table tr {
@@ -3853,34 +3555,35 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 #dialog_publicator .element table .title {
-    color:#0088CC;
-    font-weight:bold;
+    color: #0088CC;
+    font-weight: bold;
 }
 
 #dialog_publicator .element table td.thumbnail {
-    width:140px;
-    text-align:center;
+    width: 140px;
+    text-align: center;
 }
 
 #dialog_publicator .element table td.special {
-    width:80px;
+    width: 80px;
 }
 
 #dialog_publicator .ui-tabs-panel .blockresponse a {
-    color:#0088CC;
+    color: #0088CC;
     text-decoration: none;
 }
 
-#dialog_publicator .element_menu .default_action, .element_menu .trigger {
-    z-index:444;
-    font-size:13px;
-    font-weight:normal;
-    border-color:#666
+#dialog_publicator .element_menu .default_action,
+.element_menu .trigger {
+    z-index: 444;
+    font-size: 13px;
+    font-weight: normal;
+    border-color: #666
 }
 
 #dialog_publicator .submenu {
-    display:none;
-    position:absolute;
+    display: none;
+    position: absolute;
 }
 
 #dialog_publicator .multi_menu .submenu button {
@@ -3893,7 +3596,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 #dialog_publicator .api_content .element {
-    padding:5px;
+    padding: 5px;
 }
 
 #dialog_publicator .api_content .element.odd {
@@ -3915,40 +3618,38 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 .ui-selectable-helper {
-    border:1px dotted #CCCCCC;
-    z-index:10000;
+    border: 1px dotted #CCCCCC;
+    z-index: 10000;
 }
 
 #BasketBrowser .diapo .title {
-    height:16px;
+    height: 16px;
 }
 
+/******* THUMB EXTRACTOR ******************************************************/
 
-
-/** THUMB EXTRACTOR **/
 #thumbExtractor {
-    background-color:#404040;
+    background-color: #404040;
 }
 
 #thumbExtractor .main_title {
-    height:15px;
+    height: 15px;
     font-weight: bold;
-    top:15px
+    top: 15px
 }
 
 #thumbExtractor .part_title_left {
-    height:20px;
-    width:320px;
-    top:30px;
-    left:10px;
+    height: 20px;
+    width: 320px;
+    top: 30px;
+    left: 10px;
 }
 
-
 #thumbExtractor .part_title_right {
-    height:20px;
-    width:320px;
-    top:30px;
-    left:380px;
+    height: 20px;
+    width: 320px;
+    top: 30px;
+    left: 380px;
 }
 
 #thumbExtractor #thumb_info {
@@ -3957,93 +3658,94 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 #thumbExtractor .frame_video {
-    border:1px solid #1A1B1B;
-    height:210px;
-    width:320px;
-    top:50px;
-    left:10px;
+    border: 1px solid #1A1B1B;
+    height: 210px;
+    width: 320px;
+    top: 50px;
+    left: 10px;
 }
 
 #thumbExtractor #thumb_video {
-    height:100%;
-    width:100%;
+    height: 100%;
+    width: 100%;
 }
 
 #thumbExtractor .frame_canva {
-    border:1px solid #1A1B1B;
-    border-bottom:none;
-    height:210px;
-    width:320px;
-    top:50px;
-    left:380px;
-    z-index:2;
-    text-align:center
+    border: 1px solid #1A1B1B;
+    border-bottom: none;
+    height: 210px;
+    width: 320px;
+    top: 50px;
+    left: 380px;
+    z-index: 2;
+    text-align: center
 }
 
 #thumbExtractor .action_bar_left {
-    height:20px;
-    width:320px;
-    left:10px;
-    top:260px;
+    height: 20px;
+    width: 320px;
+    left: 10px;
+    top: 260px;
     background-color: #3B3D3B;
-    border:1px solid #3B3D3B;
-    padding:2px;
+    border: 1px solid #3B3D3B;
+    padding: 2px;
 }
 
 #thumbExtractor .action_bar_right {
-    height:20px;
-    width:320px;
-    top:260px;
-    left:380px;
+    height: 20px;
+    width: 320px;
+    top: 260px;
+    left: 380px;
     background-color: #3B3D3B;
-    border:1px solid #3B3D3B;
+    border: 1px solid #3B3D3B;
     display: table-row;
-    padding:2px;
+    padding: 2px;
 }
 
 #thumbExtractor .action_bar_right .action_icon {
-    padding-right:10px;
+    padding-right: 10px;
     display: table-cell;
     vertical-align: middle
 }
 
 #thumbExtractor .action_bar_right .action_icon:hover {
-    cursor:pointer;
+    cursor: pointer;
 }
 
 #thumbExtractor #thumb_reset_button {
-    width:41px;
-    height:41px;
-    position:absolute;
-    bottom:10px;
-    right:60px;
-    display:none;
+    width: 41px;
+    height: 41px;
+    position: absolute;
+    bottom: 10px;
+    right: 60px;
+    display: none;
 }
 
 #thumbExtractor #thumb_delete_button {
-    width:41px;
-    height:41px;
-    position:absolute;
-    bottom:10px;
-    right:10px;
-    display:none
+    width: 41px;
+    height: 41px;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    display: none
 }
 
-#thumbExtractor #thumb_delete_button, #thumbExtractor #thumb_reset_button {
+#thumbExtractor #thumb_delete_button,
+#thumbExtractor #thumb_reset_button {
     cursor: pointer;
 }
 
 #thumbExtractor #thumb_slider {
-    height:95px;
-    width:320px;
-    top:285px;
-    left:380px;
-    padding:0;
-    overflow:auto;
+    height: 95px;
+    width: 320px;
+    top: 285px;
+    left: 380px;
+    padding: 0;
+    overflow: auto;
 }
 
 #thumbExtractor #thumb_wrapper {
-    white-space:nowrap;
+    white-space: nowrap;
     margin-top: 15px;
 }
 
@@ -4056,25 +3758,25 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 #thumbExtractor #thumb_wrapper img.selected {
-    border:2px solid white;
+    border: 2px solid white;
 }
 
 #thumbExtractor #thumb_camera_button {
-    cursor:pointer;
-    height:50px;
-    width:320px;
-    top:300px;
-    left:10px;
-    text-align:center;
+    cursor: pointer;
+    height: 50px;
+    width: 320px;
+    top: 300px;
+    left: 10px;
+    text-align: center;
 }
 
 #thumbExtractor #thumb_validate_button {
-    cursor:pointer;
-    height:30px;
-    width:80px;
-    top:385px;
-    left:620px;
-    padding:0;
+    cursor: pointer;
+    height: 30px;
+    width: 80px;
+    top: 385px;
+    left: 620px;
+    padding: 0;
 }
 
 #thumbExtractor .action_frame .ui-slider .ui-slider-handle {
@@ -4083,18 +3785,16 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
 #thumb_confirm table {
     table-layout: fixed;
-    width:100%;
+    width: 100%;
 }
 
 #thumb_confirm table td {
     padding: 5px;
-    text-align:center;
-    vertical-align:middle;
+    text-align: center;
+    vertical-align: middle;
 }
 
-
-
-/** UPLOAD MANAGER */
+/******* UPLOAD MANAGER *******************************************************/
 
 #uploadBox {
     height: 100%;
@@ -4172,7 +3872,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
     background-image: -moz-linear-gradient(top, #FFFFFF, #D6D6D6);
     border-color: #D6D6D6 #D6D6D6 #bfbfbf;
     border-bottom-color: #b3b3b3;
-    filter: progid:dximagetransform.microsoft.gradient(startColorstr='#ffffff', endColorstr='#D6D6D6', GradientType=0);
+    filter: progid:dximagetransform.microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#D6D6D6', GradientType=0);
     filter: progid:dximagetransform.microsoft.gradient(enabled=false);
     /*border: 1px solid #666666;*/
     text-shadow: none;
