@@ -772,7 +772,7 @@ class task_period_archive extends task_abstract
                 $n->setAttribute('temperature', 'hot');
             }
         } catch (Exception $e) {
-            
+
         }
 
         return($nnew);
@@ -870,7 +870,7 @@ class task_period_archive extends task_abstract
                 }
             }
         } catch (Exception $e) {
-            
+
         }
 
         return;
@@ -1756,6 +1756,7 @@ class task_period_archive extends task_abstract
         $core = \bootstrap::getCore();
 
         $file = $node->getAttribute('name');
+        $cid = $node->getAttribute('cid');
         $captionFileName = $captionFileNode ? $captionFileNode->getAttribute('name') : NULL;
 
         $rootpath = p4string::delEndSlash(trim((string) ($this->sxTaskSettings->hotfolder)));
