@@ -90,18 +90,12 @@
         {
             "package": "phpexiftool/exiftool",
             "version": "dev-master",
-            "source-reference": "d58d08b134904764da7861f459767b83d3b55072"
+            "source-reference": "999e660215b25a12fd3409df9a31883b6c617570"
         },
         {
             "package": "phpexiftool/phpexiftool",
             "version": "dev-master",
-            "source-reference": "0a458a069b94b68124f6a66a5c9e1c128605177b"
-        },
-        {
-            "package": "pimple/pimple",
-            "version": "dev-master",
-            "alias-pretty-version": "1.0.x-dev",
-            "alias-version": "1.0.9999999.9999999-dev"
+            "source-reference": "a82594313de311c6259fcdb140df1becbffe7830"
         },
         {
             "package": "pimple/pimple",
@@ -128,7 +122,7 @@
         {
             "package": "silex/silex",
             "version": "dev-master",
-            "source-reference": "ca49749039f3b3d2f9df028109c8f83adb607dc9"
+            "source-reference": "4b70fb1a9b498228146ba0f363209b5829f10ca7"
         },
         {
             "package": "swftools/swftools",
