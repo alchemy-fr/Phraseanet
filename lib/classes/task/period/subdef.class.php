@@ -239,7 +239,6 @@ class task_period_subdef extends task_databoxAbstract
         $sql = 'SELECT coll_id, record_id
               FROM record
               WHERE jeton & ' . JETON_MAKE_SUBDEF . ' > 0
-                AND parent_record_id = 0
               ORDER BY record_id DESC LIMIT 0, 20';
 
         $stmt = $connbas->prepare($sql);
