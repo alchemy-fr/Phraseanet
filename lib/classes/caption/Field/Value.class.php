@@ -408,6 +408,8 @@ class caption_Field_Value implements cache_cacheableInterface
         $record->get_caption()->delete_data_from_cache();
         $databox_field->delete_data_from_cache();
 
+        $caption_field_value->delete_data_from_cache();
+        
         return $caption_field_value;
     }
 
@@ -534,7 +536,7 @@ class caption_Field_Value implements cache_cacheableInterface
      */
     public function get_cache_key($option = null)
     {
-        return 'caption_fieldvalue_' . $this->id . '_' . $this->record->get_serialize_key() . ($option ? '_' . $option : '');
+        return 'caption_fieldvalue_' . $this->id . '_' . ($option ? '_' . $option : '');
     }
 
     /**
@@ -575,6 +577,12 @@ class caption_Field_Value implements cache_cacheableInterface
     {
         $databox = $this->record->get_databox();
         $this->value = $this->VocabularyId = $this->VocabularyType = null;
+        
+        try {
+            $this->record->get_caption()->get_field($this->databox_field->get_name())->delete_data_from_cache();
+        } catch (\Exception $e) {
+            
+        }
 
         return $databox->delete_data_from_cache($this->get_cache_key($option));
     }

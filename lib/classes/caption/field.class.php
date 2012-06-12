@@ -463,7 +463,7 @@ class caption_field implements cache_cacheableInterface
      */
     public function get_cache_key($option = null)
     {
-        return 'caption_field_' . $this->record->get_serialize_key() . ($option ? '_' . $option : '');
+        return 'caption_field_' . $this->databox_field->get_id() . '_' . $this->record->get_serialize_key() . ($option ? '_' . $option : '');
     }
 
     /**
