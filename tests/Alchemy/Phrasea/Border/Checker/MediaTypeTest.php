@@ -18,7 +18,7 @@ class MediaTypeTest extends \PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new MediaType(array(MediaType::TYPE_IMAGE));
+        $this->object = new MediaType(array('mediatypes' => array(MediaType::TYPE_IMAGE)));
     }
 
     /**
@@ -32,7 +32,7 @@ class MediaTypeTest extends \PhraseanetPHPUnitAbstract
 
         $this->assertTrue($response->isOk());
 
-        $object = new MediaType(array(MediaType::TYPE_VIDEO, MediaType::TYPE_AUDIO));
+        $object = new MediaType(array('mediatypes' => array(MediaType::TYPE_VIDEO, MediaType::TYPE_AUDIO)));
 
         $media = \MediaVorus\MediaVorus::guess(new \SplFileInfo(__DIR__ . '/../../../../testfiles/test001.CR2'));
         $file = new \Alchemy\Phrasea\Border\File($media, self::$collection);
@@ -47,5 +47,13 @@ class MediaTypeTest extends \PhraseanetPHPUnitAbstract
     public function testGetMessage()
     {
         $this->assertInternalType('string', $this->object->getMessage());
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testContructorInvalidArgumentException()
+    {
+        new MediaType(array(array(MediaType::TYPE_IMAGE)));
     }
 }

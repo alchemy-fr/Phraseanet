@@ -91,7 +91,7 @@ class FilenameTest extends \PhraseanetPHPUnitAbstract
 
         $this->assertFalse($response->isOk());
 
-        $objectSensitive = new Filename(true);
+        $objectSensitive = new Filename(array('sensitive'        => true));
         $responseSensitive = $objectSensitive->check(self::$core['EM'], $mock);
 
         $this->assertTrue($responseSensitive->isOk());

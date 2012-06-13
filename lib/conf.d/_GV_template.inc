@@ -281,13 +281,6 @@ $GV = array(
         'section' => _('GV::section:: Stockage des documents'),
         'vars'    => array(
             array(
-                'type'     => 'string',
-                'name'     => 'GV_appletAllowedFileExt',
-                'comment'  => _('reglages:: extensions de fichier autorisees en upload, separees par des virgules. * pour autoriser tous les fichiers'),
-                'default'  => 'jpg,jpeg,bmp,tif,gif,png,pdf,doc,odt,mpg,mpeg,mov,avi,xls,flv,mp3,mp2',
-                'required' => true
-            ),
-            array(
                 'type'      => 'string',
                 'name'      => 'GV_base_datapath_noweb',
                 'end_slash' => true,

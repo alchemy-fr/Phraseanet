@@ -18,14 +18,22 @@ class Extension implements Checker
 {
     protected $extensions;
 
-    public function __construct(array $extensions)
+    public function __construct(array $options)
     {
-        $this->extensions = array_map('strtolower', $extensions);
+        if ( ! isset($options['extensions'])) {
+            throw new \InvalidArgumentException('Missing "extensions" options');
+        }
+
+        $this->extensions = array_map('strtolower', (array) $options['extensions']);
     }
 
     public function check(EntityManager $em, File $file)
     {
-        $boolean = in_array(strtolower($file->getFile()->getExtension()), $this->extensions);
+        if (0 === count($this->extensions)) { //if empty authorize all extensions
+            $boolean = true;
+        } else {
+            $boolean = in_array(strtolower($file->getFile()->getExtension()), $this->extensions);
+        }
 
         return new Response($boolean, $this);
     }

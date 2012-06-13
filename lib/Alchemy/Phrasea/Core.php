@@ -161,20 +161,12 @@ class Core extends \Pimple
             });
 
         $this['border-manager'] = $this->share(function () use ($core) {
+                $serviceName = $core->getConfiguration()->getBorder();
+                $configuration = $core->getConfiguration()->getService($serviceName);
 
-                /**
-                 * @todo configuration
-                 */
-                $borderManager = new \Alchemy\Phrasea\Border\Manager($core['EM'], $core['monolog']);
+                $service = Core\Service\Builder::create($core, $configuration);
 
-                $borderManager->registerCheckers(
-                    array(
-                        new Border\Checker\Sha256(),
-                        new Border\Checker\UUID(),
-                    )
-                );
-
-                return $borderManager;
+                return $service->getDriver();
             });
 
         $this['file-system'] = $this->share(function () use ($core) {

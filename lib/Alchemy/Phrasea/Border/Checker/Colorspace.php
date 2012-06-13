@@ -18,17 +18,41 @@ class Colorspace implements Checker
 {
     protected $colorspaces;
 
-    public function __construct(array $colorspaces)
+    const COLORSPACE_RGB = 'rgb';
+    const COLORSPACE_CMYK = 'cmyk';
+    const COLORSPACE_GRAYSCALE = 'grayscale';
+
+    public function __construct(array $options)
     {
-        $this->colorspaces = array_map('strtolower', $colorspaces);
+        if ( ! isset($options['colorspaces'])) {
+            throw new \InvalidArgumentException('Missing "colorspaces" options');
+        }
+
+        $this->colorspaces = array_map('strtolower', (array) $options['colorspaces']);
     }
 
     public function check(EntityManager $em, File $file)
     {
         $boolean = false;
 
-        if (method_exists($file->getMedia(), 'getColorSpace')) {
-            $boolean = in_array(strtolower($file->getMedia()->getColorSpace()), $this->colorspaces);
+        if (0 === count($this->colorspaces)) {
+            $boolean = true; //bypass color if empty array
+        } elseif (method_exists($file->getMedia(), 'getColorSpace')) {
+            $colorspace = null;
+            switch ($file->getMedia()->getColorSpace()) {
+                case \MediaVorus\Media\Image::COLORSPACE_CMYK:
+                    $colorspace = self::COLORSPACE_CMYK;
+                    break;
+                case \MediaVorus\Media\Image::COLORSPACE_RGB:
+                case \MediaVorus\Media\Image::COLORSPACE_SRGB:
+                    $colorspace = self::COLORSPACE_RGB;
+                    break;
+                case \MediaVorus\Media\Image::COLORSPACE_GRAYSCALE:
+                    $colorspace = self::COLORSPACE_GRAYSCALE;
+                    break;
+            }
+
+            $boolean = $colorspace !== null && in_array(strtolower($colorspace), $this->colorspaces);
         }
 
         return new Response($boolean, $this);

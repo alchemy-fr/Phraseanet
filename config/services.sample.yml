@@ -125,7 +125,7 @@ Log:
 
 Cache:
   #Define cache services
-  #There are Four deffirent cache type available [array, xcache, apc, memcache]
+  #There are Four different cache type available [array, xcache, apc, memcache]
   #Only a memcache service can take option to define port & host for the memcache server
   array_cache:
     type: Cache\ArrayCache
@@ -141,3 +141,54 @@ Cache:
 
   xcache_cache:
     type: Cache\XcacheCache
+
+Border:
+  #Define Border service
+  #The border service handles checks validation constraints against incoming files
+  border_manager:
+    type: Border\BorderManager
+    options:
+      #Enable validation on incoming files
+      enabled: true
+      checkers:
+          #Check for duplicated file based on their sha256 check sum
+          -
+            type: Checker\Sha256
+            enabled: true
+          #Check for duplicated file based on their UUID
+          -
+            type: Checker\UUID
+            enabled: true
+          #Check colorspace (if applicable)
+          -
+            type: Checker\Colorspace
+            enabled: false
+            options:
+              colorspaces: [cmyk, grayscale, rgb]
+          #Check file dimension (if applicable)
+          -
+            type: Checker\Dimension
+            enabled: false
+            options:
+              width: 80
+              height: 160
+          #Check file extension
+          #set to false to enable all file extensions
+          -
+            type: Checker\Extension
+            enabled: false
+            options:
+              extensions: [jpg, jpeg, bmp, tif, gif, png, pdf, doc, odt, mpg, mpeg, mov, avi, xls, flv, mp3, mp2]
+          #Check filename
+          -
+            type: Checker\Filename
+            enabled: false
+            options:
+              sensitive: true
+          #Check media type
+          #Set to false to enable all mediatype
+          -
+            type: Checker\MediaType
+            enabled: false
+            options:
+              mediatypes: [Audio, Document, Flash, Image, Video]

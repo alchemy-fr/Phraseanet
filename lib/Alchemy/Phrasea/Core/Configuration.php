@@ -334,6 +334,15 @@ class Configuration
     }
 
     /**
+     * Return border service for border-manager
+     * @return string
+     */
+    public function getBorder()
+    {
+        return 'Border\\' . $this->configuration->get('border-manager');
+    }
+
+    /**
      * Return the selected service configuration
      *
      * @param  type         $name

@@ -26,9 +26,13 @@ class Filename implements Checker
      *
      * @param boolean $sensitive Toggle case-sensitive mode, default : false
      */
-    public function __construct($sensitive = false)
+    public function __construct(array $options = array())
     {
-        $this->sensitive = (boolean) $sensitive;
+        if ( ! isset($options['sensitive'])) {
+            $options['sensitive'] = false;
+        }
+
+        $this->sensitive = (boolean) $options['sensitive'];
     }
 
     /**
