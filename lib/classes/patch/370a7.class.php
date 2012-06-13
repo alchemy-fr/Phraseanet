@@ -246,7 +246,7 @@ class patch_370a7 implements patchInterface
             }
 
             if (count($taskstodel) > 0) {
-//                $conn->exec('DELETE FROM task2 WHERE task_id IN(' . implode(',', $taskstodel) . ')');
+                $conn->exec('DELETE FROM task2 WHERE task_id IN(' . implode(',', $taskstodel) . ')');
             }
         }
 
