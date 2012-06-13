@@ -251,10 +251,11 @@ $(document).ready(function () {
                     // Add data to Queue
                     UploaderManager.addData(data);
 
+                    //For IE supporttest if var is undefined
                     var formatedFile = {
-                        size: UploaderManager.Formater.size(file.size),
+                        size: file.size != undefined ? UploaderManager.Formater.size(file.size) : '',
                         name: file.name,
-                        type: file.type,
+                        type: file.type != undefined ? file.type : '',
                         uploadIndex: UploaderManager.getUploadIndex(),
                         language: language
                     }

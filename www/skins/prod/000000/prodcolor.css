@@ -447,7 +447,7 @@ span.ww_winTitle {
     width: 110px;
     height: 30px;
     margin-left: 4px;
-    /*border: 1px solid #515151;*/
+    *border: 1px solid #515151;
     color: #AAAAAA;
     font-weight: bold;
 }
@@ -624,7 +624,7 @@ div.diapo {
     background-image: -o-linear-gradient(top, #444444, #393939);
     background-image: -moz-linear-gradient(top, #444444, #393939);
     background-image: linear-gradient(top, #444444, #393939);
-    /*border: 1px solid #515151;*/
+    *border: 1px solid #515151;
     color: #AAAAAA;
     padding-left: 5px;
 }
@@ -644,7 +644,7 @@ div.diapo {
 #idFrameT .tools .dropdown-menu {
     min-width: 95px;
     background-color: #393939;
-    /*border: 1px solid #515151;*/
+    *border: 1px solid #515151;
 }
 
 #idFrameT .tools .dropdown-menu a {
@@ -666,7 +666,7 @@ div.diapo {
 .dropdown-menu .divider {
     background-color: #515151;
     border-bottom: 1px solid #404040;
-    margin: 3px 1px;
+    margin: 3px 1px 3px 1px;
 }
 
 /******* BASKETS **************************************************************/
@@ -846,7 +846,7 @@ div.diapo {
 }
 
 .diapo.IMGT .thumb_wrapper {
-    padding: 0 15px;
+    padding: 0 11px;
 }
 
 .diapo .bottom {
@@ -947,7 +947,7 @@ form.phrasea_query input.query {
 }
 
 #basket-rename-box .btn-inverse, #reorder_box .btn-inverse {
-    /*border: 1px solid #515151;*/
+    *border: 1px solid #515151;
     color: #AAAAAA;
 }
 
@@ -1279,7 +1279,7 @@ form.phrasea_query input.query {
     background-image: -o-linear-gradient(top, #444444, #393939);
     background-image: -moz-linear-gradient(top, #444444, #393939);
     background-image: linear-gradient(top, #444444, #393939);
-    /*border: 1px solid #515151;*/
+    *border: 1px solid #515151;
     color: #aaaaaa;
 }
 
@@ -1381,8 +1381,8 @@ input.search {
 input, select, textarea {
     margin: 2px;
     padding: 2px;
-    /*border: 1px solid #b1b1b1;
-    background: white;
+    *border: 1px solid #b1b1b1;
+    /*background: white;
     resize: none;*/
     font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
 }
@@ -1429,7 +1429,7 @@ input.btn-mini {
     background-image: -o-linear-gradient(top, #444444, #393939);
     background-image: -moz-linear-gradient(top, #444444, #393939);
     background-image: linear-gradient(top, #444444, #393939);
-    /*border: 1px solid #515151;*/
+    *border: 1px solid #515151;
     color: #AAAAAA;
 }
 
@@ -1463,6 +1463,7 @@ input.btn-mini {
 
 #notification_trigger .counter {
     position: relative;
+    *position: static;
     top: -2px;
     margin: 0 2px;
     padding: 1px 4px;
@@ -1470,6 +1471,7 @@ input.btn-mini {
     background-color: #DA4F49;
     background-repeat: repeat-x;
     border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    *border-color: transparent;
     border-style: solid;
     border-width: 1px;
     border-radius: 4px 4px 4px 4px;
@@ -1585,6 +1587,7 @@ input.btn-mini {
 
 .prevTrainCurrent .doc_infos, .diapo .doc_infos {
     position: absolute;
+    float: left;
     padding: 3px;
     z-index: 97;
 }
@@ -1760,7 +1763,7 @@ H4 {
 
 .sbasglob .btn-inverse,
 #sbasfiltercont .btn-inverse {
-    /*border: 1px solid #515151;*/
+    *border: 1px solid #515151;
     font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 12px;
     font-weight: bold;
@@ -1859,7 +1862,7 @@ H4 {
     background-image: -o-linear-gradient(top, #444444, #393939);
     background-image: -moz-linear-gradient(top, #444444, #393939);
     background-image: linear-gradient(top, #444444, #393939);
-    /*border: 1px solid #515151;*/
+    *border: 1px solid #515151;
     color: #AAAAAA;
 }
 
@@ -2357,7 +2360,7 @@ DIV.thesaurus U.w {
 }
 
 #buttonEditing .btn-inverse {
-    /*border: 1px solid #515151;*/
+    *border: 1px solid #515151;
     color: #AAAAAA;
 }
 
@@ -2462,7 +2465,7 @@ DIV.thesaurus U.w {
     background-image: -o-linear-gradient(top, #444444, #393939);
     background-image: -moz-linear-gradient(top, #444444, #393939);
     background-image: linear-gradient(top, #444444, #393939);
-    /*border: 1px solid #515151;*/
+    *border: 1px solid #515151;
     color: #AAAAAA;
 }
 
@@ -3010,25 +3013,6 @@ dans l'onglet thesaurus : arbres, menus contextuels
     background-color: #404040;
 }
 
-#PushBox .btn-inverse {
-    background-color: #444444;
-    *background-color: #393939;
-    background-image: -ms-linear-gradient(top, #444444, #393939);
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#444444), to(#393939));
-    background-image: -webkit-linear-gradient(top, #444444, #393939);
-    background-image: -o-linear-gradient(top, #444444, #393939);
-    background-image: -moz-linear-gradient(top, #444444, #393939);
-    background-image: linear-gradient(top, #444444, #393939);
-    /*border: 1px solid #515151;*/
-    color: #aaaaaa;
-}
-
-#PushBox .btn-inverse:hover {
-    background-color: #393939;
-    *background-color: #393939;
-    color: #ffffff;
-}
-
 .PushBox .grey-bg .btn {
     font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 12px;
@@ -3039,6 +3023,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
     padding: 4px 10px;
 }
 
+#PushBox .btn-inverse,
 .PushBox .grey-bg .btn-inverse {
     background-color: #444444;
     *background-color: #393939;
@@ -3048,10 +3033,11 @@ dans l'onglet thesaurus : arbres, menus contextuels
     background-image: -o-linear-gradient(top, #444444, #393939);
     background-image: -moz-linear-gradient(top, #444444, #393939);
     background-image: linear-gradient(top, #444444, #393939);
-    /*border: 1px solid #515151;*/
-    color: #aaaaaa;
+    *border: 1px solid #515151;
+    color: #AAAAAA;
 }
 
+#PushBox .btn-inverse:hover,
 .PushBox .grey-bg .btn-inverse:hover {
     background-color: #393939;
     *background-color: #393939;
@@ -3059,7 +3045,8 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 .PushBox .theme-bg .btn,
-#modal_feed form .btn {
+#modal_feed form .btn,
+#QuickAddUser .btn {
     font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 12px;
     font-weight: bold;
@@ -3069,13 +3056,15 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 .PushBox .theme-bg .btn-inverse,
-#modal_feed form .btn-inverse {
-    /*border: 1px solid #515151;*/
+#modal_feed form .btn-inverse,
+#QuickAddUser .btn-inverse {
+    *border: 1px solid #515151;
     color: #AAAAAA;
 }
 
 .PushBox .theme-bg .btn-inverse:hover,
-#modal_feed form .btn-inverse:hover {
+#modal_feed form .btn-inverse:hover,
+#QuickAddUser .btn-inverse:hover {
     color: #FFFFFF;
 }
 
@@ -3108,12 +3097,10 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
 #modal_feed form .feeds .feed.hover {
     background-color: #606060;
-    font-weight: bold;
 }
 
 #modal_feed form .feeds .feed.selected {
-    background-color: #959595;
-    font-weight: bold;
+    background-color: #0088CC;
 }
 
 #modal_feed form .feeds .feed span {
@@ -3154,7 +3141,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
 #answers .feed .btn-inverse {
     margin-left: 4px;
-    /*border: 1px solid #515151;*/
+    *border: 1px solid #515151;
     color: #AAAAAA;
     font-weight: bold;
 }
@@ -3249,6 +3236,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
     text-align: right;
     font-style: italic;
     max-width: 600px;
+    *width: 600px;
     margin-bottom: 20px;
 }
 
@@ -3346,7 +3334,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
     background-image: -o-linear-gradient(top, #444444, #393939);
     background-image: -moz-linear-gradient(top, #444444, #393939);
     background-image: linear-gradient(top, #444444, #393939);
-    /*border: 1px solid #515151;*/
+    *border: 1px solid #515151;
     color: #aaaaaa;
 }
 
@@ -3366,7 +3354,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 #pub_tabs .btn-inverse {
-    /*border: 1px solid #515151;*/
+    *border: 1px solid #515151;
     color: #AAAAAA;
 }
 
@@ -3388,7 +3376,6 @@ dans l'onglet thesaurus : arbres, menus contextuels
 #pub_tabs .container .blockmenu .dropdown-menu {
     background-color: #000000;
     border: 1px solid #404040;
-    z-index: 1000;
 }
 
 #pub_tabs .container .blockmenu .dropdown-menu a {
@@ -3902,7 +3889,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
     border-bottom-color: #b3b3b3;
     filter: progid:dximagetransform.microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#D6D6D6', GradientType=0);
     filter: progid:dximagetransform.microsoft.gradient(enabled=false);
-    /*border: 1px solid #666666;*/
+    *border: 1px solid #666666;
     text-shadow: none;
     color: #777777;
     font-weight: bold;

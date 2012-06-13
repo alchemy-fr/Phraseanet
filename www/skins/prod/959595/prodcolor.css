@@ -462,7 +462,7 @@ span.ww_winTitle {
     border-bottom-color: #b3b3b3;
     filter: progid:dximagetransform.microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#D6D6D6', GradientType=0);
     filter: progid:dximagetransform.microsoft.gradient(enabled=false);
-    /*border: 1px solid #666666;*/
+    *border: 1px solid #666666;
     text-shadow: none;
     color: #777777;
 }
@@ -644,7 +644,7 @@ div.diapo {
     background-image: -o-linear-gradient(top, #B9B9B9, #A4A4A4);
     background-image: -moz-linear-gradient(top, #B9B9B9, #A4A4A4);
     background-image: linear-gradient(top, #B9B9B9, #A4A4A4);
-    /*border: 1px solid #666666;*/
+    *border: 1px solid #666666;
     filter: progid:dximagetransform.microsoft.gradient(startColorstr='#B9B9B9', endColorstr='#A4A4A4', GradientType=0);
     filter: progid:dximagetransform.microsoft.gradient(enabled=false);
     color: #EAEAEA;
@@ -666,7 +666,7 @@ div.diapo {
 #idFrameT .tools .dropdown-menu {
     min-width: 95px;
     background-color: #A4A4A4;
-    /*border: 1px solid #666666;*/
+    *border: 1px solid #666666;
 }
 
 #idFrameT .tools .dropdown-menu a {
@@ -867,7 +867,7 @@ div.diapo {
 }
 
 .diapo.IMGT .thumb_wrapper {
-    padding: 0 15px;
+    padding: 0 11px;
 }
 
 .diapo .bottom {
@@ -980,7 +980,7 @@ form.phrasea_query input.query {
     border-bottom-color: #b3b3b3;
     filter: progid:dximagetransform.microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#D6D6D6', GradientType=0);
     filter: progid:dximagetransform.microsoft.gradient(enabled=false);
-    /*border: 1px solid #666666;*/
+    *border: 1px solid #666666;
     text-shadow: none;
     color: #777777;
 }
@@ -1316,7 +1316,7 @@ form.phrasea_query input.query {
     background-image: -o-linear-gradient(top, #B9B9B9, #A4A4A4);
     background-image: -moz-linear-gradient(top, #B9B9B9, #A4A4A4);
     background-image: linear-gradient(top, #B9B9B9, #A4A4A4);
-    /*border: 1px solid #666666;*/
+    *border: 1px solid #666666;
     filter: progid:dximagetransform.microsoft.gradient(startColorstr='#B9B9B9', endColorstr='#A4A4A4', GradientType=0);
     filter: progid:dximagetransform.microsoft.gradient(enabled=false);
     color: #EAEAEA;
@@ -1420,8 +1420,8 @@ input.search {
 input, select, textarea {
     margin: 2px;
     padding: 2px;
-    /*border: 1px solid #b1b1b1;
-    background: white;
+    *border: 1px solid #b1b1b1;
+    /*background: white;
     resize: none;*/
     font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;}
 
@@ -1468,7 +1468,7 @@ input.btn-mini {
     background-image: -o-linear-gradient(top, #B9B9B9, #A4A4A4);
     background-image: -moz-linear-gradient(top, #B9B9B9, #A4A4A4);
     background-image: linear-gradient(top, #B9B9B9, #A4A4A4);
-    /*border: 1px solid #666666;*/
+    *border: 1px solid #666666;
     filter: progid:dximagetransform.microsoft.gradient(startColorstr='#B9B9B9', endColorstr='#A4A4A4', GradientType=0);
     filter: progid:dximagetransform.microsoft.gradient(enabled=false);
     color: #EAEAEA;
@@ -1504,6 +1504,7 @@ input.btn-mini {
 
 #notification_trigger .counter {
     position: relative;
+    *position: static;
     top: -2px;
     margin: 0 2px;
     padding: 1px 4px;
@@ -1511,6 +1512,7 @@ input.btn-mini {
     background-color: #DA4F49;
     background-repeat: repeat-x;
     border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    *border-color: transparent;
     border-style: solid;
     border-width: 1px;
     border-radius: 4px 4px 4px 4px;
@@ -1626,6 +1628,7 @@ input.btn-mini {
 
 .prevTrainCurrent .doc_infos, .diapo .doc_infos {
     position: absolute;
+    float: left;
     padding: 3px;
     z-index: 97;
 }
@@ -1809,7 +1812,7 @@ H4 {
     background-image: -o-linear-gradient(top, #FFFFFF, #D6D6D6);
     background-image: linear-gradient(top, #FFFFFF, #D6D6D6);
     background-image: -moz-linear-gradient(top, #FFFFFF, #D6D6D6);
-    /*border: 1px solid #666666;*/
+    *border: 1px solid #666666;
     font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 12px;
     font-weight: bold;
@@ -1911,7 +1914,7 @@ H4 {
     background-image: -o-linear-gradient(top, #B9B9B9, #A4A4A4);
     background-image: linear-gradient(top, #B9B9B9, #A4A4A4);
     background-image: -moz-linear-gradient(top, #B9B9B9, #A4A4A4);
-    /*border: 1px solid #666666;*/
+    *border: 1px solid #666666;
     filter: progid:dximagetransform.microsoft.gradient(startColorstr='#B9B9B9', endColorstr='#A4A4A4', GradientType=0);
     filter: progid:dximagetransform.microsoft.gradient(enabled=false);
     color: #EAEAEA;
@@ -2424,7 +2427,7 @@ DIV.thesaurus U.w {
     border-bottom-color: #b3b3b3;
     filter: progid:dximagetransform.microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#D6D6D6', GradientType=0);
     filter: progid:dximagetransform.microsoft.gradient(enabled=false);
-    /*border: 1px solid #666666;*/
+    *border: 1px solid #666666;
     text-shadow: none;
     color: #777777;
 }
@@ -2537,7 +2540,7 @@ DIV.thesaurus U.w {
     border-bottom-color: #b3b3b3;
     filter: progid:dximagetransform.microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#D6D6D6', GradientType=0);
     filter: progid:dximagetransform.microsoft.gradient(enabled=false);
-    /*border: 1px solid #666666;*/
+    *border: 1px solid #666666;
     text-shadow: none;
     color: #777777;
 }
@@ -3053,6 +3056,7 @@ dans l'onglet thesaurus :  arbres, menus contextuels
 #order_manager tr.order_row {
     height: 28px;
 }
+
 #order_manager .order_row.odd {
     background-color: #404040;
 }
@@ -3092,27 +3096,6 @@ dans l'onglet thesaurus :  arbres, menus contextuels
     background-color: #B1B1B1;
 }
 
-#PushBox .btn-inverse {
-    background-color: #B1B1B1;
-    *background-color: #B1B1B1;
-    background-image: -ms-linear-gradient(top, #B9B9B9, #A4A4A4);
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#B9B9B9), to(#A4A4A4));
-    background-image: -webkit-linear-gradient(top, #B9B9B9, #A4A4A4);
-    background-image: -o-linear-gradient(top, #B9B9B9, #A4A4A4);
-    background-image: -moz-linear-gradient(top, #B9B9B9, #A4A4A4);
-    background-image: linear-gradient(top, #B9B9B9, #A4A4A4);
-    /*border: 1px solid #666666;*/
-    filter: progid:dximagetransform.microsoft.gradient(startColorstr='#B9B9B9', endColorstr='#A4A4A4', GradientType=0);
-    filter: progid:dximagetransform.microsoft.gradient(enabled=false);
-    color: #EAEAEA;
-}
-
-#PushBox .btn-inverse:hover {
-    background-color: #A4A4A4;
-    *background-color: #A4A4A4;
-    color: #FFFFFF;
-}
-
 .PushBox .grey-bg .btn {
     font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 12px;
@@ -3123,27 +3106,32 @@ dans l'onglet thesaurus :  arbres, menus contextuels
     padding: 4px 10px;
 }
 
+#PushBox .btn-inverse,
 .PushBox .grey-bg .btn-inverse {
-    background-color: #444444;
-    *background-color: #393939;
-    background-image: -ms-linear-gradient(top, #444444, #393939);
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#444444), to(#393939));
-    background-image: -webkit-linear-gradient(top, #444444, #393939);
-    background-image: -o-linear-gradient(top, #444444, #393939);
-    background-image: -moz-linear-gradient(top, #444444, #393939);
-    background-image: linear-gradient(top, #444444, #393939);
-    /*border: 1px solid #515151;*/
-    color: #aaaaaa;
+    background-color: #B1B1B1;
+    *background-color: #B1B1B1;
+    background-image: -ms-linear-gradient(top, #B9B9B9, #A4A4A4);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#B9B9B9), to(#A4A4A4));
+    background-image: -webkit-linear-gradient(top, #B9B9B9, #A4A4A4);
+    background-image: -o-linear-gradient(top, #B9B9B9, #A4A4A4);
+    background-image: -moz-linear-gradient(top, #B9B9B9, #A4A4A4);
+    background-image: linear-gradient(top, #B9B9B9, #A4A4A4);
+    *border: 1px solid #666666;
+    filter: progid:dximagetransform.microsoft.gradient(startColorstr='#B9B9B9', endColorstr='#A4A4A4', GradientType=0);
+    filter: progid:dximagetransform.microsoft.gradient(enabled=false);
+    color: #EAEAEA;
 }
 
+#PushBox .btn-inverse:hover,
 .PushBox .grey-bg .btn-inverse:hover {
-    background-color: #393939;
-    *background-color: #393939;
+    background-color: #A4A4A4;
+    *background-color: #A4A4A4;
     color: #FFFFFF;
 }
 
 .PushBox .theme-bg .btn,
-#modal_feed form .btn {
+#modal_feed form .btn,
+#QuickAddUser .btn {
     font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 12px;
     font-weight: bold;
@@ -3153,7 +3141,8 @@ dans l'onglet thesaurus :  arbres, menus contextuels
 }
 
 .PushBox .theme-bg .btn-inverse,
-#modal_feed form .btn-inverse {
+#modal_feed form .btn-inverse,
+#QuickAddUser .btn-inverse {
     background-color: #D6D6D6;
     *background-color: #D6D6D6;
     background-image: -ms-linear-gradient(top, #FFFFFF, #D6D6D6);
@@ -3166,13 +3155,14 @@ dans l'onglet thesaurus :  arbres, menus contextuels
     border-bottom-color: #b3b3b3;
     filter: progid:dximagetransform.microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#D6D6D6', GradientType=0);
     filter: progid:dximagetransform.microsoft.gradient(enabled=false);
-    /*border: 1px solid #666666;*/
+    *border: 1px solid #666666;
     text-shadow: none;
     color: #777777;
 }
 
 .PushBox .theme-bg .btn-inverse:hover,
-#modal_feed form .btn-inverse:hover {
+#modal_feed form .btn-inverse:hover,
+#QuickAddUser .btn-inverse:hover {
     background-color: #D6D6D6;
     *background-color: #D6D6D6;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
@@ -3196,25 +3186,25 @@ dans l'onglet thesaurus :  arbres, menus contextuels
     width: 95%;
     height: 18px;
     padding: 5px 0;
-    border: 1px solid #414141;
+    border: 1px solid #959595;
     color: #333333;
     font-size: 13px;
     cursor: pointer;
 }
 
 #modal_feed form .feeds .feed.odd {
-    background-color: #414141;
+    background-color: #959595;
     color: #FFFFFF;
 }
 
 #modal_feed form .feeds .feed.hover {
     background-color: #606060;
-    font-weight: bold;
+    color: #FFFFFF;
 }
 
 #modal_feed form .feeds .feed.selected {
-    background-color: #959595;
-    font-weight: bold;
+    background-color: #0088CC;
+    color: #FFFFFF;
 }
 
 #modal_feed form .feeds .feed span {
@@ -3266,7 +3256,7 @@ dans l'onglet thesaurus :  arbres, menus contextuels
     border-bottom-color: #b3b3b3;
     filter: progid:dximagetransform.microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#D6D6D6', GradientType=0);
     filter: progid:dximagetransform.microsoft.gradient(enabled=false);
-    /*border: 1px solid #666666;*/
+    *border: 1px solid #666666;
     text-shadow: none;
     color: #777777;
     font-weight: bold;
@@ -3365,6 +3355,7 @@ dans l'onglet thesaurus :  arbres, menus contextuels
     text-align: right;
     font-style: italic;
     max-width: 600px;
+    *width: 600px;
     margin-bottom: 20px;
 }
 
@@ -3463,7 +3454,7 @@ dans l'onglet thesaurus :  arbres, menus contextuels
     background-image: -o-linear-gradient(top, #B9B9B9, #A4A4A4);
     background-image: -moz-linear-gradient(top, #B9B9B9, #A4A4A4);
     background-image: linear-gradient(top, #B9B9B9, #A4A4A4);
-    /*border: 1px solid #666666;*/
+    *border: 1px solid #666666;
     filter: progid:dximagetransform.microsoft.gradient(startColorstr='#B9B9B9', endColorstr='#A4A4A4', GradientType=0);
     filter: progid:dximagetransform.microsoft.gradient(enabled=false);
     color: #EAEAEA;
@@ -3497,7 +3488,7 @@ dans l'onglet thesaurus :  arbres, menus contextuels
     border-bottom-color: #b3b3b3;
     filter: progid:dximagetransform.microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#D6D6D6', GradientType=0);
     filter: progid:dximagetransform.microsoft.gradient(enabled=false);
-    /*border: 1px solid #666666;*/
+    *border: 1px solid #666666;
     text-shadow: none;
     color: #777777;
 }
@@ -3523,7 +3514,6 @@ dans l'onglet thesaurus :  arbres, menus contextuels
 #pub_tabs .container .blockmenu .dropdown-menu {
     background-color: #E6E6E6;
     border: 1px solid #D9D9D9;
-    z-index: 1000;
 }
 
 #pub_tabs .container .blockmenu .dropdown-menu a {
@@ -3603,6 +3593,7 @@ dans l'onglet thesaurus :  arbres, menus contextuels
     padding: 0 10px;
     top: 40px;
     overflow: auto;
+    z-index: 1000000000;
 }
 
 #dialog_publicator .api_content .blockmenu {
@@ -4050,7 +4041,7 @@ dans l'onglet thesaurus :  arbres, menus contextuels
     border-bottom-color: #b3b3b3;
     filter: progid:dximagetransform.microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#D6D6D6', GradientType=0);
     filter: progid:dximagetransform.microsoft.gradient(enabled=false);
-    /*border: 1px solid #666666;*/
+    *border: 1px solid #666666;
     text-shadow: none;
     color: #777777;
     font-weight: bold;
