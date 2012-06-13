@@ -19,18 +19,26 @@ class Dimension implements Checker
     protected $width;
     protected $height;
 
-    public function __construct($width, $height = null)
+    public function __construct(array $options)
     {
-        if ($height === null) {
-            $height = $width;
+        if ( ! isset($options['width'])) {
+            throw new \InvalidArgumentException('Missing "width" option');
         }
 
-        if ((int) $height <= 0 || (int) $width <= 0) {
+        if ( ! isset($options['height'])) {
+            $options['height'] = null;
+        }
+
+        if ($options['height'] === null) {
+            $options['height'] = $options['width'];
+        }
+
+        if ((int) $options['height'] <= 0 || (int) $options['width'] <= 0) {
             throw new \InvalidArgumentException('Dimensions should be greater than 0');
         }
 
-        $this->width = $width;
-        $this->height = $height;
+        $this->width = $options['width'];
+        $this->height = $options['height'];
     }
 
     public function check(EntityManager $em, File $file)

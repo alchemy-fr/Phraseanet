@@ -31,32 +31,32 @@ class DimensionTest extends \PhraseanetPHPUnitAbstract
 
         $File = new \Alchemy\Phrasea\Border\File($media, self::$collection);
 
-        $object = new Dimension(800);
+        $object = new Dimension(array('width' => 800));
         $response = $object->check(self::$core['EM'], $File);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertFalse($response->isOk());
 
-        $object = new Dimension(500);
+        $object = new Dimension(array('width' => 500));
         $response = $object->check(self::$core['EM'], $File);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertFalse($response->isOk());
 
-        $object = new Dimension(400);
+        $object = new Dimension(array('width' => 400));
         $response = $object->check(self::$core['EM'], $File);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertTrue($response->isOk());
 
-        $object = new Dimension(600, 500);
+        $object = new Dimension(array('width' => 600, 'height' => 500));
         $response = $object->check(self::$core['EM'], $File);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertFalse($response->isOk());
 
-        $object = new Dimension(600, 400);
+        $object = new Dimension(array('width' => 600, 'height' => 400));
         $response = $object->check(self::$core['EM'], $File);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertTrue($response->isOk());
 
-        $object = new Dimension(200, 200);
+        $object = new Dimension(array('width' => 200, 'height' => 200));
         $response = $object->check(self::$core['EM'], $File);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertTrue($response->isOk());
@@ -72,13 +72,13 @@ class DimensionTest extends \PhraseanetPHPUnitAbstract
 
             try {
                 $width = $height = null;
-                $width = $dimensions[0];
+                $width = $dimensions['width'];
 
-                if (isset($dimensions[1])) {
-                    $height = $dimensions[1];
+                if (isset($dimensions['height'])) {
+                    $height = $dimensions['height'];
                 }
 
-                new Dimension($width, $height);
+                new Dimension(array('width' => $width,'height' => $height));
                 $this->fail(sprintf('Exception raised with dimensions %s and %s', $width, $height));
             } catch (\InvalidArgumentException $e) {
 
@@ -89,15 +89,15 @@ class DimensionTest extends \PhraseanetPHPUnitAbstract
     public function getWrongDimensions()
     {
         return array(
-            array(0),
-            array(-1),
-            array(5, -4),
-            array(5, 'a'),
-            array('a', 5),
-            array('a', 'b'),
-            array('a'),
-            array(0, 35),
-            array(30, 0),
+            array('width' => 0),
+            array('width' => -1),
+            array('width' => 5, 'height' => -4),
+            array('width' => 5, 'height' => 'a'),
+            array('width' => 'a', 'height' => 5),
+            array('width' => 'a', 'height' => 'b'),
+            array('width' => 'a'),
+            array('width' => 0, 'height' => 35),
+            array('width' => 30, 'height' => 0)
         );
     }
 
@@ -107,5 +107,13 @@ class DimensionTest extends \PhraseanetPHPUnitAbstract
     public function testGetMessage()
     {
         $this->assertInternalType('string', Dimension::getMessage());
+    }
+
+     /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testContructorInvalidArgumentException()
+    {
+        new Dimension(array('witdh' => 38));
     }
 }

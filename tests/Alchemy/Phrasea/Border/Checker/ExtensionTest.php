@@ -18,7 +18,7 @@ class ExtensionTest extends \PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new Extension(array('jpg', 'png', 'tiff'));
+        $this->object = new Extension(array('extensions' => array('jpg', 'png', 'tiff')));
     }
 
     /**
@@ -61,5 +61,13 @@ class ExtensionTest extends \PhraseanetPHPUnitAbstract
     public function testGetMessage()
     {
         $this->assertInternalType('string', $this->object->getMessage());
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testContructorInvalidArgumentException()
+    {
+        new Dimension(array(array('jpg', 'png', 'tiff')));
     }
 }
