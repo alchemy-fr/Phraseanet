@@ -30,7 +30,7 @@ class AutoloaderTest extends \PhraseanetPHPUnitAbstract
     }
 
     /**
-     * @covers Alchemy\Phrasea\Loader\Autoloader::getPath
+     * @covers Alchemy\Phrasea\Loader\Autoloader::getPaths
      */
     public function testGetPath()
     {

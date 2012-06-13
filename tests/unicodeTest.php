@@ -9,9 +9,6 @@ class unicodeTest extends PhraseanetPHPUnitAbstract
      */
     protected $object;
 
-    /**
-     * @covers \unicode::__construct
-     */
     public function setUp()
     {
         parent::setUp();
