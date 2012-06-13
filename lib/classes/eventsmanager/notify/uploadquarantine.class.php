@@ -138,8 +138,7 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
             $checkClassName = (string) $reason->checkClassName;
 
             if (class_exists($checkClassName)) {
-                $check = new $checkClassName();
-                $reasons[] = $check->getMessage();
+                $reasons[] = $checkClassName::getMessage();
             }
         }
 
