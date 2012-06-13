@@ -404,7 +404,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $task_manager->getTasks(true);
         $task = $task_manager->getTask($idTask);
-        $this->assertEquals(\task_abstract::STATE_TOSTART, $task->getState());
         $this->assertContains($task->getState(), array(\task_abstract::STATE_TOSTART, \task_abstract::STATE_STARTED));
     }
 
@@ -609,7 +608,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
                 $ref_structure->get_element('idbarbouze');
                 $this->fail('An expected exception has not been raised.');
             } catch (\Exception_Databox_FieldNotFound $e) {
-                
+
             }
 
             $route = '/databoxes/' . $databox_id . '/metadatas/';
@@ -679,7 +678,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     /**
      * @covers \API_V1_adapter::get_databox_terms
      * @covers \API_V1_adapter::list_databox_terms
-     * 
+     *
      */
     public function testDataboxTermsOfUseRoute()
     {
@@ -1132,7 +1131,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
-        $this->client->request('POST', $route, array('name'   => 'un Joli Nom'), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('POST', $route, array('name' => 'un Joli Nom'), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -1205,7 +1204,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
-        $crawler = $this->client->request('POST', $route, array('name'   => 'un Joli Nom'), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $crawler = $this->client->request('POST', $route, array('name' => 'un Joli Nom'), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -1219,7 +1218,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             $this->assertEquals($basket_str['name'], 'un Joli Nom');
         }
 
-        $crawler = $this->client->request('POST', $route, array('name'   => '<i>un Joli Nom<i>'), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $crawler = $this->client->request('POST', $route, array('name' => '<i>un Joli Nom<i>'), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -1235,7 +1234,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             $this->assertEquals($basket_str['name'], 'un Joli Nom');
         }
 
-        $crawler = $this->client->request('POST', $route, array('name'   => '<strong>aéaa'), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $crawler = $this->client->request('POST', $route, array('name' => '<strong>aéaa'), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -1468,7 +1467,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             new \Symfony\Component\HttpFoundation\File\UploadedFile(__FILE__, 'upload.txt'),
         );
 
-        $this->client->request('POST', $route, $this->getAddRecordParameters(), array('file'   => $file),array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('POST', $route, $this->getAddRecordParameters(), array('file' => $file), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponseBadRequest($this->client->getResponse());

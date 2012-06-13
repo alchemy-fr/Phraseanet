@@ -39,6 +39,7 @@ class module_console_fileEnsureProductionSetting extends Command
         , 'checkOrmService'
         , 'checkCacheService'
         , 'checkOpcodeCacheService'
+        , 'checkBorderService'
     );
     protected $errors = 0;
     protected $alerts = 0;
@@ -113,6 +114,9 @@ class module_console_fileEnsureProductionSetting extends Command
                 case 'checkOpcodeCacheService' :
                     $display = "Opcode";
                     break;
+                case 'checkBorderService' :
+                    $display = "Border";
+                    break;
                 default:
                     throw new \Exception('Unknown test');
                     break;
@@ -186,6 +190,32 @@ class module_console_fileEnsureProductionSetting extends Command
 
         $this->printConf($output, "\t" . 'service', $cache, false, $verification);
         $this->verifyCacheOptions($output, $cache);
+    }
+
+    private function checkBorderService(OutputInterface $output)
+    {
+        $serviceName = $this->configuration->getBorder();
+        $configuration = $this->configuration->getService($serviceName);
+
+        $listChecks = false;
+        try {
+            $service = Core\Service\Builder::create(\bootstrap::getCore(), $configuration);
+            $work_message = '<info>Works !</info>';
+            $listChecks = true;
+        } catch (\Exception $e) {
+            $work_message = '<error>Failed - could not load Border Manager service !</error>';
+            $this->errors ++;
+        }
+
+        $output->writeln(sprintf("\t--> Verify Border Manager<info>%s</info> : %s", $serviceName, $work_message));
+
+        if ($listChecks) {
+            $borderManager = $service->getDriver();
+
+            foreach ($service->getUnregisteredCheckers() as $check) {
+                $output->writeln(sprintf("\t\t--> <comment>check %s could not be loaded for the following reason %s</comment>", $check['checker'], $check['message']));
+            }
+        }
     }
 
     private function checkPhraseanetScope(OutputInterface $output)

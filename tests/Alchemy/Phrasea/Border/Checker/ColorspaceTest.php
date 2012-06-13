@@ -18,7 +18,7 @@ class ColorspaceTest extends \PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new Colorspace(array('RGB', 'cmyk'));
+        $this->object = new Colorspace(array('colorspaces' => array('RGB', 'cmyk')));
     }
 
     /**
@@ -48,5 +48,13 @@ class ColorspaceTest extends \PhraseanetPHPUnitAbstract
     public function testGetMessage()
     {
         $this->assertInternalType('string', $this->object->getMessage());
+    }
+
+     /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testContructorInvalidArgumentException()
+    {
+        new Colorspace(array(array('RGB', 'cmyk')));
     }
 }

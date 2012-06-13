@@ -24,14 +24,22 @@ class MediaType implements Checker
     const TYPE_IMAGE = \MediaVorus\Media\Media::TYPE_IMAGE;
     const TYPE_VIDEO = \MediaVorus\Media\Media::TYPE_VIDEO;
 
-    public function __construct(array $mediaTypes)
+    public function __construct(array $options)
     {
-        $this->mediaTypes = $mediaTypes;
+        if ( ! isset($options['mediatypes'])) {
+            throw new \InvalidArgumentException('Missing "mediatypes" options');
+        }
+
+        $this->mediaTypes = (array) $options['mediatypes'];
     }
 
     public function check(EntityManager $em, File $file)
     {
-        $boolean = in_array($file->getMedia()->getType(), $this->mediaTypes);
+        if (0 === count($this->mediaTypes)) { //if empty authorize all mediative
+            $boolean = true;
+        } else {
+            $boolean = in_array($file->getMedia()->getType(), $this->mediaTypes);
+        }
 
         return new Response($boolean, $this);
     }
