@@ -577,6 +577,7 @@ class caption_Field_Value implements cache_cacheableInterface
     {
         $databox = $this->record->get_databox();
         $this->value = $this->VocabularyId = $this->VocabularyType = null;
+        $this->record->delete_data_from_cache(record_adapter::CACHE_TITLE);
         
         try {
             $this->record->get_caption()->get_field($this->databox_field->get_name())->delete_data_from_cache();

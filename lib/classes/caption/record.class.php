@@ -249,9 +249,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
     {
         $fields = array();
 
-        foreach ($this->get_fields(array(), $includeBusiness) as $meta_struct_id => $field) {
-            if (is_array($grep_fields) && ! in_array($field->get_name(), $grep_fields))
-                continue;
+        foreach ($this->get_fields($grep_fields, $includeBusiness) as $meta_struct_id => $field) {
 
             $value = preg_replace(
                 "(([^']{1})((https?|file):((/{2,4})|(\\{2,4}))[\w:#%/;$()~_?/\-=\\\.&]*)([^']{1}))"

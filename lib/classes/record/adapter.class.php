@@ -138,6 +138,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     const CACHE_ORIGINAL_NAME = 'originalname';
     const CACHE_TECHNICAL_DATAS = 'technical_datas';
     const CACHE_MIME = 'mime';
+    const CACHE_TITLE = 'title';
     const CACHE_SHA256 = 'sha256';
     const CACHE_SUBDEFS = 'subdefs';
     const CACHE_GROUPING = 'grouping';
@@ -180,7 +181,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
             return $this;
         } catch (Exception $e) {
-
+            
         }
 
         $connbas = $this->databox->get_connection();
@@ -504,7 +505,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         try {
             return $this->get_subdef('thumbnailGIF');
         } catch (Exception $e) {
-
+            
         }
 
         return null;
@@ -550,7 +551,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         try {
             return $this->get_data_from_cache(self::CACHE_STATUS);
         } catch (Exception $e) {
-
+            
         }
         $sql = 'SELECT BIN(status) as status FROM record
               WHERE record_id = :record_id';
@@ -590,7 +591,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $name = strtolower($name);
 
         if ( ! in_array($name, $this->get_available_subdefs())) {
-            throw new Exception_Media_SubdefNotFound (sprintf("subdef `%s` not found", $name));
+            throw new Exception_Media_SubdefNotFound(sprintf("subdef `%s` not found", $name));
         }
 
         if (isset($this->subdefs[$name])) {
@@ -694,7 +695,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         try {
             return $this->get_data_from_cache(self::CACHE_SUBDEFS);
         } catch (Exception $e) {
-
+            
         }
 
         $connbas = $this->get_databox()->get_connection();
@@ -857,6 +858,16 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      */
     public function get_title($highlight = false, searchEngine_adapter $searchEngine = null, $removeExtension = null)
     {
+        $cache = ! $highlight && ! $searchEngine && ! $removeExtension;
+
+        if ($cache) {
+            try {
+                return $this->get_data_from_cache(self::CACHE_TITLE);
+            } catch (\Exception $e) {
+                
+            }
+        }
+
         $title = '';
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $session = $appbox->get_session();
@@ -887,6 +898,10 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         }
 
         $title = $title != "" ? $title : _('reponses::document sans titre');
+
+        if ($cache) {
+            $this->set_data_from_cache(self::CACHE_TITLE, $title);
+        }
 
         return $title;
     }
@@ -1216,7 +1231,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 $sphinx->update_status(array("metadatas" . $sbas_crc, "metadatas" . $sbas_crc . "_stemmed_en", "metadatas" . $sbas_crc . "_stemmed_fr", "documents" . $sbas_crc), $this->get_sbas_id(), $this->get_record_id(), strrev($status));
             }
         } catch (Exception $e) {
-
+            
         }
         $this->delete_data_from_cache(self::CACHE_STATUS);
 
@@ -1880,7 +1895,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             try {
                 $subdef->rotate($angle);
             } catch (\Exception $e) {
-
+                
             }
         }
 
