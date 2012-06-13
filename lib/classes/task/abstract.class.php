@@ -97,7 +97,8 @@ abstract class task_abstract
     protected $taskid = NULL;
     protected $system = '';  // "DARWIN", "WINDOWS" , "LINUX"...
     protected $argt = array(
-        "--help" => array("set"    => false, "values" => array(), "usage" => " (no help available)")
+        "--help" => array(
+            'set'    => false, "values" => array(), "usage" => " (no help available)")
     );
 
     /**
@@ -107,51 +108,45 @@ abstract class task_abstract
      */
     public function getState()
     {
+        static $stmt = NULL;
         $conn = connection::getPDOConnection();
-        $sql = 'SELECT status FROM task2 WHERE task_id = :taskid';
-        $stmt = $conn->prepare($sql);
+        if ( ! $stmt) {
+            $sql = 'SELECT status FROM task2 WHERE task_id = :taskid';
+            $stmt = $conn->prepare($sql);
+        }
         $stmt->execute(array(':taskid' => $this->taskid));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
         if ( ! $row) {
             throw new Exception('Unknown task id');
         }
-
+        unset($conn);
         return $row['status'];
     }
 
     /**
-     * to be overwritten by tasks : echo text to be included in <head> in task interface
+     * to be overwritten by tasks : ECHO text to be included in <head> in task interface
      */
     public function printInterfaceHEAD()
     {
-        return false;
+
     }
 
     /**
-     * to be overwritten by tasks : echo javascript to be included in <head> in task interface
+     * to be overwritten by tasks : ECHO javascript to be included in <head> in task interface
      */
     public function printInterfaceJS()
     {
-        return false;
+
     }
 
     /**
      *
      * @return boolean
      */
-    public function printInterfaceHTML()
+    public function hasInterfaceHTML()
     {
-        return false;
-    }
-
-    /**
-     *
-     * @return boolean
-     */
-    public function getGraphicForm()
-    {
-        return false;
+        return method_exists($this, "getInterfaceHTML");
     }
 
     /**
@@ -163,12 +158,12 @@ abstract class task_abstract
     public function setState($status)
     {
         $av_status = array(
-            self::STATE_STARTED
-            , self::STATE_TOSTOP
-            , self::STATE_STOPPED
-            , self::STATE_TORESTART
-            , self::STATE_TOSTART
-            , self::STATE_TODELETE
+            self::STATE_STARTED,
+            self::STATE_TOSTOP,
+            self::STATE_STOPPED,
+            self::STATE_TORESTART,
+            self::STATE_TOSTART,
+            self::STATE_TODELETE
         );
 
         if ( ! in_array($status, $av_status)) {
@@ -184,21 +179,30 @@ abstract class task_abstract
         $this->log(sprintf("task %d <- %s", $this->getID(), $status));
     }
 
-    // 'active' means 'auto-start when scheduler starts'
-    public function setActive($boolean)
+    /**
+     *
+     * @param boolean $active   'active' means 'auto-start when scheduler starts'
+     * @return \task_abstract
+     */
+    public function setActive($active)
     {
         $conn = connection::getPDOConnection();
 
         $sql = 'UPDATE task2 SET active = :active WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':active' => ($boolean ? '1' : '0'), ':taskid' => $this->getID()));
+        $stmt->execute(array(':active' => ($active ? '1' : '0'), ':taskid' => $this->getID()));
         $stmt->closeCursor();
 
-        $this->active = ! ! $boolean;
+        $this->active = ! ! $active;
 
         return $this;
     }
 
+    /**
+     *
+     * @param string $title
+     * @return \task_abstract
+     */
     public function setTitle($title)
     {
         $title = strip_tags($title);
@@ -214,6 +218,12 @@ abstract class task_abstract
         return $this;
     }
 
+    /**
+     *
+     * @param string $settings  xml settings as STRING
+     * @throws Exception_InvalidArgument    if not proper xml
+     * @return \task_abstract
+     */
     public function setSettings($settings)
     {
         if (@simplexml_load_string($settings) === FALSE) {
@@ -230,8 +240,14 @@ abstract class task_abstract
         $this->settings = $settings;
 
         $this->loadSettings(simplexml_load_string($settings));
+
+        return $this;
     }
 
+    /**
+     *
+     * @return \task_abstract
+     */
     public function resetCrashCounter()
     {
         $conn = connection::getPDOConnection();
@@ -246,11 +262,19 @@ abstract class task_abstract
         return $this;
     }
 
+    /**
+     *
+     * @return int
+     */
     public function getCrashCounter()
     {
         return $this->crash_counter;
     }
 
+    /**
+     *
+     * @return int
+     */
     public function incrementCrashCounter()
     {
         $conn = connection::getPDOConnection();
@@ -260,20 +284,33 @@ abstract class task_abstract
         $stmt->execute(array(':taskid' => $this->getID()));
         $stmt->closeCursor();
 
-        return $this->crash_counter ++;
+        return ++ $this->crash_counter;
     }
 
+    /**
+     *
+     * @return string
+     */
     public function getSettings()
     {
         return $this->settings;
     }
 
-    // 'active' means 'auto-start when scheduler starts'
+    /**
+     * 'active' means 'auto-start when scheduler starts'
+     *
+     * @return boolean
+     *
+     */
     public function isActive()
     {
         return $this->active;
     }
 
+    /**
+     *
+     * @return int
+     */
     public function getCompletedPercentage()
     {
         return $this->completed_percentage;
@@ -303,7 +340,7 @@ abstract class task_abstract
 
             $this->running = false;
 
-            return('');
+            return '';
         }
         $sql = 'SELECT crashed, pid, status, active, settings, name, completed, runner
               FROM task2 WHERE task_id = :taskid';
@@ -319,15 +356,30 @@ abstract class task_abstract
         $this->active = ! ! $row['active'];
         $this->settings = $row['settings'];
         $this->runner = $row['runner'];
-        $this->completed_percentage = (integer) $row['completed'];
-        $this->loadSettings(simplexml_load_string($row['settings']));
+        $this->completed_percentage = (int) $row['completed'];
+        $this->settings = $row['settings'];
+
+        $sx = @simplexml_load_string($this->settings);
+        if ($sx) {
+            $this->loadSettings($sx);
+        }
     }
 
+    /**
+     *
+     * @return enum (self::RUNNER_MANUAL or self::RUNNER_SCHEDULER)
+     */
     public function getRunner()
     {
         return $this->runner;
     }
 
+    /**
+     *
+     * @param enum $runner (self::RUNNER_MANUAL or self::RUNNER_SCHEDULER)
+     * @throws Exception_InvalidArgument
+     * @return \task_abstract
+     */
     public function setRunner($runner)
     {
         if ($runner != self::RUNNER_MANUAL && $runner != self::RUNNER_SCHEDULER) {
@@ -347,13 +399,22 @@ abstract class task_abstract
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
+
+        return $this;
     }
 
+    /**
+     *
+     * @return string
+     */
     public function getTitle()
     {
         return $this->title;
     }
 
+    /**
+     *
+     */
     public function delete()
     {
         if ( ! $this->getPID()) { // do not delete a running task
@@ -369,6 +430,9 @@ abstract class task_abstract
         }
     }
 
+    /**
+     * set last execution time to now()
+     */
     public function setLastExecTime()
     {
         $conn = connection::getPDOConnection();
@@ -380,7 +444,7 @@ abstract class task_abstract
 
     /**
      * Return the last time the task was executed
-     * 
+     *
      * @return null|\DateTime
      */
     public function getLastExecTime()
@@ -397,10 +461,16 @@ abstract class task_abstract
         if ($row['last_exec_time'] != '0000-00-00 00:00:00') {
             $time = new \DateTime($row['last_exec_time']);
         }
-        
+
         return $time;
     }
 
+    /**
+     *
+     * @return null|integer
+     * pid (int) of the task
+     * NULL : the pid file is not locked (task no running)
+     */
     public function getPID()
     {
         $pid = NULL;
@@ -421,6 +491,11 @@ abstract class task_abstract
         return $pid;
     }
 
+    /**
+     * set to false to ask the task to quit its loop
+     * @param boolean $stat
+     *
+     */
     public function setRunning($stat)
     {
         $this->running = $stat;
@@ -445,6 +520,12 @@ abstract class task_abstract
         }
     }
 
+    /**
+     * sleep n seconds
+     *
+     * @param int $nsec
+     * @throws \InvalidArgumentException
+     */
     protected function sleep($nsec)
     {
         $nsec = (integer) $nsec;
@@ -455,16 +536,25 @@ abstract class task_abstract
         }
     }
 
+    /**
+     *
+     * @return string   fullpath to the pid file for the task
+     */
     private function getLockfilePath()
     {
         $core = \bootstrap::getCore();
 
         $lockdir = $core->getRegistry()->get('GV_RootPath') . 'tmp/locks/';
-        $lockfile = ($lockdir . 'task_' . $this->getID() . '.lock');
+        $lockfilePath = ($lockdir . 'task_' . $this->getID() . '.lock');
 
-        return($lockfile);
+        return $lockfilePath;
     }
 
+    /**
+     *
+     * @return resource file descriptor of the OPENED pid file
+     * @throws Exception    if file is already locked (task running)
+     */
     private function lockTask()
     {
         $lockfile = $this->getLockfilePath();
@@ -504,7 +594,11 @@ abstract class task_abstract
         try {
             $this->run2();
         } catch (\Exception $exception) {
-            
+
+        }
+
+        if ($this->getState() === self::STATE_STARTED && $this->runner === self::RUNNER_MANUAL) {
+            $this->setState(self::STATE_STOPPED);
         }
 
         // in any case, exception or not, the task is ending so unlock the pid file
@@ -516,7 +610,11 @@ abstract class task_abstract
         }
     }
 
-    public function unlockTask($lockFD)
+    /**
+     *
+     * @param resource $lockFD  file descriptor of the OPENED lock file
+     */
+    private function unlockTask($lockFD)
     {
         flock($lockFD, LOCK_UN | LOCK_NB);
         ftruncate($lockFD, 0);
@@ -563,9 +661,11 @@ abstract class task_abstract
             // post-process
             $this->postProcessOneContent($box, $row);
 
+            $rowsdone ++;
+
             $current_memory = memory_get_usage();
             if ($current_memory >> 20 >= $this->maxmegs) {
-                $this->log(sprintf("Max memory (%s M) reached (actual is %s M)", $this->maxmegs, $current_memory));
+                $this->log(sprintf("Max memory (%s M) reached (actual is %.02f M)", $this->maxmegs, ($current_memory >> 10) / 1024));
                 $this->running = FALSE;
                 $ret = self::STATE_MAXMEGSREACHED;
             }
@@ -577,8 +677,7 @@ abstract class task_abstract
             }
 
             try {
-                $status = $this->getState();
-                if ($status == self::STATE_TOSTOP) {
+                if ($this->getState() == self::STATE_TOSTOP) {
                     $this->running = FALSE;
                     $ret = self::STATE_TOSTOP;
                 }
@@ -592,11 +691,11 @@ abstract class task_abstract
         }
         //
         // if nothing was done, at least check the status
-        if (count($rs) == 0 && $this->running) {
+        if ($rowsdone == 0 && $this->running) {
 
             $current_memory = memory_get_usage();
             if ($current_memory >> 20 >= $this->maxmegs) {
-                $this->log(sprintf("Max memory (%s M) reached (current is %s M)", $this->maxmegs, $current_memory));
+                $this->log(sprintf("Max memory (%s M) reached (current is %.02f M)", $this->maxmegs, ($current_memory >> 10) / 1024));
                 $this->running = FALSE;
                 $ret = self::STATE_MAXMEGSREACHED;
             }
@@ -689,8 +788,8 @@ abstract class task_abstract
     /**
      *
      * @param  appbox        $appbox
-     * @param  type          $class_name
-     * @param  type          $settings
+     * @param  string        $class_name
+     * @param  string        $settings  (xml string)
      * @return task_abstract
      */
     public static function create(appbox $appbox, $class_name, $settings = null)
@@ -738,14 +837,24 @@ abstract class task_abstract
             $t .= "\t" . $n . $v["usage"] . "\n";
         }
 
-        return($t);
+        return $t;
     }
 
+    /**
+     *
+     * @return int  id of the task
+     */
     public function getID()
     {
         return $this->taskid;
     }
 
+    /**
+     *
+     * @param int $done
+     * @param int $todo
+     * @return \task_abstract
+     */
     public function setProgress($done, $todo)
     {
         $p = ($todo > 0) ? ((100 * $done) / $todo) : -1;
@@ -754,11 +863,14 @@ abstract class task_abstract
             $conn = connection::getPDOConnection();
             $sql = 'UPDATE task2 SET completed = :p WHERE task_id = :taskid';
             $stmt = $conn->prepare($sql);
-            $stmt->execute(array(':p'      => $p, ':taskid' => $this->getID()));
+            $stmt->execute(array(
+                ':p'      => $p,
+                ':taskid' => $this->getID()
+            ));
             $stmt->closeCursor();
             $this->completed_percentage = $p;
         } catch (Exception $e) {
-            
+
         }
 
         return $this;

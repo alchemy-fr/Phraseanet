@@ -212,47 +212,38 @@ class task_period_archive extends task_abstract
     }
 
     /**
-     *
-     * @return string
-     */
-    public function getGraphicForm()
-    {
-        return true;
-    }
-
-    /**
-     *  printInterfaceHTML(..) : generer l'interface 'graphic view'
+     *  getInterfaceHTML(..) : retourner l'interface 'graphic view'
      *
      * @return Void
      */
-    public function printInterfaceHTML()
+    public function getInterfaceHTML()
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
 
         ob_start();
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
-        <?php echo _('task::archive:archivage sur base/collection/') ?> :
+            <?php echo _('task::archive:archivage sur base/collection/') ?> :
 
             <select onchange="chgxmlpopup(this, 'base_id');" name="base_id">
                 <option value="">...</option>
-        <?php
-        foreach ($appbox->get_databoxes() as $databox) {
-            foreach ($databox->get_collections() as $collection) {
-                print("<option value=\"" . $collection->get_base_id() . "\">" . $databox->get_viewname() . " / " . $collection->get_name() . "</option>");
-            }
-        }
-        ?>
+                <?php
+                foreach ($appbox->get_databoxes() as $databox) {
+                    foreach ($databox->get_collections() as $collection) {
+                        print("<option value=\"" . $collection->get_base_id() . "\">" . $databox->get_viewname() . " / " . $collection->get_name() . "</option>");
+                    }
+                }
+                ?>
             </select>
             <br/>
             <br/>
-        <?php echo _('task::_common_:hotfolder') ?>
+            <?php echo _('task::_common_:hotfolder') ?>
             <input type="text" name="hotfolder" style="width:400px;" onchange="chgxmltxt(this, 'hotfolder');" value=""><br/>
             <br/>
-        <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
+            <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
             <input type="text" name="period" style="width:40px;" onchange="chgxmltxt(this, 'period');" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
             <br/>
-        <?php echo _('task::archive:delai de \'repos\' avant traitement') ?>&nbsp;:&nbsp;
+            <?php echo _('task::archive:delai de \'repos\' avant traitement') ?>&nbsp;:&nbsp;
             <input type="text" name="cold" style="width:40px;" onchange="chgxmltxt(this, 'cold');" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
             <br/>
             <input type="checkbox" name="move_archived" onchange="chgxmlck(this, 'move_archived');">&nbsp;<?php echo _('task::archive:deplacer les fichiers archives dans _archived') ?>
@@ -264,9 +255,7 @@ class task_period_archive extends task_abstract
             <input type="checkbox" name="delfolder" onchange="chgxmlck(this, 'delfolder');">&nbsp;<?php echo _('task::archive:supprimer les repertoires apres archivage') ?><br/>
         </form>
         <?php
-        $out = ob_get_clean();
-
-        return $out;
+        return ob_get_clean();
     }
 
     /**
@@ -409,7 +398,9 @@ class task_period_archive extends task_abstract
 
                         for ($t = 60 * 10; $this->running && $t; $t -- ) // DON'T do sleep(600) because it prevents ticks !
                             sleep(1);
-                        $this->setState(self::STATE_TORESTART);
+                        if ($this->getState() === self::STATE_STARTED) {
+                            $this->setState(self::STATE_TORESTART);
+                        }
                     } else {
                         $this->log(sprintf(('Error : missing hotfolder \'%s\', stopping.'), $path_in));
                         // runner = manual : can't restart so simply quit
@@ -445,7 +436,9 @@ class task_period_archive extends task_abstract
 
                         $this->sleep(60 * 10);
 
-                        $this->setState(self::STATE_TORESTART);
+                        if ($this->getState() === self::STATE_STARTED) {
+                            $this->setState(self::STATE_TORESTART);
+                        }
                     } else {
                         $this->log(sprintf(('Error : error fetching task \'%d\', stopping.'), $this->getID()));
                         // runner = manual : can't restart so simply quit
@@ -779,7 +772,7 @@ class task_period_archive extends task_abstract
                 $n->setAttribute('temperature', 'hot');
             }
         } catch (Exception $e) {
-            
+
         }
 
         return($nnew);
@@ -877,7 +870,7 @@ class task_period_archive extends task_abstract
                 }
             }
         } catch (Exception $e) {
-            
+
         }
 
         return;
@@ -1763,6 +1756,7 @@ class task_period_archive extends task_abstract
         $core = \bootstrap::getCore();
 
         $file = $node->getAttribute('name');
+        $cid = $node->getAttribute('cid');
         $captionFileName = $captionFileNode ? $captionFileNode->getAttribute('name') : NULL;
 
         $rootpath = p4string::delEndSlash(trim((string) ($this->sxTaskSettings->hotfolder)));

@@ -154,7 +154,6 @@ class task_period_outofdate extends task_abstract
                 parent.calcSQL();
             </script>
             <?php
-
             return("");
         } else { // ... so we NEVER come here
             // bad xml
@@ -306,18 +305,9 @@ class task_period_outofdate extends task_abstract
     }
 
     // ====================================================================
-    // callback : must return the name graphic form to submit
-    // if not implemented, assume 'graphicForm'
+    // getInterfaceHTML(..) : retourner l'interface 'graphic view' !! EN UTF-8 !!
     // ====================================================================
-    public function getGraphicForm()
-    {
-        return true;
-    }
-
-    // ====================================================================
-    // printInterfaceHTML(..) : generer l'interface 'graphic view' !! EN UTF-8 !!
-    // ====================================================================
-    public function printInterfaceHTML()
+    public function getInterfaceHTML()
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $session = $appbox->get_session();
@@ -417,9 +407,7 @@ class task_period_outofdate extends task_abstract
             <div style="margin:10px; padding:5px; border:1px #000000 solid; background-color:#404040" id="cmd">cmd</div>
         </center>
         <?php
-        $out = ob_get_clean();
-
-        return $out;
+        return ob_get_clean();
     }
     // ====================================================================
     // $argt : command line args specifics to this task (optional)

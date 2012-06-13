@@ -76,22 +76,10 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
     }
 
     /**
-     * @covers task_period_archive::getGraphicForm
-     * @todo Implement testGetGraphicForm().
+     * @covers task_period_archive::getInterfaceHTML
+     * @todo Implement testGetInterfaceHTML().
      */
-    public function testGetGraphicForm()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers task_period_archive::printInterfaceHTML
-     * @todo Implement testPrintInterfaceHTML().
-     */
-    public function testPrintInterfaceHTML()
+    public function testGetInterfaceHTML()
     {
         // Remove the following lines when you implement this test.
         $this->markTestIncomplete(

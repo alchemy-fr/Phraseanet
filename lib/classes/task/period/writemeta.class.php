@@ -170,12 +170,7 @@ class task_period_writemeta extends task_databoxAbstract
         <?php
     }
 
-    public function getGraphicForm()
-    {
-        return true;
-    }
-
-    public function printInterfaceHTML()
+    public function getInterfaceHTML()
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $session = $appbox->get_session();
@@ -204,9 +199,8 @@ class task_period_writemeta extends task_databoxAbstract
             </form>
             <?php
         }
-        $out = ob_get_clean();
 
-        return $out;
+        return ob_get_clean();
     }
 
     protected function retrieveSbasContent(databox $databox)

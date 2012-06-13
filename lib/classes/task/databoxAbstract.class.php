@@ -85,7 +85,7 @@ abstract class task_databoxAbstract extends task_abstract
 
                 try {
                     // get the records to process
-                    $databox = databox::get_instance((int)$row['sbas_id']);
+                    $databox = databox::get_instance((int) $row['sbas_id']);
                 } catch (Exception $e) {
                     $this->log(sprintf('Warning : can\' connect to sbas(%s)', $row['sbas_id']));
                     continue;
@@ -126,16 +126,16 @@ abstract class task_databoxAbstract extends task_abstract
                         // DO NOT SUICIDE IN THE LOOP, may have to work on other sbas !!!
                         $task_must_delete = TRUE;
                         break;
-
-                    case self::STATE_OK:
-                        break;
                 }
 
                 $this->flushRecordsSbas();
             }
 
             $this->incrementLoops();
-            $this->pause($duration);
+
+            if ($this->running) {
+                $this->pause($duration);
+            }
         }
 
         if ($task_must_delete) {
@@ -160,7 +160,6 @@ abstract class task_databoxAbstract extends task_abstract
 
             // process the records
             $ret = $this->processLoop($databox, $rs);
-
         } catch (Exception $e) {
             $this->log('Error  : ' . $e->getMessage());
         }

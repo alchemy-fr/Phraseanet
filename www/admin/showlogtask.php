@@ -21,7 +21,7 @@ $appbox = appbox::get_instance($Core);
 $session = $appbox->get_session();
 
 $request = http_request::getInstance();
-$parm = $request->get_parms('fil', 'id', 'act');
+$parm = $request->get_parms('fil', 'id', 'clr');
 ?>
 <html lang="<?php echo($session->get_I18n()); ?>">
     <head>
@@ -41,14 +41,15 @@ $parm = $request->get_parms('fil', 'id', 'act');
 
         $name = str_replace('..', '', $parm['fil']);
 
+        $rname = $name;
         if ($parm['id']) {
-            $name .= '_' . $parm['id'];
+            $rname .= '_' . $parm['id'];
         }
-        $name .= '*.log';
+        $rname = '/' . $rname . '((\.log)|(-.*\.log))$/';
 
         $finder = new Finder();
         $finder
-            ->files()->name($name . '*')
+            ->files()->name($rname)
             ->in($logdir)
             ->date('> now - 1 days')
             ->sortByModifiedTime()
@@ -58,16 +59,22 @@ $parm = $request->get_parms('fil', 'id', 'act');
 
         $found = false;
         foreach ($finder->getIterator() as $file) {
-            if ($parm['act'] == 'CLR') {
+            if ($parm['clr'] == $file->getFilename()) {
                 file_put_contents($file->getRealPath(), '');
+                $found = true;
+            }
+        }
+        if ($found) {
+            return phrasea::redirect(sprintf("/admin/showlogtask.php?fil=%s&id=%s"
+                        , urlencode($parm['fil'])
+                        , urlencode($parm['id']))
+            );
+        }
 
-                return phrasea::redirect(sprintf("/admin/showlogtask.php?fil=%s&id=%s"
-                            , urlencode($parm['fil'])
-                            , urlencode($parm['id']))
-                );
-            } else {
+        $found = false;
+        foreach ($finder->getIterator() as $file) { {
                 printf("<h4>%s\n", $file->getRealPath());
-                printf("&nbsp;<a href=\"/admin/showlogtask.php?fil=%s&id=%s&act=CLR\">" . _('Clear') . "</a>"
+                printf("&nbsp;<a href=\"/admin/showlogtask.php?fil=%s&id=%s&clr=" . urlencode($file->getFilename()) . "\">" . _('Clear') . "</a>"
                     , urlencode($parm['fil'])
                     , urlencode($parm['id']));
                 print("</h4>\n<pre>\n");
