@@ -111,18 +111,19 @@
         {
             "package": "silex/silex",
             "version": "dev-master",
-            "source-reference": "ca49749039f3b3d2f9df028109c8f83adb607dc9"
-        },
-        {
-            "package": "silex/silex",
-            "version": "dev-master",
             "alias-pretty-version": "1.0.x-dev",
             "alias-version": "1.0.9999999.9999999-dev"
         },
         {
             "package": "silex/silex",
             "version": "dev-master",
-            "source-reference": "4b70fb1a9b498228146ba0f363209b5829f10ca7"
+            "source-reference": "f4f1b5594e4e49477ddfeb84bc1aa881d1e81cda"
+        },
+        {
+            "package": "silex/silex",
+            "version": "dev-master",
+            "alias-pretty-version": "1.0.x-dev",
+            "alias-version": "1.0.9999999.9999999-dev"
         },
         {
             "package": "swftools/swftools",
@@ -144,13 +145,12 @@
             "package": "symfony/symfony",
             "version": "dev-master",
             "alias-pretty-version": "2.1.x-dev",
-            "alias-version": "2.1.9999999.9999999-dev",
-            "source-reference": "6a01d3dd54ab5923b9572c30afdb24b9b9ec4833"
+            "alias-version": "2.1.9999999.9999999-dev"
         },
         {
             "package": "symfony/symfony",
             "version": "dev-master",
-            "source-reference": "0995b1f28b80f91cfef7b3201840aa3dbcc66ae1"
+            "source-reference": "c07e9163a6ed298d628df3c6ec3ab00580c16842"
         },
         {
             "package": "tcpdf/tcpdf",
@@ -165,7 +165,7 @@
         {
             "package": "twig/twig",
             "version": "dev-master",
-            "source-reference": "d4511d02b45725a56c8cc49127244bca640c9d13"
+            "source-reference": "ca33207bb22fe6365d13bdaf034f936e30b53560"
         },
         {
             "package": "twig/twig",
