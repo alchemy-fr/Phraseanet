@@ -214,14 +214,12 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             if ($row['created_on'])
                 $this->creation_date = new DateTime($row['created_on']);
 
-            if (file_exists($this->path . $this->file)) {
-                $this->is_physically_present = true;
-            }
+            $this->is_physically_present = true;
         } elseif ($substitute === false) {
             throw new Exception_Media_SubdefNotFound($this->name . ' not found');
         }
 
-        if ( ! $row || ! $this->is_physically_present) {
+        if ( ! $row) {
             $this->find_substitute_file();
         }
 
