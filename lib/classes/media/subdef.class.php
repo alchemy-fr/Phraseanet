@@ -178,7 +178,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
             return $this;
         } catch (Exception $e) {
-            
+
         }
 
         $connbas = $this->record->get_databox()->get_connection();
@@ -676,7 +676,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
         try {
 
-            $sql = 'SELECT subdef_id FROM subdef 
+            $sql = 'SELECT subdef_id FROM subdef
                     WHERE record_id = :record_id AND name = :name';
             $stmt = $connbas->prepare($sql);
             $stmt->execute(array(
