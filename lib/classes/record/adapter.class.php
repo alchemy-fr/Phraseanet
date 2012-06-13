@@ -900,7 +900,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $title = $title != "" ? $title : _('reponses::document sans titre');
 
         if ($cache) {
-            $this->set_data_from_cache(self::CACHE_TITLE, $title);
+            $this->set_data_to_cache(self::CACHE_TITLE, $title);
         }
 
         return $title;
