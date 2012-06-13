@@ -2602,10 +2602,6 @@ DIV.thesaurus U.w {
     z-index: 1200;
     background-color: #1a1a1a;
     display: none;
-    top: 0;
-    bottom: 15px;
-    right: 20px;
-    left: 20px;
     border: 2px solid #666666;
 }
 

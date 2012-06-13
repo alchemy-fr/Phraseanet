@@ -2678,10 +2678,6 @@ DIV.thesaurus U.w {
 #PREVIEWBOX, #EDITWINDOW {
     z-index: 1200;
     display: none;
-    top: 0;
-    bottom: 15px;
-    right: 20px;
-    left: 20px;
     border: 2px solid #EEEEEE;
 }
 
