@@ -107,7 +107,7 @@ class patch_370a9 implements patchInterface
                                 'type'    => 'Checker\\Filename',
                                 'enabled' => false,
                                 'options' => array(
-                                    'sensitive' => false,
+                                    'sensitive' => true,
                                 ),
                             ),
                             array(

@@ -184,7 +184,7 @@ Border:
             type: Checker\Filename
             enabled: false
             options:
-              sensitive: false
+              sensitive: true
           #Check media type
           #Set to false to enable all mediatype
           -
