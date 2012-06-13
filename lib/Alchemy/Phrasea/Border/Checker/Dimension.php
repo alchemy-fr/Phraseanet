@@ -25,11 +25,7 @@ class Dimension implements Checker
             throw new \InvalidArgumentException('Missing "width" option');
         }
 
-        if ( ! isset($options['height'])) {
-            $options['height'] = null;
-        }
-
-        if ($options['height'] === null) {
+        if ( ! isset($options['height']) || null === $options['height']) {
             $options['height'] = $options['width'];
         }
 

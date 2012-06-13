@@ -144,15 +144,14 @@ Cache:
 
 Border:
   #Define Border service
-  #There is one border service which handles the checks in all the incoming files
+  #The border service handles checks validation constraints against incoming files
   border_manager:
     type: Border\BorderManager
     options:
-      #Disable or enable checks on external incoming files
+      #Enable validation on incoming files
       enabled: true
-      #You can define a set of checkers which handle one specific check per file
       checkers:
-          #Check for duplicated file based on their sha256 control sum
+          #Check for duplicated file based on their sha256 check sum
           -
             type: Checker\Sha256
             enabled: true
@@ -160,33 +159,33 @@ Border:
           -
             type: Checker\UUID
             enabled: true
-          #Check for specific color space
+          #Check colorspace (if applicable)
           -
             type: Checker\Colorspace
             enabled: false
             options:
               colorspaces: [cmyk, grayscale, rgb]
-          #Check for specific file dimension
+          #Check file dimension (if applicable)
           -
             type: Checker\Dimension
             enabled: false
             options:
               width: 80
               height: 160
-          #Check for specific allowef file extension
-          #set to flase to enable all file extensions
+          #Check file extension
+          #set to false to enable all file extensions
           -
             type: Checker\Extension
             enabled: false
             options:
               extensions: [jpg, jpeg, bmp, tif, gif, png, pdf, doc, odt, mpg, mpeg, mov, avi, xls, flv, mp3, mp2]
-          #Check for sensitive filename
+          #Check filename
           -
             type: Checker\Filename
             enabled: false
             options:
               sensitive: false
-          #Check for specific mediatype
+          #Check media type
           #Set to false to enable all mediatype
           -
             type: Checker\MediaType
