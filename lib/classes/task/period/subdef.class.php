@@ -149,7 +149,6 @@ class task_period_subdef extends task_databoxAbstract
             </script>
 
             <?php
-
             return("");
         } else {
             return("BAD XML");
@@ -203,16 +202,12 @@ class task_period_subdef extends task_databoxAbstract
         <?php
     }
 
-    public function getGraphicForm()
-    {
-        return true;
-    }
-
     /**
-     * generates interface 'graphic view'
+     * return interface 'graphic view'
      *
      */
-    public function printInterfaceHTML()
+
+    public function getInterfaceHTML()
     {
         ob_start();
         ?>
@@ -233,9 +228,8 @@ class task_period_subdef extends task_databoxAbstract
             <br/>
         </form>
         <?php
-        $out = ob_get_clean();
 
-        return $out;
+        return ob_get_clean();
     }
 
     public function retrieveSbasContent(databox $databox)
@@ -245,7 +239,6 @@ class task_period_subdef extends task_databoxAbstract
         $sql = 'SELECT coll_id, record_id
               FROM record
               WHERE jeton & ' . JETON_MAKE_SUBDEF . ' > 0
-                AND parent_record_id = 0
               ORDER BY record_id DESC LIMIT 0, 20';
 
         $stmt = $connbas->prepare($sql);

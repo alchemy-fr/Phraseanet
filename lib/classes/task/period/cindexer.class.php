@@ -263,18 +263,9 @@ class task_period_cindexer extends task_abstract
 
     /**
      *
-     * @return string
-     */
-    public function getGraphicForm()
-    {
-        return true;
-    }
-
-    /**
-     *
      * @return return
      */
-    public function printInterfaceHTML()
+    public function getInterfaceHTML()
     {
         $appname = 'phraseanet_indexer';
         if (defined('PHP_WINDOWS_VERSION_BUILD')) {
@@ -333,9 +324,8 @@ class task_period_cindexer extends task_abstract
             <div style="margin:10px; padding:5px; border:1px #000000 solid; font-family:monospace; font-size:16px; text-align:left; color:#00e000; background-color:#404040" id="cmd">cmd</div>
         </center>
         <?php
-        $out = ob_get_clean();
 
-        return $out;
+        return ob_get_clean();
     }
 
     /**

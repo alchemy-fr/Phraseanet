@@ -191,7 +191,6 @@ foreach ($tasks as $t) {
 ?>
             ];
 
-
             $('#newTaskButton').contextMenu(
             menuNewTask,
             {
@@ -254,8 +253,6 @@ foreach ($tasks as $t) {
             }
         );
 
-
-
             $('.task_manager .dropdown.task').contextMenu(
             [
                 {
@@ -316,24 +313,32 @@ foreach ($tasks as $t) {
                         $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['edit']+')').removeClass("context-menu-item-disabled");
 
                         if(retPing.tasks[tid].status == 'started' || retPing.tasks[tid].status == 'torestart')
+                        {
                             $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['stop']+')').removeClass("context-menu-item-disabled");
+                        }
                         else
+                        {
                             $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['stop']+')').addClass("context-menu-item-disabled");
+                        }
 
                         $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['delete']+')').removeClass("context-menu-item-disabled");
-                        if(retPing.scheduler && retPing.scheduler.pid)
-                            $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').removeClass("context-menu-item-disabled");
-                        else
-                            $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').addClass("context-menu-item-disabled");
-                    }
 
+                        if(retPing.scheduler && retPing.scheduler.pid && !(retPing.tasks[tid].status == 'started' || retPing.tasks[tid].status == 'torestart'))
+                        {
+                            $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').removeClass("context-menu-item-disabled");
+                        }
+                        else
+                        {
+                            $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').addClass("context-menu-item-disabled");
+                        }
+                    }
                 }
             }
         );
 
-
             self.setTimeout("pingScheduler(true);", 100); // true : loop forever each 2 sec
-        })
+        }
+    )
         </script>
     </head>
     <body>

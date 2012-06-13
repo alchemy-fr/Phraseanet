@@ -175,7 +175,7 @@
                     switch(type)
                     {
                         case 'PRE_XML':
-                            {% if task.getGraphicForm() %}
+                            {% if task.hasInterfaceHTML() %}
                             document.getElementById('divGraph').style.display = "none";
                             document.getElementById('divXml').style.display = "";
                             document.getElementById('linkviewxml').className = "tabFront";
@@ -183,6 +183,7 @@
                             {% endif %}
                             this.currentView = "XML";
                             break;
+
                         case 'XML':
                             if( (f = document.forms['graphicForm']) )
                             {
@@ -360,7 +361,11 @@
                     f.appendChild(o);
                 }
                 redrawme();
-                jsTaskObj.view("PRE_{{view}}");
+                {% if task.hasInterfaceHTML() %}
+                jsTaskObj.view("PRE_GRAPHIC");
+                {% else %}
+                jsTaskObj.view("PRE_XML");
+                {% endif %}
                 if( (o = document.getElementById("iddivloading")) )
                     o.style.visibility = "hidden";
             }
@@ -398,27 +403,24 @@
         <div style="position:absolute; top:65px; bottom:30px; left:0px; width:100%;">
             <div id="idBox2" style="position:absolute; top:20px; left:5px; bottom:5px; right:5px; z-index:2; border-top:#ffffff 1px solid; border-left:#ffffff 1px solid; border-bottom:#000000 1px solid; border-right:#000000 1px solid;">
                 <div class="divTab">
-                    {% if task.printInterfaceHTML %}
+                    {% if task.hasInterfaceHTML() %}
                     <div id="linkviewgraph" class="tabFront" onClick="jsTaskObj.view('GRAPHIC');" style="width:100px;">
                         {% trans 'boutton::vue graphique' %}
                     </div>
                     {% endif %}
-                    <div id="linkviewxml" class="{% if task.printInterfaceHTML %}tabBack{% else %}tabFront{% endif %}" onClick="jsTaskObj.view('XML');" style="width:100px;">
+                    <div id="linkviewxml" class="{% if task.hasInterfaceHTML() %}tabBack{% else %}tabFront{% endif %}" onClick="jsTaskObj.view('XML');" style="width:100px;">
                         {% trans 'boutton::vue xml' %}
                     </div>
                 </div>
-                {% if task.getGraphicForm %}
+                {% if task.hasInterfaceHTML() %}
+                <!-- ______________   graphic interface '{{task.getName()}}'   ___________________ -->
                 <div id="divGraph" style="position:absolute; top:5px; left:5px; bottom:5px; right:5px; display:auto; overflow:scroll;" >
-                    {% if task.printInterfaceHTML %}
-                    {{task.printInterfaceHTML()|raw}}
-                    {% else %}
-                    <form name="graphicForm" onsubmit="return false;"></form>
-                    {% endif %}
+                    {{task.getInterfaceHTML()|raw}}
                 </div>
                 <!-- _____________  end graphic interface '{{task.getName()}}'   _________________ -->
                 {% endif %}
                 <!-- _____________      xml interface    _____________ -->
-                <div id="divXml" style="position:absolute; top:5px; left:5px; bottom:5px; right:5px; {% if task.printInterfaceHTML %}display:none;{% endif %}">
+                <div id="divXml" style="position:absolute; top:5px; left:5px; bottom:5px; right:5px; {% if task.hasInterfaceHTML() %}display:none;{% endif %}">
                     <form style="position:absolute; top:0px; left:0px; right:4px; bottom:20px;" action="./task2utils.php" onsubmit="return(false);" name="fxml" method="post">
                         <input type="hidden" name="__act" value="???" />
                         <input type="hidden" name="__class" value="{{ task|get_class }}" />

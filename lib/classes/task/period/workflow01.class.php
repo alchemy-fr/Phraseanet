@@ -259,12 +259,7 @@ class task_period_workflow01 extends task_databoxAbstract
         <?php
     }
 
-    public function getGraphicForm()
-    {
-        return true;
-    }
-
-    public function printInterfaceHTML()
+    public function getInterfaceHTML()
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $session = $appbox->get_session();
@@ -327,9 +322,8 @@ class task_period_workflow01 extends task_databoxAbstract
             <div style="margin:10px; padding:5px; border:1px #000000 solid; font-family:monospace; font-size:16px; text-align:left; color:#00e000; background-color:#404040" id="cmd">cmd</div>
         </center>
         <?php
-        $out = ob_get_clean();
 
-        return $out;
+        return ob_get_clean();
     }
 
     public function help()

@@ -140,16 +140,7 @@ class task_period_ftp extends task_appboxAbstract
      *
      * @return string
      */
-    public function getGraphicForm()
-    {
-        return true;
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function printInterfaceHTML()
+    public function getInterfaceHTML()
     {
         ob_start();
         ?>
@@ -167,9 +158,8 @@ class task_period_ftp extends task_appboxAbstract
             &nbsp;<?php echo('task::_common_:secondes (unite temporelle)') ?><br/>
         </form>
         <?php
-        $out = ob_get_clean();
 
-        return $out;
+        return ob_get_clean();
     }
 
     public function saveChanges(connection_pdo $conn, $taskid, &$taskrow)

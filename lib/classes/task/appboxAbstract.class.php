@@ -99,14 +99,14 @@ abstract class task_appboxAbstract extends task_abstract
                         $this->setState(self::STATE_TODELETE);
                         $this->running = FALSE;
                         break;
-
-                    case self::STATE_OK:
-                        break;
                 }
             } // if(row)
 
             $this->incrementLoops();
-            $this->pause($duration);
+
+            if ($this->running) {
+                $this->pause($duration);
+            }
         } // while running
 
         return;
@@ -118,7 +118,7 @@ abstract class task_appboxAbstract extends task_abstract
      */
     protected function process(appbox $appbox)
     {
-                  $ret = self::STATE_OK;
+        $ret = self::STATE_OK;
 
         try {
             // get the records to process
@@ -126,7 +126,6 @@ abstract class task_appboxAbstract extends task_abstract
 
             // process the records
             $ret = $this->processLoop($appbox, $rs);
-
         } catch (Exception $e) {
             $this->log('Error  : ' . $e->getMessage());
         }
