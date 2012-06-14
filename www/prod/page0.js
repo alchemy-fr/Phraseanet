@@ -957,7 +957,7 @@ $(document).ready(function(){
                         });
                     }
                 }
-                callback_answerselectable();
+                afterSearch();
             }
         });
 

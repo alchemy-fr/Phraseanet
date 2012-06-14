@@ -79,7 +79,7 @@
                     {% set l_width = l_width + 20 %}
                     {% endif %}
                     <td style='text-align:right;width:{{l_width}}px;' valign='bottom'>
-                    {{drop_down.prod(record, user)}}
+                    {{drop_down.prod(record, user, entry_id)}}
                     {% if record.has_preview() and user.ACL().has_access_to_subdef(record, 'preview') %}
                     <div tooltipsrc="/prod/tooltip/preview/{{record.get_sbas_id()}}/{{record.get_record_id()}}/" class="previewTips"></div>
                     {% endif %}
