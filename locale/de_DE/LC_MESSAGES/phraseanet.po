@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-03-19 18:00+0100\n"
-"PO-Revision-Date: 2012-03-19 18:01+0100\n"
-"Last-Translator: Romain Neutron <imprec@gmail.com>\n"
+"PO-Revision-Date: 2012-05-23 12:37+0100\n"
+"Last-Translator: Aldrian <aldrian1@sms.at>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -13,7 +13,7 @@ msgstr ""
 "X-Launchpad-Export-Date: 2012-03-19 16:08+0000\n"
 "X-Generator: Launchpad (build 14969)\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Poedit-Basepath: /Users/romain/Documents/workspace/Phraseanet\n"
+"X-Poedit-Basepath: /home/grosroro/Documents/workspace/Phraseanet\n"
 "X-Poedit-Country: GERMANY\n"
 "Language: \n"
 "X-Poedit-Language: German\n"
@@ -30,7 +30,7 @@ msgstr ""
 #: lib/classes/appbox.class.php:327
 #: lib/classes/appbox.class.php:401
 msgid "Flushing cache"
-msgstr "Cache wird gespüllt"
+msgstr "Cache wird geleert"
 
 #: lib/classes/appbox.class.php:334
 msgid "Creating new tables"
@@ -39,7 +39,7 @@ msgstr "Neue Tabellen erstellen"
 #: lib/classes/appbox.class.php:351
 #: lib/classes/appbox.class.php:359
 msgid "Purging directories"
-msgstr "Verzeichnisse werden reinigt"
+msgstr "Verzeichnisse werden gereinigt"
 
 #: lib/classes/appbox.class.php:367
 msgid "Copying files"
@@ -60,16 +60,16 @@ msgstr "Nach der Aktualisierung"
 
 #: lib/classes/appbox.class.php:443
 msgid "Nom de base de donnee incorrect"
-msgstr "falsche Datenbankname"
+msgstr "falscher Datenbankname"
 
 #: lib/classes/appbox.class.php:536
 msgid "setup::la base de donnees existe deja et vous n'avez pas les droits ou vous n'avez pas les droits de la creer"
-msgstr "Die Datenbank besteht schon und Sie haben keine Rechte darauf oder Sie haben keinen Zugriff, diese Datenbank zu erstellen"
+msgstr "Die Datenbank besteht bereits oder Sie haben keine Rechte eine neue Datenbank zu erstellen"
 
 #: lib/classes/base.class.php:311
 #, php-format
 msgid "Updating table %s"
-msgstr "Tabelle %s werden aktualisiert"
+msgstr "Tabellen %s werden aktualisiert"
 
 #: lib/classes/base.class.php:328
 #: lib/classes/base.class.php:579
@@ -82,7 +82,7 @@ msgstr "Fehler beim Versuch ; Fehler : %s"
 #: lib/classes/base.class.php:350
 #, php-format
 msgid "Creating table %s"
-msgstr "Tabelle %s werden erstellt"
+msgstr "Tabellen %s werden erstellt"
 
 #: lib/classes/base.class.php:358
 #: lib/classes/base.class.php:900
@@ -100,7 +100,7 @@ msgstr "FEHLER : Alle \"subdefgroup\" tags brauchen ein \"name\" Attribut"
 
 #: lib/classes/databox.class.php:1407
 msgid "ERREUR : Les name de subdef sont uniques par groupe de subdefs et necessaire"
-msgstr "FEHLER : das \"name\" Attribut des Knotens \"subdef\" ist zwingend und einzig durch Gruppe von subdef"
+msgstr "FEHLER : das \"name\" Attribut des Knotens \"subdef\" ist zwingend und einzigartig durch Gruppe von subdef"
 
 #: lib/classes/databox.class.php:1412
 msgid "ERREUR : La classe de subdef est necessaire et egal a \"thumbnail\",\"preview\" ou \"document\""
@@ -116,11 +116,11 @@ msgstr "Bestandteil existiert nicht oder nicht mehr"
 
 #: lib/classes/lazaretFile.class.php:62
 msgid "Impossible dajouter le fichier a la base"
-msgstr "Unmöglich, die Datei zur Datenbank hinzuzufügen"
+msgstr "Es ist nicht möglich, diese Datei zur Datenbank hinzuzufügen"
 
 #: lib/classes/lazaretFile.class.php:133
 msgid "Impossible de trouver la base"
-msgstr "Unmöglich, die Datenbank zu finden"
+msgstr "Die Datenbank kann nicht gefunden werden"
 
 #: lib/classes/login.class.php:38
 msgid "login:: register"
@@ -149,12 +149,12 @@ msgstr "Sie haben Dokument(e) bekommen"
 
 #: lib/classes/mail.class.php:47
 msgid "Vous avez recu des documents, vous pourrez les telecharger a ladresse suivante "
-msgstr "Sie haben Dockument(e) bekommen, bitte klicken Sie auf dem Link, um herunterzuladen "
+msgstr "Sie haben Dokument(e) erhalten. Wenn Sie auf den link klicken können Sie diese herunterladen "
 
 #: lib/classes/mail.class.php:52
 #, php-format
 msgid "Attention, ce lien lien est valable jusqu'au %s"
-msgstr "Vorsicht, dieses Link ist bis %s gültig"
+msgstr "ACHTUNG: Dieser link ist nur bis %s gültig"
 
 #: lib/classes/mail.class.php:70
 msgid "login:: Forgot your password"
@@ -162,11 +162,11 @@ msgstr "Passwort vergessen?"
 
 #: lib/classes/mail.class.php:72
 msgid "login:: Quelqu'un a demande a reinitialiser le mode passe correspondant au login suivant : "
-msgstr "Jemand hat gefragt, das Passwort zurückzusetzen, mit dem Benutzername : "
+msgstr "Ein User möchte sein Passwort zurücksetzen. Der Benutzername lautet : "
 
 #: lib/classes/mail.class.php:73
 msgid "login:: Visitez le lien suivant et suivez les instructions pour continuer, sinon ignorez cet email et il ne se passera rien"
-msgstr "Besuchen Sie bitte diesen Link für weitere Informationen und um fortzusetzen, oder ignorieren Sie diese Nachricht und nichts wird geschehen"
+msgstr "Klicken Sie auf den folgenden link  um Ihre Änderung fortsetzen zu können. Wenn Sie diese Nachricht ignorieren wird keine Änderung vorgenommen"
 
 #: lib/classes/mail.class.php:84
 #: lib/classes/mail.class.php:105
@@ -180,7 +180,7 @@ msgstr "Hier ist eine Nachricht über Ihre Zugriffanfragen"
 
 #: lib/classes/mail.class.php:90
 msgid "login::register:email: Vous avez ete accepte sur les collections suivantes : "
-msgstr "Sie haben einen Zugriff auf die folgenden Kollektionen : "
+msgstr "Sie haben nun Zugriff auf die folgenden Kollektionen : "
 
 #: lib/classes/mail.class.php:94
 msgid "login::register:email: Vous avez ete refuse sur les collections suivantes : "
@@ -196,40 +196,40 @@ msgstr "Sie haben nun einen direkten Zugriff auf die folgenden Kollektionen: "
 
 #: lib/classes/mail.class.php:117
 msgid "login::register: vos demandes concernat les collections suivantes sont sujettes a approbation d'un administrateur"
-msgstr "Ihre Zugriffanfragen auf die folgenden Kollektionen müssen erst von einem Administrator akzeptiert werden"
+msgstr "Ihre Zugriffanfragen auf die folgenden Kollektionen müssen erst vom Administrator bestätigt werden"
 
 #: lib/classes/mail.class.php:118
 #: lib/classes/mail.class.php:166
 msgid "login::register : vous serez avertis par email lorsque vos demandes seront traitees"
-msgstr "Sie werden eine Nachricht bekommen, wenn Ihre Anfrage behandelt sind"
+msgstr "Sie erhalten eine Nachricht sobald Ihre Anfrage behandelt wird."
 
 #: lib/classes/mail.class.php:134
 #: lib/classes/mail.class.php:148
 #: lib/classes/mail.class.php:162
 #: lib/classes/mail.class.php:179
 msgid "login::register: sujet email : confirmation de votre adresse email"
-msgstr "E-Mail Adresse Bestätigung"
+msgstr "E-Mail Adressen Bestätigung"
 
 #: lib/classes/mail.class.php:136
 msgid "admin::compte-utilisateur: email changement de mot d'email Bonjour, nous avons bien recu votre demande de changement d'adresse e-mail. Pour la confirmer, veuillez suivre le lien qui suit. SI vous recevez ce mail sans l'avoir sollicite, merci de le detruire et de l'ignorer."
-msgstr "Guten Tag, Ihre Anfrage, um Ihre Email Adresse zu verändern, wurde bei uns eingegangen. Um diese Anfrage zu bestätigen, bitte folgen Sie folgendem Link. Wenn Sie dieses Mail gegen Ihnen Willen bekommen, bitte zerstören Sie diese Nachricht."
+msgstr "Guten Tag. Eine Anfrage zur Änderung Ihrer Email Adresse ist bei uns eingegangen. Damit Sie die Änderung durchführen können, klicken Sie auf den folgenden link. Sollten Sie keine Änderung wünschen so löschen Sie bitte dieses mail"
 
 #: lib/classes/mail.class.php:150
 #: lib/classes/mail.class.php:164
 msgid "login::register: merci d'avoir confirme votre adresse email"
-msgstr "Wir danken Ihnen, um Ihre E-Mail Adresse bestätigt zu haben"
+msgstr "Wir danken Ihnen für die Bestätigung Ihrer E-Mail Adresse"
 
 #: lib/classes/mail.class.php:151
 msgid "login::register: vous pouvez maintenant vous connecter a l'adresse suivante : "
-msgstr "Sie dürfen jetzt Ihnen mit dem folgenden Link einloggen "
+msgstr "Sie können sich jetzt mit dem folgenden Link einloggen:"
 
 #: lib/classes/mail.class.php:165
 msgid "login::register: vous devez attendre la confirmation d'un administrateur ; vos demandes sur les collections suivantes sont toujours en attente : "
-msgstr "Ihre Zugriffanfragen auf die folgende Kollektionen müssen von einem Administrator akzeptiert werden : Sie sind noch schwebend : "
+msgstr "Ihre Zugriffsanfragen auf die folgenden Kollektionen müssen erst vom Administrator bestätigt werden. Ihre Anfrage wurde noch nicht bearbeitet. "
 
 #: lib/classes/mail.class.php:181
 msgid "login::register: email confirmation email Pour valider votre inscription a la base de donnees, merci de confirmer votre e-mail en suivant le lien ci-dessous."
-msgstr "Um Ihre Anmeldung zu der Datenbank zu bestätigen, bitte bestätigen Sie Ihre E-Mail Adresse mit dem folgenden Link"
+msgstr "Um Ihre Anmeldung auf die Datenbank abschließen zu können, bestätigen Sie Ihre E-Mail Adresse unter dem folgenden link:"
 
 #: lib/classes/mail.class.php:212
 msgid "si cet email contient des liens non cliquables copiez/collez ces liens dans votre navigateur."
@@ -237,11 +237,11 @@ msgstr ""
 
 #: lib/classes/mail.class.php:214
 msgid "phraseanet::signature automatique des notifications par mail, infos a l'url suivante"
-msgstr "Phraseanet IV Automatische Meldung - Bitte besuchen Sie dieses Link, um automatisierte Meldungen zu verwalten"
+msgstr "Phraseanet IV Automatische Meldung - Klicken Sie diesen link um automatisierte Meldungen zu verwalten"
 
 #: lib/classes/p4file.class.php:154
 msgid "prod::erreur : impossible de lire les preferences de base"
-msgstr "Es ist unmöglich, die Einstellungsdatenbank zu lesen"
+msgstr "Es ist nicht möglich, die Einstellungsdatenbank zu lesen"
 
 #: lib/classes/p4file.class.php:170
 #, php-format
@@ -344,7 +344,7 @@ msgstr "Vorsicht, bitte überprüfen Sie die Konfiguration xsendfile, die zurzei
 #: lib/classes/setup.class.php:368
 #: lib/classes/setup.class.php:377
 msgid "Attention, veuillez verifier la configuration h264_streaming, actuellement activee dans le setup"
-msgstr "Vorsicht, bitte überprüfen Sie die Konfiguration  h264_streaming, die zurzeit in Setup aktiviert ist"
+msgstr "Achtung: Bitte überprüfen Sie die Konfiguration  h264_streaming, die zurzeit in Setup aktiviert ist"
 
 #: lib/classes/setup.class.php:520
 msgid "setup::Tests d'envois d'emails"
@@ -352,7 +352,7 @@ msgstr "Test E-Mail Überprüfungen"
 
 #: lib/classes/setup.class.php:524
 msgid "boutton::valider"
-msgstr "Validieren"
+msgstr "Bestätigen"
 
 #: lib/classes/setup.class.php:602
 msgid "setup:: Serveur Memcached"
@@ -383,7 +383,7 @@ msgstr "Schlechte Konfiguration: für die Variante %1$s, gegebene Konfiguration 
 
 #: lib/classes/setup.class.php:691
 msgid "setup::Etat du moteur de recherche"
-msgstr "Suchmaschinestatus"
+msgstr "Suchmaschinenstatus"
 
 #: lib/classes/setup.class.php:702
 msgid "setup::Sphinx confguration"
@@ -455,12 +455,12 @@ msgstr "Der Datensatz hat keine physikalische Datei"
 #: lib/classes/Bridge/Api/Dailymotion.class.php:935
 #, php-format
 msgid "La taille maximale d'une video est de %d minutes."
-msgstr "Das maximale Gewicht für eine Video ist %d Minuten."
+msgstr "Das maximale Länge für ein Video ist %d Minuten."
 
 #: lib/classes/Bridge/Api/Dailymotion.class.php:938
 #, php-format
 msgid "Le poids maximum d'un fichier est de %s"
-msgstr "Maximales Gewicht für eine Datei ist %s"
+msgstr "Maximale Größe für eine Datei ist %s"
 
 #: lib/classes/Bridge/Api/Flickr.class.php:154
 msgid "Ce produit utilise l'API Flickr mais n'est ni soutenu, ni certifie par Flickr"
@@ -485,7 +485,7 @@ msgstr "Das Video ist beschränkt"
 
 #: lib/classes/Bridge/Api/Youtube.class.php:582
 msgid "Erreur la requête a été mal formée ou contenait des données valides."
-msgstr "Die Anfrage wurde schlecht formuliert oder beinhaltete ungültige Daten"
+msgstr "Die Anfrage wurde schlecht formuliert oder beinhaltet ungültige Zeichen"
 
 #: lib/classes/Bridge/Api/Youtube.class.php:585
 msgid "Erreur lors de l'authentification au service Youtube, Veuillez vous déconnecter, puis vous reconnecter."
@@ -497,7 +497,7 @@ msgstr "Fehler beim Versenden einer Anfrage. Authentifizierungsfehler."
 
 #: lib/classes/Bridge/Api/Youtube.class.php:591
 msgid "Erreur la ressource que vous tentez de modifier n'existe pas."
-msgstr "Fehler: die Ressource, die Sie versuchen, zu verändern, existiert nicht."
+msgstr "Fehler: die Ressource die Sie versuchen zu verändern, existiert nicht."
 
 #: lib/classes/Bridge/Api/Youtube.class.php:594
 msgid "Erreur YouTube a rencontré une erreur lors du traitement de la requête."
@@ -505,15 +505,15 @@ msgstr "Fehler: YouTube hat einen Fehler bei der Bearbeitung der Anfrage gefunde
 
 #: lib/classes/Bridge/Api/Youtube.class.php:597
 msgid "Erreur vous avez essayé d'exécuter une requête non prise en charge par Youtube"
-msgstr "Fehler: Sie haben versucht, eine Anfrage, die von YouTube nicht unterstützt wird, auszuführen."
+msgstr "Fehler: Sie haben versucht eine Anfrage die von YouTube nicht unterstützt wird auszuführen."
 
 #: lib/classes/Bridge/Api/Youtube.class.php:600
 msgid "Erreur le service Youtube n'est pas accessible pour le moment. Veuillez réessayer plus tard."
-msgstr "Fehler: die YouTube Dienstleistung wird zurzeit nicht erreichbar. Bitte versuchen Sie es später noch einmal."
+msgstr "Fehler: die YouTube Dienstleistung ist zurzeit nicht erreichbar. Bitte versuchen Sie es später noch einmal."
 
 #: lib/classes/Bridge/Api/Youtube.class.php:622
 msgid "A required field is missing or has an empty value"
-msgstr "Ein Plichtfeld fehlt oder hat einen leeren Wert."
+msgstr "Ein Plichtfeld fehlt oder wurde nicht ausgefüllt"
 
 #: lib/classes/Bridge/Api/Youtube.class.php:625
 msgid "A value has been deprecated and is no longer valid"
@@ -521,7 +521,7 @@ msgstr "Ein Wert ist veraltet und ist nicht mehr gültig"
 
 #: lib/classes/Bridge/Api/Youtube.class.php:628
 msgid "A value does not match an expected format"
-msgstr "Ein Wert passt nicht das erwartete Format"
+msgstr "Ein Wert passt nicht für das erwartete Format"
 
 #: lib/classes/Bridge/Api/Youtube.class.php:631
 msgid "A field value contains an invalid character"
@@ -533,7 +533,7 @@ msgstr "Ein Wert überschreitet die zulässige Maximallänge"
 
 #: lib/classes/Bridge/Api/Youtube.class.php:637
 msgid "The Youtube servers have received too many calls from the same caller in a short amount of time."
-msgstr "Die YouTube Server haben zu vielen Anrufen vom gleichen Anrufer in kurzer Zeit erhalten"
+msgstr "Die YouTube Server haben zu viele Anfragen vom gleichen Server in kurzer Zeit erhalten"
 
 #: lib/classes/Bridge/Api/Youtube.class.php:640
 msgid "You are attempting to exceed the storage limit on your account and must delete existing entries before inserting new entries"
@@ -545,11 +545,11 @@ msgstr "Authentisierungs Token in angegebenen Authentisierungskopf ist nicht gü
 
 #: lib/classes/Bridge/Api/Youtube.class.php:646
 msgid "The authentication token specified in the Authorization header has expired."
-msgstr "Authentisierungs Token in angegebenen Authentisierungskopf ist abgelaufen"
+msgstr "Authentisierungs Token im angegebenen Authentisierungskopf ist abgelaufen"
 
 #: lib/classes/Bridge/Api/Youtube.class.php:649
 msgid "Current operations cannot be executed because the site is temporarily in maintenance mode. Wait a few minutes and try your request again"
-msgstr "Aktuelle Operationen können nicht ausgeführt werden, weil die Website kurzzeitig im Wartungs-Modus ist. Bitte warten Sie und versuchen Sie es wieder noch einmal später."
+msgstr "Aktuelle Operationen können nicht ausgeführt werden, da die Website kurzzeitig im Wartungs-Modus ist. Bitte warten Sie oder versuchen Sie es  später noch einmal."
 
 #: lib/classes/Bridge/Api/Youtube.class.php:658
 msgid "Service youtube introuvable."
@@ -567,7 +567,7 @@ msgstr "ANB (Allgemeinen Nutzungsbedingungen) für die %s Datenbank"
 
 #: lib/classes/databox/cgu.class.php:40
 msgid "cgus:: Pour continuer a utiliser lapplication, vous devez accepter les conditions precedentes"
-msgstr "Um fortzusetzen, müssen Sie die ANB akzeptieren"
+msgstr "Damit Sie sich eiloggen können, müssen Sie die ANB akzeptieren"
 
 #: lib/classes/databox/cgu.class.php:41
 msgid "cgus :: accepter"
@@ -579,7 +579,7 @@ msgstr "ablehnen"
 
 #: lib/classes/deprecated/inscript.api.php:221
 msgid "login::register: acces authorise sur la collection "
-msgstr "Zugriff auf die Kollektion gewährt : "
+msgstr "Zugriff auf folgende Kollektion gewährt : "
 
 #: lib/classes/deprecated/inscript.api.php:223
 #: lib/classes/deprecated/inscript.api.php:235
@@ -592,7 +592,7 @@ msgstr "die ANB lesen"
 
 #: lib/classes/deprecated/inscript.api.php:233
 msgid "login::register: acces refuse sur la collection "
-msgstr "Zugriff auf die Kollektion abgelehnt "
+msgstr "Zugriff auf folgende Kollektion abgelehnt "
 
 #: lib/classes/deprecated/inscript.api.php:245
 msgid "login::register: en attente d'acces sur"
@@ -604,7 +604,7 @@ msgstr "vorübergehender Zugriff auf"
 
 #: lib/classes/deprecated/inscript.api.php:269
 msgid "login::register: acces temporaire termine sur "
-msgstr "vorübergehender Zugriff beendet auf : "
+msgstr "vorübergehender Zugriff auf beendet: "
 
 #: lib/classes/deprecated/inscript.api.php:281
 msgid "login::register: acces supendu sur"
@@ -615,7 +615,7 @@ msgstr "Zugriff beendet auf"
 #: lib/classes/deprecated/inscript.api.php:410
 #: lib/classes/deprecated/inscript.api.php:441
 msgid "login::register: L'acces aux bases ci-dessous implique l'acceptation des Conditions Generales d'Utilisation (CGU) suivantes"
-msgstr "Der Zugriff auf der herunterende Datenbanken beinhaltet die Akzeptierung der folgenden Allegemeinen Nutzenbedingungen"
+msgstr "Der Zugriff auf die folgenden Datenbanken erfolgt nur mit der Bestätigung der folgenden Allgemeinen Nutzenbedingungen"
 
 #: lib/classes/deprecated/inscript.api.php:310
 #: lib/classes/deprecated/inscript.api.php:332
@@ -630,7 +630,7 @@ msgstr "Datenbank-Zugriff : "
 
 #: lib/classes/deprecated/inscript.api.php:370
 msgid "login::register: Vous avez acces a toutes les collections de toutes les bases"
-msgstr "Sie haben einen Zugriff auf alle verfügbare Kollektionen"
+msgstr "Sie haben einen Zugriff auf alle verfügbaren Kollektionen"
 
 #: lib/classes/deprecated/inscript.api.php:374
 msgid "login::register: confirmer la demande"
@@ -656,7 +656,7 @@ msgstr "%1$s hat sich auf eine oder mehrere %2$sKollektionen%3$s angemeldet"
 
 #: lib/classes/eventsmanager/notify/autoregister.class.php:193
 msgid "AutoRegister information"
-msgstr "Auto Registrierung Informationen"
+msgstr "Auto Registrierungs Informationen"
 
 #: lib/classes/eventsmanager/notify/autoregister.class.php:202
 msgid "Recevoir des notifications lorsqu'un utilisateur s'inscrit sur une collection"
@@ -717,23 +717,23 @@ msgstr "Beruf"
 #: lib/classes/eventsmanager/notify/order.class.php:236
 #: lib/classes/eventsmanager/notify/register.class.php:255
 msgid "admin::compte-utilisateur societe"
-msgstr "Unternehmensname"
+msgstr "Firma"
 
 #: lib/classes/eventsmanager/notify/autoregister.class.php:257
 msgid "admin::register: l'utilisateur s'est inscrit sur les bases suivantes"
-msgstr "Der Benutzer wurde schon auf die folgenden Kollektionen angemeldet"
+msgstr "Der Benutzer wurde schon auf folgende Kollektionen angemeldet"
 
 #: lib/classes/eventsmanager/notify/autoregister.class.php:271
 msgid "admin::register: vous pourrez consulter son compte en ligne via l'interface d'administration"
-msgstr "Sie können die Benutzer Anfragen in Phraseanet Admin bewältigen"
+msgstr "Sie können die Benutzer Anfragen im Modul Phraseanet Admin bewältigen"
 
 #: lib/classes/eventsmanager/notify/bridgeuploadfail.class.php:145
 msgid "Bridge upload fail"
-msgstr "Bridge Upload Misserfolg"
+msgstr "Bridge Upload fehlgeschlagen"
 
 #: lib/classes/eventsmanager/notify/bridgeuploadfail.class.php:154
 msgid "Recevoir des notifications lorsqu'un upload echoue sur un bridge"
-msgstr "Benachrichtigungen bekommen im Falle von Bridge Upload Misserfolg"
+msgstr "Mitteilung im Falle eines Fehlschlagens von Bridge Upload "
 
 #: lib/classes/eventsmanager/notify/downloadmailfail.class.php:125
 msgid "email is not valid"
@@ -758,7 +758,7 @@ msgstr "Email Export schlägt fehl"
 
 #: lib/classes/eventsmanager/notify/downloadmailfail.class.php:165
 msgid "Get a notification when a mail export fails"
-msgstr "Eine Nachricht bekommen, wenn einen Email Export fehlschlägt"
+msgstr "Eine Nachricht erhalten wenn ein Email Export fehlschlägt"
 
 #: lib/classes/eventsmanager/notify/feed.class.php:143
 #, php-format
@@ -777,7 +777,7 @@ msgstr "Benachrichtigungen per E-mail erhalten"
 #: lib/classes/eventsmanager/notify/feed.class.php:191
 #, php-format
 msgid "Nouvelle publication : %s"
-msgstr "New publication : %s"
+msgstr "Neue Veröffentlichung : %s"
 
 #: lib/classes/eventsmanager/notify/feed.class.php:195
 msgid "Connectez vous a l'adresse suivante pour la consulter"
@@ -787,7 +787,7 @@ msgstr ""
 #: lib/classes/eventsmanager/notify/push.class.php:191
 #: lib/classes/eventsmanager/notify/validate.class.php:213
 msgid "push::atention: ce lien est unique et son contenu confidentiel, ne divulguez pas"
-msgstr "Vorsicht : Dieses Link ist einzig und geheim, bitte nicht enthüllen"
+msgstr "Achtung : Dieser link ist vertraulich. Bitte nicht weiterleiten."
 
 #: lib/classes/eventsmanager/notify/order.class.php:162
 #, php-format
@@ -813,7 +813,7 @@ msgstr "Ein Benutzer hat Dokumente bestellt"
 
 #: lib/classes/eventsmanager/notify/order.class.php:243
 msgid "Retrouvez son bon de commande dans l'interface"
-msgstr "Finden Sie sein Bestellformular in Prod Modul"
+msgstr "Sein Bestellformular befindet sich im Modul Prod"
 
 #: lib/classes/eventsmanager/notify/orderdeliver.class.php:33
 #: lib/classes/eventsmanager/notify/ordernotdelivered.class.php:29
@@ -823,25 +823,25 @@ msgstr "Bestellung"
 #: lib/classes/eventsmanager/notify/orderdeliver.class.php:161
 #, php-format
 msgid "%1$s vous a delivre %2$d document(s) pour votre commande %3$s"
-msgstr "%1$s hat Ihnen %2$d Dokument(e) für Ihre Bestellung %3$s versendet"
+msgstr "%1$s hat Ihnen %2$d Dokument(e) auf Grund Ihrer Bestellung %3$s gesendet"
 
 #: lib/classes/eventsmanager/notify/orderdeliver.class.php:179
 msgid "Reception de commande"
-msgstr "Bestellung bekommen"
+msgstr "Empfangskontrolle"
 
 #: lib/classes/eventsmanager/notify/orderdeliver.class.php:188
 msgid "Reception d'une commande"
-msgstr "Bestellung bekommen"
+msgstr "Eingang einer Bestellung"
 
 #: lib/classes/eventsmanager/notify/orderdeliver.class.php:216
 #, php-format
 msgid "push::mail:: Reception de votre commande %s"
-msgstr "Empfang von Ihre Bestellung %s"
+msgstr "Empfangsbestätigung für Ihre Bestellung %s"
 
 #: lib/classes/eventsmanager/notify/orderdeliver.class.php:222
 #, php-format
 msgid "%s vous a delivre votre commande, consultez la en ligne a l'adresse suivante"
-msgstr "%s hat Ihre Bestellung geliefert, bitte gehen Sie online unter folgende Adresse"
+msgstr "%s hat Ihre Bestellung geliefert, bitte gehen Sie online auf folgende Adresse"
 
 #: lib/classes/eventsmanager/notify/ordernotdelivered.class.php:124
 #, php-format
@@ -851,7 +851,7 @@ msgstr "%1$s hat die Lieferung von %2$d Dokument(e) für Ihre Bestellung abgeleh
 #: lib/classes/eventsmanager/notify/ordernotdelivered.class.php:134
 #: lib/classes/eventsmanager/notify/ordernotdelivered.class.php:139
 msgid "Refus d'elements de commande"
-msgstr "Ablehnung für Bestandteile von Ihrer Bestellung"
+msgstr "Ablehnung für Bestandteile Ihrer Bestellung"
 
 #: lib/classes/eventsmanager/notify/ordernotdelivered.class.php:144
 #, php-format
@@ -866,7 +866,7 @@ msgstr "%s hat %d Bestandteile von Ihrer Bestellung abgelehnt"
 #: lib/classes/eventsmanager/notify/push.class.php:130
 #, php-format
 msgid "%1$s vous a envoye un %2$spanier%3$s"
-msgstr "%1$s hat Ihnen einen %2$s Sammelkorb%3$s gesendet"
+msgstr "%1$s hat Ihnen einen %2$s Sammelkorb%3$s zugesandt"
 
 #: lib/classes/eventsmanager/notify/push.class.php:146
 msgid "Push"
@@ -878,12 +878,12 @@ msgstr "Empfang von Dokumenten"
 
 #: lib/classes/eventsmanager/notify/push.class.php:181
 msgid "push::Vous pouvez vous connecter a l'adresse suivante afin de retrouver votre panier, voir les previews, les descriptions, le telecharger, etc."
-msgstr "Sie dürfen sich nun mit dem folgenden Link einloggen, um Ihr Sammelkorb zu sehen, und auch Ihre Voransichten, Beschreibungen, Herunterladen, usw."
+msgstr "Sie können sich nun mit dem folgenden link einloggen. Er enthält einen Sammelkorb mit Voransichten und Beschreibungen. Ein download ist je nach Vereinbarung möglich."
 
 #: lib/classes/eventsmanager/notify/register.class.php:178
 #, php-format
 msgid "%1$s demande votre approbation sur une ou plusieurs %2$scollections%3$s"
-msgstr "%1$s braucht Ihre Zustimmung für eine oder mehrere %2$sKollektionen%3$s"
+msgstr "%1$s benötigt Ihre Bewertung für eine oder mehrere %2$sKollektionen%3$s"
 
 #: lib/classes/eventsmanager/notify/register.class.php:195
 msgid "Register approbation"
@@ -891,7 +891,7 @@ msgstr "Anmeldung Zustimmung"
 
 #: lib/classes/eventsmanager/notify/register.class.php:204
 msgid "Recevoir des notifications lorsqu'un utilisateur demande une inscription necessitant mon approbation"
-msgstr "Eine Anmeldung braucht meine Zustimmung"
+msgstr "Eine Registrierung muß bearbeitet werden"
 
 #: lib/classes/eventsmanager/notify/register.class.php:217
 #, php-format
@@ -913,7 +913,7 @@ msgstr "Benutzer Anfragen in Phraseanet Admin bewältigen"
 #: lib/classes/eventsmanager/notify/validate.class.php:33
 #: lib/classes/eventsmanager/notify/validate.class.php:177
 msgid "Validation"
-msgstr "Validierung"
+msgstr "Bestätigung"
 
 #: lib/classes/eventsmanager/notify/validate.class.php:148
 #: lib/classes/eventsmanager/notify/validate.class.php:152
@@ -923,7 +923,7 @@ msgstr "eine Auswahl ohne Titel"
 #: lib/classes/eventsmanager/notify/validate.class.php:162
 #, php-format
 msgid "%1$s vous demande de valider %2$s"
-msgstr "%1$s fragt Ihnen, %2$s zu validieren"
+msgstr "%1$s fragt an, %2$s zu bestätigen"
 
 #: lib/classes/eventsmanager/notify/validate.class.php:186
 msgid "Recevoir des notifications lorsqu'on me demande une validation"
@@ -931,25 +931,25 @@ msgstr "Benachrichtigungen per E-mail erhalten"
 
 #: lib/classes/eventsmanager/notify/validate.class.php:200
 msgid "push::mail:: Demande de validation de documents"
-msgstr "Validierungsanfrage für Dokumente"
+msgstr "Bestätigungsanfrage für Dokumente"
 
 #: lib/classes/eventsmanager/notify/validate.class.php:203
 #, php-format
 msgid "Le lien suivant vous propose de valider une selection faite par %s"
-msgstr "Das folgende Link schlägt Ihnen vor, Ihre Validierung auf die Dokumente, die von %s geschickt wurden, zu geben"
+msgstr "Mit dem folgenden link können Sie eine Bewertungsanfrage für Dokumente bearbeiten, die von %s an Sie gesandt wurden"
 
 #: lib/classes/eventsmanager/notify/validationdone.class.php:158
 #, php-format
 msgid "%1$s a envoye son rapport de validation de %2$s"
-msgstr "%1$s hat seinen Validierungsbericht von %2$s versendet"
+msgstr "%1$s hat seinen Bestätigungsbericht von %2$s versendet"
 
 #: lib/classes/eventsmanager/notify/validationdone.class.php:176
 msgid "Rapport de Validation"
-msgstr "Validierungsbericht"
+msgstr "Bestätigungsbericht"
 
 #: lib/classes/eventsmanager/notify/validationdone.class.php:185
 msgid "Reception d'un rapport de validation"
-msgstr "eingehenden Validierungsbericht"
+msgstr "Empfang eines Bestätigungsberichtes"
 
 #: lib/classes/eventsmanager/notify/validationdone.class.php:210
 #, php-format
@@ -959,25 +959,25 @@ msgstr "Validierungsbericht von %1$s für %2$s"
 #: lib/classes/eventsmanager/notify/validationdone.class.php:216
 #, php-format
 msgid "%s a rendu son rapport, consulter le en ligne a l'adresse suivante"
-msgstr "%s hat seinen Bericht geteilt, bitte lesen Sie online unter folgende Adresse"
+msgstr "%s hat seine Bewertung abgegeben und kann online unter folgende Adresse eingesehen werden"
 
 #: lib/classes/eventsmanager/notify/validationreminder.class.php:177
 #, php-format
 msgid "Rappel : Il vous reste %1$d jours pour valider %2$s de %3$s"
-msgstr "Mahnung: Sie haben %1$d verbleibende Tage, um %2$s von %3$s zu bestätigen"
+msgstr "Zur Erinnerung: Sie haben %1$d verbleibende Tage, um %2$s von %3$s zu bestätigen"
 
 #: lib/classes/eventsmanager/notify/validationreminder.class.php:200
 msgid "Rappel pour une demande de validation"
-msgstr "Mahnung für eine Validierungsanfrage"
+msgstr "Erinnerung für eine Bestätigungsanfrage"
 
 #: lib/classes/eventsmanager/notify/validationreminder.class.php:212
 msgid "push::mail:: Rappel de demande de validation de documents"
-msgstr "Mahnung für eine Validierungsanfrage von Dokumenten"
+msgstr "Erinnerung für eine Bewertungsanfrage von Dokumenten"
 
 #: lib/classes/eventsmanager/notify/validationreminder.class.php:216
 #, php-format
 msgid "Il ne vous reste plus que %d jours pour terminer votre validation"
-msgstr "%d verbleibenden Tage, um Ihre Validierung zu senden"
+msgstr "%d verbleibenden Tage um Ihre Bewertung zu senden"
 
 #: lib/classes/module/client.class.php:25
 #: lib/classes/module/client.class.php:26
@@ -986,27 +986,27 @@ msgstr "Name des Sammelkorbes"
 
 #: lib/classes/module/client.class.php:27
 msgid "export:: aucun document n'est disponible au telechargement"
-msgstr "Keine Dokumente sind herunterzuladen"
+msgstr "Es stehen keine Dokumente zum download bereit"
 
 #: lib/classes/module/client.class.php:28
 msgid "invite:: Redirection vers la zone d'authentification, cliquez sur OK pour continuer ou annulez"
-msgstr "Umleitung auf die Anmelde-Seite, bitte klicken Sie OK auf Weiter oder Abbrechen zum fortfahren"
+msgstr "Umleitung auf die Anmelde-Seite. Mit OK kommen Sie zur Anmeldeseite und mit klick auf Abbrechen können Sieauf dieser Seite fortfahren"
 
 #: lib/classes/module/client.class.php:30
 msgid "phraseanet::erreur: Une erreur est survenue, si ce probleme persiste, contactez le support technique"
-msgstr "Leider ist ein Fehler aufgetreten, sollte dieser Fehler wieder vorkommen, kontaktieren Sie bitte die technische Unterstützung"
+msgstr "Leider ist ein Fehler aufgetreten. Sollte sich dieser Fehler wiederholen kontaktieren Sie bitte den Administrator"
 
 #: lib/classes/module/client.class.php:31
 msgid "phraseanet::erreur: La connection au serveur Phraseanet semble etre indisponible"
-msgstr "Die Verbindung mit Phraseanet Server erscheint, nicht verfügbar zu sein"
+msgstr "Die Verbindung mit Phraseanet Server ist derzeit nich verfügbar"
 
 #: lib/classes/module/client.class.php:32
 msgid "phraseanet::erreur: Votre session est fermee, veuillez vous re-authentifier"
-msgstr "Sie sind nun abgemeldet, bitte loggen Sie sich wieder ein"
+msgstr "Sie sind nun abgemeldet. Bitte loggen Sie sich wieder ein"
 
 #: lib/classes/module/client.class.php:33
 msgid "paniers::Vous etes sur le point de supprimer ce panier. Cette action est irreversible. Souhaitez-vous continuer ?"
-msgstr "Sie sind dabei, diesen Sammelkorb zu löschen. Diese Aktion kann nicht gelöscht werden. Möchten Sie trotzdem fortsetzen?"
+msgstr "Sie sind dabei diesen Sammelkorb zu löschen. Diese Aktion kann nicht rückgängig werden. Möchten Sie trotzdem fortsetzen?"
 
 #: lib/classes/module/client.class.php:34
 msgid "boutton::annuler"
@@ -1071,7 +1071,7 @@ msgstr "%"
 
 #: lib/classes/module/report.class.php:675
 msgid "report:: telechargement"
-msgstr "Herunterladen"
+msgstr "Download"
 
 #: lib/classes/module/report.class.php:676
 msgid "report:: record id"
@@ -1135,7 +1135,7 @@ msgstr "Sonntag"
 
 #: lib/classes/module/report.class.php:712
 msgid "janvier"
-msgstr "Januar"
+msgstr "Jänner"
 
 #: lib/classes/module/report.class.php:713
 msgid "fevrier"
@@ -1235,7 +1235,7 @@ msgstr "Anfrage"
 
 #: lib/classes/module/report/activity.class.php:235
 msgid "report:: questions sans reponses"
-msgstr "häufigsten gestellten Fragen"
+msgstr "Anfragen ohne Ergebnis"
 
 #: lib/classes/module/report/activity.class.php:236
 msgid "report:: questions les plus posees"
@@ -1244,19 +1244,19 @@ msgstr "häufigsten gestellten Fragen"
 #: lib/classes/module/report/activity.class.php:362
 #, php-format
 msgid "report:: Telechargement effectue par l'utilisateur %s"
-msgstr "Herunterladen für den Benutzer %s"
+msgstr "Download pro Nutzer %s"
 
 #: lib/classes/module/report/activity.class.php:375
 msgid "report:: telechargements par jour"
-msgstr "Herunterladen"
+msgstr "Download pro Tag"
 
 #: lib/classes/module/report/activity.class.php:530
 msgid "report:: Detail des connexions"
-msgstr "Verbindungen"
+msgstr "Verbindungsdetails"
 
 #: lib/classes/module/report/activity.class.php:588
 msgid "report:: Detail des telechargements"
-msgstr "Herunterladen"
+msgstr "Downloaddetails"
 
 #: lib/classes/module/report/add.class.php:50
 msgid "report:: document ajoute"
@@ -1268,7 +1268,7 @@ msgstr "Verbindungen"
 
 #: lib/classes/module/report/download.class.php:53
 msgid "report:: telechargements"
-msgstr "Herunterladen"
+msgstr "Download"
 
 #: lib/classes/module/report/edit.class.php:50
 msgid "report:: edited documents"
@@ -1288,7 +1288,7 @@ msgstr "Bildschirmauflösung"
 
 #: lib/classes/module/report/nav.class.php:321
 msgid "report:: navigateurs et plateforme"
-msgstr "Webbrowser und Plattforme"
+msgstr "Webbrowser und Plattformen"
 
 #: lib/classes/module/report/nav.class.php:388
 msgid "report:: modules"
@@ -1324,11 +1324,11 @@ msgstr "\"Pushed\" Dokumente"
 
 #: lib/classes/module/report/validate.class.php:50
 msgid "report:: validated documents"
-msgstr "Validierte Dokumente"
+msgstr "Bestätigte Dokumente"
 
 #: lib/classes/record/adapter.class.php:930
 msgid "reponses::document sans titre"
-msgstr "unbetitelt"
+msgstr "ohne Titel"
 
 #: lib/classes/record/exportElement.class.php:143
 #: lib/classes/record/exportElement.class.php:149
@@ -1393,7 +1393,7 @@ msgstr "eine Feldname wird vor dem Operator %s erwartet"
 #: lib/classes/searchEngine/adapter/phrasea/queryParser.class.php:1130
 #, php-format
 msgid "qparser::Formulation incorrecte, une valeur est attendue apres l operateur %s"
-msgstr "falsche Formulierung, eine Werte wird nach Operator %s erwartet"
+msgstr "falsche Formulierung, ein Werte wird nach dem Operator %s erwartet"
 
 #: lib/classes/searchEngine/adapter/phrasea/queryParser.class.php:1650
 msgid "qparser:: erreur : trop de parentheses fermantes"
@@ -1402,7 +1402,7 @@ msgstr "Zuviele schliessende Klammern"
 #: lib/classes/searchEngine/adapter/phrasea/queryParser.class.php:1771
 #, php-format
 msgid "qparser::Formulation incorrecte, une valeur est attendu apres %s"
-msgstr "falsche Formulierung, eine Werte wird nach %s erwartet"
+msgstr "falsche Formulierung, ein Wert wird nach %s erwartet"
 
 #: lib/classes/searchEngine/adapter/phrasea/queryParser.class.php:1843
 #: lib/classes/searchEngine/adapter/phrasea/queryParser.class.php:1868
@@ -1413,7 +1413,7 @@ msgstr "Eine Abfrage kann nicht mit %s beginnen"
 #: lib/classes/searchEngine/adapter/phrasea/queryParser.class.php:1852
 #, php-format
 msgid "qparser::Formulation incorrecte, ne peut suivre un operateur :  %s"
-msgstr "falsche Formulierung, kann nicht ein Operator: %s folgen"
+msgstr "falsche Formulierung, kann nicht einem Operator: %s folgen"
 
 #: lib/classes/searchEngine/adapter/phrasea/queryParser.class.php:1878
 #, php-format
@@ -1471,7 +1471,7 @@ msgstr "Frist vor Bearbeitung"
 
 #: lib/classes/task/period/archive.class.php:259
 msgid "task::archive:deplacer les fichiers archives dans _archived"
-msgstr "die archivierte Dateien nach _archived verschieben"
+msgstr "die archivierten Dateien nach _archived verschieben"
 
 #: lib/classes/task/period/archive.class.php:261
 msgid "task::archive:deplacer les fichiers non-archives dans _error"
@@ -1492,7 +1492,7 @@ msgstr "gefundenen Dateien nach einem Hotfolder archivieren"
 #: lib/classes/task/period/archive.class.php:356
 #, php-format
 msgid "task::archive:Can't create or go to folder '%s'"
-msgstr "unmöglich, '%s' Ordner zu erstellen oder erreichen"
+msgstr "unmöglich, '%s' Ordner zu erstellen oder zu erreichen"
 
 #: lib/classes/task/period/cindexer.class.php:92
 msgid "task::cindexer:Indexation"
@@ -1622,11 +1622,11 @@ msgstr "Einige Dokumente konnten nicht übertragen werden"
 
 #: lib/classes/task/period/ftp.class.php:742
 msgid "Des difficultes ont ete rencontres a la connection au serveur distant"
-msgstr "Schwierigkeiten erschienen mit dem Verbindung auf dem entfernten Server"
+msgstr "Probleme sind bei der Verbindung mit dem entfernten Server aufgetreten"
 
 #: lib/classes/task/period/ftp.class.php:744
 msgid "La connection vers le serveur distant est OK"
-msgstr "Verbindung auf dem entfernten Server ist OK"
+msgstr "Verbindung mit dem entfernten Server ist OK"
 
 #: lib/classes/task/period/ftp.class.php:756
 msgid "task::ftp:Details des fichiers"
@@ -1695,7 +1695,7 @@ msgstr "Status verschieben oder ändern, nach zeitlichen Kriterien"
 
 #: lib/classes/task/period/subdef.class.php:41
 msgid "task::subdef:creation des sous definitions des documents d'origine"
-msgstr "Erstellung der Unterauflösungen"
+msgstr "Erstellung von Unterauflösungen"
 
 #: lib/classes/task/period/subdef.class.php:52
 msgid "task::subdef:creation des sous definitions"
@@ -1743,7 +1743,7 @@ msgstr "Strukturfehlende Metadaten löschen"
 #: lib/classes/User/Adapter.class.php:413
 #, php-format
 msgid "A user already exists with email addres %s"
-msgstr "Ein Benutzer existiert schon mit Email %s"
+msgstr "Ein Benutzer existiert schon mit dem Email %s"
 
 #: lib/classes/User/Adapter.class.php:1356
 #, php-format
@@ -1760,7 +1760,7 @@ msgstr "Zeitzone"
 
 #: lib/conf.d/_GV_template.php:95
 msgid "reglages:: Nom de linstallation"
-msgstr "einziger Schlüssel des Falles"
+msgstr "Name der Datenbank"
 
 #: lib/conf.d/_GV_template.php:103
 msgid "reglages:: Langue par defaut"
@@ -2276,7 +2276,7 @@ msgstr "Die Dienstleistung wird in einige Minuten wieder verfügbar sein."
 
 #: tmp/cache_twig/02/ee/d8a87fa43d0d48fcbacf6d02028b.php:34
 msgid "Vous avez autorise ces applications a acceder a votre compte"
-msgstr "Sie haben diese Applikationen berechtigt, einen Zugriff auf Ihr Konto zu haben."
+msgstr "Sie haben dieser Applikationen eine Zugriffsberechtigung auf Ihr Konto erteilt"
 
 #: tmp/cache_twig/02/ee/d8a87fa43d0d48fcbacf6d02028b.php:61
 msgid "Revoquer l'access"
@@ -2300,7 +2300,7 @@ msgstr "Anwendungen"
 
 #: tmp/cache_twig/02/ee/d8a87fa43d0d48fcbacf6d02028b.php:140
 msgid "Naviguez et gerez les applications que vous souhaitez autoriser a acceder a vos informations Phraseanet"
-msgstr "Durchsuchen Sie und verwalten Sie die Applikationen, die Sie berechtigen, einen Zugriff auf Ihre Phraseanet Informationen zu haben."
+msgstr "Durchsuchen und verwalten Sie die Applikationen, die Sie berechtigen, einen Zugriff auf Ihre Phraseanet Informationen zu haben."
 
 #: tmp/cache_twig/02/ee/d8a87fa43d0d48fcbacf6d02028b.php:145
 msgid "Developpeurs"
@@ -2399,7 +2399,7 @@ msgstr "Allgemeine"
 
 #: tmp/cache_twig/07/fc/40153184d66ad31ac62daad2522e.php:183
 msgid "report:: (connexions) OS et navigateurs"
-msgstr "pro Plattforme und Webbrowser"
+msgstr "pro Plattform und Webbrowser"
 
 #: tmp/cache_twig/07/fc/40153184d66ad31ac62daad2522e.php:271
 msgid "report:: par utilisateurs"
@@ -2507,7 +2507,7 @@ msgstr "angemeldet bleiben"
 
 #: tmp/cache_twig/08/65/d09b4a0e666fb11e5b0666a0cb93.php:60
 msgid "login::erreur: Les cookies sont desactives sur votre navigateur"
-msgstr "Ihre Webbrowser sollte so konfiguriert werden, dass er Cookies akzeptiert; Sie müssen diese Option aktivieren, wenn Sie Phraseanet IV benutzen möchten"
+msgstr "Ihr Webbrowser sollte unbedingt Cookies akzeptieren, damit Sie Phraseanet IV benutzen können"
 
 #: tmp/cache_twig/08/65/d09b4a0e666fb11e5b0666a0cb93.php:70
 msgid "Vous etes maintenant deconnecte. A bientot."
@@ -2548,7 +2548,7 @@ msgstr "löschen"
 
 #: tmp/cache_twig/09/09/565a2afac5c75ab06c1c2dbec4d1.php:109
 msgid "Derniere mise a jour le %updated_on%"
-msgstr "letzte Update am %updated_on%"
+msgstr "letztes Update am %updated_on%"
 
 #: tmp/cache_twig/09/09/565a2afac5c75ab06c1c2dbec4d1.php:127
 msgid "dans %feed_name%"
@@ -2564,7 +2564,7 @@ msgstr "Beschreibung"
 
 #: tmp/cache_twig/09/36/bf77d681b54db86a8445f384ca88.php:39
 msgid "Pour davantage d'informations, consulter le lien suivant %lien%"
-msgstr "Für mehrere Informationen, bitte sehen Sie folgendes Link %lien%"
+msgstr "Für weitere Informationen klicken Sie folgenden link %lien%"
 
 #: tmp/cache_twig/09/81/951f3c987474b17a9686305be82e.php:47
 msgid "Users"
@@ -2640,7 +2640,7 @@ msgstr "Anwenden"
 
 #: tmp/cache_twig/09/81/951f3c987474b17a9686305be82e.php:220
 msgid "reset users rights"
-msgstr "Reset users rights"
+msgstr "Nutzerrechte zurückstellen"
 
 #: tmp/cache_twig/09/81/951f3c987474b17a9686305be82e.php:235
 msgid "admin::compte-utilisateur id utilisateur"
@@ -2690,11 +2690,11 @@ msgstr "exportieren"
 
 #: tmp/cache_twig/09/81/951f3c987474b17a9686305be82e.php:819
 msgid "select at least one user"
-msgstr "No users selected"
+msgstr "Einen user auswählen"
 
 #: tmp/cache_twig/09/81/951f3c987474b17a9686305be82e.php:831
 msgid "are you sure you want reset rights ?"
-msgstr "Are you sure you want reset rights ?"
+msgstr "Sind Sie sicher, dass Sie die Rechte zurücksetzen wollen ?"
 
 #: tmp/cache_twig/09/81/951f3c987474b17a9686305be82e.php:848
 msgid "An error occured"
@@ -2702,7 +2702,7 @@ msgstr "Ein Fehler ist aufgetreten"
 
 #: tmp/cache_twig/09/81/951f3c987474b17a9686305be82e.php:855
 msgid "users rights have been reseted"
-msgstr "Users rights have been reset"
+msgstr "Nutzerrechte wurden zurückgesetzt"
 
 #: tmp/cache_twig/09/9c/a07ffdb3e121de2fbb9434c90319.php:21
 #: tmp/cache_twig/09/9c/a07ffdb3e121de2fbb9434c90319.php:27
@@ -2720,7 +2720,7 @@ msgstr[1] "%nb_rating% Likes"
 #: tmp/cache_twig/0b/4e/1f430effbbcb0daf1b9a9acb4b78.php:114
 #, php-format
 msgid "prod::thesaurusTab:dlg:Remplacement du candidat \"%s\" :"
-msgstr "Ertetzung des möglichen Begriffes \"%s\":"
+msgstr "Ersetzung des möglichen Begriffes \"%s\":"
 
 #: tmp/cache_twig/0b/4e/1f430effbbcb0daf1b9a9acb4b78.php:119
 #, php-format
@@ -2742,7 +2742,7 @@ msgstr "Löschen..."
 #: tmp/cache_twig/0b/4e/1f430effbbcb0daf1b9a9acb4b78.php:412
 #, php-format
 msgid "prod::thesaurusTab:dlg:accepter les %d termes candidats ?"
-msgstr "die %d mögliche Begriffe annehmen?"
+msgstr "die %d möglichen Begriffe annehmen?"
 
 #: tmp/cache_twig/0b/4e/1f430effbbcb0daf1b9a9acb4b78.php:420
 #, php-format
@@ -2783,7 +2783,7 @@ msgstr "Begriff \"%s\" von der Beschreibung(en) löschen?"
 #: tmp/cache_twig/0b/4e/1f430effbbcb0daf1b9a9acb4b78.php:602
 #: tmp/cache_twig/0b/4e/1f430effbbcb0daf1b9a9acb4b78.php:860
 msgid "prod::thesaurusTab:tree:loading"
-msgstr "ladend"
+msgstr "wird geladen"
 
 #: tmp/cache_twig/0b/4e/1f430effbbcb0daf1b9a9acb4b78.php:1232
 msgid "boutton::ok"
@@ -2877,19 +2877,19 @@ msgstr "Wahrscheinlich ist JavaScript in Ihrem Browser deaktiviert. Sie müssen 
 
 #: tmp/cache_twig/10/05/672e4a01e13ca90ac430fe043825.php:42
 msgid "phraseanet::browser not compliant"
-msgstr "Ihr Webbrowser ist nicht Phraseanet IV konform"
+msgstr "Ihre Browser Einstellungen müssen geändert werden um Phraseanet IV nutzen zu können"
 
 #: tmp/cache_twig/10/05/672e4a01e13ca90ac430fe043825.php:44
 msgid "phraseanet::recommend browser"
-msgstr "Aus Geschwindigkeit- und Zuverlässigkeit Gründen empfehlen wir Ihnen, die neueste Version den folgenden Webbrowsern zu nutzen"
+msgstr "Aus Geschwindigkeit- und Zuverlässigkeitsgründen empfehlen wir Ihnen, die neuesten Versionen der folgenden Webbrowser zu nutzen"
 
 #: tmp/cache_twig/10/05/672e4a01e13ca90ac430fe043825.php:121
 msgid "Phraseanet recommande l'utilisation de Google Chrome Frame pour Internet Explorer"
-msgstr "Phraseanet empfehlt Ihnen, Google Chrome Frame für Internet Explorer zu benutzen"
+msgstr "Phraseanet empfiehlt Google Chrome Frame für Internet Explorer zu benutzen"
 
 #: tmp/cache_twig/10/05/672e4a01e13ca90ac430fe043825.php:125
 msgid "C'est gratuit et s'installe en quelques secondes. Pour Internet Explorer 6, 7, et 8 sur Windows 7 / Vista / XP SP2."
-msgstr "es ist kostenlos und in wenigen Sekunden installiert. Für Internet Explorer 6, 7 und 8 auf Windows 7 / Vista / XP SP2."
+msgstr "Diese Applikation ist kostenlos und in wenigen Sekunden installiert. Für Internet Explorer 6, 7 und 8 auf Windows 7 / Vista / XP SP2."
 
 #: tmp/cache_twig/10/05/672e4a01e13ca90ac430fe043825.php:130
 msgid "Ne plus afficher ce message"
@@ -2910,7 +2910,7 @@ msgstr "Sprache"
 #: tmp/cache_twig/10/14/f294b28413d46d6959201fd37c02.php:47
 #: tmp/cache_twig/10/14/f294b28413d46d6959201fd37c02.php:243
 msgid "Upload"
-msgstr "Hochladen"
+msgstr "upload"
 
 #: tmp/cache_twig/10/14/f294b28413d46d6959201fd37c02.php:64
 msgid "Vous n'avez selectionne aucun element"
@@ -2918,7 +2918,7 @@ msgstr "Sie haben kein Element ausgewählt."
 
 #: tmp/cache_twig/10/14/f294b28413d46d6959201fd37c02.php:68
 msgid "Les elements ne peuvent etre uploades (problemes de type ou de droit)"
-msgstr "Die Elemente können nicht hochgeladen werden (Typ oder Recht Probleme)."
+msgstr "Die Elemente können nicht hochgeladen werden (Typ oder Rechte Problem)."
 
 #: tmp/cache_twig/10/14/f294b28413d46d6959201fd37c02.php:71
 msgid "Le bridge Dailymotion ne prend en charge que les videos"
@@ -2970,7 +2970,7 @@ msgstr "öffentlich"
 
 #: tmp/cache_twig/10/14/f294b28413d46d6959201fd37c02.php:255
 msgid "Nous vous rappelons qu'il est de votre responsabilité de vous assurer que le contenu de la vidéo que vous allez mettre en ligne est conforme aux conditions d'utilisations"
-msgstr "Sie erklären sich damit einverstanden, dass Sie dafür verantwortlich sind: Stellen Sie sicher, dass der Video Inhalt, der Sie Online hochladen werden, entspricht die Nutzungsbedingungen."
+msgstr "Sie erklären hiemit Ihr Einverständnis: Sie sind alleine für den von Ihnen hochgeladenen Inhalt der Videos verantwortlich und haben auch die Rechte für diese Videos"
 
 #: tmp/cache_twig/10/8e/67ad474f1160c83a96f843815e7d.php:23
 msgid "Type texte"
@@ -3066,12 +3066,12 @@ msgstr "Dieses Feed ist öffentlich"
 
 #: tmp/cache_twig/12/a2/2021d9942666a7bae0d71012739c.php:278
 msgid "Une fois la publication supprimee, les donnees publiees seront definitivement perdues. Continuer ?"
-msgstr "Nachdem Sie die Veröffentlichung gelöscht haben, werden die veröffentliche Daten eingültig verloren"
+msgstr "Nachdem Sie die Veröffentlichung gelöscht haben, gehen die veröffentlichen Daten eingültig verloren. Fortsetzen?"
 
 #: tmp/cache_twig/12/dc/9a7289760e7d2e66ba64584108ab.php:14
 #: tmp/cache_twig/12/dc/9a7289760e7d2e66ba64584108ab.php:19
 msgid "validation::envoyer mon rapport"
-msgstr "Mein Bericht senden"
+msgstr "Meinen Bericht senden"
 
 #: tmp/cache_twig/13/3d/b3dc2adfdbd4e22924e6def443c1.php:14
 msgid "You are not authorized to do this"
@@ -3091,7 +3091,7 @@ msgstr "Editor kann Inhalte verändern"
 
 #: tmp/cache_twig/13/3d/b3dc2adfdbd4e22924e6def443c1.php:38
 msgid "Access user have readonly access"
-msgstr "Viewer hat ein Nur-Lesen Zugriff"
+msgstr "Viewer haben nur einen - Lese Zugriff"
 
 #: tmp/cache_twig/13/3d/b3dc2adfdbd4e22924e6def443c1.php:46
 msgid "Find a user"
@@ -3190,7 +3190,7 @@ msgstr "folgende"
 
 #: tmp/cache_twig/1f/b8/8eb333db33342e0e3065cf81acdb.php:53
 msgid "boutton::telecharger"
-msgstr "herunterladen"
+msgstr "download"
 
 #: tmp/cache_twig/23/31/8a648fe343aa7bb7465a372fadc5.php:136
 msgid "En attente"
@@ -3214,7 +3214,7 @@ msgstr "Die Liste teilen"
 
 #: tmp/cache_twig/24/9e/91b44faaa7a1a779d0bbe6403278.php:64
 msgid "Set sharing permission"
-msgstr "Legen sie die Teilung Zugriffe fest"
+msgstr "Legen sie die sharing Berechtigungen fest"
 
 #: tmp/cache_twig/24/9e/91b44faaa7a1a779d0bbe6403278.php:79
 msgid "Delete"
@@ -3258,7 +3258,7 @@ msgstr "Alle"
 
 #: tmp/cache_twig/26/4a/a88de5c8ef8ff0f4e7b7c33fd479.php:19
 msgid "VALIDATION"
-msgstr "Validierung"
+msgstr "Bestätigung"
 
 #: tmp/cache_twig/26/4a/a88de5c8ef8ff0f4e7b7c33fd479.php:25
 msgid "lightbox::recaptitulatif"
@@ -3299,11 +3299,11 @@ msgstr "Zugriffscode"
 
 #: tmp/cache_twig/2b/30/d8caf9ef0ae182c4f330cd586c76.php:120
 msgid "Copiez le code ci-dessous, retournez dans votre application et collez-le &agrave l'endroit requis :"
-msgstr "Kopieren Sie bitte einfach die unstehenden Code, gehen Sie in Ihre Anwendung zurück und fügen Sie sie im angeforderten Ort ein :"
+msgstr "Kopieren Sie bitte einfach den untenstehenden Code, gehen Sie in Ihrer Anwendung zurück und fügen Sie ihn am angeforderten Ort ein :"
 
 #: tmp/cache_twig/2c/19/c0ea416c356104ffdf45ed31cd94.php:12
 msgid "Limite temporelle"
-msgstr "zeitlich Begrenzung"
+msgstr "zeitliche Beschränkung"
 
 #: tmp/cache_twig/2c/19/c0ea416c356104ffdf45ed31cd94.php:19
 msgid "Base %base%"
@@ -3331,7 +3331,7 @@ msgstr "Benutzername / Passwort Fehler"
 
 #: tmp/cache_twig/2c/1e/674890db1226a661be3dbeecd46d.php:82
 msgid "Bonjour, veuillez vous identifier sur %home_title% :"
-msgstr "Guten Tag, bitte melden Sie sich auf  %home_title% an :"
+msgstr "Guten Tag! Bitte melden Sie sich auf  %home_title% an :"
 
 #: tmp/cache_twig/2c/1e/674890db1226a661be3dbeecd46d.php:95
 msgid "Se connecter"
@@ -3365,7 +3365,7 @@ msgstr "Über"
 #: tmp/cache_twig/2c/f0/0baabea228e3d526886065275e57.php:86
 #: tmp/cache_twig/2c/f0/0baabea228e3d526886065275e57.php:154
 msgid "Validations"
-msgstr "Validierungen"
+msgstr "Bestätigung"
 
 #: tmp/cache_twig/2c/f0/0baabea228e3d526886065275e57.php:96
 #: tmp/cache_twig/2c/f0/0baabea228e3d526886065275e57.php:222
@@ -3382,7 +3382,7 @@ msgstr "Zurück"
 
 #: tmp/cache_twig/2c/f0/0baabea228e3d526886065275e57.php:161
 msgid "Voici vos validations en cours"
-msgstr "Validierungen im Gange"
+msgstr "Hier sind Ihre aktuellen Bewertungen"
 
 #: tmp/cache_twig/2c/f0/0baabea228e3d526886065275e57.php:229
 msgid "Voici vos paniers"
@@ -3432,7 +3432,7 @@ msgstr "Dieses Feld ist erforderlich"
 
 #: tmp/cache_twig/33/bd/3f7434a025a7f4ace343dfa5715b.php:101
 msgid "forms::les mots de passe ne correspondent pas"
-msgstr "Die Passwörter sind nicht paarig"
+msgstr "Die Passwörter sind nicht gleich"
 
 #: tmp/cache_twig/33/bd/3f7434a025a7f4ace343dfa5715b.php:105
 msgid "Vous devez specifier une adresse email et un mot de passe valides"
@@ -3444,11 +3444,11 @@ msgstr "falsche Datenbankname"
 
 #: tmp/cache_twig/33/bd/3f7434a025a7f4ace343dfa5715b.php:113
 msgid "Il y a des erreurs, merci de les corriger avant de continuer"
-msgstr "Es gibt Fehler, bitte korrigieren Sie, bevor Sie fortfahren"
+msgstr "Fehler bei der Eingabe. Bitte korrigieren Sie diese bevor Sie fortfahren"
 
 #: tmp/cache_twig/33/bd/3f7434a025a7f4ace343dfa5715b.php:120
 msgid "forms::le mot de passe est trop similaire a l'identifiant"
-msgstr "Ihr Passwort ist Ihrer Benutzername zu ähnlich"
+msgstr "Ihr Passwort ist Ihrem Benutzernamen zu ähnlich"
 
 #: tmp/cache_twig/33/bd/3f7434a025a7f4ace343dfa5715b.php:124
 msgid "forms::la valeur donnee est trop courte"
@@ -3469,7 +3469,7 @@ msgstr "Sehr gut"
 
 #: tmp/cache_twig/33/bd/3f7434a025a7f4ace343dfa5715b.php:186
 msgid "Veuillez corriger les erreurs avant de poursuivre"
-msgstr "Bitte korrigieren Sie die Fehler, bevor Sie fortsetzen können"
+msgstr "Bitte korrigieren Sie die Fehler bevor Sie fortsetzen"
 
 #: tmp/cache_twig/33/bd/3f7434a025a7f4ace343dfa5715b.php:333
 msgid "Successfull connection"
@@ -3477,21 +3477,21 @@ msgstr "Erfolgreiche Verbindung"
 
 #: tmp/cache_twig/33/bd/3f7434a025a7f4ace343dfa5715b.php:339
 msgid "Warning, this database is not empty"
-msgstr "Achtung, diese Datenbank ist nicht leer"
+msgstr "Achtung: Diese Datenbank ist nicht leer"
 
 #: tmp/cache_twig/33/bd/3f7434a025a7f4ace343dfa5715b.php:352
 msgid "Connection is OK but database does not exists or can not be accessed"
-msgstr "Verbindung ist OK aber die Datenbank existiert nicht oder kann nicht zugegriffen werden"
+msgstr "Verbindung ist OK aber die Datenbank existiert nicht oder es kann nicht zugegriffen werden"
 
 #: tmp/cache_twig/33/bd/3f7434a025a7f4ace343dfa5715b.php:359
 #: tmp/cache_twig/33/bd/3f7434a025a7f4ace343dfa5715b.php:371
 #: tmp/cache_twig/33/bd/3f7434a025a7f4ace343dfa5715b.php:379
 msgid "Unable to connect to MySQL server"
-msgstr "Unfähig, mit einem MySQL-Server zu verbinden"
+msgstr "Es ist nicht möglich eine Verbindung zum MySQL-Server aufzubauen"
 
 #: tmp/cache_twig/33/bd/3f7434a025a7f4ace343dfa5715b.php:429
 msgid "Bonjour, vous etes sur le point d'installer Phraseanet."
-msgstr "Guten Tag, Sie sind bereits, Phraseanet zu installieren."
+msgstr "Hallo! Sie sind im Begriff Phraseanet IV zu installieren."
 
 #: tmp/cache_twig/33/bd/3f7434a025a7f4ace343dfa5715b.php:435
 msgid "Consultez en ligne les pré-requis et la configuration du serveur web"
@@ -3503,7 +3503,7 @@ msgstr "Sie müssen einen MySQL Server und Ablageordner für Ihre Dokumente fest
 
 #: tmp/cache_twig/33/bd/3f7434a025a7f4ace343dfa5715b.php:451
 msgid "Avant de continuer, prenez connaissance des points ci-dessous. Vous pouvez continuer sans corriger ces problèmes."
-msgstr "Bevor Sie fortsetzen können, bitte beachten Sie den folgenden Hinweis. Sie können forsetzen, ohne diese Probleme zu korrigieren."
+msgstr "Bevor Sie fortfahren, lesen Sie die folgenden Punkte. Sie können ohne Korrektur dieser Probleme fortsetzen."
 
 #: tmp/cache_twig/33/bd/3f7434a025a7f4ace343dfa5715b.php:517
 msgid "Prerequisite and Configuration"
@@ -3531,7 +3531,7 @@ msgstr "Keine Sorge: Sie können die Konfiguration später verändern."
 
 #: tmp/cache_twig/33/bd/3f7434a025a7f4ace343dfa5715b.php:669
 msgid "Creation de votre compte"
-msgstr "Erstellung von Ihrem Benutzerkonto"
+msgstr "Erstellung Ihres Benutzerkontos"
 
 #: tmp/cache_twig/33/bd/3f7434a025a7f4ace343dfa5715b.php:681
 msgid "Votre adresse email"
@@ -3575,7 +3575,7 @@ msgstr "Ihre Email wird für Ihre Anmeldung benötigt"
 
 #: tmp/cache_twig/33/bd/3f7434a025a7f4ace343dfa5715b.php:762
 msgid "Please be sure it is still valid and you can access it"
-msgstr "Bitte achten Sie, dass sie immer noch gültig ist und dass Sie einen Zugriff darauf haben"
+msgstr "Bitte beachten Sie, dass sie immer noch gültig ist und das Sie einen Zugriff darauf haben"
 
 #: tmp/cache_twig/33/bd/3f7434a025a7f4ace343dfa5715b.php:807
 msgid "setup::Configuration de la base de compte ApplicationBox"
@@ -3622,7 +3622,7 @@ msgstr "Es speichert Benutzer Daten, Rechte und Referenzen zu DataBoxes, wo Date
 
 #: tmp/cache_twig/33/bd/3f7434a025a7f4ace343dfa5715b.php:920
 msgid "Phraseanet strongly recommends the use of %link_start%MariaDB%link_end% as a replacement for MySQL."
-msgstr "Phraseanet empfehlt dringend die Benutzung von %link_start%MariaDB%link_end%, um MySQL zu ersetzen"
+msgstr "Phraseanet empfiehlt dringend die Benutzung von %link_start%MariaDB%link_end%, um MySQL zu ersetzen"
 
 #: tmp/cache_twig/33/bd/3f7434a025a7f4ace343dfa5715b.php:964
 msgid "setup::Configuration des repertoires de stockage"
@@ -4351,7 +4351,7 @@ msgstr "Sind Sie sicher, %number% Fotos zu löschen?"
 
 #: tmp/cache_twig/46/21/f5a038e4c5a3f4677f8ee17a5d45.php:38
 msgid "Erreur lors de votre authentification"
-msgstr "Authentifizierungsfehler"
+msgstr "Anmeldungsfehler"
 
 #: tmp/cache_twig/46/21/f5a038e4c5a3f4677f8ee17a5d45.php:53
 msgid "Vous etes authentifie avec succes"
@@ -4359,11 +4359,11 @@ msgstr "Sie haben sich erfolgreich angemeldet."
 
 #: tmp/cache_twig/46/21/f5a038e4c5a3f4677f8ee17a5d45.php:59
 msgid "Si cette fenetre ne se ferme pas automatiquement, fermez la, et raffraichissez votre compte"
-msgstr "Wenn dieses Fenster nicht automatisch schliesst, dann schliessen Sie es und aktualisieren Sie Ihr Konto."
+msgstr "Wenn dieses Fenster nicht automatisch schließt, dann schließen Sie es und aktualisieren Sie Ihr Konto."
 
 #: tmp/cache_twig/47/cc/7278d06f416783c9815cd63e2f09.php:17
 msgid "Vous etes actuellement deconnecte de votre compte, vous devez vous connecter pour continuer"
-msgstr "Sie sind zurzeit abgemeldet. Loggen Sie sich bitte zuerst ein, um fortzusetzen."
+msgstr "Sie sind zur Zeit abgemeldet. Loggen Sie sich bitte zuerst ein um fortzusetzen zu können."
 
 #: tmp/cache_twig/47/cc/7278d06f416783c9815cd63e2f09.php:62
 msgid "boutton::refresh"
@@ -4383,11 +4383,11 @@ msgstr "Handlungen"
 
 #: tmp/cache_twig/4d/c1/7d0c2228d36d650b2be2d9a43835.php:15
 msgid "Les indications donnees ci dessous sont a titre informatif."
-msgstr "Die Informationen hier dienen nur zur Orientierung."
+msgstr "Diese Informationen dienen nur zur Orientierung."
 
 #: tmp/cache_twig/4d/c1/7d0c2228d36d650b2be2d9a43835.php:19
 msgid "Si vous ne les respectez pas, les documents seront correctement indexes, mais les metadonnees inscrites risquent d'etre erronnees"
-msgstr "Wenn Sie sie nicht beachten, werden die Dokumente korrekt indiziert aber die Metadaten werden vielleicht falsch sein."
+msgstr "Wenn Sie sie nicht beachten werden die Dokumente korrekt indiziert aber die Metadaten könnten eventuell falsch sein."
 
 #: tmp/cache_twig/4d/c1/7d0c2228d36d650b2be2d9a43835.php:26
 msgid "Ces informations sont directement fournies par la norme de metadonnees de ce champ : %norm_name%"
@@ -4476,11 +4476,11 @@ msgstr "Einige Benutzer haben die selbe Email Adresse. Sie können dieses Proble
 
 #: tmp/cache_twig/52/48/d7b24984e78d1532173f20658d9a.php:163
 msgid "Une mise a jour de l'application est necessaire, il est vivement recommande de l'effectuer en ligne de commande via la commande :"
-msgstr "eine Update der Anwendung ist notwendig. Wir empfehlen online es zu tun mit Befehlszeile:"
+msgstr "Ein Update der Anwendung ist notwendig. Wir empfehlen dies online mit folgender Befehlszeile zu tun :"
 
 #: tmp/cache_twig/52/48/d7b24984e78d1532173f20658d9a.php:182
 msgid "Si toutefois vous n'aviez pas acces à la console, suivez le lien suivant"
-msgstr "Wenn keinen Zugriff zur Konsole, bitte folgen Sie das Link:"
+msgstr "Wenn Sie keinen Zugriff auf die Konsole haben, folgen Sie dem link:"
 
 #: tmp/cache_twig/52/48/d7b24984e78d1532173f20658d9a.php:202
 msgid "Progression de la mise a jour : "
@@ -4552,7 +4552,7 @@ msgstr "Quoten"
 
 #: tmp/cache_twig/5c/72/a1b63fb5c6635e4efaa3f5331d5f.php:131
 msgid "Restrictions de telechargement"
-msgstr "Herunterladen Einschränkungen"
+msgstr "Download Einschränkungen"
 
 #: tmp/cache_twig/5c/72/a1b63fb5c6635e4efaa3f5331d5f.php:153
 msgid "Droits"
@@ -4628,7 +4628,7 @@ msgstr "Erfolgreiche Installation"
 
 #: tmp/cache_twig/61/1a/09e7e46699dea233edb7fa1db810.php:311
 msgid "Ajouter un nouvel utilisateur"
-msgstr "einen neuen benutzer hinzufügen"
+msgstr "einen neuen Benutzer hinzufügen"
 
 #: tmp/cache_twig/61/1a/09e7e46699dea233edb7fa1db810.php:316
 msgid "Adresse email du nouvel utilisateur"
@@ -4690,11 +4690,11 @@ msgstr "Beschreibung"
 
 #: tmp/cache_twig/6c/f6/2b8926b3d1c28a32e61adb464dac.php:20
 msgid "Aucune notification"
-msgstr "Benachrichtigungen"
+msgstr "keine Benachrichtigungen"
 
 #: tmp/cache_twig/6c/f6/2b8926b3d1c28a32e61adb464dac.php:29
 msgid "toutes les notifications"
-msgstr "Benachrichtigungen"
+msgstr "alle Benachrichtigungen"
 
 #: tmp/cache_twig/6e/86/0f7607e846fbfef2f3d8a63745a2.php:78
 msgid "veuillez choisir au minimum une collection"
@@ -4734,7 +4734,7 @@ msgstr "(%length%)"
 
 #: tmp/cache_twig/71/76/405af9058132405d577a00d3ffb7.php:16
 msgid "Reordonner automatiquement"
-msgstr "automatisch wider ordnen"
+msgstr "automatisch neu anordnen"
 
 #: tmp/cache_twig/71/76/405af9058132405d577a00d3ffb7.php:21
 msgid "Choisir"
@@ -4778,15 +4778,15 @@ msgstr "1 - Zeit"
 
 #: tmp/cache_twig/79/f8/0ba081da1ba0a0dcbb3e67c823aa.php:17
 msgid "Le connecteur API requis n'est pas configure correctement, veuillez contacter un administrateur"
-msgstr "Das benötigte API Connector wurde falsch konfiguriert. Bitte kontaktieren Sie einen Administrator."
+msgstr "Der benötigte API Connector wurde falsch konfiguriert. Bitte kontaktieren Sie einen Administrator."
 
 #: tmp/cache_twig/7e/38/00f8ed117d6893741e4218ff0a39.php:122
 msgid "Etes vous sur de vouloir supprimer cette metadonnee ? Elle sera definitivement perdue"
-msgstr "Sind Sie sicher, diese Metadaten zu löschen? Nachdem wird sie endgültig verloren werden"
+msgstr "Sind Sie sicher diese Metadaten zu löschen? Dieser Vorgang kann nicht rückgängig gemacht werden"
 
 #: tmp/cache_twig/7e/38/00f8ed117d6893741e4218ff0a39.php:145
 msgid "Attention, deux champs ne peuvent représenter le meme element Dublin Core."
-msgstr "Vorsicht, zwei Felder können nicht das gleiche Dublin Core Element darstellen."
+msgstr "Achtung: zwei Felder können nicht das gleiche Dublin Core Element darstellen."
 
 #: tmp/cache_twig/7e/38/00f8ed117d6893741e4218ff0a39.php:147
 msgid "La precedente attribution a ete desactivee"
@@ -4850,19 +4850,19 @@ msgstr "als Titel anzeigen"
 
 #: tmp/cache_twig/7e/38/00f8ed117d6893741e4218ff0a39.php:483
 msgid "Attention, la source descriptive selectionne n'est pas multivaluee, vous devriez decocher cette case"
-msgstr "Vorsicht, die ausgewählte beschreibende Quelle ist nicht mehrwertig. Sie müssten diesen Kasten deaktivieren."
+msgstr "Achtung: Die ausgewählte beschreibende Quelle ist nicht mehrwertig. Sie müssten diesen Kasten deaktivieren."
 
 #: tmp/cache_twig/7e/38/00f8ed117d6893741e4218ff0a39.php:487
 msgid "Attention, la source descriptive selectionne est multivaluee, vous devriez cocher cette case"
-msgstr "Vorsicht, die ausgewählte beschreibende Quelle ist mehrwertig. Sie müssten diesen Kasten aktivieren."
+msgstr "Achtung: Die ausgewählte beschreibende Quelle ist mehrwertig. Sie müssten diesen Kasten aktivieren."
 
 #: tmp/cache_twig/7e/38/00f8ed117d6893741e4218ff0a39.php:588
 msgid "Attention, la source descriptive selectionne n'est pas en lecture seule, vous devriez decocher cette case"
-msgstr "Vorsicht, die ausgewählte beschreibende Quelle ist nicht schreibgeschützt. Sie müssten diesen Kasten deaktivieren."
+msgstr "Achtung: Die ausgewählte beschreibende Quelle ist nicht schreibgeschützt. Sie müssten diesen Kasten deaktivieren."
 
 #: tmp/cache_twig/7e/38/00f8ed117d6893741e4218ff0a39.php:592
 msgid "Attention, la source descriptive selectionne est en lecture seule, vous devriez cocher cette case"
-msgstr "Vorsicht, die ausgewählte beschreibende Quelle ist schreibgeschützt. Sie müssten diesen Kasten aktivieren."
+msgstr "Achtung: Die ausgewählte beschreibende Quelle ist schreibgeschützt. Sie müssten diesen Kasten aktivieren."
 
 #: tmp/cache_twig/7e/38/00f8ed117d6893741e4218ff0a39.php:792
 msgid "Tous"
@@ -4890,7 +4890,7 @@ msgstr "arabisch"
 
 #: tmp/cache_twig/86/5f/b2d6707e2c88807bdab257351922.php:18
 msgid "Retour aux commandes"
-msgstr "Zurück zur Bestellungen"
+msgstr "Zurück zur Bestellung"
 
 #: tmp/cache_twig/86/5f/b2d6707e2c88807bdab257351922.php:26
 msgid "Destinataire"
@@ -4906,7 +4906,7 @@ msgstr "Termin"
 
 #: tmp/cache_twig/86/5f/b2d6707e2c88807bdab257351922.php:58
 msgid "Utilisation prevue"
-msgstr "Zweckbestimmung"
+msgstr "Verwendungszweck"
 
 #: tmp/cache_twig/86/5f/b2d6707e2c88807bdab257351922.php:68
 msgid "Nombre total d'element commandes"
@@ -4914,7 +4914,7 @@ msgstr "Gesamtanzahl von bestellten Dokumenten"
 
 #: tmp/cache_twig/86/5f/b2d6707e2c88807bdab257351922.php:80
 msgid "Il se peux que vous ne voyez pas tous les elements. Vous ne verrez que les  elements correspondants aux collections sur lesquelles vous gerez les commandes"
-msgstr "Es ist möglich, dass Sie alle Dokumente nicht sehen können. Sie werden nur die Bestandteile der Kollektionen, wo Sie die Bestellungen verwalten, sehen."
+msgstr "Es ist möglich, dass Sie nicht alle Dokumente sehen können. Sie sehen nur die Bestandteile der Kollektionen in denen Sie Bestellungen verwalten können."
 
 #: tmp/cache_twig/86/5f/b2d6707e2c88807bdab257351922.php:87
 msgid "Selectionnez des documents et "
@@ -4926,7 +4926,7 @@ msgstr "Dokument wurde von %name% abgelehnt"
 
 #: tmp/cache_twig/86/5f/b2d6707e2c88807bdab257351922.php:135
 msgid "Forcer l'envoi du document"
-msgstr "Senden des Dokumentes ausser Kraft setzen"
+msgstr "Senden des Dokumentes außer Kraft setzen"
 
 #: tmp/cache_twig/86/5f/b2d6707e2c88807bdab257351922.php:154
 msgid "Document envoye par %name%"
@@ -4935,12 +4935,12 @@ msgstr "Dokument wurde von %name% gesendet"
 #: tmp/cache_twig/86/f3/c156a27071cbf5fd188d6606334f.php:55
 #: tmp/cache_twig/86/f3/c156a27071cbf5fd188d6606334f.php:59
 msgid "User contribute to the feedback"
-msgstr "User contributes to the feedback"
+msgstr "Beitrag zum user feedback"
 
 #: tmp/cache_twig/86/f3/c156a27071cbf5fd188d6606334f.php:69
 #: tmp/cache_twig/86/f3/c156a27071cbf5fd188d6606334f.php:73
 msgid "User can see others choices"
-msgstr "User can see others choices"
+msgstr "User kann andere Beiträge sehen"
 
 #: tmp/cache_twig/88/03/50a155557e21ad61abb3e76b2c04.php:141
 msgid "(validation) session terminee"
@@ -5008,11 +5008,11 @@ msgstr "Welche Playlist möchten Sie für Ihre %number% Elemente benutzen?"
 
 #: tmp/cache_twig/99/14/b0b63823076bfbcb2c5f51bd90b0.php:19
 msgid "Apparait aussi dans ces reportages"
-msgstr "ercheint auch in diese Reportagen"
+msgstr "ercheint auch in diesen Reportagen"
 
 #: tmp/cache_twig/99/14/b0b63823076bfbcb2c5f51bd90b0.php:67
 msgid "Apparait aussi dans ces paniers"
-msgstr "erscheint auch in diese Sammelkörbe"
+msgstr "erscheint auch in diesen Sammelkörben"
 
 #: tmp/cache_twig/99/32/ffa3967161f314f640bc9e4c1abe.php:151
 msgid "Fichiers envoyes"
@@ -5033,7 +5033,7 @@ msgstr "Hoppla! Etwas ist schiefgegangen"
 
 #: tmp/cache_twig/9e/88/68131b8442f2df898c593dc2e163.php:82
 msgid "boutton::retry"
-msgstr "Retry"
+msgstr "Wiederholen"
 
 #: tmp/cache_twig/9e/be/1977c6e64a7acf4902aff6940cb6.php:59
 msgid "Edition"
@@ -5073,11 +5073,11 @@ msgstr "Sie sind nicht der Besitzer von diesem Feed"
 
 #: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:42
 msgid "Vous avez recu un nouveau panier"
-msgstr "Sie haben einen neuen Sammelkorb bekommen"
+msgstr "Sie haben einen neuen Sammelkorb erhalten"
 
 #: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:96
 msgid "Vous avez recu une demande de validation de document sur ce panier"
-msgstr "Sie haben eine Dokumente Validierungsanfrage auf diesen Sammelkorb"
+msgstr "Sie können eine Bewertung der Bilder in diesem Sammelkorb abgeben"
 
 #: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:112
 #: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:258
@@ -5094,11 +5094,11 @@ msgstr "bearbeiten"
 #: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:148
 #: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:309
 msgid "action::Valider"
-msgstr "validieren"
+msgstr "Bestätigen"
 
 #: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:225
 msgid "Vous avez envoye une demande de validation de document sur ce panier"
-msgstr "Sie haben eine Dokument Validierung angefordert"
+msgstr "Sie haben eine Bewertung von Dokumenten angefordert"
 
 #: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:238
 msgid "paniers:: panier recu de %pusher%"
@@ -5131,7 +5131,7 @@ msgstr "gut bewertet"
 
 #: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:805
 msgid "panier:: ordre Validation descendante"
-msgstr "weniger bewertet"
+msgstr "weniger gut bewertet"
 
 #: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:850
 msgid "L'utilisateur approuve ce document"
@@ -5184,7 +5184,7 @@ msgstr "Einen Benutzer in der Liste wählen"
 
 #: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:166
 msgid "or"
-msgstr "Oder"
+msgstr "oder"
 
 #: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:169
 msgid "Add user"
@@ -5196,7 +5196,7 @@ msgstr "und %n% mehr Leute"
 
 #: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:277
 msgid "Please consider send this validation to the following users : %recommendation%"
-msgstr "Bitte überlegen Sie sich, diese Validierung zu folgenden Benutzern zu senden: %recommendation%"
+msgstr "Bitte prüfen Sie, ob Sie dieseBewertung zu folgenden Benutzern senden möchten: %recommendation%"
 
 #: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:286
 msgid "Users suggestion"
@@ -5204,11 +5204,11 @@ msgstr "Benutzer Vorschlag"
 
 #: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:336
 msgid "Push::unpush permet d'envoyer un lot d'image a des destinataires"
-msgstr "Ein Push ermöglicht, einen Stapel Bildern an Emfängern zu senden. Sie werden eine E-Mail mit einem Link bekommen, das Phraseanet Lightbox starten wird. Es wird erlauben, die Dokumente anzuchauen und/oder herunterzuladen. Für die angemeldete Benutzer ist Push auch verfügbar als einen \"bekommen\" Sammelkorb"
+msgstr "Das Modul Push ermöglicht es einen Stapel Bilder an Emfänger zu senden. Diese erhalten eine E-Mail mit einem link, der das Modul Phraseanet Lightbox startet. In diesem Modul kann man die Dokumente anschauen und bei Berechtigung auch downloaden. Für registrierte Benutze rerscheinen die mit  Push gesendeten Daten im Modul Prod  als \"Sammelkorb erhalten\" "
 
 #: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:342
 msgid "Push::une validation est une demande d'appreciation a d'autres personnes"
-msgstr "\"Validieren\" erlaubt, eine Meinungsanfrage auf Dokumente an Empfängern zu senden. Sie werden eine E-Mail bekommen, die einen Link beinhaltet, das Phraseanet Lightbox startet. Sie werden dann einen Zugriff auf die Dokumente haben, um Ihre Meinung zu geben und/oder um sie herunterzuladen. Für die Benutzer, die schon eingeloggt sind, ist die \"Validierung\" auch verfügbar als Sammelkorb."
+msgstr "\"Bewertung\" erlaubt es Dokumente an Empfänger zu senden. In einem E-Mai ist ein link, der das Modul Phraseanet Lightbox startet. In diesem können Sie die Dokumente mittels 3 verschieden Symbolen bewerten und bei Berechtigung auch downloaden. Für eingeloggte Benutzer ist die \"Bewertung\" im Modul Prod als Sammelkorb verfügbar."
 
 #: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:363
 msgid "Select all"
@@ -5232,7 +5232,7 @@ msgstr "Zurück zum Feedback"
 
 #: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:464
 msgid "Welcome to the ListManager !"
-msgstr "Herzlich Willkommen bei der Liste Manager !"
+msgstr "Herzlich Willkommen beim Liste Manager !"
 
 #: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:473
 msgid "Start by creating one by using the \"add\" button on the left !"
@@ -5240,11 +5240,11 @@ msgstr "Beginnen Sie mit der Erstellung: Klicken sie auf \"Hinzufügen\" links !
 
 #: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:482
 msgid "Select a list on the left and edit it !"
-msgstr "Wählen Sie eine Liste links aus und bearbeiten Sie sie!"
+msgstr "Wählen Sie eine Liste auf der linken Seite aus und bearbeiten Sie diese."
 
 #: tmp/cache_twig/a5/4a/3c031045d47e838eac5252dfd6a9.php:380
 msgid "Do you want to send your report ?"
-msgstr "Möchten Sie, Ihren Bericht zu senden ?"
+msgstr "Möchten Sie Ihren Bericht senden ?"
 
 #: tmp/cache_twig/a6/5e/67e9cbdd50463a8dcc5670c1b8f2.php:157
 msgid "report:: Volumetrie des questions posees sur %home_title%"
@@ -5280,7 +5280,7 @@ msgstr "Voransicht und Bildunterschrift"
 
 #: tmp/cache_twig/aa/c6/3fb5af89a8aa5b7f0ac544042860.php:44
 msgid "print:: image de choix et description avec planche contact"
-msgstr "Voransicht und Bildunterschrift mit Mosaicansicht"
+msgstr "Voransicht und Bildunterschrift mit Mosaikansicht"
 
 #: tmp/cache_twig/aa/c6/3fb5af89a8aa5b7f0ac544042860.php:58
 msgid "print:: imagette"
@@ -5292,7 +5292,7 @@ msgstr "Miniaturansichten Liste"
 
 #: tmp/cache_twig/aa/c6/3fb5af89a8aa5b7f0ac544042860.php:71
 msgid "print:: planche contact (mosaique)"
-msgstr "Mosaicansicht"
+msgstr "Mosaikansicht"
 
 #: tmp/cache_twig/aa/c6/3fb5af89a8aa5b7f0ac544042860.php:82
 msgid "None of the selected records can be printed "
@@ -5344,7 +5344,7 @@ msgstr "Zurück"
 
 #: tmp/cache_twig/ab/07/5ccd6fb81ad017c314fb0d7732ed.php:31
 msgid "Cochez les cases correspondantes aux colonnes que vous desirez voire apparaitre dans le report"
-msgstr "Markieren Sie die Felder, die Sie in Report sehen möchten"
+msgstr "Markieren Sie die Felder, die Sie im Report sehen möchten"
 
 #: tmp/cache_twig/ab/07/5ccd6fb81ad017c314fb0d7732ed.php:37
 msgid "cocher tout"
@@ -5458,7 +5458,7 @@ msgstr "eine neue Anwendung erstellen"
 
 #: tmp/cache_twig/b2/63/bd38ddfa703d8e8a7af751f92137.php:124
 msgid "Creez une application pour commencer a utiliser l'API Phraseanet"
-msgstr "Erstellen Sie zuerst eine Applikation, um das Phraseanet API dann zu benutzen."
+msgstr "Erstellen Sie zuerst eine Applikation, um das Phraseanet API danach zu benutzen."
 
 #: tmp/cache_twig/b3/8b/2d8c3df979b2599df392835e8faf.php:47
 #: tmp/cache_twig/b4/5c/2163e6275d10e0bce2e118b5c7c4.php:47
@@ -5482,11 +5482,11 @@ msgstr "Bearbeitung von 1 Element"
 
 #: tmp/cache_twig/c0/d0/888dd899d0fc0f18fd750774ab0f.php:174
 msgid "Aucun statut editable"
-msgstr "Keine editierbare Status"
+msgstr "Kein editierbarer Status"
 
 #: tmp/cache_twig/c0/d0/888dd899d0fc0f18fd750774ab0f.php:180
 msgid "Les status de certains documents ne sont pas accessible par manque de droits"
-msgstr "die Status von einigen Dokumenten werden nicht erreichbar (fehlende Rechte)"
+msgstr "der Status von einigen Dokumenten sind nicht erreichbar (fehlende Rechte)"
 
 #: tmp/cache_twig/c0/d0/888dd899d0fc0f18fd750774ab0f.php:258
 msgid "boutton::remplacer"
@@ -5574,19 +5574,19 @@ msgstr "Bearbeitung nicht möglich"
 
 #: tmp/cache_twig/c0/d0/888dd899d0fc0f18fd750774ab0f.php:570
 msgid "prod::edit: Impossible d'editer simultanement des documents provenant de bases differentes"
-msgstr "Es ist unmöglich, Dokumente, die verschiedenen Bilddatenbanken entstammen, gleichzeitig zu bearbeiten"
+msgstr "Es ist nicht möglich, Dokumente die aus verschiedenen Bilddatenbanken stammen gleichzeitig zu bearbeiten"
 
 #: tmp/cache_twig/c0/d0/888dd899d0fc0f18fd750774ab0f.php:576
 msgid "prod::editing: aucun documents ne peuvent etre edites car vos droits sont induffisants"
-msgstr "Keine Dokumente dürfen bearbeitet werden, weil Sie keine Rechte darauf haben"
+msgstr "Es können keine Dokumente bearbeitet werden, da Sie keine Berechtigung für das Bearbeiten haben"
 
 #: tmp/cache_twig/c0/d0/888dd899d0fc0f18fd750774ab0f.php:612
 msgid "prod::editing: %not_actionable% documents ne peuvent etre edites car vos droits sont induffisants"
-msgstr "%not_actionable% Dokumente dürfen nicht bearbeitet werden, weil Sie keine Rechte darauf haben"
+msgstr "%not_actionable% Dokumente können nicht bearbeitet werden, da Sie keine Rechte darauf haben"
 
 #: tmp/cache_twig/c0/d0/888dd899d0fc0f18fd750774ab0f.php:618
 msgid "prod::editing: 1 document ne peut etre edite car vos droits sont induffisants"
-msgstr "Keine Bearbeitung möglich, Sie haben keinen Zugriff darauf"
+msgstr "Keine Bearbeitung möglich. Sie haben keinen Zugriff auf die Dokumente"
 
 #: tmp/cache_twig/c0/d0/888dd899d0fc0f18fd750774ab0f.php:778
 msgid "edit::Certains champs doivent etre remplis pour valider cet editing"
@@ -5642,7 +5642,7 @@ msgstr "Veröffentlichung von %dest%"
 
 #: tmp/cache_twig/c1/26/56b58b636b862713d982bc8506ac.php:133
 msgid "report::Telechargement de %dest%"
-msgstr "Herunterladen von %dest%"
+msgstr "Download von %dest%"
 
 #: tmp/cache_twig/c1/26/56b58b636b862713d982bc8506ac.php:145
 msgid "Envoi par mail a %dest% de %content%"
@@ -5695,12 +5695,12 @@ msgstr "Datenschutz: öffentlich"
 #: tmp/cache_twig/ca/6b/bfdc9ede9e32c797756b9d3d1771.php:26
 #: tmp/cache_twig/ca/6b/bfdc9ede9e32c797756b9d3d1771.php:153
 msgid "Les documents ne peuvent pas etre exportes"
-msgstr "Dokumente können nicht herunterladen werden"
+msgstr "Dokumente können nicht heruntergeladen werden"
 
 #: tmp/cache_twig/ca/6b/bfdc9ede9e32c797756b9d3d1771.php:43
 #: tmp/cache_twig/ca/6b/bfdc9ede9e32c797756b9d3d1771.php:80
 msgid "export:: telechargement"
-msgstr "Herunterladen"
+msgstr "Download"
 
 #: tmp/cache_twig/ca/6b/bfdc9ede9e32c797756b9d3d1771.php:47
 #: tmp/cache_twig/ca/6b/bfdc9ede9e32c797756b9d3d1771.php:204
@@ -5733,11 +5733,11 @@ msgstr "Empfangsbestätigung zu %my_email% bekommen"
 
 #: tmp/cache_twig/ca/6b/bfdc9ede9e32c797756b9d3d1771.php:237
 msgid "Accuse de reception indisponible, vous n'avez pas declare d'adresse email"
-msgstr "Unmöglich, eine Empfangsbestätigung zu bekommen; fehlende E-Mail Adresse"
+msgstr "Es ist nicht möglich, eine Empfangsbestätigung zu erhalten. Grund: eine fehlende E-Mail Adresse"
 
 #: tmp/cache_twig/ca/6b/bfdc9ede9e32c797756b9d3d1771.php:246
 msgid "Entrez plusieurs adresses email en les separant par des points-virgules"
-msgstr "Füllen Sie mehrere E-Mail Adressen aus, benutzen Sie Strichpunkte"
+msgstr "Trennen Sie die E-Mail Adressen mit Strichpunkten wenn sie an mehrere Empfänger gleichzeitig Dokumente senden wollen"
 
 #: tmp/cache_twig/ca/6b/bfdc9ede9e32c797756b9d3d1771.php:252
 msgid "export::mail: contenu du mail"
@@ -5765,7 +5765,7 @@ msgstr "Bestellung"
 
 #: tmp/cache_twig/ca/6b/bfdc9ede9e32c797756b9d3d1771.php:387
 msgid "commande::utilisation prevue"
-msgstr "Zweckbestimmung"
+msgstr "Verwendungszweck"
 
 #: tmp/cache_twig/ca/6b/bfdc9ede9e32c797756b9d3d1771.php:398
 msgid "commande::deadline"
@@ -5807,11 +5807,11 @@ msgstr "You can not download more than %max_download% Mo ; time to package all d
 
 #: tmp/cache_twig/ca/6b/bfdc9ede9e32c797756b9d3d1771.php:956
 msgid "You can alternatively receive an email when the download is ready."
-msgstr "Sie können auch eine Email bekommen, wenn Ihr Download fertig ist."
+msgstr "Sie können zur Bestätigung eine Email erhalten wenn Ihr Download abgeschlossen ist."
 
 #: tmp/cache_twig/ca/6b/bfdc9ede9e32c797756b9d3d1771.php:960
 msgid "Would you like to receive an e-mail when your download is ready ?"
-msgstr "Möchten Sie eine Email bekommen, wenn Ihr Download fertig ist ?"
+msgstr "Möchten Sie eine Email erhalten wenn Ihr Download abgeschlossen ist ?"
 
 #: tmp/cache_twig/ca/6b/bfdc9ede9e32c797756b9d3d1771.php:1127
 msgid "phraseanet:: utiliser SSL"
@@ -5835,11 +5835,11 @@ msgstr "Directory erstellen"
 
 #: tmp/cache_twig/ca/6b/bfdc9ede9e32c797756b9d3d1771.php:1265
 msgid "admin::compte-utilisateur:ftp: ecrire un fichier de log"
-msgstr "ein Log Datei schreiben"
+msgstr "eine Log Datei schreiben"
 
 #: tmp/cache_twig/ca/6b/bfdc9ede9e32c797756b9d3d1771.php:1307
 msgid "Nom des fichiers a l'export"
-msgstr "Name der Dateien für Herunterladen"
+msgstr "Name der Dateien für den download"
 
 #: tmp/cache_twig/ca/6b/bfdc9ede9e32c797756b9d3d1771.php:1320
 msgid "export::titre: titre du documument"
@@ -5895,7 +5895,7 @@ msgstr "Datensatz"
 
 #: tmp/cache_twig/cd/4d/ad420f18e1ba9813d96988cc449c.php:238
 msgid "Aucun document dans la quarantaine actuellement"
-msgstr "kein Dokument zurzeit im Quarantäne"
+msgstr "Kein Dokument ist zur Zeit in Quarantäne"
 
 #: tmp/cache_twig/cd/4d/ad420f18e1ba9813d96988cc449c.php:285
 msgid "Document ajoute le %date% par %display_name% sur la collection %basname%"
@@ -5955,7 +5955,7 @@ msgstr "Weiter"
 
 #: tmp/cache_twig/df/4e/a6eeff08e70837a644553d58cd76.php:219
 msgid "Create new subdef"
-msgstr "Neuer subdef erstellen"
+msgstr "Neuen subdef erstellen"
 
 #: tmp/cache_twig/df/4e/a6eeff08e70837a644553d58cd76.php:223
 msgid "Delete the subdef ?"
@@ -5963,7 +5963,7 @@ msgstr "subdef löschen?"
 
 #: tmp/cache_twig/df/4e/a6eeff08e70837a644553d58cd76.php:229
 msgid "These subdef will be permanently deleted and cannot be recovered. Are you sure?"
-msgstr "Diese subdef wird endgültig gelöscht werden und kann nicht wiederhergestellt werden. Sind Sie sicher?"
+msgstr "Diese subdef wird entgültig gelöscht und kann nicht wiederhergestellt werden. Fortfahren?"
 
 #: tmp/cache_twig/df/4e/a6eeff08e70837a644553d58cd76.php:240
 msgid "Subdef name"
@@ -6036,7 +6036,7 @@ msgstr "Details"
 #: tmp/cache_twig/e1/b2/12ece9b0ee22fa8bac84c8d049ff.php:65
 #: tmp/cache_twig/e1/b2/12ece9b0ee22fa8bac84c8d049ff.php:978
 msgid "report:: Cumul telechargements & connexions"
-msgstr "Allgemeine Herunterladen und Verbindungen"
+msgstr "Allgemeine Downloads und Verbindungen"
 
 #: tmp/cache_twig/e1/b2/12ece9b0ee22fa8bac84c8d049ff.php:76
 msgid "report::Connexion"
@@ -6061,11 +6061,11 @@ msgstr "Benutzer"
 
 #: tmp/cache_twig/e1/b2/12ece9b0ee22fa8bac84c8d049ff.php:133
 msgid "report:: telechargements document"
-msgstr "Herunterladen von Dokumenten"
+msgstr "Download von Dokumenten"
 
 #: tmp/cache_twig/e1/b2/12ece9b0ee22fa8bac84c8d049ff.php:202
 msgid "report:: telechargements preview"
-msgstr "Herunterladen von Miniaturansichten"
+msgstr "Download von Miniaturansichten"
 
 #: tmp/cache_twig/e1/b2/12ece9b0ee22fa8bac84c8d049ff.php:260
 #: tmp/cache_twig/e1/b2/12ece9b0ee22fa8bac84c8d049ff.php:391
@@ -6076,7 +6076,7 @@ msgstr "die meist heruntergeladenen Dokumente"
 #: tmp/cache_twig/e1/b2/12ece9b0ee22fa8bac84c8d049ff.php:332
 #: tmp/cache_twig/e1/b2/12ece9b0ee22fa8bac84c8d049ff.php:1006
 msgid "report:: preview les plus telecharges"
-msgstr "Meisten heruntergeladen Voransichten"
+msgstr "die meist heruntergeladen Voransichten"
 
 #: tmp/cache_twig/e1/b2/12ece9b0ee22fa8bac84c8d049ff.php:387
 #: tmp/cache_twig/e1/b2/12ece9b0ee22fa8bac84c8d049ff.php:419
@@ -6094,11 +6094,11 @@ msgstr "Anzahl der Ansichten"
 
 #: tmp/cache_twig/e1/b2/12ece9b0ee22fa8bac84c8d049ff.php:492
 msgid "report:: poids document"
-msgstr "Dokumente Gewicht"
+msgstr "Dokumente Größe"
 
 #: tmp/cache_twig/e1/b2/12ece9b0ee22fa8bac84c8d049ff.php:561
 msgid "report:: poids preview"
-msgstr "Voransichten Gewicht"
+msgstr "Voransichten Größe"
 
 #: tmp/cache_twig/e1/b2/12ece9b0ee22fa8bac84c8d049ff.php:834
 msgid "report:: activite document ajoute"
@@ -6118,11 +6118,11 @@ msgstr "Hauptbild"
 
 #: tmp/cache_twig/f3/51/f55d9d65f38f24e778764cf30f06.php:18
 msgid "prod::Les enregistrements ne provienent pas tous de la meme base et ne peuvent donc etre traites ensemble"
-msgstr "Unmöglich: die ausgewählte Dokumente kommen nicht alle aus der selben Datenbank und können nicht zusammen bearbeitet werden"
+msgstr "Achtung: Die ausgewählten Dokumente kommen nicht alle aus der selben Datenbank und können nicht zusammen bearbeitet werden"
 
 #: tmp/cache_twig/f3/51/f55d9d65f38f24e778764cf30f06.php:30
 msgid "prod::Vous n'avez le droit d'effectuer l'operation sur aucun document"
-msgstr "Sie haben keinen Zugriff darauf, diesen Betrieb um diese Dokumente durchzuführen"
+msgstr "Sie haben keine Berechtigung, diesen Vorgang auf diese Dokumente durchzuführen"
 
 #: tmp/cache_twig/f3/51/f55d9d65f38f24e778764cf30f06.php:42
 msgid "erreur : Vous n'avez pas les droits"
@@ -6156,7 +6156,7 @@ msgstr "Meine Sammelkörbe"
 
 #: tmp/cache_twig/f4/9c/1593aef71f486ed368d85e63253d.php:55
 msgid "Received baskets"
-msgstr "Bekommene Sammelkörbe"
+msgstr "Erhaltene Sammelkörbe"
 
 #: tmp/cache_twig/f4/9c/1593aef71f486ed368d85e63253d.php:67
 msgid "Validations sent"
@@ -6164,7 +6164,7 @@ msgstr "Gesendete Bestätigungen"
 
 #: tmp/cache_twig/f4/9c/1593aef71f486ed368d85e63253d.php:79
 msgid "Validations received"
-msgstr "Bekommene Bestätigungen"
+msgstr "Erhaltene Bestätigungen"
 
 #: tmp/cache_twig/f4/9c/1593aef71f486ed368d85e63253d.php:86
 msgid "When"
@@ -6257,7 +6257,7 @@ msgstr "Datenbank Leerung wurde erfolgreich"
 #: www/admin/adminFeedback.php:85
 #: www/admin/adminFeedback.php:118
 msgid "A task has been creted, please run it to complete empty collection"
-msgstr "Eine Aufgabe wurde erstellt, bitte ausführen, um die Kollektion Leerung fertig zu stellen"
+msgstr "Eine Aufgabe wurde erstellt. Bitte führen Sie diese aus um die Leerung der Kollektion fertigstellen zu können"
 
 #: www/admin/adminFeedback.php:91
 #: www/admin/adminFeedback.php:123
@@ -6266,7 +6266,7 @@ msgstr "Ein Fehler ist aufgetreten"
 
 #: www/admin/adminFeedback.php:96
 msgid "Collection empty successful"
-msgstr "Kollektion Leerung wurde erfolgreich"
+msgstr "Die Leerung der Kollektion wurde erfolgreich abgeschlossen"
 
 #: www/admin/adminFeedback.php:316
 #: www/admin/database.php:213
@@ -6276,7 +6276,7 @@ msgstr "Kein Alias"
 #: www/admin/adminFeedback.php:406
 #: www/admin/database.php:256
 msgid "admin::base: vider la base avant de la supprimer"
-msgstr "Datenbank leeren, bevor sie gelöscht wird"
+msgstr "Datenbank leeren bevor sie gelöscht wird"
 
 #: www/admin/cgus.php:85
 msgid "Terms Of Use"
@@ -6288,7 +6288,7 @@ msgstr "aktualisieren"
 
 #: www/admin/cgus.php:89
 msgid "admin::CGU Les utilisateurs doivent imperativement revalider ces conditions"
-msgstr "ANB: Die Benutzer müssen unbedingt die ANB noch einmal validieren"
+msgstr "ANB: Die Benutzer müssen unbedingt die ANB noch einmal bestätigen"
 
 #: www/admin/collection.php:85
 #: www/admin/collection.php:98
@@ -6304,7 +6304,7 @@ msgstr "Kollektion leeren, bevor sie gelöscht wird"
 #: www/admin/collection.php:184
 #: www/admin/collection.php:221
 msgid "admin::base:collection le fichier envoye est trop volumineux."
-msgstr "Gesendete Datei ist zu Gross"
+msgstr "Gesendete Datei ist zu groß"
 
 #: www/admin/collection.php:112
 #: www/admin/collection.php:151
@@ -6313,7 +6313,7 @@ msgstr "Gesendete Datei ist zu Gross"
 #: www/admin/database.php:57
 #: www/admin/database.php:62
 msgid "forms::erreur lors de l'envoi du fichier"
-msgstr "Ein Fehler erschien, als Ihr Datei gesendet wurde"
+msgstr "Ein Fehler ist beim senden ihrer Datei aufgetreten"
 
 #: www/admin/collection.php:281
 msgid "admin::base:collection: etes vous sur de vider la collection ?"
@@ -6379,7 +6379,7 @@ msgstr "Anzahl"
 #: www/admin/database.php:439
 #: www/admin/database.php:440
 msgid "admin::base: poids"
-msgstr "Gewicht"
+msgstr "Größe"
 
 #: www/admin/collection.php:591
 msgid "admin::collection:: Gestionnaires des commandes"
@@ -6387,11 +6387,11 @@ msgstr "Bestellungen Manager"
 
 #: www/admin/collection.php:606
 msgid "setup:: ajouter un administrateur des commandes"
-msgstr "ein Manager für die Bestellungen hinzufügen"
+msgstr "einen Manager für die Bestellungen hinzufügen"
 
 #: www/admin/collection.php:624
 msgid "admin::collection:: presentation des elements lors de la diffusion aux utilisateurs externes (publications)"
-msgstr "Vorstellung den Elementen beim externen Veröffentlichungen"
+msgstr "Vorstellung von Elementen bei externen Veröffentlichungen"
 
 #: www/admin/collection.php:626
 msgid "admin::colelction::presentation des elements : rien"
@@ -6446,11 +6446,11 @@ msgstr "Aktualiserung wurde erfolgreich hergestellt"
 
 #: www/admin/collorder.php:202
 msgid "admin::base:collorder: monter"
-msgstr "steigen"
+msgstr "aufsteigend"
 
 #: www/admin/collorder.php:204
 msgid "admin::base:collorder: descendre"
-msgstr "heruntergehen"
+msgstr "absteigend"
 
 #: www/admin/collorder.php:207
 msgid "admin::base:collorder: reinitialiser en ordre alphabetique"
@@ -6462,7 +6462,7 @@ msgstr "Logo für das Drucken löschen"
 
 #: www/admin/database.php:146
 msgid "Confirmez-vous la re-indexation de la base ?"
-msgstr "Bestätigen Sie die Wieder Indizierung der Datenbank?"
+msgstr "Bestätigen Sie die Re- Indizierung der Datenbank?"
 
 #: www/admin/database.php:174
 #: www/admin/database.php:379
@@ -6487,7 +6487,7 @@ msgstr "Ende der Datenbankveröffentlichung bestätigen?"
 
 #: www/admin/database.php:395
 msgid "admin::base: nombre d'enregistrements sur la base :"
-msgstr "Anzahl von Datensätze auf die Datenbank"
+msgstr "Anzahl von Datensätzen auf der Datenbank"
 
 #: www/admin/database.php:406
 msgid "admin::base: nombre de mots uniques sur la base : "
@@ -6524,7 +6524,7 @@ msgstr "Indexierung in dieser Datenbank möglich"
 
 #: www/admin/database.php:581
 msgid "base:: re-indexer"
-msgstr "Jetzt die Datenbank neu indexieren (es könnte Stunden dauern, wenn Sie viele Dokumente haben)"
+msgstr "Jetzt die Datenbank neu indexieren (Dieser Vorgang kann bei vielen Datensätzen / ab 10.000/ Stunden dauern)"
 
 #: www/admin/database.php:589
 msgid "admin::base:collection: Creer une collection"
@@ -6580,21 +6580,21 @@ msgstr "Vorschläge für die Veränderungen der Tabellen"
 
 #: www/admin/databases.php:76
 msgid "N'oubliez pas de redemarrer le planificateur de taches"
-msgstr "Vergessen Sie nicht, den Task Manager neu zu starten"
+msgstr "Vergessen Sie nicht den Task Manager neu zu starten"
 
 #: www/admin/databases.php:83
 msgid "Veuillez arreter le planificateur avant la mise a jour"
-msgstr "Task Manager beenden, bevor Sie die Update starten"
+msgstr "Task Manager beenden bevor Sie die Update starten"
 
 #: www/admin/databases.php:94
 #: www/admin/databases.php:140
 #: www/admin/databases.php:167
 msgid "Database name can not contains special characters"
-msgstr "Datenbank kann nicht Sonderzeichen beinhalten"
+msgstr "Datenbank kann keine Sonderzeichen beinhalten"
 
 #: www/admin/databases.php:129
 msgid "Database does not exists or can not be accessed"
-msgstr "Verbindung ist OK aber die Datenbank existiert nicht oder kann nicht zugegriffen werden."
+msgstr "Verbindung ist OK aber die Datenbank existiert nicht oder es kann nicht zugegriffen werden."
 
 #: www/admin/databases.php:318
 msgid "admin::base: Version"
@@ -6618,7 +6618,7 @@ msgstr "eine neue Datenbank erstellen"
 
 #: www/admin/databases.php:344
 msgid "phraseanet:: Creer une base sur un serveur different de l'application box"
-msgstr "eine neue Datenbank auf andere Server erstellen"
+msgstr "eine neue Datenbank auf einem  anderen Server erstellen"
 
 #: www/admin/databases.php:348
 #: www/admin/databases.php:400
@@ -6698,7 +6698,7 @@ msgstr "Vorlage anwenden  "
 
 #: www/admin/newcoll.php:43
 msgid "admin:: La collection n'a pas ete creee : vous devez donner un nom a votre collection"
-msgstr "Kollektion wurde nicht erstellt: sie müssen eine Name eingeben"
+msgstr "Kollektion wurde nicht erstellt: sie müssen einen Namen eingeben"
 
 #: www/admin/newcoll.php:175
 msgid "Collection successfully created"
@@ -6746,7 +6746,7 @@ msgstr "Anwendung Administratoren"
 
 #: www/admin/sitestruct.php:205
 msgid "setup:: ajouter un administrateur de l'application"
-msgstr "ein Administrator hinzufügen"
+msgstr "einen Administrator hinzufügen"
 
 #: www/admin/sitestruct.php:211
 msgid "setup:: Reinitialisation des droits admins"
@@ -6787,12 +6787,12 @@ msgstr "Phrasea Modul"
 #: www/admin/statbits.php:110
 #: www/admin/statbits.php:147
 msgid "You do not enough rights to update status"
-msgstr "Sie haben nicht die genügende Rechte, um die Status zu aktualisieren"
+msgstr "Sie haben nicht die genügende Rechte, um den Status zu aktualisieren"
 
 #: www/admin/statbits.php:114
 #: www/admin/statbits.php:151
 msgid "Something wrong happend"
-msgstr "Etwas schlecht ist geschehen !"
+msgstr "Es ist etwas schief gelaufen !"
 
 #: www/admin/statbits.php:118
 #: www/admin/statbits.php:155
@@ -6828,11 +6828,11 @@ msgstr "On"
 
 #: www/admin/statbits.php:197
 msgid "admin::status: parametres si decoche"
-msgstr "Einstellungen, wenn Kontrollkästchen markiert ist"
+msgstr "Einstellungen, wenn Kontrollkästchen deaktiviert ist"
 
 #: www/admin/statbits.php:198
 msgid "admin::status: parametres si coche"
-msgstr "Einstellungen, wenn Kontrollkästchen markiert ist"
+msgstr "Einstellungen, wenn Kontrollkästchen aktiviert ist"
 
 #: www/admin/statbits.php:201
 #: www/admin/statbits.php:202
@@ -6896,13 +6896,13 @@ msgstr "Struktur"
 
 #: www/admin/structure.php:92
 msgid "admin::base: xml invalide, les changements ne seront pas appliques"
-msgstr "XML ungültig, die Änderungen werden nicht angewendet sein"
+msgstr "XML ungültig, die Änderungen werden nicht angewendet"
 
 #: www/admin/sugval.php:935
 msgid ""
 "admin::sugval: Attention, passer en mode graphique implique la perte des modifications du xml si vous n'appliquez pas les changements avant.\\n"
 "Continuer quand meme ?"
-msgstr "Vorsicht, Umstellung auf grafischen Ansicht beinhaltet XML Veränderungenverlust, wenn Sie die Änderungen nicht bevor anwenden.Wollen Sie trotzdem fortsetzen?"
+msgstr "Achtung: Die Umstellung auf grafischen Ansicht beinhaltet XML Veränderungenverlust, wenn Sie die Änderungen nicht zuvor anwenden.Wollen Sie trotzdem fortsetzen?"
 
 #: www/admin/sugval.php:967
 msgid "Suggested values"
@@ -6965,7 +6965,7 @@ msgstr "TaskManager Einstellungen"
 
 #: www/admin/taskmanager.php:755
 msgid "Cette URL vous permet de controler le sheduler depuis un manager comme cron"
-msgstr "Dieses URL ermöglicht Ihnen, der Scheduler als ein Manager wie Cron zu benutzen"
+msgstr "Diese URL ermöglicht es Ihnen, den Scheduler als einen Manager wie Cron zu benutzen"
 
 #: www/client/answer.php:182
 msgid "client::answers: rapport de questions par bases"
@@ -6986,7 +6986,7 @@ msgstr "Meine Sammelkörbe"
 
 #: www/client/baskets.php:130
 msgid "paniers::categories: paniers recus"
-msgstr "Sammelkörben bekommen"
+msgstr "Sammelkörben erhalten"
 
 #: www/client/baskets.php:147
 #, php-format
@@ -7009,7 +7009,7 @@ msgstr "Sammelkorb von %s übertragen"
 
 #: www/client/baskets.php:260
 msgid "paniers:: vous avez de nouveaux paniers non consultes"
-msgstr "neu(e)r Sammelkorb(ë) bekommen"
+msgstr "neue(n) Sammelkorb(e) erhalten"
 
 #: www/client/homeinterpubbask.php:32
 msgid "publications:: dernieres publications"
@@ -7064,7 +7064,7 @@ msgstr "Kollektionen"
 
 #: www/client/index.php:324
 msgid "client::recherche: cliquez ici pour desactiver tous les filtres de toutes base"
-msgstr "Hier klicken, um alle Filter allen Datenbanken zu deaktivieren"
+msgstr "Hier klicken um alle Filter in allen Datenbanken zu deaktivieren"
 
 #: www/client/index.php:338
 msgid "phraseanet:: historique"
@@ -7099,23 +7099,23 @@ msgstr "Alle Felder"
 #: www/include/download_prepare.php:108
 #: www/include/download_prepare.php:151
 msgid "phraseanet:: Telechargement de documents"
-msgstr "Herunterladen Vorlauf"
+msgstr "Download Vorlauf"
 
 #: www/include/download_anonymous.php:121
 #: www/include/download_prepare.php:153
 msgid "telechargement::Veuillez patienter, vos fichiers sont en train d'etre rassembles pour le telechargement, cette operation peut prendre quelques minutes."
-msgstr "Bitte warten, Ihre Dateien werden versammelt, dieser Betrieb kann einige Minuten dauern"
+msgstr "Bitte warten. Ihre Dateien werden gesammelt. Bei vielen Daten kann dies einige Minuten dauern"
 
 #: www/include/download_anonymous.php:128
 #: www/include/download_prepare.php:158
 #, php-format
 msgid "telechargement::Vos documents sont prets. Si le telechargement ne demarre pas, %s cliquez ici %s"
-msgstr "Ihre Dokumente sind nun fertig. Wenn Herunterladen nicht beginnt, bitte %s klicken Sie hier %s"
+msgstr "Ihre Dokumente sind nun fertig. Wenn der download nicht automatisch beginnt, klicken Sie %s bitte hier %s"
 
 #: www/include/download_anonymous.php:133
 #: www/include/download_prepare.php:161
 msgid "telechargement::Le fichier contient les elements suivants"
-msgstr "ZIP Datei enthält die folgende Dokumente"
+msgstr "ZIP Datei enthält die folgenden Dokumente"
 
 #: www/include/download_anonymous.php:137
 #: www/include/download_prepare.php:165
@@ -7135,11 +7135,11 @@ msgstr "Dokumenttyp"
 #: www/include/download_anonymous.php:140
 #: www/include/download_prepare.php:168
 msgid "poids"
-msgstr "Gewicht"
+msgstr "Größe"
 
 #: www/include/download_anonymous.php:174
 msgid "Votre lien est corrompu"
-msgstr "Ihr Link ist beschädigt"
+msgstr "Der Link ist beschädigt"
 
 #: www/include/error.php:29
 msgid "error:204::Le contenu que vous demandez n'existe pas ou a expire"
@@ -7159,27 +7159,27 @@ msgstr "Sie haben keinen Zugriff, Sie wurden abgemeldet"
 
 #: www/include/error.php:42
 msgid "error:404::Vous avez demande une page qui n'existe pas ou plus"
-msgstr "Die aufgerufene Seite existiert nicht oder nicht mehre auf dem Server"
+msgstr "Die aufgerufene Seite existiert nicht oder nicht mehr auf dem Server"
 
 #: www/include/error.php:46
 msgid "error:500::Erreur interne du serveur"
-msgstr "Interner Fehler von dem Server"
+msgstr "Interner Fehler vom Server"
 
 #: www/include/error.php:47
 msgid "error:500::Une erreur interne est survenue. Ceci se produit lorsque la connetion a la base de donnee a ete interrompue ou lorsqu'un module rencontre un probleme."
-msgstr "Ein interner Fehler erschien. Die Verbindung mit dem server wurde unterbrochen, oder der benutze Phraseanet Modul hat ein Problem"
+msgstr "Ein interner Fehler ist aufgetreten. Die Verbindung mit dem Server wurde unterbrochen, oder dass benutzte Modul hat ein Problem"
 
 #: www/include/error.php:48
 msgid "error:500::Si ce probleme persiste, contactez l'administrateur du serveur"
-msgstr "Wenn dieses Problem wieder erscheint, bitte kontaktieren Sie den Systemadministrator"
+msgstr "Wenn dieses Problem wieder auftritt kontaktieren Sie bitte den Administrator"
 
 #: www/include/updses.php:93
 msgid "The application is going down for maintenance, please logout."
-msgstr "die Anwendung wird wegen Überarbeitung heruntergefahren; Vielen Dank für Ihr Verständnis"
+msgstr "Die Anwendung wird wegen Überarbeitung heruntergefahren. Vielen Dank für Ihr Verständnis"
 
 #: www/login/account.php:182
 msgid "etes vous sur de vouloir supprimer cette application"
-msgstr "Sind Sie sicher, diese Applikation zu löschen?"
+msgstr "Wollen Sie diese Applikation sicher zu löschen?"
 
 #: www/login/account.php:183
 msgid "oui"
@@ -7220,7 +7220,7 @@ msgstr "Veränderungen wurden bestätigt"
 
 #: www/login/account.php:438
 msgid "forms::erreurs lors de l'enregistrement des modifications"
-msgstr "Ein Fehler erschien, als Ihr Datei gesendet wurde"
+msgstr "Ein Fehler ist beim Senden Ihrer Datei aufgetreten"
 
 #: www/login/account.php:441
 msgid "login::notification: Vos demandes ont ete prises en compte"
@@ -7233,7 +7233,7 @@ msgstr "mein Passwort ändern"
 
 #: www/login/account.php:498
 msgid "login:: Changer mon adresse email"
-msgstr "meine E-Mail Adresse verändern"
+msgstr "meine E-Mail Adresse ändern"
 
 #: www/login/account.php:604
 msgid "admin::compte-utilisateur:ftp: Activer le compte FTP"
@@ -7261,11 +7261,11 @@ msgstr "beinhaltet ungültige Zeichen"
 
 #: www/login/forgotpwd.php:177
 msgid "Pour ameliorer la securite de l'application, vous devez mettre a jour votre mot de passe."
-msgstr "Um die Sicherheit der Anwendung zu verbessern, bitte updaten Sie Ihr Passwort"
+msgstr "Um die Sicherheit der Anwendung zu verbessern, ändern Sie immer wieder Ihr Passwort"
 
 #: www/login/forgotpwd.php:178
 msgid "Cette tache ne pouvant etre automatisee, merci de bien vouloir la realiser."
-msgstr "Diese Aufgabe kann nicht automatisiert werden, so müssen Sie es tun"
+msgstr "Diese Aufgabe kann nicht automatisiert werden. Das muss manuell passieren"
 
 #: www/login/forgotpwd.php:186
 msgid "admin::compte-utilisateur nouveau mot de passe"
@@ -7283,7 +7283,7 @@ msgstr "Zurück zur Startseite"
 #: www/login/forgotpwd.php:252
 #: www/login/forgotpwd.php:258
 msgid "phraseanet::erreur: Echec du serveur mail"
-msgstr "Zur optimalen Anzeige empfehlen wir Ihnen die folgende Browser zu benutzen"
+msgstr "Zur optimalen Anzeige empfehlen wir Ihnen die folgenden Browser zu benutzen"
 
 #: www/login/forgotpwd.php:255
 msgid "phraseanet::erreur: Le compte n'a pas ete trouve"
@@ -7291,7 +7291,7 @@ msgstr "Konto nicht gefunden"
 
 #: www/login/forgotpwd.php:261
 msgid "phraseanet::erreur: l'url n'est plus valide"
-msgstr "Dies ist kein gültiger URL"
+msgstr "Dies ist keine gültiger URL"
 
 #: www/login/forgotpwd.php:270
 msgid "phraseanet:: Un email vient de vous etre envoye"
@@ -7303,31 +7303,31 @@ msgstr "Bitte geben Sie Ihre E-Mail Adresse ein"
 
 #: www/login/index.php:70
 msgid "login::erreur: Erreur d'authentification"
-msgstr "Authentifizierungsfehler"
+msgstr "Anmeldefehler"
 
 #: www/login/index.php:73
 msgid "login::erreur: Erreur de captcha"
-msgstr "Zuviele Authentifizierungsfehler. Bitte geben Sie die Captcha ein."
+msgstr "Zuviele Anmeldefehler. Bitte geben Sie die Captcha ein."
 
 #: www/login/index.php:76
 msgid "login::erreur: Vous n'avez pas confirme votre email"
-msgstr "Zugriff unerreichbar, Sie haben Ihre E-Mail Adresse noch nicht bestätigt"
+msgstr "Zugriff nicht möglich. Sie haben Ihre E-Mail Adresse noch nicht bestätigt"
 
 #: www/login/index.php:78
 msgid "login:: Envoyer a nouveau le mail de confirmation"
-msgstr "Bitte senden Sie mir wieder eine E-Mail Bestätigung"
+msgstr "Bitte senden Sie mir nochmals eine E-Mail Bestätigung"
 
 #: www/login/index.php:81
 msgid "login::erreur: Aucune base n'est actuellment accessible"
-msgstr "Sie haben jetzt keinen Zugriff auf die veröffentlichten Datenbanken"
+msgstr "Sie haben derzeit keinen Zugriff auf die veröffentlichten Datenbanken"
 
 #: www/login/index.php:84
 msgid "login::erreur: No available connection - Please contact sys-admin"
-msgstr "Fehler: Keine verfügbare Verbindung - Bitte kontaktieren Sie Systemadministrator"
+msgstr "Fehler: Keine verfügbare Verbindung - Bitte kontaktieren Sie den Administrator"
 
 #: www/login/index.php:87
 msgid "login::erreur: maintenance en cours, merci de nous excuser pour la gene occasionee"
-msgstr "Wartungsmodus, wir entschuldigen uns für die Unannehmlichkeiten und bedanken Ihnen für Ihr Verständnis"
+msgstr "Wartungsmodus: Bitte haben Sie etwas Geduld  - Danke für Ihr Verständnis"
 
 #: www/login/index.php:99
 msgid "login::notification: cette email est deja confirmee"
@@ -7363,11 +7363,11 @@ msgstr "E-Mail scheint ungültig"
 
 #: www/login/register.php:123
 msgid "forms::un utilisateur utilisant cette adresse email existe deja"
-msgstr "Einen Benutzer mit dieser E-Mail Adresse existiert bereits in unserer Datenbank"
+msgstr "Ein Benutzer mit dieser E-Mail Adresse existiert bereits in unserer Datenbank"
 
 #: www/login/register.php:128
 msgid "forms::un utilisateur utilisant ce login existe deja"
-msgstr "Diese Benutzername existiert bereits in unserer Datenbank"
+msgstr "Dieser Benutzername existiert bereits in unserer Datenbank"
 
 #: www/login/register.php:292
 msgid "login invalide (5 caracteres sans accents ni espaces)"
@@ -7376,7 +7376,7 @@ msgstr "Ungültige Benutzername (mind. 5 Zeichen, ohne Umlaute oder Leerfeld)"
 #: www/login/register.php:304
 #: www/login/reset-password.php:92
 msgid "forms::le mot de passe est simple"
-msgstr "Passwort ist einfach"
+msgstr "Passwort ist zu einfach"
 
 #: www/login/register.php:379
 msgid "5 caracteres minimum"
@@ -7414,7 +7414,7 @@ msgstr "Mailserver-Ausfall"
 #: www/login/reset-email.php:150
 #: www/login/reset-email.php:191
 msgid "forms::les emails ne correspondent pas"
-msgstr "Die E-Mail sind nicht paarig"
+msgstr "Die E-Mail sind nicht gleich"
 
 #: www/login/reset-email.php:154
 #: www/login/reset-password.php:68
@@ -7423,16 +7423,16 @@ msgstr "falsches Passwort"
 
 #: www/login/reset-email.php:219
 msgid "admin::compte-utilisateur un email de confirmation vient de vous etre envoye. Veuillez suivre les instructions contenue pour continuer"
-msgstr "Wir haben Ihnen eine Email Bestätigung geschickt. Bitte folgen Sie die Anweisungen, um fortzusetzen."
+msgstr "Wir haben Ihnen eine Email Bestätigung geschickt. Bitte folgen Sie den Anweisungen um fortzusetzen."
 
 #: www/login/reset-email.php:223
 msgid "admin::compte-utilisateur retour a mon compte"
-msgstr "Zurück nach Benutzerkonto"
+msgstr "Zurück zum Benutzerkonto"
 
 #: www/login/reset-email.php:232
 #: www/login/reset-password.php:150
 msgid "phraseanet::erreur : oups ! une erreur est survenue pendant l'operation !"
-msgstr "Hoppla! Leider ist ein Fehler aufgetreten!"
+msgstr "Hoppala! Leider ist ein Fehler aufgetreten!"
 
 #: www/login/reset-email.php:253
 msgid "admin::compte-utilisateur nouvelle adresse email"
@@ -7444,11 +7444,11 @@ msgstr "E-mail Adresse bestätigen"
 
 #: www/login/reset-email.php:267
 msgid "admin::compte-utilisateur: Pourquoi me demande-t-on mon mot de passe pour changer mon adresse email ?"
-msgstr "Warum brauche ich mein Passwort, um mein E-mail Adresse zu verändern?"
+msgstr "Warum brauche ich mein Passwort um meine E-mail Adresse zu ändern?"
 
 #: www/login/reset-email.php:268
 msgid "admin::compte-utilisateur: Votre adresse e-mail sera utilisee lors de la perte de votre mot de passe afin de pouvoir le reinitialiser, il est important que vous soyez la seule personne a pouvoir la changer."
-msgstr "Ihr E-Mail Adresse wird benutzt sein, falls Sie Ihr Passwort vergessen haben und zurücksetzen, es ist ganz wichtig, dass Sie die einzige Person, die dieses Passwort ändern dürfen."
+msgstr "Iher E-Mail Adresse wird als Sicherheitsabfrage benutzt falls Sie Ihr Passwort vergessen haben und zurücksetzen wollen. Nur der E-mail Besitzer kannmit seinem account das Passwort ändern"
 
 #: www/login/reset-password.php:162
 msgid "admin::compte-utilisateur ancien mot de passe"
@@ -7461,7 +7461,7 @@ msgstr "ungültiges Dateiformat"
 #: www/prod/chghddocument.php:61
 #: www/prod/chgthumb.php:49
 msgid "prod::substitution::document remplace avec succes"
-msgstr "Dokument wurde erfolgreich ersetzt"
+msgstr "Dokument wurden erfolgreich ersetzt"
 
 #: www/prod/chgstatus.php:131
 #, php-format
@@ -7470,7 +7470,7 @@ msgstr "%d veränderte(s) Dokument(e)"
 
 #: www/prod/chgthumb.php:44
 msgid "prod::substitution::erreur : impossible d'ajouter ce document"
-msgstr "Es ist unmöglich, dieses Dokument hinzufügen"
+msgstr "Dieses Dokument kann nicht hinzugefügt werden"
 
 #: www/prod/docfunction.php:337
 msgid "prod::proprietes:: status"
@@ -7492,11 +7492,11 @@ msgstr "Status Bearbeitung für %d Dokument(e)"
 
 #: www/prod/docfunction.php:415
 msgid "prod::status: remettre a zero les status non nommes"
-msgstr "die unbenennte Status auf Null zurücksetzen"
+msgstr "den unbenannten Status auf Null zurücksetzen"
 
 #: www/prod/docfunction.php:415
 msgid "prod::status: remetter a zero tous les status"
-msgstr "die Status auf Null zurücksetzen"
+msgstr "den Status auf Null zurücksetzen"
 
 #: www/prod/docfunction.php:418
 msgid "prod::status: aucun status n'est defini sur cette base"
@@ -7504,7 +7504,7 @@ msgstr "Kein Status wurde hier festgelegt"
 
 #: www/prod/docfunction.php:434
 msgid "prod::status: changer egalement le status des document rattaches aux regroupements"
-msgstr "Auch der Dokumentestatus zur Berichte verknüpft verändern"
+msgstr "Auch der Dokumentestatus zu den verknüpften Berichten verändern"
 
 #: www/prod/docfunction.php:464
 #, php-format
@@ -7513,7 +7513,7 @@ msgstr "Status Bearbeitung unmöglich für diese(s) %d Dokument(e)"
 
 #: www/prod/docfunction.php:471
 msgid "prod::status:Vous n'avez pas les droits suffisants pour changer le status des documents selectionnes"
-msgstr "Ihre Zugriffrechte sind ungenügend, um die markierte Dokumente Status zu verändern"
+msgstr "Ihre Zugriffrechte sind nicht ausreichend um den Status der markierten Dokumente zu verändern"
 
 #: www/prod/docfunction.php:506
 msgid "prod::type: appliquer a tous les documents selectionnes"
@@ -7541,7 +7541,7 @@ msgstr "Metadaten"
 
 #: www/prod/imgfunction.php:165
 msgid "prod::tools:regeneration: Attention, certain documents ont des sous-definitions substituees."
-msgstr "Vorsicht : Einige Dokumente haben ersetzte Unterauflösungen"
+msgstr "Achtung : Einige Dokumente haben ersetzte Unterauflösungen"
 
 #: www/prod/imgfunction.php:166
 msgid "prod::tools:regeneration: Forcer la reconstruction sur les enregistrements ayant des thumbnails substituees."
@@ -7573,7 +7573,7 @@ msgstr "90° entgegen dem Uhrzeigersinn drehen"
 
 #: www/prod/imgfunction.php:221
 msgid "prod::tools:substitution : mettre a jour le nom original de fichier apres substitution"
-msgstr "ursprüngliche Dateiname nach Ersetzung aktualisieren"
+msgstr "ursprünglichen Dateinamen nach Ersetzung aktualisieren"
 
 #: www/prod/prodFeedBack.php:237
 msgid "les enregistrements ont ete correctement commandes"
@@ -7620,7 +7620,7 @@ msgstr "Titel"
 #: www/report/tab.php:64
 #: www/report/tab.php:846
 msgid "report:: poids"
-msgstr "Gewicht"
+msgstr "Größe"
 
 #: www/report/ajax_table_content.php:66
 #: www/report/ajax_table_content.php:689
@@ -7700,7 +7700,7 @@ msgstr "Durchschnittszahl der Ergebnisse"
 #: www/report/ajax_table_content.php:531
 #: www/report/tab.php:715
 msgid "report:: total des telechargements"
-msgstr "Allgemeine Herunterladen"
+msgstr "Allgemeine downloads"
 
 #: www/report/ajax_table_content.php:532
 #: www/report/tab.php:716
@@ -7720,7 +7720,7 @@ msgstr "Anzahl von Dokumenten"
 #: www/report/ajax_table_content.php:549
 #: www/report/tab.php:746
 msgid "report:: poids des documents"
-msgstr "Gewicht von Dokumenten"
+msgstr "Größe von Dokumenten"
 
 #: www/report/ajax_table_content.php:550
 #: www/report/tab.php:747
@@ -7730,7 +7730,7 @@ msgstr "Anzahl von Miniaturansichten"
 #: www/report/ajax_table_content.php:551
 #: www/report/tab.php:748
 msgid "report:: poids des previews"
-msgstr "Gewicht von Miniaturansichten"
+msgstr "Größe von Miniaturansichten"
 
 #: www/report/ajax_table_content.php:589
 #: www/report/tab.php:796
@@ -7742,7 +7742,7 @@ msgstr "Historie von Verbindungen"
 #: www/report/tab.php:803
 #: www/report/tab.php:892
 msgid "report:: historique des telechargements"
-msgstr "Historie von Herunterladen"
+msgstr "Historie der downloads"
 
 #: www/report/ajax_table_content.php:602
 #: www/report/tab.php:809
@@ -7943,7 +7943,7 @@ msgstr "Importieren"
 
 #: www/thesaurus2/import_dlg.php:87
 msgid "thesaurus:: coller ici la liste des termes a importer"
-msgstr "Hier die Liste der Begriffe zu importieren einfügen"
+msgstr "Hier die Liste der Begriffe zu importieren sind einfügen"
 
 #: www/thesaurus2/import_dlg.php:88
 msgid "thesaurus:: langue par default"
@@ -8303,7 +8303,7 @@ msgstr "Einige hochgeladene Bestandteile wurden in Quarantäne gelegt"
 #: www/upload/index.php:277
 #, php-format
 msgid "upload :: choisir les fichiers  a uploader (max : %d MB)"
-msgstr "Dateien, die zu herunterladen sind, auswählen (max: %d MB)"
+msgstr "Dateien zum upload auswählen (max: %d MB)"
 
 #: www/upload/index.php:343
 msgid "Upload Manager"
@@ -8323,7 +8323,7 @@ msgstr "Zurück zum Upload in Flash"
 
 #: www/upload/index.php:363
 msgid "upload:: Re-ordonner les fichiers"
-msgstr "Dateien neu anzuordnen"
+msgstr "Dateien neu anordnen"
 
 #: www/upload/index.php:370
 msgid "upload:: inverser"
@@ -8351,7 +8351,7 @@ msgstr "starten"
 
 #: www/upload/index.php:416
 msgid "upload:: annuler tous les telechargements"
-msgstr "Alle Herunterladungen abbrechen"
+msgstr "Alle downloads abbrechen"
 
 #: www/upload/index.php:434
 msgid "Action"
@@ -8363,7 +8363,7 @@ msgstr "blockierte Dokumente hinzufügen"
 
 #: www/upload/index.php:440
 msgid "Substituer quand possible ou Ajouter les documents bloques"
-msgstr "blockierte Dokumente ersetzen wenn möglich oder hinzufügen?"
+msgstr "blockierte Dokumente wenn möglich ersetzen oder hinzufügen?"
 
 #: www/upload/index.php:443
 msgid "Supprimer les documents bloques"
@@ -8409,7 +8409,7 @@ msgstr "erfolgreich versendet"
 
 #: lib/Alchemy/Phrasea/Controller/Admin/Publications.php:92
 msgid "You are not the owner of this feed, you can not edit it"
-msgstr "Sie sind nicht der Besitzer von diesem Feed: Sie dürfen also ihn nicht bearbeiten."
+msgstr "Sie sind nicht der Besitzer dieses Feeds: Sie können ihn deshalb nicht bearbeiten."
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:104
 msgid "Basket created"
@@ -8453,11 +8453,11 @@ msgstr "%d Datensätze verschoben"
 #: lib/Alchemy/Phrasea/Controller/Prod/Bridge.php:237
 #: lib/Alchemy/Phrasea/Controller/Prod/Bridge.php:308
 msgid "Vous ne pouvez pas editer plusieurs elements simultanement"
-msgstr "Sie dürfen nicht, mehrere Elemente gleichzeitig zu bearbeiten"
+msgstr "Sie können nicht mehrere Elemente gleichzeitig bearbeiten"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Bridge.php:262
 msgid "Vous essayez de faire une action que je ne connais pas !"
-msgstr "Sie versuchen eine Handlung, die ich nicht kenne !"
+msgstr "Sie versuchen eine unbekannte Aktion auszuführen !"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Bridge.php:328
 #: lib/Alchemy/Phrasea/Controller/Prod/Bridge.php:468
@@ -8480,17 +8480,17 @@ msgstr "Eintritt für Eingabe nicht gefunden"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Feed.php:196
 msgid "Action Forbidden : You are not the publisher"
-msgstr "Handlung verboten: Sie sind nicht der Veröffentlicher"
+msgstr "Aktion verboten: Sie sind nicht der Veröffentlicher"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Feed.php:292
 #: lib/Alchemy/Phrasea/Controller/Prod/Feed.php:316
 msgid "publication::Voici votre fil RSS personnel. Il vous permettra d'etre tenu au courrant des publications."
-msgstr "Hier finden Sie bitte Ihr eigenes RSS Feed, Sie werden dann dank dem RSS über die Veröffentlichungen gut unterrichtet sein"
+msgstr "Hier finden Sie Ihr eigenes RSS Feed. Dank des RSS werden Sie über neue Veröffentlichungen automatisch informiert"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Feed.php:293
 #: lib/Alchemy/Phrasea/Controller/Prod/Feed.php:317
 msgid "publications::Ne le partagez pas, il est strictement confidentiel"
-msgstr "Bitte tauchen Sie es nicht, es ist streng vertraulich"
+msgstr "Dieses RSS nicht weiterleiten - es istvertraulich"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Feed.php:295
 #: lib/Alchemy/Phrasea/Controller/Prod/Feed.php:319
@@ -8499,7 +8499,7 @@ msgstr "Ihr eigenes RSS"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:41
 msgid "prod::recherche: Attention : la liste des bases selectionnees pour la recherche a ete changee."
-msgstr "Vorsicht : die ausgewählte Datenbanken Liste für die Suche wurde verändert"
+msgstr "Achtung : Die ausgewählte Datenbanken Liste für die Suche wurde verändert"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:47
 msgid "phraseanet::Ne plus afficher ce message"
@@ -8507,11 +8507,11 @@ msgstr "Diese Meldung nicht mehr anzeigen"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:48
 msgid "Supprimer egalement les documents rattaches a ces regroupements"
-msgstr "Auch die Dokumente, die mit diesen Berichten verknüpft sind, löschen?"
+msgstr "Auch die Dokumente die mit diesen Berichten verknüpft sind löschen?"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:49
 msgid "reponses:: Ces enregistrements vont etre definitivement supprimes et ne pourront etre recuperes. Etes vous sur ?"
-msgstr "Diese Datensätze werden endgültig gelöscht sein und es wird unmöglich sein, sie abzurufen. Bestätigen?"
+msgstr "Diese Datensätze werden entgültig gelöscht und es ist nicht möglich sie erneut aufzurufen. Fortfahren?"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:52
 msgid "prod::editing valeurs heterogenes, choisir 'remplacer', 'ajouter' ou 'annuler'"
@@ -8519,15 +8519,15 @@ msgstr "heterogene Werte, bitte wählen Sie \"ersetzen\", \"hinzufügen\" oder \
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:53
 msgid "prod::editing::annulation: abandonner les modification ?"
-msgstr "Abbrechung: Änderungen verzichten?"
+msgstr "Abbrechen und auf Änderungen verzichten?"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:60
 msgid "Vous n'avez pas les droits pour supprimer certains documents"
-msgstr "Sie haben keinen Zugriff, einige Dokumente zu löschen"
+msgstr "Sie haben keinen Zugriffsrechte um einige Dokumente zu löschen"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:61
 msgid "Vous n'avez pas les droits pour supprimer ces documents"
-msgstr "Sie haben keinen Zugriff, diese Dokumente zu löschen"
+msgstr "Sie haben keine Zugriffsrechte um dieses Dokument zu löschen"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:62
 msgid "Vous devez donner un titre"
@@ -8539,11 +8539,11 @@ msgstr "Neue Vorlage"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:65
 msgid "Vous n'avez pas rempli tous les champ requis"
-msgstr "Sie haben alle erforderliche Felder nicht ausgefüllt"
+msgstr "Sie haben nicht alle erforderlichen Felder ausgefüllt"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:66
 msgid "Vous n'avez pas selectionne de fil de publication"
-msgstr "Sie haben den Veröffentlichung Thread nicht ausgewählt"
+msgstr "Sie haben den Veröffentlichungs - Thread nicht ausgewählt"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:67
 msgid "panier::Supression d'un element d'un reportage"
@@ -8551,7 +8551,7 @@ msgstr "Löschen von einem Element einer Reportage"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:68
 msgid "panier::Attention, vous etes sur le point de supprimer un element du reportage. Merci de confirmer votre action."
-msgstr "Vorsicht : Sie sind dabei, ein Element des Berichtes zu löschen. Bitte bestätigen Sie Ihre Handlung."
+msgstr "Achtung : Sie sind dabei ein Element des Berichtes zu löschen. Bitte bestätigen Sie Ihre Handlung."
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:69
 msgid "phraseanet::recherche avancee"
@@ -8564,7 +8564,7 @@ msgstr "umbenennen"
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:71
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:80
 msgid "panier:: Un reportage ne peux recevoir que des elements provenants de la base ou il est enregistre"
-msgstr "Ein Bericht darf nur Elemente bekommen, die aus der selben Datenbank kommen"
+msgstr "Ein Bericht darf nur Elemente enthalten die aus der selben Datenbank kommen"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:72
 msgid "phraseanet:: Erreur"
@@ -8572,11 +8572,11 @@ msgstr "Fehler"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:73
 msgid "cgus :: Attention, si vous refuser les CGUs de cette base, vous n'y aures plus acces"
-msgstr "Vorsicht: Wenn Sie die ANB ablehnen, werden Sie nicht erlaubt, auf diese Datenbank einzuloggen"
+msgstr "Achtung: Wenn Sie die ANB ablehnen können Sie sich nicht in die Datenbank einloggen"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:74
 msgid "cgus :: Vous devez vous reauthentifier pour que vos parametres soient pris en compte."
-msgstr "Änderungen werden wirken beim nächsten Anmeldung"
+msgstr "Änderungen werden erst bei der nächsten Anmeldung wirksam"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:75
 #, php-format
@@ -8600,11 +8600,11 @@ msgstr "%s zum ausgewählten Dokument hinzufügen"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:79
 msgid "panier:: vous ne pouvez pas supprimer un panier public"
-msgstr "Sie dürfen nicht, einen leeren öffentlichen Sammelkorb löschen"
+msgstr "Sie können keinen leeren öffentlichen Sammelkorb löschen"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:81
 msgid "Vous ne pouvez pas selectionner plus de 800 enregistrements"
-msgstr "Sie dürfen nicht, mehr als 800 Datensätze auswählen"
+msgstr "Sie können nicht mehr als 800 Datensätze auswählen"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:83
 msgid "Erreur : soit les parametres sont incorrects, soit le serveur distant ne repond pas"
@@ -8624,11 +8624,11 @@ msgstr "keine Veröffentlichung ausgeführt, überprüfen Sie Ihre Parameter"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:87
 msgid "Attention, en supprimant ce preregalge, vous ne pourrez plus modifier ou supprimer de publications prealablement effectues avec celui-ci"
-msgstr "Vorsicht, wenn Sie diese Voreinstellung löschen, werden Sie nicht mehr Veröffentlichungen (die mit dieser Voreinstellung ausgeführt wurde) verändern oder löschen können"
+msgstr "Achtung: Wenn Sie diese Voreinstellung löschen, können Sie Veröffentlichungen die mit diesen Voreinstellungen ausgeführt wurden weder verändern noch löschen "
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:88
 msgid "edit::certains documents possedent des champs requis non remplis. Merci de les remplir pour valider votre editing"
-msgstr "einige Dokumente haben fehlend erforderliche Felder. Bitte ausfüllen vor der Validierung."
+msgstr "Bei einigen Dokumenten wurden erforderliche Felder nicht ausgefüllt. Bitte füllen Sie diese vor der Bestätigung aus."
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:89
 msgid "Aucun document selectionne"
@@ -8636,7 +8636,7 @@ msgstr "kein ausgewähltes Dokument"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:90
 msgid "Are you sure you want to delete this list ?"
-msgstr "Sind Sie sicher, diese Liste zu löschen?"
+msgstr "Wollen Sie diese Liste sicher löschen?"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:91
 msgid "New list name ?"
@@ -8656,7 +8656,7 @@ msgstr "Zeit für Feedback (Tage)"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:97
 msgid "Accuse de reception"
-msgstr "Rückschein"
+msgstr "Empfangsbestätigung"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:98
 #, php-format
@@ -8670,7 +8670,7 @@ msgstr "Kein Benutzer ausgewählt"
 #: lib/Alchemy/Phrasea/Controller/Prod/Push.php:171
 #: lib/Alchemy/Phrasea/Controller/Prod/Push.php:309
 msgid "Unable to send the documents"
-msgstr "Unmöglich, Dokumente zu senden"
+msgstr "Es ist nicht möglich Dokumente zu senden"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Push.php:190
 #, php-format
@@ -8712,7 +8712,7 @@ msgstr "Keine Dokumente zu bestätigen"
 #: lib/Alchemy/Phrasea/Controller/Prod/Push.php:428
 #, php-format
 msgid "Missing mandatory parameter %s"
-msgstr "Missing mandatory parameter %s"
+msgstr "Fehlende parameter %s"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Push.php:518
 #, php-format
@@ -8721,15 +8721,15 @@ msgstr "%1$d Datensätze wurden für Bestätigung zu %2$d Benutzer gesendet"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Push.php:604
 msgid "First name is required"
-msgstr "Vorname wird erfordert"
+msgstr "Vorname erforderlich"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Push.php:607
 msgid "Last name is required"
-msgstr "Nachname wird erfordert"
+msgstr "Nachname erforderlich"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Push.php:610
 msgid "Email is required"
-msgstr "Email Adresse wird erfordert"
+msgstr "Email Adresse erforderlich"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Push.php:613
 msgid "Email is invalid"
@@ -8745,7 +8745,7 @@ msgstr "Benutzer wurde erfolgreich erstellt"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Push.php:665
 msgid "Error while creating user"
-msgstr "Fehler bei Benutzer Erstellung"
+msgstr "Fehler bei der Erstellung des Benutzers"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Query.php:153
 #, php-format
@@ -8769,15 +8769,15 @@ msgstr "%s ausgewählte Dokumente"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Story.php:131
 msgid "Story created"
-msgstr "Bericht erfolgreich erstellt"
+msgstr "Bericht wurde erfolgreich erstellt"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Story.php:240
 msgid "Record removed from story"
-msgstr "Datensatz wurde von Bericht entfernt"
+msgstr "Datensatz wurde vom Bericht entfernt"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Story.php:310
 msgid "You can not edit this story"
-msgstr "Sie dürfen diesen Bericht nicht bearbeiten"
+msgstr "Sie können diesen Bericht nicht bearbeiten"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Story.php:329
 msgid "Story updated"
@@ -8785,7 +8785,7 @@ msgstr "Bericht wurde aktualisiert"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/UserPreferences.php:40
 msgid "Error while saving preference"
-msgstr "Beim Speichern der Einstellungen ist ein Fehler eingetreten"
+msgstr "Beim Speichern der Einstellungen ist ein Fehler aufgetreten"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/UserPreferences.php:53
 msgid "Preference saved !"
@@ -8794,7 +8794,7 @@ msgstr "Einstellungen gespeichert !"
 #: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:144
 #, php-format
 msgid "Unable to create list %s"
-msgstr "Unmöglich, Liste %s zu erstellen"
+msgstr "Es ist nicht möglich, die Liste %s zu erstellen"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:152
 #: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:272
@@ -8808,7 +8808,7 @@ msgstr "Liste %s wurde erstellt"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:263
 msgid "Unable to update list"
-msgstr "Unmöglich, die Liste zu aktualisieren"
+msgstr "Es ist nicht möglich, die Liste zu aktualisieren"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:293
 msgid "List has been updated"
@@ -8822,7 +8822,7 @@ msgstr "Liste wurde gelöscht"
 #: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:354
 #, php-format
 msgid "Unable to delete list"
-msgstr "Unmöglich, die Liste zu löschen"
+msgstr "Es ist nicht möglich, die Liste zu löschen"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:395
 msgid "Entry removed from list"
@@ -8830,7 +8830,7 @@ msgstr "Eingabe wurde von der Liste entfernt"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:410
 msgid "Unable to remove entry from list "
-msgstr "Unmöglich, die Eingabe von der Liste zu entfernen "
+msgstr "Es ist nicht möglich, die Eingabe von der Liste zu entfernen "
 
 #: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:471
 #, php-format
@@ -8844,7 +8844,7 @@ msgstr "%d hinzugefügter Benutzer zu der Liste"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:496
 msgid "Unable to add usr to list"
-msgstr "Unmöglich, Benutzer zur Liste hinzufügen"
+msgstr "Es ist nicht möglich den Benutzer zur Liste hinzufügen"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:597
 msgid "List shared to user"
@@ -8852,7 +8852,7 @@ msgstr "Liste mit Benuzer geteilt"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:612
 msgid "Unable to share the list with the usr"
-msgstr "Unmöglich, die Liste mit dem Benutzer zu teilen"
+msgstr "Es ist nicht möglich, die Liste mit dem Benutzer zu teilen"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:650
 msgid "Owner removed from list"
@@ -8860,7 +8860,7 @@ msgstr "Besitzer wurde von der Liste entfernt"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:664
 msgid "Unable to remove usr from list"
-msgstr "Unmöglich , den Benutzer von der Liste zu entfernen"
+msgstr "Es ist nicht möglich den Benutzer von der Liste zu entfernen"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/WorkZone.php:177
 #, php-format
@@ -8884,11 +8884,11 @@ msgstr "%1$d Berichte zum Arbeitsbereich, %2$d schon angehängt"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/WorkZone.php:253
 msgid "Story detached from the WorkZone"
-msgstr "Bericht wurde zum Arbeitsbereich gelöst"
+msgstr "Bericht wurde vom Arbeitsbereich gelöst"
 
 #: lib/Alchemy/Phrasea/Controller/Setup/Installer.php:138
 msgid "It is not recommended to install Phraseanet without HTTPS support"
-msgstr "Es wird nicht empfohlen, Phraseanet ohne HTTPS Unterstützung zu installieren."
+msgstr "Es wird nicht empfehlenswert  Phraseanet ohne HTTPS Unterstützung zu installieren."
 
 #: lib/Alchemy/Phrasea/Controller/Setup/Installer.php:187
 msgid "Appbox is unreachable"
@@ -8918,7 +8918,7 @@ msgstr "ungültiger Vorlagenname"
 #: lib/Doctrine/Entities/ValidationSession.php:356
 #, php-format
 msgid "Vous aviez envoye cette demande a %d utilisateurs"
-msgstr "Sie haben diese Anfrage zu %d Benutzer versendet"
+msgstr "Sie haben diese Anfrage zu %d Benutzer gesendet"
 
 #: lib/Doctrine/Entities/ValidationSession.php:363
 #, php-format
@@ -8928,12 +8928,12 @@ msgstr "Sie haben diese Anfrage zu %d Benutzer gesendet"
 #: lib/Doctrine/Entities/ValidationSession.php:373
 #, php-format
 msgid "Processus de validation recu de %s et concernant %d utilisateurs"
-msgstr "Validierungsprozess von %s für %d Benutzer bekommen"
+msgstr "Bestätigungsprozess von %s für %d Benutzer erhalten"
 
 #: lib/Doctrine/Entities/ValidationSession.php:380
 #, php-format
 msgid "Processus de validation recu de %s"
-msgstr "Validierungsprozess von %s bekommen"
+msgstr "Bewertungsprozess von %s erhalten"
 
 #: lib/Doctrine/Repositories/BasketElementRepository.php:43
 msgid "Element is not found"
@@ -8954,7 +8954,7 @@ msgstr "Besitzer nicht gefunden"
 
 #: lib/Doctrine/Repositories/UsrListOwnerRepository.php:35
 msgid "Owner and list mismatch"
-msgstr "Besitzer und Liste übereinstimmen nicht miteinander"
+msgstr "Besitzer und Liste stimmen nicht miteinander überein"
 
 #: lib/Doctrine/Repositories/UsrListRepository.php:51
 msgid "List is not found"
