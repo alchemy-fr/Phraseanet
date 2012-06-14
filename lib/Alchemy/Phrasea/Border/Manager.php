@@ -398,6 +398,22 @@ class Manager
 
         $this->filesystem->copy($file->getFile()->getRealPath(), $lazaretPathname, true);
 
+        $spec = new \MediaAlchemyst\Specification\Image();
+
+        $spec->setResizeMode(\MediaAlchemyst\Specification\Image::RESIZE_MODE_INBOUND_FIXEDRATIO);
+        $spec->setDimensions(375, 275);
+
+        $core = \bootstrap::getCore();
+
+        try {
+           $core['media-alchemyst']
+                ->open($file->getFile()->getPathname())
+                ->turnInto($lazaretPathname, $spec)
+                ->close();
+        } catch (\MediaAlchemyst\Exception\Exception $e) {
+            
+        }
+
         $lazaretFile = new LazaretFile();
         $lazaretFile->setBaseId($file->getCollection()->get_base_id());
         $lazaretFile->setSha256($file->getSha256());
