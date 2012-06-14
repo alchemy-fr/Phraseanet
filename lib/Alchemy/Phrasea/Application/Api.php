@@ -204,7 +204,7 @@ return call_user_func(function() {
                 $route, function(\Silex\Application $app, Request $request) {
                     return $app['api']->get_task_list($app)->get_response();
                 }
-            )->middleware($mustBeAdmin);
+            )->before($mustBeAdmin);
 
             /**
              * *******************************************************************
@@ -222,7 +222,7 @@ return call_user_func(function() {
                 $route, function(\Silex\Application $app, Request $request, $task_id) {
                     return $app['api']->get_task($app, $task_id)->get_response();
                 }
-            )->middleware($mustBeAdmin)->assert('task_id', '\d+');
+            )->before($mustBeAdmin)->assert('task_id', '\d+');
 
             /**
              * *******************************************************************
@@ -241,7 +241,7 @@ return call_user_func(function() {
                 $route, function(\Silex\Application $app, Request $request, $task_id) {
                     return $app['api']->set_task_property($app, $task_id)->get_response();
                 }
-            )->middleware($mustBeAdmin)->assert('task_id', '\d+');
+            )->before($mustBeAdmin)->assert('task_id', '\d+');
 
             /**
              * *******************************************************************
@@ -259,7 +259,7 @@ return call_user_func(function() {
                 $route, function(\Silex\Application $app, Request $request, $task_id) {
                     return $app['api']->start_task($app, $task_id)->get_response();
                 }
-            )->middleware($mustBeAdmin);
+            )->before($mustBeAdmin);
 
             /**
              * *******************************************************************
@@ -277,7 +277,7 @@ return call_user_func(function() {
                 $route, function(\Silex\Application $app, Request $request, $task_id) {
                     return $app['api']->stop_task($app, $task_id)->get_response();
                 }
-            )->middleware($mustBeAdmin);
+            )->before($mustBeAdmin);
 
             /**
              * *******************************************************************
@@ -295,7 +295,7 @@ return call_user_func(function() {
                 $route, function(\Silex\Application $app, Request $request) {
                     return $app['api']->get_phraseanet_monitor($app)->get_response();
                 }
-            )->middleware($mustBeAdmin);
+            )->before($mustBeAdmin);
 
 
             /**
@@ -395,6 +395,20 @@ return call_user_func(function() {
 
             $app->get('/databoxes/{any_id}/termsOfUse/', $bad_request_exception);
 
+            
+            $route = '/quarantine/list/';
+            $app->get(
+                $route, function(\Silex\Application $app, Request $request) {
+                    return $app['api']->list_quarantine($app, $request)->get_response();
+                }
+            );
+            
+            $route = '/quarantine/item/{lazaret_id}/';
+            $app->get(
+                $route, function($lazaret_id, \Silex\Application $app, Request $request) {
+                    return $app['api']->list_quarantine_item($lazaret_id, $app, $request)->get_response();
+                }
+            );
 
 
             /**
