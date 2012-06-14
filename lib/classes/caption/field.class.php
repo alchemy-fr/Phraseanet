@@ -35,6 +35,8 @@ class caption_field implements cache_cacheableInterface
      */
     protected $record;
 
+    protected static $localCache = array();
+
     /**
      *
      * @param  databox_field    $databox_field
@@ -474,9 +476,11 @@ class caption_field implements cache_cacheableInterface
      */
     public function get_data_from_cache($option = null)
     {
-        $databox = $this->record->get_databox();
-
-        return $databox->get_data_from_cache($this->get_cache_key($option));
+        if (isset(self::$localCache[$this->get_cache_key($option)])) {
+            return self::$localCache[$this->get_cache_key($option)];
+        }
+        
+        throw new Exception('no value');
     }
 
     /**
@@ -489,9 +493,7 @@ class caption_field implements cache_cacheableInterface
      */
     public function set_data_to_cache($value, $option = null, $duration = 360000)
     {
-        $databox = $this->record->get_databox();
-
-        return $databox->set_data_to_cache($value, $this->get_cache_key($option), $duration);
+        return self::$localCache[$this->get_cache_key($option)] = $value;
     }
 
     /**
@@ -502,8 +504,6 @@ class caption_field implements cache_cacheableInterface
      */
     public function delete_data_from_cache($option = null)
     {
-        $databox = $this->record->get_databox();
-
-        return $databox->delete_data_from_cache($this->get_cache_key($option));
+        unset(self::$localCache[$this->get_cache_key($option)]);
     }
 }
