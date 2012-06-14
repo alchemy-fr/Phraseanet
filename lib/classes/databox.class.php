@@ -649,44 +649,6 @@ class databox extends base
         return sprintf("%s@%s:%s (MySQL %s)", $this->dbname, $this->host, $this->port, $this->get_connection()->server_info());
     }
 
-    /**
-     * Return an array of available metadata objects
-     *
-     * @return Array
-     */
-    public static function get_available_metadatas()
-    {
-        $provider = new PHPExiftool\Driver\TagProvider();
-
-        $available = $provider->getAll();
-
-        $available['Phraseanet'] = array(
-            'PdfText'       => new \Alchemy\Phrasea\Metadata\Tag\PdfText(),
-            'TfArchivedate' => new \Alchemy\Phrasea\Metadata\Tag\TfArchivedate(),
-            'TfAtime'       => new \Alchemy\Phrasea\Metadata\Tag\TfAtime(),
-            'TfBits'        => new \Alchemy\Phrasea\Metadata\Tag\TfBits(),
-            'TfBasename'    => new \Alchemy\Phrasea\Metadata\Tag\TfBasename(),
-            'TfChannels'    => new \Alchemy\Phrasea\Metadata\Tag\TfChannels(),
-            'TfCtime'       => new \Alchemy\Phrasea\Metadata\Tag\TfCtime(),
-            'TfDuration'    => new \Alchemy\Phrasea\Metadata\Tag\TfDuration(),
-            'TfEditdate'    => new \Alchemy\Phrasea\Metadata\Tag\TfEditdate(),
-            'TfExtension'   => new \Alchemy\Phrasea\Metadata\Tag\TfExtension(),
-            'TfFilename'    => new \Alchemy\Phrasea\Metadata\Tag\TfFilename(),
-            'TfFilepath'    => new \Alchemy\Phrasea\Metadata\Tag\TfFilepath(),
-            'TfHeight'      => new \Alchemy\Phrasea\Metadata\Tag\TfHeight(),
-            'TfMimetype'    => new \Alchemy\Phrasea\Metadata\Tag\TfMimetype(),
-            'TfMtime'       => new \Alchemy\Phrasea\Metadata\Tag\TfMtime(),
-            'TfDirname'     => new \Alchemy\Phrasea\Metadata\Tag\TfDirname(),
-            'TfRecordid'    => new \Alchemy\Phrasea\Metadata\Tag\TfRecordid(),
-            'TfSize'        => new \Alchemy\Phrasea\Metadata\Tag\TfSize(),
-            'TfWidth'       => new \Alchemy\Phrasea\Metadata\Tag\TfWidth(),
-        );
-
-        ksort($available);
-
-        return $available;
-    }
-
     public function get_available_dcfields()
     {
         return array(

@@ -264,7 +264,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         if ($opCodeCache instanceof \Alchemy\Phrasea\Cache\Cache) {
             $ret['cache']['op_code'] = array(
-                'type'  => $mainCache->getName(),
+                'type'  => $opCodeCache->getName(),
                 'stats' => $opCodeCache->getStats()
             );
         } else {
@@ -695,13 +695,71 @@ class API_V1_adapter extends API_V1_Abstract
 
         if ($output instanceof \record_adapter) {
             $ret['entity'] = '0';
-            $ret['record'] = $this->list_record($output);
+            $ret['url'] = '/records/' . $output->get_sbas_id() . '/' . $output->get_record_id() . '/';
         }
         if ($output instanceof \Entities\LazaretFile) {
             $ret['entity'] = '1';
-            $ret['reasons'] = $behavior === BorderManager::FORCE_LAZARET ? array() : $reasons;
-            $ret['lazaretFile'] = $this->list_lazaret_file($output);
+            $ret['url'] = '/quarantine/item/' . $output->getId() . '/';
         }
+
+        $result = new API_V1_result($request, $this);
+
+        $result->set_datas($ret);
+
+        return $result;
+    }
+
+    public function list_quarantine(Application $app, Request $request)
+    {
+        $offset_start = max($request->get('offset_start', 0), 0);
+        $per_page = min(max($request->get('per_page', 10), 1), 20);
+
+        $em = $app['Core']->getEntityManager();
+        $user = $app['Core']->getAuthenticatedUser();
+        /* @var $user \User_Adapter */
+        $baseIds = array_keys($user->ACL()->get_granted_base(array('canaddrecord')));
+
+        $lazaretFiles = array();
+
+        if (count($baseIds) > 0) {
+            $lazaretRepository = $em->getRepository('Entities\LazaretFile');
+
+            $lazaretFiles = $lazaretRepository->findPerPage(
+                $baseIds, $offset_start, $per_page
+            );
+        }
+
+        $ret = array();
+
+        foreach ($lazaretFiles as $lazaretFile) {
+            $ret[] = $this->list_lazaret_file($lazaretFile);
+        }
+
+        $result = new API_V1_result($request, $this);
+
+        $result->set_datas(array(
+            'offset_start' => $offset_start,
+            'per_page'     => $per_page,
+            'items'        => $ret,
+        ));
+
+        return $result;
+    }
+
+    public function list_quarantine_item($lazaret_id, Application $app, Request $request)
+    {
+        $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $lazaret_id);
+
+        /* @var $lazaretFile \Entities\LazaretFile */
+        if (null === $lazaretFile) {
+            throw new \API_V1_exception_notfound(sprintf('Lazaret file id %d not found', $lazaret_id));
+        }
+
+        if ( ! $app['Core']->getAuthenticatedUser()->ACL()->has_right_on_base($lazaretFile->getBaseId(), 'canaddrecord')) {
+            throw new \API_V1_exception_forbidden('You do not have access to this quarantine item');
+        }
+
+        $ret = array('item' => $this->list_lazaret_file($lazaretFile));
 
         $result = new API_V1_result($request, $this);
 
@@ -1278,7 +1336,7 @@ class API_V1_adapter extends API_V1_Abstract
                 $choices[$user->get_id()] = array(
                     'usr_id'     => $user->get_id(),
                     'usr_name'   => $user->get_display_name(),
-                    'is_mine'    => $user->get_id() == $this->core->getAuthenticatedUser()->get_id(),
+                    'readonly'   => $user->get_id() != $this->core->getAuthenticatedUser()->get_id(),
                     'agreement'  => $validation_datas->getAgreement(),
                     'updated_on' => $validation_datas->getUpdated()->format(DATE_ATOM),
                     'note'       => $validation_datas->getNote(),
@@ -1447,10 +1505,10 @@ class API_V1_adapter extends API_V1_Abstract
         $per_page = (($per_page >= 1) && ($per_page <= 20)) ? $per_page : 5;
 
         $datas = array(
-            'feed'         => $this->list_aggregate_publications($feed, $user),
-            'offset_start' => $offset_start,
-            'per_page'     => $per_page,
-            'entries'      => $this->list_publications_entries($feed, $offset_start, $per_page),
+            'total_entries' => $feed->get_count_total_entries(),
+            'offset_start'  => $offset_start,
+            'per_page'      => $per_page,
+            'entries'       => $this->list_publications_entries($feed, $offset_start, $per_page),
         );
 
         $result->set_datas($datas);
@@ -1495,16 +1553,10 @@ class API_V1_adapter extends API_V1_Abstract
             'total_entries' => $feed->get_count_total_entries(),
             'icon'          => $feed->get_icon_url(),
             'public'        => $feed->is_public(),
-            'is_mine'       => $feed->is_owner($user),
+            'readonly'      => ! $feed->is_publisher($user),
+            'deletable'     => $feed->is_owner($user),
             'created_on'    => $feed->get_created_on()->format(DATE_ATOM),
             'updated_on'    => $feed->get_updated_on()->format(DATE_ATOM),
-        );
-    }
-
-    protected function list_aggregate_publications(Feed_Aggregate $feed, $user)
-    {
-        return array(
-            'total_entries' => $feed->get_count_total_entries(),
         );
     }
 

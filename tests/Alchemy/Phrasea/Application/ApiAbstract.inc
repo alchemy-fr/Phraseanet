@@ -608,7 +608,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
                 $ref_structure->get_element('idbarbouze');
                 $this->fail('An expected exception has not been raised.');
             } catch (\Exception_Databox_FieldNotFound $e) {
-
+                
             }
 
             $route = '/databoxes/' . $databox_id . '/metadatas/';
@@ -1567,7 +1567,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->evaluateMeta200($content);
 
 
-        $this->assertArrayHasKey('feed', $content['response']);
+        $this->assertArrayHasKey('total_entries', $content['response']);
         $this->assertArrayHasKey('offset_start', $content['response']);
         $this->assertArrayHasKey('per_page', $content['response']);
         $this->assertArrayHasKey('entries', $content['response']);
@@ -1725,6 +1725,99 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         if ( ! $found) {
             $this->fail('Entry not found');
         }
+    }
+
+    /**
+     * @covers list_lazaret_file
+     * @covers list_quarantine
+     * @covers list_quarantine_item
+     */
+    public function testQuarantineList()
+    {
+        $this->setToken(self::$token);
+        $route = '/quarantine/list/';
+
+        $quarantineItemId = $this->getQuarantineItem()->getId();
+
+        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+
+        $this->client->request('GET', $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $content = $this->unserialize($this->client->getResponse()->getContent());
+
+        $this->assertArrayHasKey('offset_start', $content['response']);
+        $this->assertArrayHasKey('per_page', $content['response']);
+        $this->assertArrayHasKey('items', $content['response']);
+
+        $found = false;
+        foreach ($content['response']['items'] as $item) {
+            $this->evaluateGoodQuarantineItem($item);
+            if ($item['id'] == $quarantineItemId) {
+                $found = true;
+            }
+        }
+
+        if ( ! $found) {
+            $this->fail('should find the quarantine item');
+        }
+    }
+
+    /**
+     * @covers list_lazaret_file
+     * @covers list_quarantine_item
+     */
+    public function testQuarantineContent()
+    {
+        $this->setToken(self::$token);
+
+        $quarantineItemId = $this->getQuarantineItem()->getId();
+        $route = '/quarantine/item/' . $quarantineItemId . '/';
+
+        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+
+        $this->client->request('GET', $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $content = $this->unserialize($this->client->getResponse()->getContent());
+
+        $this->assertArrayHasKey('item', $content['response']);
+
+        $this->evaluateGoodQuarantineItem($content['response']['item']);
+        $this->assertEquals($quarantineItemId, $content['response']['item']['id']);
+    }
+
+    protected function getQuarantineItem()
+    {
+        $lazaretSession = new \Entities\LazaretSession();
+        self::$core['EM']->persist($lazaretSession);
+
+        $quarantineItem;
+        $callback = function ($element, $visa, $code) use (&$quarantineItem) {
+                $quarantineItem = $element;
+            };
+
+        $tmpname = tempnam(sys_get_temp_dir(), 'test_quarantine');
+        copy(__DIR__ . '/../../../testfiles/iphone_pic.jpg', $tmpname);
+
+        $file = \Alchemy\Phrasea\Border\File::buildFromPathfile($tmpname, self::$collection);
+        self::$core['border-manager']->process($lazaretSession, $file, $callback, \Alchemy\Phrasea\Border\Manager::FORCE_LAZARET);
+
+        return $quarantineItem;
+    }
+
+    protected function evaluateGoodQuarantineItem($item)
+    {
+        $this->assertArrayHasKey('id', $item);
+        $this->assertArrayHasKey('session', $item);
+        $this->assertArrayHasKey('base_id', $item);
+        $this->assertArrayHasKey('original_name', $item);
+        $this->assertArrayHasKey('sha256', $item);
+        $this->assertArrayHasKey('uuid', $item);
+        $this->assertArrayHasKey('forced', $item);
+        $this->assertArrayHasKey('checks', $item);
+        $this->assertArrayHasKey('created_on', $item);
+        $this->assertArrayHasKey('updated_on', $item);
+
+        $this->assertInternalType('boolean', $item['forced']);
+        $this->assertDateAtom($item['updated_on']);
+        $this->assertDateAtom($item['created_on']);
     }
 
     protected function evaluateGoodFeed($feed)
