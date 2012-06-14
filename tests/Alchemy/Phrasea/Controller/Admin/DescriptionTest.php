@@ -242,4 +242,23 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->client->request("GET", "/description/" . $databox->get_sbas_id() . "/");
         $this->assertTrue($this->client->getResponse()->isOk());
     }
+
+    public function testGetMetadatas()
+    {
+        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $databox = array_shift($appbox->get_databoxes());
+
+        $this->client->request("GET", "/description/metadatas/search/", array('term'=>''));
+        $this->assertTrue($this->client->getResponse()->isOk());
+
+        $datas = json_decode($this->client->getResponse()->getContent(), true);
+        $this->assertEquals(array(), $datas);
+        
+        $this->client->request("GET", "/description/metadatas/search/", array('term'=>'xmp'));
+        $this->assertTrue($this->client->getResponse()->isOk());
+
+        $datas = json_decode($this->client->getResponse()->getContent(), true);
+        $this->assertTrue(is_array($datas));
+        $this->assertGreaterThan(0, count($datas));
+    }
 }

@@ -32,6 +32,131 @@ class Description implements ControllerProviderInterface
         $controllers = new ControllerCollection();
 
 
+        $controllers->get('/metadatas/search/', function(Application $app, Request $request) {
+
+                $term = trim(strtolower($request->get('term')));
+                $res = array();
+
+                if ($term) {
+                    $provider = new \PHPExiftool\Driver\TagProvider();
+
+                    $table = $provider->getLookupTable();
+                    $table['phraseanet'] = array(
+                        'pdftext' => array(
+                            'tagname'       => 'PdfText',
+                            'classname'     => '\\Alchemy\\Phrasea\\Metadata\\Tag\\PdfText',
+                            'namespace'     => 'Phraseanet'),
+                        'tfarchivedate' => array(
+                            'tagname'   => 'TfArchivedate',
+                            'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfArchivedate',
+                            'namespace' => 'Phraseanet'
+                        ),
+                        'tfatime'   => array(
+                            'tagname'   => 'TfAtime',
+                            'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfAtime',
+                            'namespace' => 'Phraseanet'
+                        ),
+                        'tfbits'    => array(
+                            'tagname'    => 'TfBits',
+                            'classname'  => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfBits',
+                            'namespace'  => 'Phraseanet'
+                        ),
+                        'tfbasename' => array(
+                            'tagname'    => 'TfBasename',
+                            'classname'  => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfBasename',
+                            'namespace'  => 'Phraseanet'),
+                        'tfchannels' => array(
+                            'tagname'   => 'TfChannels',
+                            'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfChannels',
+                            'namespace' => 'Phraseanet'
+                        ),
+                        'tTfCtime'  => array(
+                            'tagname'    => 'TfCtime',
+                            'classname'  => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfCtime',
+                            'namespace'  => 'Phraseanet'
+                        ),
+                        'tfduration' => array(
+                            'tagname'    => 'TfDuration',
+                            'classname'  => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfDuration',
+                            'namespace'  => 'Phraseanet'
+                        ),
+                        'tfeditdate' => array(
+                            'tagname'     => 'TfEditdate',
+                            'classname'   => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfEditdate',
+                            'namespace'   => 'Phraseanet'
+                        ),
+                        'tfextension' => array(
+                            'tagname'    => 'TfExtension',
+                            'classname'  => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfExtension',
+                            'namespace'  => 'Phraseanet'
+                        ),
+                        'tffilename' => array(
+                            'tagname'    => 'TfFilename',
+                            'classname'  => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfFilename',
+                            'namespace'  => 'Phraseanet'
+                        ),
+                        'tffilepath' => array(
+                            'tagname'   => 'TfFilepath',
+                            'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfFilepath',
+                            'namespace' => 'Phraseanet'
+                        ),
+                        'tfheight'  => array(
+                            'tagname'    => 'TfHeight',
+                            'classname'  => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfHeight',
+                            'namespace'  => 'Phraseanet'
+                        ),
+                        'tfmimetype' => array(
+                            'tagname'   => 'TfMimetype',
+                            'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfMimetype',
+                            'namespace' => 'Phraseanet'
+                        ),
+                        'tfmtime'   => array(
+                            'tagname'   => 'TfMtime',
+                            'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfMtime',
+                            'namespace' => 'Phraseanet'
+                        ),
+                        'tfdirname' => array(
+                            'tagname'    => 'TfDirname',
+                            'classname'  => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfDirname',
+                            'namespace'  => 'Phraseanet'
+                        ),
+                        'tfrecordid' => array(
+                            'tagname'   => 'TfRecordid',
+                            'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfRecordid',
+                            'namespace' => 'Phraseanet'
+                        ),
+                        'tfsize'    => array(
+                            'tagname'   => 'TfSize',
+                            'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfSize',
+                            'namespace' => 'Phraseanet'
+                        ),
+                        'tfwidth'   => array(
+                            'tagname'   => 'TfWidth',
+                            'classname' => '\\Alchemy\\Phrasea\\Metadata\\Tag\\TfWidth',
+                            'namespace' => 'Phraseanet'
+                        ),
+                    );
+
+                    foreach ($table as $namespace => $tags) {
+                        $ns = strpos($namespace, $term);
+
+                        foreach ($tags as $tagname => $datas) {
+                            if ($ns === false && strpos($tagname, $term) === false) {
+                                continue;
+                            }
+
+                            $res[] = array(
+                                'id'    => $namespace . '/' . $tagname,
+                                'label' => $datas['namespace'] . ' / ' . $datas['tagname'],
+                                'value' => $datas['namespace'] . ':' . $datas['tagname'],
+                            );
+                        }
+                    }
+                }
+
+                return new \Symfony\Component\HttpFoundation\JsonResponse($res);
+            });
+
         $controllers->post('/{sbas_id}/', function(Application $app, $sbas_id) {
                 $Core = $app['Core'];
                 $user = $Core->getAuthenticatedUser();
@@ -44,7 +169,6 @@ class Description implements ControllerProviderInterface
 
                 $databox = \databox::get_instance((int) $sbas_id);
                 $fields = $databox->get_meta_structure();
-                $available_fields = \databox::get_available_metadatas();
                 $available_dc_fields = $databox->get_available_dcfields();
 
 
@@ -76,7 +200,7 @@ class Description implements ControllerProviderInterface
                                     $field->setVocabularyControl($vocabulary);
                                     $field->setVocabularyRestricted($request->get('vocabularyrestricted_' . $id));
                                 } catch (\Exception $e) {
-
+                                    
                                 }
 
                                 $dces_element = null;
@@ -103,7 +227,7 @@ class Description implements ControllerProviderInterface
                                 $field = \databox_field::get_instance($databox, $id);
                                 $field->delete();
                             } catch (\Exception $e) {
-
+                                
                             }
                         }
                     }
@@ -132,14 +256,12 @@ class Description implements ControllerProviderInterface
 
                 $databox = \databox::get_instance((int) $sbas_id);
                 $fields = $databox->get_meta_structure();
-                $available_fields = \databox::get_available_metadatas();
                 $available_dc_fields = $databox->get_available_dcfields();
 
 
                 $params = array(
                     'databox'             => $databox,
                     'fields'              => $fields,
-                    'available_fields'    => $available_fields,
                     'available_dc_fields' => $available_dc_fields,
                     'vocabularies'        => \Alchemy\Phrasea\Vocabulary\Controller::getAvailable(),
                 );
