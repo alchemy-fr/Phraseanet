@@ -2343,7 +2343,7 @@ DIV.thesaurus U.w {
     left: 0;
     bottom: 0;
     width: 100%;
-    height: 24px;
+    height: 28px;
     overflow: hidden;
     text-align: center;
 }
@@ -2443,6 +2443,20 @@ DIV.thesaurus U.w {
     height: auto;
     text-align: center;
     z-index: 10;
+}
+
+#Edit_copyPreset_dlg form span {
+    color: #FFFFFF;
+}
+
+.Edit_preset_item {
+     position: relative;
+     top: 0px;
+     left: 0px;
+     width: 550px;
+     height: 250px;
+     overflow: auto;
+     color: #999999;
 }
 
 #TH_Oreplace .btn,
@@ -3445,12 +3459,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 #dialog_publicator .api_content {
     top: 30px;
     bottom: 25px;
-}
-
-#dialog_publicator .api_content .blockresponse {
-    padding: 0 10px;
-    top: 40px;
-    overflow: auto;
+    color: #FFFFFF;
 }
 
 #dialog_publicator .api_content .blockmenu {
@@ -3467,12 +3476,26 @@ dans l'onglet thesaurus : arbres, menus contextuels
     color: #0088CC;
 }
 
+#dialog_publicator .api_content .blockresponse {
+    padding: 0 10px;
+    top: 40px;
+    overflow: auto;
+    z-index: 2000;
+}
+
+#dialog_publicator .api_content .blockresponse .form-actions {
+    background-color: #000000;
+    border-top: none;
+    margin: 0;
+}
+
 #dialog_publicator .api_infos {
     top: auto;
     height: 25px;
     background-image: url('/skins/icons/api_info.png');
     background-repeat: repeat-x;
     background-position: 0 0;
+    color: #999999;
 }
 
 #dialog_publicator .main_menu {
@@ -3608,6 +3631,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
 #dialog_publicator .api_content .element {
     padding: 5px;
+    color: #FFFFFF;
 }
 
 #dialog_publicator .api_content .element.odd {
@@ -3626,6 +3650,10 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
 #dialog_publicator .api_content .element.selected {
     background-color: #999999;
+}
+
+#dialog_publicator .api_content .element table .informations {
+    width: 296px;
 }
 
 .ui-selectable-helper {

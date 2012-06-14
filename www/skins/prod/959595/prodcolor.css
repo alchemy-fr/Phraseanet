@@ -3583,13 +3583,7 @@ dans l'onglet thesaurus :  arbres, menus contextuels
 #dialog_publicator .api_content {
     top: 30px;
     bottom: 25px;
-}
-
-#dialog_publicator .api_content .blockresponse {
-    padding: 0 10px;
-    top: 40px;
-    overflow: auto;
-    z-index: 1000000000;
+    color: #333333;
 }
 
 #dialog_publicator .api_content .blockmenu {
@@ -3606,12 +3600,26 @@ dans l'onglet thesaurus :  arbres, menus contextuels
     color: #0088CC;
 }
 
+#dialog_publicator .api_content .blockresponse {
+    padding: 0 10px;
+    top: 40px;
+    overflow: auto;
+    z-index: 2000;
+}
+
+#dialog_publicator .api_content .blockresponse .form-actions {
+    background-color: #D9D9D9;
+    border-top: none;
+    margin: 0;
+}
+
 #dialog_publicator .api_infos {
     top: auto;
     height: 25px;
     background-image: url('/skins/icons/api_info.png');
     background-repeat: repeat-x;
     background-position: 0 0;
+    color: #999999;
 }
 
 #dialog_publicator .main_menu {
@@ -3760,6 +3768,7 @@ dans l'onglet thesaurus :  arbres, menus contextuels
 
 #dialog_publicator .api_content .element {
     padding: 5px;
+    color: #FFFFFF;
 }
 
 #dialog_publicator .api_content .element.odd {
@@ -3778,6 +3787,10 @@ dans l'onglet thesaurus :  arbres, menus contextuels
 
 #dialog_publicator .api_content .element.selected {
     background-color: #999999;
+}
+
+#dialog_publicator .api_content .element table .informations {
+    width: 296px;
 }
 
 .ui-selectable-helper {
