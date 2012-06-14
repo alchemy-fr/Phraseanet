@@ -1354,12 +1354,11 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $datas = $content['response'];
 
         $this->assertArrayHasKey('entity', $datas);
-        $this->assertArrayHasKey('record', $datas);
+        $this->assertArrayHasKey('url', $datas);
+        $this->assertRegExp('/\/records\/\d+\/\d+\//', $datas['url']);
 
         // if forced, there is no reason
         $this->assertEquals('0', $datas['entity']);
-
-        $this->evaluateGoodRecord($datas['record']);
     }
 
     /**
@@ -1384,20 +1383,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $datas = $content['response'];
 
         $this->assertArrayHasKey('entity', $datas);
-        $this->assertArrayHasKey('reasons', $datas);
-        $this->assertArrayHasKey('lazaretFile', $datas);
+        $this->assertArrayHasKey('url', $datas);
+        $this->assertRegExp('/\/quarantine\/item\/\d+\//', $datas['url']);
 
-        // if forced, there is no reason
-        $this->assertEquals(array(), $datas['reasons']);
         $this->assertEquals('1', $datas['entity']);
-
-        $this->checkLazaretFile($datas['lazaretFile']);
-
-        $this->assertEquals(array(), $datas['lazaretFile']['checks']);
-        $this->assertEquals(true, $datas['lazaretFile']['forced']);
-        $this->assertEquals(self::$core->getAuthenticatedUser()->get_id(), $datas['lazaretFile']['session']['usr_id']);
-        $this->assertEquals('upload.jpg', $datas['lazaretFile']['original_name']);
-        $this->assertEquals(self::$collection->get_base_id(), $datas['lazaretFile']['base_id']);
     }
 
     /**
@@ -1828,7 +1817,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertArrayHasKey('total_entries', $feed);
         $this->assertArrayHasKey('icon', $feed);
         $this->assertArrayHasKey('public', $feed);
-        $this->assertArrayHasKey('is_mine', $feed);
+        $this->assertArrayHasKey('readonly', $feed);
+        $this->assertArrayHasKey('deletable', $feed);
         $this->assertArrayHasKey('created_on', $feed);
         $this->assertArrayHasKey('updated_on', $feed);
 
@@ -1838,7 +1828,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertInternalType('integer', $feed['total_entries']);
         $this->assertInternalType('string', $feed['icon']);
         $this->assertInternalType('boolean', $feed['public']);
-        $this->assertInternalType('boolean', $feed['is_mine']);
+        $this->assertInternalType('boolean', $feed['readonly']);
+        $this->assertInternalType('boolean', $feed['deletable']);
         $this->assertInternalType('string', $feed['created_on']);
         $this->assertInternalType('string', $feed['updated_on']);
 
