@@ -74,7 +74,7 @@ class Feed_Entry_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
             self::$object->set_title('');
             $this->fail();
         } catch (Exception_InvalidArgument $e) {
-
+            
         }
     }
 
@@ -96,6 +96,21 @@ class Feed_Entry_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertEquals($new_author, self::$object->get_author_name());
         self::$object->set_author_name(self::$author_name);
         $this->assertEquals(self::$author_name, self::$object->get_author_name());
+    }
+
+    public function testSetFeed()
+    {
+        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $new_feed = Feed_Adapter::create($appbox, self::$user, self::$feed_title, self::$feed_subtitle);
+
+        $publisher = Feed_Publisher_Adapter::getPublisher($appbox, $new_feed, self::$user);
+        $entry = Feed_Entry_Adapter::create($appbox, self::$feed, $publisher, self::$title, self::$subtitle, self::$author_name, self::$author_email);
+
+        $this->assertEquals(self::$feed, $entry->get_feed());
+        $entry->set_feed($new_feed);
+        $this->assertEquals($new_feed, $entry->get_feed());
+
+        $new_feed->delete();
     }
 
     public function testSet_author_email()
