@@ -86,7 +86,7 @@ return call_user_func(function() {
 
                             return;
                         } catch (\Exception $e) {
-
+                            
                         }
                     }
                     $auth = new \Session_Authentication_None($user);
@@ -395,14 +395,14 @@ return call_user_func(function() {
 
             $app->get('/databoxes/{any_id}/termsOfUse/', $bad_request_exception);
 
-            
+
             $route = '/quarantine/list/';
             $app->get(
                 $route, function(\Silex\Application $app, Request $request) {
                     return $app['api']->list_quarantine($app, $request)->get_response();
                 }
             );
-            
+
             $route = '/quarantine/item/{lazaret_id}/';
             $app->get(
                 $route, function($lazaret_id, \Silex\Application $app, Request $request) {
@@ -755,7 +755,7 @@ return call_user_func(function() {
                 }
             );
 
-            
+
             $route = '/feeds/content/';
             $app->get(
                 $route, function() use ($app) {
@@ -764,7 +764,7 @@ return call_user_func(function() {
                     return $result->get_response();
                 }
             );
-            
+
             $route = '/feeds/entry/{entry_id}/';
             $app->get(
                 $route, function($entry_id) use ($app) {
@@ -774,7 +774,7 @@ return call_user_func(function() {
                 }
             )->assert('entry_id', '\d+');
             $app->get('/feeds/entry/{entry_id}/', $bad_request_exception);
-            
+
             /**
              * Route : /feeds/PUBLICATION_ID/content/
              *
@@ -802,85 +802,40 @@ return call_user_func(function() {
              */
             $app->error(function (\Exception $e) use ($app) {
 
-                    if ($e instanceof \API_V1_exception_methodnotallowed)
+                    $headers = array();
+                    
+                    if ($e instanceof \API_V1_exception_methodnotallowed) {
                         $code = \API_V1_result::ERROR_METHODNOTALLOWED;
-                    elseif ($e instanceof Exception\MethodNotAllowedHttpException)
+                    } elseif ($e instanceof Exception\MethodNotAllowedHttpException) {
                         $code = \API_V1_result::ERROR_METHODNOTALLOWED;
-                    elseif ($e instanceof \API_V1_exception_badrequest)
+                    } elseif ($e instanceof \API_V1_exception_badrequest) {
                         $code = \API_V1_result::ERROR_BAD_REQUEST;
-                    elseif ($e instanceof \API_V1_exception_forbidden)
+                    } elseif ($e instanceof \API_V1_exception_forbidden) {
                         $code = \API_V1_result::ERROR_FORBIDDEN;
-                    elseif ($e instanceof \API_V1_exception_unauthorized)
+                    } elseif ($e instanceof \API_V1_exception_unauthorized) {
                         $code = \API_V1_result::ERROR_UNAUTHORIZED;
-                    elseif ($e instanceof \API_V1_exception_internalservererror)
+                    } elseif ($e instanceof \API_V1_exception_internalservererror) {
                         $code = \API_V1_result::ERROR_INTERNALSERVERERROR;
-                    elseif ($e instanceof \Exception_NotFound)
+                    } elseif ($e instanceof \Exception_NotFound) {
                         $code = \API_V1_result::ERROR_NOTFOUND;
-                    elseif ($e instanceof Exception\NotFoundHttpException)
+                    } elseif ($e instanceof Exception\NotFoundHttpException) {
                         $code = \API_V1_result::ERROR_NOTFOUND;
-                    else
+                    } else {
                         $code = \API_V1_result::ERROR_INTERNALSERVERERROR;
+                    }
 
+                    if($e instanceof \Symfony\Component\HttpKernel\Exception\HttpException) {
+                        $headers = $e->getHeaders();
+                    }
+                    
                     $result = $app['api']->get_error_message($app['request'], $code, $e->getMessage());
+                    $response = $result->get_response();
 
-                    return $result->get_response();
+                    foreach ($headers as $key => $value) {
+                        $response->headers->set($key, $value);
+                    }
+                    
+                    return $response;
                 });
-////
-////
-////  /**
-////   * Route : /records/DATABOX_ID/RECORD_ID/addtobasket/
-////   *
-////   * Method : POST
-////   *
-////   * Parameters :
-////   *    DATABOX_ID : required INT
-////   *    RECORD_ID : required INT
-////   *
-////   */
-////  public function add_record_tobasket(\Symfony\Component\HttpFoundation\Request $app['request'], $databox_id, $record_id);
-////
-////
-////  /**
-////   * Route : /feeds/PUBLICATION_ID/remove/
-////   *
-////   * Method : GET
-////   *
-////   * Parameters :
-////   *    PUBLICATION_ID : required INT
-////   *
-////   */
-////  public function remove_publications(\Symfony\Component\HttpFoundation\Request $app['request'], $publication_id);
-////
-////
-////  /**
-////   * Route : /users/search/
-////   *
-////   * Method : POST-GET
-////   *
-////   * Parameters :
-////   *
-////   */
-////  public function search_users(\Symfony\Component\HttpFoundation\Request $app['request']);
-////
-////  /**
-////   * Route : /users/USER_ID/access/
-////   *
-////   * Method : GET
-////   *
-////   * Parameters :
-////   *    USER_ID : required INT
-////   *
-////   */
-////  public function get_user_acces(\Symfony\Component\HttpFoundation\Request $app['request'], $usr_id);
-////
-////  /**
-////   * Route : /users/add/
-////   *
-////   * Method : POST
-////   *
-////   * Parameters :
-////   *
-////   */
-////  public function add_user(\Symfony\Component\HttpFoundation\Request $app['request']);
             return $app;
         });
