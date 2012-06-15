@@ -27,10 +27,16 @@ interface Cache extends DoctrineCache
     public function getName();
 
     /**
-     * Tell whether the caching system use a server
+     * Tell whether the caching system use a server or not
      * @return boolean
      */
     public function isServer();
+
+    /**
+     * Tell if the cache system is online
+     * @return boolean
+     */
+    public function isOnline();
 
     /**
      * Get an entry from the cache.

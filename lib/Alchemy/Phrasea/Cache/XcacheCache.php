@@ -36,6 +36,14 @@ class XcacheCache extends DoctrineXcache implements Cache
     {
         return false;
     }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function isOnline()
+    {
+        return true;
+    }
 
     /**
      * {@inheritdoc}

@@ -34,8 +34,15 @@ class ArrayCache extends DoctrineArray implements Cache
      */
     public function isServer()
     {
-
         return false;
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function isOnline()
+    {
+        return true;
     }
 
     /**
