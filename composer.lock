@@ -56,7 +56,7 @@
         {
             "package": "media-alchemyst/media-alchemyst",
             "version": "dev-master",
-            "source-reference": "bf5e52be4bcfbc216c94f21774763097fa9360da"
+            "source-reference": "669459e24a9f83fd207a86312c8ba680568b809a"
         },
         {
             "package": "mediavorus/mediavorus",
@@ -70,7 +70,7 @@
         {
             "package": "php-ffmpeg/php-ffmpeg",
             "version": "dev-master",
-            "source-reference": "644ad9de63be4c5c4a0ca3ea25828f347e11a08d"
+            "source-reference": "52b7ba1e606b0a2944c8c9111105c10fb1bef4e8"
         },
         {
             "package": "php-mp4box/php-mp4box",
@@ -111,7 +111,7 @@
         {
             "package": "silex/silex",
             "version": "dev-master",
-            "source-reference": "14f48cb93377bba11f82c4b49a474daadcead5fb"
+            "source-reference": "b88266302cbe40bd7cb42a91e6c1cb8e7fdfa393"
         },
         {
             "package": "silex/silex",
@@ -127,24 +127,24 @@
         {
             "package": "swiftmailer/swiftmailer",
             "version": "dev-master",
-            "source-reference": "d33d54cc8a081b0b85734744936ede1ba230dd64"
+            "alias-pretty-version": "4.1.x-dev",
+            "alias-version": "4.1.9999999.9999999-dev"
         },
         {
             "package": "swiftmailer/swiftmailer",
             "version": "dev-master",
-            "alias-pretty-version": "4.1.x-dev",
-            "alias-version": "4.1.9999999.9999999-dev"
+            "source-reference": "0ba1372991110629f44ed076dfc5b93240a4a19a"
+        },
+        {
+            "package": "symfony/symfony",
+            "version": "dev-master",
+            "source-reference": "7c91ee5755499bc3be26ed4ff5c547db58e32c20"
         },
         {
             "package": "symfony/symfony",
             "version": "dev-master",
             "alias-pretty-version": "2.1.x-dev",
             "alias-version": "2.1.9999999.9999999-dev"
-        },
-        {
-            "package": "symfony/symfony",
-            "version": "dev-master",
-            "source-reference": "7c91ee5755499bc3be26ed4ff5c547db58e32c20"
         },
         {
             "package": "tcpdf/tcpdf",
@@ -159,13 +159,13 @@
         {
             "package": "twig/twig",
             "version": "dev-master",
-            "source-reference": "4c9e394c388a88e15b125175587b9d8a0adc17c2"
+            "alias-pretty-version": "1.8.x-dev",
+            "alias-version": "1.8.9999999.9999999-dev"
         },
         {
             "package": "twig/twig",
             "version": "dev-master",
-            "alias-pretty-version": "1.8.x-dev",
-            "alias-version": "1.8.9999999.9999999-dev"
+            "source-reference": "120c44d68f07ced5b1e08f582f94016f4f2685d6"
         },
         {
             "package": "zend/gdata",
