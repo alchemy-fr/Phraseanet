@@ -135,6 +135,8 @@ $(document).ready(function () {
         downloadBox: $('#uploadBox .download-box')
     });
 
+    var totalElement;
+
     var maxFileSize = {{ maxFileSize }};
 
     UploaderManager.Preview.setOptions({
@@ -198,9 +200,15 @@ $(document).ready(function () {
         //Fetch all valid elements
         var documents = UploaderManager.getUploadBox().find('li.upload-valid');
 
-        if(documents.length > 0) {
+        totalElement = documents.length;
+
+        if(totalElement > 0) {
             var dialog = p4.Dialog.get(1);
 
+            //reset progressbar for iframe uploads
+            if( ! $.support.xhrFileUpload && ! $.support.xhrFormDataFileUpload) {
+                progressbarAll.width('0%');
+            }
             //enabled cancel all button
             $("#cancel-all").attr("disabled", false);
 
@@ -221,9 +229,21 @@ $(document).ready(function () {
 
     $('#fileupload', UploaderManager.getContainer()).fileupload({
         namespace: 'phrasea-upload',
-        dataType: 'json',
-        //override "on error" local ajax event to prevent global ajax event from being triggered
-        //as all fileupload options are passed as argument to the $.ajax jquery function
+        // define our own mediatype to handle and convert the response
+        // to prevent errors when Iframe based uploads
+        // as they require text/plain or text/html Content-type
+        // see http://api.jquery.com/extending-ajax/#Converters
+        dataType: 'phrjson',
+        converters: {
+            'html phrjson': function(htmlEncodedJson) {
+                return $.parseJSON(htmlEncodedJson);
+            },
+            'iframe phrjson': function (iframe) {
+                return $.parseJSON(iframe.find('body').text());
+            }
+        },
+        // override "on error" local ajax event to prevent global ajax event from being triggered
+        // as all fileupload options are passed as argument to the $.ajax jquery function
         error: function(){return false},
         // Set singleFileUploads, sequentialUploads to true so the files
         // are upload one by one
@@ -251,7 +271,7 @@ $(document).ready(function () {
                     // Add data to Queue
                     UploaderManager.addData(data);
 
-                    //For IE supporttest if var is undefined
+                    // Check support of file.size && file.type property
                     var formatedFile = {
                         size: file.size != undefined ? UploaderManager.Formater.size(file.size) : '',
                         name: file.name,
@@ -286,6 +306,10 @@ $(document).ready(function () {
             data.context.find('button.remove-element').removeClass('btn-inverse').addClass('disabled');
             UploaderManager.removeData(data.uploadIndex);
             data.context.find("button.remove-element").remove();
+
+            if( ! $.support.xhrFileUpload && ! $.support.xhrFormDataFileUpload) {
+                progressbarAll.width(100 - Math.round((UploaderManager.Queue.getLength() * (100 / totalElement ))) + '%');
+            }
 
             if (UploaderManager.Queue.isEmpty()){
                 progressbarAll.width('100%');
@@ -394,6 +418,14 @@ $(document).ready(function () {
     $('#fileupload', UploaderManager.getContainer()).bind('fileuploadfail', function (e, data) {
         //Remove from queue
         UploaderManager.removeData(data.uploadIndex);
+    });
+
+    $('#fileupload', UploaderManager.getContainer()).bind('fileuploadsend', function (e, data) {
+
+        //IFRAME progress fix
+        if( ! $.support.xhrFileUpload && ! $.support.xhrFormDataFileUpload) {
+            data.context.find('.progress-bar').width('25%');
+        }
     });
 
 });
