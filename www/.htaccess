@@ -120,3 +120,8 @@ ErrorDocument 500 /include/error.php
   php_value max_execution_time	"30"
   php_value output_buffering    "4096"
 </IfModule>
+
+# video
+AddType video/ogg                      ogg ogv
+AddType video/mp4                      mp4
+AddType video/webm                     webm
