@@ -14,7 +14,7 @@ namespace Alchemy\Phrasea\Border\Checker;
 use Alchemy\Phrasea\Border\File;
 use Doctrine\ORM\EntityManager;
 
-class Colorspace implements Checker
+class Colorspace extends AbstractChecker
 {
     protected $colorspaces;
 

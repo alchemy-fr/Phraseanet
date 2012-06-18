@@ -13,7 +13,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\Checker\\Checker', array('getMessage', 'check'));
+        $this->mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\Checker\\CheckerInterface', array('getMessage', 'check', 'isApplicable'));
         $this->object = new Response(true, $this->mock);
     }
 
@@ -27,7 +27,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Alchemy\Phrasea\Border\Checker\Checker
+     * @covers Alchemy\Phrasea\Border\Checker\CheckerInterface
      * @covers Alchemy\Phrasea\Border\Checker\Response::isOk
      */
     public function testIsOk()
@@ -39,7 +39,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Alchemy\Phrasea\Border\Checker\Checker
+     * @covers Alchemy\Phrasea\Border\Checker\CheckerInterface
      * @covers Alchemy\Phrasea\Border\Checker\Response::getChecker
      */
     public function testGetCheck()

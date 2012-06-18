@@ -17,7 +17,7 @@ use Doctrine\ORM\EntityManager;
 /**
  * Checks if a file with the same filename already exists in the destination databox
  */
-class Filename implements Checker
+class Filename extends AbstractChecker
 {
     protected $sensitive;
 

@@ -14,7 +14,7 @@ namespace Alchemy\Phrasea\Border\Checker;
 use Alchemy\Phrasea\Border\File;
 use Doctrine\ORM\EntityManager;
 
-class MediaType implements Checker
+class MediaType extends AbstractChecker
 {
     protected $mediaTypes;
 
