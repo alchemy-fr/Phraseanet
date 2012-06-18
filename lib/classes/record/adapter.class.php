@@ -1002,7 +1002,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         }
 
         $core['file-system']->chmod($subdefFile->getRealPath(), 0760);
-        $media = \MediaVorus\MediaVorus::guess($subdefFile);
+        $media = $core['mediavorus']->guess($subdefFile);
 
         media_subdef::create($this, $name, $media);
 
@@ -1348,7 +1348,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
         $core['file-system']->copy($file->getFile()->getRealPath(), $pathhd . $newname, true);
 
-        $media = MediaVorus\MediaVorus::guess(new \SplFileInfo($pathhd . $newname));
+        $media = $core['mediavorus']->guess(new \SplFileInfo($pathhd . $newname));
         $subdef = media_subdef::create($record, 'document', $media);
 
         $record->delete_data_from_cache(record_adapter::CACHE_SUBDEFS);
@@ -1652,6 +1652,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
             return;
         }
+        
+        $core = \bootstrap::getCore();
 
         foreach ($subdefs as $subdef) {
             $subdefname = $subdef->get_name();
@@ -1676,7 +1678,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             $this->generate_subdef($subdef, $pathdest, $logger);
 
             if (file_exists($pathdest)) {
-                $media = \MediaVorus\MediaVorus::guess(new \SplFileInfo($pathdest));
+                $media = $core['mediavorus']->guess(new \SplFileInfo($pathdest));
 
                 media_subdef::create($this, $subdef->get_name(), $media);
             }

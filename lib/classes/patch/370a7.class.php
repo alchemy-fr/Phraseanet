@@ -84,7 +84,7 @@ class patch_370a7 implements patchInterface
                     $filePath = __DIR__ . '/../../../tmp/lazaret/' . $row['filepath'];
 
                     if (file_exists($filePath)) {
-                        $media = \MediaVorus\MediaVorus::guess(new \SplFileInfo($filePath));
+                        $media = $Core['mediavorus']->guess(new \SplFileInfo($filePath));
 
                         $collection = \collection::get_from_base_id($row['base_id']);
 

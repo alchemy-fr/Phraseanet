@@ -145,6 +145,12 @@ class Core extends \Pimple
                 return new Serializer\Serializer(array(), $encoders);
             });
 
+
+        $this['mediavorus'] = $this->share(function() {
+
+                return new \MediaVorus\MediaVorus();
+            });
+
         $this['monolog'] = $this->share(function () use ($core) {
                 $logger = new \Monolog\Logger('Logger');
 

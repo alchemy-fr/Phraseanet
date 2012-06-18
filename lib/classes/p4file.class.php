@@ -132,6 +132,7 @@ class p4file
     {
         throw new Exception('This method is deprecated');
 
+        $core = \bootstrap::getCore();
         $checks = array();
 
         $system_file = new system_file($filename);
@@ -151,7 +152,7 @@ class p4file
 
         $errors = array();
 
-        $media = \MediaVorus\MediaVorus::guess($filename);
+        $media = $core['mediavorus']->guess($filename);
 
         $width = $height = 0;
         $colorSpace = null;

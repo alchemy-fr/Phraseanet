@@ -644,7 +644,7 @@ class API_V1_adapter extends API_V1_Abstract
             throw new API_V1_exception_forbidden(sprintf('You do not have access to collection %s', $collection->get_name()));
         }
 
-        $media = \MediaVorus\MediaVorus::guess($file);
+        $media = $app['Core']['mediavorus']->guess($file);
 
         $Package = new Alchemy\Phrasea\Border\File($media, $collection, $file->getClientOriginalName());
 
