@@ -17,7 +17,7 @@ use Doctrine\ORM\EntityManager;
 /**
  * Checks if a file with the same UUID already exists in the destination databox
  */
-class UUID implements Checker
+class UUID extends AbstractChecker
 {
 
     /**

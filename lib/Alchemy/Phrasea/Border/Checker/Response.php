@@ -25,7 +25,7 @@ class Response
      * @param boolean $ok      True if the response is OK
      * @param Checker $checker The checker attachedto the response
      */
-    public function __construct($ok, Checker $checker)
+    public function __construct($ok, CheckerInterface $checker)
     {
         $this->ok = $ok;
         $this->checker = $checker;
@@ -62,7 +62,7 @@ class Response
     /**
      * Returns the attached Checker
      *
-     * @return Checker
+     * @return CheckerInterface
      */
     public function getChecker()
     {
