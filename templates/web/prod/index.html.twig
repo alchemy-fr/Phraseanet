@@ -21,7 +21,7 @@
                             <label style="line-height: 18px;" onclick="infoSbas($('#ck_{{base_id}}_{{unique_id}}'),{{sbas_id}}, false, event); return false;"
                                 for="ck_{{base_id}}_{{unique_id}}" class="ck_{{base_id}} {% if collection["selected"] %}selected{% endif %} checkbox">
                                 {{base_id|get_collection_logo|raw}} {{base_id|bas_names}}
-                                <input class="ck_{{collection["base_id"]}} checkbas checkbox"
+                                <input class="ck_{{collection["base_id"]}} checkbas" style="*margin-top:-18px;"
                                     onclick="cancelEvent(event);return false;"
                                     onmousedown="infoSbas(this, {{sbas_id}}, false, event); return false;"
                                     id="ck_{{collection["base_id"]}}_{{unique_id}}" type="checkbox"
@@ -144,7 +144,7 @@
                 <div class="tabs ui-tabs">
                     <ul class="icon-menu ui-tabs-nav ui-helper-reset">
                         <li class="ui-tabs-selected ui-corner-top">
-                            <a href="#baskets">
+                            <a href="#baskets" id="WZbaskets">
                                 <img src="/skins/icons/workzone32.png" title="{% trans 'phraseanet:: panier' %}"/>
                                 <span id="basket_menu_trigger" style="cursor:pointer;padding:3px;font-size:12px;">&#9660;</span>
                             </a>
@@ -390,7 +390,7 @@
                                                 <hr />
                                                 <div class="status_filter">
                                                     <span>{% trans 'Status des documents a rechercher' %}</span>
-                                                    <table>
+                                                    <table style="width: 100%;">
                                                         {% for n, stat in search_status %}
                                                             {% for s in stat %}
                                                             <tr>
@@ -398,17 +398,23 @@
                                                                     {% if s['imgoff'] %}
                                                                         <img src="{{s['imgoff']}}" title="{{s['labeloff']}}" />
                                                                     {% endif %}
-                                                                    <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|implode('field_')}}"
+                                                                    <label class="checkbox inline">
+                                                                        <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|implode('field_')}}"
                                                                         type="checkbox" value="{{s['sbas']|implode(' field_')}}"
-                                                                        n="{{n}}" name="status[{{n}}][off][]"/><label>{{s['labeloff']}}</label>
+                                                                        n="{{n}}" name="status[{{n}}][off][]" />
+                                                                        {{s['labeloff']}}
+                                                                    </label>
                                                                 </td>
                                                                 <td>
                                                                     {% if s['imgoff'] %}
                                                                         <img src="{{s['imgon']}}" title="{{s['labelon']}}" />
                                                                     {% endif %}
-                                                                    <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|implode('field_')}}"
+                                                                    <label class="checkbox inline">
+                                                                        <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|implode('field_')}}"
                                                                         type="checkbox" value="{{s['sbas']|implode(' field_')}}"
-                                                                        n="{{n}}" name="status[{{n}}][on][]"/><label>{{s['labelon']}}</label>
+                                                                        n="{{n}}" name="status[{{n}}][on][]"/>
+                                                                        {{s['labelon']}}
+                                                                    </label>
                                                                 </td>
                                                             </tr>
                                                             {% endfor %}
@@ -438,11 +444,11 @@
                                                         </tr>
                                                         <tr>
                                                             <td style="padding-right: 5px;">
-                                                                <span>{% trans 'phraseanet::time:: de' %}</span>
+                                                                <span>{% trans 'phraseanet::time:: de' %}</span><br />
                                                                 <input onchange="checkFilters(true);" class="datepicker input-medium" type="text" name="datemin" style="height: 18px;" />
                                                             </td>
                                                             <td>
-                                                                <span>{% trans 'phraseanet::time:: a' %}</span>
+                                                                <span>{% trans 'phraseanet::time:: a' %}</span><br />
                                                                 <input onchange="checkFilters(true);" class="datepicker input-medium" type="text" name="datemax" style="height: 18px;" />
                                                             </td>
                                                         </tr>

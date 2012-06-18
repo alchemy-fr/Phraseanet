@@ -534,6 +534,7 @@ span.ww_winTitle {
 
 .diapo div.title {
     overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 div.diapo {
@@ -3592,6 +3593,7 @@ dans l'onglet thesaurus :  arbres, menus contextuels
     overflow: hidden;
     background-repeat: repeat-x;
     background-position: left bottom;
+    z-index: 1000;
 }
 
 #dialog_publicator .api_content .blockmenu a.selected,
@@ -3604,7 +3606,7 @@ dans l'onglet thesaurus :  arbres, menus contextuels
     padding: 0 10px;
     top: 40px;
     overflow: auto;
-    z-index: 2000;
+    z-index: 200;
 }
 
 #dialog_publicator .api_content .blockresponse .form-actions {
@@ -3719,6 +3721,10 @@ dans l'onglet thesaurus :  arbres, menus contextuels
 
 #dialog_publicator .element table td.thumbnail {
     width: 140px;
+    border: none;
+    border-radius: 0px;
+    box-shadow: none;
+    background-color: transparent;
     text-align: center;
 }
 

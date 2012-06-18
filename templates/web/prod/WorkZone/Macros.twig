@@ -16,7 +16,7 @@
              class="basketTips ui-accordion-header ui-state-default
                     ui-corner-all header SSTT basket {% if not basket.getIsRead() %}unread{% endif %}
                     {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}">
-          <a href="/prod/baskets/{{ basket.getId() }}/">
+          <a href="/prod/baskets/{{ basket.getId() }}/" style="text-overflow: ellipsis;">
             <span>
               <img src='/skins/icons/basket.gif' title=''/>
               {{basket.getName()}}
@@ -80,7 +80,7 @@
              class="basketTips ui-accordion-header ui-state-default
                     ui-corner-all header SSTT basket {% if not basket.getIsRead() %}unread{% endif %}
                     {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}">
-          <a href="/prod/baskets/{{ basket.getId() }}/">
+          <a href="/prod/baskets/{{ basket.getId() }}/" style="text-overflow: ellipsis;">
             <span>
               <img src='/skins/icons/basket.gif' title=''/>
               {{basket.getName()}}
