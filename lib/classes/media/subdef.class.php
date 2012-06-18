@@ -438,7 +438,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      */
     public function get_size()
     {
-        return @filesize($this->get_pathfile());
+        return (int) @filesize($this->get_pathfile());
     }
 
     /**

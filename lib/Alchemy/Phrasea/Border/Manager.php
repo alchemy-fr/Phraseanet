@@ -17,6 +17,8 @@ use Doctrine\ORM\EntityManager;
 use Entities\LazaretAttribute;
 use Entities\LazaretFile;
 use Entities\LazaretSession;
+use MediaAlchemyst\Exception\Exception as MediaAlchemystException;
+use MediaAlchemyst\Specification\Image as ImageSpec;
 use Monolog\Logger;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Value\Mono as MonoValue;
@@ -398,9 +400,9 @@ class Manager
 
         $this->filesystem->copy($file->getFile()->getRealPath(), $lazaretPathname, true);
 
-        $spec = new \MediaAlchemyst\Specification\Image();
+        $spec = new ImageSpec();
 
-        $spec->setResizeMode(\MediaAlchemyst\Specification\Image::RESIZE_MODE_INBOUND_FIXEDRATIO);
+        $spec->setResizeMode(ImageSpec::RESIZE_MODE_INBOUND_FIXEDRATIO);
         $spec->setDimensions(375, 275);
 
         $core = \bootstrap::getCore();
@@ -410,8 +412,8 @@ class Manager
                 ->open($file->getFile()->getPathname())
                 ->turnInto($lazaretPathname, $spec)
                 ->close();
-        } catch (\MediaAlchemyst\Exception\Exception $e) {
-            
+        } catch (MediaAlchemystException $e) {
+
         }
 
         $lazaretFile = new LazaretFile();
