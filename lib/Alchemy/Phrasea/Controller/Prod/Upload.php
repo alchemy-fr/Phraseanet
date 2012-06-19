@@ -186,7 +186,7 @@ class Upload implements ControllerProviderInterface
 
             $app['Core']['file-system']->rename($uploadedFilename, $renamedFilename);
 
-            $file = new UploadedFile($renamedFilename . $file->getClientOriginalName(), $originalname, $clientMimeType, $size, $error);
+            $file = new UploadedFile($renamedFilename, $originalname, $clientMimeType, $size, $error);
 
             $media = $app['Core']['mediavorus']->guess($file);
             $collection = \collection::get_from_base_id($base_id);
@@ -229,6 +229,8 @@ class Upload implements ControllerProviderInterface
                 $lazaretSession, $packageFile, $callback, $forceBehavior
             );
 
+            $app['Core']['file-system']->rename($renamedFilename, $uploadedFilename);
+
             if ( ! ! $forceBehavior) {
                 $reasons = array();
             }
@@ -259,7 +261,6 @@ class Upload implements ControllerProviderInterface
                 'id'      => $id,
             );
         } catch (\Exception $e) {
-            var_dump($e->getMessage());
             $datas['message'] = _('Unable to add file to Phraseanet');
         }
 

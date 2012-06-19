@@ -85,7 +85,7 @@
         {
             "package": "php-xpdf/php-xpdf",
             "version": "dev-master",
-            "source-reference": "36f46761568ae25643a64596c28db465bc16c57f"
+            "source-reference": "36e8feb0d7a59aab6b66c549ca25fe6bb4147c5f"
         },
         {
             "package": "phpexiftool/exiftool",
