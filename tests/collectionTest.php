@@ -82,7 +82,7 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testGet_record_amount()
     {
         self::$object->empty_collection();
-        $file = new Alchemy\Phrasea\Border\File(\MediaVorus\MediaVorus::guess(new \SplFileInfo(__DIR__ . '/testfiles/cestlafete.jpg')), self::$object);
+        $file = new Alchemy\Phrasea\Border\File(self::$core['mediavorus']->guess(new \SplFileInfo(__DIR__ . '/testfiles/cestlafete.jpg')), self::$object);
         record_adapter::createFromFile($file);
         $this->assertTrue(self::$object->get_record_amount() === 1);
         self::$object->empty_collection();
@@ -129,7 +129,7 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_record_details()
     {
-        $file = new Alchemy\Phrasea\Border\File(\MediaVorus\MediaVorus::guess(new \SplFileInfo(__DIR__ . '/testfiles/cestlafete.jpg')), self::$object);
+        $file = new Alchemy\Phrasea\Border\File(self::$core['mediavorus']->guess(new \SplFileInfo(__DIR__ . '/testfiles/cestlafete.jpg')), self::$object);
         $record = record_adapter::createFromFile($file);
         $details = self::$object->get_record_details();
 

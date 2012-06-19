@@ -401,7 +401,7 @@ class Lazaret implements ControllerProviderInterface
                 return self::formatJson($app['Core']['Serializer'], $ret);
             }
 
-            $media = MediaVorus::guess(new \SplFileInfo($lazaretFile->getPathname()));
+            $media = $app['Core']['mediavorus']->guess(new \SplFileInfo($lazaretFile->getPathname()));
 
             $record = $lazaretFile->getCollection()->get_databox()->get_record($recordId);
             $record->substitute_subdef('document', $media);

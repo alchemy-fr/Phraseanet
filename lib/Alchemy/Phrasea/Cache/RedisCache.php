@@ -18,7 +18,7 @@ use Doctrine\Common\Cache\CacheProvider;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class RedisCache extends CacheProvider
+class RedisCache extends CacheProvider implements Cache
 {
     /**
      * @var \Redis
@@ -94,7 +94,15 @@ class RedisCache extends CacheProvider
      */
     protected function doGetStats()
     {
-        return $this->_redis->info();
+        $stats = $this->_redis->info();
+        
+        return array(
+            Cache::STATS_HITS              => false,
+            Cache::STATS_MISSES            => false,
+            Cache::STATS_UPTIME            => $stats['uptime_in_seconds'],
+            Cache::STATS_MEMORY_USAGE      => $stats['used_memory'],
+            Cache::STATS_MEMORY_AVAILIABLE => false,
+        );
     }
 
     /**
@@ -103,6 +111,14 @@ class RedisCache extends CacheProvider
     public function isServer()
     {
         return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isOnline()
+    {
+        return is_array($this->getRedis()->info());
     }
 
     /**

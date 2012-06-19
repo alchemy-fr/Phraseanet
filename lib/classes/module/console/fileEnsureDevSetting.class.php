@@ -72,7 +72,7 @@ class module_console_fileEnsureDevSetting extends Command
         $this->configuration = \Alchemy\Phrasea\Core\Configuration::build($specifications, $environnement);
 
         $this->checkParse($output);
-        $output->writeln(sprintf("Will Ensure Production Settings on <info>%s</info>", $this->configuration->getEnvironnement()));
+        $output->writeln(sprintf("Will Ensure Development Settings on <info>%s</info>", $this->configuration->getEnvironnement()));
 
         $this->runTests($output);
 
@@ -423,7 +423,7 @@ class module_console_fileEnsureDevSetting extends Command
 
             return true;
         } catch (\Exception $e) {
-
+            
         }
 
         return false;
@@ -707,6 +707,8 @@ class module_console_fileEnsureDevSetting extends Command
             default:
                 break;
             case 'memcache':
+            case 'memcached':
+            case 'redis':
                 $required_options = array('host', 'port');
                 break;
         }
@@ -762,7 +764,14 @@ class module_console_fileEnsureDevSetting extends Command
             return false;
         }
 
-        if ($Service->getDriver()->isServer()) {
+
+        try {
+            $driver = $Service->getDriver();
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        if ($driver->isServer()) {
             switch ($Service->getType()) {
                 default:
                     return false;
@@ -771,6 +780,38 @@ class module_console_fileEnsureDevSetting extends Command
                     if ( ! @memcache_connect($Service->getHost(), $Service->getPort())) {
                         return false;
                     }
+                    break;
+                case 'memcached':
+                    $ret = false;
+                    try {
+                        $memcached = new \Memcached();
+                        $memcached->addServer($Service->getHost(), $Service->getPort());
+                        $stats = $memcached->getStats();
+
+                        if ( ! isset($stats[$key]) || ! $stats[$key]) {
+                            throw new \Exception('Unable to connect to memcached server');
+                        }
+
+                        $ret = true;
+                    } catch (\Exception $e) {
+                        
+                    }
+
+                    unset($memcached);
+                    return $ret;
+                    break;
+                case 'redis':
+                    $ret = false;
+                    try {
+                        $redis = new \Redis();
+                        if (@$redis->connect($Service->getHost(), $Service->getPort())) {
+                            $ret = true;
+                        }
+                    } catch (\Exception $e) {
+                        
+                    }
+                    unset($redis);
+                    return $ret;
                     break;
             }
         }

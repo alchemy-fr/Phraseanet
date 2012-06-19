@@ -148,7 +148,6 @@ class module_console_fileEnsureProductionSetting extends Command
     {
         $cache = $this->configuration->getCache();
 
-
         if ($this->probeCacheService($output, $cache)) {
             if ($this->recommendedCacheService($output, $cache, true)) {
                 $work_message = '<info>Works !</info>';
@@ -412,7 +411,7 @@ class module_console_fileEnsureProductionSetting extends Command
 
             return true;
         } catch (\Exception $e) {
-
+            
         }
 
         return false;
@@ -705,6 +704,8 @@ class module_console_fileEnsureProductionSetting extends Command
             default:
                 break;
             case 'memcache':
+            case 'memcached':
+            case 'redis':
                 $required_options = array('host', 'port');
                 break;
         }
@@ -760,7 +761,13 @@ class module_console_fileEnsureProductionSetting extends Command
             return false;
         }
 
-        if ($Service->getDriver()->isServer()) {
+        try {
+            $driver = $Service->getDriver();
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        if ($driver->isServer()) {
             switch ($Service->getType()) {
                 default:
                     return false;
@@ -769,6 +776,38 @@ class module_console_fileEnsureProductionSetting extends Command
                     if ( ! @memcache_connect($Service->getHost(), $Service->getPort())) {
                         return false;
                     }
+                    break;
+                case 'memcached':
+                    $ret = false;
+                    try {
+                        $memcached = new \Memcached();
+                        $memcached->addServer($Service->getHost(), $Service->getPort());
+                        $stats = $memcached->getStats();
+
+                        if ( ! isset($stats[$key]) || ! $stats[$key]) {
+                            throw new \Exception('Unable to connect to memcached server');
+                        }
+
+                        $ret = true;
+                    } catch (\Exception $e) {
+                        
+                    }
+
+                    unset($memcached);
+                    return $ret;
+                    break;
+                case 'redis':
+                    $ret = false;
+                    try {
+                        $redis = new \Redis();
+                        if (@$redis->connect($Service->getHost(), $Service->getPort())) {
+                            $ret = true;
+                        }
+                    } catch (\Exception $e) {
+                        
+                    }
+                    unset($redis);
+                    return $ret;
                     break;
             }
         }

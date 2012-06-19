@@ -731,13 +731,15 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
                     throw new Exception(sprintf('File %d not found', $i));
                 };
+                
+            $core = self::$core;
 
             foreach (range(1, 24) as $i) {
-                static::$records['record_' . $i] = static::$records->share(function() use ($logger, $collection, $resolvePathfile, $i) {
+                static::$records['record_' . $i] = static::$records->share(function() use ($logger, $collection, $resolvePathfile, $i, $core) {
 
                         PhraseanetPHPUnitAbstract::$recordsInitialized[] = $i;
 
-                        $file = new Alchemy\Phrasea\Border\File(\MediaVorus\MediaVorus::guess($resolvePathfile($i)), $collection);
+                        $file = new Alchemy\Phrasea\Border\File($core['mediavorus']->guess($resolvePathfile($i)), $collection);
 
                         $record = record_adapter::createFromFile($file);
 
@@ -757,11 +759,11 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             $collection_no_access = self::$collection_no_access;
 
-            static::$records['record_no_access'] = static::$records->share(function()use($collection_no_access) {
+            static::$records['record_no_access'] = static::$records->share(function()use($collection_no_access, $core) {
 
                     PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'no_access';
 
-                    $file = new Alchemy\Phrasea\Border\File(MediaVorus\MediaVorus::guess(new \SplFileInfo(__DIR__ . '/testfiles/test001.CR2')), $collection_no_access);
+                    $file = new Alchemy\Phrasea\Border\File($core['mediavorus']->guess(new \SplFileInfo(__DIR__ . '/testfiles/test001.CR2')), $collection_no_access);
 
                     return record_adapter::createFromFile($file);
                 });

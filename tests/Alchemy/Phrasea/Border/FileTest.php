@@ -22,7 +22,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
         $this->filename = __DIR__ . '/../../../../tmp/iphone_pic.jpg';
         copy(__DIR__ . '/../../../testfiles/iphone_pic.jpg', $this->filename);
 
-        $this->media = \MediaVorus\MediaVorus::guess(new \SplFileInfo($this->filename));
+        $this->media = self::$core['mediavorus']->guess(new \SplFileInfo($this->filename));
 
         $this->object = new File($this->media, self::$collection, 'originalName.txt');
     }
@@ -60,20 +60,20 @@ class FileTest extends \PhraseanetPHPUnitAbstract
 
         copy(__DIR__ . '/../../../testfiles/p4logo.jpg', $file);
 
-        $borderFile = new File(\MediaVorus\MediaVorus::guess(new \SplFileInfo($file)), self::$collection);
+        $borderFile = new File(self::$core['mediavorus']->guess(new \SplFileInfo($file)), self::$collection);
         $uuid = $borderFile->getUUID(true, false);
 
         $this->assertTrue(\uuid::is_valid($uuid));
         $this->assertEquals($uuid, $borderFile->getUUID());
 
-        $borderFile = new File(\MediaVorus\MediaVorus::guess(new \SplFileInfo($file)), self::$collection);
+        $borderFile = new File(self::$core['mediavorus']->guess(new \SplFileInfo($file)), self::$collection);
         $newuuid = $borderFile->getUUID(true, true);
 
         $this->assertTrue(\uuid::is_valid($newuuid));
         $this->assertNotEquals($uuid, $newuuid);
         $this->assertEquals($newuuid, $borderFile->getUUID());
 
-        $borderFile = new File(\MediaVorus\MediaVorus::guess(new \SplFileInfo($file)), self::$collection);
+        $borderFile = new File(self::$core['mediavorus']->guess(new \SplFileInfo($file)), self::$collection);
         $uuid = $borderFile->getUUID();
 
         $this->assertTrue(\uuid::is_valid($uuid));
@@ -139,7 +139,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      */
     public function testOriginalNameAuto()
     {
-        $object = new File(\MediaVorus\MediaVorus::guess(new \SplFileInfo($this->filename)), self::$collection);
+        $object = new File(self::$core['mediavorus']->guess(new \SplFileInfo($this->filename)), self::$collection);
         $this->assertSame('iphone_pic.jpg', $object->getOriginalName());
     }
 
@@ -180,7 +180,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      */
     public function testBuildFromPathfile()
     {
-        $media = \MediaVorus\MediaVorus::guess(new \SplFileInfo($this->filename));
+        $media = self::$core['mediavorus']->guess(new \SplFileInfo($this->filename));
         $file1 = new File($media, self::$collection);
 
         $file2 = File::buildFromPathfile($this->filename, self::$collection);
@@ -188,7 +188,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
         $this->assertEquals($file1, $file2);
 
 
-        $media = \MediaVorus\MediaVorus::guess(new \SplFileInfo($this->filename));
+        $media = self::$core['mediavorus']->guess(new \SplFileInfo($this->filename));
         $file3 = new File($media, self::$collection, 'coco lapin');
 
         $file4 = File::buildFromPathfile($this->filename, self::$collection, 'coco lapin');

@@ -42,7 +42,8 @@ class task_period_upgradetov31 extends task_abstract
     {
         printf("taskid %s starting." . PHP_EOL, $this->getID());
         // task can't be stopped here
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $core = \bootstrap::getCore();
+        $appbox = appbox::get_instance($core);
         $conn = $appbox->get_connection();
         $running = true;
 
@@ -75,7 +76,7 @@ class task_period_upgradetov31 extends task_abstract
 
                     $uuid = uuid::generate_v4();
                     try {
-                        $media = \MediaVorus\MediaVorus::guess(new \SplFileInfo($pathfile));
+                        $media = $core->guess(new \SplFileInfo($pathfile));
                         $collection = \collection::get_from_coll_id($databox, $row['coll_id']);
 
                         $file = new \Alchemy\Phrasea\Border\File($media, $collection);

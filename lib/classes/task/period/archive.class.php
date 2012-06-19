@@ -1531,7 +1531,8 @@ class task_period_archive extends task_abstract
             $stat1 = '0';
         }
 
-        $media = MediaVorus::guess(new \SplFileInfo($pathfile));
+        $core = \bootstrap::getCore();
+        $media = $core['mediavorus']->guess(new \SplFileInfo($pathfile));
 
         $databox = $collection->get_databox();
         $metadatasStructure = $databox->get_meta_structure();
@@ -1597,7 +1598,7 @@ class task_period_archive extends task_abstract
         $core = \bootstrap::getCore();
         $status = databox_status::operation_or($stat0, $stat1);
 
-        $media = MediaVorus::guess(new \SplFileInfo($pathfile));
+        $media = $core['mediavorus']->guess(new \SplFileInfo($pathfile));
 
         $databox = $collection->get_databox();
         $metadatasStructure = $databox->get_meta_structure();

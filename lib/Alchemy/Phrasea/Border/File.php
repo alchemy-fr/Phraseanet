@@ -276,8 +276,10 @@ class File
      */
     public function buildFromPathfile($pathfile, \collection $collection, $originalName = null)
     {
+        $core = \bootstrap::getCore();
+        
         try {
-            $media = MediaVorus::guess(new \SplFileInfo($pathfile));
+            $media = $core['mediavorus']->guess(new \SplFileInfo($pathfile));
         } catch (\MediaVorus\Exception\FileNotFoundException $e) {
             throw new \InvalidArgumentException(sprintf('Unable to build media file from non existant %s', $pathfile));
         }

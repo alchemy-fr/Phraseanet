@@ -123,6 +123,22 @@ class Feed implements ControllerProviderInterface
                         ->set_author_name($author_name)
                         ->set_title($title)
                         ->set_subtitle($subtitle);
+                    
+                    $current_feed_id = $entry->get_feed()->get_id();
+                    $new_feed_id = $request->get('feed_id',$current_feed_id);
+                    if($current_feed_id != $new_feed_id) {
+                        try {
+                            $new_feed = \Feed_Adapter::load_with_user($appbox, $user, $new_feed_id);
+                        } catch(\Exception_NotFound $e) {
+                            throw new \Exception_Forbidden('You have no access to this feed');
+                        }
+                        
+                        if ( ! $new_feed->is_publisher($user)) {
+                            throw new \Exception_Forbidden('You are not publisher of this feed');
+                        }
+                        
+                        $entry->set_feed($new_feed);
+                    }
 
                     $items = explode(';', $request->get('sorted_lst'));
 
@@ -144,6 +160,12 @@ class Feed implements ControllerProviderInterface
                 } catch (\Exception_Feed_EntryNotFound $e) {
                     $appbox->get_connection()->rollBack();
                     $datas['message'] = _('Feed entry not found');
+                } catch (\Exception_NotFound $e) {
+                    $appbox->get_connection()->rollBack();
+                    $datas['message'] = _('Feed not found');
+                } catch (\Exception_Forbidden $e) {
+                    $appbox->get_connection()->rollBack();
+                    $datas['message'] = _('You are not authorized to access this feed');
                 } catch (\Exception $e) {
                     $appbox->get_connection()->rollBack();
                     $datas['message'] = $e->getMessage();

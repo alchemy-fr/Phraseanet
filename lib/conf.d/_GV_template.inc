@@ -399,6 +399,18 @@ $GV = array(
                 'default' => ''
             ),
             array(
+                'type'      => 'enum',
+                'name'      => 'GV_imagine_driver',
+                'default'   => '',
+                'comment'   => _('Imagine driver'),
+                'available' => array(
+                    ''                                             => 'Auto',
+                    \MediaAlchemyst\Driver\Imagine::DRIVER_GMAGICK => 'GraphicsMagick',
+                    \MediaAlchemyst\Driver\Imagine::DRIVER_IMAGICK => 'ImageMagick',
+                    \MediaAlchemyst\Driver\Imagine::DRIVER_GD      => 'GD',
+                )
+            ),
+            array(
                 'type'     => 'string',
                 'name'     => 'GV_imagick',
                 'default'  => '',
@@ -447,6 +459,18 @@ $GV = array(
                 'default' => ''
             ),
             array(
+                'type'    => 'integer',
+                'name'    => 'GV_ffmpeg_threads',
+                'comment' => _('Number of threads allowed for FFmpeg'),
+                'default' => 2
+            ),
+            array(
+                'type'    => 'string',
+                'name'    => 'GV_ffprobe',
+                'comment' => _('FFprobe path'),
+                'default' => ''
+            ),
+            array(
                 'type'    => 'string',
                 'name'    => 'GV_mp4box',
                 'comment' => _('reglages:: chemin de l\'executable MP4Box'),
@@ -484,13 +508,6 @@ $GV = array(
     ), array(
         'section' => _('GV::section:: Configuration principale'),
         'vars'    => array(
-//            array(
-//                'type' => 'boolean',
-//                'name' => 'GV_logobeforebas',
-//                'comment' => _('reglages:: Voir les minilogos devant les noms de collection'),
-//                'default' => false,
-//                'required' => true
-//            ),
             array(
                 'type'    => 'string',
                 'name'    => 'GV_adminMail',
@@ -518,13 +535,6 @@ $GV = array(
                 'default'   => 'support@alchemy.fr',
                 'available' => array('title'    => 'Titre du document', 'original' => 'Nom original')
             ),
-//            array(
-//                'type' => 'boolean',
-//                'name' => 'GV_ArchiveSorted',
-//                'comment' => _('reglages:: trie des fichiers par ordre naturel a l\'import'),
-//                'default' => true,
-//                'required' => true
-//            ),
             array(
                 'type'      => 'enum',
                 'name'      => 'GV_social_tools',
@@ -538,13 +548,6 @@ $GV = array(
         'section' => _('GV::section:: Page d\'accueil'),
         'rolled'  => true,
         'vars'    => array(
-//            array(
-//                'type' => 'boolean',
-//                'name' => 'GV_find_password',
-//                'comment' => _('reglages:: affiche le lien de renouvellement de mot de passe'),
-//                'default' => true,
-//                'required' => true
-//            ),
             array(
                 'type'      => 'enum',
                 'name'      => 'GV_home_publi',
@@ -617,93 +620,9 @@ $GV = array(
             )
         )
     )
-//    , array(
-//        'section' => _('GV::section:: Authentification LDAP'),
-//        'rolled' => true,
-//        'vars' => array(
-//            array(
-//                'type' => 'boolean',
-//                'name' => 'GV_ldap_enabled',
-//                'comment' => _('reglages:: Activation de l\'authentification LDAP '),
-//                'default' => false
-//            ),
-//            array(
-//                'type' => 'string',
-//                'name' => 'GV_ldap_addr',
-//                'comment' => _('reglages:: Adresse du serveur LDAP'),
-//                'default' => '127.0.0.1'
-//            ),
-//            array(
-//                'type' => 'integer',
-//                'name' => 'GV_ldap_port',
-//                'comment' => _('reglages:: Port du serveur LDAP'),
-//                'default' => 389
-//            ),
-//            array(
-//                'type' => 'integer',
-//                'name' => 'GV_ldap_userid_template',
-//                'comment' => _('reglages:: UserID Phraseanet du Template USER LDAP (obsolete)'),
-//                'default' => 4
-//            ),
-//            array(
-//                'type' => 'string',
-//                'name' => 'GV_ldap_user_template',
-//                'comment' => '',
-//                'default' => 'ldap_model'
-//            ),
-//            array(
-//                'type' => 'boolean',
-//                'name' => 'GV_ldap_bind_anonymous',
-//                'comment' => _('reglages:: Utilisation de BIND Anonyme pour la consultation (obsolete)'),
-//                'default' => true
-//            ),
-//            array(
-//                'type' => 'string',
-//                'name' => 'GV_ldap_login_consult',
-//                'comment' => _('reglages:: Login de Consultation (vide=anonymous)'),
-//                'default' => ''
-//            ),
-//            array(
-//                'type' => 'password',
-//                'name' => 'GV_ldap_pwd_consult',
-//                'comment' => _('reglages:: Mot de passe de Consultation (vide=anonymous)'),
-//                'default' => ''
-//            ),
-//            array(
-//                'type' => 'string',
-//                'name' => 'GV_ldap_base_dn',
-//                'comment' => _('reglages:: Base DN du Groupe Phototheque'),
-//                'default' => ''
-//            ),
-//            array(
-//                'type' => 'string',
-//                'name' => 'GV_ldap_sfilter',
-//                'comment' => _('reglages:: Filtre de Recherche LDAP oe %LOGIN% sera substitue par le login de l\'utilisateur'),
-//                'default' => 'cn=%LOGIN%'
-//            ),
-//            array(
-//                'type' => 'string',
-//                'name' => 'GV_ldap_grp_base_dn',
-//                'comment' => '',
-//                'default' => 'o=Alchemy'
-//            ),
-//            array(
-//                'type' => 'string',
-//                'name' => 'GV_ldap_grp_sfilter',
-//                'comment' => _('reglages:: Filtre de recherche du groupe Phototheque'),
-//                'default' => '(ou=photo_*)'
-//            )
-//        )
-//    )
     , array(
         'section' => _('GV::section:: Envois de mails'),
         'vars'    => array(
-//            array(
-//                'type' => 'boolean',
-//                'name' => 'GV_exportmail',
-//                'comment' => _('reglages:: Activation de l\'export par mail'),
-//                'default' => true
-//            ),
             array(
                 'type'    => 'string',
                 'name'    => 'GV_defaulmailsenderaddr',
@@ -809,12 +728,6 @@ $GV = array(
                 'available' => array('tree'    => 'Arbres', 'popups'  => 'Menus deroulants'),
                 'default' => 'tree'
             ),
-//            array(
-//                'type' => 'boolean',
-//                'name' => 'GV_grp_preview_list',
-//                'comment' => _('reglages:: Voir les elements d\'un reportage sans Thumbnail (fenetre de preview)'),
-//                'default' => false
-//            ),
             array(
                 'type'    => 'boolean',
                 'name'    => 'GV_rollover_reg_preview',
@@ -878,12 +791,6 @@ $GV = array(
                 'comment' => _('reglages:: Nombre de jour avant la fin de la validation pour envoie de mail de rappel'),
                 'default' => 2
             ),
-//            array(
-//                'type' => 'boolean',
-//                'name' => 'GV_DL_checkit',
-//                'comment' => _('reglages:: Autorise le telechargement des fichiers pendant le process de validation'),
-//                'default' => true
-//            ),
             array(
                 'type'    => 'integer',
                 'name'    => 'GV_val_expiration',
@@ -932,5 +839,4 @@ $GV = array(
             )
         )
     )
-    )
-?>
+);

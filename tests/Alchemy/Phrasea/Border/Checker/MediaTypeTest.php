@@ -26,7 +26,7 @@ class MediaTypeTest extends \PhraseanetPHPUnitAbstract
      */
     public function testCheck()
     {
-        $media = \MediaVorus\MediaVorus::guess(new \SplFileInfo(__DIR__ . '/../../../../testfiles/test001.CR2'));
+        $media = self::$core['mediavorus']->guess(new \SplFileInfo(__DIR__ . '/../../../../testfiles/test001.CR2'));
         $file = new \Alchemy\Phrasea\Border\File($media, self::$collection);
         $response = $this->object->check(self::$core['EM'], $file);
 
@@ -34,7 +34,7 @@ class MediaTypeTest extends \PhraseanetPHPUnitAbstract
 
         $object = new MediaType(array('mediatypes' => array(MediaType::TYPE_VIDEO, MediaType::TYPE_AUDIO)));
 
-        $media = \MediaVorus\MediaVorus::guess(new \SplFileInfo(__DIR__ . '/../../../../testfiles/test001.CR2'));
+        $media = self::$core['mediavorus']->guess(new \SplFileInfo(__DIR__ . '/../../../../testfiles/test001.CR2'));
         $file = new \Alchemy\Phrasea\Border\File($media, self::$collection);
         $response = $object->check(self::$core['EM'], $file);
 
