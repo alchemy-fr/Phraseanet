@@ -32,7 +32,7 @@ class UserPreferences implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
-        $controllers = new ControllerCollection();
+        $controllers = $app['controllers_factory'];
 
         $controllers->post('/save/', function(Application $app, Request $request) {
                 $ret = array('success' => false, 'message' => _('Error while saving preference'));

@@ -33,7 +33,7 @@ class Story implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
-        $controllers = new ControllerCollection();
+        $controllers = $app['controllers_factory'];
 
         $controllers->get('/create/', function(Application $app) {
                 /* @var $twig \Twig_Environment */

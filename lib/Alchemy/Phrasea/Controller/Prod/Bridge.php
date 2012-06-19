@@ -28,7 +28,7 @@ class Bridge implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
-        $controllers = new ControllerCollection();
+        $controllers = $app['controllers_factory'];
         $appbox = \appbox::get_instance($app['Core']);
         /* @var $twig \Twig_Environment */
         $twig = $app['Core']->getTwig();

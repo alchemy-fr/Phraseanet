@@ -29,7 +29,7 @@ class Subdefs implements ControllerProviderInterface
     public function connect(Application $app)
     {
 
-        $controllers = new ControllerCollection();
+        $controllers = $app['controllers_factory'];
 
         $controllers->get('/{sbas_id}/', function(Application $app, $sbas_id) {
                 $databox = \databox::get_instance((int) $sbas_id);

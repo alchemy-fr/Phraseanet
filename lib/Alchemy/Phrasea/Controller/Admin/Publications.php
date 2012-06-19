@@ -30,7 +30,7 @@ class Publications implements ControllerProviderInterface
         $appbox = \appbox::get_instance($app['Core']);
         $session = $appbox->get_session();
 
-        $controllers = new ControllerCollection();
+        $controllers = $app['controllers_factory'];
 
         $controllers->get('/list/', function() use ($app, $appbox) {
                 $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);

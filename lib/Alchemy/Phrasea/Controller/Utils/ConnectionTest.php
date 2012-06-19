@@ -27,7 +27,7 @@ class ConnectionTest implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
-        $controllers = new ControllerCollection();
+        $controllers = $app['controllers_factory'];
 
         $controllers->get('/mysql/', function() use ($app) {
                 require_once __DIR__ . '/../../../../classes/connection/pdo.class.php';

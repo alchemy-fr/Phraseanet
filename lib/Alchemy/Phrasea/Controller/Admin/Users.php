@@ -31,7 +31,7 @@ class Users implements ControllerProviderInterface
     {
         $appbox = \appbox::get_instance($app['Core']);
 
-        $controllers = new ControllerCollection();
+        $controllers = $app['controllers_factory'];
 
         $controllers->post('/rights/', function(Application $app) {
                 $rights = new UserHelper\Edit($app['Core'], $app['request']);

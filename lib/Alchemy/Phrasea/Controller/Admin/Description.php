@@ -28,8 +28,7 @@ class Description implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
-
-        $controllers = new ControllerCollection();
+        $controllers = $app['controllers_factory'];
 
         $controllers->get('/metadatas/search/', function(Application $app, Request $request) {
 

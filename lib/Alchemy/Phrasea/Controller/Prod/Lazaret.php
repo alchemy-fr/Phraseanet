@@ -38,7 +38,7 @@ class Lazaret implements ControllerProviderInterface
      */
     public function connect(Application $app)
     {
-        $controllers = new ControllerCollection();
+        $controllers = $app['controllers_factory'];
 
         /**
          * Lazaret Elements route

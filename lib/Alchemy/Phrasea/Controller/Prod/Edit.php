@@ -28,7 +28,7 @@ class Edit implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
-        $controllers = new ControllerCollection();
+        $controllers = $app['controllers_factory'];
 
         $controllers->post('/', function(Application $app, Request $request) {
                 $handler = new RecordHelper\Edit($app['Core'], $request);

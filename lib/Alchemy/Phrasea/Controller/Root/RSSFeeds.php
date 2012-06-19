@@ -29,7 +29,7 @@ class RSSFeeds implements ControllerProviderInterface
     {
         $appbox = \appbox::get_instance($app['Core']);
 
-        $controllers = new ControllerCollection();
+        $controllers = $app['controllers_factory'];
 
         $display_feed = function($feed, $format, $page, $user = null) {
                 $total = $feed->get_count_total_entries();

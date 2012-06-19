@@ -94,7 +94,7 @@ class Push implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
-        $controllers = new ControllerCollection();
+        $controllers = $app['controllers_factory'];
 
         $userFormatter = $this->getUserFormatter();
 
