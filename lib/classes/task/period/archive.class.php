@@ -178,7 +178,6 @@ class task_period_archive extends task_abstract
             <?php echo $form ?>.copy_spe.checked      = <?php echo p4field::isyes($sxml->copy_spe) ? "true" : "false" ?>;
             </script>
             <?php
-
             return("");
         } else { // ... so we NEVER come here
             // bad xml
@@ -209,7 +208,6 @@ class task_period_archive extends task_abstract
             }
         </script>
         <?php
-
         return;
     }
 
@@ -225,27 +223,27 @@ class task_period_archive extends task_abstract
         ob_start();
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
-            <?php echo _('task::archive:archivage sur base/collection/') ?> :
+        <?php echo _('task::archive:archivage sur base/collection/') ?> :
 
             <select onchange="chgxmlpopup(this, 'base_id');" name="base_id">
                 <option value="">...</option>
-                <?php
-                foreach ($appbox->get_databoxes() as $databox) {
-                    foreach ($databox->get_collections() as $collection) {
-                        print("<option value=\"" . $collection->get_base_id() . "\">" . $databox->get_viewname() . " / " . $collection->get_name() . "</option>");
-                    }
-                }
-                ?>
+        <?php
+        foreach ($appbox->get_databoxes() as $databox) {
+            foreach ($databox->get_collections() as $collection) {
+                print("<option value=\"" . $collection->get_base_id() . "\">" . $databox->get_viewname() . " / " . $collection->get_name() . "</option>");
+            }
+        }
+        ?>
             </select>
             <br/>
             <br/>
-            <?php echo _('task::_common_:hotfolder') ?>
+        <?php echo _('task::_common_:hotfolder') ?>
             <input type="text" name="hotfolder" style="width:400px;" onchange="chgxmltxt(this, 'hotfolder');" value=""><br/>
             <br/>
-            <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
+        <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
             <input type="text" name="period" style="width:40px;" onchange="chgxmltxt(this, 'period');" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
             <br/>
-            <?php echo _('task::archive:delai de \'repos\' avant traitement') ?>&nbsp;:&nbsp;
+        <?php echo _('task::archive:delai de \'repos\' avant traitement') ?>&nbsp;:&nbsp;
             <input type="text" name="cold" style="width:40px;" onchange="chgxmltxt(this, 'cold');" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
             <br/>
             <input type="checkbox" name="move_archived" onchange="chgxmlck(this, 'move_archived');">&nbsp;<?php echo _('task::archive:deplacer les fichiers archives dans _archived') ?>
@@ -257,7 +255,6 @@ class task_period_archive extends task_abstract
             <input type="checkbox" name="delfolder" onchange="chgxmlck(this, 'delfolder');">&nbsp;<?php echo _('task::archive:supprimer les repertoires apres archivage') ?><br/>
         </form>
         <?php
-
         return ob_get_clean();
     }
 
@@ -1403,7 +1400,7 @@ class task_period_archive extends task_abstract
             try {
 
                 $databox = \databox::get_instance($this->sbas_id);
-                $collection = collection::get_from_coll_id($databox, $cid);
+                $collection = collection::get_from_coll_id($databox, (int) $cid);
 
                 $story = $this->createStory($collection, $path . '/' . $representationFileName, $path . '/' . $captionFileName);
 
@@ -1557,7 +1554,7 @@ class task_period_archive extends task_abstract
      *
      * @param  \collection $collection  The destination collection
      * @param  string      $pathfile    The file to archive
-     * @param  string      $captionFile The Phrasea XML caption file
+     * @param  string      $captionFile The Phrasea XML caption file (NULL if no caption file)
      * @param  integer     $grp_rid     Add the record to a story
      * @param  integer     $force       Force lazaret or record ; use \Alchemy\Phrasea\Border\Manager::FORCE_* constants
      * @return null
@@ -1592,7 +1589,7 @@ class task_period_archive extends task_abstract
 
         $metadatas = $this->getIndexByFieldName($metadatasStructure, $media->getEntity()->getMetadatas());
 
-        if (file_exists($captionFile)) {
+        if ($captionFile !== NULL && file_exists($captionFile)) {
             $caption = $this->readXMLForDatabox($metadatasStructure, $captionFile);
             $captionStatus = $this->parseStatusBit(simplexml_load_file($captionFile));
 
@@ -1602,7 +1599,6 @@ class task_period_archive extends task_abstract
 
             $metadatas = $this->mergeForDatabox($metadatasStructure, $metadatas, $caption);
         }
-
         $file = new \Alchemy\Phrasea\Border\File($media, $collection);
 
         $file->addAttribute(new BorderAttribute\Status($status));
@@ -1774,9 +1770,13 @@ class task_period_archive extends task_abstract
 
         try {
             $databox = \databox::get_instance($this->sbas_id);
-            $collection = collection::get_from_coll_id($databox, $cid);
+            $collection = collection::get_from_coll_id($databox, (int) $cid);
 
-            $record = $this->createRecord($collection, $path . '/' . $file, $path . '/' . $captionFileName, $grp_rid);
+            if ($captionFileName === NULL) {
+                $record = $this->createRecord($collection, $path . '/' . $file, NULL, $grp_rid);
+            } else {
+                $record = $this->createRecord($collection, $path . '/' . $file, $path . '/' . $captionFileName, $grp_rid);
+            }
 
             $node->setAttribute('archived', '1');
 
