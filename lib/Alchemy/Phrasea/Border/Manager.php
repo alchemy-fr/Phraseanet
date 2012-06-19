@@ -23,6 +23,7 @@ use Monolog\Logger;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Value\Mono as MonoValue;
 use Symfony\Component\Filesystem\Filesystem;
+use XPDF\PdfToText;
 
 /**
  * Phraseanet Border Manager
@@ -36,7 +37,7 @@ class Manager
     protected $checkers = array();
     protected $em;
     protected $filesystem;
-    protected $logger;
+    protected $pdfToText;
 
     const RECORD_CREATED = 1;
     const LAZARET_CREATED = 2;
@@ -49,11 +50,10 @@ class Manager
      * @param \Doctrine\ORM\EntityManager $em     Entity manager
      * @param \Monolog\Logger             $logger A logger
      */
-    public function __construct(EntityManager $em, Logger $logger)
+    public function __construct(EntityManager $em, Filesystem $filesystem)
     {
         $this->em = $em;
-        $this->filesystem = new Filesystem();
-        $this->logger = $logger;
+        $this->filesystem = $filesystem;
     }
 
     /**
@@ -62,7 +62,21 @@ class Manager
      */
     public function __destruct()
     {
-        $this->em = $this->filesystem = $this->logger = null;
+        $this->em = $this->filesystem = null;
+    }
+
+    /**
+     * Set a PdfToText object for extracting PDF content
+     *
+     * @param PdfTotext $pdfToText The PdfToText Object
+     *
+     * @return Manager
+     */
+    public function setPdfToText(PdfToText $pdfToText)
+    {
+        $this->pdfToText = $pdfToText;
+
+        return $this;
     }
 
     /**
@@ -514,12 +528,10 @@ class Manager
             );
         }
 
-        if ($file->getFile()->getMimeType() == 'application/pdf') {
+        if ($file->getFile()->getMimeType() == 'application/pdf' && null !== $this->pdfToText) {
 
             try {
-                $extractor = \XPDF\PdfToText::load($this->logger);
-
-                $text = $extractor->open($file->getFile()->getRealPath())
+                $text = $this->pdfToText->open($file->getFile()->getRealPath())
                     ->getText();
 
                 if (trim($text)) {
@@ -532,7 +544,7 @@ class Manager
                     );
                 }
 
-                $extractor->close();
+                $this->pdfToText->close();
             } catch (\XPDF\Exception\Exception $e) {
 
             }

@@ -28,7 +28,7 @@ class Printer implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
-        $controllers = new ControllerCollection();
+        $controllers = $app['controllers_factory'];
 
         $controllers->post('/', function(Application $app) {
                 $printer = new RecordHelper\Printer($app['Core'], $app['request']);

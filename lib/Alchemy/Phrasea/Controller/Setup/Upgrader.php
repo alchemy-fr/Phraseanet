@@ -26,7 +26,7 @@ class Upgrader implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
-        $controllers = new ControllerCollection();
+        $controllers = $app['controllers_factory'];
 
         $controllers->get('/', function() use ($app) {
                 require_once __DIR__ . '/../../../../bootstrap.php';

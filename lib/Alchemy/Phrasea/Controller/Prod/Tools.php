@@ -30,7 +30,7 @@ class Tools implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
-        $controllers = new ControllerCollection();
+        $controllers = $app['controllers_factory'];
 
         $controllers->get('/', function(Application $app, Request $request) {
                 $helper = new Helper\Record\Tools($app['Core'], $request);

@@ -41,16 +41,20 @@ class BorderManager extends ServiceAbstract
     protected function init()
     {
 
-        $borderManager = new Border\Manager($this->core['EM'], $this->core['monolog']);
+        $borderManager = new Border\Manager($this->core['EM'], $this->core['file-system']);
+
+        if ($this->core['pdf-to-text']) {
+            $borderManager->setPdfToText($this->core['pdf-to-text']);
+        }
 
         $options = $this->getOptions();
 
         $registeredCheckers = array();
 
         if ( ! ! $options['enabled']) {
-            foreach ( $options['checkers'] as $checker) {
+            foreach ($options['checkers'] as $checker) {
 
-                if (!isset($checker['type'])) {
+                if ( ! isset($checker['type'])) {
                     $this->addUnregisteredCheck(null, 'No type defined');
                     continue;
                 }
@@ -62,7 +66,7 @@ class BorderManager extends ServiceAbstract
                     continue;
                 }
 
-                $className = sprintf('\\Alchemy\\Phrasea\\Border\\%s',  $checker['type']);
+                $className = sprintf('\\Alchemy\\Phrasea\\Border\\%s', $checker['type']);
 
                 if ( ! class_exists($className)) {
                     $this->addUnregisteredCheck($type, sprintf('Unknow checker type "%s"', $type));
@@ -114,7 +118,7 @@ class BorderManager extends ServiceAbstract
             $borderManager->registerCheckers($registeredCheckers);
         }
 
-        $this->borderManager =  $borderManager;
+        $this->borderManager = $borderManager;
     }
 
     /**

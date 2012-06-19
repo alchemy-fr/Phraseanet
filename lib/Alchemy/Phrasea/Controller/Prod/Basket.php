@@ -32,7 +32,7 @@ class Basket implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
-        $controllers = new ControllerCollection();
+        $controllers = $app['controllers_factory'];
 
         /**
          * This route is used to create a Basket

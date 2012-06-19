@@ -731,7 +731,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
                     throw new Exception(sprintf('File %d not found', $i));
                 };
-                
+
             $core = self::$core;
 
             foreach (range(1, 24) as $i) {

@@ -27,7 +27,7 @@ class PathFileTest implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
-        $controllers = new ControllerCollection();
+        $controllers = $app['controllers_factory'];
 
         $controllers->get('/path/', function() use ($app) {
                 $path = $app['request']->get('path');

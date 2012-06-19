@@ -29,7 +29,7 @@ class Fields implements ControllerProviderInterface
     {
         $appbox = \appbox::get_instance($app['Core']);
 
-        $controllers = new ControllerCollection();
+        $controllers = $app['controllers_factory'];
 
         $controllers->get('/checkmulti/', function() use ($app, $appbox) {
                 $request = $app['request'];
