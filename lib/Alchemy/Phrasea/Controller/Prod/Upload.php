@@ -176,6 +176,18 @@ class Upload implements ControllerProviderInterface
         }
 
         try {
+            $uploadedFilename = $file->getRealPath();
+            $renamedFilename = $file->getRealPath() . $file->getClientOriginalName();
+
+            $originalname = $file->getClientOriginalName();
+            $clientMimeType = $file->getClientMimeType();
+            $size = $file->getSize();
+            $error = $file->getError();
+
+            $app['Core']['file-system']->rename($uploadedFilename, $renamedFilename);
+
+            $file = new UploadedFile($renamedFilename . $file->getClientOriginalName(), $originalname, $clientMimeType, $size, $error);
+
             $media = $app['Core']['mediavorus']->guess($file);
             $collection = \collection::get_from_base_id($base_id);
 
@@ -247,6 +259,7 @@ class Upload implements ControllerProviderInterface
                 'id'      => $id,
             );
         } catch (\Exception $e) {
+            var_dump($e->getMessage());
             $datas['message'] = _('Unable to add file to Phraseanet');
         }
 
