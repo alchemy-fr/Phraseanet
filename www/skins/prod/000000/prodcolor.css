@@ -210,29 +210,65 @@ span.ww_winTitle {
     overflow: hidden;
 }
 
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected {
+    background-color: #404040;
+    border: none;
+}
+
 #idFrameC .ui-tabs .ui-tabs-nav li {
+    width: auto;
+    *width: 74px;
     height: 52px;
-    float: left;
+    display: inline-block;
+    background-color: #404040;
+    z-index: 1000;
 }
 
 #idFrameC .ui-tabs .ui-tabs-nav li a {
     padding: 5px;
     margin: 5px;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
 }
 
-#idFrameC .icon-menu #WZbaskets {
-    *background-image: url("/skins/icons/workzone32.png");
-    *background-repeat: no-repeat;
-    width: 54px;
-    height: 32px;
-}
-
-#idFrameC.closed .icon-menu li {
-    clear: left;
+#idFrameC .ui-tabs .ui-tabs-nav li:hover a {
+    background-color: #666666;
 }
 
 #idFrameC .ui-tabs .ui-tabs-nav li.ui-state-active a {
     background-color: #666666;
+}
+
+#idFrameC ul.icon-menu {
+    width: 100%;
+}
+
+#idFrameC .icon-menu #WZbaskets {
+    display: block;
+    background-image: url("/skins/icons/workzone32.png");
+    background-repeat: no-repeat;
+    background-position: 8px 5px;
+    width: 54px;
+    height: 32px;
+}
+
+#idFrameC .icon-menu #WZproposals,
+#idFrameC .icon-menu #WZthesaurus {
+    display: block;
+    width: 32px;
+    height: 32px;
+}
+
+#idFrameC .icon-menu #WZbaskets #basket_menu_trigger {
+     padding: 7px 3px;
+     float: right;
+     font-size: 12px;
+     cursor: pointer;
+}
+
+#idFrameC.closed .icon-menu li {
+    clear: left;
 }
 
 #idFrameC.closed .ui-tabs-panel,
@@ -250,10 +286,6 @@ span.ww_winTitle {
     display: block;
 }
 
-.ui-tabs .ui-tabs-nav li.ui-tabs-selected {
-    background-color: #404040;
-    border: none;
-}
 .ui-tabs .ui-tabs-nav li a {
     padding: 10px 8px;
     font-size: 0.8em;

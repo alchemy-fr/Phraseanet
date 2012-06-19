@@ -145,19 +145,18 @@
                     <ul class="icon-menu ui-tabs-nav ui-helper-reset">
                         <li class="ui-tabs-selected ui-corner-top">
                             <a href="#baskets" id="WZbaskets">
-                                <img src="/skins/icons/workzone32.png" title="{% trans 'phraseanet:: panier' %}"/>
-                                <span id="basket_menu_trigger" style="cursor:pointer;padding:3px;font-size:12px;">&#9660;</span>
+                                <div id="basket_menu_trigger">&#9660;</div>
                             </a>
                         </li>
                         {% if GV_thesaurus %}
                         <li class="proposals_WZ">
-                            <a href="#proposals">
+                            <a href="#proposals" id="WZproposals">
                                 <img class="proposals_off" src="/skins/icons/proposition_off32.png" title="{% trans 'phraseanet:: propositions' %}"/>
                                 <img class="proposals_on" src="/skins/icons/proposition_on32.png" title="{% trans 'phraseanet:: propositions' %}"/>
                             </a>
                         </li>
                         <li>
-                            <a href="#thesaurus_tab">
+                            <a href="#thesaurus_tab" id="WZthesaurus">
                                 <img src="/skins/icons/thesaurus_32.png" title="{% trans 'phraseanet:: thesaurus' %}"/>
                             </a>
                         </li>
