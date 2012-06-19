@@ -117,7 +117,7 @@
         {
             "package": "silex/silex",
             "version": "dev-master",
-            "source-reference": "3be840d40abd5f3f65da9ac353e4d438f6d161a6"
+            "source-reference": "8150e2ca6d7145aa33aeb6d57e4a728317a36621"
         },
         {
             "package": "swftools/swftools",
@@ -144,7 +144,7 @@
         {
             "package": "symfony/symfony",
             "version": "dev-master",
-            "source-reference": "fcf7afcab68e5ed6fc2addd7f67bccebabef1ad8"
+            "source-reference": "092b5dde62df60c268c8d99bd5d45d50cda42acc"
         },
         {
             "package": "tcpdf/tcpdf",
