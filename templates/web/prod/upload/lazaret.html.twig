@@ -40,6 +40,25 @@
             button.closest(".btn-group").removeClass('loading');
         }
 
+        function reloadContent(){
+            var nbItems = scope.find(".wrapper-item").length;
+
+            if( nbItems === 0 ) {
+                $.ajax({
+                    url:'/prod/lazaret/',
+                    beforeSend: function(){
+                        $("#lazaretBox").empty().append(language.loading );
+                    },
+                    success: function(data) {
+                        scope.empty().append(data);
+                    },
+                    error : function() {
+                        $("#lazaretBox").empty().append(language.errorAjaxRequest);
+                    }
+                });
+            }
+        }
+
         $(".records-subititution", scope).bind('click', function(){
             $(this).closest('.lazaret-proposals').find('.records-subititution').removeClass("thumb-selected");
             $(this).closest('.lazaret-proposals').find('.thumbnail').css({'border-color': 'white'})
@@ -80,6 +99,7 @@
                 },
                 complete: function(){
                     stopAjax(that);
+                    reloadContent();
                 }
             });
         });
@@ -112,6 +132,7 @@
                 },
                 complete: function(){
                     stopAjax(that);
+                    reloadContent();
                 }
             });
         });
@@ -170,6 +191,7 @@
                 },
                 complete: function(){
                     stopAjax(that);
+                    reloadContent();
                 }
             });
         });

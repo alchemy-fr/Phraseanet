@@ -17,6 +17,8 @@ use Doctrine\ORM\EntityManager;
 use Entities\LazaretAttribute;
 use Entities\LazaretFile;
 use Entities\LazaretSession;
+use MediaAlchemyst\Exception\Exception as MediaAlchemystException;
+use MediaAlchemyst\Specification\Image as ImageSpec;
 use Monolog\Logger;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Value\Mono as MonoValue;
@@ -397,6 +399,22 @@ class Manager
         $lazaretPathname = $this->bookLazaretPathfile($file->getFile()->getRealPath());
 
         $this->filesystem->copy($file->getFile()->getRealPath(), $lazaretPathname, true);
+
+        $spec = new ImageSpec();
+
+        $spec->setResizeMode(ImageSpec::RESIZE_MODE_INBOUND_FIXEDRATIO);
+        $spec->setDimensions(375, 275);
+
+        $core = \bootstrap::getCore();
+
+        try {
+           $core['media-alchemyst']
+                ->open($file->getFile()->getPathname())
+                ->turnInto($lazaretPathname, $spec)
+                ->close();
+        } catch (MediaAlchemystException $e) {
+
+        }
 
         $lazaretFile = new LazaretFile();
         $lazaretFile->setBaseId($file->getCollection()->get_base_id());

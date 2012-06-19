@@ -276,6 +276,10 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
             break;
         }
 
+        if(null === $statusbit) {
+            $this->markTestSkipped('No status bit defined in databox');
+        }
+
         $request = new Request(array("salut" => "salut c'est la fete"), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
         $result = $stub->set_record_status($request, static::$records['record_1']->get_sbas_id(), static::$records['record_1']->get_record_id());
         $this->assertEquals(400, $result->get_http_code());

@@ -310,6 +310,9 @@ class Lazaret implements ControllerProviderInterface
             //Delete lazaret file
             $app['Core']['EM']->remove($lazaretFile);
             $app['Core']['EM']->flush();
+
+            $app['Core']['file-system']->remove($lazaretFile->getPathname());
+
             $ret['success'] = true;
         } catch (\Exception_NotFound $e) {
             $ret['message'] = _('File is not present in quarantine anymore, please refresh');
@@ -344,6 +347,8 @@ class Lazaret implements ControllerProviderInterface
             //Delete lazaret file
             $app['Core']['EM']->remove($lazaretFile);
             $app['Core']['EM']->flush();
+
+            $app['Core']['file-system']->remove($lazaretFile->getPathname());
 
             $ret['success'] = true;
         } catch (\Exception_NotFound $e) {
@@ -410,8 +415,9 @@ class Lazaret implements ControllerProviderInterface
             $app['Core']['EM']->remove($lazaretFile);
             $app['Core']['EM']->flush();
 
-            $ret['success'] = true;
+            $app['Core']['file-system']->remove($lazaretFile->getPathname());
 
+            $ret['success'] = true;
         } catch (\Exception_NotFound $e) {
             $ret['message'] = _('File is not present in quarantine anymore, please refresh');
         } catch (\Exception $e) {
