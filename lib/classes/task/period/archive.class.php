@@ -151,13 +151,13 @@ class task_period_archive extends task_abstract
             // ... but we could check for safe values (ex. 0 < period < 3600)
             if ((int) ($sxml->period) < 10) {
                 $sxml->period = 10;
-            } elseif ((int) ($sxml->period) > 300) {
-                $sxml->period = 300;
+            } elseif ((int) ($sxml->period) > 3600) {
+                $sxml->period = 3600;
             }
             if ((int) ($sxml->cold) < 5) {
                 $sxml->cold = 5;
-            } elseif ((int) ($sxml->cold) > 3600) {
-                $sxml->cold = 3600;
+            } elseif ((int) ($sxml->cold) > 300) {
+                $sxml->cold = 300;
             }
             ?>
             <script type="text/javascript">
@@ -306,7 +306,7 @@ class task_period_archive extends task_abstract
         $this->tmask = array(); // mask(s) of accepted files
         $this->tmaskgrp = array();
         $this->period = 60;
-        $this->cold = 60;
+        $this->cold = 30;
 
         if (($this->sxBasePrefs = simplexml_load_string($collection->get_prefs())) != FALSE) {
             $this->sxBasePrefs["id"] = $base_id;
@@ -314,13 +314,13 @@ class task_period_archive extends task_abstract
             $do_it = true;
 
             $this->period = (int) ($this->sxTaskSettings->period);
-            if ($this->period <= 0 || $this->period >= 60 * 60) {
+            if ($this->period <= 0 || $this->period >= 3600) {
                 $this->period = 60;
             }
 
             $this->cold = (int) ($this->sxTaskSettings->cold);
-            if ($this->cold <= 0 || $this->cold >= 60 * 60) {
-                $this->cold = 60;
+            if ($this->cold <= 0 || $this->cold >= 300) {
+                $this->cold = 30;
             }
 
             // check the data-repository exists
@@ -421,12 +421,12 @@ class task_period_archive extends task_abstract
                         $this->move_error = p4field::isyes($this->sxTaskSettings->move_error);
 
                         $period = (int) ($this->sxTaskSettings->period);
-                        if ($period <= 0 || $period >= 60 * 60) {
+                        if ($period <= 0 || $period >= 3600) {
                             $period = 60;
                         }
                         $cold = (int) ($this->sxTaskSettings->cold);
-                        if ($cold <= 0 || $cold >= 60 * 60) {
-                            $cold = 60;
+                        if ($cold <= 0 || $cold >= 300) {
+                            $cold = 30;
                         }
                     }
                 } catch (Exception $e) {
@@ -568,8 +568,8 @@ class task_period_archive extends task_abstract
         }
 
         $cold = (int) ($this->sxTaskSettings->cold);
-        if ($cold <= 0 || $cold >= 60 * 60) {
-            $cold = 60;
+        if ($cold <= 0 || $cold >= 300) {
+            $cold = 30;
         }
 
         while ($this->running && $cold > 0) {
