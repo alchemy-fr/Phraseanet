@@ -26,7 +26,7 @@ class Language implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
-        $controller = new ControllerCollection();
+        $controller = $app['controllers_factory'];
 
         $controller->get("/", function(Application $app) {
                 $registry = $app["Core"]->getRegistry();
