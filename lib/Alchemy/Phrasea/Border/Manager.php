@@ -127,10 +127,10 @@ class Manager
     /**
      * Registers a checker
      *
-     * @param  Checker\Checker $checker The checker to register
+     * @param  Checker\CheckerInterface $checker The checker to register
      * @return Manager
      */
-    public function registerChecker(Checker\Checker $checker)
+    public function registerChecker(Checker\CheckerInterface $checker)
     {
         $this->checkers[] = $checker;
 
@@ -155,10 +155,10 @@ class Manager
     /**
      * Unregister a checker
      *
-     * @param  Checker\Checker $checker The checker to unregister
+     * @param  Checker\CheckerInterface $checker The checker to unregister
      * @return Manager
      */
-    public function unregisterChecker(Checker\Checker $checker)
+    public function unregisterChecker(Checker\CheckerInterface $checker)
     {
         $checkers = $this->checkers;
         foreach ($this->checkers as $offset => $registered) {

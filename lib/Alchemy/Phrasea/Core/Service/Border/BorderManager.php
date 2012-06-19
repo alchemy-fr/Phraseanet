@@ -37,13 +37,11 @@ class BorderManager extends ServiceAbstract
     protected $unregisteredCheckers = array();
 
     /**
-     * Set and return a new Border Manager instance and set the proper checkers
-     * according to the services configuration
-     *
-     * @return \Alchemy\Phrasea\Border\Manager
+     * {@inheritdoc}
      */
-    public function getDriver()
+    protected function init()
     {
+
         $borderManager = new Border\Manager($this->core['EM'], $this->core['monolog']);
 
         $options = $this->getOptions();
@@ -51,37 +49,84 @@ class BorderManager extends ServiceAbstract
         $registeredCheckers = array();
 
         if ( ! ! $options['enabled']) {
-            $checkers = $options['checkers'];
-            foreach ($checkers as $checker) {
-                if (isset($checker['enabled']) && isset($checker['type'])) {
-                    $type = (string) $checker['type'];
-                    $className = sprintf('\\Alchemy\\Phrasea\\Border\\%s', $type);
+            foreach ( $options['checkers'] as $checker) {
 
-                    if ( ! class_exists($className)) {
-                        $this->addUnregisteredCheck($type, sprintf('Unknow checker type "%s"', $type));
-                    }
+                if (!isset($checker['type'])) {
+                    $this->addUnregisteredCheck(null, 'No type defined');
+                    continue;
+                }
 
-                    if ( ! ! $checker['enabled']) {
-                        $options = array();
+                $type = $checker['type'];
 
-                        if (isset($checker['options']) && is_array($checker['options'])) {
-                            $options = $checker['options'];
+                if (isset($checker['enabled']) && $checker['enabled'] !== true) {
+                    $this->addUnregisteredCheck($type, 'Checker is disabled');
+                    continue;
+                }
+
+                $className = sprintf('\\Alchemy\\Phrasea\\Border\\%s',  $checker['type']);
+
+                if ( ! class_exists($className)) {
+                    $this->addUnregisteredCheck($type, sprintf('Unknow checker type "%s"', $type));
+                    continue;
+                }
+
+                $options = array();
+
+                if (isset($checker['options']) && is_array($checker['options'])) {
+                    $options = $checker['options'];
+                }
+
+                try {
+                    $checkerObj = new $className($options);
+                    if(isset($checker['databoxes'])) {
+
+                        $databoxes = array();
+                        foreach($checker['databoxes'] as $sbas_id) {
+                            try {
+                                $databoxes[] = \databox::get_instance($sbas_id);
+                            } catch (\Exception $e) {
+                                throw new \InvalidArgumentException('Invalid databox option');
+                            }
                         }
 
-                        try {
-                            $checker = new $className($options);
-                            $registeredCheckers[] = $checker;
-                        } catch (\InvalidArgumentException $e) {
-                            $this->addUnregisteredCheck($type, $e->getMessage());
-                        }
+                        $checkerObj->restrictToDataboxes($databoxes);
                     }
+                    if(isset($checker['collections'])) {
+
+                        $collections = array();
+                        foreach($checker['collections'] as $base_id) {
+                            try {
+                                $collections[] = \collection::get_from_base_id($base_id);
+                            } catch (\Exception $e) {
+                                throw new \InvalidArgumentException('Invalid collection option');
+                            }
+                        }
+
+                        $checkerObj->restrictToCollections($collections);
+                    }
+                    $registeredCheckers[] = $checkerObj;
+                } catch (\InvalidArgumentException $e) {
+                    $this->addUnregisteredCheck($type, $e->getMessage());
+                } catch (\LogicException $e) {
+                    $this->addUnregisteredCheck($type, $e->getMessage());
                 }
             }
 
             $borderManager->registerCheckers($registeredCheckers);
         }
 
-        return $borderManager;
+        $this->borderManager =  $borderManager;
+    }
+
+    /**
+     * Set and return a new Border Manager instance and set the proper checkers
+     * according to the services configuration
+     *
+     * @return \Alchemy\Phrasea\Border\Manager
+     */
+    public function getDriver()
+    {
+        return $this->borderManager;
     }
 
     /**

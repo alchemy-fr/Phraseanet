@@ -14,7 +14,7 @@ namespace Alchemy\Phrasea\Border\Checker;
 use Alchemy\Phrasea\Border\File;
 use Doctrine\ORM\EntityManager;
 
-class Extension implements Checker
+class Extension extends AbstractChecker
 {
     protected $extensions;
 

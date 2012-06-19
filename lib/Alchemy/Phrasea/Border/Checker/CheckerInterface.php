@@ -17,7 +17,7 @@ use Doctrine\ORM\EntityManager;
 /**
  * The checker interface
  */
-interface Checker
+interface CheckerInterface
 {
 
     /**
@@ -28,6 +28,14 @@ interface Checker
      * @return Response      A Response object
      */
     public function check(EntityManager $em, File $file);
+
+    /**
+     * Checks if a Checker is applicable on a file
+     * 
+     * @param  File          $file The file package object
+     * @return Boolean
+     */
+    public function isApplicable(File $file);
 
     /**
      * Get a localized message about the Checker

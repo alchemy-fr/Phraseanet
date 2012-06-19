@@ -18,7 +18,7 @@ use Doctrine\ORM\EntityManager;
  * Checks if a file with the same Sha256 checksum already exists in the
  * destination databox
  */
-class Sha256 implements Checker
+class Sha256 extends AbstractChecker
 {
 
     /**
