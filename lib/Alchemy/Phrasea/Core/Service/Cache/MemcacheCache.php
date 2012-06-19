@@ -55,7 +55,7 @@ class MemcacheCache extends ServiceAbstract
 
             $stats = @$memcache->getExtendedStats();
 
-            if (isset($stats[$key])) {
+            if (isset($stats[$key]) && false !== $stats[$key]) {
                 $this->cache = new CacheDriver\MemcacheCache();
                 $this->cache->setMemcache($memcache);
 

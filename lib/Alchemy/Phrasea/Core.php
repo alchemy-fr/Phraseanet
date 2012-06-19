@@ -11,9 +11,10 @@
 
 namespace Alchemy\Phrasea;
 
-use Symfony\Component\HttpFoundation\Request,
-    Symfony\Component\Serializer;
 use Alchemy\Phrasea\Core\Configuration;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer;
 
 require_once __DIR__ . '/../../../vendor/pimple/pimple/lib/Pimple.php';
 
@@ -144,6 +145,12 @@ class Core extends \Pimple
                 return new Serializer\Serializer(array(), $encoders);
             });
 
+
+        $this['mediavorus'] = $this->share(function() {
+
+                return new \MediaVorus\MediaVorus();
+            });
+
         $this['monolog'] = $this->share(function () use ($core) {
                 $logger = new \Monolog\Logger('Logger');
 
@@ -153,7 +160,37 @@ class Core extends \Pimple
             });
 
         $this['media-alchemyst'] = $this->share(function () use ($core) {
-                $conf = $core->getConfiguration()->has('media-alchemyst') ? $core->getConfiguration()->get('media-alchemyst') : new \Symfony\Component\DependencyInjection\ParameterBag\ParameterBag(array());
+
+
+                $conf = new ParameterBag();
+
+                if ($core->getRegistry()->get('GV_ffmpeg')) {
+                    $conf->set('ffmpeg', $core->getRegistry()->get('GV_ffmpeg'));
+                }
+                if ($core->getRegistry()->get('GV_ffmpeg_threads')) {
+                    $conf->set('ffmpeg.threads', $core->getRegistry()->get('GV_ffmpeg_threads'));
+                }
+                if ($core->getRegistry()->get('GV_ffprobe')) {
+                    $conf->set('ffprobe', $core->getRegistry()->get('GV_ffprobe'));
+                }
+                if ($core->getRegistry()->get('GV_imagine_driver')) {
+                    $conf->set('imagine', $core->getRegistry()->get('GV_imagine_driver'));
+                }
+                if ($core->getRegistry()->get('GV_mp4box')) {
+                    $conf->set('MP4Box', $core->getRegistry()->get('GV_mp4box'));
+                }
+                if ($core->getRegistry()->get('GV_unoconv')) {
+                    $conf->set('Unoconv', $core->getRegistry()->get('GV_unoconv'));
+                }
+                if ($core->getRegistry()->get('GV_pdf2swf')) {
+                    $conf->set('Pdf2Swf', $core->getRegistry()->get('GV_pdf2swf'));
+                }
+                if ($core->getRegistry()->get('GV_swf_render')) {
+                    $conf->set('SwfRender', $core->getRegistry()->get('GV_swf_render'));
+                }
+                if ($core->getRegistry()->get('GV_swf_extract')) {
+                    $conf->set('SwfExtract', $core->getRegistry()->get('GV_swf_extract'));
+                }
 
                 $drivers = new \MediaAlchemyst\DriversContainer($conf, $core['monolog']);
 

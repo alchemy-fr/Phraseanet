@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Border;
-use MediaVorus\MediaVorus;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ControllerCollection;
@@ -177,7 +176,7 @@ class Upload implements ControllerProviderInterface
         }
 
         try {
-            $media = MediaVorus::guess($file);
+            $media = $app['Core']['mediavorus']->guess($file);
             $collection = \collection::get_from_base_id($base_id);
 
             $lazaretSession = new \Entities\LazaretSession();

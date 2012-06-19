@@ -21,7 +21,7 @@ class Sha256Test extends \PhraseanetPHPUnitAbstract
         $this->object = new Sha256;
         $this->filename = __DIR__ . '/../../../../../tmp/test001.CR2';
         copy(__DIR__ . '/../../../../testfiles/test001.CR2', $this->filename);
-        $this->media = \MediaVorus\MediaVorus::guess(new \SplFileInfo($this->filename));
+        $this->media = self::$core['mediavorus']->guess(new \SplFileInfo($this->filename));
     }
 
     public function tearDown()

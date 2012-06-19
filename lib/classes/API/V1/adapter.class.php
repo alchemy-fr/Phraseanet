@@ -248,27 +248,27 @@ class API_V1_adapter extends API_V1_Abstract
      */
     protected function get_cache_info(Application $app)
     {
-        $mainCache = $app['Core']['Cache'];
-        $opCodeCache = $app['Core']['OpcodeCache'];
+        $em = $app['Core']['EM'];
+        $caches = array(
+            'main'               => $app['Core']['Cache'],
+            'op_code'            => $app['Core']['OpcodeCache'],
+            'doctrine_metadatas' => $em->getConfiguration()->getMetadataCacheImpl(),
+            'doctrine_query'     => $em->getConfiguration()->getQueryCacheImpl(),
+            'doctrine_result'    => $em->getConfiguration()->getResultCacheImpl(),
+        );
 
         $ret = array();
 
-        if ($mainCache instanceof \Alchemy\Phrasea\Cache\Cache) {
-            $ret['cache']['main'] = array(
-                'type'  => $mainCache->getName(),
-                'stats' => $mainCache->getStats()
-            );
-        } else {
-            $ret['cache']['main'] = null;
-        }
-
-        if ($opCodeCache instanceof \Alchemy\Phrasea\Cache\Cache) {
-            $ret['cache']['op_code'] = array(
-                'type'  => $opCodeCache->getName(),
-                'stats' => $opCodeCache->getStats()
-            );
-        } else {
-            $ret['cache']['op_code'] = null;
+        foreach ($caches as $name => $service) {
+            if ($service instanceof \Alchemy\Phrasea\Cache\Cache) {
+                $ret['cache'][$name] = array(
+                    'type'   => $service->getName(),
+                    'online' => $service->isOnline(),
+                    'stats'  => $service->getStats(),
+                );
+            } else {
+                $ret['cache'][$name] = null;
+            }
         }
 
         return $ret;
@@ -644,7 +644,7 @@ class API_V1_adapter extends API_V1_Abstract
             throw new API_V1_exception_forbidden(sprintf('You do not have access to collection %s', $collection->get_name()));
         }
 
-        $media = \MediaVorus\MediaVorus::guess($file);
+        $media = $app['Core']['mediavorus']->guess($file);
 
         $Package = new Alchemy\Phrasea\Border\File($media, $collection, $file->getClientOriginalName());
 

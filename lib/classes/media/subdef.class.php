@@ -438,7 +438,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      */
     public function get_size()
     {
-        return filesize($this->get_pathfile());
+        return @filesize($this->get_pathfile());
     }
 
     /**
@@ -563,7 +563,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             return $this;
         }
 
-        $media = MediaVorus::guess(new SplFileInfo($this->get_pathfile()));
+        $media = $Core['mediavorus']->guess(new SplFileInfo($this->get_pathfile()));
 
         $sql = "UPDATE subdef
               SET height = :height , width = :width, updated_on = NOW()
@@ -601,8 +601,9 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         if ( ! $this->is_physically_present()) {
             return array();
         }
-
-        $media = MediaVorus::guess(new \SplFileInfo($this->get_pathfile()));
+        
+        $Core = \bootstrap::getCore();
+        $media = $Core['mediavorus']->guess(new \SplFileInfo($this->get_pathfile()));
 
         $datas = array();
 

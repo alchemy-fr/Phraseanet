@@ -132,7 +132,7 @@ class Publications implements ControllerProviderInterface
                         throw new \Exception_BadRequest('Uploaded file is invalid');
                     }
 
-                    $media = \MediaVorus\MediaVorus::guess($file);
+                    $media = $app['Core']['mediavorus']->guess($file);
 
                     if ($media->getType() !== \MediaVorus\Media\Media::TYPE_IMAGE) {
                         throw new \Exception_BadRequest('Bad filetype');

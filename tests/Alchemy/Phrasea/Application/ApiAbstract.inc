@@ -942,7 +942,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $file = new \Alchemy\Phrasea\Border\File(\MediaVorus\MediaVorus::guess(new \SplFileInfo(__DIR__ . '/../../../testfiles/test001.CR2')), self::$collection);
+        $file = new \Alchemy\Phrasea\Border\File(self::$core['mediavorus']->guess(new \SplFileInfo(__DIR__ . '/../../../testfiles/test001.CR2')), self::$collection);
         $record = \record_adapter::createFromFile($file);
 
         $route = '/records/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/setmetadatas/';
@@ -1064,7 +1064,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testMoveRecordToCollection()
     {
-        $file = new \Alchemy\Phrasea\Border\File(\MediaVorus\MediaVorus::guess(new \SplFileInfo(__DIR__ . '/../../../testfiles/test001.CR2')), self::$collection);
+        $file = new \Alchemy\Phrasea\Border\File(self::$core['mediavorus']->guess(new \SplFileInfo(__DIR__ . '/../../../testfiles/test001.CR2')), self::$collection);
         $record = \record_adapter::createFromFile($file);
 
         $this->setToken(self::$token);
@@ -1327,9 +1327,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->evaluateResponse200($this->client->getResponse());
         $this->evaluateMeta200($content);
-        /**
-         * check that there is a record or lazaret
-         */
+        $datas = $content['response'];
+        
+        $this->assertArrayHasKey('entity', $datas);
+        $this->assertArrayHasKey('url', $datas);
     }
 
     /**

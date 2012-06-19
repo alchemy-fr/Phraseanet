@@ -417,7 +417,7 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
     public function testGetIndexByFieldName()
     {
         $meta_struct = self::$collection->get_databox()->get_meta_structure();
-        $media = \MediaVorus\MediaVorus::guess(new \SplFileInfo(__DIR__ . '/../../testfiles/test001.CR2'));
+        $media = self::$core['mediavorus']->guess(new \SplFileInfo(__DIR__ . '/../../testfiles/test001.CR2'));
 
         $bagByName = self::$object->getIndexByFieldNameTester($meta_struct, $media->getEntity()->getMetadatas());
 

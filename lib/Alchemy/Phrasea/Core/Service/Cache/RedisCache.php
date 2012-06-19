@@ -54,11 +54,11 @@ class RedisCache extends ServiceAbstract
         if ( ! $this->cache) {
             $redis = new \Redis();
 
-            if ( ! $redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_IGBINARY)) {
-                $redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_PHP);
-            }
-
             if ($redis->connect($this->host, $this->port)) {
+                if ( ! $redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_IGBINARY)) {
+                    $redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_PHP);
+                }
+                
                 $this->cache = new CacheDriver\RedisCache();
                 $this->cache->setRedis($redis);
                 $this->cache->setNamespace(md5(realpath(__DIR__ . '/../../../../../../')));

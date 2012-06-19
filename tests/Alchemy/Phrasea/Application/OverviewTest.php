@@ -48,7 +48,7 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $tmp = tempnam(sys_get_temp_dir(), 'testEtag');
         copy(__DIR__ . '/../../../testfiles/cestlafete.jpg', $tmp);
 
-        $media = \MediaVorus\MediaVorus::guess(new \SplFileInfo($tmp));
+        $media = self::$core['mediavorus']->guess(new \SplFileInfo($tmp));
 
         $file = new Alchemy\Phrasea\Border\File($media, self::$collection);
         $record = record_adapter::createFromFile($file);

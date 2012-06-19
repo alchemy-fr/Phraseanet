@@ -127,7 +127,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
 
             return $this;
         } catch (Exception $e) {
-
+            
         }
 
         $sql = 'SELECT publisher, title, description, created_on, updated_on
@@ -213,6 +213,31 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
     public function get_subtitle()
     {
         return $this->subtitle;
+    }
+
+    /**
+     * Change the parent feed of the entry
+     *
+     * @param Feed_Adapter $feed
+     * @return \Feed_Entry_Adapter 
+     */
+    public function set_feed(Feed_Adapter $feed)
+    {
+        $sql = 'UPDATE feed_entries
+            SET feed_id = :feed_id, updated_on = NOW() WHERE id = :entry_id';
+        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt->execute(array(
+            ':feed_id'  => $feed->get_id(),
+            ':entry_id' => $this->get_id(),
+        ));
+        $stmt->closeCursor();
+
+        $this->feed->delete_data_from_cache();
+        $this->feed = $feed;
+        $feed->delete_data_from_cache();
+        $this->delete_data_from_cache();
+
+        return $this;
     }
 
     /**
@@ -416,7 +441,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
             try {
                 $items[] = new Feed_Entry_Item($this->appbox, $this, $item_id);
             } catch (Exception_NotFound $e) {
-
+                
             }
         }
 
@@ -430,7 +455,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
         try {
             return $this->get_data_from_cache(self::CACHE_ELEMENTS);
         } catch (Exception $e) {
-
+            
         }
 
         $sql = 'SELECT id FROM feed_entry_elements
@@ -499,12 +524,12 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
               , :description, NOW(), NOW(), :author_name, :author_email)';
 
         $params = array(
-            ':feed_id'      => $feed->get_id()
-            , ':publisher_id' => $publisher->get_id()
-            , ':title'        => trim($title)
-            , ':description'  => trim($subtitle)
-            , ':author_name'  => trim($author_name)
-            , ':author_email' => trim($author_mail)
+            ':feed_id'      => $feed->get_id(),
+            ':publisher_id' => $publisher->get_id(),
+            ':title'        => trim($title),
+            ':description'  => trim($subtitle),
+            ':author_name'  => trim($author_name),
+            ':author_email' => trim($author_mail),
         );
 
         $stmt = $appbox->get_connection()->prepare($sql);

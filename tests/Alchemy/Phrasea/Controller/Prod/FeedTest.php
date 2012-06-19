@@ -95,10 +95,10 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function createApplication()
     {
         $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Prod.php';
-        
+
         $app['debug'] = true;
         unset($app['exception_handler']);
-        
+
         return $app;
     }
 
@@ -195,11 +195,10 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
         );
 
 
-        try
-        {
+        try {
             $crawler = $this->client->request('GET', '/feeds/entry/' . $entry->get_id() . '/edit/');
             $this->fail('Should raise an exception');
-        } catch(Exception_UnauthorizedAction $e) {
+        } catch (Exception_UnauthorizedAction $e) {
             
         }
 
@@ -211,12 +210,11 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $appbox = appbox::get_instance(\bootstrap::getCore());
 
         $params = array(
-            "feed_id"      => $this->feed->get_id()
-            , "title"        => "dog"
-            , "subtitle"     => "cat"
-            , "author_name"  => "bird"
-            , "author_email" => "mouse"
-            , 'lst'          => static::$records['record_1']->get_serialize_key()
+            "title"        => "dog",
+            "subtitle"     => "cat",
+            "author_name"  => "bird",
+            "author_email" => "mouse",
+            'lst'          => static::$records['record_1']->get_serialize_key(),
         );
 
         $crawler = $this->client->request('POST', '/feeds/entry/' . $this->entry->get_id() . '/update/', $params);
@@ -228,6 +226,88 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue(is_string($pageContent->message));
         $this->assertTrue(is_string($pageContent->datas));
         $this->assertRegExp("/entry_" . $this->entry->get_id() . "/", $pageContent->datas);
+    }
+
+    public function testEntryUpdateChangeFeed()
+    {
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $newfeed = Feed_Adapter::create(
+                $appbox, self::$user, $this->feed_title, $this->feed_subtitle
+        );
+
+        $params = array(
+            "feed_id"      => $newfeed->get_id(),
+            "title"        => "dog",
+            "subtitle"     => "cat",
+            "author_name"  => "bird",
+            "author_email" => "mouse",
+            'lst'          => static::$records['record_1']->get_serialize_key(),
+        );
+
+        $crawler = $this->client->request('POST', '/feeds/entry/' . $this->entry->get_id() . '/update/', $params);
+        $this->assertTrue($this->client->getResponse()->isOk());
+        $this->assertEquals("application/json", $this->client->getResponse()->headers->get("content-type"));
+        $pageContent = json_decode($this->client->getResponse()->getContent());
+        $this->assertTrue(is_object($pageContent));
+        $this->assertFalse($pageContent->error);
+        $this->assertTrue(is_string($pageContent->message));
+        $this->assertTrue(is_string($pageContent->datas));
+        $this->assertRegExp("/entry_" . $this->entry->get_id() . "/", $pageContent->datas);
+
+        $retrievedentry = Feed_Entry_Adapter::load_from_id($appbox, $this->entry->get_id());
+        $this->assertEquals($newfeed->get_id(), $retrievedentry->get_feed()->get_id());
+
+        $newfeed->delete();
+    }
+
+    public function testEntryUpdateChangeFeedNoAccess()
+    {
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $newfeed = Feed_Adapter::create(
+                $appbox, self::$user, $this->feed_title, $this->feed_subtitle
+        );
+        $newfeed->set_collection(self::$collection_no_access);
+
+        $appbox = appbox::get_instance(\bootstrap::getCore());
+
+        $params = array(
+            "feed_id"      => $newfeed->get_id(),
+            "title"        => "dog",
+            "subtitle"     => "cat",
+            "author_name"  => "bird",
+            "author_email" => "mouse",
+            'lst'          => static::$records['record_1']->get_serialize_key(),
+        );
+
+        $crawler = $this->client->request('POST', '/feeds/entry/' . $this->entry->get_id() . '/update/', $params);
+        $this->assertTrue($this->client->getResponse()->isOk());
+        $this->assertEquals("application/json", $this->client->getResponse()->headers->get("content-type"));
+        $pageContent = json_decode($this->client->getResponse()->getContent());
+        $this->assertTrue(is_object($pageContent));
+        $this->assertTrue($pageContent->error);
+        $this->assertTrue(is_string($pageContent->message));
+
+        $newfeed->delete();
+    }
+
+    public function testEntryUpdateChangeFeedInvalidFeed()
+    {
+        $params = array(
+            "feed_id"      => 0,
+            "title"        => "dog",
+            "subtitle"     => "cat",
+            "author_name"  => "bird",
+            "author_email" => "mouse",
+            'lst'          => static::$records['record_1']->get_serialize_key(),
+        );
+
+        $crawler = $this->client->request('POST', '/feeds/entry/' . $this->entry->get_id() . '/update/', $params);
+        $this->assertTrue($this->client->getResponse()->isOk());
+        $this->assertEquals("application/json", $this->client->getResponse()->headers->get("content-type"));
+        $pageContent = json_decode($this->client->getResponse()->getContent());
+        $this->assertTrue(is_object($pageContent));
+        $this->assertTrue($pageContent->error);
+        $this->assertTrue(is_string($pageContent->message));
     }
 
     public function testEntryUpdateNotFound()
@@ -336,7 +416,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
             Feed_Entry_Adapter::load_from_id($appbox, $this->entry->get_id());
             $this->fail("Failed to delete entry");
         } catch (Exception $e) {
-
+            
         }
     }
 

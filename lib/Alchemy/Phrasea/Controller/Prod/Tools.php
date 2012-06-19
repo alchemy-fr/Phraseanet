@@ -143,7 +143,7 @@ class Tools implements ControllerProviderInterface
                                     , $request->get('record_id')
                             );
 
-                            $media = MediaVorus::guess($file);
+                            $media = $app['Core']['mediavorus']->guess($file);
 
                             $record->substitute_subdef('document', $media);
 
@@ -194,7 +194,7 @@ class Tools implements ControllerProviderInterface
                                     , $request->get('record_id')
                             );
 
-                            $media = MediaVorus::guess($file);
+                            $media = $app['Core']['mediavorus']->guess($file);
 
                             $record->substitute_subdef('thumbnail', $media);
 
@@ -254,7 +254,7 @@ class Tools implements ControllerProviderInterface
 
                     file_put_contents($fileName, $dataUri->getData());
 
-                    $media = MediaVorus::guess(new \SplFileInfo($fileName));
+                    $media = $app['Core']['mediavorus']->guess(new \SplFileInfo($fileName));
 
                     $record->substitute_subdef('thumbnail', $media);
 
