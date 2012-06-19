@@ -250,7 +250,13 @@ class Upload implements ControllerProviderInterface
             $datas['message'] = _('Unable to add file to Phraseanet');
         }
 
-        return self::getJsonResponse($app['Core']['Serializer'], $datas);
+        $response = self::getJsonResponse($app['Core']['Serializer'], $datas);
+
+        // IE 7 and 8 does not correctly handle json response in file API
+        // let send them an html content-type header
+        $response->headers->set('Content-type', 'text/html');
+
+        return $response;
     }
 
     private static function getJsonResponse(Serializer $serializer, Array $datas)
