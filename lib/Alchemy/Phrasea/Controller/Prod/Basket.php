@@ -63,19 +63,9 @@ class Basket implements ControllerProviderInterface
 
                 $n = 0;
 
-                foreach (explode(';', $request->get('lst')) as $sbas_rec) {
-                    $sbas_rec = explode('_', $sbas_rec);
+                $helper = new \Alchemy\Phrasea\Helper\Record\Basket($app['Core'], $app['request']);
 
-                    if (count($sbas_rec) !== 2)
-                        continue;
-
-                    $record = new \record_adapter($sbas_rec[0], $sbas_rec[1]);
-
-                    if ( ! $user->ACL()->has_access_to_base($record->get_base_id())
-                        && ! $user->ACL()->has_hd_grant($record)
-                        && ! $user->ACL()->has_preview_grant($record)) {
-                        continue;
-                    }
+                foreach ($helper->get_elements() as $record) {
 
                     if ($Basket->hasRecord($record))
                         continue;
@@ -344,20 +334,9 @@ class Basket implements ControllerProviderInterface
 
                 $n = 0;
 
-                foreach (explode(';', $request->get('lst')) as $sbas_rec) {
-                    $sbas_rec = explode('_', $sbas_rec);
+                $helper = new \Alchemy\Phrasea\Helper\Record\Basket($app['Core'], $app['request']);
 
-                    if (count($sbas_rec) !== 2)
-                        continue;
-
-                    $record = new \record_adapter($sbas_rec[0], $sbas_rec[1]);
-
-                    if ( ! $user->ACL()->has_access_to_base($record->get_base_id())
-                        && ! $user->ACL()->has_hd_grant($record)
-                        && ! $user->ACL()->has_preview_grant($record)) {
-                        continue;
-                    }
-
+                foreach ($helper->get_elements() as $record) {
                     if ($basket->hasRecord($record))
                         continue;
 
