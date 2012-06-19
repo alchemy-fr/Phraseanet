@@ -223,27 +223,27 @@ class task_period_archive extends task_abstract
         ob_start();
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
-        <?php echo _('task::archive:archivage sur base/collection/') ?> :
+            <?php echo _('task::archive:archivage sur base/collection/') ?> :
 
             <select onchange="chgxmlpopup(this, 'base_id');" name="base_id">
                 <option value="">...</option>
-        <?php
-        foreach ($appbox->get_databoxes() as $databox) {
-            foreach ($databox->get_collections() as $collection) {
-                print("<option value=\"" . $collection->get_base_id() . "\">" . $databox->get_viewname() . " / " . $collection->get_name() . "</option>");
-            }
-        }
-        ?>
+                <?php
+                foreach ($appbox->get_databoxes() as $databox) {
+                    foreach ($databox->get_collections() as $collection) {
+                        print("<option value=\"" . $collection->get_base_id() . "\">" . $databox->get_viewname() . " / " . $collection->get_name() . "</option>");
+                    }
+                }
+                ?>
             </select>
             <br/>
             <br/>
-        <?php echo _('task::_common_:hotfolder') ?>
+            <?php echo _('task::_common_:hotfolder') ?>
             <input type="text" name="hotfolder" style="width:400px;" onchange="chgxmltxt(this, 'hotfolder');" value=""><br/>
             <br/>
-        <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
+            <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
             <input type="text" name="period" style="width:40px;" onchange="chgxmltxt(this, 'period');" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
             <br/>
-        <?php echo _('task::archive:delai de \'repos\' avant traitement') ?>&nbsp;:&nbsp;
+            <?php echo _('task::archive:delai de \'repos\' avant traitement') ?>&nbsp;:&nbsp;
             <input type="text" name="cold" style="width:40px;" onchange="chgxmltxt(this, 'cold');" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
             <br/>
             <input type="checkbox" name="move_archived" onchange="chgxmlck(this, 'move_archived');">&nbsp;<?php echo _('task::archive:deplacer les fichiers archives dans _archived') ?>
@@ -374,8 +374,9 @@ class task_period_archive extends task_abstract
                     if ($this->getRunner() == self::RUNNER_SCHEDULER) {
                         $this->log(("Warning : abox connection lost, restarting in 10 min."));
 
-                        for ($t = 60 * 10; $this->running && $t; $t -- ) // DON'T do sleep(600) because it prevents ticks !
+                        for ($t = 60 * 10; $this->running && $t; $t -- ) { // DON'T do sleep(600) because it prevents ticks !
                             sleep(1);
+                        }
                         // because connection is lost we cannot change status to 'torestart'
                         // anyway the current status 'running' with no pid
                         // will enforce the scheduler to restart the task
@@ -393,8 +394,9 @@ class task_period_archive extends task_abstract
                     if ($this->getRunner() == self::RUNNER_SCHEDULER) {
                         $this->log(sprintf(('Warning : missing hotfolder \'%s\', restarting in 10 min.'), $path_in));
 
-                        for ($t = 60 * 10; $this->running && $t; $t -- ) // DON'T do sleep(600) because it prevents ticks !
+                        for ($t = 60 * 10; $this->running && $t; $t -- ) { // DON'T do sleep(600) because it prevents ticks !
                             sleep(1);
+                        }
                         if ($this->getState() === self::STATE_STARTED) {
                             $this->setState(self::STATE_TORESTART);
                         }
@@ -517,7 +519,8 @@ class task_period_archive extends task_abstract
     {
         clearstatcache();
 
-        $conn = connection::getPDOConnection();
+        connection::getPDOConnection();
+        \databox::get_instance($this->sbas_id)->get_connection();
 
         $path_in = p4string::delEndSlash(trim((string) ($this->sxTaskSettings->hotfolder)));
         if ( ! @is_file($path_in . "/.phrasea.xml")) {
@@ -569,7 +572,7 @@ class task_period_archive extends task_abstract
             $cold = 60;
         }
 
-        while ($cold > 0) {
+        while ($this->running && $cold > 0) {
             $s = $this->getState();
             if ($s == self::STATE_TOSTOP) {
                 return('TOSTOP');
@@ -601,11 +604,10 @@ class task_period_archive extends task_abstract
         $r = $this->moveFiles($dom, $root, $path_in, $path_archived, $path_error);
         if ($this->debug)
             $this->log("=========== moveFiles ========== (returned " . ($r ? 'true' : 'false') . ") : \n" . $dom->saveXML());
-
         if ($this->movedFiles) {
             // something happened : a least one file has moved
             return('MAXRECSDONE');
-        } elseif (memory_get_usage() >> 20 > 15) {
+        } elseif (memory_get_usage() >> 20 > 25) {
             return('MAXMEMORY');
         } else {
             return('NORECSTODO');
@@ -1401,8 +1403,11 @@ class task_period_archive extends task_abstract
 
                 $databox = \databox::get_instance($this->sbas_id);
                 $collection = collection::get_from_coll_id($databox, (int) $cid);
-
-                $story = $this->createStory($collection, $path . '/' . $representationFileName, $path . '/' . $captionFileName);
+                if ($captionFileName === NULL) {
+                    $story = $this->createStory($collection, $path . '/' . $representationFileName, NULL);
+                } else {
+                    $story = $this->createStory($collection, $path . '/' . $representationFileName, $path . '/' . $captionFileName);
+                }
 
                 $rid = $story->get_record_id();
 
@@ -1523,7 +1528,7 @@ class task_period_archive extends task_abstract
 
         $metadatas = $this->getIndexByFieldName($metadatasStructure, $media->getEntity()->getMetadatas());
 
-        if (file_exists($captionFile)) {
+        if ($captionFile !== NULL && file_exists($captionFile)) {
             $caption = $this->readXMLForDatabox($metadatasStructure, $captionFile);
             $captionStatus = $this->parseStatusBit(simplexml_load_file($captionFile));
 
