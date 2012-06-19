@@ -144,19 +144,19 @@
                 <div class="tabs ui-tabs">
                     <ul class="icon-menu ui-tabs-nav ui-helper-reset">
                         <li class="ui-tabs-selected ui-corner-top">
-                            <a href="#baskets" id="WZbaskets">
+                            <a href="#baskets" class="WZbasketTab">
                                 <div id="basket_menu_trigger">&#9660;</div>
                             </a>
                         </li>
                         {% if GV_thesaurus %}
                         <li class="proposals_WZ">
-                            <a href="#proposals" id="WZproposals">
+                            <a href="#proposals" class="WZtabs">
                                 <img class="proposals_off" src="/skins/icons/proposition_off32.png" title="{% trans 'phraseanet:: propositions' %}"/>
                                 <img class="proposals_on" src="/skins/icons/proposition_on32.png" title="{% trans 'phraseanet:: propositions' %}"/>
                             </a>
                         </li>
                         <li>
-                            <a href="#thesaurus_tab" id="WZthesaurus">
+                            <a href="#thesaurus_tab" class="WZtabs">
                                 <img src="/skins/icons/thesaurus_32.png" title="{% trans 'phraseanet:: thesaurus' %}"/>
                             </a>
                         </li>
@@ -529,8 +529,7 @@
                     <span class="dropdownButton">
                         <div class="btn-group">
                             <button class="default_action TOOL_disktt_btn results_window btn btn-inverse">
-                                <img src="/skins/prod/000000/images/disktt_history.gif" height="16" width="16" />
-                                {% trans 'action : exporter' %}
+                                <img src="/skins/prod/000000/images/disktt_history.gif" height="16" width="16" /> {% trans 'action : exporter' %}
                             </button>
                             <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
                             <ul class="dropdown-menu">
@@ -571,8 +570,7 @@
                                 {% for action in actions %}
                                     {% if loop.first %}
                                         <button class="default_action {{ action.class }} results_window btn btn-inverse">
-                                            <img src="{{ action.icon }}" height="16" width="16" />
-                                            {{ action.label }}
+                                            <img src="{{ action.icon }}" height="16" width="16" /> {{ action.label }}
                                         </button>
                                     {% endif %}
                                 {% endfor %}

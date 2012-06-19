@@ -244,7 +244,7 @@ span.ww_winTitle {
     width: 100%;
 }
 
-#idFrameC .icon-menu #WZbaskets {
+#idFrameC .icon-menu .WZbasketTab {
     display: block;
     background-image: url("/skins/icons/workzone32.png");
     background-repeat: no-repeat;
@@ -253,14 +253,13 @@ span.ww_winTitle {
     height: 32px;
 }
 
-#idFrameC .icon-menu #WZproposals,
-#idFrameC .icon-menu #WZthesaurus {
+#idFrameC .icon-menu .WZtabs {
     display: block;
     width: 32px;
     height: 32px;
 }
 
-#idFrameC .icon-menu #WZbaskets #basket_menu_trigger {
+#basket_menu_trigger {
      padding: 7px 3px;
      float: right;
      font-size: 12px;
