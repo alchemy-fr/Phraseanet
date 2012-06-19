@@ -39,7 +39,7 @@ class Upload implements ControllerProviderInterface
      */
     public function connect(Application $app)
     {
-        $controllers = new ControllerCollection();
+        $controllers = $app['controllers_factory'];
 
         /**
          * Upload form route
@@ -176,6 +176,18 @@ class Upload implements ControllerProviderInterface
         }
 
         try {
+            $uploadedFilename = $file->getRealPath();
+            $renamedFilename = $file->getRealPath() . $file->getClientOriginalName();
+
+            $originalname = $file->getClientOriginalName();
+            $clientMimeType = $file->getClientMimeType();
+            $size = $file->getSize();
+            $error = $file->getError();
+
+            $app['Core']['file-system']->rename($uploadedFilename, $renamedFilename);
+
+            $file = new UploadedFile($renamedFilename, $originalname, $clientMimeType, $size, $error);
+
             $media = $app['Core']['mediavorus']->guess($file);
             $collection = \collection::get_from_base_id($base_id);
 
@@ -216,6 +228,8 @@ class Upload implements ControllerProviderInterface
             $code = $app['Core']['border-manager']->process(
                 $lazaretSession, $packageFile, $callback, $forceBehavior
             );
+
+            $app['Core']['file-system']->rename($renamedFilename, $uploadedFilename);
 
             if ( ! ! $forceBehavior) {
                 $reasons = array();

@@ -29,7 +29,7 @@ class Query implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
-        $controllers = new ControllerCollection();
+        $controllers = $app['controllers_factory'];
 
         $controllers->match('/', function(Application $app, Request $request) {
 

@@ -43,7 +43,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new Manager(self::$core['EM'], self::$core['monolog']);
+        $this->object = new Manager(self::$core['EM'], self::$core['file-system']);
         $this->session = new \Entities\LazaretSession();
 
         self::$core['EM']->persist($this->session);
@@ -386,7 +386,8 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
      */
     public function testAddMediaAttributesPDF()
     {
-        $manager = new ManagerTester(self::$core['EM'], self::$core['monolog']);
+        $manager = new ManagerTester(self::$core['EM'], self::$core['file-system']);
+        $manager->setPdfToText(self::$core['pdf-to-text']);
 
         $file = File::buildFromPathfile(__DIR__ . '/../../../testfiles/HelloWorld.pdf', self::$collection);
 
@@ -434,7 +435,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
      */
     public function testAddMediaAttributesAudio()
     {
-        $manager = new ManagerTester(self::$core['EM'], self::$core['monolog']);
+        $manager = new ManagerTester(self::$core['EM'], self::$core['file-system']);
 
         $file = File::buildFromPathfile(__DIR__ . '/../../../testfiles/test012.wav', self::$collection);
 
@@ -481,7 +482,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
      */
     public function testAddMediaAttributes()
     {
-        $manager = new ManagerTester(self::$core['EM'], self::$core['monolog']);
+        $manager = new ManagerTester(self::$core['EM'], self::$core['file-system']);
 
         $file = File::buildFromPathfile(self::$file1, self::$collection);
 
@@ -618,7 +619,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
      */
     public function testBookLazaretPathfile()
     {
-        $manager = new ManagerTester(self::$core['EM'], self::$core['monolog']);
+        $manager = new ManagerTester(self::$core['EM'], self::$core['file-system']);
 
         $file1 = $manager->bookLazaretPathfileTester('babebibobu.txt');
         $file2 = $manager->bookLazaretPathfileTester('babebibobu.txt');

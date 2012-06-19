@@ -15,6 +15,8 @@ use Alchemy\Phrasea\Core\Configuration;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer;
+use XPDF\PdfToText;
+use XPDF\Exception\Exception as XPDFException;
 
 require_once __DIR__ . '/../../../vendor/pimple/pimple/lib/Pimple.php';
 
@@ -209,6 +211,25 @@ class Core extends \Pimple
         $this['file-system'] = $this->share(function () use ($core) {
 
                 return new \Symfony\Component\Filesystem\Filesystem();
+            });
+
+        $this['pdf-to-text'] = $this->share(function () use ($core) {
+
+                try {
+                    if ($core->getRegistry()->get('GV_pdftotext')) {
+                        $pdftotext = new PdfToText($core->getRegistry()->get('GV_pdftotext'), $core['monolog']);
+                    } else {
+                        $pdftotext = PdfToText::load($core['monolog']);
+                    }
+
+                    if ($core->getRegistry()->get('GV_pdfmaxpages')) {
+                        $pdftotext->setPageQuantity($core->getRegistry()->get('GV_pdfmaxpages'));
+                    }
+                } catch (XPDFException $e) {
+                    return null;
+                }
+
+                return $pdftotext;
             });
 
         self::initPHPConf();

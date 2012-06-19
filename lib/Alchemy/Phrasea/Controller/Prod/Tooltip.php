@@ -27,7 +27,7 @@ class Tooltip implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
-        $controllers = new ControllerCollection();
+        $controllers = $app['controllers_factory'];
         $app['appbox'] = \appbox::get_instance($app['Core']);
 
         $controllers->post('/basket/{basket_id}/'
