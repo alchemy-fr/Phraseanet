@@ -220,8 +220,12 @@ span.ww_winTitle {
     *width: 74px;
     height: 52px;
     display: inline-block;
+    background-color: #999999;
+    z-index: 0;
+}
+
+#idFrameC .ui-tabs .ui-tabs-nav li.ui-tabs-selected {
     background-color: #B1B1B1;
-    z-index: 1000;
 }
 
 #idFrameC .ui-tabs .ui-tabs-nav li a {
@@ -699,6 +703,7 @@ div.diapo {
 #idFrameT .tools .classicButton button.btn-inverse img,
 #idFrameT .tools .dropdownButton button.btn-inverse img {
     margin: 0 2px;
+    max-width: none;
 }
 
 #idFrameT .tools .dropdown-menu {
