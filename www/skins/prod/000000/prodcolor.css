@@ -210,22 +210,64 @@ span.ww_winTitle {
     overflow: hidden;
 }
 
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected {
+    background-color: #404040;
+    border: none;
+}
+
 #idFrameC .ui-tabs .ui-tabs-nav li {
+    width: auto;
+    *width: 74px;
     height: 52px;
-    float: left;
+    display: inline-block;
+    background-color: #404040;
+    z-index: 1000;
 }
 
 #idFrameC .ui-tabs .ui-tabs-nav li a {
     padding: 5px;
     margin: 5px;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
 }
 
-#idFrameC.closed .icon-menu li {
-    clear: left;
+#idFrameC .ui-tabs .ui-tabs-nav li:hover a {
+    background-color: #666666;
 }
 
 #idFrameC .ui-tabs .ui-tabs-nav li.ui-state-active a {
     background-color: #666666;
+}
+
+#idFrameC ul.icon-menu {
+    width: 100%;
+}
+
+#idFrameC .icon-menu .WZbasketTab {
+    display: block;
+    background-image: url("/skins/icons/workzone32.png");
+    background-repeat: no-repeat;
+    background-position: 8px 5px;
+    width: 54px;
+    height: 32px;
+}
+
+#idFrameC .icon-menu .WZtabs {
+    display: block;
+    width: 32px;
+    height: 32px;
+}
+
+#basket_menu_trigger {
+     padding: 7px 3px;
+     float: right;
+     font-size: 12px;
+     cursor: pointer;
+}
+
+#idFrameC.closed .icon-menu li {
+    clear: left;
 }
 
 #idFrameC.closed .ui-tabs-panel,
@@ -243,10 +285,6 @@ span.ww_winTitle {
     display: block;
 }
 
-.ui-tabs .ui-tabs-nav li.ui-tabs-selected {
-    background-color: #404040;
-    border: none;
-}
 .ui-tabs .ui-tabs-nav li a {
     padding: 10px 8px;
     font-size: 0.8em;
@@ -516,6 +554,7 @@ span.ww_winTitle {
 
 .diapo div.title {
     overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 div.diapo {
@@ -617,7 +656,7 @@ div.diapo {
 
 #idFrameT .tools .classicButton button.btn-inverse,
 #idFrameT .tools .dropdownButton button.btn-inverse {
-    *background-color: #393939;
+    *background-color: #404040;
     background-image: -ms-linear-gradient(top, #444444, #393939);
     background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#444444), to(#393939));
     background-image: -webkit-linear-gradient(top, #444444, #393939);
@@ -639,6 +678,7 @@ div.diapo {
 #idFrameT .tools .classicButton button.btn-inverse img,
 #idFrameT .tools .dropdownButton button.btn-inverse img {
     margin: 0 2px;
+    max-width: none;
 }
 
 #idFrameT .tools .dropdown-menu {
@@ -3468,6 +3508,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
     overflow: hidden;
     background-repeat: repeat-x;
     background-position: left bottom;
+    z-index: 1000;
 }
 
 #dialog_publicator .api_content .blockmenu a.selected,
@@ -3480,7 +3521,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
     padding: 0 10px;
     top: 40px;
     overflow: auto;
-    z-index: 2000;
+    z-index: 200;
 }
 
 #dialog_publicator .api_content .blockresponse .form-actions {
@@ -3595,6 +3636,10 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
 #dialog_publicator .element table td.thumbnail {
     width: 140px;
+    border: none;
+    border-radius: 0px;
+    box-shadow: none;
+    background-color: transparent;
     text-align: center;
 }
 
