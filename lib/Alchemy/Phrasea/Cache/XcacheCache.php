@@ -36,7 +36,7 @@ class XcacheCache extends DoctrineXcache implements Cache
     {
         return false;
     }
-    
+
     /**
      * {@inheritdoc}
      */

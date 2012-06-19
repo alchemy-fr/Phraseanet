@@ -79,7 +79,6 @@ class Subdefs implements ControllerProviderInterface
 
                     $subdefs = $databox->get_subdef_structure();
 
-
                     foreach ($Parmsubdefs as $post_sub) {
 
                         $options = array();

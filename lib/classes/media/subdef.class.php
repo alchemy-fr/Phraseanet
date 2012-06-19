@@ -601,7 +601,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         if ( ! $this->is_physically_present()) {
             return array();
         }
-        
+
         $Core = \bootstrap::getCore();
         $media = $Core['mediavorus']->guess(new \SplFileInfo($this->get_pathfile()));
 

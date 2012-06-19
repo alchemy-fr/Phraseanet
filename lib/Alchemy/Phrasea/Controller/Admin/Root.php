@@ -81,7 +81,6 @@ class Root implements ControllerProviderInterface
                     $databoxes[] = $databox;
                 }
 
-
                 $twig = $Core->getTwig();
 
                 return new Response($twig->render('admin/index.html.twig', array(

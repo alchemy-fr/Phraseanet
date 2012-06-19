@@ -35,7 +35,6 @@ class Story implements ControllerProviderInterface
     {
         $controllers = new ControllerCollection();
 
-
         $controllers->get('/create/', function(Application $app) {
                 /* @var $twig \Twig_Environment */
                 $twig = $app['Core']->getTwig();
@@ -50,7 +49,6 @@ class Story implements ControllerProviderInterface
                 $user = $app['Core']->getAuthenticatedUser();
 
                 $collection = \collection::get_from_base_id($request->get('base_id'));
-
 
                 if ( ! $user->ACL()->has_right_on_base($collection->get_base_id(), 'canaddrecord')) {
                     throw new \Exception_Forbidden('You can not create a story on this collection');
@@ -126,8 +124,6 @@ class Story implements ControllerProviderInterface
                 }
             });
 
-
-
         $controllers->get('/{sbas_id}/{record_id}/', function(Application $app, $sbas_id, $record_id) {
                 $Story = new \record_adapter($sbas_id, $record_id);
 
@@ -138,7 +134,6 @@ class Story implements ControllerProviderInterface
 
                 return new Response($html);
             })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
-
 
         $controllers->post(
             '/{sbas_id}/{record_id}/addElements/'
@@ -225,7 +220,6 @@ class Story implements ControllerProviderInterface
             ->assert('child_sbas_id', '\d+')
             ->assert('child_record_id', '\d+');
 
-
         /**
          * Get the Basket reorder form
          */
@@ -253,7 +247,6 @@ class Story implements ControllerProviderInterface
                 })
             ->assert('sbas_id', '\d+')
             ->assert('record_id', '\d+');
-
 
         $controllers->post(
                 '/{sbas_id}/{record_id}/reorder/'
@@ -301,7 +294,6 @@ class Story implements ControllerProviderInterface
                 })
             ->assert('sbas_id', '\d+')
             ->assert('record_id', '\d+');
-
 
         return $controllers;
     }

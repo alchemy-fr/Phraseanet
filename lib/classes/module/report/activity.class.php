@@ -144,7 +144,6 @@ class module_report_activity extends module_report
         //set report
         $this->setReport();
 
-
         $this->report['legend'] = array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
             13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23);
 
@@ -163,7 +162,6 @@ class module_report_activity extends module_report
         $filter = $s->getFilters();
         $conn = $s->getConnBas();
 
-
         $params = array(':main_value' => $value);
         $date_filter = $filter->getDateFilter();
         $params = array_merge($params, $date_filter['params']);
@@ -181,7 +179,6 @@ class module_report_activity extends module_report
                 AND " . $site_filter['sql'] . "
                 AND (" . $coll_filter['sql'] . ")
                 ORDER BY date";
-
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
@@ -228,7 +225,6 @@ class module_report_activity extends module_report
         $i = 0;
         ($no_answer) ? $this->title = _('report:: questions sans reponses') :
                 $this->title = _('report:: questions les plus posees');
-
 
         $params = array();
         $date_filter = $filter->getDateFilter();
@@ -296,7 +292,6 @@ class module_report_activity extends module_report
 
         $databox = \databox::get_instance($this->sbas_id);
 
-
         $params = array();
         $date_filter = $filter->getDateFilter();
         $params = array_merge($params, $date_filter['params']);
@@ -326,8 +321,6 @@ class module_report_activity extends module_report
         $sql .= "
                 ORDER BY date DESC";
         $sql .= $filter->getLimitFilter();
-
-
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
@@ -484,7 +477,6 @@ class module_report_activity extends module_report
         $site_filter = $filter->getGvSitFilter();
         $params = array_merge($params, $site_filter['params']);
 
-
         $this->req = "
                 SELECT  DISTINCT(log." . $on . ") as " . $on . ",
                     usrid,
@@ -503,7 +495,6 @@ class module_report_activity extends module_report
         $stmt->closeCursor();
 
         $this->enable_limit ? $this->req .= "LIMIT 0," . $this->nb_record : "";
-
 
         $stmt = $conn->prepare($this->req);
         $stmt->execute($params);
@@ -631,7 +622,6 @@ class module_report_activity extends module_report
                     }
                 }
 
-
                 $i ++;
 
                 $this->result[$i]['nbprev'] = 0;
@@ -697,7 +687,6 @@ class module_report_activity extends module_report
         $conn = $s->getConnBas();
         $push = array();
 
-
         $params = array();
         $date_filter = $filter->getDateFilter();
         $params = array_merge($params, $date_filter['params']);
@@ -707,7 +696,6 @@ class module_report_activity extends module_report
         $params = array_merge($params, $site_filter['params']);
         $record_filter = $filter->getRecordFilter();
         $params = array_merge($params, $record_filter['params']);
-
 
         $sql = "
             SELECT log.usrid, log.user , d.final as getter,  d.record_id, d.date, s.*
@@ -760,7 +748,6 @@ class module_report_activity extends module_report
         $this->setDisplayNav();
         //set report
         $this->setReport();
-
 
         return($this->report);
     }
@@ -871,7 +858,6 @@ class module_report_activity extends module_report
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $total = $stmt->rowCount();
         $stmt->closeCursor();
-
 
         for ($i = 0; $i < 24; $i ++ )
             $res[$i] = 0;

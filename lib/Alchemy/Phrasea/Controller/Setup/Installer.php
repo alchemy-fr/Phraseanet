@@ -64,7 +64,6 @@ class Installer implements ControllerProviderInterface
                     return $app->redirect('/setup/installer/step2/');
                 }
 
-
                 $ld_path = array(__DIR__ . '/../../../../../templates/web');
                 $loader = new \Twig_Loader_Filesystem($ld_path);
                 $twig = new \Twig_Environment($loader);

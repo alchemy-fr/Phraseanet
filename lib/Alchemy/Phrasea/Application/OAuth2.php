@@ -60,11 +60,9 @@ return call_user_func(function() {
                     return $response;
                 });
 
-
             /* * *******************************************************************
              *                        AUTHENTIFICATION API
              */
-
 
             /**
              *  AUTHORIZE ENDPOINT
@@ -93,7 +91,6 @@ return call_user_func(function() {
                     $action_accept = $request->get("action_accept", null);
                     $action_login = $request->get("action_login", null);
 
-
                     $template = "api/auth/end_user_authorization.twig";
 
                     $custom_template = sprintf(
@@ -101,7 +98,6 @@ return call_user_func(function() {
                         , $app['appbox']->get_registry()->get('GV_RootPath')
                         , $client->get_id()
                     );
-
 
                     if (file_exists($custom_template)) {
                         $template = sprintf(
@@ -188,8 +184,6 @@ return call_user_func(function() {
             $app->get($route, $authorize_func);
             $app->post($route, $authorize_func);
 
-
-
             /**
              *  TOKEN ENDPOINT
              *  Token endpoint - used to exchange an authorization grant for an access token.
@@ -206,7 +200,6 @@ return call_user_func(function() {
 
                     return;
                 });
-
 
             /******************************************************************
              * MANAGEMENT APPS
@@ -243,8 +236,6 @@ return call_user_func(function() {
                     return $app['response']('api/auth/application_dev_new.twig', $var);
                 });
 
-
-
             $route = "/applications/dev/create";
             $app->post($route, function() use ($app) {
                     $submit = false;
@@ -278,7 +269,6 @@ return call_user_func(function() {
 
                     return $app['response']('api/auth/application_dev_new.twig', $var);
                 });
-
 
             /**
              * show details of app identified by its id
@@ -442,7 +432,6 @@ return call_user_func(function() {
 
                     return new Response($msg, $code, $headers);
                 });
-
 
             return $app;
         });

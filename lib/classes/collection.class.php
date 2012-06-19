@@ -532,7 +532,6 @@ class collection implements cache_cacheableInterface
         $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
         cache_databox::update($sbas_id, 'structure');
 
-
         phrasea::reset_baseDatas();
         self::set_admin($new_bas, $user);
 

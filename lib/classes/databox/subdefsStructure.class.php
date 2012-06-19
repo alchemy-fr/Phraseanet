@@ -80,7 +80,6 @@ class databox_subdefsStructure implements IteratorAggregate
 
         $subdefgroup = $sx_struct->subdefs[0];
 
-
         foreach ($subdefgroup as $k => $subdefs) {
             $subdefgroup_name = strtolower($subdefs->attributes()->name);
 

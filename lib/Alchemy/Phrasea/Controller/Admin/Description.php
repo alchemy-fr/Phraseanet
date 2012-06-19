@@ -31,7 +31,6 @@ class Description implements ControllerProviderInterface
 
         $controllers = new ControllerCollection();
 
-
         $controllers->get('/metadatas/search/', function(Application $app, Request $request) {
 
                 $term = trim(strtolower($request->get('term')));
@@ -171,7 +170,6 @@ class Description implements ControllerProviderInterface
                 $fields = $databox->get_meta_structure();
                 $available_dc_fields = $databox->get_available_dcfields();
 
-
                 $databox->get_connection()->beginTransaction();
                 $error = false;
                 try {
@@ -200,7 +198,7 @@ class Description implements ControllerProviderInterface
                                     $field->setVocabularyControl($vocabulary);
                                     $field->setVocabularyRestricted($request->get('vocabularyrestricted_' . $id));
                                 } catch (\Exception $e) {
-                                    
+
                                 }
 
                                 $dces_element = null;
@@ -227,7 +225,7 @@ class Description implements ControllerProviderInterface
                                 $field = \databox_field::get_instance($databox, $id);
                                 $field->delete();
                             } catch (\Exception $e) {
-                                
+
                             }
                         }
                     }
@@ -257,7 +255,6 @@ class Description implements ControllerProviderInterface
                 $databox = \databox::get_instance((int) $sbas_id);
                 $fields = $databox->get_meta_structure();
                 $available_dc_fields = $databox->get_available_dcfields();
-
 
                 $params = array(
                     'databox'             => $databox,

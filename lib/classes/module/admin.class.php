@@ -70,7 +70,6 @@ class module_admin
             , 'off_databoxes' => $off_databoxes
         );
 
-
         $core = \bootstrap::getCore();
         $twig = $core->getTwig();
 

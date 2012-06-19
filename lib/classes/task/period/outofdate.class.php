@@ -154,6 +154,7 @@ class task_period_outofdate extends task_abstract
                 parent.calcSQL();
             </script>
             <?php
+
             return("");
         } else { // ... so we NEVER come here
             // bad xml
@@ -407,6 +408,7 @@ class task_period_outofdate extends task_abstract
             <div style="margin:10px; padding:5px; border:1px #000000 solid; background-color:#404040" id="cmd">cmd</div>
         </center>
         <?php
+
         return ob_get_clean();
     }
     // ====================================================================
@@ -610,7 +612,6 @@ class task_period_outofdate extends task_abstract
             $date2 = date("YmdHis", $date2);
         }
 
-
         $sqlset = $params = $tmp_params = array();
         $sqlwhere = array();
         for ($i = 0; $i <= 2; $i ++ ) {
@@ -664,7 +665,6 @@ class task_period_outofdate extends task_abstract
             $ret[] = array('sql'    => $sql, 'params' => $params);
         }
 
-
         if ($date1 && $date2) {
             $params = array();
             $params[':name1'] = $field1;
@@ -695,7 +695,6 @@ class task_period_outofdate extends task_abstract
 
             $ret[] = array('sql'    => $sql, 'params' => $params);
         }
-
 
         if ($date2 && $sqlset[2]) {
             $params = array();
@@ -780,4 +779,3 @@ class task_period_outofdate extends task_abstract
         print(json_encode($ret));
     }
 }
-?>

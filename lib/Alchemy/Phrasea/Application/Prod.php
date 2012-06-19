@@ -114,6 +114,5 @@ return call_user_func(function() {
                     }
                 });
 
-
             return $app;
         });

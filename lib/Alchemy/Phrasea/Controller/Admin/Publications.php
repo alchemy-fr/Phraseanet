@@ -43,7 +43,6 @@ class Publications implements ControllerProviderInterface
                 return $twig->render($template, array('feeds' => $feeds));
             });
 
-
         $controllers->post('/create/', function() use ($app, $appbox) {
 
                 $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
@@ -59,7 +58,6 @@ class Publications implements ControllerProviderInterface
                 return $app->redirect('/admin/publications/list/');
             });
 
-
         $controllers->get('/feed/{id}/', function($id) use ($app, $appbox) {
                 $feed = new \Feed_Adapter($appbox, $id);
 
@@ -73,7 +71,6 @@ class Publications implements ControllerProviderInterface
                         )
                 );
             })->assert('id', '\d+');
-
 
         $controllers->post('/feed/{id}/update/', function($id) use ($app, $appbox) {
 
@@ -99,7 +96,6 @@ class Publications implements ControllerProviderInterface
 
                 return $app->redirect('/admin/publications/list/');
             })->assert('id', '\d+');
-
 
         $controllers->post('/feed/{id}/iconupload/', function($id) use ($app, $appbox) {
                 try {
@@ -187,7 +183,6 @@ class Publications implements ControllerProviderInterface
 
                 return $app->redirect('/admin/publications/feed/' . $id . '/?err=' . $error);
             })->assert('id', '\d+');
-
 
         $controllers->post('/feed/{id}/removepublisher/', function($id) use ($app, $appbox) {
                 try {

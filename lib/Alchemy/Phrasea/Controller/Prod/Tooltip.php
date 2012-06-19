@@ -53,7 +53,6 @@ class Tooltip implements ControllerProviderInterface
                 return $twig->render('prod/Tooltip/Story.html.twig', array('Story' => $Story));
             })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
 
-
         $controllers->post('/user/{usr_id}/'
             , function(Application $app, $usr_id) {
                 $user = \User_Adapter::getInstance($usr_id, \appbox::get_instance($app['Core']));
@@ -67,7 +66,6 @@ class Tooltip implements ControllerProviderInterface
                         )
                 );
             })->assert('usr_id', '\d+');
-
 
         $controllers->post('/preview/{sbas_id}/{record_id}/'
             , function(Application $app, $sbas_id, $record_id) {
@@ -85,7 +83,6 @@ class Tooltip implements ControllerProviderInterface
                         )
                 );
             })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
-
 
         $controllers->post('/caption/{sbas_id}/{record_id}/{view}/'
             , function(Application $app, $sbas_id, $record_id, $view) {
@@ -117,7 +114,6 @@ class Tooltip implements ControllerProviderInterface
                 );
             })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
 
-
         $controllers->post('/tc_datas/{sbas_id}/{record_id}/'
             , function(Application $app, $sbas_id, $record_id) {
                 $record = new \record_adapter($sbas_id, $record_id);
@@ -133,7 +129,6 @@ class Tooltip implements ControllerProviderInterface
                         )
                 );
             })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
-
 
         $controllers->post('/metas/FieldInfos/{sbas_id}/{field_id}/'
             , function(Application $app, $sbas_id, $field_id) {
@@ -151,7 +146,6 @@ class Tooltip implements ControllerProviderInterface
                 );
             })->assert('sbas_id', '\d+')->assert('field_id', '\d+');
 
-
         $controllers->post('/DCESInfos/{sbas_id}/{field_id}/'
             , function(Application $app, $sbas_id, $field_id) {
                 $databox = \databox::get_instance((int) $sbas_id);
@@ -167,7 +161,6 @@ class Tooltip implements ControllerProviderInterface
                         )
                 );
             })->assert('sbas_id', '\d+')->assert('field_id', '\d+');
-
 
         $controllers->post('/metas/restrictionsInfos/{sbas_id}/{field_id}/'
             , function(Application $app, $sbas_id, $field_id) {

@@ -116,7 +116,6 @@ class registry implements registryInterface
                 $this->cache->save('registry_loaded', true);
         }
 
-
         return $this;
     }
 

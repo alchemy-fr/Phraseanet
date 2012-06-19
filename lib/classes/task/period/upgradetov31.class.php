@@ -170,4 +170,3 @@ class task_period_upgradetov31 extends task_abstract
     }
 }
 
-?>

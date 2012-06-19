@@ -178,6 +178,7 @@ class task_period_archive extends task_abstract
             <?php echo $form ?>.copy_spe.checked      = <?php echo p4field::isyes($sxml->copy_spe) ? "true" : "false" ?>;
             </script>
             <?php
+
             return("");
         } else { // ... so we NEVER come here
             // bad xml
@@ -208,6 +209,7 @@ class task_period_archive extends task_abstract
             }
         </script>
         <?php
+
         return;
     }
 
@@ -255,6 +257,7 @@ class task_period_archive extends task_abstract
             <input type="checkbox" name="delfolder" onchange="chgxmlck(this, 'delfolder');">&nbsp;<?php echo _('task::archive:supprimer les repertoires apres archivage') ?><br/>
         </form>
         <?php
+
         return ob_get_clean();
     }
 
@@ -291,7 +294,6 @@ class task_period_archive extends task_abstract
             return('tostop');
         }
 
-
         $databox = databox::get_instance($this->sbas_id);
 
         $this->TColls = array();
@@ -304,12 +306,10 @@ class task_period_archive extends task_abstract
         }
         $server_coll_id = $collection->get_coll_id();
 
-
         $this->tmask = array(); // mask(s) of accepted files
         $this->tmaskgrp = array();
         $this->period = 60;
         $this->cold = 60;
-
 
         if (($this->sxBasePrefs = simplexml_load_string($collection->get_prefs())) != FALSE) {
             $this->sxBasePrefs["id"] = $base_id;
@@ -553,7 +553,6 @@ class task_period_archive extends task_abstract
         $dom->formatOutput = true;
         $root = $dom->appendChild($dom->createElement('root'));
 
-
         $this->movedFiles = 0;
         $this->archivedFiles = 0;
         $this->path_in = $path_in;
@@ -582,36 +581,25 @@ class task_period_archive extends task_abstract
             $cold -= 2;
         }
 
-
         $this->listFilesPhase2($dom, $root, $path_in);
         if ($this->debug)
             $this->log("=========== listFilesPhase2 ========== : \n" . $dom->saveXML());
-
-
 
         $this->makePairs($dom, $root, $path_in, $path_archived, $path_error);
         if ($this->debug)
             $this->log("=========== makePairs ========== : \n" . $dom->saveXML());
 
-
-
         $r = $this->removeBadGroups($dom, $root, $path_in, $path_archived, $path_error);
         if ($this->debug)
             $this->log("=========== removeBadGroups ========== (returned " . ($r ? 'true' : 'false') . ") : \n" . $dom->saveXML());
-
-
 
         $this->archive($dom, $root, $path_in, $path_archived, $path_error);
         if ($this->debug)
             $this->log("=========== archive ========== : \n" . $dom->saveXML());
 
-
-
         $this->bubbleResults($dom, $root, $path_in);
         if ($this->debug)
             $this->log("=========== bubbleResults ========== : \n" . $dom->saveXML());
-
-
 
         $r = $this->moveFiles($dom, $root, $path_in, $path_archived, $path_error);
         if ($this->debug)
@@ -625,7 +613,6 @@ class task_period_archive extends task_abstract
         } else {
             return('NORECSTODO');
         }
-
 
 //print($dom->saveXML());
 // unset($dom);
@@ -2159,10 +2146,10 @@ class CListFolder
 
     /**
      *
-     * @param string $path
+     * @param string  $path
      * @param boolean $sorted
      */
-    function __construct($path, $sorted = true)
+    public function __construct($path, $sorted = true)
     {
         $this->list = array();
         if ($hdir = opendir($path)) {
@@ -2180,7 +2167,7 @@ class CListFolder
      * Destructor
      *
      */
-    function __destruct()
+    public function __destruct()
     {
         unset($this->list);
     }
@@ -2189,7 +2176,7 @@ class CListFolder
      *
      * @return string
      */
-    function read()
+    public function read()
     {
         return(array_shift($this->list));
     }

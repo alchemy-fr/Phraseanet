@@ -117,7 +117,6 @@ class patch_310 implements patchInterface
                 $dom_subdef->appendChild($dom_element);
             }
 
-
             //preview, thumbnail et thumbnailGIF
             if ($k == 'preview') {
                 $dom_element =

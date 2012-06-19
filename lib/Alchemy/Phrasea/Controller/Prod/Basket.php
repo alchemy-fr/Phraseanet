@@ -231,7 +231,6 @@ class Basket implements ControllerProviderInterface
                 );
             })->assert('basket_id', '\d+');
 
-
         /**
          * Get the Basket reorder form
          */
@@ -255,7 +254,6 @@ class Basket implements ControllerProviderInterface
                 );
             })->assert('basket_id', '\d+');
 
-
         $controllers->post(
             '/{basket_id}/reorder/'
             , function(Application $app, $basket_id) {
@@ -267,9 +265,7 @@ class Basket implements ControllerProviderInterface
                     $basket = $em->getRepository('\Entities\Basket')
                         ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), true);
 
-
                     $order = $app['request']->get('element');
-
 
                     /* @var $basket \Entities\Basket */
                     foreach ($basket->getElements() as $basketElement) {
@@ -289,7 +285,6 @@ class Basket implements ControllerProviderInterface
 
                 return new Response($Serializer->serialize($ret, 'json'), 200, array('Content-type' => 'application/json'));
             })->assert('basket_id', '\d+');
-
 
         /**
          * Toggle the status of a Basket
@@ -406,9 +401,6 @@ class Basket implements ControllerProviderInterface
                     return new RedirectResponse('/');
                 }
             })->assert('basket_id', '\d+');
-
-
-
 
         /**
          *

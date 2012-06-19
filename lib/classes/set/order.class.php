@@ -280,7 +280,6 @@ class set_order extends set_abstract
 
                 $em->persist($BasketElement);
 
-
                 $params = array(
                     ':usr_id'           => $session->get_usr_id()
                     , ':order_id'         => $this->id
@@ -347,7 +346,6 @@ class set_order extends set_abstract
             $stmt->closeCursor();
             $n ++;
         }
-
 
         if ($n > 0) {
             $evt_mngr = eventsmanager_broker::getInstance($appbox, $Core);

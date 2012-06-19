@@ -268,7 +268,6 @@ class phrasea
                 $array[] = $modules[$a];
         }
 
-
         return $array;
     }
 

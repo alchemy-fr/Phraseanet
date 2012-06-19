@@ -97,7 +97,6 @@ class patch_3103 implements patchInterface
                 $expire = $expire->format('u') == 0 ?
                     null : phraseadate::format_mysql($expire);
 
-
                 $params = array(
                     ':ssel_id'    => $row['ssel_id']
                     , ':created_on' => $row['date_maj']

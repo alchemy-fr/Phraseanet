@@ -254,7 +254,6 @@ class ACL implements cache_cacheableInterface
             if ( ! in_array($sbas_id, $sbas_ids))
                 continue;
 
-
             if ( ! $this->has_access_to_sbas($sbas_id)) {
                 $sbas_to_acces[] = $sbas_id;
             }
@@ -315,7 +314,6 @@ class ACL implements cache_cacheableInterface
 
             $mask_and = ctype_digit($mask_and) ? $mask_and : '0';
             $mask_xor = ctype_digit($mask_xor) ? $mask_xor : '0';
-
 
             /**
              * apply sb is substractive
@@ -844,7 +842,6 @@ class ACL implements cache_cacheableInterface
 
         $this->_rights_bas = $this->_limited = array();
 
-
         $this->_global_rights['manageusers'] = false;
         $this->_global_rights['coll_manage'] = false;
         $this->_global_rights['coll_modify_struct'] = false;
@@ -860,7 +857,6 @@ class ACL implements cache_cacheableInterface
         $this->_global_rights['candwnldpreview'] = false;
         $this->_global_rights['candwnldhd'] = false;
         $this->_global_rights['order_master'] = false;
-
 
         foreach ($rs as $row) {
             $this->_rights_bas[$row['base_id']]['actif'] = ($row['actif'] == '1');
@@ -1233,7 +1229,6 @@ class ACL implements cache_cacheableInterface
         $stmt = $this->appbox->get_connection()->prepare($sql);
         $stmt->execute(array(':usr_id' => $this->user->get_id()));
         $stmt->closeCursor();
-
 
         $sql = "UPDATE basusr SET lastconn=now()
             WHERE usr_id = :usr_id AND actif = 1";

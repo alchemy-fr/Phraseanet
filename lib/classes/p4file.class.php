@@ -40,7 +40,6 @@ class p4file
             } elseif ($server->is_apache()) {
                 $fileToProtect = mb_substr($file, mb_strlen($registry->get('GV_mod_auth_token_directory_path')));
 
-
                 $secret = $registry->get('GV_mod_auth_token_passphrase');        // Same as AuthTokenSecret
                 $protectedPath = p4string::addEndSlash(p4string::delFirstSlash($registry->get('GV_mod_auth_token_directory')));         // Same as AuthTokenPrefix
                 $hexTime = dechex(time());             // Time in Hexadecimal
@@ -49,7 +48,6 @@ class p4file
 
                 // We build the url
                 $url = '/' . $protectedPath . $token . "/" . $hexTime . $fileToProtect;
-
 
                 $ret = $url;
             }

@@ -81,8 +81,6 @@ class connection
 
         file_put_contents($registry->get('GV_RootPath') . 'logs/mysql_log.log', $string, FILE_APPEND);
 
-
-
         return;
     }
 

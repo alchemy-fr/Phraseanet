@@ -25,7 +25,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class RescanTechnicalDatas extends Command
 {
     /**
-     * The average speed (record/sec), used to warn about duration 
+     * The average speed (record/sec), used to warn about duration
      */
     const AVG_SPEED = 2.8;
 
@@ -37,7 +37,6 @@ class RescanTechnicalDatas extends Command
     public function __construct($name = null)
     {
         parent::__construct($name);
-
 
         $this->setDescription('Rescan databases for technical datas');
         $this->setHelp('Old Phraseanet version did not fully read technical datas. This command rescan all records of these datas.');
@@ -72,6 +71,7 @@ class RescanTechnicalDatas extends Command
 
         if (strtolower($continue) !== 'y') {
             $output->writeln('Aborting !');
+
             return;
         }
 
@@ -108,8 +108,8 @@ class RescanTechnicalDatas extends Command
     /**
      * Format a duration in seconds to human readable
      *
-     * @param type $seconds the time to format
-     * @return string 
+     * @param  type   $seconds the time to format
+     * @return string
      */
     public function getFormattedDuration($seconds)
     {
@@ -128,7 +128,7 @@ class RescanTechnicalDatas extends Command
     /**
      * Return the total quantity of records to process
      *
-     * @return integer 
+     * @return integer
      */
     protected function computeQuantity()
     {

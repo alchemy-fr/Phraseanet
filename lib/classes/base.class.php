@@ -291,7 +291,6 @@ abstract class base implements cache_cacheableInterface
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-
         $ORMTables = array(
             'BasketElements',
             'Baskets',
@@ -469,7 +468,6 @@ abstract class base implements cache_cacheableInterface
                 . $is_default . " " . $isnull . "";
         }
 
-
         if ($table->indexes) {
             foreach ($table->indexes->index as $index) {
                 switch ($index->type) {
@@ -623,7 +621,6 @@ abstract class base implements cache_cacheableInterface
             }
         }
 
-
         $sql = "SHOW FULL FIELDS FROM `" . $table['name'] . "`";
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute();
@@ -662,7 +659,6 @@ abstract class base implements cache_cacheableInterface
                 else
                     $expr_found .= ' DEFAULT \'' . $_default . '\'';
             }
-
 
             if (isset($correct_table['fields'][$f_name])) {
                 if (isset($correct_table['collation'][$f_name]) && $correct_table['collation'][$f_name] != $current_collation) {

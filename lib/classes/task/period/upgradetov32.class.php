@@ -166,9 +166,6 @@ class task_period_upgradetov32 extends task_abstract
                 }
                 $connbas->commit();
 
-
-
-
                 $sql = 'select record_id, coll_id, xml, BIN(status) as status
           FROM record
           WHERE migrated="0" AND record_id NOT IN (select distinct record_id from technical_datas)
@@ -221,7 +218,6 @@ class task_period_upgradetov32 extends task_abstract
                 $stmt->execute();
                 $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $stmt->closeCursor();
-
 
                 if (count($rs) > 0) {
                     $this->running = true;
@@ -321,7 +317,6 @@ class task_period_upgradetov32 extends task_abstract
         $stmt = $connbas->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
-
 
         $sql = "DELETE from technical_datas WHERE name='DONE'";
         $stmt = $connbas->prepare($sql);

@@ -91,7 +91,6 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
 
         $order_id_dom->appendChild($dom_xml->createTextNode($order_id));
 
-
         $root->appendChild($usr_id_dom);
         $root->appendChild($order_id_dom);
 
@@ -226,7 +225,6 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
         $body .= "<br/>\n<div>"
             . _('Retrouvez son bon de commande dans l\'interface')
             . "</div>\n";
-
 
         return mail::send_mail($subject, $body, $to, $from);
     }

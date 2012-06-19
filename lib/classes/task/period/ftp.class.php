@@ -453,7 +453,6 @@ class task_period_ftp extends task_appboxAbstract
 
                     $ftp_client->put($remotefile, $localfile);
 
-
                     $obj[] = array(
                         "name"     => $subdef, "size"     => filesize($localfile),
                         "shortXml" => ($sdcaption ? $sdcaption : '')

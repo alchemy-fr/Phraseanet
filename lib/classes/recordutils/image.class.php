@@ -318,7 +318,6 @@ class recordutils_image extends recordutils
 
         $newh = $image_height + $stampheight;
 
-
         $cmd = $registry->get('GV_imagick');
         $cmd .= ' -extent "' . $image_width . 'x' . $newh
             . '" -draw "image SrcOver 0,' . $image_height . ' '
@@ -398,7 +397,6 @@ class recordutils_image extends recordutils
             $cmd .= " -strip -watermark 90% -gravity center ";
             $cmd .= " \"" . $pathOut . "\"";  # <-- la preview temporaire
 
-
             $descriptorspec = array(0 => array("pipe", "r"),
                 1 => array("pipe", "w"),
                 2 => array("pipe", "w")
@@ -455,7 +453,6 @@ class recordutils_image extends recordutils
                 . " $tailleText -draw \"text 0,0 '$collname'\"";
             $cmd .= " -fill black -gravity SouthEast -pointsize "
                 . " $tailleText -draw \"text $decalage,1 '$collname'\"";
-
 
             $cmd.= " \"" . $pathIn . "\""; #  <<-- la preview original
             $cmd.= " \"" . $pathOut . "\"";  # <-- la preview temporaire

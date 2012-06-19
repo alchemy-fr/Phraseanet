@@ -62,7 +62,6 @@ class patch_360 implements patchInterface
             $stmt->closeCursor();
         }
 
-
         $stories = array();
 
         $sql = 'SELECT sbas_id, rid as record_id, usr_id
@@ -126,7 +125,6 @@ class patch_360 implements patchInterface
         $stmt->execute();
         $stmt->closeCursor();
 
-
         $sql = 'SELECT ssel_id FROM ssel WHERE temporaryType = "0"';
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
@@ -186,7 +184,6 @@ class patch_360 implements patchInterface
         $stmt->execute();
         $stmt->closeCursor();
 
-
         $sql = 'INSERT INTO ValidationSessions
             (
                 SELECT null as id, v.ssel_id as basket_id ,created_on as created
@@ -214,17 +211,14 @@ class patch_360 implements patchInterface
         $stmt->execute();
         $stmt->closeCursor();
 
-
         $sql = 'SELECT usr_id, basket_id, p.id as participant_id
                         FROM ValidationParticipants p, ValidationSessions s
                         WHERE p.ValidationSession_Id = s.id';
-
 
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
-
 
         $sql = 'INSERT INTO ValidationDatas (
                             SELECT d.id , :participant_id as participant_id, d.sselcont_id, d.agreement,

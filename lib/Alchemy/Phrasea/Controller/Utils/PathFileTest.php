@@ -68,7 +68,6 @@ class PathFileTest implements ControllerProviderInterface
                 );
             });
 
-
         return $controllers;
     }
 }

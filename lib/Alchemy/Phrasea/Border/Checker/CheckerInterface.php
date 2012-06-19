@@ -31,8 +31,8 @@ interface CheckerInterface
 
     /**
      * Checks if a Checker is applicable on a file
-     * 
-     * @param  File          $file The file package object
+     *
+     * @param  File    $file The file package object
      * @return Boolean
      */
     public function isApplicable(File $file);

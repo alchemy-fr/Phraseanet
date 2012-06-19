@@ -33,7 +33,6 @@ class BuildMissingSubdefs extends Command
     {
         parent::__construct($name);
 
-
         return $this;
     }
 
@@ -129,7 +128,7 @@ class BuildMissingSubdefs extends Command
     /**
      * Format a duration in seconds to human readable
      *
-     * @param type $seconds the time to format
+     * @param  type   $seconds the time to format
      * @return string
      */
     public function getFormattedDuration($seconds)

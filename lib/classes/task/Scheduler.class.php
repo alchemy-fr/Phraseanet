@@ -58,7 +58,7 @@ class task_Scheduler
         $registry = $appbox->get_registry();
 
         //prevent scheduler to fail if GV_cli is not provided
-        if( ! is_executable($registry->get('GV_cli'))){
+        if ( ! is_executable($registry->get('GV_cli'))) {
             throw new \RuntimeException('PHP cli is not provided in registry');
         }
 
@@ -133,7 +133,6 @@ class task_Scheduler
                 }
             }
         }
-
 
         $schedstatus = 'started';
         $runningtask = 0;

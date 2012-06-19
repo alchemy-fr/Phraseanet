@@ -106,7 +106,6 @@ class Bridge implements ControllerProviderInterface
                 return new Response($twig->render('prod/actions/Bridge/callback.twig', $params));
             });
 
-
         $controllers->get('/adapter/{account_id}/logout/'
             , function($account_id) use ($app, $twig) {
                 $appbox = \appbox::get_instance($app['Core']);
@@ -116,7 +115,6 @@ class Bridge implements ControllerProviderInterface
 
                 return $app->redirect('/prod/bridge/adapter/' . $account_id . '/load-elements/' . $account->get_api()->get_connector()->get_default_element_type() . '/');
             })->assert('account_id', '\d+');
-
 
         $controllers->get('/adapter/{account_id}/load-records/'
                 , function($account_id) use ($app, $twig) {
@@ -191,7 +189,6 @@ class Bridge implements ControllerProviderInterface
                 })
             ->assert('account_id', '\d+');
 
-
         $controllers->get('/action/{account_id}/{action}/{element_type}/'
             , function($account_id, $action, $element_type) use ($app, $twig) {
 
@@ -258,7 +255,6 @@ class Bridge implements ControllerProviderInterface
 
                 return new Response($html);
             })->assert('account_id', '\d+');
-
 
         $controllers->post('/action/{account_id}/{action}/{element_type}/'
             , function($account_id, $action, $element_type) use ($app, $twig) {
@@ -361,10 +357,8 @@ class Bridge implements ControllerProviderInterface
                         break;
                 }
 
-
                 return new Response($html);
             })->assert('account_id', '\d+');
-
 
         $controllers->get('/upload/', function(Application $app) use ($twig) {
                 $request = $app['request'];
@@ -391,7 +385,6 @@ class Bridge implements ControllerProviderInterface
 
                 return new Response($html);
             });
-
 
         $controllers->post('/upload/'
             , function(Application $app) use ($twig) {

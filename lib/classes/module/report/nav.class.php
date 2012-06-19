@@ -272,7 +272,6 @@ class module_report_nav extends module_report
 
         $this->initialize();
 
-
         $stmt = $s->getConnBas()->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -459,7 +458,6 @@ class module_report_nav extends module_report
         $conn = connection::getPDOConnection();
         $conn2 = connection::getPDOConnection($this->sbas_id);
 
-
         $datefilter = array();
 
         if ($this->dmin && $this->dmax) {
@@ -562,7 +560,6 @@ class module_report_nav extends module_report
         $this->title = sprintf(
             _('report:: Information sur l\'enregistrement numero %d'), (int) $rid);
 
-
         $x = $record->get_thumbnail();
         $this->result[] = array(
             'photo'     =>
@@ -586,7 +583,6 @@ class module_report_nav extends module_report
         $conn = connection::getPDOConnection($this->sbas_id);
         $this->title = sprintf(
             _('report:: Information sur le navigateur %s'), $navigator);
-
 
         $params = array(':browser' => $navigator);
 

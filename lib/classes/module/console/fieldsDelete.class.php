@@ -60,7 +60,6 @@ class module_console_fieldsDelete extends Command
             return 1;
         }
 
-
         $dialog = $this->getHelperSet()->get('dialog');
         $continue = mb_strtolower(
             $dialog->ask(

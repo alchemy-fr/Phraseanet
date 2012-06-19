@@ -309,7 +309,6 @@ class set_export extends set_abstract
         $this->display_download = $display_download;
         $this->display_ftp = $display_ftp;
 
-
         return $this;
     }
 
@@ -443,7 +442,6 @@ class set_export extends set_abstract
             $infos = pathinfo($files[$id]['original_name']);
 
             $extension = isset($infos['extension']) ? $infos['extension'] : '';
-
 
             if ($rename_title) {
                 $title = strip_tags($download_element->get_title(null, null, true));
@@ -690,7 +688,6 @@ class set_export extends set_abstract
             'count' => $n_files
         );
 
-
         return $this->list;
     }
 
@@ -715,7 +712,6 @@ class set_export extends set_abstract
         }
 
         $files = $list['files'];
-
 
         $list['complete'] = false;
 
@@ -782,7 +778,7 @@ class set_export extends set_abstract
         $registry = registry::get_instance();
 
         $response = new Symfony\Component\HttpFoundation\Response();
-        
+
         $disposition = $disposition != 'attachment' ? ResponseHeaderBag::DISPOSITION_INLINE : ResponseHeaderBag::DISPOSITION_ATTACHMENT;
         $headerDisposition = $response->headers->makeDisposition($disposition, $exportname);
 
@@ -839,6 +835,7 @@ class set_export extends set_abstract
         }
 
         $response->setStatusCode(404);
+
         return $response;
     }
 
@@ -884,7 +881,7 @@ class set_export extends set_abstract
         $session = $appbox->get_session();
         $user = false;
         if ($anonymous) {
-            
+
         } else {
             $user = User_Adapter::getInstance($session->get_usr_id(), appbox::get_instance(\bootstrap::getCore()));
         }

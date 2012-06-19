@@ -83,7 +83,7 @@ class caption_Field_Value implements cache_cacheableInterface
 
             return $this;
         } catch (\Exception $e) {
-            
+
         }
 
         $connbas = $this->databox_field->get_databox()->get_connection();
@@ -102,9 +102,8 @@ class caption_Field_Value implements cache_cacheableInterface
             $this->VocabularyType = $row['VocabularyType'] ? Vocabulary\Controller::get($row['VocabularyType']) : null;
             $this->VocabularyId = $row['VocabularyId'];
         } catch (\Exception $e) {
-            
-        }
 
+        }
 
         if ($this->VocabularyType) {
             /**
@@ -288,7 +287,7 @@ class caption_Field_Value implements cache_cacheableInterface
                 $sphinx_rt->delete(array("documents" . $sbas_crc, "documents" . $sbas_crc . "_stemmed_fr", "documents" . $sbas_crc . "_stemmed_en"), "", $this->record->get_record_id());
             }
         } catch (Exception $e) {
-            
+
         }
 
         $this->update_cache_value($value);
@@ -381,7 +380,7 @@ class caption_Field_Value implements cache_cacheableInterface
 
                 return $caption_field_value;
             } catch (\Exception $e) {
-                
+
             }
         }
 
@@ -552,7 +551,7 @@ class caption_Field_Value implements cache_cacheableInterface
         if (isset(self::$localCache[$this->get_cache_key($option)])) {
             return self::$localCache[$this->get_cache_key($option)];
         }
-        
+
         throw new Exception('no value');
     }
 
@@ -584,9 +583,9 @@ class caption_Field_Value implements cache_cacheableInterface
         try {
             $this->record->get_caption()->get_field($this->databox_field->get_name())->delete_data_from_cache();
         } catch (\Exception $e) {
-            
+
         }
-        
+
         unset(self::$localCache[$this->get_cache_key($option)]);
     }
 }

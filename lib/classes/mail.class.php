@@ -53,7 +53,6 @@ class mail
             )
             . '</div>';
 
-
         if ($message != '') {
             $body .= "<div>---------------------------------------------------</div>\n" . $message;
         }
@@ -99,7 +98,6 @@ class mail
     {
         $registry = registry::get_instance();
         $subject = sprintf(_('login::register:email: Votre compte %s'), $registry->get('GV_homeTitle'));
-
 
         $body = "<div>" . _('login::register:Votre inscription a ete prise en compte') . "</div>\n";
 

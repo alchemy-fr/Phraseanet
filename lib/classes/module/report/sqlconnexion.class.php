@@ -49,7 +49,6 @@ class module_report_sqlconnexion extends module_report_sql implements module_rep
             $this->sql .= " WHERE " . $report_filter['sql'];
             $this->sql .= $this->filter->getOrderFilter() ? : '';
 
-
             $stmt = $this->connbas->prepare($this->sql);
             $stmt->execute($params);
             $this->total_row = $stmt->rowCount();
@@ -67,8 +66,6 @@ class module_report_sqlconnexion extends module_report_sql implements module_rep
 
             $this->sql .= " GROUP BY " . $this->groupby;
             $this->sql .= $this->filter->getOrderFilter() ? : '';
-
-
 
             $stmt = $this->connbas->prepare($this->sql);
             $stmt->execute($params);

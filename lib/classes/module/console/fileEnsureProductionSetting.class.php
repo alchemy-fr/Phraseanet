@@ -162,7 +162,6 @@ class module_console_fileEnsureProductionSetting extends Command
 
         $verification = sprintf("\t--> Verify <info>%s</info> : %s", 'MainCache', $work_message);
 
-
         $this->printConf($output, "\t" . 'service', $cache, false, $verification);
         $this->verifyCacheOptions($output, $cache);
     }
@@ -170,7 +169,6 @@ class module_console_fileEnsureProductionSetting extends Command
     private function checkOpcodeCacheService(OutputInterface $output)
     {
         $cache = $this->configuration->getOpcodeCache();
-
 
         if ($this->probeCacheService($output, $cache)) {
             if ($this->recommendedCacheService($output, $cache, false)) {
@@ -185,7 +183,6 @@ class module_console_fileEnsureProductionSetting extends Command
         }
 
         $verification = sprintf("\t--> Verify <info>%s</info> : %s", 'OpcodeCache', $work_message);
-
 
         $this->printConf($output, "\t" . 'service', $cache, false, $verification);
         $this->verifyCacheOptions($output, $cache);
@@ -411,7 +408,7 @@ class module_console_fileEnsureProductionSetting extends Command
 
             return true;
         } catch (\Exception $e) {
-            
+
         }
 
         return false;
@@ -441,8 +438,6 @@ class module_console_fileEnsureProductionSetting extends Command
             $output->writeln("\n<error>Your type is not managed</error>");
             $this->errors ++;
         }
-
-
 
         foreach ($configuration->all() as $conf => $value) {
             switch ($conf) {
@@ -540,8 +535,6 @@ class module_console_fileEnsureProductionSetting extends Command
 
         $output->writeln(sprintf("\t--> Verify ORM engine <info>%s</info> : %s", $ormName, $work_message));
 
-
-
         if ( ! $configuration->has('type')) {
             $output->writeln("\n<error>Configuration has no type</error>");
             $this->errors ++;
@@ -551,8 +544,6 @@ class module_console_fileEnsureProductionSetting extends Command
             $output->writeln("\n<error>Your type is not managed</error>");
             $this->errors ++;
         }
-
-
 
         foreach ($configuration->all() as $conf => $value) {
             switch ($conf) {
@@ -576,7 +567,6 @@ class module_console_fileEnsureProductionSetting extends Command
                     break;
             }
         }
-
 
         foreach ($configuration->get('options') as $conf => $value) {
             switch ($conf) {
@@ -626,7 +616,6 @@ class module_console_fileEnsureProductionSetting extends Command
                                     }
 
                                     $verification = sprintf("\t--> Verify <info>%s</info> : %s", $name, $work_message);
-
 
                                     $this->printConf($output, "\t" . $key_cache, $value_cache, false, $verification);
                                     $this->verifyCacheOptions($output, $value_cache);
@@ -790,10 +779,11 @@ class module_console_fileEnsureProductionSetting extends Command
 
                         $ret = true;
                     } catch (\Exception $e) {
-                        
+
                     }
 
                     unset($memcached);
+
                     return $ret;
                     break;
                 case 'redis':
@@ -804,9 +794,10 @@ class module_console_fileEnsureProductionSetting extends Command
                             $ret = true;
                         }
                     } catch (\Exception $e) {
-                        
+
                     }
                     unset($redis);
+
                     return $ret;
                     break;
             }

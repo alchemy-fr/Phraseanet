@@ -188,7 +188,6 @@ class module_console_systemExport extends Command
             $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
-
             $done = 0;
             $current_total = count($rs);
             $total += $current_total;

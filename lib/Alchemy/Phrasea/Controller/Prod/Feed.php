@@ -46,7 +46,6 @@ class Feed implements ControllerProviderInterface
                 return new Response($datas);
             });
 
-
         /**
          * I've selected a publication for my ocs, let's publish them
          */
@@ -82,7 +81,6 @@ class Feed implements ControllerProviderInterface
                 );
             });
 
-
         $controllers->get('/entry/{id}/edit/', function(Application $app, Request $request, $id) use ($appbox, $twig) {
 
                 $user = $app["Core"]->getAuthenticatedUser();
@@ -99,7 +97,6 @@ class Feed implements ControllerProviderInterface
 
                 return new Response($datas);
             })->assert('id', '\d+');
-
 
         $controllers->post('/entry/{id}/update/', function(Application $app, Request $request, $id) use ($appbox, $twig) {
                 $datas = array('error'   => true, 'message' => '', 'datas'   => '');
@@ -123,20 +120,20 @@ class Feed implements ControllerProviderInterface
                         ->set_author_name($author_name)
                         ->set_title($title)
                         ->set_subtitle($subtitle);
-                    
+
                     $current_feed_id = $entry->get_feed()->get_id();
                     $new_feed_id = $request->get('feed_id',$current_feed_id);
-                    if($current_feed_id != $new_feed_id) {
+                    if ($current_feed_id != $new_feed_id) {
                         try {
                             $new_feed = \Feed_Adapter::load_with_user($appbox, $user, $new_feed_id);
-                        } catch(\Exception_NotFound $e) {
+                        } catch (\Exception_NotFound $e) {
                             throw new \Exception_Forbidden('You have no access to this feed');
                         }
-                        
+
                         if ( ! $new_feed->is_publisher($user)) {
                             throw new \Exception_Forbidden('You are not publisher of this feed');
                         }
-                        
+
                         $entry->set_feed($new_feed);
                     }
 
@@ -179,7 +176,6 @@ class Feed implements ControllerProviderInterface
                         , array('Content-Type' => 'application/json')
                 );
             })->assert('id', '\d+');
-
 
         $controllers->post('/entry/{id}/delete/', function(Application $app, Request $request, $id) use ($appbox, $twig) {
                 $datas = array('error'   => true, 'message' => '');
@@ -255,7 +251,6 @@ class Feed implements ControllerProviderInterface
                 return new Response($datas);
             });
 
-
         $controllers->get('/feed/{id}/', function(Application $app, Request $request, $id) use ($appbox, $twig) {
                 $page = (int) $request->get('page');
                 $page = $page > 0 ? $page : 1;
@@ -270,7 +265,6 @@ class Feed implements ControllerProviderInterface
                 return new Response($datas);
             })->assert('id', '\d+');
 
-
         $controllers->get('/subscribe/aggregated/', function(Application $app, Request $request) use ( $appbox, $twig) {
                 $renew = ($request->get('renew') === 'true');
 
@@ -278,7 +272,6 @@ class Feed implements ControllerProviderInterface
 
                 $feeds = \Feed_Collection::load_all($appbox, $user);
                 $registry = $appbox->get_registry();
-
 
                 $output = array(
                     'texte' => '<p>' . _('publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.')
@@ -295,7 +288,6 @@ class Feed implements ControllerProviderInterface
                         , array('Content-Type' => 'application/json')
                 );
             });
-
 
         $controllers->get('/subscribe/{id}/', function(Application $app, Request $request, $id) use ($appbox, $twig) {
                 $renew = ($request->get('renew') === 'true');

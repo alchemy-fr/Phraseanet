@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Helper;
 
-
 /**
  *
  * WorkZone provides methods for working with the working zone of Phraseanet

@@ -127,7 +127,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
 
             return $this;
         } catch (Exception $e) {
-            
+
         }
 
         $sql = 'SELECT publisher, title, description, created_on, updated_on
@@ -218,8 +218,8 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
     /**
      * Change the parent feed of the entry
      *
-     * @param Feed_Adapter $feed
-     * @return \Feed_Entry_Adapter 
+     * @param  Feed_Adapter        $feed
+     * @return \Feed_Entry_Adapter
      */
     public function set_feed(Feed_Adapter $feed)
     {
@@ -441,7 +441,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
             try {
                 $items[] = new Feed_Entry_Item($this->appbox, $this, $item_id);
             } catch (Exception_NotFound $e) {
-                
+
             }
         }
 
@@ -455,7 +455,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
         try {
             return $this->get_data_from_cache(self::CACHE_ELEMENTS);
         } catch (Exception $e) {
-            
+
         }
 
         $sql = 'SELECT id FROM feed_entry_elements

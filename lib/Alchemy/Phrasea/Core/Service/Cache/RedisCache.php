@@ -50,7 +50,6 @@ class RedisCache extends ServiceAbstract
             throw new \Exception('The Redis cache requires the Redis extension.');
         }
 
-
         if ( ! $this->cache) {
             $redis = new \Redis();
 
@@ -58,7 +57,7 @@ class RedisCache extends ServiceAbstract
                 if ( ! $redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_IGBINARY)) {
                     $redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_PHP);
                 }
-                
+
                 $this->cache = new CacheDriver\RedisCache();
                 $this->cache->setRedis($redis);
                 $this->cache->setNamespace(md5(realpath(__DIR__ . '/../../../../../../')));

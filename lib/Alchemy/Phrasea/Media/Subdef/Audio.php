@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Media\Subdef;
 
-
 /**
  * Audio Subdef
  *

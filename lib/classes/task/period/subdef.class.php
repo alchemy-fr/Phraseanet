@@ -149,6 +149,7 @@ class task_period_subdef extends task_databoxAbstract
             </script>
 
             <?php
+
             return("");
         } else {
             return("BAD XML");

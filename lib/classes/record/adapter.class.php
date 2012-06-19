@@ -181,7 +181,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
             return $this;
         } catch (Exception $e) {
-            
+
         }
 
         $connbas = $this->databox->get_connection();
@@ -505,7 +505,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         try {
             return $this->get_subdef('thumbnailGIF');
         } catch (Exception $e) {
-            
+
         }
 
         return null;
@@ -551,7 +551,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         try {
             return $this->get_data_from_cache(self::CACHE_STATUS);
         } catch (Exception $e) {
-            
+
         }
         $sql = 'SELECT BIN(status) as status FROM record
               WHERE record_id = :record_id';
@@ -695,7 +695,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         try {
             return $this->get_data_from_cache(self::CACHE_SUBDEFS);
         } catch (Exception $e) {
-            
+
         }
 
         $connbas = $this->get_databox()->get_connection();
@@ -864,7 +864,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             try {
                 return $this->get_data_from_cache(self::CACHE_TITLE);
             } catch (\Exception $e) {
-                
+
             }
         }
 
@@ -1052,7 +1052,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     /**
      *
      * @todo move this function to caption_record
-     * @param  Array          $params An array containing three keys : meta_struct_id (int), meta_id (int or null) and value (Array)
+     * @param  Array          $params An array containing three keys : meta_struct_id (int) , meta_id (int or null) and value (Array)
      * @return record_adapter
      */
     protected function set_metadata(Array $params, databox $databox)
@@ -1084,7 +1084,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 $vocab = $vocab_id = null;
             }
         }
-
 
         if (trim($params['meta_id']) !== '') {
             $tmp_val = trim($params['value']);
@@ -1231,10 +1230,9 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 $sphinx->update_status(array("metadatas" . $sbas_crc, "metadatas" . $sbas_crc . "_stemmed_en", "metadatas" . $sbas_crc . "_stemmed_fr", "documents" . $sbas_crc), $this->get_sbas_id(), $this->get_record_id(), strrev($status));
             }
         } catch (Exception $e) {
-            
+
         }
         $this->delete_data_from_cache(self::CACHE_STATUS);
-
 
         return $this;
     }
@@ -1525,7 +1523,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $stmt->execute(array(':record_id' => $this->get_record_id()));
         $stmt->closeCursor();
 
-
         $sql = 'SELECT id FROM metadatas WHERE record_id = :record_id';
         $stmt = $connbas->prepare($sql);
         $stmt->execute(array(':record_id' => $this->get_record_id()));
@@ -1605,7 +1602,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $stmt->execute(array(':record_id' => $this->get_record_id()));
         $stmt->closeCursor();
 
-
         $em = bootstrap::getCore()->getEntityManager();
 
         $repository = $em->getRepository('\Entities\BasketElement');
@@ -1652,12 +1648,11 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
             return;
         }
-        
+
         $core = \bootstrap::getCore();
 
         foreach ($subdefs as $subdef) {
             $subdefname = $subdef->get_name();
-
 
             if ($wanted_subdefs && ! in_array($subdefname, $wanted_subdefs)) {
                 continue;
@@ -1719,6 +1714,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         try {
             if (null === $this->get_hd_file()) {
                 $logger->addInfo('No HD file found, aborting');
+
                 return;
             }
 
@@ -1897,7 +1893,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             try {
                 $subdef->rotate($angle);
             } catch (\Exception $e) {
-                
+
             }
         }
 
@@ -2022,7 +2018,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
               )
               ON (g.rid_parent = r.record_id)
             WHERE rid_child = :record_id';
-
 
         $params = array(
             ':GV_site'   => $appbox->get_registry()->get('GV_sit')

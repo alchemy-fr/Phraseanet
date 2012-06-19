@@ -25,10 +25,10 @@ abstract class AbstractChecker implements CheckerInterface
      * Restrict the checker to a set of databoxes.
      * Warning, you can not restrict on both databoxes and collections
      *
-     * @param databox|array $databoxes A databox or an array of databoxes
+     * @param  databox|array $databoxes A databox or an array of databoxes
      * @return Boolean
      *
-     * @throws \LogicException If already restricted to collections
+     * @throws \LogicException           If already restricted to collections
      * @throws \InvalidArgumentException In case invalid databoxes are provided
      */
     public function restrictToDataboxes($databoxes)
@@ -53,10 +53,10 @@ abstract class AbstractChecker implements CheckerInterface
      * Restrict the checker to a set of collections.
      * Warning, you can not restrict on both databoxes and collections
      *
-     * @param collection|array $collections
+     * @param  collection|array $collections
      * @return Boolean
      *
-     * @throws \LogicException If already restricted to databoxes
+     * @throws \LogicException           If already restricted to databoxes
      * @throws \InvalidArgumentException In case invalid collections are provided
      */
     public function restrictToCollections($collections)
@@ -89,7 +89,6 @@ abstract class AbstractChecker implements CheckerInterface
         if (null === $file->getCollection()) {
             return true;
         }
-
 
         $fileDatabox = $file->getCollection()->get_databox();
 

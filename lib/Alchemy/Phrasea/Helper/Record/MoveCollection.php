@@ -109,7 +109,6 @@ class MoveCollection extends RecordHelper
             throw new \Exception_Unauthorized(sprintf("%s do not have the permission to move records to %s", $user->get_login()));
         }
 
-
         if ( ! $this->is_possible())
             throw new Exception('This action is not possible');
 
@@ -125,7 +124,6 @@ class MoveCollection extends RecordHelper
                 }
             }
         }
-
 
         $collection = \collection::get_from_base_id($base_dest);
 

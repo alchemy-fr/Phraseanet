@@ -54,9 +54,9 @@ class Tools implements ControllerProviderInterface
                                     ->files($record->get_subdef('document')->get_pathfile())
                                     ->first()->getMetadatas();
                         } catch (\PHPExiftool\Exception\Exception $e) {
-                            
+
                         } catch (\Exception_Media_SubdefNotFound $e) {
-                            
+
                         }
                     }
                 }
@@ -114,7 +114,7 @@ class Tools implements ControllerProviderInterface
                             break;
                         }
                     }
-                    
+
                     if ( ! $substituted || $request->get('ForceThumbSubstit') == '1') {
                         $record->rebuild_subdefs();
                     }

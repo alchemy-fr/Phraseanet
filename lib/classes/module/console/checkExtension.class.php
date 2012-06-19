@@ -47,6 +47,7 @@ class module_console_checkExtension extends Command
 
         if ( ! extension_loaded('phrasea2')) {
             $output->writeln("<error>Missing Extension php-phrasea.</error>");
+
             return 1;
         }
 
@@ -106,7 +107,6 @@ class module_console_checkExtension extends Command
         foreach (phrasea_info() as $key => $value) {
             $output->writeln("\t$key => $value");
         }
-
 
         $output->writeln("");
 
@@ -168,7 +168,6 @@ class module_console_checkExtension extends Command
             }
         }
 
-
         $output->writeln("\n-- phrasea_query --");
 
         $nbanswers = 0;
@@ -188,7 +187,6 @@ class module_console_checkExtension extends Command
                 , array()
             );
 
-
             if ($ret) {
                 $output->writeln("<info>Succes ! </info> got result on sbas_id " . $base["sbas_id"]);
             } else {
@@ -201,7 +199,6 @@ class module_console_checkExtension extends Command
 
             $nbanswers += $tbases[$kb]["results"]["nbanswers"];
         }
-
 
         $output->writeln("Got a total of <info>$nbanswers</info> answers");
 

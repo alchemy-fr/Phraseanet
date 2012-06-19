@@ -1388,7 +1388,6 @@ class searchEngine_adapter_phrasea_queryParser
                     // return;
                 }
 
-
                 if ($tree["RB"]["CLASS"] == "OPS" && in_array($tree["RB"]["NODETYPE"], $opdistrib)) {
 
                     // on a un truc du genre 't1 {dans|=} (t2 op t3)', on distribue le dans é t2 et t3

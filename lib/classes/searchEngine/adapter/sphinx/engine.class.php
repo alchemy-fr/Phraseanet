@@ -132,7 +132,6 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
             $this->sphinx->SetFilter('business', array(0));
         }
 
-
         if ($filters) {
             $this->sphinx->SetFilter('crc_struct_id', $filters);
         }
@@ -278,7 +277,6 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
         $this->sphinx->SetLimits($offset, $this->perPage);
         $this->sphinx->SetMatchMode(SPH_MATCH_EXTENDED2);
         $this->parse_query();
-
 
         $index = '*';
 

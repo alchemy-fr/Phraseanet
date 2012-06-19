@@ -211,7 +211,6 @@ class Edit extends RecordHelper
 
         $twig = $this->getCore()->getTwig();
 
-
         $databox = \databox::get_instance($this->get_sbas_id());
 
         $databox_fields = array();
@@ -481,7 +480,6 @@ class Edit extends RecordHelper
             } catch (Exception $e) {
                 continue;
             }
-
 
             $key = $record->get_serialize_key();
 

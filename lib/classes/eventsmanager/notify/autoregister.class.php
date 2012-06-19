@@ -133,7 +133,6 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
                     $mailed = true;
             }
 
-
             $this->broker->notify($usr_id, __CLASS__, $datas, $mailed);
         }
 

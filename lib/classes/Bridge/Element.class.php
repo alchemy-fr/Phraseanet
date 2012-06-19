@@ -333,7 +333,6 @@ class Bridge_Element
             , ':update' => $this->updated_on->format(DATE_ISO8601)
         );
 
-
         $stmt = $this->appbox->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
@@ -368,7 +367,6 @@ class Bridge_Element
             , ':id'     => $this->id
             , ':update' => $this->updated_on->format(DATE_ISO8601)
         );
-
 
         $stmt = $this->appbox->get_connection()->prepare($sql);
         $stmt->execute($params);

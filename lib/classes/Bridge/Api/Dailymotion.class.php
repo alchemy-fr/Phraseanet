@@ -229,7 +229,6 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
         switch ($object) {
             case self::ELEMENT_TYPE_VIDEO:
 
-
                 $result = $this->_api->call('/me/videos', array('fields' => array(
                         'created_time'
                         , 'description'
@@ -795,7 +794,6 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
                 $length = (int) $field["length"];
                 $length_min = (int) $field["length_min"];
 
-
                 if ( ! isset($datas[$name]) || trim($datas[$name]) === '') {
                     if ($required)
                         $errors[$name . '_' . $key] = _("Ce champ est obligatoire");
@@ -820,7 +818,6 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
                 $name = $field["name"];
                 $length = (int) $field["length"];
                 $length_min = (int) $field["length_min"];
-
 
                 if ( ! isset($datas[$name]) || trim($datas[$name]) === '') {
                     if ($required)

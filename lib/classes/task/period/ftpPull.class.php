@@ -308,7 +308,6 @@ class task_period_ftpPull extends task_appboxAbstract
             $todo = count($list_1);
             $this->setProgress($done, $todo);
 
-
             $this->logger->addDebug("attente de 25sec pour avoir les fichiers froids...");
 
             $this->sleep(25);

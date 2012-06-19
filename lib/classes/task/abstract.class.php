@@ -121,6 +121,7 @@ abstract class task_abstract
             throw new Exception('Unknown task id');
         }
         unset($conn);
+
         return $row['status'];
     }
 
@@ -181,7 +182,7 @@ abstract class task_abstract
 
     /**
      *
-     * @param boolean $active   'active' means 'auto-start when scheduler starts'
+     * @param  boolean        $active 'active' means 'auto-start when scheduler starts'
      * @return \task_abstract
      */
     public function setActive($active)
@@ -200,7 +201,7 @@ abstract class task_abstract
 
     /**
      *
-     * @param string $title
+     * @param  string         $title
      * @return \task_abstract
      */
     public function setTitle($title)
@@ -220,8 +221,8 @@ abstract class task_abstract
 
     /**
      *
-     * @param string $settings  xml settings as STRING
-     * @throws Exception_InvalidArgument    if not proper xml
+     * @param  string                    $settings xml settings as STRING
+     * @throws Exception_InvalidArgument if not proper xml
      * @return \task_abstract
      */
     public function setSettings($settings)
@@ -376,7 +377,7 @@ abstract class task_abstract
 
     /**
      *
-     * @param enum $runner (self::RUNNER_MANUAL or self::RUNNER_SCHEDULER)
+     * @param  enum                      $runner (self::RUNNER_MANUAL or self::RUNNER_SCHEDULER)
      * @throws Exception_InvalidArgument
      * @return \task_abstract
      */
@@ -523,7 +524,7 @@ abstract class task_abstract
     /**
      * sleep n seconds
      *
-     * @param int $nsec
+     * @param  int                       $nsec
      * @throws \InvalidArgumentException
      */
     protected function sleep($nsec)
@@ -538,7 +539,7 @@ abstract class task_abstract
 
     /**
      *
-     * @return string   fullpath to the pid file for the task
+     * @return string fullpath to the pid file for the task
      */
     private function getLockfilePath()
     {
@@ -552,8 +553,8 @@ abstract class task_abstract
 
     /**
      *
-     * @return resource file descriptor of the OPENED pid file
-     * @throws Exception    if file is already locked (task running)
+     * @return resource  file descriptor of the OPENED pid file
+     * @throws Exception if file is already locked (task running)
      */
     private function lockTask()
     {
@@ -612,7 +613,7 @@ abstract class task_abstract
 
     /**
      *
-     * @param resource $lockFD  file descriptor of the OPENED lock file
+     * @param resource $lockFD file descriptor of the OPENED lock file
      */
     private function unlockTask($lockFD)
     {
@@ -789,7 +790,7 @@ abstract class task_abstract
      *
      * @param  appbox        $appbox
      * @param  string        $class_name
-     * @param  string        $settings  (xml string)
+     * @param  string        $settings   (xml string)
      * @return task_abstract
      */
     public static function create(appbox $appbox, $class_name, $settings = null)
@@ -804,7 +805,6 @@ abstract class task_abstract
                     VALUES
                     (null, 0, "stopped", 0, :active,
                       :name, "0000/00/00 00:00:00", :class, :settings)';
-
 
         if ($settings && ! DOMDocument::loadXML($settings)) {
             throw new Exception('settings invalide');
@@ -842,7 +842,7 @@ abstract class task_abstract
 
     /**
      *
-     * @return int  id of the task
+     * @return int id of the task
      */
     public function getID()
     {
@@ -851,8 +851,8 @@ abstract class task_abstract
 
     /**
      *
-     * @param int $done
-     * @param int $todo
+     * @param  int            $done
+     * @param  int            $todo
      * @return \task_abstract
      */
     public function setProgress($done, $todo)

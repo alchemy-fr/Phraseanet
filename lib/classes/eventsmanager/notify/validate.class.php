@@ -108,7 +108,6 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
                 $mailed = true;
         }
 
-
         return $this->broker->notify($params['to'], __CLASS__, $datas, $mailed);
     }
 

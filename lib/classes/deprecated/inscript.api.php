@@ -358,7 +358,7 @@ function giveInscript($lng, $demandes = null)
                 //je check si ya des cgu pour la base
                 if ($baseInsc['CGU']) {
                     $out .= '<tr><td colspan="3" style="text-align:center;">' . _('login::register: L\'acces aux bases ci-dessous implique l\'acceptation des Conditions Generales d\'Utilisation (CGU) suivantes') . '<br/><a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas=' . $sbasId . '">' . _('login::register::CGU: ouvrir dans une nouvelle fenetre') . '</a></td></tr>';
-                    //$out .= '<tr><td colspan="3" style="text-align:center;"><div id="CGUTXT'.$sbasId.'" style="width:90%;height:120px;text-align:left;overflow:auto;">'.(string)$baseInsc['CGU'].'</div></td></tr>';
+                    //$out .= '<tr><td colspan="3" style="text-align:center;"><div id="CGUTXT'.$sbasId.'" style="width:90%;height:120px;text-align:left;overflow:auto;">'.(string) $baseInsc['CGU'].'</div></td></tr>';
                 }
                 foreach ($baseInsc['Colls'] as $collId => $collName) {
 
@@ -389,7 +389,7 @@ function giveInscript($lng, $demandes = null)
                         '<br/><a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas=' . $sbasId . '&col=' . $collId . '">' . _('login::register::CGU: ouvrir dans une nouvelle fenetre') . '</a></td></tr>' .
                         //  '<tr >' .
                         //  '<td colspan="3" style="text-align:center;"><div style="height:120px;text-align:left;overflow:auto;">' .
-                        //  ''.(string)$collDesc['CGU'].'' .
+                        //  ''.(string) $collDesc['CGU'].'' .
                         //  '</div></td>' .
                         //  '</tr>' .
                         '<tr >' .
@@ -408,4 +408,3 @@ function giveInscript($lng, $demandes = null)
 
     return $out;
 }
-?>

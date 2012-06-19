@@ -88,7 +88,6 @@ class sphinx_configuration
         $charsets = explode("\n", $charsets);
         $last_detect = false;
 
-
         for ($i = (count($charsets) - 1); $i >= 0; $i -- ) {
             if (trim($charsets[$i]) === '') {
                 unset($charsets[$i]);
@@ -177,7 +176,6 @@ class sphinx_configuration
     sql_attr_string       = keyword
   }
 
-
   index suggest' . $index_crc . '
   {
     source                = src_suggest' . $index_crc . '
@@ -185,7 +183,6 @@ class sphinx_configuration
 
 ' . $charset_abstract . '
   }
-
 
   #--------------------------------------
   ### Metadatas Sources
@@ -313,7 +310,6 @@ class sphinx_configuration
     type                  = rt
     path                  = /var/sphinx/datas/metas_realtime_' . $serialized . '
 
-
 ' . $charset_abstract . '
 
     rt_field              = value
@@ -332,8 +328,6 @@ class sphinx_configuration
     rt_attr_uint          = crc_coll_business
     rt_attr_timestamp     = created_on
   }
-
-
 
   #--------------------------------------
   ### All documents Index (give the last 1000 records added, etc...)
@@ -387,7 +381,6 @@ class sphinx_configuration
     morphology            = none
   }
 
-
   index documents' . $index_crc . '_stemmed_fr : documents' . $index_crc . '
   {
     path                  = /var/sphinx/datas/documents_' . $serialized . '_stemmed_fr
@@ -405,7 +398,6 @@ class sphinx_configuration
     #
     index_exact_words     = 1
   }
-
 
   index documents' . $index_crc . '_stemmed_en : documents' . $index_crc . '
   {
@@ -433,7 +425,6 @@ class sphinx_configuration
     type                  = rt
     path                  = /var/sphinx/datas/docs_realtime_' . $serialized . '
 
-
     ' . $charset_abstract . '
 
     rt_field              = value
@@ -451,17 +442,14 @@ class sphinx_configuration
     rt_attr_timestamp     = created_on
   }
 
-
 #------------------------------------------------------------------------------
 # *****************  End configuration for ' . $serialized . '
 #------------------------------------------------------------------------------
-
 
 ';
         }
 
         $conf .='
-
 
 #******************************************************************************
 #******************  Sphinx Indexer Configuration  ****************************
@@ -480,7 +468,6 @@ indexer {
   #
   # max_iosize            = 1048576
 }
-
 
 #******************************************************************************
 #******************  Sphinx Search Daemon Configuration  **********************
@@ -594,8 +581,6 @@ searchd
 }
 
 ';
-
-
 
         return $conf;
     }

@@ -206,4 +206,3 @@ class module_report_dashboard_merge implements module_report_dashboard_component
     }
 }
 
-?>

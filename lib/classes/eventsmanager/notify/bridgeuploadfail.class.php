@@ -167,7 +167,6 @@ class eventsmanager_notify_bridgeuploadfail extends eventsmanager_notifyAbstract
         $reason = (string) $sx->reason;
         $body = "reason : " . $reason;
 
-
         return mail::send_mail($subject, $body, $to, $from);
     }
 

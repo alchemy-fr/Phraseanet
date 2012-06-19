@@ -242,7 +242,6 @@ class Feed_XML_Cooliris extends Feed_XML_Abstract implements Feed_XML_Interface
         $doc->formatOutput = true;
         $doc->standalone = true;
 
-
         $root = $this->addTag($doc, $doc, 'rss');
 
         $root->setAttribute('version', self::VERSION);
@@ -367,7 +366,7 @@ class Feed_XML_Cooliris extends Feed_XML_Abstract implements Feed_XML_Interface
 
         //add item node to channel node
         $item = $this->addTag($document, $node, 'item');
-        
+
         $caption =  $content->get_record()->get_caption();
 
         $title_field = $caption->get_dc_field(databox_Field_DCESAbstract::Title);
@@ -419,7 +418,6 @@ class Feed_XML_Cooliris extends Feed_XML_Abstract implements Feed_XML_Interface
                 $thumbnail->setAttribute('width', $thumbnail_sd->get_width());
             if ($thumbnail_sd->get_height())
                 $thumbnail->setAttribute('height', $thumbnail_sd->get_height());
-
 
             $thumbnail = $this->addTag($document, $item, 'media:content');
 

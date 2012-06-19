@@ -75,7 +75,6 @@ return call_user_func(
                         return new Response('');
                     }
 
-
                     $em = $app['Core']->getEntityManager();
 
                     /* @var $repository \Repositories\BasketElementRepository */
@@ -126,7 +125,6 @@ return call_user_func(
                         $appbox = \appbox::get_instance($app['Core']);
                         $usr_id = $appbox->get_session()->get_usr_id();
 
-
                         $Basket = $BasketElement->getBasket();
 
                         $ret = array();
@@ -150,9 +148,6 @@ return call_user_func(
                     }
                 }
             )->assert('sselcont_id', '\d+');
-
-
-
 
             $app->get('/ajax/LOAD_FEED_ITEM/{entry_id}/{item_id}/', function(\Silex\Application $app, $entry_id, $item_id) {
                     /* @var $twig \Twig_Environment */
@@ -190,7 +185,6 @@ return call_user_func(
                         $ret['options_html'] = $twig->render($template_options, array('feed_element'  => $item));
                         $ret['caption'] = $twig->render($template_caption, array('view'   => 'preview', 'record' => $item->get_record()));
 
-
                         $ret['agreement_html'] = $ret['selector_html'] = $ret['note_html'] = '';
 
                         $Serializer = $app['Core']['Serializer'];
@@ -223,7 +217,6 @@ return call_user_func(
                         , $app['Core']->getAuthenticatedUser()
                         , false
                     );
-
 
                     if ($basket->getIsRead() === false) {
                         $basket = $em->merge($basket);
@@ -279,7 +272,6 @@ return call_user_func(
                         , false
                     );
 
-
                     if ($basket->getIsRead() === false) {
                         $basket = $em->merge($basket);
                         $basket->setIsRead(true);
@@ -313,8 +305,6 @@ return call_user_func(
                     return $response;
                 }
             )->assert('ssel_id', '\d+');
-
-
 
             $app->get('/feeds/entry/{entry_id}/', function (\Silex\Application $app, $entry_id) use ($appbox) {
 
@@ -493,7 +483,6 @@ return call_user_func(
                 }
             )->assert('sselcont_id', '\d+');
 
-
             $app->post('/ajax/SET_RELEASE/{ssel_id}/', function(\Silex\Application $app, $ssel_id) use ($appbox) {
 
                     $em = $app['Core']->getEntityManager();
@@ -535,7 +524,6 @@ return call_user_func(
                                 , $basket->getId()
                         );
 
-
                         $to = $basket->getValidation()->getInitiator()->get_id();
                         $params = array(
                             'ssel_id' => $basket->getId(),
@@ -544,10 +532,7 @@ return call_user_func(
                             'to'      => $to
                         );
 
-
-
                         $evt_mngr->trigger('__VALIDATION_DONE__', $params);
-
 
                         $participant->setIsConfirmed(true);
 
@@ -573,8 +558,6 @@ return call_user_func(
                     return $response;
                 }
             )->assert('ssel_id', '\d+');
-
-
 
             $app->error(function($e) use($app) {
 

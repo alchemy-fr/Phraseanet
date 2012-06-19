@@ -48,7 +48,6 @@ class Bridge_Api_Flickr_Element implements Bridge_Api_ElementInterface
         else
             $this->init_from_single_entry($entry);
 
-
         $this->user_id = (string) $user_id;
 
         return $this;

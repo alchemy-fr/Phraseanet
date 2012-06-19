@@ -161,7 +161,6 @@ class geonames
         }
         $this->cache_ips[$ip] = $output;
 
-
         return $output;
     }
 }

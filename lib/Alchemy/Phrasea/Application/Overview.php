@@ -41,7 +41,6 @@ return call_user_func(
                         $pathOut = \recordutils_image::stamp($record->get_base_id(), $record->get_record_id());
                     }
 
-
                     $log_id = null;
                     try {
                         $registry = \registry::get_instance();
@@ -55,7 +54,7 @@ return call_user_func(
 
                         $record->log_view($log_id, $referrer, $registry->get('GV_sit'));
                     } catch (\Exception $e) {
-                        
+
                     }
 
                     $response = \set_export::stream_file($pathOut, $file->get_file(), $file->get_mime(), 'attachment');
@@ -81,7 +80,6 @@ return call_user_func(
                     if ( ! $session->is_authenticated()) {
                         throw new \Exception_Session_NotAuthenticated();
                     }
-
 
                     $all_access = false;
                     $subdefStruct = $databox->get_subdef_structure();
@@ -139,7 +137,6 @@ return call_user_func(
                     return $deliver_content($app['request'], $session, $record, $subdef, $watermark, $stamp, $app);
                 })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
 
-
             $app->get('/permalink/v1/{label}/{sbas_id}/{record_id}/{key}/{subdef}/view/'
                 , function($label, $sbas_id, $record_id, $key, $subdef) use($app) {
 
@@ -163,7 +160,6 @@ return call_user_func(
 
                     return $twig->render('overview.twig', $params);
                 })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
-
 
             $app->get('/permalink/v1/{label}/{sbas_id}/{record_id}/{key}/{subdef}/'
                     , function($label, $sbas_id, $record_id, $key, $subdef) use ($app, $session, $deliver_content) {
@@ -214,7 +210,6 @@ return call_user_func(
                 )
                 ->assert('sbas_id', '\d+')->assert('record_id', '\d+');
 
-
             $app->error(function (\Exception $e) {
                     if ($e instanceof \Exception_Session_NotAuthenticated) {
                         $code = 403;
@@ -232,9 +227,6 @@ return call_user_func(
 
                     return new Response($message, $code);
                 });
-
-
-
 
             return $app;
         }

@@ -42,7 +42,6 @@ class WorkZone implements ControllerProviderInterface
                     , 'srt'           => $app['request']->get('sort')
                 );
 
-
                 return new Response($app['Core']->getTwig()->render('prod/WorkZone/WorkZone.html.twig', $params));
             });
 
@@ -76,7 +75,6 @@ class WorkZone implements ControllerProviderInterface
                 $PerPage = 10;
                 $offsetStart = max(($Page - 1) * $PerPage, 0);
 
-
                 $Baskets = $BasketRepo->findWorkzoneBasket(
                     $user
                     , $request->get('Query')
@@ -88,7 +86,6 @@ class WorkZone implements ControllerProviderInterface
 
                 $page = floor($offsetStart / $PerPage) + 1;
                 $maxPage = floor(count($Baskets) / $PerPage) + 1;
-
 
                 $params = array(
                     'Baskets' => $Baskets
@@ -117,7 +114,6 @@ class WorkZone implements ControllerProviderInterface
                 return new Response($app['Core']->getTwig()->render('prod/WorkZone/Browser/Basket.html.twig', $params));
             })->assert('basket_id', '\d+');
 
-
         $controllers->post(
             '/attachStories/'
             , function(Application $app, Request $request) {
@@ -144,7 +140,6 @@ class WorkZone implements ControllerProviderInterface
 
                     if ( ! $user->ACL()->has_access_to_base($Story->get_base_id()))
                         throw new \Exception_Forbidden('You do not have access to this Story');
-
 
                     if ($StoryWZRepo->findUserStory($user, $Story)) {
                         $alreadyFixed ++;
@@ -204,7 +199,6 @@ class WorkZone implements ControllerProviderInterface
                 }
             });
 
-
         $controllers->post(
             '/detachStory/{sbas_id}/{record_id}/'
             , function(Application $app, Request $request, $sbas_id, $record_id) {
@@ -239,7 +233,6 @@ class WorkZone implements ControllerProviderInterface
                     return new RedirectResponse('/');
                 }
             })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
-
 
         return $controllers;
     }

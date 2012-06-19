@@ -68,7 +68,6 @@ class patch_320c implements patchInterface
         $stmt->execute();
         $stmt->closeCursor();
 
-
         $phrasea_maps = array(
             'pdftext'        => 'Phraseanet:pdftext'
             , 'tf-archivedate' => 'Phraseanet:tf-archivedate'
@@ -117,7 +116,6 @@ class patch_320c implements patchInterface
         $databox->delete_data_from_cache(databox::CACHE_STRUCTURE);
         $databox->delete_data_from_cache(databox::CACHE_META_STRUCT);
 
-
         $conn = connection::getPDOConnection();
         $sql = 'INSERT INTO `task2`
                     (`task_id`, `usr_id_owner`, `pid`, `status`, `crashed`,
@@ -136,7 +134,6 @@ class patch_320c implements patchInterface
         $stmt->execute();
         $stmt->closeCursor();
         unset($stmt);
-
 
         return true;
     }

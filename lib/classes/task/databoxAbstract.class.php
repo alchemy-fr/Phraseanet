@@ -107,7 +107,6 @@ abstract class task_databoxAbstract extends task_abstract
                     unset($connbas);
                 }
 
-
                 switch ($process_ret) {
                     case self::STATE_MAXMEGSREACHED:
                     case self::STATE_MAXRECSDONE:

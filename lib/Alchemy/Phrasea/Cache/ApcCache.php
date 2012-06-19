@@ -36,7 +36,7 @@ class ApcCache extends DoctrineApc implements Cache
     {
         return false;
     }
-    
+
     /**
      * {@inheritdoc}
      */

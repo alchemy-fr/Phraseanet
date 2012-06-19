@@ -99,7 +99,6 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
             $base_ids->appendChild($base_id_node);
         }
 
-
         $root->appendChild($usr_id);
         $root->appendChild($base_ids);
 
@@ -131,7 +130,6 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
                 if (self::mail($to, $from, $datas))
                     $mailed = true;
             }
-
 
             $this->broker->notify($usr_id, __CLASS__, $datas, $mailed);
         }

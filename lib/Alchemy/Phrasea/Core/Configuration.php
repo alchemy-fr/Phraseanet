@@ -99,7 +99,6 @@ class Configuration
 
         $this->setConnexions($connexions);
 
-
         $configs = $this->getConfigurations();
 
         $retrieve_old_parameters = function(\SplFileInfo $configInc) {

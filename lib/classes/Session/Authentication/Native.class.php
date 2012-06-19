@@ -106,7 +106,6 @@ class Session_Authentication_Native implements Session_Authentication_Interface
         $browser = Browser::getInstance();
         $this->check_and_revoke_badlogs($browser->getIP());
 
-
         $this->check_bad_salinity()
             ->check_mail_locked()
             ->challenge_password($browser);

@@ -102,19 +102,15 @@ class queries
             }
         }
 
-
         if ($xmlTopics == '') {
             return '';
         }
-
 
         $jsTopics = 'null';
         $maxdepth = 0;
         if (($sxTopics = simplexml_load_file($xmlTopics))) {
             $jsTopics = self::topicsAsJS($sxTopics->topics, 0, $maxdepth);
         }
-
-
 
         $out .= ' <script type="text/javascript">
                 var maxdepth = ' . ($maxdepth + 1) . ';
@@ -200,7 +196,6 @@ class queries
                     </div>
                 </div>
                 <script>chgPopTopic(0);</script>';
-
 
         return $out;
     }

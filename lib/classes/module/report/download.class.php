@@ -230,7 +230,6 @@ class module_report_download extends module_report
         $finalfilter .= $collfilter['sql'] . ' AND ';
         $finalfilter .= 'log.site = :site_id';
 
-
         $sql = '
             SELECT record.record_id as id, SUM(1) AS nb, subdef.name
             FROM ( log

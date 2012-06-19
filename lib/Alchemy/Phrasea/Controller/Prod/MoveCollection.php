@@ -42,7 +42,6 @@ class MoveCollection implements ControllerProviderInterface
             }
         );
 
-
         $controllers->post('/apply/', function(Application $app) {
                 $request = $app['request'];
                 $move = new RecordHelper\MoveCollection($app['Core'], $app['request']);

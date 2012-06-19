@@ -273,7 +273,6 @@ class User_Query implements User_QueryInterface
             }
         }
 
-
         if (count($this->sbas_ids) == 0) {
             if ($this->sbas_restrictions)
                 throw new Exception('No base available for you, not enough rights');
@@ -349,7 +348,6 @@ class User_Query implements User_QueryInterface
                     break;
             }
         }
-
 
         if (count($sql_like) > 0)
             $sql .= sprintf(' AND (%s) ', implode($this->like_match, $sql_like));
@@ -551,7 +549,6 @@ class User_Query implements User_QueryInterface
         $stmt->execute($this->sql_params);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
-
 
         $this->total = $row['total'];
 

@@ -205,8 +205,8 @@ class API_V1_adapter extends API_V1_Abstract
      *  - name
      *  - autostart
      *
-     * @param  \Silex\Application         $app     Silex application
-     * @param  integer                    $task_id the task id
+     * @param  \Silex\Application           $app     Silex application
+     * @param  integer                      $task_id the task id
      * @return \API_V1_result
      * @throws \API_V1_exception_badrequest
      */
@@ -896,7 +896,6 @@ class API_V1_adapter extends API_V1_Abstract
         $search_engine = new searchEngine_adapter($registry);
         $search_engine->set_options($options);
 
-
         /**
          * @todo ameliorer this shit
          */
@@ -1253,7 +1252,6 @@ class API_V1_adapter extends API_V1_Abstract
         $em = $this->core->getEntityManager();
         $repository = $em->getRepository('\Entities\Basket');
 
-
         /* @var $repository \Repositories\BasketRepository */
 
         $Basket = $repository->findUserBasket($basket_id, $this->core->getAuthenticatedUser(), true);
@@ -1372,7 +1370,6 @@ class API_V1_adapter extends API_V1_Abstract
         $em = $this->core->getEntityManager();
         $repository = $em->getRepository('\Entities\Basket');
 
-
         /* @var $repository \Repositories\BasketRepository */
 
         $Basket = $repository->findUserBasket($basket_id, $this->core->getAuthenticatedUser(), true);
@@ -1407,7 +1404,6 @@ class API_V1_adapter extends API_V1_Abstract
 
         $em = $this->core->getEntityManager();
         $repository = $em->getRepository('\Entities\Basket');
-
 
         /* @var $repository \Repositories\BasketRepository */
 
@@ -1459,7 +1455,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function remove_publications(Request $request, $publication_id)
     {
-        
+
     }
 
     /**
@@ -1630,7 +1626,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function search_users(Request $request)
     {
-        
+
     }
 
     /**
@@ -1640,7 +1636,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function get_user_acces(Request $request, $usr_id)
     {
-        
+
     }
 
     /**
@@ -1649,7 +1645,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function add_user(Request $request)
     {
-        
+
     }
 
     /**

@@ -276,7 +276,6 @@ class API_OAuth2_Account
             ":application_id" => $application->get_id()
         );
 
-
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute($params);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);

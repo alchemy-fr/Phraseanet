@@ -58,7 +58,6 @@ class set_exportorder extends set_export
 
             $order_id = $conn->lastInsertId();
 
-
             $sql = 'INSERT INTO order_elements
                   (id, order_id, base_id, record_id, order_master_id)
                   VALUES

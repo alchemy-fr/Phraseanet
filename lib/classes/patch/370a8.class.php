@@ -55,7 +55,7 @@ class patch_370a8 implements patchInterface
      * transform tasks 'workflow 01' to 'workflow 02'
      * will group tasks(01) with same period to a single task(02)
      *
-     * @param base $appbox
+     * @param  base    $appbox
      * @return boolean
      */
     public function apply(base &$appbox)

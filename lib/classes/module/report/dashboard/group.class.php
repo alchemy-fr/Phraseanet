@@ -95,4 +95,3 @@ class module_report_dashboard_group implements module_report_dashboard_component
     }
 }
 
-?>

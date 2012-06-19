@@ -52,7 +52,6 @@ return call_user_func(function() {
                     return;
                 });
 
-
             $app->get('/', function() use ($app) {
                     if ($app['install'] === true) {
                         return $app->redirect('/setup/installer/');
@@ -60,7 +59,6 @@ return call_user_func(function() {
                         return $app->redirect('/setup/upgrader/');
                     }
                 });
-
 
             $app->mount('/installer/', new Controller\Installer());
             $app->mount('/upgrader/', new Controller\Upgrader());

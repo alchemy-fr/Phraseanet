@@ -23,7 +23,6 @@ use Symfony\Component\HttpKernel\Exception;
  */
 return call_user_func(function() {
 
-
             $app = new \Silex\Application();
 
             /**
@@ -86,7 +85,7 @@ return call_user_func(function() {
 
                             return;
                         } catch (\Exception $e) {
-                            
+
                         }
                     }
                     $auth = new \Session_Authentication_None($user);
@@ -95,7 +94,6 @@ return call_user_func(function() {
 
                     return;
                 });
-
 
             /**
              * oAUth log process
@@ -297,7 +295,6 @@ return call_user_func(function() {
                 }
             )->before($mustBeAdmin);
 
-
             /**
              * *******************************************************************
              * Route : /databoxes/list/
@@ -334,7 +331,6 @@ return call_user_func(function() {
             )->assert('databox_id', '\d+');
 
             $app->get('/databoxes/{any_id}/collections/', $bad_request_exception);
-
 
             /**
              * *******************************************************************
@@ -395,7 +391,6 @@ return call_user_func(function() {
 
             $app->get('/databoxes/{any_id}/termsOfUse/', $bad_request_exception);
 
-
             $route = '/quarantine/list/';
             $app->get(
                 $route, function(\Silex\Application $app, Request $request) {
@@ -409,7 +404,6 @@ return call_user_func(function() {
                     return $app['api']->list_quarantine_item($lazaret_id, $app, $request)->get_response();
                 }
             );
-
 
             /**
              * *******************************************************************
@@ -426,7 +420,6 @@ return call_user_func(function() {
                     return $app['api']->add_record($app, $request)->get_response();
                 }
             );
-
 
             /**
              * Route : /records/search/
@@ -453,7 +446,6 @@ return call_user_func(function() {
                 }
             );
 
-
             $route = '/records/{databox_id}/{record_id}/caption/';
             $app->get(
                 $route, function($databox_id, $record_id) use ($app) {
@@ -464,7 +456,6 @@ return call_user_func(function() {
             )->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
             $app->get('/records/{any_id}/{anyother_id}/caption/', $bad_request_exception);
-
 
             /**
              * Route : /records/DATABOX_ID/RECORD_ID/metadatas/
@@ -592,7 +583,6 @@ return call_user_func(function() {
 
             $app->post('/records/{any_id}/{anyother_id}/setstatus/', $bad_request_exception);
 
-
             /**
              * Route : /records/DATABOX_ID/RECORD_ID/setcollection/
              *
@@ -612,7 +602,6 @@ return call_user_func(function() {
                 }
             )->assert('databox_id', '\d+')->assert('record_id', '\d+');
             $app->post('/records/{wrong_databox_id}/{wrong_record_id}/setcollection/', $bad_request_exception);
-
 
             $route = '/records/{databox_id}/{record_id}/';
             $app->get($route, function($databox_id, $record_id) use ($app) {
@@ -639,7 +628,6 @@ return call_user_func(function() {
                 }
             );
 
-
             /**
              * Route : /baskets/add/
              *
@@ -656,8 +644,6 @@ return call_user_func(function() {
                     return $result->get_response();
                 }
             );
-
-
 
             /**
              * Route : /baskets/BASKET_ID/content/
@@ -678,7 +664,6 @@ return call_user_func(function() {
             )->assert('basket_id', '\d+');
             $app->get('/baskets/{wrong_basket_id}/content/', $bad_request_exception);
 
-
             /**
              * Route : /baskets/BASKET_ID/settitle/
              *
@@ -697,7 +682,6 @@ return call_user_func(function() {
                 }
             )->assert('basket_id', '\d+');
             $app->post('/baskets/{wrong_basket_id}/setname/', $bad_request_exception);
-
 
             /**
              * Route : /baskets/BASKET_ID/setdescription/
@@ -737,7 +721,6 @@ return call_user_func(function() {
             )->assert('basket_id', '\d+');
             $app->post('/baskets/{wrong_basket_id}/delete/', $bad_request_exception);
 
-
             /**
              * Route : /feeds/list/
              *
@@ -754,7 +737,6 @@ return call_user_func(function() {
                     return $result->get_response();
                 }
             );
-
 
             $route = '/feeds/content/';
             $app->get(
@@ -803,7 +785,7 @@ return call_user_func(function() {
             $app->error(function (\Exception $e) use ($app) {
 
                     $headers = array();
-                    
+
                     if ($e instanceof \API_V1_exception_methodnotallowed) {
                         $code = \API_V1_result::ERROR_METHODNOTALLOWED;
                     } elseif ($e instanceof Exception\MethodNotAllowedHttpException) {
@@ -824,18 +806,19 @@ return call_user_func(function() {
                         $code = \API_V1_result::ERROR_INTERNALSERVERERROR;
                     }
 
-                    if($e instanceof \Symfony\Component\HttpKernel\Exception\HttpException) {
+                    if ($e instanceof \Symfony\Component\HttpKernel\Exception\HttpException) {
                         $headers = $e->getHeaders();
                     }
-                    
+
                     $result = $app['api']->get_error_message($app['request'], $code, $e->getMessage());
                     $response = $result->get_response();
 
                     foreach ($headers as $key => $value) {
                         $response->headers->set($key, $value);
                     }
-                    
+
                     return $response;
                 });
+
             return $app;
         });

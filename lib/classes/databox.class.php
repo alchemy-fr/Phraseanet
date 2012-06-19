@@ -297,7 +297,6 @@ class databox extends base
             );
         }
 
-
         ksort($trows);
         foreach ($trows as $kgrp => $vgrp)
             ksort($trows[$kgrp]);
@@ -615,7 +614,6 @@ class databox extends base
             $n ++;
         }
 
-
         $core['file-system']->mkdir($pathout, 0750);
 
         return $pathout . DIRECTORY_SEPARATOR;
@@ -787,7 +785,6 @@ class databox extends base
         $stmt->execute($params);
         $stmt->closeCursor();
 
-
         return $this;
     }
     protected $thesaurus;
@@ -843,7 +840,6 @@ class databox extends base
             $meta_id = isset($field['meta_id']) ? $field['meta_id'] : null;
             if ( ! is_null($meta_id))
                 continue;
-
 
             $nodes = $xp_struct->query('/record/description/' . $fname);
             if ($nodes->length > 0) {
@@ -902,7 +898,6 @@ class databox extends base
                 'bas_modif_th'      => 1, 'bas_chupub'        => 1
                 )
         );
-
 
         $sql = "SELECT * FROM coll";
         $stmt = $this->get_connection()->prepare($sql);

@@ -78,7 +78,6 @@ class patch_3102 implements patchInterface
             $stmt->closeCursor();
         }
 
-
         if ($base->get_base_type() == base::DATA_BOX) {
             $sql = 'UPDATE record SET sha256 = ""
                             WHERE sha256 IS NULL AND parent_record_id = 0';

@@ -97,7 +97,6 @@ class sphinxrt
         $cl->SetServer($registry->get('GV_sphinx_host'), (int) $registry->get('GV_sphinx_port'));
         $cl->SetConnectTimeout(1);
 
-
         $status = strrev($status);
         $new_stat = array();
         for ($i = 4; $i < strlen($status); $i ++ ) {

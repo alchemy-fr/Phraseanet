@@ -83,7 +83,6 @@ class module_console_systemMailCheck extends Command
                 $continue = mb_strtolower($dialog->ask($output, $question, 'C'));
             } while ( ! in_array($continue, array('c', 'd', 's')));
 
-
             if ($continue == 's') {
                 return false;
             } elseif ($continue == 'c') {

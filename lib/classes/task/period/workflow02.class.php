@@ -37,7 +37,7 @@ class task_period_workflow02 extends task_appboxAbstract
     /**
      * return the xml (text) version of the form filled by the gui
      *
-     * @param string $oldxml
+     * @param  string $oldxml
      * @return string
      */
     public function graphic2xml($oldxml)
@@ -82,15 +82,16 @@ class task_period_workflow02 extends task_appboxAbstract
                 $xmlchanged = true;
             }
         }
+
         return $dom->saveXML();
     }
 
     /**
      * must fill the gui (using js) from xml
      *
-     * @param string $xml
-     * @param form-object $form
-     * @return string   "" or error message
+     * @param  string      $xml
+     * @param  form-object $form
+     * @return string      "" or error message
      */
     public function xml2graphic($xml, $form)
     {
@@ -120,11 +121,9 @@ class task_period_workflow02 extends task_appboxAbstract
                     , dataType:'json'
                     , type:"POST"
                     , async:true
-                    , success:function(data)
-                    {
+                    , success:function(data) {
                         t = "";
-                        for(i in data.tasks)
-                        {
+                        for (i in data.tasks) {
                             t += "<div class=\"title\">&nbsp;";
                             if(data.tasks[i].active)
                                 t += "<span class=\"active\">&nbsp;X&nbsp;</span>&nbsp;";
@@ -164,18 +163,12 @@ class task_period_workflow02 extends task_appboxAbstract
                             , dataType:'json'
                             , type:"POST"
                             , async:true
-                            , success:function(data)
-                            {
-                                for(i in data.tasks)
-                                {
-                                    if(data.tasks[i].sql)
-                                    {
-                                        if(data.tasks[i].sql.test.err)
-                                        {
+                            , success:function(data) {
+                                for (i in data.tasks) {
+                                    if (data.tasks[i].sql) {
+                                        if (data.tasks[i].sql.test.err) {
                                             parent.$("#SQLRET"+i).html("err: " + data.tasks[i].sql.test.err);
-                                        }
-                                        else
-                                        {
+                                        } else {
                                             t = '';
                                             for(j in data.tasks[i].sql.test.result.rids)
                                                 t += (t?', ':'') + data.tasks[i].sql.test.result.rids[j];
@@ -183,9 +176,7 @@ class task_period_workflow02 extends task_appboxAbstract
                                                 t += ', ...';
                                             parent.$("#SQLRET"+i).html("n=" + data.tasks[i].sql.test.result.n + ", rids:(" + t + ")");
                                         }
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         parent.$("#SQLRET"+i).html("");
                                     }
                                 }
@@ -196,9 +187,9 @@ class task_period_workflow02 extends task_appboxAbstract
 
             </script>
             <?php
+
             return "";
-        }
-        else { // ... so we NEVER come here
+        } else { // ... so we NEVER come here
             // bad xml
             return "BAD XML";
         }
@@ -279,6 +270,7 @@ class task_period_workflow02 extends task_appboxAbstract
                     jQuery.map($(this).serializeArray(), function(n, i){
                         json[n['name']] = n['value'];
                     });
+
                     return json;
                 };
             })( jQuery );
@@ -287,8 +279,7 @@ class task_period_workflow02 extends task_appboxAbstract
             function chgxmltxt(textinput, fieldname)
             {
                 var limits = { 'period':{min:1, 'max':1440} , 'delay':{min:0} } ;
-                if(typeof(limits[fieldname])!='undefined')
-                {
+                if (typeof(limits[fieldname])!='undefined') {
                     var v = 0|textinput.value;
                     if(limits[fieldname].min && v < limits[fieldname].min)
                         v = limits[fieldname].min;
@@ -326,6 +317,7 @@ class task_period_workflow02 extends task_appboxAbstract
             <div class="terminal" id="sqla"></div>
         </center>
         <?php
+
         return ob_get_clean();
     }
     /**
@@ -337,7 +329,7 @@ class task_period_workflow02 extends task_appboxAbstract
     /**
      * return array of records to work on, from sql generated by 'from' clause
      *
-     * @param appbox $appbox
+     * @param  appbox  $appbox
      * @return array()
      */
 
@@ -420,8 +412,8 @@ class task_period_workflow02 extends task_appboxAbstract
     /**
      * work on ONE record
      *
-     * @param appbox $appbox
-     * @param array $row
+     * @param  appbox                  $appbox
+     * @param  array                   $row
      * @return \task_period_workflow02
      */
     protected function processOneContent(appbox $appbox, Array $row)
@@ -480,8 +472,8 @@ class task_period_workflow02 extends task_appboxAbstract
     /**
      * all work done on processOneContent, so nothing to do here
      *
-     * @param appbox $appbox
-     * @param array $row
+     * @param  appbox                  $appbox
+     * @param  array                   $row
      * @return \task_period_workflow02
      */
     protected function postProcessOneContent(appbox $appbox, Array $row)
@@ -492,8 +484,8 @@ class task_period_workflow02 extends task_appboxAbstract
     /**
      * compute sql for a task (<task> entry in settings)
      *
-     * @param simplexml $sxtask
-     * @param boolean $playTest
+     * @param  simplexml $sxtask
+     * @param  boolean   $playTest
      * @return array
      */
     private function calcSQL($sxtask, $playTest = false)
@@ -544,9 +536,9 @@ class task_period_workflow02 extends task_appboxAbstract
     /**
      * compute entry for a UPDATE query
      *
-     * @param integer $sbas_id
-     * @param simplexml $sxtask
-     * @param boolean $playTest
+     * @param  integer   $sbas_id
+     * @param  simplexml $sxtask
+     * @param  boolean   $playTest
      * @return array
      */
     private function calcUPDATE($sbas_id, &$sxtask, $playTest)
@@ -615,9 +607,9 @@ class task_period_workflow02 extends task_appboxAbstract
     /**
      * compute entry for a DELETE task
      *
-     * @param integer $sbas_id
-     * @param simplexml $sxtask
-     * @param boolean $playTest
+     * @param  integer   $sbas_id
+     * @param  simplexml $sxtask
+     * @param  boolean   $playTest
      * @return array
      */
     private function calcDELETE($sbas_id, &$sxtask, $playTest)
@@ -661,8 +653,8 @@ class task_period_workflow02 extends task_appboxAbstract
      * returns an array of clauses to be joined by 'and'
      * and a 'join' to needed tables
      *
-     * @param integer $sbas_id
-     * @param simplecms $sxtask
+     * @param  integer   $sbas_id
+     * @param  simplecms $sxtask
      * @return array
      */
     private function calcWhere($sbas_id, &$sxtask)
@@ -765,8 +757,8 @@ class task_period_workflow02 extends task_appboxAbstract
     /**
      * play a 'test' sql on sbas, return the number of records and the 10 first rids
      *
-     * @param integer $sbas_id
-     * @param string $sql
+     * @param  integer $sbas_id
+     * @param  string  $sql
      * @return array
      */
     private function playTest($sbas_id, $sql)

@@ -398,7 +398,6 @@ class API_OAuth2_Adapter extends OAuth2
             , 'redirect_uri'  => $request->get('redirect_uri', false)
         );
 
-
         $scope = $request->get('scope', false);
         $state = $request->get('state', false);
 
@@ -425,7 +424,6 @@ class API_OAuth2_Adapter extends OAuth2
             , "state"  => array("flags" => FILTER_REQUIRE_SCALAR)
             , "scope" => array("flags" => FILTER_REQUIRE_SCALAR)
         );
-
 
         $input = filter_var_array($datas, $filters);
 
@@ -484,7 +482,6 @@ class API_OAuth2_Adapter extends OAuth2
             $input["redirect_uri"] = $redirect_uri;
         }
 
-
         /**
          * Check response_type
          */
@@ -492,20 +489,17 @@ class API_OAuth2_Adapter extends OAuth2
             $this->errorDoRedirectUriCallback($input["redirect_uri"], OAUTH2_ERROR_INVALID_REQUEST, 'Invalid response type.', NULL, $input["state"]);
         }
 
-
         /**
          * Check requested auth response type against the list of supported types
          */
         if (array_search($input["response_type"], $this->getSupportedAuthResponseTypes()) === FALSE)
             $this->errorDoRedirectUriCallback($input["redirect_uri"], OAUTH2_ERROR_UNSUPPORTED_RESPONSE_TYPE, NULL, NULL, $input["state"]);
 
-
         /**
          *  Restrict clients to certain authorization response types
          */
         if ($this->checkRestrictedAuthResponseType($input["client_id"], $input["response_type"]) === FALSE)
             $this->errorDoRedirectUriCallback($input["redirect_uri"], OAUTH2_ERROR_UNAUTHORIZED_CLIENT, NULL, NULL, $input["state"]);
-
 
         /**
          * Validate that the requested scope is supported

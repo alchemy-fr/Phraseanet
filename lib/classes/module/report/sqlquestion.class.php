@@ -47,7 +47,6 @@ class module_report_sqlquestion extends module_report_sql implements module_repo
        ON log.id = log_search.log_id
        ";
 
-
             $this->sql .= " WHERE " . $report_filter['sql'];
 
             $this->sql .= $this->filter->getOrderFilter() ? : '';
@@ -103,4 +102,3 @@ class module_report_sqlquestion extends module_report_sql implements module_repo
     }
 }
 
-?>

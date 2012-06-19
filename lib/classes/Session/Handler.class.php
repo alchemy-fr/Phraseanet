@@ -450,7 +450,6 @@ class Session_Handler
             $stmt->execute(array(':old_usr_id' => $oldusr));
             $stmt->closeCursor();
 
-
             $sql = 'UPDATE dsel SET usr_id = :usr_id WHERE usr_id = :old_usr_id';
             $stmt = $conn->prepare($sql);
             $stmt->execute(array(':usr_id'     => $this->get_usr_id(), ':old_usr_id' => $oldusr));

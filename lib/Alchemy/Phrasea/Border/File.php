@@ -277,7 +277,7 @@ class File
     public function buildFromPathfile($pathfile, \collection $collection, $originalName = null)
     {
         $core = \bootstrap::getCore();
-        
+
         try {
             $media = $core['mediavorus']->guess(new \SplFileInfo($pathfile));
         } catch (\MediaVorus\Exception\FileNotFoundException $e) {

@@ -46,7 +46,6 @@ class Query implements ControllerProviderInterface
 
                 $options = new \searchEngine_options();
 
-
                 $bas = is_array($request->get('bas')) ? $request->get('bas') : array_keys($user->ACL()->get_granted_base());
 
                 /* @var $user \User_Adapter */
@@ -148,7 +147,6 @@ class Query implements ControllerProviderInterface
                 }
                 $string .= '<div style="display:none;"><div id="NEXT_PAGE"></div><div id="PREV_PAGE"></div></div>';
 
-
                 $explain = "<div id=\"explainResults\" class=\"myexplain\">";
 
                 $explain .= "<img src=\"/skins/icons/answers.gif\" /><span><b>";
@@ -204,14 +202,12 @@ class Query implements ControllerProviderInterface
                     )
                 );
 
-
                 $json['query'] = $query;
                 $json['phrasea_props'] = $proposals;
                 $json['total_answers'] = (int) $result->get_count_available_results();
                 $json['next_page'] = ($page < $npages && $result->get_count_available_results() > 0) ? ($page + 1) : false;
                 $json['prev_page'] = ($page > 1 && $result->get_count_available_results() > 0) ? ($page - 1) : false;
                 $json['form'] = $form;
-
 
                 $datas = $app['Core']['Serializer']->serialize($json, 'json');
 

@@ -72,7 +72,6 @@ class patch_320e implements patchInterface
         $stmt->execute();
         $stmt->closeCursor();
 
-
         $dom = $databox->get_dom_structure();
         $xpath = $databox->get_xpath_structure();
 

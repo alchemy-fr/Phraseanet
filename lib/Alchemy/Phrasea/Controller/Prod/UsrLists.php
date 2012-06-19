@@ -81,7 +81,6 @@ class UsrLists implements ControllerProviderInterface
                             );
                         }
 
-
                         /* @var $list \Entities\UsrList */
                         $result[] = array(
                             'name'    => $list->getName(),
@@ -212,7 +211,6 @@ class UsrLists implements ControllerProviderInterface
                     );
                 }
 
-
                 /* @var $list \Entities\UsrList */
                 $result = array(
                     'id'      => $list->getId(),
@@ -222,7 +220,6 @@ class UsrLists implements ControllerProviderInterface
                     'owners'  => $owners,
                     'users'   => $entries
                 );
-
 
                 return new Response($app['Core']->getTwig()->render('prod/actions/Feedback/list.html.twig', $result));
             }
@@ -322,7 +319,6 @@ class UsrLists implements ControllerProviderInterface
                 return new Response($Json, 200, array('Content-Type' => 'application/json'));
             }
         )->assert('list_id', '\d+');
-
 
         /**
          * Remove a usr_id from a list
@@ -589,7 +585,6 @@ class UsrLists implements ControllerProviderInterface
                 return new Response($Json, 200, array('Content-Type' => 'application/json'));
             }
         )->assert('list_id', '\d+')->assert('usr_id', '\d+');
-
 
         return $controllers;
     }

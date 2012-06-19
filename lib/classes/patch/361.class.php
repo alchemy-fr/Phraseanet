@@ -90,7 +90,6 @@ class patch_361 implements patchInterface
             }
         }
 
-
         $dql = "SELECT b FROM Entities\Basket b WHERE b.description != ''";
 
         $n = 0;
@@ -128,7 +127,6 @@ class patch_361 implements patchInterface
         }
 
         $em->flush();
-
 
         return true;
     }

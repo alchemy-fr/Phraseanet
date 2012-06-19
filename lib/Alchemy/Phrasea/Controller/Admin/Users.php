@@ -33,7 +33,6 @@ class Users implements ControllerProviderInterface
 
         $controllers = new ControllerCollection();
 
-
         $controllers->post('/rights/', function(Application $app) {
                 $rights = new UserHelper\Edit($app['Core'], $app['request']);
 
@@ -233,7 +232,6 @@ class Users implements ControllerProviderInterface
                     );
                 }
 
-
                 $CSVDatas = \format::arr_to_csv($userTable);
 
                 $response = new Response($CSVDatas, 200, array('Content-Type' => 'text/plain'));
@@ -264,7 +262,6 @@ class Users implements ControllerProviderInterface
                 $have_right = $request->get('have_right') ? : array();
                 $have_not_right = $request->get('have_not_right') ? : array();
                 $on_base = $request->get('on_base') ? : array();
-
 
                 $elligible_users = $user_query
                     ->on_sbas_where_i_am($user->ACL(), $rights)
@@ -298,7 +295,6 @@ class Users implements ControllerProviderInterface
                         , array('Content-type' => 'application/json')
                 );
             });
-
 
         $controllers->post('/create/', function(Application $app) {
 

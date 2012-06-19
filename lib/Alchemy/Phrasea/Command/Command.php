@@ -13,7 +13,6 @@ namespace Alchemy\Phrasea\Command;
 
 use Monolog\Logger;
 use Symfony\Component\Console\Command\Command as SymfoCommand;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Abstract command which represents a Phraseanet base command
@@ -26,7 +25,7 @@ abstract class Command extends SymfoCommand
 
     /**
      * Constructor
-     * @param type $name 
+     * @param type $name
      */
     public function __construct($name)
     {
@@ -38,8 +37,8 @@ abstract class Command extends SymfoCommand
     /**
      * Set a logger to the command
      *
-     * @param Logger $logger
-     * @return \Alchemy\Phrasea\Command\Command 
+     * @param  Logger                           $logger
+     * @return \Alchemy\Phrasea\Command\Command
      */
     public function setLogger(Logger $logger)
     {

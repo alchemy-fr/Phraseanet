@@ -327,7 +327,6 @@ class Bridge_Account
         $results = array();
         $apis = array();
 
-
         foreach ($rs as $row) {
             $api_id = $row['api_id'];
             if ( ! isset($apis[$api_id])) {

@@ -162,7 +162,6 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
 
         $this->opt_status = $options->get_status();
 
-
         return $this;
     }
 
@@ -270,7 +269,6 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
         }
 
         $results = new set_result();
-
 
         $perPage = $this->get_per_page();
         $page = $this->get_current_page();

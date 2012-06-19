@@ -28,7 +28,6 @@ class module_console_sphinxGenerateSuggestion extends Command
 
         $this->setDescription('Generate suggestions for Sphinx Search Engine');
 
-
         return $this;
     }
 

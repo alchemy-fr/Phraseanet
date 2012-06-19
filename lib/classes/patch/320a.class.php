@@ -69,8 +69,6 @@ class patch_320a implements patchInterface
         }
         $stmt->closeCursor();
 
-
-
         $sql = 'SELECT task_id, `class` FROM task2';
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();

@@ -88,7 +88,6 @@ class setup
     {
         require(__DIR__ . "/../../lib/conf.d/_GV_template.inc");
 
-
         if ($registry->is_set('GV_timezone'))
             date_default_timezone_set($registry->get('GV_timezone'));
         else
@@ -114,7 +113,6 @@ class setup
                         }
                     }
                 }
-
 
                 $type = 'string';
                 switch ($variable['type']) {
@@ -398,7 +396,6 @@ class setup
                             $(el).closest('li').addClass('blocker');
                     });
 
-
                 }
             </script>
 
@@ -638,7 +635,7 @@ class setup
                         case 'k':
                             $memoryRequired *= 1024;
                     }
-                    
+
                     if ($memoryFound >= $memoryRequired) {
                         $constraints[] = new Setup_Constraint($conf, true, sprintf('%s = `%s` => OK', $conf, $value), ! in_array($conf, $nonblockers));
                     } else {
@@ -745,7 +742,7 @@ class setup
                     $stmt->execute();
                     $stmt->closeCursor();
                 } catch (Exception $e) {
-                    
+
                 }
             }
             if ($connbas) {
@@ -756,7 +753,7 @@ class setup
                         $stmt->execute();
                         $stmt->closeCursor();
                     } catch (Exception $e) {
-                        
+
                     }
                 }
             }

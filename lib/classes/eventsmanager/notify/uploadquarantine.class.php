@@ -34,9 +34,9 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
 
     /**
      *
-     * @param  string        $event
-     * @param  Array         $params
-     * @param  mixed content $object
+     * @param string        $event
+     * @param Array         $params
+     * @param mixed content $object
      */
     public function fire($event, $params, &$object)
     {
@@ -100,7 +100,7 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
      * Notifiy an user using the specified datas
      *
      * @param \User_Adapter $user
-     * @param string $datas
+     * @param string        $datas
      */
     private function notifyUser(\User_Adapter $user, $datas)
     {

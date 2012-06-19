@@ -534,7 +534,6 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
         $stmt->execute(array(':feed_id' => $this->get_id()));
         $stmt->closeCursor();
 
-
         $this->delete_data_from_cache();
 
         $feed_coll = new Feed_Collection($this->appbox, array());

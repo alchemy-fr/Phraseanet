@@ -74,7 +74,6 @@ class module_console_systemUpgrade extends Command
             $continue = mb_strtolower($dialog->ask($output, '<question>' . _('Continuer ?') . ' (Y/n)</question>', 'Y'));
         } while ( ! in_array($continue, array('y', 'n')));
 
-
         if ($continue == 'y') {
             try {
                 $Core = \bootstrap::getCore();

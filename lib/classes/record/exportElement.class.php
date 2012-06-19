@@ -149,11 +149,9 @@ class record_exportElement extends record_adapter
             $this->add_count('document', $sd['document']->get_size());
         }
 
-
         foreach ($subdefs as $subdef) {
             $name = $subdef->get_name();
             $class = $subdef->get_class();
-
 
             $subdef_label = $name;
             foreach ($subdef->get_labels() as $lang => $label) {

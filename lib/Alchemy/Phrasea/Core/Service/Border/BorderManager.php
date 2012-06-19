@@ -15,7 +15,6 @@ use Alchemy\Phrasea\Border;
 use Alchemy\Phrasea\Core;
 use Alchemy\Phrasea\Core\Service;
 use Alchemy\Phrasea\Core\Service\ServiceAbstract;
-use Alchemy\Phrasea\Core\Service\ServiceInterface;
 
 /**
  * Define a Border Manager service which handles checks on files that comes in
@@ -78,10 +77,10 @@ class BorderManager extends ServiceAbstract
 
                 try {
                     $checkerObj = new $className($options);
-                    if(isset($checker['databoxes'])) {
+                    if (isset($checker['databoxes'])) {
 
                         $databoxes = array();
-                        foreach($checker['databoxes'] as $sbas_id) {
+                        foreach ($checker['databoxes'] as $sbas_id) {
                             try {
                                 $databoxes[] = \databox::get_instance($sbas_id);
                             } catch (\Exception $e) {
@@ -91,10 +90,10 @@ class BorderManager extends ServiceAbstract
 
                         $checkerObj->restrictToDataboxes($databoxes);
                     }
-                    if(isset($checker['collections'])) {
+                    if (isset($checker['collections'])) {
 
                         $collections = array();
-                        foreach($checker['collections'] as $base_id) {
+                        foreach ($checker['collections'] as $base_id) {
                             try {
                                 $collections[] = \collection::get_from_base_id($base_id);
                             } catch (\Exception $e) {

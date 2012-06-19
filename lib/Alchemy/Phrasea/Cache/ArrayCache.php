@@ -36,7 +36,7 @@ class ArrayCache extends DoctrineArray implements Cache
     {
         return false;
     }
-    
+
     /**
      * {@inheritdoc}
      */

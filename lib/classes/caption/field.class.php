@@ -71,7 +71,7 @@ class caption_field implements cache_cacheableInterface
         try {
             return $this->get_data_from_cache();
         } catch (\Exception $e) {
-            
+
         }
 
         $connbas = $this->databox_field->get_connection();
@@ -327,7 +327,7 @@ class caption_field implements cache_cacheableInterface
                     $record->set_metadatas(array());
                     unset($record);
                 } catch (Exception $e) {
-                    
+
                 }
             }
 
@@ -377,7 +377,7 @@ class caption_field implements cache_cacheableInterface
 
             unset($record);
         } catch (Exception $e) {
-            
+
         }
 
         return;
@@ -447,7 +447,7 @@ class caption_field implements cache_cacheableInterface
                     unset($caption_field);
                     unset($record);
                 } catch (Exception $e) {
-                    
+
                 }
             }
 
@@ -479,7 +479,7 @@ class caption_field implements cache_cacheableInterface
         if (isset(self::$localCache[$this->get_cache_key($option)])) {
             return self::$localCache[$this->get_cache_key($option)];
         }
-        
+
         throw new Exception('no value');
     }
 

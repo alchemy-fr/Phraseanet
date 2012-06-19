@@ -75,7 +75,6 @@ class patch_3604 implements patchInterface
 
         }
 
-
         try {
             $sql = 'ALTER TABLE `metadatas` DROP INDEX `unique`';
 
@@ -138,7 +137,6 @@ class patch_3604 implements patchInterface
             }
 
             $stmt->closeCursor();
-
 
             $sql = 'DELETE FROM metadatas WHERE id = :id';
             $stmt = $databox->get_connection()->prepare($sql);

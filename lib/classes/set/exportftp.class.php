@@ -44,7 +44,6 @@ class set_exportftp extends set_export
             $email_dest = $user_t->get_email();
         }
 
-
         $text_mail_receiver = "Bonjour,\n"
             . "L'utilisateur "
             . $user_f->get_display_name() . " (login : " . $user_f->get_login() . ") "

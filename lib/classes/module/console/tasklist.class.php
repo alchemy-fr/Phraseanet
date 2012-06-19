@@ -39,9 +39,9 @@ class module_console_tasklist extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        try{
+        try {
             $this->checkSetup();
-        } catch (\RuntimeException $e){
+        } catch (\RuntimeException $e) {
             return self::EXITCODE_SETUP_ERROR;
         }
 

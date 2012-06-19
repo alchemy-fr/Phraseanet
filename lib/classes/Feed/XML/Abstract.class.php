@@ -238,7 +238,7 @@ abstract class Feed_XML_Abstract
         $group = $this->addTag($document, $item, 'media:group');
 
         $caption = $content->get_record()->get_caption();
-        
+
         $title_field = $caption->get_dc_field(databox_Field_DCESAbstract::Title);
         if ($title_field) {
             $str_title = $title_field->get_serialized_values(' ');
@@ -318,7 +318,6 @@ abstract class Feed_XML_Abstract
                 $thumbnail->setAttribute('width', $thumbnail_sd->get_width());
             if ($thumbnail_sd->get_height())
                 $thumbnail->setAttribute('height', $thumbnail_sd->get_height());
-
 
             $thumbnail = $this->addTag($document, $group, 'media:content');
 

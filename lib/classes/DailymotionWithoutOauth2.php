@@ -85,4 +85,3 @@ class DailymotionWithoutOauth2 extends Dailymotion
     }
 }
 
-?>

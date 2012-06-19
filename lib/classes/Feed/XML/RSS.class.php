@@ -242,7 +242,6 @@ class Feed_XML_RSS extends Feed_XML_Abstract implements Feed_XML_Interface
         $doc->formatOutput = true;
         $doc->standalone = true;
 
-
         $root = $this->addTag($doc, $doc, 'rss');
 
         $root->setAttribute('version', self::VERSION);

@@ -189,7 +189,6 @@ class Push implements ControllerProviderInterface
                         throw new ControllerException(_('No elements to push'));
                     }
 
-
                     $events_manager = \eventsmanager_broker::getInstance(\appbox::get_instance($app['Core']), $app['Core']);
 
                     foreach ($receivers as $receiver) {
@@ -362,7 +361,6 @@ class Push implements ControllerProviderInterface
                     } else {
                         $Validation = $Basket->getValidation();
                     }
-
 
                     $appbox = \appbox::get_instance($app['Core']);
 
@@ -608,7 +606,6 @@ class Push implements ControllerProviderInterface
                     }
                 }
 
-
                 return new Response($Serializer->serialize($result, 'json'), 200, array('Content-Type' => 'application/json'));
             });
 
@@ -659,9 +656,6 @@ class Push implements ControllerProviderInterface
                 return new Response($Json, 200, array('Content-Type' => 'application/json'));
             }
         );
-
-
-
 
         $controllers->match('/edit-list/{list_id}/', function(Application $app, Request $request, $list_id) {
 

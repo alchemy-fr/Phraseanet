@@ -287,7 +287,6 @@ class appbox extends base
 
         $upgrader->add_steps_complete(1);
 
-
         $upgrader->set_current_message(_('Creating new tables'));
         $core = bootstrap::getCore();
         $em = $core->getEntityManager();
@@ -349,7 +348,6 @@ class appbox extends base
         $upgrader->set_current_message(_('Post upgrade'));
         $this->post_upgrade($upgrader);
         $upgrader->add_steps_complete(1);
-
 
         /**
          * Step 9

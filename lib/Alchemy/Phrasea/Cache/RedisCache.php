@@ -95,7 +95,7 @@ class RedisCache extends CacheProvider implements Cache
     protected function doGetStats()
     {
         $stats = $this->_redis->info();
-        
+
         return array(
             Cache::STATS_HITS              => false,
             Cache::STATS_MISSES            => false,
