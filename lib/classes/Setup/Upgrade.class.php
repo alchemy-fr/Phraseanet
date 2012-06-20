@@ -134,6 +134,11 @@ class Setup_Upgrade
         $this->recommendations[] = array($recommendation, $command);
     }
 
+    /**
+     * Return an array of recommendations
+     *
+     * @return array
+     */
     public function getRecommendations()
     {
         return $this->recommendations;

@@ -75,6 +75,10 @@ class Upgrader implements ControllerProviderInterface
                 $upgrader = new \Setup_Upgrade($appbox);
                 $appbox->forceUpgrade($upgrader);
 
+                /**
+                 * @todo Show recomandation instead of redirect
+                 */
+
                 return new \Symfony\Component\HttpFoundation\RedirectResponse('/');
             });
 
