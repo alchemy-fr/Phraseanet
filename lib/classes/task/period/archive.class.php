@@ -1495,7 +1495,7 @@ class task_period_archive extends task_abstract
      * @param  string          $captionFile The optionnal Phrasea XML caption file
      * @return \record_adapter
      */
-    private function createStory(\collection $collection, $pathfile, $captionFile = null)
+    public function createStory(\collection $collection, $pathfile, $captionFile = null)
     {
         $stat0 = $stat1 = "0";
 
@@ -1559,7 +1559,7 @@ class task_period_archive extends task_abstract
      * @param  integer      $force       Force lazaret or record ; use \Alchemy\Phrasea\Border\Manager::FORCE_* constants
      * @return null
      */
-    private function createRecord(\collection $collection, $pathfile, $captionFile, $grp_rid, $force = null)
+    public function createRecord(\collection $collection, $pathfile, $captionFile, $grp_rid, $force = null)
     {
         $stat0 = $stat1 = "0";
 
