@@ -114,8 +114,9 @@ class databox extends base
 
         $connection_params = phrasea::sbas_params();
 
-        if ( ! isset($connection_params[$sbas_id]))
-            throw new Exception_DataboxNotFound ();
+        if ( ! isset($connection_params[$sbas_id])) {
+            throw new Exception_DataboxNotFound(sprintf('databox %d not found', $sbas_id));
+        }
 
         $this->host = $connection_params[$sbas_id]['host'];
         $this->port = $connection_params[$sbas_id]['port'];
