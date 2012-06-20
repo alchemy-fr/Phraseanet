@@ -31,6 +31,11 @@ class Setup_Upgrade
      * @var string
      */
     protected $message;
+    /**
+     *
+     * @var array
+     */
+    protected $recommendations = array();
 
     /**
      *
@@ -117,6 +122,21 @@ class Setup_Upgrade
         $this->write_lock();
 
         return $this;
+    }
+
+    /**
+     *
+     * @param type $recommendation
+     * @param type $command
+     */
+    public function addRecommendation($recommendation, $command = null)
+    {
+        $this->recommendations[] = array($recommendation, $command);
+    }
+
+    public function getRecommendations()
+    {
+        return $this->recommendations;
     }
 
     /**

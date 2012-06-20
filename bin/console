@@ -58,6 +58,7 @@ try {
     $app->add(new module_console_checkExtension('check:extension'));
 
     $app->add(new module_console_systemUpgrade('system:upgrade'));
+    $app->add(new \Alchemy\Phrasea\Command\UpgradeDBDatas('system:upgrade-datas'));
 
     $app->add(new module_console_sphinxGenerateSuggestion('sphinx:generate-suggestions'));
 
@@ -85,7 +86,7 @@ try {
 
     $app->add(new Alchemy\Phrasea\Command\RescanTechnicalDatas('records:rescan-technical-datas'));
     $app->add(new Alchemy\Phrasea\Command\BuildMissingSubdefs('records:build-missing-subdefs'));
-    
+
     $result_code = is_int($app->run()) ? : 1;
 } catch (Exception $e) {
     echo sprintf("an error occured : %s", $e->getMessage());
