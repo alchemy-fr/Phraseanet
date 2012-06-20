@@ -32,23 +32,6 @@ class task_period_archive extends task_abstract
      *
      * @var <type>
      */
-    protected $mimeTypes = array(
-        "jpg"  => "image/jpeg",
-        "jpeg" => "image/jpeg",
-        "pdf"  => "application/pdf"
-    );
-
-    /**
-     * HOT files list
-     *
-     * @var <type>
-     */
-    protected $hotfiles = array();
-
-    /**
-     *
-     * @var <type>
-     */
     protected $sxTaskSettings = null;
 
     /**
@@ -113,7 +96,7 @@ class task_period_archive extends task_abstract
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
                 $pvalue = $parm2[$pname];
-                if (($ns = $dom->getElementsByTagName($pname)->item(0)) != NULL) {
+                if (($ns = $dom->getElementsByTagName($pname)->item(0)) != null) {
                     // le champ existait dans le xml, on supprime son ancienne valeur (tout le contenu)
                     while (($n = $ns->firstChild)) {
                         $ns->removeChild($n);
@@ -178,8 +161,10 @@ class task_period_archive extends task_abstract
             <?php echo $form ?>.copy_spe.checked      = <?php echo p4field::isyes($sxml->copy_spe) ? "true" : "false" ?>;
             </script>
             <?php
+
             return("");
         } else { // ... so we NEVER come here
+
             // bad xml
             return("BAD XML");
         }
@@ -208,6 +193,7 @@ class task_period_archive extends task_abstract
             }
         </script>
         <?php
+
         return;
     }
 
@@ -255,6 +241,7 @@ class task_period_archive extends task_abstract
             <input type="checkbox" name="delfolder" onchange="chgxmlck(this, 'delfolder');">&nbsp;<?php echo _('task::archive:supprimer les repertoires apres archivage') ?><br/>
         </form>
         <?php
+
         return ob_get_clean();
     }
 
@@ -270,13 +257,12 @@ class task_period_archive extends task_abstract
 
     /**
      *
-     * @return <type>
+     * @return void
      */
     protected function run2()
     {
         $this->debug = FALSE;
 
-        $ret = '';
         $core = \bootstrap::getCore();
         $conn = connection::getPDOConnection();
 
@@ -310,8 +296,6 @@ class task_period_archive extends task_abstract
 
         if (($this->sxBasePrefs = simplexml_load_string($collection->get_prefs())) != FALSE) {
             $this->sxBasePrefs["id"] = $base_id;
-
-            $do_it = true;
 
             $this->period = (int) ($this->sxTaskSettings->period);
             if ($this->period <= 0 || $this->period >= 3600) {
@@ -374,7 +358,8 @@ class task_period_archive extends task_abstract
                     if ($this->getRunner() == self::RUNNER_SCHEDULER) {
                         $this->log(("Warning : abox connection lost, restarting in 10 min."));
 
-                        for ($t = 60 * 10; $this->running && $t; $t -- ) { // DON'T do sleep(600) because it prevents ticks !
+                         // DON'T do sleep(600) because it prevents ticks !
+                         for ($t = 60 * 10; $this->running && $t; $t -- ) {
                             sleep(1);
                         }
                         // because connection is lost we cannot change status to 'torestart'
@@ -394,7 +379,8 @@ class task_period_archive extends task_abstract
                     if ($this->getRunner() == self::RUNNER_SCHEDULER) {
                         $this->log(sprintf(('Warning : missing hotfolder \'%s\', restarting in 10 min.'), $path_in));
 
-                        for ($t = 60 * 10; $this->running && $t; $t -- ) { // DON'T do sleep(600) because it prevents ticks !
+                         // DON'T do sleep(600) because it prevents ticks !
+                        for ($t = 60 * 10; $this->running && $t; $t -- ) {
                             sleep(1);
                         }
                         if ($this->getState() === self::STATE_STARTED) {
@@ -512,10 +498,10 @@ class task_period_archive extends task_abstract
 
     /**
      *
-     * @param  <type> $server_coll_id
-     * @return <type>
+     * @param  int $server_coll_id
+     * @return string
      */
-    public function archiveHotFolder($server_coll_id)
+    protected function archiveHotFolder($server_coll_id)
     {
         clearstatcache();
 
@@ -558,15 +544,16 @@ class task_period_archive extends task_abstract
         $this->path_in = $path_in;
 
         $nnew = $this->listFilesPhase1($dom, $root, $path_in, $server_coll_id);
-
-        if ($this->debug)
+        if ($this->debug) {
             $this->log("=========== listFilesPhase1 ========== (returned " . $nnew . ")\n" . $dom->saveXML());
+        }
 
         // special case : status has changed to TOSTOP while listing files
         if ($nnew === 'TOSTOP') {
             return('TOSTOP');
         }
 
+        // wait for files to be cold
         $cold = (int) ($this->sxTaskSettings->cold);
         if ($cold <= 0 || $cold >= 300) {
             $cold = 30;
@@ -581,49 +568,60 @@ class task_period_archive extends task_abstract
             $cold -= 2;
         }
 
-        $this->listFilesPhase2($dom, $root, $path_in);
-        if ($this->debug)
+        $nnew = $this->listFilesPhase2($dom, $root, $path_in);
+        if ($this->debug) {
             $this->log("=========== listFilesPhase2 ========== : \n" . $dom->saveXML());
+        }
+
+        // special case : status has changed to TOSTOP while listing files
+        if ($nnew === 'TOSTOP') {
+            return('TOSTOP');
+        }
 
         $this->makePairs($dom, $root, $path_in, $path_archived, $path_error);
-        if ($this->debug)
+        if ($this->debug) {
             $this->log("=========== makePairs ========== : \n" . $dom->saveXML());
+        }
 
         $r = $this->removeBadGroups($dom, $root, $path_in, $path_archived, $path_error);
-        if ($this->debug)
+        if ($this->debug) {
             $this->log("=========== removeBadGroups ========== (returned " . ($r ? 'true' : 'false') . ") : \n" . $dom->saveXML());
+        }
 
         $this->archive($dom, $root, $path_in, $path_archived, $path_error);
-        if ($this->debug)
+        if ($this->debug) {
             $this->log("=========== archive ========== : \n" . $dom->saveXML());
+        }
 
         $this->bubbleResults($dom, $root, $path_in);
-        if ($this->debug)
+        if ($this->debug) {
             $this->log("=========== bubbleResults ========== : \n" . $dom->saveXML());
+        }
 
         $r = $this->moveFiles($dom, $root, $path_in, $path_archived, $path_error);
-        if ($this->debug)
+        if ($this->debug) {
             $this->log("=========== moveFiles ========== (returned " . ($r ? 'true' : 'false') . ") : \n" . $dom->saveXML());
+        }
+
         if ($this->movedFiles) {
+
             // something happened : a least one file has moved
             return('MAXRECSDONE');
         } elseif (memory_get_usage() >> 20 > 25) {
+
             return('MAXMEMORY');
         } else {
+
             return('NORECSTODO');
         }
-
-//print($dom->saveXML());
-// unset($dom);
-// die();
     }
 
     /**
      *
-     * @param  <type> $f
-     * @return <type>
+     * @param  string $f
+     * @return boolean
      */
-    public function isIgnoredFile($f)
+    protected function isIgnoredFile($f)
     {
         $f = strtolower($f);
 
@@ -633,11 +631,11 @@ class task_period_archive extends task_abstract
     /**
      * check if the file matches any mask, and flag the 'caption' file if found
      *
-     * @param  <type> $dom
-     * @param  <type> $node
-     * @return <type>
+     * @param  DOMDocument $dom
+     * @param  DOMElement $node
+     * @return void
      */
-    public function checkMatch($dom, $node)
+    protected function checkMatch($dom, $node)
     {
         $file = $node->getAttribute('name');
 
@@ -675,22 +673,27 @@ class task_period_archive extends task_abstract
      *  list every file, all 'hot'
      *  read .phrasea.xml files
      *
-     * @param  <type> $dom
-     * @param  <type> $node
-     * @param  <type> $path
-     * @param  <type> $server_coll_id
-     * @return <type>
+     * @param  DOMDocument $dom
+     * @param  DomElement $node
+     * @param  string $path
+     * @param  int $server_coll_id
+     * @return int|string the number on found files or "TOSTOP" if task is to stop
      */
-    public function listFilesPhase1($dom, $node, $path, $server_coll_id)
+    private function listFilesPhase1($dom, $node, $path, $server_coll_id, $depth = 0)
     {
-        // $this->traceRam();
+        static $time0 = null;
+        if ($depth == 0) {
+            $time0 = time();
+        }
+
         $nnew = 0;
 
         try {
             $listFolder = new CListFolder($path);
 
             if (($sxDotPhrasea = @simplexml_load_file($path . '/.phrasea.xml')) != FALSE) {
-                // on gere le magicfile
+
+                // test for magic file
                 if (($magicfile = trim((string) ($sxDotPhrasea->magicfile))) != '') {
                     $magicmethod = strtoupper($sxDotPhrasea->magicfile['method']);
                     if ($magicmethod == 'LOCK' && file_exists($path . '/' . $magicfile)) {
@@ -700,7 +703,7 @@ class task_period_archive extends task_abstract
                     }
                 }
 
-                // on gere le changement de collection
+                // change collection ?
                 if (($new_cid = $sxDotPhrasea['collection']) != '') {
                     if (isset($this->TColls['c' . $new_cid])) {
                         $server_coll_id = $new_cid;
@@ -714,10 +717,10 @@ class task_period_archive extends task_abstract
 
             $iloop = 0;
             $time0 = time();
-            while (($file = $listFolder->read()) !== NULL) {
-                if (time() - $time0 >= 2) { // each 2 secs, check the status of the task
-                    $s = $this->getState();
-                    if ($s == self::STATE_TOSTOP) {
+            while (($file = $listFolder->read()) !== null) {
+                 // each 2 secs, check the status of the task
+                if (time() - $time0 >= 2) {
+                    if ($this->getState() == self::STATE_TOSTOP) {
                         $nnew = 'TOSTOP'; // since we will return a string...
                         break;    // ...we can check it against numerical result
                     }
@@ -737,7 +740,7 @@ class task_period_archive extends task_abstract
                     $n->setAttribute('isdir', '1');
                     $n->setAttribute('name', $file);
 
-                    $_nnew_ = $this->listFilesPhase1($dom, $n, $path . '/' . $file, $server_coll_id);
+                    $_nnew_ = $this->listFilesPhase1($dom, $n, $path . '/' . $file, $server_coll_id, $depth + 1);
                     if ($_nnew_ === 'TOSTOP') {
                         $nnew = 'TOSTOP'; // special case to quit recursion
                         break;
@@ -769,17 +772,19 @@ class task_period_archive extends task_abstract
      *   list again and flag dead files as 'cold'
      *
      * @staticvar int $iloop
-     * @param  <type> $dom
-     * @param  <type> $node
-     * @param  <type> $path
-     * @param  <type> $depth
-     * @return <type>
+     * @param  DOMDocument $dom
+     * @param  DOMElement $node
+     * @param  string $path
+     * @param  int $depth
+     * @return int|string the number of NEW files or "TOSTOP" if task is to stop
      */
-    public function listFilesPhase2($dom, $node, $path, $depth = 0)
+    private function listFilesPhase2($dom, $node, $path, $depth = 0)
     {
         static $iloop = 0;
+        static $time0 = NULL;
         if ($depth == 0) {
             $iloop = 0;
+            $time0 = time();
         }
 
         $nnew = 0;
@@ -790,28 +795,28 @@ class task_period_archive extends task_abstract
             $xp = new DOMXPath($dom);
 
             if (($sxDotPhrasea = @simplexml_load_file($path . '/.phrasea.xml')) != FALSE) {
-                // on gere le magicfile
+
+                // test magicfile
                 if (($magicfile = trim((string) ($sxDotPhrasea->magicfile))) != '') {
                     $magicmethod = strtoupper($sxDotPhrasea->magicfile['method']);
                     if ($magicmethod == 'LOCK' && file_exists($path . '/' . $magicfile)) {
-                        return;
+                        return 0;
                     } elseif ($magicmethod == 'UNLOCK' && ! file_exists($path . '/' . $magicfile)) {
-                        return;
+                        return 0;
                     }
                 }
             }
 
-            // on gere le magicfile
-            if (($magicfile = trim((string) @($sxDotPhrasea->magicfile))) != '') {
-                $magicmethod = strtoupper($sxDotPhrasea->magicfile['method']);
-                if ($magicmethod == 'LOCK' && file_exists($path . '/' . $magicfile)) {
-                    return;
-                } elseif ($magicmethod == 'UNLOCK' && ! file_exists($path . '/' . $magicfile)) {
-                    return;
+            while (($file = $listFolder->read()) !== null) {
+                 // each 2 secs, check the status of the task
+                if (time() - $time0 >= 2) {
+                    if ($this->getState() == self::STATE_TOSTOP) {
+                        $nnew = 'TOSTOP'; // since we will return a string...
+                        break;    // ...we can check it against numerical result
+                    }
+                    $time0 = time();
                 }
-            }
 
-            while (($file = $listFolder->read()) !== NULL) {
                 if ($this->isIgnoredFile($file)) {
                     continue;
                 }
@@ -827,17 +832,18 @@ class task_period_archive extends task_abstract
                         $n->setAttribute('isdir', '1');
                         $n->setAttribute('name', $file);
 
-                        $nnew += $this->listFilesPhase2($dom, $n, $path . '/' . $file, $depth + 1);
+                        $_nnew_ = $this->listFilesPhase2($dom, $n, $path . '/' . $file, $depth + 1);
+                        if ($_nnew_ === 'TOSTOP') {
+                            $nnew = 'TOSTOP'; // special case to quit recursion
+                            break;
+                        } else {
+                            $nnew += $_nnew_; // normal case, _nnew_ is a number
+                        }
                     } else {
                         $n = $node->appendChild($dom->createElement('file'));
                         $n->setAttribute('name', $file);
-//            $stat = stat($path.'/'.$file);
-//            foreach(array("size", "ctime", "mtime") as $k)
-//              $n->setAttribute($k, $stat[$k]);
                         $nnew ++;
                     }
-//          $n->setAttribute('cid', $server_coll_id);
-//          $n->setAttribute('temperature', 'hot');
                     $this->setBranchHot($dom, $n);
                 } elseif ($dnl && $dnl->length == 1) {
                     $dnl->item(0)->setAttribute('temperature', 'cold');
@@ -859,7 +865,7 @@ class task_period_archive extends task_abstract
 
         }
 
-        return;
+        return $nnew;
     }
 
     /**
@@ -869,16 +875,16 @@ class task_period_archive extends task_abstract
      *  declare uncomplete grp as error
      *
      * @staticvar int $iloop
-     * @param  <type> $dom
-     * @param  <type> $node
-     * @param  <type> $path
-     * @param  <type> $path_archived
-     * @param  <type> $path_error
-     * @param  <type> $inGrp
-     * @param  <type> $depth
-     * @return <type>
+     * @param  DOMDocument $dom
+     * @param  DOMElement $node
+     * @param  string $path
+     * @param  string $path_archived
+     * @param  string $path_error
+     * @param  boolean $inGrp
+     * @param  int $depth
+     * @return void
      */
-    public function makePairs($dom, $node, $path, $path_archived, $path_error, $inGrp = false, $depth = 0)
+    private function makePairs($dom, $node, $path, $path_archived, $path_error, $inGrp = false, $depth = 0)
     {
         static $iloop = 0;
         if ($depth == 0) {
@@ -944,7 +950,6 @@ class task_period_archive extends task_abstract
                             // ... as the existing linked file(s) ...
                             foreach ($flink as $linkName => $v) {
                                 if ($v) {  // this linked file exists
-                                    // $v->setAttribute('grp', '1');
                                     $v->setAttribute('match', '*');
                                     $n->setAttribute('grp_' . $linkName, $v->getAttribute('name'));
                                 }
@@ -1009,15 +1014,15 @@ class task_period_archive extends task_abstract
      *   move files to archived or error dir
      *
      * @staticvar int $iloop
-     * @param  <type> $dom
-     * @param  <type> $node
-     * @param  <type> $path
-     * @param  <type> $path_archived
-     * @param  <type> $path_error
-     * @param  <type> $depth
-     * @return <type>
+     * @param  DOMDocument $dom
+     * @param  DOMElement $node
+     * @param  string $path
+     * @param  string $path_archived
+     * @param  string $path_error
+     * @param  int $depth
+     * @return void
      */
-    public function removeBadGroups($dom, $node, $path, $path_archived, $path_error, $depth = 0)
+    private function removeBadGroups($dom, $node, $path, $path_archived, $path_error, $depth = 0)
     {
         static $iloop = 0;
         if ($depth == 0) {
@@ -1086,15 +1091,15 @@ class task_period_archive extends task_abstract
      *   do special work on grp folders
      *
      * @staticvar int $iloop
-     * @param  <type> $dom
-     * @param  <type> $node
-     * @param  <type> $path
-     * @param  <type> $path_archived
-     * @param  <type> $path_error
-     * @param  <type> $depth
-     * @return <type>
+     * @param  DOMDOcument $dom
+     * @param  DOMElement $node
+     * @param  string $path
+     * @param  string $path_archived
+     * @param  string $path_error
+     * @param  int $depth
+     * @return void
      */
-    public function archive($dom, $node, $path, $path_archived, $path_error, $depth = 0)
+    private function archive($dom, $node, $path, $path_archived, $path_error, $depth = 0)
     {
         static $iloop = 0;
         if ($depth == 0) {
@@ -1160,13 +1165,13 @@ class task_period_archive extends task_abstract
      *   to help creation of result folders and cleaning of the hotfolder
      *
      * @staticvar int $iloop
-     * @param  <type> $dom
-     * @param  <type> $node
-     * @param  <type> $path
-     * @param  <type> $depth
-     * @return <type>
+     * @param  DOMDocument $dom
+     * @param  DOMElement $node
+     * @param  string $path
+     * @param  int $depth
+     * @return int  flags used only inside recursion
      */
-    public function bubbleResults($dom, $node, $path, $depth = 0)
+    private function bubbleResults($dom, $node, $path, $depth = 0)
     {
         static $iloop = 0;
         if ($depth == 0) {
@@ -1190,13 +1195,6 @@ class task_period_archive extends task_abstract
                     $n->setAttribute('archived', '1');
                 }
             }
-//      else
-//      {
-//        if(!$n->getAttribute('isdir') && ($n->getAttribute('temperature') == 'cold' && !$n->getAttribute('archived')))
-//        {
-//          $n->setAttribute('error', '1');
-//        }
-//      }
             if ($n->getAttribute('keep') == '1') {
                 $ret |= 1;
             }
@@ -1228,15 +1226,15 @@ class task_period_archive extends task_abstract
      *   move files to archived or error dir
      *
      * @staticvar int $iloop
-     * @param  <type> $dom
-     * @param  <type> $node
-     * @param  <type> $path
-     * @param  <type> $path_archived
-     * @param  <type> $path_error
-     * @param  <type> $depth
-     * @return <type>
+     * @param  DOMDocument $dom
+     * @param  DOMElement $node
+     * @param  string $path
+     * @param  string $path_archived
+     * @param  string $path_error
+     * @param  int $depth
+     * @return boolean  at least one file was moved
      */
-    public function moveFiles($dom, $node, $path, $path_archived, $path_error, $depth = 0)
+    private function moveFiles($dom, $node, $path, $path_archived, $path_error, $depth = 0)
     {
         static $iloop = 0;
         if ($depth == 0) {
@@ -1304,7 +1302,6 @@ class task_period_archive extends task_abstract
                 if ( ! $n->getAttribute('keep')) {
                     $this->log(sprintf(('delete \'%s\''), $subpath . '/' . $name));
                     if (@unlink($path . '/' . $name)) {
-                        //      $n->parentNode->removeChild($n);
                         $this->movedFiles ++;
                     } else {
                         $this->log(sprintf(("Warning : can't delete '%s' from hotfolder, task is stopped"), $subpath . '/' . $name));
@@ -1322,11 +1319,11 @@ class task_period_archive extends task_abstract
 
     /**
      *
-     * @param  <type> $dom
-     * @param  <type> $node
-     * @return <type>
+     * @param  DOMDocument $dom
+     * @param  DOMElement $node
+     * @return void
      */
-    public function setBranchHot($dom, $node)
+    private function setBranchHot($dom, $node)
     {
         for ($n = $node; $n; $n = $n->parentNode) {
             if ($n->nodeType == XML_ELEMENT_NODE) {
@@ -1346,15 +1343,15 @@ class task_period_archive extends task_abstract
      *   create the grp if needed
      *   archive files
      *
-     * @param  <type> $dom
-     * @param  <type> $node
-     * @param  <type> $path
-     * @param  <type> $path_archived
-     * @param  <type> $path_error
-     * @param  <type> $nodesToDel
-     * @return <type>
+     * @param  DOMDocument $dom
+     * @param  DOMElement $node
+     * @param  string $path
+     * @param  string $path_archived
+     * @param  string $path_error
+     * @param  array $nodesToDel    out, filled with deleted files
+     * @return void
      */
-    public function archiveGrp($dom, $node, $path, $path_archived, $path_error, &$nodesToDel)
+    private function archiveGrp($dom, $node, $path, $path_archived, $path_error, &$nodesToDel)
     {
         $xpath = new DOMXPath($dom); // useful
 
@@ -1403,8 +1400,8 @@ class task_period_archive extends task_abstract
 
                 $databox = \databox::get_instance($this->sbas_id);
                 $collection = collection::get_from_coll_id($databox, (int) $cid);
-                if ($captionFileName === NULL) {
-                    $story = $this->createStory($collection, $path . '/' . $representationFileName, NULL);
+                if ($captionFileName === null) {
+                    $story = $this->createStory($collection, $path . '/' . $representationFileName, null);
                 } else {
                     $story = $this->createStory($collection, $path . '/' . $representationFileName, $path . '/' . $captionFileName);
                 }
@@ -1423,14 +1420,12 @@ class task_period_archive extends task_abstract
                 $n->setAttribute('name', '.grouping.xml');
                 $n->setAttribute('temperature', 'cold');
                 $n->setAttribute('grp', '1');
-                //      $n->setAttribute('archived', '1');
                 $n->setAttribute('match', '*');
                 if ($this->move_archived) {
                     $this->log(sprintf(('copy \'%s\' to \'archived\''), $subpath . '/' . $grpFolder . '/.grouping.xml'));
                     @mkdir($path_archived . '/' . $grpFolder, 0755, true);
                     @copy($path . '/' . $grpFolder . '/.grouping.xml', $path_archived . '/' . $grpFolder . '/.grouping.xml');
                 }
-                //
 
                 if ($captionFileNode) {
                     $captionFileNode->setAttribute('archived', '1');
@@ -1500,7 +1495,7 @@ class task_period_archive extends task_abstract
      * @param  string          $captionFile The optionnal Phrasea XML caption file
      * @return \record_adapter
      */
-    public function createStory(\collection $collection, $pathfile, $captionFile = null)
+    private function createStory(\collection $collection, $pathfile, $captionFile = null)
     {
         $stat0 = $stat1 = "0";
 
@@ -1528,7 +1523,7 @@ class task_period_archive extends task_abstract
 
         $metadatas = $this->getIndexByFieldName($metadatasStructure, $media->getEntity()->getMetadatas());
 
-        if ($captionFile !== NULL && file_exists($captionFile)) {
+        if ($captionFile !== null && file_exists($captionFile)) {
             $caption = $this->readXMLForDatabox($metadatasStructure, $captionFile);
             $captionStatus = $this->parseStatusBit(simplexml_load_file($captionFile));
 
@@ -1555,16 +1550,16 @@ class task_period_archive extends task_abstract
     }
 
     /**
-     * Creates a fecord
+     * Creates a record
      *
-     * @param  \collection $collection  The destination collection
-     * @param  string      $pathfile    The file to archive
-     * @param  string      $captionFile The Phrasea XML caption file (NULL if no caption file)
-     * @param  integer     $grp_rid     Add the record to a story
-     * @param  integer     $force       Force lazaret or record ; use \Alchemy\Phrasea\Border\Manager::FORCE_* constants
+     * @param  \collection  $collection  The destination collection
+     * @param  string       $pathfile    The file to archive
+     * @param  string|null  $captionFile The Phrasea XML caption file or null if no caption file
+     * @param  integer      $grp_rid     Add the record to a story
+     * @param  integer      $force       Force lazaret or record ; use \Alchemy\Phrasea\Border\Manager::FORCE_* constants
      * @return null
      */
-    public function createRecord(\collection $collection, $pathfile, $captionFile, $grp_rid, $force = null)
+    private function createRecord(\collection $collection, $pathfile, $captionFile, $grp_rid, $force = null)
     {
         $stat0 = $stat1 = "0";
 
@@ -1594,7 +1589,7 @@ class task_period_archive extends task_abstract
 
         $metadatas = $this->getIndexByFieldName($metadatasStructure, $media->getEntity()->getMetadatas());
 
-        if ($captionFile !== NULL && file_exists($captionFile)) {
+        if ($captionFile !== null && file_exists($captionFile)) {
             $caption = $this->readXMLForDatabox($metadatasStructure, $captionFile);
             $captionStatus = $this->parseStatusBit(simplexml_load_file($captionFile));
 
@@ -1636,17 +1631,16 @@ class task_period_archive extends task_abstract
 
     /**
      *
-     * @param  <type> $dom
-     * @param  <type> $node
-     * @param  <type> $path
-     * @param  <type> $path_archived
-     * @param  <type> $path_error
-     * @param  <type> $grp_rid
-     * @return <type>
+     * @param  DOMDocument $dom
+     * @param  DOMElement $node
+     * @param  string $path
+     * @param  string $path_archived
+     * @param  string $path_error
+     * @param  int $grp_rid
+     * @return void
      */
-    public function archiveFilesToGrp($dom, $node, $path, $path_archived, $path_error, $grp_rid)
+    private function archiveFilesToGrp($dom, $node, $path, $path_archived, $path_error, $grp_rid)
     {
-        //usleep(1000);
         $nodesToDel = array();
         for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
             if ($n->getAttribute('isdir') == '1') {
@@ -1671,16 +1665,16 @@ class task_period_archive extends task_abstract
     /**
      * Archive File
      *
-     * @param  <type> $dom
-     * @param  <type> $node
-     * @param  <type> $path
-     * @param  <type> $path_archived
-     * @param  <type> $path_error
-     * @param  <type> $nodesToDel
+     * @param  DOMDocument $dom
+     * @param  DOMElement $node
+     * @param  string $path
+     * @param  string $path_archived
+     * @param  string $path_error
+     * @param  array $nodesToDel    out, filled with files to delete
      * @param  <type> $grp_rid
-     * @return <type>
+     * @return void
      */
-    public function archiveFile($dom, $node, $path, $path_archived, $path_error, &$nodesToDel, $grp_rid = 0)
+    private function archiveFile($dom, $node, $path, $path_archived, $path_error, &$nodesToDel, $grp_rid = 0)
     {
         $match = $node->getAttribute('match');
 
@@ -1728,17 +1722,17 @@ class task_period_archive extends task_abstract
 
     /**
      *
-     * @param  <type> $dom
-     * @param  <type> $node
-     * @param  <type> $captionFileNode
-     * @param  <type> $path
-     * @param  <type> $path_archived
-     * @param  <type> $path_error
-     * @param  <type> $grp_rid
-     * @param  <type> $nodesToDel
-     * @return Void
+     * @param  DOMDOcument $dom
+     * @param  DOMElement $node
+     * @param  DOMElement $captionFileNode
+     * @param  string $path
+     * @param  string $path_archived
+     * @param  string $path_error
+     * @param  int $grp_rid
+     * @param  array $nodesToDel    out, filled with files to delete
+     * @return void
      */
-    public function archiveFileAndCaption($dom, $node, $captionFileNode, $path, $path_archived, $path_error, $grp_rid, &$nodesToDel)
+    private function archiveFileAndCaption($dom, $node, $captionFileNode, $path, $path_archived, $path_error, $grp_rid, &$nodesToDel)
     {
         $ret = false;
 
@@ -1746,13 +1740,13 @@ class task_period_archive extends task_abstract
 
         $file = $node->getAttribute('name');
         $cid = $node->getAttribute('cid');
-        $captionFileName = $captionFileNode ? $captionFileNode->getAttribute('name') : NULL;
+        $captionFileName = $captionFileNode ? $captionFileNode->getAttribute('name') : null;
 
         $rootpath = p4string::delEndSlash(trim((string) ($this->sxTaskSettings->hotfolder)));
         $subpath = substr($path, strlen($rootpath));
 
         $this->log(sprintf(("Archiving file '%s'"), $subpath . '/' . $file));
-        if ($captionFileName !== NULL) {
+        if ($captionFileName !== null) {
             $this->log(sprintf(' ' . (" (caption in '%s')"), $captionFileName));
         }
         if ($grp_rid !== 0) {
@@ -1777,8 +1771,8 @@ class task_period_archive extends task_abstract
             $databox = \databox::get_instance($this->sbas_id);
             $collection = collection::get_from_coll_id($databox, (int) $cid);
 
-            if ($captionFileName === NULL) {
-                $record = $this->createRecord($collection, $path . '/' . $file, NULL, $grp_rid);
+            if ($captionFileName === null) {
+                $record = $this->createRecord($collection, $path . '/' . $file, null, $grp_rid);
             } else {
                 $record = $this->createRecord($collection, $path . '/' . $file, $path . '/' . $captionFileName, $grp_rid);
             }
@@ -1852,12 +1846,12 @@ class task_period_archive extends task_abstract
      * xml facility : set attributes to a node and all children
      *
      * @staticvar int $iloop
-     * @param <type> $dom
-     * @param <type> $node
-     * @param <type> $attributes
-     * @param <type> $depth
+     * @param DOMDocument $dom
+     * @param DOMElement $node
+     * @param array $attributes associative name=>value
+     * @param int $depth
      */
-    public function setAllChildren($dom, $node, $attributes, $depth = 0)
+    private function setAllChildren($dom, $node, $attributes, $depth = 0)
     {
         static $iloop = 0;
         if ($depth == 0) {
@@ -1880,9 +1874,9 @@ class task_period_archive extends task_abstract
     /**
      *
      * @param  string $file
-     * @return <type>
+     * @return array
      */
-    public function getGrpSettings($file)
+    private function getGrpSettings($file)
     {
         $matched = FALSE;
         foreach ($this->tmaskgrp as $maskgrp) {
