@@ -106,26 +106,6 @@ class RescanTechnicalDatas extends Command
     }
 
     /**
-     * Format a duration in seconds to human readable
-     *
-     * @param  type   $seconds the time to format
-     * @return string
-     */
-    public function getFormattedDuration($seconds)
-    {
-        $duration = round($seconds / (60 * self::AVG_SPEED)) . ' minutes';
-
-        if ($duration > 60) {
-            $duration = round($duration / (60 * self::AVG_SPEED), 1) . ' hours';
-        }
-        if ($duration > 24) {
-            $duration = round($duration / (24 * self::AVG_SPEED), 1) . ' days';
-        }
-
-        return $duration;
-    }
-
-    /**
      * Return the total quantity of records to process
      *
      * @return integer

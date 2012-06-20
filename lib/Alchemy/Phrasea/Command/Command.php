@@ -80,4 +80,27 @@ abstract class Command extends SymfoCommand
             }
         }
     }
+
+    /**
+     * Format a duration in seconds to human readable
+     *
+     * @param  type   $seconds the time to format
+     * @return string
+     */
+    public function getFormattedDuration($seconds)
+    {
+        $duration = ceil($seconds) . ' seconds';
+
+        if ($duration > 60) {
+            $duration = round($duration / 60  , 1) . ' minutes';
+        }
+        elseif ($duration > 3600) {
+            $duration = round($duration / (60 * 60) , 1) . ' hours';
+        }
+        elseif ($duration > (24 * 60 * 60)) {
+            $duration = round($duration / (24 * 60 * 60) , 1) . ' days';
+        }
+
+        return $duration;
+    }
 }
