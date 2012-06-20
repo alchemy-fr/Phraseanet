@@ -13,7 +13,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class task_period_workflow02 extends task_appboxAbstract
+class task_period_RecordMover extends task_appboxAbstract
 {
 
     /**
@@ -22,7 +22,7 @@ class task_period_workflow02 extends task_appboxAbstract
      */
     public function getName()
     {
-        return _("task::workflow02");
+        return _("Record Mover");
     }
 
     /**
@@ -114,7 +114,7 @@ class task_period_workflow02 extends task_appboxAbstract
                 var data = {};
                 data["ACT"] = "CALCTEST";
                 data["taskid"]=<?php echo $this->getID(); ?>;
-                data["cls"]="workflow02";
+                data["cls"]="RecordMover";
                 data["xml"] = "<?php echo p4string::MakeString($sxml->saveXML(), "js", '"') ?>";
                 parent.$.ajax({ url: "/admin/taskfacility.php"
                     , data: data
@@ -156,7 +156,7 @@ class task_period_workflow02 extends task_appboxAbstract
                         var data = {};
                         data["ACT"] = "PLAYTEST";
                         data["taskid"]=<?php echo $this->getID(); ?>;
-                        data["cls"]="workflow02";
+                        data["cls"]="RecordMover";
                         data["xml"] = "<?php echo p4string::MakeString($sxml->saveXML(), "js", '"') ?>";
                         parent.$.ajax({ url: "/admin/taskfacility.php"
                             , data: data
@@ -414,7 +414,7 @@ class task_period_workflow02 extends task_appboxAbstract
      *
      * @param  appbox                  $appbox
      * @param  array                   $row
-     * @return \task_period_workflow02
+     * @return \task_period_RecordMover
      */
     protected function processOneContent(appbox $appbox, Array $row)
     {
@@ -474,7 +474,7 @@ class task_period_workflow02 extends task_appboxAbstract
      *
      * @param  appbox                  $appbox
      * @param  array                   $row
-     * @return \task_period_workflow02
+     * @return \task_period_RecordMover
      */
     protected function postProcessOneContent(appbox $appbox, Array $row)
     {
@@ -672,7 +672,7 @@ class task_period_workflow02 extends task_appboxAbstract
                 case 'RECORD':
                     $tw[] = 'parent_record_id!=record_id';
                     break;
-                case 'REGROUP':
+                case 'STORY':
                     $tw[] = 'parent_record_id=record_id';
                     break;
             }
