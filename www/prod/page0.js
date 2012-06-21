@@ -2681,7 +2681,9 @@ function doDelete(lst)
                 imgt.unbind("click").removeAttr("ondblclick").removeClass("selected").draggable("destroy").removeClass("IMGT").find("img").unbind();
                 imgt.find(".thumb img").attr("src","/skins/icons/deleted.png").css({
                     width:'100%',
-                    height:'auto'
+                    height:'auto',
+                    margin: '0 10px',
+                    top: '0'
                 });
                 chim.parent().slideUp().remove();
                 imgt.find(".status,.title,.bottom").empty();
