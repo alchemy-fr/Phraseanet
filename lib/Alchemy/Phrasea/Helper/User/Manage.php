@@ -166,7 +166,7 @@ class Manage extends \Alchemy\Phrasea\Helper\Helper
         $count = count($row);
 
         if ( ! is_array($row) || $count == 0) {
-            $created_user = \User_Adapter::create($appbox, $email, \random::generatePassword(16), $email, false, false);
+            $created_user = \User_Adapter::create($appbox, $email, \random::generatePassword(16), $email, false, false, true);
             $this->usr_id = $created_user->get_id();
         } else {
             $this->usr_id = $row['usr_id'];
