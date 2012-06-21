@@ -36,10 +36,8 @@ class module_console_fieldsList extends Command
         return true;
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $this->checkSetup();
-
         $appbox = \appbox::get_instance(\bootstrap::getCore());
 
         foreach ($appbox->get_databoxes() as $databox) {

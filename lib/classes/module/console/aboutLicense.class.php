@@ -31,10 +31,8 @@ class module_console_aboutLicense extends Command
         return $this;
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $this->checkSetup();
-
         $output->writeln(file_get_contents(__DIR__ . '/../../../../LICENSE'));
 
         return 0;

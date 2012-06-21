@@ -37,10 +37,8 @@ class module_console_systemClearCache extends Command
         return false;
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $this->checkSetup();
-
         $finder = new Finder();
 
         $finder

@@ -55,10 +55,8 @@ class RescanTechnicalDatas extends Command
     /**
      * {@inheritdoc}
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $this->checkSetup();
-
         $this->appbox = \appbox::get_instance(\bootstrap::getCore());
 
         $quantity = $this->computeQuantity();

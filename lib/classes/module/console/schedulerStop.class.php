@@ -36,10 +36,8 @@ class module_console_schedulerStop extends Command
         return true;
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $this->checkSetup();
-
         try {
             $appbox = appbox::get_instance(\bootstrap::getCore());
             $task_manager = new task_manager($appbox);

@@ -37,7 +37,7 @@ class module_console_systemUpgrade extends Command
         return false;
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         $old_connexion_file = __DIR__ . '/../../../../config/connexion.inc';
         $old_config_file = __DIR__ . '/../../../../config/config.inc';

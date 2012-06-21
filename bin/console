@@ -21,6 +21,7 @@ use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Command\UpgradeDBDatas;
 use Alchemy\Phrasea\Command\RescanTechnicalDatas;
 use Alchemy\Phrasea\Command\BuildMissingSubdefs;
+use Alchemy\Phrasea\Command\RecordAdd;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -56,38 +57,39 @@ try {
  under certain conditions; type `about:license' for details.\n\n"
             . ' KONSOLE KOMMANDER', Version::getName() . ' ' . Version::getNumber());
 
-    $app->add(new module_console_aboutAuthors('about:authors'));
-    $app->add(new module_console_aboutLicense('about:license'));
+    $app->add(new \module_console_aboutAuthors('about:authors'));
+    $app->add(new \module_console_aboutLicense('about:license'));
 
-    $app->add(new module_console_checkExtension('check:extension'));
+    $app->add(new \module_console_checkExtension('check:extension'));
 
-    $app->add(new module_console_systemUpgrade('system:upgrade'));
+    $app->add(new \module_console_systemUpgrade('system:upgrade'));
     $app->add(new UpgradeDBDatas('system:upgrade-datas'));
 
-    $app->add(new module_console_sphinxGenerateSuggestion('sphinx:generate-suggestions'));
+    $app->add(new \module_console_sphinxGenerateSuggestion('sphinx:generate-suggestions'));
 
-    $app->add(new module_console_systemMailCheck('system:mail-check'));
-    $app->add(new module_console_systemBackupDB('system:backup-db'));
-    $app->add(new module_console_systemClearCache('system:clear-cache'));
-    $app->add(new module_console_systemTemplateGenerator('system:template-generator'));
-    $app->add(new module_console_systemExport('system:export'));
+    $app->add(new \module_console_systemMailCheck('system:mail-check'));
+    $app->add(new \module_console_systemBackupDB('system:backup-db'));
+    $app->add(new \module_console_systemClearCache('system:clear-cache'));
+    $app->add(new \module_console_systemTemplateGenerator('system:template-generator'));
+    $app->add(new \module_console_systemExport('system:export'));
 
-    $app->add(new module_console_taskrun('task:run'));
-    $app->add(new module_console_tasklist('task:list'));
-    $app->add(new module_console_taskState('task:state'));
-    $app->add(new module_console_schedulerState('scheduler:state'));
-    $app->add(new module_console_schedulerStop('scheduler:stop'));
-    $app->add(new module_console_schedulerStart('scheduler:start'));
-    $app->add(new module_console_fileEnsureProductionSetting('check:ensure-production-settings'));
-    $app->add(new module_console_fileEnsureDevSetting('check:ensure-dev-settings'));
-    $app->add(new module_console_systemConfigCheck('check:system'));
+    $app->add(new \module_console_taskrun('task:run'));
+    $app->add(new \module_console_tasklist('task:list'));
+    $app->add(new \module_console_taskState('task:state'));
+    $app->add(new \module_console_schedulerState('scheduler:state'));
+    $app->add(new \module_console_schedulerStop('scheduler:stop'));
+    $app->add(new \module_console_schedulerStart('scheduler:start'));
+    $app->add(new \module_console_fileEnsureProductionSetting('check:ensure-production-settings'));
+    $app->add(new \module_console_fileEnsureDevSetting('check:ensure-dev-settings'));
+    $app->add(new \module_console_systemConfigCheck('check:system'));
 
 
-    $app->add(new module_console_fieldsList('fields:list'));
-    $app->add(new module_console_fieldsDelete('fields:delete'));
-    $app->add(new module_console_fieldsRename('fields:rename'));
-    $app->add(new module_console_fieldsMerge('fields:merge'));
+    $app->add(new \module_console_fieldsList('fields:list'));
+    $app->add(new \module_console_fieldsDelete('fields:delete'));
+    $app->add(new \module_console_fieldsRename('fields:rename'));
+    $app->add(new \module_console_fieldsMerge('fields:merge'));
 
+    $app->add(new RecordAdd('records:add'));
     $app->add(new RescanTechnicalDatas('records:rescan-technical-datas'));
     $app->add(new BuildMissingSubdefs('records:build-missing-subdefs'));
 

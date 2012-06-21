@@ -36,10 +36,8 @@ class module_console_systemTemplateGenerator extends Command
         return false;
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $this->checkSetup();
-
         $tplDirs = array(
             realpath(__DIR__ . '/../../../../templates/web/'),
             realpath(__DIR__ . '/../../../../templates/mobile/')
