@@ -59,10 +59,10 @@ class patch_370a7 implements patchInterface
 
         //order matters for foreign keys constraints
         //truncate all altered tables
-        $this->truncateTable($em, 'Entities\\LazaretFile');
-        $this->truncateTable($em, 'Entities\\LazaretSession');
         $this->truncateTable($em, 'Entities\\LazaretAttribute');
         $this->truncateTable($em, 'Entities\\LazaretCheck');
+        $this->truncateTable($em, 'Entities\\LazaretFile');
+        $this->truncateTable($em, 'Entities\\LazaretSession');
 
         $conn = $appbox->get_connection();
 

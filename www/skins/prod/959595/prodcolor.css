@@ -228,6 +228,21 @@ span.ww_winTitle {
     background-color: #B1B1B1;
 }
 
+#idFrameC .ui-tabs #thesaurus_tab li {
+    height: 34px;
+    background-color: #B1B1B1;
+    color: #EAEAEA;
+}
+
+#idFrameC .ui-tabs #thesaurus_tab li a {
+    color: #FFF;
+}
+
+#THPD_T, #THPD_C {
+    margin-top: 10px;
+    margin-left: 5px;
+}
+
 #idFrameC .ui-tabs .ui-tabs-nav li a {
     padding: 5px;
     margin: 5px;

@@ -224,6 +224,15 @@ span.ww_winTitle {
     z-index: 1000;
 }
 
+#idFrameC .ui-tabs #thesaurus_tab li {
+    height: 34px;
+}
+
+#THPD_T, #THPD_C {
+    margin-top: 10px;
+    margin-left: 5px;
+}
+
 #idFrameC .ui-tabs .ui-tabs-nav li a {
     padding: 5px;
     margin: 5px;
