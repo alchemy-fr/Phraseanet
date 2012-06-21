@@ -65,6 +65,9 @@ if (isset($parm['token']) && isset($parm['form_password']) && isset($parm['form_
             $datas = random::helloToken($parm['token']);
             $user = User_Adapter::getInstance($datas['usr_id'], $appbox);
             $user->set_password($parm['form_password_confirm']);
+
+            mail::change_password($user);
+
             random::removeToken($parm['token']);
 
             return phrasea::redirect('/login/index.php?confirm=password-update-ok');

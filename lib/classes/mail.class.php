@@ -75,6 +75,18 @@ class mail
         return self::send_mail($subject, $body, $to);
     }
 
+    public static function change_password(User_Adapter $user)
+    {
+        $subject = _('Password has been changed');
+
+        $body = "<div>" . _('This email warn you that the password for the following login account has been changed recently ')
+            . "</div><div>\n\n" . $login . "</div>\n\n";
+
+        $to = array('email' => $user->get_email(), 'name'  => $user->get_email());
+
+        return self::send_mail($subject, $body, $to);
+    }
+
     public static function register_confirm($email, $accept, $deny)
     {
         $registry = registry::get_instance();

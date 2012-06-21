@@ -54,6 +54,8 @@ if ( ! is_null($parm['form_old_password']) && ! is_null($parm['form_password']) 
             $auth->challenge_password();
             $user->set_password($parm['form_password_confirm']);
 
+            mail::change_password($user);
+
             return phrasea::redirect('/login/account.php?notice=password-update-ok');
         } catch (Exception $e) {
             $error = true;
