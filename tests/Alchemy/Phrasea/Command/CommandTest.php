@@ -1,6 +1,8 @@
 <?php
 
 namespace Alchemy\Phrasea\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class CommandTest extends \PHPUnit_Framework_TestCase
 {
@@ -52,6 +54,6 @@ class AbstractCommandTester extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        
+
     }
 }
