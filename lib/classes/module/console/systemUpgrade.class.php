@@ -27,7 +27,7 @@ class module_console_systemUpgrade extends Command
     {
         parent::__construct($name);
 
-        $this->setDescription('Upgrade Phraseanet to the lastest version');
+        $this->setDescription('Upgrade Phraseanet to the latest version');
 
         return $this;
     }
@@ -39,11 +39,12 @@ class module_console_systemUpgrade extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->checkSetup();
+        $old_connexion_file = __DIR__ . '/../../../../config/connexion.inc';
+        $old_config_file = __DIR__ . '/../../../../config/config.inc';
 
         $Core = \bootstrap::getCore();
 
-        if ( ! setup::is_installed()) {
+        if ( ! $Core->getConfiguration()->isInstalled() && file_exists($old_config_file) && file_exists($old_connexion_file)) {
 
             $output->writeln('This version of Phraseanet requires a config/config.yml, config/connexion.yml, config/service.yml');
             $output->writeln('Would you like it to be created based on your settings ?');
@@ -55,8 +56,8 @@ class module_console_systemUpgrade extends Command
 
             if ($continue == 'y') {
                 try {
-                    $connexionInc = new \SplFileInfo(__DIR__ . '/../../../../config/connexion.inc', true);
-                    $configInc = new \SplFileInfo(__DIR__ . '/../../../../config/config.inc', true);
+                    $connexionInc = new \SplFileInfo($old_connexion_file, true);
+                    $configInc = new \SplFileInfo($old_config_file, true);
 
                     $Core->getConfiguration()->upgradeFromOldConf($configInc, $connexionInc);
                 } catch (\Exception $e) {
@@ -66,6 +67,8 @@ class module_console_systemUpgrade extends Command
                 throw new RuntimeException('Phraseanet is not set up');
             }
         }
+
+        $this->checkSetup();
 
         $output->write('Phraseanet is going to be upgraded', true);
         $dialog = $this->getHelperSet()->get('dialog');
@@ -86,6 +89,16 @@ class module_console_systemUpgrade extends Command
 
                 $upgrader = new Setup_Upgrade($appbox);
                 $appbox->forceUpgrade($upgrader);
+
+                foreach ($upgrader->getRecommendations() as $recommendation) {
+                    list($message, $command) = $recommendation;
+
+                    $output->writeln(sprintf('<info>%s</info>', $message));
+                    $output->writeln("");
+                    $output->writeln(sprintf("\t\t%s", $command));
+                    $output->writeln("");
+                    $output->writeln("");
+                }
             } catch (\Exception $e) {
 
                 $output->writeln(sprintf('<error>An error occured while upgrading : %s </error>', $e->getMessage()));

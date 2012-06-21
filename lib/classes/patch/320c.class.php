@@ -117,17 +117,6 @@ class patch_320c implements patchInterface
         $databox->delete_data_from_cache(databox::CACHE_META_STRUCT);
 
         $conn = connection::getPDOConnection();
-        $sql = 'INSERT INTO `task2`
-                    (`task_id`, `usr_id_owner`, `pid`, `status`, `crashed`,
-                        `active`, `name`, `last_exec_time`, `class`, `settings`, `completed`)
-                    VALUES
-                    (null, 0, 0, "stopped", 0, 1, "upgrade to v3.2 for sbas ' . $databox->get_sbas_id() . '",
-                    "0000-00-00 00:00:00", "task_period_upgradetov32",
-                        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>' .
-            '<tasksettings><sbas_id>' . $databox->get_sbas_id() . '</sbas_id></tasksettings>", -1)';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
 
         $sql = 'DELETE FROM `task2` WHERE class="readmeta"';
         $stmt = $conn->prepare($sql);

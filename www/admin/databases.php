@@ -60,13 +60,30 @@ phrasea::headers();
                             $code .= $advice['sql'] . '<br/>';
                         }
 
-                        $code = _('Propositions de modifications des tables')
-                            . '<blockquote>' . $code . '</blockquote>';
+                        $recommendations = $upgrader->getRecommendations();
+
+                        if($code) {
+                            $code = _('Propositions de modifications des tables')
+                                . '<blockquote>' . $code . '</blockquote>';
                         ?>
                         <pre>
                             <?php echo $code; ?>
                         </pre>
-                        <?php ?>
+                        <?php
+                        }
+                        if ($recommendations) {
+                            foreach($recommendations as $recommendation) {
+                                list($message, $command) = $recommendation;
+                                ?>
+                                <p><?php echo $message; ?></p>
+                                <pre>
+                                    <blockquote><?php echo $command; ?></blockquote>
+                                </pre>
+                                <?php
+                            }
+                        }
+
+                        ?>
                         <div style="color:black;font-weight:bold;background-color:green;">
                             <?php echo _('N\'oubliez pas de redemarrer le planificateur de taches'); ?>
                         </div>
