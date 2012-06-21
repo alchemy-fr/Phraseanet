@@ -1686,22 +1686,25 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         return $locale;
     }
 
-    public static function create(appbox &$appbox, $login, $password, $email, $admin, $invite = false)
+    public static function create(appbox &$appbox, $login, $password, $email, $admin, $invite = false, $sendCredentials = false)
     {
         $conn = $appbox->get_connection();
 
-        if (trim($login) == '')
+        if (trim($login) == '') {
             throw new Exception('Invalid username');
-        if (trim($password) == '')
+        }
+
+        if (trim($password) == '') {
             throw new Exception('Invalid password');
+        }
 
         $login = $invite ? 'invite' . random::generatePassword(16) : $login;
 
         $nonce = random::generatePassword(16);
 
         $sql = 'INSERT INTO usr
-      (usr_id, usr_login, usr_password, usr_creationdate, usr_mail, create_db, nonce, salted_password, invite)
-      VALUES (null, :login, :password, NOW(), :email, :admin, :nonce, 1, :invite)';
+                (usr_id, usr_login, usr_password, usr_creationdate, usr_mail, create_db, nonce, salted_password, invite)
+                VALUES (null, :login, :password, NOW(), :email, :admin, :nonce, 1, :invite)';
 
         $stmt = $conn->prepare($sql);
         $stmt->execute(array(
@@ -1721,6 +1724,10 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
             $stmt = $conn->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();
+        }
+
+        if ($sendCredentials) {
+            mail::sendCredentials($usr_id, $login, $email);
         }
 
         return self::getInstance($usr_id, $appbox);
