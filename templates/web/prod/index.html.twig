@@ -194,9 +194,9 @@
                                             <div class="txt">{% trans 'prod::thesaurusTab:wizard:remplacer par le terme' %}</div>
                                         </div>
                                         <form class="gform" href="#" onsubmit="T_Gfilter(this);return(false);">
-                                            <input type="text" onkeyup="T_Gfilter_delayed(this.value, 300)" style="width:150px;" />
-                                            <input class="th_ok"     type="submit" value="{% trans 'boutton::rechercher' %}" />
-                                            <input class="th_cancel" type="button" value="{% trans 'boutton::annuler' %}" onclick="thesauCancelWizard();return(false);"/>
+                                            <input type="text" class="input-medium" onkeyup="T_Gfilter_delayed(this.value, 300)" />
+                                            <input type="submit" class="th_ok btn" value="{% trans 'boutton::rechercher' %}" />
+                                            <input type="button" class="th_cancel btn" value="{% trans 'boutton::annuler' %}" onclick="thesauCancelWizard();return(false);"/>
                                         </form>
                                     </div>
                                     <div id='THPD_T_treeBox' class="searchZone" style="position:absolute; top:0px; bottom:0px; left:0px; width:100%; overflow:auto">
