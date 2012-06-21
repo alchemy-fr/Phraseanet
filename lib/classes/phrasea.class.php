@@ -26,34 +26,6 @@ class phrasea
     const CACHE_SBAS_FROM_BAS = 'sbas_from_bas';
     const CACHE_SBAS_PARAMS = 'sbas_params';
 
-    public static function copy_custom_files()
-    {
-        $core = \bootstrap::getCore();
-
-        $registry = registry::get_instance();
-
-        $origine = $registry->get('GV_RootPath') . 'config/';
-        $dest = $registry->get('GV_RootPath') . 'www/custom/';
-
-        $finder = new Symfony\Component\Finder\Finder();
-
-        $mapping = array(
-            'custom_files' => '',
-            'status'       => 'status',
-            'minilogos'    => 'minilogos'
-        );
-
-        foreach ($mapping as $source => $target) {
-            foreach ($finder->depth('==1')->in($origine . $source)->ignoreVCS(true)->ignoreDotFiles(true) as $file) {
-                $targetFile = str_replace($origine, $dest . $target, $file->getRealPath());
-
-                $core['file-system']->mkdir(dirname($targetFile), 0750);
-                $core['file-system']->copy($file->getRealPath(), $targetFile, true);
-                $core['file-system']->chmod($targetFile, 0760);
-            }
-        }
-    }
-
     public static function is_scheduler_started()
     {
         $retval = false;
