@@ -530,8 +530,10 @@ abstract class task_abstract
     protected function sleep($nsec)
     {
         $nsec = (integer) $nsec;
-        if ($nsec < 0)
+        if ($nsec < 0) {
             throw new \InvalidArgumentException(sprintf("(%s) is not > 0"));
+        }
+
         while ($this->running && $nsec -- > 0) {
             sleep(1);
         }
