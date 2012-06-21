@@ -328,6 +328,16 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     }
 
     /**
+     * Return record collection
+     *
+     * @return \collection
+     */
+    public function get_collection()
+    {
+        return \collection::get_from_base_id($this->base_id);
+    }
+
+    /**
      * return recor_id of the record
      *
      * @return <int>

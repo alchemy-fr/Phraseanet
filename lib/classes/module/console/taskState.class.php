@@ -59,10 +59,10 @@ class module_console_taskState extends Command
 
     public function requireSetup()
     {
-        return true;
+        return false;
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         try {
             $this->checkSetup();

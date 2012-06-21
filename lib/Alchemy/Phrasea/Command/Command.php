@@ -12,7 +12,10 @@
 namespace Alchemy\Phrasea\Command;
 
 use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 use Symfony\Component\Console\Command\Command as SymfoCommand;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Abstract command which represents a Phraseanet base command
@@ -82,6 +85,25 @@ abstract class Command extends SymfoCommand
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
+        $this->checkSetup();
+
+        $core = \bootstrap::getCore();
+
+        if($input->getOption('verbose')) {
+            $handler = new StreamHandler('php://stdout');
+            $this->logger->pushHandler($handler);
+        }
+
+        return $this->doExecute($input, $output);
+    }
+
+    abstract protected function doExecute(InputInterface $input, OutputInterface $output);
+
+    /**
      * Format a duration in seconds to human readable
      *
      * @param  type   $seconds the time to format
@@ -92,13 +114,11 @@ abstract class Command extends SymfoCommand
         $duration = ceil($seconds) . ' seconds';
 
         if ($duration > 60) {
-            $duration = round($duration / 60  , 1) . ' minutes';
-        }
-        elseif ($duration > 3600) {
-            $duration = round($duration / (60 * 60) , 1) . ' hours';
-        }
-        elseif ($duration > (24 * 60 * 60)) {
-            $duration = round($duration / (24 * 60 * 60) , 1) . ' days';
+            $duration = round($duration / 60, 1) . ' minutes';
+        } elseif ($duration > 3600) {
+            $duration = round($duration / (60 * 60), 1) . ' hours';
+        } elseif ($duration > (24 * 60 * 60)) {
+            $duration = round($duration / (24 * 60 * 60), 1) . ' days';
         }
 
         return $duration;

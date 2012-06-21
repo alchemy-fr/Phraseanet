@@ -36,10 +36,8 @@ class module_console_sphinxGenerateSuggestion extends Command
         return true;
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $this->checkSetup();
-
         define('FREQ_THRESHOLD', 10);
         define('SUGGEST_DEBUG', 0);
 

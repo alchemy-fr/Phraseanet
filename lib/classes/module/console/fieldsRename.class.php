@@ -41,10 +41,8 @@ class module_console_fieldsRename extends Command
         return true;
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $this->checkSetup();
-
         $new_name = $input->getArgument('name');
 
         try {

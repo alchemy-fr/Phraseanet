@@ -47,16 +47,14 @@ class BuildMissingSubdefs extends Command
     /**
      * {@inheritdoc}
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $this->checkSetup();
-
         $core = \bootstrap::getCore();
         $this->appbox = \appbox::get_instance($core);
 
         if ($input->getOption('verbose')) {
             $logger = $this->getLogger();
-            $handler = new Handler\StreamHandler(fopen('php://stdout', 'a'));
+            $handler = new Handler\StreamHandler('php://stdout');
             $logger->pushHandler($handler);
             $this->setLogger($logger);
         }

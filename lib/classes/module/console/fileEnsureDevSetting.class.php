@@ -61,10 +61,8 @@ class module_console_fileEnsureDevSetting extends Command
         return true;
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $this->checkSetup();
-
         $specifications = new \Alchemy\Phrasea\Core\Configuration\ApplicationSpecification();
 
         $environnement = $input->getArgument('conf');
