@@ -49,4 +49,9 @@ class AbstractCommandTester extends Command
     {
         return true;
     }
+
+    protected function doExecute(InputInterface $input, OutputInterface $output)
+    {
+        
+    }
 }
