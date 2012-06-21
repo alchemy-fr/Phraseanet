@@ -105,7 +105,6 @@ $parm = $request->get_parms(
                             }
                         }
 
-
                         $sql = "DELETE FROM thit WHERE name = :name";
                         $stmt = $connbas->prepare($sql);
                         foreach ($parm["f2unlk"] as $f2unlk) {

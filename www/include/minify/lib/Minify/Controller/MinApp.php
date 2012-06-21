@@ -12,16 +12,17 @@ require_once 'Minify/Controller/Base.php';
  * @package Minify
  * @author Stephen Clay <steve@mrclay.org>
  */
-class Minify_Controller_MinApp extends Minify_Controller_Base {
-
+class Minify_Controller_MinApp extends Minify_Controller_Base
+{
     /**
      * Set up groups of files as sources
      *
-     * @param array $options controller and Minify options
+     * @param  array $options controller and Minify options
      * @return array Minify options
      *
      */
-    public function setupSources($options) {
+    public function setupSources($options)
+    {
         // filter controller options
         $cOptions = array_merge(
             array(
@@ -47,7 +48,7 @@ class Minify_Controller_MinApp extends Minify_Controller_Base {
             if (is_object($files)) {
                 $files = array($files);
             } elseif (! is_array($files)) {
-                $files = (array)$files;
+                $files = (array) $files;
             }
             foreach ($files as $file) {
                 if ($file instanceof Minify_Source) {
@@ -108,7 +109,7 @@ class Minify_Controller_MinApp extends Minify_Controller_Base {
                 $base = '/';
             }
             $allowDirs = array();
-            foreach ((array)$cOptions['allowDirs'] as $allowDir) {
+            foreach ((array) $cOptions['allowDirs'] as $allowDir) {
                 $allowDirs[] = realpath(str_replace('//', $_SERVER['DOCUMENT_ROOT'] . '/', $allowDir));
             }
             foreach ($files as $file) {

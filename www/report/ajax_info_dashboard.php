@@ -22,7 +22,6 @@ $user = $Core->getAuthenticatedUser();
 if ( ! $user->ACL()->has_right('report'))
     phrasea::headers(403);
 
-
 $sbasid = isset($_POST['sbasid']) ? $_POST['sbasid'] : null;
 $dmin = isset($_POST['dmin']) ? $_POST['dmin'] : false;
 $dmax = isset($_POST['dmax']) ? $_POST['dmax'] : false;
@@ -38,7 +37,6 @@ try {
 } catch (Exception $e) {
     echo 'Exception reçue : ', $e->getMessage(), "\n";
 }
-
 
 $twig = $Core->getTwig();
 

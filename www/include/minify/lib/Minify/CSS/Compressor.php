@@ -18,8 +18,8 @@
  * @author Stephen Clay <steve@mrclay.org>
  * @author http://code.google.com/u/1stvamp/ (Issue 64 patch)
  */
-class Minify_CSS_Compressor {
-
+class Minify_CSS_Compressor
+{
     /**
      * Minify a CSS string
      *
@@ -48,7 +48,6 @@ class Minify_CSS_Compressor {
      */
     protected $_inHack = false;
 
-
     /**
      * Constructor
      *
@@ -56,7 +55,8 @@ class Minify_CSS_Compressor {
      *
      * @return null
      */
-    private function __construct($options) {
+    private function __construct($options)
+    {
         $this->_options = $options;
     }
 

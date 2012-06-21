@@ -48,8 +48,7 @@ if ($parm["dlg"]) {
 
             function clkBut(but)
             {
-                switch(but)
-                {
+                switch (but) {
                     case 'cancel':
                         self.close();
                         break;

@@ -17,7 +17,6 @@
 require_once __DIR__ . "/../../../lib/bootstrap.php";
 $registry = registry::get_instance();
 
-
 $request = http_request::getInstance();
 $parm = $request->get_parms(
     "bid"

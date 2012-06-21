@@ -71,7 +71,6 @@ class Session_HandlerTest extends PhraseanetPHPUnitAbstract
         $this->assertEquals(0, $stmt->rowCount());
         $stmt->closeCursor();
 
-
         foreach ($databoxes as $databox) {
 
             $logger = $this->object->get_logger($databox);
@@ -313,7 +312,6 @@ class Session_HandlerTest extends PhraseanetPHPUnitAbstract
         $this->object->authenticate($auth);
 
         $registry = registry::get_instance();
-
 
         foreach ($user->ACL()->get_granted_sbas() as $databox) {
             $sql = 'SELECT usr_id FROM collusr WHERE site = :site AND usr_id = :usr_id AND coll_id = :coll_id';

@@ -16,8 +16,8 @@
  * @package Minify
  * @author Stephen Clay <steve@mrclay.org>
  */
-class Minify_HTML {
-
+class Minify_HTML
+{
     /**
      * "Minify" an HTML page
      *
@@ -36,12 +36,12 @@ class Minify_HTML {
      *
      * @return string
      */
-    public static function minify($html, $options = array()) {
+    public static function minify($html, $options = array())
+    {
         $min = new Minify_HTML($html, $options);
 
         return $min->process();
     }
-
 
     /**
      * Create a minifier object
@@ -65,7 +65,7 @@ class Minify_HTML {
     {
         $this->_html = str_replace("\r\n", "\n", trim($html));
         if (isset($options['xhtml'])) {
-            $this->_isXhtml = (bool)$options['xhtml'];
+            $this->_isXhtml = (bool) $options['xhtml'];
         }
         if (isset($options['cssMinifier'])) {
             $this->_cssMinifier = $options['cssMinifier'];
@@ -74,7 +74,6 @@ class Minify_HTML {
             $this->_jsMinifier = $options['jsMinifier'];
         }
     }
-
 
     /**
      * Minify the markeup given in the constructor

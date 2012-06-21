@@ -63,7 +63,6 @@ switch ($parm['action']) {
             );
         }
 
-
         if ($record->is_from_feed()) {
             $train = $twig->render('prod/preview/feed_train.html', array(
                 'record' => $record

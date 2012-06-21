@@ -29,9 +29,7 @@ $parm = $request->get_parms(
     , 'last' // the node to browse has the 'last' class in the tree, so keep it
 );
 
-
 phrasea::headers(200, true, 'application/json', 'UTF-8', false);
-
 
 if ( ! $parm['lng']) {
     $lng2 = Session_Handler::get_locale();
@@ -42,12 +40,10 @@ if ( ! $parm['lng']) {
 
 $lng = $parm['lng'];
 
-
 if ($parm['debug'])
     print('<pre>');
 
 $html = '';
-
 
 $sbid = (int) $parm['sbid'];
 
@@ -98,8 +94,7 @@ try {
 
         foreach ($rs as $rowbas)
             $t_nrec[$thid . $rowbas['k']] = $rowbas;
-    }
-    elseif (strlen($thid) > 1) {
+    } elseif (strlen($thid) > 1) {
         $dthid = str_replace('.', 'd', $thid);
         $sql = 'SELECT SUBSTRING_INDEX(SUBSTR(value, ' . ($lthid) . '), \'d\', 1) AS k ,
               COUNT(DISTINCT record_id) AS n
@@ -165,7 +160,6 @@ try {
         $nodes = $xpath->query($q);
         if ($nodes->length > 0) {
             $node0 = $nodes->item(0);
-
 
             $key0 = null; // key of the sy in the current language (or key of the first sy if we can't find good lng)
             $nts0 = 0;  // count of ts under this term

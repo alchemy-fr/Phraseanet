@@ -20,7 +20,3 @@ $app = require __DIR__ . '/../../lib/Alchemy/Phrasea/Application/Overview.php';
 
 $app->run();
 
-
-
-
-

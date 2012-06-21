@@ -89,7 +89,6 @@ if ( ! is_null($templates) || ! is_null($parm['deny']) || ! is_null($parm['accep
 
         $user->ACL()->apply_model($user_template, $base_ids);
 
-
         if ( ! isset($done[$usr]))
             $done[$usr] = array();
         foreach ($base_ids as $base_id) {
@@ -191,16 +190,15 @@ if ( ! is_null($templates) || ! is_null($parm['deny']) || ! is_null($parm['accep
         </script>
         <script type="text/javascript">
             var bodySize = {x:100,y:100};
-            function resize(){
-
+            function resize()
+            {
                 bodySize.y = $(window).height();
                 bodySize.x = $(window).width();
 
                 var $heightd =  $('#tab_demandes').outerHeight(true);
                 var maxSize = (bodySize.y - 120);
 
-                if($heightd > maxSize)
-                {
+                if ($heightd > maxSize) {
                     $('#tab_demandes').height(maxSize);
                 }
 
@@ -215,19 +213,15 @@ if ( ! is_null($templates) || ! is_null($parm['deny']) || ! is_null($parm['accep
             });
             function checkDeny(el)
             {
-                if($(el)[0].checked)
-                {
+                if ($(el)[0].checked) {
                     $('.disabler_'+$(el).attr('id').substring(5)).removeAttr('checked');
-                }
-                else
-                {
+                } else {
                 }
             }
 
             function checkAdd(el)
             {
-                if($(el)[0].checked)
-                {
+                if ($(el)[0].checked) {
                     $('#accept_'+$(el).attr('id').substring(10))[0].checked = true;
                     $('#deny_'+$(el).attr('id').substring(10))[0].checked = false;
                 }
@@ -271,8 +265,7 @@ if ( ! is_null($templates) || ! is_null($parm['deny']) || ! is_null($parm['accep
                         bool = false;
                     $(this)[0].checked = bool;
                     first = false;
-                    if(that == 'deny')
-                    {
+                    if (that == 'deny') {
                         checkDeny($(this));
                     }
                     if(that == 'accept_hd')
@@ -300,7 +293,6 @@ if ( ! is_null($templates) || ! is_null($parm['deny']) || ! is_null($parm['accep
 <?php
 $out = "";
 
-
 $lastMonth = time() - (3 * 4 * 7 * 24 * 60 * 60);
 
 $sql = "DELETE FROM demand WHERE date_modif < :date";
@@ -311,7 +303,6 @@ $stmt->closeCursor();
 $usr_id = $session->get_usr_id();
 $user = User_Adapter::getInstance($usr_id, $appbox);
 $baslist = array_keys($user->ACL()->get_granted_base(array('canadmin')));
-
 
 $models = '<option value="">aucun</option>';
 $sql = 'SELECT usr_id, usr_login FROM usr WHERE model_of = :usr_id';
@@ -335,7 +326,6 @@ $stmt->execute();
 $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $stmt->closeCursor();
 
-
 $out .= "<div id=\"top_box\" style='height:70px;overflow:hidden;'>";
 $out .= "<div id=\"title\"><h1>" . _('admin:: demandes en cours') . "</h1></div>";
 
@@ -352,7 +342,6 @@ $out .= "<table style='width:100%'>" .
     "<td style='width:150px'>" . _('admin::collection') . "</td>" .
     "</tr>" .
     "</table>";
-
 
 $out .= "</div>";
 $out .= "</div><div  id=\"tab_demandes\" style='overflow-y:scroll;overflow-x:hidden'>";
@@ -425,7 +414,6 @@ foreach ($rs as $row) {
         }
 
         $info = "<div style='margin:5px;'>" . $info . "</div>";
-
 
         $out .= '<tr class="tipInfoUsr ' . $class . '" title="' . $info . '"  id="USER_' . $row['usr_id'] . '"' . '>';
         $out .= "<td>";

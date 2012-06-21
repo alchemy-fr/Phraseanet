@@ -17,7 +17,6 @@
 /* @var $Core \Alchemy\Phrasea\Core */
 $Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 
-
 $request = http_request::getInstance();
 $parm = $request->get_parms("app");
 

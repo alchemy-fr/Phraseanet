@@ -16,16 +16,17 @@ require_once 'Minify/Controller/Base.php';
  * @package Minify
  * @author Stephen Clay <steve@mrclay.org>
  */
-class Minify_Controller_Version1 extends Minify_Controller_Base {
-
+class Minify_Controller_Version1 extends Minify_Controller_Base
+{
     /**
      * Set up groups of files as sources
      *
-     * @param array $options controller and Minify options
+     * @param  array $options controller and Minify options
      * @return array Minify options
      *
      */
-    public function setupSources($options) {
+    public function setupSources($options)
+    {
         self::_setupDefines();
         if (MINIFY_USE_CACHE) {
             $cacheDir = defined('MINIFY_CACHE_DIR')

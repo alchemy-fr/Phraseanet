@@ -2,9 +2,6 @@
 
 require_once __DIR__ . '/../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
-use Symfony\Component\HttpFoundation\Response;
-use Silex\WebTestCase;
-
 /**
  * Test oauthv2 flow based on ietf authv2 spec
  * @link http://tools.ietf.org/html/draft-ietf-oauth-v2-18
@@ -115,10 +112,10 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
     public function createApplication()
     {
         $app = require __DIR__ . '/../../../../lib/Alchemy/Phrasea/Application/OAuth2.php';
-        
+
         $app['debug'] = true;
         unset($app['exception_handler']);
-        
+
         return $app;
     }
 

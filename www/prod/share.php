@@ -61,7 +61,6 @@ $right = false;
                 if ( ! $right)
                     exit('ERROR<br><input class="input-button" type="button" value="' . _('boutton::fermer') . '" onclick="parent.hideDwnl();" /> </body></html>');
 
-
                 $sha256 = $record->get_sha256();
                 $type = $record->get_type();
 
@@ -137,7 +136,6 @@ if ($url != '') {
                     }
                     ?>
                 </div>
-
 
                 <div style="text-align:center;padding:20px 0;">
                     <input class="input-button" type="button" value="<?php echo _('boutton::fermer') ?>" onclick="parent.hideDwnl();" />

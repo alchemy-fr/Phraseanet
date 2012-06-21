@@ -33,7 +33,6 @@ if ( ! $user->ACL()->has_right_on_sbas($parm['p0'], 'bas_modify_struct')) {
     phrasea::headers(403);
 }
 
-
 phrasea::headers();
 ?>
 <html lang="<?php echo $session->get_I18n(); ?>">
@@ -62,7 +61,6 @@ phrasea::headers();
         </script>
     </head>
     <body onResize="sizeTxtArea();" onLoad="sizeTxtArea();">
-
 
 <?php
 $out = "";
@@ -99,7 +97,6 @@ if ($parm["act"] == "CHGSTRUCTURE") {
     $parm["str"] = $databox->get_structure();
 }
 if ($loadit) {
-
 
     $errors = databox::get_structure_errors($parm["str"]);
     $out .= "<div>" . implode("</div><div>", $errors) . "</div>";

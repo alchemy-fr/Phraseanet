@@ -14,7 +14,6 @@ namespace Alchemy\Phrasea\Controller\Setup;
 use Symfony\Component\HttpFoundation\Response;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Silex\ControllerCollection;
 
 /**
  *

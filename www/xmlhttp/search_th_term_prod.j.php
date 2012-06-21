@@ -37,7 +37,6 @@ if ( ! $parm['lng']) {
 
 $lng = $parm['lng'];
 
-
 if ($parm['debug'])
     print("<pre>");
 
@@ -111,8 +110,7 @@ try {
 
             getHTML($domth->documentElement, $html);
         }
-    }
-    else {
+    } else {
         $html .= "\t" . '<ul style="display: none;">loading</ul>' . "\n";
     }
 
@@ -166,7 +164,6 @@ function getHTML($srcnode, &$html, $depth = 0)
 
     if ($nts > 0) {
         $tab = str_repeat("\t", 1 + $depth * 2);
-
 
         if ($ntsopened == 0) {
             $html .= $tab . '<UL style="display:none">' . "\n";

@@ -5,7 +5,6 @@ $_SERVER["DOCUMENT_ROOT"] = __DIR__ . '/../../../www/';
  * @package Minify
  */
 
-
 /**
  * In 'debug' mode, Minify can combine files with no minification and
  * add comments to indicate line #s of the original files.
@@ -14,7 +13,6 @@ $_SERVER["DOCUMENT_ROOT"] = __DIR__ . '/../../../www/';
  * a URI. E.g. /min/?f=script1.js,script2.js&debug=1
  */
 $min_allowDebugFlag = false;
-
 
 /**
  * Set to true to log messages to FirePHP (Firefox Firebug addon).
@@ -28,13 +26,11 @@ $min_allowDebugFlag = false;
  */
 $min_errorLogger = false;
 
-
 /**
  * Allow use of the Minify URI Builder app. If you no longer need
  * this, set to false.
  **/
 $min_enableBuilder = true;
-
 
 /**
  * For best performance, specify your temp directory here. Otherwise Minify
@@ -43,7 +39,6 @@ $min_enableBuilder = true;
 //$min_cachePath = 'c:\\WINDOWS\\Temp';
 //$min_cachePath = '/tmp';
 //$min_cachePath = preg_replace('/^\\d+;/', '', session_save_path());
-
 
 /**
  * Leave an empty string to use PHP's $_SERVER['DOCUMENT_ROOT'].
@@ -88,7 +83,6 @@ $min_serveOptions['bubbleCssImports'] = false;
  * querystring, maxAge will be set to one year. E.g. /min/f=hello.css&123456
  */
 $min_serveOptions['maxAge'] = 1800;
-
 
 /**
  * If you'd like to restrict the "f" option to files within/below
@@ -144,7 +138,6 @@ $min_symlinks = array();
  * @link http://winscp.net/eng/docs/ui_login_environment#daylight_saving_time
  */
 $min_uploaderHoursBehind = 0;
-
 
 /**
  * Path to Minify's lib folder. If you happen to move it, change

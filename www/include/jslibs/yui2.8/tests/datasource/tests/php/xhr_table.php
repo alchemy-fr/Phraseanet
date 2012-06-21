@@ -11,32 +11,33 @@ $rows = 1; // default one row
 $cols = 1; // default one column
 
 // How many rows to get?
-if(strlen($_GET['rows']) > 0) {
+if (strlen($_GET['rows']) > 0) {
     $rows = $_GET['rows'];
 }
 
 // How many columns
-if(strlen($_GET['cols']) > 0) {
+if (strlen($_GET['cols']) > 0) {
     $cols = $_GET['cols'];
 }
 
 // Return the data
 returnMarkup($rows, $cols);
 
-function returnMarkup($rows, $cols) {
+function returnMarkup($rows, $cols)
+{
     // start the table
     $markup = "<table><thead><tr>";
 
     // build the thead
-    for($i=0; $i<$cols; $i++) {
+    for ($i=0; $i<$cols; $i++) {
         $markup = $markup."<th>header ".$i."</th>";
     }
     $markup = $markup."</tr></thead><tbody>";
 
     // build the tbody
-    for($j=0; $j<$rows; $j++) {
+    for ($j=0; $j<$rows; $j++) {
         $markup = $markup."<tr>";
-        for($i=0; $i<$cols; $i++) {
+        for ($i=0; $i<$cols; $i++) {
             $markup = $markup."<td>data cell ".$j."-".$i."</td>";
         }
         $markup = $markup."</tr>";
@@ -46,4 +47,3 @@ function returnMarkup($rows, $cols) {
 
     echo $markup;
 }
-?>

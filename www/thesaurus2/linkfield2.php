@@ -36,8 +36,7 @@ $parm = $request->get_parms(
         <script type="text/javascript">
             function clkBut(button)
             {
-                switch(button)
-                {
+                switch (button) {
                     case "submit":
                         document.forms[0].submit();
                         break;

@@ -101,7 +101,6 @@ class reportTest extends PhraseanetPHPUnitAbstract
     public function testGetterSetter()
     {
 
-
         $report = new module_report($this->dmin, $this->dmax, 1, '');
         $bool = true;
         $report->setPrettyString($bool);

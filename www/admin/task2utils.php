@@ -80,8 +80,7 @@ phrasea::headers();
                     } else {
                         ?>
                         <script type="text/javascript">
-                            if(confirm("<?php echo p4string::MakeString(_('admin::tasks: xml invalide, restaurer la version precedente ?'), 'js', '"') // xml invalide, restaurer la v. prec. ?         ?>"))
-                            {
+                            if (confirm("<?php echo p4string::MakeString(_('admin::tasks: xml invalide, restaurer la version precedente ?'), 'js', '"') // xml invalide, restaurer la v. prec. ?         ?>")) {
                                 parent.document.forms['fxml'].txtareaxml.value = parent.jsTaskObj.oldXML;
                             }
                         </script>
@@ -138,5 +137,4 @@ phrasea::headers();
     <body>
     </body>
 </html>
-
 

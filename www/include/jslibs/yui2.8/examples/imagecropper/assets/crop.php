@@ -21,4 +21,3 @@ $response = new stdclass();
 $response->data = '<p>This example does not really resize, but here is the data we received: '.$data.'</p><p>If we used ImageMagick &amp; PHP we could issue this command: convert yui.jpg -crop ['.$w.' x '.$h.' + '.$l.' + '.$t.'] yui-new.jpg</p>';
 
 echo($json->encode($response));
-?>

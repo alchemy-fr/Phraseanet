@@ -22,7 +22,7 @@ $images = array(
 );
 
 $num = 3;                       // number of items to return
-$pos = (int)$_GET['pos'];
+$pos = (int) $_GET['pos'];
 
 $rv = '[';
 for ($i = 0; $i < $num; $i++) {
@@ -33,4 +33,3 @@ $rv .= ']';
 
 header('Content-Type: application/json');
 echo $rv;
-?>

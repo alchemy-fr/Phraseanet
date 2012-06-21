@@ -3,7 +3,7 @@
 print "<strong>Submitted Data</strong>";
 print "<ul>";
 
-foreach($_POST as $key => $value) {
+foreach ($_POST as $key => $value) {
       print "<li>";
     print htmlspecialchars("$key: ", ENT_QUOTES);
 
@@ -22,4 +22,3 @@ foreach($_POST as $key => $value) {
     print "</li>";
 }
 print "</ul>";
-?>

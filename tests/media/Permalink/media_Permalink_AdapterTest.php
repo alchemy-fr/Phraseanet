@@ -7,7 +7,7 @@ class media_Permalink_AdapterTest extends PhraseanetPHPUnitAbstract
     /**
      * @var media_Permalink_Adapter
      */
-    static $object;
+    public static $object;
 
     public static function setUpBeforeClass()
     {

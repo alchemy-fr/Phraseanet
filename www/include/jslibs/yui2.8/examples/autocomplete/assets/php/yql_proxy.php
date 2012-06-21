@@ -14,7 +14,7 @@ $query = PATH . "?q=";
 $q = str_replace('&quot;', '"', $_GET['q']);
 $url = $query . urlencode(stripslashes($q));
 
-if($_GET['format'] == "xml") {
+if ($_GET['format'] == "xml") {
         $type = "text/xml";
 }
 
@@ -32,4 +32,3 @@ header("Content-Type: ".$type);
 echo $response;
 curl_close($session);
 
-?>

@@ -15,10 +15,10 @@ class ControllerInstallerTest extends \PhraseanetWebTestCaseAbstract
     public function createApplication()
     {
         $app = require __DIR__ . '/FakeSetupApplication.inc';
-        
+
         $app['debug'] = true;
         unset($app['exception_handler']);
-        
+
         return $app;
     }
 

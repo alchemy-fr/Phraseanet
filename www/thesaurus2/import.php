@@ -240,7 +240,6 @@ function no_dof($dom, $node)
 
     $t = $parm['t'];
 
-
     $t = preg_replace('/\\r|\\n/', '£', $t);
     $t = preg_replace('/££*/', '£', $t);
     $t = preg_replace('/£\\s*;/', ' ;', $t);
@@ -345,11 +344,11 @@ function no_dof($dom, $node)
 //      printf("depth=%s (%s) ; sy='%s', kon='%s', lng='%s', hit='%s' \n", $depth, $id, $syn, $kon, $lng, $hit);
 
             /*
-              $nid = (int)($node->getAttribute('nextid'));
+              $nid = (int) ($node->getAttribute('nextid'));
               $pid = $node->getAttribute('id');
 
               $id = ($pid ? ($pid.'.'):'T') . $nid ;
-              $node->setAttribute('nextid', (string)($nid+1));
+              $node->setAttribute('nextid', (string) ($nid+1));
 
              */
             $sy = $node->appendChild($dom->createElement('sy'));

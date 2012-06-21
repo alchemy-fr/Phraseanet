@@ -62,7 +62,7 @@ phrasea::headers();
 
                         $recommendations = $upgrader->getRecommendations();
 
-                        if($code) {
+                        if ($code) {
                             $code = _('Propositions de modifications des tables')
                                 . '<blockquote>' . $code . '</blockquote>';
                         ?>
@@ -72,7 +72,7 @@ phrasea::headers();
                         <?php
                         }
                         if ($recommendations) {
-                            foreach($recommendations as $recommendation) {
+                            foreach ($recommendations as $recommendation) {
                                 list($message, $command) = $recommendation;
                                 ?>
                                 <p><?php echo $message; ?></p>
@@ -94,13 +94,13 @@ phrasea::headers();
                             <?php echo _('The upgrade is already started'); ?>
                         </div>
                         <?php
-                    }catch(\Exception_Setup_FixBadEmailAddresses $e){
+                    } catch (\Exception_Setup_FixBadEmailAddresses $e) {
                         ?>
                         <div style="margin-top:10px;color:black;font-weight:bold;background-color:yellow;">
                             <?php echo _('Please fix the database before starting'); ?>
                         </div>
                         <?php
-                    }catch(\Exception $e){
+                    } catch (\Exception $e) {
                         ?>
                         <div style="margin-top:10px;color:black;font-weight:bold;background-color:yellow;">
                             <?php echo _('An error occured'); ?>
@@ -216,7 +216,6 @@ phrasea::headers();
                 }
             }
         }
-
 
         $upgrade_available = false;
 

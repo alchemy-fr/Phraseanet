@@ -27,7 +27,6 @@ $parm = $request->get_parms(
     , "debug"
 );
 
-
 if ($parm["debug"]) {
     phrasea::headers(200, true, 'text/html', 'UTF-8', true);
 } else {
@@ -123,6 +122,5 @@ if ($parm["bid"] !== null) {
 if ($parm["debug"]) {
     print("<pre>" . $ret->saveXML() . "</pre>");
     print("</body></html>");
-}
-else
+} else
     print($ret->saveXML());

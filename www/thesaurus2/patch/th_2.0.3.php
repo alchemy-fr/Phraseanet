@@ -17,7 +17,7 @@
 class patch_th_2_0_3
 {
 
-    function patch($version, &$domct, &$domth, connection_pdo &$connbas)
+    public function patch($version, &$domct, &$domth, connection_pdo &$connbas)
     {
         global $debug;
         global $ctchanged, $thchanged, $needreindex;
@@ -104,7 +104,7 @@ class patch_th_2_0_3
         return($version);
     }
 
-    function fixRejected(connection_pdo &$connbas, &$node, $rejected)
+    public function fixRejected(connection_pdo &$connbas, &$node, $rejected)
     {
         global $debug;
 
@@ -136,7 +136,7 @@ class patch_th_2_0_3
             $this->fixRejected($connbas, $n, $rejected);
     }
 
-    function fixIds(connection_pdo &$connbas, &$node)
+    public function fixIds(connection_pdo &$connbas, &$node)
     {
         global $debug;
 

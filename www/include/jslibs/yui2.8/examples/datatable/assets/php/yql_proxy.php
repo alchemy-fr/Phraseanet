@@ -26,4 +26,3 @@ header("Content-Type: application/json");
 echo $response;
 curl_close($session);
 
-?>

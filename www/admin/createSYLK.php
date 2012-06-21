@@ -20,23 +20,23 @@ define("FORMAT_TEXTE", 3); // @
 
 class fileSYLK
 {
-    var $myhandler = null;
-    var $fileName = null;
-    var $fieldsToExport = null;
-    var $cfg_formats = null;
-    var $nblines = null;
-    var $nbrows = null;
-    var $row_format = null;
-    var $format = null;
+    public $myhandler = null;
+    public $fileName = null;
+    public $fieldsToExport = null;
+    public $cfg_formats = null;
+    public $nblines = null;
+    public $nbrows = null;
+    public $row_format = null;
+    public $format = null;
 
-    function fileSYLK()
+    public function fileSYLK()
     {
         $this->cfg_formats[FORMAT_ENTIER] = "FF0";
         $this->cfg_formats[FORMAT_REEL] = "FF2";
         $this->cfg_formats[FORMAT_TEXTE] = "FG0";
     }
 
-    function setfilename($aFileName)
+    public function setfilename($aFileName)
     {
 
         $registry = registry::get_instance();
@@ -44,7 +44,7 @@ class fileSYLK
         $this->fileName = $pathtmp . $aFileName;
     }
 
-    function setFieldsNamesList($arrayFields)
+    public function setFieldsNamesList($arrayFields)
     {
         //$this->fieldsToExport = $arrayFields;
         foreach ($arrayFields as $idx => $a) {
@@ -76,29 +76,29 @@ class fileSYLK
         $this->nbrows = count($this->fieldsToExport);
     }
 
-    function setNbLines($nb)
+    public function setNbLines($nb)
     {
         $this->nblines = $nb;
     }
 
-    function openHandler()
+    public function openHandler()
     {
         if ($this->fileName)
             $this->myhandler = @fopen($this->fileName, 'a');
     }
 
-    function releaseHandler()
+    public function releaseHandler()
     {
         if ($this->myhandler)
             fclose($this->myhandler);
     }
 
-    function release()
+    public function release()
     {
         $this->releaseHandler();
     }
 
-    function writeHeader()
+    public function writeHeader()
     {
         if ( ! $this->myhandler)
             $this->openHandler();
@@ -120,7 +120,6 @@ class fileSYLK
             fwrite($this->myhandler, "P;FArial;M200;SB\n");
             fwrite($this->myhandler, "\n");
 
-
             fwrite($this->myhandler, "B;Y" . ($this->nblines + 1));  ## <?php echo == NB de lignes qu'il y aura  avec +1 pour les titres de colone en gras
             fwrite($this->myhandler, ";X" . $this->nbrows . "\n");    ## <?php echo == NB de colones qu'il y aura
             fwrite($this->myhandler, "\n");
@@ -129,8 +128,7 @@ class fileSYLK
               // largeurs des colonnes
               // pour chaque colones, on calcul la largeur
               // dans cette classe on defini ttes las col de la meme tailles
-              for ($cpt = 1; $cpt <= $nbcol; $cpt++)
-              {
+              for ($cpt = 1; $cpt <= $nbcol; $cpt++) {
               for($t=0;$t < count($tableau);$t++)
               $tmpo[$t]= strlen($tableau[$t][$cpt-1]);
               $taille=max($tmpo);
@@ -149,8 +147,6 @@ class fileSYLK
             fwrite($this->myhandler, "F;W" . $this->nbrows . " 256 8\n"); // F;Wcoldeb colfin largeur
             fwrite($this->myhandler, "\n");
 
-
-
             // on ecris l'en-tete des colonnes (en gras --> SDM4)
             for ($cmpt = 1; $cmpt <= $this->nbrows; $cmpt ++ ) {
                 fwrite($this->myhandler, "F;SDM4;FG0C;" . ($cmpt == 1 ? "Y1;" : "") . "X" . $cmpt . "\n");
@@ -160,7 +156,7 @@ class fileSYLK
         }
     }
 
-    function addLine($lineNum, $arrayFields)
+    public function addLine($lineNum, $arrayFields)
     {
         if ( ! $this->myhandler)
             $this->openHandler();
@@ -185,7 +181,7 @@ class fileSYLK
         }
     }
 
-    function writeEnd()
+    public function writeEnd()
     {
         fwrite($this->myhandler, "E\n");
         $this->releaseHandler();

@@ -2,7 +2,8 @@
 /* yadl_spaceid - Skip Stamping */
 error_reporting(E_ALL);
 
-function getResource($url){
+function getResource($url)
+{
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -23,8 +24,6 @@ if ($response === false) {
 
 $resultSet = unserialize($response);
 $resultSet = $resultSet['ResultSet'];
-
-
 
 $list = ''; // HTML output
 $headlines = array(); // track headlines to filter dupes

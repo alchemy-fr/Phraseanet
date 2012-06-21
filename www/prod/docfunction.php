@@ -34,11 +34,9 @@ $user = $Core->getAuthenticatedUser();
 
         <script type="text/javascript">
 
-            function getElementsByClass(cName,elType){var rtab=new Array();var tabTmp=new Array();tabTmp=document.getElementsByTagName(elType);var j=0;var X=tabTmp.length;for(i=0;i<X;i++){if(tabTmp[i].className==cName)
-                    {rtab[j]=tabTmp[i];j++;}}
+            function getElementsByClass(cName,elType){var rtab=new Array();var tabTmp=new Array();tabTmp=document.getElementsByTagName(elType);var j=0;var X=tabTmp.length;for (i=0;i<X;i++){if(tabTmp[i].className==cName) {rtab[j]=tabTmp[i];j++;}}
 
                 return rtab;}
-
 
             function selectGal(sbasid)
             {
@@ -49,8 +47,7 @@ $user = $Core->getAuthenticatedUser();
                 if(opt != '0')
                     dis = true;
 
-                for(var i=0;i!=X;i++)
-                {
+                for (var i=0;i!=X;i++) {
                     els[i].disabled = dis;
                 }
             }
@@ -61,18 +58,15 @@ $user = $Core->getAuthenticatedUser();
                 var X = els.length;
 
                 var out = '';
-                for(var i=0;i!=X;i++)
-                {
+                for (var i=0;i!=X;i++) {
                     var gal = false;
-                    if(els[i].options[els[i].selectedIndex].value != '0')
-                    {
+                    if (els[i].options[els[i].selectedIndex].value != '0') {
                         gal = true;
                     }
 
                     var imgs = getElementsByClass('select'+els[i].id.substr(6),'select');
                     var Y = imgs.length;
-                    for(var j=0;j!=Y;j++)
-                    {
+                    for (var j=0;j!=Y;j++) {
                         if(gal)
                             out += imgs[j].id+'='+els[i].options[els[i].selectedIndex].value+";";
                         else
@@ -84,17 +78,13 @@ $user = $Core->getAuthenticatedUser();
                 document.forms.formtypedoc.submit();
             }
 
-
-
             function doChgStat(do_it)
             {
-                if(do_it)
-                {
+                if (do_it) {
                     var sbases = document.getElementsByName('presa');
                     var A = sbases.length;
 
-                    for(var h=0;h!=A;h++)
-                    {
+                    for (var h=0;h!=A;h++) {
                         calcHex(sbases[h].id.substring(4));
                     }
 
@@ -110,21 +100,18 @@ $user = $Core->getAuthenticatedUser();
                     var outOr='';
                     var outAnd='';
 
-                    for(var i=0;i!=X;i++)
-                    {
+                    for (var i=0;i!=X;i++) {
                         outOr += outOr!=''?';':'';
                         outOr += sbOr[i].id.substring(4)+'_'+sbOr[i].value;
                     }
-                    for(var j=0;j!=Y;j++)
-                    {
+                    for (var j=0;j!=Y;j++) {
                         outAnd += outAnd!=''?';':'';
                         outAnd += sbAnd[j].id.substring(4)+'_'+sbAnd[j].value;
                     }
                     document.getElementById('MSKA').value = outAnd;
                     document.getElementById('MSKO').value = outOr;
                     document.formstatus.submit();
-                }
-                else
+                } else
                     parent.hideDwnl();
             }
 
@@ -134,8 +121,7 @@ $user = $Core->getAuthenticatedUser();
             {
                 var t_and = new Array();
                 var t_or = new Array();
-                for(bit=0; bit<64; bit++)
-                {
+                for (bit=0; bit<64; bit++) {
                     t_and[bit] = bit<4 ? 1 : 0;  // on peut clear tous les bits non nommes, sauf les 4 premiers reserves
                     t_or[bit] = 0;
                 }
@@ -143,8 +129,7 @@ $user = $Core->getAuthenticatedUser();
                 var bit;
                 var status;
 
-                for(i=0; i<c.length; i++)
-                {
+                for (i=0; i<c.length; i++) {
                     bit    = c[i].getAttribute('bit');
                     status = c[i].getAttribute('status');
                     t_and[bit] = 1;
@@ -158,11 +143,9 @@ $user = $Core->getAuthenticatedUser();
                 t_hex = new Array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f");
                 bit = 0;
                 s_a = s_o = "";
-                for(q=0; q<16; q++)
-                {
+                for (q=0; q<16; q++) {
                     v_a = v_o = 0;
-                    for(b=0; b<4; b++)
-                    {
+                    for (b=0; b<4; b++) {
                         v_a |= t_and[bit]<<b;
                         v_o |= t_or[bit]<<b;
                         bit++;
@@ -178,8 +161,7 @@ $user = $Core->getAuthenticatedUser();
             {
                 var bit = ccoch.getAttribute('bit');
                 var sbas = ccoch.getAttribute('sbas');
-                switch(ccoch.getAttribute('status'))
-                {
+                switch (ccoch.getAttribute('status')) {
                     case "0":    // decoche -> coche
                         ccoch.setAttribute('status', "1");
                         document.getElementById("linkoff_"+sbas+'_'+bit).setAttribute('status', "0");
@@ -201,16 +183,12 @@ $user = $Core->getAuthenticatedUser();
                 evt_clk_stat(document.getElementById("linkon_"+ccoch.getAttribute('sbas')+'_'+ ccoch.getAttribute('bit') ) );
             }
 
-
             function chksonstatus(obj)
             {
-                if(obj.getAttribute('status')=="1")
-                {
+                if (obj.getAttribute('status')=="1") {
                     obj.setAttribute('status', "0");
                     obj.src = "/skins/icons/ccoch0.gif";
-                }
-                else
-                {
+                } else {
                     obj.setAttribute('status', "1");
                     obj.src = "/skins/icons/ccoch1.gif";
                 }
@@ -283,7 +261,6 @@ $user = $Core->getAuthenticatedUser();
             $sbasid = $basrec[0];
             $record = new record_adapter($basrec[0], $basrec[1]);
 
-
             // on verifie que on a le droits de changer les status sur les collections des documents droppe
 
             if ( ! isset($sbasSet[$sbasid])) {
@@ -341,8 +318,7 @@ if ($sbasSet !== null) {
     if ($ndocs != null) {
         foreach ($ndocs as $doc)
             $ndocsum += $doc;
-    }
-    else
+    } else
         $ndocsum = 0;
 
     foreach ($sbasSet as $sbasid => $truth) {
@@ -404,8 +380,6 @@ if ($sbasSet !== null) {
 
                             echo "</div>";
 
-
-
                             if ($nbgrouping[$sbasid] > 0) {
                                 ?>
                                 <br>
@@ -461,7 +435,7 @@ if ($sbasSet !== null) {
                     <input type="hidden" name="lst" value="<?php echo $parm["lst"] ?>" />
                     <div style="margin-top:10px; margin-bottom:10px; text-align:center;">
                         <?php
-                         if ($ndefined[$sbasid] > 0){
+                         if ($ndefined[$sbasid] > 0) {
                         ?>
                             <input type="button" class="edit-btn" value="<?php echo _('boutton::valider') ?>" onclick="doChgStat(true);" />
                         <?php

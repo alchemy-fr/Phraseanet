@@ -27,8 +27,8 @@ require_once 'Minify/Source.php';
  * @license http://opensource.org/licenses/bsd-license.php  New BSD License
  * @link http://code.google.com/p/minify/
  */
-class Minify {
-
+class Minify
+{
     const VERSION = '2.1.3';
     const TYPE_CSS = 'text/css';
     const TYPE_HTML = 'text/html';
@@ -154,8 +154,8 @@ class Minify {
      * @param array $options controller/serve options
      *
      * @return mixed null, or, if the 'quiet' option is set to true, an array
-     * with keys "success" (bool), "statusCode" (int), "content" (string), and
-     * "headers" (array).
+     * with keys "success" (bool) , "statusCode" (int) , "content" (string) , and
+     * "headers" (array) .
      */
     public static function serve($controller, $options = array())
     {
@@ -188,7 +188,7 @@ class Minify {
 
                 return array(
                     'success' => false
-                    ,'statusCode' => (int)$statusCode
+                    ,'statusCode' => (int) $statusCode
                     ,'content' => ''
                     ,'headers' => array()
                 );
@@ -348,7 +348,7 @@ class Minify {
         $cache = self::$_cache;
         self::$_cache = null;
         $options = array_merge(array(
-            'files' => (array)$sources
+            'files' => (array) $sources
             ,'quiet' => true
             ,'encodeMethod' => ''
             ,'lastModifiedTime' => 0
@@ -519,7 +519,7 @@ class Minify {
             // bubble CSS imports
             preg_match_all('/@import.*?;/', $css, $imports);
             $css = implode('', $imports[0]) . preg_replace('/@import.*?;/', '', $css);
-        } else if ('' !== self::$importWarning) {
+        } elseif ('' !== self::$importWarning) {
             // remove comments so we don't mistake { in a comment as a block
             $noCommentCss = preg_replace('@/\\*[\\s\\S]*?\\*/@', '', $css);
             $lastImportPos = strrpos($noCommentCss, '@import');

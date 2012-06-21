@@ -64,7 +64,6 @@ if ($Request->get('act') == "DELCHU" && ($Request->get("p0") != "" && $Request->
     unset($basket);
 }
 
-
 $courChuId = $Request->get('courChuId');
 
 if ($Request->get('act') == "NEWCHU" && ($Request->get("p0") != "" && $Request->get("p0") != null)) {
@@ -122,12 +121,9 @@ if ($recepts_opt) {
         . '</optgroup>';
 }
 
-
 $out.='</optgroup>';
 $out .= "</select>";
 $out .= '</td><td style="width:40%">';
-
-
 
 $em = $Core->getEntityManager();
 $repository = $em->getRepository('\Entities\Basket');

@@ -95,7 +95,6 @@ try {
             if ($parm['debug'])
                 printf("%s : replacing=%s \n", __LINE__, var_export($replacing, true));
 
-
             foreach ($t_rid as $rid => $xml) {
                 if ($parm['debug'])
                     printf("%s rid=%s \n", __LINE__, $rid);
@@ -172,10 +171,8 @@ try {
                         $desc->appendChild($dom->createElement($field))->appendChild($dom->createTextNode($t));
                 }
 
-
                 if ($parm['debug'])
                     printf("%s : t_mval APRES = %s \n", __LINE__, var_export($t_mval, true));
-
 
                 if ($parm['debug'])
                     printf("APRES:\n%s \n", htmlentities($dom->saveXML()));

@@ -80,7 +80,6 @@ $finder
     ->ignoreVCS(false)
     ->in(__DIR__);
 
-
 $dirs = array();
 
 foreach ($finder as $dir) {

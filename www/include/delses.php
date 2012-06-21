@@ -24,11 +24,9 @@ $session = $appbox->get_session();
 $request = http_request::getInstance();
 $parm = $request->get_parms("app");
 
-
 if ( ! $session->is_authenticated()) {
     return;
 }
 
 $session->set_event_module($parm['app'], false);
-
 

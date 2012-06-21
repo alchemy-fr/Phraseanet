@@ -46,7 +46,6 @@ phrasea::headers();
 
         </style>
 
-
         <script type="text/javascript">
             function gostep3()
             {
@@ -82,7 +81,6 @@ phrasea::headers();
                 rewind($FILE);
                 if (count($test1) == 1 || ( count($test2) > count($test1) && count($test2) < 20))
                     $separateur = ";";
-
 
                 while ($ARRAY[] = fgetcsv($FILE, 1024, $separateur));
                 fclose($FILE);
@@ -245,7 +243,6 @@ phrasea::headers();
                     }
                 }
 
-
                 # on va cree ici le user et ses droits
                 # on verifie juste le login et le password
                 if (isset($curUser['usr_login']) && trim($curUser['usr_login']) !== '' && isset($curUser['usr_password']) && trim($curUser['usr_password']) !== "") {
@@ -315,7 +312,6 @@ phrasea::headers();
     if ($out != "")
         $out.="\n<br> ";
 
-
     if ( ! $logindefined || ! $pwddefined)
         $out = $outTmp;
     else {
@@ -366,8 +362,7 @@ phrasea::headers();
                     if ($out2 != "") {
                         $out .= "<br>Line " . ( $i + 1) . " :";
                         $out .= "$out2<br>";
-                    }
-                    else
+                    } else
                         $nbusrToadd ++;
                 }
             }

@@ -68,16 +68,14 @@ TH { text-align: left; }
 <?php
 $testdates = array(time(), strtotime('1900/01/01'), strtotime('2008/01/01'), strtotime('2008/01/01 08:00:00'), strtotime('2007/12/31 23:59:59'), strtotime('2008/02/29'), strtotime('2000/12/31'));
 /*$testdates = array();
-for($i=1; $i<366; $i++)
-{
+for ($i=1; $i<366; $i++) {
     $testdates[] = strtotime("2008/01/$i");
     $testdates[] = strtotime("2008/01/$i 11:59:59");
     $testdates[] = strtotime("2008/01/$i 12:00:00");
 }*/
 $formats = array('a','A','b','B','c','C','d','D','e','F','g','G','h','H','I','j','k','l','m','M','n','p','P','r','R','s','S','t','T','u','U','V','w','W','x','X','y','Y','z','Z','%');
 //$formats = array('j');
-foreach($testdates as $date)
-{
+foreach ($testdates as $date) {
 ?>
 <script type="text/javascript">
 var date = new Date('<?php echo strftime('%Y/%m/%d %H:%M:%S', $date); ?>');
@@ -91,8 +89,7 @@ document.write(YAHOO.util.Date.format(date, {format: '%Y/%m/%d %H:%M:%S'}));
 <tr> <th rowspan="2">format</th> <th colspan="2">US English</th> <th colspan="2">UK English</th> <th colspan="2">French</th> <th colspan="2">Canadian French</th> <th colspan="2">Swiss French</th> <th colspan="2">German</th> <th colspan="2">Swiss German</th> <th colspan="2">Hindi</th> <th colspan="2">Hangul</th> </tr>
 <tr> <th>PHP</th> <th>Javascript</th> <th>PHP</th> <th>Javascript</th> <th>PHP</th> <th>Javascript</th> <th>PHP</th> <th>Javascript</th> <th>PHP</th> <th>Javascript</th> <th>PHP</th> <th>Javascript</th> <th>PHP</th> <th>Javascript</th> <th>PHP</th> <th>Javascript</th> <th>PHP</th> <th>Javascript</th> </tr>
 <?php
-foreach($formats as $format)
-{
+foreach ($formats as $format) {
     $format = "%$format";
 
     setlocale(LC_TIME, 'en_US.UTF-8', 'en_US');
@@ -280,14 +277,12 @@ $lc['c'] = strftime("%c");
 $lc['r'] = strftime("%r");
 $lc['x'] = strftime("%X");
 $lc['X'] = strftime("%X");
-for($i=6; $i<13; $i++)
-{
+for ($i=6; $i<13; $i++) {
     $d = strtotime("2008/01/$i");
     $lc['a'][] = strftime("%a", $d);
     $lc['A'][] = strftime("%A", $d);
 }
-for($i=1; $i<13; $i++)
-{
+for ($i=1; $i<13; $i++) {
     $d = strtotime("2008/$i/1");
     $lc['b'][] = strftime("%b", $d);
     $lc['B'][] = strftime("%B", $d);
@@ -302,5 +297,4 @@ $lc['P'][] = strftime("%p", $d);
 
 echo "<!-- " . json_encode($lc) . " -->";
 ?>
-
 

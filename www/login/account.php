@@ -28,8 +28,6 @@ $parm = $request->get_parms("form_gender", "form_lastname", "form_firstname", "f
 
 $lng = Session_Handler::get_locale();
 
-
-
 $user = $Core->getAuthenticatedUser();
 $usr_id = $user->get_id();
 $gatekeeper = gatekeeper::getInstance($Core);
@@ -39,7 +37,6 @@ if ($user->is_guest()) {
     phrasea::headers(403);
 }
 phrasea::headers();
-
 
 appbox_register::clean_old_requests($appbox);
 
@@ -281,16 +278,14 @@ $user = User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox)
 
                 $(".app-btn").live("click", function(){
 
-                    if (!$(this).hasClass("authorize"))
-                    {
+                    if (!$(this).hasClass("authorize")) {
                         var revoke = 1;
                         var button_class = "authorize";
                         var old_class ="revoke";
                         var string  = "<?php echo _('Authoriser l\'access'); ?>";
                     }
 
-                    if ($(this).hasClass("authorize"))
-                    {
+                    if ($(this).hasClass("authorize")) {
                         var revoke = 0;
                         var button_class = "revoke";
                         var old_class ="authorize";
@@ -308,18 +303,16 @@ $user = User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox)
                             revoke : revoke
                         },
                         success : function(data){
-                            if(data.ok)
-                            {
+                            if (data.ok) {
                                 div = current.closest("div");
                                 current.removeClass(old_class).addClass(button_class);
                                 current.attr("value", acc_id);
-                                current.empty().append(string);
+                                current.empty().append(string) ;
                             }
                         }
                     }
                     $.ajax(opts);
                 });
-
 
                 $("#app_dev, #app_dev_new, #app_dev_create, a.dev_back").live("click", function(e){
                     e.preventDefault();
@@ -334,7 +327,6 @@ $user = User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox)
                     }
                     $.ajax(opts);
                 });
-
 
                 $(".delete_app").die().live("click", function(){
                     var id = $(this).closest("li").attr('id').split("_");;
@@ -358,8 +350,7 @@ $user = User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox)
                                         dataType: 'json',
                                         data : {},
                                         success : function(data){
-                                            if(data.success == true)
-                                            {
+                                            if (data.success == true) {
                                                 $this.closest("li").remove();
                                                 $("#confirm_delete").dialog("close");
                                             }
@@ -590,11 +581,10 @@ $user = User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox)
                                                     <td colspan="3">
                                                 </tr>
 
-
                                                 <tr>
                                                     <td class="form_label"><label for="form_activeFTP"><?php echo _('admin::compte-utilisateur:ftp: Activer le compte FTP'); ?></label></td>
                                                     <td class="form_input">
-                                                        <input onchange="if(this.checked){$('#ftpinfos').slideDown();}else{$('#ftpinfos').slideUp();}" style=""  type="checkbox" class="checkbox" <?php echo ($user->get_activeftp() ? "checked" : "") ?> name="form_activeFTP" id="form_activeFTP">
+                                                        <input onchange="if (this.checked) {$('#ftpinfos').slideDown();} else {$('#ftpinfos').slideUp();}" style=""  type="checkbox" class="checkbox" <?php echo ($user->get_activeftp() ? "checked" : "") ?> name="form_activeFTP" id="form_activeFTP">
                                                     </td>
                                                     <td class="form_alert"></td>
                                                 </tr>
@@ -681,7 +671,6 @@ $user = User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox)
                         <!-- START TAB ACCESS -->
                         <div id="tab-account-access">
 
-
                             <form name="updatingDemand" id="updatingDemand" action="/login/account.php" method="post">
                                 <?php
                                 $demandes = giveMeBaseUsr($usr_id, $lng);
@@ -689,7 +678,6 @@ $user = User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox)
                                 ?>
                                 <input type="submit" value="<?php echo _('boutton::valider'); ?>"/>
                             </form>
-
 
                         </div>
 
@@ -776,10 +764,8 @@ $user = User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox)
                         <!-- START TAB APPLICATION -->
                         <div id="tab-account-app">
 
-
                         </div>
                         <div id="tab-account-dev">
-
 
                         </div>
                     </div>

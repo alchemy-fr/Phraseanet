@@ -31,9 +31,7 @@ $filename = mb_strtolower('report' . $name . '_' . date('dmY') . '.csv');
 
 $content = "";
 
-
 if ($parm['csv']) {
     $content = trimUltime($parm['csv']);
     set_export::stream_data($content, $filename, "text/csv");
 }
-?>

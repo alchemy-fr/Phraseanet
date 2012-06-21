@@ -31,7 +31,6 @@ $var = array(
     'ajax_chart' => true
 );
 
-
 $twig = $Core->getTwig();
 
 $html = $twig->render('report/chart.twig', $var);

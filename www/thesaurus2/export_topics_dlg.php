@@ -44,8 +44,7 @@ if ($parm["dlg"]) {
             var format = '???';
             function clkBut(button)
             {
-                switch(button)
-                {
+                switch (button) {
                     case "submit":
                         document.forms[0].target = (format == 'tofiles' ? "_self" : "EXPORT2");
                         document.forms[0].submit();
@@ -69,8 +68,7 @@ if ($parm["dlg"]) {
             {
                 if(o.nodeType==1)  // element
                 {
-                    if(o.nodeName=='INPUT')
-                    {
+                    if (o.nodeName=='INPUT') {
                         if(stat)
                             o.removeAttribute('disabled');
                         else
@@ -83,16 +81,12 @@ if ($parm["dlg"]) {
             function chgFormat()
             {
                 var i, f;
-                for(i=0; i<document.forms[0].ofm.length; i++)
-                {
+                for (i=0; i<document.forms[0].ofm.length; i++) {
                     f = document.forms[0].ofm[i].value;
-                    if(document.forms[0].ofm[i].checked)
-                    {
+                    if (document.forms[0].ofm[i].checked) {
                         // enable_inputs(document.getElementById('subform_'+f), true);
                         format = f;
-                    }
-                    else
-                    {
+                    } else {
                         // enable_inputs(document.getElementById('subform_'+f), false);
                     }
                 }

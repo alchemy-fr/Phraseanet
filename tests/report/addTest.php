@@ -70,7 +70,6 @@ class addReportTest extends PhraseanetPHPUnitAbstract
             $this->ColFilter();
         }
 
-
         foreach ($this->ret as $sbasid => $collections) {
             $this->report = new module_report_add(
                     $this->dmin,
@@ -105,7 +104,6 @@ class addReportTest extends PhraseanetPHPUnitAbstract
             $this->assertFalse($report['previous_page']);
         else
             $this->assertEquals($report['page'] - 1, $report['previous_page']);
-
 
         if (intval(ceil($nbPage)) == $report['page'] || intval(ceil($nbPage)) == 0)
             $this->assertFalse($report['next_page']);
@@ -142,8 +140,7 @@ class addReportTest extends PhraseanetPHPUnitAbstract
                     $i ++;
                 }
             }
-        }
-        else {
+        } else {
             $this->assertArrayHasKey($groupby, $this->report->getDisplay());
             $this->assertArrayHasKey('nombre', $this->report->getDisplay());
         }

@@ -74,7 +74,7 @@ class Feed_Entry_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
             self::$object->set_title('');
             $this->fail();
         } catch (Exception_InvalidArgument $e) {
-            
+
         }
     }
 

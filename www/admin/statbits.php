@@ -108,7 +108,6 @@ if ($parm["act"] == "APPLY") {
         }
     }
 
-
     if ($parm["dic1"]) {
         databox_status::deleteIcon($parm['p0'], $parm['bit'], 'on');
     }
@@ -130,8 +129,6 @@ if ($parm["act"] == "APPLY") {
         }
     }
 }
-
-
 
 if ($parm["act"] == "ADD" || $parm["act"] == "EDIT") {
     $status = $databox->get_statusbits();

@@ -39,8 +39,7 @@ if ($parm["dlg"]) {
         <script type="text/javascript">
             function clkBut(button)
             {
-                switch(button)
-                {
+                switch (button) {
                     case "submit":
                         m = null;
                         for(i=0; !m && document.forms[0].m[i]; i++)

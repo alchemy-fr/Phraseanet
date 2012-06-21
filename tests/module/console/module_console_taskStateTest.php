@@ -64,4 +64,3 @@ class module_console_taskStateTest extends PhraseanetPHPUnitAbstract
     }
 }
 
-?>

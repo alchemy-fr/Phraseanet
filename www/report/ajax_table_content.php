@@ -48,7 +48,6 @@ $parm = $request->get_parms("dmin", // date minimal of the reporting
                             "from"
 );
 
-
 $core = \bootstrap::getCore();
 $twig = $core->getTwig();
 
@@ -270,8 +269,7 @@ function doUserConf($conf, $param)
         }
 
         return $new_conf;
-    }
-    else {
+    } else {
         return $conf;
     }
 }
@@ -580,8 +578,7 @@ function infoUsr($param, $twig, $conf)
     if ($registry->get('GV_anonymousReport') == false) {
         $html_info .= doHtml($report, $param, $twig, 'report/report.twig');
         (empty($param['on']) && isset($report['result'])) ? $title = $report['result'][0]['identifiant'] : $title = $param['user'];
-    }
-    else
+    } else
         $title = $param['user'];
 
     sendReport($html_info . $html, false, $title);
@@ -735,4 +732,3 @@ switch ($param['tbl']) {
         infoNav($param, $twig);
         break;
 }
-?>

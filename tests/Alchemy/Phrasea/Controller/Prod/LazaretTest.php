@@ -3,7 +3,6 @@
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 require_once __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Controller/Prod/Lazaret.php';
 
-use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
 class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract

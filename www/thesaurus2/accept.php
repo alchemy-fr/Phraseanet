@@ -22,7 +22,6 @@ $registry = $appbox->get_registry();
 require($registry->get('GV_RootPath') . "www/thesaurus2/xmlhttp.php");
 $session = $appbox->get_session();
 
-
 $request = http_request::getInstance();
 $parm = $request->get_parms(
     "bid"
@@ -64,20 +63,15 @@ if ($parm["dlg"]) {
             function ok()
             {
                 as = "";
-                if((n=document.forms[0].as.length) > 0)
-                {
-                    for(i=0; i<n && as==""; i++)
-                    {
+                if ((n=document.forms[0].as.length) > 0) {
+                    for (i=0; i<n && as==""; i++) {
                         if(document.forms[0].as[i].checked)
                             as = document.forms[0].as[i].value;
                     }
-                }
-                else
-                {
+                } else {
                     as = document.forms[0].as.value;
                 }
-                if(as == "TS")
-                {
+                if (as == "TS") {
                     url = "xmlhttp/acceptcandidates.x.php";
                     parms  = "bid=<?php echo urlencode($parm["bid"]) ?>";
                     parms += "&piv=<?php echo urlencode($parm["piv"]) ?>";
@@ -93,11 +87,9 @@ if ($parm["dlg"]) {
 
                     refresh = ret.getElementsByTagName("refresh");
                     //alert(refresh.length);
-                    for(i=0; i<refresh.length; i++)
-                    {
+                    for (i=0; i<refresh.length; i++) {
                         //alert(i + " : '" + refresh.item(i).getAttribute("type") + "' id='"+refresh.item(i).getAttribute("id")+"'");
-                        switch(refresh.item(i).getAttribute("type"))
-                        {
+                        switch (refresh.item(i).getAttribute("type")) {
                             case "CT":
 <?php echo $opener ?>.reloadCtermsBranch(refresh.item(i).getAttribute("id"));
                             break;
@@ -107,9 +99,7 @@ if ($parm["dlg"]) {
                         }
                     }
                     self.close();
-                }
-                else if(as == "SY")
-                {
+                } elseif (as == "SY") {
                     url = "xmlhttp/acceptcandidates.x.php";
                     parms  = "bid=<?php echo urlencode($parm["bid"]) ?>";
                     parms += "&piv=<?php echo urlencode($parm["piv"]) ?>";
@@ -120,10 +110,8 @@ if ($parm["dlg"]) {
                     ret = loadXMLDoc(url, parms, true);
 
                     refresh = ret.getElementsByTagName("refresh");
-                    for(i=0; i<refresh.length; i++)
-                    {
-                        switch(refresh.item(i).getAttribute("type"))
-                        {
+                    for (i=0; i<refresh.length; i++) {
+                        switch (refresh.item(i).getAttribute("type")) {
                             case "CT":
 <?php echo $opener ?>.reloadCtermsBranch(refresh.item(i).getAttribute("id"));
                                 break;
@@ -177,8 +165,7 @@ if ($parm["bid"] !== null) {
                 $cfield = '*';
             else
                 $cfield = $cfield->getAttribute("field");
-        }
-        else {
+        } else {
             $cfield = NULL;
         }
         //  {

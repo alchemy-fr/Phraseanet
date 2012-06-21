@@ -33,7 +33,7 @@ class Step35 implements DatasUpgraderInterface
     /**
      * Constructor
      *
-     * @param Core $core
+     * @param Core   $core
      * @param Logger $logger
      */
     public function __construct(Core $core, Logger $logger)
@@ -113,7 +113,6 @@ class Step35 implements DatasUpgraderInterface
             } while (count($rs) > 0);
         }
 
-
         foreach ($appbox->get_databoxes() as $databox) {
             $this->ensureDropMigrateColumn($databox);
         }
@@ -148,7 +147,7 @@ class Step35 implements DatasUpgraderInterface
      * Update the metadatas of a record
      *
      * @param \record_adapter $record
-     * @param string $xml
+     * @param string          $xml
      */
     protected function updateMetadatas(\record_adapter $record, $xml)
     {
@@ -215,7 +214,7 @@ class Step35 implements DatasUpgraderInterface
      *
      * @staticvar \PDO_statement $stmt
      * @param \databox $databox
-     * @param array $record
+     * @param array    $record
      */
     protected function setOriginalName(\databox $databox, array $record)
     {

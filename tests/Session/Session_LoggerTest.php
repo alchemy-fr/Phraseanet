@@ -28,8 +28,6 @@ class Session_LoggerTest extends PhraseanetPHPUnitAbstract
         $user = self::$user;
         $auth = new Session_Authentication_None($user);
 
-
-
         $this->session->authenticate($auth);
 
         foreach ($user->ACL()->get_granted_sbas() as $databox) {

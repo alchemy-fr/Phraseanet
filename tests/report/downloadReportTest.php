@@ -164,8 +164,7 @@ class downloadReportTest extends PhraseanetPHPUnitAbstract
         if ($groupby) {
             if ($groupby != 'record_id')
                 $this->assertEquals(count($this->report->getDisplay()), 2);
-        }
-        else
+        } else
             $this->assertEquals(count($this->report->getDisplay()), count($conf));
 
         if ( ! $groupby) {
@@ -190,8 +189,7 @@ class downloadReportTest extends PhraseanetPHPUnitAbstract
                     $i ++;
                 }
             }
-        }
-        else {
+        } else {
 
             $this->assertArrayHasKey($groupby, $this->report->getDisplay());
         }

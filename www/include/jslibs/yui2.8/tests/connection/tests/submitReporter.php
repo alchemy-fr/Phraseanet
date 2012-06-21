@@ -5,4 +5,3 @@ echo(json_encode(array(
     POST => $_POST,
     GET  => $_GET
 )));
-?>

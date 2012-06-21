@@ -159,8 +159,6 @@ $curPrefs = $collection->get_prefs();
             font-size:11px;
         }
 
-
-
         .desktopMenu
         {
             BORDER-RIGHT: 2px outset;
@@ -214,8 +212,7 @@ $curPrefs = $collection->get_prefs();
         {
             inxml = document.getElementById("txtareaxml").value;
             inxml2="";
-            for(i=0; i<inxml.length;i++)
-            {
+            for (i=0; i<inxml.length;i++) {
                 if(inxml.charCodeAt(i)!=13)
                     inxml2+=inxml.substr(i,1);
 
@@ -239,22 +236,16 @@ $curPrefs = $collection->get_prefs();
         }
         function addEvent(obj, evType, fn, useCapture)
         {
-            if (obj.addEventListener)
-            {
+            if (obj.addEventListener) {
                 obj.addEventListener(evType, fn, useCapture);
 
                 return true;
-            }
-            else
-            {
-                if (obj.attachEvent)
-                {
+            } else {
+                if (obj.attachEvent) {
                     var r = obj.attachEvent("on"+evType, fn);
 
                     return r;
-                }
-                else
-                {
+                } else {
                     alert("Handler could not be attached");
                 }
             }
@@ -266,34 +257,29 @@ $curPrefs = $collection->get_prefs();
             if(!node)
 
             return;
-        if(node.id)
-        {
+        if (node.id) {
             allgetID[node.id] = node;
             //node.style.visibility = "hidden";
             total++;
         }
-        for(n=node.firstChild; n; n=n.nextSibling)
-        {
+        for (n=node.firstChild; n; n=n.nextSibling) {
             if(n.nodeType && n.nodeType == 1)
                 scandom(n, depth+1);
         }
     }
 
-    window.onload=function()
-    {
+    window.onload=function() {
         redrawme();
         scan();
         document.getElementById("iddivloading").style.visibility = "hidden";
     }
-    function scan()
+    public function scan()
     {
         if(document.all)
             scandom(document.documentElement, 0);
-        else
-        {
+        else {
             allccuser = document.getElementsByName("ccuser");
-            for (var i=0; i<allccuser.length;i++)
-            {
+            for (var i=0; i<allccuser.length;i++) {
                 allgetID[allccuser[i].id] = allccuser[i];
                 total++ ;
             }
@@ -301,14 +287,12 @@ $curPrefs = $collection->get_prefs();
 
     }
 
-    function view(typeDiv)
+    public function view(typeDiv)
     {
 
-        switch (typeDiv)
-        {
+        switch (typeDiv) {
             case "RIGHTS":
-                if( document.getElementById( "divGraph") )
-                {
+                if ( document.getElementById( "divGraph") ) {
                     document.getElementById( "divGraph").style.visibility = "visible";
                     document.getElementById( "divGraph").style.display = "";
                 }
@@ -318,29 +302,22 @@ $curPrefs = $collection->get_prefs();
                     oo.style.visibility = "visible" ;
                 break;
 
-
-
         }
     }
 
     var pass=false;
-    function redrawme()
+    public function redrawme()
     {
 
-
         wb = document.getElementById("divref").offsetWidth;
-
 
         if(wb<150)
             wb= 150;
 
         document.getElementById("presentUser").style.width = (wb-10)+"px";
 
-
-
         /***************************************************/
-        if(document.all)
-        {
+        if (document.all) {
             if(document.documentElement.clientHeight)
                 bodyH = document.documentElement.clientHeight - 5 ;
             else
@@ -351,20 +328,15 @@ $curPrefs = $collection->get_prefs();
             else
                 scrollLeft = document.body.scrollLeft;
             scrolltop = null;
-            if(document.documentElement.scrollTop)
-            {
+            if (document.documentElement.scrollTop) {
                 scrolltop = document.documentElement.scrollTop;
                 document.documentElement.scrollTop = 0 ;
-            }
-            else
-            {
+            } else {
                 scrolltop = document.body.scrollTop;
                 document.body.scrollTop=0;
 
             }
-        }
-        else
-        {
+        } else {
 
             bodyH =  parent.window.document.clientHeight;
             if(!bodyH)
@@ -378,13 +350,10 @@ $curPrefs = $collection->get_prefs();
             else
                 scrollLeft = document.body.scrollLeft;
             scrolltop = null;
-            if(document.documentElement.scrollTop)
-            {
+            if (document.documentElement.scrollTop) {
                 scrolltop = document.documentElement.scrollTop;
                 document.documentElement.scrollTop = 0;
-            }
-            else
-            {
+            } else {
                 scrolltop = document.body.scrollTop;
                 document.body.scrollTop=0;
             }
@@ -392,8 +361,7 @@ $curPrefs = $collection->get_prefs();
         /***************************************************/
         hauteur =  document.getElementById("spanref").offsetTop;
         hauteur =  bodyH-10;
-        if(hauteur<10)
-        {
+        if (hauteur<10) {
 
             hauteur = document.getElementById("spanref").clientHeight;
         }
@@ -410,8 +378,7 @@ $curPrefs = $collection->get_prefs();
 
         document.getElementById("txtareaxml").style.height = (hauteur-160)+"px";
 
-        if (o = returnElement("iddivloading") )
-        {
+        if (o = returnElement("iddivloading") ) {
             o.style.width = (wb-18)+"px";
             o.style.left = "10px";
             o.style.top = "95px";
@@ -419,13 +386,10 @@ $curPrefs = $collection->get_prefs();
         }
     }
 
-
-    function returnElement(unId)
+    public function returnElement(unId)
     {
-        if(! allgetID[unId] )
-        {
-            if( document.getElementById(unId) )
-            {
+        if (! allgetID[unId] ) {
+            if ( document.getElementById(unId) ) {
                 allgetID[unId] = document.getElementById(unId);
             }
         }
@@ -436,7 +400,7 @@ $curPrefs = $collection->get_prefs();
     var pref = new Array(0);
     var lastpref=null;
 
-    function loaded()
+    public function loaded()
     {
         self.focus();
         write_valsug();
@@ -447,14 +411,14 @@ $curPrefs = $collection->get_prefs();
         scan();
         document.getElementById("iddivloading").style.visibility = "hidden";
     }
-    function Roll(im, x)
+    public function Roll(im, x)
     {
         var s=document[im].src;
         var d=s.substr(0,s.length-5)
         document[im].src = d + x + ".gif";
     }
 
-    function valeursPref(nomaff,valsug)
+    public function valeursPref(nomaff,valsug)
     {
         this.nomaff = nomaff;
         this.Type = "text";
@@ -464,25 +428,22 @@ $curPrefs = $collection->get_prefs();
 
         return(this);
     }
-    function savenomaff()
+    public function savenomaff()
     {
         if ( (o = document.getElementById("namAff"))  != null  && lastpref!=null)
             pref[lastpref].nomaff = o.value ;
     }
     // ecrit le select des valsug
-    function write_valsug()
+    public function write_valsug()
     {
-        if ( (o = document.getElementById("nomchamPH"))  != null )
-        {
-            if((o2 = document.getElementById("valsug")) != null)
-            {
+        if ( (o = document.getElementById("nomchamPH"))  != null ) {
+            if ((o2 = document.getElementById("valsug")) != null) {
                 lastpref =  o.value;
 
                 p = document.getElementById("valsug2");
 
                 p.options.length = 0;
-                for(i=0; i<pref[o.value].valsug.length; i++)
-                {
+                for (i=0; i<pref[o.value].valsug.length; i++) {
                     if(pref[o.value].valsug[i])
                         x = p.options[p.options.length] = new Option(unescape(pref[o.value].valsug[i]), pref[o.value].valsug[i]);
                 }
@@ -490,24 +451,20 @@ $curPrefs = $collection->get_prefs();
         }
     }
 
-    function desactivall4VS()
+    public function desactivall4VS()
     {
         activer_bout('bout_supp',true);
         activer_bout('bout_mont',true);
         activer_bout('bout_desc',true);
-        if((o2 = document.getElementById("valsug2")) != null)
-        {
+        if ((o2 = document.getElementById("valsug2")) != null) {
             o2.selectedIndex =-1;
         }
     }
 
-
-    function desactiv4VS()
+    public function desactiv4VS()
     {
-        if((o2 = document.getElementById("valsug2")) != null)
-        {
-            if(o2.options.length >1)
-            {
+        if ((o2 = document.getElementById("valsug2")) != null) {
+            if (o2.options.length >1) {
 
                 if((o2.selectedIndex+1) != o2.options.length)
                     activer_bout('bout_desc',false);
@@ -518,19 +475,16 @@ $curPrefs = $collection->get_prefs();
                     activer_bout('bout_mont',false);
                 else
                     activer_bout('bout_mont',true);
-            }
-            else
-            {
+            } else {
                 activer_bout('bout_desc',true);
                 activer_bout('bout_mont',true);
             }
 
         }
     }
-    function activ4VS()
+    public function activ4VS()
     {
-        if((o2 = document.getElementById("valsug2")) != null)
-        {
+        if ((o2 = document.getElementById("valsug2")) != null) {
             if(o2.selectedIndex ==-1)
 
             return;
@@ -545,20 +499,16 @@ $curPrefs = $collection->get_prefs();
 
     lastIdx = null;
 
-    if((o2 = document.getElementById("valsug2")) != null)
-    {
+    if ((o2 = document.getElementById("valsug2")) != null) {
         o = document.getElementById("nomchamPH");
         var ancienfocus = o2.selectedIndex;
         // pref[o.value].valsug.splice(o2.selectedIndex,1);
         var bb =0;
         lastIdx = (pref[o.value].valsug.length)-1;
-        for ( aa in pref[o.value].valsug)
-        {
-            if(aa != o2.selectedIndex)
-            {
+        for ( aa in pref[o.value].valsug) {
+            if (aa != o2.selectedIndex) {
                 pref[o.value].valsug[bb]=pref[o.value].valsug[aa];
-                if(aa+1 == pref[o.value].valsug.length)
-                {
+                if (aa+1 == pref[o.value].valsug.length) {
                     pref[o.value].valsug[bb]=null;
                 }
                 bb++;
@@ -566,28 +516,21 @@ $curPrefs = $collection->get_prefs();
         }
         pref[o.value].valsug[bb]="";
 
-
-        if(lastIdx!=null && lastIdx>=0)
-        {
+        if (lastIdx!=null && lastIdx>=0) {
             delete(pref[o.value].valsug[lastIdx]);
             pref[o.value].valsug.length--;
         }
-
 
         write_valsug();
         o2 = document.getElementById("valsug2");
 
         var i = o2.options.length ;  // au depart i=1 et ancienfocus=1
         o2.selectedIndex = -1;
-        while( i>-1 )
-        {
-            if(o2.options.length>= ancienfocus+1)
-            {
+        while ( i>-1 ) {
+            if (o2.options.length>= ancienfocus+1) {
                 o2.selectedIndex = ancienfocus;
                 i==0;
-            }
-            else
-            {
+            } else {
                 ancienfocus--;
             }
             i--;
@@ -596,10 +539,7 @@ $curPrefs = $collection->get_prefs();
             activer_bout('bout_supp',true);
         desactiv4VS();
 
-
-
     }
-
 
   }
 
@@ -608,21 +548,16 @@ $curPrefs = $collection->get_prefs();
   {
     o2 = document.getElementById("valajout");
     var test = false;
-    for (var k=0; k<o2.value.length; k++)
-    {
+    for (var k=0; k<o2.value.length; k++) {
         if(o2.value.charAt(k)!=" ")
             test=true;
     }
-    if(!test)
-    {
+    if (!test) {
         o2.value="";
         verifAndactiv();
         o2.focus();
-    }
-    else
-    {
-        if(o2.value!="" && o2.value!=null)
-        {
+    } else {
+        if (o2.value!="" && o2.value!=null) {
             o = document.getElementById("nomchamPH");
             // pref[o.value].valsug.push( UtEncode(o2.value) );
             // pref[o.value].valsug[pref[o.value].valsug.length]= UtEncode(o2.value);
@@ -630,8 +565,7 @@ $curPrefs = $collection->get_prefs();
             o2.value="";
         }
         write_valsug();
-        if( test && (o2 = document.getElementById("valsug2")) != null)
-        {
+        if ( test && (o2 = document.getElementById("valsug2")) != null) {
             o2.selectedIndex = o2.options.length-1 ;
             activer_bout('bout_add',true);
             activ4VS();
@@ -642,8 +576,7 @@ $curPrefs = $collection->get_prefs();
   function UtEncode(expr)
   {
     var expretour ="";
-    for(i=0; i<expr.length; i++)
-    {
+    for (i=0; i<expr.length; i++) {
         if( (expr.charCodeAt(i) >= 65 && expr.charCodeAt(i) <=90) || (expr.charCodeAt(i) >= 97 && expr.charCodeAt(i) <=122) )
             expretour += expr.substring(i,i+1);
         else
@@ -654,8 +587,7 @@ $curPrefs = $collection->get_prefs();
   }
   function verifAndactiv()
   {
-    if(o = document.getElementById("valajout") )
-    {
+    if (o = document.getElementById("valajout") ) {
         if(o.value.length>0)
             activer_bout('bout_add',false);
         else
@@ -665,29 +597,23 @@ $curPrefs = $collection->get_prefs();
   function desactiver()
   {
     // desactivation du bouton ajouter
-    if(o = document.getElementById("valajout") )
-    {
+    if (o = document.getElementById("valajout") ) {
         o.value = "";
         activer_bout("bout_add",true);
     }
   }
-
 
   function valid()
   {
     savenomaff();
     var lexmlstruct = '';
 
-    if(document.getElementById('divGraph') && document.getElementById('divGraph').style.display=="")
-    {
+    if (document.getElementById('divGraph') && document.getElementById('divGraph').style.display=="") {
         lexmlstruct = getSruct();
-    }
-    else if( document.getElementById('divXml')  && document.getElementById('divXml').style.display=="" )
-    {
+    } elseif ( document.getElementById('divXml')  && document.getElementById('divXml').style.display=="" ) {
         lexmlstruct = document.getElementById('txtareaxml').value;
     }
-    if(document.getElementById("idstr"))
-    {
+    if (document.getElementById("idstr")) {
         document.getElementById("idstr").value = lexmlstruct ;
 
         document.forms["chgStructure"].act.value = "CHGSUGVAL";
@@ -698,20 +624,15 @@ $curPrefs = $collection->get_prefs();
   function modifordre(bool)
   {
     //bool : true pour monter  -- false pour descendre
-    if((o2 = document.getElementById("valsug2")) != null)
-    {
-        if ( (o = document.getElementById("nomchamPH"))  != null )
-        {
+    if ((o2 = document.getElementById("valsug2")) != null) {
+        if ( (o = document.getElementById("nomchamPH"))  != null ) {
             var ancienind = o2.selectedIndex;
             var tmp = pref[o.value].valsug[o2.selectedIndex];
-            if(bool)
-            {
+            if (bool) {
                 pref[o.value].valsug[o2.selectedIndex] = pref[o.value].valsug[o2.selectedIndex-1] ;
                 pref[o.value].valsug[o2.selectedIndex-1] = tmp ;
                 ancienind--;
-            }
-            else
-            {
+            } else {
                 pref[o.value].valsug[o2.selectedIndex] = pref[o.value].valsug[o2.selectedIndex+1] ;
                 pref[o.value].valsug[o2.selectedIndex+1] = tmp ;
                 ancienind++;
@@ -727,10 +648,8 @@ $curPrefs = $collection->get_prefs();
   function trialph()
   {
 
-    if((o2 = document.getElementById("valsug2")) != null)
-    {
-        if ( (o = document.getElementById("nomchamPH"))  != null )
-        {
+    if ((o2 = document.getElementById("valsug2")) != null) {
+        if ( (o = document.getElementById("nomchamPH"))  != null ) {
             pref[o.value].valsug.sort();
             write_valsug();
             desactiv4VS();
@@ -742,8 +661,7 @@ $curPrefs = $collection->get_prefs();
 
   function maketextaffich()
   {
-    if ( (o = document.getElementById("nomchamPH"))  != null )
-    {
+    if ( (o = document.getElementById("nomchamPH"))  != null ) {
         var tmp = "idtext";
         if(pref[o.value].Type != null )
             tmp = "id" + pref[o.value].Type;
@@ -753,8 +671,7 @@ $curPrefs = $collection->get_prefs();
   }
   function makeRestrict()
   {
-    if ( (o = document.getElementById("nomchamPH"))  != null )
-    {
+    if ( (o = document.getElementById("nomchamPH"))  != null ) {
         var tmp = "none";
         if(pref[o.value].content!=null )
             tmp= pref[o.value].content;
@@ -764,8 +681,7 @@ $curPrefs = $collection->get_prefs();
   }
   function makeEmpty()
   {
-    if ( (o = document.getElementById("nomchamPH"))  != null )
-    {
+    if ( (o = document.getElementById("nomchamPH"))  != null ) {
         var tmp = "empty";
         if(!pref[o.value].empty)
             tmp = "no"+tmp;
@@ -840,7 +756,7 @@ if (isset($curPrefs)) {
                     ?>
                       statuscoll ="<status><?php echo $vi ?></status>";
                     <?php
-                } else if ($ki != "sugestedValues") {
+                } elseif ($ki != "sugestedValues") {
                     $lexml = $vi->asXML();
                     echo "\notherFields +=\"\\n\\t" . p4string::MakeString($lexml, "js") . "\";";
                 }
@@ -857,11 +773,9 @@ if (isset($curPrefs)) {
   if(otherFields!="")
       lexmlstruct += "\t" + otherFields+"\n";
   lexmlstruct +='\t<sugestedValues>\n';
-  for (a in pref )
-  {
+  for (a in pref ) {
       lexmlstruct2 = "";
-      for (b in pref[a].valsug )
-      {
+      for (b in pref[a].valsug ) {
           // rempl
           var reg=new RegExp("&", "g");
           var reg2=new RegExp("<", "g");
@@ -873,8 +787,7 @@ if (isset($curPrefs)) {
           if(pref[a].valsug[b]!="")
               lexmlstruct2 += '\t\t\t<value>'+ unescape(pref[a].valsug[b]).replace(reg,"&amp;") + '</value>\n';
       }
-      if(lexmlstruct2!="")
-      {
+      if (lexmlstruct2!="") {
           lexmlstruct += '\t\t<' + a + '>\n';
           //lexmlstruct += lexmlstruct2;
 
@@ -891,8 +804,7 @@ if (isset($curPrefs)) {
   }
   function view(type)
   {
-  switch(type)
-  {
+  switch (type) {
       case 'XML':
           if(document.getElementById('divGraph') )
               document.getElementById('divGraph').style.display = "none";
@@ -906,17 +818,14 @@ if (isset($curPrefs)) {
 
           newStr=getSruct();
 
-          if(document.getElementById('txtareaxml') && newStr!=null  )
-          {
+          if (document.getElementById('txtareaxml') && newStr!=null  ) {
               avantModif =  newStr;
               document.getElementById('txtareaxml').value = newStr;
           }
 
-
           break;
       case 'GRAPH':
-          if( !changeInXml || confirm("<?php echo p4string::MakeString(_('admin::sugval: Attention, passer en mode graphique implique la perte des modifications du xml si vous n\'appliquez pas les changements avant.\nContinuer quand meme ?'), 'JS') ?>"))
-          {
+          if ( !changeInXml || confirm("<?php echo p4string::MakeString(_('admin::sugval: Attention, passer en mode graphique implique la perte des modifications du xml si vous n\'appliquez pas les changements avant.\nContinuer quand meme ?'), 'JS') ?>")) {
               if(document.getElementById('divGraph') )
                   document.getElementById('divGraph').style.display = "";
               if(document.getElementById('divXml') )
@@ -929,7 +838,6 @@ if (isset($curPrefs)) {
           }
           break;
       }
-
 
   }
 

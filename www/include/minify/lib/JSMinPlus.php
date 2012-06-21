@@ -123,14 +123,11 @@ class JSMinPlus
 
     private function min($js, $filename)
     {
-        try
-        {
+        try {
             $n = $this->parser->parse($js, $filename, 1);
 
             return $this->parseTree($n);
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
             echo $e->getMessage() . "\n";
         }
 
@@ -141,8 +138,7 @@ class JSMinPlus
     {
         $s = '';
 
-        switch ($n->type)
-        {
+        switch ($n->type) {
             case KEYWORD_FUNCTION:
                 $s .= 'function' . ($n->name ? ' ' . $n->name : '') . '(';
                 $params = $n->params;
@@ -157,13 +153,10 @@ class JSMinPlus
             // fall through
             case JS_BLOCK:
                 $childs = $n->treeNodes;
-                for ($c = 0, $i = 0, $j = count($childs); $i < $j; $i++)
-                {
+                for ($c = 0, $i = 0, $j = count($childs); $i < $j; $i++) {
                     $t = $this->parseTree($childs[$i]);
-                    if (strlen($t))
-                    {
-                        if ($c)
-                        {
+                    if (strlen($t)) {
+                        if ($c) {
                             if ($childs[$i]->type == KEYWORD_FUNCTION && $childs[$i]->functionForm == DECLARED_FORM)
                                 $s .= "\n"; // put declared functions on a new line
                             else
@@ -176,8 +169,7 @@ class JSMinPlus
                     }
                 }
 
-                if ($c > 1 && !$noBlockGrouping)
-                {
+                if ($c > 1 && !$noBlockGrouping) {
                     $s = '{' . $s . '}';
                 }
             break;
@@ -188,8 +180,7 @@ class JSMinPlus
                 $elsePart = $n->elsePart ? $this->parseTree($n->elsePart) : null;
 
                 // quite a rancid hack to see if we should enclose the thenpart in brackets
-                if ($thenPart[0] != '{')
-                {
+                if ($thenPart[0] != '{') {
                     if (strpos($thenPart, 'if(') !== false)
                         $thenPart = '{' . $thenPart . '}';
                     elseif ($elsePart)
@@ -198,8 +189,7 @@ class JSMinPlus
 
                 $s .= $thenPart;
 
-                if ($elsePart)
-                {
+                if ($elsePart) {
                     $s .= 'else';
 
                     if ($elsePart[0] != '{')
@@ -210,10 +200,9 @@ class JSMinPlus
             break;
 
             case KEYWORD_SWITCH:
-                $s = 'switch(' . $this->parseTree($n->discriminant) . '){';
+                $s = 'switch (' . $this->parseTree($n->discriminant) . ') {';
                 $cases = $n->cases;
-                for ($i = 0, $j = count($cases); $i < $j; $i++)
-                {
+                for ($i = 0, $j = count($cases); $i < $j; $i++) {
                     $case = $cases[$i];
                     if ($case->type == KEYWORD_CASE)
                         $s .= 'case' . ($case->caseLabel->type != TOKEN_STRING ? ' ' : '') . $this->parseTree($case->caseLabel) . ':';
@@ -243,7 +232,7 @@ class JSMinPlus
             break;
 
             case KEYWORD_DO:
-                $s = 'do{' . $this->parseTree($n->body, true) . '}while(' . $this->parseTree($n->condition) . ')';
+                $s = 'do {' . $this->parseTree($n->body, true) . '} while (' . $this->parseTree($n->condition) . ')';
             break;
 
             case KEYWORD_BREAK:
@@ -252,10 +241,9 @@ class JSMinPlus
             break;
 
             case KEYWORD_TRY:
-                $s = 'try{' . $this->parseTree($n->tryBlock, true) . '}';
+                $s = 'try {' . $this->parseTree($n->tryBlock, true) . '}';
                 $catchClauses = $n->catchClauses;
-                for ($i = 0, $j = count($catchClauses); $i < $j; $i++)
-                {
+                for ($i = 0, $j = count($catchClauses); $i < $j; $i++) {
                     $t = $catchClauses[$i];
                     $s .= 'catch(' . $t->varName . ($t->guard ? ' if ' . $this->parseTree($t->guard) : '') . '){' . $this->parseTree($t->block, true) . '}';
                 }
@@ -279,8 +267,7 @@ class JSMinPlus
             case KEYWORD_CONST:
                 $s = $n->value . ' ';
                 $childs = $n->treeNodes;
-                for ($i = 0, $j = count($childs); $i < $j; $i++)
-                {
+                for ($i = 0, $j = count($childs); $i < $j; $i++) {
                     $t = $childs[$i];
                     $s .= ($i ? ',' : '') . $t->name;
                     $u = $t->initializer;
@@ -413,8 +400,7 @@ class JSMinPlus
             case JS_ARRAY_INIT:
                 $s = '[';
                 $childs = $n->treeNodes;
-                for ($i = 0, $j = count($childs); $i < $j; $i++)
-                {
+                for ($i = 0, $j = count($childs); $i < $j; $i++) {
                     $s .= ($i ? ',' : '') . $this->parseTree($childs[$i]);
                 }
                 $s .= ']';
@@ -423,13 +409,11 @@ class JSMinPlus
             case JS_OBJECT_INIT:
                 $s = '{';
                 $childs = $n->treeNodes;
-                for ($i = 0, $j = count($childs); $i < $j; $i++)
-                {
+                for ($i = 0, $j = count($childs); $i < $j; $i++) {
                     $t = $childs[$i];
                     if ($i)
                         $s .= ',';
-                    if ($t->type == JS_PROPERTY_INIT)
-                    {
+                    if ($t->type == JS_PROPERTY_INIT) {
                         // Ditch the quotes when the index is a valid identifier
                         if (  $t->treeNodes[0]->type == TOKEN_STRING &&
                             $this->isValidIdentifier(substr($t->treeNodes[0]->value, 1, -1))
@@ -439,9 +423,7 @@ class JSMinPlus
                             $s .= $t->treeNodes[0]->value;
 
                         $s .= ':' . $this->parseTree($t->treeNodes[1]);
-                    }
-                    else
-                    {
+                    } else {
                         $s .= $t->type == JS_GETTER ? 'get' : 'set';
                         $s .= ' ' . $t->name . '(';
                         $params = $t->params;
@@ -584,8 +566,7 @@ class JSParser
 
         // Cases for statements ending in a right curly return early, avoiding the
         // common semicolon insertion magic after this switch.
-        switch ($tt)
-        {
+        switch ($tt) {
             case KEYWORD_FUNCTION:
                 return $this->FunctionDefinition(
                     $x,
@@ -622,10 +603,8 @@ class JSParser
 
                 $this->t->mustMatch(OP_LEFT_CURLY);
 
-                while (($tt = $this->t->get()) != OP_RIGHT_CURLY)
-                {
-                    switch ($tt)
-                    {
+                while (($tt = $this->t->get()) != OP_RIGHT_CURLY) {
+                    switch ($tt) {
                         case KEYWORD_DEFAULT:
                             if ($n->defaultIndex >= 0)
                                 throw $this->t->newSyntaxError('More than one switch default');
@@ -658,28 +637,21 @@ class JSParser
                 $n->isLoop = true;
                 $this->t->mustMatch(OP_LEFT_PAREN);
 
-                if (($tt = $this->t->peek()) != OP_SEMICOLON)
-                {
+                if (($tt = $this->t->peek()) != OP_SEMICOLON) {
                     $x->inForLoopInit = true;
-                    if ($tt == KEYWORD_VAR || $tt == KEYWORD_CONST)
-                    {
+                    if ($tt == KEYWORD_VAR || $tt == KEYWORD_CONST) {
                         $this->t->get();
                         $n2 = $this->Variables($x);
-                    }
-                    else
-                    {
+                    } else {
                         $n2 = $this->Expression($x);
                     }
                     $x->inForLoopInit = false;
                 }
 
-                if ($n2 && $this->t->match(KEYWORD_IN))
-                {
+                if ($n2 && $this->t->match(KEYWORD_IN)) {
                     $n->type = JS_FOR_IN;
-                    if ($n2->type == KEYWORD_VAR)
-                    {
-                        if (count($n2->treeNodes) != 1)
-                        {
+                    if ($n2->type == KEYWORD_VAR) {
+                        if (count($n2->treeNodes) != 1) {
                             throw $this->t->SyntaxError(
                                 'Invalid for..in left-hand side',
                                 $this->t->filename,
@@ -690,17 +662,13 @@ class JSParser
                         // NB: n2[0].type == IDENTIFIER and n2[0].value == n2[0].name.
                         $n->iterator = $n2->treeNodes[0];
                         $n->varDecl = $n2;
-                    }
-                    else
-                    {
+                    } else {
                         $n->iterator = $n2;
                         $n->varDecl = null;
                     }
 
                     $n->object = $this->Expression($x);
-                }
-                else
-                {
+                } else {
                     $n->setup = $n2 ? $n2 : null;
                     $this->t->mustMatch(OP_SEMICOLON);
                     $n->condition = $this->t->peek() == OP_SEMICOLON ? null : $this->Expression($x);
@@ -726,8 +694,7 @@ class JSParser
                 $n->isLoop = true;
                 $n->body = $this->nest($x, $n, KEYWORD_WHILE);
                 $n->condition = $this->ParenExpression($x);
-                if (!$x->ecmaStrictMode)
-                {
+                if (!$x->ecmaStrictMode) {
                     // <script language="JavaScript"> (without version hints) may need
                     // automatic semicolon insertion without a newline after do-while.
                     // See http://bugzilla.mozilla.org/show_bug.cgi?id=238945.
@@ -741,8 +708,7 @@ class JSParser
             case KEYWORD_CONTINUE:
                 $n = new JSNode($this->t);
 
-                if ($this->t->peekOnSameLine() == TOKEN_IDENTIFIER)
-                {
+                if ($this->t->peekOnSameLine() == TOKEN_IDENTIFIER) {
                     $this->t->get();
                     $n->label = $this->t->currentToken()->value;
                 }
@@ -750,19 +716,14 @@ class JSParser
                 $ss = $x->stmtStack;
                 $i = count($ss);
                 $label = $n->label;
-                if ($label)
-                {
-                    do
-                    {
+                if ($label) {
+                    do {
                         if (--$i < 0)
                             throw $this->t->newSyntaxError('Label not found');
                     }
                     while ($ss[$i]->label != $label);
-                }
-                else
-                {
-                    do
-                    {
+                } else {
+                    do {
                         if (--$i < 0)
                             throw $this->t->newSyntaxError('Invalid ' . $tt);
                     }
@@ -777,14 +738,12 @@ class JSParser
                 $n->tryBlock = $this->Block($x);
                 $n->catchClauses = array();
 
-                while ($this->t->match(KEYWORD_CATCH))
-                {
+                while ($this->t->match(KEYWORD_CATCH)) {
                     $n2 = new JSNode($this->t);
                     $this->t->mustMatch(OP_LEFT_PAREN);
                     $n2->varName = $this->t->mustMatch(TOKEN_IDENTIFIER)->value;
 
-                    if ($this->t->match(KEYWORD_IF))
-                    {
+                    if ($this->t->match(KEYWORD_IF)) {
                         if ($x->ecmaStrictMode)
                             throw $this->t->newSyntaxError('Illegal catch guard');
 
@@ -792,9 +751,7 @@ class JSParser
                             throw $this->t->newSyntaxError('Guarded catch after unguarded');
 
                         $n2->guard = $this->Expression($x);
-                    }
-                    else
-                    {
+                    } else {
                         $n2->guard = null;
                     }
 
@@ -861,17 +818,14 @@ class JSParser
             return $n;
 
             default:
-                if ($tt == TOKEN_IDENTIFIER)
-                {
+                if ($tt == TOKEN_IDENTIFIER) {
                     $this->t->scanOperand = false;
                     $tt = $this->t->peek();
                     $this->t->scanOperand = true;
-                    if ($tt == OP_COLON)
-                    {
+                    if ($tt == OP_COLON) {
                         $label = $this->t->currentToken()->value;
                         $ss = $x->stmtStack;
-                        for ($i = count($ss) - 1; $i >= 0; --$i)
-                        {
+                        for ($i = count($ss) - 1; $i >= 0; --$i) {
                             if ($ss[$i]->label == $label)
                                 throw $this->t->newSyntaxError('Duplicate label');
                         }
@@ -892,8 +846,7 @@ class JSParser
             break;
         }
 
-        if ($this->t->lineno == $this->t->currentToken()->lineno)
-        {
+        if ($this->t->lineno == $this->t->currentToken()->lineno) {
             $tt = $this->t->peekOnSameLine();
             if ($tt != TOKEN_END && $tt != TOKEN_NEWLINE && $tt != OP_SEMICOLON && $tt != OP_RIGHT_CURLY)
                 throw $this->t->newSyntaxError('Missing ; before statement');
@@ -919,8 +872,7 @@ class JSParser
         $this->t->mustMatch(OP_LEFT_PAREN);
             $f->params = array();
 
-        while (($tt = $this->t->get()) != OP_RIGHT_PAREN)
-        {
+        while (($tt = $this->t->get()) != OP_RIGHT_PAREN) {
             if ($tt != TOKEN_IDENTIFIER)
                 throw $this->t->newSyntaxError('Missing formal parameter');
 
@@ -949,15 +901,13 @@ class JSParser
     {
         $n = new JSNode($this->t);
 
-        do
-        {
+        do {
             $this->t->mustMatch(TOKEN_IDENTIFIER);
 
             $n2 = new JSNode($this->t);
             $n2->name = $n2->value;
 
-            if ($this->t->match(OP_ASSIGN))
-            {
+            if ($this->t->match(OP_ASSIGN)) {
                 if ($this->t->currentToken()->assignOp)
                     throw $this->t->newSyntaxError('Invalid variable initialization');
 
@@ -985,8 +935,7 @@ class JSParser
         $pl = $x->parenLevel;
         $hl = $x->hookLevel;
 
-        while (($tt = $this->t->get()) != TOKEN_END)
-        {
+        while (($tt = $this->t->get()) != TOKEN_END) {
             if ($tt == $stop &&
                 $x->bracketLevel == $bl &&
                 $x->curlyLevel == $cl &&
@@ -999,8 +948,7 @@ class JSParser
                 break;
             }
 
-            switch ($tt)
-            {
+            switch ($tt) {
                 case OP_SEMICOLON:
                     // NB: cannot be empty, Statement handled that.
                     break 2;
@@ -1019,16 +967,13 @@ class JSParser
                     )
                         $this->reduce($operators, $operands);
 
-                    if ($tt == OP_COLON)
-                    {
+                    if ($tt == OP_COLON) {
                         $n = end($operators);
                         if ($n->type != OP_HOOK)
                             throw $this->t->newSyntaxError('Invalid label');
 
                         --$x->hookLevel;
-                    }
-                    else
-                    {
+                    } else {
                         array_push($operators, new JSNode($this->t));
                         if ($tt == OP_ASSIGN)
                             end($operands)->assignOp = $this->t->currentToken()->assignOp;
@@ -1075,13 +1020,10 @@ class JSParser
                     )
                         $this->reduce($operators, $operands);
 
-                    if ($tt == OP_DOT)
-                    {
+                    if ($tt == OP_DOT) {
                         $this->t->mustMatch(TOKEN_IDENTIFIER);
                         array_push($operands, new JSNode($this->t, OP_DOT, array_pop($operands), new JSNode($this->t)));
-                    }
-                    else
-                    {
+                    } else {
                         array_push($operators, new JSNode($this->t));
                         $this->t->scanOperand = true;
                     }
@@ -1097,19 +1039,15 @@ class JSParser
                 break;
 
                 case OP_INCREMENT: case OP_DECREMENT:
-                    if ($this->t->scanOperand)
-                    {
+                    if ($this->t->scanOperand) {
                         array_push($operators, new JSNode($this->t));  // prefix increment or decrement
-                    }
-                    else
-                    {
+                    } else {
                         // Don't cross a line boundary for postfix {in,de}crement.
                         $t = $this->t->tokens[($this->t->tokenIndex + $this->t->lookahead - 1) & 3];
                         if ($t && $t->lineno != $this->t->lineno)
                             break 2;
 
-                        if (!empty($operators))
-                        {
+                        if (!empty($operators)) {
                             // Use >, not >=, so postfix has higher precedence than prefix.
                             while ($this->opPrecedence[end($operators)->type] > $this->opPrecedence[$tt])
                                 $this->reduce($operators, $operands);
@@ -1146,15 +1084,12 @@ class JSParser
                 break;
 
                 case OP_LEFT_BRACKET:
-                    if ($this->t->scanOperand)
-                    {
+                    if ($this->t->scanOperand) {
                         // Array initialiser.  Parse using recursive descent, as the
                         // sub-grammar here is not an operator grammar.
                         $n = new JSNode($this->t, JS_ARRAY_INIT);
-                        while (($tt = $this->t->peek()) != OP_RIGHT_BRACKET)
-                        {
-                            if ($tt == OP_COMMA)
-                            {
+                        while (($tt = $this->t->peek()) != OP_RIGHT_BRACKET) {
+                            if ($tt == OP_COMMA) {
                                 $this->t->get();
                                 $n->addNode(null);
                                 continue;
@@ -1168,9 +1103,7 @@ class JSParser
                         $this->t->mustMatch(OP_RIGHT_BRACKET);
                         array_push($operands, $n);
                         $this->t->scanOperand = false;
-                    }
-                    else
-                    {
+                    } else {
                         // Property indexing operator.
                         array_push($operators, new JSNode($this->t, JS_INDEX));
                         $this->t->scanOperand = true;
@@ -1196,23 +1129,17 @@ class JSParser
                     // parse using recursive descent.
                     ++$x->curlyLevel;
                     $n = new JSNode($this->t, JS_OBJECT_INIT);
-                    while (!$this->t->match(OP_RIGHT_CURLY))
-                    {
-                        do
-                        {
+                    while (!$this->t->match(OP_RIGHT_CURLY)) {
+                        do {
                             $tt = $this->t->get();
                             $tv = $this->t->currentToken()->value;
-                            if (($tv == 'get' || $tv == 'set') && $this->t->peek() == TOKEN_IDENTIFIER)
-                            {
+                            if (($tv == 'get' || $tv == 'set') && $this->t->peek() == TOKEN_IDENTIFIER) {
                                 if ($x->ecmaStrictMode)
                                     throw $this->t->newSyntaxError('Illegal property accessor');
 
                                 $n->addNode($this->FunctionDefinition($x, true, EXPRESSED_FORM));
-                            }
-                            else
-                            {
-                                switch ($tt)
-                                {
+                            } else {
+                                switch ($tt) {
                                     case TOKEN_IDENTIFIER:
                                     case TOKEN_NUMBER:
                                     case TOKEN_STRING:
@@ -1231,8 +1158,7 @@ class JSParser
                                 $this->t->mustMatch(OP_COLON);
                                 $n->addNode(new JSNode($this->t, JS_PROPERTY_INIT, $id, $this->Expression($x, OP_COMMA)));
                             }
-                        }
-                        while ($this->t->match(OP_COMMA));
+                        } while ($this->t->match(OP_COMMA));
 
                         $this->t->mustMatch(OP_RIGHT_CURLY);
                         break;
@@ -1249,12 +1175,9 @@ class JSParser
                 break 2;
 
                 case OP_LEFT_PAREN:
-                    if ($this->t->scanOperand)
-                    {
+                    if ($this->t->scanOperand) {
                         array_push($operators, new JSNode($this->t, JS_GROUP));
-                    }
-                    else
-                    {
+                    } else {
                         while (  !empty($operators) &&
                             $this->opPrecedence[end($operators)->type] > $this->opPrecedence[KEYWORD_NEW]
                         )
@@ -1265,15 +1188,11 @@ class JSParser
                         // the first one is a regexp or unary+/-.
                         $n = end($operators);
                         $this->t->scanOperand = true;
-                        if ($this->t->match(OP_RIGHT_PAREN))
-                        {
-                            if ($n && $n->type == KEYWORD_NEW)
-                            {
+                        if ($this->t->match(OP_RIGHT_PAREN)) {
+                            if ($n && $n->type == KEYWORD_NEW) {
                                 array_pop($operators);
                                 $n->addNode(array_pop($operands));
-                            }
-                            else
-                            {
+                            } else {
                                 $n = new JSNode($this->t, JS_CALL, array_pop($operands), new JSNode($this->t, JS_LIST));
                             }
 
@@ -1302,8 +1221,7 @@ class JSParser
                         continue;
                     }
 
-                    if ($tt != JS_GROUP)
-                    {
+                    if ($tt != JS_GROUP) {
                         $n = end($operands);
                         if ($n->treeNodes[1]->type != OP_COMMA)
                             $n->treeNodes[1] = new JSNode($this->t, JS_LIST, $n->treeNodes[1]);
@@ -1372,14 +1290,11 @@ class JSParser
         $op = $n->type;
         $arity = $this->opArity[$op];
         $c = count($operands);
-        if ($arity == -2)
-        {
+        if ($arity == -2) {
             // Flatten left-associative trees
-            if ($c >= 2)
-            {
+            if ($c >= 2) {
                 $left = $operands[$c - 2];
-                if ($left->type == $op)
-                {
+                if ($left->type == $op) {
                     $right = array_pop($operands);
                     $left->addNode($right);
 
@@ -1439,22 +1354,18 @@ class JSNode
 
     public function __construct($t, $type=0)
     {
-        if ($token = $t->currentToken())
-        {
+        if ($token = $t->currentToken()) {
             $this->type = $type ? $type : $token->type;
             $this->value = $token->value;
             $this->lineno = $token->lineno;
             $this->start = $token->start;
             $this->end = $token->end;
-        }
-        else
-        {
+        } else {
             $this->type = $type;
             $this->lineno = $t->lineno;
         }
 
-        if (($numargs = func_num_args()) > 2)
-        {
+        if (($numargs = func_num_args()) > 2) {
             $args = func_get_args();;
             for ($i = 2; $i < $numargs; $i++)
                 $this->addNode($args[$i]);
@@ -1613,16 +1524,13 @@ class JSTokenizer
 
     public function peek()
     {
-        if ($this->lookahead)
-        {
+        if ($this->lookahead) {
             $next = $this->tokens[($this->tokenIndex + $this->lookahead) & 3];
             if ($this->scanNewlines && $next->lineno != $this->lineno)
                 $tt = TOKEN_NEWLINE;
             else
                 $tt = $next->type;
-        }
-        else
-        {
+        } else {
             $tt = $this->get();
             $this->unget();
         }
@@ -1648,8 +1556,7 @@ class JSTokenizer
 
     public function get($chunksize = 1000)
     {
-        while($this->lookahead)
-        {
+        while ($this->lookahead) {
             $this->lookahead--;
             $this->tokenIndex = ($this->tokenIndex + 1) & 3;
             $token = $this->tokens[$this->tokenIndex];
@@ -1661,14 +1568,12 @@ class JSTokenizer
         $conditional_comment = false;
 
         // strip whitespace and comments
-        while(true)
-        {
+        while (true) {
             $input = $this->getInput($chunksize);
 
             // whitespace handling; gobble up \r as well (effectively we don't have support for MAC newlines!)
             $re = $this->scanNewlines ? '/^[ \r\t]+/' : '/^\s+/';
-            if (preg_match($re, $input, $match))
-            {
+            if (preg_match($re, $input, $match)) {
                 $spaces = $match[0];
                 $spacelen = strlen($spaces);
                 $this->cursor += $spacelen;
@@ -1684,8 +1589,7 @@ class JSTokenizer
             }
 
             // Comments
-            if (!preg_match('/^\/(?:\*(@(?:cc_on|if|elif|else|end))?(?:.|\n)*?\*\/|\/.*)/', $input, $match))
-            {
+            if (!preg_match('/^\/(?:\*(@(?:cc_on|if|elif|else|end))?(?:.|\n)*?\*\/|\/.*)/', $input, $match)) {
                 if (!$chunksize)
                     break;
 
@@ -1695,39 +1599,29 @@ class JSTokenizer
             }
 
             // check if this is a conditional (JScript) comment
-            if (!empty($match[1]))
-            {
+            if (!empty($match[1])) {
                 //$match[0] = '/*' . $match[1];
                 $conditional_comment = true;
                 break;
-            }
-            else
-            {
+            } else {
                 $this->cursor += strlen($match[0]);
                 $this->lineno += substr_count($match[0], "\n");
             }
         }
 
-        if ($input == '')
-        {
+        if ($input == '') {
             $tt = TOKEN_END;
             $match = array('');
-        }
-        elseif ($conditional_comment)
+        } elseif ($conditional_comment)
         {
             $tt = TOKEN_CONDCOMMENT_MULTILINE;
-        }
-        else
-        {
-            switch ($input[0])
-            {
+        } else {
+            switch ($input[0]) {
                 case '0': case '1': case '2': case '3': case '4':
                 case '5': case '6': case '7': case '8': case '9':
-                    if (preg_match('/^\d+\.\d*(?:[eE][-+]?\d+)?|^\d+(?:\.\d*)?[eE][-+]?\d+/', $input, $match))
-                    {
+                    if (preg_match('/^\d+\.\d*(?:[eE][-+]?\d+)?|^\d+(?:\.\d*)?[eE][-+]?\d+/', $input, $match)) {
                         $tt = TOKEN_NUMBER;
-                    }
-                    elseif (preg_match('/^0[xX][\da-fA-F]+|^0[0-7]*|^\d+/', $input, $match))
+                    } elseif (preg_match('/^0[xX][\da-fA-F]+|^0[0-7]*|^\d+/', $input, $match))
                     {
                         // this should always match because of \d+
                         $tt = TOKEN_NUMBER;
@@ -1736,12 +1630,9 @@ class JSTokenizer
 
                 case '"':
                 case "'":
-                    if (preg_match('/^"(?:\\\\(?:.|\r?\n)|[^\\\\"\r\n])*"|^\'(?:\\\\(?:.|\r?\n)|[^\\\\\'\r\n])*\'/', $input, $match))
-                    {
+                    if (preg_match('/^"(?:\\\\(?:.|\r?\n)|[^\\\\"\r\n])*"|^\'(?:\\\\(?:.|\r?\n)|[^\\\\\'\r\n])*\'/', $input, $match)) {
                         $tt = TOKEN_STRING;
-                    }
-                    else
-                    {
+                    } else {
                         if ($chunksize)
 
                             return $this->get(null); // retry with a full chunk fetch
@@ -1751,8 +1642,7 @@ class JSTokenizer
                 break;
 
                 case '/':
-                    if ($this->scanOperand && preg_match('/^\/((?:\\\\.|\[(?:\\\\.|[^\]])*\]|[^\/])+)\/([gimy]*)/', $input, $match))
-                    {
+                    if ($this->scanOperand && preg_match('/^\/((?:\\\\.|\[(?:\\\\.|[^\]])*\]|[^\/])+)\/([gimy]*)/', $input, $match)) {
                         $tt = TOKEN_REGEXP;
                         break;
                     }
@@ -1772,16 +1662,12 @@ class JSTokenizer
                     // should always match
                     preg_match($this->opRegExp, $input, $match);
                     $op = $match[0];
-                    if (in_array($op, $this->assignOps) && $input[strlen($op)] == '=')
-                    {
+                    if (in_array($op, $this->assignOps) && $input[strlen($op)] == '=') {
                         $tt = OP_ASSIGN;
                         $match[0] .= '=';
-                    }
-                    else
-                    {
+                    } else {
                         $tt = $op;
-                        if ($this->scanOperand)
-                        {
+                        if ($this->scanOperand) {
                             if ($op == OP_PLUS)
                                 $tt = OP_UNARY_PLUS;
                             elseif ($op == OP_MINUS)
@@ -1792,8 +1678,7 @@ class JSTokenizer
                 break;
 
                 case '.':
-                    if (preg_match('/^\.\d+(?:[eE][-+]?\d+)?/', $input, $match))
-                    {
+                    if (preg_match('/^\.\d+(?:[eE][-+]?\d+)?/', $input, $match)) {
                         $tt = TOKEN_NUMBER;
                         break;
                     }
@@ -1820,22 +1705,18 @@ class JSTokenizer
                 break;
 
                 case "\n":
-                    if ($this->scanNewlines)
-                    {
+                    if ($this->scanNewlines) {
                         $match = array("\n");
                         $tt = TOKEN_NEWLINE;
-                    }
-                    else
+                    } else
                         throw $this->newSyntaxError('Illegal token');
                 break;
 
                 default:
                     // FIXME: add support for unicode and unicode escape sequence \uHHHH
-                    if (preg_match('/^[$\w]+/', $input, $match))
-                    {
+                    if (preg_match('/^[$\w]+/', $input, $match)) {
                         $tt = in_array($match[0], $this->keywords) ? $match[0] : TOKEN_IDENTIFIER;
-                    }
-                    else
+                    } else
                         throw $this->newSyntaxError('Illegal token');
             }
         }
@@ -1886,4 +1767,3 @@ class JSToken
     public $assignOp;
 }
 
-?>

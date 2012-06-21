@@ -21,8 +21,8 @@ $images = array(
     'http://farm1.static.flickr.com/81/259386441_c5fb7049de_s.jpg'
 );
 
-$num = (int)$_GET['batchSize'];// number of items to return
-$pos = (int)$_GET['pos'];
+$num = (int) $_GET['batchSize'];// number of items to return
+$pos = (int) $_GET['pos'];
 
 $rv = '[';
 for ($i = 0; $i < $num; $i++) {
@@ -33,4 +33,3 @@ $rv .= ']';
 
 header('Content-Type: application/json');
 echo $rv;
-?>

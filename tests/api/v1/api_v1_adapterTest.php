@@ -276,7 +276,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
             break;
         }
 
-        if(null === $statusbit) {
+        if (null === $statusbit) {
             $this->markTestSkipped('No status bit defined in databox');
         }
 

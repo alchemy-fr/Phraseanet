@@ -12,7 +12,8 @@ header("Content-Type:text/xml");
 
 $url = 'http://xml.weather.yahoo.com/forecastrss?'.getenv('QUERY_STRING');
 
-function getResource($url){
+function getResource($url)
+{
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -24,4 +25,3 @@ function getResource($url){
 
 $feed = getResource($url);
 echo $feed;
-?>

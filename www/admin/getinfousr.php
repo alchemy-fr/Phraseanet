@@ -24,7 +24,6 @@ $user = User_Adapter::getInstance($parm['u'], $appbox);
 
 phrasea::headers();
 
-
 $info = "";
 $info2 = "";
 

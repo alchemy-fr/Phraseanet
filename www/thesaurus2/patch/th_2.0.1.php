@@ -17,7 +17,7 @@
 class patch_th_2_0_1
 {
 
-    function patch($version, &$domct, &$domth, connection_pdo &$connbas)
+    public function patch($version, &$domct, &$domth, connection_pdo &$connbas)
     {
         if ($version == "2.0.1") {
             $th = $domth->documentElement;

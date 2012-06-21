@@ -33,7 +33,6 @@ if ($parm["debug"]) {
     phrasea::headers(200, true, 'text/xml', 'UTF-8', false);
 }
 
-
 $ret = new DOMDocument("1.0", "UTF-8");
 $ret->standalone = true;
 $ret->preserveWhiteSpace = false;
@@ -103,8 +102,7 @@ if ($parm["bid"] !== null) {
                                 break;
                         }
                         $tts[$realksy . "_" . $uniq] = array("id"     => $n->getAttribute("id"), "allsy"  => $allsy, "nchild" => $xpath->query("te", $n)->length, "tsy"    => $tsy);
-                    }
-                    else {
+                    } else {
                         $tts[] = array("id"     => $n->getAttribute("id"), "allsy"  => $allsy, "nchild" => $xpath->query("te", $n)->length, "tsy"    => $tsy);
                     }
                 } elseif ($n->nodeName == "sy") {

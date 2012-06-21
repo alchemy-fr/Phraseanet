@@ -4,7 +4,7 @@ print "data = { ";
 
 $index = 0;
 
-foreach($_GET as $key => $value) {
+foreach ($_GET as $key => $value) {
 
     print htmlspecialchars("$key:", ENT_QUOTES);
 
@@ -30,4 +30,3 @@ foreach($_GET as $key => $value) {
 }
 
 print " };";
-?>

@@ -135,12 +135,10 @@ foreach ($tsbas as $sbas) {
         $stmt->execute(array(':record_id' => $rid));
         $stmt->closeCursor();
 
-
         $sql = 'DELETE FROM thit WHERE record_id = :record_id';
         $stmt = $connbas->prepare($sql);
         $stmt->execute(array(':record_id' => $rid));
         $stmt->closeCursor();
-
 
         $sql = 'UPDATE record
             SET status=(status & ~3)|4, jeton=' . (JETON_WRITE_META_DOC | JETON_WRITE_META_SUBDEF) . ',

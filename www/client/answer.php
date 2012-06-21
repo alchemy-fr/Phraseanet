@@ -68,7 +68,6 @@ if (is_null($parm['bas'])) {
 if ( ! $parm["mod"])
     $parm["mod"] = "3X6";
 
-
 $mod = explode("X", $parm["mod"]);
 if (count($mod) == 1) {
     $mod_row = (int) ($mod[0]);
@@ -134,7 +133,6 @@ $perPage = $mod_xy;
 $search_engine = new searchEngine_adapter($registry);
 $search_engine->set_options($options);
 
-
 if ($parm['pag'] < 1) {
     $search_engine->set_is_first_page(true);
     $search_engine->reset_cache();
@@ -143,12 +141,9 @@ if ($parm['pag'] < 1) {
 
 $result = $search_engine->query_per_page($parm['qry'], (int) $parm["pag"], $perPage);
 
-
-
 $proposals = $search_engine->is_first_page() ? $result->get_propositions() : false;
 
 $npages = $result->get_total_pages();
-
 
 $page = $result->get_current_page();
 
@@ -169,8 +164,6 @@ if ($registry->get('GV_thesaurus')) {
     </script>
     <?php
 }
-
-
 
 $history = queries::history();
 
@@ -221,8 +214,7 @@ if ($npages > $max) {
         )
             $pages .= '<span class="naviButton" style="cursor:default;"> - </span>';
     }
-}
-else {
+} else {
     for ($p = 1; $p <= $npages; $p ++ ) {
         if ($p == $page)
             $pages .= '<span class="naviButton sel">' . ($p) . '</span>';
@@ -307,7 +299,6 @@ if (count($result->get_datas()) > 0) {
         }
         $caption = $twig->render('common/caption.html', array('view'   => 'answer', 'record' => $record));
 
-
         if ($i == 0) {
             ?><tr><?php
         }
@@ -338,7 +329,6 @@ if (count($result->get_datas()) > 0) {
         $isAudio = ($docType == 'audio');
         $isImage = ($docType == 'image');
         $isDocument = ($docType == 'document');
-
 
         $sd = $record->get_subdefs();
 

@@ -32,6 +32,5 @@ switch ($action) {
         break;
 }
 
-
 echo $output;
 

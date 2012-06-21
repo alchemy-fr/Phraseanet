@@ -37,7 +37,6 @@ if ($registry->get('GV_needAuth2DL') && $user->is_guest()) {
     exit();
 }
 
-
 $download = new set_export($parm['lst'], $parm['SSTTID'], $parm['story']);
 $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
 
@@ -52,6 +51,4 @@ echo $twig->render('common/dialog_export.twig', array(
     'default_export_title' => $registry->get('GV_default_export_title'),
     'choose_export_title'  => $registry->get('GV_choose_export_title')
 ));
-
-
 

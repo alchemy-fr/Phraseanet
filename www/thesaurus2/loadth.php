@@ -128,13 +128,10 @@ if ($parm["bid"] !== null) {
             print("';\n");
         } else {
             ?>
-                if(confirm("Thesaurus ou CTerms invalide\n effacer (OK) ou quitter (Annuler) ?"))
-                {
+                if (confirm("Thesaurus ou CTerms invalide\n effacer (OK) ou quitter (Annuler) ?")) {
                     parent.document.forms['fBase'].repair.value = "on";
                     parent.document.forms['fBase'].submit();
-                }
-                else
-                {
+                } else {
                     parent.window.close();
                 }
             <?php

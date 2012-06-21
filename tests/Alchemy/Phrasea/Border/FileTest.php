@@ -187,7 +187,6 @@ class FileTest extends \PhraseanetPHPUnitAbstract
 
         $this->assertEquals($file1, $file2);
 
-
         $media = self::$core['mediavorus']->guess(new \SplFileInfo($this->filename));
         $file3 = new File($media, self::$collection, 'coco lapin');
 

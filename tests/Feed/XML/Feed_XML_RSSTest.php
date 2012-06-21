@@ -64,7 +64,6 @@ class Feed_XML_RSSTest extends PhraseanetPHPUnitAbstract
         $last_build = new DateTime('-2 hours');
         self::$rss->set_lastBuildDate($last_build);
 
-
         $xml = self::$rss->render();
         $sxe = simplexml_load_string($xml);
         $this->assertInstanceOf('SimpleXMLElement', $sxe);
@@ -132,7 +131,6 @@ class Feed_XML_RSSTest extends PhraseanetPHPUnitAbstract
         $image->set_width($width);
         $image->set_height($height);
         $image->set_description($description);
-
 
         self::$rss->set_image($image);
         $xml = self::$rss->render();

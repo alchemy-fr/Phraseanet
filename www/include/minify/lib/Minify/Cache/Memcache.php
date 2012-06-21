@@ -17,8 +17,8 @@
  * }
  * </code>
  **/
-class Minify_Cache_Memcache {
-
+class Minify_Cache_Memcache
+{
     /**
      * Create a Minify_Cache_Memcache object, to be passed to
      * Minify::setCache().

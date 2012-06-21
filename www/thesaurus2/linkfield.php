@@ -38,8 +38,7 @@ $parm = $request->get_parms(
             {
                 fields = document.getElementsByName("field[]");
                 changed = false;
-                for(i=0; i<fields.length && !changed; i++)
-                {
+                for (i=0; i<fields.length && !changed; i++) {
                     if( (fields[i].checked?"1":"0") != fields[i].ck0)
                         changed = true;
                 }
@@ -49,8 +48,7 @@ $parm = $request->get_parms(
             }
             function clkBut(button)
             {
-                switch(button)
-                {
+                switch (button) {
                     case "submit":
                         // document.forms[0].target="LINKFIELD";
                         document.forms[0].submit();

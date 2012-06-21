@@ -9,7 +9,6 @@
 
 require_once 'Minify/Build.php';
 
-
 /**
  * Get a timestamped URI to a minified resource using the default Minify install
  *
@@ -39,7 +38,6 @@ function Minify_groupUri($group, $forceAmpersand = false)
     );
 }
 
-
 /**
  * Get the last modification time of the source js/css files used by Minify to
  * build the page.
@@ -66,7 +64,7 @@ function Minify_groupUri($group, $forceAmpersand = false)
 function Minify_groupsMtime($groups)
 {
     $max = 0;
-    foreach ((array)$groups as $group) {
+    foreach ((array) $groups as $group) {
         $max = max($max, _Minify_getBuild($group)->lastModified);
     }
 
@@ -80,8 +78,8 @@ function Minify_groupsMtime($groups)
  */
 function _Minify_getBuild($group)
 {
-    static $builds = array();
-    static $gc = false;
+    public static $builds = array();
+    public static $gc = false;
     if (false === $gc) {
         $gc = (require __DIR__ . '/groupsConfig.php');
     }

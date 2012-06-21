@@ -341,7 +341,6 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
 
         foreach ($tofetchMeta as $name => $values) {
 
-
             $this->assertEquals($values, $foundMeta[$name]);
         }
     }
@@ -542,7 +541,6 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertTrue($visa->isValid());
 
         $this->object->process($this->session, File::buildFromPathfile(self::$file1, self::$collection), $postProcessRecord);
-
 
         $visa = $this->object->getVisa(File::buildFromPathfile(self::$file1, self::$collection));
 

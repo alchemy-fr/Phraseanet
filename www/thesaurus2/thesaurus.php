@@ -26,7 +26,6 @@ $parm = $request->get_parms(
 
 $dispdbg = $parm["dbg"] ? "" : " visibility:hidden; ";
 
-
 $lng = Session_Handler::get_locale();
 
 User_Adapter::updateClientInfos(5);
@@ -118,12 +117,10 @@ User_Adapter::updateClientInfos(5);
                 return(true);
             }
 
-
             var timer_scrolling = null;
             function evtScrollBody()
             {
-                if(timer_scrolling)
-                {
+                if (timer_scrolling) {
                     window.clearTimeout(timer_scrolling);
                     timer_scrolling = null;
                 }
@@ -136,8 +133,7 @@ User_Adapter::updateClientInfos(5);
                 /*
           if(n==0)
             window.setTimeout("scrollEnd(1);", 500);
-          else
-          {
+          else {
           //  alert('zerzerzer');
         //    o_thbox_bck.style.width  = (0)+"px";
         //    o_thbox_bck.style.height = (0)+"px";
@@ -151,7 +147,8 @@ User_Adapter::updateClientInfos(5);
                  */
             }
             var xhr_object;
-            function sessionactive(){
+            function sessionactive()
+            {
                 $.ajax({
                     type: "POST",
                     url: "/include/updses.php",
@@ -177,8 +174,7 @@ User_Adapter::updateClientInfos(5);
                     }
                 })
             };
-            window.onbeforeunload = function()
-            {
+            window.onbeforeunload = function() {
                 xhr_object = null;
                 if(window.XMLHttpRequest) // Firefox
                     xhr_object = new XMLHttpRequest();
@@ -282,7 +278,6 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                     <a href="javascript:void();" onclick="fixTh();return(false);" style="<?php echo $dispdbg ?>">X</a>
                 </div>
 
-
                 <div id="TabT0" style="position:absolute; top:28px; left:0px; bottom:0px; width:40%;">
 
                     <div class="thbox" style="position:absolute; top:0px; bottom:8px; left:6px; right:3px;">
@@ -323,7 +318,6 @@ $jsFlags = '{ ' . $jsFlags . ' }';
 
         <div id="clipboard" style="position:absolute; top:0px; left:0px; z-index:99">&nbsp;</div>
 
-
         <iframe src="about:blank" name="IFRsave" id="IFRsave" style="<?php echo $dispdbg ?> ; position:absolute; top:<?php echo $parm["dbg"] ? 600 : 0 ?>px; left:5px;   height:<?php echo $parm["dbg"] ? 150 : 50 ?>px; width:<?php echo $parm["dbg"] ? 340 : 50 ?>px; overflow:scroll"></iframe>
         <iframe src="about:blank" name="IFR0"    id="IFR0"    style="<?php echo $dispdbg ?> ; position:absolute; top:<?php echo $parm["dbg"] ? 600 : 0 ?>px; left:400px; height:<?php echo $parm["dbg"] ? 150 : 50 ?>px; width:<?php echo $parm["dbg"] ? 340 : 50 ?>px; overflow:scroll"></iframe>
 
@@ -345,11 +339,9 @@ $jsFlags = '{ ' . $jsFlags . ' }';
         {
             var html = "";
             var syl = xmlobj.getElementsByTagName("sy_list");
-            if(syl.length==1)
-            {
+            if (syl.length==1) {
                 html = "<table>";
-                for(var sy=syl.item(0).firstChild; sy; sy=sy.nextSibling )
-                {
+                for (var sy=syl.item(0).firstChild; sy; sy=sy.nextSibling ) {
                     var lng = sy.getAttribute("lng");
                     html += "<tr>";
                     if(lng)
@@ -389,22 +381,17 @@ $jsFlags = '{ ' . $jsFlags . ' }';
             var om;
             //  o = document.getElementById(cbParm);
             o = cbParm;
-            switch(action)
-            {
+            switch (action) {
                 case "INIT":
                     // last chance to change menu content
-                    switch(o.id.substr(0, 4))
-                    {
+                    switch (o.id.substr(0, 4)) {
                         case "TCE_":    // racine (STOCK) ou premier niveau (champ ou [trash])
                             //       alert(o.id);
-                            if(o.id == "TCE_C")
-                            {
+                            if (o.id == "TCE_C") {
                                 // racine
                                 if(om=document.getElementById("kcterm_delete0hits"))
                                     om.className = "disabled";
-                            }
-                            else
-                            {
+                            } else {
                                 // premier niveau
                                 if(om=document.getElementById("kcterm_delete0hits"))
                                     om.className = "";
@@ -430,39 +417,30 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                                 om.className = "disabled";
                             if(om=document.getElementById("kcterm_rescan"))
                                 om.className = "disabled";
-                            if(o.id.substr(4, 1)=="R")
-                            {
+                            if (o.id.substr(4, 1)=="R") {
                                 if(om=document.getElementById("kcterm_reject"))
                                     om.className = "disabled";
                                 if(om=document.getElementById("kcterm_delete"))
                                     om.className = "";
-                                if(o.parentNode.id.indexOf(".") == -1)
-                                {
+                                if (o.parentNode.id.indexOf(".") == -1) {
                                     // terme de premier niveau sous un champ : on peut retablir
                                     if(om=document.getElementById("kcterm_accept"))
                                         om.className = "";
-                                }
-                                else
-                                {
+                                } else {
                                     // terme 'profond' (dans deleted) : on peut pas retablir
                                     if(om=document.getElementById("kcterm_accept"))
                                         om.className = "disabled";
                                 }
-                            }
-                            else
-                            {
+                            } else {
                                 if(om=document.getElementById("kcterm_accept"))
                                     om.className = "disabled";
                                 if(om=document.getElementById("kcterm_delete"))
                                     om.className = "";
-                                if(o.parentNode.id.indexOf(".") == -1)
-                                {
+                                if (o.parentNode.id.indexOf(".") == -1) {
                                     // terme de premier niveau sous un champ : on peut refuser
                                     if(om=document.getElementById("kcterm_reject"))
                                         om.className = "";
-                                }
-                                else
-                                {
+                                } else {
                                     // terme 'profond' (dans deleted) : on peut pas refuser
                                     if(om=document.getElementById("kcterm_reject"))
                                         om.className = "disabled";
@@ -479,9 +457,7 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                             {
                                 if(om = document.getElementById("kcterm_search"))
                                     om.className = "disabled";  // carre grise
-                            }
-                            else
-                            {
+                            } else {
                                 if(om=document.getElementById("kcterm_search"))
                                     om.className = "";
                             }
@@ -490,8 +466,7 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                     // alert(o.id);
                     break;
                 case "SELECT":
-                    switch(menuelem_id)
-                    {
+                    switch (menuelem_id) {
                         case "kcterm_delete":
                             url  = "xmlhttp/getterm.x.php";
                             url += "?bid=<?php echo urlencode($parm["bid"]) ?>";
@@ -509,8 +484,7 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                             else
                                 msg = "<?php echo p4string::MakeString(_('thesaurus:: Des reponses sont retournees par cette branche. &#10;Supprimer quand meme ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)'), "js") /* cette branche retourne %s reponses.... */ ?>";
 
-                            if(confirm(msg))
-                            {
+                            if (confirm(msg)) {
                                 var myObj = { "win":window };
                                 url  = "./xmlhttp/killterm.x.php";
                                 url += "?bid=<?php echo $parm["bid"] ?>";
@@ -523,10 +497,8 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                                 ret = loadXMLDoc(url, parms, true);
 
                                 refresh = ret.getElementsByTagName("refresh");
-                                for(i=0; i<refresh.length; i++)
-                                {
-                                    switch(refresh.item(i).getAttribute("type"))
-                                    {
+                                for (i=0; i<refresh.length; i++) {
+                                    switch (refresh.item(i).getAttribute("type")) {
                                         case "CT":
                                             reloadCtermsBranch(refresh.item(i).getAttribute("id"));
                                             break;
@@ -547,14 +519,11 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                             // alert(ret);
                             n_nohits = ret.documentElement.getAttribute("n_nohits");
 
-                            if(n_nohits==0)
-                            {
+                            if (n_nohits==0) {
                                 alert("<?php echo p4string::MakeString(_('thesaurus:: Tous les termes ont des hits'), "js") /* Cette branche ne contient aucun terme 'e 0 hits' */ ?>");
 
                                 return;
-                            }
-                            else
-                            {
+                            } else {
                                 if(confirm("<?php echo p4string::MakeString(_('thesaurus:: Des termes de cette branche ne renvoient pas de hits. Les supprimer ?'), "js") ?>"));
                                 {
                                     url  = "xmlhttp/deletenohits.x.php";
@@ -582,10 +551,8 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                             ret = loadXMLDoc(url, parms, true);
 
                             refresh = ret.getElementsByTagName("refresh");
-                            for(i=0; i<refresh.length; i++)
-                            {
-                                switch(refresh.item(i).getAttribute("type"))
-                                {
+                            for (i=0; i<refresh.length; i++) {
+                                switch (refresh.item(i).getAttribute("type")) {
                                     case "CT":
                                         reloadCtermsBranch(refresh.item(i).getAttribute("id"));
                                         break;
@@ -608,10 +575,8 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                             ret = loadXMLDoc(url, parms, true);
 
                             refresh = ret.getElementsByTagName("refresh");
-                            for(i=0; i<refresh.length; i++)
-                            {
-                                switch(refresh.item(i).getAttribute("type"))
-                                {
+                            for (i=0; i<refresh.length; i++) {
+                                switch (refresh.item(i).getAttribute("type")) {
                                     case "CT":
                                         reloadCtermsBranch(refresh.item(i).getAttribute("id"));
                                         break;
@@ -622,11 +587,9 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                             }
                             break;
                         case "kcterm_candidate":
-                            if( o )
-                            {
+                            if ( o ) {
                                 o.className = o.className.replace("R_", "r_");
-                                if(!o.oldid)
-                                {
+                                if (!o.oldid) {
                                     //    o.oldid = o.id.substr(4);
                                     o.setAttribute("oldid", o.id.substr(4) );
                                 }
@@ -655,8 +618,7 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                             break;
                         case "kcterm_search":
                             ret = window.showModalDialog("search.php?dlg=1", null, "dialogHeight:240px; dialogWidth:300px; center:yes; help:no; resizable:yes; scroll:no; status:no; unadorned:yes");
-                            if(ret && ret.t != "")
-                            {
+                            if (ret && ret.t != "") {
                                 url = "./xmlhttp/openbranches.x.php";
                                 parms  = "bid=<?php echo $parm["bid"] ?>";
                                 parms += "&id=" + cbParm.id.substr(4);
@@ -670,8 +632,7 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                                 thb = document.getElementById("THB_" + cbParm.id.substr(4));
 
                                 ts = ret.getElementsByTagName("html");
-                                if(ts.length==1)
-                                {
+                                if (ts.length==1) {
                                     replaceContent(thb, ts.item(0));
                                     thb.className = "hb";
                                     document.getElementById("THP_" + cbParm.id.substr(4)).innerText="...";
@@ -696,14 +657,11 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                 function cbDD_T0(event, type, eventObj)
                 {
                     ret = true;
-                    switch(type)
-                    {
+                    switch (type) {
                         case "RMOUSEDOWN":
-                            if(o = eventObj.Src0)
-                            {
+                            if (o = eventObj.Src0) {
                                 // alert(o.id.substr(0, 4));
-                                switch(o.id.substr(0, 4))
-                                {
+                                switch (o.id.substr(0, 4)) {
                                     case "TCE_":    // une branche (champ) de candidats
                                         myGUI.select(o);
                                         document.getElementById("kctermMenu").runAsMenu( event, o );
@@ -717,11 +675,9 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                             break;
                         /*
             case "CONTEXTMENU":
-              if(o = eventObj.Src0)
-              {
+              if (o = eventObj.Src0) {
                 // alert(o.id.substr(0, 4));
-                switch(o.id.substr(0, 4))
-                {
+                switch (o.id.substr(0, 4)) {
                   case "TCE_":    // une branche (champ) de candidats
                   case "THE_":    // le terme candidat
                     myGUI.select(o);
@@ -733,13 +689,10 @@ $jsFlags = '{ ' . $jsFlags . ' }';
               break;
                          */
                     case "DBLCLICK":
-                        if(o = eventObj.Src0)
-                        {
-                            switch(o.id.substr(0, 4))
-                            {
+                        if (o = eventObj.Src0) {
+                            switch (o.id.substr(0, 4)) {
                                 case "THE_":    // terme candidat
-                                    if(o.id.indexOf(".") != -1)
-                                    {
+                                    if (o.id.indexOf(".") != -1) {
                                         var myObj = { "win":window };
                                         url  = "properties.php";
                                         url += "?bid=<?php echo $parm["bid"] ?>";
@@ -754,11 +707,9 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                             }
                             break;
                         case "MOUSEDOWN":
-                            if(o = eventObj.Src0)
-                            {
+                            if (o = eventObj.Src0) {
                                 // alert(o.id);
-                                switch(o.id.substr(0, 4))
-                                {
+                                switch (o.id.substr(0, 4)) {
                                     case "THP_":  // + ou - devant un terme
                                         thid = o.id.substr(4);
                                         if(tce = document.getElementById("TCE_"+thid))
@@ -766,20 +717,16 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                                         else
                                             if(the = document.getElementById("THE_"+thid))
                                                 myGUI.select(the);
-                                        if(o.className=="" && (thb = document.getElementById("THB_"+thid)))
-                                        {
+                                        if (o.className=="" && (thb = document.getElementById("THB_"+thid))) {
                                             // alert(thb.className);
                                             // alert(thb.className + " " + thb.className.indexOf("OB"));
                                             /*
-                      if(thb.className.indexOf("OB") != -1)
-                      {
+                      if (thb.className.indexOf("OB") != -1) {
                         eventObj.Src0.innerHTML = "+";
 
                         // thb.className = "ob";
                         thb.className = thb.className.replace(/OB/, "ob");
-                      }
-                      else
-                      {
+                      } else {
                         new_thb = reloadbranch(thb, thid, "CT");
 
                         eventObj.Src0.innerHTML = "-";
@@ -788,15 +735,12 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                         //alert(new_thb.className);
                       }
                                              */
-                                            if(thb.className == "ob")
-                                            {
+                                            if (thb.className == "ob") {
                                                 new_thb = reloadbranch(thb, thid, "CT");
 
                                                 eventObj.Src0.innerHTML = "-";
                                                 new_thb.className = "OB";
-                                            }
-                                            else
-                                            {
+                                            } else {
                                                 eventObj.Src0.innerHTML = "+";
 
                                                 // thb.className = "ob";
@@ -825,10 +769,8 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                             }
                             break;
                         case "DRAGSTART":
-                            if(o = eventObj.Src0)
-                            {
-                                if(o.id.substr(0, 4)=="THE_")
-                                {
+                            if (o = eventObj.Src0) {
+                                if (o.id.substr(0, 4)=="THE_") {
                                     myGUI.select(null);
                                     cp = document.getElementById("clipboard");
                                     //          if(cp = document.getElementById("clipboard"))
@@ -846,25 +788,20 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                                     //o2.style.zIndex = 2;
 
                                     //    o.style.display = "none";
-                                    if(pp = document.getElementById("clipboard"))
-                                    {
+                                    if (pp = document.getElementById("clipboard")) {
                                         pp.replaceChild(o2, pp.firstChild);
                                         pp.style.visibility = "visible";
                                         myGUI.setDragObj(pp);
                                     }
                                     //          }
-                                }
-                                else
-                                {
+                                } else {
                                     ret = false;
                                 }
                             }
                             break;
                         case "BALLOON":
-                            if(o = eventObj.Src0)
-                            {
-                                if(o.id.substr(0, 4)=="THE_") // && o.id.substr(4)!="T")
-                                {
+                            if (o = eventObj.Src0) {
+                                if (o.id.substr(0, 4)=="THE_") // && o.id.substr(4)!="T") {
                                     var url   = "xmlhttp/getterm.x.php";
                                     var parms = "bid=<?php echo $parm["bid"] ?>";
                                     parms    += "&piv=<?php echo $parm["piv"] ?>";
@@ -905,13 +842,11 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                         ret = loadXMLDoc(url, parms, true);
                         ts = ret.getElementsByTagName("ts_list");
                         // alert(url+"?"+parms);
-                        if(ts.length==1)
-                        {
+                        if (ts.length==1) {
                             new_thb = document.createElement("DIV");
                             new_thb.setAttribute("id", "THB_" + thid);
                             nts = 0;
-                            for(n=ts.item(0).firstChild; n; n=n.nextSibling)
-                            {
+                            for (n=ts.item(0).firstChild; n; n=n.nextSibling) {
                                 div = new_thb.appendChild(document.createElement("div"));
                                 id = n.getAttribute("id");
                                 if(id.substr(0,1) == "R")
@@ -926,12 +861,9 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                                     txt = div.appendChild(document.createTextNode(n.firstChild.nodeValue));
                                 else
                                     txt = div.appendChild(document.createTextNode(""));
-                                if(n.getAttribute("nts") > 0)
-                                {
+                                if (n.getAttribute("nts") > 0) {
                                     u.appendChild(document.createTextNode("+"));
-                                }
-                                else
-                                {
+                                } else {
                                     u.className = "nots";
                                     u.appendChild(document.createTextNode(""));
                                 }
@@ -944,25 +876,19 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                             thb.parentNode.replaceChild(new_thb, thb);
                             thp = document.getElementById("THP_"+thid);
 
-                            if(nts > 0)
-                            {
+                            if (nts > 0) {
                                 //       alert("thb.className = "+thb.className);
                                 new_thb.className = thb.className;
-                                if(thid.substr(0,1) == "R")
-                                {
+                                if (thid.substr(0,1) == "R") {
                                     // new_thb.className = "ob r1_";
                                     new_thb.className = "ob";
-                                }
-                                else
-                                {
+                                } else {
                                     // new_thb.className = "ob r0_";
                                 }
                                 // alert(thid + " " + new_thb.className);
                                 thp.className = "";
                                 thp.innerText = thb.className=="ob"?"+":"-";
-                            }
-                            else
-                            {
+                            } else {
                                 //      new_thb.className = "ob r1_";
                                 new_thb.className = "ob";
                                 thp.className = "nots";
@@ -998,12 +924,10 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                         var ret;
                         if(cbParm.id)
                             o = document.getElementById(cbParm.id);
-                        switch(action)
-                        {
+                        switch (action) {
                             case "INIT":
                                 // last chance to change menu content
-                                if(o.id.substr(4) == "T")
-                                {
+                                if (o.id.substr(4) == "T") {
                                     // menu contextuel e la racine du thesaurus
                                     // document.getElementById("kterm_replace").style.display = "none";
                                     if(om=document.getElementById("kterm_link"))
@@ -1014,9 +938,7 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                                         om.className = "disabled";
                                     if(om=document.getElementById("kterm_properties"))
                                         om.className = "disabled";
-                                }
-                                else
-                                {
+                                } else {
                                     // menu contextuel sur un terme du thesaurus
                                     // document.getElementById("kterm_replace").style.display = "";
                                     if(om=document.getElementById("kterm_link"))
@@ -1030,16 +952,14 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                                 }
                                 break;
                             case "SELECT":
-                                switch(menuelem_id)
-                                {
+                                switch (menuelem_id) {
                                     case "kterm_newts": // nouveau terme specifique
                                         var myObj = { "win":window };
                                         url  = "newsy_dlg.php?piv=<?php echo $parm["piv"] ?>&typ=TS";
 
                                         ret = window.showModalDialog(url, myObj, "dialogHeight:200px; dialogWidth:400px; center:yes; help:no; resizable:yes; scroll:no; status:no; unadorned:yes");
 
-                                        if(ret && ret.t)
-                                        {
+                                        if (ret && ret.t) {
                                             var myObj = { "win":window };
                                             url  = "newterm.php";
                                             url += "?bid=<?php echo $parm["bid"] ?>";
@@ -1057,8 +977,7 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                                         var myObj = { "win":window };
                                         url  = "newsy_dlg.php?piv=<?php echo $parm["piv"] ?>&typ=SY";
                                         ret = window.showModalDialog(url, myObj, "dialogHeight:200px; dialogWidth:400px; center:yes; help:no; resizable:yes; scroll:no; status:no; unadorned:yes");
-                                        if(ret && ret.t)
-                                        {
+                                        if (ret && ret.t) {
                                             var myObj = { "win":window };
                                             url  = "newterm.php";
                                             url += "?bid=<?php echo $parm["bid"] ?>";
@@ -1088,18 +1007,15 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                                         parms += "&piv=<?php echo $parm["piv"] ?>";
                                         parms += "&id=" + tid;
 
-                                        if(confirm("<?php echo p4string::MakeString(_('thesaurus:: deplacer le terme dans la corbeille ?'), "js") ?>"+"\n\n"+fullpath+"\n\n"))
-                                        {
+                                        if (confirm("<?php echo p4string::MakeString(_('thesaurus:: deplacer le terme dans la corbeille ?'), "js") ?>"+"\n\n"+fullpath+"\n\n")) {
                                             // xmlhttp/delts.x.php?bid=15&id=T1.629&debug=1
                                             // alert(url+"?"+parms);
                                             ret = loadXMLDoc(url, parms, true);
                                             // alert(ret);
 
                                             refresh = ret.getElementsByTagName("refresh");
-                                            for(i=0; i<refresh.length; i++)
-                                            {
-                                                switch(refresh.item(i).getAttribute("type"))
-                                                {
+                                            for (i=0; i<refresh.length; i++) {
+                                                switch (refresh.item(i).getAttribute("type")) {
                                                     case "CT":
                                                         reloadCtermsBranch(refresh.item(i).getAttribute("id"));
                                                         break;
@@ -1134,8 +1050,7 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                                         break;
                                     case "kterm_search":
                                         ret = window.showModalDialog("search.php?dlg=1", myObj, "dialogHeight:240px; dialogWidth:300px; center:yes; help:no; resizable:yes; scroll:no; status:no; unadorned:yes");
-                                        if(ret && ret.t != "")
-                                        {
+                                        if (ret && ret.t != "") {
                                             url = "./xmlhttp/openbranches.x.php";
                                             parms  = "bid=<?php echo $parm["bid"] ?>";
                                             parms += "&id=" + cbParm.id.substr(4);
@@ -1150,8 +1065,7 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                                             thb = document.getElementById("THB_" + cbParm.id.substr(4));
 
                                             ts = ret.getElementsByTagName("html");
-                                            if(ts.length==1)
-                                            {
+                                            if (ts.length==1) {
                                                 replaceContent(thb, ts.item(0));
                                                 thb.className = "hb";
                                                 document.getElementById("THP_" + cbParm.id.substr(4)).innerText="...";
@@ -1204,9 +1118,7 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                                     dstNode.innerHTML = "";
                                     for(n=newContent.firstChild; n; n=n.nextSibling)
                                         docImport(n, dstNode);  // assez rapide sous safari, tres tres lent sous explorer
-                                }
-                                else
-                                {
+                                } else {
                                     var t = "";
                                     for(n=newContent.firstChild; n; n=n.nextSibling)
                                         t += n.xml;    // marche pas sous safari...
@@ -1222,13 +1134,10 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                             function cbDD_T1(event, type, eventObj)
                             {
                                 ret = true;
-                                switch(type)
-                                {
+                                switch (type) {
                                     case "RMOUSEDOWN":
-                                        if(o = eventObj.Src0)
-                                        {
-                                            switch(o.id.substr(0, 4))
-                                            {
+                                        if (o = eventObj.Src0) {
+                                            switch (o.id.substr(0, 4)) {
                                                 case "THE_":    // le terme
                                                     myGUI.select(o);
                                                     document.getElementById("ktermMenu").runAsMenu( event, {id:o.id} );
@@ -1238,24 +1147,18 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                                         }
                                         break;
                                     case "MOUSEDOWN":
-                                        if(o = eventObj.Src0)
-                                        {
-                                            switch(o.id.substr(0, 4))
-                                            {
+                                        if (o = eventObj.Src0) {
+                                            switch (o.id.substr(0, 4)) {
                                                 case "THP_":  // + ou - devant un terme
                                                     thid = o.id.substr(4);
                                                     if(the = document.getElementById("THE_"+thid))
                                                         myGUI.select(the);
-                                                    if(o.className=="" && (thb = document.getElementById("THB_"+thid)))
-                                                    {
-                                                        if(thb.className == "ob")
-                                                        {
+                                                    if (o.className=="" && (thb = document.getElementById("THB_"+thid))) {
+                                                        if (thb.className == "ob") {
                                                             new_thb = reloadbranch(thb, thid, "TH");
                                                             eventObj.Src0.innerHTML = "-";
                                                             new_thb.className = "OB";
-                                                        }
-                                                        else
-                                                        {
+                                                        } else {
                                                             eventObj.Src0.innerHTML = "+";
                                                             thb.className = "ob";
                                                         }
@@ -1269,10 +1172,8 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                                         }
                                         break;
                                     case "DBLCLICK":
-                                        if(o = eventObj.Src0)
-                                        {
-                                            if(o.id.substr(0, 4)=="THE_" && o.id.substr(4)!="T")
-                                            {
+                                        if (o = eventObj.Src0) {
+                                            if (o.id.substr(0, 4)=="THE_" && o.id.substr(4)!="T") {
                                                 var myObj = { "win":window };
                                                 url  = "properties.php";
                                                 url += "?bid=<?php echo $parm["bid"] ?>";
@@ -1285,10 +1186,8 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                                         }
                                         break;
                                     case "BALLOON":
-                                        if(o = eventObj.Src0)
-                                        {
-                                            if(o.id.substr(0, 4)=="THE_") // && o.id.substr(4)!="T")
-                                            {
+                                        if (o = eventObj.Src0) {
+                                            if (o.id.substr(0, 4)=="THE_") // && o.id.substr(4)!="T") {
                                                 var url   = "xmlhttp/getterm.x.php";
                                                 var parms = "bid=<?php echo $parm["bid"] ?>";
                                                 parms    += "&piv=<?php echo $parm["piv"] ?>";
@@ -1312,17 +1211,14 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                                             lo.style.backgroundColor = ""; // eventObj.lastTarget0Style;
                                         break;
                                     case "DRAGOVER":
-                                        //  if(cp = document.getElementById("clipboard"))
-                                        {
+                                        //  if (cp = document.getElementById("clipboard")) {
                                             // o.style.position = "absolute";
                                             //    cp.style.pixelLeft = eventObj.X+10;
                                             //    cp.style.pixelTop = eventObj.Y+10;
                                             // o.style.backgroundColor = "#ffff00";
                                             // o.style.zIndex = 2;
-                                            if(o = eventObj.Target0)
-                                            {
-                                                if(lo = eventObj.lastTarget0)
-                                                {
+                                            if (o = eventObj.Target0) {
+                                                if (lo = eventObj.lastTarget0) {
                                                     lo.style.backgroundColor = ""; // eventObj.lastTarget0Style;
                                                     // lo.style.border = "1px none #ffff00"; // eventObj.lastTarget0Style;
                                                     //            lo.style.color="#ff00ff";
@@ -1343,10 +1239,8 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                                         if(lo = eventObj.lastTarget0)
                                             lo.style.backgroundColor = "";
 
-                                        if(cp = document.getElementById("clipboard").firstChild)
-                                        {
-                                            if(tgt0 = eventObj.Target0)
-                                            {
+                                        if (cp = document.getElementById("clipboard").firstChild) {
+                                            if (tgt0 = eventObj.Target0) {
                                                 var myObj = { "win":window };
                                                 url  = "accept.php";
                                                 url += "?bid=<?php echo $parm["bid"] ?>";
@@ -1365,8 +1259,7 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                                 function cbDD_TabT1(event, type, eventObj)
                                 {
                                     ret = true;
-                                    switch(type)
-                                    {
+                                    switch (type) {
                                         case "RMOUSEDOWN":
                                             document.getElementById("kThMenu").runAsMenu( event, null );
                                             break;
@@ -1393,14 +1286,12 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                                     // alert("id=" + cbParm.id + "menuelem_id='" + menuelem_id + "'");
                                     // alert("cbParm.obj={obj:'" + cbParm.obj + "', id:'" + cbParm.id + "'} ; menuelem_id='" + menuelem_id + "'");
                                     var om;
-                                    switch(action)
-                                    {
+                                    switch (action) {
                                         case "INIT":
                                             // last chance to change menu content
                                             break;
                                         case "SELECT":
-                                            switch(menuelem_id)
-                                            {
+                                            switch (menuelem_id) {
                                                 case "kth_import": // importer
                                                     var myObj = { "win":window };
                                                     url  = "import_dlg.php?piv=<?php echo $parm["piv"] ?>&bid=<?php echo $parm["bid"] ?>&id=&dlg=1";
@@ -1417,8 +1308,7 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                                         {
                                             var n, nn;
                                             // alert(src.nodeType);
-                                            switch(src.nodeType)
-                                            {
+                                            switch (src.nodeType) {
                                                 case 1:  // element
                                                     // alert(src.nodeName);
                                                     nn = dst.appendChild(document.createElement(src.nodeName))
@@ -1440,7 +1330,6 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                                             }
                                         }
 
-
                                         function reloadbranch2(thb, thid, typ)
                                         {
                                             new_thb = null;
@@ -1456,8 +1345,7 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                                             alert(ret);
 
                                             ts = ret.getElementsByTagName("html");
-                                            if(ts.length==1)
-                                            {
+                                            if (ts.length==1) {
                                                 /*
     thb.innerHTML = ts.item(0).firstChild.nodeValue;
                                                  */
@@ -1467,9 +1355,7 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                                                     for(n=ts.item(0).firstChild; n; n=n.nextSibling)
                                                         docImport(n, thb);
 
-                                                }
-                                                else
-                                                {
+                                                } else {
                                                     t = "";
                                                     for(n=ts.item(0).firstChild; n; n=n.nextSibling)
                                                         t += n.xml;    // marche pas sous safari...
@@ -1490,10 +1376,7 @@ $jsFlags = '{ ' . $jsFlags . ' }';
 
                                         myGUI.setDraggable("T0", cbDD_T0);
 
-
                                         myGUI.setClickable("TabT1Title", cbDD_TabT1);
-
-
 
                                         myGUI.setClickable("T1", cbDD_T1);
 
@@ -1515,5 +1398,4 @@ $jsFlags = '{ ' . $jsFlags . ' }';
     </body>
 
 </html>
-
 

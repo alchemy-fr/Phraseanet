@@ -55,4 +55,3 @@ function indentXML2(&$dom, $node, $depth, $ichild)
         $node->parentNode->insertBefore($dom->createTextNode($tab), $node);
     }
 }
-?>

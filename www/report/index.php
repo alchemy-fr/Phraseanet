@@ -29,7 +29,6 @@ $user = $Core->getAuthenticatedUser();
 $dashboard = new module_report_dashboard($user);
 $dashboard->execute();
 
-
 $var = array(
     'ajax_dash'   => true,
     'dashboard'   => $dashboard,
