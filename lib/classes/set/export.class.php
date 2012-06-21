@@ -783,17 +783,7 @@ class set_export extends set_abstract
         $headerDisposition = $response->headers->makeDisposition($disposition, $exportname);
 
         if (is_file($file)) {
-            $testPath = function($file, $registry) {
-                    $ret = true;
-
-                    if($registry->get('GV_X_Accel_Redirect') && strpos($file, $registry->get('GV_X_Accel_Redirect')) === false) {
-                        $ret = false;
-                    }
-
-                    return $ret;
-                };
-
-            if ($registry->get('GV_modxsendfile') && $testPath($file, $registry)) {
+            if ($registry->get('GV_modxsendfile')) {
                 $file_xaccel = str_replace(
                     array(
                     $registry->get('GV_X_Accel_Redirect'),
