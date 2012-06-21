@@ -4,7 +4,6 @@ header('Content-Type: application/json');
 /* yadl_spaceid - Skip Stamping */
 include('exampleslib.inc');
 
-
 // Use Services_JSON
 require_once('JSON.php');
 $json = new Services_JSON();
@@ -52,15 +51,14 @@ $data->Results->data = $EditorData;
 
 echo($json->encode($data));
 
-
-
 /*
  * Elmer Fudd filter code.
  * Plugin URI: http://dougal.gunters.org/blog/2004/08/30/text-filter-suite
  * Author: Dougal Campbell
  * Author URI: http://dougal.gunters.org/
  */
-function filter_cdata_content($content, $filter='none') {
+function filter_cdata_content($content, $filter='none')
+{
     if (function_exists($filter)) {
         $content = preg_replace_callback('/(?(?<=>)|\A)([^<>]+)(?(?=<)|\Z)/s', $filter, $content);
     }
@@ -68,11 +66,13 @@ function filter_cdata_content($content, $filter='none') {
     return $content;
 }
 
-function fudd($content) {
+function fudd($content)
+{
     return filter_cdata_content($content,'fudd_filter');
 }
 
-function array_apply_regexp($patterns,$content) {
+function array_apply_regexp($patterns,$content)
+{
     // Extract the values:
     $keys = array_keys($patterns);
     $values = array_values($patterns);
@@ -83,7 +83,8 @@ function array_apply_regexp($patterns,$content) {
     return $content;
 }
 
-function fudd_filter($content) {
+function fudd_filter($content)
+{
     $content = $content[1];
 
     $patterns = array(
@@ -104,4 +105,3 @@ function fudd_filter($content) {
     return $content;
 }
 
-?>

@@ -44,8 +44,7 @@ if ($parm["dlg"]) {
 
             function clkBut(button)
             {
-                switch(button)
-                {
+                switch (button) {
                     case "submit":
                         document.forms[0].action = "export_" + format + ".php";
                         document.forms[0].submit();
@@ -69,8 +68,7 @@ if ($parm["dlg"]) {
             {
                 if(o.nodeType==1)  // element
                 {
-                    if(o.nodeName=='INPUT')
-                    {
+                    if (o.nodeName=='INPUT') {
                         if(stat)
                             o.removeAttribute('disabled');
                         else
@@ -84,33 +82,26 @@ if ($parm["dlg"]) {
             {
                 var i, f;
                 /*
-            for(i=0; i<document.forms[0].ofm.length; i++)
-            {
+            for (i=0; i<document.forms[0].ofm.length; i++) {
               f = document.forms[0].ofm[i].value;
-              if(document.forms[0].ofm[i].checked)
-              {
+              if (document.forms[0].ofm[i].checked) {
                 enable_inputs(document.getElementById('subform_'+f), true);
                 format = f;
-              }
-              else
-              {
+              } else {
                 enable_inputs(document.getElementById('subform_'+f), false);
               }
             }
                  */
                 url = "./export_"+format+".php?bid=<?php echo $parm["bid"] ?>&piv=<?php echo $parm["piv"] ?>&id=<?php echo $parm["id"] ?>&typ=<?php echo $parm["typ"] ?>&dlg=0&smp=1";
                 /*
-            if(format == "text")
-            {
+            if (format == "text") {
                  */
                 url += "&osl=" + (document.forms[0].osl[0].checked ? "1" : "0");
                 url += "&iln=" + (document.forms[0].iln.checked ? "1" : "0");
                 url += "&hit=" + (document.forms[0].hit.checked ? "1" : "0");
                 url += "&ilg=" + (document.forms[0].ilg.checked ? "1" : "0");
                 /*
-            }
-            else
-            {
+            } else {
               url += "&obr=<?php echo $parm['obr'] ?>";
             }
                  */

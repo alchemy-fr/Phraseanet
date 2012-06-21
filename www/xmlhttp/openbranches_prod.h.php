@@ -69,8 +69,7 @@ if ($parm['bid'] !== null) {
 
                 $zhtml = '';
                 getHTML2($znode, $zhtml, 0);
-            }
-            else {
+            } else {
                 $zhtml = '';
                 $bid = $parm['bid'];
                 for ($i = 0; $i < $nodes->length; $i ++ ) {

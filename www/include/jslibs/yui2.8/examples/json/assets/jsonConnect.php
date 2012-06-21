@@ -13,4 +13,3 @@ $messages =<<<END
 END;
 
 echo($messages);
-?>

@@ -72,7 +72,6 @@ if ($parm["act"] == "DELETETASK") {
             var allgetID = new Array ;
             var total = 0;
 
-
             function resized()
             {
                 $("#redbox0").width($("#tableau_center").width()-4);
@@ -89,8 +88,7 @@ if ($parm["act"] == "DELETETASK") {
 
             function doMenuSched(act)
             {
-                switch(act)
-                {
+                switch (act) {
                     case "start":
                         lauchScheduler();
                         break;
@@ -110,8 +108,7 @@ if ($parm["act"] == "DELETETASK") {
             {
                 var tid = $(context).parent().attr('id').split('_').pop();
 
-                switch(act)
-                {
+                switch (act) {
                     case "edit":
                         editTask(tid);
                         break;
@@ -122,8 +119,7 @@ if ($parm["act"] == "DELETETASK") {
                         setTaskStatus(tid, 'tostop', 15, false);  // 15 = SIGTERM
                         break;
                     case 'delete':
-                        if(confirm("<?php echo p4string::MakeString(_('admin::tasks: supprimer la tache ?'), 'js', '"') ?>"))
-                        {
+                        if (confirm("<?php echo p4string::MakeString(_('admin::tasks: supprimer la tache ?'), 'js', '"') ?>")) {
                             document.forms["taskManager"].target = "";
                             document.forms["taskManager"].act.value = "DELETETASK";
                             document.forms["taskManager"].tid.value = tid;
@@ -235,17 +231,14 @@ foreach ($tasks as $t) {
             {
                 // theme:'vista',
                 optionsIdx:{'start':0, 'stop':1},
-                beforeShow:function()
-                {
+                beforeShow:function() {
                     if(!retPing)
+
                         return;
-                    if(retPing.scheduler && retPing.scheduler.pid)
-                    {
+                    if (retPing.scheduler && retPing.scheduler.pid) {
                         $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['stop']+')').removeClass("context-menu-item-disabled");
                         $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').addClass("context-menu-item-disabled");
-                    }
-                    else
-                    {
+                    } else {
                         $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['stop']+')').addClass("context-menu-item-disabled");
                         $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').removeClass("context-menu-item-disabled");
                     }
@@ -294,41 +287,32 @@ foreach ($tasks as $t) {
             ],
             {
                 optionsIdx:{'edit':0, 'start':1, 'stop':2, 'delete':3, 'log':5},
-                beforeShow:function()
-                {
+                beforeShow:function() {
                     var tid = $($(this)[0].target).parent().attr('id').split('_').pop();
 
                     if(!retPing || !retPing.tasks[tid])
+
                         return;
 
-                    if(retPing.tasks[tid].pid)
-                    {
+                    if (retPing.tasks[tid].pid) {
                         $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['edit']+')').addClass("context-menu-item-disabled");
                         $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['stop']+')').removeClass("context-menu-item-disabled");
                         $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').addClass("context-menu-item-disabled");
                         $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['delete']+')').addClass("context-menu-item-disabled");
-                    }
-                    else
-                    {
+                    } else {
                         $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['edit']+')').removeClass("context-menu-item-disabled");
 
-                        if(retPing.tasks[tid].status == 'started' || retPing.tasks[tid].status == 'torestart')
-                        {
+                        if (retPing.tasks[tid].status == 'started' || retPing.tasks[tid].status == 'torestart') {
                             $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['stop']+')').removeClass("context-menu-item-disabled");
-                        }
-                        else
-                        {
+                        } else {
                             $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['stop']+')').addClass("context-menu-item-disabled");
                         }
 
                         $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['delete']+')').removeClass("context-menu-item-disabled");
 
-                        if(retPing.scheduler && retPing.scheduler.pid && !(retPing.tasks[tid].status == 'started' || retPing.tasks[tid].status == 'torestart'))
-                        {
+                        if (retPing.scheduler && retPing.scheduler.pid && !(retPing.tasks[tid].status == 'started' || retPing.tasks[tid].status == 'torestart')) {
                             $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').removeClass("context-menu-item-disabled");
-                        }
-                        else
-                        {
+                        } else {
                             $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').addClass("context-menu-item-disabled");
                         }
                     }
@@ -429,14 +413,12 @@ foreach ($tasks as $t) {
 
                 function setTaskStatus(tid, status, signal, resetCrashCounter)
                 {
-                    if(resetCrashCounter)
-                    {
+                    if (resetCrashCounter) {
                         $.ajax({
                             url: "/admin/adminFeedback.php",
                             data : { task_id:tid, action:"RESETTASKCRASHCOUNTER" },
                             dataType:'xml',
-                            success: function(ret)
-                            {
+                            success: function(ret) {
                             }
                         });
                     }
@@ -445,8 +427,7 @@ foreach ($tasks as $t) {
                         url: "/admin/adminFeedback.php",
                         data : {task_id:tid, action:"SETTASKSTATUS", status:status, signal:signal},
                         dataType:'json',
-                        success: function(ret)
-                        {
+                        success: function(ret) {
                             pingScheduler(false); // false : just one time
                         }
                     });
@@ -459,8 +440,7 @@ foreach ($tasks as $t) {
                         url: "/admin/adminFeedback.php",
                         data : { action:"SETSCHEDSTATUS", status:status },
                         dataType:'json',
-                        success: function(ret)
-                        {
+                        success: function(ret) {
                             pingScheduler(false); // false : just one time
                         }
                     });
@@ -469,8 +449,7 @@ foreach ($tasks as $t) {
 
                 function deleteTask(tid)
                 {
-                    if(confirm("<?php echo p4string::MakeString(_('admin::tasks: supprimer la tache ?'), 'js', '"') ?>"))
-                    {
+                    if (confirm("<?php echo p4string::MakeString(_('admin::tasks: supprimer la tache ?'), 'js', '"') ?>")) {
                         document.forms["taskManager"].target = "";
                         document.forms["taskManager"].act.value = "DELETETASK";
                         document.forms["taskManager"].tid.value = tid;
@@ -484,13 +463,11 @@ foreach ($tasks as $t) {
                         url: '/admin/adminFeedback.php',
                         data:{action:'PINGSCHEDULER_JS', dbps:0},
                         dataType:'json',
-                        success: function(ret)
-                        {
+                        success: function(ret) {
                             retPing = ret;  // global
                             if(ret.time)
                                 $("#pingTime").empty().append(ret.time);
-                            if(ret.scheduler)
-                            {
+                            if (ret.scheduler) {
                                 if(ret.scheduler.status)
                                     $("#STATUS_SCHED").html(ret.scheduler.status);
                                 else
@@ -499,17 +476,13 @@ foreach ($tasks as $t) {
                                     $("#PID_SCHED").html(ret.scheduler.pid);
                                 else
                                     $("#PID_SCHED").html('-');
-                            }
-                            else
-                            {
+                            } else {
                                 $("#STATUS_SCHED").html('');
                                 $("#PID_SCHED").html('-');
                             }
 
-                            if(ret.tasks)
-                            {
-                                for(id in ret.tasks)
-                                {
+                            if (ret.tasks) {
+                                for (id in ret.tasks) {
                                     if(ret.tasks[id].status)
                                         $("#STATUS_"+id).html(ret.tasks[id].status);
                                     else
@@ -520,37 +493,28 @@ foreach ($tasks as $t) {
                                     else
                                         $("#PID_"+id).html('-');
 
-                                    if(ret.tasks[id].crashed)
-                                    {
+                                    if (ret.tasks[id].crashed) {
                                         //                      $("#WARNING_"+id).show().setAttribute("src", "/skins/icons/alert.png");
                                         $("#WARNING_"+id).show().attr("title", "crashed "+ret.tasks[id].crashed+" times");
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         $("#WARNING_"+id).hide();
                                     }
 
-                                    if(ret.tasks[id].completed && ret.tasks[id].completed>0 && ret.tasks[id].completed<=100)
-                                    {
+                                    if (ret.tasks[id].completed && ret.tasks[id].completed>0 && ret.tasks[id].completed<=100) {
                                         $("#COMP_"+id).width(ret.tasks[id].completed + "%");
                                         $("#COMPBOX_"+id).show();
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         $("#COMPBOX_"+id).hide();
                                         $("#COMP_"+id).width('0px');
                                     }
                                 }
                             }
 
-                            if(ret.db_processlist)
-                            {
+                            if (ret.db_processlist) {
                                 var _table = document.createElement('table');
                                 _table.setAttribute('class', 'db_processlist');
-                                for(p in ret.db_processlist)
-                                {
-                                    if(p==0)
-                                    {
+                                for (p in ret.db_processlist) {
+                                    if (p==0) {
                                         var _tr = _table.appendChild(document.createElement('tr'));
                                         for(c in ret.db_processlist[p])
                                             _tr.appendChild(document.createElement('th')).appendChild(document.createTextNode(c));
@@ -592,7 +556,6 @@ foreach ($tasks as $t) {
             <input type="hidden" name="tcl" value="" />
             <input type="hidden" name="view" value="GRAPHIC" />
         </form>
-
 
     </body>
 </html>

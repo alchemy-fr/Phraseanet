@@ -27,4 +27,3 @@ $app = require __DIR__ . "/../../lib/Alchemy/Phrasea/Application/Admin.php";
 
 $app->run();
 
-

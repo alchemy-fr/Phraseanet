@@ -17,7 +17,6 @@
 require_once __DIR__ . "/../../../lib/bootstrap.php";
 $registry = registry::get_instance();
 
-
 $request = http_request::getInstance();
 $parm = $request->get_parms(
     "bid"
@@ -67,7 +66,6 @@ if ($parm["bid"] !== null) {
                 else
                     $q = "(" . $tbranch . ")/descendant-or-self::te[not(@id)]";
 
-
                 $fields[$fieldname] = array("name"     => $fieldname, "tbranch"  => $tbranch, "cid"      => null, "sourceok" => false);
 
                 if ( ! $tbranch)
@@ -98,8 +96,7 @@ if ($parm["bid"] !== null) {
                     if ($parm["k"]) {
                         if ($parm["k"] != "*")
                             $q .= " and @k='" . thesaurus::xquery_escape($unicode->remove_indexer_chars($parm["k"])) . "'";
-                    }
-                    else {
+                    } else {
                         $q .= " and not(@k)";
                     }
                     $q = "/cterms//te[./sy[$q]]";

@@ -24,7 +24,6 @@ $request = http_request::getInstance();
 
 $parm = $request->get_parms('form_old_password', 'form_password', 'form_password_confirm');
 
-
 $gatekeeper = gatekeeper::getInstance($Core);
 $gatekeeper->require_session();
 $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
@@ -38,7 +37,6 @@ $updated = $error = false;
 
 if ( ! is_null($parm['form_old_password']) && ! is_null($parm['form_password']) && ! is_null($parm['form_password_confirm'])) {
     $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
-
 
     // 1 - on verifie les password
     if ($parm['form_password'] !== $parm['form_password_confirm'])
@@ -66,8 +64,6 @@ $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
 
 phrasea::headers();
 ?>
-
-
 
 <head>
     <title></title>
@@ -119,7 +115,6 @@ phrasea::headers();
             }
         );
             $("#form_password").valid();
-
 
         });
     </script>
@@ -197,5 +192,4 @@ echo '</ul></div>';
         </div>
     </div>
 </body>
-
 

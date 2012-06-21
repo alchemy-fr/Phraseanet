@@ -49,7 +49,6 @@ $phpcli = $registry->get('GV_cli');
 
 $cmd = $phpcli . ' -f ' . $registry->get('GV_RootPath') . "bin/console scheduler:start";
 
-
 $descriptors[1] = array("file", $nullfile, "a+");
 $descriptors[2] = array("file", $nullfile, "a+");
 

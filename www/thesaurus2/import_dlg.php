@@ -42,8 +42,7 @@ if ($parm["dlg"]) {
         <script type="text/javascript">
             function clkBut(button)
             {
-                switch(button)
-                {
+                switch (button) {
                     case "submit":
                         document.forms[0].target='IFRIM';
                         document.forms[0].submit();
@@ -59,13 +58,10 @@ if ($parm["dlg"]) {
             }
             function importDone(err)
             {
-                if(!err)
-                {
+                if (!err) {
 <?php echo $opener ?>.reload();
                 self.close();
-            }
-            else
-            {
+            } else {
                 alert(err);
             }
         }

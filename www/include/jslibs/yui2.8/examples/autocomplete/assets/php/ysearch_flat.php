@@ -8,7 +8,8 @@
     $results = search($search_queries, $query);
     sendResults($query,$results);
 
-function search($search_queries, $query) {
+function search($search_queries, $query)
+{
     if (strlen($query) == 0)
 
         return;
@@ -24,7 +25,7 @@ function search($search_queries, $query) {
     $charQueries = $search_queries[$firstChar];
 
     $results = array();
-    for($i = 0; $i < count($charQueries); $i++) {
+    for ($i = 0; $i < count($charQueries); $i++) {
         if (strcasecmp(substr($charQueries[$i],0,strlen($query)),$query) == 0)
             $results[] = $charQueries[$i];
     }
@@ -32,12 +33,14 @@ function search($search_queries, $query) {
     return $results;
 }
 
-function sendResults($query,$results) {
+function sendResults($query,$results)
+{
     for ($i = 0; $i < count($results); $i++)
         print "$results[$i]\n";
 }
 
-function initArray() {
+function initArray()
+{
     return array(
     '$' => array(
         "$100 reward  4385",
@@ -44115,4 +44118,3 @@ function initArray() {
     )
     );
 }
-?>

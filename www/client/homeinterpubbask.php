@@ -20,7 +20,6 @@ $user = $Core->getAuthenticatedUser();
 
 $feeds = \Feed_Collection::load_all($appbox, $user);
 
-
 $th_size = $user->getPrefs('images_size');
 
 $core = \bootstrap::getCore();
@@ -68,18 +67,12 @@ foreach ($feeds->get_aggregate()->get_entries(0, 5)->get_entries() as $entry) {
 
     $feed .= '</span></div><div class="descPubli"><div style="margin:10px 0 10px 20px;width:80%;">';
 
-
     if (trim($entry->get_subtitle()) != '') {
         $feed .= '' . nl2br($entry->get_subtitle());
     }
     $feed .= '</div>';
 
     $feed .= '<div style="width:100%;position:relative;float:left;" id="PUBLICONT' . $entry->get_id() . '">';
-
-
-
-
-
 
     foreach ($entry->get_content() as $Feed_item) {
         /* @var $Feed_item \Feed_Entry_Item */
@@ -114,7 +107,6 @@ foreach ($feeds->get_aggregate()->get_entries(0, 5)->get_entries() as $entry) {
             if ($duration != '')
                 $duration = '<div class="duration">' . $duration . '</div>';
         }
-
 
         $ratio = $thumbnail->get_width() / $thumbnail->get_height();
 
@@ -169,7 +161,6 @@ foreach ($feeds->get_aggregate()->get_entries(0, 5)->get_entries() as $entry) {
         $feed .= "</tr>";
         $feed .= "</table>";
         $feed .= "</div>";
-
 
         $feed .= "</div>";
     }

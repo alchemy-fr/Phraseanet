@@ -4,9 +4,6 @@ require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.
 
 require_once __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php';
 
-use Silex\WebTestCase;
-use Symfony\Component\HttpFoundation\Response;
-
 class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
@@ -20,10 +17,10 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function createApplication()
     {
         $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Prod.php';
-        
+
         $app['debug'] = true;
         unset($app['exception_handler']);
-        
+
         return $app;
     }
 
@@ -37,7 +34,7 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $pageContent = $this->client->getResponse()->getContent();
         $this->assertTrue($this->client->getResponse()->isOk());
     }
-    
+
     /**
      * @expectedException \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
@@ -48,7 +45,7 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertFalse($this->client->getResponse()->isOk());
 
     }
-    
+
     /**
      * @expectedException \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
@@ -188,7 +185,6 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testRouteStory()
     {
         $databox = static::$records['record_story_1']->get_databox();
-
 
         $route = '/tooltip/Story/' . $databox->get_sbas_id()
             . '/' . static::$records['record_story_1']->get_record_id() . '/';

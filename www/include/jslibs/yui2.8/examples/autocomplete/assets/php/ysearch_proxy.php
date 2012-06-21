@@ -15,21 +15,20 @@ $type = "text/xml";
 // Get all query params
 $query = "?";
 foreach ($_GET as $key => $value) {
-    if(($key == "output") && ($value == "json")) {
+    if (($key == "output") && ($value == "json")) {
         $type = "application/json";
     }
     $query .= urlencode($key)."=".urlencode($value)."&";
 }
 
 foreach ($_POST as $key => $value) {
-    if(($key == "output") && ($value == "json")) {
+    if (($key == "output") && ($value == "json")) {
         $type = "application/json";
     }
     $query .= $key."=".$value."&";
 }
 $query .= "appid=jennyhan_ac";
 $url = PATH.$query;
-
 
 // Open the Curl session
 $session = curl_init($url);
@@ -45,4 +44,3 @@ header("Content-Type: ".$type);
 echo $response;
 curl_close($session);
 
-?>

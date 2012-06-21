@@ -26,8 +26,8 @@
  * @package Minify
  * @author Stephen Clay <steve@mrclay.org>
  */
-class Minify_YUICompressor {
-
+class Minify_YUICompressor
+{
     /**
      * Filepath of the YUI Compressor jar file. This must be set before
      * calling minifyJs() or minifyCss().
@@ -115,7 +115,7 @@ class Minify_YUICompressor {
                 ? " --charset {$o['charset']}"
                 : '')
              . (is_numeric($o['line-break']) && $o['line-break'] >= 0
-                ? ' --line-break ' . (int)$o['line-break']
+                ? ' --line-break ' . (int) $o['line-break']
                 : '');
         if ($type === 'js') {
             foreach (array('nomunge', 'preserve-semi', 'disable-optimizations') as $opt) {

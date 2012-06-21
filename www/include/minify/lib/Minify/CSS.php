@@ -14,8 +14,8 @@
  * @author Stephen Clay <steve@mrclay.org>
  * @author http://code.google.com/u/1stvamp/ (Issue 64 patch)
  */
-class Minify_CSS {
-
+class Minify_CSS
+{
     /**
      * Minify a CSS string
      *

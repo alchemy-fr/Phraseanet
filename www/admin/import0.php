@@ -34,8 +34,7 @@ phrasea::headers();
                 myOpener.document.forms[0].submit();
             }
 
-            window.onbeforeunload = function()
-            {
+            window.onbeforeunload = function() {
                 if(needrefresh)
                     imrloadusr();
             };

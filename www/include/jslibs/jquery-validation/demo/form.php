@@ -7,4 +7,3 @@ if($user && $pw && $pw == "foobar")
     echo "Hi $user, welcome back.";
 else
     echo "Your password is wrong (must be foobar).";
-?>

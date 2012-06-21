@@ -32,4 +32,3 @@ imagettftext($image, 14, $rotate, 18, 30, $colour, $font, $str);
 // Output the image as a png
 imagepng($image);
 
-?>

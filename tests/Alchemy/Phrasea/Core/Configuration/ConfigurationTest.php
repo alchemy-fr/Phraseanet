@@ -78,10 +78,8 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
         $handler = new Configuration\Handler($this->stubNotInstalled);
         $this->confNotInstalled = new PhraseaCore\Configuration($handler);
 
-
         $handler = new Configuration\Handler($this->stubExperience);
         $this->object = new PhraseaCore\Configuration($handler);
-
 
         touch(__DIR__ . "/confTestFiles/yamlWriteTest.yml");
 

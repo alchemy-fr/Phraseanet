@@ -23,7 +23,6 @@ $usr_id = $session->get_usr_id();
 
 phrasea::headers();
 
-
 $request = http_request::getInstance();
 $parm = $request->get_parms("act", "p0", "p1", 'flush_cache', 'sudo', 'admins', 'email');
 
@@ -31,7 +30,6 @@ $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
 if ( ! $user->is_admin()) {
     phrasea::headers(403);
 }
-
 
 $cache_flushed = false;
 if ($parm['flush_cache']) {
@@ -62,7 +60,6 @@ if ($parm['flush_cache']) {
                 COLOR : #ba36bf;
                 text-decoration:underline;
             }
-
 
             h1{
                 position:relative;
@@ -218,7 +215,6 @@ if ($parm['email']) {
 }
 $php_constraints = setup::check_php_version();
 
-
 foreach ($php_constraints as $php_constraint) {
     echo '<h1>' . $php_constraint->get_name() . '</h1>';
     echo '<ul class="setup">';
@@ -243,7 +239,6 @@ foreach ($php_constraints as $php_constraint) {
                 }
                 echo '</ul>';
 
-
                 $php_constraints = setup::check_binaries($registry);
                 echo '<h1>' . _('setup::Executables') . '</h1>';
                 echo '<ul class="setup">';
@@ -255,7 +250,6 @@ foreach ($php_constraints as $php_constraint) {
                     <?php
                 }
                 echo '</ul>';
-
 
                 $php_constraints = setup::check_php_extension();
                 echo '<h1>' . _('setup::PHP extensions') . '</h1>';

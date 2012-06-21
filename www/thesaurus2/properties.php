@@ -30,7 +30,6 @@ $parm = $request->get_parms(
     , "dlg"
 );
 
-
 $lng = Session_Handler::get_locale();
 
 if ($parm["dlg"]) {
@@ -203,7 +202,7 @@ if ($parm["bid"] !== null) {
     // gui callback du menu des drapeaux
     var nsy = <?php echo $nsy ?>;
 
-    function cbME_flags(action, cbParm, menuelem_id)
+    public function cbME_flags(action, cbParm, menuelem_id)
     {
         // cbParm = objet 'TR'
         // alert("cbParm.obj={obj:'" + cbParm.obj + "', id:'" + cbParm.id + "'} ; menuelem_id='" + menuelem_id + "'");
@@ -231,10 +230,8 @@ if ($parm["bid"] !== null) {
     refresh_sy(sy_list);
 
     refresh = ret.getElementsByTagName("refresh");
-    for(i=0; i<refresh.length; i++)
-    {
-        switch(refresh.item(i).getAttribute("type"))
-        {
+    for (i=0; i<refresh.length; i++) {
+        switch (refresh.item(i).getAttribute("type")) {
             case "CT":
 <?php echo $opener ?>.reloadCtermsBranch(refresh.item(i).getAttribute("id"));
 <?php echo $opener ?>.myGUI.select(<?php echo $opener ?>.document.getElementById("THE_<?php echo $parm["id"] ?>"));
@@ -251,25 +248,18 @@ if ($parm["bid"] !== null) {
 function cbME_synonym(action, cbParm, menuelem_id)
 {
 
-if(action == "INIT")
-{
-  if(nsy <= 1)
-  {
+if (action == "INIT") {
+  if (nsy <= 1) {
       // pas d'action possible s'il ne reste qu'un seul synonyme
       // alert(nsy);
       document.getElementById("delete_sy").className = "disabled";
       // document.getElementById("reject_sy").className = "disabled";
-  }
-  else
-  {
-      if(cbParm && cbParm.hits > 0)
-      {
+  } else {
+      if (cbParm && cbParm.hits > 0) {
           // y'a des hits, on peut pas supprimer
           // document.getElementById("reject_sy").className = "";
           document.getElementById("delete_sy").className = "";
-      }
-      else
-      {
+      } else {
           // pas de hits : on peut supprimer
           // document.getElementById("reject_sy").className = "";
           document.getElementById("delete_sy").className = "";
@@ -289,8 +279,7 @@ if(action == "INIT")
 if(action != "SELECT" || !menuelem_id)
 
 return;      // pas d'option de menu : on est sorti du menu sans cliquer
-switch(menuelem_id)
-{
+switch (menuelem_id) {
 case "delete_sy":    // cbParm = objet 'TR'
   url = "xmlhttp/getsy.x.php";
   url +=  "?bid=<?php echo urlencode($parm["bid"]) ?>";
@@ -309,18 +298,15 @@ case "delete_sy":    // cbParm = objet 'TR'
 
   // alert(url + "?" + parms);
 
-  if(confirm($.sprintf("<?php echo p4string::MakeString(_('thesaurus:: Confirmer la suppression du terme %s'), "js") ?>","\n\n"+fullpath+"\n\n")))
-  {
+  if (confirm($.sprintf("<?php echo p4string::MakeString(_('thesaurus:: Confirmer la suppression du terme %s'), "js") ?>","\n\n"+fullpath+"\n\n"))) {
       ret = loadXMLDoc(url, parms, true);
 
       sy_list = ret.getElementsByTagName("sy_list").item(0);
       refresh_sy(sy_list);
 
       refresh = ret.getElementsByTagName("refresh");
-      for(i=0; i<refresh.length; i++)
-      {
-          switch(refresh.item(i).getAttribute("type"))
-          {
+      for (i=0; i<refresh.length; i++) {
+          switch (refresh.item(i).getAttribute("type")) {
               case "CT":
 <?php echo $opener ?>.reloadCtermsBranch(refresh.item(i).getAttribute("id"));
 <?php echo $opener ?>.myGUI.select(<?php echo $opener ?>.document.getElementById("THE_<?php echo $parm["id"] ?>"));
@@ -343,8 +329,7 @@ case "delete_sy":    // cbParm = objet 'TR'
       t = ret.getElementsByTagName("sy").item(0).getAttribute("t");
       //alert("delete : cbParm.obj={id:'" + cbParm.id + "'} ; menuelem_id='" + menuelem_id + "'");
 
-      if(opener.wClient && opener.wClient.externQuery)
-      {
+      if (opener.wClient && opener.wClient.externQuery) {
           opener.wClient.focus();
           opener.wClient.externQuery(opener.currentBaseId, t);
       }
@@ -370,8 +355,7 @@ function refresh_sy(sy_list)
   //  tr = tbody.appendChild(document.createElement("tr"));
   //  for(i=0; i<3; i++)
   //    tr.appendChild(document.createElement("td"));
-  for(nsy=0, n=sy_list.firstChild; n; n=n.nextSibling, nsy++)
-  {
+  for (nsy=0, n=sy_list.firstChild; n; n=n.nextSibling, nsy++) {
       tr = tbody.appendChild(document.createElement("tr"));
       // tr.className = n.getAttribute("sel") ? "S_" : "s_";
       tr.className = "s_";
@@ -379,20 +363,17 @@ function refresh_sy(sy_list)
 
       td = tr.appendChild(document.createElement("td"));
       td.style.textAlign = "center";
-      if(nsy > 0)
-      {
+      if (nsy > 0) {
           img = td.appendChild(document.createElement("img"));
           img.id = "BTNU_" + id;
           img.src = "./images/up.gif";
-          if(n.nextSibling)
-          {
+          if (n.nextSibling) {
               // td.appendChild(document.createEntityReference("nbsp"));
               td.appendChild(document.createTextNode(" "));
               // img.insertAdjacentHTML("afterEnd", "&nbsp;");
           }
       }
-      if(n.nextSibling)
-      {
+      if (n.nextSibling) {
           img = td.appendChild(document.createElement("img"));
           img.id = "BTND_" + id;
           img.src = "./images/down.gif";
@@ -429,21 +410,17 @@ function refresh_sy(sy_list)
   newtbody = oldtbody.parentNode.replaceChild(tbody, oldtbody);
 }
 
-
 function cbDD_TSY(evt, type, eventObj)
 {
   ret = true;
-  switch(type)
-  {
+  switch (type) {
       case "RMOUSEDOWN":
-          if(o = eventObj.Src0)
-          {
+          if (o = eventObj.Src0) {
               for(tr=o; tr && (tr.nodeName!="TR" || !tr.id || tr.id.substr(0, 4)!="SYN_"); tr=tr.parentNode)
                   ;
               if(tr)
                   myGUI.select(tr);
-              switch(o.id.substr(0, 4))
-              {
+              switch (o.id.substr(0, 4)) {
                   case "FLG_":    // le drapeau
                       // myGUI.select(o);
                       document.getElementById("flagsMenu").runAsMenu( evt, tr );
@@ -457,14 +434,12 @@ function cbDD_TSY(evt, type, eventObj)
           }
           break;
       case "MOUSEDOWN":
-          if(o = eventObj.Src0)
-          {
+          if (o = eventObj.Src0) {
               for(tr=o; tr && (tr.nodeName!="TR" || !tr.id || tr.id.substr(0, 4)!="SYN_"); tr=tr.parentNode)
                   ;
               if(tr)
                   myGUI.select(tr);
-              switch(o.id.substr(0, 5))
-              {
+              switch (o.id.substr(0, 5)) {
                   case "BTNU_":
                       syChgPos(1);
                       break;
@@ -501,10 +476,8 @@ sy_list = ret.getElementsByTagName("sy_list").item(0);
 refresh_sy(sy_list);
 
 refresh = ret.getElementsByTagName("refresh");
-for(i=0; i<refresh.length; i++)
-{
-  switch(refresh.item(i).getAttribute("type"))
-  {
+for (i=0; i<refresh.length; i++) {
+  switch (refresh.item(i).getAttribute("type")) {
       case "CT":
 <?php echo $opener ?>.reloadCtermsBranch(refresh.item(i).getAttribute("id"));
 <?php echo $opener ?>.myGUI.select(<?php echo $opener ?>.document.getElementById("THE_<?php echo $parm["id"] ?>"));

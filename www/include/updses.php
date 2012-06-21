@@ -74,7 +74,6 @@ foreach ($baskets as $basket) {
     $ret['changed'][] = $basket->getId();
 }
 
-
 if (in_array($session->get_session_prefs('message'), array('1', null))) {
     $registry = $appbox->get_registry();
     if ($registry->get('GV_maintenance')) {

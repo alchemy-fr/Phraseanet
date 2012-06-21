@@ -23,4 +23,3 @@ header("Content-Type: application/json");
 //header("Content-Type: text/plain");
 echo json_encode($inventory);
 
-?>

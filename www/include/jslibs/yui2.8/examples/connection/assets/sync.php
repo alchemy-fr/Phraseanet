@@ -13,6 +13,3 @@ $num = mt_rand(0,10);
 sleep($num);
 echo('<span>This request responded in '.$num.' seconds. </span>');
 
-?>
-
-

@@ -19,7 +19,6 @@ $registry = registry::get_instance();
 
 require("../xmlhttp.php");
 
-
 $request = http_request::getInstance();
 $parm = $request->get_parms(
     "bid"
@@ -29,7 +28,6 @@ $parm = $request->get_parms(
     // , "newlng"  // nouveau lng du sy
     , "debug"
 );
-
 
 if ($parm["debug"]) {
     phrasea::headers(200, true, 'text/html', 'UTF-8', true);
@@ -102,4 +100,3 @@ function rejectBranch(connection_pdo &$connbas, &$node)
             rejectBranch($connbas, $n);
     }
 }
-?>

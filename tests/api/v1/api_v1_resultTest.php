@@ -93,7 +93,6 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $date_obj2 = new DateTime();
         $this->assertLessThan(3, abs($date_obj1->format('U') - $date_obj2->format('U')), 'No more than 3sec between now and the query');
 
-
         $this->assertArrayHasKey("http_code", $response["meta"]);
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_INT, $response["meta"]["http_code"]);
         $this->assertEquals(200, $response["meta"]["http_code"]);
@@ -104,7 +103,6 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertArrayHasKey("charset", $response["meta"]);
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $response["meta"]["charset"]);
         $this->assertEquals("UTF-8", $response["meta"]["charset"]);
-
 
         $server = array(
             "HTTP_ACCEPT"     => "application/yaml"

@@ -108,8 +108,7 @@ if ($parm['act']) {
         }
         function deleteLogoPdf()
         {
-            if(confirm("<?php echo _('admin::base: Supprimer le logo pour impression') ?>"))
-            {
+            if (confirm("<?php echo _('admin::base: Supprimer le logo pour impression') ?>")) {
                 $.ajax({
                     type: "POST",
                     url: "/admin/adminFeedback.php",
@@ -124,8 +123,7 @@ if ($parm['act']) {
         }
         function reindex()
         {
-            if(confirm('<?php echo str_replace("'", "\'", _('Confirmez-vous la re-indexation de la base ?')); ?>'))
-            {
+            if (confirm('<?php echo str_replace("'", "\'", _('Confirmez-vous la re-indexation de la base ?')); ?>')) {
                 $.ajax({
                     type: "POST",
                     url: "/admin/adminFeedback.php",
@@ -152,8 +150,7 @@ if ($parm['act']) {
         var __viewname = "";    // global will be updated by refreshContent
         function chgViewName()
         {
-            if( (newAlias = prompt("<?php echo(_('admin::base: Alias')) ?> :", __viewname)) != null)
-            {
+            if ( (newAlias = prompt("<?php echo(_('admin::base: Alias')) ?> :", __viewname)) != null) {
                 $.ajax({
                     type: "POST",
                     url: "/admin/adminFeedback.php",
@@ -167,8 +164,7 @@ if ($parm['act']) {
 
         function emptyBase()
         {
-            if(confirm("<?php echo _('admin::base: Confirmer le vidage complet de la base') ?>"))
-            {
+            if (confirm("<?php echo _('admin::base: Confirmer le vidage complet de la base') ?>")) {
                 $.ajax({
                     type: "POST",
                     url: "/admin/adminFeedback.php?action=EMPTYBASE",
@@ -198,8 +194,7 @@ if ($parm['act']) {
                     $("#is_indexable").attr('checked', data.indexable);
                     $("#xml_indexed").text(data.xml_indexed);
                     $("#thesaurus_indexed").text(data.thesaurus_indexed);
-                    if(data.records > 0)
-                    {
+                    if (data.records > 0) {
                         var p;
                         p = 100*data.xml_indexed/data.records;
                         $("#xml_indexed_bar").width(Math.round(2*p));  // 0..200px
@@ -208,14 +203,11 @@ if ($parm['act']) {
                         $("#thesaurus_indexed_bar").width(Math.round(2*p));
                         $("#thesaurus_indexed_percent").text((Math.round(p*100)/100)+" %");
                     }
-                    if(data.printLogoURL)
-                    {
+                    if (data.printLogoURL) {
                         $("#printLogo").attr("src", data.printLogoURL);
                         $("#printLogoDIV_NONE").hide();
                         $("#printLogoDIV_OK").show();
-                    }
-                    else
-                    {
+                    } else {
                         $("#printLogoDIV_OK").hide();
                         $("#printLogoDIV_NONE").show();
                     }
@@ -232,14 +224,10 @@ if ($parm['act']) {
                 dataType: 'json',
                 data: { action:"P_BAR_INFO", sbas_id:<?php echo $sbas_id ?> },
                 success: function(data){
-                    if(data.records > 0)
-                    {
+                    if (data.records > 0) {
                         alert("<?php echo(_('admin::base: vider la base avant de la supprimer')) ?>");
-                    }
-                    else
-                    {
-                        if(confirm("<?php echo _('admin::base: Confirmer la suppression de la base') ?>"))
-                        {
+                    } else {
+                        if (confirm("<?php echo _('admin::base: Confirmer la suppression de la base') ?>")) {
                             $.ajax({
                                 type: "POST",
                                 url: "/admin/adminFeedback.php",
@@ -250,9 +238,7 @@ if ($parm['act']) {
                                     {
                                         parent.$("#TREE_DATABASES").trigger('click');
                                         parent.reloadTree("bases");
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         if(data.errmsg)
                                             alert(data.errmsg);
                                     }
@@ -265,8 +251,7 @@ if ($parm['act']) {
         }
         function clearAllLog()
         {
-            if(confirm("<?php echo _('admin::base: Confirmer la suppression de tous les logs') ?>"))
-            {
+            if (confirm("<?php echo _('admin::base: Confirmer la suppression de tous les logs') ?>")) {
                 $.ajax({
                     type: "POST",
                     url: "/admin/adminFeedback.php",
@@ -291,8 +276,7 @@ if ($parm['act']) {
 
         function umountBase()
         {
-            if(confirm("<?php echo _('admin::base: Confirmer vous l\'arret de la publication de la base') ?>"))
-            {
+            if (confirm("<?php echo _('admin::base: Confirmer vous l\'arret de la publication de la base') ?>")) {
                 $.ajax({
                     type: "POST",
                     url: "/admin/adminFeedback.php",
@@ -369,7 +353,6 @@ if ($user->ACL()->has_right_on_sbas($sbas_id, 'bas_manage')) {
                 <?php
                 $nrecords = $databox->get_record_amount();
 
-
                 // stats sur la base distante
                 $out .= "<div style='margin:3px 0 3px 10px;'>";
                 $out .= _('admin::base: nombre d\'enregistrements sur la base :') . '<span id="nrecords"></span> ';
@@ -395,7 +378,6 @@ if ($user->ACL()->has_right_on_sbas($sbas_id, 'bas_manage')) {
                     }
 
                     $out .= " (<a href=\"javascript:void(0);\" onclick=\"showDetails(0);return(false);\">" . _('admin::base: masquer les details') . "</a>)<br />\n";
-
 
                     $trows = $databox->get_record_details($parm['srt']);
 

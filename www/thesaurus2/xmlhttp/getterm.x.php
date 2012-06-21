@@ -17,7 +17,6 @@
 require_once __DIR__ . "/../../../lib/bootstrap.php";
 $registry = registry::get_instance();
 
-
 $request = http_request::getInstance();
 $parm = $request->get_parms(
     "bid"
@@ -142,8 +141,7 @@ if ($parm["bid"] !== null) {
                                         break;
                                 }
                                 $tts[$realksy . "_" . $uniq] = array("id"     => $n->getAttribute("id"), "allsy"  => $allsy, "nchild" => $xpath->query("te", $n)->length);
-                            }
-                            else {
+                            } else {
                                 $tts[] = array("id"     => $n->getAttribute("id"), "allsy"  => $allsy, "nchild" => $xpath->query("te", $n)->length);
                             }
                         }
@@ -190,7 +188,6 @@ if ($parm["bid"] !== null) {
                     $newts->setAttribute("nts", $ts["nchild"]);
                     $newts->appendChild($ret->createTextNode($ts["allsy"]));
                 }
-
 
                 $fullpath_html = $fullpath = "";
                 for ($depth = 0, $n = $nodes->item(0); $n; $n = $n->parentNode, $depth -- ) {

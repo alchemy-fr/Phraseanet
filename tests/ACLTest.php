@@ -221,7 +221,6 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
             , 'canaddrecord' => true
         );
 
-
         foreach ($appbox->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
@@ -303,11 +302,9 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
 
-
         $rights = array(
             'bas_modify_struct' => true
         );
-
 
         $this->assertFalse(self::$user->ACL()->has_right('bas_modify_struct'));
         $this->assertFalse(self::$user->ACL()->has_right('bas_modif_th'));
@@ -339,7 +336,6 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
             , 'bas_chupub'        => true
             , 'bas_modif_th'      => true
         );
-
 
         foreach ($appbox->get_databoxes() as $databox) {
             self::$user->ACL()->give_access_to_sbas(array($databox->get_sbas_id()));
@@ -425,7 +421,6 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $bases = array_keys(self::$user->ACL()->get_granted_base());
 
         $this->assertEquals(count($base_ids), count($bases));
-
 
         $sql = 'SELECT actif FROM basusr WHERE usr_id = :usr_id AND base_id = :base_id';
         $stmt = $appbox->get_connection()->prepare($sql);
@@ -567,7 +562,6 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertTrue(self::$user->ACL()->has_access_to_module('report'));
         $this->assertTrue(self::$user->ACL()->has_access_to_module('thesaurus'));
         $this->assertFalse(self::$user->ACL()->has_access_to_module('upload'));
-
 
         $found = false;
         foreach ($appbox->get_databoxes() as $databox) {

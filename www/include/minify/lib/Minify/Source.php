@@ -13,8 +13,8 @@
  * @package Minify
  * @author Stephen Clay <steve@mrclay.org>
  */
-class Minify_Source {
-
+class Minify_Source
+{
     /**
      * @var int time of last modification
      */

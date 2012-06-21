@@ -95,7 +95,6 @@ if (( ! is_null($parm['login']) && ! is_null($parm['pwd'])) || $is_guest) {
     if ( ! $browser->isNewGeneration())
         $app = 'client';
 
-
     if ($browser->isMobile()) {
         return phrasea::redirect("/lightbox/");
     } elseif ($parm['redirect']) {

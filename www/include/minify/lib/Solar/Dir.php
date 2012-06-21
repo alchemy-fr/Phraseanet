@@ -14,8 +14,8 @@
  * @version $Id: Dir.php 2926 2007-11-09 16:25:44Z pmjones $
  *
  */
-class Solar_Dir {
-
+class Solar_Dir
+{
     /**
      *
      * The OS-specific temporary directory location.

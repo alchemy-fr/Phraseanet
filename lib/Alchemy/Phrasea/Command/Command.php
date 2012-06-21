@@ -93,11 +93,9 @@ abstract class Command extends SymfoCommand
 
         if ($duration > 60) {
             $duration = round($duration / 60  , 1) . ' minutes';
-        }
-        elseif ($duration > 3600) {
+        } elseif ($duration > 3600) {
             $duration = round($duration / (60 * 60) , 1) . ' hours';
-        }
-        elseif ($duration > (24 * 60 * 60)) {
+        } elseif ($duration > (24 * 60 * 60)) {
             $duration = round($duration / (24 * 60 * 60) , 1) . ' days';
         }
 

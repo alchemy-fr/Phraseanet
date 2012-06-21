@@ -27,7 +27,6 @@ $parm = $request->get_parms("act", "p0", // base_id
 $usr_id = $session->get_usr_id();
 $user = User_Adapter::getInstance($usr_id, $appbox);
 
-
 $msg = "";
 
 phrasea::headers();
@@ -78,22 +77,17 @@ if ($parm["act"] == "NEWCOLL" && ! $error) {
                 document.forms["newColl"].submit();
             }
 
-
             function clk_cc_coll()
             {
-                if( document.getElementById("ccusrothercoll") )
-                {
-                    if( document.getElementById("ccusrothercoll").checked )
-                    {
+                if ( document.getElementById("ccusrothercoll") ) {
+                    if ( document.getElementById("ccusrothercoll").checked ) {
                         // idspanothsel
                         if( document.getElementById("idspanothsel") )
                             document.getElementById("idspanothsel").style.color = "#000000";
                         // othcollsel
                         if( document.getElementById("othcollsel") )
                             document.getElementById("othcollsel").disabled = false;
-                    }
-                    else
-                    {
+                    } else {
                         // idspanothsel
                         if( document.getElementById("idspanothsel") )
                             document.getElementById("idspanothsel").style.color = "#AAAAAA";

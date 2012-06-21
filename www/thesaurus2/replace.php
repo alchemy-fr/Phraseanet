@@ -84,8 +84,7 @@ $hits = $dom->getElementsByTagName("hits")->item(0)->firstChild->nodeValue;
             {
                 fields = document.getElementsByName("field[]");
                 chk = false;
-                for(i=0; i<fields.length && !chk; i++)
-                {
+                for (i=0; i<fields.length && !chk; i++) {
                     if( fields[i].checked )
                         chk = true;
                 }
@@ -98,8 +97,7 @@ $hits = $dom->getElementsByTagName("hits")->item(0)->firstChild->nodeValue;
             }
             function clkBut(button)
             {
-                switch(button)
-                {
+                switch (button) {
                     case "submit":
                         // document.forms[0].target="LINKFIELD";
                         document.forms[0].submit();
@@ -112,8 +110,7 @@ $hits = $dom->getElementsByTagName("hits")->item(0)->firstChild->nodeValue;
             function clkRepl()
             {
                 var o;
-                if(!(o=document.getElementById("rplrec")).checked)
-                {
+                if (!(o=document.getElementById("rplrec")).checked) {
                     fields = document.getElementsByName("field[]");
                     for(i=0; i<fields.length; i++)
                         fields[i].checked = false;

@@ -26,19 +26,20 @@ require_once 'Minify/Controller/Base.php';
  * @package Minify
  * @author Stephen Clay <steve@mrclay.org>
  */
-class Minify_Controller_Files extends Minify_Controller_Base {
-
+class Minify_Controller_Files extends Minify_Controller_Base
+{
     /**
      * Set up file sources
      *
-     * @param array $options controller and Minify options
+     * @param  array $options controller and Minify options
      * @return array Minify options
      *
      * Controller options:
      *
      * 'files': (required) array of complete file paths, or a single path
      */
-    public function setupSources($options) {
+    public function setupSources($options)
+    {
         // strip controller options
 
         $files = $options['files'];
@@ -46,7 +47,7 @@ class Minify_Controller_Files extends Minify_Controller_Base {
         if (is_object($files)) {
             $files = array($files);
         } elseif (! is_array($files)) {
-            $files = (array)$files;
+            $files = (array) $files;
         }
         unset($options['files']);
 

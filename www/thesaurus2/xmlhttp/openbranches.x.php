@@ -18,7 +18,6 @@ require_once __DIR__ . "/../../../lib/bootstrap.php";
 
 $registry = registry::get_instance();
 
-
 $request = http_request::getInstance();
 $parm = $request->get_parms(
     "bid"
@@ -151,8 +150,7 @@ function getHTML2($srcnode, $dstdom, $dstnode, $depth)
                     if ($parm["debug"])
                         printf("explored node te id=%s : nts=%s<br/>\n", $n->getAttribute("id"), $t["nts"]);
                 }
-            }
-            elseif ($n->nodeName == "sy") {
+            } elseif ($n->nodeName == "sy") {
                 $t = $n->getAttribute("v");
                 if ($k = $n->getAttribute("k")) {
                     //        $t .= " ($k)";

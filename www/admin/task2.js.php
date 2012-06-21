@@ -37,17 +37,13 @@ xmlhttp=new XMLHttpRequest();
 else if (window.ActiveXObject)
 xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
 
-if (xmlhttp)
-{
+if (xmlhttp) {
 // xmlhttp.onreadystatechange=state_Change
-if(post_parms)
-{
+if (post_parms) {
 xmlhttp.open("POST", url, false);
 xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 xmlhttp.send(post_parms);
-}
-else
-{
+} else {
 xmlhttp.open("GET", url, false);
 xmlhttp.send(null);
 }
@@ -56,7 +52,6 @@ out = asxml ? xmlhttp.responseXML : xmlhttp.responseText;
 
 return(out);
 }
-
 
 var pass=false;
 /*
@@ -73,7 +68,6 @@ document.getElementById("txtareaxml").style.height = (hauteur-160)+"px";  // tex
 var pref = new Array(0);
 var lastpref=null;
 
-
 function chgName(name)
 {
 url  = "/admin/adminFeedback.php?action=CHANGETASK";
@@ -89,8 +83,7 @@ url  = "/admin/adminFeedback.php?action=CHANGETASK";
 parms  = "task_id=<?php echo $parm['tid'] ?>";
 parms += "&active=" + (ck ? "1":"0");
 // alert(url+"?"+parms);
-if( (ret = loadXMLDoc(url, parms, true)) )
-{
+if ( (ret = loadXMLDoc(url, parms, true)) ) {
 crashed = ret.documentElement.getAttribute("crashed");
 document.getElementById("idCrashCount").innerHTML = crashed;
 document.getElementById("idCrashLine").style.visibility = crashed > 0 ? "visible" : "hidden";
@@ -99,18 +92,15 @@ document.getElementById("idCrashLine").style.visibility = crashed > 0 ? "visible
 }
 }
 
-
 function saveXML()
 {
 var xml = document.forms["fxml"].txtareaxml.value;
-if(xml)
-{
+if (xml) {
 url  = "/admin/adminFeedback.php?action=CHANGETASK";
 parms += "?task_id=<?php echo $parm['tid'] ?>";
 parms += "&xml=" + encodeURIComponent(xml);
 // alert(url+"?"+parms);
-if( (ret = loadXMLDoc(url, parms, true)) )
-{
+if ( (ret = loadXMLDoc(url, parms, true)) ) {
 if(ret.documentElement.getAttribute("saved") == "1")
 
 return(true);
@@ -119,8 +109,6 @@ return(true);
 
 return(false);
 }
-
-
 
 function returnToTaskList()
 {

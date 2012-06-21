@@ -2,7 +2,6 @@
 
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
-use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\CssSelector\CssSelector;
 
@@ -82,7 +81,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         if ($this->feed instanceof Feed_Adapter) {
             $this->feed->delete();
-        } else if ($this->entry instanceof Feed_Entry_Adapter) {
+        } elseif ($this->entry instanceof Feed_Entry_Adapter) {
             $this->entry->delete();
             if ($this->publisher instanceof Feed_Publisher_Adapter) {
                 $this->publisher->delete();
@@ -194,12 +193,11 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 , $this->entry_authormail
         );
 
-
         try {
             $crawler = $this->client->request('GET', '/feeds/entry/' . $entry->get_id() . '/edit/');
             $this->fail('Should raise an exception');
         } catch (Exception_UnauthorizedAction $e) {
-            
+
         }
 
         $feed->delete();
@@ -416,7 +414,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
             Feed_Entry_Adapter::load_from_id($appbox, $this->entry->get_id());
             $this->fail("Failed to delete entry");
         } catch (Exception $e) {
-            
+
         }
     }
 

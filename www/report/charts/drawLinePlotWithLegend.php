@@ -17,8 +17,7 @@ $graph->border->hide();
 if (isset($values["Heures"]))
   unset($values["Heures"]);
 
-for ($i = 0; $i < sizeof($values); $i++)
-{
+for ($i = 0; $i < sizeof($values); $i++) {
   if ($values[$i] < 1)
     $values[$i] = (float) ($values[$i]);
   else
@@ -34,7 +33,6 @@ $plot->grid->hide(true);
 $plot->setSpace(4, 4, 10, 0);
 $plot->setPadding(40, 15, 30, 50);
 
-
 $plot->mark->setType(Mark::SQUARE);
 $plot->mark->setSize(4);
 $plot->mark->setFill(new Blue);
@@ -47,7 +45,6 @@ $plot->label->set($x);
 $plot->label->move(0, -10);
 $plot->label->setFont(new Tuffy(6));
 $plot->label->setAlign(NULL, Label::MIDDLE);
-
 
 $plot->xAxis->setLabelText($y);
 $plot->xAxis->label->setAngle(90);
@@ -63,4 +60,3 @@ $plot->xAxis->setTitleAlignment(Label::RIGHT);
 
 $graph->add($plot);
 $graph->draw();
-?>

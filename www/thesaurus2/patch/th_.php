@@ -17,7 +17,7 @@
 class patch_th_
 {
 
-    function patch($version, &$domct, &$domth, connection_pdo &$connbas)
+    public function patch($version, &$domct, &$domth, connection_pdo &$connbas)
     {
         if ($version == "") {
             $th = $domth->documentElement;
@@ -52,7 +52,7 @@ class patch_th_
         return($version);
     }
 
-    function fixThesaurus2(&$domth, &$tenode, $depth = 0)
+    public function fixThesaurus2(&$domth, &$tenode, $depth = 0)
     {
         $unicode = new unicode();
         $sy = $tenode->appendChild($domth->createElement("sy"));
@@ -81,4 +81,3 @@ class patch_th_
     }
 }
 
-?>

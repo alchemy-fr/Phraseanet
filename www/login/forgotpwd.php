@@ -111,7 +111,6 @@ if ($parm['token'] !== null) {
                                     <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery.validate.js"></script>
                                     <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery.validate.password.js"></script>
 
-
                                     <script type="text/javascript" >
         <?php
         $rules = 'form_password_confirm:{required:true}';

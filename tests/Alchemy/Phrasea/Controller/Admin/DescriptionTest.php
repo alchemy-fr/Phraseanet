@@ -9,10 +9,10 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function createApplication()
     {
         $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Admin.php';
-        
+
         $app['debug'] = true;
         unset($app['exception_handler']);
-        
+
         return $app;
     }
 
@@ -171,7 +171,6 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertFalse($field->is_indexable());
         $field->delete();
 
-
         $name = "test" . uniqid();
         $field = \databox_field::create($databox, $name);
         $id = $field->get_id();
@@ -253,7 +252,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $datas = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertEquals(array(), $datas);
-        
+
         $this->client->request("GET", "/description/metadatas/search/", array('term'=>'xmp'));
         $this->assertTrue($this->client->getResponse()->isOk());
 

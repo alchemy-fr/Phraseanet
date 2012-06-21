@@ -34,7 +34,7 @@ class Step31 implements DatasUpgraderInterface
     /**
      * Constructor
      *
-     * @param Core $core
+     * @param Core   $core
      * @param Logger $logger
      */
     public function __construct(Core $core, Logger $logger)
@@ -104,7 +104,7 @@ class Step31 implements DatasUpgraderInterface
     /**
      * Return a maximum of 100 recods without UUIDs
      *
-     * @param \databox $databox
+     * @param  \databox $databox
      * @return array
      */
     protected function getNullUUIDs(\databox $databox)
@@ -127,7 +127,7 @@ class Step31 implements DatasUpgraderInterface
      * Update a record with a UUID
      *
      * @param \databox $databox
-     * @param array $record
+     * @param array    $record
      */
     protected function updateRecordUUID(\databox $databox, array $record)
     {

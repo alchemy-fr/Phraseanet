@@ -47,7 +47,6 @@ try {
 
 phrasea::headers();
 
-
 $client = Browser::getInstance();
 
 $errorWarning = $confirmWarning = '';

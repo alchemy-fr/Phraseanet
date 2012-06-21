@@ -43,7 +43,6 @@ $msg = array();
 
 $refreshFinder = false;
 
-
 if (is_array($parm['admins'])) {
     $admins = array();
 
@@ -219,8 +218,7 @@ phrasea::headers();
 
             function emptyColl(collname)
             {
-                if(confirm("<?php echo _('admin::base:collection: etes vous sur de vider la collection ?') ?>"))
-                {
+                if (confirm("<?php echo _('admin::base:collection: etes vous sur de vider la collection ?') ?>")) {
                     $.ajax({
                         type: "POST",
                         url: "/admin/adminFeedback.php?action=EMPTYCOLL",
@@ -253,13 +251,10 @@ phrasea::headers();
 
             function enabledPublication(bool)
             {
-                if(bool)
-                {
+                if (bool) {
                     if(confirm("<?php echo _('admin::base:collection: etes vous sur de publier cette collection ?') ?>"))
                     sendForm('ENABLED');
-                }
-                else
-                {
+                } else {
                     if(confirm("<?php echo _('admin::base:collection: etes vous sur darreter la publication de cette collection') ?>"))
                     sendForm('DISABLED');
                 }

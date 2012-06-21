@@ -100,8 +100,7 @@ if ($parm["bid"] !== null) {
                 $id0 = substr($node->getAttribute("id"), 0, 1);
                 if (($parm["dct"] && $id0 == "C") || ($parm["drt"] && $id0 == "R"))
                     $nodestodel[] = $node;
-            }
-            else {
+            } else {
                 for ($n = $node->firstChild; $n; $n = $n->nextSibling)
                     removeCandidates($n, $nodestodel);
             }

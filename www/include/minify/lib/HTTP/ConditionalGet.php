@@ -60,8 +60,8 @@
  * @subpackage HTTP
  * @author Stephen Clay <steve@mrclay.org>
  */
-class HTTP_ConditionalGet {
-
+class HTTP_ConditionalGet
+{
     /**
      * Does the client have a valid copy of the requested resource?
      *
@@ -236,9 +236,9 @@ class HTTP_ConditionalGet {
     public static function check($lastModifiedTime = null, $isPublic = false, $options = array())
     {
         if (null !== $lastModifiedTime) {
-            $options['lastModifiedTime'] = (int)$lastModifiedTime;
+            $options['lastModifiedTime'] = (int) $lastModifiedTime;
         }
-        $options['isPublic'] = (bool)$isPublic;
+        $options['isPublic'] = (bool) $isPublic;
         $cg = new HTTP_ConditionalGet($options);
         $cg->sendHeaders();
         if ($cg->cacheIsValid) {
@@ -276,7 +276,7 @@ class HTTP_ConditionalGet {
 
     protected function _setLastModified($time)
     {
-        $this->_lmTime = (int)$time;
+        $this->_lmTime = (int) $time;
         $this->_headers['Last-Modified'] = self::gmtDate($time);
     }
 
@@ -323,7 +323,8 @@ class HTTP_ConditionalGet {
         return false;
     }
 
-    protected function normalizeEtag($etag) {
+    protected function normalizeEtag($etag)
+    {
         $etag = trim($etag);
 
         return $this->_stripEtag

@@ -11,4 +11,3 @@ if(strtoupper($_GET['captcha']) == $_SESSION['captcha_id'])
 else
     echo 'false';
 
-?>

@@ -412,8 +412,8 @@ class task_period_RecordMover extends task_appboxAbstract
     /**
      * work on ONE record
      *
-     * @param  appbox                  $appbox
-     * @param  array                   $row
+     * @param  appbox                   $appbox
+     * @param  array                    $row
      * @return \task_period_RecordMover
      */
     protected function processOneContent(appbox $appbox, Array $row)
@@ -472,8 +472,8 @@ class task_period_RecordMover extends task_appboxAbstract
     /**
      * all work done on processOneContent, so nothing to do here
      *
-     * @param  appbox                  $appbox
-     * @param  array                   $row
+     * @param  appbox                   $appbox
+     * @param  array                    $row
      * @return \task_period_RecordMover
      */
     protected function postProcessOneContent(appbox $appbox, Array $row)

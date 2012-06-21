@@ -63,16 +63,14 @@ if ($parm["act"] == "APPLY") {
         unset($collection);
         $update = true;
     }
-}
-else
+} else
     echo "<br><br>";
 ?>
 
         <script type="text/javascript">
             function activeButtons()
             {
-                if( document.getElementById("coll_ord")!=null && document.getElementById("coll_ord").selectedIndex!=-1)
-                {
+                if ( document.getElementById("coll_ord")!=null && document.getElementById("coll_ord").selectedIndex!=-1) {
                     if(document.getElementById("coll_ord").selectedIndex==0)
                         document.getElementById("upbutton").disabled = true;
                     else
@@ -86,8 +84,7 @@ else
             }
             function upcoll()
             {
-                if( document.getElementById("coll_ord")!=null && document.getElementById("coll_ord").selectedIndex!=-1 )
-                {
+                if ( document.getElementById("coll_ord")!=null && document.getElementById("coll_ord").selectedIndex!=-1 ) {
                     var old_idx   = document.getElementById("coll_ord").selectedIndex;
                     var old_value = document.getElementById("coll_ord")[old_idx].value;
                     var old_html  = document.getElementById("coll_ord")[old_idx].innerHTML;
@@ -107,8 +104,7 @@ else
 
             function downcoll()
             {
-                if( document.getElementById("coll_ord")!=null && document.getElementById("coll_ord").selectedIndex!=-1 )
-                {
+                if ( document.getElementById("coll_ord")!=null && document.getElementById("coll_ord").selectedIndex!=-1 ) {
                     var old_idx   = document.getElementById("coll_ord").selectedIndex;
                     var old_value = document.getElementById("coll_ord")[old_idx].value;
                     var old_html  = document.getElementById("coll_ord")[old_idx].innerHTML;
@@ -128,10 +124,8 @@ else
             function applychange()
             {
                 var send = "";
-                if( document.getElementById("coll_ord")!=null )
-                {
-                    for(i=0; i<document.getElementById("coll_ord").length;i++)
-                    {
+                if ( document.getElementById("coll_ord")!=null ) {
+                    for (i=0; i<document.getElementById("coll_ord").length;i++) {
                         send += "<ord" + i + ">" + document.getElementById("coll_ord")[i].value + "</ord" + i + ">";
                     }
                 }
@@ -141,8 +135,7 @@ else
             }
             function alphaOrder()
             {
-                if( document.getElementById("coll_ord")!=null )
-                {
+                if ( document.getElementById("coll_ord")!=null ) {
                     document.getElementById("coll_ord").selectedIndex =-1 ;
 <?php
 $temp = array();

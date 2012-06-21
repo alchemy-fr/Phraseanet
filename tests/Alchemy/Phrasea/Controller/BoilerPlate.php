@@ -7,7 +7,6 @@ require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAbstract.class.inc';
 require_once __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Controller/My/Controller.php';
 
 use Silex\WebTestCase;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  *
@@ -32,10 +31,10 @@ class BoilerPlate extends \PhraseanetWebTestCaseAbstract
     public function createApplication()
     {
         $app = require __DIR__ . '/../../../../Path/To/Application.php';
-        
+
         $app['debug'] = true;
         unset($app['exception_handler']);
-        
+
         return $app;
     }
 

@@ -25,7 +25,6 @@ $parm = $request->get_parms(
     , "typ"  // type de dlg : "TS"=nouvo terme specifique ; "SY"=nouvo synonyme
 );
 
-
 $lng = Session_Handler::get_locale();
 
 switch ($parm["typ"]) {
@@ -50,18 +49,15 @@ switch ($parm["typ"]) {
             self.returValue = null;
             function clkBut(button)
             {
-                switch(button)
-                {
+                switch (button) {
                     case "submit":
                         t = document.forms[0].term.value;
                         k = document.forms[0].context.value;
                         if(k != "")
                             t += " ("+k+")";
                         self.returnValue = {"t":t, "lng":null };
-                        for(i=0; i<(n=document.getElementsByName("lng")).length; i++)
-                        {
-                            if(n[i].checked)
-                            {
+                        for (i=0; i<(n=document.getElementsByName("lng")).length; i++) {
+                            if (n[i].checked) {
                                 self.returnValue.lng = n[i].value;
                                 break;
                             }

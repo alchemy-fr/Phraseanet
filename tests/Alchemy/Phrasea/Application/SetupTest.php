@@ -2,7 +2,6 @@
 
 require_once __DIR__ . '/../../../PhraseanetWebTestCaseAbstract.class.inc';
 
-use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
 class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
@@ -136,7 +135,6 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
         $MySQLpassword = isset($settings['password']) ? $settings['password'] : '';
         $abName = isset($settings['applicationBox']) ? $settings['applicationBox'] : null;
         $dbName = isset($settings['dataBox']) ? $settings['dataBox'] : null;
-
 
         $connection = new connection_pdo('unitTestsAB', $host, $port, $MySQLuser, $MySQLpassword, $abName);
 

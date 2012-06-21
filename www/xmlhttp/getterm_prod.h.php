@@ -91,8 +91,7 @@ if ($parm["bid"] !== null) {
                                 break;
                         }
                         $tts[$realksy . "_" . $uniq] = array("id"     => $n->getAttribute("id"), "allsy"  => $allsy, "nchild" => $xpath->query("te", $n)->length, "tsy"    => $tsy);
-                    }
-                    else {
+                    } else {
                         $tts[] = array("id"     => $n->getAttribute("id"), "allsy"  => $allsy, "nchild" => $xpath->query("te", $n)->length, "tsy"    => $tsy);
                     }
                 } elseif ($n->nodeName == "sy") {

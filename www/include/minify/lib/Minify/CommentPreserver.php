@@ -10,8 +10,8 @@
  * @package Minify
  * @author Stephen Clay <steve@mrclay.org>
  */
-class Minify_CommentPreserver {
-
+class Minify_CommentPreserver
+{
     /**
      * String to be prepended to each preserved comment
      *
@@ -34,9 +34,9 @@ class Minify_CommentPreserver {
      * preserved comments, and the comments will be surrounded by
      * Minify_CommentPreserver::$preprend and Minify_CommentPreserver::$append.
      *
-     * @param string $content
+     * @param string   $content
      * @param callback $processor function
-     * @param array $args array of extra arguments to pass to the processor
+     * @param array    $args      array of extra arguments to pass to the processor
      * function (default = array())
      * @return string
      */

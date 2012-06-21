@@ -100,8 +100,6 @@ if ($parm["typ"] == "TH" || $parm["typ"] == "CT") {
     }
 }
 
-
-
 $tnodes = NULL;
 
 function printTNodes()
@@ -159,8 +157,7 @@ function printTNodes()
                         $isyn ++;
                     }
                     print("\n");
-                }
-                else {
+                } else {
                     $isyn = 0;
                     foreach ($node["syns"] as $syn) {
                         if ($numlig)
@@ -199,8 +196,7 @@ function exportNode(&$node, $depth)
                 $tnodes[] = array("type"    => "TRASH", "depth"   => $depth, "name"    => $fld);
             else
                 $tnodes[] = array("type"  => "FIELD", "depth" => $depth, "name"  => $fld);
-        }
-        else {
+        } else {
             $tsy = array();
             for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
                 if ($n->nodeName == "sy") {
@@ -238,7 +234,6 @@ function export0($znode)
     }
 
     export($znode, count($nodes));
-
 
     printTNodes();
 }

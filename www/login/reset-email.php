@@ -100,7 +100,6 @@ if ( ! is_null($parm['token'])) {
     }
 }
 
-
 $gatekeeper = gatekeeper::getInstance($Core);
 $gatekeeper->require_session();
 
@@ -129,11 +128,9 @@ if (isset($parm['form_password']) && isset($parm['form_email']) && isset($parm['
                     $updated = true;
                 else
                     $error = _('phraseanet::erreur: echec du serveur de mail');
-            }
-            else
+            } else
                 $error = _('forms::l\'email semble invalide');
-        }
-        else
+        } else
             $error = _('forms::les emails ne correspondent pas');
     } catch (Exception $e) {
         $error = _('admin::compte-utilisateur:ftp: Le mot de passe est errone');

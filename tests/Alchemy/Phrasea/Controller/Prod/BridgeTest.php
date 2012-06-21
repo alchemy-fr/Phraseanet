@@ -3,7 +3,6 @@
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 require_once __DIR__ . '/../../../../Bridge/Bridge_datas.inc';
 
-use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
 class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
@@ -43,10 +42,10 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
     public function createApplication()
     {
         $app = require realpath(__DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Prod.php');
-        
+
         $app['debug'] = true;
         unset($app['exception_handler']);
-        
+
         return $app;
     }
 
@@ -328,7 +327,6 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
         $url = sprintf("/bridge/action/%s/createcontainer/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_container_type());
         $this->client->request('GET', $url);
         $this->assertTrue($this->client->getResponse()->isOk());
-
 
         Bridge_Api_Apitest::$hasException = true;
         $url = sprintf("/bridge/action/%s/createcontainer/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_element_type());

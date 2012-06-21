@@ -86,8 +86,7 @@ if ($parm["bid"] !== null) {
                     $r = $refresh_list->appendChild($ret->createElement("refresh"));
                     $r->setAttribute("id", "C");
                     $r->setAttribute("type", "CT");
-                }
-                else {
+                } else {
                     // 'deleted' existe
                     $del = $nodes->item(0);
                     $r = $refresh_list->appendChild($ret->createElement("refresh"));
@@ -144,8 +143,7 @@ if ($parm["bid"] !== null) {
                         $r->setAttribute("id", $refrid);
                     else
                         $r->setAttribute("id", "C");
-                }
-                else {
+                } else {
                     $xmlct = str_replace(array("\r", "\n", "\t"), array("", "", ""), $domct->saveXML());
                     $xmlte = str_replace(array("\r", "\n", "\t"), array("", "", ""), $dom->saveXML());
 
@@ -185,6 +183,5 @@ if ($parm["bid"] !== null) {
 if ($parm["debug"]) {
     print("<pre>" . $ret->saveXML() . "</pre>");
     print("</body></html>");
-}
-else
+} else
     print($ret->saveXML());

@@ -5,7 +5,6 @@ require_once __DIR__ . '/../../../../FeedValidator.inc';
 
 require_once __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Controller/Root/RSSFeeds.php';
 
-use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -155,7 +154,6 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
             self::$feed_4_entries[] = $entry;
         }
 
-
         self::$public_feeds = Feed_Collection::load_public_feeds($appbox);
         self::$private_feeds = Feed_Collection::load_all($appbox, self::$user);
         $appbox->get_session()->logout();
@@ -174,10 +172,10 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
     public function createApplication()
     {
         $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Root.php';
-        
+
         $app['debug'] = true;
         unset($app['exception_handler']);
-        
+
         return $app;
     }
 
@@ -347,7 +345,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
     {
         $this->client->request("GET", "/feeds/feed/0/rss/");
     }
-    
+
     /**
      * @expectedException \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
@@ -389,6 +387,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
         /**
          * XML is not verified due to Validator Service bug
          */
+
         return;
 
         try {
@@ -401,7 +400,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
         }
     }
 
-    function verifyRSS(Feed_Adapter $feed, $xml_string)
+    public function verifyRSS(Feed_Adapter $feed, $xml_string)
     {
         $dom_doc = new DOMDocument();
         $dom_doc->loadXML($xml_string);
@@ -414,7 +413,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
         $this->checkRSSEntryNode($xpath, $feed);
     }
 
-    function checkRSSRootNode(DOMXPath $xpath, Feed_Adapter $feed)
+    public function checkRSSRootNode(DOMXPath $xpath, Feed_Adapter $feed)
     {
         $channel = $xpath->query("/rss/channel");
         foreach ($channel->item(0)->childNodes as $child) {
@@ -454,7 +453,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
         }
     }
 
-    function checkRSSEntryNode(DOMXPath $xpath, Feed_Adapter $feed)
+    public function checkRSSEntryNode(DOMXPath $xpath, Feed_Adapter $feed)
     {
         $list_entries = $xpath->query("/rss/channel/item");
         $count = 0;
@@ -503,7 +502,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
         $this->assertEquals($feed->get_count_total_entries(), $count);
     }
 
-    function checkRSSEntryItemsNode(DOMXPath $xpath, Feed_Entry_Adapter $entry, $count)
+    public function checkRSSEntryItemsNode(DOMXPath $xpath, Feed_Entry_Adapter $entry, $count)
     {
         $content = $entry->get_content();
         $available_medium = array('image', 'audio', 'video');
@@ -675,21 +674,20 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
             )
         );
 
-
         foreach ($fields as $key_field => $field) {
 
             $role = true;
-            
-            if(isset($field["media_field"]['attributes']['role'])){
+
+            if (isset($field["media_field"]['attributes']['role'])) {
                 $role = false;
-                foreach($node->attributes as $attr){
-                    if($attr->name == 'role') {
+                foreach ($node->attributes as $attr) {
+                    if ($attr->name == 'role') {
                         $role = $attr->value == $field["media_field"]['attributes']['role'];
                         break;
                     }
                 }
             }
-            
+
             if ($field["media_field"]["name"] == $node->nodeName && $role != false) {
 
                 if ($p4field = $entry_item->get_record()->get_caption()->get_dc_field($field["dc_field"])) {
@@ -821,11 +819,9 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
         $content = $entry->get_content();
 
-
         $available_medium = array('image', 'audio', 'video');
 
         array_walk($content, $this->removeBadItems($content, $available_medium));
-
 
         $media_group = $xpath->query("/Atom:feed/Atom:entry[0]/media:group");
 

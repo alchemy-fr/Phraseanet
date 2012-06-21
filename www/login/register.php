@@ -29,9 +29,7 @@ if ( ! $register_enabled) {
     return phrasea::redirect('/login/index.php?no-register-available');
 }
 
-
 $request = http_request::getInstance();
-
 
 $lng = Session_Handler::get_locale();
 

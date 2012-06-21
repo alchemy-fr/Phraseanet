@@ -2,7 +2,6 @@
 
 require_once __DIR__ . '/../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
-use Silex\WebTestCase;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -18,14 +17,14 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     public function createApplication()
     {
         $app = require __DIR__ . '/../../../../lib/Alchemy/Phrasea/Application/Overview.php';
-        
+
         $app['debug'] = true;
         unset($app['exception_handler']);
-        
+
         return $app;
     }
 
-    function testDatafilesRouteAuthenticated()
+    public function testDatafilesRouteAuthenticated()
     {
         $registry = registry::get_instance();
         $crawler = $this->client->request('GET', '/datafiles/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/preview/');
@@ -43,7 +42,7 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(404, $response->getStatusCode());
     }
 
-    function testEtag()
+    public function testEtag()
     {
         $tmp = tempnam(sys_get_temp_dir(), 'testEtag');
         copy(__DIR__ . '/../../../testfiles/cestlafete.jpg', $tmp);
@@ -82,7 +81,7 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         unlink($tmp);
     }
 
-    function testDatafilesRouteNotAuthenticated()
+    public function testDatafilesRouteNotAuthenticated()
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $appbox->get_session()->logout();
@@ -95,14 +94,14 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(403, $response->getStatusCode());
     }
 
-    function testPermalinkAuthenticated()
+    public function testPermalinkAuthenticated()
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $this->assertTrue($appbox->get_session()->is_authenticated());
         $this->get_a_permalink();
     }
 
-    function testPermalinkNotAuthenticated()
+    public function testPermalinkNotAuthenticated()
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $appbox->get_session()->logout();

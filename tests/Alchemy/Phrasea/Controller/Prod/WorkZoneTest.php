@@ -2,9 +2,6 @@
 
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
-use Alchemy\Phrasea\Helper;
-use Alchemy\Phrasea\RouteProcessor as routeProcessor;
-
 class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
@@ -19,10 +16,10 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function createApplication()
     {
         $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Prod.php';
-        
+
         $app['debug'] = true;
         unset($app['exception_handler']);
-        
+
         return $app;
     }
 
@@ -76,8 +73,6 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertEquals(302, $response->getStatusCode());
 
-
-
         $em = self::$core->getEntityManager();
         /* @var $em \Doctrine\ORM\EntityManager */
         $query = $em->createQuery(
@@ -96,7 +91,6 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $em->remove(array_shift($storyWZ));
 
         $em->flush();
-
 
     //attach JSON
     $this->client->request('POST', $route, array('stories' => array($story->get_serialize_key())), array(), array(
@@ -141,7 +135,6 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $count = $query->getSingleScalarResult();
 
         $this->assertEquals(1, $count);
-
 
         //detach
         $this->client->request('POST', $route);

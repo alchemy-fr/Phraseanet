@@ -36,8 +36,8 @@ require_once 'Minify/Source.php';
  * @package Minify
  * @author Stephen Clay <steve@mrclay.org>
  */
-class Minify_Build {
-
+class Minify_Build
+{
     /**
      * Last modification time of all files in the build
      *
@@ -64,12 +64,13 @@ class Minify_Build {
      * // outputs "/scriptaculous.js?load=effects&amp1678242"
      * </code>
      *
-     * @param string $uri
+     * @param string  $uri
      * @param boolean $forceAmpersand (default = false) Force the use of ampersand to
      * append the timestamp to the URI.
      * @return string
      */
-    public function uri($uri, $forceAmpersand = false) {
+    public function uri($uri, $forceAmpersand = false)
+    {
         $sep = ($forceAmpersand || strpos($uri, '?') !== false)
             ? self::$ampersand
             : '?';
@@ -87,7 +88,7 @@ class Minify_Build {
     public function __construct($sources)
     {
         $max = 0;
-        foreach ((array)$sources as $source) {
+        foreach ((array) $sources as $source) {
             if ($source instanceof Minify_Source) {
                 $max = max($max, $source->lastModified);
             } elseif (is_string($source)) {

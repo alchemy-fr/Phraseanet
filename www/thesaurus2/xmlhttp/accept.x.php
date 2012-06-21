@@ -20,7 +20,6 @@ $registry = registry::get_instance();
 
 require("../xmlhttp.php");
 
-
 $request = http_request::getInstance();
 $parm = $request->get_parms(
     "bid"

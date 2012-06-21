@@ -47,9 +47,7 @@ if (isset($parm['get']) && $parm['get'] == '1') {
 
 $files = $list['files'];
 
-
 $zip_done = $zip_building = false;
-
 
 if (isset($list['complete'])) {
     if ($list['complete'] == true)
@@ -187,6 +185,4 @@ if ( ! $zip_done) {
         </div>
     </body>
 </html>
-
-
 

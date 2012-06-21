@@ -33,7 +33,6 @@ phrasea::headers();
 if ( ! $parm['view'])
     $parm['view'] = 'GRAPHIC';
 
-
 $refreshfinder = false;
 $out = "";
 

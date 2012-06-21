@@ -146,8 +146,7 @@ class questionReportTest extends PhraseanetPHPUnitAbstract
                     $i ++;
                 }
             }
-        }
-        else {
+        } else {
             $this->assertArrayHasKey($groupby, $this->report->getDisplay());
             $this->assertArrayHasKey('nb', $this->report->getDisplay());
         }

@@ -85,7 +85,6 @@ phrasea::start($Core);
             }
             .NEW{color:red;}
 
-
             #form div{
                 position:relative;
                 float:left;
@@ -140,8 +139,6 @@ phrasea::start($Core);
         </div>
 <?php
 $rules = array();
-
-
 
 echo '<form id="form" method="post" action = "global_values.php">';
 
@@ -233,7 +230,6 @@ foreach ($GV as $section) {
 
     echo '</div>';
 }
-
 
 $JS = '$(document).ready(function() {
     // validate signup form on keyup and submit

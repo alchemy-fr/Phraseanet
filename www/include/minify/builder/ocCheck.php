@@ -32,5 +32,5 @@ if (isset($_GET['hello'])) {
 } else {
     // echo status "0" or "1"
     header('Content-Type: text/plain');
-    echo (int)$_oc;
+    echo (int) $_oc;
 }

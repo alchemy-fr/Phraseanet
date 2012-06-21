@@ -49,7 +49,6 @@ $appLaunched = array(
 
 $out = "";
 
-
 $out.="<center>\n";
 
 $out.="<table class='admintable' >\n";
@@ -117,10 +116,7 @@ foreach (Session_Handler::get_active_sessions() as $row) {
     $onedetail.="  </table>";
     $onedetail.="</span>";
 
-
-
     $out.="<tr title=\"" . str_replace('"', '&quot;', $onedetail) . "\" class='" . ($n % 2 == 0 ? 'even' : 'odd') . " usrTips' id=\"TREXP_" . $row["session_id"] . "\">";
-
 
     if ($row["session_id"] == $session->get_ses_id())
         $out.=sprintf("<td style=\"color:#ff0000\"><i>" . $row['usr_id']->get_display_name() . "</i></td>\n");
@@ -138,7 +134,6 @@ foreach (Session_Handler::get_active_sessions() as $row) {
         , '7' => _('admin::monitor: module validation')
         , '8' => _('admin::monitor: module upload')
     );
-
 
     $row["app"] = unserialize($row["app"]);
 
@@ -160,7 +155,6 @@ foreach (Session_Handler::get_active_sessions() as $row) {
     $n ++;
 }
 $out.="</tbody></table>\n";
-
 
 echo "<center>";
 
@@ -240,10 +234,8 @@ if ($appLaunched[0] > 0) {
     echo "</tr>";
 }
 
-
 echo "</table>";
 echo "</center>";
-
 
 echo "<br><br><hr><br><br>";
 echo $out;

@@ -24,8 +24,6 @@ $session = $appbox->get_session();
 $gatekeeper = gatekeeper::getInstance($Core);
 $gatekeeper->require_session();
 
-
-
 $request = http_request::getInstance();
 $parm = $request->get_parms("lst", "obj", "ssttid", "type", "businessfields");
 
@@ -66,12 +64,10 @@ if ($url) {
         'export_file' => $exportname
     );
 
-
     $events_mngr = eventsmanager_broker::getInstance($appbox, $Core);
     $events_mngr->trigger('__DOWNLOAD__', $params);
 
     return phrasea::redirect('/download/' . $url);
 }
 phrasea::headers(500);
-
 

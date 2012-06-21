@@ -51,8 +51,6 @@ foreach ($sphinx_conf->get_available_charsets() as $charset => $charset_obj) {
         ?>
     </select>
 
-
-
     <button type="submit">valide</button>
 
 </form>

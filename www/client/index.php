@@ -49,8 +49,6 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
                 HEIGHT: 128px;
             }
 
-
-
         </style>
         <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
         <script type="text/javascript" src="/include/minify/f=include/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
@@ -121,7 +119,6 @@ echo $twig->render('common/menubar.twig', array('module' => 'client', 'events' =
             <?php
             $i = 1;
 
-
             $tong = array(
                 $registry->get('GV_ong_search')    => 1,
                 $registry->get('GV_ong_advsearch') => 2,
@@ -133,7 +130,6 @@ echo $twig->render('common/menubar.twig', array('module' => 'client', 'events' =
 
             ksort($tong);
             ?>
-
 
                         <div class="bodyLeft" style="top:3px;">
                             <div id="bigTabsBckg">
@@ -173,7 +169,7 @@ foreach ($tong as $kong => $ong) {
                                     </tr>
                                 </table>
                             </div>
-                            <form  style="margin:0px; padding:0px;" name="search" id="searchForm" action="answer.php" onkeypress="if(event.keyCode==13){ doSearch();return false;}" method="post">
+                            <form  style="margin:0px; padding:0px;" name="search" id="searchForm" action="answer.php" onkeypress="if (event.keyCode==13) { doSearch();return false;}" method="post">
 
                                 <div id="idongSearch">
 
@@ -209,13 +205,10 @@ if ($registry->get('GV_client_coll_ckbox') === 'popup') {
                                                 <div>
     <?php echo _('client::recherche: rechercher dans les bases :') ?>
 
-
                                                 <?php
                                                 $allbases = array();
                                                 $showbases = (count($appbox->get_databoxes()) > 0);
                                                 $options = '';
-
-
 
                                                 foreach ($user->ACL()->get_granted_sbas() as $databox) {
                                                     if ($showbases) {
@@ -269,8 +262,7 @@ if ($registry->get('GV_client_coll_ckbox') === 'popup') {
                                                     if ($mode_pres == '') {
                                                         if ($vm['selected'] == '1')
                                                             $sel = 'selected';
-                                                    }
-                                                    else
+                                                    } else
                                                     if ($mode_pres == $h . 'X' . $w)
                                                         $sel = "selected";
 
@@ -295,8 +287,6 @@ if ($registry->get('GV_client_coll_ckbox') === 'popup') {
                                         </div>
                                         <input type="hidden" name="pag" id="formAnswerPage" value="">
                                         <input type="hidden" name="nba" value="">
-
-
 
                                         <div class="onglets" style="white-space: nowrap; margin-left: 5px; width: 227px;">
 <?php
@@ -455,9 +445,6 @@ if ($registry->get('GV_thesaurus')) {
                                                 </div>
                                             </div>
 
-
-
-
                                         </div>
                                     </div>
                             </form>
@@ -473,7 +460,6 @@ if ($registry->get('GV_thesaurus')) {
 
                             </div>
                             <div class="bodySearchBottom">
-
 
                             </div>
                         </div>
@@ -573,7 +559,6 @@ echo phrasea::getHome($start_page, 'client');
     <script type="text/javascript" src="/include/jslibs/flowplayer/flowplayer-3.2.6.min.js"></script>
     <script type="text/javascript">
 
-
         function reModCol()
         {
             var mod_col = $('#mod')[0].options[$('#mod')[0].selectedIndex].value.split('X');
@@ -590,9 +575,8 @@ echo phrasea::getHome($start_page, 'client');
             document.styleSheets[0][propname][3].style.height = (w)+"px";  // .h160px
         }
 
-
-
-        function sessionactive(){
+        function sessionactive()
+        {
             $.ajax({
                 type: "POST",
                 url: "/include/updses.php",
@@ -660,7 +644,6 @@ if ($baskStatus == '0') {
 ?>
     setBaskStatus();
 
-
 });
     </script>
 <?php
@@ -676,7 +659,7 @@ if (trim($registry->get('GV_googleAnalytics')) != '') {
             pageTracker._setDomainName("none");
             pageTracker._setAllowLinker(true);
             pageTracker._trackPageview();
-        } catch(err) {}
+        } catch (err) {}
         </script>
     <?php
 }

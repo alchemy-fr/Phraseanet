@@ -11,8 +11,8 @@
  * @author Stephen Clay <steve@mrclay.org>
  * @author Adam Pedersen (Issue 55 fix)
  */
-class Minify_Lines {
-
+class Minify_Lines
+{
     /**
      * Add line numbers in C-style comments
      *

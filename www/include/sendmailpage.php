@@ -16,7 +16,6 @@
  */
 /* @var $Core \Alchemy\Phrasea\Core */
 
-
 set_time_limit(0);
 session_write_close();
 ignore_user_abort(true);
@@ -30,7 +29,6 @@ $gatekeeper = gatekeeper::getInstance($Core);
 $gatekeeper->require_session();
 
 $events_mngr = \eventsmanager_broker::getInstance(\appbox::get_instance($Core), $Core);
-
 
 $user = $Core->getAuthenticatedUser();
 
@@ -133,7 +131,4 @@ if (count($dest) > 0 && $token) {
         $events_mngr->trigger('__EXPORT_MAIL_FAIL__', $params);
     }
 }
-
-
-
 

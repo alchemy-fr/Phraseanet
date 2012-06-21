@@ -2,9 +2,6 @@
 
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
-use Alchemy\Phrasea\Helper;
-use Alchemy\Phrasea\RouteProcessor as routeProcessor;
-
 class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
@@ -63,7 +60,6 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $query = self::$core->getEntityManager()->createQuery(
             'SELECT b FROM \Entities\Basket b'
         );
-
 
         $basket = array_shift($query->getResult());
         /* @var $basket \Entities\Basket */
@@ -606,7 +602,6 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
         $response = $this->client->getResponse();
 
-
         $this->assertEquals(200, $response->getStatusCode());
 
         $datas = (array) json_decode($response->getContent());
@@ -665,7 +660,6 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $count = $query->getSingleScalarResult();
 
         $this->assertEquals(0, $count);
-
 
         $query = $em->createQuery(
             'SELECT COUNT(b.id) FROM \Entities\Basket b'

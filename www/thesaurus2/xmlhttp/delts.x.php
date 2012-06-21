@@ -31,7 +31,6 @@ if ($parm["debug"]) {
     phrasea::headers(200, true, 'text/xml', 'UTF-8', false);
 }
 
-
 $ret = new DOMDocument("1.0", "UTF-8");
 $ret->standalone = true;
 $ret->preserveWhiteSpace = false;
@@ -102,8 +101,7 @@ function moveToDeleted(&$thnode, &$chgids, $sbas_id)
         $r = $refresh_list->appendChild($ret->createElement("refresh"));
         $r->setAttribute("id", "C");
         $r->setAttribute("type", "CT");
-    }
-    else {
+    } else {
         $ct = $nodes->item(0);
         $r = $refresh_list->appendChild($ret->createElement("refresh"));
         $r->setAttribute("id", $ct->getAttribute("id"));

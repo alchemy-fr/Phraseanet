@@ -43,8 +43,8 @@
  * @subpackage HTTP
  * @author Stephen Clay <steve@mrclay.org>
  */
-class HTTP_Encoder {
-
+class HTTP_Encoder
+{
     /**
      * Should the encoder allow HTTP encoding to IE6?
      *
@@ -61,7 +61,6 @@ class HTTP_Encoder {
      */
     public static $encodeToIe6 = false;
 
-
     /**
      * Default compression level for zlib operations
      *
@@ -70,7 +69,6 @@ class HTTP_Encoder {
      * @var int
      */
     public static $compressionLevel = 6;
-
 
     /**
      * Get an HTTP Encoder object
@@ -91,7 +89,7 @@ class HTTP_Encoder {
     public function __construct($spec)
     {
         $this->_content = $spec['content'];
-        $this->_headers['Content-Length'] = (string)strlen($this->_content);
+        $this->_headers['Content-Length'] = (string) strlen($this->_content);
         if (isset($spec['type'])) {
             $this->_headers['Content-Type'] = $spec['type'];
         }
@@ -321,7 +319,7 @@ class HTTP_Encoder {
             return false;
         }
         // no regex = faaast
-        $version = (float)substr($ua, 30);
+        $version = (float) substr($ua, 30);
 
         return self::$encodeToIe6
             ? ($version < 6 || ($version == 6 && false === strpos($ua, 'SV1')))

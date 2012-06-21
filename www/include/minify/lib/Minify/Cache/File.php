@@ -4,8 +4,8 @@
  * @package Minify
  */
 
-class Minify_Cache_File {
-
+class Minify_Cache_File
+{
     public function __construct($path = '', $fileLocking = false)
     {
         if (! $path) {

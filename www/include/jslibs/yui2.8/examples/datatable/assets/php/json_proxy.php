@@ -15,26 +15,25 @@ $dir = 'asc'; // default sort dir is asc
 $sort_dir = SORT_ASC;
 
 // How many records to get?
-if(strlen($_GET['results']) > 0) {
+if (strlen($_GET['results']) > 0) {
     $results = $_GET['results'];
 }
 
 // Start at which record?
-if(strlen($_GET['startIndex']) > 0) {
+if (strlen($_GET['startIndex']) > 0) {
     $startIndex = $_GET['startIndex'];
 }
 
 // Sorted?
-if(strlen($_GET['sort']) > 0) {
+if (strlen($_GET['sort']) > 0) {
     $sort = $_GET['sort'];
 }
 
 // Sort dir?
-if((strlen($_GET['dir']) > 0) && ($_GET['dir'] == 'desc')) {
+if ((strlen($_GET['dir']) > 0) && ($_GET['dir'] == 'desc')) {
     $dir = 'desc';
     $sort_dir = SORT_DESC;
-}
-else {
+} else {
     $dir = 'asc';
     $sort_dir = SORT_ASC;
 }
@@ -42,12 +41,13 @@ else {
 // Return the data
 returnData($results, $startIndex, $sort, $dir, $sort_dir);
 
-function returnData($results, $startIndex, $sort, $dir, $sort_dir) {
+function returnData($results, $startIndex, $sort, $dir, $sort_dir)
+{
     // All records
     $allRecords = initArray();
 
     // Need to sort records
-    if(!is_null($sort)) {
+    if (!is_null($sort)) {
 
         // Obtain a list of columns
         foreach ($allRecords as $key => $row) {
@@ -55,7 +55,7 @@ function returnData($results, $startIndex, $sort, $dir, $sort_dir) {
         }
 
         // Valid sort value
-        if(count($sortByCol) > 0) {
+        if (count($sortByCol) > 0) {
             // Sort the original data
             // Add $allRecords as the last parameter, to sort by the common key
             array_multisort($sortByCol, $sort_dir, $allRecords);
@@ -63,7 +63,7 @@ function returnData($results, $startIndex, $sort, $dir, $sort_dir) {
     }
 
     // Invalid start value
-    if(is_null($startIndex) || !is_numeric($startIndex) || ($startIndex < 0)) {
+    if (is_null($startIndex) || !is_numeric($startIndex) || ($startIndex < 0)) {
         // Default is zero
         $startIndex = 0;
     }
@@ -88,10 +88,10 @@ function returnData($results, $startIndex, $sort, $dir, $sort_dir) {
     // Iterate through records and return from start index
     $data = array();
     $lastIndex = $startIndex+$results;
-    if($lastIndex > count($allRecords)) {
+    if ($lastIndex > count($allRecords)) {
         $lastIndex = count($allRecords);
     }
-    for($i=$startIndex; $i<($lastIndex); $i++) {
+    for ($i=$startIndex; $i<($lastIndex); $i++) {
         $data[] = $allRecords[$i];
     }
 
@@ -115,7 +115,8 @@ function returnData($results, $startIndex, $sort, $dir, $sort_dir) {
     echo ($json->encode($returnValue)); // Instead of json_encode
 }
 
-function initArray() {
+function initArray()
+{
 return array(
 array('id'=>'0', 'name'=>'xmlqoyzgmykrphvyiz', 'date'=>'13-Sep-2002', 'price'=>'8370', 'number'=>'8056', 'address'=>'qdfbc', 'company'=>'taufrid', 'desc'=>'pppzhfhcdqcvbirw', 'age'=>'5512', 'title'=>'zticbcd', 'phone'=>'hvdkltabshgakjqmfrvxo', 'email'=>'eodnqepua', 'zip'=>'eodnqepua', 'country'=>'pdibxicpqipbsgnxyjumsza'),
 array('id'=>'1', 'name'=>'rbdmbabficcre', 'date'=>'10-Sep-2004', 'price'=>'3075', 'number'=>'3627', 'address'=>'oxcm', 'company'=>'xyzwzv', 'desc'=>'rwndyoedxh', 'age'=>'2134', 'title'=>'lxxyfgdtdffjce', 'phone'=>'zeejvbwy', 'email'=>'ldcikhxwfuulaxeedkogpxftb', 'zip'=>'ldcikhxwfuulaxeedkogpxftb', 'country'=>'pcmobxrdfclcyrx'),
@@ -1516,4 +1517,3 @@ array('id'=>'1395', 'name'=>'rmvxhxenreolwg', 'date'=>'22-Mar-2005', 'price'=>'8
 array('id'=>'1396', 'name'=>'xcwscuzuopmgyczlczejwxa', 'date'=>'17-Oct-2001', 'price'=>'3013', 'number'=>'3285', 'address'=>'sfhucaxwz', 'company'=>'kodrmfrxircrnarip', 'desc'=>'qyejdmdgmaclsmzvembvk', 'age'=>'3502', 'title'=>'maamsjcnzbsi', 'phone'=>'emlrn', 'email'=>'cfacbeoczylml', 'zip'=>'cfacbeoczylml', 'country'=>'myevasvbkegp'));
 }
 
-?>

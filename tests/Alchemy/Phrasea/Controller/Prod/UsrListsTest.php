@@ -9,10 +9,10 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function createApplication()
     {
         $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Prod.php';
-        
+
         $app['debug'] = true;
         unset($app['exception_handler']);
-        
+
         return $app;
     }
 
@@ -147,7 +147,6 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertFalse($datas['success']);
 
-
         $this->client->request('POST', $route, array('name' => 'New NAME'));
 
         $response = $this->client->getResponse();
@@ -261,7 +260,6 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(400, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
 
-
         $route = '/lists/list/' . $list->getId() . '/share/' . self::$user_alt1->get_id() . '/';
 
         $this->client->request('POST', $route, array('role' => 'general'));
@@ -271,8 +269,6 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(400, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
 
-
-
         $route = '/lists/list/' . $list->getId() . '/share/' . self::$user_alt1->get_id() . '/';
 
         $this->client->request('POST', $route, array('role' => \Entities\UsrListOwner::ROLE_ADMIN));
@@ -281,7 +277,6 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
-
 
         $datas = (array) json_decode($response->getContent());
 
@@ -313,7 +308,6 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
 
-
         $datas = (array) json_decode($response->getContent());
 
         $this->assertArrayHasKey('success', $datas);
@@ -326,8 +320,6 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $list = $repository->find($list->getId());
 
         $this->assertEquals(2, $list->getOwners()->count());
-
-
 
         $route = '/lists/list/' . $list->getId() . '/unshare/' . self::$user_alt1->get_id() . '/';
 
@@ -367,15 +359,12 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
 
-
         $datas = (array) json_decode($response->getContent());
 
         $this->assertArrayHasKey('success', $datas);
         $this->assertArrayHasKey('message', $datas);
 
         $this->assertTrue($datas['success']);
-
-
 
         $route = '/lists/list/' . $list->getId() . '/share/' . self::$user->get_id() . '/';
 
@@ -386,15 +375,12 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
 
-
         $datas = (array) json_decode($response->getContent());
 
         $this->assertArrayHasKey('success', $datas);
         $this->assertArrayHasKey('message', $datas);
 
         $this->assertFalse($datas['success']);
-
-
 
         $route = '/lists/list/' . $list->getId() . '/share/' . self::$user_alt1->get_id() . '/';
 
@@ -405,7 +391,6 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
 
-
         $datas = (array) json_decode($response->getContent());
 
         $this->assertArrayHasKey('success', $datas);
@@ -413,15 +398,11 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue($datas['success']);
 
-
-
         $repository = self::$core->getEntityManager()->getRepository('Entities\UsrList');
 
         $list = $repository->find($list->getId());
 
         $this->assertEquals(2, $list->getOwners()->count());
-
-
 
         $route = '/lists/list/' . $list->getId() . '/unshare/' . self::$user_alt1->get_id() . '/';
 

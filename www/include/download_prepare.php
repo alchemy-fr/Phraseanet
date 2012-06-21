@@ -78,8 +78,6 @@ if (isset($parm['get']) && $parm['get'] == '1') {
     return;
 }
 
-
-
 if (isset($list['complete'])) {
     if ($list['complete'] == true)
         $zip_done = true;
@@ -202,8 +200,7 @@ foreach ($files as $file) {
                       $.post("/include/download_prepare.exe.php", {
                           token: "<?php echo $parm['token']; ?>"
                       }, function(data){
-                          if(data == '1')
-                          {
+                          if (data == '1') {
                               $('#wait').hide();
                               $('#ready').show();
                               get_file();
@@ -231,7 +228,8 @@ foreach ($files as $file) {
                 <iframe style="display:none;" name="get_file"></iframe>
 
                 <script type="text/javascript">
-                    function get_file(){
+                    function get_file()
+                    {
                         $('form[name=download]').submit();
                     }
                 </script>

@@ -142,8 +142,7 @@ class pushReportTest extends PhraseanetPHPUnitAbstract
                     $i ++;
                 }
             }
-        }
-        else {
+        } else {
             $this->assertArrayHasKey($groupby, $this->report->getDisplay());
             $this->assertArrayHasKey('nombre', $this->report->getDisplay());
         }

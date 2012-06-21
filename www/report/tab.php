@@ -177,7 +177,6 @@ function doReport($obj, $param, $conf, $twig, $what = false)
     $obj->setActiveColumn($active_column);
     $obj->setPostingFilter($posting_filter);
 
-
     // display a new arraywhere results are group
     groupBy($obj, $param, $twig);
     //set Limit
@@ -316,8 +315,7 @@ function doUserConf($conf, $param)
         }
 
         return $new_conf;
-    }
-    else {
+    } else {
         return $conf;
     }
 }
@@ -379,7 +377,6 @@ function getHistory($obj, $param, $twig, $conf, $dl = false, $title)
     $obj->setConfig(false);
     $obj->setTitle($title);
     $obj->setHasLimit(false);
-
 
     if ($param['printcsv'] == "on") {
         $csv = doCsv($obj, $param, $conf, $twig);
@@ -585,7 +582,6 @@ function bestOf($param, $twig)
     $activity->setTop(20);
     $activity->setConfig(false);
 
-
     if ($param['printcsv'] == "on") {
         $activity->setHasLimit(false);
         $report_csv = $activity->getTopQuestion($conf);
@@ -610,7 +606,6 @@ function noBestOf($param, $twig)
     $activity = new module_report_activity($param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
     $activity->setConfig(false);
     doLimit($activity, $param);
-
 
     if ($param['printcsv'] == "on") {
         $activity->setHasLimit(false);
@@ -684,7 +679,6 @@ function usr($param, $twig)
     doLimit($activity, $param);
     $activity->setConfig(false);
 
-
     if ($param['printcsv'] == "on") {
         $activity->setHasLimit(false);
         $report_csv = $activity->getDetailDownload($conf, $param['on']);
@@ -745,8 +739,7 @@ function infoUsr($param, $twig, $conf)
     if ($registry->get('GV_anonymousReport') == false) {
         $html_info .= doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
         (empty($param['on']) && isset($report['result'])) ? $title = $report['result'][0]['identifiant'] : $title = $param['user'];
-    }
-    else
+    } else
         $title = $param['user'];
 
     sendReport($html_info . $html, false, $title);
@@ -836,8 +829,7 @@ function what($param, $twig)
             $html .= doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
             sendReport($html, false, $title);
         }
-    }
-    else
+    } else
         sendReport($html, false, $title);
 }
 /* Display informations about navigators */
@@ -1032,4 +1024,3 @@ switch ($param['tbl']) {
         whichDoc($param, $twig);
         break;
 }
-?>

@@ -2,7 +2,6 @@
 
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
-use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
 class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthenticatedAbstract
@@ -20,10 +19,10 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
     public function createApplication()
     {
         $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Admin.php';
-        
+
         $app['debug'] = true;
         unset($app['exception_handler']);
-        
+
         return $app;
     }
 
@@ -148,7 +147,6 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
                 , '/admin/publications/list/'
             ) === 0);
 
-
         $feed = new Feed_Adapter($appbox, $feed->get_id());
 
         $collection = $feed->get_collection();
@@ -175,7 +173,6 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
         $stub = $this->getMock("user_adapter", array(), array(), "", false);
         //return a different userid
         $stub->expects($this->any())->method("get_id")->will($this->returnValue(99999999));
-
 
         $feed = Feed_Adapter::create($appbox, $stub, "salut", 'coucou');
 
@@ -244,7 +241,7 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
         $feed = Feed_Adapter::create($appbox, self::$user, "salut", 'coucou');
 
-		$files = array(
+        $files = array(
             'files' => array(
                 new \Symfony\Component\HttpFoundation\File\UploadedFile(
                     __DIR__ . '/../../../../testfiles/logocoll.gif', 'logocoll.gif'

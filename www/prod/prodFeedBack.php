@@ -39,7 +39,6 @@ switch ($action) {
 
         $options = new searchEngine_options();
 
-
         $parm['bas'] = is_array($parm['bas']) ? $parm['bas'] : array_keys($user->ACL()->get_granted_base());
 
         /* @var $user \User_Adapter */
@@ -57,7 +56,6 @@ switch ($action) {
         } else {
             $options->set_business_fields(array());
         }
-
 
         $options->set_bases($parm['bas'], $user->ACL());
         if ( ! ! is_array($parm['fields']))
@@ -119,10 +117,6 @@ switch ($action) {
         $output = $evt_mngr->get_json_notifications($parm['page']);
         break;
 
-
-
-
-
     case 'VIDEOTOKEN':
         $parm = $request->get_parms( ! 'sbas_id', 'record_id');
         $sbas_id = (int) $parm['sbas_id'];
@@ -130,8 +124,6 @@ switch ($action) {
 
         $output = p4string::jsonencode(array('url' => $record->get_preview()->renew_url()));
         break;
-
-
 
     case 'ANSWERTRAIN':
         $parm = $request->get_parms('pos', 'record_id', 'options_serial', 'query');
@@ -156,7 +148,6 @@ switch ($action) {
                 )
         );
         break;
-
 
     case 'REGTRAIN':
         $parm = $request->get_parms('cont', 'pos');
@@ -224,8 +215,6 @@ switch ($action) {
 
         $output = p4string::jsonencode($ret);
         break;
-
-
 
     case "ORDER":
         $parm = $request->get_parms('lst', 'ssttid', 'use', 'deadline');
@@ -317,5 +306,4 @@ switch ($action) {
         break;
 }
 echo $output;
-
 

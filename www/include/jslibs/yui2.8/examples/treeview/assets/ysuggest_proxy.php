@@ -22,4 +22,3 @@ $response = curl_exec($session);
 header("Content-Type: ".$type);
 echo $response;
 curl_close($session);
-?>

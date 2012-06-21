@@ -51,7 +51,6 @@ $parm = $request->get_parms(
             $opener = "opener";
         }
 
-
 // print($parm["t"]);
 
         list($term, $context) = splitTermAndContext($parm["t"]);
@@ -64,7 +63,6 @@ $parm = $request->get_parms(
 // if($context != "")
         $url .= "&k=" . urlencode($context);
         $dom = xmlhttp($url);
-
 
         $zterm = p4string::MakeString(sprintf(_('thesaurus:: le terme %s'), "<b>" . $term . "</b> "));
         if ($context != "")
@@ -140,16 +138,14 @@ $parm = $request->get_parms(
             </form>
         </center>
                 <?php
-            }
-            else {
+            } else {
                 if ($nb_candidates_bad > 0) {
                     // present dans les candidats, mais aucun champ acceptable : on informe
                     if ($nb_candidates_bad == 1)
                         $t = p4string::MakeString(_('thesaurus:: est candidat en provenance des champs mais ne peut etre accepte a cet emplacement du thesaurus'));
                     else
                         $t = p4string::MakeString(_('thesaurus:: est candidat en provenance des champs mais ne peut etre accepte a cet emplacement du thesaurus'));
-                }
-                else {
+                } else {
                     // pas present dans les candidats
                     $t = p4string::MakeString(_('thesaurus:: n\'est pas present dans les candidats')) . "\n";
                 }
@@ -184,12 +180,11 @@ $parm = $request->get_parms(
 <?php
 if ($nb_candidates_ok > 0) {
     ?>
-    function clkCid()
+    public function clkCid()
     {
         cids = document.getElementsByName("cid");
         f = false;
-        for(i=0; i<cids.length && !f; i++)
-        {
+        for (i=0; i<cids.length && !f; i++) {
             if(cids[i].checked)
                 f = true;
         }
@@ -197,17 +192,15 @@ if ($nb_candidates_ok > 0) {
 
         return(true);
     }
-    function clkBut(button)
+    public function clkBut(button)
     {
-        switch(button)
-        {
+        switch (button) {
             case "submit":
                 url = "xmlhttp/acceptcandidates.x.php";
                 parms  = "bid=<?php echo $parm["bid"] ?>";
                 parms += "&pid=<?php echo $parm["pid"] ?>";
                 parms += "&typ=<?php echo $parm["typ"] ?>";
-                for(i=0; i<(n=document.getElementsByName("cid")).length; i++)
-                {
+                for (i=0; i<(n=document.getElementsByName("cid")).length; i++) {
                     if(n[i].checked)
                         parms += "&cid[]=" + encodeURIComponent(n[i].value);
                 }
@@ -219,10 +212,8 @@ if ($nb_candidates_ok > 0) {
                 //alert(ret);
                 //return;
                 refresh = ret.getElementsByTagName("refresh");
-                for(i=0; i<refresh.length; i++)
-                {
-                    switch(refresh.item(i).getAttribute("type"))
-                    {
+                for (i=0; i<refresh.length; i++) {
+                    switch (refresh.item(i).getAttribute("type")) {
                         case "CT":
     <?php echo $opener ?>.reloadCtermsBranch(refresh.item(i).getAttribute("id"));
                             break;
@@ -245,8 +236,7 @@ if ($nb_candidates_ok > 0) {
             {}
             function clkBut(button)
             {
-                switch(button)
-                {
+                switch (button) {
                     case "submit":
     <?php if ($parm["typ"] == "TS") {
         ?>
@@ -266,10 +256,8 @@ if ($nb_candidates_ok > 0) {
     <?php } ?>
                         parms += "&sylng=<?php echo $parm["sylng"] ?>";
                         // alert(url + "?" + parms);
-                        for(i=0; i<(n=document.getElementsByName("reindex")).length; i++)
-                        {
-                            if(n[i].checked)
-                            {
+                        for (i=0; i<(n=document.getElementsByName("reindex")).length; i++) {
+                            if (n[i].checked) {
                                 parms += "&reindex=" + encodeURIComponent(n[i].value);
                                 break;
                             }
@@ -277,13 +265,11 @@ if ($nb_candidates_ok > 0) {
                         // alert(url + "?" + parms);
                         ret = loadXMLDoc(url, parms, true);
                         refresh = ret.getElementsByTagName("refresh");
-                        for(i=0; i<refresh.length; i++)
-                        {
+                        for (i=0; i<refresh.length; i++) {
                             // alert("type : " + refresh.item(i).getAttribute("type"));
                             // alert("id   : " + refresh.item(i).getAttribute("id"));
 
-                            switch(refresh.item(i).getAttribute("type"))
-                            {
+                            switch (refresh.item(i).getAttribute("type")) {
                                 case "CT":
     <?php echo $opener ?>.reloadCtermsBranch(refresh.item(i).getAttribute("id"));
                                     break;
@@ -324,4 +310,3 @@ function splitTermAndContext($word)
 
     return(array($term, $context));
 }
-?>

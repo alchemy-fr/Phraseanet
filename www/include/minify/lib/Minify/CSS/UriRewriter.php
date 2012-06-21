@@ -10,8 +10,8 @@
  * @package Minify
  * @author Stephen Clay <steve@mrclay.org>
  */
-class Minify_CSS_UriRewriter {
-
+class Minify_CSS_UriRewriter
+{
     /**
      * Defines which class to call as part of callbacks, change this
      * if you extend Minify_CSS_UriRewriter
@@ -107,7 +107,6 @@ class Minify_CSS_UriRewriter {
 
         return $css;
     }
-
 
     /**
      * @var string directory of this stylesheet

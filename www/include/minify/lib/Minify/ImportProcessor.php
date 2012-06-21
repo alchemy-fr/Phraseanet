@@ -17,8 +17,8 @@
  * @package Minify
  * @author Stephen Clay <steve@mrclay.org>
  */
-class Minify_ImportProcessor {
-
+class Minify_ImportProcessor
+{
     public static $filesIncluded = array();
 
     public static function process($file)
