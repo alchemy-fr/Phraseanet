@@ -35,12 +35,15 @@ class UpgradeDBDatas extends Command
 
         $this
         ->setDescription("Upgrade Phraseanet datas")
-        ->setHelp("Upgrade Phraseanet datas from older version
+        ->setHelp(<<<EOF
+Upgrade Phraseanet datas from older version
 
 Steps are
 
     - version 3.1 : records UUID
-    - version 3.5 : metadatas upgrade");
+    - version 3.5 : metadatas upgrade
+EOF
+            );
 
         $this->addOption('from', 'f', null, 'The version where to start upgrade');
         $this->addOption('at-version', null, null, 'The version step to upgrade');
