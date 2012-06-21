@@ -40,10 +40,8 @@ class module_console_fieldsDelete extends Command
         return true;
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $this->checkSetup();
-
         try {
             $databox = \databox::get_instance((int) $input->getArgument('sbas_id'));
         } catch (\Exception $e) {

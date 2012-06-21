@@ -109,7 +109,7 @@ EOF
     /**
      * {@inheritdoc}
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         $this->generateUpgradesFromOption($input);
 

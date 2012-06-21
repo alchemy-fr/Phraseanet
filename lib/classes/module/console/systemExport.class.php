@@ -76,10 +76,8 @@ class module_console_systemExport extends Command
         return true;
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $this->checkSetup();
-
         $core = \bootstrap::getCore();
 
         $docPerDir = max(1, (int) $input->getOption('docperdir'));

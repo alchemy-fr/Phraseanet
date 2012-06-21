@@ -39,13 +39,11 @@ class module_console_schedulerStart extends Command
         return true;
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $this->checkSetup();
-
         $logger = new Logger('Task logger');
 
-        $streamHandler = new Handler\StreamHandler(fopen('php://stdout', 'a'), $input->getOption('verbose') ? Logger::DEBUG : Logger::WARNING);
+        $streamHandler = new Handler\StreamHandler('php://stdout', $input->getOption('verbose') ? Logger::DEBUG : Logger::WARNING);
         $logger->pushHandler($streamHandler);
 
         $logfile = __DIR__ . '/../../../../logs/scheduler.log';

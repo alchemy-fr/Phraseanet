@@ -43,10 +43,8 @@ class module_console_systemBackupDB extends Command
         return true;
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $this->checkSetup();
-
         $output->write('Phraseanet is going to be backup...', true);
 
         $appbox = appbox::get_instance(\bootstrap::getCore());

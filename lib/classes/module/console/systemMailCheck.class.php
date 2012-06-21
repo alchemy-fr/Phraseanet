@@ -42,10 +42,8 @@ class module_console_systemMailCheck extends Command
         return true;
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $this->checkSetup();
-
         $appbox = appbox::get_instance(\bootstrap::getCore());
 
         $output->writeln("Processing...");

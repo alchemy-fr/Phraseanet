@@ -50,10 +50,8 @@ class module_console_fieldsMerge extends Command
         return true;
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $this->checkSetup();
-
         $output->writeln("");
 
         try {

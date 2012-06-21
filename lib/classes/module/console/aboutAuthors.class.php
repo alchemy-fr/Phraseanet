@@ -31,10 +31,8 @@ class module_console_aboutAuthors extends Command
         return $this;
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $this->checkSetup();
-
         $output->writeln(file_get_contents(__DIR__ . '/../../../../AUTHORS'));
 
         return 0;
