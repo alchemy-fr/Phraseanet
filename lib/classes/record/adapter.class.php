@@ -484,6 +484,71 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
         $this->base_id = $collection->get_base_id();
 
+        try {
+            $sphinx_rt = sphinxrt::get_instance($appbox->get_registry());
+
+            $sbas_id = $this->get_sbas_id();
+            $sbas_params = phrasea::sbas_params();
+
+            if (isset($sbas_params[$sbas_id])) {
+                $params = $sbas_params[$sbas_id];
+                $sbas_crc = crc32(
+                    str_replace(
+                        array('.', '%')
+                        , '_'
+                        , sprintf('%s_%s_%s_%s', $params['host'], $params['port'], $params['user'], $params['dbname'])
+                    )
+                );
+
+                foreach ($this->get_caption()->get_fields(null, true) as $field) {
+
+                    if ( ! $field->is_indexable()) {
+                        continue;
+                    }
+
+                    $databox_field = $field->get_databox_field();
+
+                    foreach ($field->get_values() as $value) {
+
+                        $sphinx_rt->delete(array("metadatas" . $sbas_crc, "metadatas" . $sbas_crc . "_stemmed_en", "metadatas" . $sbas_crc . "_stemmed_fr"), "metas_realtime" . $sbas_crc, $value->getId());
+
+                        $sphinx_rt->replace_in_metas(
+                            "metas_realtime" . $sbas_crc
+                            , $value->getId()
+                            , $databox_field->get_id()
+                            , $this->get_record_id()
+                            , $sbas_id
+                            , phrasea::collFromBas($this->get_base_id())
+                            , ($this->is_grouping() ? '1' : '0')
+                            , $this->get_type()
+                            , $value->getValue()
+                            , ($databox_field->isBusiness() ? '1' : '0')
+                            , $this->get_creation_date()
+                        );
+                    }
+                }
+
+                $all_datas = array();
+
+                foreach ($this->get_caption()->get_fields(null, true) as $field) {
+                    if ( ! $field->is_indexable()) {
+                        continue;
+                    }
+
+                    $all_datas[] = $field->get_serialized_values();
+                }
+
+                $all_datas = implode(' ', $all_datas);
+                $sphinx_rt->delete(array("documents" . $sbas_crc, "documents" . $sbas_crc . "_stemmed_fr", "documents" . $sbas_crc . "_stemmed_en"), "docs_realtime" . $sbas_crc, $this->get_record_id());
+
+                $sphinx_rt->replace_in_documents(
+                    "docs_realtime" . $sbas_crc, $this->get_record_id(), $all_datas, $sbas_id, phrasea::collFromBas($this->get_base_id()), ($this->is_grouping() ? '1' : '0'), $this->get_type(), $this->get_creation_date()
+                );
+            }
+        } catch (Exception $e) {
+
+        }
+
         $appbox->get_session()->get_logger($this->get_databox())
             ->log($this, Session_Logger::EVENT_MOVE, $collection->get_coll_id(), '');
 

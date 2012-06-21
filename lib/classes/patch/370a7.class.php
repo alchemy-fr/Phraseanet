@@ -157,19 +157,8 @@ class patch_370a7 implements patchInterface
 
     private function truncateTable(\Doctrine\ORM\EntityManager $em, $className)
     {
-        $cmd = $em->getClassMetadata($className);
-        $connection = $em->getConnection();
-        $dbPlatform = $connection->getDatabasePlatform();
-        $connection->beginTransaction();
-        try {
-            $query = $dbPlatform->getTruncateTableSql($cmd->getTableName());
-            $connection->executeUpdate($query);
-            $connection->commit();
-        } catch (\Exception $e) {
-            $connection->rollback();
-            // throw e to stop patch execution if one truncate failed
-            throw $e;
-        }
+        $query = $em->createQuery(sprintf('DELETE FROM %s', $className));
+        $query->execute();
     }
 }
 

@@ -9,13 +9,18 @@
  * file that was distributed with this source code.
  */
 
+namespace KonsoleKommander;
+
 /**
  *
- * @package
- * @package     KonsoleKomander
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
+use Alchemy\Phrasea\Core\Configuration;
+use Alchemy\Phrasea\Core\Version;
+use Alchemy\Phrasea\Command\UpgradeDBDatas;
+use Alchemy\Phrasea\Command\RescanTechnicalDatas;
+use Alchemy\Phrasea\Command\BuildMissingSubdefs;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -25,9 +30,9 @@ use Symfony\Component\Console\Application;
 
 require_once dirname(__FILE__) . '/../lib/classes/bootstrap.class.php';
 
-bootstrap::register_autoloads();
+\bootstrap::register_autoloads();
 
-$configuration = Alchemy\Phrasea\Core\Configuration::build();
+$configuration = Configuration::build();
 if ($configuration->isInstalled()) {
     require_once dirname(__FILE__) . '/../lib/bootstrap.php';
 }
@@ -49,8 +54,7 @@ try {
  This program comes with ABSOLUTELY NO WARRANTY.
  This is free software, and you are welcome to redistribute it
  under certain conditions; type `about:license' for details.\n\n"
-            . ' KONSOLE KOMMANDER', \Alchemy\Phrasea\Core\Version::getName()
-            . ' ' . \Alchemy\Phrasea\Core\Version::getNumber());
+            . ' KONSOLE KOMMANDER', Version::getName() . ' ' . Version::getNumber());
 
     $app->add(new module_console_aboutAuthors('about:authors'));
     $app->add(new module_console_aboutLicense('about:license'));
@@ -58,6 +62,7 @@ try {
     $app->add(new module_console_checkExtension('check:extension'));
 
     $app->add(new module_console_systemUpgrade('system:upgrade'));
+    $app->add(new UpgradeDBDatas('system:upgrade-datas'));
 
     $app->add(new module_console_sphinxGenerateSuggestion('sphinx:generate-suggestions'));
 
@@ -83,9 +88,9 @@ try {
     $app->add(new module_console_fieldsRename('fields:rename'));
     $app->add(new module_console_fieldsMerge('fields:merge'));
 
-    $app->add(new Alchemy\Phrasea\Command\RescanTechnicalDatas('records:rescan-technical-datas'));
-    $app->add(new Alchemy\Phrasea\Command\BuildMissingSubdefs('records:build-missing-subdefs'));
-    
+    $app->add(new RescanTechnicalDatas('records:rescan-technical-datas'));
+    $app->add(new BuildMissingSubdefs('records:build-missing-subdefs'));
+
     $result_code = is_int($app->run()) ? : 1;
 } catch (Exception $e) {
     echo sprintf("an error occured : %s", $e->getMessage());

@@ -274,6 +274,8 @@ class appbox extends base
 
     public function forceUpgrade(Setup_Upgrade &$upgrader)
     {
+        $from_version = $this->get_version();
+
         $upgrader->add_steps(7 + count($this->get_databoxes()));
 
         $registry = $this->get_registry();
@@ -357,6 +359,17 @@ class appbox extends base
         $this->Core['CacheService']->flushAll();
 
         $upgrader->add_steps_complete(1);
+
+        if(version_compare($from_version, '3.1') < 0) {
+            $upgrader->addRecommendation(_('Your install requires data migration, please execute the following command'), 'bin/upgrader --from=3.1');
+        } elseif (version_compare($from_version, '3.5') < 0) {
+            $upgrader->addRecommendation(_('Your install requires data migration, please execute the following command'), 'bin/upgrader --from=3.5');
+        }
+
+        if (version_compare($from_version, '3.7') < 0) {
+            $upgrader->addRecommendation(_('Your install might need to re-read technical datas'), 'bin/console records:rescan-technical-datas');
+            $upgrader->addRecommendation(_('Your install might need to re-read technical datas'), 'bin/console records:build-missing-subdefs');
+        }
 
         return $advices;
     }

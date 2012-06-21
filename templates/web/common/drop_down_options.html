@@ -1,5 +1,5 @@
 {% macro prod(record, user, entry_id)%}
-    {% if entry_id is none %}
+    {% if not entry_id %}
         <a style="float:right;padding:0;margin:0;cursor:pointer;" class="contextMenuTrigger"
         id="contextTrigger_{{record.get_base_id}}_{{record.get_record_id}}">&#9660;</a>
         <table cellspacing="0" cellpadding="0" style="display:none;"
