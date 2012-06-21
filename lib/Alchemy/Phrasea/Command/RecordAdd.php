@@ -43,7 +43,7 @@ class RecordAdd extends Command
             ->addArgument('base_id', InputArgument::REQUIRED, 'The target collection id', null)
             ->addArgument('file', InputArgument::REQUIRED, 'The file to archive', null)
             ->addOption('force', 'f', InputOption::VALUE_OPTIONAL, 'Force a behavior (record|quarantine)', null)
-            ->addOption('in-place', 'i', InputOption::VALUE_OPTIONAL, 'Set this option to 1 to archive record in place. When record is added, it is copied to a temporary folder and file has some metadatas written. If you choose to archive in place, please be warned that the file will be updated (UUID will be written in it)');
+            ->addOption('in-place', 'i', InputOption::VALUE_NONE, 'Set this flag to archive record in place. When record is added, it is copied to a temporary folder and file has some metadatas written. If you choose to archive in place, please be warned that the file will be updated (UUID will be written in it)');
 
         return $this;
     }
@@ -86,9 +86,10 @@ class RecordAdd extends Command
             return;
         }
 
-        $tempfile = null;
+        $tempfile = $originalName = null;
 
         if ($input->getOption('in-place') !== '1') {
+            $originalName = pathinfo($file, PATHINFO_BASENAME);
             $tempfile = tempnam(sys_get_temp_dir(), 'addrecord') . '.' . pathinfo($file, PATHINFO_EXTENSION);
             $this->logger->addInfo(sprintf('copy file from `%s` to temporary `%s`', $file, $tempfile));
             $filesystem->copy($file, $tempfile, true);
@@ -96,7 +97,7 @@ class RecordAdd extends Command
             $media = $core['mediavorus']->guess(new \SplFileInfo($file));
         }
 
-        $file = new File($media, $collection);
+        $file = new File($media, $collection, $originalName);
         $session = new LazaretSession();
         $core['EM']->persist($session);
 
