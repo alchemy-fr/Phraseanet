@@ -209,6 +209,10 @@
           <form>
             <label>{% trans 'Adresse email du nouvel utilisateur' %}</label>
             <input type="text" name="value" />
+            <label class="checkbox" for="warn_user">
+                <input type="checkbox" name="warn_user" value="1"></input>
+                {% trans "inform the user that his account is created" %}
+            </label>
             <img src="/skins/icons/loaderFFF.gif" class="new_user_loader" style="display:none;"/>
           </form>
         </div>
