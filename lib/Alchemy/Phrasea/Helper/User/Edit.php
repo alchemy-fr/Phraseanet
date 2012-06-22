@@ -522,8 +522,11 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $parm = $request->get_parms_from_serialized_datas($infos, 'user_infos');
 
-        if ($parm['email'] && ! \mail::validateEmail($parm['email']))
+        if ($parm['email'] && ! \mail::validateEmail($parm['email'])) {
             throw new \Exception_InvalidArgument(_('Email addess is not valid'));
+        }
+
+        $old_email = $user->get_email();
 
         $user->set_firstname($parm['first_name'])
             ->set_lastname($parm['last_name'])
@@ -538,6 +541,12 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             ->set_tel($parm['telephone'])
             ->set_fax($parm['fax']);
 
+        $new_email = $user->get_email();
+
+        if ($old_email != $new_email) {
+            \mail::change_mail_information($user->get_display_name(), $old_email, $new_email);
+        }
+        
         return $this;
     }
 

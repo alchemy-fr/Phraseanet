@@ -30,9 +30,15 @@ if ( ! is_null($parm['token'])) {
 
         $new_mail = $datas['datas'];
         $usr_id = $datas['usr_id'];
+
         $user = User_Adapter::getInstance($usr_id, $appbox);
+        $old_email = $user->get_email();
 
         $user->set_email($new_mail);
+
+        if ($old_email != $new_mail) {
+            \mail::change_mail_information($user->get_display_name(), $old_email, $new_mail);
+        }
 
         random::removeToken($parm['token']);
 
