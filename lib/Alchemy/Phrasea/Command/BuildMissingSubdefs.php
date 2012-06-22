@@ -33,6 +33,8 @@ class BuildMissingSubdefs extends Command
     {
         parent::__construct($name);
 
+        $this->setDescription('Build missing subviews');
+
         return $this;
     }
 

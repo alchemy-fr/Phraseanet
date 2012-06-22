@@ -207,8 +207,16 @@
         <div id="time_dialog"></div>
         <div id="user_add_dialog" title="{% trans 'Ajouter un nouvel utilisateur' %}">
           <form>
-            <label>{% trans 'Adresse email du nouvel utilisateur' %}</label>
-            <input type="text" name="value" />
+            <label for="new_user_mail">{% trans 'Adresse email du nouvel utilisateur' %}</label>
+            <input id="new_user_mail"  type="text" name="value" />
+            <label class="checkbox" for="send_credentials">
+                <input type="checkbox" checked="checked" name="send_credentials" id="send_credentials" value="1" />
+                {% trans "Send an email to the user to setup his password" %}
+            </label>
+            <label class="checkbox" for="validate_mail">
+                <input type="checkbox" checked="checked" name="validate_mail" id="validate_mail" value="1" />
+                {% trans "Require email validation to activate the account" %}
+            </label>
             <img src="/skins/icons/loaderFFF.gif" class="new_user_loader" style="display:none;"/>
           </form>
         </div>

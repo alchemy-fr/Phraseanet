@@ -4185,28 +4185,8 @@ dans l'onglet thesaurus :  arbres, menus contextuels
 }
 
 #uploadBox .upload-record .canva-wrapper {
-    height: 120px;
-}
-
-@media (min-width: 768px) and (max-width: 979px) {
-    #uploadBox .upload-record canvas {
-        max-height: 120px;
-        width: 94px;
-    }
-}
-
-@media (min-width: 980px) and (max-width: 1199px) {
-    #uploadBox .upload-record canvas {
-        max-height: 120px;
-        width: 130px;
-    }
-}
-
-@media (min-width: 1200px) {
-    #uploadBox .upload-record canvas {
-        max-height: 120px;
-        width: 160px;
-    }
+    height: 125px;
+    overflow: auto;
 }
 
 #uploadBox .upload-record .name-doc {

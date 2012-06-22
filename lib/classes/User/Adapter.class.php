@@ -1690,18 +1690,21 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     {
         $conn = $appbox->get_connection();
 
-        if (trim($login) == '')
-            throw new Exception('Invalid username');
-        if (trim($password) == '')
-            throw new Exception('Invalid password');
+        if (trim($login) == '') {
+            throw new \InvalidArgumentException('Invalid username');
+        }
+
+        if (trim($password) == '') {
+            throw new \InvalidArgumentException('Invalid password');
+        }
 
         $login = $invite ? 'invite' . random::generatePassword(16) : $login;
 
         $nonce = random::generatePassword(16);
 
         $sql = 'INSERT INTO usr
-      (usr_id, usr_login, usr_password, usr_creationdate, usr_mail, create_db, nonce, salted_password, invite)
-      VALUES (null, :login, :password, NOW(), :email, :admin, :nonce, 1, :invite)';
+                (usr_id, usr_login, usr_password, usr_creationdate, usr_mail, create_db, nonce, salted_password, invite)
+                VALUES (null, :login, :password, NOW(), :email, :admin, :nonce, 1, :invite)';
 
         $stmt = $conn->prepare($sql);
         $stmt->execute(array(
