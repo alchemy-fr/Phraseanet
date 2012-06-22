@@ -323,7 +323,13 @@ class appbox extends base
          * Step 5
          */
         $upgrader->set_current_message(_('Copying files'));
-        phrasea::copy_custom_files();
+
+        $origine = $registry->get('GV_RootPath') . 'config/';
+        $target = $registry->get('GV_RootPath') . 'www/custom/';
+
+        $filesystem = $core['file-system'];
+        $filesystem->mirror($origine, $target);
+
         $upgrader->add_steps_complete(1);
 
         $advices = array();
