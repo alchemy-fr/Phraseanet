@@ -32,7 +32,9 @@ class BuildMissingSubdefs extends Command
     public function __construct($name = null)
     {
         parent::__construct($name);
-        $this->setDescription('Build missing subdefs for all records');
+
+        $this->setDescription('Build missing subviews');
+
         return $this;
     }
 

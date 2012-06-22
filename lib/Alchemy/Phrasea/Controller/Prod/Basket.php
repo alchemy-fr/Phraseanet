@@ -189,13 +189,12 @@ class Basket implements ControllerProviderInterface
 
                     $success = true;
                     $msg = _('Basket has been updated');
-                    $basket = $basket->getId();
                 } catch (\Exception_NotFound $e) {
                     $msg = _('The requested basket does not exist');
                 } catch (\Exception_Forbidden $e) {
-                    $msg = _('You do not have enough rights to access this basket');
+                    $msg = _('You do not have access to this basket');
                 } catch (\Exception $e) {
-                    $msg = _('An error occurred, please retry or contact an admin if problem persists');
+                    $msg = _('An error occurred');
                 }
 
                 $data = array(

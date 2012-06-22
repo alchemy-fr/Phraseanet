@@ -21,6 +21,7 @@ $session = $appbox->get_session();
 $registry = $appbox->get_registry();
 
 $request = http_request::getInstance();
+$symfoRequest = Symfony\Component\HttpFoundation\Request::createFromGlobals();
 $parm = $request->get_parms('salt', 'error', 'sent', 'token', 'form_password', 'form_password_confirm', 'mail');
 
 $needed = array();
@@ -66,7 +67,7 @@ if (isset($parm['token']) && isset($parm['form_password']) && isset($parm['form_
             $user = User_Adapter::getInstance($datas['usr_id'], $appbox);
             $user->set_password($parm['form_password_confirm']);
 
-            mail::change_password($user);
+            \mail::change_password($user, $symfoRequest->getClientIp(), new \DateTime());
 
             random::removeToken($parm['token']);
 

@@ -88,7 +88,8 @@ $(document).ready(function(){
       data: {
         act:'CREATENEWUSER',
         value:$('input[name="value"]', container).val(),
-        warn_user: $('input[name="warn_user"]', container).is(':checked') ? 1 : 0,
+        send_credentials: $('input[name="send_credentials"]', container).is(':checked') ? 1 : 0,
+        validate_mail: $('input[name="validate_mail"]', container).is(':checked') ? 1 : 0,
         template:is_template ? '1':'0'
       },
       success: function(data){

@@ -21,6 +21,7 @@ $registry = $appbox->get_registry();
 require_once($registry->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php');
 
 $request = http_request::getInstance();
+$symfoRequest = Symfony\Component\HttpFoundation\Request::createFromGlobals();
 
 $parm = $request->get_parms('form_old_password', 'form_password', 'form_password_confirm');
 
@@ -54,7 +55,7 @@ if ( ! is_null($parm['form_old_password']) && ! is_null($parm['form_password']) 
             $auth->challenge_password();
             $user->set_password($parm['form_password_confirm']);
 
-            mail::change_password($user);
+            \mail::change_password($user, $symfoRequest->getClientIp(), new \DateTime());
 
             return phrasea::redirect('/login/account.php?notice=password-update-ok');
         } catch (Exception $e) {

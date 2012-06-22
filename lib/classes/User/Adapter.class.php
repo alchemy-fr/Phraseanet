@@ -1686,16 +1686,16 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         return $locale;
     }
 
-    public static function create(appbox &$appbox, $login, $password, $email, $admin, $invite = false, $sendCredentials = false)
+    public static function create(appbox &$appbox, $login, $password, $email, $admin, $invite = false)
     {
         $conn = $appbox->get_connection();
 
         if (trim($login) == '') {
-            throw new Exception('Invalid username');
+            throw new \InvalidArgumentException('Invalid username');
         }
 
         if (trim($password) == '') {
-            throw new Exception('Invalid password');
+            throw new \InvalidArgumentException('Invalid password');
         }
 
         $login = $invite ? 'invite' . random::generatePassword(16) : $login;
@@ -1724,10 +1724,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
             $stmt = $conn->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();
-        }
-
-        if ($sendCredentials) {
-            mail::sendCredentials($usr_id, $login, $email);
         }
 
         return self::getInstance($usr_id, $appbox);
