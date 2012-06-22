@@ -133,6 +133,31 @@ class mail
         return self::send_mail($subject, $body, $to);
     }
 
+    public static function change_mail_information($display_name, $old_email, $new_email)
+    {
+        $registry = registry::get_instance();
+        $subject = sprintf(_('Update of your email address on %s'), $registry->get('GV_homeTitle'));
+
+        $body = "<div>" . sprintf(_('Dear %s,'), $display_name) . "</div>\n<br/>\n";
+        $body .= "<div>" . _('Your contact email address has been updated') . "</div>\n<br/>\n";
+
+        if ($old_email) {
+            $body .= "<div>" . sprintf(_('You will no longer receive notifications at %s'), sprintf('<b>%s</b>', $old_email)) . "</div>\n";
+        }
+
+        if ($new_email) {
+            $body .= "<div>" . sprintf(_('You will now receive notifications at %s'), sprintf('<b>%s</b>', $new_email)) . "</div>\n";
+        }
+
+        $to_old = array('email' => $old_email, 'name'  => $display_name);
+        $to_new = array('email' => $new_email, 'name'  => $display_name);
+
+        $res_old = $old_email ? self::send_mail($subject, $body, $to_old) : true;
+        $res_new = $new_email ? self::send_mail($subject, $body, $to_new) : true;
+
+        return $res_old && $res_new;
+    }
+
     public static function mail_confirm_registered($email)
     {
         $registry = \registry::get_instance();
