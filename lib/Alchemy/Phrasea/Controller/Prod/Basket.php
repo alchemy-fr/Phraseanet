@@ -173,21 +173,34 @@ class Basket implements ControllerProviderInterface
          *
          */
         $controllers->post('/{basket_id}/update/', function(Application $app, Request $request, $basket_id) {
-                $em = $app['Core']->getEntityManager();
+                $success = false;
 
-                $basket = $em->getRepository('\Entities\Basket')
-                    ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), true);
+                try {
+                    $em = $app['Core']->getEntityManager();
 
-                $basket->setName($request->get('name', ''));
-                $basket->setDescription($request->get('description'));
+                    $basket = $em->getRepository('\Entities\Basket')
+                        ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), true);
 
-                $em->merge($basket);
-                $em->flush();
+                    $basket->setName($request->get('name', ''));
+                    $basket->setDescription($request->get('description'));
+
+                    $em->merge($basket);
+                    $em->flush();
+
+                    $success = true;
+                    $msg = _('Basket has been updated');
+                } catch (\Exception_NotFound $e) {
+                    $msg = _('The requested basket does not exist');
+                } catch (\Exception_Forbidden $e) {
+                    $msg = _('You do not have access to this basket');
+                } catch (\Exception $e) {
+                    $msg = _('An error occurred');
+                }
 
                 $data = array(
-                    'success' => true
-                    , 'message' => _('Basket has been updated')
-                    , 'basket'  => array('id' => $basket->getId())
+                    'success' => $success
+                    , 'message' => $msg
+                    , 'basket'  => array('id' => $basket_id)
                 );
 
                 if ($request->getRequestFormat() == 'json') {

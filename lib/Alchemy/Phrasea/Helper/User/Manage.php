@@ -166,14 +166,33 @@ class Manage extends \Alchemy\Phrasea\Helper\Helper
         $count = count($row);
 
         if ( ! is_array($row) || $count == 0) {
-            $created_user = \User_Adapter::create($appbox, $email, \random::generatePassword(16), $email, false, false);
-            $this->usr_id = $created_user->get_id();
+            $sendCredentials = ! ! $this->request->get('send_credentials', false);
+            $validateMail = ! ! $this->request->get('validate_mail', false);
+
+            $createdUser = \User_Adapter::create($appbox, $email, \random::generatePassword(16), $email, false, false);
+            /* @var $createdUser \User_Adapter */
+            if ($validateMail) {
+                $createdUser->set_mail_locked(true);
+                \mail::mail_confirmation($email, $createdUser->get_id());
+            }
+
+            if ($sendCredentials) {
+                $urlToken = \random::getUrlToken(\random::TYPE_PASSWORD, $createdUser->get_id());
+                $registry = \bootstrap::getCore()->getRegistry();
+
+                if (false !== $urlToken) {
+                    $url = sprintf('%slogin/forgotpwd.php?token=%s', $registry->get('GV_ServerName'), $urlToken);
+                    \mail::send_credentials($url, $createdUser->get_login(), $createdUser->get_email());
+                }
+            }
+
+            $this->usr_id = $createdUser->get_id();
         } else {
             $this->usr_id = $row['usr_id'];
-            $created_user = \User_Adapter::getInstance($this->usr_id, $appbox);
+            $createdUser = \User_Adapter::getInstance($this->usr_id, $appbox);
         }
 
-        return $created_user;
+        return $createdUser;
     }
 
     public function create_template()

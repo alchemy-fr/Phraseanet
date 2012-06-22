@@ -158,6 +158,36 @@ class mail
         return $res_old && $res_new;
     }
 
+    public static function change_password(User_Adapter $user, $ip, \DateTime $date)
+    {
+        $registry = registry::get_instance();
+
+        $subject = sprintf(_('Your account update on %s'), $registry->get('GV_homeTitle'));
+
+        $body = "<div>" . sprintf(_('Dear %s,'), $user->get_display_name()) . "</div><br/>\n\n";
+        $body .= "<div>" . sprintf(_('The password of your account %s has been successfully updated'), $user->get_login()) . "</div><br/>\n\n";
+        $body .= "<div>" . sprintf(_('For your interest, the request has been done from %s at %s'), $ip, $date->format(DATE_ATOM)) . "</div>\n";
+
+        $to = array('email' => $user->get_email(), 'name'  => $user->get_email());
+
+        return self::send_mail($subject, $body, $to);
+    }
+
+    public static function send_credentials($url, $login, $email)
+    {
+        $registry = registry::get_instance();
+
+        $subject = sprintf(_('Your account on %s'), $registry->get('GV_homeTitle'));
+
+        $body = "<div>" . sprintf(_('Your account with the login %s as been created'), $login) . "</div><br/>\n\n";
+        $body .= "<div>" . _('Please follow this url to setup your password') . "</div>\n";
+        $body .= "<div><a href=\"" . $url . "\">" . $url . "</a></div>\n";
+
+        $to = array('email' => $email, 'name'  => $email);
+
+        return self::send_mail($subject, $body, $to);
+    }
+
     public static function mail_confirm_registered($email)
     {
         $registry = \registry::get_instance();

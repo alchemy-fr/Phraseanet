@@ -4,16 +4,16 @@
         <input type="text" name="name" value="{{ basket.getName() }}" style="width:98%;" />
         <label style="margin:5px 0 0 0;">{% trans 'panier:: description' %}</label>
         <textarea style="width:98%;height:120px;" name="description">{{ basket.getDescription() }}</textarea>
-        <button class="btn btn-inverse" style="margin: 5px 40%;">{% trans 'boutton::valider' %}</button>
+        <button type='button' class="btn btn-inverse" style="margin: 5px 40%;">{% trans 'boutton::valider' %}</button>
     </form>
     <script type="text/javascript">
       $(document).ready(function(){
 
-        $('#DIALOG form').bind('submit', function(event){
+        $('#basket-rename-box button').bind('click', function(event){
 
           //$this.SetLoader(true);
 
-          var $form = $(this);
+          var $form = $(this).closest('form');
 
           $.ajax({
             type: $form.attr('method'),
@@ -24,11 +24,14 @@
 
             },
             success: function(data){
-
-              return p4.WorkZone.refresh(data.basket.id);
-              $('#DIALOG').dialog('close').empty();
-
-              return;
+                $dialog = p4.Dialog.get(1).Close();
+                if(data.success) {
+                    humane.info(data.message);
+                    return p4.WorkZone.refresh(data.basket.id);
+                } else {
+                    humane.error(data.message);
+                    return false;
+                }
             },
             error: function(){
 
