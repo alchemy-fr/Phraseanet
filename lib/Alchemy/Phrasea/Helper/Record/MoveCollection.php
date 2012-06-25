@@ -40,16 +40,41 @@ class MoveCollection extends RecordHelper
     protected $works_on_unique_sbas = true;
 
     /**
+     * Destination collection id
+     *
+     * @var integer
+     */
+    protected $baseIdDestination;
+
+    /**
      *
      * @param  \Alchemy\Phrasea\Core $core
+     *
      * @return MoveCollection
      */
-    public function __construct(Core $core, Request $Request)
+    public function __construct(Core $core, Request $request)
     {
-        parent::__construct($core, $Request);
+        $this->baseIdDestination = $request->get('base_id');
+
+        if ($request->get("chg_coll_son") == "1") {
+            $this->flatten_groupings = true;
+        }
+
+        parent::__construct($core, $request);
+
         $this->evaluate_destinations();
 
         return $this;
+    }
+
+    /**
+     * Get destination collection id
+     *
+     * @return integer
+     */
+    public function getBaseIdDestination()
+    {
+        return $this->baseIdDestination;
     }
 
     /**
@@ -91,38 +116,23 @@ class MoveCollection extends RecordHelper
 
     /**
      *
-     * @param  http_request $request
      * @return action_move
      */
-    public function execute(Request $request)
+    public function execute()
     {
         $appbox = \appbox::get_instance($this->core);
         $user = $this->getCore()->getAuthenticatedUser();
 
-        $baseId = $request->get('base_id');
-
         $base_dest =
-            $user->ACL()->has_right_on_base($baseId, 'canaddrecord') ?
-            $request->get('base_id') : false;
+            $user->ACL()->has_right_on_base($this->baseIdDestination, 'canaddrecord') ?
+            $this->baseIdDestination : false;
 
-        if ( ! $user->ACL()->has_right_on_base($baseId, 'canaddrecord')) {
-            throw new \Exception_Unauthorized(sprintf("%s do not have the permission to move records to %s", $user->get_login()));
+        if ( ! $user->ACL()->has_right_on_base($this->baseIdDestination, 'canaddrecord')) {
+            throw new \Exception_Unauthorized(sprintf("user id %s does not have the permission to move records to %s", $user->get_id(), \phrasea::bas_names($this->baseIdDestination)));
         }
 
-        if ( ! $this->is_possible())
-            throw new Exception('This action is not possible');
-
-        if ($request->get("chg_coll_son") == "1") {
-            foreach ($this->selection as $record) {
-                if ( ! $record->is_grouping())
-                    continue;
-                foreach ($record->get_children() as $child) {
-                    if ( ! $user->ACL()->has_right_on_base(
-                            $child->get_base_id(), 'candeleterecord'))
-                        continue;
-                    $this->selection->add_element($child);
-                }
-            }
+        if ( ! $this->is_possible()) {
+            throw new \Exception('This action is not possible');
         }
 
         $collection = \collection::get_from_base_id($base_dest);
