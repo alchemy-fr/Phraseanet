@@ -1,0 +1,64 @@
+/******* TABLES ***************************************************************/
+table.admintable {
+  width: 100%;
+  margin: 10px 0;
+  border: none;
+}
+table.admintable tr {
+  height: 28px;
+  vertical-align: middle;
+}
+table.admintable thead {
+  background-color: #e5d4a0;
+}
+table.admintable thead th {
+  padding: 3px;
+  text-align: left;
+  font-weight: bold;
+}
+table.admintable tbody tr.even {
+  background-color: #fffbcd;
+}
+table.admintable tbody tr.selected {
+  background-color: #f0ad30;
+}
+table.admintable tbody tr:hover {
+  background-color: #e5d4a0;
+  cursor: pointer;
+}
+table.admintable tbody td {
+  padding: 3px;
+}
+table.admintable tbody.dropdown {
+  cursor: pointer;
+}
+/******* USERS TABLE **********************************************************/
+#users th.sortable {
+  cursor: pointer;
+}
+#users th.sortable span {
+  margin: 0 5px;
+}
+#users th.sortable span.ord_notifier {
+  display: none;
+}
+#users th.sortable.hover {
+  background-color: #f0ad30;
+}
+#users th.sortable.sorted {
+  background-color: #f0ad30;
+}
+#users th.sortable.sorted span.ord_notifier {
+  display: inline;
+}
+/******* EDIT-USERS TABLE *****************************************************/
+td.users_col {
+  width: 23px;
+  border: 0px solid transparent;
+  vertical-align: middle;
+  text-align: center;
+}
+td.users_col.options {
+  color: #afafaf;
+  cursor: pointer;
+}

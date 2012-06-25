@@ -1,0 +1,158 @@
+/******* GLOBAL CSS for ADMIN *************************************************/
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #ffffff;
+  color: #333333;
+  overflow-y: auto;
+}
+h1 {
+  font-weight: bold;
+  font-size: 24px;
+  text-align: left;
+  margin: 10px 0;
+}
+h2 {
+  font-weight: bold;
+  font-size: 18px;
+  text-align: left;
+  margin: 7px 0;
+}
+h3 {
+  font-weight: bold;
+  font-size: 14px;
+  text-align: left;
+  margin: 4px 0;
+}
+h4 {
+  font-weight: bold;
+  font-size: 12px;
+  text-align: left;
+  margin: 2px 0;
+}
+a {
+  color: #333333;
+  text-decoration: underline;
+  cursor: pointer;
+}
+a:hover {
+  color: #005580;
+  text-decoration: underline;
+  cursor: pointer;
+}
+img {
+  vertical-align: middle;
+}
+input,
+textarea,
+select,
+.uneditable-input {
+  margin: 0;
+  padding: 4px;
+}
+.treeview ul {
+  background-color: transparent;
+}
+div.finder div.content div.title {
+  margin-top: -2px;
+  position: relative;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+  overflow: hidden;
+}
+/******* MAIN MENU ************************************************************/
+#mainMenu {
+  background-color: #fceb3f;
+}
+#mainMenu a,
+#mainMenu b,
+#mainMenu .title,
+#mainMenu span {
+  color: #000000;
+}
+#mainMenu a:hover span {
+  background-color: #fffbcd;
+}
+#mainMenu span.selected {
+  border-top: 3px solid #000000;
+}
+/******* LEFT SIDE ************************************************************/
+#left {
+  background-color: #fffbcd;
+  overflow: auto;
+}
+#FNDR {
+  overflow: auto;
+}
+/******* USERS ****************************************************************/
+.admin_head_opts {
+  margin: 5px 0 10px 0;
+}
+.admin_head_opts span {
+  margin: 0 10px;
+}
+.admin_head_opts a {
+  margin: 0 5px;
+}
+#users_page_form p {
+  margin: 5px 5px 10px;
+}
+#users_page_form .input-mini {
+  width: 30px;
+}
+#users_check_uncheck div {
+  padding: 5px 10px;
+  background-color: #cccccc;
+  color: #000000;
+  cursor: pointer;
+}
+#users_check_uncheck div.hovered {
+  padding: 5px 10px;
+  background-color: #4d4d4d;
+  color: #ffffff;
+}
+/******* EDIT USERS ***********************************************************/
+div.no_switch {
+  width: 12px;
+  height: 12px;
+  margin: 0 auto;
+  background-image: url('/skins/icons/ccoch5.gif');
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+div.switch_quota,
+div.switch_masks,
+div.switch_time,
+div.switch_right {
+  width: 12px;
+  height: 12px;
+  margin: 0 auto;
+}
+div.switch_quota.mixed,
+div.switch_masks.mixed,
+div.switch_time.mixed,
+div.switch_right.mixed {
+  background-image: url('/skins/icons/ccoch2.gif');
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+div.switch_quota.checked,
+div.switch_masks.checked,
+div.switch_time.checked,
+div.switch_right.checked {
+  background-image: url('/skins/icons/ccoch1.gif');
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+div.switch_quota.unchecked,
+div.switch_masks.unchecked,
+div.switch_time.unchecked,
+div.switch_right.unchecked {
+  background-image: url('/skins/icons/ccoch0.gif');
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+.ui-datepicker {
+  z-index: 1500;
+}

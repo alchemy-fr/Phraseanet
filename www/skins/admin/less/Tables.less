@@ -1,0 +1,108 @@
+//****** LESS SETTINGS ********************************************************/
+
+// Colors & bg settings
+@white: #FFF;
+@black: #000;
+@dark: #333;
+@grey: #CCC;
+@blue: #005580;
+@orange: #F0AD30;
+@lemon: #FCEB3F;
+@sand: #FFFBCD;
+@dk-sand: #E5D4A0;
+.bg(@c: @white) {
+    background-color: @c;
+}
+
+// Spaces settings
+.no-space() {
+    margin: 0;
+    padding: 0;
+}
+
+// Text settings
+.color(@c: @dark) {
+    color: @c;
+}
+
+// Misc.
+.cursor(@type: pointer) {
+    cursor: @type;
+}
+
+/******* TABLES ***************************************************************/
+
+table.admintable {
+    width: 100%;
+    margin: 10px 0;
+    border: none;
+    tr {
+        height: 28px;
+        vertical-align: middle;
+    }
+    thead {
+        .bg(@dk-sand);
+        th {
+            padding: 3px;
+            text-align: left;
+            font-weight: bold;
+        }
+    }
+    tbody {
+        tr {
+            &.even {
+                .bg(@sand);
+            }
+            &.selected {
+                .bg(@orange);
+            }
+            &:hover {
+                .bg(@dk-sand);
+                .cursor;
+            }
+        }
+        td {
+            padding: 3px;
+        }
+        &.dropdown {
+            .cursor;
+        }
+    }
+}
+
+/******* USERS TABLE **********************************************************/
+
+#users th.sortable {
+    .cursor;
+    span {
+        margin: 0 5px;
+        &.ord_notifier {
+            display: none;
+        }
+    }
+    &.hover {
+        .bg(@orange);
+    }
+    &.sorted {
+        .bg(@orange);
+        span {
+            &.ord_notifier {
+                display: inline;
+            }
+        }
+    }
+}
+
+/******* EDIT-USERS TABLE *****************************************************/
+
+td.users_col {
+    width: 23px;
+    border: 0px solid transparent;
+    vertical-align: middle;
+    text-align: center;
+    &.options {
+        .color(#AFAFAF);
+        .cursor;
+    }
+}
+
