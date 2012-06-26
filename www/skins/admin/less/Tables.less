@@ -21,6 +21,13 @@
 }
 
 // Text settings
+.titleTable(@m1, @m2, @size, @align, @deco) {
+    margin: @m1 @m2;
+    font-weight: bold;
+    font-size: @size;
+    text-align: @align;
+    text-decoration: @deco;
+}
 .color(@c: @dark) {
     color: @c;
 }
@@ -31,6 +38,43 @@
 }
 
 /******* TABLES ***************************************************************/
+
+div.center {
+    width: 100%;
+    margin: auto;
+}
+
+.tableTitle {
+    .titleTable(20px, auto, 14px, center, underline);
+}
+
+table.whoisTable {
+    margin: auto;
+    border: @black 1px solid;
+    table-layout: fixed;
+    tr {
+        border: @grey 1px solid;
+        &:hover {
+            .bg(@sand);
+        }
+    }
+    td {
+        padding: 3px;
+        &.colTitle {
+            width: 120px;
+            text-align: left;
+        }
+        &.noborder {
+            width: 60px;
+            text-align: right;
+        }
+    }
+}
+
+.spacehr {
+    margin-top: 40px;
+    margin-bottom: 30px;
+}
 
 table.admintable {
     width: 100%;

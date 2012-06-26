@@ -1,4 +1,41 @@
 /******* TABLES ***************************************************************/
+div.center {
+  width: 100%;
+  margin: auto;
+}
+.tableTitle {
+  margin: 20px auto;
+  font-weight: bold;
+  font-size: 14px;
+  text-align: center;
+  text-decoration: underline;
+}
+table.whoisTable {
+  margin: auto;
+  border: #000000 1px solid;
+  table-layout: fixed;
+}
+table.whoisTable tr {
+  border: #cccccc 1px solid;
+}
+table.whoisTable tr:hover {
+  background-color: #fffbcd;
+}
+table.whoisTable td {
+  padding: 3px;
+}
+table.whoisTable td.colTitle {
+  width: 120px;
+  text-align: left;
+}
+table.whoisTable td.noborder {
+  width: 60px;
+  text-align: right;
+}
+.spacehr {
+  margin-top: 40px;
+  margin-bottom: 30px;
+}
 table.admintable {
   width: 100%;
   margin: 10px 0;
