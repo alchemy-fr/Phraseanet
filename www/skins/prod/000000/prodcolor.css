@@ -221,7 +221,7 @@ span.ww_winTitle {
     height: 52px;
     display: inline-block;
     background-color: #404040;
-    z-index: 1000;
+    z-index: 10;
 }
 
 #idFrameC .ui-tabs #thesaurus_tab li a {
