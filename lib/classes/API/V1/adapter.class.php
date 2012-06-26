@@ -1933,8 +1933,8 @@ class API_V1_adapter extends API_V1_Abstract
                 'label_off'  => $datas['labeloff'],
                 'img_on'     => $datas['img_on'],
                 'img_off'    => $datas['img_off'],
-                'searchable' => $datas['searchable'],
-                'printable'  => $datas['printable'],
+                'searchable' => ! ! $datas['searchable'],
+                'printable'  => ! ! $datas['printable'],
             );
         }
 
