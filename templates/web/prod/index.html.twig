@@ -178,18 +178,8 @@
                     <div id="thesaurus_tab" class="PNB ui-tabs-panel ui-tabs-hide" style="top:52px;">
                         <div id="THPD_tabs">
                             <ul>
-                                <li>
-                                    <a href="#THPD_T">
-                                        <span>{% trans 'prod::thesaurusTab:thesaurus' %}</span>
-                                    </a>
-                                </li>
-                                {% if user.ACL().has_access_to_module('thesaurus') %}
-                                <li>
-                                    <a href="#THPD_C">
-                                        <span>{% trans 'prod::thesaurusTab:candidats' %}</span>
-                                    </a>
-                                </li>
-                                {% endif %}
+                                <li class="th_tab"><a href="#THPD_T"><span>{% trans 'prod::thesaurusTab:thesaurus' %}</span></a></li>
+                                <li class="th_tab"><a href="#THPD_C"><span>{% trans 'prod::thesaurusTab:candidats' %}</span></a></li>
                             </ul>
                             <div class="ui-tabs-panels-container">
                                 <div id="THPD_T">
