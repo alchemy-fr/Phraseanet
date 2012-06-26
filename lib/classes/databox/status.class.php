@@ -86,8 +86,8 @@ class databox_status
                 $this->status[$bit]["labeloff"] = (string) $sb['labelOff'];
                 $this->status[$bit]["labelon"] = (string) $sb['labelOn'];
 
-                $this->status[$bit]["img_off"] = false;
-                $this->status[$bit]["img_on"] = false;
+                $this->status[$bit]["img_off"] = '';
+                $this->status[$bit]["img_on"] = '';
 
                 if (is_file($path . "-stat_" . $bit . "_0.gif")) {
                     $this->status[$bit]["img_off"] = $url . "-stat_" . $bit . "_0.gif";
@@ -278,11 +278,11 @@ class databox_status
 
                 $databox->saveStructure($doc);
 
-                if ($status[$bit]['img_off']) {
+                if ('' !== $status[$bit]['img_off']) {
                     $core['file-system']->remove($status[$bit]['path_off']);
                 }
 
-                if ($status[$bit]['img_on']) {
+                if ('' !== $status[$bit]['img_on']) {
                     $core['file-system']->remove($status[$bit]['path_on']);
                 }
 
@@ -363,15 +363,15 @@ class databox_status
             self::$_status[$sbas_id]->status[$bit]["name"] = $properties['name'];
             self::$_status[$sbas_id]->status[$bit]["labelon"] = $properties['labelon'];
             self::$_status[$sbas_id]->status[$bit]["labeloff"] = $properties['labeloff'];
-            self::$_status[$sbas_id]->status[$bit]["searchable"] = (int) $properties['searchable'];
-            self::$_status[$sbas_id]->status[$bit]["printable"] = (int) $properties['printable'];
+            self::$_status[$sbas_id]->status[$bit]["searchable"] = ! ! $properties['searchable'];
+            self::$_status[$sbas_id]->status[$bit]["printable"] = ! ! $properties['printable'];
 
             if ( ! isset(self::$_status[$sbas_id]->status[$bit]['img_on'])) {
-                self::$_status[$sbas_id]->status[$bit]['img_on'] = false;
+                self::$_status[$sbas_id]->status[$bit]['img_on'] = '';
             }
 
             if ( ! isset(self::$_status[$sbas_id]->status[$bit]['img_off'])) {
-                self::$_status[$sbas_id]->status[$bit]['img_off'] = false;
+                self::$_status[$sbas_id]->status[$bit]['img_off'] = '';
             }
         }
 
