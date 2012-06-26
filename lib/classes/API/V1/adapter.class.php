@@ -743,7 +743,7 @@ class API_V1_adapter extends API_V1_Abstract
         $result->set_datas(array(
             'offset_start' => $offset_start,
             'per_page'     => $per_page,
-            'items'        => $ret,
+            'quarantine_items'        => $ret,
         ));
 
         return $result;
@@ -762,7 +762,7 @@ class API_V1_adapter extends API_V1_Abstract
             throw new \API_V1_exception_forbidden('You do not have access to this quarantine item');
         }
 
-        $ret = array('item' => $this->list_lazaret_file($lazaretFile));
+        $ret = array('quarantine_item' => $this->list_lazaret_file($lazaretFile));
 
         $result = new API_V1_result($request, $this);
 
