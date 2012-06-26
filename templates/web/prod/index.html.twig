@@ -178,8 +178,18 @@
                     <div id="thesaurus_tab" class="PNB ui-tabs-panel ui-tabs-hide" style="top:52px;">
                         <div id="THPD_tabs">
                             <ul>
-                                <li><a href="#THPD_T"><span>{% trans 'prod::thesaurusTab:thesaurus' %}</span></a></li>
-                                <li><a href="#THPD_C"><span>{% trans 'prod::thesaurusTab:candidats' %}</span></a></li>
+                                <li>
+                                    <a href="#THPD_T">
+                                        <span>{% trans 'prod::thesaurusTab:thesaurus' %}</span>
+                                    </a>
+                                </li>
+                                {% if user.ACL().has_access_to_module('thesaurus') %}
+                                <li>
+                                    <a href="#THPD_C">
+                                        <span>{% trans 'prod::thesaurusTab:candidats' %}</span>
+                                    </a>
+                                </li>
+                                {% endif %}
                             </ul>
                             <div class="ui-tabs-panels-container">
                                 <div id="THPD_T">
@@ -215,6 +225,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                {% if user.ACL().has_access_to_module('thesaurus') %}
                                 <div id="THPD_C">
                                     <div id='THPD_C_treeBox' class="searchZone">
                                         <div onclick="Xclick(event);return(false);" ondblclick="CXdblClick(event);">
@@ -232,6 +243,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                {% endif %}
                             </div>
                         </div>
                         <div style="display:none" id="THPD_confirm_del_dlg">
@@ -435,7 +447,7 @@
                                                                 <select name="datefield" class="input-medium">
                                                                     {% for field_id, field in search_datas['dates'] %}
                                                                         <option onchange="checkFilters(true);"
-                                                                            class="field_switch field_{{field['sbas']|implode(' field_')}}" value="{{field_id}}">{{field['fieldname']}}</option>
+                                                                            class="field_switch field_{{field['sbas']|implode(' field_')}}" value="{{ field['fieldname'] }}">{{field['fieldname']}}</option>
                                                                     {% endfor %}
                                                                     <option value="{{search_datas['dates']|array_keys|implode('|')}}" selected="selected">
                                                                         {% trans 'rechercher dans tous les champs' %}
