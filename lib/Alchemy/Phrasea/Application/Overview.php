@@ -36,7 +36,7 @@ return call_user_func(
                     $pathIn = $pathOut = $file->get_pathfile();
 
                     if ($watermark === true && $file->get_type() === \media_subdef::TYPE_IMAGE) {
-                        $pathOut = \recordutils_image::watermark($record->get_base_id(), $record->get_record_id());
+                        $pathOut = \recordutils_image::watermark($file);
                     } elseif ($stamp === true && $file->get_type() === \media_subdef::TYPE_IMAGE) {
                         $pathOut = \recordutils_image::stamp($record->get_base_id(), $record->get_record_id());
                     }
