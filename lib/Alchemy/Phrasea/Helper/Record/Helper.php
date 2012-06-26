@@ -77,9 +77,14 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
 
     /**
      *
-     * @var <type>
+     * @var Symfony\Component\HttpFoundation\Request
      */
     protected $request;
+
+    /**
+     *
+     * @var boolean
+     */
     protected $flatten_groupings = false;
 
     /**

@@ -15,6 +15,7 @@ use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Alchemy\Phrasea\Helper\Record as RecordHelper;
 
 /**
@@ -42,16 +43,26 @@ class MoveCollection implements ControllerProviderInterface
             }
         );
 
-        $controllers->post('/apply/', function(Application $app) {
-                $request = $app['request'];
-                $move = new RecordHelper\MoveCollection($app['Core'], $app['request']);
-                $move->execute($request);
-                $template = 'prod/actions/collection_submit.twig';
+        $controllers->post('/apply/', function(Application $app, Request $request) {
+                $move = new RecordHelper\MoveCollection($app['Core'], $request);
+                $success = false;
 
-                /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                try {
+                    $move->execute();
+                    $success = true;
+                    $msg = _('Records have been successfuly moved');
+                } catch (\Exception_Unauthorized $e) {
+                    $msg = sprintf(_("You do not have the permission to move records to %s"), \phrasea::bas_names($move->getBaseIdDestination()));
+                } catch (\Exception $e) {
+                    $msg = _('An error occured');
+                }
 
-                return $twig->render($template, array('action'  => $move, 'message' => ''));
+                $datas = array(
+                    'success' => $success,
+                    'message' => $msg
+                );
+
+                return new JsonResponse($datas);
             });
 
         return $controllers;
