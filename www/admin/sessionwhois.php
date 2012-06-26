@@ -20,7 +20,7 @@ $session = $appbox->get_session();
 ?>
 <style type="text/css">
     #tooltip{
-        position:absolute;
+        position: absolute;
     }
 </style>
 <script type="text/javascript">
@@ -30,9 +30,8 @@ $session = $appbox->get_session();
     }
 );
 </script>
-<div style="margin:20px 0;text-align:center;">
-    <div style="font-size:14px"><u><b><?php echo _('admin::utilisateurs: utilisateurs connectes') ?> - <?php echo date("G:i:s") ?></b></u></div>
-</div>
+
+<div class="tableTitle"><?php echo _('admin::utilisateurs: utilisateurs connectes') ?> - <?php echo date("G:i:s") ?></div>
 
 <?php
 $appLaunched = array(
@@ -50,7 +49,7 @@ $appLaunched = array(
 $out = "";
 
 
-$out.="<center>\n";
+$out.="<div class=\"center\">\n";
 
 $out.="<table class='admintable' >\n";
 $out.="  <thead><tr>\n";
@@ -162,88 +161,54 @@ foreach (Session_Handler::get_active_sessions() as $row) {
 $out.="</tbody></table>\n";
 
 
-echo "<center>";
+echo "<div class=\"center\">";
 
-echo "<table style=\"table-layout:fixed;border:#000000 1px solid\">";
+echo "<table class=\"whoisTable\" >";
 
 echo "<tr>";
-echo "    <td class=\"colTitle\"  nowrap style=\"width:120px;text-align:left;\" >" . _('admin::monitor: module production') . "</td>";
-echo "    <td class=\"noborder\"  nowrap style=\"width:60px;text-align:right\" >" . $appLaunched[1] . "</td>";
-echo "</tr>";
-echo "<tr  class=\"noborder\">";
-echo "  <td  class=\"noborder\" colspan=\"2\" style=\"position:relative; background-color:#333333; height:1px; top:0px; overflow:none;\" />";
+echo "  <td class=\"colTitle\" nowrap >" . _('admin::monitor: module production') . "</td>";
+echo "  <td class=\"noborder\" nowrap >" . $appLaunched[1] . "</td>";
 echo "</tr>";
 
 echo "<tr  class=\"noborder\">";
-echo "    <td class=\"colTitle\"  nowrap style=\"width:120px;text-align:left;\" >" . _('admin::monitor: module client') . "</td>";
-echo "  <td  class=\"noborder\" style=\"text-align:right\">" . $appLaunched[2] . "</td>";
+echo "  <td class=\"colTitle\" nowrap >" . _('admin::monitor: module client') . "</td>";
+echo "  <td class=\"noborder\" >" . $appLaunched[2] . "</td>";
 echo "</tr>";
 
 echo "<tr  class=\"noborder\">";
-echo "  <td  class=\"noborder\" colspan=\"2\" style=\"position:relative; background-color:#333333; height:1px; top:0px; overflow:none;\" />";
+echo "  <td  class=\"colTitle\" >" . _('admin::monitor: module admin') . "</td>";
+echo "  <td  class=\"noborder\" >" . $appLaunched[3] . "</td>";
 echo "</tr>";
 
 echo "<tr  class=\"noborder\">";
-echo "  <td  class=\"colTitle\" style=\"text-align:left\">" . _('admin::monitor: module admin') . "</td>";
-echo "  <td  class=\"noborder\" style=\"text-align:right\">" . $appLaunched[3] . "</td>";
+echo "  <td  class=\"colTitle\" >" . _('admin::monitor: module report') . "</td>";
+echo "  <td  class=\"noborder\" >" . $appLaunched[4] . "</td>";
 echo "</tr>";
 
 echo "<tr  class=\"noborder\">";
-echo "  <td  class=\"noborder\" colspan=\"2\" style=\"position:relative; background-color:#333333; height:1px; top:0px; overflow:none;\" />";
+echo "  <td  class=\"colTitle\" >" . _('admin::monitor: module thesaurus') . "</td>";
+echo "  <td  class=\"noborder\" >" . $appLaunched[5] . "</td>";
 echo "</tr>";
 
 echo "<tr  class=\"noborder\">";
-echo "  <td  class=\"colTitle\" style=\"text-align:left\">" . _('admin::monitor: module report') . "</td>";
-echo "  <td  class=\"noborder\" style=\"text-align:right\">" . $appLaunched[4] . "</td>";
+echo "  <td  class=\"colTitle\" >" . _('admin::monitor: module comparateur') . "</td>";
+echo "  <td  class=\"noborder\" >" . $appLaunched[6] . "</td>";
 echo "</tr>";
 
 echo "<tr  class=\"noborder\">";
-echo "  <td  class=\"noborder\" colspan=\"2\" style=\"position:relative; background-color:#333333; height:1px; top:0px; overflow:none;\" />";
-echo "</tr>";
-
-echo "<tr  class=\"noborder\">";
-echo "  <td  class=\"colTitle\" style=\"text-align:left\">" . _('admin::monitor: module thesaurus') . "</td>";
-echo "  <td  class=\"noborder\" style=\"text-align:right\">" . $appLaunched[5] . "</td>";
-echo "</tr>";
-
-echo "<tr  class=\"noborder\">";
-echo "  <td  class=\"noborder\" colspan=\"2\" style=\"position:relative; background-color:#333333; height:1px; top:0px; overflow:none;\" />";
-echo "</tr>";
-
-echo "<tr  class=\"noborder\">";
-echo "  <td  class=\"colTitle\" style=\"text-align:left\">" . _('admin::monitor: module comparateur') . "</td>";
-echo "  <td  class=\"noborder\" style=\"text-align:right\">" . $appLaunched[6] . "</td>";
-echo "</tr>";
-
-echo "<tr  class=\"noborder\">";
-echo "  <td  class=\"noborder\" colspan=\"2\" style=\"position:relative; background-color:#333333; height:1px; top:0px; overflow:none;\" />";
-echo "</tr>";
-
-echo "<tr  class=\"noborder\">";
-echo "  <td  class=\"colTitle\" style=\"text-align:left\">" . _('admin::monitor: module validation') . "</td>";
-echo "  <td  class=\"noborder\" style=\"text-align:right\">" . $appLaunched[7] . "</td>";
-echo "</tr>";
-
-echo "<tr  class=\"noborder\">";
-echo "  <td  class=\"noborder\" colspan=\"2\" style=\"position:relative; background-color:#333333; height:1px; top:0px; overflow:none;\" />";
+echo "  <td  class=\"colTitle\" >" . _('admin::monitor: module validation') . "</td>";
+echo "  <td  class=\"noborder\" >" . $appLaunched[7] . "</td>";
 echo "</tr>";
 
 if ($appLaunched[0] > 0) {
-
     echo "<tr  class=\"noborder\">";
-    echo "<td  class=\"noborder\" colspan=\"2\"/>";
-    echo "</tr>";
-
-    echo "<tr  class=\"noborder\">";
-    echo "<td  class=\"colTitle\" style=\"text-align:left\">" . _('admin::monitor: total des utilisateurs uniques : ');
-    echo "  <td  class=\"noborder\" style=\"text-align:right\">" . $appLaunched[0] . "</td>";
+    echo "<td  class=\"colTitle\" >" . _('admin::monitor: total des utilisateurs uniques : ');
+    echo "  <td  class=\"noborder\" >" . $appLaunched[0] . "</td>";
     echo "</tr>";
 }
 
-
 echo "</table>";
-echo "</center>";
+echo "</div>";
 
-
-echo "<br><br><hr><br><br>";
+echo "<hr class=\"spacehr\">";
 echo $out;
