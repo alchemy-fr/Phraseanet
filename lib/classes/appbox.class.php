@@ -10,6 +10,7 @@
  */
 
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
+use MediaAlchemyst\Specification\Image as ImageSpecification;
 
 /**
  *
@@ -101,6 +102,20 @@ class appbox extends base
             if ( ! in_array(mb_strtolower($pathfile->getMimeType()), array('image/gif', 'image/png', 'image/jpeg', 'image/jpg', 'image/pjpeg'))) {
                 throw new \InvalidArgumentException('Invalid file format');
             }
+
+            //resize collection logo
+            $imageSpec = new ImageSpecification();
+            $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
+            $imageSpec->setDimensions(120, 24);
+
+            try {
+                $core['media-alchemyst']
+                    ->open($pathfile->getPathname())
+                    ->turninto($pathfile->getPathname(), $imageSpec)
+                    ->close();
+            } catch (\MediaAlchemyst\Exception $e) {
+
+            }
         }
 
         switch ($pic_type) {
@@ -132,7 +147,7 @@ class appbox extends base
                 $core['file-system']->remove($target);
             }
 
-            if (is_null($target)) {
+            if (null === $target || null === $pathfile) {
                 continue;
             }
 
@@ -366,7 +381,7 @@ class appbox extends base
 
         $upgrader->add_steps_complete(1);
 
-        if(version_compare($from_version, '3.1') < 0) {
+        if (version_compare($from_version, '3.1') < 0) {
             $upgrader->addRecommendation(_('Your install requires data migration, please execute the following command'), 'bin/upgrader --from=3.1');
         } elseif (version_compare($from_version, '3.5') < 0) {
             $upgrader->addRecommendation(_('Your install requires data migration, please execute the following command'), 'bin/upgrader --from=3.5');
