@@ -130,6 +130,22 @@ div.finder div.content div.title {
 
 #FNDR {
     overflow: auto;
+    li.selected {
+        .bg(@orange);
+        .color(@white);
+    }
+    a {
+        text-decoration: none;
+        &:hover {
+            text-decoration: none;
+        }
+        span {
+            text-decoration: underline;
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
 }
 
 /******* USERS ****************************************************************/

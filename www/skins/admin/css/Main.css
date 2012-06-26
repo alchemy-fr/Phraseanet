@@ -85,6 +85,22 @@ div.finder div.content div.title {
 #FNDR {
   overflow: auto;
 }
+#FNDR li.selected {
+  background-color: #f0ad30;
+  color: #ffffff;
+}
+#FNDR a {
+  text-decoration: none;
+}
+#FNDR a:hover {
+  text-decoration: none;
+}
+#FNDR a span {
+  text-decoration: underline;
+}
+#FNDR a span:hover {
+  text-decoration: underline;
+}
 /******* USERS ****************************************************************/
 .admin_head_opts {
   margin: 5px 0 10px 0;
