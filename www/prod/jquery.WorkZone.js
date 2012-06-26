@@ -587,9 +587,10 @@ var p4 = p4 || {};
       'addElementToBasket': function(sbas_id, record_id, event , singleSelection) {
         singleSelection = !!singleSelection || false;
 
-        if($('#baskets .SSTT.active').length == 1)
-        {
+        if($('#baskets .SSTT.active').length == 1) {
             return dropOnBask(event, $('#IMGT_'+ sbas_id +'_'+ record_id), $('#baskets .SSTT.active'), singleSelection);
+        } else {
+            humane.info(language.noActiveBasket);
         }
       },
       'reloadCurrent':function(){

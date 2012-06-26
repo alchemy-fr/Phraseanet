@@ -99,6 +99,7 @@ class Language implements ControllerProviderInterface
                 $out['fileBeingDownloaded'] = _('Some files are being downloaded');
                 $out['warning'] = _('Attention');
                 $out['browserFeatureSupport'] = _('This feature is not supported by your browser');
+                $out['noActiveBasket'] = _('No active basket');
 
                 $Serializer = $app['Core']['Serializer'];
 
