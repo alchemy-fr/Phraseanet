@@ -516,10 +516,7 @@ class set_export extends set_abstract
                         if ( ! $user->ACL()->has_right_on_base($download_element->get_base_id(), "nowatermark")
                             && ! $user->ACL()->has_preview_grant($download_element)
                             && $sd[$name]->get_type() == media_subdef::TYPE_IMAGE) {
-                            $path = recordutils_image::watermark(
-                                    $download_element->get_base_id()
-                                    , $download_element->get_record_id()
-                            );
+                            $path = recordutils_image::watermark($sd[$name]);
                             if (file_exists($path)) {
                                 $tmp_pathfile = array(
                                     'path'        => dirname($path)

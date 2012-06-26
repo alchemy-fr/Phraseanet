@@ -168,7 +168,7 @@ class PDF
 
             if ( ! $user->ACL()->has_right_on_base($rec->get_base_id(), "nowatermark")
                 && $subdef->get_type() == \media_subdef::TYPE_IMAGE) {
-                $fimg = \recordutils_image::watermark($rec->get_base_id(), $rec->get_record_id());
+                $fimg = \recordutils_image::watermark($subdef);
             }
 
             $wimg = $himg = $ImgSize;
@@ -436,7 +436,7 @@ class PDF
 
             if ( ! $user->ACL()->has_right_on_base($rec->get_base_id(), "nowatermark")
                 && $subdef->get_type() == \media_subdef::TYPE_IMAGE)
-                $f = \recordutils_image::watermark($rec->get_base_id(), $rec->get_record_id());
+                $f = \recordutils_image::watermark($subdef);
 
             $wimg = $himg = 150; // preview dans un carre de 150 mm
             if ($subdef->get_width() > 0 && $subdef->get_height() > 0) {

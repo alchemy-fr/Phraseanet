@@ -339,47 +339,30 @@ class recordutils_image extends recordutils
 
     /**
      *
-     * @param  int     $bas
-     * @param  int     $rec
-     * @param  boolean $hd
-     * @return string
+     * @param \media_subdef $subdef
+     * @return boolean|string
      */
-    public static function watermark($bas, $rec, $hd = false)
+    public static function watermark(\media_subdef $subdef)
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $registry = $appbox->get_registry();
+        $base_id = $subdef->get_record()->get_base_id();
 
-        $sbas_id = phrasea::sbasFromBas($bas);
-
-        if ( ! isset($sbas_id)) {
-            return false;
+        if ($subdef->get_name() !== 'preview') {
+            return $subdef->get_pathfile();
         }
 
-        $connSbas = connection::getPDOConnection($sbas_id);
-
-        $sql = "SELECT s.path, s.file, s.mime, r.type, r.xml
-      FROM subdef s, record r
-      WHERE r.record_id = :record_id AND r.record_id = s.record_id AND name='preview'";
-
-        $stmt = $connSbas->prepare($sql);
-        $stmt->execute(array(':record_id' => $rec));
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        if ( ! $row) {
-            return false;
+        if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE) {
+            return $subdef->get_pathfile();
         }
 
-        $file = array(
-            'type' => $row['type']
-            , 'path' => p4string::addEndSlash($row['path'])
-            , 'file' => $row['file']
-            , 'mime' => $row['mime']
-        );
+        if ( ! $subdef->is_physically_present()) {
+            return $subdef->get_pathfile();
+        }
 
-        $pathIn = $file['path'] . $file['file'];
+        $pathIn = $subdef->get_path() . $subdef->get_file();
 
-        $pathOut = $file['path'] . 'watermark_' . $file['file'];
+        $pathOut = $subdef->get_path() . 'watermark_' . $subdef->get_file();
 
         if ( ! is_file($pathIn)) {
             return false;
@@ -390,9 +373,9 @@ class recordutils_image extends recordutils
         }
 
         if ($registry->get('GV_pathcomposite') &&
-            file_exists($registry->get('GV_RootPath') . 'config/wm/' . $bas)) { // si il y a un WM
+            file_exists($registry->get('GV_RootPath') . 'config/wm/' . $base_id)) { // si il y a un WM
             $cmd = $registry->get('GV_pathcomposite') . " ";
-            $cmd .= $registry->get('GV_RootPath') . 'config/wm/' . $bas . " ";
+            $cmd .= $registry->get('GV_RootPath') . 'config/wm/' . $base_id . " ";
             $cmd .= " \"" . $pathIn . "\" "; #  <<-- la preview original
             $cmd .= " -strip -watermark 90% -gravity center ";
             $cmd .= " \"" . $pathOut . "\"";  # <-- la preview temporaire
@@ -414,7 +397,7 @@ class recordutils_image extends recordutils
                 $return_value = proc_close($process);
             }
         } elseif ($registry->get('GV_imagick')) {
-            $collname = phrasea::bas_names($bas);
+            $collname = phrasea::bas_names($base_id);
             $cmd = $registry->get('GV_imagick');
             $tailleimg = @getimagesize($pathIn);
             $max = ($tailleimg[0] > $tailleimg[1] ? $tailleimg[0] : $tailleimg[1]);
