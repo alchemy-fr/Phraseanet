@@ -608,11 +608,13 @@
                         </span>
                     {% elseif n_actions == 1 %}
                         <span class="classicButton">
+                            <div class="btn-group">
                             {% for action in actions %}
                                 <button class="{{ action.class }} results_window btn btn-inverse">
                                     <img src="{{ action.icon }}"/> {{ action.label }}
                                 </button>
                             {% endfor %}
+                            </div>
                         </span>
                     {% endif %}
 
