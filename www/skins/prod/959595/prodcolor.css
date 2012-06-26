@@ -221,7 +221,7 @@ span.ww_winTitle {
     height: 52px;
     display: inline-block;
     background-color: #999999;
-    z-index: 0;
+    z-index: 10;
 }
 
 #idFrameC .ui-tabs .ui-tabs-nav li.ui-tabs-selected {
@@ -229,13 +229,16 @@ span.ww_winTitle {
 }
 
 #idFrameC .ui-tabs #thesaurus_tab li {
-    height: 34px;
     background-color: #B1B1B1;
-    color: #EAEAEA;
+    color: #FFF;
 }
 
 #idFrameC .ui-tabs #thesaurus_tab li a {
     color: #FFF;
+}
+
+#idFrameC .ui-tabs #thesaurus_tab li.th_tab {
+    height: 34px;
 }
 
 #THPD_T, #THPD_C {
