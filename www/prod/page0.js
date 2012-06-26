@@ -2469,8 +2469,6 @@ function shareThis(bas,rec)
 
 function printThis(value)
 {
-
-
     $('#DIALOG').dialog('destroy').attr('title', 'Print')
     .empty().addClass('loading')
     .dialog({
@@ -2478,7 +2476,8 @@ function printThis(value)
         closeOnEscape:true,
         modal:true,
         width:'800',
-        height:'500'
+        height:'500',
+        zIndex: 1999
     })
     .dialog('open');
 
@@ -2495,7 +2494,6 @@ function printThis(value)
             return;
         }
     });
-
 }
 
 
