@@ -181,9 +181,9 @@ return call_user_func(
 
                                 $repository = $em->getRepository('\Entities\BasketElement');
 
-                                if ($repository->findReceivedValidationElementsByRecord($record, $user)->count() > 0) {
+                                if (count($repository->findReceivedValidationElementsByRecord($record, $user)) > 0) {
                                     $watermark = false;
-                                } elseif ($repository->findReceivedElementsByRecord($record, $user)->count() > 0) {
+                                } elseif (count($repository->findReceivedElementsByRecord($record, $user)) > 0) {
                                     $watermark = false;
                                 }
                             }
