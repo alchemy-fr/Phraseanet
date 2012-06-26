@@ -445,7 +445,7 @@
                                                                 <select name="datefield" class="input-medium">
                                                                     {% for field_id, field in search_datas['dates'] %}
                                                                         <option onchange="checkFilters(true);"
-                                                                            class="field_switch field_{{field['sbas']|implode(' field_')}}" value="{{field_id}}">{{field['fieldname']}}</option>
+                                                                            class="field_switch field_{{field['sbas']|implode(' field_')}}" value="{{ field['fieldname'] }}">{{field['fieldname']}}</option>
                                                                     {% endfor %}
                                                                     <option value="{{search_datas['dates']|array_keys|implode('|')}}" selected="selected">
                                                                         {% trans 'rechercher dans tous les champs' %}
