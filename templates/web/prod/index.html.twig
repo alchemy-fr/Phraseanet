@@ -261,12 +261,14 @@
                                 {% trans 'Browse Baskets' %}
                             </a>
                         </div>
-                        <div class="context-menu-item-inner"@>
-                            <a title="{% trans 'action:: nouveau reportage' %}" class="dialog small-dialog" href="/prod/story/create/">
-                                <img style="cursor:pointer;" src="/skins/icons/mtadd_0.gif" title="{% trans 'action:: nouveau reportage' %}" />
-                                {% trans 'action:: nouveau reportage' %}
-                            </a>
-                        </div>
+                        {% if registry.get('GV_multiAndReport') %}
+                            <div class="context-menu-item-inner"@>
+                                <a title="{% trans 'action:: nouveau reportage' %}" class="dialog small-dialog" href="/prod/story/create/">
+                                    <img style="cursor:pointer;" src="/skins/icons/mtadd_0.gif" title="{% trans 'action:: nouveau reportage' %}" />
+                                    {% trans 'action:: nouveau reportage' %}
+                                </a>
+                            </div>
+                       {% endif %}
                     </li>
                     <li class="context-menu-item">
                         <div class="context-menu-item-inner" onclick="return p4.WorkZone.refresh('current','date');">
