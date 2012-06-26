@@ -9,10 +9,10 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function createApplication()
     {
         $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Admin.php';
-        
+
         $app['debug'] = true;
         unset($app['exception_handler']);
-        
+
         return $app;
     }
 
@@ -30,7 +30,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $databox = array_shift($appbox->get_databoxes());
         $name = "testtest" . uniqid();
-        $field = \databox_field::create($databox, $name);
+        $field = \databox_field::create($databox, $name, false);
         $id = $field->get_id();
         $this->client->request("POST", "/description/" . $databox->get_sbas_id() . "/", array(
             'field_ids' => array($id)
@@ -53,7 +53,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $databox = array_shift($appbox->get_databoxes());
         $name = "test" . uniqid();
-        $field = \databox_field::create($databox, $name);
+        $field = \databox_field::create($databox, $name, false);
         $id = $field->get_id();
 
         $this->client->request("POST", "/description/" . $databox->get_sbas_id() . "/", array(
@@ -111,7 +111,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue($this->client->getResponse()->isRedirect());
 
         $name = "test" . uniqid();
-        $field = \databox_field::create($databox, $name);
+        $field = \databox_field::create($databox, $name, false);
         $id = $field->get_id();
         $this->client->request("POST", "/description/" . $databox->get_sbas_id() . "/", array(
             'field_ids' => array($id)
@@ -129,7 +129,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $field->delete();
 
         $name = "test" . uniqid();
-        $field = \databox_field::create($databox, $name);
+        $field = \databox_field::create($databox, $name, false);
         $id = $field->get_id();
         $this->client->request("POST", "/description/" . $databox->get_sbas_id() . "/", array(
             'field_ids' => array($id)
@@ -146,8 +146,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $field->delete();
 
         $name = "test" . uniqid();
-        $field = \databox_field::create($databox, $name);
-        $field->set_multi(false);
+        $field = \databox_field::create($databox, $name, false);
         $field->set_indexable(false);
         $field->set_required(true);
         $field->set_readonly(true);
@@ -173,7 +172,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
 
         $name = "test" . uniqid();
-        $field = \databox_field::create($databox, $name);
+        $field = \databox_field::create($databox, $name, false);
         $id = $field->get_id();
         $this->client->request("POST", "/description/" . $databox->get_sbas_id() . "/", array(
             'field_ids' => array('unknow_id')
@@ -201,7 +200,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $databox = array_shift($appbox->get_databoxes());
         $name = "test" . uniqid();
-        $field = \databox_field::create($databox, $name);
+        $field = \databox_field::create($databox, $name, false);
         $id = $field->get_id();
         $this->client->request("POST", "/description/" . $databox->get_sbas_id() . "/", array(
             'field_ids' => array($id)
@@ -253,7 +252,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $datas = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertEquals(array(), $datas);
-        
+
         $this->client->request("GET", "/description/metadatas/search/", array('term'=>'xmp'));
         $this->assertTrue($this->client->getResponse()->isOk());
 

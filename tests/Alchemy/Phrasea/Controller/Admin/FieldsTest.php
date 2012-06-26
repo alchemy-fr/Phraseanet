@@ -9,10 +9,10 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function createApplication()
     {
         $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Admin.php';
-        
+
         $app['debug'] = true;
         unset($app['exception_handler']);
-        
+
         return $app;
     }
 
@@ -32,7 +32,7 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $tag = new PHPExiftool\Driver\Tag\IPTC\ObjectName();
 
-        $field = \databox_field::create($databox, "test" . time());
+        $field = \databox_field::create($databox, "test" . time(), false);
         $field->set_tag($tag)->save();
 
         $this->client->request("GET", "/fields/checkmulti/", array(
@@ -54,7 +54,7 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $tag = new PHPExiftool\Driver\Tag\IPTC\ObjectName();
 
-        $field = \databox_field::create($databox, "test" . time());
+        $field = \databox_field::create($databox, "test" . time(), false);
         $field->set_tag($tag)->save();
 
         $this->client->request("GET", "/fields/checkreadonly/", array(

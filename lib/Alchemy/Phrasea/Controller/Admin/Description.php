@@ -179,7 +179,6 @@ class Description implements ControllerProviderInterface
                                 $field->set_name($request->get('name_' . $id));
                                 $field->set_thumbtitle($request->get('thumbtitle_' . $id));
                                 $field->set_tag(\databox_field::loadClassFromTagName($request->get('src_' . $id)));
-                                $field->set_multi($request->get('multi_' . $id));
                                 $field->set_business($request->get('business_' . $id));
                                 $field->set_indexable($request->get('indexable_' . $id));
                                 $field->set_required($request->get('required_' . $id));
@@ -215,7 +214,7 @@ class Description implements ControllerProviderInterface
                     }
 
                     if ($request->get('newfield')) {
-                        $field = \databox_field::create($databox, $request->get('newfield'));
+                        $field = \databox_field::create($databox, $request->get('newfield'), $request->get('newfield_multi'));
                     }
 
                     if (is_array($request->get('todelete_ids'))) {
