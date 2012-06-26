@@ -104,7 +104,6 @@ class databox_field implements cache_cacheableInterface
      */
     protected $Business;
     protected $renamed = false;
-    protected $metaToMerge = false;
 
     /**
      *
@@ -365,11 +364,6 @@ class databox_field implements cache_cacheableInterface
             $this->renamed = false;
         }
 
-        if ($this->metaToMerge) {
-            caption_field::merge_all_metadatas($this);
-            $this->metaToMerge = false;
-        }
-
         $dom_struct = $this->databox->get_dom_structure();
         $xp_struct = $this->databox->get_xpath_structure();
 
@@ -600,26 +594,6 @@ class databox_field implements cache_cacheableInterface
      * @param  boolean       $bool
      * @return databox_field
      */
-    public function set_multi($multi)
-    {
-        $multi = ! ! $multi;
-
-        if ($this->multi !== $multi && ! $multi) {
-            $this->metaToMerge = true;
-        }
-
-        $this->multi = $multi;
-
-        $this->set_separator(';');
-
-        return $this;
-    }
-
-    /**
-     *
-     * @param  boolean       $bool
-     * @return databox_field
-     */
     public function set_report($report)
     {
         $this->report = ! ! $report;
@@ -804,7 +778,7 @@ class databox_field implements cache_cacheableInterface
         return $this->on_error;
     }
 
-    public static function create(databox $databox, $name)
+    public static function create(databox $databox, $name, $multi)
     {
         $sorter = 0;
 
@@ -822,7 +796,7 @@ class databox_field implements cache_cacheableInterface
           `thumbtitle`, `multi`, `business`,
           `report`, `sorter`)
         VALUES (null, :name, '', 0, 1, 'string', '',
-          null, 0,
+          null, :multi,
           0, 1, :sorter)";
 
         $name = self::generateName($name);
@@ -831,8 +805,10 @@ class databox_field implements cache_cacheableInterface
             throw new \Exception_InvalidArgument();
         }
 
+        $multi = $multi ? 1 : 0;
+
         $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute(array(':name'   => $name, ':sorter' => $sorter));
+        $stmt->execute(array(':name'   => $name, ':sorter' => $sorter, ':multi' => $multi));
         $id = $databox->get_connection()->lastInsertId();
         $stmt->closeCursor();
 

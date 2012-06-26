@@ -24,11 +24,11 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
 
         $this->object_multi = $this->databox->get_meta_structure()->get_element_by_name($this->name_multi);
 
-        if ( ! $this->object_mono instanceof databox_field)
-            $this->object_mono = databox_field::create($this->databox, $this->name_mono);
+        if ( ! $this->object_mono instanceof databox_field) {
+            $this->object_mono = databox_field::create($this->databox, $this->name_mono, false);
+        }
         if ( ! $this->object_multi instanceof databox_field) {
-            $this->object_multi = databox_field::create($this->databox, $this->name_multi);
-            $this->object_multi->set_multi(true)->save();
+            $this->object_multi = databox_field::create($this->databox, $this->name_multi, true);
         }
     }
 
@@ -217,14 +217,6 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
         $this->assertTrue($this->object_mono->isBusiness());
     }
 
-    public function testSet_multi()
-    {
-        $this->object_mono->set_multi(false);
-        $this->assertFalse($this->object_mono->is_multi());
-        $this->object_mono->set_multi(true);
-        $this->assertTrue($this->object_mono->is_multi());
-    }
-
     public function testSet_report()
     {
         $this->object_mono->set_report(false);
@@ -364,105 +356,4 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
         $this->assertEquals($value->getValue(), $AddedValue);
     }
 
-    public function testChangeMulti()
-    {
-        $AddedValue_1 = 'scalar value 1';
-        $AddedValue_2 = 'scalar value 2';
-
-        static::$records['record_1']->set_metadatas(array(
-            array(
-                'meta_id'        => null,
-                'meta_struct_id' => $this->object_multi->get_id(),
-                'value'          => $AddedValue_1
-            ),
-            array(
-                'meta_id'        => null,
-                'meta_struct_id' => $this->object_multi->get_id(),
-                'value'          => $AddedValue_2
-            )
-        ));
-
-        $this->assertEquals(2, count(static::$records['record_1']->get_caption()->get_field(str_replace(' ', '', $this->name_multi))->get_values()));
-
-        $this->object_multi->set_multi(false)->save();
-
-        $this->assertEquals(1, count(static::$records['record_1']->get_caption()->get_field(str_replace(' ', '', $this->name_multi))->get_values()));
-    }
-
-    /**
-     * @todo Implement testCreate().
-     */
-    public function testCreate()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo Implement test__sleep().
-     */
-    public function test__sleep()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo Implement test__wakeup().
-     */
-    public function test__wakeup()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo Implement testGet_cache_key().
-     */
-    public function testGet_cache_key()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo Implement testGet_data_from_cache().
-     */
-    public function testGet_data_from_cache()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo Implement testSet_data_to_cache().
-     */
-    public function testSet_data_to_cache()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo Implement testDelete_data_from_cache().
-     */
-    public function testDelete_data_from_cache()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
 }
