@@ -57,9 +57,9 @@
         {% for feed in feeds.get_feeds %}
             <tr class="{% if loop.index is odd %}odd{% else %}even{% endif %}">
                 <td>
-                    <div style="border:1px solid #ccc; width:22px; height:22px; margin:2px">
+                    <div style="border:1px solid #ccc; width:22px; height:22px; margin:2px;">
                         <a href="/admin/publications/feed/{{ feed.get_id() }}/">
-                            <img src="{{feed.get_icon_url() ~ '?' ~ random(1000) }}" style="margin:3px;width:16px;height:16px;" id="pub_icon"/>
+                            <img src="{{feed.get_icon_url() ~ '?' ~ random(1000) }}" id="pub_icon" style="margin:3px; width:16px; height:16px;"/>
                         </a>
                     </div>
                 </td>
