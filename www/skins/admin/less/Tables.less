@@ -83,6 +83,11 @@ table.admintable {
     tr {
         height: 28px;
         vertical-align: middle;
+        &.selected {
+            &:hover {
+                .bg(@orange);
+            }
+        }
     }
     thead {
         .bg(@dk-sand);
