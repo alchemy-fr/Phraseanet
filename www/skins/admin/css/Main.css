@@ -6,6 +6,9 @@ body {
   color: #333333;
   overflow-y: auto;
 }
+.clear {
+  clear: both;
+}
 h1 {
   font-weight: bold;
   font-size: 24px;
@@ -51,7 +54,8 @@ textarea,
 }
 select {
   margin: 0;
-  padding: 6px 4px;
+  padding: 5px 4px;
+  *padding: 4px;
 }
 .treeview ul {
   background-color: transparent;
@@ -178,4 +182,23 @@ div.switch_right.unchecked {
 /******* PUBLICATIONS *********************************************************/
 .form_publication .controls {
   margin-left: 10px;
+}
+#pub_icon {
+  width: 42px;
+  height: 42px;
+  float: left;
+}
+#pub_icon .thumb_wrapper {
+  width: 32px;
+  height: 32px;
+  margin: 5px auto;
+}
+#pub_icon .thumb_wrapper img {
+  width: 32px;
+  height: 32px;
+}
+#pub_fileupload {
+  height: 42px;
+  line-height: 42px;
+  margin-left: 47px;
 }

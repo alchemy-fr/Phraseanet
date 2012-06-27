@@ -51,6 +51,10 @@ body {
     overflow-y: auto;
 }
 
+.clear {
+    clear: both;
+}
+
 h1 {
     .title(@size * 2,10px,0);
 }
@@ -89,7 +93,8 @@ input, textarea, .uneditable-input {
 
 select {
     margin: 0;
-    padding: 6px 4px;
+    padding: 5px 4px;
+    *padding: 4px;
 }
 
 .treeview ul {
@@ -225,3 +230,25 @@ div.switch_right {
     }
 }
 
+@ico-size: 32px;
+
+#pub_icon {
+    width: (@ico-size + 10px);
+    height: (@ico-size + 10px);
+    float: left;
+    .thumb_wrapper {
+        width: @ico-size;
+        height: @ico-size;
+        margin: 5px auto;
+        img {
+            width: @ico-size;
+            height: @ico-size;
+        }
+    }
+}
+
+#pub_fileupload {
+    height: (@ico-size + 10px);
+    line-height: (@ico-size + 10px);
+    margin-left: (@ico-size + 10px) + 5px;
+}
