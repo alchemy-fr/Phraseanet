@@ -45,10 +45,13 @@ img {
 }
 input,
 textarea,
-select,
 .uneditable-input {
   margin: 0;
   padding: 4px;
+}
+select {
+  margin: 0;
+  padding: 6px 4px;
 }
 .treeview ul {
   background-color: transparent;
@@ -171,4 +174,8 @@ div.switch_right.unchecked {
 }
 .ui-datepicker {
   z-index: 1500;
+}
+/******* PUBLICATIONS *********************************************************/
+.form_publication .controls {
+  margin-left: 10px;
 }
