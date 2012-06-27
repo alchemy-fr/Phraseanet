@@ -97,8 +97,21 @@ select {
     *padding: 4px;
 }
 
+li.selected, div.selected {
+    .bg(@orange);
+    .color(@white);
+    a {
+        .bg(@orange);
+        .color(@white);
+    }
+}
+
 .treeview ul {
 	.bg(transparent);
+}
+
+#right-ajax.loading{
+    .bgi('/skins/icons/loaderFFF.gif');
 }
 
 div.finder div.content div.title {

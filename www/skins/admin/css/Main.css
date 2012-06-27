@@ -57,8 +57,23 @@ select {
   padding: 5px 4px;
   *padding: 4px;
 }
+li.selected,
+div.selected {
+  background-color: #f0ad30;
+  color: #ffffff;
+}
+li.selected a,
+div.selected a {
+  background-color: #f0ad30;
+  color: #ffffff;
+}
 .treeview ul {
   background-color: transparent;
+}
+#right-ajax.loading {
+  background-image: url('/skins/icons/loaderFFF.gif');
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 div.finder div.content div.title {
   margin-top: -2px;

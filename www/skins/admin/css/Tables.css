@@ -45,6 +45,9 @@ table.admintable tr {
   height: 28px;
   vertical-align: middle;
 }
+table.admintable tr.selected:hover {
+  background-color: #f0ad30;
+}
 table.admintable thead {
   background-color: #e5d4a0;
 }
