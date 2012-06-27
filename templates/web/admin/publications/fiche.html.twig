@@ -3,7 +3,7 @@
 {% block content %}
 <div>
   {% if error %}
-    <div class="error">{{error}}</div>
+    <div class="error alert alert-error">{{error}}</div>
   {% endif %}
   {% if feed.is_owner(user) %}
     <h2>{% trans 'Edition' %}</h2>
