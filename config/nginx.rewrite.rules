@@ -14,6 +14,7 @@ rewrite ^/admin/description/.*$       /admin/router.php last;
 rewrite ^/admin/subdefs/.*$       /admin/router.php last;
 rewrite ^/admin/publications/.*$  /admin/router.php last;
 rewrite ^/admin/typeahead/.*$     /admin/router.php last;
+rewrite ^/admin/connected-users/.*$     /admin/router.php last;
 
 
 rewrite ^/prod/records/edit/.*$   /prod/router.php last;

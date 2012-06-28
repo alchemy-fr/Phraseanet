@@ -164,31 +164,30 @@
 
 {% block content %}
     <div id="left" class="PNB" style="width:250px;right:auto;">
-      <div class="PNB10" style="right:0">
-        <div id="FNDR">
+        <div class="PNB10" style="right:0">
+            <div id="FNDR">
         {% include 'admin/tree.html.twig' %}
-          </div>
+            </div>
         </div>
-      </div>
+    </div>
 
-      {% if notice %}
-        <div class="right PNB10 notice" style="left:260px;">
-            {% if notice == "install_success" %}
-              {% trans %}Successful install{% endtrans %}
-            {% endif %}
-        </div>
-      {% endif %}
+    {% if notice %}
+    <div class="right PNB10 notice" style="left:260px;">
+        {% if notice == "install_success" %}
+            {% trans %}Successful install{% endtrans %}
+        {% endif %}
+    </div>
+    {% endif %}
 
-        <iframe class="right PNB10" src="about:blank;" name="right" id="right" frameborder="1" border="0" framespacing="0" style="left:260px;border:none;right:0;{{ notice ? "top:30px" : "top:0" }}"></iframe>
-        <div class="right PNB" style="left:250px;overflow:auto;">
-          <div id="right-ajax" class="PNB10"></div>
-        </div>
-
-        <div id="quotas_dialog"></div>
-        <div id="masks_dialog"></div>
-        <div id="time_dialog"></div>
-        <div id="user_add_dialog" title="{% trans 'Ajouter un nouvel utilisateur' %}">
-          <form>
+    <iframe class="right PNB10" src="about:blank;" name="right" id="right" frameborder="1" border="0" framespacing="0" style="left:260px;border:none;right:0;{{ notice ? "top:30px" : "top:0" }}"></iframe>
+    <div class="right PNB" style="left:250px;overflow:auto;">
+        <div id="right-ajax" class="PNB10"></div>
+    </div>
+    <div id="quotas_dialog"></div>
+    <div id="masks_dialog"></div>
+    <div id="time_dialog"></div>
+    <div id="user_add_dialog" title="{% trans 'Ajouter un nouvel utilisateur' %}">
+        <form>
             <label for="new_user_mail">{% trans 'Adresse email du nouvel utilisateur' %}</label>
             <input id="new_user_mail"  type="text" name="value" />
             <label class="checkbox" for="send_credentials">
@@ -200,14 +199,14 @@
                 {% trans "Require email validation to activate the account" %}
             </label>
             <img src="/skins/icons/loaderFFF.gif" class="new_user_loader" style="display:none;"/>
-          </form>
-        </div>
-        <div id="template_add_dialog" title="{% trans 'Creer un modele' %}">
-          <form>
+        </form>
+    </div>
+    <div id="template_add_dialog" title="{% trans 'Creer un modele' %}">
+        <form>
             <label>{% trans 'Nom du nouveau modele' %}</label>
             <input type="text" name="value" />
             <img src="/skins/icons/loaderFFF.gif" class="new_user_loader" style="display:none;"/>
-          </form>
-        </div>
-        <div id="DIALOG" style="color:white;"></div>
+        </form>
+    </div>
+    <div id="DIALOG" style="color:white;"></div>
 {% endblock %}
