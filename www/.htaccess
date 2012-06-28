@@ -10,7 +10,8 @@
   RewriteRule ^register-confirm=([a-zA-Z0-9]+)$   /login/register-confirm.php?code=$1 [L]
 
   RewriteRule ^admin/$                /admin/router.php [L]
-  RewriteRule ^admin/description/.*$        /admin/router.php [L]
+  RewriteRule ^admin/description/.*$  /admin/router.php [L]
+  RewriteRule ^admin/connected-users/.*$  /admin/router.php [L]
   RewriteRule ^admin/users/.*$        /admin/router.php [L]
   RewriteRule ^admin/tests/.*$        /admin/router.php [L]
   RewriteRule ^admin/fields/.*$       /admin/router.php [L]

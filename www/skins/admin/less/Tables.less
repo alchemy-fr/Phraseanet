@@ -64,7 +64,7 @@ table.whoisTable {
             width: 120px;
             text-align: left;
         }
-        &.noborder {
+        &.colValue {
             width: 60px;
             text-align: right;
         }
@@ -152,6 +152,32 @@ td.users_col {
     &.options {
         .color(#AFAFAF);
         .cursor;
+    }
+}
+
+/******* TOOLTIP CONNECTED USERS **********************************************/
+
+#tooltip-usr {
+    position: relative;
+    top: 0;
+    left: 0;
+    .color;
+    #tabledescexp {
+        table-layout: fixed;
+        width: 300px;
+        td {
+            border: none;
+            text-align: left;
+            strong {
+                font-weight: bold;
+            }
+            &.tooltip-title {
+                .bg(@orange);
+                border: 1px solid (darken(@orange, 10%));
+                .titleTable(10px, auto, 14px, center, none);
+                .color(@white);
+            }
+        }
     }
 }
 

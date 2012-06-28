@@ -28,7 +28,7 @@ table.whoisTable td.colTitle {
   width: 120px;
   text-align: left;
 }
-table.whoisTable td.noborder {
+table.whoisTable td.colValue {
   width: 60px;
   text-align: right;
 }
@@ -101,4 +101,32 @@ td.users_col {
 td.users_col.options {
   color: #afafaf;
   cursor: pointer;
+}
+/******* TOOLTIP CONNECTED USERS **********************************************/
+#tooltip-usr {
+  position: relative;
+  top: 0;
+  left: 0;
+  color: #333333;
+}
+#tooltip-usr #tabledescexp {
+  table-layout: fixed;
+  width: 300px;
+}
+#tooltip-usr #tabledescexp td {
+  border: none;
+  text-align: left;
+}
+#tooltip-usr #tabledescexp td strong {
+  font-weight: bold;
+}
+#tooltip-usr #tabledescexp td.tooltip-title {
+  background-color: #f0ad30;
+  border: 1px solid #dd9510;
+  margin: 10px auto;
+  font-weight: bold;
+  font-size: 14px;
+  text-align: center;
+  text-decoration: none;
+  color: #ffffff;
 }
