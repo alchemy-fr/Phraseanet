@@ -62,69 +62,57 @@ function getFormTimezone($props = array(), $selected = false)
 }
 phrasea::start($Core);
 ?>
-<html lang="<?php echo $session->get_I18n(); ?>">
-    <head>
-        <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
-        <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
-        <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery.validate.js"></script>
-        <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery.validate.password.js"></script>
-        <link href="/skins/common/main.css" type="text/css" rel="stylesheet"/>
         <style type="text/css">
-            .error{
+             #GV_form .error{
                 color:red;
                 font-weight:bold;
             }
-            h1{
+            #GV_form h1{
                 font-weight:bold;
                 color:#404040;
                 font-size:16px;
                 margin:5px 0;
             }
-            body{
-                overflow:auto;
-            }
-            .NEW{color:red;}
+             #GV_form .NEW{color:red;}
 
 
-            #form div{
+            #GV_form div{
                 position:relative;
                 float:left;
                 width:100%;
             }
-            ul{
+            #GV_form ul{
                 position:relative;
                 float:left;
                 width:100%;
                 list-style-type:none;
                 width:100%;
             }
-            li{
+             #GV_form li{
                 position:relative;
                 float:left;
                 width:100%;
             }
-            #form li div.input
+            #GV_form li div.input
             {
                 width:200px;
             }
-            #form li div.input input,
-            #form li div.input textarea,
-            #form li div.input select
+            #GV_form li div.input input,
+            #GV_form li div.input textarea,
+            #GV_form li div.input select
             {
                 width:180px;
             }
-            #form li div.input input.checkbox
+            #GV_form li div.input input.checkbox
             {
                 width:auto;
             }
-            #form li div.label
+            #GV_form li div.label
             {
                 width:350px;
             }
 
         </style>
-    </head>
-    <body>
 
         <div>
             Adresse : <input type="text" readonly="readonly" value="<?php echo $registry->get('GV_ServerName'); ?>"/>
@@ -143,7 +131,7 @@ $rules = array();
 
 
 
-echo '<form id="form" method="post" action = "global_values.php">';
+echo '<form id="GV_form" method="post" action = "global_values.php">';
 
 foreach ($GV as $section) {
     echo '<div style="">';
@@ -237,7 +225,7 @@ foreach ($GV as $section) {
 
 $JS = '$(document).ready(function() {
     // validate signup form on keyup and submit
-    $("#form").validate({
+    $("#GV_form").validate({
         rules: ' . p4string::jsonencode($rules) . ',
         messages: ' . p4string::jsonencode($messages) . ',
         errorPlacement: function(error, element) {
@@ -252,6 +240,4 @@ $JS = '$(document).ready(function() {
     <script type='text/javascript'>
         <?php echo $JS ?>
     </script>
-</body>
-</html>
 

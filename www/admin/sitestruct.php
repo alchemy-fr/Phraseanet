@@ -40,29 +40,7 @@ if ($parm['flush_cache']) {
     $cache_flushed = true;
 }
 ?>
-<html lang="<?php echo $session->get_I18n(); ?>">
-    <head>
-        <link type="text/css" rel="stylesheet" href="/include/minify/f=include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css,skins/common/main.css,skins/admin/admincolor.css" />
-        <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
-        <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
         <style type="text/css">
-            body
-            {
-            }
-            A,  A:link, A:visited, A:active
-            {
-
-                color : #000000;
-                padding-bottom : 15px;
-                text-decoration:none;
-            }
-
-            A:hover
-            {
-                COLOR : #ba36bf;
-                text-decoration:underline;
-            }
-
 
             h1{
                 position:relative;
@@ -124,7 +102,9 @@ if ($parm['flush_cache']) {
         <script type="text/javascript">
 
             $(document).ready(function(){
-                $( ".admin_adder" ).autocomplete({
+
+                var container = $('#right-ajax');
+                $( ".admin_adder", container ).autocomplete({
                     source: "/admin/users/typeahead/search/",
                     minLength: 2,
                     select: function( event, ui ) {
@@ -141,10 +121,9 @@ if ($parm['flush_cache']) {
                     .append( "<a>" + item.name + login + email + "</a>" )
                     .appendTo( ul );
                 };
+
             });
         </script>
-    </head>
-    <body>
 <?php
 if ($parm['sudo']) {
     if ($parm['sudo'] == '1') {
@@ -199,7 +178,7 @@ if ($cache_flushed) {
             </form>
             <h1><?php echo _('setup:: Reinitialisation des droits admins') ?></h1>
 
-            <form action="sitestruct.php" method="post">
+            <form action="sitestruct.php" method="post" id="admin_reset">
                 <input type="hidden" name="sudo" value="1" />
                 <input type="submit" value="<?php echo _('boutton::reinitialiser') ?>" />
             </form>
@@ -209,8 +188,13 @@ if ($cache_flushed) {
         <h2><?php echo _('setup::Votre configuration') ?></h2>
         <div>
             <div style="position:relative;float:left;width:400px;">
+
+            <h1><?php echo _('setup::Tests d\'envois d\'emails'); ?></h1>
+            <form id="mail_checker" method="post" action="/admin/sitestruct.php" target="_self">
+                <label>Email : </label><input name="email" type="text" />
+                <input type="submit" value="<?php echo _('boutton::valider'); ?>"/>
+            </form>
 <?php
-setup::check_mail_form();
 
 if ($parm['email']) {
     echo 'result : ';
@@ -303,7 +287,7 @@ foreach ($php_constraints as $php_constraint) {
 
                 if ($Core->getCache()->isServer()) {
                     ?>
-                    <form method="post" action="sitestruct.php">
+                    <form id="cache_flusher" method="post" action="sitestruct.php">
                         <input type="hidden" name="flush_cache" value="1"/>
                         <input id="flush_button" type="submit" value="Flush All Caches" />
                     </form>
@@ -324,5 +308,4 @@ foreach ($php_constraints as $php_constraint) {
                 ?>
             </div>
         </div>
-    </body>
-</html>
+        

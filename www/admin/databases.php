@@ -27,13 +27,7 @@ $error = array();
 
 $Core = bootstrap::getCore();
 
-phrasea::headers();
 ?>
-<html lang="<?php echo $session->get_I18n(); ?>">
-    <head>
-        <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css" />
-        <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/admin/admincolor.css" />
-        <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
         <style type="text/css">
             blockquote{
                 margin:0 15px;
@@ -42,8 +36,6 @@ phrasea::headers();
                 background-color:#DEDEDE;
             }
         </style>
-    </head>
-    <body>
         <?php
         if ($request->has_post_datas() && $user_obj->is_admin() === true) {
             $parm = $request->get_parms('upgrade');
@@ -400,6 +392,3 @@ if ($createBase || $mountBase) {
             </div>
             <?php
         }
-        ?>
-    </body>
-</html>

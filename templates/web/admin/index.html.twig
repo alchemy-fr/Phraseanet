@@ -15,6 +15,8 @@
 
 {% block javascript %}
   <script type="text/javascript" src="/include/jslibs/jquery-1.7.1.js"></script>
+  <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery.validate.js"></script>
+  <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery.validate.password.js"></script>
   <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
   <script type="text/javascript" src="/include/vendor/javascript-load-image/load-image.min.js"></script>
   <script type="text/javascript" src="/include/minify/g=admin"></script>
@@ -89,6 +91,32 @@
       $.each($('#tree a[target=right]'),function(){
         var dest = $(this).attr('href');
 
+        function enableForms(forms) {
+            forms.bind('submit', function(){
+
+                var method = $(this).attr('method');
+                var url = $(this).attr('action');
+                var datas = $(this).serializeArray();
+
+                if(!method) {
+                    method = 'GET';
+                }
+                $('#right-ajax').empty().addClass('loading');
+                if(url) {
+                    $.ajax({
+                        type: method,
+                        url: url,
+                        data: datas,
+                        success: function(datas){
+                            $('#right-ajax').removeClass('loading').html(datas);
+                            enableForms($('#right-ajax form:not(.no-ajax)'));
+                            return;
+                        }
+                    });
+                }
+            });
+        }
+
         $(this).bind('click',function(){
           if($(this).hasClass('ajax'))
           {
@@ -96,6 +124,7 @@
             $('#right').hide();
             $.get(dest, function(data) {
               $('#right-ajax').removeClass('loading').html(data);
+              enableForms($('#right-ajax form:not(.no-ajax)'));
             });
           }
           else
@@ -155,7 +184,7 @@
 
         return;
       }
-    })
+    });
   }
 
     </script>

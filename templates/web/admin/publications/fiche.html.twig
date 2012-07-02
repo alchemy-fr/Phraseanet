@@ -79,7 +79,7 @@
         });
         </script>
 
-        <form class="form_publication form-vertical" name="form_publication" enctype="multipart/form-data" method="post" action="/admin/publications/feed/{{ feed.get_id() }}/update/">
+        <form class="no-ajax form_publication form-vertical" name="form_publication" enctype="multipart/form-data" method="post" action="/admin/publications/feed/{{ feed.get_id() }}/update/">
             <div class="control-group">
                 <label class="control-label" for="edit_pub_titre">{% trans 'Titre' %} :</label>
                 <div class="controls">
@@ -148,7 +148,7 @@
                             {% if publisher.is_owner() == true %}
                                 X
                             {% else %}
-                                <form class="form_publication" method="post" action="/admin/publications/feed/{{ feed.get_id() }}/removepublisher/">
+                                <form class="no-ajax form_publication" method="post" action="/admin/publications/feed/{{ feed.get_id() }}/removepublisher/">
                                     <input type="hidden" value="{{ publisher.get_id() }}" name="publisher_id"/>
                                     <button class="btn btn-mini">{% trans 'boutton::supprimer' %}</button>
                                 </form>
@@ -159,7 +159,7 @@
                 </tbody>
             </table>
             <div>
-                <form class="form_publication" id="publisher_adder" method="post" action="/admin/publications/feed/{{ feed.get_id() }}/addpublisher/">
+                <form class="no-ajax form_publication" id="publisher_adder" method="post" action="/admin/publications/feed/{{ feed.get_id() }}/addpublisher/">
                     <div class="control-group">
                         <label class="control-label">{% trans 'Ajouter un publisher' %} :</label>
                         <div class="controls">

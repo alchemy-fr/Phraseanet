@@ -4,7 +4,7 @@
 
   {% if user.is_admin() %}
   <li>
-    <a target="right" href="sitestruct.php">
+    <a target="right" href="sitestruct.php" class="ajax">
       <img src="/skins/admin/Dashboard.png" />
       <span>{% trans 'Tableau de bord' %}</span>
     </a>
@@ -17,7 +17,7 @@
 
   {% if user.is_admin() %}
   <li>
-    <a target="right" href="/admin/global_values.php">
+    <a target="right" href="/admin/global_values.php" class="ajax">
       <img src="/skins/admin/Setup.png" />
       <span>Setup</span>
     </a>
@@ -73,7 +73,7 @@
 
   <li class="open">
     <div class="{% if feature == 'bases' %}selected{% endif %}" style="padding:0 0 2px 0;">
-      <a id="TREE_DATABASES" target="right" href="databases.php">
+      <a id="TREE_DATABASES" target="right" href="databases.php" class="ajax">
         <img src="/skins/admin/DatabasesAvailable.png" />
         <span>{% trans 'admin::utilisateurs: bases de donnees' %}</span>
       </a>
@@ -98,7 +98,7 @@
 
       <li class="{% if this_is_open %}open{% endif %}">
         <div style="padding:0 0 2px 0;" class="{% if this_is_selected %}selected{% endif %}">
-          <a target="right" href="database.php?p0={{ sbas_id }}">
+          <a target="right" href="database.php?p0={{ sbas_id }}" class="ajax">
             <img src="/skins/admin/Database.png"/>
             <span>{{ databox.get_viewname() }}</span>
           </a>

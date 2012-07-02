@@ -92,17 +92,11 @@ if ($user->ACL()->has_right_on_sbas($sbas_id, 'bas_manage')) {
     }
 }
 ?>
-<html lang="<?php echo $session->get_I18n(); ?>">
-    <head>
-        <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css" />
-        <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/admin/admincolor.css" />
-
-        <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
 
         <script type="text/javascript">
 <?php
 if ($parm['act']) {
-    print("parent.reloadTree('base:" . $parm['p0'] . "');");
+    print("reloadTree('base:" . $parm['p0'] . "');");
 }
 ?>
 
@@ -339,17 +333,7 @@ if ($parm['act']) {
                 padding-top:5px;
                 border-top:2px solid black;
             }
-            a:link,a:visited{
-                text-decoration:none;
-                color:#666;
-            }
-            a:hover{
-                text-decoration:underline;
-                color:black;
-            }
         </style>
-    </head>
-    <body>
 <?php
 $out = "";
 ?>
@@ -722,5 +706,3 @@ if ($user->ACL()->has_right_on_sbas($sbas_id, 'bas_manage')) {
             <input type="hidden" name="act" value="???" />
             <input type="hidden" name="tid" value="???" />
         </form>
-    </body>
-</html>
