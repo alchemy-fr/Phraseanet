@@ -481,20 +481,6 @@ class setup
             return $php_constraints;
         }
 
-        function check_mail_form()
-        {
-            echo '<h1>' . _('setup::Tests d\'envois d\'emails') . '</h1>';
-            ?>
-            <form method="post" action="/admin/sitestruct.php" target="_self">
-                <label>Email : </label><input name="email" type="text" />
-                <input type="submit" value="<?php echo _('boutton::valider'); ?>"/>
-            </form>
-
-            <?php
-
-            return;
-        }
-
         /**
          *
          */
