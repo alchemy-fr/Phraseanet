@@ -217,3 +217,39 @@ div.switch_right.unchecked {
   line-height: 42px;
   margin-left: 47px;
 }
+/******* GLOBAL VALUES FORM ***************************************************/
+#GV_form_head .control-label {
+  width: 100px;
+  text-align: left;
+}
+#GV_form_head .controls {
+  margin-left: 110px;
+}
+#GV_form_head .controls input[type="checkbox"] {
+  margin-top: 8px;
+}
+#GV_form .error,
+#GV_form .NEW {
+  color: #ff0000;
+  font-weight: bold;
+}
+#GV_form .section {
+  padding-bottom: 10px;
+}
+#GV_form .section h1 {
+  font-weight: bold;
+  font-size: 16px;
+  text-align: left;
+  margin: 10px 0;
+  line-height: 22px;
+}
+#GV_form .section .control-label {
+  width: auto;
+  margin-left: 230px;
+  float: none;
+  text-align: left;
+}
+#GV_form .section .controls {
+  margin-left: 0;
+  float: left;
+}

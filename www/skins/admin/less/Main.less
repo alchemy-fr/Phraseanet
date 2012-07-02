@@ -6,6 +6,7 @@
 @dark: #333;
 @grey: #CCC;
 @blue: #005580;
+@red: #FF0000;
 @orange: #F0AD30;
 @lemon: #FCEB3F;
 @sand: #FFFBCD;
@@ -265,3 +266,45 @@ div.switch_right {
     line-height: (@ico-size + 10px);
     margin-left: (@ico-size + 10px) + 5px;
 }
+
+/******* GLOBAL VALUES FORM ***************************************************/
+
+#GV_form_head {
+    .control-label {
+        width: 100px;
+        text-align: left;
+    }
+    .controls {
+        margin-left: 110px;
+        input[type="checkbox"] {
+            margin-top: 8px;
+        }
+    }
+}
+
+#GV_form {
+    .error, .NEW {
+        .color(@red);
+        font-weight: bold;
+    }
+    .section {
+        padding-bottom: 10px;
+        h1 {
+            .title(16px, 10px, 0);
+            line-height: 22px;
+        }
+        .control-label {
+            width: auto;
+            margin-left: 230px;
+            float: none;
+            text-align: left;
+        }
+        .controls {
+            margin-left: 0;
+            float: left;
+        }
+
+    }
+}
+
+
