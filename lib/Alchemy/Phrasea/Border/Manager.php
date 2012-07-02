@@ -23,6 +23,7 @@ use Monolog\Logger;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Value\Mono as MonoValue;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Exception\IOException;
 use XPDF\PdfToText;
 
 /**
@@ -204,22 +205,25 @@ class Manager
      * @param  string $filename The desired filename
      * @return string The available filename to use
      */
-    protected function bookLazaretPathfile($filename)
+    protected function bookLazaretPathfile($filename, $suffix = '')
     {
-        $root = __DIR__ . '/../../../../tmp/lazaret/';
+        $output = __DIR__ . '/../../../../tmp/lazaret/lzrt_' . substr($filename, 0, 3) . '_' . $suffix . '.' .pathinfo($filename, PATHINFO_EXTENSION);
+        $infos = pathinfo($output);
+        $n = 0;
+        while (true) {
+            $output = sprintf('%s/%s-%d%s', $infos['dirname'], $infos['filename'],  ++ $n, (isset($infos['extension']) ? '.' . $infos['extension'] : ''));
 
-        $infos = pathinfo($filename);
+            try {
+                if ( ! $this->filesystem->exists($output)) {
+                    $this->filesystem->touch($output);
+                    break;
+                }
+            } catch (IOException $e) {
 
-        $output = $root . $infos['basename'];
-
-        $n = 1;
-        while (file_exists($output) || ! touch($output)) {
-            $output = $root . $infos['filename'] . '-' . ++ $n . '.' . $infos['extension'];
+            }
         }
 
-        $this->filesystem->touch($output);
-
-        return $output;
+        return realpath($output);
     }
 
     /**
@@ -410,7 +414,8 @@ class Manager
             )
         );
 
-        $lazaretPathname = $this->bookLazaretPathfile($file->getFile()->getRealPath());
+        $lazaretPathname = $this->bookLazaretPathfile($file->getOriginalName());
+        $lazaretPathnameThumb = $this->bookLazaretPathfile($file->getOriginalName(), 'thumb');
 
         $this->filesystem->copy($file->getFile()->getRealPath(), $lazaretPathname, true);
 
@@ -422,9 +427,9 @@ class Manager
         $core = \bootstrap::getCore();
 
         try {
-           $core['media-alchemyst']
+            $core['media-alchemyst']
                 ->open($file->getFile()->getPathname())
-                ->turnInto($lazaretPathname, $spec)
+                ->turnInto($lazaretPathnameThumb, $spec)
                 ->close();
         } catch (MediaAlchemystException $e) {
 
@@ -438,7 +443,9 @@ class Manager
 
         $lazaretFile->setForced($forced);
 
-        $lazaretFile->setPathname($lazaretPathname);
+        $lazaretFile->setPathname(pathinfo($lazaretPathname, PATHINFO_BASENAME));
+        $lazaretFile->setThumbPathName(pathinfo($lazaretPathnameThumb, PATHINFO_BASENAME));
+
         $lazaretFile->setSession($session);
 
         $this->em->persist($lazaretFile);

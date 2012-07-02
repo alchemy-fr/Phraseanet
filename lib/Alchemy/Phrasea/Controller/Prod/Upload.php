@@ -176,8 +176,9 @@ class Upload implements ControllerProviderInterface
         }
 
         try {
+            // Add file extension, so mediavorus can guess file type for octet-stream file
             $uploadedFilename = $file->getRealPath();
-            $renamedFilename = $file->getRealPath() . $file->getClientOriginalName();
+            $renamedFilename = $file->getRealPath() . '.' . pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
 
             $originalname = $file->getClientOriginalName();
             $clientMimeType = $file->getClientMimeType();
