@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<form class="form_publication form-vertical" method="post" action="/admin/publications/create/">
+<form class="no-ajax form_publication form-vertical" method="post" action="/admin/publications/create/">
     <h2>{% trans 'Ajouter une publication' %}</h2>
     <div class="control-group">
         <label class="control-label" for="add_pub_titre">{% trans 'Titre' %} :</label>
@@ -82,7 +82,7 @@
                 </td>
                 <td style="text-align: center;">
                     {% if feed.is_owner(user) %}
-                        <form class="form_publication" action="/admin/publications/feed/{{feed.get_id()}}/delete/" method="post">
+                        <form class="no-ajax form_publication" action="/admin/publications/feed/{{feed.get_id()}}/delete/" method="post">
                             <button class="feed_remover btn btn-mini">{% trans 'boutton::supprimer' %}</button>
                         </form>
                     {% endif %}
