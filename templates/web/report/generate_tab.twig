@@ -29,8 +29,9 @@
                 <div class="right">{{ result.periode }}</div>
                 <div style="clear:both;height:2px;"></div>
                 <div class="right" style="font-weight:lighter;font-size:10px;">
-                    {% if result.total|length > 0 and result.total != 0 %}
-                        <i>Nombre de résultat : {{ result.total }}</i>
+                    {% set total_count = result.total %}
+                    {% if result.total > 0 and result.total != 0 %}
+                        <i>{% trans %} Number of result {% plural total_count %} Number of results {% endtrans %} : {{ result.total }}</i>
                     {% endif %}
                 </div>
                 <div class="spacer"></div>
