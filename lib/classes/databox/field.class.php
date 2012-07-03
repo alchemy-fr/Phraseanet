@@ -574,6 +574,10 @@ class databox_field implements cache_cacheableInterface
     {
         $this->Business = ! ! $boolean;
 
+        if($this->Business) {
+            $this->thumbtitle = '0';
+        }
+
         return $this;
     }
 
@@ -665,6 +669,10 @@ class databox_field implements cache_cacheableInterface
     public function set_thumbtitle($value)
     {
         $this->thumbtitle = $value;
+
+        if($this->thumbtitle != '0') {
+            $this->Business = false;
+        }
 
         return $this;
     }
