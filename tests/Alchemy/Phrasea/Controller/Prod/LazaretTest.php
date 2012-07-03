@@ -534,7 +534,11 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         //mock Doctrine\ORM\EntityManager
         $em = $this->getMock('Doctrine\ORM\EntityManager', array(), array(), '', false);
 
-        $lazaretFile = $this->getOneLazaretFile();
+        $lazaretFile = $this->getMock('Entities\LazaretFile', array(), array(), '', false);
+
+        $lazaretFile->expects($this->any())
+            ->method('getThumbPathname')
+            ->will($this->returnValue('../../tests/testfiles/test001.CR2'));
 
         $id = 1;
 
@@ -584,6 +588,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $lazaretFile = new \Entities\LazaretFile();
         $lazaretFile->setOriginalName('test');
         $lazaretFile->setPathname(__DIR__ . '/../../../../testfiles/test001.CR2');
+        $lazaretFile->setThumbPathname(__DIR__ . '/../../../../testfiles/test001.CR2');
         $lazaretFile->setBaseId(self::$collection->get_base_id());
         $lazaretFile->setSession($lazaretSession);
         $lazaretFile->setSha256('3191af52748620e0d0da50a7b8020e118bd8b8a0845120b0bb');
