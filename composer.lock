@@ -19,7 +19,7 @@
         {
             "package": "dailymotion/sdk",
             "version": "dev-master",
-            "source-reference": "bf3863eb335b0414a4a93686cee23e8cf64a32f2"
+            "source-reference": "553ae64f3a981f4d9b4ea2a4b8e51ebef2409bbf"
         },
         {
             "package": "data-uri/data-uri",
@@ -33,7 +33,7 @@
         {
             "package": "doctrine/data-fixtures",
             "version": "dev-master",
-            "source-reference": "d233d05437c1a10034867f22069b4bb0f7dc96b6"
+            "source-reference": "64538135ef2b17a296e26f88a04c7ce2e4551459"
         },
         {
             "package": "doctrine/dbal",
@@ -70,7 +70,7 @@
         {
             "package": "php-ffmpeg/php-ffmpeg",
             "version": "dev-master",
-            "source-reference": "52b7ba1e606b0a2944c8c9111105c10fb1bef4e8"
+            "source-reference": "b6b8bd502131e0dd82f53517ccc84d3de2c09424"
         },
         {
             "package": "php-mp4box/php-mp4box",
@@ -106,7 +106,7 @@
         {
             "package": "pimple/pimple",
             "version": "dev-master",
-            "source-reference": "694448bdd2b7d802517104bdafe1a6f2591506c8"
+            "source-reference": "d2cfa2f02f50abef65c238747c753a5f6786f6be"
         },
         {
             "package": "silex/silex",
@@ -117,7 +117,7 @@
         {
             "package": "silex/silex",
             "version": "dev-master",
-            "source-reference": "8150e2ca6d7145aa33aeb6d57e4a728317a36621"
+            "source-reference": "8cb0ba08839d6ca84fc76936eec1f8ced9a80546"
         },
         {
             "package": "swftools/swftools",
@@ -126,14 +126,7 @@
         },
         {
             "package": "swiftmailer/swiftmailer",
-            "version": "dev-master",
-            "alias-pretty-version": "4.1.x-dev",
-            "alias-version": "4.1.9999999.9999999-dev"
-        },
-        {
-            "package": "swiftmailer/swiftmailer",
-            "version": "dev-master",
-            "source-reference": "0509c682d482940949ea7f7128c582d9d8b628e2"
+            "version": "v4.1.8"
         },
         {
             "package": "symfony/symfony",
@@ -144,7 +137,7 @@
         {
             "package": "symfony/symfony",
             "version": "dev-master",
-            "source-reference": "092b5dde62df60c268c8d99bd5d45d50cda42acc"
+            "source-reference": "2f66ae3a0c30fcf0051ede0a3812f96f5ffa1335"
         },
         {
             "package": "tcpdf/tcpdf",
@@ -165,7 +158,7 @@
         {
             "package": "twig/twig",
             "version": "dev-master",
-            "source-reference": "4679ad51c5390648b7ea4c8f0ecd2c0c344145ba"
+            "source-reference": "73da773aaad0f97f2e967ec8241b8adf7b1e03d2"
         },
         {
             "package": "zend/gdata",
