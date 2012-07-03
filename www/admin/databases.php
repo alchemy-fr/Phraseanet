@@ -257,7 +257,7 @@ if ($createBase || $mountBase) {
         }
         ?>
         <div class="db_infos">
-            <h1>Bases actuelles :</h1>
+            <h2>Bases actuelles :</h2>
             <ul>
                 <?php
                 if (count($sbas) > 0) {
@@ -282,7 +282,7 @@ if ($createBase || $mountBase) {
         if ($user_obj->is_admin() === true) {
             ?>
             <div class="db_infos">
-                <h1><?php echo _('admin::base: Version') ?></h1>
+                <h2><?php echo _('admin::base: Version') ?></h2>
                 <?php
                 if ($upgrade_available) {
                     ?>
@@ -301,7 +301,7 @@ if ($createBase || $mountBase) {
             </div>
 
             <div class="db_infos">
-                <h1><?php echo _('admin::base: creer une base') ?></h1>
+                <h2><?php echo _('admin::base: creer une base') ?></h2>
                 <div id="create_base">
                     <form class="form-vertical" method="post" action="databases.php">
                         <label class="checkbox">
@@ -342,7 +342,7 @@ if ($createBase || $mountBase) {
             </div>
 
             <div class="db_infos">
-                <h1><?php echo _('admin::base: Monter une base') ?></h1>
+                <h2><?php echo _('admin::base: Monter une base') ?></h2>
                 <div id="mount_base">
                     <form method="post" action="databases.php">
                         <label class="checkbox">

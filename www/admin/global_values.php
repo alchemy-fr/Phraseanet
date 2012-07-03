@@ -62,46 +62,6 @@ function getFormTimezone($props = array(), $selected = false)
 }
 phrasea::start($Core);
 ?>
-        <style type="text/css">
-
-            /*
-            #GV_form div{
-                position:relative;
-                float:left;
-                width:100%;
-            }
-            #GV_form ul{
-                position:relative;
-                float:left;
-                width:100%;
-                list-style-type:none;
-                width:100%;
-            }
-            #GV_form li{
-                position:relative;
-                float:left;
-                width:100%;
-            }
-            #GV_form li div.input
-            {
-                width:200px;
-            }
-            #GV_form li div.input input,
-            #GV_form li div.input textarea,
-            #GV_form li div.input select
-            {
-                width:180px;
-            }
-            #GV_form li div.input input.checkbox
-            {
-                width:auto;
-            }
-            #GV_form li div.label
-            {
-                width:350px;
-            }
-            */
-        </style>
 
         <form class="form-horizontal" id="GV_form_head">
             <div class="control-group">
