@@ -202,12 +202,13 @@ class Manager
     /**
      * Find an available Lazaret filename and creates the empty file.
      *
-     * @param  string $filename The desired filename
+     * @param  string   $filename     The desired filename
+     * @param  string   $suffix       A suffix to the filename
      * @return string The available filename to use
      */
     protected function bookLazaretPathfile($filename, $suffix = '')
     {
-        $output = __DIR__ . '/../../../../tmp/lazaret/lzrt_' . substr($filename, 0, 3) . '_' . $suffix . '.' .pathinfo($filename, PATHINFO_EXTENSION);
+        $output = __DIR__ . '/../../../../tmp/lazaret/lzrt_' . substr($filename, 0, 3) . '_' . $suffix . '.' . pathinfo($filename, PATHINFO_EXTENSION);
         $infos = pathinfo($output);
         $n = 0;
         while (true) {

@@ -104,7 +104,6 @@ class patch_370a7 implements patchInterface
 
                         }
 
-
                         $media = $Core['mediavorus']->guess(new \SplFileInfo($filePath));
 
                         $collection = \collection::get_from_base_id($row['base_id']);

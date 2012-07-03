@@ -387,6 +387,4 @@ class LazaretFile
     {
         $this->thumbPathname = $thumbPathname;
     }
-
-
 }
