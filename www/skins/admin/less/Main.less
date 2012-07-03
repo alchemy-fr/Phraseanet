@@ -5,8 +5,8 @@
 @black: #000;
 @dark: #333;
 @grey: #CCC;
-@blue: #005580;
-@red: #FF0000;
+@blue: #0088CC;
+@red: #F00;
 @orange: #F0AD30;
 @lemon: #FCEB3F;
 @sand: #FFFBCD;
@@ -81,6 +81,13 @@ a {
         text-decoration: underline;
         .cursor;
     }
+}
+
+blockquote {
+    margin: 0 15px;
+    padding: 5px 10px;
+    border: 3px dotted @black;
+    .bg(#DEDEDE);
 }
 
 img {
@@ -305,6 +312,34 @@ div.switch_right {
         }
 
     }
+}
+
+/******* DATABASES ************************************************************/
+
+.db_recommand {
+    .color;
+    font-weight: bold;
+}
+
+.db_exception {
+    margin-top:10px;
+    .bg(@lemon);
+}
+
+.db_infos {
+    width: 100%;
+    padding-bottom: 10px;
+    h1 {
+        .title(18px, 10px, 0);
+        line-height: 22px;
+    }
+    input[type="text"],
+    input[type="password"],
+    input[type="submit"],
+    select, textarea {
+        margin-bottom: 9px
+    }
+
 }
 
 
