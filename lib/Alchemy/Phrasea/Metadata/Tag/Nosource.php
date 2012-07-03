@@ -17,6 +17,6 @@ class Nosource extends \PHPExiftool\Driver\Tag
 
     public function getTagname()
     {
-        return 'No source';
+        return '';
     }
 }
