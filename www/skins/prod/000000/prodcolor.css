@@ -1848,8 +1848,15 @@ H4 {
     margin: 0 5px;
 }
 
+.clkbas {
+    white-space: nowrap;
+    margin:0 5px;
+}
+
 .clkbas label {
     color: #AAAAAA;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .clkbas label.selected {

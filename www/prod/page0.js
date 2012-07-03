@@ -345,6 +345,7 @@ function newSearch()
     {
         console.log('Fresh new search, cache empty');
     }
+    $('#proposals').empty();
     p4.Results.Selection.empty()
 
     clearAnswers();
@@ -484,10 +485,9 @@ function initAnswerForm(){
                     $('#IMGT_' + el).addClass('selected');
                 });
 
-                $('#proposals').empty().append(datas.phrasea_props);
-
                 if(datas.phrasea_props && $.trim(datas.phrasea_props) !== '')
                 {
+                    $('#proposals').empty().append(datas.phrasea_props);
                     $('#idFrameC li.proposals_WZ').addClass('active');
                 }
                 p4.tot = datas.total_answers;

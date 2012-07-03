@@ -17,7 +17,7 @@
                 <ul style="list-style-type:none; padding:0; margin:0;" class="basChild_{{sbas_id}}">
                     {% for collection in base["collections"] %}
                         {% set base_id = collection["base_id"] %}
-                        <li style="margin:0 5px;" class="clkbas">
+                        <li class="clkbas">
                             <label style="line-height: 18px;" onclick="infoSbas($('#ck_{{base_id}}_{{unique_id}}'),{{sbas_id}}, false, event); return false;"
                                 for="ck_{{base_id}}_{{unique_id}}" class="ck_{{base_id}} {% if collection["selected"] %}selected{% endif %} checkbox">
                                 {{base_id|get_collection_logo|raw}} {{base_id|bas_names}}

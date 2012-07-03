@@ -94,7 +94,7 @@
                             <input style="width:100px;" class="meta_namer metafield_{{ field.get_id() }}" {{ disabled }} type="text" name="name_{{ field.get_id() }}" value="{{ field.get_name () }}" />
                         </td>
                         <td>
-                            <span id="display_value_{{ field.get_id() }}">{{ field.get_tag().getGroupName() }}:{{ field.get_tag().getName() }}</span> <a href="#" class="field_change">change<input type="hidden" value="{{ field.get_id() }}"/></a>
+                            <span id="display_value_{{ field.get_id() }}">{% if field.is_on_error() %}Error{% elseif field.get_tag().getTagname() != '' %}{{ field.get_tag().getTagname() }}{% else %}No source{% endif %}</span> <a href="#" class="field_change">{% trans 'boutton::modifier' %}<input type="hidden" value="{{ field.get_id() }}"/></a>
                             <input class="meta_src" type="hidden" name="src_{{ field.get_id() }}" value="{{ field.get_tag().getTagname() }}"/>
                         </td>
                         <td>
@@ -150,12 +150,12 @@
                             <input class="metafield_{{ field.get_id() }}" {{ disabled }} name="report_{{ field.get_id() }}" type="checkbox" {% if field.is_report() %}checked="checked"{% endif %}/>
                         </td>
                         <td>
-                            <select class="metafield_{{ field.get_id() }}" {{ disabled }} name="thumbtitle_{{ field.get_id() }}">
+                            <select class="thumbtitle metafield_{{ field.get_id() }}" {{ disabled }} name="thumbtitle_{{ field.get_id() }}">
                             {{ _self.thumbtitle_selector(field.get_thumbtitle()) }}
                             </select>
                         </td>
                         <td>
-                            <input class="metafield_{{ field.get_id() }}" {{ disabled }} name="business_{{ field.get_id() }}" type="checkbox" {% if field.isBusiness() %}checked="checked"{% endif %}/>
+                            <input class="business metafield_{{ field.get_id() }}" {{ disabled }} name="business_{{ field.get_id() }}" type="checkbox" {% if field.isBusiness() %}checked="checked"{% endif %}/>
                         </td>
                     </tr>
                 {% endfor %}
@@ -222,6 +222,34 @@
                     });
 
                     return false;
+                });
+
+                $('select.thumbtitle', container).bind('change', function(){
+                    if($(this).val() == '') {
+                        return;
+                    }
+
+                    var id = $(this).attr('name').split('_').pop();
+                    var business = $('input[name="business_' + id + '"]');
+
+                    if(business.attr('checked')) {
+                        $(this).val('0');
+                        alert('{% trans 'A field can not be set both as title and business field. Remove business field flag before setting title' %}');
+                    }
+                });
+
+                $('input.business', container).bind('change', function(){
+                    if(!$(this).attr('checked')) {
+                        return;
+                    }
+
+                    var id = $(this).attr('name').split('_').pop();
+                    var thumbtitle = $('select[name="thumbtitle_' + id + '"]');
+
+                    if(thumbtitle.val() != '0') {
+                        $(this).removeAttr('checked');
+                        alert('{% trans 'A field can not be set both as title and business field. Remove the title before setting the business flag' %}');
+                    }
                 });
 
                 $("#field_chooser").autocomplete({
