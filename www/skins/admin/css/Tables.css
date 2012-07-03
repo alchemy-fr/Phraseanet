@@ -35,6 +35,7 @@ table.whoisTable td.colValue {
 .spacehr {
   margin-top: 40px;
   margin-bottom: 30px;
+  border-top: 1px solid #cccccc;
 }
 table.admintable {
   width: 100%;
@@ -63,7 +64,7 @@ table.admintable tbody tr.selected {
   background-color: #f0ad30;
 }
 table.admintable tbody tr:hover {
-  background-color: #e5d4a0;
+  background-color: #f0ad30;
   cursor: pointer;
 }
 table.admintable tbody td {
