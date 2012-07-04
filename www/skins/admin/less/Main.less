@@ -84,10 +84,10 @@ a {
 }
 
 blockquote {
-    margin: 0 15px;
-    padding: 5px 10px;
-    border: 3px dotted @black;
-    .bg(#DEDEDE);
+    margin: 20px 15px;
+    padding: 10px;
+    border: 1px dotted @black;
+    .bg(lighten(@grey, 15%));
 }
 
 img {
@@ -103,6 +103,10 @@ select {
     margin: 0;
     padding: 5px 4px;
     *padding: 4px;
+}
+
+.help-block, .help-inline {
+    .color(lighten(@dark, 20%));
 }
 
 li.selected, div.selected {
@@ -383,5 +387,13 @@ div[id$="_indexed_percent"] {
     }
 }
 
+/******* DATABASE - FIELDS ****************************************************/
 
+#field_adder .help-block label {
+    .color(lighten(@dark, 20%));
+}
+
+#form_struct {
+    margin: 10px 0;
+}
 

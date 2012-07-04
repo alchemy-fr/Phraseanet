@@ -73,6 +73,9 @@ table.admintable tbody td {
 table.admintable tbody.dropdown {
   cursor: pointer;
 }
+table.admintable .centered {
+  text-align: center;
+}
 /******* USERS TABLE **********************************************************/
 #users th.sortable {
   cursor: pointer;
