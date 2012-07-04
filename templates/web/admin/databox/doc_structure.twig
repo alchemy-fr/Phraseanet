@@ -41,8 +41,8 @@
             <blockquote>* {% trans 'This can not be changed' %}</blockquote>
         </div>
         <div class="btn-toolbar">
-            <button class="field_adder btn">{% trans 'boutton::ajouter' %}</button>
-            <button class="struct_saver btn">{% trans 'Valider' %}</button>
+            <button class="field_adder btn btn-warning">{% trans 'boutton::ajouter' %}</button>
+            <button class="struct_saver btn btn-warning">{% trans 'Valider' %}</button>
         </div>
 
         <form id="form_struct" action="/admin/description/{{ databox.get_sbas_id() }}/" method="post" target="_self">
@@ -154,7 +154,7 @@
                 {% endfor %}
                 </tbody>
             </table>
-            <button type="submit" class="btn">{% trans 'Valider' %}</button>
+            <button type="submit" class="btn btn-warning">{% trans 'Valider' %}</button>
         </form>
         <style>
             .ui-autocomplete {

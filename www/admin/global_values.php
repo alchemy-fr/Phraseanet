@@ -193,7 +193,7 @@ $JS = '$(document).ready(function() {
     });
 ';
 ?>
-        <input type="submit" class="btn input-medium" style="margin-bottom: 10px;" value="<?php echo _('boutton::valider') ?>"/>
+        <input type="submit" class="btn btn-warning" style="margin-bottom: 10px;" value="<?php echo _('boutton::valider') ?>"/>
     </form>
     <script type='text/javascript'>
         <?php echo $JS ?>

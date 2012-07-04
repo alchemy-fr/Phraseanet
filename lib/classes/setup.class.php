@@ -322,12 +322,12 @@ class setup
     {
         $registry = registry::get_instance();
         ?>
-        <h1>Apache Server mods avalaibility</h1>
-        <div style="position:relative;float:left;">
+        <h2>Apache Server mods avalaibility</h2>
+        <p>
             <?php
             echo _('Attention, seul le test de l\'activation des mods est effectue, leur bon fonctionnement ne l\'est pas ')
             ?>
-        </div>
+        </p>
 
         <ul id="apache_mods_checker" class="setup">
 
@@ -358,49 +358,49 @@ class setup
                     <div class="infos"><img style="vertical-align:middle" src="/skins/icons/alert.png"/> <?php echo _('Attention, veuillez verifier la configuration h264_streaming, actuellement activee dans le setup'); ?></div>
                 <?php } ?>
             </li>
-            <style type="text/css">
-                #apache_mods_checker div.infos{
-                    display:none;
+        </ul>
+        <style type="text/css">
+            #apache_mods_checker div.infos{
+                display:none;
+            }
+            #apache_mods_checker .blocker div.infos{
+                display:block;
+            }
+        </style>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $('#apache_mods_checker a').trigger('click');
+            });
+
+            function check_apache_mod(el,mod)
+            {
+                var url = '/admin/test-';
+                switch (mod) {
+                    case 'rewrite':
+                        url += 'rewrite';
+                        break;
+                    case 'xsendfile':
+                        url += 'xsendfile';
+                        break;
+                    case 'authtoken':
+                        url += 'authtoken';
+                        break;
+                    case 'h264':
+                        url += 'h264';
+                        break;
                 }
-                #apache_mods_checker .blocker div.infos{
-                    display:block;
-                }
-            </style>
-            <script type="text/javascript">
-                $(document).ready(function(){
-                    $('#apache_mods_checker a').trigger('click');
+
+                $.get(url, function(data) {
+                    if(data == '1')
+                        $(el).closest('li').removeClass('blocker');
+                    else
+                        $(el).closest('li').addClass('blocker');
                 });
 
-                function check_apache_mod(el,mod)
-                {
-                    var url = '/admin/test-';
-                    switch (mod) {
-                        case 'rewrite':
-                            url += 'rewrite';
-                            break;
-                        case 'xsendfile':
-                            url += 'xsendfile';
-                            break;
-                        case 'authtoken':
-                            url += 'authtoken';
-                            break;
-                        case 'h264':
-                            url += 'h264';
-                            break;
-                    }
-
-                    $.get(url, function(data) {
-                        if(data == '1')
-                            $(el).closest('li').removeClass('blocker');
-                        else
-                            $(el).closest('li').addClass('blocker');
-                    });
-
-                }
-            </script>
+            }
+        </script>
 
             <?php
-            echo '</ul>';
         }
 
         public static function check_phrasea()
@@ -545,7 +545,7 @@ class setup
         {
             $Core = \bootstrap::getCore();
 
-            echo '<h1>' . _('setup:: Serveur Memcached') . '</h1>';
+            echo '<h2>' . _('setup:: Serveur Memcached') . '</h2>';
             echo '<ul class="setup">';
 
             $registry = registry::get_instance();
@@ -645,7 +645,7 @@ class setup
                 $engine = new searchEngine_adapter($registry);
                 $status = $engine->get_status();
 
-                echo '<h1>' . _('setup::Etat du moteur de recherche') . '</h1>';
+                echo '<h2>' . _('setup::Etat du moteur de recherche') . '</h2>';
                 echo '<ul class="setup">';
                 foreach ($status as $value) {
                     echo '<li>' . sprintf('%s : %s', $value[0], $value[1]) . '</li>';
@@ -653,7 +653,7 @@ class setup
                 echo '</ul>';
             } catch (Exception $e) {
 
-                echo '<h1>' . _('setup::Sphinx confguration') . '</h1>';
+                echo '<h2>' . _('setup::Sphinx confguration') . '</h2>';
                 echo '<ul class="setup">';
                 echo '<li class="blocker">' . $e->getMessage() . '</li>';
                 echo '</ul>';

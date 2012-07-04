@@ -41,48 +41,6 @@ if ($parm['flush_cache']) {
 }
 ?>
         <style type="text/css">
-
-            h1{
-                position:relative;
-                float:left;
-                width:100%;
-            }
-            ul.setup {
-                position:relative;
-                float:left;
-                width:360px;
-                list-style-type:none;
-                padding:0 0 0 0px;
-                margin:5px 0 5px 40px;
-                border:1px solid #404040;
-            }
-            ul.setup table{
-                width:100%;
-                table-layout: fixed;
-            }
-            .setup li{
-                margin:0px 0;
-                padding:2px 5px 2px 30px;
-                background-image:url(/skins/icons/ok.png);
-                background-repeat:no-repeat;
-                background-position:5px center;
-            }
-            .setup li.non-blocker{
-                background-image:url(/skins/icons/alert.png);
-            }
-            .setup li.blocker{
-                background-image:url(/skins/icons/delete.png);
-            }
-            tr.even{
-                background-color:#CCCCCC;
-            }
-            #flush_button {
-                width:360px;
-                margin: 5px 0 5px 40px;
-            }
-        </style>
-
-        <style>
             .ui-autocomplete {
                 max-height: 200px;
                 overflow-y: auto;
@@ -151,161 +109,161 @@ if ($parm['admins']) {
 }
 
 if ($cache_flushed) {
+?>
+    <div>
+        <?php echo _('all caches services have been flushed'); ?>
+    </div>
+    <?php
+    }
     ?>
-            <div>
-            <?php echo _('all caches services have been flushed'); ?>
-            </div>
-            <?php
-        }
-        ?>
-        <div>
-            <h1><?php echo _('setup:: administrateurs de l\'application') ?></h1>
-            <form id="admin_adder" action="sitestruct.php" method="post">
+    <div class="board_section">
+        <h1><?php echo _('setup:: administrateurs de l\'application') ?></h1>
+        <form id="admin_adder" action="sitestruct.php" method="post">
+            <ul>
             <?php
             $admins = User_Adapter::get_sys_admins();
-
             foreach ($admins as $usr_id => $usr_login) {
                 ?>
-                    <div><input name="admins[]" type="checkbox" value="<?php echo $usr_id ?>" id="adm_<?php echo $usr_id ?>" checked /><label for="adm_<?php echo $usr_id ?>"><?php echo $usr_login; ?></label></div>
-    <?php
-}
-?>
-                <div><?php echo _('setup:: ajouter un administrateur de l\'application') ?></div>
+                <li>
+                    <label class="checkbox" for="adm_<?php echo $usr_id ?>">
+                        <input type="checkbox" id="adm_<?php echo $usr_id ?>" name="admins[]" value="<?php echo $usr_id ?>" checked />
+                        <?php echo $usr_login; ?>
+                    </label>
+                </li>
+                <?php
+            }
+            ?>
+            </ul>
+            <label><?php echo _('setup:: ajouter un administrateur de l\'application') ?> :</label>
+            <input class="admin_adder input-large" />
+            <input type="hidden" class="new" name="admins[]" />
+            <input type="submit" class="btn btn-warning" value="<?php echo _('boutton::valider') ?>" />
+        </form>
+        <h2><?php echo _('setup:: Reinitialisation des droits admins') ?></h2>
+        <form id="admin_reset" action="sitestruct.php" method="post">
+            <input type="hidden" name="sudo" value="1" />
+            <input type="submit" class="btn btn-warning" value="<?php echo _('boutton::reinitialiser') ?>" />
+        </form>
+    </div>
 
-                <input class="admin_adder"/>
-                <input type="hidden" class="new" name="admins[]"/>
-                <input type="submit" value="<?php echo _('boutton::valider') ?>" />
-            </form>
-            <h1><?php echo _('setup:: Reinitialisation des droits admins') ?></h1>
-
-            <form action="sitestruct.php" method="post" id="admin_reset">
-                <input type="hidden" name="sudo" value="1" />
-                <input type="submit" value="<?php echo _('boutton::reinitialiser') ?>" />
-            </form>
-        </div>
-        <h1><?php echo _('setup:: Reglages generaux') ?></h1>
-        <br>
-        <h2><?php echo _('setup::Votre configuration') ?></h2>
-        <div>
-            <div style="position:relative;float:left;width:400px;">
-
-            <h1><?php echo _('setup::Tests d\'envois d\'emails'); ?></h1>
+    <div class="board_section">
+        <h1 style="margin-bottom: 0;"><?php echo _('setup:: Reglages generaux') ?></h1>
+        <h2 style="margin-top: 0; font-style: italic;"><?php echo _('setup::Votre configuration') ?></h2>
+        <div class="section_left">
+            <h2><?php echo _('setup::Tests d\'envois d\'emails'); ?></h2>
             <form id="mail_checker" method="post" action="/admin/sitestruct.php" target="_self">
                 <label>Email : </label><input name="email" type="text" />
-                <input type="submit" value="<?php echo _('boutton::valider'); ?>"/>
+                <input type="submit" class="btn btn-warning" value="<?php echo _('boutton::valider'); ?>"/>
             </form>
-<?php
+            <?php
 
-if ($parm['email']) {
-    echo 'result : ';
-    var_dump(mail::mail_test($parm['email']));
-}
-$php_constraints = setup::check_php_version();
+            if ($parm['email']) {
+                echo 'result : ';
+                var_dump(mail::mail_test($parm['email']));
+            }
 
-
-foreach ($php_constraints as $php_constraint) {
-    echo '<h1>' . $php_constraint->get_name() . '</h1>';
-    echo '<ul class="setup">';
-    ?>
-                    <li class="<?php echo $php_constraint->is_ok() ? 'good-enough' : 'blocker'; ?>">
-                    <?php echo $php_constraint->get_message(); ?>
-                    </li>
-                    <?php
-                    echo '</ul>';
-                }
-
-                $php_constraints = setup::check_writability($registry);
-
-                echo '<h1>' . _('setup::Filesystem configuration') . '</h1>';
+            $php_constraints = setup::check_php_version();
+            foreach ($php_constraints as $php_constraint) {
+                echo '<h2>' . $php_constraint->get_name() . '</h2>';
                 echo '<ul class="setup">';
-                foreach ($php_constraints as $constraint) {
-                    ?>
-                    <li class="<?php echo ! $constraint->is_ok() ? ($constraint->is_blocker() ? 'blocker' : 'non-blocker') : 'good-enough'; ?>">
-                    <?php echo $constraint->get_message(); ?>
-                    </li>
-                    <?php
-                }
-                echo '</ul>';
-
-
-                $php_constraints = setup::check_binaries($registry);
-                echo '<h1>' . _('setup::Executables') . '</h1>';
-                echo '<ul class="setup">';
-                foreach ($php_constraints as $constraint) {
-                    ?>
-                    <li class="<?php echo ! $constraint->is_ok() ? ($constraint->is_blocker() ? 'blocker' : 'non-blocker') : 'good-enough'; ?>">
-                        <?php echo $constraint->get_message(); ?>
-                    </li>
-                    <?php
-                }
-                echo '</ul>';
-
-
-                $php_constraints = setup::check_php_extension();
-                echo '<h1>' . _('setup::PHP extensions') . '</h1>';
-                echo '<ul class="setup">';
-                foreach ($php_constraints as $constraint) {
-                    ?>
-                    <li class="<?php echo ! $constraint->is_ok() ? ($constraint->is_blocker() ? 'blocker' : 'non-blocker') : 'good-enough'; ?>">
-                        <?php echo $constraint->get_message(); ?>
-                    </li>
-                    <?php
-                }
-                echo '</ul>';
-
-                $php_constraints = setup::check_cache_server();
-                echo '<h1>' . _('setup::Serveur de cache') . '</h1>';
-                echo '<ul class="setup">';
-                foreach ($php_constraints as $constraint) {
-                    ?>
-                    <li class="<?php echo ! $constraint->is_ok() ? ($constraint->is_blocker() ? 'blocker' : 'non-blocker') : 'good-enough'; ?>">
-                    <?php echo $constraint->get_message(); ?>
-                    </li>
-                        <?php
-                    }
-                    echo '</ul>';
-                    ?>
-            </div>
-            <div style="position:relative;float:left;width:400px;margin-left:25px;">
-                <?php
-                $php_constraints = setup::check_phrasea();
-                echo '<h1>' . _('Phrasea Module') . '</h1>';
-                echo '<ul class="setup">';
-                foreach ($php_constraints as $constraint) {
-                    ?>
-                    <li class="<?php echo ! $constraint->is_ok() ? ($constraint->is_blocker() ? 'blocker' : 'non-blocker') : 'good-enough'; ?>">
-                        <?php echo $constraint->get_message(); ?>
-                    </li>
-                    <?php
-                }
-                echo '</ul>';
-
-                setup::check_apache();
-                setup::check_mod_auth_token();
-                setup::check_cache_opcode();
-                setup::check_cache_memcache();
-
-                if ($Core->getCache()->isServer()) {
-                    ?>
-                    <form id="cache_flusher" method="post" action="sitestruct.php">
-                        <input type="hidden" name="flush_cache" value="1"/>
-                        <input id="flush_button" type="submit" value="Flush All Caches" />
-                    </form>
-                    <?php
-                }
-
-                echo '<h1>' . _('OPCode cache') . '</h1>';
-                echo '<ul class="setup">';
-                if ($Core['OpcodeCache']->getName() == 'array') {
-                    echo '<li class="non-blocker">' . _('Array opcode cache is activated, but phrasea strongly recommand the use of APC or Xcache in production') . '</li>';
-                } else {
-                    echo '<li>' . $Core['OpcodeCache']->getName() . '</li>';
-                }
-                echo '</ul>';
-
-                setup::check_sphinx_search();
-                setup::check_php_configuration();
                 ?>
-            </div>
+                <li class="<?php echo $php_constraint->is_ok() ? 'good-enough' : 'blocker'; ?>">
+                    <?php echo $php_constraint->get_message(); ?>
+                </li>
+                <?php
+                echo '</ul>';
+            }
+
+            $php_constraints = setup::check_writability($registry);
+            echo '<h2>' . _('setup::Filesystem configuration') . '</h2>';
+            echo '<ul class="setup">';
+            foreach ($php_constraints as $constraint) {
+                ?>
+                <li class="<?php echo ! $constraint->is_ok() ? ($constraint->is_blocker() ? 'blocker' : 'non-blocker') : 'good-enough'; ?>">
+                    <?php echo $constraint->get_message(); ?>
+                </li>
+                <?php
+            }
+            echo '</ul>';
+
+            $php_constraints = setup::check_binaries($registry);
+            echo '<h2>' . _('setup::Executables') . '</h2>';
+            echo '<ul class="setup">';
+            foreach ($php_constraints as $constraint) {
+                ?>
+                <li class="<?php echo ! $constraint->is_ok() ? ($constraint->is_blocker() ? 'blocker' : 'non-blocker') : 'good-enough'; ?>">
+                    <?php echo $constraint->get_message(); ?>
+                </li>
+                <?php
+            }
+            echo '</ul>';
+
+            $php_constraints = setup::check_php_extension();
+            echo '<h2>' . _('setup::PHP extensions') . '</h2>';
+            echo '<ul class="setup">';
+            foreach ($php_constraints as $constraint) {
+                ?>
+                <li class="<?php echo ! $constraint->is_ok() ? ($constraint->is_blocker() ? 'blocker' : 'non-blocker') : 'good-enough'; ?>">
+                    <?php echo $constraint->get_message(); ?>
+                </li>
+                <?php
+            }
+            echo '</ul>';
+
+            $php_constraints = setup::check_cache_server();
+            echo '<h2>' . _('setup::Serveur de cache') . '</h2>';
+            echo '<ul class="setup">';
+                foreach ($php_constraints as $constraint) {
+                    ?>
+                    <li class="<?php echo ! $constraint->is_ok() ? ($constraint->is_blocker() ? 'blocker' : 'non-blocker') : 'good-enough'; ?>">
+                    <?php echo $constraint->get_message(); ?>
+                    </li>
+                    <?php
+                }
+            echo '</ul>';
+            ?>
         </div>
-        
+
+        <div class="section_right">
+            <?php
+            $php_constraints = setup::check_phrasea();
+            echo '<h2>' . _('Phrasea Module') . '</h2>';
+            echo '<ul class="setup">';
+            foreach ($php_constraints as $constraint) {
+                ?>
+                <li class="<?php echo ! $constraint->is_ok() ? ($constraint->is_blocker() ? 'blocker' : 'non-blocker') : 'good-enough'; ?>">
+                    <?php echo $constraint->get_message(); ?>
+                </li>
+                <?php
+            }
+            echo '</ul>';
+
+            setup::check_apache();
+            setup::check_mod_auth_token();
+            setup::check_cache_opcode();
+            setup::check_cache_memcache();
+
+            if ($Core->getCache()->isServer()) {
+                ?>
+                <form id="cache_flusher" method="post" action="sitestruct.php">
+                    <input type="hidden" name="flush_cache" value="1"/>
+                    <input type="submit" id="flush_button" class="btn btn-warning" value="Flush All Caches" />
+                </form>
+                <?php
+            }
+            
+            echo '<h2>' . _('OPCode cache') . '</h2>';
+            echo '<ul class="setup">';
+            if ($Core['OpcodeCache']->getName() == 'array') {
+                echo '<li class="non-blocker">' . _('Array opcode cache is activated, but phrasea strongly recommand the use of APC or Xcache in production') . '</li>';
+            } else {
+                echo '<li>' . $Core['OpcodeCache']->getName() . '</li>';
+            }
+            echo '</ul>';
+
+            setup::check_sphinx_search();
+            setup::check_php_configuration();
+            ?>
+        </div>
+
+    </div>

@@ -47,7 +47,7 @@ table.admintable tr {
   vertical-align: middle;
 }
 table.admintable tr.selected:hover {
-  background-color: #f0ad30;
+  background-color: #faa732;
 }
 table.admintable thead {
   background-color: #e5d4a0;
@@ -61,10 +61,10 @@ table.admintable tbody tr.even {
   background-color: #fffbcd;
 }
 table.admintable tbody tr.selected {
-  background-color: #f0ad30;
+  background-color: #faa732;
 }
 table.admintable tbody tr:hover {
-  background-color: #f0ad30;
+  background-color: #faa732;
   cursor: pointer;
 }
 table.admintable tbody td {
@@ -87,10 +87,10 @@ table.admintable .centered {
   display: none;
 }
 #users th.sortable.hover {
-  background-color: #f0ad30;
+  background-color: #faa732;
 }
 #users th.sortable.sorted {
-  background-color: #f0ad30;
+  background-color: #faa732;
 }
 #users th.sortable.sorted span.ord_notifier {
   display: inline;
@@ -125,8 +125,8 @@ td.users_col.options {
   font-weight: bold;
 }
 #tooltip-usr #tabledescexp td.tooltip-title {
-  background-color: #f0ad30;
-  border: 1px solid #dd9510;
+  background-color: #faa732;
+  border: 1px solid #f39106;
   margin: 10px auto;
   font-weight: bold;
   font-size: 14px;
