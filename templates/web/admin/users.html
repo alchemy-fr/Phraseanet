@@ -48,7 +48,7 @@
 
         <form id="users_reset_rights" method="post" action="/admin/users/rights/reset/" target="_self" style="float:right">
             <input type="hidden" value="" name="users">
-            <button type='button' class="btn">{% trans 'reset users rights' %}</button>
+            <button type='button' class="btn btn-warning">{% trans 'reset users rights' %}</button>
         </form>
 
         <table id="users" cellspacing="0"  cellpadding="0" border="0" class="admintable">
@@ -155,7 +155,7 @@
         <form id="users_page_form" method="post" target="_self" action="/admin/users/search/">
             <p>
                 <span>{{users.get_total}} resultats,</span>
-                
+
                 {% set pages = users.get_total() / parm['per_page'] %}
                 {% set modulo = users.get_total() % parm['per_page'] %}
 
@@ -222,7 +222,7 @@
             {% endif %}
             <input name="like_value" value="{{parm.like_value}}" type="hidden" />
             <input name="like_field" value="{{parm.like_field}}" type="hidden" />
-            <button class="btn">{% trans 'boutton::exporter' %}</button>
+            <button class="btn btn-warning">{% trans 'boutton::exporter' %}</button>
         </form>
 
     <script type="text/javascript">

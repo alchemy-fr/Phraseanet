@@ -69,12 +69,12 @@ select {
 }
 li.selected,
 div.selected {
-  background-color: #f0ad30;
+  background-color: #faa732;
   color: #ffffff;
 }
 li.selected a,
 div.selected a {
-  background-color: #f0ad30;
+  background-color: #faa732;
   color: #ffffff;
 }
 .treeview ul {
@@ -118,7 +118,7 @@ div.finder div.content div.title {
   overflow: auto;
 }
 #FNDR li.selected {
-  background-color: #f0ad30;
+  background-color: #faa732;
   color: #ffffff;
 }
 #FNDR a {
@@ -203,6 +203,51 @@ div.switch_right.unchecked {
 }
 .ui-datepicker {
   z-index: 1500;
+}
+/******* BOARD ****************************************************************/
+.board_section {
+  margin: 0 0 30px;
+}
+.board_section ul {
+  margin: 0 0 15px 15px;
+}
+.board_section div[class^="section_"] {
+  width: 400px;
+  height: auto;
+}
+.board_section div[class^="section_"] h2 {
+  line-height: 24px;
+}
+.board_section div[class^="section_"] ul.setup {
+  width: 360px;
+  border: 1px solid #cccccc;
+  list-style-type: none;
+}
+.board_section div[class^="section_"] ul.setup li {
+  padding: 2px 5px 2px 30px;
+  background-image: url(/skins/icons/ok.png);
+  background-repeat: no-repeat;
+  background-position: 5px center;
+}
+.board_section div[class^="section_"] ul.setup li.non-blocker {
+  background-image: url(/skins/icons/alert.png);
+}
+.board_section div[class^="section_"] ul.setup li.blocker {
+  background-image: url(/skins/icons/delete.png);
+}
+.board_section div[class^="section_"] ul.setup li:hover {
+  background-color: #fffbcd;
+}
+.board_section .section_left {
+  float: left;
+}
+.board_section .section_right {
+  margin-left: 430px;
+  padding-top: 1px;
+}
+.board_section #flush_button {
+  width: 362px;
+  margin-left: 15px;
 }
 /******* PUBLICATIONS *********************************************************/
 .form_publication .controls {

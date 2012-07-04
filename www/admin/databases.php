@@ -296,7 +296,7 @@ if ($createBase || $mountBase) {
                 ?>
                 <form action="databases.php" method="post" >
                     <input type="hidden" value="" name="upgrade" />
-                    <input type="submit" class="btn" value="<?php echo _('update::Verifier els tables') ?>" />
+                    <input type="submit" class="btn btn-warning" value="<?php echo _('update::Verifier els tables') ?>" />
                 </form>
             </div>
 

@@ -7,7 +7,7 @@
 @grey: #CCC;
 @blue: #0088CC;
 @red: #F00;
-@orange: #F0AD30;
+@orange: #FAA732; //F0AD30;
 @lemon: #FCEB3F;
 @sand: #FFFBCD;
 @dk-sand: #E5D4A0;
@@ -245,6 +245,53 @@ div.switch_right {
 
 .ui-datepicker {
     z-index:1500;
+}
+
+/******* BOARD ****************************************************************/
+
+.board_section {
+    margin: 0 0 30px;
+    ul {
+        margin: 0 0 15px 15px;
+    }
+    div[class^="section_"] {
+        width: 400px;
+        height: auto;
+        h2 {
+            line-height: 24px;
+        }
+        ul.setup {
+            width: 360px;
+            border: 1px solid @grey;
+            list-style-type: none;
+            li {
+                padding: 2px 5px 2px 30px;
+                background-image: url(/skins/icons/ok.png);
+                background-repeat: no-repeat;
+                background-position: 5px center;
+                &.non-blocker {
+                    background-image: url(/skins/icons/alert.png);
+                }
+                &.blocker {
+                    background-image: url(/skins/icons/delete.png);
+                }
+                &:hover {
+                    .bg(@sand);
+                }
+            }
+        }
+    }
+    .section_left {
+        float: left;
+    }
+    .section_right {
+        margin-left: 430px;
+        padding-top: 1px;
+    }
+    #flush_button {
+        width: 362px;
+        margin-left: 15px;
+    }
 }
 
 /******* PUBLICATIONS *********************************************************/
