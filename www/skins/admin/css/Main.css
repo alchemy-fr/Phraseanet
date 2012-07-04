@@ -44,10 +44,10 @@ a:hover {
   cursor: pointer;
 }
 blockquote {
-  margin: 0 15px;
-  padding: 5px 10px;
-  border: 3px dotted #000000;
-  background-color: #dedede;
+  margin: 20px 15px;
+  padding: 10px;
+  border: 1px dotted #000000;
+  background-color: #f2f2f2;
 }
 img {
   vertical-align: middle;
@@ -62,6 +62,10 @@ select {
   margin: 0;
   padding: 5px 4px;
   *padding: 4px;
+}
+.help-block,
+.help-inline {
+  color: #666666;
 }
 li.selected,
 div.selected {
@@ -320,4 +324,11 @@ div[id$="_indexed_percent"] {
 .logo_box div[id^="printLogoDIV_"] {
   margin: 0 0 5px 0;
   display: none;
+}
+/******* DATABASE - FIELDS ****************************************************/
+#field_adder .help-block label {
+  color: #666666;
+}
+#form_struct {
+  margin: 10px 0;
 }

@@ -3,7 +3,7 @@
     {% if selected_field.is_on_error() %}
         {% set disabled = 'disabled="disabled"' %}
     {% endif %}
-    <select class="metafield_{{ selected_field.get_id() }} dces_selector" {{ disabled }} name="dces_{{ selected_field.get_id() }}">
+    <select class="metafield_{{ selected_field.get_id() }} dces_selector input-medium" {{ disabled }} name="dces_{{ selected_field.get_id() }}">
         <option value="">{% trans 'choisir' %}</option>
         {% for field in available_dc_sources %}
             <option value="{{ field.get_label() }}" {% if selected_field.get_dces_element() != null and selected_field.get_dces_element().get_label() == field.get_label() %}selected="selected"{% endif %}>
@@ -22,39 +22,32 @@
     <option value="ar" {% if title == 'ar' %}selected="selected"{% endif %}>{% trans 'Arabe' %}</option>
 {% endmacro %}
 
-        <div id="warning_dialog" style="display:none" title="{% trans 'Attention !' %}" >
+        <div id="warning_dialog" class="alert alert-error" style="display:none" title="{% trans 'Attention !' %}" ></div>
+        <div style="display:none;" id="field_changer">
+            <input type="text" id="field_chooser" class="input-medium" value="" />
+            <input type="text" id="current_field_label" class="input-medium" readonly value="" />
+            <button id="tag_remover" class="btn">{% trans 'Delete' %}</button>
+            <input type="hidden" name="field_id" value="" />
         </div>
-        <div style="display:none" id="field_changer">
-            <input id="field_chooser" type="text" value="">
-            <input type="text" readonly value="" id="current_field_label"/>
-            <button id="tag_remover">{% trans 'Delete' %}</button>
-            <input name="field_id" type="hidden" value=""/>
-        </div>
-        <div style="display:none" id="field_adder" title="{% trans 'Add a field' %}">
-            <div>
-                <label for="input_new_field_name">
-                    <input name="newfield_name" type="text" id="input_new_field_name"/>
-                    {% trans 'New field name' %}
-                </label>
-            </div>
-            <div>
+        <div style="display:none;" id="field_adder" title="{% trans 'Add a field' %}">
+            <label for="input_new_field_name">{% trans 'New field name' %} :</label>
+            <input type="text" id="input_new_field_name" name="newfield_name" class="input-large" />
+            <p class="help-block">
                 <label class="checkbox" for="input_new_field_multi">
-                    <input type="checkbox" name="newfield_multi" value="1" type="text" id="input_new_field_multi"/>
+                    <input type="checkbox" id="input_new_field_multi" name="newfield_multi" value="1" />
                     {% trans 'This field is multi-valued' %} *
                 </label>
-            </div>
-            <br/>
+            </p>
             <blockquote>* {% trans 'This can not be changed' %}</blockquote>
         </div>
-        <div>
-            <button class="field_adder">
-                {% trans 'boutton::ajouter' %}
-            </button>
-            <button class="struct_saver">Submit</button>
+        <div class="btn-toolbar">
+            <button class="field_adder btn">{% trans 'boutton::ajouter' %}</button>
+            <button class="struct_saver btn">{% trans 'Valider' %}</button>
         </div>
-        <form action="/admin/description/{{ databox.get_sbas_id() }}/" method="post" target="_self" id="form_struct">
+
+        <form id="form_struct" action="/admin/description/{{ databox.get_sbas_id() }}/" method="post" target="_self">
             <input name="newfield" id="newfield" type="hidden" />
-             <input name="newfield_multi" id="newfield_multi" type="hidden" />
+            <input name="newfield_multi" id="newfield_multi" type="hidden" />
             <table class="admintable">
                 <thead>
                     <tr>
@@ -83,111 +76,109 @@
                         {% set disabled = 'disabled="disabled"' %}
                     {% endif %}
                     <tr class="{% if loop.index is odd %}odd{% else %}even{% endif %}">
-                        <td>
+                        <td class="centered" style="min-width: 22px;">
                             <a class="meta_deleter">
-                                <input type="hidden" value="{{ field.get_id() }}"/>
+                                <input type="hidden" value="{{ field.get_id() }}" />
                                 <img src="/skins/icons/delete.png">
                             </a>
                             <input type="hidden" name="field_ids[]" value="{{ field.get_id() }}" />
                         </td>
                         <td>
-                            <input style="width:100px;" class="meta_namer metafield_{{ field.get_id() }}" {{ disabled }} type="text" name="name_{{ field.get_id() }}" value="{{ field.get_name () }}" />
+                            <input type="text" class="meta_namer metafield_{{ field.get_id() }} input-medium" {{ disabled }} name="name_{{ field.get_id() }}" value="{{ field.get_name () }}" />
                         </td>
                         <td>
-                            <span id="display_value_{{ field.get_id() }}">{% if field.is_on_error() %}Error{% elseif field.get_tag().getTagname() != '' %}{{ field.get_tag().getTagname() }}{% else %}No source{% endif %}</span> <a href="#" class="field_change">{% trans 'boutton::modifier' %}<input type="hidden" value="{{ field.get_id() }}"/></a>
-                            <input class="meta_src" type="hidden" name="src_{{ field.get_id() }}" value="{{ field.get_tag().getTagname() }}"/>
+                            <span id="display_value_{{ field.get_id() }}">{{ field.get_tag().getGroupName() }}:{{ field.get_tag().getName() }}</span>
+                            <a href="#" class="field_change">change<input type="hidden" value="{{ field.get_id() }}"/></a>
+                            <input type="hidden" class="meta_src" name="src_{{ field.get_id() }}" value="{{ field.get_tag().getTagname() }}"/>
                         </td>
-                        <td>
+                        <td class="centered">
                             {{ _self.dces_selector(available_dc_fields, field) }}
                         </td>
-                        <td style="text-align:center;" class="multi_{{ field.get_id() }}">
+                        <td class="multi_{{ field.get_id() }} centered">
                             {% if field.is_multi() %}<img src="/skins/icons/ok.png"/>{% endif %}
                             <img class="alert alertTips alert_not_multi" src="/skins/icons/alert.png" title="{% trans 'Attention, la source descriptive selectionne n\'est pas multivaluee' %}" style="display:none;" />
                             <img class="alert alertTips alert_is_multi" src="/skins/icons/alert.png" title="{% trans 'Attention, la source descriptive selectionne est multivaluee' %}" style="display:none;" />
                         </td>
-                        <td>
-                            <input class="metafield_{{ field.get_id() }}" {{ disabled }} name="indexable_{{ field.get_id() }}" type="checkbox" {% if field.is_indexable() %}checked="checked"{% endif %}/>
+                        <td class="centered">
+                            <input type="checkbox" class="metafield_{{ field.get_id() }}" {{ disabled }} name="indexable_{{ field.get_id() }}" {% if field.is_indexable() %}checked="checked"{% endif %} />
                         </td>
-
-                        <td>
+                        <td class="centered">
                             {% if field.is_multi() %}
-                            <select class="metafield_{{ field.get_id() }}" {{ disabled }} name="vocabulary_{{ field.get_id() }}">
-                            <option value=""></option>
-                            {% for vocabulary in vocabularies %}
-                            <option {% if field.getVocabularyControl() and field.getVocabularyControl().getType() == vocabulary.getType() %}selected="selected"{% endif %} value="{{ vocabulary.getType() }}">{{ vocabulary.getName() }}</option>
-                            {% endfor %}
-                            </select>
+                                <select class="metafield_{{ field.get_id() }} input-medium" {{ disabled }} name="vocabulary_{{ field.get_id() }}">
+                                    <option value=""></option>
+                                    {% for vocabulary in vocabularies %}
+                                        <option {% if field.getVocabularyControl() and field.getVocabularyControl().getType() == vocabulary.getType() %}selected="selected"{% endif %} value="{{ vocabulary.getType() }}">{{ vocabulary.getName() }}</option>
+                                    {% endfor %}
+                                </select>
                             {% endif %}
                         </td>
-                        <td>
-                            <input class="metafield_{{ field.get_id() }}" {{ disabled }} name="vocabularyrestricted_{{ field.get_id() }}" type="checkbox" {% if field.isVocabularyRestricted() %}checked="checked"{% endif %}/>
+                        <td class="centered">
+                            <input type="checkbox" class="metafield_{{ field.get_id() }}" {{ disabled }} name="vocabularyrestricted_{{ field.get_id() }}" {% if field.isVocabularyRestricted() %}checked="checked"{% endif %}/>
                         </td>
 
-                        <td>
-                            <input class="metafield_{{ field.get_id() }}" {{ disabled }} name="required_{{ field.get_id() }}" type="checkbox" {% if field.is_required() %}checked="checked"{% endif %}/>
+                        <td class="centered">
+                            <input type="checkbox" class="metafield_{{ field.get_id() }}" {{ disabled }} name="required_{{ field.get_id() }}" {% if field.is_required() %}checked="checked"{% endif %}/>
                         </td>
-                        <td>
-                            <input class="meta_readonly metafield_{{ field.get_id() }}" {{ disabled }} name="readonly_{{ field.get_id() }}" type="checkbox" {% if field.is_readonly() %}checked="checked"{% endif %}/>
+                        <td class="centered">
+                            <input type="checkbox" class="meta_readonly metafield_{{ field.get_id() }}" {{ disabled }} name="readonly_{{ field.get_id() }}" {% if field.is_readonly() %}checked="checked"{% endif %}/>
                             <img class="alert alertTips alert_not_readonly" src="/skins/icons/alert.png" title="{% trans 'Attention, la source descriptive selectionne n\'est pas en lecture seule, vous devriez decocher cette case' %}" style="display:none;" />
                             <img class="alert alertTips alert_is_readonly" src="/skins/icons/alert.png" title="{% trans 'Attention, la source descriptive selectionne est en lecture seule, vous devriez cocher cette case' %}" style="display:none;" />
                         </td>
-                        <td>
-                            <select class="metafield_{{ field.get_id() }}" {{ disabled }} name="type_{{ field.get_id() }}">
-                            <option value=""></option>
-                            <option {% if field.get_type() == 'string' %}selected{% endif %} value="string">string</option>
-                            <option {% if field.get_type() == 'text' %}selected{% endif %} value="text">text</option>
-                            <option {% if field.get_type() == 'number' %}selected{% endif %} value="number">number</option>
-                            <option {% if field.get_type() == 'date' %}selected{% endif %} value="date">date</option>
+                        <td class="centered">
+                            <select class="metafield_{{ field.get_id() }} input-small" {{ disabled }} name="type_{{ field.get_id() }}">
+                                <option value=""></option>
+                                <option {% if field.get_type() == 'string' %}selected{% endif %} value="string">{% trans 'string' %}</option>
+                                <option {% if field.get_type() == 'text' %}selected{% endif %} value="text">{% trans 'text' %}</option>
+                                <option {% if field.get_type() == 'number' %}selected{% endif %} value="number">{% trans 'number' %}</option>
+                                <option {% if field.get_type() == 'date' %}selected{% endif %} value="date">{% trans 'date' %}</option>
                             </select>
                         </td>
-                        <td>
-                            <input size="2" class="metafield_{{ field.get_id() }}" {{ disabled }} value="{{ field.get_separator() }}" name="separator_{{ field.get_id() }}" type="text"/>
+                        <td class="centered">
+                            <input type="text" size="2" class="metafield_{{ field.get_id() }} input-small" {{ disabled }} value="{{ field.get_separator() }}" name="separator_{{ field.get_id() }}" />
                         </td>
-                        <td>
-                            <input style="width:100px;" class="metafield_{{ field.get_id() }}" {{ disabled }} name="tbranch_{{ field.get_id() }}" type="text" value="{{ field.get_tbranch() }}"/>
+                        <td class="centered">
+                            <input type="text" class="metafield_{{ field.get_id() }} input-small" {{ disabled }} name="tbranch_{{ field.get_id() }}" value="{{ field.get_tbranch() }}"/>
                         </td>
-                        <td>
-                            <input class="metafield_{{ field.get_id() }}" {{ disabled }} name="report_{{ field.get_id() }}" type="checkbox" {% if field.is_report() %}checked="checked"{% endif %}/>
+                        <td class="centered">
+                            <input type="checkbox" class="metafield_{{ field.get_id() }}" {{ disabled }} name="report_{{ field.get_id() }}" {% if field.is_report() %}checked="checked"{% endif %}/>
                         </td>
-                        <td>
-                            <select class="thumbtitle metafield_{{ field.get_id() }}" {{ disabled }} name="thumbtitle_{{ field.get_id() }}">
-                            {{ _self.thumbtitle_selector(field.get_thumbtitle()) }}
+                        <td class="centered">
+                            <select class="metafield_{{ field.get_id() }} input-small" {{ disabled }} name="thumbtitle_{{ field.get_id() }}">
+                                {{ _self.thumbtitle_selector(field.get_thumbtitle()) }}
                             </select>
                         </td>
-                        <td>
-                            <input class="business metafield_{{ field.get_id() }}" {{ disabled }} name="business_{{ field.get_id() }}" type="checkbox" {% if field.isBusiness() %}checked="checked"{% endif %}/>
+                        <td class="centered">
+                            <input type="checkbox" class="metafield_{{ field.get_id() }}" {{ disabled }} name="business_{{ field.get_id() }}" {% if field.isBusiness() %}checked="checked"{% endif %}/>
                         </td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
-            <button type="submit">Submit</button>
+            <button type="submit" class="btn">{% trans 'Valider' %}</button>
         </form>
         <style>
-            body{
-                font-size:12px;
-            }
             .ui-autocomplete {
-            max-height: 200px;
-            max-width: 400px;
-            overflow-y: auto;
-            /* prevent horizontal scrollbar */
-            overflow-x: hidden;
-            /* add padding to account for vertical scrollbar */
-            padding-right: 20px;
+                max-height: 200px;
+                max-width: 400px;
+                overflow-y: auto;
+                /* prevent horizontal scrollbar */
+                overflow-x: hidden;
+                /* add padding to account for vertical scrollbar */
+                padding-right: 20px;
             }
             /** IE 6 doesn't support max-height
              *  we use height instead, but this forces the menu to always be this tall
              */
             * html .ui-autocomplete {
-            height: 200px;
+                height: 200px;
             }
-            .ui-autocomplete-loading { background: white url('/skins/icons/ui-anim_basic_16x16.gif') right center no-repeat; }
-            .alertTips{
-            cursor:help;
+            .ui-autocomplete-loading {
+                background: white url('/skins/icons/ui-anim_basic_16x16.gif') right center no-repeat; }
+            .alertTips {
+                cursor:help;
             }
-            .alert{
-            vertical-align: baseline;
+            .alert {
+                vertical-align: baseline;
             }
         </style>
         <script type="text/javascript">
@@ -302,10 +293,7 @@
                     $('#form_struct').submit();
                 });
 
-
                 $('.field_adder', container).bind('click', function(){
-
-
                     var buttons = {};
 
                     buttons['{% trans 'boutton::annuler' %}'] = function(){
@@ -337,7 +325,6 @@
                         $('.metafield_'+field_id, container).attr('disabled', 'disabled');
                     }
                 });
-
 
                 $('.dces_selector', container).bind('change', function(event){
                     if($.trim($(this).val()) === '') {
@@ -388,7 +375,6 @@
                     });
 
                 });
-
 
                 $('.meta_readonly, .meta_src', container).bind('change', function(){
                     var id = $(this).attr('name').split('_').pop();
