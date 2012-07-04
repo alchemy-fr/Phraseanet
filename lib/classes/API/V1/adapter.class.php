@@ -1784,7 +1784,7 @@ class API_V1_adapter extends API_V1_Abstract
             $ret = array_merge(
                 array(
                 'validation_users'     => $users,
-                'validation_end_date'  => $expires_on_atom,
+                'expires_on'           => $expires_on_atom,
                 'validation_infos'     => $basket->getValidation()->getValidationString($user),
                 'validation_confirmed' => $basket->getValidation()->getParticipant($user)->getIsConfirmed(),
                 'validation_initiator' => $basket->getValidation()->isInitiator($user),
