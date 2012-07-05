@@ -208,8 +208,9 @@ div.switch_right.unchecked {
 .board_section {
   margin: 0 0 30px;
 }
-.board_section ul {
-  margin: 0 0 15px 15px;
+.board_section ul,
+.board_section #mail_checker {
+  margin: 0 0 20px 15px;
 }
 .board_section div[class^="section_"] {
   width: 400px;
@@ -237,6 +238,9 @@ div.switch_right.unchecked {
 }
 .board_section div[class^="section_"] ul.setup li:hover {
   background-color: #fffbcd;
+}
+.board_section div[class^="section_"] #cache_flusher {
+  margin: -10px 0 20px 0;
 }
 .board_section .section_left {
   float: left;
