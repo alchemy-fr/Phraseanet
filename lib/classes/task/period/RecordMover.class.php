@@ -337,7 +337,7 @@ class task_period_RecordMover extends task_appboxAbstract
     {
         $this->maxrecs = 1000;
         $this->sxTaskSettings = @simplexml_load_string($this->getSettings());
-        if ( ! $this->sxTaskSettings) {
+        if ( ! $this->sxTaskSettings || !$this->sxTaskSettings->tasks) {
             return array();
         }
 
