@@ -1063,7 +1063,7 @@ class API_V1_adapter extends API_V1_Abstract
             }
 
             $record->set_metadatas($metadatas);
-            $result->set_datas(array("metadatas" => $this->list_record_caption($record->get_caption())));
+            $result->set_datas(array("record_metadatas" => $this->list_record_caption($record->get_caption())));
         } catch (Exception $e) {
             $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('An error occured'));
         }
@@ -1817,7 +1817,7 @@ class API_V1_adapter extends API_V1_Abstract
             'mime_type'              => $record->get_mime(),
             'title'                  => $record->get_title(),
             'original_name'          => $record->get_original_name(),
-            'updated-on'             => $record->get_modification_date()->format(DATE_ATOM),
+            'updated_on'             => $record->get_modification_date()->format(DATE_ATOM),
             'created_on'             => $record->get_creation_date()->format(DATE_ATOM),
             'collection_id'          => phrasea::collFromBas($record->get_base_id()),
             'sha256'                 => $record->get_sha256(),
