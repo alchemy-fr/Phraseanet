@@ -125,7 +125,7 @@ class Manage extends \Alchemy\Phrasea\Helper\Helper
         try {
             $autoregister_id = \User_Adapter::get_usr_id_from_login('autoregister');
             $autoregister = \User_Adapter::getInstance($autoregister_id, $appbox);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $autoregister = \User_Adapter::create($appbox, 'autoregister', 'autoregister', '', false);
         }
 

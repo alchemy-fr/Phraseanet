@@ -61,7 +61,7 @@ class Term
     {
 
         if ( ! assert(is_scalar($value))) {
-            throw new Exception('A Term value should be scalar');
+            throw new \Exception('A Term value should be scalar');
         }
 
         $this->value = $value;

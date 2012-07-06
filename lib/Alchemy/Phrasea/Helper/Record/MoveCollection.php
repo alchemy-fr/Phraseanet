@@ -131,8 +131,20 @@ class MoveCollection extends RecordHelper
             throw new \Exception_Unauthorized(sprintf("user id %s does not have the permission to move records to %s", $user->get_id(), \phrasea::bas_names($this->baseIdDestination)));
         }
 
-        if ( ! $this->is_possible()) {
+        if ( ! $this->is_possible())
             throw new \Exception('This action is not possible');
+
+        if ($request->get("chg_coll_son") == "1") {
+            foreach ($this->selection as $record) {
+                if ( ! $record->is_grouping())
+                    continue;
+                foreach ($record->get_children() as $child) {
+                    if ( ! $user->ACL()->has_right_on_base(
+                            $child->get_base_id(), 'candeleterecord'))
+                        continue;
+                    $this->selection->add_element($child);
+                }
+            }
         }
 
         $collection = \collection::get_from_base_id($base_dest);
