@@ -1,0 +1,67 @@
+//****** LESS SETTINGS ********************************************************/
+
+// Colors & bg settings
+@white: #FFF;
+@black: #000;
+@dark: #333;
+@grey: #CCC;
+@blue: #0088CC;
+.bg(@c: @black) {
+    background-color: @c;
+}
+
+// Spaces settings
+.no-space() {
+    margin: 0;
+    padding: 0;
+}
+
+// Text settings
+@size: 12px;
+.color(@c: @white) {
+    color: @c;
+}
+
+// Misc.
+.cursor(@type: pointer) {
+    cursor: @type;
+}
+
+/******* GLOBAL CSS for LOGIN *************************************************/
+
+body, html {
+    .no-space;
+    .bg;
+    .color;
+}
+
+a {
+    .color(@blue);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: bold;
+    line-height: 18px;
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+label {
+    .color(@white);
+}
+
+/******* NAVBAR ***************************************************************/
+
+#tab-account-cat {
+    .ui-tabs-nav li {
+        a {
+            .color(@blue);
+            text-decoration: none;
+            font-size: 13px;
+            &:hover {
+                .bg(@blue);
+                .color(@white);
+            }
+        }
+    }
+}
