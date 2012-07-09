@@ -1,0 +1,188 @@
+//****** LESS SETTINGS ********************************************************/
+
+// Colors & bg settings
+@white: #FFF;
+@black: #000;
+@dark: #333;
+@grey: #CCC;
+@blue: #0088CC;
+@red: #F00;
+@orange: #FAA732; //F0AD30;
+@lemon: #FCEB3F;
+@sand: #FFFBCD;
+@dk-sand: #E5D4A0;
+.bg(@c: @white) {
+    background-color: @c;
+}
+
+// Spaces settings
+.no-space() {
+    margin: 0;
+    padding: 0;
+}
+
+// Text settings
+.titleTable(@m1, @m2, @size, @align, @deco) {
+    margin: @m1 @m2;
+    font-weight: bold;
+    font-size: @size;
+    text-align: @align;
+    text-decoration: @deco;
+}
+.color(@c: @dark) {
+    color: @c;
+}
+
+// Misc.
+.cursor(@type: pointer) {
+    cursor: @type;
+}
+
+/******* TABLES ***************************************************************/
+
+div.center {
+    width: 100%;
+    margin: auto;
+}
+
+.tableTitle {
+    .titleTable(20px, auto, 14px, center, underline);
+}
+
+table.whoisTable {
+    margin: auto;
+    border: @black 1px solid;
+    table-layout: fixed;
+    tr {
+        border: @grey 1px solid;
+        &:hover {
+            .bg(@sand);
+        }
+    }
+    td {
+        padding: 3px;
+        &.colTitle {
+            width: 120px;
+            text-align: left;
+        }
+        &.colValue {
+            width: 60px;
+            text-align: right;
+        }
+    }
+}
+
+.spacehr {
+    margin-top: 40px;
+    margin-bottom: 30px;
+    border-top: 1px solid @grey;
+}
+
+table.admintable {
+    width: 100%;
+    margin: 10px 0;
+    border: none;
+    tr {
+        height: 28px;
+        vertical-align: middle;
+        &.selected {
+            &:hover {
+                .bg(@orange);
+            }
+        }
+    }
+    thead {
+        .bg(@dk-sand);
+        th {
+            padding: 3px;
+            text-align: left;
+            font-weight: bold;
+        }
+    }
+    tbody {
+        tr {
+            &.even {
+                .bg(@sand);
+            }
+            &.selected {
+                .bg(@orange);
+            }
+            &:hover {
+                .bg(@orange);
+                .cursor;
+            }
+        }
+        td {
+            padding: 3px;
+        }
+        &.dropdown {
+            .cursor;
+        }
+    }
+    .centered {
+        text-align: center;
+    }
+}
+
+/******* USERS TABLE **********************************************************/
+
+#users th.sortable {
+    .cursor;
+    span {
+        margin: 0 5px;
+        &.ord_notifier {
+            display: none;
+        }
+    }
+    &.hover {
+        .bg(@orange);
+    }
+    &.sorted {
+        .bg(@orange);
+        span {
+            &.ord_notifier {
+                display: inline;
+            }
+        }
+    }
+}
+
+/******* EDIT-USERS TABLE *****************************************************/
+
+td.users_col {
+    width: 23px;
+    border: 0px solid transparent;
+    vertical-align: middle;
+    text-align: center;
+    &.options {
+        .color(#AFAFAF);
+        .cursor;
+    }
+}
+
+/******* TOOLTIP CONNECTED USERS **********************************************/
+
+#tooltip-usr {
+    position: relative;
+    top: 0;
+    left: 0;
+    .color;
+    #tabledescexp {
+        table-layout: fixed;
+        width: 300px;
+        td {
+            border: none;
+            text-align: left;
+            strong {
+                font-weight: bold;
+            }
+            &.tooltip-title {
+                .bg(@orange);
+                border: 1px solid (darken(@orange, 10%));
+                .titleTable(10px, auto, 14px, center, none);
+                .color(@white);
+            }
+        }
+    }
+}
+

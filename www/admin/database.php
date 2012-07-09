@@ -86,26 +86,20 @@ if ($user->ACL()->has_right_on_sbas($sbas_id, 'bas_manage')) {
     }
 }
 ?>
-<html lang="<?php echo $session->get_I18n(); ?>">
-    <head>
-        <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css" />
-        <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/admin/admincolor.css" />
-
-        <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
 
         <script type="text/javascript">
 <?php
 if ($parm['act']) {
-    print("parent.reloadTree('base:" . $parm['p0'] . "');");
+    print("reloadTree('base:" . $parm['p0'] . "');");
 }
 ?>
-
         function sendLogopdf()
         {
             document.forms["flpdf"].target = "";
             document.forms["flpdf"].act.value = "SENDLOGOPDF";
             document.forms["flpdf"].submit();
         }
+
         function deleteLogoPdf()
         {
             if(confirm("<?php echo _('admin::base: Supprimer le logo pour impression') ?>"))
@@ -122,6 +116,7 @@ if ($parm['act']) {
                 });
             }
         }
+
         function reindex()
         {
             if(confirm('<?php echo str_replace("'", "\'", _('Confirmez-vous la re-indexation de la base ?')); ?>'))
@@ -221,7 +216,6 @@ if ($parm['act']) {
                     }
                 }
             });
-            setTimeout("refreshContent();", 6000);
         }
 
         function deleteBase()
@@ -263,6 +257,7 @@ if ($parm['act']) {
                 }
             });
         }
+
         function clearAllLog()
         {
             if(confirm("<?php echo _('admin::base: Confirmer la suppression de tous les logs') ?>"))
@@ -313,6 +308,7 @@ if ($parm['act']) {
             document.forms["manageDatabase"].sta.value = sta;
             document.forms["manageDatabase"].submit();
         }
+
         function chgOrd(srt)
         {
             document.forms["manageDatabase"].target = "";
@@ -321,76 +317,52 @@ if ($parm['act']) {
             document.forms["manageDatabase"].srt.value = srt;
             document.forms["manageDatabase"].submit();
         }
+
         $(document).ready(function(){
             refreshContent();
         });
         </script>
 
-        <style type="text/css">
-            .logo_boxes
-            {
-                margin:5px 5px 5px 10px;
-                padding-top:5px;
-                border-top:2px solid black;
-            }
-            a:link,a:visited{
-                text-decoration:none;
-                color:#666;
-            }
-            a:hover{
-                text-decoration:underline;
-                color:black;
-            }
-        </style>
-    </head>
-    <body>
 <?php
 $out = "";
 ?>
-        <div style='margin:3px 0 3px 10px;'>
-            <h2>
-<?php echo $databox->get_serialized_server_info(); ?>
-            </h2>
-        </div>
-        <div style='margin:3px 0 3px 10px;'>
-            ID : <?php echo($sbas_id) ?>
-        </div>
-
-        <div style='margin:3px 0 3px 10px;'>
-<?php echo(_('admin::base: Alias')) ?> : <span id="viewname"></span>
-<?php
-if ($user->ACL()->has_right_on_sbas($sbas_id, 'bas_manage')) {
-    ?>
-                <img src='/skins/icons/edit_0.gif' onclick="chgViewName();return(false);" style='vertical-align:middle'/>
-            <?php
-        }
-        ?>
-        </div>
+        <div class="db_box">
+            <h2><?php echo $databox->get_serialized_server_info(); ?></h2>
+            <p>ID : <?php echo($sbas_id) ?></p>
+            <p>
+                <?php echo(_("admin::base: Alias")) ?> : <span id="viewname"></span>
+                <?php
+                if ($user->ACL()->has_right_on_sbas($sbas_id, "bas_manage")) {
+                    ?>
+                    <img src="/skins/icons/edit_0.gif" onclick="chgViewName();return(false);" />
+                <?php
+                }
+                ?>
+            </p>
                 <?php
                 $nrecords = $databox->get_record_amount();
 
-
+                $out .= "<p>";
                 // stats sur la base distante
-                $out .= "<div style='margin:3px 0 3px 10px;'>";
-                $out .= _('admin::base: nombre d\'enregistrements sur la base :') . '<span id="nrecords"></span> ';
+                $out .= _('admin::base: nombre d\'enregistrements sur la base :') . ' ' . '<span id="nrecords"></span> ';
 
                 if ((int) $parm["sta"] < 1) {
                     $out .= " (<a href=\"javascript:void(0);\" onclick=\"showDetails(1);return(false);\">" . _('phraseanet:: details') . "</a>)";
                 } else {
                     $unique_keywords = $databox->get_unique_keywords();
 
-                    $out .= ", &nbsp;&nbsp;";
+                    $out .= ", &nbsp;";
                     $out .= _('admin::base: nombre de mots uniques sur la base : ') . ' ' . $unique_keywords;
 
                     $indexes = $databox->get_index_amount();
 
-                    $out .= ", &nbsp;&nbsp;";
+                    $out .= ", &nbsp;";
                     $out .= _('admin::base: nombre de mots indexes sur la base') . ' ' . $indexes;
 
                     if ($registry->get('GV_thesaurus')) {
                         $thits = $databox->get_thesaurus_hits();
 
-                        $out .= ", &nbsp;&nbsp;";
+                        $out .= ", &nbsp;";
                         $out .= _('admin::base: nombre de termes de Thesaurus indexes :') . ' ' . $thits;
                     }
 
@@ -501,208 +473,192 @@ if ($user->ACL()->has_right_on_sbas($sbas_id, 'bas_manage')) {
                     $out .= "</tr>\n";
 
                     $out .= "</tbody></table>";
+                    $out .= "</p>";
                 }
-                $out .= "</div>";
 
                 print($out);
                 ?>
 
-        <div style='margin:3px 0 3px 10px;'>
-            <div id='INDEX_P_BAR'>
-                <div style='height:30px;'>
-                    <div>
-        <?php echo(_('admin::base: document indexes en utilisant la fiche xml')); ?> :
-                        <span id='xml_indexed'></span>
-                    </div>
-                    <div id='xml_indexed_bar' style='position:absolute;width:0px;height:15px;background:#d4d0c9;z-index:6;'>
-                    </div>
-                    <div id='xml_indexed_percent' style='position:absolute;width:198px;height:13px;text-align:center;border:1px solid black;z-index:10;'>
-                    </div>
+            <div id="INDEX_P_BAR">
+                <div style="height: 35px;">
+                    <p>
+                        <?php echo(_("admin::base: document indexes en utilisant la fiche xml")); ?> :
+                        <span id="xml_indexed"></span>
+                    </p>
+                    <div id="xml_indexed_bar"></div>
+                    <div id="xml_indexed_percent"></div>
                 </div>
-                <div style='height:30px;'>
-                    <div>
-        <?php echo(_('admin::base: document indexes en utilisant le thesaurus')); ?> :
-                        <span id='thesaurus_indexed'></span>
-                    </div>
-                    <div id='thesaurus_indexed_bar' style='position:absolute;width:0px;height:15px;background:#d4d0c9;z-index:6;'>
-                    </div>
-                    <div id='thesaurus_indexed_percent' style='position:absolute;width:198px;height:13px;text-align:center;border:1px solid black;z-index:10;'>
-                    </div>
+                <div style="height: 35px;">
+                    <p>
+                        <?php echo(_("admin::base: document indexes en utilisant le thesaurus")); ?> :
+                        <span id="thesaurus_indexed"></span>
+                    </p>
+                    <div id="thesaurus_indexed_bar"></div>
+                    <div id="thesaurus_indexed_percent"></div>
                 </div>
             </div>
-        <?php
-        if ($user->ACL()->has_right_on_sbas($sbas_id, 'bas_manage')) {
+            <?php
+            if ($user->ACL()->has_right_on_sbas($sbas_id, "bas_manage")) {
             ?>
-                <div style='margin:15px 5px 0px 0px;'>
-                    <input type='checkbox'  id='is_indexable' onclick='makeIndexable(this)'/>
-                    <label for='is_indexable<?php echo($parm["p0"]); ?>'>
-            <?php echo(_('admin::base: Cette base est indexable')); ?>
-                    </label>
-                    <div style='display:none' id='make_indexable_ajax_status'>&nbsp;</div>
-                </div>
-
-                <div>
-                    <a href="javascript:void(0);return(false);" onclick="reindex();return(false);">
-                            <?php echo(_('base:: re-indexer')); ?>
-                    </a>
-                </div>
+            <div style="margin: 9px 0;">
+                <label class="checkbox" for="is_indexable<?php echo($parm["p0"]); ?>">
+                    <input type="checkbox" id="is_indexable" onclick="makeIndexable(this)" />
+                    <?php echo(_("admin::base: Cette base est indexable")); ?>
+                </label>
+                <div id="make_indexable_ajax_status" style="display:none">&nbsp;</div>
             </div>
-
-            <div style='margin:20px 0 3px 10px;'>
-                <a href="newcoll.php?act=GETNAME&p0=<?php echo($parm["p0"]); ?>">
-                    <img src='/skins/icons/create_coll.png' style='vertical-align:middle'/>
-    <?php echo(_('admin::base:collection: Creer une collection')); ?>
+            <p>
+                <a href="javascript:void(0);return(false);" onclick="reindex();return(false);">
+                    <?php echo(_("base:: re-indexer")); ?>
                 </a>
-            </div>
-                            <?php
-                            $mountable_colls = $databox->get_mountable_colls();
-
-                            if (count($mountable_colls) > 0) {
-                                ?>
-                <div style='margin:20px 0 3px 10px;'>
+            </p>
+            <br />
+            <p>
+                <a href="newcoll.php?act=GETNAME&p0=<?php echo($parm["p0"]); ?>">
+                    <img src="/skins/icons/create_coll.png" style="vertical-align:middle"/>
+                    <?php echo(_("admin::base:collection: Creer une collection")); ?>
+                </a>
+            </p>
+            <?php
+            $mountable_colls = $databox->get_mountable_colls();
+            if (count($mountable_colls) > 0) {
+            ?>
+                <p>
                     <a href="#" onclick="mountColl();">
-                        <img src='/skins/icons/create_coll.png' style='vertical-align:middle'/>
-                    <?php echo(_('admin::base:collection: Monter une collection')); ?>
+                        <img src="/skins/icons/create_coll.png" style="vertical-align:middle" />
+                        <?php echo(_("admin::base:collection: Monter une collection")); ?>
                     </a>
-                </div>
+                </p>
                 <div id="mount_coll" style="display:none;">
                     <form method="post" action="database.php" target="_self">
                         <select name="coll_id">
-        <?php
-        foreach ($mountable_colls as $coll_id => $name) {
-            ?>
-                                <option value="<?php echo $coll_id ?>"><?php echo $name ?></option>
-            <?php
-        }
-        ?>
-                        </select>
                             <?php
-                            $colls = $user->ACL()->get_granted_base(array('canadmin'));
-                            if (count($colls) > 0) {
+                            foreach ($mountable_colls as $coll_id => $name) {
                                 ?>
-                            <span>
-            <?php echo _('admin::base:collection: Vous pouvez choisir une collection de reference pour donenr des acces ') ?>
-                            </span>
-                            <select name="othcollsel" >
-                                <option><?php echo _('choisir') ?></option>
-                            <?php
-                            foreach ($colls as $base_id => $collection)
-                                echo "<option value='" . $base_id . "'>" . $collection->get_name() . '</option>';
+                                <option value="<?php echo $coll_id ?>"><?php echo $name ?></option>
+                                <?php
+                            }
                             ?>
+                        </select>
+                        <?php
+                        $colls = $user->ACL()->get_granted_base(array("canadmin"));
+                        if (count($colls) > 0) {
+                            ?>
+                            <p><?php echo _("admin::base:collection: Vous pouvez choisir une collection de reference pour donenr des acces ") ?></p>
+                            <select name="othcollsel" >
+                                <option><?php echo _("choisir") ?></option>
+                                <?php
+                                foreach ($colls as $base_id => $collection)
+                                    echo "<option value='" . $base_id . "'>" . $collection->get_name() . '</option>';
+                                ?>
                             </select>
-                    <?php
-                }
-                ?>
-                        <input type="hidden" name="p0" value="<?php echo $sbas_id; ?>"/>
-                        <input type="hidden" name="act" value="MOUNT"/>
-                        <button type="submit"><?php echo _('Monter'); ?></button>
+                            <?php
+                        }
+                        ?>
+                        <input type="hidden" name="p0" value="<?php echo $sbas_id; ?>" />
+                        <input type="hidden" name="act" value="MOUNT" />
+                        <button type="submit" class="btn"><?php echo _("Monter"); ?></button>
                     </form>
                 </div>
-        <?php
-    }
+                <?php
+            }
 
-    $activable_colls = $databox->get_activable_colls();
-
-    if (count($activable_colls) > 0) {
-        ?>
-                <div style='margin:20px 0 3px 10px;'>
+            $activable_colls = $databox->get_activable_colls();
+            if (count($activable_colls) > 0) {
+                ?>
+                <p>
                     <a href="#" onclick="activateColl();">
-                        <img src='/skins/icons/create_coll.png' style='vertical-align:middle'/>
-                            <?php echo(_('Activer une collection')); ?>
+                        <img src="/skins/icons/create_coll.png" style="vertical-align:middle"/>
+                        <?php echo(_("Activer une collection")); ?>
                     </a>
-                </div>
+                </p>
                 <div id="activate_coll" style="display:none;">
                     <form method="post" action="database.php" target="_self">
                         <select name="base_id">
                         <?php
                         foreach ($activable_colls as $base_id) {
                             ?>
-                                <option value="<?php echo $base_id ?>"><?php echo phrasea::bas_names($base_id) ?></option>
-                                <?php
-                            }
-                            ?>
+                            <option value="<?php echo $base_id ?>"><?php echo phrasea::bas_names($base_id) ?></option>
+                            <?php
+                        }
+                        ?>
                         </select>
                         <input type="hidden" name="p0" value="<?php echo $sbas_id; ?>"/>
                         <input type="hidden" name="act" value="ACTIVATE"/>
-                        <button type="submit"><?php echo _('Activer'); ?></button>
+                        <button type="submit"><?php echo _("Activer"); ?></button>
                     </form>
                 </div>
-                        <?php
-                    }
-                    ?>
-            <div style='margin:20px 0 3px 10px;'>
+                <?php
+            }
+            ?>
+            <p>
                 <a href="javascript:void(0);return(false);" onclick="clearAllLog();return(false);">
-                    <img src='/skins/icons/clearLogs.png' style='vertical-align:middle'/>
-    <?php echo(_('admin::base: supprimer tous les logs')); ?>
+                    <img src="/skins/icons/clearLogs.png" style="vertical-align:middle"/>
+                    <?php echo(_("admin::base: supprimer tous les logs")); ?>
                 </a>
-            </div>
-            <div style='margin:20px 0 13px 10px;'>
+            </p>
+            <p>
                 <a href="javascript:void(0);return(false);" onclick="umountBase();return(false);">
-                    <img src='/skins/icons/db-remove.png' style='vertical-align:middle'/>
-            <?php echo(_('admin::base: arreter la publication de la base')); ?>
+                    <img src="/skins/icons/db-remove.png" style="vertical-align:middle"/>
+                    <?php echo(_("admin::base: arreter la publication de la base")); ?>
                 </a>
-            </div>
-            <div style='margin:3px 0 3px 10px;'>
+            </p>
+            <p>
                 <a href="javascript:void(0);return(false);" onclick="emptyBase();return(false);">
-                    <img src='/skins/icons/trash.png' style='vertical-align:middle'/>
-                    <?php echo(_('admin::base: vider la base')); ?>
+                    <img src="/skins/icons/trash.png" style="vertical-align:middle"/>
+                    <?php echo(_("admin::base: vider la base")); ?>
                 </a>
-            </div>
-            <div style='margin:3px 0 3px 10px;'>
+            </p>
+            <p>
                 <a href="javascript:void(0);return(false);" onclick="deleteBase();return(false);">
-                    <img src='/skins/icons/delete.gif' style='vertical-align:middle'/>
-                        <?php echo(_('admin::base: supprimer la base')); ?>
+                    <img src="/skins/icons/delete.gif" style="vertical-align:middle"/>
+                    <?php echo(_("admin::base: supprimer la base")); ?>
                 </a>
-            </div>
-                        <?php
-                    }
-                    ?>
+            </p>
+                <?php
+            }
+            ?>
+
+        </div><!-- /db_box -->
 
         <!-- minilogo pour print pdf -->
-        <div class='logo_boxes'>
-            <div style="font-size:11px;font-weight:bold;margin:0px 3px 10px 0px;">
-<?php echo(_('admin::base: logo impression PDF')) ?>
-            </div>
-
-<?php echo($printLogoUploadMsg) ?>
-
-            <div id='printLogoDIV_OK' style='margin:0 0 5px 0; display:none'>
-                <img id='printLogo' src="/print/<?php echo $sbas_id ?>" />
-
-<?php
-if ($user->ACL()->has_right_on_sbas($sbas_id, 'bas_manage')) {
-    ?>
+        <div class="logo_box">
+            <hr>
+            <h4><?php echo(_("admin::base: logo impression PDF")) ?></h4>
+            <?php echo($printLogoUploadMsg) ?>
+            <div id="printLogoDIV_OK">
+                <img id="printLogo" src="/print/<?php echo $sbas_id ?>" />
+                <?php
+                if ($user->ACL()->has_right_on_sbas($sbas_id, "bas_manage")) {
+                    ?>
                     <a href="javascript:void();return(false);" onclick="deleteLogoPdf();return(false);">
-    <?php echo(_('admin::base:collection: supprimer le logo')) ?>
+                        <?php echo(_("admin::base:collection: supprimer le logo")) ?>
                     </a>
-    <?php
-}
-?>
+                    <?php
+                }
+                ?>
             </div>
-
-            <div id='printLogoDIV_NONE' style='margin:0 0 5px 0; display:none'>
-<?php echo(_('admin::base:collection: aucun fichier (minilogo, watermark ...)')) ?>
-
+            <div id="printLogoDIV_NONE">
+                <?php echo(_("admin::base:collection: aucun fichier (minilogo, watermark ...)")) ?>
                 <form method="post" name="flpdf" action="./database.php" target="???" onsubmit="return(false);" ENCTYPE="multipart/form-data">
                     <input type="hidden" name="p0"  value="<?php echo($parm["p0"]); ?>" />
-                    <input type="hidden" name="sta" value="\" />
-                           <input type="hidden" name="srt" value="" />
-                           <input type="hidden" name="act" value="" />
+                    <input type="hidden" name="sta" value="" />
+                    <input type="hidden" name="srt" value="" />
+                    <input type="hidden" name="act" value="" />
                     <input type="hidden" name="tid" value="" />
-                <?php
-                if ($user->ACL()->has_right_on_sbas($sbas_id, 'bas_manage')) {
+                    <?php
+                    if ($user->ACL()->has_right_on_sbas($sbas_id, "bas_manage")) {
                     ?>
                         <input name="newLogoPdf" type="file" />
-                        <input type='button' value='<?php echo(_('boutton::envoyer')); ?>' onclick='sendLogopdf();'/>
-                        <br/>
-            <?php echo(_('admin::base: envoyer un logo (jpeg 35px de hauteur max)')); ?>
-    <?php
-}
-?>
+                        <input type="button" class="btn" value="<?php echo(_("boutton::envoyer")); ?>" onclick="sendLogopdf();" />
+                        <br />
+                        <?php echo(_("admin::base: envoyer un logo (jpeg 35px de hauteur max)"));
+                    }
+                    ?>
                 </form>
             </div>
-
         </div>
+
         <form method="post" name="manageDatabase" action="./database.php" target="???" onsubmit="return(false);">
             <input type="hidden" name="p0"  value="<?php echo($parm["p0"]) ?>" />
             <input type="hidden" name="sta" value="0" />
@@ -710,5 +666,3 @@ if ($user->ACL()->has_right_on_sbas($sbas_id, 'bas_manage')) {
             <input type="hidden" name="act" value="???" />
             <input type="hidden" name="tid" value="???" />
         </form>
-    </body>
-</html>
