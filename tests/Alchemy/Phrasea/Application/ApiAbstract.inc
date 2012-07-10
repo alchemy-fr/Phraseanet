@@ -522,13 +522,13 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             foreach ($content['response']['collections'] as $collection) {
                 $this->assertTrue(is_array($collection), 'Une collection est un objet');
                 $this->assertArrayHasKey('base_id', $collection);
-                $this->assertArrayHasKey('coll_id', $collection);
+                $this->assertArrayHasKey('collection_id', $collection);
                 $this->assertArrayHasKey('name', $collection);
                 $this->assertArrayHasKey('record_amount', $collection);
                 $this->assertTrue(is_int($collection['base_id']));
                 $this->assertGreaterThan(0, $collection['base_id']);
-                $this->assertTrue(is_int($collection['coll_id']));
-                $this->assertGreaterThan(0, $collection['coll_id']);
+                $this->assertTrue(is_int($collection['collection_id']));
+                $this->assertGreaterThan(0, $collection['collection_id']);
                 $this->assertTrue(is_string($collection['name']));
                 $this->assertTrue(is_int($collection['record_amount']));
             }
@@ -572,13 +572,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
                 $this->assertArrayHasKey('img_off', $status);
                 $this->assertArrayHasKey('searchable', $status);
                 $this->assertArrayHasKey('printable', $status);
-                $this->assertTrue(is_int($status['searchable']));
-                $this->assertTrue(in_array($status['searchable'], array(0, 1)));
-                $this->assertTrue($status['searchable'] === $ref_status[$status['bit']]['searchable']);
-                $this->assertTrue(is_int($status['printable']));
-                $this->assertTrue(in_array($status['printable'], array(0, 1)));
-                $this->assertTrue($status['printable'] === $ref_status[$status['bit']]['printable']);
-                $this->assertTrue($status['label_off'] === $ref_status[$status['bit']]['labeloff']);
+                $this->assertTrue(is_bool($status['searchable']));
+                $this->assertTrue($status['searchable'] === (bool) $ref_status[$status['bit']]['searchable']);
+                $this->assertTrue(is_bool($status['printable']));
+                $this->assertTrue($status['printable'] === (bool) $ref_status[$status['bit']]['printable']);
                 $this->assertTrue($status['label_on'] === $ref_status[$status['bit']]['labelon']);
                 $this->assertTrue($status['img_off'] === $ref_status[$status['bit']]['img_off']);
                 $this->assertTrue($status['img_on'] === $ref_status[$status['bit']]['img_on']);
@@ -608,7 +605,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
                 $ref_structure->get_element('idbarbouze');
                 $this->fail('An expected exception has not been raised.');
             } catch (\Exception_Databox_FieldNotFound $e) {
-                
+
             }
 
             $route = '/databoxes/' . $databox_id . '/metadatas/';
@@ -618,8 +615,9 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             $content = $this->unserialize($this->client->getResponse()->getContent());
             $this->evaluateResponse200($this->client->getResponse());
             $this->evaluateMeta200($content);
-            $this->assertArrayHasKey('metadatas', $content['response']);
-            foreach ($content['response']['metadatas'] as $metadatas) {
+
+            $this->assertArrayHasKey('document_metadatas', $content['response']);
+            foreach ($content['response']['document_metadatas'] as $metadatas) {
                 $this->assertTrue(is_array($metadatas), 'Un bloc metadata est un objet');
                 $this->assertArrayHasKey('id', $metadatas);
                 $this->assertArrayHasKey('namespace', $metadatas);
@@ -723,8 +721,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $response = $content['response'];
 
-        $this->assertArrayHasKey('total_pages', $response);
-        $this->assertArrayHasKey('current_page', $response);
         $this->assertArrayHasKey('available_results', $response);
         $this->assertArrayHasKey('total_results', $response);
         $this->assertArrayHasKey('error', $response);
@@ -736,8 +732,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertArrayHasKey('query', $response);
 
 
-        $this->assertTrue(is_int($response['total_pages']), 'Le nombre de page est un int');
-        $this->assertTrue(is_int($response['current_page']), 'Le nombre de la page courrante  est un int');
         $this->assertTrue(is_int($response['available_results']), 'Le nombre de results dispo est un int');
         $this->assertTrue(is_int($response['total_results']), 'Le nombre de results est un int');
         $this->assertTrue(is_string($response['error']), 'Error est une string');
@@ -855,11 +849,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->evaluateResponse200($this->client->getResponse());
         $this->evaluateMeta200($content);
 
-        foreach ($content['response'] as $embed) {
-            foreach ($keys as $key) {
-                $this->assertArrayHasKey($key, $embed);
-                $this->checkEmbed($key, $embed[$key], static::$records['record_1']);
-            }
+        $this->assertArrayHasKey('embed', $content['response']);
+
+        foreach ($content['response']['embed'] as $embed) {
+            $this->checkEmbed($embed, static::$records['record_1']);
         }
         $route = '/records/24892534/51654651553/embed/';
         $this->evaluateNotFoundRoute($route, array('GET'));
@@ -881,11 +874,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->client->request('GET', $route, array('mimes' => array('image/jpg', 'image/jpeg')), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
-        foreach ($content['response'] as $embed) {
-            foreach (array('thumbnail', 'preview') as $key) {
-                $this->assertArrayHasKey($key, $embed);
-                $this->checkEmbed($key, $embed[$key], static::$records['record_1']);
-            }
+        $this->assertArrayHasKey('embed', $content['response']);
+
+        foreach ($content['response']['embed'] as $embed) {
+            $this->checkEmbed($embed, static::$records['record_1']);
         }
     }
 
@@ -974,9 +966,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->evaluateResponse200($this->client->getResponse());
         $this->evaluateMeta200($content);
 
-        $caption = $record->get_caption();
-
-        $this->assertEquals(count($caption->get_fields()), count($content['response']['metadatas']), 'Retrived metadatas are the same');
+        $this->assertArrayHasKey("record_metadatas", $content['response']);
+        $this->assertEquals(count($caption->get_fields()), count($content['response']['record_metadatas']), 'Retrived metadatas are the same');
 
         foreach ($caption->get_fields() as $field) {
             foreach ($field->get_values() as $value) {
@@ -989,7 +980,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->evaluateRecordsMetadataResponse($content);
 
-        foreach ($content['response']['metadatas'] as $metadata) {
+        foreach ($content['response']['record_metadatas'] as $metadata) {
             if ( ! in_array($metadata['meta_id'], array_keys($toupdate)))
                 continue;
             $saved_value = $toupdate[$metadata['meta_structure_id']]['value'];
@@ -1079,7 +1070,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             }
         }
         if ( ! $base_id) {
-            continue;
+            $this->markTestSkipped('No collection');
         }
 
         $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
@@ -1139,11 +1130,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->assertEquals(1, count($content['response']));
         $this->assertArrayHasKey("basket", $content['response']);
-
-        foreach ($content['response']['basket'] as $basket) {
-            $this->evaluateGoodBasket($basket);
-            $this->assertEquals('un Joli Nom', $basket['name']);
-        }
+        $this->evaluateGoodBasket($content['response']['basket']);
+        $this->assertEquals('un Joli Nom', $content['response']['basket']['name']);
     }
 
     /**
@@ -1168,24 +1156,21 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->evaluateResponse200($this->client->getResponse());
         $this->evaluateMeta200($content);
 
-        $this->assertEquals(1, count((array) $content['response']));
+        $this->assertEquals(2, count((array) $content['response']));
 
         $this->assertArrayHasKey("basket_elements", $content['response']);
+        $this->assertArrayHasKey("basket", $content['response']);
+        $this->evaluateGoodBasket($content['response']['basket']);
 
-        foreach ($content['response']['basket_elements'] as $basket_str) {
-            $this->evaluateGoodBasket($basket_str);
-
-            $this->assertEquals(count($basket->getElements()), count($basket_str['basket_elements']));
-            foreach ($basket_str['basket_elements'] as $basket_element) {
-                $this->assertArrayHasKey('basket_element_id', $basket_element);
-                $this->assertArrayHasKey('order', $basket_element);
-                $this->assertArrayHasKey('record', $basket_element);
-                $this->assertArrayHasKey('validation_item', $basket_element);
-                $this->assertTrue(is_bool($basket_element['validation_item']));
-                $this->assertTrue(is_int($basket_element['order']));
-                $this->assertTrue(is_int($basket_element['basket_element_id']));
-                $this->evaluateGoodRecord($basket_element['record']);
-            }
+        foreach ($content['response']['basket_elements'] as $basket_element) {
+            $this->assertArrayHasKey('basket_element_id', $basket_element);
+            $this->assertArrayHasKey('order', $basket_element);
+            $this->assertArrayHasKey('record', $basket_element);
+            $this->assertArrayHasKey('validation_item', $basket_element);
+            $this->assertTrue(is_bool($basket_element['validation_item']));
+            $this->assertTrue(is_int($basket_element['order']));
+            $this->assertTrue(is_int($basket_element['basket_element_id']));
+            $this->evaluateGoodRecord($basket_element['record']);
         }
     }
 
@@ -1212,13 +1197,11 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->assertEquals(1, count((array) $content['response']));
         $this->assertArrayHasKey("basket", $content['response']);
-        foreach ($content['response']['basket'] as $basket_str) {
-            $this->evaluateGoodBasket($basket_str);
+        $this->evaluateGoodBasket($content['response']['basket']);
 
-            $this->assertEquals($basket_str['name'], 'un Joli Nom');
-        }
+        $this->assertEquals($content['response']['basket']['name'], 'un Joli Nom');
 
-        $crawler = $this->client->request('POST', $route, array('name' => '<i>un Joli Nom<i>'), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $crawler = $this->client->request('POST', $route, array('name' => 'un Joli Nom'), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -1228,11 +1211,9 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->assertArrayHasKey("basket", $content['response']);
 
-        foreach ($content['response']['basket'] as $basket) {
-            $this->evaluateGoodBasket($basket_str);
+        $this->evaluateGoodBasket($content['response']['basket']);
 
-            $this->assertEquals($basket_str['name'], 'un Joli Nom');
-        }
+        $this->assertEquals($content['response']['basket']['name'], 'un Joli Nom');
 
         $crawler = $this->client->request('POST', $route, array('name' => '<strong>aéaa'), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
@@ -1242,10 +1223,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->assertEquals(1, count((array) $content['response']));
         $this->assertArrayHasKey("basket", $content['response']);
-        foreach ($content['response']['basket'] as $basket_str) {
-            $this->evaluateGoodBasket($basket_str);
-            $this->assertEquals($basket_str['name'], '<strong>aéaa');
-        }
+        $this->evaluateGoodBasket($content['response']['basket']);
+        $this->assertEquals($content['response']['basket']['name'], '<strong>aéaa');
     }
 
     /**
@@ -1272,11 +1251,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertEquals(1, count((array) $content['response']));
 
         $this->assertArrayHasKey("basket", $content['response']);
-        foreach ($content['response']['basket'] as $basket_str) {
-            $this->evaluateGoodBasket($basket_str);
-
-            $this->assertEquals($basket_str['description'], 'une belle desc');
-        }
+        $this->evaluateGoodBasket($content['response']['basket']);
+        $this->assertEquals($content['response']['basket']['description'], 'une belle desc');
     }
 
     /**
@@ -1328,7 +1304,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->evaluateResponse200($this->client->getResponse());
         $this->evaluateMeta200($content);
         $datas = $content['response'];
-        
+
         $this->assertArrayHasKey('entity', $datas);
         $this->assertArrayHasKey('url', $datas);
     }
@@ -1501,11 +1477,11 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertArrayHasKey('feeds', $content['response']);
 
         $found = false;
-        foreach ($content['response']['feeds'] as $feed_id => $feed) {
+        foreach ($content['response']['feeds'] as $feed) {
 
             $this->evaluateGoodFeed($feed);
 
-            if ($feed_id == $created_feed->get_id()) {
+            if ($feed['id'] == $created_feed->get_id()) {
                 $found = true;
                 $this->assertEquals($title, $feed['title']);
                 $this->assertEquals($subtitle, $feed['subtitle']);
@@ -1564,10 +1540,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $found = false;
 
-        foreach ($content['response']['entries'] as $entry_id => $entry) {
+        foreach ($content['response']['entries'] as $entry) {
             $this->assertGoodEntry($entry);
 
-            if ($entry_id == $created_entry->get_id()) {
+            if ($entry['id'] == $created_entry->get_id()) {
                 $found = true;
                 $this->assertEquals($author_email, $entry['author_email']);
                 $this->assertEquals($author, $entry['author_name']);
@@ -1736,10 +1712,11 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->assertArrayHasKey('offset_start', $content['response']);
         $this->assertArrayHasKey('per_page', $content['response']);
-        $this->assertArrayHasKey('items', $content['response']);
+        $this->assertArrayHasKey('quarantine_items', $content['response']);
 
         $found = false;
-        foreach ($content['response']['items'] as $item) {
+
+        foreach ($content['response']['quarantine_items'] as $item) {
             $this->evaluateGoodQuarantineItem($item);
             if ($item['id'] == $quarantineItemId) {
                 $found = true;
@@ -1767,10 +1744,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->client->request('GET', $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
-        $this->assertArrayHasKey('item', $content['response']);
+        $this->assertArrayHasKey('quarantine_item', $content['response']);
 
-        $this->evaluateGoodQuarantineItem($content['response']['item']);
-        $this->assertEquals($quarantineItemId, $content['response']['item']['id']);
+        $this->evaluateGoodQuarantineItem($content['response']['quarantine_item']);
+        $this->assertEquals($quarantineItemId, $content['response']['quarantine_item']['id']);
     }
 
     protected function getQuarantineItem()
@@ -1795,7 +1772,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     protected function evaluateGoodQuarantineItem($item)
     {
         $this->assertArrayHasKey('id', $item);
-        $this->assertArrayHasKey('session', $item);
+        $this->assertArrayHasKey('quarantine_session', $item);
         $this->assertArrayHasKey('base_id', $item);
         $this->assertArrayHasKey('original_name', $item);
         $this->assertArrayHasKey('sha256', $item);
@@ -1934,27 +1911,31 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         }
     }
 
-    protected function checkEmbed($subdef_name, $embed, \record_adapter $record)
+    protected function checkEmbed($embed, \record_adapter $record)
     {
+        if ($embed['filesize'] === 0) {
+            var_dump($embed);
+        }
+        $this->assertArrayHasKey("name", $embed);
         $this->assertArrayHasKey("permalink", $embed);
-        $this->checkPermalink($embed['permalink'], $record->get_subdef($subdef_name));
+        $this->checkPermalink($embed['permalink'], $record->get_subdef($embed['name']));
         $this->assertArrayHasKey("height", $embed);
-        $this->assertEquals($embed['height'], $record->get_subdef($subdef_name)->get_height());
+        $this->assertEquals($embed['height'], $record->get_subdef($embed['name'])->get_height());
         $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_INT, $embed['height']);
         $this->assertArrayHasKey("width", $embed);
-        $this->assertEquals($embed['width'], $record->get_subdef($subdef_name)->get_width());
+        $this->assertEquals($embed['width'], $record->get_subdef($embed['name'])->get_width());
         $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_INT, $embed['width']);
         $this->assertArrayHasKey("filesize", $embed);
-        $this->assertEquals($embed['filesize'], $record->get_subdef($subdef_name)->get_size());
+        $this->assertEquals($embed['filesize'], $record->get_subdef($embed['name'])->get_size());
         $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_INT, $embed['filesize']);
         $this->assertArrayHasKey("player_type", $embed);
-        $this->assertEquals($embed['player_type'], $record->get_subdef($subdef_name)->get_type());
+        $this->assertEquals($embed['player_type'], $record->get_subdef($embed['name'])->get_type());
         $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $embed['player_type']);
         $this->assertArrayHasKey("mime_type", $embed);
-        $this->assertEquals($embed['mime_type'], $record->get_subdef($subdef_name)->get_mime());
+        $this->assertEquals($embed['mime_type'], $record->get_subdef($embed['name'])->get_mime());
         $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $embed['mime_type']);
         $this->assertArrayHasKey("devices", $embed);
-        $this->assertEquals($embed['devices'], $record->get_subdef($subdef_name)->getDevices());
+        $this->assertEquals($embed['devices'], $record->get_subdef($embed['name'])->getDevices());
         $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $embed['devices']);
     }
 
@@ -1977,10 +1958,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             $this->assertEquals($subdef->get_permalink()->get_is_activated(), $permalink['is_activated']);
             $this->assertArrayHasKey("label", $permalink);
             $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['label']);
-            $this->assertArrayHasKey("last_modified", $permalink);
-            $this->assertEquals($subdef->get_permalink()->get_last_modified()->format(DATE_ATOM), $permalink['last_modified']);
-            $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['last_modified']);
-            $this->assertDateAtom($permalink['last_modified']);
+            $this->assertArrayHasKey("updated_on", $permalink);
+            $this->assertEquals($subdef->get_permalink()->get_last_modified()->format(DATE_ATOM), $permalink['updated_on']);
+            $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['updated_on']);
+            $this->assertDateAtom($permalink['updated_on']);
             $this->assertArrayHasKey("page_url", $permalink);
             $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['page_url']);
             $this->assertEquals($subdef->get_permalink()->get_page(\registry::get_instance()), $permalink['page_url']);
@@ -2133,7 +2114,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertArrayHasKey('description', $basket);
         $this->assertArrayHasKey('name', $basket);
         $this->assertArrayHasKey('pusher_usr_id', $basket);
-        $this->assertArrayHasKey('ssel_id', $basket);
         $this->assertArrayHasKey('updated_on', $basket);
         $this->assertArrayHasKey('unread', $basket);
 
@@ -2143,7 +2123,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->assertTrue(is_string($basket['name']));
         $this->assertTrue(is_string($basket['description']));
-        $this->assertTrue(is_int($basket['ssel_id']));
         $this->assertTrue(is_bool($basket['unread']));
         $this->assertDateAtom($basket['created_on']);
         $this->assertDateAtom($basket['updated_on']);
@@ -2161,8 +2140,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertTrue(is_string($record['title']));
         $this->assertArrayHasKey('original_name', $record);
         $this->assertTrue(is_string($record['original_name']));
-        $this->assertArrayHasKey('last_modification', $record);
-        $this->assertDateAtom($record['last_modification']);
+        $this->assertArrayHasKey('updated_on', $record);
+        $this->assertDateAtom($record['updated_on']);
         $this->assertArrayHasKey('created_on', $record);
         $this->assertDateAtom($record['created_on']);
         $this->assertArrayHasKey('collection_id', $record);
@@ -2194,7 +2173,11 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->assertTrue(is_array($record['technical_informations']));
 
-        foreach ($record['technical_informations'] as $key => $value) {
+        foreach ($record['technical_informations'] as $technical) {
+            $this->assertArrayHasKey('value', $technical);
+            $this->assertArrayHasKey('name', $technical);
+
+            $value = $technical['value'];
             if (is_string($value)) {
                 $this->assertFalse(ctype_digit($value));
                 $this->assertEquals(0, preg_match('/[0-9]?\.[0-9]+/', $value));
@@ -2210,7 +2193,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
     protected function evaluateRecordsCaptionResponse($content)
     {
-        foreach ($content['response'] as $field) {
+        $this->assertArrayHasKey('caption_metadatas', $content['response']);
+        foreach ($content['response']['caption_metadatas'] as $field) {
             $this->assertTrue(is_array($field), 'Un bloc field est un objet');
             $this->assertArrayHasKey('meta_structure_id', $field);
             $this->assertTrue(is_int($field['meta_structure_id']));
@@ -2223,8 +2207,12 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
     protected function evaluateRecordsMetadataResponse($content)
     {
-        $this->assertArrayHasKey("metadatas", $content['response']);
-        foreach ($content['response']['metadatas'] as $meta) {
+        if ( ! array_key_exists("record_metadatas", $content['response'])) {
+            var_dump($content['response']);
+        }
+
+        $this->assertArrayHasKey("record_metadatas", $content['response']);
+        foreach ($content['response']['record_metadatas'] as $meta) {
             $this->assertTrue(is_array($meta), 'Un bloc meta est un objet');
             $this->assertArrayHasKey('meta_id', $meta);
             $this->assertTrue(is_int($meta['meta_id']));

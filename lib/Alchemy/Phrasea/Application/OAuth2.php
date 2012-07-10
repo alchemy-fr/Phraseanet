@@ -14,8 +14,8 @@ namespace Alchemy\Phrasea\Application;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpFoundation\Request;
+use Silex\Provider\ValidatorServiceProvider;
 
 /**
  *
@@ -36,6 +36,8 @@ return call_user_func(function() {
             $app['appbox'] = function() use ($app) {
                     return \appbox::get_instance($app['Core']);
                 };
+
+            $app->register(new ValidatorServiceProvider());
 
             $app['oauth'] = function($app) {
                     return new \API_OAuth2_Adapter($app['appbox']);
@@ -60,7 +62,7 @@ return call_user_func(function() {
                     return $response;
                 });
 
-            /* * *******************************************************************
+            /********************************************************************
              *                        AUTHENTIFICATION API
              */
 
@@ -201,7 +203,7 @@ return call_user_func(function() {
                     return;
                 });
 
-            /******************************************************************
+            /* ****************************************************************
              * MANAGEMENT APPS
              *
              *
@@ -238,35 +240,34 @@ return call_user_func(function() {
 
             $route = "/applications/dev/create";
             $app->post($route, function() use ($app) {
-                    $submit = false;
-                    if ($app['request']->get("type") == "desktop") {
-                        $post = new \API_OAuth2_Form_DevAppDesktop($app['request']);
-                    } else {
-                        $post = new \API_OAuth2_Form_DevAppInternet($app['request']);
-                    }
+                        $submit = false;
+                        if ($app['request']->get("type") == "desktop") {
+                            $post = new \API_OAuth2_Form_DevAppDesktop($app['request']);
+                        } else {
+                            $post = new \API_OAuth2_Form_DevAppInternet($app['request']);
+                        }
 
-                    $violations = $app['validator']->validate($post);
+                        $violations = $app['validator']->validate($post);
 
-                    if ($violations->count() == 0)
-                        $submit = true;
+                        if ($violations->count() == 0)
+                            $submit = true;
 
-                    $request = $app['request'];
+                        $request = $app['request'];
 
-                    if ($submit) {
-                        $application = \API_OAuth2_Application::create($app['appbox'], $app['Core']->getAuthenticatedUser(), $post->getName());
-                        $application->set_description($post->getDescription())
-                            ->set_redirect_uri($post->getSchemeCallback() . $post->getCallback())
-                            ->set_type($post->getType())
-                            ->set_website($post->getSchemeWebsite() . $post->getWebsite());
+                        if ($submit) {
+                            $application = \API_OAuth2_Application::create($app['appbox'], $app['Core']->getAuthenticatedUser(), $post->getName());
+                            $application->set_description($post->getDescription())
+                                ->set_redirect_uri($post->getSchemeCallback() . $post->getCallback())
+                                ->set_type($post->getType())
+                                ->set_website($post->getSchemeWebsite() . $post->getWebsite());
 
-                        return $app->redirect("/api/oauthv2/applications/dev/" . $application->get_id() . "/show");
-                    }
+                            return $app->redirect("/api/oauthv2/applications/dev/" . $application->get_id() . "/show");
+                        }
 
-                    $var = array(
-                        "violations" => $violations,
-                        "form"       => $post
-                    );
-
+                        $var = array(
+                            "violations" => $violations,
+                            "form"       => $post
+                        );
                     return $app['response']('api/auth/application_dev_new.twig', $var);
                 });
 

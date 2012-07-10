@@ -568,7 +568,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         $result->set_datas(
             array(
-                "metadatas" =>
+                "document_metadatas" =>
                 $this->list_databox_metadatas_fields(
                     $this->appbox->get_databox($databox_id)
                         ->get_meta_structure()
@@ -607,14 +607,17 @@ class API_V1_adapter extends API_V1_Abstract
 
         $record = $this->appbox->get_databox($databox_id)->get_record($record_id);
         $fields = $record->get_caption()->get_fields();
+
         $ret = array();
+
         foreach ($fields as $field) {
-            $ret[$field->get_meta_struct_id()] = array(
+            $ret['caption_metadatas'][] = array(
                 'meta_structure_id' => $field->get_meta_struct_id(),
                 'name'              => $field->get_name(),
                 'value'             => $field->get_serialized_values(";"),
             );
         }
+
         $result->set_datas($ret);
 
         return $result;
@@ -741,9 +744,9 @@ class API_V1_adapter extends API_V1_Abstract
         $result = new API_V1_result($request, $this);
 
         $result->set_datas(array(
-            'offset_start' => $offset_start,
-            'per_page'     => $per_page,
-            'items'        => $ret,
+            'offset_start'     => $offset_start,
+            'per_page'         => $per_page,
+            'quarantine_items' => $ret,
         ));
 
         return $result;
@@ -762,7 +765,7 @@ class API_V1_adapter extends API_V1_Abstract
             throw new \API_V1_exception_forbidden('You do not have access to this quarantine item');
         }
 
-        $ret = array('item' => $this->list_lazaret_file($lazaretFile));
+        $ret = array('quarantine_item' => $this->list_lazaret_file($lazaretFile));
 
         $result = new API_V1_result($request, $this);
 
@@ -793,14 +796,14 @@ class API_V1_adapter extends API_V1_Abstract
         );
 
         return array(
-            'id'            => $file->getId(),
-            'session'       => $session,
-            'base_id'       => $file->getBaseId(),
-            'original_name' => $file->getOriginalName(),
-            'sha256'        => $file->getSha256(),
-            'uuid'          => $file->getUuid(),
-            'forced'        => $file->getForced(),
-            'checks'        => $file->getForced() ? array() : $checks,
+            'id'                 => $file->getId(),
+            'quarantine_session' => $session,
+            'base_id'            => $file->getBaseId(),
+            'original_name'      => $file->getOriginalName(),
+            'sha256'             => $file->getSha256(),
+            'uuid'               => $file->getUuid(),
+            'forced'             => $file->getForced(),
+            'checks'             => $file->getForced() ? array() : $checks,
             'created_on' => $file->getCreated()->format(DATE_ATOM),
             'updated_on' => $file->getUpdated()->format(DATE_ATOM),
         );
@@ -836,17 +839,17 @@ class API_V1_adapter extends API_V1_Abstract
             'fields' => is_array($request->get('fields')) ? $request->get('fields') : array(),
             'status' => is_array($request->get('status')) ? $request->get('status') : array(),
             'bases' => is_array($request->get('bases')) ? $request->get('bases') : array(),
-            'search_type' => $search_type,
-            'recordtype'  => $record_type,
-            'datemin'     => $request->get('datemin') ? : '',
-            'datemax'     => $request->get('datemax') ? : '',
-            'datefield'   => $request->get('datefield') ? : '',
-            'sort'        => $request->get('sort') ? : '',
-            'ord'         => $request->get('ord') ? : '',
-            'stemme'      => $request->get('stemme') ? : '',
-            'per_page'    => $request->get('per_page') ? : 10,
-            'query'       => $request->get('query') ? : '',
-            'page'        => (int) ($request->get('page') ? : 0),
+            'search_type'  => $search_type,
+            'recordtype'   => $record_type,
+            'datemin'      => $request->get('date_min') ? : '',
+            'datemax'      => $request->get('date_max') ? : '',
+            'datefield'    => $request->get('date_field') ? : '',
+            'sort'         => $request->get('sort') ? : '',
+            'ord'          => $request->get('ord') ? : '',
+            'stemme'       => $request->get('stemme') ? : '',
+            'per_page'     => $request->get('per_page') ? : 10,
+            'query'        => $request->get('query') ? : '',
+            'offset_start' => (int) ($request->get('offset_start') ? : 0),
         );
 
         if (is_array($request->get('bases')) === false) {
@@ -899,21 +902,13 @@ class API_V1_adapter extends API_V1_Abstract
         $search_engine = new searchEngine_adapter($registry);
         $search_engine->set_options($options);
 
-        /**
-         * @todo ameliorer this shit
-         */
-        if ($params['page'] < 1) {
-            $search_engine->set_is_first_page(true);
-            $params['page'] = 1;
-        }
-
         $search_engine->reset_cache();
 
-        $search_result = $search_engine->query_per_page($params['query'], $params["page"], $perPage);
+        $search_result = $search_engine->query_per_offset($params['query'], $params["offset_start"], $perPage);
 
         $ret = array(
-            'total_pages'       => $search_result->get_total_pages(),
-            'current_page'      => $search_result->get_current_page(),
+            'offset_start'      => $params["offset_start"],
+            'per_page'          => $perPage,
             'available_results' => $search_result->get_count_available_results(),
             'total_results'     => $search_result->get_count_total_results(),
             'error'             => $search_result->get_error(),
@@ -957,7 +952,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         $ret = array();
         foreach ($containers as $basket) {
-            $ret[$basket->getId()] = $this->list_basket($basket);
+            $ret[] = $this->list_basket($basket);
         }
 
         $result->set_datas(array("baskets" => $ret));
@@ -982,7 +977,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         $result->set_datas(
             array(
-                "metadatas" => $this->list_record_caption($record->get_caption())
+                "record_metadatas" => $this->list_record_caption($record->get_caption())
             )
         );
 
@@ -1041,7 +1036,7 @@ class API_V1_adapter extends API_V1_Abstract
         $mimes = $request->get('mimes', array());
 
         foreach ($record->get_embedable_medias($devices, $mimes) as $name => $media) {
-            $ret[$name] = $this->list_embedable_media($media, $this->appbox->get_registry());
+            $ret[] = $this->list_embedable_media($media, $this->appbox->get_registry());
         }
 
         $result->set_datas(array("embed" => $ret));
@@ -1068,7 +1063,7 @@ class API_V1_adapter extends API_V1_Abstract
             }
 
             $record->set_metadatas($metadatas);
-            $result->set_datas(array("metadatas" => $this->list_record_caption($record->get_caption())));
+            $result->set_datas(array("record_metadatas" => $this->list_record_caption($record->get_caption())));
         } catch (Exception $e) {
             $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('An error occured'));
         }
@@ -1202,7 +1197,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         $ret = array();
         foreach ($baskets as $basket) {
-            $ret[$basket->getId()] = $this->list_basket($basket);
+            $ret[] = $this->list_basket($basket);
         }
 
         return $ret;
@@ -1234,9 +1229,7 @@ class API_V1_adapter extends API_V1_Abstract
         $em->persist($Basket);
         $em->flush();
 
-        $ret = array();
-        $ret[$Basket->getId()] = $this->list_basket($Basket);
-        $result->set_datas(array("basket" => $ret));
+        $result->set_datas(array("basket" => $this->list_basket($Basket)));
 
         return $result;
     }
@@ -1250,8 +1243,6 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function delete_basket(Request $request, $basket_id)
     {
-        $result = new API_V1_result($request, $this);
-
         $em = $this->core->getEntityManager();
         $repository = $em->getRepository('\Entities\Basket');
 
@@ -1283,10 +1274,9 @@ class API_V1_adapter extends API_V1_Abstract
         $Basket = $repository->findUserBasket($basket_id, $this->core->getAuthenticatedUser(), false);
 
         $result->set_datas(
-            array("basket_elements" =>
-                array(
-                    $Basket->getId() => $this->list_basket_content($Basket)
-                )
+            array(
+                "basket"          => $this->list_basket($Basket),
+                "basket_elements" => $this->list_basket_content($Basket)
             )
         );
 
@@ -1301,12 +1291,10 @@ class API_V1_adapter extends API_V1_Abstract
      */
     protected function list_basket_content(\Entities\Basket $Basket)
     {
-        $ret = $this->list_basket($Basket);
-
-        $ret['basket_elements'] = array();
+        $ret = array();
 
         foreach ($Basket->getElements() as $basket_element) {
-            $ret['basket_elements'][$basket_element->getId()] = $this->list_basket_element($basket_element);
+            $ret[] = $this->list_basket_element($basket_element);
         }
 
         return $ret;
@@ -1324,32 +1312,40 @@ class API_V1_adapter extends API_V1_Abstract
             'basket_element_id' => $basket_element->getId(),
             'order'             => $basket_element->getOrd(),
             'record'            => $this->list_record($basket_element->getRecord()),
-            'validation_item'   => ! ! $basket_element->getValidationDatas(),
+            'validation_item'   => null != $basket_element->getBasket()->getValidation(),
         );
 
-        if ($basket_element->getValidationDatas()) {
+        if ($basket_element->getBasket()->getValidation()) {
             $choices = array();
-            $agreement = $note = null;
+            $agreement = null;
+            $note = '';
 
             foreach ($basket_element->getValidationDatas() as $validation_datas) {
-                $user = $validation_datas->getParticipant()->getUser();
+                $participant = $validation_datas->getParticipant();
+                $user = $participant->getUser();
                 /* @var $validation_datas Entities\ValidationData */
-                $choices[$user->get_id()] = array(
-                    'usr_id'     => $user->get_id(),
-                    'usr_name'   => $user->get_display_name(),
-                    'readonly'   => $user->get_id() != $this->core->getAuthenticatedUser()->get_id(),
-                    'agreement'  => $validation_datas->getAgreement(),
-                    'updated_on' => $validation_datas->getUpdated()->format(DATE_ATOM),
-                    'note'       => $validation_datas->getNote(),
+                $choices[] = array(
+                    'validation_user' => array(
+                        'usr_id'         => $user->get_id(),
+                        'usr_name'       => $user->get_display_name(),
+                        'confirmed'      => $participant->getIsConfirmed(),
+                        'can_agree'      => $participant->getCanAgree(),
+                        'can_see_others' => $participant->getCanSeeOthers(),
+                        'readonly'       => $user->get_id() != $this->core->getAuthenticatedUser()->get_id(),
+                    ),
+                    'agreement'      => $validation_datas->getAgreement(),
+                    'updated_on'     => $validation_datas->getUpdated()->format(DATE_ATOM),
+                    'note'           => null === $validation_datas->getNote() ? '' : $validation_datas->getNote(),
                 );
 
                 if ($user->get_id() == $this->core->getAuthenticatedUser()->get_id()) {
                     $agreement = $validation_datas->getAgreement();
-                    $note = $validation_datas->getNote();
+                    $note = null === $validation_datas->getNote() ? '' : $validation_datas->getNote();
                 }
+
+                $ret['validation_choices'] = $choices;
             }
 
-            $ret['choices'] = $choices;
             $ret['agreement'] = $agreement;
             $ret['note'] = $note;
         }
@@ -1381,13 +1377,7 @@ class API_V1_adapter extends API_V1_Abstract
         $em->merge($Basket);
         $em->flush();
 
-        $result->set_datas(
-            array(
-                "basket" =>
-                array($Basket->getId() => $this->list_basket_content($Basket)
-                )
-            )
-        );
+        $result->set_datas(array( "basket" => $this->list_basket($Basket)));
 
         return $result;
     }
@@ -1416,13 +1406,7 @@ class API_V1_adapter extends API_V1_Abstract
         $em->merge($Basket);
         $em->flush();
 
-        $result->set_datas(
-            array(
-                "basket" =>
-                array($Basket->getId() => $this->list_basket_content($Basket)
-                )
-            )
-        );
+        $result->set_datas(array("basket" => $this->list_basket($Basket)));
 
         return $result;
     }
@@ -1442,7 +1426,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         $datas = array();
         foreach ($coll->get_feeds() as $feed) {
-            $datas[$feed->get_id()] = $this->list_publication($feed, $user);
+            $datas[] = $this->list_publication($feed, $user);
         }
 
         $result->set_datas(array("feeds" => $datas));
@@ -1574,7 +1558,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         $out = array();
         foreach ($entries as $entry) {
-            $out[$entry->get_id()] = $this->list_publication_entry($entry);
+            $out[] = $this->list_publication_entry($entry);
         }
 
         return $out;
@@ -1670,6 +1654,7 @@ class API_V1_adapter extends API_V1_Abstract
         }
 
         return array(
+            'name'        => $media->get_name(),
             'permalink'   => $permalink,
             'height'      => $media->get_height(),
             'width'       => $media->get_width(),
@@ -1690,13 +1675,13 @@ class API_V1_adapter extends API_V1_Abstract
     protected function list_permalink(media_Permalink_Adapter &$permalink, registryInterface &$registry)
     {
         return array(
-            'created_on'    => $permalink->get_created_on()->format(DATE_ATOM),
-            'id'            => $permalink->get_id(),
-            'is_activated'  => $permalink->get_is_activated(),
-            'label'         => $permalink->get_label(),
-            'last_modified' => $permalink->get_last_modified()->format(DATE_ATOM),
-            'page_url'      => $permalink->get_page($registry),
-            'url'           => $permalink->get_url($registry)
+            'created_on'   => $permalink->get_created_on()->format(DATE_ATOM),
+            'id'           => $permalink->get_id(),
+            'is_activated' => $permalink->get_is_activated(),
+            'label'        => $permalink->get_label(),
+            'updated_on'   => $permalink->get_last_modified()->format(DATE_ATOM),
+            'page_url'     => $permalink->get_page($registry),
+            'url'          => $permalink->get_url($registry)
         );
     }
 
@@ -1712,7 +1697,7 @@ class API_V1_adapter extends API_V1_Abstract
         $status = strrev($status);
         $ret = array();
         foreach ($databox->get_statusbits() as $bit => $status_datas) {
-            $ret[$bit] = array('bit'   => $bit, 'state' => ! ! substr($status, ($bit - 1), 1));
+            $ret[] = array('bit'   => $bit, 'state' => ! ! substr($status, ($bit - 1), 1));
         }
 
         return $ret;
@@ -1729,7 +1714,7 @@ class API_V1_adapter extends API_V1_Abstract
         $ret = array();
         foreach ($caption->get_fields() as $field) {
             foreach ($field->get_values() as $value) {
-                $ret[$value->getId()] = $this->list_record_caption_field($value, $field);
+                $ret[] = $this->list_record_caption_field($value, $field);
             }
         }
 
@@ -1761,13 +1746,14 @@ class API_V1_adapter extends API_V1_Abstract
     protected function list_basket(\Entities\Basket $basket)
     {
         $ret = array(
-            'created_on'    => $basket->getCreated()->format(DATE_ATOM),
-            'description'   => (string) $basket->getDescription(),
-            'name'          => $basket->getName(),
-            'pusher_usr_id' => $basket->getPusherId(),
-            'ssel_id'       => $basket->getId(),
-            'updated_on'    => $basket->getUpdated()->format(DATE_ATOM),
-            'unread'        => ! $basket->getIsRead(),
+            'basket_id'         => $basket->getId(),
+            'created_on'        => $basket->getCreated()->format(DATE_ATOM),
+            'description'       => (string) $basket->getDescription(),
+            'name'              => $basket->getName(),
+            'pusher_usr_id'     => $basket->getPusherId(),
+            'updated_on'        => $basket->getUpdated()->format(DATE_ATOM),
+            'unread'            => ! $basket->getIsRead(),
+            'validation_basket' => ! ! $basket->getValidation()
         );
 
         if ($basket->getValidation()) {
@@ -1777,12 +1763,13 @@ class API_V1_adapter extends API_V1_Abstract
                 /* @var $participant \Entities\ValidationParticipant */
                 $user = $participant->getUser();
 
-                $users[$user->get_id()] = array(
+                $users[] = array(
                     'usr_id'         => $user->get_id(),
                     'usr_name'       => $user->get_display_name(),
                     'confirmed'      => $participant->getIsConfirmed(),
                     'can_agree'      => $participant->getCanAgree(),
                     'can_see_others' => $participant->getCanSeeOthers(),
+                    'readonly'       => $user->get_id() != $this->core->getAuthenticatedUser()->get_id(),
                 );
             }
 
@@ -1797,10 +1784,10 @@ class API_V1_adapter extends API_V1_Abstract
             $ret = array_merge(
                 array(
                 'validation_users'     => $users,
-                'validation_end_date'  => $expires_on_atom,
+                'expires_on'           => $expires_on_atom,
                 'validation_infos'     => $basket->getValidation()->getValidationString($user),
                 'validation_confirmed' => $basket->getValidation()->getParticipant($user)->getIsConfirmed(),
-                'mine'                 => $basket->getValidation()->isInitiator($user),
+                'validation_initiator' => $basket->getValidation()->isInitiator($user),
                 ), $ret
             );
         }
@@ -1816,20 +1803,26 @@ class API_V1_adapter extends API_V1_Abstract
      */
     protected function list_record(record_adapter $record)
     {
+        $technicalInformation = array();
+        foreach ($record->get_technical_infos() as $name => $value) {
+            $technicalInformation[] = array(
+                'name'  => $name,
+                'value' => $value
+            );
+        }
+
         return array(
             'databox_id'             => $record->get_sbas_id(),
             'record_id'              => $record->get_record_id(),
             'mime_type'              => $record->get_mime(),
             'title'                  => $record->get_title(),
             'original_name'          => $record->get_original_name(),
-            'last_modification'      => $record->get_modification_date()->format(DATE_ATOM),
+            'updated_on'             => $record->get_modification_date()->format(DATE_ATOM),
             'created_on'             => $record->get_creation_date()->format(DATE_ATOM),
             'collection_id'          => phrasea::collFromBas($record->get_base_id()),
             'sha256'                 => $record->get_sha256(),
-            'thumbnail'              => $this->list_embedable_media(
-                $record->get_thumbnail(), registry::get_instance()
-            ),
-            'technical_informations' => $record->get_technical_infos(),
+            'thumbnail'              => $this->list_embedable_media($record->get_thumbnail(), registry::get_instance()),
+            'technical_informations' => $technicalInformation,
             'phrasea_type'           => $record->get_type(),
             'uuid'                   => $record->get_uuid(),
         );
@@ -1844,7 +1837,7 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $ret = array();
         foreach ($this->appbox->get_databoxes() as $databox) {
-            $ret[$databox->get_sbas_id()] = $this->list_databox($databox);
+            $ret[] = $this->list_databox($databox);
         }
 
         return $ret;
@@ -1860,7 +1853,7 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $ret = array();
         foreach ($databox->get_cgus() as $locale => $array_terms) {
-            $ret[$locale] = array('locale' => $locale, 'terms'  => $array_terms['value']);
+            $ret[] = array('locale' => $locale, 'terms'  => $array_terms['value']);
         }
 
         return $ret;
@@ -1893,7 +1886,7 @@ class API_V1_adapter extends API_V1_Abstract
         $ret = array();
 
         foreach ($databox->get_collections() as $collection) {
-            $ret[$collection->get_coll_id()] = $this->list_collection($collection);
+            $ret[] = $this->list_collection($collection);
         }
 
         return $ret;
@@ -1909,7 +1902,7 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $ret = array(
             'base_id'       => $collection->get_base_id(),
-            'coll_id'       => $collection->get_coll_id(),
+            'collection_id' => $collection->get_coll_id(),
             'name'          => $collection->get_name(),
             'record_amount' => $collection->get_record_amount(),
         );
@@ -1927,14 +1920,14 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $ret = array();
         foreach ($status as $n => $datas) {
-            $ret[$n] = array(
+            $ret[] = array(
                 'bit'        => $n,
                 'label_on'   => $datas['labelon'],
                 'label_off'  => $datas['labeloff'],
                 'img_on'     => $datas['img_on'],
                 'img_off'    => $datas['img_off'],
-                'searchable' => $datas['searchable'],
-                'printable'  => $datas['printable'],
+                'searchable' => ! ! $datas['searchable'],
+                'printable'  => ! ! $datas['printable'],
             );
         }
 
@@ -1951,7 +1944,7 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $ret = array();
         foreach ($meta_struct as $meta) {
-            $ret[$meta->get_id()] = $this->list_databox_metadata_field_properties($meta);
+            $ret[] = $this->list_databox_metadata_field_properties($meta);
         }
 
         return $ret;
