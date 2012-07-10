@@ -20,12 +20,18 @@ label {
   color: #ffffff;
 }
 /******* NAVBAR ***************************************************************/
-#tab-account-cat .ui-tabs-nav li a {
+#tab-account-cat ul {
+  list-style: none;
+}
+#tab-account-cat ul li {
+  display: inline;
+}
+#tab-account-cat ul li a {
   color: #0088cc;
   text-decoration: none;
   font-size: 13px;
 }
-#tab-account-cat .ui-tabs-nav li a:hover {
+#tab-account-cat ul li a:hover {
   background-color: #0088cc;
   color: #ffffff;
 }
