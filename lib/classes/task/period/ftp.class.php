@@ -591,7 +591,7 @@ class task_period_ftp extends task_appboxAbstract
                 $stmt = $conn->prepare($sql);
                 $stmt->execute();
                 $stmt->closeCursor();
-                $sql = 'DELET FROM ftp_export_elements WHERE ftp_export_id = :export_id AND error="0"';
+                $sql = 'DELETE FROM ftp_export_elements WHERE ftp_export_id = :export_id AND error="0"';
                 $stmt = $conn->prepare($sql);
                 $stmt->execute(array(':export_id' => $id));
                 $stmt->closeCursor();
