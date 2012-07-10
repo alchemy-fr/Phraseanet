@@ -86,8 +86,8 @@ class databox_status
                 $this->status[$bit]["labeloff"] = (string) $sb['labelOff'];
                 $this->status[$bit]["labelon"] = (string) $sb['labelOn'];
 
-                $this->status[$bit]["img_off"] = '';
-                $this->status[$bit]["img_on"] = '';
+                $this->status[$bit]["img_off"] = null;
+                $this->status[$bit]["img_on"] = null;
 
                 if (is_file($path . "-stat_" . $bit . "_0.gif")) {
                     $this->status[$bit]["img_off"] = $url . "-stat_" . $bit . "_0.gif";
@@ -278,11 +278,11 @@ class databox_status
 
                 $databox->saveStructure($doc);
 
-                if ('' !== $status[$bit]['img_off']) {
+                if (null !== $status[$bit]['img_off']) {
                     $core['file-system']->remove($status[$bit]['path_off']);
                 }
 
-                if ('' !== $status[$bit]['img_on']) {
+                if (null !== $status[$bit]['img_on']) {
                     $core['file-system']->remove($status[$bit]['path_on']);
                 }
 
@@ -367,11 +367,11 @@ class databox_status
             self::$_status[$sbas_id]->status[$bit]["printable"] = ! ! $properties['printable'];
 
             if ( ! isset(self::$_status[$sbas_id]->status[$bit]['img_on'])) {
-                self::$_status[$sbas_id]->status[$bit]['img_on'] = '';
+                self::$_status[$sbas_id]->status[$bit]['img_on'] = null;
             }
 
             if ( ! isset(self::$_status[$sbas_id]->status[$bit]['img_off'])) {
-                self::$_status[$sbas_id]->status[$bit]['img_off'] = '';
+                self::$_status[$sbas_id]->status[$bit]['img_off'] = null;
             }
         }
 
