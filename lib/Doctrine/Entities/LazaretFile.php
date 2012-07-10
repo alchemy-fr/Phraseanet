@@ -18,6 +18,11 @@ class LazaretFile
     private $pathname;
 
     /**
+     * @var string $thumbPathname
+     */
+    private $thumbPathname;
+
+    /**
      * @var integer $base_id
      */
     private $base_id;
@@ -355,21 +360,31 @@ class LazaretFile
         $ret = array();
 
         $shaRecords = \record_adapter::get_record_by_sha(
-            $this->getCollection()->get_sbas_id(), $this->getSha256()
+                $this->getCollection()->get_sbas_id(), $this->getSha256()
         );
 
         $uuidRecords = \record_adapter::get_record_by_uuid(
-            $this->getCollection()->get_databox(), $this->getUuid()
+                $this->getCollection()->get_databox(), $this->getUuid()
         );
 
         $merged = array_merge($uuidRecords, $shaRecords);
 
         foreach ($merged as $record) {
-            if (!in_array($record, $ret)) {
+            if ( ! in_array($record, $ret)) {
                 $ret[] = $record;
             }
         }
 
         return $ret;
+    }
+
+    public function getThumbPathname()
+    {
+        return $this->thumbPathname;
+    }
+
+    public function setThumbPathname($thumbPathname)
+    {
+        $this->thumbPathname = $thumbPathname;
     }
 }

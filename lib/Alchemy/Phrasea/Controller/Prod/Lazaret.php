@@ -18,6 +18,7 @@ use Silex\ControllerProviderInterface;
 use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Filesystem\Exception\IOException;
 
 /**
  * Lazaret controller collection
@@ -189,31 +190,27 @@ class Lazaret implements ControllerProviderInterface
     {
         $ret = array('success' => false, 'message' => '', 'result'  => array());
 
-        try {
-            $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
+        $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
 
-            /* @var $lazaretFile \Entities\LazaretFile */
-            if (null === $lazaretFile) {
-                throw new \Exception_NotFound(sprintf('Lazaret file id %d not found', $file_id));
-            }
-
-            $file = array(
-                'filename' => $lazaretFile->getOriginalName(),
-                'base_id'  => $lazaretFile->getBaseId(),
-                'created'  => $lazaretFile->getCreated()->format(\DateTime::ATOM),
-                'updated'  => $lazaretFile->getUpdated()->format(\DateTime::ATOM),
-                'pathname' => $lazaretFile->getPathname(),
-                'sha256'   => $lazaretFile->getSha256(),
-                'uuid'     => $lazaretFile->getUuid(),
-            );
-
-            $ret['result'] = $file;
-            $ret['success'] = true;
-        } catch (\Exception_NotFound $e) {
+        /* @var $lazaretFile \Entities\LazaretFile */
+        if (null === $lazaretFile) {
             $ret['message'] = _('File is not present in quarantine anymore, please refresh');
-        } catch (\Exception $e) {
-            $ret['message'] = _('An error occured');
+
+            return self::formatJson($app['Core']['Serializer'], $ret);
         }
+
+        $file = array(
+            'filename' => $lazaretFile->getOriginalName(),
+            'base_id'  => $lazaretFile->getBaseId(),
+            'created'  => $lazaretFile->getCreated()->format(\DateTime::ATOM),
+            'updated'  => $lazaretFile->getUpdated()->format(\DateTime::ATOM),
+            'pathname' => $lazaretFile->getPathname(),
+            'sha256'   => $lazaretFile->getSha256(),
+            'uuid'     => $lazaretFile->getUuid(),
+        );
+
+        $ret['result'] = $file;
+        $ret['success'] = true;
 
         return self::formatJson($app['Core']['Serializer'], $ret);
     }
@@ -242,14 +239,17 @@ class Lazaret implements ControllerProviderInterface
             return self::formatJson($app['Core']['Serializer'], $ret);
         }
 
+
+        $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
+
+        /* @var $lazaretFile \Entities\LazaretFile */
+        if (null === $lazaretFile) {
+            $ret['message'] = _('File is not present in quarantine anymore, please refresh');
+
+            return self::formatJson($app['Core']['Serializer'], $ret);
+        }
+
         try {
-            $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
-
-            /* @var $lazaretFile \Entities\LazaretFile */
-            if (null === $lazaretFile) {
-                throw new \Exception_NotFound(sprintf('Lazaret file id %d not found', $file_id));
-            }
-
             $borderFile = Border\File::buildFromPathfile(
                     $lazaretFile->getPathname(), $lazaretFile->getCollection(), $lazaretFile->getOriginalName()
             );
@@ -311,13 +311,16 @@ class Lazaret implements ControllerProviderInterface
             $app['Core']['EM']->remove($lazaretFile);
             $app['Core']['EM']->flush();
 
-            $app['Core']['file-system']->remove($lazaretFile->getPathname());
-
             $ret['success'] = true;
-        } catch (\Exception_NotFound $e) {
-            $ret['message'] = _('File is not present in quarantine anymore, please refresh');
         } catch (\Exception $e) {
             $ret['message'] = _('An error occured');
+        }
+
+        try {
+            $app['Core']['file-system']->remove($lazaretFile->getPathname());
+            $app['Core']['file-system']->remove($lazaretFile->getThumbPathname());
+        } catch (IOException $e) {
+
         }
 
         return self::formatJson($app['Core']['Serializer'], $ret);
@@ -336,25 +339,30 @@ class Lazaret implements ControllerProviderInterface
     {
         $ret = array('success' => false, 'message' => '', 'result'  => array());
 
+
+        $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
+
+        /* @var $lazaretFile \Entities\LazaretFile */
+        if (null === $lazaretFile) {
+            $ret['message'] = _('File is not present in quarantine anymore, please refresh');
+
+            return self::formatJson($app['Core']['Serializer'], $ret);
+        }
+
         try {
-            $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
-
-            /* @var $lazaretFile \Entities\LazaretFile */
-            if (null === $lazaretFile) {
-                throw new \Exception_NotFound(sprintf('Lazaret file id %d not found', $file_id));
-            }
-
-            //Delete lazaret file
             $app['Core']['EM']->remove($lazaretFile);
             $app['Core']['EM']->flush();
 
-            $app['Core']['file-system']->remove($lazaretFile->getPathname());
-
             $ret['success'] = true;
-        } catch (\Exception_NotFound $e) {
-            $ret['message'] = _('File is not present in quarantine anymore, please refresh');
         } catch (\Exception $e) {
             $ret['message'] = _('An error occured');
+        }
+
+        try {
+            $app['Core']['file-system']->remove($lazaretFile->getPathname());
+            $app['Core']['file-system']->remove($lazaretFile->getThumbPathname());
+        } catch (IOException $e) {
+
         }
 
         return self::formatJson($app['Core']['Serializer'], $ret);
@@ -380,32 +388,34 @@ class Lazaret implements ControllerProviderInterface
             return self::formatJson($app['Core']['Serializer'], $ret);
         }
 
+        $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
+
+        /* @var $lazaretFile \Entities\LazaretFile */
+        if (null === $lazaretFile) {
+            $ret['message'] = _('File is not present in quarantine anymore, please refresh');
+
+            return self::formatJson($app['Core']['Serializer'], $ret);
+        }
+
+        $found = false;
+
+        //Check if the choosen record is eligible to the substitution
+        foreach ($lazaretFile->getRecordsToSubstitute() as $record) {
+            if ($record->get_record_id() !== (int) $recordId) {
+                continue;
+            }
+
+            $found = true;
+            break;
+        }
+
+        if ( ! $found) {
+            $ret['message'] = _('The destination record provided is not allowed');
+
+            return self::formatJson($app['Core']['Serializer'], $ret);
+        }
+
         try {
-            $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
-
-            /* @var $lazaretFile \Entities\LazaretFile */
-            if (null === $lazaretFile) {
-                throw new \Exception_NotFound(sprintf('Lazaret file id %d not found', $file_id));
-            }
-
-            $found = false;
-
-            //Check if the choosen record is eligible to the substitution
-            foreach ($lazaretFile->getRecordsToSubstitute() as $record) {
-                if ($record->get_record_id() !== (int) $recordId) {
-                    continue;
-                }
-
-                $found = true;
-                break;
-            }
-
-            if ( ! $found) {
-                $ret['message'] = _('The destination record provided is not allowed');
-
-                return self::formatJson($app['Core']['Serializer'], $ret);
-            }
-
             $media = $app['Core']['mediavorus']->guess(new \SplFileInfo($lazaretFile->getPathname()));
 
             $record = $lazaretFile->getCollection()->get_databox()->get_record($recordId);
@@ -415,13 +425,16 @@ class Lazaret implements ControllerProviderInterface
             $app['Core']['EM']->remove($lazaretFile);
             $app['Core']['EM']->flush();
 
-            $app['Core']['file-system']->remove($lazaretFile->getPathname());
-
             $ret['success'] = true;
-        } catch (\Exception_NotFound $e) {
-            $ret['message'] = _('File is not present in quarantine anymore, please refresh');
         } catch (\Exception $e) {
             $ret['message'] = _('An error occured');
+        }
+
+        try {
+            $app['Core']['file-system']->remove($lazaretFile->getPathname());
+            $app['Core']['file-system']->remove($lazaretFile->getThumbPathname());
+        } catch (IOException $e) {
+
         }
 
         return self::formatJson($app['Core']['Serializer'], $ret);
@@ -442,11 +455,14 @@ class Lazaret implements ControllerProviderInterface
 
         /* @var $lazaretFile \Entities\LazaretFile */
         if (null === $lazaretFile) {
+
             return new Response(null, 404);
         }
 
+        $lazaretPath = __DIR__ . '/../../../../../tmp/lazaret/';
+
         $response = \set_export::stream_file(
-                $lazaretFile->getPathname(), $lazaretFile->getOriginalName(), 'image/jpeg', 'inline'
+                $lazaretPath . $lazaretFile->getThumbPathname(), $lazaretFile->getOriginalName(), 'image/jpeg', 'inline'
         );
 
         return $response;

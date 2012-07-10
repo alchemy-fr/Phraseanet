@@ -9,6 +9,9 @@
  * file that was distributed with this source code.
  */
 
+use MediaAlchemyst\Exception\Exception as MediaAlchemystException;
+use MediaAlchemyst\Specification\Image as ImageSpec;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -84,6 +87,23 @@ class patch_370a7 implements patchInterface
                     $filePath = __DIR__ . '/../../../tmp/lazaret/' . $row['filepath'];
 
                     if (file_exists($filePath)) {
+
+                        $spec = new ImageSpec();
+
+                        $spec->setResizeMode(ImageSpec::RESIZE_MODE_INBOUND_FIXEDRATIO);
+                        $spec->setDimensions(375, 275);
+
+                        $thumbPass = sprintf("thumb_%s", $filePath);
+
+                        try {
+                            $Core['media-alchemyst']
+                                ->open($filePath)
+                                ->turnInto($thumbPass, $spec)
+                                ->close();
+                        } catch (MediaAlchemystException $e) {
+
+                        }
+
                         $media = $Core['mediavorus']->guess(new \SplFileInfo($filePath));
 
                         $collection = \collection::get_from_base_id($row['base_id']);
@@ -111,7 +131,8 @@ class patch_370a7 implements patchInterface
                         }
 
                         $lazaretFile->setOriginalName($row['filename']);
-                        $lazaretFile->setPathname(__DIR__ . '/../../../tmp/lazaret/' . $row['filepath']);
+                        $lazaretFile->setPathname($row['filepath']);
+                        $lazaretFile->setThumbPathname($thumbPass);
                         $lazaretFile->setCreated(new \DateTime($row['created_on']));
                         $lazaretFile->setSession($lazaretSession);
 
