@@ -594,6 +594,8 @@ class Session_Handler
             }
             $rs[$k]['session_id'] = (int) $rs[$k]['session_id'];
             $rs[$k]['ip_infos'] = $infos;
+            $rs[$k]['created_on'] = new \DateTime($row['created_on']);;
+            $rs[$k]['lastaccess'] = new \DateTime($row['lastaccess']);
         }
 
         return $rs;
