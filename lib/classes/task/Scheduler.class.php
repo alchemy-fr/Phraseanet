@@ -108,10 +108,6 @@ class task_Scheduler
 
         $this->log(sprintf("running scheduler with method %s", $this->method));
 
-        if ($this->method == self::METHOD_FORK) {
-            pcntl_signal(SIGCHLD, SIG_IGN);
-        }
-
         $conn = appbox::get_instance(\bootstrap::getCore())->get_connection();
 
         $taskPoll = array(); // the poll of tasks
@@ -230,7 +226,8 @@ class task_Scheduler
                             $task->getID(), '--runner=scheduler'
                         ),
                         "killat"       => null,
-                        "sigterm_sent" => false
+                        "sigterm_sent" => false,
+                        "pid"          => false
                     );
                     if ($this->method == self::METHOD_PROC_OPEN) {
                         $taskPoll[$tkey]['process'] = NULL;
@@ -293,7 +290,17 @@ class task_Scheduler
                                 @proc_close($taskPoll[$tkey]["process"]);
 
                                 $taskPoll[$tkey]["process"] = null;
+                            } elseif ($this->method == self::METHOD_FORK) {
+                                $pid = $taskPoll[$tkey]['pid'];
+                                if ($pid) {
+                                    $status = NULL;
+                                    if (pcntl_waitpid($pid, $status, WNOHANG) === $pid) {
+                                        // pid has quit
+                                        $taskPoll[$tkey]['pid'] = false;
+                                    }
+                                }
                             }
+
                             if ($schedstatus == 'started') {
                                 $taskPoll[$tkey]["task"]->setState(task_abstract::STATE_TOSTART);
                             }
@@ -332,13 +339,14 @@ class task_Scheduler
                                     sleep(2); // let the process lock and write it's pid
                                 }
 
-                                if (is_resource($taskPoll[$tkey]["process"]) && $taskPoll[$tkey]['task']->getPID() !== null) {
+                                if (is_resource($taskPoll[$tkey]["process"]) && ($pid = $taskPoll[$tkey]['task']->getPID()) !== null) {
+                                    $taskPoll[$tkey]['pid'] = $pid;
                                     $this->log(
                                         sprintf(
                                             "Task %s '%s' started (pid=%s)"
                                             , $taskPoll[$tkey]['task']->getID()
                                             , $taskPoll[$tkey]["cmd"] . ' ' . implode(' ', $taskPoll[$tkey]["args"])
-                                            , $taskPoll[$tkey]['task']->getPID()
+                                            , $pid
                                         )
                                     );
                                     $runningtask ++;
@@ -380,6 +388,9 @@ class task_Scheduler
 
                                 $this->log(sprintf("exec('%s %s')", $taskPoll[$tkey]["cmd"], implode(' ', $taskPoll[$tkey]["args"])));
                                 pcntl_exec($taskPoll[$tkey]["cmd"], $taskPoll[$tkey]["args"]);
+                            } else {
+                                // parent (scheduler)
+                                $taskPoll[$tkey]['pid'] = $pid;
                             }
                         }
                         break;
@@ -516,6 +527,15 @@ class task_Scheduler
                                 @proc_close($taskPoll[$tkey]["process"]);
 
                                 $taskPoll[$tkey]["process"] = null;
+                            }
+                        } elseif ($this->method == self::METHOD_FORK) {
+                            $pid = $taskPoll[$tkey]['pid'];
+                            if ($pid) {
+                                $status = NULL;
+                                if (pcntl_waitpid($pid, $status, WNOHANG) === $pid) {
+                                    // pid has quit
+                                    $taskPoll[$tkey]['pid'] = false;
+                                }
                             }
                         }
                         break;
