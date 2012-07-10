@@ -260,7 +260,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         $this->assertEquals($response['meta']['http_code'], 200);
 
-        $this->checkResponseField($result, "metadatas", 'array');
+        $this->checkResponseField($result, "record_metadatas", 'array');
     }
 
     public function testSet_record_status()
@@ -357,11 +357,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         $n = 0;
         $response = json_decode($result->format(), true);
-        foreach ($response['response']['basket'] as $ssel_id => $basket) {
-            $n ++;
-        }
-
-        $this->assertEquals(1, $n);
+        $this->assertArrayHasKey('basket', $response['response']);
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $session = $appbox->get_session();
         $usr_id = $session->get_usr_id();
@@ -370,7 +366,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $repo = $em->getRepository('\Entities\Basket');
 
         /* @var $repo \Repositories\BasketRepository */
-        $basket = $repo->findUserBasket($ssel_id, self::$core->getAuthenticatedUser(), true);
+        $basket = $repo->findUserBasket($response['response']['basket']['basket_id'], self::$core->getAuthenticatedUser(), true);
 
         $this->assertTrue($basket instanceof \Entities\Basket);
         $em->remove($basket);

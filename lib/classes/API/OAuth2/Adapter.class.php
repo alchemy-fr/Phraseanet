@@ -170,19 +170,6 @@ class API_OAuth2_Adapter extends OAuth2
 
     /**
      *
-     * @param  string $secret
-     * @param  string $nonce
-     * @return string
-     */
-    protected static function crypt_secret($secret, $nonce)
-    {
-        $registry = registry::get_instance();
-
-        return hash_hmac('sha512', $secret . $nonce, $registry->get('GV_sit'));
-    }
-
-    /**
-     *
      * Implements OAuth2::checkClientCredentials().
      *
      * @param  string  $client_id
@@ -198,9 +185,7 @@ class API_OAuth2_Adapter extends OAuth2
                 return true;
             }
 
-            $crypted = $this->crypt_secret($client_secret, $application->get_nonce());
-
-            return ($result["client_secret"] === $crypted);
+            return ($application->get_client_secret() === $client_secret);
         } catch (Exception $e) {
 
         }

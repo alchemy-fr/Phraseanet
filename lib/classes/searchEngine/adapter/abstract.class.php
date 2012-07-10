@@ -149,7 +149,7 @@ abstract class searchEngine_adapter_abstract
      */
     public function get_per_page()
     {
-        return $this->perPage;
+        return (int) $this->perPage;
     }
 
     /**
@@ -158,7 +158,7 @@ abstract class searchEngine_adapter_abstract
      */
     public function get_total_results()
     {
-        return $this->total_results;
+        return (int) $this->total_results;
     }
 
     /**
@@ -176,7 +176,7 @@ abstract class searchEngine_adapter_abstract
      */
     public function get_current_page()
     {
-        return $this->current_page;
+        return (int) $this->current_page;
     }
 
     /**
@@ -185,7 +185,7 @@ abstract class searchEngine_adapter_abstract
      */
     public function get_offset_start()
     {
-        return $this->offset_start;
+        return (int) $this->offset_start;
     }
 
     /**

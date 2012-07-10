@@ -477,7 +477,7 @@ class Edit extends RecordHelper
         foreach ($request->get('mds') as $rec) {
             try {
                 $record = $databox->get_record($rec['record_id']);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 continue;
             }
 
