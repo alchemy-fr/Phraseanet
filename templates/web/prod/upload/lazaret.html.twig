@@ -262,13 +262,8 @@
                         and user.ACL().has_right_on_base(record.get_base_id(), "candeleterecord") %}
                         <li class="records-subititution span3">
                             <div class="thumbnail">
-                                {% if user.ACL().has_access_to_subdef(record, "preview") %}
-                                    {% set preview_obj = record.get_preview() %}
-                                {% else %}
-                                    {% set preview_obj = record.get_thumbnail() %}
-                                {% endif %}
                                 <div class="record-thumb" style="text-align:center;">
-                                    {{ thumb.format(preview_obj, 260, 180, "", session, false) }}
+                                    {{ thumb.format(record.get_thumbnail(), 260, 180, "", session, false) }}
                                     <input name="record_id" value="{{ record.get_record_id() }}" type="hidden"/>
                                 </div>
                                 <div class="caption">

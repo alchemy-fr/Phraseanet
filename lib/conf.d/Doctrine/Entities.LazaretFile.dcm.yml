@@ -11,6 +11,9 @@ Entities\LazaretFile:
     pathname:
       type: string
       length: 512
+    thumbPathname:
+      type: string
+      length: 512
     originalName:
       type: string
       length: 256

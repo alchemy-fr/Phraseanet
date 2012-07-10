@@ -126,7 +126,10 @@ class API_V1_adapter extends API_V1_Abstract
             'state'          => $task->getState(),
             'pid'            => $task->getPID(),
             'title'          => $task->getTitle(),
-            'last_exec_time' => $task->getLastExecTime() ? $task->getLastExecTime()->format(DATE_ATOM) : null
+            'last_exec_time' => $task->getLastExecTime() ? $task->getLastExecTime()->format(DATE_ATOM) : null,
+            'auto_start'     => ! ! $task->isActive(),
+            'runner'         => $task->getRunner(),
+            'crash_counter'  => $task->getCrashCounter()
         );
     }
 

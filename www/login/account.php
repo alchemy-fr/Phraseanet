@@ -495,7 +495,7 @@ $user = User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox)
                                                     <td colspan="3"></td>
                                                 </tr>
                                                 <tr>
-                                                    <td colspan="3">Notification par email</td>
+                                                    <td colspan="3"><?php echo _('Email notification') ?></td>
                                                 </tr>
                                                 <?php
                                                 $evt_mngr = eventsmanager_broker::getInstance($appbox, $Core);
@@ -701,7 +701,7 @@ $user = User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox)
                                 <thead>
                                     <tr>
                                         <th colspan="7" style="text-align:left;">
-                                            Mes session
+                                            <?php echo _('My sessions') ?>
                                         </th>
                                     </tr>
                                 </thead>
@@ -711,22 +711,22 @@ $user = User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox)
 
                                         </td>
                                         <td>
-                                            Date de connexion
+                                            <?php echo _('Date of connection') ?>
                                         </td>
                                         <td>
-                                            Dernier access
+                                            <?php echo _('Last access') ?>
                                         </td>
                                         <td>
-                                            IP
+                                            <?php echo _('IP adress') ?>
                                         </td>
                                         <td>
-                                            Browser
+                                            <?php echo _('Browser') ?>
                                         </td>
                                         <td>
-                                            ecran
+                                            <?php echo _('Screen') ?>
                                         </td>
                                         <td>
-                                            Session persistante
+                                            <?php echo _('Persistent session') ?>
                                         </td>
                                     </tr>
 
