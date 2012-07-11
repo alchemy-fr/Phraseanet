@@ -367,16 +367,13 @@ class Session_Handler
             throw new Exception_ServiceUnavailable();
         }
 
-        $registry = $this->appbox->get_registry();
-
         $conn = $this->appbox->get_connection();
         $browser = Browser::getInstance();
-
-        $sbases = array();
 
         $this->send_reminders();
 
         $auth->prelog();
+
         if ($this->is_authenticated() && $this->get_usr_id() == $auth->get_user()->get_id()) {
             return $this;
         }
@@ -533,38 +530,31 @@ class Session_Handler
             return $this;
         }
 
-        $Core = bootstrap::getCore();
+        $core = bootstrap::getCore();
 
-        $registry = $Core->getRegistry();
-        $date_two_day = new DateTime('+' . (int) $registry->get('GV_validation_reminder') . ' days');
+        $registry = $core->getRegistry();
 
-        $events_mngr = eventsmanager_broker::getInstance($this->appbox, $Core);
+        $date = new DateTime('+' . (int) $registry->get('GV_validation_reminder') . ' days');
 
-        $sql = 'SELECT v.id as validate_id, v.usr_id, v.ssel_id
-              , s.usr_id as owner, t.value
-            FROM (validate v, ssel s)
-              INNER JOIN tokens t
-                ON (t.datas = s.ssel_id
-                    AND v.usr_id=t.usr_id AND t.type="validate")
-            WHERE expires_on < :expires_on
-            AND ISNULL(last_reminder) AND confirmed="0" AND s.ssel_id = v.ssel_id ';
+        $eventsMngr = eventsmanager_broker::getInstance($this->appbox, $core);
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
-        $stmt->execute(array(':expires_on' => phraseadate::format_mysql($date_two_day)));
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $em = $core->getEntityManager();
+        /* @var $em \Doctrine\ORM\EntityManager */
+        $participantRepo = $em->getRepository('\Entities\ValidationParticipant');
+        /* @var $participantRepo \Repositories\ValidationParticipantRepository */
+        $participants = $participantRepo->findNotConfirmedAndNotRemindedParticipantsByExpireDate($date);
 
-        foreach ($rs as $row) {
-            $params = array(
-                'to'          => $row['usr_id'],
-                'ssel_id'     => $row['ssel_id'],
-                'from'        => $row['owner'],
-                'validate_id' => $row['validate_id'],
-                'url'         => $registry->get('GV_ServerName')
-                . 'lightbox/validate/' . $row['ssel_id'] . '/?LOG=' . $row['value']
-            );
-
-            $events_mngr->trigger('__VALIDATION_REMINDER__', $params);
+        foreach ($participants as $participant) {
+            /* @var $participant \Entities\ValidationParticipant */
+            $validationSession = $participant->getSession();
+            $basketId = $validationSession->getBasket()->getId();
+            $eventsMngr->trigger('__VALIDATION_REMINDER__', array(
+                'to'          => $participant->getUsrId(),
+                'ssel_id'     => $basketId,
+                'from'        => $validationSession->getInitiatorId(),
+                'validate_id' => $validationSession->getId(),
+                'url'         => $registry->get('GV_ServerName') . 'lightbox/validate/' . $basketId . '/'//?LOG=' . $row['value']
+            ));
         }
 
         return $this;

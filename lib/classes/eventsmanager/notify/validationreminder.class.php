@@ -110,13 +110,19 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
                 $mailed = true;
         }
 
-        try {
-            $sql = 'UPDATE validate SET last_reminder=NOW() WHERE id = :validate_id';
-            $stmt = $this->appbox->get_connection()->prepare($sql);
-            $stmt->execute(array(':validate_id' => $params['validate_id']));
-            $stmt->closeCursor();
-        } catch (Exception $e) {
+        $core = \bootstrap::getCore();
 
+        $em = $core->getEntityManager();
+
+        $validationParticipant = $em->getRepository('\Entities\ValidationParticipant')->find($params['to']);
+        /* @var $validationParticipant \Entities\ValidationParticipant */
+
+        if (null !== $validationParticipant) {
+            $validationParticipant->setReminded(new \DateTime('now'));
+
+            $em->persist($validationParticipant);
+
+            $em->flush();
         }
 
         return $this->broker->notify($params['to'], __CLASS__, $datas, $mailed);
