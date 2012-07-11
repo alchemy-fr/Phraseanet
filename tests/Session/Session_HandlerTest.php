@@ -171,50 +171,6 @@ class Session_HandlerTest extends PhraseanetPHPUnitAbstract
         $this->assertNull($this->object->get_ses_id());
     }
 
-    /**
-     * @todo Implement testIsset_postlog().
-     */
-    public function testIsset_postlog()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo Implement testSet_postlog().
-     */
-    public function testSet_postlog()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo Implement testGet_postlog().
-     */
-    public function testGet_postlog()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo Implement testDelete_postlog().
-     */
-    public function testDelete_postlog()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
     public function testSet_session_prefs()
     {
         $datas = array('bla' => 1, 2     => 'boum');
