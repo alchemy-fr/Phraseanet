@@ -35,7 +35,12 @@ body, html {
     .color;
 }
 
+* {
+    font-size: 13px;
+}
+
 a {
+    .cursor;
     .color(@blue);
     text-decoration: none;
     font-size: 13px;
@@ -44,10 +49,6 @@ a {
     &:hover {
         text-decoration: underline;
     }
-}
-
-label {
-    .color(@white);
 }
 
 /******* NAVBAR ***************************************************************/
@@ -62,10 +63,28 @@ label {
                 text-decoration: none;
                 font-size: 13px;
                 &:hover {
-                    .bg(@blue);
-                    .color(@white);
+                    .color(@blue);
                 }
             }
         }
     }
+}
+
+/******* FORM *****************************************************************/
+
+legend {
+    margin-bottom: 15px;
+    .color(@white);
+}
+
+label {
+    .color(@white);
+}
+
+.form-horizontal .control-group {
+    margin-bottom: 10px;
+}
+
+legend + .control-group {
+    margin-top: 10px;
 }
