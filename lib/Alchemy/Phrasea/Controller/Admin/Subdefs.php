@@ -85,8 +85,8 @@ class Subdefs implements ControllerProviderInterface
 
                         $post_sub_ex = explode('_', $post_sub);
 
-                        $group = $post_sub_ex[0];
-                        $name = $post_sub_ex[1];
+                        $group = array_shift($post_sub_ex);
+                        $name = implode('_', $post_sub_ex);
 
                         $class = $request->get($post_sub . '_class');
                         $downloadable = $request->get($post_sub . '_downloadable');

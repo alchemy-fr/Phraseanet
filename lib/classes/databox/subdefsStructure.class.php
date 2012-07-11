@@ -261,13 +261,15 @@ class databox_subdefsStructure implements IteratorAggregate
             . 'subdef[@name="' . $name . '"]'
         );
 
+        $refNode = null;
         if ($nodes->length > 0) {
             for ($i = 0; $i < $nodes->length; $i ++ ) {
+                $refNode = $nodes->item($i)->nextSibling;
                 $dom_group->removeChild($nodes->item($i));
             }
         }
 
-        $dom_group->appendChild($subdef);
+        $dom_group->insertBefore($subdef, $refNode);
 
         $this->databox->saveStructure($dom_struct);
 

@@ -221,7 +221,7 @@ class databox_subdef
                     }
                 }
 
-                $mediatype_obj->registerOption(new \Alchemy\Phrasea\Media\Subdef\OptionType\Multi(_('Target Device'), 'device', $availableDevices, $this->devices));
+                $mediatype_obj->registerOption(new \Alchemy\Phrasea\Media\Subdef\OptionType\Multi(_('Target Device'), 'devices', $availableDevices, $this->devices));
 
                 $subdefTypes[] = $mediatype_obj;
             }
