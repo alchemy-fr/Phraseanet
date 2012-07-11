@@ -547,13 +547,21 @@ class Session_Handler
         foreach ($participants as $participant) {
             /* @var $participant \Entities\ValidationParticipant */
             $validationSession = $participant->getSession();
+            $participantId = $participant->getUsrId();
             $basketId = $validationSession->getBasket()->getId();
+
+            try {
+                $token = \random::getValidationToken($participantId, $basketId);
+            } catch (\Exception_NotFound $e) {
+                continue;
+            }
+
             $eventsMngr->trigger('__VALIDATION_REMINDER__', array(
-                'to'          => $participant->getUsrId(),
+                'to'          => $participantId,
                 'ssel_id'     => $basketId,
                 'from'        => $validationSession->getInitiatorId(),
                 'validate_id' => $validationSession->getId(),
-                'url'         => $registry->get('GV_ServerName') . 'lightbox/validate/' . $basketId . '/'//?LOG=' . $row['value']
+                'url'         => $registry->get('GV_ServerName') . 'lightbox/validate/' . $basketId . '/?LOG=' . $token
             ));
         }
 
