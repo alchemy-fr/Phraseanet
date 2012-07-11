@@ -3,7 +3,7 @@ language: php
 before_script:
   - cp hudson/*.yml config/
   - curl -s http://getcomposer.org/installer | php
-  - php composer.phar install
+  - php composer.phar install --dev
   - sudo apt-get update
   - sudo apt-get install -y xpdf ffmpeg libavcodec-extra-53 openoffice.org-writer unoconv ghostscript gsfonts dcraw ufraw graphicsmagick libgraphicsmagick1-dev libfreetype6-dev libjpeg-dev libgif-dev libtiff-dev libdjvulibre-dev libwmf-dev libmagickcore-dev libmagickwand-dev libpng-dev gettext zlib1g-dev build-essential libfaac-dev libmp3lame0 libx264-dev libvpx-dev libtheora-dev libvorbis-dev gpac
   - mysql -e 'create database ab_test;create database db_test; create database ab_unitTests; create database db_unitTests;'
