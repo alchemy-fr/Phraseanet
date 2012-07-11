@@ -6,7 +6,11 @@ html {
   background-color: #000000;
   color: #ffffff;
 }
+* {
+  font-size: 13px;
+}
 a {
+  cursor: pointer;
   color: #0088cc;
   text-decoration: none;
   font-size: 13px;
@@ -15,9 +19,6 @@ a {
 }
 a:hover {
   text-decoration: underline;
-}
-label {
-  color: #ffffff;
 }
 /******* NAVBAR ***************************************************************/
 #tab-account-cat ul {
@@ -32,6 +33,19 @@ label {
   font-size: 13px;
 }
 #tab-account-cat ul li a:hover {
-  background-color: #0088cc;
+  color: #0088cc;
+}
+/******* FORM *****************************************************************/
+legend {
+  margin-bottom: 15px;
   color: #ffffff;
+}
+label {
+  color: #ffffff;
+}
+.form-horizontal .control-group {
+  margin-bottom: 10px;
+}
+legend + .control-group {
+  margin-top: 10px;
 }
