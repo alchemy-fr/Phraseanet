@@ -41,84 +41,73 @@ class ValidationData extends \Entities\ValidationData implements \Doctrine\ORM\P
         return $this->__isInitialized__;
     }
 
-
+    
     public function getId()
     {
         if ($this->__isInitialized__ === false) {
             return (int) $this->_identifier["id"];
         }
         $this->__load();
-
         return parent::getId();
     }
 
     public function setAgreement($agreement)
     {
         $this->__load();
-
         return parent::setAgreement($agreement);
     }
 
     public function getAgreement()
     {
         $this->__load();
-
         return parent::getAgreement();
     }
 
     public function setNote($note)
     {
         $this->__load();
-
         return parent::setNote($note);
     }
 
     public function getNote()
     {
         $this->__load();
-
         return parent::getNote();
     }
 
     public function setUpdated($updated)
     {
         $this->__load();
-
         return parent::setUpdated($updated);
     }
 
     public function getUpdated()
     {
         $this->__load();
-
         return parent::getUpdated();
     }
 
     public function setParticipant(\Entities\ValidationParticipant $participant)
     {
         $this->__load();
-
         return parent::setParticipant($participant);
     }
 
     public function getParticipant()
     {
         $this->__load();
-
         return parent::getParticipant();
     }
 
     public function setBasketElement(\Entities\BasketElement $basketElement)
     {
         $this->__load();
-
         return parent::setBasketElement($basketElement);
     }
 
     public function getBasketElement()
     {
         $this->__load();
-
         return parent::getBasketElement();
     }
 
@@ -142,6 +131,6 @@ class ValidationData extends \Entities\ValidationData implements \Doctrine\ORM\P
             }
             unset($this->_entityPersister, $this->_identifier);
         }
-
+        
     }
 }

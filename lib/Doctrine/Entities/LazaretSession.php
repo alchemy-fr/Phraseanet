@@ -161,4 +161,14 @@ class LazaretSession
 
         return $this;
     }
+
+    /**
+     * Get usr_id
+     *
+     * @return integer 
+     */
+    public function getUsrId()
+    {
+        return $this->usr_id;
+    }
 }

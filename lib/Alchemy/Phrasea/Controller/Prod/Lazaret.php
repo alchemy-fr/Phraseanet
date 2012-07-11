@@ -204,7 +204,7 @@ class Lazaret implements ControllerProviderInterface
             'base_id'  => $lazaretFile->getBaseId(),
             'created'  => $lazaretFile->getCreated()->format(\DateTime::ATOM),
             'updated'  => $lazaretFile->getUpdated()->format(\DateTime::ATOM),
-            'pathname' => $lazaretFile->getPathname(),
+            'pathname' => $app['Core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getFilename(),
             'sha256'   => $lazaretFile->getSha256(),
             'uuid'     => $lazaretFile->getUuid(),
         );
@@ -249,9 +249,12 @@ class Lazaret implements ControllerProviderInterface
             return self::formatJson($app['Core']['Serializer'], $ret);
         }
 
+        $lazaretFileName = $app['Core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getFilename();
+        $lazaretThumbFileName = $app['Core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getThumbFilename();
+
         try {
             $borderFile = Border\File::buildFromPathfile(
-                    $lazaretFile->getPathname(), $lazaretFile->getCollection(), $lazaretFile->getOriginalName()
+                    $lazaretFileName, $lazaretFile->getCollection(), $lazaretFile->getOriginalName()
             );
 
             $record = null;
@@ -317,8 +320,8 @@ class Lazaret implements ControllerProviderInterface
         }
 
         try {
-            $app['Core']['file-system']->remove($lazaretFile->getPathname());
-            $app['Core']['file-system']->remove($lazaretFile->getThumbPathname());
+            $app['Core']['file-system']->remove($lazaretFileName);
+            $app['Core']['file-system']->remove($lazaretThumbFileName);
         } catch (IOException $e) {
 
         }
@@ -349,6 +352,9 @@ class Lazaret implements ControllerProviderInterface
             return self::formatJson($app['Core']['Serializer'], $ret);
         }
 
+        $lazaretFileName = $app['Core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getFilename();
+        $lazaretThumbFileName = $app['Core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getThumbFilename();
+
         try {
             $app['Core']['EM']->remove($lazaretFile);
             $app['Core']['EM']->flush();
@@ -359,8 +365,8 @@ class Lazaret implements ControllerProviderInterface
         }
 
         try {
-            $app['Core']['file-system']->remove($lazaretFile->getPathname());
-            $app['Core']['file-system']->remove($lazaretFile->getThumbPathname());
+            $app['Core']['file-system']->remove($lazaretFileName);
+            $app['Core']['file-system']->remove($lazaretThumbFileName);
         } catch (IOException $e) {
 
         }
@@ -415,8 +421,11 @@ class Lazaret implements ControllerProviderInterface
             return self::formatJson($app['Core']['Serializer'], $ret);
         }
 
+        $lazaretFileName = $app['Core']['Registry']->get('GV_RootPath').'tmp/lazaret/'.$lazaretFile->getFilename();
+        $lazaretThumbFileName = $app['Core']['Registry']->get('GV_RootPath').'tmp/lazaret/'.$lazaretFile->getThumbFilename();
+
         try {
-            $media = $app['Core']['mediavorus']->guess(new \SplFileInfo($lazaretFile->getPathname()));
+            $media = $app['Core']['mediavorus']->guess(new \SplFileInfo($lazaretFileName));
 
             $record = $lazaretFile->getCollection()->get_databox()->get_record($recordId);
             $record->substitute_subdef('document', $media);
@@ -431,8 +440,8 @@ class Lazaret implements ControllerProviderInterface
         }
 
         try {
-            $app['Core']['file-system']->remove($lazaretFile->getPathname());
-            $app['Core']['file-system']->remove($lazaretFile->getThumbPathname());
+            $app['Core']['file-system']->remove($lazaretFileName);
+            $app['Core']['file-system']->remove($lazaretThumbFileName);
         } catch (IOException $e) {
 
         }
@@ -459,10 +468,10 @@ class Lazaret implements ControllerProviderInterface
             return new Response(null, 404);
         }
 
-        $lazaretPath = __DIR__ . '/../../../../../tmp/lazaret/';
+        $lazaretThumbFileName = $app['Core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getThumbFilename();
 
         $response = \set_export::stream_file(
-                $lazaretPath . $lazaretFile->getThumbPathname(), $lazaretFile->getOriginalName(), 'image/jpeg', 'inline'
+                $lazaretThumbFileName, $lazaretFile->getOriginalName(), 'image/jpeg', 'inline'
         );
 
         return $response;

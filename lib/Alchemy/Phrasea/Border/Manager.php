@@ -444,8 +444,8 @@ class Manager
 
         $lazaretFile->setForced($forced);
 
-        $lazaretFile->setPathname(pathinfo($lazaretPathname, PATHINFO_BASENAME));
-        $lazaretFile->setThumbPathName(pathinfo($lazaretPathnameThumb, PATHINFO_BASENAME));
+        $lazaretFile->setFilename(pathinfo($lazaretPathname, PATHINFO_BASENAME));
+        $lazaretFile->setThumbFileName(pathinfo($lazaretPathnameThumb, PATHINFO_BASENAME));
 
         $lazaretFile->setSession($session);
 

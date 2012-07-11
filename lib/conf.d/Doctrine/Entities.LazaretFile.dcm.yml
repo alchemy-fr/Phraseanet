@@ -8,10 +8,10 @@ Entities\LazaretFile:
       generator:
         strategy: AUTO
   fields:
-    pathname:
+    filename:
       type: string
       length: 512
-    thumbPathname:
+    thumbFilename:
       type: string
       length: 512
     originalName:
