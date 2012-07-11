@@ -41,84 +41,73 @@ class LazaretAttribute extends \Entities\LazaretAttribute implements \Doctrine\O
         return $this->__isInitialized__;
     }
 
-
+    
     public function getId()
     {
         if ($this->__isInitialized__ === false) {
             return (int) $this->_identifier["id"];
         }
         $this->__load();
-
         return parent::getId();
     }
 
     public function setName($name)
     {
         $this->__load();
-
         return parent::setName($name);
     }
 
     public function getName()
     {
         $this->__load();
-
         return parent::getName();
     }
 
     public function setValue($value)
     {
         $this->__load();
-
         return parent::setValue($value);
     }
 
     public function getValue()
     {
         $this->__load();
-
         return parent::getValue();
     }
 
     public function setCreated($created)
     {
         $this->__load();
-
         return parent::setCreated($created);
     }
 
     public function getCreated()
     {
         $this->__load();
-
         return parent::getCreated();
     }
 
     public function setUpdated($updated)
     {
         $this->__load();
-
         return parent::setUpdated($updated);
     }
 
     public function getUpdated()
     {
         $this->__load();
-
         return parent::getUpdated();
     }
 
     public function setLazaretFile(\Entities\LazaretFile $lazaretFile = NULL)
     {
         $this->__load();
-
         return parent::setLazaretFile($lazaretFile);
     }
 
     public function getLazaretFile()
     {
         $this->__load();
-
         return parent::getLazaretFile();
     }
 
@@ -142,6 +131,6 @@ class LazaretAttribute extends \Entities\LazaretAttribute implements \Doctrine\O
             }
             unset($this->_entityPersister, $this->_identifier);
         }
-
+        
     }
 }

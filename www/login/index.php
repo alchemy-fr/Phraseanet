@@ -30,7 +30,7 @@ $parm = $request->get_parms('lng', 'error', 'confirm', 'badlog', 'postlog', 'usr
 if ($parm['postlog']) {
     $session->set_postlog(true);
 
-    return phrasea::redirect("/login/index.php?redirect=" . $parm['redirect']);
+    return phrasea::redirect("/login/logout.php?redirect=" . $parm['redirect']);
 }
 
 if ( ! $session->isset_postlog() && $session->is_authenticated() && $parm['error'] != 'no-connection') {

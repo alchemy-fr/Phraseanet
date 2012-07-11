@@ -41,8 +41,8 @@ class LoadOneFile extends \PhraseaFixture\AbstractWZ implements FixtureInterface
 
         $lazaretFile = new \Entities\LazaretFile();
         $lazaretFile->setOriginalName('test');
-        $lazaretFile->setPathname('test\test');
-        $lazaretFile->setThumbPathname('test\thumb_test');
+        $lazaretFile->setFilename('test.jpg');
+        $lazaretFile->setThumbFilename('thumb_test.jpg');
         $lazaretFile->setBaseId($this->collectionId);
         $lazaretFile->setSession($lazaretSession);
         $lazaretFile->setSha256('3191af52748620e0d0da50a7b8020e118bd8b8a0845120b0bb');

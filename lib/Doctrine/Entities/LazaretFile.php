@@ -88,29 +88,6 @@ class LazaretFile
     }
 
     /**
-     * Set pathname
-     *
-     * @param  string      $pathname
-     * @return LazaretFile
-     */
-    public function setPathname($pathname)
-    {
-        $this->pathname = $pathname;
-
-        return $this;
-    }
-
-    /**
-     * Get pathname
-     *
-     * @return string
-     */
-    public function getPathname()
-    {
-        return $this->pathname;
-    }
-
-    /**
      * Set base_id
      *
      * @param  integer     $baseId
@@ -378,13 +355,58 @@ class LazaretFile
         return $ret;
     }
 
-    public function getThumbPathname()
+    /**
+     * @var string $filename
+     */
+    private $filename;
+
+    /**
+     * @var string $thumbFilename
+     */
+    private $thumbFilename;
+
+
+    /**
+     * Set filename
+     *
+     * @param string $filename
+     * @return LazaretFile
+     */
+    public function setFilename($filename)
     {
-        return $this->thumbPathname;
+        $this->filename = $filename;
+        return $this;
     }
 
-    public function setThumbPathname($thumbPathname)
+    /**
+     * Get filename
+     *
+     * @return string
+     */
+    public function getFilename()
     {
-        $this->thumbPathname = $thumbPathname;
+        return $this->filename;
+    }
+
+    /**
+     * Set thumbFilename
+     *
+     * @param string $thumbFilename
+     * @return LazaretFile
+     */
+    public function setThumbFilename($thumbFilename)
+    {
+        $this->thumbFilename = $thumbFilename;
+        return $this;
+    }
+
+    /**
+     * Get thumbFilename
+     *
+     * @return string
+     */
+    public function getThumbFilename()
+    {
+        return $this->thumbFilename;
     }
 }

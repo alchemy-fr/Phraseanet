@@ -84,7 +84,7 @@ class patch_370a7 implements patchInterface
             try {
                 foreach ($rs as $row) {
 
-                    $filePath = __DIR__ . '/../../../tmp/lazaret/' . $row['filepath'];
+                    $filePath = $Core->getRegistry()->get('GV_RootPath') . 'tmp/lazaret/' . $row['filepath'];
 
                     if (file_exists($filePath)) {
 
@@ -93,12 +93,12 @@ class patch_370a7 implements patchInterface
                         $spec->setResizeMode(ImageSpec::RESIZE_MODE_INBOUND_FIXEDRATIO);
                         $spec->setDimensions(375, 275);
 
-                        $thumbPass = sprintf("thumb_%s", $filePath);
+                        $thumbPath = $Core->getRegistry()->get('GV_RootPath') . 'tmp/lazaret/' . sprintf("thumb_%s", $row['filepath']);
 
                         try {
                             $Core['media-alchemyst']
                                 ->open($filePath)
-                                ->turnInto($thumbPass, $spec)
+                                ->turnInto($thumbPath, $spec)
                                 ->close();
                         } catch (MediaAlchemystException $e) {
 
@@ -131,8 +131,8 @@ class patch_370a7 implements patchInterface
                         }
 
                         $lazaretFile->setOriginalName($row['filename']);
-                        $lazaretFile->setPathname($row['filepath']);
-                        $lazaretFile->setThumbPathname($thumbPass);
+                        $lazaretFile->setFilename($row['filepath']);
+                        $lazaretFile->setThumbFilename(pathinfo($thumbPath), PATHINFO_BASENAME);
                         $lazaretFile->setCreated(new \DateTime($row['created_on']));
                         $lazaretFile->setSession($lazaretSession);
 

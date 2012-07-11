@@ -378,10 +378,13 @@ class record_preview extends record_adapter
                 );
             }
 
-            if ( ! in_array($row['final'], $tab[$hour][$site][$action][$row['usr_id']]['final']))
-                $tab[$hour][$site][$action][$row['usr_id']]['final'][] =
-                    $row['final'];
-
+            if ( ! in_array($row['final'], $tab[$hour][$site][$action][$row['usr_id']]['final'])) {
+                if($action == 'collection') {
+                    $tab[$hour][$site][$action][$row['usr_id']]['final'][] = phrasea::baseFromColl($this->get_sbas_id(), $row['final']);
+                } else {
+                    $tab[$hour][$site][$action][$row['usr_id']]['final'][] = $row['final'];
+                }
+            }
             if ( ! in_array($row['comment'], $tab[$hour][$site][$action][$row['usr_id']]['comment']))
                 $tab[$hour][$site][$action][$row['usr_id']]['comment'][] =
                     $row['comment'];
