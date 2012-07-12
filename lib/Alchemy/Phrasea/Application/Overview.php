@@ -57,7 +57,7 @@ return call_user_func(
 
                     }
 
-                    $response = \set_export::stream_file($pathOut, $file->get_file(), $file->get_mime());
+                    $response = \set_export::stream_file($pathOut, $file->get_file(), $file->get_mime(), 'inline');
                     $response->setPrivate();
 
                     /* @var $response \Symfony\Component\HttpFoundation\Response */
