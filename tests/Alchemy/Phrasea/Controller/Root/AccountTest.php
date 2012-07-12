@@ -69,9 +69,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         ));
 
         $response = $this->client->getResponse();
-
-        $this->assertTrue($response->isOk());
-
+        $this->assertTrue($response->isRedirect());
         $this->assertEquals('minet', $core->getAUthenticatedUser()->get_lastname());
     }
 }
