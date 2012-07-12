@@ -293,9 +293,8 @@ $jsFlags = '{ ' . $jsFlags . ' }';
                         <div style="width:100%; overflow:hidden">
                             <input type="checkbox" name="ckShowRejected" onClick="return(chgCkShowRejected());" /><span style="white-space:nowrap; overflow:hidden"><?php echo p4string::MakeString(_('thesaurus:: afficher les termes refuses')) /* Afficher les termes refuses */ ?></span>
                         </div>
-                        <div id="TabT0k" onscroll="dosomething()"style="position:absolute; top:20px; bottom:0px; left:0px; right:0px; overflow:scroll; border:2px red solid;">
+                        <div id="TabT0k" style="position:absolute; top:20px; bottom:0px; left:0px; right:0px; overflow:scroll; border:0px #000000 none">
                             <div id="T0" style="position:absolute; top:0px; left:0px;">
-                                <div style='height:900px;'></div>
                             </div>
                         </div>
                     </div>

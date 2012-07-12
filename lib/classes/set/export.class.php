@@ -770,13 +770,13 @@ class set_export extends set_abstract
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public static function stream_file(
-    $file, $exportname, $mime, $disposition = 'attachment')
+    $file, $exportname, $mime, $disposition = 'inline')
     {
         $registry = registry::get_instance();
 
         $response = new Symfony\Component\HttpFoundation\Response();
 
-        $disposition = $disposition != 'attachment' ? ResponseHeaderBag::DISPOSITION_INLINE : ResponseHeaderBag::DISPOSITION_ATTACHMENT;
+        $disposition = $disposition === 'attachment' ? ResponseHeaderBag::DISPOSITION_ATTACHMENT : ResponseHeaderBag::DISPOSITION_INLINE;
         $headerDisposition = $response->headers->makeDisposition($disposition, $exportname);
 
         if (is_file($file)) {
