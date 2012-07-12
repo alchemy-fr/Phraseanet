@@ -74,8 +74,30 @@ if (isset($parm['token']) && isset($parm['form_password']) && isset($parm['form_
     }
 }
 
+$tokenize = $tokenError = false;
+
+if ($parm['token'] !== null) {
+    try {
+         random::helloToken($parm['token']);
+         $tokenize = true;
+    } catch (\Exception_NotFound $e) {
+        $tokenError = true;
+    }
+}
+
 phrasea::headers();
+
+$parameters = array(
+    'parm' => $parm,
+    'tokenize' => $tokenize,
+    'tokenError' => $tokenError,
+);
+
+$Core['Twig']->display('user/forgotpwd.html.twig', $parameters);
+
+return;
 ?>
+
 <html lang="<?php echo $session->get_I18n(); ?>">
     <head>
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
@@ -101,62 +123,57 @@ phrasea::headers();
                     <div xstyle="width:360px;float:right;height:490px;">
                         <div style="margin:40px 25px;float:left;width:880px;">
 <?php
-$tokenize = false;
-if ($parm['token'] !== null) {
-    try {
-        random::helloToken($parm['token']);
-        $tokenize = true;
+
+if ($tokenize) {
+
         ?>
-                                    <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
-                                    <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery.validate.js"></script>
-                                    <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery.validate.password.js"></script>
+            <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
+            <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery.validate.js"></script>
+            <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery.validate.password.js"></script>
 
 
-                                    <script type="text/javascript" >
+            <script type="text/javascript" >
         <?php
-        $rules = 'form_password_confirm:{required:true}';
-        $msg = '
-              form_password_confirm : {equalTo:"' . _('forms::les mots de passe ne correspondent pas') . '"}';
         ?>
-                          $(document).ready(function() {
+            $(document).ready(function() {
 
-                              $.validator.passwordRating.messages = {
-                                  "similar-to-username": "<?php echo _('forms::le mot de passe est trop similaire a l\'identifiant'); ?>",
-                                  "too-short": "<?php echo _('forms::la valeur donnee est trop courte') ?>",
-                                  "very-weak": "<?php echo _('forms::le mot de passe est trop simple') ?>",
-                                  "weak": "<?php echo _('forms::le mot de passe est trop simple') ?>",
-                                  "good": "<?php echo _('forms::le mot de passe est bon') ?>",
-                                  "strong": "<?php echo _('forms::le mot de passe est tres bon') ?>"
-                              }
+                $.validator.passwordRating.messages = {
+                    "similar-to-username": "{<?php echo _('forms::le mot de passe est trop similaire a l\'identifiant'); ?>",
+                    "too-short": "<?php echo _('forms::la valeur donnee est trop courte') ?>",
+                    "very-weak": "<?php echo _('forms::le mot de passe est trop simple') ?>",
+                    "weak": "<?php echo _('forms::le mot de passe est trop simple') ?>",
+                    "good": "<?php echo _('forms::le mot de passe est bon') ?>",
+                    "strong": "<?php echo _('forms::le mot de passe est tres bon') ?>"
+                }
 
-                              $("#password-reset").validate(
-                              {
-                                  rules: {
-        <?php echo $rules ?>
-                                  },
-                                  messages: {
-        <?php echo $msg ?>
-                                  },
-                                  errorPlacement: function(error, element) {
-                                      error.prependTo( element.parent().parent().next().find('.form_alert') );
-                                  }
-                              }
-                          );
+                $("#password-reset").validate(
+                {
+                    rules: {
+        <?php echo 'form_password_confirm:{required:true}' ?>
+                    },
+                    messages: {
+        <?php echo 'form_password_confirm : {equalTo:"' . _('forms::les mots de passe ne correspondent pas') . '"}' ?>
+                    },
+                    errorPlacement: function(error, element) {
+                        error.prependTo( element.parent().parent().next().find('.form_alert') );
+                    }
+                }
+            );
 
-                              $('#form_password').rules("add",{password: "#form_login"});
-                              $('#form_password_confirm').rules("add",{equalTo: "#form_password"});
-                              $("#form_password").valid();
+                $('#form_password').rules("add",{password: "#form_login"});
+                $('#form_password_confirm').rules("add",{equalTo: "#form_password"});
+                $("#form_password").valid();
 
-                          });
-                                    </script>
+            });
+            </script>
 
         <?php
         if ($parm['salt']) {
             ?>
-                                        <div class="notice" style="text-align:center;margin:20px 40px;padding:10px;font-weight:bold;font-size:14px;">
+                                <div class="notice" style="text-align:center;margin:20px 40px;padding:10px;font-weight:bold;font-size:14px;">
             <?php echo _('Pour ameliorer la securite de l\'application, vous devez mettre a jour votre mot de passe.'); ?><br/>
             <?php echo _('Cette tache ne pouvant etre automatisee, merci de bien vouloir la realiser.'); ?>
-                                        </div>
+                                </div>
             <?php
         }
         ?>
@@ -171,7 +188,7 @@ if ($parm['token'] !== null) {
                                                 </td>
                                                 <td style="width:33%;">
                                                     <div class="form_alert">
-                                        <?php echo isset($needed['form_password']) ? $needed['form_password'] : ''; ?>
+                                                        <?php echo isset($needed['form_password']) ? $needed['form_password'] : ''; ?>
                                                         <div class="password-meter">
                                                             <div class="password-meter-message">&nbsp;</div>
                                                             <div class="password-meter-bg">
@@ -191,7 +208,7 @@ if ($parm['token'] !== null) {
                                                 </td>
                                                 <td>
                                                     <div class="form_alert">
-        <?php echo isset($needed['form_password_confirm']) ? $needed['form_password_confirm'] : ''; ?>
+                                                        <?php echo isset($needed['form_password_confirm']) ? $needed['form_password_confirm'] : ''; ?>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -207,44 +224,38 @@ if ($parm['token'] !== null) {
                                             </tr>
                                         </table>
                                     </form>
+                                        <?php
+                                        }
+                                        if ($tokenError) {
+                                                $parm['error'] = 'token';
+                                            }
+                                        if ( ! $tokenize && !$tokenError) {
+                                            echo '<form name="send" action="forgotpwd.php" method="post" style="width:600px;margin:0 auto;">';
 
-                                                        <?php
-                                                    } catch (Exception_NotFound $e) {
-
-                                                    }
-                                                    if ( ! $tokenize) {
-                                                        $parm['error'] = 'token';
-                                                    }
+                                            if ($parm['error'] !== null) {
+                                                switch ($parm['error']) {
+                                                    case 'mailserver':
+                                                        echo '<div style="background:#00a8FF;">' . _('phraseanet::erreur: Echec du serveur mail') . '</div>';
+                                                        break;
+                                                    case 'noaccount':
+                                                        echo '<div style="background:#00a8FF;">' . _('phraseanet::erreur: Le compte n\'a pas ete trouve') . '</div>';
+                                                        break;
+                                                    case 'mail':
+                                                        echo '<div style="background:#00a8FF;">' . _('phraseanet::erreur: Echec du serveur mail') . '</div>';
+                                                        break;
+                                                    case 'token':
+                                                        echo '<div style="background:#00a8FF;">' . _('phraseanet::erreur: l\'url n\'est plus valide') . '</div>';
+                                                        break;
                                                 }
-
-                                                if ( ! $tokenize) {
-                                                    echo '<form name="send" action="forgotpwd.php" method="post" style="width:600px;margin:0 auto;">';
-
-                                                    if ($parm['error'] !== null) {
-                                                        switch ($parm['error']) {
-                                                            case 'mailserver':
-                                                                echo '<div style="background:#00a8FF;">' . _('phraseanet::erreur: Echec du serveur mail') . '</div>';
-                                                                break;
-                                                            case 'noaccount':
-                                                                echo '<div style="background:#00a8FF;">' . _('phraseanet::erreur: Le compte n\'a pas ete trouve') . '</div>';
-                                                                break;
-                                                            case 'mail':
-                                                                echo '<div style="background:#00a8FF;">' . _('phraseanet::erreur: Echec du serveur mail') . '</div>';
-                                                                break;
-                                                            case 'token':
-                                                                echo '<div style="background:#00a8FF;">' . _('phraseanet::erreur: l\'url n\'est plus valide') . '</div>';
-                                                                break;
-                                                        }
-                                                    }
-                                                    if ($parm['sent'] !== null) {
-                                                        switch ($parm['sent']) {
-                                                            case 'ok':
-                                                                echo '<div style="background:#00a8FF;">' . _('phraseanet:: Un email vient de vous etre envoye') . '</div>';
-                                                                break;
-                                                        }
-                                                    }
-                                                    ?>
-
+                                            }
+                                            if ($parm['sent'] !== null) {
+                                                switch ($parm['sent']) {
+                                                    case 'ok':
+                                                        echo '<div style="background:#00a8FF;">' . _('phraseanet:: Un email vient de vous etre envoye') . '</div>';
+                                                        break;
+                                                }
+                                            }
+                                            ?>
                                 <div style="margin-top:20px;font-size:16px;font-weight:bold;">
                                 <?php echo _('login:: Forgot your password') ?>
                                 </div>
@@ -263,7 +274,6 @@ if ($parm['token'] !== null) {
                             }
                             ?>
                         </div>
-
                     </div>
                 </div>
                 <div style="text-align:right;position:relative;margin:18px 10px 0 0;font-size:10px;font-weight:normal;"><span>&copy; Copyright Alchemy 2005-<?php echo date('Y') ?></span></div>
@@ -271,4 +281,3 @@ if ($parm['token'] !== null) {
         </div>
     </body>
 </html>
-
