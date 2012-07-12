@@ -182,6 +182,12 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $lazaretFile = $this->getOneLazaretFile();
 
+        $lazaretFileName = $this->app['Core']->getRegistry()->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getFilename();
+        $lazaretThumbFileName = $this->app['Core']->getRegistry()->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getThumbFilename();
+
+        copy(__DIR__ . '/../../../../testfiles/cestlafete.jpg', $lazaretFileName);
+        copy(__DIR__ . '/../../../../testfiles/cestlafete.jpg', $lazaretThumbFileName);
+
         //mock lazaret Attribute
         $lazaretAttribute = $this->getMock('Entities\LazaretAttribute', array(), array(), '', false);
 
@@ -386,9 +392,15 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->method('getRecordsToSubstitute')
             ->will($this->returnValue(array(self::$records['record_2'], self::$records['record_1'])));
 
+        copy(__DIR__ . '/../../../../testfiles/cestlafete.jpg', __DIR__ . '/../../../../../tmp/lazaret/cestlafete.jpg');
+
         $lazaretFile->expects($this->any())
-            ->method('getPathname')
-            ->will($this->returnValue(__DIR__ . '/../../../../testfiles/test001.CR2'));
+            ->method('getFilename')
+            ->will($this->returnValue('cestlafete.jpg'));
+
+        $lazaretFile->expects($this->any())
+            ->method('getThumbFilename')
+            ->will($this->returnValue('cestlafete.jpg'));
 
         $lazaretFile->expects($this->any())
             ->method('getCollection')
@@ -536,9 +548,15 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $lazaretFile = $this->getMock('Entities\LazaretFile', array(), array(), '', false);
 
+        copy(__DIR__ . '/../../../../testfiles/cestlafete.jpg', __DIR__ . '/../../../../../tmp/lazaret/cestlafete.jpg');
+
         $lazaretFile->expects($this->any())
-            ->method('getThumbPathname')
-            ->will($this->returnValue('../../tests/testfiles/test001.CR2'));
+            ->method('getThumbFilename')
+            ->will($this->returnValue('cestlafete.jpg'));
+
+        $lazaretFile->expects($this->any())
+            ->method('getFilename')
+            ->will($this->returnValue('cestlafete.jpg'));
 
         $id = 1;
 
@@ -587,8 +605,8 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         //The lazaret file
         $lazaretFile = new \Entities\LazaretFile();
         $lazaretFile->setOriginalName('test');
-        $lazaretFile->setPathname(__DIR__ . '/../../../../testfiles/test001.CR2');
-        $lazaretFile->setThumbPathname(__DIR__ . '/../../../../testfiles/test001.CR2');
+        $lazaretFile->setFilename('test001.CR2');
+        $lazaretFile->setThumbFilename('test001.CR2');
         $lazaretFile->setBaseId(self::$collection->get_base_id());
         $lazaretFile->setSession($lazaretSession);
         $lazaretFile->setSha256('3191af52748620e0d0da50a7b8020e118bd8b8a0845120b0bb');

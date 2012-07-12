@@ -186,22 +186,22 @@ class Session_Handler
 
     public function isset_postlog()
     {
-        return $this->storage()->has('postlog');
+        return self::isset_cookie('postlog');
     }
 
-    public function set_postlog($boolean)
+    public function set_postlog()
     {
-        return $this->storage()->set('postlog', $boolean);
+        return self::set_cookie('postlog', '1', 0, false);
     }
 
     public function get_postlog()
     {
-        return $this->storage()->get('postlog');
+        return self::get_cookie('postlog', null);
     }
 
     public function delete_postlog()
     {
-        return $this->storage()->remove('postlog');
+        return self::set_cookie('postlog', '', -5, false);
     }
 
     /**
@@ -403,6 +403,7 @@ class Session_Handler
         }
 
         $this->set_usr_lastconn($conn, $user->get_id());
+        $this->transfer_baskets($user);
         $this->delete_postlog();
 
         $auth->postlog();
@@ -412,61 +413,28 @@ class Session_Handler
         return $this;
     }
 
-    protected function transfer_baskets()
+    protected function transfer_baskets(\User_Adapter $user)
     {
-        $conn = $this->appbox->get_connection();
-        $transferBasks = ($this->isset_postlog() && $this->get_postlog() === true);
+        $Core = \bootstrap::getCore();
 
-        if ( ! $transferBasks)
-            self::set_cookie('last_act', '', -400000, true);
-        if ($transferBasks && Session_Handler::isset_cookie('invite-usr_id')) {
-            $basks = array();
+        $transferBasks = ($this->isset_postlog() && $this->get_postlog() == '1');
+        if ($transferBasks && $user->is_guest() == false && Session_Handler::isset_cookie('invite-usr_id')) {
+
             $oldusr = self::get_cookie('invite-usr_id');
 
-            if ($oldusr == $this->get_usr_id()) {
+            if ($oldusr == $user->get_id()) {
                 return $this;
             }
 
-            $sql = 'SELECT sselcont_id, s.ssel_id
-          FROM sselcont c, ssel s
-          WHERE s.usr_id = :usr_id
-            AND s.ssel_id = c.ssel_id';
+            $repo = $Core['EM']->getRepository('Entities\Basket');
+            $baskets = $repo->findBy(array('usr_id' => $oldusr));
 
-            $stmt = $conn->prepare($sql);
-            $stmt->execute(array(':usr_id' => $this->get_usr_id()));
-            $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-
-            $sql = 'UPDATE ssel set usr_id = :usr_id WHERE ssel_id = :ssel_id AND usr_id = :old_usr_id';
-            $stmt = $conn->prepare($sql);
-
-            foreach ($rs as $row) {
-                $stmt->execute(array(':usr_id'     => $this->get_usr_id(), ':ssel_id'    => $row['ssel_id'], ':old_usr_id' => $oldusr));
+            foreach ($baskets as $basket) {
+                $basket->setUsrId($user->get_id());
+                $Core['EM']->persist($basket);
             }
-            $stmt->closeCursor();
 
-            $sql = 'DELETE FROM ssel WHERE usr_id = :old_usr_id';
-            $stmt = $conn->prepare($sql);
-            $stmt->execute(array(':old_usr_id' => $oldusr));
-            $stmt->closeCursor();
-
-            $sql = 'UPDATE dsel SET usr_id = :usr_id WHERE usr_id = :old_usr_id';
-            $stmt = $conn->prepare($sql);
-            $stmt->execute(array(':usr_id'     => $this->get_usr_id(), ':old_usr_id' => $oldusr));
-            $stmt->closeCursor();
-
-            $sql = 'DELETE FROM usr WHERE usr_id = :old_usr_id';
-            $stmt = $conn->prepare($sql);
-            $stmt->execute(array(':old_usr_id' => $oldusr));
-            $stmt->closeCursor();
-            $sql = 'DELETE FROM basusr WHERE usr_id = :old_usr_id';
-            $stmt = $conn->prepare($sql);
-            $stmt->execute(array(':old_usr_id' => $oldusr));
-            $stmt->closeCursor();
-            $sql = 'DELETE FROM sbasusr WHERE usr_id = :old_usr_id';
-            $stmt = $conn->prepare($sql);
-            $stmt->execute(array(':old_usr_id' => $oldusr));
-            $stmt->closeCursor();
+            $Core['EM']->flush();
         }
 
         return $this;

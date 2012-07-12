@@ -88,6 +88,7 @@ class Session_Authentication_Guest implements Session_Authentication_Interface
      */
     public function postlog()
     {
+        \Session_Handler::set_cookie('invite-usr_id', $this->user->get_id(), 0, true);
         return $this;
     }
 }

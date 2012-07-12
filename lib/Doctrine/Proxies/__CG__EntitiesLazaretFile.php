@@ -41,175 +41,176 @@ class LazaretFile extends \Entities\LazaretFile implements \Doctrine\ORM\Proxy\P
         return $this->__isInitialized__;
     }
 
-
+    
     public function getId()
     {
         if ($this->__isInitialized__ === false) {
             return (int) $this->_identifier["id"];
         }
         $this->__load();
-
         return parent::getId();
-    }
-
-    public function setPathname($pathname)
-    {
-        $this->__load();
-
-        return parent::setPathname($pathname);
-    }
-
-    public function getPathname()
-    {
-        $this->__load();
-
-        return parent::getPathname();
     }
 
     public function setBaseId($baseId)
     {
         $this->__load();
-
         return parent::setBaseId($baseId);
     }
 
     public function getBaseId()
     {
         $this->__load();
-
         return parent::getBaseId();
     }
 
     public function setUuid($uuid)
     {
         $this->__load();
-
         return parent::setUuid($uuid);
     }
 
     public function getUuid()
     {
         $this->__load();
-
         return parent::getUuid();
     }
 
     public function setSha256($sha256)
     {
         $this->__load();
-
         return parent::setSha256($sha256);
     }
 
     public function getSha256()
     {
         $this->__load();
-
         return parent::getSha256();
     }
 
     public function setCreated($created)
     {
         $this->__load();
-
         return parent::setCreated($created);
     }
 
     public function getCreated()
     {
         $this->__load();
-
         return parent::getCreated();
     }
 
     public function setUpdated($updated)
     {
         $this->__load();
-
         return parent::setUpdated($updated);
     }
 
     public function getUpdated()
     {
         $this->__load();
-
         return parent::getUpdated();
     }
 
     public function addLazaretAttribute(\Entities\LazaretAttribute $attributes)
     {
         $this->__load();
-
         return parent::addLazaretAttribute($attributes);
     }
 
     public function getAttributes()
     {
         $this->__load();
-
         return parent::getAttributes();
     }
 
     public function setSession(\Entities\LazaretSession $session = NULL)
     {
         $this->__load();
-
         return parent::setSession($session);
     }
 
     public function getSession()
     {
         $this->__load();
-
         return parent::getSession();
     }
 
     public function setOriginalName($originalName)
     {
         $this->__load();
-
         return parent::setOriginalName($originalName);
     }
 
     public function getOriginalName()
     {
         $this->__load();
-
         return parent::getOriginalName();
     }
 
     public function addLazaretCheck(\Entities\LazaretCheck $checks)
     {
         $this->__load();
-
         return parent::addLazaretCheck($checks);
     }
 
     public function getChecks()
     {
         $this->__load();
-
         return parent::getChecks();
     }
 
     public function setForced($forced)
     {
         $this->__load();
-
         return parent::setForced($forced);
     }
 
     public function getForced()
     {
         $this->__load();
-
         return parent::getForced();
+    }
+
+    public function getCollection()
+    {
+        $this->__load();
+        return parent::getCollection();
+    }
+
+    public function getRecordsToSubstitute()
+    {
+        $this->__load();
+        return parent::getRecordsToSubstitute();
+    }
+
+    public function setFilename($filename)
+    {
+        $this->__load();
+        return parent::setFilename($filename);
+    }
+
+    public function getFilename()
+    {
+        $this->__load();
+        return parent::getFilename();
+    }
+
+    public function setThumbFilename($thumbFilename)
+    {
+        $this->__load();
+        return parent::setThumbFilename($thumbFilename);
+    }
+
+    public function getThumbFilename()
+    {
+        $this->__load();
+        return parent::getThumbFilename();
     }
 
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'id', 'pathname', 'originalName', 'base_id', 'uuid', 'sha256', 'forced', 'created', 'updated', 'attributes', 'checks', 'session');
+        return array('__isInitialized__', 'id', 'filename', 'thumbFilename', 'originalName', 'base_id', 'uuid', 'sha256', 'forced', 'created', 'updated', 'attributes', 'checks', 'session');
     }
 
     public function __clone()
@@ -226,6 +227,6 @@ class LazaretFile extends \Entities\LazaretFile implements \Doctrine\ORM\Proxy\P
             }
             unset($this->_entityPersister, $this->_identifier);
         }
-
+        
     }
 }
