@@ -10,14 +10,14 @@
             $(document).ready(function(){
 
                 var trans = {
-                    'confirm_delete' : "<?php echo _('etes vous sur de vouloir supprimer cette application'); ?>"
-                    ,'yes' : "<?php echo _('oui'); ?>"
-                    ,'no' : "<?php echo _('non'); ?>"
+                    'confirm_delete' : "{% trans 'etes vous sur de vouloir supprimer cette application' %}"
+                    ,'yes' : "{% trans 'oui' %}"
+                    ,'no' : "{% trans 'non' %}"
                 }
                 $( "#tab-account-cat").tabs({
                     ajaxOptions: {
                         error: function( xhr, status, index, anchor ) {
-                            $( anchor.hash ).html("<?php echo _('Erreur lors du chargement') ?>");
+                            $( anchor.hash ).html("<{% trans 'Erreur lors du chargement' %}");
                         }
                     }
                 });
@@ -138,7 +138,7 @@
                         var revoke = 1;
                         var button_class = "authorize";
                         var old_class ="revoke";
-                        var string  = "<?php echo _('Authoriser l\'access'); ?>";
+                        var string  = "{% trans 'Authoriser l\'access' %}";
                     }
 
                     if ($(this).hasClass("authorize"))
@@ -146,7 +146,7 @@
                         var revoke = 0;
                         var button_class = "revoke";
                         var old_class ="authorize";
-                        var string  = "<?php echo _('Revoquer l\'access'); ?>";
+                        var string  = "{% trans 'Revoquer l\'access' %}";
                     }
 
                     var acc_id = $(this).attr("value");
