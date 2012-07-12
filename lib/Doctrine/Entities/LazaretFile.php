@@ -13,16 +13,6 @@ class LazaretFile
     private $id;
 
     /**
-     * @var string $pathname
-     */
-    private $pathname;
-
-    /**
-     * @var string $thumbPathname
-     */
-    private $thumbPathname;
-
-    /**
      * @var integer $base_id
      */
     private $base_id;
