@@ -17,7 +17,7 @@
                 $( "#tab-account-cat").tabs({
                     ajaxOptions: {
                         error: function( xhr, status, index, anchor ) {
-                            $( anchor.hash ).html("<{% trans 'Erreur lors du chargement' %}");
+                            $( anchor.hash ).html("{% trans 'Erreur lors du chargement' %}");
                         }
                     }
                 });
@@ -266,7 +266,7 @@
                             <table>
                                 <tr valign="top">
                                     <td style="width: 98%">
-                                        {% if notice != '' %}
+                                        {% if notice | trim != '' %}
                                             <div class="notice alert alert-error">{{ notice }}</div>
                                         {% endif %}
                                         <form name="account" id="account" class="form-horizontal" action="/login/account.php" method="post">
@@ -483,50 +483,58 @@
                                         <td  width="15px" style="width: 15px">&nbsp;</td>
                                         <td  style="width: 180px;">&nbsp;</td>
                                     </tr>
-                                    {% for sbasId, baseIsnc in inscriptions %}
-                                        {% if baseIsnc['CollsRegistered'] or baseInsc['CollsRefuse'] or baseInsc['CollsWait'] or baseInsc['CollsIntime'] or baseInsc['CollsOuttime'] or baseInsc['CollsNonactif'] or baseInsc['CollsCGU'] or baseInsc['Colls'] %}
+                                    {% for sbasId, baseInsc in inscriptions %}
+                                        {% if baseInsc['CollsRegistered'] or baseInsc['CollsRefuse'] or baseInsc['CollsWait'] or baseInsc['CollsIntime'] or baseInsc['CollsOuttime'] or baseInsc['CollsNonactif'] or baseInsc['CollsCGU'] or baseInsc['Colls'] %}
                                             <tr>
-                                                <td colspan="3" style="text-align: center;"><h3>{{ sbasId |sbas_names }}</h3></td>
+                                                <td colspan="3" style="text-align: center;"><h3>{{ sbasId | sbas_names }}</h3></td>
                                             </tr>
                                         {% endif %}
 
-                                        {% if baseInsc['CollsRegistered'] %}
-                                            {% for collId, isTrue in baseInsc['CollsRegistered'] %}
-                                                {{ base_id == (sbasId |base_from_coll(collId)) }}
-                                                <tr>
-                                                    <td colspan="3" style="text-align:center;">
-                                                        {% trans 'login::register: acces authorise sur la collection ' %}{{ sbasId |sbas_names }}
-                                                        {% if (isTrue |trim) != '' %}
-                                                            <a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas={{sbasId}}&col='{{collId}}">{% trans 'login::register::CGU: lire les CGU' %}</a>
-                                                        {% endif %}
-                                                    </td>
-                                                </tr>
+                                        {% if baseInsc['CollsRegistered'] is not none %}
+                                            {% for base in  baseInsc['CollsRegistered']%}
+                                                {% for collId, isTrue in base %}
+                                                    {{ base_id == sbasId |base_from_coll(collId) }}
+                                                    <tr>
+                                                        <td colspan="3" style="text-align:center;">
+                                                            {% trans 'login::register: acces authorise sur la collection ' %}{{ sbasId |sbas_names }}
+                                                            {% if isTrue | trim != '' %}
+                                                                <a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas={{sbasId}}&col='{{collId}}">{% trans 'login::register::CGU: lire les CGU' %}</a>
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
                                             {% endfor %}
-                                            <tr style="height: 5px;"><td></td></tr>
+                                            <tr style="height: 5px;">
+                                                <td>
+                                                </td>
+                                            </tr>
                                         {% endif %}
 
                                         {% if baseInsc['CollsRefuse'] %}
                                             {% for collId, isTrue in baseInsc['CollsRefuse'] %}
-                                                {{ base_id == (sbasId |base_from_coll(collId)) }}
+                                                {{ base_id == sbasId |base_from_coll(collId) }}
                                                 <tr>
                                                     <td colspan="3" style="text-align: center;">
                                                         <span style="color: red;">{% trans 'login::register: acces refuse sur la collection ' %}{{ sbasId |sbas_names }}</span>
-                                                        {% if (isTrue |trim) != '' %}
+                                                        {% if isTrue | trim != '' %}
                                                             <a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas={{sbasId}}&col='{{collId}}">{% trans 'login::register::CGU: lire les CGU' %}</a>
                                                         {% endif %}
                                                     </td>
                                                 </tr>
                                             {% endfor %}
-                                            <tr style="height: 5px;"><td></td></tr>
+                                            <tr style="height: 5px;">
+                                                <td>
+                                                </td>
+                                            </tr>
                                         {% endif %}
 
                                         {% if baseInsc['CollsWait'] %}
                                             {% for collId, isTrue in baseInsc['CollsWait'] %}
-                                                {{ base_id == (sbasId |base_from_coll(collId)) }}
+                                                {{ base_id == sbasId |base_from_coll(collId) }}
                                                 <tr>
                                                     <td colspan="3" style="text-align: center;">
                                                         <span style="color: orange;">{% trans 'login::register: en attente d\'acces sur' %} {{ sbasId |sbas_names }}</span>
-                                                        {% if (isTrue |trim) != '' %}
+                                                        {% if isTrue | trim != '' %}
                                                             <a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas={{sbasId}}&col='{{collId}}">{% trans 'login::register::CGU: lire les CGU' %}</a>
                                                         {% endif %}
                                                     </td>
@@ -537,11 +545,11 @@
 
                                         {% if baseInsc['CollsIntime'] %}
                                             {% for collId, isTrue in baseInsc['CollsIntime'] %}
-                                                {{ base_id == (sbasId |base_from_coll(collId)) }}
+                                                {{ base_id == sbasId |base_from_coll(collId) }}
                                                 <tr>
                                                     <td colspan="3" style="text-align: center;">
                                                         <span>{% trans 'login::register: acces temporaire sur' %} {{ sbasId |sbas_names }}</span>
-                                                        {% if (isTrue |trim) != '' %}
+                                                        {% if isTrue |trim != '' %}
                                                             <a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas={{sbasId}}&col='{{collId}}">{% trans 'login::register::CGU: lire les CGU' %}</a>
                                                         {% endif %}
                                                     </td>
@@ -552,11 +560,11 @@
 
                                         {% if baseInsc['CollsOuttime'] %}
                                             {% for collId, isTrue in baseInsc['CollsOuttime'] %}
-                                                {{ base_id == (sbasId |base_from_coll(collId)) }}
+                                                {{ base_id == sbasId |base_from_coll(collId) }}
                                                 <tr>
                                                     <td colspan="3" style="text-align: center;">
                                                         <span style="color:red;">{% trans 'login::register: acces temporaire termine sur ' %}{{ sbasId |sbas_names }}</span>
-                                                        {% if (isTrue |trim) != '' %}
+                                                        {% if isTrue |trim != '' %}
                                                             <a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas={{sbasId}}&col='{{collId}}">{% trans 'login::register::CGU: lire les CGU' %}</a>
                                                         {% endif %}
                                                     </td>
@@ -571,7 +579,7 @@
                                                 <tr>
                                                     <td colspan="3" style="text-align: center;">
                                                         <span style="color:red;">{% trans 'login::register: acces supendu sur' %} {{ sbasId |sbas_names }}</span>
-                                                        {% if (isTrue |trim) != '' %}
+                                                        {% if isTrue |trim != '' %}
                                                             <a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas={{sbasId}}&col='{{collId}}">{% trans 'login::register::CGU: lire les CGU' %}</a>
                                                         {% endif %}
                                                     </td>
@@ -592,7 +600,7 @@
                                                     </tr>
                                                 {% endif %}
                                                 {% for collId, collName in baseInsc['Colls'] %}
-                                                    {{ base_id == (sbasId |base_from_coll(collId)) }}
+                                                    {{ base_id == sbasId |base_from_coll(collId) }}
                                                     <tr>
                                                         <td style="text-align: right;">{{ collName }}</td>
                                                         <td></td>
@@ -605,7 +613,7 @@
                                             {% endif %}
                                             {% if baseInsc['CollsCGU'] %}
                                                 {% for collId, collDesc in baseInsc['CollsCGU'] %}
-                                                    {{ base_id == (sbasId |base_from_coll(collId)) }}
+                                                    {{ base_id == sbasId |base_from_coll(collId) }}
                                                     <tr>
                                                         <td colspan="3" style="text-align: center;"><hr style="width: 80%"/></td>
                                                     </tr>
