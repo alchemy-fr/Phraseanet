@@ -127,7 +127,7 @@ class Account implements ControllerProviderInterface
                 break;
         }
 
-        return new Response($app['Core']['Twig']->display('user/account.html.twig', array(
+        return new Response($app['Core']['Twig']->render('user/account.html.twig', array(
                     'geonames'      => new \geonames(),
                     'user'          => $user,
                     'notice'        => $notice,
