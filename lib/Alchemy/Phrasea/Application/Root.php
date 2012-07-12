@@ -61,16 +61,6 @@ return call_user_func(function() {
             $app->mount('/feeds/', new Controller\RSSFeeds());
             $app->mount('/account/', new Controller\Account());
 
-            $app->error(function (\Exception $e, $code) use ($app) {
-
-                    if ($e instanceof \Exception_Forbidden) {
-                        $code = 403;
-                    } else {
-                        return new Response(Response::$statusTexts[500], 500);
-                    }
-                });
-
-
             return $app;
         }
 );
