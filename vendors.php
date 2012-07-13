@@ -21,7 +21,7 @@ $composer = __DIR__ . '/composer.phar';
 if ( ! file_exists($composer)) {
     system('curl -s http://getcomposer.org/installer | php');
     system('chmod +x ' . $composer);
-    system($composer . ' install');
+    system($composer . ' install --dev');
 }
 
 if ( ! is_executable($composer)) {
@@ -29,7 +29,7 @@ if ( ! is_executable($composer)) {
 }
 
 system($composer . ' self-update');
-system($composer . ' install');
+system($composer . ' install --dev');
 
 system('git submodule init');
 system('git submodule update');

@@ -29,11 +29,11 @@ $composer = __DIR__ . '/composer.phar';
 
 if ( ! file_exists($composer)) {
     file_put_contents($composer, file_get_contents('http://getcomposer.org/installer'), LOCK_EX);
-    system($phpDir . 'php ' . $composer . ' install');
+    system($phpDir . 'php ' . $composer . ' install --dev');
 }
 
 system($phpDir . 'php ' . $composer . ' self-update');
-system($phpDir . 'php ' . $composer . ' install');
+system($phpDir . 'php ' . $composer . ' install --dev');
 
 system($gitDir . 'git submodule init');
 system($gitDir . 'git submodule update');
