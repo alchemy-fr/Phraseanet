@@ -38,7 +38,7 @@ class Developers implements ControllerProviderInterface
          *
          * name         : list_dev_apps
          *
-         * description  : Display form to create a new account
+         * description  : List all user applications
          *
          * method       : GET
          *
@@ -56,7 +56,7 @@ class Developers implements ControllerProviderInterface
          *
          * name         : form_dev_app
          *
-         * description  : Display form to create a new account
+         * description  : Display form to create a new user application
          *
          * method       : GET
          *
@@ -72,7 +72,7 @@ class Developers implements ControllerProviderInterface
          *
          * name         : create_dev_app
          *
-         * description  : Display form to create a new account
+         * description  : POST request to create a new user app
          *
          * method       : POST
          *
@@ -89,7 +89,7 @@ class Developers implements ControllerProviderInterface
          *
          * name         : get_dev_app
          *
-         * description  : Display form to create a new account
+         * description  : Get application information
          *
          * method       : GET
          *
@@ -119,12 +119,12 @@ class Developers implements ControllerProviderInterface
             ->bind('delete_dev_app');
 
         /**
-         * Authorize application to use a grant password type, which allow end user to
-         * authenticate himself with their credentials (login/password)
+         * Allow authentification paswword grant method
          *
          * name         : grant_password_auth
          *
-         * description  : Display form to create a new account
+         * description  : Authorize application to use a grant password type, which allow end user to
+         *                authenticate himself with their credentials (login/password)
          *
          * method       : POST
          *
@@ -154,11 +154,11 @@ class Developers implements ControllerProviderInterface
             ->bind('renew_access_token');
 
         /**
-         * Renew access token
+         * Update application callback
          *
          * name         : renew_app_callback
          *
-         * description  : Regenerate an access token for the current app linked to the authenticated user
+         * description  : Change callback used by application
          *
          * method       : POST
          *
