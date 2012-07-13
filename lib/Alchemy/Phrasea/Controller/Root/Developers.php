@@ -36,7 +36,7 @@ class Developers implements ControllerProviderInterface
         /**
          * List of apps created by the user
          *
-         * name         : list_dev_apps
+         * name         : developers_applications
          *
          * description  : List all user applications
          *
@@ -47,14 +47,14 @@ class Developers implements ControllerProviderInterface
          * return       : HTML Response
          */
         $controllers->get('/applications/', $this->call('listApps'))
-            ->bind('list_dev_apps');
+            ->bind('developers_applications');
 
 
 
         /**
          * Get the form to create a new application
          *
-         * name         : form_dev_app
+         * name         : developers_application_new
          *
          * description  : Display form to create a new user application
          *
@@ -65,12 +65,12 @@ class Developers implements ControllerProviderInterface
          * return       : HTML Response
          */
         $controllers->get('/application/new/', $this->call('displayFormApp'))
-            ->bind('form_dev_app');
+            ->bind('developers_application_new');
 
         /**
          * Create a new app
          *
-         * name         : create_dev_app
+         * name         : developers_application
          *
          * description  : POST request to create a new user app
          *
@@ -81,13 +81,13 @@ class Developers implements ControllerProviderInterface
          * return       : HTML Response
          */
         $controllers->post('/application/', $this->call('newApp'))
-            ->bind('create_dev_app');
+            ->bind('developers_application');
 
 
         /**
          * Get application information
          *
-         * name         : get_dev_app
+         * name         : developers_application
          *
          * description  : Get application information
          *
@@ -99,12 +99,12 @@ class Developers implements ControllerProviderInterface
          */
         $controllers->get('/application/{id}/', $this->call('getApp'))
             ->assert('id', '\d+')
-            ->bind('get_dev_app');
+            ->bind('developers_application');
 
         /**
          * Delete application
          *
-         * name         : delete_dev_app
+         * name         : delete_developers_application
          *
          * description  : Delete selected application
          *
@@ -116,12 +116,12 @@ class Developers implements ControllerProviderInterface
          */
         $controllers->delete('/application/{id}/', $this->call('deleteApp'))
             ->assert('id', '\d+')
-            ->bind('delete_dev_app');
+            ->bind('delete_developers_application');
 
         /**
          * Allow authentification paswword grant method
          *
-         * name         : grant_password_auth
+         * name         : developers_application_authorize_grant_password
          *
          * description  : Authorize application to use a grant password type, which allow end user to
          *                authenticate himself with their credentials (login/password)
@@ -134,12 +134,12 @@ class Developers implements ControllerProviderInterface
          */
         $controllers->post('/application/{id}/authorize_grant_password/', $this->call('authorizeGrantpassword'))
             ->assert('id', '\d+')
-            ->bind('grant_password_auth');
+            ->bind('developers_application_authorize_grant_password');
 
         /**
          * Renew access token
          *
-         * name         : renew_access_token
+         * name         : developers_application_token
          *
          * description  : Regenerate an access token for the current app linked to the authenticated user
          *
@@ -151,12 +151,12 @@ class Developers implements ControllerProviderInterface
          */
         $controllers->post('/application/{id}/access_token/', $this->call('renewAccessToken'))
             ->assert('id', '\d+')
-            ->bind('renew_access_token');
+            ->bind('developers_application_token');
 
         /**
          * Update application callback
          *
-         * name         : renew_app_callback
+         * name         : application_callback
          *
          * description  : Change callback used by application
          *
@@ -168,7 +168,7 @@ class Developers implements ControllerProviderInterface
          */
         $controllers->post('/application/{id}/callback/', $this->call('renewAppCallback'))
             ->assert('id', '\d+')
-            ->bind('renew_app_callback');
+            ->bind('application_callback');
 
         return $controllers;
     }
