@@ -83,7 +83,7 @@ if (( ! is_null($parm['login']) && ! is_null($parm['pwd'])) || $is_guest) {
         $usr_id = User_Adapter::get_usr_id_from_login($parm['login']);
         $url = random::getUrlToken(\random::TYPE_PASSWORD, $usr_id, $date);
 
-        $url = '/login/forgotpwd.php?token=' . $url . '&salt=1';
+        $url = '/account/forgot-password/?token=' . $url . '&salt=1';
 
         return phrasea::redirect($url);
     } catch (\Exception $e) {

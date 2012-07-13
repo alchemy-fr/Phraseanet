@@ -221,7 +221,7 @@ class Account implements ControllerProviderInterface
             $token = \random::getUrlToken(\random::TYPE_PASSWORD, $user->get_id(), new \DateTime('+1 day'));
 
             if ($token) {
-                $url = sprintf('%slogin/forgotpwd.php?token=%s', $app['Registry']->get('GV_ServerName'), $token);
+                $url = sprintf('%saccount/forgot-password/?token=%s', $app['Registry']->get('GV_ServerName'), $token);
 
                 if (\mail::forgot_passord($email, $user->get_login(), $url)) {
                     return $app->redirect('/account/forgot-password/?sent=ok');
