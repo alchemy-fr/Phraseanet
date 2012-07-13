@@ -289,6 +289,71 @@ class Account implements ControllerProviderInterface
             ->assert('application_id', '\d+')
             ->bind('grant_app_access');
 
+        /**
+         * Give account access
+         *
+         * name         : account_access
+         *
+         * description  : Display form to create a new account
+         *
+         * method       : GET
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->get('/access/', $this->call('accountAccess'))
+            ->bind('account_access');
+
+        /**
+         * Give account open sessions
+         *
+         * name         : account_sessions
+         *
+         * description  : Display form to create a new account
+         *
+         * method       : GET
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->get('/security/sessions/', $this->call('accountSessionsAccess'))
+            ->bind('account_sessions');
+
+        /**
+         * Give authorized applications that can access user informations
+         *
+         * name         : account_auth_apps
+         *
+         * description  : Display form to create a new account
+         *
+         * method       : GET
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->get('/security/applications/', $this->call('accountAuthorizedApps'))
+            ->bind('account_auth_apps');
+
+        /**
+         * Grant access to an authorized app
+         *
+         * name         : grant_app_access
+         *
+         * description  : Display form to create a new account
+         *
+         * method       : GET
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->get('/security/application/{application_id}/grant/', $this->call('grantAccess'))
+            ->assert('application_id', '\d+')
+            ->bind('grant_app_access');
+
         return $controllers;
     }
 
