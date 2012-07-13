@@ -36,7 +36,7 @@ class Account implements ControllerProviderInterface
         /**
          * New account route
          *
-         * name         : display_account
+         * name         : get_account
          *
          * description  : Display form to create a new account
          *
@@ -47,12 +47,12 @@ class Account implements ControllerProviderInterface
          * return       : HTML Response
          */
         $controllers->get('/', $this->call('displayAccount'))
-            ->bind('display_account');
+            ->bind('get_account');
 
         /**
          * Create account route
          *
-         * name         : update_account
+         * name         : create_account
          *
          * description  : update your account informations
          *
@@ -92,7 +92,40 @@ class Account implements ControllerProviderInterface
          * return       : HTML Response
          */
         $controllers->post('/', $this->call('updateAccount'))
-            ->bind('update_account');
+            ->bind('create_account');
+
+
+        /**
+         * Forgot password
+         *
+         * name         : account_forgot_password
+         *
+         * description  : Display form to renew password
+         *
+         * method       : GET
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->get('/forgot-password/', $this->call('displayForgotPasswordForm'))
+            ->bind('account_forgot_password');
+
+        /**
+         * Renew password
+         *
+         * name         : account_renew_password
+         *
+         * description  : Register the new user password
+         *
+         * method       : POST
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->post('/forgot-password/', $this->call('renewPassword'))
+            ->bind('post_account_forgot_password');
 
         /**
          * Give account access
@@ -113,7 +146,7 @@ class Account implements ControllerProviderInterface
         /**
          * Give account open sessions
          *
-         * name         : account_sessions
+         * name         : account_security_sessions
          *
          * description  : Display form to create a new account
          *
@@ -124,12 +157,12 @@ class Account implements ControllerProviderInterface
          * return       : HTML Response
          */
         $controllers->get('/security/sessions/', $this->call('accountSessionsAccess'))
-            ->bind('account_sessions');
+            ->bind('account_security_sessions');
 
         /**
          * Give authorized applications that can access user informations
          *
-         * name         : account_auth_apps
+         * name         : account_security_applications
          *
          * description  : Display form to create a new account
          *
@@ -140,12 +173,12 @@ class Account implements ControllerProviderInterface
          * return       : HTML Response
          */
         $controllers->get('/security/applications/', $this->call('accountAuthorizedApps'))
-            ->bind('account_auth_apps');
+            ->bind('account_security_applications');
 
         /**
          * Grant access to an authorized app
          *
-         * name         : grant_app_access
+         * name         : account_security_applications_grant
          *
          * description  : Display form to create a new account
          *
@@ -157,9 +190,149 @@ class Account implements ControllerProviderInterface
          */
         $controllers->get('/security/application/{application_id}/grant/', $this->call('grantAccess'))
             ->assert('application_id', '\d+')
-            ->bind('grant_app_access');
+            ->bind('account_security_applications_grant');
 
         return $controllers;
+    }
+
+    /**
+     * Submit the new password
+     *
+     * @param Application $app     A Silex application where the controller is mounted on
+     * @param Request     $request The current request
+     * @return Response
+     */
+    public function renewPassword(Application $app, Request $request)
+    {
+        $appbox = \appbox::get_instance($app['Core']);
+
+        // send mail
+        if ('' !== $mail = trim($request->get('mail', ''))) {
+            if ( ! \PHPMailer::ValidateAddress($mail)) {
+                return $app->redirect('/account/forgot-password/?error=invalidmail');
+            }
+
+            try {
+                $user = \User_Adapter::getInstance(\User_Adapter::get_usr_id_from_email($mail), $appbox);
+            } catch (\Exception $e) {
+                return $app->redirect('/account/forgot-password/?error=noaccount');
+            }
+
+            $token = \random::getUrlToken(\random::TYPE_PASSWORD, $user->get_id(), new \DateTime('+1 day'));
+
+            if ($token) {
+                $url = sprintf('%slogin/forgotpwd.php?token=%s', $app['Registry']->get('GV_ServerName'), $token);
+
+                if (\mail::forgot_passord($email, $user->get_login(), $url)) {
+                    return $app->redirect('/account/forgot-password/?sent=ok');
+                } else {
+                    return $app->redirect('/account/forgot-password/?error=mailserver');
+                }
+            }
+
+            return $app->redirect('/account/forgot-password/?error=noaccount');
+        }
+
+        if (null !== $token = $request->get('token')
+            && null !== $password = $request->get('form_password')
+            && null !== $passwordConfirm = $request->get('form_password_confirm')) {
+
+            if ($password !== $passwordConfirm) {
+
+                return $app->redirect('/account/forgot-password/?pass-error=pass-match');
+            } elseif (strlen(trim($password)) < 5) {
+
+                return $app->redirect('/account/forgot-password/?pass-error=pass-short');
+            } elseif (trim($password) != str_replace(array("\r\n", "\n", "\r", "\t", " "), "_", $password)) {
+
+                return $app->redirect('/account/forgot-password/?pass-error=pass-invalid');
+            }
+
+            try {
+                $datas = \random::helloToken($token);
+
+                $user = \User_Adapter::getInstance($datas['usr_id'], $appbox);
+                $user->set_password($passwordConfirm);
+
+                \random::removeToken($token);
+
+                return $app->redirect('/login/?confirm=password-update-ok');
+            } catch (\Exception_NotFound $e) {
+
+            }
+        }
+    }
+
+    /**
+     * Get the fogot password form
+     *
+     * @param Application $app     A Silex application where the controller is mounted on
+     * @param Request     $request The current request
+     * @return Response
+     */
+    public function displayForgotPasswordForm(Application $app, Request $request)
+    {
+        $tokenize = false;
+        $errorMsg = $request->get('error');
+
+        if (null !== $token = $request->get('token')) {
+            try {
+                \random::helloToken($token);
+                $tokenize = true;
+            } catch (\Exception $e) {
+                $errorMsg = 'token';
+            }
+        }
+
+        if (null !== $errorMsg) {
+            switch ($errorMsg) {
+                case 'invalidmail':
+                    $errorMsg = _('Invalid email address');
+                    break;
+                case 'mailserver':
+                    $errorMsg = _('phraseanet::erreur: Echec du serveur mail');
+                    break;
+                case 'noaccount':
+                    $errorMsg = _('phraseanet::erreur: Le compte n\'a pas ete trouve');
+                    break;
+                case 'mail':
+                    $errorMsg = _('phraseanet::erreur: Echec du serveur mail');
+                    break;
+                case 'token':
+                    $errorMsg = _('phraseanet::erreur: l\'url n\'est plus valide');
+                    break;
+            }
+        }
+
+        if (null !== $sentMsg = $request->get('sent')) {
+            switch ($sentMsg) {
+                case 'ok':
+                    $sentMsg = _('phraseanet:: Un email vient de vous etre envoye');
+                    break;
+            }
+        }
+
+        if (null !== $passwordMsg = $request->get('pass-error')) {
+            switch ($sentMsg) {
+                case 'pass-match':
+                    $sentMsg = _('forms::les mots de passe ne correspondent pas');
+                    break;
+                case 'pass-short':
+                    $sentMsg = _('forms::la valeur donnee est trop courte');
+                    break;
+                case 'pass-invalid':
+                    $sentMsg = _('forms::la valeur donnee contient des caracteres invalides');
+                    break;
+            }
+        }
+
+        return new Response($app['Core']['Twig']->render('account/forgot-password.html.twig', array(
+                'needed'      => array(),
+                'tokenize'    => $tokenize,
+                'passwordMsg' => $passwordMsg,
+                'errorMsg'    => $errorMsg,
+                'sentMsg'     => $sentMsg
+            )));
     }
 
     /**
@@ -237,10 +410,8 @@ class Account implements ControllerProviderInterface
     {
         require_once $app['Core']['Registry']->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php';
 
-        $user = $app['Core']->getAuthenticatedUser();
-
         return new Response($app['Core']['Twig']->render('account/access.html.twig', array(
-                    'inscriptions' => giveMeBases($user->get_id())
+                    'inscriptions' => giveMeBases($app['Core']->getAuthenticatedUser()->get_id())
                 )));
     }
 
