@@ -1,0 +1,107 @@
+{% extends 'account/base.html.twig' %}
+
+{% block head %}
+<script type="text/javascript">
+$(document).ready(function(){
+    $(".app-btn").live("click", function(){
+        var $this = $(this);
+
+        if (!$this.hasClass("authorize"))
+        {
+            var revoke = 1;
+            var button_class = "authorize";
+            var old_class ="revoke";
+            var string  = "{% trans 'Authoriser l\'access' %}";
+        }
+        else ($this.hasClass("authorize"))
+        {
+            var revoke = 0;
+            var button_class = "revoke";
+            var old_class ="authorize";
+            var string  = "{% trans 'Revoquer l\'access' %}";
+        }
+
+        var app_id = $this.attr("value");
+
+        var opts = {
+            type:"POST",
+            url : '/security/application/' + app_id + '/grant/',
+            dataType: 'json',
+            data : {
+                revoke : revoke
+            },
+            success : function(data){
+                if(data.success)
+                {
+                    div = $this.closest("div");
+                    current.removeClass(old_class).addClass(button_class);
+                    current.attr("value", acc_id);
+                    current.empty().append(string);
+                }
+            }
+        }
+        $.ajax(opts);
+    });
+});
+</script>
+{% endblock %}
+{% block content %}
+<table class='app-placement'>
+  <tbody>
+    <tr>
+      <td style='width:600px;'>
+        <div id="content-apps">
+          <h3>{% trans 'Vous avez autorise ces applications a acceder a votre compte' %}</h3>
+          {% if apps|length > 0 %}
+            <ul class='app-list'>
+              {% for app in apps %}
+                <li id='app_{{app.get_id}}'>
+                  <div>
+                    {% set account = app.get_user_account(user) %}
+                      {% if account.is_revoked() is empty %}
+                        <button type='button' class='revoke app-btn' value='{{app.get_id()}}'>{% trans 'Revoquer l\'access' %}</button>
+                      {% else %}
+                        <button type='button' class='authorize app-btn' value='{{app.get_id()}}'>{% trans 'Authoriser l\'access' %}</button>
+                      {% endif %}
+                        <span class='app-row'>
+                          <a href="{{app.get_website()}}" target="_blank">
+                            <strong>{{app.get_name()}}</strong>
+                          </a>
+                          {% if user is not none %}
+                            {% set user_name = app.get_creator().get_display_name() %}
+                            {% trans %}
+                            par {{user_name}}
+                            {% endtrans %}
+                          {% endif%}
+                        </span>
+                        <span class='app-row'>
+                          <font size="1"><i>{{app.get_created_on()|prettyDate}}</i></font>
+                        </span>
+                        <span class='app-row'>{{app.get_description() }}</span>
+                  </div>
+                </li>
+              {%endfor%}
+            </ul>
+           {% else %}
+              <div>
+                {% trans 'Aucune application n\'a accés à vos données.' %}
+              </div>
+           {% endif %}
+         </div>
+        </td>
+      <td style="vertical-align:top;">
+        <div class="side-section" style="margin:10px;text-align:left;">
+          <h3>{% trans 'Applications' %}</h3>
+          <p>
+            {% trans 'Naviguez et gerez les applications que vous souhaitez autoriser a acceder a vos informations Phraseanet' %}
+          </p>
+          <h3>{% trans 'Developpeurs' %}</h3>
+          <p>
+            {% trans 'Les developpeurs peuvent editer l\'enregistrement de leurs application grace a l\'onglet "developpeurs" ci-dessus' %}
+          </p>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+{% endblock %}

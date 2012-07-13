@@ -45,6 +45,8 @@ rewrite ^/prod/notifications/.*$  /prod/router.php last;
 
 rewrite ^/robots.txt$             /index.php last;
 rewrite ^/feeds/.*$               /index.php last;
+rewrite ^/account/.*$             /index.php last;
+rewrite ^/developers/.*$          /index.php last;
 
 rewrite ^/lightbox/.*$            /lightbox/index.php last;
 rewrite ^/api/v1/.*$              /api/v1/index.php last;

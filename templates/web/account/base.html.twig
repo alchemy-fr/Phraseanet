@@ -1,0 +1,44 @@
+ <html lang="{{ session.get_I18n() }}">
+    <head>
+        <title>{{ registry.get('GV_homeTitle') }} {% trans 'login:: Mon compte'%}</title>
+        <link rel="stylesheet" type="text/css" href="/include/minify/f=login/home.css,/login/geonames.css,/skins/html5/bootstrap/css/bootstrap.min.css,/skins/html5/bootstrap/css/bootstrap-responsive.min.css,/skins/login/css/main.css"/>
+        <link rel="stylesheet" type="text/css" href="/skins/login/css/main.css"/>
+        <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
+        <script type="text/javascript" language="javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
+        {% block head %}{% endblock %}
+    </head>
+
+    <body>
+        <div style="width: 950px; margin-left: auto; margin-right: auto;">
+            <div style="margin-top: 70px; height: 35px;">
+                <table style="width: 100%;">
+                    <tr style="height: 35px;">
+                        <td style="width: 580px;">
+                            <span class="title-name">{{ registry.get('GV_homeTitle') }}</span>
+                            <span class="title-desc">{% trans 'login:: Mon compte' %}</span>
+                        </td>
+                        <td style="color: #b1b1b1; text-align: right;">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="tab-pane">
+                <div id="id-main" class="tab-content" style="height: auto;display: block; overflow-y: auto; overflow-x: hidden;">
+                    <ul class='account-menu'>
+                        <li><a href="/account/">{% trans 'Informations' %}</a></li>
+                        <li><a href="/account/access/">{% trans 'Acces' %}</a></li>
+                        <li><a href="/account/security/sessions/">{% trans 'Sessions' %}</a></li>
+                        <li><a href="/account/security/applications/">{% trans 'Applications' %}</a></li>
+                        <li><a href="/developers/applications/">{% trans 'Developpeur' %}</a></li>
+                    </ul>
+                    <div>
+                        {% block content %}{% endblock %}
+                    </div>
+                </div>
+                <div style="text-align: right; position: relative; margin: 18px 10px 0 0; font-size: 10px; font-weight: normal;">
+                    <span>&copy; Copyright Alchemy 2005-{{ "now"|date("Y") }}</span>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
