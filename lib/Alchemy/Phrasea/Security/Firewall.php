@@ -7,6 +7,13 @@ use Silex\Application;
 class Firewall
 {
 
+    public function requireSetUp(Application $app)
+    {
+        if ( ! \setup::is_installed()) {
+            return $app->redirect("/setup/");
+        }
+    }
+
     public function requireAuthentication(Application $app)
     {
         if ($app['Core']->isAuthenticated()) {
@@ -23,7 +30,7 @@ class Firewall
         }
 
         if ($app['Core']->getAuthenticatedUser()->is_guest()) {
-            
+
             return $app->redirect('/login/');
         }
     }

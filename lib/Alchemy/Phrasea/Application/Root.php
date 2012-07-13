@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Application;
 
 use Alchemy\Phrasea\Controller\Root as Controller;
 use Silex\Application as SilexApp;
+use Silex\Provider\ValidatorServiceProvider;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -25,12 +26,10 @@ return call_user_func(function() {
 
             $app['Core'] = \bootstrap::getCore();
 
+            $app->register(new ValidatorServiceProvider());
+
             $app->before(function () use ($app) {
-                    // redirect the user to the setup screen
-                    // if Phraseanet in not set up
-                    if ( ! \setup::is_installed()) {
-                        return $app->redirect("/setup/");
-                    }
+                    $app['Core']['Firewall']->requireSetup($app);
                 });
 
             $app->get('/', function(SilexApp $app) {
@@ -60,6 +59,7 @@ return call_user_func(function() {
 
             $app->mount('/feeds/', new Controller\RSSFeeds());
             $app->mount('/account/', new Controller\Account());
+            $app->mount('/developers/', new Controller\Developers());
 
             return $app;
         }

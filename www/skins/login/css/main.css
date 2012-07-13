@@ -49,3 +49,9 @@ label {
 legend + .control-group {
   margin-top: 10px;
 }
+
+#id-main .account-menu li {
+    display: inline-block;
+    width:130px;
+    font-size:16px;
+}
