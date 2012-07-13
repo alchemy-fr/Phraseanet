@@ -269,7 +269,7 @@
                                         {% if notice | trim != '' %}
                                             <div class="notice alert alert-error">{{ notice }}</div>
                                         {% endif %}
-                                        <form name="account" id="account" class="form-horizontal" action="/login/account.php" method="post">
+                                        <form name="account" id="account" class="form-horizontal" action="/account/" method="post">
                                             <fieldset>
 
                                                 <legend>{% trans 'Informations personnelles' %}</legend>
@@ -476,7 +476,7 @@
                         <!-- END TAB ACCOUNT -->
                         <!-- START TAB ACCESS -->
                         <div id="tab-account-access">
-                            <form name="updatingDemand" id="updatingDemand" action="/login/account.php" method="post">
+                            <form name="updatingDemand" id="updatingDemand" action="/account/" method="post">
                                 <table border="0" style="table-layout: fixed; font-size: 11px;" cellspacing=0 width="100%">
                                     <tr>
                                         <td  style="width: 180px; text-align: right">&nbsp;</td>
