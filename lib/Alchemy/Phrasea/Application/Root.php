@@ -29,6 +29,8 @@ return call_user_func(function() {
 
             $app->register(new ValidatorServiceProvider());
 
+            $app->register(new ValidatorServiceProvider());
+
             $app->before(function () use ($app) {
                     $app['Core']['Firewall']->requireSetup($app);
                 });
