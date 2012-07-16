@@ -1818,7 +1818,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             $pathdest = databox::dispatch($subdef->get_path());
         }
 
-        return $pathdest . $this->get_record_id() . '_' . $subdef->get_name() . '.' . $this->getExtensionFromSpec($subdef->getSpecs());
+        return $pathdest . $this->get_record_id() . '_' . $subdef->get_name() . '.' . $this->getExtensionFromSpec($subdef->getSpecs(), $logger);
     }
 
     /**
@@ -1865,6 +1865,9 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         switch ($audioCodec) {
             case 'flac':
                 $extension = 'flac';
+                break;
+            case 'libvorbis':
+                $extension = 'ogg';
                 break;
             case 'libmp3lame':
                 $extension = 'mp3';
