@@ -25,6 +25,7 @@ return call_user_func(function() {
             $app = new SilexApp();
 
             $app['Core'] = \bootstrap::getCore();
+            $app['debug'] = true;
 
             $app->register(new ValidatorServiceProvider());
 

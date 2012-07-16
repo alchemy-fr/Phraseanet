@@ -7,6 +7,10 @@
 </script>
 {% endblock %}
 
+{% block title %}
+    {% trans 'login:: Mon compte' %}
+{% endblock %}
+
 {% block content %}
 <table style="width: 100%">
     <tr valign="top">
@@ -20,7 +24,7 @@
                     <legend>{% trans 'Informations personnelles' %}</legend>
                     <div class="control-group">
                         <div class="controls">
-                            <p><a href="/login/reset-password.php" target="_self">{% trans 'admin::compte-utilisateur changer mon mot de passe' %}</a></p>
+                            <p><a href="/account/reset-password/" target="_self">{% trans 'admin::compte-utilisateur changer mon mot de passe' %}</a></p>
                         </div>
                     </div>
                     <div class="control-group">
@@ -64,7 +68,7 @@
                     <div class="control-group">
                         <label class="form_label control-label" for="form_firstname">{% trans 'admin::compte-utilisateur email' %}</label>
                         <div class="controls">
-                            <p>{{ user.get_email() }} <a href="/login/reset-email.php" target="_self">{% trans 'login:: Changer mon adresse email' %}</a></p>
+                            <p>{{ user.get_email() }} <a href="/account/reset-email/" target="_self">{% trans 'login:: Changer mon adresse email' %}</a></p>
                             <p class="form_alert help-block"></p>
                         </div>
                     </div>
