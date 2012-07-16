@@ -1,6 +1,9 @@
 {
     "name": "phraseanet/phraseanet",
     "description": "Phraseanet",
+    "config": {
+        "bin-dir": "bin/"
+    },
     "require": {
         "php": ">=5.3.3",
         "alchemy/oauth2php": "master",
@@ -25,6 +28,10 @@
     },
     "minimum-stability": "dev",
     "require-dev": {
+        "behat/behat": "2.4.*@stable",
+        "behat/mink-extension": "dev-master",
+        "behat/mink-goutte-driver": "dev-master",
+        "behat/mink-selenium2-driver": "dev-master",
         "doctrine/data-fixtures": "dev-master",
         "fabpot/php-cs-fixer": "dev-master"
     },

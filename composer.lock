@@ -1,5 +1,5 @@
 {
-    "hash": "709b865d18d952667bf199d09ceba844",
+    "hash": "c1ac8aafaa9ca83d3a646d84963dee6e",
     "packages": [
         {
             "package": "alchemy/Phlickr",
@@ -58,14 +58,14 @@
         {
             "package": "media-alchemyst/media-alchemyst",
             "version": "dev-master",
-            "source-reference": "8b81d5d5e46402cb61541598e0ddf8ca8f68f8c6",
-            "commit-date": "1342002821"
+            "source-reference": "474630bacc4ffe3324a03341220287f2e0c6db63",
+            "commit-date": "1342193470"
         },
         {
             "package": "mediavorus/mediavorus",
             "version": "dev-master",
-            "source-reference": "28e3ce826a37126e901b5d80c3253090af74647a",
-            "commit-date": "1339782829"
+            "source-reference": "1987597da05a87b3e0676a666f51f1b0b13fe093",
+            "commit-date": "1342193047"
         },
         {
             "package": "monolog/monolog",
@@ -128,8 +128,8 @@
         {
             "package": "silex/silex",
             "version": "dev-master",
-            "source-reference": "4679d476aee0a5981b13d4ac899a8ef72b8b060c",
-            "commit-date": "1341899486"
+            "source-reference": "b9277c0e378ff1bce2a3e974cb801b6d9b0b5d5f",
+            "commit-date": "1342380872"
         },
         {
             "package": "swftools/swftools",
@@ -150,8 +150,8 @@
         {
             "package": "symfony/symfony",
             "version": "dev-master",
-            "source-reference": "09d71ca9274e7b82a54566360684842885f61912",
-            "commit-date": "1341995849"
+            "source-reference": "151b79a6ce3f459e2fa8815cd9f2786eef750993",
+            "commit-date": "1342376835"
         },
         {
             "package": "tcpdf/tcpdf",
@@ -178,16 +178,74 @@
     ],
     "packages-dev": [
         {
+            "package": "behat/behat",
+            "version": "v2.4.2"
+        },
+        {
+            "package": "behat/gherkin",
+            "version": "v2.2.2"
+        },
+        {
+            "package": "behat/mink",
+            "version": "v1.4.0"
+        },
+        {
+            "package": "behat/mink-browserkit-driver",
+            "version": "dev-master",
+            "source-reference": "97fa7d67ab5afb13d74515c15ef5c0cab12c0bc0",
+            "commit-date": "1341477260"
+        },
+        {
+            "package": "behat/mink-extension",
+            "version": "dev-master",
+            "source-reference": "2fc55fdd358b121b5439acc76be6fa654ebe2e28",
+            "commit-date": "1341477571"
+        },
+        {
+            "package": "behat/mink-goutte-driver",
+            "version": "dev-master",
+            "source-reference": "v1.0.3",
+            "commit-date": "1341477036"
+        },
+        {
+            "package": "behat/mink-selenium2-driver",
+            "version": "dev-master",
+            "source-reference": "v1.0.2",
+            "commit-date": "1341477123"
+        },
+        {
             "package": "doctrine/data-fixtures",
             "version": "dev-master",
             "source-reference": "779c3dfe446b6da893be87b908d6be28345d1e01",
             "commit-date": "1341780535"
         },
         {
+            "package": "fabpot/goutte",
+            "version": "dev-master",
+            "alias-pretty-version": "1.0.x-dev",
+            "alias-version": "1.0.9999999.9999999-dev"
+        },
+        {
+            "package": "fabpot/goutte",
+            "version": "dev-master",
+            "source-reference": "c2ea8d9a6682d14482e57ede2371001b8a5238d2",
+            "commit-date": "1340264258"
+        },
+        {
             "package": "fabpot/php-cs-fixer",
             "version": "dev-master",
             "source-reference": "9b13373840537c91bf830b1b45e39b223e5dd438",
             "commit-date": "1341582702"
+        },
+        {
+            "package": "guzzle/guzzle",
+            "version": "v2.6.6"
+        },
+        {
+            "package": "instaclick/php-webdriver",
+            "version": "dev-master",
+            "source-reference": "v1.0",
+            "commit-date": "1337727558"
         }
     ],
     "aliases": [
@@ -200,6 +258,10 @@
         "media-alchemyst/media-alchemyst": 20,
         "php-xpdf/php-xpdf": 20,
         "phpexiftool/phpexiftool": 20,
+        "behat/behat": 0,
+        "behat/mink-extension": 20,
+        "behat/mink-goutte-driver": 20,
+        "behat/mink-selenium2-driver": 20,
         "doctrine/data-fixtures": 20,
         "fabpot/php-cs-fixer": 20
     }
