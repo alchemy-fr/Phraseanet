@@ -1,0 +1,384 @@
+{% extends 'account/base.html.twig' %}
+
+{% block title %}
+{% endblock %}
+
+{% block head %}
+<script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js,include/jslibs/jquery.validate.js,include/jslibs/jquery.validate.password.js,include/jslibs/jquery.validate.login.js"></script>
+<script type="text/javascript">
+
+<?php
+$geonames = new geonames();
+$first = true;
+$sep = $msg = $rules = '';
+foreach ($arrayVerif as $ar => $ver) {
+    if ($ver === false)
+        continue;
+    if ($ar != 'form_password') {
+        if ( ! $first)
+            $sep = ',';
+        $first = false;
+        $rules .= $sep . $ar . ':{required:true}';
+        $msg .= $sep . $ar . ': {';
+        $msg .= 'required : "' . _('forms::ce champ est requis') . '"';
+
+        if ($ar == 'form_login' || $ar == 'form_password')
+            $msg .= ' ,minlength: "' . _('forms::la valeur donnee est trop courte') . '"';
+
+        if ($ar == 'form_password')
+            $msg .= ' ,minlength: "' . _('forms::la valeur donnee est trop courte') . '"';
+        if ($ar == 'form_password_confirm')
+            $msg .= ' ,equalTo: "' . _('forms::les mots de passe ne correspondent pas') . '"';
+        if ($ar == 'form_email')
+            $msg .= ',email:"' . (str_replace('"', '\"', _('forms::l\'email semble invalide'))) . '"';
+
+        $msg .= ',login:"' . (str_replace('"', '\"', _('login invalide (5 caracteres sans accents ni espaces)'))) . '"';
+        $msg .= '}';
+    }
+}
+?>
+
+    $(document).ready(function() {
+
+        $.validator.passwordRating.messages = {
+            "similar-to-username": "{% trans 'forms::le mot de passe est trop similaire a l\'identifiant' %}",
+            "too-short": "{% trans 'forms::la valeur donnee est trop courte' %}",
+            "very-weak": "{% trans 'forms::le mot de passe est trop simple' %}",
+            "weak": "{% trans 'forms::le mot de passe est simple' %}",
+            "good": "{% trans 'forms::le mot de passe est bon' %}",
+            "strong": "{% trans 'forms::le mot de passe est tres bon' %}"
+        }
+
+        $("#register").validate(
+        {
+            rules: {
+                <?php echo $rules ?>
+            },
+            messages: {
+                <?php echo $msg ?>
+            },
+            errorPlacement: function(error, element) {
+                error.prependTo( element.parent().next() );
+            }
+        }
+    );
+
+        $('#form_email').rules("add",{email:true});
+
+        $('#form_login').rules("add",{
+            minlength: 5
+        });
+
+        $('#form_password').rules("add",{password: "#form_login"});
+        $('#form_password_confirm').rules("add",{equalTo: "#form_password"});
+
+
+        $("#form_password").valid();
+
+        initialize_geoname_field($('#form_geonameid'));
+    });
+
+</script>
+{% endblock %}
+
+{% block content %}
+
+
+    <form id="register" name="creation" action="register.php" method="post">
+
+        <table id="form_register_table" cellspacing="0" cellpadding="0" style="font-size:11px;margin:0 auto;">
+            <tr style="height:10px;">
+                <td colspan="3">
+                </td>
+            </tr>
+            <tr>
+                <td class="form_label">
+                    <label for="form_login">
+                        <?php echo (isset($arrayVerif['form_login']) && $arrayVerif['form_login'] === true) ? '<span class="requiredField">*</span>' : '' ?> {% trans 'admin::compte-utilisateur identifiant' %} <br/><span style="font-size:9px;">{% trans '5 caracteres minimum' %}</span> :
+                    </label>
+                </td>
+                <td class="form_input">
+                    <input id="form_login" autocomplete="off" type="text" value="<?php echo $parm ["form_login"] ?>" class="input_element" name="form_login">
+                </td>
+                <td class="form_alert">
+                    <?php echo isset($needed['form_login']) ? $needed['form_login'] : '' ?>
+                </td>
+            </tr>
+            <tr style="height:10px;">
+                <td colspan="3">
+                </td>
+            </tr>
+            <tr>
+                <td class="form_label">
+                    <label for="form_password">
+                        <?php echo (isset($arrayVerif['form_password']) && $arrayVerif['form_password'] === true) ? '<span class="requiredField">*</span>' : '' ?> {% trans 'admin::compte-utilisateur mot de passe' %} <br/><span style="font-size:9px;">{% trans '8 caracteres minimum' %}</span> :
+                    </label>
+                </td>
+                <td class="form_input">
+                    <input autocomplete="off" type="password" value="<?php echo $parm ["form_password"] ?>" class="input_element password" name="form_password" id="form_password" />
+
+                </td>
+                <td class="form_alert">
+                    <span style="color:white;">{% trans 'Resistance du mot de passe' %}</span><br/>
+                    <?php echo isset($needed['form_password']) ? $needed['form_password'] : '' ?>
+                    <div class="password-meter">
+                        <div class="password-meter-message">&nbsp;</div>
+                        <div class="password-meter-bg">
+                            <div class="password-meter-bar"></div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="form_label">
+                    <label for="form_password_confirm">
+                        <?php echo (isset($arrayVerif['form_password_confirm']) && $arrayVerif['form_password_confirm'] === true) ? '<span class="requiredField">*</span>' : '' ?>  <span style="font-size:9px;">Confirmation</span> :
+                    </label>
+                </td>
+                <td class="form_input">
+                    <input id="form_password_confirm" autocomplete="off" type="password" value="<?php echo $parm ["form_password_confirm"] ?>" class="input_element" name="form_password_confirm">
+                </td>
+                <td class="form_alert">
+                    <?php echo isset($needed['form_password_confirm']) ? $needed['form_password_confirm'] : '' ?>
+                </td>
+            </tr>
+            <tr style="height:10px;">
+                <td colspan="3">
+                    <div style="margin:20px 0;">
+                        <a href="#" onclick="$('#password_infos').slideToggle();return false;" style="color:white;font-size:13px;">{% trans 'admin::compte-utilisateur A propos de la securite des mots de passe' %}</a>
+                        <div id="password_infos" style="display:none;">
+                            <div style="text-align:center;margin:20px 0 0;">
+                                {% trans 'admin::compte-utilisateur Les mots de passe doivent etre clairement distincts du login et contenir au moins deux types parmis les caracteres suivants :' %}
+                            </div>
+                            <div style="text-align:left;margin:10px auto;width:300px;">
+                                <ul>
+                                    <li>{% trans 'admin::compte-utilisateur::securite caracteres speciaux' %}</li>
+                                    <li>{% trans 'admin::compte-utilisateur::securite caracteres majuscules' %}</li>
+                                    <li>{% trans 'admin::compte-utilisateur::securite caracteres minuscules' %}</li>
+                                    <li>{% trans 'admin::compte-utilisateur::securite caracteres numeriques' %}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <hr/>
+                </td>
+            </tr>
+            <tr>
+                <td class="form_label">
+                    <label for="form_email">
+                        <?php echo (isset($arrayVerif['form_email']) && $arrayVerif['form_email'] === true) ? '<span class="requiredField">*</span>' : '' ?> {% trans 'admin::compte-utilisateur email' %} :
+                    </label>
+                </td>
+                <td class="form_input">
+                    <input id="form_email" autocomplete="off" type="text" value="<?php echo $parm["form_email"] ?>" class="input_element" name="form_email">
+                </td>
+                <td class="form_alert">
+                    <?php echo isset($needed['form_email']) ? $needed['form_email'] : '' ?>
+                </td>
+            </tr>
+            <tr><td colspan="3">&nbsp;</td></tr>
+            <tr>
+                <td class="form_label">
+                    <label for="form_city">
+                        <?php echo (isset($arrayVerif['form_geonameid']) && $arrayVerif['form_geonameid'] === true) ? '<span class="requiredField">*</span>' : '' ?> {% trans 'admin::compte-utilisateur ville' %} :
+                    </label>
+                </td>
+                <td class="form_input">
+                    <input id="form_geonameid" type="text" geonameid="<?php echo $parm["form_geonameid"] ?>" value="<?php echo $geonames->name_from_id($parm["form_geonameid"]) ?>" class="input_element geoname_field" name="form_geonameid">
+                </td>
+                <td class="form_alert">
+                    <?php echo isset($needed['form_geonameid']) ? $needed['form_geonameid'] : '' ?>
+                </td>
+            </tr>
+            <tr>
+                <td class="form_label">
+                    {% trans 'admin::compte-utilisateur sexe' %} :
+                </td>
+                <td class="form_input">
+                    <input type="radio" class="checkbox" name="form_gender" style="width:10px;" <?php echo (($parm ["form_gender"] == 0) ? "checked" : "") ?> value="0">{% trans 'admin::compte-utilisateur:sexe: mademoiselle' %}
+                    <input type="radio" class="checkbox" name="form_gender" style="width:10px;" <?php echo (($parm ["form_gender"] == 1) ? "checked" : "") ?> value="1">{% trans 'admin::compte-utilisateur:sexe: madame' %}
+                    <input type="radio" class="checkbox" name="form_gender" style="width:10px;" <?php echo (($parm ["form_gender"] == 2) ? "checked" : "") ?> value="2">{% trans 'admin::compte-utilisateur:sexe: monsieur' %}
+                </td>
+                <td class="form_alert">
+                    <?php echo isset($needed['form_gender']) ? $needed['form_gender'] : '' ?>
+                </td>
+            </tr>
+            <tr>
+                <td class="form_label">
+                    <label for="form_lastname">
+                        <?php echo (isset($arrayVerif['form_lastname']) && $arrayVerif['form_lastname'] === true) ? '<span class="requiredField">*</span>' : '' ?> {% trans 'admin::compte-utilisateur nom' %} :
+                    </label>
+                </td>
+                <td class="form_input">
+                    <input id="form_lastname" autocomplete="off" type="text" value="<?php echo $parm['form_lastname'] ?>" class="input_element" name="form_lastname">
+                </td>
+                <td class="form_alert">
+                    <?php echo isset($needed['form_lastname']) ? $needed['form_lastname'] : '' ?>
+                </td>
+            </tr>
+            <tr>
+                <td class="form_label">
+                    <label for="form_firstname">
+                        <?php echo (isset($arrayVerif['form_firstname']) && $arrayVerif['form_firstname'] === true) ? '<span class="requiredField">*</span>' : '' ?> {% trans 'admin::compte-utilisateur prenom' %} :
+                    </label>
+                </td>
+                <td class="form_input">
+                    <input id="form_firstname" autocomplete="off" type="text" value="<?php echo $parm["form_firstname"] ?>" class="input_element" name="form_firstname">
+                </td>
+                <td class="form_alert">
+                    <?php echo isset($needed['form_firstname']) ? $needed['form_firstname'] : '' ?>
+                </td>
+            </tr>
+            <tr>
+                <td class="form_label">
+                    <label for="form_job">
+                        <?php echo (isset($arrayVerif['form_job']) && $arrayVerif['form_job'] === true) ? '<span class="requiredField">*</span>' : '' ?> {% trans 'admin::compte-utilisateur poste' %} :
+                    </label>
+                </td>
+                <td class="form_input">
+                    <input id="form_job" autocomplete="off" type="text" value="<?php echo $parm["form_job"] ?>" class="input_element" name="form_job">
+                </td>
+                <td class="form_alert">
+                    <?php echo isset($needed['form_job']) ? $needed['form_job'] : '' ?>
+                </td>
+            </tr>
+            <tr>
+                <td class="form_label">
+                    <label for="form_activity">
+                        <?php echo (isset($arrayVerif['form_activity']) && $arrayVerif['form_activity'] === true) ? '<span class="requiredField">*</span>' : '' ?> {% trans 'admin::compte-utilisateur activite' %} :
+                    </label>
+                </td>
+                <td class="form_input">
+                    <input id="form_activity" autocomplete="off" type="text" value="<?php echo $parm["form_activity"] ?>" class="input_element" name="form_activity">
+                </td>
+                <td class="form_alert">
+                    <?php echo isset($needed['form_activity']) ? $needed['form_activity'] : '' ?>
+                </td>
+            </tr>
+            <tr>
+                <td class="form_label">
+                    <label for="form_phone">
+                        <?php echo (isset($arrayVerif['form_phone']) && $arrayVerif['form_phone'] === true) ? '<span class="requiredField">*</span>' : '' ?> {% trans 'admin::compte-utilisateur telephone' %} :
+                    </label>
+                </td>
+                <td class="form_input">
+                    <input id="form_phone" autocomplete="off" type="text" value="<?php echo $parm["form_phone"] ?>" class="input_element" name="form_phone">
+                </td>
+                <td class="form_alert">
+                    <?php echo isset($needed['form_phone']) ? $needed['form_phone'] : '' ?>
+                </td>
+            </tr>
+            <tr>
+                <td class="form_label">
+                    <label for="form_fax">
+                        <?php echo (isset($arrayVerif['form_fax']) && $arrayVerif['form_fax'] === true) ? '<span class="requiredField">*</span>' : '' ?> {% trans 'admin::compte-utilisateur fax' %} :
+                    </label>
+                </td>
+                <td class="form_input">
+                    <input id="form_fax" autocomplete="off" type="text" value="<?php echo $parm["form_fax"] ?>" class="input_element" name="form_fax">
+                </td>
+                <td class="form_alert">
+                    <?php echo isset($needed['form_fax']) ? $needed['form_fax'] : '' ?>
+                </td>
+            </tr>
+            <tr>
+                <td class="form_label">
+                    <label for="form_company">
+                        <?php echo (isset($arrayVerif['form_company']) && $arrayVerif['form_company'] === true) ? '<span class="requiredField">*</span>' : '' ?> {% trans 'admin::compte-utilisateur societe' %} :
+                    </label>
+                </td>
+                <td class="form_input">
+                    <input id="form_company" autocomplete="off" type="text" value="<?php echo $parm["form_company"] ?>" class="input_element" name="form_company">
+                </td>
+                <td class="form_alert">
+                    <?php echo isset($needed['form_company']) ? $needed['form_company'] : '' ?>
+                </td>
+            </tr>
+            <tr>
+                <td class="form_label">
+                    <label for="form_address">
+                        <?php echo (isset($arrayVerif['form_address']) && $arrayVerif['form_address'] === true) ? '<span class="requiredField">*</span>' : '' ?> {% trans 'admin::compte-utilisateur adresse' %} :
+                    </label>
+                </td>
+                <td class="form_input">
+                    <input id="form_address" autocomplete="off" type="text" value="<?php echo $parm["form_address"] ?>" class="input_element" name="form_address">
+                </td>
+                <td class="form_alert">
+                    <?php echo isset($needed['form_address']) ? $needed['form_address'] : '' ?>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="form_label">
+                    <label for="form_zip">
+                        <?php echo (isset($arrayVerif['form_zip']) && $arrayVerif['form_zip'] === true) ? '<span class="requiredField">*</span>' : '' ?> {% trans 'admin::compte-utilisateur code postal' %} :
+                    </label>
+                </td>
+                <td class="form_input">
+                    <input id="form_zip" autocomplete="off" type="text" value="<?php echo $parm["form_zip"] ?>" class="input_element" name="form_zip">
+                </td>
+                <td class="form_alert">
+                    <?php echo isset($needed['form_zip']) ? $needed['form_zip'] : '' ?>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td colspan="3">
+                    <hr/>
+                </td>
+            </tr>
+        </table>
+
+
+    <?php
+    if ($registry->get('GV_autoselectDB')) {
+    ?>
+            <div style="display:none;">
+        <?php
+    }
+    ?>
+            <div style="width:600px;height:20px;text-align:center;margin:0 auto;">{% trans 'admin::compte-utilisateur actuellement, acces aux bases suivantes : ' %}</div>
+            <div class="requiredField" style="width:600px;height:20px;text-align:center;margin:0 auto;"><?php echo isset($needed['demand']) ? 'Vous n\'avez selectionne aucune base' : '' ?></div>
+
+            <div style="width:600px;center;margin:0 5px;">
+
+
+<?php
+$demandes = null;
+if (is_array($parm['demand']))
+foreach ($parm['demand'] as $id)
+$demandes[$id] = true;
+
+echo giveInscript($lng, $demandes);
+?>
+            </div>
+
+        <?php
+        if ($registry->get('GV_autoselectDB')) {
+            ?>
+            </div>
+            <?php
+        }
+        ?>
+        <input type="hidden" value="<?php echo $lng ?>" name="lng">
+        <div style="margin:10px 0;text-align:center;"><input type="submit" value="{% trans 'boutton::valider' %}"/></div>
+    </form>
+
+
+
+<script type="text/javascript">
+
+    $('.tab').hover(function(){
+        $(this).addClass('active');
+    }, function(){
+        $(this).removeClass('active');
+    });
+</script>
+
+
+{% endblock %}

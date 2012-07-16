@@ -144,6 +144,54 @@ class Account implements ControllerProviderInterface
             ->bind('account_access');
 
         /**
+         * Reset user email
+         *
+         * name         : account_reset_email
+         *
+         * description  : Reset User email
+         *
+         * method       : GET
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->get('/register/', $this->call('registerAccount'))
+            ->bind('account_register');
+
+        /**
+         * Reset user email
+         *
+         * name         : account_reset_email
+         *
+         * description  : Reset User email
+         *
+         * method       : GET
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->get('/reset-email/', $this->call('resetEmail'))
+            ->bind('account_reset_email');
+
+        /**
+         * Reset user password
+         *
+         * name         : account_reset_password
+         *
+         * description  : Reset user password
+         *
+         * method       : GET
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->get('/reset-password/', $this->call('resetPassword'))
+            ->bind('account_reset_password');
+
+        /**
          * Give account open sessions
          *
          * name         : account_security_sessions
@@ -193,6 +241,22 @@ class Account implements ControllerProviderInterface
             ->bind('account_security_applications_grant');
 
         return $controllers;
+    }
+
+
+    public function registerAccount(Application $app, Request $request)
+    {
+        return new Response($app['Core']['Twig']->render('account/register.html.twig'));
+    }
+
+    public function resetPassword(Application $app, Request $request)
+    {
+        return new Response($app['Core']['Twig']->render('account/reset-password.html.twig'));
+    }
+
+    public function resetEmail(Application $app, Request $request)
+    {
+        return new Response($app['Core']['Twig']->render('account/reset-email.html.twig'));
     }
 
     /**

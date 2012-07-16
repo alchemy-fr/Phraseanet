@@ -1,6 +1,6 @@
  <html lang="{{ session.get_I18n() }}">
     <head>
-        <title>{{ registry.get('GV_homeTitle') }} {% trans 'login:: Mon compte'%}</title>
+        <title>{{ home_title }} {% block title %}{% endblock %}</title>
         <link rel="stylesheet" type="text/css" href="/include/minify/f=login/home.css,/login/geonames.css,/skins/html5/bootstrap/css/bootstrap.min.css,/skins/html5/bootstrap/css/bootstrap-responsive.min.css,/skins/login/css/main.css"/>
         <link rel="stylesheet" type="text/css" href="/skins/login/css/main.css"/>
         <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
@@ -14,8 +14,8 @@
                 <table style="width: 100%;">
                     <tr style="height: 35px;">
                         <td style="width: 580px;">
-                            <span class="title-name">{{ registry.get('GV_homeTitle') }}</span>
-                            <span class="title-desc">{% trans 'login:: Mon compte' %}</span>
+                            <span class="title-name">{{ home_title }}</span>
+                            <span class="title-desc">{{ block('title') }}</span>
                         </td>
                         <td style="color: #b1b1b1; text-align: right;">
                         </td>
