@@ -6,12 +6,16 @@
     {% if wrap %}
         <div style="width:{{ displayWidth | round }}px;height:{{ displayHeight | round }}px;" class="thumb_wrapper {{ extraclass | default('') }}">
     {% endif %}
-                
+
     <div class="record record_video imgTips" style="position:relative;width:{{ displayWidth | round }}px;height:{{ displayHeight | round }}px;">
         <video id="video_preview_tooltip" class="videoTips video-js vjs-default-skin" controls autoplay
         preload="auto" xposter="my_video_poster.png" width="{{ displayWidth|round }}" height="{{ displayHeight | round }}"
         data-setup="{}">
         {% for name, subdef in arraySubdefs %}
+            {% if loop.first %}
+            <input type="hidden" name="width" value="{{subdef.get_width()}}"/>
+            <input type="hidden" name="height" value="{{subdef.get_height()}}"/>
+            {% endif %}
             {% if session.is_authenticated() == true %}
                 {% set url = subdef.get_url() %}
             {% else %}
@@ -26,7 +30,11 @@
         $(document).ready(function(){
             try {
                 _V_("video_preview_tooltip", {}, function(){
-
+                    var player = this;
+                    $('#video_preview_tooltip').parent().bind('resize-video-js', function(){
+                        player.width($(this).width());
+                        player.height($(this).height());
+                    });
                 });
             } catch(err) {
                 console.error('An error has been catched during the execution of VideoJS', err);

@@ -498,6 +498,7 @@ function setPreview(){
 		top: t,
 		left: l
 	}).attr('width',w).attr('height',h);
+        $('#PREVIEWIMGCONT .record').trigger('resize-video-js');
 }
 
 function classicMode(){
@@ -527,7 +528,7 @@ function closePreview(){
 		cancelPreview();
 		$(this).dequeue();
 	});
-        
+
         $.each($('#PREVIEWBOX video'), function(i,el){
             _V_($(el).attr('id')).destroy();
         });
