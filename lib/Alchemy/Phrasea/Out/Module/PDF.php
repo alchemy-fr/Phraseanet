@@ -340,7 +340,7 @@ class PDF
             $RIGHT_IMG = NULL;
 
             $LEFT__IMG = $registry->get('GV_RootPath') . "config/minilogos/logopdf_"
-                . $rec->get_sbas_id() . ".jpg";
+                . $rec->get_sbas_id() . "";
 
             if ( ! is_file($LEFT__IMG)) {
                 $databox = $rec->get_databox();
