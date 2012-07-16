@@ -47,6 +47,8 @@
 
   RewriteRule ^robots.txt$            /index.php [L]
   RewriteRule ^feeds/.*$              /index.php [L]
+  RewriteRule ^account/.*$            /index.php [L]
+  RewriteRule ^developers/.*$         /index.php [L]
 
 # RewriteRule ^atom\/(cooliris)+\/?([0-9]*)\/?$  /cooliris.php?item_id=$2 [L]
 

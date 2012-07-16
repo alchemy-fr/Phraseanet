@@ -145,6 +145,11 @@ class API_OAuth2_Application
 
         $stmt = $this->appbox->get_connection()->prepare($sql);
         $stmt->execute(array(':application_id' => $this->id));
+
+        if (0 === $stmt->rowCount()) {
+            throw new \Exception_NotFound(sprintf('Application with id %d not found', $this->id));
+        }
+
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
         $this->creator = ! $row['creator'] ? null : User_Adapter::getInstance($row['creator'], $this->appbox);

@@ -11,8 +11,10 @@
 
 namespace Alchemy\Phrasea\Application;
 
-use Symfony\Component\HttpFoundation\Response;
 use Alchemy\Phrasea\Controller\Root as Controller;
+use Silex\Application as SilexApp;
+use Silex\Provider\ValidatorServiceProvider;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  *
@@ -20,17 +22,17 @@ use Alchemy\Phrasea\Controller\Root as Controller;
  * @link        www.phraseanet.com
  */
 return call_user_func(function() {
-            $app = new \Silex\Application();
+            $app = new SilexApp();
 
             $app['Core'] = \bootstrap::getCore();
 
-            if ( ! \setup::is_installed()) {
-                $response = new \Symfony\Component\HttpFoundation\RedirectResponse('/setup/');
+            $app->register(new ValidatorServiceProvider());
 
-                return $response->send();
-            }
+            $app->before(function () use ($app) {
+                    $app['Core']['Firewall']->requireSetup($app);
+                });
 
-            $app->get('/', function() use ($app) {
+            $app->get('/', function(SilexApp $app) {
                     $browser = \Browser::getInstance();
                     if ($browser->isMobile()) {
                         return $app->redirect("/login/?redirect=/lightbox");
@@ -41,17 +43,12 @@ return call_user_func(function() {
                     }
                 });
 
-            $app->get('/robots.txt', function() use ($app) {
-                    $appbox = \appbox::get_instance($app['Core']);
+            $app->get('/robots.txt', function(SilexApp $app) {
 
-                    $registry = $appbox->get_registry();
-
-                    if ($registry->get('GV_allow_search_engine') === true) {
-                        $buffer = "User-Agent: *\n"
-                            . "Allow: /\n";
+                    if ($app['Core']['Registry']->get('GV_allow_search_engine') === true) {
+                        $buffer = "User-Agent: *\n" . "Allow: /\n";
                     } else {
-                        $buffer = "User-Agent: *\n"
-                            . "Disallow: /\n";
+                        $buffer = "User-Agent: *\n" . "Disallow: /\n";
                     }
 
                     $response = new Response($buffer, 200, array('Content-Type' => 'text/plain'));
@@ -61,6 +58,8 @@ return call_user_func(function() {
                 });
 
             $app->mount('/feeds/', new Controller\RSSFeeds());
+            $app->mount('/account/', new Controller\Account());
+            $app->mount('/developers/', new Controller\Developers());
 
             return $app;
         }

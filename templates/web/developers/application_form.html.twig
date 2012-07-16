@@ -1,0 +1,105 @@
+{% extends 'account/base.html.twig' %}
+
+{% use "developers/header.html.twig" with header as parent_header %}
+
+{% block head %}
+    {{ block('parent_header') }}
+{% endblock %}
+
+{# form input macro #}
+{% macro input(name, value, violations, property, type, size) %}
+    {% if violations is none %}
+        <input type="{{ type|default('text') }}" name="{{ name }}" value="{{ value|e }}" size="{{ size|default(20) }}" />
+    {% else %}
+        {% set hasError = "false" %}
+        {% for violation in violations %}
+            {% if violation.getPropertyPath == property and hasError == "false" %}
+                {% set hasError = "true" %}
+                <input type="{{ type|default('text') }}" name="{{ name }}" value="{{ value  }}" size="{{ size|default(20) }}" />
+                <div style="color:red" > {{ violation.getInvalidValue  }} - {{violation.getMessage}} </div>
+            {% endif %}
+        {% endfor %}
+        {% if hasError == "false" %}
+            <input type="{{ type|default('text') }}" name="{{ name }}" value="{{ value|e }}" size="{{ size|default(20) }}" />
+        {% endif %}
+    {% endif %}
+{% endmacro %}
+
+{# form textare macro #}
+{% macro textarea(name, value, violations,property, rows, cols) %}
+    {% if violations is none %}
+        <textarea name="{{ name }}" rows="{{ rows|default(4)}}" cols="{{cols|default(20)}}" >{{ value|e}}</textarea>
+    {% else %}
+        {% set hasError = "false" %}
+        {% for violation in violations %}
+            {% if violation.getPropertyPath == property and hasError == "false" %}
+                {% set hasError = "true" %}
+                <textarea name="{{ name }}" rows="{{ rows|default(4)}}" cols="{{cols|default(20)}}" >{{ violation.getInvalidValue}}</textarea>
+                <div style="color:red" > {{violation.getMessage}} </div>
+            {% endif %}
+        {% endfor %}
+        {% if hasError == "false" %}
+            <textarea name="{{ name }}" rows="{{ rows|default(4)}}" cols="{{cols|default(20)}}" >{{ value|e}}</textarea>
+        {% endif %}
+    {% endif %}
+{% endmacro %}
+
+{% block content %}
+<form id="form_create" action="/developers/application/" method="POST">
+    {% if form is none %}
+      {% set name, description, website, callback = '', '', '', ''%}
+      {% set app_type = 'web'%}
+    {% else %}
+      {% set name = form.name %}
+      {% set description = form.description %}
+      {% set website = form.website %}
+      {% set callback = form.callback %}
+      {% set app_type = form.type %}
+    {% endif %}
+    <table id = "app-dev-create">
+      <tr>
+        <td><label for="name">{% trans 'Nom' %}</label></td>
+        <td>{{ _self.input("name", name, violations, 'name') }}</td>
+      </tr>
+      <tr>
+        <td><label for="description">{% trans 'Description' %}</label></td>
+        <td>{{ _self.textarea("description", description, 'description', violations, 5, 17) }}</td>
+      </tr>
+      <tr>
+        <td><label for="website">{% trans 'Site web' %}</label></td>
+        <td class="url-td">
+          <select name="scheme-website">
+            <option value="http://">http://</option>
+            <option value="https://">https://</option>
+          </select>
+          {{ _self.input("website", website, violations, 'urlwebsite') }}</td>
+      </tr>
+      <tr>
+        <td><label for="type">{% trans 'Type d\'application' %}</label></td>
+        <td>{% trans 'Application web' %}
+          <input type="radio" name="type" value="web" {{ app_type == "web" ? "checked='checked'" : "" }}/>
+    {% trans 'Application desktop' %}
+          <input type="radio" name="type" value="desktop" {{ app_type == "desktop" ? "checked='checked'" : "" }}/></td>
+      </tr>
+    {% if app_type == "web" %}
+      <tr class="callback" style="height:25px;">
+        <td><label for="callback">{% trans 'URL de callback' %} <br/></label></td>
+        <td class="url-td">
+          <select name="scheme-callback">
+            <option value="http://">http://</option>
+            <option value="https://">https://</option>
+          </select>
+          {{ _self.input("callback", callback, violations, 'urlcallback') }}</td>
+      </tr>
+    {% endif %}
+      <tr>
+        <td></td>
+        <td><button class="app_submit" type="button">{% trans 'boutton::valider' %}</button</td>
+
+      </tr>
+    </table>
+  </form>
+  <div style="text-align:left">
+    <a href="/developers/applications/"><button>{% trans 'boutton::retour' %}</button></a>
+  <div>
+{% endblock %}
