@@ -3569,26 +3569,6 @@ dans l'onglet thesaurus :  arbres, menus contextuels
     background-image: none;
 }
 
-#pub_tabs .container {
-    width: 660px;
-    background-color: #D9D9D9;
-    color: #FFFFFF;
-}
-
-#pub_tabs .container .blockmenu .dropdown-menu {
-    background-color: #E6E6E6;
-    border: 1px solid #D9D9D9;
-}
-
-#pub_tabs .container .blockmenu .dropdown-menu a {
-    color: #333333;
-}
-
-#pub_tabs .container .blockmenu .dropdown-menu a:hover {
-    background-color: #0088CC;
-    color: #FFFFFF;
-}
-
 #dialog_publicator .ui-tabs .ui-tabs-panel.loading {
     background-image: url('/skins/icons/loader000.gif');
     background-position: center center;
@@ -3601,6 +3581,31 @@ dans l'onglet thesaurus :  arbres, menus contextuels
 
 #dialog_publicator .diapo.ui-selecting {
     background-color: #202020;
+}
+
+
+#dialog_publicator .dropdown-menu {
+    min-width: 95px;
+    background-color: #A4A4A4;
+    *border: 1px solid #666666;
+}
+
+#dialog_publicator .dropdown-menu a {
+    padding: 3px 10px;
+    font-size: 12px;
+    color: #EAEAEA;
+    cursor: pointer;
+}
+
+#dialog_publicator .dropdown-menu a:hover {
+    background-color: #666666;
+    color: #FFFFFF;
+}
+
+#dialog_publicator .dropdown-menu .divider {
+    background-color: #777777;
+    border-bottom: 1px solid #B0B0B0;
+    margin: 3px 1px;
 }
 
 #ul_main_pub_tabs {
@@ -3655,12 +3660,12 @@ dans l'onglet thesaurus :  arbres, menus contextuels
 }
 
 #dialog_publicator .api_content .blockmenu {
-    height: 100%;
     bottom: auto;
-    overflow: hidden;
     background-repeat: repeat-x;
     background-position: left bottom;
     z-index: 1000;
+    width:100%;
+    height:40px
 }
 
 #dialog_publicator .api_content .blockmenu a.selected,
@@ -3689,34 +3694,6 @@ dans l'onglet thesaurus :  arbres, menus contextuels
     background-repeat: repeat-x;
     background-position: 0 0;
     color: #999999;
-}
-
-#dialog_publicator .main_menu {
-    float: left;
-}
-
-#dialog_publicator .main_menu button {
-    z-index: 555;
-    font-size: 13px;
-    font-weight: normal;
-}
-
-#dialog_publicator .main_menu .submenu button {
-    width: 145px;
-    z-index: 555;
-    background-color: #111;
-    font-size: 13px;
-    font-weight: normal;
-    border-color: #666;
-}
-
-#dialog_publicator .element_menu .submenu button {
-    width: 145px;
-    z-index: 555;
-    background-color: #111;
-    font-size: 13px;
-    font-weight: normal;
-    border-color: #666;
 }
 
 #dialog_publicator .diapo .title {

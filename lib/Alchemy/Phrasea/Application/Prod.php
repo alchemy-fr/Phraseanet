@@ -76,22 +76,22 @@ return call_user_func(function() {
                         if ($e instanceof \Bridge_Exception_ApiConnectorNotConfigured) {
                             $params = array_merge($params, array('account' => $app['current_account']));
 
-                            return new response($twig->render('/prod/actions/Bridge/notconfigured.twig', $params), 200);
+                            return new Response($twig->render('/prod/actions/Bridge/notconfigured.twig', $params), 200);
                         } elseif ($e instanceof \Bridge_Exception_ApiConnectorNotConnected) {
                             $params = array_merge($params, array('account' => $app['current_account']));
 
-                            return new response($twig->render('/prod/actions/Bridge/disconnected.twig', $params), 200);
+                            return new Response($twig->render('/prod/actions/Bridge/disconnected.twig', $params), 200);
                         } elseif ($e instanceof \Bridge_Exception_ApiConnectorAccessTokenFailed) {
                             $params = array_merge($params, array('account' => $app['current_account']));
 
-                            return new response($twig->render('/prod/actions/Bridge/disconnected.twig', $params), 200);
+                            return new Response($twig->render('/prod/actions/Bridge/disconnected.twig', $params), 200);
                         } elseif ($e instanceof \Bridge_Exception_ApiDisabled) {
                             $params = array_merge($params, array('api' => $e->get_api()));
 
-                            return new response($twig->render('/prod/actions/Bridge/deactivated.twig', $params), 200);
+                            return new Response($twig->render('/prod/actions/Bridge/deactivated.twig', $params), 200);
                         }
 
-                        return new response($twig->render('/prod/actions/Bridge/error.twig', $params), 200);
+                        return new Response($twig->render('/prod/actions/Bridge/error.twig', $params), 200);
                     }
                     if ($request->getRequestFormat() == 'json') {
                         $datas = array(

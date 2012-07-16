@@ -1,7 +1,7 @@
 
 {% import "common/thumbnail.html" as thumb %}
 
-<div class="PNB main_window">
+<div class="PNB" id='dialog_publicator'>
     <div id='publicator_selection' class="PNB10 ui-corner-all">
         <div class="PNB10">
             {% for id, record in route.get_elements %}
@@ -116,14 +116,20 @@ $(function() {
       });
 
       $('.bridge_action', $panel).bind('click', function(){
+        var $this = $(this);
+
         $.ajax({
           type : 'GET',
           url : $(this).attr('href'),
           beforeSend : function(){
-            $('.container', $panel).empty().addClass('loading');
+            var container = $('.container-bridge', $panel);
+            container.empty();
+            if( ! $this.hasClass('bridge_logout')) {
+                container.addClass('loading');
+            }
           },
           success : function(datas){
-            $panel.removeClass('loading').append(datas);
+            $('.container-bridge', $panel).removeClass('loading').append(datas);
             panel_load($panel);
           },
           error:function(){
@@ -216,7 +222,7 @@ $(function() {
       });
 
 
-      $('button.form_multiple_submitter', $panel).bind('click', function(){
+      $('a.form_multiple_submitter', $panel).bind('click', function(){
 
         var $form = $(this).closest('form');
         var elements = $('form[name="bridge_selection"] input[name="elements_list"]', $panel).val();
@@ -269,24 +275,22 @@ $(function() {
         return false;
 
       });
-
-
   }
 
   pub_tabs.tabs({
     load: function(event, ui)
     {
       $panel = $(ui.panel);
-      $('.container', $panel).removeClass('loading');
+      ('.container-bridge', $panel).removeClass('loading');
       panel_load($panel);
     }
-    , panelTemplate : '<div class="PNB"><div class="PNB10 container"></div></div>'
+    , panelTemplate : '<div class="PNB"><div class="PNB10 container-bridge"></div></div>'
     , spinner: '<i>loading...</i>'
     ,select: function(event, ui)
     {
       if($(ui.tab).hasClass('account'))
       {
-        var container = $('.container', ui.panel);
+        var container = $('.container-bridge', ui.panel);
         container.empty();
         $('.container', ui.panel).addClass('loading');
       }
