@@ -30,6 +30,33 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue($response->isOk());
     }
 
+    public function testGetAccountAccess()
+    {
+        $this->client->request('GET', '/account/access/');
+
+        $response = $this->client->getResponse();
+
+        $this->assertTrue($response->isOk());
+    }
+
+    public function testGetAccountSecuritySessions()
+    {
+        $this->client->request('GET', '/account/security/sessions/');
+
+        $response = $this->client->getResponse();
+
+        $this->assertTrue($response->isOk());
+    }
+
+    public function testGetAccountSecurityApplications()
+    {
+        $this->client->request('GET', '/account/security/applications/');
+
+        $response = $this->client->getResponse();
+
+        $this->assertTrue($response->isOk());
+    }
+
     public function testUpdateAccount()
     {
         $core = \bootstrap::getCore();
@@ -71,5 +98,23 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $response = $this->client->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('minet', $core->getAUthenticatedUser()->get_lastname());
+    }
+
+    public function testGetForgotPassword()
+    {
+        $this->client->request('GET', '/account/forgot-password/');
+
+        $response = $this->client->getResponse();
+
+        $this->assertTrue($response->isOk());
+    }
+
+    public function testPostForgotPassword()
+    {
+//        $this->client->request('POST', '/account/forgot-password/');
+//
+//        $response = $this->client->getResponse();
+//
+//        $this->assertTrue($response->isOk());
     }
 }
