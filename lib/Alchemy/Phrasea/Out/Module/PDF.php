@@ -45,19 +45,19 @@ class PDF
                     try {
                         $subdef = $record->get_subdef('preview');
                         if ( ! $subdef->is_physically_present()) {
-                            continue;
+                            continue 2;
                         }
                         if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE)
-                            continue;
+                            continue 2;
 
                         $subdef = $record->get_subdef('thumbnail');
                         if ( ! $subdef->is_physically_present())
-                            continue;
+                            continue 2;
 
                         if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE)
-                            continue;
+                            continue 2;
                     } catch (\Exception $e) {
-                        continue;
+                        continue 2;
                     }
                     break;
                 case self::LAYOUT_THUMBNAILLIST:
@@ -65,12 +65,12 @@ class PDF
                     try {
                         $subdef = $record->get_subdef('thumbnail');
                         if ( ! $subdef->is_physically_present())
-                            continue;
+                            continue 2;
 
                         if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE)
                             throw new \Exception('Not suitable');
                     } catch (\Exception $e) {
-                        continue;
+                        continue 2;
                     }
                     break;
             }
