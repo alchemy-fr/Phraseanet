@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\Helper\Record;
 
 use Alchemy\Phrasea\Helper\Record\Helper as RecordHelper;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Edit Record Helper
