@@ -234,7 +234,7 @@ class Account implements ControllerProviderInterface
          *
          * parameters   : none
          *
-         * return       : HTML Response
+         * return       : JSON Response
          */
         $controllers->get('/security/application/{application_id}/grant/', $this->call('grantAccess'))
             ->assert('application_id', '\d+')
