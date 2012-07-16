@@ -1818,7 +1818,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             $pathdest = databox::dispatch($subdef->get_path());
         }
 
-        return $pathdest . $this->get_record_id() . '_' . $subdef->get_name() . '.' . $this->getExtensionFromSpec($subdef->getSpecs(), $logger);
+        return $pathdest . $this->get_record_id() . '_' . $subdef->get_name() . '.' . $this->getExtensionFromSpec($subdef->getSpecs());
     }
 
     /**
