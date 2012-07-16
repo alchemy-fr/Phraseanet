@@ -124,7 +124,7 @@ class Account implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/forgot-password/', $this->call('renewPassword'))
+        $controllers->post('/forgot-password/', $this->call('renewPasswordFromMail'))
             ->bind('post_account_forgot_password');
 
         /**
@@ -176,11 +176,11 @@ class Account implements ControllerProviderInterface
             ->bind('account_reset_email');
 
         /**
-         * Reset user password
+         * Display form to renew password
          *
          * name         : account_reset_password
          *
-         * description  : Reset user password
+         * description  : Display form to renew password
          *
          * method       : GET
          *
@@ -190,6 +190,22 @@ class Account implements ControllerProviderInterface
          */
         $controllers->get('/reset-password/', $this->call('resetPassword'))
             ->bind('account_reset_password');
+
+        /**
+         * Reset user password
+         *
+         * name         : account_reset_password
+         *
+         * description  : Reset user password
+         *
+         * method       : POST
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->post('/reset-password/', $this->call('renewPassword'))
+            ->bind('post_account_reset_password');
 
         /**
          * Give account open sessions
@@ -308,7 +324,6 @@ class Account implements ControllerProviderInterface
         return $controllers;
     }
 
-
     public function registerAccount(Application $app, Request $request)
     {
         return new Response($app['Core']['Twig']->render('account/register.html.twig'));
@@ -316,7 +331,23 @@ class Account implements ControllerProviderInterface
 
     public function resetPassword(Application $app, Request $request)
     {
-        return new Response($app['Core']['Twig']->render('account/reset-password.html.twig'));
+        if (null !== $passwordMsg = $request->get('pass-error')) {
+            switch ($passwordMsg) {
+                case 'pass-match':
+                    $passwordMsg = _('forms::les mots de passe ne correspondent pas');
+                    break;
+                case 'pass-short':
+                    $passwordMsg = _('forms::la valeur donnee est trop courte');
+                    break;
+                case 'pass-invalid':
+                    $passwordMsg = _('forms::la valeur donnee contient des caracteres invalides');
+                    break;
+            }
+        }
+
+        return new Response($app['Core']['Twig']->render('account/reset-password.html.twig', array(
+            'passwordMsg' => $passwordMsg
+        )));
     }
 
     public function resetEmail(Application $app, Request $request)
@@ -332,6 +363,45 @@ class Account implements ControllerProviderInterface
      * @return Response
      */
     public function renewPassword(Application $app, Request $request)
+    {
+        $appbox = \appbox::get_instance($app['Core']);
+
+        if ( (null !== $password = $request->get('form_password')) && (null !== $passwordConfirm = $request->get('form_password_confirm'))) {
+            if ($password !== $passwordConfirm) {
+
+                return $app->redirect('/account/reset-password/?pass-error=pass-match');
+            } elseif (strlen(trim($password)) < 5) {
+
+                return $app->redirect('/account/reset-password/?pass-error=pass-short');
+            } elseif (trim($password) != str_replace(array("\r\n", "\n", "\r", "\t", " "), "_", $password)) {
+
+                return $app->redirect('/account/reset-password/?pass-error=pass-invalid');
+            }
+
+            try {
+                $user = $app['Core']->getAuthenticatedUser();
+
+                $auth = new \Session_Authentication_Native($appbox, $user->get_login(), $request->get('form_old_password', ''));
+                $auth->challenge_password();
+
+                $user->set_password($passwordConfirm);
+
+                return $app->redirect('/account/?notice=pass-ok');
+            } catch (\Exception $e) {
+                return $app->redirect('/account/?notice=pass-ko');
+            }
+        }
+    }
+
+
+    /**
+     * Submit the new password
+     *
+     * @param Application $app     A Silex application where the controller is mounted on
+     * @param Request     $request The current request
+     * @return Response
+     */
+    public function renewPasswordFromMail(Application $app, Request $request)
     {
         $appbox = \appbox::get_instance($app['Core']);
 
@@ -456,12 +526,11 @@ class Account implements ControllerProviderInterface
         }
 
         return new Response($app['Core']['Twig']->render('account/forgot-password.html.twig', array(
-                'needed'      => array(),
-                'tokenize'    => $tokenize,
-                'passwordMsg' => $passwordMsg,
-                'errorMsg'    => $errorMsg,
-                'sentMsg'     => $sentMsg
-            )));
+                    'tokenize'    => $tokenize,
+                    'passwordMsg' => $passwordMsg,
+                    'errorMsg'    => $errorMsg,
+                    'sentMsg'     => $sentMsg
+                )));
     }
 
     /**
@@ -641,8 +710,11 @@ class Account implements ControllerProviderInterface
         $evtMngr = \eventsmanager_broker::getInstance($appbox, $app['Core']);
 
         switch ($notice = $request->get('notice', '')) {
-            case 'password-update-ok':
+            case 'pass-ok':
                 $notice = _('login::notification: Mise a jour du mot de passe avec succes');
+                break;
+            case 'pass-ko':
+                $notice = _('Password update failed');
                 break;
             case 'account-update-ok':
                 $notice = _('login::notification: Changements enregistres');
