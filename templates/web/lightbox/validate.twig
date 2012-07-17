@@ -122,11 +122,13 @@
                     <tr>
                         <td style="width:20px;">
                         </td>
-                        <td style="width:310px;">
-                            {% if basket.getValidation() %}
-                            <img title="{% trans 'lightbox::recaptitulatif' %}" class="report" src="/skins/lightbox/retour.png"/>
-                            {% endif %}
-                            <select id="navigation">
+                        {% if basket.getValidation() %}
+                            <td style="width:50px;">
+                                <img title="{% trans 'lightbox::recaptitulatif' %}" class="report" src="/skins/lightbox/retour.png"/>
+                            </td>
+                        {% endif %}
+                        <td style="width:220px;">
+                            <select id="navigation" style='margin:0'>
                                 <optgroup label="{% trans 'Validations'%}">
                                 {% for item in baskets_collection %}
                                   {% if item.getValidation() %}
@@ -144,8 +146,10 @@
                                 {% endfor %}
                                 </optgroup>
                             </select>
-                            <button class="ui-corner-all basket_downloader" title="{% trans 'boutton::telecharger tous les documents' %}">
-                                <img src="/skins/lightbox/save.png"/>
+                        </td>
+                        <td style="width:50px;">
+                            <button style='width:30px;margin:0;' class="ui-corner-all basket_downloader" title="{% trans 'boutton::telecharger tous les documents' %}">
+                               <img src="/skins/lightbox/save.png"/>
                             </button>
                         </td>
                         <td>
@@ -156,7 +160,7 @@
                     </tr>
                 </table>
             </div>
-            <div class="PNB" style="top:30px;">
+            <div class="PNB" style="top:40px;">
                 <div id="left_scroller" class="PNB clickable">
                 </div>
                 <div class="PNB" id="sc_wrapper">
