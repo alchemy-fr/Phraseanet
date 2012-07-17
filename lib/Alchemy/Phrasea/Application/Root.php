@@ -12,6 +12,8 @@
 namespace Alchemy\Phrasea\Application;
 
 use Alchemy\Phrasea\Controller\Root as Controller;
+use Alchemy\Phrasea\Controller\Login\Authenticate as AuthenticateController;
+use Alchemy\Phrasea\Controller\Login\Login as LoginController;
 use Silex\Application as SilexApp;
 use Silex\Provider\ValidatorServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,7 +34,7 @@ return call_user_func(function() {
             $app->register(new ValidatorServiceProvider());
 
             $app->before(function () use ($app) {
-                    $app['Core']['Firewall']->requireSetup($app);
+                    $app['phraseanet.core']['Firewall']->requireSetup($app);
                 });
 
             $app->get('/', function(SilexApp $app) {
@@ -48,7 +50,7 @@ return call_user_func(function() {
 
             $app->get('/robots.txt', function(SilexApp $app) {
 
-                    if ($app['Core']['Registry']->get('GV_allow_search_engine') === true) {
+                    if ($app['phraseanet.core']['Registry']->get('GV_allow_search_engine') === true) {
                         $buffer = "User-Agent: *\n" . "Allow: /\n";
                     } else {
                         $buffer = "User-Agent: *\n" . "Disallow: /\n";
@@ -62,6 +64,8 @@ return call_user_func(function() {
 
             $app->mount('/feeds/', new Controller\RSSFeeds());
             $app->mount('/account/', new Controller\Account());
+            $app->mount('/login/authenticate/', new AuthenticateController());
+            $app->mount('/login/', new LoginController());
             $app->mount('/developers/', new Controller\Developers());
             $app->mount('/login/', new Controller\Login());
 

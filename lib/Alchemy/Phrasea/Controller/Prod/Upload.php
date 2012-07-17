@@ -92,7 +92,7 @@ class Upload implements ControllerProviderInterface
         $collections = array();
         $rights = array('canaddrecord');
 
-        foreach ($app['Core']->getAuthenticatedUser()->ACL()->get_granted_base($rights) as $collection) {
+        foreach ($app['phraseanet.core']->getAuthenticatedUser()->ACL()->get_granted_base($rights) as $collection) {
             $databox = $collection->get_databox();
             if ( ! isset($collections[$databox->get_sbas_id()])) {
                 $collections[$databox->get_sbas_id()] = array(
@@ -121,7 +121,7 @@ class Upload implements ControllerProviderInterface
 
         $maxFileSize = min(UploadedFile::getMaxFilesize(), (int) $postMaxSize);
 
-        $html = $app['Core']['Twig']->render(
+        $html = $app['phraseanet.core']['Twig']->render(
             'prod/upload/upload.html.twig', array(
             'collections'         => $collections,
             'maxFileSize'         => $maxFileSize,
@@ -165,7 +165,7 @@ class Upload implements ControllerProviderInterface
             throw new \Exception_BadRequest('Missing base_id parameter');
         }
 
-        if ( ! $app['Core']->getAuthenticatedUser()->ACL()->has_right_on_base($base_id, 'canaddrecord')) {
+        if ( ! $app['phraseanet.core']->getAuthenticatedUser()->ACL()->has_right_on_base($base_id, 'canaddrecord')) {
             throw new \Exception_Forbidden('User is not allowed to add record on this collection');
         }
 
@@ -185,17 +185,17 @@ class Upload implements ControllerProviderInterface
             $size = $file->getSize();
             $error = $file->getError();
 
-            $app['Core']['file-system']->rename($uploadedFilename, $renamedFilename);
+            $app['phraseanet.core']['file-system']->rename($uploadedFilename, $renamedFilename);
 
             $file = new UploadedFile($renamedFilename, $originalname, $clientMimeType, $size, $error);
 
-            $media = $app['Core']['mediavorus']->guess($file);
+            $media = $app['phraseanet.core']['mediavorus']->guess($file);
             $collection = \collection::get_from_base_id($base_id);
 
             $lazaretSession = new \Entities\LazaretSession();
-            $lazaretSession->setUsrId($app['Core']->getAuthenticatedUser()->get_id());
+            $lazaretSession->setUsrId($app['phraseanet.core']->getAuthenticatedUser()->get_id());
 
-            $app['Core']['EM']->persist($lazaretSession);
+            $app['phraseanet.core']['EM']->persist($lazaretSession);
 
             $packageFile = new Border\File($media, $collection, $file->getClientOriginalName());
 
@@ -226,11 +226,11 @@ class Upload implements ControllerProviderInterface
                     $elementCreated = $element;
                 };
 
-            $code = $app['Core']['border-manager']->process(
+            $code = $app['phraseanet.core']['border-manager']->process(
                 $lazaretSession, $packageFile, $callback, $forceBehavior
             );
 
-            $app['Core']['file-system']->rename($renamedFilename, $uploadedFilename);
+            $app['phraseanet.core']['file-system']->rename($renamedFilename, $uploadedFilename);
 
             if ( ! ! $forceBehavior) {
                 $reasons = array();
@@ -243,9 +243,9 @@ class Upload implements ControllerProviderInterface
             } else {
                 $params = array('lazaret_file' => $elementCreated);
 
-                $appbox = \appbox::get_instance($app['Core']);
+                $appbox = $app['phraseanet.appbox'];
 
-                $eventsManager = \eventsmanager_broker::getInstance($appbox, $app['Core']);
+                $eventsManager = \eventsmanager_broker::getInstance($appbox, $app['phraseanet.core']);
                 $eventsManager->trigger('__UPLOAD_QUARANTINE__', $params);
 
                 $id = $elementCreated->getId();
@@ -265,7 +265,7 @@ class Upload implements ControllerProviderInterface
             $datas['message'] = _('Unable to add file to Phraseanet');
         }
 
-        $response = self::getJsonResponse($app['Core']['Serializer'], $datas);
+        $response = self::getJsonResponse($app['phraseanet.core']['Serializer'], $datas);
 
         // IE 7 and 8 does not correctly handle json response in file API
         // let send them an html content-type header

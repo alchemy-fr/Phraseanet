@@ -21,9 +21,7 @@ use Alchemy\Phrasea\Controller\Utils as ControllerUtils;
  */
 return call_user_func(
         function() {
-            $app = new \Silex\Application();
-
-            $app['Core'] = \bootstrap::getCore();
+            $app = new \Alchemy\Phrasea\Application();
 
             $app->mount('/', new Controller\Root());
             $app->mount('/connected-users', new Controller\ConnectedUsers());

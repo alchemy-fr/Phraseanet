@@ -101,7 +101,7 @@ class Language implements ControllerProviderInterface
                 $out['browserFeatureSupport'] = _('This feature is not supported by your browser');
                 $out['noActiveBasket'] = _('No active basket');
 
-                $Serializer = $app['Core']['Serializer'];
+                $Serializer = $app['phraseanet.core']['Serializer'];
 
                 return new Response(
                         $Serializer->serialize($out, 'json')

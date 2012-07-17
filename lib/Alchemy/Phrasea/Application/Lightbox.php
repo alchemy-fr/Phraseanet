@@ -22,19 +22,15 @@ use Alchemy\Phrasea\Controller\Exception as ControllerException;
  */
 return call_user_func(
         function() {
-            $app = new \Silex\Application();
+            $app = new \Alchemy\Phrasea\Application();
 
-            $app['Core'] = \bootstrap::getCore();
-
-            $appbox = \appbox::get_instance($app['Core']);
-
-            $app->get('/', function (\Silex\Application $app) use ($appbox) {
+            $app->get('/', function (\Silex\Application $app) {
                     \User_Adapter::updateClientInfos((6));
 
-                    $em = $app['Core']->getEntityManager();
+                    $em = $app['phraseanet.core']->getEntityManager();
                     $repository = $em->getRepository('\Entities\Basket');
 
-                    $current_user = $app['Core']->getAuthenticatedUser();
+                    $current_user = $app['phraseanet.core']->getAuthenticatedUser();
 
                     /* @var $repository \Repositories\BasketRepository */
 
@@ -44,7 +40,7 @@ return call_user_func(
                     );
 
                     /* @var $twig \Twig_Environment */
-                    $twig = $app['Core']->getTwig();
+                    $twig = $app['phraseanet.core']->getTwig();
 
                     $browser = \Browser::getInstance();
 
@@ -66,21 +62,21 @@ return call_user_func(
                 }
             );
 
-            $app->get('/ajax/NOTE_FORM/{sselcont_id}/', function(\Silex\Application $app, $sselcont_id) use ($appbox) {
+            $app->get('/ajax/NOTE_FORM/{sselcont_id}/', function(\Silex\Application $app, $sselcont_id) {
                     /* @var $twig \Twig_Environment */
-                    $twig = $app['Core']->getTwig();
+                    $twig = $app['phraseanet.core']->getTwig();
                     $browser = \Browser::getInstance();
 
                     if ( ! $browser->isMobile()) {
                         return new Response('');
                     }
 
-                    $em = $app['Core']->getEntityManager();
+                    $em = $app['phraseanet.core']->getEntityManager();
 
                     /* @var $repository \Repositories\BasketElementRepository */
                     $repository = $em->getRepository('\Entities\BasketElement');
 
-                    $basket_element = $repository->findUserElement($sselcont_id, $app['Core']->getAuthenticatedUser());
+                    $basket_element = $repository->findUserElement($sselcont_id, $app['phraseanet.core']->getAuthenticatedUser());
 
                     $template = 'lightbox/note_form.twig';
                     $output = $twig->render($template, array('basket_element' => $basket_element, 'module_name'    => ''));
@@ -93,14 +89,14 @@ return call_user_func(
                     $browser = \Browser::getInstance();
 
                     /* @var $twig \Twig_Environment */
-                    $twig = $app['Core']->getTwig();
+                    $twig = $app['phraseanet.core']->getTwig();
 
-                    $em = $app['Core']->getEntityManager();
+                    $em = $app['phraseanet.core']->getEntityManager();
 
                     /* @var $repository \Repositories\BasketElementRepository */
                     $repository = $em->getRepository('\Entities\BasketElement');
 
-                    $BasketElement = $repository->findUserElement($sselcont_id, $app['Core']->getAuthenticatedUser());
+                    $BasketElement = $repository->findUserElement($sselcont_id, $app['phraseanet.core']->getAuthenticatedUser());
 
                     if ($browser->isMobile()) {
                         $output = $twig->render('lightbox/basket_element.twig', array(
@@ -122,8 +118,7 @@ return call_user_func(
                             $template_options = 'lightbox/IE6/sc_options_box.twig';
                             $template_agreement = 'lightbox/IE6/agreement_box.twig';
                         }
-                        $appbox = \appbox::get_instance($app['Core']);
-                        $usr_id = $appbox->get_session()->get_usr_id();
+                        $usr_id = $app['phraseanet.appbox']->get_session()->get_usr_id();
 
                         $Basket = $BasketElement->getBasket();
 
@@ -138,7 +133,7 @@ return call_user_func(
                         $ret['note_html'] = $twig->render($template_note, array('basket_element' => $BasketElement));
                         $ret['caption'] = $twig->render($template_caption, array('view'   => 'preview', 'record' => $BasketElement->getRecord()));
 
-                        $Serializer = $app['Core']['Serializer'];
+                        $Serializer = $app['phraseanet.core']['Serializer'];
 
                         return new Response(
                                 $Serializer->serialize($ret, 'json')
@@ -151,11 +146,10 @@ return call_user_func(
 
             $app->get('/ajax/LOAD_FEED_ITEM/{entry_id}/{item_id}/', function(\Silex\Application $app, $entry_id, $item_id) {
                     /* @var $twig \Twig_Environment */
-                    $twig = $app['Core']->getTwig();
+                    $twig = $app['phraseanet.core']->getTwig();
 
-                    $appbox = \appbox::get_instance($app['Core']);
-                    $entry = \Feed_Entry_Adapter::load_from_id($appbox, $entry_id);
-                    $item = new \Feed_Entry_Item($appbox, $entry, $item_id);
+                    $entry = \Feed_Entry_Adapter::load_from_id($app['phraseanet.appbox'], $entry_id);
+                    $item = new \Feed_Entry_Item($app['phraseanet.appbox'], $entry, $item_id);
 
                     $browser = \Browser::getInstance();
 
@@ -175,7 +169,6 @@ return call_user_func(
                         if ( ! $browser->isNewGeneration()) {
                             $template_options = 'lightbox/IE6/feed_options_box.twig';
                         }
-                        $usr_id = $appbox->get_session()->get_usr_id();
 
                         $ret = array();
                         $ret['number'] = $item->get_record()->get_number();
@@ -187,7 +180,7 @@ return call_user_func(
 
                         $ret['agreement_html'] = $ret['selector_html'] = $ret['note_html'] = '';
 
-                        $Serializer = $app['Core']['Serializer'];
+                        $Serializer = $app['phraseanet.core']['Serializer'];
 
                         return new Response(
                                 $Serializer->serialize($ret, 'json')
@@ -198,23 +191,23 @@ return call_user_func(
                 }
             )->assert('entry_id', '\d+')->assert('item_id', '\d+');
 
-            $app->get('/validate/{ssel_id}/', function (\Silex\Application $app, $ssel_id) use ($appbox) {
+            $app->get('/validate/{ssel_id}/', function (\Silex\Application $app, $ssel_id) {
 
                     \User_Adapter::updateClientInfos((6));
 
                     $browser = \Browser::getInstance();
 
-                    $em = $app['Core']->getEntityManager();
+                    $em = $app['phraseanet.core']->getEntityManager();
                     $repository = $em->getRepository('\Entities\Basket');
 
                     /* @var $repository \Repositories\BasketRepository */
                     $basket_collection = $repository->findActiveValidationAndBasketByUser(
-                        $app['Core']->getAuthenticatedUser()
+                        $app['phraseanet.core']->getAuthenticatedUser()
                     );
 
                     $basket = $repository->findUserBasket(
                         $ssel_id
-                        , $app['Core']->getAuthenticatedUser()
+                        , $app['phraseanet.core']->getAuthenticatedUser()
                         , false
                     );
 
@@ -224,14 +217,14 @@ return call_user_func(
                         $em->flush();
                     }
 
-                    if ($basket->getValidation() && $basket->getValidation()->getParticipant($app['Core']->getAuthenticatedUser())->getIsAware() === false) {
+                    if ($basket->getValidation() && $basket->getValidation()->getParticipant($app['phraseanet.core']->getAuthenticatedUser())->getIsAware() === false) {
                         $basket = $em->merge($basket);
-                        $basket->getValidation()->getParticipant($app['Core']->getAuthenticatedUser())->setIsAware(true);
+                        $basket->getValidation()->getParticipant($app['phraseanet.core']->getAuthenticatedUser())->setIsAware(true);
                         $em->flush();
                     }
 
                     /* @var $twig \Twig_Environment */
-                    $twig = $app['Core']->getTwig();
+                    $twig = $app['phraseanet.core']->getTwig();
 
                     $template = 'lightbox/validate.twig';
 
@@ -252,23 +245,23 @@ return call_user_func(
                 }
             )->assert('ssel_id', '\d+');
 
-            $app->get('/compare/{ssel_id}/', function (\Silex\Application $app, $ssel_id) use ($appbox) {
+            $app->get('/compare/{ssel_id}/', function (\Silex\Application $app, $ssel_id) {
 
                     \User_Adapter::updateClientInfos((6));
 
                     $browser = \Browser::getInstance();
 
-                    $em = $app['Core']->getEntityManager();
+                    $em = $app['phraseanet.core']->getEntityManager();
                     $repository = $em->getRepository('\Entities\Basket');
 
                     /* @var $repository \Repositories\BasketRepository */
                     $basket_collection = $repository->findActiveValidationAndBasketByUser(
-                        $app['Core']->getAuthenticatedUser()
+                        $app['phraseanet.core']->getAuthenticatedUser()
                     );
 
                     $basket = $repository->findUserBasket(
                         $ssel_id
-                        , $app['Core']->getAuthenticatedUser()
+                        , $app['phraseanet.core']->getAuthenticatedUser()
                         , false
                     );
 
@@ -278,14 +271,14 @@ return call_user_func(
                         $em->flush();
                     }
 
-                    if ($basket->getValidation() && $basket->getValidation()->getParticipant($app['Core']->getAuthenticatedUser())->getIsAware() === false) {
+                    if ($basket->getValidation() && $basket->getValidation()->getParticipant($app['phraseanet.core']->getAuthenticatedUser())->getIsAware() === false) {
                         $basket = $em->merge($basket);
-                        $basket->getValidation()->getParticipant($app['Core']->getAuthenticatedUser())->setIsAware(true);
+                        $basket->getValidation()->getParticipant($app['phraseanet.core']->getAuthenticatedUser())->setIsAware(true);
                         $em->flush();
                     }
 
                     /* @var $twig \Twig_Environment */
-                    $twig = $app['Core']->getTwig();
+                    $twig = $app['phraseanet.core']->getTwig();
 
                     $template = 'lightbox/validate.twig';
 
@@ -306,16 +299,16 @@ return call_user_func(
                 }
             )->assert('ssel_id', '\d+');
 
-            $app->get('/feeds/entry/{entry_id}/', function (\Silex\Application $app, $entry_id) use ($appbox) {
+            $app->get('/feeds/entry/{entry_id}/', function (\Silex\Application $app, $entry_id) {
 
                     \User_Adapter::updateClientInfos((6));
 
                     $browser = \Browser::getInstance();
 
-                    $feed_entry = \Feed_Entry_Adapter::load_from_id($appbox, $entry_id);
+                    $feed_entry = \Feed_Entry_Adapter::load_from_id($app['phraseanet.appbox'], $entry_id);
 
                     /* @var $twig \Twig_Environment */
-                    $twig = $app['Core']->getTwig();
+                    $twig = $app['phraseanet.core']->getTwig();
 
                     $template = 'lightbox/feed.twig';
 
@@ -339,19 +332,19 @@ return call_user_func(
 
             $app->get('/ajax/LOAD_REPORT/{ssel_id}/', function(\Silex\Application $app, $ssel_id) {
                     /* @var $twig \Twig_Environment */
-                    $twig = $app['Core']->getTwig();
+                    $twig = $app['phraseanet.core']->getTwig();
 
                     $browser = \Browser::getInstance();
 
                     $template = 'lightbox/basket_content_report.twig';
 
-                    $em = $app['Core']->getEntityManager();
+                    $em = $app['phraseanet.core']->getEntityManager();
                     $repository = $em->getRepository('\Entities\Basket');
 
                     /* @var $repository \Repositories\BasketRepository */
                     $basket = $repository->findUserBasket(
                         $ssel_id
-                        , $app['Core']->getAuthenticatedUser()
+                        , $app['phraseanet.core']->getAuthenticatedUser()
                         , false
                     );
 
@@ -372,14 +365,14 @@ return call_user_func(
                         Return new Response('You must provide a note value', 400);
                     }
 
-                    $em = $app['Core']->getEntityManager();
+                    $em = $app['phraseanet.core']->getEntityManager();
 
                     /* @var $repository \Repositories\BasketElementRepository */
                     $repository = $em->getRepository('\Entities\BasketElement');
 
-                    $basket_element = $repository->findUserElement($sselcont_id, $app['Core']->getAuthenticatedUser());
+                    $basket_element = $repository->findUserElement($sselcont_id, $app['phraseanet.core']->getAuthenticatedUser());
 
-                    $validationDatas = $basket_element->getUserValidationDatas($app['Core']->getAuthenticatedUser());
+                    $validationDatas = $basket_element->getUserValidationDatas($app['phraseanet.core']->getAuthenticatedUser());
 
                     $validationDatas->setNote($note);
 
@@ -388,7 +381,7 @@ return call_user_func(
                     $em->flush();
 
                     /* @var $twig \Twig_Environment */
-                    $twig = $app['Core']->getTwig();
+                    $twig = $app['phraseanet.core']->getTwig();
 
                     $browser = \Browser::getInstance();
 
@@ -404,7 +397,7 @@ return call_user_func(
                         $output = array('error' => false, 'datas' => $datas);
                     }
 
-                    $Serializer = $app['Core']['Serializer'];
+                    $Serializer = $app['phraseanet.core']['Serializer'];
 
                     return new Response(
                             $Serializer->serialize($output, 'json')
@@ -432,8 +425,8 @@ return call_user_func(
                             'datas'      => _('Erreur lors de la mise a jour des donnes ')
                         );
 
-                        $user = $app['Core']->getAuthenticatedUser();
-                        $em = $app['Core']->getEntityManager();
+                        $user = $app['phraseanet.core']->getAuthenticatedUser();
+                        $em = $app['phraseanet.core']->getEntityManager();
                         $repository = $em->getRepository('\Entities\BasketElement');
 
                         /* @var $repository \Repositories\BasketElementRepository */
@@ -473,7 +466,7 @@ return call_user_func(
                     } catch (ControllerException $e) {
                         $ret['datas'] = $e->getMessage();
                     }
-                    $Serializer = $app['Core']['Serializer'];
+                    $Serializer = $app['phraseanet.core']['Serializer'];
 
                     return new Response(
                             $Serializer->serialize($ret, 'json')
@@ -483,11 +476,11 @@ return call_user_func(
                 }
             )->assert('sselcont_id', '\d+');
 
-            $app->post('/ajax/SET_RELEASE/{ssel_id}/', function(\Silex\Application $app, $ssel_id) use ($appbox) {
+            $app->post('/ajax/SET_RELEASE/{ssel_id}/', function(\Silex\Application $app, $ssel_id) {
 
-                    $em = $app['Core']->getEntityManager();
+                    $em = $app['phraseanet.core']->getEntityManager();
 
-                    $user = $app['Core']->getAuthenticatedUser();
+                    $user = $app['phraseanet.core']->getAuthenticatedUser();
 
                     $repository = $em->getRepository('\Entities\Basket');
 
@@ -512,11 +505,10 @@ return call_user_func(
                         /* @var $basket \Entities\Basket */
                         $participant = $basket->getValidation()->getParticipant($user);
 
-                        $appbox = \appbox::get_instance($app['Core']);
-                        $evt_mngr = \eventsmanager_broker::getInstance($appbox, $app['Core']);
+                        $evt_mngr = \eventsmanager_broker::getInstance($app['phraseanet.appbox'], $app['phraseanet.core']);
 
                         $expires = new \DateTime('+10 days');
-                        $url = $appbox->get_registry()->get('GV_ServerName')
+                        $url = $app['phraseanet.appbox']->get_registry()->get('GV_ServerName')
                             . 'lightbox/index.php?LOG=' . \random::getUrlToken(
                                 \random::TYPE_VALIDATE
                                 , $basket->getValidation()->getInitiator()->get_id()
@@ -527,7 +519,7 @@ return call_user_func(
                         $to = $basket->getValidation()->getInitiator()->get_id();
                         $params = array(
                             'ssel_id' => $basket->getId(),
-                            'from'    => $app['Core']->getAuthenticatedUser()->get_id(),
+                            'from'    => $app['phraseanet.core']->getAuthenticatedUser()->get_id(),
                             'url'     => $url,
                             'to'      => $to
                         );
@@ -545,7 +537,7 @@ return call_user_func(
                         $datas = array('error' => true, 'datas' => $e->getMessage());
                     }
 
-                    $Serializer = $app['Core']['Serializer'];
+                    $Serializer = $app['phraseanet.core']['Serializer'];
 
                     $response = new Response(
                             $Serializer->serialize($datas, 'json')
@@ -562,7 +554,7 @@ return call_user_func(
             $app->error(function($e) use($app) {
 
                     /* @var $twig \Twig_Environment */
-                    $twig = $app['Core']->getTwig();
+                    $twig = $app['phraseanet.core']->getTwig();
                     $registry = \registry::get_instance();
 
                     $template = 'lightbox/error.twig';

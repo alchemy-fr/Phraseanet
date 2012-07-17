@@ -29,27 +29,27 @@ class Users implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
-        $appbox = \appbox::get_instance($app['Core']);
+        $appbox = $app['phraseanet.appbox'];
 
         $controllers = $app['controllers_factory'];
 
         $controllers->post('/rights/', function(Application $app) {
-                $rights = new UserHelper\Edit($app['Core'], $app['request']);
+                $rights = new UserHelper\Edit($app['phraseanet.core'], $app['request']);
 
                 $template = 'admin/editusers.twig';
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
                 return $twig->render($template, $rights->get_users_rights());
             }
         );
 
         $controllers->get('/rights/', function(Application $app) {
-                $rights = new UserHelper\Edit($app['Core'], $app['request']);
+                $rights = new UserHelper\Edit($app['phraseanet.core'], $app['request']);
 
                 $template = 'admin/editusers.twig';
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
                 return $twig->render($template, $rights->get_users_rights());
             }
@@ -57,7 +57,7 @@ class Users implements ControllerProviderInterface
 
         $controllers->post('/rights/reset/', function(Application $app, Request $request) {
                 try {
-                    $core = $app['Core'];
+                    $core = $app['phraseanet.core'];
                     $datas = array('error' => false);
 
                     $helper = new UserHelper\Edit($core, $request);
@@ -76,7 +76,7 @@ class Users implements ControllerProviderInterface
         );
 
         $controllers->post('/delete/', function(Application $app) {
-                $module = new UserHelper\Edit($app['Core'], $app['request']);
+                $module = new UserHelper\Edit($app['phraseanet.core'], $app['request']);
                 $module->delete_users();
 
                 return $app->redirect('/admin/users/search/');
@@ -87,7 +87,7 @@ class Users implements ControllerProviderInterface
                 $datas = array('error' => true);
 
                 try {
-                    $rights = new UserHelper\Edit($app['Core'], $app['request']);
+                    $rights = new UserHelper\Edit($app['phraseanet.core'], $app['request']);
                     $rights->apply_rights();
 
                     if ($app['request']->get('template')) {
@@ -101,7 +101,7 @@ class Users implements ControllerProviderInterface
                     $datas['message'] = $e->getMessage();
                 }
 
-                $Serializer = $app['Core']['Serializer'];
+                $Serializer = $app['phraseanet.core']['Serializer'];
 
                 return new Response(
                         $Serializer->serialize($datas, 'json')
@@ -112,18 +112,18 @@ class Users implements ControllerProviderInterface
         );
 
         $controllers->post('/rights/quotas/', function(Application $app) {
-                $rights = new UserHelper\Edit($app['Core'], $app['request']);
+                $rights = new UserHelper\Edit($app['phraseanet.core'], $app['request']);
 
                 $template = 'admin/editusers_quotas.twig';
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
                 return $twig->render($template, $rights->get_quotas());
             }
         );
 
         $controllers->post('/rights/quotas/apply/', function(Application $app) {
-                $rights = new UserHelper\Edit($app['Core'], $app['request']);
+                $rights = new UserHelper\Edit($app['phraseanet.core'], $app['request']);
                 $rights->apply_quotas();
 
                 return;
@@ -131,18 +131,18 @@ class Users implements ControllerProviderInterface
         );
 
         $controllers->post('/rights/time/', function(Application $app) {
-                $rights = new UserHelper\Edit($app['Core'], $app['request']);
+                $rights = new UserHelper\Edit($app['phraseanet.core'], $app['request']);
 
                 $template = 'admin/editusers_timelimit.twig';
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
                 return $twig->render($template, $rights->get_time());
             }
         );
 
         $controllers->post('/rights/time/apply/', function(Application $app) {
-                $rights = new UserHelper\Edit($app['Core'], $app['request']);
+                $rights = new UserHelper\Edit($app['phraseanet.core'], $app['request']);
                 $rights->apply_time();
 
                 return;
@@ -150,18 +150,18 @@ class Users implements ControllerProviderInterface
         );
 
         $controllers->post('/rights/masks/', function(Application $app) {
-                $rights = new UserHelper\Edit($app['Core'], $app['request']);
+                $rights = new UserHelper\Edit($app['phraseanet.core'], $app['request']);
 
                 $template = 'admin/editusers_masks.twig';
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
                 return $twig->render($template, $rights->get_masks());
             }
         );
 
         $controllers->post('/rights/masks/apply/', function(Application $app) {
-                $rights = new UserHelper\Edit($app['Core'], $app['request']);
+                $rights = new UserHelper\Edit($app['phraseanet.core'], $app['request']);
                 $rights->apply_masks();
 
                 return;
@@ -169,11 +169,11 @@ class Users implements ControllerProviderInterface
         );
 
         $controllers->match('/search/', function(Application $app) {
-                $users = new UserHelper\Manage($app['Core'], $app['request']);
+                $users = new UserHelper\Manage($app['phraseanet.core'], $app['request']);
                 $template = 'admin/users.html';
 
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
                 return $twig->render($template, $users->search());
             }
@@ -182,12 +182,12 @@ class Users implements ControllerProviderInterface
         $controllers->post('/search/export/', function() use ($app) {
                 $request = $app['request'];
 
-                $users = new UserHelper\Manage($app['Core'], $app['request']);
+                $users = new UserHelper\Manage($app['phraseanet.core'], $app['request']);
 
                 $template = 'admin/users.html';
 
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
                 $userTable = array(
                     array(
@@ -242,7 +242,7 @@ class Users implements ControllerProviderInterface
         );
 
         $controllers->post('/apply_template/', function() use ($app) {
-                $users = new UserHelper\Edit($app['Core'], $app['request']);
+                $users = new UserHelper\Edit($app['phraseanet.core'], $app['request']);
 
                 $users->apply_template();
 
@@ -287,7 +287,7 @@ class Users implements ControllerProviderInterface
                     );
                 }
 
-                $Serializer = $app['Core']['Serializer'];
+                $Serializer = $app['phraseanet.core']['Serializer'];
 
                 return new Response(
                         $Serializer->serialize($datas, 'json')
@@ -301,7 +301,7 @@ class Users implements ControllerProviderInterface
                 $datas = array('error'   => false, 'message' => '', 'data'    => null);
                 try {
                     $request = $app['request'];
-                    $module = new UserHelper\Manage($app['Core'], $app['request']);
+                    $module = new UserHelper\Manage($app['phraseanet.core'], $app['request']);
                     if ($request->get('template') == '1') {
                         $user = $module->create_template();
                     } else {
@@ -316,7 +316,7 @@ class Users implements ControllerProviderInterface
                     $datas['message'] = $e->getMessage();
                 }
 
-                $Serializer = $app['Core']['Serializer'];
+                $Serializer = $app['phraseanet.core']['Serializer'];
 
                 return new Response($Serializer->serialize($datas, 'json'), 200, array("Content-Type" => "application/json"));
             }
@@ -324,7 +324,7 @@ class Users implements ControllerProviderInterface
 
         $controllers->post('/export/csv/', function(Application $app) use ($appbox) {
                 $request = $app['request'];
-                $user_query = new \User_Query($appbox, $app['Core']);
+                $user_query = new \User_Query($appbox, $app['phraseanet.core']);
 
                 $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
                 $like_value = $request->get('like_value');

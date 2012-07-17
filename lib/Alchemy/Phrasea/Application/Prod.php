@@ -21,8 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @link        www.phraseanet.com
  */
 return call_user_func(function() {
-            $app = new \Silex\Application();
-            $app['Core'] = \bootstrap::getCore();
+            $app = new \Alchemy\Phrasea\Application();
 
             $app->before(function(Request $request) {
                     $request->setRequestFormat(
@@ -71,7 +70,7 @@ return call_user_func(function() {
                         );
 
                         /* @var $twig \Twig_Environment */
-                        $twig = $app['Core']->getTwig();
+                        $twig = $app['phraseanet.core']->getTwig();
 
                         if ($e instanceof \Bridge_Exception_ApiConnectorNotConfigured) {
                             $params = array_merge($params, array('account' => $app['current_account']));
@@ -99,7 +98,7 @@ return call_user_func(function() {
                             , 'message' => $e->getMessage()
                         );
 
-                        $json = $app['Core']['Serializer']->serialize($datas, 'json');
+                        $json = $app['phraseanet.core']['Serializer']->serialize($datas, 'json');
 
                         return new Response($json, 200, array('Content-Type' => 'application/json'));
                     }

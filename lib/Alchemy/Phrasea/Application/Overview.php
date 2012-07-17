@@ -21,12 +21,9 @@ use Symfony\Component\HttpFoundation\Request;
  */
 return call_user_func(
         function() {
+            $app = new \Alchemy\Phrasea\Application();
 
-            $app = new \Silex\Application();
-
-            $app['Core'] = \bootstrap::getCore();
-
-            $appbox = \appbox::get_instance($app['Core']);
+            $appbox = $app['phraseanet.appbox'];
             $session = $appbox->get_session();
 
             $deliver_content = function(Request $request, \Session_Handler $session, \record_adapter $record, $subdef, $watermark, $stamp, $app) {
@@ -94,7 +91,7 @@ return call_user_func(
                         }
                     }
 
-                    $user = \User_Adapter::getInstance($session->get_usr_id(), \appbox::get_instance($app['Core']));
+                    $user = \User_Adapter::getInstance($session->get_usr_id(), $app['phraseanet.appbox']);
 
                     if ( ! $user->ACL()->has_access_to_subdef($record, $subdef)) {
                         throw new \Exception_UnauthorizedAction();
@@ -118,7 +115,7 @@ return call_user_func(
 
                     if ($watermark && ! $all_access) {
 
-                        $em = $app['Core']->getEntityManager();
+                        $em = $app['phraseanet.core']->getEntityManager();
 
                         $repository = $em->getRepository('\Entities\BasketElement');
 
@@ -148,7 +145,7 @@ return call_user_func(
                         throw new \Exception('bad luck');
 
                     /* @var $twig \Twig_Environment */
-                    $twig = $app['Core']->getTwig();
+                    $twig = $app['phraseanet.core']->getTwig();
 
                     $params = array(
                         'subdef_name' => $subdef
@@ -171,13 +168,13 @@ return call_user_func(
                         $watermark = $stamp = false;
 
                         if ($session->is_authenticated()) {
-                            $user = \User_Adapter::getInstance($session->get_usr_id(), \appbox::get_instance($app['Core']));
+                            $user = \User_Adapter::getInstance($session->get_usr_id(), $app['phraseanet.appbox']);
 
                             $watermark = ! $user->ACL()->has_right_on_base($record->get_base_id(), 'nowatermark');
 
                             if ($watermark) {
 
-                                $em = $app['Core']->getEntityManager();
+                                $em = $app['phraseanet.core']->getEntityManager();
 
                                 $repository = $em->getRepository('\Entities\BasketElement');
 

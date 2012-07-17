@@ -23,17 +23,7 @@ use Symfony\Component\HttpKernel\Exception;
  */
 return call_user_func(function() {
 
-            $app = new \Silex\Application();
-
-            /**
-             * @var Alchemy\Phrasea\Core
-             */
-            $app["Core"] = \bootstrap::getCore();
-
-            /**
-             * @var appbox
-             */
-            $app["appbox"] = \appbox::get_instance($app['Core']);
+            $app = new \Alchemy\Phrasea\Application();
 
             /**
              * @var API_OAuth2_Token
@@ -45,7 +35,7 @@ return call_user_func(function() {
              * @var Closure
              */
             $app['api'] = function () use ($app) {
-                    return new \API_V1_adapter(false, $app["appbox"], $app["Core"]);
+                    return new \API_V1_adapter(false, $app['phraseanet.appbox'], $app['phraseanet.core']);
                 };
 
             /**
@@ -59,13 +49,13 @@ return call_user_func(function() {
              * @ throws \API_V1_exception_forbidden
              */
             $app->before(function($request) use ($app) {
-                    $session = $app["appbox"]->get_session();
-                    $registry = $app['Core']->getRegistry();
-                    $oauth2_adapter = new \API_OAuth2_Adapter($app["appbox"]);
+                    $session = $app['phraseanet.appbox']->get_session();
+                    $registry = $app['phraseanet.core']->getRegistry();
+                    $oauth2_adapter = new \API_OAuth2_Adapter($app['phraseanet.appbox']);
                     $oauth2_adapter->verifyAccessToken();
 
-                    $user = \User_Adapter::getInstance($oauth2_adapter->get_usr_id(), $app["appbox"]);
-                    $app['token'] = \API_OAuth2_Token::load_by_oauth_token($app["appbox"], $oauth2_adapter->getToken());
+                    $user = \User_Adapter::getInstance($oauth2_adapter->get_usr_id(), $app['phraseanet.appbox']);
+                    $app['token'] = \API_OAuth2_Token::load_by_oauth_token($app['phraseanet.appbox'], $oauth2_adapter->getToken());
 
                     $oAuth2App = $app['token']->get_account()->get_application();
                     /* @var $oAuth2App \API_OAuth2_Application */
@@ -157,7 +147,7 @@ return call_user_func(function() {
                     $pathInfo = $request->getPathInfo();
                     $route = $parseRoute($pathInfo, $response);
                     \API_V1_Log::create(
-                        $app["appbox"]
+                        $app['phraseanet.appbox']
                         , $account
                         , $request->getMethod() . " " . $pathInfo
                         , $response->getStatusCode()
@@ -732,7 +722,7 @@ return call_user_func(function() {
             $route = '/feeds/list/';
             $app->get(
                 $route, function() use ($app) {
-                    $result = $app['api']->search_publications($app['request'], $app['Core']->getAuthenticatedUser());
+                    $result = $app['api']->search_publications($app['request'], $app['phraseanet.core']->getAuthenticatedUser());
 
                     return $result->get_response();
                 }
@@ -741,7 +731,7 @@ return call_user_func(function() {
             $route = '/feeds/content/';
             $app->get(
                 $route, function() use ($app) {
-                    $result = $app['api']->get_publications($app['request'], $app['Core']->getAuthenticatedUser());
+                    $result = $app['api']->get_publications($app['request'], $app['phraseanet.core']->getAuthenticatedUser());
 
                     return $result->get_response();
                 }
@@ -750,7 +740,7 @@ return call_user_func(function() {
             $route = '/feeds/entry/{entry_id}/';
             $app->get(
                 $route, function($entry_id) use ($app) {
-                    $result = $app['api']->get_feed_entry($app['request'], $entry_id, $app['Core']->getAuthenticatedUser());
+                    $result = $app['api']->get_feed_entry($app['request'], $entry_id, $app['phraseanet.core']->getAuthenticatedUser());
 
                     return $result->get_response();
                 }
@@ -769,7 +759,7 @@ return call_user_func(function() {
             $route = '/feeds/{feed_id}/content/';
             $app->get(
                 $route, function($feed_id) use ($app) {
-                    $result = $app['api']->get_publication($app['request'], $feed_id, $app['Core']->getAuthenticatedUser());
+                    $result = $app['api']->get_publication($app['request'], $feed_id, $app['phraseanet.core']->getAuthenticatedUser());
 
                     return $result->get_response();
                 }

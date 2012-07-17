@@ -21,18 +21,14 @@ use Alchemy\Phrasea\Controller\Utils as ControllerUtils;
  * @link        www.phraseanet.com
  */
 return call_user_func(function() {
-            $app = new \Silex\Application();
-
-            $app['Core'] = \bootstrap::getCore();
+            $app = new \Alchemy\Phrasea\Application();
 
             $app['install'] = false;
             $app['upgrade'] = false;
 
             $app->before(function($a) use ($app) {
                     if (\setup::is_installed()) {
-                        $appbox = \appbox::get_instance($app['Core']);
-
-                        if ( ! $appbox->need_major_upgrade()) {
+                        if ( ! $app['phraseanet.appbox']->need_major_upgrade()) {
                             throw new \Exception_Setup_PhraseaAlreadyInstalled();
                         }
 

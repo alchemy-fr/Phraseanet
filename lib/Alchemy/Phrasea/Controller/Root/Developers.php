@@ -30,7 +30,7 @@ class Developers implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function() use ($app) {
-                $app['Core']['Firewall']->requireAuthentication($app);
+                $app['phraseanet.core']['Firewall']->requireAuthentication($app);
             });
 
         /**
@@ -191,7 +191,7 @@ class Developers implements ControllerProviderInterface
         $error = false;
 
         try {
-            $clientApp = new \API_OAuth2_Application(\appbox::get_instance($app['Core']), $id);
+            $clientApp = new \API_OAuth2_Application($app['phraseanet.appbox'], $id);
             $clientApp->delete();
         } catch (\Exception_NotFound $e) {
             $error = true;
@@ -218,7 +218,7 @@ class Developers implements ControllerProviderInterface
         $error = false;
 
         try {
-            $clientApp = new \API_OAuth2_Application(\appbox::get_instance($app['Core']), $id);
+            $clientApp = new \API_OAuth2_Application($app['phraseanet.appbox'], $id);
 
             if ($callback = $request->get("callback")) {
                 $clientApp->set_redirect_uri($callback);
@@ -247,13 +247,13 @@ class Developers implements ControllerProviderInterface
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 
-        $appbox = \appbox::get_instance($app['Core']);
+        $appbox = $app['phraseanet.appbox'];
         $error = false;
         $accessToken = null;
 
         try {
             $clientApp = new \API_OAuth2_Application($appbox, $id);
-            $account = $clientApp->get_user_account($app['Core']->getAuthenticatedUser());
+            $account = $clientApp->get_user_account($app['phraseanet.core']->getAuthenticatedUser());
 
             $token = $account->get_token();
 
@@ -289,7 +289,7 @@ class Developers implements ControllerProviderInterface
         $error = false;
 
         try {
-            $clientApp = new \API_OAuth2_Application(\appbox::get_instance($app['Core']), $id);
+            $clientApp = new \API_OAuth2_Application($app['phraseanet.appbox'], $id);
         } catch (\Exception_NotFound $e) {
             $error = true;
         }
@@ -324,7 +324,7 @@ class Developers implements ControllerProviderInterface
         }
 
         if ($error) {
-            $application = \API_OAuth2_Application::create(\appbox::get_instance($app['Core']), $app['Core']->getAuthenticatedUser(), $form->getName());
+            $application = \API_OAuth2_Application::create($app['phraseanet.appbox'], $app['phraseanet.core']->getAuthenticatedUser(), $form->getName());
             $application
                 ->set_description($form->getDescription())
                 ->set_redirect_uri($form->getSchemeCallback() . $form->getCallback())
@@ -339,7 +339,7 @@ class Developers implements ControllerProviderInterface
             "form"       => $form
         );
 
-        return $app['Core']['Twig']->render('/developers/application.html.twig', $var);
+        return $app['phraseanet.core']['Twig']->render('/developers/application.html.twig', $var);
     }
 
     /**
@@ -352,9 +352,9 @@ class Developers implements ControllerProviderInterface
      */
     public function listApps(Application $app, Request $request)
     {
-        return $app['Core']['Twig']->render('developers/applications.html.twig', array(
+        return $app['phraseanet.core']['Twig']->render('developers/applications.html.twig', array(
                 "apps" => \API_OAuth2_Application::load_dev_app_by_user(
-                    \appbox::get_instance($app['Core']), $app['Core']->getAuthenticatedUser()
+                    $app['phraseanet.appbox'], $app['phraseanet.core']->getAuthenticatedUser()
                 )));
     }
 
@@ -368,7 +368,7 @@ class Developers implements ControllerProviderInterface
      */
     public function displayFormApp(Application $app, Request $request)
     {
-        return $app['Core']['Twig']->render('developers/application_form.html.twig', array(
+        return $app['phraseanet.core']['Twig']->render('developers/application_form.html.twig', array(
                 "violations" => null,
                 'form'       => null,
                 'request'    => $request
@@ -386,17 +386,17 @@ class Developers implements ControllerProviderInterface
      */
     public function getApp(Application $app, Request $request, $id)
     {
-        $user = $app['Core']->getAuthenticatedUser();
+        $user = $app['phraseanet.core']->getAuthenticatedUser();
 
         try {
-            $client = new \API_OAuth2_Application(\appbox::get_instance($app['Core']), $id);
+            $client = new \API_OAuth2_Application($app['phraseanet.appbox'], $id);
         } catch (\Exception_NotFound $e) {
             $app->abort(404);
         }
 
         $token = $client->get_user_account($user)->get_token()->get_value();
 
-        return $app['Core']['Twig']->render('developers/application.html.twig', array(
+        return $app['phraseanet.core']['Twig']->render('developers/application.html.twig', array(
                 "app"   => $client,
                 "user"  => $user,
                 "token" => $token

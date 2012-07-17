@@ -21,15 +21,13 @@ use Symfony\Component\HttpFoundation\Request;
  */
 return call_user_func(function() {
 
-            $app = new \Silex\Application();
-
-            $app["Core"] = \bootstrap::getCore();
+            $app = new \Alchemy\Phrasea\Application();
 
             $app->get(
                 '/', function(Request $request) use ($app) {
-                    $registry = $app["Core"]->getRegistry();
+                    $registry = $app['phraseanet.core']->getRegistry();
 
-                    $apiAdapter = new \API_V1_adapter(false, \appbox::get_instance($app['Core']), $app["Core"]);
+                    $apiAdapter = new \API_V1_adapter(false, $app['phraseanet.appbox'], $app['phraseanet.core']);
 
                     $result = new \API_V1_result($request, $apiAdapter);
 

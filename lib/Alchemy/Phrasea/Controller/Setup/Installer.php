@@ -72,9 +72,9 @@ class Installer implements ControllerProviderInterface
                     '/setup/index.html.twig'
                     , array_merge($constraints_coll, array(
                         'locale'             => \Session_Handler::get_locale()
-                        , 'available_locales'  => $app['Core']::getAvailableLanguages()
-                        , 'version_number'     => $app['Core']['Version']->getNumber()
-                        , 'version_name'       => $app['Core']['Version']->getName()
+                        , 'available_locales'  => $app['phraseanet.core']::getAvailableLanguages()
+                        , 'version_number'     => $app['phraseanet.core']['Version']->getNumber()
+                        , 'version_name'       => $app['phraseanet.core']['Version']->getName()
                         , 'current_servername' => $request->getScheme() . '://' . $request->getHttpHost() . '/'
                     ))
                 );
@@ -128,10 +128,10 @@ class Installer implements ControllerProviderInterface
                     '/setup/step2.html.twig'
                     , array(
                     'locale'              => \Session_Handler::get_locale()
-                    , 'available_locales'   => $app['Core']::getAvailableLanguages()
+                    , 'available_locales'   => $app['phraseanet.core']::getAvailableLanguages()
                     , 'available_templates' => \appbox::list_databox_templates()
-                    , 'version_number'      => $app['Core']['Version']->getNumber()
-                    , 'version_name'        => $app['Core']['Version']->getName()
+                    , 'version_number'      => $app['phraseanet.core']['Version']->getNumber()
+                    , 'version_name'        => $app['phraseanet.core']['Version']->getName()
                     , 'warnings'            => $warnings
                     , 'error'               => $request->get('error')
                     , 'current_servername'  => $request->getScheme() . '://' . $request->getHttpHost() . '/'
@@ -181,7 +181,7 @@ class Installer implements ControllerProviderInterface
 
                 try {
 
-                    $appbox = \appbox::create($app['Core'], $setupRegistry, $conn, $appbox_name, true);
+                    $appbox = \appbox::create($app['phraseanet.core'], $setupRegistry, $conn, $appbox_name, true);
 
                     $configuration = \Alchemy\Phrasea\Core\Configuration::build();
 
@@ -190,7 +190,7 @@ class Installer implements ControllerProviderInterface
                         $confService = $configuration->getService($serviceName);
 
                         $ormService = \Alchemy\Phrasea\Core\Service\Builder::create(
-                                $app['Core']
+                                $app['phraseanet.core']
                                 , $confService
                         );
 
@@ -231,7 +231,7 @@ class Installer implements ControllerProviderInterface
 
                     $user = \User_Adapter::create($appbox, $request->get('email'), $request->get('password'), $request->get('email'), true);
 
-                    \phrasea::start($app['Core']);
+                    \phrasea::start($app['phraseanet.core']);
 
                     $auth = new \Session_Authentication_None($user);
 
