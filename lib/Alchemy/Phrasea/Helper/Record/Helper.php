@@ -110,26 +110,23 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
 
         $this->selection = new \set_selection();
 
-        $appbox = \appbox::get_instance($core);
-        $usr_id = $appbox->get_session()->get_usr_id();
-
         if (trim($Request->get('ssel')) !== '') {
-            $em = $this->getCore()->getEntityManager();
+            $em = $core->getEntityManager();
             $repository = $em->getRepository('\Entities\Basket');
 
             /* @var $$repository \Repositories\BasketRepository */
-            $Basket = $repository->findUserBasket($Request->get('ssel'), $this->getCore()->getAuthenticatedUser(), false);
+            $Basket = $repository->findUserBasket($Request->get('ssel'), $core->getAuthenticatedUser(), false);
 
             $this->selection->load_basket($Basket);
 
             $this->is_basket = true;
             $this->original_basket = $Basket;
         } elseif (trim($Request->get('story')) !== '') {
-            $em = $this->getCore()->getEntityManager();
+            $em = $core->getEntityManager();
             $repository = $em->getRepository('\Entities\StoryWZ');
 
             $storyWZ = $repository->findByUserAndId(
-                $this->getCore()->getAuthenticatedUser()
+                $core->getAuthenticatedUser()
                 , $Request->get('story')
             );
 
@@ -306,8 +303,9 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
     public function grep_records(\Closure $closure)
     {
         foreach ($this->selection->get_elements() as $record) {
-            if ( ! $closure($record))
+            if ( ! $closure($record)) {
                 $this->selection->remove_element($record);
+            }
         }
 
         return $this;

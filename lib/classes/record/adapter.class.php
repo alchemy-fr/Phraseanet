@@ -1866,6 +1866,9 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             case 'flac':
                 $extension = 'flac';
                 break;
+            case 'libvorbis':
+                $extension = 'ogg';
+                break;
             case 'libmp3lame':
                 $extension = 'mp3';
                 break;

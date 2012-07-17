@@ -26,10 +26,10 @@
         </thead>
         <tbody>
     {% for order in ordermanager %}
-        {% set deadline = order.get_deadline()|phraseadate%}
+        {% set deadline = order.get_deadline() | prettyDate %}
         <tr id="order_{{order.get_order_id()}}" class="order_row">
             <td>{{order.get_user().get_display_name()}}</td>
-            <td>{{order.get_created_on()|phraseadate}}</td>
+            <td>{{order.get_created_on() | prettyDate }}</td>
             <td>
                 {% if deadline != '' %}
                     {{deadline}}

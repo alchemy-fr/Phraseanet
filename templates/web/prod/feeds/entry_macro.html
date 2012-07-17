@@ -27,8 +27,8 @@
       </tr>
     </table>
     <div class="post_date">
-      {% set updated_on = entry.get_updated_on()|getPrettyDate %}
-      {% set created_on = entry.get_created_on()|getPrettyDate %}
+      {% set updated_on = entry.get_updated_on() | prettyDate %}
+      {% set created_on = entry.get_created_on() | prettyDate %}
       <span class="created_on">
           {{ created_on }}
       </span>
@@ -60,5 +60,5 @@
     {% endfor %}
     </div>
   </div>
-  
+
 {% endmacro %}

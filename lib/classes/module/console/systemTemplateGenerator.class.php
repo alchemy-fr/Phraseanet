@@ -56,41 +56,27 @@ class module_console_systemTemplateGenerator extends Command
                 ));
 
             $twig->addExtension(new Twig_Extensions_Extension_I18n());
+            $twig->addExtension(new \Alchemy\Phrasea\Twig\JSUniqueID());
 
-            /**
-             * @todo clean all duplicate filters
-             */
-            $twig->addFilter('serialize', new Twig_Filter_Function('serialize'));
-            $twig->addFilter('sbas_names', new Twig_Filter_Function('phrasea::sbas_names'));
-            $twig->addFilter('sbas_name', new Twig_Filter_Function('phrasea::sbas_names'));
-            $twig->addFilter('unite', new Twig_Filter_Function('p4string::format_octets'));
-            $twig->addFilter('stristr', new Twig_Filter_Function('stristr'));
-            $twig->addFilter('implode', new Twig_Filter_Function('implode'));
-            $twig->addFilter('stripdoublequotes', new Twig_Filter_Function('stripdoublequotes'));
-            $twig->addFilter('phraseadate', new Twig_Filter_Function('phraseadate::getPrettyString'));
-            $twig->addFilter('format_octets', new Twig_Filter_Function('p4string::format_octets'));
-            $twig->addFilter('geoname_display', new Twig_Filter_Function('geonames::name_from_id'));
-            $twig->addFilter('get_collection_logo', new Twig_Filter_Function('collection::getLogo'));
-            $twig->addFilter('nl2br', new Twig_Filter_Function('nl2br'));
-            $twig->addFilter('floor', new Twig_Filter_Function('floor'));
-            $twig->addFilter('bas_name', new Twig_Filter_Function('phrasea::bas_names'));
-            $twig->addFilter('bas_names', new Twig_Filter_Function('phrasea::bas_names'));
-            $twig->addFilter('basnames', new Twig_Filter_Function('phrasea::bas_names'));
-            $twig->addFilter('urlencode', new Twig_Filter_Function('urlencode'));
-            $twig->addFilter('sbasFromBas', new Twig_Filter_Function('phrasea::sbasFromBas'));
-            $twig->addFilter('str_replace', new Twig_Filter_Function('str_replace'));
-            $twig->addFilter('strval', new Twig_Filter_Function('strval'));
-            $twig->addFilter('key_exists', new Twig_Filter_Function('array_key_exists'));
-            $twig->addFilter('array_keys', new Twig_Filter_Function('array_keys'));
-            $twig->addFilter('round', new Twig_Filter_Function('round'));
-            $twig->addFilter('get_class', new Twig_Filter_Function('get_class'));
-            $twig->addFilter('formatdate', new Twig_Filter_Function('phraseadate::getDate'));
-            $twig->addFilter('getPrettyDate', new Twig_Filter_Function('phraseadate::getPrettyString'));
-            $twig->addFilter('prettyDate', new Twig_Filter_Function('phraseadate::getPrettyString'));
-            $twig->addFilter('prettyString', new Twig_Filter_Function('phraseadate::getPrettyString'));
-            $twig->addFilter('formatoctet', new Twig_Filter_Function('p4string::format_octet'));
-            $twig->addFilter('getDate', new Twig_Filter_Function('phraseadate::getDate'));
-            $twig->addFilter('geoname_name_from_id', new Twig_Filter_Function('geonames::name_from_id'));
+            $twig->addFilter('serialize', new \Twig_Filter_Function('serialize'));
+            $twig->addFilter('stristr', new \Twig_Filter_Function('stristr'));
+            $twig->addFilter('implode', new \Twig_Filter_Function('implode'));
+            $twig->addFilter('get_class', new \Twig_Filter_Function('get_class'));
+            $twig->addFilter('stripdoublequotes', new \Twig_Filter_Function('stripdoublequotes'));
+            $twig->addFilter('geoname_display', new \Twig_Filter_Function('geonames::name_from_id'));
+            $twig->addFilter('get_collection_logo', new \Twig_Filter_Function('collection::getLogo'));
+            $twig->addFilter('floor', new \Twig_Filter_Function('floor'));
+            $twig->addFilter('bas_names', new \Twig_Filter_Function('phrasea::bas_names'));
+            $twig->addFilter('sbas_names', new \Twig_Filter_Function('phrasea::sbas_names'));
+            $twig->addFilter('urlencode', new \Twig_Filter_Function('urlencode'));
+            $twig->addFilter('sbasFromBas', new \Twig_Filter_Function('phrasea::sbasFromBas'));
+            $twig->addFilter('key_exists', new \Twig_Filter_Function('array_key_exists'));
+            $twig->addFilter('array_keys', new \Twig_Filter_Function('array_keys'));
+            $twig->addFilter('round', new \Twig_Filter_Function('round'));
+            $twig->addFilter('formatDate', new \Twig_Filter_Function('phraseadate::getDate'));
+            $twig->addFilter('prettyDate', new \Twig_Filter_Function('phraseadate::getPrettyString'));
+            $twig->addFilter('formatOctets', new \Twig_Filter_Function('p4string::format_octets'));
+            $twig->addFilter('geoname_name_from_id', new \Twig_Filter_Function('geonames::name_from_id'));
 
             $finder = new Symfony\Component\Finder\Finder();
             foreach ($finder->files()->in(array($tplDir))->exclude('Mustache') as $file) {
