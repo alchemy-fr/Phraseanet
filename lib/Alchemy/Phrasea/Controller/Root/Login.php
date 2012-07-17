@@ -65,7 +65,7 @@ class Login implements ControllerProviderInterface
          *
          * name         : login_register_confirm
          *
-         * description  : Confirm your register by validationg your email adress
+         * description  : Confirm a user registration by validating his email adress
          *
          * method       : GET
          *
@@ -81,7 +81,7 @@ class Login implements ControllerProviderInterface
          *
          * name         : login_send_mail
          *
-         * description  : Send confirmation mail
+         * description  : Send confirmation mail, to verify user email
          *
          * method       : GET
          *

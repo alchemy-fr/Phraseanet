@@ -63,10 +63,7 @@ return call_user_func(function() {
             $app->mount('/feeds/', new Controller\RSSFeeds());
             $app->mount('/account/', new Controller\Account());
             $app->mount('/developers/', new Controller\Developers());
-            /**
-             * @todo : change
-             */
-            $app->mount('/loggin/', new Controller\Login());
+            $app->mount('/login/', new Controller\Login());
 
             return $app;
         }

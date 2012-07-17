@@ -34,7 +34,7 @@ class Account implements ControllerProviderInterface
             });
 
         /**
-         * New account route
+         * Get a new account
          *
          * name         : get_account
          *
@@ -100,7 +100,7 @@ class Account implements ControllerProviderInterface
          *
          * name         : account_access
          *
-         * description  : Display form to create a new account
+         * description  : Display collection that the user can access
          *
          * method       : GET
          *
@@ -112,11 +112,11 @@ class Account implements ControllerProviderInterface
             ->bind('account_access');
 
         /**
-         * Display reset email form
+         * Get reset email
          *
          * name         : account_reset_email
          *
-         * description  : Reset User email
+         * description  : Display reset email form
          *
          * method       : GET
          *
@@ -130,11 +130,11 @@ class Account implements ControllerProviderInterface
         /**
          * Reset user email
          *
-         * name         : account_reset_email
+         * name         : post_account_reset_email
          *
          * description  : Reset User email
          *
-         * method       : GET
+         * method       : POST
          *
          * parameters   : none
          *
@@ -144,11 +144,11 @@ class Account implements ControllerProviderInterface
             ->bind('post_account_reset_email');
 
         /**
-         * Display form to renew password
+         * Get reset password
          *
          * name         : account_reset_password
          *
-         * description  : Display form to renew password
+         * description  : Display form to reset password
          *
          * method       : GET
          *
@@ -162,7 +162,7 @@ class Account implements ControllerProviderInterface
         /**
          * Reset user password
          *
-         * name         : account_reset_password
+         * name         : post_account_reset_password
          *
          * description  : Reset user password
          *
@@ -176,11 +176,11 @@ class Account implements ControllerProviderInterface
             ->bind('post_account_reset_password');
 
         /**
-         * Give account open sessions
+         * Get security session
          *
          * name         : account_security_sessions
          *
-         * description  : Display form to create a new account
+         * description  : Display user's open sessions
          *
          * method       : GET
          *
@@ -192,11 +192,11 @@ class Account implements ControllerProviderInterface
             ->bind('account_security_sessions');
 
         /**
-         * Give authorized applications that can access user informations
+         * Get authorized apps
          *
          * name         : account_security_applications
          *
-         * description  : Display form to create a new account
+         * description  : Give authorized applications that can access user informations
          *
          * method       : GET
          *
@@ -212,7 +212,7 @@ class Account implements ControllerProviderInterface
          *
          * name         : account_security_applications_grant
          *
-         * description  : Display form to create a new account
+         * description  : Grant or revoke access to a client application
          *
          * method       : POST
          *
@@ -292,6 +292,13 @@ class Account implements ControllerProviderInterface
         return $controllers;
     }
 
+    /**
+     * Display form to reset a password
+     *
+     * @param \Silex\Application $app
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
     public function resetPassword(Application $app, Request $request)
     {
         if (null !== $passwordMsg = $request->get('pass-error')) {
@@ -322,6 +329,8 @@ class Account implements ControllerProviderInterface
      */
     public function resetEmail(Application $app, Request $request)
     {
+        $appbox = \appbox::get_instance($app['Core']);
+
         if (null !== $token = $request->get('token')) {
             try {
                 $datas = \random::helloToken($token);
@@ -336,33 +345,38 @@ class Account implements ControllerProviderInterface
             }
         }
 
-        if (null !== ($password = $request->get('form_password'))
-            && null !== ($email = $request->get('form_email'))
-            && null !== ($emailConfirm = $request->get('form_email_confirm'))) {
+        if (null === ($password = $request->get('form_password'))
+            || null === ($email = $request->get('form_email'))
+            || null === ($emailConfirm = $request->get('form_email_confirm'))) {
 
-            $user = $app['Core']->getAuthenticatedUser();
-
-            try {
-                $auth = new \Session_Authentication_Native($appbox, $user->get_login(), $password);
-                $auth->challenge_password();
-
-                if (str_replace(array("\r\n", "\r", "\n", "\t"), '_', trim($email)) === $emailConfirm) {
-                    if (\PHPMailer::ValidateAddress($parm['form_email'])) {
-                        if (\mail::reset_email($parm['form_email'], $session->get_usr_id()) === true) {
-                            return $app->redirect('/account/reset-email/?update=mail-send');
-                        } else {
-                            return $app->redirect('/account/reset-email/?notice=mail-server');
-                        }
-                    } else {
-                        return $app->redirect('/account/reset-email/?notice=mail-invalid');
-                    }
-                } else {
-                    return $app->redirect('/account/reset-email/?notice=mail-match');
-                }
-            } catch (\Exception $e) {
-                return $app->redirect('/account/reset-email/?notice=bad-password');
-            }
+            $app->abort(400, _('Could not perform request, please contact an administrator.'));
         }
+
+        $user = $app['Core']->getAuthenticatedUser();
+
+        try {
+            $auth = new \Session_Authentication_Native($appbox, $user->get_login(), $password);
+            $auth->challenge_password();
+        } catch (\Exception $e) {
+
+            return $app->redirect('/account/reset-email/?notice=bad-password');
+        }
+        if ( ! \PHPMailer::ValidateAddress($email)) {
+
+            return $app->redirect('/account/reset-email/?notice=mail-invalid');
+        }
+
+        if ($email !== $emailConfirm) {
+
+            return $app->redirect('/account/reset-email/?notice=mail-match');
+        }
+
+        if ( ! \mail::reset_email($email, $user->get_id()) === true) {
+
+            return $app->redirect('/account/reset-email/?notice=mail-server');
+        }
+
+        return $app->redirect('/account/reset-email/?update=mail-send');
     }
 
     /**
