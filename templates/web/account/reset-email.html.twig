@@ -51,6 +51,7 @@ $(document).ready(function() {
     <div style="margin-top:100px;">{{ updateMsg }}</div>
     <a href="/account/" target="_self">{% trans 'admin::compte-utilisateur retour a mon compte'%}</a>
 {% else %}
+
     {% if noticeMsg is not none %}
         <div class="notice" style="text-align:center;margin:20px 0">
             {% trans 'phraseanet::erreur : oups ! une erreur est survenue pendant l\'operation !' %}

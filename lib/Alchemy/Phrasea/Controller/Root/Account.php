@@ -405,10 +405,10 @@ class Account implements ControllerProviderInterface
             }
         }
 
-        return new Response($app['Core']['Twig']->render('account/reset-email.html.twig'), array(
-                'noticeMsg' => $noticeMsg,
-                'updateMsg'  => $updateMsg,
-            ));
+        return new Response($app['Core']['Twig']->render('account/reset-email.html.twig', array(
+                    'noticeMsg' => $noticeMsg,
+                    'updateMsg' => $updateMsg,
+                )));
     }
 
     /**
