@@ -24,13 +24,17 @@
             </div>
             <div class="tab-pane">
                 <div id="id-main" class="tab-content" style="height: auto;display: block; overflow-y: auto; overflow-x: hidden;">
-                    <ul class='account-menu'>
-                        <li><a href="/account/">{% trans 'Informations' %}</a></li>
-                        <li><a href="/account/access/">{% trans 'Acces' %}</a></li>
-                        <li><a href="/account/security/sessions/">{% trans 'Sessions' %}</a></li>
-                        <li><a href="/account/security/applications/">{% trans 'Applications' %}</a></li>
-                        <li><a href="/developers/applications/">{% trans 'Developpeur' %}</a></li>
-                    </ul>
+                    
+                    {% block menu %}
+                        <ul class='account-menu'>
+                            <li><a href="/account/">{% trans 'Informations' %}</a></li>
+                            <li><a href="/account/access/">{% trans 'Acces' %}</a></li>
+                            <li><a href="/account/security/sessions/">{% trans 'Sessions' %}</a></li>
+                            <li><a href="/account/security/applications/">{% trans 'Applications' %}</a></li>
+                            <li><a href="/developers/applications/">{% trans 'Developpeur' %}</a></li>
+                        </ul>
+                    {% endblock %}
+
                     <div>
                         {% block content %}{% endblock %}
                     </div>

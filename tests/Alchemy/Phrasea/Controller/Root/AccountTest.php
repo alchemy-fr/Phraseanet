@@ -21,6 +21,9 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         return $app;
     }
 
+    /**
+     * @covers \Alchemy\Phrasea\Controller\Root/Account::displayAccount
+     */
     public function testGetAccount()
     {
         $this->client->request('GET', '/account/');
@@ -30,6 +33,9 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue($response->isOk());
     }
 
+    /**
+     * @covers \Alchemy\Phrasea\Controller\Root/Account::accountAccess
+     */
     public function testGetAccountAccess()
     {
         $this->client->request('GET', '/account/access/');
@@ -39,6 +45,21 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue($response->isOk());
     }
 
+    /**
+     * @covers \Alchemy\Phrasea\Controller\Root/Account::resetEmail
+     */
+    public function testGetResetMail()
+    {
+        $this->client->request('GET', '/account/reset-email/');
+
+        $response = $this->client->getResponse();
+
+        $this->assertTrue($response->isOk());
+    }
+
+    /**
+     * @covers \Alchemy\Phrasea\Controller\Root/Account::accountSessionsAccess
+     */
     public function testGetAccountSecuritySessions()
     {
         $this->client->request('GET', '/account/security/sessions/');
@@ -48,6 +69,9 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue($response->isOk());
     }
 
+    /**
+     * @covers \Alchemy\Phrasea\Controller\Root/Account::accountAuthorizedApps
+     */
     public function testGetAccountSecurityApplications()
     {
         $this->client->request('GET', '/account/security/applications/');
@@ -57,6 +81,21 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue($response->isOk());
     }
 
+    /**
+     * @covers \Alchemy\Phrasea\Controller\Root/Account::resetPassword
+     */
+    public function testGetResetPassword()
+    {
+        $this->client->request('GET', '/account/reset-password/');
+
+        $response = $this->client->getResponse();
+
+        $this->assertTrue($response->isOk());
+    }
+
+    /**
+     * @covers \Alchemy\Phrasea\Controller\Root/Account::renewPassword
+     */
     public function testUpdateAccount()
     {
         $core = \bootstrap::getCore();
@@ -100,21 +139,5 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals('minet', $core->getAUthenticatedUser()->get_lastname());
     }
 
-    public function testGetForgotPassword()
-    {
-        $this->client->request('GET', '/account/forgot-password/');
 
-        $response = $this->client->getResponse();
-
-        $this->assertTrue($response->isOk());
-    }
-
-    public function testPostForgotPassword()
-    {
-//        $this->client->request('POST', '/account/forgot-password/');
-//
-//        $response = $this->client->getResponse();
-//
-//        $this->assertTrue($response->isOk());
-    }
 }
