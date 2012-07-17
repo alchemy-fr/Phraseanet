@@ -31,7 +31,7 @@ class Login implements ControllerProviderInterface
         /**
          * Logout
          *
-         * name         : developers_applications
+         * name         : logout
          *
          * description  : Logout from phraseanet
          *
@@ -47,7 +47,7 @@ class Login implements ControllerProviderInterface
         /**
          * Register a new user
          *
-         * name         : developers_application_new
+         * name         : login_register
          *
          * description  : Display form to create a new user
          *
@@ -111,7 +111,7 @@ class Login implements ControllerProviderInterface
         /**
          * Renew password
          *
-         * name         : login_renew_password
+         * name         : post_login_forgot_password
          *
          * description  : Register the new user password
          *
