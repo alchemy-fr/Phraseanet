@@ -13,7 +13,7 @@
     </div>
     <div style="margin:5px 0;text-align:right;font-style:italic;position:relative;">
         {% set nb_records = basket.getElements()|length %}
-        {% set date = basket.getUpdated()|prettyString %}
+        {% set date = basket.getUpdated() | prettyDate %}
         {% trans %}
         {{ nb_records }} records
         {% endtrans %}

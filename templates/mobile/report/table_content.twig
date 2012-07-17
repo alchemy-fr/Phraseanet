@@ -197,7 +197,7 @@
                 {% for key, value in dashboard_array.dashboard.top_ten_user.poiddoc %}
                     <tr>
                         <td>{{ value.user|e }}</td>
-                        <td>{{ value.poiddoc|unite }}</td>
+                        <td>{{ value.poiddoc | formatOctets }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -228,7 +228,7 @@
                 {% for key, value in dashboard_array.dashboard.top_ten_user.poidprev %}
                     <tr>
                         <td>{{ value.user|e }}</td>
-                        <td>{{ value.poidprev|unite }}</td>
+                        <td>{{ value.poidprev | formatOctets }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>

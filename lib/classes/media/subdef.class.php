@@ -390,6 +390,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
                 $type = self::TYPE_FLEXPAPER;
                 break;
             case 'audio/mpeg':
+            case 'audio/mp3':
                 $type = self::TYPE_AUDIO_MP3;
                 break;
             case 'image/jpeg':

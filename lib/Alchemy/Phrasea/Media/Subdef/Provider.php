@@ -28,6 +28,13 @@ abstract class Provider implements Subdef
         return $this;
     }
 
+    public function unregisterOption($name)
+    {
+        unset($this->options[$name]);
+
+        return $this;
+    }
+
     public function getOptions()
     {
         return $this->options;

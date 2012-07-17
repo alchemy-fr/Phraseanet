@@ -96,23 +96,28 @@ class appbox extends base
     public function write_collection_pic(collection $collection, SymfoFile $pathfile = null, $pic_type)
     {
         $core = \bootstrap::getCore();
+        $filename = null;
 
         if ( ! is_null($pathfile)) {
 
             if ( ! in_array(mb_strtolower($pathfile->getMimeType()), array('image/gif', 'image/png', 'image/jpeg', 'image/jpg', 'image/pjpeg'))) {
                 throw new \InvalidArgumentException('Invalid file format');
             }
+            $filename = $pathfile->getPathname();
 
             //resize collection logo
             $imageSpec = new ImageSpecification();
             $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
             $imageSpec->setDimensions(120, 24);
 
+            $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox').'.jpg';
+
             try {
                 $core['media-alchemyst']
                     ->open($pathfile->getPathname())
-                    ->turninto($pathfile->getPathname(), $imageSpec)
+                    ->turninto($tmp, $imageSpec)
                     ->close();
+                $filename = $tmp;
             } catch (\MediaAlchemyst\Exception $e) {
 
             }
@@ -147,12 +152,12 @@ class appbox extends base
                 $core['file-system']->remove($target);
             }
 
-            if (null === $target || null === $pathfile) {
+            if (null === $target || null === $filename) {
                 continue;
             }
 
             $core['file-system']->mkdir(dirname($target), 0750);
-            $core['file-system']->copy($pathfile->getPathname(), $target, true);
+            $core['file-system']->copy($filename, $target, true);
             $core['file-system']->chmod($target, 0760);
         }
 
@@ -162,16 +167,38 @@ class appbox extends base
     public function write_databox_pic(databox $databox, SymfoFile $pathfile = null, $pic_type)
     {
         $core = \bootstrap::getCore();
+        $filename = null;
 
         if ( ! is_null($pathfile)) {
 
-            if ( ! in_array(mb_strtolower($pathfile->getMimeType()), array('image/jpeg', 'image/jpg', 'image/pjpeg'))) {
+            if ( ! in_array(mb_strtolower($pathfile->getMimeType()), array('image/jpeg', 'image/jpg', 'image/pjpeg', 'image/png', 'image/gif'))) {
                 throw new \InvalidArgumentException('Invalid file format');
             }
         }
 
         if ( ! in_array($pic_type, array(databox::PIC_PDF))) {
             throw new \InvalidArgumentException('unknown pic_type');
+        }
+
+        if($pathfile) {
+
+            $filename = $pathfile->getPathname();
+
+            $imageSpec = new ImageSpecification();
+            $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
+            $imageSpec->setDimensions(120, 35);
+
+            $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox').'.jpg';
+
+            try {
+                $core['media-alchemyst']
+                    ->open($pathfile->getPathname())
+                    ->turninto($tmp, $imageSpec)
+                    ->close();
+                $filename = $tmp;
+            } catch (\MediaAlchemyst\Exception $e) {
+
+            }
         }
 
         $registry = $databox->get_registry();
@@ -184,12 +211,12 @@ class appbox extends base
                 $core['file-system']->remove($target);
             }
 
-            if (is_null($pathfile)) {
+            if (is_null($filename)) {
                 continue;
             }
 
             $core['file-system']->mkdir(dirname($target));
-            $core['file-system']->copy($pathfile->getRealPath(), $target);
+            $core['file-system']->copy($filename, $target);
             $core['file-system']->chmod($target, 0760);
         }
 

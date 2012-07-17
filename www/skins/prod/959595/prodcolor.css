@@ -1494,7 +1494,7 @@ input:radio, input:checkbox, .checkbox {
 input.btn-mini {
     margin: 0 2px;
     height: 12px;
-    width: 9px;
+    width: auto;
     cursor: default;
     font-size: 12px;
 }

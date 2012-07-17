@@ -13,7 +13,6 @@ namespace Alchemy\Phrasea\Helper\Record;
 
 use Alchemy\Phrasea\Core;
 use Alchemy\Phrasea\Helper\Record\Helper as RecordHelper;
-use MediaVorus\MediaVorus;
 use Symfony\Component\HttpFoundation\Request;
 
 /**

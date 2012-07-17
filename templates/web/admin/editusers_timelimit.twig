@@ -1,10 +1,10 @@
 <h1>{% trans 'Limite temporelle' %}</h1>
 <div>
-{% set base = base_id|sbasFromBas|sbas_name %}
+{% set base = base_id|sbasFromBas|sbas_names %}
 {% trans %}Base {{base}}{% endtrans %}
 </div>
 <div>
-{% set collection = base_id|bas_name %}
+{% set collection = base_id|bas_names %}
 {% trans %}Collection {{collection}}{% endtrans %}
 </div>
 <form>
