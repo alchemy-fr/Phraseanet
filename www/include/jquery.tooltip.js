@@ -248,7 +248,7 @@
         ratio = width/height;
         $imgTips.css({top:'0px',left:'0px'});
       }
-      
+
       if ($videoTips[0] && $('#' + settings($.tooltip.current).id + ' .noToolTipResize').length === 0) {
         resizeVideoTips = true;
         width = parseInt($videoTips.attr('width'));
@@ -446,7 +446,7 @@
             maxHeight: Math.round(height-70)
           });
         }
-        
+
         if(resizeVideoTips)
         {
           $videoTips.css({
@@ -594,15 +594,8 @@
     {
       $.tooltip.ajaxRequest.abort();
     }
-    
-    $.each($('#tooltip video'), function(i,el){
-        try {
-            _V_($(el).attr('id')).destroy();
-        } catch(err) {
-            console.error('An error has been catched during the execution of VideoJS', err);
-        }
-    });
-  
+    $('#tooltip .videoTips.video-js').trigger('unload-video-js');
+
     helper.body.empty();
     $.tooltip.current = null;
     function complete() {
@@ -628,13 +621,7 @@ function unfix_tooltip()
   $.tooltip.visible = false;
   $.tooltip.current = null;
   $('#tooltip').hide();
-  $.each($('#tooltip video'), function(i,el){
-      try {
-       _V_($(el).attr('id')).destroy();
-      } catch(err) {
-          console.error('An error has been catched during the execution of VideoJS', err);
-      }
-  });
+  $('#tooltip .videoTips.video-js').trigger('unload-video-js');
   $('#tooltip .tooltip_closer').hide();
   hideOverlay('_tooltip');
 }

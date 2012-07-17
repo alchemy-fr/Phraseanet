@@ -203,7 +203,7 @@
 
               <tr>
                 <td style="width:122px;overflow:hidden;white-space:nowrap;">
-                  {{rights['sbas_id']|sbas_name}}
+                  {{rights['sbas_id']|sbas_names}}
                 </td>
                 <td class="users_col options">
                   <div>
@@ -353,7 +353,7 @@
               {% endif %}
               <tr>
                 <td style="overflow:hidden;white-space:nowrap;">
-                  {{rights['base_id']|bas_name}}
+                  {{rights['base_id']|bas_names}}
                 </td>
                 <td class="users_col case_right_access" title="{% trans 'Access' %}">
                   {{_self.format_checkbox(user, rights, 'access', users, 'base')}}

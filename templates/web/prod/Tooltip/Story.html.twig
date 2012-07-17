@@ -10,7 +10,7 @@
     <div class="noToolTipResize" style="margin:5px;width:{{ width - 40 }}px;height:300px;position:relative;">
     <div style="margin:5px 0;text-align:right;font-style:italic;position:relative;">
         {% set nb_records = Story.get_children().get_elements()|length %}
-        {% set date = Story.get_modification_date()|prettyString %}
+        {% set date = Story.get_modification_date() | prettyDate %}
         {% trans %}
         {{ nb_records }} records
         {% endtrans %}

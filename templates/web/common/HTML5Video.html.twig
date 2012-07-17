@@ -7,9 +7,11 @@
         <div style="width:{{ displayWidth | round }}px;height:{{ displayHeight | round }}px;" class="thumb_wrapper {{ extraclass | default('') }}">
     {% endif %}
 
+    {% set unique_id = '' | JSUniqueID %}
+
     <div class="record record_video imgTips" style="position:relative;width:{{ displayWidth | round }}px;height:{{ displayHeight | round }}px;">
-        <video id="video_preview_tooltip" class="videoTips video-js vjs-default-skin" controls autoplay
-        preload="auto" xposter="my_video_poster.png" width="{{ displayWidth|round }}" height="{{ displayHeight | round }}"
+        <video id="{{ unique_id }}" class="videoTips video-js vjs-default-skin" controls autoplay
+        preload="auto" width="{{ displayWidth|round }}" height="{{ displayHeight | round }}"
         data-setup="{}">
         {% for name, subdef in arraySubdefs %}
             {% if loop.first %}
@@ -29,11 +31,16 @@
     <script type="text/javascript">
         $(document).ready(function(){
             try {
-                _V_("video_preview_tooltip", {}, function(){
+                _V_("{{ unique_id }}", {}, function(){
                     var player = this;
-                    $('#video_preview_tooltip').parent().bind('resize-video-js', function(){
+
+                    $('#{{ unique_id }}').parent().bind('resize-video-js', function(){
                         player.width($(this).width());
                         player.height($(this).height());
+                    });
+
+                    $('#{{ unique_id }}').bind('unload-video-js', function(){
+                        player.destroy();
                     });
                 });
             } catch(err) {

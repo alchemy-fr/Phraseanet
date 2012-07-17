@@ -63,7 +63,7 @@
           </div>
         </td>
         <td><a href="/admin/publications/feed/{{ feed.get_id() }}/">{{ feed.get_title() }}</a></td>
-        <td>{{ feed.get_created_on()|formatdate }}</td>
+        <td>{{ feed.get_created_on()| formatDate }}</td>
         <td>
           {% if feed.get_collection() != null %}
             {{ feed.get_collection().get_databox().get_viewname() }} /

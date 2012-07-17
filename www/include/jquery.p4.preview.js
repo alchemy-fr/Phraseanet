@@ -529,7 +529,5 @@ function closePreview(){
 		$(this).dequeue();
 	});
 
-        $.each($('#PREVIEWBOX video'), function(i,el){
-            _V_($(el).attr('id')).destroy();
-        });
+        $('#PREVIEWBOX .videoTips.video-js').trigger('unload-video-js');
 }

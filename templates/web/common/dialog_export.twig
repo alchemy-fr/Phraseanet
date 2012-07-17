@@ -111,7 +111,7 @@
                                         <input class="{{values.class}}" type="checkbox" id="download_{{name}}" name="obj[]" value="{{name}}" />
                                         <input type="hidden" name="download_{{name}}" value="{{values.size}}" />
                                         <input type="hidden" name="count_{{name}}" value="{{values.available}}" />
-                                        {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size|format_octets}})
+                                        {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size | formatOctets}})
                                     </label>
                                     {% set title%}
                                         {% trans 'Documents indisponibles' %}
@@ -178,7 +178,7 @@
                                     <div style="margin: 10px 0 20px 0; padding: 0 10px;">
                                         <label for="sendmail_{{name}}" class="checkbox">
                                             <input class="{{values.class}}" type="checkbox" id="sendmail_{{name}}" name="obj[]" value="{{name}}" />
-                                            {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size|format_octets}})
+                                            {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size | formatOctets}})
                                         </label>
                                         {% set title%}
                                             {% trans 'Documents indisponibles' %}
@@ -399,7 +399,7 @@
                                     <div style="margin: 10px 0 20px 0; padding: 0 10px;">
                                         <label for="ftp_{{name}}" class="checkbox">
                                             <input class="{{values.class}}" type="checkbox" id="ftp_{{name}}" name="obj[]" value="{{name}}" />
-                                            {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size|format_octets}}))
+                                            {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size | formatOctets}}))
                                         </label>
                                         {% set title%}
                                             {% trans 'Documents indisponibles' %}

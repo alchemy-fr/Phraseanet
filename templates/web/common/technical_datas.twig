@@ -11,7 +11,7 @@
     {{ record.get_mime() }}
 
     {% if document and document.get_size() %}
-        - {{document.get_size()|formatoctet}}
+        - {{document.get_size()| formatOctets}}
     {% endif %}
     <br/>
 

@@ -21,7 +21,7 @@
                             <td><a href="#" id= "id_{{ value.id }}" >{{ value.lib|e }}</a></td>
                         {% endif %}
                     {% endif %}
-                    <td>{{ unite == "true" ? value.nb|unite : value.nb }}</td>
+                    <td>{{ unite == "true" ? value.nb | formatOctets : value.nb }}</td>
                 </tr>
             {% endfor %}
             </tbody>

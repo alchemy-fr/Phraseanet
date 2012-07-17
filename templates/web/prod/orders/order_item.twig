@@ -12,11 +12,11 @@
             </tr>
             <tr>
                 <td>{% trans 'Date de commande' %}</td>
-                <td>{{ order.get_created_on()|phraseadate }}</td>
+                <td>{{ order.get_created_on() | prettyDate }}</td>
             </tr>
             <tr>
                 <td>{% trans 'Deadline' %}</td>
-                <td>{{ order.get_deadline()|phraseadate }}</td>
+                <td>{{ order.get_deadline() | prettyDate }}</td>
             </tr>
             <tr>
                 <td>{% trans 'Utilisation prevue' %}</td>

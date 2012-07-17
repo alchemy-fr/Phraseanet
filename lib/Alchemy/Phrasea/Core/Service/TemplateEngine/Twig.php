@@ -105,6 +105,7 @@ class Twig extends ServiceAbstract
         $this->twig->addExtension(new \Twig_Extensions_Extension_Intl());
         // add filters truncate, wordwrap, nl2br
         $this->twig->addExtension(new \Twig_Extensions_Extension_Text());
+        $this->twig->addExtension(new \Alchemy\Phrasea\Twig\JSUniqueID());
     }
 
     private function loadTests()
@@ -119,36 +120,23 @@ class Twig extends ServiceAbstract
     private function loadFilters()
     {
         $this->twig->addFilter('serialize', new \Twig_Filter_Function('serialize'));
-        $this->twig->addFilter('sbas_names', new \Twig_Filter_Function('phrasea::sbas_names'));
-        $this->twig->addFilter('sbas_name', new \Twig_Filter_Function('phrasea::sbas_names'));
-        $this->twig->addFilter('unite', new \Twig_Filter_Function('p4string::format_octets'));
         $this->twig->addFilter('stristr', new \Twig_Filter_Function('stristr'));
         $this->twig->addFilter('implode', new \Twig_Filter_Function('implode'));
         $this->twig->addFilter('get_class', new \Twig_Filter_Function('get_class'));
         $this->twig->addFilter('stripdoublequotes', new \Twig_Filter_Function('stripdoublequotes'));
-        $this->twig->addFilter('phraseadate', new \Twig_Filter_Function('phraseadate::getPrettyString'));
-        $this->twig->addFilter('format_octets', new \Twig_Filter_Function('p4string::format_octets'));
         $this->twig->addFilter('geoname_display', new \Twig_Filter_Function('geonames::name_from_id'));
         $this->twig->addFilter('get_collection_logo', new \Twig_Filter_Function('collection::getLogo'));
-        $this->twig->addFilter('nl2br', new \Twig_Filter_Function('nl2br'));
         $this->twig->addFilter('floor', new \Twig_Filter_Function('floor'));
-        $this->twig->addFilter('bas_name', new \Twig_Filter_Function('phrasea::bas_names'));
         $this->twig->addFilter('bas_names', new \Twig_Filter_Function('phrasea::bas_names'));
-        $this->twig->addFilter('basnames', new \Twig_Filter_Function('phrasea::bas_names'));
+        $this->twig->addFilter('sbas_names', new \Twig_Filter_Function('phrasea::sbas_names'));
         $this->twig->addFilter('urlencode', new \Twig_Filter_Function('urlencode'));
         $this->twig->addFilter('sbasFromBas', new \Twig_Filter_Function('phrasea::sbasFromBas'));
-        $this->twig->addFilter('str_replace', new \Twig_Filter_Function('str_replace'));
-        $this->twig->addFilter('strval', new \Twig_Filter_Function('strval'));
         $this->twig->addFilter('key_exists', new \Twig_Filter_Function('array_key_exists'));
         $this->twig->addFilter('array_keys', new \Twig_Filter_Function('array_keys'));
         $this->twig->addFilter('round', new \Twig_Filter_Function('round'));
-        $this->twig->addFilter('dump', new \Twig_Filter_Function('var_dump'));
-        $this->twig->addFilter('formatdate', new \Twig_Filter_Function('phraseadate::getDate'));
-        $this->twig->addFilter('getPrettyDate', new \Twig_Filter_Function('phraseadate::getPrettyString'));
+        $this->twig->addFilter('formatDate', new \Twig_Filter_Function('phraseadate::getDate'));
         $this->twig->addFilter('prettyDate', new \Twig_Filter_Function('phraseadate::getPrettyString'));
-        $this->twig->addFilter('prettyString', new \Twig_Filter_Function('phraseadate::getPrettyString'));
-        $this->twig->addFilter('formatoctet', new \Twig_Filter_Function('p4string::format_octets'));
-        $this->twig->addFilter('getDate', new \Twig_Filter_Function('phraseadate::getDate'));
+        $this->twig->addFilter('formatOctets', new \Twig_Filter_Function('p4string::format_octets'));
         $this->twig->addFilter('geoname_name_from_id', new \Twig_Filter_Function('geonames::name_from_id'));
     }
 
