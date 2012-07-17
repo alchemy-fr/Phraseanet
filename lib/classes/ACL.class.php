@@ -762,11 +762,11 @@ class ACL implements cache_cacheableInterface
         }
 
         try {
-            $this->_rights_sbas = $this->get_data_from_cache(self::CACHE_RIGHTS_SBAS);
             $this->_global_rights = $this->get_data_from_cache(self::CACHE_GLOBAL_RIGHTS);
+            $this->_rights_sbas = $this->get_data_from_cache(self::CACHE_RIGHTS_SBAS);
 
             return $this;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
         }
 
@@ -820,8 +820,8 @@ class ACL implements cache_cacheableInterface
         }
 
         try {
-            $this->_rights_bas = $this->get_data_from_cache(self::CACHE_RIGHTS_BAS);
             $this->_global_rights = $this->get_data_from_cache(self::CACHE_GLOBAL_RIGHTS);
+            $this->_rights_bas = $this->get_data_from_cache(self::CACHE_RIGHTS_BAS);
             $this->_limited = $this->get_data_from_cache(self::CACHE_LIMITS_BAS);
 
             return $this;
@@ -830,10 +830,10 @@ class ACL implements cache_cacheableInterface
         }
 
         $sql = 'SELECT  u.* FROM basusr u, bas b, sbas s
-      WHERE usr_id= :usr_id
-        AND b.base_id = u.base_id
-        AND b.sbas_id = s.sbas_id
-        AND s.sbas_id = b.sbas_id ';
+            WHERE usr_id= :usr_id
+            AND b.base_id = u.base_id
+            AND b.sbas_id = s.sbas_id
+            AND s.sbas_id = b.sbas_id ';
 
         $stmt = $this->appbox->get_connection()->prepare($sql);
         $stmt->execute(array(':usr_id' => $this->user->get_id()));
