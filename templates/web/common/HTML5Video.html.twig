@@ -13,10 +13,12 @@
         <video id="{{ unique_id }}" class="videoTips video-js vjs-default-skin" controls autoplay
         preload="auto" width="{{ displayWidth|round }}" height="{{ displayHeight | round }}"
         data-setup="{}">
+        {% set s_width = null %}
+        {% set s_height = null %}
         {% for name, subdef in arraySubdefs %}
             {% if loop.first %}
-            <input type="hidden" name="width" value="{{subdef.get_width()}}"/>
-            <input type="hidden" name="height" value="{{subdef.get_height()}}"/>
+                {% set s_width = subdef.get_width() %}
+                {% set s_height = subdef.get_height() %}
             {% endif %}
             {% if session.is_authenticated() == true %}
                 {% set url = subdef.get_url() %}
@@ -26,6 +28,8 @@
             <source src="{{ url }}" type='{{ subdef.get_mime() }}'>
         {% endfor %}
         </video>
+        <input type="hidden" name="width" value="{{ s_width }}"/>
+        <input type="hidden" name="height" value="{{ s_height }}"/>
     </div>
 
     <script type="text/javascript">
@@ -38,7 +42,7 @@
                         var parent = $(this).parent();
                         player.width(parent.width());
                         player.height(parent.height());
-                    });
+                    }).trigger('resize-video-js');
 
                     $('#{{ unique_id }}').bind('unload-video-js', function(){
                         player.destroy();
