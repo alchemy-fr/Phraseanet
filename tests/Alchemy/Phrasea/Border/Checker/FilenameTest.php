@@ -16,7 +16,7 @@ class FilenameTest extends \PhraseanetPHPUnitAbstract
     protected $media;
 
     /**
-     * @covers Alchemy\Phrasea\Border\Checker\Checker
+     * @covers Alchemy\Phrasea\Border\Checker\CheckerInterface
      * @covers Alchemy\Phrasea\Border\Checker\Filename::__construct
      */
     public function setUp()

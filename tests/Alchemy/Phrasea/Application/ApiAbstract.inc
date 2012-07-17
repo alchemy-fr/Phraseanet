@@ -1340,7 +1340,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
     /**
      * @covers \API_V1_adapter::add_record
-     * @covers \API_V1_adapter::list_lazaret_file
+     * @covers \API_V1_adapter::list_quarantine_item
      */
     public function testAddRecordForceLazaret()
     {
@@ -1497,7 +1497,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
     /**
      * @covers \API_V1_adapter::get_publications
-     * @covers \API_V1_adapter::list_aggregate_publications
      * @covers \API_V1_adapter::list_publications_entries
      * @covers \API_V1_adapter::list_publication_entry
      * @covers \API_V1_adapter::list_publication_entry_item
@@ -1694,7 +1693,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     }
 
     /**
-     * @covers list_lazaret_file
      * @covers list_quarantine
      * @covers list_quarantine_item
      */
@@ -1729,7 +1727,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     }
 
     /**
-     * @covers list_lazaret_file
      * @covers list_quarantine_item
      */
     public function testQuarantineContent()

@@ -12,7 +12,7 @@ class DimensionTest extends \PhraseanetPHPUnitAbstract
     protected $object;
 
     /**
-     * @covers Alchemy\Phrasea\Border\Checker\Checker
+     * @covers Alchemy\Phrasea\Border\Checker\CheckerInterface
      * @covers Alchemy\Phrasea\Border\Checker\Dimension::__construct
      * @covers Alchemy\Phrasea\Border\Checker\Dimension::check
      */

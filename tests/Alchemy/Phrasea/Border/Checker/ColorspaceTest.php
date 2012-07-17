@@ -12,7 +12,7 @@ class ColorspaceTest extends \PhraseanetPHPUnitAbstract
     protected $object;
 
     /**
-     * @covers Alchemy\Phrasea\Border\Checker\Checker
+     * @covers Alchemy\Phrasea\Border\Checker\CheckerInterface
      * @covers Alchemy\Phrasea\Border\Checker\Colorspace::__construct
      */
     public function setUp()
