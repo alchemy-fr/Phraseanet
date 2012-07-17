@@ -1,7 +1,8 @@
 {% extends 'account/base.html.twig' %}
 
 {% block head %}
-<script type="text/javascript" src="/login/geonames.js"></script>
+<link rel="stylesheet" type="text/css" href="/include/minify/f=/skins/account/geonames.css">
+<script type="text/javascript" src="/include/minify/f=/include/account/geonames.js"></script>
 <script type="text/javascript">
     initialize_geoname_field($('#form_geonameid'));
 </script>
