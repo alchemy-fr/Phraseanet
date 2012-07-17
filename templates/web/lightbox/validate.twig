@@ -56,7 +56,8 @@
                         {% if basket_element %}
 
                             {% set bask_prev = basket_element.getRecord().get_preview() %}
-
+                            {% set previewHtml5 = null %}
+                            
                             {% if basket_element.getRecord().get_type() == 'video' %}
                                 {% set previewHtml5 = basket_element.getRecord().getSubdfefByDeviceAndMime(constant('\\databox_subdef::DEVICE_SCREEN'), ['video/ogg', 'video/mp4', 'video/webm']) %}
                                 {% if previewHtml5|length < 3 %}
