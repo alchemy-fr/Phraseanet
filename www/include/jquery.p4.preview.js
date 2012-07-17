@@ -498,7 +498,7 @@ function setPreview(){
 		top: t,
 		left: l
 	}).attr('width',w).attr('height',h);
-        $('#PREVIEWIMGCONT .record').trigger('resize-video-js');
+        $('#PREVIEWIMGCONT .videoTips.video-js').trigger('resize-video-js');
 }
 
 function classicMode(){
