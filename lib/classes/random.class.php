@@ -221,4 +221,38 @@ class random
 
         return $row;
     }
+
+    /**
+     * Get the validation token for one user and one validation basket
+     *
+     * @param integer $userId
+     * @param integer $basketId
+     * @return string The desired token
+     * @throws \Exception_NotFound
+     */
+    public static function getValidationToken($userId, $basketId)
+    {
+        $conn = \connection::getPDOConnection();
+        $sql = '
+            SELECT value FROM tokens
+            WHERE type = :type
+            AND usr_id = :usr_id
+            AND datas = :basket_id
+            AND (expire_on > NOW() OR expire_on IS NULL)';
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(array(
+            ':type'      => self::TYPE_VALIDATE,
+            ':usr_id'    => (int) $userId,
+            ':basket_id' => (int) $basketId,
+        ));
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        if ( ! $row) {
+            throw new \Exception_NotFound('Token not found');
+        }
+
+        return $row['value'];
+    }
 }

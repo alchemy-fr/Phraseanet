@@ -180,8 +180,6 @@ class Installer implements ControllerProviderInterface
                 \setup::rollback($conn, $connbas);
 
                 try {
-                    $setupRegistry = new \Setup_Registry();
-                    $setupRegistry->set('GV_ServerName', $servername, \registry::TYPE_STRING);
 
                     $appbox = \appbox::create($app['Core'], $setupRegistry, $conn, $appbox_name, true);
 

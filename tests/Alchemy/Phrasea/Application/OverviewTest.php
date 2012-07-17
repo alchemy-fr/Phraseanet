@@ -18,10 +18,10 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     public function createApplication()
     {
         $app = require __DIR__ . '/../../../../lib/Alchemy/Phrasea/Application/Overview.php';
-        
+
         $app['debug'] = true;
         unset($app['exception_handler']);
-        
+
         return $app;
     }
 
@@ -33,7 +33,7 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertEquals(200, $response->getStatusCode());
         $content_disposition = explode(';', $response->headers->get('content-disposition'));
-        $this->assertEquals('attachment', $content_disposition[0]);
+        $this->assertEquals('inline', $content_disposition[0]);
         $this->assertEquals(static::$records['record_1']->get_preview()->get_mime(), $response->headers->get('content-type'));
         $this->assertEquals(static::$records['record_1']->get_preview()->get_size(), $response->headers->get('content-length'));
 
