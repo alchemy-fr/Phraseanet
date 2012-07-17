@@ -22,7 +22,7 @@ class Firewall
                 $session->open_phrasea_session();
             } catch (\Exception $e) {
 
-                return $app->redirect('/login/logout.php');
+                return $app->redirect('/login/logout/');
             }
         } else {
 
