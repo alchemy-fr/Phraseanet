@@ -150,8 +150,8 @@
         {
             "package": "symfony/symfony",
             "version": "dev-master",
-            "source-reference": "151b79a6ce3f459e2fa8815cd9f2786eef750993",
-            "commit-date": "1342376835"
+            "source-reference": "46071f3238f0670916a1f043a620df9616497012",
+            "commit-date": "1337808087"
         },
         {
             "package": "tcpdf/tcpdf",
@@ -218,12 +218,6 @@
             "version": "dev-master",
             "source-reference": "779c3dfe446b6da893be87b908d6be28345d1e01",
             "commit-date": "1341780535"
-        },
-        {
-            "package": "fabpot/goutte",
-            "version": "dev-master",
-            "alias-pretty-version": "1.0.x-dev",
-            "alias-version": "1.0.9999999.9999999-dev"
         },
         {
             "package": "fabpot/goutte",
