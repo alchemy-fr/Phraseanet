@@ -34,9 +34,10 @@
                 _V_("{{ unique_id }}", {}, function(){
                     var player = this;
 
-                    $('#{{ unique_id }}').parent().bind('resize-video-js', function(){
-                        player.width($(this).width());
-                        player.height($(this).height());
+                    $('#{{ unique_id }}').bind('resize-video-js', function(){
+                        var parent = $(this).parent();
+                        player.width(parent.width());
+                        player.height(parent.height());
                     });
 
                     $('#{{ unique_id }}').bind('unload-video-js', function(){
