@@ -16,9 +16,9 @@ class Firewall
 
     public function requireAuthentication(Application $app)
     {
-        if ($app['Core']->isAuthenticated()) {
+        if ($app['phraseanet.core']->isAuthenticated()) {
             try {
-                $session = \appbox::get_instance($app['Core'])->get_session();
+                $session = $app['phraseanet.appbox']->get_session();
                 $session->open_phrasea_session();
             } catch (\Exception $e) {
 
@@ -29,9 +29,16 @@ class Firewall
             return $app->redirect('/login/');
         }
 
-        if ($app['Core']->getAuthenticatedUser()->is_guest()) {
+        if ($app['phraseanet.core']->getAuthenticatedUser()->is_guest()) {
 
             return $app->redirect('/login/');
+        }
+    }
+
+    public function requireNotAuthenticated(Application $app)
+    {
+        if ($app['phraseanet.core']->isAuthenticated()) {
+            return $app->redirect('/prod/');
         }
     }
 }
