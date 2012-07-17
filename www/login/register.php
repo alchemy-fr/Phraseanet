@@ -325,7 +325,7 @@ foreach ($arrayVerif as $ar => $ver) {
 <?php
 if ($register_enabled) {
     ?>
-                                <a href="register.php" class="tab active" id="register-tab"><?php echo _('login:: register') ?></a>
+                                <a href="/login/register/" class="tab active" id="register-tab"><?php echo _('login:: register') ?></a>
     <?php
 }
 ?>
@@ -340,7 +340,7 @@ if ($register_enabled) {
 
 
 
-                    <form id="register" name="creation" action="register.php" method="post">
+                    <form id="register" name="creation" action="/login/register/" method="post">
 
                         <table id="form_register_table" cellspacing="0" cellpadding="0" style="font-size:11px;margin:0 auto;">
                             <tr style="height:10px;">

@@ -31,7 +31,7 @@ class login
         $demandLinkBox = '';
 
         if (self::register_enabled()) {
-            $demandLinkBox = '<a href="register.php" rel="external" class="link pointer" id="register-tab">' . _('login:: register') . '</a>';
+            $demandLinkBox = '<a href="/login/register/" rel="external" class="link pointer" id="register-tab">' . _('login:: register') . '</a>';
         }
 
         return $demandLinkBox;

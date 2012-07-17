@@ -66,7 +66,7 @@ if ($parm['error'] !== null) {
         case 'mailNotConfirm' :
             $errorWarning = '<div class="notice">' . _('login::erreur: Vous n\'avez pas confirme votre email') . '</div>';
             if (ctype_digit($parm['usr']))
-                $errorWarning .= '<div class="notice"><a href="/login/sendmail-confirm.php?usr_id=' . $parm['usr'] . '" target ="_self" style="color:black;text-decoration:none;">' . _('login:: Envoyer a nouveau le mail de confirmation') . '</a></div>';
+                $errorWarning .= '<div class="notice"><a href="/login/sendmail-confirm/?usr_id=' . $parm['usr'] . '" target ="_self" style="color:black;text-decoration:none;">' . _('login:: Envoyer a nouveau le mail de confirmation') . '</a></div>';
             break;
         case 'no-base' :
             $errorWarning = '<div class="notice">' . _('login::erreur: Aucune base n\'est actuellment accessible') . '</div>';
