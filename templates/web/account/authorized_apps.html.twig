@@ -68,7 +68,7 @@ $(document).ready(function(){
                           <a href="{{app.get_website()}}" target="_blank">
                             <strong>{{app.get_name()}}</strong>
                           </a>
-                          {% if user is not none %}
+                          {% if app.get_creator() is not none %}
                             {% set user_name = app.get_creator().get_display_name() %}
                             {% trans %}
                             par {{user_name}}
