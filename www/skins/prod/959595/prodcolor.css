@@ -217,7 +217,6 @@ span.ww_winTitle {
 
 #idFrameC .ui-tabs .ui-tabs-nav li {
     width: auto;
-    *width: 74px;
     height: 52px;
     display: inline-block;
     background-color: #999999;
