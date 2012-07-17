@@ -565,7 +565,7 @@ echo phrasea::getHome($start_page, 'client');
         <input type="hidden" name="ssel_id" id="ssel2val" value="">
         <input type="hidden" name="mode" value="0">
     </form>
-    <form name="logout" target="_self" id="logout" action="/login/logout.php" method="post" style="visibility:hidden; display:none" >
+    <form name="logout" target="_self" id="logout" action="/login/logout/" method="post" style="visibility:hidden; display:none" >
         <input type="hidden" name="app" value="client">
     </form>
     <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
