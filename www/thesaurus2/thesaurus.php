@@ -198,7 +198,7 @@ User_Adapter::updateClientInfos(5);
 
     </head>
 
-    <body id="desktop" style="background-color:#808080; overflow:hidden" onload="loaded();" onmousewheel="return(false);" onscroll="evtScrollBody();" >
+    <body id="desktop" style="background-color:#808080; overflow:hidden" onload="loaded();" onscroll="evtScrollBody();" >
 
         <div class="menu" id="flagsMenu" style="z-index:50">
 <?php

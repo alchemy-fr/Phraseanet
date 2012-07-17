@@ -373,7 +373,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      *
      * @return \Entities\Basket
      */
-    protected function insertOneValidationBasket()
+    protected function insertOneValidationBasket(array $parameters = array())
     {
         $em = self::$core->getEntityManager();
 
@@ -384,8 +384,11 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $Validation->setBasket($basket);
         $Validation->setInitiator(self::$user);
 
+        if (isset($parameters['expires']) && $parameters['expires'] instanceof \DateTime) {
+            $Validation->setExpires($parameters['expires']);
+        }
+        
         $basket->setValidation($Validation);
-
         $em->persist($Validation);
         $em->merge($basket);
 

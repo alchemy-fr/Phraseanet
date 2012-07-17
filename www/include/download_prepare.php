@@ -71,7 +71,7 @@ if ($n_files == 1) {
 $files = $list['files'];
 
 if (isset($parm['get']) && $parm['get'] == '1') {
-    $response = set_export::stream_file($zipFile, $export_name, $mime);
+    $response = set_export::stream_file($zipFile, $export_name, $mime, 'attachment');
     $response->send();
     set_export::log_download($list, $parm['type']);
 

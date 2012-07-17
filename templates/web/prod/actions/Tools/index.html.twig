@@ -124,6 +124,7 @@
                 {% for subdef in previewHtml5 %}
                 <source type="{{ subdef.get_mime() }}" src="{{ subdef.get_url() }}" />
                 {% endfor %}
+                {% trans 'No preview available' %}
               </video>
             </div>
 
@@ -374,7 +375,7 @@
 </div>
 
 <script type="text/javascript">
-    
+
 $(document).ready(function(){
     var scope = $("#prod-tool-box");
     var width = 0;
