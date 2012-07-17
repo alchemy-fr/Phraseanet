@@ -29,7 +29,7 @@
         </div>
         </td>-->
         {% endif %}
-        <td style="text-align:right;">
+        <td style="text-align:right;padding-right:2%">
             {% set url = '/prod/bridge/adapter/' ~ account.get_id ~ '/' ~ adapter_action ~ '/' ~ action_type ~ '/' %}
             {{pages.paginator(elements.get_total_page(), elements.get_current_page(), url) }}
         </td>
@@ -40,15 +40,15 @@
 {% block response %}
     {%for element in elements.get_elements%}
       <div class="element {{ loop.index is odd ? 'odd' : 'even' }}">
-        <table>
+        <table style="width:100%;">
           <tr>
             <td style="width:20px;">
               <input class="bridge_element_selector" type="checkbox" value="{{element.get_id}}"/>
             </td>
-            <td class="thumbnail">
+            <td style="width:130px";>
               {% if element.get_thumbnail != "" %}
                 <div style="position:relative;">
-                  <img src="{{element.get_thumbnail}}" class="api_thumbnail"/>
+                  <img src="{{element.get_thumbnail}}" class="thumbnail api_thumbnail"/>
                   {% if element.get_duration != "" %}
                   <span class="duration_time">
                     {{element.get_duration}}
