@@ -29,7 +29,7 @@ class Language implements ControllerProviderInterface
         $controller = $app['controllers_factory'];
 
         $controller->get("/", function(Application $app) {
-                $registry = $app["Core"]->getRegistry();
+                $registry = $app['phraseanet.core']->getRegistry();
 
                 $out = array();
                 $out['thesaurusBasesChanged'] = _('prod::recherche: Attention : la liste des bases selectionnees pour la recherche a ete changee.');

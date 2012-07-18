@@ -433,6 +433,46 @@ class Bridge implements ControllerProviderInterface
                 return $app->redirect('/prod/bridge/adapter/' . $account->get_id() . '/load-records/?notice=' . sprintf(_('%d elements en attente'), count($route->get_elements())));
             });
 
+        $app->error(function(\Exception $e, $code) use ($app) {
+
+                $request = $app['request'];
+
+                if ($e instanceof \Bridge_Exception) {
+
+                    $params = array(
+                        'message'      => $e->getMessage()
+                        , 'file'         => $e->getFile()
+                        , 'line'         => $e->getLine()
+                        , 'r_method'     => $request->getMethod()
+                        , 'r_action'     => $request->getRequestUri()
+                        , 'r_parameters' => ($request->getMethod() == 'GET' ? array() : $request->request->all())
+                    );
+
+                    /* @var $twig \Twig_Environment */
+                    $twig = $app['phraseanet.core']->getTwig();
+
+                    if ($e instanceof \Bridge_Exception_ApiConnectorNotConfigured) {
+                        $params = array_merge($params, array('account' => $app['current_account']));
+
+                        return new response($twig->render('/prod/actions/Bridge/notconfigured.twig', $params), 200);
+                    } elseif ($e instanceof \Bridge_Exception_ApiConnectorNotConnected) {
+                        $params = array_merge($params, array('account' => $app['current_account']));
+
+                        return new response($twig->render('/prod/actions/Bridge/disconnected.twig', $params), 200);
+                    } elseif ($e instanceof \Bridge_Exception_ApiConnectorAccessTokenFailed) {
+                        $params = array_merge($params, array('account' => $app['current_account']));
+
+                        return new response($twig->render('/prod/actions/Bridge/disconnected.twig', $params), 200);
+                    } elseif ($e instanceof \Bridge_Exception_ApiDisabled) {
+                        $params = array_merge($params, array('api' => $e->get_api()));
+
+                        return new response($twig->render('/prod/actions/Bridge/deactivated.twig', $params), 200);
+                    }
+
+                    return new response($twig->render('/prod/actions/Bridge/error.twig', $params), 200);
+                }
+            });
+
         return $controllers;
     }
 }

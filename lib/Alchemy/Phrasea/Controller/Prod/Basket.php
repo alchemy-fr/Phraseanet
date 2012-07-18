@@ -176,10 +176,10 @@ class Basket implements ControllerProviderInterface
                 $success = false;
 
                 try {
-                    $em = $app['Core']->getEntityManager();
+                    $em = $app['phraseanet.core']->getEntityManager();
 
                     $basket = $em->getRepository('\Entities\Basket')
-                        ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), true);
+                        ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), true);
 
                     $basket->setName($request->get('name', ''));
                     $basket->setDescription($request->get('description'));

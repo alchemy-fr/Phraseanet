@@ -190,13 +190,13 @@ class Lazaret implements ControllerProviderInterface
     {
         $ret = array('success' => false, 'message' => '', 'result'  => array());
 
-        $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
+        $lazaretFile = $app['phraseanet.core']['EM']->find('Entities\LazaretFile', $file_id);
 
         /* @var $lazaretFile \Entities\LazaretFile */
         if (null === $lazaretFile) {
             $ret['message'] = _('File is not present in quarantine anymore, please refresh');
 
-            return self::formatJson($app['Core']['Serializer'], $ret);
+            return self::formatJson($app['phraseanet.core']['Serializer'], $ret);
         }
 
         $file = array(
@@ -204,7 +204,7 @@ class Lazaret implements ControllerProviderInterface
             'base_id'  => $lazaretFile->getBaseId(),
             'created'  => $lazaretFile->getCreated()->format(\DateTime::ATOM),
             'updated'  => $lazaretFile->getUpdated()->format(\DateTime::ATOM),
-            'pathname' => $app['Core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getFilename(),
+            'pathname' => $app['phraseanet.core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getFilename(),
             'sha256'   => $lazaretFile->getSha256(),
             'uuid'     => $lazaretFile->getUuid(),
         );
@@ -212,7 +212,7 @@ class Lazaret implements ControllerProviderInterface
         $ret['result'] = $file;
         $ret['success'] = true;
 
-        return self::formatJson($app['Core']['Serializer'], $ret);
+        return self::formatJson($app['phraseanet.core']['Serializer'], $ret);
     }
 
     /**
@@ -240,17 +240,17 @@ class Lazaret implements ControllerProviderInterface
         }
 
 
-        $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
+        $lazaretFile = $app['phraseanet.core']['EM']->find('Entities\LazaretFile', $file_id);
 
         /* @var $lazaretFile \Entities\LazaretFile */
         if (null === $lazaretFile) {
             $ret['message'] = _('File is not present in quarantine anymore, please refresh');
 
-            return self::formatJson($app['Core']['Serializer'], $ret);
+            return self::formatJson($app['phraseanet.core']['Serializer'], $ret);
         }
 
-        $lazaretFileName = $app['Core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getFilename();
-        $lazaretThumbFileName = $app['Core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getThumbFilename();
+        $lazaretFileName = $app['phraseanet.core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getFilename();
+        $lazaretThumbFileName = $app['phraseanet.core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getThumbFilename();
 
         try {
             $borderFile = Border\File::buildFromPathfile(
@@ -320,13 +320,13 @@ class Lazaret implements ControllerProviderInterface
         }
 
         try {
-            $app['Core']['file-system']->remove($lazaretFileName);
-            $app['Core']['file-system']->remove($lazaretThumbFileName);
+            $app['phraseanet.core']['file-system']->remove($lazaretFileName);
+            $app['phraseanet.core']['file-system']->remove($lazaretThumbFileName);
         } catch (IOException $e) {
 
         }
 
-        return self::formatJson($app['Core']['Serializer'], $ret);
+        return self::formatJson($app['phraseanet.core']['Serializer'], $ret);
     }
 
     /**
@@ -343,21 +343,21 @@ class Lazaret implements ControllerProviderInterface
         $ret = array('success' => false, 'message' => '', 'result'  => array());
 
 
-        $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
+        $lazaretFile = $app['phraseanet.core']['EM']->find('Entities\LazaretFile', $file_id);
 
         /* @var $lazaretFile \Entities\LazaretFile */
         if (null === $lazaretFile) {
             $ret['message'] = _('File is not present in quarantine anymore, please refresh');
 
-            return self::formatJson($app['Core']['Serializer'], $ret);
+            return self::formatJson($app['phraseanet.core']['Serializer'], $ret);
         }
 
-        $lazaretFileName = $app['Core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getFilename();
-        $lazaretThumbFileName = $app['Core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getThumbFilename();
+        $lazaretFileName = $app['phraseanet.core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getFilename();
+        $lazaretThumbFileName = $app['phraseanet.core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getThumbFilename();
 
         try {
-            $app['Core']['EM']->remove($lazaretFile);
-            $app['Core']['EM']->flush();
+            $app['phraseanet.core']['EM']->remove($lazaretFile);
+            $app['phraseanet.core']['EM']->flush();
 
             $ret['success'] = true;
         } catch (\Exception $e) {
@@ -365,13 +365,13 @@ class Lazaret implements ControllerProviderInterface
         }
 
         try {
-            $app['Core']['file-system']->remove($lazaretFileName);
-            $app['Core']['file-system']->remove($lazaretThumbFileName);
+            $app['phraseanet.core']['file-system']->remove($lazaretFileName);
+            $app['phraseanet.core']['file-system']->remove($lazaretThumbFileName);
         } catch (IOException $e) {
 
         }
 
-        return self::formatJson($app['Core']['Serializer'], $ret);
+        return self::formatJson($app['phraseanet.core']['Serializer'], $ret);
     }
 
     /**
@@ -394,13 +394,13 @@ class Lazaret implements ControllerProviderInterface
             return self::formatJson($app['phraseanet.core']['Serializer'], $ret);
         }
 
-        $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
+        $lazaretFile = $app['phraseanet.core']['EM']->find('Entities\LazaretFile', $file_id);
 
         /* @var $lazaretFile \Entities\LazaretFile */
         if (null === $lazaretFile) {
             $ret['message'] = _('File is not present in quarantine anymore, please refresh');
 
-            return self::formatJson($app['Core']['Serializer'], $ret);
+            return self::formatJson($app['phraseanet.core']['Serializer'], $ret);
         }
 
         $found = false;
@@ -418,14 +418,14 @@ class Lazaret implements ControllerProviderInterface
         if ( ! $found) {
             $ret['message'] = _('The destination record provided is not allowed');
 
-            return self::formatJson($app['Core']['Serializer'], $ret);
+            return self::formatJson($app['phraseanet.core']['Serializer'], $ret);
         }
 
-        $lazaretFileName = $app['Core']['Registry']->get('GV_RootPath').'tmp/lazaret/'.$lazaretFile->getFilename();
-        $lazaretThumbFileName = $app['Core']['Registry']->get('GV_RootPath').'tmp/lazaret/'.$lazaretFile->getThumbFilename();
+        $lazaretFileName = $app['phraseanet.core']['Registry']->get('GV_RootPath').'tmp/lazaret/'.$lazaretFile->getFilename();
+        $lazaretThumbFileName = $app['phraseanet.core']['Registry']->get('GV_RootPath').'tmp/lazaret/'.$lazaretFile->getThumbFilename();
 
         try {
-            $media = $app['Core']['mediavorus']->guess(new \SplFileInfo($lazaretFileName));
+            $media = $app['phraseanet.core']['mediavorus']->guess(new \SplFileInfo($lazaretFileName));
 
             $record = $lazaretFile->getCollection()->get_databox()->get_record($recordId);
             $record->substitute_subdef('document', $media);
@@ -440,13 +440,13 @@ class Lazaret implements ControllerProviderInterface
         }
 
         try {
-            $app['Core']['file-system']->remove($lazaretFileName);
-            $app['Core']['file-system']->remove($lazaretThumbFileName);
+            $app['phraseanet.core']['file-system']->remove($lazaretFileName);
+            $app['phraseanet.core']['file-system']->remove($lazaretThumbFileName);
         } catch (IOException $e) {
 
         }
 
-        return self::formatJson($app['Core']['Serializer'], $ret);
+        return self::formatJson($app['phraseanet.core']['Serializer'], $ret);
     }
 
     /**
@@ -468,7 +468,7 @@ class Lazaret implements ControllerProviderInterface
             return new Response(null, 404);
         }
 
-        $lazaretThumbFileName = $app['Core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getThumbFilename();
+        $lazaretThumbFileName = $app['phraseanet.core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getThumbFilename();
 
         $response = \set_export::stream_file(
                 $lazaretThumbFileName, $lazaretFile->getOriginalName(), 'image/jpeg', 'inline'

@@ -44,7 +44,7 @@ class MoveCollection implements ControllerProviderInterface
         );
 
         $controllers->post('/apply/', function(Application $app, Request $request) {
-                $move = new RecordHelper\MoveCollection($app['Core'], $request);
+                $move = new RecordHelper\MoveCollection($app['phraseanet.core'], $request);
                 $success = false;
 
                 try {
