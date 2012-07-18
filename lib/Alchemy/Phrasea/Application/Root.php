@@ -15,8 +15,8 @@ use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Root\RSSFeeds;
 use Alchemy\Phrasea\Controller\Root\Account;
 use Alchemy\Phrasea\Controller\Root\Developers;
+use Alchemy\Phrasea\Controller\Root\Login;
 use Alchemy\Phrasea\Controller\Login\Authenticate as AuthenticateController;
-use Alchemy\Phrasea\Controller\Login\Login as LoginController;
 use Silex\Application as SilexApp;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -62,7 +62,7 @@ return call_user_func(function() {
             $app->mount('/feeds/', new RSSFeeds());
             $app->mount('/account/', new Account());
             $app->mount('/login/authenticate/', new AuthenticateController());
-            $app->mount('/login/', new LoginController());
+            $app->mount('/login/', new Login());
             $app->mount('/developers/', new Developers());
 
             return $app;
