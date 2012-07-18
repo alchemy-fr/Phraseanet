@@ -387,7 +387,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         if (isset($parameters['expires']) && $parameters['expires'] instanceof \DateTime) {
             $Validation->setExpires($parameters['expires']);
         }
-        
+
         $basket->setValidation($Validation);
         $em->persist($Validation);
         $em->merge($basket);
