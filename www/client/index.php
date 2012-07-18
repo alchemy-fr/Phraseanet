@@ -570,7 +570,7 @@ echo phrasea::getHome($start_page, 'client');
     </form>
     <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
     <script type="text/javascript" src="/include/minify/g=client"></script>
-    <script type="text/javascript" src="/include/jslibs/flowplayer/flowplayer-3.2.6.min.js"></script>
+    <script type="text/javascript" src="/include/jslibs/flowplayer/flowplayer-3.2.11.min.js"></script>
     <script type="text/javascript">
 
 
