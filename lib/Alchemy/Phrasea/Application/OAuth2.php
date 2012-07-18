@@ -50,14 +50,11 @@ return call_user_func(function() {
             $authorize_func = function() use ($app) {
                     $request = $app['request'];
                     $oauth2_adapter = $app['oauth'];
-                    /* @var $twig \Twig_Environment */
-                    $twig = $app['phraseanet.core']->getTwig();
                     $session = $app['phraseanet.appbox']->get_session();
 
                     //Check for auth params, send error or redirect if not valid
                     $params = $oauth2_adapter->getAuthorizationRequestParameters($request);
 
-                    $authenticated = $session->is_authenticated();
                     $app_authorized = false;
                     $errorMessage = false;
 
@@ -65,8 +62,8 @@ return call_user_func(function() {
 
                     $oauth2_adapter->setClient($client);
 
-                    $action_accept = $request->get("action_accept", null);
-                    $action_login = $request->get("action_login", null);
+                    $action_accept = $request->get("action_accept");
+                    $action_login = $request->get("action_login");
 
                     $template = "api/auth/end_user_authorization.twig";
 
@@ -83,34 +80,21 @@ return call_user_func(function() {
                         );
                     }
 
-                    if ( ! $authenticated) {
+                    if ( ! $session->is_authenticated()) {
                         if ($action_login !== null) {
                             try {
-                                $login = $request->get("login");
-                                $password = $request->get("password");
-                                $auth = new \Session_Authentication_Native($app['phraseanet.appbox'], $login, $password);
-                                $session->authenticate($auth);
-                            } catch (\Exception $e) {
-                                $params = array(
-                                    "auth"         => $oauth2_adapter
-                                    , "session"      => $session
-                                    , "errorMessage" => true
-                                    , "user"         => $app['phraseanet.core']->getAuthenticatedUser()
+                                $session->authenticate(
+                                    new \Session_Authentication_Native(
+                                        $app['phraseanet.appbox'], $request->get("login"), $request->get("password")
+                                    )
                                 );
-                                $html = $twig->render($template, $params);
+                            } catch (\Exception $e) {
 
-                                return new Response($html, 200, array("content-type" => "text/html"));
+                                return new Response($app['phraseanet.core']->getTwig()->render($template, array("auth" => $oauth2_adapter)));
                             }
                         } else {
-                            $params = array(
-                                "auth"         => $oauth2_adapter
-                                , "session"      => $session
-                                , "errorMessage" => $errorMessage
-                                , "user"         => $app['phraseanet.core']->getAuthenticatedUser()
-                            );
-                            $html = $twig->render($template, $params);
 
-                            return new Response($html, 200, array("content-type" => "text/html"));
+                            return new Response($app['phraseanet.core']->getTwig()->render($template, array("auth" => $oauth2_adapter)));
                         }
                     }
 
@@ -121,8 +105,9 @@ return call_user_func(function() {
                     );
 
                     foreach ($user_auth_clients as $auth_client) {
-                        if ($client->get_client_id() == $auth_client->get_client_id())
+                        if ($client->get_client_id() == $auth_client->get_client_id()) {
                             $app_authorized = true;
+                        }
                     }
 
                     $account = $oauth2_adapter->updateAccount($session->get_usr_id());
@@ -131,52 +116,40 @@ return call_user_func(function() {
 
                     if ( ! $app_authorized && $action_accept === null) {
                         $params = array(
-                            "auth"         => $oauth2_adapter
-                            , "session"      => $session
-                            , "errorMessage" => $errorMessage
-                            , "user"         => $app['phraseanet.core']->getAuthenticatedUser()
+                            "auth"         => $oauth2_adapter,
+                            "errorMessage" => $errorMessage,
                         );
 
-                        $html = $twig->render($template, $params);
-
-                        return new Response($html, 200, array("content-type" => "text/html"));
+                        return new Response($app['phraseanet.core']->getTwig()->render($template, $params));
                     } elseif ( ! $app_authorized && $action_accept !== null) {
-                        $app_authorized = ! ! $action_accept;
+                        $app_authorized = (Boolean) $action_accept;
                         $account->set_revoked( ! $app_authorized);
                     }
 
                     //if native app show template
                     if ($oauth2_adapter->isNativeApp($params['redirect_uri'])) {
                         $params = $oauth2_adapter->finishNativeClientAuthorization($app_authorized, $params);
-                        $params['user'] = $app['phraseanet.core']->getAuthenticatedUser();
-                        $html = $twig->render("api/auth/native_app_access_token.twig", $params);
 
-                        return new Response($html, 200, array("content-type" => "text/html"));
+                        return new Response($app['phraseanet.core']->getTwig()->render("api/auth/native_app_access_token.twig", $params));
                     } else {
                         $oauth2_adapter->finishClientAuthorization($app_authorized, $params);
                     }
                 };
 
-            $route = '/authorize';
-            $app->get($route, $authorize_func);
-            $app->post($route, $authorize_func);
+            $app->match('/authorize', $authorize_func)->method('GET|POST');
 
             /**
              *  TOKEN ENDPOINT
              *  Token endpoint - used to exchange an authorization grant for an access token.
              */
-            $route = '/token';
-            $app->post($route, function(\Silex\Application $app, Request $request) {
-                    if ( ! $request->isSecure()) {
-                        throw new HttpException(400, 'require the use of the https', null, array('content-type' => 'application/json'));
-                    }
+            $app->post('/token', function(\Silex\Application $app, Request $request) {
 
                     $app['oauth']->grantAccessToken();
                     ob_flush();
                     flush();
 
                     return;
-                });
+                })->requireHttps();
 
             /**
              * *******************************************************************
