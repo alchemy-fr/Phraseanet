@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Controller\Root as Controller;
 use Silex\Application as SilexApp;
 use Silex\Provider\ValidatorServiceProvider;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -25,7 +26,6 @@ return call_user_func(function() {
             $app = new SilexApp();
 
             $app['Core'] = \bootstrap::getCore();
-            $app['debug'] = true;
 
             $app->register(new ValidatorServiceProvider());
 
@@ -61,6 +61,7 @@ return call_user_func(function() {
             $app->mount('/feeds/', new Controller\RSSFeeds());
             $app->mount('/account/', new Controller\Account());
             $app->mount('/developers/', new Controller\Developers());
+            $app->mount('/login/', new Controller\Login());
 
             return $app;
         }

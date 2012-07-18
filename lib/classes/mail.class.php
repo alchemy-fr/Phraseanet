@@ -121,7 +121,7 @@ class mail
         $date = new DateTime('1 day');
         $token = random::getUrlToken(\random::TYPE_EMAIL, $usr_id, $date, $email);
 
-        $url = $registry->get('GV_ServerName') . 'login/reset-email.php?token=' . $token;
+        $url = $registry->get('GV_ServerName') . 'account/reset-email/?token=' . $token;
 
         $subject = _('login::register: sujet email : confirmation de votre adresse email');
 
@@ -148,13 +148,18 @@ class mail
         return self::send_mail($subject, $body, $to);
     }
 
-    public static function mail_confirm_unregistered($email, $others)
+    public static function mail_confirm_unregistered($email, array $others)
     {
 
         $subject = _('login::register: sujet email : confirmation de votre adresse email');
 
         $body = "<div>" . _('login::register: merci d\'avoir confirme votre adresse email') . "</div>\n";
-        $body .= "<br/>\n<div>" . _('login::register: vous devez attendre la confirmation d\'un administrateur ; vos demandes sur les collections suivantes sont toujours en attente : ') . "</div>\n<ul>" . $others . "</ul>\n";
+        $body .= "<br/>\n<div>" . _('login::register: vous devez attendre la confirmation d\'un administrateur ; vos demandes sur les collections suivantes sont toujours en attente : ') . "</div>\n";
+        $body .= "<ul>";
+        foreach ($others as $other) {
+            $body .= sprintf("<li>%s</li>", $other);
+        }
+        $body .= "</ul>\n";
         $body .= "<br/>\n<div>" . _('login::register : vous serez avertis par email lorsque vos demandes seront traitees') . "</div>\n";
 
         $to = array('email' => $email, 'name'  => $email);

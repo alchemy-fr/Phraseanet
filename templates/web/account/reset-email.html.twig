@@ -1,11 +1,11 @@
 {% extends 'account/base.html.twig' %}
 
 {% block title %}
-    {% trans 'admin::compte-utilisateur changer mon mot de passe' %}
+    {% trans 'Change my email address' %}
 {% endblock %}
 
 {% block head %}
-<script type="text/javascript" language="javascript" src="/include/jslibs/jquery.validate.js"></script>
+<script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery.validate.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
     $("#mainform").validate(
@@ -38,7 +38,7 @@ $(document).ready(function() {
 
         },
         errorPlacement: function(error, element) {
-            error.prependTo( element.parent().next() );
+            error.appendTo(element.closest('.controls').find('.form_alert'));
         }
     });
 });
@@ -46,43 +46,60 @@ $(document).ready(function() {
 {% endblock %}
 
 {% block content %}
-<form method="POST" action="/account/reset-email/" id="mainform" class="form-horizontal">
-    <div class="control-group">
-        <label class="form_label control-label" for="form_login">{% trans 'admin::compte-utilisateur identifiant' %}</label>
-        <div class="controls">
-            <p>{{ user.get_login() }}</p>
-            <p class="form_alert help-block"></p>
+
+{% if updateMsg is not none %}
+    <div style="margin-top:100px;">{{ updateMsg }}</div>
+    <a href="/account/" target="_self">{% trans 'admin::compte-utilisateur retour a mon compte'%}</a>
+{% else %}
+
+    {% if noticeMsg is not none %}
+        <div class="notice" style="text-align:center;margin:20px 0">
+            {% trans 'phraseanet::erreur : oups ! une erreur est survenue pendant l\'operation !' %}
         </div>
-    </div>
-    <div class="control-group">
-        <label class="form_label control-label" for="form_password">{% trans 'admin::compte-utilisateur mot de passe' %}</label>
-        <div class="controls">
-            <input type="password" id="form_password" name="form_password" autocomplete="off" />
-            {#<p class="form_alert help-block"><?php echo isset($needed['form_password']) ? $needed['form_password'] : '' ?></p>#}
+        <div class="notice" style="text-align:center;margin:20px 0">
+            {{ noticeMsg }}
         </div>
-    </div>
-    <div class="control-group">
-        <label class="form_label control-label" for="form_email">{% trans 'admin::compte-utilisateur nouvelle adresse email' %}</label>
-        <div class="controls">
-            <input type="text" id="form_email" name="form_email" />
-            {#<p class="form_alert help-block"><?php echo isset($needed['form_email']) ? $needed['form_email'] : '' ?></p>#}
+        <a href="/account/" target="_self">{% trans 'admin::compte-utilisateur retour a mon compte'%}</a>
+    {% endif %}
+
+    <form method="POST" action="/account/reset-email/" id="mainform" class="form-horizontal">
+        <div class="control-group">
+            <label class="form_label control-label" for="form_login">{% trans 'admin::compte-utilisateur identifiant' %}</label>
+            <div class="controls">
+                <p>{{ user.get_login() }}</p>
+                <p class="form_alert help-block"></p>
+            </div>
         </div>
-    </div>
-    <div class="control-group">
-        <label class="form_label control-label" for="form_email_confirm">{% trans 'admin::compte-utilisateur confirmer la nouvelle adresse email' %}</label>
-        <div class="controls">
-            <input type="text" id="form_email_confirm" name="form_email_confirm" autocomplete="off" />
-            {#<p class="form_alert help-block"><?php echo isset($needed['form_email_confirm']) ? $needed['form_email_confirm'] : '' ?></p>#}
+        <div class="control-group">
+            <label class="form_label control-label" for="form_password">{% trans 'admin::compte-utilisateur mot de passe' %}</label>
+            <div class="controls">
+                <input type="password" id="form_password" name="form_password" autocomplete="off" />
+                {#<p class="form_alert help-block"><?php echo isset($needed['form_password']) ? $needed['form_password'] : '' ?></p>#}
+            </div>
         </div>
-    </div>
-    <div class="form-actions" style="background-color: transparent;">
-        <input type="submit" class="btn" value="{% trans 'boutton::valider' %}" style="margin: 20px auto;" />
-        <input type="button" class="btn" value="{% trans 'boutton::annuler' %}" onclick="self.location.replace('/account/');" />
-    </div>
-</form>
-<p>
-    {% trans 'admin::compte-utilisateur: Pourquoi me demande-t-on mon mot de passe pour changer mon adresse email ?'%}
-    <br />
-    {% trans 'admin::compte-utilisateur: Votre adresse e-mail sera utilisee lors de la perte de votre mot de passe afin de pouvoir le reinitialiser, il est important que vous soyez la seule personne a pouvoir la changer.'%}
-</p>
+        <div class="control-group">
+            <label class="form_label control-label" for="form_email">{% trans 'admin::compte-utilisateur nouvelle adresse email' %}</label>
+            <div class="controls">
+                <input type="text" id="form_email" name="form_email" />
+                {#<p class="form_alert help-block"><?php echo isset($needed['form_email']) ? $needed['form_email'] : '' ?></p>#}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="form_label control-label" for="form_email_confirm">{% trans 'admin::compte-utilisateur confirmer la nouvelle adresse email' %}</label>
+            <div class="controls">
+                <input type="text" id="form_email_confirm" name="form_email_confirm" autocomplete="off" />
+                {#<p class="form_alert help-block"><?php echo isset($needed['form_email_confirm']) ? $needed['form_email_confirm'] : '' ?></p>#}
+            </div>
+        </div>
+        <div class="form-actions" style="background-color: transparent;">
+            <input type="submit" class="btn" value="{% trans 'boutton::valider' %}" style="margin: 20px auto;" />
+            <input type="button" class="btn" value="{% trans 'boutton::annuler' %}" onclick="self.location.replace('/account/');" />
+        </div>
+    </form>
+    <p>
+        {% trans 'admin::compte-utilisateur: Pourquoi me demande-t-on mon mot de passe pour changer mon adresse email ?'%}
+        <br />
+        {% trans 'admin::compte-utilisateur: Votre adresse e-mail sera utilisee lors de la perte de votre mot de passe afin de pouvoir le reinitialiser, il est important que vous soyez la seule personne a pouvoir la changer.'%}
+    </p>
+{% endif %}
 {% endblock %}

@@ -7,7 +7,7 @@
   RewriteRule ^(mail-export)/([a-zA-Z0-9]*)\/get$ /include/download_anonymous.php?type=$1&token=$2&get=1 [L]
 
 
-  RewriteRule ^register-confirm=([a-zA-Z0-9]+)$   /login/register-confirm.php?code=$1 [L]
+  #RewriteRule ^register-confirm=([a-zA-Z0-9]+)$   /login/register-confirm.php?code=$1 [L]
 
   RewriteRule ^admin/$                /admin/router.php [L]
   RewriteRule ^admin/description/.*$        /admin/router.php [L]
@@ -49,6 +49,7 @@
   RewriteRule ^feeds/.*$              /index.php [L]
   RewriteRule ^account/.*$            /index.php [L]
   RewriteRule ^developers/.*$         /index.php [L]
+  RewriteRule ^login/.*$              /index.php [L]
 
 # RewriteRule ^atom\/(cooliris)+\/?([0-9]*)\/?$  /cooliris.php?item_id=$2 [L]
 
