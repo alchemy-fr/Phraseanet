@@ -38,7 +38,7 @@ class UserPreferences implements ControllerProviderInterface
                 $ret = array('success' => false, 'message' => _('Error while saving preference'));
 
                 try {
-                    $user = $app['Core']->getAuthenticatedUser();
+                    $user = $app['phraseanet.core']->getAuthenticatedUser();
 
                     $ret = $user->setPrefs($request->get('prop'), $request->get('value'));
 
@@ -52,7 +52,7 @@ class UserPreferences implements ControllerProviderInterface
 
                 }
 
-                $Serializer = $app['Core']['Serializer'];
+                $Serializer = $app['phraseanet.core']['Serializer'];
                 $datas = $Serializer->serialize($ret, 'json');
 
                 return new Response($datas, 200, array('Content-Type' => 'application/json'));

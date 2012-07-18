@@ -69,7 +69,7 @@ class appbox extends base
      *
      * @return appbox
      */
-    protected function __construct(\Alchemy\Phrasea\Core $Core, registryInterface $registry = null)
+    public function __construct(\Alchemy\Phrasea\Core $Core, registryInterface $registry = null)
     {
         $this->Core = $Core;
         if ( ! $registry)
@@ -596,9 +596,11 @@ class appbox extends base
     public function get_databox($sbas_id)
     {
         $databoxes = $this->get_databoxes();
-        if ( ! array_key_exists($sbas_id, $databoxes))
-            throw new Exception_DataboxNotFound('Databox `' . $sbas_id . '` not found');
 
+        if ( ! array_key_exists($sbas_id, $databoxes)) {
+            throw new Exception_DataboxNotFound('Databox `' . $sbas_id . '` not found');
+        }
+        
         return $databoxes[$sbas_id];
     }
 

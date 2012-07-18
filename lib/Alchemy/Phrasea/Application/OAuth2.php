@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Application;
 
+use Alchemy\Phrasea\Application as PhraseaApplication;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -29,18 +30,13 @@ use Silex\Provider\ValidatorServiceProvider;
  * @link        www.phraseanet.com
  */
 return call_user_func(function() {
-            $app = new \Silex\Application();
 
-            $app['Core'] = \bootstrap::getCore();
-
-            $app['appbox'] = function() use ($app) {
-                    return \appbox::get_instance($app['Core']);
-                };
+            $app = new PhraseaApplication();
 
             $app->register(new ValidatorServiceProvider());
 
             $app['oauth'] = function($app) {
-                    return new \API_OAuth2_Adapter($app['appbox']);
+                    return new \API_OAuth2_Adapter($app['phraseanet.appbox']);
                 };
 
             /**
@@ -50,7 +46,7 @@ return call_user_func(function() {
              */
             $app['response'] = $app->protect(function ($template, $variable) use ($app) {
                     /* @var $twig \Twig_Environment */
-                    $twig = $app['Core']->getTwig();
+                    $twig = $app['phraseanet.core']->getTwig();
 
                     $response = new Response(
                             $twig->render($template, $variable)
@@ -62,7 +58,7 @@ return call_user_func(function() {
                     return $response;
                 });
 
-            /********************************************************************
+            /*             * *******************************************************************
              *                        AUTHENTIFICATION API
              */
 
@@ -76,8 +72,8 @@ return call_user_func(function() {
                     $request = $app['request'];
                     $oauth2_adapter = $app['oauth'];
                     /* @var $twig \Twig_Environment */
-                    $twig = $app['Core']->getTwig();
-                    $session = $app['appbox']->get_session();
+                    $twig = $app['phraseanet.core']->getTwig();
+                    $session = $app['phraseanet.appbox']->get_session();
 
                     //Check for auth params, send error or redirect if not valid
                     $params = $oauth2_adapter->getAuthorizationRequestParameters($request);
@@ -86,7 +82,7 @@ return call_user_func(function() {
                     $app_authorized = false;
                     $errorMessage = false;
 
-                    $client = \API_OAuth2_Application::load_from_client_id($app['appbox'], $params['client_id']);
+                    $client = \API_OAuth2_Application::load_from_client_id($app['phraseanet.appbox'], $params['client_id']);
 
                     $oauth2_adapter->setClient($client);
 
@@ -97,7 +93,7 @@ return call_user_func(function() {
 
                     $custom_template = sprintf(
                         "%sconfig/templates/web/api/auth/end_user_authorization/%s.twig"
-                        , $app['appbox']->get_registry()->get('GV_RootPath')
+                        , $app['phraseanet.appbox']->get_registry()->get('GV_RootPath')
                         , $client->get_id()
                     );
 
@@ -113,14 +109,14 @@ return call_user_func(function() {
                             try {
                                 $login = $request->get("login");
                                 $password = $request->get("password");
-                                $auth = new \Session_Authentication_Native($app['appbox'], $login, $password);
+                                $auth = new \Session_Authentication_Native($app['phraseanet.appbox'], $login, $password);
                                 $session->authenticate($auth);
                             } catch (\Exception $e) {
                                 $params = array(
                                     "auth"         => $oauth2_adapter
                                     , "session"      => $session
                                     , "errorMessage" => true
-                                    , "user"         => $app['Core']->getAuthenticatedUser()
+                                    , "user"         => $app['phraseanet.core']->getAuthenticatedUser()
                                 );
                                 $html = $twig->render($template, $params);
 
@@ -131,7 +127,7 @@ return call_user_func(function() {
                                 "auth"         => $oauth2_adapter
                                 , "session"      => $session
                                 , "errorMessage" => $errorMessage
-                                , "user"         => $app['Core']->getAuthenticatedUser()
+                                , "user"         => $app['phraseanet.core']->getAuthenticatedUser()
                             );
                             $html = $twig->render($template, $params);
 
@@ -141,8 +137,8 @@ return call_user_func(function() {
 
                     //check if current client is already authorized by current user
                     $user_auth_clients = \API_OAuth2_Application::load_authorized_app_by_user(
-                            $app['appbox']
-                            , $app['Core']->getAuthenticatedUser()
+                            $app['phraseanet.appbox']
+                            , $app['phraseanet.core']->getAuthenticatedUser()
                     );
 
                     foreach ($user_auth_clients as $auth_client) {
@@ -159,7 +155,7 @@ return call_user_func(function() {
                             "auth"         => $oauth2_adapter
                             , "session"      => $session
                             , "errorMessage" => $errorMessage
-                            , "user"         => $app['Core']->getAuthenticatedUser()
+                            , "user"         => $app['phraseanet.core']->getAuthenticatedUser()
                         );
 
                         $html = $twig->render($template, $params);
@@ -173,7 +169,7 @@ return call_user_func(function() {
                     //if native app show template
                     if ($oauth2_adapter->isNativeApp($params['redirect_uri'])) {
                         $params = $oauth2_adapter->finishNativeClientAuthorization($app_authorized, $params);
-                        $params['user'] = $app['Core']->getAuthenticatedUser();
+                        $params['user'] = $app['phraseanet.core']->getAuthenticatedUser();
                         $html = $twig->render("api/auth/native_app_access_token.twig", $params);
 
                         return new Response($html, 200, array("content-type" => "text/html"));
@@ -224,10 +220,7 @@ return call_user_func(function() {
                         $code = $e->getStatusCode();
 
                         if (isset($headers['content-type']) && $headers['content-type'] == 'application/json') {
-                            $obj = new \stdClass();
-                            $obj->msg = $msg;
-                            $obj->code = $code;
-                            $msg = json_encode($obj);
+                            $msg = json_encode(array('msg'  => $msg, 'code' => $code));
                         }
                     }
 

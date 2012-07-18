@@ -27,7 +27,7 @@ class Publications implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
-        $appbox = \appbox::get_instance($app['Core']);
+        $appbox = $app['phraseanet.appbox'];
         $session = $appbox->get_session();
 
         $controllers = $app['controllers_factory'];
@@ -38,7 +38,7 @@ class Publications implements ControllerProviderInterface
 
                 $template = 'admin/publications/list.html';
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
                 return $twig->render($template, array('feeds' => $feeds));
             });
@@ -62,7 +62,7 @@ class Publications implements ControllerProviderInterface
                 $feed = new \Feed_Adapter($appbox, $id);
 
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
                 return $twig->render('admin/publications/fiche.html.twig'
                         , array(
@@ -106,7 +106,7 @@ class Publications implements ControllerProviderInterface
 
                     $feed = new \Feed_Adapter($appbox, $id);
 
-                    $user = $app['Core']->getAuthenticatedUser();
+                    $user = $app['phraseanet.core']->getAuthenticatedUser();
 
                     $request = $app["request"];
 
@@ -128,7 +128,7 @@ class Publications implements ControllerProviderInterface
                         throw new \Exception_BadRequest('Uploaded file is invalid');
                     }
 
-                    $media = $app['Core']['mediavorus']->guess($file);
+                    $media = $app['phraseanet.core']['mediavorus']->guess($file);
 
                     if ($media->getType() !== \MediaVorus\Media\Media::TYPE_IMAGE) {
                         throw new \Exception_BadRequest('Bad filetype');
@@ -144,7 +144,7 @@ class Publications implements ControllerProviderInterface
                     $tmpname = tempnam(sys_get_temp_dir(), 'feed_icon');
 
                     try {
-                        $app['Core']['media-alchemyst']
+                        $app['phraseanet.core']['media-alchemyst']
                             ->open($media->getFile()->getPathname())
                             ->turnInto($tmpname, $spec)
                             ->close();
@@ -156,7 +156,7 @@ class Publications implements ControllerProviderInterface
 
                     unset($media);
 
-                    $app['Core']['file-system']->remove($tmpname);
+                    $app['phraseanet.core']['file-system']->remove($tmpname);
 
                     $datas['success'] = true;
                 } catch (\Exception $e) {
@@ -164,7 +164,7 @@ class Publications implements ControllerProviderInterface
                 }
 
                 return new Response(
-                        $app['Core']['Serializer']->serialize($datas, 'json'),
+                        $app['phraseanet.core']['Serializer']->serialize($datas, 'json'),
                         200,
                         array('Content-type' => 'application/json')
                 );

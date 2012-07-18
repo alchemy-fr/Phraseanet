@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Application;
 
+use Alchemy\Phrasea\Application as PhraseaApplication;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -22,14 +23,12 @@ use Symfony\Component\HttpFoundation\Request;
 return call_user_func(
         function() {
 
-            $app = new \Silex\Application();
+            $app = new PhraseaApplication();
 
-            $app['Core'] = \bootstrap::getCore();
-
-            $appbox = \appbox::get_instance($app['Core']);
+            $appbox = $app['phraseanet.appbox'];
             $session = $appbox->get_session();
 
-            $deliver_content = function(Request $request, \Session_Handler $session, \record_adapter $record, $subdef, $watermark, $stamp, $app) {
+            $deliver_content = function(Request $request, \Session_Handler $session, \record_adapter $record, $subdef, $watermark, $stamp, PhraseaApplication $app) {
 
                     $file = $record->get_subdef($subdef);
 
@@ -49,8 +48,9 @@ return call_user_func(
 
                         $referrer = 'NO REFERRER';
 
-                        if (isset($_SERVER['HTTP_REFERER']))
+                        if (isset($_SERVER['HTTP_REFERER'])) {
                             $referrer = $_SERVER['HTTP_REFERER'];
+                        }
 
                         $record->log_view($log_id, $referrer, $registry->get('GV_sit'));
                     } catch (\Exception $e) {
@@ -72,7 +72,7 @@ return call_user_func(
                     return $response;
                 };
 
-            $app->get('/datafiles/{sbas_id}/{record_id}/{subdef}/', function($sbas_id, $record_id, $subdef) use ($app, $session, $deliver_content) {
+            $app->get('/datafiles/{sbas_id}/{record_id}/{subdef}/', function($sbas_id, $record_id, $subdef, PhraseaApplication $app) use ($session, $deliver_content) {
 
                     $databox = \databox::get_instance((int) $sbas_id);
                     $record = new \record_adapter($sbas_id, $record_id);
@@ -94,7 +94,7 @@ return call_user_func(
                         }
                     }
 
-                    $user = \User_Adapter::getInstance($session->get_usr_id(), \appbox::get_instance($app['Core']));
+                    $user = \User_Adapter::getInstance($session->get_usr_id(), $app['phraseanet.appbox']);
 
                     if ( ! $user->ACL()->has_access_to_subdef($record, $subdef)) {
                         throw new \Exception_UnauthorizedAction();
@@ -118,7 +118,7 @@ return call_user_func(
 
                     if ($watermark && ! $all_access) {
 
-                        $em = $app['Core']->getEntityManager();
+                        $em = $app['phraseanet.core']->getEntityManager();
 
                         $repository = $em->getRepository('\Entities\BasketElement');
 
@@ -138,7 +138,7 @@ return call_user_func(
                 })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
 
             $app->get('/permalink/v1/{label}/{sbas_id}/{record_id}/{key}/{subdef}/view/'
-                , function($label, $sbas_id, $record_id, $key, $subdef) use($app) {
+                , function($label, $sbas_id, $record_id, $key, $subdef, PhraseaApplication $app) {
 
                     $databox = \databox::get_instance((int) $sbas_id);
 
@@ -148,7 +148,7 @@ return call_user_func(
                         throw new \Exception('bad luck');
 
                     /* @var $twig \Twig_Environment */
-                    $twig = $app['Core']->getTwig();
+                    $twig = $app['phraseanet.core']->getTwig();
 
                     $params = array(
                         'subdef_name' => $subdef
@@ -158,7 +158,7 @@ return call_user_func(
                         , 'record'      => $record
                     );
 
-                    return $twig->render('overview.twig', $params);
+                    return new Response($twig->render('overview.twig', $params));
                 })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
 
             $app->get('/permalink/v1/{label}/{sbas_id}/{record_id}/{key}/{subdef}/'
@@ -171,13 +171,13 @@ return call_user_func(
                         $watermark = $stamp = false;
 
                         if ($session->is_authenticated()) {
-                            $user = \User_Adapter::getInstance($session->get_usr_id(), \appbox::get_instance($app['Core']));
+                            $user = \User_Adapter::getInstance($session->get_usr_id(), $app['phraseanet.appbox']);
 
                             $watermark = ! $user->ACL()->has_right_on_base($record->get_base_id(), 'nowatermark');
 
                             if ($watermark) {
 
-                                $em = $app['Core']->getEntityManager();
+                                $em = $app['phraseanet.core']->getEntityManager();
 
                                 $repository = $em->getRepository('\Entities\BasketElement');
 

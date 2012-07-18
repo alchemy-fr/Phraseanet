@@ -32,7 +32,7 @@ class PathFileTest implements ControllerProviderInterface
         $controllers->get('/path/', function() use ($app) {
                 $path = $app['request']->get('path');
 
-                $Serializer = $app['Core']['Serializer'];
+                $Serializer = $app['phraseanet.core']['Serializer'];
 
                 return new Response(
                         $Serializer->serialize(
@@ -54,7 +54,7 @@ class PathFileTest implements ControllerProviderInterface
         $controllers->get('/url/', function() use ($app) {
                 $url = $app['request']->get('url');
 
-                $Serializer = $app['Core']['Serializer'];
+                $Serializer = $app['phraseanet.core']['Serializer'];
 
                 return new Response(
                         $Serializer->serialize(

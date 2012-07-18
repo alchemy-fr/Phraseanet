@@ -27,7 +27,7 @@ class Fields implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
-        $appbox = \appbox::get_instance($app['Core']);
+        $appbox = $app['phraseanet.appbox'];
 
         $controllers = $app['controllers_factory'];
 
@@ -43,7 +43,7 @@ class Fields implements ControllerProviderInterface
                     'is_multi' => $tag->isMulti(),
                 );
 
-                $Serializer = $app['Core']['Serializer'];
+                $Serializer = $app['phraseanet.core']['Serializer'];
 
                 return new Response(
                         $Serializer->serialize($datas, 'json')
@@ -63,7 +63,7 @@ class Fields implements ControllerProviderInterface
                     'is_readonly' => ! $tag->isWritable(),
                 );
 
-                $Serializer = $app['Core']['Serializer'];
+                $Serializer = $app['phraseanet.core']['Serializer'];
 
                 return new Response(
                         $Serializer->serialize($datas, 'json'),

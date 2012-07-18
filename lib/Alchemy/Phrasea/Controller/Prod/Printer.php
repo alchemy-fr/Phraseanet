@@ -31,23 +31,23 @@ class Printer implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->post('/', function(Application $app) {
-                $printer = new RecordHelper\Printer($app['Core'], $app['request']);
+                $printer = new RecordHelper\Printer($app['phraseanet.core'], $app['request']);
 
                 $template = 'prod/actions/printer_default.html.twig';
 
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
                 return $twig->render($template, array('printer' => $printer, 'message' => ''));
             }
         );
 
         $controllers->post('/print.pdf', function(Application $app) {
-                $printer = new RecordHelper\Printer($app['Core'], $app['request']);
+                $printer = new RecordHelper\Printer($app['phraseanet.core'], $app['request']);
 
                 $request = $app['request'];
 
-                $session = \Session_Handler::getInstance(\appbox::get_instance($app['Core']));
+                $session = \Session_Handler::getInstance($app['phraseanet.appbox']);
 
                 $layout = $request->get('lay');
 

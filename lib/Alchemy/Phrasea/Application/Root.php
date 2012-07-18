@@ -11,10 +11,13 @@
 
 namespace Alchemy\Phrasea\Application;
 
-use Alchemy\Phrasea\Controller\Root as Controller;
+use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\Root\RSSFeeds;
+use Alchemy\Phrasea\Controller\Root\Account;
+use Alchemy\Phrasea\Controller\Root\Developers;
+use Alchemy\Phrasea\Controller\Login\Authenticate as AuthenticateController;
+use Alchemy\Phrasea\Controller\Login\Login as LoginController;
 use Silex\Application as SilexApp;
-use Silex\Provider\ValidatorServiceProvider;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -23,20 +26,16 @@ use Symfony\Component\HttpFoundation\Response;
  * @link        www.phraseanet.com
  */
 return call_user_func(function() {
-            $app = new SilexApp();
 
-            $app['Core'] = \bootstrap::getCore();
-
-            $app->register(new ValidatorServiceProvider());
-
-            $app->register(new ValidatorServiceProvider());
+            $app = new PhraseaApplication();
 
             $app->before(function () use ($app) {
-                    $app['Core']['Firewall']->requireSetup($app);
+                    $app['phraseanet.core']['Firewall']->requireSetup($app);
                 });
 
             $app->get('/', function(SilexApp $app) {
                     $browser = \Browser::getInstance();
+
                     if ($browser->isMobile()) {
                         return $app->redirect("/login/?redirect=/lightbox");
                     } elseif ($browser->isNewGeneration()) {
@@ -48,7 +47,7 @@ return call_user_func(function() {
 
             $app->get('/robots.txt', function(SilexApp $app) {
 
-                    if ($app['Core']['Registry']->get('GV_allow_search_engine') === true) {
+                    if ($app['phraseanet.core']['Registry']->get('GV_allow_search_engine') === true) {
                         $buffer = "User-Agent: *\n" . "Allow: /\n";
                     } else {
                         $buffer = "User-Agent: *\n" . "Disallow: /\n";
@@ -60,10 +59,11 @@ return call_user_func(function() {
                     return $response;
                 });
 
-            $app->mount('/feeds/', new Controller\RSSFeeds());
-            $app->mount('/account/', new Controller\Account());
-            $app->mount('/developers/', new Controller\Developers());
-            $app->mount('/login/', new Controller\Login());
+            $app->mount('/feeds/', new RSSFeeds());
+            $app->mount('/account/', new Account());
+            $app->mount('/login/authenticate/', new AuthenticateController());
+            $app->mount('/login/', new LoginController());
+            $app->mount('/developers/', new Developers());
 
             return $app;
         }

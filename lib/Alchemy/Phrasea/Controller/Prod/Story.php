@@ -37,16 +37,16 @@ class Story implements ControllerProviderInterface
 
         $controllers->get('/create/', function(Application $app) {
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
                 return new Response($twig->render('prod/Story/Create.html.twig', array()));
             });
 
         $controllers->post('/', function(Application $app, Request $request) {
                 /* @var $request \Symfony\Component\HttpFoundation\Request */
-                $em = $app['Core']->getEntityManager();
+                $em = $app['phraseanet.core']->getEntityManager();
 
-                $user = $app['Core']->getAuthenticatedUser();
+                $user = $app['phraseanet.core']->getAuthenticatedUser();
 
                 $collection = \collection::get_from_base_id($request->get('base_id'));
 
@@ -116,7 +116,7 @@ class Story implements ControllerProviderInterface
                         )
                     );
 
-                    $datas = $app['Core']['Serializer']->serialize($data, 'json');
+                    $datas = $app['phraseanet.core']['Serializer']->serialize($data, 'json');
 
                     return new Response($datas, 200, array('Content-type' => 'application/json'));
                 } else {
@@ -128,7 +128,7 @@ class Story implements ControllerProviderInterface
                 $Story = new \record_adapter($sbas_id, $record_id);
 
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
                 $html = $twig->render('prod/WorkZone/Story.html.twig', array('Story' => $Story));
 
@@ -140,7 +140,7 @@ class Story implements ControllerProviderInterface
             , function(Application $app, Request $request, $sbas_id, $record_id) {
                 $Story = new \record_adapter($sbas_id, $record_id);
 
-                $user = $app['Core']->getAuthenticatedUser();
+                $user = $app['phraseanet.core']->getAuthenticatedUser();
 
                 if ( ! $user->ACL()->has_right_on_base($Story->get_base_id(), 'canmodifrecord'))
                     throw new \Exception_Forbidden('You can not add document to this Story');
@@ -178,7 +178,7 @@ class Story implements ControllerProviderInterface
 
                 if ($request->getRequestFormat() == 'json') {
 
-                    $datas = $app['Core']['Serializer']->serialize($data, 'json');
+                    $datas = $app['phraseanet.core']['Serializer']->serialize($data, 'json');
 
                     return new Response($datas, 200, array('Content-type' => 'application/json'));
                 } else {
@@ -193,7 +193,7 @@ class Story implements ControllerProviderInterface
 
                     $record = new \record_adapter($child_sbas_id, $child_record_id);
 
-                    $user = $app['Core']->getAuthenticatedUser();
+                    $user = $app['phraseanet.core']->getAuthenticatedUser();
 
                     if ( ! $user->ACL()->has_right_on_base($Story->get_base_id(), 'canmodifrecord'))
                         throw new \Exception_Forbidden('You can not add document to this Story');
@@ -208,7 +208,7 @@ class Story implements ControllerProviderInterface
                     );
 
                     if ($request->getRequestFormat() == 'json') {
-                        $datas = $app['Core']['Serializer']->serialize($data, 'json');
+                        $datas = $app['phraseanet.core']['Serializer']->serialize($data, 'json');
 
                         return new Response($datas, 200, array('Content-type' => 'application/json'));
                     } else {
@@ -227,7 +227,7 @@ class Story implements ControllerProviderInterface
                 '/{sbas_id}/{record_id}/reorder/'
                 , function(Application $app, $sbas_id, $record_id) {
                     /* @var $em \Doctrine\ORM\EntityManager */
-                    $em = $app['Core']->getEntityManager();
+                    $em = $app['phraseanet.core']->getEntityManager();
 
                     $story = new \record_adapter($sbas_id, $record_id);
 
@@ -236,7 +236,7 @@ class Story implements ControllerProviderInterface
                     }
 
                     /* @var $twig \Twig_Environment */
-                    $twig = $app['Core']->getTwig();
+                    $twig = $app['phraseanet.core']->getTwig();
 
                     return new Response(
                             $twig->render(
@@ -253,7 +253,7 @@ class Story implements ControllerProviderInterface
                 , function(Application $app, $sbas_id, $record_id) {
                     $ret = array('success' => false, 'message' => _('An error occured'));
                     try {
-                        $user = $app['Core']->getAuthenticatedUser();
+                        $user = $app['phraseanet.core']->getAuthenticatedUser();
                         /* @var $user \User_Adapter */
 
                         $story = new \record_adapter($sbas_id, $record_id);
@@ -288,7 +288,7 @@ class Story implements ControllerProviderInterface
 
                     }
 
-                    $Serializer = $app['Core']['Serializer'];
+                    $Serializer = $app['phraseanet.core']['Serializer'];
 
                     return new Response($Serializer->serialize($ret, 'json'), 200, array('Content-type' => 'application/json'));
                 })

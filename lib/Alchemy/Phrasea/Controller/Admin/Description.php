@@ -11,12 +11,12 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
+use PHPExiftool\Driver\TagProvider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Silex\ControllerCollection;
 
 /**
  *
@@ -36,7 +36,7 @@ class Description implements ControllerProviderInterface
                 $res = array();
 
                 if ($term) {
-                    $provider = new \PHPExiftool\Driver\TagProvider();
+                    $provider = new TagProvider();
 
                     $table = $provider->getLookupTable();
                     $table['phraseanet'] = array(
@@ -152,12 +152,11 @@ class Description implements ControllerProviderInterface
                     }
                 }
 
-                return new \Symfony\Component\HttpFoundation\JsonResponse($res);
+                return $app->json($res);
             });
 
         $controllers->post('/{sbas_id}/', function(Application $app, $sbas_id) {
-                $Core = $app['Core'];
-                $user = $Core->getAuthenticatedUser();
+                $user = $app['phraseanet.core']->getAuthenticatedUser();
 
                 $request = $app['request'];
 
@@ -165,7 +164,7 @@ class Description implements ControllerProviderInterface
                     throw new \Exception_Forbidden('You are not allowed to access this zone');
                 }
 
-                $databox = \databox::get_instance((int) $sbas_id);
+                $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
                 $fields = $databox->get_meta_structure();
                 $available_dc_fields = $databox->get_available_dcfields();
 
@@ -231,18 +230,18 @@ class Description implements ControllerProviderInterface
                     $error = true;
                 }
 
-                if ($error)
+                if ($error) {
                     $databox->get_connection()->rollBack();
-                else
+                } else {
                     $databox->get_connection()->commit();
+                }
 
-                return new RedirectResponse('/admin/description/' . $sbas_id . '/');
+                return $app->redirect('/admin/description/' . $sbas_id . '/');
             })->assert('sbas_id', '\d+');
 
         $controllers->get('/{sbas_id}/', function(Application $app, $sbas_id) {
 
-                $Core = $app['Core'];
-                $user = $Core->getAuthenticatedUser();
+                $user = $app['phraseanet.core']->getAuthenticatedUser();
 
                 $request = $app['request'];
 
@@ -261,7 +260,7 @@ class Description implements ControllerProviderInterface
                     'vocabularies'        => \Alchemy\Phrasea\Vocabulary\Controller::getAvailable(),
                 );
 
-                return new Response($Core->getTwig()->render('admin/databox/doc_structure.twig', $params));
+                return new Response($app['phraseanet.core']->getTwig()->render('admin/databox/doc_structure.twig', $params));
             })->assert('sbas_id', '\d+');
 
         return $controllers;

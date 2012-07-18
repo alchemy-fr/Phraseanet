@@ -75,7 +75,7 @@ class ConnectionTest implements ControllerProviderInterface
                     }
                 }
 
-                $Serializer = $app['Core']['Serializer'];
+                $Serializer = $app['phraseanet.core']['Serializer'];
 
                 $datas = array(
                     'connection' => $connection_ok

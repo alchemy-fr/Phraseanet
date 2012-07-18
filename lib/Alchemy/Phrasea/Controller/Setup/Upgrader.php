@@ -33,17 +33,17 @@ class Upgrader implements ControllerProviderInterface
                 $upgrade_status = \Setup_Upgrade::get_status();
 
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
                 $html = $twig->render(
                     '/setup/upgrader.html.twig'
                     , array(
                     'locale'            => \Session_Handler::get_locale()
                     , 'upgrade_status'    => $upgrade_status
-                    , 'available_locales' => $app['Core']::getAvailableLanguages()
-                    , 'bad_users'         => \User_Adapter::get_wrong_email_users(\appbox::get_instance($app['Core']))
-                    , 'version_number'    => $app['Core']['Version']->getNumber()
-                    , 'version_name'      => $app['Core']['Version']->getName()
+                    , 'available_locales' => $app['phraseanet.core']::getAvailableLanguages()
+                    , 'bad_users'         => \User_Adapter::get_wrong_email_users($app['phraseanet.appbox'])
+                    , 'version_number'    => $app['phraseanet.core']['Version']->getNumber()
+                    , 'version_name'      => $app['phraseanet.core']['Version']->getName()
                     )
                 );
                 ini_set('display_errors', 'on');
@@ -56,7 +56,7 @@ class Upgrader implements ControllerProviderInterface
 
                 $datas = \Setup_Upgrade::get_status();
 
-                $Serializer = $app['Core']['Serializer'];
+                $Serializer = $app['phraseanet.core']['Serializer'];
 
                 return new Response(
                         $Serializer->serialize($datas, 'json')
@@ -71,7 +71,7 @@ class Upgrader implements ControllerProviderInterface
                 session_write_close();
                 ignore_user_abort(true);
 
-                $appbox = \appbox::get_instance($app['Core']);
+                $appbox = $app['phraseanet.appbox'];
                 $upgrader = new \Setup_Upgrade($appbox);
                 $appbox->forceUpgrade($upgrader);
 

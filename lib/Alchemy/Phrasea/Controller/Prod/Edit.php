@@ -31,14 +31,14 @@ class Edit implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->post('/', function(Application $app, Request $request) {
-                $handler = new RecordHelper\Edit($app['Core'], $request);
+                $handler = new RecordHelper\Edit($app['phraseanet.core'], $request);
 
                 $handler->propose_editing();
 
                 $template = 'prod/actions/edit_default.twig';
 
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
                 return $twig->render($template, array('edit'    => $handler, 'message' => ''));
             }
@@ -47,7 +47,7 @@ class Edit implements ControllerProviderInterface
         $controllers->get('/vocabulary/{vocabulary}/', function(Application $app, Request $request, $vocabulary) {
                 $datas = array('success' => false, 'message' => '', 'results' => array());
 
-                $Serializer = $app['Core']['Serializer'];
+                $Serializer = $app['phraseanet.core']['Serializer'];
 
                 $sbas_id = (int) $request->get('sbas_id');
 
@@ -68,7 +68,7 @@ class Edit implements ControllerProviderInterface
 
                 $query = $request->get('query');
 
-                $results = $VC->find($query, $app['Core']->getAuthenticatedUser(), $databox);
+                $results = $VC->find($query, $app['phraseanet.core']->getAuthenticatedUser(), $databox);
 
                 $list = array();
 
@@ -89,13 +89,13 @@ class Edit implements ControllerProviderInterface
         );
 
         $controllers->post('/apply/', function(Application $app, Request $request) {
-                $editing = new RecordHelper\Edit($app['Core'], $app['request']);
+                $editing = new RecordHelper\Edit($app['phraseanet.core'], $app['request']);
                 $editing->execute($request);
 
                 $template = 'prod/actions/edit_default.twig';
 
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
                 return $twig->render($template, array('edit'    => $editing, 'message' => ''));
             }
