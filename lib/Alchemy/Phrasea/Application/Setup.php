@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Application;
 
+use Alchemy\Phrasea\Application as PhraseaApplication;
 use Symfony\Component\HttpFoundation\Response;
 use Alchemy\Phrasea\Controller\Setup as Controller;
 use Alchemy\Phrasea\Controller\Utils as ControllerUtils;
@@ -21,7 +22,8 @@ use Alchemy\Phrasea\Controller\Utils as ControllerUtils;
  * @link        www.phraseanet.com
  */
 return call_user_func(function() {
-            $app = new \Alchemy\Phrasea\Application();
+
+            $app = new PhraseaApplication();
 
             $app['install'] = false;
             $app['upgrade'] = false;
@@ -70,4 +72,5 @@ return call_user_func(function() {
                 });
 
             return $app;
-        });
+        }
+);

@@ -11,7 +11,8 @@
 
 namespace Alchemy\Phrasea\Application;
 
-use Symfony\Component\HttpFoundation\Request;
+use Alchemy\Phrasea\Application as PhraseaApplication;
+use Silex\Application as SilexApplication;
 use Symfony\Component\HttpFoundation\Response;
 use Alchemy\Phrasea\Controller\Exception as ControllerException;
 
@@ -22,9 +23,10 @@ use Alchemy\Phrasea\Controller\Exception as ControllerException;
  */
 return call_user_func(
         function() {
-            $app = new \Alchemy\Phrasea\Application();
 
-            $app->get('/', function (\Silex\Application $app) {
+            $app = new PhraseaApplication();
+
+            $app->get('/', function (SilexApplication $app) {
                     \User_Adapter::updateClientInfos((6));
 
                     $em = $app['phraseanet.core']->getEntityManager();
@@ -62,7 +64,7 @@ return call_user_func(
                 }
             );
 
-            $app->get('/ajax/NOTE_FORM/{sselcont_id}/', function(\Silex\Application $app, $sselcont_id) {
+            $app->get('/ajax/NOTE_FORM/{sselcont_id}/', function(SilexApplication $app, $sselcont_id) {
                     /* @var $twig \Twig_Environment */
                     $twig = $app['phraseanet.core']->getTwig();
                     $browser = \Browser::getInstance();
@@ -85,7 +87,7 @@ return call_user_func(
                 }
             )->assert('sselcont_id', '\d+');
 
-            $app->get('/ajax/LOAD_BASKET_ELEMENT/{sselcont_id}/', function(\Silex\Application $app, $sselcont_id) {
+            $app->get('/ajax/LOAD_BASKET_ELEMENT/{sselcont_id}/', function(SilexApplication $app, $sselcont_id) {
                     $browser = \Browser::getInstance();
 
                     /* @var $twig \Twig_Environment */
@@ -118,7 +120,6 @@ return call_user_func(
                             $template_options = 'lightbox/IE6/sc_options_box.twig';
                             $template_agreement = 'lightbox/IE6/agreement_box.twig';
                         }
-                        $usr_id = $app['phraseanet.appbox']->get_session()->get_usr_id();
 
                         $Basket = $BasketElement->getBasket();
 
@@ -144,7 +145,7 @@ return call_user_func(
                 }
             )->assert('sselcont_id', '\d+');
 
-            $app->get('/ajax/LOAD_FEED_ITEM/{entry_id}/{item_id}/', function(\Silex\Application $app, $entry_id, $item_id) {
+            $app->get('/ajax/LOAD_FEED_ITEM/{entry_id}/{item_id}/', function(SilexApplication $app, $entry_id, $item_id) {
                     /* @var $twig \Twig_Environment */
                     $twig = $app['phraseanet.core']->getTwig();
 
@@ -191,7 +192,7 @@ return call_user_func(
                 }
             )->assert('entry_id', '\d+')->assert('item_id', '\d+');
 
-            $app->get('/validate/{ssel_id}/', function (\Silex\Application $app, $ssel_id) {
+            $app->get('/validate/{ssel_id}/', function (SilexApplication $app, $ssel_id) {
 
                     \User_Adapter::updateClientInfos((6));
 
@@ -245,7 +246,7 @@ return call_user_func(
                 }
             )->assert('ssel_id', '\d+');
 
-            $app->get('/compare/{ssel_id}/', function (\Silex\Application $app, $ssel_id) {
+            $app->get('/compare/{ssel_id}/', function (SilexApplication $app, $ssel_id) {
 
                     \User_Adapter::updateClientInfos((6));
 
@@ -299,7 +300,7 @@ return call_user_func(
                 }
             )->assert('ssel_id', '\d+');
 
-            $app->get('/feeds/entry/{entry_id}/', function (\Silex\Application $app, $entry_id) {
+            $app->get('/feeds/entry/{entry_id}/', function (SilexApplication $app, $entry_id) {
 
                     \User_Adapter::updateClientInfos((6));
 
@@ -330,7 +331,7 @@ return call_user_func(
                 }
             )->assert('entry_id', '\d+');
 
-            $app->get('/ajax/LOAD_REPORT/{ssel_id}/', function(\Silex\Application $app, $ssel_id) {
+            $app->get('/ajax/LOAD_REPORT/{ssel_id}/', function(SilexApplication $app, $ssel_id) {
                     /* @var $twig \Twig_Environment */
                     $twig = $app['phraseanet.core']->getTwig();
 
@@ -355,7 +356,7 @@ return call_user_func(
                 }
             )->assert('ssel_id', '\d+');
 
-            $app->post('/ajax/SET_NOTE/{sselcont_id}/', function (\Silex\Application $app, $sselcont_id) {
+            $app->post('/ajax/SET_NOTE/{sselcont_id}/', function (SilexApplication $app, $sselcont_id) {
                     $output = array('error' => true, 'datas' => _('Erreur lors de l\'enregistrement des donnees'));
 
                     $request = $app['request'];
@@ -407,7 +408,7 @@ return call_user_func(
                 }
             )->assert('sselcont_id', '\d+');
 
-            $app->post('/ajax/SET_ELEMENT_AGREEMENT/{sselcont_id}/', function(\Silex\Application $app, $sselcont_id) {
+            $app->post('/ajax/SET_ELEMENT_AGREEMENT/{sselcont_id}/', function(SilexApplication $app, $sselcont_id) {
                     $request = $app['request'];
                     $agreement = $request->get('agreement');
 
@@ -476,7 +477,7 @@ return call_user_func(
                 }
             )->assert('sselcont_id', '\d+');
 
-            $app->post('/ajax/SET_RELEASE/{ssel_id}/', function(\Silex\Application $app, $ssel_id) {
+            $app->post('/ajax/SET_RELEASE/{ssel_id}/', function(SilexApplication $app, $ssel_id) {
 
                     $em = $app['phraseanet.core']->getEntityManager();
 

@@ -11,9 +11,28 @@
 
 namespace Alchemy\Phrasea\Application;
 
-use Alchemy\Phrasea\Controller\Prod as Controller;
+use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\Prod\UserPreferences;
+use Alchemy\Phrasea\Controller\Prod\Query;
+use Alchemy\Phrasea\Controller\Prod\Basket;
+use Alchemy\Phrasea\Controller\Prod\Story;
+use Alchemy\Phrasea\Controller\Prod\WorkZone;
+use Alchemy\Phrasea\Controller\Prod\UsrLists;
+use Alchemy\Phrasea\Controller\Prod\MustacheLoader;
+use Alchemy\Phrasea\Controller\Prod\Edit;
+use Alchemy\Phrasea\Controller\Prod\MoveCollection;
+use Alchemy\Phrasea\Controller\Prod\Bridge;
+use Alchemy\Phrasea\Controller\Prod\Push;
+use Alchemy\Phrasea\Controller\Prod\Printer;
+use Alchemy\Phrasea\Controller\Prod\TOU;
+use Alchemy\Phrasea\Controller\Prod\Feed;
+use Alchemy\Phrasea\Controller\Prod\Tooltip;
+use Alchemy\Phrasea\Controller\Prod\Language;
+use Alchemy\Phrasea\Controller\Prod\Tools;
+use Alchemy\Phrasea\Controller\Prod\Lazaret;
+use Alchemy\Phrasea\Controller\Prod\Upload;
+use Alchemy\Phrasea\Controller\Prod\Root;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  *
@@ -21,86 +40,41 @@ use Symfony\Component\HttpFoundation\Request;
  * @link        www.phraseanet.com
  */
 return call_user_func(function() {
-            $app = new \Alchemy\Phrasea\Application();
 
-            $app->before(function(Request $request) {
-                    $request->setRequestFormat(
-                        $request->getFormat(
-                            array_shift(
-                                $request->getAcceptableContentTypes()
-                            )
-                        )
-                    );
-                });
+            $app = new PhraseaApplication();
 
-            $app->mount('/UserPreferences/', new Controller\UserPreferences());
-            $app->mount('/query/', new Controller\Query());
-            $app->mount('/baskets', new Controller\Basket());
-            $app->mount('/story', new Controller\Story());
-            $app->mount('/WorkZone', new Controller\WorkZone());
-            $app->mount('/lists', new Controller\UsrLists());
-            $app->mount('/MustacheLoader', new Controller\MustacheLoader());
-            $app->mount('/records/edit', new Controller\Edit());
-            $app->mount('/records/movecollection', new Controller\MoveCollection());
-            $app->mount('/bridge/', new Controller\Bridge());
-            $app->mount('/push/', new Controller\Push());
-            $app->mount('/printer/', new Controller\Printer());
-            $app->mount('/TOU/', new Controller\TOU());
-            $app->mount('/feeds', new Controller\Feed());
-            $app->mount('/tooltip', new Controller\Tooltip());
-            $app->mount('/language', new Controller\Language());
-            $app->mount('/tools/', new Controller\Tools());
-            $app->mount('/lazaret/', new Controller\Lazaret());
-            $app->mount('/upload/', new Controller\Upload());
-            $app->mount('/', new Controller\Root());
+            $app->mount('/UserPreferences/', new UserPreferences());
+            $app->mount('/query/', new Query());
+            $app->mount('/baskets', new Basket());
+            $app->mount('/story', new Story());
+            $app->mount('/WorkZone', new WorkZone());
+            $app->mount('/lists', new UsrLists());
+            $app->mount('/MustacheLoader', new MustacheLoader());
+            $app->mount('/records/edit', new Edit());
+            $app->mount('/records/movecollection', new MoveCollection());
+            $app->mount('/bridge/', new Bridge());
+            $app->mount('/push/', new Push());
+            $app->mount('/printer/', new Printer());
+            $app->mount('/TOU/', new TOU());
+            $app->mount('/feeds', new Feed());
+            $app->mount('/tooltip', new Tooltip());
+            $app->mount('/language', new Language());
+            $app->mount('/tools/', new Tools());
+            $app->mount('/lazaret/', new Lazaret());
+            $app->mount('/upload/', new Upload());
+            $app->mount('/', new Root());
 
             $app->error(function (\Exception $e, $code) use ($app) {
                     /* @var $request \Symfony\Component\HttpFoundation\Request */
                     $request = $app['request'];
 
-                    if ($e instanceof \Bridge_Exception) {
-
-                        $params = array(
-                            'message'      => $e->getMessage()
-                            , 'file'         => $e->getFile()
-                            , 'line'         => $e->getLine()
-                            , 'r_method'     => $request->getMethod()
-                            , 'r_action'     => $request->getRequestUri()
-                            , 'r_parameters' => ($request->getMethod() == 'GET' ? array() : $request->request->all())
-                        );
-
-                        /* @var $twig \Twig_Environment */
-                        $twig = $app['phraseanet.core']->getTwig();
-
-                        if ($e instanceof \Bridge_Exception_ApiConnectorNotConfigured) {
-                            $params = array_merge($params, array('account' => $app['current_account']));
-
-                            return new Response($twig->render('/prod/actions/Bridge/notconfigured.twig', $params), 200);
-                        } elseif ($e instanceof \Bridge_Exception_ApiConnectorNotConnected) {
-                            $params = array_merge($params, array('account' => $app['current_account']));
-
-                            return new Response($twig->render('/prod/actions/Bridge/disconnected.twig', $params), 200);
-                        } elseif ($e instanceof \Bridge_Exception_ApiConnectorAccessTokenFailed) {
-                            $params = array_merge($params, array('account' => $app['current_account']));
-
-                            return new Response($twig->render('/prod/actions/Bridge/disconnected.twig', $params), 200);
-                        } elseif ($e instanceof \Bridge_Exception_ApiDisabled) {
-                            $params = array_merge($params, array('api' => $e->get_api()));
-
-                            return new Response($twig->render('/prod/actions/Bridge/deactivated.twig', $params), 200);
-                        }
-
-                        return new Response($twig->render('/prod/actions/Bridge/error.twig', $params), 200);
-                    }
                     if ($request->getRequestFormat() == 'json') {
                         $datas = array(
                             'success' => false
                             , 'message' => $e->getMessage()
                         );
 
-                        $json = $app['phraseanet.core']['Serializer']->serialize($datas, 'json');
-
-                        return new Response($json, 200, array('Content-Type' => 'application/json'));
+                        return $app->json($app['phraseanet.core']['Serializer']->serialize($datas, 'json'));
                     }
                     if ($e instanceof \Exception_BadRequest) {
                         return new Response('Bad Request', 400);
@@ -114,4 +88,5 @@ return call_user_func(function() {
                 });
 
             return $app;
-        });
+        }
+);

@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Application;
 
+use Alchemy\Phrasea\Application as PhraseaApplication;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -29,7 +30,8 @@ use Silex\Provider\ValidatorServiceProvider;
  * @link        www.phraseanet.com
  */
 return call_user_func(function() {
-            $app = new \Alchemy\Phrasea\Application();
+
+            $app = new PhraseaApplication();
 
             $app->register(new ValidatorServiceProvider());
 
@@ -56,7 +58,7 @@ return call_user_func(function() {
                     return $response;
                 });
 
-            /********************************************************************
+            /*             * *******************************************************************
              *                        AUTHENTIFICATION API
              */
 
@@ -218,10 +220,7 @@ return call_user_func(function() {
                         $code = $e->getStatusCode();
 
                         if (isset($headers['content-type']) && $headers['content-type'] == 'application/json') {
-                            $obj = new \stdClass();
-                            $obj->msg = $msg;
-                            $obj->code = $code;
-                            $msg = json_encode($obj);
+                            $msg = json_encode(array('msg'  => $msg, 'code' => $code));
                         }
                     }
 

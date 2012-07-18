@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Application;
 
+use Alchemy\Phrasea\Application as PhraseaApplication;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -21,12 +22,13 @@ use Symfony\Component\HttpFoundation\Request;
  */
 return call_user_func(
         function() {
-            $app = new \Alchemy\Phrasea\Application();
+
+            $app = new PhraseaApplication();
 
             $appbox = $app['phraseanet.appbox'];
             $session = $appbox->get_session();
 
-            $deliver_content = function(Request $request, \Session_Handler $session, \record_adapter $record, $subdef, $watermark, $stamp, $app) {
+            $deliver_content = function(Request $request, \Session_Handler $session, \record_adapter $record, $subdef, $watermark, $stamp, PhraseaApplication $app) {
 
                     $file = $record->get_subdef($subdef);
 
@@ -46,8 +48,9 @@ return call_user_func(
 
                         $referrer = 'NO REFERRER';
 
-                        if (isset($_SERVER['HTTP_REFERER']))
+                        if (isset($_SERVER['HTTP_REFERER'])) {
                             $referrer = $_SERVER['HTTP_REFERER'];
+                        }
 
                         $record->log_view($log_id, $referrer, $registry->get('GV_sit'));
                     } catch (\Exception $e) {
@@ -69,7 +72,7 @@ return call_user_func(
                     return $response;
                 };
 
-            $app->get('/datafiles/{sbas_id}/{record_id}/{subdef}/', function($sbas_id, $record_id, $subdef) use ($app, $session, $deliver_content) {
+            $app->get('/datafiles/{sbas_id}/{record_id}/{subdef}/', function($sbas_id, $record_id, $subdef, PhraseaApplication $app) use ($session, $deliver_content) {
 
                     $databox = \databox::get_instance((int) $sbas_id);
                     $record = new \record_adapter($sbas_id, $record_id);
@@ -135,7 +138,7 @@ return call_user_func(
                 })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
 
             $app->get('/permalink/v1/{label}/{sbas_id}/{record_id}/{key}/{subdef}/view/'
-                , function($label, $sbas_id, $record_id, $key, $subdef) use($app) {
+                , function($label, $sbas_id, $record_id, $key, $subdef, PhraseaApplication $app) {
 
                     $databox = \databox::get_instance((int) $sbas_id);
 
@@ -155,7 +158,7 @@ return call_user_func(
                         , 'record'      => $record
                     );
 
-                    return $twig->render('overview.twig', $params);
+                    return new Response($twig->render('overview.twig', $params));
                 })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
 
             $app->get('/permalink/v1/{label}/{sbas_id}/{record_id}/{key}/{subdef}/'
