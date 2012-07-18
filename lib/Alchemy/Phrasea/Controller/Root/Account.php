@@ -34,7 +34,7 @@ class Account implements ControllerProviderInterface
             });
 
         /**
-         * New account route
+         * Get a new account
          *
          * name         : get_account
          *
@@ -96,11 +96,11 @@ class Account implements ControllerProviderInterface
 
 
         /**
-         * Forgot password
+         * Give account access
          *
-         * name         : account_forgot_password
+         * name         : account_access
          *
-         * description  : Display form to renew password
+         * description  : Display collection that the user can access
          *
          * method       : GET
          *
@@ -108,15 +108,31 @@ class Account implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/forgot-password/', $this->call('displayForgotPasswordForm'))
-            ->bind('account_forgot_password');
+        $controllers->get('/access/', $this->call('accountAccess'))
+            ->bind('account_access');
 
         /**
-         * Renew password
+         * Get reset email
          *
-         * name         : account_renew_password
+         * name         : account_reset_email
          *
-         * description  : Register the new user password
+         * description  : Display reset email form
+         *
+         * method       : GET
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->get('/reset-email/', $this->call('displayResetEmailForm'))
+            ->bind('account_reset_email');
+
+        /**
+         * Reset user email
+         *
+         * name         : post_account_reset_email
+         *
+         * description  : Reset User email
          *
          * method       : POST
          *
@@ -124,8 +140,89 @@ class Account implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/forgot-password/', $this->call('renewPassword'))
-            ->bind('post_account_forgot_password');
+        $controllers->post('/reset-email/', $this->call('resetEmail'))
+            ->bind('post_account_reset_email');
+
+        /**
+         * Get reset password
+         *
+         * name         : account_reset_password
+         *
+         * description  : Display form to reset password
+         *
+         * method       : GET
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->get('/reset-password/', $this->call('resetPassword'))
+            ->bind('account_reset_password');
+
+        /**
+         * Reset user password
+         *
+         * name         : post_account_reset_password
+         *
+         * description  : Reset user password
+         *
+         * method       : POST
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->post('/reset-password/', $this->call('renewPassword'))
+            ->bind('post_account_reset_password');
+
+        /**
+         * Get security session
+         *
+         * name         : account_security_sessions
+         *
+         * description  : Display user's open sessions
+         *
+         * method       : GET
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->get('/security/sessions/', $this->call('accountSessionsAccess'))
+            ->bind('account_security_sessions');
+
+        /**
+         * Get authorized apps
+         *
+         * name         : account_security_applications
+         *
+         * description  : Give authorized applications that can access user informations
+         *
+         * method       : GET
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->get('/security/applications/', $this->call('accountAuthorizedApps'))
+            ->bind('account_security_applications');
+
+        /**
+         * Grant access to an authorized app
+         *
+         * name         : account_security_applications_grant
+         *
+         * description  : Grant or revoke access to a client application
+         *
+         * method       : POST
+         *
+         * parameters   : none
+         *
+         * return       : JSON Response
+         */
+        $controllers->post('/security/application/{application_id}/grant/', $this->call('grantAccess'))
+            ->assert('application_id', '\d+')
+            ->bind('account_security_applications_grant');
 
         /**
          * Give account access
@@ -144,57 +241,9 @@ class Account implements ControllerProviderInterface
             ->bind('account_access');
 
         /**
-         * Reset user email
-         *
-         * name         : account_reset_email
-         *
-         * description  : Reset User email
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/register/', $this->call('registerAccount'))
-            ->bind('account_register');
-
-        /**
-         * Reset user email
-         *
-         * name         : account_reset_email
-         *
-         * description  : Reset User email
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/reset-email/', $this->call('resetEmail'))
-            ->bind('account_reset_email');
-
-        /**
-         * Reset user password
-         *
-         * name         : account_reset_password
-         *
-         * description  : Reset user password
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/reset-password/', $this->call('resetPassword'))
-            ->bind('account_reset_password');
-
-        /**
          * Give account open sessions
          *
-         * name         : account_security_sessions
+         * name         : account_sessions
          *
          * description  : Display form to create a new account
          *
@@ -205,12 +254,12 @@ class Account implements ControllerProviderInterface
          * return       : HTML Response
          */
         $controllers->get('/security/sessions/', $this->call('accountSessionsAccess'))
-            ->bind('account_security_sessions');
+            ->bind('account_sessions');
 
         /**
          * Give authorized applications that can access user informations
          *
-         * name         : account_security_applications
+         * name         : account_auth_apps
          *
          * description  : Display form to create a new account
          *
@@ -221,12 +270,12 @@ class Account implements ControllerProviderInterface
          * return       : HTML Response
          */
         $controllers->get('/security/applications/', $this->call('accountAuthorizedApps'))
-            ->bind('account_security_applications');
+            ->bind('account_auth_apps');
 
         /**
          * Grant access to an authorized app
          *
-         * name         : account_security_applications_grant
+         * name         : grant_app_access
          *
          * description  : Display form to create a new account
          *
@@ -238,25 +287,142 @@ class Account implements ControllerProviderInterface
          */
         $controllers->get('/security/application/{application_id}/grant/', $this->call('grantAccess'))
             ->assert('application_id', '\d+')
-            ->bind('account_security_applications_grant');
+            ->bind('grant_app_access');
 
         return $controllers;
     }
 
-
-    public function registerAccount(Application $app, Request $request)
-    {
-        return new Response($app['Core']['Twig']->render('account/register.html.twig'));
-    }
-
+    /**
+     * Display form to reset a password
+     *
+     * @param \Silex\Application $app
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
     public function resetPassword(Application $app, Request $request)
     {
-        return new Response($app['Core']['Twig']->render('account/reset-password.html.twig'));
+        if (null !== $passwordMsg = $request->get('pass-error')) {
+            switch ($passwordMsg) {
+                case 'pass-match':
+                    $passwordMsg = _('forms::les mots de passe ne correspondent pas');
+                    break;
+                case 'pass-short':
+                    $passwordMsg = _('forms::la valeur donnee est trop courte');
+                    break;
+                case 'pass-invalid':
+                    $passwordMsg = _('forms::la valeur donnee contient des caracteres invalides');
+                    break;
+            }
+        }
+
+        return new Response($app['Core']['Twig']->render('account/reset-password.html.twig', array(
+                    'passwordMsg' => $passwordMsg
+                )));
     }
 
+    /**
+     * Reset email
+     *
+     * @param \Silex\Application $app
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
     public function resetEmail(Application $app, Request $request)
     {
-        return new Response($app['Core']['Twig']->render('account/reset-email.html.twig'));
+        $appbox = \appbox::get_instance($app['Core']);
+
+        if (null !== $token = $request->get('token')) {
+            try {
+                $datas = \random::helloToken($token);
+                $user = \User_Adapter::getInstance((int) $datas['usr_id'], $appbox);
+                $user->set_email($datas['datas']);
+                \random::removeToken($token);
+
+                return $app->redirect('/account/reset-email/?update=ok');
+            } catch (\Exception $e) {
+
+                return $app->redirect('/account/reset-email/?update=ko');
+            }
+        }
+
+        if (null === ($password = $request->get('form_password'))
+            || null === ($email = $request->get('form_email'))
+            || null === ($emailConfirm = $request->get('form_email_confirm'))) {
+
+            $app->abort(400, _('Could not perform request, please contact an administrator.'));
+        }
+
+        $user = $app['Core']->getAuthenticatedUser();
+
+        try {
+            $auth = new \Session_Authentication_Native($appbox, $user->get_login(), $password);
+            $auth->challenge_password();
+        } catch (\Exception $e) {
+
+            return $app->redirect('/account/reset-email/?notice=bad-password');
+        }
+        if ( ! \PHPMailer::ValidateAddress($email)) {
+
+            return $app->redirect('/account/reset-email/?notice=mail-invalid');
+        }
+
+        if ($email !== $emailConfirm) {
+
+            return $app->redirect('/account/reset-email/?notice=mail-match');
+        }
+
+        if ( ! \mail::reset_email($email, $user->get_id()) === true) {
+
+            return $app->redirect('/account/reset-email/?notice=mail-server');
+        }
+
+        return $app->redirect('/account/reset-email/?update=mail-send');
+    }
+
+    /**
+     * Display reset email form
+     *
+     * @param \Silex\Application $app
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function displayResetEmailForm(Application $app, Request $request)
+    {
+        if (null !== $noticeMsg = $request->get('notice')) {
+            switch ($noticeMsg) {
+                case 'mail-server':
+                    $noticeMsg = _('phraseanet::erreur: echec du serveur de mail');
+                    break;
+                case 'mail-match':
+                    $noticeMsg = _('forms::les emails ne correspondent pas');
+                    break;
+                case 'mail-invalid':
+                    $noticeMsg = _('forms::l\'email semble invalide');
+                    break;
+                case 'bad-password':
+                    $noticeMsg = _('admin::compte-utilisateur:ftp: Le mot de passe est errone');
+                    break;
+            }
+        }
+
+        if (null !== $updateMsg = $request->get('update')) {
+            switch ($updateMsg) {
+                case 'ok':
+                    $updateMsg = _('admin::compte-utilisateur: L\'email a correctement ete mis a jour');
+                    break;
+                case 'ko':
+                    $updateMsg = _('admin::compte-utilisateur: erreur lors de la mise a jour');
+                    break;
+                case 'mail-send':
+                    $updateMsg = _('admin::compte-utilisateur un email de confirmation vient de vous etre envoye. Veuillez suivre les instructions contenue pour continuer');
+                    break;
+            }
+        }
+
+        return new Response($app['Core']['Twig']->render('account/reset-email.html.twig', array(
+                    'noticeMsg' => $noticeMsg,
+                    'updateMsg' => $updateMsg,
+                )));
     }
 
     /**
@@ -270,133 +436,31 @@ class Account implements ControllerProviderInterface
     {
         $appbox = \appbox::get_instance($app['Core']);
 
-        // send mail
-        if ('' !== $mail = trim($request->get('mail', ''))) {
-            if ( ! \PHPMailer::ValidateAddress($mail)) {
-                return $app->redirect('/account/forgot-password/?error=invalidmail');
-            }
-
-            try {
-                $user = \User_Adapter::getInstance(\User_Adapter::get_usr_id_from_email($mail), $appbox);
-            } catch (\Exception $e) {
-                return $app->redirect('/account/forgot-password/?error=noaccount');
-            }
-
-            $token = \random::getUrlToken(\random::TYPE_PASSWORD, $user->get_id(), new \DateTime('+1 day'));
-
-            if ($token) {
-                $url = sprintf('%saccount/forgot-password/?token=%s', $app['Registry']->get('GV_ServerName'), $token);
-
-                if (\mail::forgot_passord($email, $user->get_login(), $url)) {
-                    return $app->redirect('/account/forgot-password/?sent=ok');
-                } else {
-                    return $app->redirect('/account/forgot-password/?error=mailserver');
-                }
-            }
-
-            return $app->redirect('/account/forgot-password/?error=noaccount');
-        }
-
-        if (null !== $token = $request->get('token')
-            && null !== $password = $request->get('form_password')
-            && null !== $passwordConfirm = $request->get('form_password_confirm')) {
-
+        if ((null !== $password = $request->get('form_password')) && (null !== $passwordConfirm = $request->get('form_password_confirm'))) {
             if ($password !== $passwordConfirm) {
 
-                return $app->redirect('/account/forgot-password/?pass-error=pass-match');
+                return $app->redirect('/account/reset-password/?pass-error=pass-match');
             } elseif (strlen(trim($password)) < 5) {
 
-                return $app->redirect('/account/forgot-password/?pass-error=pass-short');
+                return $app->redirect('/account/reset-password/?pass-error=pass-short');
             } elseif (trim($password) != str_replace(array("\r\n", "\n", "\r", "\t", " "), "_", $password)) {
 
-                return $app->redirect('/account/forgot-password/?pass-error=pass-invalid');
+                return $app->redirect('/account/reset-password/?pass-error=pass-invalid');
             }
 
             try {
-                $datas = \random::helloToken($token);
+                $user = $app['Core']->getAuthenticatedUser();
 
-                $user = \User_Adapter::getInstance($datas['usr_id'], $appbox);
+                $auth = new \Session_Authentication_Native($appbox, $user->get_login(), $request->get('form_old_password', ''));
+                $auth->challenge_password();
+
                 $user->set_password($passwordConfirm);
 
-                \random::removeToken($token);
-
-                return $app->redirect('/login/?confirm=password-update-ok');
-            } catch (\Exception_NotFound $e) {
-
-            }
-        }
-    }
-
-    /**
-     * Get the fogot password form
-     *
-     * @param Application $app     A Silex application where the controller is mounted on
-     * @param Request     $request The current request
-     * @return Response
-     */
-    public function displayForgotPasswordForm(Application $app, Request $request)
-    {
-        $tokenize = false;
-        $errorMsg = $request->get('error');
-
-        if (null !== $token = $request->get('token')) {
-            try {
-                \random::helloToken($token);
-                $tokenize = true;
+                return $app->redirect('/account/?notice=pass-ok');
             } catch (\Exception $e) {
-                $errorMsg = 'token';
+                return $app->redirect('/account/?notice=pass-ko');
             }
         }
-
-        if (null !== $errorMsg) {
-            switch ($errorMsg) {
-                case 'invalidmail':
-                    $errorMsg = _('Invalid email address');
-                    break;
-                case 'mailserver':
-                    $errorMsg = _('phraseanet::erreur: Echec du serveur mail');
-                    break;
-                case 'noaccount':
-                    $errorMsg = _('phraseanet::erreur: Le compte n\'a pas ete trouve');
-                    break;
-                case 'mail':
-                    $errorMsg = _('phraseanet::erreur: Echec du serveur mail');
-                    break;
-                case 'token':
-                    $errorMsg = _('phraseanet::erreur: l\'url n\'est plus valide');
-                    break;
-            }
-        }
-
-        if (null !== $sentMsg = $request->get('sent')) {
-            switch ($sentMsg) {
-                case 'ok':
-                    $sentMsg = _('phraseanet:: Un email vient de vous etre envoye');
-                    break;
-            }
-        }
-
-        if (null !== $passwordMsg = $request->get('pass-error')) {
-            switch ($sentMsg) {
-                case 'pass-match':
-                    $sentMsg = _('forms::les mots de passe ne correspondent pas');
-                    break;
-                case 'pass-short':
-                    $sentMsg = _('forms::la valeur donnee est trop courte');
-                    break;
-                case 'pass-invalid':
-                    $sentMsg = _('forms::la valeur donnee contient des caracteres invalides');
-                    break;
-            }
-        }
-
-        return new Response($app['Core']['Twig']->render('account/forgot-password.html.twig', array(
-                'needed'      => array(),
-                'tokenize'    => $tokenize,
-                'passwordMsg' => $passwordMsg,
-                'errorMsg'    => $errorMsg,
-                'sentMsg'     => $sentMsg
-            )));
     }
 
     /**
@@ -480,6 +544,88 @@ class Account implements ControllerProviderInterface
     }
 
     /**
+     * Display authorized applications that can access user informations
+     *
+     * @param Application $app     A Silex application where the controller is mounted on
+     * @param Request     $request The current request
+     *
+     * @return Response
+     */
+    public function grantAccess(Application $app, Request $request, $application_id)
+    {
+        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
+            $app->abort(400, _('Bad request format, only JSON is allowed'));
+        }
+
+        $appbox = \appbox::get_instance($app['Core']);
+        $error = false;
+
+        try {
+            $account = \API_OAuth2_Account::load_with_user(
+                    $appbox
+                    , new \API_OAuth2_Application($appbox, $application_id)
+                    , $app['Core']->getAuthenticatedUser()
+            );
+        } catch (\Exception_NotFound $e) {
+            $error = true;
+        }
+
+        $account->set_revoked((bool) $request->get('revoke'), false);
+
+        return new JsonResponse(array('success' => ! $error));
+    }
+
+    /**
+     * Display authorized applications that can access user informations
+     *
+     * @param Application $app     A Silex application where the controller is mounted on
+     * @param Request     $request The current request
+     *
+     * @return Response
+     */
+    public function accountAuthorizedApps(Application $app, Request $request)
+    {
+        $user = $app['Core']->getAuthenticatedUser();
+
+        return $app['Core']['Twig']->render('account/authorized_apps.html.twig', array(
+                "apps" => \API_OAuth2_Application::load_app_by_user(\appbox::get_instance($app['Core']), $user),
+                'user' => $user
+            ));
+    }
+
+    /**
+     * Display account session accesss
+     *
+     * @param Application $app     A Silex application where the controller is mounted on
+     * @param Request     $request The current request
+     *
+     * @return Response
+     */
+    public function accountSessionsAccess(Application $app, Request $request)
+    {
+        return new Response($app['Core']['Twig']->render('account/sessions.html.twig'));
+    }
+
+    /**
+     * Display account base access
+     *
+     * @param Application $app     A Silex application where the controller is mounted on
+     * @param Request     $request The current request
+     *
+     * @return Response
+     */
+    public function accountAccess(Application $app, Request $request)
+    {
+        require_once $app['Core']['Registry']->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php';
+
+        $user = $app['Core']->getAuthenticatedUser();
+
+        return new Response($app['Core']['Twig']->render('account/access.html.twig', array(
+                    'inscriptions' => giveMeBases($user->get_id())
+                )));
+    }
+
+    /**
      * Display account form
      *
      * @param Application $app     A Silex application where the controller is mounted on
@@ -494,8 +640,11 @@ class Account implements ControllerProviderInterface
         $evtMngr = \eventsmanager_broker::getInstance($appbox, $app['Core']);
 
         switch ($notice = $request->get('notice', '')) {
-            case 'password-update-ok':
+            case 'pass-ok':
                 $notice = _('login::notification: Mise a jour du mot de passe avec succes');
+                break;
+            case 'pass-ko':
+                $notice = _('Password update failed');
                 break;
             case 'account-update-ok':
                 $notice = _('login::notification: Changements enregistres');
