@@ -62,7 +62,7 @@
 {% block javascript %}
         <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js,include/jslibs/jquery.mousewheel.js,include/jquery.image_enhancer.js"></script>
     <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
-        <script type="text/javascript" src="/include/jslibs/flowplayer/flowplayer-3.2.6.min.js"></script>
+        <script type="text/javascript" src="/include/jslibs/flowplayer/flowplayer-3.2.11.min.js"></script>
     <script type="text/javascript">
       $(document).ready(function(){
         $('.preview .thumb_wrapper').width('100%');
@@ -81,24 +81,9 @@
       <h1>{{record.get_title()}}</h1>
       <div class="preview enhancable">
         {% import 'common/thumbnail.html' as thumbnail %}
-        {% import 'common/HTML5Video.html.twig' as thumbnailHTML5 %}
-              
         {% set subdef = record.get_subdef(subdef_name) %}
 
-        {% set previewHtml5 = null %}
-
-        {% if subdef_name == 'preview' and record.get_type() == 'video' %}
-            {% set previewHtml5 = record.getSubdfefByDeviceAndMime(constant('\\databox_subdef::DEVICE_SCREEN'), ['video/ogg', 'video/mp4', 'video/webm']) %}
-            {% if previewHtml5|length < 3 %}
-                {% set previewHtml5 = null %}
-            {% endif %}
-        {% endif %}
-
-        {% if previewHtml5 %}
-            {{ thumbnailHTML5.format(previewHtml5, subdef.get_width(), subdef.get_height(), '', session, true) }}
-        {% else %}
-            {{ thumbnail.format(subdef, subdef.get_width(), subdef.get_height(), '', session, true) }}
-        {% endif %}
+        {{ thumbnail.format(subdef, subdef.get_width(), subdef.get_height(), '', session, true) }}
       </div>
             <div class="caption">
         {% include 'common/caption.html' %}

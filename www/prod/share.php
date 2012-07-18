@@ -74,7 +74,7 @@ $right = false;
                 if ($url != '') {
                     switch ($type) {
                         case 'video':
-                            $embed = '<object width="100%" height="100%" type="application/x-shockwave-flash" data="' . $registry->get('GV_ServerName') . 'include/jslibs/flowplayer/flowplayer-3.2.6.swf">' .
+                            $embed = '<object width="100%" height="100%" type="application/x-shockwave-flash" data="' . $registry->get('GV_ServerName') . 'include/jslibs/flowplayer/flowplayer-3.2.12.swf">' .
                                 '<param value="true" name="allowfullscreen">' .
                                 '<param value="always" name="allowscriptaccess">' .
                                 '<param value="high" name="quality">' .

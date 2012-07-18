@@ -4,7 +4,7 @@
 
   {% set b_width = b_w %}
   {% set b_height = b_h|default(b_w) %}
-  
+
   {% if record_type == 'AUDIO_MP3' %}
 
       {% set d_width = 320 %}
@@ -59,9 +59,11 @@
           </div>
           <script type="text/javascript">
             flowplayer("preview{{random}}",
-              {src:"/include/jslibs/flowplayer/flowplayer-3.2.6.swf", wmode: "transparent"},
+              {src:"/include/jslibs/flowplayer/flowplayer-3.2.12.swf", wmode: "transparent"},
               {clip:{url:"{{url}}",autoPlay: true,autoBuffering:true,provider: "h264streaming",scaling:"fit"},
-              onError:function(code,message){getNewVideoToken({{thumbnail.get_sbas_id()}}, {{thumbnail.get_record_id()}}, this);},              plugins: {h264streaming: {url: "/include/jslibs/flowplayer/flowplayer.pseudostreaming-3.2.6.swf"}}});
+              onError:function(code,message){getNewVideoToken({{thumbnail.get_sbas_id()}}, {{thumbnail.get_record_id()}}, this);},
+              plugins: {h264streaming: {url: "/include/jslibs/flowplayer/flowplayer.pseudostreaming-3.2.9.swf"}}
+              });
           </script>
         {% elseif record_type == 'FLEXPAPER' %}
           {% set random = thumbnail.get_random() %}
@@ -160,9 +162,9 @@
           </div>
           <script type="text/javascript">
             flowplayer("preview{{random}}",
-              {src:"/include/jslibs/flowplayer/flowplayer-3.2.6.swf", wmode: "transparent"},
+              {src:"/include/jslibs/flowplayer/flowplayer-3.2.12.swf", wmode: "transparent"},
               {clip:{url:"{{url}}",autoPlay: true,autoBuffering:true,provider: "h264streaming",scaling:"fit"},
-              onError:function(code,message){getNewVideoToken({{thumbnail.get_sbas_id()}}, {{thumbnail.get_record_id()}}, this);},              plugins: {h264streaming: {url: "/include/jslibs/flowplayer/flowplayer.pseudostreaming-3.2.6.swf"}}});
+              onError:function(code,message){getNewVideoToken({{thumbnail.get_sbas_id()}}, {{thumbnail.get_record_id()}}, this);},              plugins: {h264streaming: {url: "/include/jslibs/flowplayer/flowplayer.pseudostreaming-3.2.9.swf"}}});
           </script>
         {% elseif record_type == 'FLEXPAPER' %}
           {% set random = thumbnail.get_random() %}

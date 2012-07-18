@@ -58,14 +58,14 @@
         {
             "package": "media-alchemyst/media-alchemyst",
             "version": "dev-master",
-            "source-reference": "474630bacc4ffe3324a03341220287f2e0c6db63",
-            "commit-date": "1342193470"
+            "source-reference": "9181cc3da00f28f0d07d067eeaa952ab24f81eb9",
+            "commit-date": "1342615297"
         },
         {
             "package": "mediavorus/mediavorus",
             "version": "dev-master",
-            "source-reference": "1987597da05a87b3e0676a666f51f1b0b13fe093",
-            "commit-date": "1342193047"
+            "source-reference": "2e194cc17b78bf1fd98f0ffa2afb29188e567211",
+            "commit-date": "1342615206"
         },
         {
             "package": "monolog/monolog",
