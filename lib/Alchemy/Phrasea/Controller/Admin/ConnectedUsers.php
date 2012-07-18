@@ -36,10 +36,10 @@ class ConnectedUsers implements ControllerProviderInterface
 
         $controllers->get('/', function(Application $app, Request $request) {
 
-                $app['Core']['Twig']->addFilter('AppName', new \Twig_Filter_Function(__CLASS__ . '::appName'));
+                $app['phraseanet.core']['Twig']->addFilter('AppName', new \Twig_Filter_Function(__CLASS__ . '::appName'));
 
                 return new Response(
-                        $app['Core']['Twig']->render(
+                        $app['phraseanet.core']['Twig']->render(
                             'admin/connected-users.html.twig', array('datas' => \Session_Handler::get_active_sessions()
                             )
                         )

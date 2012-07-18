@@ -28,6 +28,15 @@ class Login implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
+
+
+        $controllers->get('/',  $this->call('login'))
+            ->before(function() use ($app) {
+                return $app['phraseanet.core']['Firewall']->requireNotAuthenticated($app);
+            });
+
+
+
         /**
          * Logout
          *
@@ -136,7 +145,7 @@ class Login implements ControllerProviderInterface
      */
     public function sendConfirmMail(Application $app, Request $request)
     {
-        $appbox = \appbox::get_instance($app['Core']);
+        $appbox = $app['phraseanet.appbox'];
 
         if (null === $usrId = $request->get('usr_id')) {
             $app->abort(400, sprintf(_('Request to send you the confirmation mail failed, please retry')));
@@ -163,7 +172,7 @@ class Login implements ControllerProviderInterface
      */
     public function registerConfirm(Application $app, Request $request)
     {
-        $appbox = \appbox::get_instance($app['Core']);
+        $appbox = $app['phraseanet.appbox'];
 
         if (null === $code = $request->get('code')) {
             return $app->redirect('/login/?redirect=/prod&error=code-not-found');
@@ -224,7 +233,7 @@ class Login implements ControllerProviderInterface
      */
     public function renewPassword(Application $app, Request $request)
     {
-        $appbox = \appbox::get_instance($app['Core']);
+        $appbox = $app['phraseanet.appbox'];
 
         if (null !== $mail = trim($request->get('mail'))) {
             if ( ! \PHPMailer::ValidateAddress($mail)) {
@@ -240,7 +249,7 @@ class Login implements ControllerProviderInterface
             $token = \random::getUrlToken(\random::TYPE_PASSWORD, $user->get_id(), new \DateTime('+1 day'));
 
             if ($token) {
-                $url = sprintf('%slogin/forgot-password/?token=%s', $app['Core']['Registry']->get('GV_ServerName'), $token);
+                $url = sprintf('%slogin/forgot-password/?token=%s', $app['phraseanet.core']['Registry']->get('GV_ServerName'), $token);
 
                 if (\mail::forgot_passord($mail, $user->get_login(), $url)) {
                     return $app->redirect('/login/forgot-password/?sent=ok');
@@ -345,7 +354,7 @@ class Login implements ControllerProviderInterface
             }
         }
 
-        return new Response($app['Core']['Twig']->render('login/forgot-password.html.twig', array(
+        return new Response($app['phraseanet.core']['Twig']->render('login/forgot-password.html.twig', array(
                     'tokenize'    => $tokenize,
                     'passwordMsg' => $passwordMsg,
                     'errorMsg'    => $errorMsg,
@@ -362,7 +371,7 @@ class Login implements ControllerProviderInterface
      */
     public function displayRegisterForm(Application $app, Request $request)
     {
-        return new Response($app['Core']['Twig']->render('login/register.html.twig'));
+        return new Response($app['phraseanet.core']['Twig']->render('login/register.html.twig'));
     }
 
     /**
@@ -376,17 +385,135 @@ class Login implements ControllerProviderInterface
     {
         $appRedirect = $request->get("app");
 
-        try {
-            $appbox = \appbox::get_instance($app['Core']);
-            $session = $appbox->get_session();
+//        try {
+            $session = $app['phraseanet.appbox']->get_session();
 
             $session->logout();
             $session->remove_cookies();
-        } catch (\Exception $e) {
-            return $app->redirect("/" . ($appRedirect ? $appRedirect : 'prod'));
-        }
+//        } catch (\Exception $e) {
+//            return $app->redirect("/" . ($appRedirect ? $appRedirect : 'prod'));
+//        }
 
         return $app->redirect("/login/?logged_out=user" . ($appRedirect ? sprintf("&redirect=/%s", $appRedirect) : ""));
+    }
+
+
+    public function login(Application $app, Request $request)
+    {
+        $appbox = $app['phraseanet.appbox'];
+        $session = $appbox->get_session();
+        $registry = $appbox->get_registry();
+
+        require_once($registry->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php');
+        if ($registry->get('GV_captchas') && trim($registry->get('GV_captcha_private_key')) !== '' && trim($registry->get('GV_captcha_public_key')) !== '') {
+            include($registry->get('GV_RootPath') . 'lib/vendor/recaptcha/recaptchalib.php');
+        }
+
+        if ($request->get('postlog')) {
+            $session->set_postlog(true);
+
+            return $app->redirect("/login/index.php?redirect=" . $request->get('redirect'));
+        }
+
+        if ( ! $session->isset_postlog() && $session->is_authenticated() && $request->get('error') != 'no-connection') {
+            return $app->redirect($request->get('redirect', '/prod/'));
+        }
+
+        $noconn = false;
+        try {
+            $conn = $appbox->get_connection();
+        } catch (Exception $e) {
+            $noconn = true;
+        }
+
+        $client = \Browser::getInstance();
+
+        $warning = $notice = '';
+        $linkMailConfirm = false;
+
+        if (ctype_digit($request->get('usr'))) {
+            $linkMailConfirm = true;
+            $errorWarning .= '<div class="notice"><a href="/login/sendmail-confirm.php?usr_id=' . $request->get('usr') . '" target ="_self" style="color:black;text-decoration:none;">' . _('login:: Envoyer a nouveau le mail de confirmation') . '</a></div>';
+        }
+
+        switch (true) {
+            case $registry->get('GV_maintenance'):
+            case $request->get('error') === 'maintenance':
+                $warning = _('login::erreur: maintenance en cours, merci de nous excuser pour la gene occasionee');
+                break;
+            case $noconn:
+            case $request->get('error') === 'no-connection':
+                $warning = _('login::erreur: No available connection - Please contact sys-admin');
+                break;
+            case $request->get('error') === 'auth':
+                $warning = _('login::erreur: Erreur d\'authentification');
+                break;
+            case $request->get('error') === 'captcha':
+                $warning = _('login::erreur: Erreur de captcha');
+                break;
+            case $request->get('error') === 'mailNotConfirm' :
+                $warning = _('login::erreur: Vous n\'avez pas confirme votre email');
+                break;
+            case $request->get('error') === 'no-base' :
+                $warning = _('login::erreur: Aucune base n\'est actuellment accessible');
+                break;
+        }
+        switch ($request->get('notice')) {
+            case 'ok':
+                $notice = _('login::register: sujet email : confirmation de votre adresse email') . '</div>';
+                break;
+            case 'already':
+                $notice = _('login::notification: cette email est deja confirmee') . '</div>';
+                break;
+            case 'mail-sent':
+                $notice = _('login::notification: demande de confirmation par mail envoyee') . '</div>';
+                break;
+            case 'register-ok':
+                $notice = _('login::notification: votre email est desormais confirme') . '</div>';
+                break;
+            case 'register-ok-wait':
+                $notice = _('Your email is now confirmed. You will be informed as soon as your pending request will be managed');
+                break;
+            case 'password-update-ok':
+                $notice = _('login::notification: Mise a jour du mot de passe avec succes');
+                break;
+        }
+
+        $captchaSys = '';
+        if ( ! $registry->get('GV_maintenance')
+            && $registry->get('GV_captchas')
+            && trim($registry->get('GV_captcha_private_key')) !== ''
+            && trim($registry->get('GV_captcha_public_key')) !== ''
+            && $request->get('error') == 'captcha') {
+            $captchaSys = '<div style="margin:0;float: left;width:330px;"><div id="recaptcha_image" style="float: left;margin:10px 15px 5px"></div>
+                                                                <div style="text-align:center;float: left;margin:0 15px 5px;width:300px;">
+                                                                <a href="javascript:Recaptcha.reload()" class="link">' . _('login::captcha: obtenir une autre captcha') . '</a>
+                                                                </div>
+                                                                <div style="text-align:center;float: left;width:300px;margin:0 15px 0px;">
+                                                                    <span class="recaptcha_only_if_image">' . _('login::captcha: recopier les mots ci dessous') . ' : </span>
+                                                                    <input name="recaptcha_response_field" id="recaptcha_response_field" value="" type="text" style="width:180px;"/>
+                                                                </div>' . recaptcha_get_html($registry->get('GV_captcha_public_key')) . '</div>';
+        }
+
+        $public_feeds = \Feed_Collection::load_public_feeds($appbox);
+        $feeds = array_merge(array($public_feeds->get_aggregate()), $public_feeds->get_feeds());
+
+        //$twig = new supertwig(array('Escaper' => false));
+        $core = \bootstrap::getCore();
+        $twig = $core->getTwig();
+
+        return $twig->render('login/index.twig', array(
+            'module_name'    => _('Accueil'),
+            'notice'         => $notice,
+            'warning'        => $warning,
+            'redirect'       => $request->get('redirect'),
+            'logged_out'     => $request->get('logged_out'),
+            'captcha_system' => $captchaSys,
+            'login'          => new \login(),
+            'feeds'          => $feeds,
+            'display_layout' => $registry->get('GV_home_publi')
+        ));
+
     }
 
     /**

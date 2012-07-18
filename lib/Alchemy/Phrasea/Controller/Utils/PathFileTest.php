@@ -12,10 +12,8 @@
 namespace Alchemy\Phrasea\Controller\Utils;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Silex\ControllerCollection;
 
 /**
  *
@@ -29,13 +27,11 @@ class PathFileTest implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->get('/path/', function() use ($app) {
-                $path = $app['request']->get('path');
+        $controllers->get('/path/', function( Request $request) {
+                $path = $request->get('path');
 
-                $Serializer = $app['phraseanet.core']['Serializer'];
-
-                return new Response(
-                        $Serializer->serialize(
+                return $app->json(
+                        $app['phraseanet.core']['Serializer']->serialize(
                             array(
                             'exists'     => file_exists($path)
                             , 'file'       => is_file($path)
@@ -46,25 +42,17 @@ class PathFileTest implements ControllerProviderInterface
                             )
                             , 'json'
                         )
-                        , 200
-                        , array('content-type' => 'application/json')
                 );
             });
 
-        $controllers->get('/url/', function() use ($app) {
-                $url = $app['request']->get('url');
+        $controllers->get('/url/', function( Request $request) {
+                $url = $request->get('url');
 
-                $Serializer = $app['phraseanet.core']['Serializer'];
-
-                return new Response(
-                        $Serializer->serialize(
-                            array(
-                            'code' => \http_query::getHttpCodeFromUrl($url)
-                            )
+                return $app->json(
+                        $app['phraseanet.core']['Serializer']->serialize(
+                            array('code' => \http_query::getHttpCodeFromUrl($url))
                             , 'json'
                         )
-                        , 200
-                        , array('content-type' => 'application/json')
                 );
             });
 

@@ -11,10 +11,11 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
+use Alchemy\Phrasea\Vocabulary\Controller as VocabularyController;
 use PHPExiftool\Driver\TagProvider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 
@@ -155,43 +156,33 @@ class Description implements ControllerProviderInterface
                 return $app->json($res);
             });
 
-        $controllers->post('/{sbas_id}/', function(Application $app, $sbas_id) {
-                $user = $app['phraseanet.core']->getAuthenticatedUser();
-
-                $request = $app['request'];
-
-                if ( ! $user->ACL()->has_right_on_sbas($sbas_id, 'bas_modify_struct')) {
-                    throw new \Exception_Forbidden('You are not allowed to access this zone');
-                }
+        $controllers->post('/{sbas_id}/', function(Application $app, Request $request, $sbas_id) {
 
                 $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
-                $fields = $databox->get_meta_structure();
-                $available_dc_fields = $databox->get_available_dcfields();
 
                 $databox->get_connection()->beginTransaction();
-                $error = false;
                 try {
                     if (is_array($request->get('field_ids'))) {
                         foreach ($request->get('field_ids') as $id) {
                             try {
                                 $field = \databox_field::get_instance($databox, $id);
-                                $field->set_name($request->get('name_' . $id));
-                                $field->set_thumbtitle($request->get('thumbtitle_' . $id));
-                                $field->set_tag(\databox_field::loadClassFromTagName($request->get('src_' . $id)));
-                                $field->set_business($request->get('business_' . $id));
-                                $field->set_indexable($request->get('indexable_' . $id));
-                                $field->set_required($request->get('required_' . $id));
-                                $field->set_separator($request->get('separator_' . $id));
-                                $field->set_readonly($request->get('readonly_' . $id));
-                                $field->set_type($request->get('type_' . $id));
-                                $field->set_tbranch($request->get('tbranch_' . $id));
-                                $field->set_report($request->get('report_' . $id));
-
-                                $field->setVocabularyControl(null);
-                                $field->setVocabularyRestricted(false);
+                                $field->set_name($request->get('name_' . $id))
+                                    ->set_thumbtitle($request->get('thumbtitle_' . $id))
+                                    ->set_tag(\databox_field::loadClassFromTagName($request->get('src_' . $id)))
+                                    ->set_multi($request->get('multi_' . $id))
+                                    ->set_business($request->get('business_' . $id))
+                                    ->set_indexable($request->get('indexable_' . $id))
+                                    ->set_required($request->get('required_' . $id))
+                                    ->set_separator($request->get('separator_' . $id))
+                                    ->set_readonly($request->get('readonly_' . $id))
+                                    ->set_type($request->get('type_' . $id))
+                                    ->set_tbranch($request->get('tbranch_' . $id))
+                                    ->set_report($request->get('report_' . $id))
+                                    ->setVocabularyControl(null)
+                                    ->setVocabularyRestricted(false);
 
                                 try {
-                                    $vocabulary = \Alchemy\Phrasea\Vocabulary\Controller::get($request->get('vocabulary_' . $id));
+                                    $vocabulary = VocabularyController::get($request->get('vocabulary_' . $id));
                                     $field->setVocabularyControl($vocabulary);
                                     $field->setVocabularyRestricted($request->get('vocabularyrestricted_' . $id));
                                 } catch (\Exception $e) {
@@ -201,11 +192,11 @@ class Description implements ControllerProviderInterface
                                 $dces_element = null;
 
                                 $class = 'databox_Field_DCES_' . $request->get('dces_' . $id);
-                                if (class_exists($class))
+                                if (class_exists($class)) {
                                     $dces_element = new $class();
+                                }
 
-                                $field->set_dces_element($dces_element);
-                                $field->save();
+                                $field->set_dces_element($dces_element)->save();
                             } catch (\Exception $e) {
                                 continue;
                             }
@@ -226,41 +217,37 @@ class Description implements ControllerProviderInterface
                             }
                         }
                     }
-                } catch (\Exception $e) {
-                    $error = true;
-                }
 
-                if ($error) {
-                    $databox->get_connection()->rollBack();
-                } else {
                     $databox->get_connection()->commit();
+                } catch (\Exception $e) {
+                    $databox->get_connection()->rollBack();
                 }
 
                 return $app->redirect('/admin/description/' . $sbas_id . '/');
+            })->before(function(Request $request) use ($app) {
+                if (false === $app['phraseanet.core']->getAuthenticatedUser()->ACL()
+                        ->has_right_on_sbas($request->get('sbas_id'), 'bas_modify_struct')) {
+                    throw new AccessDeniedHttpException('You are not allowed to access this zone');
+                }
             })->assert('sbas_id', '\d+');
 
         $controllers->get('/{sbas_id}/', function(Application $app, $sbas_id) {
 
-                $user = $app['phraseanet.core']->getAuthenticatedUser();
-
-                $request = $app['request'];
-
-                if ( ! $user->ACL()->has_right_on_sbas($sbas_id, 'bas_modify_struct')) {
-                    throw new \Exception_Forbidden('You are not allowed to access this zone');
-                }
-
                 $databox = \databox::get_instance((int) $sbas_id);
-                $fields = $databox->get_meta_structure();
-                $available_dc_fields = $databox->get_available_dcfields();
 
                 $params = array(
                     'databox'             => $databox,
-                    'fields'              => $fields,
-                    'available_dc_fields' => $available_dc_fields,
-                    'vocabularies'        => \Alchemy\Phrasea\Vocabulary\Controller::getAvailable(),
+                    'fields'              => $databox->get_meta_structure(),
+                    'available_dc_fields' => $databox->get_available_dcfields(),
+                    'vocabularies'        => VocabularyController::getAvailable(),
                 );
 
                 return new Response($app['phraseanet.core']->getTwig()->render('admin/databox/doc_structure.twig', $params));
+            })->before(function(Request $request) use ($app) {
+                if (false === $app['phraseanet.core']->getAuthenticatedUser()->ACL()
+                        ->has_right_on_sbas($request->get('sbas_id'), 'bas_modify_struct')) {
+                    throw new AccessDeniedHttpException('You are not allowed to access this zone');
+                }
             })->assert('sbas_id', '\d+');
 
         return $controllers;

@@ -11,11 +11,12 @@
 
 namespace Alchemy\Phrasea\Controller\Setup;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Alchemy\Phrasea\Core\Configuration;
+use \Alchemy\Phrasea\Core\Service\Builder as ServiceBuilder;
+use Doctrine\ORM\Tools\SchemaTool;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Silex\ControllerCollection;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  *
@@ -29,8 +30,7 @@ class Installer implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->get('/', function() use ($app) {
-                $request = $app['request'];
+        $controllers->get('/', function(Application $app, Request $request) {
 
                 $php_constraint = \setup::check_php_version();
                 $writability_constraints = \setup::check_writability(new \Setup_Registry());
@@ -68,21 +68,19 @@ class Installer implements ControllerProviderInterface
                 $loader = new \Twig_Loader_Filesystem($ld_path);
                 $twig = new \Twig_Environment($loader);
 
-                $html = $twig->render(
-                    '/setup/index.html.twig'
-                    , array_merge($constraints_coll, array(
-                        'locale'             => \Session_Handler::get_locale()
-                        , 'available_locales'  => $app['phraseanet.core']::getAvailableLanguages()
-                        , 'version_number'     => $app['phraseanet.core']['Version']->getNumber()
-                        , 'version_name'       => $app['phraseanet.core']['Version']->getName()
-                        , 'current_servername' => $request->getScheme() . '://' . $request->getHttpHost() . '/'
-                    ))
+                return $twig->render(
+                        '/setup/index.html.twig'
+                        , array_merge($constraints_coll, array(
+                            'locale'             => \Session_Handler::get_locale()
+                            , 'available_locales'  => $app['phraseanet.core']::getAvailableLanguages()
+                            , 'version_number'     => $app['phraseanet.core']['Version']->getNumber()
+                            , 'version_name'       => $app['phraseanet.core']['Version']->getName()
+                            , 'current_servername' => $request->getScheme() . '://' . $request->getHttpHost() . '/'
+                        ))
                 );
-
-                return new Response($html);
             });
 
-        $controllers->get('/step2/', function() use ($app) {
+        $controllers->get('/step2/', function(Application $app, Request $request) {
                 \phrasea::use_i18n(\Session_Handler::get_locale());
 
                 $ld_path = array(__DIR__ . '/../../../../../templates/web');
@@ -90,8 +88,6 @@ class Installer implements ControllerProviderInterface
 
                 $twig = new \Twig_Environment($loader);
                 $twig->addExtension(new \Twig_Extensions_Extension_I18n());
-
-                $request = $app['request'];
 
                 $warnings = array();
 
@@ -124,34 +120,28 @@ class Installer implements ControllerProviderInterface
                     $warnings[] = _('It is not recommended to install Phraseanet without HTTPS support');
                 }
 
-                $html = $twig->render(
-                    '/setup/step2.html.twig'
-                    , array(
-                    'locale'              => \Session_Handler::get_locale()
-                    , 'available_locales'   => $app['phraseanet.core']::getAvailableLanguages()
-                    , 'available_templates' => \appbox::list_databox_templates()
-                    , 'version_number'      => $app['phraseanet.core']['Version']->getNumber()
-                    , 'version_name'        => $app['phraseanet.core']['Version']->getName()
-                    , 'warnings'            => $warnings
-                    , 'error'               => $request->get('error')
-                    , 'current_servername'  => $request->getScheme() . '://' . $request->getHttpHost() . '/'
-                    , 'discovered_binaries' => \setup::discover_binaries()
-                    , 'rootpath'            => dirname(dirname(dirname(dirname(__DIR__)))) . '/'
-                    )
+                return $twig->render(
+                        '/setup/step2.html.twig'
+                        , array(
+                        'locale'              => \Session_Handler::get_locale()
+                        , 'available_locales'   => $app['phraseanet.core']::getAvailableLanguages()
+                        , 'available_templates' => \appbox::list_databox_templates()
+                        , 'version_number'      => $app['phraseanet.core']['Version']->getNumber()
+                        , 'version_name'        => $app['phraseanet.core']['Version']->getName()
+                        , 'warnings'            => $warnings
+                        , 'error'               => $request->get('error')
+                        , 'current_servername'  => $request->getScheme() . '://' . $request->getHttpHost() . '/'
+                        , 'discovered_binaries' => \setup::discover_binaries()
+                        , 'rootpath'            => dirname(dirname(dirname(dirname(__DIR__)))) . '/'
+                        )
                 );
-
-                return new Response($html);
             });
 
-        $controllers->post('/install/', function() use ($app) {
+        $controllers->post('/install/', function(Application $app, Request $request) {
                 set_time_limit(360);
                 \phrasea::use_i18n(\Session_Handler::get_locale());
-                $request = $app['request'];
 
                 $servername = $request->getScheme() . '://' . $request->getHttpHost() . '/';
-
-                $setupRegistry = new \Setup_Registry();
-                $setupRegistry->set('GV_ServerName', $servername, \registry::TYPE_STRING);
 
                 $conn = $connbas = null;
 
@@ -183,13 +173,13 @@ class Installer implements ControllerProviderInterface
 
                     $appbox = \appbox::create($app['phraseanet.core'], $setupRegistry, $conn, $appbox_name, true);
 
-                    $configuration = \Alchemy\Phrasea\Core\Configuration::build();
+                    $configuration = Configuration::build();
 
                     if ($configuration->isInstalled()) {
                         $serviceName = $configuration->getOrm();
                         $confService = $configuration->getService($serviceName);
 
-                        $ormService = \Alchemy\Phrasea\Core\Service\Builder::create(
+                        $ormService = ServiceBuilder::create(
                                 $app['phraseanet.core']
                                 , $confService
                         );
@@ -203,7 +193,7 @@ class Installer implements ControllerProviderInterface
 
                             if ( ! empty($metadatas)) {
                                 // Create SchemaTool
-                                $tool = new \Doctrine\ORM\Tools\SchemaTool($em);
+                                $tool = new SchemaTool($em);
                                 // Create schema
                                 $tool->dropSchema($metadatas);
                                 $tool->createSchema($metadatas);

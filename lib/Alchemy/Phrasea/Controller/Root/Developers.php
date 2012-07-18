@@ -220,8 +220,8 @@ class Developers implements ControllerProviderInterface
         try {
             $clientApp = new \API_OAuth2_Application($app['phraseanet.appbox'], $id);
 
-            if ($callback = $request->get("callback")) {
-                $clientApp->set_redirect_uri($callback);
+            if (null !== $request->get("callback")) {
+                $clientApp->set_redirect_uri($request->get("callback"));
             } else {
                 $error = true;
             }

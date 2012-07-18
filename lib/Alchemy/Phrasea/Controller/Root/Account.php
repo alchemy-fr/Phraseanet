@@ -46,13 +46,10 @@ class Account implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/', $this->call('displayAccount'))
-            ->bind('get_account');
+        $controllers->get('/', $this->call('displayAccount'))->bind('account');
 
         /**
-         * Create account route
-         *
-         * name         : create_account
+         * Update account route
          *
          * description  : update your account informations
          *
@@ -91,8 +88,7 @@ class Account implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/', $this->call('updateAccount'))
-            ->bind('create_account');
+        $controllers->post('/', $this->call('updateAccount'));
 
 
         /**
@@ -108,8 +104,8 @@ class Account implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/access/', $this->call('accountAccess'))
-            ->bind('account_access');
+        $controllers->get('/forgot-password/', $this->call('displayForgotPasswordForm'))
+            ->bind('forgot_password');
 
         /**
          * Get reset email
@@ -140,90 +136,7 @@ class Account implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/reset-email/', $this->call('resetEmail'))
-            ->bind('post_account_reset_email');
-
-        /**
-         * Get reset password
-         *
-         * name         : account_reset_password
-         *
-         * description  : Display form to reset password
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/reset-password/', $this->call('resetPassword'))
-            ->bind('account_reset_password');
-
-        /**
-         * Reset user password
-         *
-         * name         : post_account_reset_password
-         *
-         * description  : Reset user password
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->post('/reset-password/', $this->call('renewPassword'))
-            ->bind('post_account_reset_password');
-
-        /**
-         * Get security session
-         *
-         * name         : account_security_sessions
-         *
-         * description  : Display user's open sessions
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/security/sessions/', $this->call('accountSessionsAccess'))
-            ->bind('account_security_sessions');
-
-        /**
-         * Get authorized apps
-         *
-         * name         : account_security_applications
-         *
-         * description  : Give authorized applications that can access user informations
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/security/applications/', $this->call('accountAuthorizedApps'))
-            ->bind('account_security_applications');
-
-        /**
-         * Grant access to an authorized app
-         *
-         * name         : account_security_applications_grant
-         *
-         * description  : Grant or revoke access to a client application
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : JSON Response
-         */
-        $controllers->post('/security/application/{application_id}/grant/', $this->call('grantAccess'))
-            ->assert('application_id', '\d+')
-            ->bind('account_security_applications_grant');
-
+        $controllers->post('/forgot-password/', $this->call('renewPassword'));
 
         /**
          * Give account access
@@ -238,8 +151,52 @@ class Account implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/access/', $this->call('accountAccess'))
-            ->bind('account_access');
+        $controllers->get('/access/', $this->call('accountAccess'))->bind('account_access');
+
+//        /**
+//         * Give account open sessions
+//         *
+//         * name         : register_account
+//         *
+//         * description  : Display form to create a new account
+//         *
+//         * method       : GET
+//         *
+//         * parameters   : none
+//         *
+//         * return       : HTML Response
+//         */
+//        $controllers->get('/register/', $this->call('registerAccount'))->bind('register_account');
+
+        /**
+         * Give authorized applications that can access user informations
+         *
+         * name         : reset_email
+         *
+         * description  : Display form to create a new account
+         *
+         * method       : GET
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->get('/reset-email/', $this->call('resetEmail'))->bind('reset_email');
+
+        /**
+         * Grant access to an authorized app
+         *
+         * name         : reset_password
+         *
+         * description  : Display form to create a new account
+         *
+         * method       : GET
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->get('/reset-password/', $this->call('resetPassword'))->bind('reset_password');
 
         /**
          * Give account open sessions
@@ -293,13 +250,11 @@ class Account implements ControllerProviderInterface
         return $controllers;
     }
 
-    /**
-     * Display form to reset a password
-     *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     */
+    public function registerAccount(Application $app, Request $request)
+    {
+        return new Response($app['phraseanet.core']['Twig']->render('account/register.html.twig'));
+    }
+
     public function resetPassword(Application $app, Request $request)
     {
         if (null !== $passwordMsg = $request->get('pass-error')) {
@@ -316,7 +271,7 @@ class Account implements ControllerProviderInterface
             }
         }
 
-        return new Response($app['Core']['Twig']->render('account/reset-password.html.twig', array(
+        return new Response($app['phraseanet.core']['Twig']->render('account/reset-password.html.twig', array(
                     'passwordMsg' => $passwordMsg
                 )));
     }
@@ -353,7 +308,7 @@ class Account implements ControllerProviderInterface
             $app->abort(400, _('Could not perform request, please contact an administrator.'));
         }
 
-        $user = $app['Core']->getAuthenticatedUser();
+        $user = $app['phraseanet.core']->getAuthenticatedUser();
 
         try {
             $auth = new \Session_Authentication_Native($appbox, $user->get_login(), $password);
@@ -420,7 +375,7 @@ class Account implements ControllerProviderInterface
             }
         }
 
-        return new Response($app['Core']['Twig']->render('account/reset-email.html.twig', array(
+        return new Response($app['phraseanet.core']['Twig']->render('account/reset-email.html.twig', array(
                     'noticeMsg' => $noticeMsg,
                     'updateMsg' => $updateMsg,
                 )));
@@ -435,7 +390,7 @@ class Account implements ControllerProviderInterface
      */
     public function renewPassword(Application $app, Request $request)
     {
-        $appbox = \appbox::get_instance($app['Core']);
+        $appbox = \appbox::get_instance($app['phraseanet.core']);
 
         if ((null !== $password = $request->get('form_password')) && (null !== $passwordConfirm = $request->get('form_password_confirm'))) {
             if ($password !== $passwordConfirm) {
@@ -450,7 +405,7 @@ class Account implements ControllerProviderInterface
             }
 
             try {
-                $user = $app['Core']->getAuthenticatedUser();
+                $user = $app['phraseanet.core']->getAuthenticatedUser();
 
                 $auth = new \Session_Authentication_Native($appbox, $user->get_login(), $request->get('form_old_password', ''));
                 $auth->challenge_password();
@@ -478,14 +433,14 @@ class Account implements ControllerProviderInterface
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 
-        $appbox = \appbox::get_instance($app['Core']);
+        $appbox = \appbox::get_instance($app['phraseanet.core']);
         $error = false;
 
         try {
             $account = \API_OAuth2_Account::load_with_user(
                     $appbox
                     , new \API_OAuth2_Application($appbox, $application_id)
-                    , $app['Core']->getAuthenticatedUser()
+                    , $app['phraseanet.core']->getAuthenticatedUser()
             );
         } catch (\Exception_NotFound $e) {
             $error = true;
@@ -495,8 +450,6 @@ class Account implements ControllerProviderInterface
 
         return new JsonResponse(array('success' => ! $error));
     }
-
-
 
     /**
      * Display account base access
@@ -508,10 +461,10 @@ class Account implements ControllerProviderInterface
      */
     public function accountAccess(Application $app, Request $request)
     {
-        require_once $app['Core']['Registry']->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php';
+        require_once $app['phraseanet.core']['Registry']->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php';
 
-        return new Response($app['Core']['Twig']->render('account/access.html.twig', array(
-                    'inscriptions' => giveMeBases($app['Core']->getAuthenticatedUser()->get_id())
+        return new Response($app['phraseanet.core']['Twig']->render('account/access.html.twig', array(
+                    'inscriptions' => giveMeBases($app['phraseanet.core']->getAuthenticatedUser()->get_id())
                 )));
     }
 
@@ -525,9 +478,9 @@ class Account implements ControllerProviderInterface
      */
     public function accountAuthorizedApps(Application $app, Request $request)
     {
-        return $app['Core']['Twig']->render('account/authorized_apps.html.twig', array(
-                "apps" => \API_OAuth2_Application::load_app_by_user(\appbox::get_instance($app['Core']), $user),
-                'user' => $app['Core']->getAuthenticatedUser()
+        return $app['phraseanet.core']['Twig']->render('account/authorized_apps.html.twig', array(
+                "apps" => \API_OAuth2_Application::load_app_by_user(\appbox::get_instance($app['phraseanet.core']), $user),
+                'user' => $app['phraseanet.core']->getAuthenticatedUser()
             ));
     }
 
