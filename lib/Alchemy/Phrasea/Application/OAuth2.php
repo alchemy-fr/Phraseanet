@@ -33,30 +33,9 @@ return call_user_func(function() {
 
             $app = new PhraseaApplication();
 
-            $app->register(new ValidatorServiceProvider());
-
             $app['oauth'] = function($app) {
                     return new \API_OAuth2_Adapter($app['phraseanet.appbox']);
                 };
-
-            /**
-             * Protected Closure
-             * @var Closure
-             * @return Symfony\Component\HttpFoundation\Response
-             */
-            $app['response'] = $app->protect(function ($template, $variable) use ($app) {
-                    /* @var $twig \Twig_Environment */
-                    $twig = $app['phraseanet.core']->getTwig();
-
-                    $response = new Response(
-                            $twig->render($template, $variable)
-                            , 200
-                            , array('Content-Type' => 'text/html')
-                    );
-                    $response->setCharset('UTF-8');
-
-                    return $response;
-                });
 
             /*             * *******************************************************************
              *                        AUTHENTIFICATION API
