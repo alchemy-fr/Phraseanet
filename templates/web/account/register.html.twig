@@ -8,36 +8,41 @@
 <script type="text/javascript" language="javascript" src="include/jslibs/jquery.validate.js,include/jslibs/jquery.validate.password.js,include/jslibs/jquery.validate.login.js"></script>
 <script type="text/javascript">
 
-<?php
-$geonames = new geonames();
-$first = true;
-$sep = $msg = $rules = '';
-foreach ($arrayVerif as $ar => $ver) {
-    if ($ver === false)
-        continue;
-    if ($ar != 'form_password') {
-        if ( ! $first)
-            $sep = ',';
-        $first = false;
-        $rules .= $sep . $ar . ':{required:true}';
-        $msg .= $sep . $ar . ': {';
-        $msg .= 'required : "' . {% trans 'forms::ce champ est requis' %} . '"';
+{% set sep = msg = rules = '' %}
+{% set message1 = 'forms::ce champ est requis' | trans %}
+{% set message2 = 'forms::la valeur donnee est trop courte' | trans %}
+{% set message3 = 'forms::les mots de passe ne correspondent pas' | trans %}
+{% set message4 = 'forms::l\'email semble invalide' | trans | e('js') %}
+{% set message5 = 'login invalide (5 caracteres sans accents ni espaces)' | trans | e('js') %}
 
-        if ($ar == 'form_login' || $ar == 'form_password')
-            $msg .= ' ,minlength: "' . {% trans 'forms::la valeur donnee est trop courte' %} . '"';
+{% for ar, ver in arrayVerif if ver is not false %}
+    {% if ar != 'form_password' %}
+        {% if loop.first %}
+            {% set sep = ',' %}
+        {% endif %}
 
-        if ($ar == 'form_password')
-            $msg .= ' ,minlength: "' . {% trans 'forms::la valeur donnee est trop courte' %} . '"';
-        if ($ar == 'form_password_confirm')
-            $msg .= ' ,equalTo: "' . {% trans 'forms::les mots de passe ne correspondent pas' %} . '"';
-        if ($ar == 'form_email')
-            $msg .= ',email:"' . (str_replace('"', '\"', {% trans 'forms::l\'email semble invalide' %})) . '"';
+        {% set rules = rules ~ sep ~ ar ~ ':{required:true}' %}
+        {% set msg = msg ~ sep ~ ar ~ ': {' %}
+        {% set msg = msg ~ 'required : "' ~ message1 ~ '"' %}
 
-        $msg .= ',login:"' . (str_replace('"', '\"', {% trans 'login invalide (5 caracteres sans accents ni espaces)' %})) . '"';
-        $msg .= '}';
-    }
-}
-?>
+        {% if ar == 'form_login' or ar == 'form_password' %}
+            {% set msg = msg ~ ' ,minlength: "' ~ message2 ~ '"' %}
+        {% endif %}
+        {% if ar == 'form_password' %}
+            {% set msg = msg ~ ' ,minlength: "' ~ message2 ~ '"' %}
+        {% endif %}
+        {% if ar == 'form_password_confirm' %}
+            {% set msg = msg ~ ' ,equalTo: "' ~ message3 ~ '"' %}
+        {% endif %}
+        {% if ar == 'form_email' %}
+            {% set msg = msg ~ ',email:"' ~ message4 ~ '"' %}
+        {% endif %}
+
+        {% set msg = msg ~ ',login:"' ~ message5 ~ '"' %}
+        {% set msg = msg ~ '}' %}
+    {% endif %}
+{% endfor %}
+
 
     $(document).ready(function() {
 
