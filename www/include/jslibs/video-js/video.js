@@ -80,7 +80,7 @@ VideoJS.options = {
   // Default of web browser is 300x150. Should rely on source width/height.
   width: "auto",
   height: "auto",
-  
+
   // defaultVolume: 0.85,
   defaultVolume: 0.00, // The freakin seaguls are driving me crazy!
 
@@ -223,11 +223,46 @@ _V_.extend({
     classNames.splice(classNames.indexOf(classToRemove),1);
     element.className = classNames.join(" ");
   },
-  
+
+  arrayIndexOf: function(tab, searchElement){
+    if (tab === void 0 || tab === null) {
+        throw new TypeError();
+    }
+    var t = Object(tab);
+    var len = t.length >>> 0;
+    if (len === 0) {
+        return -1;
+    }
+    var n = 0;
+    if (arguments.length > 0) {
+        n = Number(arguments[1]);
+        if (n !== n) { // shortcut for verifying if it's NaN
+            n = 0;
+        } else if (n !== 0 && n !== (1 / 0) && n !== -(1 / 0)) {
+            n = (n > 0 || -1) * Math.floor(Math.abs(n));
+        }
+    }
+    if (n >= len) {
+        return -1;
+    }
+    var k = n >= 0 ? n : Math.max(len - Math.abs(n), 0);
+    for (; k < len; k++) {
+        if (k in t && t[k] === searchElement) {
+            return k;
+        }
+    }
+    return -1;
+  },
+
   remove: function(item, array){
     if (!array) return;
-    var i = array.indexOf(item);
-    if (i != -1) { 
+    if (!Array.prototype.indexOf) {
+        var i = this.arrayIndexOf(array, item);
+    } else {
+        var i = array.indexOf(item);
+    }
+
+    if (i != -1) {
       return array.splice(i, 1)
     };
   },
@@ -271,7 +306,7 @@ _V_.extend({
   getRelativePosition: function(x, relativeElement){
     return Math.max(0, Math.min(1, (x - _V_.findPosX(relativeElement)) / relativeElement.offsetWidth));
   },
-  
+
   getComputedStyleValue: function(element, style){
     return window.getComputedStyle(element, null).getPropertyValue(style);
   },
@@ -626,7 +661,7 @@ _V_.Component = _V_.Class.extend({
   hide: function(){
     this.el.style.display = "none";
   },
-  
+
   fadeIn: function(){
     this.removeClass("vjs-fade-out");
     this.addClass("vjs-fade-in");
@@ -1563,44 +1598,7 @@ _V_.MenuItem = _V_.Button.extend({
     }
   }
 
-});// ECMA-262 is the standard for javascript.
-// The following methods are impelemented EXACTLY as described in the standard (according to Mozilla Docs), and do not override the default method if one exists.
-// This may conflict with other libraries that modify the array prototype, but those libs should update to use the standard.
-
-// [].indexOf
-// https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/indexOf
-if (!Array.prototype.indexOf) {
-    Array.prototype.indexOf = function (searchElement /*, fromIndex */ ) {
-        "use strict";
-        if (this === void 0 || this === null) {
-            throw new TypeError();
-        }
-        var t = Object(this);
-        var len = t.length >>> 0;
-        if (len === 0) {
-            return -1;
-        }
-        var n = 0;
-        if (arguments.length > 0) {
-            n = Number(arguments[1]);
-            if (n !== n) { // shortcut for verifying if it's NaN
-                n = 0;
-            } else if (n !== 0 && n !== (1 / 0) && n !== -(1 / 0)) {
-                n = (n > 0 || -1) * Math.floor(Math.abs(n));
-            }
-        }
-        if (n >= len) {
-            return -1;
-        }
-        var k = n >= 0 ? n : Math.max(len - Math.abs(n), 0);
-        for (; k < len; k++) {
-            if (k in t && t[k] === searchElement) {
-                return k;
-            }
-        }
-        return -1;
-    }
-}
+});
 
 // NOT NEEDED YET
 // [].lastIndexOf
@@ -1610,15 +1608,15 @@ if (!Array.prototype.indexOf) {
 //   Array.prototype.lastIndexOf = function(searchElement /*, fromIndex*/)
 //   {
 //     "use strict";
-// 
+//
 //     if (this === void 0 || this === null)
 //       throw new TypeError();
-// 
+//
 //     var t = Object(this);
 //     var len = t.length >>> 0;
 //     if (len === 0)
 //       return -1;
-// 
+//
 //     var n = len;
 //     if (arguments.length > 1)
 //     {
@@ -1628,11 +1626,11 @@ if (!Array.prototype.indexOf) {
 //       else if (n !== 0 && n !== (1 / 0) && n !== -(1 / 0))
 //         n = (n > 0 || -1) * Math.floor(Math.abs(n));
 //     }
-// 
+//
 //     var k = n >= 0
 //           ? Math.min(n, len - 1)
 //           : len - Math.abs(n);
-// 
+//
 //     for (; k >= 0; k--)
 //     {
 //       if (k in t && t[k] === searchElement)
@@ -1648,51 +1646,51 @@ if (!Array.prototype.indexOf) {
 // Production steps of ECMA-262, Edition 5, 15.4.4.18
 // Reference: http://es5.github.com/#x15.4.4.18
 // if ( !Array.prototype.forEach ) {
-// 
+//
 //   Array.prototype.forEach = function( callback, thisArg ) {
-// 
+//
 //     var T, k;
-// 
+//
 //     if ( this == null ) {
 //       throw new TypeError( " this is null or not defined" );
 //     }
-// 
+//
 //     // 1. Let O be the result of calling ToObject passing the |this| value as the argument.
 //     var O = Object(this);
-// 
+//
 //     // 2. Let lenValue be the result of calling the Get internal method of O with the argument "length".
 //     // 3. Let len be ToUint32(lenValue).
 //     var len = O.length >>> 0;
-// 
+//
 //     // 4. If IsCallable(callback) is false, throw a TypeError exception.
 //     // See: http://es5.github.com/#x9.11
 //     if ( {}.toString.call(callback) != "[object Function]" ) {
 //       throw new TypeError( callback + " is not a function" );
 //     }
-// 
+//
 //     // 5. If thisArg was supplied, let T be thisArg; else let T be undefined.
 //     if ( thisArg ) {
 //       T = thisArg;
 //     }
-// 
+//
 //     // 6. Let k be 0
 //     k = 0;
-// 
+//
 //     // 7. Repeat, while k < len
 //     while( k < len ) {
-// 
+//
 //       var kValue;
-// 
+//
 //       // a. Let Pk be ToString(k).
 //       //   This is implicit for LHS operands of the in operator
 //       // b. Let kPresent be the result of calling the HasProperty internal method of O with argument Pk.
 //       //   This step can be combined with c
 //       // c. If kPresent is true, then
 //       if ( k in O ) {
-// 
+//
 //         // i. Let kValue be the result of calling the Get internal method of O with argument Pk.
 //         kValue = O[ Pk ];
-// 
+//
 //         // ii. Call the Call internal method of callback with T as the this value and
 //         // argument list containing kValue, k, and O.
 //         callback.call( T, kValue, k, O );
@@ -1711,83 +1709,83 @@ if (!Array.prototype.indexOf) {
 // Reference: http://es5.github.com/#x15.4.4.19
 // if (!Array.prototype.map) {
 //   Array.prototype.map = function(callback, thisArg) {
-// 
+//
 //     var T, A, k;
-// 
+//
 //     if (this == null) {
 //       throw new TypeError(" this is null or not defined");
 //     }
-// 
+//
 //     // 1. Let O be the result of calling ToObject passing the |this| value as the argument.
 //     var O = Object(this);
-// 
+//
 //     // 2. Let lenValue be the result of calling the Get internal method of O with the argument "length".
 //     // 3. Let len be ToUint32(lenValue).
 //     var len = O.length >>> 0;
-// 
+//
 //     // 4. If IsCallable(callback) is false, throw a TypeError exception.
 //     // See: http://es5.github.com/#x9.11
 //     if ({}.toString.call(callback) != "[object Function]") {
 //       throw new TypeError(callback + " is not a function");
 //     }
-// 
+//
 //     // 5. If thisArg was supplied, let T be thisArg; else let T be undefined.
 //     if (thisArg) {
 //       T = thisArg;
 //     }
-// 
+//
 //     // 6. Let A be a new array created as if by the expression new Array(len) where Array is
 //     // the standard built-in constructor with that name and len is the value of len.
 //     A = new Array(len);
-// 
+//
 //     // 7. Let k be 0
 //     k = 0;
-// 
+//
 //     // 8. Repeat, while k < len
 //     while(k < len) {
-// 
+//
 //       var kValue, mappedValue;
-// 
+//
 //       // a. Let Pk be ToString(k).
 //       //   This is implicit for LHS operands of the in operator
 //       // b. Let kPresent be the result of calling the HasProperty internal method of O with argument Pk.
 //       //   This step can be combined with c
 //       // c. If kPresent is true, then
 //       if (k in O) {
-// 
+//
 //         // i. Let kValue be the result of calling the Get internal method of O with argument Pk.
 //         kValue = O[ k ];
-// 
+//
 //         // ii. Let mappedValue be the result of calling the Call internal method of callback
 //         // with T as the this value and argument list containing kValue, k, and O.
 //         mappedValue = callback.call(T, kValue, k, O);
-// 
+//
 //         // iii. Call the DefineOwnProperty internal method of A with arguments
 //         // Pk, Property Descriptor {Value: mappedValue, Writable: true, Enumerable: true, Configurable: true},
 //         // and false.
-// 
+//
 //         // In browsers that support Object.defineProperty, use the following:
 //         // Object.defineProperty(A, Pk, { value: mappedValue, writable: true, enumerable: true, configurable: true });
-// 
+//
 //         // For best browser support, use the following:
 //         A[ k ] = mappedValue;
 //       }
 //       // d. Increase k by 1.
 //       k++;
 //     }
-// 
+//
 //     // 9. return A
 //     return A;
-//   };      
+//   };
 // }
 // Event System (J.Resig - Secrets of a JS Ninja http://jsninja.com/ [Go read it, really])
 // (Book version isn't completely usable, so fixed some things and borrowed from jQuery where it's working)
-// 
+//
 // This should work very similarly to jQuery's events, however it's based off the book version which isn't as
 // robust as jquery's, so there's probably some differences.
-// 
-// When you add an event listener using _V_.addEvent, 
-//   it stores the handler function in seperate cache object, 
+//
+// When you add an event listener using _V_.addEvent,
+//   it stores the handler function in seperate cache object,
 //   and adds a generic handler to the element's event,
 //   along with a unique id (guid) to the element.
 
@@ -1808,13 +1806,13 @@ _V_.extend({
         var handlers = _V_.getData(elem).events[event.type];
         // Go through and call all the real bound handlers
         if (handlers) {
-          
+
           // Copy handlers so if handlers are added/removed during the process it doesn't throw everything off.
           var handlersCopy = [];
           _V_.each(handlers, function(handler, i){
             handlersCopy[i] = handler;
           })
-          
+
           for (var i = 0, l = handlersCopy.length; i < l; i++) {
             handlersCopy[i].call(elem, event);
           }
@@ -1966,7 +1964,7 @@ _V_.extend({
 
     // Added in attion to book. Book code was broke.
     event = typeof event === "object" ?
-      event[_V_.expando] ? 
+      event[_V_.expando] ?
         event :
         new _V_.Event(type, event) :
       new _V_.Event(type);
@@ -1984,7 +1982,7 @@ _V_.extend({
     // Unless it's been explicitly stopped
     // if (parent && !event.isPropagationStopped()) {
     //   _V_.triggerEvent(parent, event);
-    // 
+    //
     // // We're at the top document so trigger the default action
     // } else if (!parent && !event.isDefaultPrevented()) {
     //   // log(type);
@@ -1998,10 +1996,10 @@ _V_.extend({
     //     if (targetHandler) {
     //       targetData.handler = function(){};
     //     }
-    // 
+    //
     //     // Trigger the native event (click, focus, blur)
     //     event.target[event.type]();
-    // 
+    //
     //     // Restore the handler
     //     if (targetHandler) {
     //       targetData.handler = targetHandler;
@@ -2009,7 +2007,7 @@ _V_.extend({
     //   }
     // }
   },
-  
+
   one: function(elem, type, fn) {
     _V_.addEvent(elem, type, function(){
       _V_.removeEvent(elem, type, arguments.callee)
@@ -2052,7 +2050,7 @@ _V_.Event.prototype = {
     if (!e) { return; }
 
     // if preventDefault exists run it on the original event
-    if (e.preventDefault) { 
+    if (e.preventDefault) {
       e.preventDefault();
     // otherwise set the returnValue property of the original event to false (IE)
     } else {
@@ -2557,9 +2555,9 @@ _V_.Player = _V_.Component.extend({
 
   // Method for calling methods on the current playback technology
   // techCall: function(method, arg){
-  // 
+  //
   //   // if (this.isReady) {
-  //   //   
+  //   //
   //   // } else {
   //   //   _V_.log("The playback technology API is not ready yet. Use player.ready(myFunction)."+" ["+method+"]", arguments.callee.caller.arguments.callee.caller.arguments.callee.caller)
   //   //   return false;
@@ -2578,7 +2576,7 @@ _V_.Player = _V_.Component.extend({
     this.techCall("pause");
     return this;
   },
-  
+
   // http://dev.w3.org/html5/spec/video.html#dom-media-paused
   // The initial state of paused should be true (in Safari it's actually false)
   paused: function(){
@@ -4525,7 +4523,7 @@ _V_.autoSetup = function(){
         if (vid.player === undefined) {
           options = vid.getAttribute("data-setup");
 
-          // Check if data-setup attr exists. 
+          // Check if data-setup attr exists.
           // We only auto-setup if they've added the data-setup attr.
           if (options !== null) {
 
