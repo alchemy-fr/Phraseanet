@@ -15,22 +15,20 @@ class Application extends SilexApplication
     {
         parent::__construct();
 
-        $app = $this;
-
         $this->register(new PhraseanetServiceProvider());
         $this->register(new ValidatorServiceProvider());
 
         $this['debug'] = $this['phraseanet.core']->getEnv() !== 'prod';
 
         $this->before(function(Request $request) {
-                $request->setRequestFormat(
-                    $request->getFormat(
-                        array_shift(
-                            $request->getAcceptableContentTypes()
-                        )
+            $request->setRequestFormat(
+                $request->getFormat(
+                    array_shift(
+                        $request->getAcceptableContentTypes()
                     )
-                );
-            });
+                )
+            );
+        });
 
 //        $this->register(new \Silex\Provider\HttpCacheServiceProvider());
 //        $this->register(new \Silex\Provider\MonologServiceProvider());
@@ -41,13 +39,20 @@ class Application extends SilexApplication
 //        $this->register(new \Silex\Provider\UrlGeneratorServiceProvider());
 
 
+    }
+
+    public function run(Request $request = null)
+    {
+        $app = $this;
+
         $this->error(function($e) use ($app) {
-                if ($app['debug']) {
-                    return new Response($e->getMessage(), 500);
-                } else {
-                    return new Response(_('An error occured'), 500);
-                }
-            });
+            if ($app['debug']) {
+                return new Response($e->getMessage(), 500);
+            } else {
+                return new Response(_('An error occured'), 500);
+            }
+        });
+        parent::run($request);
     }
 }
 
