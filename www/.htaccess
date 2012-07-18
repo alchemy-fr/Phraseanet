@@ -6,9 +6,6 @@
   RewriteRule ^(mail-export)/([a-zA-Z0-9]*)\/?$   /include/download_anonymous.php?type=$1&token=$2 [L]
   RewriteRule ^(mail-export)/([a-zA-Z0-9]*)\/get$ /include/download_anonymous.php?type=$1&token=$2&get=1 [L]
 
-
-  #RewriteRule ^register-confirm=([a-zA-Z0-9]+)$   /login/register-confirm.php?code=$1 [L]
-
   RewriteRule ^admin/$                /admin/router.php [L]
   RewriteRule ^admin/description/.*$  /admin/router.php [L]
   RewriteRule ^admin/connected-users/.*$  /admin/router.php [L]
@@ -67,7 +64,6 @@
   RewriteRule ^permalink/.*$          /include/overview.php [L]
   RewriteRule ^datafiles/.*$          /include/overview.php [L]
 
-  RewriteRule	^login/(client|prod|admin|report|thesaurus|upload|lightbox)\/?$			/login/index.php?app=$1 [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteRule ^setup/.*$              /setup/installer.php [L]
 
