@@ -30,7 +30,7 @@ class Account implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function() use ($app) {
-                $app['phraseanet.core']['Firewall']->requireAuthentication($app);
+                return $app['phraseanet.core']['Firewall']->requireAuthentication($app);
             });
 
         /**
@@ -224,70 +224,6 @@ class Account implements ControllerProviderInterface
             ->assert('application_id', '\d+')
             ->bind('account_security_applications_grant');
 
-        /**
-         * Give account access
-         *
-         * name         : account_access
-         *
-         * description  : Display form to create a new account
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/access/', $this->call('accountAccess'))
-            ->bind('account_access');
-
-        /**
-         * Give account open sessions
-         *
-         * name         : account_sessions
-         *
-         * description  : Display form to create a new account
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/security/sessions/', $this->call('accountSessionsAccess'))
-            ->bind('account_sessions');
-
-        /**
-         * Give authorized applications that can access user informations
-         *
-         * name         : account_auth_apps
-         *
-         * description  : Display form to create a new account
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/security/applications/', $this->call('accountAuthorizedApps'))
-            ->bind('account_auth_apps');
-
-        /**
-         * Grant access to an authorized app
-         *
-         * name         : grant_app_access
-         *
-         * description  : Display form to create a new account
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/security/application/{application_id}/grant/', $this->call('grantAccess'))
-            ->assert('application_id', '\d+')
-            ->bind('grant_app_access');
 
         /**
          * Give account access
@@ -560,36 +496,7 @@ class Account implements ControllerProviderInterface
         return new JsonResponse(array('success' => ! $error));
     }
 
-    /**
-     * Display authorized applications that can access user informations
-     *
-     * @param Application $app     A Silex application where the controller is mounted on
-     * @param Request     $request The current request
-     *
-     * @return Response
-     */
-    public function accountAuthorizedApps(Application $app, Request $request)
-    {
-        $user = $app['Core']->getAuthenticatedUser();
 
-        return $app['Core']['Twig']->render('account/authorized_apps.html.twig', array(
-                "apps" => \API_OAuth2_Application::load_app_by_user(\appbox::get_instance($app['Core']), $user),
-                'user' => $user
-            ));
-    }
-
-    /**
-     * Display account session accesss
-     *
-     * @param Application $app     A Silex application where the controller is mounted on
-     * @param Request     $request The current request
-     *
-     * @return Response
-     */
-    public function accountSessionsAccess(Application $app, Request $request)
-    {
-        return new Response($app['Core']['Twig']->render('account/sessions.html.twig'));
-    }
 
     /**
      * Display account base access
@@ -616,45 +523,11 @@ class Account implements ControllerProviderInterface
      *
      * @return Response
      */
-    public function grantAccess(Application $app, Request $request, $application_id)
-    {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
-        }
-
-        $appbox = $app['phraseanet.appbox'];
-        $error = false;
-
-        try {
-            $account = \API_OAuth2_Account::load_with_user(
-                    $appbox
-                    , new \API_OAuth2_Application($appbox, $application_id)
-                    , $app['phraseanet.core']->getAuthenticatedUser()
-            );
-        } catch (\Exception_NotFound $e) {
-            $error = true;
-        }
-
-        $account->set_revoked((bool) $request->get('revoke'), false);
-
-        return new JsonResponse(array('success' => ! $error));
-    }
-
-    /**
-     * Display authorized applications that can access user informations
-     *
-     * @param Application $app     A Silex application where the controller is mounted on
-     * @param Request     $request The current request
-     *
-     * @return Response
-     */
     public function accountAuthorizedApps(Application $app, Request $request)
     {
-        $user = $app['phraseanet.core']->getAuthenticatedUser();
-
-        return $app['phraseanet.core']['Twig']->render('account/authorized_apps.html.twig', array(
-                "apps" => \API_OAuth2_Application::load_app_by_user($app['phraseanet.appbox'], $user),
-                'user' => $user
+        return $app['Core']['Twig']->render('account/authorized_apps.html.twig', array(
+                "apps" => \API_OAuth2_Application::load_app_by_user(\appbox::get_instance($app['Core']), $user),
+                'user' => $app['Core']->getAuthenticatedUser()
             ));
     }
 
@@ -669,25 +542,6 @@ class Account implements ControllerProviderInterface
     public function accountSessionsAccess(Application $app, Request $request)
     {
         return new Response($app['phraseanet.core']['Twig']->render('account/sessions.html.twig'));
-    }
-
-    /**
-     * Display account base access
-     *
-     * @param Application $app     A Silex application where the controller is mounted on
-     * @param Request     $request The current request
-     *
-     * @return Response
-     */
-    public function accountAccess(Application $app, Request $request)
-    {
-        require_once $app['phraseanet.core']['Registry']->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php';
-
-        $user = $app['Core']->getAuthenticatedUser();
-
-        return new Response($app['Core']['Twig']->render('account/access.html.twig', array(
-                    'inscriptions' => giveMeBases($user->get_id())
-                )));
     }
 
     /**

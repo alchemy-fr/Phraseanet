@@ -16,15 +16,7 @@ class Firewall
 
     public function requireAuthentication(Application $app)
     {
-        if ($app['phraseanet.core']->isAuthenticated()) {
-            try {
-                $session = $app['phraseanet.appbox']->get_session();
-                $session->open_phrasea_session();
-            } catch (\Exception $e) {
-
-                return $app->redirect('/login/logout/');
-            }
-        } else {
+        if (false === $app['phraseanet.core']->isAuthenticated()) {
 
             return $app->redirect('/login/');
         }
@@ -32,6 +24,14 @@ class Firewall
         if ($app['phraseanet.core']->getAuthenticatedUser()->is_guest()) {
 
             return $app->redirect('/login/');
+        }
+
+        try {
+            $session = $app['phraseanet.appbox']->get_session();
+            $session->open_phrasea_session();
+        } catch (\Exception $e) {
+
+            return $app->redirect('/login/logout/');
         }
     }
 
