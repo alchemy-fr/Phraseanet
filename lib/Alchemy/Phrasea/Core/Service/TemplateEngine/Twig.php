@@ -138,6 +138,7 @@ class Twig extends ServiceAbstract
         $this->twig->addFilter('prettyDate', new \Twig_Filter_Function('phraseadate::getPrettyString'));
         $this->twig->addFilter('formatOctets', new \Twig_Filter_Function('p4string::format_octets'));
         $this->twig->addFilter('geoname_name_from_id', new \Twig_Filter_Function('geonames::name_from_id'));
+        $this->twig->addFilter('base_from_coll', new \Twig_Filter_Function('phrasea::baseFromColl'));
     }
 
     private function getDefaultTemplatePath()

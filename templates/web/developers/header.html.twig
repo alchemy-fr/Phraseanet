@@ -1,0 +1,177 @@
+{% block header %}
+<script type="text/javascript">
+    $(document).ready(function(){
+        var trans = {
+            'confirm_delete' : "{% trans 'etes vous sur de vouloir supprimer cette application' %}"
+            ,'yes' : "{% trans 'oui' %}"
+            ,'no' : "{% trans 'non' %}"
+        }
+
+        $("#generate_access").live("click", function(){
+            var app_id = $(this).attr("value");
+            var usr_id = $(this).closest("div").attr("id");
+            var opts = {
+                type:"POST",
+                url : '/developers/application/'+ app_id +'/access_token/',
+                dataType: 'json',
+                data : {
+                    usr_id : usr_id
+                },
+                success : function(data){
+                    if(data.success) {
+                        $("#my_access_token").empty().append(data.token);
+                    }
+                }
+            }
+            jQuery.ajax(opts);
+        });
+
+        var $url_callback_event = function(event) {
+            if ( event.type == "mouseover" ) {
+                $(this).find(".modifier_callback").show();
+            } else {
+                $(this).find(".modifier_callback").hide();
+            }
+        };
+
+        var $event = function(event){
+            if ( event.type == "mouseover" ) {
+                $(this).find(".delete_app").show();
+            } else {
+                $(this).find(".delete_app").hide();
+            }
+        };
+
+        $(".url_callback").live("mouseover mouseout", $url_callback_event);
+
+        $(".app-list li").live("mouseover mouseout", $event);
+
+        $(".modifier_callback").live("click", function(){
+            $(this).hide();
+            $(".save_callback").show();
+            var cur_value = $(".url_callback_input").html();
+            $(".url_callback_input")
+            .empty()
+            .wrapInner('<input value = "'+cur_value+'" name="oauth_callback" size="50" type="text"/>');
+            $(".url_callback").die();
+            $(".save_callback").live("click", function(){
+                var callback = $("input[name=oauth_callback]").val();
+                var app_id = $("input[name=app_id]").val();
+                var $this = $(this);
+                var option = {
+                    type:"POST",
+                    url : "/developers/application/" + app_id + "callback/",
+                    dataType: 'json',
+                    data :{callback : callback},
+                    success : function(data){
+                        if(data.success == true)
+                            $(".url_callback_input").empty().append(callback);
+                        else
+                            $(".url_callback_input").empty().append(cur_value);
+                        $this.hide();
+                        $(".url_callback").live("mouseover mouseout", $url_callback_event);
+                    }
+                }
+                $.ajax(option);
+            });
+        });
+
+        $(".app_submit").live("click", function(){
+            var form = $(this).closest("form");
+            var action = form.attr("action");
+            var option = {
+                type:"POST",
+                url : action,
+                dataType: 'html',
+                data : form.serializeArray(),
+                success : function(data){
+                    $(".ui-tabs-panel:visible").empty().append(data);
+                }
+            }
+            $.ajax(option);
+        });
+
+        $("#form_create input[name=type]").live("click", function(){
+            if($(this).val() == "desktop")
+                $("#form_create .callback td").hide().find("input").val('');
+            else
+                $("#form_create .callback td").show();
+        });
+
+        $('.grant-type').live('click', function(){
+            var appId = $(this).val();
+            var grant = $(this).is(":checked") ? "1": "0";
+            var opts = {
+                type:"POST",
+                url : '/developers/application/' + appId + '/authorize_grant_password/',
+                dataType: 'json',
+                data : {grant : grant},
+                success : function(data){
+
+                }
+            }
+            $.ajax(opts);
+        });
+
+        $("#app_dev, #app_dev_new, #app_dev_create, a.dev_back").live("click", function(e){
+            e.preventDefault();
+            target = $(this).attr("href");
+            var opts = {
+                type:"GET",
+                url : target,
+                dataType: 'html',
+                success : function(data){
+                    $(".ui-tabs-panel:visible").empty().append(data);
+                }
+            }
+            $.ajax(opts);
+        });
+
+        $(".delete_app").die().live("click", function(){
+            var id = $(this).closest("li").attr('id').split("_");;
+            var app_id = id[1];
+            var $this= $(this);
+            $("body").append("<div id='confirm_delete'><p>"+trans.confirm_delete+" ? </p></div>")
+            $("#confirm_delete").dialog({
+                resizable: false,
+                autoOpen :true,
+                title: "",
+                draggable: false,
+                width:340,
+                modal: true,
+                buttons: [{
+                        id: "ybutton",
+                        text: trans.yes,
+                        click: function() {
+                            var opts = {
+                                type:"DELETE",
+                                url : '/developers/application/'+ app_id +'/',
+                                dataType: 'json',
+                                data : {},
+                                success : function(data){
+                                    if(data.success)
+                                    {
+                                        $this.closest("li").remove();
+                                        $("#confirm_delete").dialog("close");
+                                    }
+                                }
+                            }
+                            $.ajax(opts);
+                        }
+                    },
+                    {
+                        id: "nbutton",
+                        text: trans.no,
+                        click: function() {
+                            $( this ).dialog( "close" );
+                        }
+                    }],
+                close : function() {
+                    $( this ).remove();
+                }
+            });
+        });
+
+    });
+</script>
+{% endblock %}
