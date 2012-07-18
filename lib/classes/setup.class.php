@@ -292,116 +292,6 @@ class setup
         );
     }
 
-    public function check_mod_auth_token()
-    {
-        $registry = registry::get_instance();
-
-        if ($registry->get('GV_h264_streaming') !== true) {
-            return;
-        }
-        ?>
-        <h1>mod_auth_token configuration </h1>
-        <ul class="setup">
-            <?php
-            $fileName = $registry->get('GV_mod_auth_token_directory_path') . '/test_mod_auth_token.txt';    // The file to access
-
-            touch($fileName);
-
-            $url = $registry->get('GV_ServerName') . p4file::apache_tokenize($fileName);
-
-            if (http_query::getHttpCodeFromUrl($url) == 200)
-                echo '<li>' . _('mod_auth_token correctement configure') . '</li>';
-            else
-                echo '<li class="blocker">' . _('mod_auth_token mal configure') . '</li>';
-            ?>
-        </ul>
-        <?php
-    }
-
-    public function check_apache()
-    {
-        $registry = registry::get_instance();
-        ?>
-        <h1>Apache Server mods avalaibility</h1>
-        <div style="position:relative;float:left;">
-            <?php
-            echo _('Attention, seul le test de l\'activation des mods est effectue, leur bon fonctionnement ne l\'est pas ')
-            ?>
-        </div>
-
-        <ul id="apache_mods_checker" class="setup">
-
-            <li class="blocker">
-                <a href="#" onclick="check_apache_mod(this,'rewrite');return false;">mod_rewrite (required)</a>
-            </li>
-            <li class="blocker">
-                <a href="#" onclick="check_apache_mod(this,'xsendfile');return false;">mod_xsendfile (optionnal)</a>
-                <?php
-                if ($registry->get('GV_modxsendfile')) {
-                    ?>
-                    <div class="infos"><img style="vertical-align:middle" src="/skins/icons/alert.png"/> <?php echo _('Attention, veuillez verifier la configuration xsendfile, actuellement activee dans le setup'); ?></div>
-                <?php } ?>
-            </li>
-            <li class="blocker">
-                <a href="#" onclick="check_apache_mod(this,'authtoken');return false;">mod_auth_token (optionnal)</a>
-                <?php
-                if ($registry->get('GV_h264_streaming')) {
-                    ?>
-                    <div class="infos"><img style="vertical-align:middle" src="/skins/icons/alert.png"/> <?php echo _('Attention, veuillez verifier la configuration h264_streaming, actuellement activee dans le setup'); ?></div>
-                <?php } ?>
-            </li>
-            <li class="blocker">
-                <a href="#" onclick="check_apache_mod(this,'h264');return false;">mod_h264_streaming (optionnal)</a>
-                <?php
-                if ($registry->get('GV_h264_streaming')) {
-                    ?>
-                    <div class="infos"><img style="vertical-align:middle" src="/skins/icons/alert.png"/> <?php echo _('Attention, veuillez verifier la configuration h264_streaming, actuellement activee dans le setup'); ?></div>
-                <?php } ?>
-            </li>
-            <style type="text/css">
-                #apache_mods_checker div.infos{
-                    display:none;
-                }
-                #apache_mods_checker .blocker div.infos{
-                    display:block;
-                }
-            </style>
-            <script type="text/javascript">
-                $(document).ready(function(){
-                    $('#apache_mods_checker a').trigger('click');
-                });
-
-                function check_apache_mod(el,mod)
-                {
-                    var url = '/admin/test-';
-                    switch (mod) {
-                        case 'rewrite':
-                            url += 'rewrite';
-                            break;
-                        case 'xsendfile':
-                            url += 'xsendfile';
-                            break;
-                        case 'authtoken':
-                            url += 'authtoken';
-                            break;
-                        case 'h264':
-                            url += 'h264';
-                            break;
-                    }
-
-                    $.get(url, function(data) {
-                        if(data == '1')
-                            $(el).closest('li').removeClass('blocker');
-                        else
-                            $(el).closest('li').addClass('blocker');
-                    });
-
-                }
-            </script>
-
-            <?php
-            echo '</ul>';
-        }
 
         public static function check_phrasea()
         {
@@ -481,20 +371,6 @@ class setup
             return $php_constraints;
         }
 
-        function check_mail_form()
-        {
-            echo '<h1>' . _('setup::Tests d\'envois d\'emails') . '</h1>';
-            ?>
-            <form method="post" action="/admin/sitestruct.php" target="_self">
-                <label>Email : </label><input name="email" type="text" />
-                <input type="submit" value="<?php echo _('boutton::valider'); ?>"/>
-            </form>
-
-            <?php
-
-            return;
-        }
-
         /**
          *
          */
@@ -555,31 +431,6 @@ class setup
             return new Setup_ConstraintsIterator($constraints);
         }
 
-        function check_cache_memcache()
-        {
-            $Core = \bootstrap::getCore();
-
-            echo '<h1>' . _('setup:: Serveur Memcached') . '</h1>';
-            echo '<ul class="setup">';
-
-            $registry = registry::get_instance();
-
-            if ($Core->getCache()->isServer()) {
-                $stats = $Core->getCache()->getStats();
-
-                echo '<li>' . sprintf(_('setup::Serveur actif sur %s'), $registry->get('GV_cache_server_host') . ':' . $registry->get('GV_cache_server_port')) . '</li>';
-                echo "<table>";
-
-                foreach ($stats as $name => $stat) {
-                    echo "<tr class='even'><td>" . $name . "</td><td> " . $stat . "</td></tr>";
-                }
-
-                echo "</table>";
-            } else {
-                echo '<li class="non-blocker">' . sprintf(_('setup::Aucun serveur memcached rattache.')) . '</li>';
-            }
-            echo '</ul>';
-        }
 
         public static function check_cache_opcode()
         {
@@ -651,28 +502,6 @@ class setup
             return new Setup_ConstraintsIterator($constraints);
         }
 
-        public static function check_sphinx_search()
-        {
-            $registry = registry::get_instance();
-
-            try {
-                $engine = new searchEngine_adapter($registry);
-                $status = $engine->get_status();
-
-                echo '<h1>' . _('setup::Etat du moteur de recherche') . '</h1>';
-                echo '<ul class="setup">';
-                foreach ($status as $value) {
-                    echo '<li>' . sprintf('%s : %s', $value[0], $value[1]) . '</li>';
-                }
-                echo '</ul>';
-            } catch (Exception $e) {
-
-                echo '<h1>' . _('setup::Sphinx confguration') . '</h1>';
-                echo '<ul class="setup">';
-                echo '<li class="blocker">' . $e->getMessage() . '</li>';
-                echo '</ul>';
-            }
-        }
 
         /**
          *

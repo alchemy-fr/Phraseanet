@@ -652,11 +652,43 @@ class Session_Handler
 
         $geonames = new geonames();
 
-        foreach ($rs as $k => $row) {
-            $rs[$k]['created_on'] = new DateTime($row['created_on']);
-            $rs[$k]['lastaccess'] = new DateTime($row['lastaccess']);
-            $rs[$k]['token'] = ! ! $row['token'];
-            $rs[$k]['usr_id'] = User_Adapter::getInstance($row['usr_id'], appbox::get_instance(\bootstrap::getCore()));
+        $ret = array(
+            'sessions' => array(),
+            'applications' => array(
+                '0' => 0,
+                '1' => 0,
+                '2' => 0,
+                '3' => 0,
+                '4' => 0,
+                '5' => 0,
+                '6' => 0,
+                '7' => 0,
+                '8' => 0,
+            )
+        );
+
+        foreach ($rs as $row) {
+
+            $session = array();
+
+            $session['browser'] = $row['browser'];
+            $session['browser_version'] = $row['browser_version'];
+            $session['session_id'] = $row['session_id'];
+            $session['user_agent'] = $row['user_agent'];
+            $session['ip'] = $row['ip'];
+            $session['screen'] = $row['screen'];
+            $session['platform'] = $row['platform'];
+            $session['created_on'] = new DateTime($row['created_on']);
+            $session['lastaccess'] = new DateTime($row['lastaccess']);
+            $session['token'] = ! ! $row['token'];
+            $session['user'] = User_Adapter::getInstance($row['usr_id'], appbox::get_instance(\bootstrap::getCore()));
+            $session["app"] = (array) unserialize($row["app"]);
+
+            foreach ($session["app"] as $app) {
+                if (isset($ret['applications'][$app])) {
+                    $ret['applications'][$app] ++;
+                }
+            }
 
             $datas = $geonames->find_geoname_from_ip($row['ip']);
 
@@ -670,10 +702,12 @@ class Session_Handler
                 $infos = '';
             }
 
-            $rs[$k]['ip_infos'] = $infos;
+            $session['ip_infos'] = $infos;
+
+            $ret['sessions'][] = $session;
         }
 
-        return $rs;
+        return $ret;
     }
 }
 

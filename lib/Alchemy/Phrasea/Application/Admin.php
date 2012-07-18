@@ -26,6 +26,7 @@ return call_user_func(
             $app['Core'] = \bootstrap::getCore();
 
             $app->mount('/', new Controller\Root());
+            $app->mount('/connected-users', new Controller\ConnectedUsers());
             $app->mount('/publications', new Controller\Publications());
             $app->mount('/users', new Controller\Users());
             $app->mount('/fields', new Controller\Fields());

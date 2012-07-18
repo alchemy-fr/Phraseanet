@@ -183,12 +183,13 @@ if ( ! is_null($templates) || ! is_null($parm['deny']) || ! is_null($parm['accep
 ?>
 <html lang="<?php echo $session->get_I18n(); ?>">
     <head>
+        <link type="text/css" rel="stylesheet" href="/skins/html5/bootstrap/css/bootstrap.min.css" />
+        <link type="text/css" rel="stylesheet" href="/skins/html5/bootstrap/css/bootstrap-responsive.min.css" />
         <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css" />
-        <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/admin/admincolor.css" />
-        <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js">
-        </script>
-        <script type="text/javascript" src="/include/minify/f=include/jquery.tooltip.js">
-        </script>
+        <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/admin/css/Main.css" />
+        <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/admin/css/Tables.css" />
+        <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
+        <script type="text/javascript" src="/include/minify/f=include/jquery.tooltip.js"></script>
         <script type="text/javascript">
             var bodySize = {x:100,y:100};
             function resize(){
@@ -286,10 +287,10 @@ if ( ! is_null($templates) || ! is_null($parm['deny']) || ! is_null($parm['accep
             }
         </script>
         <style>
-            #tooltip{
-                background-color:black;
-                color:white;
-                position:absolute;
+            #tooltip {
+                background-color: black;
+                color: white;
+                position: absolute;
             }
         </style>
 
@@ -336,7 +337,7 @@ $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $stmt->closeCursor();
 
 
-$out .= "<div id=\"top_box\" style='height:70px;overflow:hidden;'>";
+$out .= "<div id=\"top_box\" style='height:70px;'>";
 $out .= "<div id=\"title\"><h1>" . _('admin:: demandes en cours') . "</h1></div>";
 
 $out .= "<div>";
@@ -496,7 +497,7 @@ $out .= "</div>";
 
 $out .= "    <div id='bottom_box' style='height:40px;overflow:hidden;'>";
 $out .= "      <div id=\"divboutdemand\" style=\"text-align:center;\">";
-$out .= "        <input type='submit' value='" . _('boutton::valider') . "' />";
+$out .= "        <input type='submit' class='btn' value='" . _('boutton::valider') . "' />";
 $out .= "      </div>";
 $out .= "    </div></form>";
 $out .= "  </body>";
