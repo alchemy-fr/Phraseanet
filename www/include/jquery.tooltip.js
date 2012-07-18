@@ -594,7 +594,6 @@
     {
       $.tooltip.ajaxRequest.abort();
     }
-    $('#tooltip .videoTips.video-js').trigger('unload-video-js');
 
     helper.body.empty();
     $.tooltip.current = null;
@@ -621,7 +620,6 @@ function unfix_tooltip()
   $.tooltip.visible = false;
   $.tooltip.current = null;
   $('#tooltip').hide();
-  $('#tooltip .videoTips.video-js').trigger('unload-video-js');
   $('#tooltip .tooltip_closer').hide();
   hideOverlay('_tooltip');
 }

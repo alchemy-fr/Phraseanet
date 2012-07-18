@@ -498,7 +498,6 @@ function setPreview(){
 		top: t,
 		left: l
 	}).attr('width',w).attr('height',h);
-        $('#PREVIEWIMGCONT .videoTips.video-js').trigger('resize-video-js');
 }
 
 function classicMode(){
@@ -529,5 +528,4 @@ function closePreview(){
 		$(this).dequeue();
 	});
 
-        $('#PREVIEWBOX .videoTips.video-js').trigger('unload-video-js');
 }
