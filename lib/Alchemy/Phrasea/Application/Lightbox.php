@@ -134,13 +134,7 @@ return call_user_func(
                         $ret['note_html'] = $twig->render($template_note, array('basket_element' => $BasketElement));
                         $ret['caption'] = $twig->render($template_caption, array('view'   => 'preview', 'record' => $BasketElement->getRecord()));
 
-                        $Serializer = $app['phraseanet.core']['Serializer'];
-
-                        return new Response(
-                                $Serializer->serialize($ret, 'json')
-                                , 200
-                                , array('Content-Type' => 'application/json')
-                        );
+                        return $app->json($app['phraseanet.core']['Serializer']->serialize($ret, 'json'));
                     }
                 }
             )->assert('sselcont_id', '\d+');
@@ -181,13 +175,7 @@ return call_user_func(
 
                         $ret['agreement_html'] = $ret['selector_html'] = $ret['note_html'] = '';
 
-                        $Serializer = $app['phraseanet.core']['Serializer'];
-
-                        return new Response(
-                                $Serializer->serialize($ret, 'json')
-                                , 200
-                                , array('Content-type' => 'application/json')
-                        );
+                        return $app->json($app['phraseanet.core']['Serializer']->serialize($ret, 'json'));
                     }
                 }
             )->assert('entry_id', '\d+')->assert('item_id', '\d+');
@@ -398,13 +386,7 @@ return call_user_func(
                         $output = array('error' => false, 'datas' => $datas);
                     }
 
-                    $Serializer = $app['phraseanet.core']['Serializer'];
-
-                    return new Response(
-                            $Serializer->serialize($output, 'json')
-                            , 200
-                            , array('Content-Type' => 'application/json')
-                    );
+                    return $app->json($app['phraseanet.core']['Serializer']->serialize($output, 'json'));
                 }
             )->assert('sselcont_id', '\d+');
 
@@ -467,13 +449,8 @@ return call_user_func(
                     } catch (ControllerException $e) {
                         $ret['datas'] = $e->getMessage();
                     }
-                    $Serializer = $app['phraseanet.core']['Serializer'];
 
-                    return new Response(
-                            $Serializer->serialize($ret, 'json')
-                            , 200
-                            , array('Content-Type' => 'application/json')
-                    );
+                    return $app->json($app['phraseanet.core']['Serializer']->serialize($ret, 'json'));
                 }
             )->assert('sselcont_id', '\d+');
 
@@ -538,14 +515,7 @@ return call_user_func(
                         $datas = array('error' => true, 'datas' => $e->getMessage());
                     }
 
-                    $Serializer = $app['phraseanet.core']['Serializer'];
-
-                    $response = new Response(
-                            $Serializer->serialize($datas, 'json')
-                            , 200
-                            , array('Content-Type' => 'application/json')
-                    );
-
+                    $response = new Response($app['phraseanet.core']['Serializer']->serialize($datas, 'json'));
                     $response->setCharset('UTF-8');
 
                     return $response;
