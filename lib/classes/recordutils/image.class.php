@@ -69,71 +69,42 @@ class recordutils_image extends recordutils
      * @param  boolean $hd
      * @return string
      */
-    public static function stamp($bas, $rec, $hd = false)
+    public static function stamp(\media_subdef $subdef, $bas, $rec, $hd = false)
     {
-        $registry = registry::get_instance();
-        $debug = false;
+        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $registry = $appbox->get_registry();
+        $base_id = $subdef->get_record()->get_base_id();
+
+        if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE) {
+            return $subdef->get_pathfile();
+        }
+
+        if ( ! $subdef->is_physically_present()) {
+            return $subdef->get_pathfile();
+        }
 
         if ( ! $registry->get('GV_imagick')) {
-            return false;
+            return $subdef->get_pathfile();
         }
 
-        $sbas_id = phrasea::sbasFromBas($bas);
+        $domprefs = new DOMDocument();
 
-        if ( ! isset($sbas_id)) {
-            return false;
+        if (false === $domprefs->loadXML($subdef->get_record()->get_collection()->get_prefs())) {
+            return $subdef->get_pathfile();
         }
 
-        $connSbas = connection::getPDOConnection($sbas_id);
-
-        $sdname = 'preview';
-        if ($hd)
-            $sdname = 'document';
-
-        $sql = "SELECT path, file, s.mime, type, xml, prefs
-      FROM subdef s, record r, coll c
-      WHERE r.record_id = :record_id AND r.record_id = s.record_id
-        AND name = :name AND c.coll_id=r.coll_id";
-
-        $stmt = $connSbas->prepare($sql);
-        $stmt->execute(array(':record_id' => $rec, ':name'      => $sdname));
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        $sxprefs = $sxxml = $domprefs = FALSE;
-
-        if ($row) {
-            $domprefs = new DOMDocument();
-            if ( ! ($domprefs->loadXML($row['prefs'])))
-                $domprefs = FALSE;
-
-            $sxxml = simplexml_load_string($row['xml']);
-            $file = array(
-                'type' => $row['type']
-                , 'path' => p4string::addEndSlash($row['path'])
-                , 'file' => $row['file']
-                , 'mime' => $row['mime']
-            );
-        }
-
-        if ($domprefs === FALSE || $sxxml === FALSE) {
-            return false;
+        if (false === $sxxml = simplexml_load_string($subdef->get_record()->get_caption()->serialize(caption_record::SERIALIZE_XML))) {
+            return $subdef->get_pathfile();
         }
 
         $xpprefs = new DOMXPath($domprefs);
 
-        $pathIn = $file['path'] . $file['file'];
-        $pathOut = $file['path'] . 'stamp_' . $file['file'];
-        $pathTmpStamp = $registry->get('GV_RootPath') . 'tmp/'
-            . time() . '-stamptmp_' . $file['file'];
+        $pathIn = $subdef->get_path() . $subdef->get_file();
+        $pathOut = $subdef->get_path() . 'stamp_' . $subdef->get_file();
+        $pathTmpStamp = $registry->get('GV_RootPath') . 'tmp/' . time() . '-stamptmp_' . $subdef->get_file();
 
-        if ( ! is_file($pathIn)) {
-            return false;
-        }
-
-        if ($file['type'] != 'image' ||
-            $xpprefs->query('/baseprefs/stamp')->length == 0) {
-            return $pathIn;
+        if ($xpprefs->query('/baseprefs/stamp')->length == 0) {
+            return $subdef->get_pathfile();
         }
 
         $vars = $xpprefs->query('/baseprefs/stamp/*/var');
@@ -145,7 +116,7 @@ class recordutils_image extends recordutils
                     if ( ! ($format = $n->getAttribute('format')))
                         $format = 'Y/m/d H:i:s';
                     $varval = date($format);
-                    @unlink($pathOut);   // since date is included, invalidate cache
+                    @unlink($pathOut);
                     break;
                 case 'RECORD_ID':
                     $varval = $rec;
@@ -154,7 +125,6 @@ class recordutils_image extends recordutils
             $n->parentNode->replaceChild($domprefs->createTextNode($varval), $n);
         }
 
-        // ------------- CACHING !
         if (is_file($pathOut)) {
             return $pathOut;
         }
@@ -177,8 +147,6 @@ class recordutils_image extends recordutils
 
         $domprefs->normalizeDocument();
 
-        $collname = phrasea::bas_names($bas);
-
         if ( ! ($tailleimg = @getimagesize($pathIn))) {
             return false;
         }
@@ -189,7 +157,7 @@ class recordutils_image extends recordutils
         $text_xpos = 0;
         $text_width = $image_width;
 
-        $logofile = $registry->get('GV_RootPath') . 'config/stamp/' . $bas;
+        $logofile = $registry->get('GV_RootPath') . 'config/stamp/' . $base_id;
         $logopos = null;
         $imlogo = null; // gd image
         $logo_phywidth = $logo_phyheight = 0; // physical size
@@ -334,7 +302,7 @@ class recordutils_image extends recordutils
             return $pathOut;
         }
 
-        return false;
+        return $subdef->get_pathfile();;
     }
 
     /**
