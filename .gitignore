@@ -1,5 +1,14 @@
 /nbproject
-/config
+/config/custom_files
+/config/templates
+/config/topics
+/config/wm
+/config/minilogos
+/config/status
+/config/stamp
+/config/services.yml
+/config/config.yml
+/config/connexions.yml
 .DS_Store
 /vendor
 composer.phar
