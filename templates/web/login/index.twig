@@ -18,27 +18,27 @@
                 <div style="height:30px;text-align:center;margin-top:15px;width:950px;margin-right:auto;margin-left:auto;">
                 {% if browser.getPlatform == 'Windows' %}
                             <span style="margin:0 10px;padding:0;white-space:nowrap;height:25px;">
-                                <img style="vertical-align:middle;" src="/login/img/firefox.png"/>
+                                <img style="vertical-align:middle;" src="/skins/login/img/firefox.png"/>
                                 <a href="http://www.mozilla.com/firefox/" target="_blank">Mozilla Firefox</a></span>
                             <span style="margin:0 10px;padding:0;white-space:nowrap;height:25px;">
-                                <img style="vertical-align:middle;" src="/login/img/safari.png"/>
+                                <img style="vertical-align:middle;" src="/skins/login/img/safari.png"/>
                                 <a href="http://www.apple.com/safari/" target="_blank">Apple Safari</a></span>
                             <span style="margin:0 10px;padding:0;white-space:nowrap;height:25px;">
-                                <img style="vertical-align:middle;" src="/login/img/chrome.png"/>
+                                <img style="vertical-align:middle;" src="/skins/login/img/chrome.png"/>
                                 <a href="http://www.google.com/chrome/" target="_blank">Google Chrome</a></span>
                 {% elseif browser.getPlatform == 'Apple' %}
                             <span style="margin:0 10px;padding:0;white-space:nowrap;height:25px;">
-                                <img style="vertical-align:middle;" src="/login/img/firefox.png"/>
+                                <img style="vertical-align:middle;" src="/skins/login/img/firefox.png"/>
                                 <a href="http://www.mozilla.com/firefox/" target="_blank">Mozilla Firefox</a></span>
                             <span style="margin:0 10px;padding:0;white-space:nowrap;height:25px;">
-                                <img style="vertical-align:middle;" src="/login/img/safari.png"/>
+                                <img style="vertical-align:middle;" src="/skins/login/img/safari.png"/>
                                 <a href="http://www.apple.com/safari/" target="_blank">Apple Safari</a></span>
                             <span style="margin:0 10px;padding:0;white-space:nowrap;height:25px;">
-                                <img style="vertical-align:middle;" src="/login/img/opera.png"/>
+                                <img style="vertical-align:middle;" src="/skins/login/img/opera.png"/>
                                 <a href="http://www.opera.com/download/" target="_blank">Opera</a></span>
                 {% else %}
                             <span style="margin:0 10px;padding:0;white-space:nowrap;height:25px;">
-                                <img style="vertical-align:middle;" src="/login/img/firefox.png"/>
+                                <img style="vertical-align:middle;" src="/skins/login/img/firefox.png"/>
                                 <a href="http://www.mozilla.com/firefox/" target="_blank">Mozilla Firefox</a></span>
                 {% endif %}
                 </div>
@@ -131,7 +131,7 @@
             </div>
             <div style="height:530px;" class="tab-pane">
                 <div id="id-main" class="tab-content" style="display:block;">
-                    <form name="send" action="/login/authenticate.php" method="post" >
+                    <form name="send" action="/login/authenticate/" method="post" >
                         {% if display_layout == 'DISPLAYx1' %}
                             {% include 'login/index_layout_displayx1.twig' %}
                         {% elseif display_layout == 'DISPLAYx4' %}
