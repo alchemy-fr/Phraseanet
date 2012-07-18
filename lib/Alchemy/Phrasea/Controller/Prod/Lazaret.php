@@ -155,8 +155,8 @@ class Lazaret implements ControllerProviderInterface
      */
     public function listElement(Application $app, Request $request)
     {
-        $em = $app['Core']->getEntityManager();
-        $user = $app['Core']->getAuthenticatedUser();
+        $em = $app['phraseanet.core']->getEntityManager();
+        $user = $app['phraseanet.core']->getAuthenticatedUser();
         /* @var $user \User_Adapter */
         $baseIds = array_keys($user->ACL()->get_granted_base(array('canaddrecord')));
 
@@ -170,7 +170,7 @@ class Lazaret implements ControllerProviderInterface
             );
         }
 
-        $html = $app['Core']['Twig']->render(
+        $html = $app['phraseanet.core']['Twig']->render(
             'prod/upload/lazaret.html.twig', array('lazaretFiles' => $lazaretFiles)
         );
 
@@ -236,7 +236,7 @@ class Lazaret implements ControllerProviderInterface
         if (null === $baseId = $request->get('bas_id')) {
             $ret['message'] = _('You must give a destination collection');
 
-            return self::formatJson($app['Core']['Serializer'], $ret);
+            return self::formatJson($app['phraseanet.core']['Serializer'], $ret);
         }
 
 
@@ -266,7 +266,7 @@ class Lazaret implements ControllerProviderInterface
                 };
 
             //Force creation record
-            $app['Core']['border-manager']->process(
+            $app['phraseanet.core']['border-manager']->process(
                 $lazaretFile->getSession(), $borderFile, $callBack, Border\Manager::FORCE_RECORD
             );
 
@@ -311,8 +311,8 @@ class Lazaret implements ControllerProviderInterface
             }
 
             //Delete lazaret file
-            $app['Core']['EM']->remove($lazaretFile);
-            $app['Core']['EM']->flush();
+            $app['phraseanet.core']['EM']->remove($lazaretFile);
+            $app['phraseanet.core']['EM']->flush();
 
             $ret['success'] = true;
         } catch (\Exception $e) {
@@ -391,7 +391,7 @@ class Lazaret implements ControllerProviderInterface
         if (null === $recordId = $request->get('record_id')) {
             $ret['message'] = _('You must give a destination record');
 
-            return self::formatJson($app['Core']['Serializer'], $ret);
+            return self::formatJson($app['phraseanet.core']['Serializer'], $ret);
         }
 
         $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
@@ -431,8 +431,8 @@ class Lazaret implements ControllerProviderInterface
             $record->substitute_subdef('document', $media);
 
             //Delete lazaret file
-            $app['Core']['EM']->remove($lazaretFile);
-            $app['Core']['EM']->flush();
+            $app['phraseanet.core']['EM']->remove($lazaretFile);
+            $app['phraseanet.core']['EM']->flush();
 
             $ret['success'] = true;
         } catch (\Exception $e) {
@@ -460,7 +460,7 @@ class Lazaret implements ControllerProviderInterface
      */
     public function thumbnailElement(Application $app, Request $request, $file_id)
     {
-        $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
+        $lazaretFile = $app['phraseanet.core']['EM']->find('Entities\LazaretFile', $file_id);
 
         /* @var $lazaretFile \Entities\LazaretFile */
         if (null === $lazaretFile) {

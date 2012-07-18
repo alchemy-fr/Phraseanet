@@ -38,9 +38,9 @@ class Root implements ControllerProviderInterface
 
                 \User_Adapter::updateClientInfos(1);
 
-                $appbox = \appbox::get_instance($app['Core']);
-                $registry = $app['Core']->getRegistry();
-                $user = $app['Core']->getAuthenticatedUser();
+                $appbox = $app['phraseanet.appbox'];
+                $registry = $app['phraseanet.core']->getRegistry();
+                $user = $app['phraseanet.core']->getAuthenticatedUser();
                 $cssPath = $registry->get('GV_RootPath') . 'www/skins/prod/';
 
                 $css = array();
@@ -99,17 +99,17 @@ class Root implements ControllerProviderInterface
                 }
 
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
-                $Serializer = $app['Core']['Serializer'];
+                $Serializer = $app['phraseanet.core']['Serializer'];
 
                 $out = $twig->render('prod/index.html.twig', array(
                     'module_name'          => 'Production',
-                    'WorkZone'             => new Helper\WorkZone($app['Core'], $app['request']),
-                    'module_prod'          => new Helper\Prod($app['Core'], $app['request']),
+                    'WorkZone'             => new Helper\WorkZone($app['phraseanet.core'], $app['request']),
+                    'module_prod'          => new Helper\Prod($app['phraseanet.core'], $app['request']),
                     'cssfile'              => $cssfile,
                     'module'               => 'prod',
-                    'events'               => \eventsmanager_broker::getInstance($appbox, $app['Core']),
+                    'events'               => \eventsmanager_broker::getInstance($appbox, $app['phraseanet.core']),
                     'GV_defaultQuery_type' => $registry->get('GV_defaultQuery_type'),
                     'GV_multiAndReport'    => $registry->get('GV_multiAndReport'),
                     'GV_thesaurus'         => $registry->get('GV_thesaurus'),

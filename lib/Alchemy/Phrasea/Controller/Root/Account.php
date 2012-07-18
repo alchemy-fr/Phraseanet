@@ -30,7 +30,7 @@ class Account implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function() use ($app) {
-                $app['Core']['Firewall']->requireAuthentication($app);
+                $app['phraseanet.core']['Firewall']->requireAuthentication($app);
             });
 
         /**
@@ -289,6 +289,71 @@ class Account implements ControllerProviderInterface
             ->assert('application_id', '\d+')
             ->bind('grant_app_access');
 
+        /**
+         * Give account access
+         *
+         * name         : account_access
+         *
+         * description  : Display form to create a new account
+         *
+         * method       : GET
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->get('/access/', $this->call('accountAccess'))
+            ->bind('account_access');
+
+        /**
+         * Give account open sessions
+         *
+         * name         : account_sessions
+         *
+         * description  : Display form to create a new account
+         *
+         * method       : GET
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->get('/security/sessions/', $this->call('accountSessionsAccess'))
+            ->bind('account_sessions');
+
+        /**
+         * Give authorized applications that can access user informations
+         *
+         * name         : account_auth_apps
+         *
+         * description  : Display form to create a new account
+         *
+         * method       : GET
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->get('/security/applications/', $this->call('accountAuthorizedApps'))
+            ->bind('account_auth_apps');
+
+        /**
+         * Grant access to an authorized app
+         *
+         * name         : grant_app_access
+         *
+         * description  : Display form to create a new account
+         *
+         * method       : GET
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->get('/security/application/{application_id}/grant/', $this->call('grantAccess'))
+            ->assert('application_id', '\d+')
+            ->bind('grant_app_access');
+
         return $controllers;
     }
 
@@ -329,7 +394,7 @@ class Account implements ControllerProviderInterface
      */
     public function resetEmail(Application $app, Request $request)
     {
-        $appbox = \appbox::get_instance($app['Core']);
+        $appbox = $app['phraseanet.appbox'];
 
         if (null !== $token = $request->get('token')) {
             try {
@@ -557,14 +622,14 @@ class Account implements ControllerProviderInterface
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 
-        $appbox = \appbox::get_instance($app['Core']);
+        $appbox = $app['phraseanet.appbox'];
         $error = false;
 
         try {
             $account = \API_OAuth2_Account::load_with_user(
                     $appbox
                     , new \API_OAuth2_Application($appbox, $application_id)
-                    , $app['Core']->getAuthenticatedUser()
+                    , $app['phraseanet.core']->getAuthenticatedUser()
             );
         } catch (\Exception_NotFound $e) {
             $error = true;
@@ -585,10 +650,10 @@ class Account implements ControllerProviderInterface
      */
     public function accountAuthorizedApps(Application $app, Request $request)
     {
-        $user = $app['Core']->getAuthenticatedUser();
+        $user = $app['phraseanet.core']->getAuthenticatedUser();
 
-        return $app['Core']['Twig']->render('account/authorized_apps.html.twig', array(
-                "apps" => \API_OAuth2_Application::load_app_by_user(\appbox::get_instance($app['Core']), $user),
+        return $app['phraseanet.core']['Twig']->render('account/authorized_apps.html.twig', array(
+                "apps" => \API_OAuth2_Application::load_app_by_user($app['phraseanet.appbox'], $user),
                 'user' => $user
             ));
     }
@@ -603,7 +668,7 @@ class Account implements ControllerProviderInterface
      */
     public function accountSessionsAccess(Application $app, Request $request)
     {
-        return new Response($app['Core']['Twig']->render('account/sessions.html.twig'));
+        return new Response($app['phraseanet.core']['Twig']->render('account/sessions.html.twig'));
     }
 
     /**
@@ -616,7 +681,7 @@ class Account implements ControllerProviderInterface
      */
     public function accountAccess(Application $app, Request $request)
     {
-        require_once $app['Core']['Registry']->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php';
+        require_once $app['phraseanet.core']['Registry']->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php';
 
         $user = $app['Core']->getAuthenticatedUser();
 
@@ -635,9 +700,9 @@ class Account implements ControllerProviderInterface
      */
     public function displayAccount(Application $app, Request $request)
     {
-        $appbox = \appbox::get_instance($app['Core']);
-        $user = $app['Core']->getAuthenticatedUser();
-        $evtMngr = \eventsmanager_broker::getInstance($appbox, $app['Core']);
+        $appbox = $app['phraseanet.appbox'];
+        $user = $app['phraseanet.core']->getAuthenticatedUser();
+        $evtMngr = \eventsmanager_broker::getInstance($appbox, $app['phraseanet.core']);
 
         switch ($notice = $request->get('notice', '')) {
             case 'pass-ok':
@@ -657,7 +722,7 @@ class Account implements ControllerProviderInterface
                 break;
         }
 
-        return new Response($app['Core']['Twig']->render('account/account.html.twig', array(
+        return new Response($app['phraseanet.core']['Twig']->render('account/account.html.twig', array(
                     'geonames'      => new \geonames(),
                     'user'          => $user,
                     'notice'        => $notice,
@@ -676,9 +741,9 @@ class Account implements ControllerProviderInterface
      */
     public function updateAccount(Application $app, Request $request)
     {
-        $appbox = \appbox::get_instance($app['Core']);
-        $user = $app['Core']->getAuthenticatedUser();
-        $evtMngr = \eventsmanager_broker::getInstance($appbox, $app['Core']);
+        $appbox = $app['phraseanet.appbox'];
+        $user = $app['phraseanet.core']->getAuthenticatedUser();
+        $evtMngr = \eventsmanager_broker::getInstance($appbox, $app['phraseanet.core']);
         $notice = 'account-update-bad';
 
         $demands = (array) $request->get('demand', array());

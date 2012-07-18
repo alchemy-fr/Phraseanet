@@ -33,7 +33,7 @@ class Tools implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->get('/', function(Application $app, Request $request) {
-                $helper = new Helper\Record\Tools($app['Core'], $request);
+                $helper = new Helper\Record\Tools($app['phraseanet.core'], $request);
 
                 $selection = $helper->get_elements();
 
@@ -72,13 +72,13 @@ class Tools implements ControllerProviderInterface
                     'metadatas' => $metadatas,
                 );
 
-                return new Response($app['Core']->getTwig()->render($template, $var));
+                return new Response($app['phraseanet.core']->getTwig()->render($template, $var));
             });
 
         $controllers->post('/rotate/', function(Application $app, Request $request) {
                 $return = array('success'      => false, 'errorMessage' => '');
 
-                $helper = new Helper\Record\Tools($app['Core'], $request);
+                $helper = new Helper\Record\Tools($app['phraseanet.core'], $request);
 
                 $rotation = in_array($request->get('rotation'), array('-90', '90', '180')) ? $request->get('rotation', 90) : 90;
 
@@ -93,7 +93,7 @@ class Tools implements ControllerProviderInterface
                     }
                 }
 
-                $json = $app['Core']->getSerializer()->serialize($return, 'json');
+                $json = $app['phraseanet.core']->getSerializer()->serialize($return, 'json');
 
                 return new Response($json, 200, array('content-type' => 'application/json'));
             });
@@ -101,7 +101,7 @@ class Tools implements ControllerProviderInterface
         $controllers->post('/image/', function(Application $app, Request $request) {
                 $return = array('success' => true);
 
-                $helper = new Helper\Record\Tools($app['Core'], $request);
+                $helper = new Helper\Record\Tools($app['phraseanet.core'], $request);
 
                 $selection = $helper->get_elements();
 
@@ -120,7 +120,7 @@ class Tools implements ControllerProviderInterface
                     }
                 }
 
-                $json = $app['Core']->getSerializer()->serialize($return, 'json');
+                $json = $app['phraseanet.core']->getSerializer()->serialize($return, 'json');
 
                 return new Response($json, 200, array('content-type' => 'application/json'));
             });
@@ -143,7 +143,7 @@ class Tools implements ControllerProviderInterface
                                     , $request->get('record_id')
                             );
 
-                            $media = $app['Core']['mediavorus']->guess($file);
+                            $media = $app['phraseanet.core']['mediavorus']->guess($file);
 
                             $record->substitute_subdef('document', $media);
 
@@ -167,7 +167,7 @@ class Tools implements ControllerProviderInterface
                     , 'errorMessage' => $errorMessage
                 );
 
-                return new Response($app['Core']->getTwig()->render($template, $var));
+                return new Response($app['phraseanet.core']->getTwig()->render($template, $var));
 
                 /**
                  *
@@ -185,7 +185,7 @@ class Tools implements ControllerProviderInterface
 
                     if ($size && $fileName && $file->isValid()) {
                         try {
-                            $rootPath = $app['Core']->getRegistry()->get('GV_RootPath');
+                            $rootPath = $app['phraseanet.core']->getRegistry()->get('GV_RootPath');
                             $tmpFile = $rootPath . 'tmp/' . $fileName;
                             rename($file->getPathname(), $tmpFile);
 
@@ -194,7 +194,7 @@ class Tools implements ControllerProviderInterface
                                     , $request->get('record_id')
                             );
 
-                            $media = $app['Core']['mediavorus']->guess($file);
+                            $media = $app['phraseanet.core']['mediavorus']->guess($file);
 
                             $record->substitute_subdef('thumbnail', $media);
 
@@ -213,7 +213,7 @@ class Tools implements ControllerProviderInterface
                         , 'errorMessage' => $errorMessage
                     );
 
-                    return new Response($app['Core']->getTwig()->render($template, $var));
+                    return new Response($app['phraseanet.core']->getTwig()->render($template, $var));
                 }
             });
 
@@ -227,13 +227,13 @@ class Tools implements ControllerProviderInterface
                         'video_title'    => $record->get_title()
                         , 'image'          => $request->get('image', '')
                     );
-                    $return['datas'] = $app['Core']->getTwig()->render($template, $var);
+                    $return['datas'] = $app['phraseanet.core']->getTwig()->render($template, $var);
                 } catch (\Exception $e) {
                     $return['datas'] = _('an error occured');
                     $return['error'] = true;
                 }
 
-                $json = $app['Core']->getSerializer()->serialize($return, 'json');
+                $json = $app['phraseanet.core']->getSerializer()->serialize($return, 'json');
 
                 return new Response($json, 201, array('content-type' => 'application/json'));
             });
@@ -246,7 +246,7 @@ class Tools implements ControllerProviderInterface
 
                     $dataUri = DataURI\Parser::parse($request->get('image', ''));
 
-                    $path = $app['Core']->getRegistry()->get('GV_RootPath') . 'tmp';
+                    $path = $app['phraseanet.core']->getRegistry()->get('GV_RootPath') . 'tmp';
 
                     $name = sprintf('extractor_thumb_%s', $record->get_serialize_key());
 
@@ -254,19 +254,19 @@ class Tools implements ControllerProviderInterface
 
                     file_put_contents($fileName, $dataUri->getData());
 
-                    $media = $app['Core']['mediavorus']->guess(new \SplFileInfo($fileName));
+                    $media = $app['phraseanet.core']['mediavorus']->guess(new \SplFileInfo($fileName));
 
                     $record->substitute_subdef('thumbnail', $media);
 
                     unset($media);
-                    $app['Core']['file-system']->remove($fileName);
+                    $app['phraseanet.core']['file-system']->remove($fileName);
 
                     $return['success'] = true;
                 } catch (\Exception $e) {
                     $return['message'] = $e->getMessage();
                 }
 
-                $json = $app['Core']->getSerializer()->serialize($return, 'json');
+                $json = $app['phraseanet.core']->getSerializer()->serialize($return, 'json');
 
                 return new Response($json, 201, array('content-type' => 'application/json'));
             });
