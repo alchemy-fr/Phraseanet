@@ -17,7 +17,7 @@
       <h1>{{home_title}}</h1>
     </div>
     <div data-role="content">
-      <form name="send" action="/login/authenticate.php" method="post" id="authentication">
+      <form name="send" action="/login/authenticate/" method="post" id="authentication">
         <script type="text/javascript">
           {% if errorWarning|striptags != '' %}
           alert("{{errorWarning|striptags}}");
