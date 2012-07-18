@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea;
 
-use Alchemy\Phrasea\Core\Configuration;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer;
@@ -100,6 +99,10 @@ class Core extends \Pimple
                 $file = new \SplFileInfo(__DIR__ . '/../../../tmp/cache_registry.yml');
 
                 return new \Alchemy\Phrasea\Cache\Manager($core, $file);
+            });
+
+            $this['Firewall'] = $this->share(function() {
+                return new Security\Firewall();
             });
 
         /**

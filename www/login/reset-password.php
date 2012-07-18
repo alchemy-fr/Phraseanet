@@ -186,14 +186,14 @@ if ($error) {
                 </form>
                 <div>
 <?php
-echo '<div style="text-align:center;font-weight:bold;font-size:13px;margin:60px 0 0;">' . _('admin::compte-utilisateur A propos de la securite des mots de passe :') . '</div>';
-echo '<div style="text-align:center;margin:20px 0 0;">' . _('admin::compte-utilisateur Les mots de passe doivent etre clairement distincts du login et contenir au moins deux types parmis les caracteres suivants :') . '</div>';
-echo '<div style="text-align:left;margin:10px auto;width:300px;"><ul>';
-echo '<li>' . _('admin::compte-utilisateur::securite caracteres speciaux') . '</li>';
-echo '<li>' . _('admin::compte-utilisateur::securite caracteres majuscules') . '</li>';
-echo '<li>' . _('admin::compte-utilisateur::securite caracteres minuscules') . '</li>';
-echo '<li>' . _('admin::compte-utilisateur::securite caracteres numeriques') . '</li>';
-echo '</ul></div>';
+                echo '<div style="text-align:center;font-weight:bold;font-size:13px;margin:60px 0 0;">' . _('admin::compte-utilisateur A propos de la securite des mots de passe :') . '</div>';
+                echo '<div style="text-align:center;margin:20px 0 0;">' . _('admin::compte-utilisateur Les mots de passe doivent etre clairement distincts du login et contenir au moins deux types parmis les caracteres suivants :') . '</div>';
+                echo '<div style="text-align:left;margin:10px auto;width:300px;"><ul>';
+                echo '<li>' . _('admin::compte-utilisateur::securite caracteres speciaux') . '</li>';
+                echo '<li>' . _('admin::compte-utilisateur::securite caracteres majuscules') . '</li>';
+                echo '<li>' . _('admin::compte-utilisateur::securite caracteres minuscules') . '</li>';
+                echo '<li>' . _('admin::compte-utilisateur::securite caracteres numeriques') . '</li>';
+                echo '</ul></div>';
 ?>
                 </div>
             </div>
