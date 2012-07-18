@@ -1,10 +1,8 @@
  <html lang="{{ session.get_I18n() }}">
     <head>
         <title>{{ home_title }} {% block title %}{% endblock %}</title>
-        <link rel="stylesheet" type="text/css" href="/include/minify/f=login/home.css,/login/geonames.css,/skins/html5/bootstrap/css/bootstrap.min.css,/skins/html5/bootstrap/css/bootstrap-responsive.min.css,/skins/login/css/main.css"/>
-        <link rel="stylesheet" type="text/css" href="/skins/login/css/main.css"/>
-        <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
-        <script type="text/javascript" language="javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="/include/minify/f=/skins/login/home.css,/skins/html5/bootstrap/css/bootstrap.min.css,/skins/html5/bootstrap/css/bootstrap-responsive.min.css,/skins/login/css/main.css"/>
+        <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js,include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
         {% block head %}{% endblock %}
     </head>
 
@@ -24,13 +22,17 @@
             </div>
             <div class="tab-pane">
                 <div id="id-main" class="tab-content" style="height: auto;display: block; overflow-y: auto; overflow-x: hidden;">
-                    <ul class='account-menu'>
-                        <li><a href="/account/">{% trans 'Informations' %}</a></li>
-                        <li><a href="/account/access/">{% trans 'Acces' %}</a></li>
-                        <li><a href="/account/security/sessions/">{% trans 'Sessions' %}</a></li>
-                        <li><a href="/account/security/applications/">{% trans 'Applications' %}</a></li>
-                        <li><a href="/developers/applications/">{% trans 'Developpeur' %}</a></li>
-                    </ul>
+
+                    {% block menu %}
+                        <ul class='account-menu'>
+                            <li><a href="/account/">{% trans 'Informations' %}</a></li>
+                            <li><a href="/account/access/">{% trans 'Acces' %}</a></li>
+                            <li><a href="/account/security/sessions/">{% trans 'Sessions' %}</a></li>
+                            <li><a href="/account/security/applications/">{% trans 'Applications' %}</a></li>
+                            <li><a href="/developers/applications/">{% trans 'Developpeur' %}</a></li>
+                        </ul>
+                    {% endblock %}
+
                     <div>
                         {% block content %}{% endblock %}
                     </div>
