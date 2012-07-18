@@ -1,7 +1,6 @@
 {% extends "common/index_bootstrap.html.twig" %}
 
 {% import 'common/thumbnail.html' as thumbnail %}
-{% import 'common/HTML5Video.html.twig' as thumbnailHTML5 %}
 {% import 'common/caption_templates/preview.html' as caption %}
 
 {% block javascript %}
@@ -14,7 +13,6 @@
 {% block stylesheet %}
     <link type="text/css" rel="stylesheet"
         href="/include/minify/f=include/jslibs/yui2.8/build/reset/reset.css,include/jslibs/jquery.contextmenu.css,include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css,skins/lightbox/lightbox.css" media="screen"/>
-    <link type="text/css" rel="stylesheet" href="{{registry.get('GV_STATIC_URL')}}/include/jslibs/video-js/video-js.css">
 {% endblock %}
 
 
@@ -56,23 +54,11 @@
                         {% if basket_element %}
 
                             {% set bask_prev = basket_element.getRecord().get_preview() %}
-                            {% set previewHtml5 = null %}
-                            
-                            {% if basket_element.getRecord().get_type() == 'video' %}
-                                {% set previewHtml5 = basket_element.getRecord().getSubdfefByDeviceAndMime(constant('\\databox_subdef::DEVICE_SCREEN'), ['video/ogg', 'video/mp4', 'video/webm']) %}
-                                {% if previewHtml5|length < 3 %}
-                                    {% set previewHtml5 = null %}
-                                {% endif %}
-                            {% endif %}
 
                             {% set width = bask_prev.get_width() %}
                             {% set height = bask_prev.get_height() %}
 
-                            {% if previewHtml5 %}
-                                {{ thumbnailHTML5.format(previewHtml5, width, height, '', session, false) }}
-                            {% else %}
-                                {{ thumbnail.format(bask_prev, width,height, '', session, false) }}
-                            {% endif %}
+                            {{ thumbnail.format(bask_prev, width,height, '', session, false) }}
 
                         {% endif %}
                         {% include 'lightbox/selector_box.twig' %}

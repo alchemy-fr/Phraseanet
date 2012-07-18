@@ -363,8 +363,6 @@ function scid_click(event, el)
       .empty()
       .append(data.options_html);
 
-      $('.videoTips.video-js',  $('.container', container)).trigger('unload-video-js');
-      
       $('.container', container).empty()
       .append(data.preview+data.selector_html+data.note_html);
 
@@ -1019,14 +1017,7 @@ function set_image_position(smooth, image, width, height, container, callback)
   }
   if(typeof callback == 'undefined')
   {
-    callback = function(){
-      $('.videoTips.video-js', $(image).closest('.container')).trigger('resize-video-js');
-    };
-  } else {
-    callback = function(){
-      $('.videoTips.video-js', $(image).closest('.container')).trigger('resize-video-js');
-      callback();
-    };
+    callback = function(){};
   }
 
   dimensions.width	= width;
