@@ -100,6 +100,9 @@ class Language implements ControllerProviderInterface
                 $out['warning'] = _('Attention');
                 $out['browserFeatureSupport'] = _('This feature is not supported by your browser');
                 $out['noActiveBasket'] = _('No active basket');
+                $out['pushUserCanDownload'] = _('User can download HD');
+                $out['feedbackCanContribute'] = _('User contribute to the feedback');
+                $out['feedbackCanSeeOthers'] = _('User can see others choices');
 
                 $Serializer = $app['Core']['Serializer'];
 
