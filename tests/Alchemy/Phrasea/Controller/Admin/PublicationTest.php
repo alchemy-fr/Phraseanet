@@ -20,10 +20,10 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
     public function createApplication()
     {
         $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Admin.php';
-        
+
         $app['debug'] = true;
         unset($app['exception_handler']);
-        
+
         return $app;
     }
 
@@ -179,7 +179,7 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
         $feed = Feed_Adapter::create($appbox, $stub, "salut", 'coucou');
 
-        $this->client->request("POST", "/publications/feed/" . $feed->get_id() . "/iconupload/", array(), array());
+        $this->client->request("POST", "/publications/feed/" . $feed->get_id() . "/iconupload/", array(), array(), array('HTTP_ACCEPT'=>'application/json'));
 
         $response = $this->client->getResponse();
 

@@ -100,7 +100,9 @@ class Publications implements ControllerProviderInterface
                 $request = $app["request"];
 
                 if ( ! $feed->is_owner($user)) {
-                    throw new \Exception_Forbidden('ERROR:you are not allowed');
+                    $datas['message'] = 'You are not allowed to do that';
+
+                    return $app->json($datas);
                 }
 
                 try {
