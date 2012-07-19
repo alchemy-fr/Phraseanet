@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Application;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\Admin\ConnectedUsers;
 use Alchemy\Phrasea\Controller\Admin\Description;
 use Alchemy\Phrasea\Controller\Admin\Fields;
 use Alchemy\Phrasea\Controller\Admin\Publications;
@@ -26,6 +27,7 @@ return call_user_func(
             $app = new PhraseaApplication();
 
             $app->mount('/', new Root());
+            $app->mount('/connected-users', new ConnectedUsers());
             $app->mount('/publications', new Publications());
             $app->mount('/users', new Users());
             $app->mount('/fields', new Fields());
