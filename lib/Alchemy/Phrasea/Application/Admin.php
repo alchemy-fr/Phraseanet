@@ -33,6 +33,7 @@ return call_user_func(
 
             $app->mount('/connected-users', new ConnectedUsers());
             $app->mount('/tasks', new Tasks());
+            $app->mount('/tasks', new Tasks());
             $app->mount('/task', new Task());
             $app->mount('/scheduler', new Scheduler());
 

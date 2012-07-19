@@ -28,7 +28,7 @@ class Task implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
-        $appbox = \appbox::get_instance($app['Core']);
+        $appbox = \appbox::get_instance($app['phraseanet.core']);
 
         $controllers = $app['controllers_factory'];
 
