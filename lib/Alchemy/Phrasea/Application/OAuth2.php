@@ -16,7 +16,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
-use Silex\Provider\ValidatorServiceProvider;
 
 /**
  *
@@ -37,12 +36,8 @@ return call_user_func(function() {
                     return new \API_OAuth2_Adapter($app['phraseanet.appbox']);
                 };
 
-            /*             * *******************************************************************
-             *                        AUTHENTIFICATION API
-             */
-
             /**
-             *  AUTHORIZE ENDPOINT
+             * AUTHORIZE ENDPOINT
              *
              * Authorization endpoint - used to obtain authorization from the
              * resource owner via user-agent redirection.
@@ -152,10 +147,7 @@ return call_user_func(function() {
                 })->requireHttps();
 
             /**
-             * *******************************************************************
-             *
-             * Route Errors
-             *
+             * Error Handler
              */
             $app->error(function (\Exception $e) use ($app) {
                     if ($e instanceof NotFoundHttpException || $e instanceof \Exception_NotFound) {

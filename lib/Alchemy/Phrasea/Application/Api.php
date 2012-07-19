@@ -89,7 +89,7 @@ return call_user_func(function() {
                 });
 
             /**
-             * oAUth log process
+             * OAuth log process
              *
              * Parse the requested route to fetch
              * - the ressource (databox, basket, record etc ..)

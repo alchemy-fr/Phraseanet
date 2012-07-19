@@ -53,10 +53,7 @@ return call_user_func(function() {
                         $buffer = "User-Agent: *\n" . "Disallow: /\n";
                     }
 
-                    $response = new Response($buffer, 200, array('Content-Type' => 'text/plain'));
-                    $response->setCharset('UTF-8');
-
-                    return $response;
+                    return new Response($buffer, 200, array('Content-Type' => 'text/plain'));
                 });
 
             $app->mount('/feeds/', new RSSFeeds());

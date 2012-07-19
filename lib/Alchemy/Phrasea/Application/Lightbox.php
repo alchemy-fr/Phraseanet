@@ -41,9 +41,6 @@ return call_user_func(
                         , $repository->findActiveValidationByUser($current_user)
                     );
 
-                    /* @var $twig \Twig_Environment */
-                    $twig = $app['phraseanet.core']->getTwig();
-
                     $browser = \Browser::getInstance();
 
                     $template = 'lightbox/index.twig';
@@ -51,39 +48,33 @@ return call_user_func(
                         $template = 'lightbox/IE6/index.twig';
                     }
 
-                    $output = $twig->render($template, array(
-                        'baskets_collection' => $basket_collection,
-                        'module_name'        => 'Lightbox',
-                        'module'             => 'lightbox'
-                        )
-                    );
-                    $response = new Response($output);
-                    $response->setCharset('UTF-8');
-
-                    return $response;
+                    return new Response($app['phraseanet.core']->getTwig()->render($template, array(
+                                'baskets_collection' => $basket_collection,
+                                'module_name'        => 'Lightbox',
+                                'module'             => 'lightbox'
+                                )
+                        ));
                 }
             );
 
             $app->get('/ajax/NOTE_FORM/{sselcont_id}/', function(SilexApplication $app, $sselcont_id) {
-                    /* @var $twig \Twig_Environment */
-                    $twig = $app['phraseanet.core']->getTwig();
                     $browser = \Browser::getInstance();
 
                     if ( ! $browser->isMobile()) {
                         return new Response('');
                     }
 
-                    $em = $app['phraseanet.core']->getEntityManager();
+                    $basketElement = $app['phraseanet.core']->getEntityManager()
+                        ->getRepository('\Entities\BasketElement')
+                        ->findUserElement($sselcont_id, $app['phraseanet.core']->getAuthenticatedUser());
 
-                    /* @var $repository \Repositories\BasketElementRepository */
-                    $repository = $em->getRepository('\Entities\BasketElement');
+                    $parameters = array(
+                        'basket_element' => $basketElement,
+                        'module_name'    => '',
+                    );
 
-                    $basket_element = $repository->findUserElement($sselcont_id, $app['phraseanet.core']->getAuthenticatedUser());
-
-                    $template = 'lightbox/note_form.twig';
-                    $output = $twig->render($template, array('basket_element' => $basket_element, 'module_name'    => ''));
-
-                    return new Response($output);
+                    return $app['phraseanet.core']->getTwig()
+                            ->render('lightbox/note_form.twig', $parameters);
                 }
             )->assert('sselcont_id', '\d+');
 
