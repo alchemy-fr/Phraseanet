@@ -27,7 +27,7 @@ class Tasks implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
-        $appbox = \appbox::get_instance($app['Core']);
+        $appbox = \appbox::get_instance($app['phraseanet.core']);
         $session = $appbox->get_session();
 
         $controllers = $app['controllers_factory'];
@@ -48,7 +48,7 @@ class Tasks implements ControllerProviderInterface
 
                     $template = 'admin/tasks/list.html.twig';
                     /* @var $twig \Twig_Environment */
-                    $twig = $app['Core']->getTwig();
+                    $twig = $app['phraseanet.core']->getTwig();
 
                     return $twig->render($template, array(
                             'task_manager'  => $task_manager,

@@ -27,7 +27,7 @@ class Scheduler implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
-        $appbox = \appbox::get_instance($app['Core']);
+        $appbox = \appbox::get_instance($app['phraseanet.core']);
         $session = $appbox->get_session();
 
         $controllers = $app['controllers_factory'];
