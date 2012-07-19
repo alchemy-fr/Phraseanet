@@ -69,6 +69,12 @@
       <span>{% trans 'admin::utilisateurs: gestionnaire de taches' %}</span>
     </a>
   </li>
+  <li class="{% if feature == 'taskmanager' %}selected{% endif %}">
+    <a target="right" href="/admin/tasks/" class="ajax">
+      <img src="/skins/admin/TaskManager.png" />
+      {% trans 'admin::utilisateurs: gestionnaire de taches 2' %}
+    </a>
+  </li>
   {% endif %}
 
   <li class="open">
