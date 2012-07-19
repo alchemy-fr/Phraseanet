@@ -74,7 +74,7 @@ return call_user_func(function() {
                             , 'message' => $e->getMessage()
                         );
 
-                        return $app->json($app['phraseanet.core']['Serializer']->serialize($datas, 'json'));
+                        return $app->json($datas);
                     }
                     if ($e instanceof \Exception_BadRequest) {
                         return new Response('Bad Request', 400);

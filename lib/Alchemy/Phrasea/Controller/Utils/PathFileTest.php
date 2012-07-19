@@ -30,30 +30,20 @@ class PathFileTest implements ControllerProviderInterface
         $controllers->get('/path/', function( Request $request) {
                 $path = $request->get('path');
 
-                return $app->json(
-                        $app['phraseanet.core']['Serializer']->serialize(
-                            array(
-                            'exists'     => file_exists($path)
-                            , 'file'       => is_file($path)
-                            , 'dir'        => is_dir($path)
-                            , 'readable'   => is_readable($path)
-                            , 'writeable'  => is_writable($path)
-                            , 'executable' => is_executable($path)
-                            )
-                            , 'json'
-                        )
-                );
+                return $app->json(array(
+                        'exists'     => file_exists($path)
+                        , 'file'       => is_file($path)
+                        , 'dir'        => is_dir($path)
+                        , 'readable'   => is_readable($path)
+                        , 'writeable'  => is_writable($path)
+                        , 'executable' => is_executable($path)
+                    ));
             });
 
         $controllers->get('/url/', function( Request $request) {
                 $url = $request->get('url');
 
-                return $app->json(
-                        $app['phraseanet.core']['Serializer']->serialize(
-                            array('code' => \http_query::getHttpCodeFromUrl($url))
-                            , 'json'
-                        )
-                );
+                return $app->json(array('code' => \http_query::getHttpCodeFromUrl($url)));
             });
 
         return $controllers;

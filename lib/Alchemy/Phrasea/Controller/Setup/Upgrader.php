@@ -46,9 +46,7 @@ class Upgrader implements ControllerProviderInterface
         $controllers->get('/status/', function() use ($app) {
                 require_once __DIR__ . '/../../../../bootstrap.php';
 
-                $datas = \Setup_Upgrade::get_status();
-
-                return $app->json($app['phraseanet.core']['Serializer']->serialize($datas, 'json'));
+                return $app->json(\Setup_Upgrade::get_status());
             });
 
         $controllers->post('/execute/', function() use ($app) {

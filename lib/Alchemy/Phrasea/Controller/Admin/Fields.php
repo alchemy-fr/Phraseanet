@@ -39,7 +39,7 @@ class Fields implements ControllerProviderInterface
                     'is_multi' => $tag->isMulti(),
                 );
 
-                return $app->json($app['phraseanet.core']['Serializer']->serialize($datas, 'json'));
+                return $app->json($datas);
             });
 
         $controllers->get('/checkreadonly/', function(PhraseaApplication $app, Request $request) {
@@ -52,7 +52,7 @@ class Fields implements ControllerProviderInterface
                     'is_readonly' => ! $tag->isWritable(),
                 );
 
-                return $app->json($app['phraseanet.core']['Serializer']->serialize($datas, 'json'));
+                return $app->json($datas);
             });
 
         return $controllers;

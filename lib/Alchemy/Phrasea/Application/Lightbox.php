@@ -125,7 +125,7 @@ return call_user_func(
                         $ret['note_html'] = $twig->render($template_note, array('basket_element' => $BasketElement));
                         $ret['caption'] = $twig->render($template_caption, array('view'   => 'preview', 'record' => $BasketElement->getRecord()));
 
-                        return $app->json($app['phraseanet.core']['Serializer']->serialize($ret, 'json'));
+                        return $app->json($ret);
                     }
                 }
             )->assert('sselcont_id', '\d+');
@@ -166,7 +166,7 @@ return call_user_func(
 
                         $ret['agreement_html'] = $ret['selector_html'] = $ret['note_html'] = '';
 
-                        return $app->json($app['phraseanet.core']['Serializer']->serialize($ret, 'json'));
+                        return $app->json($ret);
                     }
                 }
             )->assert('entry_id', '\d+')->assert('item_id', '\d+');
@@ -377,7 +377,7 @@ return call_user_func(
                         $output = array('error' => false, 'datas' => $datas);
                     }
 
-                    return $app->json($app['phraseanet.core']['Serializer']->serialize($output, 'json'));
+                    return $app->json($output);
                 }
             )->assert('sselcont_id', '\d+');
 
@@ -441,7 +441,7 @@ return call_user_func(
                         $ret['datas'] = $e->getMessage();
                     }
 
-                    return $app->json($app['phraseanet.core']['Serializer']->serialize($ret, 'json'));
+                    return $app->json($ret);
                 }
             )->assert('sselcont_id', '\d+');
 
@@ -506,10 +506,7 @@ return call_user_func(
                         $datas = array('error' => true, 'datas' => $e->getMessage());
                     }
 
-                    $response = new Response($app['phraseanet.core']['Serializer']->serialize($datas, 'json'));
-                    $response->setCharset('UTF-8');
-
-                    return $response;
+                    return $app->json($datas);
                 }
             )->assert('ssel_id', '\d+');
 

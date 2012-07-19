@@ -80,7 +80,7 @@ class ConnectionTest implements ControllerProviderInterface
                     , 'is_databox' => $is_databox
                 );
 
-                return $app->json($app['phraseanet.core']['Serializer']->serialize($datas, 'json'));
+                return $app->json($datas);
             });
 
         return $controllers;
