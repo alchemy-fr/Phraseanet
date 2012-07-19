@@ -3,7 +3,7 @@
 }
 
 #chart_detail{
-	cursor: pointer;	
+	cursor: pointer;
 }
 .form_csv{
 	width:15px;
@@ -12,20 +12,20 @@
 }
 /*hack tout sauf ie 6-7-8*/
 :root *>.form_csv {
-	
+
 	margin-top:6px;
 }
 
 /*hack tout sauf ie 6-7-8*/
 .form_csv {
-	
+
 	margin-top:-8px\9;
 	margin-left:5px;
 }
 
 /*hack pour ie 6-7-8*/
 th{
-	height:50px\9; 
+	height:50px\9;
 }
 
 #query{
@@ -37,9 +37,15 @@ th{
 .form label{
 	display:inline-block;
 	vertical-align: baseline;
+    color:#FFF;
 }
-.form_csv 	input[name=submit]{
-	
+
+form.report_form input[type=text]{
+    width:40px;
+}
+
+.form_csv input[name=submit]{
+
 	background:url(../../report/images/csv.gif) top right no-repeat;
 	width:15px;
 	height: 16px;
@@ -47,7 +53,7 @@ th{
 	border:0;
 }
 
-.left{ 
+.left{
 	float :left;
 }
 
@@ -258,19 +264,19 @@ table.center{
 	float:left;
 	padding:20px 5px 20px 5px;
 }
- 
-.leftControl { 
+
+.leftControl {
 	float:left;
 	margin-right:5px;
 	margin-top:10px;
 	cursor: pointer;
-}  
-.rightControl {  
+}
+.rightControl {
     float:left;
 	margin-left:5px;
 	margin-top:10px;
 	cursor: pointer;
-}  
+}
 #dashboard-table table {
 	font:normal 76%/150% "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
 	border:none;
@@ -361,7 +367,7 @@ div.form_titre{
 	margin-right:10px;
 }
 .form1{
-	float:left;	
+	float:left;
 	width: 140px;
 	padding:3px;
 	height:120px;
@@ -384,7 +390,7 @@ input{
 	font-family: Verdana, sans-serif;
 	padding: 2px;
 	border: 1px solid #555555;
-}			
+}
 table.tablesorter  tr th{
 	background-image: url(../skins/icons/bg.gif);
 	background-repeat: no-repeat;
@@ -450,7 +456,7 @@ table.tablesorter tr th.SortDown {
 }
 	.aroundTable {  width:900px; overflow:auto;}
 	.imgdash table{ margin: auto; margin-top: 15px; margin-bottom: 15px; width :100%; }
- 	.imgdash td, .imgdash th{ border: 1px solid #bbb; background: #ddd; text-align: center; border-radius: 0.5px; } 
+ 	.imgdash td, .imgdash th{ border: 1px solid #bbb; background: #ddd; text-align: center; border-radius: 0.5px; }
  	.imgdash caption{ font-weight: bold; }
-  
-  
+
+
