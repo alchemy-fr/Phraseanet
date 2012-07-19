@@ -373,7 +373,7 @@
         console.log('Selecting', user);
       }
 
-      p4.Mustache.Render(this.Context + '-Badge', user, p4.Feedback.appendBadge);
+      p4.Mustache.Render(this.Context + '-Badge', {user:user, language:language}, p4.Feedback.appendBadge);
     },
     loadUser : function(usr_id, callback) {
       var $this = this;

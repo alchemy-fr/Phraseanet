@@ -24,7 +24,7 @@
                     {% endif %}
                 </td>
                 {% if list.getOwner(user).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_ADMIN') %}
-                    <td style="text-align:right;white-space:nowrap;">
+                    <td style="text-align:right;white-space:nowrap;width:150px;">
                         <button class="deleter btn btn-inverse">
                             {% trans 'Delete' %}
                             <input type="hidden" name="list_id" value="{{ list.getId() }}"/>

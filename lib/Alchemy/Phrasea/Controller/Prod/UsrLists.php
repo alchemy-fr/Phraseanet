@@ -211,17 +211,16 @@ class UsrLists implements ControllerProviderInterface
                     );
                 }
 
-                /* @var $list \Entities\UsrList */
-                $result = array(
-                    'id'      => $list->getId(),
-                    'name'    => $list->getName(),
-                    'created' => $list->getCreated()->format(DATE_ATOM),
-                    'updated' => $list->getUpdated()->format(DATE_ATOM),
-                    'owners'  => $owners,
-                    'users'   => $entries
-                );
-
-                return new Response($app['phraseanet.core']->getTwig()->render('prod/actions/Feedback/list.html.twig', $result));
+                return $app->json(array(
+                        'result' => array(
+                            'id'      => $list->getId(),
+                            'name'    => $list->getName(),
+                            'created' => $list->getCreated()->format(DATE_ATOM),
+                            'updated' => $list->getUpdated()->format(DATE_ATOM),
+                            'owners'  => $owners,
+                            'users'   => $entries
+                        )
+                    ));
             }
         );
 

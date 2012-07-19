@@ -488,11 +488,7 @@ class set_export extends set_abstract
                         break;
                     case 'document':
                         $subdef_export = true;
-                        $path = recordutils_image::stamp(
-                                $download_element->get_base_id()
-                                , $download_element->get_record_id()
-                                , true
-                        );
+                        $path = recordutils_image::stamp($sd[$name]);
                         $tmp_pathfile = array(
                             'path' => $sd[$name]->get_path()
                             , 'file' => $sd[$name]->get_file()

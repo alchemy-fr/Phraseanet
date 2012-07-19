@@ -1,8 +1,8 @@
-<div class="badge badge_{{ usr_id }}">
+<div class="badge badge_{{ user.usr_id }}">
    <a href="#" class="deleter">
     <img src="/skins/prod/Push/close_badge.png"/>
   </a>
-  <input name="id" value="{{ usr_id }}" type="hidden" />
+  <input name="id" value="{{ user.usr_id }}" type="hidden" />
   <table>
     <tr>
       <td class="icon">
@@ -10,23 +10,23 @@
       </td>
       <td class="infos">
         <div>
-          <input type="hidden" name="participants[{{ usr_id }}][usr_id]" value="{{ usr_id }}" />
+          <input type="hidden" name="participants[{{ user.usr_id }}][usr_id]" value="{{ user.usr_id }}" />
           <table>
             <tr>
               <td colspan="3">
-                <span class="name">{{ display_name }}</span>
+                <span class="name">{{ user.display_name }}</span>
               </td>
             </tr>
             <tr>
               <td colspan="3">
-                <span class="subtite">{{ subtitle }}</span>
+                <span class="subtite">{{ user.subtitle }}</span>
               </td>
             </tr>
             <tr class="toggles">
               <td class="toggle status_off toggle_HD">
-                <img title="{% trans 'User can download HD' %}" class="toggle_off" src="/skins/prod/Push/download_off_badge.png" />
-                <img title="{% trans 'User can download HD' %}" class="toggle_on" src="/skins/prod/Push/download_badge.png" />
-                <input type="hidden" name="participants[{{ usr_id }}][HD]" value="0" />
+                <img title="{{ language.pushUserCanDownload }}" class="toggle_off" src="/skins/prod/Push/download_off_badge.png" />
+                <img title="{{ language.pushUserCanDownload }}" class="toggle_on" src="/skins/prod/Push/download_badge.png" />
+                <input type="hidden" name="participants[{{ user.usr_id }}][HD]" value="0" />
               </td>
             </tr>
           </table>
