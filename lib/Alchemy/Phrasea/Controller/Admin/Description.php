@@ -169,7 +169,6 @@ class Description implements ControllerProviderInterface
                                 $field->set_name($request->get('name_' . $id))
                                     ->set_thumbtitle($request->get('thumbtitle_' . $id))
                                     ->set_tag(\databox_field::loadClassFromTagName($request->get('src_' . $id)))
-                                    ->set_multi($request->get('multi_' . $id))
                                     ->set_business($request->get('business_' . $id))
                                     ->set_indexable($request->get('indexable_' . $id))
                                     ->set_required($request->get('required_' . $id))

@@ -30,10 +30,10 @@ class Login implements ControllerProviderInterface
 
 
 
-        $controllers->get('/',  $this->call('login'))
+        $controllers->get('/', $this->call('login'))
             ->before(function() use ($app) {
-                return $app['phraseanet.core']['Firewall']->requireNotAuthenticated($app);
-            });
+                    return $app['phraseanet.core']['Firewall']->requireNotAuthenticated($app);
+                });
 
 
 
@@ -386,17 +386,16 @@ class Login implements ControllerProviderInterface
         $appRedirect = $request->get("app");
 
 //        try {
-            $session = $app['phraseanet.appbox']->get_session();
+        $session = $app['phraseanet.appbox']->get_session();
 
-            $session->logout();
-            $session->remove_cookies();
+        $session->logout();
+        $session->remove_cookies();
 //        } catch (\Exception $e) {
 //            return $app->redirect("/" . ($appRedirect ? $appRedirect : 'prod'));
 //        }
 
         return $app->redirect("/login/?logged_out=user" . ($appRedirect ? sprintf("&redirect=/%s", $appRedirect) : ""));
     }
-
 
     public function login(Application $app, Request $request)
     {
@@ -503,17 +502,16 @@ class Login implements ControllerProviderInterface
         $twig = $core->getTwig();
 
         return $twig->render('login/index.twig', array(
-            'module_name'    => _('Accueil'),
-            'notice'         => $notice,
-            'warning'        => $warning,
-            'redirect'       => $request->get('redirect'),
-            'logged_out'     => $request->get('logged_out'),
-            'captcha_system' => $captchaSys,
-            'login'          => new \login(),
-            'feeds'          => $feeds,
-            'display_layout' => $registry->get('GV_home_publi')
-        ));
-
+                'module_name'    => _('Accueil'),
+                'notice'         => $notice,
+                'warning'        => $warning,
+                'redirect'       => $request->get('redirect'),
+                'logged_out'     => $request->get('logged_out'),
+                'captcha_system' => $captchaSys,
+                'login'          => new \login(),
+                'feeds'          => $feeds,
+                'display_layout' => $registry->get('GV_home_publi')
+            ));
     }
 
     /**

@@ -2,13 +2,12 @@
 
 namespace Alchemy\Phrasea\Application;
 
+use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Setup as Controller;
 use Alchemy\Phrasea\Controller\Utils as ControllerUtils;
 
 return call_user_func(function() {
-            $app = new \Silex\Application();
-
-            $app['phraseanet.core'] = \bootstrap::getCore();
+            $app = new PhraseaApplication();
 
             $app['upgrade'] = true;
 

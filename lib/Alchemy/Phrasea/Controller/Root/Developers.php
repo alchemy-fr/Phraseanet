@@ -268,7 +268,7 @@ class Developers implements ControllerProviderInterface
             $error = true;
         }
 
-        return new JsonResponse(array('success' => ! $error, 'token' => $accessToken));
+        return new JsonResponse(array('success' => ! $error, 'token'   => $accessToken));
     }
 
     /**

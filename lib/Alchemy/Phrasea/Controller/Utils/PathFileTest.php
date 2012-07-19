@@ -27,23 +27,21 @@ class PathFileTest implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->get('/path/', function( Request $request) {
-                $path = $request->get('path');
+        $controllers->get('/path/', function(Application $app, Request $request) {
 
                 return $app->json(array(
-                        'exists'     => file_exists($path)
-                        , 'file'       => is_file($path)
-                        , 'dir'        => is_dir($path)
-                        , 'readable'   => is_readable($path)
-                        , 'writeable'  => is_writable($path)
-                        , 'executable' => is_executable($path)
+                        'exists'     => file_exists($request->get('path'))
+                        , 'file'       => is_file($request->get('path'))
+                        , 'dir'        => is_dir($request->get('path'))
+                        , 'readable'   => is_readable($request->get('path'))
+                        , 'writeable'  => is_writable($request->get('path'))
+                        , 'executable' => is_executable($request->get('path'))
                     ));
             });
 
-        $controllers->get('/url/', function( Request $request) {
-                $url = $request->get('url');
+        $controllers->get('/url/', function(Application $app, Request $request) {
 
-                return $app->json(array('code' => \http_query::getHttpCodeFromUrl($url)));
+                return $app->json(array('code' => \http_query::getHttpCodeFromUrl($request->get('url'))));
             });
 
         return $controllers;

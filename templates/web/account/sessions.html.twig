@@ -38,10 +38,10 @@
                         {% endif %}
                     </td>
                     <td>
-                        {{ row['created_on'] |getDate }}
+                        {{ row['created_on'] |formatDate }}
                     </td>
                     <td>
-                        {{ row['lastaccess'] |getDate }}
+                        {{ row['lastaccess'] |formatDate }}
                     </td>
                     <td>
                         {{ row['ip'] }}

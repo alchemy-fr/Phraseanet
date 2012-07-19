@@ -479,8 +479,7 @@ class Account implements ControllerProviderInterface
     public function accountAuthorizedApps(Application $app, Request $request)
     {
         return $app['phraseanet.core']['Twig']->render('account/authorized_apps.html.twig', array(
-                "apps" => \API_OAuth2_Application::load_app_by_user(\appbox::get_instance($app['phraseanet.core']), $user),
-                'user' => $app['phraseanet.core']->getAuthenticatedUser()
+                "apps" => \API_OAuth2_Application::load_app_by_user(\appbox::get_instance($app['phraseanet.core']), $app['phraseanet.core']->getAuthenticatedUser()),
             ));
     }
 

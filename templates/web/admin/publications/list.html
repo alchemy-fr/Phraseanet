@@ -67,7 +67,7 @@
                     <a href="/admin/publications/feed/{{ feed.get_id() }}/">{{ feed.get_title() }}</a>
                 </td>
                 <td style="text-align: center;">
-                    {{ feed.get_created_on()|formatdate }}
+                    {{ feed.get_created_on()|formatDate }}
                 </td>
                 <td style="text-align: center;">
                     {% if feed.get_collection() != null %}

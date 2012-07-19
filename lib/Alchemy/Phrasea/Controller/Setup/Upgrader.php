@@ -43,13 +43,13 @@ class Upgrader implements ControllerProviderInterface
                 );
             });
 
-        $controllers->get('/status/', function() use ($app) {
+        $controllers->get('/status/', function(Application $app) {
                 require_once __DIR__ . '/../../../../bootstrap.php';
 
                 return $app->json(\Setup_Upgrade::get_status());
             });
 
-        $controllers->post('/execute/', function() use ($app) {
+        $controllers->post('/execute/', function(Application $app) {
                 require_once __DIR__ . '/../../../../bootstrap.php';
                 set_time_limit(0);
                 session_write_close();
@@ -62,7 +62,7 @@ class Upgrader implements ControllerProviderInterface
                 /**
                  * @todo Show recomandation instead of redirect
                  */
-                return new $app->redirect('/');
+                return $app->redirect('/');
             });
 
         return $controllers;

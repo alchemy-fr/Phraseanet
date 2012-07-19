@@ -13,7 +13,6 @@ namespace Alchemy\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 
@@ -94,7 +93,7 @@ class Publications implements ControllerProviderInterface
                     'message' => '',
                 );
 
-                $feed = new \Feed_Adapter($appbox, $id);
+                $feed = new \Feed_Adapter($app['phraseanet.appbox'], $id);
 
                 $user = $app['phraseanet.core']->getAuthenticatedUser();
 
@@ -154,19 +153,15 @@ class Publications implements ControllerProviderInterface
                     $datas['message'] = _('Unable to add file to Phraseanet');
                 }
 
-                return new Response(
-                        $app['phraseanet.core']['Serializer']->serialize($datas, 'json'),
-                        200,
-                        array('Content-type' => 'application/json')
-                );
+                return $app->json($datas);
             })->assert('id', '\d+');
 
-        $controllers->post('/feed/{id}/addpublisher/', function($id) use ($app, $appbox) {
+        $controllers->post('/feed/{id}/addpublisher/', function(PhraseaApplication $app, $id) {
                 $error = '';
                 try {
                     $request = $app['request'];
-                    $user = \User_Adapter::getInstance($request->get('usr_id'), $appbox);
-                    $feed = new \Feed_Adapter($appbox, $id);
+                    $user = \User_Adapter::getInstance($request->get('usr_id'), $app['phraseanet.appbox']);
+                    $feed = new \Feed_Adapter($app['phraseanet.appbox'], $id);
                     $feed->add_publisher($user);
                 } catch (\Exception $e) {
                     $error = $e->getMessage();
@@ -175,12 +170,12 @@ class Publications implements ControllerProviderInterface
                 return $app->redirect('/admin/publications/feed/' . $id . '/?err=' . $error);
             })->assert('id', '\d+');
 
-        $controllers->post('/feed/{id}/removepublisher/', function($id) use ($app, $appbox) {
+        $controllers->post('/feed/{id}/removepublisher/', function(PhraseaApplication $app, $id) {
                 try {
                     $request = $app['request'];
 
-                    $feed = new \Feed_Adapter($appbox, $id);
-                    $publisher = new \Feed_Publisher_Adapter($appbox, $request->get('publisher_id'));
+                    $feed = new \Feed_Adapter($app['phraseanet.appbox'], $id);
+                    $publisher = new \Feed_Publisher_Adapter($app['phraseanet.appbox'], $request->get('publisher_id'));
                     $user = $publisher->get_user();
                     if ($feed->is_publisher($user) === true && $feed->is_owner($user) === false)
                         $publisher->delete();
@@ -191,8 +186,8 @@ class Publications implements ControllerProviderInterface
                 return $app->redirect('/admin/publications/feed/' . $id . '/?err=' . $error);
             })->assert('id', '\d+');
 
-        $controllers->post('/feed/{id}/delete/', function($id) use ($app, $appbox) {
-                $feed = new \Feed_Adapter($appbox, $id);
+        $controllers->post('/feed/{id}/delete/', function(PhraseaApplication $app, $id) {
+                $feed = new \Feed_Adapter($app['phraseanet.appbox'], $id);
                 $feed->delete();
 
                 return $app->redirect('/admin/publications/list/');
