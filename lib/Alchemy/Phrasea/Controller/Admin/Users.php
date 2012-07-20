@@ -36,22 +36,14 @@ class Users implements ControllerProviderInterface
         $controllers->post('/rights/', function(Application $app) {
                 $rights = new UserHelper\Edit($app['phraseanet.core'], $app['request']);
 
-                $template = 'admin/editusers.twig';
-                /* @var $twig \Twig_Environment */
-                $twig = $app['phraseanet.core']->getTwig();
-
-                return $twig->render($template, $rights->get_users_rights());
+                return $app['twig']->render('admin/editusers.twig', $rights->get_users_rights());
             }
         );
 
         $controllers->get('/rights/', function(Application $app) {
                 $rights = new UserHelper\Edit($app['phraseanet.core'], $app['request']);
 
-                $template = 'admin/editusers.twig';
-                /* @var $twig \Twig_Environment */
-                $twig = $app['phraseanet.core']->getTwig();
-
-                return $twig->render($template, $rights->get_users_rights());
+                return $app['twig']->render('admin/editusers.twig', $rights->get_users_rights());
             }
         );
 
@@ -114,11 +106,7 @@ class Users implements ControllerProviderInterface
         $controllers->post('/rights/quotas/', function(Application $app) {
                 $rights = new UserHelper\Edit($app['phraseanet.core'], $app['request']);
 
-                $template = 'admin/editusers_quotas.twig';
-                /* @var $twig \Twig_Environment */
-                $twig = $app['phraseanet.core']->getTwig();
-
-                return $twig->render($template, $rights->get_quotas());
+                return $app['twig']->render('admin/editusers_quotas.twig', $rights->get_quotas());
             }
         );
 
@@ -133,11 +121,7 @@ class Users implements ControllerProviderInterface
         $controllers->post('/rights/time/', function(Application $app) {
                 $rights = new UserHelper\Edit($app['phraseanet.core'], $app['request']);
 
-                $template = 'admin/editusers_timelimit.twig';
-                /* @var $twig \Twig_Environment */
-                $twig = $app['phraseanet.core']->getTwig();
-
-                return $twig->render($template, $rights->get_time());
+                return $app['twig']->render('admin/editusers_timelimit.twig', $rights->get_time());
             }
         );
 
@@ -152,11 +136,7 @@ class Users implements ControllerProviderInterface
         $controllers->post('/rights/masks/', function(Application $app) {
                 $rights = new UserHelper\Edit($app['phraseanet.core'], $app['request']);
 
-                $template = 'admin/editusers_masks.twig';
-                /* @var $twig \Twig_Environment */
-                $twig = $app['phraseanet.core']->getTwig();
-
-                return $twig->render($template, $rights->get_masks());
+                return $app['twig']->render('admin/editusers_masks.twig', $rights->get_masks());
             }
         );
 
@@ -170,12 +150,8 @@ class Users implements ControllerProviderInterface
 
         $controllers->match('/search/', function(Application $app) {
                 $users = new UserHelper\Manage($app['phraseanet.core'], $app['request']);
-                $template = 'admin/users.html';
 
-                /* @var $twig \Twig_Environment */
-                $twig = $app['phraseanet.core']->getTwig();
-
-                return $twig->render($template, $users->search());
+                return $app['twig']->render('admin/users.html', $users->search());
             }
         );
 
@@ -183,11 +159,6 @@ class Users implements ControllerProviderInterface
                 $request = $app['request'];
 
                 $users = new UserHelper\Manage($app['phraseanet.core'], $app['request']);
-
-                $template = 'admin/users.html';
-
-                /* @var $twig \Twig_Environment */
-                $twig = $app['phraseanet.core']->getTwig();
 
                 $userTable = array(
                     array(

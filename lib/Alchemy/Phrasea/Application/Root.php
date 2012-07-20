@@ -34,11 +34,10 @@ return call_user_func(function() {
                 });
 
             $app->get('/', function(SilexApp $app) {
-                    $browser = \Browser::getInstance();
 
-                    if ($browser->isMobile()) {
+                    if ($app['browser']->isMobile()) {
                         return $app->redirect("/login/?redirect=/lightbox");
-                    } elseif ($browser->isNewGeneration()) {
+                    } elseif ($app['browser']->isNewGeneration()) {
                         return $app->redirect("/login/?redirect=/prod");
                     } else {
                         return $app->redirect("/login/?redirect=/client");

@@ -29,9 +29,6 @@ class Bridge implements ControllerProviderInterface
     public function connect(Application $app)
     {
         $controllers = $app['controllers_factory'];
-        $appbox = $app['phraseanet.appbox'];
-        /* @var $twig \Twig_Environment */
-        $twig = $app['phraseanet.core']->getTwig();
 
         $app['require_connection'] = $app->protect(function(\Bridge_Account $account) use ($app) {
                 $app['current_account'] = function() use ($account) {
@@ -47,7 +44,7 @@ class Bridge implements ControllerProviderInterface
             });
 
         $controllers->post('/manager/'
-            , function(Application $app) use ($twig) {
+            , function(Application $app) {
                 $route = new RecordHelper\Bridge($app['phraseanet.core'], $app['request']);
                 $appbox = $app['phraseanet.appbox'];
                 $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
@@ -59,18 +56,18 @@ class Bridge implements ControllerProviderInterface
                     , 'current_account_id' => ''
                 );
 
-                return new Response($twig->render('prod/actions/Bridge/index.twig', $params)
+                return new Response($app['twig']->render('prod/actions/Bridge/index.twig', $params)
                 );
             });
 
-        $controllers->get('/login/{api_name}/', function($api_name) use ($app, $twig) {
+        $controllers->get('/login/{api_name}/', function(Application $app, $api_name) {
                 $appbox = $app['phraseanet.appbox'];
                 $connector = \Bridge_Api::get_connector_by_name($appbox->get_registry(), $api_name);
 
                 return $app->redirect($connector->get_auth_url());
             });
 
-        $controllers->get('/callback/{api_name}/', function($api_name) use ($app, $twig) {
+        $controllers->get('/callback/{api_name}/', function(Application $app, $api_name) {
                 $error_message = '';
                 try {
                     $appbox = $app['phraseanet.appbox'];
@@ -103,11 +100,10 @@ class Bridge implements ControllerProviderInterface
 
                 $params = array('error_message' => $error_message);
 
-                return new Response($twig->render('prod/actions/Bridge/callback.twig', $params));
+                return new Response($app['twig']->render('prod/actions/Bridge/callback.twig', $params));
             });
 
-        $controllers->get('/adapter/{account_id}/logout/'
-            , function($account_id) use ($app, $twig) {
+        $controllers->get('/adapter/{account_id}/logout/', function(Application $app, $account_id) {
                 $appbox = $app['phraseanet.appbox'];
                 $account = \Bridge_Account::load_account($appbox, $account_id);
                 $app['require_connection']($account);
@@ -116,8 +112,7 @@ class Bridge implements ControllerProviderInterface
                 return $app->redirect('/prod/bridge/adapter/' . $account_id . '/load-elements/' . $account->get_api()->get_connector()->get_default_element_type() . '/');
             })->assert('account_id', '\d+');
 
-        $controllers->get('/adapter/{account_id}/load-records/'
-                , function($account_id) use ($app, $twig) {
+        $controllers->get('/adapter/{account_id}/load-records/', function(Application $app, $account_id) {
                     $page = max((int) $app['request']->get('page'), 0);
                     $quantity = 10;
                     $offset_start = max(($page - 1) * $quantity, 0);
@@ -135,12 +130,12 @@ class Bridge implements ControllerProviderInterface
                         , 'notice_message' => $app['request']->get('notice')
                     );
 
-                    return new Response($twig->render('prod/actions/Bridge/records_list.twig', $params));
+                    return new Response($app['twig']->render('prod/actions/Bridge/records_list.twig', $params));
                 })
             ->assert('account_id', '\d+');
 
         $controllers->get('/adapter/{account_id}/load-elements/{type}/'
-                , function($account_id, $type) use ($app, $twig) {
+                , function($account_id, $type) use ($app) {
                     $page = max((int) $app['request']->get('page'), 0);
                     $quantity = 5;
                     $offset_start = max(($page - 1) * $quantity, 0);
@@ -160,12 +155,12 @@ class Bridge implements ControllerProviderInterface
                         , 'notice_message' => $app['request']->get('notice')
                     );
 
-                    return new Response($twig->render('prod/actions/Bridge/element_list.twig', $params));
+                    return new Response($app['twig']->render('prod/actions/Bridge/element_list.twig', $params));
                 })
             ->assert('account_id', '\d+');
 
         $controllers->get('/adapter/{account_id}/load-containers/{type}/'
-                , function($account_id, $type) use ($app, $twig) {
+                , function(Application $app, $account_id, $type) {
 
                     $page = max((int) $app['request']->get('page'), 0);
                     $quantity = 5;
@@ -185,12 +180,12 @@ class Bridge implements ControllerProviderInterface
                         , 'notice_message' => $app['request']->get('notice')
                     );
 
-                    return new Response($twig->render('prod/actions/Bridge/element_list.twig', $params));
+                    return new Response($app['twig']->render('prod/actions/Bridge/element_list.twig', $params));
                 })
             ->assert('account_id', '\d+');
 
         $controllers->get('/action/{account_id}/{action}/{element_type}/'
-            , function($account_id, $action, $element_type) use ($app, $twig) {
+            , function(Application $app, $account_id, $action, $element_type) {
 
                 $appbox = $app['phraseanet.appbox'];
                 $account = \Bridge_Account::load_account($appbox, $account_id);
@@ -251,13 +246,12 @@ class Bridge implements ControllerProviderInterface
                 $params = array_merge($params, $route_params);
 
                 $template = 'prod/actions/Bridge/' . $account->get_api()->get_connector()->get_name() . '/' . $element_type . '_' . $action . ($destination ? '_' . $destination : '') . '.twig';
-                $html = $twig->render($template, $params);
 
-                return new Response($html);
+                return new Response($app['twig']->render($template, $params));
             })->assert('account_id', '\d+');
 
         $controllers->post('/action/{account_id}/{action}/{element_type}/'
-            , function($account_id, $action, $element_type) use ($app, $twig) {
+            , function(Application $app, $account_id, $action, $element_type) {
                 $appbox = $app['phraseanet.appbox'];
                 $account = \Bridge_Account::load_account($appbox, $account_id);
 
@@ -297,9 +291,8 @@ class Bridge implements ControllerProviderInterface
                                 );
 
                                 $template = 'prod/actions/Bridge/' . $account->get_api()->get_connector()->get_name() . '/' . $element_type . '_' . $action . ($destination ? '_' . $destination : '') . '.twig';
-                                $html = $twig->render($template, $params);
 
-                                return new Response($html);
+                                return new Response($app['twig']->render($template, $params));
                             }
 
                             foreach ($elements as $element_id) {
@@ -360,7 +353,7 @@ class Bridge implements ControllerProviderInterface
                 return new Response($html);
             })->assert('account_id', '\d+');
 
-        $controllers->get('/upload/', function(Application $app) use ($twig) {
+        $controllers->get('/upload/', function(Application $app) {
                 $request = $app['request'];
                 $appbox = $app['phraseanet.appbox'];
                 $account = \Bridge_Account::load_account($appbox, $request->get('account_id'));
@@ -379,15 +372,12 @@ class Bridge implements ControllerProviderInterface
                     , 'adapter_action'    => 'upload'
                 );
 
-                $html = $twig->render(
-                    'prod/actions/Bridge/' . $account->get_api()->get_connector()->get_name() . '/upload.twig', $params
-                );
-
-                return new Response($html);
+                return new Response($app['twig']->render(
+                            'prod/actions/Bridge/' . $account->get_api()->get_connector()->get_name() . '/upload.twig', $params
+                    ));
             });
 
-        $controllers->post('/upload/'
-            , function(Application $app) use ($twig) {
+        $controllers->post('/upload/', function(Application $app) {
                 $errors = array();
                 $request = $app['request'];
                 $appbox = $app['phraseanet.appbox'];
@@ -417,10 +407,7 @@ class Bridge implements ControllerProviderInterface
                         , 'adapter_action'    => 'upload'
                     );
 
-                    $html = $twig->render('prod/actions/Bridge/' . $account->get_api()->get_connector()->get_name() . '/upload.twig', $params);
-
-                    return new Response($html);
-                    //return $app->redirect('/prod/bridge/upload/?lst='.$request->get('lst').'&account_id='.$request->get('account_id').'&errors=' . sprintf(_('%d elements en erreur. %s'), count($errors), $error_msg));
+                    return new Response($app['twig']->render('prod/actions/Bridge/' . $account->get_api()->get_connector()->get_name() . '/upload.twig', $params));
                 }
 
                 foreach ($route->get_elements() as $record) {
@@ -448,28 +435,25 @@ class Bridge implements ControllerProviderInterface
                         , 'r_parameters' => ($request->getMethod() == 'GET' ? array() : $request->request->all())
                     );
 
-                    /* @var $twig \Twig_Environment */
-                    $twig = $app['phraseanet.core']->getTwig();
-
                     if ($e instanceof \Bridge_Exception_ApiConnectorNotConfigured) {
                         $params = array_merge($params, array('account' => $app['current_account']));
 
-                        return new response($twig->render('/prod/actions/Bridge/notconfigured.twig', $params), 200);
+                        return new response($app['twig']->render('/prod/actions/Bridge/notconfigured.twig', $params), 200);
                     } elseif ($e instanceof \Bridge_Exception_ApiConnectorNotConnected) {
                         $params = array_merge($params, array('account' => $app['current_account']));
 
-                        return new response($twig->render('/prod/actions/Bridge/disconnected.twig', $params), 200);
+                        return new response($app['twig']->render('/prod/actions/Bridge/disconnected.twig', $params), 200);
                     } elseif ($e instanceof \Bridge_Exception_ApiConnectorAccessTokenFailed) {
                         $params = array_merge($params, array('account' => $app['current_account']));
 
-                        return new response($twig->render('/prod/actions/Bridge/disconnected.twig', $params), 200);
+                        return new response($app['twig']->render('/prod/actions/Bridge/disconnected.twig', $params), 200);
                     } elseif ($e instanceof \Bridge_Exception_ApiDisabled) {
                         $params = array_merge($params, array('api' => $e->get_api()));
 
-                        return new response($twig->render('/prod/actions/Bridge/deactivated.twig', $params), 200);
+                        return new response($app['twig']->render('/prod/actions/Bridge/deactivated.twig', $params), 200);
                     }
 
-                    return new response($twig->render('/prod/actions/Bridge/error.twig', $params), 200);
+                    return new response($app['twig']->render('/prod/actions/Bridge/error.twig', $params), 200);
                 }
             });
 

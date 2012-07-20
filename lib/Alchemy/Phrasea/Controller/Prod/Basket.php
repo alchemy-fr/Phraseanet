@@ -223,11 +223,8 @@ class Basket implements ControllerProviderInterface
                 $basket = $em->getRepository('\Entities\Basket')
                     ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), true);
 
-                /* @var $twig \Twig_Environment */
-                $twig = $app['phraseanet.core']->getTwig();
-
                 return new Response(
-                        $twig->render(
+                        $app['twig']->render(
                             'prod/Baskets/Update.html.twig'
                             , array('basket' => $basket)
                         )
@@ -246,11 +243,8 @@ class Basket implements ControllerProviderInterface
                 $basket = $em->getRepository('\Entities\Basket')
                     ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), true);
 
-                /* @var $twig \Twig_Environment */
-                $twig = $app['phraseanet.core']->getTwig();
-
                 return new Response(
-                        $twig->render(
+                        $app['twig']->render(
                             'prod/Baskets/Reorder.html.twig'
                             , array('basket' => $basket)
                         )
@@ -449,10 +443,8 @@ class Basket implements ControllerProviderInterface
          * Get basket creation form
          */
         $controllers->get('/create/', function(Application $app) {
-                /* @var $twig \Twig_Environment */
-                $twig = $app['phraseanet.core']->getTwig();
 
-                return new Response($twig->render('prod/Baskets/Create.html.twig', array()));
+                return new Response($app['twig']->render('prod/Baskets/Create.html.twig', array()));
             });
 
         /**
@@ -476,15 +468,12 @@ class Basket implements ControllerProviderInterface
                     }
                 }
 
-                /* @var $twig \Twig_Environment */
-                $twig = $app['phraseanet.core']->getTwig();
-
                 $params = array(
                     'basket' => $basket,
                     'ordre'  => $request->get('order')
                 );
 
-                $html = $twig->render('prod/WorkZone/Basket.html.twig', $params);
+                $html = $app['twig']->render('prod/WorkZone/Basket.html.twig', $params);
 
                 return new Response($html);
             })->assert('basket_id', '\d+');

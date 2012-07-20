@@ -85,11 +85,11 @@ return call_user_func(function() {
                                 );
                             } catch (\Exception $e) {
 
-                                return new Response($app['phraseanet.core']->getTwig()->render($template, array("auth" => $oauth2_adapter)));
+                                return new Response($app['twig']->render($template, array("auth" => $oauth2_adapter)));
                             }
                         } else {
 
-                            return new Response($app['phraseanet.core']->getTwig()->render($template, array("auth" => $oauth2_adapter)));
+                            return new Response($app['twig']->render($template, array("auth" => $oauth2_adapter)));
                         }
                     }
 
@@ -115,7 +115,7 @@ return call_user_func(function() {
                             "errorMessage" => $errorMessage,
                         );
 
-                        return new Response($app['phraseanet.core']->getTwig()->render($template, $params));
+                        return new Response($app['twig']->render($template, $params));
                     } elseif ( ! $app_authorized && $action_accept !== null) {
                         $app_authorized = (Boolean) $action_accept;
                         $account->set_revoked( ! $app_authorized);
@@ -125,7 +125,7 @@ return call_user_func(function() {
                     if ($oauth2_adapter->isNativeApp($params['redirect_uri'])) {
                         $params = $oauth2_adapter->finishNativeClientAuthorization($app_authorized, $params);
 
-                        return new Response($app['phraseanet.core']->getTwig()->render("api/auth/native_app_access_token.twig", $params));
+                        return new Response($app['twig']->render("api/auth/native_app_access_token.twig", $params));
                     } else {
                         $oauth2_adapter->finishClientAuthorization($app_authorized, $params);
                     }

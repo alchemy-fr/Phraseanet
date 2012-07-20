@@ -339,7 +339,7 @@ class Developers implements ControllerProviderInterface
             "form"       => $form
         );
 
-        return $app['phraseanet.core']['Twig']->render('/developers/application.html.twig', $var);
+        return $app['twig']->render('/developers/application.html.twig', $var);
     }
 
     /**
@@ -352,7 +352,7 @@ class Developers implements ControllerProviderInterface
      */
     public function listApps(Application $app, Request $request)
     {
-        return $app['phraseanet.core']['Twig']->render('developers/applications.html.twig', array(
+        return $app['twig']->render('developers/applications.html.twig', array(
                 "apps" => \API_OAuth2_Application::load_dev_app_by_user(
                     $app['phraseanet.appbox'], $app['phraseanet.core']->getAuthenticatedUser()
                 )));
@@ -368,7 +368,7 @@ class Developers implements ControllerProviderInterface
      */
     public function displayFormApp(Application $app, Request $request)
     {
-        return $app['phraseanet.core']['Twig']->render('developers/application_form.html.twig', array(
+        return $app['twig']->render('developers/application_form.html.twig', array(
                 "violations" => null,
                 'form'       => null,
                 'request'    => $request
@@ -396,7 +396,7 @@ class Developers implements ControllerProviderInterface
 
         $token = $client->get_user_account($user)->get_token()->get_value();
 
-        return $app['phraseanet.core']['Twig']->render('developers/application.html.twig', array(
+        return $app['twig']->render('developers/application.html.twig', array(
                 "app"   => $client,
                 "user"  => $user,
                 "token" => $token

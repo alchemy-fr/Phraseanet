@@ -32,15 +32,9 @@ class Edit implements ControllerProviderInterface
 
         $controllers->post('/', function(Application $app, Request $request) {
                 $handler = new RecordHelper\Edit($app['phraseanet.core'], $request);
-
                 $handler->propose_editing();
 
-                $template = 'prod/actions/edit_default.twig';
-
-                /* @var $twig \Twig_Environment */
-                $twig = $app['phraseanet.core']->getTwig();
-
-                return $twig->render($template, array('edit'    => $handler, 'message' => ''));
+                return $app['twig']->render('prod/actions/edit_default.twig', array('edit'    => $handler, 'message' => ''));
             }
         );
 
@@ -92,12 +86,7 @@ class Edit implements ControllerProviderInterface
                 $editing = new RecordHelper\Edit($app['phraseanet.core'], $app['request']);
                 $editing->execute($request);
 
-                $template = 'prod/actions/edit_default.twig';
-
-                /* @var $twig \Twig_Environment */
-                $twig = $app['phraseanet.core']->getTwig();
-
-                return $twig->render($template, array('edit'    => $editing, 'message' => ''));
+                return $app['twig']->render( 'prod/actions/edit_default.twig', array('edit'    => $editing, 'message' => ''));
             }
         );
 

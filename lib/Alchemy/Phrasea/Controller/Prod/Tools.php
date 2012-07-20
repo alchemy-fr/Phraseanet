@@ -72,7 +72,7 @@ class Tools implements ControllerProviderInterface
                     'metadatas' => $metadatas,
                 );
 
-                return new Response($app['phraseanet.core']->getTwig()->render($template, $var));
+                return new Response($app['twig']->render($template, $var));
             });
 
         $controllers->post('/rotate/', function(Application $app, Request $request) {
@@ -167,7 +167,7 @@ class Tools implements ControllerProviderInterface
                     , 'errorMessage' => $errorMessage
                 );
 
-                return new Response($app['phraseanet.core']->getTwig()->render($template, $var));
+                return new Response($app['twig']->render($template, $var));
 
                 /**
                  *
@@ -213,7 +213,7 @@ class Tools implements ControllerProviderInterface
                         , 'errorMessage' => $errorMessage
                     );
 
-                    return new Response($app['phraseanet.core']->getTwig()->render($template, $var));
+                    return new Response($app['twig']->render($template, $var));
                 }
             });
 
@@ -227,7 +227,7 @@ class Tools implements ControllerProviderInterface
                         'video_title'    => $record->get_title()
                         , 'image'          => $request->get('image', '')
                     );
-                    $return['datas'] = $app['phraseanet.core']->getTwig()->render($template, $var);
+                    $return['datas'] = $app['twig']->render($template, $var);
                 } catch (\Exception $e) {
                     $return['datas'] = _('an error occured');
                     $return['error'] = true;

@@ -170,7 +170,7 @@ class Lazaret implements ControllerProviderInterface
             );
         }
 
-        $html = $app['phraseanet.core']['Twig']->render(
+        $html = $app['twig']->render(
             'prod/upload/lazaret.html.twig', array('lazaretFiles' => $lazaretFiles)
         );
 
@@ -421,8 +421,8 @@ class Lazaret implements ControllerProviderInterface
             return self::formatJson($app['phraseanet.core']['Serializer'], $ret);
         }
 
-        $lazaretFileName = $app['phraseanet.core']['Registry']->get('GV_RootPath').'tmp/lazaret/'.$lazaretFile->getFilename();
-        $lazaretThumbFileName = $app['phraseanet.core']['Registry']->get('GV_RootPath').'tmp/lazaret/'.$lazaretFile->getThumbFilename();
+        $lazaretFileName = $app['phraseanet.core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getFilename();
+        $lazaretThumbFileName = $app['phraseanet.core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getThumbFilename();
 
         try {
             $media = $app['phraseanet.core']['mediavorus']->guess(new \SplFileInfo($lazaretFileName));

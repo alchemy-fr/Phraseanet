@@ -180,9 +180,6 @@ class Query implements ControllerProviderInterface
                     }
                 }
 
-                $core = \bootstrap::getCore();
-                $twig = $core->getTwig();
-
                 if ($result->get_count_total_results() === 0) {
                     $template = 'prod/results/help.twig';
                 } else {
@@ -193,7 +190,7 @@ class Query implements ControllerProviderInterface
                     }
                 }
 
-                $json['results'] = $twig->render($template, array(
+                $json['results'] = $app['twig']->render($template, array(
                     'results'         => $result,
                     'GV_social_tools' => $registry->get('GV_social_tools'),
                     'highlight'       => $search_engine->get_query(),

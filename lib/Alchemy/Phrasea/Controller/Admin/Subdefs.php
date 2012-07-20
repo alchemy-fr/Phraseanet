@@ -34,7 +34,7 @@ class Subdefs implements ControllerProviderInterface
         $controllers->get('/{sbas_id}/', function(Application $app, $sbas_id) {
                 $databox = \databox::get_instance((int) $sbas_id);
 
-                return new response($app['phraseanet.core']->getTwig()->render(
+                return new response($app['twig']->render(
                             'admin/subdefs.twig', array(
                             'databox' => $databox,
                             'subdefs' => $databox->get_subdef_structure()

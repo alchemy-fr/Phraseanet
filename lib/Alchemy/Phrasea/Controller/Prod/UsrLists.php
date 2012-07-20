@@ -111,7 +111,7 @@ class UsrLists implements ControllerProviderInterface
                     return new Response($Json, 200, array('Content-Type' => 'application/json'));
                 } else {
 
-                    return new Response($app['phraseanet.core']->getTwig()->render('prod/actions/Feedback/lists-all.html.twig', array('lists' => $lists)));
+                    return new Response($app['twig']->render('prod/actions/Feedback/lists-all.html.twig', array('lists' => $lists)));
                 }
             }
         );
@@ -462,7 +462,7 @@ class UsrLists implements ControllerProviderInterface
 
                 }
 
-                return new Response($app['phraseanet.core']->getTwig()->render('prod/actions/Feedback/List-Share.html.twig', array('list' => $list)));
+                return new Response($app['twig']->render('prod/actions/Feedback/List-Share.html.twig', array('list' => $list)));
             })->assert('list_id', '\d+');
 
         /**

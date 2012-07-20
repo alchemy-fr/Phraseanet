@@ -22,34 +22,33 @@ namespace Alchemy\Phrasea\Vocabulary;
 class Controller
 {
 
-  /**
-   * Factory of ControlProvider
-   *
-   * @param string $type
-   * @return \Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface
-   * @throws \Exception when ControlProvider is not found
-   */
-  public static function get($type)
-  {
-    $classname = __NAMESPACE__ . '\\ControlProvider\\' . $type . 'Provider';
+    /**
+     * Factory of ControlProvider
+     *
+     * @param string $type
+     * @return \Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface
+     * @throws \Exception when ControlProvider is not found
+     */
+    public static function get($type)
+    {
+        $classname = __NAMESPACE__ . '\\ControlProvider\\' . $type . 'Provider';
 
-    if (!class_exists($classname)) {
-      throw new \Exception('Vocabulary type not found');
+        if ( ! class_exists($classname)) {
+            throw new \Exception('Vocabulary type not found');
+        }
+
+        return new $classname();
     }
 
-    return new $classname();
-  }
-
-  /**
-   * Returns an array of available ControlProviders
-   *
-   * @return array
-   */
-  public static function getAvailable()
-  {
-    return array(
-      new ControlProvider\UserProvider()
-    );
-  }
-
+    /**
+     * Returns an array of available ControlProviders
+     *
+     * @return array
+     */
+    public static function getAvailable()
+    {
+        return array(
+            new ControlProvider\UserProvider()
+        );
+    }
 }

@@ -35,11 +35,7 @@ class MoveCollection implements ControllerProviderInterface
                 $move = new RecordHelper\MoveCollection($app['phraseanet.core'], $app['request']);
                 $move->propose();
 
-                $template = 'prod/actions/collection_default.twig';
-                /* @var $twig \Twig_Environment */
-                $twig = $app['phraseanet.core']->getTwig();
-
-                return $twig->render($template, array('action'  => $move, 'message' => ''));
+                return $app['twig']->render('prod/actions/collection_default.twig', array('action'  => $move, 'message' => ''));
             }
         );
 

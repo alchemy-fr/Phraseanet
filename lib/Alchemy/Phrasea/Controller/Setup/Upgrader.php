@@ -30,7 +30,7 @@ class Upgrader implements ControllerProviderInterface
                 require_once __DIR__ . '/../../../../bootstrap.php';
                 $upgrade_status = \Setup_Upgrade::get_status();
 
-                return $app['phraseanet.core']->getTwig()->render(
+                return $app['twig']->render(
                         '/setup/upgrader.html.twig'
                         , array(
                         'locale'            => \Session_Handler::get_locale()

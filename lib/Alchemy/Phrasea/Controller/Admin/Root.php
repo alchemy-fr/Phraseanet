@@ -79,9 +79,7 @@ class Root implements ControllerProviderInterface
                     $databoxes[] = $databox;
                 }
 
-                $twig = $Core->getTwig();
-
-                return new Response($twig->render('admin/index.html.twig', array(
+                return new Response($app['twig']->render('admin/index.html.twig', array(
                             'module'        => 'admin'
                             , 'events'        => \eventsmanager_broker::getInstance($appbox, $Core)
                             , 'module_name'   => 'Admin'
