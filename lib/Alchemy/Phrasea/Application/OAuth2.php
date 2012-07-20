@@ -60,17 +60,17 @@ return call_user_func(function() {
                     $action_accept = $request->get("action_accept");
                     $action_login = $request->get("action_login");
 
-                    $template = "api/auth/end_user_authorization.twig";
+                    $template = "api/auth/end_user_authorization.html.twig";
 
                     $custom_template = sprintf(
-                        "%sconfig/templates/web/api/auth/end_user_authorization/%s.twig"
+                        "%sconfig/templates/web/api/auth/end_user_authorization/%s.html.twig"
                         , $app['phraseanet.appbox']->get_registry()->get('GV_RootPath')
                         , $client->get_id()
                     );
 
                     if (file_exists($custom_template)) {
                         $template = sprintf(
-                            'api/auth/end_user_authorization/%s.twig'
+                            'api/auth/end_user_authorization/%s.html.twig'
                             , $client->get_id()
                         );
                     }
@@ -125,7 +125,7 @@ return call_user_func(function() {
                     if ($oauth2_adapter->isNativeApp($params['redirect_uri'])) {
                         $params = $oauth2_adapter->finishNativeClientAuthorization($app_authorized, $params);
 
-                        return new Response($app['twig']->render("api/auth/native_app_access_token.twig", $params));
+                        return new Response($app['twig']->render("api/auth/native_app_access_token.html.twig", $params));
                     } else {
                         $oauth2_adapter->finishClientAuthorization($app_authorized, $params);
                     }

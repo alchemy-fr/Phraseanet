@@ -305,7 +305,7 @@ if (count($result->get_datas()) > 0) {
         } catch (\Exception $e) {
             $light_info = '';
         }
-        $caption = $twig->render('common/caption.html', array('view'   => 'answer', 'record' => $record));
+        $caption = $twig->render('common/caption.html.twig', array('view'   => 'answer', 'record' => $record));
 
 
         if ($i == 0) {

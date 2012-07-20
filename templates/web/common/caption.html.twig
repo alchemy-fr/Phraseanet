@@ -1,9 +1,9 @@
-{% import 'common/caption_templates/answer.html' as cap_ans %}
-{% import 'common/caption_templates/basket_element.html' as cap_bas %}
-{% import 'common/caption_templates/internal_publi.html' as cap_pub %}
-{% import 'common/caption_templates/lazaret.html' as cap_laz %}
-{% import 'common/caption_templates/overview.html' as cap_ovr %}
-{% import 'common/caption_templates/preview.html' as cap_prev %}
+{% import 'common/caption_templates/answer.html.twig' as cap_ans %}
+{% import 'common/caption_templates/basket_element.html.twig' as cap_bas %}
+{% import 'common/caption_templates/internal_publi.html.twig' as cap_pub %}
+{% import 'common/caption_templates/lazaret.html.twig' as cap_laz %}
+{% import 'common/caption_templates/overview.html.twig' as cap_ovr %}
+{% import 'common/caption_templates/preview.html.twig' as cap_prev %}
 
 {% if user %}
   {% set business = user.ACL().has_right_on_base(record.get_base_id(), 'canmodifrecord') %}

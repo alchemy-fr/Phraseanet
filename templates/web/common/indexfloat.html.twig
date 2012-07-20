@@ -12,13 +12,13 @@
   </head>
   <body>
     <div id="mainContainer" style="height:100%">
-      {% include 'common/menubar.twig' %}
+      {% include 'common/menubar.html.twig' %}
       <div style="top:30px;height:100%;">
         <div id="mainContent" style="height:100%;min-width:900px;">
                 {% block content %}{% endblock %}
         </div>
       </div>
     </div>
-    {% include 'common/analytics.twig' %}
+    {% include 'common/analytics.html.twig' %}
   </body>
 </html>

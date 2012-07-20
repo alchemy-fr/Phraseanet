@@ -83,7 +83,7 @@ return call_user_func(
                     $BasketElement = $repository->findUserElement($sselcont_id, $app['phraseanet.core']->getAuthenticatedUser());
 
                     if ($app['browser']->isMobile()) {
-                        $output = $app['twig']->render('lightbox/basket_element.twig', array(
+                        $output = $app['twig']->render('lightbox/basket_element.html.twig', array(
                             'basket_element' => $BasketElement,
                             'module_name'    => $BasketElement->getRecord()->get_title()
                             )
@@ -91,16 +91,16 @@ return call_user_func(
 
                         return new Response($output);
                     } else {
-                        $template_options = 'lightbox/sc_options_box.twig';
-                        $template_agreement = 'lightbox/agreement_box.twig';
-                        $template_selector = 'lightbox/selector_box.twig';
-                        $template_note = 'lightbox/sc_note.twig';
-                        $template_preview = 'common/preview.html';
-                        $template_caption = 'common/caption.html';
+                        $template_options = 'lightbox/sc_options_box.html.twig';
+                        $template_agreement = 'lightbox/agreement_box.html.twig';
+                        $template_selector = 'lightbox/selector_box.html.twig';
+                        $template_note = 'lightbox/sc_note.html.twig';
+                        $template_preview = 'common/preview.html.twig';
+                        $template_caption = 'common/caption.html.twig';
 
                         if ( ! $app['browser']->isNewGeneration()) {
-                            $template_options = 'lightbox/IE6/sc_options_box.twig';
-                            $template_agreement = 'lightbox/IE6/agreement_box.twig';
+                            $template_options = 'lightbox/IE6/sc_options_box.html.twig';
+                            $template_agreement = 'lightbox/IE6/agreement_box.html.twig';
                         }
 
                         $Basket = $BasketElement->getBasket();
@@ -135,12 +135,12 @@ return call_user_func(
 
                         return new Response($output);
                     } else {
-                        $template_options = 'lightbox/feed_options_box.twig';
-                        $template_preview = 'common/preview.html';
-                        $template_caption = 'common/caption.html';
+                        $template_options = 'lightbox/feed_options_box.html.twig';
+                        $template_preview = 'common/preview.html.twig';
+                        $template_caption = 'common/caption.html.twig';
 
                         if ( ! $app['browser']->isNewGeneration()) {
-                            $template_options = 'lightbox/IE6/feed_options_box.twig';
+                            $template_options = 'lightbox/IE6/feed_options_box.html.twig';
                         }
 
                         $ret = array();
