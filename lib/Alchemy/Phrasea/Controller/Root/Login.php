@@ -386,7 +386,7 @@ class Login implements ControllerProviderInterface
     public function displayRegisterForm(Application $app, Request $request)
     {
         if (false === \login::register_enabled()) {
-            return $app->redirect('/login/?no-register-available');
+            return $app->redirect('/login/?notice=no-register-available');
         }
 
         $needed = $request->get('needed', array());
@@ -698,6 +698,9 @@ class Login implements ControllerProviderInterface
                 break;
             case 'password-update-ok':
                 $notice = _('login::notification: Mise a jour du mot de passe avec succes');
+                break;
+            case 'no-register-available':
+                $notice = _('User inscriptions are disabled');
                 break;
         }
 
