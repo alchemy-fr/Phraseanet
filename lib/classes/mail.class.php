@@ -231,7 +231,7 @@ class mail
         $subject = _('login::register: sujet email : confirmation de votre adresse email');
 
         $body = "<div>" . _('login::register: email confirmation email Pour valider votre inscription a la base de donnees, merci de confirmer votre e-mail en suivant le lien ci-dessous.') . "</div>\n";
-        $body .= "<br/>\n<div><a href='" . $registry->get('GV_ServerName') . "register-confirm=" . $token . "' target='_blank'>" . $registry->get('GV_ServerName') . "register-confirm=" . $token . "</a></div>\n";
+        $body .= "<br/>\n<div><a href='" . $registry->get('GV_ServerName') . "register-confirm/?code=" . $token . "' target='_blank'>" . $registry->get('GV_ServerName') . "register-confirm/code=" . $token . "</a></div>\n";
 
         $to = array('email' => $email, 'name'  => $email);
 

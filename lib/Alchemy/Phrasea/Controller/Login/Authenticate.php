@@ -14,7 +14,9 @@ class Authenticate implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->post('/', __CLASS__ . '::authenticate')
-            ->before('Alchemy\Phrasea\Security\Firewall::requrieNotAuthenticated');
+            ->before(function() use ($app) {
+                    return $app['phraseanet.core']['Firewall']->requireNotAuthenticated($app);
+                });
 
         return $controllers;
     }
@@ -76,7 +78,7 @@ class Authenticate implements ControllerProviderInterface
             } catch (\Exception_Unauthorized $e) {
                 return $app->redirect("/login/?redirect=" . $request->get('redirect') . "&error=auth");
             } catch (\Exception_Session_MailLocked $e) {
-                return $app->redirect("/login/?redirect=" . $request->get('redirect') . "&error=mailNotConfirm&usr=" . $e->get_usr_id());
+                return $app->redirect("/login/?redirect=" . $request->get('redirect') . "&error=mail-not-confirmed&usr=" . $e->get_usr_id());
             } catch (\Exception_Session_WrongToken $e) {
                 return $app->redirect("/login/?redirect=" . $request->get('redirect') . "&error=token");
             } catch (\Exception_InternalServerError $e) {
@@ -97,7 +99,7 @@ class Authenticate implements ControllerProviderInterface
 
             $browser = \Browser::getInstance();
 
-            if($browser->isMobile()) {
+            if ($browser->isMobile()) {
                 return $app->redirect("/lightbox/");
             } elseif ($request->get('redirect')) {
                 return $app->redirect($request->get('redirect'));
@@ -111,4 +113,3 @@ class Authenticate implements ControllerProviderInterface
         }
     }
 }
-
