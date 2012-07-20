@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Root;
 
+use Alchemy\Phrasea\Core;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,14 +29,10 @@ class Login implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-
-
         $controllers->get('/', $this->call('login'))
             ->before(function() use ($app) {
                     return $app['phraseanet.core']['Firewall']->requireNotAuthenticated($app);
                 });
-
-
 
         /**
          * Logout
@@ -66,8 +63,24 @@ class Login implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/register/', $this->call('register'))
+        $controllers->get('/register/', $this->call('displayRegisterForm'))
             ->bind('login_register');
+
+        /**
+         * Register a new user
+         *
+         * name         : post_login_register
+         *
+         * description  : Register a new user
+         *
+         * method       : POST
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->post('/register/', $this->call('register'))
+            ->bind('post_login_register');
 
         /**
          * Register confirm
@@ -156,7 +169,7 @@ class Login implements ControllerProviderInterface
             $email = $user->get_email();
 
             if (true === \mail::mail_confirmation($email, $usrId)) {
-                return $app->redirect('/login/?confirm=mail-sent');
+                return $app->redirect('/login/?notice=mail-sent');
             }
         } catch (\Exception $e) {
             return $app->redirect('/login/?error=user-not-found');
@@ -179,7 +192,7 @@ class Login implements ControllerProviderInterface
         }
 
         try {
-            $datas = \random::helloToken($parm['code']);
+            $datas = \random::helloToken($code);
         } catch (\Exception_NotFound $e) {
             return $app->redirect('/login/?redirect=/prod&error=token-not-found');
         }
@@ -191,7 +204,7 @@ class Login implements ControllerProviderInterface
         }
 
         if ( ! $user->get_mail_locked()) {
-            return $app->redirect('/login?redirect=prod&confirm=already');
+            return $app->redirect('/login/?redirect=prod&notice=already');
         }
 
         $user->set_mail_locked(false);
@@ -205,23 +218,24 @@ class Login implements ControllerProviderInterface
             $user->set_mail_locked(false);
             \random::removeToken($code);
 
-            if (\PHPMailer::ValidateAddress($user->get_email())) {
+            $appboxRegister = new \appbox_register($appbox);
 
-                $appboxRegister = new \appbox_register($appbox);
+            $list = $appboxRegister->get_collection_awaiting_for_user($user);
 
-                $list = $appboxRegister->get_collection_awaiting_for_user($user);
-
+            if (count($list) > 0) {
                 $others = array();
 
                 foreach ($list as $collection) {
-                    $others[] .= $collection->get_name();
+                    $others[] = $collection->get_name();
                 }
 
                 \mail::mail_confirm_unregistered($user->get_email(), $others);
-            }
-        }
 
-        return $app->redirect('/login?redirect=/prod&confirm=ok');
+                return $app->redirect('/login/?redirect=prod&notice=confirm-ok-wait');
+            }
+
+            return $app->redirect('/login/?redirect=prod&notice=confirm-ok');
+        }
     }
 
     /**
@@ -268,10 +282,10 @@ class Login implements ControllerProviderInterface
             if ($password !== $passwordConfirm) {
 
                 return $app->redirect('/login/forgot-password/?pass-error=pass-match');
-            } elseif (strlen(trim($password)) < 5) {
+            } elseif (strlen(trim($password)) < 8) {
 
                 return $app->redirect('/login/forgot-password/?pass-error=pass-short');
-            } elseif (trim($password) != str_replace(array("\r\n", "\n", "\r", "\t", " "), "_", $password)) {
+            } elseif (trim($password) !== str_replace(array("\r\n", "\n", "\r", "\t", " "), "_", $password)) {
 
                 return $app->redirect('/login/forgot-password/?pass-error=pass-invalid');
             }
@@ -284,7 +298,7 @@ class Login implements ControllerProviderInterface
 
                 \random::removeToken($token);
 
-                return $app->redirect('/login/?confirm=password-update-ok');
+                return $app->redirect('/login/?notice=password-update-ok');
             } catch (\Exception_NotFound $e) {
 
             }
@@ -371,7 +385,214 @@ class Login implements ControllerProviderInterface
      */
     public function displayRegisterForm(Application $app, Request $request)
     {
-        return new Response($app['phraseanet.core']['Twig']->render('login/register.html.twig'));
+        if (false === \login::register_enabled()) {
+            return $app->redirect('/login/?no-register-available');
+        }
+
+        $needed = $request->get('needed', array());
+
+        foreach ($needed as $fields => $error) {
+            switch ($error) {
+                case 'required-field':
+                    $needed[$fields] = _('forms::ce champ est requis');
+                    break;
+                case 'pass-match':
+                    $needed[$fields] = _('forms::les mots de passe ne correspondent pas');
+                    break;
+                case 'pass-short':
+                    $needed[$fields] = _('forms::la valeur donnee est trop courte');
+                    break;
+                case 'pass-invalid':
+                    $needed[$fields] = _('forms::la valeur donnee est trop courte');
+                    break;
+                case 'email-invalid':
+                    $needed[$fields] = _('forms::l\'email semble invalide');
+                    break;
+                case 'login-short':
+                    $needed[$fields] = _('forms::la valeur donnee est trop courte');
+                    break;
+                case 'login-mail-exists':
+                    $needed[$fields] = _('forms::un utilisateur utilisant ce login existe deja');
+                    break;
+                case 'user-mail-exists':
+                    $needed[$fields] = _('forms::un utilisateur utilisant cette adresse email existe deja');
+                    break;
+                case 'no-collections':
+                    $needed[$fields] = _('You have not made any request for collections');
+                    break;
+            }
+        }
+
+        $arrayVerif = $this->getRegisterFieldConfiguration($app['phraseanet.core']);
+
+        return new Response($app['phraseanet.core']['Twig']->render('login/register.html.twig', array(
+                    'inscriptions' => giveMeBases(),
+                    'parms'        => $request->query->all(),
+                    'needed'       => $needed,
+                    'arrayVerif'   => $arrayVerif,
+                    'geonames'     => new \geonames(),
+                    'demandes'     => $request->get('demand', array()),
+                    'lng' => \Session_Handler::get_locale()
+                )));
+    }
+
+    /**
+     * Get the register form
+     *
+     * @param \Silex\Application $app
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function register(Application $app, Request $request)
+    {
+        $arrayVerif = $this->getRegisterFieldConfiguration($app['phraseanet.core']);
+
+        $parameters = $request->request->all();
+
+        $needed = array_diff_key($arrayVerif, $parameters);
+
+        if (sizeof($needed) > 0 && ! (sizeof($parameters) === 1 && isset($parameters['form_login']) && $parameters['form_login'] === true)) {
+            $app->abort(400, sprintf(_('Bad request missing %s parameters'), implode(',', array_keys($needed))));
+        }
+
+        foreach ($parameters as $field => $value) {
+            if (is_string($value) && isset($arrayVerif[$field]) && $arrayVerif[$field] === true) {
+                if ('' === trim($value)) {
+                    $needed[$field] = 'required-field';
+                }
+            }
+        }
+
+        if (($password = $request->get('form_password')) !== $request->get('form_password_confirm')) {
+            $needed['form_password'] = $needed['form_password_confirm'] = 'pass-match';
+        } elseif (strlen(trim($password)) < 8) {
+            $needed['form_password'] = 'pass-short';
+        } elseif (trim($password) !== str_replace(array("\r\n", "\n", "\r", "\t", " "), "_", $password)) {
+            $needed['form_password'] = 'pass-invalid';
+        }
+
+        if (false !== \PHPMailer::ValidateAddress($email = $request->get('form_email'))) {
+            $needed['form_email'] = 'mail-invalid';
+        }
+
+        if (strlen($login = $request->get('form_login')) < 5) {
+            $needed['form_login'] = 'login-short';
+        }
+
+        if ((sizeof($parameters) === 1 && isset($parameters['form_login']) && $parameters['form_login'] === true) && ! isset($needed['form_email'])) {
+            $login = $email;
+            unset($needed['form_login']);
+        }
+
+        if (\User_Adapter::get_usr_id_from_email($email)) {
+            $needed['form_email'] = 'user-email-exists';
+        }
+
+        if (\User_Adapter::get_usr_id_from_login($login)) {
+            $needed['form_login'] = 'usr-login-exists';
+        }
+
+        if (sizeof($demands = $request->get('demand', array())) === 0) {
+            $needed['demandes'] = 'no-collections';
+        }
+
+        if (sizeof($needed) > 0) {
+            $app->redirect(sprintf('/register/?%s', http_build_query(array('needed' => $needed))));
+        }
+
+        require_once($app['phraseanet.core']['Registry']->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php');
+
+        $demands = array_unique($demands);
+        $inscriptions = giveMeBases();
+        $inscOK = array();
+
+        foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
+
+            foreach ($databox->get_collections() as $collection) {
+                if ( ! in_array($collection->get_base_id(), $demands)) {
+                    continue;
+                }
+
+                $sbas_id = $databox->get_sbas_id();
+
+                if (isset($inscriptions[$sbas_id])
+                    && $inscriptions[$sbas_id]['inscript'] === true
+                    && (isset($inscriptions[$sbas_id]['Colls'][$collection->get_coll_id()])
+                    || isset($inscriptions[$sbas_id]['CollsCGU'][$collection->get_coll_id()]))) {
+                    $inscOK[$collection->get_base_id()] = true;
+                } else {
+                    $inscOK[$collection->get_base_id()] = false;
+                }
+            }
+        }
+
+        try {
+            $user = \User_Adapter::create($app['phraseanet.appbox'], $request->get('form_login'), $request->get("form_password"), $request->get("form_email"), false);
+
+            $user->set_gender($request->get('form_gender'))
+                ->set_firstname($request->get('form_firstname'))
+                ->set_lastname($request->get('form_lastname'))
+                ->set_address($request->get('form_address'))
+                ->set_zip($request->get('form_zip'))
+                ->set_tel($request->get('form_phone'))
+                ->set_fax($request->get('form_fax'))
+                ->set_job($request->get('form_job'))
+                ->set_company($request->get('form_company'))
+                ->set_position($request->get('form_activity'))
+                ->set_geonameid($request->get('form_geonameid'));
+
+            $demandOK = array();
+
+            if ( ! ! $app['phraseanet.core']['Registry']->get('GV_autoregister')) {
+
+                $template_user_id = \User_Adapter::get_usr_id_from_login('autoregister');
+
+                $template_user = \User_Adapter::getInstance($template_user_id, $app['phraseanet.appbox']);
+
+                $base_ids = array();
+
+                foreach (array_keys($inscOK) as $base_id) {
+                    $base_ids[] = $base_id;
+                }
+                $user->ACL()->apply_model($template_user, $base_ids);
+            }
+
+            $autoReg = $user->ACL()->get_granted_base();
+
+            $appbox_register = new \appbox_register($app['phraseanet.appbox']);
+
+            foreach ($demands as $base_id) {
+                if (false === $inscOK[$base_id] || $user->ACL()->has_access_to_base($base_id)) {
+                    continue;
+                }
+
+                $collection = \collection::get_from_base_id($base_id);
+                $appbox_register->add_request($user, $collection);
+                unset($collection);
+                $demandOK[$base_id] = true;
+            }
+
+            $event_mngr = \eventsmanager_broker::getInstance($app['phraseanet.appbox'], $app['phraseanet.core']);
+
+            $params = array(
+                'demand'       => $demandOK,
+                'autoregister' => $autoReg,
+                'usr_id'       => $user->get_id()
+            );
+
+            $event_mngr->trigger('__REGISTER_AUTOREGISTER__', $params);
+            $event_mngr->trigger('__REGISTER_APPROVAL__', $params);
+
+            $user->set_mail_locked(true);
+            if (true === \mail::mail_confirmation($user->get_email(), $user->get_id())) {
+
+                return $app->redirect('/login/?notice=mail-sent');
+            }
+
+            return $app->redirect(sprintf('/login/?usr=%d', $user->get_id()));
+        } catch (\Exception $e) {
+            return $app->redirect(sprintf('/login/?error=%s', _('An error occured while inscription, please retry or contact a sysadmin')));
+        }
     }
 
     /**
@@ -385,14 +606,14 @@ class Login implements ControllerProviderInterface
     {
         $appRedirect = $request->get("app");
 
-//        try {
-        $session = $app['phraseanet.appbox']->get_session();
+        try {
+            $session = $app['phraseanet.appbox']->get_session();
 
-        $session->logout();
-        $session->remove_cookies();
-//        } catch (\Exception $e) {
-//            return $app->redirect("/" . ($appRedirect ? $appRedirect : 'prod'));
-//        }
+            $session->logout();
+            $session->remove_cookies();
+        } catch (\Exception $e) {
+            return $app->redirect("/" . ($appRedirect ? $appRedirect : 'prod'));
+        }
 
         return $app->redirect("/login/?logged_out=user" . ($appRedirect ? sprintf("&redirect=/%s", $appRedirect) : ""));
     }
@@ -411,64 +632,66 @@ class Login implements ControllerProviderInterface
         if ($request->get('postlog')) {
             $session->set_postlog(true);
 
-            return $app->redirect("/login/index.php?redirect=" . $request->get('redirect'));
+            return $app->redirect("/login/?redirect=" . $request->get('redirect'));
         }
 
         if ( ! $session->isset_postlog() && $session->is_authenticated() && $request->get('error') != 'no-connection') {
             return $app->redirect($request->get('redirect', '/prod/'));
         }
 
-        $noconn = false;
+        $warning = $request->get('error', '');
+
         try {
-            $conn = $appbox->get_connection();
-        } catch (Exception $e) {
-            $noconn = true;
+            $appbox->get_connection();
+        } catch (\Exception $e) {
+            $warning = 'no-connection';
         }
 
-        $client = \Browser::getInstance();
-
-        $warning = $notice = '';
-        $linkMailConfirm = false;
-
-        if (ctype_digit($request->get('usr'))) {
-            $linkMailConfirm = true;
-            $errorWarning .= '<div class="notice"><a href="/login/sendmail-confirm.php?usr_id=' . $request->get('usr') . '" target ="_self" style="color:black;text-decoration:none;">' . _('login:: Envoyer a nouveau le mail de confirmation') . '</a></div>';
+        if ( ! ! $registry->get('GV_maintenance')) {
+            $warning = 'maintenance';
         }
 
-        switch (true) {
-            case $registry->get('GV_maintenance'):
-            case $request->get('error') === 'maintenance':
+        switch ($warning) {
+
+            case 'maintenance':
                 $warning = _('login::erreur: maintenance en cours, merci de nous excuser pour la gene occasionee');
                 break;
-            case $noconn:
-            case $request->get('error') === 'no-connection':
+            case 'no-connection':
                 $warning = _('login::erreur: No available connection - Please contact sys-admin');
                 break;
-            case $request->get('error') === 'auth':
+            case 'auth':
                 $warning = _('login::erreur: Erreur d\'authentification');
                 break;
-            case $request->get('error') === 'captcha':
+            case 'captcha':
                 $warning = _('login::erreur: Erreur de captcha');
                 break;
-            case $request->get('error') === 'mailNotConfirm' :
+            case 'mail-not-confirm' :
                 $warning = _('login::erreur: Vous n\'avez pas confirme votre email');
                 break;
-            case $request->get('error') === 'no-base' :
+            case 'no-base' :
                 $warning = _('login::erreur: Aucune base n\'est actuellment accessible');
                 break;
+            case 'session' :
+                $warning = _('Error while authentication, please retry or contact an admin if problem persists');
+                break;
         }
-        switch ($request->get('notice')) {
+
+        if (ctype_digit($request->get('usr'))) {
+            $warning .= '<div class="notice"><a href="/login/send-mail-confirm/?usr_id=' . $request->get('usr') . '" target ="_self" style="color:black;text-decoration:none;">' . _('login:: Envoyer a nouveau le mail de confirmation') . '</a></div>';
+        }
+
+        switch ($notice = $request->get('notice', '')) {
             case 'ok':
-                $notice = _('login::register: sujet email : confirmation de votre adresse email') . '</div>';
+                $notice = _('login::register: sujet email : confirmation de votre adresse email');
                 break;
             case 'already':
-                $notice = _('login::notification: cette email est deja confirmee') . '</div>';
+                $notice = _('login::notification: cette email est deja confirmee');
                 break;
             case 'mail-sent':
-                $notice = _('login::notification: demande de confirmation par mail envoyee') . '</div>';
+                $notice = _('login::notification: demande de confirmation par mail envoyee');
                 break;
             case 'register-ok':
-                $notice = _('login::notification: votre email est desormais confirme') . '</div>';
+                $notice = _('login::notification: votre email est desormais confirme');
                 break;
             case 'register-ok-wait':
                 $notice = _('Your email is now confirmed. You will be informed as soon as your pending request will be managed');
@@ -497,7 +720,6 @@ class Login implements ControllerProviderInterface
         $public_feeds = \Feed_Collection::load_public_feeds($appbox);
         $feeds = array_merge(array($public_feeds->get_aggregate()), $public_feeds->get_feeds());
 
-        //$twig = new supertwig(array('Escaper' => false));
         $core = \bootstrap::getCore();
         $twig = $core->getTwig();
 
@@ -523,5 +745,52 @@ class Login implements ControllerProviderInterface
     private function call($method)
     {
         return sprintf('%s::%s', __CLASS__, $method);
+    }
+
+    /**
+     * Get required fields configuration
+     *
+     * @param \Alchemy\Phrasea\Core $core
+     * @return boolean
+     */
+    private function getRegisterFieldConfiguration(Core $core)
+    {
+        /**
+         * @todo enhance this shit
+         */
+        $arrayVerif = array(
+            "form_login"            => true,
+            "form_password"         => true,
+            "form_password_confirm" => true,
+            "form_gender"           => true,
+            "form_lastname"         => true,
+            "form_firstname"        => true,
+            "form_email"            => true,
+            "form_job"              => true,
+            "form_company"          => true,
+            "form_activity"         => true,
+            "form_phone"            => true,
+            "form_fax"              => true,
+            "form_address"          => true,
+            "form_zip"              => true,
+            "form_geonameid"        => true,
+            "demand"                => true
+        );
+
+        //on va chercher le fichier de configuration
+        $registerFieldConfigurationFile = $core['Registry']->get('GV_RootPath') . 'config/register-fields.php';
+
+        if (is_file($registerFieldConfigurationFile)) {
+            include $registerFieldConfigurationFile;
+        }
+
+        //on force les champs vraiment obligatoires si le mec a fumé en faisant sa conf
+        $arrayVerif['form_login'] = true;
+        $arrayVerif['form_password'] = true;
+        $arrayVerif['form_password_confirm'] = true;
+        $arrayVerif['demand'] = true;
+        $arrayVerif['form_email'] = true;
+
+        return $arrayVerif;
     }
 }
