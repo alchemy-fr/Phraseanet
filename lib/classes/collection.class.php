@@ -132,7 +132,7 @@ class collection implements cache_cacheableInterface
     {
         $sql = 'UPDATE bas SET active=0 WHERE base_id = :base_id';
         $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute(array(':base_id' => $this->get_base_id()));
+        $stmt->execute(array(':base_id'       => $this->get_base_id()));
         $stmt->closeCursor();
         $this->is_active = false;
         $this->delete_data_from_cache();
@@ -487,7 +487,7 @@ class collection implements cache_cacheableInterface
         return $this;
     }
 
-    public static function create(databox $databox, appbox $appbox, $name, user_adapter $user)
+    public static function create(databox $databox, appbox $appbox, $name, User_Adapter $user = null)
     {
         $sbas_id = $databox->get_sbas_id();
         $connbas = $databox->get_connection();
@@ -533,9 +533,11 @@ class collection implements cache_cacheableInterface
         cache_databox::update($sbas_id, 'structure');
 
         phrasea::reset_baseDatas();
-        self::set_admin($new_bas, $user);
 
-        $appbox->get_session()->renew_phrasea_session();
+        if (null !== $user) {
+            self::set_admin($new_bas, $user);
+            $appbox->get_session()->renew_phrasea_session();
+        }
 
         return self::get_from_coll_id($databox, $new_id);
     }
