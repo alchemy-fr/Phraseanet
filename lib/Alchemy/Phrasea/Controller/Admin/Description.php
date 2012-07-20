@@ -241,7 +241,7 @@ class Description implements ControllerProviderInterface
                     'vocabularies'        => VocabularyController::getAvailable(),
                 );
 
-                return new Response($app['twig']->render('admin/databox/doc_structure.twig', $params));
+                return new Response($app['twig']->render('admin/databox/doc_structure.html.twig', $params));
             })->before(function(Request $request) use ($app) {
                 if (false === $app['phraseanet.core']->getAuthenticatedUser()->ACL()
                         ->has_right_on_sbas($request->get('sbas_id'), 'bas_modify_struct')) {

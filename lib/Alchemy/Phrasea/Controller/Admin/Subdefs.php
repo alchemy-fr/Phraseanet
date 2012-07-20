@@ -35,7 +35,7 @@ class Subdefs implements ControllerProviderInterface
                 $databox = \databox::get_instance((int) $sbas_id);
 
                 return new response($app['twig']->render(
-                            'admin/subdefs.twig', array(
+                            'admin/subdefs.html.twig', array(
                             'databox' => $databox,
                             'subdefs' => $databox->get_subdef_structure()
                             )

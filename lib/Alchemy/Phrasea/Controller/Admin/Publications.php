@@ -35,7 +35,7 @@ class Publications implements ControllerProviderInterface
                 );
 
                 return $app['twig']
-                        ->render('admin/publications/list.html', array('feeds' => $feeds));
+                        ->render('admin/publications/list.html.twig', array('feeds' => $feeds));
             });
 
         $controllers->post('/create/', function(PhraseaApplication $app, Request $request) {
