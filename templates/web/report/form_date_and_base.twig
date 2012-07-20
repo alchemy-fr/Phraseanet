@@ -2,27 +2,31 @@
 {% block form_date_and_base %}
     <div class="form1">
         <div class="form_titre">{% trans "report:: 1 - Periode" %}</div>
-        <div>
+        <div class="control-group">
             <label for="dmin">{% trans "report:: Du (date)" %}</label>
-            <input class= "dmin" name="dmin" type="text" value="{{ dashboard.dmin}}" size="10" />
+            <div class="controls" style="display:inline-block">
+                <input class= "dmin" name="dmin" type="text" value="{{ dashboard.dmin}}" size="10" style='width:100px'/>
+            </div>
         </div>
-        <div>
-            <label for="dmax">{% trans "report:: Au (date)" %}</label>
-            <input class="dmax" name="dmax" type="text" value="{{dashboard.dmax}}" size="10" />
+        <div class="control-group">
+             <label for="dmax">{% trans "report:: Au (date)" %}</label>
+            <div class="controls" style="display:inline-block">
+                <input class="dmax" name="dmax" type="text" value="{{dashboard.dmax}}" size="10" style='width:100px'/>
+            </div>
         </div>
     </div>
     <div class="form2">
         <div class="form_titre">{% trans "report:: 2 - Bases" %}</div>
         <div id="select_one">
         {% block base_selector %}
-        {% set all_coll = dashboard.getAllColl() %}
+            {% set all_coll = dashboard.getAllColl() %}
             <select name="popbases[]" class="multiselect" multiple="multiple" id="popbases">
             {% for the_base_coll in all_coll %}
                 <optgroup label="{{ the_base_coll.name_sbas }}">
-               {% for a_coll in the_base_coll.sbas_collections %}
-                 <option value="{{ a_coll.sbas_id}}_{{ a_coll.coll_id }}">{{ a_coll.name }}</option>
-                 {% endfor %}
-                 </optgroup>
+                {% for a_coll in the_base_coll.sbas_collections %}
+                    <option value="{{ a_coll.sbas_id}}_{{ a_coll.coll_id }}">{{ a_coll.name }}</option>
+                {% endfor %}
+                </optgroup>
             {% endfor %}
             </select>
         {% endblock base_selector %}
