@@ -78,7 +78,7 @@ class Authenticate implements ControllerProviderInterface
             } catch (\Exception_Unauthorized $e) {
                 return $app->redirect("/login/?redirect=" . $request->get('redirect') . "&error=auth");
             } catch (\Exception_Session_MailLocked $e) {
-                return $app->redirect("/login/?redirect=" . $request->get('redirect') . "&error=mail-not-onfirm&usr=" . $e->get_usr_id());
+                return $app->redirect("/login/?redirect=" . $request->get('redirect') . "&error=mail-not-confirmed&usr=" . $e->get_usr_id());
             } catch (\Exception_Session_WrongToken $e) {
                 return $app->redirect("/login/?redirect=" . $request->get('redirect') . "&error=token");
             } catch (\Exception_InternalServerError $e) {

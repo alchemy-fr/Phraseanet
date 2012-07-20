@@ -69,7 +69,7 @@ class Login implements ControllerProviderInterface
         /**
          * Register a new user
          *
-         * name         : post_login_register
+         * name         : submit_login_register
          *
          * description  : Register a new user
          *
@@ -80,7 +80,7 @@ class Login implements ControllerProviderInterface
          * return       : HTML Response
          */
         $controllers->post('/register/', $this->call('register'))
-            ->bind('post_login_register');
+            ->bind('submit_login_register');
 
         /**
          * Register confirm
@@ -133,7 +133,7 @@ class Login implements ControllerProviderInterface
         /**
          * Renew password
          *
-         * name         : post_login_forgot_password
+         * name         : submit_login_forgot_password
          *
          * description  : Register the new user password
          *
@@ -144,7 +144,7 @@ class Login implements ControllerProviderInterface
          * return       : HTML Response
          */
         $controllers->post('/forgot-password/', $this->call('renewPassword'))
-            ->bind('post_login_forgot_password');
+            ->bind('submit_login_forgot_password');
 
         return $controllers;
     }
@@ -465,7 +465,7 @@ class Login implements ControllerProviderInterface
 
         if (($password = $request->get('form_password')) !== $request->get('form_password_confirm')) {
             $needed['form_password'] = $needed['form_password_confirm'] = 'pass-match';
-        } elseif (strlen(trim($password)) < 8) {
+        } elseif (strlen(trim($password)) < 5) {
             $needed['form_password'] = 'pass-short';
         } elseif (trim($password) !== str_replace(array("\r\n", "\n", "\r", "\t", " "), "_", $password)) {
             $needed['form_password'] = 'pass-invalid';
@@ -665,7 +665,7 @@ class Login implements ControllerProviderInterface
             case 'captcha':
                 $warning = _('login::erreur: Erreur de captcha');
                 break;
-            case 'mail-not-confirm' :
+            case 'mail-not-confirmed' :
                 $warning = _('login::erreur: Vous n\'avez pas confirme votre email');
                 break;
             case 'no-base' :
