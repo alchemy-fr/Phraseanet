@@ -22,6 +22,7 @@ use Alchemy\Phrasea\Command\UpgradeDBDatas;
 use Alchemy\Phrasea\Command\RescanTechnicalDatas;
 use Alchemy\Phrasea\Command\BuildMissingSubdefs;
 use Alchemy\Phrasea\Command\RecordAdd;
+use Alchemy\Phrasea\Command\CreateCollection;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -88,6 +89,8 @@ try {
     $app->add(new \module_console_fieldsDelete('fields:delete'));
     $app->add(new \module_console_fieldsRename('fields:rename'));
     $app->add(new \module_console_fieldsMerge('fields:merge'));
+
+    $app->add(new CreateCollection('collection:create'));
 
     $app->add(new RecordAdd('records:add'));
     $app->add(new RescanTechnicalDatas('records:rescan-technical-datas'));
