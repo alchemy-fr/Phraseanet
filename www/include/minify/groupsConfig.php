@@ -48,7 +48,6 @@ $groups = array(
         , '//include/jslibs/jquery.print.js'
         , '//include/jslibs/jquery.multiselect.js'
         , '//include/jslibs/jquery.cluetip.js'
-        , '//include/jslibs/jquery.tablesorter.2.0.3.js'
         , '//include/jquery.nicoslider.js'
         , '//report/report.js'
     ),
