@@ -2,7 +2,7 @@
 {% extends "prod/results/answerabstract.twig" %}
 {% block content %}
 
-{% import 'common/caption_templates/answer.html' as caption %}
+{% import 'common/caption_templates/answer.html.twig' as caption %}
 
 {% for record in results.get_datas() %}
 <div class='list ui-corner-all'>

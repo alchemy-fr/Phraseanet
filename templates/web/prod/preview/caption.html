@@ -1,4 +1,4 @@
-{% import 'common/caption_templates/preview.html' as caption %}
+{% import 'common/caption_templates/preview.html.twig' as caption %}
 
   {% if user.ACL().has_right_on_base(record.get_base_id, 'canmodifrecord') %}
     <div class="edit_button" style="text-align:right">

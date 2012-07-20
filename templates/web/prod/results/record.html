@@ -1,7 +1,7 @@
 {% macro block(record, user, session, highlight, searchEngine, prefix, entry_id)%}
     {% import 'common/thumbnail.html' as thumbnail %}
-    {% import 'common/doctype_icons.html' as doctype_icons %}
-    {% import 'common/drop_down_options.html' as drop_down %}
+    {% import 'common/doctype_icons.html.twig' as doctype_icons %}
+    {% import 'common/drop_down_options.html.twig' as drop_down %}
     {% set th_size = user.getPrefs('images_size')%}
     {% set sbas_id = record.get_base_id|sbasFromBas %}
     {% if entry_id %}
