@@ -148,21 +148,6 @@ class patch_370a7 implements patchInterface
                 $em->close();
             }
 
-            if ($transfertLazaretFile) {
-                try {
-                    $sql = 'DROP TABLE lazaret';
-                    $stmt = $conn->prepare($sql);
-                    $stmt->execute();
-
-                    //success deletion, commit all changes
-                    $em->getConnection()->commit();
-
-                    $success = true;
-                } catch (\PDOException $e) {
-                    $em->getConnection()->rollback();
-                    $em->close();
-                }
-            }
         } else {
             $success = true;
         }
