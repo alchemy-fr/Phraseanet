@@ -149,7 +149,7 @@ switch ($action) {
         $output = p4string::jsonencode(
                 array('current' =>
                     $twig->render(
-                        'prod/preview/result_train.html', array(
+                        'prod/preview/result_train.html.twig', array(
                         'records'  => $records
                         , 'selected' => $parm['pos'])
                     )
@@ -161,7 +161,7 @@ switch ($action) {
     case 'REGTRAIN':
         $parm = $request->get_parms('cont', 'pos');
         $record = new record_preview('REG', $parm['pos'], $parm['cont']);
-        $output = $twig->render('prod/preview/reg_train.html', array('container_records' => $record->get_container()->get_children(),
+        $output = $twig->render('prod/preview/reg_train.html.twig', array('container_records' => $record->get_container()->get_children(),
             'record'            => $record));
         break;
 
@@ -173,7 +173,7 @@ switch ($action) {
             $core = \bootstrap::getCore();
             $twig = $core->getTwig();
 
-            $render = $twig->render('prod/orders/order_box.twig', array('ordermanager' => $orders));
+            $render = $twig->render('prod/orders/order_box.html.twig', array('ordermanager' => $orders));
             $ret = array('error' => false, 'datas' => $render);
         } catch (Exception $e) {
             $ret = array('error' => true, 'datas' => $e->getMessage());
@@ -190,7 +190,7 @@ switch ($action) {
             $core = \bootstrap::getCore();
             $twig = $core->getTwig();
 
-            $render = $twig->render('prod/orders/order_item.twig', array('order' => $order));
+            $render = $twig->render('prod/orders/order_item.html.twig', array('order' => $order));
             $ret = array('error' => false, 'datas' => $render);
         } catch (Exception $e) {
             $ret = array('error' => true, 'datas' => $e->getMessage());

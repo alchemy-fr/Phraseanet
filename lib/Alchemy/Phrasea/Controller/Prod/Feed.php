@@ -38,7 +38,7 @@ class Feed implements ControllerProviderInterface
                 $feeds = \Feed_Collection::load_all($app['phraseanet.appbox'], $user);
                 $publishing = new RecordHelper\Feed($app['phraseanet.core'], $request);
 
-                return new Response($app['twig']->render('prod/actions/publish/publish.html', array('publishing' => $publishing, 'feeds'      => $feeds)));
+                return new Response($app['twig']->render('prod/actions/publish/publish.html.twig', array('publishing' => $publishing, 'feeds'      => $feeds)));
             });
 
         /**
@@ -88,7 +88,7 @@ class Feed implements ControllerProviderInterface
 
                 $feeds = \Feed_Collection::load_all($app['phraseanet.appbox'], $user);
 
-                $datas = $app['twig']->render('prod/actions/publish/publish_edit.html', array('entry' => $entry, 'feeds' => $feeds));
+                $datas = $app['twig']->render('prod/actions/publish/publish_edit.html.twig', array('entry' => $entry, 'feeds' => $feeds));
 
                 return new Response($datas);
             })->assert('id', '\d+');
@@ -146,7 +146,7 @@ class Feed implements ControllerProviderInterface
                     }
                     $app['phraseanet.appbox']->get_connection()->commit();
 
-                    $entry = $app['twig']->render('prod/feeds/entry.html', array('entry' => $entry));
+                    $entry = $app['twig']->render('prod/feeds/entry.html.twig', array('entry' => $entry));
 
                     $datas = array('error'   => false, 'message' => 'succes', 'datas'   => $entry);
                 } catch (\Exception_Feed_EntryNotFound $e) {
@@ -216,7 +216,7 @@ class Feed implements ControllerProviderInterface
 
                 $feeds = \Feed_Collection::load_all($app['phraseanet.appbox'], $user);
 
-                $datas = $app['twig']->render('prod/feeds/feeds.html'
+                $datas = $app['twig']->render('prod/feeds/feeds.html.twig'
                     , array(
                     'feeds' => $feeds
                     , 'feed'  => $feeds->get_aggregate()
@@ -236,7 +236,7 @@ class Feed implements ControllerProviderInterface
                 $feed = \Feed_Adapter::load_with_user($app['phraseanet.appbox'], $user, $id);
                 $feeds = \Feed_Collection::load_all($app['phraseanet.appbox'], $user);
 
-                $datas = $app['twig']->render('prod/feeds/feeds.html', array('feed'  => $feed, 'feeds' => $feeds, 'page'  => $page));
+                $datas = $app['twig']->render('prod/feeds/feeds.html.twig', array('feed'  => $feed, 'feeds' => $feeds, 'page'  => $page));
 
                 return new Response($datas);
             })->assert('id', '\d+');

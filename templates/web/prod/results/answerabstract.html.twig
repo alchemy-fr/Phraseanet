@@ -1,0 +1,22 @@
+{% import 'prod/results/record.html.twig' as record_format %}
+
+{% if results.get_error() %}
+<div>{{results.get_error()}}</div>
+{% else %}
+  {% if results.get_warning() %}
+    <div>{{results.get_warning()}}</div>
+  {% endif %}
+
+  {% if suggestions %}
+    {% set suggestions = suggestions|e %}
+    {% set link = '<a href="#" onclick="doSpecialSearch(\'' ~ suggestions ~ '\');return false;">' ~ suggestions ~ '</a>' %}
+    {% trans %}
+      Voulez-vous dire {{link}} ?
+    {% endtrans %}
+    <br/>
+  {% endif %}
+  {% set th_size = user.getPrefs('images_size')%}
+  <div class="selectable" style="margin:10px 0; float:left;">
+    {% block content %}{% endblock %}
+  </div>
+{% endif %}

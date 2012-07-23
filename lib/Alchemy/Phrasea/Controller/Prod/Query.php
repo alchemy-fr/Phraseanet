@@ -181,12 +181,12 @@ class Query implements ControllerProviderInterface
                 }
 
                 if ($result->get_count_total_results() === 0) {
-                    $template = 'prod/results/help.twig';
+                    $template = 'prod/results/help.html.twig';
                 } else {
                     if ($mod == 'thumbs') {
-                        $template = 'prod/results/answergrid.html';
+                        $template = 'prod/results/answergrid.html.twig';
                     } else {
-                        $template = 'prod/results/answerlist.html';
+                        $template = 'prod/results/answerlist.html.twig';
                     }
                 }
 

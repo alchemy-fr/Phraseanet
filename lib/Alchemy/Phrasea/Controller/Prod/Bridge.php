@@ -56,7 +56,7 @@ class Bridge implements ControllerProviderInterface
                     , 'current_account_id' => ''
                 );
 
-                return new Response($app['twig']->render('prod/actions/Bridge/index.twig', $params)
+                return new Response($app['twig']->render('prod/actions/Bridge/index.html.twig', $params)
                 );
             });
 
@@ -100,7 +100,7 @@ class Bridge implements ControllerProviderInterface
 
                 $params = array('error_message' => $error_message);
 
-                return new Response($app['twig']->render('prod/actions/Bridge/callback.twig', $params));
+                return new Response($app['twig']->render('prod/actions/Bridge/callback.html.twig', $params));
             });
 
         $controllers->get('/adapter/{account_id}/logout/', function(Application $app, $account_id) {
@@ -130,7 +130,7 @@ class Bridge implements ControllerProviderInterface
                         , 'notice_message' => $app['request']->get('notice')
                     );
 
-                    return new Response($app['twig']->render('prod/actions/Bridge/records_list.twig', $params));
+                    return new Response($app['twig']->render('prod/actions/Bridge/records_list.html.twig', $params));
                 })
             ->assert('account_id', '\d+');
 
@@ -155,7 +155,7 @@ class Bridge implements ControllerProviderInterface
                         , 'notice_message' => $app['request']->get('notice')
                     );
 
-                    return new Response($app['twig']->render('prod/actions/Bridge/element_list.twig', $params));
+                    return new Response($app['twig']->render('prod/actions/Bridge/element_list.html.twig', $params));
                 })
             ->assert('account_id', '\d+');
 
@@ -180,7 +180,7 @@ class Bridge implements ControllerProviderInterface
                         , 'notice_message' => $app['request']->get('notice')
                     );
 
-                    return new Response($app['twig']->render('prod/actions/Bridge/element_list.twig', $params));
+                    return new Response($app['twig']->render('prod/actions/Bridge/element_list.html.twig', $params));
                 })
             ->assert('account_id', '\d+');
 
@@ -245,7 +245,7 @@ class Bridge implements ControllerProviderInterface
 
                 $params = array_merge($params, $route_params);
 
-                $template = 'prod/actions/Bridge/' . $account->get_api()->get_connector()->get_name() . '/' . $element_type . '_' . $action . ($destination ? '_' . $destination : '') . '.twig';
+                $template = 'prod/actions/Bridge/' . $account->get_api()->get_connector()->get_name() . '/' . $element_type . '_' . $action . ($destination ? '_' . $destination : '') . '.html.twig';
 
                 return new Response($app['twig']->render($template, $params));
             })->assert('account_id', '\d+');
@@ -290,7 +290,7 @@ class Bridge implements ControllerProviderInterface
                                     , 'notice_message'    => $app['request']->get('notice')
                                 );
 
-                                $template = 'prod/actions/Bridge/' . $account->get_api()->get_connector()->get_name() . '/' . $element_type . '_' . $action . ($destination ? '_' . $destination : '') . '.twig';
+                                $template = 'prod/actions/Bridge/' . $account->get_api()->get_connector()->get_name() . '/' . $element_type . '_' . $action . ($destination ? '_' . $destination : '') . '.html.twig';
 
                                 return new Response($app['twig']->render($template, $params));
                             }
@@ -373,7 +373,7 @@ class Bridge implements ControllerProviderInterface
                 );
 
                 return new Response($app['twig']->render(
-                            'prod/actions/Bridge/' . $account->get_api()->get_connector()->get_name() . '/upload.twig', $params
+                            'prod/actions/Bridge/' . $account->get_api()->get_connector()->get_name() . '/upload.html.twig', $params
                     ));
             });
 
@@ -407,7 +407,7 @@ class Bridge implements ControllerProviderInterface
                         , 'adapter_action'    => 'upload'
                     );
 
-                    return new Response($app['twig']->render('prod/actions/Bridge/' . $account->get_api()->get_connector()->get_name() . '/upload.twig', $params));
+                    return new Response($app['twig']->render('prod/actions/Bridge/' . $account->get_api()->get_connector()->get_name() . '/upload.html.twig', $params));
                 }
 
                 foreach ($route->get_elements() as $record) {
@@ -438,22 +438,22 @@ class Bridge implements ControllerProviderInterface
                     if ($e instanceof \Bridge_Exception_ApiConnectorNotConfigured) {
                         $params = array_merge($params, array('account' => $app['current_account']));
 
-                        return new response($app['twig']->render('/prod/actions/Bridge/notconfigured.twig', $params), 200);
+                        return new response($app['twig']->render('/prod/actions/Bridge/notconfigured.html.twig', $params), 200);
                     } elseif ($e instanceof \Bridge_Exception_ApiConnectorNotConnected) {
                         $params = array_merge($params, array('account' => $app['current_account']));
 
-                        return new response($app['twig']->render('/prod/actions/Bridge/disconnected.twig', $params), 200);
+                        return new response($app['twig']->render('/prod/actions/Bridge/disconnected.html.twig', $params), 200);
                     } elseif ($e instanceof \Bridge_Exception_ApiConnectorAccessTokenFailed) {
                         $params = array_merge($params, array('account' => $app['current_account']));
 
-                        return new response($app['twig']->render('/prod/actions/Bridge/disconnected.twig', $params), 200);
+                        return new response($app['twig']->render('/prod/actions/Bridge/disconnected.html.twig', $params), 200);
                     } elseif ($e instanceof \Bridge_Exception_ApiDisabled) {
                         $params = array_merge($params, array('api' => $e->get_api()));
 
-                        return new response($app['twig']->render('/prod/actions/Bridge/deactivated.twig', $params), 200);
+                        return new response($app['twig']->render('/prod/actions/Bridge/deactivated.html.twig', $params), 200);
                     }
 
-                    return new response($app['twig']->render('/prod/actions/Bridge/error.twig', $params), 200);
+                    return new response($app['twig']->render('/prod/actions/Bridge/error.html.twig', $params), 200);
                 }
             });
 

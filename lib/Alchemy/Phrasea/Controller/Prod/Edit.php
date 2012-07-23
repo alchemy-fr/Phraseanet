@@ -34,7 +34,7 @@ class Edit implements ControllerProviderInterface
                 $handler = new RecordHelper\Edit($app['phraseanet.core'], $request);
                 $handler->propose_editing();
 
-                return $app['twig']->render('prod/actions/edit_default.twig', array('edit'    => $handler, 'message' => ''));
+                return $app['twig']->render('prod/actions/edit_default.html.twig', array('edit'    => $handler, 'message' => ''));
             }
         );
 
@@ -86,7 +86,7 @@ class Edit implements ControllerProviderInterface
                 $editing = new RecordHelper\Edit($app['phraseanet.core'], $app['request']);
                 $editing->execute($request);
 
-                return $app['twig']->render( 'prod/actions/edit_default.twig', array('edit'    => $editing, 'message' => ''));
+                return $app['twig']->render( 'prod/actions/edit_default.html.twig', array('edit'    => $editing, 'message' => ''));
             }
         );
 
