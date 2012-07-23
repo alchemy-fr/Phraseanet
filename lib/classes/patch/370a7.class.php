@@ -23,7 +23,7 @@ class patch_370a7 implements patchInterface
      *
      * @var string
      */
-    private $release = '3.7.0.0.a7';
+    private $release = '3.7.0a7';
 
     /**
      *
