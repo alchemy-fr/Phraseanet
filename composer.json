@@ -22,7 +22,7 @@
         "swiftmailer/swiftmailer": "4.1.*",
         "symfony/symfony": "2.1.*",
         "tcpdf/tcpdf": ">5.9",
-        "twig/twig": "1.8.*",
+        "twig/twig": "1.9.*",
         "twig/extensions": "master",
         "zend/gdata": ">1.11"
     },

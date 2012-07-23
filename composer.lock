@@ -1,5 +1,5 @@
 {
-    "hash": "c1ac8aafaa9ca83d3a646d84963dee6e",
+    "hash": "5bf41b7681091d016c3ba913e32ce794",
     "packages": [
         {
             "package": "alchemy/Phlickr",
@@ -52,8 +52,8 @@
         {
             "package": "imagine/Imagine",
             "version": "dev-develop",
-            "source-reference": "ea555767c851236f31ee1e048b4cd51f448cab2e",
-            "commit-date": "1339599310"
+            "source-reference": "b761a2725267c7e68c5e8c559403cd0d19cb704c",
+            "commit-date": "1342901848"
         },
         {
             "package": "media-alchemyst/media-alchemyst",
@@ -167,7 +167,15 @@
         },
         {
             "package": "twig/twig",
-            "version": "v1.8.3"
+            "version": "dev-master",
+            "alias-pretty-version": "1.9.x-dev",
+            "alias-version": "1.9.9999999.9999999-dev"
+        },
+        {
+            "package": "twig/twig",
+            "version": "dev-master",
+            "source-reference": "657de7bdeb680815e0df95f63da9f81e1533d2ea",
+            "commit-date": "1342953178"
         },
         {
             "package": "zend/gdata",
@@ -198,8 +206,8 @@
         {
             "package": "behat/mink-extension",
             "version": "dev-master",
-            "source-reference": "2fc55fdd358b121b5439acc76be6fa654ebe2e28",
-            "commit-date": "1341477571"
+            "source-reference": "da58c1b572349310ce5b65066a4d8b7e487a63a7",
+            "commit-date": "1342818063"
         },
         {
             "package": "behat/mink-goutte-driver",
@@ -222,14 +230,20 @@
         {
             "package": "fabpot/goutte",
             "version": "dev-master",
+            "alias-pretty-version": "1.0.x-dev",
+            "alias-version": "1.0.9999999.9999999-dev"
+        },
+        {
+            "package": "fabpot/goutte",
+            "version": "dev-master",
             "source-reference": "c2ea8d9a6682d14482e57ede2371001b8a5238d2",
             "commit-date": "1340264258"
         },
         {
             "package": "fabpot/php-cs-fixer",
             "version": "dev-master",
-            "source-reference": "9b13373840537c91bf830b1b45e39b223e5dd438",
-            "commit-date": "1341582702"
+            "source-reference": "4c4bc75cc179ff91bb83960ae7dacca6754d2c46",
+            "commit-date": "1342957711"
         },
         {
             "package": "guzzle/guzzle",
