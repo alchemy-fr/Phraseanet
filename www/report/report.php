@@ -76,7 +76,7 @@ $core = \bootstrap::getCore();
 $twig = $core->getTwig();
 
 echo $twig->render(
-    'report/ajax_report_content.twig', array(
+    'report/ajax_report_content.html.twig', array(
     'selection' => $selection,
     'param'     => $parm,
     'anonymous' => $registry->get('GV_anonymousReport'),

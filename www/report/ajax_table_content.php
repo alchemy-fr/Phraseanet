@@ -279,7 +279,7 @@ function doUserConf($conf, $param)
 function displayListColumn($conf, $param, $twig)
 {
     if ($param['conf'] == "on") {
-        $html = $twig->render('report/listColumn.twig', array(
+        $html = $twig->render('report/listColumn.html.twig', array(
             'conf'  => $conf,
             'param' => $param,
             ));
@@ -296,7 +296,7 @@ function groupBy($obj, $param, $twig, $on = false)
     //If users ask for group by, display the good array, result is encoded in Json , exit the function.
     if ($groupby) {
         $report = $obj->buildTab(false, $groupby[0], $on);
-        $html = doHtml($report, $param, $twig, 'report/report.twig', 'group');
+        $html = doHtml($report, $param, $twig, 'report/report.html.twig', 'group');
         $title = "Groupement des resultats sur le champ " . $report['display'][$report['allChamps'][0]]['title'];
         sendReport($html, false, $title);
         exit();
@@ -305,7 +305,7 @@ function groupBy($obj, $param, $twig, $on = false)
 
 function displayColValue($tab, $column, $twig, $on = false)
 {
-    $test = $twig->render('report/colFilter.twig', array(
+    $test = $twig->render('report/colFilter.html.twig', array(
         'result' => $tab,
         'field'  => $column
         ));
@@ -350,7 +350,7 @@ function cnx($param, $twig)
         'appli' => array(_('report:: modules'), 1, 0, 0, 0)
     );
     $report = doReport($cnx, $param, $conf, $twig);
-    $html = doHtml($report, $param, $twig, 'report/report.twig');
+    $html = doHtml($report, $param, $twig, 'report/report.html.twig');
     sendReport($html, $report);
 }
 /* generate all the html string to display all the valid download in <table></table>, the result is encoded in json */
@@ -367,7 +367,7 @@ function gen($param, $twig)
     );
     //$conf = doPreff($conf, $param);
     $report = doReport($dl, $param, $conf, $twig);
-    $html = doHtml($report, $param, $twig, 'report/report.twig');
+    $html = doHtml($report, $param, $twig, 'report/report.html.twig');
     sendReport($html, $report);
 }
 /* generate all the html string to display all the valid question in <table></table>, the result is encoded in json */
@@ -381,7 +381,7 @@ function ask($param, $twig)
         'ddate' => array(_('report:: date'), 1, 0, 1, 1)
     );
     $report = doReport($ask, $param, $conf, $twig);
-    $html = doHtml($report, $param, $twig, 'report/report.twig');
+    $html = doHtml($report, $param, $twig, 'report/report.html.twig');
     sendReport($html, $report);
 }
 /* generate the html code to display the download by doc (records or string in xml description), the result is encoded in json */
@@ -399,7 +399,7 @@ function doc($param, $twig)
     $dl = new module_report_download($param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
     $conf = doPreff($conf, $param);
     $report = doReport($dl, $param, $conf, $twig, 'record_id');
-    $html = doHtml($report, $param, $twig, 'report/report.twig');
+    $html = doHtml($report, $param, $twig, 'report/report.html.twig');
     sendReport($html, $report);
 }
 /* generate the html string to display the result from different report (see below) in <table></table>, the result is encoded in json */
@@ -434,7 +434,7 @@ function cnxb($param, $twig)
         'mod'   => $nav->buildTabModule($conf_mod),
         'combo' => $nav->buildTabCombo($conf_combo)
     );
-    $html = doHtml($report, $param, $twig, 'report/report.twig', 'nav');
+    $html = doHtml($report, $param, $twig, 'report/report.html.twig', 'nav');
     sendReport($html);
 }
 /* generate the html string to display the number of connexion by user in <table></table>, the result is encoded in json */
@@ -452,7 +452,7 @@ function cnxu($param, $twig)
     isset($report['display']['user']) ? $report['display']['user']['title'] = _('phraseanet::utilisateurs') : "";
     isset($report['display']['user']) ? $report['display']['user']['bound'] = 1 : "";
 
-    $html = doHtml($report, $param, $twig, 'report/report.twig');
+    $html = doHtml($report, $param, $twig, 'report/report.html.twig');
     sendReport($html);
 }
 /* generate all the html string to display the top 20 question by databox in <table></table>, the result is encoded in json */
@@ -470,7 +470,7 @@ function bestOf($param, $twig)
     $activity->nb_top = $param['limit'];
 
     $report = $activity->getTopQuestion($conf);
-    $html = doHtml($report, $param, $twig, 'report/report.twig');
+    $html = doHtml($report, $param, $twig, 'report/report.html.twig');
     sendReport($html);
 }
 /* generate all the html string to display all the resot of questions <table></table>, the result is encoded in json */
@@ -484,7 +484,7 @@ function noBestOf($param, $twig)
     $activity = new module_report_activity($param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
     doLimit($activity, $param);
     $report = $activity->getTopQuestion($conf, true);
-    $html = doHtml($report, $param, $twig, 'report/report.twig');
+    $html = doHtml($report, $param, $twig, 'report/report.html.twig');
     sendReport($html);
 }
 /* generate all the html string to display the users connexions activity by hour in <table></table>, the result is encoded in json */
@@ -493,7 +493,7 @@ function tableSiteActivityPerHours($param, $twig)
 {
     $activity = new module_report_activity($param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
     $report = $activity->getActivityPerHours();
-    $html = doHtml($report, $param, $twig, 'report/report.twig', 'plot');
+    $html = doHtml($report, $param, $twig, 'report/report.html.twig', 'plot');
     sendReport($html);
 }
 /* generate all the html string to display all number of download day by day in <table></table>, the result is encoded in json */
@@ -509,7 +509,7 @@ function day($param, $twig)
     $activiy->list_coll_id = $param['collection'];
     doLimit($activity, $param);
     $report = $activity->getDownloadByBaseByDay($conf);
-    $html = doHtml($report, $param, $twig, 'report/report.twig');
+    $html = doHtml($report, $param, $twig, 'report/report.html.twig');
     sendReport($html);
 }
 /* generate all the html string to display all the details of download user by user in <table></table>, the result is encoded in json */
@@ -529,7 +529,7 @@ function usr($param, $twig)
     empty($param['on']) ? $on = "user" : $on = $param['on']; //by default always report on user
 
     $report = $activity->getDetailDownload($conf, $on);
-    $html = doHtml($report, $param, $twig, 'report/report.twig');
+    $html = doHtml($report, $param, $twig, 'report/report.html.twig');
     sendReport($html);
 }
 /* Display basic informations about an user */
@@ -578,7 +578,7 @@ function infoUsr($param, $twig, $conf)
     $report = $info->buildTabGrpInfo($request, $params, $param['user'], $conf['conf'], $param['on']);
     $report['periode'] = ""; //delete the periode
     if ($registry->get('GV_anonymousReport') == false) {
-        $html_info .= doHtml($report, $param, $twig, 'report/report.twig');
+        $html_info .= doHtml($report, $param, $twig, 'report/report.html.twig');
         (empty($param['on']) && isset($report['result'])) ? $title = $report['result'][0]['identifiant'] : $title = $param['user'];
     }
     else
@@ -623,7 +623,7 @@ function what($param, $twig)
 
     $title = $report['result'][0]["titre"];
 
-    $html = doHtml($report, $param, $twig, 'report/info.twig');
+    $html = doHtml($report, $param, $twig, 'report/info.html.twig');
 
     if ($param['from'] == 'TOOL')
         sendReport($html);
@@ -641,7 +641,7 @@ function what($param, $twig)
         $report = $histo->buildTab($config_dl);
         $report['title'] = _("report:: historique des telechargements");
         $report['config'] = 0;
-        $html .= doHtml($report, $param, $twig, 'report/report.twig');
+        $html .= doHtml($report, $param, $twig, 'report/report.html.twig');
     }
 
     if ($registry->get('GV_anonymousReport') == false && $param['from'] != 'DOC' && $param['from'] != 'DASH' && $param['from'] != "GEN") {
@@ -659,7 +659,7 @@ function what($param, $twig)
         $report['config'] = 0;
         $report['title'] = _('report:: utilisateur');
 
-        $html .= doHtml($report, $param, $twig, 'report/report.twig');
+        $html .= doHtml($report, $param, $twig, 'report/report.html.twig');
     }
     sendReport($html, false, $title);
 }
@@ -673,7 +673,7 @@ function infoNav($param, $twig)
     );
     $infonav = new module_report_nav($param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
     $report = $infonav->buildTabInfoNav($conf, $param['user']);
-    $html = doHtml($report, $param, $twig, 'report/report.twig');
+    $html = doHtml($report, $param, $twig, 'report/report.html.twig');
     sendReport($html, false, $param['user']);
 }
 ################################################SWITCH ACTIONS##############################################################
