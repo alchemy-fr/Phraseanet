@@ -53,7 +53,6 @@ class patch_370a3 implements patchInterface
 
     public function apply(base &$appbox)
     {
-        exit('applying atch'.__CLASS__);
         $appbox = \appbox::get_instance(\bootstrap::getCore());
 
         try {
