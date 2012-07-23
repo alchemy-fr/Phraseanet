@@ -723,7 +723,7 @@ class Login implements ControllerProviderInterface
         $public_feeds = \Feed_Collection::load_public_feeds($appbox);
         $feeds = array_merge(array($public_feeds->get_aggregate()), $public_feeds->get_feeds());
 
-        return $app['twig']->render('login/index.twig', array(
+        return $app['twig']->render('login/index.html.twig', array(
                 'module_name'    => _('Accueil'),
                 'notice'         => $notice,
                 'warning'        => $warning,

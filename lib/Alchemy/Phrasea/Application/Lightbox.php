@@ -41,9 +41,9 @@ return call_user_func(
                         , $repository->findActiveValidationByUser($current_user)
                     );
 
-                    $template = 'lightbox/index.twig';
+                    $template = 'lightbox/index.html.twig';
                     if ( ! $app['browser']->isNewGeneration() && ! $app['browser']->isMobile()) {
-                        $template = 'lightbox/IE6/index.twig';
+                        $template = 'lightbox/IE6/index.html.twig';
                     }
 
                     return new Response($app['twig']->render($template, array(
@@ -70,7 +70,7 @@ return call_user_func(
                         'module_name'    => '',
                     );
 
-                    return $app['twig']->render('lightbox/note_form.twig', $parameters);
+                    return $app['twig']->render('lightbox/note_form.html.twig', $parameters);
                 }
             )->assert('sselcont_id', '\d+');
 
@@ -127,7 +127,7 @@ return call_user_func(
                     $item = new \Feed_Entry_Item($app['phraseanet.appbox'], $entry, $item_id);
 
                     if ($app['browser']->isMobile()) {
-                        $output = $app['twig']->render('lightbox/feed_element.twig', array(
+                        $output = $app['twig']->render('lightbox/feed_element.html.twig', array(
                             'feed_element' => $item,
                             'module_name'  => $item->get_record()->get_title()
                             )
@@ -188,10 +188,10 @@ return call_user_func(
                         $em->flush();
                     }
 
-                    $template = 'lightbox/validate.twig';
+                    $template = 'lightbox/validate.html.twig';
 
                     if ( ! $app['browser']->isNewGeneration() && ! $app['browser']->isMobile()) {
-                        $template = 'lightbox/IE6/validate.twig';
+                        $template = 'lightbox/IE6/validate.html.twig';
                     }
 
                     $response = new Response($app['twig']->render($template, array(
@@ -238,10 +238,10 @@ return call_user_func(
                         $em->flush();
                     }
 
-                    $template = 'lightbox/validate.twig';
+                    $template = 'lightbox/validate.html.twig';
 
                     if ( ! $app['browser']->isNewGeneration() && ! $app['browser']->isMobile()) {
-                        $template = 'lightbox/IE6/validate.twig';
+                        $template = 'lightbox/IE6/validate.html.twig';
                     }
 
                     $response = new Response($app['twig']->render($template, array(
@@ -264,10 +264,10 @@ return call_user_func(
 
                     $feed_entry = \Feed_Entry_Adapter::load_from_id($app['phraseanet.appbox'], $entry_id);
 
-                    $template = 'lightbox/feed.twig';
+                    $template = 'lightbox/feed.html.twig';
 
                     if ( ! $app['browser']->isNewGeneration() && ! $app['browser']->isMobile()) {
-                        $template = 'lightbox/IE6/feed.twig';
+                        $template = 'lightbox/IE6/feed.html.twig';
                     }
 
                     $output = $app['twig']->render($template, array(
@@ -287,7 +287,7 @@ return call_user_func(
 
             $app->get('/ajax/LOAD_REPORT/{ssel_id}/', function(SilexApplication $app, $ssel_id) {
 
-                    $template = 'lightbox/basket_content_report.twig';
+                    $template = 'lightbox/basket_content_report.html.twig';
 
                     $em = $app['phraseanet.core']->getEntityManager();
                     $repository = $em->getRepository('\Entities\Basket');
@@ -332,11 +332,11 @@ return call_user_func(
                     $em->flush();
 
                     if ($app['browser']->isMobile()) {
-                        $datas = $app['twig']->render('lightbox/sc_note.twig', array('basket_element' => $basket_element));
+                        $datas = $app['twig']->render('lightbox/sc_note.html.twig', array('basket_element' => $basket_element));
 
                         $output = array('error' => false, 'datas' => $datas);
                     } else {
-                        $template = 'lightbox/sc_note.twig';
+                        $template = 'lightbox/sc_note.html.twig';
 
                         $datas = $app['twig']->render($template, array('basket_element' => $basket_element));
 
@@ -480,7 +480,7 @@ return call_user_func(
 
                     $registry = \registry::get_instance();
 
-                    $template = 'lightbox/error.twig';
+                    $template = 'lightbox/error.html.twig';
 
                     if ($registry->get('GV_debug')) {
                         $options = array(
