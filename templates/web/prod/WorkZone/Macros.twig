@@ -248,7 +248,7 @@
       {% set box_height = (box_height + 20) %}
   {% endif %}
 
-  {% import 'common/thumbnail.html' as thumbnail %}
+  {% import 'common/thumbnail.html.twig' as thumbnail %}
 
   <div ondblclick="{% if wz_scope == 'groupings' %}openPreview('REG',{{ ord }},'{{container.get_sbas_id()}}_{{container.get_record_id()}}');{% else %}openPreview('BASK',{{ ord }},{{container.getId()}});{% endif %}"
        class="CHIM diapo CHIM_{{record.get_serialize_key()}}" style="height:{{box_height}}px;"

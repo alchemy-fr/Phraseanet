@@ -283,7 +283,7 @@ class Edit extends RecordHelper
                 , 'h'   => $thumbnail->get_height()
             );
 
-            $_lst[$indice]['preview'] = $twig->render('common/preview.html', array('record' => $record));
+            $_lst[$indice]['preview'] = $twig->render('common/preview.html.twig', array('record' => $record));
 
             $_lst[$indice]['type'] = $record->get_type();
         }

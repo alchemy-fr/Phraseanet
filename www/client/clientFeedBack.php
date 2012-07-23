@@ -79,7 +79,7 @@ switch ($parm['action']) {
                         , 'searchEngine' => $search_engine
                         )
                     )
-                    , "html_preview" => $twig->render('common/preview.html', array('record' => $record)
+                    , "html_preview" => $twig->render('common/preview.html.twig', array('record' => $record)
                     )
                     , "others" => $twig->render('prod/preview/appears_in.html', array(
                         'parents' => $record->get_grouping_parents(),

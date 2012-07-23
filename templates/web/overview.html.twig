@@ -80,7 +80,7 @@
         <div id="page">
       <h1>{{record.get_title()}}</h1>
       <div class="preview enhancable">
-        {% import 'common/thumbnail.html' as thumbnail %}
+        {% import 'common/thumbnail.html.twig' as thumbnail %}
         {% set subdef = record.get_subdef(subdef_name) %}
 
         {{ thumbnail.format(subdef, subdef.get_width(), subdef.get_height(), '', session, true) }}

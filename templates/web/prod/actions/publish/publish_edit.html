@@ -1,6 +1,6 @@
 
 {% macro format_diapo(record, session) %}
-  {% import 'common/thumbnail.html' as thumbnail %}
+  {% import 'common/thumbnail.html.twig' as thumbnail %}
   <div class="diapo">
     {{thumbnail.format(record.get_thumbnail(), 100, 100, '', session, true)}}
   </div>

@@ -1,5 +1,5 @@
 {% macro block(record, user, session, highlight, searchEngine, prefix, entry_id)%}
-    {% import 'common/thumbnail.html' as thumbnail %}
+    {% import 'common/thumbnail.html.twig' as thumbnail %}
     {% import 'common/doctype_icons.html.twig' as doctype_icons %}
     {% import 'common/drop_down_options.html.twig' as drop_down %}
     {% set th_size = user.getPrefs('images_size')%}

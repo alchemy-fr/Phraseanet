@@ -301,7 +301,7 @@ if (count($result->get_datas()) > 0) {
 
         try {
             $record->get_subdef('document');
-            $light_info = $twig->render('common/technical_datas.twig', array('record' => $record));
+            $light_info = $twig->render('common/technical_datas.html.twig', array('record' => $record));
         } catch (\Exception $e) {
             $light_info = '';
         }
