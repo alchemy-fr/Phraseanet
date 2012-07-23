@@ -1,6 +1,6 @@
 <html lang="{{session.get_I18n}}">
     <head>
-        {% include 'login/head.twig' %}
+        {% include 'login/head.html.twig' %}
     </head>
     <body>
         <div style="display:none;">{{meta_description}}</div>
@@ -133,15 +133,15 @@
                 <div id="id-main" class="tab-content" style="display:block;">
                     <form name="send" action="/login/authenticate/" method="post" >
                         {% if display_layout == 'DISPLAYx1' %}
-                            {% include 'login/index_layout_displayx1.twig' %}
+                            {% include 'login/index_layout_displayx1.html.twig' %}
                         {% elseif display_layout == 'DISPLAYx4' %}
 
                         {% elseif display_layout == 'COOLIRIS' %}
-                            {% include 'login/index_layout_displaycooliris.twig' %}
+                            {% include 'login/index_layout_displaycooliris.html.twig' %}
                         {% elseif display_layout == 'SCROLL' %}
-                            {% include 'login/index_layout_displayscroll.twig' %}
+                            {% include 'login/index_layout_displayscroll.html.twig' %}
                         {% else %}
-                            {% include 'login/index_layout_displayx1.twig' %}
+                            {% include 'login/index_layout_displayx1.html.twig' %}
                         {% endif %}
                         <input type="hidden" name="redirect" value="{{redirect}}">
                     </form>

@@ -44,7 +44,7 @@
                                 </td>
                                 <td style="text-align:right;width:230px;">
                                     <div class="options">
-                                        {% include 'lightbox/sc_options_box.twig' %}
+                                        {% include 'lightbox/sc_options_box.html.twig' %}
                                     </div>
                                 </td>
                             </tr>
@@ -61,8 +61,8 @@
                             {{ thumbnail.format(bask_prev, width,height, '', session, false) }}
 
                         {% endif %}
-                        {% include 'lightbox/selector_box.twig' %}
-                        {% include 'lightbox/sc_note.twig' %}
+                        {% include 'lightbox/selector_box.html.twig' %}
+                        {% include 'lightbox/sc_note.html.twig' %}
                     </div>
                 </div>
                 <div id="record_compare" class="PNB record_display_box">
@@ -109,7 +109,7 @@
                 {% if basket.getValidation() %}
                 <div class="right_column_wrapper unselectable right_column_wrapper_user PNB">
                     <div id="basket_infos" class="PNB ui-corner-all">
-                            {% include 'lightbox/agreement_box.twig' %}
+                            {% include 'lightbox/agreement_box.html.twig' %}
                     </div>
                 </div>
                 <div id="right_column_validation_toggle" class="PNB ui-corner-all title15">
@@ -117,7 +117,7 @@
                     {% trans 'VALIDATION' %}
                 </div>
                 <div id="basket_options" class="PNB ui-corner-all unselectable">
-                    {% include 'lightbox/basket_options.twig' %}
+                    {% include 'lightbox/basket_options.html.twig' %}
                 </div>
                 {% endif %}
             </div>
@@ -170,7 +170,7 @@
                 <div id="left_scroller" class="PNB clickable">
                 </div>
                 <div class="PNB" id="sc_wrapper">
-                    {% include 'lightbox/sc_container.twig' %}
+                    {% include 'lightbox/sc_container.html.twig' %}
                 </div>
                 <div id="right_scroller" class="PNB clickable">
                 </div>

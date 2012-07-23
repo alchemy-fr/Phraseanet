@@ -37,7 +37,7 @@
                                 <td style="text-align:right;width:230px;">
                                     <div class="options">
                     {% set feed_element = first_item %}
-                                        {% include 'lightbox/feed_options_box.twig' %}
+                                        {% include 'lightbox/feed_options_box.html.twig' %}
                                     </div>
                                 </td>
                             </tr>
@@ -112,7 +112,7 @@
                 <div id="left_scroller" class="PNB clickable">
                 </div>
                 <div class="PNB" id="sc_wrapper">
-                    {% include 'lightbox/feed_container.twig' %}
+                    {% include 'lightbox/feed_container.html.twig' %}
                 </div>
                 <div id="right_scroller" class="PNB clickable">
                 </div>

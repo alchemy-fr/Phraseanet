@@ -167,7 +167,7 @@
                         </li>
                     </ul>
                     <div id="baskets" class="PNB ui-tabs-panel ui-accordion" style="top:52px;">
-                        {% import 'prod/WorkZone/Macros.twig'  as  WorkZoneMacros %}
+                        {% import 'prod/WorkZone/Macros.html.twig'  as  WorkZoneMacros %}
                         {{WorkZoneMacros.make_bloc(WorkZone)}}
                     </div>
                     {% if GV_thesaurus %}
