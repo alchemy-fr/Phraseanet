@@ -25,11 +25,6 @@ class CoreTest extends PhraseanetPHPUnitAbstract
         $this->assertInstanceOf('\Twig_Environment', self::$core->getTwig());
     }
 
-    public function testCoreSerializer()
-    {
-        $this->assertInstanceOf('\Symfony\Component\Serializer\Serializer', self::$core->getSerializer());
-    }
-
     public function testCoreConfiguration()
     {
         $this->assertInstanceOf('\Alchemy\Phrasea\Core\Configuration', self::$core->getConfiguration());
