@@ -28,7 +28,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $app['debug'] = true;
         unset($app['exception_handler']);
 
-        $app['Core']['file-system'] = $this->getMock('Symfony\Component\Filesystem\Filesystem', array('remove'));
+        $app['phraseanet.core']['file-system'] = $this->getMock('Symfony\Component\Filesystem\Filesystem', array('remove'));
 
         return $app;
     }
@@ -45,7 +45,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testListElement()
     {
-        $originalEm = $this->app['Core']['EM'];
+        $originalEm = $this->app['phraseanet.core']['EM'];
 
         $fileLazaret = $this->getMock('Entities\LazaretFile', array('getRecordsToSubstitute', 'getSession', 'getCollection'), array(), '', false);
 
@@ -81,13 +81,13 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/lazaret/';
 
-        $this->app['Core']['EM'] = $em;
+        $this->app['phraseanet.core']['EM'] = $em;
 
         $crawler = $this->client->request(
             'GET', $route
         );
 
-        $this->app['Core']['EM'] = $originalEm;
+        $this->app['phraseanet.core']['EM'] = $originalEm;
 
         $this->assertResponseOk($this->client->getResponse());
 
@@ -101,7 +101,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGetElement()
     {
-        $originalEm = $this->app['Core']['EM'];
+        $originalEm = $this->app['phraseanet.core']['EM'];
 
         $em = $this->getMock('Doctrine\ORM\EntityManager', array('find'), array(), '', false);
 
@@ -114,11 +114,11 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->with($this->EqualTo('Entities\LazaretFile'), $this->EqualTo($id))
             ->will($this->returnValue($lazaretFile));
 
-        $this->app['Core']['EM'] = $em;
+        $this->app['phraseanet.core']['EM'] = $em;
 
         $this->client->request('GET', '/lazaret/' . $id . '/');
 
-        $this->app['Core']['EM'] = $originalEm;
+        $this->app['phraseanet.core']['EM'] = $originalEm;
 
         $response = $this->client->getResponse();
 
@@ -145,7 +145,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGetElementException()
     {
-        $originalEm = $this->app['Core']['EM'];
+        $originalEm = $this->app['phraseanet.core']['EM'];
 
         $em = $this->getMock('Doctrine\ORM\EntityManager', array('find'), array(), '', false);
 
@@ -156,11 +156,11 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->with($this->EqualTo('Entities\LazaretFile'), $this->EqualTo($id))
             ->will($this->returnValue(null));
 
-        $this->app['Core']['EM'] = $em;
+        $this->app['phraseanet.core']['EM'] = $em;
 
         $this->client->request('GET', '/lazaret/' . $id . '/');
 
-        $this->app['Core']['EM'] = $originalEm;
+        $this->app['phraseanet.core']['EM'] = $originalEm;
 
         $response = $this->client->getResponse();
 
@@ -175,15 +175,15 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testAddElement()
     {
-        $originalEm = $this->app['Core']['EM'];
+        $originalEm = $this->app['phraseanet.core']['EM'];
 
         //mock Doctrine\ORM\EntityManager
         $em = $this->getMock('Doctrine\ORM\EntityManager', array(), array(), '', false);
 
         $lazaretFile = $this->getOneLazaretFile();
 
-        $lazaretFileName = $this->app['Core']->getRegistry()->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getFilename();
-        $lazaretThumbFileName = $this->app['Core']->getRegistry()->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getThumbFilename();
+        $lazaretFileName = $this->app['phraseanet.core']->getRegistry()->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getFilename();
+        $lazaretThumbFileName = $this->app['phraseanet.core']->getRegistry()->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getThumbFilename();
 
         copy(__DIR__ . '/../../../../testfiles/cestlafete.jpg', $lazaretFileName);
         copy(__DIR__ . '/../../../../testfiles/cestlafete.jpg', $lazaretThumbFileName);
@@ -233,7 +233,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $em->expects($this->once())
             ->method('flush');
 
-        $this->app['Core']['EM'] = $em;
+        $this->app['phraseanet.core']['EM'] = $em;
 
         $this->client->request('POST', '/lazaret/' . $id . '/force-add/', array(
             'bas_id'          => $lazaretFile->getBaseId(),
@@ -241,7 +241,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'attributes'      => array(1, 2, 3, 4) //Check only the four first attributes
         ));
 
-        $this->app['Core']['EM'] = $originalEm;
+        $this->app['phraseanet.core']['EM'] = $originalEm;
 
         $response = $this->client->getResponse();
         $this->assertResponseOk($response);
@@ -257,7 +257,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testAddElementBadRequestException()
     {
-        $originalEm = $this->app['Core']['EM'];
+        $originalEm = $this->app['phraseanet.core']['EM'];
 
         //mock Doctrine\ORM\EntityManager
         $em = $this->getMock('Doctrine\ORM\EntityManager', array(), array(), '', false);
@@ -272,7 +272,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->with($this->EqualTo('Entities\LazaretFile'), $this->EqualTo($id))
             ->will($this->returnValue($lazaretFile));
 
-        $this->app['Core']['EM'] = $em;
+        $this->app['phraseanet.core']['EM'] = $em;
 
         //Ommit base_id mandatory param
         $this->client->request('POST', '/lazaret/' . $id . '/force-add/', array(
@@ -280,7 +280,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'attributes'      => array(1, 2, 3, 4) //Check only the four first attributes
         ));
 
-        $this->app['Core']['EM'] = $originalEm;
+        $this->app['phraseanet.core']['EM'] = $originalEm;
 
         $response = $this->client->getResponse();
 
@@ -295,7 +295,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testAddElementException()
     {
-        $originalEm = $this->app['Core']['EM'];
+        $originalEm = $this->app['phraseanet.core']['EM'];
 
         $this->client->request('POST', '/lazaret/99999/force-add/', array(
             'bas_id'          => 1,
@@ -303,7 +303,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'attributes'      => array(1, 2, 3, 4) //Check only the four first attributes
         ));
 
-        $this->app['Core']['EM'] = $originalEm;
+        $this->app['phraseanet.core']['EM'] = $originalEm;
 
         $response = $this->client->getResponse();
 
@@ -358,7 +358,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testAcceptElement()
     {
-        $originalEm = $this->app['Core']['EM'];
+        $originalEm = $this->app['phraseanet.core']['EM'];
 
         //mock Doctrine\ORM\EntityManager
         $em = $this->getMock('Doctrine\ORM\EntityManager', array(), array(), '', false);
@@ -423,13 +423,13 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $em->expects($this->once())
             ->method('flush');
 
-        $this->app['Core']['EM'] = $em;
+        $this->app['phraseanet.core']['EM'] = $em;
 
         $this->client->request('POST', '/lazaret/' . $id . '/accept/', array(
             'record_id' => self::$records['record_1']->get_record_id()
         ));
 
-        $this->app['Core']['EM'] = $originalEm;
+        $this->app['phraseanet.core']['EM'] = $originalEm;
 
         $response = $this->client->getResponse();
         $content = json_decode($response->getContent());
@@ -445,7 +445,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testAcceptElementNoRecordException()
     {
-        $originalEm = $this->app['Core']['EM'];
+        $originalEm = $this->app['phraseanet.core']['EM'];
 
         //mock Doctrine\ORM\EntityManager
         $em = $this->getMock('Doctrine\ORM\EntityManager', array(), array(), '', false);
@@ -470,13 +470,13 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $id = 1;
 
-        $this->app['Core']['EM'] = $em;
+        $this->app['phraseanet.core']['EM'] = $em;
 
         $this->client->request('POST', '/lazaret/' . $id . '/accept/', array(
             'record_id' => self::$records['record_1']->get_record_id()
         ));
 
-        $this->app['Core']['EM'] = $originalEm;
+        $this->app['phraseanet.core']['EM'] = $originalEm;
 
         $response = $this->client->getResponse();
 
@@ -506,7 +506,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testAcceptElementBadRequestException()
     {
-        $originalEm = $this->app['Core']['EM'];
+        $originalEm = $this->app['phraseanet.core']['EM'];
 
         //mock Doctrine\ORM\EntityManager
         $em = $this->getMock('Doctrine\ORM\EntityManager', array(), array(), '', false);
@@ -521,12 +521,12 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->with($this->EqualTo('Entities\LazaretFile'), $this->EqualTo($id))
             ->will($this->returnValue($lazaretFile));
 
-        $this->app['Core']['EM'] = $em;
+        $this->app['phraseanet.core']['EM'] = $em;
 
         //Ommit record_id mandatory param
         $this->client->request('POST', '/lazaret/' . $id . '/accept/');
 
-        $this->app['Core']['EM'] = $originalEm;
+        $this->app['phraseanet.core']['EM'] = $originalEm;
 
         $response = $this->client->getResponse();
 
@@ -541,7 +541,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testThumbnailElement()
     {
-        $originalEm = $this->app['Core']['EM'];
+        $originalEm = $this->app['phraseanet.core']['EM'];
 
         //mock Doctrine\ORM\EntityManager
         $em = $this->getMock('Doctrine\ORM\EntityManager', array(), array(), '', false);
@@ -566,11 +566,11 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->with($this->EqualTo('Entities\LazaretFile'), $this->EqualTo($id))
             ->will($this->returnValue($lazaretFile));
 
-        $this->app['Core']['EM'] = $em;
+        $this->app['phraseanet.core']['EM'] = $em;
 
         $this->client->request('GET', '/lazaret/' . $id . '/thumbnail/');
 
-        $this->app['Core']['EM'] = $originalEm;
+        $this->app['phraseanet.core']['EM'] = $originalEm;
 
         $response = $this->client->getResponse();
 

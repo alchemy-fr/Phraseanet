@@ -1,0 +1,64 @@
+{% extends 'account/base.html.twig' %}
+
+{% block title %}
+    {% trans 'Mes sessions' %}
+{% endblock %}
+
+{% block content %}
+<div>
+    <table style="width: 80%; margin: 0 auto;">
+        <tbody>
+            <tr>
+                <td>
+                </td>
+                <td>
+                    {% trans 'Date de connexion' %}
+                </td>
+                <td>
+                    {% trans 'Dernier access' %}
+                </td>
+                <td>
+                    {% trans 'IP' %}
+                </td>
+                <td>
+                    {% trans 'Browser' %}
+                </td>
+                <td>
+                    {% trans 'ecran' %}
+                </td>
+                <td>
+                    {% trans 'Session persistante' %}
+                </td>
+            </tr>
+            {% for row in session.get_my_sessions() %}
+                <tr>
+                    <td>
+                        {% if session.get_ses_id() != row['session_id'] %}
+                            <img src="/skins/icons/delete.png"/>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ row['created_on'] |formatDate }}
+                    </td>
+                    <td>
+                        {{ row['lastaccess'] |formatDate }}
+                    </td>
+                    <td>
+                        {{ row['ip'] }}
+                        {{ row['ip_infos'] }}
+                    </td>
+                    <td>
+                        {{ row['browser'] }} {{ row['browser_version'] }}
+                    </td>
+                    <td>
+                        {{ row['screen'] }}
+                    </td>
+                    <td>
+                        {% if row['token'] %}oui{% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

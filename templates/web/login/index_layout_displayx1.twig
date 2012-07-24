@@ -27,7 +27,7 @@
           {% trans 'Vous etes maintenant deconnecte. A bientot.' %}
         </div>
         {% endif %}
-                {{errorWarning|raw}}{{confirmWarning|raw}}
+                {{ warning }}{{ notice }}
             </div>
             <div style="margin-top:20px;">
                 <div style="margin-top:3px;">{% trans 'admin::compte-utilisateur identifiant' %}</div>
@@ -39,7 +39,7 @@
                 <div style="margin-top:3px;"><input {% if maintenance == true %}disabled{% endif %} tabindex="2" name="pwd"
                     id="pwd" value="" type="password" style="width:100%" /></div>
                 <div style="text-align:right;margin-top:3px;">
-                  <a target="_self" class="link" rel="external" href="/login/forgotpwd.php">
+                  <a target="_self" class="link" rel="external" href="/login/forgot-password/">
                     {% trans 'login:: Forgot your password' %}
                   </a>
                 </div>

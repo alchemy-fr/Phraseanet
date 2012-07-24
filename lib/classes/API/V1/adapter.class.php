@@ -48,7 +48,7 @@ class API_V1_adapter extends API_V1_Abstract
      * @param  appbox         $appbox     Appbox object
      * @return API_V1_adapter
      */
-    public function __construct($auth_token, appbox &$appbox, Alchemy\Phrasea\Core $core)
+    public function __construct(appbox &$appbox, Alchemy\Phrasea\Core $core)
     {
         $this->appbox = $appbox;
         $this->core = $core;
@@ -104,7 +104,7 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new \API_V1_result($app['request'], $this);
 
-        $appbox = \appbox::get_instance($app['Core']);
+        $appbox = \appbox::get_instance($app['phraseanet.core']);
         $taskManager = new \task_manager($appbox);
         $tasks = $taskManager->getTasks();
 
@@ -144,7 +144,7 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new \API_V1_result($app['request'], $this);
 
-        $appbox = \appbox::get_instance($app['Core']);
+        $appbox = \appbox::get_instance($app['phraseanet.core']);
         $taskManager = new task_manager($appbox);
 
         $ret = array(
@@ -167,7 +167,7 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new \API_V1_result($app['request'], $this);
 
-        $appbox = \appbox::get_instance($app['Core']);
+        $appbox = \appbox::get_instance($app['phraseanet.core']);
         $taskManager = new \task_manager($appbox);
 
         $task = $taskManager->getTask($taskId);
@@ -191,7 +191,7 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $result = new API_V1_result($app['request'], $this);
 
-        $appbox = \appbox::get_instance($app['Core']);
+        $appbox = \appbox::get_instance($app['phraseanet.core']);
         $taskManager = new \task_manager($appbox);
 
         $task = $taskManager->getTask($taskId);
@@ -224,7 +224,7 @@ class API_V1_adapter extends API_V1_Abstract
             throw new \API_V1_exception_badrequest();
         }
 
-        $appbox = \appbox::get_instance($app['Core']);
+        $appbox = \appbox::get_instance($app['phraseanet.core']);
 
         $taskManager = new \task_manager($appbox);
 
@@ -251,10 +251,10 @@ class API_V1_adapter extends API_V1_Abstract
      */
     protected function get_cache_info(Application $app)
     {
-        $em = $app['Core']['EM'];
+        $em = $app['phraseanet.core']['EM'];
         $caches = array(
-            'main'               => $app['Core']['Cache'],
-            'op_code'            => $app['Core']['OpcodeCache'],
+            'main'               => $app['phraseanet.core']['Cache'],
+            'op_code'            => $app['phraseanet.core']['OpcodeCache'],
             'doctrine_metadatas' => $em->getConfiguration()->getMetadataCacheImpl(),
             'doctrine_query'     => $em->getConfiguration()->getQueryCacheImpl(),
             'doctrine_result'    => $em->getConfiguration()->getResultCacheImpl(),
@@ -288,13 +288,13 @@ class API_V1_adapter extends API_V1_Abstract
         $ret = array();
 
         $ret['phraseanet']['version'] = array(
-            'name'   => $app['Core']['Version']::getName(),
-            'number' => $app['Core']['Version']::getNumber(),
+            'name'   => $app['phraseanet.core']['Version']::getName(),
+            'number' => $app['phraseanet.core']['Version']::getNumber(),
         );
 
-        $config = $app['Core']->getConfiguration();
+        $config = $app['phraseanet.core']->getConfiguration();
 
-        $ret['phraseanet']['environment'] = $app['Core']->getEnv();
+        $ret['phraseanet']['environment'] = $app['phraseanet.core']->getEnv();
         $ret['phraseanet']['debug'] = $config->isDebug();
         $ret['phraseanet']['maintenance'] = $config->isMaintained();
         $ret['phraseanet']['errorsLog'] = $config->isDisplayingErrors();
@@ -310,7 +310,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     protected function get_gv_info(Application $app)
     {
-        $registry = $app['Core']['Registry'];
+        $registry = $app['phraseanet.core']['Registry'];
 
         return array(
             'global_values' => array(
@@ -646,11 +646,11 @@ class API_V1_adapter extends API_V1_Abstract
 
         $collection = \collection::get_from_base_id($request->get('base_id'));
 
-        if ( ! $app['Core']->getAuthenticatedUser()->ACL()->has_right_on_base($request->get('base_id'), 'canaddrecord')) {
+        if ( ! $app['phraseanet.core']->getAuthenticatedUser()->ACL()->has_right_on_base($request->get('base_id'), 'canaddrecord')) {
             throw new API_V1_exception_forbidden(sprintf('You do not have access to collection %s', $collection->get_name()));
         }
 
-        $media = $app['Core']['mediavorus']->guess($file);
+        $media = $app['phraseanet.core']['mediavorus']->guess($file);
 
         $Package = new Alchemy\Phrasea\Border\File($media, $collection, $file->getClientOriginalName());
 
@@ -659,10 +659,10 @@ class API_V1_adapter extends API_V1_Abstract
         }
 
         $session = new Entities\LazaretSession();
-        $session->setUsrId($app['Core']->getAuthenticatedUser()->get_id());
+        $session->setUsrId($app['phraseanet.core']->getAuthenticatedUser()->get_id());
 
-        $app['Core']['EM']->persist($session);
-        $app['Core']['EM']->flush();
+        $app['phraseanet.core']['EM']->persist($session);
+        $app['phraseanet.core']['EM']->flush();
 
         $reasons = $output = null;
 
@@ -693,7 +693,7 @@ class API_V1_adapter extends API_V1_Abstract
                 break;
         }
 
-        $app['Core']['border-manager']->process($session, $Package, $callback, $behavior);
+        $app['phraseanet.core']['border-manager']->process($session, $Package, $callback, $behavior);
 
         $ret = array(
             'entity' => null,
@@ -720,8 +720,8 @@ class API_V1_adapter extends API_V1_Abstract
         $offset_start = max($request->get('offset_start', 0), 0);
         $per_page = min(max($request->get('per_page', 10), 1), 20);
 
-        $em = $app['Core']->getEntityManager();
-        $user = $app['Core']->getAuthenticatedUser();
+        $em = $app['phraseanet.core']->getEntityManager();
+        $user = $app['phraseanet.core']->getAuthenticatedUser();
         /* @var $user \User_Adapter */
         $baseIds = array_keys($user->ACL()->get_granted_base(array('canaddrecord')));
 
@@ -754,14 +754,14 @@ class API_V1_adapter extends API_V1_Abstract
 
     public function list_quarantine_item($lazaret_id, Application $app, Request $request)
     {
-        $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $lazaret_id);
+        $lazaretFile = $app['phraseanet.core']['EM']->find('Entities\LazaretFile', $lazaret_id);
 
         /* @var $lazaretFile \Entities\LazaretFile */
         if (null === $lazaretFile) {
             throw new \API_V1_exception_notfound(sprintf('Lazaret file id %d not found', $lazaret_id));
         }
 
-        if ( ! $app['Core']->getAuthenticatedUser()->ACL()->has_right_on_base($lazaretFile->getBaseId(), 'canaddrecord')) {
+        if ( ! $app['phraseanet.core']->getAuthenticatedUser()->ACL()->has_right_on_base($lazaretFile->getBaseId(), 'canaddrecord')) {
             throw new \API_V1_exception_forbidden('You do not have access to this quarantine item');
         }
 

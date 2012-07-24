@@ -1,0 +1,62 @@
+{% extends 'account/base.html.twig' %}
+
+{% use "developers/header.html.twig" with header as parent_header %}
+
+{% block head %}
+    {{ block('parent_header') }}
+{% endblock %}
+
+{% block content %}
+<table class='app-placement'>
+  <tbody>
+    <tr>
+      <td style='width:600px;'>
+        <div id="content-apps">
+        <h1>Phraseanet Developer Center</h1>
+        <h3>{% trans 'Mes applications' %}</h3>
+        {% if apps|length > 0 %}
+        <ul class='app-list'>
+          {% for app in apps %}
+            <li id='app_{{app.get_id()}}'>
+              <div>
+                <button class='delete_app' type='button'>{% trans  'button::supprimer'%}</button>
+                    <span class='app-row'>
+                      <strong>
+                        <a  class="link" href="/developers/application/{{app.get_id()}}/">
+                          {{app.get_name()}}
+                        </a>
+                      </strong>
+                    </span>
+                    <span class='app-row'>{{app.get_description() }}</span>
+                    <span class='app-row'>{{app.get_website()}}</span>
+              </div>
+            </li>
+          {%endfor%}
+        </ul>
+        {% else %}
+          <div>
+            {% trans 'Aucune application creee.' %}
+          </div>
+        {% endif %}
+        </div>
+      </td>
+      <td style="vertical-align:top;text-align:left;">
+        <div style="margin:10px;text-align:left;" class="side-section">
+          <div>
+              <a href="http://developer.phraseanet.com/" class="no_underline" target="_blank">
+                <button class="link_button">{% trans 'Demarrer avec l\'API Phraseanet' %}</button>
+              </a><br/>
+              {% trans 'Decouvrez la documentation' %}
+          </div>
+          <div>
+              <a class="no_underline" href="/developers/application/new/">
+                <button class="link_button">{% trans 'Creer une nouvelle applications' %}</button>
+              </a><br/>
+              {% trans 'Creez une application pour commencer a utiliser l\'API Phraseanet' %}
+          </div>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+{% endblock %}

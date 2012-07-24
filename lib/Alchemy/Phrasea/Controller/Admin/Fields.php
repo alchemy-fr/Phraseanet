@@ -11,11 +11,10 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
+use Alchemy\Phrasea\Application as PhraseaApplication;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Silex\ControllerCollection;
 
 /**
  *
@@ -27,12 +26,9 @@ class Fields implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
-        $appbox = \appbox::get_instance($app['Core']);
-
         $controllers = $app['controllers_factory'];
 
-        $controllers->get('/checkmulti/', function() use ($app, $appbox) {
-                $request = $app['request'];
+        $controllers->get('/checkmulti/', function(PhraseaApplication $app, Request $request) {
 
                 $multi = ($request->get('multi') === 'true');
 
@@ -43,17 +39,10 @@ class Fields implements ControllerProviderInterface
                     'is_multi' => $tag->isMulti(),
                 );
 
-                $Serializer = $app['Core']['Serializer'];
-
-                return new Response(
-                        $Serializer->serialize($datas, 'json')
-                        , 200
-                        , array('Content-Type' => 'application/json')
-                );
+                return $app->json($datas);
             });
 
-        $controllers->get('/checkreadonly/', function() use ($app, $appbox) {
-                $request = $app['request'];
+        $controllers->get('/checkreadonly/', function(PhraseaApplication $app, Request $request) {
                 $readonly = ($request->get('readonly') === 'true');
 
                 $tag = \databox_field::loadClassFromTagName($request->get('source'));
@@ -63,13 +52,7 @@ class Fields implements ControllerProviderInterface
                     'is_readonly' => ! $tag->isWritable(),
                 );
 
-                $Serializer = $app['Core']['Serializer'];
-
-                return new Response(
-                        $Serializer->serialize($datas, 'json'),
-                        200,
-                        array('Content-Type' => 'application/json')
-                );
+                return $app->json($datas);
             });
 
         return $controllers;

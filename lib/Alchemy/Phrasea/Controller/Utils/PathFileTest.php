@@ -12,10 +12,8 @@
 namespace Alchemy\Phrasea\Controller\Utils;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Silex\ControllerCollection;
 
 /**
  *
@@ -29,43 +27,21 @@ class PathFileTest implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->get('/path/', function() use ($app) {
-                $path = $app['request']->get('path');
+        $controllers->get('/path/', function(Application $app, Request $request) {
 
-                $Serializer = $app['Core']['Serializer'];
-
-                return new Response(
-                        $Serializer->serialize(
-                            array(
-                            'exists'     => file_exists($path)
-                            , 'file'       => is_file($path)
-                            , 'dir'        => is_dir($path)
-                            , 'readable'   => is_readable($path)
-                            , 'writeable'  => is_writable($path)
-                            , 'executable' => is_executable($path)
-                            )
-                            , 'json'
-                        )
-                        , 200
-                        , array('content-type' => 'application/json')
-                );
+                return $app->json(array(
+                        'exists'     => file_exists($request->get('path'))
+                        , 'file'       => is_file($request->get('path'))
+                        , 'dir'        => is_dir($request->get('path'))
+                        , 'readable'   => is_readable($request->get('path'))
+                        , 'writeable'  => is_writable($request->get('path'))
+                        , 'executable' => is_executable($request->get('path'))
+                    ));
             });
 
-        $controllers->get('/url/', function() use ($app) {
-                $url = $app['request']->get('url');
+        $controllers->get('/url/', function(Application $app, Request $request) {
 
-                $Serializer = $app['Core']['Serializer'];
-
-                return new Response(
-                        $Serializer->serialize(
-                            array(
-                            'code' => \http_query::getHttpCodeFromUrl($url)
-                            )
-                            , 'json'
-                        )
-                        , 200
-                        , array('content-type' => 'application/json')
-                );
+                return $app->json(array('code' => \http_query::getHttpCodeFromUrl($request->get('url'))));
             });
 
         return $controllers;

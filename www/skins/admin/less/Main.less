@@ -1,0 +1,370 @@
+//****** LESS SETTINGS ********************************************************/
+
+// Colors & bg settings
+@white: #FFF;
+@black: #000;
+@dark: #333;
+@grey: #CCC;
+@blue: #0088CC;
+@red: #F00;
+@orange: #FAA732; //F0AD30;
+@lemon: #FCEB3F;
+@sand: #FFFBCD;
+@dk-sand: #E5D4A0;
+.bg(@c: @white) {
+    background-color: @c;
+}
+.bgi(@url: '') {
+    background-image: url(@url);
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+// Spaces settings
+.no-space() {
+    margin: 0;
+    padding: 0;
+}
+
+// Text settings
+@size: 12px;
+.title(@size, @m1, @m2) {
+    font-weight: bold;
+    font-size: @size;
+    text-align: left;
+    margin: @m1 @m2;
+}
+.color(@c: @dark) {
+    color: @c;
+}
+
+// Misc.
+.cursor(@type: pointer) {
+    cursor: @type;
+}
+
+/******* GLOBAL CSS for ADMIN *************************************************/
+
+body {
+    .no-space;
+    .bg;
+    .color;
+    overflow-y: auto;
+}
+
+.clear {
+    clear: both;
+}
+
+h1 {
+    .title(@size * 2,10px,0);
+}
+
+h2 {
+    .title(@size + 6,7px,0);
+}
+
+h3 {
+    .title(@size + 2,4px,0);
+}
+
+h4 {
+    .title(@size,2px,0);
+}
+
+a {
+	.color;
+	text-decoration: underline;
+	.cursor;
+    &:hover {
+        .color(@blue);
+        text-decoration: underline;
+        .cursor;
+    }
+}
+
+blockquote {
+    margin: 20px 15px;
+    padding: 10px;
+    border: 1px dotted @black;
+    .bg(lighten(@grey, 15%));
+}
+
+img {
+    vertical-align: middle;
+}
+
+input, textarea, .uneditable-input {
+    margin: 0;
+    padding: 4px;
+}
+
+select {
+    margin: 0;
+    padding: 5px 4px;
+    *padding: 4px;
+}
+
+.help-block, .help-inline {
+    .color(lighten(@dark, 20%));
+}
+
+li.selected, div.selected {
+    .bg(@orange);
+    .color(@white);
+    a {
+        .bg(@orange);
+        .color(@white);
+    }
+}
+
+.treeview ul {
+	.bg(transparent);
+}
+
+#right-ajax.loading{
+    .bgi('/skins/icons/loaderFFF.gif');
+}
+
+div.finder div.content div.title {
+	margin-top: -2px;
+	position: relative;
+	top: 0;
+	left: 0;
+    white-space: nowrap;
+	overflow: hidden;
+}
+
+/******* MAIN MENU ************************************************************/
+
+#mainMenu {
+    .bg(@lemon);
+    a, b, .title, span {
+        .color(@black);
+    }
+    a {
+        &:hover {
+            span {
+                .bg(@sand);
+            }
+        }
+    }
+    span {
+        &.selected {
+            border-top: 3px solid @black;
+        }
+    }
+}
+
+/******* LEFT SIDE ************************************************************/
+
+#left {
+    .bg(@sand);
+    overflow: auto;
+}
+
+#FNDR {
+    overflow: auto;
+    li.selected {
+        .bg(@orange);
+        .color(@white);
+    }
+    a {
+        text-decoration: none;
+        &:hover {
+            text-decoration: none;
+        }
+        span {
+            text-decoration: underline;
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}
+
+/******* USERS ****************************************************************/
+
+.admin_head_opts {
+    margin: 5px 0 10px 0;
+    span {
+        margin: 0 10px;
+    }
+    a {
+        margin: 0 5px;
+    }
+}
+
+#users_page_form {
+    p {
+        margin: 5px 5px 10px;
+    }
+    .input-mini {
+        width: 30px;
+    }
+}
+
+#users_check_uncheck div {
+    padding: 5px 10px;
+    .bg(@grey);
+    .color(@black);
+    .cursor;
+    &.hovered {
+        padding: 5px 10px;
+        .bg(darken(@grey, 50%));
+        .color(@white);
+    }
+}
+
+/******* EDIT USERS ***********************************************************/
+
+div.no_switch {
+    width: 12px;
+    height: 12px;
+    margin: 0 auto;
+    .bgi('/skins/icons/ccoch5.gif');
+}
+
+div.switch_quota,
+div.switch_masks,
+div.switch_time,
+div.switch_right {
+    width: 12px;
+    height: 12px;
+    margin: 0 auto;
+    &.mixed {
+        .bgi('/skins/icons/ccoch2.gif');
+    }
+    &.checked {
+        .bgi('/skins/icons/ccoch1.gif');
+    }
+    &.unchecked {
+        .bgi('/skins/icons/ccoch0.gif');
+    }
+}
+
+.ui-datepicker {
+    z-index:1500;
+}
+
+/******* BOARD ****************************************************************/
+
+.board_section {
+    margin: 0 0 30px;
+    ul, #mail_checker {
+        margin: 0 0 20px 15px;
+    }
+    div[class^="section_"] {
+        width: 400px;
+        height: auto;
+        h2 {
+            line-height: 24px;
+        }
+        ul.setup {
+            width: 360px;
+            border: 1px solid @grey;
+            list-style-type: none;
+            li {
+                padding: 2px 5px 2px 30px;
+                background-image: url(/skins/icons/ok.png);
+                background-repeat: no-repeat;
+                background-position: 5px center;
+                &.non-blocker {
+                    background-image: url(/skins/icons/alert.png);
+                }
+                &.blocker {
+                    background-image: url(/skins/icons/delete.png);
+                }
+                &:hover {
+                    .bg(@sand);
+                }
+            }
+        }
+        #cache_flusher {
+            margin: -10px 0 20px 0;
+        }
+    }
+    .section_left {
+        float: left;
+    }
+    .section_right {
+        margin-left: 430px;
+        padding-top: 1px;
+    }
+    #flush_button {
+        width: 362px;
+        margin-left: 15px;
+    }
+}
+
+/******* PUBLICATIONS *********************************************************/
+
+.form_publication {
+    .controls {
+        margin-left: 10px;
+    }
+}
+
+@ico-size: 32px;
+
+#pub_icon {
+    width: (@ico-size + 10px);
+    height: (@ico-size + 10px);
+    float: left;
+    .thumb_wrapper {
+        width: @ico-size;
+        height: @ico-size;
+        margin: 5px auto;
+        img {
+            width: @ico-size;
+            height: @ico-size;
+        }
+    }
+}
+
+#pub_fileupload {
+    height: (@ico-size + 10px);
+    line-height: (@ico-size + 10px);
+    margin-left: (@ico-size + 10px) + 5px;
+}
+
+/******* GLOBAL VALUES FORM ***************************************************/
+
+#GV_form_head {
+    .control-label {
+        width: 100px;
+        text-align: left;
+    }
+    .controls {
+        margin-left: 110px;
+        input[type="checkbox"] {
+            margin-top: 8px;
+        }
+    }
+}
+
+#GV_form {
+    .error, .NEW {
+        .color(@red);
+        font-weight: bold;
+    }
+    .section {
+        padding-bottom: 10px;
+        h1 {
+            .title(16px, 10px, 0);
+            line-height: 22px;
+        }
+        .control-label {
+            width: auto;
+            margin-left: 230px;
+            float: none;
+            text-align: left;
+        }
+        .controls {
+            margin-left: 0;
+            float: left;
+        }
+
+    }
+}
+

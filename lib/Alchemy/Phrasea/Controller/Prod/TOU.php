@@ -33,8 +33,8 @@ class TOU implements ControllerProviderInterface
                 $ret = array('success' => false, 'message' => '');
 
                 try {
-                    $user = $app['Core']->getAuthenticatedUser();
-                    $session = \Session_Handler::getInstance(\appbox::get_instance($app['Core']));
+                    $user = $app['phraseanet.core']->getAuthenticatedUser();
+                    $session = \Session_Handler::getInstance($app['phraseanet.appbox']);
 
                     $databox = \databox::get_instance((int) $sbas_id);
 
@@ -50,7 +50,7 @@ class TOU implements ControllerProviderInterface
 
                 }
 
-                $Serializer = $app['Core']['Serializer'];
+                $Serializer = $app['phraseanet.core']['Serializer'];
                 $datas = $Serializer->serialize($ret, 'json');
 
                 return new Response($datas, 200, array('Content-Type' => 'application/json'));

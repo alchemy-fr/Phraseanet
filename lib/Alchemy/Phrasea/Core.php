@@ -11,7 +11,10 @@
 
 namespace Alchemy\Phrasea;
 
+use Alchemy\Phrasea\Cache\Manager as CacheManager;
 use Alchemy\Phrasea\Core\Configuration;
+use Alchemy\Phrasea\Core\Version;
+use Alchemy\Phrasea\Security\Firewall;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer;
@@ -54,13 +57,13 @@ class Core extends \Pimple
 
     /**
      *
-     * @var Core\Configuration
+     * @var Configuration
      */
     private $configuration;
 
     public function __construct($environement = null)
     {
-        $this->configuration = Core\Configuration::build(null, $environement);
+        $this->configuration = Configuration::build(null, $environement);
 
         $core = $this;
 
@@ -75,7 +78,7 @@ class Core extends \Pimple
          * Set version
          */
         $this['Version'] = $this->share(function() {
-                return new Core\Version();
+                return new Version();
             });
 
         if ($this->configuration->isInstalled()) {
@@ -99,8 +102,12 @@ class Core extends \Pimple
 
                 $file = new \SplFileInfo(__DIR__ . '/../../../tmp/cache_registry.yml');
 
-                return new \Alchemy\Phrasea\Cache\Manager($core, $file);
+                return new CacheManager($core, $file);
             });
+
+        $this['Firewall'] = $this->share(function() {
+            return new Firewall();
+        });
 
         /**
          * Set Entity Manager using configuration

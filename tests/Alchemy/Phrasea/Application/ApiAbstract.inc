@@ -145,7 +145,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
     public function testCheckNativeApp()
     {
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = $this->app["phraseanet.appbox"];
 
         $registry = $this->getMock('\\registry', array(), array(), '', false);
         $registry
@@ -153,13 +153,13 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             ->method('get')
             ->with($this->equalTo('GV_client_navigator'))
             ->will($this->returnValue(false));
-        $registryBkp = $this->app["Core"]->getRegistry();
+        $registryBkp = $this->app["phraseanet.core"]->getRegistry();
 
         $fail = null;
 
         try {
 
-            $this->app["Core"]['Registry'] = $registry;
+            $this->app["phraseanet.core"]['Registry'] = $registry;
 
             $nativeApp = \API_OAuth2_Application::load_from_client_id($appbox, \API_OAuth2_Application_Navigator::CLIENT_ID);
 
@@ -176,7 +176,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             $fail = $e;
         }
 
-        $this->app["Core"]['Registry'] = $registryBkp;
+        $this->app["phraseanet.core"]['Registry'] = $registryBkp;
 
         if ($fail) {
             throw $fail;
@@ -222,7 +222,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testGetMonitorTasks()
     {
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = $this->app["phraseanet.appbox"];
         if (null === self::$adminToken) {
             $this->markTestSkipped('there is no user with admin rights');
         }
@@ -288,7 +288,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testGetMonitorTaskById()
     {
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = $this->app["phraseanet.appbox"];
         $task_manager = new \task_manager($appbox);
         $tasks = $task_manager->getTasks();
 
@@ -322,7 +322,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testPostMonitorTaskById()
     {
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = $this->app["phraseanet.appbox"];
         $task_manager = new \task_manager($appbox);
         $tasks = $task_manager->getTasks();
 
@@ -379,7 +379,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             $this->markTestSkipped('there is no user with admin rights');
         }
 
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = $this->app["phraseanet.appbox"];
         $task_manager = new \task_manager($appbox);
         $tasks = $task_manager->getTasks();
 
@@ -413,7 +413,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testPostMonitorStopTask()
     {
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = $this->app["phraseanet.appbox"];
         $task_manager = new \task_manager($appbox);
 
         $tasks = $task_manager->getTasks();

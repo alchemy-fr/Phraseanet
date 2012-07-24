@@ -29,7 +29,7 @@ class Language implements ControllerProviderInterface
         $controller = $app['controllers_factory'];
 
         $controller->get("/", function(Application $app) {
-                $registry = $app["Core"]->getRegistry();
+                $registry = $app['phraseanet.core']->getRegistry();
 
                 $out = array();
                 $out['thesaurusBasesChanged'] = _('prod::recherche: Attention : la liste des bases selectionnees pour la recherche a ete changee.');
@@ -104,7 +104,7 @@ class Language implements ControllerProviderInterface
                 $out['feedbackCanContribute'] = _('User contribute to the feedback');
                 $out['feedbackCanSeeOthers'] = _('User can see others choices');
 
-                $Serializer = $app['Core']['Serializer'];
+                $Serializer = $app['phraseanet.core']['Serializer'];
 
                 return new Response(
                         $Serializer->serialize($out, 'json')

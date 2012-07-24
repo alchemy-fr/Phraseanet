@@ -27,7 +27,7 @@ class RSSFeeds implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
-        $appbox = \appbox::get_instance($app['Core']);
+        $appbox = $app['phraseanet.appbox'];
 
         $controllers = $app['controllers_factory'];
 

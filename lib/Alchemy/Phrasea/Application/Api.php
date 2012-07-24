@@ -11,10 +11,13 @@
 
 namespace Alchemy\Phrasea\Application;
 
-use Silex\Application;
+use Alchemy\Phrasea\Application as PhraseaApplication;
+use Silex\Application as SilexApplication;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception;
 
 /**
  *
@@ -23,17 +26,7 @@ use Symfony\Component\HttpKernel\Exception;
  */
 return call_user_func(function() {
 
-            $app = new \Silex\Application();
-
-            /**
-             * @var Alchemy\Phrasea\Core
-             */
-            $app["Core"] = \bootstrap::getCore();
-
-            /**
-             * @var appbox
-             */
-            $app["appbox"] = \appbox::get_instance($app['Core']);
+            $app = new PhraseaApplication();
 
             /**
              * @var API_OAuth2_Token
@@ -45,7 +38,7 @@ return call_user_func(function() {
              * @var Closure
              */
             $app['api'] = function () use ($app) {
-                    return new \API_V1_adapter(false, $app["appbox"], $app["Core"]);
+                    return new \API_V1_adapter($app['phraseanet.appbox'], $app['phraseanet.core']);
                 };
 
             /**
@@ -59,13 +52,13 @@ return call_user_func(function() {
              * @ throws \API_V1_exception_forbidden
              */
             $app->before(function($request) use ($app) {
-                    $session = $app["appbox"]->get_session();
-                    $registry = $app['Core']->getRegistry();
-                    $oauth2_adapter = new \API_OAuth2_Adapter($app["appbox"]);
+                    $session = $app['phraseanet.appbox']->get_session();
+                    $registry = $app['phraseanet.core']->getRegistry();
+                    $oauth2_adapter = new \API_OAuth2_Adapter($app['phraseanet.appbox']);
                     $oauth2_adapter->verifyAccessToken();
 
-                    $user = \User_Adapter::getInstance($oauth2_adapter->get_usr_id(), $app["appbox"]);
-                    $app['token'] = \API_OAuth2_Token::load_by_oauth_token($app["appbox"], $oauth2_adapter->getToken());
+                    $user = \User_Adapter::getInstance($oauth2_adapter->get_usr_id(), $app['phraseanet.appbox']);
+                    $app['token'] = \API_OAuth2_Token::load_by_oauth_token($app['phraseanet.appbox'], $oauth2_adapter->getToken());
 
                     $oAuth2App = $app['token']->get_account()->get_application();
                     /* @var $oAuth2App \API_OAuth2_Application */
@@ -96,7 +89,7 @@ return call_user_func(function() {
                 });
 
             /**
-             * oAUth log process
+             * OAuth log process
              *
              * Parse the requested route to fetch
              * - the ressource (databox, basket, record etc ..)
@@ -157,7 +150,7 @@ return call_user_func(function() {
                     $pathInfo = $request->getPathInfo();
                     $route = $parseRoute($pathInfo, $response);
                     \API_V1_Log::create(
-                        $app["appbox"]
+                        $app['phraseanet.appbox']
                         , $account
                         , $request->getMethod() . " " . $pathInfo
                         , $response->getStatusCode()
@@ -177,7 +170,7 @@ return call_user_func(function() {
                 };
 
             /**
-             * Check wether the current user is Admin
+             * Check wether the current user is Admin or not
              */
             $mustBeAdmin = function (Request $request) use ($app) {
                     /* @var $user \User_Adapter */
@@ -197,15 +190,12 @@ return call_user_func(function() {
              * Parameters :
              *
              */
-            $route = '/monitor/tasks/';
-            $app->get(
-                $route, function(\Silex\Application $app, Request $request) {
+            $app->get('/monitor/tasks/', function(SilexApplication $app, Request $request) {
                     return $app['api']->get_task_list($app)->get_response();
                 }
             )->before($mustBeAdmin);
 
             /**
-             * *******************************************************************
              * Get task informations
              *
              * Route : /monitor/phraseanet/
@@ -215,15 +205,12 @@ return call_user_func(function() {
              * Parameters :
              *
              */
-            $route = '/monitor/task/{task_id}/';
-            $app->get(
-                $route, function(\Silex\Application $app, Request $request, $task_id) {
+            $app->get('/monitor/task/{task_id}/', function(SilexApplication $app, Request $request, $task_id) {
                     return $app['api']->get_task($app, $task_id)->get_response();
                 }
             )->before($mustBeAdmin)->assert('task_id', '\d+');
 
             /**
-             * *******************************************************************
              * Start task
              *
              * Route : /monitor/task/{task_id}/
@@ -234,15 +221,12 @@ return call_user_func(function() {
              * - name (string) change the name of the task
              * - autostart (boolean) start task when scheduler starts
              */
-            $route = '/monitor/task/{task_id}/';
-            $app->post(
-                $route, function(\Silex\Application $app, Request $request, $task_id) {
+            $app->post('/monitor/task/{task_id}/', function(SilexApplication $app, Request $request, $task_id) {
                     return $app['api']->set_task_property($app, $task_id)->get_response();
                 }
             )->before($mustBeAdmin)->assert('task_id', '\d+');
 
             /**
-             * *******************************************************************
              * Start task
              *
              * Route : /monitor/task/{task_id}/start/
@@ -252,15 +236,12 @@ return call_user_func(function() {
              * Parameters :
              *
              */
-            $route = '/monitor/task/{task_id}/start/';
-            $app->post(
-                $route, function(\Silex\Application $app, Request $request, $task_id) {
+            $app->post('/monitor/task/{task_id}/start/', function(SilexApplication $app, Request $request, $task_id) {
                     return $app['api']->start_task($app, $task_id)->get_response();
                 }
             )->before($mustBeAdmin);
 
             /**
-             * *******************************************************************
              * Stop task
              *
              * Route : /monitor/task/{task_id}/stop/
@@ -270,15 +251,12 @@ return call_user_func(function() {
              * Parameters :
              *
              */
-            $route = '/monitor/task/{task_id}/stop/';
-            $app->post(
-                $route, function(\Silex\Application $app, Request $request, $task_id) {
+            $app->post('/monitor/task/{task_id}/stop/', function(SilexApplication $app, Request $request, $task_id) {
                     return $app['api']->stop_task($app, $task_id)->get_response();
                 }
             )->before($mustBeAdmin);
 
             /**
-             * *******************************************************************
              * Get some information about phraseanet
              *
              * Route : /monitor/phraseanet/
@@ -288,15 +266,12 @@ return call_user_func(function() {
              * Parameters :
              *
              */
-            $route = '/monitor/phraseanet/';
-            $app->get(
-                $route, function(\Silex\Application $app, Request $request) {
+            $app->get('/monitor/phraseanet/', function(SilexApplication $app, Request $request) {
                     return $app['api']->get_phraseanet_monitor($app)->get_response();
                 }
             )->before($mustBeAdmin);
 
             /**
-             * *******************************************************************
              * Route : /databoxes/list/
              *
              * Method : GET
@@ -304,16 +279,12 @@ return call_user_func(function() {
              * Parameters :
              *
              */
-            $route = '/databoxes/list/';
-            $app->get(
-                $route, function(\Silex\Application $app, Request $request) {
+            $app->get('/databoxes/list/', function(SilexApplication $app, Request $request) {
                     return $app['api']->get_databoxes($request)->get_response();
                 }
             );
 
             /**
-             * *******************************************************************
-             *
              * Route /databoxes/DATABOX_ID/collections/
              *
              * Method : GET
@@ -321,19 +292,16 @@ return call_user_func(function() {
              * Parameters ;
              *    DATABOX_ID : required INT
              */
-            $route = '/databoxes/{databox_id}/collections/';
-            $app->get(
-                $route, function($databox_id) use ($app) {
-                    $result = $app['api']->get_databox_collections($app['request'], $databox_id);
-
-                    return $result->get_response();
+            $app->get('/databoxes/{databox_id}/collections/', function(SilexApplication $app, $databox_id) {
+                    return $app['api']
+                            ->get_databox_collections($app['request'], $databox_id)
+                            ->get_response();
                 }
             )->assert('databox_id', '\d+');
 
             $app->get('/databoxes/{any_id}/collections/', $bad_request_exception);
 
             /**
-             * *******************************************************************
              * Route /databoxes/DATABOX_ID/status/
              *
              * Method : GET
@@ -342,12 +310,10 @@ return call_user_func(function() {
              *    DATABOX_ID : required INT
              *
              */
-            $route = '/databoxes/{databox_id}/status/';
-            $app->get(
-                $route, function($databox_id) use ($app) {
-                    $result = $app['api']->get_databox_status($app['request'], $databox_id);
-
-                    return $result->get_response();
+            $app->get('/databoxes/{databox_id}/status/', function(SilexApplication $app, $databox_id) {
+                    return $app['api']
+                            ->get_databox_status($app['request'], $databox_id)
+                            ->get_response();
                 }
             )->assert('databox_id', '\d+');
 
@@ -361,12 +327,10 @@ return call_user_func(function() {
              * Parameters ;
              *    DATABOX_ID : required INT
              */
-            $route = '/databoxes/{databox_id}/metadatas/';
-            $app->get(
-                $route, function($databox_id) use ($app) {
-                    $result = $app['api']->get_databox_metadatas($app['request'], $databox_id);
-
-                    return $result->get_response();
+            $app->get('/databoxes/{databox_id}/metadatas/', function(SilexApplication $app, $databox_id) {
+                    return $app['api']
+                            ->get_databox_metadatas($app['request'], $databox_id)
+                            ->get_response();
                 }
             )->assert('databox_id', '\d+');
 
@@ -380,33 +344,26 @@ return call_user_func(function() {
              * Parameters ;
              *    DATABOX_ID : required INT
              */
-            $route = '/databoxes/{databox_id}/termsOfUse/';
-            $app->get(
-                $route, function($databox_id) use ($app) {
-                    $result = $app['api']->get_databox_terms($app['request'], $databox_id);
-
-                    return $result->get_response();
+            $app->get('/databoxes/{databox_id}/termsOfUse/', function(SilexApplication $app, $databox_id) {
+                    return $app['api']
+                            ->get_databox_terms($app['request'], $databox_id)
+                            ->get_response();
                 }
             )->assert('databox_id', '\d+');
 
             $app->get('/databoxes/{any_id}/termsOfUse/', $bad_request_exception);
 
-            $route = '/quarantine/list/';
-            $app->get(
-                $route, function(\Silex\Application $app, Request $request) {
+            $app->get('/quarantine/list/', function(SilexApplication $app, Request $request) {
                     return $app['api']->list_quarantine($app, $request)->get_response();
                 }
             );
 
-            $route = '/quarantine/item/{lazaret_id}/';
-            $app->get(
-                $route, function($lazaret_id, \Silex\Application $app, Request $request) {
+            $app->get('/quarantine/item/{lazaret_id}/', function($lazaret_id, SilexApplication $app, Request $request) {
                     return $app['api']->list_quarantine_item($lazaret_id, $app, $request)->get_response();
                 }
             );
 
             /**
-             * *******************************************************************
              * Route : /records/add/
              *
              * Method : POST
@@ -414,9 +371,7 @@ return call_user_func(function() {
              * Parameters :
              *
              */
-            $route = '/records/add/';
-            $app->post(
-                $route, function(\Silex\Application $app, Request $request) {
+            $app->post('/records/add/', function(SilexApplication $app, Request $request) {
                     return $app['api']->add_record($app, $request)->get_response();
                 }
             );
@@ -437,21 +392,15 @@ return call_user_func(function() {
              *    Array of record objects
              *
              */
-            $route = '/records/search/';
-            $app->match(
-                $route, function() use ($app) {
-                    $result = $app['api']->search_records($app['request']);
-
-                    return $result->get_response();
+            $app->match('/records/search/', function(SilexApplication $app) {
+                    return $app['api']->search_records($app['request'])->get_response();
                 }
             );
 
-            $route = '/records/{databox_id}/{record_id}/caption/';
-            $app->get(
-                $route, function($databox_id, $record_id) use ($app) {
-                    $result = $app['api']->caption_records($app['request'], $databox_id, $record_id);
-
-                    return $result->get_response();
+            $app->get('/records/{databox_id}/{record_id}/caption/', function(SilexApplication $app, $databox_id, $record_id) {
+                    return $app['api']
+                            ->caption_records($app['request'], $databox_id, $record_id)
+                            ->get_response();
                 }
             )->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
@@ -467,12 +416,10 @@ return call_user_func(function() {
              *    RECORD_ID : required INT
              *
              */
-            $route = '/records/{databox_id}/{record_id}/metadatas/';
-            $app->get(
-                $route, function($databox_id, $record_id) use ($app) {
-                    $result = $app['api']->get_record_metadatas($app['request'], $databox_id, $record_id);
-
-                    return $result->get_response();
+            $app->get('/records/{databox_id}/{record_id}/metadatas/', function(SilexApplication $app, $databox_id, $record_id) {
+                    return $app['api']
+                            ->get_record_metadatas($app['request'], $databox_id, $record_id)
+                            ->get_response();
                 }
             )->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
@@ -488,12 +435,10 @@ return call_user_func(function() {
              *    RECORD_ID : required INT
              *
              */
-            $route = '/records/{databox_id}/{record_id}/status/';
-            $app->get(
-                $route, function($databox_id, $record_id) use ($app) {
-                    $result = $app['api']->get_record_status($app['request'], $databox_id, $record_id);
-
-                    return $result->get_response();
+            $app->get('/records/{databox_id}/{record_id}/status/', function(SilexApplication $app, $databox_id, $record_id) {
+                    return $app['api']
+                            ->get_record_status($app['request'], $databox_id, $record_id)
+                            ->get_response();
                 }
             )->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
@@ -509,12 +454,10 @@ return call_user_func(function() {
              *    RECORD_ID : required INT
              *
              */
-            $route = '/records/{databox_id}/{record_id}/related/';
-            $app->get(
-                $route, function($databox_id, $record_id) use ($app) {
-                    $result = $app['api']->get_record_related($app['request'], $databox_id, $record_id);
-
-                    return $result->get_response();
+            $app->get('/records/{databox_id}/{record_id}/related/', function(SilexApplication $app, $databox_id, $record_id) {
+                    return $app['api']
+                            ->get_record_related($app['request'], $databox_id, $record_id)
+                            ->get_response();
                 }
             )->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
@@ -530,12 +473,10 @@ return call_user_func(function() {
              *    RECORD_ID : required INT
              *
              */
-            $route = '/records/{databox_id}/{record_id}/embed/';
-            $app->get(
-                $route, function($databox_id, $record_id) use ($app) {
-                    $result = $app['api']->get_record_embed($app['request'], $databox_id, $record_id);
-
-                    return $result->get_response();
+            $app->get('/records/{databox_id}/{record_id}/embed/', function(SilexApplication $app, $databox_id, $record_id) {
+                    return $app['api']
+                            ->get_record_embed($app['request'], $databox_id, $record_id)
+                            ->get_response();
                 }
             )->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
@@ -551,12 +492,10 @@ return call_user_func(function() {
              *    RECORD_ID : required INT
              *
              */
-            $route = '/records/{databox_id}/{record_id}/setmetadatas/';
-            $app->post(
-                $route, function($databox_id, $record_id) use ($app) {
-                    $result = $app['api']->set_record_metadatas($app['request'], $databox_id, $record_id);
-
-                    return $result->get_response();
+            $app->post('/records/{databox_id}/{record_id}/setmetadatas/', function(SilexApplication $app, $databox_id, $record_id) {
+                    return $app['api']
+                            ->set_record_metadatas($app['request'], $databox_id, $record_id)
+                            ->get_response();
                 }
             )->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
@@ -572,12 +511,10 @@ return call_user_func(function() {
              *    RECORD_ID : required INT
              *
              */
-            $route = '/records/{databox_id}/{record_id}/setstatus/';
-            $app->post(
-                $route, function($databox_id, $record_id) use ($app) {
-                    $result = $app['api']->set_record_status($app['request'], $databox_id, $record_id);
-
-                    return $result->get_response();
+            $app->post('/records/{databox_id}/{record_id}/setstatus/', function(SilexApplication $app, $databox_id, $record_id) {
+                    return $app['api']
+                            ->set_record_status($app['request'], $databox_id, $record_id)
+                            ->get_response();
                 }
             )->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
@@ -593,22 +530,21 @@ return call_user_func(function() {
              *    RECORD_ID : required INT
              *
              */
-            $route = '/records/{databox_id}/{record_id}/setcollection/';
-            $app->post(
-                $route, function($databox_id, $record_id) use ($app) {
-                    $result = $app['api']->set_record_collection($app['request'], $databox_id, $record_id);
-
-                    return $result->get_response();
+            $app->post('/records/{databox_id}/{record_id}/setcollection/', function(SilexApplication $app, $databox_id, $record_id) {
+                    return $app['api']
+                            ->set_record_collection($app['request'], $databox_id, $record_id)
+                            ->get_response();
                 }
             )->assert('databox_id', '\d+')->assert('record_id', '\d+');
+
             $app->post('/records/{wrong_databox_id}/{wrong_record_id}/setcollection/', $bad_request_exception);
 
-            $route = '/records/{databox_id}/{record_id}/';
-            $app->get($route, function($databox_id, $record_id) use ($app) {
-                    $result = $app['api']->get_record($app['request'], $databox_id, $record_id);
-
-                    return $result->get_response();
+            $app->get('/records/{databox_id}/{record_id}/', function(SilexApplication $app, $databox_id, $record_id) {
+                    return $app['api']
+                            ->get_record($app['request'], $databox_id, $record_id)
+                            ->get_response();
                 })->assert('databox_id', '\d+')->assert('record_id', '\d+');
+
             $app->get('/records/{any_id}/{anyother_id}/', $bad_request_exception);
 
             /**
@@ -619,12 +555,8 @@ return call_user_func(function() {
              * Parameters :
              *
              */
-            $route = '/baskets/list/';
-            $app->get(
-                $route, function() use ($app) {
-                    $result = $app['api']->search_baskets($app['request']);
-
-                    return $result->get_response();
+            $app->get('/baskets/list/', function(SilexApplication $app) {
+                    return $app['api']->search_baskets($app['request'])->get_response();
                 }
             );
 
@@ -636,12 +568,8 @@ return call_user_func(function() {
              * Parameters :
              *
              */
-            $route = '/baskets/add/';
-            $app->post(
-                $route, function() use ($app) {
-                    $result = $app['api']->create_basket($app['request']);
-
-                    return $result->get_response();
+            $app->post('/baskets/add/', function(SilexApplication $app) {
+                    return $app['api']->create_basket($app['request'])->get_response();
                 }
             );
 
@@ -654,14 +582,11 @@ return call_user_func(function() {
              *    BASKET_ID : required INT
              *
              */
-            $route = '/baskets/{basket_id}/content/';
-            $app->get(
-                $route, function($basket_id) use ($app) {
-                    $result = $app['api']->get_basket($app['request'], $basket_id);
-
-                    return $result->get_response();
+            $app->get('/baskets/{basket_id}/content/', function(SilexApplication $app, $basket_id) {
+                    return $app['api']->get_basket($app['request'], $basket_id)->get_response();
                 }
             )->assert('basket_id', '\d+');
+
             $app->get('/baskets/{wrong_basket_id}/content/', $bad_request_exception);
 
             /**
@@ -673,14 +598,13 @@ return call_user_func(function() {
              *    BASKET_ID : required INT
              *
              */
-            $route = '/baskets/{basket_id}/setname/';
-            $app->post(
-                $route, function($basket_id) use ($app) {
-                    $result = $app['api']->set_basket_title($app['request'], $basket_id);
-
-                    return $result->get_response();
+            $app->post('/baskets/{basket_id}/setname/', function(SilexApplication $app, $basket_id) {
+                    return $app['api']
+                            ->set_basket_title($app['request'], $basket_id)
+                            ->get_response();
                 }
             )->assert('basket_id', '\d+');
+
             $app->post('/baskets/{wrong_basket_id}/setname/', $bad_request_exception);
 
             /**
@@ -692,14 +616,13 @@ return call_user_func(function() {
              *    BASKET_ID : required INT
              *
              */
-            $route = '/baskets/{basket_id}/setdescription/';
-            $app->post(
-                $route, function($basket_id) use ($app) {
-                    $result = $app['api']->set_basket_description($app['request'], $basket_id);
-
-                    return $result->get_response();
+            $app->post('/baskets/{basket_id}/setdescription/', function(SilexApplication $app, $basket_id) {
+                    return $app['api']
+                            ->set_basket_description($app['request'], $basket_id)
+                            ->get_response();
                 }
             )->assert('basket_id', '\d+');
+
             $app->post('/baskets/{wrong_basket_id}/setdescription/', $bad_request_exception);
 
             /**
@@ -711,14 +634,11 @@ return call_user_func(function() {
              *    BASKET_ID : required INT
              *
              */
-            $route = '/baskets/{basket_id}/delete/';
-            $app->post(
-                $route, function($basket_id) use ($app) {
-                    $result = $app['api']->delete_basket($app['request'], $basket_id);
-
-                    return $result->get_response();
+            $app->post('/baskets/{basket_id}/delete/', function(SilexApplication $app, $basket_id) {
+                    return $app['api']->delete_basket($app['request'], $basket_id)->get_response();
                 }
             )->assert('basket_id', '\d+');
+
             $app->post('/baskets/{wrong_basket_id}/delete/', $bad_request_exception);
 
             /**
@@ -729,32 +649,27 @@ return call_user_func(function() {
              * Parameters :
              *
              */
-            $route = '/feeds/list/';
-            $app->get(
-                $route, function() use ($app) {
-                    $result = $app['api']->search_publications($app['request'], $app['Core']->getAuthenticatedUser());
-
-                    return $result->get_response();
+            $app->get('/feeds/list/', function(SilexApplication $app) {
+                    return $app['api']
+                            ->search_publications($app['request'], $app['phraseanet.core']->getAuthenticatedUser())
+                            ->get_response();
                 }
             );
 
-            $route = '/feeds/content/';
-            $app->get(
-                $route, function() use ($app) {
-                    $result = $app['api']->get_publications($app['request'], $app['Core']->getAuthenticatedUser());
-
-                    return $result->get_response();
+            $app->get('/feeds/content/', function(SilexApplication $app) {
+                    return $app['api']
+                            ->get_publications($app['request'], $app['phraseanet.core']->getAuthenticatedUser())
+                            ->get_response();
                 }
             );
 
-            $route = '/feeds/entry/{entry_id}/';
-            $app->get(
-                $route, function($entry_id) use ($app) {
-                    $result = $app['api']->get_feed_entry($app['request'], $entry_id, $app['Core']->getAuthenticatedUser());
-
-                    return $result->get_response();
+            $app->get('/feeds/entry/{entry_id}/', function(SilexApplication $app, $entry_id) {
+                    return $app['api']
+                            ->get_feed_entry($app['request'], $entry_id, $app['phraseanet.core']->getAuthenticatedUser())
+                            ->get_response();
                 }
             )->assert('entry_id', '\d+');
+
             $app->get('/feeds/entry/{entry_id}/', $bad_request_exception);
 
             /**
@@ -766,21 +681,17 @@ return call_user_func(function() {
              *    PUBLICATION_ID : required INT
              *
              */
-            $route = '/feeds/{feed_id}/content/';
-            $app->get(
-                $route, function($feed_id) use ($app) {
-                    $result = $app['api']->get_publication($app['request'], $feed_id, $app['Core']->getAuthenticatedUser());
-
-                    return $result->get_response();
+            $app->get('/feeds/{feed_id}/content/', function(SilexApplication $app, $feed_id) {
+                    return $app['api']
+                            ->get_publication($app['request'], $feed_id, $app['phraseanet.core']->getAuthenticatedUser())
+                            ->get_response();
                 }
             )->assert('feed_id', '\d+');
+
             $app->get('/feeds/{wrong_feed_id}/content/', $bad_request_exception);
 
             /**
-             * *******************************************************************
-             *
              * Route Errors
-             *
              */
             $app->error(function (\Exception $e) use ($app) {
 
@@ -788,7 +699,7 @@ return call_user_func(function() {
 
                     if ($e instanceof \API_V1_exception_methodnotallowed) {
                         $code = \API_V1_result::ERROR_METHODNOTALLOWED;
-                    } elseif ($e instanceof Exception\MethodNotAllowedHttpException) {
+                    } elseif ($e instanceof MethodNotAllowedHttpException) {
                         $code = \API_V1_result::ERROR_METHODNOTALLOWED;
                     } elseif ($e instanceof \API_V1_exception_badrequest) {
                         $code = \API_V1_result::ERROR_BAD_REQUEST;
@@ -800,13 +711,13 @@ return call_user_func(function() {
                         $code = \API_V1_result::ERROR_INTERNALSERVERERROR;
                     } elseif ($e instanceof \Exception_NotFound) {
                         $code = \API_V1_result::ERROR_NOTFOUND;
-                    } elseif ($e instanceof Exception\NotFoundHttpException) {
+                    } elseif ($e instanceof NotFoundHttpException) {
                         $code = \API_V1_result::ERROR_NOTFOUND;
                     } else {
                         $code = \API_V1_result::ERROR_INTERNALSERVERERROR;
                     }
 
-                    if ($e instanceof \Symfony\Component\HttpKernel\Exception\HttpException) {
+                    if ($e instanceof HttpException) {
                         $headers = $e->getHeaders();
                     }
 
@@ -821,4 +732,5 @@ return call_user_func(function() {
                 });
 
             return $app;
-        });
+        }
+);

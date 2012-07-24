@@ -33,10 +33,10 @@ class Query implements ControllerProviderInterface
 
         $controllers->match('/', function(Application $app, Request $request) {
 
-                $appbox = \appbox::get_instance($app['Core']);
+                $appbox = $app['phraseanet.appbox'];
                 $registry = $appbox->get_registry();
 
-                $user = $app['Core']->getAuthenticatedUser();
+                $user = $app['phraseanet.core']->getAuthenticatedUser();
 
                 $query = (string) $request->get('qry');
 
@@ -209,7 +209,7 @@ class Query implements ControllerProviderInterface
                 $json['prev_page'] = ($page > 1 && $result->get_count_available_results() > 0) ? ($page - 1) : false;
                 $json['form'] = $form;
 
-                $datas = $app['Core']['Serializer']->serialize($json, 'json');
+                $datas = $app['phraseanet.core']['Serializer']->serialize($json, 'json');
 
                 return new Response($datas, 200, array('Content-Type' => 'application/json'));
             });

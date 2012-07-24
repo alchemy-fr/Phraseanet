@@ -281,8 +281,9 @@ class API_OAuth2_Account
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        if ( ! $row)
+        if ( ! $row) {
             throw new Exception_NotFound();
+        }
 
         return new self($appbox, $row['api_account_id']);
     }

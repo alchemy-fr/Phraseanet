@@ -47,11 +47,11 @@ class UsrLists implements ControllerProviderInterface
                 $lists = new \Doctrine\Common\Collections\ArrayCollection();
 
                 try {
-                    $em = $app['Core']->getEntityManager();
+                    $em = $app['phraseanet.core']->getEntityManager();
 
                     $repository = $em->getRepository('\Entities\UsrList');
 
-                    $lists = $repository->findUserLists($app['Core']->getAuthenticatedUser());
+                    $lists = $repository->findUserLists($app['phraseanet.core']->getAuthenticatedUser());
 
                     $result = array();
 
@@ -106,12 +106,12 @@ class UsrLists implements ControllerProviderInterface
                 }
 
                 if ($request->getRequestFormat() == 'json') {
-                    $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+                    $Json = $app['phraseanet.core']['Serializer']->serialize($datas, 'json');
 
                     return new Response($Json, 200, array('Content-Type' => 'application/json'));
                 } else {
 
-                    return new Response($app['Core']->getTwig()->render('prod/actions/Feedback/lists-all.html.twig', array('lists' => $lists)));
+                    return new Response($app['phraseanet.core']->getTwig()->render('prod/actions/Feedback/lists-all.html.twig', array('lists' => $lists)));
                 }
             }
         );
@@ -135,13 +135,13 @@ class UsrLists implements ControllerProviderInterface
                         throw new ControllerException(_('List name is required'));
                     }
 
-                    $em = $app['Core']->getEntityManager();
+                    $em = $app['phraseanet.core']->getEntityManager();
 
                     $List = new \Entities\UsrList();
 
                     $Owner = new \Entities\UsrListOwner();
                     $Owner->setRole(\Entities\UsrListOwner::ROLE_ADMIN);
-                    $Owner->setUser($app['Core']->getAuthenticatedUser());
+                    $Owner->setUser($app['phraseanet.core']->getAuthenticatedUser());
                     $Owner->setList($List);
 
                     $List->setName($list_name);
@@ -165,7 +165,7 @@ class UsrLists implements ControllerProviderInterface
 
                 }
 
-                $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+                $Json = $app['phraseanet.core']['Serializer']->serialize($datas, 'json');
 
                 return new Response($Json, 200, array('Content-Type' => 'application/json'));
             }
@@ -178,8 +178,8 @@ class UsrLists implements ControllerProviderInterface
 
                 $result = array();
 
-                $user = $app['Core']->getAuthenticatedUser();
-                $em = $app['Core']->getEntityManager();
+                $user = $app['phraseanet.core']->getAuthenticatedUser();
+                $em = $app['phraseanet.core']->getEntityManager();
 
                 $repository = $em->getRepository('\Entities\UsrList');
 
@@ -242,8 +242,8 @@ class UsrLists implements ControllerProviderInterface
                         throw new ControllerException(_('List name is required'));
                     }
 
-                    $user = $app['Core']->getAuthenticatedUser();
-                    $em = $app['Core']->getEntityManager();
+                    $user = $app['phraseanet.core']->getAuthenticatedUser();
+                    $em = $app['phraseanet.core']->getEntityManager();
 
                     $repository = $em->getRepository('\Entities\UsrList');
 
@@ -270,7 +270,7 @@ class UsrLists implements ControllerProviderInterface
 
                 }
 
-                $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+                $Json = $app['phraseanet.core']['Serializer']->serialize($datas, 'json');
 
                 return new Response($Json, 200, array('Content-Type' => 'application/json'));
             }
@@ -280,12 +280,12 @@ class UsrLists implements ControllerProviderInterface
          * Delete a list
          */
         $controllers->post('/list/{list_id}/delete/', function(Application $app, $list_id) {
-                $em = $app['Core']->getEntityManager();
+                $em = $app['phraseanet.core']->getEntityManager();
 
                 try {
                     $repository = $em->getRepository('\Entities\UsrList');
 
-                    $user = $app['Core']->getAuthenticatedUser();
+                    $user = $app['phraseanet.core']->getAuthenticatedUser();
 
                     $list = $repository->findUserListByUserAndId($user, $list_id);
 
@@ -313,7 +313,7 @@ class UsrLists implements ControllerProviderInterface
                     );
                 }
 
-                $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+                $Json = $app['phraseanet.core']['Serializer']->serialize($datas, 'json');
 
                 return new Response($Json, 200, array('Content-Type' => 'application/json'));
             }
@@ -323,12 +323,12 @@ class UsrLists implements ControllerProviderInterface
          * Remove a usr_id from a list
          */
         $controllers->post('/list/{list_id}/remove/{usr_id}/', function(Application $app, $list_id, $usr_id) {
-                $em = $app['Core']->getEntityManager();
+                $em = $app['phraseanet.core']->getEntityManager();
 
                 try {
                     $repository = $em->getRepository('\Entities\UsrList');
 
-                    $user = $app['Core']->getAuthenticatedUser();
+                    $user = $app['phraseanet.core']->getAuthenticatedUser();
 
                     $list = $repository->findUserListByUserAndId($user, $list_id);
                     /* @var $list \Entities\UsrList */
@@ -361,7 +361,7 @@ class UsrLists implements ControllerProviderInterface
                     );
                 }
 
-                $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+                $Json = $app['phraseanet.core']['Serializer']->serialize($datas, 'json');
 
                 return new Response($Json, 200, array('Content-Type' => 'application/json'));
             }
@@ -371,8 +371,8 @@ class UsrLists implements ControllerProviderInterface
          * Adds a usr_id to a list
          */
         $controllers->post('/list/{list_id}/add/', function(Application $app, Request $request, $list_id) {
-                $em = $app['Core']->getEntityManager();
-                $user = $app['Core']->getAuthenticatedUser();
+                $em = $app['phraseanet.core']->getEntityManager();
+                $user = $app['phraseanet.core']->getAuthenticatedUser();
 
                 try {
                     if ( ! is_array($request->get('usr_ids'))) {
@@ -391,7 +391,7 @@ class UsrLists implements ControllerProviderInterface
                     $inserted_usr_ids = array();
 
                     foreach ($request->get('usr_ids') as $usr_id) {
-                        $user_entry = \User_Adapter::getInstance($usr_id, \appbox::get_instance($app['Core']));
+                        $user_entry = \User_Adapter::getInstance($usr_id, $app['phraseanet.appbox']);
 
                         if ($list->has($user_entry))
                             continue;
@@ -435,7 +435,7 @@ class UsrLists implements ControllerProviderInterface
                     );
                 }
 
-                $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+                $Json = $app['phraseanet.core']['Serializer']->serialize($datas, 'json');
 
                 return new Response($Json, 200, array('Content-Type' => 'application/json'));
             }
@@ -443,8 +443,8 @@ class UsrLists implements ControllerProviderInterface
 
         $controllers->get('/list/{list_id}/share/', function(Application $app, Request $request, $list_id) {
 
-                $em = $app['Core']->getEntityManager();
-                $user = $app['Core']->getAuthenticatedUser();
+                $em = $app['phraseanet.core']->getEntityManager();
+                $user = $app['phraseanet.core']->getAuthenticatedUser();
 
                 $list = null;
 
@@ -462,15 +462,15 @@ class UsrLists implements ControllerProviderInterface
 
                 }
 
-                return new Response($app['Core']->getTwig()->render('prod/actions/Feedback/List-Share.html.twig', array('list' => $list)));
+                return new Response($app['phraseanet.core']->getTwig()->render('prod/actions/Feedback/List-Share.html.twig', array('list' => $list)));
             })->assert('list_id', '\d+');
 
         /**
          * Share a list to a user with an optionnal role
          */
         $controllers->post('/list/{list_id}/share/{usr_id}/', function(Application $app, $list_id, $usr_id) {
-                $em = $app['Core']->getEntityManager();
-                $user = $app['Core']->getAuthenticatedUser();
+                $em = $app['phraseanet.core']->getEntityManager();
+                $user = $app['phraseanet.core']->getAuthenticatedUser();
 
                 $availableRoles = array(
                     \Entities\UsrListOwner::ROLE_USER,
@@ -493,7 +493,7 @@ class UsrLists implements ControllerProviderInterface
                         throw new ControllerException(_('You are not authorized to do this'));
                     }
 
-                    $new_owner = \User_Adapter::getInstance($usr_id, \appbox::get_instance($app['Core']));
+                    $new_owner = \User_Adapter::getInstance($usr_id, $app['phraseanet.appbox']);
 
                     if ($list->hasAccess($new_owner)) {
                         if ($new_owner->get_id() == $user->get_id()) {
@@ -534,7 +534,7 @@ class UsrLists implements ControllerProviderInterface
                     );
                 }
 
-                $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+                $Json = $app['phraseanet.core']['Serializer']->serialize($datas, 'json');
 
                 return new Response($Json, 200, array('Content-Type' => 'application/json'));
             }
@@ -543,8 +543,8 @@ class UsrLists implements ControllerProviderInterface
          * UnShare a list to a user
          */
         $controllers->post('/list/{list_id}/unshare/{usr_id}/', function(Application $app, $list_id, $usr_id) {
-                $em = $app['Core']->getEntityManager();
-                $user = $app['Core']->getAuthenticatedUser();
+                $em = $app['phraseanet.core']->getEntityManager();
+                $user = $app['phraseanet.core']->getAuthenticatedUser();
 
                 try {
                     $repository = $em->getRepository('\Entities\UsrList');
@@ -579,7 +579,7 @@ class UsrLists implements ControllerProviderInterface
                     );
                 }
 
-                $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+                $Json = $app['phraseanet.core']['Serializer']->serialize($datas, 'json');
 
                 return new Response($Json, 200, array('Content-Type' => 'application/json'));
             }

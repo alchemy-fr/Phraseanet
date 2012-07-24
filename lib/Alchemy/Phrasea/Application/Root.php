@@ -11,8 +11,14 @@
 
 namespace Alchemy\Phrasea\Application;
 
+use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\Root\RSSFeeds;
+use Alchemy\Phrasea\Controller\Root\Account;
+use Alchemy\Phrasea\Controller\Root\Developers;
+use Alchemy\Phrasea\Controller\Root\Login;
+use Alchemy\Phrasea\Controller\Login\Authenticate as AuthenticateController;
+use Silex\Application as SilexApp;
 use Symfony\Component\HttpFoundation\Response;
-use Alchemy\Phrasea\Controller\Root as Controller;
 
 /**
  *
@@ -20,18 +26,16 @@ use Alchemy\Phrasea\Controller\Root as Controller;
  * @link        www.phraseanet.com
  */
 return call_user_func(function() {
-            $app = new \Silex\Application();
 
-            $app['Core'] = \bootstrap::getCore();
+            $app = new PhraseaApplication();
 
-            if ( ! \setup::is_installed()) {
-                $response = new \Symfony\Component\HttpFoundation\RedirectResponse('/setup/');
+            $app->before(function () use ($app) {
+                    $app['phraseanet.core']['Firewall']->requireSetup($app);
+                });
 
-                return $response->send();
-            }
-
-            $app->get('/', function() use ($app) {
+            $app->get('/', function(SilexApp $app) {
                     $browser = \Browser::getInstance();
+
                     if ($browser->isMobile()) {
                         return $app->redirect("/login/?redirect=/lightbox");
                     } elseif ($browser->isNewGeneration()) {
@@ -41,26 +45,22 @@ return call_user_func(function() {
                     }
                 });
 
-            $app->get('/robots.txt', function() use ($app) {
-                    $appbox = \appbox::get_instance($app['Core']);
+            $app->get('/robots.txt', function(SilexApp $app) {
 
-                    $registry = $appbox->get_registry();
-
-                    if ($registry->get('GV_allow_search_engine') === true) {
-                        $buffer = "User-Agent: *\n"
-                            . "Allow: /\n";
+                    if ($app['phraseanet.core']['Registry']->get('GV_allow_search_engine') === true) {
+                        $buffer = "User-Agent: *\n" . "Allow: /\n";
                     } else {
-                        $buffer = "User-Agent: *\n"
-                            . "Disallow: /\n";
+                        $buffer = "User-Agent: *\n" . "Disallow: /\n";
                     }
 
-                    $response = new Response($buffer, 200, array('Content-Type' => 'text/plain'));
-                    $response->setCharset('UTF-8');
-
-                    return $response;
+                    return new Response($buffer, 200, array('Content-Type' => 'text/plain'));
                 });
 
-            $app->mount('/feeds/', new Controller\RSSFeeds());
+            $app->mount('/feeds/', new RSSFeeds());
+            $app->mount('/account/', new Account());
+            $app->mount('/login/authenticate/', new AuthenticateController());
+            $app->mount('/login/', new Login());
+            $app->mount('/developers/', new Developers());
 
             return $app;
         }

@@ -36,13 +36,13 @@ class WorkZone implements ControllerProviderInterface
 
         $controllers->get('/', function(Application $app) {
                 $params = array(
-                    'WorkZone'      => new Helper\WorkZone($app['Core'], $app['request'])
+                    'WorkZone'      => new Helper\WorkZone($app['phraseanet.core'], $app['request'])
                     , 'selected_type' => $app['request']->get('type')
                     , 'selected_id'   => $app['request']->get('id')
                     , 'srt'           => $app['request']->get('sort')
                 );
 
-                return new Response($app['Core']->getTwig()->render('prod/WorkZone/WorkZone.html.twig', $params));
+                return new Response($app['phraseanet.core']->getTwig()->render('prod/WorkZone/WorkZone.html.twig', $params));
             });
 
         $controllers->get('/Browse/', function(Application $app) {
@@ -53,7 +53,7 @@ class WorkZone implements ControllerProviderInterface
                 );
 
                 return new Response(
-                        $app['Core']->getTwig()->render('prod/WorkZone/Browser/Browser.html.twig'
+                        $app['phraseanet.core']->getTwig()->render('prod/WorkZone/Browser/Browser.html.twig'
                             , $params
                         )
                 );
@@ -61,11 +61,11 @@ class WorkZone implements ControllerProviderInterface
 
         $controllers->get('/Browse/Search/', function(Application $app) {
 
-                $user = $app['Core']->getAuthenticatedUser();
+                $user = $app['phraseanet.core']->getAuthenticatedUser();
 
                 $request = $app['request'];
 
-                $em = $app['Core']->getEntityManager();
+                $em = $app['phraseanet.core']->getEntityManager();
                 /* @var $em \Doctrine\ORM\EntityManager */
 
                 $BasketRepo = $em->getRepository('\Entities\Basket');
@@ -97,21 +97,21 @@ class WorkZone implements ControllerProviderInterface
                     , 'Type'    => $request->get('Type')
                 );
 
-                return new Response($app['Core']->getTwig()->render('prod/WorkZone/Browser/Results.html.twig', $params));
+                return new Response($app['phraseanet.core']->getTwig()->render('prod/WorkZone/Browser/Results.html.twig', $params));
             });
 
         $controllers->get('/Browse/Basket/{basket_id}/', function(Application $app, Request $request, $basket_id) {
 
-                $em = $app['Core']->getEntityManager();
+                $em = $app['phraseanet.core']->getEntityManager();
 
                 $basket = $em->getRepository('\Entities\Basket')
-                    ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), false);
+                    ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), false);
 
                 $params = array(
                     'Basket' => $basket
                 );
 
-                return new Response($app['Core']->getTwig()->render('prod/WorkZone/Browser/Basket.html.twig', $params));
+                return new Response($app['phraseanet.core']->getTwig()->render('prod/WorkZone/Browser/Basket.html.twig', $params));
             })->assert('basket_id', '\d+');
 
         $controllers->post(
@@ -120,9 +120,9 @@ class WorkZone implements ControllerProviderInterface
                 if ( ! $request->get('stories'))
                     throw new \Exception_BadRequest();
 
-                $user = $app['Core']->getAuthenticatedUser();
+                $user = $app['phraseanet.core']->getAuthenticatedUser();
 
-                $em = $app['Core']->getEntityManager();
+                $em = $app['phraseanet.core']->getEntityManager();
                 /* @var $em \Doctrine\ORM\EntityManager */
 
                 $StoryWZRepo = $em->getRepository('\Entities\StoryWZ');
@@ -191,7 +191,7 @@ class WorkZone implements ControllerProviderInterface
 
                 if ($request->getRequestFormat() == 'json') {
 
-                    $datas = $app['Core']['Serializer']->serialize($data, 'json');
+                    $datas = $app['phraseanet.core']['Serializer']->serialize($data, 'json');
 
                     return new Response($datas, 200, array('Content-type' => 'application/json'));
                 } else {
@@ -204,9 +204,9 @@ class WorkZone implements ControllerProviderInterface
             , function(Application $app, Request $request, $sbas_id, $record_id) {
                 $Story = new \record_adapter($sbas_id, $record_id);
 
-                $user = $app['Core']->getAuthenticatedUser();
+                $user = $app['phraseanet.core']->getAuthenticatedUser();
 
-                $em = $app['Core']->getEntityManager();
+                $em = $app['phraseanet.core']->getEntityManager();
 
                 $repository = $em->getRepository('\Entities\StoryWZ');
 
@@ -226,7 +226,7 @@ class WorkZone implements ControllerProviderInterface
                 );
 
                 if ($request->getRequestFormat() == 'json') {
-                    $datas = $app['Core']['Serializer']->serialize($data, 'json');
+                    $datas = $app['phraseanet.core']['Serializer']->serialize($data, 'json');
 
                     return new Response($datas, 200, array('Content-type' => 'application/json'));
                 } else {

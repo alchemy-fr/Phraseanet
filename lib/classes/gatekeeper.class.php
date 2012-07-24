@@ -164,14 +164,14 @@ class gatekeeper
                     }
                     break;
             }
-        } elseif ($_SERVER['PHP_SELF'] === '/login/logout.php') {
+        } elseif ($_SERVER['PHP_SELF'] === '/login/logout/') {
             return;
         }
 
         try {
             $session->open_phrasea_session();
         } catch (Exception $e) {
-            phrasea::redirect('/login/logout.php?app=' . $this->_directory);
+            phrasea::redirect('/login/logout/?app=' . $this->_directory);
         }
 
         $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
@@ -299,7 +299,7 @@ class gatekeeper
             try {
                 $session->open_phrasea_session();
             } catch (Exception $e) {
-                phrasea::redirect('/login/logout.php');
+                phrasea::redirect('/login/logout/');
             }
 
             return true;

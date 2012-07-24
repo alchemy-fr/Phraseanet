@@ -20,7 +20,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Silex\ControllerCollection;
 
 /**
  *
@@ -36,8 +35,8 @@ class Root implements ControllerProviderInterface
 
         $controllers->get('/', function(Application $app, Request $request) {
 
-                $Core = $app['Core'];
-                $appbox = \appbox::get_instance($app['Core']);
+                $Core = $app['phraseanet.core'];
+                $appbox = $app['phraseanet.appbox'];
                 $user = $Core->getAuthenticatedUser();
 
                 \User_Adapter::updateClientInfos(3);

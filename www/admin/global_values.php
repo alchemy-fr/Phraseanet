@@ -62,93 +62,41 @@ function getFormTimezone($props = array(), $selected = false)
 }
 phrasea::start($Core);
 ?>
-<html lang="<?php echo $session->get_I18n(); ?>">
-    <head>
-        <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
-        <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
-        <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery.validate.js"></script>
-        <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery.validate.password.js"></script>
-        <link href="/skins/common/main.css" type="text/css" rel="stylesheet"/>
-        <style type="text/css">
-            .error{
-                color:red;
-                font-weight:bold;
-            }
-            h1{
-                font-weight:bold;
-                color:#404040;
-                font-size:16px;
-                margin:5px 0;
-            }
-            body{
-                overflow:auto;
-            }
-            .NEW{color:red;}
 
-
-            #form div{
-                position:relative;
-                float:left;
-                width:100%;
-            }
-            ul{
-                position:relative;
-                float:left;
-                width:100%;
-                list-style-type:none;
-                width:100%;
-            }
-            li{
-                position:relative;
-                float:left;
-                width:100%;
-            }
-            #form li div.input
-            {
-                width:200px;
-            }
-            #form li div.input input,
-            #form li div.input textarea,
-            #form li div.input select
-            {
-                width:180px;
-            }
-            #form li div.input input.checkbox
-            {
-                width:auto;
-            }
-            #form li div.label
-            {
-                width:350px;
-            }
-
-        </style>
-    </head>
-    <body>
-
-        <div>
-            Adresse : <input type="text" readonly="readonly" value="<?php echo $registry->get('GV_ServerName'); ?>"/>
-        </div>
-        <div>
-            Installation : <input type="text" readonly="readonly" value="<?php echo $registry->get('GV_RootPath'); ?>"/>
-        </div>
-        <div>
-            Maintenance : <input type="checkbox" readonly="readonly" disabled="disabled" <?php echo $registry->get('GV_maintenance') == true ? "checked='checked'" : ''; ?>/>
-        </div>
-        <div>
-            Debug : <input type="checkbox" readonly="readonly" disabled="disabled" <?php echo $registry->get('GV_debug') == true ? "checked='checked'" : ''; ?>/>
-        </div>
+        <form class="form-horizontal" id="GV_form_head">
+            <div class="control-group">
+                <label class="control-label">Adresse : </label>
+                <div class="controls">
+                    <input type="text" class="input-xlarge" readonly="readonly" value="<?php echo $registry->get('GV_ServerName'); ?>"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Installation : </label>
+                <div class="controls">
+                    <input type="text" class="input-xlarge" readonly="readonly" value="<?php echo $registry->get('GV_RootPath'); ?>"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Maintenance : </label>
+                <div class="controls">
+                    <input type="checkbox" readonly="readonly" disabled="disabled" <?php echo $registry->get('GV_maintenance') == true ? "checked='checked'" : ''; ?>/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Debug : </label>
+                <div class="controls">
+                    <input type="checkbox" readonly="readonly" disabled="disabled" <?php echo $registry->get('GV_debug') == true ? "checked='checked'" : ''; ?>/>
+                </div>
+            </div>
+        </form>
 <?php
 $rules = array();
 
-
-
-echo '<form id="form" method="post" action = "global_values.php">';
+echo '<form id="GV_form" class="form-horizontal" method="post" action = "global_values.php">';
 
 foreach ($GV as $section) {
-    echo '<div style="">';
+    echo '<div class="section" style="">';
     echo '<h1>' . $section['section'] . '</h1>';
-    echo '<ul>';
     foreach ($section['vars'] as $value) {
         $readonly = false;
         if (isset($value['readonly']) && $value['readonly'] === true)
@@ -166,8 +114,8 @@ foreach ($GV as $section) {
 
             case 'boolean':
                 $input = '
-                    <input class="checkbox" ' . ($readonly ? 'readonly="readonly"' : '') . ' ' . ( $currentValue == '0' ? 'checked="selected"' : '' ) . ' type="radio"  name="' . $value['name'] . '" value="False" id="id_' . $value['name'] . '_no" /><label for="id_' . $value['name'] . '_no">False</label>
-                    <input class="checkbox" ' . ($readonly ? 'readonly="readonly"' : '') . ' ' . ( $currentValue == '1' ? 'checked="checked"' : '' ) . ' type="radio"  name="' . $value['name'] . '" value="True" id="id_' . $value['name'] . '_yes" /><label for="id_' . $value['name'] . '_yes">True</label>
+                    <label class="radio inline" for="id_' . $value['name'] . '_no"><input ' . ($readonly ? 'readonly="readonly"' : '') . ' ' . ( $currentValue == '0' ? 'checked="selected"' : '' ) . ' type="radio"  name="' . $value['name'] . '" value="False" id="id_' . $value['name'] . '_no" />False</label>
+                    <label class="radio inline" for="id_' . $value['name'] . '_yes"><input ' . ($readonly ? 'readonly="readonly"' : '') . ' ' . ( $currentValue == '1' ? 'checked="checked"' : '' ) . ' type="radio"  name="' . $value['name'] . '" value="True" id="id_' . $value['name'] . '_yes" />True</label>
                     ';
                 break;
             case 'string':
@@ -189,9 +137,9 @@ foreach ($GV as $section) {
             case 'enum_multi':
                 if (isset($value['available']) && is_array($value['available'])) {
                     foreach ($value['available'] as $k => $v)
-                        $input .= '<input class="checkbox" type="checkbox" name="' . $value['name'] . '[]" ' . ($readonly ? 'readonly="readonly"' : '') . ' value="' . $k . '" ' . ( ( ! is_array($currentValue) || in_array($k, $currentValue)) ? 'checked="checked"' : '' ) . '/><label>' . $v . '</label><br>';
+                        $input .= '<label class="checkbox"><input type="checkbox" name="' . $value['name'] . '[]" ' . ($readonly ? 'readonly="readonly"' : '') . ' value="' . $k . '" ' . ( ( ! is_array($currentValue) || in_array($k, $currentValue)) ? 'checked="checked"' : '' ) . '/>' . $v . '</label>';
                 } else {
-                    echo '<p style="color:red;">erreur avec la valeur ' . $value['name'] . '</p>';
+                    echo '<p class="error">erreur avec la valeur ' . $value['name'] . '</p>';
                 }
                 break;
             case 'list':
@@ -215,17 +163,15 @@ foreach ($GV as $section) {
         }
 
         $isnew = $registry->is_set($value['name']);
-        echo '  <li>
-                        <div class="input">' . $input . '</div>
-                        <div class="label"><span class="NEW">' . ($isnew === false ? 'NEW' : '') . '</span><label for="id_' . $value['name'] . '">' . $value['comment'] . '</label></div>
-                    </li>';
+        echo '  <div class="control-group">
+                    <div class="controls">' . $input . '</div>
+                    <label class="control-label" for="id_' . $value['name'] . '"><span class="NEW">' . ($isnew === false ? 'NEW' : '') . '</span>' . $value['comment'] . '</label>
+                </div>';
         if (isset($value['required'])) {
             $rules[$value['name']] = array('required'                => $value['required']);
             $messages[$value['name']] = array('required' => 'Ce champ est requis !');
         }
     }
-
-    echo '</ul>';
 
     if (isset($section['javascript'])) {
         echo "<div><input type='button' onclick='" . $section['javascript'] . "(this);' value='Tester'/></div>";
@@ -237,7 +183,7 @@ foreach ($GV as $section) {
 
 $JS = '$(document).ready(function() {
     // validate signup form on keyup and submit
-    $("#form").validate({
+    $("#GV_form").validate({
         rules: ' . p4string::jsonencode($rules) . ',
         messages: ' . p4string::jsonencode($messages) . ',
         errorPlacement: function(error, element) {
@@ -247,11 +193,9 @@ $JS = '$(document).ready(function() {
     });
 ';
 ?>
-        <input type="submit" value="<?php echo _('boutton::valider') ?>"/>
+        <input type="submit" class="btn btn-warning" style="margin-bottom: 10px;" value="<?php echo _('boutton::valider') ?>"/>
     </form>
     <script type='text/javascript'>
         <?php echo $JS ?>
     </script>
-</body>
-</html>
 

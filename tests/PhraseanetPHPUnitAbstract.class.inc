@@ -387,7 +387,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         if (isset($parameters['expires']) && $parameters['expires'] instanceof \DateTime) {
             $Validation->setExpires($parameters['expires']);
         }
-        
+
         $basket->setValidation($Validation);
         $em->persist($Validation);
         $em->merge($basket);
@@ -510,7 +510,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 , $confService
         );
 
-        $this->app['Core']["Twig"] = $templateService->getDriver();
+        $this->app['phraseanet.core']["Twig"] = $templateService->getDriver();
     }
 
     /**

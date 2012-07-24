@@ -4,8 +4,6 @@ rewrite ^/(download)/([a-zA-Z0-9]*)\/get$     /include/download_prepare.php?type
 rewrite ^/(mail-export)/([a-zA-Z0-9]*)\/?$    /include/download_anonymous.php?type=$1&token=$2 last;
 rewrite ^/(mail-export)/([a-zA-Z0-9]*)\/get$  /include/download_anonymous.php?type=$1&token=$2&get=1 last;
 
-rewrite ^/register-confirm=([a-zA-Z0-9]+)$    /login/register-confirm.php?code=$1 last;
-
 rewrite ^/admin/$                 /admin/router.php last;
 rewrite ^/admin/users/.*$         /admin/router.php last;
 rewrite ^/admin/tests/.*$         /admin/router.php last;
@@ -14,6 +12,7 @@ rewrite ^/admin/description/.*$       /admin/router.php last;
 rewrite ^/admin/subdefs/.*$       /admin/router.php last;
 rewrite ^/admin/publications/.*$  /admin/router.php last;
 rewrite ^/admin/typeahead/.*$     /admin/router.php last;
+rewrite ^/admin/connected-users/.*$     /admin/router.php last;
 
 
 rewrite ^/prod/records/edit/.*$   /prod/router.php last;
@@ -45,6 +44,9 @@ rewrite ^/prod/notifications/.*$  /prod/router.php last;
 
 rewrite ^/robots.txt$             /index.php last;
 rewrite ^/feeds/.*$               /index.php last;
+rewrite ^/account/.*$             /index.php last;
+rewrite ^/login/.*$               /index.php last;
+rewrite ^/developers/.*$          /index.php last;
 
 rewrite ^/lightbox/.*$            /lightbox/index.php last;
 rewrite ^/api/v1/.*$              /api/v1/index.php last;
@@ -54,5 +56,4 @@ rewrite ^/api/.*$                 /api/index.php last;
 rewrite ^/permalink/.*$           /include/overview.php last;
 rewrite ^/datafiles/.*$           /include/overview.php last;
 
-rewrite ^/login/(client|prod|admin|report|thesaurus|upload|lightbox)\/?$       /login/index.php?app=$1 last;
 rewrite ^/setup/.*$               /setup/installer.php last;

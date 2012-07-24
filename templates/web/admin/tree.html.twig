@@ -4,37 +4,37 @@
 
   {% if user.is_admin() %}
   <li>
-    <a target="right" href="sitestruct.php">
+    <a target="right" href="sitestruct.php" class="ajax">
       <img src="/skins/admin/Dashboard.png" />
-      {% trans 'Tableau de bord' %}
+      <span>{% trans 'Tableau de bord' %}</span>
     </a>
   </li>
   {% else %}
   <li>
-    {{ registry.get('GV_ServerName') }}
+    <span>{{ registry.get('GV_ServerName') }}</span>
   </li>
   {% endif %}
 
   {% if user.is_admin() %}
   <li>
-    <a target="right" href="/admin/global_values.php">
+    <a target="right" href="/admin/global_values.php" class="ajax">
       <img src="/skins/admin/Setup.png" />
-      Setup
+      <span>Setup</span>
     </a>
   </li>
     {% if registry.get('GV_sphinx') %}
   <li>
     <a target="right" href="/admin/sphinxconf.php">
-      Sphinx Conf
+      <span>Sphinx Conf</span>
     </a>
   </li>
     {% endif %}
   {% endif %}
 
   <li class="{% if feature == 'connected' %}selected{% endif %}">
-    <a target="right" href="sessionwhois.php" class="ajax zone_online_users">
+    <a target="right" href="/admin/connected-users/" class="ajax zone_online_users">
       <img src="/skins/admin/Connected.png" />
-      {% trans 'admin::utilisateurs: utilisateurs connectes' %}
+      <span>{% trans 'admin::utilisateurs: utilisateurs connectes' %}</span>
     </a>
   </li>
 
@@ -42,13 +42,13 @@
   <li class="{% if feature == 'users' %}selected{% endif %}">
     <a target="right" href="/admin/users/search/" class="ajax zone_editusers">
       <img src="/skins/admin/Users.png" />
-      {% trans 'admin::utilisateurs: utilisateurs' %}
+      <span>{% trans 'admin::utilisateurs: utilisateurs' %}</span>
     </a>
   </li>
   <li class="{% if feature == 'registrations' %}selected{% endif %}">
     <a target="right" href="demand.php?act=LISTUSERS">
       <img src="/skins/admin/Demandes.png" />
-      {% trans 'admin::utilisateurs: demandes en cours' %}
+      <span>{% trans 'admin::utilisateurs: demandes en cours' %}</span>
     </a>
   </li>
   {% endif %}
@@ -57,7 +57,7 @@
   <li class="">
     <a target="right" href="/admin/publications/list/" class="ajax">
       <img src="/skins/icons/rss16.png" />
-      {% trans 'Publications' %}
+      <span>{% trans 'Publications' %}</span>
     </a>
   </li>
   {% endif %}
@@ -66,16 +66,16 @@
   <li class="{% if feature == 'taskmanager' %}selected{% endif %}">
     <a target="right" href="taskmanager.php">
       <img src="/skins/admin/TaskManager.png" />
-      {% trans 'admin::utilisateurs: gestionnaire de taches' %}
+      <span>{% trans 'admin::utilisateurs: gestionnaire de taches' %}</span>
     </a>
   </li>
   {% endif %}
 
   <li class="open">
     <div class="{% if feature == 'bases' %}selected{% endif %}" style="padding:0 0 2px 0;">
-      <a id="TREE_DATABASES" target="right" href="databases.php">
+      <a id="TREE_DATABASES" target="right" href="databases.php" class="ajax">
         <img src="/skins/admin/DatabasesAvailable.png" />
-        {% trans 'admin::utilisateurs: bases de donnees' %}
+        <span>{% trans 'admin::utilisateurs: bases de donnees' %}</span>
       </a>
     </div>
     <ul>
@@ -98,9 +98,9 @@
 
       <li class="{% if this_is_open %}open{% endif %}">
         <div style="padding:0 0 2px 0;" class="{% if this_is_selected %}selected{% endif %}">
-          <a target="right" href="database.php?p0={{ sbas_id }}">
+          <a target="right" href="database.php?p0={{ sbas_id }}" class="ajax">
             <img src="/skins/admin/Database.png"/>
-            {{ databox.get_viewname() }}
+            <span>{{ databox.get_viewname() }}</span>
           </a>
         </div>
         <ul>
@@ -109,36 +109,36 @@
           <li>
             <a target="right" href="structure.php?act=STRUCTURE&p0={{ sbas_id }}">
               <img src="/skins/icons/miniadjust01.gif"/>
-              {% trans 'admin::structure: reglage de la structure' %}
+              <span>{% trans 'admin::structure: reglage de la structure' %}</span>
             </a>
           </li>
           <li>
             <a target="right" href="/admin/description/{{ sbas_id }}/" class="ajax">
               <img src="/skins/icons/miniadjust01.gif"/>
-              {% trans 'CHAMPS' %}
+              <span>{% trans 'CHAMPS' %}</span>
             </a>
           </li>
           <li>
             <a target="right" href="/admin/subdefs/{{ sbas_id }}/">
               <img src="/skins/icons/miniadjust01.gif"/>
-              {% trans 'SUBDEFS' %}
+              <span>{% trans 'SUBDEFS' %}</span>
             </a>
           </li>
           <li>
             <a target="right" href="statbits.php?act=STATBITS&p0={{ sbas_id }}">
               <img src="/skins/icons/miniadjust02.gif"/>
-              {% trans 'admin::status: reglage des status' %}
+              <span>{% trans 'admin::status: reglage des status' %}</span>
             </a>
           </li>
           <li>
             <a target="right" href="cgus.php?p0={{ sbas_id }}">
-              {% trans 'admin:: CGUs' %}
+              <span>{% trans 'admin:: CGUs' %}</span>
             </a>
           </li>
           <li>
             <a target="right" href="collorder.php?p0={{ sbas_id }}">
               <img src="/skins/icons/miniadjust03.gif"/>
-              {% trans 'admin::collection: ordre des collections' %}
+              <span>{% trans 'admin::collection: ordre des collections' %}</span>
             </a>
           </li>
         {% endif %}
@@ -155,7 +155,7 @@
           <li>
             <a target="right" href="/admin/users/search/?sbas_id[]={{ sbas_id }}" class="ajax">
               <img src="/skins/admin/Users.png"/>
-              {% trans 'admin::utilisateurs: utilisateurs' %}
+              <span>{% trans 'admin::utilisateurs: utilisateurs' %}</span>
             </a>
           </li>
         {% endif %}
@@ -168,7 +168,7 @@
           <li>
             <div style="padding:0 0 2px 0;">
               <a target="right" href="collection.php?act=COLLECTION&p0={{ sbas_id }}&p1={{ collection.get_base_id() }}">
-                {{ collection.get_name() }}
+                <span>{{ collection.get_name() }}</span>
               </a>
             </div>
             <ul>
@@ -177,7 +177,7 @@
               <li>
                 <a target="right" href="sugval.php?p0={{ sbas_id }}&p1={{ collection.get_base_id() }}">
                   <img src="/skins/icons/foldph20open_0.gif"/>
-                  {% trans 'admin::base: preferences de collection' %}
+                  <span>{% trans 'admin::base: preferences de collection' %}</span>
                 </a>
               </li>
             {% endif %}
@@ -189,7 +189,7 @@
               <li>
                 <a target="right" href="/admin/users/search/?base_id[]={{ collection.get_base_id() }}" class="ajax">
                   <img src="/skins/admin/Users.png"/>
-                  {% trans 'admin::utilisateurs: utilisateurs' %}
+                  <span>{% trans 'admin::utilisateurs: utilisateurs' %}</span>
                 </a>
               </li>
               {% endif %}

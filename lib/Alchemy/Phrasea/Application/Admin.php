@@ -11,32 +11,31 @@
 
 namespace Alchemy\Phrasea\Application;
 
-use Alchemy\Phrasea\Controller\Admin as Controller;
-use Alchemy\Phrasea\Controller\Utils as ControllerUtils;
+use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\Admin\ConnectedUsers;
+use Alchemy\Phrasea\Controller\Admin\Description;
+use Alchemy\Phrasea\Controller\Admin\Fields;
+use Alchemy\Phrasea\Controller\Admin\Publications;
+use Alchemy\Phrasea\Controller\Admin\Root;
+use Alchemy\Phrasea\Controller\Admin\Subdefs;
+use Alchemy\Phrasea\Controller\Admin\Users;
+use Alchemy\Phrasea\Controller\Utils\ConnectionTest;
+use Alchemy\Phrasea\Controller\Utils\PathFileTest;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 return call_user_func(
         function() {
-            $app = new \Silex\Application();
+            $app = new PhraseaApplication();
 
-            $app['Core'] = \bootstrap::getCore();
-
-            $app->mount('/', new Controller\Root());
-            $app->mount('/publications', new Controller\Publications());
-            $app->mount('/users', new Controller\Users());
-            $app->mount('/fields', new Controller\Fields());
-            $app->mount('/subdefs', new Controller\Subdefs);
-            $app->mount('/description', new Controller\Description());
-            $app->mount('/tests/connection', new ControllerUtils\ConnectionTest());
-            $app->mount('/tests/pathurl', new ControllerUtils\PathFileTest());
-
-            $app->error(function($e) {
-                    return new \Symfony\Component\HttpFoundation\Response($e->getMessage(), 403);
-                });
+            $app->mount('/', new Root());
+            $app->mount('/connected-users', new ConnectedUsers());
+            $app->mount('/publications', new Publications());
+            $app->mount('/users', new Users());
+            $app->mount('/fields', new Fields());
+            $app->mount('/subdefs', new Subdefs());
+            $app->mount('/description', new Description());
+            $app->mount('/tests/connection', new ConnectionTest());
+            $app->mount('/tests/pathurl', new PathFileTest());
 
             return $app;
-        });
+        }
+);

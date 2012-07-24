@@ -49,21 +49,21 @@ class Basket implements ControllerProviderInterface
 
                 /* @var $request \Symfony\Component\HttpFoundation\Request */
 
-                $em = $app['Core']->getEntityManager();
+                $em = $app['phraseanet.core']->getEntityManager();
 
-                $user = $app['Core']->getAuthenticatedUser();
+                $user = $app['phraseanet.core']->getAuthenticatedUser();
 
                 $Basket = new \Entities\Basket();
 
                 $Basket->setName($request->get('name', ''));
-                $Basket->setOwner($app['Core']->getAuthenticatedUser());
+                $Basket->setOwner($app['phraseanet.core']->getAuthenticatedUser());
                 $Basket->setDescription($request->get('desc'));
 
                 $em->persist($Basket);
 
                 $n = 0;
 
-                $helper = new \Alchemy\Phrasea\Helper\Record\Basket($app['Core'], $app['request']);
+                $helper = new \Alchemy\Phrasea\Helper\Record\Basket($app['phraseanet.core'], $app['request']);
 
                 foreach ($helper->get_elements() as $record) {
 
@@ -92,7 +92,7 @@ class Basket implements ControllerProviderInterface
                         )
                     );
 
-                    $datas = $app['Core']['Serializer']->serialize($data, 'json');
+                    $datas = $app['phraseanet.core']['Serializer']->serialize($data, 'json');
 
                     return new Response($datas, 200, array('Content-type' => 'application/json'));
                 } else {
@@ -107,10 +107,10 @@ class Basket implements ControllerProviderInterface
          *
          */
         $controllers->post('/{basket_id}/delete/', function(Application $app, Request $request, $basket_id) {
-                $em = $app['Core']->getEntityManager();
+                $em = $app['phraseanet.core']->getEntityManager();
 
                 $basket = $em->getRepository('\Entities\Basket')
-                    ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), true);
+                    ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), true);
 
                 $em->remove($basket);
                 $em->flush();
@@ -122,7 +122,7 @@ class Basket implements ControllerProviderInterface
 
                 if ($request->getRequestFormat() == 'json') {
 
-                    $datas = $app['Core']['Serializer']->serialize($data, 'json');
+                    $datas = $app['phraseanet.core']['Serializer']->serialize($data, 'json');
 
                     return new Response($datas, 200, array('Content-type' => 'application/json'));
                 } else {
@@ -137,10 +137,10 @@ class Basket implements ControllerProviderInterface
             '/{basket_id}/delete/{basket_element_id}/'
             , function(Application $app, Request $request, $basket_id, $basket_element_id) {
                 /* @var $em \Doctrine\ORM\EntityManager */
-                $em = $app['Core']->getEntityManager();
+                $em = $app['phraseanet.core']->getEntityManager();
 
                 $basket = $em->getRepository('\Entities\Basket')
-                    ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), true);
+                    ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), true);
 
                 foreach ($basket->getElements() as $basket_element) {
                     /* @var $basket_element \Entities\BasketElement */
@@ -157,7 +157,7 @@ class Basket implements ControllerProviderInterface
                 );
 
                 if ($request->getRequestFormat() == 'json') {
-                    $datas = $app['Core']['Serializer']->serialize($data, 'json');
+                    $datas = $app['phraseanet.core']['Serializer']->serialize($data, 'json');
 
                     return new Response($datas, 200, array('Content-type' => 'application/json'));
                 } else {
@@ -176,10 +176,10 @@ class Basket implements ControllerProviderInterface
                 $success = false;
 
                 try {
-                    $em = $app['Core']->getEntityManager();
+                    $em = $app['phraseanet.core']->getEntityManager();
 
                     $basket = $em->getRepository('\Entities\Basket')
-                        ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), true);
+                        ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), true);
 
                     $basket->setName($request->get('name', ''));
                     $basket->setDescription($request->get('description'));
@@ -205,7 +205,7 @@ class Basket implements ControllerProviderInterface
 
                 if ($request->getRequestFormat() == 'json') {
 
-                    $datas = $app['Core']['Serializer']->serialize($data, 'json');
+                    $datas = $app['phraseanet.core']['Serializer']->serialize($data, 'json');
 
                     return new Response($datas, 200, array('Content-type' => 'application/json'));
                 } else {
@@ -218,13 +218,13 @@ class Basket implements ControllerProviderInterface
          */
         $controllers->get('/{basket_id}/update/', function(Application $app, $basket_id) {
                 /* @var $em \Doctrine\ORM\EntityManager */
-                $em = $app['Core']->getEntityManager();
+                $em = $app['phraseanet.core']->getEntityManager();
 
                 $basket = $em->getRepository('\Entities\Basket')
-                    ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), true);
+                    ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), true);
 
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
                 return new Response(
                         $twig->render(
@@ -241,13 +241,13 @@ class Basket implements ControllerProviderInterface
             '/{basket_id}/reorder/'
             , function(Application $app, $basket_id) {
                 /* @var $em \Doctrine\ORM\EntityManager */
-                $em = $app['Core']->getEntityManager();
+                $em = $app['phraseanet.core']->getEntityManager();
 
                 $basket = $em->getRepository('\Entities\Basket')
-                    ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), true);
+                    ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), true);
 
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
                 return new Response(
                         $twig->render(
@@ -263,10 +263,10 @@ class Basket implements ControllerProviderInterface
                 $ret = array('success' => false, 'message' => _('An error occured'));
                 try {
                     /* @var $em \Doctrine\ORM\EntityManager */
-                    $em = $app['Core']->getEntityManager();
+                    $em = $app['phraseanet.core']->getEntityManager();
 
                     $basket = $em->getRepository('\Entities\Basket')
-                        ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), true);
+                        ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), true);
 
                     $order = $app['request']->get('element');
 
@@ -284,7 +284,7 @@ class Basket implements ControllerProviderInterface
                 } catch (\Exception $e) {
 
                 }
-                $Serializer = $app['Core']['Serializer'];
+                $Serializer = $app['phraseanet.core']['Serializer'];
 
                 return new Response($Serializer->serialize($ret, 'json'), 200, array('Content-type' => 'application/json'));
             })->assert('basket_id', '\d+');
@@ -297,10 +297,10 @@ class Basket implements ControllerProviderInterface
          * @returns JSON / HTML
          */
         $controllers->post('/{basket_id}/archive/', function(Application $app, Request $request, $basket_id) {
-                $em = $app['Core']->getEntityManager();
+                $em = $app['phraseanet.core']->getEntityManager();
 
                 $basket = $em->getRepository('\Entities\Basket')
-                    ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), true);
+                    ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), true);
 
                 $archive_status = ! ! $request->get('archive');
 
@@ -323,7 +323,7 @@ class Basket implements ControllerProviderInterface
 
                 if ($request->getRequestFormat() == 'json') {
 
-                    $datas = $app['Core']['Serializer']->serialize($data, 'json');
+                    $datas = $app['phraseanet.core']['Serializer']->serialize($data, 'json');
 
                     return new Response($datas, 200, array('Content-type' => 'application/json'));
                 } else {
@@ -337,17 +337,17 @@ class Basket implements ControllerProviderInterface
         $controllers->post(
             '/{basket_id}/addElements/'
             , function(Application $app, Request $request, $basket_id) {
-                $em = $app['Core']->getEntityManager();
+                $em = $app['phraseanet.core']->getEntityManager();
 
                 $basket = $em->getRepository('\Entities\Basket')
-                    ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), true);
+                    ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), true);
 
-                $user = $app['Core']->getAuthenticatedUser();
+                $user = $app['phraseanet.core']->getAuthenticatedUser();
                 /* @var $user \User_Adapter */
 
                 $n = 0;
 
-                $helper = new \Alchemy\Phrasea\Helper\Record\Basket($app['Core'], $app['request']);
+                $helper = new \Alchemy\Phrasea\Helper\Record\Basket($app['phraseanet.core'], $app['request']);
 
                 foreach ($helper->get_elements() as $record) {
                     if ($basket->hasRecord($record))
@@ -386,7 +386,7 @@ class Basket implements ControllerProviderInterface
 
                 if ($request->getRequestFormat() == 'json') {
 
-                    $datas = $app['Core']['Serializer']->serialize($data, 'json');
+                    $datas = $app['phraseanet.core']['Serializer']->serialize($data, 'json');
 
                     return new Response($datas, 200, array('Content-type' => 'application/json'));
                 } else {
@@ -404,13 +404,13 @@ class Basket implements ControllerProviderInterface
         $controllers->post(
             '/{basket_id}/stealElements/'
             , function(Application $app, Request $request, $basket_id) {
-                $em = $app['Core']->getEntityManager();
+                $em = $app['phraseanet.core']->getEntityManager();
 
                 /* @var $em \Doctrine\ORM\EntityManager */
                 $basket = $em->getRepository('\Entities\Basket')
-                    ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), true);
+                    ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), true);
 
-                $user = $app['Core']->getAuthenticatedUser();
+                $user = $app['phraseanet.core']->getAuthenticatedUser();
                 /* @var $user \User_Adapter */
 
                 $n = 0;
@@ -437,7 +437,7 @@ class Basket implements ControllerProviderInterface
 
                 if ($request->getRequestFormat() == 'json') {
 
-                    $datas = $app['Core']['Serializer']->serialize($data, 'json');
+                    $datas = $app['phraseanet.core']['Serializer']->serialize($data, 'json');
 
                     return new Response($datas, 200, array('Content-type' => 'application/json'));
                 } else {
@@ -450,7 +450,7 @@ class Basket implements ControllerProviderInterface
          */
         $controllers->get('/create/', function(Application $app) {
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
                 return new Response($twig->render('prod/Baskets/Create.html.twig', array()));
             });
@@ -459,10 +459,10 @@ class Basket implements ControllerProviderInterface
          * Get a basket
          */
         $controllers->get('/{basket_id}/', function(Application $app, Request $request, $basket_id) {
-                $em = $app['Core']->getEntityManager();
+                $em = $app['phraseanet.core']->getEntityManager();
 
                 $basket = $em->getRepository('\Entities\Basket')
-                    ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), false);
+                    ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), false);
 
                 if ($basket->getIsRead() === false) {
                     $basket->setIsRead(true);
@@ -470,14 +470,14 @@ class Basket implements ControllerProviderInterface
                 }
 
                 if ($basket->getValidation()) {
-                    if ($basket->getValidation()->getParticipant($app['Core']->getAuthenticatedUser())->getIsAware() === false) {
-                        $basket->getValidation()->getParticipant($app['Core']->getAuthenticatedUser())->setIsAware(true);
+                    if ($basket->getValidation()->getParticipant($app['phraseanet.core']->getAuthenticatedUser())->getIsAware() === false) {
+                        $basket->getValidation()->getParticipant($app['phraseanet.core']->getAuthenticatedUser())->setIsAware(true);
                         $em->flush();
                     }
                 }
 
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
                 $params = array(
                     'basket' => $basket,

@@ -103,9 +103,9 @@ class Push implements ControllerProviderInterface
         $userSelection = $this->getUsersInSelectionExtractor();
 
         $controllers->post('/sendform/', function(Application $app) use ($userSelection) {
-                $push = new RecordHelper\Push($app['Core'], $app['request']);
+                $push = new RecordHelper\Push($app['phraseanet.core'], $app['request']);
 
-                $em = $app['Core']->getEntityManager();
+                $em = $app['phraseanet.core']->getEntityManager();
                 $repository = $em->getRepository('\Entities\UsrList');
 
                 $RecommendedUsers = $userSelection($push->get_elements());
@@ -113,7 +113,7 @@ class Push implements ControllerProviderInterface
                 $params = array(
                     'push'             => $push,
                     'message'          => '',
-                    'lists'            => $repository->findUserLists($app['Core']->getAuthenticatedUser()),
+                    'lists'            => $repository->findUserLists($app['phraseanet.core']->getAuthenticatedUser()),
                     'context'          => 'Push',
                     'RecommendedUsers' => $RecommendedUsers
                 );
@@ -121,16 +121,16 @@ class Push implements ControllerProviderInterface
                 $template = 'prod/actions/Push.html.twig';
 
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
                 return new Response($twig->render($template, $params));
             }
         );
 
         $controllers->post('/validateform/', function(Application $app) use ($userSelection) {
-                $push = new RecordHelper\Push($app['Core'], $app['request']);
+                $push = new RecordHelper\Push($app['phraseanet.core'], $app['request']);
 
-                $em = $app['Core']->getEntityManager();
+                $em = $app['phraseanet.core']->getEntityManager();
                 $repository = $em->getRepository('\Entities\UsrList');
 
                 $RecommendedUsers = $userSelection($push->get_elements());
@@ -138,7 +138,7 @@ class Push implements ControllerProviderInterface
                 $params = array(
                     'push'             => $push,
                     'message'          => '',
-                    'lists'            => $repository->findUserLists($app['Core']->getAuthenticatedUser()),
+                    'lists'            => $repository->findUserLists($app['phraseanet.core']->getAuthenticatedUser()),
                     'context'          => 'Feedback',
                     'RecommendedUsers' => $RecommendedUsers
                 );
@@ -146,7 +146,7 @@ class Push implements ControllerProviderInterface
                 $template = 'prod/actions/Push.html.twig';
 
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
                 return new Response($twig->render($template, $params));
             }
@@ -161,15 +161,15 @@ class Push implements ControllerProviderInterface
                 );
 
                 try {
-                    $em = $app['Core']->getEntityManager();
+                    $em = $app['phraseanet.core']->getEntityManager();
 
-                    $registry = $app['Core']->getRegistry();
+                    $registry = $app['phraseanet.core']->getRegistry();
 
-                    $pusher = new RecordHelper\Push($app['Core'], $app['request']);
+                    $pusher = new RecordHelper\Push($app['phraseanet.core'], $app['request']);
 
-                    $user = $app['Core']->getAuthenticatedUser();
+                    $user = $app['phraseanet.core']->getAuthenticatedUser();
 
-                    $appbox = \appbox::get_instance($app['Core']);
+                    $appbox = $app['phraseanet.appbox'];
 
                     $push_name = $request->get('name');
 
@@ -189,7 +189,7 @@ class Push implements ControllerProviderInterface
                         throw new ControllerException(_('No elements to push'));
                     }
 
-                    $events_manager = \eventsmanager_broker::getInstance(\appbox::get_instance($app['Core']), $app['Core']);
+                    $events_manager = \eventsmanager_broker::getInstance($app['phraseanet.appbox'], $app['phraseanet.core']);
 
                     foreach ($receivers as $receiver) {
                         try {
@@ -271,7 +271,7 @@ class Push implements ControllerProviderInterface
                     $ret['message'] = $e->getMessage() . $e->getFile() . $e->getLine();
                 }
 
-                $Json = $app['Core']['Serializer']->serialize($ret, 'json');
+                $Json = $app['phraseanet.core']['Serializer']->serialize($ret, 'json');
 
                 return new Response($Json, 200, array('Content-Type' => 'application/json'));
             }
@@ -279,25 +279,25 @@ class Push implements ControllerProviderInterface
 
         $controllers->post('/validate/', function(Application $app) {
                 $request = $app['request'];
-                $appbox = \appbox::get_instance($app['Core']);
+                $appbox = $app['phraseanet.appbox'];
 
                 $ret = array(
                     'success' => false,
                     'message' => _('Unable to send the documents')
                 );
 
-                $em = $app['Core']->getEntityManager();
+                $em = $app['phraseanet.core']->getEntityManager();
 
-                $registry = $app['Core']->getRegistry();
+                $registry = $app['phraseanet.core']->getRegistry();
 
                 /* @var $em \Doctrine\ORM\EntityManager */
                 $em->beginTransaction();
 
                 try {
-                    $pusher = new RecordHelper\Push($app['Core'], $app['request']);
-                    $user = $app['Core']->getAuthenticatedUser();
+                    $pusher = new RecordHelper\Push($app['phraseanet.core'], $app['request']);
+                    $user = $app['phraseanet.core']->getAuthenticatedUser();
 
-                    $events_manager = \eventsmanager_broker::getInstance(\appbox::get_instance($app['Core']), $app['Core']);
+                    $events_manager = \eventsmanager_broker::getInstance($app['phraseanet.appbox'], $app['phraseanet.core']);
 
                     $repository = $em->getRepository('\Entities\Basket');
 
@@ -346,7 +346,7 @@ class Push implements ControllerProviderInterface
 
                     if ( ! $Basket->getValidation()) {
                         $Validation = new \Entities\ValidationSession();
-                        $Validation->setInitiator($app['Core']->getAuthenticatedUser());
+                        $Validation->setInitiator($app['phraseanet.core']->getAuthenticatedUser());
                         $Validation->setBasket($Basket);
 
                         $duration = (int) $request->get('duration');
@@ -362,7 +362,7 @@ class Push implements ControllerProviderInterface
                         $Validation = $Basket->getValidation();
                     }
 
-                    $appbox = \appbox::get_instance($app['Core']);
+                    $appbox = $app['phraseanet.appbox'];
 
                     $found = false;
                     foreach ($participants as $key => $participant) {
@@ -483,7 +483,7 @@ class Push implements ControllerProviderInterface
                     $em->rollback();
                 }
 
-                $Json = $app['Core']['Serializer']->serialize($ret, 'json');
+                $Json = $app['phraseanet.core']['Serializer']->serialize($ret, 'json');
 
                 return new Response($Json, 200, array('Content-Type' => 'application/json'));
             }
@@ -494,10 +494,10 @@ class Push implements ControllerProviderInterface
                 $datas = null;
 
                 $request = $app['request'];
-                $em = $app['Core']->getEntityManager();
-                $user = $app['Core']->getAuthenticatedUser();
+                $em = $app['phraseanet.core']->getEntityManager();
+                $user = $app['phraseanet.core']->getAuthenticatedUser();
 
-                $query = new \User_Query(\appbox::get_instance($app['Core']));
+                $query = new \User_Query($app['phraseanet.appbox']);
 
                 $query->on_bases_where_i_am($user->ACL(), array('canpush'));
 
@@ -513,7 +513,7 @@ class Push implements ControllerProviderInterface
                     }
                 }
 
-                $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+                $Json = $app['phraseanet.core']['Serializer']->serialize($datas, 'json');
 
                 return new Response($Json, 200, array('Content-Type' => 'application/json'));
             })->assert('usr_id', '\d+');
@@ -521,8 +521,8 @@ class Push implements ControllerProviderInterface
         $controllers->get('/list/{list_id}/', function(Application $app, $list_id) use ($listFormatter) {
                 $datas = null;
 
-                $em = $app['Core']->getEntityManager();
-                $user = $app['Core']->getAuthenticatedUser();
+                $em = $app['phraseanet.core']->getEntityManager();
+                $user = $app['phraseanet.core']->getAuthenticatedUser();
 
                 $repository = $em->getRepository('\Entities\UsrList');
 
@@ -532,7 +532,7 @@ class Push implements ControllerProviderInterface
                     $datas = $listFormatter($list);
                 }
 
-                $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+                $Json = $app['phraseanet.core']['Serializer']->serialize($datas, 'json');
 
                 return new Response($Json, 200, array('Content-Type' => 'application/json'));
             })->assert('list_id', '\d+');
@@ -540,9 +540,9 @@ class Push implements ControllerProviderInterface
         $controllers->post('/add-user/', function(Application $app, Request $request) use ($userFormatter) {
                 $result = array('success' => false, 'message' => '', 'user'    => null);
 
-                $Serializer = $app['Core']['Serializer'];
+                $Serializer = $app['phraseanet.core']['Serializer'];
 
-                $AdminUser = $app['Core']->getAuthenticatedUser();
+                $AdminUser = $app['phraseanet.core']->getAuthenticatedUser();
 
                 try {
                     /* @var $AdminUser \User_Adapter */
@@ -566,7 +566,7 @@ class Push implements ControllerProviderInterface
                     return new Response($Serializer->serialize($result, 'json'), 200, array('Content-Type' => 'application/json'));
                 }
 
-                $appbox = \appbox::get_instance($app['Core']);
+                $appbox = $app['phraseanet.appbox'];
 
                 $user = null;
                 $email = $request->get('email');
@@ -612,15 +612,15 @@ class Push implements ControllerProviderInterface
         $controllers->get('/add-user/', function(Application $app, Request $request) {
                 $params = array('callback' => $request->get('callback'));
 
-                return new Response($app['Core']['Twig']->render('prod/User/Add.html.twig', $params));
+                return new Response($app['phraseanet.core']['Twig']->render('prod/User/Add.html.twig', $params));
             });
 
         $controllers->get('/search-user/', function(Application $app) use ($userFormatter, $listFormatter) {
                 $request = $app['request'];
-                $em = $app['Core']->getEntityManager();
-                $user = $app['Core']->getAuthenticatedUser();
+                $em = $app['phraseanet.core']->getEntityManager();
+                $user = $app['phraseanet.core']->getAuthenticatedUser();
 
-                $query = new \User_Query(\appbox::get_instance($app['Core']));
+                $query = new \User_Query($app['phraseanet.appbox']);
 
                 $query->on_bases_where_i_am($user->ACL(), array('canpush'));
 
@@ -651,7 +651,7 @@ class Push implements ControllerProviderInterface
                     }
                 }
 
-                $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+                $Json = $app['phraseanet.core']['Serializer']->serialize($datas, 'json');
 
                 return new Response($Json, 200, array('Content-Type' => 'application/json'));
             }
@@ -659,14 +659,14 @@ class Push implements ControllerProviderInterface
 
         $controllers->match('/edit-list/{list_id}/', function(Application $app, Request $request, $list_id) {
 
-                $user = $app['Core']->getAuthenticatedUser();
-                $em = $app['Core']->getEntityManager();
+                $user = $app['phraseanet.core']->getAuthenticatedUser();
+                $em = $app['phraseanet.core']->getEntityManager();
 
                 $repository = $em->getRepository('\Entities\UsrList');
 
                 $list = $repository->findUserListByUserAndId($user, $list_id);
 
-                $query = new \User_Query(\appbox::get_instance($app['Core']));
+                $query = new \User_Query($app['phraseanet.appbox']);
 
                 $query->on_bases_where_i_am($user->ACL(), array('canpush'));
 
@@ -712,11 +712,11 @@ class Push implements ControllerProviderInterface
 
                 if ($request->get('type') === 'fragment') {
                     return new Response(
-                            $app['Core']->getTwig()->render('prod/actions/Feedback/ResultTable.html.twig', $params)
+                            $app['phraseanet.core']->getTwig()->render('prod/actions/Feedback/ResultTable.html.twig', $params)
                     );
                 } else {
                     return new Response(
-                            $app['Core']->getTwig()->render('prod/actions/Feedback/list.html.twig', $params)
+                            $app['phraseanet.core']->getTwig()->render('prod/actions/Feedback/list.html.twig', $params)
                     );
                 }
             }

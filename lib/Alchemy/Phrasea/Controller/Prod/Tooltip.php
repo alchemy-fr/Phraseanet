@@ -28,17 +28,17 @@ class Tooltip implements ControllerProviderInterface
     public function connect(Application $app)
     {
         $controllers = $app['controllers_factory'];
-        $app['appbox'] = \appbox::get_instance($app['Core']);
+        $app['appbox'] = $app['phraseanet.appbox'];
 
         $controllers->post('/basket/{basket_id}/'
             , function(Application $app, $basket_id) {
-                $em = $app['Core']->getEntityManager();
+                $em = $app['phraseanet.core']->getEntityManager();
 
                 $basket = $em->getRepository('\Entities\Basket')
-                    ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), false);
+                    ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), false);
 
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
                 return $twig->render('prod/Tooltip/Basket.html.twig', array('basket' => $basket));
             })->assert('basket_id', '\d+');
@@ -48,17 +48,17 @@ class Tooltip implements ControllerProviderInterface
                 $Story = new \record_adapter($sbas_id, $record_id);
 
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
                 return $twig->render('prod/Tooltip/Story.html.twig', array('Story' => $Story));
             })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
 
         $controllers->post('/user/{usr_id}/'
             , function(Application $app, $usr_id) {
-                $user = \User_Adapter::getInstance($usr_id, \appbox::get_instance($app['Core']));
+                $user = \User_Adapter::getInstance($usr_id, $app['phraseanet.appbox']);
 
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
                 return new Response($twig->render(
                             'prod/Tooltip/User.html.twig'
@@ -72,7 +72,7 @@ class Tooltip implements ControllerProviderInterface
                 $record = new \record_adapter($sbas_id, $record_id);
 
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
                 return new Response($twig->render(
                             'prod/Tooltip/Preview.html.twig'
@@ -99,7 +99,7 @@ class Tooltip implements ControllerProviderInterface
                 }
 
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
                 return new Response(
                         $twig->render(
@@ -120,7 +120,7 @@ class Tooltip implements ControllerProviderInterface
                 $document = $record->get_subdef('document');
 
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
                 return new Response(
                         $twig->render(
@@ -136,7 +136,7 @@ class Tooltip implements ControllerProviderInterface
                 $field = \databox_field::get_instance($databox, $field_id);
 
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
                 return new Response(
                         $twig->render(
@@ -152,7 +152,7 @@ class Tooltip implements ControllerProviderInterface
                 $field = \databox_field::get_instance($databox, $field_id);
 
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
                 return new Response(
                         $twig->render(
@@ -168,7 +168,7 @@ class Tooltip implements ControllerProviderInterface
                 $field = \databox_field::get_instance($databox, $field_id);
 
                 /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+                $twig = $app['phraseanet.core']->getTwig();
 
                 return new Response(
                         $twig->render(

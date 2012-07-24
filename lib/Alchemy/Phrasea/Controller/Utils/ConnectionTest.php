@@ -11,11 +11,8 @@
 
 namespace Alchemy\Phrasea\Controller\Utils;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Silex\ControllerCollection;
 
 /**
  *
@@ -29,7 +26,7 @@ class ConnectionTest implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->get('/mysql/', function() use ($app) {
+        $controllers->get('/mysql/', function(Application $app) {
                 require_once __DIR__ . '/../../../../classes/connection/pdo.class.php';
 
                 $request = $app['request'];
@@ -75,8 +72,6 @@ class ConnectionTest implements ControllerProviderInterface
                     }
                 }
 
-                $Serializer = $app['Core']['Serializer'];
-
                 $datas = array(
                     'connection' => $connection_ok
                     , 'database'   => $db_ok
@@ -85,14 +80,9 @@ class ConnectionTest implements ControllerProviderInterface
                     , 'is_databox' => $is_databox
                 );
 
-                return new Response(
-                        $Serializer->serialize($datas, 'json')
-                        , 200
-                        , array('content-type' => 'application/json')
-                );
+                return $app->json($datas);
             });
 
         return $controllers;
     }
 }
-

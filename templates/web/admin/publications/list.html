@@ -1,92 +1,96 @@
 {% extends 'admin/publications/wrapper.html' %}
 
-
 {% block content %}
 
-<style type="text/css">
-.error{
-  border-color:red;
-}
-</style>
-
-<form class="form_publication" method="post" action="/admin/publications/create/">
-  <h2>{% trans 'Ajouter une publication' %}</h2>
-  <div>
-    <input placeholder="{% trans 'Feed name' %}" class="required_text" id="add_pub_titre" size="30" maxlength="128" name="title" type="text" />
-    <label for="add_pub_titre">{% trans 'Titre' %}</label>
-  </div>
-  <div>
-    <input placeholder="{% trans 'Short description' %}" id="add_pub_subtitre" size="30" maxlength="512" name="subtitle" type="text" />
-    <label for="add_pub_subtitre">{% trans 'Sous-titre' %}</label>
-  </div>
-  <div>
-    <select id="add_pub_base_id" name="base_id">
-      <option value="">{% trans 'Non-Restreinte (publique)' %}</option>
-      {% for databox in user.ACL().get_granted_sbas('bas_chupub') %}
-      <optgroup label="{{ databox.get_viewname() }}">
-        {% for collection in databox.get_collections() %}
-        <option value="{{ collection.get_base_id() }}">{{ collection.get_name() }}</option>
-        {% endfor %}
-      </optgroup>
-      {% endfor %}
-    </select>
-    <label for="add_pub_base_id">{% trans 'Etendue de la publication' %}</label>
-  </div>
-  <div>
-    <input type="checkbox" id="add_pub_public" name="public" value="1" />
-    <label for="add_pub_public">{% trans 'Publique' %}</label>
-  </div>
-  <div>
-    <button type="submit">{% trans 'boutton::valider' %}</button>
-  </div>
+<form class="no-ajax form_publication form-vertical" method="post" action="/admin/publications/create/">
+    <h2>{% trans 'Ajouter une publication' %}</h2>
+    <div class="control-group">
+        <label class="control-label" for="add_pub_titre">{% trans 'Titre' %} :</label>
+        <div class="controls">
+            <input type="text" id="add_pub_titre" class="required_text input-large" placeholder="{% trans 'Feed name' %}" maxlength="128" name="title" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="add_pub_subtitre">{% trans 'Sous-titre' %} :</label>
+        <div class="controls">
+            <input type="text" id="add_pub_subtitre" class="input-large" placeholder="{% trans 'Short description' %}" maxlength="512" name="subtitle" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="add_pub_base_id">{% trans 'Etendue de la publication' %} :</label>
+        <div class="controls">
+            <select id="add_pub_base_id" class="input-large" name="base_id">
+                <option value="">{% trans 'Non-Restreinte (publique)' %}</option>
+                {% for databox in user.ACL().get_granted_sbas('bas_chupub') %}
+                    <optgroup label="{{ databox.get_viewname() }}">
+                        {% for collection in databox.get_collections() %}
+                            <option value="{{ collection.get_base_id() }}">{{ collection.get_name() }}</option>
+                        {% endfor %}
+                    </optgroup>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="control-group">
+        <div class="controls">
+            <label class="checkbox" for="add_pub_public">
+                <input type="checkbox" id="add_pub_public" name="public" value="1" />
+                {% trans 'Publique' %}
+            </label>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-warning">{% trans 'boutton::valider' %}</button>
 </form>
 
 <table class="admintable" cellspacing="0" cellpadding="0">
-  <thead>
-    <tr>
-      <th style="width:40px;"></th>
-      <th>{% trans 'Titre' %}</th>
-      <th style="width:150px;">{% trans 'Date Creation' %}</th>
-      <th style="width:220px;">{% trans 'Restriction' %}</th>
-      <th style="width:80px;">{% trans 'Public' %}</th>
-      <th style="width:80px;"></th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for feed in feeds.get_feeds %}
-      <tr class="{% if loop.index is odd %}odd{% else %}even{% endif %}">
-        <td>
-          <div style="border:1px solid #ccc;width:22px;height:22px;margin:2px">
-            <a href="/admin/publications/feed/{{ feed.get_id() }}/">
-              <img src="{{feed.get_icon_url() ~ '?' ~ random(1000) }}" style="margin:3px;width:16px;height:16px;" id="pub_icon"/>
-            </a>
-          </div>
-        </td>
-        <td><a href="/admin/publications/feed/{{ feed.get_id() }}/">{{ feed.get_title() }}</a></td>
-        <td>{{ feed.get_created_on()| formatDate }}</td>
-        <td>
-          {% if feed.get_collection() != null %}
-            {{ feed.get_collection().get_databox().get_viewname() }} /
-            {{ feed.get_collection().get_name() }}
-          {% endif %}
-        </td>
-        <td style="text-align:center;">
-          {% if feed.is_public() %}
-            <img src="/skins/icons/ligth-on.png" title="{% trans 'This feed is public' %}"/>
-          {% endif %}
-        </td>
-        <td>
-          {% if feed.is_owner(user) %}
-          <form class="form_publication" action="/admin/publications/feed/{{feed.get_id()}}/delete/" method="post">
-            <button class="feed_remover">{% trans 'boutton::supprimer' %}</button>
-          </form>
-          {% endif %}
-        </td>
-      </tr>
-    {% endfor %}
-  </tbody>
+    <thead>
+        <tr>
+            <th style="width:40px;"></th>
+            <th>{% trans 'Titre' %}</th>
+            <th style="width:150px; text-align: center;">{% trans 'Date Creation' %}</th>
+            <th style="width:220px; text-align: center;">{% trans 'Restriction' %}</th>
+            <th style="width:80px; text-align: center;">{% trans 'Public' %}</th>
+            <th style="width:80px;"></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for feed in feeds.get_feeds %}
+            <tr class="{% if loop.index is odd %}odd{% else %}even{% endif %}">
+                <td>
+                    <div style="border:1px solid #ccc; width:22px; height:22px; margin:2px;">
+                        <a href="/admin/publications/feed/{{ feed.get_id() }}/">
+                            <img src="{{feed.get_icon_url() ~ '?' ~ random(1000) }}" id="pub_icon" style="margin:3px; width:16px; height:16px;"/>
+                        </a>
+                    </div>
+                </td>
+                <td>
+                    <a href="/admin/publications/feed/{{ feed.get_id() }}/">{{ feed.get_title() }}</a>
+                </td>
+                <td style="text-align: center;">
+                    {{ feed.get_created_on()|formatDate }}
+                </td>
+                <td style="text-align: center;">
+                    {% if feed.get_collection() != null %}
+                        {{ feed.get_collection().get_databox().get_viewname() }} /
+                        {{ feed.get_collection().get_name() }}
+                    {% endif %}
+                </td>
+                <td style="text-align: center;">
+                    {% if feed.is_public() %}
+                        <img src="/skins/icons/ligth-on.png" title="{% trans 'This feed is public' %}"/>
+                    {% endif %}
+                </td>
+                <td style="text-align: center;">
+                    {% if feed.is_owner(user) %}
+                        <form class="no-ajax form_publication" action="/admin/publications/feed/{{feed.get_id()}}/delete/" method="post">
+                            <button class="feed_remover btn btn-mini">{% trans 'boutton::supprimer' %}</button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
 </table>
-
 
 <script type="text/javascript">
   $(document).ready(function(){
@@ -111,4 +115,5 @@
     });
   });
 </script>
+
 {% endblock %}
