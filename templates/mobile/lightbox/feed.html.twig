@@ -1,0 +1,49 @@
+{% import "common/thumbnail.html.twig" as thumbnail %}
+{% extends "common/index.html.twig" %}
+
+{% block javascript %}
+  <script type="text/javascript" src="/include/minify/f=skins/lightbox/jquery.validator.mobile.js"></script>
+{% endblock %}
+
+{% block stylesheet %}
+  <link rel="stylesheet" href="/include/minify/f=skins/lightbox/jquery.validator.mobile.css" />
+{% endblock %}
+
+{% block content %}
+<div id="home" data-role="page">
+    <div data-role="header">
+    <h1>{{feed_entry.get_title()}}</h1>
+    <a rel="external" href="/lightbox/" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">{% trans 'Home' %}</a>
+  </div>
+    <div data-role="content">
+    <p>
+      {{feed_entry.get_subtitle()|nl2br|raw}}
+    </p>
+    <p>
+      {% set author = feed_entry.get_author_name() %}
+      <span class="author">{% trans %}Par {{ author }}{% endtrans %}</span>
+      {% set entry_length = feed_entry.get_content()|length %}
+      {% trans %}{{entry_length}} documents{% endtrans %}
+    </p>
+    <ul class="image_set">
+    {% for item in feed_entry.get_content() %}
+      <li class="image_box" id="item_{{item.get_id()}}">
+        <a href="/lightbox/ajax/LOAD_FEED_ITEM/{{feed_entry.get_id()}}/{{item.get_id()}}/">
+          {{thumbnail.format(item.get_record().get_thumbnail(), 80, 80, '', session, true)}}
+          </a>
+          <input type="hidden" class="display_id" name="display_id" value="{{item.get_ord()}}" />
+      </li>
+    {% endfor %}
+    </ul>
+  </div>
+    <div data-role="footer">
+
+  </div>
+</div>
+{% endblock %}
+
+
+
+
+
+

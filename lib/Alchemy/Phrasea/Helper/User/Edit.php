@@ -546,7 +546,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         if ($old_email != $new_email) {
             \mail::change_mail_information($user->get_display_name(), $old_email, $new_email);
         }
-        
+
         return $this;
     }
 

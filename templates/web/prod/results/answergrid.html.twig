@@ -1,0 +1,15 @@
+
+{% extends "prod/results/answerabstract.html.twig" %}
+
+{% block content %}
+
+  {% for record in results.get_datas() %}
+
+    {% set ident = record.get_base_id ~ ' ' ~ record.get_record_id%}
+    {% set sbas_id = record.get_base_id|sbasFromBas %}
+
+        {{record_format.block(record, user, session, highlight, searchEngine, 'IMGT', false)}}
+  {% endfor %}
+
+{% endblock %}
+

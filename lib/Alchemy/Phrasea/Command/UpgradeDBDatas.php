@@ -24,7 +24,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class UpgradeDBDatas extends Command
 {
-    protected $upgrades =array();
+    protected $upgrades = array();
 
     /**
      * Constructor
@@ -34,8 +34,8 @@ class UpgradeDBDatas extends Command
         parent::__construct($name);
 
         $this
-        ->setDescription("Upgrade Phraseanet datas")
-        ->setHelp(<<<EOF
+            ->setDescription("Upgrade Phraseanet datas")
+            ->setHelp(<<<EOF
 Upgrade Phraseanet datas from older version
 
 Steps are
@@ -43,7 +43,7 @@ Steps are
     - version 3.1 : records UUID
     - version 3.5 : metadatas upgrade
 EOF
-            );
+        );
 
         $this->addOption('from', 'f', null, 'The version where to start upgrade');
         $this->addOption('at-version', null, null, 'The version step to upgrade');
@@ -128,7 +128,7 @@ EOF
         $dialog = $this->getHelperSet()->get('dialog');
 
         do {
-            $continue = strtolower($dialog->ask($output, $question. '<question>Continue ? (Y/n)</question>', 'Y'));
+            $continue = strtolower($dialog->ask($output, $question . '<question>Continue ? (Y/n)</question>', 'Y'));
         } while ( ! in_array($continue, array('y', 'n')));
 
         if (strtolower($continue) !== 'y') {

@@ -180,20 +180,17 @@ class Query implements ControllerProviderInterface
                     }
                 }
 
-                $core = \bootstrap::getCore();
-                $twig = $core->getTwig();
-
                 if ($result->get_count_total_results() === 0) {
-                    $template = 'prod/results/help.twig';
+                    $template = 'prod/results/help.html.twig';
                 } else {
                     if ($mod == 'thumbs') {
-                        $template = 'prod/results/answergrid.html';
+                        $template = 'prod/results/answergrid.html.twig';
                     } else {
-                        $template = 'prod/results/answerlist.html';
+                        $template = 'prod/results/answerlist.html.twig';
                     }
                 }
 
-                $json['results'] = $twig->render($template, array(
+                $json['results'] = $app['twig']->render($template, array(
                     'results'         => $result,
                     'GV_social_tools' => $registry->get('GV_social_tools'),
                     'highlight'       => $search_engine->get_query(),

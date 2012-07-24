@@ -43,7 +43,7 @@ try {
 $twig = $Core->getTwig();
 
 $html = $twig->render(
-    "report/ajax_dashboard_content_child.twig", array(
+    "report/ajax_dashboard_content_child.html.twig", array(
     'dashboard' => $dashboard
     )
 );

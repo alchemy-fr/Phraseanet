@@ -64,7 +64,7 @@ return call_user_func(function() {
             $app->mount('/installer/', new Installer());
             $app->mount('/upgrader/', new Upgrader());
             $app->mount('/test', new PathFileTest());
-            $app->mount('/connection_test', new  ConnectionTest());
+            $app->mount('/connection_test', new ConnectionTest());
 
             $app->error(function($e) use ($app) {
                     if ($e instanceof \Exception_Setup_PhraseaAlreadyInstalled) {

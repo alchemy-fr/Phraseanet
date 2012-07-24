@@ -325,7 +325,7 @@ function doUserConf($conf, $param)
 function displayListColumn($conf, $param, $twig)
 {
     if ($param['conf'] == "on") {
-        $html = $twig->render('report/listColumn.twig', array(
+        $html = $twig->render('report/listColumn.html.twig', array(
             'conf'  => $conf,
             'param' => $param
             ));
@@ -343,7 +343,7 @@ function groupBy($obj, $param, $twig, $on = false)
     if ($groupby) {
         $obj->setConfig(false);
         $report = $obj->buildReport(false, $groupby[0], $on);
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig', 'group');
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig', 'group');
         $title = "Groupement des resultats sur le champ " . $report['display'][$report['allChamps'][0]]['title'];
         sendReport($html, false, $title);
         exit();
@@ -352,7 +352,7 @@ function groupBy($obj, $param, $twig, $on = false)
 
 function displayColValue($tab, $column, $twig, $on = false)
 {
-    $test = $twig->render('report/colFilter.twig', array(
+    $test = $twig->render('report/colFilter.html.twig', array(
         'result' => $tab,
         'field'  => $column
         ));
@@ -389,9 +389,9 @@ function getHistory($obj, $param, $twig, $conf, $dl = false, $title)
     }
 
     if ($dl) {
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig', "user");
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig', "user");
     } else {
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
     }
     $request = $obj->getReq();
 
@@ -419,7 +419,7 @@ function cnx($param, $twig)
         sendCsv($csv);
     } else {
         $report = doReport($cnx, $param, $conf, $twig);
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
         sendReport($html, $report);
     }
 }
@@ -447,7 +447,7 @@ function gen($param, $twig)
         sendCsv($csv);
     } else {
         $report = doReport($dl, $param, $conf, $twig);
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
         sendReport($html, $report);
     }
 }
@@ -471,7 +471,7 @@ function ask($param, $twig)
         sendCsv($csv);
     } else {
         $report = doReport($ask, $param, $conf, $twig);
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
         sendReport($html, $report);
     }
 }
@@ -495,7 +495,7 @@ function doc($param, $twig)
         sendCsv($csv);
     } else {
         $report = doReport($dl, $param, $conf, $twig, 'record_id');
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig', 'doc');
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig', 'doc');
         sendReport($html, $report);
     }
 }
@@ -544,7 +544,7 @@ function cnxb($param, $twig)
 
         sendCsv($csv);
     } else {
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig', 'nav');
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig', 'nav');
         sendReport($html);
     }
 }
@@ -566,7 +566,7 @@ function cnxu($param, $twig)
         sendCsv($csv);
     } else {
         $report = $connex->getConnexionBase(false, $param['on']);
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
         sendReport($html);
     }
 }
@@ -595,7 +595,7 @@ function bestOf($param, $twig)
         sendCsv($csv);
     } else {
         $report = $activity->getTopQuestion($conf);
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
         sendReport($html);
     }
 }
@@ -621,7 +621,7 @@ function noBestOf($param, $twig)
         sendCsv($csv);
     } else {
         $report = $activity->getTopQuestion($conf, true);
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
         sendReport($html);
     }
 }
@@ -639,7 +639,7 @@ function tableSiteActivityPerHours($param, $twig)
         $csv = format::arr_to_csv($result, $display);
         sendCsv($csv);
     } else {
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig', 'plot');
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig', 'plot');
         sendReport($html);
     }
 }
@@ -665,7 +665,7 @@ function day($param, $twig)
         sendCsv($csv);
     } else {
         $report = $activity->getDownloadByBaseByDay($conf);
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
         sendReport($html);
     }
 }
@@ -694,7 +694,7 @@ function usr($param, $twig)
         sendCsv($csv);
     } else {
         $report = $activity->getDetailDownload($conf, $param['on']);
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
         sendReport($html);
     }
 }
@@ -743,7 +743,7 @@ function infoUsr($param, $twig, $conf)
     $info->setCsv(false);
     $report = $info->buildTabGrpInfo($request, $params, $param['user'], $conf['conf'], $param['on']);
     if ($registry->get('GV_anonymousReport') == false) {
-        $html_info .= doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+        $html_info .= doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
         (empty($param['on']) && isset($report['result'])) ? $title = $report['result'][0]['identifiant'] : $title = $param['user'];
     }
     else
@@ -788,7 +788,7 @@ function what($param, $twig)
     $report = $what->buildTabUserWhat($basid, $param['rid'], $config);
     $title = $what->getTitle();
 
-    $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+    $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
 
     if ($param['from'] == 'TOOL') {
         $what->setTitle("");
@@ -812,7 +812,7 @@ function what($param, $twig)
             sendCsv($csv);
         } else {
             $report = $histo->buildReport($config_dl);
-            $html .= doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+            $html .= doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
             sendReport($html, false, $title);
         }
     } elseif ($registry->get('GV_anonymousReport') == false && $param['from'] != 'DOC' && $param['from'] != 'DASH' && $param['from'] != "GEN" && $param['from'] != "PUSHDOC") {
@@ -833,7 +833,7 @@ function what($param, $twig)
             sendCsv($csv);
         } else {
             $report = $info->buildTabGrpInfo(false, array(), $param['user'], $conf, false);
-            $html .= doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+            $html .= doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
             sendReport($html, false, $title);
         }
     }
@@ -852,7 +852,7 @@ function infoNav($param, $twig)
     $infonav->setCsv(false);
     $infonav->setConfig(false);
     $report = $infonav->buildTabInfoNav($conf, $param['user']);
-    $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+    $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
     sendReport($html, false, $param['user']);
 }
 
@@ -875,7 +875,7 @@ function pushDoc($param, $twig)
         sendCsv($csv);
     } else {
         $report = doReport($dl, $param, $conf, $twig);
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
         sendReport($html, $report);
     }
 }
@@ -898,7 +898,7 @@ function addDoc($param, $twig)
         sendCsv($csv);
     } else {
         $report = doReport($dl, $param, $conf, $twig);
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
         sendReport($html, $report);
     }
 }
@@ -921,7 +921,7 @@ function ediDoc($param, $twig)
         sendCsv($csv);
     } else {
         $report = doReport($dl, $param, $conf, $twig);
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
         sendReport($html, $report);
     }
 }
@@ -945,7 +945,7 @@ function validDoc($param, $twig)
         sendCsv($csv);
     } else {
         $report = doReport($dl, $param, $conf, $twig);
-        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+        $html = doHtml($report, $param, $twig, 'report/ajax_data_content.html.twig');
         sendReport($html, $report);
     }
 }

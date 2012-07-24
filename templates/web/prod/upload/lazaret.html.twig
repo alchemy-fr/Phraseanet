@@ -199,7 +199,7 @@
 </script>
 
 {% macro lazaretElement(file) %}
-    {% import "common/thumbnail.html" as thumb %}
+    {% import "common/thumbnail.html.twig" as thumb %}
     {% set records = file.getRecordsToSubstitute() %}
     <div class="lazaret-file span4">
         <h5>{% trans "Last uploaded version" %}</h5>

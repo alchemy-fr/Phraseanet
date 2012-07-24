@@ -93,7 +93,7 @@ abstract class Command extends SymfoCommand
 
         $core = \bootstrap::getCore();
 
-        if($input->getOption('verbose')) {
+        if ($input->getOption('verbose')) {
             $handler = new StreamHandler('php://stdout');
             $this->logger->pushHandler($handler);
         }

@@ -1,0 +1,61 @@
+{% extends "common/index.html.twig" %}
+
+{% block javascript %}
+  <script type="text/javascript">
+    $(document).bind("mobileinit", function(){
+          $.extend(  $.mobile, { ajaxFormsEnabled: false });
+      });
+  </script>
+{% endblock %}
+
+{% block stylesheet %}
+{% endblock %}
+
+{% block content %}
+  <div data-role="page">
+    <div data-role="header">
+      <h1>{{home_title}}</h1>
+    </div>
+    <div data-role="content">
+      <form name="send" action="/login/authenticate/" method="post" id="authentication">
+        <script type="text/javascript">
+          {% if errorWarning|striptags != '' %}
+          alert("{{errorWarning|striptags}}");
+          {% endif %}
+          {% if confirmWarning|striptags != '' %}
+          alert("{{confirmWarning|striptags}}");
+          {% endif %}
+        </script>
+        {% if meta_description != '' %}
+              <div class="info">{{meta_description}}</div>
+        {% endif %}
+        <div data-role="fieldcontain">
+          <fieldset>
+            <div data-role="fieldcontain">
+              <input autocapitalize="off" autocorrect="off" type="text" name="login" id="name" value="" {% if maintenance == true %}disabled{% endif %} tabindex="1"
+                      placeholder="{% trans 'admin::compte-utilisateur identifiant' %}"  />
+              <input autocapitalize="off" autocorrect="off" {% if maintenance == true %}disabled{% endif %} tabindex="2"
+                placeholder="{% trans 'admin::compte-utilisateur mot de passe' %}" name="pwd" id="pwd" value="" type="password" />
+              <input type="hidden" name="redirect" value="{{redirect}}">
+              <fieldset data-role="controlgroup">
+                <input type="checkbox" name="remember" id="remember" value="1" checked="checked" class="custom" />
+                <label for="remember">{% trans 'Garder ma session active' %}</label>
+              </fieldset>
+              <button type="submit" name="submit" value="{% trans 'login:: connexion' %}...">{% trans 'login:: connexion' %}</button>
+            </div>
+          </fieldset>
+        </div>
+      </form>
+      <ul data-role="listview">
+        <li>
+          <a href="/login/forgot-password/" rel="external">
+            {% trans 'login:: Forgot your password' %}
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+    <div data-role="footer">
+
+  </div>
+{% endblock %}

@@ -58,6 +58,9 @@ class module_console_systemTemplateGenerator extends Command
             $twig->addExtension(new Twig_Extensions_Extension_I18n());
             $twig->addExtension(new \Alchemy\Phrasea\Twig\JSUniqueID());
 
+            $twig->addTest('null', new \Twig_Test_Function('is_null'));
+
+            $twig->addFilter('AppName', new \Twig_Filter_Function('Alchemy\Phrasea\Controller\Admin\ConnectedUsers::appName'));
             $twig->addFilter('serialize', new \Twig_Filter_Function('serialize'));
             $twig->addFilter('stristr', new \Twig_Filter_Function('stristr'));
             $twig->addFilter('implode', new \Twig_Filter_Function('implode'));
@@ -77,6 +80,7 @@ class module_console_systemTemplateGenerator extends Command
             $twig->addFilter('prettyDate', new \Twig_Filter_Function('phraseadate::getPrettyString'));
             $twig->addFilter('formatOctets', new \Twig_Filter_Function('p4string::format_octets'));
             $twig->addFilter('geoname_name_from_id', new \Twig_Filter_Function('geonames::name_from_id'));
+            $twig->addFilter('base_from_coll', new \Twig_Filter_Function('phrasea::baseFromColl'));
 
             $finder = new Symfony\Component\Finder\Finder();
             foreach ($finder->files()->in(array($tplDir))->exclude('Mustache') as $file) {

@@ -73,4 +73,4 @@ $twig = $core->getTwig();
 
     $parm['view'] = 'XML';
 
-echo $twig->render('admin/task.html', array('task' => $task, 'view' => $parm['view']));
+echo $twig->render('admin/task.html.twig', array('task' => $task, 'view' => $parm['view']));

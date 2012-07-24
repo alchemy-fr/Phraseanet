@@ -144,11 +144,9 @@ return call_user_func(
 
                     $record = \media_Permalink_Adapter::challenge_token($databox, $key, $record_id, $subdef);
 
-                    if ( ! ($record instanceof \record_adapter))
+                    if ( ! ($record instanceof \record_adapter)) {
                         throw new \Exception('bad luck');
-
-                    /* @var $twig \Twig_Environment */
-                    $twig = $app['phraseanet.core']->getTwig();
+                    }
 
                     $params = array(
                         'subdef_name' => $subdef
@@ -158,7 +156,7 @@ return call_user_func(
                         , 'record'      => $record
                     );
 
-                    return new Response($twig->render('overview.twig', $params));
+                    return new Response($app['twig']->render('overview.html.twig', $params));
                 })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
 
             $app->get('/permalink/v1/{label}/{sbas_id}/{record_id}/{key}/{subdef}/'

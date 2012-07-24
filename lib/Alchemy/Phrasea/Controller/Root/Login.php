@@ -32,7 +32,8 @@ class Login implements ControllerProviderInterface
         $controllers->get('/', $this->call('login'))
             ->before(function() use ($app) {
                     return $app['phraseanet.core']['Firewall']->requireNotAuthenticated($app);
-                });
+                })
+            ->bind('homepage');
 
         /**
          * Logout
@@ -368,7 +369,7 @@ class Login implements ControllerProviderInterface
             }
         }
 
-        return new Response($app['phraseanet.core']['Twig']->render('login/forgot-password.html.twig', array(
+        return new Response($app['twig']->render('login/forgot-password.html.twig', array(
                     'tokenize'    => $tokenize,
                     'passwordMsg' => $passwordMsg,
                     'errorMsg'    => $errorMsg,
@@ -425,7 +426,7 @@ class Login implements ControllerProviderInterface
 
         $arrayVerif = $this->getRegisterFieldConfiguration($app['phraseanet.core']);
 
-        return new Response($app['phraseanet.core']['Twig']->render('login/register.html.twig', array(
+        return new Response($app['twig']->render('login/register.html.twig', array(
                     'inscriptions' => giveMeBases(),
                     'parms'        => $request->query->all(),
                     'needed'       => $needed,
@@ -723,10 +724,7 @@ class Login implements ControllerProviderInterface
         $public_feeds = \Feed_Collection::load_public_feeds($appbox);
         $feeds = array_merge(array($public_feeds->get_aggregate()), $public_feeds->get_feeds());
 
-        $core = \bootstrap::getCore();
-        $twig = $core->getTwig();
-
-        return $twig->render('login/index.twig', array(
+        return $app['twig']->render('login/index.html.twig', array(
                 'module_name'    => _('Accueil'),
                 'notice'         => $notice,
                 'warning'        => $warning,

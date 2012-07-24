@@ -50,14 +50,14 @@ switch ($parm['action']) {
         $train = '';
 
         if ($record->is_from_reg()) {
-            $train = $twig->render('prod/preview/reg_train.html', array(
+            $train = $twig->render('prod/preview/reg_train.html.twig', array(
                 'record' => $record
                 )
             );
         }
 
         if ($record->is_from_basket() && $parm['roll']) {
-            $train = $twig->render('prod/preview/basket_train.html', array(
+            $train = $twig->render('prod/preview/basket_train.html.twig', array(
                 'record' => $record
                 )
             );
@@ -65,7 +65,7 @@ switch ($parm['action']) {
 
 
         if ($record->is_from_feed()) {
-            $train = $twig->render('prod/preview/feed_train.html', array(
+            $train = $twig->render('prod/preview/feed_train.html.twig', array(
                 'record' => $record
                 )
             );
@@ -73,25 +73,25 @@ switch ($parm['action']) {
 
         $output = p4string::jsonencode(
                 array(
-                    "desc" => $twig->render('prod/preview/caption.html', array(
+                    "desc" => $twig->render('prod/preview/caption.html.twig', array(
                         'record'       => $record
                         , 'highlight'    => $parm['query']
                         , 'searchEngine' => $search_engine
                         )
                     )
-                    , "html_preview" => $twig->render('common/preview.html', array('record' => $record)
+                    , "html_preview" => $twig->render('common/preview.html.twig', array('record' => $record)
                     )
-                    , "others" => $twig->render('prod/preview/appears_in.html', array(
+                    , "others" => $twig->render('prod/preview/appears_in.html.twig', array(
                         'parents' => $record->get_grouping_parents(),
                         'baskets' => $record->get_container_baskets()
                         )
                     )
                     , "current" => $train
-                    , "history" => $twig->render('prod/preview/short_history.html', array('record'     => $record)
+                    , "history" => $twig->render('prod/preview/short_history.html.twig', array('record'     => $record)
                     )
-                    , "popularity" => $twig->render('prod/preview/popularity.html', array('record' => $record)
+                    , "popularity" => $twig->render('prod/preview/popularity.html.twig', array('record' => $record)
                     )
-                    , "tools"  => $twig->render('prod/preview/tools.html', array('record' => $record)
+                    , "tools"  => $twig->render('prod/preview/tools.html.twig', array('record' => $record)
                     )
                     , "pos"    => $record->get_number()
                     , "title"  => $record->get_title($parm['query'], $search_engine)

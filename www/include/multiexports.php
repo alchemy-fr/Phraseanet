@@ -44,7 +44,7 @@ $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
 $core = \bootstrap::getCore();
 $twig = $core->getTwig();
 
-echo $twig->render('common/dialog_export.twig', array(
+echo $twig->render('common/dialog_export.html.twig', array(
     'download'             => $download,
     'ssttid'               => $parm['SSTTID'],
     'lst'                  => $download->serialize_list(),

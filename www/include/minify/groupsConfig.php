@@ -48,20 +48,8 @@ $groups = array(
         , '//include/jslibs/jquery.print.js'
         , '//include/jslibs/jquery.multiselect.js'
         , '//include/jslibs/jquery.cluetip.js'
-        , '//include/jslibs/jquery.tablesorter.2.0.3.js'
         , '//include/jquery.nicoslider.js'
         , '//report/report.js'
-    ),
-    'reportmobile' => array(
-         '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
-        , '//include/jslibs/jquery.cookie.js'
-        , '//include/jquery.common.js'
-        , '//include/jquery.tooltip.js'
-        , '//include/jslibs/jquery.contextmenu_scroll.js'
-        , '//include/jslibs/jquery.gvChart-0.1.js'
-        , '//include/jslibs/jqtouch/jqtouch/jqtouch.js'
-        , '//include/jslibs/jquery.slide-mobile.js'
-        , '//report/report_mobile.js'
     ),
     'modalBox' => array(
          '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'

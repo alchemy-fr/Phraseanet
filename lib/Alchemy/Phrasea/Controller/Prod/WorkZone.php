@@ -42,7 +42,7 @@ class WorkZone implements ControllerProviderInterface
                     , 'srt'           => $app['request']->get('sort')
                 );
 
-                return new Response($app['phraseanet.core']->getTwig()->render('prod/WorkZone/WorkZone.html.twig', $params));
+                return new Response($app['twig']->render('prod/WorkZone/WorkZone.html.twig', $params));
             });
 
         $controllers->get('/Browse/', function(Application $app) {
@@ -53,7 +53,7 @@ class WorkZone implements ControllerProviderInterface
                 );
 
                 return new Response(
-                        $app['phraseanet.core']->getTwig()->render('prod/WorkZone/Browser/Browser.html.twig'
+                        $app['twig']->render('prod/WorkZone/Browser/Browser.html.twig'
                             , $params
                         )
                 );
@@ -97,7 +97,7 @@ class WorkZone implements ControllerProviderInterface
                     , 'Type'    => $request->get('Type')
                 );
 
-                return new Response($app['phraseanet.core']->getTwig()->render('prod/WorkZone/Browser/Results.html.twig', $params));
+                return new Response($app['twig']->render('prod/WorkZone/Browser/Results.html.twig', $params));
             });
 
         $controllers->get('/Browse/Basket/{basket_id}/', function(Application $app, Request $request, $basket_id) {
@@ -111,7 +111,7 @@ class WorkZone implements ControllerProviderInterface
                     'Basket' => $basket
                 );
 
-                return new Response($app['phraseanet.core']->getTwig()->render('prod/WorkZone/Browser/Basket.html.twig', $params));
+                return new Response($app['twig']->render('prod/WorkZone/Browser/Basket.html.twig', $params));
             })->assert('basket_id', '\d+');
 
         $controllers->post(
