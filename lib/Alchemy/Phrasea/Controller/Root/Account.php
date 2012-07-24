@@ -56,39 +56,40 @@ class Account implements ControllerProviderInterface
          * method       : POST
          *
          * parameters   :
-         *  'gender'
-         *  'lastname'
-         *  'firstname'
-         *  'job'
-         *  'lastname'
-         *  'company'
-         *  'function'
-         *  'activity'
-         *  'phone'
-         *  'fax'
-         *  'address'
-         *  'zip_code'
-         *  'geoname_id'
-         *  'dest_ftp'
-         *  'default_data_ftp'
-         *  'prefix_ftp_folder'
-         *  'notice'
-         *  'bases'
-         *  'mail_notifications'
-         *  'request_notifications'
-         *  'demand'
-         *  'notifications'
-         *  'active_ftp'
-         *  'address_ftp'
-         *  'login_ftp'
-         *  'password_ftp'
-         *  'pass_if_ftp'
-         *  'retry_ftp'
+         *  'form_gender'
+         *  'form_lastname'
+         *  'form_firstname'
+         *  'form_job'
+         *  'form_lastname'
+         *  'form_company'
+         *  'form_function'
+         *  'form_activity'
+         *  'form_phone'
+         *  'form_fax'
+         *  'form_address'
+         *  'form_zip_code'
+         *  'form_geoname_id'
+         *  'form_dest_ftp'
+         *  'form_default_data_ftp'
+         *  'form_prefix_ftp_folder'
+         *  'form_notice'
+         *  'form_bases'
+         *  'form_mail_notifications'
+         *  'form_request_notifications'
+         *  'form_demand'
+         *  'form_notifications'
+         *  'form_active_ftp'
+         *  'form_address_ftp'
+         *  'form_login_ftp'
+         *  'form_password_ftp'
+         *  'form_pass_if_ftp'
+         *  'form_retry_ftp'
          *
          *
          * return       : HTML Response
          */
-        $controllers->post('/', $this->call('updateAccount'));
+        $controllers->post('/', $this->call('updateAccount'))
+            ->bind('submit_update_account');
 
 
         /**
@@ -126,7 +127,7 @@ class Account implements ControllerProviderInterface
         /**
          * Reset user email
          *
-         * name         : post_account_reset_email
+         * name         : submit_forgot_password
          *
          * description  : Reset User email
          *
@@ -136,7 +137,8 @@ class Account implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/forgot-password/', $this->call('renewPassword'));
+        $controllers->post('/forgot-password/', $this->call('renewPassword'))
+            ->bind('submit_forgot_password');
 
         /**
          * Give account access
@@ -390,7 +392,7 @@ class Account implements ControllerProviderInterface
      */
     public function renewPassword(Application $app, Request $request)
     {
-        $appbox = \appbox::get_instance($app['phraseanet.core']);
+        $appbox = $app['phraseanet.appbox'];
 
         if ((null !== $password = $request->get('form_password')) && (null !== $passwordConfirm = $request->get('form_password_confirm'))) {
             if ($password !== $passwordConfirm) {
@@ -433,7 +435,7 @@ class Account implements ControllerProviderInterface
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 
-        $appbox = \appbox::get_instance($app['phraseanet.core']);
+        $appbox = $app['phraseanet.appbox'];
         $error = false;
 
         try {
@@ -479,7 +481,7 @@ class Account implements ControllerProviderInterface
     public function accountAuthorizedApps(Application $app, Request $request)
     {
         return $app['phraseanet.core']['Twig']->render('account/authorized_apps.html.twig', array(
-                "apps" => \API_OAuth2_Application::load_app_by_user(\appbox::get_instance($app['phraseanet.core']), $app['phraseanet.core']->getAuthenticatedUser()),
+                "apps" => \API_OAuth2_Application::load_app_by_user($app['phraseanet.appbox'], $app['phraseanet.core']->getAuthenticatedUser())
             ));
     }
 

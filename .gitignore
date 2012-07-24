@@ -12,3 +12,4 @@
 .DS_Store
 /vendor
 composer.phar
+/datas
