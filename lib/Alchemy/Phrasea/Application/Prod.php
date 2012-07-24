@@ -32,6 +32,8 @@ use Alchemy\Phrasea\Controller\Prod\Tools;
 use Alchemy\Phrasea\Controller\Prod\Lazaret;
 use Alchemy\Phrasea\Controller\Prod\Upload;
 use Alchemy\Phrasea\Controller\Prod\Root;
+use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -65,27 +67,36 @@ return call_user_func(function() {
             $app->mount('/', new Root());
 
             $app->error(function (\Exception $e, $code) use ($app) {
-                    /* @var $request \Symfony\Component\HttpFoundation\Request */
-                    $request = $app['request'];
+                /* @var $request \Symfony\Component\HttpFoundation\Request */
+                $request = $app['request'];
 
-                    if ($request->getRequestFormat() == 'json') {
-                        $datas = array(
-                            'success' => false
-                            , 'message' => $e->getMessage()
-                        );
+                if ($request->getRequestFormat() == 'json') {
+                    $datas = array(
+                        'success' => false
+                        , 'message' => $e->getMessage()
+                    );
 
-                        return $app->json($datas);
-                    }
-                    if ($e instanceof \Exception_BadRequest) {
-                        return new Response('Bad Request', 400);
-                    }
-                    if ($e instanceof \Exception_NotFound) {
-                        return new Response('Not Found', 404);
-                    }
-                    if ($e instanceof \Exception_Forbidden) {
-                        return new Response('Not Found', 403);
-                    }
-                });
+                    return $app->json($datas);
+                }
+                if ($e instanceof \Exception_BadRequest) {
+                    return new Response('Bad Request', 400);
+                }
+                if ($e instanceof \Exception_NotFound) {
+                    return new Response('Not Found', 404);
+                }
+                if ($e instanceof \Exception_Forbidden) {
+                    return new Response('Not Found', 403);
+                }
+            });
+
+            /**
+             * Temporary fix for https://github.com/fabpot/Silex/issues/438
+             */
+            $app['dispatcher']->addListener(KernelEvents::RESPONSE, function(FilterResponseEvent $event){
+                if ($event->getRequest()->getRequestFormat() == 'json') {
+                    $event->getResponse()->setStatusCode(200);
+                }
+            });
 
             return $app;
         }
