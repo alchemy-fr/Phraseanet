@@ -1,4 +1,4 @@
-{% extends "common/index.twig" %}
+{% extends "common/index_bootstrap.html.twig" %}
 
 {% import 'common/thumbnail.html' as thumbnail %}
 {% import 'common/caption_templates/preview.html' as caption %}
@@ -85,8 +85,9 @@
                 <div class="right_column_wrapper right_column_wrapper_caption left unselectable" style="width:230px;height:auto;">
                     <div id="record_infos">
                         <div class="container">
+              {% set business = user.ACL().has_right_on_base(first_item.get_record().get_base_id(), 'canmodifrecord') %}
               {% if first_item %}
-                {{caption.format_caption(first_item.get_record())}}
+                {{caption.format_caption(first_item.get_record(), '', null, business)}}
               {% endif %}
             </div>
                     </div>

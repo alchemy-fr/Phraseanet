@@ -1,25 +1,28 @@
-
-      <td>
-          <form class="action_works_standalone action_works_single_element action_works_many_element" method="GET" action="/prod/bridge/action/{{ account.get_id() }}/createcontainer/{{action_type}}/">
-            <button  class="form_multiple_submitter single_menu">
+<td>
+    <form class="action_works_standalone action_works_single_element action_works_many_element" method="GET" action="/prod/bridge/action/{{ account.get_id() }}/createcontainer/{{action_type}}/">
+        <button class="form_multiple_submitter single_menu btn btn-inverse">
               {% trans 'Creer' %}
+        </button>
+    </form>
+</td>
+<td>
+    <div class="multi_menu">
+        <div class="btn-group">
+            <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+                {% trans 'Actions' %}
+                <span class="caret"></span>
             </button>
-          </form>
-      </td>
-      <td>
-        <div class="multi_menu">
-          <div>
-              <button class="trigger">{% trans 'Actions' %}</button>
-          </div>
-
-          <div class="submenu" style="display:none;position:absolute;">
-            <form class="action_works_single_element action_works_many_element" method="GET" action="/prod/bridge/action/{{ account.get_id() }}/deleteelement/{{action_type}}/">
-              <input type="hidden" name="elements_list" value="" />
-              <input type="hidden" name="destination" value="" />
-              <button  class="form_multiple_submitter" style="">
-                {% trans 'boutton::supprimer' %}
-              </button>
-            </form>
-          </div>
+            <ul class="dropdown-menu">
+                <li>
+                    <form class="action_works_single_element action_works_many_element" method="GET" action="/prod/bridge/action/{{ account.get_id() }}/deleteelement/{{action_type}}/">
+                        <input type="hidden" name="elements_list" value="" />
+                        <input type="hidden" name="destination" value="" />
+                        <a class="form_multiple_submitter">
+                            {% trans 'boutton::supprimer' %}
+                        </a>
+                    </form>
+                </li>
+            </ul>
         </div>
-      </td>
+    </div>
+</td>

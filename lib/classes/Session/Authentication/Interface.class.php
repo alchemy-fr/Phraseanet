@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -18,30 +18,31 @@
 interface Session_Authentication_Interface
 {
 
-  /**
-   * Pre execution after authentication
-   *
-   * @return Session_Authentication_Interface
-   */
-  public function prelog();
+    /**
+     * Pre execution after authentication
+     *
+     * @return Session_Authentication_Interface
+     */
+    public function prelog();
 
-  /**
-   * Verify the authentication
-   *
-   * @return User_Adapter
-   */
-  public function signOn();
-  /**
-   * Give the user related to the object
-   *
-   * @return User_Adapter
-   */
-  public function get_user();
+    /**
+     * Verify the authentication
+     *
+     * @return User_Adapter
+     */
+    public function signOn();
 
-  /**
-   * Post execution after authentication
-   *
-   * @return Session_Authentication_Interface
-   */
-  public function postlog();
+    /**
+     * Give the user related to the object
+     *
+     * @return User_Adapter
+     */
+    public function get_user();
+
+    /**
+     * Post execution after authentication
+     *
+     * @return Session_Authentication_Interface
+     */
+    public function postlog();
 }

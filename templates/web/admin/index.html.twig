@@ -1,4 +1,4 @@
-{% extends "common/index.twig" %}
+{% extends "common/index_bootstrap.html.twig" %}
 
 {% block icon %}
 <link rel="shortcut icon" type="image/x-icon" href="/admin/favicon.ico">
@@ -34,6 +34,7 @@
 
   <script type="text/javascript" src="/include/jslibs/jquery-1.7.1.js"></script>
   <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
+  <script type="text/javascript" src="/include/vendor/javascript-load-image/load-image.min.js"></script>
   <script type="text/javascript" src="/include/minify/g=admin"></script>
   <script type="text/javascript">
 
@@ -49,7 +50,8 @@
         uncheck_all :  '{% trans 'Decocher toute la colonne' %}',
         create_template :  '{% trans 'Creer un model' %}',
         create_user :  '{% trans 'Creer un utilisateur' %}',
-        annuler :  '{% trans 'boutton::annuler' %}'
+        annuler :  '{% trans 'boutton::annuler' %}',
+        errorFileApiTooBig :  '{% trans 'This file is too big' %}'
     };
 
     window.onbeforeunload = function()
@@ -205,8 +207,16 @@
         <div id="time_dialog"></div>
         <div id="user_add_dialog" title="{% trans 'Ajouter un nouvel utilisateur' %}">
           <form>
-            <label>{% trans 'Adresse email du nouvel utilisateur' %}</label>
-            <input type="text" name="value" />
+            <label for="new_user_mail">{% trans 'Adresse email du nouvel utilisateur' %}</label>
+            <input id="new_user_mail"  type="text" name="value" />
+            <label class="checkbox" for="send_credentials">
+                <input type="checkbox" checked="checked" name="send_credentials" id="send_credentials" value="1" />
+                {% trans "Send an email to the user to setup his password" %}
+            </label>
+            <label class="checkbox" for="validate_mail">
+                <input type="checkbox" checked="checked" name="validate_mail" id="validate_mail" value="1" />
+                {% trans "Require email validation to activate the account" %}
+            </label>
             <img src="/skins/icons/loaderFFF.gif" class="new_user_loader" style="display:none;"/>
           </form>
         </div>

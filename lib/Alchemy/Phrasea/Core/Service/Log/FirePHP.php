@@ -16,7 +16,6 @@ use Alchemy\Phrasea\Core,
     Alchemy\Phrasea\Core\Service\ServiceAbstract,
     Alchemy\Phrasea\Core\Service\ServiceInterface;
 use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
 use Monolog\Handler\FirePHPHandler;
 
 /**
@@ -24,26 +23,23 @@ use Monolog\Handler\FirePHPHandler;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class FirePHP extends ServiceAbstract implements ServiceInterface
+class FirePHP extends ServiceAbstract
 {
+    protected $logger;
 
-  protected $logger;
-
-  public function getDriver()
-  {
-    if (!$this->logger)
+    public function getDriver()
     {
-      $this->logger = new Logger('FirePHP');
+        if ( ! $this->logger) {
+            $this->logger = new Logger('FirePHP');
 
-      $this->logger->pushHandler(new FirePHPHandler());
+            $this->logger->pushHandler(new FirePHPHandler());
+        }
+
+        return $this->logger;
     }
 
-    return $this->logger;
-  }
-
-  public function getType()
-  {
-    return 'FirePHP Monolog';
-  }
-
+    public function getType()
+    {
+        return 'FirePHP Monolog';
+    }
 }

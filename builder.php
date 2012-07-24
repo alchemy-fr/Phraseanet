@@ -30,75 +30,72 @@ printf('Remove files ...' . PHP_EOL);
 
 $finder = new Finder();
 $finder
-  ->files()
-  ->name('.gitmodules')
-  ->name('.gitignore')
-  ->name('check_cs.php')
-  ->name('cleaner.php')
-  ->name('launchpadToLocales.php')
-  ->name('localesToLaunchPad.php')
-  ->name('pom.xml')
-  ->name('vendors.php')
-  ->name('builder.php')
-  ->ignoreDotFiles(false)
-  ->ignoreVCS(false)
-  ->in(__DIR__);
+    ->files()
+    ->name('.gitmodules')
+    ->name('.gitignore')
+    ->name('check_cs.php')
+    ->name('cleaner.php')
+    ->name('phpunit.xml.dist')
+    ->name('launchpadToLocales.php')
+    ->name('localesToLaunchPad.php')
+    ->name('pom.xml')
+    ->name('composer.json')
+    ->name('vendors.php')
+    ->name('vendors.win.php')
+    ->name('builder.php')
+    ->ignoreDotFiles(false)
+    ->ignoreVCS(false)
+    ->in(__DIR__);
 
 $files = array();
 
-foreach ($finder as $file)
-{
-  $files[] = $file->getPathname();
+foreach ($finder as $file) {
+    $files[] = $file->getPathname();
 }
 
-foreach ($files as $file)
-{
-  echo "rm $file\n";
-  unlink($file);
+foreach ($files as $file) {
+    echo "rm $file\n";
+    unlink($file);
 }
 
 $finder = new Finder();
 
 $finder
-  ->directories()
-  ->name('test')
-  ->name('tests')
-  ->name('unitTest')
-  ->name('demos')
-  ->name('demo')
-  ->name('example')
-  ->name('examples')
-  ->name('docs')
-  ->name('documentation')
-  ->name('doc')
-  ->name('as-docs')
-  ->name('hudson')
-  ->name('.svn')
-  ->name('.git')
-  ->name('flash')
-  ->ignoreDotFiles(false)
-  ->ignoreVCS(false)
-  ->in(__DIR__);
+    ->directories()
+    ->name('test')
+    ->name('tests')
+    ->name('demos')
+    ->name('demo')
+    ->name('example')
+    ->name('examples')
+    ->name('docs')
+    ->name('documentation')
+    ->name('doc')
+    ->name('as-docs')
+    ->name('hudson')
+    ->name('.svn')
+    ->name('.git')
+    ->name('flash')
+    ->ignoreDotFiles(false)
+    ->ignoreVCS(false)
+    ->in(__DIR__);
 
 
 $dirs = array();
 
-foreach ($finder as $dir)
-{
-  $dirs[] = $dir->getPathname();
+foreach ($finder as $dir) {
+    $dirs[] = $dir->getPathname();
 }
 
-foreach ($dirs as $dir)
-{
-  if (!is_dir($dir))
-  {
-    continue;
-  }
+foreach ($dirs as $dir) {
+    if ( ! is_dir($dir)) {
+        continue;
+    }
 
-  $cmd = sprintf('rm -Rf %s' . PHP_EOL, escapeshellarg($dir));
+    $cmd = sprintf('rm -Rf %s' . PHP_EOL, escapeshellarg($dir));
 
-  printf($cmd);
-  system($cmd);
+    printf($cmd);
+    system($cmd);
 }
 
 exit(0);

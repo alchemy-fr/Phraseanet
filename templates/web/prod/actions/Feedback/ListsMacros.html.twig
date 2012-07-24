@@ -78,7 +78,7 @@
               {{ user.get_login() }}
             </td>
             <td>
-              {{ user.get_creation_date()|getDate }}
+              {{ user.get_creation_date() | formatDate }}
             </td>
           </tr>
           {% endfor %}

@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -19,76 +19,68 @@ use Alchemy\Phrasea\Core,
 
 /**
  *
- * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class MemcacheCache extends ServiceAbstract implements ServiceInterface
+class MemcacheCache extends ServiceAbstract
 {
+    const DEFAULT_HOST = "localhost";
+    const DEFAULT_PORT = "11211";
 
-  const DEFAULT_HOST = "localhost";
-  const DEFAULT_PORT = "11211";
+    protected $cache;
+    protected $host;
+    protected $port;
 
-  protected $cache;
-  protected $host;
-  protected $port;
-
-  protected function init()
-  {
-    $options = $this->getOptions();
-
-    $this->host = isset($options["host"]) ? $options["host"] : self::DEFAULT_HOST;
-
-    $this->port = isset($options["port"]) ? $options["port"] : self::DEFAULT_PORT;
-  }
-
-  public function getDriver()
-  {
-    if (!extension_loaded('memcache'))
+    protected function init()
     {
-      throw new \Exception('The Memcache cache requires the Memcache extension.');
+        $options = $this->getOptions();
+
+        $this->host = isset($options["host"]) ? $options["host"] : self::DEFAULT_HOST;
+
+        $this->port = isset($options["port"]) ? $options["port"] : self::DEFAULT_PORT;
     }
 
-    if (!$this->cache)
+    public function getDriver()
     {
-      $memcache = new \Memcache();
+        if ( ! extension_loaded('memcache')) {
+            throw new \Exception('The Memcache cache requires the Memcache extension.');
+        }
 
-      $memcache->addServer($this->host, $this->port);
+        if ( ! $this->cache) {
+            $memcache = new \Memcache();
 
-      $key = sprintf("%s:%s", $this->host, $this->port);
+            $memcache->addServer($this->host, $this->port);
 
-      $stats = @$memcache->getExtendedStats();
+            $key = sprintf("%s:%s", $this->host, $this->port);
 
-      if (isset($stats[$key]))
-      {
-        $this->cache = new CacheDriver\MemcacheCache();
-        $this->cache->setMemcache($memcache);
+            $stats = @$memcache->getExtendedStats();
 
-        $this->cache->setNamespace(md5(realpath(__DIR__ . '/../../../../../../')));
-      }
-      else
-      {
-        throw new \Exception(sprintf("Memcache instance with host '%s' and port '%s' is not reachable", $this->host, $this->port));
-      }
+            if (isset($stats[$key]) && false !== $stats[$key]) {
+                $this->cache = new CacheDriver\MemcacheCache();
+                $this->cache->setMemcache($memcache);
+
+                $this->cache->setNamespace(md5(realpath(__DIR__ . '/../../../../../../')));
+            } else {
+                throw new \Exception(sprintf("Memcache instance with host '%s' and port '%s' is not reachable", $this->host, $this->port));
+            }
+        }
+
+        return $this->cache;
     }
 
-    return $this->cache;
-  }
+    public function getType()
+    {
+        return 'memcache';
+    }
 
-  public function getType()
-  {
-    return 'memcache';
-  }
+    public function getHost()
+    {
+        return $this->host;
+    }
 
-  public function getHost()
-  {
-    return $this->host;
-  }
-
-  public function getPort()
-  {
-    return $this->port;
-  }
-
+    public function getPort()
+    {
+        return $this->port;
+    }
 }
 

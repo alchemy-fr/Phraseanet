@@ -1,74 +1,21 @@
-[submodule "lib/vendor/dailymotion-sdk-php"]
-	path = lib/vendor/dailymotion-sdk-php
-	url = git://github.com/dailymotion/dailymotion-sdk-php.git
-[submodule "lib/vendor/exiftool"]
-	path = lib/vendor/exiftool
-	url = git://github.com/alchemy-fr/exiftool.git
-[submodule "lib/vendor/fpdf"]
-	path = lib/vendor/fpdf
-	url = git://github.com/alchemy-fr/fpdf.git
-[submodule "lib/vendor/gdata"]
-	path = lib/vendor/gdata
-	url = git://github.com/alchemy-fr/gdata.git
-[submodule "lib/vendor/moov"]
-	path = lib/vendor/moov
-	url = git://github.com/alchemy-fr/MoovRelocator.git
-[submodule "lib/vendor/oauth2"]
-	path = lib/vendor/oauth2
-	url = git://github.com/alchemy-fr/oauth2-php.git
-[submodule "lib/vendor/Phlickr"]
-	path = lib/vendor/Phlickr
-	url = git://github.com/alchemy-fr/Phlickr.git
-[submodule "lib/vendor/PHPMailer_v5.1"]
-	path = lib/vendor/PHPMailer_v5.1
-	url = git://github.com/alchemy-fr/PHPMailer_v5.1.git
-[submodule "lib/vendor/PHPShortener"]
-	path = lib/vendor/PHPShortener
-	url = git://github.com/alchemy-fr/PHPShortener.git
 [submodule "lib/vendor/recaptcha"]
 	path = lib/vendor/recaptcha
 	url = git://github.com/alchemy-fr/recaptcha.git
-[submodule "lib/vendor/Silex"]
-	path = lib/vendor/Silex
-	url = git://github.com/fabpot/Silex.git
 [submodule "lib/vendor/sphinx"]
 	path = lib/vendor/sphinx
 	url = git://github.com/alchemy-fr/SphinxSearch-PHP-SDK.git
-[submodule "lib/vendor/swiftmailer"]
-	path = lib/vendor/swiftmailer
-	url = git://github.com/swiftmailer/swiftmailer.git
-[submodule "lib/vendor/symfony"]
-	path = lib/vendor/symfony
-	url = git://github.com/symfony/symfony.git
-[submodule "lib/vendor/tcpdf"]
-	path = lib/vendor/tcpdf
-	url = git://github.com/alchemy-fr/tcpdf.git
-[submodule "lib/vendor/Twig"]
-	path = lib/vendor/Twig
-	url = git://github.com/fabpot/Twig.git
-[submodule "lib/vendor/Twig-extensions"]
-	path = lib/vendor/Twig-extensions
-	url = git://github.com/fabpot/Twig-extensions.git
-[submodule "lib/vendor/doctrine2-gedmo"]
-	path = lib/vendor/doctrine2-gedmo
-	url = git://github.com/l3pp4rd/DoctrineExtensions.git
-[submodule "lib/vendor/doctrine2-orm"]
-	path = lib/vendor/doctrine2-orm
-	url = git://github.com/doctrine/doctrine2.git
-[submodule "lib/vendor/data-fixtures"]
-	path = lib/vendor/data-fixtures
-	url = https://github.com/doctrine/data-fixtures
 [submodule "www/include/vendor/humane-js"]
 	path = www/include/vendor/humane-js
 	url = https://github.com/wavded/humane-js.git
-
-
 [submodule "www/include/vendor/qunit"]
 	path = www/include/vendor/qunit
 	url = git://github.com/jquery/qunit.git
-[submodule "lib/vendor/doctrine2-beberlei"]
-	path = lib/vendor/doctrine2-beberlei
-	url = git://github.com/beberlei/DoctrineExtensions.git
 [submodule "www/include/vendor/mustache-js"]
 	path = www/include/vendor/mustache-js
 	url = https://github.com/janl/mustache.js.git
+[submodule "www/include/vendor/jquery-file-upload"]
+	path = www/include/vendor/jquery-file-upload
+	url = https://github.com/blueimp/jQuery-File-Upload.git
+[submodule "www/include/vendor/javascript-load-image"]
+	path = www/include/vendor/javascript-load-image
+	url = https://github.com/blueimp/JavaScript-Load-Image.git

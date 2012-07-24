@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,70 +11,57 @@
 
 namespace Alchemy\Phrasea\Application;
 
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Alchemy\Phrasea\Controller\Root as Controller;
 
 /**
  *
- * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-return call_user_func(function()
-    {
-      $app = new \Silex\Application();
+return call_user_func(function() {
+            $app = new \Silex\Application();
 
-      $app['Core'] = \bootstrap::getCore();
+            $app['Core'] = \bootstrap::getCore();
 
-      if (!\setup::is_installed())
-      {
-        $response = new \Symfony\Component\HttpFoundation\RedirectResponse('/setup/');
+            if ( ! \setup::is_installed()) {
+                $response = new \Symfony\Component\HttpFoundation\RedirectResponse('/setup/');
 
-        return $response->send();
-      }
+                return $response->send();
+            }
 
-      $app->get('/', function() use ($app)
-        {
-          $browser = \Browser::getInstance();
-          if ($browser->isMobile())
+            $app->get('/', function() use ($app) {
+                    $browser = \Browser::getInstance();
+                    if ($browser->isMobile()) {
+                        return $app->redirect("/login/?redirect=/lightbox");
+                    } elseif ($browser->isNewGeneration()) {
+                        return $app->redirect("/login/?redirect=/prod");
+                    } else {
+                        return $app->redirect("/login/?redirect=/client");
+                    }
+                });
 
-            return $app->redirect("/login/?redirect=/lightbox");
-          elseif ($browser->isNewGeneration())
+            $app->get('/robots.txt', function() use ($app) {
+                    $appbox = \appbox::get_instance($app['Core']);
 
-            return $app->redirect("/login/?redirect=/prod");
-          else
+                    $registry = $appbox->get_registry();
 
-            return $app->redirect("/login/?redirect=/client");
-        });
+                    if ($registry->get('GV_allow_search_engine') === true) {
+                        $buffer = "User-Agent: *\n"
+                            . "Allow: /\n";
+                    } else {
+                        $buffer = "User-Agent: *\n"
+                            . "Disallow: /\n";
+                    }
 
-      $app->get('/robots.txt', function() use ($app)
-        {
-          $appbox = \appbox::get_instance($app['Core']);
+                    $response = new Response($buffer, 200, array('Content-Type' => 'text/plain'));
+                    $response->setCharset('UTF-8');
 
-          $registry = $appbox->get_registry();
+                    return $response;
+                });
 
-          if ($registry->get('GV_allow_search_engine') === true)
-          {
-            $buffer = "User-Agent: *\n"
-              . "Allow: /\n";
-          }
-          else
-          {
-            $buffer = "User-Agent: *\n"
-              . "Disallow: /\n";
-          }
+            $app->mount('/feeds/', new Controller\RSSFeeds());
 
-          $response = new Response($buffer, 200, array('Content-Type' => 'text/plain'));
-          $response->setCharset('UTF-8');
-
-          return $response;
-        });
-
-      $app->mount('/feeds/', new Controller\RSSFeeds());
-
-      return $app;
-    }
+            return $app;
+        }
 );

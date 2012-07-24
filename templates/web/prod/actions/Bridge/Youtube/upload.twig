@@ -34,7 +34,7 @@
               </div>
           </td>
           <td>
-            <input class="required_field" type='text' name='{{name}}' value="{{ caption.get_dc_field('Title') is not none ? caption.get_dc_field('Title').get_value()|default(record.get_title()) : record.get_title() }}"/>
+            <input class="required_field" type='text' name='{{name}}' value="{{ caption.get_dc_field('Title') is not none ? caption.get_dc_field('Title').get_serialized_values()|default(record.get_title()) : record.get_title() }}"/>
              <br />
               {{ error_form.display_errors(name, constraint_errors) }}
             </label>
@@ -49,7 +49,7 @@
             </div>
           </td>
           <td class='column_right'>
-            <textarea class="required_field" name="{{ name }}" rows="5">{{ caption.get_dc_field('Description') is not none ? caption.get_dc_field('Description').get_value() : ""}}</textarea>
+            <textarea class="required_field" name="{{ name }}" rows="5">{{ caption.get_dc_field('Description') is not none ? caption.get_dc_field('Description').get_serialized_values() : ""}}</textarea>
             <br />
               {{ error_form.display_errors(name, constraint_errors) }}
           </td>
@@ -123,6 +123,6 @@
   </script>
 {% endif %}
 <p>
-  <button class="back_link">&lt; {% trans 'Retour' %}</button>
+  <button class="back_link btn btn-inverse">&lt; {% trans 'Retour' %}</button>
 </p>
 {% endblock %}

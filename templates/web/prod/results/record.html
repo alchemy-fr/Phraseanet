@@ -1,99 +1,99 @@
 {% macro block(record, user, session, highlight, searchEngine, prefix, entry_id)%}
-  {% import 'common/thumbnail.html' as thumbnail %}
-  {% import 'common/doctype_icons.html' as doctype_icons %}
-  {% import 'common/drop_down_options.html' as drop_down %}
-  {% set th_size = user.getPrefs('images_size')%}
-  {% set sbas_id = record.get_base_id|sbasFromBas %}
-  {% if entry_id %}
-    <div style="width:{{th_size+30}}px;" sbas="{{sbas_id}}"
-         id="{{ prefix|default('IMGT') }}_{{record.get_sbas_id}}_{{record.get_record_id}}"
-         class="IMGT diapo type-{{record.get_type}}"
-         onDblClick="openPreview('FEED',{{record.get_number()}},{{entry_id}});">
-  {% elseif record.is_grouping() %}
-    <div style="width:{{th_size+30}}px;" sbas="{{sbas_id}}"
-         id="{{ prefix|default('IMGT') }}_{{record.get_sbas_id}}_{{record.get_record_id}}"
-         class="IMGT diapo grouping type-{{record.get_type}}"
-         onDblClick="openPreview('REG','0','{{record.get_serialize_key()}}');">
-  {% else %}
-    <div style="width:{{th_size+30}}px;" sbas="{{sbas_id}}"
-         id="{{ prefix|default('IMGT') }}_{{record.get_sbas_id}}_{{record.get_record_id}}"
-         class="IMGT diapo type-{{record.get_type}}"
-         onDblClick="openPreview('RESULT',{{record.get_number}});">
-  {% endif %}
-      <div style="height:40px;position: relative; z-index: 100;">
-        <div class="title">
-          {{record.get_title(highlight, searchEngine)|raw}}
-        </div>
-        <div class="status">
-          {{record.get_status_icons|raw}}
-        </div>
-      </div>
-      {% set rollover_gif = record.get_rollover_thumbnail() %}
+    {% import 'common/thumbnail.html' as thumbnail %}
+    {% import 'common/doctype_icons.html' as doctype_icons %}
+    {% import 'common/drop_down_options.html' as drop_down %}
+    {% set th_size = user.getPrefs('images_size')%}
+    {% set sbas_id = record.get_base_id|sbasFromBas %}
+    {% if entry_id %}
+        <div style="width:{{th_size+30}}px;" sbas="{{sbas_id}}"
+            id="{{ prefix|default('IMGT') }}_{{record.get_sbas_id}}_{{record.get_record_id}}"
+            class="IMGT diapo type-{{record.get_type}}"
+            onDblClick="openPreview('FEED',{{record.get_number()}},{{entry_id}});">
+    {% elseif record.is_grouping() %}
+        <div style="width:{{th_size+30}}px;" sbas="{{sbas_id}}"
+            id="{{ prefix|default('IMGT') }}_{{record.get_sbas_id}}_{{record.get_record_id}}"
+            class="IMGT diapo grouping type-{{record.get_type}}"
+            onDblClick="openPreview('REG','0','{{record.get_serialize_key()}}');">
+    {% else %}
+        <div style="width:{{th_size+30}}px;" sbas="{{sbas_id}}"
+            id="{{ prefix|default('IMGT') }}_{{record.get_sbas_id}}_{{record.get_record_id}}"
+            class="IMGT diapo type-{{record.get_type}}"
+            onDblClick="openPreview('RESULT',{{record.get_number}});">
+    {% endif %}
+        <div style="padding: 4px;">
+            <div style="height:40px; position: relative; z-index: 95;">
+                <div class="title">
+                {{record.get_title(highlight, searchEngine)|raw}}
+                </div>
+                <div class="status">
+                {{record.get_status_icons|raw}}
+                </div>
+            </div>
+            {% set rollover_gif = record.get_rollover_thumbnail() %}
 
-      {% set user_technical_display = user.getPrefs('technical_display') %}
-      {% set user_rollover_thumbnail = user.getPrefs('rollover_thumbnail') %}
+            {% set user_technical_display = user.getPrefs('technical_display') %}
+            {% set user_rollover_thumbnail = user.getPrefs('rollover_thumbnail') %}
 
-      {% set extraclass = '' %}
-      {% if user_rollover_thumbnail == 'caption' and searchEngine is not null %}
-        {% set extraclass = extraclass ~ ' captionTips' %}
-        {% set tooltipsrc = '/prod/tooltip/caption/' ~ record.get_sbas_id() ~ '/' ~ record.get_record_id() ~ '/answer/?number=' ~record.get_number() %}
-      {% elseif user_rollover_thumbnail == 'caption' and searchEngine is null %}
-        {% set extraclass = extraclass ~ ' captionTips' %}
-        {% set tooltipsrc = '/prod/tooltip/caption/' ~ record.get_sbas_id() ~ '/' ~ record.get_record_id() ~ '/publi/' %}
-      {% elseif user_rollover_thumbnail == 'preview' %}
-        {% set extraclass = extraclass ~ ' captionTips' %}
-        {% set tooltipsrc = '/prod/tooltip/preview/' ~ record.get_sbas_id() ~ '/' ~ record.get_record_id() ~ '/' %}
-      {% endif %}
-
-      <div class="thumb {{extraclass}} " tooltipsrc="{{tooltipsrc}}" style="height:{{th_size}}px;z-index:90;">
-        <div class="doc_infos">
-          {% if user.getPrefs('doctype_display') == '1' %}
-          {{doctype_icons.format(record)}}
-          {% endif %}
-          <span class="duration">
-            {{record.get_formated_duration()}}
-          </span>
-        </div>
-        <div class="{% if rollover_gif %}rollovable{% endif %}">
-        {% set extraclass = '' %}
-        {% if rollover_gif %}
-          {% set extraclass = 'rollover-gif-out' %}
-        {% endif %}
-        {{thumbnail.format(record.get_thumbnail(), th_size, th_size, extraclass, session, true)}}
-        {% if rollover_gif %}
-          {{thumbnail.format(rollover_gif, th_size, th_size, 'rollover-gif-hover', session, true )}}
-        {% endif %}
-        </div>
-      </div>
-      <div style="height: 25px;position:relative;text-align:left;">
-        <table class="bottom" style="width:100%;table-layout:auto;">
-          <tr>
-            <td style="text-align:left;">
-              {{record.get_collection_logo|raw}}
-            </td>
-            {% set l_width = 30 %}
-            {% if user_rollover_thumbnail == 'preview' %}
-            {% set l_width = l_width + 20 %}
+            {% set extraclass = '' %}
+            {% if user_rollover_thumbnail == 'caption' and searchEngine is not null %}
+                {% set extraclass = extraclass ~ ' captionTips' %}
+                {% set tooltipsrc = '/prod/tooltip/caption/' ~ record.get_sbas_id() ~ '/' ~ record.get_record_id() ~ '/answer/?number=' ~record.get_number() %}
+            {% elseif user_rollover_thumbnail == 'caption' and searchEngine is null %}
+                {% set extraclass = extraclass ~ ' captionTips' %}
+                {% set tooltipsrc = '/prod/tooltip/caption/' ~ record.get_sbas_id() ~ '/' ~ record.get_record_id() ~ '/publi/' %}
+            {% elseif user_rollover_thumbnail == 'preview' %}
+                {% set extraclass = extraclass ~ ' captionTips' %}
+                {% set tooltipsrc = '/prod/tooltip/preview/' ~ record.get_sbas_id() ~ '/' ~ record.get_record_id() ~ '/' %}
             {% endif %}
-            {% if user_technical_display == '1' %}
-            {% set l_width = l_width + 20 %}
-            {% endif %}
-            <td style='text-align:right;width:{{l_width}}px;' valign='bottom'>
-              {{drop_down.prod(record, user)}}
-              {% if record.has_preview() and user.ACL().has_access_to_subdef(record, 'preview') %}
-              <div tooltipsrc="/prod/tooltip/preview/{{record.get_sbas_id()}}/{{record.get_record_id()}}/" class="previewTips"></div>
-              {% endif %}
-              {% if user_rollover_thumbnail == 'preview' %}
-              <div tooltipsrc="/prod/tooltip/caption/{{record.get_sbas_id()}}/{{record.get_record_id()}}/answer/?number={{record.get_number()}}" class="captionRolloverTips"></div>
-              {% endif %}
-              {% if user_technical_display == '1' %}
-              <img class="infoTips" tooltipsrc="/prod/tooltip/tc_datas/{{record.get_sbas_id()}}/{{record.get_record_id()}}/" src="/skins/icons/info.gif"/>
-              {% endif %}
-            </td>
-          </tr>
-        </table>
-      </div>
-
+            <div class="thumb {{extraclass}} " tooltipsrc="{{tooltipsrc}}" style="height:{{th_size}}px; z-index:90;">
+                <div class="doc_infos">
+                {% if user.getPrefs('doctype_display') == '1' %}
+                {{doctype_icons.format(record)}}
+                {% endif %}
+                <span class="duration">
+                    {{record.get_formated_duration()}}
+                </span>
+                </div>
+                <div class="{% if rollover_gif %}rollovable{% endif %}">
+                {% set extraclass = '' %}
+                {% if rollover_gif %}
+                {% set extraclass = 'rollover-gif-out' %}
+                {% endif %}
+                {{thumbnail.format(record.get_thumbnail(), th_size, th_size, extraclass, session, true)}}
+                {% if rollover_gif %}
+                {{thumbnail.format(rollover_gif, th_size, th_size, 'rollover-gif-hover', session, true )}}
+                {% endif %}
+                </div>
+            </div>
+            <div style="height: 25px; position:relative; text-align:left;">
+                <table class="bottom" style="width:100%; table-layout:auto;">
+                <tr>
+                    <td style="text-align:left;">
+                    {{record.get_collection_logo|raw}}
+                    </td>
+                    {% set l_width = 30 %}
+                    {% if user_rollover_thumbnail == 'preview' %}
+                    {% set l_width = l_width + 20 %}
+                    {% endif %}
+                    {% if user_technical_display == '1' %}
+                    {% set l_width = l_width + 20 %}
+                    {% endif %}
+                    <td style='text-align:right;width:{{l_width}}px;' valign='bottom'>
+                    {{drop_down.prod(record, user, entry_id)}}
+                    {% if record.has_preview() and user.ACL().has_access_to_subdef(record, 'preview') %}
+                    <div tooltipsrc="/prod/tooltip/preview/{{record.get_sbas_id()}}/{{record.get_record_id()}}/" class="previewTips"></div>
+                    {% endif %}
+                    {% if user_rollover_thumbnail == 'preview' %}
+                    <div tooltipsrc="/prod/tooltip/caption/{{record.get_sbas_id()}}/{{record.get_record_id()}}/answer/?number={{record.get_number()}}" class="captionRolloverTips"></div>
+                    {% endif %}
+                    {% if user_technical_display == '1' %}
+                    <img class="infoTips" tooltipsrc="/prod/tooltip/tc_datas/{{record.get_sbas_id()}}/{{record.get_record_id()}}/" src="/skins/icons/info.gif"/>
+                    {% endif %}
+                    </td>
+                </tr>
+                </table>
+            </div>
+        </div>
 
     </div>
 {% endmacro %}

@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,21 +17,23 @@
  */
 class databox_Field_DCES_Date extends databox_Field_DCESAbstract
 {
+    /**
+     *
+     * @var string
+     */
+    protected $label = 'Date';
 
-  /**
-   *
-   * @var string
-   */
-  protected $label = 'Date';
-  /**
-   *
-   * @var string
-   */
-  protected $definition = 'A point or period of time associated with an event
+    /**
+     *
+     * @var string
+     */
+    protected $definition = 'A point or period of time associated with an event
                           in the lifecycle of the resource.';
-  /**
-   *
-   * @var string
-   */
-  protected $URI = 'http://dublincore.org/documents/dces/#date';
+
+    /**
+     *
+     * @var string
+     */
+    protected $URI = 'http://dublincore.org/documents/dces/#date';
+
 }

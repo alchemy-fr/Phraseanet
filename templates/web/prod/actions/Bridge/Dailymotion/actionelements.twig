@@ -1,35 +1,42 @@
-
-      <td>
-        <div class="multi_menu">
-          <div>
-              <button class="trigger">{% trans 'Ajouter a' %}</button>
-          </div>
-
-          <div class="submenu" style="display:none;position:absolute;">
-            <form class="action_works_single_element action_works_many_element" method="GET" action="/prod/bridge/action/{{ account.get_id() }}/moveinto/{{action_type}}/">
-              <input type="hidden" name="elements_list" value="" />
-              <input type="hidden" name="destination" value="{{ constant('Bridge_Api_Dailymotion::CONTAINER_TYPE_PLAYLIST') }}" />
-              <button  class="form_multiple_submitter" style="">
-                {% trans 'Playlist' %}
-              </button>
-            </form>
-          </div>
+<td>
+    <div class="multi_menu">
+        <div class="btn-group">
+            <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+                {% trans 'Ajouter a' %}
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <form class="action_works_single_element action_works_many_element" method="GET" action="/prod/bridge/action/{{ account.get_id() }}/moveinto/{{action_type}}/">
+                        <input type="hidden" name="elements_list" value="" />
+                        <input type="hidden" name="destination" value="{{ constant('Bridge_Api_Dailymotion::CONTAINER_TYPE_PLAYLIST') }}" />
+                        <a class="form_multiple_submitter">
+                            {% trans 'Playlist' %}
+                        </a>
+                    </form>
+                </li>
+            </ul>
         </div>
-      </td>
-      <td>
-        <div class="multi_menu">
-          <div>
-              <button class="trigger">{% trans 'Actions' %}</button>
-          </div>
-
-          <div class="submenu" style="display:none;position:absolute;">
-            <form class="action_works_single_element action_works_many_element" method="GET" action="/prod/bridge/action/{{ account.get_id() }}/deleteelement/{{action_type}}/">
-              <input type="hidden" name="elements_list" value="" />
-              <input type="hidden" name="destination" value="" />
-              <button  class="form_multiple_submitter" style="">
-                {% trans 'boutton::supprimer' %}
-              </button>
-            </form>
-          </div>
+    </div>
+</td>
+<td>
+    <div class="multi_menu">
+        <div class="btn-group">
+            <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+                {% trans 'Actions' %}
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <form class="action_works_single_element action_works_many_element" method="GET" action="/prod/bridge/action/{{ account.get_id() }}/deleteelement/{{action_type}}/">
+                        <input type="hidden" name="elements_list" value="" />
+                        <input type="hidden" name="destination" value="" />
+                        <a class="form_multiple_submitter">
+                            {% trans 'boutton::supprimer' %}
+                        </a>
+                    </form>
+                </li>
+            </ul>
         </div>
-      </td>
+    </div>
+</td>

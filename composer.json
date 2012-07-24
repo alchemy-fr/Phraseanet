@@ -1,0 +1,57 @@
+{
+    "name": "phraseanet/phraseanet",
+    "description": "Phraseanet",
+    "config": {
+        "bin-dir": "bin/"
+    },
+    "require": {
+        "php": ">=5.3.3",
+        "alchemy/oauth2php": "master",
+        "alchemy/phlickr": "master",
+        "alchemy/phpmailer": "master",
+        "dailymotion/sdk": "*",
+        "data-uri/data-uri": "dev-master",
+        "doctrine/orm": "2.2.2",
+        "gedmo/doctrine-extensions": "2.2.*",
+        "mediavorus/mediavorus": "dev-master",
+        "media-alchemyst/media-alchemyst": "dev-master",
+        "monolog/monolog": "1.0.*",
+        "php-xpdf/php-xpdf": "dev-master",
+        "phpexiftool/phpexiftool": "dev-master",
+        "silex/silex": "1.0.*",
+        "swiftmailer/swiftmailer": "4.1.*",
+        "symfony/symfony": "2.1.*",
+        "tcpdf/tcpdf": ">5.9",
+        "twig/twig": "1.9.*",
+        "twig/extensions": "master",
+        "zend/gdata": ">1.11"
+    },
+    "minimum-stability": "dev",
+    "require-dev": {
+        "behat/behat": "2.4.*@stable",
+        "behat/mink-extension": "dev-master",
+        "behat/mink-goutte-driver": "dev-master",
+        "behat/mink-selenium2-driver": "dev-master",
+        "doctrine/data-fixtures": "dev-master",
+        "fabpot/php-cs-fixer": "dev-master"
+    },
+    "repositories": [
+    {
+        "type": "vcs",
+        "url": "https://github.com/alchemy-fr/oauth2-php"
+    },
+    {
+        "type": "vcs",
+        "url": "https://github.com/alchemy-fr/Phlickr"
+    },
+    {
+        "type": "vcs",
+        "url": "https://github.com/alchemy-fr/PHPMailer_v5.1"
+    }
+    ],
+    "autoload": {
+        "psr-0": {
+            "Alchemy": "lib"
+        }
+    }
+}

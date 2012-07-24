@@ -141,3 +141,41 @@ Cache:
 
   xcache_cache:
     type: Cache\XcacheCache
+
+Border:
+  border_manager:
+    type: Border\BorderManager
+    options:
+      enabled: true
+      checkers:
+        -
+          type: Checker\Sha256
+          enabled: true
+        -
+          type: Checker\UUID
+          enabled: true
+        -
+          type: Checker\Colorspace
+          enabled: false
+          options:
+            colorspaces: [cmyk, grayscale, rgb]
+        -
+          type: Checker\Dimension
+          enabled: false
+          options:
+            width: 80
+            height: 80
+        -
+          type: Checker\Extension
+          enabled: false
+          options: {  }
+        -
+          type: Checker\Filename
+          enabled: false
+          options:
+            sensitive: true
+        -
+          type: Checker\MediaType
+          enabled: false
+          options:
+            mediatypes: [Audio, Document, Flash, Image, Video]

@@ -241,15 +241,6 @@
                         </td>
                         <td></td>
                       </tr>
-                      <tr>
-                        <td>
-                {% trans 'Baseurl' %}
-                          </td>
-                          <td>
-                            <input class="url_testable can_empty same_domain" type="text" value="{{subdef.get_baseurl()}}" name="{{subdefgroup}}_{{subdefname}}_baseurl"/>
-                          </td>
-                          <td></td>
-                        </tr>
                         <tr>
                           <td>
                 {% trans 'Write Metas' %}
@@ -267,8 +258,8 @@
                                 <select onchange="select_mediatype('{{subdefgroup}}{{subdefname}}', this);" name="{{subdefgroup}}_{{subdefname}}_mediatype">
                                   <option>{% trans 'Choisir' %}</option>
 
-                  {% for mediatype, options in subdef.get_mediatype_options() %}
-                                  <option value="{{mediatype}}" {% if subdef.get_mediatype() == mediatype %}selected="selected"{% endif %}>{{mediatype}}</option>
+                  {% for subdefType in subdef.getAvailableSubdefTypes() %}
+                                  <option value="{{ subdefType.getType() }}" {% if subdef.getSubdefType.getType() == subdefType.getType() %}selected="selected"{% endif %}>{{ subdefType.getType() }}</option>
                   {% endfor %}
                                 </select>
                               </td>
@@ -276,49 +267,54 @@
                             </tr>
                           </tbody>
                         </table>
-        {% for mediatype, options in subdef.get_mediatype_options() %}
-                        <div id="box{{subdefgroup}}{{subdefname}}{{mediatype}}" class="{{subdefgroup}}{{subdefname}}" {% if subdef.get_mediatype() != mediatype %}style="display:none;"{% endif %}>
+        {% for subdefType in subdef.getAvailableSubdefTypes() %}
+                        <div id="box{{subdefgroup}}{{subdefname}}{{ subdefType.getType() }}" class="{{subdefgroup}}{{subdefname}}" {% if subdef.getSubdefType.getType() != subdefType.getType() %}style="display:none;"{% endif %}>
                           <table cellspacing="0" cellpading="0" border="0" style="width:500px;">
-            {% for optionname, option in options%}
-            {% set varname = subdefgroup~'_'~subdefname~'_'~mediatype~'['~optionname~']' %}
+            {% for option in subdefType.getOptions() %}
+            {% set varname = subdefgroup~'_'~subdefname~'_'~subdefType.getType()~'['~ option.getName() ~']' %}
                               <tr>
                                 <td style="width:120px;">
-                {{optionname}}
+                {{option.getDisplayName()}}
                                   </td>
                                   <td style="width:250px;">
                 {% set extradata = '' %}
-                {% if option.type == 'range' %}
-                                      <div style="width:250px;" id="slider{{subdefgroup}}{{subdefname}}{{mediatype}}{{optionname}}"></div>
+                {% if option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_RANGE') %}
+                                      <div style="width:250px;" id="slider{{subdefgroup}}{{subdefname}}{{subdefType.getType()}}{{ option.getName() }}"></div>
                                       <script type="text/javascript">
-                                        $('#slider{{subdefgroup}}{{subdefname}}{{mediatype}}{{optionname}}').slider({
-                                          value:{% if option.value %}{{option.value}}{% else %}{{option.default}}{% endif %},
-                                            min: {{option.min}},
-                                            max: {{option.max}},
-                                            {% if option.step is not empty %}step : {{option.step}},{% endif %}
+                                        $('#slider{{subdefgroup}}{{subdefname}}{{subdefType.getType()}}{{ option.getName() }}').slider({
+                                          value:{{ option.getValue }},
+                                            min: {{ option.getMinValue() }},
+                                            max: {{ option.getMaxValue() }},
+                                            {% if option.getStep() is not empty %}step : {{ option.getStep() }},{% endif %}
                                             slide: function( event, ui ) {
-                                              $( "#slidervalue{{subdefgroup}}{{subdefname}}{{mediatype}}{{optionname}}" ).val( ui.value );
+                                              $( "#slidervalue{{subdefgroup}}{{subdefname}}{{ subdefType.getType() }}{{ option.getName() }}" ).val( ui.value );
                                             }
 
                                           });
                                         </script>
 
-                {% elseif option.type == 'enum' %}
+                {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_ENUM') %}
                                         <select name="{{varname}}">
-                                          <option>{% trans 'Choisir' %}</option>
-                  {% for pot_value in option.values %}
-                                          <option value="{{pot_value}}" {% if pot_value == option.value %}selected="selected"{% endif %}>{{pot_value}}</option>
+                                          <option value="">{% trans 'Choisir' %}</option>
+                  {% for pot_value in option.getAvailableValues() %}
+                                          <option value="{{ pot_value }}" {% if pot_value == option.getValue() %}selected="selected"{% endif %}>{{ pot_value }}</option>
                   {% endfor %}
                                         </select>
-                {% elseif option.type == 'boolean' %}
-                                        <input name="{{varname}}" type="radio" value="yes" {% if option.value %}checked="checked"{% endif %} /> {% trans 'yes' %}
-                                        <input name="{{varname}}" type="radio" value="no" {% if option.value is empty %}checked="checked"{% endif %}/> {% trans 'no' %}
-                       {% else %}
-                                        <input name="{{varname}}" type="text" value="{{option.value}}"/>{{option.type}}
+                {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_BOOLEAN') %}
+                                        <input name="{{varname}}" type="radio" value="yes" {% if option.getValue() %}checked="checked"{% endif %} /> {% trans 'yes' %}
+                                        <input name="{{varname}}" type="radio" value="no" {% if option.getValue() is empty %}checked="checked"{% endif %}/> {% trans 'no' %}
+                {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_MULTI') %}
+
+                    {% for pot_value, selected in option.Value(true) %}
+                        <input type="checkbox" name="{{varname}}[]" value="{{ pot_value }}" {% if selected %}checked="checked"{% endif %}/><label>{{ pot_value }}</label>
+                    {% endfor %}
+
+
                 {% endif %}
                                       </td>
                                       <td>
-                {% if option.type == 'range' %}
-                                          <input style="width:35px;" readonly value="{{option.value}}" id="slidervalue{{subdefgroup}}{{subdefname}}{{mediatype}}{{optionname}}" name="{{varname}}" />
+                {% if option.type == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_RANGE') %}
+                                          <input style="width:35px;" readonly value="{{option.value}}" id="slidervalue{{subdefgroup}}{{subdefname}}{{subdefType.getType()}}{{ option.getName() }}" name="{{varname}}" />
                 {% endif %}
                                         </td>
                                       </tr>

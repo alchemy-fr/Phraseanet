@@ -1,614 +1,649 @@
 {% import 'common/thumbnail.html' as thumbnail %}
 
-
 {% macro print_ftp_form(datas) %}
     <div class="ftp_form ftp_form_{{datas.usr_id}}">
-  <table cellspacing="0" cellpadding="0" border="0" style="width:100%;">
-    <tr>
-      <td>
-        <label for="addrFTP_{{datas.usr_id}}">{% trans 'phraseanet:: adresse' %}  ftp://</label>
-      </td>
-      <td>
-        <input style="width:250px;" type="text" name="addr" id="addrFTP_{{datas.usr_id}}" value="{{datas.addrFTP}}" />
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label for="ftpssl_{{datas.usr_id}}">{% trans 'phraseanet:: utiliser SSL' %} </label>
-      </td>
-      <td>
-        <input class="checkbox" type="checkbox" name="ssl" id="ftpssl_{{datas.usr_id}}" value="1" />
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label for="loginFTP_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur identifiant' %} </label>
-      </td>
-      <td>
-        <input style="width:250px;" type="text" name="login" id="loginFTP_{{datas.usr_id}}" value="{{datas.loginFTP}}" />
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label for="pwdFTP_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur mot de passe' %} </label>
-      </td>
-      <td>
-        <input style="width:250px;" type="password" name="pwd" id="pwdFTP_{{datas.usr_id}}" value="{{datas.pwdFTP}}" />
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label for="passifFTP_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur:ftp: Utiliser le mode passif' %} </label>
-      </td>
-      <td>
-        <input value="1" type="checkbox" class="checkbox" name="passif" id="passifFTP_{{datas.usr_id}}" {% if datas.passifFTP %}checked="checked"{% endif %}  />
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label for="retryFTP_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur:ftp: Nombre d\'essais max' %}   </label>
-      </td>
-      <td>
-        <input style="width:250px;" type="text" name="nbretry" id="retryFTP_{{datas.usr_id}}" value="{{datas.retryFTP}}" />
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label for="destFTP_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur:ftp:  repertoire de destination ftp' %} </label>
-      </td>
-      <td>
-        <input style="width:250px;" type="text" name="destfolder" id="destFTP_{{datas.usr_id}}" value="{{datas.destFTP}}"" />
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label for="idMKDFOLD_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur:ftp: creer un dossier' %}  </label>
-      </td>
-      <td>
-        <input type="checkbox" class="checkbox ftp_folder_check" {% if datas.prefixFTPfolder != '' %}checked="checked"{% endif %} name="MKDFOLD" id="idMKDFOLD_{{datas.usr_id}}" value="MKDFOLD"  />
-               <input style="width:250px;" type="text" name="NAMMKDFOLD" id="prefixFTPfolder_{{datas.usr_id}}" value="{{datas.prefixFTPfolder}}" {% if datas.prefixFTPfolder == '' %}disabled="disabled"{% endif %}/>
-      </td>
-    </tr>
-    <tr>
-      <td>
-                    <label for="logfile_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur:ftp: ecrire un fichier de log' %}  </label>
-      </td>
-      <td>
-                    <input type="checkbox" class="checkbox ftp_logfile_check" name="logfile" id="logfile_{{datas.usr_id}}" value="1"  />
-      </td>
-    </tr>
-  </table>
-</div>
-{% endmacro %}
-{% macro choose_title(id, choose_export_title, default_export_title)%}
-<div class="buttons_line" style="display:{% if choose_export_title %}{% else %}none{% endif %};">
-        {% trans 'Nom des fichiers a l\'export'%}
-  <input class="checkbox" type="radio" name="type" id="type_{{id}}_original" {% if default_export_title == "title" %}checked{% endif %} value="title" />
-         <label for="type_{{id}}_original">{% trans 'export::titre: titre du documument' %}</label>
-  <input class="checkbox" type="radio" name="type" id="type_{{id}}_title" {% if default_export_title == "original" %}checked{% endif %} value="originalname" />
-         <label for="type_{{id}}_title">{% trans 'export::titre: nom original du document' %}</label>
-</div>
+        <div class="control-group">
+            <label class="control-label" for="addrFTP_{{datas.usr_id}}">{% trans 'phraseanet:: adresse' %}  ftp://</label>
+            <div class="controls">
+                <input type="text" name="addr" id="addrFTP_{{datas.usr_id}}" value="{{datas.addrFTP}}" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="ftpssl_{{datas.usr_id}}">{% trans 'phraseanet:: utiliser SSL' %}</label>
+            <div class="controls">
+                <input type="checkbox" name="ssl" id="ftpssl_{{datas.usr_id}}" value="1" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="loginFTP_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur identifiant' %}</label>
+            <div class="controls">
+                <input type="text" name="login" id="loginFTP_{{datas.usr_id}}" value="{{datas.loginFTP}}" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="pwdFTP_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur mot de passe' %}</label>
+            <div class="controls">
+                <input type="password" name="pwd" id="pwdFTP_{{datas.usr_id}}" value="{{datas.pwdFTP}}" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="passifFTP_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur:ftp: Utiliser le mode passif' %}</label>
+            <div class="controls">
+                <input value="1" type="checkbox" name="passif" id="passifFTP_{{datas.usr_id}}" {% if datas.passifFTP %}checked="checked"{% endif %}  />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="retryFTP_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur:ftp: Nombre d\'essais max' %}</label>
+            <div class="controls">
+                <input type="text" name="nbretry" id="retryFTP_{{datas.usr_id}}" value="{{datas.retryFTP}}" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="destFTP_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur:ftp:  repertoire de destination ftp' %}</label>
+            <div class="controls">
+                <input type="text" name="destfolder" id="destFTP_{{datas.usr_id}}" value="{{datas.destFTP}}" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="idMKDFOLD_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur:ftp: creer un dossier' %}</label>
+            <div class="controls">
+                <input type="checkbox" class="ftp_folder_check" {% if datas.prefixFTPfolder != '' %}checked="checked"{% endif %} name="MKDFOLD" id="idMKDFOLD_{{datas.usr_id}}" value="MKDFOLD"  />
+                <input type="text" name="NAMMKDFOLD" id="prefixFTPfolder_{{datas.usr_id}}" value="{{datas.prefixFTPfolder}}" {% if datas.prefixFTPfolder == '' %}disabled="disabled"{% endif %} />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="logfile_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur:ftp: ecrire un fichier de log' %}</label>
+            <div class="controls">
+                <input type="checkbox" class=ftp_logfile_check" name="logfile" id="logfile_{{datas.usr_id}}" value="1" />
+            </div>
+        </div>
+    </div>
 {% endmacro %}
 
+{% macro choose_title(id, choose_export_title, default_export_title)%}
+    <div class="buttons_line" style="display:{% if choose_export_title %}{% else %}none{% endif %}; text-align: left;">
+        <p>{% trans 'Nom des fichiers a l\'export'%}</p>
+        <div style="margin: 10px 0 20px 0; padding: 0 10px;">
+            <label for="type_{{id}}_original" class="radio">
+                <input type="radio" name="type" id="type_{{id}}_original" {% if default_export_title == "title" %}checked{% endif %} value="title" />
+                {% trans 'export::titre: titre du documument' %}
+            </label>
+            <label for="type_{{id}}_title" class="radio">
+                <input type="radio" name="type" id="type_{{id}}_title" {% if default_export_title == "original" %}checked{% endif %} value="originalname" />
+                {% trans 'export::titre: nom original du document' %}
+            </label>
+        </div>
+    </div>
+{% endmacro %}
 
 {% if download.get_total_download() <= 0 and download.get_total_order() <= 0 and download.get_total_ftp() <= 0%}
-<div class="buttons_line">
-        {% trans 'Les documents ne peuvent pas etre exportes' %}<br/>
-  <button type="button" class="close_button">{% trans 'boutton::fermer'%}</button>
-</div>
+    <div class="buttons_line" style="text-align: left;">
+        <p>{% trans 'Les documents ne peuvent pas etre exportes' %}</p>
+        <button type="button" class="close_button">{% trans 'boutton::fermer'%}</button>
+    </div>
 {% endif %}
-<div class="tabs">
-  <ul>
-        {% if download.get_total_download() > 0 %}
-    <li><a href="#download">{% trans 'export:: telechargement' %}</a></li>
-    <li><a href="#sendmail">{% trans 'export:: envoi par mail' %}</a></li>
-        {% endif %}
-        {% if download.get_total_order() > 0 %}
-    <li><a href="#order">{% trans 'export:: commande' %}</a></li>
-        {% endif %}
-        {% if download.get_total_ftp() > 0 %}
-    <li><a href="#ftp">{% trans 'export:: FTP' %}</a></li>
-        {% endif %}
-  </ul>
-  <div>
-    {% if download.get_total_download() > 0 %}
-    <div id="download">
-      <div style="margin:10px;">
-        <h1>{% trans 'export:: telechargement' %}</h1>
-        <form method="post" target="_blank" action="/include/download.php">
-          <input type="hidden" name="lst" value="{{lst}}"/>
-          <input type="hidden" name="ssttid" value="{{ssttid}}"/>
-                    {% for name, values in download.get_display_download() %}
-                        {% if values.available > 0 %}
 
-          <div>
-            <input class="checkbox" type="checkbox" id="download_{{name}}" name="obj[]" value="{{name}}" />
-            <input type="hidden" name="download_{{name}}" value="{{values.size}}" />
-            <input type="hidden" name="count_{{name}}" value="{{values.available}}" />
-            <label for="download_{{name}}">{{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size|format_octets}})</label>
-                                {% set title%}
-                                    {% trans 'Documents indisponibles' %}
-                                {% endset %}
-                                {% if values.refused|length > 0 %}
-            <a href="#" class="undisposable_link" title="{{title|e}}"> + </a>
-            <div style="display:none;" class="undisposable">
-              <div>{% trans 'Les documents ne peuvent pas etre exportes' %}</div>
-                                    {% for datas in values.refused%}
-                                        {{ thumbnail.format(datas, 80, 80,'', session, true) }}
-                                    {% endfor %}
-            </div>
-                                {% endif %}
-          </div>
-                        {% endif %}
-                    {% endfor %}
-                    {{ _self.choose_title('sendmail', choose_export_title, default_export_title) }}
-          <div class="buttons_line">
-            <button type="button" class="download_button">{% trans 'boutton::telecharger'%}</button>
-            <button type="button" class="close_button">{% trans 'boutton::annuler'%}</button>
-          </div>
-        </form>
-      </div>
-    </div>
-    <div id="sendmail">
-      <div style="margin:10px;">
-        <h1>{% trans 'export:: envoi par mail' %}</h1>
-        <form action="/include/sendmailpage.php" method="post" target="sendmail_target">
-          <input type="hidden" name="lst" value="{{lst}}"/>
-          <input type="hidden" name="ssttid" value="{{ssttid}}"/>
-          <div>
-                        {% trans 'export::mail: destinataire' %}
-            <input type="text" value="" style="width:300px;" name="destmail" class="required">
-                        {% set my_email = user.get_email() %}
-                        {% if my_email != '' %}
-            <input class="checkbox" type="checkbox" name="reading_confirm" value="1" />
-                            {% trans %}Recevoir un accuse de reception a {{my_email}}{% endtrans %}
-                        {% else %}
-                            {% trans 'Accuse de reception indisponible, vous n\'avez pas declare d\'adresse email' %}
-            <input class="checkbox" type="checkbox" name="reading_confirm" value="1" readonly />
-                        {% endif %}
-            <br>
-            <i>{% trans 'Entrez plusieurs adresses email en les separant par des points-virgules' %}</i>
-          </div>
-          <div>
-            <p>{% trans 'export::mail: contenu du mail' %}</p>
-            <textarea rows="10" style="width:100%;white-space:pre" name="textmail" id="sendmail_message"></textarea>
-          </div>
-          <div>
-            <p>{% trans 'export::mail: fichiers joint' %}</p>
-                        {% for name, values in download.get_display_download() %}
-                            {% if values.available > 0 %}
-            <div>
-              <input class="checkbox" type="checkbox" id="sendmail_{{name}}" name="obj[]" value="{{name}}" />
-              <label for="sendmail_{{name}}"> {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size|format_octets}})</label>
-                                    {% set title%}
-                                        {% trans 'Documents indisponibles' %}
-                                    {% endset %}
-                                    {% if values.refused|length > 0 %}
-              <a href="#" class="undisposable_link" title="{{title|e}}"> + </a>
-              <div style="display:none;" class="undisposable">
-                <div><i>{% trans 'La sous resolution n\'est pas disponible pour les documents suivants' %}</i></div>
-                                        {% for datas in values.refused%}
-                                            {{ thumbnail.format(datas, 80, 80,'', session, true) }}
-                                        {% endfor %}
-              </div>
-                                    {% endif %}
-            </div>
-                            {% endif %}
-                        {% endfor %}
-          </div>
-                    {{ _self.choose_title('download', choose_export_title, default_export_title) }}
-          <div class="buttons_line">
-            <button type="button" class="sendmail_button">{% trans 'boutton::envoyer'%}</button>
-            <img class="sendmail_button_loader" src="/skins/icons/loader404040.gif" style="visibility:hidden;margin:0 5px;"/>
-            <button type="button" class="close_button">{% trans 'boutton::annuler'%}</button>
-          </div>
-        </form>
-        <iframe style="display:none;" name="sendmail_target"></iframe>
-      </div>
-    </div>
+<div class="tabs">
+    <ul>
+    {% if download.get_total_download() > 0 %}
+        <li><a href="#download">{% trans 'export:: telechargement' %}</a></li>
+        <li><a href="#sendmail">{% trans 'export:: envoi par mail' %}</a></li>
     {% endif %}
     {% if download.get_total_order() > 0 %}
-    <div id="order">
-      <div style="margin:10px;">
-        <h1>{% trans 'export::commande: bon de commande' %}</h1>
-        <form method="post">
-          <input type="hidden" name="lst" value="{{lst}}"/>
-          <input type="hidden" name="ssttid" value="{{ssttid}}"/>
-          <table cellspacing="0" cellpadding="0" border="0" style="width:100%;">
-            <tr>
-              <td>
-                                {% trans 'commande::utilisation prevue' %}
-              </td>
-              <td>
-                <textarea style="width:250px;" rows="5" name="use" id="order_usage"></textarea>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                                {% trans 'commande::deadline' %}
-              </td>
-              <td>
-                <input style="width:250px;" class="datepicker" type="text" name="deadline" id="deadline" value="">
-              </td>
-            </tr>
-            <tr>
-              <td>
-              </td>
-              <td>
-                <select name="sexe" id="sexe">
-                  <option {% if user.get_gender == 0 %}selected="selected"{% endif %} value="0">{% trans 'admin::compte-utilisateur:sexe: mademoiselle' %}</option>
-                  <option {% if user.get_gender == 1 %}selected="selected"{% endif %} value="1">{% trans 'admin::compte-utilisateur:sexe: madame' %}</option>
-                  <option {% if user.get_gender == 2 %}selected="selected"{% endif %} value="2">{% trans 'admin::compte-utilisateur:sexe: monsieur' %}</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                                {% trans 'admin::compte-utilisateur nom' %} *
-              </td>
-              <td>
-                <input style="width:250px;" type="text" name="usr_nom" class="required" value="{{ user.get_lastname() }}">
-              </td>
-            </tr>
-            <tr>
-              <td>
-                                {% trans 'admin::compte-utilisateur prenom' %} *
-              </td>
-              <td>
-                <input style="width:250px;" type="text" name="usr_prenom" class="required" id="prenom" value="{{ user.get_firstname() }}">
-              </td>
-            </tr>
-            <tr>
-              <td>
-                                {% trans 'admin::compte-utilisateur email' %} *
-              </td>
-              <td>
-                <input style="width:250px;" class="required" type="text" name="usr_mail" id="usr_mail" value="{{ user.get_email() }}">
-              </td>
-            </tr>
-            <tr>
-              <td>
-                                {% trans 'admin::compte-utilisateur telephone' %}
-              </td>
-              <td>
-                <input style="width:250px;" type="text" name="tel" id="tel" value="{{ user.get_tel() }}">
-              </td>
-            </tr>
-            <tr>
-              <td>
-                                {% trans 'admin::compte-utilisateur societe' %}
-              </td>
-              <td>
-                <input style="width:250px;" type="text" name="societe" id="societe" value="{{ user.get_company() }}">
-              </td>
-            </tr>
-            <tr>
-              <td>
-                                {% trans 'admin::compte-utilisateur poste' %}
-              </td>
-              <td>
-                <input style="width:250px;" type="text" name="fonction" id="fonction" value="{{ user.get_job() }}">
-              </td>
-            </tr>
-            <tr>
-              <td>
-                                {% trans 'admin::compte-utilisateur adresse' %} *
-              </td>
-              <td>
-                <input style="width:250px;" class="required" type="text" name="adresse" id="adresse" value="{{ user.get_address() }}">
-              </td>
-            </tr>
-            <tr>
-              <td>
-                                {% trans 'admin::compte-utilisateur code postal' %} *
-              </td>
-              <td>
-                <input style="width:250px;" type="text" name="cpostal" name="cpostal" class="required" value="{{ user.get_zipcode() }}">
-              </td>
-            </tr>
-            <tr>
-              <td>
-                                {% trans 'admin::compte-utilisateur ville' %} *
-              </td>
-              <td>
-                <input style="width:250px;" class="required geoname_field" type="text" name="geonameid" id="command_geoname_field" geonameid="{{ user.get_geonameid() }}" value="{{ user.get_geonameid()|geoname_display }}">
-              </td>
-            </tr>
-            <tr>
-              <td>
-                                {% trans 'admin::compte-utilisateur fax' %}
-              </td>
-              <td>
-                <input style="width:250px;" type="text" name="fax" name="fax" value="{{ user.get_fax() }}">
-              </td>
-            </tr>
-          </table>
-          <div>
-                        {% for name, values in download.get_display_orderable() %}
-                            {% if values.available > 0 %}
-            <div>
-                                    {% set docs_orderable = values.available %}
-                                    {% trans %}{{docs_orderable}} documents commandes{% endtrans %}
-                                    {% set docs_not_orderable = values.total - values.available %}
-                                    {% if docs_not_orderable > 0%}
-                                    {% trans %}{{docs_not_orderable}} documents ne peuvent pas etre commandes{% endtrans %}
-                                    {% endif %}
-                                    {% set title%}
-                                        {% trans 'Documents indisponibles' %}
-                                    {% endset %}
-                                    {% if values.refused|length > 0 %}
-              <a href="#" class="undisposable_link" title="{{title|e}}"> + </a>
-              <div style="display:none;" class="undisposable">
-                <div><i>{% trans 'La sous resolution n\'est pas disponible pour les documents suivants' %}</i></div>
-                                        {% for datas in values.refused%}
-                                            {{ thumbnail.format(datas, 80, 80,'', session, true) }}
-                                        {% endfor %}
-              </div>
-                                    {% endif %}
-            </div>
-                            {% endif %}
-                        {% endfor %}
-          </div>
-          <div class="buttons_line">
-            <button type="button" class="order_button">{% trans 'boutton::commander'%}</button>
-            <img class="order_button_loader" src="/skins/icons/loader404040.gif" style="visibility:hidden;margin:0 5px;"/>
-            <button type="button" class="close_button">{% trans 'boutton::annuler'%}</button>
-          </div>
-        </form>
-      </div>
-    </div>
+        <li><a href="#order">{% trans 'export:: commande' %}</a></li>
     {% endif %}
     {% if download.get_total_ftp() > 0 %}
-
-    <div id="ftp">
-      <div style="margin:10px;">
-        <h1>{% trans 'export:: FTP' %}</h1>
-        <form action="/include/exportsFTP.php" method="post" target="_blank">
-          <input type="hidden" name="lst" value="{{lst}}"/>
-          <input type="hidden" name="ssttid" value="{{ssttid}}"/>
-          <div>
-                        {% trans 'phraseanet:: prereglages'%}
-            <select id="ftp_form_selector">
-                            {% for datas in download.get_ftp_datas() %}
-              <option value="{{datas.usr_id}}">{{datas.name}}</option>
-                            {% endfor %}
-            </select>
-          </div>
-                    <div id="ftp_form">
-                                            <div id="ftp_form_stock">
-                                            {% for datas in download.get_ftp_datas() %}
-                                                    {{ _self.print_ftp_form(datas) }}
-                                            {% endfor %}
-                                            </div>
-                                        </div>
-          <div>
-            <p>{% trans 'export::mail: fichiers joint' %}</p>
-                        {% for name, values in download.get_display_ftp() %}
+        <li><a href="#ftp">{% trans 'export:: FTP' %}</a></li>
+    {% endif %}
+    </ul>
+    <div>
+        {% if download.get_total_download() > 0 %}
+            <div id="download">
+                <div style="padding:10px; text-align: center;">
+                    <h4>{% trans 'export:: telechargement' %}</h4>
+                    <form method="post" target="_blank" action="/include/download.php" style="text-align: left;">
+                        <input type="hidden" name="lst" value="{{lst}}"/>
+                        <input type="hidden" name="ssttid" value="{{ssttid}}"/>
+                        {% for name, values in download.get_display_download() %}
                             {% if values.available > 0 %}
-            <div>
-              <input class="checkbox" type="checkbox" id="ftp_{{name}}" name="obj[]" value="{{name}}" />
-              <label for="ftp_{{name}}"> {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size|format_octets}}))</label>
+                                <div style="margin: 10px 0 20px 0; padding: 0 10px;">
+                                    <label for="download_{{name}}" class="checkbox">
+                                        <input class="{{values.class}}" type="checkbox" id="download_{{name}}" name="obj[]" value="{{name}}" />
+                                        <input type="hidden" name="download_{{name}}" value="{{values.size}}" />
+                                        <input type="hidden" name="count_{{name}}" value="{{values.available}}" />
+                                        {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size | formatOctets}})
+                                    </label>
                                     {% set title%}
                                         {% trans 'Documents indisponibles' %}
                                     {% endset %}
                                     {% if values.refused|length > 0 %}
-              <a href="#" class="undisposable_link" title="{{title|e}}"> + </a>
-              <div style="display:none;" class="undisposable">
-                <div><i>{% trans 'La sous resolution n\'est pas disponible pour les documents suivants' %}</i></div>
-                                        {% for datas in values.refused%}
-                                            {{ thumbnail.format(datas, 80, 80,'', session, true) }}
-                                        {% endfor %}
-              </div>
+                                        <a href="#" class="undisposable_link" title="{{title|e}}"> + </a>
+                                        <div style="display:none;" class="undisposable">
+                                            <div>{% trans 'Les documents ne peuvent pas etre exportes' %}</div>
+                                            {% for datas in values.refused%}
+                                                {{ thumbnail.format(datas, 80, 80,'', session, true) }}
+                                            {% endfor %}
+                                        </div>
                                     {% endif %}
-            </div>
+                                </div>
                             {% endif %}
                         {% endfor %}
-          </div>
-          <div class="buttons_line">
-            <button type="button" class="tryftp_button">{% trans 'boutton::essayer'%}</button>
-            <img class="tryftp_button_loader" src="/skins/icons/loader404040.gif" style="visibility:hidden;margin:0 5px;"/>
-            <button type="button" class="ftp_button">{% trans 'boutton::envoyer'%}</button>
-            <img class="ftp_button_loader" src="/skins/icons/loader404040.gif" style="visibility:hidden;margin:0 5px;"/>
-            <button type="button" class="close_button">{% trans 'boutton::annuler'%}</button>
-          </div>
-        </form>
-      </div>
-    </div>
-    <script type="text/javascript">
-            $(document).ready(function(){
+                        {% if download.has_business_fields_access() %}
+                            <div class="businessfields" style="margin-left:20px;display:none;">
+                                <label for="business_download" class="checkbox">
+                                    <input type="checkbox" name="businessfields" id="business_download" value="1"  />
+                                    {% trans 'Include Business-fields in caption' %}
+                                </label>
+                            </div>
+                        {% endif %}
+                        {{ _self.choose_title('download', choose_export_title, default_export_title) }}
+                        <div class="buttons_line">
+                            <button type="button" class="download_button btn btn-inverse">{% trans 'boutton::telecharger'%}</button>
+                            <button type="button" class="close_button btn btn-inverse">{% trans 'boutton::annuler'%}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div id="sendmail">
+                <div style="padding:10px; text-align: center;">
+                    <h4>{% trans 'export:: envoi par mail' %}</h4>
+                    <form action="/include/sendmailpage.php" method="post" target="sendmail_target" style="text-align: left;">
+                        <input type="hidden" name="lst" value="{{lst}}"/>
+                        <input type="hidden" name="ssttid" value="{{ssttid}}"/>
+                        <div>
+                            {% trans 'export::mail: destinataire' %}
+                            <input type="text" value="" name="destmail" class="required span4">
+                            {% set my_email = user.get_email() %}
+                            {% if my_email != '' %}
+                                <label class="checkbox">
+                                    <input type="checkbox" name="reading_confirm" value="1" />
+                                    {% trans %}Recevoir un accuse de reception a {{my_email}}{% endtrans %}
+                                </label>
+                            {% else %}
+                                <label class="checkbox">
+                                    {% trans 'Accuse de reception indisponible, vous n\'avez pas declare d\'adresse email' %}
+                                    <input type="checkbox" name="reading_confirm" value="1" readonly />
+                                </label>
+                            {% endif %}
+                            <span style="font-style: italic; color: #999999;">{% trans 'Entrez plusieurs adresses email en les separant par des points-virgules' %}</span>
+                        </div>
+                        <div>
+                            <p>{% trans 'export::mail: contenu du mail' %}</p>
+                            <textarea rows="10" style="width:100%; white-space:pre;" name="textmail" id="sendmail_message"></textarea>
+                        </div>
+                        <div>
+                            <p>{% trans 'export::mail: fichiers joint' %}</p>
+                            {% for name, values in download.get_display_download() %}
+                                {% if values.available > 0 %}
+                                    <div style="margin: 10px 0 20px 0; padding: 0 10px;">
+                                        <label for="sendmail_{{name}}" class="checkbox">
+                                            <input class="{{values.class}}" type="checkbox" id="sendmail_{{name}}" name="obj[]" value="{{name}}" />
+                                            {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size | formatOctets}})
+                                        </label>
+                                        {% set title%}
+                                            {% trans 'Documents indisponibles' %}
+                                        {% endset %}
+                                        {% if values.refused|length > 0 %}
+                                            <a href="#" class="undisposable_link" title="{{title|e}}"> + </a>
+                                            <div style="display:none;" class="undisposable">
+                                                <div><i>{% trans 'La sous resolution n\'est pas disponible pour les documents suivants' %}</i></div>
+                                                {% for datas in values.refused%}
+                                                    {{ thumbnail.format(datas, 80, 80,'', session, true) }}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        {% if download.has_business_fields_access() %}
+                            <div class="businessfields" style="margin-left:20px;display:none;">
+                                <label for="business_sendmail" class="checkbox">
+                                    <input type="checkbox" name="businessfields" id="business_sendmail" value="1"  />
+                                    {% trans 'Include Business-fields in caption' %}
+                                </label>
+                            </div>
+                        {% endif %}
+                        {{ _self.choose_title('sendmail', choose_export_title, default_export_title) }}
+                        <div class="buttons_line">
+                            <button type="button" class="sendmail_button btn btn-inverse">{% trans 'boutton::envoyer'%}</button>
+                            <img class="sendmail_button_loader" src="/skins/icons/loader404040.gif" style="visibility:hidden;margin:0 5px;"/>
+                            <button type="button" class="close_button btn btn-inverse">{% trans 'boutton::annuler'%}</button>
+                        </div>
+                    </form>
+                    <iframe style="display:none;" name="sendmail_target"></iframe>
+                </div>
+            </div>
+        {% endif %}
+        {% if download.get_total_order() > 0 %}
+            <div id="order">
+                <div style="padding:10px; text-align: center;">
+                    <h4>{% trans 'export::commande: bon de commande' %}</h4>
+                    <form method="post" class="form-horizontal" style="text-align: left;">
+                        <input type="hidden" name="lst" value="{{lst}}"/>
+                        <input type="hidden" name="ssttid" value="{{ssttid}}"/>
+                        <table cellspacing="0" cellpadding="0" border="0" style="width:100%;">
+                            <tr>
+                                <td>
+                                    {% trans 'commande::utilisation prevue' %}
+                                </td>
+                                <td>
+                                    <textarea style="width:250px;" rows="5" name="use" id="order_usage"></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    {% trans 'commande::deadline' %}
+                                </td>
+                                <td>
+                                    <input style="width:250px;" class="datepicker" type="text" name="deadline" id="deadline" value="">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                </td>
+                                <td>
+                                    <select name="sexe" id="sexe">
+                                        <option {% if user.get_gender == 0 %}selected="selected"{% endif %} value="0">{% trans 'admin::compte-utilisateur:sexe: mademoiselle' %}</option>
+                                        <option {% if user.get_gender == 1 %}selected="selected"{% endif %} value="1">{% trans 'admin::compte-utilisateur:sexe: madame' %}</option>
+                                        <option {% if user.get_gender == 2 %}selected="selected"{% endif %} value="2">{% trans 'admin::compte-utilisateur:sexe: monsieur' %}</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    {% trans 'admin::compte-utilisateur nom' %} *
+                                </td>
+                                <td>
+                                    <input style="width:250px;" type="text" name="usr_nom" class="required" value="{{ user.get_lastname() }}">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    {% trans 'admin::compte-utilisateur prenom' %} *
+                                </td>
+                                <td>
+                                    <input style="width:250px;" type="text" name="usr_prenom" class="required" id="prenom" value="{{ user.get_firstname() }}">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    {% trans 'admin::compte-utilisateur email' %} *
+                                </td>
+                                <td>
+                                    <input style="width:250px;" class="required" type="text" name="usr_mail" id="usr_mail" value="{{ user.get_email() }}">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    {% trans 'admin::compte-utilisateur telephone' %}
+                                </td>
+                                <td>
+                                    <input style="width:250px;" type="text" name="tel" id="tel" value="{{ user.get_tel() }}">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    {% trans 'admin::compte-utilisateur societe' %}
+                                </td>
+                                <td>
+                                    <input style="width:250px;" type="text" name="societe" id="societe" value="{{ user.get_company() }}">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    {% trans 'admin::compte-utilisateur poste' %}
+                                </td>
+                                <td>
+                                    <input style="width:250px;" type="text" name="fonction" id="fonction" value="{{ user.get_job() }}">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    {% trans 'admin::compte-utilisateur adresse' %} *
+                                </td>
+                                <td>
+                                    <input style="width:250px;" class="required" type="text" name="adresse" id="adresse" value="{{ user.get_address() }}">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    {% trans 'admin::compte-utilisateur code postal' %} *
+                                </td>
+                                <td>
+                                    <input style="width:250px;" type="text" name="cpostal" name="cpostal" class="required" value="{{ user.get_zipcode() }}">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    {% trans 'admin::compte-utilisateur ville' %} *
+                                </td>
+                                <td>
+                                    <input style="width:250px;" class="required geoname_field" type="text" name="geonameid" id="command_geoname_field" geonameid="{{ user.get_geonameid() }}" value="{{ user.get_geonameid()|geoname_display }}">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    {% trans 'admin::compte-utilisateur fax' %}
+                                </td>
+                                <td>
+                                    <input style="width:250px;" type="text" name="fax" name="fax" value="{{ user.get_fax() }}">
+                                </td>
+                            </tr>
+                        </table>
+                        <div>
+                            {% for name, values in download.get_display_orderable() %}
+                                {% if values.available > 0 %}
+                                    <div style="margin: 10px 0 20px 0; padding: 0 10px;">
+                                        {% set docs_orderable = values.available %}
+                                        {% trans %}{{docs_orderable}} documents commandes{% endtrans %}
+                                        {% set docs_not_orderable = values.total - values.available %}
+                                        {% if docs_not_orderable > 0%}
+                                            {% trans %}{{docs_not_orderable}} documents ne peuvent pas etre commandes{% endtrans %}
+                                        {% endif %}
+                                        {% set title%}
+                                            {% trans 'Documents indisponibles' %}
+                                        {% endset %}
+                                        {% if values.refused|length > 0 %}
+                                            <a href="#" class="undisposable_link" title="{{title|e}}"> + </a>
+                                            <div style="display:none;" class="undisposable">
+                                                <div><i>{% trans 'La sous resolution n\'est pas disponible pour les documents suivants' %}</i></div>
+                                                {% for datas in values.refused%}
+                                                    {{ thumbnail.format(datas, 80, 80,'', session, true) }}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <div class="buttons_line">
+                            <button type="button" class="order_button btn btn-inverse">{% trans 'boutton::commander'%}</button>
+                            <img class="order_button_loader" src="/skins/icons/loader404040.gif" style="visibility:hidden;margin:0 5px;"/>
+                            <button type="button" class="close_button btn btn-inverse">{% trans 'boutton::annuler'%}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        {% endif %}
+        {% if download.get_total_ftp() > 0 %}
+            <div id="ftp">
+                <div style="padding:10px; text-align: center;">
+                    <h4>{% trans 'export:: FTP' %}</h4>
+                    <form action="/include/exportsFTP.php" method="post" target="_blank" class="form-horizontal" style="text-align: left;">
+                        <input type="hidden" name="lst" value="{{lst}}"/>
+                        <input type="hidden" name="ssttid" value="{{ssttid}}"/>
+                        <div class="control-group">
+                            <label class="control-label" for="ftp_form_selector">
+                                {% trans 'phraseanet:: prereglages'%}
+                            </label>
+                            <div class="controls">
+                                <select id="ftp_form_selector" class="span3">
+                                    {% for datas in download.get_ftp_datas() %}
+                                        <option value="{{datas.usr_id}}">{{datas.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div id="ftp_form">
+                            <div id="ftp_form_stock">
+                                {% for datas in download.get_ftp_datas() %}
+                                    {{ _self.print_ftp_form(datas) }}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div>
+                            <p>{% trans 'export::mail: fichiers joint' %}</p>
+                            {% for name, values in download.get_display_ftp() %}
+                                {% if values.available > 0 %}
+                                    <div style="margin: 10px 0 20px 0; padding: 0 10px;">
+                                        <label for="ftp_{{name}}" class="checkbox">
+                                            <input class="{{values.class}}" type="checkbox" id="ftp_{{name}}" name="obj[]" value="{{name}}" />
+                                            {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size | formatOctets}}))
+                                        </label>
+                                        {% set title%}
+                                            {% trans 'Documents indisponibles' %}
+                                        {% endset %}
+                                        {% if values.refused|length > 0 %}
+                                            <a href="#" class="undisposable_link" title="{{title|e}}"> + </a>
+                                            <div style="display:none;" class="undisposable">
+                                                <div><i>{% trans 'La sous resolution n\'est pas disponible pour les documents suivants' %}</i></div>
+                                                {% for datas in values.refused%}
+                                                    {{ thumbnail.format(datas, 80, 80,'', session, true) }}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        {% if download.has_business_fields_access() %}
+                            <div class="businessfields" style="margin-left:20px;display:none;">
+                                <label for="business_ftp" class="checkbox">
+                                    <input type="checkbox" name="businessfields" id="business_ftp" value="1"  />
+                                    {% trans 'Include Business-fields in caption' %}
+                                </label>
+                            </div>
+                        {% endif %}
+                        <div class="buttons_line">
+                            <button type="button" class="tryftp_button btn btn-inverse">{% trans 'boutton::essayer'%}</button>
+                            <img class="tryftp_button_loader" src="/skins/icons/loader404040.gif" style="visibility:hidden;margin:0 5px;"/>
+                            <button type="button" class="ftp_button btn btn-inverse">{% trans 'boutton::envoyer'%}</button>
+                            <img class="ftp_button_loader" src="/skins/icons/loader404040.gif" style="visibility:hidden;margin:0 5px;"/>
+                            <button type="button" class="close_button btn btn-inverse">{% trans 'boutton::annuler'%}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <script type="text/javascript">
+                $(document).ready(function(){
                     $('#ftp_form_selector').bind('change',function(){
                     $('#ftp .ftp_form').hide();
                     $('#ftp .ftp_form_'+$(this).val()).show();
-                            $('#dialog_dwnl .ftp_folder_check').unbind('change').bind('change', function(){
-                                    if($(this).attr('checked'))
-                                            $(this).next().removeAttr('disabled');
-                                    else
-                                            $(this).next().attr('disabled','disabled');
-                            });
+                        $('#dialog_dwnl .ftp_folder_check').unbind('change').bind('change', function(){
+                            if($(this).attr('checked'))
+                                $(this).next().removeAttr('disabled');
+                            else
+                                $(this).next().attr('disabled','disabled');
+                        });
                     }).trigger('change');
+                });
+            </script>
+        {% endif %}
+    </div>
+
+    <script type="text/javascript">
+        function check_subdefs(container)
+        {
+            var go = required = false;
+            $('input[name="obj[]"]', $(container)).each(function(){
+                if($(this).attr('checked'))
+                {
+                    go = true;
+                }
             });
+            $('input.required, textarea.required', container).each(function(i,n){
+                if($.trim($(n).val()) == '')
+                {
+                    required = true;
+                    $(n).addClass('error');
+                }
+                else
+                {
+                    $(n).removeClass('error');
+                }
+            });
+            if(required)
+            {
+                {% set alert_message %}
+                    {% trans 'Certains champs sont obligatoires, veuillez les remplir' %}
+                {% endset %}
+                alert("{{alert_message|e}}");
+
+                return false;
+            }
+            if(!go)
+            {
+                {% set alert_message %}
+                    {% trans 'Vous devez selectionner un type de sous definitions' %}
+                {% endset %}
+                alert("{{alert_message|e}}");
+
+                return false;
+            }
+
+            return true;
+        }
+
+        $(document).ready(function(){
+            $('.close_button').bind('click',function(){
+                $('#dialog_dwnl').dialog('close').dialog('destroy');
+            });
+            initialize_geoname_field($('#command_geoname_field'));
+            $('#download .download_button').bind('click',function(){
+                if(!check_subdefs($('#download')))
+                    return false;
+
+                var total = 0;
+                var count = 0;
+                $('input[name="obj[]"]', $('#download')).each(function(){
+                    var total_el = $('#download input[name=download_'+$(this).val()+']')
+                    var count_el = $('#download input[name=count_'+$(this).val()+']')
+                    if($(this).attr('checked'))
+                    {
+                        total += parseInt($(total_el).val());
+                        count += parseInt($(count_el).val());
+                    }
+                });
+
+                {% set max_download = registry.get('GV_download_max', 120) %}
+                {% set alert_too_big%}
+                    "{% trans %} You can not directly download more than {{max_download}} Mo ; time to package all documents is too long{% endtrans %}\n"+
+                    "{% trans 'You can alternatively receive an email when the download is ready.' %}\n\n"+
+                    "{% trans 'Would you like to receive an e-mail when your download is ready ?' %}"
+                {% endset %}
+                if(count>1 && total/1024/1024 > {{max_download}})
+                {
+                    if(confirm("{{alert_too_big|escape("js")}}"))
+                    {
+                        $('input[name="obj[]"]:checked', $('#download')).each(function(i,n){
+                        $('input[name="obj[]"][value="'+$(n).val()+'"]', $('#sendmail')).attr('checked', true);
+                        });
+                        $('input[name="destmail"]', $('#sendmail')).val("{{user.get_email()}}");
+                        $('#dialog_dwnl .tabs').tabs('select',1);
+                    }
+
+                    return;
+                }
+
+                $('#download form').submit();
+                $('#dialog_dwnl').dialog('close').dialog('destroy');
+            });
+
+            $('#order .order_button').bind('click',function(){
+                $('#order .order_button_loader').css('visibility','visible');
+
+                var options = $('#order form').serialize()+'&action=ORDER&use='+escape(tinyMCE.get('order_usage').getContent());
+
+                var $this = $(this);
+                $this.attr('disabled','disabled');
+                $.post("/prod/prodFeedBack.php"
+                    , options
+                    , function(data){
+                        $this.removeAttr('disabled');
+                        $('#order .order_button_loader').css('visibility','hidden');
+
+                        alert(data.message);
+                        if(!data.error)
+                        {
+                            $('#dialog_dwnl').dialog('close').dialog('destroy');
+                        }
+
+                        return;
+                    }
+                    ,'json'
+                );
+            });
+
+            $('#ftp .ftp_button').bind('click',function(){
+                if(!check_subdefs($('#ftp')))
+                    return false;
+
+                $('#ftp .ftp_button_loader').css('visibility','visible');
+
+                    $('#ftp .ftp_form:hidden').remove();
+
+                var $this = $(this);
+                var options = $('#ftp form').serialize()+'&action=FTP_EXPORT';
+                $this.attr('disabled','disabled');
+                $.post("/prod/prodFeedBack.php"
+                    , options
+                    , function(data){
+                        $this.removeAttr('disabled');
+                        $('#ftp .ftp_button_loader').css('visibility','hidden');
+                        alert(data.message);
+                        if(!data.error)
+                        {
+                            $('#dialog_dwnl').dialog('close').dialog('destroy');
+                        }
+
+                        return;
+                    }
+                    , 'json'
+                );
+            });
+            $('#ftp .tryftp_button').bind('click',function(){
+
+                $('#ftp .tryftp_button_loader').css('visibility','visible');
+                var $this = $(this);
+                $this.attr('disabled','disabled');
+                var options = $('#ftp form').serialize()+'&action=FTP_TEST';
+                $.post("/prod/prodFeedBack.php"
+                    , options
+                    , function(data){
+                        $('#ftp .tryftp_button_loader').css('visibility','hidden');
+                        alert(data);
+                        $this.removeAttr('disabled');
+
+                        return;
+                    }
+                );
+            });
+
+            $('#sendmail .sendmail_button').bind('click',function(){
+                if(!check_subdefs($('#sendmail')))
+                {
+                    return false;
+                }
+                $('#sendmail .close_button').trigger("click");
+                //$('#sendmail .sendmail_button_loader').css('visibility','visible');
+                //$(this).attr('disabled','disabled');
+                $('#sendmail form').submit();
+            });
+            $('#dialog_dwnl .datepicker').datepicker({
+                changeYear: true,
+                changeMonth:true,
+                dateFormat : 'yy-mm-dd'
+            });
+            $('#dialog_dwnl a.undisposable_link').bind('click',function(){
+                $(this).next('.undisposable').slideToggle();
+
+                return false;
+            });
+
+            $('input[name="obj[]"]', $('#download, #sendmail, #ftp')).bind('change', function(){
+
+                var $form = $(this).closest('form');
+
+                if($('input.caption[name="obj[]"]:checked', $form).length > 0)
+                {
+                $('div.businessfields', $form).show();
+                }
+                else
+                {
+                $('div.businessfields', $form).hide();
+                }
+            });
+        });
     </script>
-    {% endif %}
-  </div>
-  <script type="text/javascript">
-                  function check_subdefs(container)
-                  {
-                          var go = required = false;
-                          $('input[name="obj[]"]', $(container)).each(function(){
-                                  if($(this).attr('checked'))
-                                  {
-                                          go = true;
-                                  }
-                          });
-                          $('input.required, textarea.required', container).each(function(i,n){
-                                  if($.trim($(n).val()) == '')
-                                  {
-                                          required = true;
-                                          $(n).addClass('error');
-                                  }
-                                  else
-                                  {
-                                          $(n).removeClass('error');
-                                  }
-                          });
-                          if(required)
-                          {
-                                  {% set alert_message %}
-                                          {% trans 'Certains champs sont obligatoires, veuillez les remplir' %}
-                                  {% endset %}
-                                  alert("{{alert_message|e}}");
-
-                                  return false;
-                          }
-                          if(!go)
-                          {
-                                  {% set alert_message %}
-                                          {% trans 'Vous devez selectionner un type de sous definitions' %}
-                                  {% endset %}
-                                  alert("{{alert_message|e}}");
-
-                                  return false;
-                          }
-
-                          return true;
-                  }
-          $(document).ready(function(){
-                  $('.close_button').bind('click',function(){
-                          $('#dialog_dwnl').dialog('close').dialog('destroy');
-                  });
-                  initialize_geoname_field($('#command_geoname_field'));
-                  $('#download .download_button').bind('click',function(){
-                          if(!check_subdefs($('#download')))
-
-                                  return false;
-                          var total = 0;
-                          var count = 0;
-                          $('input[name="obj[]"]', $('#download')).each(function(){
-                                  var total_el = $('#download input[name=download_'+$(this).val()+']')
-                                  var count_el = $('#download input[name=count_'+$(this).val()+']')
-                                  if($(this).attr('checked'))
-                                  {
-                                          total += parseInt($(total_el).val());
-                                          count += parseInt($(count_el).val());
-                                  }
-                          });
-
-                          {% set max_download = registry.get('GV_download_max', 120) %}
-                          {% set alert_too_big%}
-                                  "{% trans %} You can not directly download more than {{max_download}} Mo ; time to package all documents is too long{% endtrans %}\n"+
-                                  "{% trans 'You can alternatively receive an email when the download is ready.' %}\n\n"+
-                                  "{% trans 'Would you like to receive an e-mail when your download is ready ?' %}"
-                          {% endset %}
-                          if(count>1 && total/1024/1024 > {{max_download}})
-                          {
-                                  if(confirm({{alert_too_big|escape("js")}}))
-                                  {
-                                    $('input[name="obj[]"]:checked', $('#download')).each(function(i,n){
-                                      $('input[name="obj[]"][value="'+$(n).val()+'"]', $('#sendmail')).attr('checked', true);
-                                    });
-                                    $('input[name="destmail"]', $('#sendmail')).val("{{user.get_email()}}");
-                                    $('#dialog_dwnl .tabs').tabs('select',1);
-                                  }
-
-                                  return;
-                          }
-
-                          $('#download form').submit();
-                          $('#dialog_dwnl').dialog('close').dialog('destroy');
-                  });
-
-                  $('#order .order_button').bind('click',function(){
-                          $('#order .order_button_loader').css('visibility','visible');
-
-                          var options = $('#order form').serialize()+'&action=ORDER&use='+escape(tinyMCE.get('order_usage').getContent());
-
-                          var $this = $(this);
-                          $this.attr('disabled','disabled');
-                          $.post("/prod/prodFeedBack.php"
-                                  , options
-                                  , function(data){
-                                          $this.removeAttr('disabled');
-                                          $('#order .order_button_loader').css('visibility','hidden');
-
-                                          alert(data.message);
-                                          if(!data.error)
-                                          {
-                                                  $('#dialog_dwnl').dialog('close').dialog('destroy');
-                                          }
-
-                                          return;
-                                  }
-                                  ,'json'
-                          );
-                  });
-
-                  $('#ftp .ftp_button').bind('click',function(){
-                          if(!check_subdefs($('#ftp')))
-
-                                  return false;
-
-                          $('#ftp .ftp_button_loader').css('visibility','visible');
-
-                                $('#ftp .ftp_form:hidden').remove();
-
-                          var $this = $(this);
-                          var options = $('#ftp form').serialize()+'&action=FTP_EXPORT';
-                          $this.attr('disabled','disabled');
-                          $.post("/prod/prodFeedBack.php"
-                                  , options
-                                  , function(data){
-                                          $this.removeAttr('disabled');
-                                          $('#ftp .ftp_button_loader').css('visibility','hidden');
-                                          alert(data.message);
-                                          if(!data.error)
-                                          {
-                                                  $('#dialog_dwnl').dialog('close').dialog('destroy');
-                                          }
-
-                                          return;
-                                  }
-                                  , 'json'
-                          );
-                  });
-                  $('#ftp .tryftp_button').bind('click',function(){
-
-                          $('#ftp .tryftp_button_loader').css('visibility','visible');
-                          var $this = $(this);
-                          $this.attr('disabled','disabled');
-                          var options = $('#ftp form').serialize()+'&action=FTP_TEST';
-                          $.post("/prod/prodFeedBack.php"
-                                  , options
-                                  , function(data){
-                                          $('#ftp .tryftp_button_loader').css('visibility','hidden');
-                                          alert(data);
-                                          $this.removeAttr('disabled');
-
-                                          return;
-                                  }
-                          );
-                  });
-
-                  $('#sendmail .sendmail_button').bind('click',function(){
-                          if(!check_subdefs($('#sendmail')))
-                          {
-                            return false;
-                          }
-                          $('#sendmail .close_button').trigger("click");
-                          //$('#sendmail .sendmail_button_loader').css('visibility','visible');
-                          //$(this).attr('disabled','disabled');
-                          $('#sendmail form').submit();
-                  });
-                  $('#dialog_dwnl .datepicker').datepicker({
-                          changeYear: true,
-                          changeMonth:true,
-                          dateFormat : 'yy-mm-dd'
-                  });
-                  $('#dialog_dwnl a.undisposable_link').bind('click',function(){
-                          $(this).next('.undisposable').slideToggle();
-
-                          return false;
-                  });
-          });
-  </script>
 </div>
-

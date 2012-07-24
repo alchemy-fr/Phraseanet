@@ -44,6 +44,10 @@
       <td>Access endpoint</td>
       <td>{{registry.get('GV_ServerName')}}api/oauthv2/token</td>
     </tr>
+    <tr>
+      <td>{% trans 'Activer le grant_type de type password pour votre application' %}</td>
+      <td><input class="grant-type" type='checkbox' {{ app.is_password_granted() ? "checked='checked'" : ""}} name="grant" value='{{app.get_id()}}'></td>
+    </tr>
   </tbody>
 </table>
 

@@ -1,17 +1,19 @@
 <form method="POST" action="/prod/story/">
 
-  <label>{% trans 'Collection' %}</label>
-  <select name="base_id">
-    {% for collection in user.ACL().get_granted_base(['canaddrecord']) %}
-     <option value="{{ collection.get_base_id() }}">{{ collection.get_databox().get_viewname() }} / {{ collection.get_name() }}</option>
-    {% endfor %}
-  </select>
+    <label>{% trans 'Collection' %}</label>
+    <select name="base_id">
+        {% for collection in user.ACL().get_granted_base(['canaddrecord']) %}
+            <option value="{{ collection.get_base_id() }}">{{ collection.get_databox().get_viewname() }} / {{ collection.get_name() }}</option>
+        {% endfor %}
+    </select>
 
-  <label>{% trans 'Story name' %}</label>
-  <input name="name" value="" type="text"/>
+    <label>{% trans 'Story name' %}</label>
+    <input name="name" value="" type="text"/>
 
-  <label for="add_sel">{% trans 'Ajouter ma selection courrante' %}</label>
-  <input type="checkbox" name="lst" value=""/>
+    <label for="new_story_add_sel" class="checkbox">
+        <input type="checkbox" name="lst" value="" id="new_story_add_sel"/>
+        {% trans 'Ajouter ma selection courrante' %}
+    </label>
 
   <script type="text/javascript">
     $(document).ready(function(){
@@ -21,12 +23,18 @@
       $('input[name="lst"]', $dialogBox).val(p4.Results.Selection.serialize());
 
       var buttons = $dialog.getOption('buttons');
-      buttons[language.create] = function(){$('form', $dialogBox).trigger('submit')};
+
+      buttons[language.create] = function(){
+          $('form', $dialogBox).trigger('submit')
+      };
+
       $dialog.setOption('buttons', buttons);
 
       $('form', $dialogBox).bind('submit', function(event){
 
         var $form = $(this);
+        var dialog = $dialogBox.closest('.ui-dialog');
+        var buttonPanel = dialog.find('.ui-dialog-buttonpane');
 
         $.ajax({
           type: $form.attr('method'),
@@ -34,7 +42,8 @@
           data: $form.serializeArray(),
           dataType: 'json',
           beforeSend:function(){
-
+              $(":button:contains('" + language.create + "')", buttonPanel)
+              .attr("disabled", true).addClass("ui-state-disabled");
           },
           success: function(data){
 
@@ -44,7 +53,8 @@
             return;
           },
           error: function(){
-
+              $(":button:contains('" + language.create + "')", buttonPanel)
+              .attr("disabled", false).removeClass("ui-state-disabled");
           },
           timeout: function(){
 

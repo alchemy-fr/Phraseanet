@@ -1513,7 +1513,7 @@ function preset_copy()
     {
       var c = p4.edit.T_fields[i]._value == "" ? "" : "checked=\"1\"";
       var v = p4.edit.T_fields[i]._value;
-      html += "<div><input type=\"checkbox\" class=\"checkbox\" id=\"new_preset_"+p4.edit.T_fields[i].name+"\" value=\""+i+"\" "+c+"/><label for=\"new_preset_"+p4.edit.T_fields[i].name+"\">" +"<b>" + p4.edit.T_fields[i].name + " : </b></label> ";
+      html += "<div><label class=\"checkbox\" for=\"new_preset_" + p4.edit.T_fields[i].name + "\"><input type=\"checkbox\" class=\"checkbox\" id=\"new_preset_" + p4.edit.T_fields[i].name + "\" value=\"" + i + "\" " + c + "/>" + "<b>" + p4.edit.T_fields[i].name + " : </b></label> ";
       html += cleanTags(p4.edit.T_fields[i]._value) + "</div>";
     }
   }
@@ -2119,7 +2119,7 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
 
   check_required();
 
-  $('#TH_Opresets button.adder').button().bind('click', function(){
+  $('#TH_Opresets button.adder').bind('click', function(){
     preset_copy();
   });
 

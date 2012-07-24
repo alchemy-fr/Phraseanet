@@ -25,65 +25,59 @@ use Symfony\Component\Console\Application;
 use Alchemy\Phrasea;
 
 $Core = require_once dirname(__FILE__) . '/../lib/bootstrap.php';
-bootstrap::register_autoloads();
 
-try
-{
-  $configuration = \Alchemy\Phrasea\Core\Configuration::build();
+try {
+    $configuration = \Alchemy\Phrasea\Core\Configuration::build();
 
-  $serviceName = $configuration->getOrm();
-  $confService = $configuration->getService($serviceName);
+    $serviceName = $configuration->getOrm();
+    $confService = $configuration->getService($serviceName);
 
-  if ($confService->get("type") !== 'Orm\\Doctrine')
-  {
-    exit(sprintf("Doctrine is not declared as your ORM but %s is", $confService->get("type")));
-  }
+    if ($confService->get("type") !== 'Orm\\Doctrine') {
+        exit(sprintf("Doctrine is not declared as your ORM but %s is", $confService->get("type")));
+    }
 
-  $ormService = \Alchemy\Phrasea\Core\Service\Builder::create(
-      $Core
-      , $confService
-  );
+    $ormService = \Alchemy\Phrasea\Core\Service\Builder::create(
+            $Core
+            , $confService
+    );
 
-  $em = $ormService->getDriver();
-  /* @var $em \Doctrine\ORM\EntityManager */
+    $em = $ormService->getDriver();
+    /* @var $em \Doctrine\ORM\EntityManager */
 
-  $app = new Application("Phraseanet Doctrine Console");
+    $app = new Application("Phraseanet Doctrine Console");
 
-  $helpers = array(
-    'db' => new \Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper($em->getConnection()),
-    'em' => new \Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper($em)
-  );
+    $helpers = array(
+        'db' => new \Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper($em->getConnection()),
+        'em' => new \Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper($em)
+    );
 
-  $helperSet = $app->getHelperSet();
-  foreach ($helpers as $name => $helper)
-  {
-    $helperSet->set($helper, $name);
-  }
+    $helperSet = $app->getHelperSet();
+    foreach ($helpers as $name => $helper) {
+        $helperSet->set($helper, $name);
+    }
 
-  $app->addCommands(array(
-    // DBAL Commands
-    new \Doctrine\DBAL\Tools\Console\Command\RunSqlCommand(),
-    new \Doctrine\DBAL\Tools\Console\Command\ImportCommand(),
-    // ORM Commands
-    new \Doctrine\ORM\Tools\Console\Command\ClearCache\MetadataCommand(),
-    new \Doctrine\ORM\Tools\Console\Command\ClearCache\ResultCommand(),
-    new \Doctrine\ORM\Tools\Console\Command\ClearCache\QueryCommand(),
-    new \Doctrine\ORM\Tools\Console\Command\SchemaTool\CreateCommand(),
-    new \Doctrine\ORM\Tools\Console\Command\SchemaTool\UpdateCommand(),
-    new \Doctrine\ORM\Tools\Console\Command\SchemaTool\DropCommand(),
-    new \Doctrine\ORM\Tools\Console\Command\EnsureProductionSettingsCommand(),
-    new \Doctrine\ORM\Tools\Console\Command\ConvertDoctrine1SchemaCommand(),
-    new \Doctrine\ORM\Tools\Console\Command\GenerateRepositoriesCommand(),
-    new \Doctrine\ORM\Tools\Console\Command\GenerateEntitiesCommand(),
-    new \Doctrine\ORM\Tools\Console\Command\GenerateProxiesCommand(),
-    new \Doctrine\ORM\Tools\Console\Command\ConvertMappingCommand(),
-    new \Doctrine\ORM\Tools\Console\Command\RunDqlCommand(),
-    new \Doctrine\ORM\Tools\Console\Command\ValidateSchemaCommand(),
-  ));
+    $app->addCommands(array(
+        // DBAL Commands
+        new \Doctrine\DBAL\Tools\Console\Command\RunSqlCommand(),
+        new \Doctrine\DBAL\Tools\Console\Command\ImportCommand(),
+        // ORM Commands
+        new \Doctrine\ORM\Tools\Console\Command\ClearCache\MetadataCommand(),
+        new \Doctrine\ORM\Tools\Console\Command\ClearCache\ResultCommand(),
+        new \Doctrine\ORM\Tools\Console\Command\ClearCache\QueryCommand(),
+        new \Doctrine\ORM\Tools\Console\Command\SchemaTool\CreateCommand(),
+        new \Doctrine\ORM\Tools\Console\Command\SchemaTool\UpdateCommand(),
+        new \Doctrine\ORM\Tools\Console\Command\SchemaTool\DropCommand(),
+        new \Doctrine\ORM\Tools\Console\Command\EnsureProductionSettingsCommand(),
+        new \Doctrine\ORM\Tools\Console\Command\ConvertDoctrine1SchemaCommand(),
+        new \Doctrine\ORM\Tools\Console\Command\GenerateRepositoriesCommand(),
+        new \Doctrine\ORM\Tools\Console\Command\GenerateEntitiesCommand(),
+        new \Doctrine\ORM\Tools\Console\Command\GenerateProxiesCommand(),
+        new \Doctrine\ORM\Tools\Console\Command\ConvertMappingCommand(),
+        new \Doctrine\ORM\Tools\Console\Command\RunDqlCommand(),
+        new \Doctrine\ORM\Tools\Console\Command\ValidateSchemaCommand(),
+    ));
 
-  $app->run();
-}
-catch (Exception $e)
-{
-  echo "an error occured : " . $e->getMessage();
+    $app->run();
+} catch (Exception $e) {
+    echo "an error occured : " . $e->getMessage();
 }

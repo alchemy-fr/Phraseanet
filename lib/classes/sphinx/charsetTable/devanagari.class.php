@@ -7,9 +7,8 @@
 
 class sphinx_charsetTable_devanagari extends sphinx_charsetTableAbstract
 {
-
-  protected $name = 'Devanagari';
-  protected $table = '
+    protected $name = 'Devanagari';
+    protected $table = '
     ##################################################
     # Devanagari
     U+0929->U+0928, U+0931->U+0930, U+0934->U+0933, U+0958->U+0915, U+0959->U+0916,

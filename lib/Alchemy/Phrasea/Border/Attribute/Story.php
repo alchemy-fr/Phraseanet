@@ -1,0 +1,93 @@
+<?php
+
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2012 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Alchemy\Phrasea\Border\Attribute;
+
+/**
+ * Phraseanet Border Story Attribute
+ *
+ * This attribute is used to store a destination story for a file, prior to
+ * their record creation
+ */
+class Story implements Attribute
+{
+    protected $story;
+
+    /**
+     * Constructor
+     *
+     * @param \record_adapter $story The destination story
+     */
+    public function __construct(\record_adapter $story)
+    {
+        if ( ! $story->is_grouping()) {
+            throw new \InvalidArgumentException('Unable to fetch a story from string');
+        }
+
+        $this->story = $story;
+    }
+
+    /**
+     * Destructor
+     */
+    public function __destruct()
+    {
+        $this->story = null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return self::NAME_STORY;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return \record_adapter The story
+     */
+    public function getValue()
+    {
+        return $this->story;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function asString()
+    {
+        return $this->story->get_serialize_key();
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return Story
+     */
+    public static function loadFromString($string)
+    {
+        $ids = explode('_', $string);
+
+        try {
+            $story = new \record_adapter($ids[0], $ids[1]);
+        } catch (\Exception_NotFound $e) {
+            throw new \InvalidArgumentException('Unable to fetch a story from string');
+        }
+
+        if ( ! $story->is_grouping()) {
+            throw new \InvalidArgumentException('Unable to fetch a story from string');
+        }
+
+        return new static($story);
+    }
+}

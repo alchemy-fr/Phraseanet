@@ -1,43 +1,50 @@
 
 <form target="_blank" name="formprintpage" method="POST" action="/prod/printer/print.pdf">
+    <div id="printBox">
+        <div style="padding:10px;">
+            {% if printer.get_count_actionable() > 0 %}
+                {% if printer.get_count_preview() > 0 %}
+                <h4>{% trans 'phraseanet:: preview' %}</h4>
+                <div style="margin: 10px 0 20px 0; padding: 0 10px;">
+                    <label for="RADI_PRE_LAB" class="radio">
+                        <input type="radio" name="lay" value="preview" id="RADI_PRE_LAB" />
+                            {% trans 'print:: image de choix seulement' %}
+                    </label>
+                    <label for="RADI_PRE_CAP" class="radio">
+                        <input type="radio" name="lay" value="previewCaption" id="RADI_PRE_CAP" />
+                            {% trans 'print:: image de choix et description' %}
+                    </label>
+                    <label for="RADI_PRE_TDM" class="radio">
+                        <input type="radio" name="lay" value="previewCaptionTdm" id="RADI_PRE_TDM" />
+                            {% trans 'print:: image de choix et description avec planche contact' %}
+                    </label>
+                </div>
+                {% endif %}
+                {% if printer.get_count_thumbnail() > 0 %}
+                <h4>{% trans 'print:: imagette' %}</h4>
+                <div style="margin: 10px 0 20px 0; padding: 0 10px;">
+                    <label for="RADI_PRE_THUM" class="radio">
+                        <input type="radio" name="lay" value="thumbnailList" id="RADI_PRE_THUM" />
+                            {% trans 'print:: liste d\'imagettes' %}
+                    </label>
+                    <label for="RADI_PRE_THUMGRI" class="radio">
+                        <input type="radio" name="lay" checked value="thumbnailGrid" id="RADI_PRE_THUMGRI" />
+                            {% trans 'print:: planche contact (mosaique)' %}
+                    </label>
+                </div>
+                {% endif %}
 
-  {% if printer.get_count_actionable() > 0 %}
-    {% if printer.get_count_preview() > 0 %}
-
-      <u>{% trans 'phraseanet:: preview' %}</u><br/>
-      <input type="radio" name="lay" value="preview" id="RADI_PRE_LAB" />
-      <label for="RADI_PRE_LAB">
-        {% trans 'print:: image de choix seulement' %}
-      </label><br/>
-      <input type="radio" name="lay" value="previewCaption" id="RADI_PRE_CAP" />
-      <label for="RADI_PRE_CAP">
-        {% trans 'print:: image de choix et description' %}
-      </label><br/>
-      <input type="radio" name="lay" value="previewCaptionTdm" id="RADI_PRE_TDM" />
-      <label for="RADI_PRE_TDM">
-        {% trans 'print:: image de choix et description avec planche contact' %}
-      </label><br/>
-
-    <br /><br />
-    {% endif %}
-    {% if printer.get_count_thumbnail() > 0 %}
-
-      <u>{% trans 'print:: imagette' %}</u><br/>
-      <input type="radio" name="lay" value="thumbnailList" id="RADI_PRE_THUM" />
-      <label for="RADI_PRE_THUM">
-        {% trans 'print:: liste d\'imagettes' %}
-      </label><br/>
-      <input type="radio" name="lay" checked value="thumbnailGrid" id="RADI_PRE_THUMGRI" />
-      <label for="RADI_PRE_THUMGRI">
-        {% trans 'print:: planche contact (mosaique)' %}
-      </label><br/>
-
-    {% endif %}
-  {% elseif printer.get_count_element_received() > 0 %}
-    {% trans 'None of the selected records can be printed ' %}
-  {% else %}
-    {% trans 'export:: erreur : aucun document selectionne' %}
-  {% endif %}
-  <input type="hidden" name="lst" value="{{ printer.get_serialize_list }}" />
-  <button type="submit">{% trans 'boutton::imprimer' %}</button>
-</form>
+                {% if printer.get_count_thumbnail() > 0 or printer.get_count_preview() > 0 %}
+                    <div style="margin-bottom: 10px; text-align: center;">
+                        <input type="hidden" name="lst" value="{{ printer.get_serialize_list }}" />
+                        <button type="submit" class="btn btn-inverse">{% trans 'boutton::imprimer' %}</button>
+                    </div>
+                {% endif %}
+            {% elseif printer.get_count_element_received() > 0 %}
+                {% trans 'None of the selected records can be printed' %}
+            {% else %}
+                {% trans 'export:: erreur : aucun document selectionne' %}
+            {% endif %}
+            </div>
+        </div>
+    </form>

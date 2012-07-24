@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,43 +11,40 @@
 
 namespace PhraseaFixture\UsrLists;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Common\Persistence\ObjectManager;
 
 /**
  *
- * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
 class UsrList extends ListAbstract implements FixtureInterface
 {
+    /**
+     *
+     * @var \Entities\UsrList
+     */
+    public $list;
 
-  /**
-   *
-   * @var \Entities\UsrList
-   */
-  public $list;
+    public function load(ObjectManager $manager)
+    {
+        $list = new \Entities\UsrList();
 
-  public function load($manager)
-  {
-    $list = new \Entities\UsrList();
+        $owner = $this->getReference('one-listowner');
 
-    $owner = $this->getReference('one-listowner');
+        $list->setName('new list');
+        $list->addUsrListOwner($owner);
 
-    $list->setName('new list');
-    $list->addUsrListOwner($owner);
+        /* @var $owner \Entities\UsrListOwner */
+        $owner->setList($list);
 
-    /* @var $owner \Entities\UsrListOwner */
-    $owner->setList($list);
+        $manager->persist($list);
+        $manager->merge($owner);
+        $manager->flush();
 
-    $manager->persist($list);
-    $manager->merge($owner);
-    $manager->flush();
+        $this->list = $list;
 
-    $this->list = $list;
-
-    $this->addReference('one-list', $list);
-  }
-
+        $this->addReference('one-list', $list);
+    }
 }

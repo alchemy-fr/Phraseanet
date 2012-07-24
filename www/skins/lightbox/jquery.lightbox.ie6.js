@@ -925,8 +925,9 @@ function set_image_position(smooth, image, width, height, container, callback)
 	}
 	if(typeof callback == 'undefined')
 	{
-		callback = function(){};
+            callback = function(){};
 	}
+    }
 
 	dimensions.width	= parseInt(width);
 	dimensions.height	= parseInt(height);
@@ -1007,7 +1008,7 @@ function scid_click(event, el)
 					.append(data.options_html);
 
 			$('.container', container).empty()
-									.append(data.preview+data.selector_html+data.note_html);
+                            .append(data.preview+data.selector_html+data.note_html);
 
 
 			display_basket_element(compare, sselcont_id);

@@ -31,7 +31,10 @@ rewrite ^/prod/baskets/.*$        /prod/router.php last;
 rewrite ^/prod/story/.*$          /prod/router.php last;
 rewrite ^/prod/WorkZone/.*$       /prod/router.php last;
 rewrite ^/prod/language/.*$       /prod/router.php last;
+rewrite ^/prod/tools/.*$          /prod/router.php last;
 rewrite ^/prod/TOU/.*$            /prod/router.php last;
+rewrite ^/prod/upload/.*$         /prod/router.php last;
+rewrite ^/prod/lazaret/.*$        /prod/router.php last;
 rewrite ^/prod/UserPreferences/.*$  /prod/router.php last;
 rewrite ^/prod/$                  /prod/router.php last;
 
@@ -46,6 +49,7 @@ rewrite ^/feeds/.*$               /index.php last;
 rewrite ^/lightbox/.*$            /lightbox/index.php last;
 rewrite ^/api/v1/.*$              /api/v1/index.php last;
 rewrite ^/api/oauthv2/.*$         /api/oauthv2/index.php last;
+rewrite ^/api/.*$                 /api/index.php last;
 
 rewrite ^/permalink/.*$           /include/overview.php last;
 rewrite ^/datafiles/.*$           /include/overview.php last;

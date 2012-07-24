@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -16,66 +16,59 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
+use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
 
 class module_console_tasklist extends Command
 {
 
-  public function __construct($name = null)
-  {
-    parent::__construct($name);
-
-    $this->setDescription('List tasks');
-
-    return $this;
-  }
-
-  public function execute(InputInterface $input, OutputInterface $output)
-  {
-    if (!setup::is_installed())
+    public function __construct($name = null)
     {
-      $output->writeln('Phraseanet is not set up');
+        parent::__construct($name);
 
-      return 1;
+        $this->setDescription('List tasks');
+
+        return $this;
     }
 
-    require_once __DIR__ . '/../../../../lib/bootstrap.php';
-
-    try
+    public function requireSetup()
     {
-      $appbox = appbox::get_instance(\bootstrap::getCore());
-      $task_manager = new task_manager($appbox);
-      $tasks = $task_manager->get_tasks();
-
-      if (count($tasks) === 0)
-      {
-        $output->writeln('No tasks on your install !');
-      }
-
-      foreach ($tasks as $task)
-      {
-        $this->print_task($task, $output);
-      }
-
-      return 0;
+        return false;
     }
-    catch (\Exception $e)
+
+    protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-      return 1;
+        try {
+            $this->checkSetup();
+        } catch (\RuntimeException $e) {
+            return self::EXITCODE_SETUP_ERROR;
+        }
+
+        try {
+            $appbox = appbox::get_instance(\bootstrap::getCore());
+            $task_manager = new task_manager($appbox);
+            $tasks = $task_manager->getTasks();
+
+            if (count($tasks) === 0) {
+                $output->writeln('No tasks on your install !');
+            }
+
+            foreach ($tasks as $task) {
+                $this->printTask($task, $output);
+            }
+
+            return 0;
+        } catch (\Exception $e) {
+            return 1;
+        }
     }
-  }
 
-  protected function print_task(task_abstract $task, OutputInterface &$output)
-  {
-    $message = $task->get_task_id() . "\t" . ($task->get_status() ) . "\t" . $task->get_title();
-    $output->writeln($message);
+    protected function printTask(task_abstract $task, OutputInterface &$output)
+    {
+        $message = $task->getID() . "\t" . ($task->getState() ) . "\t" . $task->getTitle();
+        $output->writeln($message);
 
-    return $this;
-  }
-
+        return $this;
+    }
 }

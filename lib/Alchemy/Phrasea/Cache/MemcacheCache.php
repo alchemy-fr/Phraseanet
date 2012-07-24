@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,46 +15,57 @@ use \Doctrine\Common\Cache\MemcacheCache as DoctrineMemcache;
 
 /**
  *
- * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
 class MemcacheCache extends DoctrineMemcache implements Cache
 {
 
-  public function isServer()
-  {
-    return true;
-  }
-
-  public function getStats()
-  {
-    return $this->getMemcache()->getstats();
-  }
-
-  public function get($key)
-  {
-    if (!$this->contains($key))
+     /**
+     * {@inheritdoc}
+     */
+    public function getName()
     {
-      throw new Exception('Unable to retrieve the value');
+        return 'memcache';
     }
 
-    return $this->fetch($key);
-  }
-
-  public function deleteMulti(array $array_keys)
-  {
-    foreach ($array_keys as $id)
+    /**
+     * {@inheritdoc}
+     */
+    public function isOnline()
     {
-      $this->delete($id);
+        return $this->getMemcache()->getstats();
     }
 
-    return $this;
-  }
+     /**
+     * {@inheritdoc}
+     */
+    public function isServer()
+    {
+        return true;
+    }
 
-  public function flush()
-  {
-    return $this->getMemcache()->flush();
-  }
+     /**
+     * {@inheritdoc}
+     */
+    public function get($key)
+    {
+        if ( ! $this->contains($key)) {
+            throw new Exception('Unable to retrieve the value');
+        }
 
+        return $this->fetch($key);
+    }
+
+     /**
+     * {@inheritdoc}
+     */
+    public function deleteMulti(array $keys)
+    {
+        foreach ($keys as $key) {
+            $this->delete($key);
+        }
+
+        return $this;
+    }
 }

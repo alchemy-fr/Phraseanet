@@ -3,26 +3,24 @@ language: php
 before_script:
   - cp hudson/*.yml config/
   - curl -s http://getcomposer.org/installer | php
-  - php composer.phar install
+  - php composer.phar install --dev
   - sudo apt-get update
-  - sudo apt-get install -y mplayer ffmpeg ufraw dcraw libavcodec-extra-53 openoffice.org openoffice.org-writer unoconv ghostscript gsfonts ufraw graphicsmagick libgraphicsmagick1-dev libfreetype6-dev libjpeg-dev libgif-dev libtiff-dev libdjvulibre-dev libwmf-dev libmagickcore-dev libmagickwand-dev libpng-dev xpdf libexpat-dev gettext zlib1g-dev build-essential libfaac-dev libmp3lame0 libx264-dev libvpx-dev libtheora-dev libvorbis-dev gpac
+  - sudo apt-get install -y xpdf ffmpeg libavcodec-extra-53 openoffice.org-writer unoconv ghostscript gsfonts dcraw ufraw graphicsmagick libgraphicsmagick1-dev libfreetype6-dev libjpeg-dev libgif-dev libtiff-dev libdjvulibre-dev libwmf-dev libmagickcore-dev libmagickwand-dev libpng-dev gettext zlib1g-dev build-essential libfaac-dev libmp3lame0 libx264-dev libvpx-dev libtheora-dev libvorbis-dev gpac
   - mysql -e 'create database ab_test;create database db_test; create database ab_unitTests; create database db_unitTests;'
-  - mysql -e "GRANT ALL PRIVILEGES ON ab_unitTests.* TO 'phraseaUnitTests'@'localhost'"
-  - mysql -e "GRANT ALL PRIVILEGES ON db_unitTests.* TO 'phraseaUnitTests'@'localhost'"
+  - sudo mysql -e "GRANT ALL PRIVILEGES ON ab_unitTests.* TO 'phraseaUnitTests'@'localhost' IDENTIFIED BY 'iWvGxPE8' WITH GRANT OPTION"
+  - sudo mysql -e "GRANT ALL PRIVILEGES ON db_unitTests.* TO 'phraseaUnitTests'@'localhost' IDENTIFIED BY 'iWvGxPE8' WITH GRANT OPTION"
   - mysql -e "source `pwd`/hudson/fixtures.sql"
   - mysql -e 'SET GLOBAL time_zone = "+02:00";'
   - git clone git://github.com/alchemy-fr/Phraseanet-Extension.git
   - sh -c "cd Phraseanet-Extension && ./configure && make && sudo make install"
   - echo "extension=phrasea2.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
-  - wget http://www.swftools.org/swftools-0.9.1.tar.gz
-  - sh -c "tar xzvf swftools-0.9.1.tar.gz && cd swftools-0.9.1 && ./configure && make && sudo make install"
   - wget http://pecl.php.net/get/gmagick-1.1.0RC2.tgz
-  - tar -xzf gmagick-1.1.0RC2.tgz  
+  - tar -xzf gmagick-1.1.0RC2.tgz
   - sh -c "cd gmagick-1.1.0RC2 && phpize && ./configure --with-gmagick=/usr/local && make && sudo make install"
   - echo "extension=gmagick.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
 
 notifications:
-  irc: 
+  irc:
     channels:
       - "irc.freenode.org#phrasea"
     template:
@@ -31,7 +29,6 @@ notifications:
     use_notice: true
 
 php:
-  - 5.3.2
   - 5.3
   - 5.4
 

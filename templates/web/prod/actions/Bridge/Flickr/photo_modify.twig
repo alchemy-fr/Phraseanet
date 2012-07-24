@@ -3,45 +3,41 @@
 
 {% block menu %}
 <table style="width:100%;height:30px;">
-  <tr>
-    <td style="width:10px;">
-    </td>
-    <td>
-      {% trans %}Edition de 1 element{% endtrans %}
-    </td>
-    <td style="text-align:right;">
-      <a href="#" class="back_link">{% trans 'boutton::annuler' %}</a>
-    </td>
-    <td style="width:10px;">
-    </td>
-  </tr>
+    <tr>
+        <td style="width:10px;">
+        </td>
+        <td>
+            {% trans %}Edition de 1 element{% endtrans %} :
+        </td>
+        <td style="text-align:right;">
+            <a class="back_link" style="cursor: pointer;">{% trans 'boutton::annuler' %}</a>
+        </td>
+        <td style="width:10px;">
+        </td>
+    </tr>
 </table>
 {% endblock %}
 
 {% block response %}
-<form class="form_add_container bridge_form" action="/prod/bridge/action/{{ account.get_id() }}/{{action}}/{{element_type}}/" method="post">
-  <table>
-    <tr>
-      <td class='column_left'>
-        <label for="modif_title">{% trans 'Titre' %}</label>
-      </td>
-      <td class='column_right'>
-        <input name="modif_title" type="text" value="{{element.get_title}}" />
-         {{ error_form.display_errors('title', constraint_errors) }}
-      </td>
-    </tr>
-    <tr>
-      <td class='column_left'>
-        <label for="modif_description">{% trans 'Description' %}</label>
-      </td>
-      <td class='column_right'>
-        <textarea name="modif_description" rows="3" >{{element.get_description|default("")}}</textarea>
-         {{ error_form.display_errors('description', constraint_errors) }}
-      </td>
-    </tr>
-  </table>
-  <input type="hidden" name="elements_list[]" value="{{element.get_id}}" />
-  <button class="form_submitter">{% trans 'boutton::valider' %}</button>
-  <a target="#" class="back_link">{% trans 'boutton::annuler' %}</a>
+<form class="form_add_container bridge_form form-horizontal" action="/prod/bridge/action/{{ account.get_id() }}/{{action}}/{{element_type}}/" method="post">
+    <div class="control-group">
+        <label class="control-label" for="modif_title">{% trans 'Titre' %}</label>
+        <div class="controls">
+            <input name="modif_title" type="text" value="{{element.get_title}}" />
+            {{ error_form.display_errors('title', constraint_errors) }}
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="modif_description">{% trans 'Description' %}</label>
+        <div class="controls">
+            <textarea name="modif_description" rows="3" >{{element.get_description|default("")}}</textarea>
+            {{ error_form.display_errors('description', constraint_errors) }}
+        </div>
+    </div>
+    <div class="form-actions">
+        <input type="hidden" name="elements_list[]" value="{{element.get_id}}" />
+        <button class="form_submitter btn btn-inverse">{% trans 'boutton::valider' %}</button>
+        <button class="back_link btn btn-inverse">{% trans 'boutton::annuler' %}</button>
+    </div>
 </form>
 {% endblock %}

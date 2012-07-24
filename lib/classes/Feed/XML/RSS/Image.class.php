@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,142 +17,145 @@
  */
 class Feed_XML_RSS_Image implements Feed_XML_RSS_ImageInterface
 {
+    /**
+     *
+     * @var string
+     */
+    protected $url;
 
-  /**
-   *
-   * @var string
-   */
-  protected $url;
-  /**
-   *
-   * @var string
-   */
-  protected $title;
-  /**
-   *
-   * @var string
-   */
-  protected $link;
-  /**
-   *
-   * @var string
-   */
-  protected $description;
-  /**
-   *
-   * @var int
-   */
-  protected $width;
-  /**
-   *
-   * @var int
-   */
-  protected $height;
+    /**
+     *
+     * @var string
+     */
+    protected $title;
 
-  /**
-   *
-   * @param string $url
-   * @param string $title
-   * @param string $link
-   * @return Feed_XML_RSS_Image
-   */
-  public function __construct($url, $title, $link)
-  {
-    $this->url = $url;
-    $this->title = $title;
-    $this->link = $link;
+    /**
+     *
+     * @var string
+     */
+    protected $link;
 
-    return $this;
-  }
+    /**
+     *
+     * @var string
+     */
+    protected $description;
 
-  /**
-   *
-   * @param type $description
-   * @return Feed_XML_RSS_Image
-   */
-  public function set_description($description)
-  {
-    $this->description = $description;
+    /**
+     *
+     * @var int
+     */
+    protected $width;
 
-    return $this;
-  }
+    /**
+     *
+     * @var int
+     */
+    protected $height;
 
-  /**
-   *
-   * @param int $width
-   * @return Feed_XML_RSS_Image
-   */
-  public function set_width($width)
-  {
-    $this->width = (int) $width;
+    /**
+     *
+     * @param  string             $url
+     * @param  string             $title
+     * @param  string             $link
+     * @return Feed_XML_RSS_Image
+     */
+    public function __construct($url, $title, $link)
+    {
+        $this->url = $url;
+        $this->title = $title;
+        $this->link = $link;
 
-    return $this;
-  }
+        return $this;
+    }
 
-  /**
-   *
-   * @param int $height
-   * @return Feed_XML_RSS_Image
-   */
-  public function set_height($height)
-  {
-    $this->height = (int) $height;
+    /**
+     *
+     * @param  type               $description
+     * @return Feed_XML_RSS_Image
+     */
+    public function set_description($description)
+    {
+        $this->description = $description;
 
-    return $this;
-  }
+        return $this;
+    }
 
-  /**
-   *
-   * @return string
-   */
-  public function get_url()
-  {
-    return $this->url;
-  }
+    /**
+     *
+     * @param  int                $width
+     * @return Feed_XML_RSS_Image
+     */
+    public function set_width($width)
+    {
+        $this->width = (int) $width;
 
-  /**
-   *
-   * @return string
-   */
-  public function get_title()
-  {
-    return $this->title;
-  }
+        return $this;
+    }
 
-  /**
-   *
-   * @return string
-   */
-  public function get_link()
-  {
-    return $this->link;
-  }
+    /**
+     *
+     * @param  int                $height
+     * @return Feed_XML_RSS_Image
+     */
+    public function set_height($height)
+    {
+        $this->height = (int) $height;
 
-  /**
-   *
-   * @return string
-   */
-  public function get_description()
-  {
-    return $this->description;
-  }
+        return $this;
+    }
 
-  /**
-   *
-   * @return int
-   */
-  public function get_width()
-  {
-    return $this->width;
-  }
+    /**
+     *
+     * @return string
+     */
+    public function get_url()
+    {
+        return $this->url;
+    }
 
-  /**
-   *
-   * @return int
-   */
-  public function get_height()
-  {
-    return $this->height;
-  }
+    /**
+     *
+     * @return string
+     */
+    public function get_title()
+    {
+        return $this->title;
+    }
 
+    /**
+     *
+     * @return string
+     */
+    public function get_link()
+    {
+        return $this->link;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function get_description()
+    {
+        return $this->description;
+    }
+
+    /**
+     *
+     * @return int
+     */
+    public function get_width()
+    {
+        return $this->width;
+    }
+
+    /**
+     *
+     * @return int
+     */
+    public function get_height()
+    {
+        return $this->height;
+    }
 }

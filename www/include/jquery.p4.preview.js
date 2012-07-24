@@ -527,4 +527,5 @@ function closePreview(){
 		cancelPreview();
 		$(this).dequeue();
 	});
+
 }

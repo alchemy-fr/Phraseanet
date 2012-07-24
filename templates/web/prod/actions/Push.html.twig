@@ -1,268 +1,247 @@
 <div class="PNB PushBox" id="PushBox" >
-  <div class="PNB" style="width:205px;">
-    <div class="PNB10 LeftColumn">
-      <div class="PNB" style="height:130px;bottom:auto;text-align:center;">
-        {% if context == 'Push' %}
-        <img style="margin:30px 0;" src="/skins/icons/push64.png"/>
-        {% else %}
-        <img style="margin:30px 0;" src="/skins/icons/Feedback60.png"/>
-        {% endif %}
-      </div>
-      <div class="PNB content" style="top:150px;overflow-y:auto;">
-        <div style="padding:10px">
-          <h1>{% trans 'Grant rights' %}</h1>
-          <ul class="general_togglers">
-            {% if context == 'Feedback' %}
-            <li>
-               <button type="button" class="general_toggler" feature="agree">
-                {% trans 'Contributor' %}
-              </button>
-            </li>
-            <li>
-              <button type="button" class="general_toggler" feature="see_others">
-                {% trans 'See others' %}
-              </button>
-            </li>
-            {% endif %}
-            <li>
-                <button type="button" class="general_toggler" feature="HD">
-                {% trans 'HD Download' %}
-                </button>
-            </li>
-          </ul>
-        </div>
-        <div style="padding:10px;">
-          <h1>
-            {% trans 'Lists' %}
-          </h1>
-          <span style="width:100%;display:block;text-align:center;">
-            <a href="#" class="link list_manager">
-              <b>{% trans 'List Manager' %}</b>
-            </a>
-          </span>
-          <div>
-            <form class="list_saver">
-            <table>
-              <tbody>
-                <tr>
-                  <td>
-                    <input name="name" placeholder="{% trans 'Save this list' %}"/>
-                   </td>
-                  <td>
-                    <button>
-                      <img src="/skins/prod/Push/save_list_as.png" />
-                    </button>
-                   </td>
-                 </tr>
-              </tbody>
-            </table>
-            </form>
-          </div>
-          <ul class="list">
-            {% for list in lists %}
-              <li class="list" style="padding:2px;">
-                <a class="list_loader" href="/prod/push/list/{{ list.getId() }}/">
-                  {% if list.getOwner(user).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
-                    <img src="/skins/prod/Push/list-icon.png" />
-                  {% else %}
-                    <img src="/skins/icons/SHARE16.png" />
-                  {% endif %}
-                  {{ list.getName() }}
-                  ({{ list.getEntries().count() }})
-                </a>
-              </li>
-            {% endfor %}
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="PNB" style="left:205px;">
-    <div class="PNB" style="height:150px;bottom:auto;line-height:26px">
-      <div class="PNB10">
-        <table>
-          <tr style="vertical-align:top;">
-            <td>
-              <div id="find-user">
-                <input class="search" name="users-search" placeholder="{% trans 'Users' %}" type="text" style="width:210px;"/>
-                <br/>
-                {% trans 'Select a user in the list'%} <br/>
-                {% if user.ACL().has_right('manageusers') %}
-                  {% trans 'or' %}
-                  <a href="/prod/push/add-user/" class="user_adder link">{% trans 'Add user' %}</a>
-                {% endif %}
-              </div>
-              <p id="recommanded-users">
-
-                {% set recommendation = '' %}
-
-                {% set total = RecommendedUsers|length %}
-
-                {% for user in RecommendedUsers %}
-
-                  {% if total <= 4 or loop.index <= 4 %}
-                    {% if recommendation != '' and not loop.last %}
-                      {% set recommendation = recommendation ~ ', ' %}
-                    {% elseif recommendation != '' and loop.last %}
-                      {% set recommendation = recommendation %}
-                    {% endif %}
-                    {% set recommendation = recommendation
-                    ~ ' <a href="#" class="recommended_users" tooltipsrc="/prod/tooltip/user/'
-                    ~ user.get_id() ~ '/" class="UserTips"/">'
-                    ~ '<input type="hidden" name="usr_id" value="' ~ user.get_id() ~ '" />'
-                    ~ user.get_display_name()
-                    ~ '</a>' %}
-                  {% endif %}
-
-                {% endfor %}
-
-                {% if total > 4 %}
-                  {% set n = total - 4%}
-                  {% set and_many_more %}
-                    {% trans %}
-                      and {{ n }} more peoples
-                    {% endtrans %}
-                  {% endset %}
-                  {% set recommendation = recommendation
-                              ~ '<a href="#" class="recommended_users_list">'
-                              ~ and_many_more ~ '</a>' %}
-                {% endif %}
-
-
-                {% if recommendation != '' %}
-                  {% set recommendation = '<br/>' ~ recommendation %}
-                  {% trans %}
-                    Please consider send this validation to the following users : {{ recommendation }}
-                  {% endtrans %}
-                {% endif %}
-              </p>
-
-              <div style="display:none;" id="push_user_recommendations" title="{% trans 'Users suggestion' %}" >
-                <table class="users" style="width:100%;">
-                  {% for user in RecommendedUsers %}
-                  <tr>
-                    <td>
-                      <img src="/skins/icons/user.png"/>
-                    </td>
-                    <td>
-                      {{ user.get_display_name() }}
-                      <input type="hidden" name="usr_id" value="{{ user.get_id() }}" />
-                    </td>
-                    <td>
-                      <a href="#" class="adder">
-                        {% trans 'Add' %}
-                      </a>
-                    </td>
-                  </tr>
-                  {% endfor %}
-                </table>
-              </div>
-            </td>
-            <td style="width:10px;">
-            </td>
-            <td>
-              <p>
+    <div class="PNB" style="width:205px;">
+        <div class="PNB10 LeftColumn">
+            <div class="PNB" style="height:130px; text-align:center;">
                 {% if context == 'Push' %}
-                  {% trans 'Push::unpush permet d\'envoyer un lot d\'image a des destinataires' %}
+                    <img style="margin:30px 0;" src="/skins/icons/push64.png"/>
                 {% else %}
-                  {% trans 'Push::une validation est une demande d\'appreciation a d\'autres personnes' %}
+                    <img style="margin:30px 0;" src="/skins/icons/Feedback60.png"/>
                 {% endif %}
-              </p>
-            </td>
-          </tr>
-        </table>
-      </div>
-    </div>
-    <div class="PNB" style="top:150px;">
-      <div class="PNB10 content user_content">
-        <div class="PNB10 header">
-          <table style="table-layout:auto;">
-            <tr>
-              <td>
-              </td>
-              <td class="options">
-                <button class="select-all">{% trans 'Select all' %}</button>
-                <button class="unselect-all">{% trans 'Deselect all' %}</button>
-              </td>
-            </tr>
-          </table>
+            </div>
+            <div class="PNB content" style="top:150px; overflow-y:auto;">
+                <div style="padding:10px">
+                    <h1>{% trans 'Grant rights' %}</h1>
+                    <ul class="general_togglers">
+                    {% if context == 'Feedback' %}
+                        <li>
+                            <button type="button" class="general_toggler btn btn-inverse" feature="agree">
+                                {% trans 'Contributor' %}
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="general_toggler btn btn-inverse" feature="see_others">
+                                {% trans 'See others' %}
+                            </button>
+                        </li>
+                    {% endif %}
+                        <li>
+                            <button type="button" class="general_toggler btn btn-inverse" feature="HD">
+                                {% trans 'HD Download' %}
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <div style="padding:10px;">
+                    <h1>{% trans 'Lists' %}</h1>
+                    <span style="width:100%; display:block; text-align:center;">
+                        <a href="#" class="link list_manager">
+                            <b>{% trans 'List Manager' %}</b>
+                        </a>
+                    </span>
+                    <form class="list_saver">
+                        <div class="btn-toolbar">
+                            <input type="text" name="name" placeholder="{% trans 'Save this list' %}" />
+                            <button class="btn"><img src="/skins/prod/Push/save_list_as.png" /></button>
+                        </div>
+                    </form>
+                    <ul class="list">
+                        {% for list in lists %}
+                            <li class="list" style="padding:2px;">
+                                <a class="list_loader" href="/prod/push/list/{{ list.getId() }}/">
+                                    {% if list.getOwner(user).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
+                                        <img src="/skins/prod/Push/list-icon.png" />
+                                    {% else %}
+                                        <img src="/skins/icons/SHARE16.png" />
+                                    {% endif %}
+                                    {{ list.getName() }}
+                                    ({{ list.getEntries().count() }})
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
         </div>
-        <form name="FeedBackForm" method="post"
-          {% if context == 'Push' %}
-          action="/prod/push/send/"
-          {% else %}
-          action="/prod/push/validate/"
-          {% endif %}
-           >
-          <input name="lst" type="hidden" value="{{ push.get_serialize_list() }}" />
-          <input name="ssel" type="hidden" value="{% if push.get_original_basket() %}{{ push.get_original_basket().getId() }}{% endif %}" />
-          <input name="name" type="hidden" value="{% if push.get_original_basket() %}{{ push.get_original_basket().getName() }}{% endif %}" />
-          <textarea name="message" style="display:none;"></textarea>
-          <input type="hidden" name="duration" value=""/>
-          <input type="checkbox" value="1" name="recept" style="display:none;"/>
-          <div class="PNB badges">
-          </div>
-        </form>
-        <div class="PNB10 footer">
-        <button class="FeedbackSend">
-          {% trans "Send" %}
-        </button>
-      </div>
-      </div>
     </div>
-  </div>
+    <div class="PNB" style="left:205px;">
+        <div class="PNB" style="height:150px;bottom:auto;line-height:26px">
+            <div class="PNB10">
+                <table>
+                    <tr style="vertical-align:top;">
+                        <td>
+                            <div id="find-user">
+                                <input class="search" name="users-search" placeholder="{% trans 'Users' %}" type="text" style="width:210px;"/>
+                                <br/>
+                                {% trans 'Select a user in the list'%} <br/>
+                                {% if user.ACL().has_right('manageusers') %}
+                                    {% trans 'or' %}
+                                    <a href="/prod/push/add-user/" class="user_adder link">{% trans 'Add user' %}</a>
+                                {% endif %}
+                            </div>
+                            <p id="recommanded-users">
+                                {% set recommendation = '' %}
+                                {% set total = RecommendedUsers|length %}
+
+                                {% for user in RecommendedUsers %}
+                                    {% if total <= 4 or loop.index <= 4 %}
+                                        {% if recommendation != '' and not loop.last %}
+                                            {% set recommendation = recommendation ~ ', ' %}
+                                        {% elseif recommendation != '' and loop.last %}
+                                            {% set recommendation = recommendation %}
+                                        {% endif %}
+                                        {% set recommendation = recommendation
+                                        ~ ' <a href="#" class="recommended_users UserTips" tooltipsrc="/prod/tooltip/user/'
+                                        ~ user.get_id() ~ '/" >'
+                                        ~ '<input type="hidden" name="usr_id" value="' ~ user.get_id() ~ '" />'
+                                        ~ user.get_display_name()
+                                        ~ '</a>' %}
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if total > 4 %}
+                                    {% set n = total - 4%}
+                                    {% set and_many_more %}
+                                        {% trans %}
+                                            and {{ n }} more peoples
+                                        {% endtrans %}
+                                    {% endset %}
+                                    {% set recommendation = recommendation
+                                            ~ '<a href="#" class="recommended_users_list">'
+                                            ~ and_many_more ~ '</a>' %}
+                                {% endif %}
+
+                                {% if recommendation != '' %}
+                                    {% set recommendation = '<br/>' ~ recommendation %}
+                                    {% if context == 'Push' %}
+                                        {% trans %}
+                                            Please consider send this push to the following users : {{ recommendation }}
+                                        {% endtrans %}
+                                    {% else %}
+                                        {% trans %}
+                                            Please consider send this validation to the following users : {{ recommendation }}
+                                        {% endtrans %}
+                                    {% endif %}
+                                {% endif %}
+                            </p>
+
+                            <div style="display:none;" id="push_user_recommendations" title="{% trans 'Users suggestion' %}" >
+                                <table class="users" style="width:100%;">
+                                    {% for user in RecommendedUsers %}
+                                        <tr>
+                                            <td>
+                                                <img src="/skins/icons/user.png"/>
+                                            </td>
+                                            <td>
+                                                {{ user.get_display_name() }}
+                                                <input type="hidden" name="usr_id" value="{{ user.get_id() }}" />
+                                            </td>
+                                            <td>
+                                                <a href="#" class="adder">{% trans 'Add' %}</a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                        </td>
+                        <td style="width:10px;"></td>
+                        <td>
+                            <p>
+                                {% if context == 'Push' %}
+                                    {% trans 'Push::unpush permet d\'envoyer un lot d\'image a des destinataires' %}
+                                {% else %}
+                                    {% trans 'Push::une validation est une demande d\'appreciation a d\'autres personnes' %}
+                                {% endif %}
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="PNB" style="top:150px;">
+            <div class="PNB10 content user_content grey-bg">
+                <div class="PNB10 header">
+                    <table style="table-layout:auto;">
+                        <tr>
+                            <td>
+                            </td>
+                            <td class="options">
+                                <button class="select-all btn btn-inverse">{% trans 'Select all' %}</button>
+                                <button class="unselect-all btn btn-inverse">{% trans 'Deselect all' %}</button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <form name="FeedBackForm" method="post"
+                    {% if context == 'Push' %}
+                        action="/prod/push/send/"
+                    {% else %}
+                        action="/prod/push/validate/"
+                    {% endif %}
+                >
+                    <input name="lst" type="hidden" value="{{ push.get_serialize_list() }}" />
+                    <input name="ssel" type="hidden" value="{% if push.get_original_basket() %}{{ push.get_original_basket().getId() }}{% endif %}" />
+                    <input name="name" type="hidden" value="{% if push.get_original_basket() %}{{ push.get_original_basket().getName() }}{% endif %}" />
+                    <textarea name="message" style="display:none;"></textarea>
+                    <input type="hidden" name="duration" value=""/>
+                    <input type="checkbox" value="1" name="recept" style="display:none;"/>
+                    <div class="PNB badges"></div>
+                </form>
+                <div class="PNB10 footer">
+                    <button class="FeedbackSend btn btn-inverse">{% trans "Send" %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
 <div id="ListManager" class="PNB PushBox" style="display:none;">
-  <div class="PNB" style="left:10px;height:30px;bottom:auto;">
-    <h1>
-      <button class="back_link">
-        &lt;
-        {% if context == 'Push' %}
-          {% trans 'Back to Push' %}
-        {% else %}
-          {% trans 'Back to Feedback' %}
-        {% endif %}
-      </button>
-      <span class="title">
-        {% trans 'List Manager' %}
-      </span>
-    </h1>
-  </div>
-  <div class="PNB" style="top:30px;">
-    <div class="PNB" style="width:320px;right:auto;">
-      <div class="PNB10 content all-lists LeftColumn">
-        {% include 'prod/actions/Feedback/lists-all.html.twig' %}
-      </div>
+    <div class="PNB theme-bg" style="left:10px;height:30px;bottom:auto;">
+        <h1>
+            <button class="back_link btn btn-inverse" style="margin-right: 5px;">
+                &lt;
+                {% if context == 'Push' %}
+                    {% trans 'Back to Push' %}
+                {% else %}
+                    {% trans 'Back to Feedback' %}
+                {% endif %}
+            </button>
+            <span class="title">
+                {% trans 'List Manager' %}
+            </span>
+        </h1>
     </div>
-    <div class="editor PNB" style="left:320px;">
-      <div class="welcome">
-        <h1>{% trans 'Welcome to the ListManager !' %}</h1>
-        {% if lists|length == 0 %}
-        <p class="welcome">
-          {% trans 'Start by creating one by using the "add" button on the left !' %}
-        </p>
-        {% else %}
-        <p class="welcome">
-          {% trans 'Select a list on the left and edit it !' %}
-        </p>
-        {% endif %}
-      </div>
+    <div class="PNB" style="top:30px;">
+        <div class="PNB" style="width:320px;right:auto;">
+            <div class="PNB10 content all-lists LeftColumn">
+                {% include 'prod/actions/Feedback/lists-all.html.twig' %}
+            </div>
+        </div>
+        <div class="editor PNB" style="left:320px;">
+            <div class="welcome">
+                <h1>{% trans 'Welcome to the ListManager !' %}</h1>
+                {% if lists|length == 0 %}
+                    <p class="welcome">
+                        {% trans 'Start by creating one by using the "add" button on the left !' %}
+                    </p>
+                {% else %}
+                    <p class="welcome">
+                        {% trans 'Select a list on the left and edit it !' %}
+                    </p>
+                {% endif %}
+            </div>
+        </div>
     </div>
-  </div>
 </div>
+
 <div id="FeedbackSendForm">
-  <form method="post">
-
-
-  </form>
+    <form method="post"></form>
 </div>
+
 <script type="text/javascript">
-  $(document).ready(function(){
+    $(document).ready(function(){
 
     p4.Feedback = new Feedback($('#PushBox'), '{{ context }}');
     p4.ListManager = new ListManager($('#ListManager'));
 
-    $(".general_toggler").button();
-
-  });
+    });
 </script>

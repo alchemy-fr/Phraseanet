@@ -58,7 +58,7 @@
                                 {{error}}
                                 {% endtrans %}
                             </p>
-                            <input type="text" class="input-xlarge" name="access_token" value="{{token.access_token}}" size="{{token.access_token|length}}"/>
+                            <input type="text" class="input-xlarge" name="authorize_token" value="{{code}}" size="{{code|length}}"/>
                         </div>
                     {% else %}
                         <div id="top-text-box">
@@ -70,7 +70,7 @@
                                 Copiez le code ci-dessous, retournez dans votre application et collez-le &agrave l'endroit requis :
                                 {% endtrans %}
                             </p>
-                            <input type="text" class="input-xlarge" name="access_token" value="{{token.access_token}}" size="{{token.access_token|length}}"/>
+                            <input type="text" class="input-xlarge" name="authorize_token" value="{{code}}" size="{{code|length}}"/>
                         </div>
                     {% endif %}
                 </div>

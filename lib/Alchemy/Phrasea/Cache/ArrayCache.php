@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,50 +15,57 @@ use Doctrine\Common\Cache\ArrayCache as DoctrineArray;
 
 /**
  *
- * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
 class ArrayCache extends DoctrineArray implements Cache
 {
 
-  public function isServer()
-  {
-
-    return false;
-  }
-
-  public function getStats()
-  {
-
-    return null;
-  }
-
-  public function get($id)
-  {
-    if (!$this->contains($id))
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
     {
-      throw new Exception(sprintf('Unable to find key %s', $id));
+        return 'array';
     }
 
-    return $this->fetch($id);
-  }
-
-  public function deleteMulti(array $array_keys)
-  {
-    foreach ($array_keys as $id)
+    /**
+     * {@inheritdoc}
+     */
+    public function isServer()
     {
-      $this->delete($id);
+        return false;
     }
 
-    return;
-  }
+    /**
+     * {@inheritdoc}
+     */
+    public function isOnline()
+    {
+        return true;
+    }
 
-  public function flush()
-  {
-    $this->deleteAll();
+    /**
+     * {@inheritdoc}
+     */
+    public function get($id)
+    {
+        if ( ! $this->contains($id)) {
+            throw new Exception(sprintf('Unable to find key %s', $id));
+        }
 
-    return true;
-  }
+        return $this->fetch($id);
+    }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteMulti(array $keys)
+    {
+        foreach ($keys as $key) {
+            $this->delete($key);
+        }
+
+        return $this;
+    }
 }

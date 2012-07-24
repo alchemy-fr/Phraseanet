@@ -7,9 +7,8 @@
 
 class sphinx_charsetTable_hebrew extends sphinx_charsetTableAbstract
 {
-
-  protected $name = 'Hebrew';
-  protected $table = '
+    protected $name = 'Hebrew';
+    protected $table = '
     #################################################
     # Hebrew*
     U+FB1D->U+05D9, U+FB1F->U+05F2, U+FB20->U+05E2, U+FB21->U+05D0, U+FB22->U+05D3,

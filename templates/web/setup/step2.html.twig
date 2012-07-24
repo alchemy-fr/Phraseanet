@@ -346,7 +346,7 @@
                         <tr>
                           <td>
                             <p>
-                              <a href="https://docs.phraseanet.com/3.6/Admin/" target="_blank">
+                              <a href="https://docs.phraseanet.com/3.7/Admin/" target="_blank">
                                 {% trans 'Prerequisite and Configuration' %}
                               </a>
                             </p>
@@ -661,39 +661,6 @@
                               <tr>
                                 <td><label>{% trans 'Repertoire de stockage des fichiers' %}</label></td>
                                 <td><input class="path_to_test test_writeable required" type="text" name="datapath_noweb" value="" /></td>
-                              </tr>
-                              <tr>
-                                <td><label>{% trans 'Repertoire de stockage des imagettes' %}</label></td>
-                                <td><input class="path_to_test test_writeable required" type="text" name="datapath_web" value="" /></td>
-                              </tr>
-                              <tr>
-                                <td><label>{% trans 'Point de montage des imagettes (voir aide ci dessous)' %}</label></td>
-                                <td><input class="url_to_test same_domain required" type="text" name="mount_point_web" value="web/" /></td>
-                              </tr>
-                              <tr>
-                                <td colspan="2">
-                                  <p>
-                                    {% trans 'Il faut declarer dans votre serveur web un montage vers le dossier de stockage des  imagettes' %}
-                                  </p>
-                                  <h3>{% trans 'Exemple Apache' %}</h3>
-                                  <code>
-                                    &lt;VirtualHost *:80&gt;<br/>
-                                    &nbsp;&nbsp;...<br/>
-                                    &nbsp;&nbsp;Alias /mountpoint&nbsp;&nbsp;/path/to/thumbnail/folder<br/>
-                                    &nbsp;&nbsp;...<br/>
-                                    &lt;/VirtualHost&gt;
-                                  </code>
-                                  <h3>{% trans 'Exemple Nginx' %}</h3>
-                                  <code>
-                                    server {<br/>
-                                    &nbsp;&nbsp;...<br/>
-                                    &nbsp;&nbsp;location /mountpoint {<br/>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;alias /path/to/thumbnail/folder;<br/>
-                                    &nbsp;&nbsp;}<br/>
-                                    &nbsp;&nbsp;...<br/>
-                                    }
-                                  </code>
-                                </td>
                               </tr>
                             </table>
                           </td>

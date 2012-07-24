@@ -1,91 +1,85 @@
 
 {% import "common/thumbnail.html" as thumb %}
 
-<div class="PNB main_window">
-  <div id='publicator_selection' class="PNB10 ui-corner-all" style="height:190px;bottom:auto;background-color:#404040;">
-    <div class="PNB10" style="overflow:auto;bottom:50px;background-color:#111111;">
-      {% for id, record in route.get_elements %}
-        <div id='pub_record_{{record.get_serialize_key()}}' class="diapo">
-          <div class="title">{{ record.get_title() }}</div>
-          {{thumb.format(record.get_thumbnail, 80, 80, "", session, true)}}
+<div class="PNB" id='dialog_publicator'>
+    <div id='publicator_selection' class="PNB10 ui-corner-all">
+        <div class="PNB10">
+            {% for id, record in route.get_elements %}
+                <div id='pub_record_{{record.get_serialize_key()}}' class="diapo">
+                    <div class="title">{{ record.get_title() }}</div>
+                    {{thumb.format(record.get_thumbnail, 80, 80, "", session, true)}}
+                </div>
+            {% endfor %}
         </div>
-      {% endfor %}
-    </div>
-    <form name="upload_form" method="GET" action="/prod/bridge/upload/">
-      <div class="PNB10 record_actions" style="top:auto;height:30px;text-align:right;">
-        <button class="single_menu act_upload">{% trans 'Upload' %}</button>
-      </div>
-      <input name="lst" type="hidden" value=""/>
-      <input name="account_id" type="hidden" value=""/>
-    </form>
-    <form name="current_datas">
-      {% for id, record in route.get_elements %}
-        <input type="hidden" name="element[]" value="{{record.get_serialize_key()}}" />
-      {% endfor %}
-      <input name="lst" type="hidden" value="{{route.get_serialize_list()}}"/>
-      <input name="account_id" type="hidden" value="{{current_account_id}}"/>
-    </form>
-  </div>
-
-
-    <div class="PNB" style="top:200px">
-      <div class="PNB10" id="pub_tabs" >
-        <ul id="ul_main_pub_tabs" class="PNB">
-          {% for account in user_accounts %}
-            <li class="li_{{ account.get_id() }} {% if not account.get_api().get_connector().is_configured() %}not_configured{% endif %} bridge_{{ account.get_api().get_connector().get_name() }} {% if account.get_id() == current_account_id %} ui-tabs-selected {% endif %}">
-              <a href="/prod/bridge/adapter/{{ account.get_id() }}/load-elements/{{ account.get_api().get_connector().get_default_element_type() }}/" class='account'>
-                <span style='display:block;float:left;'>{{ account.get_name() }}</span>
-                <input type="hidden" name="account_id" value="{{ account.get_id() }}" />
-              </a>
-            </li>
-          {% endfor %}
-          <li>
-            <a href="#tabs-new-account"> + {% trans 'nouveau' %}</a>
-          </li>
-        </ul>
-
-        <div id='tabs-new-account' class="PNB" >
-          <div class="PNB">
-            <div class="PNB10 container">
-              <div class="PNB10">
-                <div>{% trans 'Vers quel API voulez vous vous connecter ?' %}</div>
-                {% if available_apis|length > 0 %}
-                  {% for api in available_apis %}
-                    {% if api.get_connector().is_configured() %}
-                      <form style="float:left;margin:5px;">
-                        <button class="login_button new_bridge_button">
-                          <table style="border:none;width:250px;">
-                            <tr style="vertical-align:middle;">
-                              <td style="width:130px;">
-                                {% if api.get_connector().get_image_url() %}
-                                  <img src="{{ api.get_connector().get_image_url() }}" class="bridge_icon" />
-                                {% endif %}
-                              </td>
-                              <td>
-                                {{ api.get_connector().get_name() }}
-                              </td>
-                            </tr>
-                          </table>
-                        </button>
-                        <input type="hidden" name="url" value="{{api.generate_login_url(registry, api.get_connector().get_name()) }}" />
-                      </form>
-                    {% endif %}
-                  {% endfor %}
-                {% else %}
-                  {% trans 'Aucun bridge disponible. Veuillez contacté un administrateur.' %}
-                {% endif %}
-              </div>
+        <form name="upload_form" method="GET" action="/prod/bridge/upload/">
+            <div class="PNB10 record_actions" style="top:auto; height:30px; text-align:right;">
+                <button class="single_menu act_upload btn btn-inverse">{% trans 'Upload' %}</button>
             </div>
-          </div>
+            <input name="lst" type="hidden" value=""/>
+            <input name="account_id" type="hidden" value=""/>
+        </form>
+        <form name="current_datas">
+            {% for id, record in route.get_elements %}
+                <input type="hidden" name="element[]" value="{{record.get_serialize_key()}}" />
+            {% endfor %}
+            <input name="lst" type="hidden" value="{{route.get_serialize_list()}}"/>
+            <input name="account_id" type="hidden" value="{{current_account_id}}"/>
+        </form>
+    </div>
+    <div class="PNB" style="top:200px">
+        <div class="PNB10" id="pub_tabs" >
+            <ul id="ul_main_pub_tabs" class="PNB">
+                {% for account in user_accounts %}
+                    <li class="li_{{ account.get_id() }} {% if not account.get_api().get_connector().is_configured() %}not_configured{% endif %} bridge_{{ account.get_api().get_connector().get_name() }} {% if account.get_id() == current_account_id %} ui-tabs-selected {% endif %}">
+                        <a href="/prod/bridge/adapter/{{ account.get_id() }}/load-elements/{{ account.get_api().get_connector().get_default_element_type() }}/" class='account'>
+                            <span style='display:block;float:left;'>{{ account.get_name() }}</span>
+                            <input type="hidden" name="account_id" value="{{ account.get_id() }}" />
+                        </a>
+                    </li>
+                {% endfor %}
+                <li>
+                    <a href="#tabs-new-account"> + {% trans 'nouveau' %}</a>
+                </li>
+            </ul>
+            <div id='tabs-new-account' class="PNB" >
+                <div class="PNB">
+                    <div class="PNB10 container">
+                        <div class="PNB10">
+                            <div>{% trans 'Vers quel API voulez vous vous connecter ?' %}</div>
+                            {% if available_apis|length > 0 %}
+                                {% for api in available_apis %}
+                                    {% if api.get_connector().is_configured() %}
+                                        <form style="float:left; margin:5px;">
+                                            <button class="login_button new_bridge_button btn btn-inverse">
+                                                <table style="border:none; width:250px;">
+                                                    <tr style="vertical-align:middle;">
+                                                        <td style="width:130px;">
+                                                            {% if api.get_connector().get_image_url() %}
+                                                                <img src="{{ api.get_connector().get_image_url() }}" class="bridge_icon" />
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            {{ api.get_connector().get_name() }}
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </button>
+                                            <input type="hidden" name="url" value="{{api.generate_login_url(registry, api.get_connector().get_name()) }}" />
+                                        </form>
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                {% trans 'Aucun bridge disponible. Veuillez contacter un administrateur.' %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
 </div>
-<div class="PNB upload_window" style="display:none;">
 
-</div>
-
-
+<div class="PNB upload_window" style="display:none;"></div>
 
 {# SCRIPT - HORIZONTAL TABS #}
 <script type ="text/javascript">
@@ -111,12 +105,9 @@ $(function() {
         popme(url);
 
         return false;
-      }).button();
+      });
 
       $('.error_box, .notice_box', $panel).delay(10000).fadeOut();
-
-      $(".multi_menu", $panel).buttonsetv();
-      $(".single_menu", $panel).button();
 
       $('.back_link', $panel).bind('click', function(){
         $('#pub_tabs').tabs('load',$('#pub_tabs').tabs('option', 'selected'));
@@ -125,14 +116,20 @@ $(function() {
       });
 
       $('.bridge_action', $panel).bind('click', function(){
+        var $this = $(this);
+
         $.ajax({
           type : 'GET',
           url : $(this).attr('href'),
           beforeSend : function(){
-            $('.container', $panel).empty().addClass('loading');
+            var container = $('.container-bridge', $panel);
+            container.empty();
+            if( ! $this.hasClass('bridge_logout')) {
+                container.addClass('loading');
+            }
           },
           success : function(datas){
-            $panel.removeClass('loading').append(datas);
+            $('.container-bridge', $panel).removeClass('loading').append(datas);
             panel_load($panel);
           },
           error:function(){
@@ -145,6 +142,7 @@ $(function() {
 
         return false;
       });
+
       $('.form_submitter', $panel).bind('click', function(){
         var $form = $(this).closest('form');
         var method = $form.attr('method');
@@ -172,9 +170,6 @@ $(function() {
 
         return false;
       });
-
-
-
 
 
       $(".bridge_all_selector", $panel).bind("click", function() {
@@ -227,7 +222,7 @@ $(function() {
       });
 
 
-      $('button.form_multiple_submitter', $panel).bind('click', function(){
+      $('a.form_multiple_submitter', $panel).bind('click', function(){
 
         var $form = $(this).closest('form');
         var elements = $('form[name="bridge_selection"] input[name="elements_list"]', $panel).val();
@@ -280,24 +275,22 @@ $(function() {
         return false;
 
       });
-
-
   }
 
   pub_tabs.tabs({
     load: function(event, ui)
     {
       $panel = $(ui.panel);
-      $('.container', $panel).removeClass('loading');
+      $('.container-bridge', $panel).removeClass('loading');
       panel_load($panel);
     }
-    , panelTemplate : '<div class="PNB"><div class="PNB10 container"></div></div>'
+    , panelTemplate : '<div class="PNB"><div class="PNB10 container-bridge"></div></div>'
     , spinner: '<i>loading...</i>'
     ,select: function(event, ui)
     {
       if($(ui.tab).hasClass('account'))
       {
-        var container = $('.container', ui.panel);
+        var container = $('.container-bridge', ui.panel);
         container.empty();
         $('.container', ui.panel).addClass('loading');
       }
@@ -311,7 +304,7 @@ $(function() {
     popme(url);
 
     return false;
-  }).button();
+  });
 
   $("ul li a.account", pub_tabs).bind("click", function(){
     $('form[name="current_datas"] input[name="account_id"]', container).val($('input[name="account_id"]', this).val());
@@ -365,8 +358,6 @@ $(function() {
   $("#api_connexion").click(function(){
     container.dialog("close")
   });
-  $('.multi_menu', container).buttonsetv();
-  $('.single_menu', container).button();
 
   {% if route.get_count_element_received() == 0 %}
     alert('{% trans "Vous n\'avez selectionne aucun element" %}');

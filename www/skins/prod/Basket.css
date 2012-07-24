@@ -1,7 +1,3 @@
-
-#BasketBrowser{
-
-}
 #BasketBrowser .Browser{
   background-color: #111111;
 }
@@ -44,20 +40,30 @@
 }
 
 #BasketBrowser .result td.thumbnail{
-  text-align:center;
-  width:105px;
+    display: table-cell;
+    width: 105px;
+    height: 80px;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    line-height: 18px;
+    text-align: center;
 }
+
 #BasketBrowser .result td.thumbnail .counter{
-  bottom: 20px;
+  bottom: 18px;
   font-size: 14px;
   position: relative;
-  right: 10px;
+  right: 5px;
   text-align: right;
 }
+
 #BasketBrowser .result td.content{
   width:390px;
   vertical-align:top;
 }
+
 #BasketBrowser .results .result h1.title{
   font-size:14px;
 }

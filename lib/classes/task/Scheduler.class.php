@@ -3,535 +3,560 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
+use Monolog\Logger;
+
 /**
  *
- * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-use Symfony\Component\Console\Output\OutputInterface;
-
 class task_Scheduler
 {
+    const TASKDELAYTOQUIT = 60;
+    // how to schedule tasks (choose in 'run' method)
+    const METHOD_FORK = 'METHOD_FORK';
+    const METHOD_PROC_OPEN = 'METHOD_PROC_OPEN';
+    const ERR_ALREADY_RUNNING = 114;   // aka EALREADY (Operation already in progress)
 
-  const TASKDELAYTOQUIT = 60;
+    /**
+     *
+     * @var \Monolog\Logger
+     */
+    private $logger;
+    private $method;
 
-  protected $output;
-  protected static $connection;
-
-  protected function log($message)
-  {
-    if ($this->output instanceof OutputInterface)
+    public function __construct(Logger $logger)
     {
-      $this->output->writeln($message);
+        $this->logger = $logger;
     }
 
-    $registry = registry::get_instance();
-    $logdir   = $registry->get('GV_RootPath') . 'logs/';
-
-    logs::rotate($logdir . "scheduler.log");
-
-    $date_obj = new DateTime();
-    $message  = sprintf("%s %s \n", $date_obj->format(DATE_ATOM), $message);
-
-    file_put_contents($logdir . "scheduler.log", $message, FILE_APPEND);
-
-    return $this;
-  }
-
-  protected static function get_connection()
-  {
-    return \connection::getPDOConnection();
-  }
-
-  public function run(OutputInterface $output = null, $log_tasks = true)
-  {
-    require_once __DIR__ . '/../../bootstrap.php';
-    $this->output = $output;
-    $appbox   = appbox::get_instance(\bootstrap::getCore());
-    $registry = $appbox->get_registry();
-
-    $system = system_server::get_platform();
-
-    $lockdir = $registry->get('GV_RootPath') . 'tmp/locks/';
-
-    for ($try = 0; true; $try++)
+    protected function log($message)
     {
-      $schedlock = fopen(($lockfile  = ($lockdir . 'scheduler.lock')), 'a+');
-      if (flock($schedlock, LOCK_EX | LOCK_NB) != true)
-      {
-        $this->log(sprintf("failed to lock '%s' (try=%s/4)", $lockfile, $try));
-        if ($try == 4)
-        {
-          $this->log("scheduler already running.");
-          fclose($schedlock);
+        $this->logger->addInfo($message);
 
-          return;
-        }
-        else
-        {
-          sleep(2);
-        }
-      }
-      else
-      {
-        ftruncate($schedlock, 0);
-        fwrite($schedlock, '' . getmypid());
-        fflush($schedlock);
-        break;
-      }
+        return $this;
     }
 
-    $logdir = $registry->get('GV_RootPath') . 'logs/';
-
-    $conn = self::get_connection();
-
-    $ttask = array();
-
-    $sleeptime = 3;
-
-    $sql  = "UPDATE sitepreff SET schedstatus='started', schedpid = :pid";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute(array(':pid' => getmypid()));
-    $stmt->closeCursor();
-
-
-    $task_manager = new task_manager($appbox);
-
-    $tlist = array();
-    foreach ($task_manager->get_tasks() as $task)
+    protected static function get_connection()
     {
-      if (!$task->is_active())
-      {
-        continue;
-      }
-
-      $tid = $task->get_task_id();
-
-      if (!$task->is_running())
-      {
-        /* @var $task task_abstract */
-        $task->reset_crash_counter();
-        $task->set_status(task_abstract::STATUS_TOSTART);
-      }
+        return appbox::get_instance(\bootstrap::getCore())->get_connection();
     }
 
-
-    $schedstatus = 'started';
-    $runningtask = 0;
-    $connwaslost = false;
-
-    $last_log_check = array();
-
-    while ($schedstatus == 'started' || $runningtask > 0)
+    /**
+     * @throws Exception if scheduler is already running
+     * @todo doc all possible exception
+     */
+    public function run()
     {
-      while (!$conn->ping())
-      {
-        unset($conn);
-        if (!$connwaslost)
-        {
-          $this->log(sprintf("Warning : abox connection lost, restarting in 10 min."));
+        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $registry = $appbox->get_registry();
+
+        //prevent scheduler to fail if GV_cli is not provided
+        if ( ! is_executable($registry->get('GV_cli'))) {
+            throw new \RuntimeException('PHP cli is not provided in registry');
         }
-        sleep(60 * 10);
-        $conn        = self::get_connection();
-        $connwaslost = true;
-      }
-      if ($connwaslost)
-      {
-        $this->log("abox connection restored");
 
-        $sql  = 'UPDATE task SET crashed=0';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $this->method = self::METHOD_PROC_OPEN;
 
+        $nullfile = '/dev/null';
+
+        if (defined('PHP_WINDOWS_VERSION_BUILD')) {
+            $nullfile = 'NUL';
+        }
+
+        if (function_exists('pcntl_fork')) {
+            $this->method = self::METHOD_FORK;
+        }
+
+        $lockdir = $registry->get('GV_RootPath') . 'tmp/locks/';
+
+        for ($try = 1; true; $try ++ ) {
+            $lockfile = ($lockdir . 'scheduler.lock');
+            if (($schedlock = fopen($lockfile, 'a+')) != FALSE) {
+                if (flock($schedlock, LOCK_EX | LOCK_NB) === FALSE) {
+                    $this->log(sprintf("failed to lock '%s' (try=%s/4)", $lockfile, $try));
+                    if ($try == 4) {
+                        $this->log("scheduler already running.");
+                        fclose($schedlock);
+
+                        throw new Exception('scheduler already running.', self::ERR_ALREADY_RUNNING);
+
+                        return;
+                    } else {
+                        sleep(2);
+                    }
+                } else {
+                    // locked
+                    ftruncate($schedlock, 0);
+                    fwrite($schedlock, '' . getmypid());
+                    fflush($schedlock);
+
+                    // for windows : unlock then lock shared to allow OTHER processes to read the file
+                    // too bad : no critical section nor atomicity
+                    flock($schedlock, LOCK_UN);
+                    flock($schedlock, LOCK_SH);
+                    break;
+                }
+            }
+        }
+
+        $this->log(sprintf("running scheduler with method %s", $this->method));
+
+        $conn = appbox::get_instance(\bootstrap::getCore())->get_connection();
+
+        $taskPoll = array(); // the poll of tasks
+
+        $sleeptime = 3;
+
+        $sql = "UPDATE sitepreff SET schedstatus='started'";
+        $conn->exec($sql);
+
+        $task_manager = new task_manager($appbox);
+
+        // set every 'auto-start' task to start
+        foreach ($task_manager->getTasks() as $task) {
+            if ($task->isActive()) {
+                if ( ! $task->getPID()) {
+                    /* @var $task task_abstract */
+                    $task->resetCrashCounter();
+                    $task->setState(task_abstract::STATE_TOSTART);
+                }
+            }
+        }
+
+        $schedstatus = 'started';
+        $runningtask = 0;
         $connwaslost = false;
-      }
 
-      $schedstatus = '';
-      $sql         = "SELECT schedstatus FROM sitepreff";
-      $stmt        = $conn->prepare($sql);
-      $stmt->execute();
-      $row         = $stmt->fetch(PDO::FETCH_ASSOC);
-      $stmt->closeCursor();
+        while ($schedstatus == 'started' || $runningtask > 0) {
+            while (1) {
+                try {
+                    assert(is_object($conn));
+                    $ping = @$conn->ping();
+                } catch (ErrorException $e) {
+                    $ping = false;
+                }
+                if ($ping) {
+                    break;
+                }
 
-      if ($row)
-      {
-        $schedstatus = $row["schedstatus"];
-      }
+                unset($conn);
+                if ( ! $connwaslost) {
+                    $this->log(sprintf("Warning : abox connection lost, restarting in 10 min."));
+                }
+                for ($i = 0; $i < 60 * 10; $i ++ ) {
+                    sleep(1);
+                }
+                try {
+                    $conn = appbox::get_instance(\bootstrap::getCore())->get_connection();
+                } catch (ErrorException $e) {
+                    $ping = false;
+                }
 
-      if ($schedstatus == 'tostop')
-      {
-        $sql  = 'UPDATE sitepreff SET schedstatus = "stopping"';
+                $connwaslost = true;
+            }
+            if ($connwaslost) {
+                $this->log("abox connection restored");
+
+                $sql = 'UPDATE task SET crashed=0';
+                $stmt = $conn->prepare($sql);
+                $stmt->execute();
+                $stmt->closeCursor();
+
+                $connwaslost = false;
+            }
+
+            $schedstatus = '';
+            $row = NULL;
+            try {
+                $sql = "SELECT schedstatus FROM sitepreff";
+                $stmt = $conn->prepare($sql);
+                $stmt->execute();
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                $stmt->closeCursor();
+            } catch (ErrorException $e) {
+                continue;
+            }
+
+            if ($row) {
+                $schedstatus = $row["schedstatus"];
+            }
+
+            if ($schedstatus == 'tostop') {
+                $sql = 'UPDATE sitepreff SET schedstatus = "stopping"';
+                $stmt = $conn->prepare($sql);
+                $stmt->execute();
+                $stmt->closeCursor();
+
+                // if scheduler is stopped, stop the tasks
+                $sql = 'UPDATE task2 SET status="tostop" WHERE status != "stopped" and status != "manual"';
+                $stmt = $conn->prepare($sql);
+                $stmt->execute();
+                $stmt->closeCursor();
+                $this->log("schedstatus == 'stopping', waiting tasks to end");
+            }
+
+            // initialy, all tasks are supposed to be removed from the poll
+            foreach ($taskPoll as $tkey => $task) {
+                $taskPoll[$tkey]["todel"] = true;
+            }
+
+            foreach ($task_manager->getTasks(true) as $task) {
+                $tkey = "t_" . $task->getID();
+                $status = $task->getState();
+
+                if ( ! isset($taskPoll[$tkey])) {
+                    // the task is not in the poll, add it
+                    $taskPoll[$tkey] = array(
+                        "task"           => $task,
+                        "current_status" => $status,
+                        "cmd"            => $registry->get('GV_cli'),
+                        "args"           => array(
+                            '-f',
+                            $registry->get('GV_RootPath') . 'bin/console',
+                            '--',
+                            '-q',
+                            'task:run',
+                            $task->getID(), '--runner=scheduler'
+                        ),
+                        "killat"       => null,
+                        "sigterm_sent" => false,
+                        "pid"          => false
+                    );
+                    if ($this->method == self::METHOD_PROC_OPEN) {
+                        $taskPoll[$tkey]['process'] = NULL;
+                        $taskPoll[$tkey]['pipes'] = NULL;
+                    }
+
+                    $this->log(
+                        sprintf(
+                            "new Task %s, status=%s"
+                            , $taskPoll[$tkey]["task"]->getID()
+                            , $status
+                        )
+                    );
+                } else {
+                    // the task is already in the poll, update its status
+                    if ($taskPoll[$tkey]["current_status"] != $status) {
+                        $this->log(
+                            sprintf(
+                                "Task %s, oldstatus=%s, newstatus=%s"
+                                , $taskPoll[$tkey]["task"]->getID()
+                                , $taskPoll[$tkey]["current_status"]
+                                , $status
+                            )
+                        );
+                        $taskPoll[$tkey]["current_status"] = $status;
+                    }
+                    // update the whole task object
+                    unset($taskPoll[$tkey]["task"]);
+                    $taskPoll[$tkey]["task"] = $task;
+                }
+
+                unset($task);
+
+                $taskPoll[$tkey]["todel"] = false; // this task exists, do not remove from poll
+            }
+
+            // remove not-existing task from poll
+            foreach ($taskPoll as $tkey => $task) {
+                if ($task["todel"]) {
+                    $this->log(sprintf("Task %s deleted", $taskPoll[$tkey]["task"]->getID()));
+                    unset($taskPoll[$tkey]);
+                }
+            }
+
+            // Launch task that are not yet launched
+            $runningtask = 0;
+
+            foreach ($taskPoll as $tkey => $tv) {
+                $status = $tv['task']->getState();
+                switch ($status) {
+                    default:
+                        $this->log(sprintf('Unknow status `%s`', $status));
+                        break;
+
+                    case task_abstract::STATE_TORESTART:
+                        if ( ! $taskPoll[$tkey]['task']->getPID()) {
+                            if ($this->method == self::METHOD_PROC_OPEN) {
+                                @fclose($taskPoll[$tkey]["pipes"][1]);
+                                @fclose($taskPoll[$tkey]["pipes"][2]);
+                                @proc_close($taskPoll[$tkey]["process"]);
+
+                                $taskPoll[$tkey]["process"] = null;
+                            } elseif ($this->method == self::METHOD_FORK) {
+                                $pid = $taskPoll[$tkey]['pid'];
+                                if ($pid) {
+                                    $status = NULL;
+                                    if (pcntl_waitpid($pid, $status, WNOHANG) === $pid) {
+                                        // pid has quit
+                                        $taskPoll[$tkey]['pid'] = false;
+                                    }
+                                }
+                            }
+
+                            if ($schedstatus == 'started') {
+                                $taskPoll[$tkey]["task"]->setState(task_abstract::STATE_TOSTART);
+                            }
+                            // trick to start the task immediatly : DON'T break if ending with 'tostart'
+                            // so it will continue with 'tostart' case !
+                        } else {
+                            break;
+                        }
+
+                    case task_abstract::STATE_TOSTART:
+                        // if scheduler is 'tostop', don't launch a new task !
+                        if ($schedstatus != 'started') {
+                            break;
+                        }
+
+                        $taskPoll[$tkey]["killat"] = NULL;
+
+                        if ($this->method == self::METHOD_PROC_OPEN) {
+                            if ( ! $taskPoll[$tkey]["process"]) {
+
+                                $nullfile = defined('PHP_WINDOWS_VERSION_BUILD') ? 'NUL' : '/dev/null';
+
+                                $descriptors[1] = array('file', $nullfile, 'a+');
+                                $descriptors[2] = array('file', $nullfile, 'a+');
+
+                                $taskPoll[$tkey]["process"] = proc_open(
+                                    $taskPoll[$tkey]["cmd"] . ' ' . implode(' ', $taskPoll[$tkey]["args"])
+                                    , $descriptors
+                                    , $taskPoll[$tkey]["pipes"]
+                                    , $registry->get('GV_RootPath') . "bin/"
+                                    , null
+                                    , array('bypass_shell' => true)
+                                );
+
+                                if (is_resource($taskPoll[$tkey]["process"])) {
+                                    sleep(2); // let the process lock and write it's pid
+                                }
+
+                                if (is_resource($taskPoll[$tkey]["process"]) && ($pid = $taskPoll[$tkey]['task']->getPID()) !== null) {
+                                    $taskPoll[$tkey]['pid'] = $pid;
+                                    $this->log(
+                                        sprintf(
+                                            "Task %s '%s' started (pid=%s)"
+                                            , $taskPoll[$tkey]['task']->getID()
+                                            , $taskPoll[$tkey]["cmd"] . ' ' . implode(' ', $taskPoll[$tkey]["args"])
+                                            , $pid
+                                        )
+                                    );
+                                    $runningtask ++;
+                                } else {
+                                    $taskPoll[$tkey]["task"]->incrementCrashCounter();
+
+                                    @fclose($taskPoll[$tkey]["pipes"][1]);
+                                    @fclose($taskPoll[$tkey]["pipes"][2]);
+                                    @proc_close($taskPoll[$tkey]["process"]);
+                                    $taskPoll[$tkey]["process"] = null;
+
+                                    $this->log(
+                                        sprintf(
+                                            "Task %s '%s' failed to start %d times"
+                                            , $taskPoll[$tkey]["task"]->getID()
+                                            , $taskPoll[$tkey]["cmd"]
+                                            , $taskPoll[$tkey]["task"]->getCrashCounter()
+                                        )
+                                    );
+
+                                    if ($taskPoll[$tkey]["task"]->getCrashCounter() > 5) {
+                                        $taskPoll[$tkey]["task"]->setState(task_abstract::STATE_STOPPED);
+                                    } else {
+                                        $taskPoll[$tkey]["task"]->setState(task_abstract::STATE_TOSTART);
+                                    }
+                                }
+                            }
+                        } elseif ($this->method == self::METHOD_FORK) {
+                            $pid = pcntl_fork();
+                            if ($pid == -1) {
+                                die("failed to fork");
+                            } elseif ($pid == 0) {
+                                umask(0);
+                                if (posix_setsid() < 0) {
+                                    die("Forked process could not detach from terminal\n");
+                                }
+
+                                // todo (if possible) : redirecting stdin, stdout to log files ?
+
+                                $this->log(sprintf("exec('%s %s')", $taskPoll[$tkey]["cmd"], implode(' ', $taskPoll[$tkey]["args"])));
+                                pcntl_exec($taskPoll[$tkey]["cmd"], $taskPoll[$tkey]["args"]);
+                            } else {
+                                // parent (scheduler)
+                                $taskPoll[$tkey]['pid'] = $pid;
+                            }
+                        }
+                        break;
+
+                    case task_abstract::STATE_STARTED:
+                        $crashed = false;
+                        // If no process, the task is probably manually ran
+
+                        if ($this->method == self::METHOD_PROC_OPEN) {
+                            if ($taskPoll[$tkey]["process"]) {
+                                $taskPoll[$tkey]["killat"] = NULL;
+
+                                if (is_resource($taskPoll[$tkey]["process"])) {
+                                    $proc_status = proc_get_status($taskPoll[$tkey]["process"]);
+                                    if ($proc_status['running']) {
+                                        $runningtask ++;
+                                    } else {
+                                        $crashed = true;
+                                    }
+                                } else {
+                                    $crashed = true;
+                                }
+                            }
+                        }
+
+                        if ( ! $crashed && ! $taskPoll[$tkey]['task']->getPID()) {
+                            $crashed = true;
+                        }
+
+                        if ( ! $crashed) {
+                            $taskPoll[$tkey]["killat"] = NULL;
+                            $runningtask ++;
+                        } else {
+                            // crashed !
+                            $taskPoll[$tkey]["task"]->incrementCrashCounter();
+
+                            if ($this->method == self::METHOD_PROC_OPEN) {
+                                @fclose($taskPoll[$tkey]["pipes"][1]);
+                                @fclose($taskPoll[$tkey]["pipes"][2]);
+                                @proc_close($taskPoll[$tkey]["process"]);
+                                $taskPoll[$tkey]["process"] = null;
+                            }
+                            $this->log(
+                                sprintf(
+                                    "Task %s crashed %d times"
+                                    , $taskPoll[$tkey]["task"]->getID()
+                                    , $taskPoll[$tkey]["task"]->getCrashCounter()
+                                )
+                            );
+
+                            if ($taskPoll[$tkey]["task"]->getCrashCounter() > 5) {
+                                $taskPoll[$tkey]["task"]->setState(task_abstract::STATE_STOPPED);
+                            } else {
+                                $taskPoll[$tkey]["task"]->setState(task_abstract::STATE_TOSTART);
+                            }
+                        }
+                        break;
+
+                    case task_abstract::STATE_TOSTOP:
+
+                        if ($taskPoll[$tkey]["killat"] === NULL) {
+                            $taskPoll[$tkey]["killat"] = time() + self::TASKDELAYTOQUIT;
+                        }
+
+                        $pid = $taskPoll[$tkey]['task']->getPID();
+                        if ($pid) {
+                            // send ctrl-c to tell the task to CLEAN quit
+                            // (just in case the task doesn't pool his status 'tostop' fast enough)
+                            if (function_exists('posix_kill')) {
+                                if ( ! $taskPoll[$tkey]['sigterm_sent']) {
+                                    posix_kill($pid, SIGTERM);
+                                    $this->log(
+                                        sprintf(
+                                            "SIGTERM sent to task %s (pid=%s)"
+                                            , $taskPoll[$tkey]["task"]->getID()
+                                            , $pid
+                                        )
+                                    );
+                                }
+                            }
+
+                            if (($dt = $taskPoll[$tkey]["killat"] - time()) < 0) {
+                                // task still alive, time to kill
+                                if ($this->method == self::METHOD_PROC_OPEN) {
+                                    proc_terminate($taskPoll[$tkey]["process"], 9);
+                                    @fclose($taskPoll[$tkey]["pipes"][1]);
+                                    @fclose($taskPoll[$tkey]["pipes"][2]);
+                                    proc_close($taskPoll[$tkey]["process"]);
+                                    $this->log(
+                                        sprintf(
+                                            "proc_terminate(...) done on task %s (pid=%s)"
+                                            , $taskPoll[$tkey]["task"]->getID()
+                                            , $pid
+                                        )
+                                    );
+                                } else { // METHOD_FORK, I guess we have posix
+                                    posix_kill($pid, 9);
+                                    $this->log(
+                                        sprintf(
+                                            "SIGKILL sent to task %s (pid=%s)"
+                                            , $taskPoll[$tkey]["task"]->getID()
+                                            , $pid
+                                        )
+                                    );
+                                }
+                            } else {
+                                $this->log(
+                                    sprintf(
+                                        "waiting task %s to quit (kill in %d seconds)"
+                                        , $taskPoll[$tkey]["task"]->getID()
+                                        , $dt
+                                    )
+                                );
+                                $runningtask ++;
+                            }
+                        } else {
+                            $this->log(
+                                sprintf(
+                                    "task %s has quit"
+                                    , $taskPoll[$tkey]["task"]->getID()
+                                )
+                            );
+                            $taskPoll[$tkey]["task"]->setState(task_abstract::STATE_STOPPED);
+                        }
+
+                        break;
+
+                    case task_abstract::STATE_STOPPED:
+                    case task_abstract::STATE_TODELETE:
+                        if ($this->method == self::METHOD_PROC_OPEN) {
+                            if ($taskPoll[$tkey]["process"]) {
+                                @fclose($taskPoll[$tkey]["pipes"][1]);
+                                @fclose($taskPoll[$tkey]["pipes"][2]);
+                                @proc_close($taskPoll[$tkey]["process"]);
+
+                                $taskPoll[$tkey]["process"] = null;
+                            }
+                        } elseif ($this->method == self::METHOD_FORK) {
+                            $pid = $taskPoll[$tkey]['pid'];
+                            if ($pid) {
+                                $status = NULL;
+                                if (pcntl_waitpid($pid, $status, WNOHANG) === $pid) {
+                                    // pid has quit
+                                    $taskPoll[$tkey]['pid'] = false;
+                                }
+                            }
+                        }
+                        break;
+                }
+            }
+
+            for ($i = 0; $i < $sleeptime; $i ++ ) {
+                sleep(1);
+            }
+        }
+
+        $sql = "UPDATE sitepreff SET schedstatus='stopped', schedpid='0'";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
-        // if scheduler is stopped, stop the tasks
-        $sql  = 'UPDATE task2 SET status="tostop" WHERE status != "stopped" and status != "manual"';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $this->log("Scheduler2 is quitting.");
 
-        $this->log("schedstatus == 'stopping', waiting tasks to end");
-      }
+        ftruncate($schedlock, 0);
+        fclose($schedlock);
 
-      logs::rotate($logdir . "scheduler.log");
-      logs::rotate($logdir . "scheduler.error.log");
-
-
-      /**
-       * potentially, all tasks are supposed to be removed
-       */
-      foreach ($ttask as $tkey => $tv)
-      {
-        $ttask[$tkey]["todel"] = true;
-      }
-
-      $sql  = "SELECT * FROM task2";
-      $stmt = $conn->prepare($sql);
-      $stmt->execute();
-      $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
-      $stmt->closeCursor();
-
-      foreach ($task_manager->get_tasks(true) as $task)
-      {
-        $tkey = "t_" . $task->get_task_id();
-
-        logs::rotate($logdir . "task_$tkey.log");
-        logs::rotate($logdir . "task_$tkey.error.log");
-
-        if (!isset($ttask[$tkey]))
-        {
-          $phpcli = $registry->get('GV_cli');
-
-          switch ($system)
-          {
-            default:
-            case "DARWIN":
-            case "WINDOWS":
-            case "LINUX":
-              $cmd = $phpcli . ' -f '
-                . $registry->get('GV_RootPath')
-                . "bin/console task:run "
-                . $task->get_task_id()
-                . " --runner=scheduler ";
-              break;
-          }
-
-          $ttask[$tkey] = array(
-            "task"           => $task,
-            "current_status" => $task->get_status(),
-            "process"        => null,
-            "cmd"            => $cmd,
-            "killat"         => null,
-            "pipes"          => null
-          );
-          $this->log(
-            sprintf(
-              "new Task %s, status=%s"
-              , $ttask[$tkey]["task"]->get_task_id()
-              , $task->get_status()
-            )
-          );
-        }
-        else
-        {
-          if ($ttask[$tkey]["current_status"] != $task->get_status())
-          {
-            $this->log(
-              sprintf(
-                "Task %s, oldstatus=%s, newstatus=%s"
-                , $ttask[$tkey]["task"]->get_task_id()
-                , $ttask[$tkey]["current_status"]
-                , $task->get_status()
-              )
-            );
-            $ttask[$tkey]["current_status"] = $task->get_status();
-          }
-
-          $ttask[$tkey]["task"]  = $task;
-        }
-        $ttask[$tkey]["todel"] = false;
-      }
-
-      foreach ($ttask as $tkey => $tv)
-      {
-        if ($tv["todel"])
-        {
-          $this->log(sprintf("Task %s deleted", $ttask[$tkey]["task"]->get_task_id()));
-          unset($ttask[$tkey]);
-        }
-      }
-
-
-      /**
-       * Launch task that are not yet launched
-       */
-      $runningtask = 0;
-
-      $common_status = array(
-        task_abstract::STATUS_STARTED
-        , task_abstract::RETURNSTATUS_STOPPED
-      );
-
-      foreach ($ttask as $tkey => $tv)
-      {
-        if (!in_array($ttask[$tkey]["task"]->get_status(), $common_status))
-        {
-          $this->log(
-            sprintf(
-              'task %s has status %s'
-              , $ttask[$tkey]["task"]->get_task_id()
-              , $ttask[$tkey]["task"]->get_status()
-            )
-          );
-        }
-        switch ($ttask[$tkey]["task"]->get_status())
-        {
-          default:
-            $this->log(
-              sprintf(
-                'Unknow status `%s`'
-                , $ttask[$tkey]["task"]->get_status()
-              )
-            );
-            break;
-          case task_abstract::RETURNSTATUS_TORESTART:
-            @fclose($ttask[$tkey]["pipes"][1]);
-            @fclose($ttask[$tkey]["pipes"][2]);
-            @proc_close($ttask[$tkey]["process"]);
-
-            $ttask[$tkey]["process"] = null;
-            if ($schedstatus == 'started')
-            {
-              $ttask[$tkey]["task"]->set_status(task_abstract::STATUS_TOSTART);
-            }
-            break;
-          case task_abstract::STATUS_TOSTART:
-            $ttask[$tkey]["killat"] = NULL;
-            if ($schedstatus == 'started' && !$ttask[$tkey]["process"])
-            {
-              $descriptors = array(
-                1 => array("pipe", "w")
-                , 2 => array("pipe", "w")
-              );
-
-              if ($log_tasks === true)
-              {
-                $descriptors[1] = array(
-                  "file"
-                  , $logdir . "task_$tkey.log"
-                  , "a+"
-                );
-                $descriptors[2] = array(
-                  "file"
-                  , $logdir . "task_$tkey.error.log"
-                  , "a+"
-                );
-              }
-
-              $ttask[$tkey]["process"] = proc_open(
-                $ttask[$tkey]["cmd"]
-                , $descriptors
-                , $ttask[$tkey]["pipes"]
-                , $registry->get('GV_RootPath') . "bin/"
-                , null
-                , array('bypass_shell' => true)
-              );
-
-              if (is_resource($ttask[$tkey]["process"]))
-              {
-                $proc_status = proc_get_status($ttask[$tkey]["process"]);
-                if ($proc_status['running'])
-                  $ttask[$tkey]['task']->set_pid($proc_status['pid']);
-              }
-
-              if ($ttask[$tkey]['task']->get_pid() !== null)
-              {
-                $this->log(
-                  sprintf(
-                    "Task %s '%s' started (pid=%s)"
-                    , $ttask[$tkey]['task']->get_task_id()
-                    , $ttask[$tkey]["cmd"]
-                    , $ttask[$tkey]['task']->get_pid()
-                  )
-                );
-                $runningtask++;
-              }
-              else
-              {
-                $ttask[$tkey]["task"]->increment_crash_counter();
-
-                @fclose($ttask[$tkey]["pipes"][1]);
-                @fclose($ttask[$tkey]["pipes"][2]);
-                @proc_close($ttask[$tkey]["process"]);
-                $ttask[$tkey]["process"] = null;
-
-                $this->log(
-                  sprintf(
-                    "Task %s '%s' failed to start %d times"
-                    , $ttask[$tkey]["task"]->get_task_id()
-                    , $ttask[$tkey]["cmd"]
-                    , $ttask[$tkey]["task"]->get_crash_counter()
-                  )
-                );
-
-                $ttask[$tkey]["task"]->increment_crash_counter();
-
-                if ($ttask[$tkey]["task"]->get_crash_counter() > 5)
-                {
-                  $ttask[$tkey]["task"]->set_status(task_abstract::RETURNSTATUS_STOPPED);
-                }
-                else
-                {
-                  $ttask[$tkey]["task"]->set_status(task_abstract::STATUS_TOSTART);
-                }
-              }
-            }
-            break;
-
-          case task_abstract::STATUS_STARTED:
-            $crashed = false;
-            /**
-             * If no process, the task is probably manually ran
-             */
-            if ($ttask[$tkey]["process"])
-            {
-              $ttask[$tkey]["killat"] = NULL;
-              if (is_resource($ttask[$tkey]["process"]))
-              {
-                $proc_status = proc_get_status($ttask[$tkey]["process"]);
-                if ($proc_status['running'])
-                  $runningtask++;
-                else
-                  $crashed     = true;
-              }
-              else
-              {
-                $crashed = true;
-              }
-            }
-
-            if ($crashed === true && $ttask[$tkey]["task"]->get_status() === task_abstract::RETURNSTATUS_TORESTART)
-            {
-              $crashed = false;
-            }
-            if ($crashed)
-            {
-              $ttask[$tkey]["task"]->increment_crash_counter();
-
-              @fclose($ttask[$tkey]["pipes"][1]);
-              @fclose($ttask[$tkey]["pipes"][2]);
-              @proc_close($ttask[$tkey]["process"]);
-              $ttask[$tkey]["process"] = null;
-
-              $this->log(
-                sprintf(
-                  "Task %s crashed %d times"
-                  , $ttask[$tkey]["task"]->get_task_id()
-                  , $ttask[$tkey]["task"]->get_crash_counter()
-                )
-              );
-
-
-              $ttask[$tkey]["task"]->increment_crash_counter();
-
-              if ($ttask[$tkey]["task"]->get_crash_counter() > 5)
-              {
-                $ttask[$tkey]["task"]->set_status(task_abstract::RETURNSTATUS_STOPPED);
-              }
-              else
-              {
-                $ttask[$tkey]["task"]->set_status(task_abstract::STATUS_TOSTART);
-              }
-            }
-            break;
-
-          case task_abstract::STATUS_TOSTOP:
-            if ($ttask[$tkey]["process"])
-            {
-              if ($ttask[$tkey]["killat"] === NULL)
-                $ttask[$tkey]["killat"] = time() + self::TASKDELAYTOQUIT;
-              if (($dt                     = $ttask[$tkey]["killat"] - time()) < 0)
-              {
-                $ppid = $ttask[$tkey]['task']->get_pid();
-                $pids = preg_split('/\s+/', `ps -o pid --no-heading --ppid $ppid`);
-                foreach ($pids as $pid)
-                {
-                  if (is_numeric($pid))
-                  {
-                    $this->log("Killing pid %d", $pid);
-                    posix_kill($pid, 9);
-                  }
-                }
-
-                $this->log(
-                  sprintf(
-                    "SIGKILL sent to task %s (pid=%s)"
-                    , $ttask[$tkey]["task"]->get_task_id()
-                    , $ttask[$tkey]["task"]->get_pid()
-                  )
-                );
-
-                proc_terminate($ttask[$tkey]["process"], 9);
-                @fclose($ttask[$tkey]["pipes"][1]);
-                @fclose($ttask[$tkey]["pipes"][2]);
-                proc_close($ttask[$tkey]["process"]);
-                unlink($lockdir . 'task_' . $ttask[$tkey]['task']->get_task_id() . '.lock');
-
-                $ttask[$tkey]["task"]->increment_crash_counter();
-                $ttask[$tkey]["task"]->set_pid(null);
-                $ttask[$tkey]["task"]->set_status(task_abstract::RETURNSTATUS_STOPPED);
-              }
-              else
-              {
-                $this->log(
-                  sprintf(
-                    "waiting task %s to quit (kill in %d seconds)"
-                    , $ttask[$tkey]["task"]->get_task_id()
-                    , $dt
-                  )
-                );
-                $runningtask++;
-              }
-            }
-            break;
-
-          case task_abstract::RETURNSTATUS_STOPPED:
-          case task_abstract::RETURNSTATUS_TODELETE:
-            if ($ttask[$tkey]["process"])
-            {
-              @fclose($ttask[$tkey]["pipes"][1]);
-              @fclose($ttask[$tkey]["pipes"][2]);
-              @proc_close($ttask[$tkey]["process"]);
-
-              $ttask[$tkey]["process"] = null;
-            }
-            break;
-        }
-      }
-
-      sleep($sleeptime);
+        $this->log("Scheduler2 has quit.\n");
     }
-
-    $sql  = "UPDATE sitepreff SET schedstatus='stopped', schedpid='0'";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute();
-    $stmt->closeCursor();
-
-    $this->log("Scheduler2 is quitting.");
-
-    ftruncate($schedlock, 0);
-    fclose($schedlock);
-
-    $this->log("Scheduler2 has quit.\n");
-  }
-
 }

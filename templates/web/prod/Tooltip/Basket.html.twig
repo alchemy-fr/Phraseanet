@@ -1,29 +1,33 @@
 {% import 'common/thumbnail.html' as thumbnail %}
-<div class="noToolTipResize" style="margin:5px;width:280px;height:300px;position:relative;">
-  <div>
-    <span style="font-weight:bold;font-size:14px;">
-      {{ basket.getName() }}
-    </span>
-  </div>
-  <div style="margin:5px 0">
-    {{ basket.getDescription()|nl2br }}
-  </div>
-  <div style="margin:5px 0;text-align:right;font-style:italic;position:relative;">
-    {% set nb_records = basket.getElements()|length %}
-    {% set date = basket.getUpdated()|prettyString %}
-    {% trans %}
-      {{ nb_records }} records
-    {% endtrans %}
-     - {{ date }}
-    <hr/>
-    <div style="position:relative;float:left;width:270px;">
-      {% for element in basket.getElements() %}
-        {% if loop.index <= 9 %}
-          <div style="margin:5px;position:relative;float:left;width:80px;height:80px;overflow:hidden;">
-            {{ thumbnail.format(element.getRecord().get_thumbnail(), 80, 80 , '', session) }}
-          </div>
-        {% endif %}
-      {% endfor %}
+
+{% extends 'prod/Tooltip/Tooltip.html.twig'%}
+
+{% set title %} {{ basket.getName() }} {% endset %}
+{% set width = 300 %}
+{% set maxwidth = null %}
+
+{% block content %}
+    <div class="noToolTipResize" style="margin:5px;width:{{ width - 40 }}px;height:300px;position:relative;">
+    <div style="margin:5px 0">
+        {{ basket.getDescription()|nl2br }}
     </div>
-  </div>
-</div>
+    <div style="margin:5px 0;text-align:right;font-style:italic;position:relative;">
+        {% set nb_records = basket.getElements()|length %}
+        {% set date = basket.getUpdated() | prettyDate %}
+        {% trans %}
+        {{ nb_records }} records
+        {% endtrans %}
+        - {{ date }}
+        <hr/>
+        <div style="position:relative;float:left;width:270px;">
+        {% for element in basket.getElements() %}
+            {% if loop.index <= 9 %}
+            <div style="margin:5px;position:relative;float:left;width:80px;height:80px;overflow:hidden;">
+                {{ thumbnail.format(element.getRecord().get_thumbnail(), 80, 80 , '', session) }}
+            </div>
+            {% endif %}
+        {% endfor %}
+        </div>
+    </div>
+    </div>
+{% endblock %}

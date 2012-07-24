@@ -26,7 +26,7 @@ Entities\UsrListEntry:
   manyToOne:
     list:
       targetEntity: UsrList
-      inversedBy: users
+      inversedBy: entries
       joinColumn:
         name: list_id
         referencedColumnName: id

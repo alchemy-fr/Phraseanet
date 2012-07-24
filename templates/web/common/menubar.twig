@@ -76,14 +76,16 @@
           </li>
 
           {# MODULE #}
-          {% if user.ACL.has_access_to_module('upload') %}
-          <li>
-            <a target="_blank" href="/upload/">
-              <span class="{% if module == "upload" %}selected{% endif %}">
-                {% trans 'admin::monitor: module upload' %}
-              </span>
-            </a>
-          </li>
+          {% if module == "prod" %}
+            {% if user.ACL.has_access_to_module('upload') %}
+            <li>
+                <a  href="/prod/upload/" class="dialog full-dialog" title="{% trans 'Upload' %}">
+                <span>
+                    {% trans 'admin::monitor: module upload' %}
+                </span>
+                </a>
+            </li>
+            {% endif %}
           {% endif %}
 
           {# MODULE #}
@@ -119,14 +121,11 @@
           <a href="#" style="font-weight:bold;text-decoration:none;">
             <span>
               {% trans 'Notifications' %}
-
-              <span class="counter" style="visibility:{% if events.get_unread_notifications_number > 0 %}visible{% else %}hidden{% endif %};">
-                <div style="padding:1px 3px 0;">
+              <button class="counter btn btn-danger" style="visibility:{% if events.get_unread_notifications_number > 0 %}visible{% else %}hidden{% endif %};">
                   {% if events.get_unread_notifications_number > 0 %}
                     {{events.get_unread_notifications_number}}
                   {% endif %}
-                </div>
-              </span>
+              </button>
             </span>
           </a>
         </li>
@@ -148,7 +147,7 @@
           {% endif %}
         </li>
         <li>
-          <a target="_blank" href="https://docs.phraseanet.com/3.6/">
+          <a target="_blank" href="https://docs.phraseanet.com/3.7/">
             <span>
               {% trans 'phraseanet:: aide' %}
               <span style="display:inline-block;cursor:pointer;padding:0;border:none;" id="help-trigger"> &#9660;</span>
@@ -167,7 +166,7 @@
                               </div>
                           {% endif %}
                               <div title="" class="context-menu-item menu3-custom-item">
-                                  <div style="" class="context-menu-item-inner infoDialog" infos="<div><span style='color:#F7F7F7;font-size:18px;'>PHRASEANET</span> {{version_name}} (V{{version_number}})</div><div></div><br/><div><a href='http://www.gnu.org/licenses/gpl.html' target='_blank'><img src='http://www.gnu.org/graphics/gplv3-88x31.png' style='vertical-align:middle;'/><span>License GNU GPL v3</span></a></div><br/><div><a href='http://www.phraseanet.com/' target='_blank'>  &copy; Copyright Alchemy 2005-2010</a></div>">{% trans 'phraseanet:: a propos' %}</div>
+                                  <div style="" class="context-menu-item-inner infoDialog" infos="<div><span style='color:#F7F7F7;font-size:18px;'>PHRASEANET</span> {{version_name}} (V{{version_number}})</div><div></div><br/><div><a href='http://www.gnu.org/licenses/gpl.html' target='_blank'><img src='http://www.gnu.org/graphics/gplv3-88x31.png' style='vertical-align:middle;'/><span>License GNU GPL v3</span></a></div><br/><div><a href='http://www.phraseanet.com/' target='_blank'>  &copy; Copyright Alchemy 2005-{{ "now"|date("Y") }}</a></div>">{% trans 'phraseanet:: a propos' %}</div>
                               </div>
                           </div>
                       </td>

@@ -137,7 +137,7 @@
     if( helper.parent )
       return;
     // create the helper, h3 for title, div for url
-    helper.parent = $('<div id="' + settings.id + '"><div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix"><a class="tooltip_closer ui-dialog-titlebar-close ui-corner-all" style="background-color:black;position:absolute;top:0;right:0;cursor:pointer;display:none;z-index:100;" onclick="unfix_tooltip();return false;" href="#"><span class="ui-icon ui-icon-closethick" unselectable="on" style="-moz-user-select: none;">close</span></a></div><div class="body"></div></div>')
+    helper.parent = $('<div id="' + settings.id + '"><div class="body"></div></div>')
     // add to document
     .appendTo(document.body)
     // hide it at first
@@ -193,29 +193,6 @@
     $.tooltip.current = this;
     title = this.tooltipText;
 
-    //		if ( settings(this).bodyHandler ) {
-    //			helper.title.hide();
-    //			var bodyContent = settings(this).bodyHandler.call(this);
-    //			if (bodyContent.nodeType || bodyContent.jquery) {
-    //				helper.body.empty().append(bodyContent);
-    //			} else {
-    //				helper.body.html( bodyContent );
-    //			}
-    //			helper.body.show();
-    //		} else if ( settings(this).showBody ) {
-    //			var parts = title.split(settings(this).showBody);
-    //			helper.title.html(parts.shift()).show();
-    //			helper.body.empty();
-    //			for(var i = 0, part; (part = parts[i]); i++) {
-    //				if(i > 0)
-    //					helper.body.append("<br/>");
-    //				helper.body.append(part);
-    //			}
-    //			helper.body.hideWhenEmpty();
-    //		} else {
-    //			helper.body.html(title).show();
-    //		}
-
     // if element has href or src, add and show it, otherwise hide it
     if( settings(this).showURL && $(this).url() )
       helper.url.html( $(this).url().replace('http://', '') ).show();
@@ -232,6 +209,15 @@
     }
     else
     {
+       title =  '<div class="popover" style="display:block;position:relative;">'+
+            '<div class="arrow"></div>'+
+            '<div class="popover-inner" style="width:auto;">'+
+                '<div class="popover-content">'+
+                    title+
+                '</div>'+
+            '</div>'+
+        '</div>';
+
       positioning.apply(this, arguments);
     }
     return;
@@ -251,8 +237,9 @@
       var width = 'auto';
       var height = 'auto';
       var ratio = 1;
-      var resizeImgTips = false;
+      var resizeImgTips = resizeVideoTips = false;
       var $imgTips = $('#' + settings($.tooltip.current).id + ' .imgTips');
+      var $videoTips = $('#' + settings($.tooltip.current).id + ' .videoTips');
 
       if ($imgTips[0] && $('#' + settings($.tooltip.current).id + ' .noToolTipResize').length === 0) {
         resizeImgTips = true;
@@ -260,6 +247,14 @@
         height = parseInt($imgTips[0].style.height);
         ratio = width/height;
         $imgTips.css({top:'0px',left:'0px'});
+      }
+
+      if ($videoTips[0] && $('#' + settings($.tooltip.current).id + ' .noToolTipResize').length === 0) {
+        resizeVideoTips = true;
+        width = parseInt($videoTips.attr('width'));
+        height = parseInt($videoTips.attr('height'));
+        ratio = width/height;
+        $videoTips.css({top:'0px',left:'0px'});
       }
 
       var v = viewport(),
@@ -350,9 +345,8 @@
 
         var zH;
 
-        if(vertS > horS)
+        if((Math.abs(ratioSurfaceV - ratioImage) < Math.abs(ratioSurfaceH - ratioImage)))
         {
-          //				width = ($(h).width()>(v.x-40))?(v.x-40):$(h).width();
           var zL = event.pageX;
           var zW = $(h).width();
           zH = $(h).height();
@@ -435,9 +429,12 @@
           }
         }
 
+        top -= 10;
+        height += 20;
+
         helper.parent.css({
-          width: width,
-          height: height,
+          width: Math.round(width),
+          height: Math.round(height),
           left: left,
           top: top
         });
@@ -445,8 +442,16 @@
         if(resizeImgTips)
         {
           $imgTips.css({
-            width: width,
-            height: height
+            maxWidth: Math.round(width - 50),
+            maxHeight: Math.round(height-70)
+          });
+        }
+
+        if(resizeVideoTips)
+        {
+          $videoTips.css({
+            width: Math.round(width - 50),
+            height: Math.round(height-70)
           });
         }
 
@@ -483,7 +488,7 @@
     if(event.stopPropagation)
       event.stopPropagation();
     showOverlay('_tooltip','body',unfix_tooltip, settings(this).fixableIndex);
-    $('#tooltip .tooltip_closer').show();
+    $('#tooltip .tooltip_closer').show().bind('click', unfix_tooltip);
     $.tooltip.blocked = true;
   }
 
@@ -589,6 +594,8 @@
     {
       $.tooltip.ajaxRequest.abort();
     }
+
+    helper.body.empty();
     $.tooltip.current = null;
     function complete() {
       helper.parent.removeClass( tsettings.extraClass ).hide().css("opacity", "");

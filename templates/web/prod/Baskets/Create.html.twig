@@ -1,13 +1,15 @@
 <form method="POST" action="/prod/baskets/">
 
-  <label>{% trans 'Nom du nouveau panier' %}</label>
-  <input name="name" value="" type="text"/>
+    <label>{% trans 'Nom du nouveau panier' %}</label>
+    <input name="name" value="" type="text"/>
 
-  <label>{% trans 'paniers::description du nouveau panier' %}</label>
-  <textarea name="description"></textarea>
+    <label>{% trans 'paniers::description du nouveau panier' %}</label>
+    <textarea name="description"></textarea>
 
-  <input type="checkbox" name="lst" value=""/>
-  <label for="add_sel">{% trans 'Ajouter ma selection courrante' %}</label>
+    <label for="new_basket_add_sel" class="checkbox">
+        <input type="checkbox" name="lst" value="" id="new_basket_add_sel"/>
+        {% trans 'Ajouter ma selection courrante' %}
+    </label>
 
   <script type="text/javascript">
     $(document).ready(function(){
@@ -18,14 +20,18 @@
       $('input[name="lst"]', $dialogBox).val(p4.Results.Selection.serialize());
 
       var buttons = $dialog.getOption('buttons');
-      buttons[language.create] = function(){$('form', $dialogBox).trigger('submit')};
+
+      buttons[language.create] = function(){
+          $('form', $dialogBox).trigger('submit')
+      };
+
       $dialog.setOption('buttons', buttons);
 
       $('form', $dialogBox).bind('submit', function(event){
 
-        //$this.SetLoader(true);
-
         var $form = $(this);
+        var dialog = $dialogBox.closest('.ui-dialog');
+        var buttonPanel = dialog.find('.ui-dialog-buttonpane');
 
         $.ajax({
           type: $form.attr('method'),
@@ -33,7 +39,8 @@
           data: $form.serializeArray(),
           dataType: 'json',
           beforeSend:function(){
-
+              $(":button:contains('" + language.create + "')", buttonPanel)
+              .attr("disabled", true).addClass("ui-state-disabled");
           },
           success: function(data){
 
@@ -43,7 +50,8 @@
             return;
           },
           error: function(){
-
+              $(":button:contains('" + language.create + "')", buttonPanel)
+              .attr("disabled", false).removeClass("ui-state-disabled");
           },
           timeout: function(){
 

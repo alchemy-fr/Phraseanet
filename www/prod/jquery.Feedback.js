@@ -1,5 +1,4 @@
 
-
 ;
 (function(window){
 
@@ -155,7 +154,7 @@
 
       return false;
     });
-    
+
     $('.FeedbackSend', this.container).bind('click', function(){
       if($('.badges .badge', $container).length === 0)
       {
@@ -186,7 +185,7 @@
       };
 
       var $dialog = p4.Dialog.Create(options, 2);
-      
+
       $dialog.getDomElement().bind("keypress", function(event){
         if(event.which){
           if(event.which==13){
@@ -194,7 +193,7 @@
           }
         }
       });
-      
+
       var $FeedBackForm = $('form[name="FeedBackForm"]', $container);
 
       var callback = function(rendered){
@@ -204,13 +203,13 @@
         $('input[name="name"]', $dialog.getDomElement()).val($('input[name="name"]', $FeedBackForm).val());
         $('textarea[name="message"]', $dialog.getDomElement()).val($('textarea[name="message"]', $FeedBackForm).val());
         $('.' + $this.Context, $dialog.getDomElement()).show();
-            
+
       };
 
       p4.Mustache.Render('Feedback-SendForm', {
         language:language
       }, callback);
-    }).button();
+    });
 
     $('.user_content .badges', this.container).disableSelection();
 
@@ -274,7 +273,7 @@
       return false;
     });
 
-    $('.options button', this.container).button();
+    $('.options button', this.container);
 
     $('form.list_saver', this.container).bind('submit', function(){
       var $form = $(this);
@@ -374,11 +373,11 @@
         console.log('Selecting', user);
       }
 
-      p4.Mustache.Render(this.Context + '-Badge', user, p4.Feedback.appendBadge);
+      p4.Mustache.Render(this.Context + '-Badge', {user:user, language:language}, p4.Feedback.appendBadge);
     },
     loadUser : function(usr_id, callback) {
       var $this = this;
-      
+
       $.ajax({
         type: 'GET',
         url: '/prod/push/user/' + usr_id + '/',
@@ -396,7 +395,7 @@
     },
     loadList : function(url, callback) {
       var $this = this;
-      
+
       $.ajax({
         type: 'GET',
         url: url,
@@ -415,7 +414,7 @@
     addUser : function($form, callback){
 
       var $this = this;
-      
+
       $.ajax({
         type: 'POST',
         url: '/prod/push/add-user/',
@@ -456,7 +455,7 @@
       $('#PushBox').show();
       $('#ListManager').hide();
       return false;
-    }).button();
+    });
 
     $('a.list_sharer', this.container).die('click').live('click', function(){
 
@@ -477,7 +476,7 @@
     $('a.user_adder', this.container).bind('click', function(){
 
       var $this = $(this);
-      
+
       $.ajax({
         type: "GET",
         url: $this.attr('href'),
@@ -624,8 +623,6 @@
         $(this).closest('form').trigger('submit');
       });
 
-      $('button', $container).button();
-
       $('.EditToggle', $container).bind('click', function(){
         $('.content.readonly, .content.readwrite', $('#ListManager')).toggle();
         return false;
@@ -637,7 +634,7 @@
 
       $('form[name="SaveName"]', $container).bind('submit', function(){
         var $this = $(this);
-        
+
         $.ajax({
           type: $this.attr('method'),
           url: $this.attr('action'),
@@ -683,7 +680,7 @@
           buttons[language.valider] = function() {
 
             var callbackOK = function () {
-              $('#ListManager .lists a.list_refresh', $container).trigger('click');
+              $('#ListManager .all-lists a.list_refresh').trigger('click');
               p4.Dialog.get(2).Close();
             };
 
@@ -705,7 +702,7 @@
         return false;
       });
     };
-         
+
     initLeft();
 
     $('.badges a.deleter', this.container).live('click', function(){

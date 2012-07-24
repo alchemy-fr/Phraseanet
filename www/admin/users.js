@@ -1,4 +1,4 @@
-/* 
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -18,14 +18,14 @@ $(document).ready(function(){
     $(n).addClass('selected');
     return true;
   }
-  
+
   $('#users th.sortable').live('click', function(){
-    
+
     var $this = $(this);
-    
+
     var sort = $('input', $this).val();
-    
-    if((sort == $('#users_page_form input[name="srt"]').val()) 
+
+    if((sort == $('#users_page_form input[name="srt"]').val())
       && ($('#users_page_form input[name="ord"]').val() == 'asc'))
     {
       var ord = 'desc';
@@ -34,10 +34,10 @@ $(document).ready(function(){
     {
       var ord = 'asc';
     }
-    
+
     $('#users_page_form input[name="srt"]').val(sort);
     $('#users_page_form input[name="ord"]').val(ord);
-    
+
     $('#users_page_form').trigger('submit');
   }).live('mouseover', function(){$(this).addClass('hover');})
     .live('mouseout', function(){$(this).removeClass('hover');});
@@ -49,14 +49,14 @@ $(document).ready(function(){
   buttons[language.annuler] = function(){
     $('#user_add_dialog').dialog('close')
   };
-  
+
   $('#user_add_dialog').dialog({
     buttons:buttons,
     modal:true,
     resizable:false,
     draggable:false,
     width:500
-    
+
   }).dialog('close');
 
   var buttons = {};
@@ -66,14 +66,14 @@ $(document).ready(function(){
   buttons[language.annuler] = function(){
     $('#template_add_dialog').dialog('close')
   };
-  
+
   $('#template_add_dialog').dialog({
     buttons:buttons,
     modal:true,
     resizable:false,
     draggable:false,
     width:500
-    
+
   }).dialog('close');
 
 
@@ -88,6 +88,8 @@ $(document).ready(function(){
       data: {
         act:'CREATENEWUSER',
         value:$('input[name="value"]', container).val(),
+        send_credentials: $('input[name="send_credentials"]', container).is(':checked') ? 1 : 0,
+        validate_mail: $('input[name="validate_mail"]', container).is(':checked') ? 1 : 0,
         template:is_template ? '1':'0'
       },
       success: function(data){
@@ -113,7 +115,7 @@ $(document).ready(function(){
         {
           alert(data.message);
         }
-          
+
       },
       error:function()
       {
@@ -193,14 +195,14 @@ $(document).ready(function(){
     {
       offset_start = (Math.floor(parseInt($('input[name=total_results]').val()) / perPage))* perPage;
     }
-    
+
     $('input[name="offset_start"]', form).val(offset_start);
   });
-  
+
   $('#users tbody tr, #users tbody td').live('dblclick', function(evt){
     $('#users_page_form .user_modifier').trigger('click');
   });
-  
+
   $('#users tbody tr, #users tbody td').live('click', function(evt){
     if(evt.stopPropagation)
       evt.stopPropagation();
@@ -285,25 +287,25 @@ $(document).ready(function(){
     evt.cancelBubble = true;
     evt.preventDefault();
   });
-  
+
   $('#users_apply_template').live('submit', function(){
     var users = p4.users.sel.join(';');
     if(users === '')
     {
       return false;
     }
-    
+
     var $this = $(this);
     var template = $('select[name="template_chooser"]', $this).val();
-    
+
     if(template === '')
     {
       return false;
     }
-    
+
     $('#right-ajax').empty().addClass('loading');
     p4.users.sel = [];
-    
+
     $.ajax({
       type: $this.attr('method'),
       url: $this.attr('action'),
@@ -317,7 +319,7 @@ $(document).ready(function(){
     });
     return false;
   });
-  
+
   $('#users_page_form .user_modifier').live('click', function(){
     var users = p4.users.sel.join(';');
     if(users === '')
@@ -339,8 +341,8 @@ $(document).ready(function(){
     });
     return false;
   });
-  
-  
+
+
   $('#users_page_form .user_deleter').live('click', function(){
     var users = p4.users.sel.join(';');
     if(users === '')

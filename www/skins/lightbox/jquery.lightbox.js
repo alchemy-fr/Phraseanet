@@ -1030,7 +1030,7 @@ function set_image_position(smooth, image, width, height, container, callback)
   else
   {
     $(image).css(dimensions);
-    callback;
+    callback();
   }
 }
 

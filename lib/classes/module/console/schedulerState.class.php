@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,62 +15,79 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
+use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
 
 class module_console_schedulerState extends Command
 {
+    const EXITCODE_SETUP_ERROR = 1;
+    const EXITCODE_STATE_UNKNOWN = 21;
 
-  public function __construct($name = null)
-  {
-    parent::__construct($name);
+    private $stateToExitCode = array(
+        \task_manager::STATE_TOSTOP   => 13,
+        \task_manager::STATE_STARTED  => 10,
+        \task_manager::STATE_STOPPING => 12,
+        \task_manager::STATE_STOPPED  => 11,
+    );
 
-    $this->setDescription('Get scheduler state');
-
-    return $this;
-  }
-
-  public function execute(InputInterface $input, OutputInterface $output)
-  {
-    if (!setup::is_installed())
+    public function __construct($name = null)
     {
-      $output->writeln('Phraseanet is not set up');
+        parent::__construct($name);
 
-      return 1;
+        $this->setDescription('Get scheduler status');
+
+        $this->addOption(
+            'short'
+            , NULL
+            , InputOption::VALUE_NONE
+            , 'print short result, ie: <info>stopped()</info> | <info>started(12345)</info> | <info>tostop(12345)</info> | <info>stopping(12345)</info>'
+            , NULL
+        );
+
+        return $this;
     }
 
-    require_once __DIR__ . '/../../../../lib/bootstrap.php';
-
-    try
+    public function requireSetup()
     {
-      $appbox = appbox::get_instance(\bootstrap::getCore());
-      $task_manager = new task_manager($appbox);
-      $state = $task_manager->get_scheduler_state();
-      if ($state['schedstatus'] == 'started')
-      {
-        $output->writeln(sprintf(
+        return false;
+    }
+
+    protected function doExecute(InputInterface $input, OutputInterface $output)
+    {
+        try {
+            $this->checkSetup();
+        } catch (\RuntimeException $e) {
+            return self::EXITCODE_SETUP_ERROR;
+        }
+
+        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $task_manager = new task_manager($appbox);
+
+        $exitCode = 0;
+        $state = $task_manager->getSchedulerState();
+
+        if ($input->getOption('short')) {
+            $output->writeln(sprintf('%s(%s)', $state['status'], $state['pid']));
+        } else {
+            if ($state['pid'] != NULL) {
+                $output->writeln(sprintf(
                         'Scheduler is %s on pid %d'
-                        , $state['schedstatus']
-                        , $state['schedpid']
-                ));
-      }
-      else
-      {
-        $output->writeln(sprintf('Scheduler is %s', $state['schedstatus']));
-      }
+                        , $state['status']
+                        , $state['pid']
+                    ));
+            } else {
+                $output->writeln(sprintf('Scheduler is %s', $state['status']));
+            }
+        }
 
-      return 0;
+        if (array_key_exists($state['status'], $this->stateToExitCode)) {
+            $exitCode = $this->stateToExitCode[$state['status']];
+        } else {
+            $exitCode = self::EXITCODE_STATE_UNKNOWN;
+        }
+
+        return $exitCode;
     }
-    catch(\Exception $e)
-    {
-      return 1;
-    }
-
-    return 0;
-  }
-
 }

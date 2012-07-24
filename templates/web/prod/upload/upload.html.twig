@@ -1,0 +1,432 @@
+<div id="uploadBox">
+    {# jQuery tab wrapper #}
+    <div class="upload-tabs">
+        {# tab nav bar #}
+        <ul>
+            <li>
+                <a href="#tab-upload">
+                    {% trans 'Upload' %}
+                </a>
+            </li>
+            <li>
+                {# template prod/upload/lazaret.html.twig loaded via ajax #}
+                <a href="/prod/lazaret/" title="tab-lazaret">
+                    {# <span>&nbsp;</span> element is required for the jQuery loading spinner appears && disappears properly #}
+                    {% trans 'Quarantine' %}<span>&nbsp;</span>
+                </a>
+            </li>
+        </ul>
+        {# upload tab content #}
+        <div id="tab-upload">
+            <form id="fileupload" enctype="multipart/form-data" method="POST" action="/prod/upload/">
+
+                <div id="uploadBoxLeft" class="well ">
+
+                    {# <h5 style="margin-top: 10px;">{% trans 'Choose files to add' %} :</h5> #}
+                    {# action bar #}
+                    <div id="addFileList">
+                        <div class="btn-toolbar">
+                            <span class="btn btn-inverse fileinput-button input-medium">
+                                <span>{% trans 'Select files...' %}</span>
+                                <input type="file" name="files[]" multiple>
+                            </span>
+                            <br />
+                            <span class="comment">
+                                ({% trans %} maximum : {{ maxFileSizeReadable }} {% endtrans %})
+                            </span>
+                        {#    <button type="button" class="upload-submitter btn btn-inverse input-medium">{% trans 'Send' %}</button> #}
+                        </div>
+                    </div>
+
+                    {# settings box #}
+                    <div class='settings-box'>
+                        <h5>{% trans 'upload:: Destination (collection) :' %} :</h5>
+                        {# collections list #}
+                        {% if collections|length > 0 %}
+                            <select name="base_id" class="span3" style="margin-left: 10px;">
+                            {% for  sbasId, availableCollections in collections %}
+                                <optgroup label="{{ availableCollections['databox'].get_viewname() }}" class="select-label">
+                                {% for collection in availableCollections['databox_collections'] %}
+                                    <option value="{{ collection.get_base_id() }}" class="select-row">{{ collection.get_name() }}</option>
+                                {% endfor %}
+                                </optgroup>
+                            {% endfor %}
+                            </select>
+                            {# collections status #}
+                            {% for availableCollections in collections %}
+                                {% for collection in availableCollections['databox_collections'] %}
+                                    <div id="status-{{ collection.get_base_id() }}" class='collection-status' style='{{ loop.parent.loop.first and loop.first ? "display:block" :"display:none" }}'>
+                                        <h5>{% trans 'upload:: Status :' %} :</h5>
+                                        <table class="status-tab">
+                                            <tbody>
+                                            {% for bit, status in availableCollections['databox'].get_statusbits() %}
+                                                <tr>
+                                                    <td colspan="2">
+                                                        <h6>{{ status['name']|title }}</h6>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="status-tab-left">
+                                                        {% if status['img_off'] is not empty %}
+                                                            <img src="{{ status['img_off'] }}" width="16" height="16" />
+                                                        {% endif %}
+                                                        <span>{{ status['labeloff']|default('off') }}</span>
+                                                        <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="0" checked="checked"/>
+                                                    </td>
+                                                    <td class="status-tab-right">
+                                                        <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="1" />
+                                                        <span for="labelon">{{ status['labelon']|default('on') }}</span>
+                                                        {% if status['img_on'] is not empty %}
+                                                            <img src="{{ status['img_on'] }}" width="16" height="16" />
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+                        {% else %}
+                            {% trans 'You can not upload files' %}
+                        {% endif %}
+                    </div>
+
+                    {# upload box #}
+                    <div class='upload-box' style="display: none;">
+                        <h5>{% trans 'Selected files' %} :</h5>
+                        <button type="button" class="clear-queue btn btn-inverse input-medium" style="margin-bottom: 10px;">{% trans 'Clear list' %}</button>
+                        <button type="button" class="upload-submitter btn btn-inverse input-medium" style="margin-bottom: 10px;">{% trans 'Send' %}</button>
+                        <div class="clear"></div>
+                        <div class='upload-box-addedfiles'></div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+
+                <div id="uploadBoxRight" class="well">
+                    <div>
+                        <h5 style="margin-top: 10px;">{% trans 'Transmited files' %} :
+                            <span class='bitrate-box'></span>
+                        </h5>
+                        <button id="cancel-all" class="btn" type="button" disabled="disabled">
+                            {% trans "Cancel all" %}
+                        </button>
+                    </div>
+                    <div class="progress progress-striped active">
+                        <div class="progress-bar-total bar" style="width: 0%;"></div>
+                    </div>
+
+                    {# download box #}
+                    <div class="download-box"></div>
+                </div>
+
+            </form>
+         </div>
+    </div>
+</div>
+<script>
+
+$(document).ready(function () {
+    //Upload management
+    var UploaderManager = new p4.UploaderManager({
+        container: $('#uploadBox'),
+        uploadBox: $('#uploadBox .upload-box-addedfiles'),
+        settingsBox: $('#uploadBox .settings-box'),
+        downloadBox: $('#uploadBox .download-box')
+    });
+
+    var totalElement;
+
+    var maxFileSize = {{ maxFileSize }};
+
+    UploaderManager.Preview.setOptions({
+                        maxWidth: 160,
+                        maxHeight: 120,
+                        minWidth: 160,
+                        minHeight: 120
+                    });
+
+    //Init jquery tabs
+    $(".upload-tabs", UploaderManager.getContainer()).tabs({
+        spinner: language.loading + '<img src="/skins/icons/loader404040.gif"/>',
+        ajaxOptions: {
+            success: function( xhr, status, index, anchor ) {
+                var lazaretBox = $("#lazaretBox");
+
+                $('.userTips', lazaretBox).tooltip();
+            },
+            error: function( xhr, status, index, anchor ) {
+                //display error message if ajax failed
+                $( anchor.hash ).html(language.error);
+            }
+        }
+    });
+
+    //Show the good collection status box
+    $('select[name="base_id"]', UploaderManager.getSettingsBox()).bind('change', function(){
+        var selectedCollId = $(this).find('option:selected').val();
+
+        $('#uploadBox .settings-box .collection-status').hide();
+
+        $('#uploadBox #status-' + selectedCollId).show();
+    });
+
+    //Remove all element from upload box
+    $("button.clear-queue", UploaderManager.getContainer()).bind("click", function(){
+        UploaderManager.clearUploadBox();
+        $('ul', $(this).closest('.upload-box')).empty();
+    });
+
+    //Cancel all upload
+    $("#cancel-all").bind("click", function(){
+        //Remove all cancel
+        $('button.remove-element', UploaderManager.getDownloadBox()).each(function(i, el){
+            $(el).trigger("click");
+        });
+
+        progressbarAll.width('0%');
+    });
+
+    //Remove an element from the upload box
+    $("button.remove-element", UploaderManager.getUploadBox()).live("click", function(){
+        var container = $(this).closest("li");
+        var uploadIndex = container.find("input[name=uploadIndex]").val();
+        UploaderManager.removeData(uploadIndex);
+        container.remove();
+    });
+
+    //Get all elements in the upload box & trigger the submit event
+    $("button.upload-submitter", UploaderManager.getContainer()).bind("click", function(){
+        //Fetch all valid elements
+        var documents = UploaderManager.getUploadBox().find('li.upload-valid');
+
+        totalElement = documents.length;
+
+        if(totalElement > 0) {
+            var dialog = p4.Dialog.get(1);
+
+            //reset progressbar for iframe uploads
+            if( ! $.support.xhrFileUpload && ! $.support.xhrFormDataFileUpload) {
+                progressbarAll.width('0%');
+            }
+            //enabled cancel all button
+            $("#cancel-all").attr("disabled", false);
+
+            //prevent dialog box from being closed while files are being downloaded
+            dialog.getDomElement().bind("dialogbeforeclose", function(event, ui) {
+                if ( ! UploaderManager.Queue.isEmpty()) {
+                    p4.Alerts(language.warning, language.fileBeingDownloaded);
+                    return false;
+                }
+            });
+
+            documents.each(function(index, el){
+                var index = $(el).find('input[name=uploadIndex]').val();
+                UploaderManager.getData(index).submit();
+            });
+        }
+    });
+
+    $('#fileupload', UploaderManager.getContainer()).fileupload({
+        namespace: 'phrasea-upload',
+        // define our own mediatype to handle and convert the response
+        // to prevent errors when Iframe based uploads
+        // as they require text/plain or text/html Content-type
+        // see http://api.jquery.com/extending-ajax/#Converters
+        dataType: 'phrjson',
+        converters: {
+            'html phrjson': function(htmlEncodedJson) {
+                return $.parseJSON(htmlEncodedJson);
+            },
+            'iframe phrjson': function (iframe) {
+                return $.parseJSON(iframe.find('body').text());
+            }
+        },
+        // override "on error" local ajax event to prevent global ajax event from being triggered
+        // as all fileupload options are passed as argument to the $.ajax jquery function
+        error: function(){return false},
+        // Set singleFileUploads, sequentialUploads to true so the files
+        // are upload one by one
+        singleFileUploads : true,
+        sequentialUploads: true,
+        recalculateProgress: true,
+        //When a file is added
+        add: function (e, data) {
+            //Since singleFileUploads &  sequentialUploads are setted to true
+            //There is only on file data.files
+            $.each(data.files, function (index, file) {
+                $('.upload-box').show();
+
+                if (file.error) {
+                    var params = $.extend({}, file, {error: language.errorFileApi, language: language});
+                    p4.Mustache.Render('Upload-Items-Error', params, function(html){
+                        UploaderManager.getUploadBox().append(html);
+                    });
+                } else if(file.size > maxFileSize){
+                    var params = $.extend({}, file, {error: language.errorFileApiTooBig, language: language});
+                    p4.Mustache.Render('Upload-Items-Error', params, function(html){
+                        UploaderManager.getUploadBox().append(html);
+                    });
+                } else {
+                    // Add data to Queue
+                    UploaderManager.addData(data);
+
+                    // Check support of file.size && file.type property
+                    var formatedFile = {
+                        size: file.size != undefined ? UploaderManager.Formater.size(file.size) : '',
+                        name: file.name,
+                        type: file.type != undefined ? file.type : '',
+                        uploadIndex: UploaderManager.getUploadIndex(),
+                        language: language
+                    }
+
+                    //Set context in upload-box
+                    p4.Mustache.Render('Upload-Items', formatedFile, function(html){
+                        UploaderManager.getUploadBox().append(html);
+
+                        var context = $("li", UploaderManager.getUploadBox()).last();
+
+                        var uploadIndex = context.find("input[name=uploadIndex]").val()
+
+                        UploaderManager.addAttributeToData(uploadIndex, 'context', context);
+
+                        UploaderManager.Preview.render(file, function(img){
+                            context.find('.thumbnail .canva-wrapper').prepend(img);
+                            UploaderManager.addAttributeToData(uploadIndex, 'image', img);
+                        });
+                    });
+                }
+            });
+        },
+        //on success upload
+        done: function (e, data) {
+            // set progress bar to 100% for preventing mozilla bug which never reach 100%
+            data.context.find('.progress-bar').width('100%');
+            data.context.find('div.progress').removeClass('progress-striped active');
+            data.context.find('button.remove-element').removeClass('btn-inverse').addClass('disabled');
+            UploaderManager.removeData(data.uploadIndex);
+            data.context.find("button.remove-element").remove();
+
+            if( ! $.support.xhrFileUpload && ! $.support.xhrFormDataFileUpload) {
+                progressbarAll.width(100 - Math.round((UploaderManager.Queue.getLength() * (100 / totalElement ))) + '%');
+            }
+
+            if (UploaderManager.Queue.isEmpty()){
+                progressbarAll.width('100%');
+                bitrateBox.empty();
+                $('#uploadBoxRight .progress').removeClass('progress-striped active');
+                var dialog = p4.Dialog.get(1);
+                //unbind check before close event & disabled button for cancel all download
+                dialog.getDomElement().unbind("dialogbeforeclose");
+                //disabled cancel-all button, if queue is empty and last upload success
+                $("#cancel-all").attr("disabled", true);
+            }
+
+            return false;
+        },
+        fail: function(){
+            //disabled cancel-all button, if queue is emepty and last upload fail
+            if (UploaderManager.Queue.isEmpty()){
+                $("#cancel-all").attr("disabled", true);
+            }
+        }
+    });
+
+    //on submit file
+    $('#fileupload', UploaderManager.getContainer()).bind('fileuploadsubmit', function (e, data) {
+        var $this = $(this);
+
+        //get form datas attached to the file
+        data.formData = $.extend(
+            data.context.find('input, select').serializeArray(),
+            UploaderManager.getSettingsBox().find('.collection-status:visible input, select').serializeArray()
+        );
+
+        //remove current context
+        data.context.remove();
+
+        //Set new context in download-box
+        $.each(data.files, function (index, file) {
+            var params = $.extend({}, file, {language: language});
+            p4.Mustache.Render('Download-Items', params, function(html){
+                UploaderManager.getDownloadBox().append(html);
+
+                data.context = $("li", UploaderManager.getDownloadBox()).last();
+
+                //copy image
+                data.context.find('.upload-record .canva-wrapper').prepend(data.image);
+
+                //launch ajax request
+                var jqXHR = $this.fileupload('send', data)
+                .success(function(response){
+                    if(response.success){
+                        //case record
+                        if(response.element === 'record'){
+                            p4.Mustache.Render('Download-Finish', {heading:response.message, reasons: response.reasons}, function(html){
+                                data.context.find('.upload-record p.success').append(html).show();
+                            });
+                        } else { //case quarantine
+                            p4.Mustache.Render('Download-Finish', {heading:response.message, reasons: response.reasons}, function(html){
+                                data.context.find('.upload-record p.error').append(html).show();
+                            });
+                        }
+                    } else {
+                        //fail
+                        p4.Mustache.Render('Download-Finish', {heading:response.message, reasons: response.reasons}, function(html){
+                            data.context.find('.upload-record p.error').append(html).show();
+                        });
+                    }
+                })
+                .error(function(jqXHR, textStatus, errorThrown) {
+                    //Request is aborted
+                    if (errorThrown === 'abort') {
+                        return false;
+                    } else {
+                        data.context.find('.upload-record p.error').append(jqXHR.responseText);
+                    }
+                    //Remove data
+                    UploaderManager.removeData(data.uploadIndex);
+                });
+
+                //cancel request
+                $('button.remove-element', data.context).bind('click', function (e) {
+                    jqXHR.abort();
+                    data.context.remove();
+                });
+            });
+        });
+
+        return false;
+    });
+
+    var bitrateBox = $('#uploadBoxRight .bitrate-box');
+
+    // Get one file upload progress & bitrate
+    $('#fileupload', UploaderManager.getContainer()).bind('fileuploadprogress', function (e, data) {
+        var progressbar = data.context.find('.progress-bar');
+        progressbar.width(Math.round(UploaderManager.Formater.pourcent(data.loaded, data.total)) + '%');
+        bitrateBox.empty().append(UploaderManager.Formater.bitrate(data.bitrate));
+    });
+
+    var progressbarAll = $('#uploadBoxRight .progress-bar-total');
+
+    //Get global upload progress
+    $('#fileupload', UploaderManager.getContainer()).bind('fileuploadprogressall', function (e, data) {
+        progressbarAll.width(Math.round(UploaderManager.Formater.pourcent(data.loaded, data.total)) + '%');
+    });
+
+    $('#fileupload', UploaderManager.getContainer()).bind('fileuploadfail', function (e, data) {
+        //Remove from queue
+        UploaderManager.removeData(data.uploadIndex);
+    });
+
+    $('#fileupload', UploaderManager.getContainer()).bind('fileuploadsend', function (e, data) {
+
+        //IFRAME progress fix
+        if( ! $.support.xhrFileUpload && ! $.support.xhrFormDataFileUpload) {
+            data.context.find('.progress-bar').width('25%');
+        }
+    });
+
+});
+</script>

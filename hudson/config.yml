@@ -10,6 +10,7 @@ dev:
     orm: doctrine_dev
     cache: array_cache
     opcodecache: array_cache
+    border-manager: border_manager
 prod:
     phraseanet:
         servername: 'http://local.phrasea/'
@@ -21,6 +22,7 @@ prod:
     orm: doctrine_prod
     cache: array_cache
     opcodecache: array_cache
+    border-manager: border_manager
 test:
     phraseanet:
         servername: 'http://local.phrasea/'
@@ -32,3 +34,4 @@ test:
     orm: doctrine_test
     cache: array_cache
     opcodecache: array_cache
+    border-manager: border_manager

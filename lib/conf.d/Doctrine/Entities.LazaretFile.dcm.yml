@@ -1,0 +1,60 @@
+Entities\LazaretFile:
+  type: entity
+  repositoryClass: Repositories\LazaretFileRepository
+  table: LazaretFiles
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    filename:
+      type: string
+      length: 512
+    thumbFilename:
+      type: string
+      length: 512
+    originalName:
+      type: string
+      length: 256
+    base_id:
+      type: integer
+    uuid:
+      type: string
+      length: 36
+    sha256:
+      type: string
+      length: 64
+    forced:
+      type: boolean
+    created:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: create
+    updated:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: update
+  manyToOne:
+    session:
+      targetEntity: LazaretSession
+      inversedBy: files
+      joinColumn:
+        name: lazaret_session_id
+        referencedColumnName: id
+      cascade: ["persist"]
+  oneToMany:
+    attributes:
+      targetEntity: LazaretAttribute
+      mappedBy: lazaretFile
+      cascade: ["ALL"]
+      orderBy:
+        id: ASC
+    checks:
+      targetEntity: LazaretCheck
+      mappedBy: lazaretFile
+      cascade: ["ALL"]
+      orderBy:
+        id: ASC

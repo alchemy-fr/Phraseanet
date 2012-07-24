@@ -7,9 +7,8 @@
 
 class sphinx_charsetTable_coptic extends sphinx_charsetTableAbstract
 {
-
-  protected $name = 'Coptic';
-  protected $table = '
+    protected $name = 'Coptic';
+    protected $table = '
     ##################################################
     # Coptic
     # Notes: Some shared Greek characters, may require ammendments.

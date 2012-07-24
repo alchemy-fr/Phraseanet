@@ -1,4 +1,4 @@
-{% extends "common/index.twig" %}
+{% extends "common/index_bootstrap.html.twig" %}
 
 {% import 'common/thumbnail.html' as thumbnail %}
 {% import 'common/caption_templates/preview.html' as caption %}
@@ -44,9 +44,15 @@
                     </div>
                     <div class="container left">
                         {% if basket_element %}
-              {% set bask_prev = basket_element.getRecord().get_preview() %}
-              {{thumbnail.format(bask_prev,bask_prev.get_width(),bask_prev.get_height(),'',session, false)}}
-            {% endif %}
+
+                            {% set bask_prev = basket_element.getRecord().get_preview() %}
+
+                            {% set width = bask_prev.get_width() %}
+                            {% set height = bask_prev.get_height() %}
+
+                            {{ thumbnail.format(bask_prev, width,height, '', session, false) }}
+
+                        {% endif %}
                         {% include 'lightbox/selector_box.twig' %}
                         {% include 'lightbox/sc_note.twig' %}
                     </div>
@@ -96,7 +102,8 @@
                     <div id="record_infos">
                         <div class="container">
               {% if basket_element %}
-                {{caption.format_caption(basket_element.getRecord())}}
+                {% set business = user.ACL().has_right_on_base(basket_element.getRecord().get_base_id(), 'canmodifrecord') %}
+                {{caption.format_caption(basket_element.getRecord(), '', null, business)}}
               {% endif %}
             </div>
                     </div>

@@ -3,24 +3,13 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-
-$include_path = realpath(__DIR__ . '/../../../vendor');
-if (strpos(get_include_path(), $include_path . ':') === false)
-{
-  $new_include_path = $include_path . PATH_SEPARATOR . get_include_path();
-  set_include_path($new_include_path);
-}
-
-use \Symfony\Component\HttpFoundation\Request;
-
-require_once __DIR__ . "/../../../vendor/Phlickr/Api.php";
-require_once __DIR__ . "/../../../vendor/Phlickr/Uploader.php";
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  *
@@ -30,868 +19,833 @@ require_once __DIR__ . "/../../../vendor/Phlickr/Uploader.php";
  */
 class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interface
 {
+    /**
+     *
+     * @var Phlickr_Api
+     */
+    protected $_api;
 
-  /**
-   *
-   * @var Phlickr_Api
-   */
-  protected $_api;
+    /**
+     *
+     * @var registryInterface
+     */
+    protected $registry;
 
-  /**
-   *
-   * @var registryInterface
-   */
-  protected $registry;
+    const ELEMENT_TYPE_PHOTO = 'photo';
+    const CONTAINER_TYPE_PHOTOSET = 'photoset';
+    const AUTH_TYPE = 'Flickr';
+    const AUTH_PHOTO_SIZE = 15728640; //15 mo
+    const UPLOAD_STATE_DONE = 'done';
+    const UPLOAD_STATE_FAILED = 'failed';
+    const UPLOAD_STATE_FAILED_CONVERTING = 'failed_converting';
+    const UPLOAD_STATE_NOT_COMPLETED = 'not_completed';
 
-  const ELEMENT_TYPE_PHOTO             = 'photo';
-  const CONTAINER_TYPE_PHOTOSET        = 'photoset';
-  const AUTH_TYPE                      = 'Flickr';
-  const AUTH_PHOTO_SIZE                = 15728640; //15 mo
-  const UPLOAD_STATE_DONE              = 'done';
-  const UPLOAD_STATE_FAILED            = 'failed';
-  const UPLOAD_STATE_FAILED_CONVERTING = 'failed_converting';
-  const UPLOAD_STATE_NOT_COMPLETED     = 'not_completed';
-
-  /**
-   *
-   * @return Array
-   */
-  public function connect()
-  {
-    $response = parent::connect();
-    $this->_api->setAuthToken($response['auth_token']);
-
-    return $response;
-  }
-
-  /**
-   *
-   * @return Bridge_Api_Flickr
-   */
-  public function disconnect()
-  {
-    parent::disconnect();
-    $this->_api->setAuthToken(null);
-
-    return $this;
-  }
-
-  /**
-   *
-   * @return string
-   */
-  public function get_user_name()
-  {
-    $response = $this->_api->executeMethod('flickr.auth.checkToken');
-    if (!$response->isOk())
+    /**
+     *
+     * @return Array
+     */
+    public function connect()
     {
-      throw new Bridge_Exception_ApiConnectorRequestFailed('Unable to retrieve FlickR username');
+        $response = parent::connect();
+        $this->_api->setAuthToken($response['auth_token']);
+
+        return $response;
     }
 
-    return (string) $response->xml->auth->user['username'];
-  }
-
-  /**
-   *
-   * @return string
-   */
-  public function get_user_id()
-  {
-    return $this->_api->getUserId();
-  }
-
-  /**
-   *
-   * @return string
-   */
-  public function get_name()
-  {
-    return 'Flickr';
-  }
-
-  /**
-   *
-   * @return string
-   */
-  public function get_icon_url()
-  {
-    return '/skins/icons/flickr-small.gif';
-  }
-
-  /**
-   *
-   * @return string
-   */
-  public function get_image_url()
-  {
-    return '/skins/icons/flickr.gif';
-  }
-
-  /**
-   *
-   * @return string
-   */
-  public function get_terms_url()
-  {
-    return 'https://secure.flickr.com/services/api/tos/';
-  }
-
-  /**
-   *
-   * @return string
-   */
-  public function get_url()
-  {
-    return 'https://secure.flickr.com/';
-  }
-
-  /**
-   *
-   * @return string
-   */
-  public function get_infos()
-  {
-    return _('Ce produit utilise l\'API Flickr mais n\'est ni soutenu, ni certifie par Flickr');
-  }
-
-  /**
-   *
-   * @return string
-   */
-  public function get_default_element_type()
-  {
-    return self::ELEMENT_TYPE_PHOTO;
-  }
-
-  /**
-   *
-   * @return string
-   */
-  public function get_default_container_type()
-  {
-    return self::CONTAINER_TYPE_PHOTOSET;
-  }
-
-  /**
-   *
-   * @param type $element_id
-   * @param type $object
-   * @return type
-   */
-  public function get_element_from_id($element_id, $object)
-  {
-    switch ($object)
+    /**
+     *
+     * @return Bridge_Api_Flickr
+     */
+    public function disconnect()
     {
-      case self::ELEMENT_TYPE_PHOTO:
-        $params = array('photo_id'   => $element_id);
-        $th_response = $this->_api->executeMethod('flickr.photos.getInfo', $params);
+        parent::disconnect();
+        $this->_api->setAuthToken(null);
 
-        if (!$th_response->isOk())
-          throw new Bridge_Exception_ApiConnectorRequestFailed('Unable to retrieve element infos for ' . $object . ' ' . $element_id);
-
-        $th_xml = $th_response->getXml();
-
-        return new Bridge_Api_Flickr_Element($th_xml, $this->get_user_id(), $object, false);
-        break;
-      default:
-        throw new Bridge_Exception_ElementUnknown('Unknown element ' . $object);
-        break;
+        return $this;
     }
 
-    return null;
-  }
-
-  /**
-   *
-   * @param type $object
-   * @param type $element_id
-   * @return type
-   */
-  public function get_container_from_id($object, $element_id)
-  {
-    switch ($object)
+    /**
+     *
+     * @return string
+     */
+    public function get_user_name()
     {
-      case self::CONTAINER_TYPE_PHOTOSET:
-
-        $params = array('photoset_id' => $element_id);
-        $response     = $this->_api->executeMethod('flickr.photoset.getInfo', $params);
-
-        if (!$response->isOk())
-          throw new Bridge_Exception_ApiConnectorRequestFailed('Unable to retrieve photoset infos for ' . $object);
-
-        $xml           = $response->getXml();
-        $primary_photo = $this->get_element_from_id((string) $child['primary'], self::ELEMENT_TYPE_PHOTO);
-
-        return new Bridge_Api_Flickr_Container($xml, $this->get_user_id(), $type, $primary_photo->get_thumbnail());
-        break;
-      default:
-        throw new Bridge_Exception_ElementUnknown('Unknown element ' . $object);
-        break;
-    }
-
-    return null;
-  }
-
-  /**
-   *
-   * @param type $object
-   * @param type $offset_start
-   * @param type $quantity
-   */
-  public function list_containers($object, $offset_start = 0, $quantity = 10)
-  {
-    switch ($object)
-    {
-      case self::CONTAINER_TYPE_PHOTOSET:
-        $params = array();
-        if ($quantity)
-          $params['per_page'] = $quantity;
-        $params['page']     = $quantity != 0 ? floor($offset_start / $quantity) + 1 : 1;
-        $params['user_id']  = $user_id            = $this->get_user_id();
-        $response           = $this->_api->executeMethod('flickr.photosets.getList', $params);
-
-        if (!$response->isOk())
-          throw new Bridge_Exception_ApiConnectorRequestFailed('Unable to retrieve container list ' . $object);
-
-        $photosets = new Bridge_Api_ContainerCollection();
-        $xml       = $response->getXml();
-
-        $photosets->set_current_page((int) $xml->photosets['page'])
-          ->set_items_per_page((int) $xml->photosets['perpage'])
-          ->set_total_items((int) $xml->photosets['total'])
-          ->set_total_page((int) $xml->photosets['pages']);
-
-        foreach ($xml->photosets->children() as $child)
-        {
-          $primary_photo = $this->get_element_from_id((string) $child['primary'], self::ELEMENT_TYPE_PHOTO);
-          $photosets->add_element(new Bridge_Api_Flickr_Container($child, $user_id, $object, $primary_photo->get_thumbnail()));
+        $response = $this->_api->executeMethod('flickr.auth.checkToken');
+        if ( ! $response->isOk()) {
+            throw new Bridge_Exception_ApiConnectorRequestFailed('Unable to retrieve FlickR username');
         }
-        $photosets->set_total_items(count($photosets->get_elements()));
 
-        return $photosets;
-        break;
-      default:
-        throw new Bridge_Exception_ObjectUnknown('Unknown object ' . $object);
-        break;
-    }
-  }
-
-  /**
-   *
-   * @param string $object
-   * @param string $object_id
-   * @param Request $request
-   * @return Void
-   */
-  public function update_element($object, $object_id, Array $datas)
-  {
-    $required_fields = array("title");
-    foreach ($required_fields as $field)
-    {
-      if (!array_key_exists($field, $datas) || trim($datas[$field]) === '')
-        throw new Bridge_Exception_ActionMandatoryField("Le paramétre " . $field . " est manquant");
+        return (string) $response->xml->auth->user['username'];
     }
 
-    $params = array(
-      'title'       => $datas["title"]
-      , 'photo_id'    => $object_id
-      , 'description' => $datas["description"]
-    );
-
-    switch ($object)
+    /**
+     *
+     * @return string
+     */
+    public function get_user_id()
     {
-      case self::ELEMENT_TYPE_PHOTO :
-        $response = $this->_api->executeMethod('flickr.photos.setMeta', $params);
-
-        if (!$response->isOk())
-          throw new Bridge_Exception_ApiConnectorRequestFailed();
-
-        break;
-      default:
-        throw new Bridge_Exception_ElementUnknown('Unknown element ' . $type);
-        break;
+        return $this->_api->getUserId();
     }
 
-    return $this;
-  }
-
-  /**
-   *
-   * @param string $container_type
-   * @param Request $request
-   * @return Bridge_Api_Flickr_Container
-   */
-  public function create_container($container_type, Request $request)
-  {
-    switch ($container_type)
+    /**
+     *
+     * @return string
+     */
+    public function get_name()
     {
-      case self::CONTAINER_TYPE_PHOTOSET:
-        $pid = $request->get('f_container_primary_photo');
-        if (is_null($pid))
-          throw new Bridge_Exception_ActionMandatoryField('You must define a default photo for the photoset');
+        return 'Flickr';
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function get_icon_url()
+    {
+        return '/skins/icons/flickr-small.gif';
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function get_image_url()
+    {
+        return '/skins/icons/flickr.gif';
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function get_terms_url()
+    {
+        return 'https://secure.flickr.com/services/api/tos/';
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function get_url()
+    {
+        return 'https://secure.flickr.com/';
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function get_infos()
+    {
+        return _('Ce produit utilise l\'API Flickr mais n\'est ni soutenu, ni certifie par Flickr');
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function get_default_element_type()
+    {
+        return self::ELEMENT_TYPE_PHOTO;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function get_default_container_type()
+    {
+        return self::CONTAINER_TYPE_PHOTOSET;
+    }
+
+    /**
+     *
+     * @param  type $element_id
+     * @param  type $object
+     * @return type
+     */
+    public function get_element_from_id($element_id, $object)
+    {
+        switch ($object) {
+            case self::ELEMENT_TYPE_PHOTO:
+                $params = array('photo_id'   => $element_id);
+                $th_response = $this->_api->executeMethod('flickr.photos.getInfo', $params);
+
+                if ( ! $th_response->isOk())
+                    throw new Bridge_Exception_ApiConnectorRequestFailed('Unable to retrieve element infos for ' . $object . ' ' . $element_id);
+
+                $th_xml = $th_response->getXml();
+
+                return new Bridge_Api_Flickr_Element($th_xml, $this->get_user_id(), $object, false);
+                break;
+            default:
+                throw new Bridge_Exception_ElementUnknown('Unknown element ' . $object);
+                break;
+        }
+
+        return null;
+    }
+
+    /**
+     *
+     * @param  type $object
+     * @param  type $element_id
+     * @return type
+     */
+    public function get_container_from_id($object, $element_id)
+    {
+        switch ($object) {
+            case self::CONTAINER_TYPE_PHOTOSET:
+
+                $params = array('photoset_id' => $element_id);
+                $response = $this->_api->executeMethod('flickr.photoset.getInfo', $params);
+
+                if ( ! $response->isOk())
+                    throw new Bridge_Exception_ApiConnectorRequestFailed('Unable to retrieve photoset infos for ' . $object);
+
+                $xml = $response->getXml();
+                $primary_photo = $this->get_element_from_id((string) $child['primary'], self::ELEMENT_TYPE_PHOTO);
+
+                return new Bridge_Api_Flickr_Container($xml, $this->get_user_id(), $type, $primary_photo->get_thumbnail());
+                break;
+            default:
+                throw new Bridge_Exception_ElementUnknown('Unknown element ' . $object);
+                break;
+        }
+
+        return null;
+    }
+
+    /**
+     *
+     * @param type $object
+     * @param type $offset_start
+     * @param type $quantity
+     */
+    public function list_containers($object, $offset_start = 0, $quantity = 10)
+    {
+        switch ($object) {
+            case self::CONTAINER_TYPE_PHOTOSET:
+                $params = array();
+                if ($quantity)
+                    $params['per_page'] = $quantity;
+                $params['page'] = $quantity != 0 ? floor($offset_start / $quantity) + 1 : 1;
+                $params['user_id'] = $user_id = $this->get_user_id();
+                $response = $this->_api->executeMethod('flickr.photosets.getList', $params);
+
+                if ( ! $response->isOk())
+                    throw new Bridge_Exception_ApiConnectorRequestFailed('Unable to retrieve container list ' . $object);
+
+                $photosets = new Bridge_Api_ContainerCollection();
+                $xml = $response->getXml();
+
+                $photosets->set_current_page((int) $xml->photosets['page'])
+                    ->set_items_per_page((int) $xml->photosets['perpage'])
+                    ->set_total_items((int) $xml->photosets['total'])
+                    ->set_total_page((int) $xml->photosets['pages']);
+
+                foreach ($xml->photosets->children() as $child) {
+                    $primary_photo = $this->get_element_from_id((string) $child['primary'], self::ELEMENT_TYPE_PHOTO);
+                    $photosets->add_element(new Bridge_Api_Flickr_Container($child, $user_id, $object, $primary_photo->get_thumbnail()));
+                }
+                $photosets->set_total_items(count($photosets->get_elements()));
+
+                return $photosets;
+                break;
+            default:
+                throw new Bridge_Exception_ObjectUnknown('Unknown object ' . $object);
+                break;
+        }
+    }
+
+    /**
+     *
+     * @param  string  $object
+     * @param  string  $object_id
+     * @param  Request $request
+     * @return Void
+     */
+    public function update_element($object, $object_id, Array $datas)
+    {
+        $required_fields = array("title");
+        foreach ($required_fields as $field) {
+            if ( ! array_key_exists($field, $datas) || trim($datas[$field]) === '')
+                throw new Bridge_Exception_ActionMandatoryField("Le paramétre " . $field . " est manquant");
+        }
 
         $params = array(
-          'title'            => $request->get('title')
-          , 'primary_photo_id' => $pid
-          , 'description'      => $request->get('description')
+            'title'       => $datas["title"]
+            , 'photo_id'    => $object_id
+            , 'description' => $datas["description"]
         );
 
-        $response = $this->_api->executeMethod('flickr.photosets.create', $params);
+        switch ($object) {
+            case self::ELEMENT_TYPE_PHOTO :
+                $response = $this->_api->executeMethod('flickr.photos.setMeta', $params);
 
-        if (!$response->isOk())
-          throw new Bridge_Exception_ApiConnectorRequestFailed();
+                if ( ! $response->isOk())
+                    throw new Bridge_Exception_ApiConnectorRequestFailed();
 
-        $user_id = $this->get_user_id();
-        $xml     = $response->getXml();
+                break;
+            default:
+                throw new Bridge_Exception_ElementUnknown('Unknown element ' . $type);
+                break;
+        }
 
-        $photoset      = $xml->photoset;
-        $primary_photo = $this->get_element_from_id($pid, self::ELEMENT_TYPE_PHOTO);
-
-        return new Bridge_Api_Flickr_Container($photoset, $user_id, $container_type, $primary_photo->get_thumbnail());
-        break;
-      default:
-        throw new Bridge_Exception_ObjectUnknown('Unknown object ' . $container_type);
-        break;
+        return $this;
     }
-  }
 
-  /**
-   *
-   * @param string $element_type
-   * @param string $element_id
-   * @param string $destination
-   * @param string $container_id
-   * @return Void
-   */
-  public function add_element_to_container($element_type, $element_id, $destination, $container_id)
-  {
-    switch ($element_type)
+    /**
+     *
+     * @param  string                      $container_type
+     * @param  Request                     $request
+     * @return Bridge_Api_Flickr_Container
+     */
+    public function create_container($container_type, Request $request)
     {
-      case self::ELEMENT_TYPE_PHOTO:
-        switch ($destination)
-        {
-          case self::CONTAINER_TYPE_PHOTOSET:
-            $params = array('photo_id'    => $element_id, 'photoset_id' => $container_id);
-            $response     = $this->_api->executeMethod('flickr.photosets.addPhoto', $params);
+        switch ($container_type) {
+            case self::CONTAINER_TYPE_PHOTOSET:
+                $pid = $request->get('f_container_primary_photo');
+                if (is_null($pid))
+                    throw new Bridge_Exception_ActionMandatoryField('You must define a default photo for the photoset');
 
-            if (!$response->isOk())
-            {
-              if ($response->err_code === 3) //Already exists in photoset
+                $params = array(
+                    'title'            => $request->get('title')
+                    , 'primary_photo_id' => $pid
+                    , 'description'      => $request->get('description')
+                );
 
-                return;
-              throw new Bridge_Exception_ApiConnectorRequestFailed();
+                $response = $this->_api->executeMethod('flickr.photosets.create', $params);
+
+                if ( ! $response->isOk())
+                    throw new Bridge_Exception_ApiConnectorRequestFailed();
+
+                $user_id = $this->get_user_id();
+                $xml = $response->getXml();
+
+                $photoset = $xml->photoset;
+                $primary_photo = $this->get_element_from_id($pid, self::ELEMENT_TYPE_PHOTO);
+
+                return new Bridge_Api_Flickr_Container($photoset, $user_id, $container_type, $primary_photo->get_thumbnail());
+                break;
+            default:
+                throw new Bridge_Exception_ObjectUnknown('Unknown object ' . $container_type);
+                break;
+        }
+    }
+
+    /**
+     *
+     * @param  string $element_type
+     * @param  string $element_id
+     * @param  string $destination
+     * @param  string $container_id
+     * @return Void
+     */
+    public function add_element_to_container($element_type, $element_id, $destination, $container_id)
+    {
+        switch ($element_type) {
+            case self::ELEMENT_TYPE_PHOTO:
+                switch ($destination) {
+                    case self::CONTAINER_TYPE_PHOTOSET:
+                        $params = array('photo_id'    => $element_id, 'photoset_id' => $container_id);
+                        $response = $this->_api->executeMethod('flickr.photosets.addPhoto', $params);
+
+                        if ( ! $response->isOk()) {
+                            //Already exists in photoset
+                            if ($response->err_code === 3) {
+                                return;
+                            }
+
+                            throw new Bridge_Exception_ApiConnectorRequestFailed();
+                        }
+                        break;
+                    default:
+                        throw new Bridge_Exception_ObjectUnknown('Unknown object ' . $destination);
+                        break;
+                }
+                break;
+            default:
+                throw new Bridge_Exception_ObjectUnknown('Unknown object ' . $element_type);
+                break;
+        }
+
+        return;
+    }
+
+    /**
+     *
+     * @param  string $object
+     * @param  string $object_id
+     * @return Void
+     */
+    public function delete_object($object, $object_id)
+    {
+        switch ($object) {
+            case self::ELEMENT_TYPE_PHOTO:
+                $response = $this->_api->executeMethod(
+                    'flickr.photos.delete'
+                    , array('photo_id' => $object_id)
+                );
+                if ( ! $response->isOk())
+                    throw new Bridge_Exception_ApiConnectorRequestFailed();
+                break;
+            case self::CONTAINER_TYPE_PHOTOSET:
+                $response = $this->_api->executeMethod(
+                    'flickr.photosets.delete'
+                    , array('photoset_id' => $object_id)
+                );
+                if ( ! $response->isOk())
+                    throw new Bridge_Exception_ApiConnectorRequestFailed();
+                break;
+            default:
+                throw new Bridge_Exception_ObjectUnknown('Unknown object ' . $object);
+                break;
+        }
+
+        return;
+    }
+
+    /**
+     *
+     * @param  string                       $type
+     * @param  int                          $offset_start
+     * @param  int                          $quantity
+     * @return Bridge_Api_ElementCollection
+     */
+    public function list_elements($type, $offset_start = 0, $quantity = 10)
+    {
+        switch ($type) {
+            case self::ELEMENT_TYPE_PHOTO:
+                $params = array();
+                //info to display during search
+                $extras = array(
+                    'description'
+                    , 'license'
+                    , 'date_upload'
+                    , 'date_taken'
+                    , 'owner_name'
+                    , 'last_update'
+                    , 'tags'
+                    , 'views'
+                    , 'url_sq'
+                    , 'url_t'
+                );
+
+                $params['user_id'] = $this->get_user_id();
+                $params['extras'] = implode(",", $extras);
+
+                if ($quantity)
+                    $params['per_page'] = $quantity;
+                $params['page'] = $quantity != 0 ? floor($offset_start / $quantity) + 1 : 1;
+                $response = $this->_api->executeMethod('flickr.photos.search', $params);
+
+                $photos = new Bridge_Api_ElementCollection();
+
+                if ( ! $response->isOk())
+                    throw new Bridge_Exception_ApiConnectorRequestFailed('Unable to retrieve element list ' . $type);
+                $xml = $response->getXml();
+                $photos->set_current_page((int) $xml->photos['page'])
+                    ->set_items_per_page((int) $xml->photos['perpage'])
+                    ->set_total_items((int) $xml->photos['total'])
+                    ->set_total_page((int) $xml->photos['pages']);
+                foreach ($xml->photos->children() as $child) {
+                    $photos->add_element(new Bridge_Api_Flickr_Element($child, $params['user_id'], $type));
+                }
+
+                return $photos;
+                break;
+            default:
+                throw new Bridge_Exception_ElementUnknown('Unknown element ' . $type);
+                break;
+        }
+    }
+
+    public function get_element_status(Bridge_Element $element)
+    {
+        try {
+            $ticket = $this->checkTicket($element->get_dist_id(), $element->get_type());
+            if ($ticket["status"] == self::UPLOAD_STATE_DONE) {
+                $this->get_element_from_id($ticket["dist_id"], $element->get_type());
+                $element->set_dist_id($ticket["dist_id"]);
             }
-            break;
-          default:
-            throw new Bridge_Exception_ObjectUnknown('Unknown object ' . $destination);
-            break;
+        } catch (Exception $e) {
+            return self::UPLOAD_STATE_FAILED;
         }
-        break;
-      default:
-        throw new Bridge_Exception_ObjectUnknown('Unknown object ' . $element_type);
-        break;
+
+        return $ticket["status"];
     }
 
-    return;
-  }
-
-  /**
-   *
-   * @param string $object
-   * @param string $object_id
-   * @return Void
-   */
-  public function delete_object($object, $object_id)
-  {
-    switch ($object)
+    public function map_connector_to_element_status($status)
     {
-      case self::ELEMENT_TYPE_PHOTO:
-        $response = $this->_api->executeMethod(
-          'flickr.photos.delete'
-          , array('photo_id' => $object_id)
-        );
-        if (!$response->isOk())
-          throw new Bridge_Exception_ApiConnectorRequestFailed();
-        break;
-      case self::CONTAINER_TYPE_PHOTOSET:
-        $response  = $this->_api->executeMethod(
-          'flickr.photosets.delete'
-          , array('photoset_id' => $object_id)
-        );
-        if (!$response->isOk())
-          throw new Bridge_Exception_ApiConnectorRequestFailed();
-        break;
-      default:
-        throw new Bridge_Exception_ObjectUnknown('Unknown object ' . $object);
-        break;
+        switch ($status) {
+            case self::UPLOAD_STATE_DONE:
+                return Bridge_Element::STATUS_DONE;
+                break;
+            case self::UPLOAD_STATE_FAILED:
+                return Bridge_Element::STATUS_ERROR;
+                break;
+            default:
+                return null;
+                break;
+        }
     }
 
-    return;
-  }
-
-  /**
-   *
-   * @param string $type
-   * @param int $offset_start
-   * @param int $quantity
-   * @return Bridge_Api_ElementCollection
-   */
-  public function list_elements($type, $offset_start = 0, $quantity = 10)
-  {
-    switch ($type)
+    public function get_error_message_from_status($connector_status)
     {
-      case self::ELEMENT_TYPE_PHOTO:
-        $params = array();
-        //info to display during search
-        $extras = array(
-          'description'
-          , 'license'
-          , 'date_upload'
-          , 'date_taken'
-          , 'owner_name'
-          , 'last_update'
-          , 'tags'
-          , 'views'
-          , 'url_sq'
-          , 'url_t'
-        );
+        switch ($connector_status) {
+            case self::UPLOAD_STATE_FAILED:
+                return _('L\'upload a echoue');
+                break;
+            default:
+            case self::UPLOAD_STATE_DONE:
+                return '';
+                break;
+        }
+    }
 
-        $params['user_id'] = $this->get_user_id();
-        $params['extras']  = implode(",", $extras);
+    /**
+     *
+     * @param  record_adapter $record
+     * @param  array          $options
+     * @return string         The new distant Id
+     */
+    public function upload(record_adapter &$record, Array $options = array())
+    {
+        $uploader = new Phlickr_Uploader($this->_api);
 
-        if ($quantity)
-          $params['per_page'] = $quantity;
-        $params['page']     = $quantity != 0 ? floor($offset_start / $quantity) + 1 : 1;
-        $response           = $this->_api->executeMethod('flickr.photos.search', $params);
+        $privacy = $this->get_default_privacy();
+        $uploader->setPerms($privacy['public'], $privacy['friends'], $privacy['family']);
+        $type = $record->get_type() == 'image' ? self::ELEMENT_TYPE_PHOTO : $record->get_type();
+        switch ($type) {
+            case self::ELEMENT_TYPE_PHOTO :
+                return $uploader->upload($record->get_hd_file()->getRealPath(), $options['title'], $options['description'], $options['tags'], true);
+                break;
+            default:
+                throw new Bridge_Exception_InvalidRecordType('Unknown format');
+                break;
+        }
+    }
 
-        $photos = new Bridge_Api_ElementCollection();
+    /**
+     *
+     * @return Closure
+     */
+    public function acceptable_records()
+    {
+        return function (record_adapter &$record) {
+                return in_array($record->get_type(), array('image'));
+            };
+    }
 
-        if (!$response->isOk())
-          throw new Bridge_Exception_ApiConnectorRequestFailed('Unable to retrieve element list ' . $type);
+    protected function get_default_privacy()
+    {
+        $privacy = null;
+        $response = $this->_api->executeMethod('flickr.prefs.getPrivacy');
+        if ( ! $response->isOk())
+            throw new Bridge_Exception_ApiConnectorRequestFailed('Unable to retrieve default privacy settings');
         $xml = $response->getXml();
-        $photos->set_current_page((int) $xml->photos['page'])
-          ->set_items_per_page((int) $xml->photos['perpage'])
-          ->set_total_items((int) $xml->photos['total'])
-          ->set_total_page((int) $xml->photos['pages']);
-        foreach ($xml->photos->children() as $child)
-        {
-          $photos->add_element(new Bridge_Api_Flickr_Element($child, $params['user_id'], $type));
+        $privacy = (string) $xml->person['privacy'];
+        switch ($privacy) {
+            case '1':
+            default:
+                $public = true;
+                $friends = $family = false;
+                break;
+            case '2':
+                $friends = true;
+                $public = $family = false;
+                break;
+            case '3':
+                $family = true;
+                $public = $friends = false;
+                break;
+            case '4':
+                $friends = $family = true;
+                $public = false;
+                break;
+            case '5':
+                $family = $friends = $public = false;
+                break;
+        }
+        $ret = array('friends' => $friends, 'family'  => $family, 'public'  => $public);
+
+        return $ret;
+    }
+
+    /**
+     *
+     * @param  string $type
+     * @return string
+     */
+    public function get_object_class_from_type($type)
+    {
+        switch ($type) {
+            case self::ELEMENT_TYPE_PHOTO:
+                return self::OBJECT_CLASS_ELEMENT;
+                break;
+            case self::CONTAINER_TYPE_PHOTOSET:
+                return self::OBJECT_CLASS_CONTAINER;
+                break;
+            default:
+                throw new Exception('Unknown type');
+                break;
         }
 
-        return $photos;
-        break;
-      default:
-        throw new Bridge_Exception_ElementUnknown('Unknown element ' . $type);
-        break;
+        return;
     }
-  }
 
-  public function get_element_status(Bridge_Element $element)
-  {
-    try
+    /**
+     *
+     * @return Array
+     */
+    public function get_element_types()
     {
-      $ticket = $this->checkTicket($element->get_dist_id(), $element->get_type());
-      if ($ticket["status"] == self::UPLOAD_STATE_DONE)
-      {
-        $this->get_element_from_id($ticket["dist_id"], $element->get_type());
-        $element->set_dist_id($ticket["dist_id"]);
-      }
+        return array(self::ELEMENT_TYPE_PHOTO => _('Photos'));
     }
-    catch (Exception $e)
+
+    /**
+     *
+     * @return Array
+     */
+    public function get_container_types()
     {
-      return self::UPLOAD_STATE_FAILED;
+        return array(self::CONTAINER_TYPE_PHOTOSET => _('Photosets'));
     }
 
-    return $ticket["status"];
-  }
-
-  public function map_connector_to_element_status($status)
-  {
-    switch ($status)
+    /**
+     * Returns all categories for elements
+     * But there's not categories in FlickR.
+     * Just to satisfy the interface
+     *
+     * @return bridge_request_result;
+     */
+    public function get_category_list()
     {
-      case self::UPLOAD_STATE_DONE:
-        return Bridge_Element::STATUS_DONE;
-        break;
-      case self::UPLOAD_STATE_FAILED:
-        return Bridge_Element::STATUS_ERROR;
-        break;
-      default:
-        return null;
-        break;
+        return array();
     }
-  }
 
-  public function get_error_message_from_status($connector_status)
-  {
-    switch ($connector_status)
+    public function is_configured()
     {
-      case self::UPLOAD_STATE_FAILED:
-        return _('L\'upload a echoue');
-        break;
-      default:
-      case self::UPLOAD_STATE_DONE:
-        return '';
-        break;
-    }
-  }
 
-  /**
-   *
-   * @param record_adapter $record
-   * @param array $options
-   * @return string  The new distant Id
-   */
-  public function upload(record_adapter &$record, Array $options = array())
-  {
-    $uploader = new Phlickr_Uploader($this->_api);
-
-    $privacy = $this->get_default_privacy();
-    $uploader->setPerms($privacy['public'], $privacy['friends'], $privacy['family']);
-    $type    = $record->get_type() == 'image' ? self::ELEMENT_TYPE_PHOTO : $record->get_type();
-    switch ($type)
-    {
-      case self::ELEMENT_TYPE_PHOTO :
-        return $uploader->upload($record->get_hd_file()->getRealPath(), $options['title'], $options['description'], $options['tags'], true);
-        break;
-      default:
-        throw new Bridge_Exception_InvalidRecordType('Unknown format');
-        break;
-    }
-  }
-
-  /**
-   *
-   * @return Closure
-   */
-  public function acceptable_records()
-  {
-    return function (record_adapter &$record)
-      {
-        return in_array($record->get_type(), array('image'));
-      };
-  }
-
-  protected function get_default_privacy()
-  {
-    $privacy  = null;
-    $response = $this->_api->executeMethod('flickr.prefs.getPrivacy');
-    if (!$response->isOk())
-      throw new Bridge_Exception_ApiConnectorRequestFailed('Unable to retrieve default privacy settings');
-    $xml      = $response->getXml();
-    $privacy  = (string) $xml->person['privacy'];
-    switch ($privacy)
-    {
-      case '1':
-      default:
-        $public  = true;
-        $friends = $family  = false;
-        break;
-      case '2':
-        $friends = true;
-        $public  = $family  = false;
-        break;
-      case '3':
-        $family  = true;
-        $public  = $friends = false;
-        break;
-      case '4':
-        $friends = $family  = true;
-        $public  = false;
-        break;
-      case '5':
-        $family  = $friends = $public  = false;
-        break;
-    }
-    $ret     = array('friends' => $friends, 'family'  => $family, 'public'  => $public);
-
-    return $ret;
-  }
-
-  /**
-   *
-   * @param string $type
-   * @return string
-   */
-  public function get_object_class_from_type($type)
-  {
-    switch ($type)
-    {
-      case self::ELEMENT_TYPE_PHOTO:
-        return self::OBJECT_CLASS_ELEMENT;
-        break;
-      case self::CONTAINER_TYPE_PHOTOSET:
-        return self::OBJECT_CLASS_CONTAINER;
-        break;
-      default:
-        throw new Exception('Unknown type');
-        break;
-    }
-
-    return;
-  }
-
-  /**
-   *
-   * @return Array
-   */
-  public function get_element_types()
-  {
-    return array(self::ELEMENT_TYPE_PHOTO => _('Photos'));
-  }
-
-  /**
-   *
-   * @return Array
-   */
-  public function get_container_types()
-  {
-    return array(self::CONTAINER_TYPE_PHOTOSET => _('Photosets'));
-  }
-
-  /**
-   * Returns all categories for elements
-   * But there's not categories in FlickR.
-   * Just to satisfy the interface
-   *
-   * @return bridge_request_result;
-   */
-  public function get_category_list()
-  {
-    return array();
-  }
-
-  public function is_configured()
-  {
-
-    if (!$this->registry->get('GV_flickr_api'))
-
-      return false;
-
-    if (trim($this->registry->get('GV_flickr_client_id')) === '')
-
-      return false;
-
-    if (trim($this->registry->get('GV_flickr_client_secret')) === '')
-
-      return false;
-
-    return true;
-  }
-
-  /**
-   *
-   * @return Bridge_Api_Flickr
-   */
-  protected function initialize_transport()
-  {
-    $this->_api = new Phlickr_Api(
-        $this->registry->get('GV_flickr_client_id'),
-        $this->registry->get('GV_flickr_client_secret')
-    );
-
-    return $this;
-  }
-
-  /**
-   *
-   * @return Bridge_Api_Flickr
-   */
-  protected function set_transport_authentication_params()
-  {
-    if ($this->_auth->is_connected())
-    {
-      $signatures = $this->_auth->get_auth_signatures();
-      $this->_api->setAuthToken($signatures['auth_token']);
-    }
-
-    return $this;
-  }
-
-  /**
-   *
-   * @return Bridge_Api_Flickr
-   */
-  protected function set_auth_params()
-  {
-    $this->_auth->set_parameters(
-      array(
-        'flickr_client_id'     => $this->registry->get('GV_flickr_client_id')
-        , 'flickr_client_secret' => $this->registry->get('GV_flickr_client_secret')
-        , 'permissions'          => 'delete'
-      )
-    );
-
-    return $this;
-  }
-
-  /**
-   * Not implmented
-   * @param array $datas
-   * @param record_adapter $record
-   * @return array
-   */
-  public function check_upload_constraints(array $datas, record_adapter $record)
-  {
-    $errors = $this->check_record_constraints($record);
-    $check  = function($field) use (&$errors, $datas, $record)
-      {
-        $key      = $record->get_serialize_key();
-        $name     = $field['name'];
-        $length   = (int) $field['length'];
-        $required = !!$field['required'];
-
-        if (!isset($datas[$name]) || trim($datas[$name]) === '')
-        {
-          if ($required)
-            $errors[$name . '_' . $key] = _("Ce champ est obligatoire");
+        if ( ! $this->registry->get('GV_flickr_api')) {
+            return false;
         }
-        elseif ($length !== 0)
-        {
-          if (mb_strlen($datas[$name]) > $length)
-            $errors[$name . '_' . $key] = sprintf(_("Ce champ est trop long %s caracteres max"), $length);
+
+        if (trim($this->registry->get('GV_flickr_client_id')) === '') {
+            return false;
         }
-      };
 
-    array_map($check, $this->get_fields());
-
-    return $errors;
-  }
-
-  public function check_update_constraints(Array $datas)
-  {
-    $errors = array();
-    $check = function($field) use (&$errors, $datas)
-      {
-        $name     = $field['name'];
-        $length   = (int) $field['length'];
-        $required = !!$field['required'];
-
-        if (!isset($datas[$name]) || trim($datas[$name]) === '')
-        {
-          if ($required)
-            $errors[$name] = _("Ce champ est obligatoire");
+        if (trim($this->registry->get('GV_flickr_client_secret')) === '') {
+            return false;
         }
-        elseif ($length !== 0)
-        {
-          if (mb_strlen($datas[$name]) > $length)
-            $errors[$name] = sprintf(_("Ce champ est trop long %s caracteres max"), $length);
-        }
-      };
 
-    array_map($check, $this->get_fields());
-
-    return $errors;
-  }
-
-  /**
-   * Returns datas needed for an uploaded record
-   * @param record_adapter $record
-   * @return array
-   */
-  public function get_update_datas(Request $request)
-  {
-    $datas = array(
-      'title'       => $request->get('modif_title', ''),
-      'description' => $request->get('modif_description', '')
-    );
-
-    return $datas;
-  }
-
-  /**
-   * Returns datas needed for an uploaded record
-   * @param record_adapter $record
-   * @return array
-   */
-  public function get_upload_datas(Request $request, record_adapter $record)
-  {
-    $key   = $record->get_serialize_key();
-    $datas = array(
-      'title'       => $request->get('title_' . $key),
-      'description' => $request->get('description_' . $key),
-      'category'    => $request->get('category_' . $key),
-      'tags'        => $request->get('tags_' . $key),
-      'privacy'     => $request->get('privacy_' . $key),
-    );
-
-    return $datas;
-  }
-
-  /**
-   *
-   * @return boolean
-   */
-  public function is_multiple_upload()
-  {
-    return true;
-  }
-
-  /**
-   *
-   * @return array
-   */
-  private function get_fields()
-  {
-    return array(
-      array(
-        'name'     => 'title',
-        'length'   => '100',
-        'required' => true
-      )
-      , array(
-        'name'     => 'description',
-        'length'   => '500',
-        'required' => false
-      )
-      , array(
-        'name'     => 'tags',
-        'length'   => '200',
-        'required' => false
-      )
-    );
-  }
-
-  /**
-   *
-   * @param record_adapter $record
-   * @return array
-   */
-  private function check_record_constraints(record_adapter $record)
-  {
-    $errors = array();
-    if (!$record->get_hd_file() instanceof SplFileObject)
-      $errors["file_size"] = _("Le record n'a pas de fichier physique"); //Record must rely on real file
-    if ($record->get_technical_infos('size') > self::AUTH_PHOTO_SIZE)
-      $errors["size"]      = sprintf(_("Le poids maximum d'un fichier est de %s"), p4string::format_octets(self::AUTH_PHOTO_SIZE));
-
-    return $errors;
-  }
-
-  private function checkTicket($ticketsId, $type)
-  {
-    $return = array("status"  => self::UPLOAD_STATE_FAILED, "dist_id" => null);
-    $response = $this->_api->executeMethod("flickr.photos.upload.checkTickets", array("tickets" => $ticketsId));
-    if (!$response->isOk())
-      throw new Bridge_Exception_ApiConnectorRequestFailed('Unable to retrieve element list ' . $type);
-
-    $xml      = $response->getXml();
-    $complete = isset($xml->uploader->ticket["complete"]) ? (string) $xml->uploader->ticket["complete"] : null;
-    $invalid  = isset($xml->uploader->ticket["invalid"]) ? (string) $xml->uploader->ticket["invalid"] : null;
-
-    if ($complete)
-    {
-      if ((int) $complete == 0)
-        $return["status"] = self::UPLOAD_STATE_NOT_COMPLETED;
-      elseif ((int) $complete == 2)
-        $return["status"] = self::UPLOAD_STATE_FAILED_CONVERTING;
-      else
-      {
-        $return["dist_id"] = (string) $xml->uploader->ticket["photoid"];
-        $return["status"]  = self::UPLOAD_STATE_DONE;
-      }
+        return true;
     }
 
-    return $return;
-  }
+    /**
+     *
+     * @return Bridge_Api_Flickr
+     */
+    protected function initialize_transport()
+    {
+        $this->_api = new Phlickr_Api(
+                $this->registry->get('GV_flickr_client_id'),
+                $this->registry->get('GV_flickr_client_secret')
+        );
 
+        return $this;
+    }
+
+    /**
+     *
+     * @return Bridge_Api_Flickr
+     */
+    protected function set_transport_authentication_params()
+    {
+        if ($this->_auth->is_connected()) {
+            $signatures = $this->_auth->get_auth_signatures();
+            $this->_api->setAuthToken($signatures['auth_token']);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @return Bridge_Api_Flickr
+     */
+    protected function set_auth_params()
+    {
+        $this->_auth->set_parameters(
+            array(
+                'flickr_client_id'     => $this->registry->get('GV_flickr_client_id')
+                , 'flickr_client_secret' => $this->registry->get('GV_flickr_client_secret')
+                , 'permissions'          => 'delete'
+            )
+        );
+
+        return $this;
+    }
+
+    /**
+     * Not implmented
+     * @param  array          $datas
+     * @param  record_adapter $record
+     * @return array
+     */
+    public function check_upload_constraints(array $datas, record_adapter $record)
+    {
+        $errors = $this->check_record_constraints($record);
+        $check = function($field) use (&$errors, $datas, $record) {
+                $key = $record->get_serialize_key();
+                $name = $field['name'];
+                $length = (int) $field['length'];
+                $required = ! ! $field['required'];
+
+                if ( ! isset($datas[$name]) || trim($datas[$name]) === '') {
+                    if ($required)
+                        $errors[$name . '_' . $key] = _("Ce champ est obligatoire");
+                } elseif ($length !== 0) {
+                    if (mb_strlen($datas[$name]) > $length)
+                        $errors[$name . '_' . $key] = sprintf(_("Ce champ est trop long %s caracteres max"), $length);
+                }
+            };
+
+        array_map($check, $this->get_fields());
+
+        return $errors;
+    }
+
+    public function check_update_constraints(Array $datas)
+    {
+        $errors = array();
+        $check = function($field) use (&$errors, $datas) {
+                $name = $field['name'];
+                $length = (int) $field['length'];
+                $required = ! ! $field['required'];
+
+                if ( ! isset($datas[$name]) || trim($datas[$name]) === '') {
+                    if ($required)
+                        $errors[$name] = _("Ce champ est obligatoire");
+                } elseif ($length !== 0) {
+                    if (mb_strlen($datas[$name]) > $length)
+                        $errors[$name] = sprintf(_("Ce champ est trop long %s caracteres max"), $length);
+                }
+            };
+
+        array_map($check, $this->get_fields());
+
+        return $errors;
+    }
+
+    /**
+     * Returns datas needed for an uploaded record
+     * @param  record_adapter $record
+     * @return array
+     */
+    public function get_update_datas(Request $request)
+    {
+        $datas = array(
+            'title'       => $request->get('modif_title', ''),
+            'description' => $request->get('modif_description', '')
+        );
+
+        return $datas;
+    }
+
+    /**
+     * Returns datas needed for an uploaded record
+     * @param  record_adapter $record
+     * @return array
+     */
+    public function get_upload_datas(Request $request, record_adapter $record)
+    {
+        $key = $record->get_serialize_key();
+        $datas = array(
+            'title'       => $request->get('title_' . $key),
+            'description' => $request->get('description_' . $key),
+            'category'    => $request->get('category_' . $key),
+            'tags'        => $request->get('tags_' . $key),
+            'privacy'     => $request->get('privacy_' . $key),
+        );
+
+        return $datas;
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    public function is_multiple_upload()
+    {
+        return true;
+    }
+
+    /**
+     *
+     * @return array
+     */
+    private function get_fields()
+    {
+        return array(
+            array(
+                'name'     => 'title',
+                'length'   => '100',
+                'required' => true
+            )
+            , array(
+                'name'     => 'description',
+                'length'   => '500',
+                'required' => false
+            )
+            , array(
+                'name'     => 'tags',
+                'length'   => '200',
+                'required' => false
+            )
+        );
+    }
+
+    /**
+     *
+     * @param  record_adapter $record
+     * @return array
+     */
+    private function check_record_constraints(record_adapter $record)
+    {
+        $errors = array();
+        if ( ! $record->get_hd_file() instanceof \SplFileInfo)
+            $errors["file_size"] = _("Le record n'a pas de fichier physique"); //Record must rely on real file
+        if ($record->get_technical_infos('size') > self::AUTH_PHOTO_SIZE)
+            $errors["size"] = sprintf(_("Le poids maximum d'un fichier est de %s"), p4string::format_octets(self::AUTH_PHOTO_SIZE));
+
+        return $errors;
+    }
+
+    private function checkTicket($ticketsId, $type)
+    {
+        $return = array("status"  => self::UPLOAD_STATE_FAILED, "dist_id" => null);
+        $response = $this->_api->executeMethod("flickr.photos.upload.checkTickets", array("tickets" => $ticketsId));
+        if ( ! $response->isOk())
+            throw new Bridge_Exception_ApiConnectorRequestFailed('Unable to retrieve element list ' . $type);
+
+        $xml = $response->getXml();
+        $complete = isset($xml->uploader->ticket["complete"]) ? (string) $xml->uploader->ticket["complete"] : null;
+        $invalid = isset($xml->uploader->ticket["invalid"]) ? (string) $xml->uploader->ticket["invalid"] : null;
+
+        if ($complete) {
+            if ((int) $complete == 0)
+                $return["status"] = self::UPLOAD_STATE_NOT_COMPLETED;
+            elseif ((int) $complete == 2)
+                $return["status"] = self::UPLOAD_STATE_FAILED_CONVERTING;
+            else {
+                $return["dist_id"] = (string) $xml->uploader->ticket["photoid"];
+                $return["status"] = self::UPLOAD_STATE_DONE;
+            }
+        }
+
+        return $return;
+    }
 }

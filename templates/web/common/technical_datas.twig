@@ -1,127 +1,120 @@
-{% trans 'Record_id' %} : {{record.get_record_id() }}<br/>
+{% trans 'Record_id' %} : {{ record.get_record_id() }}<br/>
 
 {% if record.is_grouping() == false %}
 
-  {% set document = record.get_subdef('document') %}
+    {% set document = record.get_subdef('document') %}
 
-  {% if document %}
-    {% if document.get_width() %}
-      {% trans 'Largeur' %} :
-      {{document.get_width()}}
-      <br />
-    {% endif %}
-
-
-    {% if document.get_height() %}
-      {% trans 'Hauteur' %} :
-      {{document.get_height()}}
-      <br />
-    {% endif %}
-  {% endif %}
-
-  {% if record.get_original_name() %}
     {% trans 'Nom Original' %} :
-    {{record.get_original_name() }}
-    <br />
-  {% endif %}
+    {{ record.get_original_name() }}
+    <br/>
 
-  {% if record.get_mime() %}
-    {% trans 'Type Mime' %} :
-    {{record.get_mime() }}
-    <br />
-  {% endif %}
+    {{ record.get_mime() }}
 
-  {% if document %}
-    {% if document.get_size() %}
-      {% trans 'Taille' %} :
-      {{document.get_size()|formatoctet}}
+    {% if document and document.get_size() %}
+        - {{document.get_size()| formatOctets}}
+    {% endif %}
+    <br/>
+
+    {% if document and document.get_width() and document.get_height() %}
+        {% trans 'Size' %} :
+        {{document.get_width()}} x {{document.get_height()}} px
+        <br/>
+        {% if record.get_type() == 'image' and document.get_width() and document.get_height() %}
+            {% set size_w = (document.get_width() * (254/100) / 300) %}
+            {% set size_h = (document.get_height() * (254/100) / 300) %}
+            {{ size_w|round(1) }} x {{ size_h|round(1) }} cm (300dpi)
+            {% set size_w = (document.get_width() * (254/100) / 72) %}<br/>
+            {% set size_h = (document.get_height() * (254/100) / 72) %}
+            {{ size_w|round(1) }} x {{ size_h|round(1) }} cm (72dpi)
+        {% endif %}
+    {% endif %}
+    <hr/>
+
+    {% if record.get_technical_infos(constant('media_subdef::TC_DATA_CAMERAMODEL')) is not empty %}
+      {% trans 'Camera Model' %} :
+      {{ record.get_technical_infos(constant('media_subdef::TC_DATA_CAMERAMODEL')) }}
       <br />
     {% endif %}
-  {% endif %}
-
-
-  {% if document %}
-    {% if record.get_type() == 'image' and document.get_width() and document.get_height() %}
-      {% trans 'Dimensions a l\'impression' %}
-      <br/>
-      {% set size_w = (document.get_width() * (254/100) / 300) %}
-      {% set size_h = (document.get_height() * (254/100) / 300) %}
-      300 dpi : {{size_w|round(1)}}x{{size_h|round(1)}} cm
-      {% set size_w = (document.get_width() * (254/100) / 72) %}
-      {% set size_h = (document.get_height() * (254/100) / 72) %}
-      <br/>   72 dpi : {{size_w|round(1)}}x{{size_h|round(1)}} cm
+    {% if record.get_technical_infos(constant('media_subdef::TC_DATA_COLORSPACE')) is not empty %}
+      {% trans 'Color space' %} :
+      {{ record.get_technical_infos(constant('media_subdef::TC_DATA_COLORSPACE')) }}
+      <br />
     {% endif %}
-  {% endif %}
+    {% if record.get_technical_infos(constant('media_subdef::TC_DATA_CHANNELS')) is not empty %}
+      {% trans 'Channels' %} :
+      {{ record.get_technical_infos(constant('media_subdef::TC_DATA_CHANNELS')) }}
+      <br />
+    {% endif %}
+    {% if record.get_technical_infos(constant('media_subdef::TC_DATA_COLORDEPTH')) is not empty %}
+      {% trans 'Color Depth' %} :
+      {{ record.get_technical_infos(constant('media_subdef::TC_DATA_COLORDEPTH')) }} bits
+      <br />
+    {% endif %}
+    {% if record.get_technical_infos(constant('media_subdef::TC_DATA_ISO')) is not empty %}
+      {% trans 'ISO sensibility' %} :
+      {{ record.get_technical_infos(constant('media_subdef::TC_DATA_ISO')) }}
+      <br />
+    {% endif %}
+    {% if record.get_technical_infos(constant('media_subdef::TC_DATA_FLASHFIRED')) is not empty %}
+      {% trans 'Flash' %} :
+      {% if record.get_technical_infos(constant('media_subdef::TC_DATA_FLASHFIRED')) %}
+        {% trans 'yes' %}
+      {% else %}
+        {% trans 'no' %}
+      {% endif %}
+      <br />
+    {% endif %}
+    {% if record.get_technical_infos(constant('media_subdef::TC_DATA_SHUTTERSPEED')) is not empty %}
+        {% trans 'Shutter speed' %} :
+        {{ record.get_technical_infos(constant('media_subdef::TC_DATA_SHUTTERSPEED')) }} s.
+        <br />
+    {% endif %}
+    {% if record.get_technical_infos(constant('media_subdef::TC_DATA_APERTURE')) is not empty %}
+      {% trans 'Aperture' %} :
+      {{ record.get_technical_infos(constant('media_subdef::TC_DATA_APERTURE')) | round(2) }}
+      <br />
+    {% endif %}
+    {% if record.get_technical_infos(constant('media_subdef::TC_DATA_FOCALLENGTH')) is not empty %}
+        {% trans 'Focal length' %} :
+        {{ record.get_technical_infos(constant('media_subdef::TC_DATA_FOCALLENGTH')) }} mm
+        <br />
+    {% endif %}
+    {% if record.get_technical_infos(constant('media_subdef::TC_DATA_HYPERFOCALDISTANCE')) is not empty %}
+      {% trans 'Hyperfocal distance' %} :
+      {{ record.get_technical_infos(constant('media_subdef::TC_DATA_HYPERFOCALDISTANCE')) | round(2) }} mm
+      <br />
+    {% endif %}
+    {% if record.get_technical_infos(constant('media_subdef::TC_DATA_LIGHTVALUE')) is not empty %}
+      {% trans 'Light Value' %} :
+      {{ record.get_technical_infos(constant('media_subdef::TC_DATA_LIGHTVALUE')) | round(2) }}
+      <br />
+    {% endif %}
 
-  {% if record.get_type() == 'video' %}
-
-    <br/><br/>
     {% if record.get_formated_duration() %}
       {% trans 'Duree' %} :
-      {{record.get_formated_duration() }}
+      {{ record.get_formated_duration() }}
       <br />
     {% endif %}
-    {% if record.get_technical_infos(constant('system_file::TC_DATAS_FRAMERATE')) is not empty %}
+    {% if record.get_technical_infos(constant('media_subdef::TC_DATA_FRAMERATE')) is not empty %}
       {% trans 'Images par secondes' %} :
-      {{record.get_technical_infos(constant('system_file::TC_DATAS_FRAMERATE')) }} ips
+      {{ record.get_technical_infos(constant('media_subdef::TC_DATA_FRAMERATE')) | round(2) }} ips
       <br />
     {% endif %}
-    {% if record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOCODEC'))  %}
+    {% if record.get_technical_infos(constant('media_subdef::TC_DATA_AUDIOCODEC'))  %}
       {% trans 'Codec Audio' %} :
-      {{record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOCODEC')) }}
+      {{ record.get_technical_infos(constant('media_subdef::TC_DATA_AUDIOCODEC')) }}
       <br />
     {% endif %}
-    {% if record.get_technical_infos(constant('system_file::TC_DATAS_VIDEOCODEC'))  %}
+    {% if record.get_technical_infos(constant('media_subdef::TC_DATA_VIDEOCODEC'))  %}
       {% trans 'Codec Video' %} :
-      {{record.get_technical_infos(constant('system_file::TC_DATAS_VIDEOCODEC')) }}
+      {{ record.get_technical_infos(constant('media_subdef::TC_DATA_VIDEOCODEC')) }}
       <br />
     {% endif %}
-    {% if record.get_technical_infos(constant('system_file::TC_DATAS_VIDEOBITRATE'))  %}
-      {% trans 'Debit video' %} :
-      {% set rate = (record.get_technical_infos(constant('system_file::TC_DATAS_VIDEOBITRATE'))  / 1024) %}
-      {{rate|round(1)}} kbps
-      <br />
-    {% endif %}
-    {% if record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOBITRATE'))  %}
-      {% trans 'Debit audio' %} :
-      {% set rate = (record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOBITRATE'))  / 1024) %}
-      {{rate|round(1)}} kbps
-      <br />
-    {% endif %}
-    {% if record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOSAMPLERATE'))  %}
+    {% if record.get_technical_infos(constant('media_subdef::TC_DATA_AUDIOSAMPLERATE'))  %}
       {% trans 'Frequence d\'echantillonage' %} :
-      {{record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOSAMPLERATE')) }} kHz
+      {{ record.get_technical_infos(constant('media_subdef::TC_DATA_AUDIOSAMPLERATE')) | round(2) }} kHz
       <br />
     {% endif %}
-  {% endif %}
-
-
-
-
-  {% if record.get_type() == 'audio' %}
-    <br/><br/>
-    {% if record.get_formated_duration() %}
-      {% trans 'Duree' %} :
-      {{record.get_formated_duration() }}
-      <br />
-    {% endif %}
-    {% if record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOCODEC'))  %}
-      {% trans 'Codec Audio' %} :
-      {{record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOCODEC')) }}
-      <br />
-    {% endif %}
-    {% if record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOBITRATE'))  %}
-      {% trans 'Debit audio' %} :
-      {% set rate = (record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOBITRATE'))  / 1024) %}
-      {{rate|round(1)}} kbps
-      <br />
-    {% endif %}
-    {% if record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOSAMPLERATE'))  %}
-      {% trans 'Frequence d\'echantillonage' %} :
-      {{record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOSAMPLERATE')) }} kHz
-      <br />
-    {% endif %}
-  {% endif %}
 
 {% endif %}
 

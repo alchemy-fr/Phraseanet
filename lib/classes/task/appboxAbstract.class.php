@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,153 +11,125 @@
 
 /**
  *
- * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
 abstract class task_appboxAbstract extends task_abstract
 {
 
-  abstract protected function retrieve_content(appbox $appbox);
+    abstract protected function retrieveContent(appbox $appbox);
 
-  abstract protected function process_one_content(appbox $appbox, Array $row);
+    abstract protected function processOneContent(appbox $appbox, Array $row);
 
-  abstract protected function post_process_one_content(appbox $appbox, Array $row);
+    abstract protected function postProcessOneContent(appbox $appbox, Array $row);
 
-  protected function run2()
-  {
-    while ($this->running)
+    protected function run2()
     {
-      try
-      {
-        $conn = connection::getPDOConnection();
-      }
-      catch (Exception $e)
-      {
-        $this->log($e->getMessage());
-        $this->log(("Warning : abox connection lost, restarting in 10 min."));
-        sleep(60 * 10);
-        $this->running = false;
-        $this->return_value = self::RETURNSTATUS_TORESTART;
+        $this->running = TRUE;
+        while ($this->running) {
+            try {
+                $conn = connection::getPDOConnection();
+            } catch (Exception $e) {
+                $this->log($e->getMessage());
+                if ($this->getRunner() == self::RUNNER_SCHEDULER) {
+                    $this->log(("Warning : abox connection lost, restarting in 10 min."));
+
+                    // DON'T do sleep(600) because it prevents ticks !
+                    for ($t = 60 * 10; $this->running && $t; $t -- ) {
+                        sleep(1);
+                    }
+                    // because connection is lost we cannot change status to 'torestart'
+                    // anyway the current status 'running' with no pid
+                    // will enforce the scheduler to restart the task
+                } else {
+                    // runner = manual : can't restart so simply quit
+                }
+                $this->running = FALSE;
+
+                return;
+            }
+
+            $this->setLastExecTime();
+
+            try {
+                $sql = 'SELECT settings FROM task2 WHERE task_id = :taskid';
+                $stmt = $conn->prepare($sql);
+                $stmt->execute(array(':taskid' => $this->getID()));
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                $stmt->closeCursor();
+                $this->records_done = 0;
+                $duration = time();
+            } catch (Exception $e) {
+                // failed sql, simply return
+                $this->running = FALSE;
+
+                return;
+            }
+
+            if ($row) {
+                if ( ! $this->running) {
+                    break;
+                }
+
+                $appbox = appbox::get_instance(\bootstrap::getCore());
+                try {
+                    $this->loadSettings(simplexml_load_string($row['settings']));
+                } catch (Exception $e) {
+                    $this->log($e->getMessage());
+                    continue;
+                }
+
+                $process_ret = $this->process($appbox);
+
+                switch ($process_ret) {
+                    case self::STATE_MAXMEGSREACHED:
+                    case self::STATE_MAXRECSDONE:
+                        if ($this->getRunner() == self::RUNNER_SCHEDULER) {
+                            $this->setState(self::STATE_TORESTART);
+                            $this->running = FALSE;
+                        }
+                        break;
+
+                    case self::STATE_TOSTOP:
+                        $this->setState(self::STATE_TOSTOP);
+                        $this->running = FALSE;
+                        break;
+
+                    case self::STATE_TODELETE: // formal 'suicidable'
+                        $this->setState(self::STATE_TODELETE);
+                        $this->running = FALSE;
+                        break;
+                }
+            } // if(row)
+
+            $this->incrementLoops();
+
+            if ($this->running) {
+                $this->pause($duration);
+            }
+        } // while running
 
         return;
-      }
+    }
 
-      $this->set_last_exec_time();
+    /**
+     *
+     * @return <type>
+     */
+    protected function process(appbox $appbox)
+    {
+        $ret = self::STATE_OK;
 
-      try
-      {
-        $sql = 'SELECT task2.* FROM task2 WHERE task_id = :taskid';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':taskid' => $this->get_task_id()));
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-        $this->records_done = 0;
-        $duration = time();
-      }
-      catch (Exception $e)
-      {
-        $this->task_status = self::STATUS_TOSTOP;
-        $this->return_value = self::RETURNSTATUS_STOPPED;
-        $rs = array();
-      }
-      if ($row)
-      {
-        if (!$this->running)
-          break;
+        try {
+            // get the records to process
+            $rs = $this->retrieveContent($appbox);
 
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        try
-        {
-          $this->load_settings(simplexml_load_string($row['settings']));
-        }
-        catch (Exception $e)
-        {
-          $this->log($e->getMessage());
-          continue;
+            // process the records
+            $ret = $this->processLoop($appbox, $rs);
+        } catch (Exception $e) {
+            $this->log('Error  : ' . $e->getMessage());
         }
 
-        $this->current_state = self::STATE_OK;
-        $this->process($appbox)
-                ->check_current_state();
-      }
-
-      $this->increment_loops();
-      $this->pause($duration);
+        return $ret;
     }
-
-    return;
-  }
-
-  /**
-   *
-   * @return <type>
-   */
-  protected function process(appbox $appbox)
-  {
-    $conn = $appbox->get_connection();
-    $tsub = array();
-    try
-    {
-      /**
-       * GET THE RECORDS TO PROCESS ON CURRENT SBAS
-       */
-      $rs = $this->retrieve_content($appbox);
-    }
-    catch (Exception $e)
-    {
-      $this->log('Error  : ' . $e->getMessage());
-      $rs = array();
-    }
-
-    $rowstodo = count($rs);
-    $rowsdone = 0;
-
-    if ($rowstodo > 0)
-      $this->setProgress(0, $rowstodo);
-
-    foreach ($rs as $row)
-    {
-      try
-      {
-
-        /**
-         * PROCESS ONE RECORD
-         */
-        $this->process_one_content($appbox, $row);
-      }
-      catch (Exception $e)
-      {
-        $this->log("Exception : " . $e->getMessage()
-                . " " . basename($e->getFile()) . " " . $e->getLine());
-      }
-
-      $this->records_done++;
-      $this->setProgress($rowsdone, $rowstodo);
-
-      /**
-       * POST COIT
-       */
-      $this->post_process_one_content($appbox, $row);
-
-      $this->check_memory_usage()
-              ->check_records_done()
-              ->check_task_status();
-
-      if (!$this->running)
-        break;
-    }
-
-
-    $this->check_memory_usage()
-            ->check_records_done()
-            ->check_task_status();
-
-    if ($rowstodo > 0)
-      $this->setProgress(0, 0);
-
-    return $this;
-  }
-
 }
-

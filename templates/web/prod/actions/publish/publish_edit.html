@@ -47,10 +47,12 @@
         <div class="list">
           {% set feed_id = entry.get_feed().get_id() %}
           {% for feed in feeds.get_feeds() %}
-            <div class="feed {% if loop.index is odd%}odd{% endif %} {% if feed_id == feed.get_id() %}selected{% endif %}">
-              <span>{{ feed.get_title() }}</span>
-              <input type="hidden" value="{{ feed.get_id() }}"/>
-            </div>
+             {% if feed.is_publisher(user) %}
+                <div class="feed {% if loop.index is odd%}odd{% endif %} {% if feed_id == feed.get_id() %}selected{% endif %}">
+                    <span>{{ feed.get_title() }}</span>
+                    <input type="hidden" value="{{ feed.get_id() }}"/>
+                </div>
+            {% endif %}
           {% endfor %}
           <input type="hidden" value="{{ feed_id }}" name="feed_id" />
           <input type="hidden" value="{{ entry.get_id() }}" name="entry_id" />
@@ -61,8 +63,8 @@
   </div>
   <div class="PNB" style="top:auto;height:50px;text-align:center;">
     <div class="PNB10">
-      <button class="valid_form">{% trans 'boutton::mettre a jour' %}</button>
-      <button class="close_dialog">{% trans 'boutton::annuler' %}</button>
+      <button class="valid_form btn btn-inverse">{% trans 'boutton::mettre a jour' %}</button>
+      <button class="close_dialog btn btn-inverse">{% trans 'boutton::annuler' %}</button>
     </div>
   </div>
 </form>

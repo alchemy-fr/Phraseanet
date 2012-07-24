@@ -9,13 +9,20 @@
  * file that was distributed with this source code.
  */
 
+namespace KonsoleKommander;
+
 /**
  *
- * @package
- * @package     KonsoleKomander
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
+use Alchemy\Phrasea\Core\Configuration;
+use Alchemy\Phrasea\Core\Version;
+use Alchemy\Phrasea\Command\UpgradeDBDatas;
+use Alchemy\Phrasea\Command\RescanTechnicalDatas;
+use Alchemy\Phrasea\Command\BuildMissingSubdefs;
+use Alchemy\Phrasea\Command\RecordAdd;
+use Alchemy\Phrasea\Command\CreateCollection;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -23,17 +30,17 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Application;
 
-$Core = require_once dirname(__FILE__) . '/../lib/bootstrap.php';
+require_once dirname(__FILE__) . '/../lib/classes/bootstrap.class.php';
 
-$result_code = 1;
+\bootstrap::register_autoloads();
 
-$result_code = 1;
+$configuration = Configuration::build();
+if ($configuration->isInstalled()) {
+    require_once dirname(__FILE__) . '/../lib/bootstrap.php';
+}
 
-try
-{
-  \bootstrap::register_autoloads();
-
-  $app = new Application("
+try {
+    $app = new Application("
   _____  _    _ _____            _____ ______          _   _ ______ _______
  |  __ \| |  | |  __ \    /\    / ____|  ____|   /\   | \ | |  ____|__   __|
  | |__) | |__| | |__) |  /  \  | (___ | |__     /  \  |  \| | |__     | |
@@ -49,45 +56,49 @@ try
  This program comes with ABSOLUTELY NO WARRANTY.
  This is free software, and you are welcome to redistribute it
  under certain conditions; type `about:license' for details.\n\n"
-                  . ' KONSOLE KOMMANDER', \Alchemy\Phrasea\Core\Version::getName()
-                  . ' ' . \Alchemy\Phrasea\Core\Version::getNumber());
+            . ' KONSOLE KOMMANDER', Version::getName() . ' ' . Version::getNumber());
 
-  $app->add(new module_console_aboutAuthors('about:authors'));
-  $app->add(new module_console_aboutLicense('about:license'));
+    $app->add(new \module_console_aboutAuthors('about:authors'));
+    $app->add(new \module_console_aboutLicense('about:license'));
 
-  $app->add(new module_console_checkExtension('check:extension'));
+    $app->add(new \module_console_checkExtension('check:extension'));
 
-  $app->add(new module_console_systemUpgrade('system:upgrade'));
+    $app->add(new \module_console_systemUpgrade('system:upgrade'));
+    $app->add(new UpgradeDBDatas('system:upgrade-datas'));
 
-  $app->add(new module_console_sphinxGenerateSuggestion('sphinx:generate-suggestions'));
+    $app->add(new \module_console_sphinxGenerateSuggestion('sphinx:generate-suggestions'));
 
-  $app->add(new module_console_systemMailCheck('system:mailCheck'));
-  $app->add(new module_console_systemBackupDB('system:backupDB'));
-  $app->add(new module_console_systemClearCache('system:clearCache'));
-  $app->add(new module_console_systemTemplateGenerator('system:templateGenerator'));
-  $app->add(new module_console_systemExport('system:export'));
+    $app->add(new \module_console_systemMailCheck('system:mail-check'));
+    $app->add(new \module_console_systemBackupDB('system:backup-db'));
+    $app->add(new \module_console_systemClearCache('system:clear-cache'));
+    $app->add(new \module_console_systemTemplateGenerator('system:template-generator'));
+    $app->add(new \module_console_systemExport('system:export'));
 
-  $app->add(new module_console_taskrun('task:run'));
-  $app->add(new module_console_tasklist('task:list'));
-  $app->add(new module_console_schedulerState('scheduler:state'));
-  $app->add(new module_console_schedulerStop('scheduler:stop'));
-  $app->add(new module_console_schedulerStart('scheduler:start'));
-  $app->add(new module_console_fileEnsureProductionSetting('check:ensureProductionSettings'));
-  $app->add(new module_console_fileEnsureDevSetting('check:ensureDevSettings'));
-  $app->add(new module_console_systemConfigCheck('check:system'));
-
-
-  $app->add(new module_console_fieldsList('fields:list'));
-  $app->add(new module_console_fieldsDelete('fields:delete'));
-  $app->add(new module_console_fieldsRename('fields:rename'));
-  $app->add(new module_console_fieldsMerge('fields:merge'));
+    $app->add(new \module_console_taskrun('task:run'));
+    $app->add(new \module_console_tasklist('task:list'));
+    $app->add(new \module_console_taskState('task:state'));
+    $app->add(new \module_console_schedulerState('scheduler:state'));
+    $app->add(new \module_console_schedulerStop('scheduler:stop'));
+    $app->add(new \module_console_schedulerStart('scheduler:start'));
+    $app->add(new \module_console_fileEnsureProductionSetting('check:ensure-production-settings'));
+    $app->add(new \module_console_fileEnsureDevSetting('check:ensure-dev-settings'));
+    $app->add(new \module_console_systemConfigCheck('check:system'));
 
 
-  $result_code = $app->run() === 0 ? : 1;
-}
-catch (Exception $e)
-{
-  echo sprintf("an error occured : %s", $e->getMessage());
+    $app->add(new \module_console_fieldsList('fields:list'));
+    $app->add(new \module_console_fieldsDelete('fields:delete'));
+    $app->add(new \module_console_fieldsRename('fields:rename'));
+    $app->add(new \module_console_fieldsMerge('fields:merge'));
+
+    $app->add(new CreateCollection('collection:create'));
+
+    $app->add(new RecordAdd('records:add'));
+    $app->add(new RescanTechnicalDatas('records:rescan-technical-datas'));
+    $app->add(new BuildMissingSubdefs('records:build-missing-subdefs'));
+
+    $result_code = is_int($app->run()) ? : 1;
+} catch (Exception $e) {
+    echo sprintf("an error occured : %s", $e->getMessage());
 }
 
 exit($result_code);

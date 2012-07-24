@@ -1,4 +1,4 @@
-{% extends "common/index.twig" %}
+{% extends "common/index_bootstrap.html.twig" %}
 
 {% import 'common/thumbnail.html' as thumbnail %}
 {% import 'common/caption_templates/preview.html' as caption %}
@@ -13,7 +13,7 @@
 {% block stylesheet %}
     <link type="text/css" rel="stylesheet"
         href="/include/minify/f=include/jslibs/yui2.8/build/reset/reset.css,include/jslibs/jquery.contextmenu.css,include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css,skins/lightbox/lightbox.css" media="screen"/>
-  {% endblock %}
+{% endblock %}
 
 
 
@@ -52,9 +52,15 @@
                     </div>
                     <div class="container PNB">
                         {% if basket_element %}
-              {% set bask_prev = basket_element.getRecord().get_preview() %}
-              {{thumbnail.format(bask_prev,bask_prev.get_width(),bask_prev.get_height(),'',session, false)}}
-            {% endif %}
+
+                            {% set bask_prev = basket_element.getRecord().get_preview() %}
+
+                            {% set width = bask_prev.get_width() %}
+                            {% set height = bask_prev.get_height() %}
+
+                            {{ thumbnail.format(bask_prev, width,height, '', session, false) }}
+
+                        {% endif %}
                         {% include 'lightbox/selector_box.twig' %}
                         {% include 'lightbox/sc_note.twig' %}
                     </div>
@@ -94,7 +100,8 @@
                     <div id="record_infos" class="PNB">
                         <div class="container PNB">
               {% if basket_element %}
-                {{caption.format_caption(basket_element.getRecord())}}
+                {% set business = user.ACL().has_right_on_base(basket_element.getRecord().get_base_id(), 'canmodifrecord') %}
+                {{caption.format_caption(basket_element.getRecord(), '', null, business)}}
               {% endif %}
             </div>
                     </div>
@@ -121,11 +128,13 @@
                     <tr>
                         <td style="width:20px;">
                         </td>
-                        <td style="width:310px;">
-                            {% if basket.getValidation() %}
-                            <img title="{% trans 'lightbox::recaptitulatif' %}" class="report" src="/skins/lightbox/retour.png"/>
-                            {% endif %}
-                            <select id="navigation">
+                        {% if basket.getValidation() %}
+                            <td style="width:50px;">
+                                <img title="{% trans 'lightbox::recaptitulatif' %}" class="report" src="/skins/lightbox/retour.png"/>
+                            </td>
+                        {% endif %}
+                        <td style="width:220px;">
+                            <select id="navigation" style='margin:0'>
                                 <optgroup label="{% trans 'Validations'%}">
                                 {% for item in baskets_collection %}
                                   {% if item.getValidation() %}
@@ -143,8 +152,10 @@
                                 {% endfor %}
                                 </optgroup>
                             </select>
-                            <button class="ui-corner-all basket_downloader" title="{% trans 'boutton::telecharger tous les documents' %}">
-                                <img src="/skins/lightbox/save.png"/>
+                        </td>
+                        <td style="width:50px;">
+                            <button style='width:30px;margin:0;' class="ui-corner-all basket_downloader" title="{% trans 'boutton::telecharger tous les documents' %}">
+                               <img src="/skins/lightbox/save.png"/>
                             </button>
                         </td>
                         <td>
@@ -155,7 +166,7 @@
                     </tr>
                 </table>
             </div>
-            <div class="PNB" style="top:30px;">
+            <div class="PNB" style="top:40px;">
                 <div id="left_scroller" class="PNB clickable">
                 </div>
                 <div class="PNB" id="sc_wrapper">

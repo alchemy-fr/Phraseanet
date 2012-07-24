@@ -1,7 +1,5 @@
-/nbproject/*
-/config/*
+/nbproject
+/config
 .DS_Store
-!.gitignore
-.DS_Store
-/vendor/.composer/
-/www/skins/html5/bootstrap/docs/build/node_modules/.bin/
+/vendor
+composer.phar

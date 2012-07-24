@@ -1,0 +1,276 @@
+{
+    "hash": "5bf41b7681091d016c3ba913e32ce794",
+    "packages": [
+        {
+            "package": "alchemy/Phlickr",
+            "version": "dev-master",
+            "source-reference": "89993abd6a02b42e0b765114c34c26c4056762fa",
+            "commit-date": "1334339011"
+        },
+        {
+            "package": "alchemy/oauth2php",
+            "version": "dev-master",
+            "source-reference": "5f949209461e8f4c31e8476155188923aafa2ae5",
+            "commit-date": "1333122427"
+        },
+        {
+            "package": "alchemy/phpmailer",
+            "version": "dev-master",
+            "source-reference": "3bdb8bc7a8f304c27900d7b2ddc00068c86c781f",
+            "commit-date": "1333125389"
+        },
+        {
+            "package": "dailymotion/sdk",
+            "version": "dev-master",
+            "source-reference": "3a8e5d5f07523031138f47d9d7ecf439a1a7300d",
+            "commit-date": "1341934599"
+        },
+        {
+            "package": "data-uri/data-uri",
+            "version": "dev-master",
+            "source-reference": "c29d1cca49d6ba38d532025db5bf0cd06031da06",
+            "commit-date": "1338509340"
+        },
+        {
+            "package": "doctrine/common",
+            "version": "2.2.2"
+        },
+        {
+            "package": "doctrine/dbal",
+            "version": "2.2.2"
+        },
+        {
+            "package": "doctrine/orm",
+            "version": "2.2.2"
+        },
+        {
+            "package": "gedmo/doctrine-extensions",
+            "version": "2.2.x-dev",
+            "source-reference": "v2.2.3",
+            "commit-date": "1339767845"
+        },
+        {
+            "package": "imagine/Imagine",
+            "version": "dev-develop",
+            "source-reference": "b761a2725267c7e68c5e8c559403cd0d19cb704c",
+            "commit-date": "1342901848"
+        },
+        {
+            "package": "media-alchemyst/media-alchemyst",
+            "version": "dev-master",
+            "source-reference": "9181cc3da00f28f0d07d067eeaa952ab24f81eb9",
+            "commit-date": "1342615297"
+        },
+        {
+            "package": "mediavorus/mediavorus",
+            "version": "dev-master",
+            "source-reference": "2e194cc17b78bf1fd98f0ffa2afb29188e567211",
+            "commit-date": "1342615206"
+        },
+        {
+            "package": "monolog/monolog",
+            "version": "1.0.2"
+        },
+        {
+            "package": "php-ffmpeg/php-ffmpeg",
+            "version": "dev-master",
+            "source-reference": "b6b8bd502131e0dd82f53517ccc84d3de2c09424",
+            "commit-date": "1340268165"
+        },
+        {
+            "package": "php-mp4box/php-mp4box",
+            "version": "dev-master",
+            "source-reference": "ed3ae359984793a699c540871acc1d68ca6589fe",
+            "commit-date": "1335481578"
+        },
+        {
+            "package": "php-unoconv/php-unoconv",
+            "version": "dev-master",
+            "source-reference": "27f257203be01e3343128b902a06fb82363876b8",
+            "commit-date": "1335481542"
+        },
+        {
+            "package": "php-xpdf/php-xpdf",
+            "version": "dev-master",
+            "source-reference": "36e8feb0d7a59aab6b66c549ca25fe6bb4147c5f",
+            "commit-date": "1340123615"
+        },
+        {
+            "package": "phpexiftool/exiftool",
+            "version": "dev-master",
+            "source-reference": "999e660215b25a12fd3409df9a31883b6c617570",
+            "commit-date": "1339513761"
+        },
+        {
+            "package": "phpexiftool/phpexiftool",
+            "version": "dev-master",
+            "source-reference": "5dc6e9a21e4b0faf6809070bc4f1cc4fef06ead6",
+            "commit-date": "1339680734"
+        },
+        {
+            "package": "pimple/pimple",
+            "version": "dev-master",
+            "alias-pretty-version": "1.0.x-dev",
+            "alias-version": "1.0.9999999.9999999-dev"
+        },
+        {
+            "package": "pimple/pimple",
+            "version": "dev-master",
+            "source-reference": "d2cfa2f02f50abef65c238747c753a5f6786f6be",
+            "commit-date": "1341139100"
+        },
+        {
+            "package": "silex/silex",
+            "version": "dev-master",
+            "alias-pretty-version": "1.0.x-dev",
+            "alias-version": "1.0.9999999.9999999-dev"
+        },
+        {
+            "package": "silex/silex",
+            "version": "dev-master",
+            "source-reference": "b9277c0e378ff1bce2a3e974cb801b6d9b0b5d5f",
+            "commit-date": "1342380872"
+        },
+        {
+            "package": "swftools/swftools",
+            "version": "dev-master",
+            "source-reference": "72f339293ca74606814f41fd95f8c552257d8c3b",
+            "commit-date": "1339439296"
+        },
+        {
+            "package": "swiftmailer/swiftmailer",
+            "version": "v4.1.8"
+        },
+        {
+            "package": "symfony/symfony",
+            "version": "dev-master",
+            "alias-pretty-version": "2.1.x-dev",
+            "alias-version": "2.1.9999999.9999999-dev"
+        },
+        {
+            "package": "symfony/symfony",
+            "version": "dev-master",
+            "source-reference": "46071f3238f0670916a1f043a620df9616497012",
+            "commit-date": "1337808087"
+        },
+        {
+            "package": "tcpdf/tcpdf",
+            "version": "dev-master",
+            "source-reference": "8c874186166237b7909d6aa3d9aaae1ed6c4d245",
+            "commit-date": "1337808087"
+        },
+        {
+            "package": "twig/extensions",
+            "version": "dev-master",
+            "source-reference": "feb6d3f10c411e2631997c0a905aa581c80305c1",
+            "commit-date": "1337599699"
+        },
+        {
+            "package": "twig/twig",
+            "version": "dev-master",
+            "alias-pretty-version": "1.9.x-dev",
+            "alias-version": "1.9.9999999.9999999-dev"
+        },
+        {
+            "package": "twig/twig",
+            "version": "dev-master",
+            "source-reference": "657de7bdeb680815e0df95f63da9f81e1533d2ea",
+            "commit-date": "1342953178"
+        },
+        {
+            "package": "zend/gdata",
+            "version": "dev-master",
+            "source-reference": "827dc8696f1e5b70a4c507355877cdbab60fb3fa",
+            "commit-date": "1336132669"
+        }
+    ],
+    "packages-dev": [
+        {
+            "package": "behat/behat",
+            "version": "v2.4.2"
+        },
+        {
+            "package": "behat/gherkin",
+            "version": "v2.2.2"
+        },
+        {
+            "package": "behat/mink",
+            "version": "v1.4.0"
+        },
+        {
+            "package": "behat/mink-browserkit-driver",
+            "version": "dev-master",
+            "source-reference": "97fa7d67ab5afb13d74515c15ef5c0cab12c0bc0",
+            "commit-date": "1341477260"
+        },
+        {
+            "package": "behat/mink-extension",
+            "version": "dev-master",
+            "source-reference": "da58c1b572349310ce5b65066a4d8b7e487a63a7",
+            "commit-date": "1342818063"
+        },
+        {
+            "package": "behat/mink-goutte-driver",
+            "version": "dev-master",
+            "source-reference": "v1.0.3",
+            "commit-date": "1341477036"
+        },
+        {
+            "package": "behat/mink-selenium2-driver",
+            "version": "dev-master",
+            "source-reference": "v1.0.2",
+            "commit-date": "1341477123"
+        },
+        {
+            "package": "doctrine/data-fixtures",
+            "version": "dev-master",
+            "source-reference": "779c3dfe446b6da893be87b908d6be28345d1e01",
+            "commit-date": "1341780535"
+        },
+        {
+            "package": "fabpot/goutte",
+            "version": "dev-master",
+            "alias-pretty-version": "1.0.x-dev",
+            "alias-version": "1.0.9999999.9999999-dev"
+        },
+        {
+            "package": "fabpot/goutte",
+            "version": "dev-master",
+            "source-reference": "c2ea8d9a6682d14482e57ede2371001b8a5238d2",
+            "commit-date": "1340264258"
+        },
+        {
+            "package": "fabpot/php-cs-fixer",
+            "version": "dev-master",
+            "source-reference": "4c4bc75cc179ff91bb83960ae7dacca6754d2c46",
+            "commit-date": "1342957711"
+        },
+        {
+            "package": "guzzle/guzzle",
+            "version": "v2.6.6"
+        },
+        {
+            "package": "instaclick/php-webdriver",
+            "version": "dev-master",
+            "source-reference": "v1.0",
+            "commit-date": "1337727558"
+        }
+    ],
+    "aliases": [
+
+    ],
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "data-uri/data-uri": 20,
+        "mediavorus/mediavorus": 20,
+        "media-alchemyst/media-alchemyst": 20,
+        "php-xpdf/php-xpdf": 20,
+        "phpexiftool/phpexiftool": 20,
+        "behat/behat": 0,
+        "behat/mink-extension": 20,
+        "behat/mink-goutte-driver": 20,
+        "behat/mink-selenium2-driver": 20,
+        "doctrine/data-fixtures": 20,
+        "fabpot/php-cs-fixer": 20
+    }
+}

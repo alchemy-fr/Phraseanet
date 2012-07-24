@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,85 +11,55 @@
 
 /**
  *
- * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
 
 class module_console_systemClearCache extends Command
 {
 
-  public function __construct($name = null)
-  {
-    parent::__construct($name);
+    public function __construct($name = null)
+    {
+        parent::__construct($name);
 
-    $this->setDescription('Empty cache directories, clear Memcached, Redis if avalaible');
+        $this->setDescription('Empty cache directories, clear Memcached, Redis if avalaible');
 
-    return $this;
-  }
+        return $this;
+    }
 
-  public function execute(InputInterface $input, OutputInterface $output)
-  {
-    $files = $dirs = array();
-    $finder = new Finder();
-    $finder
-            ->files()
+    public function requireSetup()
+    {
+        return false;
+    }
+
+    protected function doExecute(InputInterface $input, OutputInterface $output)
+    {
+        $finder = new Finder();
+
+        $finder
             ->exclude('.git')
             ->exclude('.svn')
             ->in(array(
-                __DIR__ . '/../../../../tmp/cache_minify/'
-                , __DIR__ . '/../../../../tmp/cache_twig/'
+                __DIR__ . '/../../../../tmp/cache_minify/',
+                __DIR__ . '/../../../../tmp/cache_twig/'
             ));
 
-    $count = 1;
-    foreach ($finder as $file)
-    {
-      $files[$file->getPathname()] = $file->getPathname();
-      $count++;
+        $filesystem = new Filesystem();
+
+        $filesystem->remove($finder);
+
+        if (setup::is_installed()) {
+            $Core = \bootstrap::getCore();
+            $Core['CacheService']->flushAll();
+        }
+
+        $output->write('Finished !', true);
+
+        return 0;
     }
-
-    $finder = new Finder();
-    $finder
-            ->directories()
-            ->in(array(
-                __DIR__ . '/../../../../tmp/cache_minify'
-                , __DIR__ . '/../../../../tmp/cache_twig'
-            ))
-            ->exclude('.git')
-            ->exclude('.svn');
-
-    foreach ($finder as $file)
-    {
-      $dirs[$file->getPathname()] = $file->getPathname();
-      printf('%4d) %s' . PHP_EOL, $count, $file->getPathname());
-      $count++;
-    }
-
-    foreach ($files as $file)
-    {
-      unlink($file);
-    }
-    foreach ($dirs as $dir)
-    {
-      rmdir($dir);
-    }
-
-    if(setup::is_installed())
-    {
-      $Core = \bootstrap::getCore();
-      $Core['CacheService']->flushAll();
-    }
-
-    $output->write('Finished !', true);
-
-    return 0;
-  }
-
 }

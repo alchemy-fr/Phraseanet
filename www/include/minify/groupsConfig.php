@@ -34,6 +34,10 @@ $groups = array(
         , '//login/geonames.js'
         , '//include/jquery.tooltip.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
+        , '//include/vendor/javascript-load-image/load-image.js'
+        , '//include/vendor/jquery-file-upload/js/vendor/jquery.ui.widget.js'
+        , '//include/vendor/jquery-file-upload/js/jquery.iframe-transport.js'
+        , '//include/vendor/jquery-file-upload/js/jquery.fileupload.js'
     ),
     'report' => array(
          '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
@@ -72,6 +76,10 @@ $groups = array(
         , '//include/jquery.common.js'
         , '//include/vendor/humane-js/humane.js'
         , '//include/vendor/mustache-js/mustache.js'
+        , '//include/vendor/javascript-load-image/load-image.js'
+        , '//include/vendor/jquery-file-upload/js/vendor/jquery.ui.widget.js'
+        , '//include/vendor/jquery-file-upload/js/jquery.iframe-transport.js'
+        , '//include/vendor/jquery-file-upload/js/jquery.fileupload.js'
         , '//login/geonames.js'
         , '//include/jslibs/jquery.form.2.49.js'
         , '//include/jslibs/jquery.vertical.buttonset.js'
@@ -86,11 +94,14 @@ $groups = array(
         , '//prod/page0.js'
         , '//prod/jquery.WorkZone.js'
         , '//prod/jquery.Alerts.js'
+        , '//prod/jquery.Upload.js'
+        , '//include/jslibs/pixastic.custom.js'
+        , '//prod/ThumbExtractor.js'
         , '//prod/publicator.js'
         , '//prod/jquery.order.js'
         , '//include/jslibs/jquery.sprintf.1.0.3.js'
         , '//include/jquery.tooltip.js'
-        , '//include/jslibs/flowplayer/flowplayer-3.2.6.min.js'
+        , '//include/jslibs/flowplayer/flowplayer-3.2.11.min.js'
         , '//include/jquery.p4.preview.js'
         , '//prod/jquery.edit.js'
         , '//include/jslibs/jquery.color.animation.js'
@@ -106,18 +117,6 @@ $groups = array(
         , '//thesaurus2/xmlhttp.js'
         , '//thesaurus2/thesaurus.js'
     ),
-    'upload' => array(
-         '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
-        , '//include/jslibs/jquery.cookie.js'
-        , '//include/jquery.common.js'
-        , '//include/jslibs/jquery.sprintf.1.0.3.js'
-        , '//include/jquery.tooltip.js'
-        , '//upload/swfupload/swfupload.js'
-        , '//upload/js/swfupload.queue.js'
-        , '//upload/js/fileprogress.js'
-        , '//upload/js/handlers.js'
-        , '//upload/js/main.js'
-        , '//include/jslibs/jquery.contextmenu_scroll.js'),
     'lightbox' => array(
          '//include/jslibs/jquery.mousewheel.js'
         , '//include/jquery.tooltip.js'
@@ -128,7 +127,7 @@ $groups = array(
         , '//include/jslibs/jquery.contextmenu_scroll.js'
         , '//include/jquery.common.js'
         , '//skins/lightbox/jquery.lightbox.js'
-        , '//include/jslibs/flowplayer/flowplayer-3.2.6.min.js'
+        , '//include/jslibs/flowplayer/flowplayer-3.2.11.min.js'
     ),
     'lightboxie6' => array(
          '//include/jslibs/jquery.mousewheel.js'
@@ -140,7 +139,7 @@ $groups = array(
         , '//include/jslibs/jquery.contextmenu_scroll.js'
         , '//include/jquery.common.js'
         , '//skins/lightbox/jquery.lightbox.ie6.js'
-        , '//include/jslibs/flowplayer/flowplayer-3.2.6.min.js'
+        , '//include/jslibs/flowplayer/flowplayer-3.2.11.min.js'
     )
 );
 
