@@ -1773,14 +1773,14 @@ class task_period_archive extends task_abstract
      * Archive File
      *
      * @param \DOMDocument $dom
-     * @param \DOMDocument $node
+     * @param \DOMElement  $node
      * @param string       $path
      * @param string       $path_archived
      * @param string       $path_error
      * @param array        $nodesToDel    out, filled with files to delete
      * @param integer      $grp_rid
      */
-    private function archiveFile(\DOMDocument $dom, \DOMDocument $node, $path, $path_archived, $path_error, array &$nodesToDel, $grp_rid = 0)
+    private function archiveFile(\DOMDocument $dom, \DOMElement $node, $path, $path_archived, $path_error, array &$nodesToDel, $grp_rid = 0)
     {
         $match = $node->getAttribute('match');
 
