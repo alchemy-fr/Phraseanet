@@ -8,7 +8,7 @@ require_once __DIR__ . '/ApiAbstract.inc';
 use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class ApiJsonApplication extends ApiAbstract
+class ApiJSONPApplication extends ApiAbstract
 {
 
     protected function evaluateResponseBadRequest(Response $response)
