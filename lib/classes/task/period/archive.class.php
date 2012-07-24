@@ -1771,7 +1771,7 @@ class task_period_archive extends task_abstract
      * Archive File
      *
      * @param \DOMDocument $dom
-     * @param \DOMDocument $node
+     * @param \DOMElement  $node
      * @param string       $path
      * @param string       $path_archived
      * @param string       $path_error
