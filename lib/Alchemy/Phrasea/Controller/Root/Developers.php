@@ -197,7 +197,7 @@ class Developers implements ControllerProviderInterface
             $error = true;
         }
 
-        return new JsonResponse(array('success' => ! $error));
+        return $app->json(array('success' => ! $error));
     }
 
     /**
@@ -229,7 +229,7 @@ class Developers implements ControllerProviderInterface
             $error = true;
         }
 
-        return new JsonResponse(array('success' => ! $error));
+        return $app->json(array('success' => ! $error));
     }
 
     /**
@@ -268,7 +268,7 @@ class Developers implements ControllerProviderInterface
             $error = true;
         }
 
-        return new JsonResponse(array('success' => ! $error, 'token'   => $accessToken));
+        return $app->json(array('success' => ! $error, 'token'   => $accessToken));
     }
 
     /**
@@ -296,7 +296,7 @@ class Developers implements ControllerProviderInterface
 
         $clientApp->set_grant_password((bool) $request->get('grant', false));
 
-        return new JsonResponse(array('success' => ! $error));
+        return $app->json(array('success' => ! $error));
     }
 
     /**

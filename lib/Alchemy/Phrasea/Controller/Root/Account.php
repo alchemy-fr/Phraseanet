@@ -450,7 +450,7 @@ class Account implements ControllerProviderInterface
 
         $account->set_revoked((bool) $request->get('revoke'), false);
 
-        return new JsonResponse(array('success' => ! $error));
+        return $app->json(array('success' => ! $error));
     }
 
     /**
