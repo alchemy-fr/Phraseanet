@@ -53,7 +53,7 @@ return call_user_func(function() {
                     }
 
                     return new Response($buffer, 200, array('Content-Type' => 'text/plain'));
-                });
+                })->bind('robots');
 
             $app->mount('/feeds/', new RSSFeeds());
             $app->mount('/account/', new Account());

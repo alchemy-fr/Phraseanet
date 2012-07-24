@@ -32,7 +32,8 @@ class Login implements ControllerProviderInterface
         $controllers->get('/', $this->call('login'))
             ->before(function() use ($app) {
                     return $app['phraseanet.core']['Firewall']->requireNotAuthenticated($app);
-                });
+                })
+            ->bind('homepage');
 
         /**
          * Logout
