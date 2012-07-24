@@ -209,12 +209,11 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         return $this->assertRegExp('/\d{4}[-]\d{2}[-]\d{2}[T]\d{2}[:]\d{2}[:]\d{2}[+]\d{2}[:]\d{2}/', $date);
     }
 
-    protected function set_user_agent($user_agent)
+    protected function set_user_agent($user_agent, Alchemy\Phrasea\Application $app)
     {
-        $browser = Browser::getInstance();
-        $browser->setUserAgent($user_agent);
-        //reset twg instance
-        $this->resetTwig();
+        $app['browser']->setUserAgent($user_agent);
+        $app->register(new \Silex\Provider\TwigServiceProvider());
+        $app->setupTwig();
     }
 
     /**
@@ -492,25 +491,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         }
 
         return;
-    }
-
-    /**
-     * Create a new instance of Twig service
-     * @return void
-     */
-    protected function resetTwig()
-    {
-        $configuration = self::$core->getConfiguration();
-
-        $serviceName = $configuration->getTemplating();
-        $confService = $configuration->getService($serviceName);
-
-        $templateService = \Alchemy\Phrasea\Core\Service\Builder::create(
-                self::$core
-                , $confService
-        );
-
-        $this->app['phraseanet.core']["Twig"] = $templateService->getDriver();
     }
 
     /**

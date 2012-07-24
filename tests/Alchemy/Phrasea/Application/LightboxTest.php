@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 {
+    protected $app;
     protected $client;
     protected $feed;
     protected $entry;
@@ -33,35 +34,36 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function createApplication()
     {
-        $app = require __DIR__ . '/../../../../lib/Alchemy/Phrasea/Application/Lightbox.php';
+        $this->app = require __DIR__ . '/../../../../lib/Alchemy/Phrasea/Application/Lightbox.php';
 
-        $app['debug'] = true;
-        unset($app['exception_handler']);
+        $this->app['debug'] = true;
+        unset($this->app['exception_handler']);
 
-        return $app;
+        return $this->app;
     }
 
     public function testRouteSlash()
     {
         $baskets = $this->insertFiveBasket();
 
-        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC);
+        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, $this->app);
 
         $crawler = $this->client->request('GET', '/');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $this->assertEquals('UTF-8', $this->client->getResponse()->getCharset());
         $this->assertEquals(5, $crawler->filter('div.basket_wrapper')->count());
 
-        $this->set_user_agent(self::USER_AGENT_IE6);
+        $this->set_user_agent(self::USER_AGENT_IE6, $this->app);
 
         $crawler = $this->client->request('GET', '/');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $this->assertEquals('UTF-8', $this->client->getResponse()->getCharset());
         $this->assertEquals($crawler->filter('div.basket_wrapper')->count(), count($baskets));
 
-        $this->set_user_agent(self::USER_AGENT_IPHONE);
+        $this->set_user_agent(self::USER_AGENT_IPHONE, $this->app);
 
         $crawler = $this->client->request('GET', '/');
+        var_dump($this->client->getResponse()->getContent());
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $this->assertEquals('UTF-8', $this->client->getResponse()->getCharset());
     }
@@ -71,19 +73,19 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $basket = $this->insertOneValidationBasket();
         $basket_element = $basket->getELements()->first();
 
-        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC);
+        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, $this->app);
 
         $crawler = $this->client->request('GET', '/ajax/NOTE_FORM/' . $basket_element->getId() . '/');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $this->assertEquals('', trim($this->client->getResponse()->getContent()));
 
-        $this->set_user_agent(self::USER_AGENT_IE6);
+        $this->set_user_agent(self::USER_AGENT_IE6, $this->app);
 
         $crawler = $this->client->request('GET', '/ajax/NOTE_FORM/' . $basket_element->getId() . '/');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $this->assertEquals('', trim($this->client->getResponse()->getContent()));
 
-        $this->set_user_agent(self::USER_AGENT_IPHONE);
+        $this->set_user_agent(self::USER_AGENT_IPHONE, $this->app);
 
         $crawler = $this->client->request('GET', '/ajax/NOTE_FORM/' . $basket_element->getId() . '/');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -94,7 +96,7 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $basket_element = $this->insertOneBasketElement();
 
-        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC);
+        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, $this->app);
 
         $crawler = $this->client->request('GET', '/ajax/LOAD_BASKET_ELEMENT/' . $basket_element->getId() . '/');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -110,7 +112,7 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertObjectHasAttribute('note_html', $datas);
         $this->assertObjectHasAttribute('caption', $datas);
 
-        $this->set_user_agent(self::USER_AGENT_IE6);
+        $this->set_user_agent(self::USER_AGENT_IE6, $this->app);
 
         $crawler = $this->client->request('GET', '/ajax/LOAD_BASKET_ELEMENT/' . $basket_element->getId() . '/');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -126,7 +128,7 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertObjectHasAttribute('note_html', $datas);
         $this->assertObjectHasAttribute('caption', $datas);
 
-        $this->set_user_agent(self::USER_AGENT_IPHONE);
+        $this->set_user_agent(self::USER_AGENT_IPHONE, $this->app);
 
         $crawler = $this->client->request('GET', '/ajax/LOAD_BASKET_ELEMENT/' . $basket_element->getId() . '/');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -135,7 +137,7 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testAjaxFeedItem()
     {
-        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC);
+        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, $this->app);
 
         $crawler = $this->client->request('GET', '/ajax/LOAD_FEED_ITEM/' . $this->entry->get_id() . '/' . $this->item->get_id() . '/');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -151,7 +153,7 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertObjectHasAttribute('note_html', $datas);
         $this->assertObjectHasAttribute('caption', $datas);
 
-        $this->set_user_agent(self::USER_AGENT_IE6);
+        $this->set_user_agent(self::USER_AGENT_IE6, $this->app);
 
         $crawler = $this->client->request('GET', '/ajax/LOAD_FEED_ITEM/' . $this->entry->get_id() . '/' . $this->item->get_id() . '/');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -167,7 +169,7 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertObjectHasAttribute('note_html', $datas);
         $this->assertObjectHasAttribute('caption', $datas);
 
-        $this->set_user_agent(self::USER_AGENT_IPHONE);
+        $this->set_user_agent(self::USER_AGENT_IPHONE, $this->app);
 
         $crawler = $this->client->request('GET', '/ajax/LOAD_FEED_ITEM/' . $this->entry->get_id() . '/' . $this->item->get_id() . '/');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -179,19 +181,19 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
         $basket = $this->insertOneValidationBasket();
 
-        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC);
+        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, $this->app);
 
         $crawler = $this->client->request('GET', '/validate/' . $basket->getId() . '/');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $this->assertEquals('UTF-8', $this->client->getResponse()->getCharset());
 
-        $this->set_user_agent(self::USER_AGENT_IE6);
+        $this->set_user_agent(self::USER_AGENT_IE6, $this->app);
 
         $crawler = $this->client->request('GET', '/validate/' . $basket->getId() . '/');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $this->assertEquals('UTF-8', $this->client->getResponse()->getCharset());
 
-        $this->set_user_agent(self::USER_AGENT_IPHONE);
+        $this->set_user_agent(self::USER_AGENT_IPHONE, $this->app);
 
         $crawler = $this->client->request('GET', '/validate/' . $basket->getId() . '/');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -202,19 +204,19 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $basket = $this->insertOneBasket();
 
-        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC);
+        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, $this->app);
 
         $crawler = $this->client->request('GET', '/compare/' . $basket->getId() . '/');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $this->assertEquals('UTF-8', $this->client->getResponse()->getCharset());
 
-        $this->set_user_agent(self::USER_AGENT_IE6);
+        $this->set_user_agent(self::USER_AGENT_IE6, $this->app);
 
         $crawler = $this->client->request('GET', '/compare/' . $basket->getId() . '/');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $this->assertEquals('UTF-8', $this->client->getResponse()->getCharset());
 
-        $this->set_user_agent(self::USER_AGENT_IPHONE);
+        $this->set_user_agent(self::USER_AGENT_IPHONE, $this->app);
 
         $crawler = $this->client->request('GET', '/compare/' . $basket->getId() . '/');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -223,19 +225,19 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testFeedEntry()
     {
-        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC);
+        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, $this->app);
 
         $crawler = $this->client->request('GET', '/feeds/entry/' . $this->entry->get_id() . '/');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $this->assertEquals('UTF-8', $this->client->getResponse()->getCharset());
 
-        $this->set_user_agent(self::USER_AGENT_IE6);
+        $this->set_user_agent(self::USER_AGENT_IE6, $this->app);
 
         $crawler = $this->client->request('GET', '/feeds/entry/' . $this->entry->get_id() . '/');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $this->assertEquals('UTF-8', $this->client->getResponse()->getCharset());
 
-        $this->set_user_agent(self::USER_AGENT_IPHONE);
+        $this->set_user_agent(self::USER_AGENT_IPHONE, $this->app);
 
         $crawler = $this->client->request('GET', '/feeds/entry/' . $this->entry->get_id() . '/');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -246,7 +248,7 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $validationBasket = $this->insertOneValidationBasket();
 
-        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC);
+        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, $this->app);
         $crawler = $this->client->request('GET', '/ajax/LOAD_REPORT/' . $validationBasket->getId() . '/');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $this->assertEquals('UTF-8', $this->client->getResponse()->getCharset());

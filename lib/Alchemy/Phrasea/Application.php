@@ -28,20 +28,7 @@ class Application extends SilexApplication
         $this->register(new UrlGeneratorServiceProvider());
         $this->register(new BrowserServiceProvider());
 
-        if ($this['browser']->isTablet() || $this['browser']->isMobile()) {
-            $twig_paths = array(
-                realpath(__DIR__ . '/../../../config/templates/mobile'),
-                realpath(__DIR__ . '/../../../templates/mobile'),
-            );
-        } else {
-            $twig_paths = array(
-                realpath(__DIR__ . '/../../../config/templates/web'),
-                realpath(__DIR__ . '/../../../templates/web'),
-            );
-        }
-
         $this->register(new TwigServiceProvider(), array(
-            'twig.path'    => $twig_paths,
             'twig.options' => array(
                 'cache' => realpath(__DIR__ . '/../../../../../../tmp/cache_twig/'),
             )
@@ -67,10 +54,24 @@ class Application extends SilexApplication
 //        $this->register(new \Silex\Provider\UrlGeneratorServiceProvider());
     }
 
-    private function setupTwig()
+    public function setupTwig()
     {
-        $app['twig'] = $this->share(
+
+        $app = $this;
+        $this['twig'] = $this->share(
             $this->extend('twig', function ($twig, $app) {
+
+                    if ($app['browser']->isTablet() || $app['browser']->isMobile()) {
+                        $app['twig.loader.filesystem']->setPaths(array(
+                            realpath(__DIR__ . '/../../../config/templates/mobile'),
+                            realpath(__DIR__ . '/../../../templates/mobile'),
+                        ));
+                    } else {
+                        $app['twig.loader.filesystem']->setPaths(array(
+                            realpath(__DIR__ . '/../../../config/templates/web'),
+                            realpath(__DIR__ . '/../../../templates/web'),
+                        ));
+                    }
 
                     $twig->addGlobal('session', $app['phraseanet.appbox']->get_session());
                     $twig->addGlobal('version_number', $app['phraseanet.core']->getVersion()->getNumber());
