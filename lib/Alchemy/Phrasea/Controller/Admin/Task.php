@@ -80,6 +80,112 @@ class Task implements ControllerProviderInterface
                         });
             });
 
+        /*
+         * route /admin/task/{id}/delete
+         *  delete a task
+         */
+        $controllers->get('/{id}/delete', function(Application $app, Request $request, $id) use ($appbox) {
+                $task_manager = new \task_manager($appbox);
+
+                try {
+                    $task = $task_manager->getTask($id);
+                    $task->delete();
+
+                    return $app->redirect('/admin/tasks/');
+                } catch (\Exception $e) {
+
+                    /*
+                     * todo : add a message back
+                     */
+                    return $app->redirect('/admin/tasks/');
+                }
+            });
+
+        /*
+         * route /admin/task/{id}/start
+         *  set a task to 'tostart'
+         */
+        $controllers->get('/{id}/tostart', function(Application $app, Request $request, $id) use ($appbox) {
+                $task_manager = new \task_manager($appbox);
+
+                $ret = false;
+                try {
+                    $task = $task_manager->getTask($id);
+                    $pid = (int) ($task->getPID());
+                    if ( ! $pid) {
+                        $task->setState(\task_abstract::STATE_TOSTART);
+                        $ret = true;
+                    }
+                } catch (Exception $e) {
+
+                }
+
+                return $app->json($ret);
+            });
+
+        /*
+         * route /admin/task/{id}/stop
+         *  set a task to 'tostop'
+         */
+        $controllers->get('/{id}/tostop', function(Application $app, Request $request, $id) use ($appbox) {
+                $task_manager = new \task_manager($appbox);
+
+                $ret = false;
+                try {
+                    $task = $task_manager->getTask($id);
+                    $pid = $task->getPID();
+                    $signal = $request->get('signal');
+                    $task->setState(\task_abstract::STATE_TOSTOP);
+
+                    if ((int) $pid > 0 && (int) $signal > 0 && function_exists('posix_kill')) {
+                        posix_kill((int) $pid, (int) $signal);
+                    }
+
+                    $ret = true;
+                } catch (Exception $e) {
+
+                }
+
+                return $app->json($ret);
+            });
+
+        /*
+         * route /admin/task/{id}/resetcrashcounter
+         * return json
+         */
+        $controllers->get('/{id}/resetcrashcounter', function(Application $app, Request $request, $id) use ($appbox) {
+                $task_manager = new \task_manager($appbox);
+
+                try {
+                    $task = $task_manager->getTask($id);
+
+                    $task->resetCrashCounter();
+
+                    return $app->json(true);
+                } catch (\Exception $e) {
+
+                    return $app->json(false);
+                }
+            });
+
+        /*
+         * route /admin/task/{id}
+         *  render a task editing interface
+         */
+        $controllers->get('/{id}', function(Application $app, Request $request, $id) use ($appbox) {
+
+                $task_manager = new \task_manager($appbox);
+                $task = $task_manager->getTask($id);
+
+                /* @var $twig \Twig_Environment */
+                $twig = $app['phraseanet.core']->getTwig();
+                $template = 'admin/task.html';
+                return $twig->render($template, array(
+                        'task' => $task,
+                        'view' => 'XML'
+                    ));
+            });
+
         return $controllers;
     }
 }
