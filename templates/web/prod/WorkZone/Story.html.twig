@@ -69,7 +69,7 @@
     {% endif %}
 
     {% set basket_scope = 'groupings'%}
-    {% import 'prod/WorkZone/Macros.twig' as Macros %}
+    {% import 'prod/WorkZone/Macros.html.twig' as Macros %}
 
     {% for record in Story.get_children().get_elements() %}
         <span class="wrapCHIM_{{ record.get_serialize_key() }}">

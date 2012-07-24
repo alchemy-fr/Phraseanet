@@ -97,13 +97,11 @@ class Authenticate implements ControllerProviderInterface
                 return $app->redirect("/login/?redirect=" . $request->get('redirect') . "&error=" . _('An error occured'));
             }
 
-            $browser = \Browser::getInstance();
-
-            if ($browser->isMobile()) {
+            if ($app['browser']->isMobile()) {
                 return $app->redirect("/lightbox/");
             } elseif ($request->get('redirect')) {
                 return $app->redirect($request->get('redirect'));
-            } elseif (true !== $browser->isNewGeneration()) {
+            } elseif (true !== $app['browser']->isNewGeneration()) {
                 return $app->redirect('/client/');
             } else {
                 return $app->redirect('/prod/');

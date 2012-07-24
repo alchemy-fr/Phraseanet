@@ -98,12 +98,9 @@ class Root implements ControllerProviderInterface
                     }
                 }
 
-                /* @var $twig \Twig_Environment */
-                $twig = $app['phraseanet.core']->getTwig();
-
                 $Serializer = $app['phraseanet.core']['Serializer'];
 
-                $out = $twig->render('prod/index.html.twig', array(
+                $out = $app['twig']->render('prod/index.html.twig', array(
                     'module_name'          => 'Production',
                     'WorkZone'             => new Helper\WorkZone($app['phraseanet.core'], $app['request']),
                     'module_prod'          => new Helper\Prod($app['phraseanet.core'], $app['request']),

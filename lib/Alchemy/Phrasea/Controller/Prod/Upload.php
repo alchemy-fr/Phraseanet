@@ -121,7 +121,7 @@ class Upload implements ControllerProviderInterface
 
         $maxFileSize = min(UploadedFile::getMaxFilesize(), (int) $postMaxSize);
 
-        $html = $app['phraseanet.core']['Twig']->render(
+        $html = $app['twig']->render(
             'prod/upload/upload.html.twig', array(
             'collections'         => $collections,
             'maxFileSize'         => $maxFileSize,

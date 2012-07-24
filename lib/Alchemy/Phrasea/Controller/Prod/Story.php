@@ -36,10 +36,8 @@ class Story implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->get('/create/', function(Application $app) {
-                /* @var $twig \Twig_Environment */
-                $twig = $app['phraseanet.core']->getTwig();
 
-                return new Response($twig->render('prod/Story/Create.html.twig', array()));
+                return new Response($app['twig']->render('prod/Story/Create.html.twig', array()));
             });
 
         $controllers->post('/', function(Application $app, Request $request) {
@@ -127,10 +125,7 @@ class Story implements ControllerProviderInterface
         $controllers->get('/{sbas_id}/{record_id}/', function(Application $app, $sbas_id, $record_id) {
                 $Story = new \record_adapter($sbas_id, $record_id);
 
-                /* @var $twig \Twig_Environment */
-                $twig = $app['phraseanet.core']->getTwig();
-
-                $html = $twig->render('prod/WorkZone/Story.html.twig', array('Story' => $Story));
+                $html = $app['twig']->render('prod/WorkZone/Story.html.twig', array('Story' => $Story));
 
                 return new Response($html);
             })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
@@ -235,11 +230,8 @@ class Story implements ControllerProviderInterface
                         throw new \Exception('This is not a story');
                     }
 
-                    /* @var $twig \Twig_Environment */
-                    $twig = $app['phraseanet.core']->getTwig();
-
                     return new Response(
-                            $twig->render(
+                            $app['twig']->render(
                                 'prod/Story/Reorder.html.twig'
                                 , array('story' => $story)
                             )

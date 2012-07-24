@@ -93,52 +93,22 @@ if ($user->ACL()->has_right_on_sbas($sbas_id, 'bas_manage')) {
 }
 ?>
 
-        <script type="text/javascript">
-<?php
-if ($parm['act']) {
-    print("reloadTree('base:" . $parm['p0'] . "');");
-}
-?>
-        function sendLogopdf()
-        {
-            document.forms["flpdf"].target = "";
-            document.forms["flpdf"].act.value = "SENDLOGOPDF";
-            document.forms["flpdf"].submit();
-        }
+<script type="text/javascript">
+    <?php
+    if ($parm['act']) {
+        print("reloadTree('base:" . $parm['p0'] . "');");
+    }
+    ?>
+    function sendLogopdf()
+    {
+        document.forms["flpdf"].target = "";
+        document.forms["flpdf"].act.value = "SENDLOGOPDF";
+        document.forms["flpdf"].submit();
+    }
 
-        function deleteLogoPdf()
-        {
-            if(confirm("<?php echo _('admin::base: Supprimer le logo pour impression') ?>"))
-            {
-                $.ajax({
-                    type: "POST",
-                    url: "/admin/adminFeedback.php",
-                    dataType: 'json',
-                    data: { action:"DELLOGOPDF", p0:<?php echo $sbas_id ?>},
-                    success: function(data){
-                        $("#printLogoDIV_OK").hide();
-                        $("#printLogoDIV_NONE").show();
-                    }
-                });
-            }
-        }
-
-        function reindex()
-        {
-            if(confirm('<?php echo str_replace("'", "\'", _('Confirmez-vous la re-indexation de la base ?')); ?>'))
-            {
-                $.ajax({
-                    type: "POST",
-                    url: "/admin/adminFeedback.php",
-                    dataType: 'json',
-                    data: { action:"REINDEX", sbas_id:<?php echo $sbas_id ?>},
-                    success: function(data){
-                    }
-                });
-            }
-        }
-
-        function makeIndexable(el)
+    function deleteLogoPdf()
+    {
+        if(confirm("<?php echo _('admin::base: Supprimer le logo pour impression') ?>"))
         {
             $.ajax({
                 type: "POST",
@@ -151,6 +121,35 @@ if ($parm['act']) {
                 }
             });
         }
+    }
+
+    function reindex()
+    {
+        if(confirm('<?php echo str_replace("'", "\'", _('Confirmez-vous la re-indexation de la base ?')); ?>'))
+        {
+            $.ajax({
+                type: "POST",
+                url: "/admin/adminFeedback.php",
+                dataType: 'json',
+                data: { action:"REINDEX", sbas_id:<?php echo $sbas_id ?>},
+                success: function(data){
+                }
+            });
+        }
+    }
+
+    function makeIndexable(el)
+    {
+        $.ajax({
+            type: "POST",
+            url: "/admin/adminFeedback.php",
+            dataType: 'json',
+            data: { action:"DELLOGOPDF", p0:<?php echo $sbas_id ?>},
+            success: function(data){
+                $("#printLogoDIV_OK").hide();
+                $("#printLogoDIV_NONE").show();
+            }
+        });
     }
     function reindex()
     {
@@ -209,24 +208,24 @@ if ($parm['act']) {
                 }
             });
         }
-
-        function clearAllLog()
-        {
-            if(confirm("<?php echo _('admin::base: Confirmer la suppression de tous les logs') ?>"))
-            {
-                $.ajax({
-                    type: "POST",
-                    url: "/admin/adminFeedback.php",
-                    dataType: 'json',
-                    data: { action:"CLEARALLLOG", sbas_id:<?php echo $sbas_id ?>
-                    },
-                    success: function(data){
-                    }
-                });
-            }
-        });
-        setTimeout("refreshContent();", 6000);
     }
+
+    function clearAllLog()
+    {
+        if(confirm("<?php echo _('admin::base: Confirmer la suppression de tous les logs') ?>"))
+        {
+            $.ajax({
+                type: "POST",
+                url: "/admin/adminFeedback.php",
+                dataType: 'json',
+                data: { action:"CLEARALLLOG", sbas_id:<?php echo $sbas_id ?>
+                },
+                success: function(data){
+                }
+            });
+        }
+    };
+    setTimeout("refreshContent();", 6000);
 
     function deleteBase()
     {
@@ -302,47 +301,91 @@ if ($parm['act']) {
             document.forms["manageDatabase"].sta.value = sta;
             document.forms["manageDatabase"].submit();
         }
+    }
 
-        function chgOrd(srt)
-        {
-            document.forms["manageDatabase"].target = "";
-            document.forms["manageDatabase"].act.value = "";
-            document.forms["manageDatabase"].sta.value = "1";
-            document.forms["manageDatabase"].srt.value = srt;
-            document.forms["manageDatabase"].submit();
-        }
+    function chgOrd(srt)
+    {
+        document.forms["manageDatabase"].target = "";
+        document.forms["manageDatabase"].act.value = "";
+        document.forms["manageDatabase"].sta.value = "1";
+        document.forms["manageDatabase"].srt.value = srt;
+        document.forms["manageDatabase"].submit();
+    }
 
-        $(document).ready(function(){
-            refreshContent();
+    function refreshContent()
+    {
+        $.ajax({
+            type: "POST",
+            url: "/admin/adminFeedback.php",
+            dataType: 'json',
+            data: { action:"P_BAR_INFO", sbas_id:"<?php echo $sbas_id ?>"},
+            success: function(data){
+                __viewname = data.viewname;
+
+                if(data.viewname == '') {
+                    $("#viewname").html("<i><?php echo(_('admin::base: aucun alias')) ?></i>");
+                } else {
+                    $("#viewname").html("<b>"+data.viewname+"</b>");
+                }
+
+                $("#nrecords").text(data.records);
+                $("#is_indexable").attr('checked', data.indexable);
+                $("#xml_indexed").text(data.xml_indexed);
+                $("#thesaurus_indexed").text(data.thesaurus_indexed);
+
+                if(data.records > 0)
+                {
+                    var p;
+                    p = 100*data.xml_indexed/data.records;
+                    $("#xml_indexed_bar").width(Math.round(2*p)); // 0..200px
+                    $("#xml_indexed_percent").text((Math.round(p*100)/100)+" %");
+                    p = 100*data.thesaurus_indexed/data.records;
+                    $("#thesaurus_indexed_bar").width(Math.round(2*p));
+                    $("#thesaurus_indexed_percent").text((Math.round(p*100)/100)+" %");
+                }
+                if(data.printLogoURL)
+                {
+                    $("#printLogo").attr("src", data.printLogoURL);
+                    $("#printLogoDIV_NONE").hide();
+                    $("#printLogoDIV_OK").show();
+                }
+                else
+                {
+                    $("#printLogoDIV_OK").hide();
+                    $("#printLogoDIV_NONE").show();
+                }
+            }
         });
-        </script>
+    }
+
+    $(document).ready(function(){
+        refreshContent();
+    });
+</script>
 
 <?php
 $out = "";
 ?>
-        <div class="db_box">
-            <h2><?php echo $databox->get_serialized_server_info(); ?></h2>
-            <p>ID : <?php echo($sbas_id) ?></p>
-            <p>
-                <?php echo(_("admin::base: Alias")) ?> : <span id="viewname"></span>
-                <?php
-                if ($user->ACL()->has_right_on_sbas($sbas_id, "bas_manage")) {
-                    ?>
-                    <img src="/skins/icons/edit_0.gif" onclick="chgViewName();return(false);" />
-                <?php
-                }
-                ?>
-            </p>
-                <?php
-            }
+<div class="db_box">
+    <h2><?php echo $databox->get_serialized_server_info(); ?></h2>
+    <p>ID : <?php echo($sbas_id) ?></p>
+    <p>
+        <?php echo(_("admin::base: Alias")) ?> : <span id="viewname"></span>
+        <?php
+        if ($user->ACL()->has_right_on_sbas($sbas_id, "bas_manage")) {
             ?>
-        </div>
+            <img src="/skins/icons/edit_0.gif" onclick="chgViewName();return(false);" />
+        <?php
+        }
+        ?>
+    </p>
+</div>
             <?php
             $nrecords = $databox->get_record_amount();
 
-                $out .= "<p>";
-                // stats sur la base distante
-                $out .= _('admin::base: nombre d\'enregistrements sur la base :') . ' ' . '<span id="nrecords"></span> ';
+            $out .= "<p>";
+            // stats sur la base distante
+            $out .= _('admin::base: nombre d\'enregistrements sur la base :') . ' ' . '<span id="nrecords"></span> ';
 
             if ((int) $parm["sta"] < 1) {
                 $out .= " (<a href=\"javascript:void(0);\" onclick=\"showDetails(1);return(false);\">" . _('phraseanet:: details') . "</a>)";
@@ -457,6 +500,7 @@ $out = "";
                     $out .= "</tbody></table>";
                     $out .= "</p>";
                 }
+            }
 
             print($out);
             ?>

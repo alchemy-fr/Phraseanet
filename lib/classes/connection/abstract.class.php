@@ -32,20 +32,6 @@ abstract class connection_abstract extends PDO
     }
 
     /**
-     * html debug message from PDOException object
-     * @param PDOException $e
-     */
-    public static function html_pdo_exception(PDOException $e)
-    {
-        $p = array('e' => $e);
-
-        $core = \bootstrap::getCore();
-        $twig = $core->getTwig();
-
-        return $twig->render('common/pdo_exception.html', $p);
-    }
-
-    /**
      *
      * @return string
      */

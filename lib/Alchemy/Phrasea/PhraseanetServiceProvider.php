@@ -10,7 +10,7 @@ class PhraseanetServiceProvider implements ServiceProviderInterface
 
     public function register(SilexApplication $app)
     {
-        $app['phraseanet.core'] = $app->share(function() {
+        $app['phraseanet.core'] = $app->share(function($app) {
             return \bootstrap::getCore();
         });
 

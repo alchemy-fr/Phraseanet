@@ -1,0 +1,56 @@
+{% extends "common/index_bootstrap.html.twig" %}
+
+{% block stylesheet %}
+    <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,skins/report/jquery-ui.css,skins/report/jquery-ui-2.css,skins/report/report-table.css,skins/report/jquery.cluetip.css,include/jslibs/jquery.contextmenu.css" media="screen" />
+    <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/report/print.css" media="print" />
+{% endblock stylesheet %}
+
+{% block icon %}
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+{% endblock  icon%}
+
+{% block javascript %}
+    <script type="text/javascript" >
+
+            var usrId = '{{ dashboard.usr.get_id() }}' ;
+
+            var language = {
+                valider : '{% trans "boutton::valider" %}',
+                choix_collection : '{% trans "veuillez choisir au minimum une collection" %}',
+                annuler : '{% trans "boutton::annuler" %}',
+                fermer : '{% trans "boutton::fermer" %}',
+        connexion : '{% trans "report:: Connexion" %}',
+        heure : '{% trans "report::Heures" %}'
+            };
+
+            var date = {
+                dmin :  '{{ dashboard.dmin }}',
+                dmax : '{{ dashboard.dmax }}'
+            };
+
+            var dashboard ={
+                title_connexion : '{% trans "report::Nombre de connexions" %}',
+                title_jour : '{% trans "report:: jour" %}',
+                title_heure : '{% trans "report:: Heures" %}',
+                title_doc_add: '{% trans "report::Nombre de document ajoute" %}',
+                title_doc_edit:'{% trans "report::Nombre de document edite" %}'
+            }
+
+    </script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <script type="text/javascript" src="/include/jslibs/jquery-1.7.1.js"></script>
+  <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
+    <script type="text/javascript" src="/include/minify/g=report"></script>
+    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery.gvChart-0.1.js"></script>
+    <script type="text/javascript">
+        gvChartInit();
+    </script>
+
+{% endblock javascript%}
+
+{% block content %}
+  {% block report_layout %}
+  {% endblock report_layout %}
+  <div id="DIALOG" style="color:white;"></div>
+{% endblock content %}
+

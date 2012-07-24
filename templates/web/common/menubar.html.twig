@@ -1,0 +1,195 @@
+<div id="mainMenu" class="PNB">
+    <div class="PNB" style="right:auto;overflow:hidden;">
+      <ol>
+        <li>
+            <span class="title {% if module == "prod" %}selected{% endif %}">
+              Phraseanet
+            </span>
+        </li>
+        {% if session.is_authenticated %}
+          <li>
+            {% if module == "prod" %}
+              <a target="_self" href="/client/">
+                <span class="">
+                  {% trans 'admin::monitor: Ancienne version (client)' %}
+                </span>
+              </a>
+            {% else %}
+              {% if browser.isNewGeneration %}
+                {% if module == "client" %}
+                  <a target="_self" href="/prod/">
+                    <span class="">
+                      {% trans 'admin::monitor: Nouvelle version (prod)' %}
+                    </span>
+                  </a>
+                {% else %}
+                  <a target="_blank" href="/prod/">
+                    <span class="">
+                      {% trans 'admin::monitor: production' %}
+                    </span>
+                  </a>
+                {% endif %}
+              {% endif %}
+            {% endif %}
+          </li>
+
+          {% if browser.isNewGeneration and registry.get('GV_thesaurus') == true and user.ACL.has_access_to_module('thesaurus') %}
+          <li>
+            <a target="_blank" href="/thesaurus2/">
+              <span class="{% if module == "thesaurus" %}selected{% endif %}">
+              {% trans 'admin::monitor: module thesaurus' %}
+              </span>
+            </a>
+          </li>
+          {% endif %}
+
+
+          {# MODULE #}
+          {% if user.ACL.has_access_to_module('admin') %}
+          <li>
+            <a target="_blank" href="/admin/">
+              <span class="{% if module == "admin" %}selected{% endif %}">
+                {% trans 'admin::monitor: module admin' %}
+              </span>
+            </a>
+          </li>
+          {% endif %}
+
+          {# MODULE #}
+          {% if user.ACL.has_access_to_module('report') %}
+          <li>
+            <a target="_blank" href="/report/">
+              <span class="{% if module == "report" %}selected{% endif %}">
+                {% trans 'admin::monitor: module report' %}
+              </span>
+            </a>
+          </li>
+          {% endif %}
+
+          {# MODULE #}
+          <li>
+            <a id="validation_link" target="_blank" href="/lightbox/">
+              <span class="{% if module == "lightbox" %}selected{% endif %}">
+              {% trans 'admin::monitor: module validation' %}
+              </span>
+            </a>
+          </li>
+
+          {# MODULE #}
+          {% if module == "prod" %}
+            {% if user.ACL.has_access_to_module('upload') %}
+            <li>
+                <a  href="/prod/upload/" class="dialog full-dialog" title="{% trans 'Upload' %}">
+                <span>
+                    {% trans 'admin::monitor: module upload' %}
+                </span>
+                </a>
+            </li>
+            {% endif %}
+          {% endif %}
+
+          {# MODULE #}
+          {% if module == "prod" or module == "client" %}
+          <li>
+            <a href="#" onclick="getHome('PUBLI');" >
+              <span>
+                {% trans 'Publications' %}
+              </span>
+            </a>
+          </li>
+          {% endif %}
+
+          {% if module == "prod" and user.ACL.has_right('order_master') %}
+          <li>
+            <a href="#" class="order_launcher">
+              <span>
+                {% trans 'Commandes' %}
+              </span>
+            </a>
+          </li>
+          {% endif %}
+
+        {% endif %}
+      </ol>
+
+    </div>
+    <div class="PNB" style="left:auto;overflow:hidden;">
+      <ol>
+
+    {% if module == "client" or module == "prod" %}
+        <li id="notification_trigger">
+          <a href="#" style="font-weight:bold;text-decoration:none;">
+            <span>
+              {% trans 'Notifications' %}
+              <button class="counter btn btn-danger" style="visibility:{% if events.get_unread_notifications_number > 0 %}visible{% else %}hidden{% endif %};">
+                  {% if events.get_unread_notifications_number > 0 %}
+                    {{events.get_unread_notifications_number}}
+                  {% endif %}
+              </button>
+            </span>
+          </a>
+        </li>
+
+        {% endif %}
+        <li>
+          {% if session.is_authenticated %}
+            {% if user.is_guest %}
+              <span>
+                {% trans 'Guest' %}
+              </span>
+            {% else %}
+              <a target="_blank" href="/account/" title="{% trans 'login:: Mon compte' %}">
+                <span>
+                  {{user.get_login()}}
+                </span>
+              </a>
+            {% endif %}
+          {% endif %}
+        </li>
+        <li>
+          <a target="_blank" href="https://docs.phraseanet.com/3.8/">
+            <span>
+              {% trans 'phraseanet:: aide' %}
+              <span style="display:inline-block;cursor:pointer;padding:0;border:none;" id="help-trigger"> &#9660;</span>
+            </span>
+          </a>
+          <table cellspacing="0" cellpadding="0" style="display:none;" class="contextMenu helpcontextmenu">
+              <tbody>
+                  <tr>
+                      <td>
+                          <div class="context-menu context-menu-theme-vista">
+                          {% if module == "prod" %}
+                              <div title="" class="context-menu-item menu3-custom-item">
+                                  <div style="" class="context-menu-item-inner shortcuts-trigger">
+                                          {% trans 'phraseanet:: raccourcis clavier' %}
+                                  </div>
+                              </div>
+                          {% endif %}
+                              <div title="" class="context-menu-item menu3-custom-item">
+                                  <div style="" class="context-menu-item-inner infoDialog" infos="<div><span style='color:#F7F7F7;font-size:18px;'>PHRASEANET</span> {{version_name}} (V{{version_number}})</div><div></div><br/><div><a href='http://www.gnu.org/licenses/gpl.html' target='_blank'><img src='http://www.gnu.org/graphics/gplv3-88x31.png' style='vertical-align:middle;'/><span>License GNU GPL v3</span></a></div><br/><div><a href='http://www.phraseanet.com/' target='_blank'>  &copy; Copyright Alchemy 2005-{{ "now"|date("Y") }}</a></div>">{% trans 'phraseanet:: a propos' %}</div>
+                              </div>
+                          </div>
+                      </td>
+                  </tr>
+              </tbody>
+          </table>
+        </li>
+        <li>
+        {% if session.is_authenticated %}
+          <a href="/login/logout/?app={{module}}" target="_self">
+            <span>
+              {% trans 'phraseanet:: deconnection' %}
+            </span>
+          </a>
+        {% endif %}
+        </li>
+      </ol>
+
+
+    </div>
+</div>
+
+          <div style="display:none;z-index:30000;" id="notification_box">
+          {% set notifications = events.get_notifications %}
+          {% include 'prod/notifications.html.twig' %}
+          </div>

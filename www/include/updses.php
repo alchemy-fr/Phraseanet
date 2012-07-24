@@ -61,7 +61,7 @@ $browser = Browser::getInstance();
 $core = \bootstrap::getCore();
 $twig = $core->getTwig();
 
-$ret['notifications'] = $twig->render('prod/notifications.twig', array('notifications' => $notif));
+$ret['notifications'] = $twig->render('prod/notifications.html.twig', array('notifications' => $notif));
 
 $ret['changed'] = array();
 

@@ -34,8 +34,8 @@ class Publications implements ControllerProviderInterface
                         $app['phraseanet.appbox'], $app['phraseanet.core']->getAuthenticatedUser()
                 );
 
-                return $app['phraseanet.core']->getTwig()
-                        ->render('admin/publications/list.html', array('feeds' => $feeds));
+                return $app['twig']
+                        ->render('admin/publications/list.html.twig', array('feeds' => $feeds));
             });
 
         $controllers->post('/create/', function(PhraseaApplication $app, Request $request) {
@@ -58,7 +58,7 @@ class Publications implements ControllerProviderInterface
         $controllers->get('/feed/{id}/', function(PhraseaApplication $app, Request $request, $id) {
                 $feed = new \Feed_Adapter($app['phraseanet.appbox'], $id);
 
-                return $app['phraseanet.core']->getTwig()
+                return $app['twig']
                         ->render('admin/publications/fiche.html.twig', array('feed'  => $feed, 'error' => $app['request']->get('error')));
             })->assert('id', '\d+');
 

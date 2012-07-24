@@ -301,11 +301,11 @@ if (count($result->get_datas()) > 0) {
 
         try {
             $record->get_subdef('document');
-            $light_info = $twig->render('common/technical_datas.twig', array('record' => $record));
+            $light_info = $twig->render('common/technical_datas.html.twig', array('record' => $record));
         } catch (\Exception $e) {
             $light_info = '';
         }
-        $caption = $twig->render('common/caption.html', array('view'   => 'answer', 'record' => $record));
+        $caption = $twig->render('common/caption.html.twig', array('view'   => 'answer', 'record' => $record));
 
 
         if ($i == 0) {

@@ -52,8 +52,8 @@
         {
             "package": "imagine/Imagine",
             "version": "dev-develop",
-            "source-reference": "b761a2725267c7e68c5e8c559403cd0d19cb704c",
-            "commit-date": "1342901848"
+            "source-reference": "a9e70ca4c5f08630604caaa02359c3809247f616",
+            "commit-date": "1343106283"
         },
         {
             "package": "media-alchemyst/media-alchemyst",
@@ -116,8 +116,8 @@
         {
             "package": "pimple/pimple",
             "version": "dev-master",
-            "source-reference": "d2cfa2f02f50abef65c238747c753a5f6786f6be",
-            "commit-date": "1341139100"
+            "source-reference": "db836b8cfadc0f39dacafa2bf311a1ab603600bb",
+            "commit-date": "1343051648"
         },
         {
             "package": "silex/silex",
@@ -128,8 +128,8 @@
         {
             "package": "silex/silex",
             "version": "dev-master",
-            "source-reference": "b9277c0e378ff1bce2a3e974cb801b6d9b0b5d5f",
-            "commit-date": "1342380872"
+            "source-reference": "3ae77d823cc30dcfe4ec342614c8f400abb26657",
+            "commit-date": "1342943573"
         },
         {
             "package": "swftools/swftools",
@@ -150,14 +150,14 @@
         {
             "package": "symfony/symfony",
             "version": "dev-master",
-            "source-reference": "46071f3238f0670916a1f043a620df9616497012",
-            "commit-date": "1337808087"
+            "source-reference": "2aaa4ed84e56ad8e3420e696f6a42231d30bc1d2",
+            "commit-date": "1343064472"
         },
         {
             "package": "tcpdf/tcpdf",
             "version": "dev-master",
-            "source-reference": "8c874186166237b7909d6aa3d9aaae1ed6c4d245",
-            "commit-date": "1337808087"
+            "source-reference": "5.9.173",
+            "commit-date": "1343127876"
         },
         {
             "package": "twig/extensions",
@@ -212,8 +212,8 @@
         {
             "package": "behat/mink-goutte-driver",
             "version": "dev-master",
-            "source-reference": "v1.0.3",
-            "commit-date": "1341477036"
+            "source-reference": "192e58dfd26098385218d65637426c26d148d9b0",
+            "commit-date": "1343123643"
         },
         {
             "package": "behat/mink-selenium2-driver",
@@ -226,12 +226,6 @@
             "version": "dev-master",
             "source-reference": "779c3dfe446b6da893be87b908d6be28345d1e01",
             "commit-date": "1341780535"
-        },
-        {
-            "package": "fabpot/goutte",
-            "version": "dev-master",
-            "alias-pretty-version": "1.0.x-dev",
-            "alias-version": "1.0.9999999.9999999-dev"
         },
         {
             "package": "fabpot/goutte",

@@ -1,0 +1,26 @@
+{% import 'common/caption_templates/answer.html.twig' as cap_ans %}
+{% import 'common/caption_templates/basket_element.html.twig' as cap_bas %}
+{% import 'common/caption_templates/internal_publi.html.twig' as cap_pub %}
+{% import 'common/caption_templates/lazaret.html.twig' as cap_laz %}
+{% import 'common/caption_templates/overview.html.twig' as cap_ovr %}
+{% import 'common/caption_templates/preview.html.twig' as cap_prev %}
+
+{% if user %}
+  {% set business = user.ACL().has_right_on_base(record.get_base_id(), 'canmodifrecord') %}
+{% else %}
+  {% set business = false %}
+{% endif %}
+
+{% if view == 'answer' %}
+  {{cap_ans.format_caption(record, highlight|default(''), searchEngine|default(null), business)}}
+{% elseif view == 'lazaret' %}
+  {{cap_laz.format_caption(record, highlight|default(''), searchEngine|default(null), business)}}
+{% elseif view == 'preview' %}
+  {{cap_prev.format_caption(record, highlight|default(''), searchEngine|default(null), business)}}
+{% elseif view == 'basket' %}
+  {{cap_bas.format_caption(record, highlight|default(''), searchEngine|default(null), business)}}
+{% elseif view == 'overview' %}
+  {{cap_ovr.format_caption(record, highlight|default(''), searchEngine|default(null), business)}}
+{% elseif view == 'publi' %}
+  {{cap_pub.format_caption(record, '', null, business)}}
+{% endif %}

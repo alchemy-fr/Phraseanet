@@ -89,7 +89,7 @@ foreach ($feeds->get_aggregate()->get_entries(0, 5)->get_entries() as $entry) {
 
         $title = $record->get_title();
         $caption = $twig->render(
-            'common/caption.html', array('view'   => 'internal_publi', 'record' => $record)
+            'common/caption.html.twig', array('view'   => 'internal_publi', 'record' => $record)
         );
 
         $preview = "<div tooltipsrc='/prod/tooltip/preview/" . $record->get_sbas_id() . "/" . $record->get_record_id() . "/' class=\"previewTips\"></div>&nbsp;";

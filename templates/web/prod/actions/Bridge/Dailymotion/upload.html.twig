@@ -1,0 +1,100 @@
+{% extends "prod/actions/Bridge/wrapper.html.twig"%}
+{% import "prod/actions/Bridge/macro_error_form.html.twig" as error_form %}
+
+{% block menu %}
+  {% trans %}
+  Upload
+  {% endtrans %}
+{% endblock %}
+
+{% block response %}
+{% set elements_length = route.get_elements()|length %}
+{% set elements_received_length = route.get_count_element_received() %}
+
+{% if elements_received_length == 0 %}
+  {% trans 'Vous n\'avez selectionne aucun element' %}
+{% elseif elements_length == 0 %}
+  {% trans 'Les elements ne peuvent etre uploades (problemes de type ou de droit)' %}
+  {% trans 'Le bridge Dailymotion ne prend en charge que les videos' %}
+{% elseif elements_length > 1 %}
+  {% trans 'Vous ne pouvez uploader des elements sur Dailymotion qu\'un par un' %}
+{% else %}
+  {% for record in route.get_elements() %}
+    {% set caption = record.get_caption() %}
+    <form class='bridge_form' name="upload_form" action="/prod/bridge/upload/" method="post">
+      <input type="hidden" name="lst" value="{{ route.get_serialize_list() }}" />
+      <input type="hidden" name="account_id" value="{{ account.get_id() }}" />
+      <table>
+        <tr>
+          <td>
+            {% set name = "title_" ~ record.get_serialize_key() %}
+            <label for='{{name}}'>{% trans 'Titre' %}</label>
+            <div style="font-size:9px; font-weight:200">
+              {% trans "255 caracteres maximum" %}
+            </div>
+          </td>
+          <td>
+            <input class="required_field" type='text' name='{{name}}' value="{{ caption.get_dc_field('Title') is not none ? caption.get_dc_field('Title').get_serialized_values()|default(record.get_title()) : record.get_title()  }}"/>
+            <br />
+              {{ error_form.display_errors(name, constraint_errors) }}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {% set name = "description_" ~ record.get_serialize_key() %}
+            <label for='{{name}}'>{% trans 'Description' %}</label>
+            <div style="font-size:9px; font-weight:200">
+              {% trans "1000 caracteres maximum" %}
+            </div>
+          </td>
+          <td class='column_right'>
+            <textarea class="required_field" name="{{name}}" rows="5">{{ caption.get_dc_field('Description') is not none ? caption.get_dc_field('Description').get_serialized_values() : "" }}</textarea>
+            <br />
+              {{ error_form.display_errors(name, constraint_errors) }}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {% set name = "tags_" ~ record.get_serialize_key() %}
+            <label for='{{name}}'>{% trans 'Tags' %}</label>
+            <br/>
+            <div style="font-size:9px; font-weight:200">
+               - {% trans "250 caracteres maximum" %}<br />
+               - {% trans "10 tags maximum"%}<br />
+               - {% trans "Séparez les tags par un espace: Paris vacances restaurant"%}<br />
+               - {% trans 'Groupez 2 ou plusieurs mots avec des guillemets: "Michael Jackson"' %}
+            </div>
+          </td>
+          <td>
+            <input class='required_field' type='text' name='{{name}}' value="{{ caption.get_dc_field('Subject') is not none ? caption.get_dc_field('Subject').get_serialized_values(' ') : ''}}"/>
+            <br />
+              {{ error_form.display_errors(name, constraint_errors) }}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {% set name = "privacy_" ~ record.get_serialize_key() %}
+            <label for='{{name}}'>{% trans 'Confidentialite' %}</label>
+          </td>
+          <td>
+            <div style='float:left'>
+          <label for="input_private">{% trans 'prive' %}</label>
+          <input id="input_private" type="radio" name="{{name}}" value="private" checked='checked' />
+          </div>
+          <div style='float:left'>
+          <label for="input_public">{% trans 'public' %}</label>
+          <input id="input_public" type="radio" name="{{name}}"  value="public "/>
+          </div>
+          </td>
+        </tr>
+      </table>
+      <button class="form_submitter">{% trans 'Upload' %}</button>
+    </form>
+  {% endfor %}
+  <p>
+    {% trans %}
+    Nous vous rappelons qu'il est de votre responsabilité de vous assurer que le contenu de la vidéo que vous allez mettre en ligne est conforme aux conditions d'utilisations
+    {% endtrans %}
+  </p>
+{% endif %}
+{% endblock %}

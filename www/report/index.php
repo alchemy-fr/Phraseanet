@@ -44,4 +44,4 @@ $var = array(
 
 $twig = $Core->getTwig();
 
-echo $twig->render('report/report_layout_child.twig', $var);
+echo $twig->render('report/report_layout_child.html.twig', $var);

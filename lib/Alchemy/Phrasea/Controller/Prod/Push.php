@@ -118,12 +118,7 @@ class Push implements ControllerProviderInterface
                     'RecommendedUsers' => $RecommendedUsers
                 );
 
-                $template = 'prod/actions/Push.html.twig';
-
-                /* @var $twig \Twig_Environment */
-                $twig = $app['phraseanet.core']->getTwig();
-
-                return new Response($twig->render($template, $params));
+                return new Response($app['twig']->render( 'prod/actions/Push.html.twig', $params));
             }
         );
 
@@ -143,12 +138,7 @@ class Push implements ControllerProviderInterface
                     'RecommendedUsers' => $RecommendedUsers
                 );
 
-                $template = 'prod/actions/Push.html.twig';
-
-                /* @var $twig \Twig_Environment */
-                $twig = $app['phraseanet.core']->getTwig();
-
-                return new Response($twig->render($template, $params));
+                return new Response($app['twig']->render('prod/actions/Push.html.twig', $params));
             }
         );
 
@@ -612,7 +602,7 @@ class Push implements ControllerProviderInterface
         $controllers->get('/add-user/', function(Application $app, Request $request) {
                 $params = array('callback' => $request->get('callback'));
 
-                return new Response($app['phraseanet.core']['Twig']->render('prod/User/Add.html.twig', $params));
+                return new Response($app['twig']->render('prod/User/Add.html.twig', $params));
             });
 
         $controllers->get('/search-user/', function(Application $app) use ($userFormatter, $listFormatter) {
@@ -712,11 +702,11 @@ class Push implements ControllerProviderInterface
 
                 if ($request->get('type') === 'fragment') {
                     return new Response(
-                            $app['phraseanet.core']->getTwig()->render('prod/actions/Feedback/ResultTable.html.twig', $params)
+                            $app['twig']->render('prod/actions/Feedback/ResultTable.html.twig', $params)
                     );
                 } else {
                     return new Response(
-                            $app['phraseanet.core']->getTwig()->render('prod/actions/Feedback/list.html.twig', $params)
+                            $app['twig']->render('prod/actions/Feedback/list.html.twig', $params)
                     );
                 }
             }

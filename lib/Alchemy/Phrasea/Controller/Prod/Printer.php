@@ -33,12 +33,7 @@ class Printer implements ControllerProviderInterface
         $controllers->post('/', function(Application $app) {
                 $printer = new RecordHelper\Printer($app['phraseanet.core'], $app['request']);
 
-                $template = 'prod/actions/printer_default.html.twig';
-
-                /* @var $twig \Twig_Environment */
-                $twig = $app['phraseanet.core']->getTwig();
-
-                return $twig->render($template, array('printer' => $printer, 'message' => ''));
+                return $app['twig']->render('prod/actions/printer_default.html.twig', array('printer' => $printer, 'message' => ''));
             }
         );
 

@@ -28,7 +28,7 @@ switch ($action) {
         $core = \bootstrap::getCore();
         $twig = $core->getTwig();
 
-        $output = $twig->render('geonames/city_list.twig', array('geonames' => $geoname->find_city($parm['city'])));
+        $output = $twig->render('geonames/city_list.html.twig', array('geonames' => $geoname->find_city($parm['city'])));
         break;
 }
 

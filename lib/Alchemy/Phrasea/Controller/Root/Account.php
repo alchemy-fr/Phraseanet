@@ -254,7 +254,7 @@ class Account implements ControllerProviderInterface
 
     public function registerAccount(Application $app, Request $request)
     {
-        return new Response($app['phraseanet.core']['Twig']->render('account/register.html.twig'));
+        return new Response($app['twig']->render('account/register.html.twig'));
     }
 
     public function resetPassword(Application $app, Request $request)
@@ -273,7 +273,7 @@ class Account implements ControllerProviderInterface
             }
         }
 
-        return new Response($app['phraseanet.core']['Twig']->render('account/reset-password.html.twig', array(
+        return new Response($app['twig']->render('account/reset-password.html.twig', array(
                     'passwordMsg' => $passwordMsg
                 )));
     }
@@ -377,7 +377,7 @@ class Account implements ControllerProviderInterface
             }
         }
 
-        return new Response($app['phraseanet.core']['Twig']->render('account/reset-email.html.twig', array(
+        return new Response($app['twig']->render('account/reset-email.html.twig', array(
                     'noticeMsg' => $noticeMsg,
                     'updateMsg' => $updateMsg,
                 )));
@@ -465,7 +465,7 @@ class Account implements ControllerProviderInterface
     {
         require_once $app['phraseanet.core']['Registry']->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php';
 
-        return new Response($app['phraseanet.core']['Twig']->render('account/access.html.twig', array(
+        return new Response($app['twig']->render('account/access.html.twig', array(
                     'inscriptions' => giveMeBases($app['phraseanet.core']->getAuthenticatedUser()->get_id())
                 )));
     }
@@ -480,8 +480,8 @@ class Account implements ControllerProviderInterface
      */
     public function accountAuthorizedApps(Application $app, Request $request)
     {
-        return $app['phraseanet.core']['Twig']->render('account/authorized_apps.html.twig', array(
-                "apps" => \API_OAuth2_Application::load_app_by_user($app['phraseanet.appbox'], $app['phraseanet.core']->getAuthenticatedUser())
+        return $app['twig']->render('account/authorized_apps.html.twig', array(
+                "apps" => \API_OAuth2_Application::load_app_by_user(\appbox::get_instance($app['phraseanet.core']), $app['phraseanet.core']->getAuthenticatedUser()),
             ));
     }
 
@@ -495,7 +495,7 @@ class Account implements ControllerProviderInterface
      */
     public function accountSessionsAccess(Application $app, Request $request)
     {
-        return new Response($app['phraseanet.core']['Twig']->render('account/sessions.html.twig'));
+        return new Response($app['twig']->render('account/sessions.html.twig'));
     }
 
     /**
@@ -530,7 +530,7 @@ class Account implements ControllerProviderInterface
                 break;
         }
 
-        return new Response($app['phraseanet.core']['Twig']->render('account/account.html.twig', array(
+        return new Response($app['twig']->render('account/account.html.twig', array(
                     'geonames'      => new \geonames(),
                     'user'          => $user,
                     'notice'        => $notice,

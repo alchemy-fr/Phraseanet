@@ -1,0 +1,64 @@
+{% macro format(feed, entry, user, session)%}
+  {% import 'prod/results/record.html.twig' as record_format %}
+
+  <div class="entry ui-corner-all" id="entry_{{ entry.get_id() }}">
+    <table class="head">
+      <tr>
+        <td>
+          <h1 class="title">
+            {% if feed.is_aggregated() %}
+              <img style="height:16px;" src="{{ entry.get_feed().get_icon_url() }}" />
+            {% endif %}
+            {{ entry.get_title() }}
+            {% set author = entry.get_author_name() %}
+            <span class="author">{% trans %}Par {{ author }}{% endtrans %}</span>
+          </h1>
+        </td>
+        <td style="width:60px;text-align:right;">
+          {% if entry.get_feed().is_owner(user) or entry.is_publisher(user) %}
+          <a class="tools options feed_edit" href="/prod/feeds/entry/{{ entry.get_id() }}/edit/">
+            <img src="/skins/icons/file-edit.png" title="{% trans 'boutton::editer' %}"/>
+          </a>
+          <a class="tools feed_delete" href="/prod/feeds/entry/{{ entry.get_id() }}/delete/">
+            <img src="/skins/icons/delete.png" title="{% trans 'boutton::supprimer' %}"/>
+          </a>
+          {% endif %}
+        </td>
+      </tr>
+    </table>
+    <div class="post_date">
+      {% set updated_on = entry.get_updated_on() | prettyDate %}
+      {% set created_on = entry.get_created_on() | prettyDate %}
+      <span class="created_on">
+          {{ created_on }}
+      </span>
+      {% if created_on != updated_on %}
+      <span class="updated_on">
+        (
+        {% trans %}
+          Derniere mise a jour le {{ updated_on }}
+        {% endtrans %}
+        )
+      </span>
+      {% endif %}
+      {% if feed.is_aggregated() %}
+        <a class="ajax_answers" href="/prod/feeds/feed/{{ entry.get_feed().get_id() }}/">
+        {% set feed_name = entry.get_feed().get_title() %}
+        {% trans %}
+          dans {{feed_name}}
+        {% endtrans %}
+        <img style="height:16px;" src="{{ entry.get_feed().get_icon_url() }}" />
+        </a>
+      {% endif %}
+    </div>
+    <p>{{ entry.get_subtitle()|nl2br|raw }}</p>
+    <div class="contents selectable">
+    {% for item in entry.get_content() %}
+      {% set record = item.get_record() %}
+      {% set prefix = 'PUBLI_' ~ item.get_id() %}
+      {{record_format.block(record, user, session, false, null, prefix, entry.get_id())}}
+    {% endfor %}
+    </div>
+  </div>
+
+{% endmacro %}

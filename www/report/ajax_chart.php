@@ -34,7 +34,7 @@ $var = array(
 
 $twig = $Core->getTwig();
 
-$html = $twig->render('report/chart.twig', $var);
+$html = $twig->render('report/chart.html.twig', $var);
 $t = array("rs" => $html);
 echo json_encode($t);
 
