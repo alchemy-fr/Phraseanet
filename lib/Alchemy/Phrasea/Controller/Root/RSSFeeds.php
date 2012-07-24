@@ -27,8 +27,6 @@ class RSSFeeds implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
-        $appbox = $app['phraseanet.appbox'];
-
         $controllers = $app['controllers_factory'];
 
         $display_feed = function($feed, $format, $page, $user = null) {
@@ -82,8 +80,8 @@ class RSSFeeds implements ControllerProviderInterface
                 return $response;
             };
 
-        $controllers->get('/feed/{id}/{format}/', function($id, $format) use ($app, $appbox, $display_feed) {
-                $feed = new \Feed_Adapter($appbox, $id);
+        $controllers->get('/feed/{id}/{format}/', function(Application $app, $id, $format) use ($display_feed) {
+                $feed = new \Feed_Adapter($app['phraseanet.appbox'], $id);
 
                 if ( ! $feed->is_public()) {
                     return new Response('Forbidden', 403);
@@ -97,9 +95,9 @@ class RSSFeeds implements ControllerProviderInterface
                 return $display_feed($feed, $format, $page);
             })->assert('id', '\d+')->assert('format', '(rss|atom)');
 
-        $controllers->get('/userfeed/{token}/{id}/{format}/', function($token, $id, $format) use ($app, $appbox, $display_feed) {
+        $controllers->get('/userfeed/{token}/{id}/{format}/', function(Application $app, $token, $id, $format) use ($display_feed) {
                 try {
-                    $token = new \Feed_Token($appbox, $token, $id);
+                    $token = new \Feed_Token($app['phraseanet.appbox'], $token, $id);
                     $feed = $token->get_feed();
                 } catch (\Exception_FeedNotFound $e) {
                     return new Response('Not Found', 404);
@@ -112,9 +110,9 @@ class RSSFeeds implements ControllerProviderInterface
                 return $display_feed($feed, $format, $page, $token->get_user());
             })->assert('id', '\d+')->assert('format', '(rss|atom)');
 
-        $controllers->get('/userfeed/aggregated/{token}/{format}/', function($token, $format) use ($app, $appbox, $display_feed) {
+        $controllers->get('/userfeed/aggregated/{token}/{format}/', function(Application $app, $token, $format) use ($display_feed) {
                 try {
-                    $token = new \Feed_TokenAggregate($appbox, $token);
+                    $token = new \Feed_TokenAggregate($app['phraseanet.appbox'], $token);
                     $feed = $token->get_feed();
                 } catch (\Exception_FeedNotFound $e) {
                     return new Response('', 404);
@@ -128,8 +126,8 @@ class RSSFeeds implements ControllerProviderInterface
                 return $display_feed($feed, $format, $page, $token->get_user());
             })->assert('format', '(rss|atom)');
 
-        $controllers->get('/aggregated/{format}/', function($format) use ($app, $appbox, $display_feed) {
-                $feeds = \Feed_Collection::load_public_feeds($appbox);
+        $controllers->get('/aggregated/{format}/', function(Application $app, $format) use ($display_feed) {
+                $feeds = \Feed_Collection::load_public_feeds($app['phraseanet.appbox']);
                 $feed = $feeds->get_aggregate();
 
                 $request = $app['request'];
@@ -139,8 +137,8 @@ class RSSFeeds implements ControllerProviderInterface
                 return $display_feed($feed, $format, $page);
             })->assert('format', '(rss|atom)');
 
-        $controllers->get('/cooliris/', function() use ($app, $appbox, $display_feed) {
-                $feeds = \Feed_Collection::load_public_feeds($appbox);
+        $controllers->get('/cooliris/', function(Application $app) use ($display_feed) {
+                $feeds = \Feed_Collection::load_public_feeds($app['phraseanet.appbox']);
                 $feed = $feeds->get_aggregate();
 
                 $request = $app['request'];
