@@ -46,6 +46,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     protected static $adminApplication;
     protected static $databoxe_ids = array();
 
+    abstract public function getParameters(array $parameters = array());
+
     abstract public function unserialize($data);
 
     abstract public function getAcceptMimeType();
@@ -111,7 +113,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $route = '/nothinghere';
         $this->setToken(self::$token);
-        $this->client->request('GET', $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponseNotFound($this->client->getResponse());
@@ -126,7 +128,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     public function testDataboxListRoute()
     {
         $this->setToken(self::$token);
-        $this->client->request('GET', '/databoxes/list/', array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('GET', '/databoxes/list/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -166,7 +168,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             $account = \API_OAuth2_Account::create($appbox, self::$user, $nativeApp);
             $token = $account->get_token()->get_value();
             $this->setToken($token);
-            $this->client->request('GET', '/databoxes/list/', array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+            $this->client->request('GET', '/databoxes/list/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
             $content = $this->unserialize($this->client->getResponse()->getContent());
 
             if (403 != $content['meta']['http_code']) {
@@ -190,27 +192,27 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $this->client->request('GET', '/monitor/tasks/', array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('GET', '/monitor/tasks/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
         $this->assertEquals(401, $content['meta']['http_code']);
 
-        $this->client->request('GET', '/monitor/task/1/', array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('GET', '/monitor/task/1/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
         $this->assertEquals(401, $content['meta']['http_code']);
 
-        $this->client->request('POST', '/monitor/task/1/', array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('POST', '/monitor/task/1/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
         $this->assertEquals(401, $content['meta']['http_code']);
 
-        $this->client->request('POST', '/monitor/task/1/start/', array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('POST', '/monitor/task/1/start/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
         $this->assertEquals(401, $content['meta']['http_code']);
 
-        $this->client->request('POST', '/monitor/task/1/stop/', array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('POST', '/monitor/task/1/stop/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
         $this->assertEquals(401, $content['meta']['http_code']);
 
-        $this->client->request('GET', '/monitor/phraseanet/', array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('GET', '/monitor/phraseanet/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
         $this->assertEquals(401, $content['meta']['http_code']);
     }
@@ -231,7 +233,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $route = '/monitor/tasks/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-        $this->client->request('GET', $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -307,7 +309,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $route = '/monitor/task/' . $idTask . '/';
         $this->evaluateMethodNotAllowedRoute($route, array('PUT', 'DELETE'));
 
-        $this->client->request('GET', $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
         $this->evaluateResponse200($this->client->getResponse());
         $this->evaluateMeta200($content);
@@ -343,7 +345,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $title = 'newTitle' . mt_rand();
 
-        $this->client->request('POST', $route, array('title' => $title), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('POST', $route, $this->getParameters(array('title' => $title)), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
         $this->evaluateResponse200($this->client->getResponse());
         $this->evaluateMeta200($content);
@@ -364,7 +366,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         }
         $this->setToken(self::$adminToken);
         $this->client->followRedirects();
-        $this->client->request('GET', '/monitor/task/0/', array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('GET', '/monitor/task/0/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
         $this->evaluateMetaNotFound($content);
     }
@@ -394,7 +396,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $route = '/monitor/task/' . $idTask . '/start/';
         $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
-        $this->client->request('POST', $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('POST', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
         $this->evaluateResponse200($this->client->getResponse());
         $this->evaluateMeta200($content);
@@ -433,7 +435,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $route = '/monitor/task/' . $idTask . '/stop/';
         $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
-        $this->client->request('POST', $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('POST', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
         $this->evaluateResponse200($this->client->getResponse());
         $this->evaluateMeta200($content);
@@ -461,7 +463,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->setToken(self::$adminToken);
 
-        $this->client->request('GET', '/monitor/phraseanet/', array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('GET', '/monitor/phraseanet/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -485,7 +487,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $this->client->request('GET', $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -513,7 +515,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             $route = '/databoxes/' . $databox_id . '/collections/';
             $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-            $crawler = $this->client->request('GET', $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+            $crawler = $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
             $content = $this->unserialize($this->client->getResponse()->getContent());
             $this->evaluateResponse200($this->client->getResponse());
             $this->evaluateMeta200($content);
@@ -554,7 +556,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             $route = '/databoxes/' . $databox_id . '/status/';
             $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-            $crawler = $this->client->request('GET', $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+            $crawler = $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
             $content = $this->unserialize($this->client->getResponse()->getContent());
             $this->evaluateResponse200($this->client->getResponse());
             $this->evaluateMeta200($content);
@@ -611,7 +613,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             $route = '/databoxes/' . $databox_id . '/metadatas/';
             $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-            $crawler = $this->client->request('GET', $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+            $crawler = $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
             $content = $this->unserialize($this->client->getResponse()->getContent());
             $this->evaluateResponse200($this->client->getResponse());
             $this->evaluateMeta200($content);
@@ -685,7 +687,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             $route = '/databoxes/' . $databox_id . '/termsOfUse/';
             $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-            $this->client->request('GET', $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+            $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
             $content = $this->unserialize($this->client->getResponse()->getContent());
             $this->evaluateResponse200($this->client->getResponse());
             $this->evaluateMeta200($content);
@@ -713,7 +715,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     public function testRecordsSearchRoute()
     {
         $this->setToken(self::$token);
-        $crawler = $this->client->request('POST', '/records/search/', array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $crawler = $this->client->request('POST', '/records/search/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -760,7 +762,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/caption/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-        $this->client->request('GET', $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -787,7 +789,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/metadatas/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-        $this->client->request('GET', $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -813,7 +815,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/status/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-        $this->client->request('GET', $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -843,7 +845,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/embed/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-        $this->client->request('GET', $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -871,7 +873,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/embed/';
 
-        $this->client->request('GET', $route, array('mimes' => array('image/jpg', 'image/jpeg')), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('GET', $route, $this->getParameters(array('mimes' => array('image/jpg', 'image/jpeg'))), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->assertArrayHasKey('embed', $content['response']);
@@ -890,7 +892,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/embed/';
 
-        $this->client->request('GET', $route, array('devices' => array('nodevice')), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('GET', $route, $this->getParameters(array('devices' => array('nodevice'))), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->assertEquals(0, count($content['response']['embed']));
@@ -906,7 +908,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/related/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-        $this->client->request('GET', $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -960,7 +962,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
-        $this->client->request('POST', $route, array('metadatas' => $toupdate), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('POST', $route, $this->getParameters(array('metadatas' => $toupdate)), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -1008,7 +1010,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
 
-        $crawler = $this->client->request('POST', $route, array('status' => $tochange), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $crawler = $this->client->request('POST', $route, $this->getParameters(array('status' => $tochange)), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         /**
@@ -1031,7 +1033,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         }
 
 
-        $crawler = $this->client->request('POST', $route, array('status' => $tochange), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $crawler = $this->client->request('POST', $route, $this->getParameters(array('status' => $tochange)), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         /**
@@ -1075,7 +1077,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
-        $this->client->request('POST', $route, array('base_id' => $base_id), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('POST', $route, $this->getParameters(array('base_id' => $base_id)), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -1098,7 +1100,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $route = '/baskets/list/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-        $this->client->request('GET', $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -1122,7 +1124,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
-        $this->client->request('POST', $route, array('name' => 'un Joli Nom'), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('POST', $route, $this->getParameters(array('name' => 'un Joli Nom')), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -1150,7 +1152,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-        $this->client->request('GET', $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -1189,7 +1191,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
-        $crawler = $this->client->request('POST', $route, array('name' => 'un Joli Nom'), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $crawler = $this->client->request('POST', $route, $this->getParameters(array('name' => 'un Joli Nom')), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -1201,7 +1203,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->assertEquals($content['response']['basket']['name'], 'un Joli Nom');
 
-        $crawler = $this->client->request('POST', $route, array('name' => 'un Joli Nom'), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $crawler = $this->client->request('POST', $route, $this->getParameters(array('name' => 'un Joli Nom')), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -1215,7 +1217,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->assertEquals($content['response']['basket']['name'], 'un Joli Nom');
 
-        $crawler = $this->client->request('POST', $route, array('name' => '<strong>aéaa'), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $crawler = $this->client->request('POST', $route, $this->getParameters(array('name' => '<strong>aéaa')), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -1242,7 +1244,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
-        $this->client->request('POST', $route, array('description' => 'une belle desc'), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('POST', $route, $this->getParameters(array('description' => 'une belle desc')), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -1268,7 +1270,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
-        $this->client->request('POST', $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('POST', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -1298,7 +1300,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $params = $this->getAddRecordParameters();
         $params['status'] = '0b10000';
 
-        $this->client->request('POST', $route, $params, $this->getAddRecordFile(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('POST', $route, $this->getParameters($params), $this->getAddRecordFile(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -1321,7 +1323,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $params = $this->getAddRecordParameters();
         $params['forceBehavior'] = '0';
 
-        $this->client->request('POST', $route, $params, $this->getAddRecordFile(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('POST', $route, $this->getParameters($params), $this->getAddRecordFile(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -1350,7 +1352,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $params = $this->getAddRecordParameters();
         $params['forceBehavior'] = '1';
 
-        $this->client->request('POST', $route, $params, $this->getAddRecordFile(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('POST', $route, $this->getParameters($params), $this->getAddRecordFile(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -1377,7 +1379,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $params = $this->getAddRecordParameters();
         $params['forceBehavior'] = '2';
 
-        $this->client->request('POST', $route, $params, $this->getAddRecordFile(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('POST', $route, $this->getParameters($params), $this->getAddRecordFile(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponseBadRequest($this->client->getResponse());
@@ -1395,7 +1397,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $params = $this->getAddRecordParameters();
         $params['base_id'] = self::$collection_no_access->get_base_id();
 
-        $this->client->request('POST', $route, $params, $this->getAddRecordFile(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('POST', $route, $this->getParameters($params), $this->getAddRecordFile(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponseForbidden($this->client->getResponse());
@@ -1413,7 +1415,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $params = $this->getAddRecordParameters();
         unset($params['base_id']);
 
-        $this->client->request('POST', $route, $params, $this->getAddRecordFile(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('POST', $route, $this->getParameters($params), $this->getAddRecordFile(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponseBadRequest($this->client->getResponse());
@@ -1433,7 +1435,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             new \Symfony\Component\HttpFoundation\File\UploadedFile(__FILE__, 'upload.txt'),
         );
 
-        $this->client->request('POST', $route, $this->getAddRecordParameters(), array('file' => $file), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('POST', $route, $this->getParameters($this->getAddRecordParameters()), array('file' => $file), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponseBadRequest($this->client->getResponse());
@@ -1445,7 +1447,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->setToken(self::$token);
         $route = '/records/add/';
 
-        $this->client->request('POST', $route, $this->getAddRecordParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('POST', $route, $this->getParameters($this->getAddRecordParameters()), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponseBadRequest($this->client->getResponse());
@@ -1468,7 +1470,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-        $this->client->request('GET', $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -1525,7 +1527,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-        $this->client->request('GET', $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -1584,7 +1586,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-        $this->client->request('GET', $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -1626,7 +1628,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-        $this->client->request('GET', $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponseForbidden($this->client->getResponse());
@@ -1662,7 +1664,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-        $this->client->request('GET', $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -1705,7 +1707,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-        $this->client->request('GET', $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->assertArrayHasKey('offset_start', $content['response']);
@@ -1738,7 +1740,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-        $this->client->request('GET', $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
         $this->assertArrayHasKey('quarantine_item', $content['response']);
@@ -1900,7 +1902,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     protected function evaluateNotFoundRoute($route, $methods)
     {
         foreach ($methods as $method) {
-            $crawler = $this->client->request($method, $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+            $crawler = $this->client->request($method, $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
             $content = $this->unserialize($this->client->getResponse()->getContent());
 
             $this->evaluateResponseNotFound($this->client->getResponse());
@@ -2004,7 +2006,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     protected function evaluateMethodNotAllowedRoute($route, $methods)
     {
         foreach ($methods as $method) {
-            $crawler = $this->client->request($method, $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+            $crawler = $this->client->request($method, $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
             $content = $this->unserialize($this->client->getResponse()->getContent());
             $this->evaluateResponseMethodNotAllowed($this->client->getResponse());
             $this->evaluateMetaMethodNotAllowed($content);
@@ -2014,7 +2016,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     protected function evaluateBadRequestRoute($route, $methods)
     {
         foreach ($methods as $method) {
-            $this->client->request($method, $route, array(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+            $this->client->request($method, $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
             $content = $this->unserialize($this->client->getResponse()->getContent());
             $this->evaluateResponseBadRequest($this->client->getResponse());
             $this->evaluateMetaBadRequest($content);

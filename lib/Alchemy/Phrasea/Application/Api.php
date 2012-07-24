@@ -18,6 +18,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
 /**
  *
@@ -730,6 +732,15 @@ return call_user_func(function() {
 
                     return $response;
                 });
+
+            /**
+             * Temporary fix for https://github.com/fabpot/Silex/issues/438
+             */
+            $app['dispatcher']->addListener(KernelEvents::RESPONSE, function(FilterResponseEvent $event){
+                if ($event->getResponse() instanceof \API_V1_Response) {
+                    $event->getResponse()->setStatusCode($event->getResponse()->getOriginalStatusCode());
+                }
+            });
 
             return $app;
         }
