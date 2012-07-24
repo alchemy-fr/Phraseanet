@@ -211,7 +211,7 @@ class Users implements ControllerProviderInterface
 
                 $users->apply_template();
 
-                return new RedirectResponse('/admin/users/search/');
+                return $app->redirect('/admin/users/search/');
             }
         );
 

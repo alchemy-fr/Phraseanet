@@ -119,7 +119,7 @@ class Subdefs implements ControllerProviderInterface
                     }
                 }
 
-                return new RedirectResponse('/admin/subdefs/' . $databox->get_sbas_id() . '/');
+                return $app->redirect('/admin/subdefs/' . $databox->get_sbas_id() . '/');
             })->assert('sbas_id', '\d+');
 
         return $controllers;

@@ -116,7 +116,7 @@ class Story implements ControllerProviderInterface
 
                     return $app->json($data);
                 } else {
-                    return new RedirectResponse(sprintf('/%d/', $StoryWZ->getId()));
+                    return $app->redirect(sprintf('/%d/', $StoryWZ->getId()));
                 }
             });
 
@@ -172,7 +172,7 @@ class Story implements ControllerProviderInterface
                 if ($request->getRequestFormat() == 'json') {
                     return $app->json($data);
                 } else {
-                    return new RedirectResponse('/');
+                    return $app->redirect('/');
                 }
             })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
 
@@ -200,7 +200,7 @@ class Story implements ControllerProviderInterface
                     if ($request->getRequestFormat() == 'json') {
                         return $app->json($data);
                     } else {
-                        return new RedirectResponse('/');
+                        return $app->redirect('/');
                     }
                 })
             ->assert('sbas_id', '\d+')

@@ -220,7 +220,7 @@ class WorkZone implements ControllerProviderInterface
                 if ($request->getRequestFormat() == 'json') {
                     return $app->json($data);
                 } else {
-                    return new RedirectResponse('/');
+                    return $app->redirect('/');
                 }
             })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
 

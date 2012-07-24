@@ -11,16 +11,17 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Silex\Application,
-    Silex\ControllerProviderInterface,
-    Silex\ControllerCollection;
-use Symfony\Component\HttpFoundation\Request,
-    Symfony\Component\HttpFoundation\Response,
-    Symfony\Component\HttpFoundation\RedirectResponse,
-    Symfony\Component\HttpKernel\Exception\HttpException,
-    Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Alchemy\Phrasea\RouteProcessor\Basket as BasketRoute,
-    Alchemy\Phrasea\Helper;
+use Alchemy\Phrasea\Helper\Record\Basket;
+use Silex\Application;
+use Silex\ControllerProviderInterface;
+use Silex\ControllerCollection;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Alchemy\Phrasea\RouteProcessor\Basket as BasketRoute;
+use Alchemy\Phrasea\Helper;
 
 /**
  *
@@ -44,59 +45,7 @@ class Basket implements ControllerProviderInterface
          * @accept JSON / YAML
          *
          */
-        $controllers->post('/', function(Application $app) {
-                $request = $app['request'];
-
-                /* @var $request \Symfony\Component\HttpFoundation\Request */
-
-                $em = $app['phraseanet.core']->getEntityManager();
-
-                $user = $app['phraseanet.core']->getAuthenticatedUser();
-
-                $Basket = new \Entities\Basket();
-
-                $Basket->setName($request->get('name', ''));
-                $Basket->setOwner($app['phraseanet.core']->getAuthenticatedUser());
-                $Basket->setDescription($request->get('desc'));
-
-                $em->persist($Basket);
-
-                $n = 0;
-
-                $helper = new \Alchemy\Phrasea\Helper\Record\Basket($app['phraseanet.core'], $app['request']);
-
-                foreach ($helper->get_elements() as $record) {
-
-                    if ($Basket->hasRecord($record))
-                        continue;
-
-                    $basket_element = new \Entities\BasketElement();
-                    $basket_element->setRecord($record);
-                    $basket_element->setBasket($Basket);
-
-                    $em->persist($basket_element);
-
-                    $Basket->addBasketElement($basket_element);
-
-                    $n ++;
-                }
-
-                $em->flush();
-
-                if ($request->getRequestFormat() == 'json') {
-                    $data = array(
-                        'success' => true
-                        , 'message' => _('Basket created')
-                        , 'basket'  => array(
-                            'id' => $Basket->getId()
-                        )
-                    );
-
-                    return $app->json($data);
-                } else {
-                    return new RedirectResponse(sprintf('/%d/', $Basket->getId()));
-                }
-            });
+        $controllers->post('/', $this->call('createBasket'));
 
         /**
          * This route is used to delete a basket
@@ -121,7 +70,7 @@ class Basket implements ControllerProviderInterface
                 if ($request->getRequestFormat() == 'json') {
                     return $app->json($data);
                 } else {
-                    return new RedirectResponse('/');
+                    return $app->redirect('/');
                 }
             })->assert('basket_id', '\d+');
 
@@ -154,7 +103,7 @@ class Basket implements ControllerProviderInterface
                 if ($request->getRequestFormat() == 'json') {
                     return $app->json($data);
                 } else {
-                    return new RedirectResponse('/');
+                    return $app->redirect('/');
                 }
             })->assert('basket_id', '\d+')->assert('basket_element_id', '\d+');
 
@@ -199,7 +148,7 @@ class Basket implements ControllerProviderInterface
                 if ($request->getRequestFormat() == 'json') {
                     return $app->json($data);
                 } else {
-                    return new RedirectResponse('/');
+                    return $app->redirect('/');
                 }
             })->assert('basket_id', '\d+');
 
@@ -307,7 +256,7 @@ class Basket implements ControllerProviderInterface
                 if ($request->getRequestFormat() == 'json') {
                     return $app->json($data);
                 } else {
-                    return new RedirectResponse('/');
+                    return $app->redirect('/');
                 }
             })->assert('basket_id', '\d+');
 
@@ -327,7 +276,7 @@ class Basket implements ControllerProviderInterface
 
                 $n = 0;
 
-                $helper = new \Alchemy\Phrasea\Helper\Record\Basket($app['phraseanet.core'], $app['request']);
+                $helper = new Basket($app['phraseanet.core'], $app['request']);
 
                 foreach ($helper->get_elements() as $record) {
                     if ($basket->hasRecord($record))
@@ -367,7 +316,7 @@ class Basket implements ControllerProviderInterface
                 if ($request->getRequestFormat() == 'json') {
                     return $app->json($data);
                 } else {
-                    return new RedirectResponse('/');
+                    return $app->redirect('/');
                 }
             })->assert('basket_id', '\d+');
 
@@ -415,7 +364,7 @@ class Basket implements ControllerProviderInterface
                 if ($request->getRequestFormat() == 'json') {
                     return $app->json($data);
                 } else {
-                    return new RedirectResponse('/');
+                    return $app->redirect('/');
                 }
             })->assert('basket_id', '\d+');
 
@@ -459,5 +408,68 @@ class Basket implements ControllerProviderInterface
             })->assert('basket_id', '\d+');
 
         return $controllers;
+    }
+
+    public function createBasket(Application $app)
+    {
+        $request = $app['request'];
+        /* @var $request \Symfony\Component\HttpFoundation\Request */
+
+        $em = $app['phraseanet.core']->getEntityManager();
+
+        $Basket = new \Entities\Basket();
+
+        $Basket->setName($request->get('name', ''));
+        $Basket->setOwner($app['phraseanet.core']->getAuthenticatedUser());
+        $Basket->setDescription($request->get('desc'));
+
+        $em->persist($Basket);
+
+        $n = 0;
+
+        $helper = new Basket($app['phraseanet.core'], $app['request']);
+
+        foreach ($helper->get_elements() as $record) {
+
+            if ($Basket->hasRecord($record))
+                continue;
+
+            $basket_element = new \Entities\BasketElement();
+            $basket_element->setRecord($record);
+            $basket_element->setBasket($Basket);
+
+            $em->persist($basket_element);
+
+            $Basket->addBasketElement($basket_element);
+
+            $n ++;
+        }
+
+        $em->flush();
+
+        if ($request->getRequestFormat() == 'json') {
+            $data = array(
+                'success' => true
+                , 'message' => _('Basket created')
+                , 'basket'  => array(
+                    'id' => $Basket->getId()
+                )
+            );
+
+            return $app->json($data);
+        } else {
+            return $app->redirect(sprintf('/%d/', $Basket->getId()));
+        }
+    }
+
+    /**
+     * Prefix the method to call with the controller class name
+     *
+     * @param  string $method The method to call
+     * @return string
+     */
+    private function call($method)
+    {
+        return sprintf('%s::%s', __CLASS__, $method);
     }
 }
