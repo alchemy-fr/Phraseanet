@@ -63,7 +63,6 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $this->set_user_agent(self::USER_AGENT_IPHONE, $this->app);
 
         $crawler = $this->client->request('GET', '/');
-        var_dump($this->client->getResponse()->getContent());
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $this->assertEquals('UTF-8', $this->client->getResponse()->getCharset());
     }
