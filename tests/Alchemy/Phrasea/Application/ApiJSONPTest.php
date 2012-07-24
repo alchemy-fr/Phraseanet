@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ApiJsonApplication extends ApiAbstract
 {
+
     protected function evaluateResponseBadRequest(Response $response)
     {
         $this->assertEquals('UTF-8', $response->getCharset(), 'Test charset response');
@@ -40,13 +41,14 @@ class ApiJsonApplication extends ApiAbstract
 
         return $parameters;
     }
+
     public function unserialize($data)
     {
-        if(strpos($data, 'jsFunction(') !== 0) {
+        if (strpos($data, 'jsFunction(') !== 0) {
             $this->fail('Invalid JSONP response');
         }
 
-        if(substr($data, -1) !== ')') {
+        if (substr($data, -1) !== ')') {
             $this->fail('Invalid JSONP response');
         }
 

@@ -11,6 +11,11 @@ use Symfony\Component\HttpFoundation\Response;
 class ApiYamlApplication extends ApiAbstract
 {
 
+    public function getParameters(array $parameters = array())
+    {
+        return $parameters;
+    }
+
     public function unserialize($data)
     {
         try {
