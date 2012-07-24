@@ -1,7 +1,7 @@
 Phraseanet 3.7 - Digital Asset Management application
 =================================================
 
-[![Build Status](https://secure.travis-ci.org/alchemy-fr/Phraseanet.png?branch=Dev)](http://travis-ci.org/alchemy-fr/Phraseanet)
+[![Build Status](https://secure.travis-ci.org/alchemy-fr/Phraseanet.png?branch=3.7)](http://travis-ci.org/alchemy-fr/Phraseanet)
 
 #Features :
 
