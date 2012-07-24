@@ -92,9 +92,7 @@ class Basket implements ControllerProviderInterface
                         )
                     );
 
-                    $datas = $app['phraseanet.core']['Serializer']->serialize($data, 'json');
-
-                    return new Response($datas, 200, array('Content-type' => 'application/json'));
+                    return $app->json($data);
                 } else {
                     return new RedirectResponse(sprintf('/%d/', $Basket->getId()));
                 }
@@ -121,10 +119,7 @@ class Basket implements ControllerProviderInterface
                 );
 
                 if ($request->getRequestFormat() == 'json') {
-
-                    $datas = $app['phraseanet.core']['Serializer']->serialize($data, 'json');
-
-                    return new Response($datas, 200, array('Content-type' => 'application/json'));
+                    return $app->json($data);
                 } else {
                     return new RedirectResponse('/');
                 }
@@ -157,9 +152,7 @@ class Basket implements ControllerProviderInterface
                 );
 
                 if ($request->getRequestFormat() == 'json') {
-                    $datas = $app['phraseanet.core']['Serializer']->serialize($data, 'json');
-
-                    return new Response($datas, 200, array('Content-type' => 'application/json'));
+                    return $app->json($data);
                 } else {
                     return new RedirectResponse('/');
                 }
@@ -204,10 +197,7 @@ class Basket implements ControllerProviderInterface
                 );
 
                 if ($request->getRequestFormat() == 'json') {
-
-                    $datas = $app['phraseanet.core']['Serializer']->serialize($data, 'json');
-
-                    return new Response($datas, 200, array('Content-type' => 'application/json'));
+                    return $app->json($data);
                 } else {
                     return new RedirectResponse('/');
                 }
@@ -278,9 +268,8 @@ class Basket implements ControllerProviderInterface
                 } catch (\Exception $e) {
 
                 }
-                $Serializer = $app['phraseanet.core']['Serializer'];
 
-                return new Response($Serializer->serialize($ret, 'json'), 200, array('Content-type' => 'application/json'));
+                return $app->json($ret);
             })->assert('basket_id', '\d+');
 
         /**
@@ -316,10 +305,7 @@ class Basket implements ControllerProviderInterface
                 );
 
                 if ($request->getRequestFormat() == 'json') {
-
-                    $datas = $app['phraseanet.core']['Serializer']->serialize($data, 'json');
-
-                    return new Response($datas, 200, array('Content-type' => 'application/json'));
+                    return $app->json($data);
                 } else {
                     return new RedirectResponse('/');
                 }
@@ -379,10 +365,7 @@ class Basket implements ControllerProviderInterface
                 );
 
                 if ($request->getRequestFormat() == 'json') {
-
-                    $datas = $app['phraseanet.core']['Serializer']->serialize($data, 'json');
-
-                    return new Response($datas, 200, array('Content-type' => 'application/json'));
+                    return $app->json($data);
                 } else {
                     return new RedirectResponse('/');
                 }
@@ -430,10 +413,7 @@ class Basket implements ControllerProviderInterface
                 );
 
                 if ($request->getRequestFormat() == 'json') {
-
-                    $datas = $app['phraseanet.core']['Serializer']->serialize($data, 'json');
-
-                    return new Response($datas, 200, array('Content-type' => 'application/json'));
+                    return $app->json($data);
                 } else {
                     return new RedirectResponse('/');
                 }

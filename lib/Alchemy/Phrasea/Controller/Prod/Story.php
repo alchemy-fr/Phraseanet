@@ -114,9 +114,7 @@ class Story implements ControllerProviderInterface
                         )
                     );
 
-                    $datas = $app['phraseanet.core']['Serializer']->serialize($data, 'json');
-
-                    return new Response($datas, 200, array('Content-type' => 'application/json'));
+                    return $app->json($data);
                 } else {
                     return new RedirectResponse(sprintf('/%d/', $StoryWZ->getId()));
                 }
@@ -172,10 +170,7 @@ class Story implements ControllerProviderInterface
                 );
 
                 if ($request->getRequestFormat() == 'json') {
-
-                    $datas = $app['phraseanet.core']['Serializer']->serialize($data, 'json');
-
-                    return new Response($datas, 200, array('Content-type' => 'application/json'));
+                    return $app->json($data);
                 } else {
                     return new RedirectResponse('/');
                 }
@@ -203,9 +198,7 @@ class Story implements ControllerProviderInterface
                     );
 
                     if ($request->getRequestFormat() == 'json') {
-                        $datas = $app['phraseanet.core']['Serializer']->serialize($data, 'json');
-
-                        return new Response($datas, 200, array('Content-type' => 'application/json'));
+                        return $app->json($data);
                     } else {
                         return new RedirectResponse('/');
                     }
@@ -280,9 +273,7 @@ class Story implements ControllerProviderInterface
 
                     }
 
-                    $Serializer = $app['phraseanet.core']['Serializer'];
-
-                    return new Response($Serializer->serialize($ret, 'json'), 200, array('Content-type' => 'application/json'));
+                    return $app->json($ret);
                 })
             ->assert('sbas_id', '\d+')
             ->assert('record_id', '\d+');

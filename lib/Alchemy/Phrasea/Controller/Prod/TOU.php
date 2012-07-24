@@ -50,10 +50,7 @@ class TOU implements ControllerProviderInterface
 
                 }
 
-                $Serializer = $app['phraseanet.core']['Serializer'];
-                $datas = $Serializer->serialize($ret, 'json');
-
-                return new Response($datas, 200, array('Content-Type' => 'application/json'));
+                return $app->json($ret);
             });
 
         return $controllers;

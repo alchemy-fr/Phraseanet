@@ -104,13 +104,7 @@ class Language implements ControllerProviderInterface
                 $out['feedbackCanContribute'] = _('User contribute to the feedback');
                 $out['feedbackCanSeeOthers'] = _('User can see others choices');
 
-                $Serializer = $app['phraseanet.core']['Serializer'];
-
-                return new Response(
-                        $Serializer->serialize($out, 'json')
-                        , 200
-                        , array('Content-Type' => 'application/json')
-                );
+                return $app->json($out);
             });
 
         return $controller;

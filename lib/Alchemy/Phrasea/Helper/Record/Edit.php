@@ -120,10 +120,7 @@ class Edit extends RecordHelper
      */
     public function get_javascript_elements_ids()
     {
-        return $this->core['Serializer']->serialize(
-                array_keys($this->javascript_elements)
-                , 'json'
-        );
+        return json_encode(array_keys($this->javascript_elements));
     }
 
     /**
@@ -133,10 +130,7 @@ class Edit extends RecordHelper
      */
     public function get_javascript_elements()
     {
-        return $this->core['Serializer']->serialize(
-                array_values($this->javascript_elements)
-                , 'json'
-        );
+        return json_encode(array_values($this->javascript_elements));
     }
 
     /**
@@ -146,10 +140,7 @@ class Edit extends RecordHelper
      */
     public function get_javascript_sugg_values()
     {
-        return $this->core['Serializer']->serialize(
-                $this->javascript_sugg_values
-                , 'json'
-        );
+        return json_encode($this->javascript_sugg_values);
     }
 
     /**
@@ -159,10 +150,7 @@ class Edit extends RecordHelper
      */
     public function get_javascript_status()
     {
-        return $this->core['Serializer']->serialize(
-                $this->javascript_status
-                , 'json'
-        );
+        return json_encode($this->javascript_status);
     }
 
     /**
@@ -172,10 +160,7 @@ class Edit extends RecordHelper
      */
     public function get_javascript_fields()
     {
-        return $this->core['Serializer']->serialize(
-                $this->javascript_fields
-                , 'json'
-        );
+        return json_encode($this->javascript_fields);
     }
 
     /**
@@ -321,7 +306,6 @@ class Edit extends RecordHelper
                     continue;
 
                 foreach ($z[0] as $ki => $vi) { // les champs
-
                     $field = $databox->get_meta_structure()->get_element_by_name($ki);
                     if ( ! $field)
                         continue; // champ inconnu dans la structure ?

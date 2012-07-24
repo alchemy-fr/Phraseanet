@@ -41,8 +41,6 @@ class Edit implements ControllerProviderInterface
         $controllers->get('/vocabulary/{vocabulary}/', function(Application $app, Request $request, $vocabulary) {
                 $datas = array('success' => false, 'message' => '', 'results' => array());
 
-                $Serializer = $app['phraseanet.core']['Serializer'];
-
                 $sbas_id = (int) $request->get('sbas_id');
 
                 try {
@@ -55,9 +53,7 @@ class Edit implements ControllerProviderInterface
                 } catch (\Exception $e) {
                     $datas['message'] = _('Vocabulary not found');
 
-                    $datas = $Serializer->serialize($datas, 'json');
-
-                    return new response($datas, 200, array('Content-Type' => 'application/json'));
+                    return $app->json($datas);
                 }
 
                 $query = $request->get('query');
@@ -78,7 +74,7 @@ class Edit implements ControllerProviderInterface
                 $datas['success'] = true;
                 $datas['results'] = $list;
 
-                return new response($Serializer->serialize($datas, 'json'), 200, array('Content-Type' => 'application/json'));
+                return $app->json($datas);
             }
         );
 

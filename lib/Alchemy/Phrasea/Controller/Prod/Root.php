@@ -118,8 +118,8 @@ class Root implements ControllerProviderInterface
                     'search_status'        => \databox_status::getSearchStatus(),
                     'queries_history'      => \queries::history(),
                     'thesau_js_list'       => $thjslist,
-                    'thesau_json_sbas'     => $Serializer->serialize($sbas, 'json'),
-                    'thesau_json_bas2sbas' => $Serializer->serialize($bas2sbas, 'json'),
+                    'thesau_json_sbas'     => json_encode($sbas, 'json'),
+                    'thesau_json_bas2sbas' => json_encode($bas2sbas, 'json'),
                     'thesau_languages'     => \User_Adapter::avLanguages(),
                     ));
 

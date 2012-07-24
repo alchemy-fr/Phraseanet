@@ -67,13 +67,7 @@ class Feed implements ControllerProviderInterface
                     $datas = array('error'   => true, 'message' => _('An error occured'), 'details' => $e->getMessage());
                 }
 
-                $Serializer = $app['phraseanet.core']['Serializer'];
-
-                return new Response(
-                        $Serializer->serialize($datas, 'json')
-                        , 200
-                        , array('Content-Type' => 'application/json')
-                );
+                return $app->json($datas);
             });
 
         $controllers->get('/entry/{id}/edit/', function(Application $app, Request $request, $id) {
@@ -163,13 +157,7 @@ class Feed implements ControllerProviderInterface
                     $datas['message'] = $e->getMessage();
                 }
 
-                $Serializer = $app['phraseanet.core']['Serializer'];
-
-                return new Response(
-                        $Serializer->serialize($datas, 'json')
-                        , 200
-                        , array('Content-Type' => 'application/json')
-                );
+                return $app->json($datas);
             })->assert('id', '\d+');
 
         $controllers->post('/entry/{id}/delete/', function(Application $app, Request $request, $id) {
@@ -198,13 +186,7 @@ class Feed implements ControllerProviderInterface
                     $datas['message'] = $e->getMessage();
                 }
 
-                $Serializer = $app['phraseanet.core']['Serializer'];
-
-                return new Response(
-                        $Serializer->serialize($datas, 'json')
-                        , 200
-                        , array('Content-Type' => 'application/json')
-                );
+                return $app->json($datas);
             })->assert('id', '\d+');
 
         $controllers->get('/', function(Application $app, Request $request) {
@@ -256,13 +238,7 @@ class Feed implements ControllerProviderInterface
                     'titre' => _('publications::votre rss personnel')
                 );
 
-                $Serializer = $app['phraseanet.core']['Serializer'];
-
-                return new Response(
-                        $Serializer->serialize($output, 'json')
-                        , 200
-                        , array('Content-Type' => 'application/json')
-                );
+                return $app->json($output);
             });
 
         $controllers->get('/subscribe/{id}/', function(Application $app, Request $request, $id) {
@@ -278,13 +254,7 @@ class Feed implements ControllerProviderInterface
                     'titre' => _('publications::votre rss personnel')
                 );
 
-                $Serializer = $app['phraseanet.core']['Serializer'];
-
-                return new Response(
-                        $Serializer->serialize($output, 'json')
-                        , 200
-                        , array('Content-Type' => 'application/json')
-                );
+                return $app->json($output);
             })->assert('id', '\d+');
 
         return $controllers;

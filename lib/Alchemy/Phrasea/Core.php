@@ -145,16 +145,6 @@ class Core extends \Pimple
                 return $Service->getDriver();
             });
 
-
-        $this['Serializer'] = $this->share(function() {
-                $encoders = array(
-                    'json' => new Serializer\Encoder\JsonEncoder()
-                );
-
-                return new Serializer\Serializer(array(), $encoders);
-            });
-
-
         $this['mediavorus'] = $this->share(function() {
 
                 return new \MediaVorus\MediaVorus();
@@ -322,16 +312,6 @@ class Core extends \Pimple
     public function getVersion()
     {
         return $this['Version'];
-    }
-
-    /**
-     * Getter
-     *
-     * @return \Symfony\Component\Serializer\Serializer
-     */
-    public function getSerializer()
-    {
-        return $this['Serializer'];
     }
 
     /**

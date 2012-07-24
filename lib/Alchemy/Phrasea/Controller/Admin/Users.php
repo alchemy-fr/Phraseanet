@@ -93,13 +93,7 @@ class Users implements ControllerProviderInterface
                     $datas['message'] = $e->getMessage();
                 }
 
-                $Serializer = $app['phraseanet.core']['Serializer'];
-
-                return new Response(
-                        $Serializer->serialize($datas, 'json')
-                        , 200
-                        , array('Content-Type' => 'application/json')
-                );
+                return $app->json($datas);
             }
         );
 
@@ -258,13 +252,7 @@ class Users implements ControllerProviderInterface
                     );
                 }
 
-                $Serializer = $app['phraseanet.core']['Serializer'];
-
-                return new Response(
-                        $Serializer->serialize($datas, 'json')
-                        , 200
-                        , array('Content-type' => 'application/json')
-                );
+                return $app->json($datas);
             });
 
         $controllers->post('/create/', function(Application $app) {
@@ -287,9 +275,7 @@ class Users implements ControllerProviderInterface
                     $datas['message'] = $e->getMessage();
                 }
 
-                $Serializer = $app['phraseanet.core']['Serializer'];
-
-                return new Response($Serializer->serialize($datas, 'json'), 200, array("Content-Type" => "application/json"));
+                return $app->json($datas);
             }
         );
 

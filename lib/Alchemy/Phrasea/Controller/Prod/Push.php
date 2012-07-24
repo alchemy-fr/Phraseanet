@@ -261,9 +261,7 @@ class Push implements ControllerProviderInterface
                     $ret['message'] = $e->getMessage() . $e->getFile() . $e->getLine();
                 }
 
-                $Json = $app['phraseanet.core']['Serializer']->serialize($ret, 'json');
-
-                return new Response($Json, 200, array('Content-Type' => 'application/json'));
+                return $app->json($ret);
             }
         );
 
@@ -473,9 +471,7 @@ class Push implements ControllerProviderInterface
                     $em->rollback();
                 }
 
-                $Json = $app['phraseanet.core']['Serializer']->serialize($ret, 'json');
-
-                return new Response($Json, 200, array('Content-Type' => 'application/json'));
+                return $app->json($ret);
             }
         );
 
@@ -503,9 +499,7 @@ class Push implements ControllerProviderInterface
                     }
                 }
 
-                $Json = $app['phraseanet.core']['Serializer']->serialize($datas, 'json');
-
-                return new Response($Json, 200, array('Content-Type' => 'application/json'));
+                return $app->json($datas);
             })->assert('usr_id', '\d+');
 
         $controllers->get('/list/{list_id}/', function(Application $app, $list_id) use ($listFormatter) {
@@ -522,15 +516,11 @@ class Push implements ControllerProviderInterface
                     $datas = $listFormatter($list);
                 }
 
-                $Json = $app['phraseanet.core']['Serializer']->serialize($datas, 'json');
-
-                return new Response($Json, 200, array('Content-Type' => 'application/json'));
+                return $app->json($datas);
             })->assert('list_id', '\d+');
 
         $controllers->post('/add-user/', function(Application $app, Request $request) use ($userFormatter) {
                 $result = array('success' => false, 'message' => '', 'user'    => null);
-
-                $Serializer = $app['phraseanet.core']['Serializer'];
 
                 $AdminUser = $app['phraseanet.core']->getAuthenticatedUser();
 
@@ -553,7 +543,7 @@ class Push implements ControllerProviderInterface
                 } catch (ControllerException $e) {
                     $result['message'] = $e->getMessage();
 
-                    return new Response($Serializer->serialize($result, 'json'), 200, array('Content-Type' => 'application/json'));
+                    return $app->json($result);
                 }
 
                 $appbox = $app['phraseanet.appbox'];
@@ -596,7 +586,7 @@ class Push implements ControllerProviderInterface
                     }
                 }
 
-                return new Response($Serializer->serialize($result, 'json'), 200, array('Content-Type' => 'application/json'));
+                return $app->json($result);
             });
 
         $controllers->get('/add-user/', function(Application $app, Request $request) {
@@ -641,9 +631,7 @@ class Push implements ControllerProviderInterface
                     }
                 }
 
-                $Json = $app['phraseanet.core']['Serializer']->serialize($datas, 'json');
-
-                return new Response($Json, 200, array('Content-Type' => 'application/json'));
+                return $app->json($datas);
             }
         );
 

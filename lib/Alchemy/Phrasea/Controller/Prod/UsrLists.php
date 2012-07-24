@@ -106,12 +106,9 @@ class UsrLists implements ControllerProviderInterface
                 }
 
                 if ($request->getRequestFormat() == 'json') {
-                    $Json = $app['phraseanet.core']['Serializer']->serialize($datas, 'json');
-
-                    return new Response($Json, 200, array('Content-Type' => 'application/json'));
+                    return $app->json($datas);
                 } else {
-
-                    return new Response($app['twig']->render('prod/actions/Feedback/lists-all.html.twig', array('lists' => $lists)));
+                    return $app['twig']->render('prod/actions/Feedback/lists-all.html.twig', array('lists' => $lists));
                 }
             }
         );
@@ -165,9 +162,7 @@ class UsrLists implements ControllerProviderInterface
 
                 }
 
-                $Json = $app['phraseanet.core']['Serializer']->serialize($datas, 'json');
-
-                return new Response($Json, 200, array('Content-Type' => 'application/json'));
+                return $app->json($datas);
             }
         );
 
@@ -270,9 +265,7 @@ class UsrLists implements ControllerProviderInterface
 
                 }
 
-                $Json = $app['phraseanet.core']['Serializer']->serialize($datas, 'json');
-
-                return new Response($Json, 200, array('Content-Type' => 'application/json'));
+                return $app->json($datas);
             }
         )->assert('list_id', '\d+');
 
@@ -313,9 +306,7 @@ class UsrLists implements ControllerProviderInterface
                     );
                 }
 
-                $Json = $app['phraseanet.core']['Serializer']->serialize($datas, 'json');
-
-                return new Response($Json, 200, array('Content-Type' => 'application/json'));
+                return $app->json($datas);
             }
         )->assert('list_id', '\d+');
 
@@ -361,9 +352,7 @@ class UsrLists implements ControllerProviderInterface
                     );
                 }
 
-                $Json = $app['phraseanet.core']['Serializer']->serialize($datas, 'json');
-
-                return new Response($Json, 200, array('Content-Type' => 'application/json'));
+                return $app->json($datas);
             }
         )->assert('list_id', '\d+')->assert('entry_id', '\d+');
 
@@ -435,9 +424,7 @@ class UsrLists implements ControllerProviderInterface
                     );
                 }
 
-                $Json = $app['phraseanet.core']['Serializer']->serialize($datas, 'json');
-
-                return new Response($Json, 200, array('Content-Type' => 'application/json'));
+                return $app->json($datas);
             }
         )->assert('list_id', '\d+')->assert('usr_id', '\d+');
 
@@ -534,9 +521,7 @@ class UsrLists implements ControllerProviderInterface
                     );
                 }
 
-                $Json = $app['phraseanet.core']['Serializer']->serialize($datas, 'json');
-
-                return new Response($Json, 200, array('Content-Type' => 'application/json'));
+                return $app->json($datas);
             }
         )->assert('list_id', '\d+')->assert('usr_id', '\d+');
         /**
@@ -579,9 +564,7 @@ class UsrLists implements ControllerProviderInterface
                     );
                 }
 
-                $Json = $app['phraseanet.core']['Serializer']->serialize($datas, 'json');
-
-                return new Response($Json, 200, array('Content-Type' => 'application/json'));
+                return $app->json($datas);
             }
         )->assert('list_id', '\d+')->assert('usr_id', '\d+');
 

@@ -206,9 +206,7 @@ class Query implements ControllerProviderInterface
                 $json['prev_page'] = ($page > 1 && $result->get_count_available_results() > 0) ? ($page - 1) : false;
                 $json['form'] = $form;
 
-                $datas = $app['phraseanet.core']['Serializer']->serialize($json, 'json');
-
-                return new Response($datas, 200, array('Content-Type' => 'application/json'));
+                return $app->json($json);
             });
 
         return $controllers;

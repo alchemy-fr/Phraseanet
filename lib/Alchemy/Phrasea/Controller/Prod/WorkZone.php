@@ -114,9 +114,7 @@ class WorkZone implements ControllerProviderInterface
                 return new Response($app['twig']->render('prod/WorkZone/Browser/Basket.html.twig', $params));
             })->assert('basket_id', '\d+');
 
-        $controllers->post(
-            '/attachStories/'
-            , function(Application $app, Request $request) {
+        $controllers->post('/attachStories/', function(Application $app, Request $request) {
                 if ( ! $request->get('stories'))
                     throw new \Exception_BadRequest();
 
@@ -190,18 +188,13 @@ class WorkZone implements ControllerProviderInterface
                 );
 
                 if ($request->getRequestFormat() == 'json') {
-
-                    $datas = $app['phraseanet.core']['Serializer']->serialize($data, 'json');
-
-                    return new Response($datas, 200, array('Content-type' => 'application/json'));
+                    return $app->json($data);
                 } else {
-                    return new RedirectResponse('/{sbas_id}/{record_id}/');
+                    return $app->redirect('/{sbas_id}/{record_id}/');
                 }
             });
 
-        $controllers->post(
-            '/detachStory/{sbas_id}/{record_id}/'
-            , function(Application $app, Request $request, $sbas_id, $record_id) {
+        $controllers->post('/detachStory/{sbas_id}/{record_id}/', function(Application $app, Request $request, $sbas_id, $record_id) {
                 $Story = new \record_adapter($sbas_id, $record_id);
 
                 $user = $app['phraseanet.core']->getAuthenticatedUser();
@@ -217,7 +210,6 @@ class WorkZone implements ControllerProviderInterface
                     throw new \Exception_NotFound('Story not found');
                 }
                 $em->remove($StoryWZ);
-
                 $em->flush();
 
                 $data = array(
@@ -226,9 +218,7 @@ class WorkZone implements ControllerProviderInterface
                 );
 
                 if ($request->getRequestFormat() == 'json') {
-                    $datas = $app['phraseanet.core']['Serializer']->serialize($data, 'json');
-
-                    return new Response($datas, 200, array('Content-type' => 'application/json'));
+                    return $app->json($data);
                 } else {
                     return new RedirectResponse('/');
                 }

@@ -196,7 +196,7 @@ class Lazaret implements ControllerProviderInterface
         if (null === $lazaretFile) {
             $ret['message'] = _('File is not present in quarantine anymore, please refresh');
 
-            return self::formatJson($app['phraseanet.core']['Serializer'], $ret);
+            return $app->json($ret);
         }
 
         $file = array(
@@ -212,7 +212,7 @@ class Lazaret implements ControllerProviderInterface
         $ret['result'] = $file;
         $ret['success'] = true;
 
-        return self::formatJson($app['phraseanet.core']['Serializer'], $ret);
+        return $app->json($ret);
     }
 
     /**
@@ -236,7 +236,7 @@ class Lazaret implements ControllerProviderInterface
         if (null === $baseId = $request->get('bas_id')) {
             $ret['message'] = _('You must give a destination collection');
 
-            return self::formatJson($app['phraseanet.core']['Serializer'], $ret);
+            return $app->json($ret);
         }
 
 
@@ -246,7 +246,7 @@ class Lazaret implements ControllerProviderInterface
         if (null === $lazaretFile) {
             $ret['message'] = _('File is not present in quarantine anymore, please refresh');
 
-            return self::formatJson($app['phraseanet.core']['Serializer'], $ret);
+            return $app->json($ret);
         }
 
         $lazaretFileName = $app['phraseanet.core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getFilename();
@@ -326,7 +326,7 @@ class Lazaret implements ControllerProviderInterface
 
         }
 
-        return self::formatJson($app['phraseanet.core']['Serializer'], $ret);
+        return $app->json($ret);
     }
 
     /**
@@ -349,7 +349,7 @@ class Lazaret implements ControllerProviderInterface
         if (null === $lazaretFile) {
             $ret['message'] = _('File is not present in quarantine anymore, please refresh');
 
-            return self::formatJson($app['phraseanet.core']['Serializer'], $ret);
+            return $app->json($ret);
         }
 
         $lazaretFileName = $app['phraseanet.core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getFilename();
@@ -371,7 +371,7 @@ class Lazaret implements ControllerProviderInterface
 
         }
 
-        return self::formatJson($app['phraseanet.core']['Serializer'], $ret);
+        return $app->json($ret);
     }
 
     /**
@@ -391,7 +391,7 @@ class Lazaret implements ControllerProviderInterface
         if (null === $recordId = $request->get('record_id')) {
             $ret['message'] = _('You must give a destination record');
 
-            return self::formatJson($app['phraseanet.core']['Serializer'], $ret);
+            return $app->json($ret);
         }
 
         $lazaretFile = $app['phraseanet.core']['EM']->find('Entities\LazaretFile', $file_id);
@@ -400,7 +400,7 @@ class Lazaret implements ControllerProviderInterface
         if (null === $lazaretFile) {
             $ret['message'] = _('File is not present in quarantine anymore, please refresh');
 
-            return self::formatJson($app['phraseanet.core']['Serializer'], $ret);
+            return $app->json($ret);
         }
 
         $found = false;
@@ -418,7 +418,7 @@ class Lazaret implements ControllerProviderInterface
         if ( ! $found) {
             $ret['message'] = _('The destination record provided is not allowed');
 
-            return self::formatJson($app['phraseanet.core']['Serializer'], $ret);
+            return $app->json($ret);
         }
 
         $lazaretFileName = $app['phraseanet.core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getFilename();
@@ -446,7 +446,7 @@ class Lazaret implements ControllerProviderInterface
 
         }
 
-        return self::formatJson($app['phraseanet.core']['Serializer'], $ret);
+        return $app->json($ret);
     }
 
     /**
@@ -475,11 +475,6 @@ class Lazaret implements ControllerProviderInterface
         );
 
         return $response;
-    }
-
-    protected static function formatJson(\Symfony\Component\Serializer\Serializer $serializer, $datas)
-    {
-        return new Response($serializer->serialize($datas, 'json'), 200, array('content-type' => 'application/json'));
     }
 
     /**

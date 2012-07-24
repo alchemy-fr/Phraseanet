@@ -14,11 +14,9 @@ namespace Alchemy\Phrasea\Controller\Prod;
 use Alchemy\Phrasea\Border;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\Serializer\Serializer;
 
 /**
  * Upload controller collection
@@ -265,22 +263,12 @@ class Upload implements ControllerProviderInterface
             $datas['message'] = _('Unable to add file to Phraseanet');
         }
 
-        $response = self::getJsonResponse($app['phraseanet.core']['Serializer'], $datas);
-
+        $response = $app->json($datas);
         // IE 7 and 8 does not correctly handle json response in file API
-        // let send them an html content-type header
+        // lets send them an html content-type header
         $response->headers->set('Content-type', 'text/html');
 
         return $response;
-    }
-
-    private static function getJsonResponse(Serializer $serializer, Array $datas)
-    {
-        return new Response(
-                $serializer->serialize($datas, 'json'),
-                200,
-                array('Content-type' => 'application/json')
-        );
     }
 
     /**
