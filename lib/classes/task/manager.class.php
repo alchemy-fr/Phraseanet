@@ -36,7 +36,7 @@ class task_manager
     /**
      * status of scheduler and tasks
      * used do refresh the taskmanager page
-     * 
+     *
      * @return array
      */
     public function toArray()

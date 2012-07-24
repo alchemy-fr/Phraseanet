@@ -166,7 +166,7 @@
 
                 currentView : null,
 
-                oldXML:"{{task.getSettings()|stripdoublequotes}}",
+                oldXML:"{{task.getSettings()|escape('js')}}",
 
                 view:function(type)
                 {

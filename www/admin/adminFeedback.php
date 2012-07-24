@@ -134,7 +134,7 @@ switch ($parm['action']) {
 
         }
         break;
-
+/*
     case 'RESETTASKCRASHCOUNTER':
         $parm = $request->get_parms("task_id");
         try {
@@ -152,7 +152,7 @@ switch ($parm['action']) {
 
         $output = $ret->saveXML();
         break;
-
+*/
     case 'CHANGETASK':
         $parm = $request->get_parms('act', 'task_id', "usr");
         $ret = new DOMDocument("1.0", "UTF-8");
@@ -178,6 +178,7 @@ switch ($parm['action']) {
 
         $output = $ret->saveXML();
         break;
+/*
     case 'PINGSCHEDULER_JS':
         $parm = $request->get_parms('dbps');
         $ret = array('time' => date("H:i:s"));
@@ -218,7 +219,7 @@ switch ($parm['action']) {
 
         $output = p4string::jsonencode($ret);
         break;
-
+*/
     case 'UNMOUNTBASE':
         $parm = $request->get_parms(array('sbas_id' => http_request::SANITIZE_NUMBER_INT));
         $ret = array('sbas_id' => null);
