@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block stylesheet %}
-<link type="text/css" rel="stylesheet" href="/include/minify/f=include/jslibs/jquery-treeview/jquery.treeview.css,include/jslibs/jquery.contextmenu.css,skins/account/geonames.css,skins/common/main.css,skins/admin/css/Main.css,skins/admin/css/Bases.css,skins/admin/css/Tables.css" />
+<link type="text/css" rel="stylesheet" href="/include/minify/f=include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css,include/jslibs/jquery-treeview/jquery.treeview.css,include/jslibs/jquery.contextmenu.css,skins/account/geonames.css,skins/common/main.css,skins/admin/css/Main.css,skins/admin/css/Bases.css,skins/admin/css/Tables.css" />
 {% endblock %}
 
 
@@ -82,13 +82,11 @@
 
     function activeTree(click)
     {
-      $('#FNDR').treeview({
-        collapsed: true,
-        animated: "medium"
-      });
+        $('#FNDR').treeview({
+          collapsed: true,
+          animated: "medium"
+        });
 
-      $.each($('#tree a[target=right]'),function(){
-        var dest = $(this).attr('href');
 
         function enableForms(forms) {
             forms.bind('submit', function(){
@@ -109,32 +107,68 @@
                         success: function(datas){
                             $('#right-ajax').removeClass('loading').html(datas);
                             enableForms($('#right-ajax form:not(.no-ajax)'));
+
+                            $.each($('#right-ajax a'),function(i, el){
+                                enableLink($(el));
+                            });
                             return;
                         }
                     });
+                    return false;
                 }
             });
         }
 
+        function enableLink(link) {
+
+            $(link).bind('click',function(event){
+
+                var dest = link.attr('href');
+
+                if(dest && dest.indexOf('#') !== 0) {
+                    $('#right-ajax').empty().addClass('loading').parent().show();
+                    $('#right').hide();
+
+                    $.get(dest, function(data) {
+                      $('#right-ajax').removeClass('loading').html(data);
+                      enableForms($('#right-ajax form:not(.no-ajax)'));
+                        $.each($('#right-ajax a'),function(i, el){
+                            enableLink($(el));
+                        });
+                    });
+                    return false;
+                }
+
+            });
+        }
+
+      $.each($('#tree a[target=right]'),function(){
+        var dest = $(this).attr('href');
+
         $(this).bind('click',function(){
-          if($(this).hasClass('ajax'))
-          {
+        if($(this).hasClass('ajax'))
+        {
             $('#right-ajax').empty().addClass('loading').parent().show();
             $('#right').hide();
+
             $.get(dest, function(data) {
-              $('#right-ajax').removeClass('loading').html(data);
-              enableForms($('#right-ajax form:not(.no-ajax)'));
+                $('#right-ajax').removeClass('loading').html(data);
+                enableForms($('#right-ajax form:not(.no-ajax)'));
+
+                $.each($('#right-ajax a'),function(i, el){
+                    enableLink($(el));
+                });
             });
-          }
-          else
-          {
+        }
+        else
+        {
             $('#right-ajax').empty().parent().hide();
             $('#right').show().addClass('loading').attr('src',dest);
-          }
-          $('#tree .selected').removeClass('selected');
-          $(this).parent().addClass('selected');
+        }
+        $('#tree .selected').removeClass('selected');
+            $(this).parent().addClass('selected');
 
-          return false;
+            return false;
         });
 
         $(this).removeAttr('target');
@@ -142,9 +176,9 @@
       if(click === true)
       {
         if($('#tree li.selected').length > 0)
-          $('#tree li.selected a').trigger('click');
+            $('#tree li.selected a').trigger('click');
         else
-          $('.zone_online_users').trigger('click');
+            $('.zone_online_users').trigger('click');
       }
     }
     $(document).ready(
