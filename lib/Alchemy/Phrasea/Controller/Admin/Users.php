@@ -59,11 +59,7 @@ class Users implements ControllerProviderInterface
                     $datas['message'] = $e->getMessage();
                 }
 
-                return new Response(
-                        $core->getSerializer()->serialize($datas, 'json')
-                        , 200
-                        , array('Content-Type' => 'application/json')
-                );
+                return $app->json($datas);
             }
         );
 

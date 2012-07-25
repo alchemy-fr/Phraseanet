@@ -93,9 +93,7 @@ class Tools implements ControllerProviderInterface
                     }
                 }
 
-                $json = $app['phraseanet.core']->getSerializer()->serialize($return, 'json');
-
-                return new Response($json, 200, array('content-type' => 'application/json'));
+                return $app->json($return);
             });
 
         $controllers->post('/image/', function(Application $app, Request $request) {
@@ -120,9 +118,7 @@ class Tools implements ControllerProviderInterface
                     }
                 }
 
-                $json = $app['phraseanet.core']->getSerializer()->serialize($return, 'json');
-
-                return new Response($json, 200, array('content-type' => 'application/json'));
+                return $app->json($return);
             });
 
         $controllers->post('/hddoc/', function(Application $app, Request $request) {
@@ -233,9 +229,7 @@ class Tools implements ControllerProviderInterface
                     $return['error'] = true;
                 }
 
-                $json = $app['phraseanet.core']->getSerializer()->serialize($return, 'json');
-
-                return new Response($json, 201, array('content-type' => 'application/json'));
+                return $app->json($return);
             });
 
         $controllers->post('/thumb-extractor/apply/', function(Application $app, Request $request) {
@@ -266,9 +260,7 @@ class Tools implements ControllerProviderInterface
                     $return['message'] = $e->getMessage();
                 }
 
-                $json = $app['phraseanet.core']->getSerializer()->serialize($return, 'json');
-
-                return new Response($json, 201, array('content-type' => 'application/json'));
+                return $app->json($return);
             });
 
         return $controllers;
