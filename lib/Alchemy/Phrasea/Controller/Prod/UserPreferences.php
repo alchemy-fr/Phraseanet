@@ -11,16 +11,8 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Silex\Application,
-    Silex\ControllerProviderInterface,
-    Silex\ControllerCollection;
-use Symfony\Component\HttpFoundation\Request,
-    Symfony\Component\HttpFoundation\Response,
-    Symfony\Component\HttpFoundation\RedirectResponse,
-    Symfony\Component\HttpKernel\Exception\HttpException,
-    Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Alchemy\Phrasea\RouteProcessor\Basket as BasketRoute,
-    Alchemy\Phrasea\Helper;
+use Silex\Application;
+use Silex\ControllerProviderInterface;
 
 /**
  *
@@ -34,27 +26,40 @@ class UserPreferences implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->post('/save/', function(Application $app, Request $request) {
-                $ret = array('success' => false, 'message' => _('Error while saving preference'));
-
-                try {
-                    $user = $app['phraseanet.core']->getAuthenticatedUser();
-
-                    $ret = $user->setPrefs($request->get('prop'), $request->get('value'));
-
-                    if ($ret == $request->get('value'))
-                        $output = "1";
-                    else
-                        $output = "0";
-
-                    $ret = array('success' => true, 'message' => _('Preference saved !'));
-                } catch (\Exception $e) {
-
-                }
-
-                return $app->json($ret);
-            });
+        $controllers->post('/save/', $this->call('savePreference'));
 
         return $controllers;
+    }
+
+    public function savePreference(Application $app, Request $request)
+    {
+        $ret = array('success' => false, 'message' => _('Error while saving preference'));
+
+        try {
+            $user = $app['phraseanet.core']->getAuthenticatedUser();
+
+            $ret = $user->setPrefs($request->get('prop'), $request->get('value'));
+
+            if ($ret == $request->get('value'))
+                $output = "1"; else
+                $output = "0";
+
+            $ret = array('success' => true, 'message' => _('Preference saved !'));
+        } catch (\Exception $e) {
+
+        }
+
+        return $app->json($ret);
+    }
+
+    /**
+     * Prefix the method to call with the controller class name
+     *
+     * @param  string $method The method to call
+     * @return string
+     */
+    private function call($method)
+    {
+        return sprintf('%s::%s', __CLASS__, $method);
     }
 }
