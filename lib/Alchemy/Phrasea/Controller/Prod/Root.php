@@ -98,8 +98,6 @@ class Root implements ControllerProviderInterface
                     }
                 }
 
-                $Serializer = $app['phraseanet.core']['Serializer'];
-
                 $out = $app['twig']->render('prod/index.html.twig', array(
                     'module_name'          => 'Production',
                     'WorkZone'             => new Helper\WorkZone($app['phraseanet.core'], $app['request']),
@@ -118,8 +116,8 @@ class Root implements ControllerProviderInterface
                     'search_status'        => \databox_status::getSearchStatus(),
                     'queries_history'      => \queries::history(),
                     'thesau_js_list'       => $thjslist,
-                    'thesau_json_sbas'     => json_encode($sbas, 'json'),
-                    'thesau_json_bas2sbas' => json_encode($bas2sbas, 'json'),
+                    'thesau_json_sbas'     => json_encode($sbas),
+                    'thesau_json_bas2sbas' => json_encode($bas2sbas),
                     'thesau_languages'     => \User_Adapter::avLanguages(),
                     ));
 
