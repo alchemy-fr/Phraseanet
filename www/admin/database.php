@@ -103,7 +103,7 @@ if ($user->ACL()->has_right_on_sbas($sbas_id, 'bas_manage')) {
     {
         document.forms["flpdf"].target = "";
         document.forms["flpdf"].act.value = "SENDLOGOPDF";
-        document.forms["flpdf"].submit();
+        $('form[name="flpdf"]').trigger('submit');
     }
 
     function deleteLogoPdf()
@@ -299,8 +299,16 @@ if ($user->ACL()->has_right_on_sbas($sbas_id, 'bas_manage')) {
             document.forms["manageDatabase"].target = "";
             document.forms["manageDatabase"].act.value = "";
             document.forms["manageDatabase"].sta.value = sta;
-            document.forms["manageDatabase"].submit();
+            $('form[name="manageDatabase"]').trigger('submit');
         }
+    }
+
+    function showDetails(sta)
+    {
+        document.forms["manageDatabase"].target = "";
+        document.forms["manageDatabase"].act.value = "";
+        document.forms["manageDatabase"].sta.value = sta;
+        $('form[name="manageDatabase"]').trigger('submit');
     }
 
     function chgOrd(srt)
@@ -309,7 +317,7 @@ if ($user->ACL()->has_right_on_sbas($sbas_id, 'bas_manage')) {
         document.forms["manageDatabase"].act.value = "";
         document.forms["manageDatabase"].sta.value = "1";
         document.forms["manageDatabase"].srt.value = srt;
-        document.forms["manageDatabase"].submit();
+        $('form[name="manageDatabase"]').trigger('submit');
     }
 
     function refreshContent()
@@ -534,7 +542,7 @@ $out = "";
                 <div id="make_indexable_ajax_status" style="display:none">&nbsp;</div>
             </div>
             <p>
-                <a href="javascript:void(0);return(false);" onclick="reindex();return(false);">
+                <a onclick="reindex();return(false);">
                     <?php echo(_("base:: re-indexer")); ?>
                 </a>
             </p>
@@ -618,25 +626,25 @@ $out = "";
             }
             ?>
             <p>
-                <a href="javascript:void(0);return(false);" onclick="clearAllLog();return(false);">
+                <a onclick="clearAllLog();return(false);">
                     <img src="/skins/icons/clearLogs.png" style="vertical-align:middle"/>
                     <?php echo(_("admin::base: supprimer tous les logs")); ?>
                 </a>
             </p>
             <p>
-                <a href="javascript:void(0);return(false);" onclick="umountBase();return(false);">
+                <a onclick="umountBase();return(false);">
                     <img src="/skins/icons/db-remove.png" style="vertical-align:middle"/>
                     <?php echo(_("admin::base: arreter la publication de la base")); ?>
                 </a>
             </p>
             <p>
-                <a href="javascript:void(0);return(false);" onclick="emptyBase();return(false);">
+                <a onclick="emptyBase();return(false);">
                     <img src="/skins/icons/trash.png" style="vertical-align:middle"/>
                     <?php echo(_("admin::base: vider la base")); ?>
                 </a>
             </p>
             <p>
-                <a href="javascript:void(0);return(false);" onclick="deleteBase();return(false);">
+                <a onclick="deleteBase();return(false);">
                     <img src="/skins/icons/delete.gif" style="vertical-align:middle"/>
                     <?php echo(_("admin::base: supprimer la base")); ?>
                 </a>
@@ -685,7 +693,7 @@ $out = "";
             </div>
         </div>
 
-        <form method="post" name="manageDatabase" action="./database.php" target="???" onsubmit="return(false);">
+        <form method="post" name="manageDatabase" action="./database.php" target="???">
             <input type="hidden" name="p0"  value="<?php echo($parm["p0"]) ?>" />
             <input type="hidden" name="sta" value="0" />
             <input type="hidden" name="srt" value="" />
