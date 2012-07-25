@@ -11,7 +11,9 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Alchemy\Phrasea\Border;
+use Alchemy\Phrasea\Border\File;
+use Alchemy\Phrasea\Border\Attribute\Status;
+use Entities\LazaretSession;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -119,15 +121,13 @@ class Upload implements ControllerProviderInterface
 
         $maxFileSize = min(UploadedFile::getMaxFilesize(), (int) $postMaxSize);
 
-        $html = $app['twig']->render(
+        return $app['twig']->render(
             'prod/upload/upload.html.twig', array(
             'collections'         => $collections,
             'maxFileSize'         => $maxFileSize,
             'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
             )
         );
-
-        return new Response($html);
     }
 
     /**
@@ -190,12 +190,12 @@ class Upload implements ControllerProviderInterface
             $media = $app['phraseanet.core']['mediavorus']->guess($file);
             $collection = \collection::get_from_base_id($base_id);
 
-            $lazaretSession = new \Entities\LazaretSession();
+            $lazaretSession = new LazaretSession();
             $lazaretSession->setUsrId($app['phraseanet.core']->getAuthenticatedUser()->get_id());
 
             $app['phraseanet.core']['EM']->persist($lazaretSession);
 
-            $packageFile = new Border\File($media, $collection, $file->getClientOriginalName());
+            $packageFile = new File($media, $collection, $file->getClientOriginalName());
 
             $postStatus = $request->get('status');
 
@@ -206,7 +206,7 @@ class Upload implements ControllerProviderInterface
                 foreach (range(0, 63) as $i) {
                     $status .= isset($postStatus[$i]) ? ($postStatus[$i] ? '1' : '0') : '0';
                 }
-                $packageFile->addAttribute(new Border\Attribute\Status(strrev($status)));
+                $packageFile->addAttribute(new Status(strrev($status)));
             }
 
             $forceBehavior = $request->get('forceAction');
