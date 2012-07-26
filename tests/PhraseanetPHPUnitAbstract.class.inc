@@ -57,6 +57,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      * @var collection
      */
     protected static $collection_no_access;
+    protected static $collection_no_access_by_status;
 
     /**
      * Test start time
@@ -154,6 +155,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $this->purgeDatabase();
 
         self::$user->ACL()->revoke_access_from_bases(array(self::$collection_no_access->get_base_id()));
+        self::$user->ACL()->set_masks_on_base(self::$collection_no_access_by_status->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
 
         \PHPUnit_Framework_Error_Warning::$enabled = true;
         \PHPUnit_Framework_Error_Notice::$enabled = true;
@@ -654,20 +656,25 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     private static function setCollection()
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
-        $coll = $collection_no_acces = null;
+        $coll = $collection_no_acces = $collection_no_acces_by_status = $db = null;
 
         foreach ($appbox->get_databoxes() as $databox) {
+            $db = $databox;
             foreach ($databox->get_collections() as $collection) {
-                if ($coll instanceof collection && ! $collection_no_acces)
+                if ($collection_no_acces instanceof collection && ! $collection_no_acces_by_status) {
+                    $collection_no_acces_by_status = $collection;
+                }
+                if ($coll instanceof collection && ! $collection_no_acces) {
                     $collection_no_acces = $collection;
-                if ( ! $coll)
+                }
+                if ( ! $coll) {
                     $coll = $collection;
-                if ($coll instanceof collection && $collection_no_acces instanceof collection)
-                    break;
-            }
-
-            if ($coll instanceof collection && $collection_no_acces instanceof collection) {
-                break;
+                }
+                if ($coll instanceof collection
+                    && $collection_no_acces instanceof collection
+                    && $collection_no_acces_by_status instanceof collection) {
+                    break 2;
+                }
             }
         }
 
@@ -677,10 +684,14 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         if ( ! $collection_no_acces instanceof collection) {
             $collection_no_acces = collection::create($databox, $appbox, 'BIBOO', self::$user);
         }
+        if ( ! $collection_no_acces_by_status instanceof collection) {
+            $collection_no_acces_by_status = collection::create($databox, $appbox, 'BIBOONOACCESBYSTATUS', self::$user);
+        }
 
         self::$collection = $coll;
 
         self::$collection_no_access = $collection_no_acces;
+        self::$collection_no_access_by_status = $collection_no_acces_by_status;
 
         return;
     }
@@ -742,19 +753,28 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             $collection_no_access = self::$collection_no_access;
 
-            static::$records['record_no_access'] = static::$records->share(function()use($collection_no_access, $core) {
+            static::$records['record_no_access'] = static::$records->share(function() use ($collection_no_access, $core) {
 
                     PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'no_access';
 
-                    $file = new Alchemy\Phrasea\Border\File($core['mediavorus']->guess(new \SplFileInfo(__DIR__ . '/testfiles/test001.CR2')), $collection_no_access);
+                    $file = new Alchemy\Phrasea\Border\File($core['mediavorus']->guess(new \SplFileInfo(__DIR__ . '/testfiles/cestlafete.jpg')), $collection_no_access);
 
-                    return record_adapter::createFromFile($file);
+                    return \record_adapter::createFromFile($file);
+                });
+
+            static::$records['record_no_access_by_status'] = static::$records->share(function()use($collection_no_access, $core) {
+
+                    PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'no_access_by_status';
+
+                    $file = new Alchemy\Phrasea\Border\File($core['mediavorus']->guess(new \SplFileInfo(__DIR__ . '/testfiles/cestlafete.jpg')), $collection_no_access);
+
+                    return \record_adapter::createFromFile($file);
                 });
         }
 
         return;
     }
-
+    
     /**
      * Delete previously created Ressources
      *
