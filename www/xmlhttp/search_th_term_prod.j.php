@@ -26,6 +26,7 @@ $parm = $request->get_parms(
     , 'debug'
 );
 
+$appbox = \appbox::get_instance(\bootstrap::getCore());
 phrasea::headers(200, true, 'application/json', 'UTF-8', false);
 
 if ( ! $parm['lng']) {
@@ -50,7 +51,7 @@ $dbname = '';
 $loaded = false;
 
 try {
-    $databox = databox::get_instance($sbid);
+    $databox = $appbox->get_databox($sbid);
     $unicode = new unicode();
 
     $html = "" . '<LI id="TX_P.' . $sbid . '.T" class="expandable">' . "\n";

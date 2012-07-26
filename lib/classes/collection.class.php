@@ -585,7 +585,7 @@ class collection implements cache_cacheableInterface
         $new_bas = $appbox->get_connection()->lastInsertId();
         $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 
-        $databox = databox::get_instance((int) $sbas_id);
+        $databox = $appbox->get_databox((int) $sbas_id);
         $databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
 
         cache_databox::update($sbas_id, 'structure');

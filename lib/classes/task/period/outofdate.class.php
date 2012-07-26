@@ -731,6 +731,7 @@ class task_period_outofdate extends task_abstract
     {
         $ret = NULL;
 
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
         $request = http_request::getInstance();
         $parm2 = $request->get_parms(
             'ACT', 'bid'
@@ -750,7 +751,7 @@ class task_period_outofdate extends task_abstract
                 if ($parm2['bid'] != '') {
                     $sbas_id = (int) $parm2['bid'];
                     try {
-                        $databox = databox::get_instance($sbas_id);
+                        $databox = $appbox->get_databox($sbas_id);
                         $meta_struct = $databox->get_meta_structure();
 
                         foreach ($meta_struct as $meta) {

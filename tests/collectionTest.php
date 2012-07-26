@@ -49,7 +49,7 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertFalse(self::$object->is_active());
 
         $sbas_id = self::$object->get_databox()->get_sbas_id();
-        $databox = databox::get_instance($sbas_id);
+        $databox = $appbox->get_databox($sbas_id);
 
         foreach ($databox->get_collections() as $collection) {
             $this->assertTrue($collection->get_base_id() !== $base_id);
@@ -61,7 +61,7 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertTrue(is_int(self::$object->get_coll_id()));
         $this->assertTrue(self::$object->is_active());
 
-        $databox = databox::get_instance($sbas_id);
+        $databox = $appbox->get_databox($sbas_id);
 
         $n = $m = 0;
         foreach ($databox->get_collections() as $collection) {

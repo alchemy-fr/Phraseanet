@@ -446,7 +446,7 @@ class task_period_workflow01 extends task_databoxAbstract
 
         $sbas_id = (int) $parm['bid'];
         try {
-            $databox = databox::get_instance($sbas_id);
+            $databox = $appbox->get_databox($sbas_id);
             foreach ($databox->get_meta_structure() as $meta) {
                 if ($meta->get_type() !== 'date') {
                     continue;

@@ -232,7 +232,7 @@ class Description implements ControllerProviderInterface
 
         $controllers->get('/{sbas_id}/', function(Application $app, $sbas_id) {
 
-                $databox = \databox::get_instance((int) $sbas_id);
+                $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
 
                 $params = array(
                     'databox'             => $databox,

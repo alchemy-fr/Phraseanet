@@ -34,7 +34,7 @@ if ( ! $user->ACL()->has_right_on_sbas($parm['p0'], 'bas_modify_struct')) {
 
 phrasea::headers();
 
-$databox = databox::get_instance((int) $parm['p0']);
+$databox = $appbox->get_databox((int) $parm['p0']);
 if ((int) $parm['p0'] > 0 && is_array($parm['TOU'])) {
     foreach ($parm['TOU'] as $loc => $terms) {
         $databox->update_cgus($loc, $terms, $parm['valid']);

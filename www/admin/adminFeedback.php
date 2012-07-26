@@ -64,7 +64,7 @@ switch ($parm['action']) {
         $message = _('Base empty successful');
         try {
             $sbas_id = (int) $parm['sbas_id'];
-            $databox = databox::get_instance($sbas_id);
+            $databox = $appbox->get_databox($sbas_id);
             $class_name = 'task_period_emptyColl';
             foreach ($databox->get_collections() as $collection) {
                 if ($collection->get_record_amount() <= 500) {
@@ -89,7 +89,7 @@ switch ($parm['action']) {
             )
         );
         try {
-            $databox = databox::get_instance($parm['sbas_id']);
+            $databox = $appbox->get_databox($parm['sbas_id']);
             $collection = collection::get_from_coll_id($databox, $parm['coll_id']);
 
             if ($collection->get_record_amount() <= 500) {
@@ -223,7 +223,7 @@ switch ($parm['action']) {
         $parm = $request->get_parms(array('sbas_id' => http_request::SANITIZE_NUMBER_INT));
         $ret = array('sbas_id' => null);
 
-        $databox = databox::get_instance((int) $parm['sbas_id']);
+        $databox = $appbox->get_databox((int) $parm['sbas_id']);
         $databox->unmount_databox($appbox);
 
         $ret['sbas_id'] = $parm['sbas_id'];
@@ -242,7 +242,7 @@ switch ($parm['action']) {
             'printLogoURL'      => NULL
         );
 
-        $databox = databox::get_instance((int) $parm['sbas_id']);
+        $databox = $appbox->get_databox((int) $parm['sbas_id']);
 
         $ret['indexable'] = $appbox->is_databox_indexable($databox);
         $ret['viewname'] = (($databox->get_dbname() == $databox->get_viewname()) ? _('admin::base: aucun alias') : $databox->get_viewname());
@@ -268,7 +268,7 @@ switch ($parm['action']) {
         $parm = $request->get_parms('sbas_id', 'viewname');
         $ret = array('sbas_id'  => null, 'viewname' => null);
         $sbas_id = (int) $parm['sbas_id'];
-        $databox = databox::get_instance($sbas_id);
+        $databox = $appbox->get_databox($sbas_id);
         $appbox->set_databox_viewname($databox, $parm['viewname']);
         $output = p4string::jsonencode($ret);
         break;
@@ -278,7 +278,7 @@ switch ($parm['action']) {
         $parm = $request->get_parms('sbas_id', 'INDEXABLE');
         $ret = array('sbas_id'         => null, 'indexable'       => null);
         $sbas_id = (int) $parm['sbas_id'];
-        $databox = databox::get_instance($sbas_id);
+        $databox = $appbox->get_databox($sbas_id);
         $appbox->set_databox_indexable($databox, $parm['INDEXABLE']);
         $ret['sbas_id'] = $parm['sbas_id'];
         $ret['indexable'] = $parm['INDEXABLE'];
@@ -290,7 +290,7 @@ switch ($parm['action']) {
         $parm = $request->get_parms(array('sbas_id' => http_request::SANITIZE_NUMBER_INT));
         $ret = array('sbas_id' => null);
         $sbas_id = (int) $parm['sbas_id'];
-        $databox = databox::get_instance($sbas_id);
+        $databox = $appbox->get_databox($sbas_id);
         $databox->reindex();
         $output = p4string::jsonencode($ret);
         break;
@@ -300,7 +300,7 @@ switch ($parm['action']) {
         $parm = $request->get_parms(array('sbas_id' => http_request::SANITIZE_NUMBER_INT));
         $ret = array('sbas_id'       => null);
         $sbas_id = (int) $parm['sbas_id'];
-        $databox = databox::get_instance($sbas_id);
+        $databox = $appbox->get_databox($sbas_id);
         $databox->clear_logs();
         $ret['sbas_id'] = $parm['sbas_id'];
         $output = p4string::jsonencode($ret);
@@ -310,7 +310,7 @@ switch ($parm['action']) {
         $parm = $request->get_parms(array('sbas_id' => http_request::SANITIZE_NUMBER_INT));
         $ret = array('sbas_id'       => null);
         $sbas_id = (int) $parm['sbas_id'];
-        $databox = databox::get_instance($sbas_id);
+        $databox = $appbox->get_databox($sbas_id);
         $appbox->write_databox_pic($databox, null, databox::PIC_PDF);
         $ret['sbas_id'] = $parm['sbas_id'];
 
@@ -324,7 +324,7 @@ switch ($parm['action']) {
 
         try {
             $sbas_id = (int) $parm['sbas_id'];
-            $databox = databox::get_instance($sbas_id);
+            $databox = $appbox->get_databox($sbas_id);
             if ($databox->get_record_amount() == 0) {
                 $databox->unmount_databox($appbox);
                 $appbox->write_databox_pic($databox, null, databox::PIC_PDF);

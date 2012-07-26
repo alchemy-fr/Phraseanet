@@ -219,7 +219,7 @@ foreach ($sbas_ids as $sbas_id) {
     $version = 'unknown';
     $sbas[$sbas_id] = '<img src="/skins/icons/db-remove.png" /> ' . ' (Unreachable server)';
     try {
-        $databox = databox::get_instance($sbas_id);
+        $databox = $appbox->get_databox($sbas_id);
         $version = $databox->get_version();
         if ($databox->upgradeavailable())
             $upgrade_available = true;

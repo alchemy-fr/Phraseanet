@@ -1512,7 +1512,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
             foreach ($sbas_ids as $sbas_id) {
                 try {
-                    $logger = $session->get_logger(databox::get_instance($sbas_id));
+                    $logger = $session->get_logger($appbox->get_databox($sbas_id));
 
                     $connbas = connection::getPDOConnection($sbas_id);
                     $sql = 'SELECT appli FROM log WHERE id = :log_id';

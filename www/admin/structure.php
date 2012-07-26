@@ -77,7 +77,7 @@ if ($parm["act"] == "CHGSTRUCTURE") {
 
     $errors = databox::get_structure_errors($parm["str"]);
     if (count($errors) == 0 && $domst->loadXML($parm["str"])) { // simplexml_load_string($parm["str"]))
-        $databox = databox::get_instance((int) $parm['p0']);
+        $databox = $appbox->get_databox((int) $parm['p0']);
         $databox->saveStructure($domst);
     } else {
         $msg .= p4string::MakeString(_('admin::base: xml invalide, les changements ne seront pas appliques') . "\n" . implode("\n", $errors), 'js') . "";
@@ -95,7 +95,7 @@ if ($parm["act"] == "CHGSTRUCTURE") {
     }
     unset($domst);
 } else {
-    $databox = databox::get_instance((int) $parm["p0"]);
+    $databox = $appbox->get_databox((int) $parm["p0"]);
     $parm["str"] = $databox->get_structure();
 }
 if ($loadit) {

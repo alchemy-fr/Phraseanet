@@ -32,11 +32,10 @@ class cache_databox
 
         self::$refreshing = true;
 
-        $databox = \databox::get_instance((int) $sbas_id);
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $databox = $appbox->get_databox((int) $sbas_id);
 
         $date = new \DateTime('-3 seconds');
-
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
 
         $registry = \registry::get_instance();
 

@@ -24,7 +24,7 @@ $parm = $request->get_parms(
 );
 
 $sbas_id = (int) $parm['p0'];
-$databox = databox::get_instance($sbas_id);
+$databox = $appbox->get_databox($sbas_id);
 if (is_null($parm['p0']))
     phrasea::headers(400);
 

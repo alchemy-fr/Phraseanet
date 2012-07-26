@@ -31,7 +31,7 @@ $collname = phrasea::bas_names($parm["p1"]);
 $sbas_id = phrasea::sbasFromBas($parm["p1"]);
 $coll_id = phrasea::collFromBas($parm['p1']);
 
-$databox = databox::get_instance($sbas_id);
+$databox = $appbox->get_databox($sbas_id);
 $collection = collection::get_from_coll_id($databox, $coll_id);
 
 if ($parm["act"] == "CHGSUGVAL") {
@@ -798,7 +798,7 @@ $curPrefs = $collection->get_prefs();
   otherFields = "";
 <?php
 $structfields = null;
-$databox = databox::get_instance($sbas_id);
+$databox = $appbox->get_databox($sbas_id);
 
 foreach ($databox->get_meta_structure() as $meta) {
     if ($meta->is_readonly())
@@ -992,7 +992,7 @@ if (isset($curPrefs)) {
 <?php echo _('admin::sugval: champs') ?>
                                     <select  name=usrbases id="nomchamPH" onKeyUp="javascript:write_valsug();" onChange="javascript:savenomaff();makeRestrict();maketextaffich();makeEmpty();write_valsug();"   onclick="javascript: makeRestrict();desactivall4VS(); write_valsug();" >
 <?php
-$databox = databox::get_instance($sbas_id);
+$databox = $appbox->get_databox($sbas_id);
 
 foreach ($databox->get_meta_structure() as $meta) {
     if ($meta->is_readonly())

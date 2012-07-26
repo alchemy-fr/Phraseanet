@@ -224,7 +224,8 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             WHERE usr_id IN (" . implode(',', $this->users) . ")
               AND base_id = :base_id";
 
-        $conn = \connection::getPDOConnection();
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $conn = $appbox->get_connection();
         $stmt = $conn->prepare($sql);
         $stmt->execute(array(':base_id' => $this->base_id));
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -256,7 +257,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         $tbits_right = array();
 
         $sbas_id = \phrasea::sbasFromBas($this->base_id);
-        $databox = \databox::get_instance($sbas_id);
+        $databox = $appbox->get_databox($sbas_id);
         $status = $databox->get_statusbits();
 
         foreach ($status as $bit => $datas) {

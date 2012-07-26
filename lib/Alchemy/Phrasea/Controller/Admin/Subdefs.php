@@ -32,7 +32,7 @@ class Subdefs implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->get('/{sbas_id}/', function(Application $app, $sbas_id) {
-                $databox = \databox::get_instance((int) $sbas_id);
+                $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
 
                 return new response($app['twig']->render(
                             'admin/subdefs.html.twig', array(
@@ -48,7 +48,7 @@ class Subdefs implements ControllerProviderInterface
                 $toadd_subdef = $request->get('add_subdef');
                 $Parmsubdefs = $request->get('subdefs', array());
 
-                $databox = \databox::get_instance((int) $sbas_id);
+                $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
 
                 $add_subdef = array('class' => null, 'name'  => null, 'group' => null);
                 foreach ($add_subdef as $k => $v) {

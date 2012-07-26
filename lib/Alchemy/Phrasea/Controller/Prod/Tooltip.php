@@ -138,7 +138,7 @@ class Tooltip implements ControllerProviderInterface
 
     public function displayFieldInfos(Application $app, $sbas_id, $field_id)
     {
-        $databox = \databox::get_instance((int) $sbas_id);
+        $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
         $field = \databox_field::get_instance($databox, $field_id);
 
         return $app['twig']->render(
@@ -149,7 +149,7 @@ class Tooltip implements ControllerProviderInterface
 
     public function displayDCESInfos(Application $app, $sbas_id, $field_id)
     {
-        $databox = \databox::get_instance((int) $sbas_id);
+        $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
         $field = \databox_field::get_instance($databox, $field_id);
 
         return $app['twig']->render(
@@ -160,7 +160,7 @@ class Tooltip implements ControllerProviderInterface
 
     public function displayMetaRestrictions(Application $app, $sbas_id, $field_id)
     {
-        $databox = \databox::get_instance((int) $sbas_id);
+        $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
         $field = \databox_field::get_instance($databox, $field_id);
 
         return $app['twig']->render(

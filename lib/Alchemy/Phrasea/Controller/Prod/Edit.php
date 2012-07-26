@@ -49,7 +49,7 @@ class Edit implements ControllerProviderInterface
                     }
 
                     $VC = \Alchemy\Phrasea\Vocabulary\Controller::get($vocabulary);
-                    $databox = \databox::get_instance($sbas_id);
+                    $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
                 } catch (\Exception $e) {
                     $datas['message'] = _('Vocabulary not found');
 

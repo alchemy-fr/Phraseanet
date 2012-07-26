@@ -32,7 +32,7 @@ if ( ! $parm["srt"])
     $parm["srt"] = "col";
 
 $sbas_id = (int) $parm['p0'];
-$databox = databox::get_instance($sbas_id);
+$databox = $appbox->get_databox($sbas_id);
 
 phrasea::headers();
 

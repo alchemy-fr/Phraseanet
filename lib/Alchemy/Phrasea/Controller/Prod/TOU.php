@@ -36,7 +36,7 @@ class TOU implements ControllerProviderInterface
                     $user = $app['phraseanet.core']->getAuthenticatedUser();
                     $session = \Session_Handler::getInstance($app['phraseanet.appbox']);
 
-                    $databox = \databox::get_instance((int) $sbas_id);
+                    $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
 
                     $user->ACL()->revoke_access_from_bases(
                         $user->ACL()->get_granted_base(array(), array($databox->get_sbas_id()))

@@ -14,6 +14,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      * @var Symfony\Component\HttpKernel\Client
      */
     protected $client;
+    protected $app;
 
     /**
      * @var \API_OAuth2_Token
@@ -101,12 +102,12 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
     public function createApplication()
     {
-        $app = require __DIR__ . '/../../../../lib/Alchemy/Phrasea/Application/Api.php';
+        $this->app = require __DIR__ . '/../../../../lib/Alchemy/Phrasea/Application/Api.php';
 
-        $app['debug'] = true;
-        unset($app['exception_handler']);
+        $this->app['debug'] = true;
+        unset($this->app['exception_handler']);
 
-        return $app;
+        return $this->app;
     }
 
     public function testRouteNotFound()
@@ -551,7 +552,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
         foreach (static::$databoxe_ids as $databox_id) {
-            $databox = \databox::get_instance($databox_id);
+            $databox = $this->app['phraseanet.appbox']->get_databox($databox_id);
             $ref_status = $databox->get_statusbits();
             $route = '/databoxes/' . $databox_id . '/status/';
             $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
@@ -600,7 +601,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
         foreach (static::$databoxe_ids as $databox_id) {
-            $databox = \databox::get_instance($databox_id);
+            $databox = $this->app['phraseanet.appbox']->get_databox($databox_id);
             $ref_structure = $databox->get_meta_structure();
 
             try {

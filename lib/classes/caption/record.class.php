@@ -303,7 +303,8 @@ class caption_record implements caption_interface, cache_cacheableInterface
      */
     public function get_data_from_cache($option = null)
     {
-        $databox = databox::get_instance($this->record->get_sbas_id());
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $databox = $appbox->get_databox($this->record->get_sbas_id());
 
         return $databox->get_data_from_cache($this->get_cache_key($option));
     }
@@ -318,7 +319,8 @@ class caption_record implements caption_interface, cache_cacheableInterface
      */
     public function set_data_to_cache($value, $option = null, $duration = 0)
     {
-        $databox = databox::get_instance($this->record->get_sbas_id());
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $databox = $appbox->get_databox($this->record->get_sbas_id());
 
         return $databox->set_data_to_cache($value, $this->get_cache_key($option), $duration);
     }
@@ -331,7 +333,8 @@ class caption_record implements caption_interface, cache_cacheableInterface
      */
     public function delete_data_from_cache($option = null)
     {
-        $databox = databox::get_instance($this->record->get_sbas_id());
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $databox = $appbox->get_databox($this->record->get_sbas_id());
         $this->fields = null;
 
         return $databox->delete_data_from_cache($this->get_cache_key($option));

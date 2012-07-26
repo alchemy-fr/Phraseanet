@@ -195,7 +195,8 @@ class Edit extends RecordHelper
 
         $twig = $this->getCore()->getTwig();
 
-        $databox = \databox::get_instance($this->get_sbas_id());
+        $appbox = \appbox::get_instance($this->getCore());
+        $databox = $appbox->get_databox($this->get_sbas_id());
 
         $databox_fields = array();
         foreach ($databox->get_meta_structure() as $field) {
@@ -367,7 +368,8 @@ class Edit extends RecordHelper
 
         $this->has_thesaurus = false;
 
-        $databox = \databox::get_instance($this->get_sbas_id());
+        $appbox = \appbox::get_instance($this->getCore());
+        $databox = $appbox->get_databox($this->get_sbas_id());
         $meta_struct = $databox->get_meta_structure();
 
         foreach ($meta_struct as $meta) {
@@ -445,7 +447,7 @@ class Edit extends RecordHelper
         }
 
         $sbas_id = (int) $request->get('sbid');
-        $databox = \databox::get_instance($sbas_id);
+        $databox = $appbox->get_databox($sbas_id);
         $meta_struct = $databox->get_meta_structure();
         $write_edit_el = false;
         $date_obj = new \DateTime();
