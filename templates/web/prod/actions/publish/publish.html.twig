@@ -29,15 +29,15 @@
 </div>
 
 <form class="main_form" method="post" action="/prod/feeds/entry/create/">
-    <input type="hidden" name="lst" value="{{ publishing.get_serialize_list() }}" />
+    <input type="hidden" name="lst" value="{{ publishing.serializedList() }}" />
     <div class="PNB" style="top:200px; bottom:50px;">
         <div class="PNB" style="width:50%; right:auto;">
             <div class="PNB10 fields">
                 {% set title = '' %}
                 {% set desc = '' %}
-                {% if publishing.is_basket() %}
-                    {% set title = publishing.get_original_basket().getName() %}
-                    {% set desc = publishing.get_original_basket().getDescription() %}
+                {% if publishing.basket() is not null %}
+                    {% set title = publishing.basket().getName() %}
+                    {% set desc = publishing.basket().getDescription() %}
                 {% endif %}
                 <label for="feed_add_title">{% trans 'publication : titre' %}</label>
                 <input class="required_text" type="text" name="title" id="feed_add_title" value="{{title}}" />
