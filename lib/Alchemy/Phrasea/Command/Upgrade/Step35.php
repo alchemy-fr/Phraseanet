@@ -11,8 +11,7 @@
 
 namespace Alchemy\Phrasea\Command\Upgrade;
 
-use Alchemy\Phrasea\Core;
-use Monolog\Logger;
+use Alchemy\Phrasea\Application;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -23,23 +22,14 @@ class Step35 implements DatasUpgraderInterface
 {
     const AVERAGE_PER_SECOND = 100;
 
-    protected $core;
-
-    /**
-     * @var Monolog\Logger
-     */
-    protected $logger;
-
     /**
      * Constructor
      *
-     * @param Core $core
-     * @param Logger $logger
+     * @param Application $app The context application for execution
      */
-    public function __construct(Core $core, Logger $logger)
+    public function __construct(Application $app)
     {
-        $this->core = $core;
-        $this->logger = $logger;
+        $this->app = $app;
     }
 
     /**
@@ -47,9 +37,7 @@ class Step35 implements DatasUpgraderInterface
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $appbox = \appbox::get_instance($this->core);
-
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
 
             foreach ($databox->get_meta_structure()->get_elements() as $databox_field) {
                 if ($databox_field->is_on_error()) {
@@ -90,20 +78,20 @@ class Step35 implements DatasUpgraderInterface
                     try {
                         $record = new \record_adapter($databox->get_sbas_id(), $row['record_id']);
                     } catch (\Exception $e) {
-                        $this->logger->addError(sprintf("Unable to load record %d on databox %d : %s", $record->get_record_id(), $record->get_sbas_id(), $record->get_sbas_id(), $e->getMessage()));
+                        $this->app['phraseanet.core']['monolog']->addError(sprintf("Unable to load record %d on databox %d : %s", $record->get_record_id(), $record->get_sbas_id(), $record->get_sbas_id(), $e->getMessage()));
                         continue;
                     }
 
                     try {
                         $this->updateMetadatas($record, $row['xml']);
                     } catch (Exception $e) {
-                        $this->logger->addError(sprintf("Error while upgrading metadatas for record %d on databox %d : %s", $record->get_record_id(), $record->get_sbas_id(), $e->getMessage()));
+                        $this->app['phraseanet.core']['monolog']->addError(sprintf("Error while upgrading metadatas for record %d on databox %d : %s", $record->get_record_id(), $record->get_sbas_id(), $e->getMessage()));
                     }
 
                     try {
                         $record->set_binary_status($row['status']);
                     } catch (Exception $e) {
-                        $this->logger->addError(sprintf("Error while upgrading status for record %d on databox %d : %s", $record->get_record_id(), $record->get_sbas_id(), $e->getMessage()));
+                        $this->app['phraseanet.core']['monolog']->addError(sprintf("Error while upgrading status for record %d on databox %d : %s", $record->get_record_id(), $record->get_sbas_id(), $e->getMessage()));
                     }
                     unset($record);
                 }
@@ -114,7 +102,7 @@ class Step35 implements DatasUpgraderInterface
         }
 
 
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
             $this->ensureDropMigrateColumn($databox);
         }
     }
@@ -124,12 +112,9 @@ class Step35 implements DatasUpgraderInterface
      */
     public function getTimeEstimation()
     {
-
-        $appbox = \appbox::get_instance($this->core);
-
         $time = 0;
 
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
             $sql = 'select record_id
                             FROM record';
 

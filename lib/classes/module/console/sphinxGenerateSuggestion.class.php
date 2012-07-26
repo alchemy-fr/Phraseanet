@@ -41,7 +41,7 @@ class module_console_sphinxGenerateSuggestion extends Command
         define('FREQ_THRESHOLD', 10);
         define('SUGGEST_DEBUG', 0);
 
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = $this->getService('phraseanet.appbox');
         $registry = $appbox->get_registry();
 
         $params = phrasea::sbas_params();

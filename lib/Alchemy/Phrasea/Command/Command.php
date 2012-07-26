@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Command;
 
-use Monolog\Logger;
+use Alchemy\Phrasea\Application;
 use Monolog\Handler\StreamHandler;
 use Symfony\Component\Console\Command\Command as SymfoCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -25,6 +25,10 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 abstract class Command extends SymfoCommand
 {
+    /**
+     * @var Application
+     */
+    protected $container = null;
 
     /**
      * Constructor
@@ -33,30 +37,6 @@ abstract class Command extends SymfoCommand
     public function __construct($name)
     {
         parent::__construct($name);
-        $core = \bootstrap::getCore();
-        $this->logger = $core['monolog'];
-    }
-
-    /**
-     * Set a logger to the command
-     *
-     * @param  Logger                           $logger
-     * @return \Alchemy\Phrasea\Command\Command
-     */
-    public function setLogger(Logger $logger)
-    {
-        $this->logger = $logger;
-
-        return $this;
-    }
-
-    /** Get the current command logger
-     *
-     * @return Logger
-     */
-    public function getLogger()
-    {
-        return $this->logger;
     }
 
     /**
@@ -76,9 +56,7 @@ abstract class Command extends SymfoCommand
     public function checkSetup()
     {
         if ($this->requireSetup()) {
-            $core = \bootstrap::getCore();
-
-            if ( ! $core->getConfiguration()->isInstalled()) {
+            if ( ! $this->container['phraseanet.core']->getConfiguration()->isInstalled()) {
                 throw new \RuntimeException('Phraseanet must be set-up');
             }
         }
@@ -91,17 +69,54 @@ abstract class Command extends SymfoCommand
     {
         $this->checkSetup();
 
-        $core = \bootstrap::getCore();
-
         if ($input->getOption('verbose')) {
             $handler = new StreamHandler('php://stdout');
-            $this->logger->pushHandler($handler);
+            $this->container['phraseanet.core']['monolog']->pushHandler($handler);
         }
 
         return $this->doExecute($input, $output);
     }
 
-    abstract protected function doExecute(InputInterface $input, OutputInterface $output);
+    /**
+     * Sets the application container containing all services.
+     *
+     * @param Application $container Application object to register.
+     *
+     * @return void
+     */
+    public function setContainer(Application $container)
+    {
+        $this->container = $container;
+    }
+
+    /**
+     * Returns the application container.
+     *
+     * @return Application
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
+
+    /**
+     * Returns a service contained in the application container or null if none
+     * is found with that name.
+     *
+     * This is a convenience method used to retrieve an element from the
+     * Application container without having to assign the results of the
+     * getContainer() method in every call.
+     *
+     * @param string $name Name of the service
+     *
+     * @see self::getContainer()
+     *
+     * @return ServiceProvider
+     */
+    public function getService($name)
+    {
+        return isset($this->container[$name]) ? $this->container[$name] : null;
+    }
 
     /**
      * Format a duration in seconds to human readable

@@ -77,7 +77,7 @@ class module_console_taskState extends Command
             return self::EXITCODE_BAD_ARGUMENT;
         }
 
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $appbox = $this->getService('phraseanet.appbox');
         $task_manager = new task_manager($appbox);
 
         $taskPID = $taskState = NULL;

@@ -52,16 +52,14 @@ class CreateCollection extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $core = \bootstrap::getCore();
+        $databox = $this->container['phraseanet.appbox']
+            ->get_databox((int) $input->getArgument('databox_id'));
 
-        $appbox = \appbox::get_instance($core);
-        $databox = $appbox->get_databox((int) $input->getArgument('databox_id'));
-
-        $new_collection = \collection::create($databox, $appbox, $input->getArgument('collname'));
+        $new_collection = \collection::create($databox, $this->container['phraseanet.appbox'], $input->getArgument('collname'));
 
         if ($new_collection && $input->getOption('duplicate_rights_from_base_id')) {
 
-            $query = new \User_Query($appbox);
+            $query = new \User_Query($this->container['phraseanet.appbox']);
             $total = $query->on_base_ids(array($input->getOption('duplicate_rights_from_base_id')))->get_total();
 
             $n = 0;

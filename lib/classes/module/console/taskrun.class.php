@@ -81,7 +81,7 @@ class module_console_taskrun extends Command
             throw new \RuntimeException('Argument must be an Id.');
         }
 
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = $this->getService('phraseanet.appbox');
         $task_manager = new task_manager($appbox);
 
         if ($input->getOption('runner') === task_abstract::RUNNER_MANUAL) {
@@ -99,18 +99,15 @@ class module_console_taskrun extends Command
             }
         }
 
-        $core = \bootstrap::getCore();
-
-        $logger = $core['monolog'];
 
         if ($input->getOption('verbose')) {
             $handler = new Handler\StreamHandler(fopen('php://stdout', 'a'));
-            $logger->pushHandler($handler);
+            $this->container['monolog']->pushHandler($handler);
         }
 
         $logfile = __DIR__ . '/../../../../logs/task_' . $task_id . '.log';
         $handler = new Handler\RotatingFileHandler($logfile, 10);
-        $logger->pushHandler($handler);
+        $this->container['monolog']->pushHandler($handler);
         $this->task = $task_manager->getTask($task_id, $logger);
 
         register_tick_function(array($this, 'tick_handler'), true);
@@ -137,9 +134,9 @@ class module_console_taskrun extends Command
 
     public function tick_handler()
     {
-        static $start = FALSE;
+        static $start;
 
-        if ($start === FALSE) {
+        if ($start === null) {
             $start = time();
         }
 

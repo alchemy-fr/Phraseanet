@@ -49,9 +49,8 @@ class module_console_checkExtension extends Command
             return 1;
         }
 
-        $Core = \bootstrap::getCore();
-
-        $appbox = \appbox::get_instance($Core);
+        $Core = $this->getService('phraseanet.core');
+        $appbox = $this->getService('phraseanet.appbox');
 
         $registry = $appbox->get_registry();
 
@@ -179,7 +178,7 @@ class module_console_checkExtension extends Command
                 , $base["arrayq"]
                 , $registry->get('GV_sit')
                 , $usrId
-                , FALSE
+                , false
                 , PHRASEA_MULTIDOC_DOCONLY
                 , ''
                 , array()

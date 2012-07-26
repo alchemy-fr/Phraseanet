@@ -39,7 +39,7 @@ class module_console_schedulerStop extends Command
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         try {
-            $appbox = appbox::get_instance(\bootstrap::getCore());
+            $appbox = $this->getService('phraseanet.appbox');
             $task_manager = new task_manager($appbox);
             $task_manager->setSchedulerState(task_manager::STATE_TOSTOP);
 

@@ -42,7 +42,7 @@ class module_console_systemUpgrade extends Command
         $old_connexion_file = __DIR__ . '/../../../../config/connexion.inc';
         $old_config_file = __DIR__ . '/../../../../config/config.inc';
 
-        $Core = \bootstrap::getCore();
+        $Core = $this->getService('phraseanet.core');
 
         if ( ! $Core->getConfiguration()->isInstalled() && file_exists($old_config_file) && file_exists($old_connexion_file)) {
 
@@ -79,9 +79,8 @@ class module_console_systemUpgrade extends Command
 
         if ($continue == 'y') {
             try {
-                $Core = \bootstrap::getCore();
                 $output->write('<info>Upgrading...</info>', true);
-                $appbox = appbox::get_instance($Core);
+                $appbox = $this->getService('phraseanet.appbox');
 
                 if (count(User_Adapter::get_wrong_email_users($appbox)) > 0) {
                     return $output->writeln(sprintf('<error>You have to fix your database before upgrade with the system:mailCheck command </error>'));
