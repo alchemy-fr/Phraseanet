@@ -427,7 +427,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
             if ($this->results[$sbas_id])
                 $nbanswers += $this->results[$sbas_id]["nbanswers"];
 
-            $logger = $session->get_logger(databox::get_instance($sbas_id));
+            $logger = $session->get_logger($appbox->get_databox($sbas_id));
 
             $conn2 = connection::getPDOConnection($sbas_id);
 
@@ -558,7 +558,6 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
             if ( ! isset($this->queries[$databox->get_sbas_id()]))
                 continue;
 
-            //$databox = databox::get_instance($sbas_id);
             $sbas_id = $databox->get_sbas_id();
             $this->colls[$sbas_id] = array();
             foreach ($databox->get_collections() as $coll) {

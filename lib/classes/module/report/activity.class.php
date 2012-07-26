@@ -290,7 +290,8 @@ class module_report_activity extends module_report
         $filter = $s->getFilters();
         $conn = $s->getConnBas();
 
-        $databox = \databox::get_instance($this->sbas_id);
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $databox = $appbox->get_databox($this->sbas_id);
 
         $params = array();
         $date_filter = $filter->getDateFilter();

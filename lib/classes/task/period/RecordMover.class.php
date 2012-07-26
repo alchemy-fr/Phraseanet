@@ -419,7 +419,8 @@ class task_period_RecordMover extends task_appboxAbstract
     protected function processOneContent(appbox $appbox, Array $row)
     {
         $logsql = (int) ($this->sxTaskSettings->logsql) > 0;
-        $dbox = databox::get_instance($row['sbas_id']);
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $databox = $appbox->get_databox($row['sbas_id']);
         $rec = new record_adapter($row['sbas_id'], $row['record_id']);
         switch ($row['action']) {
 
@@ -427,7 +428,7 @@ class task_period_RecordMover extends task_appboxAbstract
 
                 // change collection ?
                 if (array_key_exists('coll', $row)) {
-                    $coll = collection::get_from_coll_id($dbox, $row['coll']);
+                    $coll = collection::get_from_coll_id($databox, $row['coll']);
                     $rec->move_to_collection($coll, $appbox);
                     if ($logsql) {
                         $this->log(sprintf("on sbas %s move rid %s to coll %s \n", $row['sbas_id'], $row['record_id'], $coll->get_coll_id()));

@@ -270,7 +270,8 @@ class task_period_archive extends task_abstract
     {
         $this->debug = false;
 
-        $conn = \connection::getPDOConnection();
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $conn = $appbox->get_connection();
 
         $this->sxTaskSettings = simplexml_load_string($this->settings);
 
@@ -283,7 +284,7 @@ class task_period_archive extends task_abstract
             return 'tostop';
         }
 
-        $databox = \databox::get_instance($this->sbas_id);
+        $databox = $appbox->get_databox($this->sbas_id);
 
         $this->TColls = array();
         $collection = null;
@@ -507,8 +508,9 @@ class task_period_archive extends task_abstract
     {
         clearstatcache();
 
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
         connection::getPDOConnection();
-        \databox::get_instance($this->sbas_id)->get_connection();
+        $appbox->get_databox($this->sbas_id)->get_connection();
 
         $path_in = p4string::delEndSlash(trim((string) ($this->sxTaskSettings->hotfolder)));
         if (false === $this->filesystem->exists($path_in . "/.phrasea.xml")) {
@@ -1414,6 +1416,7 @@ class task_period_archive extends task_abstract
      */
     private function archiveGrp(\DOMDocument $dom, \DOMElement $node, $path, $path_archived, $path_error, array &$nodesToDel)
     {
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
         $xpath = new DOMXPath($dom);
 
         // grp folders stay in place
@@ -1466,7 +1469,7 @@ class task_period_archive extends task_abstract
 
             try {
 
-                $databox = \databox::get_instance($this->sbas_id);
+                $databox = $appbox->get_databox($this->sbas_id);
                 $collection = collection::get_from_coll_id($databox, (int) $cid);
                 if ($captionFileName === null) {
                     $story = $this->createStory($collection, $path . '/' . $representationFileName, null);
@@ -1838,6 +1841,7 @@ class task_period_archive extends task_abstract
     {
         $ret = false;
 
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
         $file = $node->getAttribute('name');
         $cid = $node->getAttribute('cid');
         $captionFileName = $captionFileNode ? $captionFileNode->getAttribute('name') : null;
@@ -1868,7 +1872,7 @@ class task_period_archive extends task_abstract
         }
 
         try {
-            $databox = \databox::get_instance($this->sbas_id);
+            $databox = $appbox->get_databox($this->sbas_id);
             $collection = collection::get_from_coll_id($databox, (int) $cid);
 
             if ($captionFileName === null) {

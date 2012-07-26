@@ -210,7 +210,8 @@ class module_report_download extends module_report
 
     public static function getTopDl($dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $databox = \databox::get_instance((int) $sbas_id);
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $databox = $appbox->get_databox((int) $sbas_id);
         $conn = $databox->get_connection();
 
         $registry = $databox->get_registry();

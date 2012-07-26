@@ -40,7 +40,7 @@ class BorderManager extends ServiceAbstract
      */
     protected function init()
     {
-
+        $appbox = \appbox::get_instance($this->core);
         $borderManager = new Border\Manager($this->core['EM'], $this->core['file-system']);
 
         if ($this->core['pdf-to-text']) {
@@ -86,7 +86,7 @@ class BorderManager extends ServiceAbstract
                         $databoxes = array();
                         foreach ($checker['databoxes'] as $sbas_id) {
                             try {
-                                $databoxes[] = \databox::get_instance($sbas_id);
+                                $databoxes[] = $appbox->get_databox($sbas_id);
                             } catch (\Exception $e) {
                                 throw new \InvalidArgumentException('Invalid databox option');
                             }

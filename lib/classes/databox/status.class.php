@@ -61,6 +61,7 @@ class databox_status
 
         $path = $url = false;
 
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
         $sbas_params = phrasea::sbas_params();
         $registry = registry::get_instance();
 
@@ -71,7 +72,7 @@ class databox_status
         $path = $this->path = $registry->get('GV_RootPath') . "config/status/" . urlencode($sbas_params[$sbas_id]["host"]) . "-" . urlencode($sbas_params[$sbas_id]["port"]) . "-" . urlencode($sbas_params[$sbas_id]["dbname"]);
         $url = $this->url = "/custom/status/" . urlencode($sbas_params[$sbas_id]["host"]) . "-" . urlencode($sbas_params[$sbas_id]["port"]) . "-" . urlencode($sbas_params[$sbas_id]["dbname"]);
 
-        $databox = databox::get_instance((int) $sbas_id);
+        $databox = $appbox->get_databox((int) $sbas_id);
         $xmlpref = $databox->get_structure();
         $sxe = simplexml_load_string($xmlpref);
 
@@ -244,6 +245,7 @@ class databox_status
     public static function deleteStatus($sbas_id, $bit)
     {
         $core = \bootstrap::getCore();
+        $appbox = \appbox::get_instance($core);
 
         $user = $core->getAuthenticatedUser();
 
@@ -256,7 +258,7 @@ class databox_status
         if (isset($status[$bit])) {
             $connbas = connection::getPDOConnection($sbas_id);
 
-            $databox = databox::get_instance((int) $sbas_id);
+            $databox = $appbox->get_databox((int) $sbas_id);
 
             $doc = $databox->get_dom_structure();
             if ($doc) {

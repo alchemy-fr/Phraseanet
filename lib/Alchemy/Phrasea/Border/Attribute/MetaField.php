@@ -108,7 +108,8 @@ class MetaField implements Attribute
         }
 
         try {
-            $databox = \databox::get_instance($datas['sbas_id']);
+            $appbox = \appbox::get_instance(\bootstrap::getCore());
+            $databox = $appbox->get_databox($datas['sbas_id']);
             $field = $databox->get_meta_structure()->get_element($datas['id']);
         } catch (\Exception_NotFound $e) {
             throw new \InvalidArgumentException('Field does not exist anymore');

@@ -79,7 +79,7 @@ class p4file
         }
 
         $sbas_id = phrasea::sbasFromBas($base_id);
-        $databox = databox::get_instance($sbas_id);
+        $databox = $appbox->get_databox($sbas_id);
         $collection = collection::get_from_base_id($base_id);
 
         $collprefs = simplexml_load_string($collection->get_prefs());
@@ -131,13 +131,14 @@ class p4file
         throw new Exception('This method is deprecated');
 
         $core = \bootstrap::getCore();
+        $appbox = \appbox::get_instance($core);
         $checks = array();
 
         $system_file = new system_file($filename);
 
         $doctype = $system_file->get_phrasea_type();
 
-        $databox = databox::get_instance($sbas_id);
+        $databox = $appbox->get_databox($sbas_id);
 
         if ($baseprefs = $databox->get_sxml_structure()) {
 

@@ -45,8 +45,9 @@ class module_console_fieldsRename extends Command
     {
         $new_name = $input->getArgument('name');
 
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
         try {
-            $databox = \databox::get_instance((int) $input->getArgument('sbas_id'));
+            $databox = $appbox->get_databox((int) $input->getArgument('sbas_id'));
         } catch (\Exception $e) {
             $output->writeln("<error>Invalid databox id </error>");
 

@@ -57,7 +57,7 @@ class module_console_sphinxGenerateSuggestion extends Command
 
             $tmp_file = $registry->get('GV_RootPath') . 'tmp/dict' . $index . '.txt';
 
-            $databox = databox::get_instance($sbas_id);
+            $databox = $appbox->get_databox($sbas_id);
 
             $output->writeln("process Databox " . $databox->get_viewname() . " / $index\n");
 

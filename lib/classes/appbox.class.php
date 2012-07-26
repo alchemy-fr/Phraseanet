@@ -557,8 +557,8 @@ class appbox extends base
         $ret = array();
         foreach ($this->retrieve_sbas_ids() as $sbas_id) {
             try {
-                $ret[$sbas_id] = databox::get_instance($sbas_id);
-            } catch (Exception $e) {
+                $ret[$sbas_id] = new \databox($sbas_id);
+            } catch (\Exception_DataboxNotFound $e) {
 
             }
         }
@@ -600,7 +600,7 @@ class appbox extends base
         if ( ! array_key_exists($sbas_id, $databoxes)) {
             throw new Exception_DataboxNotFound('Databox `' . $sbas_id . '` not found');
         }
-        
+
         return $databoxes[$sbas_id];
     }
 

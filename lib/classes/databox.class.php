@@ -100,13 +100,11 @@ class databox extends base
     protected $connection;
     protected $registry;
 
-    /**
-     *
-     * @param  int     $sbas_id
-     * @return databox
-     */
-    protected function __construct($sbas_id)
+    public function __construct($sbas_id)
     {
+        assert(is_int($sbas_id));
+        assert($sbas_id > 0);
+
         $this->registry = registry::get_instance();
         $this->connection = connection::getPDOConnection($sbas_id);
         $this->Core = \bootstrap::getCore();
@@ -185,22 +183,6 @@ class databox extends base
     public function get_viewname()
     {
         return phrasea::sbas_names($this->get_sbas_id());
-    }
-
-    /**
-     *
-     * @param  int     $sbas_id
-     * @return databox
-     */
-    public static function get_instance($sbas_id)
-    {
-        assert(is_int($sbas_id));
-        assert($sbas_id > 0);
-        if ( ! array_key_exists($sbas_id, self::$_instances)) {
-            self::$_instances[$sbas_id] = new self($sbas_id);
-        }
-
-        return self::$_instances[$sbas_id];
     }
 
     /**

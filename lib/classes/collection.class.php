@@ -370,7 +370,8 @@ class collection implements cache_cacheableInterface
         if ( ! $sbas_id || ! $coll_id) {
             throw new Exception_Databox_CollectionNotFound(sprintf("Collection could not be found"));
         }
-        $databox = databox::get_instance($sbas_id);
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $databox = $appbox->get_databox($sbas_id);
 
         return self::get_from_coll_id($databox, $coll_id);
     }

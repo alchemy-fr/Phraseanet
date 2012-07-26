@@ -856,7 +856,8 @@ class databox_field implements cache_cacheableInterface
      */
     public function __wakeup()
     {
-        $databox = databox::get_instance($this->sbas_id);
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $databox = $appbox->get_databox($this->sbas_id);
         $this->set_databox($databox);
 
         return;

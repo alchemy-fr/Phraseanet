@@ -97,9 +97,10 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
 
         $filters = array();
 
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
+
         foreach ($sbas_ids as $sbas_id) {
-            $databox = databox::get_instance($sbas_id);
-            $fields = $databox->get_meta_structure();
+            $fields = $appbox->get_databox($sbas_id)->get_meta_structure();
 
             foreach ($fields as $field) {
                 if ( ! in_array($field->get_id(), $options->get_fields()))
@@ -136,12 +137,12 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
             $this->sphinx->SetFilter('crc_struct_id', $filters);
         }
 
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
         /**
          * @todo : enhance : check status better
          */
         foreach ($sbas_ids as $sbas_id) {
-            $databox = databox::get_instance($sbas_id);
-            $s_status = $databox->get_statusbits();
+            $s_status = $appbox->get_databox($sbas_id)->get_statusbits();
             $status_opts = $options->get_status();
             foreach ($s_status as $n => $status) {
                 if ( ! array_key_exists($n, $status_opts))

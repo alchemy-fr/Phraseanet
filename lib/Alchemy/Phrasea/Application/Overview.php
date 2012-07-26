@@ -74,7 +74,7 @@ return call_user_func(
 
             $app->get('/datafiles/{sbas_id}/{record_id}/{subdef}/', function($sbas_id, $record_id, $subdef, PhraseaApplication $app) use ($session, $deliver_content) {
 
-                    $databox = \databox::get_instance((int) $sbas_id);
+                    $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
                     $record = new \record_adapter($sbas_id, $record_id);
 
                     if ( ! $session->is_authenticated()) {
@@ -140,7 +140,7 @@ return call_user_func(
             $app->get('/permalink/v1/{label}/{sbas_id}/{record_id}/{key}/{subdef}/view/'
                 , function($label, $sbas_id, $record_id, $key, $subdef, PhraseaApplication $app) {
 
-                    $databox = \databox::get_instance((int) $sbas_id);
+                    $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
 
                     $record = \media_Permalink_Adapter::challenge_token($databox, $key, $record_id, $subdef);
 
@@ -161,7 +161,7 @@ return call_user_func(
 
             $app->get('/permalink/v1/{label}/{sbas_id}/{record_id}/{key}/{subdef}/'
                     , function($label, $sbas_id, $record_id, $key, $subdef) use ($app, $session, $deliver_content) {
-                        $databox = \databox::get_instance((int) $sbas_id);
+                        $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
                         $record = \media_Permalink_Adapter::challenge_token($databox, $key, $record_id, $subdef);
                         if ( ! ($record instanceof \record_adapter))
                             throw new \Exception('bad luck');
