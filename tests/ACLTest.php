@@ -39,6 +39,21 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
         parent::tearDownAfterClass();
     }
 
+    public function testHasAccesToRecord()
+    {
+        $this->assertTrue(self::$object->has_status_access_to_record(self::$records['record_1']));
+    }
+
+    public function testHasAccesToRecordFailsOnBase()
+    {
+        $this->assertFalse(self::$object->has_status_access_to_record(self::$records['record_no_access']));
+    }
+
+    public function testHasAccesToRecordFailsOnStatus()
+    {
+        $this->assertFalse(self::$object->has_status_access_to_record(self::$records['record_no_access_by_status']));
+    }
+
     public function testApply_model()
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
@@ -371,8 +386,6 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
                 self::$user->ACL()->give_access_to_base(array($base_id));
                 self::$user->ACL()->update_rights_to_base($base_id, array('actif' => false));
                 $this->assertFalse(self::$user->ACL()->get_mask_and($base_id));
-                self::$user->ACL()->update_rights_to_base($base_id, array('actif' => true));
-                $this->assertEquals('0', self::$user->ACL()->get_mask_and($base_id));
                 self::$user->ACL()->update_rights_to_base($base_id, array('mask_and' => 42));
                 $this->assertEquals('42', self::$user->ACL()->get_mask_and($base_id));
                 self::$user->ACL()->update_rights_to_base($base_id, array('mask_and' => 1));
@@ -394,7 +407,6 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
                 self::$user->ACL()->update_rights_to_base($base_id, array('actif' => false));
                 $this->assertFalse(self::$user->ACL()->get_mask_xor($base_id));
                 self::$user->ACL()->update_rights_to_base($base_id, array('actif' => true));
-                $this->assertEquals('0', self::$user->ACL()->get_mask_xor($base_id));
                 self::$user->ACL()->update_rights_to_base($base_id, array('mask_xor' => 42));
                 $this->assertEquals('42', self::$user->ACL()->get_mask_xor($base_id));
                 self::$user->ACL()->update_rights_to_base($base_id, array('mask_xor' => 1));

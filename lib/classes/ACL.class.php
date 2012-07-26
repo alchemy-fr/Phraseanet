@@ -196,6 +196,20 @@ class ACL implements cache_cacheableInterface
         return false;
     }
 
+    public function has_access_to_record(\record_adapter $record)
+    {
+        if($this->has_access_to_base($record->get_base_id()) && $this->has_status_access_to_record($record)) {
+            return true;
+        }
+
+        return $this->has_preview_grant($record) || $this->has_hd_grant($record);
+    }
+
+    public function has_status_access_to_record(record_adapter $record)
+    {
+        return (Boolean) ('Ob' . $record->get_status() ^ $this->get_mask_xor($record->get_base_id()) & $this->get_mask_and($record->get_base_id()));
+    }
+
     public function has_access_to_subdef(record_Interface $record, $subdef_name)
     {
         try {
@@ -205,6 +219,7 @@ class ACL implements cache_cacheableInterface
         } catch (Exception $e) {
             return false;
         }
+
         $granted = false;
 
         if ($subdef_class == databox_subdef::CLASS_THUMBNAIL) {
@@ -215,7 +230,7 @@ class ACL implements cache_cacheableInterface
             $granted = true;
         } elseif ($subdef_class == databox_subdef::CLASS_DOCUMENT && $this->has_right_on_base($record->get_base_id(), 'candwnldhd')) {
             $granted = true;
-        } elseif ($subdef_class == databox_subdef::CLASS_DOCUMENT && $user->ACL()->has_hd_grant($record)) {
+        } elseif ($subdef_class == databox_subdef::CLASS_DOCUMENT && $this->has_hd_grant($record)) {
             $granted = true;
         }
 
@@ -690,7 +705,7 @@ class ACL implements cache_cacheableInterface
                 continue;
 
             try {
-                $ret[$sbas_id] = databox::get_instance((int) $sbas_id);
+                $ret[$sbas_id] = $this->appbox->get_databox((int) $sbas_id);
             } catch (Exception $e) {
 
             }
