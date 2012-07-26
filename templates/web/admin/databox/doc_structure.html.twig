@@ -87,8 +87,8 @@
                             <input type="text" class="meta_namer metafield_{{ field.get_id() }} input-medium" {{ disabled }} name="name_{{ field.get_id() }}" value="{{ field.get_name () }}" />
                         </td>
                         <td>
-                            <span id="display_value_{{ field.get_id() }}">{{ field.get_tag().getGroupName() }}:{{ field.get_tag().getName() }}</span>
-                            <a href="#" class="field_change">change<input type="hidden" value="{{ field.get_id() }}"/></a>
+                            <span id="display_value_{{ field.get_id() }}">{% if field.is_on_error() %}{% trans 'Error' %}{% elseif field.get_tag().getTagname() != '' %}{{ field.get_tag().getTagname() }}{% else %}{% trans 'No source' %}{% endif %}</span>
+                            <a href="#" class="field_change">{% trans 'boutton::modifier' %}<input type="hidden" value="{{ field.get_id() }}"/></a>
                             <input type="hidden" class="meta_src" name="src_{{ field.get_id() }}" value="{{ field.get_tag().getTagname() }}"/>
                         </td>
                         <td class="centered">
