@@ -11,12 +11,10 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Alchemy\Phrasea\Helper;
+use Alchemy\Phrasea\Controller\RecordsRequest;
 use DataURI;
-use MediaVorus\MediaVorus;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -33,26 +31,22 @@ class Tools implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->get('/', function(Application $app, Request $request) {
-                $helper = new Helper\Record\Tools($app['phraseanet.core'], $request);
 
-                $selection = $helper->get_elements();
+                $records = RecordsRequest::fromRequest($app, $request, false);
 
                 $metadatas = false;
-
                 $record = null;
 
-                if (count($selection) == 1) {
-
-                    $record = reset($selection);
-
+                if (count($records) == 1) {
+                    $record = $records->first();
                     if ( ! $record->is_grouping()) {
                         try {
-
                             $reader = new \PHPExiftool\Reader();
 
                             $metadatas = $reader
                                     ->files($record->get_subdef('document')->get_pathfile())
                                     ->first()->getMetadatas();
+                            unset($reader);
                         } catch (\PHPExiftool\Exception\Exception $e) {
 
                         } catch (\Exception_Media_SubdefNotFound $e) {
@@ -61,30 +55,24 @@ class Tools implements ControllerProviderInterface
                     }
                 }
 
-                $reader = null;
-
-                $template = 'prod/actions/Tools/index.html.twig';
-
                 $var = array(
-                    'helper'    => $helper,
+                    'helper'    => $records,
                     'selection' => $selection,
                     'record'    => $record,
                     'metadatas' => $metadatas,
                 );
 
-                return new Response($app['twig']->render($template, $var));
+                return $app['twig']->render('prod/actions/Tools/index.html.twig', $var);
             });
 
         $controllers->post('/rotate/', function(Application $app, Request $request) {
                 $return = array('success'      => false, 'errorMessage' => '');
 
-                $helper = new Helper\Record\Tools($app['phraseanet.core'], $request);
+                $records = RecordsRequest::fromRequest($app, $request, false);
 
                 $rotation = in_array($request->get('rotation'), array('-90', '90', '180')) ? $request->get('rotation', 90) : 90;
 
-                $selection = $helper->get_elements();
-
-                foreach ($selection as $record) {
+                foreach ($records as $record) {
                     try {
                         $record->rotate_subdefs($rotation);
                         $return['success'] = true;

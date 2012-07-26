@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Alchemy\Phrasea\Helper\Record\Basket as BasketHelper;
+use Alchemy\Phrasea\Controller\RecordsRequest;
 use Entities\Basket as BasketEntity;
 use Entities\BasketElement;
 use Entities\ValidationData;
@@ -151,7 +151,7 @@ class Basket implements ControllerProviderInterface
         return $app['twig']->render('prod/WorkZone/Basket.html.twig', $params);
     }
 
-    public function createBasket(Application $app)
+    public function createBasket(Application $app, Request $request)
     {
         $request = $app['request'];
         /* @var $request \Symfony\Component\HttpFoundation\Request */
@@ -168,11 +168,12 @@ class Basket implements ControllerProviderInterface
 
         $n = 0;
 
-        $helper = new BasketHelper($app['phraseanet.core'], $app['request']);
+        $records = RecordsRequest::fromRequest($app, $request, true);
 
-        foreach ($helper->get_elements() as $record) {
-            if ($Basket->hasRecord($record))
+        foreach ($records as $record) {
+            if ($Basket->hasRecord($record)) {
                 continue;
+            }
 
             $basket_element = new BasketElement();
             $basket_element->setRecord($record);
@@ -381,9 +382,9 @@ class Basket implements ControllerProviderInterface
 
         $n = 0;
 
-        $helper = new BasketHelper($app['phraseanet.core'], $app['request']);
+        $records = RecordsRequest::fromRequest($app, $request, true);
 
-        foreach ($helper->get_elements() as $record) {
+        foreach ($records as $record) {
             if ($basket->hasRecord($record))
                 continue;
 

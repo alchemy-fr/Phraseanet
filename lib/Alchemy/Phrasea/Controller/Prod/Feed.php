@@ -11,12 +11,11 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use Alchemy\Phrasea\Controller\RecordsRequest;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Alchemy\Phrasea\Helper\Record as RecordHelper;
 
 /**
  *
@@ -36,7 +35,7 @@ class Feed implements ControllerProviderInterface
         $controllers->post('/requestavailable/', function(Application $app, Request $request) {
                 $user = $app['phraseanet.core']->getAuthenticatedUser();
                 $feeds = \Feed_Collection::load_all($app['phraseanet.appbox'], $user);
-                $publishing = new RecordHelper\Feed($app['phraseanet.core'], $request);
+                $publishing = RecordsRequest::fromRequest($app, $request, true, array(), array('bas_chupub'));
 
                 return new Response($app['twig']->render('prod/actions/publish/publish.html.twig', array('publishing' => $publishing, 'feeds'      => $feeds)));
             });
@@ -57,9 +56,9 @@ class Feed implements ControllerProviderInterface
 
                     $entry = \Feed_Entry_Adapter::create($app['phraseanet.appbox'], $feed, $publisher, $title, $subtitle, $author_name, $author_mail);
 
-                    $publishing = new RecordHelper\Feed($app['phraseanet.core'], $app['request']);
+                    $publishing = RecordsRequest::fromRequest($app, $request, true, array(), array('bas_chupub'));
 
-                    foreach ($publishing->get_elements() as $record) {
+                    foreach ($publishing as $record) {
                         $item = \Feed_Entry_Item::create($app['phraseanet.appbox'], $entry, $record);
                     }
                     $datas = array('error'   => false, 'message' => false);

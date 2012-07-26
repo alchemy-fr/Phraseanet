@@ -13,10 +13,9 @@ namespace Alchemy\Phrasea\Controller\Prod;
 
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
- *
+ * @todo        Check if a user has access to record before sending the response
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
