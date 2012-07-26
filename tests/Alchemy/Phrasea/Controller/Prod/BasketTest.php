@@ -2,9 +2,6 @@
 
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
-use Alchemy\Phrasea\Helper;
-use Alchemy\Phrasea\RouteProcessor as routeProcessor;
-
 class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
