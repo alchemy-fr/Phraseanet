@@ -60,20 +60,27 @@ class patch_370a7 implements patchInterface
 
         $em = $Core->getEntityManager();
 
+        $conn = $appbox->get_connection();
+
+        try {
+            //get all old lazaret file & transform them to \Entities\LazaretFile object
+            $sql = 'SELECT * FROM lazaret';
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+            $rs = $stmt->fetchAll();
+        } catch (\PDOException $e) {
+            // table does not exists
+            if ($e->getCode() == '42S02') {
+                return false;
+            }
+        }
+
         //order matters for foreign keys constraints
         //truncate all altered tables
         $this->truncateTable($em, 'Entities\\LazaretAttribute');
         $this->truncateTable($em, 'Entities\\LazaretCheck');
         $this->truncateTable($em, 'Entities\\LazaretFile');
         $this->truncateTable($em, 'Entities\\LazaretSession');
-
-        $conn = $appbox->get_connection();
-
-        //get all old lazaret file & transform them to \Entities\LazaretFile object
-        $sql = 'SELECT * FROM lazaret';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll();
 
         // suspend auto-commit
         $em->getConnection()->beginTransaction();
@@ -147,7 +154,6 @@ class patch_370a7 implements patchInterface
                 $em->getConnection()->rollback();
                 $em->close();
             }
-
         } else {
             $success = true;
         }
