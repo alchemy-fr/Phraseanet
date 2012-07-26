@@ -9,8 +9,12 @@
  * file that was distributed with this source code.
  */
 
-use Monolog\Logger;
+use Alchemy\Phrasea\Border\File;
+use Alchemy\Phrasea\Metadata\Tag\TfFilename;
+use Alchemy\Phrasea\Metadata\Tag\TfBasename;
+use MediaAlchemyst\Specification\Specification;
 use MediaVorus\Media\Media;
+use Monolog\Logger;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 
 /**
@@ -155,7 +159,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      */
     public function __construct($sbas_id, $record_id, $number = null)
     {
-        $this->databox = databox::get_instance((int) $sbas_id);
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $this->databox = $appbox->get_databox((int) $sbas_id);
         $this->number = (int) $number;
         $this->record_id = (int) $record_id;
 
@@ -880,9 +885,9 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
         foreach ($this->get_databox()->get_meta_structure()->get_elements() as $data_field) {
 
-            if ($data_field->get_tag() instanceof \Alchemy\Phrasea\Metadata\Tag\TfFilename) {
+            if ($data_field->get_tag() instanceof TfFilename) {
                 $original_name = pathinfo($original_name, PATHINFO_FILENAME);
-            } elseif ( ! $data_field->get_tag() instanceof \Alchemy\Phrasea\Metadata\Tag\TfBasename) {
+            } elseif ( ! $data_field->get_tag() instanceof TfBasename) {
                 continue;
             }
 
@@ -1045,7 +1050,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
             $core['file-system']->copy($media->getFile()->getRealPath(), $pathhd . $filehd, true);
 
-            $subdefFile = new \Symfony\Component\HttpFoundation\File\File($pathhd . $filehd);
+            $subdefFile = new SymfoFile($pathhd . $filehd);
 
             $meta_writable = true;
         } else {
@@ -1071,7 +1076,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 return $this;
             }
 
-            $subdefFile = new \Symfony\Component\HttpFoundation\File\File($path_file_dest);
+            $subdefFile = new SymfoFile($path_file_dest);
 
             $meta_writable = $subdef_def->meta_writeable();
         }
@@ -1367,7 +1372,12 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         return $story;
     }
 
-    public static function createFromFile(\Alchemy\Phrasea\Border\File $file)
+    /**
+     *
+     * @param File $file
+     * @return \record_adapter
+     */
+    public static function createFromFile(File $file)
     {
         $core = \bootstrap::getCore();
 
@@ -1424,7 +1434,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $media = $core['mediavorus']->guess(new \SplFileInfo($pathhd . $newname));
         $subdef = media_subdef::create($record, 'document', $media);
 
-        $record->delete_data_from_cache(record_adapter::CACHE_SUBDEFS);
+        $record->delete_data_from_cache(\record_adapter::CACHE_SUBDEFS);
 
         $record->insertTechnicalDatas();
 
@@ -1824,27 +1834,27 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     /**
      * Get the extension from MediaAlchemyst specs
      *
-     * @param  MediaAlchemyst\Specification\Specification $spec
+     * @param  Specification $spec
      * @return string
      */
-    protected function getExtensionFromSpec(MediaAlchemyst\Specification\Specification $spec)
+    protected function getExtensionFromSpec(Specification $spec)
     {
         $extension = null;
 
         switch (true) {
-            case $spec->getType() === MediaAlchemyst\Specification\Specification::TYPE_IMAGE:
+            case $spec->getType() === Specification::TYPE_IMAGE:
                 $extension = 'jpg';
                 break;
-            case $spec->getType() === MediaAlchemyst\Specification\Specification::TYPE_ANIMATION:
+            case $spec->getType() === Specification::TYPE_ANIMATION:
                 $extension = 'gif';
                 break;
-            case $spec->getType() === MediaAlchemyst\Specification\Specification::TYPE_AUDIO:
+            case $spec->getType() === Specification::TYPE_AUDIO:
                 $extension = $this->getExtensionFromAudioCodec($spec->getAudioCodec());
                 break;
-            case $spec->getType() === MediaAlchemyst\Specification\Specification::TYPE_VIDEO:
+            case $spec->getType() === Specification::TYPE_VIDEO:
                 $extension = $this->getExtensionFromVideoCodec($spec->getVideoCodec());
                 break;
-            case $spec->getType() === MediaAlchemyst\Specification\Specification::TYPE_SWF:
+            case $spec->getType() === Specification::TYPE_SWF:
                 $extension = 'swf';
                 break;
         }
