@@ -1,60 +1,59 @@
     <div style="text-align:center;margin:30px 0px;">
         <form onsubmit="return false" action="/prod/records/movecollection/apply/" method="post">
-        {% if action.has_many_sbas() %}
+        {% if records.databoxes() | length > 1 %}1
             {% trans 'prod::Les enregistrements ne provienent pas tous de la meme base et ne peuvent donc etre traites ensemble' %}
             <div style="text-align:center;">
                 <button class="move_cancel">{% trans 'boutton::annuler' %}</button>
             </div>
-        {% elseif action.get_count_actionable() == 0 %}
+        {% elseif records | length == 0 %}2
             {% trans 'prod::Vous n\'avez le droit d\'effectuer l\'operation sur aucun document' %}
             <div style="text-align:center;">
                 <button class="move_cancel">{% trans 'boutton::annuler' %}</button>
             </div>
-        {% elseif action.is_possible() is empty %}
+        {% elseif collections | length == 0 %}3
             {% trans 'erreur : Vous n\'avez pas les droits' %}
             <div style="text-align:center;">
                 <button class="move_cancel">{% trans 'boutton::annuler' %}</button>
             </div>
         {% else %}
+
             <div>
-                {% if action.get_count_not_actionable() != 0 %}
-                    {% set countable = action.get_count_not_actionable() %}
+                {% if records | length != records.received() | length %}
+                    {% set countable = records.received().count() - records.count() %}
                     {% trans %}
                     prod::collection {{countable}} documents ne pouvant etres mofiies
                     {% endtrans %}
                 {% endif %}
             </div>
 
-            {% if action.is_possible() %}
-                {% set countable = action.get_count_actionable() %}
-                {% trans %}
-                    prod::collection {{countable}} documents a deplacer
-                {% endtrans %}
-                <br/>
-                <br/>
-                <select name="base_id">
-                    {% for base_id in action.available_destination() %}
-                        <option value="{{base_id}}">{{base_id|bas_names}}</option>
-                    {% endfor %}
-                </select>
-                <br/>
-                <br/>
-                <br/>
-                {% if action.get_count_actionable_groupings() %}
-                    <table style="border:#ff0000 1px solid;">
-                        <tr>
-                        <td style="width:25px;"><input type="checkbox" value="1" name="chg_coll_son"/>
-                        </td>
-                        <td style="width:250px; text-align:left">
-                            {% trans 'prod::collection deplacer egalement les documents rattaches a ce(s) regroupement(s)' %}
-                        </td>
-                        </tr>
-                    </table>
-                {% endif %}
+            {% set countable = records | length %}
+            {% trans %}
+                prod::collection {{countable}} documents a deplacer
+            {% endtrans %}
+            <br/>
+            <br/>
+            <select name="base_id">
+                {% for collection in collections %}
+                    <option value="{{ collection.get_base_id() }}">{{ collection.get_name() }}</option>
+                {% endfor %}
+            </select>
+            <br/>
+            <br/>
+            <br/>
+            {% if records.stories() | length > 0 %}
+                <table style="border:#ff0000 1px solid;">
+                    <tr>
+                    <td style="width:25px;"><input type="checkbox" value="1" name="chg_coll_son"/>
+                    </td>
+                    <td style="width:250px; text-align:left">
+                        {% trans 'prod::collection deplacer egalement les documents rattaches a ce(s) regroupement(s)' %}
+                    </td>
+                    </tr>
+                </table>
             {% endif %}
 
             <input type="hidden" name="act" value="WORK">
-            <input type="hidden" name="lst" value="{{ action.get_serialize_list() }}">
+            <input type="hidden" name="lst" value="{{ records.serializedList() }}">
         {% endif %}
     </form>
 </div>
