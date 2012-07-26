@@ -685,7 +685,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             $collection_no_acces = collection::create($databox, $appbox, 'BIBOO', self::$user);
         }
         if ( ! $collection_no_acces_by_status instanceof collection) {
-            $collection_no_acces_by_status = collection::create($databox, $appbox, 'BIBOONOACCESBYSTATUS', self::$user);
+            $collection_no_acces_by_status = collection::create($databox, $appbox, 'BIBOONOACCESBYSTATUS');
         }
 
         self::$collection = $coll;
@@ -774,7 +774,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
         return;
     }
-    
+
     /**
      * Delete previously created Ressources
      *
