@@ -21,7 +21,8 @@
       <log type="junit" target="tmp/phpunit_report/logfile.xml" logIncompleteSkipped="false"/>
       <log type="testdox-html" target="tmp/phpunit_report/testdox.html"/>
       <log type="testdox-text" target="tmp/phpunit_report/testdox.txt"/>
-    </logging>-->
+    </logging>
+-->
     <php>
       <ini name="display_errors" value="on"/>
     </php>
