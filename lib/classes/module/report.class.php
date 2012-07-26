@@ -854,7 +854,8 @@ class module_report
     {
         $tab = array();
 
-        $databox = databox::get_instance((int) $sbasid);
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $databox = $appbox->get_databox((int) $sbasid);
 
         foreach ($databox->get_meta_structure() as $databox_field) {
             /* @var $databox_field \databox_field */
