@@ -15,7 +15,7 @@
  * @link        www.phraseanet.com
  */
 require_once __DIR__ . "/../../../lib/bootstrap.php";
-
+$appbox = \appbox::get_instance(\bootstrap::getCore());
 $registry = registry::get_instance();
 
 
@@ -47,7 +47,7 @@ if ($parm["bid"] !== null) {
     $loaded = false;
     try {
         $connbas = connection::getPDOConnection($parm['bid']);
-        $databox = databox::get_instance((int) $parm['bid']);
+        $databox = $appbox->get_databox((int) $parm['bid']);
         $domth = $databox->get_dom_thesaurus();
         $unicode = new unicode();
 

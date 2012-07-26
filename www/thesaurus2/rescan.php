@@ -46,7 +46,7 @@ if ($parm["dlg"]) {
 if ($parm["bid"] !== null) {
     $loaded = false;
     try {
-        $databox = databox::get_instance((int) $parm['bid']);
+        $databox = $appbox->get_databox((int) $parm['bid']);
         $connbas = connection::getPDOConnection($parm['bid']);
 
         $domct = $databox->get_dom_cterms();

@@ -63,7 +63,7 @@ $thits = array();
 if ($parm["typ"] == "TH" || $parm["typ"] == "CT") {
     $loaded = false;
     try {
-        $databox = databox::get_instance((int) $parm['bid']);
+        $databox = $appbox->get_databox((int) $parm['bid']);
         $connbas = connection::getPDOConnection($parm['bid']);
 
         if ($parm["typ"] == "TH") {

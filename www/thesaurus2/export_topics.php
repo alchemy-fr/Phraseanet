@@ -116,7 +116,7 @@ $now = date('YmdHis');
 if ($parm["typ"] == "TH" || $parm["typ"] == "CT") {
     $loaded = false;
     try {
-        $databox = databox::get_instance((int) $parm['bid']);
+        $databox = $appbox->get_databox((int) $parm['bid']);
         if ($parm["typ"] == "TH") {
             $domth = $databox->get_dom_thesaurus();
         } else {

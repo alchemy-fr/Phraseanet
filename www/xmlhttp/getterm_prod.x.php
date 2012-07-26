@@ -16,7 +16,7 @@
  */
 /* @var $Core \Alchemy\Phrasea\Core */
 $Core = require_once __DIR__ . "/../../lib/bootstrap.php";
-
+$appbox = \appbox::get_instance(\bootstrap::getCore());
 $request = http_request::getInstance();
 $parm = $request->get_parms(
     "bid"
@@ -46,7 +46,7 @@ if ($parm["bid"] !== null) {
     $loaded = false;
 
     $xml = trim($rowbas["xml"]);
-    $databox = databox::get_instance((int) $parm['bid']);
+    $databox = $appbox->get_databox((int) $parm['bid']);
     $dom = $databox->get_dom_thesaurus();
     if ($dom) {
         $xpath = $databox->get_xpath_thesaurus();

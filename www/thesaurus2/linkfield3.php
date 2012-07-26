@@ -51,7 +51,7 @@ $parm = $request->get_parms(
                 if ($parm["bid"] !== null) {
                     $loaded = false;
                     try {
-                        $databox = databox::get_instance((int) $parm['bid']);
+                        $databox = $appbox->get_databox((int) $parm['bid']);
                         $connbas = connection::getPDOConnection($parm['bid']);
                         $meta_struct = $databox->get_meta_structure();
                         $domct = $databox->get_dom_cterms();

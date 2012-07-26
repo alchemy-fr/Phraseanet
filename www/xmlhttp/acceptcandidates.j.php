@@ -15,7 +15,7 @@
  * @link        www.phraseanet.com
  */
 require_once __DIR__ . "/../../lib/bootstrap.php";
-
+$appbox = \appbox::get_instance(\bootstrap::getCore());
 $registry = registry::get_instance();
 
 $request = http_request::getInstance();
@@ -34,7 +34,7 @@ $refresh = array();
 $sbas_id = (int) $parm["sbid"];
 
 try {
-    $databox = databox::get_instance($sbas_id);
+    $databox = $appbox->get_databox($sbas_id);
     $connbas = $databox->get_connection();
 
     $domct = $databox->get_dom_cterms();

@@ -131,7 +131,7 @@ $hits = $dom->getElementsByTagName("hits")->item(0)->firstChild->nodeValue;
 if ($parm["typ"] == "TH") {
     $loaded = false;
     try {
-        $databox = databox::get_instance((int) $parm['bid']);
+        $databox = $appbox->get_databox((int) $parm['bid']);
         $domstruct = $databox->get_dom_structure();
         $domth = $databox->get_dom_thesaurus();
 

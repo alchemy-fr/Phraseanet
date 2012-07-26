@@ -15,6 +15,7 @@
  * @link        www.phraseanet.com
  */
 require_once __DIR__ . "/../../../lib/bootstrap.php";
+$appbox = \appbox::get_instance(\bootstrap::getCore());
 $registry = registry::get_instance();
 
 
@@ -48,7 +49,7 @@ $sy_list = $root->appendChild($ret->createElement("sy_list"));
 if ($parm["bid"] !== null) {
     $loaded = false;
     try {
-        $databox = databox::get_instance((int) $parm['bid']);
+        $databox = $appbox->get_databox((int) $parm['bid']);
         $connbas = $databox->get_connection();
 
         if ($parm["typ"] == "CT") {

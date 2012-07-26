@@ -15,6 +15,7 @@
  * @link        www.phraseanet.com
  */
 require_once __DIR__ . "/../../lib/bootstrap.php";
+$appbox = \appbox::get_instance(\bootstrap::getCore());
 $registry = registry::get_instance();
 
 $request = http_request::getInstance();
@@ -36,7 +37,7 @@ $result = array('n_recsChanged' => 0); // , 'n_termsDeleted'=>0, 'n_termsReplace
 
 try {
 
-    $databox = databox::get_instance((int) $parm['sbid']);
+    $databox = $appbox->get_databox((int) $parm['sbid']);
     $domth = $databox->get_dom_thesaurus();
     $domct = $databox->get_dom_cterms();
 

@@ -15,6 +15,7 @@
  * @link        www.phraseanet.com
  */
 require_once __DIR__ . "/../../lib/bootstrap.php";
+$appbox = \appbox::get_instance(\bootstrap::getCore());
 $registry = registry::get_instance();
 
 $request = http_request::getInstance();
@@ -50,7 +51,7 @@ foreach ($tsbas as $sbas) {
     if (count($sbas['tids']) <= 0)
         continue;
 
-    $databox = databox::get_instance((int) $sbas['sbas']['sbas_id']);
+    $databox = $appbox->get_databox((int) $sbas['sbas']['sbas_id']);
     try {
         $connbas = connection::getPDOConnection($sbas['sbas']['sbas_id']);
     } catch (Exception $e) {

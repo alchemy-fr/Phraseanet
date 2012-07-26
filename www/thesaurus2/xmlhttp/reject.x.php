@@ -15,6 +15,7 @@
  * @link        www.phraseanet.com
  */
 require_once __DIR__ . "/../../../lib/bootstrap.php";
+$appbox = \appbox::get_instance(\bootstrap::getCore());
 $registry = registry::get_instance();
 
 require("../xmlhttp.php");
@@ -46,7 +47,7 @@ $refresh_list = $root->appendChild($ret->createElement("refresh_list"));
 if ($parm["bid"] !== null) {
     $loaded = false;
     try {
-        $databox = databox::get_instance((int) $parm['bid']);
+        $databox = $appbox->get_databox((int) $parm['bid']);
         $connbas = connection::getPDOConnection($parm['bid']);
 
         $dom = $databox->get_cterms();

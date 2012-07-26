@@ -15,7 +15,7 @@
  * @link        www.phraseanet.com
  */
 require_once __DIR__ . "/../../lib/bootstrap.php";
-
+$appbox = \appbox::get_instance(\bootstrap::getCore());
 $registry = registry::get_instance();
 
 $request = http_request::getInstance();
@@ -31,7 +31,7 @@ $json = Array();
 
 if ($parm["sbid"] !== null) {
     $loaded = false;
-    $databox = databox::get_instance((int) $parm['sbid']);
+    $databox = $appbox->get_databox((int) $parm['sbid']);
 
     $dom_thesau = $databox->get_dom_thesaurus();
     $meta = $databox->get_meta_structure();

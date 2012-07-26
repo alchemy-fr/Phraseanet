@@ -16,7 +16,7 @@
  */
 /* @var $Core \Alchemy\Phrasea\Core */
 $Core = require_once __DIR__ . "/../../lib/bootstrap.php";
-
+$appbox = \appbox::get_instance(\bootstrap::getCore());
 $request = http_request::getInstance();
 $parm = $request->get_parms(
     'sbid'
@@ -139,7 +139,7 @@ try {
     if ($parm['debug'])
         printf("/* %s */\n", var_export($t_nrec, true));
 
-    $databox = databox::get_instance($sbid);
+    $databox = $appbox->get_databox($sbid);
     if ($parm['type'] == 'T') {
         $xqroot = 'thesaurus';
         $dom = $databox->get_dom_thesaurus();
