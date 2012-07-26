@@ -97,7 +97,7 @@
                         </select>
                     </div>
                     <input type="hidden" name="ACT" value="SEND" />
-                    <input type="hidden" name="lst" value="{{helper.get_serialize_list()}}" />
+                    <input type="hidden" name="lst" value="{{helper.serializedList()}}" />
                 </fieldset>
                 <div style='text-align:right;padding-top:10px;'>
                     <button class="action_submiter btn btn-inverse" type="button">{% trans "validate" %}</button>
@@ -243,7 +243,7 @@
                       <input type="radio" name="rotation" id="ROTA_C90" value="-90">
                       {% trans "rotation 90 degres anti-horaires"%}
                   </label>
-                  <input type="hidden" name="lst" value="{{helper.get_serialize_list()}}" />
+                  <input type="hidden" name="lst" value="{{helper.serializedList()}}" />
                   <input type="hidden" name="element" value="" />
                   <input type="hidden" name="cchd" value="" />
               </fieldset>
