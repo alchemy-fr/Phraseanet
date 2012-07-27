@@ -169,30 +169,8 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSimpleBasket()
     {
-        $elements = array(
-            self::$records['record_24'],
-            self::$records['record_2'],
-            self::$records['record_no_access'],
-            self::$records['record_no_access_by_status'],
-        );
-
-        $basket = new \Entities\Basket();
-        $basket->setName('test');
-        $basket->setOwner(self::$core->getAuthenticatedUser());
-
-        foreach ($elements as $element) {
-            $basket_element = new \Entities\BasketElement();
-            $basket_element->setRecord($element);
-            $basket_element->setBasket($basket);
-            $basket->addBasketElement($basket_element);
-            self::$core['EM']->persist($basket_element);
-        }
-        self::$core['EM']->persist($basket);
-        self::$core['EM']->flush();
-
-        $request = new Request(array(
-                'ssel' => $basket->getId(),
-            ));
+        $basket = $this->getBasket();
+        $request = new Request(array('ssel' => $basket->getId()));
 
         $records = RecordsRequest::fromRequest($this->getApplication(), $request);
 
@@ -211,6 +189,34 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertContains(self::$records['record_2']->get_serialize_key(), $exploded);
         $this->assertNotContains(self::$records['record_no_access']->get_serialize_key(), $exploded);
         $this->assertNotContains(self::$records['record_no_access_by_status']->get_serialize_key(), $exploded);
+    }
+
+    public function getBasket()
+    {
+        $elements = array(
+            self::$records['record_24'],
+            self::$records['record_2'],
+            self::$records['record_no_access'],
+            self::$records['record_no_access_by_status'],
+        );
+
+        $basket = new \Entities\Basket();
+        $basket->setName('test');
+        $basket->setOwner(self::$core->getAuthenticatedUser());
+
+        self::$core['EM']->persist($basket);
+
+        foreach ($elements as $element) {
+            $basket_element = new \Entities\BasketElement();
+            $basket_element->setRecord($element);
+            $basket_element->setBasket($basket);
+            $basket->addBasketElement($basket_element);
+            self::$core['EM']->persist($basket_element);
+        }
+
+        self::$core['EM']->flush();
+
+        return $basket;
     }
 
     public function testSimpleStory()
