@@ -205,6 +205,7 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         $basket->setOwner(self::$core->getAuthenticatedUser());
 
         self::$core['EM']->persist($basket);
+        self::$core['EM']->flush();
 
         foreach ($elements as $element) {
             $basket_element = new \Entities\BasketElement();
@@ -212,9 +213,8 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
             $basket_element->setBasket($basket);
             $basket->addBasketElement($basket_element);
             self::$core['EM']->persist($basket_element);
+            self::$core['EM']->flush();
         }
-
-        self::$core['EM']->flush();
 
         return $basket;
     }
