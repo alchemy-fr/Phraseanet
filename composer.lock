@@ -50,10 +50,22 @@
             "commit-date": "1339767845"
         },
         {
+            "package": "guzzle/common",
+            "version": "v2.8.2"
+        },
+        {
+            "package": "guzzle/http",
+            "version": "v2.8.2"
+        },
+        {
+            "package": "guzzle/parser",
+            "version": "v2.8.2"
+        },
+        {
             "package": "imagine/Imagine",
             "version": "dev-develop",
-            "source-reference": "b761a2725267c7e68c5e8c559403cd0d19cb704c",
-            "commit-date": "1342901848"
+            "source-reference": "a9e70ca4c5f08630604caaa02359c3809247f616",
+            "commit-date": "1343106283"
         },
         {
             "package": "media-alchemyst/media-alchemyst",
@@ -104,8 +116,8 @@
         {
             "package": "phpexiftool/phpexiftool",
             "version": "dev-master",
-            "source-reference": "5dc6e9a21e4b0faf6809070bc4f1cc4fef06ead6",
-            "commit-date": "1339680734"
+            "source-reference": "3e63a2713cfb15efdc7aa6b49e61080c31b5310d",
+            "commit-date": "1343328301"
         },
         {
             "package": "pimple/pimple",
@@ -156,8 +168,8 @@
         {
             "package": "tcpdf/tcpdf",
             "version": "dev-master",
-            "source-reference": "8c874186166237b7909d6aa3d9aaae1ed6c4d245",
-            "commit-date": "1337808087"
+            "source-reference": "5.9.173",
+            "commit-date": "1343127876"
         },
         {
             "package": "twig/extensions",
@@ -206,14 +218,14 @@
         {
             "package": "behat/mink-extension",
             "version": "dev-master",
-            "source-reference": "da58c1b572349310ce5b65066a4d8b7e487a63a7",
-            "commit-date": "1342818063"
+            "source-reference": "bef6818b9538ef9ba75d1f5845fe71c1f5621ad1",
+            "commit-date": "1343146519"
         },
         {
             "package": "behat/mink-goutte-driver",
             "version": "dev-master",
-            "source-reference": "v1.0.3",
-            "commit-date": "1341477036"
+            "source-reference": "192e58dfd26098385218d65637426c26d148d9b0",
+            "commit-date": "1343123643"
         },
         {
             "package": "behat/mink-selenium2-driver",
@@ -230,24 +242,14 @@
         {
             "package": "fabpot/goutte",
             "version": "dev-master",
-            "alias-pretty-version": "1.0.x-dev",
-            "alias-version": "1.0.9999999.9999999-dev"
-        },
-        {
-            "package": "fabpot/goutte",
-            "version": "dev-master",
-            "source-reference": "c2ea8d9a6682d14482e57ede2371001b8a5238d2",
-            "commit-date": "1340264258"
+            "source-reference": "df14259688c7d6f1d366aa073a589695d2b9f451",
+            "commit-date": "1343194442"
         },
         {
             "package": "fabpot/php-cs-fixer",
             "version": "dev-master",
-            "source-reference": "4c4bc75cc179ff91bb83960ae7dacca6754d2c46",
-            "commit-date": "1342957711"
-        },
-        {
-            "package": "guzzle/guzzle",
-            "version": "v2.6.6"
+            "source-reference": "55701d65622b72cbe0db8d8f9136d36e45b2f7f4",
+            "commit-date": "1343202851"
         },
         {
             "package": "instaclick/php-webdriver",
