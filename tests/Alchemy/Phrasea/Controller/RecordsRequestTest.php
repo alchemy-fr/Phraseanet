@@ -47,13 +47,14 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertNull($records->basket());
 
         $serialized = $records->serializedList();
+        $exploded = explode(';', $serialized);
 
-        $this->assertEquals(3, count(explode(';', $serialized)));
-        $this->assertTrue(false !== strpos($serialized, self::$records['record_24']->get_serialize_key()));
-        $this->assertTrue(false !== strpos($serialized, self::$records['record_2']->get_serialize_key()));
-        $this->assertTrue(false !== strpos($serialized, self::$records['record_story_2']->get_serialize_key()));
-        $this->assertTrue(false === strpos($serialized, self::$records['record_no_access']->get_serialize_key()), "asserting that $serialized does not contain ".self::$records['record_no_access']->get_serialize_key());
-        $this->assertTrue(false === strpos($serialized, self::$records['record_no_access_by_status']->get_serialize_key()));
+        $this->assertEquals(3, count($exploded));
+        $this->assertContains(self::$records['record_24']->get_serialize_key(), $exploded);
+        $this->assertContains(self::$records['record_2']->get_serialize_key(), $exploded);
+        $this->assertContains(self::$records['record_story_2']->get_serialize_key(), $exploded);
+        $this->assertNotContains(self::$records['record_no_access']->get_serialize_key(), $exploded);
+        $this->assertNotContains(self::$records['record_no_access_by_status']->get_serialize_key(), $exploded);
     }
 
     public function testSimpleSimple()
@@ -75,9 +76,10 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertNull($records->basket());
 
         $serialized = $records->serializedList();
+        $exploded = explode(';', $serialized);
 
-        $this->assertEquals(1, count(explode(';', $serialized)));
-        $this->assertTrue(false !== strpos($serialized, self::$records['record_2']->get_serialize_key()));
+        $this->assertEquals(1, count($serialized));
+        $this->assertContains(self::$records['record_2']->get_serialize_key(), $exploded);
     }
 
     public function testSimpleWithoutSbasRights()
@@ -100,9 +102,10 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertFalse($records->isSingleStory());
 
         $serialized = $records->serializedList();
+        $exploded = explode(';', $serialized);
 
         $this->assertEquals('', $serialized);
-        $this->assertTrue(false === strpos($serialized, self::$records['record_2']->get_serialize_key()));
+        $this->assertNotContains(self::$records['record_2']->get_serialize_key(), $exploded);
     }
 
     public function testSimpleWithoutBasRights()
@@ -125,9 +128,10 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertFalse($records->isSingleStory());
 
         $serialized = $records->serializedList();
+        $exploded = explode(';', $serialized);
 
         $this->assertEquals('', $serialized);
-        $this->assertTrue(false === strpos($serialized, self::$records['record_2']->get_serialize_key()));
+        $this->assertNotContains(self::$records['record_2']->get_serialize_key(), $exploded);
     }
 
     public function testSimpleFlatten()
@@ -153,13 +157,14 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertNull($records->basket());
 
         $serialized = $records->serializedList();
+        $exploded = explode(';', $serialized);
 
-        $this->assertEquals(2, count(explode(';', $serialized)));
-        $this->assertTrue(false !== strpos($serialized, self::$records['record_24']->get_serialize_key()));
-        $this->assertTrue(false !== strpos($serialized, self::$records['record_2']->get_serialize_key()));
-        $this->assertTrue(false === strpos($serialized, self::$records['record_story_2']->get_serialize_key()));
-        $this->assertTrue(false === strpos($serialized, self::$records['record_no_access']->get_serialize_key()));
-        $this->assertTrue(false === strpos($serialized, self::$records['record_no_access_by_status']->get_serialize_key()));
+        $this->assertEquals(2, count($serialized));
+        $this->assertContains(self::$records['record_2']->get_serialize_key(), $exploded);
+        $this->assertContains(self::$records['record_24']->get_serialize_key(), $exploded);
+        $this->assertNotContains(self::$records['record_story_2']->get_serialize_key(), $exploded);
+        $this->assertNotContains(self::$records['record_no_access']->get_serialize_key(), $exploded);
+        $this->assertNotContains(self::$records['record_no_access_by_status']->get_serialize_key(), $exploded);
     }
 
     public function testSimpleBasket()
@@ -199,12 +204,13 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertEquals($basket, $records->basket());
 
         $serialized = $records->serializedList();
+        $exploded = explode(';', $serialized);
 
-        $this->assertEquals(2, count(explode(';', $serialized)));
-        $this->assertTrue(false !== strpos($serialized, self::$records['record_24']->get_serialize_key()));
-        $this->assertTrue(false !== strpos($serialized, self::$records['record_2']->get_serialize_key()));
-        $this->assertTrue(false === strpos($serialized, self::$records['record_no_access']->get_serialize_key()));
-        $this->assertTrue(false === strpos($serialized, self::$records['record_no_access_by_status']->get_serialize_key()));
+        $this->assertEquals(2, count($serialized));
+        $this->assertContains(self::$records['record_24']->get_serialize_key(), $exploded);
+        $this->assertContains(self::$records['record_2']->get_serialize_key(), $exploded);
+        $this->assertNotContains(self::$records['record_no_access']->get_serialize_key(), $exploded);
+        $this->assertNotContains(self::$records['record_no_access_by_status']->get_serialize_key(), $exploded);
     }
 
     public function testSimpleStory()
@@ -222,9 +228,10 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertEquals(array($story->getRecord()->get_databox()), $records->databoxes());
 
         $serialized = $records->serializedList();
+        $exploded = explode(';', $serialized);
 
-        $this->assertEquals(1, count(explode(';', $serialized)));
-        $this->assertTrue(false !== strpos($serialized, $story->getRecord()->get_serialize_key()));
+        $this->assertEquals(1, count($serialized));
+        $this->assertContains($story->getRecord()->get_serialize_key(), $exploded);
     }
 
     public function testSimpleStoryFlatten()
@@ -242,9 +249,10 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertEquals(array(), $records->databoxes());
 
         $serialized = $records->serializedList();
+        $exploded = explode(';', $serialized);
 
         $this->assertEquals('', $serialized);
-        $this->assertTrue(false === strpos($serialized, $story->getRecord()->get_serialize_key()));
+        $this->assertNotContains($story->getRecord()->get_serialize_key(), $exploded);
     }
 
     protected function getStoryWZ()
