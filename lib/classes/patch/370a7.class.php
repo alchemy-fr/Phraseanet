@@ -60,6 +60,22 @@ class patch_370a7 implements patchInterface
 
         $em = $Core->getEntityManager();
 
+        $conn = $appbox->get_connection();
+
+        try {
+            //get all old lazaret file & transform them to \Entities\LazaretFile object
+            $sql = 'SELECT * FROM lazaret';
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+            $rs = $stmt->fetchAll();
+        } catch (\PDOException $e) {
+            // table not found
+            if ($e->getCode() == '42S02') {
+
+            }
+            return;
+        }
+
         //order matters for foreign keys constraints
         //truncate all altered tables
         $this->truncateTable($em, 'Entities\\LazaretAttribute');
@@ -67,96 +83,77 @@ class patch_370a7 implements patchInterface
         $this->truncateTable($em, 'Entities\\LazaretFile');
         $this->truncateTable($em, 'Entities\\LazaretSession');
 
-        $conn = $appbox->get_connection();
-
-        //get all old lazaret file & transform them to \Entities\LazaretFile object
-        $sql = 'SELECT * FROM lazaret';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll();
-
         // suspend auto-commit
         $em->getConnection()->beginTransaction();
 
-        $transfertLazaretFile = $success = false;
+        try {
+            foreach ($rs as $row) {
 
-        if ($stmt->rowCount() > 0) {
-            try {
-                foreach ($rs as $row) {
+                $filePath = $Core->getRegistry()->get('GV_RootPath') . 'tmp/lazaret/' . $row['filepath'];
 
-                    $filePath = $Core->getRegistry()->get('GV_RootPath') . 'tmp/lazaret/' . $row['filepath'];
+                if (file_exists(
+                )) {
 
-                    if (file_exists($filePath)) {
+                    $spec = new ImageSpec();
 
-                        $spec = new ImageSpec();
+                    $spec->setResizeMode(ImageSpec::RESIZE_MODE_INBOUND_FIXEDRATIO);
+                    $spec->setDimensions(375, 275);
 
-                        $spec->setResizeMode(ImageSpec::RESIZE_MODE_INBOUND_FIXEDRATIO);
-                        $spec->setDimensions(375, 275);
+                    $thumbPath = $Core->getRegistry()->get('GV_RootPath') . 'tmp/lazaret/' . sprintf("thumb_%s", $row['filepath']);
 
-                        $thumbPath = $Core->getRegistry()->get('GV_RootPath') . 'tmp/lazaret/' . sprintf("thumb_%s", $row['filepath']);
+                    try {
+                        $Core['media-alchemyst']
+                            ->open($filePath)
+                            ->turnInto($thumbPath, $spec)
+                            ->close();
+                    } catch (MediaAlchemystException $e) {
 
-                        try {
-                            $Core['media-alchemyst']
-                                ->open($filePath)
-                                ->turnInto($thumbPath, $spec)
-                                ->close();
-                        } catch (MediaAlchemystException $e) {
-
-                        }
-
-                        $media = $Core['mediavorus']->guess(new \SplFileInfo($filePath));
-
-                        $collection = \collection::get_from_base_id($row['base_id']);
-
-                        $borderFile = new \Alchemy\Phrasea\Border\File($media, $collection);
-
-                        $lazaretSession = new \Entities\LazaretSession();
-                        $lazaretSession->setUsrId($row['usr_id']);
-
-                        $lazaretFile = new \Entities\LazaretFile();
-                        $lazaretFile->setBaseId($row['base_id']);
-
-                        if (null === $row['uuid']) {
-                            $uuid = $borderFile->getUUID(true);
-                            $lazaretFile->setUuid($uuid);
-                        } else {
-                            $lazaretFile->setUuid($row['uuid']);
-                        }
-
-                        if (null === $row['sha256']) {
-                            $sha256 = $media->getHash('sha256');
-                            $lazaretFile->setSha256($sha256);
-                        } else {
-                            $lazaretFile->setSha256($row['sha256']);
-                        }
-
-                        $lazaretFile->setOriginalName($row['filename']);
-                        $lazaretFile->setFilename($row['filepath']);
-                        $lazaretFile->setThumbFilename(pathinfo($thumbPath), PATHINFO_BASENAME);
-                        $lazaretFile->setCreated(new \DateTime($row['created_on']));
-                        $lazaretFile->setSession($lazaretSession);
-
-                        $em->persist($lazaretFile);
                     }
+
+                    $media = $Core['mediavorus']->guess(new \SplFileInfo($filePath));
+
+                    $collection = \collection::get_from_base_id($row['base_id']);
+
+                    $borderFile = new \Alchemy\Phrasea\Border\File($media, $collection);
+
+                    $lazaretSession = new \Entities\LazaretSession();
+                    $lazaretSession->setUsrId($row['usr_id']);
+
+                    $lazaretFile = new \Entities\LazaretFile();
+                    $lazaretFile->setBaseId($row['base_id']);
+
+                    if (null === $row['uuid']) {
+                        $uuid = $borderFile->getUUID(true);
+                        $lazaretFile->setUuid($uuid);
+                    } else {
+                        $lazaretFile->setUuid($row['uuid']);
+                    }
+
+                    if (null === $row['sha256']) {
+                        $sha256 = $media->getHash('sha256');
+                        $lazaretFile->setSha256($sha256);
+                    } else {
+                        $lazaretFile->setSha256($row['sha256']);
+                    }
+
+                    $lazaretFile->setOriginalName($row['filename']);
+                    $lazaretFile->setFilename($row['filepath']);
+                    $lazaretFile->setThumbFilename(pathinfo($thumbPath), PATHINFO_BASENAME);
+                    $lazaretFile->setCreated(new \DateTime($row['created_on']));
+                    $lazaretFile->setSession($lazaretSession);
+
+                    $em->persist($lazaretFile);
                 }
-
-                $em->flush();
-
-                $transfertLazaretFile = true;
-            } catch (\Exception $e) {
-                $em->getConnection()->rollback();
-                $em->close();
             }
 
-        } else {
-            $success = true;
+            $em->flush();
+        } catch (\Exception $e) {
+            $em->getConnection()->rollback();
+            $em->close();
         }
+
 
         $stmt->closeCursor();
-
-        if ( ! $success) {
-            throw new \RuntimeException(sprintf("Patch %s failed", __CLASS__));
-        }
 
         return;
     }
