@@ -169,26 +169,23 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSimpleBasket()
     {
-        $basket = $this->getBasket();
-        $request = new Request(array('ssel' => $basket->getId()));
+        $basketElement = $this->insertOneBasketElement();
+        $request = new Request(array('ssel' => $basketElement->getBasket()->getId()));
 
         $records = RecordsRequest::fromRequest($this->getApplication(), $request);
 
-        $this->assertEquals(2, count($records));
-        $this->assertEquals(4, count($records->received()));
+        $this->assertEquals(1, count($records));
+        $this->assertEquals(1, count($records->received()));
         $this->assertEquals(0, count($records->stories()));
         $this->assertNull($records->singleStory());
         $this->assertFalse($records->isSingleStory());
-        $this->assertEquals($basket, $records->basket());
+        $this->assertEquals($basketElement->getBasket(), $records->basket());
 
         $serialized = $records->serializedList();
         $exploded = explode(';', $serialized);
 
-        $this->assertEquals(2, count($exploded));
-        $this->assertContains(self::$records['record_24']->get_serialize_key(), $exploded);
-        $this->assertContains(self::$records['record_2']->get_serialize_key(), $exploded);
-        $this->assertNotContains(self::$records['record_no_access']->get_serialize_key(), $exploded);
-        $this->assertNotContains(self::$records['record_no_access_by_status']->get_serialize_key(), $exploded);
+        $this->assertEquals(1, count($exploded));
+        $this->assertContains($basketElement->getRecord()->get_serialize_key(), $exploded);
     }
 
     public function getBasket()

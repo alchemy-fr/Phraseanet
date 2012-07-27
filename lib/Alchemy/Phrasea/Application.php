@@ -123,6 +123,7 @@ class Application extends SilexApplication
                     $twig->addFilter('formatOctets', new \Twig_Filter_Function('p4string::format_octets'));
                     $twig->addFilter('geoname_name_from_id', new \Twig_Filter_Function('geonames::name_from_id'));
                     $twig->addFilter('base_from_coll', new \Twig_Filter_Function('phrasea::baseFromColl'));
+                    $twig->addFilter('AppName', new \Twig_Filter_Function('Alchemy\Phrasea\Controller\Admin\ConnectedUsers::appName'));
 
                     return $twig;
                 }));

@@ -34,9 +34,6 @@ class ConnectedUsers implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->get('/', function(Application $app, Request $request) {
-
-                $app['twig']->addFilter('AppName', new \Twig_Filter_Function(__CLASS__ . '::appName'));
-
                 return new Response(
                         $app['twig']->render(
                             'admin/connected-users.html.twig', array('datas' => \Session_Handler::get_active_sessions()
