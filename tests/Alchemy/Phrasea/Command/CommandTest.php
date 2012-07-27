@@ -1,6 +1,8 @@
 <?php
 
 namespace Alchemy\Phrasea\Command;
+
+use Alchemy\Phrasea\Application;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -21,6 +23,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
      */
     public function testCheckSetup()
     {
+        $this->object->setContainer(new Application());
         $this->object->checkSetup();
     }
 

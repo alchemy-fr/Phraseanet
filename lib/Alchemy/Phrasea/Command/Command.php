@@ -56,7 +56,7 @@ abstract class Command extends SymfoCommand
     public function checkSetup()
     {
         if ($this->requireSetup()) {
-            if ( ! $this->container['phraseanet.core']->getConfiguration()->isInstalled()) {
+            if ($this->container['phraseanet.core'] && ! $this->container['phraseanet.core']->getConfiguration()->isInstalled()) {
                 throw new \RuntimeException('Phraseanet must be set-up');
             }
         }
