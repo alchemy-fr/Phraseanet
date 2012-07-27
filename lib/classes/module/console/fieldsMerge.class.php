@@ -54,7 +54,8 @@ class module_console_fieldsMerge extends Command
     {
         $output->writeln("");
 
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = $this->getService('phraseanet.appbox');
+        
         try {
             $databox = $appbox->get_databox((int) $input->getArgument('sbas_id'));
         } catch (\Exception $e) {

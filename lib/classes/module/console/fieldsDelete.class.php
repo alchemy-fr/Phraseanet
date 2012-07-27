@@ -42,7 +42,7 @@ class module_console_fieldsDelete extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = $this->getService('phraseanet.appbox');
         try {
             $databox = $appbox->get_databox((int) $input->getArgument('sbas_id'));
         } catch (\Exception $e) {
@@ -52,7 +52,9 @@ class module_console_fieldsDelete extends Command
         }
 
         try {
-            $field = $databox->get_meta_structure()->get_element((int) $input->getArgument('meta_struct_id'));
+            $field = $databox
+                ->get_meta_structure()
+                ->get_element((int) $input->getArgument('meta_struct_id'));
         } catch (\Exception $e) {
             $output->writeln("<error>Invalid meta struct id </error>");
 

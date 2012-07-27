@@ -58,7 +58,6 @@ EOF
         if (false !== $input->getOption('from') && false !== $input->getOption('at-version')) {
             throw new \Exception('You CAN NOT provide a `from` AND `at-version` option at the same time');
         }
-        $core = \bootstrap::getCore();
 
         $versions = array(
             'Upgrade\\Step31' => '3.1',
@@ -72,7 +71,7 @@ EOF
                 }
 
                 $classname = __NAMESPACE__ . '\\' . $classname;
-                $this->upgrades[] = new $classname($core, $this->logger);
+                $this->upgrades[] = new $classname($this->container);
             }
         }
     }

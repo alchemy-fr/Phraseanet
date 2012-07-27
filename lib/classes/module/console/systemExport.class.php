@@ -78,7 +78,7 @@ class module_console_systemExport extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $core = \bootstrap::getCore();
+        $core = $this->getService('phraseanet.core');
 
         $docPerDir = max(1, (int) $input->getOption('docperdir'));
 
@@ -130,7 +130,7 @@ class module_console_systemExport extends Command
             $output->writeln("Export datas from selected base_ids");
         }
 
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = $this->getService('phraseanet.appbox');
 
         $total = $errors = 0;
 
@@ -252,8 +252,8 @@ class module_console_systemExport extends Command
         if ( ! file_exists($record->get_subdef('document')->get_pathfile())) {
             return false;
         }
-        $core = \bootstrap::getCore();
 
+        $core = $this->getService('phraseanet.core');
         $core['file-system']->copy($record->get_subdef('document')->get_pathfile(), $outfile);
 
         $dest_file = new \SplFileInfo($outfile);

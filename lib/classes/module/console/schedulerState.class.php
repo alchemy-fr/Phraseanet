@@ -62,7 +62,7 @@ class module_console_schedulerState extends Command
             return self::EXITCODE_SETUP_ERROR;
         }
 
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $appbox = $this->getService('phraseanet.appbox');
         $task_manager = new task_manager($appbox);
 
         $exitCode = 0;

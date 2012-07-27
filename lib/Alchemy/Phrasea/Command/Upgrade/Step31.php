@@ -11,9 +11,8 @@
 
 namespace Alchemy\Phrasea\Command\Upgrade;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
-use Alchemy\Phrasea\Core;
-use Monolog\Logger;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -24,23 +23,16 @@ class Step31 implements DatasUpgraderInterface
 {
     const AVERAGE_PER_SECOND = 1.4;
 
-    protected $core;
-
-    /**
-     * @var Monolog\Logger
-     */
-    protected $logger;
+    protected $app;
 
     /**
      * Constructor
      *
-     * @param Core $core
-     * @param Logger $logger
+     * @param Application $app The context application for execution
      */
-    public function __construct(Core $core, Logger $logger)
+    public function __construct(Application $app)
     {
-        $this->core = $core;
-        $this->logger = $logger;
+        $this->app = $app;
     }
 
     /**
@@ -48,9 +40,7 @@ class Step31 implements DatasUpgraderInterface
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $appbox = \appbox::get_instance($this->core);
-
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
             do {
                 $records = $this->getNullUUIDs($databox);
 
@@ -67,11 +57,9 @@ class Step31 implements DatasUpgraderInterface
      */
     public function getTimeEstimation()
     {
-        $appbox = \appbox::get_instance($this->core);
-
         $time = 0;
 
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
             $time += $this->getDataboxTimeEstimation($databox);
         }
 
@@ -135,16 +123,16 @@ class Step31 implements DatasUpgraderInterface
 
         $uuid = \uuid::generate_v4();
         try {
-            $media = $this->core['mediavorus']->guess(new \SplFileInfo($pathfile));
+            $media = $this->app['phraseanet.core']['mediavorus']->guess(new \SplFileInfo($pathfile));
             $collection = \collection::get_from_coll_id($databox, (int) $record['coll_id']);
 
             $file = new File($media, $collection);
             $uuid = $file->getUUID(true, true);
             $sha256 = $file->getSha256();
 
-            $this->logger->addInfo(sprintf("Upgrading record %d with uuid %s", $record['record_id'], $uuid));
+            $this->app['phraseanet.core']['monolog']->addInfo(sprintf("Upgrading record %d with uuid %s", $record['record_id'], $uuid));
         } catch (\Exception $e) {
-            $this->logger->addError(sprintf("Uuid upgrade for record %s failed", $record['record_id']));
+            $this->app['phraseanet.core']['monolog']->addError(sprintf("Uuid upgrade for record %s failed", $record['record_id']));
         }
 
         $sql = 'UPDATE record SET uuid = :uuid, sha256 = :sha256 WHERE record_id = :record_id';

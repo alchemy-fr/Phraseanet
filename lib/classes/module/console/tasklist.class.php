@@ -46,7 +46,7 @@ class module_console_tasklist extends Command
         }
 
         try {
-            $appbox = appbox::get_instance(\bootstrap::getCore());
+            $appbox = $this->getService('phraseanet.appbox');
             $task_manager = new task_manager($appbox);
             $tasks = $task_manager->getTasks();
 

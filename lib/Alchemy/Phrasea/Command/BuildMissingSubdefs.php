@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Command;
 
-use Monolog\Handler;
+use Monolog\Handler\StreamHandler;
 use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -24,8 +24,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class BuildMissingSubdefs extends Command
 {
-    protected $appbox;
-
     /**
      * Constructor
      */
@@ -51,20 +49,15 @@ class BuildMissingSubdefs extends Command
      */
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $core = \bootstrap::getCore();
-        $this->appbox = \appbox::get_instance($core);
-
         if ($input->getOption('verbose')) {
-            $logger = $this->getLogger();
-            $handler = new Handler\StreamHandler('php://stdout');
-            $logger->pushHandler($handler);
-            $this->setLogger($logger);
+            $handler = new StreamHandler('php://stdout');
+            $this->container['phraseanet.core']['monolog']->pushHandler($handler);
         }
 
         $start = microtime(true);
         $n = 0;
 
-        foreach ($this->appbox->get_databoxes() as $databox) {
+        foreach ($this->container['phraseanet.appbox']->get_databoxes() as $databox) {
 
             $subdefStructure = $databox->get_subdef_structure();
 
@@ -105,8 +98,8 @@ class BuildMissingSubdefs extends Command
                         }
 
                         if ($todo) {
-                            $record->generate_subdefs($databox, $this->getLogger(), array($subdef->get_name()));
-                            $this->getLogger()->addInfo("generate " . $subdef->get_name() . " for record " . $record->get_record_id());
+                            $record->generate_subdefs($databox, $this->container['phraseanet.core']['monolog'], array($subdef->get_name()));
+                            $this->container['phraseanet.core']['monolog']->addInfo("generate " . $subdef->get_name() . " for record " . $record->get_record_id());
                             $n ++;
                         }
                     }
@@ -116,11 +109,11 @@ class BuildMissingSubdefs extends Command
             }
         }
 
-        $this->getLogger()->addInfo($n . " subdefs done");
+        $this->container['phraseanet.core']['monolog']->addInfo($n . " subdefs done");
         $stop = microtime(true);
         $duration = $stop - $start;
 
-        $this->getLogger()->addInfo(sprintf("process took %s, (%f sd/s.)", $this->getFormattedDuration($duration), round($n / $duration, 3)));
+        $this->container['phraseanet.core']['monolog']->addInfo(sprintf("process took %s, (%f sd/s.)", $this->getFormattedDuration($duration), round($n / $duration, 3)));
 
         return;
     }

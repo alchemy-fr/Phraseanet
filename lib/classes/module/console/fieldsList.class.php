@@ -38,7 +38,7 @@ class module_console_fieldsList extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = $this->getService('phraseanet.appbox');
 
         foreach ($appbox->get_databoxes() as $databox) {
             /* @var $databox \databox */

@@ -47,9 +47,7 @@ class module_console_systemBackupDB extends Command
     {
         $output->write('Phraseanet is going to be backup...', true);
 
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-
-        $ok = true;
+        $appbox = $this->getService('phraseanet.appbox');
 
         $ok = $this->dump_base($appbox, $input, $output) && $ok;
 

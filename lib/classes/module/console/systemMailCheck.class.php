@@ -44,7 +44,7 @@ class module_console_systemMailCheck extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $appbox = $this->getService('phraseanet.appbox');
 
         $output->writeln("Processing...");
 

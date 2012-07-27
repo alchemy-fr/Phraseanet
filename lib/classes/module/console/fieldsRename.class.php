@@ -45,7 +45,7 @@ class module_console_fieldsRename extends Command
     {
         $new_name = $input->getArgument('name');
 
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = $this->getService('phraseanet.appbox');
         try {
             $databox = $appbox->get_databox((int) $input->getArgument('sbas_id'));
         } catch (\Exception $e) {
@@ -55,7 +55,9 @@ class module_console_fieldsRename extends Command
         }
 
         try {
-            $field = $databox->get_meta_structure()->get_element((int) $input->getArgument('meta_struct_id'));
+            $field = $databox
+                ->get_meta_structure()
+                ->get_element((int) $input->getArgument('meta_struct_id'));
         } catch (\Exception $e) {
             $output->writeln("<error>Invalid meta struct id </error>");
 

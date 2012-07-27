@@ -57,8 +57,6 @@ class RescanTechnicalDatas extends Command
      */
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $this->appbox = \appbox::get_instance(\bootstrap::getCore());
-
         $quantity = $this->computeQuantity();
         $duration = $this->getFormattedDuration($quantity);
 
@@ -76,7 +74,7 @@ class RescanTechnicalDatas extends Command
         $start = microtime(true);
         $n = 0;
 
-        foreach ($this->appbox->get_databoxes() as $databox) {
+        foreach ($this->container['phraseanet.appbox']->get_databoxes() as $databox) {
 
             $sql = 'SELECT record_id FROM record WHERE parent_record_id = 0';
             $stmt = $databox->get_connection()->prepare($sql);
@@ -112,7 +110,7 @@ class RescanTechnicalDatas extends Command
     {
         $n = 0;
 
-        foreach ($this->appbox->get_databoxes() as $databox) {
+        foreach ($this->container['phraseanet.appbox']->get_databoxes() as $databox) {
             $n += $databox->get_record_amount();
         }
 

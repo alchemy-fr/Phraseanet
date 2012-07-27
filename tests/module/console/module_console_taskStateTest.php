@@ -2,8 +2,8 @@
 
 require_once __DIR__ . '/../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
+use Alchemy\Phrasea\CLI;
 use Symfony\Component\Console\Tester\CommandTester;
-use Symfony\Component\Console\Application;
 
 class module_console_taskStateTest extends PhraseanetPHPUnitAbstract
 {
@@ -14,10 +14,10 @@ class module_console_taskStateTest extends PhraseanetPHPUnitAbstract
     public function testExecute()
     {
         // mock the Kernel or create one depending on your needs
-        $application = new Application();
-        $application->add(new module_console_taskState('system:taskState'));
+        $application = new CLI('test');
+        $application->command(new module_console_taskState('system:taskState'));
 
-        $command = $application->find('system:taskState');
+        $command = $application['console']->find('system:taskState');
         $commandTester = new CommandTester($command);
 
          // test a bad argument
