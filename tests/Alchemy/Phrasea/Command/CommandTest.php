@@ -14,17 +14,6 @@ class CommandTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->object = new AbstractCommandTester('name');
-        $this->logger = new \Monolog\Logger('test');
-    }
-
-    /**
-     * @covers Alchemy\Phrasea\Command\Command::setLogger
-     * @covers Alchemy\Phrasea\Command\Command::getLogger
-     */
-    public function testSetLogger()
-    {
-        $this->object->setLogger($this->logger);
-        $this->assertEquals($this->logger, $this->object->getLogger());
     }
 
     /**
