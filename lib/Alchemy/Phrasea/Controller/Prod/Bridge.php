@@ -13,8 +13,6 @@ namespace Alchemy\Phrasea\Controller\Prod;
 
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Silex\ControllerCollection;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
@@ -441,21 +439,21 @@ class Bridge implements ControllerProviderInterface
                     if ($e instanceof \Bridge_Exception_ApiConnectorNotConfigured) {
                         $params = array_merge($params, array('account' => $app['current_account']));
 
-                        $response = new response($app['twig']->render('/prod/actions/Bridge/notconfigured.html.twig', $params), 200);
+                        $response = new Response($app['twig']->render('/prod/actions/Bridge/notconfigured.html.twig', $params), 200);
                     } elseif ($e instanceof \Bridge_Exception_ApiConnectorNotConnected) {
                         $params = array_merge($params, array('account' => $app['current_account']));
 
-                        $response = new response($app['twig']->render('/prod/actions/Bridge/disconnected.html.twig', $params), 200);
+                        $response = new Response($app['twig']->render('/prod/actions/Bridge/disconnected.html.twig', $params), 200);
                     } elseif ($e instanceof \Bridge_Exception_ApiConnectorAccessTokenFailed) {
                         $params = array_merge($params, array('account' => $app['current_account']));
 
-                        $response = new response($app['twig']->render('/prod/actions/Bridge/disconnected.html.twig', $params), 200);
+                        $response = new Response($app['twig']->render('/prod/actions/Bridge/disconnected.html.twig', $params), 200);
                     } elseif ($e instanceof \Bridge_Exception_ApiDisabled) {
                         $params = array_merge($params, array('api' => $e->get_api()));
 
-                        $response = new response($app['twig']->render('/prod/actions/Bridge/deactivated.html.twig', $params), 200);
+                        $response = new Response($app['twig']->render('/prod/actions/Bridge/deactivated.html.twig', $params), 200);
                     } else {
-                        $response = new response($app['twig']->render('/prod/actions/Bridge/error.html.twig', $params), 200);
+                        $response = new Response($app['twig']->render('/prod/actions/Bridge/error.html.twig', $params), 200);
                     }
 
                     $response->headers->set('Phrasea-StatusCode', 200);

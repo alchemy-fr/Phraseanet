@@ -11,15 +11,14 @@
 
 namespace Alchemy\Phrasea\Helper\User;
 
-use Alchemy\Phrasea\Core;
-use Symfony\Component\HttpFoundation\Request;
+use Alchemy\Phrasea\Helper\Helper;
 
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class Manage extends \Alchemy\Phrasea\Helper\Helper
+class Manage extends Helper
 {
     /**
      *

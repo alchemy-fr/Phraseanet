@@ -14,10 +14,7 @@ namespace Alchemy\Phrasea\Controller\Prod;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Silex\ControllerCollection;
-use Alchemy\Phrasea\Helper\Record\MoveCollection as Helper;
 use Symfony\Component\HttpFoundation\Request;
-use Alchemy\Phrasea\Helper\Record as RecordHelper;
 
 /**
  *

@@ -12,10 +12,6 @@
 namespace Alchemy\Phrasea\Command;
 
 use Alchemy\Phrasea\Command\Command;
-use Alchemy\Phrasea\Border\File;
-use Alchemy\Phrasea\Border\Manager;
-use Entities\LazaretFile;
-use Entities\LazaretSession;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
@@ -78,6 +74,6 @@ class CreateCollection extends Command
             }
         }
 
-        User_Adapter::reset_sys_admins_rights();
+        \User_Adapter::reset_sys_admins_rights();
     }
 }

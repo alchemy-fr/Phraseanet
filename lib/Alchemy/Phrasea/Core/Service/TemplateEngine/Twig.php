@@ -11,10 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Service\TemplateEngine;
 
-use Alchemy\Phrasea\Core,
-    Alchemy\Phrasea\Core\Service,
-    Alchemy\Phrasea\Core\Service\ServiceAbstract,
-    Alchemy\Phrasea\Core\Service\ServiceInterface;
+use Alchemy\Phrasea\Core\Service\ServiceAbstract;
 
 class Twig extends ServiceAbstract
 {

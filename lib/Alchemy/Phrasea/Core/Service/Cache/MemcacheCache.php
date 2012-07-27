@@ -11,11 +11,8 @@
 
 namespace Alchemy\Phrasea\Core\Service\Cache;
 
-use Alchemy\Phrasea\Core,
-    Alchemy\Phrasea\Core\Service,
-    Alchemy\Phrasea\Core\Service\ServiceAbstract,
-    Alchemy\Phrasea\Core\Service\ServiceInterface,
-    Alchemy\Phrasea\Cache as CacheDriver;
+use Alchemy\Phrasea\Core\Service\ServiceAbstract;
+use Alchemy\Phrasea\Cache as CacheDriver;
 
 /**
  *

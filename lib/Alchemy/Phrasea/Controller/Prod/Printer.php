@@ -11,11 +11,10 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Silex\Application,
-    Silex\ControllerProviderInterface,
-    Silex\ControllerCollection;
-use Alchemy\Phrasea\Helper\Record as RecordHelper,
-    Alchemy\Phrasea\Out\Module\PDF as PDFExport;
+use Silex\Application;
+use Silex\ControllerProviderInterface;
+use Alchemy\Phrasea\Helper\Record as RecordHelper;
+use Alchemy\Phrasea\Out\Module\PDF as PDFExport;
 use Symfony\Component\HttpFoundation\Response;
 
 /**

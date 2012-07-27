@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\Core;
 
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
-use Alchemy\Phrasea\Core\Configuration\ApplicationSpecification;
 
 /**
  * Handle configuration file mechanism of phraseanet

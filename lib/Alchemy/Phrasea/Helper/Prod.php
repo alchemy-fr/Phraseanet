@@ -82,10 +82,12 @@ class Prod extends Helper
                 }
             }
 
-            if ( ! $bases[$sbas_id]['thesaurus'])
+            if ( ! $bases[$sbas_id]['thesaurus']) {
                 continue;
-            if ( ! $user->ACL()->has_right_on_sbas($sbas_id, 'bas_modif_th'))
+            }
+            if ( ! $user->ACL()->has_right_on_sbas($sbas_id, 'bas_modif_th')) {
                 continue;
+            }
 
             if (simplexml_load_string($databox->get_cterms())) {
                 $bases[$sbas_id]['cterms'] = true;

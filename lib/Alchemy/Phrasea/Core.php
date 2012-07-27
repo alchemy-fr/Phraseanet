@@ -17,7 +17,6 @@ use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Security\Firewall;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Serializer;
 use XPDF\PdfToText;
 use XPDF\Exception\Exception as XPDFException;
 

@@ -13,10 +13,8 @@ namespace Alchemy\Phrasea\Controller\Admin;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Silex\ControllerCollection;
 
 /**
  *
@@ -34,7 +32,7 @@ class Subdefs implements ControllerProviderInterface
         $controllers->get('/{sbas_id}/', function(Application $app, $sbas_id) {
                 $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
 
-                return new response($app['twig']->render(
+                return new Response($app['twig']->render(
                             'admin/subdefs.html.twig', array(
                             'databox' => $databox,
                             'subdefs' => $databox->get_subdef_structure()

@@ -11,15 +11,10 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Silex\Application,
-    Silex\ControllerProviderInterface,
-    Silex\ControllerCollection;
-use Symfony\Component\HttpFoundation\Request,
-    Symfony\Component\HttpFoundation\Response,
-    Symfony\Component\HttpFoundation\RedirectResponse,
-    Symfony\Component\HttpKernel\Exception\HttpException,
-    Symfony\Component\Finder\Finder,
-    Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Silex\Application;
+use Silex\ControllerProviderInterface;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Finder\Finder;
 use Alchemy\Phrasea\Helper;
 
 /**

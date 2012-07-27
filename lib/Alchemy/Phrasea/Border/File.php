@@ -14,7 +14,6 @@ namespace Alchemy\Phrasea\Border;
 use Alchemy\Phrasea\Media\Type as MediaType;
 use MediaVorus\Media\Media;
 use MediaVorus\MediaVorus;
-use PHPExiftool\Reader;
 use PHPExiftool\Writer;
 use PHPExiftool\Driver\TagFactory;
 use PHPExiftool\Driver\Metadata\Metadata;

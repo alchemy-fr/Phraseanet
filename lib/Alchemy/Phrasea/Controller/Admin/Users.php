@@ -13,10 +13,8 @@ namespace Alchemy\Phrasea\Controller\Admin;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Silex\ControllerCollection;
 use Alchemy\Phrasea\Helper\User as UserHelper;
 
 /**

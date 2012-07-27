@@ -11,13 +11,12 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Silex\Application,
-    Silex\ControllerProviderInterface,
-    Silex\ControllerCollection;
-use Alchemy\Phrasea\Helper\Record as RecordHelper,
-    Alchemy\Phrasea\Controller\Exception as ControllerException;
-use Symfony\Component\HttpFoundation\Response,
-    Symfony\Component\HttpFoundation\Request;
+use Silex\Application;
+use Silex\ControllerProviderInterface;
+use Alchemy\Phrasea\Helper\Record as RecordHelper;
+use Alchemy\Phrasea\Controller\Exception as ControllerException;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  *
@@ -118,7 +117,7 @@ class Push implements ControllerProviderInterface
                     'RecommendedUsers' => $RecommendedUsers
                 );
 
-                return new Response($app['twig']->render( 'prod/actions/Push.html.twig', $params));
+                return new Response($app['twig']->render('prod/actions/Push.html.twig', $params));
             }
         );
 

@@ -12,8 +12,6 @@
 namespace Alchemy\Phrasea\Core\Service\Border;
 
 use Alchemy\Phrasea\Border;
-use Alchemy\Phrasea\Core;
-use Alchemy\Phrasea\Core\Service;
 use Alchemy\Phrasea\Core\Service\ServiceAbstract;
 
 /**

@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Out\Module;
 
-use \Alchemy\Phrasea\Out\Tool\PhraseaPDF;
+use Alchemy\Phrasea\Out\Tool\PhraseaPDF;
 
 /**
  * Creates a PDF
@@ -121,8 +121,7 @@ class PDF
     protected function print_thumbnailGrid($links = false)
     {
         $core = \bootstrap::getCore();
-        $appbox = \appbox::get_instance($core);
-        $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
+        $user = $core->getAuthenticatedUser();
 
         $NDiapoW = 3;
         $NDiapoH = 4;
