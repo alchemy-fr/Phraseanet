@@ -78,7 +78,7 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         $serialized = $records->serializedList();
         $exploded = explode(';', $serialized);
 
-        $this->assertEquals(1, count($serialized));
+        $this->assertEquals(1, count($exploded));
         $this->assertContains(self::$records['record_2']->get_serialize_key(), $exploded);
     }
 
@@ -159,7 +159,7 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         $serialized = $records->serializedList();
         $exploded = explode(';', $serialized);
 
-        $this->assertEquals(2, count($serialized));
+        $this->assertEquals(2, count($exploded));
         $this->assertContains(self::$records['record_2']->get_serialize_key(), $exploded);
         $this->assertContains(self::$records['record_24']->get_serialize_key(), $exploded);
         $this->assertNotContains(self::$records['record_story_2']->get_serialize_key(), $exploded);
@@ -206,7 +206,7 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         $serialized = $records->serializedList();
         $exploded = explode(';', $serialized);
 
-        $this->assertEquals(2, count($serialized));
+        $this->assertEquals(2, count($exploded));
         $this->assertContains(self::$records['record_24']->get_serialize_key(), $exploded);
         $this->assertContains(self::$records['record_2']->get_serialize_key(), $exploded);
         $this->assertNotContains(self::$records['record_no_access']->get_serialize_key(), $exploded);
@@ -230,7 +230,7 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         $serialized = $records->serializedList();
         $exploded = explode(';', $serialized);
 
-        $this->assertEquals(1, count($serialized));
+        $this->assertEquals(1, count($exploded));
         $this->assertContains($story->getRecord()->get_serialize_key(), $exploded);
     }
 
