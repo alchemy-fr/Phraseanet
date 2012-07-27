@@ -121,11 +121,16 @@ class RecordsRequest extends ArrayCollection
         $basket = null;
 
         if ($request->get('ssel')) {
+            echo "looking for a basket\n";
             $repository = $app['phraseanet.core']['EM']->getRepository('\Entities\Basket');
 
+            echo "found a repo\n";
             $basket = $repository->findUserBasket($request->get('ssel'), $app['phraseanet.core']->getAuthenticatedUser(), false);
 
+            echo "found a basket\n";
+            echo "found ".count($basket->getElements())." elements\n";
             foreach ($basket->getElements() as $basket_element) {
+                echo "adding ".$basket_element->getRecord()->get_serialize_key()."\n";
                 $received[$basket_element->getRecord()->get_serialize_key()] = $basket_element->getRecord();
             }
         } elseif ($request->get('story')) {
