@@ -150,8 +150,8 @@ class databox_subdefsStructure implements IteratorAggregate
             . 'subdef[@name="' . $name . '"]'
         );
 
-        if ($nodes->length > 0) {
-            $node = $nodes->item(0);
+        for($i = 0; $i < $nodes->length; $i++) {
+            $node = $nodes->item($i);
             $parent = $node->parentNode;
             $parent->removeChild($node);
         }
