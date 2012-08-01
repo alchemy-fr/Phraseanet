@@ -141,14 +141,14 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $token = \random::getUrlToken(\random::TYPE_EMAIL, self::$user->get_id(), null, $email);
 
         self::$user->set_mail_locked(true);
+        $this->deleteRequest();
         $appboxRegister->add_request(self::$user, self::$collection);
         $this->client->request('GET', '/login/register-confirm/', array('code'    => $token));
         $response = $this->client->getResponse();
 
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('/login/?redirect=prod&notice=confirm-ok-wait', $response->headers->get('location'));
-        $this->assertEquals($email, self::$user->get_email());
-        self::$user->set_email('noone@example.com');
+        $this->assertFalse(self::$user->get_mail_locked());
     }
 
     /**
@@ -161,10 +161,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         self::$user->set_mail_locked(true);
 
-        $sql = "DELETE FROM demand WHERE usr_id = :usr_id";
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => self::$user->get_id()));
-        $stmt->closeCursor();
+        $this->deleteRequest();
 
         $this->client->request('GET', '/login/register-confirm/', array('code'    => $token));
         $response = $this->client->getResponse();
@@ -357,7 +354,14 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             )
         ));
 
-        $this->assertTrue($this->client->getResponse()->isOk());
+        /**
+         * @todo change this
+         */
+        if(\login::register_enabled()) {
+            $this->assertTrue($this->client->getResponse()->isRedirect());
+        } else {
+            $this->assertTrue($this->client->getResponse()->isOk());
+        }
     }
 
     public function fieldErrorProvider()
@@ -635,5 +639,13 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $response = $this->client->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('/login/?error=user-not-found', $response->headers->get('location'));
+    }
+
+    private function deleteRequest()
+    {
+        $sql = "DELETE FROM demand WHERE usr_id = :usr_id";
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt->execute(array(':usr_id' => self::$user->get_id()));
+        $stmt->closeCursor();
     }
 }

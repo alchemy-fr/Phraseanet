@@ -112,7 +112,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals('/account/reset-email/?update=ok', $response->headers->get('location'));
 
         $this->assertEquals('new_email@email.com', self::$user->get_email());
-
+        self::$user->set_email('noone@example.com');
         try {
             \random::helloToken($token);
             $this->fail('TOken has not been removed');

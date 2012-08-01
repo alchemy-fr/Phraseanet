@@ -289,11 +289,10 @@ class Developers implements ControllerProviderInterface
 
         try {
             $clientApp = new \API_OAuth2_Application($app['phraseanet.appbox'], $id);
+            $clientApp->set_grant_password((bool) $request->get('grant', false));
         } catch (\Exception_NotFound $e) {
             $error = true;
         }
-
-        $clientApp->set_grant_password((bool) $request->get('grant', false));
 
         return $app->json(array('success' => ! $error));
     }
@@ -308,9 +307,7 @@ class Developers implements ControllerProviderInterface
      */
     public function newApp(Application $app, Request $request)
     {
-        $error = false;
-
-        if ($request->get("type") == "desktop") {
+        if ($request->get('type') == "desktop") {
             $form = new \API_OAuth2_Form_DevAppDesktop($app['request']);
         } else {
             $form = new \API_OAuth2_Form_DevAppInternet($app['request']);
@@ -318,11 +315,7 @@ class Developers implements ControllerProviderInterface
 
         $violations = $app['validator']->validate($form);
 
-        if ($violations->count() == 0) {
-            $error = true;
-        }
-
-        if ($error) {
+        if ($violations->count() === 0) {
             $application = \API_OAuth2_Application::create($app['phraseanet.appbox'], $app['phraseanet.core']->getAuthenticatedUser(), $form->getName());
             $application
                 ->set_description($form->getDescription())
@@ -338,7 +331,7 @@ class Developers implements ControllerProviderInterface
             "form"       => $form
         );
 
-        return $app['twig']->render('/developers/application.html.twig', $var);
+        return $app['twig']->render('/developers/application_form.html.twig', $var);
     }
 
     /**
