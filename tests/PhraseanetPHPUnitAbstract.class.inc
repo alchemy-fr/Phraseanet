@@ -83,6 +83,16 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             self::$time_start = microtime(true);
         }
 
+        //check if app is set up
+        if ( ! setup::is_installed()) {
+            exit("\033[0;31mPhraseanet is not set up\033[0;37m\r\n");
+        }
+
+        //init core
+        if (null === self::$core) {
+            self::$core = \bootstrap::getCore();
+        }
+
         self::updateTablesSchema();
 
         self::createSetOfUserTests();
@@ -100,26 +110,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     public static function tearDownAfterClass()
     {
         parent::tearDownAfterClass();
-    }
-
-    /**
-     * Delete temporay sqlite database
-     * Create schema using $this->classesMetatdas
-     * Load DoctrineTestServices
-     *
-     * @return
-     */
-    public function __construct()
-    {
-        //check if app is set up
-        if ( ! setup::is_installed()) {
-            exit("\033[0;31mPhraseanet is not set up\033[0;37m\r\n");
-        }
-
-        //init core
-        if (null === self::$core) {
-            self::$core = \bootstrap::getCore();
-        }
     }
 
     /**
