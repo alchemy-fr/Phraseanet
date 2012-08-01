@@ -178,7 +178,9 @@
                         <div id="THPD_tabs">
                             <ul>
                                 <li class="th_tab"><a href="#THPD_T"><span>{% trans 'prod::thesaurusTab:thesaurus' %}</span></a></li>
-                                <li class="th_tab"><a href="#THPD_C"><span>{% trans 'prod::thesaurusTab:candidats' %}</span></a></li>
+                                {% if user.ACL().has_access_to_module('thesaurus') %}
+                                    <li class="th_tab"><a href="#THPD_C"><span>{% trans 'prod::thesaurusTab:candidats' %}</span></a></li>
+                                {% endif %}
                             </ul>
                             <div class="ui-tabs-panels-container">
                                 <div id="THPD_T">
