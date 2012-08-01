@@ -154,21 +154,6 @@ class Account implements ControllerProviderInterface
          */
         $controllers->get('/access/', $this->call('accountAccess'))->bind('account_access');
 
-//        /**
-//         * Give account open sessions
-//         *
-//         * name         : register_account
-//         *
-//         * description  : Display form to create a new account
-//         *
-//         * method       : GET
-//         *
-//         * parameters   : none
-//         *
-//         * return       : HTML Response
-//         */
-//        $controllers->get('/register/', $this->call('registerAccount'))->bind('register_account');
-
         /**
          * Give authorized applications that can access user informations
          *
@@ -182,7 +167,7 @@ class Account implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/reset-email/', $this->call('resetEmail'))->bind('reset_email');
+        $controllers->post('/reset-email/', $this->call('resetEmail'))->bind('reset_email');
 
         /**
          * Grant access to an authorized app
@@ -251,11 +236,13 @@ class Account implements ControllerProviderInterface
         return $controllers;
     }
 
-    public function registerAccount(Application $app, Request $request)
-    {
-        return new Response($app['twig']->render('account/register.html.twig'));
-    }
-
+    /**
+     * Reset Password
+     *
+     * @param \Silex\Application $app
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function resetPassword(Application $app, Request $request)
     {
         if (null !== $passwordMsg = $request->get('pass-error')) {
@@ -278,7 +265,7 @@ class Account implements ControllerProviderInterface
     }
 
     /**
-     * Reset email
+     * Reset Email
      *
      * @param \Silex\Application $app
      * @param \Symfony\Component\HttpFoundation\Request $request
@@ -443,11 +430,11 @@ class Account implements ControllerProviderInterface
                     , new \API_OAuth2_Application($appbox, $application_id)
                     , $app['phraseanet.core']->getAuthenticatedUser()
             );
+
+            $account->set_revoked((bool) $request->get('revoke'), false);
         } catch (\Exception_NotFound $e) {
             $error = true;
         }
-
-        $account->set_revoked((bool) $request->get('revoke'), false);
 
         return $app->json(array('success' => ! $error));
     }
@@ -555,7 +542,7 @@ class Account implements ControllerProviderInterface
 
         $demands = (array) $request->get('demand', array());
 
-        if (0 === count($demands)) {
+        if (0 !== count($demands)) {
             $register = new \appbox_register($appbox);
 
             foreach ($demands as $baseId) {
@@ -563,7 +550,7 @@ class Account implements ControllerProviderInterface
                     $register->add_request($user, \collection::get_from_base_id($baseId));
                     $notice = 'demand-ok';
                 } catch (\Exception $e) {
-
+                    exit($e->getMessage());
                 }
             }
         }
@@ -640,10 +627,10 @@ class Account implements ControllerProviderInterface
 
         foreach ($evtMngr->list_notifications_available($user->get_id()) as $notifications) {
             foreach ($notifications as $notification) {
-                $notifId = (int) $notification['id'];
+                $notifId = $notification['id'];
                 $notifName = sprintf('notification_%d', $notifId);
 
-                if (isset($requestedNotifications[$notifId])) {
+                if (in_array($notifId, $requestedNotifications)) {
                     $user->setPrefs($notifName, '1');
                 } else {
                     $user->setPrefs($notifName, '0');
