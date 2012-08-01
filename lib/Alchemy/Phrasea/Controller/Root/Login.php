@@ -29,8 +29,29 @@ class Login implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
+        /**
+         * Login
+         *
+         * name         : homepage
+         *
+         * description  : Login from phraseanet
+         *
+         * method       : GET
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
         $controllers->get('/', $this->call('login'))
             ->before(function() use ($app) {
+//
+//                    if ( ! $app['phraseanet.appbox']->get_session()->isset_postlog()
+//                        && $app['phraseanet.core']->isAuthenticated()
+//                        && $app['request']->get('error') != 'no-connection') {
+//
+//                        return $app->redirect($app['request']->get('redirect', '/prod/'));
+//                    }
+
                     return $app['phraseanet.core']['Firewall']->requireNotAuthenticated($app);
                 })
             ->bind('homepage');
@@ -208,7 +229,6 @@ class Login implements ControllerProviderInterface
             return $app->redirect('/login/?redirect=prod&notice=already');
         }
 
-        $user->set_mail_locked(false);
         \random::removeToken($code);
 
         if (\PHPMailer::ValidateAddress($user->get_email())) {
@@ -250,7 +270,7 @@ class Login implements ControllerProviderInterface
     {
         $appbox = $app['phraseanet.appbox'];
 
-        if (null !== $mail = trim($request->get('mail'))) {
+        if (null !== $mail = $request->get('mail')) {
             if ( ! \PHPMailer::ValidateAddress($mail)) {
                 return $app->redirect('/login/forgot-password/?error=invalidmail');
             }
@@ -272,8 +292,6 @@ class Login implements ControllerProviderInterface
                     return $app->redirect('/login/forgot-password/?error=mailserver');
                 }
             }
-
-            return $app->redirect('/login/forgot-password/?error=noaccount');
         }
 
         if ((null !== $token = $request->get('token'))
@@ -301,7 +319,7 @@ class Login implements ControllerProviderInterface
 
                 return $app->redirect('/login/?notice=password-update-ok');
             } catch (\Exception_NotFound $e) {
-
+                return $app->redirect('/login/forgot-password/?error=token');
             }
         }
     }
@@ -356,15 +374,15 @@ class Login implements ControllerProviderInterface
         }
 
         if (null !== $passwordMsg = $request->get('pass-error')) {
-            switch ($sentMsg) {
+            switch ($passwordMsg) {
                 case 'pass-match':
-                    $sentMsg = _('forms::les mots de passe ne correspondent pas');
+                    $passwordMsg = _('forms::les mots de passe ne correspondent pas');
                     break;
                 case 'pass-short':
-                    $sentMsg = _('forms::la valeur donnee est trop courte');
+                    $passwordMsg = _('forms::la valeur donnee est trop courte');
                     break;
                 case 'pass-invalid':
-                    $sentMsg = _('forms::la valeur donnee contient des caracteres invalides');
+                    $passwordMsg = _('forms::la valeur donnee contient des caracteres invalides');
                     break;
             }
         }
@@ -472,7 +490,7 @@ class Login implements ControllerProviderInterface
             $needed['form_password'] = 'pass-invalid';
         }
 
-        if (false !== \PHPMailer::ValidateAddress($email = $request->get('form_email'))) {
+        if (false === \PHPMailer::ValidateAddress($email = $request->get('form_email'))) {
             $needed['form_email'] = 'mail-invalid';
         }
 
@@ -498,7 +516,7 @@ class Login implements ControllerProviderInterface
         }
 
         if (sizeof($needed) > 0) {
-            $app->redirect(sprintf('/register/?%s', http_build_query(array('needed' => $needed))));
+            return $app->redirect(sprintf('/register/?%s', http_build_query(array('needed' => $needed))));
         }
 
         require_once($app['phraseanet.core']['Registry']->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php');
@@ -619,6 +637,13 @@ class Login implements ControllerProviderInterface
         return $app->redirect("/login/?logged_out=user" . ($appRedirect ? sprintf("&redirect=/%s", $appRedirect) : ""));
     }
 
+    /**
+     * Login into Phraseanet
+     *
+     * @param \Silex\Application $app
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function login(Application $app, Request $request)
     {
         $appbox = $app['phraseanet.appbox'];
@@ -634,10 +659,6 @@ class Login implements ControllerProviderInterface
             $session->set_postlog(true);
 
             return $app->redirect("/login/?redirect=" . $request->get('redirect'));
-        }
-
-        if ( ! $session->isset_postlog() && $session->is_authenticated() && $request->get('error') != 'no-connection') {
-            return $app->redirect($request->get('redirect', '/prod/'));
         }
 
         $warning = $request->get('error', '');
