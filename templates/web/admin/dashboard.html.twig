@@ -65,7 +65,7 @@
 
 <div class="board_section">
     <h1>{% trans 'setup:: administrateurs de l\'application' %}</h1>
-    <form id="admin_adder" action="sitestruct.php" method="post">
+    <form id="admin_adder" action="/admin/dashboard/new/" method="post">
         <ul>
         {% for usr_id, usr_login in admins %}
             <li>
@@ -82,8 +82,7 @@
         <input type="submit" class="btn btn-warning" value="{% trans 'boutton::valider' %}" />
     </form>
     <h2>{% trans 'setup:: Reinitialisation des droits admins' %}</h2>
-    <form id="admin_reset" action="sitestruct.php" method="post">
-        <input type="hidden" name="sudo" value="1" />
+    <form id="admin_reset" action="/admin/dashboard/reset-admin-rights/" method="post">
         <input type="submit" class="btn btn-warning" value="{% trans 'boutton::reinitialiser' %}" />
     </form>
 </div>
@@ -94,7 +93,7 @@
     <div class="section_left">
 
         <h2>{% trans 'setup::Tests d\'envois d\'emails' %}</h2>
-        <form id="mail_checker" method="post" action="/admin/sitestruct.php" target="_self">
+        <form id="mail_checker" method="post" action="/admin/dashboard/send-mail-test/" target="_self">
             <label>Email : </label><input name="email" type="text" />
             <input type="submit" class="btn btn-warning" value="{% trans 'boutton::valider' %}"/>
             {% if email_status %}
@@ -160,8 +159,7 @@
             {% endif %}
         </ul>
         {% if core.getCache().isServer() %}
-            <form id="cache_flusher" method="post" action="sitestruct.php">
-                <input type="hidden" name="flush_cache" value="1"/>
+            <form id="cache_flusher" method="post" action="/admin/dashboard/flush-cache/">
                 <input type="submit" id="flush_button" class="btn btn-warning" value="Flush All Caches" />
             </form>
         {% endif %}

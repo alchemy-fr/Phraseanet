@@ -14,6 +14,18 @@ class Firewall
         }
     }
 
+    public function requireAdmin(Application $app)
+    {
+        if (null !== $response = $this->requireAuthentication($app)) {
+            
+            return $response;
+        }
+
+        if ( ! $app['phraseanet.core']->getAuthenticatedUser()->is_admin()) {
+            $app->abort(403);
+        }
+    }
+
     public function requireAuthentication(Application $app)
     {
         if (false === $app['phraseanet.core']->isAuthenticated()) {

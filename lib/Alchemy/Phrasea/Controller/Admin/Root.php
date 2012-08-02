@@ -60,22 +60,26 @@ class Root implements ControllerProviderInterface
                 if (count($position) > 0) {
                     if (in_array($position[0], $available)) {
                         $feature = $position[0];
-                        if (isset($position[1]))
+
+                        if (isset($position[1])) {
                             $featured = $position[1];
+                        }
                     }
                 }
 
                 $databoxes = $off_databoxes = array();
                 foreach ($appbox->get_databoxes() as $databox) {
                     try {
-                        if ( ! $user->ACL()->has_access_to_sbas($databox->get_sbas_id()))
+                        if ( ! $user->ACL()->has_access_to_sbas($databox->get_sbas_id())) {
                             continue;
+                        }
 
-                        $connbas = $databox->get_connection();
+                        $databox->get_connection();
                     } catch (\Exception $e) {
                         $off_databoxes[] = $databox;
                         continue;
                     }
+
                     $databoxes[] = $databox;
                 }
 

@@ -5,14 +5,16 @@ rewrite ^/(mail-export)/([a-zA-Z0-9]*)\/?$    /include/download_anonymous.php?ty
 rewrite ^/(mail-export)/([a-zA-Z0-9]*)\/get$  /include/download_anonymous.php?type=$1&token=$2&get=1 last;
 
 rewrite ^/admin/$                 /admin/router.php last;
+rewrite ^/admin/dashboard/.*$     /admin/router.php last;
 rewrite ^/admin/users/.*$         /admin/router.php last;
 rewrite ^/admin/tests/.*$         /admin/router.php last;
 rewrite ^/admin/fields/.*$        /admin/router.php last;
-rewrite ^/admin/description/.*$       /admin/router.php last;
+rewrite ^/admin/description/.*$   /admin/router.php last;
 rewrite ^/admin/subdefs/.*$       /admin/router.php last;
 rewrite ^/admin/publications/.*$  /admin/router.php last;
 rewrite ^/admin/typeahead/.*$     /admin/router.php last;
 rewrite ^/admin/connected-users/.*$     /admin/router.php last;
+rewrite ^/admin/setup/.*$   /admin/router.php last;
 
 
 rewrite ^/prod/records/edit/.*$   /prod/router.php last;
