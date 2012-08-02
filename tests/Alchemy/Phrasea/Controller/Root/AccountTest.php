@@ -19,11 +19,11 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public static function tearDownAfterClass()
     {
-        parent::tearDownAfterClass();
-
         if (self::$authorizedApp) {
             self::$authorizedApp->delete();
         }
+
+         parent::tearDownAfterClass();
     }
 
     public function setUp()
@@ -246,7 +246,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue($this->client->getResponse()->isOk());
 
-        $this->assertEquals(1, $crawler->filter('.update-msg')->count());
+        $this->assertEquals(1, $crawler->filter('.alert-info')->count());
     }
 
     public function updateMsgProvider()
@@ -307,7 +307,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue($response->isOk());
 
-        $this->assertEquals(1, $crawler->filter('.password-msg')->count());
+        $this->assertEquals(1, $crawler->filter('.alert-error')->count());
     }
 
     public function passwordMsgProvider()

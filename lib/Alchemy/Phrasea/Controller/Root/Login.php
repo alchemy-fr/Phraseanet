@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Core;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -44,17 +45,46 @@ class Login implements ControllerProviderInterface
          */
         $controllers->get('/', $this->call('login'))
             ->before(function() use ($app) {
-//
-//                    if ( ! $app['phraseanet.appbox']->get_session()->isset_postlog()
-//                        && $app['phraseanet.core']->isAuthenticated()
-//                        && $app['request']->get('error') != 'no-connection') {
-//
-//                        return $app->redirect($app['request']->get('redirect', '/prod/'));
-//                    }
 
-                    return $app['phraseanet.core']['Firewall']->requireNotAuthenticated($app);
+                    if (null !== $app['request']->get('postlog')) {
+
+                        // if isset postlog parameter, set cookie and log out current user
+                        // then post login operation like getting baskets from an invit session
+                        // could be done by Session_handler authentication process
+
+                        $app['phraseanet.appbox']->get_session()->set_postlog();
+
+                        return $app->redirect("/login/logout/?redirect=" . $app['request']->get('redirect', 'prod'));
+                    }
+
+
+                    if ($app['phraseanet.core']->isAuthenticated()) {
+
+                        return $app->redirect('/' . $app['request']->get('redirect', 'prod') . '/');
+                    }
                 })
             ->bind('homepage');
+
+        /**
+         * Authenticate
+         *
+         * name         : login_authenticate
+         *
+         * description  : authenticate to phraseanet
+         *
+         * method       : POST
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->post('/authenticate/', $this->call('authenticate'))
+            ->before(function() use ($app) {
+                    if ($app['phraseanet.core']->isAuthenticated()) {
+                        return $app->redirect('/prod/');
+                    }
+                })
+            ->bind('login_authenticate');
 
         /**
          * Logout
@@ -174,9 +204,9 @@ class Login implements ControllerProviderInterface
     /**
      * Send a confirmation mail after register
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param   Application     $app     A Silex application where the controller is mounted on
+     * @param   Request         $request The current request
+     * @return  RedirectResponse
      */
     public function sendConfirmMail(Application $app, Request $request)
     {
@@ -201,9 +231,9 @@ class Login implements ControllerProviderInterface
     /**
      * Validation of email adress
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param   Application     $app     A Silex application where the controller is mounted on
+     * @param   Request         $request The current request
+     * @return  RedirectResponse
      */
     public function registerConfirm(Application $app, Request $request)
     {
@@ -262,9 +292,9 @@ class Login implements ControllerProviderInterface
     /**
      * Submit the new password
      *
-     * @param Application $app     A Silex application where the controller is mounted on
-     * @param Request     $request The current request
-     * @return Response
+     * @param   Application     $app     A Silex application where the controller is mounted on
+     * @param   Request         $request The current request
+     * @return  RedirectResponse
      */
     public function renewPassword(Application $app, Request $request)
     {
@@ -327,9 +357,9 @@ class Login implements ControllerProviderInterface
     /**
      * Get the fogot password form
      *
-     * @param Application $app     A Silex application where the controller is mounted on
-     * @param Request     $request The current request
-     * @return Response
+     * @param   Application     $app     A Silex application where the controller is mounted on
+     * @param   Request         $request The current request
+     * @return  Response
      */
     public function displayForgotPasswordForm(Application $app, Request $request)
     {
@@ -398,9 +428,9 @@ class Login implements ControllerProviderInterface
     /**
      * Get the register form
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param   Application     $app     A Silex application where the controller is mounted on
+     * @param   Request         $request The current request
+     * @return  Response
      */
     public function displayRegisterForm(Application $app, Request $request)
     {
@@ -458,9 +488,9 @@ class Login implements ControllerProviderInterface
     /**
      * Get the register form
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param   Application     $app     A Silex application where the controller is mounted on
+     * @param   Request         $request The current request
+     * @return  RedirectResponse
      */
     public function register(Application $app, Request $request)
     {
@@ -617,9 +647,9 @@ class Login implements ControllerProviderInterface
     /**
      * Logout from Phraseanet
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param   Application     $app     A Silex application where the controller is mounted on
+     * @param   Request         $request The current request
+     * @return  RedirectResponse
      */
     public function logout(Application $app, Request $request)
     {
@@ -640,25 +670,18 @@ class Login implements ControllerProviderInterface
     /**
      * Login into Phraseanet
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param   Application     $app     A Silex application where the controller is mounted on
+     * @param   Request         $request The current request
+     * @return  Response
      */
     public function login(Application $app, Request $request)
     {
         $appbox = $app['phraseanet.appbox'];
-        $session = $appbox->get_session();
-        $registry = $appbox->get_registry();
+        $registry = $app['phraseanet.core']['Registry'];
 
         require_once($registry->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php');
         if ($registry->get('GV_captchas') && trim($registry->get('GV_captcha_private_key')) !== '' && trim($registry->get('GV_captcha_public_key')) !== '') {
             include($registry->get('GV_RootPath') . 'lib/vendor/recaptcha/recaptchalib.php');
-        }
-
-        if ($request->get('postlog')) {
-            $session->set_postlog(true);
-
-            return $app->redirect("/login/?redirect=" . $request->get('redirect'));
         }
 
         $warning = $request->get('error', '');
@@ -759,6 +782,97 @@ class Login implements ControllerProviderInterface
     }
 
     /**
+     * Authenticate to phraseanet
+     *
+     * @param   Application     $app     A Silex application where the controller is mounted on
+     * @param   Request         $request The current request
+     * @return  RedirectResponse
+     */
+    public function authenticate(Application $app, Request $request)
+    {
+        $appbox = $app['phraseanet.appbox'];
+        $session = $appbox->get_session();
+        $registry = $app['phraseanet.core']['Registry'];
+
+        $is_guest = false;
+
+        if (null !== $request->get('nolog') && \phrasea::guest_allowed()) {
+            $is_guest = true;
+        }
+
+        if (((null !== $login = $request->get('login')) && (null !== $pwd = $request->get('pwd'))) || $is_guest) {
+
+            /**
+             * @todo dispatch an event that can be used to tweak the authentication
+             * (LDAP....)
+             */
+            // $app['dispatcher']->dispatch();
+
+            try {
+                if ($is_guest) {
+                    $auth = new \Session_Authentication_Guest($appbox);
+                } else {
+                    $captcha = false;
+
+                    if ($registry->get('GV_captchas')
+                        && '' !== $privateKey = trim($registry->get('GV_captcha_private_key'))
+                        && trim($registry->get('GV_captcha_public_key')) !== ''
+                        && null !== $challenge = $request->get("recaptcha_challenge_field")
+                        && null !== $captachResponse = $request->get("recaptcha_response_field")) {
+
+                        include($registry->get('GV_RootPath') . 'lib/vendor/recaptcha/recaptchalib.php');
+
+                        $checkCaptcha = recaptcha_check_answer($privateKey, $_SERVER["REMOTE_ADDR"], $challenge, $captachResponse);
+
+                        if ($checkCaptcha->is_valid) {
+                            $captcha = true;
+                        }
+                    }
+
+                    $auth = new \Session_Authentication_Native($appbox, $login, $pwd);
+                    $auth->set_captcha_challenge($captcha);
+                }
+
+                $session->authenticate($auth);
+            } catch (\Exception_Session_StorageClosed $e) {
+                return $app->redirect("/login/?redirect=" . $request->get('redirect') . "&error=session");
+            } catch (\Exception_Session_RequireCaptcha $e) {
+                return $app->redirect("/login/?redirect=" . $request->get('redirect') . "&error=captcha");
+            } catch (\Exception_Unauthorized $e) {
+                return $app->redirect("/login/?redirect=" . $request->get('redirect') . "&error=auth");
+            } catch (\Exception_Session_MailLocked $e) {
+                return $app->redirect("/login/?redirect=" . $request->get('redirect') . "&error=mail-not-confirmed&usr=" . $e->get_usr_id());
+            } catch (\Exception_Session_WrongToken $e) {
+                return $app->redirect("/login/?redirect=" . $request->get('redirect') . "&error=token");
+            } catch (\Exception_InternalServerError $e) {
+                return $app->redirect("/login/?redirect=" . $request->get('redirect') . "&error=session");
+            } catch (\Exception_ServiceUnavailable $e) {
+                return $app->redirect("/login/?redirect=" . $request->get('redirect') . "&error=maintenance");
+            } catch (\Exception_Session_BadSalinity $e) {
+                $date = new \DateTime('5 minutes');
+                $usr_id = \User_Adapter::get_usr_id_from_login($request->get('login'));
+                $url = '/account/forgot-password/?token=' . \random::getUrlToken(\random::TYPE_PASSWORD, $usr_id, $date) . '&salt=1';
+
+                return $app->redirect($url);
+            } catch (\Exception $e) {
+                return $app->redirect("/login/?redirect=" . $request->get('redirect') . "&error=" . _('An error occured'));
+            }
+
+            if ($app['browser']->isMobile()) {
+                return $app->redirect("/lightbox/");
+            } elseif ($request->get('redirect')) {
+                return $app->redirect($request->get('redirect'));
+            } elseif (true !== $app['browser']->isNewGeneration()) {
+                return $app->redirect('/client/');
+            } else {
+                return $app->redirect('/prod/');
+            }
+        } else {
+            return $app->redirect("/login/");
+        }
+    }
+
+    /**
      * Prefix the method to call with the controller class name
      *
      * @param  string $method The method to call
@@ -772,7 +886,7 @@ class Login implements ControllerProviderInterface
     /**
      * Get required fields configuration
      *
-     * @param \Alchemy\Phrasea\Core $core
+     * @param Core $core
      * @return boolean
      */
     private function getRegisterFieldConfiguration(Core $core)
@@ -799,14 +913,13 @@ class Login implements ControllerProviderInterface
             "demand"                => true
         );
 
-        //on va chercher le fichier de configuration
         $registerFieldConfigurationFile = $core['Registry']->get('GV_RootPath') . 'config/register-fields.php';
 
         if (is_file($registerFieldConfigurationFile)) {
             include $registerFieldConfigurationFile;
         }
 
-        //on force les champs vraiment obligatoires si le mec a fumé en faisant sa conf
+        //Override mandatory fields
         $arrayVerif['form_login'] = true;
         $arrayVerif['form_password'] = true;
         $arrayVerif['form_password_confirm'] = true;

@@ -43,7 +43,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->client->request('GET', '/login/', array('postlog'  => '1', 'redirect' => 'prod'));
         $response = $this->client->getResponse();
         $this->assertTrue($response->isRedirect());
-        $this->assertEquals('/login/?redirect=prod', $response->headers->get('location'));
+        $this->assertEquals('/login/logout/?redirect=prod', $response->headers->get('location'));
     }
 
     /**
@@ -105,7 +105,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRegisterConfirmMailUserNotFound()
     {
-        $email = \random::generatePassword() . '_email@email.com';
+        $email = $this->generateEmail();
         $token = \random::getUrlToken(\random::TYPE_EMAIL, 0, null, $email);
         $this->client->request('GET', '/login/register-confirm/', array('code'    => $token));
         $response = $this->client->getResponse();
@@ -119,7 +119,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRegisterConfirmMailUnlocked()
     {
-        $email = \random::generatePassword() . '_email@email.com';
+        $email = $this->generateEmail();
         $token = \random::getUrlToken(\random::TYPE_EMAIL, self::$user->get_id(), null, $email);
 
         self::$user->set_mail_locked(false);
@@ -136,7 +136,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRegisterConfirmMail()
     {
-        $email = \random::generatePassword() . '_email@email.com';
+        $email = $this->generateEmail();
         $appboxRegister = new \appbox_register($this->app['phraseanet.appbox']);
         $token = \random::getUrlToken(\random::TYPE_EMAIL, self::$user->get_id(), null, $email);
 
@@ -156,7 +156,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRegisterConfirmMailNoCollAwait()
     {
-        $email = \random::generatePassword() . '_email@email.com';
+        $email = $this->generateEmail();
         $token = \random::getUrlToken(\random::TYPE_EMAIL, self::$user->get_id(), null, $email);
 
         self::$user->set_mail_locked(true);
@@ -290,7 +290,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ));
 
         $this->assertTrue($this->client->getResponse()->isOk());
-        $this->assertEquals(1, $crawler->filter('.error-msg')->count());
+        $this->assertEquals(1, $crawler->filter('.alert-error')->count());
     }
 
     /**
@@ -305,7 +305,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOk());
-        $this->assertEquals(1, $crawler->filter('.error-msg')->count());
+        $this->assertEquals(1, $crawler->filter('.alert-error')->count());
     }
 
     public function errorMessageProvider()
@@ -357,7 +357,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         /**
          * @todo change this
          */
-        if(\login::register_enabled()) {
+        if ( ! \login::register_enabled()) {
             $this->assertTrue($this->client->getResponse()->isRedirect());
         } else {
             $this->assertTrue($this->client->getResponse()->isOk());
@@ -641,11 +641,95 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals('/login/?error=user-not-found', $response->headers->get('location'));
     }
 
+    /**
+     * @covers \Alchemy\Phrasea\Controller\Root\Login::authenticate
+     */
+    public function testAuthenticate()
+    {
+        $this->app['phraseanet.appbox']->get_session()->logout();
+        $password = \random::generatePassword();
+        self::$user->set_password($password);
+        $this->client->request('POST', '/login/authenticate/', array(
+            'login' => self::$user->get_login(),
+            'pwd'   => $password
+        ));
+
+        $this->assertTrue($this->client->getResponse()->isRedirect());
+        $this->assertTrue($this->app['phraseanet.core']->isAuthenticated());
+    }
+
+    /**
+     * @covers \Alchemy\Phrasea\Controller\Root\Login::authenticate
+     */
+    public function testBadAuthenticate()
+    {
+        $this->app['phraseanet.appbox']->get_session()->logout();
+        $this->client->request('POST', '/login/authenticate/', array(
+            'login' => self::$user->get_login(),
+            'pwd'   => 'test'
+        ));
+
+        $this->assertTrue($this->client->getResponse()->isRedirect());
+        $this->assertRegexp('/error=auth/', $this->client->getResponse()->headers->get('location'));
+        $this->assertFalse($this->app['phraseanet.core']->isAuthenticated());
+    }
+
+    /**
+     * @covers \Alchemy\Phrasea\Controller\Root\Login::authenticate
+     */
+    public function testMailLockedAuthenticate()
+    {
+        $this->app['phraseanet.appbox']->get_session()->logout();
+        $password = \random::generatePassword();
+        self::$user->set_mail_locked(true);
+        $this->client->request('POST', '/login/authenticate/', array(
+            'login' => self::$user->get_login(),
+            'pwd'   => $password
+        ));
+
+        $this->assertTrue($this->client->getResponse()->isRedirect());
+        $this->assertRegexp('/error=mail-not-confirmed/', $this->client->getResponse()->headers->get('location'));
+        $this->assertFalse($this->app['phraseanet.core']->isAuthenticated());
+        self::$user->set_mail_locked(false);
+    }
+
+    /**
+     * @covers \Alchemy\Phrasea\Controller\Root\Login::authenticate
+     */
+    public function testAuthenticateUnavailable()
+    {
+        $this->app['phraseanet.appbox']->get_session()->logout();
+        $password = \random::generatePassword();
+        $this->app['phraseanet.core']['Registry']->set('GV_maintenance', true , \registry::TYPE_BOOLEAN);
+        $this->client->request('POST', '/login/authenticate/', array(
+            'login' => self::$user->get_login(),
+            'pwd'   => $password
+        ));
+        $this->app['phraseanet.core']['Registry']->set('GV_maintenance', false, \registry::TYPE_BOOLEAN);
+        $this->assertTrue($this->client->getResponse()->isRedirect());
+        $this->assertRegexp('/error=maintenance/', $this->client->getResponse()->headers->get('location'));
+        $this->assertFalse($this->app['phraseanet.core']->isAuthenticated());
+
+    }
+
+    /**
+     * Delete inscription demand made by the current authenticathed user
+     * @return void
+     */
     private function deleteRequest()
     {
         $sql = "DELETE FROM demand WHERE usr_id = :usr_id";
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':usr_id' => self::$user->get_id()));
         $stmt->closeCursor();
+    }
+
+    /**
+     * Generate a new valid email adress
+     * @return string
+     */
+    private function generateEmail()
+    {
+        return \random::generatePassword() . '_email@email.com';
     }
 }

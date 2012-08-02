@@ -87,7 +87,7 @@ function login(what)
 		{
 			EcrireCookie('last_act',what,null,'/');
 		}
-		self.location.replace('/login/index.php?postlog=1');
+		self.location.replace('/login/?postlog=1');
 	}
 	return false;
 }

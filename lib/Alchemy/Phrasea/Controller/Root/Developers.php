@@ -13,7 +13,9 @@ namespace Alchemy\Phrasea\Controller\Root;
 
 use Silex\Application;
 use Silex\ControllerProviderInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -175,11 +177,10 @@ class Developers implements ControllerProviderInterface
     /**
      * Delete application
      *
-     * @param Application $app     A Silex application where the controller is mounted on
-     * @param Request     $request The current request
-     * @param integer     $id      The application id
-     *
-     * @return Response
+     * @param   Application     $app     A Silex application where the controller is mounted on
+     * @param   Request         $request The current request
+     * @param   integer         $id      The application id
+     * @return  JsonResponse
      */
     public function deleteApp(Application $app, Request $request, $id)
     {
@@ -202,11 +203,10 @@ class Developers implements ControllerProviderInterface
     /**
      * Change application callback
      *
-     * @param Application $app     A Silex application where the controller is mounted on
-     * @param Request     $request The current request
-     * @param integer     $id      The application id
-     *
-     * @return Response
+     * @param   Application     $app     A Silex application where the controller is mounted on
+     * @param   Request         $request The current request
+     * @param   integer         $id      The application id
+     * @return  JsonResponse
      */
     public function renewAppCallback(Application $app, Request $request, $id)
     {
@@ -234,11 +234,10 @@ class Developers implements ControllerProviderInterface
     /**
      * Authorize application to use a grant password type
      *
-     * @param Application $app     A Silex application where the controller is mounted on
-     * @param Request     $request The current request
-     * @param integer     $id      The application id
-     *
-     * @return Response
+     * @param   Application     $app     A Silex application where the controller is mounted on
+     * @param   Request         $request The current request
+     * @param   integer         $id      The application id
+     * @return  JsonResponse
      */
     public function renewAccessToken(Application $app, Request $request, $id)
     {
@@ -273,11 +272,10 @@ class Developers implements ControllerProviderInterface
     /**
      * Authorize application to use a grant password type
      *
-     * @param Application $app     A Silex application where the controller is mounted on
-     * @param Request     $request The current request
-     * @param integer     $id      The application id
-     *
-     * @return Response
+     * @param   Application     $app     A Silex application where the controller is mounted on
+     * @param   Request         $request The current request
+     * @param   integer         $id      The application id
+     * @return  JsonResponse
      */
     public function authorizeGrantpassword(Application $app, Request $request, $id)
     {
@@ -300,14 +298,13 @@ class Developers implements ControllerProviderInterface
     /**
      * Create a new developer applications
      *
-     * @param Application $app     A Silex application where the controller is mounted on
-     * @param Request     $request The current request
-     *
-     * @return Response
+     * @param   Application $app     A Silex application where the controller is mounted on
+     * @param   Request     $request The current request
+     * @return  Response
      */
     public function newApp(Application $app, Request $request)
     {
-        if ($request->get('type') == "desktop") {
+        if ($request->get('type') === \API_OAuth2_Application::DESKTOP_TYPE) {
             $form = new \API_OAuth2_Form_DevAppDesktop($app['request']);
         } else {
             $form = new \API_OAuth2_Form_DevAppInternet($app['request']);
@@ -337,10 +334,9 @@ class Developers implements ControllerProviderInterface
     /**
      * List of apps created by the user
      *
-     * @param Application $app     A Silex application where the controller is mounted on
-     * @param Request     $request The current request
-     *
-     * @return Response
+     * @param   Application $app     A Silex application where the controller is mounted on
+     * @param   Request     $request The current request
+     * @return  Response
      */
     public function listApps(Application $app, Request $request)
     {
@@ -353,10 +349,9 @@ class Developers implements ControllerProviderInterface
     /**
      * Display form application
      *
-     * @param Application $app     A Silex application where the controller is mounted on
-     * @param Request     $request The current request
-     *
-     * @return Response
+     * @param   Application $app     A Silex application where the controller is mounted on
+     * @param   Request     $request The current request
+     * @return  Response
      */
     public function displayFormApp(Application $app, Request $request)
     {
@@ -370,11 +365,10 @@ class Developers implements ControllerProviderInterface
     /**
      * Get application information
      *
-     * @param Application $app     A Silex application where the controller is mounted on
-     * @param Request     $request The current request
-     * @param integer     $id      The application id
-     *
-     * @return Response
+     * @param   Application     $app     A Silex application where the controller is mounted on
+     * @param   Request         $request The current request
+     * @param   integer         $id      The application id
+     * @return  Response
      */
     public function getApp(Application $app, Request $request, $id)
     {

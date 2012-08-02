@@ -48,8 +48,10 @@ $(document).ready(function() {
 {% block content %}
 
 {% if updateMsg is not none %}
-    <div class='update-msg' style="margin-top:100px;">{{ updateMsg }}</div>
-    <a href="/account/" target="_self">{% trans 'admin::compte-utilisateur retour a mon compte'%}</a>
+    <div class="alert alert-info">
+        <div>{{ updateMsg }}</div>
+        <a href="/account/" target="_self">{% trans 'admin::compte-utilisateur retour a mon compte'%}</a>
+    </div>
 {% else %}
 
     {% if noticeMsg is not none %}

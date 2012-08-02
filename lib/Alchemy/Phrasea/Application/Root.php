@@ -57,7 +57,6 @@ return call_user_func(function() {
 
             $app->mount('/feeds/', new RSSFeeds());
             $app->mount('/account/', new Account());
-            $app->mount('/login/authenticate/', new AuthenticateController());
             $app->mount('/login/', new Login());
             $app->mount('/developers/', new Developers());
 
