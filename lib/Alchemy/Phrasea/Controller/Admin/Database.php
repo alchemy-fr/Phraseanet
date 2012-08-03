@@ -16,9 +16,10 @@ namespace Alchemy\Phrasea\Controller\Admin;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
+use Alchemy\Phrasea\Core\Configuration;
+use Alchemy\Phrasea\Core;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Alchemy\Phrasea\Core\Configuration;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 
@@ -83,6 +84,40 @@ class Database implements ControllerProviderInterface
          */
         $controllers->post('/mount/', $this->call('databaseMount'))->bind('admin_database_mount');
 
+        /**
+         * Get database CGU
+         *
+         * name         : admin_database_cgu
+         *
+         * description  : Get database CGU
+         *
+         * method       : GET
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->get('/{databox_id}/cgus/', $this->call('getDatabaseCGU'))
+            ->assert('databox_id', '\d+')
+            ->bind('admin_database_cgu');
+
+        /**
+         * Update database CGU
+         *
+         * name         : admin_update_database_cgu
+         *
+         * description  : Update database CGU
+         *
+         * method       : POST
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->post('/{databox_id}/cgus/', $this->call('updateDatabaseCGU'))
+            ->assert('databox_id', '\d+')
+            ->bind('admin_update_database_cgu');
+
         return $controllers;
     }
 
@@ -95,6 +130,46 @@ class Database implements ControllerProviderInterface
     public function getDatabase(Application $app, Request $request)
     {
 
+    }
+
+    /**
+     *
+     * @param \Silex\Application $app
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function getDatabaseCGU(Application $app, Request $request, $databox_id)
+    {
+        if ( ! $app['phraseanet.core']->getAuthenticatedUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+            $app->abort(403);
+        }
+
+        return new Response($app['twig']->render('admin/databox/cgus.html.twig', array(
+                    'languages'      => Core::getAvailableLanguages(),
+                    'cgus'           => $app['phraseanet.appbox']->get_databox($databox_id)->get_cgus(),
+                    'current_locale' => \Session_Handler::get_locale(),
+                )));
+    }
+
+    /**
+     *
+     * @param \Silex\Application $app
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function updateDatabaseCGU(Application $app, Request $request, $databox_id)
+    {
+        if ( ! $app['phraseanet.core']->getAuthenticatedUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+            $app->abort(403);
+        }
+
+        $databox = $app['phraseanet.appbox']->get_databox($databox_id);
+
+        foreach ($request->get('TOU', array()) as $loc => $terms) {
+            $databox->update_cgus($loc, $terms,  ! ! $request->get('valid', false));
+        }
+
+        return $app->redirect('/admin/database/' .$databox_id. '/cgus/');
     }
 
     /**
