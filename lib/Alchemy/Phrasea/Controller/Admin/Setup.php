@@ -78,11 +78,11 @@ class Setup implements ControllerProviderInterface
      */
     public function getGlobals(Application $app, Request $request)
     {
-        \phrasea::start($this->app['phraseanet.core']);
+        \phrasea::start($app['phraseanet.core']);
 
-        require_once __DIR__ . "/../../lib/conf.d/_GV_template.inc";
+        require_once __DIR__ . "/../../../../conf.d/_GV_template.inc";
 
-        $app['Twig']->addFunction('listTimeZone', new Twig_Function_Method('\DateTimeZone', 'listAbbreviations'));
+        $app['twig']->addFunction('listTimeZone', new \Twig_Function_Function('\DateTimeZone::listAbbreviations'));
 
         if (null !== $update = $request->get('update')) {
             if('ok' === $update) {
@@ -92,9 +92,9 @@ class Setup implements ControllerProviderInterface
             }
         }
 
-        return new Response($app['twig']->render('admin/globals.html.twig', array(
+        return new Response($app['twig']->render('admin/setup.html.twig', array(
                     'GV' => $GV,
-                    'update_post_data' => $update
+                    'update_post_datas' => $update
                 )));
     }
 

@@ -20,6 +20,8 @@ use Alchemy\Phrasea\Controller\Admin\Root;
 use Alchemy\Phrasea\Controller\Admin\Subdefs;
 use Alchemy\Phrasea\Controller\Admin\Users;
 use Alchemy\Phrasea\Controller\Admin\Dashboard;
+use Alchemy\Phrasea\Controller\Admin\Databases;
+use Alchemy\Phrasea\Controller\Admin\Database;
 use Alchemy\Phrasea\Controller\Admin\Setup;
 use Alchemy\Phrasea\Controller\Utils\ConnectionTest;
 use Alchemy\Phrasea\Controller\Utils\PathFileTest;
@@ -29,8 +31,10 @@ return call_user_func(
             $app = new PhraseaApplication();
 
             $app->mount('/', new Root());
-            $app->mount('/setup', new Setup());
             $app->mount('/dashboard', new Dashboard());
+            $app->mount('/database', new Database());
+            $app->mount('/databases', new Databases());
+            $app->mount('/setup', new Setup());
             $app->mount('/connected-users', new ConnectedUsers());
             $app->mount('/publications', new Publications());
             $app->mount('/users', new Users());

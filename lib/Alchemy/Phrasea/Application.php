@@ -101,7 +101,10 @@ class Application extends SilexApplication
                     $twig->addExtension(new \Twig_Extensions_Extension_Text());
                     $twig->addExtension(new \Alchemy\Phrasea\Twig\JSUniqueID());
 
+                    include_once __DIR__ . '/Twig/Functions.inc.php';
+
                     $twig->addTest('null', new \Twig_Test_Function('is_null'));
+                    $twig->addTest('loopable', new \Twig_Test_Function('is_loopable'));
 
                     $twig->addFilter('serialize', new \Twig_Filter_Function('serialize'));
                     $twig->addFilter('stristr', new \Twig_Filter_Function('stristr'));

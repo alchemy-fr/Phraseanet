@@ -1,0 +1,131 @@
+<script type="text/javascript">
+    {% if createBase or mountBase %}
+        parent.reloadTree('bases:bases');
+    {% endif %}
+
+    {% if createBase %}
+        document.location.replace('/admin/newcoll.php?act=GETNAME&p0={{ app.request.get('sbas_id') }}');
+    {% endif %}
+</script>
+
+
+{% if success_msg is not none %}
+    <div class='alert'>
+        {{ success_msg }}
+    </div>
+{% endif %}
+
+{% if error_msg is not none %}
+    <div class='alert'>
+        {{ error_msg }}
+    </div>
+{% endif %}
+
+<div class="db_infos">
+    <h2>Bases actuelles :</h2>
+    <ul>
+        {% if sbas | length > 0 %}
+            {% for key, value in sbas %}
+                <li>
+                    <a href='database.php?p0={{ key }}' target='_self'>
+                      <img src="{{ value['image'] }}" /> {{ value['name'] }} ({% trans "version" %} {{ value['version'] }}) {{ value['server_info'] }}
+                    </a>
+                </li>
+            {% endfor %}
+         {% else %}
+                <li>None</li>
+         {% endif %}
+    </ul>
+</div>
+
+{% if user.is_admin() %}
+    <div class="db_infos">
+        <h2>{% trans 'admin::base: Version' %}</h2>
+
+        {% if upgrade_available %}
+            <p>{% trans 'update::Votre application necessite une mise a jour vers : ' %} {{ version_number }}</p>
+        {% else %}
+            <p>{% trans 'update::Votre version est a jour : ' %} {{ version_number }}</p>
+        {% endif %}
+
+        {% if recommendations | length > 0%}
+            {% for recommendation in recommendations %}
+                <p>{{ recommendation['0'] }}</p>
+                <pre>
+                    <blockquote>{{ recommendation['1'] }}</blockquote>
+                </pre>
+            {% endfor %}
+        {% endif %}
+
+        {% if advices | length > 0 %}
+            <b>{% trans 'Propositions de modifications des tables' %}</b>
+            {% for advice in advices %}
+                <blockquote>{{ advice['sql'] }}</blockquote>
+            {% endfor %}
+        {% endif %}
+
+        <form action="/admin/databases/upgrade/" method="post" >
+            <input type="hidden" value="" name="upgrade" />
+            <input type="submit" class="btn btn-warning" value="{% trans 'update::Verifier els tables' %}" />
+        </form>
+    </div>
+
+    <div class="db_infos">
+        <h2>{% trans 'admin::base: creer une base' %}</h2>
+        <div id="create_base">
+            <form class="form-vertical" method="post" action="/admin/database/">
+                <label class="checkbox">
+                    <input type="checkbox" name="new_settings" onchange="if(this.checked == true)$('#server_opts').slideDown();else $('#server_opts').slideUp();" />
+                    {% trans 'phraseanet:: Creer une base sur un serveur different de l\'application box' %}
+                </label>
+                <div id="server_opts" style="display:none;">
+                    <label>{% trans 'phraseanet:: hostname' %}</label>
+                    <input name="new_hostname" value="" type="text" />
+                    <label>{% trans 'phraseanet:: port' %}</label>
+                    <input name="new_port" value="3306" type="text" />
+                    <label>{% trans 'phraseanet:: user' %}</label>
+                    <input name="new_user" value="" type="text" />
+                    <label>{% trans 'phraseanet:: password' %}</label>
+                    <input name="new_password" value="" type="password" />
+                </div>
+                <label>{% trans 'phraseanet:: dbname' %}</label>
+                <input name="new_dbname" value="" type="text" />
+                <label>{% trans 'phraseanet:: Modele de donnees' %}</label>
+                <select name="new_data_template">
+                    {% for file in files %}
+                        {% if file.isFile() %}
+                            <option value="{{ file.getBasename('.xml') }}">{{ file.getBasename('.xml') }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+                <input type="submit" class="btn" value="{% trans 'boutton::creer' %}" />
+            </form>
+        </div>
+    </div>
+
+    <div class="db_infos">
+        <h2>{% trans 'admin::base: Monter une base' %}</h2>
+        <div id="mount_base">
+            <form method="post" action="/admin/database/mount/">
+                <label class="checkbox">
+                    <input type="checkbox" name="new_settings" onchange="if(this.checked == true)$('#servermount_opts').slideDown();else $('#servermount_opts').slideUp();" />
+                    {% trans "phraseanet:: Monter une base provenant d\'un serveur different de l\'application box" %}
+                </label>
+                <div id="servermount_opts" style="display:none;">
+                    <label>{% trans 'phraseanet:: hostname' %}</label>
+                    <input name="new_hostname" value="" type="text" />
+                    <label>{% trans 'phraseanet:: port' %}</label>
+                    <input name="new_port" value="3306" type="text" />
+                    <label>{% trans 'phraseanet:: user' %}</label>
+                    <input name="new_user" value="" type="text" />
+                    <label>{% trans 'phraseanet:: password' %}</label>
+                    <input name="new_password" value="" type="password" />
+                </div>
+                <label>{% trans 'phraseanet:: dbname' %}</label>
+                <input type="text" name="new_dbname" value="" />
+                <input type="hidden" name="mount_base" value="yes" />
+                <input type="submit" class="btn" value="{% trans 'boutton::monter' %}" />
+            </form>
+        </div>
+    </div>
+{% endif %}
