@@ -1,0 +1,189 @@
+<h2>{{ databox.get_serialized_server_info() }}</h2>
+
+<ul>
+    <li>
+        ID : {{ databox.get_id() }}
+    </li>
+
+    <li>
+    {% trans 'admin::base: Alias' %} : <span id="viewname"></span>
+    {% if user.ACL().has_right_on_sbas(databox.get_id(), "bas_manage") %}
+        <img src="/skins/icons/edit_0.gif" onclick="chgViewName();return(false);" />
+    {% endif %}
+    </li>
+
+    <li>
+        {% trans 'admin::base: nombre d\'enregistrements sur la base :' %}
+        <span id="nrecords">{{ databox.get_record_amount() }}</span>
+        {% if showDetail %}
+            (<a href="javascript:void(0);" onclick="showDetails(1);return(false);">{% trans 'phraseanet:: details'%}</a>)
+        {% endif %}
+    </li>
+
+    {% if showDetail %}
+        <li>
+            {% trans 'admin::base: nombre de mots uniques sur la base : ' %}
+            {{ databox.get_unique_keywords() }}
+        </li>
+        <li>
+            {% trans 'admin::base: nombre de mots indexes sur la base' %}
+            {{ databox.get_index_amount() }}
+        </li>
+        {% if registry.get('GV_thesaurus') %}
+            <li>
+            {% trans 'admin::base: nombre de termes de Thesaurus indexes :' %}
+            {{ databox.get_thesaurus_hits() }}
+            </li>
+        {% endif %}
+        <li>
+            (<a href="javascript:void(0);" onclick="showDetails(0);return(false);">{% trans 'admin::base: masquer les details' %}</a>)
+        </li>
+    {% endif %}
+</ul>
+
+<div id="INDEX_P_BAR">
+    <div style="height: 35px;">
+        <p>
+            {% trans "admin::base: document indexes en utilisant la fiche xml" %} :
+            <span id="xml_indexed"></span>
+        </p>
+        <div id="xml_indexed_bar"></div>
+        <div id="xml_indexed_percent"></div>
+    </div>
+    <div style="height: 35px;">
+        <p>
+            {% trans "admin::base: document indexes en utilisant le thesaurus" %} :
+            <span id="thesaurus_indexed"></span>
+        </p>
+        <div id="thesaurus_indexed_bar"></div>
+        <div id="thesaurus_indexed_percent"></div>
+    </div>
+</div>
+
+{% if user.ACL().has_right_on_sbas(databox.get_id(), "bas_manage") %}
+    <div>
+        <label class="checkbox" for="is_indexable">
+            <input type="checkbox" id="is_indexable" onclick="makeIndexable(this)" />
+            {% trans "admin::base: Cette base est indexable" %}
+        </label>
+        <div id="make_indexable_ajax_status" style="display:none">&nbsp;</div>
+    </div>
+
+    <div>
+        <a onclick="reindex();return(false);">{% trans "base:: re-indexer" %}</a>
+    </div>
+
+    <div>
+        <a href="/admin/collection/">
+            <img src="/skins/icons/create_coll.png" />
+            {% trans "admin::base:collection: Creer une collection" %}
+        </a>
+    </div>
+
+    {% if databox.get_mountable_colls()| length > 0 %}
+        <div class="well">
+            <div>
+                <a href="#" onclick="mountColl();">
+                    <img src="/skins/icons/create_coll.png" />
+                    {% "admin::base:collection: Monter une collection" %}
+                </a>
+            </div>
+
+            {% for collId, name in databox.get_mountable_colls() %}
+                <div>
+                    <form class='form-inline' method="post" action="/admin/database/{{ app.request.get('databox_id') }}/collection/{{ collId }}/mount/">
+                        {% tran "Monter" %} {{ name }}
+                        {% if user.ACL().get_granted_base(array("canadmin") | length > 0 %}
+                            <label for="othcollsel">{% trans "admin::base:collection: Vous pouvez choisir une collection de reference pour donenr des acces " %}</label>
+                            <select id="othcollsel" name="othcollsel" >
+                                <option>{% trans "choisir" %}</option>
+                                {% for baseId, collection in user.ACL().get_granted_base(array("canadmin") %}
+                                   <option value='{{ baseId }}'> {{ collection.get_name() }}</option>
+                                {% endfor %}
+                            </select>
+                        {% endif %}
+                        <button type="submit" class="btn">{% tran "Monter" %}></button>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+
+    {% if databox.get_activable_colls()| length > 0 %}
+        <div class="well">
+            <div>
+                <a href="#" onclick="activateColl();">
+                    <img src="/skins/icons/create_coll.png" style="vertical-align:middle"/>
+                    {% trans "Activer une collection" %}
+                </a>
+            </div>
+
+            {% for baseId in databox.get_activable_colls() %}
+                <div>
+                    <form class='form-inline' method="post" action="/admin/database/{{ app.request.get('databox_id') }}/collection/{{ collId }}/mount/">
+                        {% tran "Activer" %} {{ baseId|bas_names }}
+                        <button type="submit" class="btn">{% tran "Monter" %}></button>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div>
+        <a onclick="clearAllLog();return(false);">
+            <img src="/skins/icons/clearLogs.png"/>
+            {% trans "admin::base: supprimer tous les logs" %}
+        </a>s
+    </div>
+
+    <div>
+        <a onclick="umountBase();return(false);">
+            <img src="/skins/icons/db-remove.png" style="vertical-align:middle"/>
+            {% trans "admin::base: arreter la publication de la base" %}
+        </a>
+    </div>
+
+    <div>
+        <a onclick="emptyBase();return(false);">
+            <img src="/skins/icons/trash.png" style="vertical-align:middle"/>
+            {% trans "admin::base: vider la base" %}
+        </a>
+    </div>
+
+    <div>
+        <a onclick="deleteBase();return(false);">
+            <img src="/skins/icons/delete.gif" style="vertical-align:middle"/>
+            {% trans "admin::base: supprimer la base" %}
+        </a>
+    </div>
+{% endif %}
+
+<div class="logo_box">
+    <hr>
+    <h4>{% trans "admin::base: logo impression PDF" %}</h4>
+    {% if uploadErrorLogoMsg is not none  %}
+        <div class="alert alert-error">
+            <a class="close" data-dismiss="alert" href="#">×</a>
+            {{ uploadErrorLogoMsg }}
+        </div>
+    {% endif %}
+    <div id="printLogoDIV_OK">
+        {#<img id="printLogo" src="/print/<?php echo $sbas_id ?>" />#}
+        {% if user.ACL().has_right_on_sbas(databox.get_id(), "bas_manage") %}
+            <a href="javascript:void();return(false);" onclick="deleteLogoPdf();return(false);">
+                {% trans "admin::base:collection: supprimer le logo" %}
+            </a>
+        {% endif %}
+    </div>
+    <div id="printLogoDIV_NONE">
+        {% trans "admin::base:collection: aucun fichier (minilogo, watermark ...)" %}
+        <form method="post" name="flpdf" action="/admin/database/{{ app.request.get('databox_id') }}/logo/" target="???" onsubmit="return(false);" ENCTYPE="multipart/form-data">
+            {% if user.ACL().has_right_on_sbas(databox.get_id(), "bas_manage") %}
+                <input name="newLogoPdf" type="file" />
+                <input type="button" class="btn" value="{% trans "boutton::envoyer" %}" onclick="sendLogopdf();" />
+                {% trans "admin::base: envoyer un logo (jpeg 35px de hauteur max)" %}
+            {% endif %}
+        </form>
+    </div>
+</div>

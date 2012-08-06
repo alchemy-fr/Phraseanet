@@ -107,7 +107,7 @@
 
         {% if user.ACL().has_right_on_sbas( sbas_id , 'bas_modify_struct') %}
           <li>
-            <a target="right" href="structure.php?act=STRUCTURE&p0={{ sbas_id }}">
+            <a target="right" class="ajax" href="/admin/structure/{{ sbas_id }}/">
               <img src="/skins/icons/miniadjust01.gif"/>
               <span>{% trans 'admin::structure: reglage de la structure' %}</span>
             </a>
@@ -125,7 +125,8 @@
             </a>
           </li>
           <li>
-            <a target="right" href="statbits.php?act=STATBITS&p0={{ sbas_id }}">
+            <a target="right" href="/admin/statusbit/{{ sbas_id }}/" class="ajax">
+            {#<a target="right" href="statbits.php?act=STATBITS&p0={{ sbas_id }}">#}
               <img src="/skins/icons/miniadjust02.gif"/>
               <span>{% trans 'admin::status: reglage des status' %}</span>
             </a>

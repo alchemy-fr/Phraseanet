@@ -263,82 +263,82 @@ switch ($parm['action']) {
         $output = p4string::jsonencode($ret);
         break;
 
-    case 'CHGVIEWNAME':
+//    case 'CHGVIEWNAME':
+//
+//        $parm = $request->get_parms('sbas_id', 'viewname');
+//        $ret = array('sbas_id'  => null, 'viewname' => null);
+//        $sbas_id = (int) $parm['sbas_id'];
+//        $databox = $appbox->get_databox($sbas_id);
+//        $appbox->set_databox_viewname($databox, $parm['viewname']);
+//        $output = p4string::jsonencode($ret);
+//        break;
 
-        $parm = $request->get_parms('sbas_id', 'viewname');
-        $ret = array('sbas_id'  => null, 'viewname' => null);
-        $sbas_id = (int) $parm['sbas_id'];
-        $databox = $appbox->get_databox($sbas_id);
-        $appbox->set_databox_viewname($databox, $parm['viewname']);
-        $output = p4string::jsonencode($ret);
-        break;
+//    case 'MAKEINDEXABLE':
+//
+//        $parm = $request->get_parms('sbas_id', 'INDEXABLE');
+//        $ret = array('sbas_id'         => null, 'indexable'       => null);
+//        $sbas_id = (int) $parm['sbas_id'];
+//        $databox = $appbox->get_databox($sbas_id);
+//        $appbox->set_databox_indexable($databox, $parm['INDEXABLE']);
+//        $ret['sbas_id'] = $parm['sbas_id'];
+//        $ret['indexable'] = $parm['INDEXABLE'];
+//        $output = p4string::jsonencode($ret);
+//        break;
 
-    case 'MAKEINDEXABLE':
+//    case 'REINDEX':
+//
+//        $parm = $request->get_parms(array('sbas_id' => http_request::SANITIZE_NUMBER_INT));
+//        $ret = array('sbas_id' => null);
+//        $sbas_id = (int) $parm['sbas_id'];
+//        $databox = $appbox->get_databox($sbas_id);
+//        $databox->reindex();
+//        $output = p4string::jsonencode($ret);
+//        break;
 
-        $parm = $request->get_parms('sbas_id', 'INDEXABLE');
-        $ret = array('sbas_id'         => null, 'indexable'       => null);
-        $sbas_id = (int) $parm['sbas_id'];
-        $databox = $appbox->get_databox($sbas_id);
-        $appbox->set_databox_indexable($databox, $parm['INDEXABLE']);
-        $ret['sbas_id'] = $parm['sbas_id'];
-        $ret['indexable'] = $parm['INDEXABLE'];
-        $output = p4string::jsonencode($ret);
-        break;
+//    case 'CLEARALLLOG':
+//
+//        $parm = $request->get_parms(array('sbas_id' => http_request::SANITIZE_NUMBER_INT));
+//        $ret = array('sbas_id'       => null);
+//        $sbas_id = (int) $parm['sbas_id'];
+//        $databox = $appbox->get_databox($sbas_id);
+//        $databox->clear_logs();
+//        $ret['sbas_id'] = $parm['sbas_id'];
+//        $output = p4string::jsonencode($ret);
+//        break;
 
-    case 'REINDEX':
+//    case 'DELLOGOPDF':
+//        $parm = $request->get_parms(array('sbas_id' => http_request::SANITIZE_NUMBER_INT));
+//        $ret = array('sbas_id'       => null);
+//        $sbas_id = (int) $parm['sbas_id'];
+//        $databox = $appbox->get_databox($sbas_id);
+//        $appbox->write_databox_pic($databox, null, databox::PIC_PDF);
+//        $ret['sbas_id'] = $parm['sbas_id'];
+//
+//        $output = p4string::jsonencode($ret);
+//        break;
 
-        $parm = $request->get_parms(array('sbas_id' => http_request::SANITIZE_NUMBER_INT));
-        $ret = array('sbas_id' => null);
-        $sbas_id = (int) $parm['sbas_id'];
-        $databox = $appbox->get_databox($sbas_id);
-        $databox->reindex();
-        $output = p4string::jsonencode($ret);
-        break;
-
-    case 'CLEARALLLOG':
-
-        $parm = $request->get_parms(array('sbas_id' => http_request::SANITIZE_NUMBER_INT));
-        $ret = array('sbas_id'       => null);
-        $sbas_id = (int) $parm['sbas_id'];
-        $databox = $appbox->get_databox($sbas_id);
-        $databox->clear_logs();
-        $ret['sbas_id'] = $parm['sbas_id'];
-        $output = p4string::jsonencode($ret);
-        break;
-
-    case 'DELLOGOPDF':
-        $parm = $request->get_parms(array('sbas_id' => http_request::SANITIZE_NUMBER_INT));
-        $ret = array('sbas_id'       => null);
-        $sbas_id = (int) $parm['sbas_id'];
-        $databox = $appbox->get_databox($sbas_id);
-        $appbox->write_databox_pic($databox, null, databox::PIC_PDF);
-        $ret['sbas_id'] = $parm['sbas_id'];
-
-        $output = p4string::jsonencode($ret);
-        break;
-
-    case 'DELETEBASE':
-        $parm = $request->get_parms(array('sbas_id' => http_request::SANITIZE_NUMBER_INT));
-
-        $ret = array('sbas_id' => null, 'err'     => -1, 'errmsg'  => null);
-
-        try {
-            $sbas_id = (int) $parm['sbas_id'];
-            $databox = $appbox->get_databox($sbas_id);
-            if ($databox->get_record_amount() == 0) {
-                $databox->unmount_databox($appbox);
-                $appbox->write_databox_pic($databox, null, databox::PIC_PDF);
-                $databox->delete();
-                $ret['sbas_id'] = $parm['sbas_id'];
-                $ret['err'] = 0;
-            } else {
-                $ret['errmsg'] = _('admin::base: vider la base avant de la supprimer');
-            }
-        } catch (Exception $e) {
-            $ret['errmsg'] = $e->getMessage();
-        }
-        $output = p4string::jsonencode($ret);
-        break;
+//    case 'DELETEBASE':
+//        $parm = $request->get_parms(array('sbas_id' => http_request::SANITIZE_NUMBER_INT));
+//
+//        $ret = array('sbas_id' => null, 'err'     => -1, 'errmsg'  => null);
+//
+//        try {
+//            $sbas_id = (int) $parm['sbas_id'];
+//            $databox = $appbox->get_databox($sbas_id);
+//            if ($databox->get_record_amount() == 0) {
+//                $databox->unmount_databox($appbox);
+//                $appbox->write_databox_pic($databox, null, databox::PIC_PDF);
+//                $databox->delete();
+//                $ret['sbas_id'] = $parm['sbas_id'];
+//                $ret['err'] = 0;
+//            } else {
+//                $ret['errmsg'] = _('admin::base: vider la base avant de la supprimer');
+//            }
+//        } catch (Exception $e) {
+//            $ret['errmsg'] = $e->getMessage();
+//        }
+//        $output = p4string::jsonencode($ret);
+//        break;
 }
 
 unset($appbox);
