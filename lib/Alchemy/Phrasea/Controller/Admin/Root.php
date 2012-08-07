@@ -97,6 +97,49 @@ class Root implements ControllerProviderInterface
                 );
             });
 
+        $controllers->get('/tree/', function() {
+                if (null === $position = $request->get('position')) {
+                    $app->abort(400, _('Missing position parameter'));
+                }
+
+                return new Response($app['twig']->render(\module_admin::getTree($position)));
+            });
+
+        $controllers->get('/test-paths/', function() {
+
+                if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
+                    $app->abort(400, _('Bad request format, only JSON is allowed'));
+                }
+
+                if (0 !== count($tests = $request->get('tests', array()))) {
+
+                    $app->abort(400, _('Missing tests parameter'));
+                }
+
+                if (null !== $path = $request->get('path')) {
+
+                    $app->abort(400, _('Missing path parameter'));
+                }
+
+                foreach ($tests as $test) {
+                    switch ($test) {
+                        case 'writeable':
+                            if ( ! is_writable($path)) {
+                                $result = false;
+                            }
+                            break;
+                        case 'readable':
+                        default:
+                            if ( ! is_readable($path)) {
+                                $result = true;
+                            }
+                            break;
+                    }
+                }
+
+                return $app->json(array('results' => $result));
+            });
+
         $controllers->get('/structure/{databox_id}/', function(Application $app, Request $request, $databox_id) {
                 if ( ! $app['phraseanet.core']->getAuthenticatedUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
                     $app->abort(403);
@@ -206,7 +249,7 @@ class Root implements ControllerProviderInterface
                     $error = true;
                 }
 
-               return $app->json(array('success' => ! $error));
+                return $app->json(array('success' => ! $error));
             })->assert('databox_id', '\d+')->assert('bit', '\d+');
 
         $controllers->post('/statusbit/{databox_id}/status/{bit}/', function(Application $app, Request $request, $databox_id, $bit) {

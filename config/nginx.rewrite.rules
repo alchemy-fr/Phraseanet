@@ -6,6 +6,7 @@ rewrite ^/(mail-export)/([a-zA-Z0-9]*)\/get$  /include/download_anonymous.php?ty
 
 rewrite ^/admin/$                 /admin/router.php last;
 rewrite ^/admin/structure/.*$     /admin/router.php last;
+rewrite ^/admin/bas/.*$     /admin/router.php last;
 rewrite ^/admin/statusbit/.*$     /admin/router.php last;
 rewrite ^/admin/dashboard/.*$     /admin/router.php last;
 rewrite ^/admin/database/.*$      /admin/router.php last;

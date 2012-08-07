@@ -20,6 +20,7 @@ use Alchemy\Phrasea\Controller\Admin\Root;
 use Alchemy\Phrasea\Controller\Admin\Subdefs;
 use Alchemy\Phrasea\Controller\Admin\Users;
 use Alchemy\Phrasea\Controller\Admin\Dashboard;
+use Alchemy\Phrasea\Controller\Admin\Bas;
 use Alchemy\Phrasea\Controller\Admin\Databases;
 use Alchemy\Phrasea\Controller\Admin\Database;
 use Alchemy\Phrasea\Controller\Admin\Setup;
@@ -32,6 +33,7 @@ return call_user_func(
 
             $app->mount('/', new Root());
             $app->mount('/dashboard', new Dashboard());
+            $app->mount('/bas', new Bas());
             $app->mount('/database', new Database());
             $app->mount('/databases', new Databases());
             $app->mount('/setup', new Setup());

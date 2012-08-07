@@ -25,9 +25,9 @@ $parm = $request->get_parms('action', 'position', 'test', 'renew', 'path', 'test
 $output = '';
 
 switch ($parm['action']) {
-    case 'TREE':
-        $output = module_admin::getTree($parm['position']);
-        break;
+//    case 'TREE':
+//        $output = module_admin::getTree($parm['position']);
+//        break;
     case 'APACHE':
         if ($parm['test'] == 'success') {
             $output = '1';
@@ -39,73 +39,72 @@ switch ($parm['action']) {
         $output = $registry->get('GV_ServerName') . 'admin/runscheduler.php?key=' . urlencode(phrasea::scheduler_key( ! ! $parm['renew']));
         break;
 
-    case 'TESTPATH':
-        $tests = true;
-        foreach ($parm['tests'] as $test) {
-            switch ($test) {
-                case 'writeable':
-                    if ( ! is_writable($parm['path'])) {
-                        $tests = false;
-                    }
-                    break;
-                case 'readable':
-                default:
-                    if ( ! is_readable($parm['path'])) {
-                        $tests = true;
-                    }
-                    break;
-            }
-        }
-        $output = p4string::jsonencode(array('results' => ($tests ? '1' : '0')));
-        break;
+//    case 'TESTPATH':
+//        $tests = true;
+//        foreach ($parm['tests'] as $test) {
+//            switch ($test) {
+//                case 'writeable':
+//                    if ( ! is_writable($parm['path'])) {
+//                        $tests = false;
+//                    }
+//                    break;
+//                case 'readable':
+//                default:
+//                    if ( ! is_readable($parm['path'])) {
+//                        $tests = true;
+//                    }
+//                    break;
+//            }
+//        }
+//        $output = p4string::jsonencode(array('results' => ($tests ? '1' : '0')));
+//        break;
 
-    case 'EMPTYBASE':
-        $parm = $request->get_parms(array('sbas_id' => http_request::SANITIZE_NUMBER_INT));
-        $message = _('Base empty successful');
-        try {
-            $sbas_id = (int) $parm['sbas_id'];
-            $databox = $appbox->get_databox($sbas_id);
-            $class_name = 'task_period_emptyColl';
-            foreach ($databox->get_collections() as $collection) {
-                if ($collection->get_record_amount() <= 500) {
-                    $collection->empty_collection(500);
-                } else {
-                    $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><tasksettings><base_id>" . $collection->get_base_id() . "</base_id></tasksettings>";
-                    task_abstract::create($appbox, $class_name, $settings);
-                    $message = _('A task has been creted, please run it to complete empty collection');
-                }
-            }
-        } catch (Exception $e) {
-            $message = _('An error occurred');
-        }
-        $output = p4string::jsonencode(array('message' => $message));
-        break;
-    case 'EMPTYCOLL':
-        $message = _('Collection empty successful');
-        $parm = $request->get_parms(
-            array(
-                "sbas_id" => http_request::SANITIZE_NUMBER_INT
-                , "coll_id" => http_request::SANITIZE_NUMBER_INT
-            )
-        );
-        try {
-            $databox = $appbox->get_databox($parm['sbas_id']);
-            $collection = collection::get_from_coll_id($databox, $parm['coll_id']);
-
-            if ($collection->get_record_amount() <= 500) {
-                $collection->empty_collection(500);
-            } else {
-                $class_name = 'task_period_emptyColl';
-                $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n<base_id>" . $collection->get_base_id() . "</base_id></tasksettings>";
-
-                task_abstract::create($appbox, $class_name, $settings);
-                $message = _('A task has been creted, please run it to complete empty collection');
-            }
-        } catch (Exception $e) {
-            $message = _('An error occurred');
-        }
-        $output = p4string::jsonencode(array('message' => $message));
-        break;
+//    case 'EMPTYBASE':
+//        $parm = $request->get_parms(array('sbas_id' => http_request::SANITIZE_NUMBER_INT));
+//        $message = _('Base empty successful');
+//        try {
+//            $sbas_id = (int) $parm['sbas_id'];
+//            $databox = $appbox->get_databox($sbas_id);
+//            $class_name = 'task_period_emptyColl';
+//            foreach ($databox->get_collections() as $collection) {
+//                if ($collection->get_record_amount() <= 500) {
+//                    $collection->empty_collection(500);
+//                } else {
+//                    $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"
+//                    task_abstract::create($appbox, $class_name, $settings);
+//                    $message = _('A task has been creted, please run it to complete empty collection');
+//                }
+//            }
+//        } catch (Exception $e) {
+//            $message = _('An error occurred');
+//        }
+//        $output = p4string::jsonencode(array('message' => $message));
+//        break;
+//    case 'EMPTYCOLL':
+//        $message = _('Collection empty successful');
+//        $parm = $request->get_parms(
+//            array(
+//                "sbas_id" => http_request::SANITIZE_NUMBER_INT
+//                , "coll_id" => http_request::SANITIZE_NUMBER_INT
+//            )
+//        );
+//        try {
+//            $databox = $appbox->get_databox($parm['sbas_id']);
+//            $collection = collection::get_from_coll_id($databox, $parm['coll_id']);
+//
+//            if ($collection->get_record_amount() <= 500) {
+//                $collection->empty_collection(500);
+//            } else {
+//                $class_name = 'task_period_emptyColl';
+//
+//                task_abstract::create($appbox, $class_name, $settings);
+//                $message = _('A task has been creted, please run it to complete empty collection');
+//            }
+//        } catch (Exception $e) {
+//            $message = _('An error occurred');
+//        }
+//        $output = p4string::jsonencode(array('message' => $message));
+//        break;
 
     case 'SETTASKSTATUS':
         $parm = $request->get_parms('task_id', 'status', 'signal');
@@ -219,49 +218,49 @@ switch ($parm['action']) {
         $output = p4string::jsonencode($ret);
         break;
 
-    case 'UNMOUNTBASE':
-        $parm = $request->get_parms(array('sbas_id' => http_request::SANITIZE_NUMBER_INT));
-        $ret = array('sbas_id' => null);
+//    case 'UNMOUNTBASE':
+//        $parm = $request->get_parms(array('sbas_id' => http_request::SANITIZE_NUMBER_INT));
+//        $ret = array('sbas_id' => null);
+//
+//        $databox = $appbox->get_databox((int) $parm['sbas_id']);
+//        $databox->unmount_databox($appbox);
+//
+//        $ret['sbas_id'] = $parm['sbas_id'];
+//        $output = p4string::jsonencode($ret);
+//        break;
 
-        $databox = $appbox->get_databox((int) $parm['sbas_id']);
-        $databox->unmount_databox($appbox);
-
-        $ret['sbas_id'] = $parm['sbas_id'];
-        $output = p4string::jsonencode($ret);
-        break;
-
-    case 'P_BAR_INFO':
-        $parm = $request->get_parms(array('sbas_id' => http_request::SANITIZE_NUMBER_INT));
-        $ret = array(
-            'sbas_id'           => null,
-            'indexable'         => false,
-            'records'           => 0,
-            'xml_indexed'       => 0,
-            'thesaurus_indexed' => 0,
-            'viewname'          => null,
-            'printLogoURL'      => NULL
-        );
-
-        $databox = $appbox->get_databox((int) $parm['sbas_id']);
-
-        $ret['indexable'] = $appbox->is_databox_indexable($databox);
-        $ret['viewname'] = (($databox->get_dbname() == $databox->get_viewname()) ? _('admin::base: aucun alias') : $databox->get_viewname());
-
-        $ret['records'] = $databox->get_record_amount();
-
-        $datas = $databox->get_indexed_record_amount();
-
-        $ret['sbas_id'] = $parm['sbas_id'];
-        $tot = $idxxml = $idxth = 0;
-
-        $ret['xml_indexed'] = $datas['xml_indexed'];
-        $ret['thesaurus_indexed'] = $datas['thesaurus_indexed'];
-
-        if (file_exists($registry->get('GV_RootPath') . 'config/minilogos/logopdf_' . $parm['sbas_id'] . '.jpg')) {
-            $ret['printLogoURL'] = '/print/' . $parm['sbas_id'];
-        }
-        $output = p4string::jsonencode($ret);
-        break;
+//    case 'P_BAR_INFO':
+//        $parm = $request->get_parms(array('sbas_id' => http_request::SANITIZE_NUMBER_INT));
+//        $ret = array(
+//            'sbas_id'           => null,
+//            'indexable'         => false,
+//            'records'           => 0,
+//            'xml_indexed'       => 0,
+//            'thesaurus_indexed' => 0,
+//            'viewname'          => null,
+//            'printLogoURL'      => NULL
+//        );
+//
+//        $databox = $appbox->get_databox((int) $parm['sbas_id']);
+//
+//        $ret['indexable'] = $appbox->is_databox_indexable($databox);
+//        $ret['viewname'] = (($databox->get_dbname() == $databox->get_viewname()) ? _('admin::base: aucun alias') : $databox->get_viewname());
+//
+//        $ret['records'] = $databox->get_record_amount();
+//
+//        $datas = $databox->get_indexed_record_amount();
+//
+//        $ret['sbas_id'] = $parm['sbas_id'];
+//        $tot = $idxxml = $idxth = 0;
+//
+//        $ret['xml_indexed'] = $datas['xml_indexed'];
+//        $ret['thesaurus_indexed'] = $datas['thesaurus_indexed'];
+//
+//        if (file_exists($registry->get('GV_RootPath') . 'config/minilogos/logopdf_' . $parm['sbas_id'] . '.jpg')) {
+//            $ret['printLogoURL'] = '/print/' . $parm['sbas_id'];
+//        }
+//        $output = p4string::jsonencode($ret);
+//        break;
 
 //    case 'CHGVIEWNAME':
 //

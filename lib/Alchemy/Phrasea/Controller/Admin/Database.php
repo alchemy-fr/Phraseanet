@@ -53,7 +53,8 @@ class Database implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/{databox_id}', $this->call('getDatabase'))->bind('admin_databases');
+        $controllers->get('/{databox_id}', $this->call('getDatabase'))
+            ->bind('admin_databases');
 
         /**
          * Delete a database
@@ -68,7 +69,8 @@ class Database implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->delete('/{databox_id}', $this->call('deleteBase'))->bind('admin_delete_databases');
+        $controllers->delete('/{databox_id}', $this->call('deleteBase'))
+            ->bind('admin_delete_databases');
 
         /**
          * Reset cache
@@ -83,7 +85,8 @@ class Database implements ControllerProviderInterface
          *
          * return       : Redirect Response
          */
-        $controllers->post('/', $this->call('createDatabase'))->bind('admin_database_new');
+        $controllers->post('/', $this->call('createDatabase'))
+            ->bind('admin_database_new');
 
         /**
          * mount a database
@@ -98,7 +101,42 @@ class Database implements ControllerProviderInterface
          *
          * return       : Redirect Response
          */
-        $controllers->post('/mount/', $this->call('databaseMount'))->bind('admin_database_mount');
+        $controllers->post('/mount/', $this->call('databaseMount'))
+            ->bind('admin_database_mount');
+
+        /**
+         * Unmount a database
+         *
+         * name         : admin_database_unmount
+         *
+         * description  : unmount one database
+         *
+         * method       : POST
+         *
+         * parameters   : none
+         *
+         * return       : Redirect Response
+         */
+        $controllers->post('/{databox_id}/unmount/', $this->call('databaseUnmount'))
+            ->assert('databox_id', '\d+')
+            ->bind('admin_database_unmount');
+
+        /**
+         * Empty a database
+         *
+         * name         : admin_database_empty
+         *
+         * description  : empty one database
+         *
+         * method       : POST
+         *
+         * parameters   : none
+         *
+         * return       : Redirect Response
+         */
+        $controllers->post('/{databox_id}/empty/', $this->call('emptyDatabase'))
+            ->assert('databox_id', '\d+')
+            ->bind('admin_database_empty');
 
         /**
          * Get database CGU
@@ -133,6 +171,23 @@ class Database implements ControllerProviderInterface
         $controllers->post('/{databox_id}/cgus/', $this->call('updateDatabaseCGU'))
             ->assert('databox_id', '\d+')
             ->bind('admin_update_database_cgu');
+
+        /**
+         * Update document information
+         *
+         * name         : admin_document_information
+         *
+         * description  : Update document information
+         *
+         * method       : GET
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->get('/{databox_id}/documents/informations/', $this->call('progressBarInfos'))
+            ->assert('databox_id', '\d+')
+            ->bind('admin_document_information');
 
         /**
          * Mount collection on collection
@@ -369,7 +424,7 @@ class Database implements ControllerProviderInterface
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 
-        $app['phraseanet.appbox']->set_databox_indexable($app['phraseanet.appbox']->get_databox($databox_id), ! ! $request->get('INDEXABLE', false));
+        $app['phraseanet.appbox']->set_databox_indexable($app['phraseanet.appbox']->get_databox($databox_id),  ! ! $request->get('INDEXABLE', false));
 
         return $app->json(array('sbas_id' => $databox_id));
     }
@@ -663,13 +718,144 @@ class Database implements ControllerProviderInterface
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 
-        if(null === $viewName = $request->get('viewname')){
+        if (null === $viewName = $request->get('viewname')) {
             $app->abort(400, _('Missing view name parameter'));
         }
 
         $app['phraseanet.appbox']->set_databox_viewname($app['phraseanet.appbox']->get_databox($databox_id), $viewName);
 
         return $app->json(array('sbas_id' => $databox_id));
+    }
+
+    /**
+     *
+     * @param \Silex\Application $app
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param type $databox_id
+     */
+    public function unmountDatabase(Application $app, Request $request, $databox_id)
+    {
+        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
+            $app->abort(400, _('Bad request format, only JSON is allowed'));
+        }
+
+        $databox = $app['phraseanet.appbox']->get_databox($databox_id);
+        $databox->unmount_databox($app['phraseanet.appbox']);
+
+        return $app->json(array('sbas_id' => $databox_id));
+    }
+
+    /**
+     *
+     * @param \Silex\Application $app
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param type $databox_id
+     */
+    public function emptyDatabase(Application $app, Request $request, $databox_id)
+    {
+        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
+            $app->abort(400, _('Bad request format, only JSON is allowed'));
+        }
+
+        $message = _('Base empty successful');
+        $success = false;
+
+        try {
+            $databox = $app['phraseanet.appbox']->get_databox($databox_id);
+
+            foreach ($databox->get_collections() as $collection) {
+                if ($collection->get_record_amount() <= 500) {
+                    $collection->empty_collection(500);
+                } else {
+                    $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><tasksettings><base_id>" . $collection->get_base_id() . "</base_id></tasksettings>";
+                    \task_abstract::create($app['phraseanet.appbox'], 'task_period_emptyColl', $settings);
+                    $message = _('A task has been creted, please run it to complete empty collection');
+                }
+            }
+
+            $success = true;
+        } catch (\Exception $e) {
+            $message = _('An error occurred');
+        }
+
+        return $app->json(array('success' => $success, 'message' => $message));
+    }
+
+    /**
+     *
+     * @param \Silex\Application $app
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param integer $databox_id
+     * @param integer $collection_id
+     */
+    public function emptyCollection(Application $app, Request $request, $databox_id, $collection_id)
+    {
+        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
+            $app->abort(400, _('Bad request format, only JSON is allowed'));
+        }
+
+        $message = _('Collection empty successful');
+        $success = false;
+
+        try {
+            $databox = $app['phraseanet.appbox']->get_databox($databox_id);
+            $collection = \collection::get_from_coll_id($databox, $collection_id);
+
+            if ($collection->get_record_amount() <= 500) {
+                $collection->empty_collection(500);
+            } else {
+                $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n<base_id>" . $collection->get_base_id() . "</base_id></tasksettings>";
+                \task_abstract::create($app['phraseanet.appbox'], 'task_period_emptyColl', $settings);
+                $message = _('A task has been creted, please run it to complete empty collection');
+            }
+
+            $success = true;
+        } catch (\Exception $e) {
+            $message = _('An error occurred');
+        }
+
+        return $app->json(array('success' => $success, 'message' => $message));
+    }
+
+    /**
+     *
+     * @param \Silex\Application $app
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param type $databox_id
+     */
+    public function progressBarInfos(Application $app, Request $request, $databox_id)
+    {
+        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
+            $app->abort(400, _('Bad request format, only JSON is allowed'));
+        }
+
+        $appbox = $app['phraseanet.appbox'];
+
+        $ret = array(
+            'sbas_id'           => null,
+            'indexable'         => false,
+            'records'           => 0,
+            'xml_indexed'       => 0,
+            'thesaurus_indexed' => 0,
+            'viewname'          => null,
+            'printLogoURL'      => NULL
+        );
+
+        $databox = $appbox->get_databox($databox_id);
+        $datas = $databox->get_indexed_record_amount();
+
+        $ret['indexable'] = $appbox->is_databox_indexable($databox);
+        $ret['viewname'] = (($databox->get_dbname() == $databox->get_viewname()) ? _('admin::base: aucun alias') : $databox->get_viewname());
+        $ret['records'] = $databox->get_record_amount();
+        $ret['sbas_id'] = $databox_id;
+        $ret['xml_indexed'] = $datas['xml_indexed'];
+        $ret['thesaurus_indexed'] = $datas['thesaurus_indexed'];
+
+        if ($app['filesystem']->exists($app['Registry']->get('GV_RootPath') . 'config/minilogos/logopdf_' . $databox_id . '.jpg')) {
+            $ret['printLogoURL'] = '/print/' . $databox_id;
+        }
+
+        return $app->json($ret);
     }
 
     /**

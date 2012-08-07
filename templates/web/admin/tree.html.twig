@@ -168,9 +168,10 @@
 
           <li>
             <div style="padding:0 0 2px 0;">
-              <a target="right" href="collection.php?act=COLLECTION&p0={{ sbas_id }}&p1={{ collection.get_base_id() }}">
-                <span>{{ collection.get_name() }}</span>
-              </a>
+              {#<a target="right" href="collection.php?act=COLLECTION&p0={{ sbas_id }}&p1={{ collection.get_base_id() }}">#}
+                <a target="right" href="/admin/bas/{{ collection.get_base_id() }}/" class="ajax">
+                    <span>{{ collection.get_name() }}</span>
+                </a>
             </div>
             <ul>
 
