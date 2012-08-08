@@ -18,6 +18,36 @@ use Silex\ControllerProviderInterface;
 use Silex\ControllerCollection;
 use Symfony\Component\Finder\Finder;
 
+class XMLParseErrorException extends \Exception
+{
+    private $_XMLErrMessage = '';
+
+    public function getXMLErrMessage()
+    {
+        return $this->_XMLErrMessage;
+    }
+
+    public function __construct($xml)
+    {
+        set_error_handler(array($this, "errorHandler"));
+        $dom = new \DomDocument('1.0', 'UTF-8');
+        @$dom->loadXML($xml);
+        restore_error_handler();
+        $this->message = "XML Parse Error";
+        parent::__construct();
+    }
+
+    public function errorHandler($errno, $errstr, $errfile, $errline)
+    {
+//        var_dump($errno, $errstr, $errfile, $errline);
+//        $pos = strpos($errstr,"]:") ;
+//        if ($pos) {
+//            $errstr = substr($errstr,$pos+ 2);
+//        }
+        $this->_XMLErrMessage = $errstr;
+    }
+}
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -28,7 +58,6 @@ class Task implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
-        $appbox = \appbox::get_instance($app['phraseanet.core']);
 
         $controllers = $app['controllers_factory'];
 
@@ -36,7 +65,8 @@ class Task implements ControllerProviderInterface
          * route /admin/task/{id}/log
          *  show logs of a task
          */
-        $controllers->get('/{id}/log', function(Application $app, Request $request, $id) use ($appbox) {
+        $controllers->get('/{id}/log', function(Application $app, Request $request, $id) {
+                $appbox = \appbox::get_instance($app['phraseanet.core']);
                 $registry = $appbox->get_registry();
                 $logdir = \p4string::addEndSlash($registry->get('GV_RootPath') . 'logs');
 
@@ -84,11 +114,12 @@ class Task implements ControllerProviderInterface
          * route /admin/task/{id}/delete
          *  delete a task
          */
-        $controllers->get('/{id}/delete', function(Application $app, Request $request, $id) use ($appbox) {
-                $task_manager = new \task_manager($appbox);
+        $controllers->get('/{id}/delete', function(Application $app, Request $request, $id) {
+//                $appbox = \appbox::get_instance($app['phraseanet.core']);
+//                $task_manager = new \task_manager($appbox);
 
                 try {
-                    $task = $task_manager->getTask($id);
+                    $task = $app['task-manager']->getTask($id);
                     $task->delete();
 
                     return $app->redirect('/admin/tasks/');
@@ -105,7 +136,8 @@ class Task implements ControllerProviderInterface
          * route /admin/task/{id}/start
          *  set a task to 'tostart'
          */
-        $controllers->get('/{id}/tostart', function(Application $app, Request $request, $id) use ($appbox) {
+        $controllers->get('/{id}/tostart', function(Application $app, Request $request, $id) {
+                $appbox = \appbox::get_instance($app['phraseanet.core']);
                 $task_manager = new \task_manager($appbox);
 
                 $ret = false;
@@ -127,7 +159,8 @@ class Task implements ControllerProviderInterface
          * route /admin/task/{id}/stop
          *  set a task to 'tostop'
          */
-        $controllers->get('/{id}/tostop', function(Application $app, Request $request, $id) use ($appbox) {
+        $controllers->get('/{id}/tostop', function(Application $app, Request $request, $id) {
+                $appbox = \appbox::get_instance($app['phraseanet.core']);
                 $task_manager = new \task_manager($appbox);
 
                 $ret = false;
@@ -153,7 +186,8 @@ class Task implements ControllerProviderInterface
          * route /admin/task/{id}/resetcrashcounter
          * return json
          */
-        $controllers->get('/{id}/resetcrashcounter', function(Application $app, Request $request, $id) use ($appbox) {
+        $controllers->get('/{id}/resetcrashcounter/', function(Application $app, Request $request, $id) {
+                $appbox = \appbox::get_instance($app['phraseanet.core']);
                 $task_manager = new \task_manager($appbox);
 
                 try {
@@ -169,21 +203,130 @@ class Task implements ControllerProviderInterface
             });
 
         /*
+         * route /admin/task/{id}/save
+         * return json
+         */
+        $controllers->post('/{id}/save/', function(Application $app, Request $request, $id) {
+                $appbox = \appbox::get_instance($app['phraseanet.core']);
+                $task_manager = new \task_manager($appbox);
+
+                $dom = new \DOMDocument('1.0', 'UTF-8');
+                $dom->strictErrorChecking = true;
+                try {
+                    if ( ! @$dom->loadXML($request->get('xml'))) {
+                        throw new XMLParseErrorException($request->get('xml'));
+                    }
+
+
+                } catch (XMLParseErrorException $e) {
+                    return  new Response(
+                            $e->getXMLErrMessage(),
+                            412    // Precondition Failed
+                    );
+                }
+
+                try {
+                    $task = $task_manager->getTask($id);
+
+                    $task->setTitle($request->get('title'));
+                    $task->setActive(\p4field::isyes($request->get('active')));
+                    $task->setSettings($request->get('xml'));
+
+                    return $app->json(true);
+
+                } catch (\Exception $e) {
+
+                    return new Response(
+                            'Bad task ID',
+                            404    // Not Found
+                    );
+                }
+
+            });
+
+        /*
+         * route /admin/task/{id}/facility/
+         * call callback(s) of a task, for ex. to transform gui(form) to xml settings
+         */
+        $controllers->post('/{id}/facility/', function(Application $app, Request $request, $id) {
+                $appbox = \appbox::get_instance($app['phraseanet.core']);
+                $task_manager = new \task_manager($appbox);
+                $ret = '';
+                try {
+                    $task = $task_manager->getTask($id);
+                } catch (\Exception $e) {
+                    return new Response(
+                            'Bad task ID',
+                            404    // Not Found
+                    );
+                }
+
+                switch ($request->get('__action')) {
+                    case 'FORM2XML':
+                        if (@simplexml_load_string($request->get('__xml'))) {
+                            $ret = $task->graphic2xml($request->get('__xml'));
+                        } else {
+                            $ret = new Response(
+                                    'Bad XML',
+                                    412    // Precondition Failed
+                            );
+                        }
+                        break;
+                    case null:
+                        // no __action, so delegates to the task (call method "facility")
+                        if(method_exists($task, 'facility'))
+                        {
+                            $ret = $task->facility();
+                        }
+                        break;
+                    default:
+                        $ret = new Response(
+                                'Bad action',
+                                404    // Not Found
+                        );
+                        break;
+                }
+                return $ret;
+            });
+
+        /*
          * route /admin/task/{id}
          *  render a task editing interface
          */
-        $controllers->get('/{id}', function(Application $app, Request $request, $id) use ($appbox) {
-
+        $controllers->get('/{id}', function(Application $app, Request $request, $id) {
+                $appbox = \appbox::get_instance($app['phraseanet.core']);
                 $task_manager = new \task_manager($appbox);
                 $task = $task_manager->getTask($id);
 
                 /* @var $twig \Twig_Environment */
                 $twig = $app['phraseanet.core']->getTwig();
-                $template = 'admin/task.html';
+                $template = 'admin/task.html.twig';
                 return $twig->render($template, array(
                         'task' => $task,
                         'view' => 'XML'
                     ));
+            });
+
+        /*
+         * route /admin/task/checkxml/
+         * check if the xml is valid
+         */
+        $controllers->post('/checkxml/', function(Application $app, Request $request) {
+                $ret = array('ok'  => true, 'err' => null);
+                $dom = new \DOMDocument('1.0', 'UTF-8');
+                $dom->strictErrorChecking = true;
+                try {
+                    if ( ! @$dom->loadXML($request->get('xml'))) {
+                        throw new XMLParseErrorException($request->get('xml'));
+                    }
+                    $ret = $app->json($ret);
+                } catch (XMLParseErrorException $e) {
+                    $ret = new Response(
+                            $e->getXMLErrMessage(),
+                            412    // Precondition Failed
+                    );
+                }
+                return $ret;
             });
 
         return $controllers;

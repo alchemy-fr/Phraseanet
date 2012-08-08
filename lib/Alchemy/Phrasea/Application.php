@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea;
 
 use Alchemy\Phrasea\PhraseanetServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BrowserServiceProvider;
+use Alchemy\Phrasea\Core\Provider\TaskManagerServiceProvider;
 use Silex\Application as SilexApplication;
 use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
@@ -27,6 +28,7 @@ class Application extends SilexApplication
         $this->register(new ValidatorServiceProvider());
         $this->register(new UrlGeneratorServiceProvider());
         $this->register(new BrowserServiceProvider());
+        $this->register(new TaskManagerServiceProvider());
 
         $this->register(new TwigServiceProvider(), array(
             'twig.options' => array(

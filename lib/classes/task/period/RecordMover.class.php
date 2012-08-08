@@ -50,6 +50,7 @@ class task_period_RecordMover extends task_appboxAbstract
         $dom = new DOMDocument();
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
+
         if ($dom->loadXML($oldxml)) {
             $xmlchanged = false;
             // foreach($parm2 as $pname=>$pvalue)
@@ -187,7 +188,6 @@ class task_period_RecordMover extends task_appboxAbstract
 
             </script>
             <?php
-
             return "";
         } else { // ... so we NEVER come here
             // bad xml
@@ -260,40 +260,122 @@ class task_period_RecordMover extends task_appboxAbstract
     {
         ?>
         <script type="text/javascript">
-            $(document).ready(
-            function(){
-            });
+            function taskFillGraphic_<?php echo(get_class($this)); ?>(xmltxt)
+            {
+                if(xmltxt)
+                {
+                    xml = $.parseXML(xmltxt);
+                    xml = $(xml);
 
-            (function( $ ){
-                $.fn.serializeJSON=function() {
-                    var json = {};
-                    jQuery.map($(this).serializeArray(), function(n, i){
-                        json[n['name']] = n['value'];
+                    var isyes = function(v) {
+                        v = v.toUpperCase().trim();
+                        return v=='O' || v=='Y' || v=='OUI' || v=='YES' || v=='1';
+                    }
+
+                    with(document.forms['graphicForm'])
+                    {
+                        period.value   = xml.find("period").text();
+                        logsql.checked = isyes(xml.find("logsql").text());
+                    }
+
+                    $("#sqlu").text("");
+                    $("#sqls").text("");
+                    $.ajax({ url: "/admin/task/<?php echo $this->getID() ?>/facility/"
+                        , data: {
+                            ACT: "CALCTEST",
+                            xml: xmltxt
+                        }
+                        , dataType:'json'
+                        , type:"POST"
+                        , async:true
+                        , success:function(data) {
+                            t = "";
+                            for (i in data.tasks) {
+                                t += "<div class=\"title\">&nbsp;";
+                                if(data.tasks[i].active)
+                                    t += "<span class=\"active\">&nbsp;X&nbsp;</span>&nbsp;";
+                                else
+                                    t += "<span class=\"notactive\">&nbsp;X&nbsp;</span>&nbsp;";
+                                if(data.tasks[i].name_htmlencoded)
+                                    t += "<b>" + data.tasks[i].name_htmlencoded + "</b>";
+                                else
+                                    t += "<b><i>sans nom</i></b>";
+
+                                if(data.tasks[i].basename_htmlencoded)
+                                    t += " (action=" + data.tasks[i].action + ' on ' +  data.tasks[i].basename_htmlencoded + ')';
+                                else
+                                    t += " (action=" + data.tasks[i].action + ' on <i>Unknown</i>)';
+                                t += "</div>";
+
+                                if(data.tasks[i].err_htmlencoded) ;
+                                t += "<div class=\"err\">" + data.tasks[i].err_htmlencoded + "</div>";
+
+                                t += "<div class=\"sql\">";
+
+                                if(data.tasks[i].sql && data.tasks[i].sql.test.sql_htmlencoded)
+                                    t += "<div class=\"sqltest\">" + data.tasks[i].sql.test.sql_htmlencoded + "</div>";
+                                t += "--&gt; <span id=\"SQLRET"+i+"\"><i>wait...</i></span><br/>";
+
+                                t += "</div>";
+                            }
+                            $("#sqla").html(t);
+
+                            $.ajax({ url: "/admin/task/<?php echo $this->getID() ?>/facility/"
+                                , data: {
+                                    ACT: "PLAYTEST",
+                                    xml: xmltxt
+                                }
+                                , dataType:'json'
+                                , type:"POST"
+                                , async:true
+                                , success:function(data) {
+                                    for (i in data.tasks) {
+                                        if (data.tasks[i].sql) {
+                                            if (data.tasks[i].sql.test.err) {
+                                                $("#SQLRET"+i).html("err: " + data.tasks[i].sql.test.err);
+                                            } else {
+                                                t = '';
+                                                for(j in data.tasks[i].sql.test.result.rids)
+                                                    t += (t?', ':'') + data.tasks[i].sql.test.result.rids[j];
+                                                if(data.tasks[i].sql.test.result.rids.length < data.tasks[i].sql.test.result.n)
+                                                    t += ', ...';
+                                                $("#SQLRET"+i).html("n=" + data.tasks[i].sql.test.result.n + ", rids:(" + t + ")");
+                                            }
+                                        } else {
+                                            $("#SQLRET"+i).html("");
+                                        }
+                                    }
+                                }
+                            });
+
+                        }
                     });
 
-                    return json;
-                };
-            })( jQuery );
-
-
-            function chgxmltxt(textinput, fieldname)
-            {
-                var limits = { 'period':{min:1, 'max':1440} , 'delay':{min:0} } ;
-                if (typeof(limits[fieldname])!='undefined') {
-                    var v = 0|textinput.value;
-                    if(limits[fieldname].min && v < limits[fieldname].min)
-                        v = limits[fieldname].min;
-                    else if(limits[fieldname].max && v > limits[fieldname].max)
-                        v = limits[fieldname].max;
-                    textinput.value = v;
                 }
-                setDirty();
             }
-            function chgxmlck(checkinput, fieldname)
-            {
-                setDirty();
-            }
-        </script>
+
+            $(document).ready(function(){
+                $("#graphicForm *").change(function(){
+                    var limits = {
+                        'period': {min:10, max:3600, allowempty:false}
+                    } ;
+                    var name = $(this).attr("name");
+                    if(name && limits[name])
+                    {
+                        var v = $(this).val();
+                        if(v != "" || !limits[name].allowempty)
+                        {
+                            v = 0|v;
+                            if(v < limits[name].min)
+                                $(this).val(limits[name].min);
+                            else if(v > limits[name].max)
+                                $(this).val(limits[name].max);
+                        }
+                    }
+                });
+            });
+
+       </script>
         <?php
     }
 
@@ -306,18 +388,17 @@ class task_period_RecordMover extends task_appboxAbstract
     {
         ob_start();
         ?>
-        <form name="graphicForm" onsubmit="return(false);" method="post">
+        <form id="graphicForm" name="graphicForm" onsubmit="return(false);" method="post">
             <?php echo _('task::_common_:periodicite de la tache') ?>
-            <input type="text" name="period" style="width:40px;" onchange="chgxmltxt(this, 'period');" value="" />
+            <input type="text" name="period" style="width:40px;"" value="" />
             <?php echo _('task::_common_:secondes (unite temporelle)') ?>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="checkbox" name="logsql" onchange="chgxmlck(this, 'logsql');" />&nbsp;log changes
+                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                   <input type="checkbox" name="logsql" />&nbsp;log changes
         </form>
         <center>
             <div class="terminal" id="sqla"></div>
         </center>
         <?php
-
         return ob_get_clean();
     }
     /**
@@ -337,7 +418,7 @@ class task_period_RecordMover extends task_appboxAbstract
     {
         $this->maxrecs = 1000;
         $this->sxTaskSettings = @simplexml_load_string($this->getSettings());
-        if ( ! $this->sxTaskSettings || !$this->sxTaskSettings->tasks) {
+        if ( ! $this->sxTaskSettings || ! $this->sxTaskSettings->tasks) {
             return array();
         }
 
@@ -497,7 +578,7 @@ class task_period_RecordMover extends task_appboxAbstract
 
         $ret = array(
             'name'                 => $sxtask['name'] ? (string) $sxtask['name'] : 'sans nom',
-            'name_htmlencoded'     => htmlentities($sxtask['name'] ? $sxtask['name'] : 'sans nom'),
+            'name_htmlencoded'     => \p4string::MakeString(($sxtask['name'] ? $sxtask['name'] : 'sans nom'), 'html'),
             'active'               => trim($sxtask['active']) === '1',
             'sbas_id'              => $sbas_id,
             'basename'             => '',
