@@ -26,6 +26,7 @@ class TasksTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     /**
      * Default route test
+     *
      */
     public function testRouteTasks()
     {
@@ -55,5 +56,9 @@ class TasksTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $json = json_decode($raw);
 
         $this->assertEquals(count($task_manager->getTasks()), count(get_object_vars($json->tasks)));
+
+        /**
+         * get /admin/task/{id}
+         */
     }
 }

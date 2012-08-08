@@ -136,52 +136,6 @@ class task_period_archive extends task_abstract
         return $dom->saveXML();
     }
 
-    /**
-     * fill the graphic form (using js) from xml
-     *
-     * @param string $xml
-     * @param string $form
-     */
-    public function xml2graphic($xml, $form)
-    {
-        // XML should always be valid here...
-        if (($sxml = simplexml_load_string($xml)) != false) {
-            // sanitize values
-            if ((int) ($sxml->period) < 10) {
-                $sxml->period = 10;
-            } elseif ((int) ($sxml->period) > 3600) {
-                $sxml->period = 3600;
-            }
-            if ((int) ($sxml->cold) < 5) {
-                $sxml->cold = 5;
-            } elseif ((int) ($sxml->cold) > 300) {
-                $sxml->cold = 300;
-            }
-            ?>
-            <script type="text/javascript">
-                var i;
-                var opts = <?php echo $form ?>.base_id.options;
-                var basefound = 0;
-                for (i=1; basefound==0 && i<opts.length; i++) {
-                    if(opts[i].value == "<?php echo \p4string::MakeString($sxml->base_id, "form") ?>")
-                    basefound = i;
-                }
-                opts[basefound].selected = true;
-            <?php echo $form ?>.hotfolder.value       = "<?php echo \p4string::MakeString($sxml->hotfolder, "js", '"') ?>";
-            <?php echo $form ?>.period.value          = "<?php echo \p4string::MakeString($sxml->period, "js", '"') ?>";
-            <?php echo $form ?>.cold.value            = "<?php echo \p4string::MakeString($sxml->cold, "js", '"') ?>";
-            <?php echo $form ?>.move_archived.checked = <?php echo \p4field::isyes($sxml->move_archived) ? "true" : "false" ?>;
-            <?php echo $form ?>.move_error.checked    = <?php echo \p4field::isyes($sxml->move_error) ? "true" : "false" ?>;
-            <?php echo $form ?>.delfolder.checked     = <?php echo \p4field::isyes($sxml->delfolder) ? "true" : "false" ?>;
-            <?php echo $form ?>.copy_spe.checked      = <?php echo \p4field::isyes($sxml->copy_spe) ? "true" : "false" ?>;
-            </script>
-            <?php
-
-            return "";
-        } else {
-            return "BAD XML";
-        }
-    }
 
     /**
      * Return some javascript code for the graphic view
@@ -190,19 +144,63 @@ class task_period_archive extends task_abstract
     {
         ?>
         <script type="text/javascript">
-            function chgxmltxt(textinput, fieldname)
+            function taskFillGraphic_<?php echo(get_class($this));?>(xml)
             {
-                setDirty();
+                if(xml)
+                {
+                    xml = $.parseXML(xml);
+                    xml = $(xml);
+
+                    var isyes = function(v) {
+                        v = v.toUpperCase().trim();
+                        return v=='O' || v=='Y' || v=='OUI' || v=='YES' || v=='1';
+                    }
+
+                    with(document.forms['graphicForm'])
+                    {
+                        var i;
+                        var opts = base_id.options;
+                        var basefound = 0;
+                        for (i=1; basefound==0 && i<opts.length; i++) {
+                            if(opts[i].value == xml.find("base_id").text())
+                                basefound = i;
+                        }
+                        opts[basefound].selected = true;
+
+                        hotfolder.value       = xml.find("hotfolder").text();
+                        period.value          = xml.find("period").text();
+                        cold.value            = xml.find("cold").text();
+                        move_archived.checked = isyes(xml.find("move_archived").text());
+                        move_error.checked    = isyes(xml.find("move_error").text());
+                        delfolder.checked     = isyes(xml.find("delfolder").text());
+                        copy_spe.checked      = isyes(xml.find("copy_spe").text());
+                    }
+                }
             }
-            function chgxmlck(checkinput, fieldname)
-            {
-                setDirty();
-            }
-            function chgxmlpopup(popupinput, fieldname)
-            {
-                setDirty();
-            }
+
+            $(document).ready(function(){
+                $("#graphicForm *").change(function(){
+                    var limits = {
+                                    'period': {min:10, max:3600, allowempty:false} ,
+                                    'cold':   {min:5,  max:300,  allowempty:false}
+                                } ;
+                    var name = $(this).attr("name");
+                    if(name && limits[name])
+                    {
+                        var v = $(this).val();
+                        if(v != "" || !limits[name].allowempty)
+                        {
+                            v = 0|v;
+                            if(v < limits[name].min)
+                                $(this).val(limits[name].min);
+                            else if(v > limits[name].max)
+                                $(this).val(limits[name].max);
+                        }
+                    }
+                });
+            });
         </script>
+
         <?php
 
         return;
@@ -217,10 +215,10 @@ class task_period_archive extends task_abstract
 
         ob_start();
         ?>
-        <form name="graphicForm" onsubmit="return(false);" method="post">
+        <form id="graphicForm" name="graphicForm" onsubmit="return(false);" method="post">
             <?php echo _('task::archive:archivage sur base/collection/') ?> :
 
-            <select onchange="chgxmlpopup(this, 'base_id');" name="base_id">
+            <select name="base_id">
                 <option value="">...</option>
                 <?php
                 foreach ($appbox->get_databoxes() as $databox) {
@@ -233,21 +231,21 @@ class task_period_archive extends task_abstract
             <br/>
             <br/>
             <?php echo _('task::_common_:hotfolder') ?>
-            <input type="text" name="hotfolder" style="width:400px;" onchange="chgxmltxt(this, 'hotfolder');" value=""><br/>
+            <input type="text" name="hotfolder" style="width:400px;" value=""><br/>
             <br/>
             <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
-            <input type="text" name="period" style="width:40px;" onchange="chgxmltxt(this, 'period');" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
+            <input type="text" name="period" style="width:40px;" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
             <br/>
             <?php echo _('task::archive:delai de \'repos\' avant traitement') ?>&nbsp;:&nbsp;
-            <input type="text" name="cold" style="width:40px;" onchange="chgxmltxt(this, 'cold');" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
+            <input type="text" name="cold" style="width:40px;" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
             <br/>
-            <input type="checkbox" name="move_archived" onchange="chgxmlck(this, 'move_archived');">&nbsp;<?php echo _('task::archive:deplacer les fichiers archives dans _archived') ?>
+            <input type="checkbox" name="move_archived">&nbsp;<?php echo _('task::archive:deplacer les fichiers archives dans _archived') ?>
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="checkbox" name="move_error" onchange="chgxmlck(this, 'move_error');">&nbsp;<?php echo _('task::archive:deplacer les fichiers non-archives dans _error') ?><br/>
+            <input type="checkbox" name="move_error">&nbsp;<?php echo _('task::archive:deplacer les fichiers non-archives dans _error') ?><br/>
             <br/>
-            <input type="checkbox" name="copy_spe" onchange="chgxmlck(this, 'copy_spe');">&nbsp;<?php echo _('task::archive:copier les fichiers \'.phrasea.xml\' et \'.grouping.xml\' dans _archived') ?><br/>
+            <input type="checkbox" name="copy_spe">&nbsp;<?php echo _('task::archive:copier les fichiers \'.phrasea.xml\' et \'.grouping.xml\' dans _archived') ?><br/>
             <br/>
-            <input type="checkbox" name="delfolder" onchange="chgxmlck(this, 'delfolder');">&nbsp;<?php echo _('task::archive:supprimer les repertoires apres archivage') ?><br/>
+            <input type="checkbox" name="delfolder">&nbsp;<?php echo _('task::archive:supprimer les repertoires apres archivage') ?><br/>
         </form>
         <?php
 

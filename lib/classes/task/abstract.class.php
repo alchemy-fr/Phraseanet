@@ -102,6 +102,15 @@ abstract class task_abstract
     );
 
     /**
+     *
+     * @return string
+     */
+    public function getClass()
+    {
+        return(get_class($this));
+    }
+
+    /**
      * get the state of the task (task_abstract::STATE_*)
      *
      * @return String
@@ -227,7 +236,11 @@ abstract class task_abstract
      */
     public function setSettings($settings)
     {
-        if (@simplexml_load_string($settings) === FALSE) {
+        $dom = new DOMDocument('1.0', 'UTF-8');
+        $dom->preserveWhiteSpace = false;
+        $dom->formatOutput = true;
+        if(!@$dom->loadXML($settings))
+        {
             throw new Exception_InvalidArgument('Bad XML');
         }
 
@@ -235,12 +248,12 @@ abstract class task_abstract
 
         $sql = 'UPDATE task2 SET settings = :settings WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':settings' => $settings, ':taskid'   => $this->getID()));
+        $stmt->execute(array(':settings' => $dom->saveXML(), ':taskid'   => $this->getID()));
         $stmt->closeCursor();
 
         $this->settings = $settings;
 
-        $this->loadSettings(simplexml_load_string($settings));
+        $this->loadSettings(simplexml_load_string($dom->saveXML()));
 
         return $this;
     }
@@ -786,6 +799,16 @@ abstract class task_abstract
     public static function interfaceAvailable()
     {
         return true;
+    }
+
+    public function getInterfaceHTML()
+    {
+        return '';
+    }
+
+    public function graphic2xml($oldxml)
+    {
+        return $oldxml;
     }
 
     /**
