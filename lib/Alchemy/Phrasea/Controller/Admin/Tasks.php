@@ -27,9 +27,6 @@ class Tasks implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
-        $appbox = \appbox::get_instance($app['phraseanet.core']);
-        $session = $appbox->get_session();
-
         $controllers = $app['controllers_factory'];
 
         /*
@@ -38,7 +35,8 @@ class Tasks implements ControllerProviderInterface
          * or
          *  task manager page in html
          */
-        $controllers->get('/', function(Application $app, Request $request) use ($appbox) {
+        $controllers->get('/', function(Application $app, Request $request) {
+                $appbox = \appbox::get_instance($app['phraseanet.core']);
                 $task_manager = new \task_manager($appbox);
 
                 if ($request->getContentType() == 'json') {
@@ -57,22 +55,25 @@ class Tasks implements ControllerProviderInterface
                 }
             });
 
-        /*
-          $controllers->post('/create/', function() use ($app, $appbox) {
+            /**
+             * route /admin/tasks/create
+             */
+        $controllers->post('/create/', function(Application $app, Request $request) {
+                $appbox = \appbox::get_instance($app['phraseanet.core']);
+                $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
 
-          $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
-          $request = $app['request'];
+                $tcl = $request->get('tcl');
+                if( $tcl )
+                {
+                    $task = \task_abstract::create($appbox, $tcl);
+                    $tid = $task->getId();
 
-          $feed = \Feed_Adapter::create($appbox, $user, $request->get('title'), $request->get('subtitle'));
+                    return $app->redirect('/admin/task/'.$tid);
+                    // return $tid;
+                }
 
-          if ($request->get('public') == '1')
-          $feed->set_public(true);
-          elseif ($request->get('base_id'))
-          $feed->set_collection(\collection::get_from_base_id($request->get('base_id')));
-
-          return $app->redirect('/admin/publications/list/');
-          });
-         */
+                return $app->redirect('/admin/publications/list/');
+            });
 
         return $controllers;
     }

@@ -10,6 +10,7 @@
  */
 
 use \Monolog\Logger;
+use Symfony\Component\Process\Process;
 
 /**
  *
@@ -124,6 +125,15 @@ class task_manager
         }
 
         return $tasks[$task_id];
+    }
+
+    public function getSchedulerProcess()
+    {
+        $phpcli = $this->appbox->get_registry()->get('GV_cli');
+
+        $cmd = $phpcli . ' -f ' . $this->appbox->get_registry()->get('GV_RootPath') . "bin/console scheduler:start";
+
+        return new Process($cmd);
     }
 
     public function setSchedulerState($status)
