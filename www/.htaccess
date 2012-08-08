@@ -15,6 +15,9 @@
   RewriteRule ^admin/publications/.*$ /admin/router.php [L]
   RewriteRule ^admin/typeahead/.*$    /admin/router.php [L]
   RewriteRule ^admin/subdefs/.*$      /admin/router.php [L]
+  RewriteRule ^admin/tasks/.*$        /admin/router.php [L]
+  RewriteRule ^admin/task/.*$         /admin/router.php [L]
+  RewriteRule ^admin/scheduler/.*$    /admin/router.php [L]
 
   RewriteRule ^prod/records/edit/.*$  /prod/router.php [L]
   RewriteRule ^prod/records/movecollection/.*$    /prod/router.php [L]
