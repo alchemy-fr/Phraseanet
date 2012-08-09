@@ -61,6 +61,40 @@ class Bas implements ControllerProviderInterface
             ->bind('admin_database_collection');
 
         /**
+         * Get a collection suggested values
+         *
+         * name         : admin_database_suggested_values
+         *
+         * description  : suggested values
+         *
+         * method       : GET
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->get('/{bas_id}/suggested-values/', $this->call('getSuggestedValues'))
+            ->assert('bas_id', '\d+')
+            ->bind('admin_database_suggested_values');
+
+        /**
+         * Submit suggested values
+         *
+         * name         : admin_database_submit_suggested_values
+         *
+         * description  : Submit suggested values
+         *
+         * method       : POST
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->post('/{bas_id}/suggested-values/', $this->call('submitSuggestedValues'))
+            ->assert('bas_id', '\d+')
+            ->bind('admin_database_submit_suggested_values');
+
+        /**
          * Delete collection
          *
          * name         : admin_collection_delete
@@ -386,10 +420,11 @@ class Bas implements ControllerProviderInterface
                 ->execute()
                 ->get_results();
         }
+
         return new Response($app['twig']->render('admin/collection/collection.html.twig', array(
-                'collection' => $collection,
-                'admins'     => $admins,
-            )));
+                    'collection' => $collection,
+                    'admins'     => $admins,
+                )));
     }
 
     /**
@@ -412,7 +447,7 @@ class Bas implements ControllerProviderInterface
             }
         }
 
-        return $app->redirect('/admin/bas/'. $bas_id . '/');
+        return $app->redirect('/admin/bas/' . $bas_id . '/');
     }
 
     /**
@@ -875,6 +910,107 @@ class Bas implements ControllerProviderInterface
             $collection->disable($app['phraseanet.appbox']);
             $success = true;
             $msg = _('forms::operation effectuee OK');
+        } catch (\Exception $e) {
+
+        }
+
+        return $app->json(array('success' => $success, 'msg'     => $msg));
+    }
+
+    /**
+     *
+     * @param \Silex\Application $app
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param integer $bas_id
+     */
+    public function getSuggestedValues(Application $app, Request $request, $bas_id)
+    {
+        $databox = $app['phraseanet.appbox']->get_databox(\phrasea::sbasFromBas($bas_id));
+        $collection = \collection::get_from_base_id($bas_id);
+        $structFields = $suggestedValues = $basePrefs = array();
+
+        foreach ($databox->get_meta_structure() as $meta) {
+            if ($meta->is_readonly()) {
+                continue;
+            }
+
+            $structFields[$meta->get_name()] = $meta;
+        }
+
+        if ($sxe = simplexml_load_string($collection->get_prefs())) {
+            $z = $sxe->xpath('/baseprefs/sugestedValues');
+            if ($z && is_array($z)) {
+                $f = 0;
+                foreach ($z[0] as $ki => $vi) {
+                    if ($vi && isset($structFields[$ki])) {
+                        foreach ($vi->value as $oneValue) {
+                            $f ++;
+                        }
+                    }
+                }
+            }
+
+            $z = $sxe->xpath('/baseprefs');
+            if ($z && is_array($z)) {
+                foreach ($z[0] as $ki => $vi) {
+                    $pref = array('status' => null, 'xml'    => null);
+
+                    if ($ki == "status") {
+                       $pref['status'] = $vi;
+                    } else if ($ki != "sugestedValues") {
+                       $pref['xml'] = $vi->asXML();
+                    }
+
+                    $basePrefs[] = $pref;
+                }
+            }
+        }
+
+        if($updateMsg = $request->get('update')) {
+            switch ($updateMsg) {
+                case 'ok';
+                    $updateMsg = _('forms::operation effectuee OK');
+                    break;
+            }
+        }
+
+        return new Response($app['twig']->render('admin/collection/suggested_value.html.twig', array(
+                    'collection'      => $collection,
+                    'databox'         => $databox,
+                    'suggestedValues' => $suggestedValues,
+                    'structFields'    => $structFields,
+                    'basePrefs'       => $basePrefs,
+                    'updateMsg'       => $updateMsg,
+                )));
+    }
+
+    /**
+     *
+     * @param \Silex\Application $app
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param integer $bas_id
+     */
+    public function submitSuggestedValues(Application $app, Request $request, $bas_id)
+    {
+        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
+            $app->abort(400, _('Bad request format, only JSON is allowed'));
+        }
+
+        $success = false;
+        $msg = _('An error occured');
+
+        try {
+            $collection = \collection::get_from_base_id($bas_id);
+
+            if ($mdesc = \DOMDocument::loadXML($request->get("str"))) {
+                $collection->set_prefs($mdesc);
+                $msg = _('forms::operation effectuee OK');
+                $success = true;
+            } else {
+                $msg = _('Coult not load XML');
+                $success = false;
+            }
+
         } catch (\Exception $e) {
 
         }

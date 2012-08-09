@@ -1,23 +1,31 @@
-<h2>{{ databox.get_serialized_server_info() }}</h2>
-
+<div class="header">
+    <h1>{{ databox.get_serialized_server_info() }}</h1>
+</div>
 <ul>
     <li>
-        ID : {{ databox.get_id() }}
+        ID : {{ databox.get_sbas_id() }}
     </li>
 
     <li>
-    {% trans 'admin::base: Alias' %} : <span id="viewname"></span>
-    {% if user.ACL().has_right_on_sbas(databox.get_id(), "bas_manage") %}
-        <img src="/skins/icons/edit_0.gif" onclick="chgViewName();return(false);" />
+    {% trans 'admin::base: Alias' %} : <span id="viewname">{{ databox.get_viewname() }}</span>
+    {% if user.ACL().has_right_on_sbas(databox.get_sbas_id(), "bas_manage") %}
+        <img src="/skins/icons/edit_0.gif" id="show-view-name" />
+        <div class='well-small' id='change-view-name' style='display:none'>
+            <form method='post' action='/admin/database/{{ databox.get_sbas_id() }}/view-name/'>
+                <div class="input-append">
+                    <input id="db-view-name" name='viewname' class="span2" type="text" size="16">
+                    <a class="btn submiter" type="button">{% trans 'Rename' %}</a>
+                </div>
+            </form>
+        </div>
     {% endif %}
     </li>
 
     <li>
         {% trans 'admin::base: nombre d\'enregistrements sur la base :' %}
         <span id="nrecords">{{ databox.get_record_amount() }}</span>
-        {% if showDetail %}
-            (<a href="javascript:void(0);" onclick="showDetails(1);return(false);">{% trans 'phraseanet:: details'%}</a>)
-        {% endif %}
+
+        (<a href="/admin/database/{{ databox.get_sbas_id() }}/informations/details/" class='ajax' target="rights">{% trans 'phraseanet:: details'%}</a>)
     </li>
 
     {% if showDetail %}
@@ -35,9 +43,6 @@
             {{ databox.get_thesaurus_hits() }}
             </li>
         {% endif %}
-        <li>
-            (<a href="javascript:void(0);" onclick="showDetails(0);return(false);">{% trans 'admin::base: masquer les details' %}</a>)
-        </li>
     {% endif %}
 </ul>
 
@@ -60,103 +65,110 @@
     </div>
 </div>
 
-{% if user.ACL().has_right_on_sbas(databox.get_id(), "bas_manage") %}
-    <div>
-        <label class="checkbox" for="is_indexable">
-            <input type="checkbox" id="is_indexable" onclick="makeIndexable(this)" />
-            {% trans "admin::base: Cette base est indexable" %}
-        </label>
-        <div id="make_indexable_ajax_status" style="display:none">&nbsp;</div>
+{% if user.ACL().has_right_on_sbas(databox.get_sbas_id(), "bas_manage") %}
+    <div class=" well-small">
+         <form method="post" action="/admin/database/{{ app.request.get('databox_id') }}/indexable/">
+             <label class="checkbox" for="is_indexable">
+                <input type="checkbox" id="is_indexable" name='indexable' {{ appbox.is_databox_indexable(databox) ? 'checked' : ''}} />
+                {% trans "admin::base: Cette base est indexable" %}
+            </label>
+        </form>
     </div>
 
-    <div>
-        <a onclick="reindex();return(false);">{% trans "base:: re-indexer" %}</a>
-    </div>
+    <div class="btn-group well-small">
 
-    <div>
-        <a href="/admin/collection/">
+        <form method="post" action="/admin/database/{{ app.request.get('bas_id') }}/reindex/">
+            <a class='btn submiter confirm' href='#' data-confirm-msg="{% trans 'Confirmez-vous la re-indexation de la base ?' %}">
+                {% trans "base:: re-indexer" %}
+            </a>
+        </form>
+
+        <a style='display:inline-block' target="right" class="ajax btn" href="/admin/database/{{ databox.get_sbas_id() }}/collection/">
             <img src="/skins/icons/create_coll.png" />
             {% trans "admin::base:collection: Creer une collection" %}
         </a>
+
+        <form style='display:inline' method="post" action="/admin/database/{{ app.request.get('bas_id') }}/clear-logs/">
+            <a href="#" class='btn submiter confirm'data-confirm-msg="{% trans 'admin::base: Confirmer la suppression de tous les logs' %}">
+                <img src="/skins/icons/clearLogs.png" />
+                {% trans "admin::base: supprimer tous les logs" %}
+            </a>
+        </form>
+
+        <form style='display:inline' method="post" action="/admin/database/{{ app.request.get('bas_id') }}/unmount/">
+            <a href="#" class='btn submiter confirm' data-confirm-msg="{% trans 'admin::base: Confirmer vous l\'arret de la publication de la base' %}">
+                <img src="/skins/icons/db-remove.png" />
+                {% trans "admin::base: arreter la publication de la base" %}
+            </a>
+        </form>
+
+        <form style='display:inline' method="post" action="/admin/database/{{ app.request.get('bas_id') }}/empty/">
+            <a href="#" class='btn submiter confirm' data-confirm-msg="{% trans 'admin::base: Confirmer le vidage complet de la base' %}">
+                <img src="/skins/icons/trash.png" />
+                {% trans "admin::base: vider la base" %}
+            </a>
+        </form>
+
+         <form style='display:inline' method="delete" action="/admin/database/{{ app.request.get('bas_id') }}/">
+            <a href="#" class='btn submiter confirm' data-confirm-msg="{% trans 'admin::base: Confirmer la suppression de la base' %}">
+                <img src="/skins/icons/delete.gif" />
+                {% trans "admin::base: supprimer la base" %}
+            </a>
+         </form>
     </div>
 
     {% if databox.get_mountable_colls()| length > 0 %}
-        <div class="well">
-            <div>
-                <a href="#" onclick="mountColl();">
-                    <img src="/skins/icons/create_coll.png" />
-                    {% "admin::base:collection: Monter une collection" %}
-                </a>
-            </div>
+        <div class="well-small">
+            <a href="#" class='btn' id='show-mount-coll'>
+                <img src="/skins/icons/create_coll.png" />
+                {% trans "admin::base:collection: Monter une collection" %}
+            </a>
+            <div class="well-small" id='mount-coll' style='display:none'>
+                <ul>
+                {% for collId, name in databox.get_mountable_colls() %}
+                    <li>
+                        <form class='form-inline' method="post" action="/admin/database/{{ app.request.get('databox_id') }}/collection/{{ collId }}/mount/">
+                            {% trans "Monter" %} {{ name }}
+                            {% if user.ACL().get_granted_base(["canadmin"]) | length > 0 %}
+                                <label for="othcollsel">{% trans "admin::base:collection: Vous pouvez choisir une collection de reference pour donenr des acces " %}</label>
+                                <select id="othcollsel" name="othcollsel" >
+                                    <option>{% trans "choisir" %}</option>
 
-            {% for collId, name in databox.get_mountable_colls() %}
-                <div>
-                    <form class='form-inline' method="post" action="/admin/database/{{ app.request.get('databox_id') }}/collection/{{ collId }}/mount/">
-                        {% tran "Monter" %} {{ name }}
-                        {% if user.ACL().get_granted_base(array("canadmin") | length > 0 %}
-                            <label for="othcollsel">{% trans "admin::base:collection: Vous pouvez choisir une collection de reference pour donenr des acces " %}</label>
-                            <select id="othcollsel" name="othcollsel" >
-                                <option>{% trans "choisir" %}</option>
-                                {% for baseId, collection in user.ACL().get_granted_base(array("canadmin") %}
-                                   <option value='{{ baseId }}'> {{ collection.get_name() }}</option>
-                                {% endfor %}
-                            </select>
-                        {% endif %}
-                        <button type="submit" class="btn">{% tran "Monter" %}></button>
-                    </form>
-                </div>
-            {% endfor %}
+                                </select>
+                            {% endif %}
+                            <a href="#" class='btn btn-mini submiter'>
+                                <img src="/skins/icons/create_coll.png" />
+                                {% trans "admin::base:collection: Monter une collection" %}
+                            </a>
+                        </form>
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
         </div>
     {% endif %}
 
 
     {% if databox.get_activable_colls()| length > 0 %}
-        <div class="well">
-            <div>
-                <a href="#" onclick="activateColl();">
-                    <img src="/skins/icons/create_coll.png" style="vertical-align:middle"/>
-                    {% trans "Activer une collection" %}
-                </a>
+        <div class="well-small">
+            <a href="#" class='btn' id='show-activate-coll'>
+                <img src="/skins/icons/create_coll.png"/>
+                {% trans "Activer une collection" %}
+            </a>
+            <div class="well-small" id='activate-coll' style='display:none'>
+                <ul>
+                {% for baseId in databox.get_activable_colls() %}
+                    <li>
+                        <form class='form-inline' method="post" action="/admin/bas/{{ baseId }}/activate/">
+                            {{ baseId|bas_names }}
+                            <a href="#" class="btn btn-mini submiter">{% trans "Activer" %}></a>
+                        </form>
+                    </li>
+                {% endfor %}
+                </ul>
             </div>
-
-            {% for baseId in databox.get_activable_colls() %}
-                <div>
-                    <form class='form-inline' method="post" action="/admin/database/{{ app.request.get('databox_id') }}/collection/{{ collId }}/mount/">
-                        {% tran "Activer" %} {{ baseId|bas_names }}
-                        <button type="submit" class="btn">{% tran "Monter" %}></button>
-                    </form>
-                </div>
-            {% endfor %}
         </div>
     {% endif %}
-
-    <div>
-        <a onclick="clearAllLog();return(false);">
-            <img src="/skins/icons/clearLogs.png"/>
-            {% trans "admin::base: supprimer tous les logs" %}
-        </a>s
-    </div>
-
-    <div>
-        <a onclick="umountBase();return(false);">
-            <img src="/skins/icons/db-remove.png" style="vertical-align:middle"/>
-            {% trans "admin::base: arreter la publication de la base" %}
-        </a>
-    </div>
-
-    <div>
-        <a onclick="emptyBase();return(false);">
-            <img src="/skins/icons/trash.png" style="vertical-align:middle"/>
-            {% trans "admin::base: vider la base" %}
-        </a>
-    </div>
-
-    <div>
-        <a onclick="deleteBase();return(false);">
-            <img src="/skins/icons/delete.gif" style="vertical-align:middle"/>
-            {% trans "admin::base: supprimer la base" %}
-        </a>
-    </div>
 {% endif %}
 
 <div class="logo_box">
@@ -169,8 +181,8 @@
         </div>
     {% endif %}
     <div id="printLogoDIV_OK">
-        {#<img id="printLogo" src="/print/<?php echo $sbas_id ?>" />#}
-        {% if user.ACL().has_right_on_sbas(databox.get_id(), "bas_manage") %}
+        <img id="printLogo" src="/print/sbas_id " />
+        {% if user.ACL().has_right_on_sbas(databox.get_sbas_id(), "bas_manage") %}
             <a href="javascript:void();return(false);" onclick="deleteLogoPdf();return(false);">
                 {% trans "admin::base:collection: supprimer le logo" %}
             </a>
@@ -179,7 +191,7 @@
     <div id="printLogoDIV_NONE">
         {% trans "admin::base:collection: aucun fichier (minilogo, watermark ...)" %}
         <form method="post" name="flpdf" action="/admin/database/{{ app.request.get('databox_id') }}/logo/" target="???" onsubmit="return(false);" ENCTYPE="multipart/form-data">
-            {% if user.ACL().has_right_on_sbas(databox.get_id(), "bas_manage") %}
+            {% if user.ACL().has_right_on_sbas(databox.get_sbas_id(), "bas_manage") %}
                 <input name="newLogoPdf" type="file" />
                 <input type="button" class="btn" value="{% trans "boutton::envoyer" %}" onclick="sendLogopdf();" />
                 {% trans "admin::base: envoyer un logo (jpeg 35px de hauteur max)" %}
@@ -187,3 +199,120 @@
         </form>
     </div>
 </div>
+
+<script type="text/javascript">
+    function refreshDatabaseInformations()
+    {
+        $.ajax({
+            type: "GET",
+            url: "/admin/database/{{ databox.get_sbas_id() }}/informations/documents/",
+            dataType: 'json',
+            data: {},
+            success: function(data){
+                if(data.viewname == '') {
+                    $("#viewname").html("{% trans 'admin::base: aucun alias' %}");
+                } else {
+                    $("#viewname").html(data.viewname);
+                }
+
+                $("#nrecords").text(data.records);
+                $("#is_indexable").attr('checked', data.indexable);
+                $("#xml_indexed").text(data.xml_indexed);
+                $("#thesaurus_indexed").text(data.thesaurus_indexed);
+
+                if(data.records > 0)
+                {
+                    var p;
+                    p = 100*data.xml_indexed/data.records;
+                    $("#xml_indexed_bar").width(Math.round(2*p)); // 0..200px
+                    $("#xml_indexed_percent").text((Math.round(p*100)/100)+" %");
+                    p = 100*data.thesaurus_indexed/data.records;
+                    $("#thesaurus_indexed_bar").width(Math.round(2*p));
+                    $("#thesaurus_indexed_percent").text((Math.round(p*100)/100)+" %");
+                }
+
+                if(data.printLogoURL)
+                {
+                    $("#printLogo").attr("src", data.printLogoURL);
+                    $("#printLogoDIV_NONE").hide();
+                    $("#printLogoDIV_OK").show();
+                }
+                else
+                {
+                    $("#printLogoDIV_OK").hide();
+                    $("#printLogoDIV_NONE").show();
+                }
+            }
+        });
+    }
+
+    $(document).ready(function(){
+        refreshDatabaseInformations();
+
+        $('#is_indexable').bind('click', function(){
+            var form = $(this).closest('form');
+
+            $.ajax({
+                dataType: 'json',
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: form.serializeArray(),
+                success: function(datas) {
+
+                }
+             });
+        });
+
+        $("#show-view-name").bind('click', function(){
+            $("#change-view-name").toggle();
+        });
+
+        $("#show-activate-coll").bind('click', function(){
+            $("#activate-coll").toggle();
+        });
+
+        $("#show-mount-coll").bind('click', function(){
+            $("#mount-coll").toggle();
+        });
+
+        $("div.right a.submiter").bind("click", function() {
+            var $this = $(this);
+            var form = $this.closest('form');
+
+            if($this.hasClass('confirm')) {
+                if(confirm($this.data('confirm-msg'))) {
+                    submitForm($this, form);
+                }
+            } else {
+                submitForm($this, form);
+            }
+        });
+
+        function submitForm(submitLink, form) {
+            $.ajax({
+                dataType: 'json',
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: form.serializeArray(),
+                success: function(datas) {
+                    if(datas.success) {
+                        if(submitLink.hasClass('reload')) {
+                            parent.reloadTree('base:{{ app.request.get('bas_id') }}');
+                        } else {
+                            p4.Mustache.Render('Alert-Success', {content:datas.msg}, function(html){
+                                $this.closest('.action-block').prepend(html);
+                            });
+                        }
+
+                    } else {
+                        p4.Mustache.Render('Alert-Error', {content:datas.msg}, function(html){
+                            $this.closest('.action-block').prepend(html);
+                        });
+                    }
+                }
+            });
+        }
+
+        setTimeout("refreshDatabaseInformations();", 6000);
+    });
+</script>

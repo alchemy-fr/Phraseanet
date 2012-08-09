@@ -1,0 +1,196 @@
+<script type="text/javascript">
+    var bodySize = {x:100,y:100};
+    function resize(){
+
+        bodySize.y = $(window).height();
+        bodySize.x = $(window).width();
+
+        var $heightd =  $('#tab_demandes').outerHeight(true);
+        var maxSize = (bodySize.y - 160);
+
+        if($heightd > maxSize)
+        {
+            $('#tab_demandes').height(maxSize);
+        }
+
+    }
+
+    $(document).ready(function(){
+
+        resize();
+        $(window).resize(function(){
+            resize();
+        });
+
+    });
+
+    function checkDeny(el)
+    {
+        if($(el)[0].checked)
+        {
+            $('.disabler_'+$(el).attr('id').substring(5)).removeAttr('checked');
+        }
+        else
+        {
+        }
+    }
+
+    function checkAdd(el)
+    {
+        if($(el)[0].checked)
+        {
+            $('#accept_'+$(el).attr('id').substring(10))[0].checked = true;
+            $('#deny_'+$(el).attr('id').substring(10))[0].checked = false;
+        }
+    }
+
+    function checkRemove(el)
+    {
+        if(!$(el)[0].checked)
+            $('.disabler_'+$(el).attr('id').substring(7)).each(function(){$(this)[0].checked = false;});
+        else
+            $('#deny_'+$(el).attr('id').substring(7))[0].checked = false;
+    }
+
+    function modelChecker(usr)
+    {
+        var val = $('#model_'+usr)[0].value;
+
+        var bool = false;
+        if(!isNaN(val) && val!='')
+            bool = true;
+
+        if(bool)
+            $('#sub_usr_'+usr).slideToggle('slow');
+        else
+            $('#sub_usr_'+usr).slideToggle('slow');
+
+        if(bool)
+            $('.checker_'+usr).attr('disabled','disabled');
+        else
+            $('.checker_'+usr).removeAttr('disabled');
+
+    }
+
+    function checkAll(that)
+    {
+        var bool = true;
+        var first = true;
+        $('.'+that+'_checker:not(:disabled)').each(function(){
+            //        if(!$(this)[0].disabled)
+            //        {
+            if(first && $(this)[0].checked)
+                bool = false;
+            $(this)[0].checked = bool;
+            first = false;
+            if(that == 'deny')
+            {
+                checkDeny($(this));
+            }
+            if(that == 'accept_hd')
+                checkAdd(this)
+            if(that == 'watermark')
+                checkAdd(this)
+            if(that == 'accept')
+                checkRemove(this)
+            //        }
+        });
+    }
+</script>
+
+
+
+<div class="header">
+    <h1>{% trans 'admin:: demandes en cours' %}</h1>
+</div>
+
+<div class="btn-grp">
+    <button class='btn'><img onclick='checkAll("deny")' style='cursor:pointer;' class='tipInfoUsr' title="{% trans 'admin:: refuser l\'acces' %}" src='/skins/icons/delete.gif'/></<button>
+    <button class='btn'><img onclick='checkAll("accept")' style='cursor:pointer;' class='tipInfoUsr' title="{% trans 'admin:: donner les droits de telechargement et consultation de previews' %}" src='/skins/icons/cmdok.gif'/></button>
+    <button class='btn'><span onclick='checkAll("accept_hd")' style='cursor:pointer;' class='tipInfoUsr' title="{% trans 'admin:: donner les droits de telechargements de preview et hd' %}">HD</span></button>
+    <button class='btn'><span onclick='checkAll("watermark")' style='cursor:pointer;' class='tipInfoUsr' title="{% trans 'admin:: watermarquer les documents' %}">W</button></td>
+</div>
+
+<table class="table table-condensed" style='margin:0'>
+    <thead>
+        <tr>
+        <th >{% trans 'Informations' %}</td>
+        <th >{% trans 'admin::compte-utilisateur date d\'inscription' %}</td>
+        <th >{% trans 'admin::collection' %}</td>
+        <th >{% trans 'Models' %}</td>
+        </tr>
+    </thead>
+</table>
+
+<div  id="tab_demandes" style='overflow-y:scroll;overflow-x:hidden'>
+    {% if table['user'] | length > 0 %}
+        {% set tableColls = table['coll'] %}
+        {% for row in table['user'] %}
+            <div class='well-small'>
+                <table class="table">
+                    <tr>
+                        <td>
+                            {% set colls = tableColls[row['usr_id']] %}
+                            <dl class="dl-horizontal">
+                                <dt>{% trans 'admin::compte-utilisateur identifiant' %}</dt>
+                                <dd>{{ row['usr_login'] }}</dd>
+                                <dt>{% trans 'admin::compte-utilisateur nom' %} / {% trans 'admin::compte-utilisateur prenom' %}</dt>
+                                <dd>{{ row['usr_nom'] }}  {{ row['usr_prenom'] }}</dd>
+                                <dt>{% trans 'admin::compte-utilisateur email' %}</dt>
+                                <dd>{{ row['usr_mail'] }}</dd>
+                                <dt>{% trans 'admin::compte-utilisateur societe' %}</dt>
+                                <dd>{{ row['societe'] }}</dd>
+                                <dt>{% trans 'admin::compte-utilisateur poste' %}</dt>
+                                <dd>{{ row['fonction'] }}</dd>
+                                <dt>{% trans 'admin::compte-utilisateur activite' %}</dt>
+                                <dd>{{ row['activite'] }}</dd>
+                                <dt>{% trans 'admin::compte-utilisateur telephone' %}</dt>
+                                <dd>{{ row['tel'] }}</dd>
+                                <dt>{% trans 'admin::compte-utilisateur adresse' %}</dt>
+                                <dd>{{ row['adresse'] }}</dd>
+                                <dd>{{ row['cpostal'] }}</dd>
+                                <dd>{{ row['ville'] }}</dd>
+                                <dd>{{ row['pays'] }}</dd>
+                            </dl>
+                        </td>
+                        <td>
+                            {{ row["date_modif"]|prettyDate }}
+                        </td>
+                        <td>
+                            <table class='table-bordered' cellspacing="0" cellpading="0" >
+                                {% for basId in colls %}
+                                    <tr>
+                                        <td>
+                                            <input name="deny[]" value="{{ row['usr_id'] }}_{{ basId }}" onclick="checkDeny(this)" id="deny_{{ row['usr_id'] }}_{{ basId }}" class="deny_checker tipInfoUsr checker_{{ row['usr_id'] }}" title="{% trans 'admin:: refuser l\'acces' %}" type="checkbox"/>
+                                        </td>
+                                        <td>
+                                            <input name="accept[]" value="{{ row['usr_id'] }}_{{ basId }}" onclick="checkRemove(this)" id="accept_{{ row['usr_id'] }}_{{ basId }}" class="disabler_{{ row['usr_id'] }} accept_checker tipInfoUsr checker_{{ row['usr_id'] }}" title="{% trans 'admin:: donner les droits de telechargement et consultation de previews' %}" type="checkbox"/>
+                                        </td>
+                                        <td>
+                                            <input name="accept_hd[]" value="{{ row['usr_id'] }}_{{ basId }}" onclick="checkAdd(this)" id="accept_hd_{{ row['usr_id'] }}_{{ basId }}" class="disabler_{{ row['usr_id'] }} accept_hd_checker tipInfoUsr checker_{{ row['usr_id'] }}" title="{% trans 'admin:: donner les droits de telechargements de preview et hd' %}" type="checkbox"/>
+                                        </td>
+                                        <td>
+                                            <input name="watermark[]" value="{{ row['usr_id'] }}_{{ basId }}" onclick="checkAdd(this)" id="watermark_{{ row['usr_id'] }}_{{ basId }}" class="disabler_{{ row['usr_id'] }} watermark_checker tipInfoUsr checker_{{ row['usr_id'] }}" title="{% trans 'admin:: watermarquer les documents' %}" type="checkbox"/>
+                                        </td>
+                                        <td>
+                                            {{ basId| bas_names }}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </td>
+                        <td>
+                            <div>{% trans 'admin:: appliquer le modele' %}</div>
+                            <select name="template[]" id="model_{{ row['usr_id'] }}" onchange="modelChecker('{{ row['usr_id'] }}')">
+                                <option value="">{% trans 'None' %}</option>
+                                {% for model in models %}
+                                    <option value="{{ row['usr_id'] }}_{{ model['usr_id'] }}">{{ model['usr_login'] }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>

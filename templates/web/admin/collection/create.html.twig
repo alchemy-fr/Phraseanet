@@ -1,0 +1,48 @@
+<div class="header">
+    <h1>{% trans 'admin::base:collection: Creer une collection' %}</h1>
+</div>
+
+<div class="well-small">
+    <form class="form-horizontal" method='post' action='/admin/database/{{ app.request.get('databox_id') }}/collection/'>
+        <fieldset>
+            <div class="control-group">
+                <label class="control-label" for="cnm">{% trans 'admin::base:collection: Nom de la nouvelle collection : ' %}</label>
+                <div class="controls">
+                    <input id="cnm" name='name' class="input-xlarge" type="text">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="ccusrothercoll">{% trans "admin::base:collection: Vous pouvez choisir une collection de reference pour donenr des acces " %}</label>
+                <div class="controls">
+                    <input type="checkbox" id="ccusrothercoll" name="ccusrothercoll">
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                     {% if user.ACL().get_granted_base(["canadmin"]) | length > 0 %}
+                        <select id="othcollsel" name="othcollsel" disabled>
+                            <option>{% trans "choisir" %}</option>
+                            {% for baseId, collection in user.ACL().get_granted_base(["canadmin"]) %}
+                               <option value='{{ baseId }}'>{{ collection.get_name() }}</option>
+                            {% endfor %}
+                        </select>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary" type="submit">{% trans 'boutton::valider' %}</button>
+                <a href='/admin/database/{{ app.request.get('databox_id') }}/' target='right' class="btn ajax">{% trans 'boutton::annuler' %}</a>
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $("#ccusrothercoll").bind('click', function(){
+        if($(this).is(':checked')) {
+            $("#othcollsel").attr("disabled", false);
+        } else {
+            $("#othcollsel").attr("disabled", true);
+        }
+    });
+</script>

@@ -40,10 +40,27 @@ class Database implements ControllerProviderInterface
                 return $app['phraseanet.core']['Firewall']->requireAdmin($app);
             });
 
+
+        /**
+         * Create Database
+         *
+         * name         : admin_database_new
+         *
+         * description  : Create Database
+         *
+         * method       : POST
+         *
+         * parameters   : none
+         *
+         * return       : Redirect Response
+         */
+        $controllers->post('/', $this->call('createDatabase'))
+            ->bind('admin_database_new');
+
         /**
          * Get admin database
          *
-         * name         : admin_databases
+         * name         : admin_get_database
          *
          * description  : Display admin dashboard
          *
@@ -53,8 +70,9 @@ class Database implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/{databox_id}', $this->call('getDatabase'))
-            ->bind('admin_databases');
+        $controllers->get('/{databox_id}/', $this->call('getDatabase'))
+            ->assert('databox_id', '\d+')
+            ->bind('admin_get_database');
 
         /**
          * Delete a database
@@ -69,24 +87,9 @@ class Database implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->delete('/{databox_id}', $this->call('deleteBase'))
+        $controllers->delete('/{databox_id}/', $this->call('deleteBase'))
+            ->assert('databox_id', '\d+')
             ->bind('admin_delete_databases');
-
-        /**
-         * Reset cache
-         *
-         * name         : admin_database_new
-         *
-         * description  : Reset all cache
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : Redirect Response
-         */
-        $controllers->post('/', $this->call('createDatabase'))
-            ->bind('admin_database_new');
 
         /**
          * mount a database
@@ -117,7 +120,7 @@ class Database implements ControllerProviderInterface
          *
          * return       : Redirect Response
          */
-        $controllers->post('/{databox_id}/unmount/', $this->call('databaseUnmount'))
+        $controllers->post('/{databox_id}/unmount/', $this->call('unmountDatabase'))
             ->assert('databox_id', '\d+')
             ->bind('admin_database_unmount');
 
@@ -137,6 +140,40 @@ class Database implements ControllerProviderInterface
         $controllers->post('/{databox_id}/empty/', $this->call('emptyDatabase'))
             ->assert('databox_id', '\d+')
             ->bind('admin_database_empty');
+
+        /**
+         * Reorder database collection
+         *
+         * name         : admin_database_collections_order
+         *
+         * description  : Reorder database collection
+         *
+         * method       : GET
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->get('/{databox_id}/collections/order/', $this->call('getReorder'))
+            ->assert('databox_id', '\d+')
+            ->bind('admin_database_collections_order');
+
+        /**
+         * Reorder database collection
+         *
+         * name         : admin_database_submit_collections_order
+         *
+         * description  : Reorder database collection
+         *
+         * method       : POST
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->post('/{databox_id}/collections/order/', $this->call('setReorder'))
+            ->assert('databox_id', '\d+')
+            ->bind('admin_database_submit_collections_order');
 
         /**
          * Get database CGU
@@ -185,9 +222,26 @@ class Database implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/{databox_id}/documents/informations/', $this->call('progressBarInfos'))
+        $controllers->get('/{databox_id}/informations/documents/', $this->call('progressBarInfos'))
             ->assert('databox_id', '\d+')
             ->bind('admin_document_information');
+
+        /**
+         * Get document details
+         *
+         * name         : admin_document_details
+         *
+         * description  : Get document details
+         *
+         * method       : GET
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->get('/{databox_id}/informations/details/', $this->call('getDetails'))
+            ->assert('databox_id', '\d+')
+            ->bind('admin_document_details');
 
         /**
          * Mount collection on collection
@@ -206,6 +260,23 @@ class Database implements ControllerProviderInterface
             ->assert('databox_id', '\d+')
             ->assert('collection_id', '\d+')
             ->bind('admin_database_mount_collection');
+
+        /**
+         * Get a new collection form
+         *
+         * name         : admin_database_get_new_collection
+         *
+         * description  : New collection form
+         *
+         * method       : GET
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->get('/{databox_id}/collection/', $this->call('getNewCollection'))
+            ->assert('databox_id', '\d+')
+            ->bind('admin_database_get_new_collection');
 
         /**
          * Add logo databox
@@ -324,9 +395,22 @@ class Database implements ControllerProviderInterface
     {
         $databox = $app['phraseanet.appbox']->get_databox($databox_id);
 
+        switch ($uploadErrorLogoMsg = $request->get('upload-logo')) {
+            case 'error':
+                $uploadErrorLogoMsg = _('forms::erreur lors de l\'envoi du fichier');
+                break;
+            case 'error-send':
+                $uploadErrorLogoMsg = _('forms::erreur lors de l\'envoi du fichier');
+                break;
+            case 'error-invalid':
+                $uploadErrorLogoMsg = _('Invalid file format');
+                break;
+        }
+
         return new Response($app['twig']->render('admin/databox/databox.html.twig', array(
-                    'databox'    => $databox,
-                    'showDetail' => (int) $request->get("sta") < 1,
+                    'databox'            => $databox,
+                    'showDetail'         => (int) $request->get("sta") < 1,
+                    'uploadErrorLogoMsg' => $uploadErrorLogoMsg
                 )));
     }
 
@@ -342,23 +426,11 @@ class Database implements ControllerProviderInterface
             $app->abort(403);
         }
 
-        switch ($uploadErrorLogoMsg = $request->get('upload-logo')) {
-            case 'error':
-                $uploadErrorLogoMsg = _('forms::erreur lors de l\'envoi du fichier');
-                break;
-            case 'error-send':
-                $uploadErrorLogoMsg = _('forms::erreur lors de l\'envoi du fichier');
-                break;
-            case 'error-invalid':
-                $uploadErrorLogoMsg = _('Invalid file format');
-                break;
-        }
 
         return new Response($app['twig']->render('admin/databox/cgus.html.twig', array(
-                    'languages'          => Core::getAvailableLanguages(),
-                    'cgus'               => $app['phraseanet.appbox']->get_databox($databox_id)->get_cgus(),
-                    'current_locale'     => \Session_Handler::get_locale(),
-                    'uploadErrorLogoMsg' => $uploadErrorLogoMsg
+                    'languages'      => Core::getAvailableLanguages(),
+                    'cgus'           => $app['phraseanet.appbox']->get_databox($databox_id)->get_cgus(),
+                    'current_locale' => \Session_Handler::get_locale()
                 )));
     }
 
@@ -380,7 +452,7 @@ class Database implements ControllerProviderInterface
             $databox = $app['phraseanet.appbox']->get_databox($databox_id);
             if ($databox->get_record_amount() == 0) {
                 $databox->unmount_databox($app['phraseanet.appbox']);
-                $appbox->write_databox_pic($databox, null, \databox::PIC_PDF);
+                $app['phraseanet.appbox']->write_databox_pic($databox, null, \databox::PIC_PDF);
                 $databox->delete();
                 $ret['sbas_id'] = $databox_id;
             } else {
@@ -399,7 +471,7 @@ class Database implements ControllerProviderInterface
      *
      * @param \Silex\Application $app
      * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param type $databox_id
+     * @param integer $databox_id
      */
     public function reindex(Application $app, Request $request, $databox_id)
     {
@@ -416,7 +488,7 @@ class Database implements ControllerProviderInterface
      *
      * @param \Silex\Application $app
      * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param type $databox_id
+     * @param integer $databox_id
      */
     public function setIndexable(Application $app, Request $request, $databox_id)
     {
@@ -424,7 +496,7 @@ class Database implements ControllerProviderInterface
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 
-        $app['phraseanet.appbox']->set_databox_indexable($app['phraseanet.appbox']->get_databox($databox_id),  ! ! $request->get('INDEXABLE', false));
+        $app['phraseanet.appbox']->set_databox_indexable($app['phraseanet.appbox']->get_databox($databox_id),  ! ! $request->get('indexable', false));
 
         return $app->json(array('sbas_id' => $databox_id));
     }
@@ -731,7 +803,7 @@ class Database implements ControllerProviderInterface
      *
      * @param \Silex\Application $app
      * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param type $databox_id
+     * @param integer $databox_id
      */
     public function unmountDatabase(Application $app, Request $request, $databox_id)
     {
@@ -749,7 +821,7 @@ class Database implements ControllerProviderInterface
      *
      * @param \Silex\Application $app
      * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param type $databox_id
+     * @param integer $databox_id
      */
     public function emptyDatabase(Application $app, Request $request, $databox_id)
     {
@@ -821,7 +893,7 @@ class Database implements ControllerProviderInterface
      *
      * @param \Silex\Application $app
      * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param type $databox_id
+     * @param integer $databox_id
      */
     public function progressBarInfos(Application $app, Request $request, $databox_id)
     {
@@ -851,11 +923,151 @@ class Database implements ControllerProviderInterface
         $ret['xml_indexed'] = $datas['xml_indexed'];
         $ret['thesaurus_indexed'] = $datas['thesaurus_indexed'];
 
-        if ($app['filesystem']->exists($app['Registry']->get('GV_RootPath') . 'config/minilogos/logopdf_' . $databox_id . '.jpg')) {
+        if ($app['phraseanet.core']['file-system']->exists($app['phraseanet.core']['Registry']->get('GV_RootPath') . 'config/minilogos/logopdf_' . $databox_id . '.jpg')) {
             $ret['printLogoURL'] = '/print/' . $databox_id;
         }
 
         return $app->json($ret);
+    }
+
+    /**
+     *
+     * @param \Silex\Application $app
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param integer $databox_id
+     */
+    public function getReorder(Application $app, Request $request, $databox_id)
+    {
+        return new Response($app['twig']->render('admin/collection/reorder.html.twig', array(
+                    'databox' => $app['phraseanet.appbox']->get_databox($databox_id),
+                )));
+    }
+
+    /**
+     *
+     * @param \Silex\Application $app
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param integer $databox_id
+     */
+    public function setReorder(Application $app, Request $request, $databox_id)
+    {
+        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
+            $app->abort(400, _('Bad request format, only JSON is allowed'));
+        }
+
+        foreach ($request->get('order', array()) as $order => $baseId) {
+            $collection = \collection::get_from_base_id($baseId);
+            $app['phraseanet.appbox']->set_collection_order($collection, $order);
+            unset($collection);
+        }
+
+        return $app->json(array('sbas_id' => $databox_id));
+    }
+
+    /**
+     *
+     * @param \Silex\Application $app
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param integer $databox_id
+     */
+    public function getNewCollection(Application $app, Request $request, $databox_id)
+    {
+        return new Response($app['twig']->render('admin/collection/create.html.twig'));
+    }
+
+    /**
+     *
+     * @param \Silex\Application $app
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param integer $databox_id
+     */
+    public function getDetails(Application $app, Request $request, $databox_id)
+    {
+        $databox = $app['phraseanet.appbox']->get_databox($databox_id);
+
+        $out = array('total' => array('totobj' => 0, 'totsiz' => 0, 'mega'   => '0', 'giga'   => '0'), 'result' => array());
+//        echo '<pre>';
+//        var_dump($databox->get_record_details($request->get('sort')));
+//        echo '</pre>';
+        foreach ($databox->get_record_details($request->get('sort')) as $vgrp) {
+
+            $last_k1 = $last_k2 = null;
+            $outRow = array('midobj' => 0, 'midsiz' => 0);
+
+            foreach ($vgrp as $vrow) {
+                if ($vrow["n"] > 0 || $last_k1 !== $vrow["coll_id"]) {
+
+                    $outRow['midobj'] += $vrow["n"];
+
+                    if (extension_loaded("bcmath")) {
+                        $outRow['midsiz'] = bcadd($outRow['midsiz'], $vrow["siz"], 0);
+                    } else {
+                        $outRow['midsiz'] += $vrow["siz"];
+                    }
+
+                    if ($last_k1 !== $vrow["coll_id"]) {
+                        if ((int) $vrow["lostcoll"] <= 0) {
+                            $outRow['asciiname'] = $vrow["asciiname"];
+                        } else {
+                            $outRow['asciiname'] = _('admin::base: enregistrements orphelins') . ' ' . sprintf("(coll_id=%d)", (int) $vrow["coll_id"]);
+                        }
+
+                        $last_k1 = (int) $vrow["coll_id"];
+                    }
+                    if ($last_k2 !== $vrow["name"]) {
+                        $outRow['name'] = $vrow["name"];
+                        $last_k2 = $vrow["name"];
+                    }
+
+                    $outRow['n'] = $vrow["n"];
+
+                    if (extension_loaded("bcmath")) {
+                        $mega = bcdiv($vrow["siz"], 1024 * 1024, 5);
+                    } else {
+                        $mega = $vrow["siz"] / (1024 * 1024);
+                    }
+
+                    if (extension_loaded("bcmath")) {
+                        $giga = bcdiv($vrow["siz"], 1024 * 1024 * 1024, 5);
+                    } else {
+                        $giga = $vrow["siz"] / (1024 * 1024 * 1024);
+                    }
+
+                    $outRow['mega'] = sprintf("%.2f", $mega);
+                    $outRow['giga'] = sprintf("%.2f", $giga);
+                }
+
+                $last_k1 = null;
+            }
+
+            $out['result'][] = $outRow;
+        }
+
+        $out['total']['totobj'] += $outRow['midobj'];
+
+        if (extension_loaded("bcmath")) {
+            $out['total']['totsiz'] = bcadd($out['total']['totsiz'], $outRow['midsiz'], 0);
+        } else {
+            $out['total']['totsiz'] += $outRow['midsiz'];
+        }
+
+        if (extension_loaded("bcmath")) {
+            $out['total']['mega'] = bcdiv($out['total']['totsiz'], 1024 * 1024, 5);
+        } else {
+            $out['total']['mega'] = $out['total']['totsiz'] / (1024 * 1024);
+        }
+
+        if (extension_loaded("bcmath")) {
+            $out['total']['giga'] = bcdiv($out['total']['totsiz'], 1024 * 1024 * 1024, 5);
+        } else {
+            $out['total']['giga'] = $out['total']['totsiz'] / (1024 * 1024 * 1024);
+        }
+
+        return new Response($app['twig']->render('admin/databox/details.html.twig', array(
+                    'databox' => $databox,
+                    'table'   => $out,
+                    'bcmath'  => extension_loaded("bcmath"),
+                )));
     }
 
     /**

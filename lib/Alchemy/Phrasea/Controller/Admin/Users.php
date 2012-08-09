@@ -351,6 +351,65 @@ class Users implements ControllerProviderInterface
             }
         );
 
+        $controllers->get('/demands/', function(Application $app, Request $request) use ($appbox) {
+                $user = $app['phraseanet.core']->getAuthenticatedUser();
+
+                $lastMonth = time() - (3 * 4 * 7 * 24 * 60 * 60);
+                $sql = "DELETE FROM demand WHERE date_modif < :date";
+                $stmt = $appbox->get_connection()->prepare($sql);
+                $stmt->execute(array(':date' => date('Y-m-d', $lastMonth)));
+                $stmt->closeCursor();
+
+                $baslist = array_keys($user->ACL()->get_granted_base(array('canadmin')));
+
+                $sql = 'SELECT usr_id, usr_login FROM usr WHERE model_of = :usr_id';
+
+                $stmt = $appbox->get_connection()->prepare($sql);
+                $stmt->execute(array(':usr_id' => $user->get_id()));
+                $models = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+                $stmt->closeCursor();
+
+
+                $sql = "
+                    SELECT demand.date_modif,demand.base_id, usr.usr_id , usr.usr_login ,usr.usr_nom,usr.usr_prenom,
+                    usr.societe, usr.fonction, usr.usr_mail, usr.tel, usr.activite,
+                    usr.adresse, usr.cpostal, usr.ville, usr.pays, CONCAT(usr.usr_nom,' ',usr.usr_prenom,'\n',fonction,' (',societe,')') AS info
+                    FROM (demand INNER JOIN usr on demand.usr_id=usr.usr_id AND demand.en_cours=1 AND usr.usr_login NOT LIKE '(#deleted%' )
+                    WHERE (base_id='" . implode("' OR base_id='", $baslist) . "') ORDER BY demand.usr_id DESC,demand.base_id ASC
+                ";
+
+                $stmt = $appbox->get_connection()->prepare($sql);
+                $stmt->execute();
+                $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+                $stmt->closeCursor();
+
+                $currentUsr = null;
+                $table = array('user' => array(), 'coll' => array());
+
+                foreach ($rs as $row) {
+                    if ($row['usr_id'] != $currentUsr) {
+                        $currentUsr = $row['usr_id'];
+                        $row['date_modif'] = new \DateTime($row['date_modif']);
+                        $table['user'][$row['usr_id']] = $row;
+                    }
+
+                    if ( ! isset($table['coll'][$row['usr_id']])) {
+                        $table['coll'][$row['usr_id']] = array();
+                    }
+
+                    if ( ! in_array($row['base_id'], $table['coll'][$row['usr_id']])) {
+                        $table['coll'][$row['usr_id']][] = $row['base_id'];
+                    }
+                }
+
+                $stmt->closeCursor();
+
+                return $app['twig']->render('admin/user/demand.html.twig', array(
+                        'table'  => $table,
+                        'models' => $models,
+                    ));
+            });
+
         return $controllers;
     }
 }

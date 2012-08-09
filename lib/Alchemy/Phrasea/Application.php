@@ -74,6 +74,7 @@ class Application extends SilexApplication
                     }
 
                     $twig->addGlobal('session', $app['phraseanet.appbox']->get_session());
+                    $twig->addGlobal('appbox', $app['phraseanet.appbox']);
                     $twig->addGlobal('version_number', $app['phraseanet.core']->getVersion()->getNumber());
                     $twig->addGlobal('version_name', $app['phraseanet.core']->getVersion()->getName());
                     $twig->addGlobal('core', $app['phraseanet.core']);
