@@ -410,6 +410,172 @@ class Users implements ControllerProviderInterface
                     ));
             });
 
+        $controllers->post('/demands/', function(Application $app, Request $request) use ($appbox) {
+
+                $templates = $deny = $accept = $options = array();
+
+                foreach ($request->get('template', array()) as $tmp) {
+                    if (trim($tmp) != '') {
+                        $tmp = explode('_', $tmp);
+
+                        if (count($tmp) == 2) {
+                            $templates[$tmp[0]] = $tmp[1];
+                        }
+                    }
+                }
+
+                foreach ($request->get('deny', array()) as $den) {
+                    $den = explode('_', $den);
+                    if (count($den) == 2 && ! isset($templates[$den[0]])) {
+                        $deny[$den[0]][$den[1]] = $den[1];
+                    }
+                }
+
+                foreach ($request->get('accept', array()) as $acc) {
+                    $acc = explode('_', $acc);
+                    if (count($acc) == 2 && ! isset($templates[$acc[0]])) {
+                        $accept[$acc[0]][$acc[1]] = $acc[1];
+                        $options[$acc[0]][$acc[1]] = array('HD' => false, 'WM' => false);
+                    }
+                }
+
+                foreach ($request->get('accept_hd', array()) as $accHD) {
+                    $accHD = explode('_', $accHD);
+                    if (count($accHD) == 2 && isset($accept[$accHD[0]]) && isset($options[$accHD[0]][$accHD[1]])) {
+                        $options[$accHD[0]][$accHD[1]]['HD'] = true;
+                    }
+                }
+
+                foreach ($request->get('watermark', array()) as $wm) {
+                    $wm = explode('_', $wm);
+                    if (count($wm) == 2 && isset($accept[$wm[0]]) && isset($options[$wm[0]][$wm[1]])) {
+                        $options[$wm[0]][$wm[1]]['WM'] = true;
+                    }
+                }
+
+
+                if (count($templates) > 0 || count($deny) > 0 || count($accept) > 0) {
+                    $done = array();
+                    $cache_to_update = array();
+
+                    foreach ($templates as $usr => $template_id) {
+                        $user = \User_Adapter::getInstance($usr, $appbox);
+                        $cache_to_update[$usr] = true;
+
+                        $user_template = \User_Adapter::getInstance($template_id, $appbox);
+                        $base_ids = array_keys($user_template->ACL()->get_granted_base());
+
+                        $user->ACL()->apply_model($user_template, $base_ids);
+
+
+                        if ( ! isset($done[$usr])) {
+                            $done[$usr] = array();
+                        }
+
+                        foreach ($base_ids as $base_id) {
+                            $done[$usr][$base_id] = true;
+                        }
+
+                        $sql = "
+                            DELETE FROM demand
+                            WHERE usr_id = :usr_id
+                            AND (base_id = " . implode(' OR base_id = ', $base_ids) . ")";
+
+                        $stmt = $appbox->get_connection()->prepare($sql);
+                        $stmt->execute(array(':usr_id' => $usr));
+                        $stmt->closeCursor();
+                    }
+
+                    $sql = "
+                        UPDATE demand SET en_cours=0, refuser=1, date_modif=now()
+                        WHERE usr_id = :usr_id
+                        AND base_id = :base_id";
+
+                    $stmt = $appbox->get_connection()->prepare($sql);
+
+                    foreach ($deny as $usr => $bases) {
+                        $cache_to_update[$usr] = true;
+                        foreach ($bases as $bas) {
+                            $stmt->execute(array(':usr_id'  => $usr, ':base_id' => $bas));
+
+                            if ( ! isset($done[$usr])) {
+                                $done[$usr] = array();
+                            }
+
+                            $done[$usr][$bas] = false;
+                        }
+                    }
+
+                    $stmt->closeCursor();
+
+                    foreach ($accept as $usr => $bases) {
+                        $user = \User_Adapter::getInstance($usr, $appbox);
+                        $cache_to_update[$usr] = true;
+
+                        foreach ($bases as $bas) {
+                            $user->ACL()->give_access_to_sbas(array(\phrasea::sbasFromBas($bas)));
+
+                            $rights = array(
+                                'canputinalbum'   => '1'
+                                , 'candwnldhd'      => ($options[$usr][$bas]['HD'] ? '1' : '0')
+                                , 'nowatermark'     => ($options[$usr][$bas]['WM'] ? '0' : '1')
+                                , 'candwnldpreview' => '1'
+                                , 'actif'           => '1'
+                            );
+
+                            $user->ACL()->give_access_to_base(array($bas));
+                            $user->ACL()->update_rights_to_base($bas, $rights);
+
+                            if ( ! isset($done[$usr])) {
+                                $done[$usr] = array();
+                            }
+
+                            $done[$usr][$bas] = true;
+
+                            $sql = "DELETE FROM demand WHERE usr_id = :usr_id AND base_id = :base_id";
+                            $stmt = $appbox->get_connection()->prepare($sql);
+                            $stmt->execute(array(':usr_id'  => $usr, ':base_id' => $bas));
+                            $stmt->closeCursor();
+                        }
+                    }
+
+                    foreach (array_keys($cache_to_update) as $usr_id) {
+                        $user = \User_Adapter::getInstance($usr_id, $appbox);
+                        $user->ACL()->delete_data_from_cache();
+                        unset($user);
+                    }
+
+                    foreach ($done as $usr => $bases) {
+                        $sql = 'SELECT usr_mail FROM usr WHERE usr_id = :usr_id';
+
+                        $stmt = $appbox->get_connection()->prepare($sql);
+                        $stmt->execute(array(':usr_id' => $usr));
+                        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+                        $stmt->closeCursor();
+
+                        $accept = $deny = '';
+
+                        if ($row) {
+
+                            if (\PHPMailer::ValidateAddress($row['usr_mail'])) {
+                                foreach ($bases as $bas => $isok) {
+                                    if ($isok) {
+                                        $accept .= '<li>' . \phrasea::bas_names($bas) . "</li>\n";
+                                    } else {
+                                        $deny .= '<li>' . \phrasea::bas_names($bas) . "</li>\n";
+                                    }
+                                }
+                                if (($accept != '' || $deny != '')) {
+                                    \mail::register_confirm($row['usr_mail'], $accept, $deny);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return $app->redirect('/admin/users/demands/?demands=ok');
+            });
+
         return $controllers;
     }
 }
