@@ -1,0 +1,47 @@
+<div class="header">
+    <h1>{% trans 'Upload a "csv" file for users creation' %}</h1>
+</div>
+
+{% if app.request.get('error') is not none %}
+    {% set error = app.request.get('error') %}
+    <div class="alert alert-error">
+        <button class="close" data-dismiss="alert" type="button">×</button>
+        {% if error == 'file' %}
+            {% trans 'An error occured while upload the file. Please retry' %}
+        {% elseif error == 'row-login' %}
+            {% trans 'Row "login" is missing, script has stopped' %}
+        {% elseif error == 'row-pwd' %}
+            {% trans 'Row "password" is missing, script has stopped' %}
+        {% elseif error == 'no-user' %}
+            {% trans 'The file does not contains any user to add' %}
+        {% endif %}
+    </div>
+{% endif %}
+
+{% if errors is defined and errors is not none and errors|length > 0 %}
+    <div class="alert alert-error">
+        <button class="close" data-dismiss="alert" type="button">×</button>
+        <ul class="unstyled">
+        {% for error in errors %}
+            <li>{{ error }}</li>
+        {% endfor%}
+        </ul>
+    </div>
+{% endif %}
+
+<div>
+    <div class='well-small'>
+        <a href="/admin/users/import/example/user/"> <i class="icon-share"></i> {% trans  'You can  download an example by clicking here' %}</a>
+    </div>
+    <div class='well-small'>
+        <a href="/admin/users/import/example/rtf/"> <i class="icon-share"></i> {% trans 'You can download the documentation here' %}</a>
+    </div>
+
+    <form class ='well' method="post" target="_self" action="/admin/users/import/file/" ENCTYPE="multipart/form-data" >
+        {% trans "User's file " %} : <input name="file" type="file" />
+        <div class="form-actions">
+            <button class='btn btn-primary'>{% trans 'Send this file' %}</button>
+            <a href="" target='/admin/users/search/' class='btn'>{% trans 'boutton::retour' %}</a>
+        </div>
+    </form>
+</div>

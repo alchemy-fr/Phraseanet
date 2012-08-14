@@ -530,7 +530,7 @@ class Database implements ControllerProviderInterface
      */
     public function createDatabase(Application $app, Request $request)
     {
-        if ('' !== $dbName = $request->get('new_dbname', '')) {
+        if ('' === $dbName = $request->get('new_dbname', '')) {
 
             return $app->redirect('/admin/databases/?error=no-empty');
         }
@@ -986,9 +986,7 @@ class Database implements ControllerProviderInterface
         $databox = $app['phraseanet.appbox']->get_databox($databox_id);
 
         $out = array('total' => array('totobj' => 0, 'totsiz' => 0, 'mega'   => '0', 'giga'   => '0'), 'result' => array());
-//        echo '<pre>';
-//        var_dump($databox->get_record_details($request->get('sort')));
-//        echo '</pre>';
+
         foreach ($databox->get_record_details($request->get('sort')) as $vgrp) {
 
             $last_k1 = $last_k2 = null;

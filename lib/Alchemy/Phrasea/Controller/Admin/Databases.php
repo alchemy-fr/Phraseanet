@@ -52,20 +52,6 @@ class Databases implements ControllerProviderInterface
          */
         $controllers->get('/', $this->call('getDatabases'))->bind('admin_databases');
 
-        /**
-         * Reset cache
-         *
-         * name         : admin_database_new
-         *
-         * description  : Reset all cache
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : Redirect Response
-         */
-        $controllers->post('/', $this->call('postDatabases'))->bind('admin_database_new');
 
         /**
          * Upgrade databases
@@ -185,17 +171,6 @@ class Databases implements ControllerProviderInterface
                     'mountBase'  => $mountBase,
                     'createBase' => $createBase,
                 )));
-    }
-
-    /**
-     *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function postDatabases(Application $app, Request $request)
-    {
-
     }
 
     /**

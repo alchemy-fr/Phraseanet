@@ -398,6 +398,23 @@ class Bas implements ControllerProviderInterface
                 }
             });
 
+        /**
+         * Get document details
+         *
+         * name         : admin_document_details
+         *
+         * description  : Get document details
+         *
+         * method       : GET
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->get('/{bas_id}/informations/details/', $this->call('getDetails'))
+            ->assert('bas_id', '\d+')
+            ->bind('admin_collection_document_details');
+
         return $controllers;
     }
 
@@ -956,9 +973,9 @@ class Bas implements ControllerProviderInterface
                     $pref = array('status' => null, 'xml'    => null);
 
                     if ($ki == "status") {
-                       $pref['status'] = $vi;
+                        $pref['status'] = $vi;
                     } else if ($ki != "sugestedValues") {
-                       $pref['xml'] = $vi->asXML();
+                        $pref['xml'] = $vi->asXML();
                     }
 
                     $basePrefs[] = $pref;
@@ -966,7 +983,7 @@ class Bas implements ControllerProviderInterface
             }
         }
 
-        if($updateMsg = $request->get('update')) {
+        if ($updateMsg = $request->get('update')) {
             switch ($updateMsg) {
                 case 'ok';
                     $updateMsg = _('forms::operation effectuee OK');
@@ -1010,12 +1027,100 @@ class Bas implements ControllerProviderInterface
                 $msg = _('Coult not load XML');
                 $success = false;
             }
-
         } catch (\Exception $e) {
 
         }
 
         return $app->json(array('success' => $success, 'msg'     => $msg));
+    }
+
+    /**
+     *
+     * @param \Silex\Application $app
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param integer $databox_id
+     */
+    public function getDetails(Application $app, Request $request, $bas_id)
+    {
+        $databox = $app['phraseanet.appbox']->get_databox(\phrasea::sbasFromBas($bas_id));
+        $collection = \collection::get_from_base_id($bas_id);
+
+        $out = array('total' => array('totobj' => 0, 'totsiz' => 0, 'mega'   => '0', 'giga'   => '0'), 'result' => array());
+
+        foreach ($collection->get_record_details() as $vrow) {
+
+            $last_k1 = $last_k2 = null;
+            $outRow = array('midobj' => 0, 'midsiz' => 0);
+
+            if ($vrow["amount"] > 0 || $last_k1 !== $vrow["coll_id"]) {
+
+                if (extension_loaded("bcmath")) {
+                    $outRow['midsiz'] = bcadd($outRow['midsiz'], $vrow["size"], 0);
+                } else {
+                    $outRow['midsiz'] += $vrow["size"];
+                }
+
+                if ($last_k2 !== $vrow["name"]) {
+                    $outRow['name'] = $vrow["name"];
+                    $last_k2 = $vrow["name"];
+                }
+
+                if (extension_loaded("bcmath")) {
+                    $mega = bcdiv($vrow["size"], 1024 * 1024, 5);
+                } else {
+                    $mega = $vrow["size"] / (1024 * 1024);
+                }
+
+                if (extension_loaded("bcmath")) {
+                    $giga = bcdiv($vrow["size"], 1024 * 1024 * 1024, 5);
+                } else {
+                    $giga = $vrow["size"] / (1024 * 1024 * 1024);
+                }
+
+                $outRow['mega'] = sprintf("%.2f", $mega);
+                $outRow['giga'] = sprintf("%.2f", $giga);
+                $outRow['amount'] = $vrow["amount"];
+            }
+
+            $out['total']['totobj'] += $outRow['amount'];
+            if (extension_loaded("bcmath")) {
+                $out['total']['totsiz'] = bcadd($out['total']['totsiz'], $outRow['midsiz'], 0);
+            } else {
+                $out['total']['totsiz'] += $outRow['midsiz'];
+            }
+
+            if (extension_loaded("bcmath"))
+                $mega = bcdiv($outRow['midsiz'], 1024 * 1024, 5);
+            else
+                $mega = $outRow['midsiz'] / (1024 * 1024);
+
+            if (extension_loaded("bcmath"))
+                $giga = bcdiv($outRow['midsiz'], 1024 * 1024 * 1024, 5);
+            else
+                $giga = $outRow['midsiz'] / (1024 * 1024 * 1024);
+
+            $outRow['mega_mid_size'] = sprintf("%.2f", $mega);
+            $outRow['giga_mid_size'] = sprintf("%.2f", $giga);
+
+            $out['result'][] = $outRow;
+        }
+
+        if (extension_loaded("bcmath")) {
+            $out['total']['mega'] = bcdiv($out['total']['totsiz'], 1024 * 1024, 5);
+        } else {
+            $out['total']['mega'] = $out['total']['totsiz'] / (1024 * 1024);
+        }
+
+        if (extension_loaded("bcmath")) {
+            $out['total']['giga'] = bcdiv($out['total']['totsiz'], 1024 * 1024 * 1024, 5);
+        } else {
+            $out['total']['giga'] = $out['total']['totsiz'] / (1024 * 1024 * 1024);
+        }
+
+        return new Response($app['twig']->render('admin/collection/details.html.twig', array(
+                    'collection' => $collection,
+                    'table'      => $out,
+                )));
     }
 
     /**

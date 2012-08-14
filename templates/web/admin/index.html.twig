@@ -205,10 +205,9 @@
 
   function reloadTree(position, click){
     $.ajax({
-      type: "POST",
-      url: "adminFeedback.php",
+      type: "GET",
+      url: "/admin/tree/",
       data: {
-        action : 'TREE',
         position : position
       },
       success: function(datas){

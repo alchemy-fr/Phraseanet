@@ -181,7 +181,7 @@
         </div>
     {% endif %}
     <div id="printLogoDIV_OK">
-        <img id="printLogo" src="/print/sbas_id " />
+        <img id="printLogo" src="/print/{{ databox.get_sbas_id() }} " />
         {% if user.ACL().has_right_on_sbas(databox.get_sbas_id(), "bas_manage") %}
             <a href="javascript:void();return(false);" onclick="deleteLogoPdf();return(false);">
                 {% trans "admin::base:collection: supprimer le logo" %}

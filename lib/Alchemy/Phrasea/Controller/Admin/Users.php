@@ -576,7 +576,349 @@ class Users implements ControllerProviderInterface
                 return $app->redirect('/admin/users/demands/?demands=ok');
             });
 
+        $controllers->get('/import/file/', function(Application $app, Request $request) {
+
+                return $app['twig']->render('admin/user/import/file.html.twig');
+            });
+
+        $controllers->post('/import/file/', function(Application $app, Request $request) {
+                $user = $app['phraseanet.core']->getAuthenticatedUser();
+
+                if ((null === $file = $request->files->get('file')) || ! $file->isValid()) {
+
+                    return $app->rediretc('/admin/import/file/?error=file');
+                }
+
+                $array = \format::csv_to_arr($file->getPathname());
+
+                $equivalenceToMysqlField = $this->getEquivalenceToMysqlField();
+                $loginDefined = $pwdDefined = false;
+                $loginNew = array();
+                $out = array('ignored_row' => array(), 'errors' => array());
+                $nbUsrToAdd = 0;
+
+                for ($j = 0; $j < sizeof($array[0]); $j ++ ) {
+                    $array[0][$j] = trim(mb_strtolower($array[0][$j]));
+
+                    if ( ! isset($equivalenceToMysqlField[$array[0][$j]])) {
+                        $out['ignored_row'][] = $array[0][$j];
+                    } else {
+                        if (($equivalenceToMysqlField[$array[0][$j]]) == 'usr_login') {
+                            $loginDefined = true;
+                        }
+
+                        if (($equivalenceToMysqlField[$array[0][$j]]) == 'usr_password') {
+                            $pwdDefined = true;
+                        }
+                    }
+                }
+
+                if ( ! $loginDefined) {
+
+                    return $app->redirect('/admin/users/import/file/?error=row-login');
+                }
+
+                if ( ! $pwdDefined) {
+
+                    return $app->redirect('/admin/users/import/file/?error=row-pwd');
+                }
+
+                $nbLines = sizeof($array);
+                $nbCols = sizeof($array[0]);
+
+                for ($i = 1; $i < $nbLines; $i ++ ) {
+                    $hasVerifLogin = false;
+                    $hasVerifPwd = false;
+
+                    for ($j = 0; $j < $nbCols; $j ++ ) {
+                        $array[$i][$j] = trim($array[$i][$j]);
+
+                        if ( ! isset($equivalenceToMysqlField[$array[0][$j]])) {
+                            continue;
+                        }
+
+                        if (($equivalenceToMysqlField[$array[0][$j]]) == 'usr_login') {
+                            $loginToAdd = $array[$i][$j];
+
+                            if ($loginToAdd == "") {
+                                $out['errors'][] = sprintf(_("Login line %d is empty"), $i);
+                            } elseif (isset($loginNew[$loginToAdd])) {
+                                $out['errors'][] = sprintf(_("Login %s is already defined in the file at line %d"), $loginToAdd, $i);
+                            } else {
+                                if (\User_Adapter::get_usr_id_from_login($loginToAdd)) {
+                                    $out['errors'][] = sprintf(_("Login %s already exists in database"), $loginToAdd);
+                                } else {
+                                    $loginNew[$loginToAdd] = ($i + 1);
+                                }
+                            }
+                            $hasVerifLogin = true;
+                        }
+
+                        if (($equivalenceToMysqlField[$array[0][$j]]) == 'usr_password') {
+                            $passwordToVerif = $array[$i][$j];
+
+                            if ($passwordToVerif == "") {
+                                $out['errors'][] = sprintf(_("Password is empty at line %d"), $i);
+                            }
+
+                            $hasVerifPwd = true;
+                        }
+
+                        if ($hasVerifLogin && $hasVerifPwd) {
+                            $j = $nbCols;
+                        }
+
+                        if (($j + 1) >= $nbCols) {
+                            if (count($out['errors']) === 0) {
+                                $nbUsrToAdd ++;
+                            }
+                        }
+                    }
+                }
+
+                if (count($out['errors']) > 0) {
+
+                    return $app['twig']->render('admin/user/import/file.html.twig', array(
+                            'errors' => $out['errors']
+                        ));
+                } else if ($nbUsrToAdd === 0) {
+
+                    return $app->redirect('/admin/users/import/file/?error=no-user');
+                } else {
+                    for ($i = 1; $i < sizeof($array); $i ++ ) {
+                        for ($j = 0; $j < sizeof($array[0]); $j ++ ) { {
+                                if ((isset($array[$i][$j]) && trim($array[$i][$j]) == "") || ( ! isset($equivalenceToMysqlField[$array[0][$j]])))
+                                    unset($array[$i][$j]);
+                            }
+                        }
+                    }
+
+                    $sql = "
+                        SELECT usr.usr_id,usr.usr_login
+                        FROM usr
+                          INNER JOIN basusr
+                            ON (basusr.usr_id=usr.usr_id)
+                        WHERE usr.model_of = :usr_id
+                          AND base_id in(" . implode(', ', array_keys($user->ACL()->get_granted_base(array('manage')))) . ")
+                          AND usr_login not like '(#deleted_%)'
+                        GROUP BY usr_id";
+
+                    $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+                    $stmt->execute(array(':usr_id' => $user->get_id()));
+                    $models = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+                    $stmt->closeCursor();
+
+                    return $app['twig']->render('/admin/user/import/view.html.twig', array(
+                            'nb_user_to_add'   => $nbUsrToAdd,
+                            'models'           => $models,
+                            'array_serialized' => serialize($array)
+                        ));
+                }
+            });
+
+        $controllers->post('/import/', function(Application $app, Request $request) {
+                $nbCreation = 0;
+                $user = $app['phraseanet.core']->getAuthenticatedUser();
+
+                if ((null === $serializedArray = $request->get('sr')) || ('' === $serializedArray)) {
+                    $app->abort(400);
+                }
+
+                if (null === $model = $request->get("modelToAplly")) {
+                    $app->abort(400);
+                }
+
+                $array = unserialize($serializedArray);
+
+                $nbLines = sizeof($array);
+                $nbCols = sizeof($array[0]);
+
+                $equivalenceToMysqlField = $this->getEquivalenceToMysqlField();
+
+                for ($i = 1; $i < $nbLines; $i ++ ) {
+                    $curUser = null;
+                    for ($j = 0; $j < $nbCols; $j ++ ) {
+                        if ( ! isset($equivalenceToMysqlField[$array[0][$j]]))
+                            continue;
+                        if ($equivalenceToMysqlField[$array[0][$j]] == "usr_sexe" && isset($array[$i][$j])) {
+                            switch ($array[$i][$j]) {
+                                case "Mlle":
+                                case "Mlle.":
+                                case "mlle":
+                                case "Miss":
+                                case "miss":
+                                case "0":
+                                    $curUser[$equivalenceToMysqlField[$array[0][$j]]] = 0;
+                                    break;
+
+                                case "Mme":
+                                case "Madame":
+                                case "Ms":
+                                case "Ms.":
+                                case "1":
+                                    $curUser[$equivalenceToMysqlField[$array[0][$j]]] = 1;
+                                    break;
+
+                                case "M":
+                                case "M.":
+                                case "Mr":
+                                case "Mr.":
+                                case "Monsieur":
+                                case "Mister":
+                                case "2":
+                                    $curUser[$equivalenceToMysqlField[$array[0][$j]]] = 2;
+                                    break;
+                            }
+                        } else {
+                            if (isset($array[$i][$j])) {
+                                $curUser[$equivalenceToMysqlField[$array[0][$j]]] = trim($array[$i][$j]);
+                            }
+                        }
+                    }
+                }
+
+                if (isset($curUser['usr_login']) && trim($curUser['usr_login']) !== '' && isset($curUser['usr_password']) && trim($curUser['usr_password']) !== "") {
+                    $loginNotExist = ! \User_Adapter::get_usr_id_from_login($curUser['usr_login']);
+
+                    if ($loginNotExist) {
+                        $NewUser = \User_Adapter::create($app['phraseanet.appbox'], $curUser['usr_login'], $curUser['usr_password'], $curUser['usr_mail'], false);
+
+                        $NewUser->ACL()->apply_model(
+                            \User_Adapter::getInstance($model, $app['phraseanet.appbox']), array_keys($user->ACL()->get_granted_base(array('manage')))
+                        );
+
+                        $nbCreation ++;
+                    }
+                }
+
+                return $app->redirect('/admin/users/search/?user-updated=' . $nbCreation);
+            });
+
+
+        $controllers->get('/import/example/user/', function(Application $app, Request $request) {
+
+                $file = new \SplFileInfo($app['phraseanet.core']['Registry']->get('GV_RootPath') . 'www/admin/exampleImportUsers.csv');
+
+                if ( ! $file->isFile()) {
+                    $app->abort(400);
+                }
+
+                $response = new Response();
+                $response->setStatusCode(200);
+                $response->headers->set('Pragma', 'public');
+                $response->headers->set('Content-Disposition', 'attachment; filename=' . $file->getFilename());
+                $response->headers->set('Content-Length', $file->getSize());
+                $response->headers->set('Content-Type', 'text/csv');
+                $response->setContent(file_get_contents($file->getPathname()));
+
+                $response->send();
+
+                return $response;
+            });
+
+        $controllers->get('/import/example/rtf/', function(Application $app, Request $request) {
+
+                $file = new \SplFileInfo($app['phraseanet.core']['Registry']->get('GV_RootPath') . 'www/admin/Fields.rtf');
+
+                if ( ! $file->isFile()) {
+                    $app->abort(400);
+                }
+
+                $response = new Response();
+                $response->setStatusCode(200);
+                $response->headers->set('Pragma', 'public');
+                $response->headers->set('Content-Disposition', 'attachment; filename=' . $file->getFilename());
+                $response->headers->set('Content-Length', $file->getSize());
+                $response->headers->set('Content-Type', 'text/rtf');
+                $response->setContent(file_get_contents($file->getPathname()));
+
+                $response->send();
+
+                return $response;
+            });
+
         return $controllers;
+    }
+
+    private function getEquivalenceToMysqlField()
+    {
+        $equivalenceToMysqlField = array();
+
+        $equivalenceToMysqlField['civilite'] = 'usr_sexe';
+        $equivalenceToMysqlField['gender'] = 'usr_sexe';
+        $equivalenceToMysqlField['usr_sexe'] = 'usr_sexe';
+        $equivalenceToMysqlField['nom'] = 'usr_nom';
+        $equivalenceToMysqlField['name'] = 'usr_nom';
+        $equivalenceToMysqlField['last name'] = 'usr_nom';
+        $equivalenceToMysqlField['last_name'] = 'usr_nom';
+        $equivalenceToMysqlField['usr_nom'] = 'usr_nom';
+        $equivalenceToMysqlField['first name'] = 'usr_prenom';
+        $equivalenceToMysqlField['first_name'] = 'usr_prenom';
+        $equivalenceToMysqlField['prenom'] = 'usr_prenom';
+        $equivalenceToMysqlField['usr_prenom'] = 'usr_prenom';
+        $equivalenceToMysqlField['identifiant'] = 'usr_login';
+        $equivalenceToMysqlField['login'] = 'usr_login';
+        $equivalenceToMysqlField['usr_login'] = 'usr_login';
+        $equivalenceToMysqlField['usr_password'] = 'usr_password';
+        $equivalenceToMysqlField['password'] = 'usr_password';
+        $equivalenceToMysqlField['mot de passe'] = 'usr_password';
+        $equivalenceToMysqlField['usr_mail'] = 'usr_mail';
+        $equivalenceToMysqlField['email'] = 'usr_mail';
+        $equivalenceToMysqlField['mail'] = 'usr_mail';
+        $equivalenceToMysqlField['adresse'] = 'adresse';
+        $equivalenceToMysqlField['adress'] = 'adresse';
+        $equivalenceToMysqlField['address'] = 'adresse';
+        $equivalenceToMysqlField['ville'] = 'ville';
+        $equivalenceToMysqlField['city'] = 'ville';
+        $equivalenceToMysqlField['zip'] = 'cpostal';
+        $equivalenceToMysqlField['zipcode'] = 'cpostal';
+        $equivalenceToMysqlField['zip_code'] = 'cpostal';
+        $equivalenceToMysqlField['cpostal'] = 'cpostal';
+        $equivalenceToMysqlField['cp'] = 'cpostal';
+        $equivalenceToMysqlField['code_postal'] = 'cpostal';
+        $equivalenceToMysqlField['tel'] = 'tel';
+        $equivalenceToMysqlField['telephone'] = 'tel';
+        $equivalenceToMysqlField['phone'] = 'tel';
+        $equivalenceToMysqlField['fax'] = 'fax';
+        $equivalenceToMysqlField['job'] = 'fonction';
+        $equivalenceToMysqlField['fonction'] = 'fonction';
+        $equivalenceToMysqlField['function'] = 'fonction';
+        $equivalenceToMysqlField['societe'] = 'societe';
+        $equivalenceToMysqlField['company'] = 'societe';
+        $equivalenceToMysqlField['activity'] = 'activite';
+        $equivalenceToMysqlField['activite'] = 'activite';
+        $equivalenceToMysqlField['pays'] = 'pays';
+        $equivalenceToMysqlField['country'] = 'pays';
+        $equivalenceToMysqlField['ftp_active'] = 'activeFTP';
+        $equivalenceToMysqlField['compte_ftp_actif'] = 'activeFTP';
+        $equivalenceToMysqlField['ftpactive'] = 'activeFTP';
+        $equivalenceToMysqlField['activeftp'] = 'activeFTP';
+        $equivalenceToMysqlField['ftp_adress'] = 'addrFTP';
+        $equivalenceToMysqlField['adresse_du_serveur_ftp'] = 'addrFTP';
+        $equivalenceToMysqlField['addrftp'] = 'addrFTP';
+        $equivalenceToMysqlField['ftpaddr'] = 'addrFTP';
+        $equivalenceToMysqlField['loginftp'] = 'loginFTP';
+        $equivalenceToMysqlField['ftplogin'] = 'loginFTP';
+        $equivalenceToMysqlField['ftppwd'] = 'pwdFTP';
+        $equivalenceToMysqlField['pwdftp'] = 'pwdFTP';
+        $equivalenceToMysqlField['destftp'] = 'destFTP';
+        $equivalenceToMysqlField['destination_folder'] = 'destFTP';
+        $equivalenceToMysqlField['dossier_de_destination'] = 'destFTP';
+        $equivalenceToMysqlField['passive_mode'] = 'passifFTP';
+        $equivalenceToMysqlField['mode_passif'] = 'passifFTP';
+        $equivalenceToMysqlField['passifftp'] = 'passifFTP';
+        $equivalenceToMysqlField['retry'] = 'retryFTP';
+        $equivalenceToMysqlField['nombre_de_tentative'] = 'retryFTP';
+        $equivalenceToMysqlField['retryftp'] = 'retryFTP';
+        $equivalenceToMysqlField['by_default__send'] = 'defaultftpdatasent';
+        $equivalenceToMysqlField['by_default_send'] = 'defaultftpdatasent';
+        $equivalenceToMysqlField['envoi_par_defaut'] = 'defaultftpdatasent';
+        $equivalenceToMysqlField['defaultftpdatasent'] = 'defaultftpdatasent';
+        $equivalenceToMysqlField['prefix_creation_folder'] = 'prefixFTPfolder';
+        $equivalenceToMysqlField['prefix_de_creation_de_dossier'] = 'prefixFTPfolder';
+        $equivalenceToMysqlField['prefixFTPfolder'] = 'prefixFTPfolder';
+
+        return $equivalenceToMysqlField;
     }
 }
 

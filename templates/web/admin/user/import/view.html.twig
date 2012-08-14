@@ -1,0 +1,22 @@
+<div class="header">
+    <h1>{% trans 'Apply a model' %} <small>({{ nb_user_to_add }} {% trans 'Users' %})</small></h1>
+</div>
+
+{% if nb_user_to_add > 0 and models|length > 0 %}
+    <form method="post" name="importform2" action="/admin/users/import/" ENCTYPE="multipart/form-data" >
+        <textarea style="display:none;" name="sr">{{ array_serialized }}</textarea>
+        <select name="modelToApply">
+        {% for model in models %}
+            <option value='{{ model['usr_id'] }}'>{{ model['usr_login'] }}</option>
+        {% endfor %}
+        </select>
+        <div class="form-actions">
+            <button class="btn btn-primary" type="submit">Save changes</button>
+            <button class="btn">Cancel</button>
+        </div>
+    </form>
+{% elseif models|length == 0 %}
+        <div class="alert alert-block">
+            {% trans 'You need define a model before importing a list of users' %}
+        </div>
+{% endif %}

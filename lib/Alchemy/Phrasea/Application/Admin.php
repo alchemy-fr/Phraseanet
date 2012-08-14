@@ -24,6 +24,7 @@ use Alchemy\Phrasea\Controller\Admin\Bas;
 use Alchemy\Phrasea\Controller\Admin\Databases;
 use Alchemy\Phrasea\Controller\Admin\Database;
 use Alchemy\Phrasea\Controller\Admin\Setup;
+use Alchemy\Phrasea\Controller\Admin\Sphinx;
 use Alchemy\Phrasea\Controller\Utils\ConnectionTest;
 use Alchemy\Phrasea\Controller\Utils\PathFileTest;
 
@@ -37,6 +38,7 @@ return call_user_func(
             $app->mount('/database', new Database());
             $app->mount('/databases', new Databases());
             $app->mount('/setup', new Setup());
+            $app->mount('/sphinx', new Sphinx());
             $app->mount('/connected-users', new ConnectedUsers());
             $app->mount('/publications', new Publications());
             $app->mount('/users', new Users());

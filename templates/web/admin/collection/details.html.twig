@@ -1,0 +1,47 @@
+<div class="header">
+    <h1>{{ collection.get_name() }} <small>{% trans "Details" %}</small></h1>
+</div>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>{% trans 'admin::base: objet' %}</th>
+            <th>{% trans 'admin::base: nombre' %}</th>
+            <th>{% trans 'admin::base: poids' %} (Mo)</th>
+            <th>{% trans 'admin::base: poids' %} (Go)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in table['result'] %}
+            <tr style='backgound-color:{{ loop.index is even ? '#ccc' : '#fff' }}'>
+                <td>{{ row['name'] }}</td>
+                <td>{{ row['amount'] }}</td>
+                <td>{{ row['mega'] }}</td>
+                <td>{{ row['giga'] }}</td>
+            </tr>
+        {% endfor %}
+        {% set totals = table['total'] %}
+        <tfoot>
+            <tr>
+                <th>
+                    {% trans 'Total' %}
+                </th>
+                <th>
+                    {{ totals['totobj'] }}
+                </th>
+                <th>
+                    {{ totals['mega'] }}
+                </th>
+                <th>
+                    {{ totals['giga'] }}
+                </th>
+
+            </tr>
+        </tfoot>
+    </tbody>
+</table>
+
+
+<div>
+    <a class='btn btn-mini' href='/admin/bas/{{ collection.get_base_id() }}/'>{% trans 'boutton::retour' %}</a>
+</div>

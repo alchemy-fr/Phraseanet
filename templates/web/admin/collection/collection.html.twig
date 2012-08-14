@@ -9,7 +9,7 @@
     <li>{% trans 'phraseanet:: adresse' %} : {{ collection.get_databox().get_serialized_server_info() }}</li>
     <li>{% trans 'admin::base:collection: numero de collection distante' %} : {{ collection.get_coll_id() }}</li>
     <li>{% trans 'admin::base:collection: etat de la collection' %} : {{ collection.is_active() ? "admin::base:collection: activer la collection"| trans : "admin::base:collection: descativer la collection"|trans }}</li>
-    <li>{{ collection.get_record_amount() }} records</li>
+    <li>{{ collection.get_record_amount() }} records <a target='_self' href='/admin/bas/{{ collection.get_base_id() }}/informations/details/'>{% trans 'phraseanet:: details' %}</a></li>
 </ul>
 
 {% if user.ACL.has_right_on_base(app.request.get('bas_id'), 'manage') %}

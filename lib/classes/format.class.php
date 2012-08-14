@@ -56,4 +56,27 @@ class format
 
         return implode("\n", $lines);
     }
+
+    public static function csv_to_arr($filename)
+    {
+        $separateur = ",";
+
+        // For mac
+        ini_set("auto_detect_line_endings", true);
+
+        if ($FILE = fopen($filename, "r")) {
+            $test1 = fgetcsv($FILE, 1024, ",");
+            rewind($FILE);
+            $test2 = fgetcsv($FILE, 1024, ";");
+            rewind($FILE);
+            if (count($test1) == 1 || ( count($test2) > count($test1) && count($test2) < 20))
+                $separateur = ";";
+
+            while ($ARRAY[] = fgetcsv($FILE, 1024, $separateur));
+            fclose($FILE);
+            array_pop($ARRAY);
+
+            return $ARRAY;
+        }
+    }
 }

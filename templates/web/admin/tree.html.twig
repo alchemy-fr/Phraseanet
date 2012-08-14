@@ -22,13 +22,13 @@
       <span>Setup</span>
     </a>
   </li>
-    {% if registry.get('GV_sphinx') %}
+  {% if registry.get('GV_sphinx') %}
   <li>
-    <a target="right" href="/admin/sphinxconf.php">
+    <a target="right" href="/admin/sphinx/configuration/" class="ajax">
       <span>Sphinx Conf</span>
     </a>
   </li>
-    {% endif %}
+  {% endif %}
   {% endif %}
 
   <li class="{% if feature == 'connected' %}selected{% endif %}">
@@ -46,7 +46,6 @@
     </a>
   </li>
   <li class="{% if feature == 'registrations' %}selected{% endif %}">
-    {#<a target="right" href="demand.php?act=LISTUSERS">#}
     <a target="right" href="/admin/users/demands/" class="ajax">
       <img src="/skins/admin/Demandes.png" />
       <span>{% trans 'admin::utilisateurs: demandes en cours' %}</span>
