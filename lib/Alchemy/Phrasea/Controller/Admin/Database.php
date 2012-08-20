@@ -62,7 +62,7 @@ class Database implements ControllerProviderInterface
          *
          * name         : admin_get_database
          *
-         * description  : Display admin dashboard
+         * description  : Get database informations
          *
          * method       : GET
          *
@@ -312,8 +312,6 @@ class Database implements ControllerProviderInterface
             ->assert('databox_id', '\d+')
             ->bind('admin_delete_database_logo');
 
-        return $controllers;
-
         /**
          * Clear databox logs
          *
@@ -544,31 +542,33 @@ class Database implements ControllerProviderInterface
         $registry = $app['phraseanet.core']['Registry'];
 
         if ((null === $request->get('new_settings')) && (null !== $dataTemplate = $request->get('new_data_template'))) {
+
+            $configuration = Configuration::build();
+            $choosenConnexion = $configuration->getPhraseanet()->get('database');
+            $connexion = $configuration->getConnexion($choosenConnexion);
+
+            $hostname = $connexion->get('host');
+            $port = $connexion->get('port');
+            $user = $connexion->get('user');
+            $password = $connexion->get('password');
+
+            $dataTemplate = new \SplFileInfo($registry->get('GV_RootPath') . 'lib/conf.d/data_templates/' . $dataTemplate . '.xml');
+
             try {
-                $configuration = Configuration::build();
-                $choosenConnexion = $configuration->getPhraseanet()->get('database');
-                $connexion = $configuration->getConnexion($choosenConnexion);
-
-                $hostname = $connexion->get('host');
-                $port = $connexion->get('port');
-                $user = $connexion->get('user');
-                $password = $connexion->get('password');
-
-                $dataTemplate = new \SplFileInfo($registry->get('GV_RootPath') . 'lib/conf.d/data_templates/' . $dataTemplate . '.xml');
                 $connbas = new \connection_pdo('databox_creation', $hostname, $port, $user, $password, $dbName, array(), $registry);
-
-                try {
-                    $base = \databox::create($appbox, $connbas, $dataTemplate, $registry);
-                    $base->registerAdmin($app['phraseanet.core']->getAuthenticatedUser());
-
-                    return $app->redirect('/admin/databases/?success=base-ok&sbas-id=' . $base->get_sbas_id());
-                } catch (\Exception $e) {
-
-                    return $app->redirect('/admin/databases/?error=base-failed');
-                }
-            } catch (\Exception $e) {
+            } catch (\PDOException $e) {
 
                 return $app->redirect('/admin/databases/?error=database-failed');
+            }
+
+            try {
+                $base = \databox::create($appbox, $connbas, $dataTemplate, $registry);
+                $base->registerAdmin($app['phraseanet.core']->getAuthenticatedUser());
+
+                return $app->redirect('/admin/databases/?success=base-ok&sbas-id=' . $base->get_sbas_id());
+            } catch (\Exception $e) {
+
+                return $app->redirect('/admin/databases/?error=base-failed');
             }
         }
 
@@ -767,7 +767,7 @@ class Database implements ControllerProviderInterface
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param integer $databox_id
      */
-    public function clearLog(Application $app, Request $request, $databox_id)
+    public function clearLogs(Application $app, Request $request, $databox_id)
     {
         if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
             $app->abort(400, _('Bad request format, only JSON is allowed'));
@@ -829,7 +829,7 @@ class Database implements ControllerProviderInterface
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 
-        $message = _('Base empty successful');
+        $message = _('An error occurred');
         $success = false;
 
         try {
@@ -838,6 +838,7 @@ class Database implements ControllerProviderInterface
             foreach ($databox->get_collections() as $collection) {
                 if ($collection->get_record_amount() <= 500) {
                     $collection->empty_collection(500);
+                    $message = _('Base empty successful');
                 } else {
                     $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><tasksettings><base_id>" . $collection->get_base_id() . "</base_id></tasksettings>";
                     \task_abstract::create($app['phraseanet.appbox'], 'task_period_emptyColl', $settings);
@@ -847,7 +848,7 @@ class Database implements ControllerProviderInterface
 
             $success = true;
         } catch (\Exception $e) {
-            $message = _('An error occurred');
+
         }
 
         return $app->json(array('success' => $success, 'message' => $message));
