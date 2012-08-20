@@ -192,9 +192,9 @@
         {% trans "admin::base:collection: aucun fichier (minilogo, watermark ...)" %}
         <form method="post" name="flpdf" action="/admin/database/{{ app.request.get('databox_id') }}/logo/" target="???" onsubmit="return(false);" ENCTYPE="multipart/form-data">
             {% if user.ACL().has_right_on_sbas(databox.get_sbas_id(), "bas_manage") %}
-                <input name="newLogoPdf" type="file" />
+                <input name="newLogoPdf" type="file" accept="image/jpeg" />
                 <input type="button" class="btn" value="{% trans "boutton::envoyer" %}" onclick="sendLogopdf();" />
-                {% trans "admin::base: envoyer un logo (jpeg 35px de hauteur max)" %}
+                <i>{% trans "admin::base: envoyer un logo (jpeg 35px de hauteur max)" %}</i>
             {% endif %}
         </form>
     </div>
