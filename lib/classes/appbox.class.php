@@ -366,7 +366,7 @@ class appbox extends base
          */
         $upgrader->set_current_message(_('Copying files'));
 
-        $origine = $registry->get('GV_RootPath') . 'config/';
+        $origine = $registry->get('GV_RootPath') . 'config/custom_files/';
         $target = $registry->get('GV_RootPath') . 'www/custom/';
 
         $filesystem = $core['file-system'];
