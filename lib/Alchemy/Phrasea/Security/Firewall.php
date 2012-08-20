@@ -10,6 +10,7 @@ class Firewall
     public function requireSetUp(Application $app)
     {
         if ( ! \setup::is_installed()) {
+
             return $app->redirect("/setup/");
         }
     }
@@ -17,7 +18,7 @@ class Firewall
     public function requireAdmin(Application $app)
     {
         if (null !== $response = $this->requireAuthentication($app)) {
-            
+
             return $response;
         }
 

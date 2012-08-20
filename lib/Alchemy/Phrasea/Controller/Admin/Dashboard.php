@@ -171,10 +171,10 @@ class Dashboard implements ControllerProviderInterface
     {
         if ($app['phraseanet.core']['CacheService']->flushAll()) {
 
-            return $app->redirect('/login/dashboard/?flush_cache=ok');
+            return $app->redirect('/admin/dashboard/?flush_cache=ok');
         }
 
-        return $app->redirect('/login/dashboard/?flush_cache=ko');
+        return $app->redirect('/admin/dashboard/?flush_cache=ko');
     }
 
     /**
@@ -191,10 +191,10 @@ class Dashboard implements ControllerProviderInterface
 
         if (\mail::mail_test($mail)) {
 
-            return $app->redirect('/login/dashboard/?email=sent');
+            return $app->redirect('/admin/dashboard/?email=sent');
         }
 
-        return $app->redirect('/login/dashboard/?email=error');
+        return $app->redirect('/admin/dashboard/?email=error');
     }
 
     /**
@@ -207,7 +207,7 @@ class Dashboard implements ControllerProviderInterface
     {
         \User_Adapter::reset_sys_admins_rights();
 
-        return $app->redirect('/login/dashboard/');
+        return $app->redirect('/admin/dashboard/');
     }
 
     /**

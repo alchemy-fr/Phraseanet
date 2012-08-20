@@ -150,9 +150,10 @@ class Installer implements ControllerProviderInterface
                 $user_ab = $request->request->get('ab_user');
                 $password = $request->request->get('ab_password');
 
-                $appbox_name = $request->request->get('ab_name');
-                $databox_name = $request->request->get('db_name');
-
+                $appbox_name = $request->get('ab_name');
+                $databox_name = $request->get('db_name');
+                $setupRegistry = new \Setup_Registry();
+                
                 try {
                     $conn = new \connection_pdo('appbox', $hostname, $port, $user_ab, $password, $appbox_name, array(), $setupRegistry);
                 } catch (\Exception $e) {

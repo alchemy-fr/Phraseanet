@@ -405,7 +405,7 @@ class databox extends base
         $stmt->closeCursor();
 
         if ($row) {
-            return self::get_instance((int) $row['sbas_id']);
+            return $appbox->get_databox((int) $row['sbas_id']);
         }
 
         try {
@@ -447,7 +447,7 @@ class databox extends base
 
         $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 
-        $databox = self::get_instance($sbas_id);
+        $databox = $appbox->get_databox($sbas_id);
         $databox->insert_datas();
         $databox->setNewStructure(
             $data_template, $registry->get('GV_base_datapath_noweb')
@@ -944,7 +944,10 @@ class databox extends base
 
     public function clear_logs()
     {
-        foreach (array('log', 'exports', 'quest') as $table) {
+        /**
+         * @todo clear log_docs log_search log_thumb log_view ?
+         */
+        foreach (array('log') as $table) {
             $sql = 'TRUNCATE ' . $table;
             $stmt = $this->get_connection()->prepare($sql);
             $stmt->execute();
