@@ -38,11 +38,11 @@ class Setup implements ControllerProviderInterface
             });
 
         /**
-         * Get admin dashboard
+         * Get globals value
          *
-         * name         : admin_dashbord
+         * name         : setup_globals
          *
-         * description  : Display admin dashboard
+         * description  : Display globals values
          *
          * method       : GET
          *
@@ -50,14 +50,14 @@ class Setup implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/', $this->call('getGlobals'))->bind('admin_dashbord');
+        $controllers->get('/', $this->call('getGlobals'))->bind('setup_globals');
 
         /**
-         * Reset cache
+         * Submit global values
          *
-         * name         : admin_dashboard_flush_cache
+         * name         : submit_setup_globals
          *
-         * description  : Reset all cache
+         * description  : Change globals values
          *
          * method       : POST
          *
@@ -65,7 +65,7 @@ class Setup implements ControllerProviderInterface
          *
          * return       : Redirect Response
          */
-        $controllers->post('/', $this->call('postGlobals'))->bind('admin_dashboard_flush_cache');
+        $controllers->post('/', $this->call('postGlobals'))->bind('submit_setup_globals');
 
         return $controllers;
     }

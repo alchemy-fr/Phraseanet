@@ -5,6 +5,13 @@
     </h1>
 </div>
 
+{% if app.request.get('operation') == 'ok' %}
+        <div class="alert alert-success">
+            <a class="close" data-dismiss="alert" href="#">×</a>
+            {% trans 'forms::operation effectuee OK' %}
+        </div>
+{% endif %}
+
 <ul>
     <li>{% trans 'phraseanet:: adresse' %} : {{ collection.get_databox().get_serialized_server_info() }}</li>
     <li>{% trans 'admin::base:collection: numero de collection distante' %} : {{ collection.get_coll_id() }}</li>
@@ -108,7 +115,7 @@
     {% elseif user.ACL.has_right_on_base(app.request.get('bas_id'), 'manage') %}
         <span>{% trans 'admin::base:collection: aucun fichier (minilogo, watermark ...)' %}</span>
         <form enctype="multipart/form-data" method="post" action="/admin/bas/{{ app.request.get('bas_id') }}/picture/mini-logo/">
-            <input name="newLogo" type="file" />
+            <input name="newLogo" type="file" accept="image/*" />
             <a class="btn btn-primary">{% trans 'boutton::envoyer' %}</a>
         </form>
     {% endif %}
@@ -129,7 +136,7 @@
     {% elseif user.ACL.has_right_on_base(app.request.get('bas_id'), 'manage') %}
         <span>{% trans 'admin::base:collection: aucun fichier (minilogo, watermark ...)' %}</span>
         <form enctype="multipart/form-data" method="post" action="/admin/bas/{{ app.request.get('bas_id') }}/picture/watermark/">
-            <input name="newWm" type="file" />
+            <input name="newWm" type="file" accept="image/*" />
             <a class="btn btn-primary">{% trans 'boutton::envoyer' %}</a>
         </form>
     {% endif %}
@@ -150,7 +157,7 @@
     {% elseif user.ACL.has_right_on_base(app.request.get('bas_id'), 'manage') %}
         <span>{% trans 'admin::base:collection: aucun fichier (minilogo, watermark ...)' %}</span>
         <form enctype="multipart/form-data" method="post" action="/admin/bas/{{ app.request.get('bas_id') }}/picture/stamp-logo/">
-            <input name="newStamp" type="file" />
+            <input name="newStamp" type="file" accept="image/*" />
             <a class="btn btn-primary">{% trans 'boutton::envoyer' %}</a>
         </form>
     {% endif %}
@@ -171,7 +178,7 @@
     {% elseif user.ACL.has_right_on_base(app.request.get('bas_id'), 'manage') %}
         <span>{% trans 'admin::base:collection: aucun fichier (minilogo, watermark ...)' %}</span>
         <form enctype="multipart/form-data" method="post" action="/admin/bas/{{ app.request.get('bas_id') }}/picture/banner/">
-            <input name="newBanner" type="file" />
+            <input name="newBanner" type="file" accept="image/*" />
             <a class="btn btn-primary">{% trans 'boutton::envoyer' %}</a>
             <span>(max : 650x200)</span>
         </form>
