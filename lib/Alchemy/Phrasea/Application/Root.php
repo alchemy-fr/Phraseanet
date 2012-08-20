@@ -30,7 +30,7 @@ return call_user_func(function() {
             $app = new PhraseaApplication();
 
             $app->before(function () use ($app) {
-                    $app['phraseanet.core']['Firewall']->requireSetup($app);
+                    return $app['phraseanet.core']['Firewall']->requireSetup($app);
                 });
 
             $app->get('/', function(SilexApp $app) {

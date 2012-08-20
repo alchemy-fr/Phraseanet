@@ -37,11 +37,11 @@ class Bas implements ControllerProviderInterface
                 if (null !== $response = $app['phraseanet.core']['Firewall']->requireAdmin($app)) {
                     return $response;
                 }
-                if ( ! $app['phraseanet.core']->getAUthenticatedUser()->ACL()->has_access_to_base($app['request']->get('bas_id'), 'canadmin')) {
+
+                if ( ! $app['phraseanet.core']->getAUthenticatedUser()->ACL()->has_right_on_base($app['request']->get('bas_id'), 'canadmin')) {
                     $app->abort(403);
                 }
             });
-
 
         /**
          * Get a collection
@@ -107,11 +107,8 @@ class Bas implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->delete('/{bas_id}/', $this->call('delete'))->bind('admin_collection_delete')->before(function() use ($app) {
-                if ( ! $app['phraseanet.core']->getAUthenticatedUser()->ACL()->has_right_on_base($app['request']->get('bas_id'), 'canadmin')) {
-                    $app->abort(403);
-                }
-            });
+        $controllers->delete('/{bas_id}/', $this->call('delete'))
+            ->assert('bas_id', '\d+')->bind('admin_collection_delete');
 
         /**
          * Enable collection
@@ -126,11 +123,8 @@ class Bas implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/{bas_id}/enable/', $this->call('enable'))->bind('admin_collection_enable')->before(function() use ($app) {
-                if ( ! $app['phraseanet.core']->getAUthenticatedUser()->ACL()->has_right_on_base($app['request']->get('bas_id'), 'canadmin')) {
-                    $app->abort(403);
-                }
-            });
+        $controllers->post('/{bas_id}/enable/', $this->call('enable'))
+            ->assert('bas_id', '\d+')->bind('admin_collection_enable');
 
         /**
          * Disabled collection
@@ -145,11 +139,8 @@ class Bas implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/{bas_id}/disabled/', $this->call('disabled'))->bind('admin_collection_disabled')->before(function() use ($app) {
-                if ( ! $app['phraseanet.core']->getAUthenticatedUser()->ACL()->has_right_on_base($app['request']->get('bas_id'), 'canadmin')) {
-                    $app->abort(403);
-                }
-            });
+        $controllers->post('/{bas_id}/disabled/', $this->call('disabled'))
+            ->assert('bas_id', '\d+')->bind('admin_collection_disabled');
 
         /**
          * Set new order admin
@@ -164,11 +155,8 @@ class Bas implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/{bas_id}/order/admins/', $this->call('setOrderAdmins'))->bind('admin_collection_order_admins')->before(function() use ($app) {
-                if ( ! $app['phraseanet.core']->getAUthenticatedUser()->ACL()->has_right_on_base($app['request']->get('bas_id'), 'canadmin')) {
-                    $app->abort(403);
-                }
-            });
+        $controllers->post('/{bas_id}/order/admins/', $this->call('setOrderAdmins'))
+            ->assert('bas_id', '\d+')->bind('admin_collection_order_admins');
 
         /**
          * Set publication watermark
@@ -183,11 +171,8 @@ class Bas implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/{bas_id}/publication/display/', $this->call('setPublicationDisplay'))->bind('admin_collection_submit_publication')->before(function() use ($app) {
-                if ( ! $app['phraseanet.core']->getAUthenticatedUser()->ACL()->has_right_on_base($app['request']->get('bas_id'), 'canadmin')) {
-                    $app->abort(403);
-                }
-            });
+        $controllers->post('/{bas_id}/publication/display/', $this->call('setPublicationDisplay'))
+            ->assert('bas_id', '\d+')->bind('admin_collection_submit_publication');
 
         /**
          * Rename a collection
@@ -202,11 +187,8 @@ class Bas implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/{bas_id}/rename/', $this->call('rename'))->bind('admin_collection_rename')->before(function() use ($app) {
-                if ( ! $app['phraseanet.core']->getAUthenticatedUser()->ACL()->has_right_on_base($app['request']->get('bas_id'), 'canadmin')) {
-                    $app->abort(403);
-                }
-            });
+        $controllers->post('/{bas_id}/rename/', $this->call('rename'))
+            ->assert('bas_id', '\d+')->bind('admin_collection_rename');
 
         /**
          * Rename a collection
@@ -221,11 +203,8 @@ class Bas implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/{bas_id}/empty/', $this->call('emptyCollection'))->bind('admin_collection_empty')->before(function() use ($app) {
-                if ( ! $app['phraseanet.core']->getAUthenticatedUser()->ACL()->has_right_on_base($app['request']->get('bas_id'), 'canadmin')) {
-                    $app->abort(403);
-                }
-            });
+        $controllers->post('/{bas_id}/empty/', $this->call('emptyCollection'))
+            ->assert('bas_id', '\d+')->bind('admin_collection_empty');
 
         /**
          * Unmount a collection
@@ -240,11 +219,8 @@ class Bas implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/{bas_id}/unmount/', $this->call('unmount'))->bind('admin_collection_unmount')->before(function() use ($app) {
-                if ( ! $app['phraseanet.core']->getAUthenticatedUser()->ACL()->has_right_on_base($app['request']->get('bas_id'), 'canadmin')) {
-                    $app->abort(403);
-                }
-            });
+        $controllers->post('/{bas_id}/unmount/', $this->call('unmount'))
+            ->assert('bas_id', '\d+')->bind('admin_collection_unmount');
 
         /**
          * Set a new logo
@@ -259,11 +235,8 @@ class Bas implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/{bas_id}/picture/mini-logo/', $this->call('setLogo'))->bind('admin_collection_submit_logo')->before(function() use ($app) {
-                if ( ! $app['phraseanet.core']->getAUthenticatedUser()->ACL()->has_right_on_base($app['request']->get('bas_id'), 'canadmin')) {
-                    $app->abort(403);
-                }
-            });
+        $controllers->post('/{bas_id}/picture/mini-logo/', $this->call('setMiniLogo'))
+            ->assert('bas_id', '\d+')->bind('admin_collection_submit_logo');
 
         /**
          * Delete a mini logo
@@ -278,11 +251,8 @@ class Bas implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->delete('/{bas_id}/picture/mini-logo/', $this->call('deleteLogo'))->bind('admin_collection_delete_logo')->before(function() use ($app) {
-                if ( ! $app['phraseanet.core']->getAUthenticatedUser()->ACL()->has_right_on_base($app['request']->get('bas_id'), 'canadmin')) {
-                    $app->abort(403);
-                }
-            });
+        $controllers->delete('/{bas_id}/picture/mini-logo/', $this->call('deleteLogo'))
+            ->assert('bas_id', '\d+')->bind('admin_collection_delete_logo');
 
         /**
          * Set a new logo
@@ -297,11 +267,8 @@ class Bas implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/{bas_id}/picture/watermark/', $this->call('setWatermark'))->bind('admin_collection_submit_logo')->before(function() use ($app) {
-                if ( ! $app['phraseanet.core']->getAUthenticatedUser()->ACL()->has_right_on_base($app['request']->get('bas_id'), 'canadmin')) {
-                    $app->abort(403);
-                }
-            });
+        $controllers->post('/{bas_id}/picture/watermark/', $this->call('setWatermark'))
+            ->assert('bas_id', '\d+')->bind('admin_collection_submit_watermark');
 
         /**
          * Delete a mini logo
@@ -316,11 +283,8 @@ class Bas implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->delete('/{bas_id}/picture/watermark/', $this->call('deleteWatermark'))->bind('admin_collection_delete_logo')->before(function() use ($app) {
-                if ( ! $app['phraseanet.core']->getAUthenticatedUser()->ACL()->has_right_on_base($app['request']->get('bas_id'), 'canadmin')) {
-                    $app->abort(403);
-                }
-            });
+        $controllers->delete('/{bas_id}/picture/watermark/', $this->call('deleteWatermark'))
+            ->assert('bas_id', '\d+')->bind('admin_collection_delete_watermark');
 
         /**
          * Set a new stamp logo
@@ -335,11 +299,8 @@ class Bas implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/{bas_id}/picture/stamp-logo/', $this->call('setStamp'))->bind('admin_collection_submit_stamp')->before(function() use ($app) {
-                if ( ! $app['phraseanet.core']->getAUthenticatedUser()->ACL()->has_right_on_base($app['request']->get('bas_id'), 'canadmin')) {
-                    $app->abort(403);
-                }
-            });
+        $controllers->post('/{bas_id}/picture/stamp-logo/', $this->call('setStamp'))
+            ->assert('bas_id', '\d+')->bind('admin_collection_submit_stamp');
 
         /**
          * Delete a stamp logo
@@ -354,11 +315,8 @@ class Bas implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->delete('/{bas_id}/picture/stamp-logo/', $this->call('deleteStamp'))->bind('admin_collection_delete_stamp')->before(function() use ($app) {
-                if ( ! $app['phraseanet.core']->getAUthenticatedUser()->ACL()->has_right_on_base($app['request']->get('bas_id'), 'canadmin')) {
-                    $app->abort(403);
-                }
-            });
+        $controllers->delete('/{bas_id}/picture/stamp-logo/', $this->call('deleteStamp'))
+            ->assert('bas_id', '\d+')->bind('admin_collection_delete_stamp');
 
         /**
          * Set a new banner
@@ -373,11 +331,8 @@ class Bas implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->post('/{bas_id}/picture/banner/', $this->call('setBanner'))->bind('admin_collection_submit_banner')->before(function() use ($app) {
-                if ( ! $app['phraseanet.core']->getAUthenticatedUser()->ACL()->has_right_on_base($app['request']->get('bas_id'), 'canadmin')) {
-                    $app->abort(403);
-                }
-            });
+        $controllers->post('/{bas_id}/picture/banner/', $this->call('setBanner'))
+            ->assert('bas_id', '\d+')->bind('admin_collection_submit_banner');
 
         /**
          * Delete a banner
@@ -392,11 +347,8 @@ class Bas implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->delete('/{bas_id}/picture/banner/', $this->call('deleteBanner'))->bind('admin_collection_delete_banner')->before(function() use ($app) {
-                if ( ! $app['phraseanet.core']->getAUthenticatedUser()->ACL()->has_right_on_base($app['request']->get('bas_id'), 'canadmin')) {
-                    $app->abort(403);
-                }
-            });
+        $controllers->delete('/{bas_id}/picture/banner/', $this->call('deleteBanner'))
+            ->assert('bas_id', '\d+')->bind('admin_collection_delete_banner');
 
         /**
          * Get document details
@@ -464,7 +416,7 @@ class Bas implements ControllerProviderInterface
             }
         }
 
-        return $app->redirect('/admin/bas/' . $bas_id . '/');
+        return $app->redirect('/admin/bas/' . $bas_id . '/?operation=ok');
     }
 
     /**
@@ -479,14 +431,15 @@ class Bas implements ControllerProviderInterface
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 
-        $message = _('Collection empty successful');
         $success = false;
+        $message = _('An error occurred');
 
         try {
             $collection = \collection::get_from_base_id($bas_id);
 
             if ($collection->get_record_amount() <= 500) {
                 $collection->empty_collection(500);
+                $message = _('Collection empty successful');
             } else {
                 $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n<bas_id>" . $collection->get_bas_id() . "</bas_id></tasksettings>";
                 \task_abstract::create($app['phraseanet.appbox'], 'task_period_emptyColl', $settings);
@@ -495,10 +448,10 @@ class Bas implements ControllerProviderInterface
 
             $success = true;
         } catch (\Exception $e) {
-            $message = _('An error occurred');
+
         }
 
-        return $app->json(array('success' => $success, 'message' => $message));
+        return $app->json(array('success' => $success, 'msg'     => $message));
     }
 
     /**
@@ -519,6 +472,7 @@ class Bas implements ControllerProviderInterface
         try {
             $collection = \collection::get_from_base_id($bas_id);
             $app['phraseanet.appbox']->write_collection_pic($collection, null, \collection::PIC_PRESENTATION);
+            $success = true;
         } catch (\Exception $e) {
 
         }
@@ -544,6 +498,7 @@ class Bas implements ControllerProviderInterface
         try {
             $collection = \collection::get_from_base_id($bas_id);
             $app['phraseanet.appbox']->write_collection_pic($collection, null, \collection::PIC_STAMP);
+            $success = true;
         } catch (\Exception $e) {
 
         }
@@ -569,6 +524,7 @@ class Bas implements ControllerProviderInterface
         try {
             $collection = \collection::get_from_base_id($bas_id);
             $app['phraseanet.appbox']->write_collection_pic($collection, null, \collection::PIC_WM);
+            $success = true;
         } catch (\Exception $e) {
 
         }
@@ -595,6 +551,7 @@ class Bas implements ControllerProviderInterface
             $collection = \collection::get_from_base_id($bas_id);
             $collection->update_logo(null);
             $app['phraseanet.appbox']->write_collection_pic($collection, null, \collection::PIC_WM);
+            $success = true;
         } catch (\Exception $e) {
 
         }
@@ -620,7 +577,7 @@ class Bas implements ControllerProviderInterface
             return $app->redirect('/admin/bas/' . $bas_id . '/?upload-error=too-big');
         }
 
-        if ($file->isValid()) {
+        if ( ! $file->isValid()) {
 
             return $app->redirect('/admin/bas/' . $bas_id . '/?upload-error=unknow-error');
         }
@@ -630,13 +587,13 @@ class Bas implements ControllerProviderInterface
 
             $app['phraseanet.appbox']->write_collection_pic($collection, $file, \collection::PIC_PRESENTATION);
 
-            $app['filesystem']->remove($file->getPathname());
+            $app['phraseanet.core']['file-system']->remove($file->getPathname());
         } catch (\Exception $e) {
 
             return $app->redirect('/admin/bas/' . $bas_id . '/?upload-error=unknow-error');
         }
 
-        return $app->redirect('/admin/bas/' . $bas_id . '/');
+        return $app->redirect('/admin/bas/' . $bas_id . '/?operation=ok');
     }
 
     /**
@@ -657,7 +614,7 @@ class Bas implements ControllerProviderInterface
             return $app->redirect('/admin/bas/' . $bas_id . '/?upload-error=too-big');
         }
 
-        if ($file->isValid()) {
+        if ( ! $file->isValid()) {
 
             return $app->redirect('/admin/bas/' . $bas_id . '/?upload-error=unknow-error');
         }
@@ -667,13 +624,13 @@ class Bas implements ControllerProviderInterface
 
             $app['phraseanet.appbox']->write_collection_pic($collection, $file, \collection::PIC_STAMP);
 
-            $app['filesystem']->remove($file->getPathname());
+            $app['phraseanet.core']['file-system']->remove($file->getPathname());
         } catch (\Exception $e) {
 
             return $app->redirect('/admin/bas/' . $bas_id . '/?upload-error=unknow-error');
         }
 
-        return $app->redirect('/admin/bas/' . $bas_id . '/');
+        return $app->redirect('/admin/bas/' . $bas_id . '/?operation=ok');
     }
 
     /**
@@ -694,7 +651,7 @@ class Bas implements ControllerProviderInterface
             return $app->redirect('/admin/bas/' . $bas_id . '/?upload-error=too-big');
         }
 
-        if ($file->isValid()) {
+        if ( ! $file->isValid()) {
 
             return $app->redirect('/admin/bas/' . $bas_id . '/?upload-error=unknow-error');
         }
@@ -704,13 +661,13 @@ class Bas implements ControllerProviderInterface
 
             $app['phraseanet.appbox']->write_collection_pic($collection, $file, \collection::PIC_WM);
 
-            $app['filesystem']->remove($file->getPathname());
+            $app['phraseanet.core']['file-system']->remove($file->getPathname());
         } catch (\Exception $e) {
 
             return $app->redirect('/admin/bas/' . $bas_id . '/?upload-error=unknow-error');
         }
 
-        return $app->redirect('/admin/bas/' . $bas_id . '/');
+        return $app->redirect('/admin/bas/' . $bas_id . '/?operation=ok');
     }
 
     /**
@@ -731,7 +688,7 @@ class Bas implements ControllerProviderInterface
             return $app->redirect('/admin/bas/' . $bas_id . '/?upload-error=too-big');
         }
 
-        if ($file->isValid()) {
+        if ( ! $file->isValid()) {
 
             return $app->redirect('/admin/bas/' . $bas_id . '/?upload-error=unknow-error');
         }
@@ -741,13 +698,13 @@ class Bas implements ControllerProviderInterface
 
             $app['phraseanet.appbox']->write_collection_pic($collection, $file, \collection::PIC_LOGO);
 
-            $app['filesystem']->remove($file->getPathname());
+            $app['phraseanet.core']['file-system']->remove($file->getPathname());
         } catch (\Exception $e) {
 
             return $app->redirect('/admin/bas/' . $bas_id . '/?upload-error=unknow-error');
         }
 
-        return $app->redirect('/admin/bas/' . $bas_id . '/');
+        return $app->redirect('/admin/bas/' . $bas_id . '/?operation=ok');
     }
 
     /**
@@ -771,7 +728,7 @@ class Bas implements ControllerProviderInterface
             if ($collection->get_record_amount() > 0) {
                 $msg = _('admin::base:collection: vider la collection avant de la supprimer');
             } else {
-                $collection->unmount_collection($appbox);
+                $collection->unmount_collection($app['phraseanet.appbox']);
                 $collection->delete();
                 $success = true;
                 $msg = _('forms::operation effectuee OK');
@@ -793,10 +750,6 @@ class Bas implements ControllerProviderInterface
     {
         if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
             $app->abort(400, _('Bad request format, only JSON is allowed'));
-        }
-
-        if (null === $name = $request->get('name')) {
-            $app->abort(400, _('Missing name format'));
         }
 
         $success = false;
@@ -857,10 +810,6 @@ class Bas implements ControllerProviderInterface
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 
-        if ( ! $app['phraseanet.core']->getAuthenticatedUser()->ACL()->has_right_on_base($bas_id, 'canadmin')) {
-            $app->abort(403);
-        }
-
         if (null === $watermark = $request->get('pub_wm')) {
             $app->abort(400, _('Missing pub_wm format'));
         }
@@ -886,7 +835,7 @@ class Bas implements ControllerProviderInterface
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param integer $bas_id
      */
-    public function enabled(Application $app, Request $request, $bas_id)
+    public function enable(Application $app, Request $request, $bas_id)
     {
         if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
             $app->abort(400, _('Bad request format, only JSON is allowed'));
@@ -1042,7 +991,6 @@ class Bas implements ControllerProviderInterface
      */
     public function getDetails(Application $app, Request $request, $bas_id)
     {
-        $databox = $app['phraseanet.appbox']->get_databox(\phrasea::sbasFromBas($bas_id));
         $collection = \collection::get_from_base_id($bas_id);
 
         $out = array('total' => array('totobj' => 0, 'totsiz' => 0, 'mega'   => '0', 'giga'   => '0'), 'result' => array());
@@ -1083,21 +1031,24 @@ class Bas implements ControllerProviderInterface
             }
 
             $out['total']['totobj'] += $outRow['amount'];
+
             if (extension_loaded("bcmath")) {
                 $out['total']['totsiz'] = bcadd($out['total']['totsiz'], $outRow['midsiz'], 0);
             } else {
                 $out['total']['totsiz'] += $outRow['midsiz'];
             }
 
-            if (extension_loaded("bcmath"))
+            if (extension_loaded("bcmath")) {
                 $mega = bcdiv($outRow['midsiz'], 1024 * 1024, 5);
-            else
+            } else {
                 $mega = $outRow['midsiz'] / (1024 * 1024);
+            }
 
-            if (extension_loaded("bcmath"))
+            if (extension_loaded("bcmath")) {
                 $giga = bcdiv($outRow['midsiz'], 1024 * 1024 * 1024, 5);
-            else
+            } else {
                 $giga = $outRow['midsiz'] / (1024 * 1024 * 1024);
+            }
 
             $outRow['mega_mid_size'] = sprintf("%.2f", $mega);
             $outRow['giga_mid_size'] = sprintf("%.2f", $giga);
