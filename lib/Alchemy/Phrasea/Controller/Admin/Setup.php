@@ -82,8 +82,6 @@ class Setup implements ControllerProviderInterface
 
         require_once __DIR__ . "/../../../../conf.d/_GV_template.inc";
 
-        $app['twig']->addFunction('listTimeZone', new \Twig_Function_Function('\DateTimeZone::listAbbreviations'));
-
         if (null !== $update = $request->get('update')) {
             if('ok' === $update) {
                 $update = _('Update succeed');
@@ -94,7 +92,8 @@ class Setup implements ControllerProviderInterface
 
         return new Response($app['twig']->render('admin/setup.html.twig', array(
                     'GV' => $GV,
-                    'update_post_datas' => $update
+                    'update_post_datas' => $update,
+                    'listTimeZone' => \DateTimeZone::listAbbreviations()
                 )));
     }
 

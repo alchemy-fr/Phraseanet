@@ -441,11 +441,11 @@ class Bas implements ControllerProviderInterface
                 $collection->empty_collection(500);
                 $message = _('Collection empty successful');
             } else {
-                $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n<bas_id>" . $collection->get_bas_id() . "</bas_id></tasksettings>";
+                $settings = '<?xml version="1.0" encoding="UTF-8"?><tasksettings><bas_id>' . $collection->get_base_id() . '</bas_id></tasksettings>';
                 \task_abstract::create($app['phraseanet.appbox'], 'task_period_emptyColl', $settings);
                 $message = _('A task has been creted, please run it to complete empty collection');
             }
-
+            
             $success = true;
         } catch (\Exception $e) {
 

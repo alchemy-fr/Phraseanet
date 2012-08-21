@@ -112,7 +112,7 @@
                             {% endif %}
                                 <select name="{{ value['name'] }}" id="id_{{ value['name'] }}">
                                     {% set times = [] %}
-                                    {% for k, v in listTimeZone() %}
+                                    {% for k, v in listTimeZone %}
                                         {% for val in v %}
                                             {% if val['timezone_id'] is defined and val['timezone_id'] | trim is not empty and val['timezone_id'] not in times %}
                                                 {% set times = times|merge([val['timezone_id']]) %}
