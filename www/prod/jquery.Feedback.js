@@ -186,14 +186,6 @@
 
       var $dialog = p4.Dialog.Create(options, 2);
 
-      $dialog.getDomElement().bind("keypress", function(event){
-        if(event.which){
-          if(event.which==13){
-            return false;
-          }
-        }
-      });
-
       var $FeedBackForm = $('form[name="FeedBackForm"]', $container);
 
       var callback = function(rendered){
@@ -204,6 +196,9 @@
         $('textarea[name="message"]', $dialog.getDomElement()).val($('textarea[name="message"]', $FeedBackForm).val());
         $('.' + $this.Context, $dialog.getDomElement()).show();
 
+        $('form', $dialog.getDomElement()).submit(function() {
+            return false;
+        });
       };
 
       p4.Mustache.Render('Feedback-SendForm', {
