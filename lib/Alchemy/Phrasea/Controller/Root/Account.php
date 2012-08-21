@@ -13,7 +13,9 @@ namespace Alchemy\Phrasea\Controller\Root;
 
 use Silex\Application;
 use Silex\ControllerProviderInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -45,7 +47,8 @@ class Account implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/', $this->call('displayAccount'))->bind('account');
+        $controllers->get('/', $this->call('displayAccount'))
+            ->bind('account');
 
         /**
          * Update account route
@@ -152,22 +155,8 @@ class Account implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/access/', $this->call('accountAccess'))->bind('account_access');
-
-//        /**
-//         * Give account open sessions
-//         *
-//         * name         : register_account
-//         *
-//         * description  : Display form to create a new account
-//         *
-//         * method       : GET
-//         *
-//         * parameters   : none
-//         *
-//         * return       : HTML Response
-//         */
-//        $controllers->get('/register/', $this->call('registerAccount'))->bind('register_account');
+        $controllers->get('/access/', $this->call('accountAccess'))
+            ->bind('account_access');
 
         /**
          * Give authorized applications that can access user informations
@@ -182,7 +171,8 @@ class Account implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/reset-email/', $this->call('resetEmail'))->bind('reset_email');
+        $controllers->post('/reset-email/', $this->call('resetEmail'))
+            ->bind('reset_email');
 
         /**
          * Grant access to an authorized app
@@ -197,7 +187,8 @@ class Account implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/reset-password/', $this->call('resetPassword'))->bind('reset_password');
+        $controllers->get('/reset-password/', $this->call('resetPassword'))
+            ->bind('reset_password');
 
         /**
          * Give account open sessions
@@ -251,11 +242,13 @@ class Account implements ControllerProviderInterface
         return $controllers;
     }
 
-    public function registerAccount(Application $app, Request $request)
-    {
-        return new Response($app['twig']->render('account/register.html.twig'));
-    }
-
+    /**
+     * Reset Password
+     *
+     * @param   Application         $app
+     * @param   Request             $request
+     * @return  Response
+     */
     public function resetPassword(Application $app, Request $request)
     {
         if (null !== $passwordMsg = $request->get('pass-error')) {
@@ -278,11 +271,11 @@ class Account implements ControllerProviderInterface
     }
 
     /**
-     * Reset email
+     * Reset Email
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @param   Application     $app
+     * @param   Request         $request
+     * @return  RedirectResponse
      */
     public function resetEmail(Application $app, Request $request)
     {
@@ -339,9 +332,9 @@ class Account implements ControllerProviderInterface
     /**
      * Display reset email form
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @param   Application     $app
+     * @param   Request         $request
+     * @return  Response
      */
     public function displayResetEmailForm(Application $app, Request $request)
     {
@@ -385,9 +378,9 @@ class Account implements ControllerProviderInterface
     /**
      * Submit the new password
      *
-     * @param Application $app     A Silex application where the controller is mounted on
-     * @param Request     $request The current request
-     * @return Response
+     * @param   Application $app        A Silex application where the controller is mounted on
+     * @param   Request     $request    The current request
+     * @return  RedirectResponse
      */
     public function renewPassword(Application $app, Request $request)
     {
@@ -423,10 +416,9 @@ class Account implements ControllerProviderInterface
     /**
      * Display authorized applications that can access user informations
      *
-     * @param Application $app     A Silex application where the controller is mounted on
-     * @param Request     $request The current request
-     *
-     * @return Response
+     * @param   Application     $app     A Silex application where the controller is mounted on
+     * @param   Request         $request The current request
+     * @return  JsonResponse
      */
     public function grantAccess(Application $app, Request $request, $application_id)
     {
@@ -443,11 +435,11 @@ class Account implements ControllerProviderInterface
                     , new \API_OAuth2_Application($appbox, $application_id)
                     , $app['phraseanet.core']->getAuthenticatedUser()
             );
+
+            $account->set_revoked((bool) $request->get('revoke'), false);
         } catch (\Exception_NotFound $e) {
             $error = true;
         }
-
-        $account->set_revoked((bool) $request->get('revoke'), false);
 
         return $app->json(array('success' => ! $error));
     }
@@ -455,10 +447,9 @@ class Account implements ControllerProviderInterface
     /**
      * Display account base access
      *
-     * @param Application $app     A Silex application where the controller is mounted on
-     * @param Request     $request The current request
-     *
-     * @return Response
+     * @param   Application $app     A Silex application where the controller is mounted on
+     * @param   Request     $request The current request
+     * @return  Response
      */
     public function accountAccess(Application $app, Request $request)
     {
@@ -472,10 +463,9 @@ class Account implements ControllerProviderInterface
     /**
      * Display authorized applications that can access user informations
      *
-     * @param Application $app     A Silex application where the controller is mounted on
-     * @param Request     $request The current request
-     *
-     * @return Response
+     * @param   Application $app     A Silex application where the controller is mounted on
+     * @param   Request     $request The current request
+     * @return  Response
      */
     public function accountAuthorizedApps(Application $app, Request $request)
     {
@@ -487,10 +477,9 @@ class Account implements ControllerProviderInterface
     /**
      * Display account session accesss
      *
-     * @param Application $app     A Silex application where the controller is mounted on
-     * @param Request     $request The current request
-     *
-     * @return Response
+     * @param   Application $app     A Silex application where the controller is mounted on
+     * @param   Request     $request The current request
+     * @return  Response
      */
     public function accountSessionsAccess(Application $app, Request $request)
     {
@@ -500,10 +489,9 @@ class Account implements ControllerProviderInterface
     /**
      * Display account form
      *
-     * @param Application $app     A Silex application where the controller is mounted on
-     * @param Request     $request The current request
-     *
-     * @return Response
+     * @param   Application $app     A Silex application where the controller is mounted on
+     * @param   Request     $request The current request
+     * @return  Response
      */
     public function displayAccount(Application $app, Request $request)
     {
@@ -543,7 +531,6 @@ class Account implements ControllerProviderInterface
      *
      * @param Application $app     A Silex application where the controller is mounted on
      * @param Request     $request The current request
-     *
      * @return Response
      */
     public function updateAccount(Application $app, Request $request)
@@ -555,7 +542,7 @@ class Account implements ControllerProviderInterface
 
         $demands = (array) $request->get('demand', array());
 
-        if (0 === count($demands)) {
+        if (0 !== count($demands)) {
             $register = new \appbox_register($appbox);
 
             foreach ($demands as $baseId) {
@@ -640,7 +627,7 @@ class Account implements ControllerProviderInterface
 
         foreach ($evtMngr->list_notifications_available($user->get_id()) as $notifications) {
             foreach ($notifications as $notification) {
-                $notifId = (int) $notification['id'];
+                $notifId = $notification['id'];
                 $notifName = sprintf('notification_%d', $notifId);
 
                 if (isset($requestedNotifications[$notifId])) {

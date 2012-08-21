@@ -180,7 +180,7 @@ class Manage extends Helper
                 $registry = \bootstrap::getCore()->getRegistry();
 
                 if (false !== $urlToken) {
-                    $url = sprintf('%slogin/forgotpwd.php?token=%s', $registry->get('GV_ServerName'), $urlToken);
+                    $url = sprintf('%slogin/forgot-password/?token=%s', $registry->get('GV_ServerName'), $urlToken);
                     \mail::send_credentials($url, $createdUser->get_login(), $createdUser->get_email());
                 }
             }

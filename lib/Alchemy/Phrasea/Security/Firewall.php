@@ -34,11 +34,4 @@ class Firewall
             return $app->redirect('/login/logout/');
         }
     }
-
-    public function requireNotAuthenticated(Application $app)
-    {
-        if ($app['phraseanet.core']->isAuthenticated()) {
-            return $app->redirect('/prod/');
-        }
-    }
 }
