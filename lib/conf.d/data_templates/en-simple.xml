@@ -301,7 +301,7 @@
     <description>
         <Object src="IPTC:ObjectName" />
         <Category src="IPTC:Category"/>
-        <SupplCategory src="IPTC:SupplementalCategories"/>
+        <SupplCategory src="IPTC:SupplementalCategories" multi="1"/>
         <Keywords src="IPTC:Keywords" multi="1"/>
         <SpecialInstruct src="IPTC:SpecialInstructions"/>
         <Date src="IPTC:DateCreated" type="date" />
