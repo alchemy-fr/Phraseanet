@@ -599,7 +599,7 @@ class BasTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         }
 
-        $collection = null;
+        unset($collection);
     }
 
     /**

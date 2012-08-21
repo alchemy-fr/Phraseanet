@@ -56,6 +56,9 @@ protected $StubbedACL;
         $this->app['phraseanet.core'] = $stubCore;
     }
 
+    /**
+     * @covers Alchemy\Phrasea\Controller\Admin\Setup::getGlobals
+     */
     public function testGetSlash()
     {
         $this->setAdmin(true);
@@ -65,6 +68,7 @@ protected $StubbedACL;
     }
 
     /**
+     * @covers Alchemy\Phrasea\Controller\Admin\Setup::getGlobals
      * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function testGetSlashUnauthorizedException()
@@ -73,5 +77,16 @@ protected $StubbedACL;
 
         $this->client->request('GET', '/setup/');
         $this->assertTrue($this->client->getResponse()->isOk());
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Controller\Admin\Setup::postGlobals
+     */
+    public function testPostGlobals()
+    {
+        $this->setAdmin(true);
+
+        $this->client->request('POST', '/setup/');
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 }

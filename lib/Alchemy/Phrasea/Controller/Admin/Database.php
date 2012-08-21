@@ -403,6 +403,9 @@ class Database implements ControllerProviderInterface
             case 'error-invalid':
                 $uploadErrorLogoMsg = _('Invalid file format');
                 break;
+            case 'too-big':
+                $uploadErrorLogoMsg = _('The file is too big');
+                break;
         }
 
         return new Response($app['twig']->render('admin/databox/databox.html.twig', array(
@@ -444,7 +447,7 @@ class Database implements ControllerProviderInterface
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 
-        $ret = array('sbas_id' => null, 'err'     => false, 'errmsg'  => null);
+        $ret = array('sbas_id' => null, 'success'     => false, 'msg'  => null);
 
         try {
             $databox = $app['phraseanet.appbox']->get_databox($databox_id);
@@ -453,13 +456,13 @@ class Database implements ControllerProviderInterface
                 $app['phraseanet.appbox']->write_databox_pic($databox, null, \databox::PIC_PDF);
                 $databox->delete();
                 $ret['sbas_id'] = $databox_id;
+                $ret['success'] = true;
+                $ret['msg'] = _('forms::operation effectuee OK');
             } else {
-                $ret['err'] = true;
-                $ret['errmsg'] = _('admin::base: vider la base avant de la supprimer');
+                $ret['msg'] = _('admin::base: vider la base avant de la supprimer');
             }
         } catch (\Exception $e) {
-            $ret['err'] = true;
-            $ret['errmsg'] = _('An error occured');
+            $ret['msg'] = _('An error occured');
         }
 
         return $app->json($ret);
@@ -538,7 +541,6 @@ class Database implements ControllerProviderInterface
             return $app->redirect('/admin/databases/?error=special-chars');
         }
 
-        $appbox = $app['phraseanet.appbox'];
         $registry = $app['phraseanet.core']['Registry'];
 
         if ((null === $request->get('new_settings')) && (null !== $dataTemplate = $request->get('new_data_template'))) {
@@ -562,7 +564,7 @@ class Database implements ControllerProviderInterface
             }
 
             try {
-                $base = \databox::create($appbox, $connbas, $dataTemplate, $registry);
+                $base = \databox::create($app['phraseanet.appbox'], $connbas, $dataTemplate, $registry);
                 $base->registerAdmin($app['phraseanet.core']->getAuthenticatedUser());
 
                 return $app->redirect('/admin/databases/?success=base-ok&sbas-id=' . $base->get_sbas_id());
@@ -584,7 +586,7 @@ class Database implements ControllerProviderInterface
                 $data_template = new \SplFileInfo($registry->get('GV_RootPath') . 'lib/conf.d/data_templates/' . $dataTemplate . '.xml');
                 $connbas = new \connection_pdo('databox_creation', $hostname, $port, $userDb, $passwordDb, $dbName, array(), $registry);
                 try {
-                    $base = \databox::create($appbox, $connbas, $data_template, $registry);
+                    $base = \databox::create($app['phraseanet.appbox'], $connbas, $data_template, $registry);
                     $base->registerAdmin($app['phraseanet.core']->getAuthenticatedUser());
 
                     return $app->redirect('/admin/databases/?success=base-ok&sbas-id=' . $base->get_sbas_id());
@@ -607,7 +609,7 @@ class Database implements ControllerProviderInterface
      */
     public function databaseMount(Application $app, Request $request)
     {
-        if ('' !== $dbName = $request->get('new_dbname', '')) {
+        if ('' === $dbName = trim($request->get('new_dbname', ''))) {
 
             return $app->redirect('/admin/databases/?error=no-empty');
         }
@@ -631,7 +633,7 @@ class Database implements ControllerProviderInterface
                 $password = $connexion->get('password');
 
                 $appbox->get_connection()->beginTransaction();
-                $base = \databox::mount($appbox, $hostname, $port, $user, $password, $dbName, $registry);
+                $base = \databox::mount($app['phraseanet.appbox'], $hostname, $port, $user, $password, $dbName, $registry);
                 $base->registerAdmin($app['phraseanet.core']->getAuthenticatedUser());
                 $appbox->get_connection()->commit();
 
@@ -677,7 +679,7 @@ class Database implements ControllerProviderInterface
         $appbox = $app['phraseanet.appbox'];
         $user = $app['phraseanet.core']->getAuthenticatedUser();
 
-        if ($user->ACL()->has_right_on_sbas($databox_id, 'bas_manage')) {
+        if ( ! $user->ACL()->has_right_on_sbas($databox_id, 'bas_manage')) {
             $app->abort(403);
         }
 
@@ -723,13 +725,15 @@ class Database implements ControllerProviderInterface
         try {
             if (null !== ($file = $request->files->get('newLogoPdf')) && $file->isValid()) {
 
-                if ($file->getClientSize < 65536) {
+                if ($file->getClientSize() < 65536) {
                     $databox = $app['phraseanet.appbox']->get_databox($databox_id);
                     $app['phraseanet.appbox']->write_databox_pic($databox, $file, \databox::PIC_PDF);
                     unlink($file->getPathname());
+
+                    return $app->redirect('/admin/database/' . $databox_id . '/');
                 } else {
 
-                    return $app->redirect('/admin/database/' . $databox_id . '/?upload-logo=error');
+                    return $app->redirect('/admin/database/' . $databox_id . '/?upload-logo=too-big');
                 }
             } else {
 
@@ -756,9 +760,18 @@ class Database implements ControllerProviderInterface
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 
-        $app['phraseanet.appbox']->write_databox_pic($app['phraseanet.appbox']->get_databox($databox_id), null, \databox::PIC_PDF);
+        $success = false;
+        $msg = ('An error occured');
 
-        return $app->json(array('sbas_id' => $databox_id));
+        try {
+            $app['phraseanet.appbox']->write_databox_pic($app['phraseanet.appbox']->get_databox($databox_id), null, \databox::PIC_PDF);
+            $success = true;
+            $msg = _('forms::operation effectuee OK');
+        } catch (\Exception $e) {
+
+        }
+
+        return $app->json(array('success' => $success, 'msg' => $msg, 'sbas_id' => $databox_id));
     }
 
     /**
@@ -811,10 +824,20 @@ class Database implements ControllerProviderInterface
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 
-        $databox = $app['phraseanet.appbox']->get_databox($databox_id);
-        $databox->unmount_databox($app['phraseanet.appbox']);
+        $success = false;
+        $msg = _('An error occured');
 
-        return $app->json(array('sbas_id' => $databox_id));
+        try {
+            $databox = $app['phraseanet.appbox']->get_databox($databox_id);
+            $databox->unmount_databox($app['phraseanet.appbox']);
+
+            $success = true;
+            $msg = _('forms::operation effectuee OK');
+        } catch (\Exception $e) {
+
+        }
+
+        return $app->json(array('success' => $success, 'msg' =>  $msg,'sbas_id' => $databox_id));
     }
 
     /**
@@ -851,43 +874,7 @@ class Database implements ControllerProviderInterface
 
         }
 
-        return $app->json(array('success' => $success, 'message' => $message));
-    }
-
-    /**
-     *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $databox_id
-     * @param integer $collection_id
-     */
-    public function emptyCollection(Application $app, Request $request, $databox_id, $collection_id)
-    {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
-        }
-
-        $message = _('Collection empty successful');
-        $success = false;
-
-        try {
-            $databox = $app['phraseanet.appbox']->get_databox($databox_id);
-            $collection = \collection::get_from_coll_id($databox, $collection_id);
-
-            if ($collection->get_record_amount() <= 500) {
-                $collection->empty_collection(500);
-            } else {
-                $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n<base_id>" . $collection->get_base_id() . "</base_id></tasksettings>";
-                \task_abstract::create($app['phraseanet.appbox'], 'task_period_emptyColl', $settings);
-                $message = _('A task has been creted, please run it to complete empty collection');
-            }
-
-            $success = true;
-        } catch (\Exception $e) {
-            $message = _('An error occurred');
-        }
-
-        return $app->json(array('success' => $success, 'message' => $message));
+        return $app->json(array('success' => $success, 'msg' => $message));
     }
 
     /**
@@ -905,27 +892,36 @@ class Database implements ControllerProviderInterface
         $appbox = $app['phraseanet.appbox'];
 
         $ret = array(
+            'success'           => false,
+            'msg'               => _('An error occured'),
             'sbas_id'           => null,
             'indexable'         => false,
             'records'           => 0,
             'xml_indexed'       => 0,
             'thesaurus_indexed' => 0,
             'viewname'          => null,
-            'printLogoURL'      => NULL
+            'printLogoURL'      => null
         );
 
-        $databox = $appbox->get_databox($databox_id);
-        $datas = $databox->get_indexed_record_amount();
+        try {
+            $databox = $appbox->get_databox($databox_id);
+            $datas = $databox->get_indexed_record_amount();
 
-        $ret['indexable'] = $appbox->is_databox_indexable($databox);
-        $ret['viewname'] = (($databox->get_dbname() == $databox->get_viewname()) ? _('admin::base: aucun alias') : $databox->get_viewname());
-        $ret['records'] = $databox->get_record_amount();
-        $ret['sbas_id'] = $databox_id;
-        $ret['xml_indexed'] = $datas['xml_indexed'];
-        $ret['thesaurus_indexed'] = $datas['thesaurus_indexed'];
+            $ret['indexable'] = $appbox->is_databox_indexable($databox);
+            $ret['viewname'] = (($databox->get_dbname() == $databox->get_viewname()) ? _('admin::base: aucun alias') : $databox->get_viewname());
+            $ret['records'] = $databox->get_record_amount();
+            $ret['sbas_id'] = $databox_id;
+            $ret['xml_indexed'] = $datas['xml_indexed'];
+            $ret['thesaurus_indexed'] = $datas['thesaurus_indexed'];
 
-        if ($app['phraseanet.core']['file-system']->exists($app['phraseanet.core']['Registry']->get('GV_RootPath') . 'config/minilogos/logopdf_' . $databox_id . '.jpg')) {
-            $ret['printLogoURL'] = '/print/' . $databox_id;
+            if ($app['phraseanet.core']['file-system']->exists($app['phraseanet.core']['Registry']->get('GV_RootPath') . 'config/minilogos/logopdf_' . $databox_id . '.jpg')) {
+                $ret['printLogoURL'] = '/print/' . $databox_id;
+            }
+
+            $ret['success'] = true;
+            $ret['msg'] = _('forms::operation effectuee OK');;
+        } catch (\Exception $e) {
+
         }
 
         return $app->json($ret);

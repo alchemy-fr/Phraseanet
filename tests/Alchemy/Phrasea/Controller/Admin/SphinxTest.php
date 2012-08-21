@@ -5,7 +5,7 @@ require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.
 class SphinxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
-protected $StubbedACL;
+    protected $StubbedACL;
 
     public function createApplication()
     {
@@ -29,7 +29,7 @@ protected $StubbedACL;
     public function setAdmin($bool)
     {
         $stubAuthenticatedUser = $this->getMockBuilder('\User_Adapter')
-            ->setMethods(array('is_admin','ACL'))
+            ->setMethods(array('is_admin', 'ACL'))
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -56,6 +56,10 @@ protected $StubbedACL;
         $this->app['phraseanet.core'] = $stubCore;
     }
 
+    /**
+     * @covers Alchemy\Phrasea\Controller\Admin\Sphinx::getConfiguration
+     * @covers Alchemy\Phrasea\Controller\Admin\Sphinx::connect
+     */
     public function testGetConfiguration()
     {
         $this->setAdmin(true);
@@ -65,6 +69,7 @@ protected $StubbedACL;
     }
 
     /**
+     * @covers Alchemy\Phrasea\Controller\Admin\Sphinx::getConfiguration
      * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function testGetConfigurationUnauthorizedException()
@@ -73,5 +78,16 @@ protected $StubbedACL;
 
         $this->client->request('GET', '/sphinx/configuration/');
         $this->assertTrue($this->client->getResponse()->isOk());
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Controller\Admin\Sphinx::submitConfiguration
+     */
+    public function testPostConfiguration()
+    {
+        $this->setAdmin(true);
+
+        $this->client->request('POST', '/sphinx/configuration/');
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 }

@@ -17,6 +17,7 @@ namespace Alchemy\Phrasea\Controller\Admin;
  * @link        www.phraseanet.com
  */
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -59,11 +60,11 @@ class Sphinx implements ControllerProviderInterface
          *
          * description  : Submit new sphinx configuration
          *
-         * method       : GET
+         * method       : POST
          *
          * parameters   : none
          *
-         * return       : HTML Response
+         * return       : REDIRECT Response
          */
         $controllers->post('/configuration/', $this->call('submitConfiguration'))->bind('submit_sphinx_configuration');
 
@@ -73,9 +74,9 @@ class Sphinx implements ControllerProviderInterface
     /**
      * Get current sphinx configuration
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param   Application     $app
+     * @param   Request         $request
+     * @return  Response
      */
     public function getConfiguration(Application $app, Request $request)
     {
@@ -96,9 +97,9 @@ class Sphinx implements ControllerProviderInterface
     /**
      * Submit a new sphinx configuration
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @param   Application     $app
+     * @param   Request         $request
+     * @return  RedirectResponse
      */
     public function submitConfiguration(Application $app, Request $request)
     {

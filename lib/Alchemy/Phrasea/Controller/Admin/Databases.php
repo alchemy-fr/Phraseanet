@@ -17,6 +17,7 @@ namespace Alchemy\Phrasea\Controller\Admin;
  * @link        www.phraseanet.com
  */
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -38,11 +39,11 @@ class Databases implements ControllerProviderInterface
             });
 
         /**
-         * Get admin dashboard
+         * Get Databases control panel
          *
          * name         : admin_databases
          *
-         * description  : Display admin dashboard
+         * description  : Get Databases control panel
          *
          * method       : GET
          *
@@ -72,10 +73,11 @@ class Databases implements ControllerProviderInterface
     }
 
     /**
+     * Get Databases control panel
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param   $app        Application $app
+     * @param   $request    Request $request
+     * @return  Response
      */
     public function getDatabases(Application $app, Request $request)
     {
@@ -174,10 +176,11 @@ class Databases implements ControllerProviderInterface
     }
 
     /**
+     * Upgrade all databases
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param   $app        Application $app
+     * @param   $request    Request $request
+     * @return  RedirectResponse
      */
     public function databasesUpgrade(Application $app, Request $request)
     {

@@ -17,14 +17,14 @@ namespace Alchemy\Phrasea\Controller\Admin;
  * @link        www.phraseanet.com
  */
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 
 /**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
+ * 
  */
 class Bas implements ControllerProviderInterface
 {
@@ -48,7 +48,7 @@ class Bas implements ControllerProviderInterface
          *
          * name         : admin_database_collection
          *
-         * description  : Get collection
+         * description  : Display collection information page
          *
          * method       : GET
          *
@@ -65,7 +65,7 @@ class Bas implements ControllerProviderInterface
          *
          * name         : admin_database_suggested_values
          *
-         * description  : suggested values
+         * description  : Display page to edit suggested values
          *
          * method       : GET
          *
@@ -95,49 +95,49 @@ class Bas implements ControllerProviderInterface
             ->bind('admin_database_submit_suggested_values');
 
         /**
-         * Delete collection
+         * Delete a collection
          *
          * name         : admin_collection_delete
          *
-         * description  : Delete collection
+         * description  : Delete a collection
          *
          * method       : DELETE
          *
          * parameters   : none
          *
-         * return       : HTML Response
+         * return       : JSON Response
          */
         $controllers->delete('/{bas_id}/', $this->call('delete'))
             ->assert('bas_id', '\d+')->bind('admin_collection_delete');
 
         /**
-         * Enable collection
+         * Enable a collection
          *
          * name         : admin_collection_enable
          *
-         * description  : Enable collection
+         * description  : Enable a collection
          *
          * method       : POST
          *
          * parameters   : none
          *
-         * return       : HTML Response
+         * return       : JSON Response
          */
         $controllers->post('/{bas_id}/enable/', $this->call('enable'))
             ->assert('bas_id', '\d+')->bind('admin_collection_enable');
 
         /**
-         * Disabled collection
+         * Disable a collection
          *
          * name         : admin_collection_disabled
          *
-         * description  : Disabled collection
+         * description  : Disable a collection
          *
          * method       : POST
          *
          * parameters   : none
          *
-         * return       : HTML Response
+         * return       : JSON Response
          */
         $controllers->post('/{bas_id}/disabled/', $this->call('disabled'))
             ->assert('bas_id', '\d+')->bind('admin_collection_disabled');
@@ -147,13 +147,13 @@ class Bas implements ControllerProviderInterface
          *
          * name         : admin_collection_order_admins
          *
-         * description  : Set new order admin
+         * description  : Set new admins for handle items order
          *
          * method       : POST
          *
          * parameters   : none
          *
-         * return       : HTML Response
+         * return       : Redirect Response
          */
         $controllers->post('/{bas_id}/order/admins/', $this->call('setOrderAdmins'))
             ->assert('bas_id', '\d+')->bind('admin_collection_order_admins');
@@ -169,7 +169,7 @@ class Bas implements ControllerProviderInterface
          *
          * parameters   : none
          *
-         * return       : HTML Response
+         * return       : JSON Response
          */
         $controllers->post('/{bas_id}/publication/display/', $this->call('setPublicationDisplay'))
             ->assert('bas_id', '\d+')->bind('admin_collection_submit_publication');
@@ -185,23 +185,23 @@ class Bas implements ControllerProviderInterface
          *
          * parameters   : none
          *
-         * return       : HTML Response
+         * return       : JSON Response
          */
         $controllers->post('/{bas_id}/rename/', $this->call('rename'))
             ->assert('bas_id', '\d+')->bind('admin_collection_rename');
 
         /**
-         * Rename a collection
+         * Empty a collection
          *
          * name         : admin_collection_empty
          *
-         * description  : Rename a collection
+         * description  : Empty a collection
          *
          * method       : POST
          *
          * parameters   : none
          *
-         * return       : HTML Response
+         * return       : JSON Response
          */
         $controllers->post('/{bas_id}/empty/', $this->call('emptyCollection'))
             ->assert('bas_id', '\d+')->bind('admin_collection_empty');
@@ -217,39 +217,39 @@ class Bas implements ControllerProviderInterface
          *
          * parameters   : none
          *
-         * return       : HTML Response
+         * return       : JSON Response
          */
         $controllers->post('/{bas_id}/unmount/', $this->call('unmount'))
             ->assert('bas_id', '\d+')->bind('admin_collection_unmount');
 
         /**
-         * Set a new logo
+         * Set a collection mini logo
          *
          * name         : admin_collection_submit_logo
          *
-         * description  : Set a new logo
+         * description  : Set a collection mini logo
          *
          * method       : POST
          *
          * parameters   : none
          *
-         * return       : HTML Response
+         * return       : REDIRECT Response
          */
         $controllers->post('/{bas_id}/picture/mini-logo/', $this->call('setMiniLogo'))
             ->assert('bas_id', '\d+')->bind('admin_collection_submit_logo');
 
         /**
-         * Delete a mini logo
+         * Delete the current collection mini logo
          *
          * name         : admin_collection_delete_logo
          *
-         * description  : Delete a mini logo
+         * description  : Delete the current collection mini logo
          *
-         * method       : POST
+         * method       : DELETE
          *
          * parameters   : none
          *
-         * return       : HTML Response
+         * return       : JSON Response
          */
         $controllers->delete('/{bas_id}/picture/mini-logo/', $this->call('deleteLogo'))
             ->assert('bas_id', '\d+')->bind('admin_collection_delete_logo');
@@ -265,7 +265,7 @@ class Bas implements ControllerProviderInterface
          *
          * parameters   : none
          *
-         * return       : HTML Response
+         * return       : REDIRECT Response
          */
         $controllers->post('/{bas_id}/picture/watermark/', $this->call('setWatermark'))
             ->assert('bas_id', '\d+')->bind('admin_collection_submit_watermark');
@@ -277,11 +277,11 @@ class Bas implements ControllerProviderInterface
          *
          * description  : Delete a mini logo
          *
-         * method       : POST
+         * method       : DELETE
          *
          * parameters   : none
          *
-         * return       : HTML Response
+         * return       : JSON Response
          */
         $controllers->delete('/{bas_id}/picture/watermark/', $this->call('deleteWatermark'))
             ->assert('bas_id', '\d+')->bind('admin_collection_delete_watermark');
@@ -297,7 +297,7 @@ class Bas implements ControllerProviderInterface
          *
          * parameters   : none
          *
-         * return       : HTML Response
+         * return       : REDIRECT Response
          */
         $controllers->post('/{bas_id}/picture/stamp-logo/', $this->call('setStamp'))
             ->assert('bas_id', '\d+')->bind('admin_collection_submit_stamp');
@@ -309,11 +309,11 @@ class Bas implements ControllerProviderInterface
          *
          * description  : Delete a stamp
          *
-         * method       : POST
+         * method       : DELETE
          *
          * parameters   : none
          *
-         * return       : HTML Response
+         * return       : JSON Response
          */
         $controllers->delete('/{bas_id}/picture/stamp-logo/', $this->call('deleteStamp'))
             ->assert('bas_id', '\d+')->bind('admin_collection_delete_stamp');
@@ -329,7 +329,7 @@ class Bas implements ControllerProviderInterface
          *
          * parameters   : none
          *
-         * return       : HTML Response
+         * return       : REDIRECT Response
          */
         $controllers->post('/{bas_id}/picture/banner/', $this->call('setBanner'))
             ->assert('bas_id', '\d+')->bind('admin_collection_submit_banner');
@@ -341,21 +341,21 @@ class Bas implements ControllerProviderInterface
          *
          * description  : Delete a mini logo
          *
-         * method       : POST
+         * method       : DELETE
          *
          * parameters   : none
          *
-         * return       : HTML Response
+         * return       : REDIRECT Response
          */
         $controllers->delete('/{bas_id}/picture/banner/', $this->call('deleteBanner'))
             ->assert('bas_id', '\d+')->bind('admin_collection_delete_banner');
 
         /**
-         * Get document details
+         * Get document details in the requested collection
          *
          * name         : admin_document_details
          *
-         * description  : Get document details
+         * description  : Get documents collection details
          *
          * method       : GET
          *
@@ -371,11 +371,12 @@ class Bas implements ControllerProviderInterface
     }
 
     /**
+     * Display collection information page
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $databox_id
-     * @param integer $bas_id
+     * @param  Application   $app        The silex application
+     * @param  Request       $request    The current request
+     * @param  integer       $bas_id     The collection base_id
+     * @return Response
      */
     public function getCollection(Application $app, Request $request, $bas_id)
     {
@@ -397,10 +398,12 @@ class Bas implements ControllerProviderInterface
     }
 
     /**
+     * Set new admin to handle orders
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $bas_id
+     * @param   Application   $app        The silex application
+     * @param   Request       $request    The current request
+     * @param   integer       $bas_id     The collection base_id
+     * @return  RedirectResponse
      */
     public function setOrderAdmins(Application $app, Request $request, $bas_id)
     {
@@ -420,10 +423,12 @@ class Bas implements ControllerProviderInterface
     }
 
     /**
+     * Empty a collection
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $bas_id
+     * @param Application   $app        The silex application
+     * @param Request       $request    The current request
+     * @param integer       $bas_id     The collection base_id
+     * @return JsonResponse
      */
     public function emptyCollection(Application $app, Request $request, $bas_id)
     {
@@ -445,7 +450,7 @@ class Bas implements ControllerProviderInterface
                 \task_abstract::create($app['phraseanet.appbox'], 'task_period_emptyColl', $settings);
                 $message = _('A task has been creted, please run it to complete empty collection');
             }
-            
+
             $success = true;
         } catch (\Exception $e) {
 
@@ -455,10 +460,12 @@ class Bas implements ControllerProviderInterface
     }
 
     /**
+     * Delete the collection banner
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $bas_id
+     * @param   Application   $app        The silex application
+     * @param   Request       $request    The current request
+     * @param   integer       $bas_id     The collection base_id
+     * @return  JsonResponse
      */
     public function deleteBanner(Application $app, Request $request, $bas_id)
     {
@@ -481,10 +488,12 @@ class Bas implements ControllerProviderInterface
     }
 
     /**
+     * Delete the collection stamp
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $bas_id
+     * @param   Application   $app        The silex application
+     * @param   Request       $request    The current request
+     * @param   integer       $bas_id     The collection base_id
+     * @return  JsonResponse
      */
     public function deleteStamp(Application $app, Request $request, $bas_id)
     {
@@ -507,10 +516,12 @@ class Bas implements ControllerProviderInterface
     }
 
     /**
+     * Delete the collection watermark
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $bas_id
+     * @param   Application   $app        The silex application
+     * @param   Request       $request    The current request
+     * @param   integer       $bas_id     The collection base_id
+     * @return  JsonResponse
      */
     public function deleteWatermark(Application $app, Request $request, $bas_id)
     {
@@ -533,10 +544,12 @@ class Bas implements ControllerProviderInterface
     }
 
     /**
+     * Delete the current collection logo
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $bas_id
+     * @param   Application   $app        The silex application
+     * @param   Request       $request    The current request
+     * @param   integer       $bas_id     The collection base_id
+     * @return  JsonResponse
      */
     public function deleteLogo(Application $app, Request $request, $bas_id)
     {
@@ -560,10 +573,12 @@ class Bas implements ControllerProviderInterface
     }
 
     /**
+     * Set a collection banner
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $bas_id
+     * @param   Application   $app        The silex application
+     * @param   Request       $request    The current request
+     * @param   integer       $bas_id     The collection base_id
+     * @return  RedirectResponse
      */
     public function setBanner(Application $app, Request $request, $bas_id)
     {
@@ -571,7 +586,6 @@ class Bas implements ControllerProviderInterface
             $app->abort(400);
         }
 
-        /* @var $file \Symfony\Component\HttpFoundation\File\UploadedFile */
         if ($file->getClientSize() > 1024 * 1024) {
 
             return $app->redirect('/admin/bas/' . $bas_id . '/?upload-error=too-big');
@@ -597,10 +611,12 @@ class Bas implements ControllerProviderInterface
     }
 
     /**
+     * Set a collection stamp
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $bas_id
+     * @param   Application   $app        The silex application
+     * @param   Request       $request    The current request
+     * @param   integer       $bas_id     The collection base_id
+     * @return  RedirectResponse
      */
     public function setStamp(Application $app, Request $request, $bas_id)
     {
@@ -608,7 +624,6 @@ class Bas implements ControllerProviderInterface
             $app->abort(400);
         }
 
-        /* @var $file \Symfony\Component\HttpFoundation\File\UploadedFile */
         if ($file->getClientSize() > 1024 * 1024) {
 
             return $app->redirect('/admin/bas/' . $bas_id . '/?upload-error=too-big');
@@ -634,10 +649,12 @@ class Bas implements ControllerProviderInterface
     }
 
     /**
+     * Set a collection watermark
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $bas_id
+     * @param   Application   $app        The silex application
+     * @param   Request       $request    The current request
+     * @param   integer       $bas_id     The collection base_id
+     * @return  RedirectResponse
      */
     public function setWatermark(Application $app, Request $request, $bas_id)
     {
@@ -645,7 +662,6 @@ class Bas implements ControllerProviderInterface
             $app->abort(400);
         }
 
-        /* @var $file \Symfony\Component\HttpFoundation\File\UploadedFile */
         if ($file->getClientSize() > 65535) {
 
             return $app->redirect('/admin/bas/' . $bas_id . '/?upload-error=too-big');
@@ -671,10 +687,12 @@ class Bas implements ControllerProviderInterface
     }
 
     /**
+     * Set collection minilogo
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $bas_id
+     * @param   Application   $app        The silex application
+     * @param   Request       $request    The current request
+     * @param   integer       $bas_id     The collection base_id
+     * @return  RedirectResponse
      */
     public function setMiniLogo(Application $app, Request $request, $bas_id)
     {
@@ -682,7 +700,6 @@ class Bas implements ControllerProviderInterface
             $app->abort(400);
         }
 
-        /* @var $file \Symfony\Component\HttpFoundation\File\UploadedFile */
         if ($file->getClientSize() > 65535) {
 
             return $app->redirect('/admin/bas/' . $bas_id . '/?upload-error=too-big');
@@ -708,10 +725,12 @@ class Bas implements ControllerProviderInterface
     }
 
     /**
+     * Delete a Collection
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $bas_id
+     * @param   Application   $app        The silex application
+     * @param   Request       $request    The current request
+     * @param   integer       $bas_id     The collection base_id
+     * @return  JsonResponse
      */
     public function delete(Application $app, Request $request, $bas_id)
     {
@@ -741,10 +760,12 @@ class Bas implements ControllerProviderInterface
     }
 
     /**
+     * Unmount a collection from application box
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $bas_id
+     * @param Application   $app        The silex application
+     * @param Request       $request    The current request
+     * @param integer       $bas_id     The collection base_id
+     * @return JsonResponse
      */
     public function unmount(Application $app, Request $request, $bas_id)
     {
@@ -768,10 +789,12 @@ class Bas implements ControllerProviderInterface
     }
 
     /**
+     * Rename a collection
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $bas_id
+     * @param   Application   $app        The silex application
+     * @param   Request       $request    The current request
+     * @param   integer       $bas_id     The collection base_id
+     * @return  JsonResponse
      */
     public function rename(Application $app, Request $request, $bas_id)
     {
@@ -799,10 +822,12 @@ class Bas implements ControllerProviderInterface
     }
 
     /**
+     * Set public presentation watermark
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $bas_id
+     * @param   Application   $app        The silex application
+     * @param   Request       $request    The current request
+     * @param   integer       $bas_id     The collection base_id
+     * @return  JsonResponse
      */
     public function setPublicationDisplay(Application $app, Request $request, $bas_id)
     {
@@ -830,10 +855,12 @@ class Bas implements ControllerProviderInterface
     }
 
     /**
+     * Enable a collection
      *
-     * @param \Silex\Application $application
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $bas_id
+     * @param   Application   $app        The silex application
+     * @param   Request       $request    The current request
+     * @param   integer       $bas_id     The collection base_id
+     * @return  JsonResponse
      */
     public function enable(Application $app, Request $request, $bas_id)
     {
@@ -857,10 +884,12 @@ class Bas implements ControllerProviderInterface
     }
 
     /**
+     * Disable a collection
      *
-     * @param \Silex\Application $application
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $bas_id
+     * @param   Application   $app        The silex application
+     * @param   Request       $request    The current request
+     * @param   integer       $bas_id     The collection base_id
+     * @return  JsonResponse
      */
     public function disabled(Application $app, Request $request, $bas_id)
     {
@@ -885,9 +914,9 @@ class Bas implements ControllerProviderInterface
 
     /**
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $bas_id
+     * @param Application   $app        The silex application
+     * @param Request       $request    The current request
+     * @param integer       $bas_id     The collection base_id
      */
     public function getSuggestedValues(Application $app, Request $request, $bas_id)
     {
@@ -921,9 +950,9 @@ class Bas implements ControllerProviderInterface
                 foreach ($z[0] as $ki => $vi) {
                     $pref = array('status' => null, 'xml'    => null);
 
-                    if ($ki == "status") {
+                    if ($ki == 'status') {
                         $pref['status'] = $vi;
-                    } else if ($ki != "sugestedValues") {
+                    } else if ($ki != 'sugestedValues') {
                         $pref['xml'] = $vi->asXML();
                     }
 
@@ -951,10 +980,12 @@ class Bas implements ControllerProviderInterface
     }
 
     /**
+     * Register suggested values
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $bas_id
+     * @param   Application   $app        The silex application
+     * @param   Request       $request    The current request
+     * @param   integer       $bas_id     The collection base_id
+     * @return  JsonResponse
      */
     public function submitSuggestedValues(Application $app, Request $request, $bas_id)
     {
@@ -968,7 +999,7 @@ class Bas implements ControllerProviderInterface
         try {
             $collection = \collection::get_from_base_id($bas_id);
 
-            if ($mdesc = \DOMDocument::loadXML($request->get("str"))) {
+            if ($mdesc = \DOMDocument::loadXML($request->get('str'))) {
                 $collection->set_prefs($mdesc);
                 $msg = _('forms::operation effectuee OK');
                 $success = true;
@@ -984,10 +1015,11 @@ class Bas implements ControllerProviderInterface
     }
 
     /**
+     * Get document details in the requested collection
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $databox_id
+     * @param Application   $app        The silex application
+     * @param Request       $request    The current request
+     * @param integer       $bas_id     The collection base_id
      */
     public function getDetails(Application $app, Request $request, $bas_id)
     {
@@ -1000,69 +1032,69 @@ class Bas implements ControllerProviderInterface
             $last_k1 = $last_k2 = null;
             $outRow = array('midobj' => 0, 'midsiz' => 0);
 
-            if ($vrow["amount"] > 0 || $last_k1 !== $vrow["coll_id"]) {
+            if ($vrow['amount'] > 0 || $last_k1 !== $vrow['coll_id']) {
 
-                if (extension_loaded("bcmath")) {
-                    $outRow['midsiz'] = bcadd($outRow['midsiz'], $vrow["size"], 0);
+                if (extension_loaded('bcmath')) {
+                    $outRow['midsiz'] = bcadd($outRow['midsiz'], $vrow['size'], 0);
                 } else {
-                    $outRow['midsiz'] += $vrow["size"];
+                    $outRow['midsiz'] += $vrow['size'];
                 }
 
-                if ($last_k2 !== $vrow["name"]) {
-                    $outRow['name'] = $vrow["name"];
-                    $last_k2 = $vrow["name"];
+                if ($last_k2 !== $vrow['name']) {
+                    $outRow['name'] = $vrow['name'];
+                    $last_k2 = $vrow['name'];
                 }
 
-                if (extension_loaded("bcmath")) {
-                    $mega = bcdiv($vrow["size"], 1024 * 1024, 5);
+                if (extension_loaded('bcmath')) {
+                    $mega = bcdiv($vrow['size'], 1024 * 1024, 5);
                 } else {
-                    $mega = $vrow["size"] / (1024 * 1024);
+                    $mega = $vrow['size'] / (1024 * 1024);
                 }
 
-                if (extension_loaded("bcmath")) {
-                    $giga = bcdiv($vrow["size"], 1024 * 1024 * 1024, 5);
+                if (extension_loaded('bcmath')) {
+                    $giga = bcdiv($vrow['size'], 1024 * 1024 * 1024, 5);
                 } else {
-                    $giga = $vrow["size"] / (1024 * 1024 * 1024);
+                    $giga = $vrow['size'] / (1024 * 1024 * 1024);
                 }
 
-                $outRow['mega'] = sprintf("%.2f", $mega);
-                $outRow['giga'] = sprintf("%.2f", $giga);
-                $outRow['amount'] = $vrow["amount"];
+                $outRow['mega'] = sprintf('%.2f', $mega);
+                $outRow['giga'] = sprintf('%.2f', $giga);
+                $outRow['amount'] = $vrow['amount'];
             }
 
             $out['total']['totobj'] += $outRow['amount'];
 
-            if (extension_loaded("bcmath")) {
+            if (extension_loaded('bcmath')) {
                 $out['total']['totsiz'] = bcadd($out['total']['totsiz'], $outRow['midsiz'], 0);
             } else {
                 $out['total']['totsiz'] += $outRow['midsiz'];
             }
 
-            if (extension_loaded("bcmath")) {
+            if (extension_loaded('bcmath')) {
                 $mega = bcdiv($outRow['midsiz'], 1024 * 1024, 5);
             } else {
                 $mega = $outRow['midsiz'] / (1024 * 1024);
             }
 
-            if (extension_loaded("bcmath")) {
+            if (extension_loaded('bcmath')) {
                 $giga = bcdiv($outRow['midsiz'], 1024 * 1024 * 1024, 5);
             } else {
                 $giga = $outRow['midsiz'] / (1024 * 1024 * 1024);
             }
 
-            $outRow['mega_mid_size'] = sprintf("%.2f", $mega);
-            $outRow['giga_mid_size'] = sprintf("%.2f", $giga);
+            $outRow['mega_mid_size'] = sprintf('%.2f', $mega);
+            $outRow['giga_mid_size'] = sprintf('%.2f', $giga);
 
             $out['result'][] = $outRow;
         }
 
-        if (extension_loaded("bcmath")) {
+        if (extension_loaded('bcmath')) {
             $out['total']['mega'] = bcdiv($out['total']['totsiz'], 1024 * 1024, 5);
         } else {
             $out['total']['mega'] = $out['total']['totsiz'] / (1024 * 1024);
         }
 
-        if (extension_loaded("bcmath")) {
+        if (extension_loaded('bcmath')) {
             $out['total']['giga'] = bcdiv($out['total']['totsiz'], 1024 * 1024 * 1024, 5);
         } else {
             $out['total']['giga'] = $out['total']['totsiz'] / (1024 * 1024 * 1024);

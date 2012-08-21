@@ -17,6 +17,7 @@ namespace Alchemy\Phrasea\Controller\Admin;
  * @link        www.phraseanet.com
  */
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -38,7 +39,7 @@ class Setup implements ControllerProviderInterface
             });
 
         /**
-         * Get globals value
+         * Get globals values
          *
          * name         : setup_globals
          *
@@ -71,10 +72,11 @@ class Setup implements ControllerProviderInterface
     }
 
     /**
+     * Display global values
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param   Application $app
+     * @param   Request     $request
+     * @return  Response
      */
     public function getGlobals(Application $app, Request $request)
     {
@@ -83,7 +85,7 @@ class Setup implements ControllerProviderInterface
         require_once __DIR__ . "/../../../../conf.d/_GV_template.inc";
 
         if (null !== $update = $request->get('update')) {
-            if('ok' === $update) {
+            if ('ok' === $update) {
                 $update = _('Update succeed');
             } else {
                 $update = _('Update failed');
@@ -91,17 +93,18 @@ class Setup implements ControllerProviderInterface
         }
 
         return new Response($app['twig']->render('admin/setup.html.twig', array(
-                    'GV' => $GV,
+                    'GV'                => $GV,
                     'update_post_datas' => $update,
-                    'listTimeZone' => \DateTimeZone::listAbbreviations()
+                    'listTimeZone'      => \DateTimeZone::listAbbreviations()
                 )));
     }
 
     /**
+     * Submit global values
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param   Application $app
+     * @param   Request     $request
+     * @return  RedirectResponse
      */
     public function postGlobals(Application $app, Request $request)
     {
@@ -109,7 +112,7 @@ class Setup implements ControllerProviderInterface
             return $app->redirect('/admin/globals/?update=ok');
         }
 
-         return $app->redirect('/admin/globals/?update=ko');
+        return $app->redirect('/admin/globals/?update=ko');
     }
 
     /**
