@@ -246,7 +246,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
 
         $body .= "</ul>\n";
 
-        $body .= "<br/>\n<div><a href='/login/?redirect=/admin' target='_blank'>"
+        $body .= "<br/>\n<div><a href='/login/?redirect=admin' target='_blank'>"
             . _('admin::register: vous pourrez consulter son compte en ligne via l\'interface d\'administration')
             . "</a></div>\n";
 

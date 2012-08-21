@@ -250,7 +250,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
         $body .= "</ul>\n";
 
         $body .= "<br/>\n<div><a href='" . $this->registry->get('GV_ServerName')
-            . "login/admin' target='_blank'>"
+            . "login/?redirect=admin' target='_blank'>"
             . _('admin::register: vous pourrez traiter ses demandes en ligne via l\'interface d\'administration')
             . "</a></div>\n";
 

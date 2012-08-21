@@ -4,6 +4,8 @@ require_once __DIR__ . "/PhraseanetPHPUnitListener.class.inc";
 
 use Silex\WebTestCase;
 use Doctrine\Common\DataFixtures\Loader;
+use Symfony\Component\HttpKernel\Client;
+use Symfony\Component\DomCrawler\Crawler;
 
 abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 {
@@ -83,6 +85,16 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             self::$time_start = microtime(true);
         }
 
+        //check if app is set up
+        if ( ! setup::is_installed()) {
+            exit("\033[0;31mPhraseanet is not set up\033[0;37m\r\n");
+        }
+
+        //init core
+        if (null === self::$core) {
+            self::$core = \bootstrap::getCore();
+        }
+
         self::updateTablesSchema();
 
         self::createSetOfUserTests();
@@ -100,26 +112,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     public static function tearDownAfterClass()
     {
         parent::tearDownAfterClass();
-    }
-
-    /**
-     * Delete temporay sqlite database
-     * Create schema using $this->classesMetatdas
-     * Load DoctrineTestServices
-     *
-     * @return
-     */
-    public function __construct()
-    {
-        //check if app is set up
-        if ( ! setup::is_installed()) {
-            exit("\033[0;31mPhraseanet is not set up\033[0;37m\r\n");
-        }
-
-        //init core
-        if (null === self::$core) {
-            self::$core = \bootstrap::getCore();
-        }
     }
 
     /**
@@ -496,6 +488,28 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     }
 
     /**
+     * Calls a URI as XMLHTTP request.
+     *
+     * @param string  $method        The request method
+     * @param string  $uri           The URI to fetch
+     * @param array   $parameters    The Request parameters
+     * @param array   $httpAccept    Contents of the Accept header
+     *
+     * @return Crawler
+     */
+    protected function XMLHTTPRequest($method, $uri, array $parameters = array(), $httpAccept = 'application/json')
+    {
+        if ( ! $this->client instanceof Client) {
+            throw new \Exception('Not client seems intitialized');
+        }
+
+        return $this->client->request($method, $uri, $parameters, array(), array(
+            'HTTP_ACCEPT'           => $httpAccept,
+            'HTTP_X-Requested-With' => 'XMLHttpRequest',
+        ));
+    }
+
+    /**
      * Update the sql tables with the current schema
      * @return void
      */
@@ -618,6 +632,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
+
                 $user->ACL()->give_access_to_base(array($base_id));
 
                 set_exportorder::set_order_admins(array($user->get_id()), $base_id);
