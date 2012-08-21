@@ -135,7 +135,7 @@ class phrasea
                 $parm["datemax"] = '';
                 $parm["recordtype"] = '';
                 $parm["datefield"] = '';
-                $parm["sort"] = '';
+                $parm["sort"] = $registry->get('GV_phrasea_sort');
                 $parm["stemme"] = '';
                 $parm["dateminfield"] = array();
                 $parm["datemaxfield"] = array();

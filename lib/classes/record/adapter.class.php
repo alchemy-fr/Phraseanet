@@ -1049,7 +1049,9 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
             $meta_writable = true;
         } else {
-            $subdef_def = $this->get_databox()->get_subdef_structure()->get_subdef($this->get_type(), $name);
+            $type = $this->is_grouping() ? 'image' : $this->get_type();
+
+            $subdef_def = $this->get_databox()->get_subdef_structure()->get_subdef($type, $name);
 
             if ($this->has_subdef($name) && ! $this->get_subdef($name)->is_substituted()) {
 

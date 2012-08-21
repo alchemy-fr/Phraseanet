@@ -286,6 +286,9 @@ if ($registry->get('GV_client_coll_ckbox') === 'popup') {
 
                                                 <input type="radio" value="0" class="checkbox" <?php echo $sel1 ?> id="search_type_docs" name="search_type" /><label for="search_type_docs"><?php echo _('phraseanet::type:: documents') ?></label>
                                                 <input type="radio" value="1" class="checkbox" <?php echo $sel2 ?> id="search_type_group" name="search_type" /><label for="search_type_group"><?php echo _('phraseanet::type:: reportages') ?></label>
+
+                                                <input type="hidden" name="sort" value="<?php echo $registry->get('GV_phrasea_sort'); ?>"/>
+
                                                 <input type="hidden" name="ord" id="searchOrd" value="<?php echo PHRASEA_ORDER_DESC ?>" />
                                             </div>
                                             <div>
