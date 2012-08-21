@@ -4,6 +4,8 @@ use Alchemy\Phrasea\Application;
 
 require_once __DIR__ . '/../../PhraseanetPHPUnitAbstract.class.inc';
 
+use \Alchemy\Phrasea\Border\Manager;
+
 class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
 {
     /**

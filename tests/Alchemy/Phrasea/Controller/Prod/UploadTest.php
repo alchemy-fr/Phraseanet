@@ -245,7 +245,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue($datas['success']);
         $this->assertEquals('record', $datas['element']);
-        $this->assertEquals(\Alchemy\Phrasea\Border\Manager::RECORD_CREATED, $datas['code']);
+        $this->assertEquals(Manager::RECORD_CREATED, $datas['code']);
 
         $id = explode('_', $datas['id']);
         $record = new \record_adapter(self::$DI['app'], $id[0], $id[1]);
@@ -281,7 +281,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue($datas['success']);
         $this->assertEquals('record', $datas['element']);
-        $this->assertEquals(\Alchemy\Phrasea\Border\Manager::RECORD_CREATED, $datas['code']);
+        $this->assertEquals(Manager::RECORD_CREATED, $datas['code']);
 
         $id = explode('_', $datas['id']);
         $record = new \record_adapter(self::$DI['app'], $id[0], $id[1]);

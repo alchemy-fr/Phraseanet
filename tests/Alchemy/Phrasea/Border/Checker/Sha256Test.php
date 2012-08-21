@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\Border\Checker;
 
 require_once __DIR__ . '/../../../../PhraseanetPHPUnitAbstract.class.inc';
 
+use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Border\File;
 
 class Sha256Test extends \PhraseanetPHPUnitAbstract

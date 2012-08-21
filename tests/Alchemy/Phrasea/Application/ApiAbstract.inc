@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\Application;
 
 require_once __DIR__ . '/../../../PhraseanetWebTestCaseAbstract.class.inc';
 
+use Alchemy\Phrasea\Border\Manager;
 use Silex\WebTestCase;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
