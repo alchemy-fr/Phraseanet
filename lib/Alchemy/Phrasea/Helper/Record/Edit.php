@@ -448,6 +448,9 @@ class Edit extends RecordHelper
                     throw new \Exception('A reg image must come from image data');
 
                 foreach ($newsubdef_reg->get_subdefs() as $name => $value) {
+                    if ( ! in_array($name, array('thumbnail', 'preview'))) {
+                        continue;
+                    }
                     $media = $this->core['mediavorus']->guess(new \SplFileInfo($value->get_pathfile()));
                     $reg_record->substitute_subdef($name, $media);
                 }
