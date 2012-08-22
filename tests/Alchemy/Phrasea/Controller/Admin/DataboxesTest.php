@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
-class DatabasesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class DataboxesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
     protected $StubbedACL;
@@ -69,7 +69,7 @@ class DatabasesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->setAdmin(true);
 
-        $this->client->request('GET', '/databases/', array(
+        $this->client->request('GET', '/databoxes/', array(
             $type => $errorMsgId
         ));
 
@@ -101,7 +101,7 @@ class DatabasesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(false);
 
-        $this->client->request('GET', '/databases/');
+        $this->client->request('GET', '/databoxes/');
     }
 
     /**
@@ -111,7 +111,7 @@ class DatabasesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/databases/upgrade/');
+        $this->client->request('POST', '/databoxes/upgrade/');
 
         $this->assertTrue($this->client->getResponse()->isRedirect());
     }

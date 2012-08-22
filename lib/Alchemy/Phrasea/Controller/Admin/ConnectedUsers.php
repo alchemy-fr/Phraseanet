@@ -45,6 +45,13 @@ class ConnectedUsers implements ControllerProviderInterface
         return $controllers;
     }
 
+    /**
+     * Return module name according to its ID
+     *
+     * @param integer $appId
+     * @return string
+     * @return null
+     */
     public static function appName($appId)
     {
         $appRef = array(

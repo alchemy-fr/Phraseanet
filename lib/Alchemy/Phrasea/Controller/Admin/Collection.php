@@ -24,9 +24,9 @@ use Silex\Application;
 use Silex\ControllerProviderInterface;
 
 /**
- * 
+ *
  */
-class Bas implements ControllerProviderInterface
+class Collection implements ControllerProviderInterface
 {
 
     public function connect(Application $app)
@@ -140,7 +140,8 @@ class Bas implements ControllerProviderInterface
          * return       : JSON Response
          */
         $controllers->post('/{bas_id}/disabled/', $this->call('disabled'))
-            ->assert('bas_id', '\d+')->bind('admin_collection_disabled');
+            ->assert('bas_id', '\d+')
+            ->bind('admin_collection_disabled');
 
         /**
          * Set new order admin
@@ -156,7 +157,8 @@ class Bas implements ControllerProviderInterface
          * return       : Redirect Response
          */
         $controllers->post('/{bas_id}/order/admins/', $this->call('setOrderAdmins'))
-            ->assert('bas_id', '\d+')->bind('admin_collection_order_admins');
+            ->assert('bas_id', '\d+')
+            ->bind('admin_collection_order_admins');
 
         /**
          * Set publication watermark
@@ -172,7 +174,8 @@ class Bas implements ControllerProviderInterface
          * return       : JSON Response
          */
         $controllers->post('/{bas_id}/publication/display/', $this->call('setPublicationDisplay'))
-            ->assert('bas_id', '\d+')->bind('admin_collection_submit_publication');
+            ->assert('bas_id', '\d+')
+            ->bind('admin_collection_submit_publication');
 
         /**
          * Rename a collection
@@ -188,7 +191,8 @@ class Bas implements ControllerProviderInterface
          * return       : JSON Response
          */
         $controllers->post('/{bas_id}/rename/', $this->call('rename'))
-            ->assert('bas_id', '\d+')->bind('admin_collection_rename');
+            ->assert('bas_id', '\d+')
+            ->bind('admin_collection_rename');
 
         /**
          * Empty a collection
@@ -204,7 +208,8 @@ class Bas implements ControllerProviderInterface
          * return       : JSON Response
          */
         $controllers->post('/{bas_id}/empty/', $this->call('emptyCollection'))
-            ->assert('bas_id', '\d+')->bind('admin_collection_empty');
+            ->assert('bas_id', '\d+')
+            ->bind('admin_collection_empty');
 
         /**
          * Unmount a collection
@@ -220,7 +225,8 @@ class Bas implements ControllerProviderInterface
          * return       : JSON Response
          */
         $controllers->post('/{bas_id}/unmount/', $this->call('unmount'))
-            ->assert('bas_id', '\d+')->bind('admin_collection_unmount');
+            ->assert('bas_id', '\d+')
+            ->bind('admin_collection_unmount');
 
         /**
          * Set a collection mini logo
@@ -236,7 +242,8 @@ class Bas implements ControllerProviderInterface
          * return       : REDIRECT Response
          */
         $controllers->post('/{bas_id}/picture/mini-logo/', $this->call('setMiniLogo'))
-            ->assert('bas_id', '\d+')->bind('admin_collection_submit_logo');
+            ->assert('bas_id', '\d+')
+            ->bind('admin_collection_submit_logo');
 
         /**
          * Delete the current collection mini logo
@@ -252,7 +259,8 @@ class Bas implements ControllerProviderInterface
          * return       : JSON Response
          */
         $controllers->delete('/{bas_id}/picture/mini-logo/', $this->call('deleteLogo'))
-            ->assert('bas_id', '\d+')->bind('admin_collection_delete_logo');
+            ->assert('bas_id', '\d+')
+            ->bind('admin_collection_delete_logo');
 
         /**
          * Set a new logo
@@ -268,7 +276,8 @@ class Bas implements ControllerProviderInterface
          * return       : REDIRECT Response
          */
         $controllers->post('/{bas_id}/picture/watermark/', $this->call('setWatermark'))
-            ->assert('bas_id', '\d+')->bind('admin_collection_submit_watermark');
+            ->assert('bas_id', '\d+')
+            ->bind('admin_collection_submit_watermark');
 
         /**
          * Delete a mini logo
@@ -284,7 +293,8 @@ class Bas implements ControllerProviderInterface
          * return       : JSON Response
          */
         $controllers->delete('/{bas_id}/picture/watermark/', $this->call('deleteWatermark'))
-            ->assert('bas_id', '\d+')->bind('admin_collection_delete_watermark');
+            ->assert('bas_id', '\d+')
+            ->bind('admin_collection_delete_watermark');
 
         /**
          * Set a new stamp logo
@@ -300,7 +310,8 @@ class Bas implements ControllerProviderInterface
          * return       : REDIRECT Response
          */
         $controllers->post('/{bas_id}/picture/stamp-logo/', $this->call('setStamp'))
-            ->assert('bas_id', '\d+')->bind('admin_collection_submit_stamp');
+            ->assert('bas_id', '\d+')
+            ->bind('admin_collection_submit_stamp');
 
         /**
          * Delete a stamp logo
@@ -316,7 +327,8 @@ class Bas implements ControllerProviderInterface
          * return       : JSON Response
          */
         $controllers->delete('/{bas_id}/picture/stamp-logo/', $this->call('deleteStamp'))
-            ->assert('bas_id', '\d+')->bind('admin_collection_delete_stamp');
+            ->assert('bas_id', '\d+')
+            ->bind('admin_collection_delete_stamp');
 
         /**
          * Set a new banner
@@ -332,7 +344,8 @@ class Bas implements ControllerProviderInterface
          * return       : REDIRECT Response
          */
         $controllers->post('/{bas_id}/picture/banner/', $this->call('setBanner'))
-            ->assert('bas_id', '\d+')->bind('admin_collection_submit_banner');
+            ->assert('bas_id', '\d+')
+            ->bind('admin_collection_submit_banner');
 
         /**
          * Delete a banner
@@ -348,7 +361,8 @@ class Bas implements ControllerProviderInterface
          * return       : REDIRECT Response
          */
         $controllers->delete('/{bas_id}/picture/banner/', $this->call('deleteBanner'))
-            ->assert('bas_id', '\d+')->bind('admin_collection_delete_banner');
+            ->assert('bas_id', '\d+')
+            ->bind('admin_collection_delete_banner');
 
         /**
          * Get document details in the requested collection
@@ -419,7 +433,7 @@ class Bas implements ControllerProviderInterface
             }
         }
 
-        return $app->redirect('/admin/bas/' . $bas_id . '/?operation=ok');
+        return $app->redirect('/admin/collection/' . $bas_id . '/?operation=ok');
     }
 
     /**
@@ -588,12 +602,12 @@ class Bas implements ControllerProviderInterface
 
         if ($file->getClientSize() > 1024 * 1024) {
 
-            return $app->redirect('/admin/bas/' . $bas_id . '/?upload-error=too-big');
+            return $app->redirect('/admin/collection/' . $bas_id . '/?upload-error=too-big');
         }
 
         if ( ! $file->isValid()) {
 
-            return $app->redirect('/admin/bas/' . $bas_id . '/?upload-error=unknow-error');
+            return $app->redirect('/admin/collection/' . $bas_id . '/?upload-error=unknow-error');
         }
 
         try {
@@ -604,10 +618,10 @@ class Bas implements ControllerProviderInterface
             $app['phraseanet.core']['file-system']->remove($file->getPathname());
         } catch (\Exception $e) {
 
-            return $app->redirect('/admin/bas/' . $bas_id . '/?upload-error=unknow-error');
+            return $app->redirect('/admin/collection/' . $bas_id . '/?upload-error=unknow-error');
         }
 
-        return $app->redirect('/admin/bas/' . $bas_id . '/?operation=ok');
+        return $app->redirect('/admin/collection/' . $bas_id . '/?operation=ok');
     }
 
     /**
@@ -626,12 +640,12 @@ class Bas implements ControllerProviderInterface
 
         if ($file->getClientSize() > 1024 * 1024) {
 
-            return $app->redirect('/admin/bas/' . $bas_id . '/?upload-error=too-big');
+            return $app->redirect('/admin/collection/' . $bas_id . '/?upload-error=too-big');
         }
 
         if ( ! $file->isValid()) {
 
-            return $app->redirect('/admin/bas/' . $bas_id . '/?upload-error=unknow-error');
+            return $app->redirect('/admin/collection/' . $bas_id . '/?upload-error=unknow-error');
         }
 
         try {
@@ -642,10 +656,10 @@ class Bas implements ControllerProviderInterface
             $app['phraseanet.core']['file-system']->remove($file->getPathname());
         } catch (\Exception $e) {
 
-            return $app->redirect('/admin/bas/' . $bas_id . '/?upload-error=unknow-error');
+            return $app->redirect('/admin/collection/' . $bas_id . '/?upload-error=unknow-error');
         }
 
-        return $app->redirect('/admin/bas/' . $bas_id . '/?operation=ok');
+        return $app->redirect('/admin/collection/' . $bas_id . '/?operation=ok');
     }
 
     /**
@@ -664,12 +678,12 @@ class Bas implements ControllerProviderInterface
 
         if ($file->getClientSize() > 65535) {
 
-            return $app->redirect('/admin/bas/' . $bas_id . '/?upload-error=too-big');
+            return $app->redirect('/admin/collection/' . $bas_id . '/?upload-error=too-big');
         }
 
         if ( ! $file->isValid()) {
 
-            return $app->redirect('/admin/bas/' . $bas_id . '/?upload-error=unknow-error');
+            return $app->redirect('/admin/collection/' . $bas_id . '/?upload-error=unknow-error');
         }
 
         try {
@@ -680,10 +694,10 @@ class Bas implements ControllerProviderInterface
             $app['phraseanet.core']['file-system']->remove($file->getPathname());
         } catch (\Exception $e) {
 
-            return $app->redirect('/admin/bas/' . $bas_id . '/?upload-error=unknow-error');
+            return $app->redirect('/admin/collection/' . $bas_id . '/?upload-error=unknow-error');
         }
 
-        return $app->redirect('/admin/bas/' . $bas_id . '/?operation=ok');
+        return $app->redirect('/admin/collection/' . $bas_id . '/?operation=ok');
     }
 
     /**
@@ -702,12 +716,12 @@ class Bas implements ControllerProviderInterface
 
         if ($file->getClientSize() > 65535) {
 
-            return $app->redirect('/admin/bas/' . $bas_id . '/?upload-error=too-big');
+            return $app->redirect('/admin/collection/' . $bas_id . '/?upload-error=too-big');
         }
 
         if ( ! $file->isValid()) {
 
-            return $app->redirect('/admin/bas/' . $bas_id . '/?upload-error=unknow-error');
+            return $app->redirect('/admin/collection/' . $bas_id . '/?upload-error=unknow-error');
         }
 
         try {
@@ -718,10 +732,10 @@ class Bas implements ControllerProviderInterface
             $app['phraseanet.core']['file-system']->remove($file->getPathname());
         } catch (\Exception $e) {
 
-            return $app->redirect('/admin/bas/' . $bas_id . '/?upload-error=unknow-error');
+            return $app->redirect('/admin/collection/' . $bas_id . '/?upload-error=unknow-error');
         }
 
-        return $app->redirect('/admin/bas/' . $bas_id . '/?operation=ok');
+        return $app->redirect('/admin/collection/' . $bas_id . '/?operation=ok');
     }
 
     /**
@@ -913,6 +927,7 @@ class Bas implements ControllerProviderInterface
     }
 
     /**
+     * Display suggested values
      *
      * @param Application   $app        The silex application
      * @param Request       $request    The current request

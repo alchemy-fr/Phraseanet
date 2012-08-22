@@ -27,7 +27,7 @@ use Silex\ControllerProviderInterface;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class Databases implements ControllerProviderInterface
+class Databoxes implements ControllerProviderInterface
 {
 
     public function connect(Application $app)
@@ -186,23 +186,23 @@ class Databases implements ControllerProviderInterface
     {
         if (\phrasea::is_scheduler_started()) {
 
-            return $app->redirect('/admin/databases/?error=scheduler-started');
+            return $app->redirect('/admin/databoxes/?error=scheduler-started');
         }
 
         try {
             $upgrader = new \Setup_Upgrade($app['phraseanet.appbox']);
             $advices = $app['phraseanet.appbox']->forceUpgrade($upgrader);
 
-            return $app->redirect('/admin/databases/?success=restart&' . http_build_query(array('advices' => $advices)));
+            return $app->redirect('/admin/databoxes/?success=restart&' . http_build_query(array('advices' => $advices)));
         } catch (\Exception_Setup_UpgradeAlreadyStarted $e) {
 
-            return $app->redirect('/admin/databases/?error=already-started');
+            return $app->redirect('/admin/databoxes/?error=already-started');
         } catch (\Exception_Setup_FixBadEmailAddresses $e) {
 
-            return $app->redirect('/admin/databases/?error=bad-email');
+            return $app->redirect('/admin/databoxes/?error=bad-email');
         } catch (\Exception $e) {
 
-            return $app->redirect('/admin/databases/?error=unknow');
+            return $app->redirect('/admin/databoxes/?error=unknow');
         }
     }
 

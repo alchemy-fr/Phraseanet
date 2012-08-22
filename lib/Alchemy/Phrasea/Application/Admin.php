@@ -20,9 +20,9 @@ use Alchemy\Phrasea\Controller\Admin\Root;
 use Alchemy\Phrasea\Controller\Admin\Subdefs;
 use Alchemy\Phrasea\Controller\Admin\Users;
 use Alchemy\Phrasea\Controller\Admin\Dashboard;
-use Alchemy\Phrasea\Controller\Admin\Bas;
-use Alchemy\Phrasea\Controller\Admin\Databases;
-use Alchemy\Phrasea\Controller\Admin\Database;
+use Alchemy\Phrasea\Controller\Admin\Collection;
+use Alchemy\Phrasea\Controller\Admin\Databoxes;
+use Alchemy\Phrasea\Controller\Admin\Databox;
 use Alchemy\Phrasea\Controller\Admin\Setup;
 use Alchemy\Phrasea\Controller\Admin\Sphinx;
 use Alchemy\Phrasea\Controller\Utils\ConnectionTest;
@@ -34,9 +34,9 @@ return call_user_func(
 
             $app->mount('/', new Root());
             $app->mount('/dashboard', new Dashboard());
-            $app->mount('/bas', new Bas());
-            $app->mount('/database', new Database());
-            $app->mount('/databases', new Databases());
+            $app->mount('/collection', new Collection());
+            $app->mount('/databox', new Databox());
+            $app->mount('/databoxes', new Databoxes());
             $app->mount('/setup', new Setup());
             $app->mount('/sphinx', new Sphinx());
             $app->mount('/connected-users', new ConnectedUsers());

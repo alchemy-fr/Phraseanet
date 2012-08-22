@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
-class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
     protected $StubbedACL;
@@ -221,7 +221,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('GET', '/database/' . self::$collection->get_sbas_id() . '/');
+        $this->client->request('GET', '/databox/' . self::$collection->get_sbas_id() . '/');
         $this->assertTrue($this->client->getResponse()->isOk());
     }
 
@@ -232,7 +232,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('GET', '/database/' . self::$collection->get_sbas_id() . '/collections/order/');
+        $this->client->request('GET', '/databox/' . self::$collection->get_sbas_id() . '/collections/order/');
         $this->assertTrue($this->client->getResponse()->isOk());
     }
 
@@ -243,7 +243,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/database/' . self::$collection->get_sbas_id() . '/collections/order/', array(
+        $this->client->request('POST', '/databox/' . self::$collection->get_sbas_id() . '/collections/order/', array(
             'order' => array(
                 2 => self::$collection->get_base_id()
             )
@@ -272,7 +272,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->setAdmin(true);
 
-        $this->client->request('GET', '/database/' . self::$collection->get_sbas_id() . '/cgus/');
+        $this->client->request('GET', '/databox/' . self::$collection->get_sbas_id() . '/cgus/');
     }
 
     /**
@@ -287,7 +287,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->setAdmin(true);
 
-        $this->client->request('GET', '/database/' . self::$collection->get_sbas_id() . '/cgus/');
+        $this->client->request('GET', '/databox/' . self::$collection->get_sbas_id() . '/cgus/');
         $this->assertTrue($this->client->getResponse()->isOk());
     }
 
@@ -297,7 +297,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testUpdateDatabaseCGUBadRequestFormat()
     {
-        $this->client->request('POST', '/database/' . self::$collection->get_sbas_id() . '/cgus/');
+        $this->client->request('POST', '/databox/' . self::$collection->get_sbas_id() . '/cgus/');
     }
 
     /**
@@ -314,14 +314,14 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $cgusUpdate = 'Test update CGUS';
 
-        $this->client->request('POST', '/database/' . self::$collection->get_sbas_id() . '/cgus/', array(
+        $this->client->request('POST', '/databox/' . self::$collection->get_sbas_id() . '/cgus/', array(
             'TOU' => array('fr_FR' => $cgusUpdate)
             ), array(), array(
             'HTTP_ACCEPT'           => 'application/json',
             'HTTP_X-Requested-With' => 'XMLHttpRequest',
         ));
 
-        $this->checkRedirection($this->client->getResponse(), '/admin/database/' . self::$collection->get_sbas_id() . '/cgus/');
+        $this->checkRedirection($this->client->getResponse(), '/admin/databox/' . self::$collection->get_sbas_id() . '/cgus/');
 
         $databox = $this->app['phraseanet.appbox']->get_databox(self::$collection->get_sbas_id());
         $cgus = $databox->get_cgus();
@@ -337,7 +337,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('GET', '/database/' . self::$collection->get_sbas_id() . '/informations/documents/');
+        $this->client->request('GET', '/databox/' . self::$collection->get_sbas_id() . '/informations/documents/');
         $this->assertTrue($this->client->getResponse()->isOk());
     }
 
@@ -348,7 +348,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('GET', '/database/' . self::$collection->get_sbas_id() . '/informations/documents/', array(), array(), array(
+        $this->client->request('GET', '/databox/' . self::$collection->get_sbas_id() . '/informations/documents/', array(), array(), array(
             'HTTP_ACCEPT'           => 'application/json',
             'HTTP_X-Requested-With' => 'XMLHttpRequest'
         ));
@@ -371,7 +371,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('GET', '/database/' . self::$collection->get_sbas_id() . '/informations/details/');
+        $this->client->request('GET', '/databox/' . self::$collection->get_sbas_id() . '/informations/details/');
         $this->assertTrue($this->client->getResponse()->isOk());
     }
 
@@ -382,7 +382,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('GET', '/database/' . self::$collection->get_sbas_id() . '/collection/');
+        $this->client->request('GET', '/databox/' . self::$collection->get_sbas_id() . '/collection/');
         $this->assertTrue($this->client->getResponse()->isOk());
     }
 
@@ -394,7 +394,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(false);
 
-        $this->client->request('GET', '/database/' . self::$collection->get_sbas_id() . '/');
+        $this->client->request('GET', '/databox/' . self::$collection->get_sbas_id() . '/');
     }
 
     /**
@@ -405,7 +405,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(false);
 
-        $this->client->request('GET', '/database/' . self::$collection->get_sbas_id() . '/collections/order/');
+        $this->client->request('GET', '/databox/' . self::$collection->get_sbas_id() . '/collections/order/');
     }
 
     /**
@@ -416,7 +416,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(false);
 
-        $this->client->request('GET', '/database/' . self::$collection->get_sbas_id() . '/cgus/');
+        $this->client->request('GET', '/databox/' . self::$collection->get_sbas_id() . '/cgus/');
     }
 
     /**
@@ -428,7 +428,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(false);
 
-        $this->client->request('GET', '/database/' . self::$collection->get_sbas_id() . '/informations/documents/', array(), array(), array(
+        $this->client->request('GET', '/databox/' . self::$collection->get_sbas_id() . '/informations/documents/', array(), array(), array(
             'HTTP_ACCEPT'           => 'application/json',
             'HTTP_X-Requested-With' => 'XMLHttpRequest'
         ));
@@ -442,7 +442,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(false);
 
-        $this->client->request('GET', '/database/' . self::$collection->get_sbas_id() . '/informations/details/');
+        $this->client->request('GET', '/databox/' . self::$collection->get_sbas_id() . '/informations/details/');
     }
 
     /**
@@ -453,7 +453,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(false);
 
-        $this->client->request('GET', '/database/' . self::$collection->get_sbas_id() . '/collection/');
+        $this->client->request('GET', '/databox/' . self::$collection->get_sbas_id() . '/collection/');
     }
 
     /**
@@ -464,7 +464,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/database/' . self::$collection->get_sbas_id() . '/reindex/');
+        $this->client->request('POST', '/databox/' . self::$collection->get_sbas_id() . '/reindex/');
     }
 
     /**
@@ -474,7 +474,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/database/' . self::$collection->get_sbas_id() . '/reindex/', array(), array(), array(
+        $this->client->request('POST', '/databox/' . self::$collection->get_sbas_id() . '/reindex/', array(), array(), array(
             'HTTP_ACCEPT'           => 'application/json',
             'HTTP_X-Requested-With' => 'XMLHttpRequest'
         ));
@@ -494,7 +494,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/database/' . self::$collection->get_sbas_id() . '/reindex/');
+        $this->client->request('POST', '/databox/' . self::$collection->get_sbas_id() . '/reindex/');
     }
 
     /**
@@ -504,7 +504,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/database/' . self::$collection->get_sbas_id() . '/indexable/', array(
+        $this->client->request('POST', '/databox/' . self::$collection->get_sbas_id() . '/indexable/', array(
             'indexable' => 1
             ), array(), array(
             'HTTP_ACCEPT'           => 'application/json',
@@ -529,7 +529,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/database/' . self::$collection->get_sbas_id() . '/clear-logs/');
+        $this->client->request('POST', '/databox/' . self::$collection->get_sbas_id() . '/clear-logs/');
     }
 
     /**
@@ -539,7 +539,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/database/' . self::$collection->get_sbas_id() . '/clear-logs/', array(), array(), array(
+        $this->client->request('POST', '/databox/' . self::$collection->get_sbas_id() . '/clear-logs/', array(), array(), array(
             'HTTP_ACCEPT'           => 'application/json',
             'HTTP_X-Requested-With' => 'XMLHttpRequest'
         ));
@@ -560,7 +560,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/database/' . self::$collection->get_sbas_id() . '/view-name/');
+        $this->client->request('POST', '/databox/' . self::$collection->get_sbas_id() . '/view-name/');
     }
 
     /**
@@ -571,7 +571,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/database/' . self::$collection->get_sbas_id() . '/view-name/', array(), array(), array(
+        $this->client->request('POST', '/databox/' . self::$collection->get_sbas_id() . '/view-name/', array(), array(), array(
             'HTTP_ACCEPT'           => 'application/json',
             'HTTP_X-Requested-With' => 'XMLHttpRequest'
         ));
@@ -584,7 +584,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/database/' . self::$collection->get_sbas_id() . '/view-name/', array(
+        $this->client->request('POST', '/databox/' . self::$collection->get_sbas_id() . '/view-name/', array(
             'viewname' => 'salut'
             ), array(), array(
             'HTTP_ACCEPT'           => 'application/json',
@@ -609,7 +609,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/database/', array(
+        $this->client->request('POST', '/databox/', array(
             'new_dbname' => ''
         ));
 
@@ -625,7 +625,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/database/', array(
+        $this->client->request('POST', '/databox/', array(
             'new_dbname' => 'ééààèè'
         ));
 
@@ -655,7 +655,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $this->markTestSkipped('Could not create Databox ');
         }
 
-        $this->client->request('POST', '/database/', array(
+        $this->client->request('POST', '/databox/', array(
             'new_dbname'        => $dbName,
             'new_data_template' => 'fr-simple',
         ));
@@ -681,7 +681,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $base = $this->createDatabox('unit_test_db2');
 
-        $this->client->request('DELETE', '/database/' . $base->get_sbas_id() . '/', array(), array(), array(
+        $this->client->request('DELETE', '/databox/' . $base->get_sbas_id() . '/', array(), array(), array(
             'HTTP_ACCEPT'           => 'application/json',
             'HTTP_X-Requested-With' => 'XMLHttpRequest'
         ));
@@ -708,7 +708,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $base = $this->createDatabox('unit_test_db3');
         $base->unmount_databox($this->app['phraseanet.appbox']);
 
-        $this->client->request('POST', '/database/mount/', array(
+        $this->client->request('POST', '/databox/mount/', array(
             'new_dbname' => 'unit_test_db3'
         ));
 
@@ -741,11 +741,11 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 //        $collection = $this->createOneCollection();
 //        $collection->unmount_collection($this->app['phraseanet.appbox']);
 //
-//        $this->client->request('POST', '/database/' . $collection->get_sbas_id() . '/collection/' . $collection->get_coll_id() . '/mount/', array(
+//        $this->client->request('POST', '/databox/' . $collection->get_sbas_id() . '/collection/' . $collection->get_coll_id() . '/mount/', array(
 //            'othcollsel' => self::$collection->get_base_id()
 //        ));
 //
-//        $this->checkRedirection($this->client->getResponse(), '/admin/database/' . $collection->get_sbas_id() . '/?mount=ok');
+//        $this->checkRedirection($this->client->getResponse(), '/admin/databox/' . $collection->get_sbas_id() . '/?mount=ok');
 //    }
 
     /**
@@ -760,8 +760,8 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $files = array(
             'newLogoPdf' => new \Symfony\Component\HttpFoundation\File\UploadedFile($target, 'logo.jpg')
         );
-        $this->client->request('POST', '/database/' . self::$collection->get_sbas_id() . '/logo/', array(), $files);
-        $this->checkRedirection($this->client->getResponse(), '/admin/database/' . self::$collection->get_sbas_id() . '/');
+        $this->client->request('POST', '/databox/' . self::$collection->get_sbas_id() . '/logo/', array(), $files);
+        $this->checkRedirection($this->client->getResponse(), '/admin/databox/' . self::$collection->get_sbas_id() . '/');
         $this->assertNotEmpty(\databox::getPrintLogo(self::$collection->get_sbas_id()));
     }
 
@@ -776,7 +776,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $this->markTestSkipped('No logo setted');
         }
 
-        $this->client->request('DELETE', '/database/' . self::$collection->get_sbas_id() . '/logo/', array(), array(), array(
+        $this->client->request('DELETE', '/databox/' . self::$collection->get_sbas_id() . '/logo/', array(), array(), array(
             'HTTP_ACCEPT'           => 'application/json',
             'HTTP_X-Requested-With' => 'XMLHttpRequest',
         ));
@@ -795,7 +795,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $base = $this->createDatabox('unit_test_db4');
 
-        $this->client->request('POST', '/database/' . $base->get_sbas_id() . '/unmount/', array(), array(), array(
+        $this->client->request('POST', '/databox/' . $base->get_sbas_id() . '/unmount/', array(), array(), array(
             'HTTP_ACCEPT'           => 'application/json',
             'HTTP_X-Requested-With' => 'XMLHttpRequest',
         ));
@@ -832,7 +832,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $this->markTestSkipped('No record were added');
         }
 
-        $this->client->request('POST', '/database/' . $base->get_sbas_id() . '/empty/', array(), array(), array(
+        $this->client->request('POST', '/databox/' . $base->get_sbas_id() . '/empty/', array(), array(), array(
             'HTTP_ACCEPT'           => 'application/json',
             'HTTP_X-Requested-With' => 'XMLHttpRequest',
         ));
@@ -882,7 +882,7 @@ class DatabaseTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $this->markTestSkipped('No enough records added');
         }
 
-        $this->client->request('POST', '/database/' . $base->get_sbas_id() . '/empty/', array(), array(), array(
+        $this->client->request('POST', '/databox/' . $base->get_sbas_id() . '/empty/', array(), array(), array(
             'HTTP_ACCEPT'           => 'application/json',
             'HTTP_X-Requested-With' => 'XMLHttpRequest',
         ));

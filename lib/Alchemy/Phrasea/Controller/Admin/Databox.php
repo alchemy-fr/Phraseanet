@@ -22,14 +22,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class Database implements ControllerProviderInterface
+class Databox implements ControllerProviderInterface
 {
 
     public function connect(Application $app)
@@ -85,7 +84,7 @@ class Database implements ControllerProviderInterface
          *
          * parameters   : none
          *
-         * return       : HTML Response
+         * return       : JSON Response
          */
         $controllers->delete('/{databox_id}/', $this->call('deleteBase'))
             ->assert('databox_id', '\d+')
@@ -416,10 +415,12 @@ class Database implements ControllerProviderInterface
     }
 
     /**
+     * Get databox CGU's
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param    Application $app        The silex application
+     * @param    Request     $request    The current HTTP request
+     * @param    integer     $databox_id The requested databox
+     * @return   Response
      */
     public function getDatabaseCGU(Application $app, Request $request, $databox_id)
     {
@@ -436,10 +437,12 @@ class Database implements ControllerProviderInterface
     }
 
     /**
+     * Delete a databox
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $databox_id
+     * @param    Application $app        The silex application
+     * @param    Request     $request    The current HTTP request
+     * @param    integer     $databox_id The requested databox
+     * @return   JsonResponse
      */
     public function deleteBase(Application $app, Request $request, $databox_id)
     {
@@ -447,7 +450,7 @@ class Database implements ControllerProviderInterface
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 
-        $ret = array('sbas_id' => null, 'success'     => false, 'msg'  => null);
+        $ret = array('sbas_id' => null, 'success' => false, 'msg'     => null);
 
         try {
             $databox = $app['phraseanet.appbox']->get_databox($databox_id);
@@ -469,10 +472,12 @@ class Database implements ControllerProviderInterface
     }
 
     /**
+     * Reindex databox content
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $databox_id
+     * @param    Application $app        The silex application
+     * @param    Request     $request    The current HTTP request
+     * @param    integer     $databox_id The requested databox
+     * @return   JsonResponse
      */
     public function reindex(Application $app, Request $request, $databox_id)
     {
@@ -486,10 +491,12 @@ class Database implements ControllerProviderInterface
     }
 
     /**
+     * Make a databox indexable
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $databox_id
+     * @param    Application $app        The silex application
+     * @param    Request     $request    The current HTTP request
+     * @param    integer     $databox_id The requested databox
+     * @return   JsonResponse
      */
     public function setIndexable(Application $app, Request $request, $databox_id)
     {
@@ -503,10 +510,12 @@ class Database implements ControllerProviderInterface
     }
 
     /**
+     * Update databox CGU's
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param    Application $app        The silex application
+     * @param    Request     $request    The current HTTP request
+     * @param    integer     $databox_id The requested databox
+     * @return   RedirectResponse
      */
     public function updateDatabaseCGU(Application $app, Request $request, $databox_id)
     {
@@ -520,14 +529,16 @@ class Database implements ControllerProviderInterface
             $databox->update_cgus($loc, $terms,  ! ! $request->get('valid', false));
         }
 
-        return $app->redirect('/admin/database/' . $databox_id . '/cgus/');
+        return $app->redirect('/admin/databox/' . $databox_id . '/cgus/');
     }
 
     /**
+     * Create a new databox
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param    Application $app        The silex application
+     * @param    Request     $request    The current HTTP request
+     * @param    integer     $databox_id The requested databox
+     * @return   RedirectResponse
      */
     public function createDatabase(Application $app, Request $request)
     {
@@ -602,10 +613,11 @@ class Database implements ControllerProviderInterface
     }
 
     /**
+     * Mount a databox
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param    Application $app        The silex application
+     * @param    Request     $request    The current HTTP request
+     * @return   RedirectResponse
      */
     public function databaseMount(Application $app, Request $request)
     {
@@ -668,11 +680,12 @@ class Database implements ControllerProviderInterface
     }
 
     /**
+     * Mount a collection on a databox
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $databox_id
-     * @param integer $collection_id
+     * @param    Application $app        The silex application
+     * @param    Request     $request    The current HTTP request
+     * @param    integer     $databox_id The requested databox
+     * @return   RedirectResponse
      */
     public function mountCollection(Application $app, Request $request, $databox_id, $collection_id)
     {
@@ -706,19 +719,21 @@ class Database implements ControllerProviderInterface
 
             $appbox->get_connection()->commit();
 
-            return $app->redirect('/admin/database/' . $databox_id . '/?mount=ok');
+            return $app->redirect('/admin/databox/' . $databox_id . '/?mount=ok');
         } catch (\Exception $e) {
             $appbox->get_connection()->rollBack();
 
-            return $app->redirect('/admin/database/' . $databox_id . '/?mount=ko');
+            return $app->redirect('/admin/databox/' . $databox_id . '/?mount=ko');
         }
     }
 
     /**
+     * Set a new logo for a databox
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $databox_id
+     * @param    Application $app        The silex application
+     * @param    Request     $request    The current HTTP request
+     * @param    integer     $databox_id The requested databox
+     * @return   RedirectResponse
      */
     public function sendLogoPdf(Application $app, Request $request, $databox_id)
     {
@@ -730,29 +745,31 @@ class Database implements ControllerProviderInterface
                     $app['phraseanet.appbox']->write_databox_pic($databox, $file, \databox::PIC_PDF);
                     unlink($file->getPathname());
 
-                    return $app->redirect('/admin/database/' . $databox_id . '/');
+                    return $app->redirect('/admin/databox/' . $databox_id . '/');
                 } else {
 
-                    return $app->redirect('/admin/database/' . $databox_id . '/?upload-logo=too-big');
+                    return $app->redirect('/admin/databox/' . $databox_id . '/?upload-logo=too-big');
                 }
             } else {
 
-                return $app->redirect('/admin/database/' . $databox_id . '/?upload-logo=error-send');
+                return $app->redirect('/admin/databox/' . $databox_id . '/?upload-logo=error-send');
             }
         } catch (\InvalidArgumentException $e) {
 
-            return $app->redirect('/admin/database/' . $databox_id . '/?upload-logo=error-invalid');
+            return $app->redirect('/admin/databox/' . $databox_id . '/?upload-logo=error-invalid');
         } catch (\Exception $e) {
 
-            return $app->redirect('/admin/database/' . $databox_id . '/?upload-logo=error');
+            return $app->redirect('/admin/databox/' . $databox_id . '/?upload-logo=error');
         }
     }
 
     /**
+     * Delete an existing logo for a databox
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $databox_id
+     * @param    Application $app        The silex application
+     * @param    Request     $request    The current HTTP request
+     * @param    integer     $databox_id The requested databox
+     * @return   JsonResponse
      */
     public function deleteLogoPdf(Application $app, Request $request, $databox_id)
     {
@@ -771,14 +788,16 @@ class Database implements ControllerProviderInterface
 
         }
 
-        return $app->json(array('success' => $success, 'msg' => $msg, 'sbas_id' => $databox_id));
+        return $app->json(array('success' => $success, 'msg'     => $msg, 'sbas_id' => $databox_id));
     }
 
     /**
+     * Clear databox logs
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $databox_id
+     * @param    Application $app        The silex application
+     * @param    Request     $request    The current HTTP request
+     * @param    integer     $databox_id The requested databox
+     * @return   JsonResponse
      */
     public function clearLogs(Application $app, Request $request, $databox_id)
     {
@@ -792,10 +811,12 @@ class Database implements ControllerProviderInterface
     }
 
     /**
+     * Change the name of a databox
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $databox_id
+     * @param    Application $app        The silex application
+     * @param    Request     $request    The current HTTP request
+     * @param    integer     $databox_id The requested databox
+     * @return   JsonResponse
      */
     public function changeViewName(Application $app, Request $request, $databox_id)
     {
@@ -813,10 +834,12 @@ class Database implements ControllerProviderInterface
     }
 
     /**
+     * Unmount a databox
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $databox_id
+     * @param    Application $app        The silex application
+     * @param    Request     $request    The current HTTP request
+     * @param    integer     $databox_id The requested databox
+     * @return   JsonResponse
      */
     public function unmountDatabase(Application $app, Request $request, $databox_id)
     {
@@ -837,14 +860,16 @@ class Database implements ControllerProviderInterface
 
         }
 
-        return $app->json(array('success' => $success, 'msg' =>  $msg,'sbas_id' => $databox_id));
+        return $app->json(array('success' => $success, 'msg'     => $msg, 'sbas_id' => $databox_id));
     }
 
     /**
+     * Empty a databox
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $databox_id
+     * @param    Application $app        The silex application
+     * @param    Request     $request    The current HTTP request
+     * @param    integer     $databox_id The requested databox
+     * @return   JsonResponse
      */
     public function emptyDatabase(Application $app, Request $request, $databox_id)
     {
@@ -874,14 +899,16 @@ class Database implements ControllerProviderInterface
 
         }
 
-        return $app->json(array('success' => $success, 'msg' => $message));
+        return $app->json(array('success' => $success, 'msg'     => $message));
     }
 
     /**
+     * Get number of indexed items for a databox
      *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $databox_id
+     * @param    Application $app        The silex application
+     * @param    Request     $request    The current HTTP request
+     * @param    integer     $databox_id The requested databox
+     * @return   JsonResponse
      */
     public function progressBarInfos(Application $app, Request $request, $databox_id)
     {
@@ -919,7 +946,7 @@ class Database implements ControllerProviderInterface
             }
 
             $ret['success'] = true;
-            $ret['msg'] = _('forms::operation effectuee OK');;
+            $ret['msg'] = _('forms::operation effectuee OK');
         } catch (\Exception $e) {
 
         }
@@ -927,12 +954,14 @@ class Database implements ControllerProviderInterface
         return $app->json($ret);
     }
 
-    /**
-     *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $databox_id
-     */
+   /**
+    * Display page for reaorder collections on a databox
+    *
+    * @param    Application $app        The silex application
+    * @param    Request     $request    The current HTTP request
+    * @param    integer     $databox_id The requested databox
+    * @return   Response
+    */
     public function getReorder(Application $app, Request $request, $databox_id)
     {
         return new Response($app['twig']->render('admin/collection/reorder.html.twig', array(
@@ -940,12 +969,14 @@ class Database implements ControllerProviderInterface
                 )));
     }
 
-    /**
-     *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $databox_id
-     */
+   /**
+    * Apply collection reorder changes
+    *
+    * @param    Application $app        The silex application
+    * @param    Request     $request    The current HTTP request
+    * @param    integer     $databox_id The requested databox
+    * @return   JsonResponse
+    */
     public function setReorder(Application $app, Request $request, $databox_id)
     {
         if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
@@ -961,23 +992,27 @@ class Database implements ControllerProviderInterface
         return $app->json(array('sbas_id' => $databox_id));
     }
 
-    /**
-     *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $databox_id
-     */
+   /**
+    * Display page to create a new collection
+    *
+    * @param    Application $app        The silex application
+    * @param    Request     $request    The current HTTP request
+    * @param    integer     $databox_id The requested databox
+    * @return   Response
+    */
     public function getNewCollection(Application $app, Request $request, $databox_id)
     {
         return new Response($app['twig']->render('admin/collection/create.html.twig'));
     }
 
-    /**
-     *
-     * @param \Silex\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param integer $databox_id
-     */
+   /**
+    * Display page to get some details on a appbox
+    *
+    * @param    Application $app        The silex application
+    * @param    Request     $request    The current HTTP request
+    * @param    integer     $databox_id The requested databox
+    * @return   Response
+    */
     public function getDetails(Application $app, Request $request, $databox_id)
     {
         $databox = $app['phraseanet.appbox']->get_databox($databox_id);
