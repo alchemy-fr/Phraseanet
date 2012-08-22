@@ -123,7 +123,7 @@
     </tr>
 </table>
 
-<form method="post" name="chgStructure" action="/admin/bas/{{ app.request.get('bas_id') }}/suggested-values/" onsubmit="return(false);" target="right" style="visibility:hidden;">
+<form method="post" name="chgStructure" action="/admin/collection/{{ app.request.get('bas_id') }}/suggested-values/" onsubmit="return(false);" target="right" style="visibility:hidden;">
     <textarea nowrap style="visibility:hidden;white-space:pre" name="str" id="idstr">{{ collection.get_prefs() }}</textarea>
 </form>
 

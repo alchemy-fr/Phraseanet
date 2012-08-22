@@ -335,4 +335,45 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertFalse($user->ACL()->has_access_to_base($base_id));
         $user->delete();
     }
+
+    public function testRenderDemands()
+    {
+        $this->client->request('GET', '/users/demands/');
+
+        $this->assertTrue($this->client->getResponse()->isOk());
+    }
+
+    public function testRenderImportFile()
+    {
+        $this->client->request('GET', '/users/import/file/');
+
+        $this->assertTrue($this->client->getResponse()->isOk());
+    }
+
+    public function testGetExampleCSVFile()
+    {
+        $this->client->request('GET', '/users/import/example/user/');
+
+        $this->assertTrue($this->client->getResponse()->isOk());
+    }
+
+    public function testGetExampleRtfFile()
+    {
+        $this->client->request('GET', '/users/import/example/rtf/');
+
+        $this->assertTrue($this->client->getResponse()->isOk());
+    }
+
+//    public function testPostDemands()
+//    {
+//        $collection = \collection::create(array_shift($this->app['phraseanet.appbox']->get_databoxes()), $this->app['phraseanet.appbox'], 'TESTTODELETE');
+//        $register = new \appbox_register($this->app['phraseanet.appbox']);
+//        $register->add_request(self::$user, $collection);
+//
+//        $this->client->request('POST', '/users/demands/', array(
+//            'accept'
+//        ));
+//
+//        $this->assertTrue($this->client->getResponse()->isOk());
+//    }
 }

@@ -1,6 +1,6 @@
 <h1>{% trans'Terms Of Use' %}</h1>
 
-<form target="_self" method="post" action="/admin/database/{{ app.request.get('databox_id') }}/cgus/">
+<form target="_self" method="post" action="/admin/databox/{{ app.request.get('databox_id') }}/cgus/">
     <div class='well'>
         <input type="submit" value="{% trans'Mettre a jour' %}" id="valid"/>
         <label for="valid" class='checkbox'>

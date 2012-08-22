@@ -16,13 +16,13 @@
     <li>{% trans 'phraseanet:: adresse' %} : {{ collection.get_databox().get_serialized_server_info() }}</li>
     <li>{% trans 'admin::base:collection: numero de collection distante' %} : {{ collection.get_coll_id() }}</li>
     <li>{% trans 'admin::base:collection: etat de la collection' %} : {{ collection.is_active() ? "admin::base:collection: activer la collection"| trans : "admin::base:collection: descativer la collection"|trans }}</li>
-    <li>{{ collection.get_record_amount() }} records <a target='_self' href='/admin/bas/{{ collection.get_base_id() }}/informations/details/'>{% trans 'phraseanet:: details' %}</a></li>
+    <li>{{ collection.get_record_amount() }} records <a target='_self' href='/admin/collection/{{ collection.get_base_id() }}/informations/details/'>{% trans 'phraseanet:: details' %}</a></li>
 </ul>
 
 {% if user.ACL.has_right_on_base(app.request.get('bas_id'), 'manage') %}
 <div class="well-small">
     <h5>{% trans 'admin::collection:: Gestionnaires des commandes' %}</h5>
-    <form id="admin_adder" action="/admin/bas/{{ app.request.get('bas_id') }}/order/admins/" method="post">
+    <form id="admin_adder" action="/admin/collection/{{ app.request.get('bas_id') }}/order/admins/" method="post">
         {% if admins | length > 0 %}
             <ul>
                 {% for user in admins %}
@@ -48,7 +48,7 @@
 
 <div class="well-small action-block">
     <h5>{% trans 'admin::collection:: presentation des elements lors de la diffusion aux utilisateurs externes (publications)' %}</h5>
-    <form method="post" action="/admin/bas/{{ app.request.get('bas_id') }}/publication/display/">
+    <form method="post" action="/admin/collection/{{ app.request.get('bas_id') }}/publication/display/">
         <label class="radio" for="pub_wm_none">
             <input id="pub_wm_none" type='radio' name='pub_wm' {{ collection.get_pub_wm() == 'none' ? 'checked' : ''}} value='none'  />
             {% trans 'admin::colelction::presentation des elements : rien' %}
@@ -65,7 +65,7 @@
 </div>
 
 <div class="action-block well">
-    <form class="form-inline" method="post" action="/admin/bas/{{ app.request.get('bas_id') }}/rename/">
+    <form class="form-inline" method="post" action="/admin/collection/{{ app.request.get('bas_id') }}/rename/">
         <div class="input-append">
             <input name="name" class="span2" type="text" size="16">
             <a class="btn submiter" >
@@ -77,21 +77,21 @@
 </div>
 
 <div class="btn-group well">
-    <form style="display:inline" method="post" action="/admin/bas/{{ app.request.get('bas_id') }}/{{ collection.is_active() ? 'disabled'  : 'enabled' }}/">
+    <form style="display:inline" method="post" action="/admin/collection/{{ app.request.get('bas_id') }}/{{ collection.is_active() ? 'disabled'  : 'enabled' }}/">
         <a class='btn confirm submiter' href='#' data-confirm-msg="{{ collection.is_active() ? 'admin::base:collection: etes vous sur darreter la publication de cette collection'|trans  : 'admin::base:collection: etes vous sur de publier cette collection ?'|trans }}">
             <img src='/skins/icons/db-remove.png'/>
             {{ collection.is_active() ? 'admin::base:collection: descativer la collection' | trans  : 'admin::base:collection: activer la collection'| trans }}
         </a>
     </form>
 
-    <form style="display:inline" method="post" action="/admin/bas/{{ app.request.get('bas_id') }}/empty/">
+    <form style="display:inline" method="post" action="/admin/collection/{{ app.request.get('bas_id') }}/empty/">
         <a class='btn confirm submiter' href="#" data-confirm-msg="{% trans 'admin::base:collection: etes vous sur de vider la collection ?' %}">
             <img src='/skins/icons/trash.png' />
             {% trans 'admin::base:collection: vider la collection' %}
         </a>
     </form>
 
-    <form style="display:inline" method="delete" action="/admin/bas/{{ app.request.get('bas_id') }}/">
+    <form style="display:inline" method="post" action="/admin/collection/{{ app.request.get('bas_id') }}/delete/">
         <a class='btn confirm submiter' href="#" data-confirm-msg="{% trans 'admin::collection: Confirmez vous la suppression de cette collection ?' %}">
             <img src='/skins/icons/delete.gif' />
             {% trans 'boutton::supprimer' %}
@@ -105,7 +105,7 @@
     {% if collection.getLogo(app.request.get('bas_id')) is not empty %}
         <div class="thumbnail" style="width:20px;height:20px;margin-top:5px;margin-bottom:5px">{{ collection.getLogo(app.request.get('bas_id')) | raw }}</div>
         {% if user.ACL.has_right_on_base(app.request.get('bas_id'), 'manage') %}
-            <form method="delete" action="/admin/bas/{{ app.request.get('bas_id') }}/picture/mini-logo/">
+            <form method="post" action="/admin/collection/{{ app.request.get('bas_id') }}/picture/mini-logo/delete/">
                 <a class="btn btn-danger btn-mini" href="#">
                     <i class="icon-trash icon-white"></i>
                     {% trans 'boutton::supprimer' %}
@@ -114,7 +114,7 @@
         {% endif%}
     {% elseif user.ACL.has_right_on_base(app.request.get('bas_id'), 'manage') %}
         <span>{% trans 'admin::base:collection: aucun fichier (minilogo, watermark ...)' %}</span>
-        <form enctype="multipart/form-data" method="post" action="/admin/bas/{{ app.request.get('bas_id') }}/picture/mini-logo/">
+        <form enctype="multipart/form-data" method="post" action="/admin/collection/{{ app.request.get('bas_id') }}/picture/mini-logo/">
             <input name="newLogo" type="file" accept="image/*" />
             <a class="btn btn-primary">{% trans 'boutton::envoyer' %}</a>
         </form>
@@ -126,7 +126,7 @@
     {% if collection.getWatermark(app.request.get('bas_id')) is not empty %}
         <div class="thumbnail" style="width:20px;height:20px">{{ collection.getWatermark(app.request.get('bas_id'))| raw }}</div>
         {% if user.ACL.has_right_on_base(app.request.get('bas_id'), 'manage') %}
-            <form method="delete" action="/admin/bas/{{ app.request.get('bas_id') }}/picture/watermark/">
+            <form method="post" action="/admin/collection/{{ app.request.get('bas_id') }}/picture/watermark/delete/">
                 <a class="btn btn-danger btn-mini" href="#">
                     <i class="icon-trash icon-white"></i>
                     {% trans 'boutton::supprimer' %}
@@ -135,7 +135,7 @@
         {% endif%}
     {% elseif user.ACL.has_right_on_base(app.request.get('bas_id'), 'manage') %}
         <span>{% trans 'admin::base:collection: aucun fichier (minilogo, watermark ...)' %}</span>
-        <form enctype="multipart/form-data" method="post" action="/admin/bas/{{ app.request.get('bas_id') }}/picture/watermark/">
+        <form enctype="multipart/form-data" method="post" action="/admin/collection/{{ app.request.get('bas_id') }}/picture/watermark/">
             <input name="newWm" type="file" accept="image/*" />
             <a class="btn btn-primary">{% trans 'boutton::envoyer' %}</a>
         </form>
@@ -147,7 +147,7 @@
     {% if collection.getStamp(app.request.get('bas_id')) is not empty %}
         <div class="thumbnail" style="width:20px;height:20px">{{ collection.getStamp(app.request.get('bas_id'))| raw }}</div>
         {% if user.ACL.has_right_on_base(app.request.get('bas_id'), 'manage') %}
-            <form method="delete" action="/admin/bas/{{ app.request.get('bas_id') }}/picture/stamp-logo/">
+            <form method="post" action="/admin/collection/{{ app.request.get('bas_id') }}/picture/stamp-logo/delete/">
                 <a class="btn btn-danger btn-mini" href="#">
                     <i class="icon-trash icon-white"></i>
                     {% trans 'boutton::supprimer' %}
@@ -156,7 +156,7 @@
         {% endif%}
     {% elseif user.ACL.has_right_on_base(app.request.get('bas_id'), 'manage') %}
         <span>{% trans 'admin::base:collection: aucun fichier (minilogo, watermark ...)' %}</span>
-        <form enctype="multipart/form-data" method="post" action="/admin/bas/{{ app.request.get('bas_id') }}/picture/stamp-logo/">
+        <form enctype="multipart/form-data" method="post" action="/admin/collection/{{ app.request.get('bas_id') }}/picture/stamp-logo/">
             <input name="newStamp" type="file" accept="image/*" />
             <a class="btn btn-primary">{% trans 'boutton::envoyer' %}</a>
         </form>
@@ -168,7 +168,7 @@
     {% if collection.getPresentation(app.request.get('bas_id')) is not empty %}
         <div class="thumbnail" style="width:20px;height:20px">{{ collection.getPresentation(app.request.get('bas_id'))| raw }}</div>
         {% if user.ACL.has_right_on_base(app.request.get('bas_id'), 'manage') %}
-            <form method="delete" action="/admin/bas/{{ app.request.get('bas_id') }}/picture/banner/">
+            <form method="post" action="/admin/collection/{{ app.request.get('bas_id') }}/picture/banner/delete/">
                 <a class="btn btn-danger btn-mini" href="#">
                     <i class="icon-trash icon-white"></i>
                     {% trans 'boutton::supprimer' %}
@@ -177,7 +177,7 @@
         {% endif%}
     {% elseif user.ACL.has_right_on_base(app.request.get('bas_id'), 'manage') %}
         <span>{% trans 'admin::base:collection: aucun fichier (minilogo, watermark ...)' %}</span>
-        <form enctype="multipart/form-data" method="post" action="/admin/bas/{{ app.request.get('bas_id') }}/picture/banner/">
+        <form enctype="multipart/form-data" method="post" action="/admin/collection/{{ app.request.get('bas_id') }}/picture/banner/">
             <input name="newBanner" type="file" accept="image/*" />
             <a class="btn btn-primary">{% trans 'boutton::envoyer' %}</a>
             <span>(max : 650x200)</span>

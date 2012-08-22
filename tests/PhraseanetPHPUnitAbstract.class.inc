@@ -611,7 +611,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     /**
      * Give Bases Rights to User
      *
-     * @param \User_AAdapter $user
+     * @param \User_Adapter $user
      */
     private static function giveRightsToUser(\User_Adapter $user)
     {

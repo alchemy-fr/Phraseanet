@@ -4,7 +4,7 @@
     {% endif %}
 
     {% if createBase %}
-        document.location.replace('/admin/database/{{ app.request.get('sbas_id') }}/');
+        document.location.replace('/admin/databox/{{ app.request.get('sbas_id') }}/');
     {% endif %}
 </script>
 
@@ -27,7 +27,7 @@
         {% if sbas | length > 0 %}
             {% for key, value in sbas %}
                 <li>
-                    <a href='/admin/database/{{ key }}/' target='_self'>
+                    <a href='/admin/databox/{{ key }}/' target='_self'>
                       <img src="{{ value['image'] }}" /> {{ value['name'] }} ({% trans "version" %} {{ value['version'] }}) {{ value['server_info'] }}
                     </a>
                 </li>
@@ -64,7 +64,7 @@
             {% endfor %}
         {% endif %}
 
-        <form action="/admin/databases/upgrade/" method="post" >
+        <form action="/admin/databoxes/upgrade/" method="post" >
             <input type="hidden" value="" name="upgrade" />
             <input type="submit" class="btn btn-warning" value="{% trans 'update::Verifier els tables' %}" />
         </form>
@@ -73,7 +73,7 @@
     <div class="db_infos">
         <h2>{% trans 'admin::base: creer une base' %}</h2>
         <div id="create_base">
-            <form class="form-vertical" method="post" action="/admin/database/">
+            <form class="form-vertical" method="post" action="/admin/databox/">
                 <label class="checkbox">
                     <input type="checkbox" name="new_settings" onchange="if(this.checked == true)$('#server_opts').slideDown();else $('#server_opts').slideUp();" />
                     {% trans 'phraseanet:: Creer une base sur un serveur different de l\'application box' %}
@@ -106,7 +106,7 @@
     <div class="db_infos">
         <h2>{% trans 'admin::base: Monter une base' %}</h2>
         <div id="mount_base">
-            <form method="post" action="/admin/database/mount/">
+            <form method="post" action="/admin/databox/mount/">
                 <label class="checkbox">
                     <input type="checkbox" name="new_settings" onchange="if(this.checked == true)$('#servermount_opts').slideDown();else $('#servermount_opts').slideUp();" />
                     {% trans "phraseanet:: Monter une base provenant d\'un serveur different de l\'application box" %}

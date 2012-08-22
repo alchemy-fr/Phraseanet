@@ -73,7 +73,7 @@
 
   <li class="open">
     <div class="{% if feature == 'bases' %}selected{% endif %}" style="padding:0 0 2px 0;">
-      <a id="TREE_DATABASES" target="right" href="/admin/databases/" class="ajax">
+      <a id="TREE_DATABASES" target="right" href="/admin/databoxes/" class="ajax">
         <img src="/skins/admin/DatabasesAvailable.png" />
         <span>{% trans 'admin::utilisateurs: bases de donnees' %}</span>
       </a>
@@ -98,7 +98,7 @@
 
       <li class="{% if this_is_open %}open{% endif %}">
         <div style="padding:0 0 2px 0;" class="{% if this_is_selected %}selected{% endif %}">
-            <a target="right" href="/admin/database/{{ sbas_id }}/" class="ajax">
+            <a target="right" href="/admin/databox/{{ sbas_id }}/" class="ajax">
                 <img src="/skins/admin/Database.png"/>
                 <span>{{ databox.get_viewname() }}</span>
             </a>
@@ -131,12 +131,12 @@
             </a>
           </li>
           <li>
-            <a target="right" href="/admin/database/{{ sbas_id }}/cgus/" class="ajax">
+            <a target="right" href="/admin/databox/{{ sbas_id }}/cgus/" class="ajax">
               <span>{% trans 'admin:: CGUs' %}</span>
             </a>
           </li>
           <li>
-              <a target="right" href="/admin/database/{{ sbas_id }}/collections/order/" class="ajax">
+              <a target="right" href="/admin/databox/{{ sbas_id }}/collections/order/" class="ajax">
               <img src="/skins/icons/miniadjust03.gif"/>
               <span>{% trans 'admin::collection: ordre des collections' %}</span>
             </a>
@@ -167,7 +167,7 @@
 
           <li>
             <div style="padding:0 0 2px 0;">
-                <a target="right" href="/admin/bas/{{ collection.get_base_id() }}/" class="ajax">
+                <a target="right" href="/admin/collection/{{ collection.get_base_id() }}/" class="ajax">
                     <span>{{ collection.get_name() }}</span>
                 </a>
             </div>
@@ -175,7 +175,7 @@
 
             {% if (user.ACL.has_right_on_base(collection.get_base_id(), 'modify_struct')) %}
               <li>
-                <a target="right" href="/admin/bas/{{ collection.get_base_id() }}/suggested-values/" class="ajax">
+                <a target="right" href="/admin/collection/{{ collection.get_base_id() }}/suggested-values/" class="ajax">
                   <img src="/skins/icons/foldph20open_0.gif"/>
                   <span>{% trans 'admin::base: preferences de collection' %}</span>
                 </a>

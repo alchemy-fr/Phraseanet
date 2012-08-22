@@ -811,8 +811,6 @@ class Users implements ControllerProviderInterface
                 $response->headers->set('Content-Type', 'text/csv');
                 $response->setContent(file_get_contents($file->getPathname()));
 
-                $response->send();
-
                 return $response;
             });
 
@@ -831,8 +829,6 @@ class Users implements ControllerProviderInterface
                 $response->headers->set('Content-Length', $file->getSize());
                 $response->headers->set('Content-Type', 'text/rtf');
                 $response->setContent(file_get_contents($file->getPathname()));
-
-                $response->send();
 
                 return $response;
             });

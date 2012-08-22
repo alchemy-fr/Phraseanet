@@ -62,7 +62,7 @@
                 dataType:'json',
                 type:'POST',
                 data: {order: order},
-                url: '/admin/database/{{ app.request.get('databox_id') }}/collections/order/',
+                url: '/admin/databox/{{ app.request.get('databox_id') }}/collections/order/',
                 beforeSend : function() {
                     $this.attr('disabled', true);
                 },

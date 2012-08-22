@@ -23,6 +23,11 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         foreach (self::$createdCollections as $collection) {
             try {
                 $collection->unmount_collection(\appbox::get_instance(\bootstrap::getCore()));
+            } catch (\Exception $e) {
+
+            }
+
+            try {
                 $collection->delete();
             } catch (\Exception $e) {
 
@@ -162,10 +167,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(false);
 
-        $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/suggested-values/', array(), array(), array(
-            'HTTP_ACCEPT'           => 'application/json',
-            'HTTP_X-Requested-With' => 'XMLHttpRequest'
-        ));
+        $this->XMLHTTPRequest('POST', '/collection/' . self::$collection->get_base_id() . '/suggested-values/');
     }
 
     /**
@@ -177,11 +179,8 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $prefs = '<?xml version="1.0" encoding="UTF-8"?> <baseprefs> <status>0</status> <sugestedValues> <Object> <value>my_new_value</value> </Object> </sugestedValues> </baseprefs>';
 
-        $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/suggested-values/', array(
+        $this->XMLHTTPRequest('POST', '/collection/' . self::$collection->get_base_id() . '/suggested-values/', array(
             'str' => $prefs
-            ), array(), array(
-            'HTTP_ACCEPT'           => 'application/json',
-            'HTTP_X-Requested-With' => 'XMLHttpRequest'
         ));
 
         $json = $this->getJson($this->client->getResponse());
@@ -201,11 +200,8 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $prefs = '<? version="1.0" encoding="UTF-alues> </baseprefs>';
 
-        $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/suggested-values/', array(
+        $this->XMLHTTPRequest('POST', '/collection/' . self::$collection->get_base_id() . '/suggested-values/', array(
             'str' => $prefs
-            ), array(), array(
-            'HTTP_ACCEPT'           => 'application/json',
-            'HTTP_X-Requested-With' => 'XMLHttpRequest'
         ));
 
         $json = $this->getJson($this->client->getResponse());
@@ -241,10 +237,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/enable/', array(), array(), array(
-            'HTTP_ACCEPT'           => 'application/json',
-            'HTTP_X-Requested-With' => 'XMLHttpRequest'
-        ));
+        $this->XMLHTTPRequest('POST', '/collection/' . self::$collection->get_base_id() . '/enable/');
 
         $json = $this->getJson($this->client->getResponse());
         $this->assertTrue($json->success);
@@ -283,10 +276,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/disabled/', array(), array(), array(
-            'HTTP_ACCEPT'           => 'application/json',
-            'HTTP_X-Requested-With' => 'XMLHttpRequest'
-        ));
+        $this->XMLHTTPRequest('POST', '/collection/' . self::$collection->get_base_id() . '/disabled/');
 
         $json = $this->getJson($this->client->getResponse());
         $this->assertTrue($json->success);
@@ -352,10 +342,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/publication/display/', array(), array(), array(
-            'HTTP_ACCEPT'           => 'application/json',
-            'HTTP_X-Requested-With' => 'XMLHttpRequest'
-        ));
+        $this->XMLHTTPRequest('POST', '/collection/' . self::$collection->get_base_id() . '/publication/display/');
     }
 
     /**
@@ -365,18 +352,15 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/publication/display/', array(
+        $this->XMLHTTPRequest('POST', '/collection/' . self::$collection->get_base_id() . '/publication/display/', array(
             'pub_wm' => 'wm',
-            ), array(), array(
-            'HTTP_ACCEPT'           => 'application/json',
-            'HTTP_X-Requested-With' => 'XMLHttpRequest',
         ));
 
         $json = $this->getJson($this->client->getResponse());
         $this->assertTrue($json->success);
         $collection = \collection::get_from_base_id(self::$collection->get_base_id());
         $this->assertNotNull($collection->get_pub_wm());
-        $collection = null;
+        unset($collection);
     }
 
     /**
@@ -409,10 +393,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/rename/', array(), array(), array(
-            'HTTP_ACCEPT'           => 'application/json',
-            'HTTP_X-Requested-With' => 'XMLHttpRequest'
-        ));
+        $this->XMLHTTPRequest('POST', '/collection/' . self::$collection->get_base_id() . '/rename/');
     }
 
     /**
@@ -422,16 +403,17 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/rename/', array(
-            'name' => 'test_rename_coll',
-            ), array(), array(
-            'HTTP_ACCEPT'           => 'application/json',
-            'HTTP_X-Requested-With' => 'XMLHttpRequest',
+        $collection = $this->createOneCollection();
+
+        $this->XMLHTTPRequest('POST', '/collection/' . $collection->get_base_id() . '/rename/', array(
+            'name' => 'test_rename_coll'
         ));
 
         $json = $this->getJson($this->client->getResponse());
         $this->assertTrue($json->success);
-        $this->assertEquals(self::$collection->get_name(), 'test_rename_coll');
+        $this->assertEquals($collection->get_name(), 'test_rename_coll');
+        $collection->unmount_collection($this->app['phraseanet.appbox']);
+        $collection->delete();
     }
 
     /**
@@ -453,10 +435,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(false);
 
-        $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/empty/', array(), array(), array(
-            'HTTP_ACCEPT'           => 'application/json',
-            'HTTP_X-Requested-With' => 'XMLHttpRequest',
-        ));
+        $this->XMLHTTPRequest('POST', '/collection/' . self::$collection->get_base_id() . '/empty/');
     }
 
     /**
@@ -475,10 +454,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $this->markTestSkipped('No record were added');
         }
 
-        $this->client->request('POST', '/collection/' . $collection->get_base_id() . '/empty/', array(), array(), array(
-            'HTTP_ACCEPT'           => 'application/json',
-            'HTTP_X-Requested-With' => 'XMLHttpRequest',
-        ));
+        $this->XMLHTTPRequest('POST', '/collection/' . $collection->get_base_id() . '/empty/');
 
         $json = $this->getJson($this->client->getResponse());
         $this->assertTrue($json->success);
@@ -495,7 +471,8 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $collection = $this->createOneCollection();
 
         $databox = $this->app['phraseanet.appbox']->get_databox($collection->get_sbas_id());
-        $sql = 'INSERT INTO record
+        $sql = '
+            INSERT INTO record
               (coll_id, record_id, parent_record_id, moddate, credate
                 , type, sha256, uuid, originalname, mime)
             VALUES
@@ -526,10 +503,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $this->markTestSkipped('No enough records added');
         }
 
-        $this->client->request('POST', '/collection/' . $collection->get_base_id() . '/empty/', array(), array(), array(
-            'HTTP_ACCEPT'           => 'application/json',
-            'HTTP_X-Requested-With' => 'XMLHttpRequest',
-        ));
+        $this->XMLHTTPRequest('POST', '/collection/' . $collection->get_base_id() . '/empty/');
 
         $json = $this->getJson($this->client->getResponse());
         $this->assertTrue($json->success);
@@ -569,10 +543,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(false);
 
-        $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/unmount/', array(), array(), array(
-            'HTTP_ACCEPT'           => 'application/json',
-            'HTTP_X-Requested-With' => 'XMLHttpRequest',
-        ));
+        $this->XMLHTTPRequest('POST', '/collection/' . self::$collection->get_base_id() . '/unmount/');
     }
 
     /**
@@ -584,10 +555,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $collection = $this->createOneCollection();
 
-        $this->client->request('POST', '/collection/' . $collection->get_base_id() . '/unmount/', array(), array(), array(
-            'HTTP_ACCEPT'           => 'application/json',
-            'HTTP_X-Requested-With' => 'XMLHttpRequest',
-        ));
+        $this->XMLHTTPRequest('POST', '/collection/' . $collection->get_base_id() . '/unmount/');
 
         $json = $this->getJson($this->client->getResponse());
         $this->assertTrue($json->success);
@@ -685,10 +653,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->setAdmin(true);
 
-        $this->client->request('DELETE', '/collection/' . self::$collection->get_base_id() . '/picture/mini-logo/', array(), array(), array(
-            'HTTP_ACCEPT'           => 'application/json',
-            'HTTP_X-Requested-With' => 'XMLHttpRequest',
-        ));
+        $this->XMLHTTPRequest('DELETE', '/collection/' . self::$collection->get_base_id() . '/picture/mini-logo/');
         $json = $this->getJson($this->client->getResponse());
         $this->assertTrue($json->success);
         /*         * todo check why file is not deleted */
@@ -733,10 +698,8 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         }
         $this->setAdmin(true);
 
-        $this->client->request('DELETE', '/collection/' . self::$collection->get_base_id() . '/picture/watermark/', array(), array(), array(
-            'HTTP_ACCEPT'           => 'application/json',
-            'HTTP_X-Requested-With' => 'XMLHttpRequest',
-        ));
+        $this->XMLHTTPRequest('DELETE', '/collection/' . self::$collection->get_base_id() . '/picture/watermark/');
+
         $json = $this->getJson($this->client->getResponse());
         $this->assertTrue($json->success);
         /*         * todo check why file is not deleted */
@@ -782,10 +745,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->setAdmin(true);
 
-        $this->client->request('DELETE', '/collection/' . self::$collection->get_base_id() . '/picture/stamp-logo/', array(), array(), array(
-            'HTTP_ACCEPT'           => 'application/json',
-            'HTTP_X-Requested-With' => 'XMLHttpRequest',
-        ));
+        $this->XMLHTTPRequest('DELETE', '/collection/' . self::$collection->get_base_id() . '/picture/stamp-logo/');
 
         $json = $this->getJson($this->client->getResponse());
         $this->assertTrue($json->success);
@@ -832,10 +792,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->setAdmin(true);
 
-        $this->client->request('DELETE', '/collection/' . self::$collection->get_base_id() . '/picture/banner/', array(), array(), array(
-            'HTTP_ACCEPT'           => 'application/json',
-            'HTTP_X-Requested-With' => 'XMLHttpRequest',
-        ));
+        $this->client->request('DELETE', '/collection/' . self::$collection->get_base_id() . '/picture/banner/');
 
         $json = $this->getJson($this->client->getResponse());
         $this->assertTrue($json->success);
@@ -907,10 +864,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $collection = $this->createOneCollection();
 
-        $this->client->request('DELETE', '/collection/' . $collection->get_base_id() . '/', array(), array(), array(
-            'HTTP_ACCEPT'           => 'application/json',
-            'HTTP_X-Requested-With' => 'XMLHttpRequest',
-        ));
+        $this->XMLHTTPRequest('DELETE', '/collection/' . $collection->get_base_id() . '/');
 
         $json = $this->getJson($this->client->getResponse());
         $this->assertTrue($json->success);
@@ -938,10 +892,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $this->markTestSkipped('No record were added');
         }
 
-        $this->client->request('DELETE', '/collection/' . $collection->get_base_id() . '/', array(), array(), array(
-            'HTTP_ACCEPT'           => 'application/json',
-            'HTTP_X-Requested-With' => 'XMLHttpRequest',
-        ));
+        $this->XMLHTTPRequest('DELETE', '/collection/' . $collection->get_base_id() . '/');
 
         $json = $this->getJson($this->client->getResponse());
         $this->assertFalse($json->success);
