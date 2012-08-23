@@ -46,7 +46,7 @@ class Collection implements ControllerProviderInterface
         /**
          * Get a collection
          *
-         * name         : admin_database_collection
+         * name         : admin_display_collection
          *
          * description  : Display collection information page
          *
@@ -58,12 +58,12 @@ class Collection implements ControllerProviderInterface
          */
         $controllers->get('/{bas_id}/', $this->call('getCollection'))
             ->assert('bas_id', '\d+')
-            ->bind('admin_database_collection');
+            ->bind('admin_display_collection');
 
         /**
          * Get a collection suggested values
          *
-         * name         : admin_database_suggested_values
+         * name         : admin_collection_display_suggested_values
          *
          * description  : Display page to edit suggested values
          *
@@ -75,12 +75,12 @@ class Collection implements ControllerProviderInterface
          */
         $controllers->get('/{bas_id}/suggested-values/', $this->call('getSuggestedValues'))
             ->assert('bas_id', '\d+')
-            ->bind('admin_database_suggested_values');
+            ->bind('admin_collection_display_suggested_values');
 
         /**
          * Submit suggested values
          *
-         * name         : admin_database_submit_suggested_values
+         * name         : admin_collection_submit_suggested_values
          *
          * description  : Submit suggested values
          *
@@ -92,7 +92,7 @@ class Collection implements ControllerProviderInterface
          */
         $controllers->post('/{bas_id}/suggested-values/', $this->call('submitSuggestedValues'))
             ->assert('bas_id', '\d+')
-            ->bind('admin_database_submit_suggested_values');
+            ->bind('admin_collection_submit_suggested_values');
 
         /**
          * Delete a collection
@@ -101,14 +101,15 @@ class Collection implements ControllerProviderInterface
          *
          * description  : Delete a collection
          *
-         * method       : DELETE
+         * method       : POST
          *
          * parameters   : none
          *
          * return       : JSON Response
          */
-        $controllers->delete('/{bas_id}/', $this->call('delete'))
-            ->assert('bas_id', '\d+')->bind('admin_collection_delete');
+        $controllers->post('/{bas_id}/delete/', $this->call('delete'))
+            ->assert('bas_id', '\d+')
+            ->bind('admin_collection_delete');
 
         /**
          * Enable a collection
@@ -124,12 +125,13 @@ class Collection implements ControllerProviderInterface
          * return       : JSON Response
          */
         $controllers->post('/{bas_id}/enable/', $this->call('enable'))
-            ->assert('bas_id', '\d+')->bind('admin_collection_enable');
+            ->assert('bas_id', '\d+')
+            ->bind('admin_collection_enable');
 
         /**
          * Disable a collection
          *
-         * name         : admin_collection_disabled
+         * name         : admin_collection_disable
          *
          * description  : Disable a collection
          *
@@ -141,12 +143,12 @@ class Collection implements ControllerProviderInterface
          */
         $controllers->post('/{bas_id}/disabled/', $this->call('disabled'))
             ->assert('bas_id', '\d+')
-            ->bind('admin_collection_disabled');
+            ->bind('admin_collection_disable');
 
         /**
          * Set new order admin
          *
-         * name         : admin_collection_order_admins
+         * name         : admin_collection_submit_order_admins
          *
          * description  : Set new admins for handle items order
          *
@@ -158,7 +160,7 @@ class Collection implements ControllerProviderInterface
          */
         $controllers->post('/{bas_id}/order/admins/', $this->call('setOrderAdmins'))
             ->assert('bas_id', '\d+')
-            ->bind('admin_collection_order_admins');
+            ->bind('admin_collection_submit_order_admins');
 
         /**
          * Set publication watermark
@@ -252,13 +254,13 @@ class Collection implements ControllerProviderInterface
          *
          * description  : Delete the current collection mini logo
          *
-         * method       : DELETE
+         * method       : POST
          *
          * parameters   : none
          *
          * return       : JSON Response
          */
-        $controllers->delete('/{bas_id}/picture/mini-logo/', $this->call('deleteLogo'))
+        $controllers->post('/{bas_id}/picture/mini-logo/delete/', $this->call('deleteLogo'))
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_delete_logo');
 
@@ -286,13 +288,13 @@ class Collection implements ControllerProviderInterface
          *
          * description  : Delete a mini logo
          *
-         * method       : DELETE
+         * method       : POST
          *
          * parameters   : none
          *
          * return       : JSON Response
          */
-        $controllers->delete('/{bas_id}/picture/watermark/', $this->call('deleteWatermark'))
+        $controllers->post('/{bas_id}/picture/watermark/delete/', $this->call('deleteWatermark'))
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_delete_watermark');
 
@@ -320,13 +322,13 @@ class Collection implements ControllerProviderInterface
          *
          * description  : Delete a stamp
          *
-         * method       : DELETE
+         * method       : POST
          *
          * parameters   : none
          *
          * return       : JSON Response
          */
-        $controllers->delete('/{bas_id}/picture/stamp-logo/', $this->call('deleteStamp'))
+        $controllers->post('/{bas_id}/picture/stamp-logo/delete/', $this->call('deleteStamp'))
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_delete_stamp');
 
@@ -354,20 +356,20 @@ class Collection implements ControllerProviderInterface
          *
          * description  : Delete a mini logo
          *
-         * method       : DELETE
+         * method       : POST
          *
          * parameters   : none
          *
          * return       : REDIRECT Response
          */
-        $controllers->delete('/{bas_id}/picture/banner/', $this->call('deleteBanner'))
+        $controllers->post('/{bas_id}/picture/banner/delete/', $this->call('deleteBanner'))
             ->assert('bas_id', '\d+')
             ->bind('admin_collection_delete_banner');
 
         /**
          * Get document details in the requested collection
          *
-         * name         : admin_document_details
+         * name         : admin_collection_display_document_details
          *
          * description  : Get documents collection details
          *
@@ -379,7 +381,7 @@ class Collection implements ControllerProviderInterface
          */
         $controllers->get('/{bas_id}/informations/details/', $this->call('getDetails'))
             ->assert('bas_id', '\d+')
-            ->bind('admin_collection_document_details');
+            ->bind('admin_collection_display_document_details');
 
         return $controllers;
     }

@@ -41,7 +41,7 @@ class Sphinx implements ControllerProviderInterface
         /**
          * Sphinx configuration
          *
-         * name         : sphinx_configuration
+         * name         : sphinx_display_configuration
          *
          * description  : Display sphinx configuration
          *
@@ -51,12 +51,13 @@ class Sphinx implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/configuration/', $this->call('getConfiguration'))->bind('sphinx_configuration');
+        $controllers->get('/configuration/', $this->call('getConfiguration'))
+            ->bind('sphinx_display_configuration');
 
         /**
          * Sphinx configuration
          *
-         * name         : submit_sphinx_configuration
+         * name         : sphinx_submit_configuration
          *
          * description  : Submit new sphinx configuration
          *
@@ -66,7 +67,7 @@ class Sphinx implements ControllerProviderInterface
          *
          * return       : REDIRECT Response
          */
-        $controllers->post('/configuration/', $this->call('submitConfiguration'))->bind('submit_sphinx_configuration');
+        $controllers->post('/configuration/', $this->call('submitConfiguration'))->bind('sphinx_submit_configuration');
 
         return $controllers;
     }

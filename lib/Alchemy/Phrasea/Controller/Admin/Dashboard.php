@@ -50,7 +50,8 @@ class Dashboard implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/', $this->call('slash'))->bind('admin_dashbord');
+        $controllers->get('/', $this->call('slash'))
+            ->bind('admin_dashbord');
 
         /**
          * Reset cache
@@ -65,7 +66,8 @@ class Dashboard implements ControllerProviderInterface
          *
          * return       : Redirect Response
          */
-        $controllers->post('/flush-cache/', $this->call('flush'))->bind('admin_dashboard_flush_cache');
+        $controllers->post('/flush-cache/', $this->call('flush'))
+            ->bind('admin_dashboard_flush_cache');
 
         /**
          * Test send mail
@@ -80,12 +82,13 @@ class Dashboard implements ControllerProviderInterface
          *
          * return       : Redirect Response
          */
-        $controllers->post('/send-mail-test/', $this->call('sendMail'))->bind('admin_dashboard_test_mail');
+        $controllers->post('/send-mail-test/', $this->call('sendMail'))
+            ->bind('admin_dashboard_test_mail');
 
         /**
          * Reset admin rights
          *
-         * name         : admin_dashboard_reset_rights
+         * name         : admin_dashboard_reset_admin_rights
          *
          * description  : Reset admin rights
          *
@@ -95,14 +98,15 @@ class Dashboard implements ControllerProviderInterface
          *
          * return       : Redirect Response
          */
-        $controllers->post('/reset-admin-rights/', $this->call('resetAdminRights'))->bind('admin_dashboard_reset_rights');
+        $controllers->post('/reset-admin-rights/', $this->call('resetAdminRights'))
+            ->bind('admin_dashboard_reset_admin_rights');
 
         /**
-         * add admins
+         * Add admins
          *
          * name         : admin_dashboard_new
          *
-         * description  : Add new admins
+         * description  : Add new admin_dashboard_add_admins
          *
          * method       : POST
          *
@@ -110,7 +114,8 @@ class Dashboard implements ControllerProviderInterface
          *
          * return       : Redirect Response
          */
-        $controllers->post('/new/', $this->call('addAdmins'))->bind('admin_dashboard_new');
+        $controllers->post('/add-admins/', $this->call('addAdmins'))
+            ->bind('admin_dashboard_add_admins');
 
         return $controllers;
     }
@@ -225,14 +230,14 @@ class Dashboard implements ControllerProviderInterface
     {
         $user = $app['phraseanet.core']->getAuthenticatedUser();
 
-        if (count($admins = array_filter($request->get('admins', array()))) > 0) {
+        if (count($admins = $request->get('admins', array())) > 0) {
 
             if ( ! in_array($user->get_id(), $admins)) {
                 $admins[] = $user->get_id();
             }
 
             if ($admins > 0) {
-                \User_Adapter::set_sys_admins($admins);
+                \User_Adapter::set_sys_admins(array_filter($admins));
                 \User_Adapter::reset_sys_admins_rights();
             }
         }

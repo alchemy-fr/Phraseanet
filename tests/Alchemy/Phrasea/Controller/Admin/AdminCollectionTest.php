@@ -44,6 +44,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function setUp()
     {
         parent::setUp();
+
         $this->client = $this->createClient();
         $this->StubbedACL = $this->getMockBuilder('\ACL')
             ->disableOriginalConstructor()
@@ -95,7 +96,6 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function checkRedirection($response, $location)
     {
         $this->assertTrue($response->isRedirect());
-//        $this->assertRegexp('/' . str_replace("/", "\/", $location) . '/', $response->headers->get('location'));
         $this->assertEquals($location, $response->headers->get('location'));
     }
 
@@ -188,7 +188,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $collection = $collection = \collection::get_from_base_id(self::$collection->get_base_id());
         $this->assertTrue( ! ! strrpos($collection->get_prefs(), 'my_new_value'));
-        $collection = null;
+        unset($collection);
     }
 
     /**
@@ -244,7 +244,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $collection = \collection::get_from_base_id(self::$collection->get_base_id());
         $this->assertTrue($collection->is_active());
-        $collection = null;
+        unset($collection);
     }
 
     /**
@@ -282,7 +282,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue($json->success);
         $collection = \collection::get_from_base_id(self::$collection->get_base_id());
         $this->assertFalse($collection->is_active());
-        $collection = null;
+        unset($collection);
     }
 
     /**
@@ -526,52 +526,6 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     /**
      * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::unmount
-     */
-    public function testPostUnmountCollectionBadRequestFormat()
-    {
-        $this->setAdmin(true);
-
-        $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/unmount/');
-    }
-
-    /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::unmount
-     */
-    public function testPostUnmountCollectionUnauthorizedException()
-    {
-        $this->setAdmin(false);
-
-        $this->XMLHTTPRequest('POST', '/collection/' . self::$collection->get_base_id() . '/unmount/');
-    }
-
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::unmount
-     */
-    public function testPostUnmountCollection()
-    {
-        $this->setAdmin(true);
-
-        $collection = $this->createOneCollection();
-
-        $this->XMLHTTPRequest('POST', '/collection/' . $collection->get_base_id() . '/unmount/');
-
-        $json = $this->getJson($this->client->getResponse());
-        $this->assertTrue($json->success);
-
-        try {
-            \collection::get_from_base_id($collection->get_base_id());
-            $this->fail('Collection not unmounted');
-        } catch (\Exception_Databox_CollectionNotFound $e) {
-
-        }
-
-        unset($collection);
-    }
-
-    /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      *  @covers Alchemy\Phrasea\Controller\Admin\Bas::setMiniLogo
      */
     public function testSetMiniLogoBadRequest()
@@ -639,7 +593,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('DELETE', '/collection/' . self::$collection->get_base_id() . '/picture/mini-logo/');
+        $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/picture/mini-logo/delete/');
     }
 
     /**
@@ -653,7 +607,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->setAdmin(true);
 
-        $this->XMLHTTPRequest('DELETE', '/collection/' . self::$collection->get_base_id() . '/picture/mini-logo/');
+        $this->XMLHTTPRequest('POST', '/collection/' . self::$collection->get_base_id() . '/picture/mini-logo/delete/');
         $json = $this->getJson($this->client->getResponse());
         $this->assertTrue($json->success);
         /*         * todo check why file is not deleted */
@@ -685,7 +639,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('DELETE', '/collection/' . self::$collection->get_base_id() . '/picture/watermark/');
+        $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/picture/watermark/delete/');
     }
 
     /**
@@ -698,7 +652,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         }
         $this->setAdmin(true);
 
-        $this->XMLHTTPRequest('DELETE', '/collection/' . self::$collection->get_base_id() . '/picture/watermark/');
+        $this->XMLHTTPRequest('POST', '/collection/' . self::$collection->get_base_id() . '/picture/watermark/delete/');
 
         $json = $this->getJson($this->client->getResponse());
         $this->assertTrue($json->success);
@@ -731,7 +685,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('DELETE', '/collection/' . self::$collection->get_base_id() . '/picture/stamp-logo/');
+        $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/picture/stamp-logo/delete/');
     }
 
     /**
@@ -745,7 +699,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->setAdmin(true);
 
-        $this->XMLHTTPRequest('DELETE', '/collection/' . self::$collection->get_base_id() . '/picture/stamp-logo/');
+        $this->XMLHTTPRequest('POST', '/collection/' . self::$collection->get_base_id() . '/picture/stamp-logo/delete/');
 
         $json = $this->getJson($this->client->getResponse());
         $this->assertTrue($json->success);
@@ -778,7 +732,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('DELETE', '/collection/' . self::$collection->get_base_id() . '/picture/banner/');
+        $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/picture/banner/delete/');
     }
 
     /**
@@ -792,7 +746,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->setAdmin(true);
 
-        $this->client->request('DELETE', '/collection/' . self::$collection->get_base_id() . '/picture/banner/');
+        $this->XMLHTTPRequest('POST', '/collection/' . self::$collection->get_base_id() . '/picture/banner/delete/');
 
         $json = $this->getJson($this->client->getResponse());
         $this->assertTrue($json->success);
@@ -841,7 +795,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('DELETE', '/collection/' . self::$collection->get_base_id() . '/');
+        $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/delete/');
     }
 
     /**
@@ -852,7 +806,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(false);
 
-        $this->client->request('DELETE', '/collection/' . self::$collection->get_base_id() . '/');
+        $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/delete/');
     }
 
     /**
@@ -864,7 +818,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $collection = $this->createOneCollection();
 
-        $this->XMLHTTPRequest('DELETE', '/collection/' . $collection->get_base_id() . '/');
+        $this->XMLHTTPRequest('POST', '/collection/' . $collection->get_base_id() . '/delete/');
 
         $json = $this->getJson($this->client->getResponse());
         $this->assertTrue($json->success);
@@ -892,10 +846,56 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $this->markTestSkipped('No record were added');
         }
 
-        $this->XMLHTTPRequest('DELETE', '/collection/' . $collection->get_base_id() . '/');
+        $this->XMLHTTPRequest('POST', '/collection/' . $collection->get_base_id() . '/delete/');
 
         $json = $this->getJson($this->client->getResponse());
         $this->assertFalse($json->success);
         $collection->empty_collection();
+    }
+
+     /**
+     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
+     * @covers Alchemy\Phrasea\Controller\Admin\Bas::unmount
+     */
+    public function testPostUnmountCollectionBadRequestFormat()
+    {
+        $this->setAdmin(true);
+
+        $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/unmount/');
+    }
+
+    /**
+     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
+     * @covers Alchemy\Phrasea\Controller\Admin\Bas::unmount
+     */
+    public function testPostUnmountCollectionUnauthorizedException()
+    {
+        $this->setAdmin(false);
+
+        $this->XMLHTTPRequest('POST', '/collection/' . self::$collection->get_base_id() . '/unmount/');
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Controller\Admin\Bas::unmount
+     */
+    public function testPostUnmountCollection()
+    {
+        $this->setAdmin(true);
+
+        $collection = $this->createOneCollection();
+
+        $this->XMLHTTPRequest('POST', '/collection/' . $collection->get_base_id() . '/unmount/');
+
+        $json = $this->getJson($this->client->getResponse());
+        $this->assertTrue($json->success);
+
+        try {
+            \collection::get_from_base_id($collection->get_base_id());
+            $this->fail('Collection not unmounted');
+        } catch (\Exception_Databox_CollectionNotFound $e) {
+
+        }
+
+        unset($collection);
     }
 }

@@ -41,7 +41,7 @@ class Setup implements ControllerProviderInterface
         /**
          * Get globals values
          *
-         * name         : setup_globals
+         * name         : setup_display_globals
          *
          * description  : Display globals values
          *
@@ -51,12 +51,13 @@ class Setup implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/', $this->call('getGlobals'))->bind('setup_globals');
+        $controllers->get('/', $this->call('getGlobals'))
+            ->bind('setup_display_globals');
 
         /**
          * Submit global values
          *
-         * name         : submit_setup_globals
+         * name         : setup_submit_globals
          *
          * description  : Change globals values
          *
@@ -66,7 +67,8 @@ class Setup implements ControllerProviderInterface
          *
          * return       : Redirect Response
          */
-        $controllers->post('/', $this->call('postGlobals'))->bind('submit_setup_globals');
+        $controllers->post('/', $this->call('postGlobals'))
+            ->bind('setup_submit_globals');
 
         return $controllers;
     }

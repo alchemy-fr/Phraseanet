@@ -11,7 +11,7 @@
     {% if user.ACL().has_right_on_sbas(databox.get_sbas_id(), "bas_manage") %}
         <img src="/skins/icons/edit_0.gif" id="show-view-name" />
         <div class='well-small' id='change-view-name' style='display:none'>
-            <form method='post' action='/admin/databox/{{ databox.get_sbas_id() }}/view-name/'>
+            <form method='post' action='{{ path('admin_database_rename', {'databox_id': databox.get_sbas_id()}) }}'>
                 <div class="input-append">
                     <input id="db-view-name" name='viewname' class="span2" type="text" size="16">
                     <a class="btn submiter" type="button">{% trans 'Rename' %}</a>
@@ -25,7 +25,7 @@
         {% trans 'admin::base: nombre d\'enregistrements sur la base :' %}
         <span id="nrecords">{{ databox.get_record_amount() }}</span>
 
-        (<a href="/admin/databox/{{ databox.get_sbas_id() }}/informations/details/" class='ajax' target="rights">{% trans 'phraseanet:: details'%}</a>)
+        (<a href="{{ path('admin_database_display_document_details', {'databox_id': databox.get_sbas_id()}) }}" class='ajax' target="rights">{% trans 'phraseanet:: details'%}</a>)
     </li>
 
     {% if showDetail %}
@@ -67,7 +67,7 @@
 
 {% if user.ACL().has_right_on_sbas(databox.get_sbas_id(), "bas_manage") %}
     <div class=" well-small">
-         <form method="post" action="/admin/databox/{{ app.request.get('databox_id') }}/indexable/">
+         <form method="post" action="{{ path('admin_database_set_indexable', {'databox_id': databox.get_sbas_id()}) }}">
              <label class="checkbox" for="is_indexable">
                 <input type="checkbox" id="is_indexable" name='indexable' {{ appbox.is_databox_indexable(databox) ? 'checked' : ''}} />
                 {% trans "admin::base: Cette base est indexable" %}
@@ -77,39 +77,39 @@
 
     <div class="btn-group well-small">
 
-        <form method="post" action="/admin/databox/{{ app.request.get('bas_id') }}/reindex/">
+        <form method="post" action="{{ path('admin_database_reindex', {'databox_id': databox.get_sbas_id()}) }}">
             <a class='btn submiter confirm' href='#' data-confirm-msg="{% trans 'Confirmez-vous la re-indexation de la base ?' %}">
                 {% trans "base:: re-indexer" %}
             </a>
         </form>
 
-        <a style='display:inline-block' target="right" class="ajax btn" href="/admin/databox/{{ databox.get_sbas_id() }}/collection/">
+        <a style='display:inline-block' target="right" class="ajax btn" href="{{ path('admin_database_get_new_collection', {'databox_id': databox.get_sbas_id()}) }}">
             <img src="/skins/icons/create_coll.png" />
             {% trans "admin::base:collection: Creer une collection" %}
         </a>
 
-        <form style='display:inline' method="post" action="/admin/databox/{{ app.request.get('bas_id') }}/clear-logs/">
+        <form style='display:inline' method="post" action="{{ path('admin_database_clear_logs', {'databox_id': databox.get_sbas_id()}) }}">
             <a href="#" class='btn submiter confirm'data-confirm-msg="{% trans 'admin::base: Confirmer la suppression de tous les logs' %}">
                 <img src="/skins/icons/clearLogs.png" />
                 {% trans "admin::base: supprimer tous les logs" %}
             </a>
         </form>
 
-        <form style='display:inline' method="post" action="/admin/databox/{{ app.request.get('bas_id') }}/unmount/">
+        <form style='display:inline' method="post" action="{{ path('admin_database_unmount', {'databox_id': databox.get_sbas_id()}) }}">
             <a href="#" class='btn submiter confirm' data-confirm-msg="{% trans 'admin::base: Confirmer vous l\'arret de la publication de la base' %}">
                 <img src="/skins/icons/db-remove.png" />
                 {% trans "admin::base: arreter la publication de la base" %}
             </a>
         </form>
 
-        <form style='display:inline' method="post" action="/admin/databox/{{ app.request.get('bas_id') }}/empty/">
+        <form style='display:inline' method="post" action="{{ path('admin_database_empty', {'databox_id': databox.get_sbas_id()}) }}">
             <a href="#" class='btn submiter confirm' data-confirm-msg="{% trans 'admin::base: Confirmer le vidage complet de la base' %}">
                 <img src="/skins/icons/trash.png" />
                 {% trans "admin::base: vider la base" %}
             </a>
         </form>
 
-         <form style='display:inline' method="post" action="/admin/databox/{{ app.request.get('bas_id') }}/delete/">
+         <form style='display:inline' method="post" action="{{ path('admin_database_delete', {'databox_id': databox.get_sbas_id()}) }}">
             <a href="#" class='btn submiter confirm' data-confirm-msg="{% trans 'admin::base: Confirmer la suppression de la base' %}">
                 <img src="/skins/icons/delete.gif" />
                 {% trans "admin::base: supprimer la base" %}
@@ -127,13 +127,15 @@
                 <ul>
                 {% for collId, name in databox.get_mountable_colls() %}
                     <li>
-                        <form class='form-inline' method="post" action="/admin/databox/{{ app.request.get('databox_id') }}/collection/{{ collId }}/mount/">
+                        <form class='form-inline' method="post" action="{{ path('admin_database_mount_collection', {'databox_id': databox.get_sbas_id(), 'collection_id' : collId }) }}">
                             {% trans "Monter" %} {{ name }}
                             {% if user.ACL().get_granted_base(["canadmin"]) | length > 0 %}
                                 <label for="othcollsel">{% trans "admin::base:collection: Vous pouvez choisir une collection de reference pour donenr des acces " %}</label>
                                 <select id="othcollsel" name="othcollsel" >
                                     <option>{% trans "choisir" %}</option>
-
+                                    {% for collection in databox.get_collections() %}
+                                        <option value='{{ collection.get_base_id() }}'>{{ collection. get_name() }}</option>
+                                    {% endfor %}
                                 </select>
                             {% endif %}
                             <a href="#" class='btn btn-mini submiter'>
@@ -159,7 +161,7 @@
                 <ul>
                 {% for baseId in databox.get_activable_colls() %}
                     <li>
-                        <form class='form-inline' method="post" action="/admin/collection/{{ baseId }}/activate/">
+                        <form class='form-inline' method="post" action="{{ path('admin_collection_enable', {'bas_id': baseId}) }}">
                             {{ baseId|bas_names }}
                             <a href="#" class="btn btn-mini submiter">{% trans "Activer" %}></a>
                         </form>
@@ -183,7 +185,7 @@
     <div id="printLogoDIV_OK">
         <img id="printLogo" src="/print/{{ databox.get_sbas_id() }} " />
         {% if user.ACL().has_right_on_sbas(databox.get_sbas_id(), "bas_manage") %}
-            <form method="post"  action="/admin/databox/{{ app.request.get('databox_id') }}/logo/delete/"/>
+            <form method="post"  action="{{ path('admin_database_delete_logo', {'databox_id': databox.get_sbas_id()}) }}"/>
                 <a href="#" class='btn submiter'>
                     {% trans "admin::base:collection: supprimer le logo" %}
                 </a>
@@ -192,10 +194,10 @@
     </div>
     <div id="printLogoDIV_NONE">
         {% trans "admin::base:collection: aucun fichier (minilogo, watermark ...)" %}
-        <form method="post" name="flpdf" action="/admin/databox/{{ app.request.get('databox_id') }}/logo/" target="???" onsubmit="return(false);" ENCTYPE="multipart/form-data">
+        <form method="post" name="flpdf" action="{{ path('admin_database_submit_logo', {'databox_id': databox.get_sbas_id()}) }}" target="right" enctype="multipart/form-data">
             {% if user.ACL().has_right_on_sbas(databox.get_sbas_id(), "bas_manage") %}
                 <input name="newLogoPdf" type="file" accept="image/jpeg" />
-                <input type="button" class="btn" value="{% trans "boutton::envoyer" %}" onclick="sendLogopdf();" />
+                <input class="btn submiter" value="{% trans "boutton::envoyer" %}" />
                 <i>{% trans "admin::base: envoyer un logo (jpeg 35px de hauteur max)" %}</i>
             {% endif %}
         </form>

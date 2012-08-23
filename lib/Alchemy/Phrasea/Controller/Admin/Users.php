@@ -408,7 +408,8 @@ class Users implements ControllerProviderInterface
                         'table'  => $table,
                         'models' => $models,
                     ));
-            });
+            })
+            ->bind('users_display_demands');
 
         $controllers->post('/demands/', function(Application $app, Request $request) use ($appbox) {
 
@@ -574,12 +575,14 @@ class Users implements ControllerProviderInterface
                 }
 
                 return $app->redirect('/admin/users/demands/?demands=ok');
-            });
+            })
+            ->bind('users_submit_demands');
 
         $controllers->get('/import/file/', function(Application $app, Request $request) {
 
                 return $app['twig']->render('admin/user/import/file.html.twig');
-            });
+            })
+            ->bind('users_display_import_file');
 
         $controllers->post('/import/file/', function(Application $app, Request $request) {
                 $user = $app['phraseanet.core']->getAuthenticatedUser();
@@ -714,7 +717,8 @@ class Users implements ControllerProviderInterface
                             'array_serialized' => serialize($array)
                         ));
                 }
-            });
+            })
+            ->bind('users_submit_import_file');
 
         $controllers->post('/import/', function(Application $app, Request $request) {
                 $nbCreation = 0;
@@ -792,10 +796,11 @@ class Users implements ControllerProviderInterface
                 }
 
                 return $app->redirect('/admin/users/search/?user-updated=' . $nbCreation);
-            });
+            })
+            ->bind('users_submit_import');
 
 
-        $controllers->get('/import/example/user/', function(Application $app, Request $request) {
+        $controllers->get('/import/example/csv/', function(Application $app, Request $request) {
 
                 $file = new \SplFileInfo($app['phraseanet.core']['Registry']->get('GV_RootPath') . 'www/admin/exampleImportUsers.csv');
 
@@ -812,7 +817,8 @@ class Users implements ControllerProviderInterface
                 $response->setContent(file_get_contents($file->getPathname()));
 
                 return $response;
-            });
+            })
+            ->bind('users_import_csv');
 
         $controllers->get('/import/example/rtf/', function(Application $app, Request $request) {
 
@@ -831,7 +837,8 @@ class Users implements ControllerProviderInterface
                 $response->setContent(file_get_contents($file->getPathname()));
 
                 return $response;
-            });
+            })
+            ->bind('users_import_rtf');
 
         return $controllers;
     }

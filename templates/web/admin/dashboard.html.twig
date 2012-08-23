@@ -65,7 +65,7 @@
 
 <div class="board_section">
     <h1>{% trans 'setup:: administrateurs de l\'application' %}</h1>
-    <form id="admin_adder" action="/admin/dashboard/new/" method="post">
+    <form id="admin_adder" action="/admin/dashboard/add-admins/" method="post">
         <ul>
         {% for usr_id, usr_login in admins %}
             <li>

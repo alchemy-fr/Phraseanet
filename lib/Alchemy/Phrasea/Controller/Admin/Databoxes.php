@@ -51,11 +51,12 @@ class Databoxes implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/', $this->call('getDatabases'))->bind('admin_databases');
+        $controllers->get('/', $this->call('getDatabases'))
+            ->bind('admin_databases');
 
 
         /**
-         * Upgrade databases
+         * Upgrade all databases
          *
          * name         : admin_databases_upgrade
          *
@@ -67,7 +68,8 @@ class Databoxes implements ControllerProviderInterface
          *
          * return       : Redirect Response
          */
-        $controllers->post('/upgrade/', $this->call('databasesUpgrade'))->bind('admin_databases_upgrade');
+        $controllers->post('/upgrade/', $this->call('databasesUpgrade'))
+            ->bind('admin_databases_upgrade');
 
         return $controllers;
     }

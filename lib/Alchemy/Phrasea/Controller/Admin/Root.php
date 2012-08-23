@@ -35,75 +35,137 @@ class Root implements ControllerProviderInterface
 
         $controllers->get('/', function(Application $app, Request $request) {
 
-                $Core = $app['phraseanet.core'];
-                $appbox = $app['phraseanet.appbox'];
-                $user = $Core->getAuthenticatedUser();
+                    $Core = $app['phraseanet.core'];
+                    $appbox = $app['phraseanet.appbox'];
+                    $user = $Core->getAuthenticatedUser();
 
-                \User_Adapter::updateClientInfos(3);
+                    \User_Adapter::updateClientInfos(3);
 
-                $section = $request->query->get('section', false);
+                    $section = $request->get('section', false);
 
-                $available = array(
-                    'connected'
-                    , 'registrations'
-                    , 'taskmanager'
-                    , 'base'
-                    , 'bases'
-                    , 'collection'
-                    , 'user'
-                    , 'users'
-                );
+                    $available = array(
+                        'connected',
+                        'registrations',
+                        'taskmanager',
+                        'base',
+                        'bases',
+                        'collection',
+                        'user',
+                        'users'
+                    );
 
-                $feature = 'connected';
-                $featured = false;
-                $position = explode(':', $section);
-                if (count($position) > 0) {
-                    if (in_array($position[0], $available)) {
-                        $feature = $position[0];
+                    $feature = 'connected';
+                    $featured = false;
+                    $position = explode(':', $section);
+                    if (count($position) > 0) {
+                        if (in_array($position[0], $available)) {
+                            $feature = $position[0];
 
-                        if (isset($position[1])) {
-                            $featured = $position[1];
+                            if (isset($position[1])) {
+                                $featured = $position[1];
+                            }
                         }
                     }
-                }
 
-                $databoxes = $off_databoxes = array();
-                foreach ($appbox->get_databoxes() as $databox) {
-                    try {
-                        if ( ! $user->ACL()->has_access_to_sbas($databox->get_sbas_id())) {
+                    $databoxes = $off_databoxes = array();
+                    foreach ($appbox->get_databoxes() as $databox) {
+                        try {
+                            if ( ! $user->ACL()->has_access_to_sbas($databox->get_sbas_id())) {
+                                continue;
+                            }
+
+                            $databox->get_connection();
+                        } catch (\Exception $e) {
+                            $off_databoxes[] = $databox;
                             continue;
                         }
 
-                        $databox->get_connection();
-                    } catch (\Exception $e) {
-                        $off_databoxes[] = $databox;
-                        continue;
+                        $databoxes[] = $databox;
                     }
 
-                    $databoxes[] = $databox;
-                }
+                    $params = array(
+                        'feature'       => $feature,
+                        'featured'      => $featured,
+                        'databoxes'     => $databoxes,
+                        'off_databoxes' => $off_databoxes
+                    );
 
-                return new Response($app['twig']->render('admin/index.html.twig', array(
-                            'module'        => 'admin'
-                            , 'events'        => \eventsmanager_broker::getInstance($appbox, $Core)
-                            , 'module_name'   => 'Admin'
-                            , 'notice'        => $request->query->get("notice")
-                            , 'feature'       => $feature
-                            , 'featured'      => $featured
-                            , 'databoxes'     => $databoxes
-                            , 'off_databoxes' => $off_databoxes
-                            , 'tree'          => \module_admin::getTree($section)
-                        ))
-                );
-            });
+
+                    return new Response($app['twig']->render('admin/index.html.twig', array(
+                                'module'        => 'admin',
+                                'events'        => \eventsmanager_broker::getInstance($appbox, $Core),
+                                'module_name'   => 'Admin',
+                                'notice'        => $request->get("notice"),
+                                'feature'       => $feature,
+                                'featured'      => $featured,
+                                'databoxes'     => $databoxes,
+                                'off_databoxes' => $off_databoxes,
+                                'tree'          => $app['twig']->render('admin/tree.html.twig', $params),
+                            ))
+                    );
+                })
+            ->bind('admin');
 
         $controllers->get('/tree/', function() {
-                if (null === $position = $request->get('position')) {
-                    $app->abort(400, _('Missing position parameter'));
-                }
+                    $Core = $app['phraseanet.core'];
+                    $appbox = $app['phraseanet.appbox'];
+                    $user = $Core->getAuthenticatedUser();
 
-                return new Response($app['twig']->render(\module_admin::getTree($position)));
-            });
+                    \User_Adapter::updateClientInfos(3);
+
+                    $section = $request->get('section', false);
+
+                    $available = array(
+                        'connected',
+                        'registrations',
+                        'taskmanager',
+                        'base',
+                        'bases',
+                        'collection',
+                        'user',
+                        'users'
+                    );
+
+                    $feature = 'connected';
+                    $featured = false;
+
+                    $position = explode(':', $request->query->get('position', false));
+                    if (count($position) > 0) {
+                        if (in_array($position[0], $available)) {
+                            $feature = $position[0];
+
+                            if (isset($position[1])) {
+                                $featured = $position[1];
+                            }
+                        }
+                    }
+
+                    $databoxes = $off_databoxes = array();
+                    foreach ($appbox->get_databoxes() as $databox) {
+                        try {
+                            if ( ! $user->ACL()->has_access_to_sbas($databox->get_sbas_id())) {
+                                continue;
+                            }
+
+                            $databox->get_connection();
+                        } catch (\Exception $e) {
+                            $off_databoxes[] = $databox;
+                            continue;
+                        }
+
+                        $databoxes[] = $databox;
+                    }
+
+                    $params = array(
+                        'feature'       => $feature,
+                        'featured'      => $featured,
+                        'databoxes'     => $databoxes,
+                        'off_databoxes' => $off_databoxes
+                    );
+
+                    return $app['twig']->render('admin/tree.html.twig', $params);
+                })
+            ->bind('admin_display_tree');
 
         $controllers->get('/test-paths/', function() {
 
@@ -141,102 +203,111 @@ class Root implements ControllerProviderInterface
             });
 
         $controllers->get('/structure/{databox_id}/', function(Application $app, Request $request, $databox_id) {
-                if ( ! $app['phraseanet.core']->getAuthenticatedUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
-                    $app->abort(403);
-                }
+                    if ( ! $app['phraseanet.core']->getAuthenticatedUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+                        $app->abort(403);
+                    }
 
-                $databox = $app['phraseanet.appbox']->get_databox((int) $databox_id);
-                $structure = $databox->get_structure();
-                $errors = \databox::get_structure_errors($structure);
+                    $databox = $app['phraseanet.appbox']->get_databox((int) $databox_id);
+                    $structure = $databox->get_structure();
+                    $errors = \databox::get_structure_errors($structure);
 
-                if ('ok' === $updateOk = $request->get('update', false)) {
-                    $updateOk = true;
-                }
+                    if ('ok' === $updateOk = $request->get('update', false)) {
+                        $updateOk = true;
+                    }
 
-                if (false !== $errorsStructure = $request->get('error', false)) {
-                    $errorsStructure = true;
-                }
+                    if (false !== $errorsStructure = $request->get('error', false)) {
+                        $errorsStructure = true;
+                    }
 
-                return new Response($app['twig']->render('admin/structure.html.twig', array(
-                            'errors'          => $errors,
-                            'structure'       => $structure,
-                            'errorsStructure' => $errorsStructure,
-                            'updateOk'        => $updateOk
-                        )));
-            })->assert('databox_id', '\d+');
+                    return new Response($app['twig']->render('admin/structure.html.twig', array(
+                                'errors'          => $errors,
+                                'structure'       => $structure,
+                                'errorsStructure' => $errorsStructure,
+                                'updateOk'        => $updateOk
+                            )));
+                })
+            ->assert('databox_id', '\d+')
+            ->bind('database_display_stucture');
 
         $controllers->post('/structure/{databox_id}/', function(Application $app, Request $request, $databox_id) {
-                if ( ! $app['phraseanet.core']->getAuthenticatedUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
-                    $app->abort(403);
-                }
+                    if ( ! $app['phraseanet.core']->getAuthenticatedUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+                        $app->abort(403);
+                    }
 
-                if (null === $structure = $request->get('structure')) {
-                    $app->abort(400, _('Missing "structure" parameter'));
-                }
+                    if (null === $structure = $request->get('structure')) {
+                        $app->abort(400, _('Missing "structure" parameter'));
+                    }
 
-                $errors = \databox::get_structure_errors($structure);
+                    $errors = \databox::get_structure_errors($structure);
 
-                $domst = new \DOMDocument('1.0', 'UTF-8');
-                $domst->preserveWhiteSpace = false;
-                $domst->formatOutput = true;
+                    $domst = new \DOMDocument('1.0', 'UTF-8');
+                    $domst->preserveWhiteSpace = false;
+                    $domst->formatOutput = true;
 
-                if (count($errors) == 0 && $domst->loadXML($structure)) {
-                    $databox = $app['phraseanet.appbox']->get_databox($databox_id);
-                    $databox->saveStructure($domst);
+                    if (count($errors) == 0 && $domst->loadXML($structure)) {
+                        $databox = $app['phraseanet.appbox']->get_databox($databox_id);
+                        $databox->saveStructure($domst);
 
-                    return $app->redirect('/admin/structure/' . $databox_id . '/?update=ok');
-                } else {
+                        return $app->redirect('/admin/structure/' . $databox_id . '/?update=ok');
+                    } else {
 
-                    return $app->redirect('/admin/structure/' . $databox_id . '/?error=struct');
-                }
-            })->assert('databox_id', '\d+');
+                        return $app->redirect('/admin/structure/' . $databox_id . '/?error=struct');
+                    }
+                })
+            ->assert('databox_id', '\d+')
+            ->bind('database_submit_stucture');
 
         $controllers->get('/statusbit/{databox_id}/', function(Application $app, Request $request, $databox_id) {
-                if ( ! $app['phraseanet.core']->getAuthenticatedUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
-                    $app->abort(403);
-                }
+                    if ( ! $app['phraseanet.core']->getAuthenticatedUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+                        $app->abort(403);
+                    }
 
-                $databox = $app['phraseanet.appbox']->get_databox($databox_id);
+                    $databox = $app['phraseanet.appbox']->get_databox($databox_id);
 
-                return new Response($app['twig']->render('admin/statusbit.html.twig', array(
-                            'status' => $databox->get_statusbits(),
-                        )));
-            })->assert('databox_id', '\d+');
+                    return new Response($app['twig']->render('admin/statusbit.html.twig', array(
+                                'status' => $databox->get_statusbits(),
+                            )));
+                })
+            ->assert('databox_id', '\d+')
+            ->bind('database_display_statusbit');
 
         $controllers->get('/statusbit/{databox_id}/status/{bit}/', function(Application $app, Request $request, $databox_id, $bit) {
-                if ( ! $app['phraseanet.core']->getAuthenticatedUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
-                    $app->abort(403);
-                }
+                    if ( ! $app['phraseanet.core']->getAuthenticatedUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+                        $app->abort(403);
+                    }
 
-                $databox = $app['phraseanet.appbox']->get_databox($databox_id);
+                    $databox = $app['phraseanet.appbox']->get_databox($databox_id);
 
-                $status = $databox->get_statusbits();
+                    $status = $databox->get_statusbits();
 
-                switch ($errorMsg = $request->get('error')) {
-                    case 'rights':
-                        $errorMsg = _('You do not enough rights to update status');
-                        break;
-                    case 'too-big':
-                        $errorMsg = _('File is too big : 64k max');
-                        break;
-                    case 'upload-error':
-                        $errorMsg = _('Status icon upload failed : upload error');
-                        break;
-                    case 'wright-error':
-                        $errorMsg = _('Status icon upload failed : can not write on disk');
-                        break;
-                    case 'unknow-error':
-                        $errorMsg = _('Something wrong happend');
-                        break;
-                }
+                    switch ($errorMsg = $request->get('error')) {
+                        case 'rights':
+                            $errorMsg = _('You do not enough rights to update status');
+                            break;
+                        case 'too-big':
+                            $errorMsg = _('File is too big : 64k max');
+                            break;
+                        case 'upload-error':
+                            $errorMsg = _('Status icon upload failed : upload error');
+                            break;
+                        case 'wright-error':
+                            $errorMsg = _('Status icon upload failed : can not write on disk');
+                            break;
+                        case 'unknow-error':
+                            $errorMsg = _('Something wrong happend');
+                            break;
+                    }
 
-                return new Response($app['twig']->render('admin/statusbit/edit.html.twig', array(
-                            'status' => isset($status[$bit]) ? $status[$bit] : array(),
-                            'errorMsg' => $errorMsg
-                        )));
-            })->assert('databox_id', '\d+')->assert('bit', '\d+');
+                    return new Response($app['twig']->render('admin/statusbit/edit.html.twig', array(
+                                'status' => isset($status[$bit]) ? $status[$bit] : array(),
+                                'errorMsg' => $errorMsg
+                            )));
+                })
+            ->assert('databox_id', '\d+')
+            ->assert('bit', '\d+')
+            ->bind('database_display_statusbit_form');
 
-        $controllers->delete('/statusbit/{databox_id}/status/{bit}/', function(Application $app, Request $request, $databox_id, $bit) {
+        $controllers->post('/statusbit/{databox_id}/status/{bit}/delete/', function(Application $app, Request $request, $databox_id, $bit) {
                 if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
                     $app->abort(400, _('Bad request format, only JSON is allowed'));
                 }
@@ -253,78 +324,81 @@ class Root implements ControllerProviderInterface
             })->assert('databox_id', '\d+')->assert('bit', '\d+');
 
         $controllers->post('/statusbit/{databox_id}/status/{bit}/', function(Application $app, Request $request, $databox_id, $bit) {
-                if ( ! $app['phraseanet.core']->getAuthenticatedUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
-                    $app->abort(403);
-                }
-
-                $properties = array(
-                    'searchable' => $request->get('searchable') ? '1' : '0',
-                    'printable'  => $request->get('printable') ? '1' : '0',
-                    'name'       => $request->get('name', ''),
-                    'labelon'    => $request->get('label_on', ''),
-                    'labeloff'   => $request->get('label_off', '')
-                );
-
-                \databox_status::updateStatus($databox_id, $bit, $properties);
-
-                if (null !== $request->get('delete_icon_off')) {
-                    \databox_status::deleteIcon($databox_id, $bit, 'off');
-                }
-
-                if (null !== $file = $request->files->get('image_off')) {
-                    try {
-                        \databox_status::updateIcon($databox_id, $bit, 'off', $file);
-                    } catch (\Exception_Forbidden $e) {
-
-                        return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=rights');
-                    } catch (\Exception_InvalidArgument $e) {
-
-                        return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=unknow-error');
-                    } catch (\Exception_Upload_FileTooBig $e) {
-
-                        return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=too-big');
-                    } catch (\Exception_Upload_Error $e) {
-
-                        return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=upload-error');
-                    } catch (\Exception_Upload_CannotWriteFile $e) {
-
-                        return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=wright-error');
-                    } catch (\Exception $e) {
-
-                        return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=unknow-error');
+                    if ( ! $app['phraseanet.core']->getAuthenticatedUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+                        $app->abort(403);
                     }
-                }
 
-                if (null !== $request->get('delete_icon_on')) {
-                    \databox_status::deleteIcon($databox_id, $bit, 'on');
-                }
+                    $properties = array(
+                        'searchable' => $request->get('searchable') ? '1' : '0',
+                        'printable'  => $request->get('printable') ? '1' : '0',
+                        'name'       => $request->get('name', ''),
+                        'labelon'    => $request->get('label_on', ''),
+                        'labeloff'   => $request->get('label_off', '')
+                    );
 
-                if (isset($_FILES['image_on']) && $_FILES['image_on']['name']) {
-                    try {
-                        \databox_status::updateIcon($databox_id, $bit, 'on', $_FILES['image_on']);
-                    } catch (\Exception_Forbidden $e) {
+                    \databox_status::updateStatus($databox_id, $bit, $properties);
 
-                        return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=rights');
-                    } catch (\Exception_InvalidArgument $e) {
-
-                        return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=unknow-error');
-                    } catch (\Exception_Upload_FileTooBig $e) {
-
-                        return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=too-big');
-                    } catch (\Exception_Upload_Error $e) {
-
-                        return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=upload-error');
-                    } catch (\Exception_Upload_CannotWriteFile $e) {
-
-                        return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=wright-error');
-                    } catch (\Exception $e) {
-
-                        return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=unknow-error');
+                    if (null !== $request->get('delete_icon_off')) {
+                        \databox_status::deleteIcon($databox_id, $bit, 'off');
                     }
-                }
 
-                return $app->redirect('/admin/statusbit/' . $databox_id . '/?update=ok');
-            })->assert('databox_id', '\d+')->assert('bit', '\d+');
+                    if (null !== $file = $request->files->get('image_off')) {
+                        try {
+                            \databox_status::updateIcon($databox_id, $bit, 'off', $file);
+                        } catch (\Exception_Forbidden $e) {
+
+                            return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=rights');
+                        } catch (\Exception_InvalidArgument $e) {
+
+                            return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=unknow-error');
+                        } catch (\Exception_Upload_FileTooBig $e) {
+
+                            return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=too-big');
+                        } catch (\Exception_Upload_Error $e) {
+
+                            return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=upload-error');
+                        } catch (\Exception_Upload_CannotWriteFile $e) {
+
+                            return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=wright-error');
+                        } catch (\Exception $e) {
+
+                            return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=unknow-error');
+                        }
+                    }
+
+                    if (null !== $request->get('delete_icon_on')) {
+                        \databox_status::deleteIcon($databox_id, $bit, 'on');
+                    }
+
+                    if (isset($_FILES['image_on']) && $_FILES['image_on']['name']) {
+                        try {
+                            \databox_status::updateIcon($databox_id, $bit, 'on', $_FILES['image_on']);
+                        } catch (\Exception_Forbidden $e) {
+
+                            return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=rights');
+                        } catch (\Exception_InvalidArgument $e) {
+
+                            return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=unknow-error');
+                        } catch (\Exception_Upload_FileTooBig $e) {
+
+                            return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=too-big');
+                        } catch (\Exception_Upload_Error $e) {
+
+                            return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=upload-error');
+                        } catch (\Exception_Upload_CannotWriteFile $e) {
+
+                            return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=wright-error');
+                        } catch (\Exception $e) {
+
+                            return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=unknow-error');
+                        }
+                    }
+
+                    return $app->redirect('/admin/statusbit/' . $databox_id . '/?update=ok');
+                })
+            ->assert('databox_id', '\d+')
+            ->assert('bit', '\d+')
+            ->bind('database_submit_statusbit');
 
         return $controllers;
     }

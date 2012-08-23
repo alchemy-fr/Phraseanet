@@ -73,7 +73,7 @@
 
   <li class="open">
     <div class="{% if feature == 'bases' %}selected{% endif %}" style="padding:0 0 2px 0;">
-      <a id="TREE_DATABASES" target="right" href="/admin/databoxes/" class="ajax">
+      <a id="TREE_DATABASES" target="right" href="{{ path('admin_databases') }}" class="ajax">
         <img src="/skins/admin/DatabasesAvailable.png" />
         <span>{% trans 'admin::utilisateurs: bases de donnees' %}</span>
       </a>

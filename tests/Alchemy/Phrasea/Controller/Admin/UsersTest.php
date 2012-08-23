@@ -352,7 +352,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testGetExampleCSVFile()
     {
-        $this->client->request('GET', '/users/import/example/user/');
+        $this->client->request('GET', '/users/import/example/csv/');
 
         $this->assertTrue($this->client->getResponse()->isOk());
     }

@@ -59,7 +59,7 @@ class Databox implements ControllerProviderInterface
         /**
          * Get admin database
          *
-         * name         : admin_get_database
+         * name         : admin_database
          *
          * description  : Get database informations
          *
@@ -71,27 +71,27 @@ class Databox implements ControllerProviderInterface
          */
         $controllers->get('/{databox_id}/', $this->call('getDatabase'))
             ->assert('databox_id', '\d+')
-            ->bind('admin_get_database');
+            ->bind('admin_database');
 
         /**
          * Delete a database
          *
-         * name         : admin_delete_databases
+         * name         : admin_database_delete
          *
          * description  : Delete a database
          *
-         * method       : DELETE
+         * method       : POST
          *
          * parameters   : none
          *
          * return       : JSON Response
          */
-        $controllers->delete('/{databox_id}/', $this->call('deleteBase'))
+        $controllers->post('/{databox_id}/delete/', $this->call('deleteBase'))
             ->assert('databox_id', '\d+')
-            ->bind('admin_delete_databases');
+            ->bind('admin_database_delete');
 
         /**
-         * mount a database
+         * Mount a database
          *
          * name         : admin_database_mount
          *
@@ -143,7 +143,7 @@ class Databox implements ControllerProviderInterface
         /**
          * Reorder database collection
          *
-         * name         : admin_database_collections_order
+         * name         : admin_database_display_collections_order
          *
          * description  : Reorder database collection
          *
@@ -155,7 +155,7 @@ class Databox implements ControllerProviderInterface
          */
         $controllers->get('/{databox_id}/collections/order/', $this->call('getReorder'))
             ->assert('databox_id', '\d+')
-            ->bind('admin_database_collections_order');
+            ->bind('admin_database_display_collections_order');
 
         /**
          * Reorder database collection
@@ -175,9 +175,26 @@ class Databox implements ControllerProviderInterface
             ->bind('admin_database_submit_collections_order');
 
         /**
+         * Create new collection
+         *
+         * name         : admin_database_submit_collection
+         *
+         * description  : Create a new collection
+         *
+         * method       : POST
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->post('/{databox_id}/collection/', $this->call('createCollection'))
+            ->assert('databox_id', '\d+')
+            ->bind('admin_database_submit_collection');
+
+        /**
          * Get database CGU
          *
-         * name         : admin_database_cgu
+         * name         : admin_database_display_cgus
          *
          * description  : Get database CGU
          *
@@ -189,12 +206,12 @@ class Databox implements ControllerProviderInterface
          */
         $controllers->get('/{databox_id}/cgus/', $this->call('getDatabaseCGU'))
             ->assert('databox_id', '\d+')
-            ->bind('admin_database_cgu');
+            ->bind('admin_database_display_cgus');
 
         /**
          * Update database CGU
          *
-         * name         : admin_update_database_cgu
+         * name         : admin_database_submit_cgus
          *
          * description  : Update database CGU
          *
@@ -206,12 +223,12 @@ class Databox implements ControllerProviderInterface
          */
         $controllers->post('/{databox_id}/cgus/', $this->call('updateDatabaseCGU'))
             ->assert('databox_id', '\d+')
-            ->bind('admin_update_database_cgu');
+            ->bind('admin_database_submit_cgus');
 
         /**
          * Update document information
          *
-         * name         : admin_document_information
+         * name         : admin_database_display_document_information
          *
          * description  : Update document information
          *
@@ -223,12 +240,12 @@ class Databox implements ControllerProviderInterface
          */
         $controllers->get('/{databox_id}/informations/documents/', $this->call('progressBarInfos'))
             ->assert('databox_id', '\d+')
-            ->bind('admin_document_information');
+            ->bind('admin_database_display_document_information');
 
         /**
          * Get document details
          *
-         * name         : admin_document_details
+         * name         : admin_database_display_document_details
          *
          * description  : Get document details
          *
@@ -240,7 +257,7 @@ class Databox implements ControllerProviderInterface
          */
         $controllers->get('/{databox_id}/informations/details/', $this->call('getDetails'))
             ->assert('databox_id', '\d+')
-            ->bind('admin_document_details');
+            ->bind('admin_database_display_document_details');
 
         /**
          * Mount collection on collection
@@ -263,7 +280,7 @@ class Databox implements ControllerProviderInterface
         /**
          * Get a new collection form
          *
-         * name         : admin_database_get_new_collection
+         * name         : admin_database_display_new_collection_form
          *
          * description  : New collection form
          *
@@ -275,12 +292,12 @@ class Databox implements ControllerProviderInterface
          */
         $controllers->get('/{databox_id}/collection/', $this->call('getNewCollection'))
             ->assert('databox_id', '\d+')
-            ->bind('admin_database_get_new_collection');
+            ->bind('admin_database_display_new_collection_form');
 
         /**
-         * Add logo databox
+         * Add databox logo
          *
-         * name         : admin_submit_database_logo
+         * name         : admin_database_submit_logo
          *
          * description  : add logo to databox
          *
@@ -292,29 +309,29 @@ class Databox implements ControllerProviderInterface
          */
         $controllers->post('/{databox_id}/logo/', $this->call('sendLogoPdf'))
             ->assert('databox_id', '\d+')
-            ->bind('admin_submit_database_logo');
+            ->bind('admin_database_submit_logo');
 
         /**
-         * Delete logo databox
+         * Delete databox logo
          *
-         * name         : admin_delete_database_logo
+         * name         : admin_database_delete_logo
          *
          * description  : delete logo databox
          *
-         * method       : DELETE
+         * method       : POST
          *
          * parameters   : none
          *
          * return       : HTML Response
          */
-        $controllers->delete('/{databox_id}/logo/', $this->call('deleteLogoPdf'))
+        $controllers->post('/{databox_id}/logo/delete/', $this->call('deleteLogoPdf'))
             ->assert('databox_id', '\d+')
-            ->bind('admin_delete_database_logo');
+            ->bind('admin_database_delete_logo');
 
         /**
          * Clear databox logs
          *
-         * name         : admin_delete_database_clear_logs
+         * name         : admin_database_clear_logs
          *
          * description  : Clear databox logs
          *
@@ -326,7 +343,7 @@ class Databox implements ControllerProviderInterface
          */
         $controllers->post('/{databox_id}/clear-logs/', $this->call('clearLogs'))
             ->assert('databox_id', '\d+')
-            ->bind('admin_delete_database_clear_logs');
+            ->bind('admin_database_clear_logs');
 
         /**
          * Reindex database
@@ -348,7 +365,7 @@ class Databox implements ControllerProviderInterface
         /**
          * Set database indexable
          *
-         * name         : admin_database_indexable
+         * name         : admin_database_set_indexable
          *
          * description  : Set database indexable
          *
@@ -360,12 +377,12 @@ class Databox implements ControllerProviderInterface
          */
         $controllers->post('/{databox_id}/indexable/', $this->call('setIndexable'))
             ->assert('databox_id', '\d+')
-            ->bind('admin_database_indexable');
+            ->bind('admin_database_set_indexable');
 
         /**
          * Set database name
          *
-         * name         : admin_database_submit_name
+         * name         : admin_database_rename
          *
          * description  : Set database indexable
          *
@@ -377,7 +394,7 @@ class Databox implements ControllerProviderInterface
          */
         $controllers->post('/{databox_id}/view-name/', $this->call('changeViewName'))
             ->assert('databox_id', '\d+')
-            ->bind('admin_database_submit_name');
+            ->bind('admin_database_rename');
 
         return $controllers;
     }
@@ -954,14 +971,14 @@ class Databox implements ControllerProviderInterface
         return $app->json($ret);
     }
 
-   /**
-    * Display page for reaorder collections on a databox
-    *
-    * @param    Application $app        The silex application
-    * @param    Request     $request    The current HTTP request
-    * @param    integer     $databox_id The requested databox
-    * @return   Response
-    */
+    /**
+     * Display page for reaorder collections on a databox
+     *
+     * @param    Application $app        The silex application
+     * @param    Request     $request    The current HTTP request
+     * @param    integer     $databox_id The requested databox
+     * @return   Response
+     */
     public function getReorder(Application $app, Request $request, $databox_id)
     {
         return new Response($app['twig']->render('admin/collection/reorder.html.twig', array(
@@ -969,14 +986,14 @@ class Databox implements ControllerProviderInterface
                 )));
     }
 
-   /**
-    * Apply collection reorder changes
-    *
-    * @param    Application $app        The silex application
-    * @param    Request     $request    The current HTTP request
-    * @param    integer     $databox_id The requested databox
-    * @return   JsonResponse
-    */
+    /**
+     * Apply collection reorder changes
+     *
+     * @param    Application $app        The silex application
+     * @param    Request     $request    The current HTTP request
+     * @param    integer     $databox_id The requested databox
+     * @return   JsonResponse
+     */
     public function setReorder(Application $app, Request $request, $databox_id)
     {
         if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
@@ -992,27 +1009,67 @@ class Databox implements ControllerProviderInterface
         return $app->json(array('sbas_id' => $databox_id));
     }
 
-   /**
-    * Display page to create a new collection
-    *
-    * @param    Application $app        The silex application
-    * @param    Request     $request    The current HTTP request
-    * @param    integer     $databox_id The requested databox
-    * @return   Response
-    */
+    /**
+     * Display page to create a new collection
+     *
+     * @param    Application $app        The silex application
+     * @param    Request     $request    The current HTTP request
+     * @param    integer     $databox_id The requested databox
+     * @return   Response
+     */
     public function getNewCollection(Application $app, Request $request, $databox_id)
     {
         return new Response($app['twig']->render('admin/collection/create.html.twig'));
     }
 
-   /**
-    * Display page to get some details on a appbox
-    *
-    * @param    Application $app        The silex application
-    * @param    Request     $request    The current HTTP request
-    * @param    integer     $databox_id The requested databox
-    * @return   Response
-    */
+    /**
+     * Create a new collection
+     *
+     * @param    Application $app        The silex application
+     * @param    Request     $request    The current HTTP request
+     * @param    integer     $databox_id The requested databox
+     * @return   Response
+     */
+    public function createCollection(Application $app, Request $request, $databox_id)
+    {
+        if ($name = trim($request->request->get('cnm', '')) === '') {
+
+            return $app->redirect('/admin/databox/' . $databox_id . '/collection/error=name');
+        }
+
+        try {
+            $databox = $app['phraseanet.appbox']->get_databox($databox_id);
+            $collection = \collection::create($databox, $app['phraseanet.appbox'], $name, $app['phraseanet.core']->getAuthenticatedUser());
+
+            if (($request->request->get('ccusrothercoll') === "on")
+                && ($othcollsel = $request->request->get('othcollsel') !== null)) {
+                $query = new \User_Query($app['phraseanet.appbox']);
+                $total = $query->on_base_ids(array($othcollsel))->get_total();
+                $n = 0;
+                while ($n < $total) {
+                    $results = $query->limit($n, 20)->execute()->get_results();
+                    foreach ($results as $user) {
+                        $user->ACL()->duplicate_right_from_bas($othcollsel, $collection->get_base_id());
+                    }
+                    $n += 20;
+                }
+            }
+
+            return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/');
+        } catch (\Exception $e) {
+
+            return $app->redirect('/admin/databox/' . $databox_id . '/collection/error=error');
+        }
+    }
+
+    /**
+     * Display page to get some details on a appbox
+     *
+     * @param    Application $app        The silex application
+     * @param    Request     $request    The current HTTP request
+     * @param    integer     $databox_id The requested databox
+     * @return   Response
+     */
     public function getDetails(Application $app, Request $request, $databox_id)
     {
         $databox = $app['phraseanet.appbox']->get_databox($databox_id);

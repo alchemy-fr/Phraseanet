@@ -124,14 +124,14 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     /**
      * @covers \Alchemy\Phrasea\Controller\Admin\Dashboard::resetAdminRights
      */
-//    public function testResetAdminRights()
-//    {
-//        $this->setAdmin(true);
-//
-//        $this->client->request('POST', '/dashboard/reset-admin-rights/');
-//
-//        $this->assertTrue($this->client->getResponse()->isRedirect());
-//    }
+    public function testResetAdminRights()
+    {
+        $this->setAdmin(true);
+
+        $this->client->request('POST', '/dashboard/reset-admin-rights/');
+
+        $this->assertTrue($this->client->getResponse()->isRedirect());
+    }
 
     /**
      * @covers \Alchemy\Phrasea\Controller\Admin\Dashboard::addAdmins
@@ -140,10 +140,14 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $user = \User_Adapter::create($this->app['phraseanet.appbox'], 'test', "test",  "test@email.com", false);
+        $admins = array_keys(\User_Adapter::get_sys_admins());
 
-        $this->client->request('POST', '/dashboard/new/', array(
-            'admins' => array($user->get_id())
+        $user = \User_Adapter::create($this->app['phraseanet.appbox'], uniqid('unit_test_user'), uniqid('unit_test_user'),  uniqid('unit_test_user') ."@email.com", false);
+
+        $admins[] = $user->get_id();
+
+        $this->client->request('POST', '/dashboard/add-admins/', array(
+            'admins' => $admins
         ));
 
         $this->assertTrue($this->client->getResponse()->isRedirect());
