@@ -129,7 +129,7 @@ class Installer implements ControllerProviderInterface
                         , 'version_number'      => $app['phraseanet.core']['Version']->getNumber()
                         , 'version_name'        => $app['phraseanet.core']['Version']->getName()
                         , 'warnings'            => $warnings
-                        , 'error'               => $request->get('error')
+                        , 'error'               => $request->query->get('error')
                         , 'current_servername'  => $request->getScheme() . '://' . $request->getHttpHost() . '/'
                         , 'discovered_binaries' => \setup::discover_binaries()
                         , 'rootpath'            => dirname(dirname(dirname(dirname(__DIR__)))) . '/'
@@ -145,13 +145,13 @@ class Installer implements ControllerProviderInterface
 
                 $conn = $connbas = null;
 
-                $hostname = $request->get('ab_hostname');
-                $port = $request->get('ab_port');
-                $user_ab = $request->get('ab_user');
-                $password = $request->get('ab_password');
+                $hostname = $request->request->get('ab_hostname');
+                $port = $request->request->get('ab_port');
+                $user_ab = $request->request->get('ab_user');
+                $password = $request->request->get('ab_password');
 
-                $appbox_name = $request->get('ab_name');
-                $databox_name = $request->get('db_name');
+                $appbox_name = $request->request->get('ab_name');
+                $databox_name = $request->request->get('db_name');
 
                 try {
                     $conn = new \connection_pdo('appbox', $hostname, $port, $user_ab, $password, $appbox_name, array(), $setupRegistry);
@@ -206,20 +206,20 @@ class Installer implements ControllerProviderInterface
 
                     $appbox->set_registry($registry);
 
-                    $registry->set('GV_base_datapath_noweb', \p4string::addEndSlash($request->get('datapath_noweb')), \registry::TYPE_STRING);
+                    $registry->set('GV_base_datapath_noweb', \p4string::addEndSlash($request->request->get('datapath_noweb')), \registry::TYPE_STRING);
                     $registry->set('GV_ServerName', $servername, \registry::TYPE_STRING);
-                    $registry->set('GV_cli', $request->get('binary_php'), \registry::TYPE_STRING);
-                    $registry->set('GV_imagick', $request->get('binary_convert'), \registry::TYPE_STRING);
-                    $registry->set('GV_pathcomposite', $request->get('binary_composite'), \registry::TYPE_STRING);
-                    $registry->set('GV_swf_extract', $request->get('binary_swfextract'), \registry::TYPE_STRING);
-                    $registry->set('GV_pdf2swf', $request->get('binary_pdf2swf'), \registry::TYPE_STRING);
-                    $registry->set('GV_swf_render', $request->get('binary_swfrender'), \registry::TYPE_STRING);
-                    $registry->set('GV_unoconv', $request->get('binary_unoconv'), \registry::TYPE_STRING);
-                    $registry->set('GV_ffmpeg', $request->get('binary_ffmpeg'), \registry::TYPE_STRING);
-                    $registry->set('GV_mp4box', $request->get('binary_MP4Box'), \registry::TYPE_STRING);
-                    $registry->set('GV_pdftotext', $request->get('binary_xpdf'), \registry::TYPE_STRING);
+                    $registry->set('GV_cli', $request->request->get('binary_php'), \registry::TYPE_STRING);
+                    $registry->set('GV_imagick', $request->request->get('binary_convert'), \registry::TYPE_STRING);
+                    $registry->set('GV_pathcomposite', $request->request->get('binary_composite'), \registry::TYPE_STRING);
+                    $registry->set('GV_swf_extract', $request->request->get('binary_swfextract'), \registry::TYPE_STRING);
+                    $registry->set('GV_pdf2swf', $request->request->get('binary_pdf2swf'), \registry::TYPE_STRING);
+                    $registry->set('GV_swf_render', $request->request->get('binary_swfrender'), \registry::TYPE_STRING);
+                    $registry->set('GV_unoconv', $request->request->get('binary_unoconv'), \registry::TYPE_STRING);
+                    $registry->set('GV_ffmpeg', $request->request->get('binary_ffmpeg'), \registry::TYPE_STRING);
+                    $registry->set('GV_mp4box', $request->request->get('binary_MP4Box'), \registry::TYPE_STRING);
+                    $registry->set('GV_pdftotext', $request->request->get('binary_xpdf'), \registry::TYPE_STRING);
 
-                    $user = \User_Adapter::create($appbox, $request->get('email'), $request->get('password'), $request->get('email'), true);
+                    $user = \User_Adapter::create($appbox, $request->request->get('email'), $request->request->get('password'), $request->query->get('email'), true);
 
                     \phrasea::start($app['phraseanet.core']);
 
@@ -228,7 +228,7 @@ class Installer implements ControllerProviderInterface
                     $appbox->get_session()->authenticate($auth);
 
                     if ($databox_name && ! \p4string::hasAccent($databox_name)) {
-                        $template = new \SplFileInfo(__DIR__ . '/../../../../conf.d/data_templates/' . $request->get('db_template') . '.xml');
+                        $template = new \SplFileInfo(__DIR__ . '/../../../../conf.d/data_templates/' . $request->query->get('db_template') . '.xml');
                         $databox = \databox::create($appbox, $connbas, $template, $registry);
                         $user->ACL()
                             ->give_access_to_sbas(array($databox->get_sbas_id()))
@@ -251,7 +251,7 @@ class Installer implements ControllerProviderInterface
                             )
                         );
 
-                        $tasks = $request->get('create_task', array());
+                        $tasks = $request->request->get('create_task', array());
                         foreach ($tasks as $task) {
                             switch ($task) {
                                 case 'cindexer';
@@ -267,7 +267,7 @@ class Installer implements ControllerProviderInterface
                                         $password = $credentials['password'];
 
                                         $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n<binpath>"
-                                            . str_replace('/phraseanet_indexer', '', $request->get('binary_phraseanet_indexer'))
+                                            . str_replace('/phraseanet_indexer', '', $request->request->get('binary_phraseanet_indexer'))
                                             . "</binpath><host>" . $host . "</host><port>"
                                             . $port . "</port><base>"
                                             . $appbox_name . "</base><user>"

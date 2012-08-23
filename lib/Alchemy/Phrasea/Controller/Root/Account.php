@@ -251,7 +251,7 @@ class Account implements ControllerProviderInterface
      */
     public function resetPassword(Application $app, Request $request)
     {
-        if (null !== $passwordMsg = $request->get('pass-error')) {
+        if (null !== $passwordMsg = $request->query->get('pass-error')) {
             switch ($passwordMsg) {
                 case 'pass-match':
                     $passwordMsg = _('forms::les mots de passe ne correspondent pas');
@@ -281,7 +281,7 @@ class Account implements ControllerProviderInterface
     {
         $appbox = $app['phraseanet.appbox'];
 
-        if (null !== $token = $request->get('token')) {
+        if (null !== $token = $request->request->get('token')) {
             try {
                 $datas = \random::helloToken($token);
                 $user = \User_Adapter::getInstance((int) $datas['usr_id'], $appbox);
@@ -295,9 +295,9 @@ class Account implements ControllerProviderInterface
             }
         }
 
-        if (null === ($password = $request->get('form_password'))
-            || null === ($email = $request->get('form_email'))
-            || null === ($emailConfirm = $request->get('form_email_confirm'))) {
+        if (null === ($password = $request->request->get('form_password'))
+            || null === ($email = $request->request->get('form_email'))
+            || null === ($emailConfirm = $request->request->get('form_email_confirm'))) {
 
             $app->abort(400, _('Could not perform request, please contact an administrator.'));
         }
@@ -338,7 +338,7 @@ class Account implements ControllerProviderInterface
      */
     public function displayResetEmailForm(Application $app, Request $request)
     {
-        if (null !== $noticeMsg = $request->get('notice')) {
+        if (null !== $noticeMsg = $request->query->get('notice')) {
             switch ($noticeMsg) {
                 case 'mail-server':
                     $noticeMsg = _('phraseanet::erreur: echec du serveur de mail');
@@ -355,7 +355,7 @@ class Account implements ControllerProviderInterface
             }
         }
 
-        if (null !== $updateMsg = $request->get('update')) {
+        if (null !== $updateMsg = $request->query->get('update')) {
             switch ($updateMsg) {
                 case 'ok':
                     $updateMsg = _('admin::compte-utilisateur: L\'email a correctement ete mis a jour');
@@ -386,7 +386,7 @@ class Account implements ControllerProviderInterface
     {
         $appbox = $app['phraseanet.appbox'];
 
-        if ((null !== $password = $request->get('form_password')) && (null !== $passwordConfirm = $request->get('form_password_confirm'))) {
+        if ((null !== $password = $request->request->get('form_password')) && (null !== $passwordConfirm = $request->request->get('form_password_confirm'))) {
             if ($password !== $passwordConfirm) {
 
                 return $app->redirect('/account/reset-password/?pass-error=pass-match');
@@ -401,7 +401,7 @@ class Account implements ControllerProviderInterface
             try {
                 $user = $app['phraseanet.core']->getAuthenticatedUser();
 
-                $auth = new \Session_Authentication_Native($appbox, $user->get_login(), $request->get('form_old_password', ''));
+                $auth = new \Session_Authentication_Native($appbox, $user->get_login(), $request->request->get('form_old_password', ''));
                 $auth->challenge_password();
 
                 $user->set_password($passwordConfirm);
@@ -436,7 +436,7 @@ class Account implements ControllerProviderInterface
                     , $app['phraseanet.core']->getAuthenticatedUser()
             );
 
-            $account->set_revoked((bool) $request->get('revoke'), false);
+            $account->set_revoked((bool) $request->query->get('revoke'), false);
         } catch (\Exception_NotFound $e) {
             $error = true;
         }
@@ -499,7 +499,7 @@ class Account implements ControllerProviderInterface
         $user = $app['phraseanet.core']->getAuthenticatedUser();
         $evtMngr = \eventsmanager_broker::getInstance($appbox, $app['phraseanet.core']);
 
-        switch ($notice = $request->get('notice', '')) {
+        switch ($notice = $request->query->get('notice', '')) {
             case 'pass-ok':
                 $notice = _('login::notification: Mise a jour du mot de passe avec succes');
                 break;
@@ -540,7 +540,7 @@ class Account implements ControllerProviderInterface
         $evtMngr = \eventsmanager_broker::getInstance($appbox, $app['phraseanet.core']);
         $notice = 'account-update-bad';
 
-        $demands = (array) $request->get('demand', array());
+        $demands = (array) $request->request->get('demand', array());
 
         if (0 !== count($demands)) {
             $register = new \appbox_register($appbox);
@@ -577,7 +577,7 @@ class Account implements ControllerProviderInterface
         if (0 === count(array_diff($accountFields, array_keys($request->request->all())))) {
             $defaultDatas = 0;
 
-            if ($datas = (array) $request->get("form_defaultdataFTP", array())) {
+            if ($datas = (array) $request->request->get("form_defaultdataFTP", array())) {
                 if (in_array('document', $datas)) {
                     $defaultDatas += 4;
                 }
@@ -594,25 +594,25 @@ class Account implements ControllerProviderInterface
             try {
                 $appbox->get_connection()->beginTransaction();
 
-                $user->set_gender($request->get("form_gender"))
-                    ->set_firstname($request->get("form_firstname"))
-                    ->set_lastname($request->get("form_lastname"))
-                    ->set_address($request->get("form_address"))
-                    ->set_zip($request->get("form_zip"))
-                    ->set_tel($request->get("form_phone"))
-                    ->set_fax($request->get("form_fax"))
-                    ->set_job($request->get("form_activity"))
-                    ->set_company($request->get("form_company"))
-                    ->set_position($request->get("form_function"))
-                    ->set_geonameid($request->get("form_geonameid"))
-                    ->set_mail_notifications((bool) $request->get("mail_notifications"))
-                    ->set_activeftp($request->get("form_activeFTP"))
-                    ->set_ftp_address($request->get("form_addrFTP"))
-                    ->set_ftp_login($request->get("form_loginFTP"))
-                    ->set_ftp_password($request->get("form_pwdFTP"))
-                    ->set_ftp_passif($request->get("form_passifFTP"))
-                    ->set_ftp_dir($request->get("form_destFTP"))
-                    ->set_ftp_dir_prefix($request->get("form_prefixFTPfolder"))
+                $user->set_gender($request->request->get("form_gender"))
+                    ->set_firstname($request->request->get("form_firstname"))
+                    ->set_lastname($request->request->get("form_lastname"))
+                    ->set_address($request->request->get("form_address"))
+                    ->set_zip($request->request->get("form_zip"))
+                    ->set_tel($request->request->get("form_phone"))
+                    ->set_fax($request->request->get("form_fax"))
+                    ->set_job($request->request->get("form_activity"))
+                    ->set_company($request->request->get("form_company"))
+                    ->set_position($request->request->get("form_function"))
+                    ->set_geonameid($request->request->get("form_geonameid"))
+                    ->set_mail_notifications((bool) $request->request->get("mail_notifications"))
+                    ->set_activeftp($request->request->get("form_activeFTP"))
+                    ->set_ftp_address($request->request->get("form_addrFTP"))
+                    ->set_ftp_login($request->request->get("form_loginFTP"))
+                    ->set_ftp_password($request->request->get("form_pwdFTP"))
+                    ->set_ftp_passif($request->request->get("form_passifFTP"))
+                    ->set_ftp_dir($request->request->get("form_destFTP"))
+                    ->set_ftp_dir_prefix($request->request->get("form_prefixFTPfolder"))
                     ->set_defaultftpdatas($defaultDatas);
 
                 $appbox->get_connection()->commit();
@@ -623,7 +623,7 @@ class Account implements ControllerProviderInterface
             }
         }
 
-        $requestedNotifications = (array) $request->get('notifications', array());
+        $requestedNotifications = (array) $request->request->get('notifications', array());
 
         foreach ($evtMngr->list_notifications_available($user->get_id()) as $notifications) {
             foreach ($notifications as $notification) {

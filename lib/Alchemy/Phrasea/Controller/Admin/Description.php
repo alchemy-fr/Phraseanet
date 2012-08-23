@@ -33,7 +33,7 @@ class Description implements ControllerProviderInterface
 
         $controllers->get('/metadatas/search/', function(Application $app, Request $request) {
 
-                $term = trim(strtolower($request->get('term')));
+                $term = trim(strtolower($request->query->get('term')));
                 $res = array();
 
                 if ($term) {
@@ -162,35 +162,35 @@ class Description implements ControllerProviderInterface
 
                 $databox->get_connection()->beginTransaction();
                 try {
-                    if (is_array($request->get('field_ids'))) {
-                        foreach ($request->get('field_ids') as $id) {
+                    if (is_array($request->request->get('field_ids'))) {
+                        foreach ($request->request->get('field_ids') as $id) {
                             try {
                                 $field = \databox_field::get_instance($databox, $id);
-                                $field->set_name($request->get('name_' . $id))
-                                    ->set_thumbtitle($request->get('thumbtitle_' . $id))
-                                    ->set_tag(\databox_field::loadClassFromTagName($request->get('src_' . $id)))
-                                    ->set_business($request->get('business_' . $id))
-                                    ->set_indexable($request->get('indexable_' . $id))
-                                    ->set_required($request->get('required_' . $id))
-                                    ->set_separator($request->get('separator_' . $id))
-                                    ->set_readonly($request->get('readonly_' . $id))
-                                    ->set_type($request->get('type_' . $id))
-                                    ->set_tbranch($request->get('tbranch_' . $id))
-                                    ->set_report($request->get('report_' . $id))
+                                $field->set_name($request->request->get('name_' . $id))
+                                    ->set_thumbtitle($request->request->get('thumbtitle_' . $id))
+                                    ->set_tag(\databox_field::loadClassFromTagName($request->request->get('src_' . $id)))
+                                    ->set_business($request->request->get('business_' . $id))
+                                    ->set_indexable($request->request->get('indexable_' . $id))
+                                    ->set_required($request->request->get('required_' . $id))
+                                    ->set_separator($request->request->get('separator_' . $id))
+                                    ->set_readonly($request->request->get('readonly_' . $id))
+                                    ->set_type($request->request->get('type_' . $id))
+                                    ->set_tbranch($request->request->get('tbranch_' . $id))
+                                    ->set_report($request->request->get('report_' . $id))
                                     ->setVocabularyControl(null)
                                     ->setVocabularyRestricted(false);
 
                                 try {
-                                    $vocabulary = VocabularyController::get($request->get('vocabulary_' . $id));
+                                    $vocabulary = VocabularyController::get($request->request->get('vocabulary_' . $id));
                                     $field->setVocabularyControl($vocabulary);
-                                    $field->setVocabularyRestricted($request->get('vocabularyrestricted_' . $id));
+                                    $field->setVocabularyRestricted($request->request->get('vocabularyrestricted_' . $id));
                                 } catch (\Exception $e) {
 
                                 }
 
                                 $dces_element = null;
 
-                                $class = 'databox_Field_DCES_' . $request->get('dces_' . $id);
+                                $class = 'databox_Field_DCES_' . $request->request->get('dces_' . $id);
                                 if (class_exists($class)) {
                                     $dces_element = new $class();
                                 }
@@ -202,12 +202,13 @@ class Description implements ControllerProviderInterface
                         }
                     }
 
-                    if ($request->get('newfield')) {
-                        $field = \databox_field::create($databox, $request->get('newfield'), $request->get('newfield_multi'));
+                    if ($request->request->get('newfield')) {
+                        $field = \databox_field::create($databox, $request->request->get('newfield'), $request->request->get('newfield_multi'));
                     }
 
-                    if (is_array($request->get('todelete_ids'))) {
-                        foreach ($request->get('todelete_ids') as $id) {
+
+                    if (is_array($request->request->get('todelete_ids'))) {
+                        foreach ($request->request->get('todelete_ids') as $id) {
                             try {
                                 $field = \databox_field::get_instance($databox, $id);
                                 $field->delete();
@@ -225,7 +226,7 @@ class Description implements ControllerProviderInterface
                 return $app->redirect('/admin/description/' . $sbas_id . '/');
             })->before(function(Request $request) use ($app) {
                 if (false === $app['phraseanet.core']->getAuthenticatedUser()->ACL()
-                        ->has_right_on_sbas($request->get('sbas_id'), 'bas_modify_struct')) {
+                        ->has_right_on_sbas($request->attributes->get('sbas_id'), 'bas_modify_struct')) {
                     throw new AccessDeniedHttpException('You are not allowed to access this zone');
                 }
             })->assert('sbas_id', '\d+');
@@ -244,7 +245,7 @@ class Description implements ControllerProviderInterface
                 return new Response($app['twig']->render('admin/databox/doc_structure.html.twig', $params));
             })->before(function(Request $request) use ($app) {
                 if (false === $app['phraseanet.core']->getAuthenticatedUser()->ACL()
-                        ->has_right_on_sbas($request->get('sbas_id'), 'bas_modify_struct')) {
+                        ->has_right_on_sbas($request->attributes->get('sbas_id'), 'bas_modify_struct')) {
                     throw new AccessDeniedHttpException('You are not allowed to access this zone');
                 }
             })->assert('sbas_id', '\d+');

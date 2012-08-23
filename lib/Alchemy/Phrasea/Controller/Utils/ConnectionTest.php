@@ -30,11 +30,11 @@ class ConnectionTest implements ControllerProviderInterface
                 require_once __DIR__ . '/../../../../classes/connection/pdo.class.php';
 
                 $request = $app['request'];
-                $hostname = $request->get('hostname', '127.0.0.1');
-                $port = (int) $request->get('port', 3306);
-                $user = $request->get('user');
-                $password = $request->get('password');
-                $dbname = $request->get('dbname');
+                $hostname = $request->query->get('hostname', '127.0.0.1');
+                $port = (int) $request->query->get('port', 3306);
+                $user = $request->query->get('user');
+                $password = $request->query->get('password');
+                $dbname = $request->query->get('dbname');
 
                 $connection_ok = $db_ok = $is_databox = $is_appbox = $empty = false;
 

@@ -40,7 +40,7 @@ class Story implements ControllerProviderInterface
 
                 $user = $app['phraseanet.core']->getAuthenticatedUser();
 
-                $collection = \collection::get_from_base_id($request->get('base_id'));
+                $collection = \collection::get_from_base_id($request->request->get('base_id'));
 
                 if ( ! $user->ACL()->has_right_on_base($collection->get_base_id(), 'canaddrecord')) {
                     throw new \Exception_Forbidden('You can not create a story on this collection');
@@ -48,7 +48,7 @@ class Story implements ControllerProviderInterface
 
                 $Story = \record_adapter::createStory($collection);
 
-                foreach (explode(';', $request->get('lst')) as $sbas_rec) {
+                foreach (explode(';', $request->request->get('lst')) as $sbas_rec) {
                     $sbas_rec = explode('_', $sbas_rec);
 
                     if (count($sbas_rec) !== 2) {
@@ -73,7 +73,7 @@ class Story implements ControllerProviderInterface
 
                 foreach ($collection->get_databox()->get_meta_structure() as $meta) {
                     if ($meta->get_thumbtitle()) {
-                        $value = $request->get('name');
+                        $value = $request->request->get('name');
                     } else {
                         continue;
                     }
@@ -136,7 +136,7 @@ class Story implements ControllerProviderInterface
 
                 $n = 0;
 
-                foreach (explode(';', $request->get('lst')) as $sbas_rec) {
+                foreach (explode(';', $request->request->get('lst')) as $sbas_rec) {
                     $sbas_rec = explode('_', $sbas_rec);
 
                     if (count($sbas_rec) !== 2)
@@ -249,7 +249,7 @@ class Story implements ControllerProviderInterface
                       WHERE rid_parent = :parent_id AND rid_child = :children_id';
                         $stmt = $story->get_databox()->get_connection()->prepare($sql);
 
-                        foreach ($app['request']->get('element') as $record_id => $ord) {
+                        foreach ($app['request']->request->get('element') as $record_id => $ord) {
                             $params = array(
                                 ':ord'         => $ord,
                                 ':parent_id'   => $story->get_record_id(),

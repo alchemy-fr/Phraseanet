@@ -157,7 +157,7 @@ class Upload implements ControllerProviderInterface
             throw new \Exception_BadRequest('Upload is limited to 1 file per request');
         }
 
-        $base_id = $request->get('base_id');
+        $base_id = $request->request->get('base_id');
 
         if ( ! $base_id) {
             throw new \Exception_BadRequest('Missing base_id parameter');
@@ -197,7 +197,7 @@ class Upload implements ControllerProviderInterface
 
             $packageFile = new File($media, $collection, $file->getClientOriginalName());
 
-            $postStatus = $request->get('status');
+            $postStatus = $request->request->get('status');
 
             if (isset($postStatus[$collection->get_sbas_id()]) && is_array($postStatus[$collection->get_sbas_id()])) {
                 $postStatus = $postStatus[$collection->get_sbas_id()];
@@ -209,7 +209,7 @@ class Upload implements ControllerProviderInterface
                 $packageFile->addAttribute(new Status(strrev($status)));
             }
 
-            $forceBehavior = $request->get('forceAction');
+            $forceBehavior = $request->request->get('forceAction');
 
             $reasons = array();
             $elementCreated = null;

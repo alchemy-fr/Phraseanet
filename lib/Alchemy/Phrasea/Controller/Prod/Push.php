@@ -160,15 +160,15 @@ class Push implements ControllerProviderInterface
 
                     $appbox = $app['phraseanet.appbox'];
 
-                    $push_name = $request->get('name');
+                    $push_name = $request->request->get('name');
 
                     if (trim($push_name) === '') {
                         $push_name = sprintf(_('Push from %s'), $user->get_display_name());
                     }
 
-                    $push_description = $request->get('push_description');
+                    $push_description = $request->request->get('push_description');
 
-                    $receivers = $request->get('participants');
+                    $receivers = $request->request->get('participants');
 
                     if ( ! is_array($receivers) || count($receivers) === 0) {
                         throw new ControllerException(_('No receivers specified'));
@@ -233,8 +233,8 @@ class Push implements ControllerProviderInterface
                             , 'to_email'   => $user_receiver->get_email()
                             , 'to_name'    => $user_receiver->get_display_name()
                             , 'url'        => $url
-                            , 'accuse'     => ! ! $request->get('recept', false)
-                            , 'message'    => $request->get('message')
+                            , 'accuse'     => ! ! $request->request->get('recept', false)
+                            , 'message'    => $request->request->get('message')
                             , 'ssel_id'    => $Basket->getId()
                         );
 
@@ -288,15 +288,15 @@ class Push implements ControllerProviderInterface
 
                     $repository = $em->getRepository('\Entities\Basket');
 
-                    $validation_name = $request->get('name');
+                    $validation_name = $request->request->get('name');
 
                     if (trim($validation_name) === '') {
                         $validation_name = sprintf(_('Validation from %s'), $user->get_display_name());
                     }
 
-                    $validation_description = $request->get('validation_description');
+                    $validation_description = $request->request->get('validation_description');
 
-                    $participants = $request->get('participants');
+                    $participants = $request->request->get('participants');
 
                     if ( ! is_array($participants) || count($participants) === 0) {
                         throw new ControllerException(_('No participants specified'));
@@ -336,7 +336,7 @@ class Push implements ControllerProviderInterface
                         $Validation->setInitiator($app['phraseanet.core']->getAuthenticatedUser());
                         $Validation->setBasket($Basket);
 
-                        $duration = (int) $request->get('duration');
+                        $duration = (int) $request->request->get('duration');
 
                         if ($duration > 0) {
                             $date = new \DateTime('+' . $duration . ' day' . ($duration > 1 ? 's' : ''));
@@ -440,8 +440,8 @@ class Push implements ControllerProviderInterface
                             , 'to_email'   => $participant_user->get_email()
                             , 'to_name'    => $participant_user->get_display_name()
                             , 'url'        => $url
-                            , 'accuse'     => ! ! $request->get('recept', false)
-                            , 'message'    => $request->get('message')
+                            , 'accuse'     => ! ! $request->request->get('recept', false)
+                            , 'message'    => $request->request->get('message')
                             , 'ssel_id'    => $Basket->getId()
                         );
 
@@ -456,7 +456,7 @@ class Push implements ControllerProviderInterface
                     $message = sprintf(
                         _('%1$d records have been sent for validation to %2$d users')
                         , count($pusher->get_elements())
-                        , count($request->get('participants'))
+                        , count($request->request->get('participants'))
                     );
 
                     $ret = array(
@@ -528,16 +528,16 @@ class Push implements ControllerProviderInterface
                     if ( ! $AdminUser->ACL()->has_right('manageusers'))
                         throw new ControllerException(_('You are not allowed to add users'));
 
-                    if ( ! $request->get('firstname'))
+                    if ( ! $request->request->get('firstname'))
                         throw new ControllerException(_('First name is required'));
 
-                    if ( ! $request->get('lastname'))
+                    if ( ! $request->request->get('lastname'))
                         throw new ControllerException(_('Last name is required'));
 
-                    if ( ! $request->get('email'))
+                    if ( ! $request->request->get('email'))
                         throw new ControllerException(_('Email is required'));
 
-                    if ( ! \mail::validateEmail($request->get('email')))
+                    if ( ! \mail::validateEmail($request->request->get('email')))
                         throw new ControllerException(_('Email is invalid'));
                 } catch (ControllerException $e) {
                     $result['message'] = $e->getMessage();
@@ -548,7 +548,7 @@ class Push implements ControllerProviderInterface
                 $appbox = $app['phraseanet.appbox'];
 
                 $user = null;
-                $email = $request->get('email');
+                $email = $request->request->get('email');
 
                 try {
                     $usr_id = \User_Adapter::get_usr_id_from_email($email);
@@ -567,15 +567,15 @@ class Push implements ControllerProviderInterface
 
                         $user = \User_Adapter::create($appbox, $email, $password, $email, false);
 
-                        $user->set_firstname($request->get('firstname'))
-                            ->set_lastname($request->get('lastname'));
+                        $user->set_firstname($request->request->get('firstname'))
+                            ->set_lastname($request->request->get('lastname'));
 
-                        if ($request->get('company'))
-                            $user->set_company($request->get('company'));
-                        if ($request->get('job'))
-                            $user->set_company($request->get('job'));
-                        if ($request->get('form_geonameid'))
-                            $user->set_geonameid($request->get('form_geonameid'));
+                        if ($request->request->get('company'))
+                            $user->set_company($request->request->get('company'));
+                        if ($request->request->get('job'))
+                            $user->set_company($request->request->get('job'));
+                        if ($request->request->get('form_geonameid'))
+                            $user->set_geonameid($request->request->get('form_geonameid'));
 
                         $result['message'] = _('User successfully created');
                         $result['success'] = true;
@@ -589,7 +589,7 @@ class Push implements ControllerProviderInterface
             });
 
         $controllers->get('/add-user/', function(Application $app, Request $request) {
-                $params = array('callback' => $request->get('callback'));
+                $params = array('callback' => $request->query->get('callback'));
 
                 return new Response($app['twig']->render('prod/User/Add.html.twig', $params));
             });
@@ -603,9 +603,9 @@ class Push implements ControllerProviderInterface
 
                 $query->on_bases_where_i_am($user->ACL(), array('canpush'));
 
-                $query->like(\User_Query::LIKE_FIRSTNAME, $request->get('query'))
-                    ->like(\User_Query::LIKE_LASTNAME, $request->get('query'))
-                    ->like(\User_Query::LIKE_LOGIN, $request->get('query'))
+                $query->like(\User_Query::LIKE_FIRSTNAME, $request->query->get('query'))
+                    ->like(\User_Query::LIKE_LASTNAME, $request->query->get('query'))
+                    ->like(\User_Query::LIKE_LOGIN, $request->query->get('query'))
                     ->like_match(\User_Query::LIKE_MATCH_OR);
 
                 $result = $query->include_phantoms()
@@ -614,7 +614,7 @@ class Push implements ControllerProviderInterface
 
                 $repository = $em->getRepository('\Entities\UsrList');
 
-                $lists = $repository->findUserListLike($user, $request->get('query'));
+                $lists = $repository->findUserListLike($user, $request->query->get('query'));
 
                 $datas = array();
 

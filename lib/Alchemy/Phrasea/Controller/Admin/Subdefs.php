@@ -42,9 +42,9 @@ class Subdefs implements ControllerProviderInterface
             })->assert('sbas_id', '\d+');
 
         $controllers->post('/{sbas_id}/', function(Application $app, Request $request, $sbas_id) {
-                $delete_subdef = $request->get('delete_subdef');
-                $toadd_subdef = $request->get('add_subdef');
-                $Parmsubdefs = $request->get('subdefs', array());
+                $delete_subdef = $request->request->get('delete_subdef');
+                $toadd_subdef = $request->request->get('add_subdef');
+                $Parmsubdefs = $request->request->get('subdefs', array());
 
                 $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
 
@@ -86,13 +86,13 @@ class Subdefs implements ControllerProviderInterface
                         $group = array_shift($post_sub_ex);
                         $name = implode('_', $post_sub_ex);
 
-                        $class = $request->get($post_sub . '_class');
-                        $downloadable = $request->get($post_sub . '_downloadable');
+                        $class = $request->request->get($post_sub . '_class');
+                        $downloadable = $request->request->get($post_sub . '_downloadable');
 
                         $defaults = array('path', 'meta', 'mediatype');
 
                         foreach ($defaults as $def) {
-                            $parm_loc = $request->get($post_sub . '_' . $def);
+                            $parm_loc = $request->request->get($post_sub . '_' . $def);
 
                             if ($def == 'meta' && ! $parm_loc) {
                                 $parm_loc = "no";
@@ -101,8 +101,8 @@ class Subdefs implements ControllerProviderInterface
                             $options[$def] = $parm_loc;
                         }
 
-                        $mediatype = $request->get($post_sub . '_mediatype');
-                        $media = $request->get($post_sub . '_' . $mediatype, array());
+                        $mediatype = $request->request->get($post_sub . '_mediatype');
+                        $media = $request->request->get($post_sub . '_' . $mediatype, array());
 
                         foreach ($media as $option => $value) {
 

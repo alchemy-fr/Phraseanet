@@ -76,7 +76,7 @@ class Users implements ControllerProviderInterface
                     $rights = new UserHelper\Edit($app['phraseanet.core'], $app['request']);
                     $rights->apply_rights();
 
-                    if ($app['request']->get('template')) {
+                    if ($app['request']->request->get('template')) {
                         $rights->apply_template();
                     }
 
@@ -216,11 +216,11 @@ class Users implements ControllerProviderInterface
 
                 $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
 
-                $like_value = $request->get('term');
-                $rights = $request->get('filter_rights') ? : array();
-                $have_right = $request->get('have_right') ? : array();
-                $have_not_right = $request->get('have_not_right') ? : array();
-                $on_base = $request->get('on_base') ? : array();
+                $like_value = $request->query->get('term');
+                $rights = $request->query->get('filter_rights') ? : array();
+                $have_right = $request->query->get('have_right') ? : array();
+                $have_not_right = $request->query->get('have_not_right') ? : array();
+                $on_base = $request->query->get('on_base') ? : array();
 
                 $elligible_users = $user_query
                     ->on_sbas_where_i_am($user->ACL(), $rights)
@@ -255,7 +255,7 @@ class Users implements ControllerProviderInterface
                 try {
                     $request = $app['request'];
                     $module = new UserHelper\Manage($app['phraseanet.core'], $app['request']);
-                    if ($request->get('template') == '1') {
+                    if ($request->request->get('template') == '1') {
                         $user = $module->create_template();
                     } else {
                         $user = $module->create_newuser();
@@ -278,10 +278,10 @@ class Users implements ControllerProviderInterface
                 $user_query = new \User_Query($appbox, $app['phraseanet.core']);
 
                 $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
-                $like_value = $request->get('like_value');
-                $like_field = $request->get('like_field');
-                $on_base = $request->get('base_id') ? : null;
-                $on_sbas = $request->get('sbas_id') ? : null;
+                $like_value = $request->request->get('like_value');
+                $like_field = $request->request->get('like_field');
+                $on_base = $request->request->get('base_id') ? : null;
+                $on_sbas = $request->request->get('sbas_id') ? : null;
 
                 $elligible_users = $user_query->on_bases_where_i_am($user->ACL(), array('canadmin'))
                     ->like($like_field, $like_value)

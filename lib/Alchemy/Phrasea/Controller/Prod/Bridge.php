@@ -114,7 +114,7 @@ class Bridge implements ControllerProviderInterface
             })->assert('account_id', '\d+');
 
         $controllers->get('/adapter/{account_id}/load-records/', function(Application $app, $account_id) {
-                    $page = max((int) $app['request']->get('page'), 0);
+                    $page = max((int) $app['request']->query->get('page'), 0);
                     $quantity = 10;
                     $offset_start = max(($page - 1) * $quantity, 0);
                     $appbox = $app['phraseanet.appbox'];
@@ -127,8 +127,8 @@ class Bridge implements ControllerProviderInterface
                         'adapter_action' => 'load-records'
                         , 'account'        => $account
                         , 'elements'       => $elements
-                        , 'error_message'  => $app['request']->get('error')
-                        , 'notice_message' => $app['request']->get('notice')
+                        , 'error_message'  => $app['request']->query->get('error')
+                        , 'notice_message' => $app['request']->query->get('notice')
                     );
 
                     return new Response($app['twig']->render('prod/actions/Bridge/records_list.html.twig', $params));
@@ -137,7 +137,7 @@ class Bridge implements ControllerProviderInterface
 
         $controllers->get('/adapter/{account_id}/load-elements/{type}/'
                 , function($account_id, $type) use ($app) {
-                    $page = max((int) $app['request']->get('page'), 0);
+                    $page = max((int) $app['request']->query->get('page'), 0);
                     $quantity = 5;
                     $offset_start = max(($page - 1) * $quantity, 0);
                     $appbox = $app['phraseanet.appbox'];
@@ -152,8 +152,8 @@ class Bridge implements ControllerProviderInterface
                         , 'adapter_action' => 'load-elements'
                         , 'account'        => $account
                         , 'elements'       => $elements
-                        , 'error_message'  => $app['request']->get('error')
-                        , 'notice_message' => $app['request']->get('notice')
+                        , 'error_message'  => $app['request']->query->get('error')
+                        , 'notice_message' => $app['request']->query->get('notice')
                     );
 
                     return new Response($app['twig']->render('prod/actions/Bridge/element_list.html.twig', $params));
@@ -163,7 +163,7 @@ class Bridge implements ControllerProviderInterface
         $controllers->get('/adapter/{account_id}/load-containers/{type}/'
                 , function(Application $app, $account_id, $type) {
 
-                    $page = max((int) $app['request']->get('page'), 0);
+                    $page = max((int) $app['request']->query->get('page'), 0);
                     $quantity = 5;
                     $offset_start = max(($page - 1) * $quantity, 0);
                     $appbox = $app['phraseanet.appbox'];
@@ -177,8 +177,8 @@ class Bridge implements ControllerProviderInterface
                         , 'adapter_action' => 'load-containers'
                         , 'account'        => $account
                         , 'elements'       => $elements
-                        , 'error_message'  => $app['request']->get('error')
-                        , 'notice_message' => $app['request']->get('notice')
+                        , 'error_message'  => $app['request']->query->get('error')
+                        , 'notice_message' => $app['request']->query->get('notice')
                     );
 
                     return new Response($app['twig']->render('prod/actions/Bridge/element_list.html.twig', $params));
@@ -193,10 +193,10 @@ class Bridge implements ControllerProviderInterface
 
                 $app['require_connection']($account);
                 $request = $app['request'];
-                $elements = $request->get('elements_list', array());
+                $elements = $request->query->get('elements_list', array());
                 $elements = is_array($elements) ? $elements : explode(';', $elements);
 
-                $destination = $request->get('destination');
+                $destination = $request->query->get('destination');
                 $route_params = array();
                 $class = $account->get_api()->get_connector()->get_object_class_from_type($element_type);
 
@@ -240,8 +240,8 @@ class Bridge implements ControllerProviderInterface
                     , 'constraint_errors' => null
                     , 'adapter_action'    => $action
                     , 'elements'          => $elements
-                    , 'error_message'     => $app['request']->get('error')
-                    , 'notice_message'    => $app['request']->get('notice')
+                    , 'error_message'     => $app['request']->query->get('error')
+                    , 'notice_message'    => $app['request']->query->get('notice')
                 );
 
                 $params = array_merge($params, $route_params);
@@ -259,10 +259,10 @@ class Bridge implements ControllerProviderInterface
                 $app['require_connection']($account);
 
                 $request = $app['request'];
-                $elements = $request->get('elements_list', array());
+                $elements = $request->request->get('elements_list', array());
                 $elements = is_array($elements) ? $elements : explode(';', $elements);
 
-                $destination = $request->get('destination');
+                $destination = $request->request->get('destination');
 
                 $class = $account->get_api()->get_connector()->get_object_class_from_type($element_type);
                 $html = '';
@@ -288,7 +288,7 @@ class Bridge implements ControllerProviderInterface
                                     , 'adapter_action'    => $action
                                     , 'error_message'     => _('Request contains invalid datas')
                                     , 'constraint_errors' => $errors
-                                    , 'notice_message'    => $app['request']->get('notice')
+                                    , 'notice_message'    => $app['request']->request->get('notice')
                                 );
 
                                 $template = 'prod/actions/Bridge/' . $account->get_api()->get_connector()->get_name() . '/' . $element_type . '_' . $action . ($destination ? '_' . $destination : '') . '.html.twig';
@@ -310,7 +310,7 @@ class Bridge implements ControllerProviderInterface
                     case 'createcontainer':
                         try {
 
-                            $container_type = $request->get('f_container_type');
+                            $container_type = $request->request->get('f_container_type');
 
                             $account->get_api()->create_container($container_type, $app['request']);
                         } catch (\Exception $e) {
@@ -323,7 +323,7 @@ class Bridge implements ControllerProviderInterface
                         break;
                     case 'moveinto':
                         try {
-                            $container_id = $request->get('container_id');
+                            $container_id = $request->request->get('container_id');
                             foreach ($elements as $element_id) {
                                 $account->get_api()->add_element_to_container($element_type, $element_id, $destination, $container_id);
                             }
@@ -357,7 +357,7 @@ class Bridge implements ControllerProviderInterface
         $controllers->get('/upload/', function(Application $app) {
                 $request = $app['request'];
                 $appbox = $app['phraseanet.appbox'];
-                $account = \Bridge_Account::load_account($appbox, $request->get('account_id'));
+                $account = \Bridge_Account::load_account($appbox, $request->query->get('account_id'));
                 $app['require_connection']($account);
 
                 $route = new RecordHelper\Bridge($app['phraseanet.core'], $app['request']);
@@ -367,8 +367,8 @@ class Bridge implements ControllerProviderInterface
                 $params = array(
                     'route'             => $route
                     , 'account'           => $account
-                    , 'error_message'     => $app['request']->get('error')
-                    , 'notice_message'    => $app['request']->get('notice')
+                    , 'error_message'     => $app['request']->query->get('error')
+                    , 'notice_message'    => $app['request']->query->get('notice')
                     , 'constraint_errors' => null
                     , 'adapter_action'    => 'upload'
                 );
@@ -382,7 +382,7 @@ class Bridge implements ControllerProviderInterface
                 $errors = array();
                 $request = $app['request'];
                 $appbox = $app['phraseanet.appbox'];
-                $account = \Bridge_Account::load_account($appbox, $request->get('account_id'));
+                $account = \Bridge_Account::load_account($appbox, $request->request->get('account_id'));
                 $app['require_connection']($account);
 
                 $route = new RecordHelper\Bridge($app['phraseanet.core'], $app['request']);
@@ -404,7 +404,7 @@ class Bridge implements ControllerProviderInterface
                         , 'account'           => $account
                         , 'error_message'     => _('Request contains invalid datas')
                         , 'constraint_errors' => $errors
-                        , 'notice_message'    => $app['request']->get('notice')
+                        , 'notice_message'    => $app['request']->request->get('notice')
                         , 'adapter_action'    => 'upload'
                     );
 

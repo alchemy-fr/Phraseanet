@@ -44,9 +44,8 @@ class Login implements ControllerProviderInterface
          * return       : HTML Response
          */
         $controllers->get('/', $this->call('login'))
-            ->before(function() use ($app) {
-
-                    if (null !== $app['request']->get('postlog')) {
+            ->before(function(Request $request) use ($app) {
+                    if (null !== $request->query->get('postlog')) {
 
                         // if isset postlog parameter, set cookie and log out current user
                         // then post login operation like getting baskets from an invit session
@@ -54,13 +53,13 @@ class Login implements ControllerProviderInterface
 
                         $app['phraseanet.appbox']->get_session()->set_postlog();
 
-                        return $app->redirect("/login/logout/?redirect=" . $app['request']->get('redirect', 'prod'));
+                        return $app->redirect("/login/logout/?redirect=" . $request->query->get('redirect', 'prod'));
                     }
 
 
                     if ($app['phraseanet.core']->isAuthenticated()) {
 
-                        return $app->redirect('/' . $app['request']->get('redirect', 'prod') . '/');
+                        return $app->redirect('/' . $request->query->get('redirect', 'prod') . '/');
                     }
                 })
             ->bind('homepage');
@@ -212,7 +211,7 @@ class Login implements ControllerProviderInterface
     {
         $appbox = $app['phraseanet.appbox'];
 
-        if (null === $usrId = $request->get('usr_id')) {
+        if (null === $usrId = $request->query->get('usr_id')) {
             $app->abort(400, sprintf(_('Request to send you the confirmation mail failed, please retry')));
         }
 
@@ -239,7 +238,7 @@ class Login implements ControllerProviderInterface
     {
         $appbox = $app['phraseanet.appbox'];
 
-        if (null === $code = $request->get('code')) {
+        if (null === $code = $request->query->get('code')) {
             return $app->redirect('/login/?redirect=/prod&error=code-not-found');
         }
 
@@ -300,7 +299,7 @@ class Login implements ControllerProviderInterface
     {
         $appbox = $app['phraseanet.appbox'];
 
-        if (null !== $mail = $request->get('mail')) {
+        if (null !== $mail = $request->request->get('mail')) {
             if ( ! \PHPMailer::ValidateAddress($mail)) {
                 return $app->redirect('/login/forgot-password/?error=invalidmail');
             }
@@ -324,9 +323,9 @@ class Login implements ControllerProviderInterface
             }
         }
 
-        if ((null !== $token = $request->get('token'))
-            && (null !== $password = $request->get('form_password'))
-            && (null !== $passwordConfirm = $request->get('form_password_confirm'))) {
+        if ((null !== $token = $request->request->get('token'))
+            && (null !== $password = $request->request->get('form_password'))
+            && (null !== $passwordConfirm = $request->request->get('form_password_confirm'))) {
 
             if ($password !== $passwordConfirm) {
 
@@ -364,9 +363,9 @@ class Login implements ControllerProviderInterface
     public function displayForgotPasswordForm(Application $app, Request $request)
     {
         $tokenize = false;
-        $errorMsg = $request->get('error');
+        $errorMsg = $request->query->get('error');
 
-        if (null !== $token = $request->get('token')) {
+        if (null !== $token = $request->query->get('token')) {
             try {
                 \random::helloToken($token);
                 $tokenize = true;
@@ -395,7 +394,7 @@ class Login implements ControllerProviderInterface
             }
         }
 
-        if (null !== $sentMsg = $request->get('sent')) {
+        if (null !== $sentMsg = $request->query->get('sent')) {
             switch ($sentMsg) {
                 case 'ok':
                     $sentMsg = _('phraseanet:: Un email vient de vous etre envoye');
@@ -403,7 +402,7 @@ class Login implements ControllerProviderInterface
             }
         }
 
-        if (null !== $passwordMsg = $request->get('pass-error')) {
+        if (null !== $passwordMsg = $request->query->get('pass-error')) {
             switch ($passwordMsg) {
                 case 'pass-match':
                     $passwordMsg = _('forms::les mots de passe ne correspondent pas');
@@ -438,7 +437,7 @@ class Login implements ControllerProviderInterface
             return $app->redirect('/login/?notice=no-register-available');
         }
 
-        $needed = $request->get('needed', array());
+        $needed = $request->query->get('needed', array());
 
         foreach ($needed as $fields => $error) {
             switch ($error) {
@@ -480,7 +479,7 @@ class Login implements ControllerProviderInterface
                     'needed'       => $needed,
                     'arrayVerif'   => $arrayVerif,
                     'geonames'     => new \geonames(),
-                    'demandes'     => $request->get('demand', array()),
+                    'demandes'     => $request->query->get('demand', array()),
                     'lng' => \Session_Handler::get_locale()
                 )));
     }
@@ -512,7 +511,7 @@ class Login implements ControllerProviderInterface
             }
         }
 
-        if (($password = $request->get('form_password')) !== $request->get('form_password_confirm')) {
+        if (($password = $request->request->get('form_password')) !== $request->request->get('form_password_confirm')) {
             $needed['form_password'] = $needed['form_password_confirm'] = 'pass-match';
         } elseif (strlen(trim($password)) < 5) {
             $needed['form_password'] = 'pass-short';
@@ -520,11 +519,11 @@ class Login implements ControllerProviderInterface
             $needed['form_password'] = 'pass-invalid';
         }
 
-        if (false === \PHPMailer::ValidateAddress($email = $request->get('form_email'))) {
+        if (false === \PHPMailer::ValidateAddress($email = $request->request->get('form_email'))) {
             $needed['form_email'] = 'mail-invalid';
         }
 
-        if (strlen($login = $request->get('form_login')) < 5) {
+        if (strlen($login = $request->request->get('form_login')) < 5) {
             $needed['form_login'] = 'login-short';
         }
 
@@ -541,7 +540,7 @@ class Login implements ControllerProviderInterface
             $needed['form_login'] = 'usr-login-exists';
         }
 
-        if (sizeof($demands = $request->get('demand', array())) === 0) {
+        if (sizeof($demands = $request->request->get('demand', array())) === 0) {
             $needed['demandes'] = 'no-collections';
         }
 
@@ -576,19 +575,19 @@ class Login implements ControllerProviderInterface
         }
 
         try {
-            $user = \User_Adapter::create($app['phraseanet.appbox'], $request->get('form_login'), $request->get("form_password"), $request->get("form_email"), false);
+            $user = \User_Adapter::create($app['phraseanet.appbox'], $request->request->get('form_login'), $request->request->get("form_password"), $request->request->get("form_email"), false);
 
-            $user->set_gender($request->get('form_gender'))
-                ->set_firstname($request->get('form_firstname'))
-                ->set_lastname($request->get('form_lastname'))
-                ->set_address($request->get('form_address'))
-                ->set_zip($request->get('form_zip'))
-                ->set_tel($request->get('form_phone'))
-                ->set_fax($request->get('form_fax'))
-                ->set_job($request->get('form_job'))
-                ->set_company($request->get('form_company'))
-                ->set_position($request->get('form_activity'))
-                ->set_geonameid($request->get('form_geonameid'));
+            $user->set_gender($request->request->get('form_gender'))
+                ->set_firstname($request->request->get('form_firstname'))
+                ->set_lastname($request->request->get('form_lastname'))
+                ->set_address($request->request->get('form_address'))
+                ->set_zip($request->request->get('form_zip'))
+                ->set_tel($request->request->get('form_phone'))
+                ->set_fax($request->request->get('form_fax'))
+                ->set_job($request->request->get('form_job'))
+                ->set_company($request->request->get('form_company'))
+                ->set_position($request->request->get('form_activity'))
+                ->set_geonameid($request->request->get('form_geonameid'));
 
             $demandOK = array();
 
@@ -653,7 +652,7 @@ class Login implements ControllerProviderInterface
      */
     public function logout(Application $app, Request $request)
     {
-        $appRedirect = $request->get("app");
+        $appRedirect = $request->query->get("app");
 
         try {
             $session = $app['phraseanet.appbox']->get_session();
@@ -684,7 +683,7 @@ class Login implements ControllerProviderInterface
             include($registry->get('GV_RootPath') . 'lib/vendor/recaptcha/recaptchalib.php');
         }
 
-        $warning = $request->get('error', '');
+        $warning = $request->query->get('error', '');
 
         try {
             $appbox->get_connection();
@@ -721,11 +720,11 @@ class Login implements ControllerProviderInterface
                 break;
         }
 
-        if (ctype_digit($request->get('usr'))) {
-            $warning .= '<div class="notice"><a href="/login/send-mail-confirm/?usr_id=' . $request->get('usr') . '" target ="_self" style="color:black;text-decoration:none;">' . _('login:: Envoyer a nouveau le mail de confirmation') . '</a></div>';
+        if (ctype_digit($request->query->get('usr'))) {
+            $warning .= '<div class="notice"><a href="/login/send-mail-confirm/?usr_id=' . $request->query->get('usr') . '" target ="_self" style="color:black;text-decoration:none;">' . _('login:: Envoyer a nouveau le mail de confirmation') . '</a></div>';
         }
 
-        switch ($notice = $request->get('notice', '')) {
+        switch ($notice = $request->query->get('notice', '')) {
             case 'ok':
                 $notice = _('login::register: sujet email : confirmation de votre adresse email');
                 break;
@@ -754,7 +753,7 @@ class Login implements ControllerProviderInterface
             && $registry->get('GV_captchas')
             && trim($registry->get('GV_captcha_private_key')) !== ''
             && trim($registry->get('GV_captcha_public_key')) !== ''
-            && $request->get('error') == 'captcha') {
+            && $request->query->get('error') == 'captcha') {
             $captchaSys = '<div style="margin:0;float: left;width:330px;"><div id="recaptcha_image" style="float: left;margin:10px 15px 5px"></div>
                                                                 <div style="text-align:center;float: left;margin:0 15px 5px;width:300px;">
                                                                 <a href="javascript:Recaptcha.reload()" class="link">' . _('login::captcha: obtenir une autre captcha') . '</a>
@@ -772,8 +771,8 @@ class Login implements ControllerProviderInterface
                 'module_name'    => _('Accueil'),
                 'notice'         => $notice,
                 'warning'        => $warning,
-                'redirect'       => $request->get('redirect'),
-                'logged_out'     => $request->get('logged_out'),
+                'redirect'       => $request->query->get('redirect'),
+                'logged_out'     => $request->query->get('logged_out'),
                 'captcha_system' => $captchaSys,
                 'login'          => new \login(),
                 'feeds'          => $feeds,
@@ -796,11 +795,11 @@ class Login implements ControllerProviderInterface
 
         $is_guest = false;
 
-        if (null !== $request->get('nolog') && \phrasea::guest_allowed()) {
+        if (null !== $request->request->get('nolog') && \phrasea::guest_allowed()) {
             $is_guest = true;
         }
 
-        if (((null !== $login = $request->get('login')) && (null !== $pwd = $request->get('pwd'))) || $is_guest) {
+        if (((null !== $login = $request->request->get('login')) && (null !== $pwd = $request->request->get('pwd'))) || $is_guest) {
 
             /**
              * @todo dispatch an event that can be used to tweak the authentication
@@ -817,8 +816,8 @@ class Login implements ControllerProviderInterface
                     if ($registry->get('GV_captchas')
                         && '' !== $privateKey = trim($registry->get('GV_captcha_private_key'))
                         && trim($registry->get('GV_captcha_public_key')) !== ''
-                        && null !== $challenge = $request->get("recaptcha_challenge_field")
-                        && null !== $captachResponse = $request->get("recaptcha_response_field")) {
+                        && null !== $challenge = $request->request->get("recaptcha_challenge_field")
+                        && null !== $captachResponse = $request->request->get("recaptcha_response_field")) {
 
                         include($registry->get('GV_RootPath') . 'lib/vendor/recaptcha/recaptchalib.php');
 
@@ -835,33 +834,33 @@ class Login implements ControllerProviderInterface
 
                 $session->authenticate($auth);
             } catch (\Exception_Session_StorageClosed $e) {
-                return $app->redirect("/login/?redirect=" . $request->get('redirect') . "&error=session");
+                return $app->redirect("/login/?redirect=" . $request->request->get('redirect') . "&error=session");
             } catch (\Exception_Session_RequireCaptcha $e) {
-                return $app->redirect("/login/?redirect=" . $request->get('redirect') . "&error=captcha");
+                return $app->redirect("/login/?redirect=" . $request->request->get('redirect') . "&error=captcha");
             } catch (\Exception_Unauthorized $e) {
-                return $app->redirect("/login/?redirect=" . $request->get('redirect') . "&error=auth");
+                return $app->redirect("/login/?redirect=" . $request->request->get('redirect') . "&error=auth");
             } catch (\Exception_Session_MailLocked $e) {
-                return $app->redirect("/login/?redirect=" . $request->get('redirect') . "&error=mail-not-confirmed&usr=" . $e->get_usr_id());
+                return $app->redirect("/login/?redirect=" . $request->request->get('redirect') . "&error=mail-not-confirmed&usr=" . $e->get_usr_id());
             } catch (\Exception_Session_WrongToken $e) {
-                return $app->redirect("/login/?redirect=" . $request->get('redirect') . "&error=token");
+                return $app->redirect("/login/?redirect=" . $request->request->get('redirect') . "&error=token");
             } catch (\Exception_InternalServerError $e) {
-                return $app->redirect("/login/?redirect=" . $request->get('redirect') . "&error=session");
+                return $app->redirect("/login/?redirect=" . $request->request->get('redirect') . "&error=session");
             } catch (\Exception_ServiceUnavailable $e) {
-                return $app->redirect("/login/?redirect=" . $request->get('redirect') . "&error=maintenance");
+                return $app->redirect("/login/?redirect=" . $request->request->get('redirect') . "&error=maintenance");
             } catch (\Exception_Session_BadSalinity $e) {
                 $date = new \DateTime('5 minutes');
-                $usr_id = \User_Adapter::get_usr_id_from_login($request->get('login'));
+                $usr_id = \User_Adapter::get_usr_id_from_login($request->request->get('login'));
                 $url = '/account/forgot-password/?token=' . \random::getUrlToken(\random::TYPE_PASSWORD, $usr_id, $date) . '&salt=1';
 
                 return $app->redirect($url);
             } catch (\Exception $e) {
-                return $app->redirect("/login/?redirect=" . $request->get('redirect') . "&error=" . _('An error occured'));
+                return $app->redirect("/login/?redirect=" . $request->request->get('redirect') . "&error=" . _('An error occured'));
             }
 
             if ($app['browser']->isMobile()) {
                 return $app->redirect("/lightbox/");
-            } elseif ($request->get('redirect')) {
-                return $app->redirect($request->get('redirect'));
+            } elseif ($request->request->get('redirect')) {
+                return $app->redirect($request->request->get('redirect'));
             } elseif (true !== $app['browser']->isNewGeneration()) {
                 return $app->redirect('/client/');
             } else {

@@ -310,7 +310,7 @@ return call_user_func(
                     $output = array('error' => true, 'datas' => _('Erreur lors de l\'enregistrement des donnees'));
 
                     $request = $app['request'];
-                    $note = $request->get('note');
+                    $note = $request->request->get('note');
 
                     if (is_null($note)) {
                         Return new Response('You must provide a note value', 400);
@@ -349,7 +349,7 @@ return call_user_func(
 
             $app->post('/ajax/SET_ELEMENT_AGREEMENT/{sselcont_id}/', function(SilexApplication $app, $sselcont_id) {
                     $request = $app['request'];
-                    $agreement = $request->get('agreement');
+                    $agreement = $request->request->get('agreement');
 
                     if (is_null($agreement)) {
                         Return new Response('You must provide an agreement value', 400);

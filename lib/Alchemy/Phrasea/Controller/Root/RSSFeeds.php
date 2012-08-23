@@ -87,7 +87,7 @@ class RSSFeeds implements ControllerProviderInterface
 
                 $request = $app['request'];
 
-                $page = (int) $request->get('page');
+                $page = (int) $request->query->get('page');
                 $page = $page < 1 ? 1 : $page;
 
                 return $display_feed($feed, $format, $page);
@@ -102,7 +102,7 @@ class RSSFeeds implements ControllerProviderInterface
                 }
                 $request = $app['request'];
 
-                $page = (int) $request->get('page');
+                $page = (int) $request->query->get('page');
                 $page = $page < 1 ? 1 : $page;
 
                 return $display_feed($feed, $format, $page, $token->get_user());
@@ -118,7 +118,7 @@ class RSSFeeds implements ControllerProviderInterface
 
                 $request = $app['request'];
 
-                $page = (int) $request->get('page');
+                $page = (int) $request->query->get('page');
                 $page = $page < 1 ? 1 : $page;
 
                 return $display_feed($feed, $format, $page, $token->get_user());
@@ -129,7 +129,7 @@ class RSSFeeds implements ControllerProviderInterface
                 $feed = $feeds->get_aggregate();
 
                 $request = $app['request'];
-                $page = (int) $request->get('page');
+                $page = (int) $request->query->get('page');
                 $page = $page < 1 ? 1 : $page;
 
                 return $display_feed($feed, $format, $page);
@@ -140,7 +140,7 @@ class RSSFeeds implements ControllerProviderInterface
                 $feed = $feeds->get_aggregate();
 
                 $request = $app['request'];
-                $page = (int) $request->get('page');
+                $page = (int) $request->query->get('page');
                 $page = $page < 1 ? 1 : $page;
 
                 return $display_feed($feed, \Feed_Adapter::FORMAT_COOLIRIS, $page);

@@ -30,9 +30,9 @@ class Fields implements ControllerProviderInterface
 
         $controllers->get('/checkmulti/', function(PhraseaApplication $app, Request $request) {
 
-                $multi = ($request->get('multi') === 'true');
+                $multi = ($request->query->get('multi') === 'true');
 
-                $tag = \databox_field::loadClassFromTagName($request->get('source'));
+                $tag = \databox_field::loadClassFromTagName($request->query->get('source'));
 
                 $datas = array(
                     'result'   => ($multi === $tag->isMulti()),
@@ -43,9 +43,9 @@ class Fields implements ControllerProviderInterface
             });
 
         $controllers->get('/checkreadonly/', function(PhraseaApplication $app, Request $request) {
-                $readonly = ($request->get('readonly') === 'true');
+                $readonly = ($request->query->get('readonly') === 'true');
 
-                $tag = \databox_field::loadClassFromTagName($request->get('source'));
+                $tag = \databox_field::loadClassFromTagName($request->query->get('source'));
 
                 $datas = array(
                     'result'      => ($readonly !== $tag->isWritable()),
