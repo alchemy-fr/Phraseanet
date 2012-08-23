@@ -171,7 +171,7 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $connexion = $configuration->getConnexion($choosenConnexion);
 
         try {
-            $conn = new \connection_pdo('databox_creation', $connexion->get('host'), $connexion->get('port'), $connexion->get('user'), $connexion->get('password', ''), $dbName, array(), $registry);
+            $conn = new \connection_pdo('databox_creation', $connexion->get('host'), $connexion->get('port'), $connexion->get('user'), $connexion->get('password'), $dbName, array(), $registry);
         } catch (\PDOException $e) {
 
             $this->markTestSkipped('Could not reach DB');
