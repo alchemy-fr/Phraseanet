@@ -38,9 +38,9 @@ class UserPreferences implements ControllerProviderInterface
         try {
             $user = $app['phraseanet.core']->getAuthenticatedUser();
 
-            $ret = $user->setPrefs($request->get('prop'), $request->get('value'));
+            $ret = $user->setPrefs($request->request->get('prop'), $request->request->get('value'));
 
-            if ($ret == $request->get('value'))
+            if ($ret == $request->request->get('value'))
                 $output = "1"; else
                 $output = "0";
 

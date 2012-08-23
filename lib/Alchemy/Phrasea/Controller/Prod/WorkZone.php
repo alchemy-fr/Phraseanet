@@ -51,9 +51,9 @@ class WorkZone implements ControllerProviderInterface
     {
         $params = array(
             'WorkZone'      => new WorkzoneHelper($app['phraseanet.core'], $app['request'])
-            , 'selected_type' => $app['request']->get('type')
-            , 'selected_id'   => $app['request']->get('id')
-            , 'srt'           => $app['request']->get('sort')
+            , 'selected_type' => $app['request']->query->get('type')
+            , 'selected_id'   => $app['request']->query->get('id')
+            , 'srt'           => $app['request']->query->get('sort')
         );
 
         return $app['twig']->render('prod/WorkZone/WorkZone.html.twig', $params);
@@ -75,16 +75,16 @@ class WorkZone implements ControllerProviderInterface
 
         $BasketRepo = $em->getRepository('\Entities\Basket');
 
-        $Page = (int) $request->get('Page', 0);
+        $Page = (int) $request->query->get('Page', 0);
 
         $PerPage = 10;
         $offsetStart = max(($Page - 1) * $PerPage, 0);
 
         $Baskets = $BasketRepo->findWorkzoneBasket(
             $user
-            , $request->get('Query')
-            , $request->get('Year')
-            , $request->get('Type')
+            , $request->query->get('Query')
+            , $request->query->get('Year')
+            , $request->query->get('Type')
             , $offsetStart
             , $PerPage
         );
@@ -97,9 +97,9 @@ class WorkZone implements ControllerProviderInterface
             , 'Page'    => $page
             , 'MaxPage' => $maxPage
             , 'Total'   => count($Baskets)
-            , 'Query'   => $request->get('Query')
-            , 'Year'    => $request->get('Year')
-            , 'Type'    => $request->get('Type')
+            , 'Query'   => $request->query->get('Query')
+            , 'Year'    => $request->query->get('Year')
+            , 'Type'    => $request->query->get('Type')
         );
 
         return $app['twig']->render('prod/WorkZone/Browser/Results.html.twig', $params);
@@ -117,7 +117,7 @@ class WorkZone implements ControllerProviderInterface
 
     public function attachStories(Application $app, Request $request)
     {
-        if ( ! $request->get('stories')) {
+        if ( ! $request->request->get('stories')) {
             throw new \Exception_BadRequest();
         }
 
@@ -130,7 +130,7 @@ class WorkZone implements ControllerProviderInterface
 
         $alreadyFixed = $done = 0;
 
-        $stories = $request->get('stories', array());
+        $stories = $request->request->get('stories', array());
 
         foreach ($stories as $element) {
             $element = explode('_', $element);

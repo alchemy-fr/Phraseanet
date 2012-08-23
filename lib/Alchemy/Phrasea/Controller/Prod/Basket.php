@@ -145,7 +145,7 @@ class Basket implements ControllerProviderInterface
 
         $params = array(
             'basket' => $basket,
-            'ordre'  => $request->get('order')
+            'ordre'  => $request->query->get('order')
         );
 
         return $app['twig']->render('prod/WorkZone/Basket.html.twig', $params);
@@ -160,9 +160,9 @@ class Basket implements ControllerProviderInterface
 
         $Basket = new BasketEntity();
 
-        $Basket->setName($request->get('name', ''));
+        $Basket->setName($request->request->get('name', ''));
         $Basket->setOwner($app['phraseanet.core']->getAuthenticatedUser());
-        $Basket->setDescription($request->get('desc'));
+        $Basket->setDescription($request->request->get('desc'));
 
         $em->persist($Basket);
 
@@ -264,8 +264,8 @@ class Basket implements ControllerProviderInterface
             $basket = $em->getRepository('\Entities\Basket')
                 ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), true);
 
-            $basket->setName($request->get('name', ''));
-            $basket->setDescription($request->get('description'));
+            $basket->setName($request->request->get('name', ''));
+            $basket->setDescription($request->request->get('description'));
 
             $em->merge($basket);
             $em->flush();
@@ -320,7 +320,7 @@ class Basket implements ControllerProviderInterface
             $basket = $em->getRepository('\Entities\Basket')
                 ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), true);
 
-            $order = $app['request']->get('element');
+            $order = $app['request']->request->get('element');
 
             /* @var $basket \Entities\Basket */
             foreach ($basket->getElements() as $basketElement) {
@@ -347,7 +347,7 @@ class Basket implements ControllerProviderInterface
         $basket = $em->getRepository('\Entities\Basket')
             ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), true);
 
-        $archive_status = ! ! $request->get('archive');
+        $archive_status = ! ! $request->request->get('archive');
 
         $basket->setArchived($archive_status);
 
@@ -439,7 +439,7 @@ class Basket implements ControllerProviderInterface
 
         $n = 0;
 
-        foreach ($request->get('elements') as $bask_element_id) {
+        foreach ($request->request->get('elements') as $bask_element_id) {
             try {
                 $basket_element = $em->getRepository('\Entities\BasketElement')
                     ->findUserElement($bask_element_id, $user);

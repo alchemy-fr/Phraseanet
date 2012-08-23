@@ -70,7 +70,7 @@ class Tools implements ControllerProviderInterface
 
                 $records = RecordsRequest::fromRequest($app, $request, false);
 
-                $rotation = in_array($request->get('rotation'), array('-90', '90', '180')) ? $request->get('rotation', 90) : 90;
+                $rotation = in_array($request->request->get('rotation'), array('-90', '90', '180')) ? $request->request->get('rotation', 90) : 90;
 
                 foreach ($records as $record) {
                     try {
@@ -101,7 +101,7 @@ class Tools implements ControllerProviderInterface
                         }
                     }
 
-                    if ( ! $substituted || $request->get('ForceThumbSubstit') == '1') {
+                    if ( ! $substituted || $request->request->get('ForceThumbSubstit') == '1') {
                         $record->rebuild_subdefs();
                     }
                 }
@@ -123,15 +123,15 @@ class Tools implements ControllerProviderInterface
 
                         try {
                             $record = new \record_adapter(
-                                    $request->get('sbas_id')
-                                    , $request->get('record_id')
+                                    $request->request->get('sbas_id')
+                                    , $request->request->get('record_id')
                             );
 
                             $media = $app['phraseanet.core']['mediavorus']->guess($file);
 
                             $record->substitute_subdef('document', $media);
 
-                            if ((int) $request->get('ccfilename') === 1) {
+                            if ((int) $request->request->get('ccfilename') === 1) {
                                 $record->set_original_name($fileName);
                             }
 
@@ -174,8 +174,8 @@ class Tools implements ControllerProviderInterface
                             rename($file->getPathname(), $tmpFile);
 
                             $record = new \record_adapter(
-                                    $request->get('sbas_id')
-                                    , $request->get('record_id')
+                                    $request->request->get('sbas_id')
+                                    , $request->request->get('record_id')
                             );
 
                             $media = $app['phraseanet.core']['mediavorus']->guess($file);
@@ -206,10 +206,10 @@ class Tools implements ControllerProviderInterface
                 $template = 'prod/actions/Tools/confirm.html.twig';
 
                 try {
-                    $record = new \record_adapter($request->get('sbas_id'), $request->get('record_id'));
+                    $record = new \record_adapter($request->request->get('sbas_id'), $request->request->get('record_id'));
                     $var = array(
                         'video_title'    => $record->get_title()
-                        , 'image'          => $request->get('image', '')
+                        , 'image'          => $request->request->get('image', '')
                     );
                     $return['datas'] = $app['twig']->render($template, $var);
                 } catch (\Exception $e) {
@@ -224,9 +224,9 @@ class Tools implements ControllerProviderInterface
                 $return = array('success' => false, 'message' => '');
 
                 try {
-                    $record = new \record_adapter($request->get('sbas_id'), $request->get('record_id'));
+                    $record = new \record_adapter($request->request->get('sbas_id'), $request->request->get('record_id'));
 
-                    $dataUri = DataURI\Parser::parse($request->get('image', ''));
+                    $dataUri = DataURI\Parser::parse($request->request->get('image', ''));
 
                     $path = $app['phraseanet.core']->getRegistry()->get('GV_RootPath') . 'tmp';
 

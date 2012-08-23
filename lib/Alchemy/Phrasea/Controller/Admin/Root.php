@@ -41,7 +41,7 @@ class Root implements ControllerProviderInterface
 
                 \User_Adapter::updateClientInfos(3);
 
-                $section = $request->get('section', false);
+                $section = $request->query->get('section', false);
 
                 $available = array(
                     'connected'
@@ -83,7 +83,7 @@ class Root implements ControllerProviderInterface
                             'module'        => 'admin'
                             , 'events'        => \eventsmanager_broker::getInstance($appbox, $Core)
                             , 'module_name'   => 'Admin'
-                            , 'notice'        => $request->get("notice")
+                            , 'notice'        => $request->query->get("notice")
                             , 'feature'       => $feature
                             , 'featured'      => $featured
                             , 'databoxes'     => $databoxes
