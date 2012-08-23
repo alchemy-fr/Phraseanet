@@ -102,13 +102,13 @@ class Tooltip implements ControllerProviderInterface
 
     public function displayCaption(Application $app, $sbas_id, $record_id, $context)
     {
-        $number = (int) $app['request']->get('number');
+        $number = (int) $app['request']->request->get('number');
         $record = new \record_adapter($sbas_id, $record_id, $number);
 
         $search_engine = null;
 
         if ($context == 'answer') {
-            if (($search_engine_options = unserialize($app['request']->get('options_serial'))) !== false) {
+            if (($search_engine_options = unserialize($app['request']->request->get('options_serial'))) !== false) {
                 $search_engine = new \searchEngine_adapter($app['phraseanet.appbox']->get_registry());
                 $search_engine->set_options($search_engine_options);
             }
@@ -119,7 +119,7 @@ class Tooltip implements ControllerProviderInterface
                 , array(
                 'record'       => $record,
                 'view'         => $context,
-                'highlight'    => $app['request']->get('query'),
+                'highlight'    => $app['request']->request->get('query'),
                 'searchEngine' => $search_engine,
                 )
         );

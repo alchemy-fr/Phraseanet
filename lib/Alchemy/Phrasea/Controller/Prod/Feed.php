@@ -46,13 +46,13 @@ class Feed implements ControllerProviderInterface
         $controllers->post('/entry/create/', function(Application $app, Request $request) {
                 try {
                     $user = $app['phraseanet.core']->getAuthenticatedUser();
-                    $feed = new \Feed_Adapter($app['phraseanet.appbox'], $request->get('feed_id'));
+                    $feed = new \Feed_Adapter($app['phraseanet.appbox'], $request->request->get('feed_id'));
                     $publisher = \Feed_Publisher_Adapter::getPublisher($app['phraseanet.appbox'], $feed, $user);
 
-                    $title = $request->get('title');
-                    $subtitle = $request->get('subtitle');
-                    $author_name = $request->get('author_name');
-                    $author_mail = $request->get('author_mail');
+                    $title = $request->request->get('title');
+                    $subtitle = $request->request->get('subtitle');
+                    $author_name = $request->request->get('author_name');
+                    $author_mail = $request->request->get('author_mail');
 
                     $entry = \Feed_Entry_Adapter::create($app['phraseanet.appbox'], $feed, $publisher, $title, $subtitle, $author_name, $author_mail);
 
@@ -99,10 +99,10 @@ class Feed implements ControllerProviderInterface
                         throw new \Exception_UnauthorizedAction();
                     }
 
-                    $title = $request->get('title');
-                    $subtitle = $request->get('subtitle');
-                    $author_name = $request->get('author_name');
-                    $author_mail = $request->get('author_mail');
+                    $title = $request->request->get('title');
+                    $subtitle = $request->request->get('subtitle');
+                    $author_name = $request->request->get('author_name');
+                    $author_mail = $request->request->get('author_mail');
 
                     $entry->set_author_email($author_mail)
                         ->set_author_name($author_name)
@@ -110,7 +110,7 @@ class Feed implements ControllerProviderInterface
                         ->set_subtitle($subtitle);
 
                     $current_feed_id = $entry->get_feed()->get_id();
-                    $new_feed_id = $request->get('feed_id', $current_feed_id);
+                    $new_feed_id = $request->request->get('feed_id', $current_feed_id);
                     if ($current_feed_id != $new_feed_id) {
                         try {
                             $new_feed = \Feed_Adapter::load_with_user($app['phraseanet.appbox'], $user, $new_feed_id);
@@ -125,7 +125,7 @@ class Feed implements ControllerProviderInterface
                         $entry->set_feed($new_feed);
                     }
 
-                    $items = explode(';', $request->get('sorted_lst'));
+                    $items = explode(';', $request->request->get('sorted_lst'));
 
                     foreach ($items as $item_sort) {
                         $item_sort_datas = explode('_', $item_sort);
@@ -190,7 +190,7 @@ class Feed implements ControllerProviderInterface
 
         $controllers->get('/', function(Application $app, Request $request) {
                 $request = $app['request'];
-                $page = (int) $request->get('page');
+                $page = (int) $request->query->get('page');
                 $page = $page > 0 ? $page : 1;
 
                 $user = $app['phraseanet.core']->getAuthenticatedUser();
@@ -209,7 +209,7 @@ class Feed implements ControllerProviderInterface
             });
 
         $controllers->get('/feed/{id}/', function(Application $app, Request $request, $id) {
-                $page = (int) $request->get('page');
+                $page = (int) $request->query->get('page');
                 $page = $page > 0 ? $page : 1;
 
                 $user = $app['phraseanet.core']->getAuthenticatedUser();
@@ -223,7 +223,7 @@ class Feed implements ControllerProviderInterface
             })->assert('id', '\d+');
 
         $controllers->get('/subscribe/aggregated/', function(Application $app, Request $request) {
-                $renew = ($request->get('renew') === 'true');
+                $renew = ($request->query->get('renew') === 'true');
 
                 $user = $app['phraseanet.core']->getAuthenticatedUser();
 
@@ -241,7 +241,7 @@ class Feed implements ControllerProviderInterface
             });
 
         $controllers->get('/subscribe/{id}/', function(Application $app, Request $request, $id) {
-                $renew = ($request->get('renew') === 'true');
+                $renew = ($request->query->get('renew') === 'true');
                 $user = $app['phraseanet.core']->getAuthenticatedUser();
                 $feed = \Feed_Adapter::load_with_user($app['phraseanet.appbox'], $user, $id);
                 $registry = $app['phraseanet.appbox']->get_registry();

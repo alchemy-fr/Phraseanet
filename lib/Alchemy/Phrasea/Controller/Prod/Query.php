@@ -27,14 +27,14 @@ class Query implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->match('/', function(Application $app, Request $request) {
+        $controllers->post('/', function(Application $app, Request $request) {
 
                 $appbox = $app['phraseanet.appbox'];
                 $registry = $appbox->get_registry();
 
                 $user = $app['phraseanet.core']->getAuthenticatedUser();
 
-                $query = (string) $request->get('qry');
+                $query = (string) $request->request->get('qry');
 
                 $mod = $user->getPrefs('view');
 
@@ -42,7 +42,7 @@ class Query implements ControllerProviderInterface
 
                 $options = new \searchEngine_options();
 
-                $bas = is_array($request->get('bas')) ? $request->get('bas') : array_keys($user->ACL()->get_granted_base());
+                $bas = is_array($request->request->get('bas')) ? $request->request->get('bas') : array_keys($user->ACL()->get_granted_base());
 
                 /* @var $user \User_Adapter */
                 if ($user->ACL()->has_right('modifyrecord')) {
@@ -60,20 +60,20 @@ class Query implements ControllerProviderInterface
                     $options->set_business_fields(array());
                 }
 
-                $status = is_array($request->get('status')) ? $request->get('status') : array();
-                $fields = is_array($request->get('fields')) ? $request->get('fields') : array();
+                $status = is_array($request->request->get('status')) ? $request->request->get('status') : array();
+                $fields = is_array($request->request->get('fields')) ? $request->request->get('fields') : array();
 
                 $options->set_fields($fields);
                 $options->set_status($status);
                 $options->set_bases($bas, $user->ACL());
 
-                $options->set_search_type($request->get('search_type'));
-                $options->set_record_type($request->get('recordtype'));
-                $options->set_min_date($request->get('datemin'));
-                $options->set_max_date($request->get('datemax'));
-                $options->set_date_fields(explode('|', $request->get('datefield')));
-                $options->set_sort($request->get('sort'), $request->get('ord', PHRASEA_ORDER_DESC));
-                $options->set_use_stemming($request->get('stemme'));
+                $options->set_search_type($request->request->get('search_type'));
+                $options->set_record_type($request->request->get('recordtype'));
+                $options->set_min_date($request->request->get('datemin'));
+                $options->set_max_date($request->request->get('datemax'));
+                $options->set_date_fields(explode('|', $request->request->get('datefield')));
+                $options->set_sort($request->request->get('sort'), $request->request->get('ord', PHRASEA_ORDER_DESC));
+                $options->set_use_stemming($request->request->get('stemme'));
 
                 $form = serialize($options);
 
@@ -82,7 +82,7 @@ class Query implements ControllerProviderInterface
                 $search_engine = new \searchEngine_adapter($registry);
                 $search_engine->set_options($options);
 
-                $page = (int) $request->get('pag');
+                $page = (int) $request->request->get('pag');
 
                 if ($page < 1) {
                     $search_engine->set_is_first_page(true);

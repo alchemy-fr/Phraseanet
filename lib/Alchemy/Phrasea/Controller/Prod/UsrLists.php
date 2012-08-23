@@ -172,7 +172,7 @@ class UsrLists implements ControllerProviderInterface
     {
         $request = $app['request'];
 
-        $list_name = $request->get('name');
+        $list_name = $request->request->get('name');
 
         $datas = array(
             'success' => false
@@ -275,7 +275,7 @@ class UsrLists implements ControllerProviderInterface
         );
 
         try {
-            $list_name = $request->get('name');
+            $list_name = $request->request->get('name');
 
             if ( ! $list_name) {
                 throw new ControllerException(_('List name is required'));
@@ -399,8 +399,8 @@ class UsrLists implements ControllerProviderInterface
         $user = $app['phraseanet.core']->getAuthenticatedUser();
 
         try {
-            if ( ! is_array($request->get('usr_ids'))) {
-                throw new Controller\Exception('Invalid or missing parameter usr_ids');
+            if ( ! is_array($request->request->get('usr_ids'))) {
+                throw new ControllerException('Invalid or missing parameter usr_ids');
             }
 
             $repository = $em->getRepository('\Entities\UsrList');
@@ -414,7 +414,7 @@ class UsrLists implements ControllerProviderInterface
 
             $inserted_usr_ids = array();
 
-            foreach ($request->get('usr_ids') as $usr_id) {
+            foreach ($request->request->get('usr_ids') as $usr_id) {
                 $user_entry = \User_Adapter::getInstance($usr_id, $app['phraseanet.appbox']);
 
                 if ($list->has($user_entry))
@@ -497,9 +497,9 @@ class UsrLists implements ControllerProviderInterface
             UsrListOwner::ROLE_ADMIN,
         );
 
-        if ( ! $app['request']->get('role'))
+        if ( ! $app['request']->request->get('role'))
             throw new \Exception_BadRequest('Missing role parameter');
-        elseif ( ! in_array($app['request']->get('role'), $availableRoles))
+        elseif ( ! in_array($app['request']->request->get('role'), $availableRoles))
             throw new \Exception_BadRequest('Role is invalid');
 
         try {
@@ -530,7 +530,7 @@ class UsrLists implements ControllerProviderInterface
                 $em->persist($owner);
             }
 
-            $role = $app['request']->get('role');
+            $role = $app['request']->request->get('role');
 
             $owner->setRole($role);
 

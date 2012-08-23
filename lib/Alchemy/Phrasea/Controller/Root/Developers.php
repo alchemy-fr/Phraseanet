@@ -219,8 +219,8 @@ class Developers implements ControllerProviderInterface
         try {
             $clientApp = new \API_OAuth2_Application($app['phraseanet.appbox'], $id);
 
-            if (null !== $request->get("callback")) {
-                $clientApp->set_redirect_uri($request->get("callback"));
+            if (null !== $request->request->get("callback")) {
+                $clientApp->set_redirect_uri($request->request->get("callback"));
             } else {
                 $error = true;
             }
@@ -287,7 +287,7 @@ class Developers implements ControllerProviderInterface
 
         try {
             $clientApp = new \API_OAuth2_Application($app['phraseanet.appbox'], $id);
-            $clientApp->set_grant_password((bool) $request->get('grant', false));
+            $clientApp->set_grant_password((bool) $request->request->get('grant', false));
         } catch (\Exception_NotFound $e) {
             $error = true;
         }
@@ -304,7 +304,7 @@ class Developers implements ControllerProviderInterface
      */
     public function newApp(Application $app, Request $request)
     {
-        if ($request->get('type') === \API_OAuth2_Application::DESKTOP_TYPE) {
+        if ($request->request->get('type') === \API_OAuth2_Application::DESKTOP_TYPE) {
             $form = new \API_OAuth2_Form_DevAppDesktop($app['request']);
         } else {
             $form = new \API_OAuth2_Form_DevAppInternet($app['request']);

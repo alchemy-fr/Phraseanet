@@ -39,7 +39,7 @@ class Edit implements ControllerProviderInterface
         $controllers->get('/vocabulary/{vocabulary}/', function(Application $app, Request $request, $vocabulary) {
                 $datas = array('success' => false, 'message' => '', 'results' => array());
 
-                $sbas_id = (int) $request->get('sbas_id');
+                $sbas_id = (int) $request->query->get('sbas_id');
 
                 try {
                     if ($sbas_id === 0) {
@@ -54,7 +54,7 @@ class Edit implements ControllerProviderInterface
                     return $app->json($datas);
                 }
 
-                $query = $request->get('query');
+                $query = $request->query->get('query');
 
                 $results = $VC->find($query, $app['phraseanet.core']->getAuthenticatedUser(), $databox);
 

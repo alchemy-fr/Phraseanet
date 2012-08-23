@@ -43,7 +43,7 @@ class Printer implements ControllerProviderInterface
 
                 $session = \Session_Handler::getInstance($app['phraseanet.appbox']);
 
-                $layout = $request->get('lay');
+                $layout = $request->request->get('lay');
 
                 foreach ($printer->get_elements() as $record) {
                     $session->get_logger($record->get_databox())

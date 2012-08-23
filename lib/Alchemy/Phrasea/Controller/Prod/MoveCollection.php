@@ -66,18 +66,18 @@ class MoveCollection implements ControllerProviderInterface
         try {
             $user = $app['phraseanet.core']->getAuthenticatedUser();
 
-            if (null === $request->get('base_id')) {
+            if (null === $request->request->get('base_id')) {
                 $datas['message'] = _('Missing target collection');
                 return $app->json($datas);
             }
 
-            if ( ! $user->ACL()->has_right_on_base($request->get('base_id'), 'canaddrecord')) {
+            if ( ! $user->ACL()->has_right_on_base($request->request->get('base_id'), 'canaddrecord')) {
                 $datas['message'] = sprintf(_("You do not have the permission to move records to %s"), \phrasea::bas_names($move->getBaseIdDestination()));
                 return $app->json($datas);
             }
 
             try {
-                $collection = \collection::get_from_base_id($request->get('base_id'));
+                $collection = \collection::get_from_base_id($request->request->get('base_id'));
             } catch (\Exception_Databox_CollectionNotFound $e) {
                 $datas['message'] = _('Invalid target collection');
                 return $app->json($datas);
@@ -86,7 +86,7 @@ class MoveCollection implements ControllerProviderInterface
             foreach ($records as $record) {
                 $record->move_to_collection($collection, $app['phraseanet.appbox']);
 
-                if ($request->get("chg_coll_son") == "1") {
+                if ($request->request->get("chg_coll_son") == "1") {
                     foreach ($record->get_children() as $child) {
                         if ($user->ACL()->has_right_on_base($child->get_base_id(), 'candeleterecord')) {
                             $child->move_to_collection($collection, $app['phraseanet.appbox']);

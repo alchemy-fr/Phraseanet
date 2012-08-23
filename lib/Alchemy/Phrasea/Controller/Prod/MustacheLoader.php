@@ -28,7 +28,7 @@ class MustacheLoader implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->get('/', function(Application $app, Request $request) {
-                $template_name = $request->get('template');
+                $template_name = $request->query->get('template');
 
                 if ( ! preg_match('/^[a-zA-Z0-9-_]+$/', $template_name)) {
                     throw new \Exception_BadRequest('Wrong template name : ' . $template_name);

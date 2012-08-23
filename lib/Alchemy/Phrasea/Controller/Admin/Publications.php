@@ -43,13 +43,13 @@ class Publications implements ControllerProviderInterface
                 $user = $app['phraseanet.core']->getAuthenticatedUser();
 
                 $feed = \Feed_Adapter::create(
-                        $app['phraseanet.appbox'], $user, $request->get('title'), $request->get('subtitle')
+                        $app['phraseanet.appbox'], $user, $request->request->get('title'), $request->request->get('subtitle')
                 );
 
-                if ($request->get('public') == '1') {
+                if ($request->request->get('public') == '1') {
                     $feed->set_public(true);
-                } elseif ($request->get('base_id')) {
-                    $feed->set_collection(\collection::get_from_base_id($request->get('base_id')));
+                } elseif ($request->request->get('base_id')) {
+                    $feed->set_collection(\collection::get_from_base_id($request->request->get('base_id')));
                 }
 
                 return $app->redirect('/admin/publications/list/');
@@ -59,7 +59,7 @@ class Publications implements ControllerProviderInterface
                 $feed = new \Feed_Adapter($app['phraseanet.appbox'], $id);
 
                 return $app['twig']
-                        ->render('admin/publications/fiche.html.twig', array('feed'  => $feed, 'error' => $app['request']->get('error')));
+                        ->render('admin/publications/fiche.html.twig', array('feed'  => $feed, 'error' => $app['request']->query->get('error')));
             })->assert('id', '\d+');
 
         $controllers->post('/feed/{id}/update/', function(PhraseaApplication $app, Request $request, $id) {
@@ -67,22 +67,22 @@ class Publications implements ControllerProviderInterface
                     $feed = new \Feed_Adapter($app['phraseanet.appbox'], $id);
 
                     try {
-                        $collection = \collection::get_from_base_id($request->get('base_id'));
+                        $collection = \collection::get_from_base_id($request->request->get('base_id'));
                     } catch (\Exception $e) {
                         $collection = null;
                     }
 
-                    $feed->set_title($request->get('title'));
-                    $feed->set_subtitle($request->get('subtitle'));
+                    $feed->set_title($request->request->get('title'));
+                    $feed->set_subtitle($request->request->get('subtitle'));
                     $feed->set_collection($collection);
-                    $feed->set_public($request->get('public'));
+                    $feed->set_public($request->request->get('public'));
 
                     return $app->redirect('/admin/publications/list/');
                 })->before(function(Request $request) use ($app) {
-                    $feed = new \Feed_Adapter($app['phraseanet.appbox'], $request->get('id'));
+                    $feed = new \Feed_Adapter($app['phraseanet.appbox'], $request->attributes->get('id'));
 
                     if ( ! $feed->is_owner($app['phraseanet.core']->getAuthenticatedUser())) {
-                        return $app->redirect('/admin/publications/feed/' . $request->get('id') . '/?error=' . _('You are not the owner of this feed, you can not edit it'));
+                        return $app->redirect('/admin/publications/feed/' . $request->attributes->get('id') . '/?error=' . _('You are not the owner of this feed, you can not edit it'));
                     }
                 })
             ->assert('id', '\d+');
@@ -162,7 +162,7 @@ class Publications implements ControllerProviderInterface
                 $error = '';
                 try {
                     $request = $app['request'];
-                    $user = \User_Adapter::getInstance($request->get('usr_id'), $app['phraseanet.appbox']);
+                    $user = \User_Adapter::getInstance($request->request->get('usr_id'), $app['phraseanet.appbox']);
                     $feed = new \Feed_Adapter($app['phraseanet.appbox'], $id);
                     $feed->add_publisher($user);
                 } catch (\Exception $e) {
@@ -177,7 +177,7 @@ class Publications implements ControllerProviderInterface
                     $request = $app['request'];
 
                     $feed = new \Feed_Adapter($app['phraseanet.appbox'], $id);
-                    $publisher = new \Feed_Publisher_Adapter($app['phraseanet.appbox'], $request->get('publisher_id'));
+                    $publisher = new \Feed_Publisher_Adapter($app['phraseanet.appbox'], $request->request->get('publisher_id'));
                     $user = $publisher->get_user();
                     if ($feed->is_publisher($user) === true && $feed->is_owner($user) === false)
                         $publisher->delete();

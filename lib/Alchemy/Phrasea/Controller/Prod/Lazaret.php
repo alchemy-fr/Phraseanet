@@ -164,7 +164,7 @@ class Lazaret implements ControllerProviderInterface
             $lazaretRepository = $em->getRepository('Entities\LazaretFile');
 
             $lazaretFiles = $lazaretRepository->findPerPage(
-                $baseIds, $request->get('offset', 0), $request->get('limit', 10)
+                $baseIds, $request->query->get('offset', 0), $request->query->get('limit', 10)
             );
         }
 
@@ -227,11 +227,11 @@ class Lazaret implements ControllerProviderInterface
         $ret = array('success' => false, 'message' => '', 'result'  => array());
 
         //Optional parameter
-        $keepAttributes = ! ! $request->get('keep_attributes', false);
-        $attributesToKeep = $request->get('attributes', array());
+        $keepAttributes = ! ! $request->request->get('keep_attributes', false);
+        $attributesToKeep = $request->request->get('attributes', array());
 
         //Mandatory parameter
-        if (null === $baseId = $request->get('bas_id')) {
+        if (null === $baseId = $request->request->get('bas_id')) {
             $ret['message'] = _('You must give a destination collection');
 
             return $app->json($ret);
@@ -386,7 +386,7 @@ class Lazaret implements ControllerProviderInterface
         $ret = array('success' => false, 'message' => '', 'result'  => array());
 
         //Mandatory parameter
-        if (null === $recordId = $request->get('record_id')) {
+        if (null === $recordId = $request->request->get('record_id')) {
             $ret['message'] = _('You must give a destination record');
 
             return $app->json($ret);
