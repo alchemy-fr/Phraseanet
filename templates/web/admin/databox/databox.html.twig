@@ -83,7 +83,7 @@
             </a>
         </form>
 
-        <a style='display:inline-block' target="right" class="ajax btn" href="{{ path('admin_database_get_new_collection', {'databox_id': databox.get_sbas_id()}) }}">
+        <a style='display:inline-block' target="right" class="ajax btn" href="{{ path('admin_database_display_new_collection_form', {'databox_id': databox.get_sbas_id()}) }}">
             <img src="/skins/icons/create_coll.png" />
             {% trans "admin::base:collection: Creer une collection" %}
         </a>
