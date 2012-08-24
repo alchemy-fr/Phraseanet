@@ -355,8 +355,6 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         $caption = self::$DI['record_1']->get_caption();
 
-
-
         foreach ($meta_structure_el as $meta_el) {
             $current_fields = $caption->get_fields(array($meta_el->get_name()));
 
@@ -387,27 +385,9 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         }
     }
 
-    public function testReindex()
-    {
-        self::$DI['record_1']->reindex();
-        $sql = 'SELECT record_id FROM record
-            WHERE (status & 7) IN (4,5,6) AND record_id = :record_id';
-        $stmt = self::$DI['record_1']->get_databox()->get_connection()->prepare($sql);
-
-        $stmt->execute(array(':record_id' => self::$DI['record_1']->get_record_id()));
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        if ( ! $row)
-            $this->fail();
-        if ($row['record_id'] != self::$DI['record_1']->get_record_id())
-            $this->fail();
-    }
-
     public function testRebuild_subdefs()
     {
-
-        self::$DI['record_1']->rebuild_subdefs();
+        static::$records['record_1']->rebuild_subdefs();
         $sql = 'SELECT record_id
               FROM record
               WHERE jeton & ' . JETON_MAKE_SUBDEF . ' > 0
