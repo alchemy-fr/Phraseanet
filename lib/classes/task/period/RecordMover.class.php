@@ -509,6 +509,7 @@ class task_period_RecordMover extends task_appboxAbstract
                 if (array_key_exists('coll', $row)) {
                     $coll = collection::get_from_coll_id($this->dependencyContainer, $databox, $row['coll']);
                     $rec->move_to_collection($coll, $this->dependencyContainer['phraseanet.appbox']);
+                    $this['phraseanet.SE']->updateRecord($rec);
                     if ($logsql) {
                         $this->log(sprintf("on sbas %s move rid %s to coll %s \n", $row['sbas_id'], $row['record_id'], $coll->get_coll_id()));
                     }
@@ -524,6 +525,7 @@ class task_period_RecordMover extends task_appboxAbstract
                     }
                     $status = implode('', $status);
                     $rec->set_binary_status($status);
+                    $this['SearchEngine']->updateRecord($rec);
                     if ($logsql) {
                         $this->log(sprintf("on sbas %s set rid %s status to %s \n", $row['sbas_id'], $row['record_id'], $status));
                     }
@@ -534,12 +536,14 @@ class task_period_RecordMover extends task_appboxAbstract
                 if ($row['deletechildren'] && $rec->is_grouping()) {
                     foreach ($rec->get_children() as $child) {
                         $child->delete();
+                        $this['SearchEngine']->removeRecord($child);
                         if ($logsql) {
                             $this->log(sprintf("on sbas %s delete (grp child) rid %s \n", $row['sbas_id'], $child->get_record_id()));
                         }
                     }
                 }
                 $rec->delete();
+                $this['SearchEngine']->removeRecord($rec);
                 if ($logsql) {
                     $this->log(sprintf("on sbas %s delete rid %s \n", $row['sbas_id'], $rec->get_record_id()));
                 }
