@@ -14,7 +14,7 @@ namespace Alchemy\Phrasea\Core\Provider;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
-class SearchENgineServiceProvider implements ServiceProviderInterface
+class SearchEngineServiceProvider implements ServiceProviderInterface
 {
 
     public function register(Application $app)
