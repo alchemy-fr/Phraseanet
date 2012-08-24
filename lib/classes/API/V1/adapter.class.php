@@ -713,6 +713,7 @@ class API_V1_adapter extends API_V1_Abstract
         if ($output instanceof \record_adapter) {
             $ret['entity'] = '0';
             $ret['url'] = '/records/' . $output->get_sbas_id() . '/' . $output->get_record_id() . '/';
+            $app['phraseanet.SE']->addRecord($output);
         }
         if ($output instanceof \Entities\LazaretFile) {
             $ret['entity'] = '1';
@@ -961,13 +962,13 @@ class API_V1_adapter extends API_V1_Abstract
         $ret = array(
             'offset_start'      => $params["offset_start"],
             'per_page'          => $perPage,
-            'available_results' => $search_result->get_count_available_results(),
-            'total_results'     => $search_result->get_count_total_results(),
-            'error'             => $search_result->get_error(),
-            'warning'           => $search_result->get_warning(),
-            'query_time'        => $search_result->get_query_time(),
-            'search_indexes'    => $search_result->get_search_indexes(),
-            'suggestions'       => $search_result->get_suggestions($this->app['locale.I18n']),
+            'available_results' => $search->available(),
+            'total_results'     => $search->total(),
+            'error'             => $search->error(),
+            'warning'           => $search->warning(),
+            'query_time'        => $search->duration(),
+            'search_indexes'    => $search->indexes(),
+            'suggestions'       => $search->suggestions()->toArray(),
             'results'           => array(),
             'query'             => $search_engine->get_query(),
         );
@@ -1185,6 +1186,9 @@ class API_V1_adapter extends API_V1_Abstract
             $datas = strrev($datas);
 
             $record->set_binary_status($datas);
+
+            $this->core['SearchEngine']->updateRecord($record);
+
             $result->set_datas(array(
                 "status" =>
                 $this->list_record_status($databox, $record->get_status())
