@@ -1187,7 +1187,7 @@ class API_V1_adapter extends API_V1_Abstract
 
             $record->set_binary_status($datas);
 
-            $this->core['SearchEngine']->updateRecord($record);
+            $this->app['phraseanet.SE']->updateRecord($record);
 
             $result->set_datas(array(
                 "status" =>

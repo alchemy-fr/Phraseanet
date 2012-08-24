@@ -329,6 +329,11 @@ class caption_field implements cache_cacheableInterface
                 try {
                     $record = $databox_field->get_databox()->get_record($row['record_id']);
                     $record->set_metadatas(array());
+
+                    /**
+                     * TODO NEUTRON add App
+                     */
+                    $app['phraseanet.SE']->updateRecord($record);
                     unset($record);
                 } catch (Exception $e) {
 
@@ -343,6 +348,8 @@ class caption_field implements cache_cacheableInterface
 
     public static function delete_all_metadatas(Application $app, databox_field $databox_field)
     {
+        $core = \bootstrap::getCore();
+
         $sql = 'SELECT count(id) as count_id FROM metadatas
             WHERE meta_struct_id = :meta_struct_id';
 
@@ -380,6 +387,8 @@ class caption_field implements cache_cacheableInterface
                     $caption_field = new caption_field($app, $databox_field, $record);
                     $caption_field->delete();
                     $record->set_metadatas(array());
+
+                    $core['SearchEngine']->updateRecord($record);
                     unset($caption_field);
                     unset($record);
                 } catch (Exception $e) {
