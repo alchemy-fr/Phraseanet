@@ -283,6 +283,8 @@ class Lazaret implements ControllerProviderInterface
                 $lazaretFile->getSession(), $borderFile, $callBack, Border\Manager::FORCE_RECORD
             );
 
+            $app['phraseanet.SE']->addRecord($record);
+
             if ($keepAttributes) {
                 //add attribute
 

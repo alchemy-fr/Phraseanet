@@ -1605,23 +1605,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $rs = $stmt->fetchAll();
         $stmt->closeCursor();
 
-        try {
-            $sphinx_rt = sphinxrt::get_instance($this->app['phraseanet.registry']);
-
-            $sbas_params = phrasea::sbas_params($this->app);
-
-            if (isset($sbas_params[$sbas_id])) {
-                $params = $sbas_params[$sbas_id];
-                $sbas_crc = crc32(str_replace(array('.', '%'), '_', sprintf('%s_%s_%s_%s', $params['host'], $params['port'], $params['user'], $params['dbname'])));
-                foreach ($rs as $row) {
-                    $sphinx_rt->delete(array("metadatas" . $sbas_crc, "metadatas" . $sbas_crc . "_stemmed_en", "metadatas" . $sbas_crc . "_stemmed_fr"), "metas_realtime" . $sbas_crc, $row['id']);
-                }
-                $sphinx_rt->delete(array("documents" . $sbas_crc, "documents" . $sbas_crc . "_stemmed_fr", "documents" . $sbas_crc . "_stemmed_en"), "docs_realtime" . $sbas_crc, $this->get_record_id());
-            }
-        } catch (\Exception $e) {
-            unset($e);
-        }
-
         $sql = "DELETE FROM metadatas WHERE record_id = :record_id";
         $stmt = $connbas->prepare($sql);
         $stmt->execute(array(':record_id' => $this->get_record_id()));

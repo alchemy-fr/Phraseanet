@@ -249,6 +249,7 @@ class Upload implements ControllerProviderInterface
                 $id = $elementCreated->get_serialize_key();
                 $element = 'record';
                 $message = _('The record was successfully created');
+                $app['phraseanet.SE']->addRecord($elementCreated);
             } else {
                 $params = array('lazaret_file' => $elementCreated);
 

@@ -193,21 +193,6 @@ class caption_Field_Value implements cache_cacheableInterface
         $sbas_id = $this->record->get_sbas_id();
         $this->record->get_caption()->delete_data_from_cache();
 
-        try {
-            $sphinx_rt = sphinxrt::get_instance($this->app['phraseanet.registry']);
-
-            $sbas_params = phrasea::sbas_params($this->app);
-
-            if (isset($sbas_params[$sbas_id])) {
-                $params = $sbas_params[$sbas_id];
-                $sbas_crc = crc32(str_replace(array('.', '%'), '_', sprintf('%s_%s_%s_%s', $params['host'], $params['port'], $params['user'], $params['dbname'])));
-                $sphinx_rt->delete(array("metadatas" . $sbas_crc, "metadatas" . $sbas_crc . "_stemmed_fr", "metadatas" . $sbas_crc . "_stemmed_en"), "metas_realtime" . $sbas_crc, $this->id);
-                $sphinx_rt->delete(array("documents" . $sbas_crc, "documents" . $sbas_crc . "_stemmed_fr", "documents" . $sbas_crc . "_stemmed_en"), "docs_realtime" . $sbas_crc, $this->record->get_record_id());
-            }
-        } catch (Exception $e) {
-            unset($e);
-        }
-
         return $this;
     }
 
@@ -276,21 +261,6 @@ class caption_Field_Value implements cache_cacheableInterface
 
         $this->delete_data_from_cache();
 
-        try {
-            $sphinx_rt = sphinxrt::get_instance($this->app['phraseanet.registry']);
-
-            $sbas_params = phrasea::sbas_params($this->app);
-
-            if (isset($sbas_params[$sbas_id])) {
-                $params = $sbas_params[$sbas_id];
-                $sbas_crc = crc32(str_replace(array('.', '%'), '_', sprintf('%s_%s_%s_%s', $params['host'], $params['port'], $params['user'], $params['dbname'])));
-                $sphinx_rt->delete(array("metadatas" . $sbas_crc, "metadatas" . $sbas_crc . "_stemmed_fr", "metadatas" . $sbas_crc . "_stemmed_en"), "", $this->id);
-                $sphinx_rt->delete(array("documents" . $sbas_crc, "documents" . $sbas_crc . "_stemmed_fr", "documents" . $sbas_crc . "_stemmed_en"), "", $this->record->get_record_id());
-            }
-        } catch (Exception $e) {
-
-        }
-
         $this->update_cache_value($value);
 
         return $this;
@@ -304,55 +274,6 @@ class caption_Field_Value implements cache_cacheableInterface
     public function update_cache_value($value)
     {
         $this->record->get_caption()->delete_data_from_cache();
-        $sbas_id = $this->databox_field->get_databox()->get_sbas_id();
-        try {
-            $sbas_params = phrasea::sbas_params($this->app);
-
-            if (isset($sbas_params[$sbas_id])) {
-                $params = $sbas_params[$sbas_id];
-                $sbas_crc = crc32(
-                    str_replace(
-                        array('.', '%')
-                        , '_'
-                        , sprintf('%s_%s_%s_%s', $params['host'], $params['port'], $params['user'], $params['dbname'])
-                    )
-                );
-
-                $sphinx_rt = sphinxrt::get_instance($this->app['phraseanet.registry']);
-                $sphinx_rt->replace_in_metas(
-                    "metas_realtime" . $sbas_crc
-                    , $this->id
-                    , $this->databox_field->get_id()
-                    , $this->record->get_record_id()
-                    , $sbas_id
-                    , phrasea::collFromBas($this->app, $this->record->get_base_id())
-                    , ($this->record->is_grouping() ? '1' : '0')
-                    , $this->record->get_type()
-                    , $value
-                    , ($this->databox_field->isBusiness() ? '1' : '0')
-                    , $this->record->get_creation_date()
-                );
-
-                $all_datas = array();
-
-                foreach ($this->record->get_caption()->get_fields(null, true) as $field) {
-                    if ( ! $field->is_indexable()) {
-                        continue;
-                    }
-
-                    $all_datas[] = $field->get_serialized_values();
-                }
-
-                $all_datas = implode(' ', $all_datas);
-
-                $sphinx_rt->replace_in_documents(
-                    "docs_realtime" . $sbas_crc, //$this->id,
-                    $this->record->get_record_id(), $all_datas, $sbas_id, phrasea::collFromBas($this->app, $this->record->get_base_id()), ($this->record->is_grouping() ? '1' : '0'), $this->record->get_type(), $this->record->get_creation_date()
-                );
-            }
-        } catch (Exception $e) {
-            unset($e);
-        }
 
         return $this;
     }
