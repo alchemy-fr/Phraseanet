@@ -1,9 +1,9 @@
 
-{% if results.get_error() %}
-<div>{{results.get_error()}}</div>
+{% if results.error() %}
+<div>{{results.error()}}</div>
 {% else %}
-  {% if results.get_warning() %}
-    <div>{{results.get_warning()}}</div>
+  {% if results.warning() %}
+    <div>{{results.warning()}}</div>
   {% endif %}
 {% endif %}
 

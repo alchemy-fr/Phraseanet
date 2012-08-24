@@ -4,11 +4,7 @@
 {% block content %}
 
   {% for record in results.get_datas() %}
-
-    {% set ident = record.get_base_id ~ ' ' ~ record.get_record_id%}
-    {% set sbas_id = record.get_sbas_id %}
-
-        {{record_format.block(record, highlight, searchEngine, 'IMGT', false)}}
+    {{record_format.block(record, highlight, searchEngine, 'IMGT', false)}}
   {% endfor %}
 
 {% endblock %}

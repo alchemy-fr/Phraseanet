@@ -4,11 +4,8 @@
 
 {% import 'common/caption_templates/answer.html.twig' as caption %}
 
-{% for record in results.get_datas() %}
+{% for record in results.results() %}
 <div class='list ui-corner-all'>
-
-    {% set ident = record.get_base_id ~ ' ' ~ record.get_record_id%}
-    {% set sbas_id = record.get_sbas_id %}
     <table style='width:100%;' cellspacing='0' cellpadding='0' border='0'>
         <tr>
             <td valign="top" style='width:{{th_size+50}}px'>
