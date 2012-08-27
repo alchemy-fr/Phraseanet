@@ -9,10 +9,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\SearchEngine;
+namespace Alchemy\Phrasea\SearchEngine\Phrasea;
 
+use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
+use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
+use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Doctrine\Common\Collections\ArrayCollection;
+use Silex\Application;
+use Symfony\Component\HttpFoundation\Request;
 
 class PhraseaEngine implements SearchEngineInterface
 {
@@ -26,6 +31,7 @@ class PhraseaEngine implements SearchEngineInterface
     protected $colls = array();
     protected $qp = array();
     protected $needthesaurus = array();
+    protected $configurationPanel;
     protected $resetCacheNextQuery = false;
 
     /**
@@ -41,8 +47,33 @@ class PhraseaEngine implements SearchEngineInterface
      */
     public function status()
     {
-        return true;
+        $status = array();
+        foreach (phrasea_info() as $key => $value) {
+            $status[] = array($key, $value);
+        }
+
+        return $status;
     }
+
+    public function getConfigurationPanel(Application $app, Request $request)
+    {
+
+    }
+
+    public function postConfigurationPanel(Application $app, Request $request)
+    {
+
+    }
+
+    private function configurationPanel()
+    {
+        if ( ! $this->configurationPanel) {
+            $this->configurationPanel = new ConfigurationPanel($this);
+        }
+
+        return $this->configurationPanel;
+    }
+
 
     /**
      * {@inheritdoc}

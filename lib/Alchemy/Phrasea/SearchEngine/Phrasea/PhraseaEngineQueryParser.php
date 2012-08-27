@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\SearchEngine;
+namespace Alchemy\Phrasea\SearchEngine\Phrasea;
 
 /**
  *

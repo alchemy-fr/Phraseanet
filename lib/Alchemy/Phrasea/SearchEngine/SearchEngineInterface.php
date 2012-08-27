@@ -15,6 +15,8 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Doctrine\Common\Collections\ArrayCollection;
+use Silex\Application;
+use Symfony\Component\HttpFoundation\Request;
 
 interface SearchEngineInterface
 {
@@ -29,6 +31,10 @@ interface SearchEngineInterface
      * @throws RuntimeException  if something is wrong
      */
     public function status();
+
+    public function getConfigurationPanel(Application $app, Request $request);
+
+    public function postConfigurationPanel(Application $app, Request $request);
 
     /**
      *

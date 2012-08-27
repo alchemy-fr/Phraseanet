@@ -9,14 +9,20 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\SearchEngine;
+namespace Alchemy\Phrasea\SearchEngine\SphinxSearch;
 
+use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
+use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
+use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
+use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Doctrine\Common\Collections\ArrayCollection;
+use Silex\Application;
+use Symfony\Component\HttpFoundation\Request;
 
-require_once __DIR__ . '/../../../vendor/sphinx/sphinxapi.php';
+require_once __DIR__ . '/../../../../vendor/sphinx/sphinxapi.php';
 
-class SphinxSearch implements SearchEngineInterface
+class SphinxSearchEngine implements SearchEngineInterface
 {
     /**
      *
@@ -29,6 +35,7 @@ class SphinxSearch implements SearchEngineInterface
      * @var \PDO
      */
     protected $rt_conn;
+    protected $configurationPanel;
     protected $options;
 
     public function __construct($host, $port, $rt_host, $rt_port)
@@ -55,7 +62,7 @@ class SphinxSearch implements SearchEngineInterface
         $status = $this->sphinx->Status();
 
         if (false === $status) {
-            throw new Exception(_('Sphinx server is offline'));
+            throw new RuntimeException(_('Sphinx server is offline'));
         }
 
         if (null === $this->rt_conn) {
@@ -63,6 +70,29 @@ class SphinxSearch implements SearchEngineInterface
         }
 
         return $status;
+    }
+
+    public function getConfigurationPanel(Application $app, Request $request)
+    {
+        return $this->configurationPanel()->get($app, $request);
+    }
+
+    public function postConfigurationPanel(Application $app, Request $request)
+    {
+        return $this->configurationPanel()->post($app, $request);
+    }
+
+    /**
+     *
+     * @return ConfigurationPanel
+     */
+    public function configurationPanel()
+    {
+        if ( ! $this->configurationPanel) {
+            $this->configurationPanel = new ConfigurationPanel($this);
+        }
+
+        return $this->configurationPanel;
     }
 
     public function availableTypes()
@@ -116,6 +146,8 @@ class SphinxSearch implements SearchEngineInterface
             ," . crc32($record->get_type()) . "
             ,0
             ," . $record->get_creation_date()->format('U') . " )");
+
+        return $this;
     }
 
     public function removeRecord(\record_adapter $record)
@@ -135,7 +167,9 @@ class SphinxSearch implements SearchEngineInterface
                     $this->sphinx->UpdateAttributes($index, array("deleted"), array($value->getId() => array(1)));
                 }
 
-                $this->rt_conn->exec("DELETE FROM metas_realtime" . $CRCdatabox . " WHERE id = " . $value->getId());
+                $stmt = $this->rt_conn->exec("DELETE FROM metas_realtime" . $CRCdatabox . " WHERE id = " . $value->getId());
+                $stmt->execute();
+                $stmt->closeCursor();
             }
         }
 
@@ -150,6 +184,8 @@ class SphinxSearch implements SearchEngineInterface
         }
 
         $this->rt_conn->exec("DELETE FROM docs_realtime" . $CRCdatabox . " WHERE id = " . $record->get_record_id());
+
+        return $this;
     }
 
     public function updateRecord(\record_adapter $record)
@@ -320,6 +356,23 @@ class SphinxSearch implements SearchEngineInterface
     }
 
     /**
+     * Return unique integer key for a databox
+     *
+     * @param \databox $databox
+     * @return int
+     */
+    public function CRCdatabox(\databox $databox)
+    {
+        return crc32(
+                str_replace(
+                    array('.', '%')
+                    , '_'
+                    , sprintf('%s_%s_%s_%s', $databox->get_host(), $databox->get_port(), $databox->get_user(), $databox->get_dbname())
+                )
+        );
+    }
+
+    /**
      * Reset sphinx client and apply the options
      *
      * Only apply filters and group by
@@ -430,23 +483,6 @@ class SphinxSearch implements SearchEngineInterface
         $this->sphinx->SetGroupBy('crc_sbas_record', SPH_GROUPBY_ATTR, $sort);
 
         return $this;
-    }
-
-    /**
-     * Return unique integer key for a databox
-     *
-     * @param \databox $databox
-     * @return int
-     */
-    private function CRCdatabox(\databox $databox)
-    {
-        return crc32(
-                str_replace(
-                    array('.', '%')
-                    , '_'
-                    , sprintf('%s_%s_%s_%s', $databox->get_host(), $databox->get_port(), $databox->get_user(), $databox->get_dbname())
-                )
-        );
     }
 
     /**
@@ -640,9 +676,9 @@ class SphinxSearch implements SearchEngineInterface
                 $index .= ', metas_realtime' . implode(', metas_realtime', $index_keys);
             } else {
                 if ($query !== '' && $this->options->stemmed() && $this->options->getLocale()) {
-                    $index .= ', documents' . implode('_stemmed_' . $this->options->getLocale() . ', documents', $index_keys) . '_stemmed_' . $this->options->getLocale();
+                    $index = ', documents' . implode('_stemmed_' . $this->options->getLocale() . ', documents', $index_keys) . '_stemmed_' . $this->options->getLocale();
                 } else {
-                    $index .= 'documents' . implode(', documents', $index_keys);
+                    $index = 'documents' . implode(', documents', $index_keys);
                 }
                 $index .= ', docs_realtime' . implode(', docs_realtime', $index_keys);
             }
