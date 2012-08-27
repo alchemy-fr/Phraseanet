@@ -150,13 +150,14 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     /**
      * @covers Alchemy\Phrasea\Controller\Admin\Bas::submitSuggestedValues
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      */
-    public function testPostSuggestedValuesBadRequest()
+    public function testPostSuggestedValuesNotJson()
     {
         $this->setAdmin(true);
 
         $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/suggested-values/');
+
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 
     /**
@@ -210,13 +211,14 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     /**
      * @covers Alchemy\Phrasea\Controller\Admin\Bas::enable
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      */
-    public function testPostEnableBadRequest()
+    public function testPostEnableNotJson()
     {
         $this->setAdmin(true);
 
         $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/enable/');
+
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 
     /**
@@ -248,14 +250,15 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\Admin\Bas::disabled
      */
-    public function testPostDisabledBadRequest()
+    public function testPostDisabledNotJson()
     {
         $this->setAdmin(true);
 
         $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/disabled/');
+
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 
     /**
@@ -307,20 +310,23 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'admins' => array(self::$user_alt1->get_id())
         ));
 
-        $this->checkRedirection($this->client->getResponse(), '/admin/collection/' . self::$collection->get_base_id() . '/?operation=ok');
+        $this->checkRedirection($this->client->getResponse(), '/admin/collection/' . self::$collection->get_base_id() . '/');
 
         $this->assertTrue(self::$user_alt1->ACL()->has_right_on_base(self::$collection->get_base_id(), 'order_master'));
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\Admin\Bas::setPublicationDisplay
      */
-    public function testPostPublicationDisplayBadRequest()
+    public function testPostPublicationDisplayNotJson()
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/publication/display/');
+        $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/publication/display/', array(
+            'pub_wm' => 'wm',
+        ));
+
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 
     /**
@@ -364,14 +370,19 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\Admin\Bas::rename
      */
-    public function testPostNameBadRequest()
+    public function testPostNameNotJson()
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/rename/');
+        $collection = $this->createOneCollection();
+
+        $this->client->request('POST', '/collection/' . $collection->get_base_id() . '/rename/', array(
+            'name' => 'test_rename_coll'
+        ));
+
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 
     /**
@@ -417,14 +428,17 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\Admin\Bas::emptyCollection
      */
-    public function testPostEmptyCollectionBadRequestFormat()
+    public function testPostEmptyCollectionNotJson()
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/empty/');
+        $collection = $this->createOneCollection();
+
+        $this->client->request('POST', '/collection/' . $collection->get_base_id() . '/empty/');
+
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 
     /**
@@ -581,19 +595,22 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'newLogo' => new \Symfony\Component\HttpFoundation\File\UploadedFile($target, 'logo.jpg')
         );
         $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/picture/mini-logo/', array(), $files);
-        $this->checkRedirection($this->client->getResponse(), '/admin/collection/' . self::$collection->get_base_id() . '/?operation=ok');
+        $this->checkRedirection($this->client->getResponse(), '/admin/collection/' . self::$collection->get_base_id() . '/?success=1');
         $this->assertEquals(1, count(\collection::getLogo(self::$collection->get_base_id())));
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      *  @covers Alchemy\Phrasea\Controller\Admin\Bas::deleteLogo
      */
-    public function testDeleteMiniLogoBadRequestFormat()
+    public function testDeleteMiniLogoNotJson()
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/picture/mini-logo/delete/');
+        $collection = $this->createOneCollection();
+
+        $this->client->request('POST', '/collection/' . $collection->get_base_id() . '/picture/mini-logo/delete/');
+
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 
     /**
@@ -627,19 +644,22 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'newWm' => new \Symfony\Component\HttpFoundation\File\UploadedFile($target, 'logo.jpg')
         );
         $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/picture/watermark/', array(), $files);
-        $this->checkRedirection($this->client->getResponse(), '/admin/collection/' . self::$collection->get_base_id() . '/?operation=ok');
+        $this->checkRedirection($this->client->getResponse(), '/admin/collection/' . self::$collection->get_base_id() . '/?success=1');
         $this->assertEquals(1, count(\collection::getWatermark(self::$collection->get_base_id())));
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\Admin\Bas::deleteWatermark
      */
-    public function testDeleteWmBadRequestFormat()
+    public function testDeleteWmBadNotJson()
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/picture/watermark/delete/');
+        $collection = $this->createOneCollection();
+
+        $this->client->request('POST', '/collection/' . $collection->get_base_id() . '/picture/watermark/delete/');
+
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 
     /**
@@ -673,19 +693,22 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'newStamp' => new \Symfony\Component\HttpFoundation\File\UploadedFile($target, 'logo.jpg')
         );
         $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/picture/stamp-logo/', array(), $files);
-        $this->checkRedirection($this->client->getResponse(), '/admin/collection/' . self::$collection->get_base_id() . '/?operation=ok');
+        $this->checkRedirection($this->client->getResponse(), '/admin/collection/' . self::$collection->get_base_id() . '/?success=1');
         $this->assertEquals(1, count(\collection::getStamp(self::$collection->get_base_id())));
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\Admin\Bas::deleteStamp
      */
-    public function testDeleteStampBadRequestFormat()
+    public function testDeleteStampBadNotJson()
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/picture/stamp-logo/delete/');
+        $collection = $this->createOneCollection();
+
+        $this->client->request('POST', '/collection/' .$collection->get_base_id() . '/picture/stamp-logo/delete/');
+
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 
     /**
@@ -720,19 +743,22 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'newBanner' => new \Symfony\Component\HttpFoundation\File\UploadedFile($target, 'logo.jpg')
         );
         $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/picture/banner/', array(), $files);
-        $this->checkRedirection($this->client->getResponse(), '/admin/collection/' . self::$collection->get_base_id() . '/?operation=ok');
+        $this->checkRedirection($this->client->getResponse(), '/admin/collection/' . self::$collection->get_base_id() . '/?success=1');
         $this->assertEquals(1, count(\collection::getPresentation(self::$collection->get_base_id())));
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\Admin\Bas::deleteBanner
      */
-    public function testDeleteBannerBadRequestFormat()
+    public function testDeleteBannerNotJson()
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/picture/banner/delete/');
+        $collection = $this->createOneCollection();
+
+        $this->client->request('POST', '/collection/' . $collection->get_base_id() . '/picture/banner/delete/');
+
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 
     /**
@@ -788,14 +814,17 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\Admin\Bas::delete
      */
-    public function testDeleteCollectionBadRequestFormat()
+    public function testDeleteCollectionNotJson()
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/delete/');
+        $collection = $this->createOneCollection();
+
+        $this->client->request('POST', '/collection/' . $collection->get_base_id() . '/delete/');
+
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 
     /**
@@ -854,14 +883,17 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
      /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\Admin\Bas::unmount
      */
-    public function testPostUnmountCollectionBadRequestFormat()
+    public function testPostUnmountCollectionNotJson()
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/collection/' . self::$collection->get_base_id() . '/unmount/');
+        $collection = $this->createOneCollection();
+
+        $this->client->request('POST', '/collection/' . $collection->get_base_id() . '/unmount/');
+
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 
     /**

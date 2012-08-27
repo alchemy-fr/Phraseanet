@@ -11,15 +11,10 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  *
@@ -106,7 +101,7 @@ class Root implements ControllerProviderInterface
                 })
             ->bind('admin');
 
-        $controllers->get('/tree/', function() {
+        $controllers->get('/tree/', function(Application $app, Request $request) {
                     $Core = $app['phraseanet.core'];
                     $appbox = $app['phraseanet.appbox'];
                     $user = $Core->getAuthenticatedUser();
@@ -167,7 +162,7 @@ class Root implements ControllerProviderInterface
                 })
             ->bind('admin_display_tree');
 
-        $controllers->get('/test-paths/', function() {
+        $controllers->get('/test-paths/', function(Application $app, Request $request) {
 
                 if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
                     $app->abort(400, _('Bad request format, only JSON is allowed'));
@@ -220,6 +215,7 @@ class Root implements ControllerProviderInterface
                     }
 
                     return new Response($app['twig']->render('admin/structure.html.twig', array(
+                                'databox'         => $databox,
                                 'errors'          => $errors,
                                 'structure'       => $structure,
                                 'errorsStructure' => $errorsStructure,
@@ -262,10 +258,8 @@ class Root implements ControllerProviderInterface
                         $app->abort(403);
                     }
 
-                    $databox = $app['phraseanet.appbox']->get_databox($databox_id);
-
                     return new Response($app['twig']->render('admin/statusbit.html.twig', array(
-                                'status' => $databox->get_statusbits(),
+                                'databox'=> $app['phraseanet.appbox']->get_databox($databox_id),
                             )));
                 })
             ->assert('databox_id', '\d+')
@@ -370,9 +364,9 @@ class Root implements ControllerProviderInterface
                         \databox_status::deleteIcon($databox_id, $bit, 'on');
                     }
 
-                    if (isset($_FILES['image_on']) && $_FILES['image_on']['name']) {
+                    if (null !== $file = $request->files->get('image_on')) {
                         try {
-                            \databox_status::updateIcon($databox_id, $bit, 'on', $_FILES['image_on']);
+                            \databox_status::updateIcon($databox_id, $bit, 'on', $file);
                         } catch (\Exception_Forbidden $e) {
 
                             return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=rights');

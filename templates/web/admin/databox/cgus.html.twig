@@ -1,8 +1,8 @@
 <h1>{% trans'Terms Of Use' %}</h1>
 
-<form target="_self" method="post" action="{{ path('admin_database_submit_cgus', {'databox_id': app.request.get('databox_id')}) }}">
+<form target="_self" method="post" action="{{ path('admin_database_submit_cgus', {'databox_id': app.request.attributes.get('databox_id')}) }}">
     <div class='well'>
-        <input type="submit" value="{% trans'Mettre a jour' %}" id="valid"/>
+        <input class='btn btn-primary' type="submit" value="{% trans'Mettre a jour' %}" id="valid"/>
         <label for="valid" class='checkbox'>
             {% trans'admin::CGU Les utilisateurs doivent imperativement revalider ces conditions' %}
                 <input type="checkbox" value="1" name="valid"/>
@@ -22,10 +22,7 @@
             {% if code in cgus| keys %}
                 <div id="terms-{{ code }}">
                     {% spaceless %}
-                        <textarea name="TOU[{{ code }}]" style="width:100%;height:600px;margin:0 auto;">
-                        {% set cgu = attribute(cgus, code) %}
-                        {{ cgu['value']|trim }}
-                        </textarea>
+                        <textarea name="TOU[{{ code }}]" style="width:100%;height:600px;margin:0 auto;">{% set cgu = attribute(cgus, code) %}{{ cgu['value']|trim }}</textarea>
                     {% endspaceless %}
                 </div>
             {% endif %}

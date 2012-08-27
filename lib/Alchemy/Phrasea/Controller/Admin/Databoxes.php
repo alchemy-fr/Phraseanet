@@ -11,16 +11,11 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  *
@@ -122,7 +117,7 @@ class Databoxes implements ControllerProviderInterface
             }
         }
 
-        switch ($errorMsg = $request->get('error')) {
+        switch ($errorMsg = $request->query->get('error')) {
             case 'scheduler-started' :
                 $errorMsg = _('Veuillez arreter le planificateur avant la mise a jour');
                 break;
@@ -147,18 +142,8 @@ class Databoxes implements ControllerProviderInterface
             case 'no-empty' :
                 $errorMsg = _('Database can not be empty');
                 break;
-        }
-
-        switch ($msgSuccess = $request->get('success')) {
-            case 'restart' :
-                $msgSuccess = _('N\'oubliez pas de redemarrer le planificateur de taches');
-                break;
-            case 'mount-ok' :
-                $mountBase = true;
-            case 'database-ok' :
-                $createBase = false === $mountBase ? : false;
-                $msgSuccess = _('The operation completed successfully');
-                $user->ACL()->delete_data_from_cache();
+            case 'mount-failed' :
+                $errorMsg = _('Database could not be mounted');
                 break;
         }
 
@@ -169,11 +154,8 @@ class Databoxes implements ControllerProviderInterface
                     'sbas'              => $sbas,
                     'upgrade_available' => $upgradeAvailable,
                     'error_msg'         => $errorMsg,
-                    'success_msg'       => $msgSuccess,
                     'recommendations'   => $upgrader->getRecommendations(),
-                    'advices'           => $request->get('advices', array()),
-                    'mountBase'  => $mountBase,
-                    'createBase' => $createBase,
+                    'advices'           => $request->query->get('advices', array()),
                 )));
     }
 
@@ -188,23 +170,23 @@ class Databoxes implements ControllerProviderInterface
     {
         if (\phrasea::is_scheduler_started()) {
 
-            return $app->redirect('/admin/databoxes/?error=scheduler-started');
+            return $app->redirect('/admin/databoxes/?success=0&error=scheduler-started');
         }
 
         try {
             $upgrader = new \Setup_Upgrade($app['phraseanet.appbox']);
             $advices = $app['phraseanet.appbox']->forceUpgrade($upgrader);
 
-            return $app->redirect('/admin/databoxes/?success=restart&' . http_build_query(array('advices' => $advices)));
+            return $app->redirect('/admin/databoxes/?success=1&notice=restart&' . http_build_query(array('advices' => $advices)));
         } catch (\Exception_Setup_UpgradeAlreadyStarted $e) {
 
-            return $app->redirect('/admin/databoxes/?error=already-started');
+            return $app->redirect('/admin/databoxes/?success=0&error=already-started');
         } catch (\Exception_Setup_FixBadEmailAddresses $e) {
 
-            return $app->redirect('/admin/databoxes/?error=bad-email');
+            return $app->redirect('/admin/databoxes/?success=0&error=bad-email');
         } catch (\Exception $e) {
 
-            return $app->redirect('/admin/databoxes/?error=unknow');
+            return $app->redirect('/admin/databoxes/?success=0&error=unknow');
         }
     }
 

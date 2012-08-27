@@ -103,23 +103,43 @@ class appbox extends base
             if ( ! in_array(mb_strtolower($pathfile->getMimeType()), array('image/gif', 'image/png', 'image/jpeg', 'image/jpg', 'image/pjpeg'))) {
                 throw new \InvalidArgumentException('Invalid file format');
             }
+
             $filename = $pathfile->getPathname();
 
-            //resize collection logo
-            $imageSpec = new ImageSpecification();
-            $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
-            $imageSpec->setDimensions(120, 24);
+            if ($pic_type === collection::PIC_LOGO) {
+                //resize collection logo
+                $imageSpec = new ImageSpecification();
+                $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
+                $imageSpec->setDimensions(120, 24);
 
-            $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox') . '.jpg';
+                $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox') . '.jpg';
 
-            try {
-                $core['media-alchemyst']
-                    ->open($pathfile->getPathname())
-                    ->turninto($tmp, $imageSpec)
-                    ->close();
-                $filename = $tmp;
-            } catch (\MediaAlchemyst\Exception $e) {
+                try {
+                    $core['media-alchemyst']
+                        ->open($pathfile->getPathname())
+                        ->turninto($tmp, $imageSpec)
+                        ->close();
+                    $filename = $tmp;
+                } catch (\MediaAlchemyst\Exception $e) {
 
+                }
+            } else if ($pic_type === collection::PIC_PRESENTATION) {
+                //resize collection logo
+                $imageSpec = new ImageSpecification();
+                $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
+                $imageSpec->setDimensions(650, 200);
+
+                $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox') . '.jpg';
+
+                try {
+                    $core['media-alchemyst']
+                        ->open($pathfile->getPathname())
+                        ->turninto($tmp, $imageSpec)
+                        ->close();
+                    $filename = $tmp;
+                } catch (\MediaAlchemyst\Exception $e) {
+
+                }
             }
         }
 
@@ -148,7 +168,9 @@ class appbox extends base
         $custom_path = $registry->get('GV_RootPath') . 'www/custom/' . $pic_type . '/' . $collection->get_base_id();
 
         foreach (array($file, $custom_path) as $target) {
+
             if (is_file($target)) {
+
                 $core['file-system']->remove($target);
             }
 

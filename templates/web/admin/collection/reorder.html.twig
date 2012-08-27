@@ -62,7 +62,7 @@
                 dataType:'json',
                 type:'POST',
                 data: {order: order},
-                url: '{{ path('admin_database_submit_collections_order', {'databox_id': app.request.get('databox_id')}) }}',
+                url: '{{ path('admin_database_submit_collections_order', {'databox_id': app.request.attributes.get('databox_id')}) }}',
                 beforeSend : function() {
                     $this.attr('disabled', true);
                 },

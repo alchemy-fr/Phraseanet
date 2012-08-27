@@ -27,7 +27,7 @@
 <h2>{% trans 'admin::base: structure' %}</h2>
 
 
-<form method="POST" action="/admin/structure/{{ app.request.get('databox_id') }}/">
+<form method="POST" action="/admin/structure/{{ databox.get_sbas_id() }}/">
     <TEXTAREA nowrap style="width:99%; height:450px; white-space:pre" name="structure">{{ structure  }}</TEXTAREA>
     <div class="form-actions">
         <button class="btn btn-primary" type="submit">{% trans 'boutton::valider' %}</button>

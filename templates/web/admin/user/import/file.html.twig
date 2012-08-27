@@ -2,11 +2,11 @@
     <h1>{% trans 'Upload a "csv" file for users creation' %}</h1>
 </div>
 
-{% if app.request.get('error') is not none %}
-    {% set error = app.request.get('error') %}
+{% if app.request.query.get('error') is not none %}
+    {% set error = app.request.query.get('error') %}
     <div class="alert alert-error">
         <button class="close" data-dismiss="alert" type="button">×</button>
-        {% if error == 'file' %}
+        {% if error == 'file-invalid' %}
             {% trans 'An error occured while upload the file. Please retry' %}
         {% elseif error == 'row-login' %}
             {% trans 'Row "login" is missing, script has stopped' %}
@@ -37,11 +37,39 @@
         <a href="/admin/users/import/example/rtf/"> <i class="icon-share"></i> {% trans 'You can download the documentation here' %}</a>
     </div>
 
-    <form class ='well' method="post" target="_self" action="/admin/users/import/file/" ENCTYPE="multipart/form-data" >
-        {% trans "User's file " %} : <input name="file" type="file" />
-        <div class="form-actions">
-            <button class='btn btn-primary'>{% trans 'Send this file' %}</button>
-            <a href="" target='/admin/users/search/' class='btn'>{% trans 'boutton::retour' %}</a>
-        </div>
-    </form>
+        <span class="label" style="display:inline-block" >
+            <i class="icon-plus icon-white"></i>
+            <span>{% trans 'Select a file' %}</span>
+            <input id="fileupload" type="file" name="files" data-url="/admin/users/import/file/" accept="text/csv, text/rtf">
+        </span>
+        <a href="/admin/users/search/" class='btn ajax'>{% trans 'boutton::retour' %}</a>
 </div>
+
+<script>
+$(function () {
+    $('#fileupload').fileupload({
+        dataType: 'html',
+        add: function(e, data) {
+            if( ! /(\.|\/)(csv|rtf)$/i.test(data.files[0].type)) {
+                {% set supported_file_types = ['csv', 'rtf']|join(' | ') %}
+                alert("{% trans %} Invalid file type, only ({{ supported_file_types }}) file formats are supported {% endtrans %}");
+
+                return false;
+            }
+
+            data.submit();
+        },
+        submit: function(e, data) {
+          $('#right-ajax').empty().addClass('loading');
+        },
+        done: function (e, data) {
+           $('#right-ajax').removeClass('loading').html(data.result);
+            enableForms($('#right-ajax form:not(.no-ajax)'));
+
+            $.each($('#right-ajax a'),function(i, el){
+                enableLink($(el));
+            });
+        }
+    });
+});
+</script>

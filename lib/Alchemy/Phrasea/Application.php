@@ -5,9 +5,9 @@ namespace Alchemy\Phrasea;
 use Alchemy\Phrasea\PhraseanetServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BrowserServiceProvider;
 use Silex\Application as SilexApplication;
+use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
-use Silex\Provider\TwigServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -74,7 +74,6 @@ class Application extends SilexApplication
                     }
 
                     $twig->addGlobal('session', $app['phraseanet.appbox']->get_session());
-                    $twig->addGlobal('appbox', $app['phraseanet.appbox']);
                     $twig->addGlobal('version_number', $app['phraseanet.core']->getVersion()->getNumber());
                     $twig->addGlobal('version_name', $app['phraseanet.core']->getVersion()->getName());
                     $twig->addGlobal('core', $app['phraseanet.core']);
@@ -138,6 +137,10 @@ class Application extends SilexApplication
         $app = $this;
 
         $this->error(function($e) use ($app) {
+
+            var_dump($e->getMessage(), $e->getFile(), $e->getLine(), $e->getTraceAsString());
+                exit;
+
             if ($app['debug']) {
                 return new Response($e->getMessage(), 500);
             } else {

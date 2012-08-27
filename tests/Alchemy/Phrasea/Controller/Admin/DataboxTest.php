@@ -276,11 +276,18 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     /**
      * @covers \Alchemy\Phrasea\Controller\Admin\Database::updateDatabaseCGU
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      */
-    public function testUpdateDatabaseCGUBadRequestFormat()
+    public function testUpdateDatabaseCGNotJson()
     {
-        $this->client->request('POST', '/databox/' . self::$collection->get_sbas_id() . '/cgus/');
+        $this->setAdmin(true);
+
+        $collection = $this->createOneCollection();
+
+        $this->client->request('POST', '/databox/' . $collection->get_sbas_id() . '/cgus/', array(
+            'TOU' => array('fr_FR' => 'Test update CGUS')
+        ));
+
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 
     /**
@@ -301,7 +308,7 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'TOU' => array('fr_FR' => $cgusUpdate)
         ));
 
-        $this->checkRedirection($this->client->getResponse(), '/admin/databox/' . self::$collection->get_sbas_id() . '/cgus/');
+        $this->checkRedirection($this->client->getResponse(), '/admin/databox/' . self::$collection->get_sbas_id() . '/cgus/?success=1');
 
         $databox = $this->app['phraseanet.appbox']->get_databox(self::$collection->get_sbas_id());
         $cgus = $databox->get_cgus();
@@ -318,7 +325,6 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(true);
 
         $this->client->request('GET', '/databox/' . self::$collection->get_sbas_id() . '/informations/documents/');
-        $this->assertTrue($this->client->getResponse()->isOk());
     }
 
     /**
@@ -431,14 +437,17 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers \Alchemy\Phrasea\Controller\Admin\Database::reindex
      */
-    public function testPostReindexBadRequestFormat()
+    public function testPostReindexNotJson()
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/databox/' . self::$collection->get_sbas_id() . '/reindex/');
+        $collection = $this->createOnecollection();
+
+        $this->client->request('POST', '/databox/' . $collection->get_sbas_id() . '/reindex/');
+
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 
     /**
@@ -458,14 +467,17 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers \Alchemy\Phrasea\Controller\Admin\Database::setIndexable
      */
-    public function testPostIndexableBadRequestFormat()
+    public function testPostIndexableNotJson()
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/databox/' . self::$collection->get_sbas_id() . '/reindex/');
+        $collection = $this->createOnecollection();
+
+        $this->client->request('POST', '/databox/' . $collection->get_sbas_id() . '/indexable/');
+
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 
     /**
@@ -490,14 +502,17 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers \Alchemy\Phrasea\Controller\Admin\Database::clearLogs
      */
-    public function testPostClearLogBadRequestFormat()
+    public function testPostClearLogNotJson()
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/databox/' . self::$collection->get_sbas_id() . '/clear-logs/');
+        $collection = $this->createOnecollection();
+
+        $this->client->request('POST', '/databox/' . $collection->get_sbas_id() . '/clear-logs/');
+
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 
     /**
@@ -518,14 +533,19 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers \Alchemy\Phrasea\Controller\Admin\Database::changeViewName
      */
-    public function testChangeViewBadRequestFormat()
+    public function testChangeViewNotJson()
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/databox/' . self::$collection->get_sbas_id() . '/view-name/');
+        $collection = $this->createOnecollection();
+
+        $this->client->request('POST', '/databox/' . $collection->get_sbas_id() . '/view-name/', array(
+            'viewname' => 'hello'
+        ));
+
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 
     /**
@@ -574,7 +594,7 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $response = $this->client->getResponse();
         $this->assertTrue($response->isRedirect());
-        $this->assertEquals('/admin/databases/?error=no-empty', $response->headers->get('location'));
+        $this->assertEquals('/admin/databoxes/?error=no-empty', $response->headers->get('location'));
     }
 
     /**
@@ -590,7 +610,7 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $response = $this->client->getResponse();
         $this->assertTrue($response->isRedirect());
-        $this->assertEquals('/admin/databases/?error=special-chars', $response->headers->get('location'));
+        $this->assertEquals('/admin/databoxes/?error=special-chars', $response->headers->get('location'));
     }
 
     /**
@@ -622,8 +642,9 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $response = $this->client->getResponse();
         $this->assertTrue($response->isRedirect());
         $uriRedirect = $response->headers->get('location');
-        $this->assertTrue( ! ! strrpos($uriRedirect, 'success=base-ok'));
-        $databoxId = array_pop(explode('=', array_pop(explode('&', $uriRedirect))));
+        $this->assertTrue( ! ! strrpos($uriRedirect, 'success=1'));
+        $explode = explode('/', $uriRedirect);
+        $databoxId = $explode[3];
         $databox = $this->app['phraseanet.appbox']->get_databox($databoxId);
         $databox->unmount_databox($this->app['phraseanet.appbox']);
         $databox->delete();
@@ -673,8 +694,10 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue($response->isRedirect());
         $uriRedirect = $response->headers->get('location');
 
-        $this->assertTrue( ! ! strrpos($uriRedirect, 'success=mount-ok'));
-        $databoxId = array_pop(explode('=', array_pop(explode('&', $uriRedirect))));
+
+        $this->assertTrue( ! ! strrpos($uriRedirect, 'success=1'));
+        $explode = explode('/', $uriRedirect);
+        $databoxId = $explode[3];
 
         try {
             $databox = $this->app['phraseanet.appbox']->get_databox($databoxId);
@@ -718,7 +741,7 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'newLogoPdf' => new \Symfony\Component\HttpFoundation\File\UploadedFile($target, 'logo.jpg')
         );
         $this->client->request('POST', '/databox/' . self::$collection->get_sbas_id() . '/logo/', array(), $files);
-        $this->checkRedirection($this->client->getResponse(), '/admin/databox/' . self::$collection->get_sbas_id() . '/');
+        $this->checkRedirection($this->client->getResponse(), '/admin/databox/' . self::$collection->get_sbas_id() . '/?success=1');
         $this->assertNotEmpty(\databox::getPrintLogo(self::$collection->get_sbas_id()));
     }
 

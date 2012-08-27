@@ -1,23 +1,22 @@
-<script type="text/javascript">
-    {% if createBase or mountBase %}
-        parent.reloadTree('bases:bases');
-    {% endif %}
-
-    {% if createBase %}
-        document.location.replace('{{ path('admin_database', {'databox_id': app.request.get('databox_id')}) }}');
-    {% endif %}
-</script>
-
-
-{% if success_msg is not none %}
-    <div class='alert'>
-        {{ success_msg }}
+{% if app.request.query.get('success') == '1' %}
+    <div class="alert alert-success">
+        <a class="close" data-dismiss="alert" href="#">×</a>
+        {% trans 'forms::operation effectuee OK' %}
+    </div>
+{% elseif app.request.query.get('success') == '0' %}
+    <div class="alert alert-error">
+        <a class="close" data-dismiss="alert" href="#">×</a>
+        <strong>{% trans 'An error occured' %}</strong>
+        {% if error_msg is not none %}
+            {{ error_msg }}
+        {% endif %}
     </div>
 {% endif %}
 
-{% if error_msg is not none %}
-    <div class='alert'>
-        {{ error_msg }}
+{% if app.request.query.get('notice') == 'restart' %}
+    <div class="alert">
+        <a class="close" data-dismiss="alert" href="#">×</a>
+        {% trans 'N\'oubliez pas de redemarrer le planificateur de taches' %}
     </div>
 {% endif %}
 

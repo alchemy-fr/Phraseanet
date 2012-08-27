@@ -435,7 +435,7 @@ class databox_status
             throw new Exception_Upload_FileTooBig();
         }
 
-        if ($file->isValid()) {
+        if ( ! $file->isValid()) {
             throw new Exception_Upload_Error();
         }
 
@@ -444,10 +444,11 @@ class databox_status
         $name = "-stat_" . $bit . "_" . ($switch == 'on' ? '1' : '0') . ".gif";
 
         try {
-            $file->move($path, $name);
+            $file = $file->move($registry->get('GV_RootPath') . "config/status/", $path.$name);
         } catch (FileException $e) {
             throw new Exception_Upload_CannotWriteFile();
         }
+
 
         $custom_path = $registry->get('GV_RootPath') . 'www/custom/status/';
 

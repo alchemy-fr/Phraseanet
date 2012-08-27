@@ -3,7 +3,7 @@
 
 {% block content %}
 
-{% if app.request.get('user-updated') is not none%}
+{% if app.request.query.get('user-updated') is not none%}
     <div class="alert alert-success">
     <button class="close" data-dismiss="alert" type="button">×</button>
     {% set user_count = app.request.get('user-updated') %}

@@ -11,15 +11,10 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  *
@@ -129,11 +124,7 @@ class Dashboard implements ControllerProviderInterface
      */
     public function slash(Application $app, Request $request)
     {
-        if ((false !== $cacheFlushed = $request->get('flush_cache', false)) && $cacheFlushed === 'ok') {
-            $cacheFlushed = true;
-        }
-
-        switch ($emailStatus = $request->get('email')) {
+        switch ($emailStatus = $request->query->get('email')) {
             case 'sent';
                 $emailStatus = _('Mail sent');
                 break;
@@ -150,7 +141,7 @@ class Dashboard implements ControllerProviderInterface
         }
 
         $parameters = array(
-            'cache_flushed'                 => $cacheFlushed,
+            'cache_flushed'                 => $request->query->get('flush_cache') === 'ok',
             'admins'                        => \User_Adapter::get_sys_admins(),
             'email_status'                  => $emailStatus,
             'search_engine_status'          => $searchEngineStatus,
@@ -193,7 +184,7 @@ class Dashboard implements ControllerProviderInterface
      */
     public function sendMail(Application $app, Request $request)
     {
-        if (null === $mail = $request->get('email')) {
+        if (null === $mail = $request->request->get('email')) {
             $app->abort(400, 'Bad request missing email parameter');
         };
 
@@ -230,7 +221,7 @@ class Dashboard implements ControllerProviderInterface
     {
         $user = $app['phraseanet.core']->getAuthenticatedUser();
 
-        if (count($admins = $request->get('admins', array())) > 0) {
+        if (count($admins = $request->request->get('admins', array())) > 0) {
 
             if ( ! in_array($user->get_id(), $admins)) {
                 $admins[] = $user->get_id();

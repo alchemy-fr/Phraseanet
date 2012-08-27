@@ -13,6 +13,19 @@
     <h1>{% trans 'Suggested values' %}</h1>
 </div>
 
+
+{% if app.request.query.get('success') == '1' %}
+    <div class="alert alert-success">
+        <a class="close" data-dismiss="alert" href="#">×</a>
+        {% trans 'forms::operation effectuee OK' %}
+    </div>
+{% elseif app.request.query.get('success') == '0' %}
+    <div class="alert alert-error">
+        <a class="close" data-dismiss="alert" href="#">×</a>
+        <strong>{% trans 'An error occured' %}</strong>
+    </div>
+{% endif %}
+
 <div id="iddivloading" style="background-image:url('./trans.gif');background-position: top bottom; background-repeat: repeat; border:#ff0000 3px solid;position:absolute; width:94%;height:80%; top:95px; left:10px;z-index:99;text-align:center">
     <table style='width:100%;height:100%; text-align:center;vertical-align: middle; color:#FF0000; font-size:16px'>
         <tr>
@@ -39,7 +52,7 @@
         </td>
 
         <td style="text-align:center;height:30px;font-size:12px; border:0px;background-position: 0px 0px;background-repeat: repeat-x" nowrap>
-            {% trans 'admin::sugval: Valeurs suggerees/Preferences de la collection' %} {{ app.request.get('bas_id')|bas_names }}
+            {% trans 'admin::sugval: Valeurs suggerees/Preferences de la collection' %} {{ app.request.attributes.get('bas_id')|bas_names }}
         </td>
 
         <td style="height:30px;width:20px;font-size:12px;border:0px; text-align:right">
@@ -86,8 +99,7 @@
                     <tr>
                         <td valign="top">
                             <span id="valsug">
-                                <select size="12" name=valsug2 id="valsug2" onFocus="activ4VS();" onClick="desactiver();activ4VS();" onChange="desactiv4VS();"  style="width:100%;font-size:11px;height:380px;">
-                                </select>
+                                <select size="12" name=valsug2 id="valsug2" onFocus="activ4VS();" onClick="desactiver();activ4VS();" onChange="desactiv4VS();"  style="width:100%;font-size:11px;height:380px;"></select>
                             </span>
                         </td>
 
@@ -123,7 +135,7 @@
     </tr>
 </table>
 
-<form method="post" name="chgStructure" action="/admin/collection/{{ app.request.get('bas_id') }}/suggested-values/" onsubmit="return(false);" target="right" style="visibility:hidden;">
+<form method="post" name="chgStructure" action="/admin/collection/{{ app.request.attributes.get('bas_id') }}/suggested-values/" onsubmit="return(false);" target="right" style="visibility:hidden;">
     <textarea nowrap style="visibility:hidden;white-space:pre" name="str" id="idstr">{{ collection.get_prefs() }}</textarea>
 </form>
 

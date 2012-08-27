@@ -11,17 +11,12 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
-use Alchemy\Phrasea\Core\Configuration;
 use Alchemy\Phrasea\Core;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Alchemy\Phrasea\Core\Configuration;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  *
@@ -409,25 +404,23 @@ class Databox implements ControllerProviderInterface
     {
         $databox = $app['phraseanet.appbox']->get_databox($databox_id);
 
-        switch ($uploadErrorLogoMsg = $request->get('upload-logo')) {
-            case 'error':
-                $uploadErrorLogoMsg = _('forms::erreur lors de l\'envoi du fichier');
+        switch ($errorMsg = $request->query->get('error')) {
+            case 'file-error':
+                $errorMsg = _('forms::erreur lors de l\'envoi du fichier');
                 break;
-            case 'error-send':
-                $uploadErrorLogoMsg = _('forms::erreur lors de l\'envoi du fichier');
+            case 'file-invalid':
+                $errorMsg = _('Invalid file format');
                 break;
-            case 'error-invalid':
-                $uploadErrorLogoMsg = _('Invalid file format');
-                break;
-            case 'too-big':
-                $uploadErrorLogoMsg = _('The file is too big');
+            case 'file-too-big':
+                $errorMsg = _('The file is too big');
                 break;
         }
 
         return new Response($app['twig']->render('admin/databox/databox.html.twig', array(
-                    'databox'            => $databox,
-                    'showDetail'         => (int) $request->get("sta") < 1,
-                    'uploadErrorLogoMsg' => $uploadErrorLogoMsg
+                    'databox'    => $databox,
+                    'showDetail' => (int) $request->query->get("sta") < 1,
+                    'errorMsg'   => $errorMsg,
+                    'reloadTree' => $request->query->get('reload-tree') === '1'
                 )));
     }
 
@@ -463,29 +456,34 @@ class Databox implements ControllerProviderInterface
      */
     public function deleteBase(Application $app, Request $request, $databox_id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
-        }
-
-        $ret = array('sbas_id' => null, 'success' => false, 'msg'     => null);
-
+        $success = false;
+        $msg = _('An error occured');
         try {
             $databox = $app['phraseanet.appbox']->get_databox($databox_id);
-            if ($databox->get_record_amount() == 0) {
+
+            if ($databox->get_record_amount() > 0) {
+                $msg = _('admin::base: vider la base avant de la supprimer');
+            } else {
                 $databox->unmount_databox($app['phraseanet.appbox']);
                 $app['phraseanet.appbox']->write_databox_pic($databox, null, \databox::PIC_PDF);
                 $databox->delete();
-                $ret['sbas_id'] = $databox_id;
-                $ret['success'] = true;
-                $ret['msg'] = _('forms::operation effectuee OK');
-            } else {
-                $ret['msg'] = _('admin::base: vider la base avant de la supprimer');
+                $success = true;
+                $msg = _('forms::operation effectuee OK');
             }
         } catch (\Exception $e) {
-            $ret['msg'] = _('An error occured');
+
         }
 
-        return $app->json($ret);
+        if ('json' === $app['request']->getRequestFormat()) {
+
+            return $app->json(array(
+                    'success' => $success,
+                    'msg'     => $msg,
+                    'sbas_id' => $databox->get_sbas_id()
+                ));
+        }
+
+        return $app->redirect('/admin/databox/' . $databox->get_sbas_id() . '/?success=' . (int) $success . ($databox->get_record_amount() > 0 ? '&error=databox-not-empty' : ''));
     }
 
     /**
@@ -498,13 +496,25 @@ class Databox implements ControllerProviderInterface
      */
     public function reindex(Application $app, Request $request, $databox_id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
+        $success = false;
+
+        try {
+            $app['phraseanet.appbox']->get_databox($databox_id)->reindex();
+            $success = true;
+        } catch (\Exception $e) {
+
         }
 
-        $app['phraseanet.appbox']->get_databox($databox_id)->reindex();
+        if ('json' === $app['request']->getRequestFormat()) {
 
-        return $app->json(array('sbas_id' => $databox_id));
+            return $app->json(array(
+                    'success' => $success,
+                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured'),
+                    'sbas_id' => $databox_id
+                ));
+        }
+
+        return $app->redirect('/admin/databox/' . $databox_id . '/?success=' . (int) $success);
     }
 
     /**
@@ -517,13 +527,25 @@ class Databox implements ControllerProviderInterface
      */
     public function setIndexable(Application $app, Request $request, $databox_id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
+        $success = false;
+
+        try {
+            $app['phraseanet.appbox']->set_databox_indexable($app['phraseanet.appbox']->get_databox($databox_id),  ! ! $request->request->get('indexable', false));
+            $success = true;
+        } catch (\Exception $e) {
+
         }
 
-        $app['phraseanet.appbox']->set_databox_indexable($app['phraseanet.appbox']->get_databox($databox_id),  ! ! $request->get('indexable', false));
+        if ('json' === $app['request']->getRequestFormat()) {
 
-        return $app->json(array('sbas_id' => $databox_id));
+            return $app->json(array(
+                    'success' => $success,
+                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured'),
+                    'sbas_id' => $databox_id
+                ));
+        }
+
+        return $app->redirect('/admin/databox/' . $databox_id . '/?success=' . (int) $success);
     }
 
     /**
@@ -542,11 +564,16 @@ class Databox implements ControllerProviderInterface
 
         $databox = $app['phraseanet.appbox']->get_databox($databox_id);
 
-        foreach ($request->get('TOU', array()) as $loc => $terms) {
-            $databox->update_cgus($loc, $terms,  ! ! $request->get('valid', false));
+        try {
+            foreach ($request->request->get('TOU', array()) as $loc => $terms) {
+                $databox->update_cgus($loc, $terms,  ! ! $request->request->get('valid', false));
+            }
+        } catch (\Exception $e) {
+
+            return $app->redirect('/admin/databox/' . $databox_id . '/cgus/?success=0');
         }
 
-        return $app->redirect('/admin/databox/' . $databox_id . '/cgus/');
+        return $app->redirect('/admin/databox/' . $databox_id . '/cgus/?success=1');
     }
 
     /**
@@ -559,19 +586,19 @@ class Databox implements ControllerProviderInterface
      */
     public function createDatabase(Application $app, Request $request)
     {
-        if ('' === $dbName = $request->get('new_dbname', '')) {
+        if ('' === $dbName = $request->request->get('new_dbname', '')) {
 
-            return $app->redirect('/admin/databases/?error=no-empty');
+            return $app->redirect('/admin/databoxes/?error=no-empty');
         }
 
         if (\p4string::hasAccent($dbName)) {
 
-            return $app->redirect('/admin/databases/?error=special-chars');
+            return $app->redirect('/admin/databoxes/?error=special-chars');
         }
 
         $registry = $app['phraseanet.core']['Registry'];
 
-        if ((null === $request->get('new_settings')) && (null !== $dataTemplate = $request->get('new_data_template'))) {
+        if ((null === $request->request->get('new_settings')) && (null !== $dataTemplate = $request->request->get('new_data_template'))) {
 
             $configuration = Configuration::build();
             $choosenConnexion = $configuration->getPhraseanet()->get('database');
@@ -588,27 +615,28 @@ class Databox implements ControllerProviderInterface
                 $connbas = new \connection_pdo('databox_creation', $hostname, $port, $user, $password, $dbName, array(), $registry);
             } catch (\PDOException $e) {
 
-                return $app->redirect('/admin/databases/?error=database-failed');
+                return $app->redirect('/admin/databoxes/?success=0&error=database-failed');
             }
 
             try {
                 $base = \databox::create($app['phraseanet.appbox'], $connbas, $dataTemplate, $registry);
                 $base->registerAdmin($app['phraseanet.core']->getAuthenticatedUser());
+                $app['phraseanet.core']->getAuthenticatedUser()->ACL()->delete_data_from_cache();
 
-                return $app->redirect('/admin/databases/?success=base-ok&sbas-id=' . $base->get_sbas_id());
+                return $app->redirect('/admin/databox/' . $base->get_sbas_id() . '/?success=1&reload-tree=1');
             } catch (\Exception $e) {
 
-                return $app->redirect('/admin/databases/?error=base-failed');
+                return $app->redirect('/admin/databoxes/?success=0&error=base-failed');
             }
         }
 
         if (
-            null !== $request->get('new_settings')
-            && (null !== $hostname = $request->get('new_hostname'))
-            && (null !== $port = $request->get('new_port'))
-            && (null !== $userDb = $request->get('new_user'))
-            && (null !== $passwordDb = $request->get('new_password'))
-            && (null !== $dataTemplate = $request->get('new_data_template'))) {
+            null !== $request->request->get('new_settings')
+            && (null !== $hostname = $request->request->get('new_hostname'))
+            && (null !== $port = $request->request->get('new_port'))
+            && (null !== $userDb = $request->request->get('new_user'))
+            && (null !== $passwordDb = $request->request->get('new_password'))
+            && (null !== $dataTemplate = $request->request->get('new_data_template'))) {
 
             try {
                 $data_template = new \SplFileInfo($registry->get('GV_RootPath') . 'lib/conf.d/data_templates/' . $dataTemplate . '.xml');
@@ -617,14 +645,14 @@ class Databox implements ControllerProviderInterface
                     $base = \databox::create($app['phraseanet.appbox'], $connbas, $data_template, $registry);
                     $base->registerAdmin($app['phraseanet.core']->getAuthenticatedUser());
 
-                    return $app->redirect('/admin/databases/?success=base-ok&sbas-id=' . $base->get_sbas_id());
+                    return $app->redirect('/admin/databox/' . $base->get_sbas_id() . '/?success=1&reload-tree=1');
                 } catch (\Exception $e) {
 
-                    return $app->redirect('/admin/databases/?error=base-failed');
+                    return $app->redirect('/admin/databoxes/?success=0&error=base-failed');
                 }
             } catch (\Exception $e) {
 
-                return $app->redirect('/admin/databases/?error=database-failed');
+                return $app->redirect('/admin/databoxes/?success=0&error=database-failed');
             }
         }
     }
@@ -638,20 +666,20 @@ class Databox implements ControllerProviderInterface
      */
     public function databaseMount(Application $app, Request $request)
     {
-        if ('' === $dbName = trim($request->get('new_dbname', ''))) {
+        if ('' === $dbName = trim($request->request->get('new_dbname', ''))) {
 
-            return $app->redirect('/admin/databases/?error=no-empty');
+            return $app->redirect('/admin/databoxes/?success=0&error=no-empty');
         }
 
         if (\p4string::hasAccent($dbName)) {
 
-            return $app->redirect('/admin/databases/?error=special-chars');
+            return $app->redirect('/admin/databoxes/?success=0&error=special-chars');
         }
 
         $appbox = $app['phraseanet.appbox'];
         $registry = $app['phraseanet.core']['Registry'];
 
-        if ((null === $request->get('new_settings'))) {
+        if ((null === $request->request->get('new_settings'))) {
             try {
                 $configuration = Configuration::build();
                 $connexion = $configuration->getConnexion();
@@ -666,20 +694,21 @@ class Databox implements ControllerProviderInterface
                 $base->registerAdmin($app['phraseanet.core']->getAuthenticatedUser());
                 $appbox->get_connection()->commit();
 
-                return $app->redirect('/admin/databases/?success=mount-ok&sbas-id=' . $base->get_sbas_id());
+                return $app->redirect('/admin/databox/' . $base->get_sbas_id() . '/?success=1&reload-tree=1');
             } catch (\Exception $e) {
                 $appbox->get_connection()->rollBack();
-
-                return $app->redirect('/admin/databases/?error=mount-failed');
+                var_dump($e->getMessage(), $e->getFile(), $e->getLine(), $e->getTraceAsString());
+                exit;
+                return $app->redirect('/admin/databoxes/?success=0&error=mount-failed');
             }
         }
 
         if (
-            null !== $request->get('new_settings')
-            && (null !== $hostname = $request->get('new_hostname'))
-            && (null !== $port = $request->get('new_port'))
-            && (null !== $userDb = $request->get('new_user'))
-            && (null !== $passwordDb = $request->get('new_password'))) {
+            null !== $request->request->get('new_settings')
+            && (null !== $hostname = $request->request->get('new_hostname'))
+            && (null !== $port = $request->request->get('new_port'))
+            && (null !== $userDb = $request->request->get('new_user'))
+            && (null !== $passwordDb = $request->request->get('new_password'))) {
 
             try {
                 $appbox->get_connection()->beginTransaction();
@@ -687,11 +716,11 @@ class Databox implements ControllerProviderInterface
                 $base->registerAdmin($app['phraseanet.core']->getAuthenticatedUser());
                 $appbox->get_connection()->commit();
 
-                return $app->redirect('/admin/databases/?success=mount-ok&sbas-id=' . $base->get_sbas_id());
+                return $app->redirect('/admin/databox/' . $base->get_sbas_id() . '/?success=1&reload-tree=1');
             } catch (\Exception $e) {
                 $appbox->get_connection()->rollBack();
 
-                return $app->redirect('/admin/databases/?error=mount-failed');
+                return $app->redirect('/admin/databoxes/?success=0&error=mount-failed');
             }
         }
     }
@@ -717,7 +746,7 @@ class Databox implements ControllerProviderInterface
         try {
             $baseId = \collection::mount_collection($databox_id, $collection_id, $user);
 
-            if (null == $othCollSel = $request->get("othcollsel")) {
+            if (null == $othCollSel = $request->request->get("othcollsel")) {
                 $app->abort(400);
             }
 
@@ -762,21 +791,18 @@ class Databox implements ControllerProviderInterface
                     $app['phraseanet.appbox']->write_databox_pic($databox, $file, \databox::PIC_PDF);
                     unlink($file->getPathname());
 
-                    return $app->redirect('/admin/databox/' . $databox_id . '/');
+                    return $app->redirect('/admin/databox/' . $databox_id . '/?success=1');
                 } else {
 
-                    return $app->redirect('/admin/databox/' . $databox_id . '/?upload-logo=too-big');
+                    return $app->redirect('/admin/databox/' . $databox_id . '/?success=0&error=file-too-big');
                 }
             } else {
 
-                return $app->redirect('/admin/databox/' . $databox_id . '/?upload-logo=error-send');
+                return $app->redirect('/admin/databox/' . $databox_id . '/?success=0&error=file-invalid');
             }
-        } catch (\InvalidArgumentException $e) {
-
-            return $app->redirect('/admin/databox/' . $databox_id . '/?upload-logo=error-invalid');
         } catch (\Exception $e) {
 
-            return $app->redirect('/admin/databox/' . $databox_id . '/?upload-logo=error');
+            return $app->redirect('/admin/databox/' . $databox_id . '/??success=0&error=file-error');
         }
     }
 
@@ -790,22 +816,25 @@ class Databox implements ControllerProviderInterface
      */
     public function deleteLogoPdf(Application $app, Request $request, $databox_id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
-        }
-
         $success = false;
-        $msg = ('An error occured');
 
         try {
             $app['phraseanet.appbox']->write_databox_pic($app['phraseanet.appbox']->get_databox($databox_id), null, \databox::PIC_PDF);
             $success = true;
-            $msg = _('forms::operation effectuee OK');
         } catch (\Exception $e) {
 
         }
 
-        return $app->json(array('success' => $success, 'msg'     => $msg, 'sbas_id' => $databox_id));
+        if ('json' === $app['request']->getRequestFormat()) {
+
+            return $app->json(array(
+                    'success' => $success,
+                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured'),
+                    'sbas_id' => $databox_id
+                ));
+        }
+
+        return $app->redirect('/admin/databox/' . $databox_id . '/?success=' . (int) $success);
     }
 
     /**
@@ -818,13 +847,25 @@ class Databox implements ControllerProviderInterface
      */
     public function clearLogs(Application $app, Request $request, $databox_id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
+        $success = false;
+
+        try {
+            $app['phraseanet.appbox']->get_databox($databox_id)->clear_logs();
+            $success = true;
+        } catch (\Exception $e) {
+
         }
 
-        $app['phraseanet.appbox']->get_databox($databox_id)->clear_logs();
+        if ('json' === $app['request']->getRequestFormat()) {
 
-        return $app->json(array('sbas_id' => $databox_id));
+            return $app->json(array(
+                    'success' => $success,
+                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured'),
+                    'sbas_id' => $databox_id
+                ));
+        }
+
+        return $app->redirect('/admin/databox/' . $databox_id . '/?success=' . (int) $success);
     }
 
     /**
@@ -837,17 +878,29 @@ class Databox implements ControllerProviderInterface
      */
     public function changeViewName(Application $app, Request $request, $databox_id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
-        }
-
-        if (null === $viewName = $request->get('viewname')) {
+        if (null === $viewName = $request->request->get('viewname')) {
             $app->abort(400, _('Missing view name parameter'));
         }
 
-        $app['phraseanet.appbox']->set_databox_viewname($app['phraseanet.appbox']->get_databox($databox_id), $viewName);
+        $success = false;
 
-        return $app->json(array('sbas_id' => $databox_id));
+        try {
+            $app['phraseanet.appbox']->set_databox_viewname($app['phraseanet.appbox']->get_databox($databox_id), $viewName);
+            $success = true;
+        } catch (\Exception $e) {
+
+        }
+
+        if ('json' === $app['request']->getRequestFormat()) {
+
+            return $app->json(array(
+                    'success' => $success,
+                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured'),
+                    'sbas_id' => $databox_id
+                ));
+        }
+
+        return $app->redirect('/admin/databox/' . $databox_id . '/?success=' . (int) $success);
     }
 
     /**
@@ -860,24 +913,27 @@ class Databox implements ControllerProviderInterface
      */
     public function unmountDatabase(Application $app, Request $request, $databox_id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
-        }
-
         $success = false;
-        $msg = _('An error occured');
 
         try {
             $databox = $app['phraseanet.appbox']->get_databox($databox_id);
             $databox->unmount_databox($app['phraseanet.appbox']);
 
             $success = true;
-            $msg = _('forms::operation effectuee OK');
         } catch (\Exception $e) {
 
         }
 
-        return $app->json(array('success' => $success, 'msg'     => $msg, 'sbas_id' => $databox_id));
+        if ('json' === $app['request']->getRequestFormat()) {
+
+            return $app->json(array(
+                    'success' => $success,
+                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured'),
+                    'sbas_id' => $databox_id
+                ));
+        }
+
+        return $app->redirect('/admin/databox/' . $databox_id . '/?success=' . (int) $success . '&reload-tree=1');
     }
 
     /**
@@ -890,11 +946,7 @@ class Databox implements ControllerProviderInterface
      */
     public function emptyDatabase(Application $app, Request $request, $databox_id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
-        }
-
-        $message = _('An error occurred');
+        $msg = _('An error occurred');
         $success = false;
 
         try {
@@ -903,11 +955,11 @@ class Databox implements ControllerProviderInterface
             foreach ($databox->get_collections() as $collection) {
                 if ($collection->get_record_amount() <= 500) {
                     $collection->empty_collection(500);
-                    $message = _('Base empty successful');
+                    $msg = _('Base empty successful');
                 } else {
                     $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><tasksettings><base_id>" . $collection->get_base_id() . "</base_id></tasksettings>";
                     \task_abstract::create($app['phraseanet.appbox'], 'task_period_emptyColl', $settings);
-                    $message = _('A task has been creted, please run it to complete empty collection');
+                    $msg = _('A task has been creted, please run it to complete empty collection');
                 }
             }
 
@@ -916,7 +968,16 @@ class Databox implements ControllerProviderInterface
 
         }
 
-        return $app->json(array('success' => $success, 'msg'     => $message));
+        if ('json' === $app['request']->getRequestFormat()) {
+
+            return $app->json(array(
+                    'success' => $success,
+                    'msg'     => $msg,
+                    'sbas_id' => $databox_id
+                ));
+        }
+
+        return $app->redirect('/admin/databox/' . $databox_id . '/?success=' . (int) $success);
     }
 
     /**
@@ -929,7 +990,7 @@ class Databox implements ControllerProviderInterface
      */
     public function progressBarInfos(Application $app, Request $request, $databox_id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
+        if ( ! $app['request']->isXmlHttpRequest() || 'json' !== $app['request']->getRequestFormat()) {
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 
@@ -959,7 +1020,7 @@ class Databox implements ControllerProviderInterface
             $ret['thesaurus_indexed'] = $datas['thesaurus_indexed'];
 
             if ($app['phraseanet.core']['file-system']->exists($app['phraseanet.core']['Registry']->get('GV_RootPath') . 'config/minilogos/logopdf_' . $databox_id . '.jpg')) {
-                $ret['printLogoURL'] = '/print/' . $databox_id;
+                $ret['printLogoURL'] = '/custom/minilogos/logopdf_' . $databox_id . '.jpg';
             }
 
             $ret['success'] = true;
@@ -996,17 +1057,30 @@ class Databox implements ControllerProviderInterface
      */
     public function setReorder(Application $app, Request $request, $databox_id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
+        $success = false;
+
+        try {
+            foreach ($request->request->get('order', array()) as $order => $baseId) {
+                $collection = \collection::get_from_base_id($baseId);
+                $app['phraseanet.appbox']->set_collection_order($collection, $order);
+                unset($collection);
+            }
+
+            $success = true;
+        } catch (\Exception $e) {
+
         }
 
-        foreach ($request->get('order', array()) as $order => $baseId) {
-            $collection = \collection::get_from_base_id($baseId);
-            $app['phraseanet.appbox']->set_collection_order($collection, $order);
-            unset($collection);
+        if ('json' === $app['request']->getRequestFormat()) {
+
+            return $app->json(array(
+                    'success' => $success,
+                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured'),
+                    'sbas_id' => $databox_id
+                ));
         }
 
-        return $app->json(array('sbas_id' => $databox_id));
+        return $app->redirect('/admin/databox/' . $databox_id . '/collections/order?success=' . (int) $success);
     }
 
     /**
@@ -1032,7 +1106,7 @@ class Databox implements ControllerProviderInterface
      */
     public function createCollection(Application $app, Request $request, $databox_id)
     {
-        if ($name = trim($request->request->get('cnm', '')) === '') {
+        if (($name = trim($request->request->get('name', ''))) === '') {
 
             return $app->redirect('/admin/databox/' . $databox_id . '/collection/error=name');
         }
@@ -1055,7 +1129,7 @@ class Databox implements ControllerProviderInterface
                 }
             }
 
-            return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/');
+            return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=1&reload-tree=1');
         } catch (\Exception $e) {
 
             return $app->redirect('/admin/databox/' . $databox_id . '/collection/error=error');
@@ -1076,7 +1150,7 @@ class Databox implements ControllerProviderInterface
 
         $out = array('total' => array('totobj' => 0, 'totsiz' => 0, 'mega'   => '0', 'giga'   => '0'), 'result' => array());
 
-        foreach ($databox->get_record_details($request->get('sort')) as $vgrp) {
+        foreach ($databox->get_record_details($request->query->get('sort')) as $vgrp) {
 
             $last_k1 = $last_k2 = null;
             $outRow = array('midobj' => 0, 'midsiz' => 0);

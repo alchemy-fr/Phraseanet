@@ -11,11 +11,11 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Alchemy\Phrasea\Helper\User as UserHelper;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Alchemy\Phrasea\Helper\User as UserHelper;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  *
@@ -415,7 +415,7 @@ class Users implements ControllerProviderInterface
 
                 $templates = $deny = $accept = $options = array();
 
-                foreach ($request->get('template', array()) as $tmp) {
+                foreach ($request->request->get('template', array()) as $tmp) {
                     if (trim($tmp) != '') {
                         $tmp = explode('_', $tmp);
 
@@ -425,14 +425,14 @@ class Users implements ControllerProviderInterface
                     }
                 }
 
-                foreach ($request->get('deny', array()) as $den) {
+                foreach ($request->request->get('deny', array()) as $den) {
                     $den = explode('_', $den);
                     if (count($den) == 2 && ! isset($templates[$den[0]])) {
                         $deny[$den[0]][$den[1]] = $den[1];
                     }
                 }
 
-                foreach ($request->get('accept', array()) as $acc) {
+                foreach ($request->request->get('accept', array()) as $acc) {
                     $acc = explode('_', $acc);
                     if (count($acc) == 2 && ! isset($templates[$acc[0]])) {
                         $accept[$acc[0]][$acc[1]] = $acc[1];
@@ -440,14 +440,14 @@ class Users implements ControllerProviderInterface
                     }
                 }
 
-                foreach ($request->get('accept_hd', array()) as $accHD) {
+                foreach ($request->request->get('accept_hd', array()) as $accHD) {
                     $accHD = explode('_', $accHD);
                     if (count($accHD) == 2 && isset($accept[$accHD[0]]) && isset($options[$accHD[0]][$accHD[1]])) {
                         $options[$accHD[0]][$accHD[1]]['HD'] = true;
                     }
                 }
 
-                foreach ($request->get('watermark', array()) as $wm) {
+                foreach ($request->request->get('watermark', array()) as $wm) {
                     $wm = explode('_', $wm);
                     if (count($wm) == 2 && isset($accept[$wm[0]]) && isset($options[$wm[0]][$wm[1]])) {
                         $options[$wm[0]][$wm[1]]['WM'] = true;
@@ -574,7 +574,7 @@ class Users implements ControllerProviderInterface
                     }
                 }
 
-                return $app->redirect('/admin/users/demands/?demands=ok');
+                return $app->redirect('/admin/users/demands/?success=1');
             })
             ->bind('users_submit_demands');
 
@@ -587,14 +587,14 @@ class Users implements ControllerProviderInterface
         $controllers->post('/import/file/', function(Application $app, Request $request) {
                 $user = $app['phraseanet.core']->getAuthenticatedUser();
 
-                if ((null === $file = $request->files->get('file')) || ! $file->isValid()) {
+                if ((null === $file = $request->files->get('files')) || ! $file->isValid()) {
 
-                    return $app->rediretc('/admin/import/file/?error=file');
+                    return $app->redirect('/admin/users/import/file/?error=file-invalid');
                 }
 
                 $array = \format::csv_to_arr($file->getPathname());
 
-                $equivalenceToMysqlField = $this->getEquivalenceToMysqlField();
+                $equivalenceToMysqlField = Users::getEquivalenceToMysqlField();
                 $loginDefined = $pwdDefined = false;
                 $loginNew = array();
                 $out = array('ignored_row' => array(), 'errors' => array());
@@ -724,11 +724,11 @@ class Users implements ControllerProviderInterface
                 $nbCreation = 0;
                 $user = $app['phraseanet.core']->getAuthenticatedUser();
 
-                if ((null === $serializedArray = $request->get('sr')) || ('' === $serializedArray)) {
+                if ((null === $serializedArray = $request->request->get('sr')) || ('' === $serializedArray)) {
                     $app->abort(400);
                 }
 
-                if (null === $model = $request->get("modelToAplly")) {
+                if (null === $model = $request->request->get("modelToAplly")) {
                     $app->abort(400);
                 }
 
@@ -737,7 +737,7 @@ class Users implements ControllerProviderInterface
                 $nbLines = sizeof($array);
                 $nbCols = sizeof($array[0]);
 
-                $equivalenceToMysqlField = $this->getEquivalenceToMysqlField();
+                $equivalenceToMysqlField = Users::getEquivalenceToMysqlField();
 
                 for ($i = 1; $i < $nbLines; $i ++ ) {
                     $curUser = null;
@@ -843,7 +843,7 @@ class Users implements ControllerProviderInterface
         return $controllers;
     }
 
-    private function getEquivalenceToMysqlField()
+    public static function getEquivalenceToMysqlField()
     {
         $equivalenceToMysqlField = array();
 

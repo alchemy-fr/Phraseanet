@@ -153,7 +153,7 @@ class Installer implements ControllerProviderInterface
                 $appbox_name = $request->get('ab_name');
                 $databox_name = $request->get('db_name');
                 $setupRegistry = new \Setup_Registry();
-                
+
                 try {
                     $conn = new \connection_pdo('appbox', $hostname, $port, $user_ab, $password, $appbox_name, array(), $setupRegistry);
                 } catch (\Exception $e) {
@@ -220,7 +220,7 @@ class Installer implements ControllerProviderInterface
                     $registry->set('GV_mp4box', $request->request->get('binary_MP4Box'), \registry::TYPE_STRING);
                     $registry->set('GV_pdftotext', $request->request->get('binary_xpdf'), \registry::TYPE_STRING);
 
-                    $user = \User_Adapter::create($appbox, $request->request->get('email'), $request->request->get('password'), $request->query->get('email'), true);
+                    $user = \User_Adapter::create($appbox, $request->request->get('email'), $request->request->get('password'), $request->request->get('email'), true);
 
                     \phrasea::start($app['phraseanet.core']);
 
@@ -229,7 +229,7 @@ class Installer implements ControllerProviderInterface
                     $appbox->get_session()->authenticate($auth);
 
                     if ($databox_name && ! \p4string::hasAccent($databox_name)) {
-                        $template = new \SplFileInfo(__DIR__ . '/../../../../conf.d/data_templates/' . $request->query->get('db_template') . '.xml');
+                        $template = new \SplFileInfo(__DIR__ . '/../../../../conf.d/data_templates/' . $request->request->get('db_template') . '.xml');
                         $databox = \databox::create($appbox, $connbas, $template, $registry);
                         $user->ACL()
                             ->give_access_to_sbas(array($databox->get_sbas_id()))

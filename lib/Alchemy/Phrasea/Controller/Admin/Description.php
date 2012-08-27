@@ -13,11 +13,11 @@ namespace Alchemy\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Vocabulary\Controller as VocabularyController;
 use PHPExiftool\Driver\TagProvider;
+use Silex\Application;
+use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Silex\Application;
-use Silex\ControllerProviderInterface;
 
 /**
  *

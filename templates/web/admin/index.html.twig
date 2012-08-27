@@ -80,67 +80,66 @@
       })
     };
 
+    function enableForms(forms) {
+        forms.bind('submit', function(){
+
+            var method = $(this).attr('method');
+            var url = $(this).attr('action');
+            var datas = $(this).serializeArray();
+
+            if(!method) {
+                method = 'GET';
+            }
+            $('#right-ajax').empty().addClass('loading');
+            if(url) {
+                $.ajax({
+                    type: method,
+                    url: url,
+                    data: datas,
+                    success: function(datas){
+                        $('#right-ajax').removeClass('loading').html(datas);
+                        enableForms($('#right-ajax form:not(.no-ajax)'));
+
+                        $.each($('#right-ajax a'),function(i, el){
+                            enableLink($(el));
+                        });
+                        return;
+                    }
+                });
+                return false;
+            }
+        });
+    }
+
+    function enableLink(link) {
+
+        $(link).bind('click',function(event){
+
+            var dest = link.attr('href');
+
+            if(dest && dest.indexOf('#') !== 0) {
+                $('#right-ajax').empty().addClass('loading').parent().show();
+                $('#right').hide();
+
+                $.get(dest, function(data) {
+                  $('#right-ajax').removeClass('loading').html(data);
+                  enableForms($('#right-ajax form:not(.no-ajax)'));
+                    $.each($('#right-ajax a'),function(i, el){
+                        enableLink($(el));
+                    });
+                });
+                return false;
+            }
+
+        });
+    }
+
     function activeTree(click)
     {
         $('#FNDR').treeview({
           collapsed: true,
           animated: "medium"
         });
-
-
-        function enableForms(forms) {
-            forms.bind('submit', function(){
-
-                var method = $(this).attr('method');
-                var url = $(this).attr('action');
-                var datas = $(this).serializeArray();
-
-                if(!method) {
-                    method = 'GET';
-                }
-                $('#right-ajax').empty().addClass('loading');
-                if(url) {
-                    $.ajax({
-                        type: method,
-                        url: url,
-                        data: datas,
-                        success: function(datas){
-                            $('#right-ajax').removeClass('loading').html(datas);
-                            enableForms($('#right-ajax form:not(.no-ajax)'));
-
-                            $.each($('#right-ajax a'),function(i, el){
-                                enableLink($(el));
-                            });
-                            return;
-                        }
-                    });
-                    return false;
-                }
-            });
-        }
-
-        function enableLink(link) {
-
-            $(link).bind('click',function(event){
-
-                var dest = link.attr('href');
-
-                if(dest && dest.indexOf('#') !== 0) {
-                    $('#right-ajax').empty().addClass('loading').parent().show();
-                    $('#right').hide();
-
-                    $.get(dest, function(data) {
-                      $('#right-ajax').removeClass('loading').html(data);
-                      enableForms($('#right-ajax form:not(.no-ajax)'));
-                        $.each($('#right-ajax a'),function(i, el){
-                            enableLink($(el));
-                        });
-                    });
-                    return false;
-                }
-
-            });
-        }
 
       $.each($('#tree a[target=right]'),function(){
         var dest = $(this).attr('href');
@@ -181,6 +180,7 @@
             $('.zone_online_users').trigger('click');
       }
     }
+
     $(document).ready(
     function(){
       resize();
@@ -189,10 +189,6 @@
     }
   );
 
-  function refreshBaskets()
-  {
-    return;
-  }
   function resize()
   {
     $('#right').height($(this).height()-$('#mainMenu').height()-20);

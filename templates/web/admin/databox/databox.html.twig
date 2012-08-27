@@ -1,6 +1,28 @@
+{% if reloadTree %}
+    <script type="text/javascript">
+        parent.reloadTree('bases:bases');
+    </script>
+{% endif %}
+
 <div class="header">
     <h1>{{ databox.get_serialized_server_info() }}</h1>
 </div>
+
+{% if app.request.query.get('success') == '1' %}
+    <div class="alert alert-success">
+        <a class="close" data-dismiss="alert" href="#">×</a>
+        {% trans 'forms::operation effectuee OK' %}
+    </div>
+{% elseif app.request.query.get('success') == '0' %}
+    <div class="alert alert-error">
+        <a class="close" data-dismiss="alert" href="#">×</a>
+        <strong>{% trans 'An error occured' %}</strong>
+        {% if errorMsg is not none %}
+            {{ errorMsg }}
+        {% endif %}
+    </div>
+{% endif %}
+
 <ul>
     <li>
         ID : {{ databox.get_sbas_id() }}
@@ -14,7 +36,7 @@
             <form method='post' action='{{ path('admin_database_rename', {'databox_id': databox.get_sbas_id()}) }}'>
                 <div class="input-append">
                     <input id="db-view-name" name='viewname' class="span2" type="text" size="16">
-                    <a class="btn submiter" type="button">{% trans 'Rename' %}</a>
+                    <button class="btn" type="submit">{% trans 'Rename' %}</button>
                 </div>
             </form>
         </div>
@@ -69,7 +91,7 @@
     <div class=" well-small">
          <form method="post" action="{{ path('admin_database_set_indexable', {'databox_id': databox.get_sbas_id()}) }}">
              <label class="checkbox" for="is_indexable">
-                <input type="checkbox" id="is_indexable" name='indexable' {{ appbox.is_databox_indexable(databox) ? 'checked' : ''}} />
+                <input type="checkbox" id="is_indexable" name='indexable' {{ app['phraseanet.appbox'].is_databox_indexable(databox) ? 'checked' : ''}} />
                 {% trans "admin::base: Cette base est indexable" %}
             </label>
         </form>
@@ -78,9 +100,9 @@
     <div class="btn-group well-small">
 
         <form method="post" action="{{ path('admin_database_reindex', {'databox_id': databox.get_sbas_id()}) }}">
-            <a class='btn submiter confirm' href='#' data-confirm-msg="{% trans 'Confirmez-vous la re-indexation de la base ?' %}">
+            <button type='button' class='btn submiter confirm' data-confirm-msg="{% trans 'Confirmez-vous la re-indexation de la base ?' %}">
                 {% trans "base:: re-indexer" %}
-            </a>
+            </button>
         </form>
 
         <a style='display:inline-block' target="right" class="ajax btn" href="{{ path('admin_database_display_new_collection_form', {'databox_id': databox.get_sbas_id()}) }}">
@@ -89,31 +111,32 @@
         </a>
 
         <form style='display:inline' method="post" action="{{ path('admin_database_clear_logs', {'databox_id': databox.get_sbas_id()}) }}">
-            <a href="#" class='btn submiter confirm'data-confirm-msg="{% trans 'admin::base: Confirmer la suppression de tous les logs' %}">
+            <button type="button" class='btn submiter confirm'
+                    data-confirm-msg="{% trans 'admin::base: Confirmer la suppression de tous les logs' %}">
                 <img src="/skins/icons/clearLogs.png" />
                 {% trans "admin::base: supprimer tous les logs" %}
-            </a>
+            </button>
         </form>
 
         <form style='display:inline' method="post" action="{{ path('admin_database_unmount', {'databox_id': databox.get_sbas_id()}) }}">
-            <a href="#" class='btn submiter confirm' data-confirm-msg="{% trans 'admin::base: Confirmer vous l\'arret de la publication de la base' %}">
+            <button class='btn confirm' data-confirm-msg="{% trans 'admin::base: Confirmer vous l\'arret de la publication de la base' %}">
                 <img src="/skins/icons/db-remove.png" />
                 {% trans "admin::base: arreter la publication de la base" %}
-            </a>
+            </button>
         </form>
 
         <form style='display:inline' method="post" action="{{ path('admin_database_empty', {'databox_id': databox.get_sbas_id()}) }}">
-            <a href="#" class='btn submiter confirm' data-confirm-msg="{% trans 'admin::base: Confirmer le vidage complet de la base' %}">
+            <button type='button' class='btn submiter confirm' data-confirm-msg="{% trans 'admin::base: Confirmer le vidage complet de la base' %}">
                 <img src="/skins/icons/trash.png" />
                 {% trans "admin::base: vider la base" %}
-            </a>
+            </button>
         </form>
 
          <form style='display:inline' method="post" action="{{ path('admin_database_delete', {'databox_id': databox.get_sbas_id()}) }}">
-            <a href="#" class='btn submiter confirm' data-confirm-msg="{% trans 'admin::base: Confirmer la suppression de la base' %}">
+            <button type='button' class='btn submiter confirm' data-confirm-msg="{% trans 'admin::base: Confirmer la suppression de la base' %}">
                 <img src="/skins/icons/delete.gif" />
                 {% trans "admin::base: supprimer la base" %}
-            </a>
+            </button>
          </form>
     </div>
 
@@ -176,31 +199,20 @@
 <div class="logo_box">
     <hr>
     <h4>{% trans "admin::base: logo impression PDF" %}</h4>
-    {% if uploadErrorLogoMsg is not none  %}
-        <div class="alert alert-error">
-            <a class="close" data-dismiss="alert" href="#">×</a>
-            {{ uploadErrorLogoMsg }}
-        </div>
-    {% endif %}
     <div id="printLogoDIV_OK">
-        <img id="printLogo" src="/print/{{ databox.get_sbas_id() }} " />
+        <img class='thumbnail' id="printLogo" src="/custom/minilogos/logopdf_{{ databox.get_sbas_id() }}.jpg" />
         {% if user.ACL().has_right_on_sbas(databox.get_sbas_id(), "bas_manage") %}
-            <form method="post"  action="{{ path('admin_database_delete_logo', {'databox_id': databox.get_sbas_id()}) }}"/>
-                <a href="#" class='btn submiter'>
-                    {% trans "admin::base:collection: supprimer le logo" %}
-                </a>
+            <form method="post" target="right" action="{{ path('admin_database_delete_logo', {'databox_id': databox.get_sbas_id()}) }}" >
+                <button class="btn btn-mini btn-danger">{% trans "admin::base:collection: supprimer le logo" %}</button>
             </form>
         {% endif %}
     </div>
     <div id="printLogoDIV_NONE">
         {% trans "admin::base:collection: aucun fichier (minilogo, watermark ...)" %}
-        <form method="post" name="flpdf" action="{{ path('admin_database_submit_logo', {'databox_id': databox.get_sbas_id()}) }}" target="right" enctype="multipart/form-data">
             {% if user.ACL().has_right_on_sbas(databox.get_sbas_id(), "bas_manage") %}
-                <input name="newLogoPdf" type="file" accept="image/jpeg" />
-                <input class="btn submiter" value="{% trans "boutton::envoyer" %}" />
+                <input id="fileupload" class="no-ajax" type="file" name="newLogoPdf" data-url="{{ path('admin_database_submit_logo', {'databox_id': databox.get_sbas_id()}) }}" accept="image/jpg, image/jpeg">
                 <i>{% trans "admin::base: envoyer un logo (jpeg 35px de hauteur max)" %}</i>
             {% endif %}
-        </form>
     </div>
 </div>
 
@@ -262,7 +274,13 @@
                 url: form.attr('action'),
                 data: form.serializeArray(),
                 success: function(datas) {
-
+                    if(datas.success) {
+                        if(submitLink.hasClass('reload')) {
+                            parent.reloadTree('base:{{ databox.get_sbas_id() }}');
+                        }
+                    } else {
+                        alert(datas.msg);
+                    }
                 }
              });
         });
@@ -279,7 +297,9 @@
             $("#mount-coll").toggle();
         });
 
-        $("div.right a.submiter").bind("click", function() {
+        console.log($("div.right .submiter"));
+
+        $("div.right .submiter").bind("click", function() {
             var $this = $(this);
             var form = $this.closest('form');
 
@@ -293,30 +313,62 @@
         });
 
         function submitForm(submitLink, form) {
+
+            form.bind('submit', function(){
+                return false;
+            });
+
             $.ajax({
                 dataType: 'json',
                 type: form.attr('method'),
                 url: form.attr('action'),
                 data: form.serializeArray(),
+                before : function() {
+                    submitLink.attr('disabled', true).addClass('disabled');
+                },
                 success: function(datas) {
                     if(datas.success) {
                         if(submitLink.hasClass('reload')) {
-                            parent.reloadTree('base:{{ app.request.get('bas_id') }}');
-                        } else {
-                            p4.Mustache.Render('Alert-Success', {content:datas.msg}, function(html){
-                                $this.closest('.action-block').prepend(html);
-                            });
+                            parent.reloadTree('base:{{ databox.get_sbas_id() }}');
                         }
-
                     } else {
-                        p4.Mustache.Render('Alert-Error', {content:datas.msg}, function(html){
-                            $this.closest('.action-block').prepend(html);
-                        });
+                        alert(datas.msg);
                     }
+                },
+                complete: function() {
+                    submitLink.attr('disabled', false).removeClass('disabled');
                 }
             });
         }
 
         setTimeout("refreshDatabaseInformations();", 6000);
+
+
+
+        $('#fileupload').fileupload({
+            dataType: 'html',
+            add: function(e, data) {
+                if( ! /(\.|\/)(jpe?g)$/i.test(data.files[0].type)) {
+                    {% set supported_file_types = ['jpg']|join(' | ') %}
+                    alert("{% trans %} Invalid file type, only ({{ supported_file_types }}) file formats are supported {% endtrans %}");
+
+                    return false;
+                }
+
+                data.submit();
+            },
+            submit: function(e, data) {
+              $('#right-ajax').empty().addClass('loading');
+            },
+            done: function (e, data) {
+               $('#right-ajax').removeClass('loading').html(data.result);
+                enableForms($('#right-ajax form:not(.no-ajax)'));
+
+                $.each($('#right-ajax a'),function(i, el){
+                    enableLink($(el));
+                });
+            }
+        });
     });
+
 </script>

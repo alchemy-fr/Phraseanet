@@ -1,3 +1,10 @@
+{% if reloadTree %}
+    <script type="text/javascript">
+        parent.reloadTree('base:{{ collection.get_sbas_id() }}');
+    </script>
+{% endif %}
+
+{% set bas_id = collection.get_base_id() %}
 
 <div class="page-header">
     <h1>
@@ -5,11 +12,19 @@
     </h1>
 </div>
 
-{% if app.request.get('operation') == 'ok' %}
-        <div class="alert alert-success">
-            <a class="close" data-dismiss="alert" href="#">×</a>
-            {% trans 'forms::operation effectuee OK' %}
-        </div>
+{% if app.request.query.get('success') == '1' %}
+    <div class="alert alert-success">
+        <a class="close" data-dismiss="alert" href="#">×</a>
+        {% trans 'forms::operation effectuee OK' %}
+    </div>
+{% elseif app.request.query.get('success') == '0' %}
+    <div class="alert alert-error">
+        <a class="close" data-dismiss="alert" href="#">×</a>
+        <strong>{% trans 'An error occured' %}</strong>
+        {% if errorMsg is not none %}
+            {{ errorMsg }}
+        {% endif %}
+    </div>
 {% endif %}
 
 <ul>
@@ -19,10 +34,10 @@
     <li>{{ collection.get_record_amount() }} records <a target='_self' href='/admin/collection/{{ collection.get_base_id() }}/informations/details/'>{% trans 'phraseanet:: details' %}</a></li>
 </ul>
 
-{% if user.ACL.has_right_on_base(app.request.get('bas_id'), 'manage') %}
+{% if user.ACL.has_right_on_base(bas_id, 'manage') %}
 <div class="well-small">
     <h5>{% trans 'admin::collection:: Gestionnaires des commandes' %}</h5>
-    <form id="admin_adder" action="/admin/collection/{{ app.request.get('bas_id') }}/order/admins/" method="post">
+    <form id="admin_adder" action="/admin/collection/{{ bas_id }}/order/admins/" method="post">
         {% if admins | length > 0 %}
             <ul>
                 {% for user in admins %}
@@ -48,7 +63,7 @@
 
 <div class="well-small action-block">
     <h5>{% trans 'admin::collection:: presentation des elements lors de la diffusion aux utilisateurs externes (publications)' %}</h5>
-    <form method="post" action="/admin/collection/{{ app.request.get('bas_id') }}/publication/display/">
+    <form method="post" action="/admin/collection/{{ bas_id }}/publication/display/">
         <label class="radio" for="pub_wm_none">
             <input id="pub_wm_none" type='radio' name='pub_wm' {{ collection.get_pub_wm() == 'none' ? 'checked' : ''}} value='none'  />
             {% trans 'admin::colelction::presentation des elements : rien' %}
@@ -65,122 +80,121 @@
 </div>
 
 <div class="action-block well">
-    <form class="form-inline" method="post" action="/admin/collection/{{ app.request.get('bas_id') }}/rename/">
+    <form class="form-inline" method="post" action="/admin/collection/{{ bas_id }}/rename/">
         <div class="input-append">
             <input name="name" class="span2" type="text" size="16">
-            <a class="btn submiter" >
+            <button class="btn reload-tree" type="submit">
                 <img src="/skins/icons/edit_0.gif" />
                 {% trans 'admin::base:collection: renommer la collection' %}
-            </a>
+            </button>
         </div>
     </form>
 </div>
 
 <div class="btn-group well">
-    <form style="display:inline" method="post" action="/admin/collection/{{ app.request.get('bas_id') }}/{{ collection.is_active() ? 'disabled'  : 'enabled' }}/">
-        <a class='btn confirm submiter' href='#' data-confirm-msg="{{ collection.is_active() ? 'admin::base:collection: etes vous sur darreter la publication de cette collection'|trans  : 'admin::base:collection: etes vous sur de publier cette collection ?'|trans }}">
+    <form style="display:inline" method="post" action="/admin/collection/{{ bas_id }}/{{ collection.is_active() ? 'disabled'  : 'enable' }}/">
+        <button class='btn confirm' data-confirm-msg="{{ collection.is_active() ? 'admin::base:collection: etes vous sur darreter la publication de cette collection'|trans  : 'admin::base:collection: etes vous sur de publier cette collection ?'|trans }}">
             <img src='/skins/icons/db-remove.png'/>
             {{ collection.is_active() ? 'admin::base:collection: descativer la collection' | trans  : 'admin::base:collection: activer la collection'| trans }}
-        </a>
+        </button>
     </form>
 
-    <form style="display:inline" method="post" action="/admin/collection/{{ app.request.get('bas_id') }}/empty/">
-        <a class='btn confirm submiter' href="#" data-confirm-msg="{% trans 'admin::base:collection: etes vous sur de vider la collection ?' %}">
+    <form style="display:inline" method="post" action="/admin/collection/{{ bas_id }}/empty/">
+        <button class='btn confirm' data-confirm-msg="{% trans 'admin::base:collection: etes vous sur de vider la collection ?' %}">
             <img src='/skins/icons/trash.png' />
             {% trans 'admin::base:collection: vider la collection' %}
-        </a>
+        </button>
     </form>
 
-    <form style="display:inline" method="post" action="/admin/collection/{{ app.request.get('bas_id') }}/delete/">
-        <a class='btn confirm submiter' href="#" data-confirm-msg="{% trans 'admin::collection: Confirmez vous la suppression de cette collection ?' %}">
+    <form style="display:inline" method="post" action="/admin/collection/{{ bas_id }}/delete/">
+        <button class='btn confirm' data-confirm-msg="{% trans 'admin::collection: Confirmez vous la suppression de cette collection ?' %}">
             <img src='/skins/icons/delete.gif' />
             {% trans 'boutton::supprimer' %}
-        </a>
+        </button>
     </form>
 </div>
 {% endif %}
 
+{# mini logo #}
 <div class="well-small action-block">
     <h5>{% trans 'admin::base:collection: minilogo actuel' %}</h5>
-    {% if collection.getLogo(app.request.get('bas_id')) is not empty %}
-        <div class="thumbnail" style="width:20px;height:20px;margin-top:5px;margin-bottom:5px">{{ collection.getLogo(app.request.get('bas_id')) | raw }}</div>
-        {% if user.ACL.has_right_on_base(app.request.get('bas_id'), 'manage') %}
-            <form method="post" action="/admin/collection/{{ app.request.get('bas_id') }}/picture/mini-logo/delete/">
-                <a class="btn btn-danger btn-mini" href="#">
+    {% if collection.getLogo(bas_id) is not empty %}
+        <div class="thumbnail" style="width:120px;height:24px;margin-top:5px;margin-bottom:5px">{{ collection.getLogo(bas_id) | raw }}</div>
+        {% if user.ACL.has_right_on_base(bas_id, 'manage') %}
+            <form method="post" action="/admin/collection/{{ bas_id }}/picture/mini-logo/delete/">
+                <button class="btn btn-danger btn-mini" >
                     <i class="icon-trash icon-white"></i>
                     {% trans 'boutton::supprimer' %}
-                </a>
+                </button>
             </form>
         {% endif%}
-    {% elseif user.ACL.has_right_on_base(app.request.get('bas_id'), 'manage') %}
+    {% elseif user.ACL.has_right_on_base(bas_id, 'manage') %}
         <span>{% trans 'admin::base:collection: aucun fichier (minilogo, watermark ...)' %}</span>
-        <form enctype="multipart/form-data" method="post" action="/admin/collection/{{ app.request.get('bas_id') }}/picture/mini-logo/">
+        <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="/admin/collection/{{ bas_id }}/picture/mini-logo/">
             <input name="newLogo" type="file" accept="image/*" />
-            <a class="btn btn-primary">{% trans 'boutton::envoyer' %}</a>
         </form>
     {% endif %}
 </div>
 
+{# watermark #}
 <div class="well-small action-block">
-    <h5>Watermark</h5>
-    {% if collection.getWatermark(app.request.get('bas_id')) is not empty %}
-        <div class="thumbnail" style="width:20px;height:20px">{{ collection.getWatermark(app.request.get('bas_id'))| raw }}</div>
-        {% if user.ACL.has_right_on_base(app.request.get('bas_id'), 'manage') %}
-            <form method="post" action="/admin/collection/{{ app.request.get('bas_id') }}/picture/watermark/delete/">
-                <a class="btn btn-danger btn-mini" href="#">
+    <h5>{% trans "Watermark" %}</h5>
+    {% if collection.getWatermark(bas_id) is not empty %}
+        <div class="thumbnail">{{ collection.getWatermark(bas_id)| raw }}</div>
+        {% if user.ACL.has_right_on_base(bas_id, 'manage') %}
+            <form method="post" action="/admin/collection/{{ bas_id }}/picture/watermark/delete/">
+                <button class="btn btn-danger btn-mini">
                     <i class="icon-trash icon-white"></i>
                     {% trans 'boutton::supprimer' %}
-                </a>
+                </button>
             </form>
         {% endif%}
-    {% elseif user.ACL.has_right_on_base(app.request.get('bas_id'), 'manage') %}
+    {% elseif user.ACL.has_right_on_base(bas_id, 'manage') %}
         <span>{% trans 'admin::base:collection: aucun fichier (minilogo, watermark ...)' %}</span>
-        <form enctype="multipart/form-data" method="post" action="/admin/collection/{{ app.request.get('bas_id') }}/picture/watermark/">
+        <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="/admin/collection/{{ bas_id }}/picture/watermark/">
             <input name="newWm" type="file" accept="image/*" />
-            <a class="btn btn-primary">{% trans 'boutton::envoyer' %}</a>
         </form>
     {% endif %}
 </div>
 
+{# stamp logo #}
 <div class="well-small action-block">
-    <h5>StampLogo</h5>
-    {% if collection.getStamp(app.request.get('bas_id')) is not empty %}
-        <div class="thumbnail" style="width:20px;height:20px">{{ collection.getStamp(app.request.get('bas_id'))| raw }}</div>
-        {% if user.ACL.has_right_on_base(app.request.get('bas_id'), 'manage') %}
-            <form method="post" action="/admin/collection/{{ app.request.get('bas_id') }}/picture/stamp-logo/delete/">
-                <a class="btn btn-danger btn-mini" href="#">
+    <h5>{% trans "Stamp logo" %}</h5>
+    {% if collection.getStamp(bas_id) is not empty %}
+        <div class="thumbnail" style="max-height:120px;max-width:260px">{{ collection.getStamp(bas_id)| raw }}</div>
+        {% if user.ACL.has_right_on_base(bas_id, 'manage') %}
+            <form method="post" action="/admin/collection/{{ bas_id }}/picture/stamp-logo/delete/">
+                <button class="btn btn-danger btn-mini">
                     <i class="icon-trash icon-white"></i>
                     {% trans 'boutton::supprimer' %}
-                </a>
+                </button>
             </form>
         {% endif%}
-    {% elseif user.ACL.has_right_on_base(app.request.get('bas_id'), 'manage') %}
+    {% elseif user.ACL.has_right_on_base(bas_id, 'manage') %}
         <span>{% trans 'admin::base:collection: aucun fichier (minilogo, watermark ...)' %}</span>
-        <form enctype="multipart/form-data" method="post" action="/admin/collection/{{ app.request.get('bas_id') }}/picture/stamp-logo/">
+        <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="/admin/collection/{{ bas_id }}/picture/stamp-logo/">
             <input name="newStamp" type="file" accept="image/*" />
-            <a class="btn btn-primary">{% trans 'boutton::envoyer' %}</a>
         </form>
     {% endif %}
 </div>
 
+{# Bandeau de présentation #}
 <div class="well-small action-block">
     <h5>{% trans 'admin::base:collection: image de presentation : ' %}</h5>
-    {% if collection.getPresentation(app.request.get('bas_id')) is not empty %}
-        <div class="thumbnail" style="width:20px;height:20px">{{ collection.getPresentation(app.request.get('bas_id'))| raw }}</div>
-        {% if user.ACL.has_right_on_base(app.request.get('bas_id'), 'manage') %}
-            <form method="post" action="/admin/collection/{{ app.request.get('bas_id') }}/picture/banner/delete/">
-                <a class="btn btn-danger btn-mini" href="#">
+    {% if collection.getPresentation(bas_id) is not empty %}
+        <div class="thumbnail" style="width:650px;height:200px">{{ collection.getPresentation(bas_id)| raw }}</div>
+        {% if user.ACL.has_right_on_base(bas_id, 'manage') %}
+            <form method="post" action="/admin/collection/{{ bas_id }}/picture/banner/delete/">
+                <button class="btn btn-danger btn-mini">
                     <i class="icon-trash icon-white"></i>
                     {% trans 'boutton::supprimer' %}
-                </a>
+                </button>
             </form>
         {% endif%}
-    {% elseif user.ACL.has_right_on_base(app.request.get('bas_id'), 'manage') %}
+    {% elseif user.ACL.has_right_on_base(bas_id, 'manage') %}
         <span>{% trans 'admin::base:collection: aucun fichier (minilogo, watermark ...)' %}</span>
-        <form enctype="multipart/form-data" method="post" action="/admin/collection/{{ app.request.get('bas_id') }}/picture/banner/">
+        <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="/admin/collection/{{ bas_id }}/picture/banner/">
             <input name="newBanner" type="file" accept="image/*" />
-            <a class="btn btn-primary">{% trans 'boutton::envoyer' %}</a>
-            <span>(max : 650x200)</span>
         </form>
     {% endif %}
 </div>
@@ -189,7 +203,7 @@
     $(document).ready(function(){
         //add admins
         $( ".admin_adder" ).autocomplete({
-            source: "/admin/users/typeahead/search/?have_not_right[]=order_master&on_base[]={{ app.request.get('bas_id') }}",
+            source: "/admin/users/typeahead/search/?have_not_right[]=order_master&on_base[]={{ bas_id }}",
             minLength: 2,
             select: function( event, ui ) {
                 var form = $('#admin_adder');
@@ -232,7 +246,7 @@
             });
         });
 
-        $("div.right a.submiter").bind("click", function() {
+        $("div.right .submiter").bind("click", function() {
             var $this = $(this);
             var form = $this.closest('form');
 
@@ -246,28 +260,60 @@
         });
 
         function submitForm(submitLink, form) {
+
+            form.bind('submit', function() {
+                return false;
+            });
+
             $.ajax({
                 dataType: 'json',
                 type: form.attr('method'),
                 url: form.attr('action'),
                 data: form.serializeArray(),
+                beforeSend : function() {
+                    submitLink.attr('disabled', true).addClass('disabled');
+                },
                 success: function(datas) {
                     if(datas.success) {
                         if(submitLink.hasClass('reload')) {
-                            parent.reloadTree('base:{{ app.request.get('bas_id') }}');
-                        } else {
-                            p4.Mustache.Render('Alert-Success', {content:datas.msg}, function(html){
-                                $this.closest('.action-block').prepend(html);
-                            });
+                            parent.reloadTree('base:{{ collection.get_sbas_id() }}');
                         }
-
                     } else {
-                        p4.Mustache.Render('Alert-Error', {content:datas.msg}, function(html){
-                            $this.closest('.action-block').prepend(html);
-                        });
+                        alert(datas.msg);
                     }
+                },
+                complete: function() {
+                    submitLink.attr('disabled', false).removeClass('disabled');
                 }
             });
         }
+
+        $('.fileupload').each(function () {
+            $(this).fileupload({
+                dataType: 'html',
+                add: function(e, data) {
+                    if( ! /(\.|\/)(png|jpeg|jpg|pjpg|gif)$/i.test(data.files[0].type)) {
+                        {% set supported_file_types = ['jpg', 'jpeg', 'pjpg', 'gif', 'png']|join(' | ') %}
+                        alert("{% trans %} Invalid file type, only ({{ supported_file_types }}) file formats are supported {% endtrans %}");
+
+                        return false;
+                    }
+
+                    data.submit();
+                },
+                submit: function(e, data) {
+                  $('#right-ajax').empty().addClass('loading');
+                },
+                done: function (e, data) {
+                    $('#right-ajax').removeClass('loading').html(data.result);
+                    enableForms($('#right-ajax form:not(.no-ajax)'));
+
+                    $.each($('#right-ajax a'),function(i, el){
+                        enableLink($(el));
+                    });
+                }
+            });
+        });
+
     });
 </script>

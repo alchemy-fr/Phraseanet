@@ -105,7 +105,7 @@
     <h1>{% trans 'admin:: demandes en cours' %}</h1>
 </div>
 
-{% if app.request.get('demands') == 'ok' %}
+{% if app.request.query.get('success') == '1' %}
         <div class="alert alert-success">
             <a class="close" data-dismiss="alert" href="#">×</a>
             {% trans 'Requests for the application registrations were recorded successfully' %}

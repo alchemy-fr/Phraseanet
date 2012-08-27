@@ -11,20 +11,17 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
+use Silex\Application;
+use Silex\ControllerProviderInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
- */
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
-use Silex\Application;
-use Silex\ControllerProviderInterface;
-
-/**
- *
  */
 class Collection implements ControllerProviderInterface
 {
@@ -38,7 +35,7 @@ class Collection implements ControllerProviderInterface
                     return $response;
                 }
 
-                if ( ! $app['phraseanet.core']->getAUthenticatedUser()->ACL()->has_right_on_base($app['request']->get('bas_id'), 'canadmin')) {
+                if ( ! $app['phraseanet.core']->getAUthenticatedUser()->ACL()->has_right_on_base($app['request']->attributes->get('bas_id'), 'canadmin')) {
                     $app->abort(403);
                 }
             });
@@ -399,6 +396,7 @@ class Collection implements ControllerProviderInterface
         $collection = \collection::get_from_base_id($bas_id);
 
         $admins = array();
+
         if ($app['phraseanet.core']->getAuthenticatedUser()->ACL()->has_right_on_base($bas_id, 'manage')) {
             $query = new \User_Query($app['phraseanet.appbox']);
             $admins = $query->on_base_ids(array($bas_id))
@@ -407,9 +405,26 @@ class Collection implements ControllerProviderInterface
                 ->get_results();
         }
 
+        switch ($errorMsg = $request->query->get('error')) {
+            case 'file-error':
+                $errorMsg = _('forms::erreur lors de l\'envoi du fichier');
+                break;
+            case 'file-invalid':
+                $errorMsg = _('Invalid file format');
+                break;
+            case 'file-file-too-big':
+                $errorMsg = _('The file is too big');
+                break;
+            case 'collection-not-empty':
+                $errorMsg = _('admin::base:collection: vider la collection avant de la supprimer');
+                break;
+        }
+
         return new Response($app['twig']->render('admin/collection/collection.html.twig', array(
                     'collection' => $collection,
                     'admins'     => $admins,
+                    'errorMsg'   => $errorMsg,
+                    'reloadTree' => $request->query->get('reload-tree') === '1'
                 )));
     }
 
@@ -423,7 +438,7 @@ class Collection implements ControllerProviderInterface
      */
     public function setOrderAdmins(Application $app, Request $request, $bas_id)
     {
-        if (count($admins = $request->get('admins', array())) > 0) {
+        if (count($admins = $request->request->get('admins', array())) > 0) {
             $new_admins = array();
 
             foreach ($admins as $admin) {
@@ -435,7 +450,7 @@ class Collection implements ControllerProviderInterface
             }
         }
 
-        return $app->redirect('/admin/collection/' . $bas_id . '/?operation=ok');
+        return $app->redirect('/admin/collection/' . $bas_id . '/');
     }
 
     /**
@@ -448,23 +463,19 @@ class Collection implements ControllerProviderInterface
      */
     public function emptyCollection(Application $app, Request $request, $bas_id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
-        }
-
         $success = false;
-        $message = _('An error occurred');
+        $msg = _('An error occurred');
 
         try {
             $collection = \collection::get_from_base_id($bas_id);
 
             if ($collection->get_record_amount() <= 500) {
                 $collection->empty_collection(500);
-                $message = _('Collection empty successful');
+                $msg = _('Collection empty successful');
             } else {
                 $settings = '<?xml version="1.0" encoding="UTF-8"?><tasksettings><bas_id>' . $collection->get_base_id() . '</bas_id></tasksettings>';
                 \task_abstract::create($app['phraseanet.appbox'], 'task_period_emptyColl', $settings);
-                $message = _('A task has been creted, please run it to complete empty collection');
+                $msg = _('A task has been creted, please run it to complete empty collection');
             }
 
             $success = true;
@@ -472,7 +483,16 @@ class Collection implements ControllerProviderInterface
 
         }
 
-        return $app->json(array('success' => $success, 'msg'     => $message));
+        if ('json' === $app['request']->getRequestFormat()) {
+
+            return $app->json(array(
+                    'success' => $success,
+                    'msg'     => $msg,
+                    'bas_id'  => $collection->get_base_id()
+                ));
+        }
+
+        return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success);
     }
 
     /**
@@ -485,12 +505,7 @@ class Collection implements ControllerProviderInterface
      */
     public function deleteBanner(Application $app, Request $request, $bas_id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
-        }
-
         $success = false;
-        $msg = _('An error occured');
 
         try {
             $collection = \collection::get_from_base_id($bas_id);
@@ -500,7 +515,16 @@ class Collection implements ControllerProviderInterface
 
         }
 
-        return $app->json(array('success' => $success, 'msg'     => $msg));
+        if ('json' === $app['request']->getRequestFormat()) {
+
+            return $app->json(array(
+                    'success' => $success,
+                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured'),
+                    'bas_id'  => $collection->get_base_id()
+                ));
+        }
+
+        return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success);
     }
 
     /**
@@ -513,12 +537,7 @@ class Collection implements ControllerProviderInterface
      */
     public function deleteStamp(Application $app, Request $request, $bas_id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
-        }
-
         $success = false;
-        $msg = _('An error occured');
 
         try {
             $collection = \collection::get_from_base_id($bas_id);
@@ -528,7 +547,16 @@ class Collection implements ControllerProviderInterface
 
         }
 
-        return $app->json(array('success' => $success, 'msg'     => $msg));
+        if ('json' === $app['request']->getRequestFormat()) {
+
+            return $app->json(array(
+                    'success' => $success,
+                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured'),
+                    'bas_id'  => $collection->get_base_id()
+                ));
+        }
+
+        return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success);
     }
 
     /**
@@ -541,12 +569,7 @@ class Collection implements ControllerProviderInterface
      */
     public function deleteWatermark(Application $app, Request $request, $bas_id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
-        }
-
         $success = false;
-        $msg = _('An error occured');
 
         try {
             $collection = \collection::get_from_base_id($bas_id);
@@ -556,7 +579,16 @@ class Collection implements ControllerProviderInterface
 
         }
 
-        return $app->json(array('success' => $success, 'msg'     => $msg));
+        if ('json' === $app['request']->getRequestFormat()) {
+
+            return $app->json(array(
+                    'success' => $success,
+                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured'),
+                    'bas_id'  => $collection->get_base_id()
+                ));
+        }
+
+        return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success);
     }
 
     /**
@@ -569,23 +601,27 @@ class Collection implements ControllerProviderInterface
      */
     public function deleteLogo(Application $app, Request $request, $bas_id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
-        }
-
         $success = false;
-        $msg = _('An error occured');
 
         try {
             $collection = \collection::get_from_base_id($bas_id);
             $collection->update_logo(null);
-            $app['phraseanet.appbox']->write_collection_pic($collection, null, \collection::PIC_WM);
+            $app['phraseanet.appbox']->write_collection_pic($collection, null, \collection::PIC_LOGO);
             $success = true;
         } catch (\Exception $e) {
 
         }
 
-        return $app->json(array('success' => $success, 'msg'     => $msg));
+        if ('json' === $app['request']->getRequestFormat()) {
+
+            return $app->json(array(
+                    'success' => $success,
+                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured'),
+                    'bas_id'  => $collection->get_base_id()
+                ));
+        }
+
+        return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success);
     }
 
     /**
@@ -604,12 +640,12 @@ class Collection implements ControllerProviderInterface
 
         if ($file->getClientSize() > 1024 * 1024) {
 
-            return $app->redirect('/admin/collection/' . $bas_id . '/?upload-error=too-big');
+            return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-too-big');
         }
 
         if ( ! $file->isValid()) {
 
-            return $app->redirect('/admin/collection/' . $bas_id . '/?upload-error=unknow-error');
+            return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-invalid');
         }
 
         try {
@@ -620,10 +656,10 @@ class Collection implements ControllerProviderInterface
             $app['phraseanet.core']['file-system']->remove($file->getPathname());
         } catch (\Exception $e) {
 
-            return $app->redirect('/admin/collection/' . $bas_id . '/?upload-error=unknow-error');
+            return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-error');
         }
 
-        return $app->redirect('/admin/collection/' . $bas_id . '/?operation=ok');
+        return $app->redirect('/admin/collection/' . $bas_id . '/?success=1');
     }
 
     /**
@@ -642,12 +678,12 @@ class Collection implements ControllerProviderInterface
 
         if ($file->getClientSize() > 1024 * 1024) {
 
-            return $app->redirect('/admin/collection/' . $bas_id . '/?upload-error=too-big');
+            return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-too-big');
         }
 
         if ( ! $file->isValid()) {
 
-            return $app->redirect('/admin/collection/' . $bas_id . '/?upload-error=unknow-error');
+            return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-invalid');
         }
 
         try {
@@ -658,10 +694,10 @@ class Collection implements ControllerProviderInterface
             $app['phraseanet.core']['file-system']->remove($file->getPathname());
         } catch (\Exception $e) {
 
-            return $app->redirect('/admin/collection/' . $bas_id . '/?upload-error=unknow-error');
+            return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-error');
         }
 
-        return $app->redirect('/admin/collection/' . $bas_id . '/?operation=ok');
+        return $app->redirect('/admin/collection/' . $bas_id . '/?success=1');
     }
 
     /**
@@ -680,12 +716,12 @@ class Collection implements ControllerProviderInterface
 
         if ($file->getClientSize() > 65535) {
 
-            return $app->redirect('/admin/collection/' . $bas_id . '/?upload-error=too-big');
+            return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-too-big');
         }
 
         if ( ! $file->isValid()) {
 
-            return $app->redirect('/admin/collection/' . $bas_id . '/?upload-error=unknow-error');
+            return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-invalid');
         }
 
         try {
@@ -696,10 +732,10 @@ class Collection implements ControllerProviderInterface
             $app['phraseanet.core']['file-system']->remove($file->getPathname());
         } catch (\Exception $e) {
 
-            return $app->redirect('/admin/collection/' . $bas_id . '/?upload-error=unknow-error');
+            return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-error');
         }
 
-        return $app->redirect('/admin/collection/' . $bas_id . '/?operation=ok');
+        return $app->redirect('/admin/collection/' . $bas_id . '/?success=1');
     }
 
     /**
@@ -718,12 +754,12 @@ class Collection implements ControllerProviderInterface
 
         if ($file->getClientSize() > 65535) {
 
-            return $app->redirect('/admin/collection/' . $bas_id . '/?upload-error=too-big');
+            return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-too-big');
         }
 
         if ( ! $file->isValid()) {
 
-            return $app->redirect('/admin/collection/' . $bas_id . '/?upload-error=unknow-error');
+            return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-invalid');
         }
 
         try {
@@ -734,10 +770,10 @@ class Collection implements ControllerProviderInterface
             $app['phraseanet.core']['file-system']->remove($file->getPathname());
         } catch (\Exception $e) {
 
-            return $app->redirect('/admin/collection/' . $bas_id . '/?upload-error=unknow-error');
+            return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-error');
         }
 
-        return $app->redirect('/admin/collection/' . $bas_id . '/?operation=ok');
+        return $app->redirect('/admin/collection/' . $bas_id . '/?success=1');
     }
 
     /**
@@ -750,10 +786,6 @@ class Collection implements ControllerProviderInterface
      */
     public function delete(Application $app, Request $request, $bas_id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
-        }
-
         $success = false;
         $msg = _('An error occured');
 
@@ -762,6 +794,7 @@ class Collection implements ControllerProviderInterface
 
             if ($collection->get_record_amount() > 0) {
                 $msg = _('admin::base:collection: vider la collection avant de la supprimer');
+
             } else {
                 $collection->unmount_collection($app['phraseanet.appbox']);
                 $collection->delete();
@@ -772,7 +805,25 @@ class Collection implements ControllerProviderInterface
 
         }
 
-        return $app->json(array('success' => $success, 'msg'     => $msg));
+        if ('json' === $app['request']->getRequestFormat()) {
+
+            return $app->json(array(
+                    'success' => $success,
+                    'msg'     => $msg
+                ));
+        }
+
+        if($collection->get_record_amount() > 0) {
+
+            return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=0&error=collection-not-empty');
+        }
+
+        if ($success) {
+
+            return $app->redirect('/admin/databox/' . $collection->get_sbas_id() . '/?success=1&reload-tree=1');
+        }
+
+        return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=0');
     }
 
     /**
@@ -785,23 +836,25 @@ class Collection implements ControllerProviderInterface
      */
     public function unmount(Application $app, Request $request, $bas_id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
-        }
-
         $success = false;
-        $msg = _('An error occured');
 
         try {
             $collection = \collection::get_from_base_id($bas_id);
             $collection->unmount_collection($app['phraseanet.appbox']);
             $success = true;
-            $msg = _('forms::operation effectuee OK');
         } catch (\Exception $e) {
 
         }
 
-        return $app->json(array('success' => $success, 'msg'     => $msg));
+        if ('json' === $app['request']->getRequestFormat()) {
+
+            return $app->json(array(
+                    'success' => $success,
+                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured')
+                ));
+        }
+
+        return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success);
     }
 
     /**
@@ -814,27 +867,29 @@ class Collection implements ControllerProviderInterface
      */
     public function rename(Application $app, Request $request, $bas_id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
-        }
-
-        if (null === $name = $request->get('name')) {
-            $app->abort(400, _('Missing name format'));
+        if (trim($name = $request->request->get('name')) === '') {
+            $app->abort(400, _('Missing name parameter'));
         }
 
         $success = false;
-        $msg = _('An error occured');
 
         try {
             $collection = \collection::get_from_base_id($bas_id);
             $collection->set_name($name);
             $success = true;
-            $msg = _('forms::operation effectuee OK');
         } catch (\Exception $e) {
 
         }
 
-        return $app->json(array('success' => $success, 'msg'     => $msg));
+        if ('json' === $app['request']->getRequestFormat()) {
+
+            return $app->json(array(
+                    'success' => $success,
+                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured')
+                ));
+        }
+
+        return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success . '&reload-tree=1');
     }
 
     /**
@@ -847,27 +902,29 @@ class Collection implements ControllerProviderInterface
      */
     public function setPublicationDisplay(Application $app, Request $request, $bas_id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
-        }
-
-        if (null === $watermark = $request->get('pub_wm')) {
+        if (null === $watermark = $request->request->get('pub_wm')) {
             $app->abort(400, _('Missing pub_wm format'));
         }
 
         $success = false;
-        $msg = _('An error occured');
 
         try {
             $collection = \collection::get_from_base_id($bas_id);
             $collection->set_public_presentation($watermark);
             $success = true;
-            $msg = _('forms::operation effectuee OK');
         } catch (\Exception $e) {
 
         }
 
-        return $app->json(array('success' => $success, 'msg'     => $msg));
+        if ('json' === $app['request']->getRequestFormat()) {
+
+            return $app->json(array(
+                    'success' => $success,
+                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured')
+                ));
+        }
+
+        return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success);
     }
 
     /**
@@ -880,23 +937,25 @@ class Collection implements ControllerProviderInterface
      */
     public function enable(Application $app, Request $request, $bas_id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
-        }
-
         $success = false;
-        $msg = _('An error occured');
 
         try {
             $collection = \collection::get_from_base_id($bas_id);
             $collection->enable($app['phraseanet.appbox']);
             $success = true;
-            $msg = _('forms::operation effectuee OK');
         } catch (\Exception $e) {
 
         }
 
-        return $app->json(array('success' => $success, 'msg'     => $msg));
+        if ('json' === $app['request']->getRequestFormat()) {
+
+            return $app->json(array(
+                    'success' => $success,
+                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured')
+                ));
+        }
+
+        return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success);
     }
 
     /**
@@ -909,23 +968,25 @@ class Collection implements ControllerProviderInterface
      */
     public function disabled(Application $app, Request $request, $bas_id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
-        }
-
         $success = false;
-        $msg = _('An error occured');
 
         try {
             $collection = \collection::get_from_base_id($bas_id);
             $collection->disable($app['phraseanet.appbox']);
             $success = true;
-            $msg = _('forms::operation effectuee OK');
         } catch (\Exception $e) {
 
         }
 
-        return $app->json(array('success' => $success, 'msg'     => $msg));
+        if ('json' === $app['request']->getRequestFormat()) {
+
+            return $app->json(array(
+                    'success' => $success,
+                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured')
+                ));
+        }
+
+        return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success);
     }
 
     /**
@@ -978,21 +1039,12 @@ class Collection implements ControllerProviderInterface
             }
         }
 
-        if ($updateMsg = $request->get('update')) {
-            switch ($updateMsg) {
-                case 'ok';
-                    $updateMsg = _('forms::operation effectuee OK');
-                    break;
-            }
-        }
-
         return new Response($app['twig']->render('admin/collection/suggested_value.html.twig', array(
                     'collection'      => $collection,
                     'databox'         => $databox,
                     'suggestedValues' => $suggestedValues,
                     'structFields'    => $structFields,
                     'basePrefs'       => $basePrefs,
-                    'updateMsg'       => $updateMsg,
                 )));
     }
 
@@ -1006,29 +1058,29 @@ class Collection implements ControllerProviderInterface
      */
     public function submitSuggestedValues(Application $app, Request $request, $bas_id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
-            $app->abort(400, _('Bad request format, only JSON is allowed'));
-        }
-
         $success = false;
-        $msg = _('An error occured');
 
         try {
             $collection = \collection::get_from_base_id($bas_id);
 
-            if ($mdesc = \DOMDocument::loadXML($request->get('str'))) {
+            if ($mdesc = \DOMDocument::loadXML($request->request->get('str'))) {
                 $collection->set_prefs($mdesc);
-                $msg = _('forms::operation effectuee OK');
                 $success = true;
-            } else {
-                $msg = _('Coult not load XML');
-                $success = false;
             }
         } catch (\Exception $e) {
 
         }
 
-        return $app->json(array('success' => $success, 'msg'     => $msg));
+        if ('json' === $app['request']->getRequestFormat()) {
+
+            return $app->json(array(
+                    'success' => $success,
+                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured'),
+                    'bas_id'  => $collection->get_base_id()
+                ));
+        }
+
+        return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/suggested-values/?success=' . (int) $success);
     }
 
     /**

@@ -11,16 +11,11 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  *
@@ -105,11 +100,11 @@ class Sphinx implements ControllerProviderInterface
     public function submitConfiguration(Application $app, Request $request)
     {
         $app['phraseanet.core']['Registry']->set(
-            'sphinx_charset_tables', $request->get('charset_tables', array()), \registry::TYPE_ARRAY
+            'sphinx_charset_tables', $request->request->get('charset_tables', array()), \registry::TYPE_ARRAY
         );
 
         $app['phraseanet.core']['Registry']->set(
-            'sphinx_user_stemmer', $request->get('libstemmer', array()), \registry::TYPE_ARRAY
+            'sphinx_user_stemmer', $request->request->get('libstemmer', array()), \registry::TYPE_ARRAY
         );
 
         return $app->redirect('/admin/sphinx/configuration/?update=ok');
