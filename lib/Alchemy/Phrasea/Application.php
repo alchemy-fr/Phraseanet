@@ -138,9 +138,6 @@ class Application extends SilexApplication
 
         $this->error(function($e) use ($app) {
 
-            var_dump($e->getMessage(), $e->getFile(), $e->getLine(), $e->getTraceAsString());
-                exit;
-
             if ($app['debug']) {
                 return new Response($e->getMessage(), 500);
             } else {

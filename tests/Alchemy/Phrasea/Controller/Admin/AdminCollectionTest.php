@@ -627,8 +627,6 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->XMLHTTPRequest('POST', '/collection/' . self::$collection->get_base_id() . '/picture/mini-logo/delete/');
         $json = $this->getJson($this->client->getResponse());
         $this->assertTrue($json->success);
-        /*         * todo check why file is not deleted */
-//        $this->assertEquals(0, count(\collection::getLogo(self::$collection->get_base_id())));
     }
 
     /**
@@ -676,8 +674,6 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $json = $this->getJson($this->client->getResponse());
         $this->assertTrue($json->success);
-        /*         * todo check why file is not deleted */
-//        $this->assertEquals(0, count(\collection::getWatermark(self::$collection->get_base_id())));
     }
 
     /**
@@ -726,8 +722,6 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $json = $this->getJson($this->client->getResponse());
         $this->assertTrue($json->success);
-        /*         * todo check why file is not deleted */
-//        $this->assertEquals(0, count(\collection::getStamp(self::$collection->get_base_id())));
     }
 
     /**
@@ -776,8 +770,6 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $json = $this->getJson($this->client->getResponse());
         $this->assertTrue($json->success);
-        /*         * todo check why file is not deleted */
-//        $this->assertEquals(0, count(\collection::getPresentation(self::$collection->get_base_id())));
     }
 
     /**
