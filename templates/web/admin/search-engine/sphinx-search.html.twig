@@ -1,0 +1,9 @@
+<form method="post">
+    {% for charset, charsetObject in charsets %}
+    <input type="checkbox" name="charset_tables[]" value="{{ charset }}" {% if charset in configuration['charset_tables'] %}checked="checked"{% endif %} > {{ charsetObject.get_name() }}
+    {% endfor %}
+
+    <button type="submit">{% trans 'boutton::valider' %}</button>
+</form>
+
+<textarea style="width:100%;height:70%">{{ configfile }}</textarea>

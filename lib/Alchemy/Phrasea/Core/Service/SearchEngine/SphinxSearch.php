@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Service\SearchEngine;
 
-use Alchemy\Phrasea\SearchEngine\SphinxSearch as SphinxSearchEngine;
+use Alchemy\Phrasea\SearchEngine\SphinxSearch\SphinxSearchEngine;
 use Alchemy\Phrasea\Core\Service\ServiceAbstract;
 
 class SphinxSearch extends ServiceAbstract

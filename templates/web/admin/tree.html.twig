@@ -22,13 +22,11 @@
       <span>Setup</span>
     </a>
   </li>
-  {% if app['phraseanet.registry'].get('GV_sphinx') %}
   <li>
-    <a target="right" href="/admin/sphinx/configuration/" class="ajax">
-      <span>Sphinx Conf</span>
+    <a target="right" href="/admin/search-engine/">
+      <span>{% trans 'SearchEngine settings' %}</span>
     </a>
   </li>
-  {% endif %}
   {% endif %}
 
   <li class="{% if feature == 'connected' %}selected{% endif %}">

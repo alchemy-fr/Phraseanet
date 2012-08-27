@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Service\SearchEngine;
 
-use Alchemy\Phrasea\SearchEngine\PhraseaEngine as PhraseaSearchEngine;
+use Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine as PhraseaSearchEngine;
 use Alchemy\Phrasea\Core\Service\ServiceAbstract;
 
 class PhraseaEngine extends ServiceAbstract
