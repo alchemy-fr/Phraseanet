@@ -11,84 +11,35 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Phrasea;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Doctrine\Common\Collections\ArrayCollection;
+use Silex\Application;
+use Symfony\Component\HttpFoundation\Request;
 
 class PhraseaEngine implements SearchEngineInterface
 {
-    private $initialized;
     /**
      *
      * @var SearchEngineOptions
      */
-    private $options;
-    private $app;
-    private $queries = array();
-    private $arrayq = array();
-    private $colls = array();
-    private $qp = array();
-    private $needthesaurus = array();
-    private $configurationPanel;
-    private $resetCacheNextQuery = false;
+    protected $options;
+    protected $queries = array();
+    protected $arrayq = array();
+    protected $colls = array();
+    protected $qp = array();
+    protected $needthesaurus = array();
+    protected $configurationPanel;
+    protected $resetCacheNextQuery = false;
 
     /**
      * {@inheritdoc}
      */
-    public function __construct(Application $app)
+    public function __construct()
     {
-        $this->app = $app;
         $this->options = new SearchEngineOptions();
-    }
-
-    public function initialize()
-    {
-        if ($this->initialized) {
-            return $this;
-        }
-
-        $choosenConnexion = $this->app['phraseanet.configuration']->getPhraseanet()->get('database');
-
-        $connexion = $this->app['phraseanet.configuration']->getConnexion($choosenConnexion);
-
-        $hostname = $connexion->get('host');
-        $port = (int) $connexion->get('port');
-        $user = $connexion->get('user');
-        $password = $connexion->get('password');
-        $dbname = $connexion->get('dbname');
-
-        if (!extension_loaded('phrasea2')) {
-            throw new RuntimeException('Phrasea extension is required');
-        }
-
-        if (!function_exists('phrasea_conn')) {
-            throw new RuntimeException('Phrasea extension requires upgrade');
-        }
-
-        if (phrasea_conn($hostname, $port, $user, $password, $dbname) !== true) {
-            throw new RuntimeException('Unable to initialize Phrasea connection');
-        }
-
-        $this->initialized = true;
-
-        return $this;
-    }
-
-    private function checkSession()
-    {
-        if (!$this->app['phraseanet.user']) {
-            throw new \RuntimeException('Phrasea currently support only authenticated queries');
-        }
-
-        if (!phrasea_open_session($this->app['session']->get('phrasea_session_id'), $this->app['phraseanet.user']->get_id())) {
-            if (!$ses_id = phrasea_create_session((string) $this->app['phraseanet.user']->get_id())) {
-                throw new \Exception_InternalServerError('Unable to create phrasea session');
-            }
-            $this->app['session']->set('phrasea_session_id', $ses_id);
-        }
     }
 
     /**
@@ -104,14 +55,25 @@ class PhraseaEngine implements SearchEngineInterface
         return $status;
     }
 
-    public function configurationPanel()
+    public function getConfigurationPanel(Application $app, Request $request)
     {
-        if (!$this->configurationPanel) {
+
+    }
+
+    public function postConfigurationPanel(Application $app, Request $request)
+    {
+
+    }
+
+    private function configurationPanel()
+    {
+        if ( ! $this->configurationPanel) {
             $this->configurationPanel = new ConfigurationPanel($this);
         }
 
         return $this->configurationPanel;
     }
+
 
     /**
      * {@inheritdoc}
@@ -161,7 +123,7 @@ class PhraseaEngine implements SearchEngineInterface
      */
     public function updateRecord(\record_adapter $record)
     {
-        $record->set_binary_status(\databox_status::dec2bin($this->app, bindec($record->get_status()) & ~7 | 4));
+        $record->set_binary_status(\databox_status::dec2bin(bindec($record->get_status()) & ~7 | 4));
 
         return $this;
     }
@@ -235,9 +197,6 @@ class PhraseaEngine implements SearchEngineInterface
      */
     public function query($query, $offset, $perPage)
     {
-        $this->initialize();
-        $this->checkSession();
-
         assert(is_int($offset));
         assert($offset >= 0);
         assert(is_int($perPage));
@@ -250,9 +209,12 @@ class PhraseaEngine implements SearchEngineInterface
             $query .= ' AND recordtype=' . $this->options->getRecordType();
         }
 
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $session = $appbox->get_session();
+
         $sql = 'SELECT query, query_time, duration, total FROM cache WHERE session_id = :ses_id';
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':ses_id' => $this->app['session']->get('phrasea_session_id')));
+        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt->execute(array(':ses_id' => $session->get_ses_id()));
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -267,24 +229,24 @@ class PhraseaEngine implements SearchEngineInterface
         }
 
         if ($this->resetCacheNextQuery === true) {
-            phrasea_clear_cache($this->app['session']->get('phrasea_session_id'));
+            phrasea_clear_cache($session->get_ses_id());
             $this->addQuery($query);
             $this->executeQuery($query);
 
             $sql = 'SELECT query, query_time, duration, total FROM cache WHERE session_id = :ses_id';
-            $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute(array(':ses_id' => $this->app['session']->get('phrasea_session_id')));
+            $stmt = $appbox->get_connection()->prepare($sql);
+            $stmt->execute(array(':ses_id' => $session->get_ses_id()));
             $row = $stmt->fetch(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
         } else {
             /**
              * @todo clean this in DB
              */
-            $this->total_available = $this->total_results = $this->app['session']->get('phrasea_engine_n_results');
+            $this->total_available = $this->total_results = $session->get_session_prefs('phrasea_engine_n_results');
         }
 
         $res = phrasea_fetch_results(
-            $this->app['session']->get('phrasea_session_id'), $offset + 1, $perPage, false
+            $session->get_ses_id(), $offset + 1, $perPage, false
         );
 
         $rs = array();
@@ -301,24 +263,18 @@ class PhraseaEngine implements SearchEngineInterface
         foreach ($rs as $data) {
             try {
                 $records->add(new \record_adapter(
-                        $this->app,
-                        \phrasea::sbasFromBas($this->app, $data['base_id']),
+                        \phrasea::sbasFromBas($data['base_id']),
                         $data['record_id'],
                         $resultNumber
                 ));
             } catch (Exception $e) {
 
             }
-            $resultNumber++;
+            $resultNumber ++;
         }
 
 
         return new SearchEngineResult($records, $query, $row['duration'], $offset, $row['total'], $row['total'], $error, '', new ArrayCollection(), new ArrayCollection(), '');
-    }
-
-    public static function create(Application $app)
-    {
-        return new static($app);
     }
 
     /**
@@ -326,6 +282,10 @@ class PhraseaEngine implements SearchEngineInterface
      */
     private function executeQuery($query)
     {
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $session = $appbox->get_session();
+        $registry = $appbox->get_registry();
+
         $dateLog = date("Y-m-d H:i:s");
         $nbanswers = $total_time = 0;
         $sort = '';
@@ -351,12 +311,12 @@ class PhraseaEngine implements SearchEngineInterface
             }
 
             $results = phrasea_query2(
-                $this->app['session']->get('phrasea_session_id')
+                $session->get_ses_id()
                 , $sbas_id
                 , $this->colls[$sbas_id]
                 , $this->arrayq[$sbas_id]
-                , $this->app['phraseanet.registry']->get('GV_sit')
-                , $this->app['session']->get('usr_id')
+                , $registry->get('GV_sit')
+                , (string) $session->get_usr_id()
                 , false
                 , $this->options->searchType() == SearchEngineOptions::RECORD_GROUPING ? PHRASEA_MULTIDOC_REGONLY : PHRASEA_MULTIDOC_DOCONLY
                 , $sort
@@ -368,26 +328,26 @@ class PhraseaEngine implements SearchEngineInterface
                 $nbanswers += $results["nbanswers"];
             }
 
-//            $logger = $session->get_logger($this->appbox->get_databox($sbas_id));
-//
-//            $conn2 = \connection::getPDOConnection($sbas_id);
-//
-//            $sql3 = "INSERT INTO log_search
-//               (id, log_id, date, search, results, coll_id )
-//               VALUES
-//               (null, :log_id, :date, :query, :nbresults, :colls)";
-//
-//            $params = array(
-//                ':log_id'    => $logger->get_id()
-//                , ':date'      => $dateLog
-//                , ':query'     => $query
-//                , ':nbresults' => $results["nbanswers"]
-//                , ':colls'     => implode(',', $this->colls[$sbas_id])
-//            );
-//
-//            $stmt = $conn2->prepare($sql3);
-//            $stmt->execute($params);
-//            $stmt->closeCursor();
+            $logger = $session->get_logger($appbox->get_databox($sbas_id));
+
+            $conn2 = \connection::getPDOConnection($sbas_id);
+
+            $sql3 = "INSERT INTO log_search
+               (id, log_id, date, search, results, coll_id )
+               VALUES
+               (null, :log_id, :date, :query, :nbresults, :colls)";
+
+            $params = array(
+                ':log_id'    => $logger->get_id()
+                , ':date'      => $dateLog
+                , ':query'     => $query
+                , ':nbresults' => $results["nbanswers"]
+                , ':colls'     => implode(',', $this->colls[$sbas_id])
+            );
+
+            $stmt = $conn2->prepare($sql3);
+            $stmt->execute($params);
+            $stmt->closeCursor();
         }
 
         $sql = 'UPDATE cache
@@ -396,18 +356,16 @@ class PhraseaEngine implements SearchEngineInterface
 
         $params = array(
             'query'     => $query,
-            ':ses_id'   => $this->app['session']->get('phrasea_session_id'),
+            ':ses_id'   => $session->get_ses_id(),
             ':duration' => $total_time,
             ':total'    => $nbanswers,
         );
 
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
-        if ($this->app['phraseanet.user']) {
-            \User_Adapter::saveQuery($this->app, $query);
-        }
+        \User_Adapter::saveQuery($query);
 
         return $this;
     }
@@ -427,17 +385,19 @@ class PhraseaEngine implements SearchEngineInterface
     {
         $ret = array();
 
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $session = $appbox->get_session();
         $res = phrasea_fetch_results(
-            $this->app['session']->get('phrasea_session_id'), ($record->get_number() + 1), 1, true, "[[em]]", "[[/em]]"
+            $session->get_ses_id(), ($record->get_number() + 1), 1, true, "[[em]]", "[[/em]]"
         );
 
-        if (!isset($res['results']) || !is_array($res['results'])) {
+        if ( ! isset($res['results']) || ! is_array($res['results'])) {
             return array();
         }
 
         $rs = $res['results'];
         $res = array_shift($rs);
-        if (!isset($res['xml'])) {
+        if ( ! isset($res['xml'])) {
             return array();
         }
 
@@ -484,8 +444,8 @@ class PhraseaEngine implements SearchEngineInterface
             if ($status) {
                 $requestStat = 'xxxx';
 
-                for ($i = 4; ($i <= 32); $i++) {
-                    if (!isset($status[$i])) {
+                for ($i = 4; ($i <= 64); $i ++ ) {
+                    if ( ! isset($status[$i])) {
                         $requestStat = 'x' . $requestStat;
                         continue;
                     }
@@ -507,9 +467,7 @@ class PhraseaEngine implements SearchEngineInterface
                 }
             }
             if ($this->options->fields()) {
-                $this->queries[$sbas] .= ' IN (' . implode(' OR ', array_map(function(\databox_field $field) {
-                                return $field->get_name();
-                            }, $this->options->fields())) . ')';
+                $this->queries[$sbas] .= ' IN (' . implode(' OR ', $this->options->fields()) . ')';
             }
             if (($this->options->getMinDate() || $this->options->getMaxDate()) && $this->options->getDateFields()) {
                 if ($this->options->getMinDate()) {
@@ -568,7 +526,7 @@ class PhraseaEngine implements SearchEngineInterface
 
     private function singleParse($sbas, $query)
     {
-        $this->qp[$sbas] = new PhraseaEngineQueryParser($this->app, $this->options->getLocale());
+        $this->qp[$sbas] = new PhraseaEngineQueryParser($this->options->getLocale());
         $this->qp[$sbas]->debug = false;
 
         if ($sbas == 'main') {
@@ -586,39 +544,5 @@ class PhraseaEngine implements SearchEngineInterface
 
         return $this;
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function clearCache()
-    {
-        if ($this->app['session']->has('phrasea_session_id')) {
-            $this->initialize();
-            phrasea_close_session($this->app['session']->get('phrasea_session_id'));
-            $this->app['session']->remove('phrasea_session_id');
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function clearAllCache(\DateTime $date = null)
-    {
-        if (!$date) {
-            $date = new \DateTime();
-        }
-
-        $sql = "SELECT session_id FROM cache WHERE lastaccess <= :date";
-
-        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':date' => $date->format(DATE_ISO8601)));
-        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        foreach ($rs as $row) {
-            phrasea_close_session($row['session_id']);
-        }
-
-        return $this;
-    }
 }
+

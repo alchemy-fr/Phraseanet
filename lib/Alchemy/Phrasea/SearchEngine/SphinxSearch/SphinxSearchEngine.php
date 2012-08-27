@@ -11,15 +11,16 @@
 
 namespace Alchemy\Phrasea\SearchEngine\SphinxSearch;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\Process\ExecutableFinder;
-use Symfony\Component\Process\Process;
+use Silex\Application;
+use Symfony\Component\HttpFoundation\Request;
+
+require_once __DIR__ . '/../../../../vendor/sphinx/sphinxapi.php';
 
 class SphinxSearchEngine implements SearchEngineInterface
 {
@@ -31,37 +32,24 @@ class SphinxSearchEngine implements SearchEngineInterface
 
     /**
      *
-     * @var \SphinxClient
-     */
-    protected $suggestionClient;
-
-    /**
-     *
      * @var \PDO
      */
     protected $rt_conn;
     protected $configurationPanel;
     protected $options;
-    protected $app;
 
-    public function __construct(Application $app, $host, $port, $rt_host, $rt_port)
+    public function __construct($host, $port, $rt_host, $rt_port)
     {
-        $this->app = $app;
         $this->options = new SearchEngineOptions();
 
         $this->sphinx = new \SphinxClient();
+
         $this->sphinx->SetServer($host, $port);
         $this->sphinx->SetArrayResult(true);
         $this->sphinx->SetConnectTimeout(1);
 
-        $this->suggestionClient = new \SphinxClient();
-        $this->suggestionClient->SetServer($host, $port);
-        $this->suggestionClient->SetArrayResult(true);
-        $this->suggestionClient->SetConnectTimeout(1);
-
         try {
             $this->rt_conn = @new \PDO(sprintf('mysql:host=%s;port=%s;', $rt_host, $rt_port));
-            $this->rt_conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         } catch (\PDOException $e) {
             $this->rt_conn = null;
         }
@@ -71,11 +59,9 @@ class SphinxSearchEngine implements SearchEngineInterface
 
     public function status()
     {
-        if (false === $this->sphinx->Status()) {
-            throw new RuntimeException(_('Sphinx server is offline'));
-        }
+        $status = $this->sphinx->Status();
 
-        if (false === $this->suggestionClient->Status()) {
+        if (false === $status) {
             throw new RuntimeException(_('Sphinx server is offline'));
         }
 
@@ -83,7 +69,17 @@ class SphinxSearchEngine implements SearchEngineInterface
             throw new RuntimeException('Unable to connect to sphinx rt');
         }
 
-        return $this->sphinx->Status();
+        return $status;
+    }
+
+    public function getConfigurationPanel(Application $app, Request $request)
+    {
+        return $this->configurationPanel()->get($app, $request);
+    }
+
+    public function postConfigurationPanel(Application $app, Request $request)
+    {
+        return $this->configurationPanel()->post($app, $request);
     }
 
     /**
@@ -92,7 +88,7 @@ class SphinxSearchEngine implements SearchEngineInterface
      */
     public function configurationPanel()
     {
-        if (!$this->configurationPanel) {
+        if ( ! $this->configurationPanel) {
             $this->configurationPanel = new ConfigurationPanel($this);
         }
 
@@ -106,33 +102,18 @@ class SphinxSearchEngine implements SearchEngineInterface
 
     public function addRecord(\record_adapter $record)
     {
-        if (!$this->rt_conn) {
-            throw new RuntimeException('Unable to connect to sphinx real-time index');
-        }
-
         $all_datas = array();
-        $status = array();
-
-        $binStatus = strrev($record->get_status());
-
-        for ($i = 4; $i < 32; $i++) {
-            if ($binStatus[$i]) {
-                $status[] = crc32($record->get_databox()->get_sbas_id() . '_' . $i);
-            }
-        }
 
         foreach ($record->get_caption()->get_fields(null, true) as $field) {
-            if (!$field->is_indexable()) {
+            if ( ! $field->is_indexable()) {
                 continue;
             }
 
-            if (!$field->get_databox_field()->isBusiness()) {
-                $all_datas[] = $field->get_serialized_values();
-            }
+            $all_datas[] = $field->get_serialized_values();
 
             foreach ($field->get_values() as $value) {
 
-                $sql = "REPLACE INTO "
+                $this->rt_conn->exec("REPLACE INTO "
                     . "metas_realtime" . $this->CRCdatabox($record->get_databox()) . " VALUES (
                     '" . $value->getId() . "'
                     ,'" . str_replace("'", "\'", $value->getValue()) . "'
@@ -148,10 +129,7 @@ class SphinxSearchEngine implements SearchEngineInterface
                     ,0
                     ," . (int) $value->getDatabox_field()->isBusiness() . "
                     ," . crc32($record->get_collection()->get_coll_id() . '_' . (int) $value->getDatabox_field()->isBusiness()) . "
-                    ," . $record->get_creation_date()->format('U') . "
-                    ,(" . implode(',', $status) . ")  )";
-
-                $this->rt_conn->exec($sql);
+                    ," . $record->get_creation_date()->format('U') . " )");
             }
         }
 
@@ -167,18 +145,13 @@ class SphinxSearchEngine implements SearchEngineInterface
             ," . crc32($record->get_sbas_id() . '_' . $record->get_record_id()) . "
             ," . crc32($record->get_type()) . "
             ,0
-            ," . $record->get_creation_date()->format('U') . "
-            ,(" . implode(',', $status) . ") )");
+            ," . $record->get_creation_date()->format('U') . " )");
 
         return $this;
     }
 
     public function removeRecord(\record_adapter $record)
     {
-        if (!$this->rt_conn) {
-            throw new RuntimeException('Unable to connect to sphinx real-time index');
-        }
-
         $CRCdatabox = $this->CRCdatabox($record->get_databox());
         $indexes = array(
             "metadatas" . $CRCdatabox,
@@ -194,7 +167,9 @@ class SphinxSearchEngine implements SearchEngineInterface
                     $this->sphinx->UpdateAttributes($index, array("deleted"), array($value->getId() => array(1)));
                 }
 
-                $this->rt_conn->exec("DELETE FROM metas_realtime" . $CRCdatabox . " WHERE id = " . $value->getId());
+                $stmt = $this->rt_conn->exec("DELETE FROM metas_realtime" . $CRCdatabox . " WHERE id = " . $value->getId());
+                $stmt->execute();
+                $stmt->closeCursor();
             }
         }
 
@@ -265,6 +240,7 @@ class SphinxSearchEngine implements SearchEngineInterface
     {
         $this->sphinx->ResetGroupBy();
         $this->sphinx->ResetFilters();
+        $this->sphinx->ResetOverrides();
     }
 
     public function query($query, $offset, $perPage)
@@ -275,10 +251,10 @@ class SphinxSearchEngine implements SearchEngineInterface
 
         $query = $this->parseQuery($query);
 
-        $preg = preg_match('/\s?(recordid|storyid)\s?=\s?([0-9]+)/i', $query, $matches, 0, 0);
+        $preg = preg_match('/\s?recordid\s?=\s?([0-9]+)/i', $query, $matches, 0, 0);
 
         if ($preg > 0) {
-            $this->sphinx->SetFilter('record_id', array($matches[2]));
+            $this->sphinx->SetFilter('record_id', array($matches[1]));
             $query = '';
         }
 
@@ -315,17 +291,16 @@ class SphinxSearchEngine implements SearchEngineInterface
                     try {
                         $record =
                             new \record_adapter(
-                                $this->app,
-                                $match['attrs']['sbas_id'],
-                                $match['attrs']['record_id'],
-                                $resultOffset
+                                $match['attrs']['sbas_id']
+                                , $match['attrs']['record_id']
+                                , $resultOffset
                         );
 
                         $results->add($record);
                     } catch (Exception $e) {
 
                     }
-                    $resultOffset++;
+                    $resultOffset ++;
                 }
             }
 
@@ -354,7 +329,7 @@ class SphinxSearchEngine implements SearchEngineInterface
                 $index = 'metadatas' . $this->CRCdatabox($record->get_databox());
             }
         } else {
-            if ($this->options->stemmed() && $this->options->getLocale()) {
+            if ($this->options->stemmed()) {
                 $index = 'documents' . $this->CRCdatabox($record->get_databox()) . '_stemmed_' . $this->options->getLocale();
             } else {
                 $index = 'documents' . $this->CRCdatabox($record->get_databox());
@@ -463,12 +438,12 @@ class SphinxSearchEngine implements SearchEngineInterface
         /**
          * @todo : enhance : check status in a better way
          */
-        $status_opts = $options->getStatus();
         foreach ($options->databoxes() as $databox) {
+            $status_opts = $options->getStatus();
             foreach ($databox->get_statusbits() as $n => $status) {
-                if (!array_key_exists($n, $status_opts))
+                if ( ! array_key_exists($n, $status_opts))
                     continue;
-                if (!array_key_exists($databox->get_sbas_id(), $status_opts[$n]))
+                if ( ! array_key_exists($databox->get_sbas_id(), $status_opts[$n]))
                     continue;
                 $crc = crc32($databox->get_sbas_id() . '_' . $n);
                 $this->sphinx->SetFilter('status', array($crc), ($status_opts[$n][$databox->get_sbas_id()] == '0'));
@@ -545,10 +520,6 @@ class SphinxSearchEngine implements SearchEngineInterface
 
         $altVersions = array();
 
-        foreach ($words as $word) {
-            $altVersions[$word] = array($word);
-        }
-
         // As we got words, we look for alternate word for each of them
         if (function_exists('enchant_broker_init') && $this->options->getLocale()) {
             $broker = enchant_broker_init();
@@ -558,7 +529,7 @@ class SphinxSearchEngine implements SearchEngineInterface
                 foreach ($words as $word) {
 
                     if (enchant_dict_check($dictionnary, $word) == false) {
-                        $suggs = array_merge(enchant_dict_suggest($dictionnary, $word));
+                        $suggs = array_merge(array($word), enchant_dict_suggest($dictionnary, $word));
                     }
 
                     $altVersions[$word] = array_unique($suggs);
@@ -595,6 +566,7 @@ class SphinxSearchEngine implements SearchEngineInterface
 
         foreach ($queries as $alt_query) {
             $results = $this->sphinx->Query($alt_query, $this->getQueryIndex($alt_query));
+
             if ($results !== false && isset($results['total_found'])) {
                 if ($results['total_found'] > 0) {
 
@@ -631,7 +603,7 @@ class SphinxSearchEngine implements SearchEngineInterface
         $t = "__" . $keyword . "__";
 
         $trigrams = "";
-        for ($i = 0; $i < strlen($t) - 2; $i++) {
+        for ($i = 0; $i < strlen($t) - 2; $i ++ ) {
             $trigrams .= substr($t, $i, 3) . " ";
         }
 
@@ -646,12 +618,12 @@ class SphinxSearchEngine implements SearchEngineInterface
 
         $this->resetSphinx();
 
-        $this->suggestionClient->SetMatchMode(SPH_MATCH_EXTENDED2);
-        $this->suggestionClient->SetRankingMode(SPH_RANK_WORDCOUNT);
-        $this->suggestionClient->SetFilterRange("len", $len - 2, $len + 4);
+        $this->sphinx->SetMatchMode(SPH_MATCH_EXTENDED2);
+        $this->sphinx->SetRankingMode(SPH_RANK_WORDCOUNT);
+        $this->sphinx->SetFilterRange("len", $len - 2, $len + 4);
 
-        $this->suggestionClient->SetSortMode(SPH_SORT_EXTENDED, "@weight DESC");
-        $this->suggestionClient->SetLimits(0, 10);
+        $this->sphinx->SetSortMode(SPH_SORT_EXTENDED, "@weight DESC");
+        $this->sphinx->SetLimits(0, 10);
 
         $indexes = array();
 
@@ -660,20 +632,26 @@ class SphinxSearchEngine implements SearchEngineInterface
         }
 
         $index = implode(',', $indexes);
-        $res = $this->suggestionClient->Query($query, $index);
 
-        if ($this->suggestionClient->Status() === false) {
+        $res = $this->sphinx->Query($query, $index);
+
+        if ($this->sphinx->Status() === false) {
             return array();
         }
 
-        if (!$res || !isset($res["matches"])) {
+        if ( ! $res || ! isset($res["matches"])) {
             return array();
         }
+
+        $this->sphinx->ResetGroupBy();
+        $this->sphinx->ResetFilters();
 
         $words = array();
         foreach ($res["matches"] as $match) {
             $words[] = $match['attrs']['keyword'];
         }
+
+        $this->applyOptions($this->options);
 
         return $words;
     }
@@ -691,14 +669,14 @@ class SphinxSearchEngine implements SearchEngineInterface
         if (count($index_keys) > 0) {
             if ($this->options->fields() || $this->options->businessFieldsOn()) {
                 if ($query !== '' && $this->options->stemmed() && $this->options->getLocale()) {
-                    $index = 'metadatas' . implode('_stemmed_' . $this->options->getLocale() . ', metadatas', $index_keys) . '_stemmed_' . $this->options->getLocale();
+                    $index = ', metadatas' . implode('_stemmed_' . $this->options->getLocale() . ', metadatas', $index_keys) . '_stemmed_' . $this->options->getLocale();
                 } else {
                     $index = 'metadatas' . implode(',metadatas', $index_keys);
                 }
                 $index .= ', metas_realtime' . implode(', metas_realtime', $index_keys);
             } else {
                 if ($query !== '' && $this->options->stemmed() && $this->options->getLocale()) {
-                    $index = 'documents' . implode('_stemmed_' . $this->options->getLocale() . ', documents', $index_keys) . '_stemmed_' . $this->options->getLocale();
+                    $index = ', documents' . implode('_stemmed_' . $this->options->getLocale() . ', documents', $index_keys) . '_stemmed_' . $this->options->getLocale();
                 } else {
                     $index = 'documents' . implode(', documents', $index_keys);
                 }
@@ -742,93 +720,6 @@ class SphinxSearchEngine implements SearchEngineInterface
         $query = str_ireplace(array(' and ', ' et '), ' +', $query);
 
         return $query;
-    }
-
-    public function buildSuggestions(array $databoxes, $configuration, $threshold = 10)
-    {
-        $executableFinder = new ExecutableFinder();
-        $indexer = $executableFinder->find('indexer');
-
-        if (!is_executable($indexer)) {
-            throw new RuntimeException('Indexer does not seem to be executable');
-        }
-
-        foreach ($databoxes as $databox) {
-            $tmp_file = tempnam(sys_get_temp_dir(), 'sphinx_sugg');
-
-            $cmd = $indexer . ' --config ' . $configuration . ' metadatas' . $this->CRCdatabox($databox)
-                . '  --buildstops ' . $tmp_file . ' 1000000 --buildfreqs';
-            $process = new Process($cmd);
-            $process->run();
-
-            $sql = 'TRUNCATE suggest';
-            $stmt = $databox->get_connection()->prepare($sql);
-            $stmt->execute();
-            $stmt->closeCursor();
-
-            if (null !== $sql = $this->BuildDictionarySQL(file_get_contents($tmp_file), $threshold)) {
-                $stmt = $databox->get_connection()->prepare($sql);
-                $stmt->execute();
-                $stmt->closeCursor();
-            }
-
-            unlink($tmp_file);
-        }
-
-        return $this;
-    }
-
-    protected function BuildDictionarySQL($dictionnary, $threshold)
-    {
-        $out = array();
-
-        $n = 1;
-        $lines = explode("\n", $dictionnary);
-        foreach ($lines as $line) {
-            if (trim($line) === '') {
-                continue;
-            }
-
-            list ( $keyword, $freq ) = explode(" ", trim($line));
-
-            if ($freq < $threshold || strstr($keyword, "_") !== false || strstr($keyword, "'") !== false) {
-                continue;
-            }
-
-            if (ctype_digit($keyword)) {
-                continue;
-            }
-            if (mb_strlen($keyword) < 3) {
-                continue;
-            }
-
-            $trigrams = $this->BuildTrigrams($keyword);
-
-            $out[] = "( $n, '$keyword', '$trigrams', $freq )";
-            $n++;
-        }
-
-        if ($out) {
-            return "INSERT INTO suggest VALUES " . implode(",\n", $out) . ";";
-        }
-
-        return null;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function clearCache()
-    {
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function clearAllCache(\DateTime $date = null)
-    {
-        return $this;
     }
 }
 
