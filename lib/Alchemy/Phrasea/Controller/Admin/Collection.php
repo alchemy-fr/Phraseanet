@@ -407,7 +407,7 @@ class Collection implements ControllerProviderInterface
 
         switch ($errorMsg = $request->query->get('error')) {
             case 'file-error':
-                $errorMsg = _('forms::erreur lors de l\'envoi du fichier');
+                $errorMsg = _('Error while sending the file');
                 break;
             case 'file-invalid':
                 $errorMsg = _('Invalid file format');
@@ -416,7 +416,7 @@ class Collection implements ControllerProviderInterface
                 $errorMsg = _('The file is too big');
                 break;
             case 'collection-not-empty':
-                $errorMsg = _('admin::base:collection: vider la collection avant de la supprimer');
+                $errorMsg = _('Empty the collection before removing');
                 break;
         }
 
@@ -459,7 +459,7 @@ class Collection implements ControllerProviderInterface
      * @param Application   $app        The silex application
      * @param Request       $request    The current request
      * @param integer       $bas_id     The collection base_id
-     * @return JsonResponse
+     * @return JsonResponse|RedirectResponse
      */
     public function emptyCollection(Application $app, Request $request, $bas_id)
     {
@@ -501,7 +501,7 @@ class Collection implements ControllerProviderInterface
      * @param   Application   $app        The silex application
      * @param   Request       $request    The current request
      * @param   integer       $bas_id     The collection base_id
-     * @return  JsonResponse
+     * @return  JsonResponse|RedirectResponse
      */
     public function deleteBanner(Application $app, Request $request, $bas_id)
     {
@@ -519,7 +519,7 @@ class Collection implements ControllerProviderInterface
 
             return $app->json(array(
                     'success' => $success,
-                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured'),
+                    'msg'     => $success ? _('Successful removal') : _('An error occured'),
                     'bas_id'  => $collection->get_base_id()
                 ));
         }
@@ -533,7 +533,7 @@ class Collection implements ControllerProviderInterface
      * @param   Application   $app        The silex application
      * @param   Request       $request    The current request
      * @param   integer       $bas_id     The collection base_id
-     * @return  JsonResponse
+     * @return  JsonResponse|RedirectResponse
      */
     public function deleteStamp(Application $app, Request $request, $bas_id)
     {
@@ -551,7 +551,7 @@ class Collection implements ControllerProviderInterface
 
             return $app->json(array(
                     'success' => $success,
-                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured'),
+                    'msg'     => $success ? _('Successful removal') : _('An error occured'),
                     'bas_id'  => $collection->get_base_id()
                 ));
         }
@@ -565,7 +565,7 @@ class Collection implements ControllerProviderInterface
      * @param   Application   $app        The silex application
      * @param   Request       $request    The current request
      * @param   integer       $bas_id     The collection base_id
-     * @return  JsonResponse
+     * @return  JsonResponse|RedirectResponse
      */
     public function deleteWatermark(Application $app, Request $request, $bas_id)
     {
@@ -583,7 +583,7 @@ class Collection implements ControllerProviderInterface
 
             return $app->json(array(
                     'success' => $success,
-                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured'),
+                    'msg'     => $success ? _('Successful removal') : _('An error occured'),
                     'bas_id'  => $collection->get_base_id()
                 ));
         }
@@ -597,7 +597,7 @@ class Collection implements ControllerProviderInterface
      * @param   Application   $app        The silex application
      * @param   Request       $request    The current request
      * @param   integer       $bas_id     The collection base_id
-     * @return  JsonResponse
+     * @return  JsonResponse|RedirectResponse
      */
     public function deleteLogo(Application $app, Request $request, $bas_id)
     {
@@ -616,7 +616,7 @@ class Collection implements ControllerProviderInterface
 
             return $app->json(array(
                     'success' => $success,
-                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured'),
+                    'msg'     => $success ? _('Successful removal') : _('An error occured'),
                     'bas_id'  => $collection->get_base_id()
                 ));
         }
@@ -782,7 +782,7 @@ class Collection implements ControllerProviderInterface
      * @param   Application   $app        The silex application
      * @param   Request       $request    The current request
      * @param   integer       $bas_id     The collection base_id
-     * @return  JsonResponse
+     * @return  JsonResponse|RedirectResponse
      */
     public function delete(Application $app, Request $request, $bas_id)
     {
@@ -793,13 +793,13 @@ class Collection implements ControllerProviderInterface
             $collection = \collection::get_from_base_id($bas_id);
 
             if ($collection->get_record_amount() > 0) {
-                $msg = _('admin::base:collection: vider la collection avant de la supprimer');
+                $msg = _('Empty the collection before removing');
 
             } else {
                 $collection->unmount_collection($app['phraseanet.appbox']);
                 $collection->delete();
                 $success = true;
-                $msg = _('forms::operation effectuee OK');
+                $msg = _('Successful removal');
             }
         } catch (\Exception $e) {
 
@@ -829,10 +829,10 @@ class Collection implements ControllerProviderInterface
     /**
      * Unmount a collection from application box
      *
-     * @param Application   $app        The silex application
-     * @param Request       $request    The current request
-     * @param integer       $bas_id     The collection base_id
-     * @return JsonResponse
+     * @param   Application   $app        The silex application
+     * @param   Request       $request    The current request
+     * @param   integer       $bas_id     The collection base_id
+     * @return  JsonResponse|RedirectResponse
      */
     public function unmount(Application $app, Request $request, $bas_id)
     {
@@ -850,7 +850,7 @@ class Collection implements ControllerProviderInterface
 
             return $app->json(array(
                     'success' => $success,
-                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured')
+                    'msg'     => $success ? _('The publication has been stopped') : _('An error occured')
                 ));
         }
 
@@ -863,7 +863,7 @@ class Collection implements ControllerProviderInterface
      * @param   Application   $app        The silex application
      * @param   Request       $request    The current request
      * @param   integer       $bas_id     The collection base_id
-     * @return  JsonResponse
+     * @return  JsonResponse|RedirectResponse
      */
     public function rename(Application $app, Request $request, $bas_id)
     {
@@ -885,7 +885,7 @@ class Collection implements ControllerProviderInterface
 
             return $app->json(array(
                     'success' => $success,
-                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured')
+                    'msg'     => $success ? _('Successful update') : _('An error occured')
                 ));
         }
 
@@ -898,7 +898,7 @@ class Collection implements ControllerProviderInterface
      * @param   Application   $app        The silex application
      * @param   Request       $request    The current request
      * @param   integer       $bas_id     The collection base_id
-     * @return  JsonResponse
+     * @return  JsonResponse|RedirectResponse
      */
     public function setPublicationDisplay(Application $app, Request $request, $bas_id)
     {
@@ -920,7 +920,7 @@ class Collection implements ControllerProviderInterface
 
             return $app->json(array(
                     'success' => $success,
-                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured')
+                    'msg'     => $success ? _('Successful update') : _('An error occured')
                 ));
         }
 
@@ -933,7 +933,7 @@ class Collection implements ControllerProviderInterface
      * @param   Application   $app        The silex application
      * @param   Request       $request    The current request
      * @param   integer       $bas_id     The collection base_id
-     * @return  JsonResponse
+     * @return  JsonResponse|RedirectResponse
      */
     public function enable(Application $app, Request $request, $bas_id)
     {
@@ -951,7 +951,7 @@ class Collection implements ControllerProviderInterface
 
             return $app->json(array(
                     'success' => $success,
-                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured')
+                    'msg'     => $success ? _('Successful update') : _('An error occured')
                 ));
         }
 
@@ -964,7 +964,7 @@ class Collection implements ControllerProviderInterface
      * @param   Application   $app        The silex application
      * @param   Request       $request    The current request
      * @param   integer       $bas_id     The collection base_id
-     * @return  JsonResponse
+     * @return  JsonResponse|RedirectResponse
      */
     public function disabled(Application $app, Request $request, $bas_id)
     {
@@ -982,7 +982,7 @@ class Collection implements ControllerProviderInterface
 
             return $app->json(array(
                     'success' => $success,
-                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured')
+                    'msg'     => $success ? _('Successful update') : _('An error occured')
                 ));
         }
 
@@ -1054,7 +1054,7 @@ class Collection implements ControllerProviderInterface
      * @param   Application   $app        The silex application
      * @param   Request       $request    The current request
      * @param   integer       $bas_id     The collection base_id
-     * @return  JsonResponse
+     * @return  JsonResponse|RedirectResponse
      */
     public function submitSuggestedValues(Application $app, Request $request, $bas_id)
     {
@@ -1075,7 +1075,7 @@ class Collection implements ControllerProviderInterface
 
             return $app->json(array(
                     'success' => $success,
-                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured'),
+                    'msg'     => $success ? _('Successful update') : _('An error occured'),
                     'bas_id'  => $collection->get_base_id()
                 ));
         }
@@ -1089,6 +1089,7 @@ class Collection implements ControllerProviderInterface
      * @param Application   $app        The silex application
      * @param Request       $request    The current request
      * @param integer       $bas_id     The collection base_id
+     * @return Response
      */
     public function getDetails(Application $app, Request $request, $bas_id)
     {

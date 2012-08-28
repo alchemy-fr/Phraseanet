@@ -406,7 +406,7 @@ class Databox implements ControllerProviderInterface
 
         switch ($errorMsg = $request->query->get('error')) {
             case 'file-error':
-                $errorMsg = _('forms::erreur lors de l\'envoi du fichier');
+                $errorMsg = _('Error while sending the file');
                 break;
             case 'file-invalid':
                 $errorMsg = _('Invalid file format');
@@ -452,7 +452,7 @@ class Databox implements ControllerProviderInterface
      * @param    Application $app        The silex application
      * @param    Request     $request    The current HTTP request
      * @param    integer     $databox_id The requested databox
-     * @return   JsonResponse
+     * @return   JsonResponse|RedirectResponse
      */
     public function deleteBase(Application $app, Request $request, $databox_id)
     {
@@ -468,7 +468,7 @@ class Databox implements ControllerProviderInterface
                 $app['phraseanet.appbox']->write_databox_pic($databox, null, \databox::PIC_PDF);
                 $databox->delete();
                 $success = true;
-                $msg = _('forms::operation effectuee OK');
+                $msg = _('Successful removal');
             }
         } catch (\Exception $e) {
 
@@ -492,7 +492,7 @@ class Databox implements ControllerProviderInterface
      * @param    Application $app        The silex application
      * @param    Request     $request    The current HTTP request
      * @param    integer     $databox_id The requested databox
-     * @return   JsonResponse
+     * @return   JsonResponse|RedirectResponse
      */
     public function reindex(Application $app, Request $request, $databox_id)
     {
@@ -509,7 +509,7 @@ class Databox implements ControllerProviderInterface
 
             return $app->json(array(
                     'success' => $success,
-                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured'),
+                    'msg'     => $success ? _('Successful update') : _('An error occured'),
                     'sbas_id' => $databox_id
                 ));
         }
@@ -523,7 +523,7 @@ class Databox implements ControllerProviderInterface
      * @param    Application $app        The silex application
      * @param    Request     $request    The current HTTP request
      * @param    integer     $databox_id The requested databox
-     * @return   JsonResponse
+     * @return   JsonResponse|RedirectResponse
      */
     public function setIndexable(Application $app, Request $request, $databox_id)
     {
@@ -540,7 +540,7 @@ class Databox implements ControllerProviderInterface
 
             return $app->json(array(
                     'success' => $success,
-                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured'),
+                    'msg'     => $success ? _('Successful update') : _('An error occured'),
                     'sbas_id' => $databox_id
                 ));
         }
@@ -811,7 +811,7 @@ class Databox implements ControllerProviderInterface
      * @param    Application $app        The silex application
      * @param    Request     $request    The current HTTP request
      * @param    integer     $databox_id The requested databox
-     * @return   JsonResponse
+     * @return   JsonResponse|RedirectResponse
      */
     public function deleteLogoPdf(Application $app, Request $request, $databox_id)
     {
@@ -828,7 +828,7 @@ class Databox implements ControllerProviderInterface
 
             return $app->json(array(
                     'success' => $success,
-                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured'),
+                    'msg'     => $success ? _('Successful removal') : _('An error occured'),
                     'sbas_id' => $databox_id
                 ));
         }
@@ -842,7 +842,7 @@ class Databox implements ControllerProviderInterface
      * @param    Application $app        The silex application
      * @param    Request     $request    The current HTTP request
      * @param    integer     $databox_id The requested databox
-     * @return   JsonResponse
+     * @return   JsonResponse|RedirectResponse
      */
     public function clearLogs(Application $app, Request $request, $databox_id)
     {
@@ -859,7 +859,7 @@ class Databox implements ControllerProviderInterface
 
             return $app->json(array(
                     'success' => $success,
-                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured'),
+                    'msg'     => $success ? _('Successful update') : _('An error occured'),
                     'sbas_id' => $databox_id
                 ));
         }
@@ -873,7 +873,7 @@ class Databox implements ControllerProviderInterface
      * @param    Application $app        The silex application
      * @param    Request     $request    The current HTTP request
      * @param    integer     $databox_id The requested databox
-     * @return   JsonResponse
+     * @return   JsonResponse|RedirectResponse
      */
     public function changeViewName(Application $app, Request $request, $databox_id)
     {
@@ -894,7 +894,7 @@ class Databox implements ControllerProviderInterface
 
             return $app->json(array(
                     'success' => $success,
-                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured'),
+                    'msg'     => $success ? _('Successful update') : _('An error occured'),
                     'sbas_id' => $databox_id
                 ));
         }
@@ -908,7 +908,7 @@ class Databox implements ControllerProviderInterface
      * @param    Application $app        The silex application
      * @param    Request     $request    The current HTTP request
      * @param    integer     $databox_id The requested databox
-     * @return   JsonResponse
+     * @return   JsonResponse|RedirectResponse
      */
     public function unmountDatabase(Application $app, Request $request, $databox_id)
     {
@@ -927,7 +927,7 @@ class Databox implements ControllerProviderInterface
 
             return $app->json(array(
                     'success' => $success,
-                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured'),
+                    'msg'     => $success ? _('The publication has been stopped') : _('An error occured'),
                     'sbas_id' => $databox_id
                 ));
         }
@@ -941,7 +941,7 @@ class Databox implements ControllerProviderInterface
      * @param    Application $app        The silex application
      * @param    Request     $request    The current HTTP request
      * @param    integer     $databox_id The requested databox
-     * @return   JsonResponse
+     * @return   JsonResponse|RedirectResponse
      */
     public function emptyDatabase(Application $app, Request $request, $databox_id)
     {
@@ -1023,7 +1023,7 @@ class Databox implements ControllerProviderInterface
             }
 
             $ret['success'] = true;
-            $ret['msg'] = _('forms::operation effectuee OK');
+            $ret['msg'] = _('Successful update');
         } catch (\Exception $e) {
 
         }
@@ -1052,7 +1052,7 @@ class Databox implements ControllerProviderInterface
      * @param    Application $app        The silex application
      * @param    Request     $request    The current HTTP request
      * @param    integer     $databox_id The requested databox
-     * @return   JsonResponse
+     * @return   JsonResponse|RedirectResponse
      */
     public function setReorder(Application $app, Request $request, $databox_id)
     {
@@ -1074,7 +1074,7 @@ class Databox implements ControllerProviderInterface
 
             return $app->json(array(
                     'success' => $success,
-                    'msg'     => $success ? _('forms::operation effectuee OK') : _('An error occured'),
+                    'msg'     => $success ? _('Successful update') : _('An error occured'),
                     'sbas_id' => $databox_id
                 ));
         }

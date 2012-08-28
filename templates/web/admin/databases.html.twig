@@ -1,7 +1,7 @@
 {% if app.request.query.get('success') == '1' %}
     <div class="alert alert-success">
         <a class="close" data-dismiss="alert" href="#">×</a>
-        {% trans 'forms::operation effectuee OK' %}
+        {% trans 'Successful update' %}
     </div>
 {% elseif app.request.query.get('success') == '0' %}
     <div class="alert alert-error">
@@ -16,7 +16,7 @@
 {% if app.request.query.get('notice') == 'restart' %}
     <div class="alert">
         <a class="close" data-dismiss="alert" href="#">×</a>
-        {% trans 'N\'oubliez pas de redemarrer le planificateur de taches' %}
+        {% trans 'Do not forget to restart the tasks scheduler' %}
     </div>
 {% endif %}
 

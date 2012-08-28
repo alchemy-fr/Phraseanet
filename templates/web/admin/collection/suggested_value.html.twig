@@ -17,7 +17,7 @@
 {% if app.request.query.get('success') == '1' %}
     <div class="alert alert-success">
         <a class="close" data-dismiss="alert" href="#">×</a>
-        {% trans 'forms::operation effectuee OK' %}
+        {% trans 'Successful update' %}
     </div>
 {% elseif app.request.query.get('success') == '0' %}
     <div class="alert alert-error">
