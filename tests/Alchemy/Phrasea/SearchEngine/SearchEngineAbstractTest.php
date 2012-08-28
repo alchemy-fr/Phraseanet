@@ -2,6 +2,8 @@
 
 namespace Alchemy\Phrasea\SearchEngine;
 
+use Symfony\Component\Process\Process;
+
 require_once __DIR__ . '/../../../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
 abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAbstract
@@ -12,7 +14,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAbstract
     {
         parent::setUp();
         $appbox = \appbox::get_instance(\bootstrap::getCore());
-        foreach($appbox->get_databoxes() as $databox) {
+        foreach ($appbox->get_databoxes() as $databox) {
             break;
         }
 
@@ -60,7 +62,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAbstract
         self::$searchEngine->addRecord($record);
         $this->updateIndex();
 
-        $query_string = 'boomboklot' . $record->get_record_id() ;
+        $query_string = 'boomboklot' . $record->get_record_id();
 
         $results = self::$searchEngine->query($query_string, 0, 1);
         $this->assertEquals(0, $results->total());
@@ -89,11 +91,314 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAbstract
         self::$searchEngine->updateRecord($record);
         $this->updateIndex();
 
-        sleep(1);
+        $results = self::$searchEngine->query($query_string, 0, 1);
+
+        $this->assertEquals(1, $results->total());
+
+        self::$searchEngine->removeRecord($record);
+        $this->updateIndex();
+    }
+
+    public function testUpdateRecordFR()
+    {
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        foreach ($appbox->get_databoxes() as $databox) {
+            break;
+        }
+        $options = new SearchEngineOptions();
+        $options->onCollections($databox->get_collections());
+        $options->useStemming(true);
+        $options->setLocale('fr');
+
+        self::$searchEngine->setOptions($options);
+
+        $record = self::$records['record_24'];
+
+        self::$searchEngine->addRecord($record);
+        $this->updateIndex();
+
+        $query_string = 'boomboklot' . $record->get_record_id() . 'fr';
+
+        $results = self::$searchEngine->query($query_string, 0, 1);
+        $this->assertEquals(0, $results->total());
+
+        $toupdate = array();
+
+        foreach ($record->get_databox()->get_meta_structure()->get_elements() as $field) {
+            try {
+                $values = $record->get_caption()->get_field($field->get_name())->get_values();
+                $value = array_pop($values);
+                $meta_id = $value->getId();
+            } catch (\Exception $e) {
+                $meta_id = null;
+            }
+
+            $toupdate[$field->get_id()] = array(
+                'meta_id'        => $meta_id
+                , 'meta_struct_id' => $field->get_id()
+                , 'value'          => $query_string
+            );
+            break;
+        }
+
+        $record->set_metadatas($toupdate);
+
+        self::$searchEngine->updateRecord($record);
+        $this->updateIndex();
 
         $results = self::$searchEngine->query($query_string, 0, 1);
 
         $this->assertEquals(1, $results->total());
+
+        self::$searchEngine->removeRecord($record);
+        $this->updateIndex();
+    }
+
+    public function testUpdateQueryOnField()
+    {
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        foreach ($appbox->get_databoxes() as $databox) {
+            break;
+        }
+        $options = new SearchEngineOptions();
+        $options->onCollections($databox->get_collections());
+
+        $record = self::$records['record_24'];
+
+        self::$searchEngine->addRecord($record);
+        $this->updateIndex();
+
+        $query_string = 'boomboklot' . $record->get_record_id() . 'onfield';
+
+        $results = self::$searchEngine->query($query_string, 0, 1);
+        $this->assertEquals(0, $results->total());
+
+        $toupdate = array();
+
+        foreach ($record->get_databox()->get_meta_structure()->get_elements() as $field) {
+            try {
+                $values = $record->get_caption()->get_field($field->get_name())->get_values();
+                $value = array_pop($values);
+                $meta_id = $value->getId();
+            } catch (\Exception $e) {
+                $meta_id = null;
+            }
+
+            $options->setFields(array($field));
+
+            $toupdate[$field->get_id()] = array(
+                'meta_id'        => $meta_id
+                , 'meta_struct_id' => $field->get_id()
+                , 'value'          => $query_string
+            );
+            break;
+        }
+
+        self::$searchEngine->setOptions($options);
+
+        $record->set_metadatas($toupdate);
+
+        self::$searchEngine->updateRecord($record);
+        $this->updateIndex();
+
+        $results = self::$searchEngine->query($query_string, 0, 1);
+
+        $this->assertEquals(1, $results->total());
+
+        self::$searchEngine->removeRecord($record);
+        $this->updateIndex();
+    }
+
+    public function testBusinessFieldAvailable()
+    {
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        foreach ($appbox->get_databoxes() as $databox) {
+            break;
+        }
+        $options = new SearchEngineOptions();
+        $options->onCollections($databox->get_collections());
+
+        $record = self::$records['record_24'];
+
+        self::$searchEngine->addRecord($record);
+        $this->updateIndex();
+
+        $query_string = 'boomboklot' . $record->get_record_id() . 'businessAvailable';
+
+        $results = self::$searchEngine->query($query_string, 0, 1);
+        $this->assertEquals(0, $results->total());
+
+        $toupdate = array();
+
+        foreach ($record->get_databox()->get_meta_structure()->get_elements() as $field) {
+
+            if ( ! $field->isBusiness()) {
+                continue;
+            }
+
+            try {
+                $values = $record->get_caption()->get_field($field->get_name())->get_values();
+                $value = array_pop($values);
+                $meta_id = $value->getId();
+            } catch (\Exception $e) {
+                $meta_id = null;
+            }
+
+            $options->allowBusinessFieldsOn(array($record->get_collection()));
+
+            $toupdate[$field->get_id()] = array(
+                'meta_id'        => $meta_id
+                , 'meta_struct_id' => $field->get_id()
+                , 'value'          => $query_string
+            );
+            break;
+        }
+
+        if ( ! $toupdate) {
+            $field = \databox_field::create($record->get_databox(), 'testBusiness' . mt_rand(), false);
+            $field->set_business(true);
+            $field->save();
+
+            $options->allowBusinessFieldsOn(array($record->get_collection()));
+
+            $toupdate[$field->get_id()] = array(
+                'meta_id'        => null
+                , 'meta_struct_id' => $field->get_id()
+                , 'value'          => $query_string
+            );
+        }
+
+        self::$searchEngine->setOptions($options);
+
+        $record->set_metadatas($toupdate);
+
+        self::$searchEngine->updateRecord($record);
+        $this->updateIndex();
+
+        $results = self::$searchEngine->query($query_string, 0, 1);
+
+        $this->assertEquals(1, $results->total());
+
+        self::$searchEngine->removeRecord($record);
+        $this->updateIndex();
+    }
+
+    public function testBusinessFieldNotAvailable()
+    {
+        $record = self::$records['record_24'];
+
+        self::$searchEngine->addRecord($record);
+        $this->updateIndex();
+
+        $query_string = 'boomboklot' . $record->get_record_id() . 'businessNotAvailable';
+
+        $results = self::$searchEngine->query($query_string, 0, 1);
+        $this->assertEquals(0, $results->total());
+
+        $toupdate = array();
+
+        foreach ($record->get_databox()->get_meta_structure()->get_elements() as $field) {
+
+            if ( ! $field->isBusiness()) {
+                continue;
+            }
+
+            try {
+                $values = $record->get_caption()->get_field($field->get_name())->get_values();
+                $value = array_pop($values);
+                $meta_id = $value->getId();
+            } catch (\Exception $e) {
+                $meta_id = null;
+            }
+
+            $toupdate[$field->get_id()] = array(
+                'meta_id'        => $meta_id
+                , 'meta_struct_id' => $field->get_id()
+                , 'value'          => $query_string
+            );
+            break;
+        }
+
+        if ( ! $toupdate) {
+            $field = \databox_field::create($record->get_databox(), 'testBusiness' . mt_rand(), false);
+            $field->set_business(true);
+            $field->save();
+
+            $toupdate[$field->get_id()] = array(
+                'meta_id'        => null
+                , 'meta_struct_id' => $field->get_id()
+                , 'value'          => $query_string
+            );
+        }
+
+        $record->set_metadatas($toupdate);
+
+        self::$searchEngine->updateRecord($record);
+        $this->updateIndex();
+
+        $results = self::$searchEngine->query($query_string, 0, 1);
+
+        $this->assertEquals(0, $results->total());
+
+        self::$searchEngine->removeRecord($record);
+        $this->updateIndex();
+    }
+
+    public function testUpdateQueryOnEmptyField()
+    {
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        foreach ($appbox->get_databoxes() as $databox) {
+            break;
+        }
+        $options = new SearchEngineOptions();
+        $options->onCollections($databox->get_collections());
+        $options->useStemming(true);
+        $options->setLocale('en');
+
+        $record = self::$records['record_24'];
+
+        self::$searchEngine->addRecord($record);
+        $this->updateIndex();
+
+        $query_string = 'boomboklot' . $record->get_record_id() . 'anotherfield';
+
+        $results = self::$searchEngine->query($query_string, 0, 1);
+        $this->assertEquals(0, $results->total());
+
+        $toupdate = array();
+
+        foreach ($record->get_databox()->get_meta_structure()->get_elements() as $field) {
+            try {
+                $values = $record->get_caption()->get_field($field->get_name())->get_values();
+                $value = array_pop($values);
+                $meta_id = $value->getId();
+            } catch (\Exception $e) {
+                $meta_id = null;
+            }
+
+            if ( ! $toupdate) {
+                $toupdate[$field->get_id()] = array(
+                    'meta_id'        => $meta_id
+                    , 'meta_struct_id' => $field->get_id()
+                    , 'value'          => $query_string
+                );
+            } else {
+                $options->setFields(array($field));
+
+                break;
+            }
+        }
+
+        self::$searchEngine->setOptions($options);
+
+        $record->set_metadatas($toupdate);
+
+        self::$searchEngine->updateRecord($record);
+        $this->updateIndex();
+
+        $results = self::$searchEngine->query($query_string, 0, 1);
+
+        $this->assertEquals(0, $results->total());
 
         self::$searchEngine->removeRecord($record);
         $this->updateIndex();
@@ -264,6 +569,145 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAbstract
         $this->updateIndex();
     }
 
-    abstract function testAutocomplete();
+    public function testStatusQuery()
+    {
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        foreach ($appbox->get_databoxes() as $databox) {
+            break;
+        }
+        $options = new SearchEngineOptions();
+        $options->onCollections($databox->get_collections());
 
+        $record = self::$records['record_24'];
+
+        self::$searchEngine->addRecord($record);
+        $this->updateIndex();
+
+        $query_string = 'boomboklot' . $record->get_record_id() . 'statusQuery';
+
+        $results = self::$searchEngine->query($query_string, 0, 1);
+        $this->assertEquals(0, $results->total());
+
+        $toupdate = array();
+
+        foreach ($record->get_databox()->get_meta_structure()->get_elements() as $field) {
+            try {
+                $values = $record->get_caption()->get_field($field->get_name())->get_values();
+                $value = array_pop($values);
+                $meta_id = $value->getId();
+            } catch (\Exception $e) {
+                $meta_id = null;
+            }
+
+            $toupdate[$field->get_id()] = array(
+                'meta_id'        => $meta_id
+                , 'meta_struct_id' => $field->get_id()
+                , 'value'          => $query_string
+            );
+            break;
+        }
+
+        self::$searchEngine->setOptions($options);
+
+        $record->set_metadatas($toupdate);
+
+        self::$searchEngine->updateRecord($record);
+        $this->updateIndex();
+
+        $results = self::$searchEngine->query($query_string, 0, 1);
+        $this->assertEquals(1, $results->total());
+
+        $options->setStatus(array(4 => array('on' => array($record->get_databox()->get_sbas_id()))));
+        self::$searchEngine->setOptions($options);
+
+        $results = self::$searchEngine->query($query_string, 0, 1);
+
+        $this->assertEquals(0, $results->total());
+
+        $record->set_binary_status('10000');
+        self::$searchEngine->updateRecord($record);
+
+        $results = self::$searchEngine->query($query_string, 0, 1);
+        $this->assertEquals(1, $results->total());
+
+
+        $options->setStatus(array(4 => array('off' => array($record->get_databox()->get_sbas_id()))));
+        self::$searchEngine->setOptions($options);
+
+        $results = self::$searchEngine->query($query_string, 0, 1);
+        $this->assertEquals(0, $results->total());
+
+        self::$searchEngine->removeRecord($record);
+        $this->updateIndex();
+    }
+
+    public function testExcerptFromSimpleQuery()
+    {
+        $record = self::$records['record_24'];
+
+        self::$searchEngine->addRecord($record);
+        $this->updateIndex();
+
+        $query_string = 'boomboklot' . $record->get_record_id() . 'excerptSimpleQuery';
+
+        $results = self::$searchEngine->query($query_string, 0, 1);
+        $this->assertEquals(0, $results->total());
+
+        $toupdate = array();
+
+        foreach ($record->get_databox()->get_meta_structure()->get_elements() as $field) {
+            try {
+                $values = $record->get_caption()->get_field($field->get_name())->get_values();
+                $value = array_pop($values);
+                $meta_id = $value->getId();
+            } catch (\Exception $e) {
+                $meta_id = null;
+            }
+
+            $toupdate[$field->get_id()] = array(
+                'meta_id'        => $meta_id
+                , 'meta_struct_id' => $field->get_id()
+                , 'value'          => $query_string
+            );
+            break;
+        }
+
+        $record->set_metadatas($toupdate);
+
+        self::$searchEngine->updateRecord($record);
+        $this->updateIndex();
+
+        $results = self::$searchEngine->query($query_string, 0, 1);
+
+        $this->assertEquals(1, $results->total());
+
+
+        $record = $results->results()->first();
+
+        $fields = array();
+
+        foreach ($record->get_caption()->get_fields() as $field) {
+            $fields[$field->get_name()] = array(
+                'value'     => $field->get_serialized_values()
+                , 'separator' => ';'
+            );
+        }
+
+        $found = false;
+        foreach (self::$searchEngine->excerpt($query_string, $fields, $record) as $field) {
+            if (strpos($field, '<em>') !== false && strpos($field, '</em>') !== false) {
+                $found = true;
+                break;
+            }
+        }
+
+        self::$searchEngine->removeRecord($record);
+        $this->updateIndex();
+
+        if ( ! $found) {
+            $this->fail('Unable to build the excerpt');
+        }
+    }
+
+    abstract function testAutocomplete();
 }

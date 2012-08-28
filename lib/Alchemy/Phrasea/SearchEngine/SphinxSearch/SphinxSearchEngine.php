@@ -31,6 +31,7 @@ class SphinxSearchEngine implements SearchEngineInterface
      * @var \SphinxClient
      */
     protected $sphinx;
+
     /**
      *
      * @var \SphinxClient
@@ -113,11 +114,13 @@ class SphinxSearchEngine implements SearchEngineInterface
                 continue;
             }
 
-            $all_datas[] = $field->get_serialized_values();
+            if ( ! $field->get_databox_field()->isBusiness()) {
+                $all_datas[] = $field->get_serialized_values();
+            }
 
             foreach ($field->get_values() as $value) {
 
-                $this->rt_conn->exec("REPLACE INTO "
+                $sql = "REPLACE INTO "
                     . "metas_realtime" . $this->CRCdatabox($record->get_databox()) . " VALUES (
                     '" . $value->getId() . "'
                     ,'" . str_replace("'", "\'", $value->getValue()) . "'
@@ -133,7 +136,9 @@ class SphinxSearchEngine implements SearchEngineInterface
                     ,0
                     ," . (int) $value->getDatabox_field()->isBusiness() . "
                     ," . crc32($record->get_collection()->get_coll_id() . '_' . (int) $value->getDatabox_field()->isBusiness()) . "
-                    ," . $record->get_creation_date()->format('U') . " )");
+                    ," . $record->get_creation_date()->format('U') . " )";
+
+                $this->rt_conn->exec($sql);
             }
         }
 
@@ -330,7 +335,7 @@ class SphinxSearchEngine implements SearchEngineInterface
                 $index = 'metadatas' . $this->CRCdatabox($record->get_databox());
             }
         } else {
-            if ($this->options->stemmed()) {
+            if ($this->options->stemmed() && $this->options->getLocale()) {
                 $index = 'documents' . $this->CRCdatabox($record->get_databox()) . '_stemmed_' . $this->options->getLocale();
             } else {
                 $index = 'documents' . $this->CRCdatabox($record->get_databox());
@@ -439,8 +444,8 @@ class SphinxSearchEngine implements SearchEngineInterface
         /**
          * @todo : enhance : check status in a better way
          */
+        $status_opts = $options->getStatus();
         foreach ($options->databoxes() as $databox) {
-            $status_opts = $options->getStatus();
             foreach ($databox->get_statusbits() as $n => $status) {
                 if ( ! array_key_exists($n, $status_opts))
                     continue;
