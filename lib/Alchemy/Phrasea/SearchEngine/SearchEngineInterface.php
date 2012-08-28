@@ -32,9 +32,7 @@ interface SearchEngineInterface
      */
     public function status();
 
-    public function getConfigurationPanel(Application $app, Request $request);
-
-    public function postConfigurationPanel(Application $app, Request $request);
+    public function configurationPanel();
 
     /**
      *

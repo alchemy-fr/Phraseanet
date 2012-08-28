@@ -2,9 +2,10 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Phrasea;
 
+use Alchemy\Phrasea\SearchEngine\ConfigurationPanelInterface;
 use Silex\Application;
 
-class ConfigurationPanel
+class ConfigurationPanel implements ConfigurationPanelInterface
 {
     protected $charsets;
     protected $searchEngine;

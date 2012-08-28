@@ -2,11 +2,12 @@
 
 namespace Alchemy\Phrasea\SearchEngine\SphinxSearch;
 
+use Alchemy\Phrasea\SearchEngine\ConfigurationPanelInterface;
 use Silex\Application;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\Request;
 
-class ConfigurationPanel
+class ConfigurationPanel implements ConfigurationPanelInterface
 {
     protected $charsets;
     protected $searchEngine;
