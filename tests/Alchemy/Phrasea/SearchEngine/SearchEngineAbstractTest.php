@@ -6,7 +6,7 @@ use Symfony\Component\Process\Process;
 
 require_once __DIR__ . '/../../../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
-abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedAbstract
+abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAbstract
 {
     protected static $searchEngine;
     protected static $initialized = false;
@@ -14,6 +14,10 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
     public function setUp()
     {
         parent::setUp();
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        foreach($appbox->get_databoxes() as $databox) {
+            break;
+        }
 
         if (!self::$initialized) {
             $found = false;
@@ -432,6 +436,9 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
         $this->assertEquals(1, $results->total());
+
+        self::$searchEngine->removeStory($story);
+        $this->updateIndex();
     }
 
     public function testStatusQueryOffOverOn()

@@ -47,6 +47,7 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
     {
     }
 
+
     public static function tearDownAfterClass()
     {
         $binaryFinder = new ExecutableFinder();
@@ -107,5 +108,54 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
             $this->assertInstanceof('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineSuggestion', $suggestion);
         }
     }
+
+    public function testAutocomplete()
+    {
+        $record = self::$records['record_24'];
+
+        $toupdate = array();
+
+        foreach ($record->get_databox()->get_meta_structure()->get_elements() as $field) {
+            try {
+                $values = $record->get_caption()->get_field($field->get_name())->get_values();
+                $value = array_pop($values);
+                $meta_id = $value->getId();
+            } catch (\Exception $e) {
+                $meta_id = null;
+            }
+
+            $toupdate[$field->get_id()] = array(
+                'meta_id'        => $meta_id
+                , 'meta_struct_id' => $field->get_id()
+                , 'value'          => 'jeanne, jeannine, jeannette, jean-pierre et jean claude'
+            );
+            break;
+        }
+
+        $record->set_metadatas($toupdate);
+
+        self::$searchEngine->addRecord($record);
+        $this->updateIndex();
+
+        $binaryFinder = new ExecutableFinder();
+        $indexer = $binaryFinder->find('indexer');
+
+        $process = new Process($indexer . ' --all --rotate -c ' . self::$config);
+        $process->run();
+
+        $appbox = \appbox::get_instance(self::$core);
+        self::$searchEngine->buildSuggestions($appbox->get_databoxes(), self::$config, 0);
+
+        $suggestions = self::$searchEngine->autoComplete('jean');
+        $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection',$suggestions);
+
+        $this->assertGreaterThan(2, count($suggestions));
+
+        foreach($suggestions as $suggestion) {
+            $this->assertInstanceof('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineSuggestion', $suggestion);
+        }
+    }
+
+
 }
 
