@@ -15,7 +15,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAbstract
     {
         parent::setUp();
         $appbox = \appbox::get_instance(\bootstrap::getCore());
-        foreach($appbox->get_databoxes() as $databox) {
+        foreach ($appbox->get_databoxes() as $databox) {
             break;
         }
 

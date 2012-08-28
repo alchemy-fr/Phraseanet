@@ -47,7 +47,6 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
     {
     }
 
-
     public static function tearDownAfterClass()
     {
         $binaryFinder = new ExecutableFinder();
@@ -147,15 +146,13 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
         self::$searchEngine->buildSuggestions($appbox->get_databoxes(), self::$config, 0);
 
         $suggestions = self::$searchEngine->autoComplete('jean');
-        $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection',$suggestions);
+        $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $suggestions);
 
         $this->assertGreaterThan(2, count($suggestions));
 
-        foreach($suggestions as $suggestion) {
+        foreach ($suggestions as $suggestion) {
             $this->assertInstanceof('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineSuggestion', $suggestion);
         }
     }
-
-
 }
 
