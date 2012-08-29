@@ -142,11 +142,9 @@ class Account implements ControllerProviderInterface
             ->bind('reset_email');
 
         /**
-         * Grant access to an authorized app
+         * Display the form to renew a password
          *
          * name         : reset_password
-         *
-         * description  : Display form to create a new account
          *
          * method       : GET
          *
@@ -156,6 +154,20 @@ class Account implements ControllerProviderInterface
          */
         $controllers->get('/reset-password/', $this->call('resetPassword'))
             ->bind('reset_password');
+
+        /**
+         * Do set a new password
+         *
+         * name         : reset_password
+         *
+         * method       : POST
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->post('/reset-password/', $this->call('renewPassword'))
+            ->bind('do_reset_password');
 
         /**
          * Give account open sessions

@@ -448,7 +448,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         self::$user->set_password($oldPassword);
 
-        $this->client->request('POST', '/account/forgot-password/', array(
+        $this->client->request('POST', '/account/reset-password/', array(
             'form_password'         => $password,
             'form_password_confirm' => $passwordConfirm,
             'form_old_password'     => $oldPassword
@@ -462,7 +462,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testPostRenewPasswordBadOldPassword()
     {
-        $this->client->request('POST', '/account/forgot-password/', array(
+        $this->client->request('POST', '/account/reset-password/', array(
             'form_password'         => 'password',
             'form_password_confirm' => 'password',
             'form_old_password'     => 'oulala'
@@ -480,7 +480,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         self::$user->set_password($password);
 
-        $this->client->request('POST', '/account/forgot-password/', array(
+        $this->client->request('POST', '/account/reset-password/', array(
             'form_password'         => 'password',
             'form_password_confirm' => 'password',
             'form_old_password'     => $password
