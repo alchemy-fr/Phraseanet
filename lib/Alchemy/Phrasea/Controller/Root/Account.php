@@ -93,23 +93,6 @@ class Account implements ControllerProviderInterface
         $controllers->post('/', $this->call('updateAccount'))
             ->bind('submit_update_account');
 
-
-        /**
-         * Give account access
-         *
-         * name         : account_access
-         *
-         * description  : Display collection that the user can access
-         *
-         * method       : GET
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->get('/forgot-password/', $this->call('displayForgotPasswordForm'))
-            ->bind('forgot_password');
-
         /**
          * Get reset email
          *
@@ -125,22 +108,6 @@ class Account implements ControllerProviderInterface
          */
         $controllers->get('/reset-email/', $this->call('displayResetEmailForm'))
             ->bind('account_reset_email');
-
-        /**
-         * Reset user email
-         *
-         * name         : submit_forgot_password
-         *
-         * description  : Reset User email
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : HTML Response
-         */
-        $controllers->post('/forgot-password/', $this->call('renewPassword'))
-            ->bind('submit_forgot_password');
 
         /**
          * Give account access
