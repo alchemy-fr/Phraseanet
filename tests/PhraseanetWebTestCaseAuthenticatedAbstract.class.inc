@@ -37,7 +37,7 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
             ->getMock();
     }
 
-    protected function setAdmin($bool)
+    public function setAdmin($bool)
     {
         $stubAuthenticatedUser = $this->getMockBuilder('\User_Adapter')
             ->setMethods(array('is_admin', 'ACL'))
@@ -49,7 +49,23 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
             ->will($this->returnValue($bool));
 
         $this->StubbedACL->expects($this->any())
+            ->method('give_access_to_sbas')
+            ->will($this->returnValue($this->StubbedACL));
+
+        $this->StubbedACL->expects($this->any())
+            ->method('update_rights_to_sbas')
+            ->will($this->returnValue($this->StubbedACL));
+
+        $this->StubbedACL->expects($this->any())
+            ->method('update_rights_to_bas')
+            ->will($this->returnValue($this->StubbedACL));
+
+        $this->StubbedACL->expects($this->any())
             ->method('has_right_on_base')
+            ->will($this->returnValue($bool));
+
+         $this->StubbedACL->expects($this->any())
+            ->method('has_right_on_sbas')
             ->will($this->returnValue($bool));
 
         $stubAuthenticatedUser->expects($this->any())
