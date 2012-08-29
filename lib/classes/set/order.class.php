@@ -92,7 +92,7 @@ class set_order extends set_abstract
         $stmt->closeCursor();
 
         if ( ! $row)
-            throw new Exception('unknown order ' . $id);
+            throw new Exception_NotFound('unknown order ' . $id);
 
         $current_user = User_Adapter::getInstance($row['usr_id'], $appbox);
         $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
@@ -262,9 +262,10 @@ class set_order extends set_abstract
               WHERE order_id = :order_id
                 AND id = :order_element_id';
 
-        if ($force == '0') {
+        if ( ! $force) {
             $sql .= ' AND ISNULL(order_master_id)';
         }
+
         $stmt = $conn->prepare($sql);
 
         foreach ($basrecs as $order_element_id => $basrec) {

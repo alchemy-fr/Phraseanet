@@ -119,6 +119,19 @@ class Root implements ControllerProviderInterface
                 return new Response($out);
             });
 
+        $controllers->post('/multi-export/', function(Application $app) {
+
+                $download = new \set_export($request->query->get('lst', ''), (int) $request->query->get('SSTTID'), $request->query->get('story'));
+
+                return $app['twig']->render('common/dialog_export.html.twig', array(
+                    'download'             => $download,
+                    'ssttid'               => (int) $request->query->get('SSTTID'),
+                    'lst'                  => $download->serialize_list(),
+                    'default_export_title' => $registry->get('GV_default_export_title'),
+                    'choose_export_title'  => $registry->get('GV_choose_export_title')
+                ));
+            });
+
         return $controllers;
     }
 }

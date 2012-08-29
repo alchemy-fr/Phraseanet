@@ -1,11 +1,10 @@
 {% import 'common/thumbnail.html.twig' as thumbnail %}
-
-<div>
+<div class="well">
     <div>
         <button class="order_launcher">&lt; {% trans 'Retour aux commandes' %}</button>
     </div>
     <div>
-        <table>
+        <table class="table">
             <tr>
                 <td>{% trans 'Destinataire' %}</td>
                 <td>{{ order.get_user().get_display_name() }}({{ order.get_user().get_email() }})</td>
@@ -34,8 +33,8 @@
     <div>
         <div>
             {% trans 'Selectionnez des documents et ' %}
-            <button class="send">Envoyer</button>
-            <button class="deny">Refuser</button>
+            <button class="btn btn-primary" class="send">Envoyer</button>
+            <button class="btn" class="deny">Refuser</button>
             <img src="/skins/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
         </div>
         <div class="order_list">
@@ -65,6 +64,6 @@
                     <input type="hidden" name="order_element_id" value="{{order_element_id}}"/>
                 </div>
             {% endfor %}
-        <div>
-    <div>
+        </div>
+    </div>
 </div>

@@ -217,153 +217,137 @@
         {% endif %}
         {% if download.get_total_order() > 0 %}
             <div id="order">
-                <div style="padding:10px; text-align: center;">
-                    <h4>{% trans 'export::commande: bon de commande' %}</h4>
-                    <form method="post" class="form-horizontal" style="text-align: left;">
+                <form method="post" action="" class="form-horizontal">
+                    <legend>{% trans 'export::commande: bon de commande' %}</legend>
                         <input type="hidden" name="lst" value="{{lst}}"/>
                         <input type="hidden" name="ssttid" value="{{ssttid}}"/>
-                        <table cellspacing="0" cellpadding="0" border="0" style="width:100%;">
-                            <tr>
-                                <td>
-                                    {% trans 'commande::utilisation prevue' %}
-                                </td>
-                                <td>
-                                    <textarea style="width:250px;" rows="5" name="use" id="order_usage"></textarea>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    {% trans 'commande::deadline' %}
-                                </td>
-                                <td>
-                                    <input style="width:250px;" class="datepicker" type="text" name="deadline" id="deadline" value="">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                </td>
-                                <td>
-                                    <select name="sexe" id="sexe">
-                                        <option {% if user.get_gender == 0 %}selected="selected"{% endif %} value="0">{% trans 'admin::compte-utilisateur:sexe: mademoiselle' %}</option>
-                                        <option {% if user.get_gender == 1 %}selected="selected"{% endif %} value="1">{% trans 'admin::compte-utilisateur:sexe: madame' %}</option>
-                                        <option {% if user.get_gender == 2 %}selected="selected"{% endif %} value="2">{% trans 'admin::compte-utilisateur:sexe: monsieur' %}</option>
-                                    </select>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    {% trans 'admin::compte-utilisateur nom' %} *
-                                </td>
-                                <td>
-                                    <input style="width:250px;" type="text" name="usr_nom" class="required" value="{{ user.get_lastname() }}">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    {% trans 'admin::compte-utilisateur prenom' %} *
-                                </td>
-                                <td>
-                                    <input style="width:250px;" type="text" name="usr_prenom" class="required" id="prenom" value="{{ user.get_firstname() }}">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    {% trans 'admin::compte-utilisateur email' %} *
-                                </td>
-                                <td>
-                                    <input style="width:250px;" class="required" type="text" name="usr_mail" id="usr_mail" value="{{ user.get_email() }}">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    {% trans 'admin::compte-utilisateur telephone' %}
-                                </td>
-                                <td>
-                                    <input style="width:250px;" type="text" name="tel" id="tel" value="{{ user.get_tel() }}">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    {% trans 'admin::compte-utilisateur societe' %}
-                                </td>
-                                <td>
-                                    <input style="width:250px;" type="text" name="societe" id="societe" value="{{ user.get_company() }}">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    {% trans 'admin::compte-utilisateur poste' %}
-                                </td>
-                                <td>
-                                    <input style="width:250px;" type="text" name="fonction" id="fonction" value="{{ user.get_job() }}">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    {% trans 'admin::compte-utilisateur adresse' %} *
-                                </td>
-                                <td>
-                                    <input style="width:250px;" class="required" type="text" name="adresse" id="adresse" value="{{ user.get_address() }}">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    {% trans 'admin::compte-utilisateur code postal' %} *
-                                </td>
-                                <td>
-                                    <input style="width:250px;" type="text" name="cpostal" name="cpostal" class="required" value="{{ user.get_zipcode() }}">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    {% trans 'admin::compte-utilisateur ville' %} *
-                                </td>
-                                <td>
-                                    <input style="width:250px;" class="required geoname_field" type="text" name="geonameid" id="command_geoname_field" geonameid="{{ user.get_geonameid() }}" value="{{ user.get_geonameid()|geoname_display }}">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    {% trans 'admin::compte-utilisateur fax' %}
-                                </td>
-                                <td>
-                                    <input style="width:250px;" type="text" name="fax" name="fax" value="{{ user.get_fax() }}">
-                                </td>
-                            </tr>
-                        </table>
-                        <div>
-                            {% for name, values in download.get_display_orderable() %}
-                                {% if values.available > 0 %}
-                                    <div style="margin: 10px 0 20px 0; padding: 0 10px;">
-                                        {% set docs_orderable = values.available %}
-                                        {% trans %}{{docs_orderable}} documents commandes{% endtrans %}
-                                        {% set docs_not_orderable = values.total - values.available %}
-                                        {% if docs_not_orderable > 0%}
-                                            {% trans %}{{docs_not_orderable}} documents ne peuvent pas etre commandes{% endtrans %}
-                                        {% endif %}
-                                        {% set title%}
-                                            {% trans 'Documents indisponibles' %}
-                                        {% endset %}
-                                        {% if values.refused|length > 0 %}
-                                            <a href="#" class="undisposable_link" title="{{title|e}}"> + </a>
-                                            <div style="display:none;" class="undisposable">
-                                                <div><i>{% trans 'La sous resolution n\'est pas disponible pour les documents suivants' %}</i></div>
-                                                {% for datas in values.refused%}
-                                                    {{ thumbnail.format(datas, 80, 80,'', session, true) }}
-                                                {% endfor %}
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
+
+                        <div class="control-group">
+                            <label class="control-label" for="order_usage">{% trans 'commande::utilisation prevue' %}</label>
+                            <div class="controls">
+                              <textarea rows="5" name="use" id="order_usage"></textarea>
+                            </div>
                         </div>
-                        <div class="buttons_line">
-                            <button type="button" class="order_button btn btn-inverse">{% trans 'boutton::commander'%}</button>
+
+                        <div class="control-group">
+                            <label class="control-label" for="deadline">{% trans 'commande::deadline' %}</label>
+                            <div class="controls">
+                              <input class="datepicker" type="text" name="deadline" id="deadline" value="">
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label" for="sexe">{% trans 'Civility' %}</label>
+                            <div class="controls">
+                                <select name="sexe" id="sexe">
+                                    <option {% if user.get_gender == 0 %}selected="selected"{% endif %} value="0">{% trans 'admin::compte-utilisateur:sexe: mademoiselle' %}</option>
+                                    <option {% if user.get_gender == 1 %}selected="selected"{% endif %} value="1">{% trans 'admin::compte-utilisateur:sexe: madame' %}</option>
+                                    <option {% if user.get_gender == 2 %}selected="selected"{% endif %} value="2">{% trans 'admin::compte-utilisateur:sexe: monsieur' %}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label" for="usr_lastname">{% trans 'admin::compte-utilisateur nom' %} *</label>
+                            <div class="controls">
+                                <input id='usr_lastname' type="text" name="usr_nom" class="required" value="{{ user.get_lastname() }}">
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label" for="usr_firstname">{% trans 'admin::compte-utilisateur prenom' %} *</label>
+                            <div class="controls">
+                                <input type="text" name="usr_prenom" class="required" id="usr_firstname" value="{{ user.get_firstname() }}">
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label" for="usr_mail"> {% trans 'admin::compte-utilisateur email' %} *</label>
+                            <div class="controls">
+                                <input class="required" type="text" name="usr_mail" id="usr_mail" value="{{ user.get_email() }}">
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label" for="usr_tel">{% trans 'admin::compte-utilisateur telephone' %}</label>
+                            <div class="controls">
+                                <input type="text" name="tel" id="usr_tel" value="{{ user.get_tel() }}">
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label" for="usr_societe">{% trans 'admin::compte-utilisateur societe' %}</label>
+                            <div class="controls">
+                                <input type="text" name="societe" id="usr_societe" value="{{ user.get_company() }}">
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label" for="usr_function">{% trans 'admin::compte-utilisateur poste' %}</label>
+                            <div class="controls">
+                                <input type="text" name="fonction" id="usr_fonction" value="{{ user.get_job() }}">
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label" for="usr_address">{% trans 'admin::compte-utilisateur adresse' %} *</label>
+                            <div class="controls">
+                                <input class="required" type="text" name="adresse" id="usr_adresse" value="{{ user.get_address() }}">
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label" for="usr_zip_code">{% trans 'admin::compte-utilisateur code postal' %} *</label>
+                            <div class="controls">
+                                <input id="usr_zip_code" type="text" name="cpostal" name="cpostal" class="required" value="{{ user.get_zipcode() }}">
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label" for="command_geoname_field">{% trans 'admin::compte-utilisateur ville' %} *</label>
+                            <div class="controls">
+                                <input class="required geoname_field" type="text" name="geonameid" id="command_geoname_field" geonameid="{{ user.get_geonameid() }}" value="{{ user.get_geonameid()|geoname_display }}">
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label" for="usr_fax">{% trans 'admin::compte-utilisateur fax' %}</label>
+                            <div class="controls">
+                                <input type="text" id="usr_fax" name="fax" value="{{ user.get_fax() }}">
+                            </div>
+                        </div>
+
+                        {% for name, values in download.get_display_orderable() %}
+                            {% if values.available > 0 %}
+                                <div class='well-small'>
+                                    {% set docs_orderable = values.available %}
+                                    <h4>{% trans %}{{docs_orderable}} documents commandes{% endtrans %}</h4>
+                                    {% set docs_not_orderable = values.total - values.available %}
+                                    {% if docs_not_orderable > 0%}
+                                        {% trans %}{{docs_not_orderable}} documents ne peuvent pas etre commandes{% endtrans %}
+                                    {% endif %}
+                                    {% set title%}
+                                        {% trans 'Documents indisponibles' %}
+                                    {% endset %}
+                                    {% if values.refused|length > 0 %}
+                                        <a href="#" class="undisposable_link" title="{{title|e}}"> + </a>
+                                        <div style="display:none;" class="undisposable">
+                                            <div><i>{% trans 'La sous resolution n\'est pas disponible pour les documents suivants' %}</i></div>
+                                            {% for datas in values.refused%}
+                                                {{ thumbnail.format(datas, 80, 80,'', session, true) }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+
+                        <div class="form_actions buttons_line">
+                            <button type="button" class="order_button btn btn-primary">{% trans 'boutton::commander'%}</button>
                             <img class="order_button_loader" src="/skins/icons/loader404040.gif" style="visibility:hidden;margin:0 5px;"/>
                             <button type="button" class="close_button btn btn-inverse">{% trans 'boutton::annuler'%}</button>
                         </div>
                     </form>
-                </div>
             </div>
         {% endif %}
         {% if download.get_total_ftp() > 0 %}
@@ -543,20 +527,23 @@
             $('#order .order_button').bind('click',function(){
                 $('#order .order_button_loader').css('visibility','visible');
 
-                var options = $('#order form').serialize()+'&action=ORDER&use='+escape(tinyMCE.get('order_usage').getContent());
+                var options = $('#order form').serialize()+'&use='+escape(tinyMCE.get('order_usage').getContent());
 
                 var $this = $(this);
-                $this.attr('disabled','disabled');
-                $.post("/prod/prodFeedBack.php"
+                $this.attr('disabled', true).addClass('disabled');
+                $.post("{{ path('prod_order_new') }}"
                     , options
                     , function(data){
-                        $this.removeAttr('disabled');
+                        $this.attr('disabled', false).removeClass('disabled')
+
                         $('#order .order_button_loader').css('visibility','hidden');
 
-                        alert(data.message);
-                        if(!data.error)
+                        if( data.success )
                         {
+                            humane.info(data.msg);
                             $('#dialog_dwnl').dialog('close').dialog('destroy');
+                        } else {
+                            humane.error(data.msg);
                         }
 
                         return;
