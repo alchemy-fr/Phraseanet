@@ -6,10 +6,28 @@ use Symfony\Component\Process\Process;
 
 require_once __DIR__ . '/../../../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
-abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAbstract
+abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedAbstract
 {
     protected static $searchEngine;
     protected static $initialized = false;
+
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+
+        foreach (self::$records['record_24']->get_databox()->get_meta_structure()->get_elements() as $field) {
+            if ( ! $field->isBusiness()) {
+                continue;
+            }
+            $found = true;
+        }
+
+        if ( ! $found) {
+            $field = \databox_field::create(self::$records['record_24']->get_databox(), 'testBusiness' . mt_rand(), false);
+            $field->set_business(true);
+            $field->save();
+        }
+    }
 
     public function setUp()
     {
@@ -436,6 +454,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAbstract
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
         $this->assertEquals(1, $results->total());
+    }
 
         self::$searchEngine->removeStory($story);
         $this->updateIndex();
@@ -469,6 +488,9 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAbstract
         $record = self::$DI['record_24'];
         $record->set_binary_status('00000');
 
+        $record = self::$records['record_24'];
+        $record->set_binary_status('00000');
+        
         $options->setStatus(array(4 => array('off' => array($record->get_databox()->get_sbas_id()))));
         self::$searchEngine->setOptions($options);
 
