@@ -91,6 +91,7 @@
             "{{d_width}}", "{{d_height}}", "9.0.0", false, false,
             {menu: "false",flashvars: "playerID=2&autostart=yes&noinfo=yes&animation=no&remaining=yes&soundFile={{url}}", movie: "/include/jslibs/audio-player/player.swf",	allowFullScreen :"true",wmode: "transparent"}, false);</script>
         {% else %}
+          {% set url = url ~ '?tag=' ~ thumbnail.getEtag() %}
           <img class="record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
                style="width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;"
                src="{{url}}" ondragstart="return false;">

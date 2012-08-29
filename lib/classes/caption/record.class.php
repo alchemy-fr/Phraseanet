@@ -202,7 +202,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
      */
     public function get_field($fieldname)
     {
-        foreach ($this->get_fields() as $meta_struct_id => $field) {
+        foreach ($this->get_fields(null, true) as $meta_struct_id => $field) {
             if ($field->get_name() == $fieldname) {
                 return $field;
             }
