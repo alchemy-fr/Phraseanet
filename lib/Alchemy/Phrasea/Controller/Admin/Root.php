@@ -206,7 +206,7 @@ class Root implements ControllerProviderInterface
                     $structure = $databox->get_structure();
                     $errors = \databox::get_structure_errors($structure);
 
-                    if ($updateOk =  ! ! $request->get('success', false)) {
+                    if ($updateOk = ! ! $request->get('success', false)) {
                         $updateOk = true;
                     }
 
@@ -259,7 +259,7 @@ class Root implements ControllerProviderInterface
                     }
 
                     return new Response($app['twig']->render('admin/statusbit.html.twig', array(
-                                'databox'=> $app['phraseanet.appbox']->get_databox($databox_id),
+                                'databox' => $app['phraseanet.appbox']->get_databox($databox_id),
                             )));
                 })
             ->assert('databox_id', '\d+')

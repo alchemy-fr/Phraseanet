@@ -794,7 +794,6 @@ class Collection implements ControllerProviderInterface
 
             if ($collection->get_record_amount() > 0) {
                 $msg = _('Empty the collection before removing');
-
             } else {
                 $collection->unmount_collection($app['phraseanet.appbox']);
                 $collection->delete();
@@ -813,7 +812,7 @@ class Collection implements ControllerProviderInterface
                 ));
         }
 
-        if($collection->get_record_amount() > 0) {
+        if ($collection->get_record_amount() > 0) {
 
             return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=0&error=collection-not-empty');
         }
@@ -1018,7 +1017,7 @@ class Collection implements ControllerProviderInterface
                     if ($vi && isset($structFields[$ki])) {
                         foreach ($vi->value as $oneValue) {
                             $suggestedValues[] = array(
-                                'key' => $ki, 'value' => $f, 'name' => $oneValue
+                                'key'   => $ki, 'value' => $f, 'name'  => $oneValue
                             );
                             $f ++;
                         }
