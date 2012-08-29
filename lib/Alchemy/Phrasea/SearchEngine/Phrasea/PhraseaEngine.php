@@ -55,17 +55,7 @@ class PhraseaEngine implements SearchEngineInterface
         return $status;
     }
 
-    public function getConfigurationPanel(Application $app, Request $request)
-    {
-
-    }
-
-    public function postConfigurationPanel(Application $app, Request $request)
-    {
-
-    }
-
-    private function configurationPanel()
+    public function configurationPanel()
     {
         if ( ! $this->configurationPanel) {
             $this->configurationPanel = new ConfigurationPanel($this);
@@ -316,7 +306,7 @@ class PhraseaEngine implements SearchEngineInterface
                 , $this->colls[$sbas_id]
                 , $this->arrayq[$sbas_id]
                 , $registry->get('GV_sit')
-                , (string) $session->get_usr_id()
+                , $session->get_usr_id()
                 , false
                 , $this->options->searchType() == SearchEngineOptions::RECORD_GROUPING ? PHRASEA_MULTIDOC_REGONLY : PHRASEA_MULTIDOC_DOCONLY
                 , $sort
@@ -467,7 +457,7 @@ class PhraseaEngine implements SearchEngineInterface
                 }
             }
             if ($this->options->fields()) {
-                $this->queries[$sbas] .= ' IN (' . implode(' OR ', $this->options->fields()) . ')';
+                $this->queries[$sbas] .= ' IN (' . implode(' OR ', array_map(function(\databox_field $field){return $field->get_name();},$this->options->fields())) . ')';
             }
             if (($this->options->getMinDate() || $this->options->getMaxDate()) && $this->options->getDateFields()) {
                 if ($this->options->getMinDate()) {
