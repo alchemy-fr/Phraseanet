@@ -29,11 +29,11 @@ class SearchEngine implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->get('/', function(PhraseaApplication $app, Request $request) {
-            return $app['phraseanet.SE']->getConfigurationPanel($app, $request);
+            return $app['phraseanet.SE']->configurationPanel()->get($app, $request);
         })->bind('admin_searchengine_get');
 
         $controllers->post('/', function(PhraseaApplication $app, Request $request) {
-            return $app['phraseanet.SE']->postConfigurationPanel($app, $request);
+            return $app['phraseanet.SE']->configurationPanel()->post($app, $request);
         })->bind('admin_searchengine_post');
 
         return $controllers;
