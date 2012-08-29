@@ -206,7 +206,7 @@ class Root implements ControllerProviderInterface
                     $structure = $databox->get_structure();
                     $errors = \databox::get_structure_errors($structure);
 
-                    if ('ok' === $updateOk = $request->get('update', false)) {
+                    if ($updateOk =  ! ! $request->get('success', false)) {
                         $updateOk = true;
                     }
 
@@ -244,10 +244,10 @@ class Root implements ControllerProviderInterface
                         $databox = $app['phraseanet.appbox']->get_databox($databox_id);
                         $databox->saveStructure($domst);
 
-                        return $app->redirect('/admin/structure/' . $databox_id . '/?update=ok');
+                        return $app->redirect('/admin/structure/' . $databox_id . '/?success=1');
                     } else {
 
-                        return $app->redirect('/admin/structure/' . $databox_id . '/?error=struct');
+                        return $app->redirect('/admin/structure/' . $databox_id . '/?success=0&error=struct');
                     }
                 })
             ->assert('databox_id', '\d+')
@@ -388,7 +388,7 @@ class Root implements ControllerProviderInterface
                         }
                     }
 
-                    return $app->redirect('/admin/statusbit/' . $databox_id . '/?update=ok');
+                    return $app->redirect('/admin/statusbit/' . $databox_id . '/?success=1');
                 })
             ->assert('databox_id', '\d+')
             ->assert('bit', '\d+')

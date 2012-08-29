@@ -30,7 +30,7 @@ class Databox implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function() use ($app) {
+        $controllers->before(function(Request $request) use ($app) {
                 return $app['phraseanet.core']['Firewall']->requireAdmin($app);
             });
 

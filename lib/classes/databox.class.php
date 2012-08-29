@@ -83,12 +83,6 @@ class databox extends base
      */
     protected static $_sxml_thesaurus = array();
 
-    /**
-     *
-     * @var Array
-     */
-    protected static $_instances = array();
-
     const BASE_TYPE = self::DATA_BOX;
     const CACHE_META_STRUCT = 'meta_struct';
     const CACHE_THESAURUS = 'thesaurus';

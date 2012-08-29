@@ -1,3 +1,10 @@
+{% if app.request.query.get('success') == '1' %}
+    <div class="alert alert-success">
+        <a class="close" data-dismiss="alert" href="#">×</a>
+        {% trans 'Successful update' %}
+    </div>
+{% endif %}
+
 <form class="well form-inline" method='post' action='/admin/sphinx/configuration/'>
     <select name="charset_tables[]" multiple="multiple">
         {% for charset, charset_obj in configuration.get_available_charsets() %}

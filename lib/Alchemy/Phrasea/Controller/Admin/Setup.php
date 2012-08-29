@@ -34,7 +34,7 @@ class Setup implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function() use ($app) {
+        $controllers->before(function(Request $request) use ($app) {
                 return $app['phraseanet.core']['Firewall']->requireAdmin($app);
             });
 
@@ -87,7 +87,7 @@ class Setup implements ControllerProviderInterface
         require_once __DIR__ . "/../../../../conf.d/_GV_template.inc";
 
         if (null !== $update = $request->get('update')) {
-            if ('ok' === $update) {
+            if ( ! ! $update) {
                 $update = _('Update succeed');
             } else {
                 $update = _('Update failed');
@@ -111,10 +111,10 @@ class Setup implements ControllerProviderInterface
     public function postGlobals(Application $app, Request $request)
     {
         if (\setup::create_global_values($app['phraseanet.core']['Registry'], $request->request->all())) {
-            return $app->redirect('/admin/globals/?update=ok');
+            return $app->redirect('/admin/globals/?success=1');
         }
 
-        return $app->redirect('/admin/globals/?update=ko');
+        return $app->redirect('/admin/globals/?success=0');
     }
 
     /**

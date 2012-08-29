@@ -30,7 +30,7 @@ class Collection implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function() use ($app) {
+        $controllers->before(function(Request $request) use ($app) {
                 if (null !== $response = $app['phraseanet.core']['Firewall']->requireAdmin($app)) {
                     return $response;
                 }

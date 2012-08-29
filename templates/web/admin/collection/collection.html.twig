@@ -1,6 +1,6 @@
 {% if reloadTree %}
     <script type="text/javascript">
-        parent.reloadTree('base:{{ collection.get_sbas_id() }}');
+        reloadTree('base:{{ collection.get_sbas_id() }}');
     </script>
 {% endif %}
 
@@ -276,7 +276,7 @@
                 success: function(datas) {
                     if(datas.success) {
                         if(submitLink.hasClass('reload')) {
-                            parent.reloadTree('base:{{ collection.get_sbas_id() }}');
+                            reloadTree('base:{{ collection.get_sbas_id() }}');
                         }
                     } else {
                         alert(datas.msg);

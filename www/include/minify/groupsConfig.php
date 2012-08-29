@@ -38,7 +38,6 @@ $groups = array(
         , '//include/vendor/jquery-file-upload/js/vendor/jquery.ui.widget.js'
         , '//include/vendor/jquery-file-upload/js/jquery.iframe-transport.js'
         , '//include/vendor/jquery-file-upload/js/jquery.fileupload.js'
-        , '//prod/jquery.Phraseanet.js'
     ),
     'report' => array(
          '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'

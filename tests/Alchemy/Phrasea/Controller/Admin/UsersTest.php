@@ -323,7 +323,6 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 break;
             }
         }
-//
 
         $this->client->request('POST', '/users/rights/reset/', array('users'   => $user->get_id()));
         $response = $this->client->getResponse();
@@ -363,17 +362,4 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue($this->client->getResponse()->isOk());
     }
-
-//    public function testPostDemands()
-//    {
-//        $collection = \collection::create(array_shift($this->app['phraseanet.appbox']->get_databoxes()), $this->app['phraseanet.appbox'], 'TESTTODELETE');
-//        $register = new \appbox_register($this->app['phraseanet.appbox']);
-//        $register->add_request(self::$user, $collection);
-//
-//        $this->client->request('POST', '/users/demands/', array(
-//            'accept'
-//        ));
-//
-//        $this->assertTrue($this->client->getResponse()->isOk());
-//    }
 }

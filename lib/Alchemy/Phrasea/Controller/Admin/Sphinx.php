@@ -29,7 +29,7 @@ class Sphinx implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function() use ($app) {
+        $controllers->before(function(Request $request) use ($app) {
                 return $app['phraseanet.core']['Firewall']->requireAdmin($app);
             });
 
@@ -107,7 +107,7 @@ class Sphinx implements ControllerProviderInterface
             'sphinx_user_stemmer', $request->request->get('libstemmer', array()), \registry::TYPE_ARRAY
         );
 
-        return $app->redirect('/admin/sphinx/configuration/?update=ok');
+        return $app->redirect('/admin/sphinx/configuration/?success=1');
     }
 
     /**

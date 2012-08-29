@@ -62,21 +62,27 @@ class format
         $separateur = ",";
 
         // For mac
+        $autoDetectLineEndings = ini_get("auto_detect_line_endings");
+
         ini_set("auto_detect_line_endings", true);
 
-        if ($FILE = fopen($filename, "r")) {
-            $test1 = fgetcsv($FILE, 1024, ",");
-            rewind($FILE);
-            $test2 = fgetcsv($FILE, 1024, ";");
-            rewind($FILE);
-            if (count($test1) == 1 || ( count($test2) > count($test1) && count($test2) < 20))
+        if ($file = fopen($filename, "r")) {
+            $test1 = fgetcsv($file, 1024, ",");
+            rewind($file);
+            $test2 = fgetcsv($file, 1024, ";");
+            rewind($file);
+
+            if (count($test1) == 1 || ( count($test2) > count($test1) && count($test2) < 20)) {
                 $separateur = ";";
+            }
 
-            while ($ARRAY[] = fgetcsv($FILE, 1024, $separateur));
-            fclose($FILE);
-            array_pop($ARRAY);
+            while ($array[] = fgetcsv($file, 1024, $separateur));
+            fclose($file);
+            array_pop($array);
 
-            return $ARRAY;
+            ini_set("auto_detect_line_endings", $autoDetectLineEndings);
+
+            return $array;
         }
     }
 }
