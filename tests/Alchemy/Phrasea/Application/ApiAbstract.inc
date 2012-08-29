@@ -197,6 +197,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $content = $this->unserialize($this->client->getResponse()->getContent());
         $this->assertEquals(401, $content['meta']['http_code']);
 
+        $this->client->request('GET', '/monitor/scheduler/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $content = $this->unserialize($this->client->getResponse()->getContent());
+        $this->assertEquals(401, $content['meta']['http_code']);
+
         $this->client->request('GET', '/monitor/task/1/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
         $this->assertEquals(401, $content['meta']['http_code']);
@@ -248,6 +252,46 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         foreach ($response['tasks'] as $task) {
             $this->evaluateGoodTask($task);
         }
+    }
+
+    /**
+     * Route GET /API/V1/monitor/scheduler
+     * @covers API_V1_adapter::get_scheduler
+     */
+    public function testGetScheduler()
+    {
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        if (null === self::$adminToken) {
+            $this->markTestSkipped('there is no user with admin rights');
+        }
+        $this->setToken(self::$adminToken);
+
+        $route = '/monitor/scheduler/';
+        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+
+        $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        $content = $this->unserialize($this->client->getResponse()->getContent());
+
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMeta200($content);
+        $response = $content['response'];
+
+        $this->assertInternalType('array', $response['scheduler']);
+
+        $this->assertArrayHasKey('state', $response['scheduler']);
+        $this->assertArrayHasKey('pid', $response['scheduler']);
+        $this->assertArrayHasKey('updated_on', $response['scheduler']);
+
+        $this->assertEquals(3, count($response['scheduler']));
+
+        if (null !== $response['scheduler']['updated_on']) {
+            $this->assertDateAtom($response['scheduler']['updated_on']);
+        }
+        if (null !== $response['scheduler']['pid']) {
+            $this->assertTrue(is_int($response['scheduler']['pid']));
+        }
+
+        $this->assertTrue('' !== $response['scheduler']['state']);
     }
 
     protected function evaluateGoodTask($task)

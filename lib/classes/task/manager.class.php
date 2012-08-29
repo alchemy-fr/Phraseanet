@@ -119,6 +119,7 @@ class task_manager
         $appbox = appbox::get_instance(\bootstrap::getCore());
 
         $sql = "SELECT UNIX_TIMESTAMP()-UNIX_TIMESTAMP(schedqtime) AS qdelay
+            , schedqtime AS updated_on
             , schedstatus AS status FROM sitepreff";
         $stmt = $this->appbox->get_connection()->prepare($sql);
         $stmt->execute();
@@ -137,6 +138,12 @@ class task_manager
                 flock($schedlock, LOCK_UN);
             }
             fclose($schedlock);
+        }
+
+        if ($ret['updated_on'] == '0000-00-00 00:00:00') {
+            $ret['updated_on'] = null;
+        } else {
+            $ret['updated_on'] = new \DateTime($ret['updated_on']);
         }
 
         if ($pid === NULL && $ret['status'] !== 'stopped') {
