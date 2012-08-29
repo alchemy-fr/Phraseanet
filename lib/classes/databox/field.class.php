@@ -392,6 +392,7 @@ class databox_field implements cache_cacheableInterface
         $meta->setAttribute('required', $this->required ? '1' : '0');
         $meta->setAttribute('multi', $this->multi ? '1' : '0');
         $meta->setAttribute('report', $this->report ? '1' : '0');
+        $meta->setAttribute('business', $this->Business ? '1' : '0');
         $meta->setAttribute('type', $this->type);
         $meta->setAttribute('tbranch', $this->tbranch);
         if ($this->multi) {
