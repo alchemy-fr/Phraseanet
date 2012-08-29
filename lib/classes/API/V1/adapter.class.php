@@ -95,6 +95,33 @@ class API_V1_adapter extends API_V1_Abstract
     }
 
     /**
+     * Return an array of key-values informations about scheduler
+     *
+     * @param  Application $app The silex application
+     * @return \API_V1_result
+     */
+    public function get_scheduler(Application $app)
+    {
+        $result = new \API_V1_result($app['request'], $this);
+
+        $appbox = \appbox::get_instance($app['Core']);
+        $taskManager = new \task_manager($appbox);
+        $ret = $taskManager->getSchedulerState();
+
+        $ret['state'] = $ret['status'];
+
+        unset($ret['qdelay'], $ret['status']);
+
+        if (null !== $ret['updated_on']) {
+            $ret['updated_on'] = $ret['updated_on']->format(DATE_ATOM);
+        }
+
+        $result->set_datas(array('scheduler' => $ret));
+
+        return $result;
+    }
+
+    /**
      * Get a list of phraseanet tasks
      *
      * @param  \Silex\Application $app The API silex application
