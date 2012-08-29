@@ -39,6 +39,8 @@ class module_console_systemUpgrade extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
+        require_once dirname(__FILE__) . '/../../../../lib/bootstrap.php';
+
         $old_connexion_file = __DIR__ . '/../../../../config/connexion.inc';
         $old_config_file = __DIR__ . '/../../../../config/config.inc';
 
@@ -68,7 +70,9 @@ class module_console_systemUpgrade extends Command
             }
         }
 
-        $this->checkSetup();
+        if ( ! $Core->getConfiguration()->isInstalled()) {
+            throw new \RuntimeException('Phraseanet must be set-up (no connexion.inc / no config.inc)');
+        }
 
         $output->write('Phraseanet is going to be upgraded', true);
         $dialog = $this->getHelperSet()->get('dialog');
