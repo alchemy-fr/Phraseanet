@@ -393,7 +393,7 @@ class databox extends base
     public static function create(appbox &$appbox, connection_pdo &$connection, \SplFileInfo $data_template, registryInterface $registry)
     {
         if ( ! file_exists($data_template->getRealPath())) {
-            throw new \InvalidArgumentException();
+            throw new \InvalidArgumentException($data_template->getRealPath() . " does not exist");
         }
 
         $credentials = $connection->get_credentials();
@@ -866,6 +866,7 @@ class databox extends base
                 ->set_indexable(isset($field['index']) ? $field['index'] : '1')
                 ->set_separator(isset($field['separator']) ? $field['separator'] : '')
                 ->set_required((isset($field['required']) && $field['required'] == 1))
+                ->set_business((isset($field['business']) && $field['business'] == 1))
                 ->set_type($type)
                 ->set_tbranch(isset($field['tbranch']) ? $field['tbranch'] : '')
                 ->set_thumbtitle(isset($field['thumbtitle']) ? $field['thumbtitle'] : (isset($field['thumbTitle']) ? $field['thumbTitle'] : '0'))
