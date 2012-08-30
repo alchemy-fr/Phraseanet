@@ -32,14 +32,14 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
         parent::setUp();
 
         $this->client = $this->createClient();
+
+        $this->StubbedACL = $this->getMockBuilder('\ACL')
+            ->disableOriginalConstructor()
+            ->getMock();
     }
 
     public function setAdmin($bool)
     {
-        $this->StubbedACL = $this->getMockBuilder('\ACL')
-            ->disableOriginalConstructor()
-            ->getMock();
-
         $stubAuthenticatedUser = $this->getMockBuilder('\User_Adapter')
             ->setMethods(array('is_admin', 'ACL'))
             ->disableOriginalConstructor()
@@ -65,7 +65,7 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
             ->method('has_right_on_base')
             ->will($this->returnValue($bool));
 
-         $this->StubbedACL->expects($this->any())
+        $this->StubbedACL->expects($this->any())
             ->method('has_right_on_sbas')
             ->will($this->returnValue($bool));
 
