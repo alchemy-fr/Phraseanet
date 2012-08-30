@@ -9,32 +9,30 @@ function initorders()
 	});
 	$('body').append('<div id="order_manager"></div>');
 }
+
 function load_orders(sort, page)
 {
 	if(typeof(page) == "undefined")
 	{
 		page = 1;
 	}
+
 	$.ajax({
-		type: "POST",
-		url: "/prod/prodFeedBack.php",
-		dataType:'json',
+		type: "GET",
+		url: "/prod/order/",
+		dataType:'html',
 		data: {
-			action: "GET_ORDERMANAGER",
 			sort:sort,
 			page:page
 		},
 		success: function(data){
-			if(data.error)
-			{
-				alert(data.datas);
-				return;
-			}
-			$('#order_manager').empty().append(data.datas);
-			$('#order_manager tr.order_row').bind('click', function(event){
+			$('#order_manager').empty().append(data);
+
+			$('#order_manager tr.order_row').bind('click', function(e){
 				var id = $(this).attr('id').split('_').pop();
 				load_order(id);
 			}).addClass('clickable').filter(':odd').addClass('odd');
+
 			display_orders();
 		}
 	});
@@ -43,26 +41,18 @@ function load_orders(sort, page)
 function load_order(id)
 {
 	$.ajax({
-		type: "POST",
-		url: "/prod/prodFeedBack.php",
-		dataType:'json',
-		data: {
-			action: "GET_ORDER",
-			order_id : id
-		},
+		type: "GET",
+		url: "/prod/order/"+id+"/",
+		dataType:'html',
 		success: function(data){
-			if(data.error)
-			{
-				alert(data.datas);
-				return;
-			}
 			display_orders();
-			$('#order_manager').empty().append(data.datas);
-			
+
+			$('#order_manager').empty().append(data);
+
 			$('#order_manager .order_list .selectable').bind('click',function(event){
-				
-				$this = $(this);
-				
+
+				var $this = $(this);
+
 				if(is_ctrl_key(event))
 				{
 					if($(this).hasClass('selected'))
@@ -83,7 +73,7 @@ function load_order(id)
 								if(first)
 									last = true;
 								first = true;
-								
+
 							}
 							if(first || last)
 								$(n).addClass('selected');
@@ -96,7 +86,7 @@ function load_order(id)
 					}
 				}
 				$('#order_manager .order_list .selectable.last_selected').removeClass('last_selected');
-				
+
 				$(this).addClass('last_selected');
 			});
 
@@ -123,14 +113,12 @@ function do_send_documents(order_id, elements_ids, force)
 	var cont = $('#order_manager');
 	$('button.deny, button.send', cont).attr('disabled','disabled');
 	$('.activity_indicator', cont).show();
-	
+
 	$.ajax({
 		type: "POST",
-		url: "/prod/prodFeedBack.php",
+		url: "/prod/order/"+order_id+"/send/",
 		dataType:'json',
 		data: {
-			action: "SEND_ORDER",
-			order_id : order_id,
 			'elements[]':elements_ids,
 			force:(force?1:0)
 		},
@@ -158,13 +146,13 @@ function do_send_documents(order_id, elements_ids, force)
 function deny_documents(order_id)
 {
 	var elements = $('#order_manager .order_list .selectable.selected');
-	
+
 	var elements_ids = [];
-	
+
 	elements.each(function(i,n){
 		elements_ids.push($(n).find('input[name=order_element_id]').val());
 	});
-	
+
 	if(elements_ids.length == 0)
 	{
 		alert(language.nodocselected);
@@ -173,7 +161,7 @@ function deny_documents(order_id)
 	var cont = $('#order_manager');
 	$('button.deny, button.send', cont).attr('disabled','disabled');
 	$('.activity_indicator', cont).show();
-		
+
 	$.ajax({
 		type: "POST",
 		url: "/prod/prodFeedBack.php",
@@ -208,13 +196,13 @@ function deny_documents(order_id)
 function send_documents(order_id)
 {
 	var elements = $('#order_manager .order_list .selectable.selected');
-	
+
 	var elements_ids = [];
-	
+
 	elements.each(function(i,n){
 		elements_ids.push($(n).find('input[name=order_element_id]').val());
 	});
-	
+
 	if(elements_ids.length == 0)
 	{
 		alert(language.nodocselected);

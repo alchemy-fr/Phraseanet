@@ -46,7 +46,7 @@ class Order implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $app->get('/', $this->call('displayOrders'))
+        $controllers->get('/', $this->call('displayOrders'))
             ->bind('prod_orders');
 
         /**
@@ -62,7 +62,7 @@ class Order implements ControllerProviderInterface
          *
          * return       : HTML Response | JSON Response
          */
-        $app->post('/', $this->call('createOrder'))
+        $controllers->post('/', $this->call('createOrder'))
             ->bind('prod_order_new');
 
         /**
@@ -78,7 +78,7 @@ class Order implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $app->get('/{order_id}/', $this->call('displayOneOrder'))
+        $controllers->get('/{order_id}/', $this->call('displayOneOrder'))
             ->bind('prod_order')
             ->assert('order_id', '\d+');
 
@@ -95,7 +95,7 @@ class Order implements ControllerProviderInterface
          *
          * return       : HTML Response | JSON Response
          */
-        $app->post('/{order_id}/send/', $this->call('sendOrder'))
+        $controllers->post('/{order_id}/send/', $this->call('sendOrder'))
             ->bind('prod_order_send')
             ->assert('order_id', '\d+');
 
@@ -112,7 +112,7 @@ class Order implements ControllerProviderInterface
          *
          * return       : HTML Response | JSON Response
          */
-        $app->post('/{order_id}/deny/', $this->call('denyOrder'))
+        $controllers->post('/{order_id}/deny/', $this->call('denyOrder'))
             ->bind('prod_order_deny')
             ->assert('order_id', '\d+');
 
@@ -135,19 +135,19 @@ class Order implements ControllerProviderInterface
             $order = new \set_exportorder($request->request->get('lst', ''), (int) $request->request->get('ssttid'));
 
             if ($order->order_available_elements(
-                    $app['Core']->getAuthenticatedUSer()->get_id(), $request->request->get('use', ''), $request->request->get('deadline', '')
+                    $app['phraseanet.core']->getAuthenticatedUser()->get_id(), $request->request->get('use', ''), $request->request->get('deadline', '')
             )) {
                 $success = true;
             }
         } catch (\Exception $e) {
-
+            $msg = $e->getMessage();
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
 
             return $app->json(array(
                     'success' => $success,
-                    'msg'     => $success ? _('The records have been properly ordered') : _('An error occured'),
+                    'msg'     => $success ? _('The records have been properly ordered') : _('An error occured') . ' ' . $msg,
                 ));
         }
 

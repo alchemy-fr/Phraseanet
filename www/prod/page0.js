@@ -2520,7 +2520,7 @@ function downloadThis(datas)
         }
     }).dialog('open');
 
-    $.post("/include/multiexports.php", datas, function(data) {
+    $.post("/prod/multi-export/", datas, function(data) {
 
         dialog_box.removeClass('loading').empty().append(data);
         $('.tabs', dialog_box).tabs();

