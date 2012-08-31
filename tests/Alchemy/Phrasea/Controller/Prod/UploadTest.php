@@ -248,7 +248,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $params = array(
             'base_id'     => self::$collection->get_base_id(),
             'forceAction' => \Alchemy\Phrasea\Border\Manager::FORCE_RECORD,
-            'status'      => array( self::$collection->get_sbas_id() => array( 4 => 1)),
+            'status'      => array( self::$collection->get_base_id() => array( 4 => 1)),
         );
 
         $files = array(
