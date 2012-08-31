@@ -128,6 +128,10 @@ $groups = array(
         , '//include/jquery.common.js'
         , '//skins/lightbox/jquery.lightbox.ie6.js'
         , '//include/jslibs/flowplayer/flowplayer-3.2.11.min.js'
+    ),
+    'uploadflash' => array(
+        '//include/jslibs/SWFUpload/swfupload.js'
+        , '//include/jslibs/SWFUpload/plugins/swfupload.queue.js'
     )
 );
 
