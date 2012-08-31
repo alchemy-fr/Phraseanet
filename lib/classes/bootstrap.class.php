@@ -11,6 +11,7 @@
 require_once __DIR__ . '/../Alchemy/Phrasea/Core.php';
 
 use Alchemy\Phrasea\Core;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  *
@@ -39,13 +40,22 @@ class bootstrap
 
         static::$core = new Core($env);
 
+        $request = Request::createFromGlobals();
+
+        if ( ! ! stripos($request->server->get('HTTP_USER_AGENT'), 'flash') && $request->getRequestUri() === '/prod/upload/') {
+            if (null !== $sessionId = $request->get('php_session_id')) {
+                session_id($sessionId);
+            }
+        }
+
+
         if (static::$core->getConfiguration()->isInstalled()) {
             static::$core->enableEvents();
         }
 
         if (\setup::is_installed()) {
             $gatekeeper = \gatekeeper::getInstance(static::$core);
-            $gatekeeper->check_directory();
+            $gatekeeper->check_directory($request);
         }
 
         return static::$core;

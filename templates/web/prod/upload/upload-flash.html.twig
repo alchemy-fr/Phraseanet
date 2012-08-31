@@ -1,0 +1,374 @@
+<div id="uploadBox">
+    {# jQuery tab wrapper #}
+    <div class="upload-tabs">
+        {# tab nav bar #}
+        <ul>
+            <li>
+                <a href="#tab-upload">
+                    {% trans 'Upload' %}
+                </a>
+            </li>
+            <li>
+                {# template prod/upload/lazaret.html.twig loaded via ajax #}
+                <a href="/prod/lazaret/" title="tab-lazaret">
+                    {# <span>&nbsp;</span> element is required for the jQuery loading spinner appears && disappears properly #}
+                    {% trans 'Quarantine' %}<span>&nbsp;</span>
+                </a>
+            </li>
+        </ul>
+        {# upload tab content #}
+        <div id="tab-upload">
+            <form id="fileupload" enctype="multipart/form-data" method="POST" action="/prod/upload/">
+
+                <div id="uploadBoxLeft" class="well ">
+
+                    {# <h5 style="margin-top: 10px;">{% trans 'Choose files to add' %} :</h5> #}
+                    {# action bar #}
+                    <div id="addFileList">
+                        <div class="btn-toolbar">
+                            <span id="spanSWFUploadButton" class="span2"></span>
+                            <br />
+                            <span>
+                                 <a href="/prod/upload/" class="dialog full-dialog" title="{% trans 'Upload' %}"><span class="label label-info"><i>{% trans 'Switch to html5 uploader' %}</i></span></a>
+                            </span>
+                            <br />
+                            <span class="comment">
+                                ({% trans %} maximum : {{ maxFileSizeReadable }} {% endtrans %})
+                            </span>
+                        {#    <button type="button" class="upload-submitter btn btn-inverse input-medium">{% trans 'Send' %}</button> #}
+                        </div>
+                    </div>
+
+                    {# settings box #}
+                    <div class='settings-box'>
+                        <h5>{% trans 'upload:: Destination (collection) :' %} :</h5>
+                        {# collections list #}
+                        {% if collections|length > 0 %}
+                            <select name="base_id" class="span3" style="margin-left: 10px;">
+                            {% for  sbasId, availableCollections in collections %}
+                                <optgroup label="{{ availableCollections['databox'].get_viewname() }}" class="select-label">
+                                {% for collection in availableCollections['databox_collections'] %}
+                                    <option value="{{ collection.get_base_id() }}" class="select-row">{{ collection.get_name() }}</option>
+                                {% endfor %}
+                                </optgroup>
+                            {% endfor %}
+                            </select>
+                            {# collections status #}
+                            {% for availableCollections in collections %}
+                                {% for collection in availableCollections['databox_collections'] %}
+                                    <div id="status-{{ collection.get_base_id() }}" class='collection-status' style='{{ loop.parent.loop.first and loop.first ? "display:block" :"display:none" }}'>
+                                        <h5>{% trans 'upload:: Status :' %} :</h5>
+                                        <table class="status-tab">
+                                            <tbody>
+                                            {% for bit, status in availableCollections['databox'].get_statusbits() %}
+                                                <tr>
+                                                    <td colspan="2">
+                                                        <h6>{{ status['name']|title }}</h6>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="status-tab-left">
+                                                        {% if status['img_off'] is not empty %}
+                                                            <img src="{{ status['img_off'] }}" width="16" height="16" />
+                                                        {% endif %}
+                                                        <span>{{ status['labeloff']|default('off') }}</span>
+                                                        <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="0" checked="checked"/>
+                                                    </td>
+                                                    <td class="status-tab-right">
+                                                        <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="1" />
+                                                        <span for="labelon">{{ status['labelon']|default('on') }}</span>
+                                                        {% if status['img_on'] is not empty %}
+                                                            <img src="{{ status['img_on'] }}" width="16" height="16" />
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+                        {% else %}
+                            {% trans 'You can not upload files' %}
+                        {% endif %}
+                    </div>
+
+                    {# upload box #}
+                    <div class='upload-box' style="display: none;">
+                        <h5>{% trans 'Selected files' %} :</h5>
+                        <button type="button" class="clear-queue btn btn-inverse input-medium" style="margin-bottom: 10px;">{% trans 'Clear list' %}</button>
+                        <button type="button" class="upload-submitter btn btn-inverse input-medium" style="margin-bottom: 10px;">{% trans 'Send' %}</button>
+                        <div class="clear"></div>
+                        <div class='upload-box-addedfiles'></div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+
+                <div id="uploadBoxRight" class="well">
+                    <div class='well-small'>
+                        <button id="cancel-all" class="btn disabled" type="button" disabled="disabled">
+                            {% trans "Cancel all" %}
+                        </button>
+                    </div>
+                    {# download box #}
+                    <div class="download-box"></div>
+                </div>
+
+            </form>
+         </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="/include/minify/g=uploadflash"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+
+        //Upload management
+        var UploaderManager = new p4.UploaderManager({
+            container: $('#uploadBox'),
+            uploadBox: $('#uploadBox .upload-box-addedfiles'),
+            settingsBox: $('#uploadBox .settings-box'),
+            downloadBox: $('#uploadBox .download-box')
+        });
+
+        {# Create tabs #}
+        $(".upload-tabs").tabs({
+            spinner: language.loading + '<img src="/skins/icons/loader404040.gif"/>',
+            ajaxOptions: {
+                success: function( xhr, status, index, anchor ) {
+                    var lazaretBox = $("#lazaretBox");
+
+                    $('.userTips', lazaretBox).tooltip();
+                },
+                error: function( xhr, status, index, anchor ) {
+                    //display error message if ajax failed
+                    $( anchor.hash ).html(language.error);
+                }
+            }
+        });
+
+        //Show the good collection status box
+        $('select[name="base_id"]', UploaderManager.getSettingsBox()).bind('change', function(){
+            var selectedCollId = $(this).find('option:selected').val();
+
+            $('#uploadBox .settings-box .collection-status').hide();
+
+            $('#uploadBox #status-' + selectedCollId).show();
+        });
+
+        var swfu = new SWFUpload({
+            upload_url : "/prod/upload/",
+            post_params: {"php_session_id" : "{{ sessionId }}"},
+            flash_url : "/include/jslibs/SWFUpload/swfupload.swf",
+            file_upload_limit : 0,
+            file_size_limit: "{{ maxFileSize ~ " B"}}",
+            requeue_on_error : true,
+            file_post_name : "files[]",
+            file_queue_limit : 0,
+            button_placeholder_id : "spanSWFUploadButton",
+            button_image_url : "/skins/icons/theme_button_background.png",
+            button_width : 170,
+            button_height : 40,
+            button_text : "<span class='btn'>{% trans 'Select files...' %}</span>",
+            button_text_style :
+                ".btn {"
+                + "font-family: verdana, Helvetica Neue, Helvetica, Arial, sans-serif; "
+                + "color: #777777;"
+                + "font-size: 12px; "
+                + "font-weight: bold;"
+                + "}",
+            button_text_left_padding : 5,
+            button_text_top_padding : 10,
+            button_window_mode:SWFUpload.WINDOW_MODE.TRANSPARENT,
+            button_cursor : SWFUpload.CURSOR.HAND,
+            file_queued_handler : function(file) {
+                var $this = this;
+                UploaderManager.getUploadBox().closest('.upload-box').show();
+
+                var formatedFile = {
+                    id: file.id,
+                    size: file.size != undefined ? UploaderManager.Formater.size(file.size) : '',
+                    name: file.name,
+                    type: file.type != undefined ? file.type : '',
+                    uploadIndex: file.index,
+                    language: language
+                }
+
+                p4.Mustache.Render('Upload-Items', formatedFile, function(html){
+                    UploaderManager.getUploadBox().append(html);
+                    $("#"+file.id).find('.canva-wrapper').remove();
+                    $("#"+file.id).find(".remove-element").bind('click', function(){
+                        $this.cancelUpload(file.id);
+                    });
+                });
+            },
+            file_queue_error_handler : function(file, errorCode, message) {
+                    if (errorCode === SWFUpload.QUEUE_ERROR.QUEUE_LIMIT_EXCEEDED) {
+                        alert(" {% trans "You have attempted to queue too many files" %}");
+                        return false;
+                    }
+
+                    var error = "{% trans "Unknow Error" %}";
+
+                    switch (errorCode) {
+                      case SWFUpload.QUEUE_ERROR.FILE_EXCEEDS_SIZE_LIMIT:
+                        error = language.errorFileApiTooBig;
+                        break;
+                      case SWFUpload.QUEUE_ERROR.ZERO_BYTE_FILE:
+                          error = "{% trans "Cannot upload Zero Byte files" %}";
+                        break;
+                      case SWFUpload.QUEUE_ERROR.INVALID_FILETYPE:
+                          error = "{% trans "Invalid file type" %}";
+                        break;
+                      default:
+                        if (file !== null) {
+                          error = "{% trans "Unhandled Error" %}";
+                        }
+                        break;
+                    }
+
+                    var params = $.extend({}, file, {error: error, language: language});
+                    p4.Mustache.Render('Upload-Items-Error', params, function(html){
+                        UploaderManager.getUploadBox().append(html);
+                        $("#"+file.id, UploaderManager.getDownloadBox()).find('.canva-wrapper').remove();
+                    });
+            },
+            file_dialog_complete_handler : function(numFilesSelected, numFilesQueued) {
+                if (numFilesQueued > 0) {
+                    $("button.clear-queue", UploaderManager.getContainer()).attr("disabled", false).removeClass("disabled");
+                    $("button.upload-submitter", UploaderManager.getContainer()).attr("disabled", false).removeClass("disabled");
+                }
+            },
+            upload_start_handler : function(file) {
+                var $this = this;
+                $("#cancel-all", UploaderManager.getContainer()).removeClass("disabled").attr("disabled", false);
+
+                $.each(UploaderManager.getSettingsBox().find('.collection-status:visible input, select').serializeArray(), function(index, param){
+                    $this.addFileParam(file.id, param.name, param.value);
+                });
+            },
+            upload_progress_handler : function(file, bytesLoaded, bytesTotal) {
+                var progressbar = $("#"+file.id, UploaderManager.getDownloadBox()).find('.progress-bar');
+                progressbar.width(Math.round(UploaderManager.Formater.pourcent(bytesLoaded, bytesTotal)) + '%');
+            },
+            upload_error_handler : function(file, errorCode, message) {
+
+                var reasons = "{% trans "Unknow reason" %}";
+
+                switch (errorCode) {
+                    case SWFUpload.UPLOAD_ERROR.HTTP_ERROR:
+                        reasons = "{% trans "Bad request, please contact an admin" %}";
+                    break;
+                    case SWFUpload.UPLOAD_ERROR.MISSING_UPLOAD_URL:
+                        reasons = "{% trans "Upload URL is not set, please contact an admin" %}";
+                    break;
+                    case SWFUpload.UPLOAD_ERROR.IO_ERROR:
+                        reasons = "{% trans "Connection terminates unexpetecdly, please retry" %}";
+                    break;
+                    case SWFUpload.UPLOAD_ERROR.SECURITY_ERROR:
+                        reasons = "{% trans "The upload violates a security restriction, please retry" %}";
+                    break;
+                    case SWFUpload.UPLOAD_ERROR.UPLOAD_LIMIT_EXCEEDED:
+                        reasons = "{% trans "File upload limit ({{ maxFileSizeReadable }}) has been reach" %}";
+                    break;
+                    case SWFUpload.UPLOAD_ERROR.UPLOAD_FAILED:
+                        reasons = "{% trans "Could not initiate upload, please retry" %}";
+                    break;
+                    case SWFUpload.UPLOAD_ERROR.SPECIFIED_FILE_ID_NOT_FOUND:
+                        reasons = "{% trans "Could not retrieve the file ID, please retry or contact an admin if problem persist" %}";
+                    break;
+                    case SWFUpload.UPLOAD_ERROR.FILE_VALIDATION_FAILED:
+                        reasons = "{% trans "File validation failed" %}";
+                    break;
+                    case SWFUpload.UPLOAD_ERROR.FILE_CANCELLED:
+                        reasons = "{% trans "File upload has been cancelled" %}";
+                    break;
+                    case SWFUpload.UPLOAD_ERROR.UPLOAD_STOPPED:
+                        reasons = "{% trans "File upload has been stopped" %}";
+                    break;
+                }
+
+                p4.Mustache.Render('Download-Finish', {heading:"{% trans "Error while uploading" %}", reasons: [reasons]}, function(html){
+                        $("#"+file.id, UploaderManager.getDownloadBox()).find('p.error').append(html).show();
+                    });
+
+                return false;
+            },
+            upload_success_handler : function(file, response) {
+                var response = $.parseJSON(response);
+
+                if(response.success){
+                    //case record
+                    if(response.element === 'record'){
+                        p4.Mustache.Render('Download-Finish', {heading:response.message, reasons: response.reasons}, function(html){
+                            $("#"+file.id, UploaderManager.getDownloadBox()).find('p.success').append(html).show();
+                        });
+                    } else { //case quarantine
+                        p4.Mustache.Render('Download-Finish', {heading:response.message, reasons: response.reasons}, function(html){
+                            $("#"+file.id, UploaderManager.getDownloadBox()).find('p.error').append(html).show();
+                        });
+                    }
+                } else {
+                    //fail
+                    p4.Mustache.Render('Download-Finish', {heading:response.message, reasons: response.reasons}, function(html){
+                        $("#"+file.id, UploaderManager.getDownloadBox()).find('p.error').append(html).show();
+                    });
+                }
+            },
+            upload_complete_handler: function(file) {
+                if (this.getStats().files_queued === 0) {
+                    $("#cancel-all", UploaderManager.getContainer()).addClass("disabled").attr("disabled", true);
+                    var dialog = p4.Dialog.get(1);
+                    //unbind check before close event & disabled button for cancel all download
+                    dialog.getDomElement().unbind("dialogbeforeclose");
+                }
+
+                $("#"+file.id, UploaderManager.getDownloadBox()).find('.progress-bar').width('100%');
+           }
+        });
+
+        $("button.upload-submitter", UploaderManager.getContainer()).bind("click", function(e){
+
+            //prevent dialog box from being closed while files are being downloaded
+            p4.Dialog.get(1).getDomElement().bind("dialogbeforeclose", function(event, ui) {
+                if ( swfu.getStats().files_queued > 0) {
+                    p4.Alerts(language.warning, language.fileBeingDownloaded);
+                    return false;
+                }
+            });
+
+            $(".upload-box-addedfiles ul:first li.upload-valid > div").each(function(index, element) {
+                var file = swfu.getFile($(this).attr("id"));
+
+                if (file !== null) {
+                    p4.Mustache.Render('Download-Items', $.extend({}, file, {language: language}), function(html){
+                        UploaderManager.getDownloadBox().append(html);
+                        $("#"+file.id, UploaderManager.getDownloadBox()).find('.canva-wrapper').remove();
+                        $("#"+file.id, UploaderManager.getDownloadBox()).find('.remove-element').bind('click', function(e){
+                            swfu.cancelUpload(file.id);
+                        });
+                    });
+                }
+            });
+
+            $('ul', UploaderManager.getContainer().find('.upload-box')).empty();
+            $("button.clear-queue", UploaderManager.getContainer()).attr("disabled", true).addClass("disabled");
+            $("button.upload-submitter", UploaderManager.getContainer()).attr("disabled", true).addClass('disabled');
+
+            swfu.startUpload();
+        });
+
+        $("button.clear-queue", UploaderManager.getContainer()).bind("click", function(e){
+            swfu.cancelQueue();
+            $('ul', $(this).closest('.upload-box')).empty();
+            $(this).attr("disabled", true).addClass("disabled");
+            $("button.upload-submitter", UploaderManager.getContainer()).attr("disabled", true).addClass('disabled');
+        });
+
+        $("#cancel-all", UploaderManager.getContainer()).bind("click", function(){
+            swfu.cancelQueue();
+            $(this).addClass("disabled").attr("disabled", true);
+        });
+    });
+
+</script>
