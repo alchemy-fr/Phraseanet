@@ -56,6 +56,20 @@ class Upload implements ControllerProviderInterface
             ->bind('upload_form');
 
         /**
+         * Flash upload form route
+         *
+         * name         : upload_flash_form
+         *
+         * description  : Render the html flash upload form
+         *
+         * method       : GET
+         *
+         * return       : HTML Response
+         */
+        $controllers->get('/flash-version/', $this->call('getFlashUploadForm'))
+            ->bind('upload_flash_form');
+
+        /**
          * UPLOAD route
          *
          * name         : upload
@@ -80,6 +94,28 @@ class Upload implements ControllerProviderInterface
     }
 
     /**
+     * Render the flash upload form
+     *
+     * @param Application $app     A Silex application
+     * @param Request     $request The current request
+     *
+     * @return Response
+     */
+    public function getFlashUploadForm(Application $app, Request $request)
+    {
+        $maxFileSize = $this->getUploadMaxFileSize();
+
+        return $app['Twig']->render(
+                'prod/upload/upload-flash.html.twig', array(
+                'sessionId'           => session_id(),
+                'collections'         => $this->getGrantedCollections($app['phraseanet.core']->getAuthenticatedUser()),
+                'maxFileSize'         => $maxFileSize,
+                'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
+                )
+        );
+    }
+
+    /**
      * Render the html upload form
      *
      * @param Application $app     A Silex application
@@ -89,44 +125,14 @@ class Upload implements ControllerProviderInterface
      */
     public function getUploadForm(Application $app, Request $request)
     {
-        $collections = array();
-        $rights = array('canaddrecord');
+        $maxFileSize = $this->getUploadMaxFileSize();
 
-        foreach ($app['phraseanet.core']->getAuthenticatedUser()->ACL()->get_granted_base($rights) as $collection) {
-            $databox = $collection->get_databox();
-            if ( ! isset($collections[$databox->get_sbas_id()])) {
-                $collections[$databox->get_sbas_id()] = array(
-                    'databox'             => $databox,
-                    'databox_collections' => array()
-                );
-            }
-
-            $collections[$databox->get_sbas_id()]['databox_collections'][] = $collection;
-        }
-
-        $postMaxSize = trim(ini_get('post_max_size'));
-
-        if ('' === $postMaxSize) {
-            $postMaxSize = PHP_INT_MAX;
-        }
-
-        switch (strtolower(substr($postMaxSize, -1))) {
-            case 'g':
-                $postMaxSize *= 1024;
-            case 'm':
-                $postMaxSize *= 1024;
-            case 'k':
-                $postMaxSize *= 1024;
-        }
-
-        $maxFileSize = min(UploadedFile::getMaxFilesize(), (int) $postMaxSize);
-
-        return $app['twig']->render(
-            'prod/upload/upload.html.twig', array(
-            'collections'         => $collections,
-            'maxFileSize'         => $maxFileSize,
-            'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
-            )
+        return $app['Twig']->render(
+                'prod/upload/upload.html.twig', array(
+                'collections'         => $this->getGrantedCollections($app['phraseanet.core']->getAuthenticatedUser()),
+                'maxFileSize'         => $maxFileSize,
+                'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
+                )
         );
     }
 
@@ -149,7 +155,7 @@ class Upload implements ControllerProviderInterface
             'id' => '',
         );
 
-        if ( ! $request->files->get('files')) {
+        if (null === $request->files->get('files')) {
             throw new \Exception_BadRequest('Missing file parameter');
         }
 
@@ -280,5 +286,55 @@ class Upload implements ControllerProviderInterface
     private function call($method)
     {
         return sprintf('%s::%s', __CLASS__, $method);
+    }
+
+    /**
+     * Get current user's granted collections where he can upload
+     *
+     * @param \User_Adapter $user
+     * @return array
+     */
+    private function getGrantedCollections(\User_Adapter $user)
+    {
+        $collections = array();
+
+        foreach ($user->ACL()->get_granted_base(array('canaddrecord')) as $collection) {
+            $databox = $collection->get_databox();
+            if ( ! isset($collections[$databox->get_sbas_id()])) {
+                $collections[$databox->get_sbas_id()] = array(
+                    'databox'             => $databox,
+                    'databox_collections' => array()
+                );
+            }
+
+            $collections[$databox->get_sbas_id()]['databox_collections'][] = $collection;
+        }
+
+        return $collections;
+    }
+
+    /**
+     * Get POST max file size
+     *
+     * @return integer
+     */
+    private function getUploadMaxFileSize()
+    {
+        $postMaxSize = trim(ini_get('post_max_size'));
+
+        if ('' === $postMaxSize) {
+            $postMaxSize = PHP_INT_MAX;
+        }
+
+        switch (strtolower(substr($postMaxSize, -1))) {
+            case 'g':
+                $postMaxSize *= 1024;
+            case 'm':
+                $postMaxSize *= 1024;
+            case 'k':
+                $postMaxSize *= 1024;
+        }
+
+        return min(UploadedFile::getMaxFilesize(), (int) $postMaxSize);
     }
 }

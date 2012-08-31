@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\HttpFoundation\Request;
+
 /**
  *
  *
@@ -71,9 +73,8 @@ class gatekeeper
      *
      * @return Void
      */
-    public function check_directory()
+    public function check_directory(Request $request)
     {
-        $request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
         $appbox = appbox::get_instance($this->Core);
         $session = $appbox->get_session();
 

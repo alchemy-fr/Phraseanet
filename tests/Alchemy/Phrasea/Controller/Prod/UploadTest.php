@@ -42,12 +42,23 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Upload::getUploadForm
+     * @covers Alchemy\Phrasea\Controller\Prod\Upload::getFlashUploadForm
      * @covers Alchemy\Phrasea\Controller\Prod\Upload::call
+     */
+    public function testFlashUploadForm()
+    {
+        $this->client->request('GET', '/upload/flash-version/');
+        $response = $this->client->getResponse();
+
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Controller\Prod\Upload::getUploadForm
      */
     public function testUploadForm()
     {
-        $this->client->request('GET', '/upload/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $this->client->request('GET', '/upload/');
         $response = $this->client->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());

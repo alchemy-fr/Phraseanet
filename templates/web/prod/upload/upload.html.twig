@@ -31,6 +31,10 @@
                                 <input type="file" name="files[]" multiple>
                             </span>
                             <br />
+                            <span>
+                                 <a href="/prod/upload/flash-version/" class="dialog full-dialog" title="{% trans 'Upload' %}"><span class="label label-info"><i>{% trans 'Switch to flash uploader' %}</i></span></a>
+                            </span>
+                            <br />
                             <span class="comment">
                                 ({% trans %} maximum : {{ maxFileSizeReadable }} {% endtrans %})
                             </span>
@@ -273,6 +277,7 @@ $(document).ready(function () {
 
                     // Check support of file.size && file.type property
                     var formatedFile = {
+                        id: 'file-' + index,
                         size: file.size != undefined ? UploaderManager.Formater.size(file.size) : '',
                         name: file.name,
                         type: file.type != undefined ? file.type : '',
@@ -347,7 +352,7 @@ $(document).ready(function () {
 
         //Set new context in download-box
         $.each(data.files, function (index, file) {
-            var params = $.extend({}, file, {language: language});
+            var params = $.extend({}, file, {language: language, id:'file-'+index});
             p4.Mustache.Render('Download-Items', params, function(html){
                 UploaderManager.getDownloadBox().append(html);
 
