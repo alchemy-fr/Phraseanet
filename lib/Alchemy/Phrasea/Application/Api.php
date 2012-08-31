@@ -183,9 +183,26 @@ return call_user_func(function() {
                 };
 
             /**
+             * Get scheduler informations
+             *
+             * Route : /monitor/scheduler/
+             *
+             * Method : GET
+             *
+             * Parameters :
+             *
+             */
+            $route = '/monitor/scheduler/';
+            $app->get(
+                $route, function(SilexApplication $app, Request $request) {
+                    return $app['api']->get_scheduler($app)->get_response();
+                }
+            )->before($mustBeAdmin);
+
+            /**
              * Get all tasks information
              *
-             * Route : /monitor/phraseanet/
+             * Route : /monitor/tasks/
              *
              * Method : GET
              *
@@ -200,7 +217,7 @@ return call_user_func(function() {
             /**
              * Get task informations
              *
-             * Route : /monitor/phraseanet/
+             * Route : /monitor/task/{task_id}/
              *
              * Method : GET
              *
