@@ -10,7 +10,20 @@ class Firewall
     public function requireSetUp(Application $app)
     {
         if ( ! \setup::is_installed()) {
+
             return $app->redirect("/setup/");
+        }
+    }
+
+    public function requireAdmin(Application $app)
+    {
+        if (null !== $response = $this->requireAuthentication($app)) {
+
+            return $response;
+        }
+
+        if ( ! $app['phraseanet.core']->getAuthenticatedUser()->is_admin()) {
+            $app->abort(403);
         }
     }
 

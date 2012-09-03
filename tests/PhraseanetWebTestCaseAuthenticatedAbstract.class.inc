@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPUnitAuthenticatedAbstract
 {
+    protected $StubbedACL;
 
     public static function setUpBeforeClass()
     {
@@ -24,5 +25,62 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $session = $appbox->get_session();
         $session->logout();
+    }
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->client = $this->createClient();
+
+        $this->StubbedACL = $this->getMockBuilder('\ACL')
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    public function setAdmin($bool)
+    {
+        $stubAuthenticatedUser = $this->getMockBuilder('\User_Adapter')
+            ->setMethods(array('is_admin', 'ACL'))
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $stubAuthenticatedUser->expects($this->any())
+            ->method('is_admin')
+            ->will($this->returnValue($bool));
+
+        $this->StubbedACL->expects($this->any())
+            ->method('give_access_to_sbas')
+            ->will($this->returnValue($this->StubbedACL));
+
+        $this->StubbedACL->expects($this->any())
+            ->method('update_rights_to_sbas')
+            ->will($this->returnValue($this->StubbedACL));
+
+        $this->StubbedACL->expects($this->any())
+            ->method('update_rights_to_bas')
+            ->will($this->returnValue($this->StubbedACL));
+
+        $this->StubbedACL->expects($this->any())
+            ->method('has_right_on_base')
+            ->will($this->returnValue($bool));
+
+        $this->StubbedACL->expects($this->any())
+            ->method('has_right_on_sbas')
+            ->will($this->returnValue($bool));
+
+        $stubAuthenticatedUser->expects($this->any())
+            ->method('ACL')
+            ->will($this->returnValue($this->StubbedACL));
+
+        $stubCore = $this->getMockBuilder('\Alchemy\Phrasea\Core')
+            ->setMethods(array('getAuthenticatedUser'))
+            ->getMock();
+
+        $stubCore->expects($this->any())
+            ->method('getAuthenticatedUser')
+            ->will($this->returnValue($stubAuthenticatedUser));
+
+        $this->app['phraseanet.core'] = $stubCore;
     }
 }

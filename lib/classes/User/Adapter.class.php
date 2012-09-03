@@ -962,17 +962,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         $stmt->execute(array(':usr_id' => $this->get_id()));
         $stmt->closeCursor();
 
-        $sql = 'DELETE FROM usrlist WHERE usr_id = :usr_id';
-        $stmt = $this->appbox->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->get_id()));
-        $stmt->closeCursor();
-
         $sql = 'DELETE FROM usr_settings WHERE usr_id = :usr_id';
-        $stmt = $this->appbox->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->get_id()));
-        $stmt->closeCursor();
-
-        $sql = 'DELETE FROM usrlistusers WHERE usr_id = :usr_id';
         $stmt = $this->appbox->get_connection()->prepare($sql);
         $stmt->execute(array(':usr_id' => $this->get_id()));
         $stmt->closeCursor();
@@ -1612,10 +1602,9 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         $users = self::get_sys_admins();
 
         $appbox = appbox::get_instance(\bootstrap::getCore());
-        $conn = $appbox->get_connection();
 
         foreach ($appbox->get_databoxes() as $databox) {
-            foreach ($users as $usr_id => $value) {
+            foreach (array_keys($users) as $usr_id) {
                 $user = User_Adapter::getInstance($usr_id, $appbox);
                 $user->ACL()->give_access_to_sbas(array($databox->get_sbas_id()));
 

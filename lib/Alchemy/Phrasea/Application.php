@@ -5,9 +5,9 @@ namespace Alchemy\Phrasea;
 use Alchemy\Phrasea\PhraseanetServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BrowserServiceProvider;
 use Silex\Application as SilexApplication;
+use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
-use Silex\Provider\TwigServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -101,7 +101,10 @@ class Application extends SilexApplication
                     $twig->addExtension(new \Twig_Extensions_Extension_Text());
                     $twig->addExtension(new \Alchemy\Phrasea\Twig\JSUniqueID());
 
+                    include_once __DIR__ . '/Twig/Functions.inc.php';
+
                     $twig->addTest('null', new \Twig_Test_Function('is_null'));
+                    $twig->addTest('loopable', new \Twig_Test_Function('is_loopable'));
 
                     $twig->addFilter('serialize', new \Twig_Filter_Function('serialize'));
                     $twig->addFilter('stristr', new \Twig_Filter_Function('stristr'));
@@ -134,6 +137,7 @@ class Application extends SilexApplication
         $app = $this;
 
         $this->error(function($e) use ($app) {
+
             if ($app['debug']) {
                 return new Response($e->getMessage(), 500);
             } else {

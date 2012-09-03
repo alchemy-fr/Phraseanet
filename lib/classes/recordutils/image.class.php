@@ -69,7 +69,7 @@ class recordutils_image extends recordutils
      * @param  boolean $hd
      * @return string
      */
-    public static function stamp(\media_subdef $subdef, $bas, $rec, $hd = false)
+    public static function stamp(\media_subdef $subdef)
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $registry = $appbox->get_registry();
@@ -119,7 +119,7 @@ class recordutils_image extends recordutils
                     @unlink($pathOut);
                     break;
                 case 'RECORD_ID':
-                    $varval = $rec;
+                    $varval = $subdef->get_record()->get_record_id();
                     break;
             }
             $n->parentNode->replaceChild($domprefs->createTextNode($varval), $n);

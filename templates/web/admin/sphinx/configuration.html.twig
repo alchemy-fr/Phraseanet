@@ -1,0 +1,26 @@
+{% if app.request.query.get('success') == '1' %}
+    <div class="alert alert-success">
+        <a class="close" data-dismiss="alert" href="#">×</a>
+        {% trans 'Successful update' %}
+    </div>
+{% endif %}
+
+<form class="well form-inline" method='post' action='/admin/sphinx/configuration/'>
+    <select name="charset_tables[]" multiple="multiple">
+        {% for charset, charset_obj in configuration.get_available_charsets() %}
+            <option value='{{ charset }}' {{ charset in options['charset_tables'] ? "selected='selected'" : "" }}>{{ charset_obj.get_name() }}</option>
+        {% endfor %}
+    </select>
+
+    <select name="libstemmer[]" multiple="multiple">
+        {% for stemme in configuration.get_available_libstemmer() %}
+            <option value='{{ stemme }}' {{ stemme in options['libstemmer'] ? "selected='selected'" : "" }}>{{ stemme }}</option>
+        {% endfor %}
+    </select>
+
+    <button class='btn btn-primary'>{% trans 'boutton::valider' %}</button>
+</form>
+
+<textarea style="width:100%;height:70%">
+    {{ configuration.get_configuration(options) }}
+</textarea>

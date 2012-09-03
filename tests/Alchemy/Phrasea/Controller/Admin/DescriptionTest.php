@@ -198,7 +198,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $appbox = $this->app['phraseanet.appbox'];
 
         $session = $appbox->get_session();
-        $auth = new Session_Authentication_None(self::$user_alt1);
+        $auth = new Session_Authentication_None(\User_Adapter::getInstance(\User_Adapter::get_usr_id_from_login('invite'), $appbox));
         $session->authenticate($auth);
 
         $databox = array_shift($appbox->get_databoxes());
@@ -231,7 +231,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $appbox = $this->app['phraseanet.appbox'];
 
         $session = $appbox->get_session();
-        $auth = new Session_Authentication_None(self::$user_alt1);
+        $auth = new Session_Authentication_None(\User_Adapter::getInstance(\User_Adapter::get_usr_id_from_login('invite'), $appbox));
         $session->authenticate($auth);
 
         $databox = array_shift($appbox->get_databoxes());

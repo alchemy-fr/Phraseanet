@@ -10,10 +10,10 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function createApplication()
     {
         $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Admin.php';
-        
+
         $app['debug'] = true;
         unset($app['exception_handler']);
-        
+
         return $app;
     }
 
@@ -323,7 +323,6 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 break;
             }
         }
-//
 
         $this->client->request('POST', '/users/rights/reset/', array('users'   => $user->get_id()));
         $response = $this->client->getResponse();
@@ -334,5 +333,33 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertFalse($datas->error);
         $this->assertFalse($user->ACL()->has_access_to_base($base_id));
         $user->delete();
+    }
+
+    public function testRenderDemands()
+    {
+        $this->client->request('GET', '/users/demands/');
+
+        $this->assertTrue($this->client->getResponse()->isOk());
+    }
+
+    public function testRenderImportFile()
+    {
+        $this->client->request('GET', '/users/import/file/');
+
+        $this->assertTrue($this->client->getResponse()->isOk());
+    }
+
+    public function testGetExampleCSVFile()
+    {
+        $this->client->request('GET', '/users/import/example/csv/');
+
+        $this->assertTrue($this->client->getResponse()->isOk());
+    }
+
+    public function testGetExampleRtfFile()
+    {
+        $this->client->request('GET', '/users/import/example/rtf/');
+
+        $this->assertTrue($this->client->getResponse()->isOk());
     }
 }

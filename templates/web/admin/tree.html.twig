@@ -4,7 +4,7 @@
 
   {% if user.is_admin() %}
   <li>
-    <a target="right" href="sitestruct.php" class="ajax">
+    <a target="right" href="/admin/dashboard/" class="ajax">
       <img src="/skins/admin/Dashboard.png" />
       <span>{% trans 'Tableau de bord' %}</span>
     </a>
@@ -17,18 +17,18 @@
 
   {% if user.is_admin() %}
   <li>
-    <a target="right" href="/admin/global_values.php" class="ajax">
+    <a target="right" href="/admin/setup/" class="ajax">
       <img src="/skins/admin/Setup.png" />
       <span>Setup</span>
     </a>
   </li>
-    {% if registry.get('GV_sphinx') %}
+  {% if registry.get('GV_sphinx') %}
   <li>
-    <a target="right" href="/admin/sphinxconf.php">
+    <a target="right" href="/admin/sphinx/configuration/" class="ajax">
       <span>Sphinx Conf</span>
     </a>
   </li>
-    {% endif %}
+  {% endif %}
   {% endif %}
 
   <li class="{% if feature == 'connected' %}selected{% endif %}">
@@ -46,7 +46,7 @@
     </a>
   </li>
   <li class="{% if feature == 'registrations' %}selected{% endif %}">
-    <a target="right" href="demand.php?act=LISTUSERS">
+    <a target="right" href="/admin/users/demands/" class="ajax">
       <img src="/skins/admin/Demandes.png" />
       <span>{% trans 'admin::utilisateurs: demandes en cours' %}</span>
     </a>
@@ -73,7 +73,7 @@
 
   <li class="open">
     <div class="{% if feature == 'bases' %}selected{% endif %}" style="padding:0 0 2px 0;">
-      <a id="TREE_DATABASES" target="right" href="databases.php" class="ajax">
+      <a id="TREE_DATABASES" target="right" href="{{ path('admin_databases') }}" class="ajax">
         <img src="/skins/admin/DatabasesAvailable.png" />
         <span>{% trans 'admin::utilisateurs: bases de donnees' %}</span>
       </a>
@@ -98,16 +98,16 @@
 
       <li class="{% if this_is_open %}open{% endif %}">
         <div style="padding:0 0 2px 0;" class="{% if this_is_selected %}selected{% endif %}">
-          <a target="right" href="database.php?p0={{ sbas_id }}" class="ajax">
-            <img src="/skins/admin/Database.png"/>
-            <span>{{ databox.get_viewname() }}</span>
-          </a>
+            <a target="right" href="/admin/databox/{{ sbas_id }}/" class="ajax">
+                <img src="/skins/admin/Database.png"/>
+                <span>{{ databox.get_viewname() }}</span>
+            </a>
         </div>
         <ul>
 
         {% if user.ACL().has_right_on_sbas( sbas_id , 'bas_modify_struct') %}
           <li>
-            <a target="right" href="structure.php?act=STRUCTURE&p0={{ sbas_id }}">
+            <a target="right" class="ajax" href="/admin/structure/{{ sbas_id }}/">
               <img src="/skins/icons/miniadjust01.gif"/>
               <span>{% trans 'admin::structure: reglage de la structure' %}</span>
             </a>
@@ -125,18 +125,18 @@
             </a>
           </li>
           <li>
-            <a target="right" href="statbits.php?act=STATBITS&p0={{ sbas_id }}">
+            <a target="right" href="/admin/statusbit/{{ sbas_id }}/" class="ajax">
               <img src="/skins/icons/miniadjust02.gif"/>
               <span>{% trans 'admin::status: reglage des status' %}</span>
             </a>
           </li>
           <li>
-            <a target="right" href="cgus.php?p0={{ sbas_id }}">
+            <a target="right" href="/admin/databox/{{ sbas_id }}/cgus/" class="ajax">
               <span>{% trans 'admin:: CGUs' %}</span>
             </a>
           </li>
           <li>
-            <a target="right" href="collorder.php?p0={{ sbas_id }}">
+              <a target="right" href="/admin/databox/{{ sbas_id }}/collections/order/" class="ajax">
               <img src="/skins/icons/miniadjust03.gif"/>
               <span>{% trans 'admin::collection: ordre des collections' %}</span>
             </a>
@@ -167,15 +167,15 @@
 
           <li>
             <div style="padding:0 0 2px 0;">
-              <a target="right" href="collection.php?act=COLLECTION&p0={{ sbas_id }}&p1={{ collection.get_base_id() }}">
-                <span>{{ collection.get_name() }}</span>
-              </a>
+                <a target="right" href="/admin/collection/{{ collection.get_base_id() }}/" class="ajax">
+                    <span>{{ collection.get_name() }}</span>
+                </a>
             </div>
             <ul>
 
             {% if (user.ACL.has_right_on_base(collection.get_base_id(), 'modify_struct')) %}
               <li>
-                <a target="right" href="sugval.php?p0={{ sbas_id }}&p1={{ collection.get_base_id() }}">
+                <a target="right" href="/admin/collection/{{ collection.get_base_id() }}/suggested-values/" class="ajax">
                   <img src="/skins/icons/foldph20open_0.gif"/>
                   <span>{% trans 'admin::base: preferences de collection' %}</span>
                 </a>
@@ -211,7 +211,7 @@
   {% for databox in off_databoxes %}
   <li>
     <img src="/skins/icons/db-remove.png"/>
-    ' . $row["dbname"] . '(' . $row["host"] . ':' . $row["port"] . ')
+    {{ databox.get_dbname() }} ({{ databox.get_host() }} {{ databox.get_port() }})
   </li>
   {% endfor %}
 </ul>

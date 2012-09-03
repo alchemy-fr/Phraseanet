@@ -11,15 +11,10 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  *
@@ -45,20 +40,27 @@ class ConnectedUsers implements ControllerProviderInterface
         return $controllers;
     }
 
-    public function appName($appId)
+    /**
+     * Return module name according to its ID
+     *
+     * @param integer $appId
+     * @return string
+     * @return null
+     */
+    public static function appName($appId)
     {
         $appRef = array(
-            '0' => _('admin::monitor: module inconnu')
-            , '1' => _('admin::monitor: module production')
-            , '2' => _('admin::monitor: module client')
-            , '3' => _('admin::monitor: module admin')
-            , '4' => _('admin::monitor: module report')
-            , '5' => _('admin::monitor: module thesaurus')
-            , '6' => _('admin::monitor: module comparateur')
-            , '7' => _('admin::monitor: module validation')
-            , '8' => _('admin::monitor: module upload')
+            '0' => _('admin::monitor: module inconnu'),
+            '1' => _('admin::monitor: module production'),
+            '2' => _('admin::monitor: module client'),
+            '3' => _('admin::monitor: module admin'),
+            '4' => _('admin::monitor: module report'),
+            '5' => _('admin::monitor: module thesaurus'),
+            '6' => _('admin::monitor: module comparateur'),
+            '7' => _('admin::monitor: module validation'),
+            '8' => _('admin::monitor: module upload'),
         );
 
-        return isset($appRef[$appId]) ? $appRef[$appId] : $appRef['0'];
+        return isset($appRef[$appId]) ? $appRef[$appId] : null;
     }
 }
