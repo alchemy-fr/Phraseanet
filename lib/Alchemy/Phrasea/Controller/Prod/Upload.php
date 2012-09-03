@@ -105,7 +105,7 @@ class Upload implements ControllerProviderInterface
     {
         $maxFileSize = $this->getUploadMaxFileSize();
 
-        return $app['Twig']->render(
+        return $app['twig']->render(
                 'prod/upload/upload-flash.html.twig', array(
                 'sessionId'           => session_id(),
                 'collections'         => $this->getGrantedCollections($app['phraseanet.core']->getAuthenticatedUser()),
@@ -127,7 +127,7 @@ class Upload implements ControllerProviderInterface
     {
         $maxFileSize = $this->getUploadMaxFileSize();
 
-        return $app['Twig']->render(
+        return $app['twig']->render(
                 'prod/upload/upload.html.twig', array(
                 'collections'         => $this->getGrantedCollections($app['phraseanet.core']->getAuthenticatedUser()),
                 'maxFileSize'         => $maxFileSize,
