@@ -71,7 +71,7 @@ return call_user_func(function() {
             $app->error(function (\Exception $e, $code) use ($app) {
                 /* @var $request \Symfony\Component\HttpFoundation\Request */
                 $request = $app['request'];
-
+               
                 if ($request->getRequestFormat() == 'json') {
                     $datas = array(
                         'success' => false

@@ -2,7 +2,7 @@
 {% set action = app.request.query.get('action') %}
 
 {% if  success == '1' %}
-    <div class="alert alert-sucess">
+    <div class="alert alert-success">
         <button type="button" class="close" data-dismiss="alert">×</button>
         {% if action == 'order' %}
             {% trans 'The records have been properly ordered' %}
@@ -19,20 +19,16 @@
     </div>
 {% endif %}
 
-<div class='well'>
-    {% if ordermanager.get_previous_page() != false %}
-        <button class='btn-mini' onclick="load_orders(false,{{ordermanager.get_previous_page()}});"><i class="icon-arrow-left"></i></button>
-    {% endif %}
-
-    {% set current_page = ordermanager.get_page() %}
-
-    {% trans %}Page {{current_page}}{% endtrans %}
-
-    {% if ordermanager.get_next_page() != false %}
-        <button class='btn-mini' onclick="load_orders(false,{{ordermanager.get_next_page()}});"><i class="icon-arrow-right"></i></button>
-    {% endif %}
-
+<div class='well' style="color:#333">
     <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    {% set current_page = ordermanager.get_page() %}
+                    {% trans %}Page {{current_page}}{% endtrans %}
+                </th>
+            </tr>
+        </thead>
         <thead>
             <tr>
                 <th>{% trans 'Utilisateur' %}</th>
@@ -45,7 +41,7 @@
         <tbody>
             {% for order in ordermanager %}
                 {% set deadline = order.get_deadline() | prettyDate %}
-                <tr id="order_{{order.get_order_id()}}" class="order_row">
+                <tr id="order_{{order.get_order_id()}}" class="order_row" {{ current_date > order.get_deadline() ? "style:text-decoration: line-through;": "" }}>
                     <td>{{order.get_user().get_display_name()}}</td>
                     <td>{{order.get_created_on() | prettyDate }}</td>
                     <td>
@@ -62,3 +58,35 @@
         </tbody>
     </table>
 </div>
+
+<div class='well-small'>
+  <ul class="pager">
+    {% if ordermanager.get_previous_page() != false %}
+        <li  class="previous"><a class='self-ajax' href="{{ path('prod_orders', {'page': ordermanager.get_previous_page()}) }}"><i class="icon-arrow-left"></i>{% trans 'Previous' %}</a></li>
+    {% endif %}
+
+    {% if ordermanager.get_next_page() != false %}
+        <li class="next"><a class='self-ajax' href="{{ path('prod_orders', {'page': ordermanager.get_next_page()}) }}"><i class="icon-arrow-right"></i>{% trans 'Next' %}</a></li>
+    {% endif %}
+  </ul>
+</div>
+
+
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+	var dialog = p4.Dialog.get(1);
+
+    $('a.self-ajax', dialog.getDomElement()).bind('click', function(){
+        var url = $(this).attr('href');
+        dialog.load(url);
+    });
+
+    $('tr.order_row', dialog.getDomElement()).bind('click', function(e){
+        var id = $(this).attr('id').split('_').pop();
+        dialog.load('/prod/order/' + id +'/');
+    }).addClass('clickable');
+});
+
+</script>

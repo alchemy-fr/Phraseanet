@@ -217,8 +217,32 @@
         {% endif %}
         {% if download.get_total_order() > 0 %}
             <div id="order">
-                <form method="post" action="" class="form-horizontal">
-                    <legend>{% trans 'export::commande: bon de commande' %}</legend>
+                {% for name, values in download.get_display_orderable() %}
+                    {% if values.available > 0 %}
+                        <div class='well-small'>
+                            {% set docs_orderable = values.available %}
+                                {% trans %}{{docs_orderable}} documents commandes{% endtrans %}
+                            {% set docs_not_orderable = values.total - values.available %}
+                            {% if docs_not_orderable > 0%}
+                                {% trans %}{{docs_not_orderable}} documents ne peuvent pas etre commandes{% endtrans %}
+                            {% endif %}
+                            {% set title%}
+                                {% trans 'Documents indisponibles' %}
+                            {% endset %}
+                            {% if values.refused|length > 0 %}
+                                <a href="#" class="undisposable_link" title="{{title|e}}"> + </a>
+                                <div style="display:none;" class="undisposable">
+                                    <div><i>{% trans 'La sous resolution n\'est pas disponible pour les documents suivants' %}</i></div>
+                                    {% for datas in values.refused%}
+                                        {{ thumbnail.format(datas, 80, 80,'', session, true) }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                <hr />
+                <form class="form-horizontal">
                         <input type="hidden" name="lst" value="{{lst}}"/>
                         <input type="hidden" name="ssttid" value="{{ssttid}}"/>
 
@@ -316,31 +340,6 @@
                                 <input type="text" id="usr_fax" name="fax" value="{{ user.get_fax() }}">
                             </div>
                         </div>
-
-                        {% for name, values in download.get_display_orderable() %}
-                            {% if values.available > 0 %}
-                                <div class='well-small'>
-                                    {% set docs_orderable = values.available %}
-                                    <h4>{% trans %}{{docs_orderable}} documents commandes{% endtrans %}</h4>
-                                    {% set docs_not_orderable = values.total - values.available %}
-                                    {% if docs_not_orderable > 0%}
-                                        {% trans %}{{docs_not_orderable}} documents ne peuvent pas etre commandes{% endtrans %}
-                                    {% endif %}
-                                    {% set title%}
-                                        {% trans 'Documents indisponibles' %}
-                                    {% endset %}
-                                    {% if values.refused|length > 0 %}
-                                        <a href="#" class="undisposable_link" title="{{title|e}}"> + </a>
-                                        <div style="display:none;" class="undisposable">
-                                            <div><i>{% trans 'La sous resolution n\'est pas disponible pour les documents suivants' %}</i></div>
-                                            {% for datas in values.refused%}
-                                                {{ thumbnail.format(datas, 80, 80,'', session, true) }}
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                            {% endif %}
-                        {% endfor %}
 
                         <div class="form_actions buttons_line">
                             <button type="button" class="order_button btn btn-primary">{% trans 'boutton::commander'%}</button>
@@ -531,7 +530,7 @@
 
                 var $this = $(this);
                 $this.attr('disabled', true).addClass('disabled');
-                $.post("{{ path('prod_order_new') }}"
+                $.post("/prod/order/"
                     , options
                     , function(data){
                         $this.attr('disabled', false).removeClass('disabled')

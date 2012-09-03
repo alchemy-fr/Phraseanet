@@ -68,11 +68,11 @@ class set_ordermanager extends set_abstract
 
         if ($sort) {
             if ($sort == 'created_on')
-                uasort($elements, array('ordermanager', 'date_orders_sort'));
+                uasort($elements, array('set_ordermanager', 'date_orders_sort'));
             elseif ($sort == 'user')
-                uasort($elements, array('ordermanager', 'user_orders_sort'));
+                uasort($elements, array('set_ordermanager', 'user_orders_sort'));
             elseif ($sort == 'usage')
-                uasort($elements, array('ordermanager', 'usage_orders_sort'));
+                uasort($elements, array('set_ordermanager', 'usage_orders_sort'));
         }
 
         $sql = 'SELECT distinct o.id

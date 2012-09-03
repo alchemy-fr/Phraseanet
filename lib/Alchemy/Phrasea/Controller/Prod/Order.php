@@ -47,6 +47,9 @@ class Order implements ControllerProviderInterface
          * return       : HTML Response
          */
         $controllers->get('/', $this->call('displayOrders'))
+            ->before(function(Request $request) use ($app) {
+                $app['phraseanet.core']['Firewall']->requireOrdersAdmin($app);
+            })
             ->bind('prod_orders');
 
         /**
@@ -79,6 +82,9 @@ class Order implements ControllerProviderInterface
          * return       : HTML Response
          */
         $controllers->get('/{order_id}/', $this->call('displayOneOrder'))
+            ->before(function(Request $request) use ($app) {
+                $app['phraseanet.core']['Firewall']->requireOrdersAdmin($app);
+            })
             ->bind('prod_order')
             ->assert('order_id', '\d+');
 
@@ -96,6 +102,9 @@ class Order implements ControllerProviderInterface
          * return       : HTML Response | JSON Response
          */
         $controllers->post('/{order_id}/send/', $this->call('sendOrder'))
+            ->before(function(Request $request) use ($app) {
+                $app['phraseanet.core']['Firewall']->requireOrdersAdmin($app);
+            })
             ->bind('prod_order_send')
             ->assert('order_id', '\d+');
 
@@ -113,6 +122,9 @@ class Order implements ControllerProviderInterface
          * return       : HTML Response | JSON Response
          */
         $controllers->post('/{order_id}/deny/', $this->call('denyOrder'))
+            ->before(function(Request $request) use ($app) {
+                $app['phraseanet.core']['Firewall']->requireOrdersAdmin($app);
+            })
             ->bind('prod_order_deny')
             ->assert('order_id', '\d+');
 
@@ -151,7 +163,10 @@ class Order implements ControllerProviderInterface
                 ));
         }
 
-        return $app->redirect(sprintf('%s?success=%d&action=order', $app['url_generator']->generate('prod_orders'), (int) $success));
+        return $app->redirect($app['url_generator']->generate('prod_orders', array(
+            'success' => (int) $success,
+            'action'  => 'send'
+        )));
     }
 
     /**
@@ -219,12 +234,15 @@ class Order implements ControllerProviderInterface
 
             return $app->json(array(
                     'success'  => $success,
-                    'msg'      => $success ? _('Order has been sent') : _('An error occured'),
+                    'msg'      => $success ? _('Order has been sent') : _('An error occured while sending, please retry  or contact an admin if problem persists'),
                     'order_id' => $order_id
                 ));
         }
 
-        return $app->redirect(sprintf('%s?success=%d&action=send', $app['url_generator']->generate('prod_orders'), (int) $success));
+        return $app->redirect($app['url_generator']->generate('prod_orders', array(
+            'success' => (int) $success,
+            'action'  => 'send'
+        )));
     }
 
     /**
@@ -256,12 +274,15 @@ class Order implements ControllerProviderInterface
 
             return $app->json(array(
                     'success'  => $success,
-                    'msg'      => $success ? _('Order has been denied') : _('An error occured'),
+                    'msg'      => $success ? _('Order has been denied') : _('An error occured while denying, please retry  or contact an admin if problem persists'),
                     'order_id' => $order_id
                 ));
         }
 
-        return $app->redirect(sprintf('%s?success=%d&action=deny', $app['url_generator']->generate('prod_orders'), (int) $success));
+        return $app->redirect($app['url_generator']->generate('prod_orders', array(
+            'success' => (int) $success,
+            'action'  => 'send'
+        )));
     }
 
     /**
