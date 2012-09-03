@@ -12,11 +12,17 @@
 namespace Alchemy\Phrasea\Application;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Controller\Admin\Collection;
 use Alchemy\Phrasea\Controller\Admin\ConnectedUsers;
+use Alchemy\Phrasea\Controller\Admin\Dashboard;
+use Alchemy\Phrasea\Controller\Admin\Databox;
+use Alchemy\Phrasea\Controller\Admin\Databoxes;
 use Alchemy\Phrasea\Controller\Admin\Description;
 use Alchemy\Phrasea\Controller\Admin\Fields;
 use Alchemy\Phrasea\Controller\Admin\Publications;
 use Alchemy\Phrasea\Controller\Admin\Root;
+use Alchemy\Phrasea\Controller\Admin\Setup;
+use Alchemy\Phrasea\Controller\Admin\Sphinx;
 use Alchemy\Phrasea\Controller\Admin\Subdefs;
 use Alchemy\Phrasea\Controller\Admin\Users;
 use Alchemy\Phrasea\Controller\Utils\ConnectionTest;
@@ -27,6 +33,12 @@ return call_user_func(
             $app = new PhraseaApplication();
 
             $app->mount('/', new Root());
+            $app->mount('/dashboard', new Dashboard());
+            $app->mount('/collection', new Collection());
+            $app->mount('/databox', new Databox());
+            $app->mount('/databoxes', new Databoxes());
+            $app->mount('/setup', new Setup());
+            $app->mount('/sphinx', new Sphinx());
             $app->mount('/connected-users', new ConnectedUsers());
             $app->mount('/publications', new Publications());
             $app->mount('/users', new Users());

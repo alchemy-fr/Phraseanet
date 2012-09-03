@@ -34,14 +34,14 @@ class ControllerSubdefsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue($this->client->getResponse()->isOk());
     }
 
-    public function getName()
+    public function getSubdefName()
     {
         return 'testname' . time() . mt_rand(10000, 99999);
     }
 
     public function testPostRouteAddSubdef()
     {
-        $name = $this->getName();
+        $name = $this->getSubdefName();
         $this->client->request("POST", "/subdefs/" .  $this->databox->get_sbas_id() . "/", array('add_subdef' => array(
                 'class'  => 'thumbnail',
                 'name'   => $name,
@@ -56,7 +56,7 @@ class ControllerSubdefsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testPostRouteDeleteSubdef()
     {
         $subdefs =  $this->databox->get_subdef_structure();
-        $name = $this->getName();
+        $name = $this->getSubdefName();
         $subdefs->add_subdef("image", $name, "thumbnail");
         $this->client->request("POST", "/subdefs/" .  $this->databox->get_sbas_id() . "/", array('delete_subdef' => 'image_' . $name));
         $this->assertTrue($this->client->getResponse()->isRedirect());
@@ -71,7 +71,7 @@ class ControllerSubdefsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testPostRouteAddSubdefWithNoParams()
     {
         $subdefs =  $this->databox->get_subdef_structure();
-        $name = $this->getName();
+        $name = $this->getSubdefName();
         $subdefs->add_subdef("image", $name, "thumbnail");
         $this->client->request("POST", "/subdefs/" .  $this->databox->get_sbas_id() . "/"
             , array('subdefs' => array(

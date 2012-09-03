@@ -103,23 +103,43 @@ class appbox extends base
             if ( ! in_array(mb_strtolower($pathfile->getMimeType()), array('image/gif', 'image/png', 'image/jpeg', 'image/jpg', 'image/pjpeg'))) {
                 throw new \InvalidArgumentException('Invalid file format');
             }
+
             $filename = $pathfile->getPathname();
 
-            //resize collection logo
-            $imageSpec = new ImageSpecification();
-            $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
-            $imageSpec->setDimensions(120, 24);
+            if ($pic_type === collection::PIC_LOGO) {
+                //resize collection logo
+                $imageSpec = new ImageSpecification();
+                $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
+                $imageSpec->setDimensions(120, 24);
 
-            $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox').'.jpg';
+                $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox') . '.jpg';
 
-            try {
-                $core['media-alchemyst']
-                    ->open($pathfile->getPathname())
-                    ->turninto($tmp, $imageSpec)
-                    ->close();
-                $filename = $tmp;
-            } catch (\MediaAlchemyst\Exception $e) {
+                try {
+                    $core['media-alchemyst']
+                        ->open($pathfile->getPathname())
+                        ->turninto($tmp, $imageSpec)
+                        ->close();
+                    $filename = $tmp;
+                } catch (\MediaAlchemyst\Exception $e) {
 
+                }
+            } else if ($pic_type === collection::PIC_PRESENTATION) {
+                //resize collection logo
+                $imageSpec = new ImageSpecification();
+                $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
+                $imageSpec->setDimensions(650, 200);
+
+                $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox') . '.jpg';
+
+                try {
+                    $core['media-alchemyst']
+                        ->open($pathfile->getPathname())
+                        ->turninto($tmp, $imageSpec)
+                        ->close();
+                    $filename = $tmp;
+                } catch (\MediaAlchemyst\Exception $e) {
+
+                }
             }
         }
 
@@ -148,7 +168,9 @@ class appbox extends base
         $custom_path = $registry->get('GV_RootPath') . 'www/custom/' . $pic_type . '/' . $collection->get_base_id();
 
         foreach (array($file, $custom_path) as $target) {
+
             if (is_file($target)) {
+
                 $core['file-system']->remove($target);
             }
 
@@ -180,7 +202,7 @@ class appbox extends base
             throw new \InvalidArgumentException('unknown pic_type');
         }
 
-        if($pathfile) {
+        if ($pathfile) {
 
             $filename = $pathfile->getPathname();
 
@@ -188,7 +210,7 @@ class appbox extends base
             $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
             $imageSpec->setDimensions(120, 35);
 
-            $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox').'.jpg';
+            $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox') . '.jpg';
 
             try {
                 $core['media-alchemyst']
@@ -202,8 +224,8 @@ class appbox extends base
         }
 
         $registry = $databox->get_registry();
-        $file = $registry->get('GV_RootPath') . 'config/minilogos/' . $pic_type . '_' . $databox->get_sbas_id();
-        $custom_path = $registry->get('GV_RootPath') . 'www/custom/minilogos/' . $pic_type . '_' . $databox->get_sbas_id();
+        $file = $registry->get('GV_RootPath') . 'config/minilogos/' . $pic_type . '_' . $databox->get_sbas_id() . '.jpg';
+        $custom_path = $registry->get('GV_RootPath') . 'www/custom/minilogos/' . $pic_type . '_' . $databox->get_sbas_id() . '.jpg';
 
         foreach (array($file, $custom_path) as $target) {
 
@@ -634,5 +656,14 @@ class appbox extends base
     public function get_cache_key($option = null)
     {
         return 'appbox_' . ($option ? $option . '_' : '');
+    }
+
+    public function delete_data_from_cache($option = null)
+    {
+        if ($option === appbox::CACHE_LIST_BASES) {
+            $this->databoxes = null;
+        }
+
+        parent::delete_data_from_cache($option);
     }
 }

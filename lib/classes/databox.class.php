@@ -83,12 +83,6 @@ class databox extends base
      */
     protected static $_sxml_thesaurus = array();
 
-    /**
-     *
-     * @var Array
-     */
-    protected static $_instances = array();
-
     const BASE_TYPE = self::DATA_BOX;
     const CACHE_META_STRUCT = 'meta_struct';
     const CACHE_THESAURUS = 'thesaurus';
@@ -367,7 +361,7 @@ class databox extends base
         $stmt->execute(array(':sbas_id' => $this->get_sbas_id()));
         $stmt->closeCursor();
 
-        phrasea::reset_sbasDatas();
+        $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 
         return;
     }
@@ -405,7 +399,7 @@ class databox extends base
         $stmt->closeCursor();
 
         if ($row) {
-            return self::get_instance((int) $row['sbas_id']);
+            return $appbox->get_databox((int) $row['sbas_id']);
         }
 
         try {
@@ -447,7 +441,7 @@ class databox extends base
 
         $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 
-        $databox = self::get_instance($sbas_id);
+        $databox = $appbox->get_databox($sbas_id);
         $databox->insert_datas();
         $databox->setNewStructure(
             $data_template, $registry->get('GV_base_datapath_noweb')
@@ -468,8 +462,7 @@ class databox extends base
      */
     public static function mount(appbox $appbox, $host, $port, $user, $password, $dbname, registry $registry)
     {
-        $name = 'test';
-        $connection = new connection_pdo($name, $host, $port, $user, $password, $dbname, array(), $registry);
+        $connection = new connection_pdo('test', $host, $port, $user, $password, $dbname, array(), $registry);
 
         $conn = $appbox->get_connection();
         $sql = 'SELECT MAX(ord) as ord FROM sbas';
@@ -491,16 +484,15 @@ class databox extends base
             , ':user'     => $user
             , ':password' => $password
         ));
+
         $stmt->closeCursor();
         $sbas_id = (int) $conn->lastInsertId();
-        phrasea::clear_sbas_params();
-        phrasea::reset_baseDatas();
-        phrasea::reset_sbasDatas();
 
-        $databox = self::get_instance($sbas_id);
+        $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+
+        $databox = $appbox->get_databox($sbas_id);
 
         $databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
-        $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
         $appbox->delete_data_from_cache(appbox::CACHE_SBAS_IDS);
 
         phrasea::reset_sbasDatas();
@@ -936,7 +928,7 @@ class databox extends base
         $registry = registry::get_instance();
 
         $out = '';
-        if (is_file(($filename = $registry->get('GV_RootPath') . 'config/minilogos/logopdf_' . $sbas_id . '.jpg')))
+        if (is_file(($filename = $registry->get('GV_RootPath') . 'config/minilogos/'.\databox::PIC_PDF.'_' . $sbas_id . '.jpg')))
             $out = file_get_contents($filename);
 
         return $out;
@@ -944,7 +936,10 @@ class databox extends base
 
     public function clear_logs()
     {
-        foreach (array('log', 'exports', 'quest') as $table) {
+        /**
+         * @todo clear log_docs log_search log_thumb log_view ?
+         */
+        foreach (array('log') as $table) {
             $sql = 'TRUNCATE ' . $table;
             $stmt = $this->get_connection()->prepare($sql);
             $stmt->execute();
@@ -1328,7 +1323,7 @@ class databox extends base
         $sql .= ' WHERE prop="ToU" AND locale = :locale';
 
         $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute(array(':terms'  => $terms, ':locale' => $locale));
+        $stmt->execute(array(':terms'    => $terms, ':locale'   => $locale));
         $stmt->closeCursor();
         $update = true;
         $this->cgus = null;

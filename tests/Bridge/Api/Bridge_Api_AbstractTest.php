@@ -1,9 +1,9 @@
 <?php
 
-require_once __DIR__ . '/../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
+require_once __DIR__ . '/../../PhraseanetWebTestCaseAbstract.class.inc';
 require_once __DIR__ . '/../Bridge_datas.inc';
 
-class Bridge_Api_AbstractTest extends PhraseanetWebTestCaseAuthenticatedAbstract
+class Bridge_Api_AbstractTest extends PhraseanetWebTestCaseAbstract
 {
     public static $account = null;
     public static $api = null;

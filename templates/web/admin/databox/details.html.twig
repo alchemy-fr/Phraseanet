@@ -1,0 +1,62 @@
+<div class="header">
+    <h1>{{ databox.get_serialized_server_info() }}<small>{% trans "Details" %}</small></h1>
+</div>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th class='col'>
+                {% if app.request.query.get('sort') == 'col' %}
+                    <img src="/skins/icons/tsort_desc.gif">
+                {% endif %}
+                {% trans 'phraseanet:: collection' %}
+            </th>
+
+            <th class="obj">
+                {% if app.request.query.get('sort') == 'obj' %}
+                    <img src="/skins/icons/tsort_desc.gif">
+                {% endif %}
+                {% trans 'admin::base: objet' %}
+            </th>
+
+            <th>{% trans 'admin::base: nombre' %}</th>
+            <th>{% trans 'admin::base: poids' %} (Mo)</th>
+            <th>{% trans 'admin::base: poids' %} (Go)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in table['result'] %}
+            <tr>
+                 <td>
+                    {{ row['asciiname'] }}
+                </td>
+                <td>
+                    {{ row['name'] }}
+                </td>
+                <td>
+                    {{ row['n'] }}
+                </td>
+                <td>
+                    {{ row['mega'] }}
+                </td>
+                <td>
+                    {{ row['giga'] }}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+    <tfoot>
+        {% set total = table['total'] %}
+        <tr>
+            <th>{% trans 'report:: total' %}</th>
+            <th></th>
+            <th>{{ total['totobj'] }}</th>
+            <th>{{ total['mega'] }} (Mo)</th>
+            <th>{{ total['giga'] }} (Go)</th>
+        </tr>
+    </tfoot>
+</table>
+
+<div>
+    <a class='btn btn-mini' href='/admin/databox/{{ databox.get_sbas_id() }}/'>{% trans 'boutton::retour' %}</a>
+</div>

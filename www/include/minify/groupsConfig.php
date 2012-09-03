@@ -74,7 +74,7 @@ $groups = array(
         , '//include/js/jquery.Selection.js'
         , '//include/js/jquery.Edit.js'
         , '//include/js/jquery.lists.js'
-        , '//prod/jquery.Phraseanet.js'
+        , '//prod/jquery.Mustache.js'
         , '//prod/jquery.Prod.js'
         , '//prod/jquery.Dialog.js'
         , '//prod/jquery.Feedback.js'

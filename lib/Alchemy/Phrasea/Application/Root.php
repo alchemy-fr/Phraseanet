@@ -30,17 +30,17 @@ return call_user_func(function() {
             $app = new PhraseaApplication();
 
             $app->before(function () use ($app) {
-                    $app['phraseanet.core']['Firewall']->requireSetup($app);
+                    return $app['phraseanet.core']['Firewall']->requireSetup($app);
                 });
 
             $app->get('/', function(SilexApp $app) {
 
                     if ($app['browser']->isMobile()) {
-                        return $app->redirect("/login/?redirect=/lightbox");
+                        return $app->redirect("/login/?redirect=lightbox");
                     } elseif ($app['browser']->isNewGeneration()) {
-                        return $app->redirect("/login/?redirect=/prod");
+                        return $app->redirect("/login/?redirect=prod");
                     } else {
-                        return $app->redirect("/login/?redirect=/client");
+                        return $app->redirect("/login/?redirect=client");
                     }
                 });
 

@@ -387,6 +387,11 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
     public function testAddMediaAttributesPDF()
     {
         $manager = new ManagerTester(self::$core['EM'], self::$core['file-system']);
+
+        if(null === self::$core['pdf-to-text']) {
+            $this->markTestSkipped('Pdf To Text could not be instantiate');
+        }
+
         $manager->setPdfToText(self::$core['pdf-to-text']);
 
         $file = File::buildFromPathfile(__DIR__ . '/../../../testfiles/HelloWorld.pdf', self::$collection);

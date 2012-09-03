@@ -10,6 +10,8 @@
  */
 
 use MediaAlchemyst\Specification\Image as ImageSpecification;
+use \Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 /**
  *
@@ -410,7 +412,7 @@ class databox_status
         return true;
     }
 
-    public static function updateIcon($sbas_id, $bit, $switch, $file)
+    public static function updateIcon($sbas_id, $bit, $switch, UploadedFile $file)
     {
         $core = \bootstrap::getCore();
         $user = $core->getAuthenticatedUser();
@@ -429,11 +431,11 @@ class databox_status
         $url = self::getUrl($sbas_id);
         $path = self::getPath($sbas_id);
 
-        if ($file['size'] >= 65535) {
+        if ($file->getSize() >= 65535) {
             throw new Exception_Upload_FileTooBig();
         }
 
-        if ($file['error'] !== UPLOAD_ERR_OK) {
+        if ( ! $file->isValid()) {
             throw new Exception_Upload_Error();
         }
 
@@ -441,9 +443,12 @@ class databox_status
 
         $name = "-stat_" . $bit . "_" . ($switch == 'on' ? '1' : '0') . ".gif";
 
-        if ( ! move_uploaded_file($file["tmp_name"], $path . $name)) {
+        try {
+            $file = $file->move($registry->get('GV_RootPath') . "config/status/", $path.$name);
+        } catch (FileException $e) {
             throw new Exception_Upload_CannotWriteFile();
         }
+
 
         $custom_path = $registry->get('GV_RootPath') . 'www/custom/status/';
 

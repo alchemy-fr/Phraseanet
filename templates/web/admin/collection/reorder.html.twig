@@ -1,0 +1,114 @@
+<table id="table-order">
+    <tr>
+        <td>
+             <select size=16 name="coll-order" id="coll-order" style="width:140px">
+                 {% for collection in databox.get_collections() %}
+                     <option value='{{ collection.get_base_id() }}'> {{ collection.get_name() }}</option>
+                 {% endfor %}
+             </select>
+        </td>
+         <td>
+            <ul>
+                <li><button id="upbutton" disabled><i class="icon-chevron-up"></i>{% trans 'admin::base:collorder: monter' %}</button></li>
+                <li><button id="downbutton" disabled ><i class="icon-chevron-down"></i>{% trans 'admin::base:collorder: descendre' %}</button></li>
+                <li><a href="#" id='natcase-reorder'>{% trans 'admin::base:collorder: reinitialiser en ordre alphabetique' %}</a></li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="height:20px" />
+    </tr>
+    <tr>
+        <td colspan="2" style="text-align:center"><button class='btn btn-primary' id='apply'>{% trans 'boutton::valider' %}</button></td>
+    </tr>
+</table>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        var select =  $("#coll-order");
+        var upButton = $('#upbutton');
+        var downButton = $('#downbutton');
+        var applyButton = $('#apply');
+
+        activeButtons(select, upButton, downButton);
+
+        select.find('option').bind('click', function(){
+             activeButtons(select, upButton, downButton);
+        });
+
+        $("#natcase-reorder").bind('click', function(){
+            select.find('option').sort(natCaseSort).appendTo(select)
+        });
+
+        upButton.bind('click', function(){
+            moveUpItem(select);
+            activeButtons(select, upButton, downButton);
+        });
+
+        downButton.bind('click', function(){
+            moveDownItem(select);
+            activeButtons(select, upButton, downButton);
+        });
+
+        applyButton.bind('click', function() {
+            var $this = $(this);
+            var order = [];
+
+            select.find('option').each(function(i, option){
+                order[i] = {id: $(this).val(), name: $(this).text()};
+            });
+
+            $.ajax({
+                dataType:'json',
+                type:'POST',
+                data: {order: order},
+                url: '{{ path('admin_database_submit_collections_order', {'databox_id': app.request.attributes.get('databox_id')}) }}',
+                beforeSend : function() {
+                    $this.attr('disabled', true);
+                },
+                success : function(datas) {
+                    p4.Mustache.Render('Alert-Success', function,(html) {
+                        $('#table-order').insertBefore(html);
+                    });
+                },
+                complete : function() {
+                    $this.attr('disabled', false);
+                }
+            });
+        });
+    });
+
+    function moveUpItem(select){
+        select.find('option:selected').each(function(){
+            $(this).insertBefore($(this).prev());
+        });
+    }
+
+    function moveDownItem(select){
+        select.find('option:selected').each(function(){
+            $(this).insertAfter($(this).next());
+        });
+    }
+
+    function natCaseSort(a, b) {
+        return (a.innerHTML > b.innerHTML) ? 1 : -1;
+    }
+
+    function activeButtons(select, upButton, downButton) {
+        var selectedIndex = select.prop("selectedIndex");
+        if(selectedIndex !== -1 ) {
+            if (selectedIndex === 0) {
+                upButton.attr('disabled', true);
+            } else {
+                upButton.attr('disabled', false);
+            }
+
+            if (selectedIndex + 1 === select.length) {
+                downButton.attr('disabled', true);
+            } else {
+                downButton.attr('disabled', false);
+            }
+        }
+    }
+
+</script>
