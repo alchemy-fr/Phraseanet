@@ -60,7 +60,7 @@ class format
     public static function csv_to_arr($filename)
     {
         $separateur = ",";
-
+        $array = array();
         // For mac
         $autoDetectLineEndings = ini_get("auto_detect_line_endings");
 
@@ -79,10 +79,10 @@ class format
             while ($array[] = fgetcsv($file, 1024, $separateur));
             fclose($file);
             array_pop($array);
-
-            ini_set("auto_detect_line_endings", $autoDetectLineEndings);
-
-            return $array;
         }
+
+        ini_set("auto_detect_line_endings", $autoDetectLineEndings);
+
+        return $array;
     }
 }
