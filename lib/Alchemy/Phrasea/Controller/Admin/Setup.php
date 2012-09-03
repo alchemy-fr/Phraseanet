@@ -86,7 +86,7 @@ class Setup implements ControllerProviderInterface
 
         require_once __DIR__ . "/../../../../conf.d/_GV_template.inc";
 
-        if (null !== $update = $request->get('update')) {
+        if (null !== $update = $request->query->get('update')) {
             if ( ! ! $update) {
                 $update = _('Update succeed');
             } else {

@@ -36,7 +36,7 @@ class Root implements ControllerProviderInterface
 
                     \User_Adapter::updateClientInfos(3);
 
-                    $section = $request->get('section', false);
+                    $section = $request->query->get('section', false);
 
                     $available = array(
                         'connected',
@@ -90,7 +90,7 @@ class Root implements ControllerProviderInterface
                                 'module'        => 'admin',
                                 'events'        => \eventsmanager_broker::getInstance($appbox, $Core),
                                 'module_name'   => 'Admin',
-                                'notice'        => $request->get("notice"),
+                                'notice'        => $request->query->get("notice"),
                                 'feature'       => $feature,
                                 'featured'      => $featured,
                                 'databoxes'     => $databoxes,
@@ -108,7 +108,7 @@ class Root implements ControllerProviderInterface
 
                     \User_Adapter::updateClientInfos(3);
 
-                    $section = $request->get('section', false);
+                    $section = $request->query->get('section', false);
 
                     $available = array(
                         'connected',
@@ -168,12 +168,12 @@ class Root implements ControllerProviderInterface
                     $app->abort(400, _('Bad request format, only JSON is allowed'));
                 }
 
-                if (0 !== count($tests = $request->get('tests', array()))) {
+                if (0 !== count($tests = $request->query->get('tests', array()))) {
 
                     $app->abort(400, _('Missing tests parameter'));
                 }
 
-                if (null !== $path = $request->get('path')) {
+                if (null !== $path = $request->query->get('path')) {
 
                     $app->abort(400, _('Missing path parameter'));
                 }
@@ -206,7 +206,7 @@ class Root implements ControllerProviderInterface
                     $structure = $databox->get_structure();
                     $errors = \databox::get_structure_errors($structure);
 
-                    if ($updateOk = ! ! $request->get('success', false)) {
+                    if ($updateOk = ! ! $request->query->get('success', false)) {
                         $updateOk = true;
                     }
 
@@ -230,7 +230,7 @@ class Root implements ControllerProviderInterface
                         $app->abort(403);
                     }
 
-                    if (null === $structure = $request->get('structure')) {
+                    if (null === $structure = $request->request->get('structure')) {
                         $app->abort(400, _('Missing "structure" parameter'));
                     }
 
@@ -274,7 +274,7 @@ class Root implements ControllerProviderInterface
 
                     $status = $databox->get_statusbits();
 
-                    switch ($errorMsg = $request->get('error')) {
+                    switch ($errorMsg = $request->query->get('error')) {
                         case 'rights':
                             $errorMsg = _('You do not enough rights to update status');
                             break;
@@ -323,16 +323,16 @@ class Root implements ControllerProviderInterface
                     }
 
                     $properties = array(
-                        'searchable' => $request->get('searchable') ? '1' : '0',
-                        'printable'  => $request->get('printable') ? '1' : '0',
-                        'name'       => $request->get('name', ''),
-                        'labelon'    => $request->get('label_on', ''),
-                        'labeloff'   => $request->get('label_off', '')
+                        'searchable' => $request->request->get('searchable') ? '1' : '0',
+                        'printable'  => $request->request->get('printable') ? '1' : '0',
+                        'name'       => $request->request->get('name', ''),
+                        'labelon'    => $request->request->get('label_on', ''),
+                        'labeloff'   => $request->request->get('label_off', '')
                     );
 
                     \databox_status::updateStatus($databox_id, $bit, $properties);
 
-                    if (null !== $request->get('delete_icon_off')) {
+                    if (null !== $request->request->get('delete_icon_off')) {
                         \databox_status::deleteIcon($databox_id, $bit, 'off');
                     }
 
@@ -360,7 +360,7 @@ class Root implements ControllerProviderInterface
                         }
                     }
 
-                    if (null !== $request->get('delete_icon_on')) {
+                    if (null !== $request->request->get('delete_icon_on')) {
                         \databox_status::deleteIcon($databox_id, $bit, 'on');
                     }
 
