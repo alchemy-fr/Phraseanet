@@ -99,7 +99,7 @@
                         <button type="button" class="clear-queue btn btn-inverse input-medium" style="margin-bottom: 10px;">{% trans 'Clear list' %}</button>
                         <button type="button" class="upload-submitter btn btn-inverse input-medium" style="margin-bottom: 10px;">{% trans 'Send' %}</button>
                         <div class="clear"></div>
-                        <div class='upload-box-addedfiles'></div>
+                        <div class='upload-box-addedfiles flash-box'></div>
                         <div class="clear"></div>
                     </div>
                 </div>
@@ -111,7 +111,7 @@
                         </button>
                     </div>
                     {# download box #}
-                    <div class="download-box"></div>
+                    <div class="download-box flash-box"></div>
                 </div>
 
             </form>
@@ -185,6 +185,7 @@
             button_text_top_padding : 10,
             button_window_mode:SWFUpload.WINDOW_MODE.TRANSPARENT,
             button_cursor : SWFUpload.CURSOR.HAND,
+            button_action : SWFUpload.BUTTON_ACTION.SELECT_FILES,
             file_queued_handler : function(file) {
                 var $this = this;
                 UploaderManager.getUploadBox().closest('.upload-box').show();
