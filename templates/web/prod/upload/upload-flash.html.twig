@@ -156,6 +156,10 @@
             $('#uploadBox #status-' + selectedCollId).show();
         });
 
+        //global file order, start uploads from swf.queue, following
+        //order of "file_order"
+        var file_order = [];
+
         var swfu = new SWFUpload({
             upload_url : "/prod/upload/",
             post_params: {"php_session_id" : "{{ sessionId }}"},
@@ -269,7 +273,7 @@
                         reasons = "{% trans "The upload violates a security restriction, please retry" %}";
                     break;
                     case SWFUpload.UPLOAD_ERROR.UPLOAD_LIMIT_EXCEEDED:
-                        reasons = "{% trans "File upload limit ({{ maxFileSizeReadable }}) has been reach" %}";
+                        reasons = "{% trans  %} File upload limit ({{ maxFileSizeReadable }}) has been reached {% endtrans %}";
                     break;
                     case SWFUpload.UPLOAD_ERROR.UPLOAD_FAILED:
                         reasons = "{% trans "Could not initiate upload, please retry" %}";
@@ -316,14 +320,26 @@
                 }
             },
             upload_complete_handler: function(file) {
+                //this event is always fired in the end
+
                 if (this.getStats().files_queued === 0) {
                     $("#cancel-all", UploaderManager.getContainer()).addClass("disabled").attr("disabled", true);
                     var dialog = p4.Dialog.get(1);
                     //unbind check before close event & disabled button for cancel all download
                     dialog.getDomElement().unbind("dialogbeforeclose");
+
+                    return false;
                 }
 
                 $("#"+file.id, UploaderManager.getDownloadBox()).find('.progress-bar').width('100%');
+
+                var next_file = file_order.shift();
+
+                if ( typeof next_file !== "undefined") {
+                    this.startUpload(next_file.id);
+                }
+
+                return false;
            }
         });
 
@@ -347,6 +363,9 @@
                         $("#"+file.id, UploaderManager.getDownloadBox()).find('.remove-element').bind('click', function(e){
                             swfu.cancelUpload(file.id);
                         });
+
+                        //Add file
+                        file_order.push(file);
                     });
                 }
             });
@@ -355,7 +374,12 @@
             $("button.clear-queue", UploaderManager.getContainer()).attr("disabled", true).addClass("disabled");
             $("button.upload-submitter", UploaderManager.getContainer()).attr("disabled", true).addClass('disabled');
 
-            swfu.startUpload();
+            if( file_order.length > 0 ) {
+                //Start upload
+                swfu.startUpload(file_order.shift().id);
+            } else {
+                alert("{% trans 'Please select at least one valid file' %}");
+            }
         });
 
         $("button.clear-queue", UploaderManager.getContainer()).bind("click", function(e){
