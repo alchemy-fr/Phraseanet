@@ -4028,6 +4028,11 @@ dans l'onglet thesaurus : arbres, menus contextuels
     background-color: #FFFFFF;
 }
 
+#uploadBox .flash-box .upload-record {
+    height: 160px;
+    background-color: #FFFFFF;
+}
+
 #uploadBox .upload-record .canva-wrapper {
     height: 125px;
     overflow: auto;
