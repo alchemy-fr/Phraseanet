@@ -122,11 +122,11 @@ class Root implements ControllerProviderInterface
 
         $controllers->post('/multi-export/', function(Application $app, Request $request) {
 
-                $download = new \set_export($request->request->get('lst', ''), (int) $request->request->get('SSTTID'), $request->request->get('story'));
+                $download = new \set_export($request->request->get('lst', ''), (int) $request->request->get('ssel'), $request->request->get('story'));
 
                 return $app['twig']->render('common/dialog_export.html.twig', array(
                     'download'             => $download,
-                    'ssttid'               => (int) $request->request->get('SSTTID'),
+                    'ssttid'               => (int) $request->request->get('ssel'),
                     'lst'                  => $download->serialize_list(),
                     'default_export_title' => $app['phraseanet.core']['Registry']->get('GV_default_export_title'),
                     'choose_export_title'  => $app['phraseanet.core']['Registry']->get('GV_choose_export_title')

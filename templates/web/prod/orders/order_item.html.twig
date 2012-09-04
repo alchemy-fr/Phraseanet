@@ -5,97 +5,101 @@
   <h1>{% trans %} {{ displayName }} wants to place an order {% endtrans %}</h1>
 </div>
 
-{% set success = app.request.query.get('success') %}
-{% set action = app.request.query.get('action') %}
+<div id="order_manager">
+    {% set success = app.request.query.get('success') %}
+    {% set action = app.request.query.get('action') %}
 
-{% if  success == '1' %}
-    <div class="alert alert-success">
-        <button type="button" class="close" data-dismiss="alert">×</button>
-         {% if action == 'send' %}
-            {% trans 'Order has been sent' %}
-        {% elseif action == 'deny' %}
-            {% trans 'Order has been denied' %}
-        {% endif %}
-    </div>
-{% elseif   success == '0'%}
-    <div class="alert alert-error">
-        <button type="button" class="close" data-dismiss="alert">×</button>
-        {% trans 'An error occured, please retry or contact an admin if problem persists' %}
-    </div>
-{% endif %}
-
-<div class="well">
-    <table class="table" style="color:#333;">
-        <tr>
-            <td>{% trans 'Destinataire' %}</td>
-            <td>{{ displayName }}({{ order.get_user().get_email() }})</td>
-        </tr>
-        <tr>
-            <td>{% trans 'Date de commande' %}</td>
-            <td>{{ order.get_created_on() | prettyDate }}</td>
-        </tr>
-        <tr>
-            <td>{% trans 'Deadline' %}</td>
-            <td>{{ order.get_deadline() | prettyDate }}</td>
-        </tr>
-        <tr>
-            <td>{% trans 'Utilisation prevue' %}</td>
-            <td>{{ order.get_usage()|raw }}</td>
-        </tr>
-        <tr>
-            <td>{% trans 'Nombre total d\'element commandes' %}</td>
-            <td>{{ order.get_total() }}</td>
-        </tr>
-    </table>
-</div>
-<div class="alert">
-    {% trans 'Il se peux que vous ne voyez pas tous les elements. Vous ne verrez que les  elements correspondants aux collections sur lesquelles vous gerez les commandes' %}
-</div>
-
-<div class="order_list well-small">
-    {% for order_element_id,element in order %}
-        <div id="order_wrapper_{{order.get_order_id()}}_{{element.get_base_id()}}_{{element.get_record_id()}}" class="order_wrapper thumbnail {% if element.get_order_master_id() == false %}selectable{% endif %}">
-            {{ thumbnail.format(element.get_thumbnail() ,80, 80, '', session, true) }}
-             <div class="caption">
-                <p style='overflow:hidden;white-space:nowrap;text-overflow:ellipsis;'>{{ element.get_original_name() }}</p>
-                {% if element.get_order_master_id() %}
-                    {% set name = element.get_order_master_name() %}
-                    {% if element.get_deny() == 1 %}
-                        {% set title %}
-                             {% trans %}Document refuse par {{name}} {% endtrans %}
-                        {% endset %}
-                        {% set title_send %}
-                            {% trans %}Forcer l'envoi du document{% endtrans %}
-                        {% endset %}
-                        <p>
-                            <button class='btn' type='button'><img style="cursor:help;" src="/skins/icons/delete.png" title="{{title|e}}" /></button>
-                            <button class='btn' type='button'><img style="cursor:pointer;" class="force_sender" src="/skins/icons/reload.png" title="{{title_send|e}}" /></button>
-                        </p>
-                    {% else %}
-                        {% set title %}
-                            {% trans %}Document envoye par {{name}} {% endtrans %}
-                        {% endset %}
-                        <p><button class='btn' type='button'><img style="cursor:help;" src="/skins/icons/ok.png" title="{{title|e}}" /></button><p>
-                    {% endif %}
-                {% endif %}
-            </div>
-            <input type="hidden" name="order_element_id" value="{{order_element_id}}"/>
+    {% if  success == '1' %}
+        <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+             {% if action == 'send' %}
+                {% trans 'Order has been sent' %}
+            {% elseif action == 'deny' %}
+                {% trans 'Order has been denied' %}
+            {% endif %}
         </div>
-    {% endfor %}
-</div>
+    {% elseif   success == '0'%}
+        <div class="alert alert-error">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            {% trans 'An error occured, please retry or contact an admin if problem persists' %}
+        </div>
+    {% endif %}
 
-<div class="form-actions" style="color:#333;">
-    {% trans 'Selectionnez des documents et ' %}
-    <button class="btn btn-primary send">Envoyer</button>
-    <button class="btn deny">Refuser</button>
-    <button class="order_launcher btn">{% trans 'Retour aux commandes' %}</button>
-    <img src="/skins/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
-    <input name="order_id" type="hidden" value="{{ order.get_order_id() }}" />
-</div>
+    <div class="well">
+        <table class="table" style="color:#333;">
+            <tr>
+                <td>{% trans 'Destinataire' %}</td>
+                <td>{{ displayName }}({{ order.get_user().get_email() }})</td>
+            </tr>
+            <tr>
+                <td>{% trans 'Date de commande' %}</td>
+                <td>{{ order.get_created_on() | prettyDate }}</td>
+            </tr>
+            <tr>
+                <td>{% trans 'Deadline' %}</td>
+                <td>{{ order.get_deadline() | prettyDate }}</td>
+            </tr>
+            <tr>
+                <td>{% trans 'Utilisation prevue' %}</td>
+                <td>{{ order.get_usage()|raw }}</td>
+            </tr>
+            <tr>
+                <td>{% trans 'Nombre total d\'element commandes' %}</td>
+                <td>{{ order.get_total() }}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="alert">
+        {% trans 'Il se peux que vous ne voyez pas tous les elements. Vous ne verrez que les  elements correspondants aux collections sur lesquelles vous gerez les commandes' %}
+    </div>
 
+    <div class="order_list well-small">
+        <ul>
+            {% for order_element_id,element in order %}
+                <li>
+                    <div id="order_wrapper_{{order.get_order_id()}}_{{element.get_base_id()}}_{{element.get_record_id()}}" class="order_wrapper {% if element.get_order_master_id() == false %}selectable{% endif %}">
+                        {{ thumbnail.format(element.get_thumbnail() ,80, 80, '', session, true) }}
+                        {% if element.get_order_master_id() %}
+                            {% set name = element.get_order_master_name() %}
+                            {% if element.get_deny() == 1 %}
+                                {% set title %}
+                                     {% trans %}Document refuse par {{name}} {% endtrans %}
+                                {% endset %}
+                                {% set title_send %}
+                                    {% trans %}Forcer l'envoi du document{% endtrans %}
+                                {% endset %}
+                                <img style="cursor:help;" src="/skins/icons/delete.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
+                                <img style="cursor:pointer;" class="force_sender" src="/skins/icons/reload.png" title="{% spaceless %}{{title_send|e}}{% endspaceless %}" />
+                            {% else %}
+                                {% set title %}
+                                    {% trans %}Document envoye par {{name}} {% endtrans %}
+                                {% endset %}
+                                <img style="cursor:help;" src="/skins/icons/ok.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
+                            {% endif %}
+                        {% endif %}
+                        <input type="hidden" name="order_element_id" value="{{order_element_id}}"/>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="form-actions" style="color:#333;">
+        {% trans 'Selectionnez des documents et ' %}
+        <button class="btn btn-primary send">Envoyer</button>
+        <button class="btn deny">Refuser</button>
+        <button class="order_launcher btn">{% trans 'Retour aux commandes' %}</button>
+        <img src="/skins/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
+        <input name="order_id" type="hidden" value="{{ order.get_order_id() }}" />
+    </div>
+</div>
 <script type="text/javascript">
 
 $(document).ready(function(){
+    if ($('#notification_box').is(':visible')) {
+        $('#notification_trigger').trigger('mousedown');
+    }
+
     var dialog = p4.Dialog.get(1);
     var order_id = $('input[name=order_id]').val();
 
@@ -164,7 +168,7 @@ $(document).ready(function(){
         {
             var element_id = [];
             element_id.push($(this).closest('.order_wrapper').find('input[name=order_element_id]').val());
-            do_send_documents(id, element_id, true);
+            do_send_documents(order_id, element_id, true);
         }
     });
 });
@@ -208,7 +212,7 @@ function do_send_documents(order_id, elements_ids, force)
 
 function deny_documents(order_id)
 {
-    var dialog = get_dialog();
+    var dialog = p4.Dialog.get(1);
     var cont = dialog.getDomElement();
 
     var elements = $('.order_list .selectable.selected', cont);
@@ -258,7 +262,7 @@ function deny_documents(order_id)
 
 function send_documents(order_id)
 {
-    var dialog = get_dialog();
+    var dialog = p4.Dialog.get(1);
     var elements_ids = [];
 
     $('.order_list .selectable.selected', dialog.getDomElement()).each(function(i,n){

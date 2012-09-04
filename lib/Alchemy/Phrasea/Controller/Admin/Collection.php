@@ -439,14 +439,14 @@ class Collection implements ControllerProviderInterface
     public function setOrderAdmins(Application $app, Request $request, $bas_id)
     {
         if (count($admins = $request->request->get('admins', array())) > 0) {
-            $new_admins = array();
+            $newAdmins = array();
 
             foreach ($admins as $admin) {
-                $new_admins[] = $admin;
+                $newAdmins[] = $admin;
             }
 
-            if (count($new_admins) > 0) {
-                \set_exportorder::set_order_admins(array_filter($admins), $bas_id);
+            if (count($newAdmins) > 0) {
+                \User_Adapter::set_order_admins(array_filter($admins), $bas_id);
             }
         }
 

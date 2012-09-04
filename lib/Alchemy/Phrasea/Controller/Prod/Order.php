@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use Alchemy\Phrasea\Controller\RecordsRequest;
+use Doctrine\Common\Collections\ArrayCollection;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,8 +50,8 @@ class Order implements ControllerProviderInterface
          */
         $controllers->get('/', $this->call('displayOrders'))
             ->before(function(Request $request) use ($app) {
-                $app['phraseanet.core']['Firewall']->requireOrdersAdmin($app);
-            })
+                    $app['phraseanet.core']['Firewall']->requireOrdersAdmin($app);
+                })
             ->bind('prod_orders');
 
         /**
@@ -83,8 +85,8 @@ class Order implements ControllerProviderInterface
          */
         $controllers->get('/{order_id}/', $this->call('displayOneOrder'))
             ->before(function(Request $request) use ($app) {
-                $app['phraseanet.core']['Firewall']->requireOrdersAdmin($app);
-            })
+                    $app['phraseanet.core']['Firewall']->requireOrdersAdmin($app);
+                })
             ->bind('prod_order')
             ->assert('order_id', '\d+');
 
@@ -103,8 +105,8 @@ class Order implements ControllerProviderInterface
          */
         $controllers->post('/{order_id}/send/', $this->call('sendOrder'))
             ->before(function(Request $request) use ($app) {
-                $app['phraseanet.core']['Firewall']->requireOrdersAdmin($app);
-            })
+                    $app['phraseanet.core']['Firewall']->requireOrdersAdmin($app);
+                })
             ->bind('prod_order_send')
             ->assert('order_id', '\d+');
 
@@ -123,8 +125,8 @@ class Order implements ControllerProviderInterface
          */
         $controllers->post('/{order_id}/deny/', $this->call('denyOrder'))
             ->before(function(Request $request) use ($app) {
-                $app['phraseanet.core']['Firewall']->requireOrdersAdmin($app);
-            })
+                    $app['phraseanet.core']['Firewall']->requireOrdersAdmin($app);
+                })
             ->bind('prod_order_deny')
             ->assert('order_id', '\d+');
 
@@ -142,31 +144,65 @@ class Order implements ControllerProviderInterface
     public function createOrder(Application $app, Request $request)
     {
         $success = false;
+        $collectionHasOrderAdmins = new ArrayCollection();
 
         try {
-            $order = new \set_exportorder($request->request->get('lst', ''), (int) $request->request->get('ssttid'));
+            $records = RecordsRequest::fromRequest($app, $request, true, array('cancmd'));
 
-            if ($order->order_available_elements(
-                    $app['phraseanet.core']->getAuthenticatedUser()->get_id(), $request->request->get('use', ''), $request->request->get('deadline', '')
-            )) {
+            $query = new \User_Query($app['phraseanet.appbox']);
+
+            foreach ($records as $key => $record) {
+                if ($collectionHasOrderAdmins->containsKey($record->get_base_id())) {
+                    if ( ! $collectionHasOrderAdmins->get($record->get_base_id())) {
+                        $records->remove($key);
+                    }
+                }
+
+                $hasOneAdmin = ! ! count($query->on_base_ids(array($record->get_base_id()))
+                            ->who_have_right(array('order_master'))
+                            ->execute()->get_results());
+
+                $collectionHasOrderAdmins->set($record->get_base_id(), $hasOneAdmin);
+
+                if ( ! $hasOneAdmin) {
+                    $records->remove($key);
+                }
+            }
+
+            $noAdmins = $collectionHasOrderAdmins->forAll(function($key, $hasAdmin) {
+                    return false === $hasAdmin;
+                });
+
+            if ($noAdmins) {
+                $msg = _('There is no one to validate orders, please contact an administrator');
+            }
+
+            if (count($records) > 0) {
+                \set_order::create(
+                    $app['phraseanet.appbox'], $records, $app['phraseanet.core']->getAuthenticatedUser(), $request->request->get('use', ''), ( (null !== $deadLine = $request->request->get('deadline')) ? new \DateTime($deadLine) : $deadLine)
+                );
+
                 $success = true;
+                $msg = _('The records have been properly ordered');
+            } else {
+                $msg = _('There is no record eligible for an order');
             }
         } catch (\Exception $e) {
-            $msg = $e->getMessage();
+            $msg = _('An error occured');
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
 
             return $app->json(array(
                     'success' => $success,
-                    'msg'     => $success ? _('The records have been properly ordered') : _('An error occured') . ' ' . $msg,
+                    'msg'     => $msg,
                 ));
         }
 
         return $app->redirect($app['url_generator']->generate('prod_orders', array(
-            'success' => (int) $success,
-            'action'  => 'send'
-        )));
+                    'success' => (int) $success,
+                    'action'  => 'send'
+                )));
     }
 
     /**
@@ -179,8 +215,23 @@ class Order implements ControllerProviderInterface
      */
     public function displayOrders(Application $app, Request $request)
     {
+        $page = (int) $request->query->get('page', 1);
+        $offsetStart = $page - 1;
+        $perPage = (int) $request->query->get('per-page', 10);
+        $sort = $request->query->get('sort');
+
+        $baseIds = array_keys($app['phraseanet.core']->getAuthenticatedUser()->ACL()->get_granted_base(array('order_master')));
+
+        $ordersList = \set_order::listOrders($app['phraseanet.appbox'], $baseIds, $offsetStart, $perPage, $sort);
+        $total = \set_order::countTotalOrder($app['phraseanet.appbox'], $baseIds);
+
         return $app['twig']->render('prod/orders/order_box.html.twig', array(
-                'ordermanager' => new \set_ordermanager( ! ! $request->query->get('sort', false), (int) $request->query->get('page', 1))
+                'page'         => $page,
+                'perPage'      => $perPage,
+                'total'        => $total,
+                'previousPage' => $page < 2 ? false : ($page - 1),
+                'nextPage'     => $page >= ceil($total / $perPage) ? false : $page + 1,
+                'orders'       => new ArrayCollection($ordersList)
             ));
     }
 
@@ -240,9 +291,9 @@ class Order implements ControllerProviderInterface
         }
 
         return $app->redirect($app['url_generator']->generate('prod_orders', array(
-            'success' => (int) $success,
-            'action'  => 'send'
-        )));
+                    'success' => (int) $success,
+                    'action'  => 'send'
+                )));
     }
 
     /**
@@ -280,9 +331,9 @@ class Order implements ControllerProviderInterface
         }
 
         return $app->redirect($app['url_generator']->generate('prod_orders', array(
-            'success' => (int) $success,
-            'action'  => 'send'
-        )));
+                    'success' => (int) $success,
+                    'action'  => 'send'
+                )));
     }
 
     /**

@@ -2356,14 +2356,14 @@ function activeIcons()
                 }
                 else
                 {
-                    datas.SSTTID = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+                    datas.ssel = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
                 }
             }
             else
             {
                 if($(this).hasClass('basket_element'))
                 {
-                    datas.SSTTID = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+                    datas.ssel = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
                 }
                 else
                 {

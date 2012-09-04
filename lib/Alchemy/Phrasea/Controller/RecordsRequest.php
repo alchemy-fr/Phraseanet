@@ -67,7 +67,7 @@ class RecordsRequest extends ArrayCollection
     {
         return new ArrayCollection(
                 array_filter($this->toArray(), function(\record_adapter $record) {
-                        return $record->is_grouping();
+                    return $record->is_grouping();
                     })
         );
     }
@@ -107,12 +107,13 @@ class RecordsRequest extends ArrayCollection
     }
 
     /**
+     * Create a new RecordRequest from current request
      *
-     * @param \Alchemy\Phrasea\Application $app
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param type $flattenStories
-     * @param array $rightsColl
-     * @param array $rightsDatabox
+     * @param   Application     $app
+     * @param   Request         $request
+     * @param   boolean         $flattenStories
+     * @param   array           $rightsColl
+     * @param   array           $rightsDatabox
      * @return RecordsRequest
      */
     public static function fromRequest(Application $app, Request $request, $flattenStories = false, array $rightsColl = array(), array $rightsDatabox = array())
@@ -165,12 +166,14 @@ class RecordsRequest extends ArrayCollection
                 $to_remove[] = $id;
                 continue;
             }
+
             foreach ($rightsColl as $right) {
                 if ( ! $user->ACL()->has_right_on_base($record->get_base_id(), $right)) {
                     $to_remove[] = $id;
                     continue;
                 }
             }
+
             foreach ($rightsDatabox as $right) {
                 if ( ! $user->ACL()->has_right_on_sbas($record->get_sbas_id(), $right)) {
                     $to_remove[] = $id;
