@@ -58,12 +58,12 @@ class module_console_systemUpgrade extends Command
 
             if ($continue == 'y') {
                 try {
-                    $connexionInc = new \SplFileInfo($old_connexion_file, true);
-                    $configInc = new \SplFileInfo($old_config_file, true);
+                    $connexionInc = new \SplFileInfo($old_connexion_file);
+                    $configInc = new \SplFileInfo($old_config_file);
 
                     $Core->getConfiguration()->upgradeFromOldConf($configInc, $connexionInc);
                 } catch (\Exception $e) {
-
+                    throw new RuntimeException('Error while upgrading : ' . $e->getMessage());
                 }
             } else {
                 throw new RuntimeException('Phraseanet is not set up');
