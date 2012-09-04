@@ -167,7 +167,7 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $receveid = array(static::$records['record_1']->get_serialize_key() => static::$records['record_1']);
 
         return \set_order::create(
-                $this->app['phraseanet.appbox'], new RecordsRequest($receveid, new ArrayCollection($receveid)), 'I need this photos', new \DateTime('+10 minutes')
+                $this->app['phraseanet.appbox'], new RecordsRequest($receveid, new ArrayCollection($receveid)), self::$user_alt2 ,$usage, new \DateTime('+10 minutes')
         );
     }
 }

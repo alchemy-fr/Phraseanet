@@ -67,7 +67,7 @@ class RecordsRequest extends ArrayCollection
     {
         return new ArrayCollection(
                 array_filter($this->toArray(), function(\record_adapter $record) {
-                    return $record->is_grouping();
+                        return $record->is_grouping();
                     })
         );
     }
