@@ -101,7 +101,7 @@ class Language implements ControllerProviderInterface
                 $out['pushUserCanDownload'] = _('User can download HD');
                 $out['feedbackCanContribute'] = _('User contribute to the feedback');
                 $out['feedbackCanSeeOthers'] = _('User can see others choices');
-                $out['forceSendDocument'] = _('Force sends of the document ?');
+                $out['forceSendDocument'] = _('Force sending of the document ?');
 
                 return $app->json($out);
             });
