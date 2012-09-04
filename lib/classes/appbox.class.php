@@ -110,7 +110,7 @@ class appbox extends base
             $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
             $imageSpec->setDimensions(120, 24);
 
-            $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox').'.jpg';
+            $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox') . '.jpg';
 
             try {
                 $core['media-alchemyst']
@@ -180,7 +180,7 @@ class appbox extends base
             throw new \InvalidArgumentException('unknown pic_type');
         }
 
-        if($pathfile) {
+        if ($pathfile) {
 
             $filename = $pathfile->getPathname();
 
@@ -188,7 +188,7 @@ class appbox extends base
             $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
             $imageSpec->setDimensions(120, 35);
 
-            $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox').'.jpg';
+            $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox') . '.jpg';
 
             try {
                 $core['media-alchemyst']
@@ -366,11 +366,17 @@ class appbox extends base
          */
         $upgrader->set_current_message(_('Copying files'));
 
-        $origine = $registry->get('GV_RootPath') . 'config/custom_files/';
-        $target = $registry->get('GV_RootPath') . 'www/custom/';
-
         $filesystem = $core['file-system'];
-        $filesystem->mirror($origine, $target);
+
+        foreach (array(
+        'config/custom_files/' => 'www/custom/',
+        'config/minilogos/'    => 'www/custom/minilogos/',
+        'config/stamp/'        => 'www/custom/stamp/',
+        'config/status/'       => 'www/custom/status/',
+        'config/wm/'           => 'www/custom/wm/',
+        ) as $source => $target) {
+            $filesystem->mirror($registry->get('GV_RootPath') . $source, $registry->get('GV_RootPath') . $target);
+        }
 
         $upgrader->add_steps_complete(1);
 
