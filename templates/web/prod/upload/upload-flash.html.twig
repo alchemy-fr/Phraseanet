@@ -188,7 +188,9 @@
             button_action : SWFUpload.BUTTON_ACTION.SELECT_FILES,
             file_queued_handler : function(file) {
                 var $this = this;
-                UploaderManager.getUploadBox().closest('.upload-box').show();
+                if ( ! UploaderManager.getUploadBox().is(':visible')) {
+                    UploaderManager.getUploadBox().closest('.upload-box').show();
+                }
 
                 var formatedFile = {
                     id: file.id,
@@ -208,35 +210,39 @@
                 });
             },
             file_queue_error_handler : function(file, errorCode, message) {
-                    if (errorCode === SWFUpload.QUEUE_ERROR.QUEUE_LIMIT_EXCEEDED) {
-                        alert(" {% trans "You have attempted to queue too many files" %}");
-                        return false;
+                if ( ! UploaderManager.getUploadBox().is(':visible')) {
+                    UploaderManager.getUploadBox().closest('.upload-box').show();
+                }
+
+                if (errorCode === SWFUpload.QUEUE_ERROR.QUEUE_LIMIT_EXCEEDED) {
+                    alert(" {% trans "You have attempted to queue too many files" %}");
+                    return false;
+                }
+
+                var error = "{% trans "Unknow Error" %}";
+
+                switch (errorCode) {
+                  case SWFUpload.QUEUE_ERROR.FILE_EXCEEDS_SIZE_LIMIT:
+                    error = language.errorFileApiTooBig;
+                    break;
+                  case SWFUpload.QUEUE_ERROR.ZERO_BYTE_FILE:
+                      error = "{% trans "Cannot upload Zero Byte files" %}";
+                    break;
+                  case SWFUpload.QUEUE_ERROR.INVALID_FILETYPE:
+                      error = "{% trans "Invalid file type" %}";
+                    break;
+                  default:
+                    if (file !== null) {
+                      error = "{% trans "Unhandled Error" %}";
                     }
+                    break;
+                }
 
-                    var error = "{% trans "Unknow Error" %}";
-
-                    switch (errorCode) {
-                      case SWFUpload.QUEUE_ERROR.FILE_EXCEEDS_SIZE_LIMIT:
-                        error = language.errorFileApiTooBig;
-                        break;
-                      case SWFUpload.QUEUE_ERROR.ZERO_BYTE_FILE:
-                          error = "{% trans "Cannot upload Zero Byte files" %}";
-                        break;
-                      case SWFUpload.QUEUE_ERROR.INVALID_FILETYPE:
-                          error = "{% trans "Invalid file type" %}";
-                        break;
-                      default:
-                        if (file !== null) {
-                          error = "{% trans "Unhandled Error" %}";
-                        }
-                        break;
-                    }
-
-                    var params = $.extend({}, file, {error: error, language: language});
-                    p4.Mustache.Render('Upload-Items-Error', params, function(html){
-                        UploaderManager.getUploadBox().append(html);
-                        $("#"+file.id, UploaderManager.getDownloadBox()).find('.canva-wrapper').remove();
-                    });
+                var params = $.extend({}, file, {error: error, language: language});
+                p4.Mustache.Render('Upload-Items-Error', params, function(html){
+                    UploaderManager.getUploadBox().append(html);
+                    $("#"+file.id, UploaderManager.getDownloadBox()).find('.canva-wrapper').remove();
+                });
             },
             file_dialog_complete_handler : function(numFilesSelected, numFilesQueued) {
                 if (numFilesQueued > 0) {
@@ -297,7 +303,6 @@
                         $("#"+file.id, UploaderManager.getDownloadBox()).find('p.error').append(html).show();
                     });
 
-                return false;
             },
             upload_success_handler : function(file, response) {
                 var response = $.parseJSON(response);
@@ -354,6 +359,9 @@
                 }
             });
 
+            var nbElements = $(".upload-box-addedfiles ul:first li.upload-valid > div").length;
+            var elementChecked = 0;
+
             $(".upload-box-addedfiles ul:first li.upload-valid > div").each(function(index, element) {
                 var file = swfu.getFile($(this).attr("id"));
 
@@ -367,6 +375,12 @@
 
                         //Add file
                         file_order.push(file);
+                        elementChecked++;
+
+                        if( elementChecked === nbElements) {
+                            //Start upload
+                            swfu.startUpload(file_order.shift().id);
+                        }
                     });
                 }
             });
@@ -375,10 +389,7 @@
             $("button.clear-queue", UploaderManager.getContainer()).attr("disabled", true).addClass("disabled");
             $("button.upload-submitter", UploaderManager.getContainer()).attr("disabled", true).addClass('disabled');
 
-            if( file_order.length > 0 ) {
-                //Start upload
-                swfu.startUpload(file_order.shift().id);
-            } else {
+            if (nbElements === 0) {
                 alert("{% trans 'Please select at least one valid file' %}");
             }
         });
