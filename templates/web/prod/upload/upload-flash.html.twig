@@ -20,25 +20,28 @@
         <div id="tab-upload">
             <form id="fileupload" enctype="multipart/form-data" method="POST" action="/prod/upload/">
 
-                <div id="uploadBoxLeft" class="well ">
+                <div id="uploadBoxLeft" class="well">
 
                     {# <h5 style="margin-top: 10px;">{% trans 'Choose files to add' %} :</h5> #}
                     {# action bar #}
-                    <div id="addFileList">
-                        <div class="btn-toolbar">
-                            <span id="spanSWFUploadButton" class="span2"></span>
-                            <br />
-                            <span>
-                                 <a href="/prod/upload/" class="dialog full-dialog" title="{% trans 'Upload' %}"><span class="label label-info"><i>{% trans 'Switch to html5 uploader' %}</i></span></a>
-                            </span>
-                            <br />
-                            <span class="comment">
-                                ({% trans %} maximum : {{ maxFileSizeReadable }} {% endtrans %})
-                            </span>
-                        {#    <button type="button" class="upload-submitter btn btn-inverse input-medium">{% trans 'Send' %}</button> #}
-                        </div>
-                    </div>
-
+                    <table id="addFileList">
+                        <tr>
+                            <td class='uploader-button'>
+                                <span id="spanSWFUploadButton" class="span2"></span>
+                                <br />
+                                <span class="comment">
+                                    ({% trans %} maximum : {{ maxFileSizeReadable }} {% endtrans %})
+                                </span>
+                            </td>
+                            <td class='uploader-icon'>
+                                <img src='/skins/icons/logo-flash.png' width="32px" heigh="32px" title="{% trans 'You are using the Flash uploader'%}"/>
+                            </td>
+                            <td class='uploader-info'>
+                                <p>{% trans 'This version does not allow you to access all the features offered by the HTML5 uploader' %}</p>
+                                <a href="/prod/upload/" class="dialog full-dialog">{% trans 'Use the HTML5 uploader' %}</a>
+                            </td>
+                        </tr>
+                     </table>
                     {# settings box #}
                     <div class='settings-box'>
                         <h5>{% trans 'upload:: Destination (collection) :' %} :</h5>
@@ -105,6 +108,7 @@
                 </div>
 
                 <div id="uploadBoxRight" class="well">
+                    <h5 style="margin-top: 10px;">{% trans 'Transmited files' %} : </h5>
                     <div class='well-small'>
                         <button id="cancel-all" class="btn disabled" type="button" disabled="disabled">
                             {% trans "Cancel all" %}
