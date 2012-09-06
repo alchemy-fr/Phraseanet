@@ -1,5 +1,5 @@
 {
-    "hash": "507b8823f5d20952ec8b6daaf649ca23",
+    "hash": "4c018b923b6efe8c938a5d57cf29f1b0",
     "packages": [
         {
             "package": "alchemy/Phlickr",
@@ -70,6 +70,12 @@
         {
             "package": "monolog/monolog",
             "version": "1.0.2"
+        },
+        {
+            "package": "neutron/silex-filesystem-provider",
+            "version": "dev-master",
+            "source-reference": "aa08f3f79c6494c21cbb3293538021a1a02303ac",
+            "commit-date": "1346932827"
         },
         {
             "package": "php-ffmpeg/php-ffmpeg",
@@ -259,6 +265,7 @@
         "data-uri/data-uri": 20,
         "mediavorus/mediavorus": 20,
         "media-alchemyst/media-alchemyst": 20,
+        "neutron/silex-filesystem-provider": 20,
         "php-xpdf/php-xpdf": 20,
         "phpexiftool/phpexiftool": 20,
         "behat/behat": 0,

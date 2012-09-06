@@ -16,6 +16,7 @@
         "mediavorus/mediavorus": "dev-master",
         "media-alchemyst/media-alchemyst": "dev-master",
         "monolog/monolog": "1.0.*",
+        "neutron/silex-filesystem-provider": "dev-master",
         "php-xpdf/php-xpdf": "dev-master",
         "phpexiftool/phpexiftool": "dev-master",
         "silex/silex": "1.0.*",
