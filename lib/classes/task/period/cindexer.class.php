@@ -196,7 +196,7 @@ class task_period_cindexer extends task_abstract
                         socket.value       = xml.find("socket").text();
                         password.value     = xml.find("password").text();
                         clng.value         = xml.find("clng").text();
-                        use_sbas.checked   = isyes(xml.find("use_sbas").text());
+                        use_sbas.checked   = true | isyes(xml.find("use_sbas").text());
                         nolog.checked      = isyes(xml.find("nolog").text());
                         winsvc_run.checked = isyes(xml.find("winsvc_run").text());
                         charset.value      = xml.find("charset").text();
@@ -207,6 +207,8 @@ class task_period_cindexer extends task_abstract
                 var cmd = '';
                 with(document.forms['graphicForm'])
                 {
+                    use_sbas.checked = true;
+
                     cmd += binpath.value + "/<?php echo $appname ?>";
                     if(host.value)
                         cmd += " -h=" + host.value;
@@ -222,7 +224,7 @@ class task_period_cindexer extends task_abstract
                         cmd += " --socket=" + socket.value;
                     if(charset.value)
                         cmd += " --default-character-set=" + charset.value;
-                    if(use_sbas.checked)
+                    if(1 || use_sbas.checked)
                         cmd += " -o";
                     if(nolog.checked)
                         cmd += " -n";
@@ -286,7 +288,7 @@ class task_period_cindexer extends task_abstract
             <?php echo _('task::cindexer:Debug mask') ?>&nbsp;:&nbsp;<input type="text" name="debugmask" style="width:50px;" value="">
             <br/>
 
-            <input type="checkbox" name="use_sbas">&nbsp;<?php echo _('task::cindexer:use table \'sbas\' (unchecked: use \'xbas\')') ?>
+            <input type="checkbox" name="use_sbas" checked="checked" disabled="disabled">&nbsp;<?php echo _('task::cindexer:use table \'sbas\' (unchecked: use \'xbas\')') ?>
             <br/>
 
             <?php echo _('task::cindexer:default language for new candidates') ?>&nbsp;:&nbsp;<input type="text" name="clng" style="width:50px;" value="">
@@ -381,7 +383,7 @@ class task_period_cindexer extends task_abstract
             $args[] = '--socket=' . $this->socket;
             $args_nopwd[] = '--socket=' . $this->socket;
         }
-        if ($this->use_sbas) {
+        if (1 || $this->use_sbas) {
             $args[] = '-o';
             $args_nopwd[] = '-o';
         }
