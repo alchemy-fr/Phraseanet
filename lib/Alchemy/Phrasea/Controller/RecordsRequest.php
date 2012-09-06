@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2012 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Alchemy\Phrasea\Controller;
 
 use Entities\Basket;
@@ -14,6 +23,14 @@ class RecordsRequest extends ArrayCollection
     protected $databoxes;
     protected $collections;
 
+    /**
+     * Constructor
+     *
+     * @param array $elements
+     * @param ArrayCollection $received
+     * @param Basket $basket
+     * @param Boolean $flatten
+     */
     public function __construct(array $elements, ArrayCollection $received, Basket $basket = null, $flatten = false)
     {
         parent::__construct($elements);
@@ -37,9 +54,14 @@ class RecordsRequest extends ArrayCollection
         }
     }
 
+    /**
+     * Return all distinct databoxes related to the contained records
+     *
+     * @return array
+     */
     public function databoxes()
     {
-        if ( ! $this->databoxes) {
+        if (!$this->databoxes) {
             $this->databoxes = array();
 
             foreach ($this as $record) {
@@ -54,9 +76,14 @@ class RecordsRequest extends ArrayCollection
         return $this->databoxes;
     }
 
+    /**
+     * Return all distinct collections related to the contained records
+     *
+     * @return array
+     */
     public function collections()
     {
-        if ( ! $this->collections) {
+        if (!$this->collections) {
             $this->collections = array();
 
             foreach ($this as $record) {
@@ -71,16 +98,31 @@ class RecordsRequest extends ArrayCollection
         return $this->collections;
     }
 
+    /**
+     * Return all received records
+     *
+     * @return ArrayCollection
+     */
     public function received()
     {
         return $this->received;
     }
 
+    /**
+     * Return basket entity if provided, null otherwise
+     *
+     * @return Basket|null
+     */
     public function basket()
     {
         return $this->basket;
     }
 
+    /**
+     * Filter contents and return only stories
+     *
+     * @return ArrayCollection
+     */
     public function stories()
     {
         return new ArrayCollection(
@@ -90,6 +132,11 @@ class RecordsRequest extends ArrayCollection
         );
     }
 
+    /**
+     * Return true if the request contains a single story
+     *
+     * @return Boolean
+     */
     public function isSingleStory()
     {
         if ($this->count() === 1) {
@@ -101,6 +148,11 @@ class RecordsRequest extends ArrayCollection
         return false;
     }
 
+    /**
+     * Return the first story if a single story is contained, null otherwise
+     *
+     * @return record_adapter|null
+     */
     public function singleStory()
     {
         if ($this->isSingleStory()) {
@@ -110,6 +162,11 @@ class RecordsRequest extends ArrayCollection
         return null;
     }
 
+    /**
+     * Return a serialized list of elements
+     *
+     * @return string
+     */
     public function serializedList()
     {
         if ($this->isSingleStory()) {
@@ -180,20 +237,20 @@ class RecordsRequest extends ArrayCollection
 
         foreach ($elements as $id => $record) {
 
-            if ( ! $user->ACL()->has_access_to_record($record)) {
+            if (!$user->ACL()->has_access_to_record($record)) {
                 $to_remove[] = $id;
                 continue;
             }
 
             foreach ($rightsColl as $right) {
-                if ( ! $user->ACL()->has_right_on_base($record->get_base_id(), $right)) {
+                if (!$user->ACL()->has_right_on_base($record->get_base_id(), $right)) {
                     $to_remove[] = $id;
                     continue;
                 }
             }
 
             foreach ($rightsDatabox as $right) {
-                if ( ! $user->ACL()->has_right_on_sbas($record->get_sbas_id(), $right)) {
+                if (!$user->ACL()->has_right_on_sbas($record->get_sbas_id(), $right)) {
                     $to_remove[] = $id;
                     continue;
                 }
