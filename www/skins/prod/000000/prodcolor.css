@@ -4084,18 +4084,30 @@ dans l'onglet thesaurus : arbres, menus contextuels
     height: 10px;
 }
 
-#uploadBox .uploader-info {
-    text-align:left;
-    font-size:10px;
-    margin:5px 0;
+#uploadBox .uploader-button{
+    text-align: center;
+    width:50%;
+}
+
+#uploadBox #addFileList {
+    width:100%;
+    table-layout:fixed;
+    border:none;
+}
+
+#uploadBox #addFileList td{
+    vertical-align: middle;
 }
 
 #uploadBox .uploader-icon {
+    width:15%;
     text-align:left;
 }
 
-#uploadBox .uploader-icon img{
-    margin:10px auto;
+#uploadBox .uploader-info {
+    font-size:10px;
+    width:35%;
+    text-align:left;
 }
 
 #uploadBox .uploader-info p {
