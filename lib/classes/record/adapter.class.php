@@ -1718,14 +1718,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         return 'record_' . $this->get_serialize_key() . ($option ? '_' . $option : '');
     }
 
-    /**
-     * Generates subdefs
-     *
-     * @param  databox         $databox        The databox
-     * @param  \Monolog\Logger $logger         A logger for binary operation
-     * @param  array           $wanted_subdefs An array of subdef names
-     * @return \record_adapter
-     */
     public function generate_subdefs(databox $databox, Logger $logger, Filesystem $filesystem, Array $wanted_subdefs = null)
     {
         $subdefs = $databox->get_subdef_structure()->getSubdefGroup($this->get_type());
