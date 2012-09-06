@@ -4084,6 +4084,32 @@ dans l'onglet thesaurus : arbres, menus contextuels
     height: 10px;
 }
 
+#uploadBox .uploader-info {
+    text-align:left;
+    font-size:10px;
+    margin:5px 0;
+}
+
+#uploadBox .uploader-icon {
+    text-align:left;
+}
+
+#uploadBox .uploader-icon img{
+    margin:10px auto;
+}
+
+#uploadBox .uploader-info p {
+    line-height:10px;
+    font-size:10px;
+    word-wrap: break-word;
+}
+
+#uploadBox .uploader-info a {
+    text-decoration: underline;
+    color: darkblue;
+    margin:5px 0;
+}
+
 #uploadBoxRight .progress .progress-bar {
     height: 10px;
 }

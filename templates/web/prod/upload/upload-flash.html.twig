@@ -24,18 +24,21 @@
 
                     {# <h5 style="margin-top: 10px;">{% trans 'Choose files to add' %} :</h5> #}
                     {# action bar #}
-                    <div id="addFileList">
-                        <div class="btn-toolbar">
+                    <div id="addFileList" class="span5 btn-toolbar row">
+                        <div class="span2  upload-button">
                             <span id="spanSWFUploadButton" class="span2"></span>
-                            <br />
-                            <span>
-                                 <a href="/prod/upload/" class="dialog full-dialog" title="{% trans 'Upload' %}"><span class="label label-info"><i>{% trans 'Switch to html5 uploader' %}</i></span></a>
-                            </span>
                             <br />
                             <span class="comment">
                                 ({% trans %} maximum : {{ maxFileSizeReadable }} {% endtrans %})
                             </span>
                         {#    <button type="button" class="upload-submitter btn btn-inverse input-medium">{% trans 'Send' %}</button> #}
+                        </div>
+                        <div class="span1 uploader-icon">
+                            <img src='/skins/icons/logo-flash.png' width="32px" heigh="32px"/>
+                        </div>
+                        <div class="span2 uploader-info">
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                            <a href="/prod/upload/" class="dialog full-dialog" title="{% trans 'Upload' %}">{% trans 'Switch' %}</a>
                         </div>
                     </div>
 
@@ -105,6 +108,7 @@
                 </div>
 
                 <div id="uploadBoxRight" class="well">
+                    <h5 style="margin-top: 10px;">{% trans 'Transmited files' %} : </h5>
                     <div class='well-small'>
                         <button id="cancel-all" class="btn disabled" type="button" disabled="disabled">
                             {% trans "Cancel all" %}
