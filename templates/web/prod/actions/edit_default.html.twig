@@ -31,11 +31,11 @@
         {% set class_status = '' %}
     {% endif %}
 
-    <div pos="{{i}}" id="idEditDiapo_{{i}}" class="diapo {{class_status}}" style="width:{{ cont_width }}px; height:{{ cont_height }}px;">
+    <div pos="{{ i }}" id="idEditDiapo_{{ i }}" class="diapo {{ class_status }}" style="width:{{ cont_width }}px; height:{{ cont_height }}px;">
         <div class='titre'>
-            {{record.get_original_name()}}
+            {{ record.get_original_name() }}
         </div>
-        <img class="edit_IMGT" id="idEditDiapoImg_{{i}}" style="position:absolute; top:{{top|round}}%; width:{{width}}; height:{{height}}; left:{{left|round}}%;" onclick="edit_clk_editimg(event, {{i}});" src="{{thumbnail}}" />
+        <img class="edit_IMGT" id="idEditDiapoImg_{{ i }}" style="position:absolute; top:{{ top|round }}%; width:{{ width }}; height:{{ height }}; left:{{ left|round }}%;" onclick="edit_clk_editimg(event, {{ i }});" src="{{ thumbnail }}" />
         <div style='position:absolute; top:0px; left:0px; height:20px'>
             <img class="require_alert" src="/skins/icons/alert.png" style="display:none;cursor:help;" title="{% trans 'edit::Certains champs doivent etre remplis pour valider cet editing' %}">
         </div>
@@ -44,8 +44,8 @@
             <img class="infoTips" tooltipsrc="/prod/tooltip/tc_datas/{{record.get_sbas_id()}}/{{record.get_record_id()}}/" src="/skins/icons/info.gif"/>
         </div>
         <div class="reg_opts" style="display:none;position:absolute;bottom:0;right:0;">
-            <a style="float:right;padding:0;margin:0;cursor:pointer;" class="contextMenuTrigger" id="editContextTrigger_{{record.get_serialize_key()}}">&#9660;</a>
-            <table cellspacing="0" cellpadding="0" style="display:none;" id="editContext_{{record.get_serialize_key()}}" class="contextMenu editcontextmenu">
+            <a style="float:right;padding:0;margin:0;cursor:pointer;" class="contextMenuTrigger" id="editContextTrigger_{{ record.get_serialize_key() }}">&#9660;</a>
+            <table cellspacing="0" cellpadding="0" style="display:none;" id="editContext_{{ record.get_serialize_key() }}" class="contextMenu editcontextmenu">
                 <tbody>
                     <tr>
                         <td>
@@ -66,7 +66,7 @@
     </div>
 {% endmacro %}
 
-{% macro HTML_fieldlist(editing, user) %}
+{% macro HTML_fieldlist(recordsRequest, fields, user) %}
     <div class="edit_field" id="EditFieldBox_status" onclick="return(edit_mdwn_status(event));" >
         {%trans 'prod::editing::fields: status ' %}
     </div>
@@ -74,7 +74,7 @@
     {% if user.getPrefs('css') %}
         {% set cssfile = user.getPrefs('css') %}
     {% endif %}
-    {% for field in editing.get_fields() %}
+    {% for field in fields %}
         {% set i = field.get_id() %}
         {% if field.is_readonly() is empty %}
             <div class="edit_field" id="EditFieldBox_{{i}}" onclick="return(edit_mdwn_fld(event, {{i}}, '{{field.get_name()}}'));" >
@@ -95,8 +95,8 @@
     {% endfor %}
 {% endmacro %}
 
-{% macro HTML_Train(editing, user, is_reg) %}
-    {% for record in editing.get_elements %}
+{% macro HTML_Train(recordsRequest, user, is_reg) %}
+    {% for record in recordsRequest %}
         {% if loop.index != 1 or is_reg != '1' %}
             {{_self.format_diapo(record, user, true)}}
         {% endif %}
@@ -104,18 +104,18 @@
 {% endmacro %}
 
 
-{% set actionable = edit.get_count_actionable() %}
-{% set not_actionable = edit.get_count_not_actionable() %}
+{% set actionable = recordsRequest|length %}
+{% set not_actionable = recordsRequest.received|length - actionable %}
 
 <script type="text/javascript">
 
 
-  p4.edit.T_statbits = {{edit.get_javascript_status()|raw}};
-  p4.edit.T_fields = {{edit.get_javascript_fields()|raw}};
+  p4.edit.T_statbits = {{ JSonStatus|raw }};
+  p4.edit.T_fields = {{ JSonFields|raw }};
 
-  p4.edit.T_records = {{edit.get_javascript_elements()|raw}};
-  p4.edit.T_sgval = {{edit.get_javascript_sugg_values()|raw}};
-  p4.edit.T_id  =  p4.edit.T_pos = {{edit.get_javascript_elements_ids()|raw}};
+  p4.edit.T_records = {{ JSonRecords|raw }};
+  p4.edit.T_sgval = {{ JSonSuggValues|raw }};
+  p4.edit.T_id  =  p4.edit.T_pos = {{ JSonIds|raw }};
   p4.edit.T_mval = [];
 
 </script>
@@ -132,10 +132,10 @@
             <div id="EDIT_ZOOMSLIDER" >
             </div>
         </div>
-        {% if edit.is_single_grouping %}
+        {% if recordsRequest.isSingleStory() %}
             <div class="GRP_IMAGE_REP">
                 <div id="EDIT_GRPDIAPO">
-                    {{_self.format_diapo(edit.get_grouping_head, user, false)}}
+                    {{_self.format_diapo(recordsRequest.singleStory(), user, false)}}
                 </div>
             </div>
             <div id="EDIT_FILM2" style="left:170px;">
@@ -143,7 +143,7 @@
             </div>
         {% else %}
             <div id="EDIT_FILM2" class='ui-corner-all'>
-                {{_self.HTML_Train(edit, user)}}
+                {{_self.HTML_Train(recordsRequest, user)}}
             </div>
         {% endif %}
     </div>
@@ -154,7 +154,7 @@
         <div id='EDIT_MID_L' class='ui-corner-all'>
             <div id="divS_wrapper" style="width:{{user.getPrefs('editing_right_box')}}">
                 <div id="divS">
-                    {{_self.HTML_fieldlist(edit, user)}}
+                    {{_self.HTML_fieldlist(recordsRequest, fields, user)}}
                 </div>
             </div>
             <div id="idEditZone">
@@ -198,24 +198,24 @@
                         </div>
                         <div class="displaystatus">
                             <table>
-                                {% for n, status in edit.get_status() %}
+                                {% for n, stat in status %}
                                     <tr>
                                         <td style="padding-left:10px">
                                             <span style="cursor:pointer" onclick="edit_clkstatus(event, {{n}}, 0);">
                                                 <div id="idCheckboxStatbit0_{{n}}" class="gui_ckbox_0"></div>
-                                                {% if status['img_off'] %}
-                                                    <img src="{{status['img_off']}}" title="{{status['label0']}}" style="width:16px;height:16px;vertical-align:bottom" />
+                                                {% if stat['img_off'] %}
+                                                    <img src="{{stat['img_off']}}" title="{{stat['label0']}}" style="width:16px;height:16px;vertical-align:bottom" />
                                                 {% endif %}
-                                                {{ status['label0'] }}
+                                                {{ stat['label0'] }}
                                             </span>
                                         </td>
                                         <td style="padding-left:20px">
                                             <span style="cursor:pointer" onclick="edit_clkstatus(event, {{n}}, 1);">
                                                 <div id="idCheckboxStatbit1_{{n}}"  class="gui_ckbox_0"></div>
-                                                {% if status['img_on'] %}
-                                                    <img src="{{status['img_on']}}" title="{{status['label1']}}" style="width:16px;height:16px;vertical-align:bottom" />
+                                                {% if stat['img_on'] %}
+                                                    <img src="{{stat['img_on']}}" title="{{stat['label1']}}" style="width:16px;height:16px;vertical-align:bottom" />
                                                 {% endif %}
-                                                {{ status['label1'] }}
+                                                {{ stat['label1'] }}
                                             </span>
                                         </td>
                                     </tr>
@@ -236,7 +236,7 @@
         <div id="EDIT_MID_R" style="width:{{user.getPrefs('editing_left_box')}}">
             <div style='position:absolute; top:0; left:0; right:0; bottom:0;' class='tabs'>
                 <ul>
-                    {% if edit.has_thesaurus() %}
+                    {% if thesaurus %}
                         <li><a href="#TH_Ofull">{% trans 'phraseanet:: thesaurus' %}</a></li>
                     {% endif %}
                     <li><a href="#TH_Oclipboard">{% trans 'phraseanet:: presse-papier' %}</a></li>
@@ -244,13 +244,13 @@
                     <li><a href="#TH_Oreplace">{% trans 'prod::editing: rechercher-remplacer' %}</a></li>
                     <li><a href="#TH_Opresets">{% trans 'prod::editing: modeles de fiches' %}</a></li>
                 </ul>
-                {% if edit.has_thesaurus() %}
+                {% if thesaurus %}
                     <div id='TH_Ofull'>
                         <div class='thesaurus' ondblclick='return(edit_dblclickThesaurus(event));' onclick='return(edit_clickThesaurus(event));'>
-                            <p id='TH_T.{{edit.get_sbas_id()}}.T'>
-                                <u id='TH_P.{{edit.get_sbas_id()}}.T'>+</u><a id='GL_W.{{edit.get_sbas_id()}}.T' style='FONT-WEIGHT: bold;'>{{edit.get_sbas_id()|sbas_names}}</a>
+                            <p id='TH_T.{{ databox.get_sbas_id() }}.T'>
+                                <u id='TH_P.{{ databox.get_sbas_id() }}.T'>+</u><a id='GL_W.{{ databox.get_sbas_id() }}.T' style='FONT-WEIGHT: bold;'>{{ databox.get_viewname() }}</a>
                             </p>
-                            <div id='TH_K.{{edit.get_sbas_id()}}.T' class='c'>{% trans 'phraseanet::chargement' %}</div>
+                            <div id='TH_K.{{ databox.get_sbas_id() }}.T' class='c'>{% trans 'phraseanet::chargement' %}</div>
                         </div>
                         <img style="position:absolute; margin:auto" id="TH_searching" src="/skins/icons/ftp-loader-blank.gif" />
                     </div>
@@ -270,8 +270,8 @@
                             <td>
                                 <select id="EditSRField" class="input-xlarge">
                                     <option value="">{% trans 'prod::editing::replace: remplacer dans tous les champs' %}</option>
-                                    {% for field in edit.get_fields() %}
-                                        <option value="{{field.get_id()}}">{{field.get_name()}}</option>
+                                    {% for field in fields %}
+                                        <option value="{{ field.get_id() }}">{{ field.get_name() }}</option>
                                     {% endfor %}
                                 </select>
                             </td>
@@ -362,7 +362,7 @@
         <br/>
         <br/>
         <br/>
-        <input type="hidden" name="edit-lst" id="edit_lst" value="{{edit.get_serialize_list}}" />
+        <input type="hidden" name="edit-lst" id="edit_lst" value="{{ recordsRequest.serializedList() }}" />
         <input type='button' class='input-button'
             value="{% trans 'boutton::fermer' %}"
             onClick="$('#EDITWINDOW').fadeOut();hideOverlay(2);return(false);" />
@@ -384,7 +384,7 @@
 <div id="dialog-edit-many-sbas" title="{% trans 'Edition impossible' %}" style="display:none;">
     <p>
         <span class="ui-icon ui-icon-alert " style="float:left; margin:0 7px 50px 0;"></span>
-        {% if edit.has_many_sbas %}
+        {% if multipleDataboxes %}
             {% trans 'prod::edit: Impossible d\'editer simultanement des documents provenant de bases differentes' %}
         {% elseif actionable == 0 %}
             {% trans %}prod::editing: aucun documents ne peuvent etre edites car vos droits sont induffisants{% endtrans %}
@@ -393,7 +393,7 @@
 </div>
 
 <script type="text/javascript">
-    {% if edit.has_many_sbas or actionable == 0 %}
+    {% if multipleDataboxes or recordsRequest|length == 0 %}
         $('#EDITWINDOW').hide();
         hideOverlay(2);
 
@@ -417,6 +417,6 @@
         {% elseif not_actionable == 1 %}
             alert("{% trans 'prod::editing: 1 document ne peut etre edite car vos droits sont induffisants' %}");
         {% endif %}
-        startThisEditing({{edit.get_sbas_id}},{% if edit.is_single_grouping() %}'GRP'{% else %}'LST'{% endif %},"",'');
+        startThisEditing({{ databox.get_sbas_id }},{% if recordsRequest.isSingleStory() %}'GRP'{% else %}'LST'{% endif %},"",'');
     {% endif %}
 </script>
