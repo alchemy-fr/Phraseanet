@@ -27,7 +27,7 @@
                 <label for="taskTaskActive">{% trans 'admin::tasks: lancer au demarrage du scheduler' %}</label>
                 <input type="checkbox" id="taskTaskActive" {% if task.isActive() %}checked="checked"{% endif %} onchange="setDirty();" />
             </form>
-            <div id="idCrashLine" style="visibility:{% if task.getCrashCounter() == 0 %}not-hidden{% endif %}">
+            <div id="idCrashLine" style="display:{% if task.getCrashCounter() == 0 %}none{% endif %}">
                 {% trans 'admin::tasks: Nombre de crashes : ' %} {{task.getCrashCounter()}}
 
                 <button id="taskResetCrashCounterButton">
@@ -60,7 +60,7 @@
 
 
         <!-- ___________   form to go back on list    ___________ -->
-        <form id="taskFormByeBye" action="./tasks/" method="get">
+        <form id="taskFormByeBye" action="./task-manager/tasks/" method="get">
         </form>
         <!-- __________ end form to go back on list   __________ -->
 
@@ -100,7 +100,7 @@
                             case "taskGuiTab":
                                 var context = { acceptTab: true };
                                 // click on gui tab : fill the gui from xml, then switch to the gui view
-                                $.ajax({ url: "/admin/task/checkxml/"
+                                $.ajax({ url: "/admin/task-manager/task/checkxml/"
                                     , context:context
                                     , data: {xml:$("#txtareaxml").val()}
                                     , dataType:'text'
@@ -137,7 +137,7 @@
                                 var data = $("form[name='graphicForm']").serializeJSON();
                                 data["__action"] = "FORM2XML";
                                 data["__xml"] = $("#txtareaxml").val();
-                                $.ajax({ url: "/admin/task/{{task.getID()}}/facility/"
+                                $.ajax({ url: "/admin/task-manager/task/{{task.getID()}}/facility/"
                                     , data: data
                                     , dataType:'text'
                                     , type:"POST"
@@ -163,7 +163,7 @@
                 $("#taskResetCrashCounterButton").click(function()
                 {
                     // click on resetCrashCounter button
-                    $.ajax({ url: "/admin/task/{{task.getID()}}/resetcrashcounter/"
+                    $.ajax({ url: "/admin/task-manager/task/{{task.getID()}}/resetcrashcounter/"
                         , data: {}
                         , dataType:'json'
                         , type:"GET"
@@ -181,7 +181,7 @@
                 $("#taskSaveButton").click(function()
                 {
                     // click on save button
-                    $.ajax({ url: "/admin/task/{{task.getID()}}/save/"
+                    $.ajax({ url: "/admin/task-manager/task/{{task.getID()}}/save/"
                         , data: {
                                     title:$("#taskTaskname").val(),
                                     active:!!$("#taskTaskActive").attr("checked"),
