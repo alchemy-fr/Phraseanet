@@ -388,11 +388,17 @@ class appbox extends base
          */
         $upgrader->set_current_message(_('Copying files'));
 
-        $origine = $registry->get('GV_RootPath') . 'config/custom_files/';
-        $target = $registry->get('GV_RootPath') . 'www/custom/';
-
         $filesystem = $core['file-system'];
-        $filesystem->mirror($origine, $target);
+
+        foreach (array(
+        'config/custom_files/' => 'www/custom/',
+        'config/minilogos/'    => 'www/custom/minilogos/',
+        'config/stamp/'        => 'www/custom/stamp/',
+        'config/status/'       => 'www/custom/status/',
+        'config/wm/'           => 'www/custom/wm/',
+        ) as $source => $target) {
+            $filesystem->mirror($registry->get('GV_RootPath') . $source, $registry->get('GV_RootPath') . $target);
+        }
 
         $upgrader->add_steps_complete(1);
 

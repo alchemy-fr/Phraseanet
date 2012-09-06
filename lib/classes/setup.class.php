@@ -39,7 +39,6 @@ class setup
         , "phrasea2"
         , "SimpleXML"
         , "sockets"
-        , "sqlite3"
         , "xml"
         , "zip"
         , "zlib"
