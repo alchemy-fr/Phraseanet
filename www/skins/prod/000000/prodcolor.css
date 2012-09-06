@@ -4084,6 +4084,44 @@ dans l'onglet thesaurus : arbres, menus contextuels
     height: 10px;
 }
 
+#uploadBox .uploader-button{
+    text-align: center;
+    width:50%;
+}
+
+#uploadBox #addFileList {
+    width:100%;
+    table-layout:fixed;
+    border:none;
+}
+
+#uploadBox #addFileList td{
+    vertical-align: middle;
+}
+
+#uploadBox .uploader-icon {
+    width:15%;
+    text-align:left;
+}
+
+#uploadBox .uploader-info {
+    font-size:10px;
+    width:35%;
+    text-align:left;
+}
+
+#uploadBox .uploader-info p {
+    line-height:10px;
+    font-size:10px;
+    word-wrap: break-word;
+}
+
+#uploadBox .uploader-info a {
+    text-decoration: underline;
+    color: darkblue;
+    margin:5px 0;
+}
+
 #uploadBoxRight .progress .progress-bar {
     height: 10px;
 }

@@ -79,7 +79,13 @@
           {% if module == "prod" %}
             {% if user.ACL.has_access_to_module('upload') %}
             <li>
-                <a  href="/prod/upload/" class="dialog full-dialog" title="{% trans 'Upload' %}">
+                {% set link = '/prod/upload/flash-version/' %}
+
+                {% if browser.isHTML5() and browser.getBrowser() is not constant('Browser::BROWSER_IE') %}
+                    {% set link = '/prod/upload/' %}
+                {% endif %}
+
+                <a  href="{{ link }}" class="dialog full-dialog" title="{% trans 'Upload' %}">
                 <span>
                     {% trans 'admin::monitor: module upload' %}
                 </span>

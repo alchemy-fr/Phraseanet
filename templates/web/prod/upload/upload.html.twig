@@ -20,27 +20,36 @@
         <div id="tab-upload">
             <form id="fileupload" enctype="multipart/form-data" method="POST" action="/prod/upload/">
 
-                <div id="uploadBoxLeft" class="well ">
+                <div id="uploadBoxLeft" class="well">
 
                     {# <h5 style="margin-top: 10px;">{% trans 'Choose files to add' %} :</h5> #}
                     {# action bar #}
-                    <div id="addFileList">
-                        <div class="btn-toolbar">
-                            <span class="btn btn-inverse fileinput-button input-medium">
-                                <span>{% trans 'Select files...' %}</span>
-                                <input type="file" name="files[]" multiple>
-                            </span>
-                            <br />
-                            <span>
-                                 <a href="/prod/upload/flash-version/" class="dialog full-dialog" title="{% trans 'Upload' %}"><span class="label label-info"><i>{% trans 'Switch to flash uploader' %}</i></span></a>
-                            </span>
-                            <br />
-                            <span class="comment">
-                                ({% trans %} maximum : {{ maxFileSizeReadable }} {% endtrans %})
-                            </span>
-                        {#    <button type="button" class="upload-submitter btn btn-inverse input-medium">{% trans 'Send' %}</button> #}
-                        </div>
-                    </div>
+                    <table id="addFileList">
+                        <tr>
+                            <td class='uploader-button'>
+                                <span class="btn btn-inverse fileinput-button input-medium">
+                                    <span>{% trans 'Select files...' %}</span>
+                                    <input type="file" name="files[]" multiple>
+                                </span>
+                                    <br />
+                                <span class="comment">
+                                    ({% trans %} maximum : {{ maxFileSizeReadable }} {% endtrans %})
+                                </span>
+                            </td>
+                            <td class='uploader-icon'>
+                                <img src='/skins/icons/html5-logo.jpeg' width="32px" heigh="32px"  title="{% trans 'You are using the HTML5 uploader'%}"/>
+                            </td>
+                            <td class="uploader-info">
+                                <p>
+                                    {% trans 'You are using the HTM5 uploader' %}
+                                    {% if not browser.isHTML5() or browser.getBrowser() is constant('Browser::BROWSER_IE') %}
+                                        {% trans 'Your browser does not support all HTML5 features properly' %}
+                                    {% endif %}
+                                </p>
+                                <a href="/prod/upload/flash-version/" class="dialog full-dialog">{% trans 'Use the Flash uploader' %}</a>
+                            </td>
+                        </tr>
+                    </table>
 
                     {# settings box #}
                     <div class='settings-box'>
