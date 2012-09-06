@@ -41,9 +41,9 @@
                             </td>
                             <td class="uploader-info">
                                 <p>
-                                    {% trans 'You are using the HTM5 uploader' %}
-                                    {% if not browser.isHTML5() or browser.getBrowser() is constant('Browser::BROWSER_IE') %}
-                                        {% trans 'Your browser does not support all HTML5 features properly' %}
+                                    {% trans 'You are using the HTML5 uploader.' %} 
+                                    {% if not browser.supportFileAPI() %}
+                                        {% trans 'Your browser does not support all HTML5 features properly.' %}
                                     {% endif %}
                                 </p>
                                 <a href="/prod/upload/flash-version/" class="dialog full-dialog">{% trans 'Use the Flash uploader' %}</a>
