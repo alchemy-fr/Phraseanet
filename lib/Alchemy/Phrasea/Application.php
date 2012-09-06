@@ -49,7 +49,7 @@ class Application extends SilexApplication
             );
         });
 
-        $app->register(new FilesystemServiceProvider());
+        $this->register(new FilesystemServiceProvider());
 
 //        $this->register(new \Silex\Provider\HttpCacheServiceProvider());
 //        $this->register(new \Silex\Provider\MonologServiceProvider());
