@@ -2,7 +2,9 @@
 
 namespace Alchemy\Phrasea\Metadata\Tag;
 
-class PdfText extends \PHPExiftool\Driver\Tag
+use PHPExiftool\Driver\AbstractTag;
+
+class PdfText extends AbstractTag
 {
     protected $Id = 'pdf-text';
     protected $Name = 'pdf-text';

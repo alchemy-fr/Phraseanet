@@ -2,7 +2,9 @@
 
 namespace Alchemy\Phrasea\Metadata\Tag;
 
-class TfCtime extends \PHPExiftool\Driver\Tag
+use PHPExiftool\Driver\AbstractTag;
+
+class TfCtime extends AbstractTag
 {
     protected $Id = 'tf-ctime';
     protected $Name = 'tf-ctime';
