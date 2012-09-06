@@ -12,6 +12,7 @@ class RecordsRequest extends ArrayCollection
     protected $received;
     protected $basket;
     protected $databoxes;
+    protected $collections;
 
     public function __construct(array $elements, ArrayCollection $received, Basket $basket = null, $flatten = false)
     {
@@ -51,6 +52,23 @@ class RecordsRequest extends ArrayCollection
         }
 
         return $this->databoxes;
+    }
+
+    public function collections()
+    {
+        if ( ! $this->collections) {
+            $this->collections = array();
+
+            foreach ($this as $record) {
+                if (false === array_key_exists($record->get_base_id(), $this->collections)) {
+                    $this->collections[$record->get_base_id()] = $record->get_collection();
+                }
+            }
+
+            $this->collections = array_values($this->collections);
+        }
+
+        return $this->collections;
     }
 
     public function received()
