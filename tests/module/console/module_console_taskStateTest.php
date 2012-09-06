@@ -31,11 +31,11 @@ class module_console_taskStateTest extends PhraseanetPHPUnitAbstract
 
         // test good tasks ids
         $task_manager = new task_manager(appbox::get_instance(\bootstrap::getCore()));
-        $tasks = $task_manager->getTasks();
+        $tasks = $task_manager->getTasks($application);
         $tids = array();    // list known ids of tasks so we can generate a 'unknown id' later
         foreach ($tasks as $task) {
             $tids[] = $task->getID();
-            $task = $task_manager->getTask($task->getID());
+            $task = $task_manager->getTask($application, $task->getID());
             $state = $task->getState();
             $pid = $task->getPID();
 

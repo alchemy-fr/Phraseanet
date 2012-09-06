@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\Filesystem\Filesystem;
+
 class databox extends base
 {
     /**
@@ -560,16 +562,8 @@ class databox extends base
         return $this->subdef_struct;
     }
 
-    /**
-     *
-     * @param  <type> $repository_path
-     * @param  <type> $date
-     * @return <type>
-     */
-    public static function dispatch($repository_path, $date = false)
+    public static function dispatch(Filesystem $filesystem, $repository_path, $date = false)
     {
-        $core = \bootstrap::getCore();
-
         if ( ! $date) {
             $date = date('Y-m-d H:i:s');
         }
@@ -589,7 +583,7 @@ class databox extends base
             $n ++;
         }
 
-        $core['file-system']->mkdir($pathout, 0750);
+        $filesystem->mkdir($pathout, 0750);
 
         return $pathout . DIRECTORY_SEPARATOR;
     }

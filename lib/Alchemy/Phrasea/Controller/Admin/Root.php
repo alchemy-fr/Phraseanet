@@ -309,7 +309,7 @@ class Root implements ControllerProviderInterface
                 $error = false;
 
                 try {
-                    \databox_status::deleteStatus($databox_id, $bit);
+                    \databox_status::deleteStatus($app['filesystem'], $databox_id, $bit);
                 } catch (\Exception $e) {
                     $error = true;
                 }
@@ -333,12 +333,12 @@ class Root implements ControllerProviderInterface
                     \databox_status::updateStatus($databox_id, $bit, $properties);
 
                     if (null !== $request->request->get('delete_icon_off')) {
-                        \databox_status::deleteIcon($databox_id, $bit, 'off');
+                        \databox_status::deleteIcon($app['filesystem'], $databox_id, $bit, 'off');
                     }
 
                     if (null !== $file = $request->files->get('image_off')) {
                         try {
-                            \databox_status::updateIcon($databox_id, $bit, 'off', $file);
+                            \databox_status::updateIcon($app['filesystem'], $databox_id, $bit, 'off', $file);
                         } catch (\Exception_Forbidden $e) {
 
                             return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=rights');
@@ -361,12 +361,12 @@ class Root implements ControllerProviderInterface
                     }
 
                     if (null !== $request->request->get('delete_icon_on')) {
-                        \databox_status::deleteIcon($databox_id, $bit, 'on');
+                        \databox_status::deleteIcon($app['filesystem'], $databox_id, $bit, 'on');
                     }
 
                     if (null !== $file = $request->files->get('image_on')) {
                         try {
-                            \databox_status::updateIcon($databox_id, $bit, 'on', $file);
+                            \databox_status::updateIcon($app['filesystem'], $databox_id, $bit, 'on', $file);
                         } catch (\Exception_Forbidden $e) {
 
                             return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=rights');

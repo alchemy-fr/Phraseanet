@@ -136,7 +136,7 @@ class Tools implements ControllerProviderInterface
 
                             $media = $app['phraseanet.core']['mediavorus']->guess($tempoFile);
 
-                            $record->substitute_subdef('document', $media);
+                            $record->substitute_subdef('document', $media, $app['filesystem'], $app['phraseanet.core']['media-alchemyst'], $app['phraseanet.core']['mediavorus']);
 
                             if ((int) $request->request->get('ccfilename') === 1) {
                                 $record->set_original_name($fileName);
@@ -252,7 +252,7 @@ class Tools implements ControllerProviderInterface
                     $record->substitute_subdef('thumbnail', $media);
 
                     unset($media);
-                    $app['phraseanet.core']['file-system']->remove($fileName);
+                    $app['filesystem']->remove($fileName);
 
                     $return['success'] = true;
                 } catch (\Exception $e) {

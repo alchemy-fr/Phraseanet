@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\Filesystem\Filesystem;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -36,7 +38,7 @@ if ($parm["type"] == "title")
 else
     $titre = false;
 
-$list = $download->prepare_export($parm['obj'], $titre, $parm['businessfields']);
+$list = $download->prepare_export($Core->getAuthenticatedUser(), new Filesystem(), $parm['obj'], $titre, $parm['businessfields']);
 
 $exportname = "Export_" . date("Y-n-d") . '_' . mt_rand(100, 999);
 

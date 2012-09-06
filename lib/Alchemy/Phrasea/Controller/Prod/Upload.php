@@ -189,7 +189,7 @@ class Upload implements ControllerProviderInterface
             $size = $file->getSize();
             $error = $file->getError();
 
-            $app['phraseanet.core']['file-system']->rename($uploadedFilename, $renamedFilename);
+            $app['filesystem']->rename($uploadedFilename, $renamedFilename);
 
             $file = new UploadedFile($renamedFilename, $originalname, $clientMimeType, $size, $error);
 
@@ -234,7 +234,7 @@ class Upload implements ControllerProviderInterface
                 $lazaretSession, $packageFile, $callback, $forceBehavior
             );
 
-            $app['phraseanet.core']['file-system']->rename($renamedFilename, $uploadedFilename);
+            $app['filesystem']->rename($renamedFilename, $uploadedFilename);
 
             if ( ! ! $forceBehavior) {
                 $reasons = array();

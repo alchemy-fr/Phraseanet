@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
 use Monolog\Logger;
 
 /**
@@ -30,9 +31,11 @@ class task_Scheduler
      */
     private $logger;
     private $method;
+    private $dependencyContainer;
 
-    public function __construct(Logger $logger)
+    public function __construct(Application $application, Logger $logger)
     {
+        $this->dependencyContainer = $application;
         $this->logger = $logger;
     }
 
@@ -124,7 +127,7 @@ class task_Scheduler
         $task_manager = new task_manager($appbox);
 
         // set every 'auto-start' task to start
-        foreach ($task_manager->getTasks() as $task) {
+        foreach ($task_manager->getTasks($this->dependencyContainer) as $task) {
             if ($task->isActive()) {
                 if ( ! $task->getPID()) {
                     /* @var $task task_abstract */
@@ -211,7 +214,7 @@ class task_Scheduler
                 $taskPoll[$tkey]["todel"] = true;
             }
 
-            foreach ($task_manager->getTasks(true) as $task) {
+            foreach ($task_manager->getTasks($this->dependencyContainer, true) as $task) {
                 $tkey = "t_" . $task->getID();
                 $status = $task->getState();
 

@@ -2,6 +2,8 @@
 
 namespace Alchemy\Phrasea\Border;
 
+use Symfony\Component\Filesystem\Filesystem;
+
 require_once __DIR__ . '/../../../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
 class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
@@ -43,7 +45,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new Manager(self::$core['EM'], self::$core['file-system']);
+        $this->object = new Manager(self::$core['EM'], new Filesystem());
         $this->session = new \Entities\LazaretSession();
 
         self::$core['EM']->persist($this->session);
@@ -386,7 +388,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
      */
     public function testAddMediaAttributesPDF()
     {
-        $manager = new ManagerTester(self::$core['EM'], self::$core['file-system']);
+        $manager = new ManagerTester(self::$core['EM'], new Filesystem());
 
         if(null === self::$core['pdf-to-text']) {
             $this->markTestSkipped('Pdf To Text could not be instantiate');
@@ -440,7 +442,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
      */
     public function testAddMediaAttributesAudio()
     {
-        $manager = new ManagerTester(self::$core['EM'], self::$core['file-system']);
+        $manager = new ManagerTester(self::$core['EM'], new Filesystem());
 
         $file = File::buildFromPathfile(__DIR__ . '/../../../testfiles/test012.wav', self::$collection);
 
@@ -487,7 +489,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
      */
     public function testAddMediaAttributes()
     {
-        $manager = new ManagerTester(self::$core['EM'], self::$core['file-system']);
+        $manager = new ManagerTester(self::$core['EM'], new Filesystem());
 
         $file = File::buildFromPathfile(self::$file1, self::$collection);
 
@@ -624,7 +626,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
      */
     public function testBookLazaretPathfile()
     {
-        $manager = new ManagerTester(self::$core['EM'], self::$core['file-system']);
+        $manager = new ManagerTester(self::$core['EM'], new Filesystem());
 
         $file1 = $manager->bookLazaretPathfileTester('babebibobu.txt');
         $file2 = $manager->bookLazaretPathfileTester('babebibobu.txt');

@@ -333,8 +333,7 @@ class Lazaret implements ControllerProviderInterface
         }
 
         try {
-            $app['phraseanet.core']['file-system']->remove($lazaretFileName);
-            $app['phraseanet.core']['file-system']->remove($lazaretThumbFileName);
+            $app['filesystem']->remove(array($lazaretFileName, $lazaretThumbFileName));
         } catch (IOException $e) {
 
         }
@@ -382,8 +381,7 @@ class Lazaret implements ControllerProviderInterface
         $app['phraseanet.core']['EM']->flush();
 
         try {
-            $app['phraseanet.core']['file-system']->remove($lazaretFileName);
-            $app['phraseanet.core']['file-system']->remove($lazaretThumbFileName);
+            $app['filesystem']->remove(array($lazaretFileName, $lazaretThumbFileName));
         } catch (IOException $e) {
 
         }
@@ -475,7 +473,7 @@ class Lazaret implements ControllerProviderInterface
             $media = $app['phraseanet.core']['mediavorus']->guess(new \SplFileInfo($lazaretFileName));
 
             $record = $lazaretFile->getCollection()->get_databox()->get_record($recordId);
-            $record->substitute_subdef('document', $media);
+            $record->substitute_subdef('document', $media, $app['filesystem'], $app['phraseanet.core']['media-alchemyst'], $app['phraseanet.core']['mediavorus']);
 
             //Delete lazaret file
             $app['phraseanet.core']['EM']->remove($lazaretFile);
@@ -487,8 +485,7 @@ class Lazaret implements ControllerProviderInterface
         }
 
         try {
-            $app['phraseanet.core']['file-system']->remove($lazaretFileName);
-            $app['phraseanet.core']['file-system']->remove($lazaretThumbFileName);
+            $app['filesystem']->remove(array($lazaretFileName, $lazaretThumbFileName));
         } catch (IOException $e) {
 
         }

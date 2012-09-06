@@ -175,7 +175,7 @@ class Databoxes implements ControllerProviderInterface
 
         try {
             $upgrader = new \Setup_Upgrade($app['phraseanet.appbox']);
-            $advices = $app['phraseanet.appbox']->forceUpgrade($upgrader);
+            $advices = $app['phraseanet.appbox']->forceUpgrade($upgrader, $app['phraseanet.core']['CacheService'], $app['phraseanet.core']['EM'], $app['filesystem']);
 
             return $app->redirect('/admin/databoxes/?success=1&notice=restart&' . http_build_query(array('advices' => $advices)));
         } catch (\Exception_Setup_UpgradeAlreadyStarted $e) {

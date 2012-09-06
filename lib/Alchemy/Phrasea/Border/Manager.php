@@ -238,7 +238,7 @@ class Manager
      */
     protected function createRecord(File $file)
     {
-        $element = \record_adapter::createFromFile($file);
+        $element = \record_adapter::createFromFile($file, $this->filesystem);
 
         $date = new \DateTime();
 

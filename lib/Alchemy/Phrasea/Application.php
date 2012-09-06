@@ -5,6 +5,7 @@ namespace Alchemy\Phrasea;
 use Alchemy\Phrasea\PhraseanetServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BrowserServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TaskManagerServiceProvider;
+use Neutron\Silex\Provider\FilesystemServiceProvider;
 use Silex\Application as SilexApplication;
 use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
@@ -47,6 +48,8 @@ class Application extends SilexApplication
                 )
             );
         });
+
+        $app->register(new FilesystemServiceProvider());
 
 //        $this->register(new \Silex\Provider\HttpCacheServiceProvider());
 //        $this->register(new \Silex\Provider\MonologServiceProvider());

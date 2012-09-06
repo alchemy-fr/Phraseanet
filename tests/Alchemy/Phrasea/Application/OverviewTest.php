@@ -2,9 +2,7 @@
 
 require_once __DIR__ . '/../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
-use Silex\WebTestCase;
-use Symfony\Component\HttpKernel\Client;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Filesystem\Filesystem;
 
 class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 {
@@ -51,7 +49,7 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $media = self::$core['mediavorus']->guess(new \SplFileInfo($tmp));
 
         $file = new Alchemy\Phrasea\Border\File($media, self::$collection);
-        $record = record_adapter::createFromFile($file);
+        $record = record_adapter::createFromFile($file, new Filesystem());
 
         $crawler = $this->client->request('GET', '/datafiles/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/preview/');
         $response = $this->client->getResponse();

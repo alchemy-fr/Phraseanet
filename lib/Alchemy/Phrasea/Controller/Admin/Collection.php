@@ -500,7 +500,7 @@ class Collection implements ControllerProviderInterface
                 $msg = _('Collection empty successful');
             } else {
                 $settings = '<?xml version="1.0" encoding="UTF-8"?><tasksettings><bas_id>' . $collection->get_base_id() . '</bas_id></tasksettings>';
-                \task_abstract::create($app['phraseanet.appbox'], 'task_period_emptyColl', $settings);
+                \task_abstract::create($app, 'task_period_emptyColl', $settings);
                 $msg = _('A task has been creted, please run it to complete empty collection');
             }
 
@@ -535,7 +535,7 @@ class Collection implements ControllerProviderInterface
 
         try {
             $collection = \collection::get_from_base_id($bas_id);
-            $app['phraseanet.appbox']->write_collection_pic($collection, null, \collection::PIC_PRESENTATION);
+            $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, null, \collection::PIC_PRESENTATION);
             $success = true;
         } catch (\Exception $e) {
 
@@ -567,7 +567,7 @@ class Collection implements ControllerProviderInterface
 
         try {
             $collection = \collection::get_from_base_id($bas_id);
-            $app['phraseanet.appbox']->write_collection_pic($collection, null, \collection::PIC_STAMP);
+            $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, null, \collection::PIC_STAMP);
             $success = true;
         } catch (\Exception $e) {
 
@@ -599,7 +599,7 @@ class Collection implements ControllerProviderInterface
 
         try {
             $collection = \collection::get_from_base_id($bas_id);
-            $app['phraseanet.appbox']->write_collection_pic($collection, null, \collection::PIC_WM);
+            $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, null, \collection::PIC_WM);
             $success = true;
         } catch (\Exception $e) {
 
@@ -632,7 +632,7 @@ class Collection implements ControllerProviderInterface
         try {
             $collection = \collection::get_from_base_id($bas_id);
             $collection->update_logo(null);
-            $app['phraseanet.appbox']->write_collection_pic($collection, null, \collection::PIC_LOGO);
+            $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, null, \collection::PIC_LOGO);
             $success = true;
         } catch (\Exception $e) {
 
@@ -677,9 +677,9 @@ class Collection implements ControllerProviderInterface
         try {
             $collection = \collection::get_from_base_id($bas_id);
 
-            $app['phraseanet.appbox']->write_collection_pic($collection, $file, \collection::PIC_PRESENTATION);
+            $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, $file, \collection::PIC_PRESENTATION);
 
-            $app['phraseanet.core']['file-system']->remove($file->getPathname());
+            $app['filesystem']->remove($file->getPathname());
         } catch (\Exception $e) {
 
             return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-error');
@@ -715,9 +715,9 @@ class Collection implements ControllerProviderInterface
         try {
             $collection = \collection::get_from_base_id($bas_id);
 
-            $app['phraseanet.appbox']->write_collection_pic($collection, $file, \collection::PIC_STAMP);
+            $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, $file, \collection::PIC_STAMP);
 
-            $app['phraseanet.core']['file-system']->remove($file->getPathname());
+            $app['filesystem']->remove($file->getPathname());
         } catch (\Exception $e) {
 
             return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-error');
@@ -753,9 +753,9 @@ class Collection implements ControllerProviderInterface
         try {
             $collection = \collection::get_from_base_id($bas_id);
 
-            $app['phraseanet.appbox']->write_collection_pic($collection, $file, \collection::PIC_WM);
+            $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, $file, \collection::PIC_WM);
 
-            $app['phraseanet.core']['file-system']->remove($file->getPathname());
+            $app['filesystem']->remove($file->getPathname());
         } catch (\Exception $e) {
 
             return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-error');
@@ -791,9 +791,9 @@ class Collection implements ControllerProviderInterface
         try {
             $collection = \collection::get_from_base_id($bas_id);
 
-            $app['phraseanet.appbox']->write_collection_pic($collection, $file, \collection::PIC_LOGO);
+            $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, $file, \collection::PIC_LOGO);
 
-            $app['phraseanet.core']['file-system']->remove($file->getPathname());
+            $app['filesystem']->remove($file->getPathname());
         } catch (\Exception $e) {
 
             return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-error');

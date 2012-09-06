@@ -14,8 +14,11 @@ use Alchemy\Phrasea\Metadata\Tag\TfFilename;
 use Alchemy\Phrasea\Metadata\Tag\TfBasename;
 use MediaAlchemyst\Specification\Specification;
 use MediaVorus\Media\Media;
+use MediaAlchemyst\Alchemyst;
+use MediaVorus\MediaVorus;
 use Monolog\Logger;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  *
@@ -1030,10 +1033,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         return $this->get_databox()->get_sbas_id();
     }
 
-    public function substitute_subdef($name, Media $media)
+    public function substitute_subdef($name, Media $media, Filesystem $filesystem, Alchemyst $alchemyst, MediaVorus $mediavorus)
     {
-        $core = \bootstrap::getCore();
-
         $newfilename = $this->record_id . '_0_' . $name . '.' . $media->getFile()->getExtension();
 
         $base_url = '';
@@ -1046,9 +1047,9 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             $pathhd = p4string::addEndSlash((string) ($baseprefs->path));
 
             $filehd = $this->get_record_id() . "_document." . strtolower($media->getFile()->getExtension());
-            $pathhd = databox::dispatch($pathhd);
+            $pathhd = databox::dispatch($filesystem, $pathhd);
 
-            $core['file-system']->copy($media->getFile()->getRealPath(), $pathhd . $filehd, true);
+            $filesystem->copy($media->getFile()->getRealPath(), $pathhd . $filehd, true);
 
             $subdefFile = new SymfoFile($pathhd . $filehd);
 
@@ -1064,14 +1065,13 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 $this->get_subdef($name)->remove_file();
                 $this->clearSubdefCache($name);
             } else {
-                $path = databox::dispatch($subdef_def->get_path());
-                $core['file-system']->mkdir($path, 0750);
+                $path = databox::dispatch($filesystem, $subdef_def->get_path());
+                $filesystem->mkdir($path, 0750);
                 $path_file_dest = $path . $newfilename;
             }
 
             try {
-                $Core = \bootstrap::getCore();
-                $Core['media-alchemyst']->open($media->getFile()->getRealPath())
+                $alchemyst->open($media->getFile()->getRealPath())
                     ->turnInto($path_file_dest, $subdef_def->getSpecs())
                     ->close();
             } catch (\MediaAlchemyst\Exception\Exception $e) {
@@ -1083,8 +1083,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             $meta_writable = $subdef_def->meta_writeable();
         }
 
-        $core['file-system']->chmod($subdefFile->getRealPath(), 0760);
-        $media = $core['mediavorus']->guess($subdefFile);
+        $filesystem->chmod($subdefFile->getRealPath(), 0760);
+        $media = $mediavorus->guess($subdefFile);
 
         media_subdef::create($this, $name, $media);
 
@@ -1379,7 +1379,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      * @param File $file
      * @return \record_adapter
      */
-    public static function createFromFile(File $file)
+    public static function createFromFile(File $file, Filesystem $filesystem)
     {
         $core = \bootstrap::getCore();
 
@@ -1428,10 +1428,10 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             unset($e);
         }
 
-        $pathhd = databox::dispatch(trim($databox->get_sxml_structure()->path));
+        $pathhd = databox::dispatch($filesystem, trim($databox->get_sxml_structure()->path));
         $newname = $record->get_record_id() . "_document." . pathinfo($file->getOriginalName(), PATHINFO_EXTENSION);
 
-        $core['file-system']->copy($file->getFile()->getRealPath(), $pathhd . $newname, true);
+        $filesystem->copy($file->getFile()->getRealPath(), $pathhd . $newname, true);
 
         $media = $core['mediavorus']->guess(new \SplFileInfo($pathhd . $newname));
         $subdef = media_subdef::create($record, 'document', $media);
@@ -1726,7 +1726,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      * @param  array           $wanted_subdefs An array of subdef names
      * @return \record_adapter
      */
-    public function generate_subdefs(databox $databox, Logger $logger, Array $wanted_subdefs = null)
+    public function generate_subdefs(databox $databox, Logger $logger, Filesystem $filesystem, Array $wanted_subdefs = null)
     {
         $subdefs = $databox->get_subdef_structure()->getSubdefGroup($this->get_type());
 
@@ -1754,7 +1754,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 $this->clearSubdefCache($subdefname);
             }
 
-            $pathdest = $this->generateSubdefPathname($subdef, $pathdest);
+            $pathdest = $this->generateSubdefPathname($subdef, $filesystem, $pathdest);
 
             $logger->addInfo(sprintf('Generating subdef %s to %s', $subdefname, $pathdest));
             $this->generate_subdef($subdef, $pathdest, $logger);
@@ -1822,12 +1822,12 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      * @param  type           $oldVersion
      * @return type
      */
-    protected function generateSubdefPathname(databox_subdef $subdef, $oldVersion = null)
+    protected function generateSubdefPathname(databox_subdef $subdef, Filesystem $filesystem, $oldVersion = null)
     {
         if ($oldVersion) {
             $pathdest = p4string::addEndSlash(pathinfo($oldVersion, PATHINFO_DIRNAME));
         } else {
-            $pathdest = databox::dispatch($subdef->get_path());
+            $pathdest = databox::dispatch($filesystem, $subdef->get_path());
         }
 
         return $pathdest . $this->get_record_id() . '_' . $subdef->get_name() . '.' . $this->getExtensionFromSpec($subdef->getSpecs());

@@ -51,7 +51,7 @@ class module_console_schedulerStart extends Command
         $logger->pushHandler($rotateHandler);
 
         try {
-            $scheduler = new task_Scheduler($logger);
+            $scheduler = new task_Scheduler($this->container, $logger);
             $scheduler->run();
         } catch (\Exception $e) {
             switch ($e->getCode()) {

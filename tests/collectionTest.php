@@ -1,5 +1,7 @@
 <?php
 
+use Symfony\Component\Filesystem\Filesystem;
+
 require_once __DIR__ . '/PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
 class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
@@ -83,7 +85,7 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
         self::$object->empty_collection();
         $file = new Alchemy\Phrasea\Border\File(self::$core['mediavorus']->guess(new \SplFileInfo(__DIR__ . '/testfiles/cestlafete.jpg')), self::$object);
-        record_adapter::createFromFile($file);
+        record_adapter::createFromFile($file, new Filesystem());
         $this->assertTrue(self::$object->get_record_amount() === 1);
         self::$object->empty_collection();
         $this->assertTrue(self::$object->get_record_amount() === 0);
@@ -130,7 +132,7 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testGet_record_details()
     {
         $file = new Alchemy\Phrasea\Border\File(self::$core['mediavorus']->guess(new \SplFileInfo(__DIR__ . '/testfiles/cestlafete.jpg')), self::$object);
-        $record = record_adapter::createFromFile($file);
+        $record = record_adapter::createFromFile($file, new Filesystem());
         $details = self::$object->get_record_details();
 
         $this->assertTrue(is_array($details));

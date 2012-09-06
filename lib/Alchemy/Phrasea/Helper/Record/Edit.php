@@ -438,7 +438,7 @@ class Edit extends RecordHelper
                         continue;
                     }
                     $media = $this->core['mediavorus']->guess(new \SplFileInfo($value->get_pathfile()));
-                    $reg_record->substitute_subdef($name, $media);
+                    $reg_record->substitute_subdef($name, $media, $this->core['file-system'], $this->core['media-alchemyst'], $this->core['mediavorus']);
                 }
             } catch (\Exception $e) {
 

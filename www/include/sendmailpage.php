@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\Filesystem\Filesystem;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -51,7 +53,7 @@ if ($Request->get("ssttid", "") != "") {
 
 $download = new set_export($Request->get('lst', ''), $Request->get('ssttid', ''));
 
-$list = $download->prepare_export($Request->get('obj'), $titre, $Request->get('businessfields'));
+$list = $download->prepare_export($Core->getAuthenticatedUser(), new Filesystem(), $Request->get('obj'), $titre, $Request->get('businessfields'));
 $list['export_name'] = $exportname . '.zip';
 $list['email'] = $Request->get("destmail", "");
 
@@ -93,7 +95,7 @@ if (count($dest) > 0 && $token) {
     //BUILDING ZIP
 
     $zipFile = $registry->get('GV_RootPath') . 'tmp/download/' . $token . '.zip';
-    set_export::build_zip($token, $list, $zipFile);
+    set_export::build_zip(new Filesystem(), $token, $list, $zipFile);
 
     $res = $dest;
 

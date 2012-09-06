@@ -57,7 +57,7 @@ class Upgrader implements ControllerProviderInterface
 
                 $appbox = $app['phraseanet.appbox'];
                 $upgrader = new \Setup_Upgrade($appbox);
-                $appbox->forceUpgrade($upgrader);
+                $appbox->forceUpgrade($upgrader, $app['phraseanet.core']['CacheService'], $app['phraseanet.core']['EM'], $app['filesystem']);
 
                 /**
                  * @todo Show recomandation instead of redirect

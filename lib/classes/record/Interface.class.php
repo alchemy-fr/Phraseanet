@@ -11,6 +11,9 @@
 
 use MediaVorus\Media\Media;
 use Monolog\Logger;
+use MediaAlchemyst\Alchemyst;
+use MediaVorus\MediaVorus;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  *
@@ -84,7 +87,7 @@ interface record_Interface
 
     public function get_sbas_id();
 
-    public function substitute_subdef($name, Media $media);
+    public function substitute_subdef($name, Media $media, Filesystem $filesystem, Alchemyst $alchemyst, MediaVorus $mediavorus);
 
     public function set_metadatas(Array $metadatas, $force_readonly = false);
 

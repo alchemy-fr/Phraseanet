@@ -133,7 +133,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         $appbox = \appbox::get_instance($app['phraseanet.core']);
         $taskManager = new \task_manager($appbox);
-        $tasks = $taskManager->getTasks();
+        $tasks = $taskManager->getTasks($app);
 
         $ret = array();
         foreach ($tasks as $task) {
@@ -175,7 +175,7 @@ class API_V1_adapter extends API_V1_Abstract
         $taskManager = new task_manager($appbox);
 
         $ret = array(
-            'task' => $this->list_task($taskManager->getTask($taskId))
+            'task' => $this->list_task($taskManager->getTask($app, $taskId))
         );
 
         $result->set_datas($ret);
@@ -197,7 +197,7 @@ class API_V1_adapter extends API_V1_Abstract
         $appbox = \appbox::get_instance($app['phraseanet.core']);
         $taskManager = new \task_manager($appbox);
 
-        $task = $taskManager->getTask($taskId);
+        $task = $taskManager->getTask($app, $taskId);
         if ( ! in_array($task->getState(), array(\task_abstract::STATE_TOSTART, \task_abstract::STATE_STARTED))) {
             $task->setState(\task_abstract::STATE_TOSTART);
         }
@@ -221,7 +221,7 @@ class API_V1_adapter extends API_V1_Abstract
         $appbox = \appbox::get_instance($app['phraseanet.core']);
         $taskManager = new \task_manager($appbox);
 
-        $task = $taskManager->getTask($taskId);
+        $task = $taskManager->getTask($app, $taskId);
         if ( ! in_array($task->getState(), array(\task_abstract::STATE_TOSTOP, \task_abstract::STATE_STOPPED))) {
             $task->setState(\task_abstract::STATE_TOSTOP);
         }
@@ -255,7 +255,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         $taskManager = new \task_manager($appbox);
 
-        $task = $taskManager->getTask($taskId);
+        $task = $taskManager->getTask($app, $taskId);
 
         if ($title) {
             $task->setTitle($title);

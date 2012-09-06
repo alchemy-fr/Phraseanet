@@ -1,5 +1,9 @@
 <?php
 
+use MediaAlchemyst\Alchemyst;
+use MediaAlchemyst\DriversContainer;
+use Symfony\Component\Filesystem\Filesystem;
+
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
@@ -47,7 +51,7 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             }
 
             try {
-                $appbox->write_databox_pic($databox, null, \databox::PIC_PDF);
+                $appbox->write_databox_pic(new Alchemyst(new DriversContainer(new Configuration())), new Filesystem(), $databox, null, \databox::PIC_PDF);
             } catch (\Exception $e) {
 
             }
@@ -679,7 +683,7 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(true);
 
         $target = tempnam(sys_get_temp_dir(), 'p4logo') . '.jpg';
-        $this->app['phraseanet.core']['file-system']->copy(__DIR__ . '/../../../../testfiles/p4logo.jpg', $target);
+        $this->app['filesystem']->copy(__DIR__ . '/../../../../testfiles/p4logo.jpg', $target);
         $files = array(
             'newLogoPdf' => new \Symfony\Component\HttpFoundation\File\UploadedFile($target, 'logo.jpg')
         );
@@ -743,7 +747,7 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $collection = \collection::create($base, $this->app['phraseanet.appbox'], 'TESTTODELETE');
         self::$createdCollections[] = $collection;
         $file = new \Alchemy\Phrasea\Border\File($this->app['phraseanet.core']['mediavorus']->guess(new \SplFileInfo(__DIR__ . '/../../../../testfiles/test001.CR2')), $collection);
-        \record_adapter::createFromFile($file);
+        \record_adapter::createFromFile($file, new Filesystem());
 
         if ($collection->get_record_amount() === 0) {
             $this->markTestSkipped('No record were added');
@@ -802,7 +806,7 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue($json->success);
 
         $taskManager = new \task_manager($this->app['phraseanet.appbox']);
-        $tasks = $taskManager->getTasks();
+        $tasks = $taskManager->getTasks($this->app);
 
         $found = false;
         foreach ($tasks as $task) {

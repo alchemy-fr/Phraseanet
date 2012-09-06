@@ -280,7 +280,7 @@ class Installer implements ControllerProviderInterface
                                         $settings = null;
                                     }
 
-                                    \task_abstract::create($appbox, $class_name, $settings);
+                                    \task_abstract::create($app, $class_name, $settings);
                                     break;
                                 default:
                                     break;

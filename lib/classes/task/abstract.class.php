@@ -1,5 +1,6 @@
 <?php
 
+use Alchemy\Phrasea\Application;
 use Monolog\Logger;
 
 abstract class task_abstract
@@ -95,11 +96,55 @@ abstract class task_abstract
     protected $completed_percentage;
     protected $period = 60;
     protected $taskid = NULL;
-    protected $system = '';  // "DARWIN", "WINDOWS" , "LINUX"...
-    protected $argt = array(
-        "--help" => array(
-            'set'    => false, "values" => array(), "usage" => " (no help available)")
-    );
+    protected $system = '';
+    protected $dependencyContainer;
+
+    public function __construct($taskid, Pimple $dependencyContainer, Logger $logger)
+    {
+        $this->dependencyContainer = $dependencyContainer;
+
+        $this->logger = $logger;
+
+        $this->taskid = (integer) $taskid;
+
+        phrasea::use_i18n(Session_Handler::get_locale());
+
+        $this->launched_by = array_key_exists("REQUEST_URI", $_SERVER) ? self::LAUCHED_BY_BROWSER : self::LAUCHED_BY_COMMANDLINE;
+
+        try {
+            $conn = connection::getPDOConnection();
+        } catch (Exception $e) {
+            $this->log($e->getMessage());
+            $this->log(("Warning : abox connection lost, restarting in 10 min."));
+
+            $this->sleep(60 * 10);
+
+            $this->running = false;
+
+            return '';
+        }
+        $sql = 'SELECT crashed, pid, status, active, settings, name, completed, runner
+              FROM task2 WHERE task_id = :taskid';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(array(':taskid' => $this->getID()));
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+        if ( ! $row) {
+            throw new Exception('Unknown task id');
+        }
+        $this->title = $row['name'];
+        $this->crash_counter = (integer) $row['crashed'];
+        $this->active = ! ! $row['active'];
+        $this->settings = $row['settings'];
+        $this->runner = $row['runner'];
+        $this->completed_percentage = (int) $row['completed'];
+        $this->settings = $row['settings'];
+
+        $sx = @simplexml_load_string($this->settings);
+        if ($sx) {
+            $this->loadSettings($sx);
+        }
+    }
 
     /**
      *
@@ -333,51 +378,6 @@ abstract class task_abstract
     abstract public function getName();
 
     abstract public function help();
-
-    public function __construct($taskid, Logger $logger)
-    {
-        $this->logger = $logger;
-
-        $this->taskid = (integer) $taskid;
-
-        phrasea::use_i18n(Session_Handler::get_locale());
-
-        $this->launched_by = array_key_exists("REQUEST_URI", $_SERVER) ? self::LAUCHED_BY_BROWSER : self::LAUCHED_BY_COMMANDLINE;
-
-        try {
-            $conn = connection::getPDOConnection();
-        } catch (Exception $e) {
-            $this->log($e->getMessage());
-            $this->log(("Warning : abox connection lost, restarting in 10 min."));
-
-            $this->sleep(60 * 10);
-
-            $this->running = false;
-
-            return '';
-        }
-        $sql = 'SELECT crashed, pid, status, active, settings, name, completed, runner
-              FROM task2 WHERE task_id = :taskid';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':taskid' => $this->getID()));
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-        if ( ! $row) {
-            throw new Exception('Unknown task id');
-        }
-        $this->title = $row['name'];
-        $this->crash_counter = (integer) $row['crashed'];
-        $this->active = ! ! $row['active'];
-        $this->settings = $row['settings'];
-        $this->runner = $row['runner'];
-        $this->completed_percentage = (int) $row['completed'];
-        $this->settings = $row['settings'];
-
-        $sx = @simplexml_load_string($this->settings);
-        if ($sx) {
-            $this->loadSettings($sx);
-        }
-    }
 
     /**
      *
@@ -843,15 +843,15 @@ abstract class task_abstract
             , ':class'    => $class_name
             , ':settings' => $settings
         );
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
-        $tid = $appbox->get_connection()->lastInsertId();
+        $tid = $app['phraseanet.appbox']->get_connection()->lastInsertId();
 
         $core = \bootstrap::getCore();
 
-        return new $class_name($tid, $core['monolog']);
+        return new $class_name($tid, $app, $core['monolog']);
     }
 
     public function getUsage()

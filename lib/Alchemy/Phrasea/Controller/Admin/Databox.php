@@ -465,7 +465,7 @@ class Databox implements ControllerProviderInterface
                 $msg = _('admin::base: vider la base avant de la supprimer');
             } else {
                 $databox->unmount_databox($app['phraseanet.appbox']);
-                $app['phraseanet.appbox']->write_databox_pic($databox, null, \databox::PIC_PDF);
+                $app['phraseanet.appbox']->write_databox_pic($app['media-alchemyst'], $app['filesystem'], $databox, null, \databox::PIC_PDF);
                 $databox->delete();
                 $success = true;
                 $msg = _('Successful removal');
@@ -787,7 +787,7 @@ class Databox implements ControllerProviderInterface
 
                 if ($file->getClientSize() < 65536) {
                     $databox = $app['phraseanet.appbox']->get_databox($databox_id);
-                    $app['phraseanet.appbox']->write_databox_pic($databox, $file, \databox::PIC_PDF);
+                    $app['phraseanet.appbox']->write_databox_pic($app['media-alchemyst'], $app['filesystem'], $databox, $file, \databox::PIC_PDF);
                     unlink($file->getPathname());
 
                     return $app->redirect('/admin/databox/' . $databox_id . '/?success=1');
@@ -818,7 +818,7 @@ class Databox implements ControllerProviderInterface
         $success = false;
 
         try {
-            $app['phraseanet.appbox']->write_databox_pic($app['phraseanet.appbox']->get_databox($databox_id), null, \databox::PIC_PDF);
+            $app['phraseanet.appbox']->write_databox_pic($app['media-alchemyst'], $app['filesystem'], $app['phraseanet.appbox']->get_databox($databox_id), null, \databox::PIC_PDF);
             $success = true;
         } catch (\Exception $e) {
 
@@ -957,7 +957,7 @@ class Databox implements ControllerProviderInterface
                     $msg = _('Base empty successful');
                 } else {
                     $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><tasksettings><base_id>" . $collection->get_base_id() . "</base_id></tasksettings>";
-                    \task_abstract::create($app['phraseanet.appbox'], 'task_period_emptyColl', $settings);
+                    \task_abstract::create($app, 'task_period_emptyColl', $settings);
                     $msg = _('A task has been creted, please run it to complete empty collection');
                 }
             }
@@ -1018,7 +1018,7 @@ class Databox implements ControllerProviderInterface
             $ret['xml_indexed'] = $datas['xml_indexed'];
             $ret['thesaurus_indexed'] = $datas['thesaurus_indexed'];
 
-            if ($app['phraseanet.core']['file-system']->exists($app['phraseanet.core']['Registry']->get('GV_RootPath') . 'config/minilogos/logopdf_' . $databox_id . '.jpg')) {
+            if ($app['filesystem']->exists($app['phraseanet.core']['Registry']->get('GV_RootPath') . 'config/minilogos/logopdf_' . $databox_id . '.jpg')) {
                 $ret['printLogoURL'] = '/custom/minilogos/logopdf_' . $databox_id . '.jpg';
             }
 

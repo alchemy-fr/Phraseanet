@@ -24,9 +24,9 @@ class module_console_tasklistTest extends PHPUnit_Framework_TestCase
         $task_manager = new task_manager(appbox::get_instance(\bootstrap::getCore()));
         $lines = explode("\n", trim($commandTester->getDisplay()));
 
-        if (count($task_manager->getTasks()) > 0) {
-            $this->assertEquals(count($task_manager->getTasks()), count($lines));
-            foreach ($task_manager->getTasks() as $task) {
+        if (count($task_manager->getTasks($application)) > 0) {
+            $this->assertEquals(count($task_manager->getTasks($application)), count($lines));
+            foreach ($task_manager->getTasks($application) as $task) {
                 $this->assertTrue(strpos($commandTester->getDisplay(), $task->getTitle()) !== false);
             }
         } else {

@@ -2,6 +2,8 @@
 
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
+use Symfony\Component\Filesystem\Filesystem;
+
 class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
@@ -101,7 +103,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $collection = $this->createOneCollection();
 
         $file = new \Alchemy\Phrasea\Border\File($this->app['phraseanet.core']['mediavorus']->guess(new \SplFileInfo(__DIR__ . '/../../../../testfiles/test001.CR2')), $collection);
-        \record_adapter::createFromFile($file);
+        \record_adapter::createFromFile($file, new Filesystem());
 
         $this->client->request('GET', '/collection/' . $collection->get_base_id() . '/informations/details/');
         $this->assertTrue($this->client->getResponse()->isOk());
@@ -421,7 +423,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $collection = $this->createOneCollection();
 
         $file = new \Alchemy\Phrasea\Border\File($this->app['phraseanet.core']['mediavorus']->guess(new \SplFileInfo(__DIR__ . '/../../../../testfiles/test001.CR2')), $collection);
-        \record_adapter::createFromFile($file);
+        \record_adapter::createFromFile($file, new Filesystem());
 
         if ($collection->get_record_amount() === 0) {
             $this->markTestSkipped('No record were added');
@@ -482,7 +484,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue($json->success);
 
         $taskManager = new \task_manager($this->app['phraseanet.appbox']);
-        $tasks = $taskManager->getTasks();
+        $tasks = $taskManager->getTasks($this->app);
 
         $found = false;
         foreach ($tasks as $task) {
@@ -549,7 +551,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(true);
 
         $target = tempnam(sys_get_temp_dir(), 'p4logo') . '.jpg';
-        $this->app['phraseanet.core']['file-system']->copy(__DIR__ . '/../../../../testfiles/p4logo.jpg', $target);
+        $this->app['filesystem']->copy(__DIR__ . '/../../../../testfiles/p4logo.jpg', $target);
         $files = array(
             'newLogo' => new \Symfony\Component\HttpFoundation\File\UploadedFile($target, 'logo.jpg')
         );
@@ -596,7 +598,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(true);
 
         $target = tempnam(sys_get_temp_dir(), 'p4logo') . '.jpg';
-        $this->app['phraseanet.core']['file-system']->copy(__DIR__ . '/../../../../testfiles/p4logo.jpg', $target);
+        $this->app['filesystem']->copy(__DIR__ . '/../../../../testfiles/p4logo.jpg', $target);
         $files = array(
             'newWm' => new \Symfony\Component\HttpFoundation\File\UploadedFile($target, 'logo.jpg')
         );
@@ -643,7 +645,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(true);
 
         $target = tempnam(sys_get_temp_dir(), 'p4logo') . '.jpg';
-        $this->app['phraseanet.core']['file-system']->copy(__DIR__ . '/../../../../testfiles/p4logo.jpg', $target);
+        $this->app['filesystem']->copy(__DIR__ . '/../../../../testfiles/p4logo.jpg', $target);
         $files = array(
             'newStamp' => new \Symfony\Component\HttpFoundation\File\UploadedFile($target, 'logo.jpg')
         );
@@ -691,7 +693,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(true);
 
         $target = tempnam(sys_get_temp_dir(), 'p4logo') . '.jpg';
-        $this->app['phraseanet.core']['file-system']->copy(__DIR__ . '/../../../../testfiles/p4logo.jpg', $target);
+        $this->app['filesystem']->copy(__DIR__ . '/../../../../testfiles/p4logo.jpg', $target);
         $files = array(
             'newBanner' => new \Symfony\Component\HttpFoundation\File\UploadedFile($target, 'logo.jpg')
         );
@@ -820,7 +822,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $collection = $this->createOneCollection();
 
         $file = new \Alchemy\Phrasea\Border\File($this->app['phraseanet.core']['mediavorus']->guess(new \SplFileInfo(__DIR__ . '/../../../../testfiles/test001.CR2')), $collection);
-        \record_adapter::createFromFile($file);
+        \record_adapter::createFromFile($file, new Filesystem());
 
         if ($collection->get_record_amount() === 0) {
             $this->markTestSkipped('No record were added');

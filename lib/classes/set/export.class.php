@@ -9,7 +9,9 @@
  * file that was distributed with this source code.
  */
 
-use \Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use User_Adapter;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 /**
  *
@@ -386,7 +388,7 @@ class set_export extends set_abstract
      * @param  boolean $rename_title
      * @return Array
      */
-    public function prepare_export(Array $subdefs, $rename_title, $includeBusinessFields)
+    public function prepare_export(User_Adapter $user, Filesystem $filesystem, Array $subdefs, $rename_title, $includeBusinessFields)
     {
         if ( ! is_array($subdefs)) {
             throw new Exception('No subdefs given');
@@ -394,7 +396,6 @@ class set_export extends set_abstract
 
         $includeBusinessFields = ! ! $includeBusinessFields;
 
-        $core = \bootstrap::getCore();
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $session = $appbox->get_session();
         $registry = $appbox->get_registry();
@@ -408,7 +409,6 @@ class set_export extends set_abstract
         $file_names = array();
 
         $size = 0;
-        $user = $core->getAuthenticatedUser();
 
         foreach ($this->elements as $download_element) {
             $id = count($files);
@@ -633,7 +633,7 @@ class set_export extends set_abstract
                     . time() . $session->get_usr_id()
                     . $session->get_ses_id() . '/';
 
-                $core['file-system']->mkdir($caption_dir, 0750);
+                $filesystem->mkdir($caption_dir, 0750);
 
                 $desc = $download_element->get_caption()->serialize(\caption_record::SERIALIZE_XML, $BF);
 
@@ -655,7 +655,7 @@ class set_export extends set_abstract
                     . time() . $session->get_usr_id()
                     . $session->get_ses_id() . '/';
 
-                $core['file-system']->mkdir($caption_dir, 0750);
+                $filesystem->mkdir($caption_dir, 0750);
 
                 $desc = $download_element->get_caption()->serialize(\caption_record::SERIALIZE_YAML, $BF);
 
@@ -691,10 +691,8 @@ class set_export extends set_abstract
      * @param  string $zipFile
      * @return string
      */
-    public static function build_zip($token, Array $list, $zipFile)
+    public static function build_zip(Filesystem $filesystem, $token, Array $list, $zipFile)
     {
-        $core = bootstrap::getCore();
-
         $zip = new ZipArchiveImproved();
 
         if ($zip->open($zipFile, ZIPARCHIVE::CREATE) !== true) {
@@ -712,7 +710,7 @@ class set_export extends set_abstract
 
         $unicode = new \unicode();
 
-        $caption_dirs = $unlinks = array();
+        $toRemove = array();
 
         foreach ($files as $record) {
             if (isset($record["subdefs"])) {
@@ -729,9 +727,10 @@ class set_export extends set_abstract
                         $zip->addFile($path, $name);
 
                         if ($o == 'caption') {
-                            if ( ! in_array(dirname($path), $caption_dirs))
-                                $caption_dirs[] = dirname($path);
-                            $unlinks[] = $path;
+                            if ( ! in_array(dirname($path), $toRemove)) {
+                                $toRemove[] = dirname($path);
+                            }
+                            $toRemove[] = $path;
                         }
                     }
                 }
@@ -745,14 +744,8 @@ class set_export extends set_abstract
 
         random::updateToken($token, serialize($list));
 
-        foreach ($unlinks as $u) {
-            @unlink($u);
-        }
-        foreach ($caption_dirs as $c) {
-            @rmdir($c);
-        }
-
-        $core['file-system']->chmod($zipFile, 0760);
+        $filesystem->remove($toRemove);
+        $filesystem->chmod($zipFile, 0760);
 
         return $zipFile;
     }

@@ -57,8 +57,6 @@ class RecordAdd extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $filesystem = $this->container['phraseanet.core']['file-system'];
-
         try {
             $collection = \collection::get_from_base_id($input->getArgument('base_id'));
         } catch (\Exception $e) {
@@ -67,7 +65,7 @@ class RecordAdd extends Command
 
         $file = $input->getArgument('file');
 
-        if (false === $filesystem->exists($file)) {
+        if (false === $this->container['filesystem']->exists($file)) {
             throw new \InvalidArgumentException(sprintf('File %s does not exists', $file));
         }
 
@@ -90,7 +88,7 @@ class RecordAdd extends Command
             $originalName = pathinfo($file, PATHINFO_BASENAME);
             $tempfile = tempnam(sys_get_temp_dir(), 'addrecord') . '.' . pathinfo($file, PATHINFO_EXTENSION);
             $this->container['phraseanet.core']['monolog']->addInfo(sprintf('copy file from `%s` to temporary `%s`', $file, $tempfile));
-            $filesystem->copy($file, $tempfile, true);
+            $this->container['filesystem']->copy($file, $tempfile, true);
             $file = $tempfile;
             $media = $this->container['phraseanet.core']['mediavorus']->guess(new \SplFileInfo($file));
         }
@@ -136,7 +134,7 @@ class RecordAdd extends Command
 
         if ($tempfile) {
             $this->container['phraseanet.core']['monolog']->addInfo(sprintf('Remove temporary file `%s`', $tempfile));
-            $filesystem->remove($tempfile);
+            $this->container['filesystem']->remove($tempfile);
         }
 
         return;

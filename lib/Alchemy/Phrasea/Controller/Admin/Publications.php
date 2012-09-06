@@ -148,7 +148,7 @@ class Publications implements ControllerProviderInterface
 
                     unset($media);
 
-                    $app['phraseanet.core']['file-system']->remove($tmpname);
+                    $app['filesystem']->remove($tmpname);
 
                     $datas['success'] = true;
                 } catch (\Exception $e) {

@@ -9,8 +9,12 @@
  * file that was distributed with this source code.
  */
 
-use Symfony\Component\HttpFoundation\File\File as SymfoFile;
+use Alchemy\Phrasea\Cache\Manager as CacheManager;
+use Doctrine\ORM\EntityManager;
+use MediaAlchemyst\Alchemyst;
 use MediaAlchemyst\Specification\Image as ImageSpecification;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 
 /**
  *
@@ -57,7 +61,7 @@ class appbox extends base
      */
     public static function get_instance(\Alchemy\Phrasea\Core $Core, registryInterface &$registry = null)
     {
-        if ( ! self::$_instance instanceof self) {
+        if (!self::$_instance instanceof self) {
             self::$_instance = new self($Core, $registry);
         }
 
@@ -72,7 +76,7 @@ class appbox extends base
     public function __construct(\Alchemy\Phrasea\Core $Core, registryInterface $registry = null)
     {
         $this->Core = $Core;
-        if ( ! $registry)
+        if (!$registry)
             $registry = registry::get_instance($Core);
         $this->connection = connection::getPDOConnection(null, $registry);
         $this->registry = $registry;
@@ -93,14 +97,13 @@ class appbox extends base
         return $this;
     }
 
-    public function write_collection_pic(collection $collection, SymfoFile $pathfile = null, $pic_type)
+    public function write_collection_pic(Alchemyst $alchemyst, Filesystem $filesystem, collection $collection, SymfoFile $pathfile = null, $pic_type)
     {
-        $core = \bootstrap::getCore();
         $filename = null;
 
-        if ( ! is_null($pathfile)) {
+        if (!is_null($pathfile)) {
 
-            if ( ! in_array(mb_strtolower($pathfile->getMimeType()), array('image/gif', 'image/png', 'image/jpeg', 'image/jpg', 'image/pjpeg'))) {
+            if (!in_array(mb_strtolower($pathfile->getMimeType()), array('image/gif', 'image/png', 'image/jpeg', 'image/jpg', 'image/pjpeg'))) {
                 throw new \InvalidArgumentException('Invalid file format');
             }
 
@@ -115,7 +118,7 @@ class appbox extends base
                 $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox') . '.jpg';
 
                 try {
-                    $core['media-alchemyst']
+                    $alchemyst
                         ->open($pathfile->getPathname())
                         ->turninto($tmp, $imageSpec)
                         ->close();
@@ -132,7 +135,7 @@ class appbox extends base
                 $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox') . '.jpg';
 
                 try {
-                    $core['media-alchemyst']
+                    $alchemyst
                         ->open($pathfile->getPathname())
                         ->turninto($tmp, $imageSpec)
                         ->close();
@@ -171,34 +174,33 @@ class appbox extends base
 
             if (is_file($target)) {
 
-                $core['file-system']->remove($target);
+                $filesystem->remove($target);
             }
 
             if (null === $target || null === $filename) {
                 continue;
             }
 
-            $core['file-system']->mkdir(dirname($target), 0750);
-            $core['file-system']->copy($filename, $target, true);
-            $core['file-system']->chmod($target, 0760);
+            $filesystem->mkdir(dirname($target), 0750);
+            $filesystem->copy($filename, $target, true);
+            $filesystem->chmod($target, 0760);
         }
 
         return $this;
     }
 
-    public function write_databox_pic(databox $databox, SymfoFile $pathfile = null, $pic_type)
+    public function write_databox_pic(Alchemyst $alchemyst, Filesystem $filesystem, databox $databox, SymfoFile $pathfile = null, $pic_type)
     {
-        $core = \bootstrap::getCore();
         $filename = null;
 
-        if ( ! is_null($pathfile)) {
+        if (!is_null($pathfile)) {
 
-            if ( ! in_array(mb_strtolower($pathfile->getMimeType()), array('image/jpeg', 'image/jpg', 'image/pjpeg', 'image/png', 'image/gif'))) {
+            if (!in_array(mb_strtolower($pathfile->getMimeType()), array('image/jpeg', 'image/jpg', 'image/pjpeg', 'image/png', 'image/gif'))) {
                 throw new \InvalidArgumentException('Invalid file format');
             }
         }
 
-        if ( ! in_array($pic_type, array(databox::PIC_PDF))) {
+        if (!in_array($pic_type, array(databox::PIC_PDF))) {
             throw new \InvalidArgumentException('unknown pic_type');
         }
 
@@ -213,7 +215,7 @@ class appbox extends base
             $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox') . '.jpg';
 
             try {
-                $core['media-alchemyst']
+                $alchemyst
                     ->open($pathfile->getPathname())
                     ->turninto($tmp, $imageSpec)
                     ->close();
@@ -230,16 +232,16 @@ class appbox extends base
         foreach (array($file, $custom_path) as $target) {
 
             if (is_file($target)) {
-                $core['file-system']->remove($target);
+                $filesystem->remove($target);
             }
 
             if (is_null($filename)) {
                 continue;
             }
 
-            $core['file-system']->mkdir(dirname($target));
-            $core['file-system']->copy($filename, $target);
-            $core['file-system']->chmod($target, 0760);
+            $filesystem->mkdir(dirname($target));
+            $filesystem->copy($filename, $target);
+            $filesystem->chmod($target, 0760);
         }
 
         $databox->delete_data_from_cache('printLogo');
@@ -273,7 +275,7 @@ class appbox extends base
      */
     public function set_databox_indexable(databox $databox, $boolean)
     {
-        $boolean = ! ! $boolean;
+        $boolean = !!$boolean;
         $sql = 'UPDATE sbas SET indexable = :indexable WHERE sbas_id = :sbas_id';
 
         $stmt = $this->get_connection()->prepare($sql);
@@ -336,7 +338,7 @@ class appbox extends base
         return self::BASE_TYPE;
     }
 
-    public function forceUpgrade(Setup_Upgrade &$upgrader)
+    public function forceUpgrade(Setup_Upgrade &$upgrader, CacheManager $cacheManager, $cacheservice,EntityManager $em, Filesystem $filesystem)
     {
         $from_version = $this->get_version();
 
@@ -349,13 +351,11 @@ class appbox extends base
          */
         $upgrader->set_current_message(_('Flushing cache'));
 
-        $this->Core['CacheService']->flushAll();
+        $cacheManager->flushAll();
 
         $upgrader->add_steps_complete(1);
 
         $upgrader->set_current_message(_('Creating new tables'));
-        $core = bootstrap::getCore();
-        $em = $core->getEntityManager();
         //create schema
 
         if ($em->getConnection()->getDatabasePlatform()->supportsAlterTable()) {
@@ -378,7 +378,7 @@ class appbox extends base
         ))->ignoreVCS(true)->ignoreDotFiles(true);
 
         foreach ($finder as $file) {
-            $core['file-system']->remove($file);
+            $filesystem->remove($file);
         }
 
         $upgrader->add_steps_complete(1);
@@ -388,7 +388,7 @@ class appbox extends base
          */
         $upgrader->set_current_message(_('Copying files'));
 
-        $filesystem = $core['file-system'];
+        $filesystem = $filesystem;
 
         foreach (array(
         'config/custom_files/' => 'www/custom/',
@@ -432,7 +432,7 @@ class appbox extends base
          */
         $upgrader->set_current_message(_('Flushing cache'));
 
-        $this->Core['CacheService']->flushAll();
+        $cacheManager->flushAll();
 
         $upgrader->add_steps_complete(1);
 
@@ -485,7 +485,7 @@ class appbox extends base
         }
 
         if ($write_file) {
-            if ($conn->is_multi_db() && ! isset($credentials['dbname'])) {
+            if ($conn->is_multi_db() && !isset($credentials['dbname'])) {
                 $credentials['dbname'] = $dbname;
             }
 
@@ -625,7 +625,7 @@ class appbox extends base
     {
         $databoxes = $this->get_databoxes();
 
-        if ( ! array_key_exists($sbas_id, $databoxes)) {
+        if (!array_key_exists($sbas_id, $databoxes)) {
             throw new Exception_DataboxNotFound('Databox `' . $sbas_id . '` not found');
         }
 

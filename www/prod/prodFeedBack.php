@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\Filesystem\Filesystem;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -193,7 +195,7 @@ switch ($action) {
             $output = p4string::jsonencode(array('error'   => true, 'message' => _('Les documents ne peuvent etre envoyes par FTP')));
         } else {
             try {
-                $download->prepare_export($parm['obj'], false, $parm['businessfields']);
+                $download->prepare_export($Core->getAuthenticatedUser(), new Filesystem(), $parm['obj'], false, $parm['businessfields']);
                 $download->export_ftp(
                     $parm['usr_dest']
                     , $parm['addr']

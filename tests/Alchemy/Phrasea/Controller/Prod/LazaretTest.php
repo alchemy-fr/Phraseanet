@@ -28,7 +28,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $app['debug'] = true;
         unset($app['exception_handler']);
 
-        $app['phraseanet.core']['file-system'] = $this->getMock('Symfony\Component\Filesystem\Filesystem', array('remove'));
+        $app['filesystem'] = $this->getMock('Symfony\Component\Filesystem\Filesystem', array('remove'));
 
         return $app;
     }

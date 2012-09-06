@@ -10,6 +10,7 @@
  */
 
 use \Monolog\Logger;
+use Alchemy\Phrasea\Application;
 
 /**
  *
@@ -93,7 +94,7 @@ class task_manager
                 continue;
             }
             try {
-                $tasks[$row['task_id']] = new $classname($row['task_id'], $logger);
+                $tasks[$row['task_id']] = new $classname($row['task_id'], $app, $logger);
             } catch (Exception $e) {
 
             }
@@ -109,7 +110,7 @@ class task_manager
      * @param  int           $task_id
      * @return task_abstract
      */
-    public function getTask($task_id, Logger $logger = null)
+    public function getTask(Application $app, $task_id, Logger $logger = null)
     {
         $core = \bootstrap::getCore();
 
@@ -117,7 +118,7 @@ class task_manager
             $logger = $core['monolog'];
         }
 
-        $tasks = $this->getTasks(false, $logger);
+        $tasks = $this->getTasks($app, false, $logger);
 
         if ( ! isset($tasks[$task_id])) {
             throw new Exception_NotFound('Unknown task_id ' . $task_id);

@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\Filesystem\Filesystem;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -41,6 +43,6 @@ ignore_user_abort(true);
 
 $registry = registry::get_instance();
 $zipFile = $registry->get('GV_RootPath') . 'tmp/download/' . $datas['value'] . '.zip';
-set_export::build_zip($token, $list, $zipFile);
+set_export::build_zip(new Filesystem(), $token, $list, $zipFile);
 
 echo '1';

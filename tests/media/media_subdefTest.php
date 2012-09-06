@@ -1,5 +1,7 @@
 <?php
 
+use Symfony\Component\Filesystem\Filesystem;
+
 require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
 
 class media_subdefTest extends \PhraseanetPHPUnitAbstract
@@ -37,7 +39,7 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
         $logger = new \Monolog\Logger('test');
         $logger->pushHandler(new \Monolog\Handler\NullHandler());
 
-        self::$recordonbleu = record_adapter::createFromFile($file);
+        self::$recordonbleu = record_adapter::createFromFile($file, new Filesystem());
         self::$recordonbleu->generate_subdefs(self::$recordonbleu->get_databox(), $logger);
 
         foreach (self::$recordonbleu->get_subdefs() as $subdef) {

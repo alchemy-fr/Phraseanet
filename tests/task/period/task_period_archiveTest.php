@@ -12,13 +12,13 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $appbox = \appbox::get_instance(\bootstrap::getCore('test'));
-        $task = \task_period_archive::create($appbox, 'task_period_archive');
+        $app = new \Alchemy\Phrasea\Application();
+        $task = \task_period_archive::create($app, 'task_period_archive');
 
         $logger = new \Monolog\Logger('test');
         $logger->pushHandler(new \Monolog\Handler\NullHandler());
 
-        self::$object = new archiveTester($task->getID(), $logger);
+        self::$object = new archiveTester($task->getID(), $app, $logger);
     }
 
     public static function tearDownAfterClass()

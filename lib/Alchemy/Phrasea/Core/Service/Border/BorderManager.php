@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Service\Border;
 
-use Alchemy\Phrasea\Border;
+use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Core\Service\ServiceAbstract;
 
 /**
@@ -39,7 +39,7 @@ class BorderManager extends ServiceAbstract
     protected function init()
     {
         $appbox = \appbox::get_instance($this->core);
-        $borderManager = new Border\Manager($this->core['EM'], $this->core['file-system']);
+        $borderManager = new Manager($this->core['EM'], $this->core['file-system']);
 
         if ($this->core['pdf-to-text']) {
             $borderManager->setPdfToText($this->core['pdf-to-text']);
