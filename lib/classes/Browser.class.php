@@ -213,7 +213,7 @@ class Browser
      */
     public static function getInstance()
     {
-        if ( ! self::$_instance) {
+        if (!self::$_instance) {
             self::$_instance = new self();
         }
 
@@ -287,6 +287,16 @@ class Browser
     public function isHTML5()
     {
         return $this->_is_html5;
+    }
+
+    /**
+     * Return true is the browser support the HTML5 File API
+     *
+     * @return boolean
+     */
+    public function supportFileAPI()
+    {
+        return $this->_is_html5 && ($this->_browser_name !== self::BROWSER_IE || $this->_version >= 10);
     }
 
     /**
