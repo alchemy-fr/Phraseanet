@@ -1650,34 +1650,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         return;
     }
 
-    public static function set_order_admins($admins, $base_id)
-    {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $conn = $appbox->get_connection();
-        $conn->beginTransaction();
-        try {
-            $user_query = new User_Query($appbox);
-            $result = $user_query->on_base_ids(array($base_id))
-                    ->who_have_right(array('order_master'))
-                    ->execute()->get_results();
-
-            foreach ($result as $user) {
-                $user->ACL()->update_rights_to_base($base_id, array('order_master' => false));
-            }
-
-            foreach ($admins as $admin) {
-                $user = User_Adapter::getInstance($admin, $appbox);
-                $user->ACL()->update_rights_to_base($base_id, array('order_master' => true));
-            }
-
-            $conn->commit();
-        } catch (Exception $e) {
-            $conn->rollBack();
-        }
-
-        return;
-    }
-
     public static function get_locale($usr_id)
     {
         $locale = 'en_GB';

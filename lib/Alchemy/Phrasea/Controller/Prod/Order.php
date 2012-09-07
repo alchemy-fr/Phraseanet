@@ -145,10 +145,10 @@ class Order implements ControllerProviderInterface
     {
         $success = false;
         $collectionHasOrderAdmins = new ArrayCollection();
+        $toRemove = array();
 
         try {
             $records = RecordsRequest::fromRequest($app, $request, true, array('cancmd'));
-
             $query = new \User_Query($app['phraseanet.appbox']);
 
             foreach ($records as $key => $record) {
@@ -165,6 +165,12 @@ class Order implements ControllerProviderInterface
                 $collectionHasOrderAdmins->set($record->get_base_id(), $hasOneAdmin);
 
                 if ( ! $hasOneAdmin) {
+                    $toRemove[] = $key;
+                }
+            }
+
+            foreach ($toRemove as $key) {
+                if($records->containsKey($key)) {
                     $records->remove($key);
                 }
             }
