@@ -824,7 +824,7 @@ return call_user_func(function() {
                     }
 
                     if ($e instanceof \Symfony\Component\HttpKernel\Exception\HttpException) {
-                        $headers = array_merge($headers, $e->getHeaders());
+                        $headers = $e->getHeaders();
                     }
 
                     $result = $app['api']->get_error_message($app['request'], $code, $e->getMessage());
