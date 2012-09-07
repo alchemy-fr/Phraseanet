@@ -9,6 +9,9 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Controller\RecordsRequest;
+use Doctrine\Common\Collections\ArrayCollection;
+
 /**
  *
  *
@@ -66,6 +69,138 @@ class set_order extends set_abstract
     protected $ssel_id;
 
     /**
+     * Create a new order entry
+     *
+     * @param RecordsRequest $recordsRequest
+     * @param integer $orderer
+     * @param string $usage
+     * @param \DateTime $deadline
+     * @return boolean
+     */
+    public static function create(appbox $appbox, RecordsRequest $records, \User_Adapter $orderer, $usage, \DateTime $deadline = null)
+    {
+        $appbox->get_connection()->beginTransaction();
+
+        try {
+            $sql = 'INSERT INTO `order` (`id`, `usr_id`, `created_on`, `usage`, `deadline`)
+            VALUES (null, :from_usr_id, NOW(), :usage, :deadline)';
+
+            $stmt = $appbox->get_connection()->prepare($sql);
+
+            $stmt->execute(array(
+                ':from_usr_id' => $orderer->get_id(),
+                ':usage'       => $usage,
+                ':deadline'    => (null !== $deadline ? phraseadate::format_mysql($deadline) : $deadline)
+            ));
+
+            $stmt->closeCursor();
+
+            $orderId = $appbox->get_connection()->lastInsertId();
+
+            $sql = 'INSERT INTO order_elements (id, order_id, base_id, record_id, order_master_id)
+            VALUES (null, :order_id, :base_id, :record_id, null)';
+
+            $stmt = $appbox->get_connection()->prepare($sql);
+
+            foreach ($records as $record) {
+                $stmt->execute(array(
+                    ':order_id'  => $orderId,
+                    ':base_id'   => $record->get_base_id(),
+                    ':record_id' => $record->get_record_id()
+                ));
+            }
+
+            $stmt->closeCursor();
+            $appbox->get_connection()->commit();
+        } catch (Exception $e) {
+            $appbox->get_connection()->rollBack();
+
+            return null;
+        }
+
+        $evt_mngr = eventsmanager_broker::getInstance($appbox, \bootstrap::getCore());
+
+        $evt_mngr->trigger('__NEW_ORDER__', array(
+            'order_id' => $orderId,
+            'usr_id'   => $orderer->get_id()
+        ));
+
+        return new static($orderId);
+    }
+
+    /**
+     * List orders
+     *
+     * @param   appbox $appbox
+     * @param   array $baseIds
+     * @param   integer $offsetStart
+     * @param   integer $perPage
+     * @return  array
+     */
+    public static function listOrders(appbox $appbox, array $baseIds, $offsetStart = 0, $perPage = 10, $sort = null)
+    {
+
+        $sql = 'SELECT distinct o.id, o.usr_id, created_on, deadline, `usage`
+        FROM (`order_elements` e, `order` o)
+        WHERE e.base_id IN (' . implode(', ', $baseIds) . ')
+        AND e.order_id = o.id
+        GROUP BY o.id
+        ORDER BY o.id DESC
+        LIMIT ' . $offsetStart . ',' . $perPage;
+
+        $elements = array();
+
+        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt->execute();
+        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        foreach ($rs as $row) {
+            $id = (int) $row['id'];
+            $elements[$id] = new set_order($id);
+        }
+
+        unset($stmt);
+
+        if ($sort && count($elements) > 0) {
+            if ($sort == 'created_on') {
+                uasort($elements, array(__CLASS__, 'date_orders_sort'));
+            } elseif ($sort == 'user') {
+                uasort($elements, array(__CLASS__, 'user_orders_sort'));
+            } elseif ($sort == 'usage') {
+                uasort($elements, array(__CLASS__, 'usage_orders_sort'));
+            }
+        }
+
+        return $elements;
+    }
+
+    /**
+     * Get total orders for selected base ids
+     *
+     * @param   appbox $appbox
+     * @param   array $baseIds
+     * @return  integer
+     */
+    public static function countTotalOrder(appbox $appbox, array $baseIds = array())
+    {
+        $sql = 'SELECT distinct o.id
+        FROM (`order_elements` e, `order` o)
+        WHERE ' . (count($baseIds > 0 ) ? 'e.base_id IN (' . implode(', ', $baseIds) . ') AND ': '' ).
+        'e.order_id = o.id
+        GROUP BY o.id
+        ORDER BY o.id DESC';
+
+        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt->execute();
+        $total = $stmt->rowCount();
+        $stmt->closeCursor();
+        unset($stmt);
+
+        return (int) $total;
+    }
+
+    /**
      *
      * @param  int       $id
      * @return set_order
@@ -92,7 +227,7 @@ class set_order extends set_abstract
         $stmt->closeCursor();
 
         if ( ! $row)
-            throw new Exception('unknown order ' . $id);
+            throw new Exception_NotFound('unknown order ' . $id);
 
         $current_user = User_Adapter::getInstance($row['usr_id'], $appbox);
         $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
@@ -107,6 +242,7 @@ class set_order extends set_abstract
         $this->ssel_id = (int) $row['ssel_id'];
 
         $base_ids = array_keys($user->ACL()->get_granted_base(array('order_master')));
+
         $sql = 'SELECT e.base_id, e.record_id, e.order_master_id, e.id, e.deny
               FROM order_elements e
               WHERE order_id = :order_id
@@ -262,9 +398,10 @@ class set_order extends set_abstract
               WHERE order_id = :order_id
                 AND id = :order_element_id';
 
-        if ($force == '0') {
+        if ( ! $force) {
             $sql .= ' AND ISNULL(order_master_id)';
         }
+
         $stmt = $conn->prepare($sql);
 
         foreach ($basrecs as $order_element_id => $basrec) {
@@ -360,5 +497,59 @@ class set_order extends set_abstract
         }
 
         return $this;
+    }
+
+    /**
+     * Order orders by usage
+     *
+     * @param  string $a
+     * @param  string $b
+     * @return int
+     */
+    private static function usage_orders_sort($a, $b)
+    {
+        $comp = strcasecmp($a['usage'], $b['usage']);
+
+        if ($comp == 0) {
+            return 0;
+        }
+
+        return $comp < 0 ? -1 : 1;
+    }
+
+    /**
+     * Order orders by user
+     *
+     * @param  string $a
+     * @param  string $b
+     * @return int
+     */
+    private static function user_orders_sort($a, $b)
+    {
+        $comp = strcasecmp($a['usr_display'], $b['usr_display']);
+
+        if ($comp == 0) {
+            return 0;
+        }
+
+        return $comp < 0 ? -1 : 1;
+    }
+
+    /**
+     * Order orders by date
+     *
+     * @param  DateTime $a
+     * @param  DateTime $b
+     * @return int
+     */
+    private static function date_orders_sort(DateTime $a, DateTime $b)
+    {
+        $comp = $b->format('U') - $a->format('U');
+
+        if ($comp == 0) {
+            return 0;
+        }
+
+        return $comp < 0 ? -1 : 1;
     }
 }

@@ -107,7 +107,7 @@
 
           {% if module == "prod" and user.ACL.has_right('order_master') %}
           <li>
-            <a href="#" class="order_launcher">
+            <a href="{{ path('prod_orders') }}" class="dialog full-dialog" title="{% trans 'Orders manager' %}">
               <span>
                 {% trans 'Commandes' %}
               </span>

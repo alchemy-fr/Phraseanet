@@ -147,7 +147,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
         $ret = array(
             'text'  => sprintf(_('%1$s a passe une %2$scommande%3$s')
                 , $sender
-                , '<a href="#" onclick="load_order(' . $order_id . ')">'
+                , '<a href="/prod/order/'.$order_id.'/" class="dialog full-dialog" title="'._('Orders manager').'">'
                 , '</a>')
             , 'class' => ''
         );

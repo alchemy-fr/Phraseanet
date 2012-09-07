@@ -438,19 +438,43 @@ class Collection implements ControllerProviderInterface
      */
     public function setOrderAdmins(Application $app, Request $request, $bas_id)
     {
+        $success = false;
+
         if (count($admins = $request->request->get('admins', array())) > 0) {
-            $new_admins = array();
+            $newAdmins = array();
 
             foreach ($admins as $admin) {
-                $new_admins[] = $admin;
+                $newAdmins[] = $admin;
             }
 
-            if (count($new_admins) > 0) {
-                \set_exportorder::set_order_admins(array_filter($admins), $bas_id);
+            if (count($newAdmins) > 0) {
+                $conn = $app['phraseanet.Appbox']->get_connection();
+                $conn->beginTransaction();
+
+                try {
+                    $userQuery = new \User_Query($app['phraseanet.Appbox']);
+
+                    $result = $userQuery->on_base_ids(array($bas_id))
+                            ->who_have_right(array('order_master'))
+                            ->execute()->get_results();
+
+                    foreach ($result as $user) {
+                        $user->ACL()->update_rights_to_base($bas_id, array('order_master' => false));
+                    }
+
+                    foreach (array_filter($newAdmins) as $admin) {
+                        $user = User_Adapter::getInstance($admin, $app['phraseanet.Appbox']);
+                        $user->ACL()->update_rights_to_base($bas_id, array('order_master' => true));
+                    }
+
+                    $success = true;
+                } catch (\Exception $e) {
+                    $conn->rollBack();
+                }
             }
         }
 
-        return $app->redirect('/admin/collection/' . $bas_id . '/');
+        return $app->redirect('/admin/collection/' . $bas_id . '/?success=' . (int) $success);
     }
 
     /**

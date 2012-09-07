@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Controller\Prod;
 
 use Silex\Application;
 use Silex\ControllerProviderInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Finder\Finder;
 use Alchemy\Phrasea\Helper;
@@ -117,6 +118,19 @@ class Root implements ControllerProviderInterface
                     ));
 
                 return new Response($out);
+            });
+
+        $controllers->post('/multi-export/', function(Application $app, Request $request) {
+
+                $download = new \set_export($request->request->get('lst', ''), (int) $request->request->get('ssel'), $request->request->get('story'));
+
+                return $app['twig']->render('common/dialog_export.html.twig', array(
+                    'download'             => $download,
+                    'ssttid'               => (int) $request->request->get('ssel'),
+                    'lst'                  => $download->serialize_list(),
+                    'default_export_title' => $app['phraseanet.core']['Registry']->get('GV_default_export_title'),
+                    'choose_export_title'  => $app['phraseanet.core']['Registry']->get('GV_choose_export_title')
+                ));
             });
 
         return $controllers;
