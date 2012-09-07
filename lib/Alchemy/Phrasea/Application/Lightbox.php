@@ -586,7 +586,7 @@ return call_user_func(
                         );
                     }
                     $output = $twig->render($template, $options);
-                    $response = new Response($output, 404);
+                    $response = new Response($output, 404,  array('X-Status-Code' => 404));
                     $response->setCharset('UTF-8');
 
                     return $response;
