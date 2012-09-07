@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-04 11:30+0100\n"
-"PO-Revision-Date: 2012-09-04 11:31+0100\n"
+"POT-Creation-Date: 2012-09-07 18:07+0100\n"
+"PO-Revision-Date: 2012-09-07 18:07+0100\n"
 "Last-Translator: Romain Neutron <imprec@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -24,7 +24,7 @@ msgstr ""
 "X-Poedit-SearchPath-6: lib/Doctrine\n"
 "X-Poedit-SearchPath-7: bin\n"
 
-#: lib/classes/appbox.class.php:328 lib/classes/appbox.class.php:405
+#: lib/classes/appbox.class.php:328 lib/classes/appbox.class.php:411
 msgid "Flushing cache"
 msgstr ""
 
@@ -40,33 +40,33 @@ msgstr ""
 msgid "Copying files"
 msgstr ""
 
-#: lib/classes/appbox.class.php:382
+#: lib/classes/appbox.class.php:388
 msgid "Upgrading appbox"
 msgstr ""
 
-#: lib/classes/appbox.class.php:390
+#: lib/classes/appbox.class.php:396
 #, php-format
 msgid "Upgrading %s"
 msgstr ""
 
-#: lib/classes/appbox.class.php:398
+#: lib/classes/appbox.class.php:404
 msgid "Post upgrade"
 msgstr ""
 
-#: lib/classes/appbox.class.php:412 lib/classes/appbox.class.php:414
+#: lib/classes/appbox.class.php:418 lib/classes/appbox.class.php:420
 msgid ""
 "Your install requires data migration, please execute the following command"
 msgstr ""
 
-#: lib/classes/appbox.class.php:418 lib/classes/appbox.class.php:419
+#: lib/classes/appbox.class.php:424 lib/classes/appbox.class.php:425
 msgid "Your install might need to re-read technical datas"
 msgstr ""
 
-#: lib/classes/appbox.class.php:456
+#: lib/classes/appbox.class.php:462
 msgid "Nom de base de donnee incorrect"
 msgstr "Wrong database name"
 
-#: lib/classes/appbox.class.php:533
+#: lib/classes/appbox.class.php:539
 msgid ""
 "setup::la base de donnees existe deja et vous n'avez pas les droits ou vous "
 "n'avez pas les droits de la creer"
@@ -397,7 +397,7 @@ msgid "admin::monitor: module validation"
 msgstr "Lightbox"
 
 #: lib/classes/phrasea.class.php:235
-#: tmp/cache_twig/fd/02/709c9789d7a947b51289a7c8ebcd.php:210
+#: tmp/cache_twig/fd/02/709c9789d7a947b51289a7c8ebcd.php:230
 #: www/admin/sessionwhois.php:139
 msgid "admin::monitor: module upload"
 msgstr "Upload"
@@ -440,38 +440,38 @@ msgstr "Search"
 msgid "client::recherche: dans les categories"
 msgstr "In categories"
 
-#: lib/classes/setup.class.php:313
+#: lib/classes/setup.class.php:312
 msgid "mod_auth_token correctement configure"
 msgstr "mod_auth_token correctly configured"
 
-#: lib/classes/setup.class.php:315
+#: lib/classes/setup.class.php:314
 msgid "mod_auth_token mal configure"
 msgstr "mod_auth_token bad  configuration"
 
-#: lib/classes/setup.class.php:328
+#: lib/classes/setup.class.php:327
 msgid ""
 "Attention, seul le test de l'activation des mods est effectue, leur bon "
 "fonctionnement ne l'est pas "
 msgstr ""
 "Warning :   mod activation test successful, running test not performed "
 
-#: lib/classes/setup.class.php:342
+#: lib/classes/setup.class.php:341
 msgid ""
 "Attention, veuillez verifier la configuration xsendfile, actuellement "
 "activee dans le setup"
 msgstr "Warning : Check xsendfile existing configuration in setup"
 
-#: lib/classes/setup.class.php:350 lib/classes/setup.class.php:358
+#: lib/classes/setup.class.php:349 lib/classes/setup.class.php:357
 msgid ""
 "Attention, veuillez verifier la configuration h264_streaming, actuellement "
 "activee dans le setup"
 msgstr "Warning : Check  h264_streaming existing configuration in setup"
 
-#: lib/classes/setup.class.php:486
+#: lib/classes/setup.class.php:485
 msgid "setup::Tests d'envois d'emails"
 msgstr "E-mails send test"
 
-#: lib/classes/setup.class.php:490
+#: lib/classes/setup.class.php:489
 #: tmp/cache_twig/0d/6d/5cc37caf53324a642750ca2c9cd8.php:86
 #: tmp/cache_twig/19/05/e4836c7f105be54f670c47b4c5ea.php:86
 #: tmp/cache_twig/1f/87/1ae61586802b61cbd108c05d1ddc.php:70
@@ -524,31 +524,31 @@ msgstr "E-mails send test"
 msgid "boutton::valider"
 msgstr "Validate"
 
-#: lib/classes/setup.class.php:562
+#: lib/classes/setup.class.php:561
 msgid "setup:: Serveur Memcached"
 msgstr "Memcached server Address"
 
-#: lib/classes/setup.class.php:570
+#: lib/classes/setup.class.php:569
 #, php-format
 msgid "setup::Serveur actif sur %s"
 msgstr "Active server on %s"
 
-#: lib/classes/setup.class.php:579
+#: lib/classes/setup.class.php:578
 #, php-format
 msgid "setup::Aucun serveur memcached rattache."
 msgstr "No Memcached server linked"
 
-#: lib/classes/setup.class.php:598
+#: lib/classes/setup.class.php:597
 msgid "Many opcode cache load is forbidden"
 msgstr ""
 
-#: lib/classes/setup.class.php:600
+#: lib/classes/setup.class.php:599
 msgid ""
 "No opcode cache were detected. Phraseanet strongly recommends the use of "
 "XCache or APC."
 msgstr ""
 
-#: lib/classes/setup.class.php:612
+#: lib/classes/setup.class.php:611
 #, php-format
 msgid ""
 "setup::Configuration mauvaise : pour la variable %1$s, configuration "
@@ -557,15 +557,15 @@ msgstr ""
 "Bad configuration : For variable %1$s, value is : %2$s ; expected value is : "
 "%3$s"
 
-#: lib/classes/setup.class.php:662
+#: lib/classes/setup.class.php:661
 msgid "setup::Etat du moteur de recherche"
 msgstr "Search engine status"
 
-#: lib/classes/setup.class.php:670
+#: lib/classes/setup.class.php:669
 msgid "setup::Sphinx confguration"
 msgstr "Sphinx setup"
 
-#: lib/classes/setup.class.php:692
+#: lib/classes/setup.class.php:691
 msgid "test::test"
 msgstr "test"
 
@@ -1815,7 +1815,7 @@ msgid "report:: Information sur les utilisateurs correspondant a %s"
 msgstr ""
 
 #: lib/classes/module/report/nav.class.php:521
-#: lib/classes/User/Adapter.class.php:1338
+#: lib/classes/User/Adapter.class.php:1328
 msgid "phraseanet::utilisateur inconnu"
 msgstr "Unknown user"
 
@@ -2279,7 +2279,7 @@ msgstr ""
 msgid "A user already exists with email addres %s"
 msgstr ""
 
-#: lib/classes/User/Adapter.class.php:1332
+#: lib/classes/User/Adapter.class.php:1322
 #, php-format
 msgid "modele %s"
 msgstr "Template %s"
@@ -3425,7 +3425,7 @@ msgstr ""
 
 #: tmp/cache_twig/15/e5/0d50a338100d7969718849182ac1.php:183
 #: tmp/cache_twig/d2/9b/7bd6edcdf96e4bbcf5b199131967.php:183
-#: tmp/cache_twig/fd/02/709c9789d7a947b51289a7c8ebcd.php:412
+#: tmp/cache_twig/fd/02/709c9789d7a947b51289a7c8ebcd.php:432
 msgid "phraseanet:: deconnection"
 msgstr "Sign out"
 
@@ -3538,8 +3538,8 @@ msgid "Deselect all"
 msgstr ""
 
 #: tmp/cache_twig/15/fd/f2d9b199f00a42485f03d55dfddc.php:449
-#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:325
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:319
+#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:344
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:330
 #: lib/Alchemy/Phrasea/Controller/Prod/Language.php:90
 msgid "Send"
 msgstr ""
@@ -3622,7 +3622,7 @@ msgstr "Demands"
 #: tmp/cache_twig/41/6b/a1532e78cac8a288695b0894fb36.php:21
 #: tmp/cache_twig/5a/56/9f36f7ac1ae4c31e7980d2778047.php:2106
 #: tmp/cache_twig/af/c5/476ce98df0c15920e85e418ad2c3.php:21
-#: tmp/cache_twig/fd/02/709c9789d7a947b51289a7c8ebcd.php:233
+#: tmp/cache_twig/fd/02/709c9789d7a947b51289a7c8ebcd.php:253
 msgid "Publications"
 msgstr "Publications"
 
@@ -4715,7 +4715,6 @@ msgid "no"
 msgstr "No"
 
 #: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:30
-#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:70
 #: tmp/cache_twig/54/de/5f5b6a9cb788eee3a417e4b6e8b9.php:37
 #: tmp/cache_twig/54/de/5f5b6a9cb788eee3a417e4b6e8b9.php:245
 #: tmp/cache_twig/55/7e/83debf219f39ad5f14d471074460.php:35
@@ -4723,9 +4722,8 @@ msgstr "No"
 #: tmp/cache_twig/a3/16/0e7b2a38ef841a038591efeef5bc.php:35
 #: tmp/cache_twig/a3/16/0e7b2a38ef841a038591efeef5bc.php:301
 #: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:30
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:64
 #: tmp/cache_twig/c2/c8/415e2b8850cc5270892aa87440f8.php:63
-#: tmp/cache_twig/fd/02/709c9789d7a947b51289a7c8ebcd.php:205
+#: tmp/cache_twig/fd/02/709c9789d7a947b51289a7c8ebcd.php:225
 msgid "Upload"
 msgstr ""
 
@@ -4735,53 +4733,63 @@ msgstr ""
 msgid "Quarantine"
 msgstr "Quarantine"
 
-#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:62
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:411
+#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:63
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:426
 msgid "Select files..."
 msgstr ""
 
-#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:72
-msgid "Switch to flash uploader"
-msgstr ""
-
-#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:79
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:73
+#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:71
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:65
 msgid "maximum : %maxFileSizeReadable%"
 msgstr ""
 
+#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:78
+#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:85
+msgid "You are using the HTML5 uploader."
+msgstr ""
+
 #: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:92
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:86
+msgid "Your browser does not support all HTML5 features properly."
+msgstr ""
+
+#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:100
+msgid "Use the Flash uploader"
+msgstr ""
+
+#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:111
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:97
 msgid "upload:: Destination (collection) :"
 msgstr "Collection"
 
-#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:189
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:183
+#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:208
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:194
 msgid "upload:: Status :"
 msgstr "Apply status"
 
-#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:305
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:299
+#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:324
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:310
 #, fuzzy
 msgid "You can not upload files"
 msgstr "Back to Flash Upload"
 
-#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:317
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:311
+#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:336
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:322
 #, fuzzy
 msgid "Selected files"
 msgstr "Theme picker"
 
-#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:321
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:315
+#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:340
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:326
 msgid "Clear list"
 msgstr ""
 
-#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:337
+#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:356
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:341
 msgid "Transmited files"
 msgstr ""
 
-#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:344
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:332
+#: tmp/cache_twig/54/87/e481d0c88eebca0f11a2fa8fd90f.php:363
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:347
 msgid "Cancel all"
 msgstr ""
 
@@ -7104,84 +7112,95 @@ msgstr ""
 msgid "users rights have been reseted"
 msgstr ""
 
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:66
-msgid "Switch to html5 uploader"
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:72
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:79
+msgid "You are using the Flash uploader."
 msgstr ""
 
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:450
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:82
+msgid ""
+"This version does not allow you to access all the features offered by the "
+"HTML5 uploader"
+msgstr ""
+
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:87
+msgid "Use the HTML5 uploader"
+msgstr ""
+
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:471
 msgid "You have attempted to queue too many files"
 msgstr ""
 
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:457
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:478
 msgid "Unknow Error"
 msgstr ""
 
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:467
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:488
 #, fuzzy
 msgid "Cannot upload Zero Byte files"
 msgstr "Back to Flash Upload"
 
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:473
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:494
 #, fuzzy
 msgid "Invalid file type"
 msgstr "Invalid email address"
 
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:480
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:501
 msgid "Unhandled Error"
 msgstr ""
 
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:514
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:535
 msgid "Unknow reason"
 msgstr ""
 
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:521
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:542
 msgid "Bad request, please contact an admin"
 msgstr ""
 
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:527
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:548
 msgid "Upload URL is not set, please contact an admin"
 msgstr ""
 
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:533
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:554
 msgid "Connection terminates unexpetecdly, please retry"
 msgstr ""
 
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:539
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:560
 msgid "The upload violates a security restriction, please retry"
 msgstr ""
 
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:545
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:566
 msgid "File upload limit (%maxFileSizeReadable%) has been reached"
 msgstr ""
 
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:551
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:572
 msgid "Could not initiate upload, please retry"
 msgstr ""
 
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:557
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:578
 msgid ""
 "Could not retrieve the file ID, please retry or contact an admin if problem "
 "persist"
 msgstr ""
 
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:563
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:584
 #, fuzzy
 msgid "File validation failed"
 msgstr "Feedback"
 
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:569
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:590
 msgid "File upload has been cancelled"
 msgstr ""
 
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:575
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:596
 msgid "File upload has been stopped"
 msgstr ""
 
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:582
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:603
 msgid "Error while uploading"
 msgstr ""
 
-#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:671
+#: tmp/cache_twig/b9/33/49d44f5c6933ef36910da9d090f5.php:697
 #, fuzzy
 msgid "Please select at least one valid file"
 msgstr "None"
@@ -7220,7 +7239,7 @@ msgid "Ne plus afficher ce message"
 msgstr "Do not display this message again"
 
 #: tmp/cache_twig/c2/63/c2e225f469852cc34b2c5ef417a2.php:218
-#: tmp/cache_twig/fd/02/709c9789d7a947b51289a7c8ebcd.php:353
+#: tmp/cache_twig/fd/02/709c9789d7a947b51289a7c8ebcd.php:373
 msgid "phraseanet:: aide"
 msgstr "Help"
 
@@ -7885,28 +7904,28 @@ msgstr "Prod"
 msgid "admin::monitor: production"
 msgstr "Prod"
 
-#: tmp/cache_twig/fd/02/709c9789d7a947b51289a7c8ebcd.php:253
+#: tmp/cache_twig/fd/02/709c9789d7a947b51289a7c8ebcd.php:273
 msgid "Commandes"
 msgstr "Orders"
 
-#: tmp/cache_twig/fd/02/709c9789d7a947b51289a7c8ebcd.php:281
+#: tmp/cache_twig/fd/02/709c9789d7a947b51289a7c8ebcd.php:301
 msgid "Notifications"
 msgstr "Notifications"
 
-#: tmp/cache_twig/fd/02/709c9789d7a947b51289a7c8ebcd.php:324
+#: tmp/cache_twig/fd/02/709c9789d7a947b51289a7c8ebcd.php:344
 msgid "Guest"
 msgstr "Guest"
 
-#: tmp/cache_twig/fd/02/709c9789d7a947b51289a7c8ebcd.php:331
+#: tmp/cache_twig/fd/02/709c9789d7a947b51289a7c8ebcd.php:351
 #: www/login/account.php:152 www/login/account.php:397
 msgid "login:: Mon compte"
 msgstr "My account"
 
-#: tmp/cache_twig/fd/02/709c9789d7a947b51289a7c8ebcd.php:372
+#: tmp/cache_twig/fd/02/709c9789d7a947b51289a7c8ebcd.php:392
 msgid "phraseanet:: raccourcis clavier"
 msgstr "Shortcuts"
 
-#: tmp/cache_twig/fd/02/709c9789d7a947b51289a7c8ebcd.php:390
+#: tmp/cache_twig/fd/02/709c9789d7a947b51289a7c8ebcd.php:410
 msgid "phraseanet:: a propos"
 msgstr "About"
 

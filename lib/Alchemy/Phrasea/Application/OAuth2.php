@@ -151,7 +151,7 @@ return call_user_func(function() {
              */
             $app->error(function (\Exception $e) use ($app) {
                     if ($e instanceof NotFoundHttpException || $e instanceof \Exception_NotFound) {
-                        return new Response('The requested page could not be found.', 404);
+                        return new Response('The requested page could not be found.', 404, array('X-Status-Code' => 404));
                     }
 
                     $code = 500;

@@ -34,10 +34,13 @@
                                 </span>
                             </td>
                             <td class='uploader-icon'>
-                                <img src='/skins/icons/logo-flash.png' width="32px" heigh="32px" title="{% trans 'You are using the Flash uploader'%}"/>
+                                <img src='/skins/icons/logo-flash.png' width="32px" heigh="32px" title="{% trans 'You are using the Flash uploader.'%}"/>
                             </td>
                             <td class='uploader-info'>
-                                <p>{% trans 'This version does not allow you to access all the features offered by the HTML5 uploader' %}</p>
+                                <p>
+                                    {% trans 'You are using the Flash uploader.'%}
+                                    {% trans 'This version does not allow you to access all the features offered by the HTML5 uploader' %}
+                                </p>
                                 <a href="/prod/upload/" class="dialog full-dialog">{% trans 'Use the HTML5 uploader' %}</a>
                             </td>
                         </tr>

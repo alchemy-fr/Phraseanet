@@ -223,7 +223,7 @@ return call_user_func(
                         $message = 'Not Found';
                     }
 
-                    return new Response($message, $code);
+                    return new Response($message, $code, array('X-Status-Code' => $code));
                 });
 
             return $app;
