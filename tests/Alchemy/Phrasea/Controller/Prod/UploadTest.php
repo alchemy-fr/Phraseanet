@@ -111,7 +111,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->client->request('POST', '/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
 
         $response = $this->client->getResponse();
-
+        
         $this->checkJsonResponse($response);
 
         $datas = json_decode($response->getContent(), true);

@@ -962,17 +962,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         $stmt->execute(array(':usr_id' => $this->get_id()));
         $stmt->closeCursor();
 
-        $sql = 'DELETE FROM usrlist WHERE usr_id = :usr_id';
-        $stmt = $this->appbox->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->get_id()));
-        $stmt->closeCursor();
-
         $sql = 'DELETE FROM usr_settings WHERE usr_id = :usr_id';
-        $stmt = $this->appbox->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->get_id()));
-        $stmt->closeCursor();
-
-        $sql = 'DELETE FROM usrlistusers WHERE usr_id = :usr_id';
         $stmt = $this->appbox->get_connection()->prepare($sql);
         $stmt->execute(array(':usr_id' => $this->get_id()));
         $stmt->closeCursor();

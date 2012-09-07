@@ -76,22 +76,22 @@ return call_user_func(function() {
                         if ($e instanceof \Bridge_Exception_ApiConnectorNotConfigured) {
                             $params = array_merge($params, array('account' => $app['current_account']));
 
-                            return new Response($twig->render('/prod/actions/Bridge/notconfigured.twig', $params), 200);
+                            return new Response($twig->render('/prod/actions/Bridge/notconfigured.twig', $params), 200, array('X-Status-Code' => 200));
                         } elseif ($e instanceof \Bridge_Exception_ApiConnectorNotConnected) {
                             $params = array_merge($params, array('account' => $app['current_account']));
 
-                            return new Response($twig->render('/prod/actions/Bridge/disconnected.twig', $params), 200);
+                            return new Response($twig->render('/prod/actions/Bridge/disconnected.twig', $params), 200, array('X-Status-Code' => 200));
                         } elseif ($e instanceof \Bridge_Exception_ApiConnectorAccessTokenFailed) {
                             $params = array_merge($params, array('account' => $app['current_account']));
 
-                            return new Response($twig->render('/prod/actions/Bridge/disconnected.twig', $params), 200);
+                            return new Response($twig->render('/prod/actions/Bridge/disconnected.twig', $params), 200, array('X-Status-Code' => 200));
                         } elseif ($e instanceof \Bridge_Exception_ApiDisabled) {
                             $params = array_merge($params, array('api' => $e->get_api()));
 
-                            return new Response($twig->render('/prod/actions/Bridge/deactivated.twig', $params), 200);
+                            return new Response($twig->render('/prod/actions/Bridge/deactivated.twig', $params), 200, array('X-Status-Code' => 200));
                         }
 
-                        return new Response($twig->render('/prod/actions/Bridge/error.twig', $params), 200);
+                        return new Response($twig->render('/prod/actions/Bridge/error.twig', $params), 200, array('X-Status-Code' => 200));
                     }
                     if ($request->getRequestFormat() == 'json') {
                         $datas = array(
@@ -101,16 +101,16 @@ return call_user_func(function() {
 
                         $json = $app['Core']['Serializer']->serialize($datas, 'json');
 
-                        return new Response($json, 200, array('Content-Type' => 'application/json'));
+                        return new Response($json, 200, array('Content-Type' => 'application/json', 'X-Status-Code' => 200));
                     }
                     if ($e instanceof \Exception_BadRequest) {
-                        return new Response('Bad Request', 400);
+                        return new Response('Bad Request', 400, array('X-Status-Code' => 400));
                     }
                     if ($e instanceof \Exception_NotFound) {
-                        return new Response('Not Found', 404);
+                        return new Response('Not Found', 404, array('X-Status-Code' => 404));
                     }
                     if ($e instanceof \Exception_Forbidden) {
-                        return new Response('Not Found', 403);
+                        return new Response('Not Found', 403, array('X-Status-Code' => 403));
                     }
                 });
 
