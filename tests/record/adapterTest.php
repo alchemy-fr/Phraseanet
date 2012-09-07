@@ -2,6 +2,9 @@
 
 require_once __DIR__ . '/../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
+use Alchemy\Phrasea\Controller\RecordsRequest;
+use Doctrine\Common\Collections\ArrayCollection;
+
 class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 {
     /**
@@ -50,11 +53,11 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $em->persist($basket);
         $em->flush();
 
-        $export = new set_exportorder(static::$records['record_1']->get_serialize_key(), $basket->getId());
+        $receveid = array(static::$records['record_1']->get_serialize_key() => static::$records['record_1']);
 
-        $orderId = $export->order_available_elements(self::$user->get_id(), 'ahaha', '+2 hours');
-
-        new set_order($orderId);
+        return \set_order::create(
+                \appbox::get_instance(self::$core), new RecordsRequest($receveid, new ArrayCollection($receveid), $basket), self::$user_alt2, 'I need this photos', new \DateTime('+10 minutes')
+        );
     }
 
     public function testGet_creation_date()

@@ -47,4 +47,10 @@ class Firewall
             return $app->redirect('/login/logout/');
         }
     }
+
+    public function requireOrdersAdmin(Application $app) {
+        if ( false === ! ! count($app['phraseanet.core']->getAuthenticatedUser()->ACL()->get_granted_base(array('order_master')))) {
+            $app->abort(403);
+        }
+    }
 }

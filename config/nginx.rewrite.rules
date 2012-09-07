@@ -42,6 +42,7 @@ rewrite ^/prod/TOU/.*$            /prod/router.php last;
 rewrite ^/prod/upload/.*$         /prod/router.php last;
 rewrite ^/prod/lazaret/.*$        /prod/router.php last;
 rewrite ^/prod/UserPreferences/.*$  /prod/router.php last;
+rewrite ^/prod/multi-export/$     /prod/router.php last;
 rewrite ^/prod/$                  /prod/router.php last;
 
 rewrite ^/prod/query/.*$          /prod/router.php last;

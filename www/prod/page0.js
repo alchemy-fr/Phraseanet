@@ -2356,14 +2356,14 @@ function activeIcons()
                 }
                 else
                 {
-                    datas.SSTTID = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+                    datas.ssel = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
                 }
             }
             else
             {
                 if($(this).hasClass('basket_element'))
                 {
-                    datas.SSTTID = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+                    datas.ssel = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
                 }
                 else
                 {
@@ -2520,7 +2520,7 @@ function downloadThis(datas)
         }
     }).dialog('open');
 
-    $.post("/include/multiexports.php", datas, function(data) {
+    $.post("/prod/multi-export/", datas, function(data) {
 
         dialog_box.removeClass('loading').empty().append(data);
         $('.tabs', dialog_box).tabs();
