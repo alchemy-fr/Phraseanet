@@ -35,7 +35,7 @@ return call_user_func(
             $app->mount('/tests/pathurl', new ControllerUtils\PathFileTest());
 
             $app->error(function($e) {
-                    return new \Symfony\Component\HttpFoundation\Response($e->getMessage(), 403);
+                    return new \Symfony\Component\HttpFoundation\Response($e->getMessage(), 403, array('X-Status-Code' => 403));
                 });
 
             return $app;
