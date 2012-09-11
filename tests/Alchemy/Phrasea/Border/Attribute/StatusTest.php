@@ -24,7 +24,6 @@ class StatusTest extends \PhraseanetPHPUnitAbstract
 
     public function getValidStatuses()
     {
-
         return array(
           array(123, '1111011'),
           array('123', '1111011'),
@@ -47,7 +46,6 @@ class StatusTest extends \PhraseanetPHPUnitAbstract
 
     public function getInvalidStatuses()
     {
-
         return array(
           array('0b00z2'),
           array('0x00g2'),
@@ -61,7 +59,7 @@ class StatusTest extends \PhraseanetPHPUnitAbstract
     public function testGetName()
     {
         $status = new Status(123);
-        $this->assertEquals(Attribute::NAME_STATUS, $status->getName());
+        $this->assertEquals(AttributeInterface::NAME_STATUS, $status->getName());
     }
 
     /**

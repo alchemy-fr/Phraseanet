@@ -25,9 +25,9 @@ class Factory
      *
      * @param Application $app  Application context
      * @param string      $name The name of the attribute, one of the
-     *                                  Attribute::NAME_* constants
+     *                                  AttributeInterface::NAME_* constants
      * @param string $serialized The serialized value of the attribute
-     *                                  (Attribute::asString result)
+     *                                  (AttributeInterface::asString result)
      * @return AttributeInterface        The attribute
      * @throws \InvalidArgumentException
      */

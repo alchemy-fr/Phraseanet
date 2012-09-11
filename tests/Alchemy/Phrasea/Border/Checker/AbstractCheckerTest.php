@@ -52,13 +52,13 @@ class AbstractCheckerTest extends \PhraseanetPHPUnitAbstract
         $appbox = $app['phraseanet.appbox'];
 
         foreach ($appbox->get_databoxes() as $db) {
-            if ( ! $collection) {
+            if (! $collection) {
                 foreach ($db->get_collections() as $coll) {
                     $collection = $coll;
                     break;
                 }
             }
-            if ( ! $collection) {
+            if (! $collection) {
                 $this->fail('Unable to get a collection');
             }
 
@@ -104,14 +104,14 @@ class AbstractCheckerTest extends \PhraseanetPHPUnitAbstract
         $appbox = $app['phraseanet.appbox'];
 
         foreach ($appbox->get_databoxes() as $db) {
-            if ( ! $collection) {
+            if (! $collection) {
                 foreach ($db->get_collections() as $coll) {
                     $collection = $coll;
                     break;
                 }
             }
 
-            if ( ! $othercollection && $collection) {
+            if (! $othercollection && $collection) {
                 foreach ($db->get_collections() as $coll) {
                     if ($coll->get_base_id() != $collection->get_base_id()) {
                         $othercollection = $coll;
@@ -175,10 +175,10 @@ class AbstractCheckerTest extends \PhraseanetPHPUnitAbstract
         $appbox = $app['phraseanet.appbox'];
 
         foreach ($appbox->get_databoxes() as $db) {
-            if ( ! $databox) {
+            if (! $databox) {
                 $databox = $db;
             }
-            if ( ! $collection) {
+            if (! $collection) {
                 foreach ($db->get_collections() as $coll) {
                     $collection = $coll;
                     break;

@@ -2,6 +2,8 @@
 
 namespace Alchemy\Phrasea\Border\Checker;
 
+use Alchemy\Phrasea\Border\File;
+
 require_once __DIR__ . '/../../../../PhraseanetPHPUnitAbstract.class.inc';
 
 class MediaTypeTest extends \PhraseanetPHPUnitAbstract
@@ -27,7 +29,7 @@ class MediaTypeTest extends \PhraseanetPHPUnitAbstract
     public function testCheck()
     {
         $media = self::$application['mediavorus']->guess(__DIR__ . '/../../../../testfiles/test001.CR2');
-        $file = new \Alchemy\Phrasea\Border\File($media, self::$collection);
+        $file = new File($media, self::$collection);
         $response = $this->object->check(self::$application['EM'], $file);
 
         $this->assertTrue($response->isOk());
@@ -35,7 +37,7 @@ class MediaTypeTest extends \PhraseanetPHPUnitAbstract
         $object = new MediaType(self::$application, array('mediatypes' => array(MediaType::TYPE_VIDEO, MediaType::TYPE_AUDIO)));
 
         $media = self::$application['mediavorus']->guess(__DIR__ . '/../../../../testfiles/test001.CR2');
-        $file = new \Alchemy\Phrasea\Border\File($media, self::$collection);
+        $file = new File($media, self::$collection);
         $response = $object->check(self::$application['EM'], $file);
 
         $this->assertFalse($response->isOk());

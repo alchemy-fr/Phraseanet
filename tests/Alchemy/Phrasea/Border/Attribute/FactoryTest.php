@@ -22,7 +22,7 @@ class FactoryTest extends \PhraseanetPHPUnitAbstract
 
         $metadata = new Metadata($tag, $value);
 
-        $attribute = Factory::getFileAttribute(self::$application, Attribute::NAME_METADATA, serialize($metadata));
+        $attribute = Factory::getFileAttribute(self::$application, AttributeInterface::NAME_METADATA, serialize($metadata));
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Attribute\\Metadata', $attribute);
     }
@@ -33,7 +33,7 @@ class FactoryTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetFileAttributeMetadataFail()
     {
-        Factory::getFileAttribute(self::$application, Attribute::NAME_METADATA, null);
+        Factory::getFileAttribute(self::$application, AttributeInterface::NAME_METADATA, null);
     }
 
     /**
@@ -41,7 +41,7 @@ class FactoryTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetFileAttributeStory()
     {
-        $attribute = Factory::getFileAttribute(self::$application, Attribute::NAME_STORY, static::$records['record_story_1']->get_serialize_key());
+        $attribute = Factory::getFileAttribute(self::$application, AttributeInterface::NAME_STORY, static::$records['record_story_1']->get_serialize_key());
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Attribute\\Story', $attribute);
     }
@@ -63,7 +63,7 @@ class FactoryTest extends \PhraseanetPHPUnitAbstract
 
         $metafield = new MetaField($databox_field, 'value');
 
-        $attribute = Factory::getFileAttribute(self::$application, Attribute::NAME_METAFIELD, $metafield->asString());
+        $attribute = Factory::getFileAttribute(self::$application, AttributeInterface::NAME_METAFIELD, $metafield->asString());
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Attribute\\MetaField', $attribute);
     }
@@ -73,7 +73,7 @@ class FactoryTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetFileAttributeStatus()
     {
-        $attribute = Factory::getFileAttribute(self::$application, Attribute::NAME_STATUS, '000100');
+        $attribute = Factory::getFileAttribute(self::$application, AttributeInterface::NAME_STATUS, '000100');
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Attribute\\Status', $attribute);
     }
@@ -84,7 +84,7 @@ class FactoryTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetFileAttributeStoryFailsRecord()
     {
-        Factory::getFileAttribute(self::$application, Attribute::NAME_STORY, static::$records['record_1']->get_serialize_key());
+        Factory::getFileAttribute(self::$application, AttributeInterface::NAME_STORY, static::$records['record_1']->get_serialize_key());
     }
 
     /**
@@ -95,7 +95,7 @@ class FactoryTest extends \PhraseanetPHPUnitAbstract
     {
         \PHPUnit_Framework_Error_Warning::$enabled = false;
 
-        Factory::getFileAttribute(self::$application, Attribute::NAME_STORY, self::$collection->get_databox()->get_sbas_id() . '_0');
+        Factory::getFileAttribute(self::$application, AttributeInterface::NAME_STORY, self::$collection->get_databox()->get_sbas_id() . '_0');
     }
 
     /**

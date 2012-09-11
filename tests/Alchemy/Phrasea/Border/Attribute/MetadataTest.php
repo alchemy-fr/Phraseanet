@@ -2,6 +2,10 @@
 
 namespace Alchemy\Phrasea\Border\Attribute;
 
+use PHPExiftool\Driver\Tag\IPTC\ObjectName;
+use PHPExiftool\Driver\Value\Mono;
+use PHPExiftool\Driver\Metadata\Metadata as ExiftoolMeta;
+
 require_once __DIR__ . '/../../../../PhraseanetPHPUnitAbstract.class.inc';
 
 class MetadataTest extends \PhraseanetPHPUnitAbstract
@@ -19,10 +23,10 @@ class MetadataTest extends \PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $tag = new \PHPExiftool\Driver\Tag\MXF\ObjectName();
-        $value = new \PHPExiftool\Driver\Value\Mono('Stockhausen !');
+        $tag = new ObjectName();
+        $value = new Mono('Stockhausen !');
 
-        $this->metadata = new \PHPExiftool\Driver\Metadata\Metadata($tag, $value);
+        $this->metadata = new ExiftoolMeta($tag, $value);
 
         $this->object = new Metadata($this->metadata);
     }
@@ -41,7 +45,7 @@ class MetadataTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetName()
     {
-        $this->assertEquals(Attribute::NAME_METADATA, $this->object->getName());
+        $this->assertEquals(AttributeInterface::NAME_METADATA, $this->object->getName());
     }
 
     /**

@@ -2,7 +2,7 @@
 
 namespace Alchemy\Phrasea\Border;
 
-use Symfony\Component\Filesystem\Filesystem;
+use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 
 require_once __DIR__ . '/../../../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
@@ -68,7 +68,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
 
         $records = array();
 
-        $postProcessRecord = function($record) use(&$records) {
+        $postProcessRecord = function($record) use (&$records) {
                 $records[] = $record;
             };
 
@@ -110,7 +110,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
     {
         $records = array();
 
-        $postProcessRecord = function($record) use(&$records) {
+        $postProcessRecord = function($record) use (&$records) {
                 $records[] = $record;
             };
         $this->assertEquals(Manager::LAZARET_CREATED, $this->object->process($this->session, File::buildFromPathfile(self::$file1, self::$collection, self::$application['mediavorus']), NULL, Manager::FORCE_LAZARET));
@@ -130,7 +130,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
     {
         $records = array();
 
-        $postProcessRecord = function($record) use(&$records) {
+        $postProcessRecord = function($record) use (&$records) {
                 $records[] = $record;
             };
 
@@ -159,7 +159,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
 
                 $data = array('Hello Mono ' . $databox_field->get_tag()->getTagname());
 
-                if ( ! $first) {
+                if (! $first) {
                     if ($odd) {
                         $value = new \PHPExiftool\Driver\Value\Mono(current($data));
                         $tofetch [$databox_field->get_name()] = $data;
@@ -208,7 +208,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
             }
         }
 
-        if ( ! $found) {
+        if (! $found) {
             $this->fail('Unable to find story in parents');
         }
 
@@ -237,7 +237,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
     {
         $lazaret = null;
 
-        $postProcessRecord = function($element) use(&$lazaret) {
+        $postProcessRecord = function($element) use (&$lazaret) {
                 $lazaret = $element;
             };
 
@@ -299,11 +299,11 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         foreach ($lazaret->getAttributes() as $attr) {
             $attribute = Attribute\Factory::getFileAttribute(self::$application, $attr->getName(), $attr->getValue());
 
-            if ($attribute->getName() == Attribute\Attribute::NAME_STORY) {
+            if ($attribute->getName() == AttributeInterface::NAME_STORY) {
                 if ($attribute->getValue()->get_serialize_key() == self::$records['record_story_1']->get_serialize_key()) {
                     $story_found = true;
                 }
-            } elseif ($attribute->getName() == Attribute\Attribute::NAME_METADATA) {
+            } elseif ($attribute->getName() == AttributeInterface::NAME_METADATA) {
 
                 $tagname = $attribute->getValue()->getTag()->getTagname();
 
@@ -312,7 +312,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
                 }
 
                 $foundMeta[$tagname] = array_merge($foundMeta[$tagname], $attribute->getValue()->getValue()->asArray());
-            } elseif ($attribute->getName() == Attribute\Attribute::NAME_METAFIELD) {
+            } elseif ($attribute->getName() == AttributeInterface::NAME_METAFIELD) {
 
                 $fieldname = $attribute->getField()->get_name();
 
@@ -321,16 +321,16 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
                 }
 
                 $foundField[$fieldname] = array_merge($foundField[$fieldname], (array) $attribute->getValue());
-            } elseif ($attribute->getName() == Attribute\Attribute::NAME_STATUS) {
+            } elseif ($attribute->getName() == AttributeInterface::NAME_STATUS) {
                 $status_found = $attribute->getValue();
             }
         }
 
-        if ( ! $story_found) {
+        if (! $story_found) {
             $this->fail('Story is not found');
         }
 
-        if ( ! $status_found) {
+        if (! $status_found) {
             $this->fail('Status is not found');
         }
 
@@ -343,7 +343,6 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         }
 
         foreach ($tofetchMeta as $name => $values) {
-
 
             $this->assertEquals($values, $foundMeta[$name]);
         }
@@ -392,7 +391,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
     {
         $manager = new ManagerTester(self::$application);
 
-        if(null === self::$application['xpdf.pdf2text']) {
+        if (null === self::$application['xpdf.pdf2text']) {
             $this->markTestSkipped('Pdf To Text could not be instantiate');
         }
 
@@ -420,7 +419,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         );
 
         foreach ($file->getAttributes() as $attribute) {
-            if ($attribute->getName() == Attribute\Attribute::NAME_METADATA) {
+            if ($attribute->getName() == AttributeInterface::NAME_METADATA) {
                 $tagname = $attribute->getValue()->getTag()->getTagname();
                 if (in_array($tagname, $toFound)) {
                     $previousC = count($toFound);
@@ -467,7 +466,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         );
 
         foreach ($file->getAttributes() as $attribute) {
-            if ($attribute->getName() == Attribute\Attribute::NAME_METADATA) {
+            if ($attribute->getName() == AttributeInterface::NAME_METADATA) {
                 $tagname = $attribute->getValue()->getTag()->getTagname();
                 if (in_array($tagname, $toFound)) {
                     $previousC = count($toFound);
@@ -514,7 +513,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         );
 
         foreach ($file->getAttributes() as $attribute) {
-            if ($attribute->getName() == Attribute\Attribute::NAME_METADATA) {
+            if ($attribute->getName() == AttributeInterface::NAME_METADATA) {
                 $tagname = $attribute->getValue()->getTag()->getTagname();
                 if (in_array($tagname, $toFound)) {
                     $previousC = count($toFound);
@@ -540,7 +539,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
     {
         $records = array();
 
-        $postProcessRecord = function($record) use(&$records) {
+        $postProcessRecord = function($record) use (&$records) {
                 $records[] = $record;
             };
 
@@ -551,7 +550,6 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertTrue($visa->isValid());
 
         $this->object->process($this->session, File::buildFromPathfile(self::$file1, self::$collection, self::$application['mediavorus']), $postProcessRecord);
-
 
         $visa = $this->object->getVisa(File::buildFromPathfile(self::$file1, self::$collection, self::$application['mediavorus']));
 

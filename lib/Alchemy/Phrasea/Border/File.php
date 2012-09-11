@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Media\Type\Document;
 use Alchemy\Phrasea\Media\Type\Flash;
 use Alchemy\Phrasea\Media\Type\Image;
 use Alchemy\Phrasea\Media\Type\Video;
+use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
 use MediaVorus\Exception\FileNotFoundException;

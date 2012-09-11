@@ -39,7 +39,7 @@ class StoryTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetName()
     {
-        $this->assertEquals(Attribute::NAME_STORY, $this->object->getName());
+        $this->assertEquals(AttributeInterface::NAME_STORY, $this->object->getName());
     }
 
     /**

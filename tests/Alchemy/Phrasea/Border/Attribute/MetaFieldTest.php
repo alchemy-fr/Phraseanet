@@ -24,7 +24,7 @@ class MetaFieldTest extends \PhraseanetPHPUnitAbstract
             $this->databox_field = $databox_field;
             break;
         }
-        if ( ! $this->databox_field) {
+        if (! $this->databox_field) {
             $this->markTestSkipped('No databox field found');
         }
         $this->object = new MetaField($this->databox_field, $this->value);
@@ -66,7 +66,7 @@ class MetaFieldTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetName()
     {
-        $this->assertEquals(Attribute::NAME_METAFIELD, $this->object->getName());
+        $this->assertEquals(AttributeInterface::NAME_METAFIELD, $this->object->getName());
     }
 
     /**
