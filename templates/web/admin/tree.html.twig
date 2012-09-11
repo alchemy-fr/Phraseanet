@@ -64,9 +64,9 @@
 
   {% if user.ACL().has_right('taskmanager') %}
   <li class="{% if feature == 'taskmanager' %}selected{% endif %}">
-    <a target="right" href="taskmanager.php">
+    <a target="right" href="/admin/task-manager/tasks/" class="ajax">
       <img src="/skins/admin/TaskManager.png" />
-      <span>{% trans 'admin::utilisateurs: gestionnaire de taches' %}</span>
+      {% trans 'admin::utilisateurs: gestionnaire de taches 2' %}
     </a>
   </li>
   {% endif %}
