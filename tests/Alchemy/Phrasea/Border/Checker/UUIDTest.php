@@ -18,10 +18,10 @@ class UUIDTest extends \PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new UUID;
+        $this->object = new UUID(self::$application);
         $this->filename = __DIR__ . '/../../../../../tmp/test001.CR2';
         copy(__DIR__ . '/../../../../testfiles/test001.CR2', $this->filename);
-        $this->media = self::$core['mediavorus']->guess(new \SplFileInfo($this->filename));
+        $this->media = self::$application['mediavorus']->guess($this->filename);
     }
 
     public function tearDown()
@@ -38,7 +38,7 @@ class UUIDTest extends \PhraseanetPHPUnitAbstract
      */
     public function testCheck()
     {
-        $response = $this->object->check(self::$core['EM'], new File($this->media, self::$collection));
+        $response = $this->object->check(self::$application['EM'], new File($this->media, self::$collection));
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
 
@@ -58,7 +58,7 @@ class UUIDTest extends \PhraseanetPHPUnitAbstract
             ->will($this->returnValue(\random::generatePassword(3)))
         ;
 
-        $response = $this->object->check(self::$core['EM'], $mock);
+        $response = $this->object->check(self::$application['EM'], $mock);
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
 

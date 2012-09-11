@@ -10,6 +10,7 @@ class StoryTest extends \PhraseanetPHPUnitAbstract
      * @var Story
      */
     protected $object;
+    protected $story;
 
     /**
      * @covers Alchemy\Phrasea\Border\Attribute\Attribute
@@ -18,7 +19,8 @@ class StoryTest extends \PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new Story(static::$records['record_story_1']);
+        $this->story = \record_adapter::createStory(self::$application, self::$collection);;
+        $this->object = new Story($this->story);
     }
 
     /**
@@ -26,6 +28,7 @@ class StoryTest extends \PhraseanetPHPUnitAbstract
      */
     public function tearDown()
     {
+        $this->story->delete();
         $this->object = null;
         parent::tearDown();
     }
@@ -44,7 +47,7 @@ class StoryTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetValue()
     {
-        $this->assertSame(static::$records['record_story_1'], $this->object->getValue());
+        $this->assertSame($this->story, $this->object->getValue());
     }
 
     /**
@@ -60,7 +63,7 @@ class StoryTest extends \PhraseanetPHPUnitAbstract
      */
     public function testLoadFromString()
     {
-        $loaded = Story::loadFromString($this->object->asString());
+        $loaded = Story::loadFromString(self::$application, $this->object->asString());
 
         $this->assertEquals($this->object, $loaded);
     }
@@ -80,7 +83,7 @@ class StoryTest extends \PhraseanetPHPUnitAbstract
      */
     public function testLoadFromStringWrongElement()
     {
-        Story::loadFromString(static::$records['record_1']->get_serialize_key());
+        Story::loadFromString(self::$application, static::$records['record_1']->get_serialize_key());
     }
 
     /**
@@ -91,6 +94,6 @@ class StoryTest extends \PhraseanetPHPUnitAbstract
     {
         \PHPUnit_Framework_Error_Warning::$enabled = false;
 
-        Story::loadFromString(self::$collection->get_databox()->get_sbas_id() . '_0');
+        Story::loadFromString(self::$application, self::$collection->get_databox()->get_sbas_id() . '_0');
     }
 }

@@ -2,7 +2,9 @@
 
 namespace Alchemy\Phrasea\Border\Attribute;
 
-class MetadataTest extends \PHPUnit_Framework_TestCase
+require_once __DIR__ . '/../../../../PhraseanetPHPUnitAbstract.class.inc';
+
+class MetadataTest extends \PhraseanetPHPUnitAbstract
 {
     /**
      * @var Metadata
@@ -14,7 +16,7 @@ class MetadataTest extends \PHPUnit_Framework_TestCase
      * @covers Alchemy\Phrasea\Border\Attribute\Attribute
      * @covers Alchemy\Phrasea\Border\Attribute\Metadata::__construct
      */
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
         $tag = new \PHPExiftool\Driver\Tag\MXF\ObjectName();
@@ -28,7 +30,7 @@ class MetadataTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers Alchemy\Phrasea\Border\Attribute\Metadata::__destruct
      */
-    protected function tearDown()
+    public function tearDown()
     {
         $this->object = null;
         parent::tearDown();
@@ -63,7 +65,7 @@ class MetadataTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoadFromString()
     {
-        $loaded = Metadata::loadFromString($this->object->asString());
+        $loaded = Metadata::loadFromString(self::$application, $this->object->asString());
 
         $this->assertEquals($this->object, $loaded);
     }
@@ -76,7 +78,7 @@ class MetadataTest extends \PHPUnit_Framework_TestCase
     {
         \PHPUnit_Framework_Error_Notice::$enabled = false;
 
-        Metadata::loadFromString('Hello String');
+        Metadata::loadFromString(self::$application, 'Hello String');
     }
 
     /**
@@ -85,6 +87,6 @@ class MetadataTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoadFromStringWrongObject()
     {
-        Metadata::loadFromString(serialize(new \stdClass()));
+        Metadata::loadFromString(self::$application, serialize(new \stdClass()));
     }
 }

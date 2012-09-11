@@ -2,22 +2,27 @@
 
 namespace Alchemy\Phrasea\Border\Attribute;
 
+use PHPExiftool\Driver\Tag\IPTC\UniqueDocumentID;
+use PHPExiftool\Driver\Value\Mono;
+use PHPExiftool\Driver\Metadata\Metadata;
+
 require_once __DIR__ . '/../../../../PhraseanetPHPUnitAbstract.class.inc';
 
 class FactoryTest extends \PhraseanetPHPUnitAbstract
 {
+
     /**
      * @covers Alchemy\Phrasea\Border\Attribute\Attribute
      * @covers Alchemy\Phrasea\Border\Attribute\Factory::getFileAttribute
      */
     public function testGetFileAttributeMetadata()
     {
-        $tag = new \PHPExiftool\Driver\Tag\IPTC\UniqueDocumentID();
-        $value = new \PHPExiftool\Driver\Value\Mono('Unique');
+        $tag = new UniqueDocumentID();
+        $value = new Mono('Unique');
 
-        $metadata = new \PHPExiftool\Driver\Metadata\Metadata($tag, $value);
+        $metadata = new Metadata($tag, $value);
 
-        $attribute = Factory::getFileAttribute(Attribute::NAME_METADATA, serialize($metadata));
+        $attribute = Factory::getFileAttribute(self::$application, Attribute::NAME_METADATA, serialize($metadata));
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Attribute\\Metadata', $attribute);
     }
@@ -28,7 +33,7 @@ class FactoryTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetFileAttributeMetadataFail()
     {
-        Factory::getFileAttribute(Attribute::NAME_METADATA, null);
+        Factory::getFileAttribute(self::$application, Attribute::NAME_METADATA, null);
     }
 
     /**
@@ -36,7 +41,7 @@ class FactoryTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetFileAttributeStory()
     {
-        $attribute = Factory::getFileAttribute(Attribute::NAME_STORY, static::$records['record_story_1']->get_serialize_key());
+        $attribute = Factory::getFileAttribute(self::$application, Attribute::NAME_STORY, static::$records['record_story_1']->get_serialize_key());
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Attribute\\Story', $attribute);
     }
@@ -52,13 +57,13 @@ class FactoryTest extends \PhraseanetPHPUnitAbstract
             break;
         }
 
-        if ( ! $databox_field) {
+        if (!$databox_field) {
             $this->markTestSkipped('No databox field found');
         }
 
         $metafield = new MetaField($databox_field, 'value');
 
-        $attribute = Factory::getFileAttribute(Attribute::NAME_METAFIELD, $metafield->asString());
+        $attribute = Factory::getFileAttribute(self::$application, Attribute::NAME_METAFIELD, $metafield->asString());
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Attribute\\MetaField', $attribute);
     }
@@ -68,7 +73,7 @@ class FactoryTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetFileAttributeStatus()
     {
-        $attribute = Factory::getFileAttribute(Attribute::NAME_STATUS, '000100');
+        $attribute = Factory::getFileAttribute(self::$application, Attribute::NAME_STATUS, '000100');
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Attribute\\Status', $attribute);
     }
@@ -79,7 +84,7 @@ class FactoryTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetFileAttributeStoryFailsRecord()
     {
-        Factory::getFileAttribute(Attribute::NAME_STORY, static::$records['record_1']->get_serialize_key());
+        Factory::getFileAttribute(self::$application, Attribute::NAME_STORY, static::$records['record_1']->get_serialize_key());
     }
 
     /**
@@ -90,7 +95,7 @@ class FactoryTest extends \PhraseanetPHPUnitAbstract
     {
         \PHPUnit_Framework_Error_Warning::$enabled = false;
 
-        Factory::getFileAttribute(Attribute::NAME_STORY, self::$collection->get_databox()->get_sbas_id() . '_0');
+        Factory::getFileAttribute(self::$application, Attribute::NAME_STORY, self::$collection->get_databox()->get_sbas_id() . '_0');
     }
 
     /**
@@ -99,6 +104,6 @@ class FactoryTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetFileAttributeFail()
     {
-        Factory::getFileAttribute('nothing', 'nothong');
+        Factory::getFileAttribute(self::$application, 'nothing', 'nothong');
     }
 }

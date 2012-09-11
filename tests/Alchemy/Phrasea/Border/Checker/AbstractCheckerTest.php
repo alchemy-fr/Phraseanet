@@ -3,11 +3,12 @@
 namespace Alchemy\Phrasea\Border\Checker;
 
 use Alchemy\Phrasea\Border\File;
+use Alchemy\Phrasea\Application;
 use Doctrine\ORM\EntityManager;
 
 require_once __DIR__ . "/../../../../PhraseanetPHPUnitAbstract.class.inc";
 
-class AbstractCheckerTest extends \PHPUnit_Framework_TestCase
+class AbstractCheckerTest extends \PhraseanetPHPUnitAbstract
 {
     /**
      * @var AbstractChecker
@@ -18,13 +19,14 @@ class AbstractCheckerTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->object = new AbstractCheckerTester();
+        $this->object = new AbstractCheckerTester(self::$application);
         $this->file = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', array('getCollection'), array(), 'CheckerTesterMock' . mt_rand(), false);
     }
 
     public function tearDown()
     {
         $this->file = null;
+        parent::tearDown();
     }
 
     /**
@@ -46,7 +48,8 @@ class AbstractCheckerTest extends \PHPUnit_Framework_TestCase
     public function getDataboxesCombinaison()
     {
         $databox = $collection = null;
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $app = new Application();
+        $appbox = $app['phraseanet.appbox'];
 
         foreach ($appbox->get_databoxes() as $db) {
             if ( ! $collection) {
@@ -97,7 +100,8 @@ class AbstractCheckerTest extends \PHPUnit_Framework_TestCase
     public function getCollectionsCombinaison()
     {
         $othercollection = $collection = null;
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $app = new Application();
+        $appbox = $app['phraseanet.appbox'];
 
         foreach ($appbox->get_databoxes() as $db) {
             if ( ! $collection) {
@@ -167,7 +171,8 @@ class AbstractCheckerTest extends \PHPUnit_Framework_TestCase
     public function getDataboxAndCollection()
     {
         $databox = $collection = null;
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $app = new Application();
+        $appbox = $app['phraseanet.appbox'];
 
         foreach ($appbox->get_databoxes() as $db) {
             if ( ! $databox) {

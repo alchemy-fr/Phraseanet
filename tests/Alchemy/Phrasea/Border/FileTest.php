@@ -22,7 +22,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
         $this->filename = __DIR__ . '/../../../../tmp/iphone_pic.jpg';
         copy(__DIR__ . '/../../../testfiles/iphone_pic.jpg', $this->filename);
 
-        $this->media = self::$core['mediavorus']->guess(new \SplFileInfo($this->filename));
+        $this->media = self::$application['mediavorus']->guess($this->filename);
 
         $this->object = new File($this->media, self::$collection, 'originalName.txt');
     }
@@ -60,20 +60,20 @@ class FileTest extends \PhraseanetPHPUnitAbstract
 
         copy(__DIR__ . '/../../../testfiles/p4logo.jpg', $file);
 
-        $borderFile = new File(self::$core['mediavorus']->guess(new \SplFileInfo($file)), self::$collection);
+        $borderFile = new File(self::$application['mediavorus']->guess($file), self::$collection);
         $uuid = $borderFile->getUUID(true, false);
 
         $this->assertTrue(\uuid::is_valid($uuid));
         $this->assertEquals($uuid, $borderFile->getUUID());
 
-        $borderFile = new File(self::$core['mediavorus']->guess(new \SplFileInfo($file)), self::$collection);
+        $borderFile = new File(self::$application['mediavorus']->guess($file), self::$collection);
         $newuuid = $borderFile->getUUID(true, true);
 
         $this->assertTrue(\uuid::is_valid($newuuid));
         $this->assertNotEquals($uuid, $newuuid);
         $this->assertEquals($newuuid, $borderFile->getUUID());
 
-        $borderFile = new File(self::$core['mediavorus']->guess(new \SplFileInfo($file)), self::$collection);
+        $borderFile = new File(self::$application['mediavorus']->guess($file), self::$collection);
         $uuid = $borderFile->getUUID();
 
         $this->assertTrue(\uuid::is_valid($uuid));
@@ -139,7 +139,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      */
     public function testOriginalNameAuto()
     {
-        $object = new File(self::$core['mediavorus']->guess(new \SplFileInfo($this->filename)), self::$collection);
+        $object = new File(self::$application['mediavorus']->guess($this->filename), self::$collection);
         $this->assertSame('iphone_pic.jpg', $object->getOriginalName());
     }
 
@@ -180,18 +180,18 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      */
     public function testBuildFromPathfile()
     {
-        $media = self::$core['mediavorus']->guess(new \SplFileInfo($this->filename));
+        $media = self::$application['mediavorus']->guess($this->filename);
         $file1 = new File($media, self::$collection);
 
-        $file2 = File::buildFromPathfile($this->filename, self::$collection);
+        $file2 = File::buildFromPathfile($this->filename, self::$collection, self::$application['mediavorus']);
 
         $this->assertEquals($file1, $file2);
 
 
-        $media = self::$core['mediavorus']->guess(new \SplFileInfo($this->filename));
+        $media = self::$application['mediavorus']->guess($this->filename);
         $file3 = new File($media, self::$collection, 'coco lapin');
 
-        $file4 = File::buildFromPathfile($this->filename, self::$collection, 'coco lapin');
+        $file4 = File::buildFromPathfile($this->filename, self::$collection, self::$application['mediavorus'], 'coco lapin');
 
         $this->assertEquals($file3, $file4);
         $this->assertNotEquals($file1, $file4);
@@ -203,7 +203,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      */
     public function testBuildFromWrongPathfile()
     {
-        File::buildFromPathfile('unexistent.file', self::$collection);
+        File::buildFromPathfile('unexistent.file', self::$collection, self::$application['mediavorus']);
     }
 
     /**
@@ -215,7 +215,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
 
         $image->expects($this->once())
             ->method('getType')
-            ->will($this->returnValue(\MediaVorus\Media\Media::TYPE_IMAGE));
+            ->will($this->returnValue(\MediaVorus\Media\MediaInterface::TYPE_IMAGE));
 
         $file = new File($image, self::$collection, 'hello');
 
@@ -231,7 +231,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
 
         $image->expects($this->once())
             ->method('getType')
-            ->will($this->returnValue(\MediaVorus\Media\Media::TYPE_DOCUMENT));
+            ->will($this->returnValue(\MediaVorus\Media\MediaInterface::TYPE_DOCUMENT));
 
         $file = new File($image, self::$collection, 'hello');
 
@@ -247,7 +247,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
 
         $image->expects($this->once())
             ->method('getType')
-            ->will($this->returnValue(\MediaVorus\Media\Media::TYPE_AUDIO));
+            ->will($this->returnValue(\MediaVorus\Media\MediaInterface::TYPE_AUDIO));
 
         $file = new File($image, self::$collection, 'hello');
 
@@ -263,7 +263,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
 
         $image->expects($this->once())
             ->method('getType')
-            ->will($this->returnValue(\MediaVorus\Media\Media::TYPE_VIDEO));
+            ->will($this->returnValue(\MediaVorus\Media\MediaInterface::TYPE_VIDEO));
 
         $file = new File($image, self::$collection, 'hello');
 
@@ -279,7 +279,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
 
         $image->expects($this->once())
             ->method('getType')
-            ->will($this->returnValue(\MediaVorus\Media\Media::TYPE_FLASH));
+            ->will($this->returnValue(\MediaVorus\Media\MediaInterface::TYPE_FLASH));
 
         $file = new File($image, self::$collection, 'hello');
 

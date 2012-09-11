@@ -11,18 +11,31 @@
 
 namespace Alchemy\Phrasea\Border;
 
-use Alchemy\Phrasea\Metadata\Tag as PhraseaTag;
+use Alchemy\Phrasea\Border\Checker\CheckerInterface;
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
+use Alchemy\Phrasea\Metadata\Tag\PdfText;
+use Alchemy\Phrasea\Metadata\Tag\TfArchivedate;
+use Alchemy\Phrasea\Metadata\Tag\TfBasename;
+use Alchemy\Phrasea\Metadata\Tag\TfBits;
+use Alchemy\Phrasea\Metadata\Tag\TfChannels;
+use Alchemy\Phrasea\Metadata\Tag\TfDuration;
+use Alchemy\Phrasea\Metadata\Tag\TfExtension;
+use Alchemy\Phrasea\Metadata\Tag\TfFilename;
+use Alchemy\Phrasea\Metadata\Tag\TfHeight;
+use Alchemy\Phrasea\Metadata\Tag\TfMimetype;
+use Alchemy\Phrasea\Metadata\Tag\TfQuarantine;
+use Alchemy\Phrasea\Metadata\Tag\TfRecordid;
+use Alchemy\Phrasea\Metadata\Tag\TfSize;
+use Alchemy\Phrasea\Metadata\Tag\TfWidth;
 use Alchemy\Phrasea\Border\Attribute\Metadata as MetadataAttr;
-use Doctrine\ORM\EntityManager;
 use Entities\LazaretAttribute;
 use Entities\LazaretFile;
 use Entities\LazaretSession;
 use MediaAlchemyst\Exception\Exception as MediaAlchemystException;
 use MediaAlchemyst\Specification\Image as ImageSpec;
-use Monolog\Logger;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Value\Mono as MonoValue;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOException;
 use XPDF\PdfToText;
 
@@ -36,7 +49,7 @@ use XPDF\PdfToText;
 class Manager
 {
     protected $checkers = array();
-    protected $em;
+    protected $app;
     protected $filesystem;
     protected $pdfToText;
 
@@ -48,13 +61,11 @@ class Manager
     /**
      * Constructor
      *
-     * @param \Doctrine\ORM\EntityManager $em     Entity manager
-     * @param \Monolog\Logger             $logger A logger
+     * @param Application $app The application context
      */
-    public function __construct(EntityManager $em, Filesystem $filesystem)
+    public function __construct(Application $app)
     {
-        $this->em = $em;
-        $this->filesystem = $filesystem;
+        $this->app = $app;
     }
 
     /**
@@ -63,7 +74,7 @@ class Manager
      */
     public function __destruct()
     {
-        $this->em = $this->filesystem = null;
+        $this->app = null;
     }
 
     /**
@@ -135,7 +146,7 @@ class Manager
         $visa = new Visa();
 
         foreach ($this->checkers as $checker) {
-            $visa->addResponse($checker->check($this->em, $file));
+            $visa->addResponse($checker->check($this->app['EM'], $file));
         }
 
         return $visa;
@@ -144,10 +155,10 @@ class Manager
     /**
      * Registers a checker
      *
-     * @param  Checker\CheckerInterface $checker The checker to register
+     * @param  CheckerInterface $checker The checker to register
      * @return Manager
      */
-    public function registerChecker(Checker\CheckerInterface $checker)
+    public function registerChecker(CheckerInterface $checker)
     {
         $this->checkers[] = $checker;
 
@@ -172,10 +183,10 @@ class Manager
     /**
      * Unregister a checker
      *
-     * @param  Checker\CheckerInterface $checker The checker to unregister
+     * @param  CheckerInterface $checker The checker to unregister
      * @return Manager
      */
-    public function unregisterChecker(Checker\CheckerInterface $checker)
+    public function unregisterChecker(CheckerInterface $checker)
     {
         $checkers = $this->checkers;
         foreach ($this->checkers as $offset => $registered) {
@@ -202,8 +213,8 @@ class Manager
     /**
      * Find an available Lazaret filename and creates the empty file.
      *
-     * @param  string   $filename     The desired filename
-     * @param  string   $suffix       A suffix to the filename
+     * @param  string $filename The desired filename
+     * @param  string $suffix   A suffix to the filename
      * @return string The available filename to use
      */
     protected function bookLazaretPathfile($filename, $suffix = '')
@@ -212,14 +223,14 @@ class Manager
         $infos = pathinfo($output);
         $n = 0;
 
-        $this->filesystem->mkdir(__DIR__ . '/../../../../tmp/lazaret');
+        $this->app['filesystem']->mkdir(__DIR__ . '/../../../../tmp/lazaret');
 
         while (true) {
             $output = sprintf('%s/%s-%d%s', $infos['dirname'], $infos['filename'],  ++ $n, (isset($infos['extension']) ? '.' . $infos['extension'] : ''));
 
             try {
-                if ( ! $this->filesystem->exists($output)) {
-                    $this->filesystem->touch($output);
+                if ( ! $this->app['filesystem']->exists($output)) {
+                    $this->app['filesystem']->touch($output);
                     break;
                 }
             } catch (IOException $e) {
@@ -238,35 +249,33 @@ class Manager
      */
     protected function createRecord(File $file)
     {
-        $element = \record_adapter::createFromFile($file, $this->filesystem);
+        $element = \record_adapter::createFromFile($file, $this->app);
 
         $date = new \DateTime();
 
         $file->addAttribute(
             new MetadataAttr(
                 new Metadata(
-                    new PhraseaTag\TfArchivedate(), new MonoValue($date->format('Y/m/d H:i:s'))
+                    new TfArchivedate(), new MonoValue($date->format('Y/m/d H:i:s'))
                 )
             )
         );
         $file->addAttribute(
             new MetadataAttr(
                 new Metadata(
-                    new PhraseaTag\TfRecordid(), new MonoValue($element->get_record_id())
+                    new TfRecordid(), new MonoValue($element->get_record_id())
                 )
             )
         );
 
         $metadatas = array();
 
-        $fileEntity = $file->getMedia()->getEntity();
-
         /**
          * @todo $key is not tagname but fieldname
          */
         $fieldToKeyMap = array();
 
-        if ( ! $fieldToKeyMap) {
+        if (! $fieldToKeyMap) {
             foreach ($file->getCollection()->get_databox()->get_meta_structure() as $databox_field) {
 
                 $tagname = $databox_field->get_tag()->getTagname();
@@ -279,7 +288,7 @@ class Manager
             }
         }
 
-        foreach ($fileEntity->getMetadatas() as $metadata) {
+        foreach ($file->getMedia()->getMetadatas() as $metadata) {
 
             $key = $metadata->getTag()->getTagname();
 
@@ -303,7 +312,7 @@ class Manager
                  * @todo implement METATAG aka metadata by fieldname (where as
                  * current metadata is metadata by source.
                  */
-                case Attribute\Attribute::NAME_METAFIELD:
+                case AttributeInterface::NAME_METAFIELD:
 
                     $key = $attribute->getField()->get_name();
 
@@ -314,7 +323,7 @@ class Manager
                     $metadatas[$key] = array_merge($metadatas[$key], array($attribute->getValue()));
                     break;
 
-                case Attribute\Attribute::NAME_METADATA:
+                case AttributeInterface::NAME_METADATA:
 
                     $key = $attribute->getValue()->getTag()->getTagname();
 
@@ -330,12 +339,12 @@ class Manager
                         $metadatas[$k] = array_merge($metadatas[$k], $attribute->getValue()->getValue()->asArray());
                     }
                     break;
-                case Attribute\Attribute::NAME_STATUS:
+                case AttributeInterface::NAME_STATUS:
 
                     $element->set_binary_status($element->get_status() | $attribute->getValue());
 
                     break;
-                case Attribute\Attribute::NAME_STORY:
+                case AttributeInterface::NAME_STORY:
 
                     $story = $attribute->getValue();
 
@@ -418,7 +427,7 @@ class Manager
         $file->addAttribute(
             new MetadataAttr(
                 new Metadata(
-                    new PhraseaTag\TfQuarantine(), new MonoValue($date->format('Y/m/d H:i:s'))
+                    new TfQuarantine(), new MonoValue($date->format('Y/m/d H:i:s'))
                 )
             )
         );
@@ -426,17 +435,15 @@ class Manager
         $lazaretPathname = $this->bookLazaretPathfile($file->getOriginalName());
         $lazaretPathnameThumb = $this->bookLazaretPathfile($file->getOriginalName(), 'thumb');
 
-        $this->filesystem->copy($file->getFile()->getRealPath(), $lazaretPathname, true);
+        $this->app['filesystem']->copy($file->getFile()->getRealPath(), $lazaretPathname, true);
 
         $spec = new ImageSpec();
 
         $spec->setResizeMode(ImageSpec::RESIZE_MODE_INBOUND_FIXEDRATIO);
         $spec->setDimensions(375, 275);
 
-        $core = \bootstrap::getCore();
-
         try {
-            $core['media-alchemyst']
+            $this->app['media-alchemyst']
                 ->open($file->getFile()->getPathname())
                 ->turnInto($lazaretPathnameThumb, $spec)
                 ->close();
@@ -457,7 +464,7 @@ class Manager
 
         $lazaretFile->setSession($session);
 
-        $this->em->persist($lazaretFile);
+        $this->app['EM']->persist($lazaretFile);
 
         foreach ($file->getAttributes() as $fileAttribute) {
             $attribute = new LazaretAttribute();
@@ -467,7 +474,7 @@ class Manager
 
             $lazaretFile->addLazaretAttribute($attribute);
 
-            $this->em->persist($attribute);
+            $this->app['EM']->persist($attribute);
         }
 
         foreach ($visa->getResponses() as $response) {
@@ -479,11 +486,11 @@ class Manager
 
                 $lazaretFile->addLazaretCheck($check);
 
-                $this->em->persist($check);
+                $this->app['EM']->persist($check);
             }
         }
 
-        $this->em->flush();
+        $this->app['EM']->flush();
 
         return $lazaretFile;
     }
@@ -502,7 +509,7 @@ class Manager
             $file->addAttribute(
                 new MetadataAttr(
                     new Metadata(
-                        new PhraseaTag\TfWidth(), new MonoValue($file->getMedia()->getWidth())
+                        new TfWidth(), new MonoValue($file->getMedia()->getWidth())
                     )
                 )
             );
@@ -511,7 +518,7 @@ class Manager
             $file->addAttribute(
                 new MetadataAttr(
                     new Metadata(
-                        new PhraseaTag\TfHeight(), new MonoValue($file->getMedia()->getHeight())
+                        new TfHeight(), new MonoValue($file->getMedia()->getHeight())
                     )
                 )
             );
@@ -520,7 +527,7 @@ class Manager
             $file->addAttribute(
                 new MetadataAttr(
                     new Metadata(
-                        new PhraseaTag\TfChannels(), new MonoValue($file->getMedia()->getChannels())
+                        new TfChannels(), new MonoValue($file->getMedia()->getChannels())
                     )
                 )
             );
@@ -529,7 +536,7 @@ class Manager
             $file->addAttribute(
                 new MetadataAttr(
                     new Metadata(
-                        new PhraseaTag\TfBits(), new MonoValue($file->getMedia()->getColorDepth())
+                        new TfBits(), new MonoValue($file->getMedia()->getColorDepth())
                     )
                 )
             );
@@ -538,7 +545,7 @@ class Manager
             $file->addAttribute(
                 new MetadataAttr(
                     new Metadata(
-                        new PhraseaTag\TfDuration(), new MonoValue($file->getMedia()->getDuration())
+                        new TfDuration(), new MonoValue($file->getMedia()->getDuration())
                     )
                 )
             );
@@ -554,7 +561,7 @@ class Manager
                     $file->addAttribute(
                         new MetadataAttr(
                             new Metadata(
-                                new PhraseaTag\PdfText(), new MonoValue($text)
+                                new PdfText(), new MonoValue($text)
                             )
                         )
                     );
@@ -569,29 +576,29 @@ class Manager
         $file->addAttribute(
             new MetadataAttr(
                 new Metadata(
-                    new PhraseaTag\TfMimetype(), new MonoValue($file->getFile()->getMimeType()))));
+                    new TfMimetype(), new MonoValue($file->getFile()->getMimeType()))));
         $file->addAttribute(
             new MetadataAttr(
                 new Metadata(
-                    new PhraseaTag\TfSize(), new MonoValue($file->getFile()->getSize()))));
+                    new TfSize(), new MonoValue($file->getFile()->getSize()))));
         $file->addAttribute(
             new MetadataAttr(
                 new Metadata(
-                    new PhraseaTag\TfBasename(), new MonoValue(pathinfo($file->getOriginalName(), PATHINFO_BASENAME))
+                    new TfBasename(), new MonoValue(pathinfo($file->getOriginalName(), PATHINFO_BASENAME))
                 )
             )
         );
         $file->addAttribute(
             new MetadataAttr(
                 new Metadata(
-                    new PhraseaTag\TfFilename(), new MonoValue(pathinfo($file->getOriginalName(), PATHINFO_FILENAME))
+                    new TfFilename(), new MonoValue(pathinfo($file->getOriginalName(), PATHINFO_FILENAME))
                 )
             )
         );
         $file->addAttribute(
             new MetadataAttr(
                 new Metadata(
-                    new PhraseaTag\TfExtension(), new MonoValue(pathinfo($file->getOriginalName(), PATHINFO_EXTENSION))
+                    new TfExtension(), new MonoValue(pathinfo($file->getOriginalName(), PATHINFO_EXTENSION))
                 )
             )
         );

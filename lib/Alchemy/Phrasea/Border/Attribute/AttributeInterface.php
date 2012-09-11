@@ -11,10 +11,12 @@
 
 namespace Alchemy\Phrasea\Border\Attribute;
 
+use Alchemy\Phrasea\Application;
+
 /**
  * File attribute interface
  */
-interface Attribute
+interface AttributeInterface
 {
     const NAME_METADATA = 'metadata';
     const NAME_METAFIELD = 'metafield';
@@ -43,7 +45,10 @@ interface Attribute
     /**
      * Build the current object with is string value
      *
+     * @param Application $app    the application context
+     * @param string      $string the serialized string
+     *
      * @throws \InvalidArgumentException
      */
-    public static function loadFromString($string);
+    public static function loadFromString(Application $app, $string);
 }

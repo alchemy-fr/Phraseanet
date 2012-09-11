@@ -18,9 +18,10 @@ class DimensionTest extends \PhraseanetPHPUnitAbstract
      */
     public function testCheckSameDims()
     {
-        $spl = new \SplFileInfo(__DIR__ . '/../../../../testfiles/test001.CR2');
-
-        $media = $this->getMock('\\MediaVorus\\Media\\Image', array('getWidth', 'getHeight'), array($spl));
+        $media = $this
+            ->getMockBuilder('\\MediaVorus\\Media\\Image')
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $media->expects($this->any())
             ->method('getWidth')
@@ -28,36 +29,39 @@ class DimensionTest extends \PhraseanetPHPUnitAbstract
         $media->expects($this->any())
             ->method('getHeight')
             ->will($this->returnValue('400'));
+        $media->expects($this->any())
+            ->method('getFile')
+            ->will($this->returnValue(new \SplFileInfo(__FILE__)));
 
         $File = new \Alchemy\Phrasea\Border\File($media, self::$collection);
 
-        $object = new Dimension(array('width' => 800));
-        $response = $object->check(self::$core['EM'], $File);
+        $object = new Dimension(self::$application, array('width' => 800));
+        $response = $object->check(self::$application['EM'], $File);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertFalse($response->isOk());
 
-        $object = new Dimension(array('width' => 500));
-        $response = $object->check(self::$core['EM'], $File);
+        $object = new Dimension(self::$application, array('width' => 500));
+        $response = $object->check(self::$application['EM'], $File);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertFalse($response->isOk());
 
-        $object = new Dimension(array('width' => 400));
-        $response = $object->check(self::$core['EM'], $File);
+        $object = new Dimension(self::$application, array('width' => 400));
+        $response = $object->check(self::$application['EM'], $File);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertTrue($response->isOk());
 
-        $object = new Dimension(array('width' => 600, 'height' => 500));
-        $response = $object->check(self::$core['EM'], $File);
+        $object = new Dimension(self::$application, array('width' => 600, 'height' => 500));
+        $response = $object->check(self::$application['EM'], $File);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertFalse($response->isOk());
 
-        $object = new Dimension(array('width' => 600, 'height' => 400));
-        $response = $object->check(self::$core['EM'], $File);
+        $object = new Dimension(self::$application, array('width' => 600, 'height' => 400));
+        $response = $object->check(self::$application['EM'], $File);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertTrue($response->isOk());
 
-        $object = new Dimension(array('width' => 200, 'height' => 200));
-        $response = $object->check(self::$core['EM'], $File);
+        $object = new Dimension(self::$application, array('width' => 200, 'height' => 200));
+        $response = $object->check(self::$application['EM'], $File);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertTrue($response->isOk());
     }
@@ -78,7 +82,7 @@ class DimensionTest extends \PhraseanetPHPUnitAbstract
                     $height = $dimensions['height'];
                 }
 
-                new Dimension(array('width' => $width,'height' => $height));
+                new Dimension(self::$application, array('width' => $width,'height' => $height));
                 $this->fail(sprintf('Exception raised with dimensions %s and %s', $width, $height));
             } catch (\InvalidArgumentException $e) {
 
@@ -114,6 +118,6 @@ class DimensionTest extends \PhraseanetPHPUnitAbstract
      */
     public function testContructorInvalidArgumentException()
     {
-        new Dimension(array('witdh' => 38));
+        new Dimension(self::$application, array('witdh' => 38));
     }
 }

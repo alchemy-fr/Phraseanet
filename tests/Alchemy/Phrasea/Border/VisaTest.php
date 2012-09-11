@@ -2,7 +2,7 @@
 
 namespace Alchemy\Phrasea\Border;
 
-class VisaTest extends \PHPUnit_Framework_TestCase
+class VisaTest extends \PhraseanetPHPUnitAbstract
 {
 
     /**
@@ -25,9 +25,9 @@ class VisaTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(array(), $visa->getResponses());
 
-        $response = new Checker\Response(true, new Checker\Filename());
+        $response = new Checker\Response(true, new Checker\Filename(self::$application));
         $visa->addResponse($response);
-        $response2 = new Checker\Response(false, new Checker\Filename());
+        $response2 = new Checker\Response(false, new Checker\Filename(self::$application));
         $visa->addResponse($response2);
 
         $this->assertSame(array($response, $response2), $visa->getResponses());
@@ -42,12 +42,12 @@ class VisaTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($visa->isValid());
 
-        $response = new Checker\Response(true, new Checker\Filename());
+        $response = new Checker\Response(true, new Checker\Filename(self::$application));
         $visa->addResponse($response);
 
         $this->assertTrue($visa->isValid());
 
-        $response2 = new Checker\Response(false, new Checker\Filename());
+        $response2 = new Checker\Response(false, new Checker\Filename(self::$application));
         $visa->addResponse($response2);
 
         $this->assertFalse($visa->isValid());

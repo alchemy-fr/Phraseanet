@@ -18,7 +18,7 @@ class MediaTypeTest extends \PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new MediaType(array('mediatypes' => array(MediaType::TYPE_IMAGE)));
+        $this->object = new MediaType(self::$application, array('mediatypes' => array(MediaType::TYPE_IMAGE)));
     }
 
     /**
@@ -26,17 +26,17 @@ class MediaTypeTest extends \PhraseanetPHPUnitAbstract
      */
     public function testCheck()
     {
-        $media = self::$core['mediavorus']->guess(new \SplFileInfo(__DIR__ . '/../../../../testfiles/test001.CR2'));
+        $media = self::$application['mediavorus']->guess(__DIR__ . '/../../../../testfiles/test001.CR2');
         $file = new \Alchemy\Phrasea\Border\File($media, self::$collection);
-        $response = $this->object->check(self::$core['EM'], $file);
+        $response = $this->object->check(self::$application['EM'], $file);
 
         $this->assertTrue($response->isOk());
 
-        $object = new MediaType(array('mediatypes' => array(MediaType::TYPE_VIDEO, MediaType::TYPE_AUDIO)));
+        $object = new MediaType(self::$application, array('mediatypes' => array(MediaType::TYPE_VIDEO, MediaType::TYPE_AUDIO)));
 
-        $media = self::$core['mediavorus']->guess(new \SplFileInfo(__DIR__ . '/../../../../testfiles/test001.CR2'));
+        $media = self::$application['mediavorus']->guess(__DIR__ . '/../../../../testfiles/test001.CR2');
         $file = new \Alchemy\Phrasea\Border\File($media, self::$collection);
-        $response = $object->check(self::$core['EM'], $file);
+        $response = $object->check(self::$application['EM'], $file);
 
         $this->assertFalse($response->isOk());
     }
@@ -54,6 +54,6 @@ class MediaTypeTest extends \PhraseanetPHPUnitAbstract
      */
     public function testContructorInvalidArgumentException()
     {
-        new MediaType(array(array(MediaType::TYPE_IMAGE)));
+        new MediaType(self::$application, array(array(MediaType::TYPE_IMAGE)));
     }
 }

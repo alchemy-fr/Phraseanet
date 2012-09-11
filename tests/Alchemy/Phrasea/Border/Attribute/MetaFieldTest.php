@@ -98,7 +98,7 @@ class MetaFieldTest extends \PhraseanetPHPUnitAbstract
      */
     public function testLoadFromString()
     {
-        $this->assertEquals($this->object, MetaField::loadFromString($this->object->asString()));
+        $this->assertEquals($this->object, MetaField::loadFromString(self::$application, $this->object->asString()));
     }
 
     /**
@@ -107,7 +107,7 @@ class MetaFieldTest extends \PhraseanetPHPUnitAbstract
      */
     public function testLoadFromStringFail()
     {
-        MetaField::loadFromString('Elephant');
+        MetaField::loadFromString(self::$application, 'Elephant');
     }
 
     /**
@@ -118,6 +118,6 @@ class MetaFieldTest extends \PhraseanetPHPUnitAbstract
     {
         \PHPUnit_Framework_Error_Warning::$enabled = false;
         \PHPUnit_Framework_Error_Notice::$enabled = false;
-        MetaField::loadFromString(serialize(array('Elephant', 'sbas_id' => self::$collection->get_sbas_id(), 'id' => 0)));
+        MetaField::loadFromString(self::$application, serialize(array('Elephant', 'sbas_id' => self::$collection->get_sbas_id(), 'id' => 0)));
     }
 }

@@ -22,10 +22,10 @@ class FilenameTest extends \PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new Filename;
+        $this->object = new Filename(self::$application);
         $this->filename = __DIR__ . '/../../../../../tmp/test001.CR2';
         copy(__DIR__ . '/../../../../testfiles/test001.CR2', $this->filename);
-        $this->media = self::$core['mediavorus']->guess(new \SplFileInfo($this->filename));
+        $this->media = self::$application['mediavorus']->guess($this->filename);
     }
 
     public function tearDown()
@@ -42,7 +42,7 @@ class FilenameTest extends \PhraseanetPHPUnitAbstract
      */
     public function testCheck()
     {
-        $response = $this->object->check(self::$core['EM'], new File($this->media, self::$collection));
+        $response = $this->object->check(self::$application['EM'], new File($this->media, self::$collection));
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
 
@@ -62,7 +62,7 @@ class FilenameTest extends \PhraseanetPHPUnitAbstract
             ->will($this->returnValue(\random::generatePassword(32)))
         ;
 
-        $response = $this->object->check(self::$core['EM'], $mock);
+        $response = $this->object->check(self::$application['EM'], $mock);
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
 
@@ -85,14 +85,14 @@ class FilenameTest extends \PhraseanetPHPUnitAbstract
             ->will($this->returnValue(strtoupper($this->media->getFile()->getFilename())))
         ;
 
-        $response = $this->object->check(self::$core['EM'], $mock);
+        $response = $this->object->check(self::$application['EM'], $mock);
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
 
         $this->assertFalse($response->isOk());
 
-        $objectSensitive = new Filename(array('sensitive'        => true));
-        $responseSensitive = $objectSensitive->check(self::$core['EM'], $mock);
+        $objectSensitive = new Filename(self::$application, array('sensitive'        => true));
+        $responseSensitive = $objectSensitive->check(self::$application['EM'], $mock);
 
         $this->assertTrue($responseSensitive->isOk());
 

@@ -11,13 +11,15 @@
 
 namespace Alchemy\Phrasea\Border\Attribute;
 
+use Alchemy\Phrasea\Application;
+
 /**
  * Phraseanet Border MetaField Attribute
  *
  * This attribute is used to store a value related to a fieldname for a file
  * prior to their record creation
  */
-class MetaField implements Attribute
+class MetaField implements AttributeInterface
 {
     /**
      *
@@ -35,13 +37,13 @@ class MetaField implements Attribute
      * Constructor
      *
      * @param \databox_field $databox_field The databox field
-     * @param type           $value         A scalar value
+     * @param string         $value         A scalar value
      *
      * @throws \InvalidArgumentException When value is not scalar
      */
     public function __construct(\databox_field $databox_field, $value)
     {
-        if ( ! is_scalar($value)) {
+        if (!is_scalar($value)) {
             throw new \InvalidArgumentException('Databox field only accept scalar values');
         }
         $this->databox_field = $databox_field;
@@ -101,20 +103,18 @@ class MetaField implements Attribute
      *
      * @return MetaField
      */
-    public static function loadFromString($string)
+    public static function loadFromString(Application $app, $string)
     {
-        if ( ! $datas = @unserialize($string)) {
+        if (!$datas = @unserialize($string)) {
             throw new \InvalidArgumentException('Unable to load metadata from string');
         }
 
         try {
-            $appbox = \appbox::get_instance(\bootstrap::getCore());
-            $databox = $appbox->get_databox($datas['sbas_id']);
-            $field = $databox->get_meta_structure()->get_element($datas['id']);
+            return new static($app['phraseanet.appbox']
+                    ->get_databox($datas['sbas_id'])
+                    ->get_meta_structure()->get_element($datas['id']), $datas['value']);
         } catch (\Exception_NotFound $e) {
             throw new \InvalidArgumentException('Field does not exist anymore');
         }
-
-        return new static($field, $datas['value']);
     }
 }

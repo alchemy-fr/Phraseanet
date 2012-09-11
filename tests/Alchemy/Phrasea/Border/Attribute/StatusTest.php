@@ -4,7 +4,7 @@ namespace Alchemy\Phrasea\Border\Attribute;
 
 require_once __DIR__ . '/../../../../PhraseanetPHPUnitAbstract.class.inc';
 
-class StatusTest extends \PHPUnit_Framework_TestCase
+class StatusTest extends \PhraseanetPHPUnitAbstract
 {
     /**
      * @var Status
@@ -89,6 +89,6 @@ class StatusTest extends \PHPUnit_Framework_TestCase
     {
         $status = new Status(12345);
 
-        $this->assertEquals($status, Status::loadFromString($status->asString()));
+        $this->assertEquals($status, Status::loadFromString(self::$application, $status->asString()));
     }
 }

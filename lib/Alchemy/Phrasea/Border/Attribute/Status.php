@@ -11,7 +11,9 @@
 
 namespace Alchemy\Phrasea\Border\Attribute;
 
-class Status implements Attribute
+use Alchemy\Phrasea\Application;
+
+class Status implements AttributeInterface
 {
     protected $status;
 
@@ -54,7 +56,7 @@ class Status implements Attribute
         return $this->status;
     }
 
-    public static function loadFromString($string)
+    public static function loadFromString(Application $app, $string)
     {
         return new static($string);
     }
