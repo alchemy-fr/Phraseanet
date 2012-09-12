@@ -2,9 +2,11 @@
 
 namespace Alchemy\Phrasea\Core\Service\Border;
 
+use Alchemy\Phrasea\Application;
+
 require_once __DIR__ . '/../../../../../PhraseanetPHPUnitAbstract.class.inc';
 
-class BorderManagerTest extends \PHPUnit_Framework_TestCase
+class BorderManagerTest extends \PhraseanetPHPUnitAbstract
 {
 
     /**
@@ -20,7 +22,7 @@ class BorderManagerTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-        $manager = new BorderManager(\bootstrap::getCore(), $options);
+        $manager = new BorderManager(self::$application, $options);
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Manager', $manager->getDriver());
     }
@@ -37,7 +39,7 @@ class BorderManagerTest extends \PHPUnit_Framework_TestCase
                 'options' => array()
             )
         );
-        $manager = new BorderManager(\bootstrap::getCore(), $options);
+        $manager = new BorderManager(self::$application, $options);
 
         $this->assertEquals('border', $manager->getType());
     }
@@ -58,7 +60,7 @@ class BorderManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetUnregisteredCheckers($options)
     {
-        $manager = new BorderManager(\bootstrap::getCore(), $options);
+        $manager = new BorderManager(self::$application, $options);
 
         $this->assertEquals(1, count($manager->getUnregisteredCheckers()));
     }
@@ -69,7 +71,7 @@ class BorderManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetGoodConf($options)
     {
-        $manager = new BorderManager(\bootstrap::getCore(), $options);
+        $manager = new BorderManager(self::$application, $options);
 
         $this->assertEquals(0, count($manager->getUnregisteredCheckers()));
     }
@@ -154,8 +156,9 @@ class BorderManagerTest extends \PHPUnit_Framework_TestCase
 
     public function getDataboxAndCollection()
     {
+        $app = new Application('test');
         $databox = $collection = null;
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = $app['phraseanet.appbox'];
 
         foreach ($appbox->get_databoxes() as $db) {
             if ( ! $databox) {

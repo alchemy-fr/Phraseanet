@@ -12,7 +12,7 @@ class AbstractBuilderTest extends PhraseanetPHPUnitAbstract
                 "\Alchemy\Phrasea\Core\Service\Builder"
                 , array()
                 , array(
-                self::$core
+                self::$application
                 , ''
                 , new \Symfony\Component\DependencyInjection\ParameterBag\ParameterBag()
                 )
@@ -30,7 +30,7 @@ class AbstractBuilderTest extends PhraseanetPHPUnitAbstract
                 "\\Alchemy\\Phrasea\\Core\\Service\\Builder"
                 , array()
                 , array(
-                self::$core,
+                self::$application,
                 'test',
                 new \Symfony\Component\DependencyInjection\ParameterBag\ParameterBag(),
                 )

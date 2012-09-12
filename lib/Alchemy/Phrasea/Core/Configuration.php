@@ -11,6 +11,9 @@
 
 namespace Alchemy\Phrasea\Core;
 
+use Alchemy\Phrasea\Core\Configuration\ApplicationSpecification;
+use Alchemy\Phrasea\Core\Configuration\SpecificationInterface;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
 /**
@@ -21,6 +24,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
  */
 class Configuration
 {
+    const KEYWORD_ENV = 'environment';
     /**
      * The finale configuration values as an array
      * @var ParameterBag\ParameterBag
@@ -36,14 +40,14 @@ class Configuration
 
     /**
      *
-     * @param  Configuration\ApplicationSpecification $specifications
+     * @param  ApplicationSpecification $specifications
      * @param  type                                   $environment
-     * @return \Alchemy\Phrasea\Core\Configuration
+     * @return Configuration
      */
     public static function build($specifications = null, $environment = null)
     {
         if ( ! $specifications) {
-            $specifications = new Configuration\ApplicationSpecification();
+            $specifications = new ApplicationSpecification();
         }
 
         return new self($specifications, $environment);
@@ -51,11 +55,11 @@ class Configuration
 
     /**
      *
-     * @param  Configuration\Specification         $specifications
+     * @param  SpecificationInterface         $specifications
      * @param  type                                $environment
-     * @return \Alchemy\Phrasea\Core\Configuration
+     * @return Configuration
      */
-    public function __construct(Configuration\Specification $specifications, $environment = null)
+    public function __construct(SpecificationInterface $specifications, $environment = null)
     {
         $this->specifications = $specifications;
 
@@ -101,12 +105,12 @@ class Configuration
         $configs = $this->getConfigurations();
 
         $retrieve_old_parameters = function(\SplFileInfo $configInc) {
-                require $configInc->getPathname();
+            require $configInc->getPathname();
 
-                return array(
-                    'servername' => $servername
-                );
-            };
+            return array(
+                'servername' => $servername
+            );
+        };
 
         $old_parameters = $retrieve_old_parameters($configInc);
 
@@ -177,10 +181,8 @@ class Configuration
      */
     public function isDebug()
     {
-        $phraseanet = $this->getPhraseanet();
-
         try {
-            $debug = ! ! $phraseanet->get('debug');
+            $debug = (Boolean) $this->getPhraseanet()->get('debug');
         } catch (\Exception $e) {
             $debug = false;
         }
@@ -195,10 +197,8 @@ class Configuration
      */
     public function isMaintained()
     {
-        $phraseanet = $this->getPhraseanet();
-
         try {
-            $maintained = ! ! $phraseanet->get('maintenance');
+            $maintained = (Boolean) $this->getPhraseanet()->get('maintenance');
         } catch (\Exception $e) {
             $maintained = false;
         }
@@ -213,10 +213,8 @@ class Configuration
      */
     public function isDisplayingErrors()
     {
-        $phraseanet = $this->getPhraseanet();
-
         try {
-            $displayErrors = ! ! $phraseanet->get('display_errors');
+            $displayErrors = (Boolean) $this->getPhraseanet()->get('display_errors');
         } catch (\Exception $e) {
             $displayErrors = false;
         }
@@ -231,9 +229,7 @@ class Configuration
      */
     public function getPhraseanet()
     {
-        $phraseanetConf = $this->configuration->get('phraseanet');
-
-        return new ParameterBag($phraseanetConf);
+        return new ParameterBag($this->configuration->get('phraseanet'));
     }
 
     /**
@@ -280,7 +276,6 @@ class Configuration
     {
         return $this->specifications->getConnexions();
     }
-    const KEYWORD_ENV = 'environment';
 
     public function getSelectedEnvironnment()
     {
@@ -297,7 +292,7 @@ class Configuration
         $connexions = $this->getConnexions();
 
         if ( ! isset($connexions[$name])) {
-            throw new \Exception(sprintf('Unknown connexion name %s', $name));
+            throw new InvalidArgumentException(sprintf('Unknown connexion name %s', $name));
         }
 
         return new Parameterbag($connexions[$name]);
@@ -359,7 +354,7 @@ class Configuration
                 $service = new ParameterBag($services->get($scope));
                 $services = $service;
             } catch (\Exception $e) {
-                throw new \Exception(sprintf('Unknow service name %s', $name));
+                throw new InvalidArgumentException(sprintf('Unknow service name %s', $name));
             }
         }
 

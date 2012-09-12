@@ -1,5 +1,9 @@
 <?php
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Service\Builder;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
+
 require_once __DIR__ . '/../../../../PhraseanetPHPUnitAbstract.class.inc';
 
 class OrmBuilderTest extends PhraseanetPHPUnitAbstract
@@ -7,12 +11,12 @@ class OrmBuilderTest extends PhraseanetPHPUnitAbstract
 
     public function testCreateException()
     {
-        $configuration = new Symfony\Component\DependencyInjection\ParameterBag\ParameterBag(
+        $configuration = new ParameterBag(
                 array("type"    => "unknow", "options" => array())
         );
 
         try {
-            $service = Alchemy\Phrasea\Core\Service\Builder::create(self::$core, $configuration);
+            $service = Builder::create(new Application('test'), $configuration);
             $this->fail("An exception should be raised");
         } catch (\Exception $e) {
 
@@ -23,7 +27,7 @@ class OrmBuilderTest extends PhraseanetPHPUnitAbstract
     {
         $registry = $this->getMock("\RegistryInterface");
 
-        $configuration = new Symfony\Component\DependencyInjection\ParameterBag\ParameterBag(
+        $configuration = new ParameterBag(
                 array("type"    => "Orm\\Doctrine", "options" => array(
                         "debug" => false
                         , "log"   => array('service' => "Log\\query_logger")
@@ -37,7 +41,7 @@ class OrmBuilderTest extends PhraseanetPHPUnitAbstract
                 )
         );
 
-        $service = Alchemy\Phrasea\Core\Service\Builder::create(self::$core, $configuration);
+        $service = Builder::create(new Application('test'), $configuration);
         $this->assertInstanceOf("\Alchemy\Phrasea\Core\Service\ServiceAbstract", $service);
     }
 }

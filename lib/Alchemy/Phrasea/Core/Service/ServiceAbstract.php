@@ -11,7 +11,8 @@
 
 namespace Alchemy\Phrasea\Core\Service;
 
-use Alchemy\Phrasea\Core;
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Service\Exception\MissingParameters;
 
 /**
  *
@@ -20,18 +21,18 @@ use Alchemy\Phrasea\Core;
  */
 abstract class ServiceAbstract implements ServiceInterface
 {
-    protected $core;
+    protected $app;
     protected $options;
 
-    final public function __construct(Core $core, Array $options)
+    final public function __construct(Application $app, Array $options)
     {
-        $this->core = $core;
+        $this->app = $app;
         $this->options = $options;
 
         $mandatory = $this->getMandatoryOptions();
 
         if ($mandatory !== array_intersect($mandatory, array_keys($options))) {
-            throw new Exception\MissingParameters(
+            throw new MissingParameters(
                 sprintf(
                     'Missing parameters %s'
                     , implode(', ', array_diff($mandatory, array_keys($options)))
@@ -45,11 +46,6 @@ abstract class ServiceAbstract implements ServiceInterface
     protected function init()
     {
         return;
-    }
-
-    protected function getCore()
-    {
-        return $this->core;
     }
 
     /**

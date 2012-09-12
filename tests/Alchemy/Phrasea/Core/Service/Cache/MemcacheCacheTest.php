@@ -8,7 +8,7 @@ class ServiceMemcacheCacheTest extends PhraseanetPHPUnitAbstract
     public function testService()
     {
         $cache = new \Alchemy\Phrasea\Core\Service\Cache\MemcacheCache(
-                self::$core, array()
+                self::$application, array()
         );
 
         if (extension_loaded('memcache')) {
@@ -27,7 +27,7 @@ class ServiceMemcacheCacheTest extends PhraseanetPHPUnitAbstract
     public function testServiceException()
     {
         $cache = new \Alchemy\Phrasea\Core\Service\Cache\MemcacheCache(
-                self::$core, array()
+                self::$application, array()
         );
 
         try {
@@ -41,7 +41,7 @@ class ServiceMemcacheCacheTest extends PhraseanetPHPUnitAbstract
     public function testType()
     {
         $cache = new \Alchemy\Phrasea\Core\Service\Cache\MemcacheCache(
-                self::$core, array()
+                self::$application, array()
         );
 
         $this->assertEquals("memcache", $cache->getType());
@@ -50,7 +50,7 @@ class ServiceMemcacheCacheTest extends PhraseanetPHPUnitAbstract
     public function testHost()
     {
         $cache = new \Alchemy\Phrasea\Core\Service\Cache\MemcacheCache(
-                self::$core, array()
+                self::$application, array()
         );
 
         $this->assertEquals(\Alchemy\Phrasea\Core\Service\Cache\MemcacheCache::DEFAULT_HOST, $cache->getHost());
@@ -59,7 +59,7 @@ class ServiceMemcacheCacheTest extends PhraseanetPHPUnitAbstract
     public function testPort()
     {
         $cache = new \Alchemy\Phrasea\Core\Service\Cache\MemcacheCache(
-                self::$core, array()
+                self::$application, array()
         );
 
         $this->assertEquals(\Alchemy\Phrasea\Core\Service\Cache\MemcacheCache::DEFAULT_PORT, $cache->getPort());

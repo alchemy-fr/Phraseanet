@@ -38,11 +38,11 @@ class BorderManager extends ServiceAbstract
      */
     protected function init()
     {
-        $appbox = \appbox::get_instance($this->core);
-        $borderManager = new Manager($this->core['EM'], $this->core['file-system']);
+        $appbox = $this->app['phraseanet.appbox'];
+        $borderManager = new Manager($this->app);
 
-        if ($this->core['pdf-to-text']) {
-            $borderManager->setPdfToText($this->core['pdf-to-text']);
+        if ($this->app['xpdf.pdf2text']) {
+            $borderManager->setPdfToText($this->app['xpdf.pdf2text']);
         }
 
         $options = $this->getOptions();
@@ -78,7 +78,7 @@ class BorderManager extends ServiceAbstract
                 }
 
                 try {
-                    $checkerObj = new $className($options);
+                    $checkerObj = new $className($this->app, $options);
                     if (isset($checker['databoxes'])) {
 
                         $databoxes = array();

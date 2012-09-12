@@ -11,8 +11,8 @@
 
 namespace Alchemy\Phrasea\Core\Service;
 
+use Alchemy\Phrasea\Application;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
-use Alchemy\Phrasea\Core;
 
 /**
  *
@@ -22,7 +22,7 @@ use Alchemy\Phrasea\Core;
 class Builder
 {
 
-    public static function create(Core $core, ParameterBag $configuration)
+    public static function create(Application $app, ParameterBag $configuration)
     {
         $classname = __NAMESPACE__ . '\\' . $configuration->get("type");
 
@@ -36,6 +36,6 @@ class Builder
             $options = array();
         }
 
-        return new $classname($core, $options);
+        return new $classname($app, $options);
     }
 }

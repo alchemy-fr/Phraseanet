@@ -8,7 +8,7 @@ class ServiceArrayCacheTest extends PhraseanetPHPUnitAbstract
     public function testService()
     {
         $cache = new \Alchemy\Phrasea\Core\Service\Cache\ArrayCache(
-                self::$core, array()
+                self::$application, array()
         );
 
         $service = $cache->getDriver();
@@ -18,7 +18,7 @@ class ServiceArrayCacheTest extends PhraseanetPHPUnitAbstract
     public function testServiceException()
     {
         $cache = new \Alchemy\Phrasea\Core\Service\Cache\ArrayCache(
-                self::$core, array()
+                self::$application, array()
         );
 
         try {
@@ -32,7 +32,7 @@ class ServiceArrayCacheTest extends PhraseanetPHPUnitAbstract
     public function testType()
     {
         $cache = new \Alchemy\Phrasea\Core\Service\Cache\ArrayCache(
-                self::$core, array()
+                self::$application, array()
         );
 
         $this->assertEquals("array", $cache->getType());
