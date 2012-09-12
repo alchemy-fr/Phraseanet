@@ -22,8 +22,8 @@
         {
             "package": "dailymotion/sdk",
             "version": "dev-master",
-            "source-reference": "3a8e5d5f07523031138f47d9d7ecf439a1a7300d",
-            "commit-date": "1341934599"
+            "source-reference": "50b8c4c05053d6ee7d058168206be38fd605b2b5",
+            "commit-date": "1347111009"
         },
         {
             "package": "data-uri/data-uri",
@@ -143,9 +143,9 @@
         },
         {
             "package": "symfony/symfony",
-            "version": "2.1.x-dev",
-            "source-reference": "e7059b44c78ca8e1e892adb4d93b5a482f4eb9b3",
-            "commit-date": "1346926323"
+            "version": "dev-master",
+            "alias-pretty-version": "2.1.x-dev",
+            "alias-version": "2.1.9999999.9999999-dev"
         },
         {
             "package": "tcpdf/tcpdf",
@@ -168,8 +168,8 @@
         {
             "package": "twig/twig",
             "version": "dev-master",
-            "source-reference": "459720ff3b74ee0c0d159277c6f2f5df89d8a4f6",
-            "commit-date": "1346397138"
+            "source-reference": "68b8c4619c5bbe82bd345fe56070dec8c356610a",
+            "commit-date": "1347025342"
         },
         {
             "package": "zend/gdata",
@@ -200,8 +200,8 @@
         {
             "package": "behat/mink-extension",
             "version": "dev-master",
-            "source-reference": "0b8a4d7d10dd83211accaa1299d57f521d912c1c",
-            "commit-date": "1346250202"
+            "source-reference": "2a0913a19c145d7e0cb0aba592635dfceb8808a1",
+            "commit-date": "1347305071"
         },
         {
             "package": "behat/mink-goutte-driver",
@@ -212,8 +212,8 @@
         {
             "package": "behat/mink-selenium2-driver",
             "version": "dev-master",
-            "source-reference": "aad26bdb19f904b1990048750fc33c7b6f7f2e0e",
-            "commit-date": "1343748582"
+            "source-reference": "11fd094d7b5809b265cd336316d7e4ce7e4f5fe6",
+            "commit-date": "1347022643"
         },
         {
             "package": "doctrine/data-fixtures",
