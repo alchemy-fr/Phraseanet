@@ -448,7 +448,7 @@ class Collection implements ControllerProviderInterface
             }
 
             if (count($newAdmins) > 0) {
-                $conn = $app['phraseanet.Appbox']->get_connection();
+                $conn = $app['phraseanet.appbox']->get_connection();
                 $conn->beginTransaction();
 
                 try {

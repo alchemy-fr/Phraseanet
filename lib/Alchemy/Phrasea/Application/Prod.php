@@ -78,7 +78,7 @@ return call_user_func(function() {
                             , 'message' => $e->getMessage()
                         );
 
-                        return $app->json($json, 200, array('X-Status-Code' => 200));
+                        return $app->json($datas, 200, array('X-Status-Code' => 200));
                     }
                     if ($e instanceof \Exception_BadRequest) {
                         return new Response('Bad Request', 400, array('X-Status-Code' => 400));
