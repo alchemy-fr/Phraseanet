@@ -84,7 +84,7 @@ class RescanTechnicalDatas extends Command
 
             foreach ($rs as $row) {
                 $record = $databox->get_record($row['record_id']);
-                $record->insertTechnicalDatas();
+                $record->insertTechnicalDatas($this->getService('mediavorus'));
                 unset($record);
                 $output->write("\r" . $n . " records done");
                 $n ++;

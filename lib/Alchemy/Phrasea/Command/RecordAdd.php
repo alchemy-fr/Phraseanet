@@ -69,7 +69,7 @@ class RecordAdd extends Command
             throw new \InvalidArgumentException(sprintf('File %s does not exists', $file));
         }
 
-        $media = $this->container['phraseanet.core']['mediavorus']->guess(new \SplFileInfo($file));
+        $media = $this->container['mediavorus']->guess($file);
 
         $dialog = $this->getHelperSet()->get('dialog');
 
@@ -87,15 +87,15 @@ class RecordAdd extends Command
         if ($input->getOption('in-place') !== '1') {
             $originalName = pathinfo($file, PATHINFO_BASENAME);
             $tempfile = tempnam(sys_get_temp_dir(), 'addrecord') . '.' . pathinfo($file, PATHINFO_EXTENSION);
-            $this->container['phraseanet.core']['monolog']->addInfo(sprintf('copy file from `%s` to temporary `%s`', $file, $tempfile));
+            $this->container['monolog']->addInfo(sprintf('copy file from `%s` to temporary `%s`', $file, $tempfile));
             $this->container['filesystem']->copy($file, $tempfile, true);
             $file = $tempfile;
-            $media = $this->container['phraseanet.core']['mediavorus']->guess(new \SplFileInfo($file));
+            $media = $this->container['mediavorus']->guess($file);
         }
 
         $file = new File($media, $collection, $originalName);
         $session = new LazaretSession();
-        $this->container['phraseanet.core']['EM']->persist($session);
+        $this->container['EM']->persist($session);
 
         $forceBehavior = null;
 
@@ -118,7 +118,7 @@ class RecordAdd extends Command
             $elementCreated = $element;
         };
 
-        $this->container['phraseanet.core']['border-manager']->process($session, $file, $callback, $forceBehavior);
+        $this->container['border-manager']->process($session, $file, $callback, $forceBehavior);
 
         if ($elementCreated instanceof \record_adapter) {
             $output->writeln(
@@ -133,7 +133,7 @@ class RecordAdd extends Command
         }
 
         if ($tempfile) {
-            $this->container['phraseanet.core']['monolog']->addInfo(sprintf('Remove temporary file `%s`', $tempfile));
+            $this->container['monolog']->addInfo(sprintf('Remove temporary file `%s`', $tempfile));
             $this->container['filesystem']->remove($tempfile);
         }
 

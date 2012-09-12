@@ -3,6 +3,8 @@
 namespace Alchemy\Phrasea\Command;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Command\Upgrade\Step31;
+use Alchemy\Phrasea\Command\Upgrade\Step35;
 
 class UpgradeDBDatasTest extends \PHPUnit_Framework_TestCase
 {
@@ -38,7 +40,7 @@ class UpgradeDBDatasTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(), $this->object->getUpgrades());
 
         $upgrades = array(
-            new Upgrade\Step31(new Application())
+            new Step31(new Application())
         );
         $this->object->setUpgrades($upgrades);
         $this->assertEquals($upgrades, $this->object->getUpgrades());
@@ -51,12 +53,12 @@ class UpgradeDBDatasTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals(array(), $this->object->getUpgrades());
 
-        $step31 = new Upgrade\Step31(new Application());
+        $step31 = new Step31(new Application());
         $this->object->addUpgrade($step31);
 
         $this->assertEquals(array($step31), $this->object->getUpgrades());
 
-        $step35 = new Upgrade\Step35(new Application());
+        $step35 = new Step35(new Application());
         $this->object->addUpgrade($step35);
 
         $this->assertEquals(array($step31, $step35), $this->object->getUpgrades());

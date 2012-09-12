@@ -72,6 +72,6 @@ class CreateCollection extends Command
             }
         }
 
-        \User_Adapter::reset_sys_admins_rights();
+        \User_Adapter::reset_sys_admins_rights($this->container);
     }
 }

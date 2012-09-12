@@ -123,16 +123,16 @@ class Step31 implements DatasUpgraderInterface
 
         $uuid = \uuid::generate_v4();
         try {
-            $media = $this->app['phraseanet.core']['mediavorus']->guess(new \SplFileInfo($pathfile));
+            $media = $this->app['mediavorus']->guess($pathfile);
             $collection = \collection::get_from_coll_id($databox, (int) $record['coll_id']);
 
             $file = new File($media, $collection);
             $uuid = $file->getUUID(true, true);
             $sha256 = $file->getSha256();
 
-            $this->app['phraseanet.core']['monolog']->addInfo(sprintf("Upgrading record %d with uuid %s", $record['record_id'], $uuid));
+            $this->app['monolog']->addInfo(sprintf("Upgrading record %d with uuid %s", $record['record_id'], $uuid));
         } catch (\Exception $e) {
-            $this->app['phraseanet.core']['monolog']->addError(sprintf("Uuid upgrade for record %s failed", $record['record_id']));
+            $this->app['monolog']->addError(sprintf("Uuid upgrade for record %s failed", $record['record_id']));
         }
 
         $sql = 'UPDATE record SET uuid = :uuid, sha256 = :sha256 WHERE record_id = :record_id';

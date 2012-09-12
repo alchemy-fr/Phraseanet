@@ -56,7 +56,7 @@ abstract class Command extends SymfoCommand
     public function checkSetup()
     {
         if ($this->requireSetup()) {
-            if ($this->container['phraseanet.core'] && ! $this->container['phraseanet.core']->getConfiguration()->isInstalled()) {
+            if (!$this->container['phraseanet.configuration']->isInstalled()) {
                 throw new \RuntimeException('Phraseanet must be set-up');
             }
         }
@@ -71,7 +71,7 @@ abstract class Command extends SymfoCommand
 
         if ($input->getOption('verbose')) {
             $handler = new StreamHandler('php://stdout');
-            $this->container['phraseanet.core']['monolog']->pushHandler($handler);
+            $this->container['monolog']->pushHandler($handler);
         }
 
         return $this->doExecute($input, $output);
