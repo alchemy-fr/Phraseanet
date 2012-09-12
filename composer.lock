@@ -104,8 +104,8 @@
         {
             "package": "phpexiftool/phpexiftool",
             "version": "dev-master",
-            "source-reference": "c72f9a88a74c1967fb14de62f342048c8311cb9b",
-            "commit-date": "1346681208"
+            "source-reference": "5dc6e9a21e4b0faf6809070bc4f1cc4fef06ead6",
+            "commit-date": "1339680734"
         },
         {
             "package": "pimple/pimple",
