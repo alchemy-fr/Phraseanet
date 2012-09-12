@@ -463,7 +463,7 @@ class Collection implements ControllerProviderInterface
                     }
 
                     foreach (array_filter($newAdmins) as $admin) {
-                        $user = User_Adapter::getInstance($admin, $app['phraseanet.appbox']);
+                        $user = \User_Adapter::getInstance($admin, $app['phraseanet.appbox']);
                         $user->ACL()->update_rights_to_base($bas_id, array('order_master' => true));
                     }
 
