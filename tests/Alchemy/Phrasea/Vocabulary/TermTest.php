@@ -1,8 +1,10 @@
 <?php
 
-require_once __DIR__ . '/../../../PhraseanetPHPUnitAbstract.class.inc';
+namespace Alchemy\Phrasea\Vocabulary;
 
-use \Alchemy\Phrasea\Vocabulary\Term;
+use Alchemy\Phrasea\Vocabulary\ControlProvider\UserProvider;
+
+require_once __DIR__ . '/../../../PhraseanetPHPUnitAbstract.class.inc';
 
 class TermTest extends \PhraseanetPHPUnitAbstract
 {
@@ -32,7 +34,7 @@ class TermTest extends \PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->control = new Alchemy\Phrasea\Vocabulary\ControlProvider\UserProvider();
+        $this->control = new UserProvider(self::$application);
 
         $this->object = new Term($this->value, $this->context);
         $this->basicObject = new Term($this->basicValue);

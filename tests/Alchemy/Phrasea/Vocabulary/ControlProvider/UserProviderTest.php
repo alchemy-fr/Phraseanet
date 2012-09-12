@@ -12,7 +12,7 @@ class UserProviderTest extends \PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new \Alchemy\Phrasea\Vocabulary\ControlProvider\UserProvider();
+        $this->object = new \Alchemy\Phrasea\Vocabulary\ControlProvider\UserProvider(self::$application);
     }
 
     /**

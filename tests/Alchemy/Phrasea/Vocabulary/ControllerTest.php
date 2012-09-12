@@ -1,5 +1,7 @@
 <?php
 
+namespace Alchemy\Phrasea\Vocabulary;
+
 require_once __DIR__ . '/../../../PhraseanetPHPUnitAbstract.class.inc';
 
 class ControllerTest extends \PhraseanetPHPUnitAbstract
@@ -7,12 +9,12 @@ class ControllerTest extends \PhraseanetPHPUnitAbstract
 
     public function testGet()
     {
-        $provider = \Alchemy\Phrasea\Vocabulary\Controller::get('User');
+        $provider = Controller::get(self::$application, 'User');
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Vocabulary\\ControlProvider\\UserProvider', $provider);
 
         try {
-            $provider = \Alchemy\Phrasea\Vocabulary\Controller::get('Zebulon');
+            $provider = Controller::get(self::$application, 'Zebulon');
             $this->fail('Should raise an exception');
         } catch (\Exception $e) {
 
@@ -21,7 +23,7 @@ class ControllerTest extends \PhraseanetPHPUnitAbstract
 
     public function testGetAvailable()
     {
-        $available = \Alchemy\Phrasea\Vocabulary\Controller::getAvailable();
+        $available = Controller::getAvailable(self::$application);
 
         $this->assertTrue(is_array($available));
 
