@@ -6,16 +6,6 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
 
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Admin.php';
-
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-
-        return $app;
-    }
-
     /**
      * @expectedException Symfony\Component\HttpKernel\Exception\HttpException
      * @covers \Alchemy\Phrasea\Controller\Admin\Dashboard::slash
@@ -25,7 +15,7 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testRouteDashboardUnauthorized()
     {
         $this->setAdmin(false);
-        $this->client->request('GET', '/dashboard/');
+        $this->client->request('GET', '/admin/dashboard/');
     }
 
     /**
@@ -35,7 +25,7 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('GET', '/dashboard/', array(
+        $this->client->request('GET', '/admin/dashboard/', array(
             'flush_cache' => 'ok',
             'email'       => 'sent'
         ));
@@ -50,7 +40,7 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/dashboard/flush-cache/');
+        $this->client->request('POST', '/admin/dashboard/flush-cache/');
 
         $this->assertTrue($this->client->getResponse()->isRedirect());
         $this->assertRegexp('/flush_cache=ok/', $this->client->getResponse()->headers->get('location'));
@@ -63,7 +53,7 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/dashboard/send-mail-test/', array(
+        $this->client->request('POST', '/admin/dashboard/send-mail-test/', array(
             'email' => self::$user->get_email()
         ));
 
@@ -79,7 +69,7 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/dashboard/send-mail-test/');
+        $this->client->request('POST', '/admin/dashboard/send-mail-test/');
     }
     /**
      * @covers \Alchemy\Phrasea\Controller\Admin\Dashboard::resetAdminRights
@@ -88,7 +78,7 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/dashboard/reset-admin-rights/');
+        $this->client->request('POST', '/admin/dashboard/reset-admin-rights/');
 
         $this->assertTrue($this->client->getResponse()->isRedirect());
     }
@@ -102,11 +92,11 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $admins = array_keys(\User_Adapter::get_sys_admins());
 
-        $user = \User_Adapter::create($this->app['phraseanet.appbox'], uniqid('unit_test_user'), uniqid('unit_test_user'),  uniqid('unit_test_user') ."@email.com", false);
+        $user = \User_Adapter::create($this->app, uniqid('unit_test_user'), uniqid('unit_test_user'),  uniqid('unit_test_user') ."@email.com", false);
 
         $admins[] = $user->get_id();
 
-        $this->client->request('POST', '/dashboard/add-admins/', array(
+        $this->client->request('POST', '/admin/dashboard/add-admins/', array(
             'admins' => $admins
         ));
 
