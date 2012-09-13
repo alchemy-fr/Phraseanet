@@ -31,6 +31,7 @@ class Setup_Upgrade
      * @var string
      */
     protected $message;
+
     /**
      *
      * @var array
@@ -54,8 +55,12 @@ class Setup_Upgrade
      * @param  appbox        $appbox
      * @return Setup_Upgrade
      */
-    public function __construct(appbox &$appbox)
+    public function __construct(appbox &$appbox, $force = false)
     {
+        if ($force) {
+            self::remove_lock_file();
+        }
+
         if (self::lock_exists()) {
             throw new Exception_Setup_UpgradeAlreadyStarted('The upgrade is already started');
         }
@@ -176,7 +181,7 @@ class Setup_Upgrade
             ), 1
         );
 
-        if ( ! file_put_contents(self::get_lock_file(), $datas))
+        if (!file_put_contents(self::get_lock_file(), $datas))
             throw new Exception_Setup_CannotWriteLockFile(
                 sprintf('Cannot write lock file to %s', self::get_lock_file())
             );
@@ -212,8 +217,9 @@ class Setup_Upgrade
      */
     protected static function remove_lock_file()
     {
-        if (self::lock_exists())
+        if (self::lock_exists()) {
             unlink(self::get_lock_file());
+        }
 
         return;
     }
