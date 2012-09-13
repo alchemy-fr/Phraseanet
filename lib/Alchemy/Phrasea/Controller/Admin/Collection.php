@@ -31,11 +31,11 @@ class Collection implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
-                if (null !== $response = $app['phraseanet.core']['Firewall']->requireAdmin($app)) {
+                if (null !== $response = $app['firewall']->requireAdmin($app)) {
                     return $response;
                 }
 
-                if ( ! $app['phraseanet.core']->getAUthenticatedUser()->ACL()->has_right_on_base($app['request']->attributes->get('bas_id'), 'canadmin')) {
+                if ( ! $app['phraseanet.user']->ACL()->has_right_on_base($app['request']->attributes->get('bas_id'), 'canadmin')) {
                     $app->abort(403);
                 }
             });
@@ -393,12 +393,12 @@ class Collection implements ControllerProviderInterface
      */
     public function getCollection(Application $app, Request $request, $bas_id)
     {
-        $collection = \collection::get_from_base_id($bas_id);
+        $collection = \collection::get_from_base_id($app, $bas_id);
 
         $admins = array();
 
-        if ($app['phraseanet.core']->getAuthenticatedUser()->ACL()->has_right_on_base($bas_id, 'manage')) {
-            $query = new \User_Query($app['phraseanet.appbox']);
+        if ($app['phraseanet.user']->ACL()->has_right_on_base($bas_id, 'manage')) {
+            $query = new \User_Query($app);
             $admins = $query->on_base_ids(array($bas_id))
                 ->who_have_right(array('order_master'))
                 ->execute()
@@ -452,7 +452,7 @@ class Collection implements ControllerProviderInterface
                 $conn->beginTransaction();
 
                 try {
-                    $userQuery = new \User_Query($app['phraseanet.appbox']);
+                    $userQuery = new \User_Query($app);
 
                     $result = $userQuery->on_base_ids(array($bas_id))
                             ->who_have_right(array('order_master'))
@@ -463,10 +463,9 @@ class Collection implements ControllerProviderInterface
                     }
 
                     foreach (array_filter($newAdmins) as $admin) {
-                        $user = \User_Adapter::getInstance($admin, $app['phraseanet.appbox']);
+                        $user = \User_Adapter::getInstance($admin, $app);
                         $user->ACL()->update_rights_to_base($bas_id, array('order_master' => true));
                     }
-
                     $conn->commit();
 
                     $success = true;
@@ -493,7 +492,7 @@ class Collection implements ControllerProviderInterface
         $msg = _('An error occurred');
 
         try {
-            $collection = \collection::get_from_base_id($bas_id);
+            $collection = \collection::get_from_base_id($app, $bas_id);
 
             if ($collection->get_record_amount() <= 500) {
                 $collection->empty_collection(500);
@@ -534,7 +533,7 @@ class Collection implements ControllerProviderInterface
         $success = false;
 
         try {
-            $collection = \collection::get_from_base_id($bas_id);
+            $collection = \collection::get_from_base_id($app, $bas_id);
             $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, null, \collection::PIC_PRESENTATION);
             $success = true;
         } catch (\Exception $e) {
@@ -566,7 +565,7 @@ class Collection implements ControllerProviderInterface
         $success = false;
 
         try {
-            $collection = \collection::get_from_base_id($bas_id);
+            $collection = \collection::get_from_base_id($app, $bas_id);
             $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, null, \collection::PIC_STAMP);
             $success = true;
         } catch (\Exception $e) {
@@ -598,7 +597,7 @@ class Collection implements ControllerProviderInterface
         $success = false;
 
         try {
-            $collection = \collection::get_from_base_id($bas_id);
+            $collection = \collection::get_from_base_id($app, $bas_id);
             $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, null, \collection::PIC_WM);
             $success = true;
         } catch (\Exception $e) {
@@ -630,7 +629,7 @@ class Collection implements ControllerProviderInterface
         $success = false;
 
         try {
-            $collection = \collection::get_from_base_id($bas_id);
+            $collection = \collection::get_from_base_id($app, $bas_id);
             $collection->update_logo(null);
             $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, null, \collection::PIC_LOGO);
             $success = true;
@@ -675,7 +674,7 @@ class Collection implements ControllerProviderInterface
         }
 
         try {
-            $collection = \collection::get_from_base_id($bas_id);
+            $collection = \collection::get_from_base_id($app, $bas_id);
 
             $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, $file, \collection::PIC_PRESENTATION);
 
@@ -713,7 +712,7 @@ class Collection implements ControllerProviderInterface
         }
 
         try {
-            $collection = \collection::get_from_base_id($bas_id);
+            $collection = \collection::get_from_base_id($app, $bas_id);
 
             $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, $file, \collection::PIC_STAMP);
 
@@ -751,7 +750,7 @@ class Collection implements ControllerProviderInterface
         }
 
         try {
-            $collection = \collection::get_from_base_id($bas_id);
+            $collection = \collection::get_from_base_id($app, $bas_id);
 
             $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, $file, \collection::PIC_WM);
 
@@ -789,7 +788,7 @@ class Collection implements ControllerProviderInterface
         }
 
         try {
-            $collection = \collection::get_from_base_id($bas_id);
+            $collection = \collection::get_from_base_id($app, $bas_id);
 
             $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, $file, \collection::PIC_LOGO);
 
@@ -816,12 +815,12 @@ class Collection implements ControllerProviderInterface
         $msg = _('An error occured');
 
         try {
-            $collection = \collection::get_from_base_id($bas_id);
+            $collection = \collection::get_from_base_id($app, $bas_id);
 
             if ($collection->get_record_amount() > 0) {
                 $msg = _('Empty the collection before removing');
             } else {
-                $collection->unmount_collection($app['phraseanet.appbox']);
+                $collection->unmount_collection($app);
                 $collection->delete();
                 $success = true;
                 $msg = _('Successful removal');
@@ -864,8 +863,8 @@ class Collection implements ControllerProviderInterface
         $success = false;
 
         try {
-            $collection = \collection::get_from_base_id($bas_id);
-            $collection->unmount_collection($app['phraseanet.appbox']);
+            $collection = \collection::get_from_base_id($app, $bas_id);
+            $collection->unmount_collection($app);
             $success = true;
         } catch (\Exception $e) {
 
@@ -899,7 +898,7 @@ class Collection implements ControllerProviderInterface
         $success = false;
 
         try {
-            $collection = \collection::get_from_base_id($bas_id);
+            $collection = \collection::get_from_base_id($app, $bas_id);
             $collection->set_name($name);
             $success = true;
         } catch (\Exception $e) {
@@ -934,7 +933,7 @@ class Collection implements ControllerProviderInterface
         $success = false;
 
         try {
-            $collection = \collection::get_from_base_id($bas_id);
+            $collection = \collection::get_from_base_id($app, $bas_id);
             $collection->set_public_presentation($watermark);
             $success = true;
         } catch (\Exception $e) {
@@ -965,7 +964,7 @@ class Collection implements ControllerProviderInterface
         $success = false;
 
         try {
-            $collection = \collection::get_from_base_id($bas_id);
+            $collection = \collection::get_from_base_id($app, $bas_id);
             $collection->enable($app['phraseanet.appbox']);
             $success = true;
         } catch (\Exception $e) {
@@ -996,7 +995,7 @@ class Collection implements ControllerProviderInterface
         $success = false;
 
         try {
-            $collection = \collection::get_from_base_id($bas_id);
+            $collection = \collection::get_from_base_id($app, $bas_id);
             $collection->disable($app['phraseanet.appbox']);
             $success = true;
         } catch (\Exception $e) {
@@ -1023,8 +1022,8 @@ class Collection implements ControllerProviderInterface
      */
     public function getSuggestedValues(Application $app, Request $request, $bas_id)
     {
-        $databox = $app['phraseanet.appbox']->get_databox(\phrasea::sbasFromBas($bas_id));
-        $collection = \collection::get_from_base_id($bas_id);
+        $databox = $app['phraseanet.appbox']->get_databox(\phrasea::sbasFromBas($app, $bas_id));
+        $collection = \collection::get_from_base_id($app, $bas_id);
         $structFields = $suggestedValues = $basePrefs = array();
 
         foreach ($databox->get_meta_structure() as $meta) {
@@ -1089,7 +1088,7 @@ class Collection implements ControllerProviderInterface
         $success = false;
 
         try {
-            $collection = \collection::get_from_base_id($bas_id);
+            $collection = \collection::get_from_base_id($app, $bas_id);
 
             if ($mdesc = \DOMDocument::loadXML($request->request->get('str'))) {
                 $collection->set_prefs($mdesc);
@@ -1121,7 +1120,7 @@ class Collection implements ControllerProviderInterface
      */
     public function getDetails(Application $app, Request $request, $bas_id)
     {
-        $collection = \collection::get_from_base_id($bas_id);
+        $collection = \collection::get_from_base_id($app, $bas_id);
 
         $out = array('total' => array('totobj' => 0, 'totsiz' => 0, 'mega'   => '0', 'giga'   => '0'), 'result' => array());
 
