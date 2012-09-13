@@ -1777,7 +1777,7 @@ class task_period_archive extends task_abstract
      * @param array        $nodesToDel    out, filled with files to delete
      * @param integer      $grp_rid
      */
-    private function archiveFile(\DOMDocument $dom, \DOMDocument $node, $path, $path_archived, $path_error, array &$nodesToDel, $grp_rid = 0)
+    private function archiveFile(\DOMDocument $dom, \DOMElement $node, $path, $path_archived, $path_error, array &$nodesToDel, $grp_rid = 0)
     {
         $match = $node->getAttribute('match');
 
@@ -1834,7 +1834,7 @@ class task_period_archive extends task_abstract
      * @param integer      $grp_rid
      * @param array        $nodesToDel      out, filled with files to delete
      */
-    private function archiveFileAndCaption(\DOMDOcument$dom, \DOMElement$node, \DOMElement$captionFileNode, $path, $path_archived, $path_error, $grp_rid, array &$nodesToDel)
+    private function archiveFileAndCaption(\DOMDOcument$dom, \DOMElement $node, \DOMElement $captionFileNode = null, $path, $path_archived, $path_error, $grp_rid, array &$nodesToDel)
     {
         $ret = false;
 
@@ -1910,7 +1910,7 @@ class task_period_archive extends task_abstract
                 $this->log($e->getMessage());
             }
 
-            if ($captionFileName != $file) {
+            if ($captionFileName != $file && $captionFileName) {
                 $this->log(sprintf(('copy \'%s\' to \'archived\''), $subpath . '/' . $captionFileName));
 
                 try {
@@ -1938,7 +1938,7 @@ class task_period_archive extends task_abstract
                 $this->log($e->getMessage());
             }
 
-            if ($captionFileName != $file) {
+            if ($captionFileName != $file && $captionFileName) {
                 $this->log(sprintf(('copy \'%s\' to \'error\''), $subpath . '/' . $captionFileName));
 
                 try {
