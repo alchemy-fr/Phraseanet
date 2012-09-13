@@ -467,6 +467,8 @@ class Collection implements ControllerProviderInterface
                         $user->ACL()->update_rights_to_base($bas_id, array('order_master' => true));
                     }
 
+                    $conn->commit();
+
                     $success = true;
                 } catch (\Exception $e) {
                     $conn->rollBack();
