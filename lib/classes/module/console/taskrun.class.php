@@ -87,14 +87,14 @@ class module_console_taskrun extends Command
         if ($input->getOption('runner') === task_abstract::RUNNER_MANUAL) {
             $schedStatus = $task_manager->getSchedulerState();
 
-            if ($schedStatus && $schedStatus['status'] == 'running' && $schedStatus['pid']) {
+            if ($schedStatus && $schedStatus['status'] == task_abstract::STATE_STARTED && $schedStatus['pid']) {
                 $this->shedulerPID = $schedStatus['pid'];
             }
             $runner = task_abstract::RUNNER_MANUAL;
         } else {
             $runner = task_abstract::RUNNER_SCHEDULER;
             $schedStatus = $task_manager->getSchedulerState();
-            if ($schedStatus && $schedStatus['status'] == 'running' && $schedStatus['pid']) {
+            if ($schedStatus && $schedStatus['status'] == task_abstract::STATE_STARTED && $schedStatus['pid']) {
                 $this->shedulerPID = $schedStatus['pid'];
             }
         }
