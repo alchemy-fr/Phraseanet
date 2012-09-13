@@ -31,7 +31,7 @@ class ConnectedUsers implements ControllerProviderInterface
         $controllers->get('/', function(Application $app, Request $request) {
                 return new Response(
                         $app['twig']->render(
-                            'admin/connected-users.html.twig', array('datas' => \Session_Handler::get_active_sessions()
+                            'admin/connected-users.html.twig', array('datas' => \Session_Handler::get_active_sessions($app)
                             )
                         )
                 );
