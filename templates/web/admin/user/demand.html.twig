@@ -27,9 +27,9 @@
 
     function checkDeny(el)
     {
-        if($(el)[0].checked)
+        if(!$(el).hasClass('active'))
         {
-            $('.disabler_'+$(el).attr('id').substring(5)).removeAttr('checked');
+            $('.disabler_'+$(el).attr('id').substring(5)).removeClass('active');
         }
         else
         {
@@ -38,19 +38,26 @@
 
     function checkAdd(el)
     {
-        if($(el)[0].checked)
+        if(!$(el).hasClass('active'))
         {
-            $('#accept_'+$(el).attr('id').substring(10))[0].checked = true;
-            $('#deny_'+$(el).attr('id').substring(10))[0].checked = false;
+            $('#accept_'+$(el).attr('id').substring(10)).addClass('active');
+            $('#deny_'+$(el).attr('id').substring(10)).removeClass('active');
         }
     }
 
     function checkRemove(el)
     {
-        if(!$(el)[0].checked)
-            $('.disabler_'+$(el).attr('id').substring(7)).each(function(){$(this)[0].checked = false;});
+        if($(el).hasClass('active'))
+        {
+            $('.disabler_'+$(el).attr('id').substring(7)).each(function(){
+                $(this).removeClass('active');
+            });
+            $(el).addClass('active');
+        }
         else
-            $('#deny_'+$(el).attr('id').substring(7))[0].checked = false;
+        {
+            $('#deny_'+$(el).attr('id').substring(7)).removeClass('active');
+        }
     }
 
     function modelChecker(usr)
@@ -77,17 +84,18 @@
     {
         var bool = true;
         var first = true;
-        $('.'+that+'_checker:not(:disabled)').each(function(){
+        $('.'+that+'_checker:not(.active)').each(function(){
             //        if(!$(this)[0].disabled)
             //        {
-            if(first && $(this)[0].checked)
+            if(first && !$(this).hasClass('active'))
                 bool = false;
-            $(this)[0].checked = bool;
             first = false;
+            if (bool = false)
+                $(this).removeClass('active');
+            else
+                $(this).addClass('active');
             if(that == 'deny')
-            {
                 checkDeny($(this));
-            }
             if(that == 'accept_hd')
                 checkAdd(this)
             if(that == 'watermark')
@@ -106,10 +114,10 @@
 </div>
 
 {% if app.request.query.get('success') == '1' %}
-        <div class="alert alert-success">
-            <a class="close" data-dismiss="alert" href="#">×</a>
-            {% trans 'Requests for the application registrations were recorded successfully' %}
-        </div>
+    <div class="alert alert-success">
+        <a class="close" data-dismiss="alert" href="#">×</a>
+        {% trans 'Requests for the application registrations were recorded successfully' %}
+    </div>
 {% endif %}
 
 {% if table['user'] | length > 0 %}
@@ -199,7 +207,7 @@
                                         </tr>
                                     {% endfor %}
                                 </table>
-                                -- End of delete #}
+                                {#-- End of delete #}
                                 {% for basId in colls %}
                                     <div class="btn-group" data-toggle="buttons-checkbox" style="margin:auto auto 5px 0;">
                                         <button type="button" name="deny[]" value="{{ row['usr_id'] }}_{{ basId }}" onclick="checkDeny(this)" id="{{ 'deny_' ~ row['usr_id']  ~ '_' ~ basId }}" class="btn deny_checker tipInfoUsr {{ 'checker_' ~ row['usr_id'] }}" title="{% trans 'admin:: refuser l\'acces' %}" style="height:30px;">
