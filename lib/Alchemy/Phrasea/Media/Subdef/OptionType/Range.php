@@ -43,14 +43,18 @@ class Range implements OptionType
 
     public function setValue($value)
     {
-        if ( ! $value) {
+        if (!$value) {
             $this->value = null;
 
             return $this;
         }
 
         if ($value > $this->maxValue || $value < $this->minValue) {
-            throw new \Exception_InvalidArgument('The value provided does not fit in range');
+            throw new \Exception_InvalidArgument(
+                sprintf(
+                    'The value `%s` provided for %s does not fit in range (%s - %s)', $value, $this->name, $this->minValue, $this->maxValue
+                )
+            );
         }
 
         $this->value = $value;
