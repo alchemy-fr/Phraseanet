@@ -448,11 +448,11 @@ class Collection implements ControllerProviderInterface
             }
 
             if (count($newAdmins) > 0) {
-                $conn = $app['phraseanet.Appbox']->get_connection();
+                $conn = $app['phraseanet.appbox']->get_connection();
                 $conn->beginTransaction();
 
                 try {
-                    $userQuery = new \User_Query($app['phraseanet.Appbox']);
+                    $userQuery = new \User_Query($app['phraseanet.appbox']);
 
                     $result = $userQuery->on_base_ids(array($bas_id))
                             ->who_have_right(array('order_master'))
@@ -463,9 +463,11 @@ class Collection implements ControllerProviderInterface
                     }
 
                     foreach (array_filter($newAdmins) as $admin) {
-                        $user = User_Adapter::getInstance($admin, $app['phraseanet.Appbox']);
+                        $user = \User_Adapter::getInstance($admin, $app['phraseanet.appbox']);
                         $user->ACL()->update_rights_to_base($bas_id, array('order_master' => true));
                     }
+
+                    $conn->commit();
 
                     $success = true;
                 } catch (\Exception $e) {
