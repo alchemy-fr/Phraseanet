@@ -63,26 +63,26 @@
                         </a>
                     </div>
                 </td>
-                <td>
-                    <a href="/admin/publications/feed/{{ feed.get_id() }}/">{{ feed.get_title() }}</a>
+                <td valign="center" align="left">
+                    <a href="/admin/publications/feed/{{ feed.get_id() }}/" style="display:block;">{{ feed.get_title() }}</a>
                 </td>
-                <td style="text-align: center;">
+                <td valign="center" align="center">
                     {{ feed.get_created_on()|formatDate }}
                 </td>
-                <td style="text-align: center;">
+                <td valign="center" align="center">
                     {% if feed.get_collection() != null %}
                         {{ feed.get_collection().get_databox().get_viewname() }} /
                         {{ feed.get_collection().get_name() }}
                     {% endif %}
                 </td>
-                <td style="text-align: center;">
+                <td valign="center" align="center">
                     {% if feed.is_public() %}
                         <img src="/skins/icons/ligth-on.png" title="{% trans 'This feed is public' %}"/>
                     {% endif %}
                 </td>
-                <td style="text-align: center;">
+                <td valign="center" align="center">
                     {% if feed.is_owner(user) %}
-                        <form class="no-ajax form_publication" action="/admin/publications/feed/{{feed.get_id()}}/delete/" method="post">
+                        <form class="no-ajax form_publication" action="/admin/publications/feed/{{feed.get_id()}}/delete/" method="post" style="margin:0;">
                             <button class="feed_remover btn btn-mini">{% trans 'boutton::supprimer' %}</button>
                         </form>
                     {% endif %}

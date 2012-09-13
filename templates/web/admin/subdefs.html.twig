@@ -2,7 +2,6 @@
 {% extends "admin/common/iframe_wrap.html.twig" %}
 
 {% block stylesheet %}
-
 <link type="text/css" rel="stylesheet" href="/include/minify/f=include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css" >
 <style>
     body{
@@ -10,6 +9,7 @@
     }
   </style>
 {% endblock %}
+
 {% block javascript %}
   <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js,include/path_files_tests.jquery.js"></script>
   <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
@@ -166,180 +166,171 @@
 {% endblock %}
 
 {% block content %}
-    <button id="create-subdef">{% trans 'Create new subdef' %}</button>
-    <div id="dialog-delete-subdef" title="{% trans 'Delete the subdef ?' %}" style="display:none;">
-      <p>
+<button id="create-subdef" class="btn btn-warning">{% trans 'Create new subdef' %}</button>
+<div id="dialog-delete-subdef" title="{% trans 'Delete the subdef ?' %}" style="display:none;">
+    <p>
         <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
-    {% trans 'These subdef will be permanently deleted and cannot be recovered. Are you sure?' %}
-      </p>
-    </div>
+        {% trans 'These subdef will be permanently deleted and cannot be recovered. Are you sure?' %}
+    </p>
+</div>
 
-    <div id="dialog-form" title="Create new subdef">
-      <p class="validateTips"></p>
-      <form>
+<div id="dialog-form" title="Create new subdef">
+    <p class="validateTips"></p>
+    <form>
         <fieldset>
-          <label for="name">{% trans 'Subdef name' %}</label>
-          <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all" value=''/><br/>
-          <label for="accessclass">{% trans 'classe d\'acces' %}</label>
-          <select name="accessclass" id="accessclass">
-            <option value="document">{% trans 'document' %}</option>
-            <option value="preview" selected="selected">{% trans 'preview' %}</option>
-            <option value="thumbnail">{% trans 'tout le monde' %}</option>
-          </select>
+            <label for="name">{% trans 'Subdef name' %}</label>
+            <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all" value=""/><br/>
+            <label for="accessclass">{% trans 'classe d\'acces' %}</label>
+            <select name="accessclass" id="accessclass">
+                <option value="document">{% trans 'document' %}</option>
+                <option value="preview" selected="selected">{% trans 'preview' %}</option>
+                <option value="thumbnail">{% trans 'tout le monde' %}</option>
+            </select>
         </fieldset>
-      </form>
-    </div>
+    </form>
+</div>
 
-    <form method="post" action="/admin/subdefs/{{ databox.get_sbas_id }}/" target="_self" class="subdefs">
-      <div class="tabs">
+<form method="post" action="/admin/subdefs/{{ databox.get_sbas_id }}/" target="_self" class="subdefs">
+    <div class="tabs">
         <ul>
-      {% for subdefgroup, subdeflist in subdefs %}
+            {% for subdefgroup, subdeflist in subdefs %}
             <li><a href="#{{subdefgroup}}">{{subdefgroup}}</a></li>
-      {% endfor %}
-          </ul>
-    {% for subdefgroup, subdeflist in subdefs %}
+            {% endfor %}
+        </ul>
 
-          <div id="{{subdefgroup}}">
-      {% for subdefname , subdef in subdeflist %}
-              <div>
+        {% for subdefgroup, subdeflist in subdefs %}
+        <div id="{{subdefgroup}}">
+            {% for subdefname , subdef in subdeflist %}
+            <div>
                 <input type="hidden" name="subdefs[]" value="{{subdefgroup}}_{{subdefname}}"/>
                 <table cellspacing="0" cellpading="0" border="0" style="width:500px;">
-                  <tbody>
-                    <tr>
-                      <td style="width:120px;">
-                        <h2>{{subdefname}}</h2><button class="subdef_deleter">{% trans 'boutton::supprimer' %}</button>
-                        <input type="hidden" name="subdef" value="{{subdefgroup}}_{{subdefname}}"/>
-                      </td>
-                      <td style="width:250px;"></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td>{% trans 'Telechargeable' %}</td>
-                      <td><input type="checkbox" name="{{subdefgroup}}_{{subdefname}}_downloadable" {% if subdef.is_downloadable() %}checked="checked"{% endif %} value="1" /></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td>
-                {% trans 'classe' %}
-                        </td>
-                        <td>
-                          <select name="{{subdefgroup}}_{{subdefname}}_class">
-                            <option>{% trans 'classe' %}</option>
-                            <option value="document" {% if subdef.get_class() == "document" %}selected="selected"{% endif %}>{% trans 'document' %}</option>
-                            <option value="preview" {% if subdef.get_class() == "preview" %}selected="selected"{% endif %}>{% trans 'preview' %}</option>
-                            <option value="thumbnail" {% if subdef.get_class() == "thumbnail" %}selected="selected"{% endif %}>{% trans 'tout le monde' %}</option>
-                          </select>
-                        </td>
-                        <td></td>
-                      </tr>
-                      <tr>
-                        <td>
-                          Path
-                        </td>
-                        <td>
-                          <input class="path_testable test_writeable" type="text" value="{{subdef.get_path()}}" name="{{subdefgroup}}_{{subdefname}}_path"/>
-                        </td>
-                        <td></td>
-                      </tr>
+                    <tbody>
                         <tr>
-                          <td>
-                {% trans 'Write Metas' %}
+                            <td style="width:120px;">
+                                <h2>{{subdefname}}</h2><button class="subdef_deleter">{% trans 'boutton::supprimer' %}</button>
+                                <input type="hidden" name="subdef" value="{{subdefgroup}}_{{subdefname}}"/>
+                            </td>
+                            <td style="width:250px;"></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>{% trans 'Telechargeable' %}</td>
+                            <td><input type="checkbox" name="{{subdefgroup}}_{{subdefname}}_downloadable" {% if subdef.is_downloadable() %}checked="checked"{% endif %} value="1" /></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {% trans 'classe' %}
                             </td>
                             <td>
-                              <input type="checkbox" value="yes" {% if subdef.meta_writeable() %}checked="checked"{% endif %} name="{{subdefgroup}}_{{subdefname}}_meta"/>
+                                <select name="{{subdefgroup}}_{{subdefname}}_class">
+                                    <option>{% trans 'classe' %}</option>
+                                    <option value="document" {% if subdef.get_class() == "document" %}selected="selected"{% endif %}>{% trans 'document' %}</option>
+                                    <option value="preview" {% if subdef.get_class() == "preview" %}selected="selected"{% endif %}>{% trans 'preview' %}</option>
+                                    <option value="thumbnail" {% if subdef.get_class() == "thumbnail" %}selected="selected"{% endif %}>{% trans 'tout le monde' %}</option>
+                                </select>
                             </td>
                             <td></td>
-                          </tr>
-                          <tr>
+                        </tr>
+                        <tr>
                             <td>
-                {% trans 'mediatype' %}
-                              </td>
-                              <td>
+                            Path
+                            </td>
+                            <td>
+                            <input class="path_testable test_writeable" type="text" value="{{subdef.get_path()}}" name="{{subdefgroup}}_{{subdefname}}_path"/>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {% trans 'Write Metas' %}
+                            </td>
+                            <td>
+                                <input type="checkbox" value="yes" {% if subdef.meta_writeable() %}checked="checked"{% endif %} name="{{subdefgroup}}_{{subdefname}}_meta"/>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {% trans 'mediatype' %}
+                            </td>
+                            <td>
                                 <select onchange="select_mediatype('{{subdefgroup}}{{subdefname}}', this);" name="{{subdefgroup}}_{{subdefname}}_mediatype">
-                                  <option>{% trans 'Choisir' %}</option>
-
-                  {% for subdefType in subdef.getAvailableSubdefTypes() %}
-                                  <option value="{{ subdefType.getType() }}" {% if subdef.getSubdefType.getType() == subdefType.getType() %}selected="selected"{% endif %}>{{ subdefType.getType() }}</option>
-                  {% endfor %}
+                                    <option>{% trans 'Choisir' %}</option>
+                                    {% for subdefType in subdef.getAvailableSubdefTypes() %}
+                                        <option value="{{ subdefType.getType() }}" {% if subdef.getSubdefType.getType() == subdefType.getType() %}selected="selected"{% endif %}>{{ subdefType.getType() }}</option>
+                                    {% endfor %}
                                 </select>
-                              </td>
-                              <td></td>
-                            </tr>
-                          </tbody>
-                        </table>
-        {% for subdefType in subdef.getAvailableSubdefTypes() %}
-                        <div id="box{{subdefgroup}}{{subdefname}}{{ subdefType.getType() }}" class="{{subdefgroup}}{{subdefname}}" {% if subdef.getSubdefType.getType() != subdefType.getType() %}style="display:none;"{% endif %}>
-                          <table cellspacing="0" cellpading="0" border="0" style="width:500px;">
-            {% for option in subdefType.getOptions() %}
-            {% set varname = subdefgroup~'_'~subdefname~'_'~subdefType.getType()~'['~ option.getName() ~']' %}
-                              <tr>
-                                <td style="width:120px;">
-                {{option.getDisplayName()}}
-                                  </td>
-                                  <td style="width:250px;">
-                {% set extradata = '' %}
-                {% if option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_RANGE') %}
-                                      <div style="width:250px;" id="slider{{subdefgroup}}{{subdefname}}{{subdefType.getType()}}{{ option.getName() }}"></div>
-                                      <script type="text/javascript">
-                                        $('#slider{{subdefgroup}}{{subdefname}}{{subdefType.getType()}}{{ option.getName() }}').slider({
-                                          value:{{ option.getValue }},
-                                            min: {{ option.getMinValue() }},
-                                            max: {{ option.getMaxValue() }},
-                                            {% if option.getStep() is not empty %}step : {{ option.getStep() }},{% endif %}
-                                            slide: function( event, ui ) {
-                                              $( "#slidervalue{{subdefgroup}}{{subdefname}}{{ subdefType.getType() }}{{ option.getName() }}" ).val( ui.value );
-                                            }
+                            </td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                {% for subdefType in subdef.getAvailableSubdefTypes() %}
+                <div id="box{{subdefgroup}}{{subdefname}}{{ subdefType.getType() }}" class="{{subdefgroup}}{{subdefname}}" {% if subdef.getSubdefType.getType() != subdefType.getType() %}style="display:none;"{% endif %}>
+                    <table cellspacing="0" cellpading="0" border="0" style="width:500px;">
+                    {% for option in subdefType.getOptions() %}
+                        {% set varname = subdefgroup~'_'~subdefname~'_'~subdefType.getType()~'['~ option.getName() ~']' %}
+                        <tr>
+                            <td style="width:120px;">
+                                {{option.getDisplayName()}}
+                            </td>
+                            <td style="width:250px;">
+                                {% set extradata = '' %}
+                                {% if option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_RANGE') %}
+                                    <div style="width:250px;" id="slider{{subdefgroup}}{{subdefname}}{{subdefType.getType()}}{{ option.getName() }}"></div>
+                                    <script type="text/javascript">
+                                    $('#slider{{subdefgroup}}{{subdefname}}{{subdefType.getType()}}{{ option.getName() }}').slider({
+                                        value:{{ option.getValue }},
+                                        min: {{ option.getMinValue() }},
+                                        max: {{ option.getMaxValue() }},
+                                        {% if option.getStep() is not empty %}step : {{ option.getStep() }},{% endif %}
+                                        slide: function( event, ui ) {
+                                            $( "#slidervalue{{subdefgroup}}{{subdefname}}{{ subdefType.getType() }}{{ option.getName() }}" ).val( ui.value );
+                                        }
 
-                                          });
-                                        </script>
-
-                {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_ENUM') %}
-                                        <select name="{{varname}}">
-                                          <option value="">{% trans 'Choisir' %}</option>
-                  {% for pot_value in option.getAvailableValues() %}
-                                          <option value="{{ pot_value }}" {% if pot_value == option.getValue() %}selected="selected"{% endif %}>{{ pot_value }}</option>
-                  {% endfor %}
-                                        </select>
-                {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_BOOLEAN') %}
-                                        <input name="{{varname}}" type="radio" value="yes" {% if option.getValue() %}checked="checked"{% endif %} /> {% trans 'yes' %}
-                                        <input name="{{varname}}" type="radio" value="no" {% if option.getValue() is empty %}checked="checked"{% endif %}/> {% trans 'no' %}
-                {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_MULTI') %}
-
-                    {% for pot_value, selected in option.Value(true) %}
-                        <input type="checkbox" name="{{varname}}[]" value="{{ pot_value }}" {% if selected %}checked="checked"{% endif %}/><label>{{ pot_value }}</label>
+                                        });
+                                    </script>
+                                {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_ENUM') %}
+                                    <select name="{{varname}}">
+                                        <option value="">{% trans 'Choisir' %}</option>
+                                        {% for pot_value in option.getAvailableValues() %}
+                                            <option value="{{ pot_value }}" {% if pot_value == option.getValue() %}selected="selected"{% endif %}>{{ pot_value }}</option>
+                                        {% endfor %}
+                                    </select>
+                                {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_BOOLEAN') %}
+                                    <input name="{{varname}}" type="radio" value="yes" {% if option.getValue() %}checked="checked"{% endif %} /> {% trans 'yes' %}
+                                    <input name="{{varname}}" type="radio" value="no" {% if option.getValue() is empty %}checked="checked"{% endif %}/> {% trans 'no' %}
+                                {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_MULTI') %}
+                                    {% for pot_value, selected in option.Value(true) %}
+                                        <input type="checkbox" name="{{varname}}[]" value="{{ pot_value }}" {% if selected %}checked="checked"{% endif %}/><label>{{ pot_value }}</label>
+                                    {% endfor %}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if option.type == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_RANGE') %}
+                                    <input style="width:35px;" readonly value="{{option.value}}" id="slidervalue{{subdefgroup}}{{subdefname}}{{subdefType.getType()}}{{ option.getName() }}" name="{{varname}}" />
+                                {% endif %}
+                            </td>
+                        </tr>
                     {% endfor %}
-
-
-                {% endif %}
-                                      </td>
-                                      <td>
-                {% if option.type == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_RANGE') %}
-                                          <input style="width:35px;" readonly value="{{option.value}}" id="slidervalue{{subdefgroup}}{{subdefname}}{{subdefType.getType()}}{{ option.getName() }}" name="{{varname}}" />
-                {% endif %}
-                                        </td>
-                                      </tr>
+                    </table>
+                </div>
+                {% endfor %}
+            </div>
             {% endfor %}
-                                    </table>
-                                  </div>
+        </div>
         {% endfor %}
-                                </div>
-      {% endfor %}
+    </div>
+    <input type="hidden" name="delete_subdef" id="delete_subdef" value=""/>
+    <input type="hidden" name="add_subdef[group]" value=""/>
+    <input type="hidden" name="add_subdef[name]" value=""/>
+    <input type="hidden" name="add_subdef[class]" value=""/>
+    <button type="submit" class="btn btn-primary">{% trans 'boutton::valider' %}</button>
+</form>
 
-                              </div>
-
-    {% endfor %}
-                            </div>
-                            <input type="hidden" name="delete_subdef" id="delete_subdef" value=""/>
-                            <input type="hidden" name="add_subdef[group]" value=""/>
-                            <input type="hidden" name="add_subdef[name]" value=""/>
-                            <input type="hidden" name="add_subdef[class]" value=""/>
-                            <button type="submit">{% trans 'boutton::valider' %}</button>
-                          </form>
-
-                          <div style="display:none;">
-                            <div id="image_template">
-
-                            </div>
-
-                          </div>
+<div style="display:none;">
+    <div id="image_template">
+    </div>
+</div>
 {% endblock %}
