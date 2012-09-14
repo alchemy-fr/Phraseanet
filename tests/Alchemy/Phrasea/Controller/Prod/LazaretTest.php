@@ -341,6 +341,33 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     /**
      * @covers Alchemy\Phrasea\Controller\Prod\Lazaret::denyElement
      */
+    public function testEmptyLazaret()
+    {
+        $lazaretFile = $this->insertOneLazaretFile();
+
+        $route = sprintf('/lazaret/empty/');
+
+        $this->client->request('POST', $route);
+
+        $response = $this->client->getResponse();
+
+        $this->assertResponseOk($response);
+        $this->assertGoodJsonContent(json_decode($response->getContent()));
+
+        $query = self::$core->getEntityManager()->createQuery(
+            'SELECT COUNT(l.id) FROM \Entities\LazaretFile l'
+        );
+
+        $count = $query->getSingleScalarResult();
+
+        $this->assertEquals(0, $count);
+
+        $lazaretFile = null;
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Controller\Prod\Lazaret::denyElement
+     */
     public function testDenyElementException()
     {
         $route = sprintf('/lazaret/%s/deny/', '99999');

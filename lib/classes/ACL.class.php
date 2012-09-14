@@ -198,6 +198,14 @@ class ACL implements cache_cacheableInterface
 
     public function has_access_to_subdef(record_Interface $record, $subdef_name)
     {
+        if ($subdef_name == 'thumbnail') {
+            return true;
+        }
+
+        if ($record->is_grouping()) {
+            return true;
+        }
+
         try {
             $subdef_class = $record->get_databox()->get_subdef_structure()
                 ->get_subdef($record->get_type(), $subdef_name)
@@ -205,6 +213,7 @@ class ACL implements cache_cacheableInterface
         } catch (Exception $e) {
             return false;
         }
+
         $granted = false;
 
         if ($subdef_class == databox_subdef::CLASS_THUMBNAIL) {
@@ -215,7 +224,7 @@ class ACL implements cache_cacheableInterface
             $granted = true;
         } elseif ($subdef_class == databox_subdef::CLASS_DOCUMENT && $this->has_right_on_base($record->get_base_id(), 'candwnldhd')) {
             $granted = true;
-        } elseif ($subdef_class == databox_subdef::CLASS_DOCUMENT && $user->ACL()->has_hd_grant($record)) {
+        } elseif ($subdef_class == databox_subdef::CLASS_DOCUMENT && $this->has_hd_grant($record)) {
             $granted = true;
         }
 

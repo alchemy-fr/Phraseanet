@@ -91,8 +91,7 @@ class patch_370a7 implements patchInterface
 
                 $filePath = $Core->getRegistry()->get('GV_RootPath') . 'tmp/lazaret/' . $row['filepath'];
 
-                if (file_exists(
-                )) {
+                if (file_exists($filePath)) {
 
                     $spec = new ImageSpec();
 
