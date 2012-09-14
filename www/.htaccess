@@ -6,7 +6,8 @@
   RewriteRule ^(mail-export)/([a-zA-Z0-9]*)\/?$   /include/download_anonymous.php?type=$1&token=$2 [L]
   RewriteRule ^(mail-export)/([a-zA-Z0-9]*)\/get$ /include/download_anonymous.php?type=$1&token=$2&get=1 [L]
 
-  RewriteRule ^admin.?$                /admin/router.php [L]
+  RewriteRule ^lightbox.?$          /index.php [L]
+  RewriteRule ^admin.?$             /index.php [L]
 
   RewriteRule ^prod/records/edit/.*$  /prod/router.php [L]
   RewriteRule ^prod/records/movecollection/.*$    /prod/router.php [L]
@@ -40,11 +41,6 @@
   RewriteRule ^account/.*$            /index.php [L]
   RewriteRule ^developers/.*$         /index.php [L]
   RewriteRule ^login/.*$              /index.php [L]
-
-# RewriteRule ^atom\/(cooliris)+\/?([0-9]*)\/?$  /cooliris.php?item_id=$2 [L]
-
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteRule ^lightbox/.*$           /lightbox/index.php [L]
 
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteRule ^api/v1/.*$             /api/v1/index.php [L]
