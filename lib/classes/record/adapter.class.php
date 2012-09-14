@@ -1058,7 +1058,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
             $subdef_def = $this->get_databox()->get_subdef_structure()->get_subdef($type, $name);
 
-            if ($this->has_subdef($name) && ! $this->get_subdef($name)->is_substituted()) {
+            if ($this->has_subdef($name) && $this->get_subdef($name)->is_physically_present()) {
 
                 $path_file_dest = $this->get_subdef($name)->get_pathfile();
                 $this->get_subdef($name)->remove_file();

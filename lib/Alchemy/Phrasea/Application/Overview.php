@@ -77,7 +77,7 @@ return call_user_func(
                     $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
                     $record = new \record_adapter($sbas_id, $record_id);
 
-                    if ( ! $session->is_authenticated()) {
+                    if (!$session->is_authenticated()) {
                         throw new \Exception_Session_NotAuthenticated();
                     }
 
@@ -90,20 +90,21 @@ return call_user_func(
                                 if ($subdefObj->get_class() == 'thumbnail') {
                                     $all_access = true;
                                 }
+                                break;
                             }
                         }
                     }
 
                     $user = \User_Adapter::getInstance($session->get_usr_id(), $app['phraseanet.appbox']);
 
-                    if ( ! $user->ACL()->has_access_to_subdef($record, $subdef)) {
+                    if (!$user->ACL()->has_access_to_subdef($record, $subdef)) {
                         throw new \Exception_UnauthorizedAction();
                     }
 
                     $stamp = false;
-                    $watermark = ! $user->ACL()->has_right_on_base($record->get_base_id(), 'nowatermark');
+                    $watermark = !$user->ACL()->has_right_on_base($record->get_base_id(), 'nowatermark');
 
-                    if ($watermark && ! $all_access) {
+                    if ($watermark && !$all_access) {
                         $subdef_class = $databox
                             ->get_subdef_structure()
                             ->get_subdef($record->get_type(), $subdef)
@@ -116,7 +117,7 @@ return call_user_func(
                         }
                     }
 
-                    if ($watermark && ! $all_access) {
+                    if ($watermark && !$all_access) {
 
                         $em = $app['phraseanet.core']->getEntityManager();
 
@@ -144,7 +145,7 @@ return call_user_func(
 
                     $record = \media_Permalink_Adapter::challenge_token($databox, $key, $record_id, $subdef);
 
-                    if ( ! ($record instanceof \record_adapter)) {
+                    if (!$record instanceof \record_adapter) {
                         throw new \Exception('bad luck');
                     }
 
@@ -163,7 +164,7 @@ return call_user_func(
                     , function($label, $sbas_id, $record_id, $key, $subdef) use ($app, $session, $deliver_content) {
                         $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
                         $record = \media_Permalink_Adapter::challenge_token($databox, $key, $record_id, $subdef);
-                        if ( ! ($record instanceof \record_adapter))
+                        if (!($record instanceof \record_adapter))
                             throw new \Exception('bad luck');
 
                         $watermark = $stamp = false;
@@ -171,7 +172,7 @@ return call_user_func(
                         if ($session->is_authenticated()) {
                             $user = \User_Adapter::getInstance($session->get_usr_id(), $app['phraseanet.appbox']);
 
-                            $watermark = ! $user->ACL()->has_right_on_base($record->get_base_id(), 'nowatermark');
+                            $watermark = !$user->ACL()->has_right_on_base($record->get_base_id(), 'nowatermark');
 
                             if ($watermark) {
 

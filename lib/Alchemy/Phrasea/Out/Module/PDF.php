@@ -44,14 +44,14 @@ class PDF
                 case self::LAYOUT_PREVIEWCAPTIONTDM:
                     try {
                         $subdef = $record->get_subdef('preview');
-                        if ( ! $subdef->is_physically_present()) {
+                        if (!$subdef->is_physically_present()) {
                             continue 2;
                         }
                         if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE)
                             continue 2;
 
                         $subdef = $record->get_subdef('thumbnail');
-                        if ( ! $subdef->is_physically_present())
+                        if (!$subdef->is_physically_present())
                             continue 2;
 
                         if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE)
@@ -64,7 +64,7 @@ class PDF
                 case self::LAYOUT_THUMBNAILGRID:
                     try {
                         $subdef = $record->get_subdef('thumbnail');
-                        if ( ! $subdef->is_physically_present())
+                        if (!$subdef->is_physically_present())
                             continue 2;
 
                         if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE)
@@ -91,19 +91,19 @@ class PDF
         $this->pdf = $pdf;
 
         switch ($layout) {
-            case "preview":
-                $this->print_preview(false);
+            case self::LAYOUT_PREVIEW:
+                $this->print_preview(false, false);
                 break;
-            case "previewCaption":
-                $this->print_preview(false);
+            case self::LAYOUT_PREVIEWCAPTION:
+                $this->print_preview(false, true);
                 break;
-            case "previewCaptionTdm":
-                $this->print_preview(true);
+            case self::LAYOUT_PREVIEWCAPTIONTDM:
+                $this->print_preview(true, true);
                 break;
-            case "thumbnailList":
+            case self::LAYOUT_THUMBNAILLIST:
                 $this->print_thumbnailList();
                 break;
-            case "thumbnailGrid":
+            case self::LAYOUT_THUMBNAILGRID:
                 $this->print_thumbnailGrid();
                 break;
         }
@@ -150,11 +150,11 @@ class PDF
         $icol = -1;
         foreach ($this->records as $rec) {
             /* @var $rec record_adapter */
-            if ( ++ $icol >= $NDiapoW) {
+            if (++$icol >= $NDiapoW) {
                 $icol = 0;
-                if ( ++ $irow >= $NDiapoH) {
+                if (++$irow >= $NDiapoH) {
                     $irow = 0;
-                    $ipage ++;
+                    $ipage++;
                     $this->pdf->AddPage();
                 }
             }
@@ -165,7 +165,7 @@ class PDF
 
             $fimg = $subdef->get_pathfile();
 
-            if ( ! $user->ACL()->has_right_on_base($rec->get_base_id(), "nowatermark")
+            if (!$user->ACL()->has_right_on_base($rec->get_base_id(), "nowatermark")
                 && $subdef->get_type() == \media_subdef::TYPE_IMAGE) {
                 $fimg = \recordutils_image::watermark($subdef);
             }
@@ -296,16 +296,16 @@ class PDF
                 $this->pdf->Write(5, $field->get_serialized_values());
 
                 $this->pdf->Write(6, "\n");
-                $nf ++;
+                $nf++;
             }
             if ($this->pdf->PageNo() == $p0 && ($this->pdf->GetY() - $y0) < $himg)
                 $this->pdf->SetY($y0 + $himg);
-            $ndoc ++;
+            $ndoc++;
         }
         $this->pdf->SetLeftMargin($lmargin);
     }
 
-    protected function print_preview($withtdm)
+    protected function print_preview($withtdm, $write_caption)
     {
         $core = \bootstrap::getCore();
         $appbox = \appbox::get_instance($core);
@@ -341,7 +341,7 @@ class PDF
             $LEFT__IMG = $registry->get('GV_RootPath') . "config/minilogos/logopdf_"
                 . $rec->get_sbas_id() . "";
 
-            if ( ! is_file($LEFT__IMG)) {
+            if (!is_file($LEFT__IMG)) {
                 $databox = $rec->get_databox();
                 $str = $databox->get_sxml_structure();
                 $vn = (string) ($str->pdfPrintLogo);
@@ -392,7 +392,7 @@ class PDF
                 if ($size = @getimagesize($RIGHT_IMG)) {
 
                     if ($size[2] == '1') {
-                        if ( ! isset($miniConv[$RIGHT_IMG])) {
+                        if (!isset($miniConv[$RIGHT_IMG])) {
                             $tmp_filename = tempnam('minilogos/', 'gif4fpdf');
                             $img = imagecreatefromgif($RIGHT_IMG);
                             imageinterlace($img, 0);
@@ -433,7 +433,7 @@ class PDF
 
             $f = $subdef->get_pathfile();
 
-            if ( ! $user->ACL()->has_right_on_base($rec->get_base_id(), "nowatermark")
+            if (!$user->ACL()->has_right_on_base($rec->get_base_id(), "nowatermark")
                 && $subdef->get_type() == \media_subdef::TYPE_IMAGE)
                 $f = \recordutils_image::watermark($subdef);
 
@@ -453,25 +453,28 @@ class PDF
             $this->pdf->SetXY($lmargin, $y += ( $himg + 5));
 
             $nf = 0;
-            foreach ($rec->get_caption()->get_fields() as $field) {
-                /* @var $field caption_field */
-                if ($nf > 0)
-                    $this->pdf->Write(6, "\n");
+            if ($write_caption) {
+                foreach ($rec->get_caption()->get_fields() as $field) {
+                    /* @var $field caption_field */
+                    if ($nf > 0) {
+                        $this->pdf->Write(6, "\n");
+                    }
 
-                $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-                $this->pdf->Write(5, $field->get_name() . " : ");
+                    $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
+                    $this->pdf->Write(5, $field->get_name() . " : ");
 
-                $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
+                    $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
 
-                $t = str_replace(
-                    array("&lt;", "&gt;", "&amp;")
-                    , array("<", ">", "&")
-                    , $field->get_serialized_values()
-                );
+                    $t = str_replace(
+                        array("&lt;", "&gt;", "&amp;")
+                        , array("<", ">", "&")
+                        , $field->get_serialized_values()
+                    );
 
-                $this->pdf->Write(5, $t);
+                    $this->pdf->Write(5, $t);
 
-                $nf ++;
+                    $nf++;
+                }
             }
         }
 

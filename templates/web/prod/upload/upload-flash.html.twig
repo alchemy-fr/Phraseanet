@@ -335,6 +335,12 @@
             upload_complete_handler: function(file) {
                 //this event is always fired in the end
 
+                $("#"+file.id, UploaderManager.getDownloadBox())
+                    .find('.progress-bar')
+                    .width('100%')
+                    .parent()
+                    .removeClass('progress-striped');
+
                 if (this.getStats().files_queued === 0) {
                     $("#cancel-all", UploaderManager.getContainer()).addClass("disabled").attr("disabled", true);
                     var dialog = p4.Dialog.get(1);
@@ -343,8 +349,6 @@
 
                     return false;
                 }
-
-                $("#"+file.id, UploaderManager.getDownloadBox()).find('.progress-bar').width('100%');
 
                 var next_file = file_order.shift();
 

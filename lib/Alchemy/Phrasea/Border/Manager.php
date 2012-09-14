@@ -358,7 +358,12 @@ class Manager
 
                     if ($databox_field->is_multi()) {
 
-                        $values = array_unique($values);
+                        $tmpValues = array();
+                        foreach ($values as $value) {
+                            $tmpValues = array_merge($tmpValues, \caption_field::get_multi_values($value, $databox_field->get_separator()));
+                        }
+
+                        $values = array_unique($tmpValues);
 
                         foreach ($values as $value) {
                             if ( ! trim($value)) {

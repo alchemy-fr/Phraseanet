@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use Entities\LazaretFile;
 use Alchemy\Phrasea\Border;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -104,6 +105,20 @@ class Lazaret implements ControllerProviderInterface
         $controllers->post('/{file_id}/deny/', $this->call('denyElement'))
             ->assert('file_id', '\d+')
             ->bind('lazaret_deny_element');
+
+        /**
+         * Lazaret Empty route
+         *
+         * name         : lazaret_empty
+         *
+         * description  : Empty the lazaret
+         *
+         * method       : POST
+         *
+         * return       : JSON Response
+         */
+        $controllers->post('/empty/', $this->call('emptyLazaret'))
+            ->bind('lazaret_empty');
 
         /**
          * Lazaret Accept Route
@@ -340,9 +355,7 @@ class Lazaret implements ControllerProviderInterface
     {
         $ret = array('success' => false, 'message' => '', 'result'  => array());
 
-
         $lazaretFile = $app['phraseanet.core']['EM']->find('Entities\LazaretFile', $file_id);
-
         /* @var $lazaretFile \Entities\LazaretFile */
         if (null === $lazaretFile) {
             $ret['message'] = _('File is not present in quarantine anymore, please refresh');
@@ -350,23 +363,59 @@ class Lazaret implements ControllerProviderInterface
             return $app->json($ret);
         }
 
+        try {
+            $this->denyLazaretFile($app, $lazaretFile);
+            $ret['success'] = true;
+        } catch (\Exception $e) {
+
+        }
+
+        return $app->json($ret);
+    }
+
+    protected function denyLazaretFile(Application $app, LazaretFile $lazaretFile)
+    {
         $lazaretFileName = $app['phraseanet.core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getFilename();
         $lazaretThumbFileName = $app['phraseanet.core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getThumbFilename();
 
-        try {
-            $app['phraseanet.core']['EM']->remove($lazaretFile);
-            $app['phraseanet.core']['EM']->flush();
-
-            $ret['success'] = true;
-        } catch (\Exception $e) {
-            $ret['message'] = _('An error occured');
-        }
+        $app['phraseanet.core']['EM']->remove($lazaretFile);
+        $app['phraseanet.core']['EM']->flush();
 
         try {
             $app['phraseanet.core']['file-system']->remove($lazaretFileName);
             $app['phraseanet.core']['file-system']->remove($lazaretThumbFileName);
         } catch (IOException $e) {
 
+        }
+
+        return $this;
+    }
+
+    /**
+     * Empty lazaret
+     *
+     * @param Application $app
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function emptyLazaret(Application $app, Request $request)
+    {
+        $ret = array('success' => false, 'message' => '', 'result'  => array());
+
+        $lazaretFiles = $app['phraseanet.core']['EM']->getRepository('Entities\LazaretFile')->findAll();
+
+        $app['phraseanet.core']['EM']->beginTransaction();
+
+        try {
+            foreach ($lazaretFiles as $lazaretFile) {
+                $this->denyLazaretFile($app, $lazaretFile);
+            }
+            $app['phraseanet.core']['EM']->commit();
+            $ret['success'] = true;
+        } catch (\Exception $e) {
+            $app['phraseanet.core']['EM']->rollback();
+            $ret['message'] = _('An error occured');
         }
 
         return $app->json($ret);

@@ -212,6 +212,14 @@ class ACL implements cache_cacheableInterface
 
     public function has_access_to_subdef(record_Interface $record, $subdef_name)
     {
+        if ($subdef_name == 'thumbnail') {
+            return true;
+        }
+
+        if ($record->is_grouping()) {
+            return true;
+        }
+
         try {
             $subdef_class = $record->get_databox()->get_subdef_structure()
                 ->get_subdef($record->get_type(), $subdef_name)
