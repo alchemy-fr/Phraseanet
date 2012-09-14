@@ -567,6 +567,13 @@ return call_user_func(
 
                     $template = 'lightbox/error.twig';
 
+                    if( $e instanceof Exception_Feed_EntryNotFound) {
+                        $message = _('Feed entry not found');
+                    } else {
+                        $message = _('Le panier demande nexiste plus');
+                    }
+
+
                     if ($registry->get('GV_debug')) {
                         $options = array(
                             'module'      => 'validation',
@@ -582,7 +589,8 @@ return call_user_func(
                         $options = array(
                             'module'      => 'validation',
                             'module_name' => _('admin::monitor: module validation'),
-                            'error'       => ''
+                            'error'       => '',
+                            'message'     => $message,
                         );
                     }
                     $output = $twig->render($template, $options);

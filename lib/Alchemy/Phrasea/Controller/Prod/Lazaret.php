@@ -11,11 +11,10 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use MediaVorus\MediaVorus;
+use Entities\LazaretFile;
 use Alchemy\Phrasea\Border;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Filesystem\Exception\IOException;
@@ -106,6 +105,20 @@ class Lazaret implements ControllerProviderInterface
         $controllers->post('/{file_id}/deny/', $this->call('denyElement'))
             ->assert('file_id', '\d+')
             ->bind('lazaret_deny_element');
+
+        /**
+         * Lazaret Empty route
+         *
+         * name         : lazaret_empty
+         *
+         * description  : Empty the lazaret
+         *
+         * method       : POST
+         *
+         * return       : JSON Response
+         */
+        $controllers->post('/empty/', $this->call('emptyLazaret'))
+            ->bind('lazaret_empty');
 
         /**
          * Lazaret Accept Route
@@ -342,9 +355,7 @@ class Lazaret implements ControllerProviderInterface
     {
         $ret = array('success' => false, 'message' => '', 'result'  => array());
 
-
         $lazaretFile = $app['Core']['EM']->find('Entities\LazaretFile', $file_id);
-
         /* @var $lazaretFile \Entities\LazaretFile */
         if (null === $lazaretFile) {
             $ret['message'] = _('File is not present in quarantine anymore, please refresh');
@@ -352,23 +363,59 @@ class Lazaret implements ControllerProviderInterface
             return self::formatJson($app['Core']['Serializer'], $ret);
         }
 
+        try {
+            $this->denyLazaretFile($app, $lazaretFile);
+            $ret['success'] = true;
+        } catch (\Exception $e) {
+
+        }
+
+        return self::formatJson($app['Core']['Serializer'], $ret);
+    }
+
+    protected function denyLazaretFile(Application $app, LazaretFile $lazaretFile)
+    {
         $lazaretFileName = $app['Core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getFilename();
         $lazaretThumbFileName = $app['Core']['Registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getThumbFilename();
 
-        try {
-            $app['Core']['EM']->remove($lazaretFile);
-            $app['Core']['EM']->flush();
-
-            $ret['success'] = true;
-        } catch (\Exception $e) {
-            $ret['message'] = _('An error occured');
-        }
+        $app['Core']['EM']->remove($lazaretFile);
+        $app['Core']['EM']->flush();
 
         try {
             $app['Core']['file-system']->remove($lazaretFileName);
             $app['Core']['file-system']->remove($lazaretThumbFileName);
         } catch (IOException $e) {
 
+        }
+
+        return $this;
+    }
+
+    /**
+     * Empty lazaret
+     *
+     * @param Application $app
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function emptyLazaret(Application $app, Request $request)
+    {
+        $ret = array('success' => false, 'message' => '', 'result'  => array());
+
+        $lazaretFiles = $app['Core']['EM']->getRepository('Entities\LazaretFile')->findAll();
+
+        $app['Core']['EM']->beginTransaction();
+
+        try {
+            foreach ($lazaretFiles as $lazaretFile) {
+                $this->denyLazaretFile($app, $lazaretFile);
+            }
+            $app['Core']['EM']->commit();
+            $ret['success'] = true;
+        } catch (\Exception $e) {
+            $app['Core']['EM']->rollback();
+            $ret['message'] = _('An error occured');
         }
 
         return self::formatJson($app['Core']['Serializer'], $ret);

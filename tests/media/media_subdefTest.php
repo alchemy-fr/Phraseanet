@@ -8,6 +8,10 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
      * @var \media_subdef
      */
     protected static $objectPresent;
+    /**
+     * @var \media_subdef
+     */
+    protected static $storyPresent;
 
     /**
      * @var \media_subdef
@@ -53,6 +57,7 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
         }
 
         self::$objectNotPresent->remove_file();
+        self::$storyPresent = self::$records['record_story_1']->get_subdef('thumbnail');
     }
 
     /**
@@ -62,6 +67,14 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
     {
         $this->assertTrue(self::$objectPresent->is_physically_present());
         $this->assertFalse(self::$objectNotPresent->is_physically_present());
+    }
+
+    /**
+     * @covers media_subdef::is_physically_present
+     */
+    public function testStoryIsNotPhysicallyPresent()
+    {
+        $this->assertFalse(self::$storyPresent->is_physically_present());
     }
 
     /**
