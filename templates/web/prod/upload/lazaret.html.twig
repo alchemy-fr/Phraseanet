@@ -1,4 +1,10 @@
 <div id="lazaretBox" class="container-fluid">
+
+    <div class="btn-group" style="text-align:center; padding:5px;">
+        <button class="btn empty-lazaret" title="{% trans "Empty quarantine"%}">
+            <img src="/skins/icons/delete.png">{% trans "Empty quarantine"%}
+        </button>
+    </div>
     {% if lazaretFiles is not none %}
         {% if lazaretFiles|length > 0 %}
             <ul>
@@ -40,10 +46,10 @@
             button.closest(".btn-group").removeClass('loading');
         }
 
-        function reloadContent(){
+        function reloadContent(force){
             var nbItems = scope.find(".wrapper-item").length;
 
-            if( nbItems === 0 ) {
+            if( nbItems === 0 || force === true) {
                 $.ajax({
                     url:'/prod/lazaret/',
                     beforeSend: function(){
@@ -64,6 +70,45 @@
             $(this).closest('.lazaret-proposals').find('.thumbnail').css({'border-color': 'white'})
             $(this).find('.thumbnail').css({'border-color': 'blue'});
             $(this).addClass("thumb-selected");
+        });
+
+        // empty lazaret
+        $('button.empty-lazaret', scope).bind('click', function(){
+
+            if(!confirm("{% trans "Empty quarantine will remove all items, are you sure you want to continue ?" %}")) {
+                return false;
+            }
+
+            var that = $(this);
+            $.ajax({
+                type : 'POST',
+                url: '/prod/lazaret/empty/',
+                dataType: 'json',
+                data : {
+                },
+                beforeSend: function(){
+                    startAjax(that);
+                },
+                success: function(data){
+                    if(data.success){
+
+                    }else{
+                        p4.Mustache.Render('Alert-Error', {content:data.message}, function(html){
+                            that.closest(".btn-group").before( html );
+                        });
+                    }
+                },
+                error: function(){
+                    stopAjax(that);
+                    p4.Mustache.Render('Alert-Error', {content:data.message}, function(html){
+                        that.closest(".btn-group").before( html );
+                    });
+                },
+                complete: function(){
+                    stopAjax(that);
+                    reloadContent(true);
+                }
+            });
         });
 
         //add lazaret file click action
