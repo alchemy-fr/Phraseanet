@@ -176,7 +176,6 @@ class task_period_archive extends task_abstract
             <?php echo $form ?>.copy_spe.checked      = <?php echo \p4field::isyes($sxml->copy_spe) ? "true" : "false" ?>;
             </script>
             <?php
-
             return "";
         } else {
             return "BAD XML";
@@ -204,7 +203,6 @@ class task_period_archive extends task_abstract
             }
         </script>
         <?php
-
         return;
     }
 
@@ -218,27 +216,27 @@ class task_period_archive extends task_abstract
         ob_start();
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
-            <?php echo _('task::archive:archivage sur base/collection/') ?> :
+        <?php echo _('task::archive:archivage sur base/collection/') ?> :
 
             <select onchange="chgxmlpopup(this, 'base_id');" name="base_id">
                 <option value="">...</option>
-                <?php
-                foreach ($appbox->get_databoxes() as $databox) {
-                    foreach ($databox->get_collections() as $collection) {
-                        print("<option value=\"" . $collection->get_base_id() . "\">" . $databox->get_viewname() . " / " . $collection->get_name() . "</option>");
-                    }
-                }
-                ?>
+        <?php
+        foreach ($appbox->get_databoxes() as $databox) {
+            foreach ($databox->get_collections() as $collection) {
+                print("<option value=\"" . $collection->get_base_id() . "\">" . $databox->get_viewname() . " / " . $collection->get_name() . "</option>");
+            }
+        }
+        ?>
             </select>
             <br/>
             <br/>
-            <?php echo _('task::_common_:hotfolder') ?>
+        <?php echo _('task::_common_:hotfolder') ?>
             <input type="text" name="hotfolder" style="width:400px;" onchange="chgxmltxt(this, 'hotfolder');" value=""><br/>
             <br/>
-            <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
+        <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
             <input type="text" name="period" style="width:40px;" onchange="chgxmltxt(this, 'period');" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
             <br/>
-            <?php echo _('task::archive:delai de \'repos\' avant traitement') ?>&nbsp;:&nbsp;
+        <?php echo _('task::archive:delai de \'repos\' avant traitement') ?>&nbsp;:&nbsp;
             <input type="text" name="cold" style="width:40px;" onchange="chgxmltxt(this, 'cold');" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
             <br/>
             <input type="checkbox" name="move_archived" onchange="chgxmlck(this, 'move_archived');">&nbsp;<?php echo _('task::archive:deplacer les fichiers archives dans _archived') ?>
@@ -250,7 +248,6 @@ class task_period_archive extends task_abstract
             <input type="checkbox" name="delfolder" onchange="chgxmlck(this, 'delfolder');">&nbsp;<?php echo _('task::archive:supprimer les repertoires apres archivage') ?><br/>
         </form>
         <?php
-
         return ob_get_clean();
     }
 
@@ -400,7 +397,6 @@ class task_period_archive extends task_abstract
                 }
 
                 $this->setLastExecTime();
-
                 try {
                     if ( ! ($this->sxTaskSettings = @simplexml_load_string($this->getSettings()))) {
                         throw new Exception(sprintf('Error fetching or reading settings of the task \'%d\'', $this->getID()));
@@ -601,16 +597,17 @@ class task_period_archive extends task_abstract
             $this->log("=========== archive ========== : \n" . $dom->saveXML());
         }
 
-        $this->bubbleResults($dom, $root, $path_in);
-        if ($this->debug) {
-            $this->log("=========== bubbleResults ========== : \n" . $dom->saveXML());
-        }
+        if ($this->running) {
+            $this->bubbleResults($dom, $root, $path_in);
+            if ($this->debug) {
+                $this->log("=========== bubbleResults ========== : \n" . $dom->saveXML());
+            }
 
-        $r = $this->moveFiles($dom, $root, $path_in, $path_archived, $path_error);
-        if ($this->debug) {
-            $this->log("=========== moveFiles ========== (returned " . ($r ? 'true' : 'false') . ") : \n" . $dom->saveXML());
+            $r = $this->moveFiles($dom, $root, $path_in, $path_archived, $path_error);
+            if ($this->debug) {
+                $this->log("=========== moveFiles ========== (returned " . ($r ? 'true' : 'false') . ") : \n" . $dom->saveXML());
+            }
         }
-
         if ($this->movedFiles) {
 
             // something happened : a least one file has moved
@@ -912,7 +909,7 @@ class task_period_archive extends task_abstract
 
         $xpath = new DOMXPath($dom);
 
-        for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
+        for ($n = $node->firstChild; $this->running && $n; $n = $n->nextSibling) {
             if (($iloop ++ % 100) == 0) {
                 usleep(1000);
             }
@@ -1020,7 +1017,7 @@ class task_period_archive extends task_abstract
         }
 
         // scan again for unmatched files
-        for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
+        for ($n = $node->firstChild; $this->running && $n; $n = $n->nextSibling) {
             if ( ! $n->getAttribute('isdir') == '1' && ! $n->getAttribute('match')) {
                 // still no match, now it's an error (bubble to the top)
                 for ($nn = $n; $nn && $nn->nodeType == XML_ELEMENT_NODE; $nn = $nn->parentNode) {
@@ -1059,7 +1056,7 @@ class task_period_archive extends task_abstract
         }
 
         $nodesToDel = array();
-        for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
+        for ($n = $node->firstChild; $this->running && $n; $n = $n->nextSibling) {
             if (($iloop ++ % 20) == 0) {
                 usleep(1000);
             }
@@ -1151,7 +1148,7 @@ class task_period_archive extends task_abstract
         }
 
         $nodesToDel = array();
-        for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
+        for ($n = $node->firstChild; $this->running && $n; $n = $n->nextSibling) {
             if (($iloop ++ % 20) == 0) {
                 usleep(1000);
             }
@@ -1280,6 +1277,7 @@ class task_period_archive extends task_abstract
      */
     private function moveFiles(\DOMDocument $dom, \DOMElement $node, $path, $path_archived, $path_error, $depth = 0)
     {
+
         static $iloop = 0;
         if ($depth == 0) {
             $iloop = 0;
@@ -1749,7 +1747,7 @@ class task_period_archive extends task_abstract
     private function archiveFilesToGrp(\DOMDocument $dom, \DOMElement $node, $path, $path_archived, $path_error, $grp_rid)
     {
         $nodesToDel = array();
-        for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
+        for ($n = $node->firstChild; $this->running && $n; $n = $n->nextSibling) {
             if ($n->getAttribute('isdir') == '1') {
                 // in a grp, all levels goes in the same grp
                 $node->setAttribute('archived', '1');  // the main grp folder is 'keep'ed, but not subfolders
