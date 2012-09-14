@@ -590,7 +590,7 @@ return call_user_func(
                             'module'      => 'validation',
                             'module_name' => _('admin::monitor: module validation'),
                             'error'       => '',
-                            'message'=>$message
+                            'message'     => $message,
                         );
                     }
                     $output = $twig->render($template, $options);
