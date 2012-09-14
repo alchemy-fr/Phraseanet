@@ -124,7 +124,7 @@ class Feed_Collection implements Feed_CollectionInterface, cache_cacheableInterf
 
         }
 
-        $sql = 'SELECT id FROM feeds WHERE public = "1" ORDER BY created_on DESC';
+        $sql = 'SELECT * FROM feeds WHERE public = "1" AND base_id = null ORDER BY created_on DESC';
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -135,7 +135,7 @@ class Feed_Collection implements Feed_CollectionInterface, cache_cacheableInterf
         foreach ($rs as $row) {
             $feeds[] = $row['id'];
         }
-
+        
         $appbox->set_data_to_cache($feeds, $key);
 
         return $feeds;
