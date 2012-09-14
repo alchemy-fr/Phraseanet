@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Application;
 
-use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Admin\Collection;
 use Alchemy\Phrasea\Controller\Admin\ConnectedUsers;
 use Alchemy\Phrasea\Controller\Admin\Dashboard;
@@ -28,28 +27,32 @@ use Alchemy\Phrasea\Controller\Admin\Users;
 use Alchemy\Phrasea\Controller\Admin\TaskManager;
 use Alchemy\Phrasea\Controller\Utils\ConnectionTest;
 use Alchemy\Phrasea\Controller\Utils\PathFileTest;
+use Silex\ControllerProviderInterface;
+use Silex\Application As SilexApplication;
 
-return call_user_func(
-        function() {
-            $app = new PhraseaApplication();
+class Admin implements ControllerProviderInterface
+{
 
-            $app->mount('/', new Root());
-            $app->mount('/dashboard', new Dashboard());
-            $app->mount('/collection', new Collection());
-            $app->mount('/databox', new Databox());
-            $app->mount('/databoxes', new Databoxes());
-            $app->mount('/setup', new Setup());
-            $app->mount('/sphinx', new Sphinx());
-            $app->mount('/connected-users', new ConnectedUsers());
-            $app->mount('/task-manager', new TaskManager());
-            $app->mount('/publications', new Publications());
-            $app->mount('/users', new Users());
-            $app->mount('/fields', new Fields());
-            $app->mount('/subdefs', new Subdefs());
-            $app->mount('/description', new Description());
-            $app->mount('/tests/connection', new ConnectionTest());
-            $app->mount('/tests/pathurl', new PathFileTest());
+    public function connect(SilexApplication $app)
+    {
+        $controllers = $app['controllers_factory'];
 
-            return $app;
-        }
-);
+        $controllers->mount('/', new Root());
+        $controllers->mount('/dashboard', new Dashboard());
+        $controllers->mount('/collection', new Collection());
+        $controllers->mount('/databox', new Databox());
+        $controllers->mount('/databoxes', new Databoxes());
+        $controllers->mount('/setup', new Setup());
+        $controllers->mount('/sphinx', new Sphinx());
+        $controllers->mount('/connected-users', new ConnectedUsers());
+        $controllers->mount('/publications', new Publications());
+        $controllers->mount('/users', new Users());
+        $controllers->mount('/fields', new Fields());
+        $controllers->mount('/subdefs', new Subdefs());
+        $controllers->mount('/description', new Description());
+        $controllers->mount('/tests/connection', new ConnectionTest());
+        $controllers->mount('/tests/pathurl', new PathFileTest());
+
+        return $controllers;
+    }
+}
