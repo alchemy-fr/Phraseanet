@@ -11,6 +11,7 @@
 
 namespace Repositories;
 
+use Alchemy\Phrasea\Application;
 use Doctrine\ORM\EntityRepository;
 use Entities;
 
@@ -125,7 +126,7 @@ class BasketRepository extends EntityRepository
      * @param  \User_Adapter        $user
      * @return \Entities\Basket
      */
-    public function findUserBasket($basket_id, \User_Adapter $user, $requireOwner)
+    public function findUserBasket(Application $app, $basket_id, \User_Adapter $user, $requireOwner)
     {
         $dql = 'SELECT b
             FROM Entities\Basket b
@@ -142,12 +143,12 @@ class BasketRepository extends EntityRepository
             throw new \Exception_NotFound(_('Basket is not found'));
         }
 
-        if ($basket->getOwner()->get_id() != $user->get_id()) {
+        if ($basket->getOwner($app)->get_id() != $user->get_id()) {
             $participant = false;
 
             if ($basket->getValidation() && ! $requireOwner) {
                 try {
-                    $basket->getValidation()->getParticipant($user);
+                    $basket->getValidation()->getParticipant($user, $app);
                     $participant = true;
                 } catch (\Exception $e) {
 

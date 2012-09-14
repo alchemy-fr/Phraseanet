@@ -11,6 +11,8 @@
 
 namespace Entities;
 
+use Alchemy\Phrasea\Application;
+
 require_once __DIR__ . '/../../classes/cache/cacheableInterface.class.php';
 require_once __DIR__ . '/../../classes/User/Interface.class.php';
 require_once __DIR__ . '/../../classes/User/Adapter.class.php';
@@ -326,10 +328,10 @@ class Basket
         $this->setPusherId($user->get_id());
     }
 
-    public function getPusher()
+    public function getPusher(Application $app)
     {
         if ($this->getPusherId()) {
-            return new \User_Adapter($this->getPusherId(), \appbox::get_instance(\bootstrap::getCore()));
+            return new \User_Adapter($this->getPusherId(), $app);
         }
     }
 
@@ -338,10 +340,10 @@ class Basket
         $this->setUsrId($user->get_id());
     }
 
-    public function getOwner()
+    public function getOwner(Application $app)
     {
         if ($this->getUsrId()) {
-            return new \User_Adapter($this->getUsrId(), \appbox::get_instance(\bootstrap::getCore()));
+            return new \User_Adapter($this->getUsrId(), $app);
         }
     }
     /**
@@ -393,10 +395,10 @@ class Basket
         return $this->is_read;
     }
 
-    public function hasRecord(\record_adapter $record)
+    public function hasRecord(Application $app, \record_adapter $record)
     {
         foreach ($this->getElements() as $basket_element) {
-            $bask_record = $basket_element->getRecord();
+            $bask_record = $basket_element->getRecord($app);
 
             if ($bask_record->get_record_id() == $record->get_record_id()
                 && $bask_record->get_sbas_id() == $record->get_sbas_id()) {
@@ -407,13 +409,13 @@ class Basket
         return false;
     }
 
-    public function getSize()
+    public function getSize(Application $app)
     {
         $totSize = 0;
 
         foreach ($this->getElements() as $basket_element) {
             try {
-                $totSize += $basket_element->getRecord()
+                $totSize += $basket_element->getRecord($app)
                     ->get_subdef('document')
                     ->get_size();
             } catch (Exception $e) {

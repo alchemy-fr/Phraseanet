@@ -11,6 +11,8 @@
 
 namespace Entities;
 
+use Alchemy\Phrasea\Application;
+
 /**
  * Kernel
  *
@@ -269,10 +271,10 @@ class ValidationSession
      *
      * @return Entities\ValidationParticipant
      */
-    public function getParticipant(\User_Adapter $user)
+    public function getParticipant(\User_Adapter $user, Application $app)
     {
         foreach ($this->getParticipants() as $participant) {
-            if ($participant->getUser()->get_id() == $user->get_id()) {
+            if ($participant->getUser($app)->get_id() == $user->get_id()) {
                 return $participant;
             }
         }
@@ -321,10 +323,10 @@ class ValidationSession
         return;
     }
 
-    public function getInitiator()
+    public function getInitiator(Application $app)
     {
         if ($this->initiator_id) {
-            return \User_Adapter::getInstance($this->initiator_id, \appbox::get_instance(\bootstrap::getCore()));
+            return \User_Adapter::getInstance($this->initiator_id, $app);
         }
     }
 
@@ -339,7 +341,7 @@ class ValidationSession
         return $date_obj > $this->getExpires();
     }
 
-    public function getValidationString(\User_Adapter $user)
+    public function getValidationString(Application $app, \User_Adapter $user)
     {
 
         if ($this->isInitiator($user)) {
@@ -358,12 +360,12 @@ class ValidationSession
             if ($this->getParticipant($user)->getCanSeeOthers()) {
                 return sprintf(
                         _('Processus de validation recu de %s et concernant %d utilisateurs')
-                        , $this->getInitiator()->get_display_name()
+                        , $this->getInitiator($app)->get_display_name()
                         , (count($this->getParticipants()) - 1));
             } else {
                 return sprintf(
                         _('Processus de validation recu de %s')
-                        , $this->getInitiator()->get_display_name()
+                        , $this->getInitiator($app)->get_display_name()
                 );
             }
         }

@@ -11,6 +11,8 @@
 
 namespace Entities;
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -144,10 +146,10 @@ class UsrList
         return $this->owners;
     }
 
-    public function hasAccess(\User_Adapter $user)
+    public function hasAccess(\User_Adapter $user, Application $app)
     {
         foreach ($this->getOwners() as $owner) {
-            if ($owner->getUser()->get_id() == $user->get_id()) {
+            if ($owner->getUser($app)->get_id() == $user->get_id()) {
                 return true;
             }
         }
@@ -160,10 +162,10 @@ class UsrList
      * @param  \User_Adapter          $user
      * @return \Entities\UsrListOwner
      */
-    public function getOwner(\User_Adapter $user)
+    public function getOwner(\User_Adapter $user, Application $app)
     {
         foreach ($this->getOwners() as $owner) {
-            if ($owner->getUser()->get_id() == $user->get_id()) {
+            if ($owner->getUser($app)->get_id() == $user->get_id()) {
                 return $owner;
             }
         }
@@ -197,11 +199,11 @@ class UsrList
      * @param  \User_Adapter $user
      * @return boolean
      */
-    public function has(\User_Adapter $user)
+    public function has(\User_Adapter $user, Application $app)
     {
         return $this->entries->exists(
                 function($key, $entry) use ($user) {
-                    return $entry->getUser()->get_id() === $user->get_id();
+                    return $entry->getUser($app)->get_id() === $user->get_id();
                 }
         );
     }

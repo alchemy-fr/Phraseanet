@@ -11,6 +11,8 @@
 
 namespace Entities;
 
+use Alchemy\Phrasea\Application;
+
 require_once __DIR__ . '/../../classes/record/Interface.class.php';
 require_once __DIR__ . '/../../classes/record/adapter.class.php';
 require_once __DIR__ . '/../../classes/cache/cacheableInterface.class.php';
@@ -144,16 +146,16 @@ class StoryWZ
         $this->setUsrId($user->get_id());
     }
 
-    public function getUser()
+    public function getUser(Application $app)
     {
         if ($this->getUsrId()) {
-            return new \User_Adapter($this->getUsrId(), \appbox::get_instance(\bootstrap::getCore()));
+            return new \User_Adapter($this->getUsrId(), $app);
         }
     }
 
-    public function getRecord()
+    public function getRecord(Application $app)
     {
-        return new \record_adapter($this->getSbasId(), $this->getRecordId());
+        return new \record_adapter($app, $this->getSbasId(), $this->getRecordId());
     }
 
     public function setRecord(\record_adapter $record)
