@@ -25,7 +25,7 @@ use Alchemy\Phrasea\Controller\Admin\Setup;
 use Alchemy\Phrasea\Controller\Admin\Sphinx;
 use Alchemy\Phrasea\Controller\Admin\Subdefs;
 use Alchemy\Phrasea\Controller\Admin\Users;
-use Alchemy\Phrasea\Controller\Admin\Tasks;
+use Alchemy\Phrasea\Controller\Admin\TaskManager;
 use Alchemy\Phrasea\Controller\Utils\ConnectionTest;
 use Alchemy\Phrasea\Controller\Utils\PathFileTest;
 
