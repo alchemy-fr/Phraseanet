@@ -78,20 +78,6 @@ class TaskManager implements ControllerProviderInterface
                 return $app->redirect('/admin/task-manager/');
             });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         /*
          * route /admin/taskmanager/scheduler/start
          */
@@ -157,37 +143,6 @@ class TaskManager implements ControllerProviderInterface
                             }
                         });
             });
-
-
-
-
-
-
-            /*
-        $controllers->before(function(Application $app) {
-
-                // todo : check sceduler key
-
-                $scheduler_key = \phrasea::scheduler_key();
-
-
-
-                $user = $app['phraseanet.core']->getAuthenticatedUser();
-                if ( ! $user || ! $user->ACL()->has_right('task_manager')) {
-                    throw new AccessDeniedHttpException('User can not access task manager');
-                }
-            });
-*/
-
-
-
-
-
-
-
-
-
-
 
 
         $controllers->get('/task/{id}/log', function(Application $app, Request $request, $id) {
@@ -457,41 +412,6 @@ class TaskManager implements ControllerProviderInterface
 
         $app['task-manager']->getSchedulerProcess()->run();
 
-//                $nullfile = '/dev/null';
-//
-//                if (defined('PHP_WINDOWS_VERSION_BUILD')) {
-//                    $nullfile = 'NUL';
-//                }
-//
-//                $phpcli = $registry->get('GV_cli');
-//
-//                $cmd = $phpcli . ' -f ' . $registry->get('GV_RootPath') . "bin/console scheduler:start";
-//
-//                $descriptors[1] = array("file", $nullfile, "a+");
-//                $descriptors[2] = array("file", $nullfile, "a+");
-//
-//                $pipes = null;
-//                $cwd = $registry->get('GV_RootPath') . "bin/";
-//                $proc = proc_open($cmd, $descriptors, $pipes, $cwd, null, array('bypass_shell' => true));
-//
-//                $pid = NULL;
-//                if (is_resource($proc)) {
-//                    $proc_status = proc_get_status($proc);
-//                    if ($proc_status['running'])
-//                        $pid = $proc_status['pid'];
-//                }
-//                if ($pid !== NULL) {
-//                    $msg = sprintf("scheduler '%s' started (pid=%s)", $cmd, $pid);
-//                    // my_syslog(LOG_INFO, $msg);
-//                } else {
-//                    @fclose($pipes[1]);
-//                    @fclose($pipes[2]);
-//                    @proc_close($process);
-//
-//                    $msg = sprintf("scheduler '%s' failed to start", $cmd);
-//                    // my_syslog(LOG_INFO, $msg);
-//                }
-
         return $app->json(true);
     }
 
@@ -505,8 +425,6 @@ class TaskManager implements ControllerProviderInterface
     {
         return sprintf('%s::%s', __CLASS__, $method);
     }
-
-
 
 
 }

@@ -224,8 +224,9 @@ class task_period_cindexer extends task_abstract
                         cmd += " --socket=" + socket.value;
                     if(charset.value)
                         cmd += " --default-character-set=" + charset.value;
-                    if(1 || use_sbas.checked)
-                        cmd += " -o";
+
+                    cmd += " -o";
+
                     if(nolog.checked)
                         cmd += " -n";
                     if(clng.value)
@@ -240,7 +241,6 @@ class task_period_cindexer extends task_abstract
 
             $(document).ready(function(){
                 $("#graphicForm *").change(function(){
-              //      console.log($(this));
                     taskFillGraphic_<?php echo(get_class($this));?>(null);
                 });
             });
@@ -383,10 +383,10 @@ class task_period_cindexer extends task_abstract
             $args[] = '--socket=' . $this->socket;
             $args_nopwd[] = '--socket=' . $this->socket;
         }
-        if (1 || $this->use_sbas) {
-            $args[] = '-o';
-            $args_nopwd[] = '-o';
-        }
+
+        $args[] = '-o';
+        $args_nopwd[] = '-o';
+
         if ($this->charset) {
             $args[] = '--default-character-set=' . $this->charset;
             $args_nopwd[] = '--default-character-set=' . $this->charset;

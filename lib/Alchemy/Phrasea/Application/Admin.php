@@ -26,9 +26,6 @@ use Alchemy\Phrasea\Controller\Admin\Sphinx;
 use Alchemy\Phrasea\Controller\Admin\Subdefs;
 use Alchemy\Phrasea\Controller\Admin\Users;
 use Alchemy\Phrasea\Controller\Admin\Tasks;
-use Alchemy\Phrasea\Controller\Admin\Task;
-use Alchemy\Phrasea\Controller\Admin\TaskManager;
-use Alchemy\Phrasea\Controller\Admin\Scheduler;
 use Alchemy\Phrasea\Controller\Utils\ConnectionTest;
 use Alchemy\Phrasea\Controller\Utils\PathFileTest;
 
@@ -46,10 +43,6 @@ return call_user_func(
             $app->mount('/connected-users', new ConnectedUsers());
 
             $app->mount('/task-manager', new TaskManager());
-
-//            $app->mount('/tasks', new Tasks());
-//            $app->mount('/task', new Task());
-//            $app->mount('/scheduler', new Scheduler());
 
             $app->mount('/publications', new Publications());
             $app->mount('/users', new Users());

@@ -107,7 +107,7 @@ abstract class task_abstract
      */
     public function getClass()
     {
-        return(get_class($this));
+        return get_class($this);
     }
 
     /**
