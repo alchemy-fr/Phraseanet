@@ -33,6 +33,38 @@ class task_manager
         return $this;
     }
 
+    /**
+     * status of scheduler and tasks
+     * used do refresh the taskmanager page
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        $ret = array(
+            'time'      => date("H:i:s"),
+            'scheduler' => $this->getSchedulerState(),
+            'tasks'     => array()
+        );
+
+        foreach ($this->getTasks(true) as $task) {
+            if ($task->getState() == self::STATE_TOSTOP && $task->getPID() === NULL) {
+                // fix
+                $task->setState(self::STATE_STOPPED);
+            }
+            $id = $task->getID();
+            $ret['tasks'][$id] = array(
+                'id'        => $id,
+                'pid'       => $task->getPID(),
+                'crashed'   => $task->getCrashCounter(),
+                'completed' => $task->getCompletedPercentage(),
+                'status'    => $task->getState()
+            );
+        }
+
+        return $ret;
+    }
+
     public function getTasks($refresh = false, Logger $logger = null)
     {
         if ($this->tasks && ! $refresh) {
@@ -94,6 +126,15 @@ class task_manager
         return $tasks[$task_id];
     }
 
+    public function getSchedulerProcess()
+    {
+        $phpcli = $this->appbox->get_registry()->get('GV_cli');
+
+        $cmd = $phpcli . ' -f ' . $this->appbox->get_registry()->get('GV_RootPath') . "bin/console scheduler:start";
+
+        return new Process($cmd);
+    }
+ 
     public function setSchedulerState($status)
     {
         $av_status = array(

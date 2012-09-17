@@ -1,0 +1,349 @@
+
+<h1>{% trans 'admin::tasks: planificateur de taches' %}
+    <span style="font-size:12px;">
+        {% trans 'Last update at' %} <span id="pingTime"></span>
+    </span>
+</h1>
+
+<form id="taskManagerForm" method="get" name="taskManager" action="/admin/task-manager/tasks/" >
+</form>
+
+<form id="createTask" method="post"  name="createTask" action="/admin/task-manager/tasks/create/" >
+    <input type="hidden" name="tcl" value="" />
+    <input type="hidden" name="view" value="GRAPHIC" />
+</form>
+
+<table class="admintable task_manager" cellpadding="0" cellSpacing="0">
+    <thead>
+        <tr>
+            <th></th>
+            <th style="text-align:center; width:40px;">ID</th>
+            <th style="text-align:center; width:30px;">!</th>
+            <th style="text-align:center; width:80px;">{% trans 'admin::tasks: statut de la tache' %}</th>
+            <th style="text-align:center; width:60px;">{% trans 'admin::tasks: process_id de la tache' %}</th>
+            <th style="text-align:center; width:120px;">{% trans 'admin::tasks: etat de progression de la tache' %}</th>
+            <th style="width:auto;">{% trans 'admin::tasks: nom de la tache' %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr id="TR_SCHED" class="sched even">
+            <td>
+                <div class="btn-group">
+                    <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="schedMenuItem" id="schedulerStart"><a href="#">start</a></li>
+                        <li class="schedMenuItem" id="schedulerStop"><a href="#">stop</a></li>
+                        <li class="schedMenuItem" id="schedulerLog"><a href="#">log</a></li>
+                    </ul>
+                </div>
+            </td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td style="text-align:center" id="STATUS_SCHED"></td>
+            <td id="PID_SCHED" style="text-align:center;">&nbsp;</td>
+            <td>&nbsp;</td>
+            <td style="font-weight:900" class="taskname">TaskManager</td>
+        </tr>
+{% for task in task_manager.getTasks() %}
+        <tr id="TR_{{ task.getID() }}" class="task {% if loop.index is odd %}odd{% else %}even{% endif %}">
+            <td>
+                <div class="btn-group">
+                    <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="taskMenuItem" id="taskEdit_{{ task.getID() }}"><a href="#">edit</a></li>
+                        <li class="taskMenuItem" id="taskStart_{{ task.getID() }}"><a href="#">start</a></li>
+                        <li class="taskMenuItem" id="taskStop_{{ task.getID() }}"><a href="#">stop</a></li>
+                        <li class="taskMenuItem" id="taskDelete_{{ task.getID() }}"><a href="#">delete</a></li>
+                        <li class="taskMenuItem" id="taskLog_{{ task.getID() }}"><a href="#">log</a></li>
+                    </ul>
+                </div>
+            </td>
+            <td style="text-align:center; font-weight:900">{{ task.getID() }}</td>
+            <td style="text-align:center"><img id="WARNING_{{ task.getID() }}" src="/skins/icons/alert.png" title="" style="display:none;"/></td>
+            <td style="text-align:center" id="STATUS_{{ task.getID() }}"></td>
+            <td style="text-align:center" id="PID_{{ task.getID() }}">&nbsp;</td>
+            <td>
+                <div style="position:relative; top:0px; left:0px; right:0px;" >
+                    <div id="COMPBOX_{{ task.getID() }}" style="position:absolute; top:1px; left:3px; right:3px; height:5px; background-color:#787878">
+                        <div id="COMP_{{ task.getID() }}" style="position:absolute; top:1px; left:0px; width:0%; height:3px; background-color:#FFFF80">
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td class="taskname">{{ task.getTitle() }} [{{ task.getName() }}]</td>
+        </tr>
+{% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="7">
+                    <select id="newTaskMenu">
+                        <option value="">{% trans 'admin::tasks: Nouvelle tache' %}...</option>
+{% for t in task_manager.getAvailableTasks() %}
+                        <option value="{{ t.class }}" {% if t.err %}disabled="disabled"{% endif %}>{{ t.name }}</option>
+{% endfor %}
+                    </select>
+            </td>
+        </tr>
+    </tfoot>
+</table>
+
+
+<script type="text/javascript">
+
+    function pingScheduler(repeatTimeout)
+    {
+        if(typeof window.TMTimer == 'number')
+        {
+            window.clearTimeout(window.TMTimer);
+            delete window.TMTimer;
+        }
+
+        // if the page is unloaded, no need to ping nor repeat
+        if($("#STATUS_SCHED").length == 0)
+            return;
+
+        $.ajax(
+        {
+            url:'/admin/task-manager/tasks/',
+            type:"GET",
+            dataType:"json",
+            data:{},
+            contentType:"application/json; charset=utf-8",
+            success:function(ret)
+            {
+                if(ret.time)
+                    $("#pingTime").empty().append(ret.time);
+
+                if(ret.scheduler)
+                {
+                    if(ret.scheduler.status)
+                        $("#STATUS_SCHED").html(ret.scheduler.status);
+                    else
+                        $("#STATUS_SCHED").html('');
+                }
+                if(ret.scheduler && ret.scheduler.pid)
+                {
+                    $("#PID_SCHED").html(ret.scheduler.pid);
+                    $("#schedulerStart").addClass("disabled");
+                    $("#schedulerStop").removeClass("disabled");
+                }
+                else
+                {
+                    $("#PID_SCHED").html('-');
+                    $("#schedulerStart").removeClass("disabled");
+                    $("#schedulerStop").addClass("disabled");
+                }
+
+
+                if(ret.tasks)
+                {
+                    for(id in ret.tasks)
+                    {
+                        if(ret.tasks[id].status)
+                        {
+                            $("#STATUS_"+id).html(ret.tasks[id].status);
+                        }
+                        else
+                        {
+                            $("#STATUS_"+id).html('');
+                        }
+
+                        if(ret.tasks[id].pid)
+                        {
+                            $("#PID_"+id).html(ret.tasks[id].pid);
+
+                            $("#taskEdit_"+id).addClass("disabled");
+                            $("#taskStop_"+id).removeClass("disabled");
+                            $("#taskStart_"+id).addClass("disabled");
+                            $("#taskDelete_"+id).addClass("disabled");
+                        }
+                        else
+                        {
+                            $("#PID_"+id).html('-');
+
+                            $("#taskEdit_"+id).removeClass("disabled");
+                            $("#taskDelete_"+id).removeClass("disabled");
+
+                            if(ret.tasks[id].status == 'started' || ret.tasks[id].status == 'torestart')
+                            {
+                                $("#taskStop_"+id).removeClass("disabled");
+                            }
+                            else
+                            {
+                                $("#taskStop_"+id).addClass("disabled");
+                            }
+
+                            if(ret.scheduler && ret.scheduler.pid && !(ret.tasks[id].status == 'started' || ret.tasks[id].status == 'torestart'))
+                            {
+                                $("#taskStart_"+id).removeClass("disabled");
+                            }
+                            else
+                            {
+                                $("#taskStart_"+id).addClass("disabled");
+                            }
+                        }
+
+                        if(ret.tasks[id].crashed)
+                        {
+                            //     $("#WARNING_"+id).show().setAttribute("src", "/skins/icons/alert.png");
+                            $("#WARNING_"+id).show().attr("title", "crashed "+ret.tasks[id].crashed+" times");
+                        }
+                        else
+                        {
+                            $("#WARNING_"+id).hide();
+                        }
+
+                        if(ret.tasks[id].completed && ret.tasks[id].completed>0 && ret.tasks[id].completed<=100)
+                        {
+                            $("#COMP_"+id).width(ret.tasks[id].completed + "%");
+                            $("#COMPBOX_"+id).show();
+                        }
+                        else
+                        {
+                            $("#COMPBOX_"+id).hide();
+                            $("#COMP_"+id).width('0px');
+                        }
+                    }
+                }
+
+                if(repeatTimeout > 0)
+                {
+                    window.TMTimer = self.setTimeout(function() {pingScheduler(repeatTimeout);}, 1000*repeatTimeout);
+                }
+            }
+        });
+    }
+
+
+    $(document).ready(function(){
+
+        $(".schedMenuItem").bind("click", function() {
+            var action = $(this).attr("id");
+
+            switch(action)
+            {
+                case "schedulerStart":
+                   // $.get("./runscheduler.php", "", function() {});
+                   $.ajax({
+                        url: "/admin/task-manager/scheduler/start",
+                        type:"GET",
+                        dataType:"json",
+                        data : {},
+                        success: function(data)
+                        {
+                        }
+                    });
+                    break;
+                  break;
+
+                case "schedulerStop":
+                    $.ajax({
+                        url: "/admin/task-manager/scheduler/stop",
+                        type:"GET",
+                        dataType:"json",
+                        data : {},
+                        success: function(data)
+                        {
+                        }
+                    });
+                    break;
+
+                case "schedulerLog":
+                    window.open("/admin/task-manager/scheduler/log", "scheduler.log");
+                    break;
+
+            }
+
+        });
+
+
+        $(".taskMenuItem").bind("click", function() {
+            var action = $(this).attr("id").split('_');
+
+            switch(action[0])
+            {
+                case "taskEdit":
+                     var a = "/admin/task-manager/task/"+action[1]+"";
+                     $("#taskManagerForm").attr("action", a);
+                     $("#taskManagerForm").submit();
+                     break;
+
+                case "taskStart":
+                    // first reset the crash counter, then set to 'tostart'
+                    $.ajax({
+                            url: "/admin/task-manager/task/"+action[1]+"/resetcrashcounter",
+                            type:"GET",
+                            dataType:"json",
+                            data : {},
+                            success: function(data)
+                            {
+                                $.ajax({
+                                        url: "/admin/task-manager/task/"+action[1]+"/tostart",
+                                        type:"GET",
+                                        dataType:"json",
+                                        data : {},
+                                        success: function(data)
+                                        {
+
+                                        }
+                                    });
+                            }
+                        });
+                    break;
+
+                case "taskStop":
+                    $.ajax({
+                            url: "/admin/task-manager/task/"+action[1]+"/tostop",
+                            type:"GET",
+                            dataType:"json",
+                            data : {signal:15},
+                            success: function(data)
+                            {
+
+                            }
+                        });
+                    break;
+
+                case "taskDelete":
+                    if(confirm("{% trans 'admin::tasks: supprimer la tache ?' %}"))
+                    {
+                        var a = "/admin/task-manager/task/"+action[1]+"/delete";
+                        $("#taskManagerForm").attr("action", a);
+                        $("#taskManagerForm").submit();
+                    }
+                    break;
+
+                case "taskLog":
+                    window.open("/admin/task-manager/task/"+action[1]+"/log", "task"+action[1]+".log");
+                    break;
+            }
+
+        });
+
+
+        $("#newTaskMenu").bind("change", function() {
+
+            var task_class = $(this).children("option:selected").attr("value");
+            console.log(task_class);
+
+            if(task_class.substr(0,5) == "task_")   // sanity check
+            {
+                $("#createTask INPUT[name=\"tcl\"]").attr("value", task_class);
+                $("#createTask").submit();
+            }
+
+            $(this).children("option:first").attr("selected", "selected");
+        });
+
+
+        window.TMTimer = self.setTimeout(function() {pingScheduler(2);}, 100); // loop forever every 2 sec
+
+    }
+)
+</script>
+

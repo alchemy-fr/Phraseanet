@@ -102,12 +102,13 @@ class module_console_taskrun extends Command
 
         if ($input->getOption('verbose')) {
             $handler = new Handler\StreamHandler(fopen('php://stdout', 'a'));
-            $this->container['monolog']->pushHandler($handler);
+            $this->container['phraseanet.core']['monolog']->pushHandler($handler);
         }
 
         $logfile = __DIR__ . '/../../../../logs/task_' . $task_id . '.log';
         $handler = new Handler\RotatingFileHandler($logfile, 10);
-        $this->container['monolog']->pushHandler($handler);
+        $this->container['phraseanet.core']['monolog']->pushHandler($handler);
+        $logger = $this->container['phraseanet.core']['monolog'];
         $this->task = $task_manager->getTask($task_id, $logger);
 
         register_tick_function(array($this, 'tick_handler'), true);
