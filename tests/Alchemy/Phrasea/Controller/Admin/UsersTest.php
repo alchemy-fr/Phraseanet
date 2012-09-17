@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Core\Configuration;
+
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
@@ -7,50 +9,39 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     protected $client;
     protected $usersParameters;
 
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Admin.php';
-
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-
-        return $app;
-    }
-
     public function setUp()
     {
         parent::setUp();
         $this->usersParameters = array("users" => implode(';', array(self::$user->get_id(), self::$user_alt1->get_id())));
-        $this->client = $this->createClient();
     }
 
     public function testRouteRightsPost()
     {
-        $this->client->request('POST', '/users/rights/', $this->usersParameters);
+        $this->client->request('POST', '/admin/users/rights/', $this->usersParameters);
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOk());
     }
 
     public function testRouteRightsGet()
     {
-        $this->client->request('GET', '/users/rights/', $this->usersParameters);
+        $this->client->request('GET', '/admin/users/rights/', $this->usersParameters);
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOk());
     }
 
     public function testRouteDelete()
     {
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
 
         $username = uniqid('user_');
-        $user = User_Adapter::create($appbox, $username, "test", $username . "@email.com", false);
+        $user = User_Adapter::create(self::$application, $username, "test", $username . "@email.com", false);
         $id = $user->get_id();
 
-        $this->client->request('POST', '/users/delete/', array('users'   => $id));
+        $this->client->request('POST', '/admin/users/delete/', array('users'   => $id));
         $response = $this->client->getResponse();
         $this->assertTrue($response->isRedirect());
         try {
-            $user = User_Adapter::getInstance($id, $appbox);
+            $user = User_Adapter::getInstance($id, self::$application);
             $user->delete();
             $this->fail("user not deleted");
         } catch (\Exception $e) {
@@ -60,16 +51,16 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteRightsApply()
     {
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
 
         $username = uniqid('user_');
-        $user = User_Adapter::create($appbox, $username, "test", $username . "@email.com", false);
+        $user = User_Adapter::create(self::$application, $username, "test", $username . "@email.com", false);
 
         $base_id = self::$collection->get_base_id();
         $_GET['values'] = 'canreport_' . $base_id . '=1&manage_' . self::$collection->get_base_id() . '=1&canpush_' . self::$collection->get_base_id() . '=1';
         $_GET['user_infos'] = "user_infos[email]=" . $user->get_email();
 
-        $this->client->request('POST', '/users/rights/apply/', array('users'   => $user->get_id()));
+        $this->client->request('POST', '/admin/users/rights/apply/', array('users'   => $user->get_id()));
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOK());
         $this->assertEquals("application/json", $response->headers->get("content-type"));
@@ -87,13 +78,13 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->markTestIncomplete();
         $_GET = array();
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
         $username = uniqid('user_');
-        $user = User_Adapter::create($appbox, $username, "test", $username . "@email.com", false);
+        $user = User_Adapter::create(self::$application, $username, "test", $username . "@email.com", false);
         $base_id = self::$collection->get_base_id();
         $_GET['values'] = 'canreport_' . $base_id . '=1&manage_' . self::$collection->get_base_id() . '=1&canpush_' . self::$collection->get_base_id() . '=1';
         $_GET['user_infos'] = "user_infos[email]=" . $user->get_email();
-        $this->client->request('POST', '/users/rights/apply/', array('users'   => $user->get_id()));
+        $this->client->request('POST', '/admin/users/rights/apply/', array('users'   => $user->get_id()));
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOK());
         $this->assertEquals("application/json", $response->headers->get("content-type"));
@@ -108,7 +99,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $base_id = array_pop(array_keys(self::$user->ACL()->get_granted_base()));
         $params = array('base_id' => $base_id, 'users'   => self::$user->get_id());
 
-        $this->client->request('POST', '/users/rights/quotas/', $params);
+        $this->client->request('POST', '/admin/users/rights/quotas/', $params);
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOK());
     }
@@ -118,7 +109,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $params = array(
             'base_id' => self::$collection->get_base_id()
             , 'quota'   => '1', 'droits'  => 38, 'restes'  => 15);
-        $this->client->request('POST', '/users/rights/quotas/apply/', $params);
+        $this->client->request('POST', '/admin/users/rights/quotas/apply/', $params);
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOK());
     }
@@ -128,7 +119,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $base_id = array_pop(array_keys(self::$user->ACL()->get_granted_base()));
         $params = array('base_id' => $base_id, 'users'   => self::$user->get_id());
 
-        $this->client->request('POST', '/users/rights/quotas/apply/', $params);
+        $this->client->request('POST', '/admin/users/rights/quotas/apply/', $params);
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOK());
     }
@@ -138,23 +129,23 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $base_id = array_pop(array_keys(self::$user->ACL()->get_granted_base()));
         $params = array('base_id' => $base_id, 'users'   => self::$user->get_id());
 
-        $this->client->request('POST', '/users/rights/time/', $params);
+        $this->client->request('POST', '/admin/users/rights/time/', $params);
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOK());
     }
 
     public function testRouteRightTimeApply()
     {
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
         $username = uniqid('user_');
-        $user = User_Adapter::create($appbox, $username, "test", $username . "@email.com", false);
+        $user = User_Adapter::create(self::$application, $username, "test", $username . "@email.com", false);
         $base_id = self::$collection->get_base_id();
         $date = new \Datetime();
         $date->modify("-10 days");
         $dmin = $date->format(DATE_ATOM);
         $date->modify("+30 days");
         $dmax = $date->format(DATE_ATOM);
-        $this->client->request('POST', '/users/rights/time/apply/', array('base_id' => $base_id, 'dmin'    => $dmin, 'dmax'    => $dmax, 'limit'   => 1, 'users'   => $user->get_id()));
+        $this->client->request('POST', '/admin/users/rights/time/apply/', array('base_id' => $base_id, 'dmin'    => $dmin, 'dmax'    => $dmax, 'limit'   => 1, 'users'   => $user->get_id()));
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOK());
 //    $this->assertTrue($user->ACL()->is_limited($base_id));
@@ -166,7 +157,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $base_id = array_pop(array_keys(self::$user->ACL()->get_granted_base()));
         $params = array('base_id' => $base_id, 'users'   => self::$user->get_id());
 
-        $this->client->request('POST', '/users/rights/masks/', $params);
+        $this->client->request('POST', '/admin/users/rights/masks/', $params);
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOK());
     }
@@ -176,8 +167,8 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->markTestIncomplete();
         $base_id = self::$collection->get_base_id();
         $username = uniqid('user_');
-        $user = User_Adapter::create($appbox, $username, "test", $username . "@email.com", false);
-        $this->client->request('POST', '/users/rights/masks/apply/', array(
+        $user = User_Adapter::create(self::$application, $username, "test", $username . "@email.com", false);
+        $this->client->request('POST', '/admin/users/rights/masks/apply/', array(
             'base_id' => $base_id, 'vand_and', 'vand_or', 'vxor_or', 'vxor_and'
         ));
         $response = $this->client->getResponse();
@@ -187,14 +178,14 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteSearch()
     {
-        $this->client->request('POST', '/users/search/');
+        $this->client->request('POST', '/admin/users/search/');
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOK());
     }
 
     public function testRoutesearchExport()
     {
-        $this->client->request('POST', '/users/search/export/');
+        $this->client->request('POST', '/admin/users/search/export/');
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOK());
         $this->assertEquals("text/plain; charset=UTF-8", $response->headers->get("Content-type"));
@@ -203,7 +194,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteThSearch()
     {
-        $this->client->request('GET', '/users/typeahead/search/', array('term'    => 'admin'));
+        $this->client->request('GET', '/admin/users/typeahead/search/', array('term'    => 'admin'));
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOK());
         $this->assertEquals("application/json", $response->headers->get("content-type"));
@@ -211,16 +202,16 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteApplyTp()
     {
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
 
         $templateName = uniqid('template_');
-        $template = User_Adapter::create($appbox, $templateName, "test", $templateName . "@email.com", false);
+        $template = User_Adapter::create(self::$application, $templateName, "test", $templateName . "@email.com", false);
         $template->set_template(self::$user);
 
         $username = uniqid('user_');
-        $user = User_Adapter::create($appbox, $username, "test", $username . "@email.com", false);
+        $user = User_Adapter::create(self::$application, $username, "test", $username . "@email.com", false);
 
-        $this->client->request('POST', '/users/apply_template/', array(
+        $this->client->request('POST', '/admin/users/apply_template/', array(
             'template' => $template->get_id()
             , 'users'    => $user->get_id())
         );
@@ -234,7 +225,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteCreateException()
     {
-        $this->client->request('POST', '/users/create/', array('value'    => '', 'template' => '1'));
+        $this->client->request('POST', '/admin/users/create/', array('value'    => '', 'template' => '1'));
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOK());
         $this->assertEquals("application/json", $response->headers->get("content-type"));
@@ -245,7 +236,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteCreateExceptionUser()
     {
-        $this->client->request('POST', '/users/create/', array('value'    => '', 'template' => '0'));
+        $this->client->request('POST', '/admin/users/create/', array('value'    => '', 'template' => '0'));
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOK());
         $this->assertEquals("application/json", $response->headers->get("content-type"));
@@ -256,12 +247,12 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteCreateUser()
     {
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
 
         $username = uniqid('user_');
-        $user = User_Adapter::create($appbox, $username, "test", $username . "@email.com", false);
+        $user = User_Adapter::create(self::$application, $username, "test", $username . "@email.com", false);
 
-        $this->client->request('POST', '/users/create/', array('value'    => $username . "@email.com", 'template' => '0'));
+        $this->client->request('POST', '/admin/users/create/', array('value'    => $username . "@email.com", 'template' => '0'));
 
         $response = $this->client->getResponse();
 
@@ -272,7 +263,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertFalse($datas->error);
 
         try {
-            $user = \User_Adapter::getInstance((int) $datas->data, $appbox);
+            $user = \User_Adapter::getInstance((int) $datas->data, self::$application);
             $user->delete();
         } catch (\Exception $e) {
             $this->fail("could not delete created user " . $e->getMessage());
@@ -281,7 +272,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteExportCsv()
     {
-        $this->client->request('POST', '/users/export/csv/');
+        $this->client->request('POST', '/admin/users/export/csv/');
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOK());
         $this->assertRegexp("#text/csv#", $response->headers->get("content-type"));
@@ -291,9 +282,9 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testResetRights()
     {
-        $appbox = \appbox::get_instance(self::$core);
+        $appbox = self::$application['phraseanet.appbox'];
         $username = uniqid('user_');
-        $user = User_Adapter::create($appbox, $username, "test", $username . "@email.com", false);
+        $user = User_Adapter::create(self::$application, $username, "test", $username . "@email.com", false);
 
         $user->ACL()->give_access_to_sbas(array_keys($appbox->get_databoxes()));
 
@@ -324,7 +315,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             }
         }
 
-        $this->client->request('POST', '/users/rights/reset/', array('users'   => $user->get_id()));
+        $this->client->request('POST', '/admin/users/rights/reset/', array('users'   => $user->get_id()));
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOK());
         $this->assertEquals("application/json", $response->headers->get("content-type"));
@@ -337,28 +328,28 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRenderDemands()
     {
-        $this->client->request('GET', '/users/demands/');
+        $this->client->request('GET', '/admin/users/demands/');
 
         $this->assertTrue($this->client->getResponse()->isOk());
     }
 
     public function testRenderImportFile()
     {
-        $this->client->request('GET', '/users/import/file/');
+        $this->client->request('GET', '/admin/users/import/file/');
 
         $this->assertTrue($this->client->getResponse()->isOk());
     }
 
     public function testGetExampleCSVFile()
     {
-        $this->client->request('GET', '/users/import/example/csv/');
+        $this->client->request('GET', '/admin/users/import/example/csv/');
 
         $this->assertTrue($this->client->getResponse()->isOk());
     }
 
     public function testGetExampleRtfFile()
     {
-        $this->client->request('GET', '/users/import/example/rtf/');
+        $this->client->request('GET', '/admin/users/import/example/rtf/');
 
         $this->assertTrue($this->client->getResponse()->isOk());
     }

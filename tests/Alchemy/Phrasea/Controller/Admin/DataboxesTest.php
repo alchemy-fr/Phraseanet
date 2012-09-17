@@ -6,16 +6,6 @@ class DataboxesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
 
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Admin.php';
-
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-
-        return $app;
-    }
-
     /**
      * @covers Alchemy\Phrasea\Controller\Admin\Databases::getDatabases
      * @covers Alchemy\Phrasea\Controller\Admin\Databases::connect
@@ -23,13 +13,7 @@ class DataboxesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGetSlash($type, $errorMsgId)
     {
-        $this->StubbedACL->expects($this->any())
-            ->method('get_granted_sbas')
-            ->will($this->returnValue(array(self::$collection->get_sbas_id())));
-
-        $this->setAdmin(true);
-
-        $this->client->request('GET', '/databoxes/', array(
+        $this->client->request('GET', '/admin/databoxes/', array(
             $type => $errorMsgId
         ));
 
@@ -61,7 +45,7 @@ class DataboxesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(false);
 
-        $this->client->request('GET', '/databoxes/');
+        $this->client->request('GET', '/admin/databoxes/');
     }
 
     /**
@@ -71,7 +55,7 @@ class DataboxesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/databoxes/upgrade/');
+        $this->client->request('POST', '/admin/databoxes/upgrade/');
 
         $this->assertTrue($this->client->getResponse()->isRedirect());
     }

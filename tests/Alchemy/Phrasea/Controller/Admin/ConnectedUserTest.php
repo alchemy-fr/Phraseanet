@@ -8,12 +8,6 @@ class ConnectedUserTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
 
-    public function setUp()
-    {
-        parent::setUp();
-        $this->client = $this->createClient();
-    }
-
     /**
      * @covers \Alchemy\Phrasea\Controller\Admin\ConnectedUsers::connect
      */

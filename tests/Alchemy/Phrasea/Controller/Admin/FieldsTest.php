@@ -1,41 +1,25 @@
 <?php
 
+use Alchemy\Phrasea\Core\Configuration;
+
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
-    protected $client;
-
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Admin.php';
-
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-
-        return $app;
-    }
-
-    public function setUp()
-    {
-        parent::setUp();
-        $this->client = $this->createClient();
-    }
-
     /**
      * Default route test
      */
     public function testCheckMulti()
     {
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
         $databox = array_shift($appbox->get_databoxes());
 
         $tag = new PHPExiftool\Driver\Tag\IPTC\ObjectName();
 
-        $field = \databox_field::create($databox, "test" . time(), false);
+        $field = \databox_field::create(self::$application, $databox, "test" . time(), false);
         $field->set_tag($tag)->save();
 
-        $this->client->request("GET", "/fields/checkmulti/", array(
+        $this->client->request("GET", "/admin/fields/checkmulti/", array(
             'source' => $tag->getTagname(), 'multi'  => 'false'));
 
         $response = $this->client->getResponse();
@@ -49,15 +33,15 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testCheckReadOnly()
     {
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
         $databox = array_shift($appbox->get_databoxes());
 
         $tag = new PHPExiftool\Driver\Tag\IPTC\ObjectName();
 
-        $field = \databox_field::create($databox, "test" . time(), false);
+        $field = \databox_field::create(self::$application, $databox, "test" . time(), false);
         $field->set_tag($tag)->save();
 
-        $this->client->request("GET", "/fields/checkreadonly/", array(
+        $this->client->request("GET", "/admin/fields/checkreadonly/", array(
             'source'   => $tag->getTagname(), 'readonly' => 'false'));
 
         $response = $this->client->getResponse();

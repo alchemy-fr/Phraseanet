@@ -90,7 +90,7 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $admins = array_keys(\User_Adapter::get_sys_admins());
+        $admins = array_keys(\User_Adapter::get_sys_admins(self::$application));
 
         $user = \User_Adapter::create($this->app, uniqid('unit_test_user'), uniqid('unit_test_user'),  uniqid('unit_test_user') ."@email.com", false);
 

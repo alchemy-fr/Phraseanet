@@ -23,7 +23,6 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             }
         }
         self::$createdCollections = null;
-
         // /!\ re enable collection
         self::$collection->enable(self::$application['phraseanet.appbox']);
 
@@ -50,7 +49,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function createOneCollection()
     {
-        $collection = \collection::create(array_shift($this->app['phraseanet.appbox']->get_databoxes()), $this->app['phraseanet.appbox'], 'TESTTODELETE');
+        $collection = \collection::create(self::$application, array_shift(self::$application['phraseanet.appbox']->get_databoxes()), self::$application['phraseanet.appbox'], 'TESTTODELETE');
 
         self::$createdCollections[] = $collection;
 
@@ -90,7 +89,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $collection = $this->createOneCollection();
 
-        $file = new \Alchemy\Phrasea\Border\File($this->app['mediavorus']->guess(__DIR__ . '/../../../../testfiles/test001.CR2'), $collection);
+        $file = new \Alchemy\Phrasea\Border\File(self::$application['mediavorus']->guess(__DIR__ . '/../../../../testfiles/test001.CR2'), $collection);
         \record_adapter::createFromFile($file, self::$application);
 
         $this->client->request('GET', '/admin/collection/' . $collection->get_base_id() . '/informations/details/');
@@ -372,7 +371,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $json = $this->getJson($this->client->getResponse());
         $this->assertTrue($json->success);
         $this->assertEquals($collection->get_name(), 'test_rename_coll');
-        $collection->unmount_collection($this->app);
+        $collection->unmount_collection(self::$application);
         $collection->delete();
     }
 
@@ -410,7 +409,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $collection = $this->createOneCollection();
 
-        $file = new \Alchemy\Phrasea\Border\File($this->app['mediavorus']->guess(__DIR__ . '/../../../../testfiles/test001.CR2'), $collection);
+        $file = new \Alchemy\Phrasea\Border\File(self::$application['mediavorus']->guess(__DIR__ . '/../../../../testfiles/test001.CR2'), $collection);
         \record_adapter::createFromFile($file, self::$application);
 
         if ($collection->get_record_amount() === 0) {
@@ -433,7 +432,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $collection = $this->createOneCollection();
 
-        $databox = $this->app['phraseanet.appbox']->get_databox($collection->get_sbas_id());
+        $databox = self::$application['phraseanet.appbox']->get_databox($collection->get_sbas_id());
         $sql = '
             INSERT INTO record
               (coll_id, record_id, parent_record_id, moddate, credate
@@ -471,7 +470,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $json = $this->getJson($this->client->getResponse());
         $this->assertTrue($json->success);
 
-        $taskManager = new \task_manager($this->app);
+        $taskManager = new \task_manager(self::$application);
         $tasks = $taskManager->getTasks();
 
         $found = false;
@@ -515,8 +514,6 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testSetWatermarkBadRequest()
     {
-        $this->setAdmin(true);
-
         $this->client->request('POST', '/admin/collection/' . self::$collection->get_base_id() . '/picture/watermark/');
     }
 
@@ -539,13 +536,13 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(true);
 
         $target = tempnam(sys_get_temp_dir(), 'p4logo') . '.jpg';
-        $this->app['filesystem']->copy(__DIR__ . '/../../../../testfiles/p4logo.jpg', $target);
+        self::$application['filesystem']->copy(__DIR__ . '/../../../../testfiles/p4logo.jpg', $target);
         $files = array(
             'newLogo' => new \Symfony\Component\HttpFoundation\File\UploadedFile($target, 'logo.jpg')
         );
         $this->client->request('POST', '/admin/collection/' . self::$collection->get_base_id() . '/picture/mini-logo/', array(), $files);
         $this->checkRedirection($this->client->getResponse(), '/admin/collection/' . self::$collection->get_base_id() . '/?success=1');
-        $this->assertEquals(1, count(\collection::getLogo(self::$collection->get_base_id())));
+        $this->assertEquals(1, count(\collection::getLogo(self::$application, self::$collection->get_base_id())));
     }
 
     /**
@@ -567,7 +564,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testDeleteMiniLogo()
     {
-        if (count(\collection::getLogo(self::$collection->get_base_id())) === 0) {
+        if (count(\collection::getLogo(self::$application, self::$collection->get_base_id())) === 0) {
             $this->markTestSkipped('No logo setted');
         }
 
@@ -586,7 +583,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(true);
 
         $target = tempnam(sys_get_temp_dir(), 'p4logo') . '.jpg';
-        $this->app['filesystem']->copy(__DIR__ . '/../../../../testfiles/p4logo.jpg', $target);
+        self::$application['filesystem']->copy(__DIR__ . '/../../../../testfiles/p4logo.jpg', $target);
         $files = array(
             'newWm' => new \Symfony\Component\HttpFoundation\File\UploadedFile($target, 'logo.jpg')
         );
@@ -633,7 +630,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(true);
 
         $target = tempnam(sys_get_temp_dir(), 'p4logo') . '.jpg';
-        $this->app['filesystem']->copy(__DIR__ . '/../../../../testfiles/p4logo.jpg', $target);
+        self::$application['filesystem']->copy(__DIR__ . '/../../../../testfiles/p4logo.jpg', $target);
         $files = array(
             'newStamp' => new \Symfony\Component\HttpFoundation\File\UploadedFile($target, 'logo.jpg')
         );
@@ -681,7 +678,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(true);
 
         $target = tempnam(sys_get_temp_dir(), 'p4logo') . '.jpg';
-        $this->app['filesystem']->copy(__DIR__ . '/../../../../testfiles/p4logo.jpg', $target);
+        self::$application['filesystem']->copy(__DIR__ . '/../../../../testfiles/p4logo.jpg', $target);
         $files = array(
             'newBanner' => new \Symfony\Component\HttpFoundation\File\UploadedFile($target, 'logo.jpg')
         );
@@ -809,7 +806,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $collection = $this->createOneCollection();
 
-        $file = new \Alchemy\Phrasea\Border\File($this->app['mediavorus']->guess(__DIR__ . '/../../../../testfiles/test001.CR2'), $collection);
+        $file = new \Alchemy\Phrasea\Border\File(self::$application['mediavorus']->guess(__DIR__ . '/../../../../testfiles/test001.CR2'), $collection);
         \record_adapter::createFromFile($file, self::$application);
 
         if ($collection->get_record_amount() === 0) {

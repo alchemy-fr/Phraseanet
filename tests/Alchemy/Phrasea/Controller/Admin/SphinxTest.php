@@ -5,17 +5,6 @@ require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.
 class SphinxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
-    protected $StubbedACL;
-
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Admin.php';
-
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-
-        return $app;
-    }
 
     /**
      * @covers Alchemy\Phrasea\Controller\Admin\Sphinx::getConfiguration
@@ -25,7 +14,7 @@ class SphinxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('GET', '/sphinx/configuration/');
+        $this->client->request('GET', '/admin/sphinx/configuration/');
         $this->assertTrue($this->client->getResponse()->isOk());
     }
 
@@ -37,7 +26,7 @@ class SphinxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(false);
 
-        $this->client->request('GET', '/sphinx/configuration/');
+        $this->client->request('GET', '/admin/sphinx/configuration/');
         $this->assertTrue($this->client->getResponse()->isOk());
     }
 
@@ -48,7 +37,7 @@ class SphinxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/sphinx/configuration/');
+        $this->client->request('POST', '/admin/sphinx/configuration/');
         $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 }
