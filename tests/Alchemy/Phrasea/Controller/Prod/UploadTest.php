@@ -14,6 +14,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     protected $client;
     protected $tmpFile;
     protected static $need_records = false;
+    protected static $useExceptionHandler = false;
 
     public function setUp()
     {
@@ -235,7 +236,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(\Alchemy\Phrasea\Border\Manager::RECORD_CREATED, $datas['code']);
 
         $id = explode('_', $datas['id']);
-        $record = new \record_adapter($id[0], $id[1]);
+        $record = new \record_adapter(self::$application, $id[0], $id[1]);
         $this->assertFalse($record->is_grouping());
         $this->assertEquals(array(), $datas['reasons']);
     }
@@ -271,7 +272,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(\Alchemy\Phrasea\Border\Manager::RECORD_CREATED, $datas['code']);
 
         $id = explode('_', $datas['id']);
-        $record = new \record_adapter($id[0], $id[1]);
+        $record = new \record_adapter(self::$application, $id[0], $id[1]);
         $this->assertFalse($record->is_grouping());
         $this->assertEquals(1, substr(strrev($record->get_status()), 4, 1));
         $this->assertEquals(array(), $datas['reasons']);

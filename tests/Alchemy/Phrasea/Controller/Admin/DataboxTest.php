@@ -43,12 +43,13 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         self::$createdCollections = null;
 
+        self::dropDatabase();
         parent::tearDownAfterClass();
     }
 
     public function tearDown()
     {
-//        self::dropDatabase();
+        self::dropDatabase();
         parent::tearDown();
     }
 
