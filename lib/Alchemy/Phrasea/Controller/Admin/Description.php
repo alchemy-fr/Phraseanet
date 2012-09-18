@@ -165,7 +165,7 @@ class Description implements ControllerProviderInterface
                     if (is_array($request->request->get('field_ids'))) {
                         foreach ($request->request->get('field_ids') as $id) {
                             try {
-                                $field = \databox_field::get_instance($databox, $id);
+                                $field = \databox_field::get_instance($app, $databox, $id);
                                 $field->set_name($request->request->get('name_' . $id))
                                     ->set_thumbtitle($request->request->get('thumbtitle_' . $id))
                                     ->set_tag(\databox_field::loadClassFromTagName($request->request->get('src_' . $id)))
@@ -181,7 +181,7 @@ class Description implements ControllerProviderInterface
                                     ->setVocabularyRestricted(false);
 
                                 try {
-                                    $vocabulary = VocabularyController::get($request->request->get('vocabulary_' . $id));
+                                    $vocabulary = VocabularyController::get($app, $request->request->get('vocabulary_' . $id));
                                     $field->setVocabularyControl($vocabulary);
                                     $field->setVocabularyRestricted($request->request->get('vocabularyrestricted_' . $id));
                                 } catch (\Exception $e) {
@@ -203,14 +203,14 @@ class Description implements ControllerProviderInterface
                     }
 
                     if ($request->request->get('newfield')) {
-                        $field = \databox_field::create($databox, $request->request->get('newfield'), $request->request->get('newfield_multi'));
+                        $field = \databox_field::create($app, $databox, $request->request->get('newfield'), $request->request->get('newfield_multi'));
                     }
 
 
                     if (is_array($request->request->get('todelete_ids'))) {
                         foreach ($request->request->get('todelete_ids') as $id) {
                             try {
-                                $field = \databox_field::get_instance($databox, $id);
+                                $field = \databox_field::get_instance($app, $databox, $id);
                                 $field->delete();
                             } catch (\Exception $e) {
 
@@ -225,7 +225,7 @@ class Description implements ControllerProviderInterface
 
                 return $app->redirect('/admin/description/' . $sbas_id . '/');
             })->before(function(Request $request) use ($app) {
-                if (false === $app['phraseanet.core']->getAuthenticatedUser()->ACL()
+                if (false === $app['phraseanet.user']->ACL()
                         ->has_right_on_sbas($request->attributes->get('sbas_id'), 'bas_modify_struct')) {
                     throw new AccessDeniedHttpException('You are not allowed to access this zone');
                 }
@@ -239,12 +239,12 @@ class Description implements ControllerProviderInterface
                     'databox'             => $databox,
                     'fields'              => $databox->get_meta_structure(),
                     'available_dc_fields' => $databox->get_available_dcfields(),
-                    'vocabularies'        => VocabularyController::getAvailable(),
+                    'vocabularies'        => VocabularyController::getAvailable($app),
                 );
 
                 return new Response($app['twig']->render('admin/databox/doc_structure.html.twig', $params));
             })->before(function(Request $request) use ($app) {
-                if (false === $app['phraseanet.core']->getAuthenticatedUser()->ACL()
+                if (false === $app['phraseanet.user']->ACL()
                         ->has_right_on_sbas($request->attributes->get('sbas_id'), 'bas_modify_struct')) {
                     throw new AccessDeniedHttpException('You are not allowed to access this zone');
                 }

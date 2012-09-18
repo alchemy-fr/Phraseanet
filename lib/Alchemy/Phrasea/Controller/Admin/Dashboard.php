@@ -142,7 +142,7 @@ class Dashboard implements ControllerProviderInterface
 
         $parameters = array(
             'cache_flushed'                 => $request->query->get('flush_cache') === 'ok',
-            'admins'                        => \User_Adapter::get_sys_admins(),
+            'admins'                        => \User_Adapter::get_sys_admins($app),
             'email_status'                  => $emailStatus,
             'search_engine_status'          => $searchEngineStatus,
             'php_version_constraints'       => \setup::check_php_version(),

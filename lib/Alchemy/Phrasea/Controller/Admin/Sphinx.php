@@ -30,7 +30,7 @@ class Sphinx implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
-                return $app['phraseanet.core']['Firewall']->requireAdmin($app);
+                return $app['firewall']->requireAdmin($app);
             });
 
         /**
@@ -76,8 +76,8 @@ class Sphinx implements ControllerProviderInterface
      */
     public function getConfiguration(Application $app, Request $request)
     {
-        $selected_charsets = $app['phraseanet.core']['Registry']->get('sphinx_charset_tables');
-        $selected_libstemmer = $app['phraseanet.core']['Registry']->get('sphinx_user_stemmer');
+        $selected_charsets = $app['phraseanet.registry']->get('sphinx_charset_tables');
+        $selected_libstemmer = $app['phraseanet.registry']->get('sphinx_user_stemmer');
 
         $options = array(
             'charset_tables' => ( ! is_array($selected_charsets) ? array() : $selected_charsets),
@@ -85,7 +85,7 @@ class Sphinx implements ControllerProviderInterface
         );
 
         return new Response($app['twig']->render('admin/sphinx/configuration.html.twig', array(
-                    'configuration' => new \sphinx_configuration(),
+                    'configuration' => new \sphinx_configuration($app),
                     'options'       => $options
                 )));
     }
@@ -99,11 +99,11 @@ class Sphinx implements ControllerProviderInterface
      */
     public function submitConfiguration(Application $app, Request $request)
     {
-        $app['phraseanet.core']['Registry']->set(
+        $app['phraseanet.registry']->set(
             'sphinx_charset_tables', $request->request->get('charset_tables', array()), \registry::TYPE_ARRAY
         );
 
-        $app['phraseanet.core']['Registry']->set(
+        $app['phraseanet.registry']->set(
             'sphinx_user_stemmer', $request->request->get('libstemmer', array()), \registry::TYPE_ARRAY
         );
 

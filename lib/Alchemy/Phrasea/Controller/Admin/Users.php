@@ -32,14 +32,14 @@ class Users implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->post('/rights/', function(Application $app) {
-                $rights = new UserHelper\Edit($app['phraseanet.core'], $app['request']);
+                $rights = new UserHelper\Edit($app, $app['request']);
 
                 return $app['twig']->render('admin/editusers.html.twig', $rights->get_users_rights());
             }
         );
 
         $controllers->get('/rights/', function(Application $app) {
-                $rights = new UserHelper\Edit($app['phraseanet.core'], $app['request']);
+                $rights = new UserHelper\Edit($app, $app['request']);
 
                 return $app['twig']->render('admin/editusers.html.twig', $rights->get_users_rights());
             }
@@ -47,10 +47,9 @@ class Users implements ControllerProviderInterface
 
         $controllers->post('/rights/reset/', function(Application $app, Request $request) {
                 try {
-                    $core = $app['phraseanet.core'];
                     $datas = array('error' => false);
 
-                    $helper = new UserHelper\Edit($core, $request);
+                    $helper = new UserHelper\Edit($app, $request);
                     $helper->resetRights();
                 } catch (\Exception $e) {
                     $datas['error'] = true;
@@ -62,7 +61,7 @@ class Users implements ControllerProviderInterface
         );
 
         $controllers->post('/delete/', function(Application $app) {
-                $module = new UserHelper\Edit($app['phraseanet.core'], $app['request']);
+                $module = new UserHelper\Edit($app, $app['request']);
                 $module->delete_users();
 
                 return $app->redirect('/admin/users/search/');
@@ -73,7 +72,7 @@ class Users implements ControllerProviderInterface
                 $datas = array('error' => true);
 
                 try {
-                    $rights = new UserHelper\Edit($app['phraseanet.core'], $app['request']);
+                    $rights = new UserHelper\Edit($app, $app['request']);
                     $rights->apply_rights();
 
                     if ($app['request']->request->get('template')) {
@@ -92,14 +91,14 @@ class Users implements ControllerProviderInterface
         );
 
         $controllers->post('/rights/quotas/', function(Application $app) {
-                $rights = new UserHelper\Edit($app['phraseanet.core'], $app['request']);
+                $rights = new UserHelper\Edit($app, $app['request']);
 
                 return $app['twig']->render('admin/editusers_quotas.html.twig', $rights->get_quotas());
             }
         );
 
         $controllers->post('/rights/quotas/apply/', function(Application $app) {
-                $rights = new UserHelper\Edit($app['phraseanet.core'], $app['request']);
+                $rights = new UserHelper\Edit($app, $app['request']);
                 $rights->apply_quotas();
 
                 return;
@@ -107,14 +106,14 @@ class Users implements ControllerProviderInterface
         );
 
         $controllers->post('/rights/time/', function(Application $app) {
-                $rights = new UserHelper\Edit($app['phraseanet.core'], $app['request']);
+                $rights = new UserHelper\Edit($app, $app['request']);
 
                 return $app['twig']->render('admin/editusers_timelimit.html.twig', $rights->get_time());
             }
         );
 
         $controllers->post('/rights/time/apply/', function(Application $app) {
-                $rights = new UserHelper\Edit($app['phraseanet.core'], $app['request']);
+                $rights = new UserHelper\Edit($app, $app['request']);
                 $rights->apply_time();
 
                 return;
@@ -122,14 +121,14 @@ class Users implements ControllerProviderInterface
         );
 
         $controllers->post('/rights/masks/', function(Application $app) {
-                $rights = new UserHelper\Edit($app['phraseanet.core'], $app['request']);
+                $rights = new UserHelper\Edit($app, $app['request']);
 
                 return $app['twig']->render('admin/editusers_masks.html.twig', $rights->get_masks());
             }
         );
 
         $controllers->post('/rights/masks/apply/', function(Application $app) {
-                $rights = new UserHelper\Edit($app['phraseanet.core'], $app['request']);
+                $rights = new UserHelper\Edit($app, $app['request']);
                 $rights->apply_masks();
 
                 return;
@@ -137,7 +136,7 @@ class Users implements ControllerProviderInterface
         );
 
         $controllers->match('/search/', function(Application $app) {
-                $users = new UserHelper\Manage($app['phraseanet.core'], $app['request']);
+                $users = new UserHelper\Manage($app, $app['request']);
 
                 return $app['twig']->render('admin/users.html.twig', $users->search());
             }
@@ -146,7 +145,7 @@ class Users implements ControllerProviderInterface
         $controllers->post('/search/export/', function() use ($app) {
                 $request = $app['request'];
 
-                $users = new UserHelper\Manage($app['phraseanet.core'], $app['request']);
+                $users = new UserHelper\Manage($app, $app['request']);
 
                 $userTable = array(
                     array(
@@ -201,7 +200,7 @@ class Users implements ControllerProviderInterface
         );
 
         $controllers->post('/apply_template/', function() use ($app) {
-                $users = new UserHelper\Edit($app['phraseanet.core'], $app['request']);
+                $users = new UserHelper\Edit($app, $app['request']);
 
                 $users->apply_template();
 
@@ -212,9 +211,9 @@ class Users implements ControllerProviderInterface
         $controllers->get('/typeahead/search/', function(Application $app) use ($appbox) {
                 $request = $app['request'];
 
-                $user_query = new \User_Query($appbox);
+                $user_query = new \User_Query($app);
 
-                $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
+                $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $app);
 
                 $like_value = $request->query->get('term');
                 $rights = $request->query->get('filter_rights') ? : array();
@@ -254,7 +253,7 @@ class Users implements ControllerProviderInterface
                 $datas = array('error'   => false, 'message' => '', 'data'    => null);
                 try {
                     $request = $app['request'];
-                    $module = new UserHelper\Manage($app['phraseanet.core'], $app['request']);
+                    $module = new UserHelper\Manage($app, $app['request']);
                     if ($request->request->get('template') == '1') {
                         $user = $module->create_template();
                     } else {
@@ -275,9 +274,9 @@ class Users implements ControllerProviderInterface
 
         $controllers->post('/export/csv/', function(Application $app) use ($appbox) {
                 $request = $app['request'];
-                $user_query = new \User_Query($appbox, $app['phraseanet.core']);
+                $user_query = new \User_Query($app);
 
-                $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
+                $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $app);
                 $like_value = $request->request->get('like_value');
                 $like_field = $request->request->get('like_field');
                 $on_base = $request->request->get('base_id') ? : null;
@@ -328,7 +327,7 @@ class Users implements ControllerProviderInterface
                             , $user->get_address()
                             , $user->get_city()
                             , $user->get_zipcode()
-                            , $geoname->get_country($user->get_geonameid())
+                            , $geoname->get_country($user->get_geonameid(), $app)
                             , $user->get_tel()
                             , $user->get_fax()
                             , $user->get_job()
@@ -352,7 +351,7 @@ class Users implements ControllerProviderInterface
         );
 
         $controllers->get('/demands/', function(Application $app, Request $request) use ($appbox) {
-                    $user = $app['phraseanet.core']->getAuthenticatedUser();
+                    $user = $app['phraseanet.user'];
 
                     $lastMonth = time() - (3 * 4 * 7 * 24 * 60 * 60);
                     $sql = "DELETE FROM demand WHERE date_modif < :date";
@@ -460,10 +459,10 @@ class Users implements ControllerProviderInterface
                         $cache_to_update = array();
 
                         foreach ($templates as $usr => $template_id) {
-                            $user = \User_Adapter::getInstance($usr, $appbox);
+                            $user = \User_Adapter::getInstance($usr, $app);
                             $cache_to_update[$usr] = true;
 
-                            $user_template = \User_Adapter::getInstance($template_id, $appbox);
+                            $user_template = \User_Adapter::getInstance($template_id, $app);
                             $base_ids = array_keys($user_template->ACL()->get_granted_base());
 
                             $user->ACL()->apply_model($user_template, $base_ids);
@@ -510,11 +509,11 @@ class Users implements ControllerProviderInterface
                         $stmt->closeCursor();
 
                         foreach ($accept as $usr => $bases) {
-                            $user = \User_Adapter::getInstance($usr, $appbox);
+                            $user = \User_Adapter::getInstance($usr, $app);
                             $cache_to_update[$usr] = true;
 
                             foreach ($bases as $bas) {
-                                $user->ACL()->give_access_to_sbas(array(\phrasea::sbasFromBas($bas)));
+                                $user->ACL()->give_access_to_sbas(array(\phrasea::sbasFromBas($app, $bas)));
 
                                 $rights = array(
                                     'canputinalbum'   => '1'
@@ -541,7 +540,7 @@ class Users implements ControllerProviderInterface
                         }
 
                         foreach (array_keys($cache_to_update) as $usr_id) {
-                            $user = \User_Adapter::getInstance($usr_id, $appbox);
+                            $user = \User_Adapter::getInstance($usr_id, $app);
                             $user->ACL()->delete_data_from_cache();
                             unset($user);
                         }
@@ -561,13 +560,13 @@ class Users implements ControllerProviderInterface
                                 if (\PHPMailer::ValidateAddress($row['usr_mail'])) {
                                     foreach ($bases as $bas => $isok) {
                                         if ($isok) {
-                                            $accept .= '<li>' . \phrasea::bas_names($bas) . "</li>\n";
+                                            $accept .= '<li>' . \phrasea::bas_names($bas, $app) . "</li>\n";
                                         } else {
-                                            $deny .= '<li>' . \phrasea::bas_names($bas) . "</li>\n";
+                                            $deny .= '<li>' . \phrasea::bas_names($bas, $app) . "</li>\n";
                                         }
                                     }
                                     if (($accept != '' || $deny != '')) {
-                                        \mail::register_confirm($row['usr_mail'], $accept, $deny);
+                                        \mail::register_confirm($app, $row['usr_mail'], $accept, $deny);
                                     }
                                 }
                             }
@@ -585,7 +584,7 @@ class Users implements ControllerProviderInterface
             ->bind('users_display_import_file');
 
         $controllers->post('/import/file/', function(Application $app, Request $request) {
-                    $user = $app['phraseanet.core']->getAuthenticatedUser();
+                    $user = $app['phraseanet.user'];
 
                     if ((null === $file = $request->files->get('files')) || ! $file->isValid()) {
 
@@ -648,7 +647,7 @@ class Users implements ControllerProviderInterface
                                 } elseif (isset($loginNew[$loginToAdd])) {
                                     $out['errors'][] = sprintf(_("Login %s is already defined in the file at line %d"), $loginToAdd, $i);
                                 } else {
-                                    if (\User_Adapter::get_usr_id_from_login($loginToAdd)) {
+                                    if (\User_Adapter::get_usr_id_from_login($app, $loginToAdd)) {
                                         $out['errors'][] = sprintf(_("Login %s already exists in database"), $loginToAdd);
                                     } else {
                                         $loginNew[$loginToAdd] = ($i + 1);
@@ -722,7 +721,7 @@ class Users implements ControllerProviderInterface
 
         $controllers->post('/import/', function(Application $app, Request $request) {
                     $nbCreation = 0;
-                    $user = $app['phraseanet.core']->getAuthenticatedUser();
+                    $user = $app['phraseanet.user'];
 
                     if ((null === $serializedArray = $request->request->get('sr')) || ('' === $serializedArray)) {
                         $app->abort(400);
@@ -782,13 +781,13 @@ class Users implements ControllerProviderInterface
                     }
 
                     if (isset($curUser['usr_login']) && trim($curUser['usr_login']) !== '' && isset($curUser['usr_password']) && trim($curUser['usr_password']) !== "") {
-                        $loginNotExist = ! \User_Adapter::get_usr_id_from_login($curUser['usr_login']);
+                        $loginNotExist = ! \User_Adapter::get_usr_id_from_login($app, $curUser['usr_login']);
 
                         if ($loginNotExist) {
-                            $NewUser = \User_Adapter::create($app['phraseanet.appbox'], $curUser['usr_login'], $curUser['usr_password'], $curUser['usr_mail'], false);
+                            $NewUser = \User_Adapter::create($app, $curUser['usr_login'], $curUser['usr_password'], $curUser['usr_mail'], false);
 
                             $NewUser->ACL()->apply_model(
-                                \User_Adapter::getInstance($model, $app['phraseanet.appbox']), array_keys($user->ACL()->get_granted_base(array('manage')))
+                                \User_Adapter::getInstance($model, $app), array_keys($user->ACL()->get_granted_base(array('manage')))
                             );
 
                             $nbCreation ++;
@@ -802,7 +801,7 @@ class Users implements ControllerProviderInterface
 
         $controllers->get('/import/example/csv/', function(Application $app, Request $request) {
 
-                    $file = new \SplFileInfo($app['phraseanet.core']['Registry']->get('GV_RootPath') . 'lib/Fixtures/exampleImportUsers.csv');
+                    $file = new \SplFileInfo($app['phraseanet.registry']->get('GV_RootPath') . 'www/admin/exampleImportUsers.csv');
 
                     if ( ! $file->isFile()) {
                         $app->abort(400);
@@ -822,7 +821,7 @@ class Users implements ControllerProviderInterface
 
         $controllers->get('/import/example/rtf/', function(Application $app, Request $request) {
 
-                    $file = new \SplFileInfo($app['phraseanet.core']['Registry']->get('GV_RootPath') . 'lib/Fixtures/Fields.rtf');
+                    $file = new \SplFileInfo($app['phraseanet.registry']->get('GV_RootPath') . 'www/admin/Fields.rtf');
 
                     if ( ! $file->isFile()) {
                         $app->abort(400);

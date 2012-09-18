@@ -35,7 +35,7 @@ class Collection implements ControllerProviderInterface
                     return $response;
                 }
 
-                if ( ! $app['phraseanet.user']->ACL()->has_right_on_base($app['request']->attributes->get('bas_id'), 'canadmin')) {
+                if (!$app['phraseanet.user']->ACL()->has_right_on_base($app['request']->attributes->get('bas_id'), 'canadmin')) {
                     $app->abort(403);
                 }
             });
@@ -491,8 +491,8 @@ class Collection implements ControllerProviderInterface
         $success = false;
         $msg = _('An error occurred');
 
+        $collection = \collection::get_from_base_id($app, $bas_id);
         try {
-            $collection = \collection::get_from_base_id($app, $bas_id);
 
             if ($collection->get_record_amount() <= 500) {
                 $collection->empty_collection(500);
@@ -532,8 +532,9 @@ class Collection implements ControllerProviderInterface
     {
         $success = false;
 
+        $collection = \collection::get_from_base_id($app, $bas_id);
+
         try {
-            $collection = \collection::get_from_base_id($app, $bas_id);
             $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, null, \collection::PIC_PRESENTATION);
             $success = true;
         } catch (\Exception $e) {
@@ -564,8 +565,9 @@ class Collection implements ControllerProviderInterface
     {
         $success = false;
 
+        $collection = \collection::get_from_base_id($app, $bas_id);
+
         try {
-            $collection = \collection::get_from_base_id($app, $bas_id);
             $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, null, \collection::PIC_STAMP);
             $success = true;
         } catch (\Exception $e) {
@@ -596,8 +598,9 @@ class Collection implements ControllerProviderInterface
     {
         $success = false;
 
+        $collection = \collection::get_from_base_id($app, $bas_id);
+
         try {
-            $collection = \collection::get_from_base_id($app, $bas_id);
             $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, null, \collection::PIC_WM);
             $success = true;
         } catch (\Exception $e) {
@@ -628,8 +631,9 @@ class Collection implements ControllerProviderInterface
     {
         $success = false;
 
+        $collection = \collection::get_from_base_id($app, $bas_id);
+
         try {
-            $collection = \collection::get_from_base_id($app, $bas_id);
             $collection->update_logo(null);
             $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, null, \collection::PIC_LOGO);
             $success = true;
@@ -668,14 +672,14 @@ class Collection implements ControllerProviderInterface
             return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-too-big');
         }
 
-        if ( ! $file->isValid()) {
+        if (!$file->isValid()) {
 
             return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-invalid');
         }
 
-        try {
-            $collection = \collection::get_from_base_id($app, $bas_id);
+        $collection = \collection::get_from_base_id($app, $bas_id);
 
+        try {
             $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, $file, \collection::PIC_PRESENTATION);
 
             $app['filesystem']->remove($file->getPathname());
@@ -706,14 +710,14 @@ class Collection implements ControllerProviderInterface
             return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-too-big');
         }
 
-        if ( ! $file->isValid()) {
+        if (!$file->isValid()) {
 
             return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-invalid');
         }
 
-        try {
-            $collection = \collection::get_from_base_id($app, $bas_id);
+        $collection = \collection::get_from_base_id($app, $bas_id);
 
+        try {
             $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, $file, \collection::PIC_STAMP);
 
             $app['filesystem']->remove($file->getPathname());
@@ -744,14 +748,14 @@ class Collection implements ControllerProviderInterface
             return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-too-big');
         }
 
-        if ( ! $file->isValid()) {
+        if (!$file->isValid()) {
 
             return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-invalid');
         }
 
-        try {
-            $collection = \collection::get_from_base_id($app, $bas_id);
+        $collection = \collection::get_from_base_id($app, $bas_id);
 
+        try {
             $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, $file, \collection::PIC_WM);
 
             $app['filesystem']->remove($file->getPathname());
@@ -782,14 +786,14 @@ class Collection implements ControllerProviderInterface
             return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-too-big');
         }
 
-        if ( ! $file->isValid()) {
+        if (!$file->isValid()) {
 
             return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-invalid');
         }
 
-        try {
-            $collection = \collection::get_from_base_id($app, $bas_id);
+        $collection = \collection::get_from_base_id($app, $bas_id);
 
+        try {
             $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, $file, \collection::PIC_LOGO);
 
             $app['filesystem']->remove($file->getPathname());
@@ -814,9 +818,9 @@ class Collection implements ControllerProviderInterface
         $success = false;
         $msg = _('An error occured');
 
-        try {
-            $collection = \collection::get_from_base_id($app, $bas_id);
+        $collection = \collection::get_from_base_id($app, $bas_id);
 
+        try {
             if ($collection->get_record_amount() > 0) {
                 $msg = _('Empty the collection before removing');
             } else {
@@ -862,8 +866,9 @@ class Collection implements ControllerProviderInterface
     {
         $success = false;
 
+        $collection = \collection::get_from_base_id($app, $bas_id);
+
         try {
-            $collection = \collection::get_from_base_id($app, $bas_id);
             $collection->unmount_collection($app);
             $success = true;
         } catch (\Exception $e) {
@@ -897,8 +902,9 @@ class Collection implements ControllerProviderInterface
 
         $success = false;
 
+        $collection = \collection::get_from_base_id($app, $bas_id);
+
         try {
-            $collection = \collection::get_from_base_id($app, $bas_id);
             $collection->set_name($name);
             $success = true;
         } catch (\Exception $e) {
@@ -932,8 +938,9 @@ class Collection implements ControllerProviderInterface
 
         $success = false;
 
+        $collection = \collection::get_from_base_id($app, $bas_id);
+
         try {
-            $collection = \collection::get_from_base_id($app, $bas_id);
             $collection->set_public_presentation($watermark);
             $success = true;
         } catch (\Exception $e) {
@@ -963,8 +970,9 @@ class Collection implements ControllerProviderInterface
     {
         $success = false;
 
+        $collection = \collection::get_from_base_id($app, $bas_id);
+
         try {
-            $collection = \collection::get_from_base_id($app, $bas_id);
             $collection->enable($app['phraseanet.appbox']);
             $success = true;
         } catch (\Exception $e) {
@@ -994,8 +1002,9 @@ class Collection implements ControllerProviderInterface
     {
         $success = false;
 
+        $collection = \collection::get_from_base_id($app, $bas_id);
+
         try {
-            $collection = \collection::get_from_base_id($app, $bas_id);
             $collection->disable($app['phraseanet.appbox']);
             $success = true;
         } catch (\Exception $e) {
@@ -1044,7 +1053,7 @@ class Collection implements ControllerProviderInterface
                             $suggestedValues[] = array(
                                 'key'   => $ki, 'value' => $f, 'name'  => $oneValue
                             );
-                            $f ++;
+                            $f++;
                         }
                     }
                 }
@@ -1087,9 +1096,9 @@ class Collection implements ControllerProviderInterface
     {
         $success = false;
 
-        try {
-            $collection = \collection::get_from_base_id($app, $bas_id);
+        $collection = \collection::get_from_base_id($app, $bas_id);
 
+        try {
             if ($mdesc = \DOMDocument::loadXML($request->request->get('str'))) {
                 $collection->set_prefs($mdesc);
                 $success = true;

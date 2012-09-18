@@ -31,7 +31,7 @@ class Publications implements ControllerProviderInterface
         $controllers->get('/list/', function(PhraseaApplication $app) {
 
                 $feeds = \Feed_Collection::load_all(
-                        $app['phraseanet.appbox'], $app['phraseanet.core']->getAuthenticatedUser()
+                        $app, $app['phraseanet.user']
                 );
 
                 return $app['twig']
@@ -40,23 +40,23 @@ class Publications implements ControllerProviderInterface
 
         $controllers->post('/create/', function(PhraseaApplication $app, Request $request) {
 
-                $user = $app['phraseanet.core']->getAuthenticatedUser();
+                $user = $app['phraseanet.user'];
 
                 $feed = \Feed_Adapter::create(
-                        $app['phraseanet.appbox'], $user, $request->request->get('title'), $request->request->get('subtitle')
+                        $app, $user, $request->request->get('title'), $request->request->get('subtitle')
                 );
 
                 if ($request->request->get('public') == '1') {
                     $feed->set_public(true);
                 } elseif ($request->request->get('base_id')) {
-                    $feed->set_collection(\collection::get_from_base_id($request->request->get('base_id')));
+                    $feed->set_collection(\collection::get_from_base_id($app, $request->request->get('base_id')));
                 }
 
                 return $app->redirect('/admin/publications/list/');
             });
 
         $controllers->get('/feed/{id}/', function(PhraseaApplication $app, Request $request, $id) {
-                $feed = new \Feed_Adapter($app['phraseanet.appbox'], $id);
+                $feed = new \Feed_Adapter($app, $id);
 
                 return $app['twig']
                         ->render('admin/publications/fiche.html.twig', array('feed'  => $feed, 'error' => $app['request']->query->get('error')));
@@ -64,10 +64,10 @@ class Publications implements ControllerProviderInterface
 
         $controllers->post('/feed/{id}/update/', function(PhraseaApplication $app, Request $request, $id) {
 
-                    $feed = new \Feed_Adapter($app['phraseanet.appbox'], $id);
+                    $feed = new \Feed_Adapter($app, $id);
 
                     try {
-                        $collection = \collection::get_from_base_id($request->request->get('base_id'));
+                        $collection = \collection::get_from_base_id($app, $request->request->get('base_id'));
                     } catch (\Exception $e) {
                         $collection = null;
                     }
@@ -79,9 +79,9 @@ class Publications implements ControllerProviderInterface
 
                     return $app->redirect('/admin/publications/list/');
                 })->before(function(Request $request) use ($app) {
-                    $feed = new \Feed_Adapter($app['phraseanet.appbox'], $request->attributes->get('id'));
+                    $feed = new \Feed_Adapter($app, $request->attributes->get('id'));
 
-                    if ( ! $feed->is_owner($app['phraseanet.core']->getAuthenticatedUser())) {
+                    if ( ! $feed->is_owner($app['phraseanet.user'])) {
                         return $app->redirect('/admin/publications/feed/' . $request->attributes->get('id') . '/?error=' . _('You are not the owner of this feed, you can not edit it'));
                     }
                 })
@@ -93,9 +93,9 @@ class Publications implements ControllerProviderInterface
                     'message' => '',
                 );
 
-                $feed = new \Feed_Adapter($app['phraseanet.appbox'], $id);
+                $feed = new \Feed_Adapter($app, $id);
 
-                $user = $app['phraseanet.core']->getAuthenticatedUser();
+                $user = $app['phraseanet.user'];
 
                 $request = $app["request"];
 
@@ -120,9 +120,9 @@ class Publications implements ControllerProviderInterface
                         throw new \Exception_BadRequest('Uploaded file is invalid');
                     }
 
-                    $media = $app['phraseanet.core']['mediavorus']->guess($file);
+                    $media = $app['mediavorus']->guess($file->getPathname());
 
-                    if ($media->getType() !== \MediaVorus\Media\Media::TYPE_IMAGE) {
+                    if ($media->getType() !== \MediaVorus\Media\MediaInterface::TYPE_IMAGE) {
                         throw new \Exception_BadRequest('Bad filetype');
                     }
 
@@ -136,7 +136,7 @@ class Publications implements ControllerProviderInterface
                     $tmpname = tempnam(sys_get_temp_dir(), 'feed_icon');
 
                     try {
-                        $app['phraseanet.core']['media-alchemyst']
+                        $app['media-alchemyst']
                             ->open($media->getFile()->getPathname())
                             ->turnInto($tmpname, $spec)
                             ->close();
@@ -162,8 +162,8 @@ class Publications implements ControllerProviderInterface
                 $error = '';
                 try {
                     $request = $app['request'];
-                    $user = \User_Adapter::getInstance($request->request->get('usr_id'), $app['phraseanet.appbox']);
-                    $feed = new \Feed_Adapter($app['phraseanet.appbox'], $id);
+                    $user = \User_Adapter::getInstance($request->request->get('usr_id'), $app);
+                    $feed = new \Feed_Adapter($app, $id);
                     $feed->add_publisher($user);
                 } catch (\Exception $e) {
                     $error = $e->getMessage();
@@ -176,8 +176,8 @@ class Publications implements ControllerProviderInterface
                 try {
                     $request = $app['request'];
 
-                    $feed = new \Feed_Adapter($app['phraseanet.appbox'], $id);
-                    $publisher = new \Feed_Publisher_Adapter($app['phraseanet.appbox'], $request->request->get('publisher_id'));
+                    $feed = new \Feed_Adapter($app, $id);
+                    $publisher = new \Feed_Publisher_Adapter($app, $request->request->get('publisher_id'));
                     $user = $publisher->get_user();
                     if ($feed->is_publisher($user) === true && $feed->is_owner($user) === false)
                         $publisher->delete();
@@ -189,7 +189,7 @@ class Publications implements ControllerProviderInterface
             })->assert('id', '\d+');
 
         $controllers->post('/feed/{id}/delete/', function(PhraseaApplication $app, $id) {
-                $feed = new \Feed_Adapter($app['phraseanet.appbox'], $id);
+                $feed = new \Feed_Adapter($app, $id);
                 $feed->delete();
 
                 return $app->redirect('/admin/publications/list/');

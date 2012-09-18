@@ -30,7 +30,7 @@ class Databoxes implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
-                return $app['phraseanet.core']['Firewall']->requireAdmin($app);
+                return $app['firewall']->requireAdmin($app);
             });
 
         /**
@@ -84,7 +84,7 @@ class Databoxes implements ControllerProviderInterface
             $upgradeAvailable = true;
         }
 
-        $user = $app['phraseanet.core']->getAuthenticatedUser();
+        $user = $app['phraseanet.user'];
 
         $sbasIds = array_merge(
             array_keys($user->ACL()->get_granted_sbas(array('bas_manage')))
@@ -110,7 +110,7 @@ class Databoxes implements ControllerProviderInterface
                     'version'     => $databox->get_version(),
                     'image'       => '/skins/icons/foldph20close_0.gif',
                     'server_info' => $databox->get_connection()->server_info(),
-                    'name'        => \phrasea::sbas_names($sbasId)
+                    'name'        => \phrasea::sbas_names($sbasId, $app)
                 );
             } catch (\Exception $e) {
 
@@ -147,10 +147,10 @@ class Databoxes implements ControllerProviderInterface
                 break;
         }
 
-        $upgrader = new \Setup_Upgrade($app['phraseanet.appbox']);
+        $upgrader = new \Setup_Upgrade($app);
 
         return new Response($app['twig']->render('admin/databases.html.twig', array(
-                    'files'             => new \DirectoryIterator($app['phraseanet.core']['Registry']->get('GV_RootPath') . 'lib/conf.d/data_templates'),
+                    'files'             => new \DirectoryIterator($app['phraseanet.registry']->get('GV_RootPath') . 'lib/conf.d/data_templates'),
                     'sbas'              => $sbas,
                     'upgrade_available' => $upgradeAvailable,
                     'error_msg'         => $errorMsg,
@@ -168,14 +168,14 @@ class Databoxes implements ControllerProviderInterface
      */
     public function databasesUpgrade(Application $app, Request $request)
     {
-        if (\phrasea::is_scheduler_started()) {
+        if (\phrasea::is_scheduler_started($app)) {
 
             return $app->redirect('/admin/databoxes/?success=0&error=scheduler-started');
         }
 
         try {
-            $upgrader = new \Setup_Upgrade($app['phraseanet.appbox']);
-            $advices = $app['phraseanet.appbox']->forceUpgrade($upgrader, $app['phraseanet.core']['CacheService'], $app['phraseanet.core']['EM'], $app['filesystem']);
+            $upgrader = new \Setup_Upgrade($app);
+            $advices = $app['phraseanet.appbox']->forceUpgrade($upgrader, $app);
 
             return $app->redirect('/admin/databoxes/?success=1&notice=restart&' . http_build_query(array('advices' => $advices)));
         } catch (\Exception_Setup_UpgradeAlreadyStarted $e) {

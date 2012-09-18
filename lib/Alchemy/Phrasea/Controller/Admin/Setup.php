@@ -16,7 +16,9 @@ namespace Alchemy\Phrasea\Controller\Admin;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-use Silex\Application;
+
+use Alchemy\Phrasea\Application;
+use Silex\Application as SilexApplication;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,12 +32,12 @@ use Symfony\Component\HttpFoundation\Response;
 class Setup implements ControllerProviderInterface
 {
 
-    public function connect(Application $app)
+    public function connect(SilexApplication $app)
     {
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
-                return $app['phraseanet.core']['Firewall']->requireAdmin($app);
+                return $app['firewall']->requireAdmin($app);
             });
 
         /**
@@ -82,7 +84,7 @@ class Setup implements ControllerProviderInterface
      */
     public function getGlobals(Application $app, Request $request)
     {
-        \phrasea::start($app['phraseanet.core']);
+//        \phrasea::start($app['phraseanet.configuration']);
 
         require_once __DIR__ . "/../../../../conf.d/_GV_template.inc";
 
@@ -110,7 +112,7 @@ class Setup implements ControllerProviderInterface
      */
     public function postGlobals(Application $app, Request $request)
     {
-        if (\setup::create_global_values($app['phraseanet.core']['Registry'], $request->request->all())) {
+        if (\setup::create_global_values($app, $request->request->all())) {
             return $app->redirect('/admin/globals/?success=1');
         }
 

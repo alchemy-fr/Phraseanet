@@ -30,11 +30,10 @@ class Root implements ControllerProviderInterface
 
         $controllers->get('/', function(Application $app, Request $request) {
 
-                    $Core = $app['phraseanet.core'];
                     $appbox = $app['phraseanet.appbox'];
-                    $user = $Core->getAuthenticatedUser();
+                    $user = $app['phraseanet.user'];
 
-                    \User_Adapter::updateClientInfos(3);
+                    \User_Adapter::updateClientInfos($app, 3);
 
                     $section = $request->query->get('section', false);
 
@@ -88,7 +87,7 @@ class Root implements ControllerProviderInterface
 
                     return new Response($app['twig']->render('admin/index.html.twig', array(
                                 'module'        => 'admin',
-                                'events'        => $app['phraseanet.core']['events-manager'],
+                                'events'        => $app['events-manager'],
                                 'module_name'   => 'Admin',
                                 'notice'        => $request->query->get("notice"),
                                 'feature'       => $feature,
@@ -102,11 +101,10 @@ class Root implements ControllerProviderInterface
             ->bind('admin');
 
         $controllers->get('/tree/', function(Application $app, Request $request) {
-                    $Core = $app['phraseanet.core'];
                     $appbox = $app['phraseanet.appbox'];
-                    $user = $Core->getAuthenticatedUser();
+                    $user = $app['phraseanet.user'];
 
-                    \User_Adapter::updateClientInfos(3);
+                    \User_Adapter::updateClientInfos($app, 3);
 
                     $section = $request->query->get('section', false);
 
@@ -198,7 +196,7 @@ class Root implements ControllerProviderInterface
             });
 
         $controllers->get('/structure/{databox_id}/', function(Application $app, Request $request, $databox_id) {
-                    if ( ! $app['phraseanet.core']->getAuthenticatedUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+                    if ( ! $app['phraseanet.user']->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
                         $app->abort(403);
                     }
 
@@ -226,7 +224,7 @@ class Root implements ControllerProviderInterface
             ->bind('database_display_stucture');
 
         $controllers->post('/structure/{databox_id}/', function(Application $app, Request $request, $databox_id) {
-                    if ( ! $app['phraseanet.core']->getAuthenticatedUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+                    if ( ! $app['phraseanet.user']->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
                         $app->abort(403);
                     }
 
@@ -254,7 +252,7 @@ class Root implements ControllerProviderInterface
             ->bind('database_submit_stucture');
 
         $controllers->get('/statusbit/{databox_id}/', function(Application $app, Request $request, $databox_id) {
-                    if ( ! $app['phraseanet.core']->getAuthenticatedUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+                    if ( ! $app['phraseanet.user']->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
                         $app->abort(403);
                     }
 
@@ -266,7 +264,7 @@ class Root implements ControllerProviderInterface
             ->bind('database_display_statusbit');
 
         $controllers->get('/statusbit/{databox_id}/status/{bit}/', function(Application $app, Request $request, $databox_id, $bit) {
-                    if ( ! $app['phraseanet.core']->getAuthenticatedUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+                    if ( ! $app['phraseanet.user']->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
                         $app->abort(403);
                     }
 
@@ -306,10 +304,14 @@ class Root implements ControllerProviderInterface
                     $app->abort(400, _('Bad request format, only JSON is allowed'));
                 }
 
+                if ( ! $app['phraseanet.user']->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+                    $app->abort(403);
+                }
+
                 $error = false;
 
                 try {
-                    \databox_status::deleteStatus($app['filesystem'], $databox_id, $bit);
+                    \databox_status::deleteStatus($app, $app['phraseanet.appbox']->get_databox($databox_id), $bit);
                 } catch (\Exception $e) {
                     $error = true;
                 }
@@ -318,7 +320,7 @@ class Root implements ControllerProviderInterface
             })->assert('databox_id', '\d+')->assert('bit', '\d+');
 
         $controllers->post('/statusbit/{databox_id}/status/{bit}/', function(Application $app, Request $request, $databox_id, $bit) {
-                    if ( ! $app['phraseanet.core']->getAuthenticatedUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+                    if ( ! $app['phraseanet.user']->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
                         $app->abort(403);
                     }
 
@@ -330,15 +332,15 @@ class Root implements ControllerProviderInterface
                         'labeloff'   => $request->request->get('label_off', '')
                     );
 
-                    \databox_status::updateStatus($databox_id, $bit, $properties);
+                    \databox_status::updateStatus($app, $databox_id, $bit, $properties);
 
                     if (null !== $request->request->get('delete_icon_off')) {
-                        \databox_status::deleteIcon($app['filesystem'], $databox_id, $bit, 'off');
+                        \databox_status::deleteIcon($app, $databox_id, $bit, 'off');
                     }
 
                     if (null !== $file = $request->files->get('image_off')) {
                         try {
-                            \databox_status::updateIcon($app['filesystem'], $databox_id, $bit, 'off', $file);
+                            \databox_status::updateIcon($app, $databox_id, $bit, 'off', $file);
                         } catch (\Exception_Forbidden $e) {
 
                             return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=rights');
@@ -361,12 +363,12 @@ class Root implements ControllerProviderInterface
                     }
 
                     if (null !== $request->request->get('delete_icon_on')) {
-                        \databox_status::deleteIcon($app['filesystem'], $databox_id, $bit, 'on');
+                        \databox_status::deleteIcon($app, $databox_id, $bit, 'on');
                     }
 
                     if (null !== $file = $request->files->get('image_on')) {
                         try {
-                            \databox_status::updateIcon($app['filesystem'], $databox_id, $bit, 'on', $file);
+                            \databox_status::updateIcon($app, $databox_id, $bit, 'on', $file);
                         } catch (\Exception_Forbidden $e) {
 
                             return $app->redirect('/admin/statusbit/' . $databox_id . '/status/' . $bit . '/?error=rights');

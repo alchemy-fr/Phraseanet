@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
-use Alchemy\Phrasea\Core;
 use Alchemy\Phrasea\Core\Configuration;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -31,7 +30,7 @@ class Databox implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
-                return $app['phraseanet.core']['Firewall']->requireAdmin($app);
+                return $app['firewall']->requireAdmin($app);
             });
 
 
@@ -434,13 +433,13 @@ class Databox implements ControllerProviderInterface
      */
     public function getDatabaseCGU(Application $app, Request $request, $databox_id)
     {
-        if ( ! $app['phraseanet.core']->getAuthenticatedUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+        if ( ! $app['phraseanet.user']->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
             $app->abort(403);
         }
 
 
         return new Response($app['twig']->render('admin/databox/cgus.html.twig', array(
-                    'languages'      => Core::getAvailableLanguages(),
+                    'languages'      => $app->getAvailableLanguages(),
                     'cgus'           => $app['phraseanet.appbox']->get_databox($databox_id)->get_cgus(),
                     'current_locale' => \Session_Handler::get_locale()
                 )));
@@ -558,7 +557,7 @@ class Databox implements ControllerProviderInterface
      */
     public function updateDatabaseCGU(Application $app, Request $request, $databox_id)
     {
-        if ( ! $app['phraseanet.core']->getAuthenticatedUser()->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+        if ( ! $app['phraseanet.user']->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
             $app->abort(403);
         }
 
@@ -596,11 +595,11 @@ class Databox implements ControllerProviderInterface
             return $app->redirect('/admin/databoxes/?error=special-chars');
         }
 
-        $registry = $app['phraseanet.core']['Registry'];
+        $registry = $app['phraseanet.registry'];
 
         if ((null === $request->request->get('new_settings')) && (null !== $dataTemplate = $request->request->get('new_data_template'))) {
 
-            $configuration = Configuration::build();
+            $configuration = $app['phraseanet.configuration'];
             $choosenConnexion = $configuration->getPhraseanet()->get('database');
             $connexion = $configuration->getConnexion($choosenConnexion);
 
@@ -619,9 +618,9 @@ class Databox implements ControllerProviderInterface
             }
 
             try {
-                $base = \databox::create($app['phraseanet.appbox'], $connbas, $dataTemplate, $registry);
-                $base->registerAdmin($app['phraseanet.core']->getAuthenticatedUser());
-                $app['phraseanet.core']->getAuthenticatedUser()->ACL()->delete_data_from_cache();
+                $base = \databox::create($app, $connbas, $dataTemplate, $registry);
+                $base->registerAdmin($app['phraseanet.user']);
+                $app['phraseanet.user']->ACL()->delete_data_from_cache();
 
                 return $app->redirect('/admin/databox/' . $base->get_sbas_id() . '/?success=1&reload-tree=1');
             } catch (\Exception $e) {
@@ -642,8 +641,8 @@ class Databox implements ControllerProviderInterface
                 $data_template = new \SplFileInfo($registry->get('GV_RootPath') . 'lib/conf.d/data_templates/' . $dataTemplate . '.xml');
                 $connbas = new \connection_pdo('databox_creation', $hostname, $port, $userDb, $passwordDb, $dbName, array(), $registry);
                 try {
-                    $base = \databox::create($app['phraseanet.appbox'], $connbas, $data_template, $registry);
-                    $base->registerAdmin($app['phraseanet.core']->getAuthenticatedUser());
+                    $base = \databox::create($app, $connbas, $data_template, $registry);
+                    $base->registerAdmin($app['phraseanet.user']);
 
                     return $app->redirect('/admin/databox/' . $base->get_sbas_id() . '/?success=1&reload-tree=1');
                 } catch (\Exception $e) {
@@ -677,11 +676,11 @@ class Databox implements ControllerProviderInterface
         }
 
         $appbox = $app['phraseanet.appbox'];
-        $registry = $app['phraseanet.core']['Registry'];
+        $registry = $app['phraseanet.registry'];
 
         if ((null === $request->request->get('new_settings'))) {
             try {
-                $configuration = Configuration::build();
+                $configuration = $app['phraseanet.configuration'];
                 $connexion = $configuration->getConnexion();
 
                 $hostname = $connexion->get('host');
@@ -690,8 +689,8 @@ class Databox implements ControllerProviderInterface
                 $password = $connexion->get('password');
 
                 $appbox->get_connection()->beginTransaction();
-                $base = \databox::mount($app['phraseanet.appbox'], $hostname, $port, $user, $password, $dbName, $registry);
-                $base->registerAdmin($app['phraseanet.core']->getAuthenticatedUser());
+                $base = \databox::mount($app, $hostname, $port, $user, $password, $dbName, $registry);
+                $base->registerAdmin($app['phraseanet.user']);
                 $appbox->get_connection()->commit();
 
                 return $app->redirect('/admin/databox/' . $base->get_sbas_id() . '/?success=1&reload-tree=1');
@@ -711,8 +710,8 @@ class Databox implements ControllerProviderInterface
 
             try {
                 $appbox->get_connection()->beginTransaction();
-                $base = \databox::mount($appbox, $hostname, $port, $userDb, $passwordDb, $dbName, $registry);
-                $base->registerAdmin($app['phraseanet.core']->getAuthenticatedUser());
+                $base = \databox::mount($app, $hostname, $port, $userDb, $passwordDb, $dbName, $registry);
+                $base->registerAdmin($app['phraseanet.user']);
                 $appbox->get_connection()->commit();
 
                 return $app->redirect('/admin/databox/' . $base->get_sbas_id() . '/?success=1&reload-tree=1');
@@ -735,7 +734,7 @@ class Databox implements ControllerProviderInterface
     public function mountCollection(Application $app, Request $request, $databox_id, $collection_id)
     {
         $appbox = $app['phraseanet.appbox'];
-        $user = $app['phraseanet.core']->getAuthenticatedUser();
+        $user = $app['phraseanet.user'];
 
         if ( ! $user->ACL()->has_right_on_sbas($databox_id, 'bas_manage')) {
             $app->abort(403);
@@ -743,13 +742,13 @@ class Databox implements ControllerProviderInterface
 
         $appbox->get_connection()->beginTransaction();
         try {
-            $baseId = \collection::mount_collection($databox_id, $collection_id, $user);
+            $baseId = \collection::mount_collection($app, $app['phraseanet.appbox']->get_databox($databox_id), $collection_id, $user);
 
             if (null == $othCollSel = $request->request->get("othcollsel")) {
                 $app->abort(400);
             }
 
-            $query = new \User_Query($appbox);
+            $query = new \User_Query($app);
             $n = 0;
 
             while ($n < $query->on_base_ids(array($othCollSel))->get_total()) {
@@ -1018,7 +1017,7 @@ class Databox implements ControllerProviderInterface
             $ret['xml_indexed'] = $datas['xml_indexed'];
             $ret['thesaurus_indexed'] = $datas['thesaurus_indexed'];
 
-            if ($app['filesystem']->exists($app['phraseanet.core']['Registry']->get('GV_RootPath') . 'config/minilogos/logopdf_' . $databox_id . '.jpg')) {
+            if ($app['filesystem']->exists($app['phraseanet.registry']->get('GV_RootPath') . 'config/minilogos/logopdf_' . $databox_id . '.jpg')) {
                 $ret['printLogoURL'] = '/custom/minilogos/logopdf_' . $databox_id . '.jpg';
             }
 
@@ -1060,7 +1059,7 @@ class Databox implements ControllerProviderInterface
 
         try {
             foreach ($request->request->get('order', array()) as $order => $baseId) {
-                $collection = \collection::get_from_base_id($baseId);
+                $collection = \collection::get_from_base_id($app, $baseId);
                 $app['phraseanet.appbox']->set_collection_order($collection, $order);
                 unset($collection);
             }
@@ -1112,11 +1111,11 @@ class Databox implements ControllerProviderInterface
 
         try {
             $databox = $app['phraseanet.appbox']->get_databox($databox_id);
-            $collection = \collection::create($databox, $app['phraseanet.appbox'], $name, $app['phraseanet.core']->getAuthenticatedUser());
+            $collection = \collection::create($app, $databox, $app['phraseanet.appbox'], $name, $app['phraseanet.user']);
 
             if (($request->request->get('ccusrothercoll') === "on")
                 && ($othcollsel = $request->request->get('othcollsel') !== null)) {
-                $query = new \User_Query($app['phraseanet.appbox']);
+                $query = new \User_Query($app);
                 $total = $query->on_base_ids(array($othcollsel))->get_total();
                 $n = 0;
                 while ($n < $total) {
