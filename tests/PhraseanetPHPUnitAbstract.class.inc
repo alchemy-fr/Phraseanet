@@ -156,7 +156,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                     $tool = new \Doctrine\ORM\Tools\SchemaTool($em);
                     $metas = $em->getMetadataFactory()->getAllMetadata();
                     $tool->createSchema($metas);
-                    $loaded = true;
 
                     return $em;
                 }));
@@ -213,6 +212,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $purger = new Doctrine\Common\DataFixtures\Purger\ORMPurger();
         $executor = new Doctrine\Common\DataFixtures\Executor\ORMExecutor(self::$application['EM'], $purger);
         $executor->execute($fixtureLoader->getFixtures(), $append);
+        $this->client = new Client(self::$application, array());
     }
 
     /**
@@ -236,6 +236,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $app['browser']->setUserAgent($user_agent);
         $app->register(new \Silex\Provider\TwigServiceProvider());
         $app->setupTwig();
+        $this->client = new Client($app, array());
     }
 
     /**
