@@ -25,6 +25,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     protected $client;
     protected static $records;
     public static $recordsInitialized = false;
+    protected static $useExceptionHandler = false;
 
     /**
      *
@@ -92,7 +93,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             exit("\033[0;31mPhraseanet is not set up\033[0;37m\r\n");
         }
 
-        self::loadApplication();
+        static::loadApplication();
 
         self::updateTablesSchema();
 
@@ -109,16 +110,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     {
         $environment = 'test';
         self::$application = require __DIR__ . '/../lib/Alchemy/Phrasea/Application/Root.php';
-
-        self::$application['EM'] = self::$application->share(self::$application->extend('EM', function($em) {
-
-                    $tool = new \Doctrine\ORM\Tools\SchemaTool($em);
-                    $metas = $em->getMetadataFactory()->getAllMetadata();
-                    $tool->createSchema($metas);
-                    $loaded = true;
-
-                    return $em;
-                }));
 
         return self::$application;
     }
@@ -138,7 +129,10 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     public function createApplication()
     {
         self::$application['debug'] = true;
-        unset(self::$application['exception_handler']);
+
+        if (!static::$useExceptionHandler) {
+            unset(self::$application['exception_handler']);
+        }
 
         return self::$application;
     }
@@ -155,12 +149,26 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         }
     }
 
+    protected static function activateEM()
+    {
+        self::$application['EM'] = self::$application->share(self::$application->extend('EM', function($em) {
+
+                    $tool = new \Doctrine\ORM\Tools\SchemaTool($em);
+                    $metas = $em->getMetadataFactory()->getAllMetadata();
+                    $tool->createSchema($metas);
+                    $loaded = true;
+
+                    return $em;
+                }));
+    }
+
     public function setUp()
     {
         parent::setUp();
 
         $start = microtime(true);
-        self::loadApplication();
+        static::loadApplication();
+        self::activateEM();
         $this->createApplication();
         $this->client = new Client(self::$application, array());
 
@@ -543,15 +551,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 unlink(Setup_Upgrade::get_lock_file());
             }
 
-//            self::$application['EM'] = self::$application->share(self::$application->extend('EM', function($em) {
-//
-//                        $tool = new \Doctrine\ORM\Tools\SchemaTool($em);
-//                        $metas = $em->getMetadataFactory()->getAllMetadata();
-//                        $tool->createSchema($metas);
-//                        $loaded = true;
-//
-//                        return $em;
-//                    }));
+            self::activateEM();
 
             $upgrader = new Setup_Upgrade(self::$application);
 //            $appbox->forceUpgrade($upgrader, self::$application);
@@ -797,7 +797,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
                     $file = new Alchemy\Phrasea\Border\File($app['mediavorus']->guess(__DIR__ . '/testfiles/cestlafete.jpg'), $collection_no_access);
 
-                    return \record_adapter::createFromFile($file, self::$application);
+                    return \record_adapter::createFromFile($file, $app);
                 });
 
             static::$records['record_no_access_by_status'] = static::$records->share(function()use($collection_no_access, $app) {
@@ -806,7 +806,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
                     $file = new Alchemy\Phrasea\Border\File($app['mediavorus']->guess(__DIR__ . '/testfiles/cestlafete.jpg'), $collection_no_access);
 
-                    return \record_adapter::createFromFile($file, self::$application);
+                    return \record_adapter::createFromFile($file, $app);
                 });
         }
 
