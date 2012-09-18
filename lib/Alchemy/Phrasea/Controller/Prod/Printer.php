@@ -30,18 +30,18 @@ class Printer implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->post('/', function(Application $app) {
-                $printer = new RecordHelper\Printer($app['phraseanet.core'], $app['request']);
+                $printer = new RecordHelper\Printer($app, $app['request']);
 
                 return $app['twig']->render('prod/actions/printer_default.html.twig', array('printer' => $printer, 'message' => ''));
             }
         );
 
         $controllers->post('/print.pdf', function(Application $app) {
-                $printer = new RecordHelper\Printer($app['phraseanet.core'], $app['request']);
+                $printer = new RecordHelper\Printer($app, $app['request']);
 
                 $request = $app['request'];
 
-                $session = \Session_Handler::getInstance($app['phraseanet.appbox']);
+                $session = \Session_Handler::getInstance($app);
 
                 $layout = $request->request->get('lay');
 
@@ -49,7 +49,7 @@ class Printer implements ControllerProviderInterface
                     $session->get_logger($record->get_databox())
                         ->log($record, \Session_Logger::EVENT_PRINT, $layout, '');
                 }
-                $PDF = new PDFExport($printer->get_elements(), $layout);
+                $PDF = new PDFExport($app, $printer->get_elements(), $layout);
 
                 /**
                  *

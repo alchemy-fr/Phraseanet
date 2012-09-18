@@ -50,7 +50,7 @@ class Order implements ControllerProviderInterface
          */
         $controllers->get('/', $this->call('displayOrders'))
             ->before(function(Request $request) use ($app) {
-                    $app['phraseanet.core']['Firewall']->requireOrdersAdmin($app);
+                    $app['firewall']->requireOrdersAdmin($app);
                 })
             ->bind('prod_orders');
 
@@ -85,7 +85,7 @@ class Order implements ControllerProviderInterface
          */
         $controllers->get('/{order_id}/', $this->call('displayOneOrder'))
             ->before(function(Request $request) use ($app) {
-                    $app['phraseanet.core']['Firewall']->requireOrdersAdmin($app);
+                    $app['firewall']->requireOrdersAdmin($app);
                 })
             ->bind('prod_order')
             ->assert('order_id', '\d+');
@@ -105,7 +105,7 @@ class Order implements ControllerProviderInterface
          */
         $controllers->post('/{order_id}/send/', $this->call('sendOrder'))
             ->before(function(Request $request) use ($app) {
-                    $app['phraseanet.core']['Firewall']->requireOrdersAdmin($app);
+                    $app['firewall']->requireOrdersAdmin($app);
                 })
             ->bind('prod_order_send')
             ->assert('order_id', '\d+');
@@ -125,7 +125,7 @@ class Order implements ControllerProviderInterface
          */
         $controllers->post('/{order_id}/deny/', $this->call('denyOrder'))
             ->before(function(Request $request) use ($app) {
-                    $app['phraseanet.core']['Firewall']->requireOrdersAdmin($app);
+                    $app['firewall']->requireOrdersAdmin($app);
                 })
             ->bind('prod_order_deny')
             ->assert('order_id', '\d+');
@@ -149,7 +149,7 @@ class Order implements ControllerProviderInterface
 
         try {
             $records = RecordsRequest::fromRequest($app, $request, true, array('cancmd'));
-            $query = new \User_Query($app['phraseanet.appbox']);
+            $query = new \User_Query($app);
 
             foreach ($records as $key => $record) {
                 if ($collectionHasOrderAdmins->containsKey($record->get_base_id())) {
@@ -185,7 +185,7 @@ class Order implements ControllerProviderInterface
 
             if (count($records) > 0) {
                 \set_order::create(
-                    $app['phraseanet.appbox'], $records, $app['phraseanet.core']->getAuthenticatedUser(), $request->request->get('use', ''), ( (null !== $deadLine = $request->request->get('deadline')) ? new \DateTime($deadLine) : $deadLine)
+                    $app, $records, $app['phraseanet.user'], $request->request->get('use', ''), ( (null !== $deadLine = $request->request->get('deadline')) ? new \DateTime($deadLine) : $deadLine)
                 );
 
                 $success = true;
@@ -226,9 +226,9 @@ class Order implements ControllerProviderInterface
         $perPage = (int) $request->query->get('per-page', 10);
         $sort = $request->query->get('sort');
 
-        $baseIds = array_keys($app['phraseanet.core']->getAuthenticatedUser()->ACL()->get_granted_base(array('order_master')));
+        $baseIds = array_keys($app['phraseanet.user']->ACL()->get_granted_base(array('order_master')));
 
-        $ordersList = \set_order::listOrders($app['phraseanet.appbox'], $baseIds, $offsetStart, $perPage, $sort);
+        $ordersList = \set_order::listOrders($app, $baseIds, $offsetStart, $perPage, $sort);
         $total = \set_order::countTotalOrder($app['phraseanet.appbox'], $baseIds);
 
         return $app['twig']->render('prod/orders/order_box.html.twig', array(
@@ -252,7 +252,7 @@ class Order implements ControllerProviderInterface
     public function displayOneOrder(Application $app, Request $request, $order_id)
     {
         try {
-            $order = new \set_order($order_id);
+            $order = new \set_order($app, $order_id);
         } catch (\Exception_NotFound $e) {
             $app->abort(404);
         }
@@ -275,13 +275,13 @@ class Order implements ControllerProviderInterface
         $success = false;
 
         try {
-            $order = new \set_order($order_id);
+            $order = new \set_order($app, $order_id);
         } catch (\Exception_NotFound $e) {
             $app->abort(404);
         }
 
         try {
-            $order->send_elements($request->request->get('elements', array()),  ! ! $request->request->get('force', false));
+            $order->send_elements($app, $request->request->get('elements', array()),  ! ! $request->request->get('force', false));
             $success = true;
         } catch (\Exception $e) {
 
@@ -315,7 +315,7 @@ class Order implements ControllerProviderInterface
         $success = false;
 
         try {
-            $order = new \set_order($order_id);
+            $order = new \set_order($app, $order_id);
         } catch (\Exception_NotFound $e) {
             $app->abort(404);
         }

@@ -32,7 +32,7 @@ class Query implements ControllerProviderInterface
                 $appbox = $app['phraseanet.appbox'];
                 $registry = $appbox->get_registry();
 
-                $user = $app['phraseanet.core']->getAuthenticatedUser();
+                $user = $app['phraseanet.user'];
 
                 $query = (string) $request->request->get('qry');
 
@@ -79,7 +79,7 @@ class Query implements ControllerProviderInterface
 
                 $perPage = (int) $user->getPrefs('images_per_page');
 
-                $search_engine = new \searchEngine_adapter($registry);
+                $search_engine = new \searchEngine_adapter($app);
                 $search_engine->set_options($options);
 
                 $page = (int) $request->request->get('pag');
@@ -165,7 +165,7 @@ class Query implements ControllerProviderInterface
                 $prop = null;
 
                 if ($search_engine->is_first_page()) {
-                    $propals = $result->get_suggestions();
+                    $propals = $result->get_suggestions($app['phraseanet.appbox']->get_session()->get_I18n());
                     if (count($propals) > 0) {
                         foreach ($propals as $prop_array) {
                             if ($prop_array['value'] !== $query && $prop_array['hits'] > $result->get_count_total_results()) {

@@ -31,8 +31,8 @@ class TOU implements ControllerProviderInterface
                 $ret = array('success' => false, 'message' => '');
 
                 try {
-                    $user = $app['phraseanet.core']->getAuthenticatedUser();
-                    $session = \Session_Handler::getInstance($app['phraseanet.appbox']);
+                    $user = $app['phraseanet.user'];
+                    $session = \Session_Handler::getInstance($app);
 
                     $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
 

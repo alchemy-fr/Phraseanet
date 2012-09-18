@@ -32,11 +32,11 @@ class Root implements ControllerProviderInterface
 
         $controllers->get('/', function(Application $app) {
 
-                \User_Adapter::updateClientInfos(1);
+                \User_Adapter::updateClientInfos($app, 1);
 
                 $appbox = $app['phraseanet.appbox'];
-                $registry = $app['phraseanet.core']->getRegistry();
-                $user = $app['phraseanet.core']->getAuthenticatedUser();
+                $registry = $app['phraseanet.registry'];
+                $user = $app['phraseanet.user'];
                 $cssPath = $registry->get('GV_RootPath') . 'www/skins/prod/';
 
                 $css = array();
@@ -63,7 +63,7 @@ class Root implements ControllerProviderInterface
                     $cssfile = '000000';
                 }
 
-                $user_feeds = \Feed_Collection::load_all($appbox, $user);
+                $user_feeds = \Feed_Collection::load_all($app, $user);
                 $feeds = array_merge(array($user_feeds->get_aggregate()), $user_feeds->get_feeds());
 
                 $thjslist = "";
@@ -71,9 +71,9 @@ class Root implements ControllerProviderInterface
                 $queries_topics = '';
 
                 if ($registry->get('GV_client_render_topics') == 'popups') {
-                    $queries_topics = \queries::dropdown_topics();
+                    $queries_topics = \queries::dropdown_topics($appbox->get_session()->get_I18n());
                 } elseif ($registry->get('GV_client_render_topics') == 'tree') {
-                    $queries_topics = \queries::tree_topics();
+                    $queries_topics = \queries::tree_topics($appbox->get_session()->get_I18n());
                 }
 
                 $sbas = $bas2sbas = array();
@@ -96,21 +96,21 @@ class Root implements ControllerProviderInterface
 
                 $out = $app['twig']->render('prod/index.html.twig', array(
                     'module_name'          => 'Production',
-                    'WorkZone'             => new Helper\WorkZone($app['phraseanet.core'], $app['request']),
-                    'module_prod'          => new Helper\Prod($app['phraseanet.core'], $app['request']),
+                    'WorkZone'             => new Helper\WorkZone($app, $app['request']),
+                    'module_prod'          => new Helper\Prod($app, $app['request']),
                     'cssfile'              => $cssfile,
                     'module'               => 'prod',
-                    'events'               => $app['phraseanet.core']['events-manager'],
+                    'events'               => $app['events-manager'],
                     'GV_defaultQuery_type' => $registry->get('GV_defaultQuery_type'),
                     'GV_multiAndReport'    => $registry->get('GV_multiAndReport'),
                     'GV_thesaurus'         => $registry->get('GV_thesaurus'),
-                    'cgus_agreement'       => \databox_cgu::askAgreement(),
+                    'cgus_agreement'       => \databox_cgu::askAgreement($app),
                     'css'                  => $css,
                     'feeds'                => $feeds,
                     'GV_google_api'        => $registry->get('GV_google_api'),
                     'queries_topics'       => $queries_topics,
-                    'search_status'        => \databox_status::getSearchStatus(),
-                    'queries_history'      => \queries::history(),
+                    'search_status'        => \databox_status::getSearchStatus($app),
+                    'queries_history'      => \queries::history($app['phraseanet.appbox'], $app['phraseanet.user']->get_id()),
                     'thesau_js_list'       => $thjslist,
                     'thesau_json_sbas'     => json_encode($sbas),
                     'thesau_json_bas2sbas' => json_encode($bas2sbas),
@@ -122,14 +122,14 @@ class Root implements ControllerProviderInterface
 
         $controllers->post('/multi-export/', function(Application $app, Request $request) {
 
-                $download = new \set_export($request->request->get('lst', ''), (int) $request->request->get('ssel'), $request->request->get('story'));
+                $download = new \set_export($app, $request->request->get('lst', ''), (int) $request->request->get('ssel'), $request->request->get('story'));
 
                 return $app['twig']->render('common/dialog_export.html.twig', array(
                     'download'             => $download,
                     'ssttid'               => (int) $request->request->get('ssel'),
                     'lst'                  => $download->serialize_list(),
-                    'default_export_title' => $app['phraseanet.core']['Registry']->get('GV_default_export_title'),
-                    'choose_export_title'  => $app['phraseanet.core']['Registry']->get('GV_choose_export_title')
+                    'default_export_title' => $app['phraseanet.registry']->get('GV_default_export_title'),
+                    'choose_export_title'  => $app['phraseanet.registry']->get('GV_choose_export_title')
                 ));
             });
 

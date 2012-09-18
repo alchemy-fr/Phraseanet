@@ -108,7 +108,7 @@ class Upload implements ControllerProviderInterface
         return $app['twig']->render(
                 'prod/upload/upload-flash.html.twig', array(
                 'sessionId'           => session_id(),
-                'collections'         => $this->getGrantedCollections($app['phraseanet.core']->getAuthenticatedUser()),
+                'collections'         => $this->getGrantedCollections($app['phraseanet.user']),
                 'maxFileSize'         => $maxFileSize,
                 'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
                 )
@@ -129,7 +129,7 @@ class Upload implements ControllerProviderInterface
 
         return $app['twig']->render(
                 'prod/upload/upload.html.twig', array(
-                'collections'         => $this->getGrantedCollections($app['phraseanet.core']->getAuthenticatedUser()),
+                'collections'         => $this->getGrantedCollections($app['phraseanet.user']),
                 'maxFileSize'         => $maxFileSize,
                 'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
                 )
@@ -169,7 +169,7 @@ class Upload implements ControllerProviderInterface
             throw new \Exception_BadRequest('Missing base_id parameter');
         }
 
-        if ( ! $app['phraseanet.core']->getAuthenticatedUser()->ACL()->has_right_on_base($base_id, 'canaddrecord')) {
+        if ( ! $app['phraseanet.user']->ACL()->has_right_on_base($base_id, 'canaddrecord')) {
             throw new \Exception_Forbidden('User is not allowed to add record on this collection');
         }
 
@@ -184,22 +184,15 @@ class Upload implements ControllerProviderInterface
             $uploadedFilename = $file->getRealPath();
             $renamedFilename = $file->getRealPath() . '.' . pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
 
-            $originalname = $file->getClientOriginalName();
-            $clientMimeType = $file->getClientMimeType();
-            $size = $file->getSize();
-            $error = $file->getError();
-
             $app['filesystem']->rename($uploadedFilename, $renamedFilename);
 
-            $file = new UploadedFile($renamedFilename, $originalname, $clientMimeType, $size, $error);
-
-            $media = $app['phraseanet.core']['mediavorus']->guess($file);
-            $collection = \collection::get_from_base_id($base_id);
+            $media = $app['mediavorus']->guess($renamedFilename);
+            $collection = \collection::get_from_base_id($app, $base_id);
 
             $lazaretSession = new LazaretSession();
-            $lazaretSession->setUsrId($app['phraseanet.core']->getAuthenticatedUser()->get_id());
+            $lazaretSession->setUsrId($app['phraseanet.user']->get_id());
 
-            $app['phraseanet.core']['EM']->persist($lazaretSession);
+            $app['EM']->persist($lazaretSession);
 
             $packageFile = new File($media, $collection, $file->getClientOriginalName());
 
@@ -212,7 +205,7 @@ class Upload implements ControllerProviderInterface
                 foreach (range(0, 63) as $i) {
                     $status .= isset($postStatus[$i]) ? ($postStatus[$i] ? '1' : '0') : '0';
                 }
-                $packageFile->addAttribute(new Status(strrev($status)));
+                $packageFile->addAttribute(new Status($app, strrev($status)));
             }
 
             $forceBehavior = $request->request->get('forceAction');
@@ -230,7 +223,7 @@ class Upload implements ControllerProviderInterface
                     $elementCreated = $element;
                 };
 
-            $code = $app['phraseanet.core']['border-manager']->process(
+            $code = $app['border-manager']->process(
                 $lazaretSession, $packageFile, $callback, $forceBehavior
             );
 
@@ -249,7 +242,7 @@ class Upload implements ControllerProviderInterface
 
                 $appbox = $app['phraseanet.appbox'];
 
-                $eventsManager = $app['phraseanet.core']['events-manager'];
+                $eventsManager = $app['events-manager'];
                 $eventsManager->trigger('__UPLOAD_QUARANTINE__', $params);
 
                 $id = $elementCreated->getId();

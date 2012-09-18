@@ -50,7 +50,7 @@ class WorkZone implements ControllerProviderInterface
     public function displayWorkzone(Application $app)
     {
         $params = array(
-            'WorkZone'      => new WorkzoneHelper($app['phraseanet.core'], $app['request'])
+            'WorkZone'      => new WorkzoneHelper($app, $app['request'])
             , 'selected_type' => $app['request']->query->get('type')
             , 'selected_id'   => $app['request']->query->get('id')
             , 'srt'           => $app['request']->query->get('sort')
@@ -66,14 +66,11 @@ class WorkZone implements ControllerProviderInterface
 
     public function browserSearch(Application $app)
     {
-        $user = $app['phraseanet.core']->getAuthenticatedUser();
+        $user = $app['phraseanet.user'];
 
         $request = $app['request'];
 
-        $em = $app['phraseanet.core']->getEntityManager();
-        /* @var $em \Doctrine\ORM\EntityManager */
-
-        $BasketRepo = $em->getRepository('\Entities\Basket');
+        $BasketRepo = $app['EM']->getRepository('\Entities\Basket');
 
         $Page = (int) $request->query->get('Page', 0);
 
@@ -107,10 +104,9 @@ class WorkZone implements ControllerProviderInterface
 
     public function browseBasket(Application $app, Request $request, $basket_id)
     {
-        $basket = $app['phraseanet.core']
-            ->getEntityManager()
+        $basket = $app['EM']
             ->getRepository('\Entities\Basket')
-            ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), false);
+            ->findUserBasket($app, $basket_id, $app['phraseanet.user'], false);
 
         return $app['twig']->render('prod/WorkZone/Browser/Basket.html.twig', array('Basket' => $basket));
     }
@@ -121,12 +117,9 @@ class WorkZone implements ControllerProviderInterface
             throw new \Exception_BadRequest();
         }
 
-        $user = $app['phraseanet.core']->getAuthenticatedUser();
+        $user = $app['phraseanet.user'];
 
-        $em = $app['phraseanet.core']->getEntityManager();
-        /* @var $em \Doctrine\ORM\EntityManager */
-
-        $StoryWZRepo = $em->getRepository('\Entities\StoryWZ');
+        $StoryWZRepo = $app['EM']->getRepository('\Entities\StoryWZ');
 
         $alreadyFixed = $done = 0;
 
@@ -134,7 +127,7 @@ class WorkZone implements ControllerProviderInterface
 
         foreach ($stories as $element) {
             $element = explode('_', $element);
-            $Story = new \record_adapter($element[0], $element[1]);
+            $Story = new \record_adapter($app, $element[0], $element[1]);
 
             if ( ! $Story->is_grouping()) {
                 throw new \Exception('You can only attach stories');
@@ -144,7 +137,7 @@ class WorkZone implements ControllerProviderInterface
                 throw new \Exception_Forbidden('You do not have access to this Story');
             }
 
-            if ($StoryWZRepo->findUserStory($user, $Story)) {
+            if ($StoryWZRepo->findUserStory($app, $user, $Story)) {
                 $alreadyFixed ++;
                 continue;
             }
@@ -153,11 +146,11 @@ class WorkZone implements ControllerProviderInterface
             $StoryWZ->setUser($user);
             $StoryWZ->setRecord($Story);
 
-            $em->persist($StoryWZ);
+            $app['EM']->persist($StoryWZ);
             $done ++;
         }
 
-        $em->flush();
+        $app['EM']->flush();
 
         if ($alreadyFixed === 0) {
             if ($done <= 1) {
@@ -199,23 +192,21 @@ class WorkZone implements ControllerProviderInterface
 
     public function detachStory(Application $app, Request $request, $sbas_id, $record_id)
     {
-        $Story = new \record_adapter($sbas_id, $record_id);
+        $Story = new \record_adapter($app, $sbas_id, $record_id);
 
-        $user = $app['phraseanet.core']->getAuthenticatedUser();
+        $user = $app['phraseanet.user'];
 
-        $em = $app['phraseanet.core']->getEntityManager();
-
-        $repository = $em->getRepository('\Entities\StoryWZ');
+        $repository = $app['EM']->getRepository('\Entities\StoryWZ');
 
         /* @var $repository \Repositories\StoryWZRepository */
-        $StoryWZ = $repository->findUserStory($user, $Story);
+        $StoryWZ = $repository->findUserStory($app, $user, $Story);
 
         if ( ! $StoryWZ) {
             throw new \Exception_NotFound('Story not found');
         }
 
-        $em->remove($StoryWZ);
-        $em->flush();
+        $app['EM']->remove($StoryWZ);
+        $app['EM']->flush();
 
         if ($request->getRequestFormat() == 'json') {
             return $app->json(array(

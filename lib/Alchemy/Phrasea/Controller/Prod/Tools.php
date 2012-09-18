@@ -39,7 +39,7 @@ class Tools implements ControllerProviderInterface
 
                 if (count($records) == 1) {
                     $record = $records->first();
-                    if ( ! $record->is_grouping()) {
+                    if (!$record->is_grouping()) {
                         try {
                             $reader = new \PHPExiftool\Reader();
 
@@ -66,18 +66,22 @@ class Tools implements ControllerProviderInterface
             });
 
         $controllers->post('/rotate/', function(Application $app, Request $request) {
-                $return = array('success'      => false, 'errorMessage' => '');
+                $return = array('success'      => true, 'errorMessage' => '');
 
                 $records = RecordsRequest::fromRequest($app, $request, false);
 
                 $rotation = in_array($request->request->get('rotation'), array('-90', '90', '180')) ? $request->request->get('rotation', 90) : 90;
 
                 foreach ($records as $record) {
-                    try {
-                        $record->rotate_subdefs($rotation);
-                        $return['success'] = true;
-                    } catch (\Exception $e) {
-                        $return['errorMessage'] = $e->getMessage();
+                    foreach ($record->get_subdefs() as $name => $subdef) {
+                        if ($name == 'document')
+                            continue;
+
+                        try {
+                            $subdef->rotate($rotation, $app['media-alchemyst'], $app['mediavorus']);
+                        } catch (\Exception $e) {
+
+                        }
                     }
                 }
 
@@ -87,7 +91,7 @@ class Tools implements ControllerProviderInterface
         $controllers->post('/image/', function(Application $app, Request $request) {
                 $return = array('success' => true);
 
-                $helper = new Helper\Record\Tools($app['phraseanet.core'], $request);
+                $helper = new Helper\Record\Tools($app, $request);
 
                 $selection = $helper->get_elements();
 
@@ -101,7 +105,7 @@ class Tools implements ControllerProviderInterface
                         }
                     }
 
-                    if ( ! $substituted || $request->request->get('ForceThumbSubstit') == '1') {
+                    if (!$substituted || $request->request->get('ForceThumbSubstit') == '1') {
                         $record->rebuild_subdefs();
                     }
                 }
@@ -130,13 +134,14 @@ class Tools implements ControllerProviderInterface
 
                         try {
                             $record = new \record_adapter(
+                                $app,
                                     $request->request->get('sbas_id')
                                     , $request->request->get('record_id')
                             );
 
-                            $media = $app['phraseanet.core']['mediavorus']->guess($tempoFile);
+                            $media = $app['mediavorus']->guess($tempoFile);
 
-                            $record->substitute_subdef('document', $media, $app['filesystem'], $app['phraseanet.core']['media-alchemyst'], $app['phraseanet.core']['mediavorus']);
+                            $record->substitute_subdef('document', $media, $app);
 
                             if ((int) $request->request->get('ccfilename') === 1) {
                                 $record->set_original_name($fileName);
@@ -180,18 +185,19 @@ class Tools implements ControllerProviderInterface
 
                     if ($size && $fileName && $file->isValid()) {
                         try {
-                            $rootPath = $app['phraseanet.core']->getRegistry()->get('GV_RootPath');
+                            $rootPath = $app['phraseanet.registry']->get('GV_RootPath');
                             $tmpFile = $rootPath . 'tmp/' . $fileName;
                             rename($file->getPathname(), $tmpFile);
 
                             $record = new \record_adapter(
+                                    $app,
                                     $request->request->get('sbas_id')
                                     , $request->request->get('record_id')
                             );
 
-                            $media = $app['phraseanet.core']['mediavorus']->guess($file);
+                            $media = $app['mediavorus']->guess($tmpFile);
 
-                            $record->substitute_subdef('thumbnail', $media);
+                            $record->substitute_subdef('thumbnail', $media, $app);
 
                             $success = true;
                         } catch (\Exception $e) {
@@ -217,7 +223,7 @@ class Tools implements ControllerProviderInterface
                 $template = 'prod/actions/Tools/confirm.html.twig';
 
                 try {
-                    $record = new \record_adapter($request->request->get('sbas_id'), $request->request->get('record_id'));
+                    $record = new \record_adapter($app, $request->request->get('sbas_id'), $request->request->get('record_id'));
                     $var = array(
                         'video_title'    => $record->get_title()
                         , 'image'          => $request->request->get('image', '')
@@ -235,11 +241,11 @@ class Tools implements ControllerProviderInterface
                 $return = array('success' => false, 'message' => '');
 
                 try {
-                    $record = new \record_adapter($request->request->get('sbas_id'), $request->request->get('record_id'));
+                    $record = new \record_adapter($app, $request->request->get('sbas_id'), $request->request->get('record_id'));
 
                     $dataUri = DataURI\Parser::parse($request->request->get('image', ''));
 
-                    $path = $app['phraseanet.core']->getRegistry()->get('GV_RootPath') . 'tmp';
+                    $path = $app['phraseanet.registry']->get('GV_RootPath') . 'tmp';
 
                     $name = sprintf('extractor_thumb_%s', $record->get_serialize_key());
 
@@ -247,9 +253,9 @@ class Tools implements ControllerProviderInterface
 
                     file_put_contents($fileName, $dataUri->getData());
 
-                    $media = $app['phraseanet.core']['mediavorus']->guess(new \SplFileInfo($fileName));
+                    $media = $app['mediavorus']->guess($fileName);
 
-                    $record->substitute_subdef('thumbnail', $media);
+                    $record->substitute_subdef('thumbnail', $media, $app);
 
                     unset($media);
                     $app['filesystem']->remove($fileName);

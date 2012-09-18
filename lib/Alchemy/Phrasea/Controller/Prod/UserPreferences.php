@@ -37,7 +37,7 @@ class UserPreferences implements ControllerProviderInterface
         $ret = array('success' => false, 'message' => _('Error while saving preference'));
 
         try {
-            $user = $app['phraseanet.core']->getAuthenticatedUser();
+            $user = $app['phraseanet.user'];
 
             $ret = $user->setPrefs($request->request->get('prop'), $request->request->get('value'));
 

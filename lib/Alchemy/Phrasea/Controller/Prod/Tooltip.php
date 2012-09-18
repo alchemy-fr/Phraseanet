@@ -65,24 +65,22 @@ class Tooltip implements ControllerProviderInterface
 
     public function displayBasket(Application $app, $basket_id)
     {
-        $em = $app['phraseanet.core']->getEntityManager();
-
-        $basket = $em->getRepository('\Entities\Basket')
-            ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), false);
+        $basket = $app['EM']->getRepository('\Entities\Basket')
+            ->findUserBasket($app, $basket_id, $app['phraseanet.user'], false);
 
         return $app['twig']->render('prod/Tooltip/Basket.html.twig', array('basket' => $basket));
     }
 
     public function displayStory(Application $app, $sbas_id, $record_id)
     {
-        $Story = new \record_adapter($sbas_id, $record_id);
+        $Story = new \record_adapter($app, $sbas_id, $record_id);
 
         return $app['twig']->render('prod/Tooltip/Story.html.twig', array('Story' => $Story));
     }
 
     public function displayUserBadge(Application $app, $usr_id)
     {
-        $user = \User_Adapter::getInstance($usr_id, $app['phraseanet.appbox']);
+        $user = \User_Adapter::getInstance($usr_id, $app);
 
         return $app['twig']->render(
                 'prod/Tooltip/User.html.twig'
@@ -92,7 +90,7 @@ class Tooltip implements ControllerProviderInterface
 
     public function displayPreview(Application $app, $sbas_id, $record_id)
     {
-        $record = new \record_adapter($sbas_id, $record_id);
+        $record = new \record_adapter($app, $sbas_id, $record_id);
 
         return $app['twig']->render(
                 'prod/Tooltip/Preview.html.twig'
@@ -103,13 +101,13 @@ class Tooltip implements ControllerProviderInterface
     public function displayCaption(Application $app, $sbas_id, $record_id, $context)
     {
         $number = (int) $app['request']->request->get('number');
-        $record = new \record_adapter($sbas_id, $record_id, $number);
+        $record = new \record_adapter($app, $sbas_id, $record_id, $number);
 
         $search_engine = null;
 
         if ($context == 'answer') {
             if (($search_engine_options = unserialize($app['request']->request->get('options_serial'))) !== false) {
-                $search_engine = new \searchEngine_adapter($app['phraseanet.appbox']->get_registry());
+                $search_engine = new \searchEngine_adapter($app);
                 $search_engine->set_options($search_engine_options);
             }
         }
@@ -127,7 +125,7 @@ class Tooltip implements ControllerProviderInterface
 
     public function displayTechnicalDatas(Application $app, $sbas_id, $record_id)
     {
-        $record = new \record_adapter($sbas_id, $record_id);
+        $record = new \record_adapter($app, $sbas_id, $record_id);
 
         return $app['twig']->render(
                 'prod/Tooltip/TechnicalDatas.html.twig'
@@ -138,7 +136,7 @@ class Tooltip implements ControllerProviderInterface
     public function displayFieldInfos(Application $app, $sbas_id, $field_id)
     {
         $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
-        $field = \databox_field::get_instance($databox, $field_id);
+        $field = \databox_field::get_instance($app, $databox, $field_id);
 
         return $app['twig']->render(
                 'prod/Tooltip/DataboxField.html.twig'
@@ -149,7 +147,7 @@ class Tooltip implements ControllerProviderInterface
     public function displayDCESInfos(Application $app, $sbas_id, $field_id)
     {
         $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
-        $field = \databox_field::get_instance($databox, $field_id);
+        $field = \databox_field::get_instance($app, $databox, $field_id);
 
         return $app['twig']->render(
                 'prod/Tooltip/DCESFieldInfo.html.twig'
@@ -160,7 +158,7 @@ class Tooltip implements ControllerProviderInterface
     public function displayMetaRestrictions(Application $app, $sbas_id, $field_id)
     {
         $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
-        $field = \databox_field::get_instance($databox, $field_id);
+        $field = \databox_field::get_instance($app, $databox, $field_id);
 
         return $app['twig']->render(
                 'prod/Tooltip/DataboxFieldRestrictions.html.twig'

@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use Alchemy\Phrasea\Vocabulary\Controller as VocabularyController;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Metadata\Tag\TfEditdate;
 use Silex\Application;
@@ -113,8 +114,8 @@ class Edit implements ControllerProviderInterface
                     /**
                      * generate javascript status
                      */
-                    if ($app['phraseanet.core']->getAuthenticatedUser()->ACL()->has_right('changestatus')) {
-                        $dbstatus = \databox_status::getDisplayStatus();
+                    if ($app['phraseanet.user']->ACL()->has_right('changestatus')) {
+                        $dbstatus = \databox_status::getDisplayStatus($app);
                         if (isset($dbstatus[$databox->get_sbas_id()])) {
                             foreach ($dbstatus[$databox->get_sbas_id()] as $n => $statbit) {
                                 $status[$n] = array();
@@ -149,7 +150,7 @@ class Edit implements ControllerProviderInterface
                         );
 
                         $elements[$indice]['statbits'] = array();
-                        if ($app['phraseanet.core']->getAuthenticatedUser()->ACL()->has_right_on_base($record->get_base_id(), 'chgstatus')) {
+                        if ($app['phraseanet.user']->ACL()->has_right_on_base($record->get_base_id(), 'chgstatus')) {
                             foreach ($status as $n => $s) {
                                 $tmp_val = substr(strrev($record->get_status()), $n, 1);
                                 $elements[$indice]['statbits'][$n]['value'] = ($tmp_val == '1') ? '1' : '0';
@@ -233,7 +234,7 @@ class Edit implements ControllerProviderInterface
                         throw new \Exception('Invalid sbas_id');
                     }
 
-                    $VC = \Alchemy\Phrasea\Vocabulary\Controller::get($vocabulary);
+                    $VC = VocabularyController::get($app, $vocabulary);
                     $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
                 } catch (\Exception $e) {
                     $datas['message'] = _('Vocabulary not found');
@@ -243,7 +244,7 @@ class Edit implements ControllerProviderInterface
 
                 $query = $request->query->get('query');
 
-                $results = $VC->find($query, $app['phraseanet.core']->getAuthenticatedUser(), $databox);
+                $results = $VC->find($query, $app['phraseanet.user'], $databox);
 
                 $list = array();
 
@@ -277,7 +278,7 @@ class Edit implements ControllerProviderInterface
                     try {
                         $reg_record = $records->singleStory();
 
-                        $newsubdef_reg = new \record_adapter($reg_record->get_sbas_id(), $request->request->get('newrepresent'));
+                        $newsubdef_reg = new \record_adapter($app, $reg_record->get_sbas_id(), $request->request->get('newrepresent'));
 
                         if ($newsubdef_reg->get_type() !== 'image') {
                             throw new \Exception('A reg image must come from image data');
@@ -287,8 +288,8 @@ class Edit implements ControllerProviderInterface
                             if (!in_array($name, array('thumbnail', 'preview'))) {
                                 continue;
                             }
-                            $media = $app['phraseanet.core']['mediavorus']->guess($value->get_pathfile());
-                            $reg_record->substitute_subdef($name, $media);
+                            $media = $app['mediavorus']->guess($value->get_pathfile());
+                            $reg_record->substitute_subdef($name, $media, $app);
                         }
                     } catch (\Exception $e) {
 
@@ -296,7 +297,7 @@ class Edit implements ControllerProviderInterface
                 }
 
                 if (!is_array($request->get('mds'))) {
-                    return $this;
+                    return;
                 }
 
                 $databox = array_pop($records->databoxes());
@@ -367,13 +368,13 @@ class Edit implements ControllerProviderInterface
                     if (!in_array($statbits, array('', 'null'))) {
                         $mask_and = ltrim(str_replace(array('x', '0', '1', 'z'), array('1', 'z', '0', '1'), $statbits), '0');
                         if ($mask_and != '') {
-                            $newstat = \databox_status::operation_and_not($newstat, $mask_and);
+                            $newstat = \databox_status::operation_and_not($app, $newstat, $mask_and);
                         }
 
                         $mask_or = ltrim(str_replace('x', '0', $statbits), '0');
 
                         if ($mask_or != '') {
-                            $newstat = \databox_status::operation_or($newstat, $mask_or);
+                            $newstat = \databox_status::operation_or($app, $newstat, $mask_or);
                         }
 
                         $record->set_binary_status($newstat);

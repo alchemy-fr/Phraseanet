@@ -36,17 +36,15 @@ class Story implements ControllerProviderInterface
 
         $controllers->post('/', function(Application $app, Request $request) {
                 /* @var $request \Symfony\Component\HttpFoundation\Request */
-                $em = $app['phraseanet.core']->getEntityManager();
+                $user = $app['phraseanet.user'];
 
-                $user = $app['phraseanet.core']->getAuthenticatedUser();
+                $collection = \collection::get_from_base_id($app, $request->request->get('base_id'));
 
-                $collection = \collection::get_from_base_id($request->request->get('base_id'));
-
-                if ( ! $user->ACL()->has_right_on_base($collection->get_base_id(), 'canaddrecord')) {
+                if (!$user->ACL()->has_right_on_base($collection->get_base_id(), 'canaddrecord')) {
                     throw new \Exception_Forbidden('You can not create a story on this collection');
                 }
 
-                $Story = \record_adapter::createStory($collection);
+                $Story = \record_adapter::createStory($app, $collection);
 
                 foreach (explode(';', $request->request->get('lst')) as $sbas_rec) {
                     $sbas_rec = explode('_', $sbas_rec);
@@ -55,11 +53,11 @@ class Story implements ControllerProviderInterface
                         continue;
                     }
 
-                    $record = new \record_adapter($sbas_rec[0], $sbas_rec[1]);
+                    $record = new \record_adapter($app, $sbas_rec[0], $sbas_rec[1]);
 
-                    if ( ! $user->ACL()->has_access_to_base($record->get_base_id())
-                        && ! $user->ACL()->has_hd_grant($record)
-                        && ! $user->ACL()->has_preview_grant($record)) {
+                    if (!$user->ACL()->has_access_to_base($record->get_base_id())
+                        && !$user->ACL()->has_hd_grant($record)
+                        && !$user->ACL()->has_preview_grant($record)) {
                         continue;
                     }
 
@@ -93,9 +91,9 @@ class Story implements ControllerProviderInterface
                 $StoryWZ->setUser($user);
                 $StoryWZ->setRecord($Story);
 
-                $em->persist($StoryWZ);
+                $app['EM']->persist($StoryWZ);
 
-                $em->flush();
+                $app['EM']->flush();
 
                 if ($request->getRequestFormat() == 'json') {
                     $data = array(
@@ -115,7 +113,7 @@ class Story implements ControllerProviderInterface
             });
 
         $controllers->get('/{sbas_id}/{record_id}/', function(Application $app, $sbas_id, $record_id) {
-                $Story = new \record_adapter($sbas_id, $record_id);
+                $Story = new \record_adapter($app, $sbas_id, $record_id);
 
                 $html = $app['twig']->render('prod/WorkZone/Story.html.twig', array('Story' => $Story));
 
@@ -125,11 +123,11 @@ class Story implements ControllerProviderInterface
         $controllers->post(
             '/{sbas_id}/{record_id}/addElements/'
             , function(Application $app, Request $request, $sbas_id, $record_id) {
-                $Story = new \record_adapter($sbas_id, $record_id);
+                $Story = new \record_adapter($app, $sbas_id, $record_id);
 
-                $user = $app['phraseanet.core']->getAuthenticatedUser();
+                $user = $app['phraseanet.user'];
 
-                if ( ! $user->ACL()->has_right_on_base($Story->get_base_id(), 'canmodifrecord'))
+                if (!$user->ACL()->has_right_on_base($Story->get_base_id(), 'canmodifrecord'))
                     throw new \Exception_Forbidden('You can not add document to this Story');
 
                 /* @var $user \User_Adapter */
@@ -142,11 +140,11 @@ class Story implements ControllerProviderInterface
                     if (count($sbas_rec) !== 2)
                         continue;
 
-                    $record = new \record_adapter($sbas_rec[0], $sbas_rec[1]);
+                    $record = new \record_adapter($app, $sbas_rec[0], $sbas_rec[1]);
 
-                    if ( ! $user->ACL()->has_access_to_base($record->get_base_id())
-                        && ! $user->ACL()->has_hd_grant($record)
-                        && ! $user->ACL()->has_preview_grant($record)) {
+                    if (!$user->ACL()->has_access_to_base($record->get_base_id())
+                        && !$user->ACL()->has_hd_grant($record)
+                        && !$user->ACL()->has_preview_grant($record)) {
                         continue;
                     }
 
@@ -155,7 +153,7 @@ class Story implements ControllerProviderInterface
 
                     $Story->appendChild($record);
 
-                    $n ++;
+                    $n++;
                 }
 
                 $data = array(
@@ -173,13 +171,13 @@ class Story implements ControllerProviderInterface
         $controllers->post(
                 '/{sbas_id}/{record_id}/delete/{child_sbas_id}/{child_record_id}/'
                 , function(Application $app, Request $request, $sbas_id, $record_id, $child_sbas_id, $child_record_id) {
-                    $Story = new \record_adapter($sbas_id, $record_id);
+                    $Story = new \record_adapter($app, $sbas_id, $record_id);
 
-                    $record = new \record_adapter($child_sbas_id, $child_record_id);
+                    $record = new \record_adapter($app, $child_sbas_id, $child_record_id);
 
-                    $user = $app['phraseanet.core']->getAuthenticatedUser();
+                    $user = $app['phraseanet.user'];
 
-                    if ( ! $user->ACL()->has_right_on_base($Story->get_base_id(), 'canmodifrecord'))
+                    if (!$user->ACL()->has_right_on_base($Story->get_base_id(), 'canmodifrecord'))
                         throw new \Exception_Forbidden('You can not add document to this Story');
 
                     /* @var $user \User_Adapter */
@@ -205,15 +203,10 @@ class Story implements ControllerProviderInterface
         /**
          * Get the Basket reorder form
          */
-        $controllers->get(
-                '/{sbas_id}/{record_id}/reorder/'
-                , function(Application $app, $sbas_id, $record_id) {
-                    /* @var $em \Doctrine\ORM\EntityManager */
-                    $em = $app['phraseanet.core']->getEntityManager();
+        $controllers->get('/{sbas_id}/{record_id}/reorder/', function(Application $app, $sbas_id, $record_id) {
+                    $story = new \record_adapter($app, $sbas_id, $record_id);
 
-                    $story = new \record_adapter($sbas_id, $record_id);
-
-                    if ( ! $story->is_grouping()) {
+                    if (!$story->is_grouping()) {
                         throw new \Exception('This is not a story');
                     }
 
@@ -232,16 +225,16 @@ class Story implements ControllerProviderInterface
                 , function(Application $app, $sbas_id, $record_id) {
                     $ret = array('success' => false, 'message' => _('An error occured'));
                     try {
-                        $user = $app['phraseanet.core']->getAuthenticatedUser();
+                        $user = $app['phraseanet.user'];
                         /* @var $user \User_Adapter */
 
-                        $story = new \record_adapter($sbas_id, $record_id);
+                        $story = new \record_adapter($app, $sbas_id, $record_id);
 
-                        if ( ! $story->is_grouping()) {
+                        if (!$story->is_grouping()) {
                             throw new \Exception('This is not a story');
                         }
 
-                        if ( ! $user->ACL()->has_right_on_base($story->get_base_id(), 'canmodifrecord')) {
+                        if (!$user->ACL()->has_right_on_base($story->get_base_id(), 'canmodifrecord')) {
                             throw new ControllerException(_('You can not edit this story'));
                         }
 
