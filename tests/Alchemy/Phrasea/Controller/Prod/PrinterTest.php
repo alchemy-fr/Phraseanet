@@ -6,22 +6,6 @@ class ControllerPrinterTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
 
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Prod.php';
-        
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-        
-        return $app;
-    }
-
-    public function setUp()
-    {
-        parent::setUp();
-        $this->client = $this->createClient();
-    }
-
     /**
      * Default route test
      */
@@ -34,7 +18,7 @@ class ControllerPrinterTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $lst = implode(';', $records);
 
-        $crawler = $this->client->request('POST', '/printer/', array('lst' => $lst));
+        $crawler = $this->client->request('POST', '/prod/printer/', array('lst' => $lst));
 
         $response = $this->client->getResponse();
 
@@ -61,7 +45,7 @@ class ControllerPrinterTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         );
 
         foreach ($layouts as $layout) {
-            $crawler = $this->client->request('POST', '/printer/print.pdf', array(
+            $crawler = $this->client->request('POST', '/prod/printer/print.pdf', array(
                 'lst' => $lst,
                 'lay' => $layout
                 )

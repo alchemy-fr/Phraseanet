@@ -14,22 +14,6 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     protected $client;
 
-    public function setUp()
-    {
-        parent::setUp();
-        $this->client = $this->createClient();
-    }
-
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Prod.php';
-
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-
-        return $app;
-    }
-
     /**
      * @covers Alchemy\Phrasea\Controller\Prod\Order::createOrder
      * @covers Alchemy\Phrasea\Controller\Prod\Order::connect
@@ -37,7 +21,7 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testCreateOrder()
     {
-        $this->client->request('POST', '/order/', array(
+        $this->client->request('POST', '/prod/order/', array(
             'lst'      => static::$records['record_1']->get_serialize_key(),
             'deadline' => '+10 minutes'
         ));
@@ -50,7 +34,7 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testCreateOrderJson()
     {
-        $this->XMLHTTPRequest('POST', '/order/', array(
+        $this->XMLHTTPRequest('POST', '/prod/order/', array(
             'lst'      => static::$records['record_1']->get_serialize_key(),
             'deadline' => '+10 minutes'
         ));
@@ -69,7 +53,7 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testDisplayOrders()
     {
-        $this->client->request('GET', '/order/');
+        $this->client->request('GET', '/prod/order/');
         $this->assertTrue($this->client->getResponse()->isOk());
     }
 
@@ -79,7 +63,7 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testDisplayOneOrder()
     {
         $order = $this->createOneOrder('I need this pictures');
-        $this->client->request('GET', '/order/' . $order->get_order_id() . '/');
+        $this->client->request('GET', '/prod/order/' . $order->get_order_id() . '/');
         $this->assertTrue($this->client->getResponse()->isOk());
     }
 
@@ -93,7 +77,7 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         foreach ($order as $id => $element) {
             $parameters[] = $id;
         }
-        $this->client->request('POST', '/order/' . $order->get_order_id() . '/send/', $parameters);
+        $this->client->request('POST', '/prod/order/' . $order->get_order_id() . '/send/', $parameters);
         $this->assertTrue($this->client->getResponse()->isRedirect());
         $url = parse_url($this->client->getResponse()->headers->get('location'));
         parse_str($url['query']);
@@ -110,7 +94,7 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         foreach ($order as $id => $element) {
             $parameters[] = $id;
         }
-        $this->XMLHTTPRequest('POST', '/order/' . $order->get_order_id() . '/send/', $parameters);
+        $this->XMLHTTPRequest('POST', '/prod/order/' . $order->get_order_id() . '/send/', $parameters);
         $this->assertTrue($this->client->getResponse()->isOk());
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOk());
@@ -133,7 +117,7 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         foreach ($order as $id => $element) {
             $parameters[] = $id;
         }
-        $this->client->request('POST', '/order/' . $order->get_order_id() . '/deny/', $parameters);
+        $this->client->request('POST', '/prod/order/' . $order->get_order_id() . '/deny/', $parameters);
         $this->assertTrue($this->client->getResponse()->isRedirect());
         $url = parse_url($this->client->getResponse()->headers->get('location'));
         parse_str($url['query']);
@@ -150,7 +134,7 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         foreach ($order as $id => $element) {
             $parameters[] = $id;
         }
-        $this->XMLHTTPRequest('POST', '/order/' . $order->get_order_id() . '/deny/', $parameters);
+        $this->XMLHTTPRequest('POST', '/prod/order/' . $order->get_order_id() . '/deny/', $parameters);
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOk());
         $this->assertEquals('application/json', $response->headers->get('Content-Type'));
@@ -167,7 +151,7 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $receveid = array(static::$records['record_1']->get_serialize_key() => static::$records['record_1']);
 
         return \set_order::create(
-                $this->app['phraseanet.appbox'], new RecordsRequest($receveid, new ArrayCollection($receveid)), self::$user_alt2 ,$usage, new \DateTime('+10 minutes')
+                self::$application, new RecordsRequest($receveid, new ArrayCollection($receveid)), self::$user_alt2 ,$usage, new \DateTime('+10 minutes')
         );
     }
 }

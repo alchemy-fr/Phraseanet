@@ -6,25 +6,9 @@ class ControllerLanguageTest extends PhraseanetWebTestCaseAbstract
 {
     protected $client;
 
-    public function setUp()
-    {
-        parent::setUp();
-        $this->client = $this->createClient();
-    }
-
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Prod.php';
-        
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-        
-        return $app;
-    }
-
     public function testRootPost()
     {
-        $route = '/language/';
+        $route = '/prod/language/';
 
         $this->client->request("GET", $route);
         $this->assertTrue($this->client->getResponse()->isOk());

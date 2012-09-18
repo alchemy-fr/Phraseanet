@@ -6,29 +6,11 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
 
-    public function setUp()
-    {
-        parent::setUp();
-        $this->client = $this->createClient();
-        $this->purgeDatabase();
-    }
-
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Prod.php';
-
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-
-        return $app;
-    }
-
     public function testRootGet()
     {
-
         $this->insertOneWZ();
 
-        $route = "/WorkZone/";
+        $route = "/prod/WorkZone/";
 
         $this->client->request('GET', $route);
 
@@ -41,7 +23,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $story = static::$records['record_story_1'];
         /* @var $story \Record_Adapter */
-        $route = sprintf("/WorkZone/attachStories/");
+        $route = sprintf("/prod/WorkZone/attachStories/");
 
         $this->client->request('POST', $route);
         $response = $this->client->getResponse();
@@ -54,7 +36,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertEquals(302, $response->getStatusCode());
 
-        $em = self::$core->getEntityManager();
+        $em = self::$application['EM'];
         /* @var $em \Doctrine\ORM\EntityManager */
         $query = $em->createQuery(
             'SELECT COUNT(w.id) FROM \Entities\StoryWZ w'
@@ -75,7 +57,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
 
 
-        $em = self::$core->getEntityManager();
+        $em = self::$application['EM'];
         /* @var $em \Doctrine\ORM\EntityManager */
         $query = $em->createQuery(
             'SELECT COUNT(w.id) FROM \Entities\StoryWZ w'
@@ -118,7 +100,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $story = static::$records['record_story_1'];
 
-        $route = sprintf("/WorkZone/detachStory/%s/%s/", $story->get_sbas_id(), $story->get_record_id());
+        $route = sprintf("/prod/WorkZone/detachStory/%s/%s/", $story->get_sbas_id(), $story->get_record_id());
         //story not yet Attched
 
         $this->client->request('POST', $route);
@@ -128,10 +110,10 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertFalse($response->isOk());
 
         //attach
-        $attachRoute = sprintf("/WorkZone/attachStories/");
+        $attachRoute = sprintf("/prod/WorkZone/attachStories/");
         $this->client->request('POST', $attachRoute, array('stories' => array($story->get_serialize_key())));
 
-        $query = self::$core->getEntityManager()->createQuery(
+        $query = self::$application['EM']->createQuery(
             'SELECT COUNT(w.id) FROM \Entities\StoryWZ w'
         );
 
@@ -145,7 +127,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $response = $this->client->getResponse();
         $this->assertEquals(302, $response->getStatusCode());
 
-        $query = self::$core->getEntityManager()->createQuery(
+        $query = self::$application['EM']->createQuery(
             'SELECT COUNT(w.id) FROM \Entities\StoryWZ w'
         );
 
@@ -166,14 +148,14 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testBrowse()
     {
-        $this->client->request("GET", "/WorkZone/Browse/");
+        $this->client->request("GET", "/prod/WorkZone/Browse/");
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOk());
     }
 
     public function testBrowseSearch()
     {
-        $this->client->request("GET", "/WorkZone/Browse/Search/");
+        $this->client->request("GET", "/prod/WorkZone/Browse/Search/");
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOk());
     }
@@ -181,7 +163,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testBrowseBasket()
     {
         $basket = $this->insertOneBasket();
-        $this->client->request("GET", "/WorkZone/Browse/Basket/" . $basket->getId() . "/");
+        $this->client->request("GET", "/prod/WorkZone/Browse/Basket/" . $basket->getId() . "/");
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOk());
     }
@@ -190,7 +172,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $story = static::$records['record_story_1'];
 
-        $route = sprintf("/WorkZone/detachStory/%s/%s/", $story->get_sbas_id(), 'unknow');
+        $route = sprintf("/prod/WorkZone/detachStory/%s/%s/", $story->get_sbas_id(), 'unknow');
         //story not yet Attched
     }
 }

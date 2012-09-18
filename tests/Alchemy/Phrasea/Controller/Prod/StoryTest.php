@@ -10,25 +10,13 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->client = $this->createClient();
-        $this->purgeDatabase();
-    }
-
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Prod.php';
-
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-
-        return $app;
     }
 
     public function testRootPost()
     {
-        $route = "/story/";
+        $route = "/prod/story/";
 
-        $collections = self::$core->getAuthenticatedUser()
+        $collections = self::$application['phraseanet.user']
             ->ACL()
             ->get_granted_base(array('canaddrecord'));
 
@@ -45,7 +33,7 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertEquals(302, $response->getStatusCode());
 
-        $query = self::$core->getEntityManager()->createQuery(
+        $query = self::$application['EM']->createQuery(
             'SELECT COUNT(w.id) FROM \Entities\StoryWZ w'
         );
 
@@ -56,9 +44,9 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRootPostJSON()
     {
-        $route = "/story/";
+        $route = "/prod/story/";
 
-        $collections = self::$core->getAuthenticatedUser()
+        $collections = self::$application['phraseanet.user']
             ->ACL()
             ->get_granted_base(array('canaddrecord'));
 
@@ -78,7 +66,7 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testCreateGet()
     {
-        $route = "/story/create/";
+        $route = "/prod/story/create/";
 
         $crawler = $this->client->request('GET', $route);
 
@@ -100,7 +88,7 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $story = static::$records['record_story_1'];
 
-        $route = sprintf("/story/%d/%d/", $story->get_sbas_id(), $story->get_record_id());
+        $route = sprintf("/prod/story/%d/%d/", $story->get_sbas_id(), $story->get_record_id());
 
         $crawler = $this->client->request('GET', $route);
 
@@ -113,7 +101,7 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $story = static::$records['record_story_1'];
 
-        $route = sprintf("/story/%s/%s/addElements/", $story->get_sbas_id(), $story->get_record_id());
+        $route = sprintf("/prod/story/%s/%s/addElements/", $story->get_sbas_id(), $story->get_record_id());
 
         $records = array(
             static::$records['record_1']->get_serialize_key(),
@@ -135,7 +123,7 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $story = static::$records['record_story_1'];
 
-        $route = sprintf("/story/%s/%s/addElements/", $story->get_sbas_id(), $story->get_record_id());
+        $route = sprintf("/prod/story/%s/%s/addElements/", $story->get_sbas_id(), $story->get_record_id());
 
         $records = array(
             static::$records['record_1']->get_serialize_key(),
@@ -169,7 +157,7 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         foreach ($records as $record) {
             /* @var $record \record_adapter */
             $route = sprintf(
-                "/story/%s/%s/delete/%s/%s/"
+                "/prod/story/%s/%s/delete/%s/%s/"
                 , $story->get_sbas_id()
                 , $story->get_record_id()
                 , $record->get_sbas_id()

@@ -6,28 +6,12 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
 
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Prod.php';
-        
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-        
-        return $app;
-    }
-
-    public function setUp()
-    {
-        parent::setUp();
-        $this->client = $this->createClient();
-    }
-
     /**
      * Default route test
      */
     public function testRoutePOSTSendSlash()
     {
-        $route = '/push/sendform/';
+        $route = '/prod/push/sendform/';
 
         $this->client->request('POST', $route);
 
@@ -39,7 +23,7 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRoutePOSTValidateSlash()
     {
-        $route = '/push/validateform/';
+        $route = '/prod/push/validateform/';
 
         $this->client->request('POST', $route);
 
@@ -51,7 +35,7 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRoutePOSTsend()
     {
-        $route = '/push/send/';
+        $route = '/prod/push/send/';
 
         $records = array(
             static::$records['record_1']->get_serialize_key(),
@@ -85,7 +69,7 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRoutePOSTvalidate()
     {
-        $route = '/push/validate/';
+        $route = '/prod/push/validate/';
 
         $records = array(
             static::$records['record_1']->get_serialize_key(),
@@ -129,7 +113,7 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteGETsearchuser()
     {
-        $route = '/push/search-user/';
+        $route = '/prod/push/search-user/';
 
         $params = array(
             'query' => ''

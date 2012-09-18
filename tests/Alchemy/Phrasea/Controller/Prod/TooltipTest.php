@@ -1,67 +1,50 @@
 <?php
 
+use Alchemy\Phrasea\Core\Configuration;
+
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 require_once __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php';
-
-use Silex\WebTestCase;
-use Symfony\Component\HttpFoundation\Response;
 
 class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
 
-    public function setUp()
-    {
-        parent::setUp();
-        $this->client = $this->createClient();
-    }
-
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Prod.php';
-        
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-        
-        return $app;
-    }
-
     public function testRouteBasket()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
 
         $basket = $this->insertOneBasket();
 
-        $crawler = $this->client->request('POST', '/tooltip/basket/' . $basket->getId() . '/');
+        $crawler = $this->client->request('POST', '/prod/tooltip/basket/' . $basket->getId() . '/');
         $pageContent = $this->client->getResponse()->getContent();
         $this->assertTrue($this->client->getResponse()->isOk());
     }
-    
+
     /**
      * @expectedException \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
     public function testRouteBasketFail()
     {
-        $crawler = $this->client->request('POST', '/tooltip/basket/notanid/');
+        $crawler = $this->client->request('POST', '/prod/tooltip/basket/notanid/');
         $pageContent = $this->client->getResponse()->getContent();
         $this->assertFalse($this->client->getResponse()->isOk());
 
     }
-    
+
     /**
      * @expectedException \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
     public function testRouteBasketFail2()
     {
-        $crawler = $this->client->request('POST', '/tooltip/basket/-5/');
+        $crawler = $this->client->request('POST', '/prod/tooltip/basket/-5/');
         $pageContent = $this->client->getResponse()->getContent();
         $this->assertFalse($this->client->getResponse()->isOk());
     }
 
     public function testRoutePreview()
     {
-        $route = '/tooltip/preview/' . static::$records['record_1']->get_sbas_id()
+        $route = '/prod/tooltip/preview/' . static::$records['record_1']->get_sbas_id()
             . '/' . static::$records['record_1']->get_record_id() . '/';
 
         $crawler = $this->client->request('POST', $route);
@@ -72,7 +55,7 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testRouteCaption()
     {
 
-        $route_base = '/tooltip/caption/' . static::$records['record_1']->get_sbas_id()
+        $route_base = '/prod/tooltip/caption/' . static::$records['record_1']->get_sbas_id()
             . '/' . static::$records['record_1']->get_record_id() . '/%s/';
 
         $routes = array(
@@ -92,7 +75,7 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteCaptionSearchEngine()
     {
-        $route_base = '/tooltip/caption/' . static::$records['record_1']->get_sbas_id()
+        $route_base = '/prod/tooltip/caption/' . static::$records['record_1']->get_sbas_id()
             . '/' . static::$records['record_1']->get_record_id() . '/%s/';
 
         $routes = array(
@@ -113,7 +96,7 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteTCDatas()
     {
-        $route = '/tooltip/tc_datas/' . static::$records['record_1']->get_sbas_id()
+        $route = '/prod/tooltip/tc_datas/' . static::$records['record_1']->get_sbas_id()
             . '/' . static::$records['record_1']->get_record_id() . '/';
 
         $crawler = $this->client->request('POST', $route);
@@ -126,7 +109,7 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $databox = static::$records['record_1']->get_databox();
 
         foreach ($databox->get_meta_structure() as $field) {
-            $route = '/tooltip/metas/FieldInfos/' . $databox->get_sbas_id()
+            $route = '/prod/tooltip/metas/FieldInfos/' . $databox->get_sbas_id()
                 . '/' . $field->get_id() . '/';
 
             $crawler = $this->client->request('POST', $route);
@@ -149,7 +132,7 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $dces_element = array_shift($dces);
             $field->set_dces_element($dces_element);
 
-            $route = '/tooltip/DCESInfos/' . $databox->get_sbas_id()
+            $route = '/prod/tooltip/DCESInfos/' . $databox->get_sbas_id()
                 . '/' . $field->get_id() . '/';
 
             $crawler = $this->client->request('POST', $route);
@@ -176,7 +159,7 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         foreach ($databox->get_meta_structure() as $field) {
 
-            $route = '/tooltip/metas/restrictionsInfos/' . $databox->get_sbas_id()
+            $route = '/prod/tooltip/metas/restrictionsInfos/' . $databox->get_sbas_id()
                 . '/' . $field->get_id() . '/';
 
             $crawler = $this->client->request('POST', $route);
@@ -190,7 +173,7 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $databox = static::$records['record_story_1']->get_databox();
 
 
-        $route = '/tooltip/Story/' . $databox->get_sbas_id()
+        $route = '/prod/tooltip/Story/' . $databox->get_sbas_id()
             . '/' . static::$records['record_story_1']->get_record_id() . '/';
 
         $this->client->request('POST', $route);
@@ -200,7 +183,7 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testUser()
     {
 
-        $route = '/tooltip/user/' . self::$user->get_id() . '/';
+        $route = '/prod/tooltip/user/' . self::$user->get_id() . '/';
         $this->client->request('POST', $route);
         $this->assertTrue($this->client->getResponse()->isOk());
     }

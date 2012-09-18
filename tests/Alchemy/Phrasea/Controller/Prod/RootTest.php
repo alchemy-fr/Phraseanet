@@ -6,28 +6,12 @@ class ControllerRootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
 
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Prod.php';
-        
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-        
-        return $app;
-    }
-
-    public function setUp()
-    {
-        parent::setUp();
-        $this->client = $this->createClient();
-    }
-
     /**
      * Default route test
      */
     public function testRouteSlash()
     {
-        $crawler = $this->client->request('GET', '/');
+        $crawler = $this->client->request('GET', '/prod/');
 
 
         $response = $this->client->getResponse();

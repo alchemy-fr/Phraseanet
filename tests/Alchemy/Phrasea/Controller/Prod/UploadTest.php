@@ -20,17 +20,6 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         parent::setUp();
         $this->tmpFile = sys_get_temp_dir() . '/' . time() . mt_rand(1000, 9999) . '.jpg';
         copy(__DIR__ . '/../../../../testfiles/cestlafete.jpg', $this->tmpFile);
-        $this->client = $this->createClient();
-    }
-
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Prod.php';
-
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-
-        return $app;
     }
 
     public function tearDown()
@@ -47,7 +36,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testFlashUploadForm()
     {
-        $this->client->request('GET', '/upload/flash-version/');
+        $this->client->request('GET', '/prod/upload/flash-version/');
         $response = $this->client->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
@@ -58,7 +47,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testUploadForm()
     {
-        $this->client->request('GET', '/upload/');
+        $this->client->request('GET', '/prod/upload/');
         $response = $this->client->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
@@ -78,7 +67,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 )
             )
         );
-        $this->client->request('POST', '/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+        $this->client->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
 
         $response = $this->client->getResponse();
 
@@ -108,10 +97,10 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 )
             )
         );
-        $this->client->request('POST', '/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+        $this->client->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
 
         $response = $this->client->getResponse();
-        
+
         $this->checkJsonResponse($response);
 
         $datas = json_decode($response->getContent(), true);
@@ -132,7 +121,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 )
             )
         );
-        $this->client->request('POST', '/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+        $this->client->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
 
         $response = $this->client->getResponse();
 
@@ -154,7 +143,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $params = array('base_id' => self::$collection->get_base_id());
         $files = array('files' => array($file));
-        $this->client->request('POST', '/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+        $this->client->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
 
         $response = $this->client->getResponse();
 
@@ -178,7 +167,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 )
             )
         );
-        $this->client->request('POST', '/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+        $this->client->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
 
         $response = $this->client->getResponse();
 
@@ -205,7 +194,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 )
             )
         );
-        $this->client->request('POST', '/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+        $this->client->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
 
         $response = $this->client->getResponse();
 
@@ -233,7 +222,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 )
             )
         );
-        $this->client->request('POST', '/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+        $this->client->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
 
         $response = $this->client->getResponse();
 
@@ -269,7 +258,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 )
             )
         );
-        $this->client->request('POST', '/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+        $this->client->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
 
         $response = $this->client->getResponse();
 
@@ -295,7 +284,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $params = array('base_id' => self::$collection->get_base_id());
         $files = array();
-        $this->client->request('POST', '/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+        $this->client->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
 
         $response = $this->client->getResponse();
 
@@ -311,7 +300,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testUploadWithoutAnything()
     {
-        $this->client->request('POST', '/upload/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $this->client->request('POST', '/prod/upload/', array(), array(), array('HTTP_Accept' => 'application/json'));
 
         $response = $this->client->getResponse();
 

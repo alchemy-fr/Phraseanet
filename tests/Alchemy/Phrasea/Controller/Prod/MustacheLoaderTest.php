@@ -6,50 +6,41 @@ class MustacheLoaderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
 
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Prod.php';
-        
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-        
-        return $app;
-    }
-
-    public function setUp()
-    {
-        parent::setUp();
-        $this->client = $this->createClient();
-    }
-
+    /**
+     * @expectedException \Exception_BadRequest
+     */
     public function testRouteSlash()
     {
-
-        $this->client->request('GET', '/MustacheLoader/');
-
-        $response = $this->client->getResponse();
-        /* @var $response \Symfony\Component\HttpFoundation\Response */
-
-        $this->assertEquals(400, $response->getStatusCode());
-        $this->assertFalse($response->isOk());
-
-        $this->client->request('GET', '/MustacheLoader/', array('template' => '/../../../../config/config.yml'));
+        $this->client->request('GET', '/prod/MustacheLoader/');
 
         $response = $this->client->getResponse();
         /* @var $response \Symfony\Component\HttpFoundation\Response */
+    }
 
-        $this->assertEquals(400, $response->getStatusCode());
-        $this->assertFalse($response->isOk());
-
-        $this->client->request('GET', '/MustacheLoader/', array('template' => 'patator_lala'));
+    /**
+     * @expectedException \Exception_BadRequest
+     */
+    public function testRouteSlashWrongUrl()
+    {
+        $this->client->request('GET', '/prod/MustacheLoader/', array('template' => '/../../../../config/config.yml'));
 
         $response = $this->client->getResponse();
         /* @var $response \Symfony\Component\HttpFoundation\Response */
+    }
 
-        $this->assertEquals(404, $response->getStatusCode());
-        $this->assertFalse($response->isOk());
+    /**
+     * @expectedException \Exception_NotFound
+     */
+    public function testRouteSlashWrongFile()
+    {
+        $this->client->request('GET', '/prod/MustacheLoader/', array('template' => 'patator_lala'));
 
-        $this->client->request('GET', '/MustacheLoader/', array('template' => 'Feedback-Badge'));
+        $response = $this->client->getResponse();
+    }
+
+    public function testRouteGood()
+    {
+        $this->client->request('GET', '/prod/MustacheLoader/', array('template' => 'Feedback-Badge'));
 
         $response = $this->client->getResponse();
         /* @var $response \Symfony\Component\HttpFoundation\Response */
