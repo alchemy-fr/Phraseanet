@@ -5,6 +5,7 @@ namespace Alchemy\Phrasea\Application;
 require_once __DIR__ . '/../../../PhraseanetWebTestCaseAbstract.class.inc';
 
 use Silex\WebTestCase;
+use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
@@ -14,7 +15,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      * @var Symfony\Component\HttpKernel\Client
      */
     protected $client;
-    protected $app;
 
     /**
      * @var \API_OAuth2_Token
@@ -29,7 +29,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     /**
      * @var \API_OAuth2_Application
      */
-    protected static $application;
+    protected static $oauthApplication;
 
     /**
      * @var \API_OAuth2_Token
@@ -46,6 +46,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     protected static $adminApplication;
     protected static $databoxe_ids = array();
+    protected static $useExceptionHandler = true;
 
     abstract public function getParameters(array $parameters = array());
 
@@ -53,61 +54,46 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
     abstract public function getAcceptMimeType();
 
-    public function setUp()
-    {
-        parent::setUp();
-        $this->client = $this->createClient();
-    }
-
     public function tearDown()
     {
         $this->unsetToken();
         parent::tearDown();
     }
 
+    protected static function loadApplication()
+    {
+        $environment = 'test';
+        return self::$application = require __DIR__ . '/../../../../lib/Alchemy/Phrasea/Application/Api.php';
+    }
+
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
 
-        self::$application = \API_OAuth2_Application::create($appbox, self::$user, 'test API v1');
-        self::$account = \API_OAuth2_Account::load_with_user($appbox, self::$application, self::$user);
+        self::$oauthApplication = \API_OAuth2_Application::create(self::$application, self::$user_alt1, 'test API v1');
+        self::$account = \API_OAuth2_Account::load_with_user(self::$application, self::$oauthApplication, self::$user_alt1);
         self::$token = self::$account->get_token()->get_value();
-
-        //create admin user token
-        $admins = \User_Adapter::get_sys_admins();
 
         self::$adminToken = null;
 
-        if (0 !== count($admins)) {
-            $admin = \User_Adapter::getInstance(key($admins), $appbox);
-            self::$adminApplication = \API_OAuth2_Application::create($appbox, $admin, 'test2 API v1');
-            self::$adminAccount = \API_OAuth2_Account::load_with_user($appbox, self::$adminApplication, $admin);
-            self::$adminToken = self::$adminAccount->get_token()->get_value();
-        }
+        self::$adminApplication = \API_OAuth2_Application::create(self::$application, self::$user, 'test2 API v1');
+        self::$adminAccount = \API_OAuth2_Account::load_with_user(self::$application, self::$adminApplication, self::$user);
+        self::$adminToken = self::$adminAccount->get_token()->get_value();
     }
 
     public static function tearDownAfterClass()
     {
         //delete database entry
         self::$account->delete();
-        self::$application->delete();
+        self::$oauthApplication->delete();
 
         if (self::$adminToken) {
             self::$adminAccount->delete();
             self::$adminApplication->delete();
         }
         parent::tearDownAfterClass();
-    }
-
-    public function createApplication()
-    {
-        $this->app = require __DIR__ . '/../../../../lib/Alchemy/Phrasea/Application/Api.php';
-
-        $this->app['debug'] = true;
-        unset($this->app['exception_handler']);
-
-        return $this->app;
+        self::$application = null;
     }
 
     public function testRouteNotFound()
@@ -156,17 +142,17 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             ->method('get')
             ->with($this->equalTo('GV_client_navigator'))
             ->will($this->returnValue(false));
-        $registryBkp = $this->app["phraseanet.core"]->getRegistry();
+        $registryBkp = $this->app["phraseanet.registry"];
 
         $fail = null;
 
         try {
 
-            $this->app["phraseanet.core"]['Registry'] = $registry;
+            $this->app["phraseanet.registry"] = $registry;
 
-            $nativeApp = \API_OAuth2_Application::load_from_client_id($appbox, \API_OAuth2_Application_Navigator::CLIENT_ID);
+            $nativeApp = \API_OAuth2_Application::load_from_client_id(self::$application, \API_OAuth2_Application_Navigator::CLIENT_ID);
 
-            $account = \API_OAuth2_Account::create($appbox, self::$user, $nativeApp);
+            $account = \API_OAuth2_Account::create(self::$application, self::$user, $nativeApp);
             $token = $account->get_token()->get_value();
             $this->setToken($token);
             $this->client->request('GET', '/databoxes/list/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
@@ -179,7 +165,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             $fail = $e;
         }
 
-        $this->app["phraseanet.core"]['Registry'] = $registryBkp;
+        $this->app["phraseanet.registry"] = $registryBkp;
 
         if ($fail) {
             throw $fail;
@@ -245,7 +231,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->evaluateMeta200($content);
         $response = $content['response'];
 
-        $task_manager = new \task_manager($appbox);
+        $task_manager = new \task_manager($this->app);
         $tasks = $task_manager->getTasks();
         $this->assertEquals(count($tasks), count($response['tasks']));
 
@@ -260,7 +246,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testGetScheduler()
     {
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
         if (null === self::$adminToken) {
             $this->markTestSkipped('there is no user with admin rights');
         }
@@ -305,7 +291,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->assertInternalType('integer', $task['id']);
 
-        if ( ! is_null($task['pid'])) {
+        if (!is_null($task['pid'])) {
             $this->assertInternalType('integer', $task['pid']);
         }
 
@@ -323,7 +309,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertInternalType('string', $task['name']);
         $this->assertInternalType('string', $task['title']);
 
-        if ( ! is_null($task['last_exec_time'])) {
+        if (!is_null($task['last_exec_time'])) {
             $this->assertDateAtom($task['last_exec_time']);
         }
     }
@@ -336,14 +322,14 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     public function testGetMonitorTaskById()
     {
         $appbox = $this->app["phraseanet.appbox"];
-        $task_manager = new \task_manager($appbox);
+        $task_manager = new \task_manager($this->app);
         $tasks = $task_manager->getTasks();
 
         if (null === self::$adminToken) {
             $this->markTestSkipped('there is no user with admin rights');
         }
 
-        if ( ! count($tasks)) {
+        if (!count($tasks)) {
             $this->markTestSkipped('no tasks created for the current instance');
         }
 
@@ -370,14 +356,14 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     public function testPostMonitorTaskById()
     {
         $appbox = $this->app["phraseanet.appbox"];
-        $task_manager = new \task_manager($appbox);
+        $task_manager = new \task_manager($this->app);
         $tasks = $task_manager->getTasks();
 
         if (null === self::$adminToken) {
             $this->markTestSkipped('there is no user with admin rights');
         }
 
-        if ( ! count($tasks)) {
+        if (!count($tasks)) {
             $this->markTestSkipped('no tasks created for the current instance');
         }
 
@@ -427,10 +413,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         }
 
         $appbox = $this->app["phraseanet.appbox"];
-        $task_manager = new \task_manager($appbox);
+        $task_manager = new \task_manager($this->app);
         $tasks = $task_manager->getTasks();
 
-        if ( ! count($tasks)) {
+        if (!count($tasks)) {
             $this->markTestSkipped('no tasks created for the current instance');
         }
 
@@ -461,7 +447,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     public function testPostMonitorStopTask()
     {
         $appbox = $this->app["phraseanet.appbox"];
-        $task_manager = new \task_manager($appbox);
+        $task_manager = new \task_manager($this->app);
 
         $tasks = $task_manager->getTasks();
 
@@ -469,7 +455,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             $this->markTestSkipped('there is no user with admin rights');
         }
 
-        if ( ! count($tasks)) {
+        if (!count($tasks)) {
             $this->markTestSkipped('no tasks created for the current instance');
         }
 
@@ -981,8 +967,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $file = new \Alchemy\Phrasea\Border\File(self::$core['mediavorus']->guess(new \SplFileInfo(__DIR__ . '/../../../testfiles/test001.CR2')), self::$collection);
-        $record = \record_adapter::createFromFile($file);
+        $file = new \Alchemy\Phrasea\Border\File(self::$application['mediavorus']->guess(__DIR__ . '/../../../testfiles/test001.CR2'), self::$collection);
+        $record = \record_adapter::createFromFile($file, self::$application);
 
         $route = '/records/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/setmetadatas/';
         $caption = $record->get_caption();
@@ -1028,7 +1014,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->evaluateRecordsMetadataResponse($content);
 
         foreach ($content['response']['record_metadatas'] as $metadata) {
-            if ( ! in_array($metadata['meta_id'], array_keys($toupdate)))
+            if (!in_array($metadata['meta_id'], array_keys($toupdate)))
                 continue;
             $saved_value = $toupdate[$metadata['meta_structure_id']]['value'];
             $this->assertEquals($saved_value, $metadata['value']);
@@ -1061,22 +1047,21 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         /**
          * Get fresh record_1
          */
-        static::$records['record_1'] = static::$records['record_1']->get_databox()->get_record(static::$records['record_1']->get_record_id());
+        $testRecord = new \record_adapter(self::$application, static::$records['record_1']->get_sbas_id(), static::$records['record_1']->get_record_id());
 
         $this->evaluateResponse200($this->client->getResponse());
         $this->evaluateMeta200($content);
 
-        $this->evaluateRecordsStatusResponse(static::$records['record_1'], $content);
+        $this->evaluateRecordsStatusResponse($testRecord, $content);
 
-        $record_status = strrev(static::$records['record_1']->get_status());
+        $record_status = strrev($testRecord->get_status());
         foreach ($status_bits as $n => $datas) {
-            $this->assertEquals(substr($record_status, ($n - 1), 1), $tochange[$n]);
+            $this->assertEquals(substr($record_status, ($n), 1), $tochange[$n]);
         }
 
         foreach ($tochange as $n => $value) {
             $tochange[$n] = $value == '0' ? '1' : '0';
         }
-
 
         $crawler = $this->client->request('POST', $route, $this->getParameters(array('status' => $tochange)), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
@@ -1084,16 +1069,16 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         /**
          * Get fresh record_1
          */
-        static::$records['record_1'] = static::$records['record_1']->get_databox()->get_record(static::$records['record_1']->get_record_id());
+        $testRecord = new \record_adapter(self::$application, $testRecord->get_sbas_id(), $testRecord->get_record_id());
 
         $this->evaluateResponse200($this->client->getResponse());
         $this->evaluateMeta200($content);
 
-        $this->evaluateRecordsStatusResponse(static::$records['record_1'], $content);
+        $this->evaluateRecordsStatusResponse($testRecord, $content);
 
-        $record_status = strrev(static::$records['record_1']->get_status());
+        $record_status = strrev($testRecord->get_status());
         foreach ($status_bits as $n => $datas) {
-            $this->assertEquals(substr($record_status, ($n - 1), 1), $tochange[$n]);
+            $this->assertEquals(substr($record_status, ($n), 1), $tochange[$n]);
         }
     }
 
@@ -1102,8 +1087,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testMoveRecordToCollection()
     {
-        $file = new \Alchemy\Phrasea\Border\File(self::$core['mediavorus']->guess(new \SplFileInfo(__DIR__ . '/../../../testfiles/test001.CR2')), self::$collection);
-        $record = \record_adapter::createFromFile($file);
+        $file = new \Alchemy\Phrasea\Border\File(self::$application['mediavorus']->guess(__DIR__ . '/../../../testfiles/test001.CR2'), self::$collection);
+        $record = \record_adapter::createFromFile($file, self::$application);
 
         $this->setToken(self::$token);
 
@@ -1116,7 +1101,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
                 break;
             }
         }
-        if ( ! $base_id) {
+        if (!$base_id) {
             $this->markTestSkipped('No collection');
         }
 
@@ -1140,8 +1125,9 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->insertFiveBasket();
         $this->insertOneValidationBasket();
+        $this->client = new Client(self::$application, array());
 
-        $this->setToken(self::$token);
+        $this->setToken(self::$adminToken);
         $route = '/baskets/list/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
@@ -1328,7 +1314,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             $this->evaluateGoodBasket($basket);
             $found = true;
         }
-        if ( ! $found) {
+        if (!$found) {
             $this->fail('There should be four baskets left');
         }
     }
@@ -1508,7 +1494,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $title = 'Yellow title';
         $subtitle = 'Trololololo !';
 
-        $created_feed = \Feed_Adapter::create(\appbox::get_instance(self::$core), self::$user, $title, $subtitle);
+        $created_feed = \Feed_Adapter::create(self::$application, self::$user, $title, $subtitle);
 
         $this->setToken(self::$token);
         $route = '/feeds/list/';
@@ -1537,7 +1523,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $created_feed->delete();
 
-        if ( ! $found) {
+        if (!$found) {
             $this->fail('feed not found !');
         }
     }
@@ -1551,7 +1537,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testFeedsContent()
     {
-        $appbox = \appbox::get_instance(self::$core);
+        $appbox = self::$application['phraseanet.appbox'];
 
         $title = 'Yellow title';
         $subtitle = 'Trololololo !';
@@ -1560,10 +1546,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $author = "W. Shakespeare";
         $author_email = "gontran.bonheur@gmail.com";
 
-        $created_feed = \Feed_Adapter::create($appbox, self::$user, $title, $subtitle);
-        $publisher = \Feed_Publisher_Adapter::getPublisher($appbox, $created_feed, self::$user);
+        $created_feed = \Feed_Adapter::create(self::$application, self::$user, $title, $subtitle);
+        $publisher = \Feed_Publisher_Adapter::getPublisher(self::$application['phraseanet.appbox'], $created_feed, self::$user);
 
-        $created_entry = \Feed_Entry_Adapter::create($appbox, $created_feed, $publisher, $entry_title, $entry_subtitle, $author, $author_email);
+        $created_entry = \Feed_Entry_Adapter::create(self::$application, $created_feed, $publisher, $entry_title, $entry_subtitle, $author, $author_email);
         $created_item = \Feed_Entry_Item::create($appbox, $created_entry, static::$records['record_1']);
 
 
@@ -1600,7 +1586,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $created_feed->delete();
 
-        if ( ! $found) {
+        if (!$found) {
             $this->fail('entry not found !');
         }
     }
@@ -1611,7 +1597,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testFeedEntry()
     {
-        $appbox = \appbox::get_instance(self::$core);
+        $appbox = self::$application['phraseanet.appbox'];
 
         $title = 'Yellow title';
         $subtitle = 'Trololololo !';
@@ -1620,10 +1606,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $author = "W. Shakespeare";
         $author_email = "gontran.bonheur@gmail.com";
 
-        $created_feed = \Feed_Adapter::create($appbox, self::$user, $title, $subtitle);
-        $publisher = \Feed_Publisher_Adapter::getPublisher($appbox, $created_feed, self::$user);
+        $created_feed = \Feed_Adapter::create(self::$application, self::$user, $title, $subtitle);
+        $publisher = \Feed_Publisher_Adapter::getPublisher(self::$application['phraseanet.appbox'], $created_feed, self::$user);
 
-        $created_entry = \Feed_Entry_Adapter::create($appbox, $created_feed, $publisher, $entry_title, $entry_subtitle, $author, $author_email);
+        $created_entry = \Feed_Entry_Adapter::create(self::$application, $created_feed, $publisher, $entry_title, $entry_subtitle, $author, $author_email);
         $created_item = \Feed_Entry_Item::create($appbox, $created_entry, static::$records['record_1']);
 
         $this->setToken(self::$token);
@@ -1651,7 +1637,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testFeedEntryNoAccess()
     {
-        $appbox = \appbox::get_instance(self::$core);
+        $appbox = self::$application['phraseanet.appbox'];
 
         $title = 'Yellow title';
         $subtitle = 'Trololololo !';
@@ -1660,10 +1646,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $author = "W. Shakespeare";
         $author_email = "gontran.bonheur@gmail.com";
 
-        $created_feed = \Feed_Adapter::create($appbox, self::$user, $title, $subtitle);
-        $publisher = \Feed_Publisher_Adapter::getPublisher($appbox, $created_feed, self::$user);
+        $created_feed = \Feed_Adapter::create(self::$application, self::$user, $title, $subtitle);
+        $publisher = \Feed_Publisher_Adapter::getPublisher(self::$application['phraseanet.appbox'], $created_feed, self::$user);
 
-        $created_entry = \Feed_Entry_Adapter::create($appbox, $created_feed, $publisher, $entry_title, $entry_subtitle, $author, $author_email);
+        $created_entry = \Feed_Entry_Adapter::create(self::$application, $created_feed, $publisher, $entry_title, $entry_subtitle, $author, $author_email);
         $created_item = \Feed_Entry_Item::create($appbox, $created_entry, static::$records['record_1']);
 
         $created_feed->set_collection(self::$collection_no_access);
@@ -1689,7 +1675,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testFeedContent()
     {
-        $appbox = \appbox::get_instance(self::$core);
+        $appbox = self::$application['phraseanet.appbox'];
 
         $title = 'Yellow title';
         $subtitle = 'Trololololo !';
@@ -1698,10 +1684,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $author = "W. Shakespeare";
         $author_email = "gontran.bonheur@gmail.com";
 
-        $created_feed = \Feed_Adapter::create($appbox, self::$user, $title, $subtitle);
-        $publisher = \Feed_Publisher_Adapter::getPublisher($appbox, $created_feed, self::$user);
+        $created_feed = \Feed_Adapter::create(self::$application, self::$user, $title, $subtitle);
+        $publisher = \Feed_Publisher_Adapter::getPublisher(self::$application['phraseanet.appbox'], $created_feed, self::$user);
 
-        $created_entry = \Feed_Entry_Adapter::create($appbox, $created_feed, $publisher, $entry_title, $entry_subtitle, $author, $author_email);
+        $created_entry = \Feed_Entry_Adapter::create(self::$application, $created_feed, $publisher, $entry_title, $entry_subtitle, $author, $author_email);
         $created_item = \Feed_Entry_Item::create($appbox, $created_entry, static::$records['record_1']);
 
         $this->setToken(self::$token);
@@ -1734,7 +1720,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $created_feed->delete();
 
-        if ( ! $found) {
+        if (!$found) {
             $this->fail('Entry not found');
         }
     }
@@ -1768,7 +1754,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             }
         }
 
-        if ( ! $found) {
+        if (!$found) {
             $this->fail('should find the quarantine item');
         }
     }
@@ -1797,7 +1783,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     protected function getQuarantineItem()
     {
         $lazaretSession = new \Entities\LazaretSession();
-        self::$core['EM']->persist($lazaretSession);
+        self::$application['EM']->persist($lazaretSession);
 
         $quarantineItem;
         $callback = function ($element, $visa, $code) use (&$quarantineItem) {
@@ -1807,8 +1793,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $tmpname = tempnam(sys_get_temp_dir(), 'test_quarantine');
         copy(__DIR__ . '/../../../testfiles/iphone_pic.jpg', $tmpname);
 
-        $file = \Alchemy\Phrasea\Border\File::buildFromPathfile($tmpname, self::$collection);
-        self::$core['border-manager']->process($lazaretSession, $file, $callback, \Alchemy\Phrasea\Border\Manager::FORCE_LAZARET);
+        $file = \Alchemy\Phrasea\Border\File::buildFromPathfile($tmpname, self::$collection, self::$application['mediavorus']);
+        self::$application['border-manager']->process($lazaretSession, $file, $callback, \Alchemy\Phrasea\Border\Manager::FORCE_LAZARET);
 
         return $quarantineItem;
     }
@@ -2008,7 +1994,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             $this->assertDateAtom($permalink['updated_on']);
             $this->assertArrayHasKey("page_url", $permalink);
             $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $permalink['page_url']);
-            $this->assertEquals($subdef->get_permalink()->get_page(\registry::get_instance()), $permalink['page_url']);
+            $this->assertEquals($subdef->get_permalink()->get_page(self::$application['phraseanet.registry']), $permalink['page_url']);
             $this->checkUrlCode200($permalink['page_url']);
             $this->assertPermalinkHeaders($permalink['page_url'], $subdef);
             $this->assertArrayHasKey("url", $permalink);
@@ -2038,7 +2024,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
     protected function checkUrlCode200($url)
     {
-        $code = \http_query::getHttpCodeFromUrl(self::$core->getRegistry()->get('GV_ServerName'));
+        $code = \http_query::getHttpCodeFromUrl(self::$application['phraseanet.registry']->get('GV_ServerName'));
 
         if ($code == 0) {
             $this->markTestSkipped('Install does not seem to rely on a webserver');
@@ -2161,7 +2147,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertArrayHasKey('updated_on', $basket);
         $this->assertArrayHasKey('unread', $basket);
 
-        if ( ! is_null($basket['pusher_usr_id'])) {
+        if (!is_null($basket['pusher_usr_id'])) {
             $this->assertTrue(is_int($basket['pusher_usr_id']));
         }
 
@@ -2200,7 +2186,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertArrayHasKey('uuid', $record);
         $this->assertTrue(\uuid::is_valid($record['uuid']));
 
-        if ( ! is_null($record['thumbnail'])) {
+        if (!is_null($record['thumbnail'])) {
             $this->assertTrue(is_array($record['thumbnail']));
             $this->assertArrayHasKey('player_type', $record['thumbnail']);
             $this->assertTrue(is_string($record['thumbnail']['player_type']));
@@ -2251,7 +2237,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
     protected function evaluateRecordsMetadataResponse($content)
     {
-        if ( ! array_key_exists("record_metadatas", $content['response'])) {
+        if (!array_key_exists("record_metadatas", $content['response'])) {
             var_dump($content['response']);
         }
 
@@ -2290,7 +2276,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             $this->assertTrue(is_int($status['bit']));
             $this->assertTrue(is_bool($status['state']));
 
-            $retrieved = ! ! substr($r_status, ($status['bit'] - 1), 1);
+            $retrieved = !!substr($r_status, ($status['bit'] - 1), 1);
 
             $this->assertEquals($retrieved, $status['state']);
         }
