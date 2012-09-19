@@ -5,36 +5,12 @@ require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAbstract.class.inc';
 class ControllerPathFileTestTest extends \PhraseanetWebTestCaseAbstract
 {
     /**
-     * As controllers use WebTestCase, it requires a client
-     */
-    protected $client;
-
-    /**
-     * The application loader
-     */
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Admin.php';
-        
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-        
-        return $app;
-    }
-
-    public function setUp()
-    {
-        parent::setUp();
-        $this->client = $this->createClient();
-    }
-
-    /**
      * Default route test
      */
     public function testRoutePath()
     {
         $file = new \SplFileObject(__DIR__ . '/../../../../testfiles/cestlafete.jpg');
-        $this->client->request("GET", "/tests/pathurl/path/", array('path' => $file->getPathname()));
+        $this->client->request("GET", "/admin/tests/pathurl/path/", array('path' => $file->getPathname()));
 
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOk());
@@ -50,7 +26,7 @@ class ControllerPathFileTestTest extends \PhraseanetWebTestCaseAbstract
 
     public function testRouteUrl()
     {
-        $this->client->request("GET", "/tests/pathurl/url/", array('url' => "www.google.com"));
+        $this->client->request("GET", "/admin/tests/pathurl/url/", array('url' => "www.google.com"));
 
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOk());

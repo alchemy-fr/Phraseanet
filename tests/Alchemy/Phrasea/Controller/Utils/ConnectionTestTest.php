@@ -2,38 +2,16 @@
 
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAbstract.class.inc';
 
+use Alchemy\Phrasea\Core\Configuration;
+
 class ControllerConnectionTestTest extends \PhraseanetWebTestCaseAbstract
 {
-    /**
-     * As controllers use WebTestCase, it requires a client
-     */
-    protected $client;
-
-    /**
-     * The application loader
-     */
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Admin.php';
-        
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-        
-        return $app;
-    }
-
-    public function setUp()
-    {
-        parent::setUp();
-        $this->client = $this->createClient();
-    }
-
     /**
      * Default route test
      */
     public function testRouteMysql()
     {
-        $configuration = \Alchemy\Phrasea\Core\Configuration::build();
+        $configuration = Configuration::build();
 
         $chooseConnexion = $configuration->getPhraseanet()->get('database');
 
@@ -47,14 +25,14 @@ class ControllerConnectionTestTest extends \PhraseanetWebTestCaseAbstract
             "dbname"   => $connexion->get('dbname')
         );
 
-        $this->client->request("GET", "/tests/connection/mysql/", $params);
+        $this->client->request("GET", "/admin/tests/connection/mysql/", $params);
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOk());
     }
 
     public function testRouteMysqlFailed()
     {
-        $configuration = \Alchemy\Phrasea\Core\Configuration::build();
+        $configuration = Configuration::build();
 
         $chooseConnexion = $configuration->getPhraseanet()->get('database');
 
@@ -68,7 +46,7 @@ class ControllerConnectionTestTest extends \PhraseanetWebTestCaseAbstract
             "dbname"   => $connexion->get('dbname')
         );
 
-        $this->client->request("GET", "/tests/connection/mysql/", $params);
+        $this->client->request("GET", "/admin/tests/connection/mysql/", $params);
         $response = $this->client->getResponse();
         $content = json_decode($this->client->getResponse()->getContent());
         $this->assertEquals("application/json", $this->client->getResponse()->headers->get("content-type"));
@@ -84,7 +62,7 @@ class ControllerConnectionTestTest extends \PhraseanetWebTestCaseAbstract
 
     public function testRouteMysqlDbFailed()
     {
-        $configuration = \Alchemy\Phrasea\Core\Configuration::build();
+        $configuration = Configuration::build();
 
         $chooseConnexion = $configuration->getPhraseanet()->get('database');
 
@@ -98,7 +76,7 @@ class ControllerConnectionTestTest extends \PhraseanetWebTestCaseAbstract
             "dbname"   => "fake-DTABASE-name"
         );
 
-        $this->client->request("GET", "/tests/connection/mysql/", $params);
+        $this->client->request("GET", "/admin/tests/connection/mysql/", $params);
         $response = $this->client->getResponse();
         $content = json_decode($this->client->getResponse()->getContent());
         $this->assertEquals("application/json", $this->client->getResponse()->headers->get("content-type"));
