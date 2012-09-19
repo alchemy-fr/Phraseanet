@@ -148,10 +148,9 @@
             "alias-version": "2.1.9999999.9999999-dev"
         },
         {
-            "package": "tcpdf/tcpdf",
+            "package": "tecnick.com/tcpdf",
             "version": "dev-master",
-            "source-reference": "5.9.176",
-            "commit-date": "1343831860"
+            "source-reference": "01dc4da8b311bf81180dced43d0e8c55a9bee932"
         },
         {
             "package": "twig/extensions",
