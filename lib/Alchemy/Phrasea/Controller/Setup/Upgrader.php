@@ -35,10 +35,10 @@ class Upgrader implements ControllerProviderInterface
                         , array(
                         'locale'            => \Session_Handler::get_locale()
                         , 'upgrade_status'    => $upgrade_status
-                        , 'available_locales' => $app['phraseanet.core']::getAvailableLanguages()
-                        , 'bad_users'         => \User_Adapter::get_wrong_email_users($app['phraseanet.appbox'])
-                        , 'version_number'    => $app['phraseanet.core']['Version']->getNumber()
-                        , 'version_name'      => $app['phraseanet.core']['Version']->getName()
+                        , 'available_locales' => $app->getAvailableLanguages()
+                        , 'bad_users'         => \User_Adapter::get_wrong_email_users($app)
+                        , 'version_number'    => $app['phraseanet.version']->getNumber()
+                        , 'version_name'      => $app['phraseanet.version']->getName()
                         )
                 );
             });
@@ -56,8 +56,8 @@ class Upgrader implements ControllerProviderInterface
                 ignore_user_abort(true);
 
                 $appbox = $app['phraseanet.appbox'];
-                $upgrader = new \Setup_Upgrade($appbox);
-                $appbox->forceUpgrade($upgrader, $app['phraseanet.core']['CacheService'], $app['phraseanet.core']['EM'], $app['filesystem']);
+                $upgrader = new \Setup_Upgrade($app);
+                $appbox->forceUpgrade($upgrader, $app);
 
                 /**
                  * @todo Show recomandation instead of redirect

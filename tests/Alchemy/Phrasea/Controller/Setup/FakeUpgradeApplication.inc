@@ -7,7 +7,7 @@ use Alchemy\Phrasea\Controller\Setup as Controller;
 use Alchemy\Phrasea\Controller\Utils as ControllerUtils;
 
 return call_user_func(function() {
-            $app = new PhraseaApplication();
+            $app = new PhraseaApplication('test');
 
             $app['upgrade'] = true;
 

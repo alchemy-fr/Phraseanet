@@ -4,25 +4,11 @@ require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAbstract.class.inc';
 
 class ControllerUpgraderTest extends \PhraseanetWebTestCaseAbstract
 {
-    /**
-     * As controllers use WebTestCase, it requires a client
-     */
-    protected $client;
 
-    public function createApplication()
+    protected static function loadApplication()
     {
-        $app = require __DIR__ . '/FakeUpgradeApplication.inc';
-        
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-        
-        return $app;
-    }
-
-    public function setUp()
-    {
-        parent::setUp();
-        $this->client = $this->createClient();
+        $environment = 'test';
+        return self::$application = require __DIR__ . '/FakeUpgradeApplication.inc';
     }
 
     /**
