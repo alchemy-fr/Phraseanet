@@ -21,34 +21,6 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class BoilerPlate extends \PhraseanetWebTestCaseAbstract
 {
-    /**
-     * As controllers use WebTestCase, it requires a client
-     */
-    protected $client;
-
-    /**
-     * The application loader
-     */
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../Path/To/Application.php';
-        
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-        
-        return $app;
-    }
-
-    public function setUp()
-    {
-        parent::setUp();
-        $this->client = $this->createClient();
-    }
-
-    public function tearDown()
-    {
-        parent::tearDown();
-    }
 
     /**
      * Default route test

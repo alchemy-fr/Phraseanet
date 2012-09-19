@@ -5,37 +5,32 @@ require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.
 class MustacheLoaderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
+    protected static $useExceptionHandler = false;
 
-    /**
-     * @expectedException \Exception_BadRequest
-     */
     public function testRouteSlash()
     {
         $this->client->request('GET', '/prod/MustacheLoader/');
 
         $response = $this->client->getResponse();
         /* @var $response \Symfony\Component\HttpFoundation\Response */
+        $this->assertEquals(400, $response->getStatusCode());
     }
 
-    /**
-     * @expectedException \Exception_BadRequest
-     */
     public function testRouteSlashWrongUrl()
     {
         $this->client->request('GET', '/prod/MustacheLoader/', array('template' => '/../../../../config/config.yml'));
 
         $response = $this->client->getResponse();
+        $this->assertEquals(400, $response->getStatusCode());
         /* @var $response \Symfony\Component\HttpFoundation\Response */
     }
 
-    /**
-     * @expectedException \Exception_NotFound
-     */
     public function testRouteSlashWrongFile()
     {
         $this->client->request('GET', '/prod/MustacheLoader/', array('template' => 'patator_lala'));
 
         $response = $this->client->getResponse();
+        $this->assertEquals(404, $response->getStatusCode());
     }
 
     public function testRouteGood()

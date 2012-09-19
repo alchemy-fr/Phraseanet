@@ -197,22 +197,23 @@ class RecordsRequest extends ArrayCollection
         $basket = null;
 
         if ($request->get('ssel')) {
-            $repository = $app['phraseanet.core']['EM']->getRepository('\Entities\Basket');
+            $repository = $app['EM']->getRepository('\Entities\Basket');
 
-            $basket = $repository->findUserBasket($request->get('ssel'), $app['phraseanet.core']->getAuthenticatedUser(), false);
+            $basket = $repository->findUserBasket($app, $request->get('ssel'), $app['phraseanet.user'], false);
 
             foreach ($basket->getElements() as $basket_element) {
-                $received[$basket_element->getRecord()->get_serialize_key()] = $basket_element->getRecord();
+                $received[$basket_element->getRecord($app)->get_serialize_key()] = $basket_element->getRecord($app);
             }
         } elseif ($request->get('story')) {
-            $repository = $app['phraseanet.core']['EM']->getRepository('\Entities\StoryWZ');
+            $repository = $app['EM']->getRepository('\Entities\StoryWZ');
 
             $storyWZ = $repository->findByUserAndId(
-                $app['phraseanet.core']->getAuthenticatedUser()
+                $app,
+                $app['phraseanet.user']
                 , $request->get('story')
             );
 
-            $received[$storyWZ->getRecord()->get_serialize_key()] = $storyWZ->getRecord();
+            $received[$storyWZ->getRecord($app)->get_serialize_key()] = $storyWZ->getRecord($app);
         } else {
             foreach (explode(";", $request->get('lst')) as $bas_rec) {
                 $basrec = explode('_', $bas_rec);
@@ -220,7 +221,7 @@ class RecordsRequest extends ArrayCollection
                     continue;
                 }
                 try {
-                    $record = new \record_adapter((int) $basrec[0], (int) $basrec[1]);
+                    $record = new \record_adapter($app, (int) $basrec[0], (int) $basrec[1]);
                     $received[$record->get_serialize_key()] = $record;
                     unset($record);
                 } catch (\Exception_NotFound $e) {
@@ -233,7 +234,7 @@ class RecordsRequest extends ArrayCollection
 
         $to_remove = array();
 
-        $user = $app['phraseanet.core']->getAuthenticatedUser();
+        $user = $app['phraseanet.user'];
 
         foreach ($elements as $id => $record) {
 

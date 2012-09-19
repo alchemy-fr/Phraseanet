@@ -81,7 +81,7 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue($this->client->getResponse()->isRedirect());
         $url = parse_url($this->client->getResponse()->headers->get('location'));
         parse_str($url['query']);
-        $this->assertTrue( ! ! $success);
+        $this->assertTrue( strpos($url['query'], 'success=1') === 0);
     }
 
     /**

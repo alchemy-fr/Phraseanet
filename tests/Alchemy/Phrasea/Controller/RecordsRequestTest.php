@@ -10,14 +10,6 @@ require_once __DIR__ . '/../../../PhraseanetPHPUnitAuthenticatedAbstract.class.i
 class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
 {
 
-    public function getApplication()
-    {
-        $application = new Application();
-        $application['phraseanet.core'] = self::$core;
-
-        return $application;
-    }
-
     public function testSimple()
     {
         $request = new Request(array(
@@ -36,7 +28,7 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
                 ))
             ));
 
-        $records = RecordsRequest::fromRequest($this->getApplication(), $request);
+        $records = RecordsRequest::fromRequest(self::$application, $request);
 
         $this->assertEquals(3, count($records));
         $this->assertEquals(5, count($records->received()));
@@ -65,7 +57,7 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
                 ))
             ));
 
-        $records = RecordsRequest::fromRequest($this->getApplication(), $request);
+        $records = RecordsRequest::fromRequest(self::$application, $request);
 
         $this->assertEquals(1, count($records));
         $this->assertEquals(1, count($records->received()));
@@ -84,7 +76,7 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSimpleWithoutSbasRights()
     {
-        self::$core->getAuthenticatedUser()->ACL()
+        self::$application['phraseanet.user']->ACL()
             ->update_rights_to_sbas(self::$records['record_2']->get_sbas_id(), array('bas_chupub' => 0));
 
         $request = new Request(array(
@@ -93,7 +85,7 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
                 ))
             ));
 
-        $records = RecordsRequest::fromRequest($this->getApplication(), $request, false, array(), array('bas_chupub'));
+        $records = RecordsRequest::fromRequest(self::$application, $request, false, array(), array('bas_chupub'));
 
         $this->assertEquals(0, count($records));
         $this->assertEquals(1, count($records->received()));
@@ -110,7 +102,7 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSimpleWithoutBasRights()
     {
-        self::$core->getAuthenticatedUser()->ACL()
+        self::$application['phraseanet.user']->ACL()
             ->update_rights_to_base(self::$records['record_2']->get_base_id(), array('chgstatus' => 0));
 
         $request = new Request(array(
@@ -119,7 +111,7 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
                 ))
             ));
 
-        $records = RecordsRequest::fromRequest($this->getApplication(), $request, false, array('chgstatus'));
+        $records = RecordsRequest::fromRequest(self::$application, $request, false, array('chgstatus'));
 
         $this->assertEquals(0, count($records));
         $this->assertEquals(1, count($records->received()));
@@ -147,7 +139,7 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
                 ))
             ));
 
-        $records = RecordsRequest::fromRequest($this->getApplication(), $request, true);
+        $records = RecordsRequest::fromRequest(self::$application, $request, true);
 
         $this->assertEquals(2, count($records));
         $this->assertEquals(5, count($records->received()));
@@ -172,7 +164,7 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         $basketElement = $this->insertOneBasketElement();
         $request = new Request(array('ssel' => $basketElement->getBasket()->getId()));
 
-        $records = RecordsRequest::fromRequest($this->getApplication(), $request);
+        $records = RecordsRequest::fromRequest(self::$application, $request);
 
         $this->assertEquals(1, count($records));
         $this->assertEquals(1, count($records->received()));
@@ -185,7 +177,7 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         $exploded = explode(';', $serialized);
 
         $this->assertEquals(1, count($exploded));
-        $this->assertContains($basketElement->getRecord()->get_serialize_key(), $exploded);
+        $this->assertContains($basketElement->getRecord(self::$application)->get_serialize_key(), $exploded);
     }
 
     public function getBasket()
@@ -199,18 +191,18 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
 
         $basket = new \Entities\Basket();
         $basket->setName('test');
-        $basket->setOwner(self::$core->getAuthenticatedUser());
+        $basket->setOwner(self::$application['phraseanet.user']);
 
-        self::$core['EM']->persist($basket);
-        self::$core['EM']->flush();
+        self::$application['EM']->persist($basket);
+        self::$application['EM']->flush();
 
         foreach ($elements as $element) {
             $basket_element = new \Entities\BasketElement();
             $basket_element->setRecord($element);
             $basket_element->setBasket($basket);
             $basket->addBasketElement($basket_element);
-            self::$core['EM']->persist($basket_element);
-            self::$core['EM']->flush();
+            self::$application['EM']->persist($basket_element);
+            self::$application['EM']->flush();
         }
 
         return $basket;
@@ -221,20 +213,20 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         $story = $this->getStoryWZ();
         $request = new Request(array('story' => $story->getId()));
 
-        $records = RecordsRequest::fromRequest($this->getApplication(), $request);
+        $records = RecordsRequest::fromRequest(self::$application, $request);
 
         $this->assertEquals(1, count($records));
         $this->assertEquals(1, count($records->received()));
         $this->assertEquals(1, count($records->stories()));
         $this->assertInstanceOf('record_adapter', $records->singleStory());
         $this->assertTrue($records->isSingleStory());
-        $this->assertEquals(array($story->getRecord()->get_databox()), $records->databoxes());
+        $this->assertEquals(array($story->getRecord(self::$application)->get_databox()), $records->databoxes());
 
         $serialized = $records->serializedList();
         $exploded = explode(';', $serialized);
 
         $this->assertEquals(1, count($exploded));
-        $this->assertContains($story->getRecord()->get_serialize_key(), $exploded);
+        $this->assertContains($story->getRecord(self::$application)->get_serialize_key(), $exploded);
     }
 
     public function testSimpleStoryFlatten()
@@ -242,7 +234,7 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         $story = $this->getStoryWZ();
         $request = new Request(array('story' => $story->getId()));
 
-        $records = RecordsRequest::fromRequest($this->getApplication(), $request, true);
+        $records = RecordsRequest::fromRequest(self::$application, $request, true);
 
         $this->assertEquals(0, count($records));
         $this->assertEquals(1, count($records->received()));
@@ -255,17 +247,17 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         $exploded = explode(';', $serialized);
 
         $this->assertEquals('', $serialized);
-        $this->assertNotContains($story->getRecord()->get_serialize_key(), $exploded);
+        $this->assertNotContains($story->getRecord(self::$application)->get_serialize_key(), $exploded);
     }
 
     protected function getStoryWZ()
     {
         $story = new \Entities\StoryWZ();
         $story->setRecord(self::$records['record_story_2']);
-        $story->setUser(self::$core->getAuthenticatedUser());
+        $story->setUser(self::$application['phraseanet.user']);
 
-        self::$core['EM']->persist($story);
-        self::$core['EM']->flush();
+        self::$application['EM']->persist($story);
+        self::$application['EM']->flush();
 
         return $story;
     }

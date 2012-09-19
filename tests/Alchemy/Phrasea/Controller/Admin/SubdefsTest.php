@@ -11,7 +11,7 @@ class ControllerSubdefsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->databox = array_shift($this->app['phraseanet.appbox']->get_databoxes());
+        $this->databox = array_shift(self::$application['phraseanet.appbox']->get_databoxes());
     }
 
     public function getSubdefName()

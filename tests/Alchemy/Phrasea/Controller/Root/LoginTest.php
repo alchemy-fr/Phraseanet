@@ -634,7 +634,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         self::$application['phraseanet.appbox']->get_session()->logout();
         $password = \random::generatePassword();
-        self::$user->set_password($password);
+        self::$application['phraseanet.user']->set_password($password);
         $this->client->request('POST', '/login/authenticate/', array(
             'login' => self::$user->get_login(),
             'pwd'   => $password

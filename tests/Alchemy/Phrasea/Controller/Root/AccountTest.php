@@ -149,7 +149,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testPostResetMailBadEmail()
     {
         $password = \random::generatePassword();
-        self::$user->set_password($password);
+        self::$application['phraseanet.user']->set_password($password);
         $this->client->request('POST', '/account/reset-email/', array(
             'form_password'      => $password,
             'form_email'         => "invalid#!&&@@email.x",
@@ -167,7 +167,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testPostResetMailEmailNotIdentical()
     {
         $password = \random::generatePassword();
-        self::$user->set_password($password);
+        self::$application['phraseanet.user']->set_password($password);
         $this->client->request('POST', '/account/reset-email/', array(
             'form_password'      => $password,
             'form_email'         => 'email1@email.com',
@@ -185,7 +185,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testPostResetMailEmail()
     {
         $password = \random::generatePassword();
-        self::$user->set_password($password);
+        self::$application['phraseanet.user']->set_password($password);
         $this->client->request('POST', '/account/reset-email/', array(
             'form_password'      => $password,
             'form_email'         => 'email1@email.com',
@@ -432,7 +432,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testPostRenewPasswordBadArguments($oldPassword, $password, $passwordConfirm, $redirect)
     {
-        self::$user->set_password($oldPassword);
+        self::$application['phraseanet.user']->set_password($oldPassword);
 
         $this->client->request('POST', '/account/reset-password/', array(
             'form_password'         => $password,
@@ -464,7 +464,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $password = \random::generatePassword();
 
-        self::$user->set_password($password);
+        self::$application['phraseanet.user']->set_password($password);
 
         $this->client->request('POST', '/account/reset-password/', array(
             'form_password'         => 'password',

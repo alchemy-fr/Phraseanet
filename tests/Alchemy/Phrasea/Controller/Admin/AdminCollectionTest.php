@@ -6,6 +6,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
     public static $createdCollections = array();
+    protected static $useExceptionHandler = true;
 
     public static function tearDownAfterClass()
     {
@@ -109,7 +110,6 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\Admin\Bas::submitSuggestedValues
      */
     public function testPostSuggestedValueUnauthorized()
@@ -117,6 +117,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(false);
 
         $this->XMLHTTPRequest('POST', '/admin/collection/' . self::$collection->get_base_id() . '/suggested-values/');
+        $this->assertXMLHTTPBadJsonResponse($this->client->getResponse());
     }
 
     /**
@@ -289,7 +290,6 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\Admin\Bas::setPublicationDisplay
      */
     public function testPublicationDisplayBadRequestMissingArguments()
@@ -297,6 +297,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(true);
 
         $this->XMLHTTPRequest('POST', '/admin/collection/' . self::$collection->get_base_id() . '/publication/display/');
+        $this->assertXMLHTTPBadJsonResponse($this->client->getResponse());
     }
 
     /**
@@ -345,7 +346,6 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\Admin\Bas::rename
      */
     public function testPostNameBadRequestMissingArguments()
@@ -353,6 +353,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(true);
 
         $this->XMLHTTPRequest('POST', '/admin/collection/' . self::$collection->get_base_id() . '/rename/');
+        $this->assertXMLHTTPBadJsonResponse($this->client->getResponse());
     }
 
     /**
@@ -390,7 +391,6 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\Admin\Bas::emptyCollection
      */
     public function testPostEmptyCollectionUnauthorizedException()
@@ -398,6 +398,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(false);
 
         $this->XMLHTTPRequest('POST', '/admin/collection/' . self::$collection->get_base_id() . '/empty/');
+        $this->assertXMLHTTPBadJsonResponse($this->client->getResponse());
     }
 
     /**
@@ -542,7 +543,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         );
         $this->client->request('POST', '/admin/collection/' . self::$collection->get_base_id() . '/picture/mini-logo/', array(), $files);
         $this->checkRedirection($this->client->getResponse(), '/admin/collection/' . self::$collection->get_base_id() . '/?success=1');
-        $this->assertEquals(1, count(\collection::getLogo(self::$application, self::$collection->get_base_id())));
+        $this->assertEquals(1, count(\collection::getLogo(self::$collection->get_base_id(), self::$application)));
     }
 
     /**
@@ -564,7 +565,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testDeleteMiniLogo()
     {
-        if (count(\collection::getLogo(self::$application, self::$collection->get_base_id())) === 0) {
+        if (count(\collection::getLogo(self::$collection->get_base_id(), self::$application)) === 0) {
             $this->markTestSkipped('No logo setted');
         }
 
@@ -835,7 +836,6 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\Admin\Bas::unmount
      */
     public function testPostUnmountCollectionUnauthorizedException()
@@ -843,6 +843,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(false);
 
         $this->XMLHTTPRequest('POST', '/admin/collection/' . self::$collection->get_base_id() . '/unmount/');
+        $this->assertXMLHTTPBadJsonResponse($this->client->getResponse());
     }
 
     /**

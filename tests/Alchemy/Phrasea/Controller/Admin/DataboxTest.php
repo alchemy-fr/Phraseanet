@@ -343,7 +343,6 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers \Alchemy\Phrasea\Controller\Admin\Database::getDetails
      *
      */
@@ -352,6 +351,7 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(false);
 
         $this->XMLHTTPRequest('GET', '/admin/databox/' . self::$collection->get_sbas_id() . '/informations/documents/');
+        $this->assertXMLHTTPBadJsonResponse($this->client->getResponse());
     }
 
     /**
@@ -487,7 +487,6 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers \Alchemy\Phrasea\Controller\Admin\Database::changeViewName
      */
     public function testPostViewNameBadRequestArguments()
@@ -495,6 +494,7 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(true);
 
         $this->XMLHTTPRequest('POST', '/admin/databox/' . self::$collection->get_sbas_id() . '/view-name/');
+        $this->assertXMLHTTPBadJsonResponse($this->client->getResponse());
     }
 
     /**
