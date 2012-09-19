@@ -129,12 +129,6 @@ class gatekeeper
                 case 'report':
                     phrasea::redirect('/login/?redirect=' . $_SERVER['REQUEST_URI']);
                     break;
-                case 'admin':
-                    if ($this->_script_name === 'runscheduler.php') {
-                        return;
-                    }
-                    phrasea::redirect('/login/?redirect=' . $_SERVER['REQUEST_URI']);
-                    break;
                 case 'login':
                     if ($appbox->need_major_upgrade()) {
                         phrasea::redirect("/setup/");

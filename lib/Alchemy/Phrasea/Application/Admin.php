@@ -41,9 +41,7 @@ return call_user_func(
             $app->mount('/setup', new Setup());
             $app->mount('/sphinx', new Sphinx());
             $app->mount('/connected-users', new ConnectedUsers());
-
             $app->mount('/task-manager', new TaskManager());
-
             $app->mount('/publications', new Publications());
             $app->mount('/users', new Users());
             $app->mount('/fields', new Fields());

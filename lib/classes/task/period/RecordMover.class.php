@@ -117,7 +117,7 @@ class task_period_RecordMover extends task_appboxAbstract
                 data["taskid"]=<?php echo $this->getID(); ?>;
                 data["cls"]="RecordMover";
                 data["xml"] = "<?php echo p4string::MakeString($sxml->saveXML(), "js", '"') ?>";
-                parent.$.ajax({ url: "/admin/taskfacility.php"
+                parent.$.ajax({ url: "/admin/task-manager/task/<?php echo $this->getID(); ?>/facility/"
                     , data: data
                     , dataType:'json'
                     , type:"POST"
@@ -159,7 +159,7 @@ class task_period_RecordMover extends task_appboxAbstract
                         data["taskid"]=<?php echo $this->getID(); ?>;
                         data["cls"]="RecordMover";
                         data["xml"] = "<?php echo p4string::MakeString($sxml->saveXML(), "js", '"') ?>";
-                        parent.$.ajax({ url: "/admin/taskfacility.php"
+                        parent.$.ajax({ url: "/admin/task-manager/task/<?php echo $this->getID(); ?>/facility/"
                             , data: data
                             , dataType:'json'
                             , type:"POST"
