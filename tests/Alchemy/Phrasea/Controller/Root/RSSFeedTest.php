@@ -1,13 +1,13 @@
 <?php
 
+use Alchemy\Phrasea\Core\Configuration;
+
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAbstract.class.inc';
 require_once __DIR__ . '/../../../../FeedValidator.inc';
 
 require_once __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Controller/Root/RSSFeeds.php';
 
-use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\DomCrawler\Crawler;
 
 class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 {
@@ -76,12 +76,11 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->client = $this->createClient();
-        self::$feed = Feed_Adapter::create(appbox::get_instance(\bootstrap::getCore()), self::$user, 'title', 'subtitle');
-        self::$publisher = Feed_Publisher_Adapter::getPublisher(appbox::get_instance(\bootstrap::getCore()), self::$feed, self::$user);
-        self::$entry = Feed_Entry_Adapter::create(appbox::get_instance(\bootstrap::getCore()), self::$feed, self::$publisher, 'title_entry', 'subtitle', 'hello', "test@mail.com");
-        Feed_Entry_Item::create(appbox::get_instance(\bootstrap::getCore()), self::$entry, static::$records['record_1']);
-        Feed_Entry_Item::create(appbox::get_instance(\bootstrap::getCore()), self::$entry, static::$records['record_2']);
+        self::$feed = Feed_Adapter::create(self::$application, self::$user, 'title', 'subtitle');
+        self::$publisher = Feed_Publisher_Adapter::getPublisher(self::$application['phraseanet.appbox'], self::$feed, self::$user);
+        self::$entry = Feed_Entry_Adapter::create(self::$application, self::$feed, self::$publisher, 'title_entry', 'subtitle', 'hello', "test@mail.com");
+        Feed_Entry_Item::create(self::$application['phraseanet.appbox'], self::$entry, static::$records['record_1']);
+        Feed_Entry_Item::create(self::$application['phraseanet.appbox'], self::$entry, static::$records['record_2']);
         self::$feed->set_public(true);
     }
 
@@ -103,28 +102,28 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
     {
         parent::setUpBeforeClass();
 
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
         $auth = new Session_Authentication_None(self::$user);
         $appbox->get_session()->authenticate($auth);
 
-        self::$feed_1_private = Feed_Adapter::create($appbox, self::$user, self::$feed_1_private_title, self::$feed_1_private_subtitle);
+        self::$feed_1_private = Feed_Adapter::create(self::$application, self::$user, self::$feed_1_private_title, self::$feed_1_private_subtitle);
         self::$feed_1_private->set_public(false);
         self::$feed_1_private->set_icon(__DIR__ . '/../../../../testfiles/logocoll.gif');
 
-        self::$feed_2_private = Feed_Adapter::create($appbox, self::$user, self::$feed_2_private_title, self::$feed_2_private_subtitle);
+        self::$feed_2_private = Feed_Adapter::create(self::$application, self::$user, self::$feed_2_private_title, self::$feed_2_private_subtitle);
         self::$feed_2_private->set_public(false);
 
-        self::$feed_3_public = Feed_Adapter::create($appbox, self::$user, self::$feed_3_public_title, self::$feed_3_public_subtitle);
+        self::$feed_3_public = Feed_Adapter::create(self::$application, self::$user, self::$feed_3_public_title, self::$feed_3_public_subtitle);
         self::$feed_3_public->set_public(true);
         self::$feed_3_public->set_icon(__DIR__ . '/../../../../testfiles/logocoll.gif');
 
-        self::$feed_4_public = Feed_Adapter::create($appbox, self::$user, self::$feed_4_public_title, self::$feed_4_public_subtitle);
+        self::$feed_4_public = Feed_Adapter::create(self::$application, self::$user, self::$feed_4_public_title, self::$feed_4_public_subtitle);
         self::$feed_4_public->set_public(true);
 
         $publisher = array_shift(self::$feed_4_public->get_publishers());
 
         for ($i = 1; $i != 15; $i ++ ) {
-            $entry = Feed_Entry_Adapter::create($appbox, self::$feed_4_public, $publisher, 'titre entry', 'soustitre entry', 'Jean-Marie Biggaro', 'author@example.com');
+            $entry = Feed_Entry_Adapter::create(self::$application, self::$feed_4_public, $publisher, 'titre entry', 'soustitre entry', 'Jean-Marie Biggaro', 'author@example.com');
 
             $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_1']);
             $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_6']);
@@ -138,7 +137,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
             $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_16']);
             $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_19']);
 
-            $entry = Feed_Entry_Adapter::create($appbox, self::$feed_1_private, $publisher, 'titre entry', 'soustitre entry', 'Jean-Marie Biggaro', 'author@example.com');
+            $entry = Feed_Entry_Adapter::create(self::$application, self::$feed_1_private, $publisher, 'titre entry', 'soustitre entry', 'Jean-Marie Biggaro', 'author@example.com');
 
             $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_1']);
             $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_6']);
@@ -156,8 +155,8 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
         }
 
 
-        self::$public_feeds = Feed_Collection::load_public_feeds($appbox);
-        self::$private_feeds = Feed_Collection::load_all($appbox, self::$user);
+        self::$public_feeds = Feed_Collection::load_public_feeds(self::$application);
+        self::$private_feeds = Feed_Collection::load_all(self::$application, self::$user);
         $appbox->get_session()->logout();
     }
 
@@ -169,16 +168,6 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
         self::$feed_4_public->delete();
 
         parent::tearDownAfterClass();
-    }
-
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Root.php';
-        
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-        
-        return $app;
     }
 
     public function testPublicFeedAggregated()
@@ -226,7 +215,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
     public function testPublicFeed()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
         $auth = new Session_Authentication_None(self::$user);
         $appbox->get_session()->authenticate($auth);
 
@@ -246,7 +235,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
     public function testUserFeedAggregated()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
         $auth = new Session_Authentication_None(self::$user);
         $appbox->get_session()->authenticate($auth);
 
@@ -266,7 +255,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
     public function testUserFeed()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
         $auth = new Session_Authentication_None(self::$user);
         $appbox->get_session()->authenticate($auth);
 
@@ -286,7 +275,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
     public function testGetFeedFormat()
     {
-        $feeds = Feed_Collection::load_public_feeds(appbox::get_instance(\bootstrap::getCore()));
+        $feeds = Feed_Collection::load_public_feeds(self::$application);
         $feed = array_shift($feeds->get_feeds());
 
         $crawler = $this->client->request("GET", "/feeds/feed/" . $feed->get_id() . "/rss/");
@@ -314,7 +303,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
     public function testAggregatedRss()
     {
-        $feeds = Feed_Collection::load_public_feeds(appbox::get_instance(\bootstrap::getCore()));
+        $feeds = Feed_Collection::load_public_feeds(self::$application);
         $all_feeds = $feeds->get_feeds();
         foreach ($all_feeds as $feed) {
             $this->assertTrue($feed->is_public());
@@ -328,7 +317,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
     public function testAggregatedAtom()
     {
-        $feeds = Feed_Collection::load_public_feeds(appbox::get_instance(\bootstrap::getCore()));
+        $feeds = Feed_Collection::load_public_feeds(self::$application);
         $all_feeds = $feeds->get_feeds();
         foreach ($all_feeds as $feed) {
             $this->assertTrue($feed->is_public());
@@ -347,7 +336,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
     {
         $this->client->request("GET", "/feeds/feed/0/rss/");
     }
-    
+
     /**
      * @expectedException \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
@@ -358,7 +347,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
     public function testGetFeedId()
     {
-        $feeds = Feed_Collection::load_public_feeds(appbox::get_instance(\bootstrap::getCore()));
+        $feeds = Feed_Collection::load_public_feeds(self::$application);
         $all_feeds = $feeds->get_feeds();
         $feed = array_shift($all_feeds);
 
@@ -376,7 +365,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
     public function testPrivateFeedAccess()
     {
-        $private_feed = Feed_Adapter::create(appbox::get_instance(\bootstrap::getCore()), self::$user, 'title', 'subtitle');
+        $private_feed = Feed_Adapter::create(self::$application, self::$user, 'title', 'subtitle');
         $private_feed->set_public(false);
         $this->client->request("GET", "/feeds/feed/" . $private_feed->get_id() . "/rss/");
         $this->assertFalse($this->client->getResponse()->isOk());
@@ -430,7 +419,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
                         $this->assertEquals($feed->get_subtitle(), $child->nodeValue);
                         break;
                     case 'link':
-                        $this->assertEquals($feed->get_homepage_link(registry::get_instance(), Feed_Adapter::FORMAT_RSS, 1)->get_href(), $child->nodeValue);
+                        $this->assertEquals($feed->get_homepage_link(self::$application['phraseanet.registry'], Feed_Adapter::FORMAT_RSS, 1)->get_href(), $child->nodeValue);
                         break;
                     case 'pubDate':
                         $this->assertTrue(new DateTime() >= new DateTime($child->nodeValue));
@@ -444,7 +433,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
                     case 'atom:link':
                         foreach ($child->attributes as $attribute) {
                             if ($attribute->name == "href") {
-                                $this->assertEquals($feed->get_homepage_link(registry::get_instance(), Feed_Adapter::FORMAT_RSS, 1)->get_href(), $attribute->value);
+                                $this->assertEquals($feed->get_homepage_link(self::$application['phraseanet.registry'], Feed_Adapter::FORMAT_RSS, 1)->get_href(), $attribute->value);
                                 break;
                             }
                         }
@@ -679,7 +668,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
         foreach ($fields as $key_field => $field) {
 
             $role = true;
-            
+
             if(isset($field["media_field"]['attributes']['role'])){
                 $role = false;
                 foreach($node->attributes as $attr){
@@ -689,7 +678,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
                     }
                 }
             }
-            
+
             if ($field["media_field"]["name"] == $node->nodeName && $role != false) {
 
                 if ($p4field = $entry_item->get_record()->get_caption()->get_dc_field($field["dc_field"])) {
@@ -744,7 +733,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
     public function checkATOMRootNode(DOMDocument $dom_doc, DOMXPath $xpath, Feed_Adapter $feed)
     {
         $ids = $xpath->query('/Atom:feed/Atom:id');
-        $this->assertEquals($feed->get_homepage_link(registry::get_instance(), Feed_Adapter::FORMAT_ATOM, 1)->get_href(), $ids->item(0)->nodeValue);
+        $this->assertEquals($feed->get_homepage_link(self::$application['phraseanet.registry'], Feed_Adapter::FORMAT_ATOM, 1)->get_href(), $ids->item(0)->nodeValue);
 
         $titles = $xpath->query('/Atom:feed/Atom:title');
         $this->assertEquals($feed->get_title(), $titles->item(0)->nodeValue);
@@ -785,12 +774,12 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
             if ($child->nodeType !== XML_TEXT_NODE) {
                 switch ($child->nodeName) {
                     case 'id':
-                        $this->assertEquals(sprintf('%sentry/%d/', $feed->get_homepage_link(registry::get_instance(), Feed_Adapter::FORMAT_ATOM, 1)->get_href(), $entry->get_id()), $child->nodeValue);
+                        $this->assertEquals(sprintf('%sentry/%d/', $feed->get_homepage_link(self::$application['phraseanet.registry'], Feed_Adapter::FORMAT_ATOM, 1)->get_href(), $entry->get_id()), $child->nodeValue);
                         break;
                     case 'link':
                         foreach ($child->attributes as $attribute) {
                             if ($attribute->name == "href") {
-                                $this->assertEquals(sprintf('%sentry/%d/', $feed->get_homepage_link(registry::get_instance(), Feed_Adapter::FORMAT_ATOM, 1)->get_href(), $entry->get_id()), $attribute->value);
+                                $this->assertEquals(sprintf('%sentry/%d/', $feed->get_homepage_link(self::$application['phraseanet.registry'], Feed_Adapter::FORMAT_ATOM, 1)->get_href(), $entry->get_id()), $attribute->value);
                                 break;
                             }
                         }

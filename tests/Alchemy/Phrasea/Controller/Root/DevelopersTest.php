@@ -1,30 +1,11 @@
 <?php
 
+use Alchemy\Phrasea\Core\Configuration;
+
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
-
-    public function setUp()
-    {
-        parent::setUp();
-        $this->client = $this->createClient();
-    }
-
-    public function tearDown()
-    {
-        parent::tearDown();
-    }
-
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Root.php';
-
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-
-        return $app;
-    }
 
     /**
      * @covers \Alchemy\Phrasea\Controller\Root\Developers::listApps
@@ -74,7 +55,7 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testPostNewApp()
     {
-        $apps = API_OAuth2_Application::load_dev_app_by_user($this->app['phraseanet.appbox'], self::$user);
+        $apps = API_OAuth2_Application::load_dev_app_by_user(self::$application, self::$user);
         $nbApp = count($apps);
 
         $this->client->request('POST', '/developers/application/', array(
@@ -87,7 +68,7 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'scheme-callback' => 'http://'
         ));
 
-        $apps = API_OAuth2_Application::load_dev_app_by_user($this->app['phraseanet.appbox'], self::$user);
+        $apps = API_OAuth2_Application::load_dev_app_by_user(self::$application, self::$user);
 
         $this->assertTrue($this->client->getResponse()->isRedirect());
         $this->assertGreaterThan($nbApp, count($apps));
@@ -107,7 +88,7 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGetApp()
     {
-        $oauthApp = \API_OAuth2_Application::create(\appbox::get_instance(\bootstrap::getCore()), self::$user, 'test app');
+        $oauthApp = \API_OAuth2_Application::create(self::$application, self::$user, 'test app');
         $this->client->request('GET', '/developers/application/' . $oauthApp->get_id() . '/');
         $this->assertTrue($this->client->getResponse()->isOk());
         $oauthApp->delete();
@@ -139,14 +120,14 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testDeleteApp()
     {
-        $oauthApp = \API_OAuth2_Application::create(\appbox::get_instance(\bootstrap::getCore()), self::$user, 'test app');
+        $oauthApp = \API_OAuth2_Application::create(self::$application, self::$user, 'test app');
 
         $this->XMLHTTPRequest('DELETE', '/developers/application/' . $oauthApp->get_id() . '/');
 
         $this->assertTrue($this->client->getResponse()->isOk());
 
         try {
-            new \API_OAuth2_Application($this->app['phraseanet.appbox'], $oauthApp->get_id());
+            new \API_OAuth2_Application(self::$application, $oauthApp->get_id());
             $this->fail('Application not deleted');
         } catch (\Exception_NotFound $e) {
 
@@ -181,7 +162,7 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRenewAppCallbackError2()
     {
-         $oauthApp = \API_OAuth2_Application::create(\appbox::get_instance(\bootstrap::getCore()), self::$user, 'test app');
+         $oauthApp = \API_OAuth2_Application::create(self::$application, self::$user, 'test app');
 
         $this->XMLHTTPRequest('POST', '/developers/application/'.$oauthApp->get_id().'/callback/');
 
@@ -195,7 +176,7 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRenewAppCallback()
     {
-        $oauthApp = \API_OAuth2_Application::create(\appbox::get_instance(\bootstrap::getCore()), self::$user, 'test app');
+        $oauthApp = \API_OAuth2_Application::create(self::$application, self::$user, 'test app');
 
         $this->XMLHTTPRequest('POST', '/developers/application/' . $oauthApp->get_id() . '/callback/', array(
             'callback' => 'my.callback.com'
@@ -204,7 +185,7 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue($this->client->getResponse()->isOk());
         $content = json_decode($this->client->getResponse()->getContent());
         $this->assertTrue($content->success);
-        $oauthApp = new \API_OAuth2_Application($this->app['phraseanet.appbox'], $oauthApp->get_id());
+        $oauthApp = new \API_OAuth2_Application(self::$application, $oauthApp->get_id());
         $this->assertEquals('my.callback.com', $oauthApp->get_redirect_uri());
     }
 
@@ -237,7 +218,7 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRenewAccessToken()
     {
-        $oauthApp = \API_OAuth2_Application::create(\appbox::get_instance(\bootstrap::getCore()), self::$user, 'test app');
+        $oauthApp = \API_OAuth2_Application::create(self::$application, self::$user, 'test app');
 
         $this->XMLHTTPRequest('POST', '/developers/application/' . $oauthApp->get_id() . '/access_token/');
 
@@ -275,7 +256,7 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testAuthorizeGrantpasswordToken()
     {
-        $oauthApp = \API_OAuth2_Application::create(\appbox::get_instance(\bootstrap::getCore()), self::$user, 'test app');
+        $oauthApp = \API_OAuth2_Application::create(self::$application, self::$user, 'test app');
 
         $this->XMLHTTPRequest('POST', '/developers/application/' . $oauthApp->get_id() . '/authorize_grant_password/', array(
             'grant' => '1'
@@ -284,7 +265,7 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue($this->client->getResponse()->isOk());
         $content = json_decode($this->client->getResponse()->getContent());
         $this->assertTrue($content->success);
-        $oauthApp = new \API_OAuth2_Application($this->app['phraseanet.appbox'], $oauthApp->get_id());
+        $oauthApp = new \API_OAuth2_Application(self::$application, $oauthApp->get_id());
         $this->assertTrue($oauthApp->is_password_granted());
     }
 }

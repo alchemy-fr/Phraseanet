@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Controller\Root;
 
-use Alchemy\Phrasea\Core;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,6 +28,12 @@ class Login implements ControllerProviderInterface
     public function connect(Application $app)
     {
         $controllers = $app['controllers_factory'];
+
+        $controllers->before(function(Request $request) use ($app) {
+            if ($app['phraseanet.registry']->get('GV_maintenance')) {
+                return $app->redirect("/login/?redirect=" . $request->request->get('redirect') . "&error=maintenance");
+            }
+        });
 
         /**
          * Login
@@ -57,7 +62,7 @@ class Login implements ControllerProviderInterface
                     }
 
 
-                    if ($app['phraseanet.core']->isAuthenticated()) {
+                    if ($app->isAuthenticated()) {
 
                         return $app->redirect('/' . $request->query->get('redirect', 'prod') . '/');
                     }
@@ -79,7 +84,7 @@ class Login implements ControllerProviderInterface
          */
         $controllers->post('/authenticate/', $this->call('authenticate'))
             ->before(function() use ($app) {
-                    if ($app['phraseanet.core']->isAuthenticated()) {
+                    if ($app->isAuthenticated()) {
                         return $app->redirect('/prod/');
                     }
                 })
@@ -216,10 +221,10 @@ class Login implements ControllerProviderInterface
         }
 
         try {
-            $user = \User_Adapter::getInstance((int) $usrId, $appbox);
+            $user = \User_Adapter::getInstance((int) $usrId, $app);
             $email = $user->get_email();
 
-            if (true === \mail::mail_confirmation($email, $usrId)) {
+            if (true === \mail::mail_confirmation($app, $email, $usrId)) {
                 return $app->redirect('/login/?notice=mail-sent');
             }
         } catch (\Exception $e) {
@@ -243,34 +248,34 @@ class Login implements ControllerProviderInterface
         }
 
         try {
-            $datas = \random::helloToken($code);
+            $datas = \random::helloToken($app, $code);
         } catch (\Exception_NotFound $e) {
             return $app->redirect('/login/?redirect=/prod&error=token-not-found');
         }
 
         try {
-            $user = \User_Adapter::getInstance((int) $datas['usr_id'], $appbox);
+            $user = \User_Adapter::getInstance((int) $datas['usr_id'], $app);
         } catch (\Exception $e) {
             return $app->redirect('/login/?redirect=/prod&error=user-not-found');
         }
 
-        if ( ! $user->get_mail_locked()) {
+        if (!$user->get_mail_locked()) {
             return $app->redirect('/login/?redirect=prod&notice=already');
         }
 
-        \random::removeToken($code);
+        \random::removeToken($app, $code);
 
         if (\PHPMailer::ValidateAddress($user->get_email())) {
             if (count($user->ACL()->get_granted_base()) > 0) {
-                \mail::mail_confirm_registered($user->get_email());
+                \mail::mail_confirm_registered($app, $user->get_email());
             }
 
             $user->set_mail_locked(false);
-            \random::removeToken($code);
+            \random::removeToken($app, $code);
 
             $appboxRegister = new \appbox_register($appbox);
 
-            $list = $appboxRegister->get_collection_awaiting_for_user($user);
+            $list = $appboxRegister->get_collection_awaiting_for_user($app, $user);
 
             if (count($list) > 0) {
                 $others = array();
@@ -279,7 +284,7 @@ class Login implements ControllerProviderInterface
                     $others[] = $collection->get_name();
                 }
 
-                \mail::mail_confirm_unregistered($user->get_email(), $others);
+                \mail::mail_confirm_unregistered($app, $user->get_email(), $others);
 
                 return $app->redirect('/login/?redirect=prod&notice=confirm-ok-wait');
             }
@@ -300,22 +305,22 @@ class Login implements ControllerProviderInterface
         $appbox = $app['phraseanet.appbox'];
 
         if (null !== $mail = $request->request->get('mail')) {
-            if ( ! \PHPMailer::ValidateAddress($mail)) {
+            if (!\PHPMailer::ValidateAddress($mail)) {
                 return $app->redirect('/login/forgot-password/?error=invalidmail');
             }
 
             try {
-                $user = \User_Adapter::getInstance(\User_Adapter::get_usr_id_from_email($mail), $appbox);
+                $user = \User_Adapter::getInstance(\User_Adapter::get_usr_id_from_email($app, $mail), $app);
             } catch (\Exception $e) {
                 return $app->redirect('/login/forgot-password/?error=noaccount');
             }
 
-            $token = \random::getUrlToken(\random::TYPE_PASSWORD, $user->get_id(), new \DateTime('+1 day'));
+            $token = \random::getUrlToken($app, \random::TYPE_PASSWORD, $user->get_id(), new \DateTime('+1 day'));
 
             if ($token) {
-                $url = sprintf('%slogin/forgot-password/?token=%s', $app['phraseanet.core']['Registry']->get('GV_ServerName'), $token);
+                $url = sprintf('%slogin/forgot-password/?token=%s', $app['phraseanet.registry']->get('GV_ServerName'), $token);
 
-                if (\mail::forgot_passord($mail, $user->get_login(), $url)) {
+                if (\mail::forgot_passord($app, $mail, $user->get_login(), $url)) {
                     return $app->redirect('/login/forgot-password/?sent=ok');
                 } else {
                     return $app->redirect('/login/forgot-password/?error=mailserver');
@@ -339,12 +344,12 @@ class Login implements ControllerProviderInterface
             }
 
             try {
-                $datas = \random::helloToken($token);
+                $datas = \random::helloToken($app, $token);
 
-                $user = \User_Adapter::getInstance($datas['usr_id'], $appbox);
+                $user = \User_Adapter::getInstance($datas['usr_id'], $app);
                 $user->set_password($passwordConfirm);
 
-                \random::removeToken($token);
+                \random::removeToken($app, $token);
 
                 return $app->redirect('/login/?notice=password-update-ok');
             } catch (\Exception_NotFound $e) {
@@ -367,7 +372,7 @@ class Login implements ControllerProviderInterface
 
         if (null !== $token = $request->query->get('token')) {
             try {
-                \random::helloToken($token);
+                \random::helloToken($app, $token);
                 $tokenize = true;
             } catch (\Exception $e) {
                 $errorMsg = 'token';
@@ -433,7 +438,7 @@ class Login implements ControllerProviderInterface
      */
     public function displayRegisterForm(Application $app, Request $request)
     {
-        if (false === \login::register_enabled()) {
+        if (false === \login::register_enabled($app)) {
             return $app->redirect('/login/?notice=no-register-available');
         }
 
@@ -471,10 +476,10 @@ class Login implements ControllerProviderInterface
             }
         }
 
-        $arrayVerif = $this->getRegisterFieldConfiguration($app['phraseanet.core']);
+        $arrayVerif = $this->getRegisterFieldConfiguration($app);
 
         return new Response($app['twig']->render('login/register.html.twig', array(
-                    'inscriptions' => giveMeBases(),
+                    'inscriptions' => giveMeBases($app),
                     'parms'        => $request->query->all(),
                     'needed'       => $needed,
                     'arrayVerif'   => $arrayVerif,
@@ -493,13 +498,13 @@ class Login implements ControllerProviderInterface
      */
     public function register(Application $app, Request $request)
     {
-        $arrayVerif = $this->getRegisterFieldConfiguration($app['phraseanet.core']);
+        $arrayVerif = $this->getRegisterFieldConfiguration($app);
 
         $parameters = $request->request->all();
 
         $needed = array_diff_key($arrayVerif, $parameters);
 
-        if (sizeof($needed) > 0 && ! (sizeof($parameters) === 1 && isset($parameters['form_login']) && $parameters['form_login'] === true)) {
+        if (sizeof($needed) > 0 && !(sizeof($parameters) === 1 && isset($parameters['form_login']) && $parameters['form_login'] === true)) {
             $app->abort(400, sprintf(_('Bad request missing %s parameters'), implode(',', array_keys($needed))));
         }
 
@@ -527,16 +532,16 @@ class Login implements ControllerProviderInterface
             $needed['form_login'] = 'login-short';
         }
 
-        if ((sizeof($parameters) === 1 && isset($parameters['form_login']) && $parameters['form_login'] === true) && ! isset($needed['form_email'])) {
+        if ((sizeof($parameters) === 1 && isset($parameters['form_login']) && $parameters['form_login'] === true) && !isset($needed['form_email'])) {
             $login = $email;
             unset($needed['form_login']);
         }
 
-        if (\User_Adapter::get_usr_id_from_email($email)) {
+        if (\User_Adapter::get_usr_id_from_email($app, $email)) {
             $needed['form_email'] = 'user-email-exists';
         }
 
-        if (\User_Adapter::get_usr_id_from_login($login)) {
+        if (\User_Adapter::get_usr_id_from_login($app, $login)) {
             $needed['form_login'] = 'usr-login-exists';
         }
 
@@ -548,16 +553,16 @@ class Login implements ControllerProviderInterface
             return $app->redirect(sprintf('/register/?%s', http_build_query(array('needed' => $needed))));
         }
 
-        require_once($app['phraseanet.core']['Registry']->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php');
+        require_once($app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php');
 
         $demands = array_unique($demands);
-        $inscriptions = giveMeBases();
+        $inscriptions = giveMeBases($app);
         $inscOK = array();
 
         foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
 
             foreach ($databox->get_collections() as $collection) {
-                if ( ! in_array($collection->get_base_id(), $demands)) {
+                if (!in_array($collection->get_base_id(), $demands)) {
                     continue;
                 }
 
@@ -575,7 +580,7 @@ class Login implements ControllerProviderInterface
         }
 
         try {
-            $user = \User_Adapter::create($app['phraseanet.appbox'], $request->request->get('form_login'), $request->request->get("form_password"), $request->request->get("form_email"), false);
+            $user = \User_Adapter::create($app, $request->request->get('form_login'), $request->request->get("form_password"), $request->request->get("form_email"), false);
 
             $user->set_gender($request->request->get('form_gender'))
                 ->set_firstname($request->request->get('form_firstname'))
@@ -591,11 +596,11 @@ class Login implements ControllerProviderInterface
 
             $demandOK = array();
 
-            if ( ! ! $app['phraseanet.core']['Registry']->get('GV_autoregister')) {
+            if (!!$app['phraseanet.registry']->get('GV_autoregister')) {
 
-                $template_user_id = \User_Adapter::get_usr_id_from_login('autoregister');
+                $template_user_id = \User_Adapter::get_usr_id_from_login($app, 'autoregister');
 
-                $template_user = \User_Adapter::getInstance($template_user_id, $app['phraseanet.appbox']);
+                $template_user = \User_Adapter::getInstance($template_user_id, $app);
 
                 $base_ids = array();
 
@@ -614,13 +619,13 @@ class Login implements ControllerProviderInterface
                     continue;
                 }
 
-                $collection = \collection::get_from_base_id($base_id);
+                $collection = \collection::get_from_base_id($app, $base_id);
                 $appbox_register->add_request($user, $collection);
                 unset($collection);
                 $demandOK[$base_id] = true;
             }
 
-            $event_mngr = \eventsmanager_broker::getInstance($app['phraseanet.appbox'], $app['phraseanet.core']);
+            $event_mngr = $app['events-manager'];
 
             $params = array(
                 'demand'       => $demandOK,
@@ -632,7 +637,7 @@ class Login implements ControllerProviderInterface
             $event_mngr->trigger('__REGISTER_APPROVAL__', $params);
 
             $user->set_mail_locked(true);
-            if (true === \mail::mail_confirmation($user->get_email(), $user->get_id())) {
+            if (true === \mail::mail_confirmation($app, $user->get_email(), $user->get_id())) {
 
                 return $app->redirect('/login/?notice=mail-sent');
             }
@@ -676,7 +681,7 @@ class Login implements ControllerProviderInterface
     public function login(Application $app, Request $request)
     {
         $appbox = $app['phraseanet.appbox'];
-        $registry = $app['phraseanet.core']['Registry'];
+        $registry = $app['phraseanet.registry'];
 
         require_once($registry->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php');
         if ($registry->get('GV_captchas') && trim($registry->get('GV_captcha_private_key')) !== '' && trim($registry->get('GV_captcha_public_key')) !== '') {
@@ -691,7 +696,7 @@ class Login implements ControllerProviderInterface
             $warning = 'no-connection';
         }
 
-        if ( ! ! $registry->get('GV_maintenance')) {
+        if (!!$registry->get('GV_maintenance')) {
             $warning = 'maintenance';
         }
 
@@ -749,7 +754,7 @@ class Login implements ControllerProviderInterface
         }
 
         $captchaSys = '';
-        if ( ! $registry->get('GV_maintenance')
+        if (!$registry->get('GV_maintenance')
             && $registry->get('GV_captchas')
             && trim($registry->get('GV_captcha_private_key')) !== ''
             && trim($registry->get('GV_captcha_public_key')) !== ''
@@ -764,7 +769,7 @@ class Login implements ControllerProviderInterface
                                                                 </div>' . recaptcha_get_html($registry->get('GV_captcha_public_key')) . '</div>';
         }
 
-        $public_feeds = \Feed_Collection::load_public_feeds($appbox);
+        $public_feeds = \Feed_Collection::load_public_feeds($app);
         $feeds = array_merge(array($public_feeds->get_aggregate()), $public_feeds->get_feeds());
 
         return $app['twig']->render('login/index.html.twig', array(
@@ -791,11 +796,11 @@ class Login implements ControllerProviderInterface
     {
         $appbox = $app['phraseanet.appbox'];
         $session = $appbox->get_session();
-        $registry = $app['phraseanet.core']['Registry'];
+        $registry = $app['phraseanet.registry'];
 
         $is_guest = false;
 
-        if (null !== $request->request->get('nolog') && \phrasea::guest_allowed()) {
+        if (null !== $request->request->get('nolog') && \phrasea::guest_allowed($app)) {
             $is_guest = true;
         }
 
@@ -809,7 +814,7 @@ class Login implements ControllerProviderInterface
 
             try {
                 if ($is_guest) {
-                    $auth = new \Session_Authentication_Guest($appbox);
+                    $auth = new \Session_Authentication_Guest($app);
                 } else {
                     $captcha = false;
 
@@ -828,7 +833,7 @@ class Login implements ControllerProviderInterface
                         }
                     }
 
-                    $auth = new \Session_Authentication_Native($appbox, $login, $pwd);
+                    $auth = new \Session_Authentication_Native($app, $login, $pwd);
                     $auth->set_captcha_challenge($captcha);
                 }
 
@@ -849,8 +854,8 @@ class Login implements ControllerProviderInterface
                 return $app->redirect("/login/?redirect=" . $request->request->get('redirect') . "&error=maintenance");
             } catch (\Exception_Session_BadSalinity $e) {
                 $date = new \DateTime('5 minutes');
-                $usr_id = \User_Adapter::get_usr_id_from_login($request->request->get('login'));
-                $url = '/account/forgot-password/?token=' . \random::getUrlToken(\random::TYPE_PASSWORD, $usr_id, $date) . '&salt=1';
+                $usr_id = \User_Adapter::get_usr_id_from_login($app, $request->request->get('login'));
+                $url = '/account/forgot-password/?token=' . \random::getUrlToken($app, \random::TYPE_PASSWORD, $usr_id, $date) . '&salt=1';
 
                 return $app->redirect($url);
             } catch (\Exception $e) {
@@ -885,10 +890,10 @@ class Login implements ControllerProviderInterface
     /**
      * Get required fields configuration
      *
-     * @param Core $core
+     * @param Application $app
      * @return boolean
      */
-    private function getRegisterFieldConfiguration(Core $core)
+    private function getRegisterFieldConfiguration(Application $app)
     {
         /**
          * @todo enhance this shit
@@ -912,7 +917,7 @@ class Login implements ControllerProviderInterface
             "demand"                => true
         );
 
-        $registerFieldConfigurationFile = $core['Registry']->get('GV_RootPath') . 'config/register-fields.php';
+        $registerFieldConfigurationFile = $app['phraseanet.registry']->get('GV_RootPath') . 'config/register-fields.php';
 
         if (is_file($registerFieldConfigurationFile)) {
             include $registerFieldConfigurationFile;

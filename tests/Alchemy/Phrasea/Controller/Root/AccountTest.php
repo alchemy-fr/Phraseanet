@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Core\Configuration;
+
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
@@ -11,7 +13,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         parent::setUpBeforeClass();
 
         try {
-            self::$authorizedApp = \API_OAuth2_Application::create(\appbox::get_instance(\bootstrap::getCore()), self::$user, 'test API v1');
+            self::$authorizedApp = \API_OAuth2_Application::create(self::$application, self::$user, 'test API v1');
         } catch (\Exception $e) {
 
         }
@@ -24,22 +26,6 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         }
 
          parent::tearDownAfterClass();
-    }
-
-    public function setUp()
-    {
-        parent::setUp();
-        $this->client = $this->createClient();
-    }
-
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Root.php';
-
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-
-        return $app;
     }
 
     /**
@@ -105,7 +91,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testPostResetMailWithToken()
     {
-        $token = \random::getUrlToken(\random::TYPE_EMAIL, self::$user->get_id(), null, 'new_email@email.com');
+        $token = \random::getUrlToken(self::$application, \random::TYPE_EMAIL, self::$user->get_id(), null, 'new_email@email.com');
         $this->client->request('POST', '/account/reset-email/', array('token'   => $token));
         $response = $this->client->getResponse();
         $this->assertTrue($response->isRedirect());
@@ -114,7 +100,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals('new_email@email.com', self::$user->get_email());
         self::$user->set_email('noone@example.com');
         try {
-            \random::helloToken($token);
+            \random::helloToken(self::$application, $token);
             $this->fail('TOken has not been removed');
         } catch (\Exception_NotFound $e) {
 
@@ -324,11 +310,11 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testUpdateAccount()
     {
-        $evtMngr = \eventsmanager_broker::getInstance($this->app['phraseanet.appbox'], $this->app['phraseanet.core']);
-        $register = new \appbox_register($this->app['phraseanet.appbox']);
+        $evtMngr = self::$application['events-manager'];
+        $register = new \appbox_register(self::$application['phraseanet.appbox']);
         $bases = $notifs = array();
 
-        foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$application['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $bases[] = $collection->get_base_id();
             }
@@ -338,7 +324,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $this->markTestSkipped('No collections');
         }
 
-        foreach ($evtMngr->list_notifications_available($this->app['phraseanet.core']->getAUthenticatedUser()->get_id()) as $notifications) {
+        foreach ($evtMngr->list_notifications_available(self::$application['phraseanet.user']->get_id()) as $notifications) {
             foreach ($notifications as $notification) {
                 $notifs[] = $notification['id'];
             }
@@ -371,9 +357,9 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $response = $this->client->getResponse();
         $this->assertTrue($response->isRedirect());
-        $this->assertEquals('minet', $this->app['phraseanet.core']->getAUthenticatedUser()->get_lastname());
+        $this->assertEquals('minet', self::$application['phraseanet.user']->get_lastname());
 
-        $ret = $register->get_collection_awaiting_for_user(self::$user);
+        $ret = $register->get_collection_awaiting_for_user(self::$application, self::$user);
 
         $this->assertEquals(count($ret), count($bases));
     }
@@ -423,7 +409,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue($json->success);
 
         $account = \API_OAuth2_Account::load_with_user(
-                $this->app['phraseanet.appbox']
+                self::$application
                 , self::$authorizedApp
                 , self::$user
         );
