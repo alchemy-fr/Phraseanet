@@ -228,7 +228,7 @@ class task_period_workflow01 extends task_databoxAbstract
                 }
                 if (sbaspopup.value > 0) {
                     $.ajax({
-                        url:"/admin/taskfacility.php"
+                        url:"/admin/task-manager/task/<?php echo $this->getID(); ?>/facility/"
                         , async:false
                         , data:{'cls':'workflow01', 'taskid':<?php echo $this->getID() ?>, 'bid':sbaspopup.value}
                         , success:function(data){

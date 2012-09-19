@@ -247,7 +247,7 @@ class task_period_outofdate extends task_abstract
                 data["taskid"] = <?php echo $this->getID(); ?>;
                 data["ACT"] = "CALCSQL";
                 data["cls"]="outofdate";
-                $.ajax({ url: "/admin/taskfacility.php"
+                $.ajax({ url: "/admin/task-manager/task/<?php echo $this->getID(); ?>/facility/"
                     , data: data
                     , dataType:'json'
                     , type:"POST"
@@ -272,7 +272,7 @@ class task_period_outofdate extends task_abstract
                 var data = {taskid:<?php echo $this->getID(); ?>, bid: sbaspopup.value};
                 data["ACT"] = "GETBASE";
                 data["cls"]="outofdate";
-                $.ajax({ url: "/admin/taskfacility.php"
+                $.ajax({ url: "/admin/task-manager/task/<?php echo $this->getID(); ?>/facility/"
                     , data: data
                     , dataType:'json'
                     , type:"POST"
