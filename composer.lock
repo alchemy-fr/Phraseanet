@@ -148,12 +148,6 @@
             "alias-version": "2.1.9999999.9999999-dev"
         },
         {
-            "package": "tcpdf/tcpdf",
-            "version": "dev-master",
-            "source-reference": "5.9.176",
-            "commit-date": "1343831860"
-        },
-        {
             "package": "twig/extensions",
             "version": "dev-master",
             "source-reference": "f904575642b1213db69b4a98f08397e722ba1cae",
