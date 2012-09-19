@@ -165,7 +165,7 @@ class Query implements ControllerProviderInterface
                 $prop = null;
 
                 if ($search_engine->is_first_page()) {
-                    $propals = $result->get_suggestions($app['phraseanet.appbox']->get_session()->get_I18n());
+                    $propals = $result->get_suggestions($app['phraseanet.session']->get_I18n());
                     if (count($propals) > 0) {
                         foreach ($propals as $prop_array) {
                             if ($prop_array['value'] !== $query && $prop_array['hits'] > $result->get_count_total_results()) {

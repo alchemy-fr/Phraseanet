@@ -234,7 +234,7 @@ class Installer implements ControllerProviderInterface
 
             $auth = new \Session_Authentication_None($user);
 
-            $appbox->get_session()->authenticate($auth);
+            $app['phraseanet.session']->authenticate($auth);
 
             if ($databox_name && !\p4string::hasAccent($databox_name)) {
                 $template = new \SplFileInfo(__DIR__ . '/../../../../conf.d/data_templates/' . $request->request->get('db_template') . '.xml');

@@ -71,9 +71,9 @@ class Root implements ControllerProviderInterface
                 $queries_topics = '';
 
                 if ($registry->get('GV_client_render_topics') == 'popups') {
-                    $queries_topics = \queries::dropdown_topics($appbox->get_session()->get_I18n());
+                    $queries_topics = \queries::dropdown_topics($app['phraseanet.session']->get_I18n());
                 } elseif ($registry->get('GV_client_render_topics') == 'tree') {
-                    $queries_topics = \queries::tree_topics($appbox->get_session()->get_I18n());
+                    $queries_topics = \queries::tree_topics($app['phraseanet.session']->get_I18n());
                 }
 
                 $sbas = $bas2sbas = array();

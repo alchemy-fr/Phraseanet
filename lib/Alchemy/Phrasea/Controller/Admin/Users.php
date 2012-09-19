@@ -213,7 +213,7 @@ class Users implements ControllerProviderInterface
 
                 $user_query = new \User_Query($app);
 
-                $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $app);
+                $user = $app['phraseanet.user'];
 
                 $like_value = $request->query->get('term');
                 $rights = $request->query->get('filter_rights') ? : array();
@@ -276,7 +276,7 @@ class Users implements ControllerProviderInterface
                 $request = $app['request'];
                 $user_query = new \User_Query($app);
 
-                $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $app);
+                $user = $app['phraseanet.user'];
                 $like_value = $request->request->get('like_value');
                 $like_field = $request->request->get('like_field');
                 $on_base = $request->request->get('base_id') ? : null;

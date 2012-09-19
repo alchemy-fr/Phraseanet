@@ -56,7 +56,7 @@ class Login implements ControllerProviderInterface
                         // then post login operation like getting baskets from an invit session
                         // could be done by Session_handler authentication process
 
-                        $app['phraseanet.appbox']->get_session()->set_postlog();
+                        $app['phraseanet.session']->set_postlog();
 
                         return $app->redirect("/login/logout/?redirect=" . $request->query->get('redirect', 'prod'));
                     }
@@ -660,7 +660,7 @@ class Login implements ControllerProviderInterface
         $appRedirect = $request->query->get("app");
 
         try {
-            $session = $app['phraseanet.appbox']->get_session();
+            $session = $app['phraseanet.session'];
 
             $session->logout();
             $session->remove_cookies();
@@ -795,7 +795,7 @@ class Login implements ControllerProviderInterface
     public function authenticate(Application $app, Request $request)
     {
         $appbox = $app['phraseanet.appbox'];
-        $session = $appbox->get_session();
+        $session = $app['phraseanet.session'];
         $registry = $app['phraseanet.registry'];
 
         $is_guest = false;

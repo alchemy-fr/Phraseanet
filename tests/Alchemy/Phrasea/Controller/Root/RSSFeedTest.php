@@ -104,7 +104,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
         $appbox = self::$application['phraseanet.appbox'];
         $auth = new Session_Authentication_None(self::$user);
-        $appbox->get_session()->authenticate($auth);
+        self::$application['phraseanet.session']->authenticate($auth);
 
         self::$feed_1_private = Feed_Adapter::create(self::$application, self::$user, self::$feed_1_private_title, self::$feed_1_private_subtitle);
         self::$feed_1_private->set_public(false);
@@ -157,7 +157,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
         self::$public_feeds = Feed_Collection::load_public_feeds(self::$application);
         self::$private_feeds = Feed_Collection::load_all(self::$application, self::$user);
-        $appbox->get_session()->logout();
+        self::$application['phraseanet.session']->logout();
     }
 
     public static function tearDownAfterClass()
@@ -217,12 +217,12 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
     {
         $appbox = self::$application['phraseanet.appbox'];
         $auth = new Session_Authentication_None(self::$user);
-        $appbox->get_session()->authenticate($auth);
+        self::$application['phraseanet.session']->authenticate($auth);
 
         $link = self::$feed_3_public->get_user_link($appbox->get_registry(), self::$user, Feed_Adapter::FORMAT_ATOM)->get_href();
         $link = str_replace($appbox->get_registry()->get('GV_ServerName') . 'feeds/', '/', $link);
 
-        $appbox->get_session()->logout();
+        self::$application['phraseanet.session']->logout();
 
         $this->client->request('GET', "/feeds" . $link);
         $response = $this->client->getResponse();
@@ -237,12 +237,12 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
     {
         $appbox = self::$application['phraseanet.appbox'];
         $auth = new Session_Authentication_None(self::$user);
-        $appbox->get_session()->authenticate($auth);
+        self::$application['phraseanet.session']->authenticate($auth);
 
         $link = self::$private_feeds->get_aggregate()->get_user_link($appbox->get_registry(), self::$user, Feed_Adapter::FORMAT_ATOM)->get_href();
         $link = str_replace($appbox->get_registry()->get('GV_ServerName') . 'feeds/', '/', $link);
 
-        $appbox->get_session()->logout();
+        self::$application['phraseanet.session']->logout();
 
         $this->client->request('GET', "/feeds" . $link);
         $response = $this->client->getResponse();
@@ -257,12 +257,12 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
     {
         $appbox = self::$application['phraseanet.appbox'];
         $auth = new Session_Authentication_None(self::$user);
-        $appbox->get_session()->authenticate($auth);
+        self::$application['phraseanet.session']->authenticate($auth);
 
         $link = self::$feed_1_private->get_user_link($appbox->get_registry(), self::$user, Feed_Adapter::FORMAT_ATOM)->get_href();
         $link = str_replace($appbox->get_registry()->get('GV_ServerName') . 'feeds/', '/', $link);
 
-        $appbox->get_session()->logout();
+        self::$application['phraseanet.session']->logout();
 
         $this->client->request('GET', "/feeds" . $link);
         $response = $this->client->getResponse();

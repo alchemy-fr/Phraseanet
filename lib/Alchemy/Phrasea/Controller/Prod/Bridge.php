@@ -48,7 +48,7 @@ class Bridge implements ControllerProviderInterface
             , function(Application $app) {
                 $route = new RecordHelper\Bridge($app, $app['request']);
                 $appbox = $app['phraseanet.appbox'];
-                $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $app);
+                $user = $app['phraseanet.user'];
 
                 $params = array(
                     'user_accounts'      => \Bridge_Account::get_accounts_by_user($app, $user)
@@ -72,7 +72,7 @@ class Bridge implements ControllerProviderInterface
                 $error_message = '';
                 try {
                     $appbox = $app['phraseanet.appbox'];
-                    $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $app);
+                    $user = $app['phraseanet.user'];
                     $api = \Bridge_Api::get_by_api_name($app, $api_name);
                     $connector = $api->get_connector();
 

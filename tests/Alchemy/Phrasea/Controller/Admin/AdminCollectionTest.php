@@ -8,8 +8,9 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public static $createdCollections = array();
     protected static $useExceptionHandler = true;
 
-    public static function tearDownAfterClass()
+    public function tearDown()
     {
+        self::$application['phraseanet.user'] = self::$user;
         foreach (self::$createdCollections as $collection) {
             try {
                 $collection->unmount_collection(self::$application);
@@ -23,11 +24,10 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
             }
         }
-        self::$createdCollections = null;
+        self::$createdCollections = array();
         // /!\ re enable collection
         self::$collection->enable(self::$application['phraseanet.appbox']);
-
-        parent::tearDownAfterClass();
+        parent::tearDown();
     }
 
     public function getJson($response)

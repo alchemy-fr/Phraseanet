@@ -64,8 +64,6 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testCallBackFailed()
     {
-        $appbox = self::$application['phraseanet.appbox'];
-        $session = $appbox->get_session();
         $crawler = $this->client->request('GET', '/prod/bridge/callback/unknow_api/');
         $this->assertTrue($this->client->getResponse()->isOk());
     }

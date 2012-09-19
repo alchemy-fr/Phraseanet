@@ -62,7 +62,7 @@ class Permalink extends AbstractDelivery
                     $watermark = $stamp = false;
 
                     if ($app['phraseanet.session']->is_authenticated()) {
-                        $user = \User_Adapter::getInstance($app['phraseanet.session']->get_usr_id(), $app);
+                        $user = \User_Adapter::getInstance($app['phraseanet.user']->get_id(), $app);
 
                         $watermark = !$user->ACL()->has_right_on_base($record->get_base_id(), 'nowatermark');
 

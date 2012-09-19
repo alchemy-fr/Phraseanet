@@ -24,7 +24,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testLoginRedirectPostLog()
     {
-        self::$application['phraseanet.appbox']->get_session()->logout();
+        self::$application['phraseanet.session']->logout();
 
         $this->client->request('GET', '/login/', array('postlog'  => '1', 'redirect' => 'prod'));
         $response = $this->client->getResponse();
@@ -38,7 +38,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testLoginError($warning, $notice)
     {
-        self::$application['phraseanet.appbox']->get_session()->logout();
+        self::$application['phraseanet.session']->logout();
 
         $this->client->request('GET', '/login/', array(
             'error'  => $warning,
@@ -632,9 +632,10 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testAuthenticate()
     {
-        self::$application['phraseanet.appbox']->get_session()->logout();
+        self::$application['phraseanet.session']->logout();
         $password = \random::generatePassword();
         self::$application['phraseanet.user']->set_password($password);
+        $this->client = new Client(self::$application, array());
         $this->client->request('POST', '/login/authenticate/', array(
             'login' => self::$user->get_login(),
             'pwd'   => $password
@@ -649,7 +650,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testBadAuthenticate()
     {
-        self::$application['phraseanet.appbox']->get_session()->logout();
+        self::$application['phraseanet.session']->logout();
         $this->client->request('POST', '/login/authenticate/', array(
             'login' => self::$user->get_login(),
             'pwd'   => 'test'
@@ -665,7 +666,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testMailLockedAuthenticate()
     {
-        self::$application['phraseanet.appbox']->get_session()->logout();
+        self::$application['phraseanet.session']->logout();
         $password = \random::generatePassword();
         self::$user->set_mail_locked(true);
         $this->client->request('POST', '/login/authenticate/', array(
@@ -684,7 +685,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testAuthenticateUnavailable()
     {
-        self::$application['phraseanet.appbox']->get_session()->logout();
+        self::$application['phraseanet.session']->logout();
         $password = \random::generatePassword();
         self::$application['phraseanet.registry']->set('GV_maintenance', true , \registry::TYPE_BOOLEAN);
 

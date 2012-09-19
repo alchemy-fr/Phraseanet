@@ -74,7 +74,7 @@ class Push implements ControllerProviderInterface
                     /* @var $record record_adapter */
                     foreach ($record->get_caption()->get_fields() as $caption_field) {
                         foreach ($caption_field->get_values() as $value) {
-                            if ( ! $value->getVocabularyType())
+                            if (!$value->getVocabularyType())
                                 continue;
 
                             if ($value->getVocabularyType()->getType() !== 'User')
@@ -166,11 +166,11 @@ class Push implements ControllerProviderInterface
 
                     $receivers = $request->request->get('participants');
 
-                    if ( ! is_array($receivers) || count($receivers) === 0) {
+                    if (!is_array($receivers) || count($receivers) === 0) {
                         throw new ControllerException(_('No receivers specified'));
                     }
 
-                    if ( ! is_array($pusher->get_elements()) || count($pusher->get_elements()) === 0) {
+                    if (!is_array($pusher->get_elements()) || count($pusher->get_elements()) === 0) {
                         throw new ControllerException(_('No elements to push'));
                     }
 
@@ -229,7 +229,7 @@ class Push implements ControllerProviderInterface
                             , 'to_email'   => $user_receiver->get_email()
                             , 'to_name'    => $user_receiver->get_display_name()
                             , 'url'        => $url
-                            , 'accuse'     => ! ! $request->request->get('recept', false)
+                            , 'accuse'     => !!$request->request->get('recept', false)
                             , 'message'    => $request->request->get('message')
                             , 'ssel_id'    => $Basket->getId()
                         );
@@ -237,7 +237,8 @@ class Push implements ControllerProviderInterface
                         $events_manager->trigger('__PUSH_DATAS__', $params);
                     }
 
-                    $appbox->get_session()->get_logger($BasketElement->getRecord($app)->get_databox())
+                    $app['phraseanet.session']
+                        ->get_logger($BasketElement->getRecord($app)->get_databox())
                         ->log($BasketElement->getRecord($app), \Session_Logger::EVENT_VALIDATE, $user_receiver->get_id(), '');
 
                     $app['EM']->flush();
@@ -291,11 +292,11 @@ class Push implements ControllerProviderInterface
 
                     $participants = $request->request->get('participants');
 
-                    if ( ! is_array($participants) || count($participants) === 0) {
+                    if (!is_array($participants) || count($participants) === 0) {
                         throw new ControllerException(_('No participants specified'));
                     }
 
-                    if ( ! is_array($pusher->get_elements()) || count($pusher->get_elements()) === 0) {
+                    if (!is_array($pusher->get_elements()) || count($pusher->get_elements()) === 0) {
                         throw new ControllerException(_('No elements to validate'));
                     }
 
@@ -324,7 +325,7 @@ class Push implements ControllerProviderInterface
 
                     $app['EM']->refresh($Basket);
 
-                    if ( ! $Basket->getValidation()) {
+                    if (!$Basket->getValidation()) {
                         $Validation = new \Entities\ValidationSession();
                         $Validation->setInitiator($app['phraseanet.user']);
                         $Validation->setBasket($Basket);
@@ -352,7 +353,7 @@ class Push implements ControllerProviderInterface
                         }
                     }
 
-                    if ( ! $found) {
+                    if (!$found) {
                         $participants[$user->get_id()] = array(
                             'see_others' => 1,
                             'usr_id'     => $user->get_id(),
@@ -363,7 +364,7 @@ class Push implements ControllerProviderInterface
 
                     foreach ($participants as $key => $participant) {
                         foreach (array('see_others', 'usr_id', 'agree', 'HD') as $mandatoryparam) {
-                            if ( ! array_key_exists($mandatoryparam, $participant))
+                            if (!array_key_exists($mandatoryparam, $participant))
                                 throw new ControllerException(sprintf(_('Missing mandatory parameter %s'), $mandatoryparam));
                         }
 
@@ -412,7 +413,8 @@ class Push implements ControllerProviderInterface
                             $app['EM']->merge($BasketElement);
                             $app['EM']->persist($ValidationData);
 
-                            $appbox->get_session()->get_logger($BasketElement->getRecord($app)->get_databox())
+                            $app['phraseanet.session']
+                                ->get_logger($BasketElement->getRecord($app)->get_databox())
                                 ->log($BasketElement->getRecord($app), \Session_Logger::EVENT_PUSH, $participant_user->get_id(), '');
 
                             $Participant->addValidationData($ValidationData);
@@ -433,7 +435,7 @@ class Push implements ControllerProviderInterface
                             , 'to_email'   => $participant_user->get_email()
                             , 'to_name'    => $participant_user->get_display_name()
                             , 'url'        => $url
-                            , 'accuse'     => ! ! $request->request->get('recept', false)
+                            , 'accuse'     => !!$request->request->get('recept', false)
                             , 'message'    => $request->request->get('message')
                             , 'ssel_id'    => $Basket->getId()
                         );
@@ -516,19 +518,19 @@ class Push implements ControllerProviderInterface
 
                 try {
                     /* @var $AdminUser \User_Adapter */
-                    if ( ! $AdminUser->ACL()->has_right('manageusers'))
+                    if (!$AdminUser->ACL()->has_right('manageusers'))
                         throw new ControllerException(_('You are not allowed to add users'));
 
-                    if ( ! $request->request->get('firstname'))
+                    if (!$request->request->get('firstname'))
                         throw new ControllerException(_('First name is required'));
 
-                    if ( ! $request->request->get('lastname'))
+                    if (!$request->request->get('lastname'))
                         throw new ControllerException(_('Last name is required'));
 
-                    if ( ! $request->request->get('email'))
+                    if (!$request->request->get('email'))
                         throw new ControllerException(_('Email is required'));
 
-                    if ( ! \mail::validateEmail($request->request->get('email')))
+                    if (!\mail::validateEmail($request->request->get('email')))
                         throw new ControllerException(_('Email is invalid'));
                 } catch (ControllerException $e) {
                     $result['message'] = $e->getMessage();
@@ -552,7 +554,7 @@ class Push implements ControllerProviderInterface
 
                 }
 
-                if ( ! $user instanceof \User_Adapter) {
+                if (!$user instanceof \User_Adapter) {
                     try {
                         $password = \random::generatePassword();
 

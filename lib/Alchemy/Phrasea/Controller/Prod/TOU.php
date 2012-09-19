@@ -32,7 +32,7 @@ class TOU implements ControllerProviderInterface
 
                 try {
                     $user = $app['phraseanet.user'];
-                    $session = \Session_Handler::getInstance($app);
+                    $session = $app['phraseanet.session'];
 
                     $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
 

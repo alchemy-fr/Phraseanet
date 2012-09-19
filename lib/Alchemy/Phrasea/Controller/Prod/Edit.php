@@ -386,12 +386,12 @@ class Edit implements ControllerProviderInterface
                         ->write_metas();
 
                     if ($statbits != '') {
-                        $app['phraseanet.appbox']->get_session()
+                        $app['phraseanet.session']
                             ->get_logger($record->get_databox())
                             ->log($record, \Session_Logger::EVENT_STATUS, '', '');
                     }
                     if ($editDirty) {
-                        $app['phraseanet.appbox']->get_session()
+                        $app['phraseanet.session']
                             ->get_logger($record->get_databox())
                             ->log($record, \Session_Logger::EVENT_EDIT, '', '');
                     }

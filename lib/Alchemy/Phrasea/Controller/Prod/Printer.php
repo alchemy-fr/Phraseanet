@@ -41,7 +41,7 @@ class Printer implements ControllerProviderInterface
 
                 $request = $app['request'];
 
-                $session = \Session_Handler::getInstance($app);
+                $session = $app['phraseanet.session'];
 
                 $layout = $request->request->get('lay');
 
@@ -63,7 +63,7 @@ class Printer implements ControllerProviderInterface
                 if ( ! headers_sent()) {
                     header("Pragma: public");
                 }
-                
+
                 return new Response($PDF->render(), 200, array('Content-Type' => 'application/pdf'));
             }
         );
