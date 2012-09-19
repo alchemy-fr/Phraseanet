@@ -14,13 +14,13 @@ namespace Alchemy\Phrasea\Core\Provider;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
-class BrowserServiceProvider implements ServiceProviderInterface
+class TaskManagerServiceProvider implements ServiceProviderInterface
 {
 
     public function register(Application $app)
     {
-        $app['browser'] = $app->share(function($app) {
-                return new \Browser();
+        $app['task-manager'] = $app->share(function($app) {
+                return new \task_manager($app['phraseanet.appbox']);
             });
     }
 

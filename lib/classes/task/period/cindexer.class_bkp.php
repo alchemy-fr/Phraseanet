@@ -141,7 +141,7 @@ class task_period_cindexer extends task_abstract
                         $ns->removeChild($n);
                     }
                 } else {
-                    // le champ n'existait pas dans le xml, on le cree
+                    // le champ n'existait pas dans le xml, on le cr�e
                     $ns = $dom->documentElement->appendChild($dom->createElement($pname));
                 }
                 // on fixe sa valeur
@@ -160,6 +160,40 @@ class task_period_cindexer extends task_abstract
         return($dom->saveXML());
     }
 
+    /**
+     *
+     * @param  string $xml
+     * @param  string $form
+     * @return string
+     */
+    public function xml2graphic($xml, $form)
+    {
+        if (($sxml = simplexml_load_string($xml)) != FALSE) { // in fact XML IS always valid here...
+            ?>
+            <script type="text/javascript">
+            <?php echo $form ?>.binpath.value      = "<?php echo p4string::MakeString($sxml->binpath, "js", '"') ?>";
+            <?php echo $form ?>.host.value         = "<?php echo p4string::MakeString($sxml->host, "js", '"') ?>";
+            <?php echo $form ?>.port.value         = "<?php echo p4string::MakeString($sxml->port, "js", '"') ?>";
+            <?php echo $form ?>.base.value         = "<?php echo p4string::MakeString($sxml->base, "js", '"') ?>";
+            <?php echo $form ?>.user.value         = "<?php echo p4string::MakeString($sxml->user, "js", '"') ?>";
+            <?php echo $form ?>.socket.value       = "<?php echo p4string::MakeString($sxml->socket, "js", '"') ?>";
+            <?php echo $form ?>.password.value     = "<?php echo p4string::MakeString($sxml->password, "js", '"') ?>";
+            <?php echo $form ?>.clng.value         = "<?php echo p4string::MakeString($sxml->clng, "js", '"') ?>";
+            <?php echo $form ?>.use_sbas.checked   = <?php echo trim((string) $sxml->use_sbas) != '' ? (p4field::isyes($sxml->use_sbas) ? 'true' : 'false') : 'true' ?>;
+            <?php echo $form ?>.nolog.checked      = <?php echo p4field::isyes($sxml->nolog) ? 'true' : 'false' ?>;
+            <?php echo $form ?>.winsvc_run.checked = <?php echo p4field::isyes($sxml->winsvc_run) ? 'true' : 'false' ?>;
+            <?php echo $form ?>.charset.value      = "<?php echo trim((string) $sxml->charset) != '' ? p4string::MakeString($sxml->charset, "js", '"') : 'utf8' ?>";
+            <?php echo $form ?>.debugmask.value    = "<?php echo trim((string) $sxml->debugmask) != '' ? p4string::MakeString($sxml->debugmask, "js", '"') : '0' ?>";
+                parent.calccmd();
+            </script>
+            <?php
+
+            return("");
+        } else { // ... so we NEVER come here
+            // bad xml
+            return("BAD XML");
+        }
+    }
 
     /**
      *
@@ -173,42 +207,11 @@ class task_period_cindexer extends task_abstract
         }
         ?>
         <script type="text/javascript">
-
-            function taskFillGraphic_<?php echo(get_class($this));?>(xml)
+            function calccmd()
             {
-                if(xml)
-                {
-                    xml = $.parseXML(xml);
-                    xml = $(xml);
-
-                    var isyes = function(v) {
-                        v = v.toUpperCase().trim();
-                        return v=='O' || v=='Y' || v=='OUI' || v=='YES' || v=='1';
-                    }
-
-                    with(document.forms['graphicForm'])
-                    {
-                        binpath.value      = xml.find("binpath").text();
-                        host.value         = xml.find("host").text();
-                        port.value         = xml.find("port").text();
-                        base.value         = xml.find("base").text();
-                        user.value         = xml.find("user").text();
-                        socket.value       = xml.find("socket").text();
-                        password.value     = xml.find("password").text();
-                        clng.value         = xml.find("clng").text();
-                        use_sbas.checked   = true | isyes(xml.find("use_sbas").text());
-                        nolog.checked      = isyes(xml.find("nolog").text());
-                        winsvc_run.checked = isyes(xml.find("winsvc_run").text());
-                        charset.value      = xml.find("charset").text();
-                        debugmask.value    = 0|xml.find("debugmask").text();
-                    }
-                }
-
                 var cmd = '';
                 with(document.forms['graphicForm'])
                 {
-                    use_sbas.checked = true;
-
                     cmd += binpath.value + "/<?php echo $appname ?>";
                     if(host.value)
                         cmd += " -h=" + host.value;
@@ -224,9 +227,8 @@ class task_period_cindexer extends task_abstract
                         cmd += " --socket=" + socket.value;
                     if(charset.value)
                         cmd += " --default-character-set=" + charset.value;
-
-                    cmd += " -o";
-
+                    if(use_sbas.checked)
+                        cmd += " -o";
                     if(nolog.checked)
                         cmd += " -n";
                     if(clng.value)
@@ -236,15 +238,23 @@ class task_period_cindexer extends task_abstract
                     if(winsvc_run.checked)
                         cmd += " --run";
                 }
-                $('#cmd').html(cmd);
+                document.getElementById('cmd').innerHTML = cmd;
             }
-
-            $(document).ready(function(){
-                $("#graphicForm *").change(function(){
-                    taskFillGraphic_<?php echo(get_class($this));?>(null);
-                });
-            });
-
+            function chgxmltxt(textinput, fieldname)
+            {
+                calccmd();
+                setDirty();
+            }
+            function chgxmlck(checkinput, fieldname)
+            {
+                calccmd();
+                setDirty();
+            }
+            function chgxmlpopup(popupinput, fieldname)
+            {
+                calccmd();
+                setDirty();
+            }
         </script>
         <?php
 
@@ -263,47 +273,55 @@ class task_period_cindexer extends task_abstract
         }
         ob_start();
         ?>
-        <form id="graphicForm" name="graphicForm" onsubmit="return(false);" method="post">
-            <?php echo _('task::cindexer:executable') ?>&nbsp;:&nbsp;
-            <input type="text" name="binpath" style="width:300px;text-align: right" value="">&nbsp;/&nbsp;<?php echo $appname ?>
+        <form name="graphicForm" onsubmit="return(false);" method="post">
+            <br/>
+        <?php echo _('task::cindexer:executable') ?>&nbsp;:&nbsp;
+            <input type="text" name="binpath" style="width:300px;" onchange="chgxmltxt(this, 'binpath');" value="">&nbsp;/&nbsp;<?php echo $appname ?>
+            <br/>
+        <?php echo _('task::cindexer:host') ?>&nbsp;:&nbsp;<input type="text" name="host" style="width:100px;" onchange="chgxmltxt(this, 'host');" value="">
+            <br/>
+            <?php echo _('task::cindexer:port') ?>&nbsp;:&nbsp;<input type="text" name="port" style="width:100px;" onchange="chgxmltxt(this, 'port');" value="">
+            <br/>
+            <?php echo _('task::cindexer:base') ?>&nbsp;:&nbsp;<input type="text" name="base" style="width:200px;" onchange="chgxmltxt(this, 'base');" value="">
+            <br/>
+            <?php echo _('task::cindexer:user') ?>&nbsp;:&nbsp;<input type="text" name="user" style="width:200px;" onchange="chgxmltxt(this, 'user');" value="">
+            <br/>
+            <?php echo _('task::cindexer:password') ?>&nbsp;:&nbsp;<input type="password" name="password" style="width:200px;" onchange="chgxmltxt(this, 'password');" value="">
+            <br/>
             <br/>
 
-            <?php echo _('task::cindexer:host') ?>&nbsp;:&nbsp;<input type="text" name="host" style="width:100px;" value="">
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <?php echo _('task::cindexer:port') ?>&nbsp;:&nbsp;<input type="text" name="port" style="width:50px;" value="">
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <?php echo _('task::cindexer:base') ?>&nbsp;:&nbsp;<input type="text" name="base" style="width:100px;" value="">
+        <?php echo _('task::cindexer:control socket') ?>&nbsp;:&nbsp;<input type="text" name="socket" style="width:50px;" onchange="chgxmltxt(this, 'socket');" value="">
+            <br/>
+            <?php echo _('task::cindexer:Debug mask') ?>&nbsp;:&nbsp;<input type="text" name="debugmask" style="width:50px;" onchange="chgxmltxt(this, 'debugmask');" value="">
+            <br/>
             <br/>
 
-            <?php echo _('task::cindexer:user') ?>&nbsp;:&nbsp;<input type="text" name="user" style="width:100px;" value="">
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <?php echo _('task::cindexer:password') ?>&nbsp;:&nbsp;<input type="password" name="password" style="width:100px;" value="">
+            <div style="display:none;">
+                <input type="checkbox" name="use_sbas" onclick="chgxmlck(this, 'old');">&nbsp;<?php echo _('task::cindexer:use table \'sbas\' (unchecked: use \'xbas\')') ?>
+                <br/>
+            </div>
+
+        <?php echo _('task::cindexer:MySQL charset') ?>&nbsp;:&nbsp;<input type="text" name="charset" style="width:100px;" onchange="chgxmltxt(this, 'charset');" value="">
             <br/>
 
-            <?php echo _('task::cindexer:MySQL charset') ?>&nbsp;:&nbsp;<input type="text" name="charset" style="width:100px;" value="">
+            <input type="checkbox" name="nolog" onclick="chgxmlck(this, 'nolog');">&nbsp;<?php echo _('task::cindexer:do not (sys)log, but out to console)') ?>
             <br/>
 
-            <?php echo _('task::cindexer:control socket') ?>&nbsp;:&nbsp;<input type="text" name="socket" style="width:50px;" value="">
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <?php echo _('task::cindexer:Debug mask') ?>&nbsp;:&nbsp;<input type="text" name="debugmask" style="width:50px;" value="">
+        <?php echo _('task::cindexer:default language for new candidates') ?>&nbsp;:&nbsp;<input type="text" name="clng" style="width:50px;" onchange="chgxmltxt(this, 'clng');" value="">
+            <br/>
             <br/>
 
-            <input type="checkbox" name="use_sbas" checked="checked" disabled="disabled">&nbsp;<?php echo _('task::cindexer:use table \'sbas\' (unchecked: use \'xbas\')') ?>
+            <hr/>
+
+            <br/>
+        <?php echo _('task::cindexer:windows specific') ?>&nbsp;:<br/>
+            <input type="checkbox" name="winsvc_run" onclick="chgxmlck(this, 'run');">&nbsp;<?php echo _('task::cindexer:run as application, not as service') ?>
             <br/>
 
-            <?php echo _('task::cindexer:default language for new candidates') ?>&nbsp;:&nbsp;<input type="text" name="clng" style="width:50px;" value="">
-            <br/>
-
-            <input type="checkbox" name="nolog">&nbsp;<?php echo _('task::cindexer:do not (sys)log, but out to console)') ?>
-            <br/>
-
-
-            <?php echo _('task::cindexer:windows specific') ?>&nbsp;:<br/>
-            <input type="checkbox" name="winsvc_run">&nbsp;<?php echo _('task::cindexer:run as application, not as service') ?>
         </form>
-
+        <br>
         <center>
-            <div style="margin:10px; padding:5px; border:1px #000000 solid; font-family:monospace; font-size:14px; text-align:left; color:#00e000; background-color:#404040" id="cmd">cmd</div>
+            <div style="margin:10px; padding:5px; border:1px #000000 solid; font-family:monospace; font-size:16px; text-align:left; color:#00e000; background-color:#404040" id="cmd">cmd</div>
         </center>
         <?php
 
@@ -383,10 +401,10 @@ class task_period_cindexer extends task_abstract
             $args[] = '--socket=' . $this->socket;
             $args_nopwd[] = '--socket=' . $this->socket;
         }
-
-        $args[] = '-o';
-        $args_nopwd[] = '-o';
-
+        if ($this->use_sbas) {
+            $args[] = '-o';
+            $args_nopwd[] = '-o';
+        }
         if ($this->charset) {
             $args[] = '--default-character-set=' . $this->charset;
             $args_nopwd[] = '--default-character-set=' . $this->charset;

@@ -85,51 +85,48 @@ class task_period_ftp extends task_appboxAbstract
 
     /**
      *
-     * @param  string $xml
-     * @param  string $form
-     * @return string
-     */
-    public function xml2graphic($xml, $form)
-    {
-        if (($sxml = simplexml_load_string($xml)) != FALSE) { // in fact XML IS always valid here...
-            // ... but we could check for safe values (ex. 0 < period < 3600)
-            ?>
-            <script type="text/javascript">
-            <?php echo $form ?>.proxy.value = "<?php echo p4string::MakeString($sxml->proxy, "js", '"') ?>";
-            <?php echo $form ?>.proxyport.value = "<?php echo p4string::MakeString($sxml->proxyport, "js", '"') ?>";
-            <?php echo $form ?>.period.value = "<?php echo p4string::MakeString($sxml->period, "js", '"') ?>";
-            </script>
-            <?php
-
-            return("");
-        } else { // ... so we NEVER come here
-            // bad xml
-            return("BAD XML");
-        }
-    }
-
-    /**
-     *
      * @return void
      */
     public function printInterfaceJS()
     {
         ?>
         <script type="text/javascript">
-            function chgxmltxt(textinput, fieldname)
+            function taskFillGraphic_<?php echo(get_class($this));?>(xml)
             {
-                setDirty();
+                if(xml)
+                {
+                    xml = $.parseXML(xml);
+                    xml = $(xml);
+
+                    with(document.forms['graphicForm'])
+                    {
+                        proxy.value     = xml.find("proxy").text();
+                        proxyport.value = xml.find("proxyport").text();
+                        period.value    = xml.find("period").text();
+                    }
+                }
             }
 
-            function chgxmlck(checkinput, fieldname)
-            {
-                setDirty();
-            }
-
-            function chgxmlpopup(popupinput, fieldname)
-            {
-                setDirty();
-            }
+            $(document).ready(function(){
+                $("#graphicForm *").change(function(){
+                    var limits = {
+                                    'period': {min:10, max:3600, allowempty:false}
+                                } ;
+                    var name = $(this).attr("name");
+                    if(name && limits[name])
+                    {
+                        var v = $(this).val();
+                        if(v != "" || !limits[name].allowempty)
+                        {
+                            v = 0|v;
+                            if(v < limits[name].min)
+                                $(this).val(limits[name].min);
+                            else if(v > limits[name].max)
+                                $(this).val(limits[name].max);
+                        }
+                    }
+                });
+            });
         </script>
         <?php
 
@@ -144,18 +141,18 @@ class task_period_ftp extends task_appboxAbstract
     {
         ob_start();
         ?>
-        <form name="graphicForm" onsubmit="return(false);" method="post">
+        <form id="graphicForm" name="graphicForm" onsubmit="return(false);" method="post">
             <br/>
-            <?php echo('task::ftp:proxy') ?>
-            <input type="text" name="proxy" style="width:400px;" onchange="chgxmltxt(this, 'proxy');"><br/>
+            <?php echo _('task::ftp:proxy') ?>
+            <input type="text" name="proxy" style="width:400px;"><br/>
             <br/>
-            <?php echo('task::ftp:proxy port') ?>
-            <input type="text" name="proxyport" style="width:400px;" onchange="chgxmltxt(this, 'proxyport');"><br/>
+            <?php echo _('task::ftp:proxy port') ?>
+            <input type="text" name="proxyport" style="width:400px;"><br/>
             <br/>
 
-            <?php echo('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
-            <input type="text" name="period" style="width:40px;" onchange="chgxmltxt(this, 'period');">
-            &nbsp;<?php echo('task::_common_:secondes (unite temporelle)') ?><br/>
+            <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
+            <input type="text" name="period" style="width:40px;">
+            &nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
         </form>
         <?php
 
