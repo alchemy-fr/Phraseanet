@@ -357,7 +357,7 @@ class ValidationSession
                 );
             }
         } else {
-            if ($this->getParticipant($user)->getCanSeeOthers()) {
+            if ($this->getParticipant($user, $app)->getCanSeeOthers()) {
                 return sprintf(
                         _('Processus de validation recu de %s et concernant %d utilisateurs')
                         , $this->getInitiator($app)->get_display_name()
