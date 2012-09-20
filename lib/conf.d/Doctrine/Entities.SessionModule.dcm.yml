@@ -1,0 +1,33 @@
+Entities\SessionModule:
+  type: entity
+  repositoryClass: Repositories\SessionModuleRepository
+  table: SessionModules
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  uniqueConstraints:
+    unique_module:
+      columns: session_id,module_id
+  fields:
+    module_id:
+      type: integer
+    created:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: create
+    updated:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: update
+  manyToOne:
+    session:
+      targetEntity: Session
+      inversedBy: modules
+      joinColumn:
+        name: session_id
+        referencedColumnName: id
+      cascade: ["persist"]
