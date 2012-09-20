@@ -41,7 +41,7 @@ class ValidationParticipant extends \Entities\ValidationParticipant implements \
         return $this->__isInitialized__;
     }
 
-
+    
     public function getId()
     {
         if ($this->__isInitialized__ === false) {
@@ -99,7 +99,7 @@ class ValidationParticipant extends \Entities\ValidationParticipant implements \
         return parent::setUser($user);
     }
 
-    public function getUser(Application $app)
+    public function getUser(\Alchemy\Phrasea\Application $app)
     {
         $this->__load();
         return parent::getUser($app);
@@ -185,6 +185,6 @@ class ValidationParticipant extends \Entities\ValidationParticipant implements \
             }
             unset($this->_entityPersister, $this->_identifier);
         }
-
+        
     }
 }

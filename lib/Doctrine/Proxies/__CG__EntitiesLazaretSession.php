@@ -41,7 +41,7 @@ class LazaretSession extends \Entities\LazaretSession implements \Doctrine\ORM\P
         return $this->__isInitialized__;
     }
 
-
+    
     public function getId()
     {
         if ($this->__isInitialized__ === false) {
@@ -57,7 +57,7 @@ class LazaretSession extends \Entities\LazaretSession implements \Doctrine\ORM\P
         return parent::setUsrId($usrId);
     }
 
-    public function getUser(Application $app)
+    public function getUser(\Alchemy\Phrasea\Application $app)
     {
         $this->__load();
         return parent::getUser($app);
@@ -131,6 +131,6 @@ class LazaretSession extends \Entities\LazaretSession implements \Doctrine\ORM\P
             }
             unset($this->_entityPersister, $this->_identifier);
         }
-
+        
     }
 }

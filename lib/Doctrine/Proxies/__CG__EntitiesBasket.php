@@ -41,7 +41,7 @@ class Basket extends \Entities\Basket implements \Doctrine\ORM\Proxy\Proxy
         return $this->__isInitialized__;
     }
 
-
+    
     public function getId()
     {
         if ($this->__isInitialized__ === false) {
@@ -159,7 +159,7 @@ class Basket extends \Entities\Basket implements \Doctrine\ORM\Proxy\Proxy
         return parent::setPusher($user);
     }
 
-    public function getPusher(Application $app)
+    public function getPusher(\Alchemy\Phrasea\Application $app)
     {
         $this->__load();
         return parent::getPusher($app);
@@ -171,7 +171,7 @@ class Basket extends \Entities\Basket implements \Doctrine\ORM\Proxy\Proxy
         return parent::setOwner($user);
     }
 
-    public function getOwner(Application $app)
+    public function getOwner(\Alchemy\Phrasea\Application $app)
     {
         $this->__load();
         return parent::getOwner($app);
@@ -201,13 +201,13 @@ class Basket extends \Entities\Basket implements \Doctrine\ORM\Proxy\Proxy
         return parent::getIsRead();
     }
 
-    public function hasRecord(Application $app, \record_adapter $record)
+    public function hasRecord(\Alchemy\Phrasea\Application $app, \record_adapter $record)
     {
         $this->__load();
         return parent::hasRecord($app, $record);
     }
 
-    public function getSize(Application $app)
+    public function getSize(\Alchemy\Phrasea\Application $app)
     {
         $this->__load();
         return parent::getSize($app);
@@ -233,6 +233,6 @@ class Basket extends \Entities\Basket implements \Doctrine\ORM\Proxy\Proxy
             }
             unset($this->_entityPersister, $this->_identifier);
         }
-
+        
     }
 }
