@@ -2,6 +2,7 @@
 
 namespace Entities;
 
+use Alchemy\Phrasea\Application;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -9,87 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Session
 {
-    /**
-     * @var string $sess_id
-     */
-    private $sess_id;
-
-    /**
-     * @var text $sess_data
-     */
-    private $sess_data;
-
-    /**
-     * @var timestamp $sess_time
-     */
-    private $sess_time;
-
-
-    /**
-     * Set sess_id
-     *
-     * @param string $sessId
-     * @return Session
-     */
-    public function setSessId($sessId)
-    {
-        $this->sess_id = $sessId;
-        return $this;
-    }
-
-    /**
-     * Get sess_id
-     *
-     * @return string 
-     */
-    public function getSessId()
-    {
-        return $this->sess_id;
-    }
-
-    /**
-     * Set sess_data
-     *
-     * @param text $sessData
-     * @return Session
-     */
-    public function setSessData($sessData)
-    {
-        $this->sess_data = $sessData;
-        return $this;
-    }
-
-    /**
-     * Get sess_data
-     *
-     * @return text 
-     */
-    public function getSessData()
-    {
-        return $this->sess_data;
-    }
-
-    /**
-     * Set sess_time
-     *
-     * @param timestamp $sessTime
-     * @return Session
-     */
-    public function setSessTime(\timestamp $sessTime)
-    {
-        $this->sess_time = $sessTime;
-        return $this;
-    }
-
-    /**
-     * Get sess_time
-     *
-     * @return timestamp 
-     */
-    public function getSessTime()
-    {
-        return $this->sess_time;
-    }
     /**
      * @var integer $id
      */
@@ -155,15 +75,19 @@ class Session
      */
     private $updated;
 
-
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
         return $this->id;
+    }
+
+    public function setUser(\User_Adapter $user)
+    {
+        return $this->setUsrId($user->get_id());
     }
 
     /**
@@ -178,10 +102,17 @@ class Session
         return $this;
     }
 
+    public function getUser(Application $app)
+    {
+        if ($this->getUsrId()) {
+            return new \User_Adapter($this->getUsrId(), $app);
+        }
+    }
+
     /**
      * Get usr_id
      *
-     * @return integer 
+     * @return integer
      */
     public function getUsrId()
     {
@@ -203,7 +134,7 @@ class Session
     /**
      * Get user_agent
      *
-     * @return string 
+     * @return string
      */
     public function getUserAgent()
     {
@@ -225,7 +156,7 @@ class Session
     /**
      * Get ip_address
      *
-     * @return string 
+     * @return string
      */
     public function getIpAddress()
     {
@@ -247,7 +178,7 @@ class Session
     /**
      * Get platform
      *
-     * @return string 
+     * @return string
      */
     public function getPlatform()
     {
@@ -269,7 +200,7 @@ class Session
     /**
      * Get browser_name
      *
-     * @return string 
+     * @return string
      */
     public function getBrowserName()
     {
@@ -291,7 +222,7 @@ class Session
     /**
      * Get browser_version
      *
-     * @return string 
+     * @return string
      */
     public function getBrowserVersion()
     {
@@ -313,7 +244,7 @@ class Session
     /**
      * Get screen_width
      *
-     * @return integer 
+     * @return integer
      */
     public function getScreenWidth()
     {
@@ -335,7 +266,7 @@ class Session
     /**
      * Get screen_height
      *
-     * @return integer 
+     * @return integer
      */
     public function getScreenHeight()
     {
@@ -357,7 +288,7 @@ class Session
     /**
      * Get token
      *
-     * @return string 
+     * @return string
      */
     public function getToken()
     {
@@ -379,7 +310,7 @@ class Session
     /**
      * Get nonce
      *
-     * @return string 
+     * @return string
      */
     public function getNonce()
     {
@@ -401,7 +332,7 @@ class Session
     /**
      * Get created
      *
-     * @return datetime 
+     * @return datetime
      */
     public function getCreated()
     {
@@ -423,10 +354,52 @@ class Session
     /**
      * Get updated
      *
-     * @return datetime 
+     * @return datetime
      */
     public function getUpdated()
     {
         return $this->updated;
+    }
+    /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    private $modules;
+
+    public function __construct()
+    {
+        $this->modules = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add modules
+     *
+     * @param Entities\SessionModule $modules
+     * @return Session
+     */
+    public function addSessionModule(\Entities\SessionModule $modules)
+    {
+        $this->modules[] = $modules;
+        return $this;
+    }
+
+    /**
+     * Get modules
+     *
+     * @return Doctrine\Common\Collections\Collection
+     */
+    public function getModules()
+    {
+        return $this->modules;
+    }
+
+    public function hasModuleId($moduleId)
+    {
+        foreach ($this->getModules() as $module) {
+            if ($module->getModuleId() == $moduleId) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
