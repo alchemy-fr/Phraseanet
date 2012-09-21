@@ -8,23 +8,26 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-/* @var $Core \Alchemy\Phrasea\Core */
-$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
-$appbox = appbox::get_instance($Core);
-$session = $appbox->get_session();
+
+require_once __DIR__ . "/../../lib/bootstrap.php";
+$app = new Application();
+$appbox = $app['phraseanet.appbox'];
 $registry = $appbox->get_registry();
 
-$user = $Core->getAuthenticatedUser();
+$user = $app['phraseanet.user'];
 
 $request = http_request::getInstance();
 $parm = $request->get_parms("lst", "SSTTID", "story");
 
-$gatekeeper = gatekeeper::getInstance($Core);
+$gatekeeper = gatekeeper::getInstance($app);
 $gatekeeper->require_session();
 
 if ($registry->get('GV_needAuth2DL') && $user->is_guest()) {
@@ -38,13 +41,10 @@ if ($registry->get('GV_needAuth2DL') && $user->is_guest()) {
 }
 
 
-$download = new set_export($parm['lst'], $parm['SSTTID'], $parm['story']);
-$user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+$download = new set_export($app, $parm['lst'], $parm['SSTTID'], $parm['story']);
+$user = $app['phraseanet.user'];
 
-$core = \bootstrap::getCore();
-$twig = $core->getTwig();
-
-echo $twig->render('common/dialog_export.html.twig', array(
+echo $app['twig']->render('common/dialog_export.html.twig', array(
     'download'             => $download,
     'ssttid'               => $parm['SSTTID'],
     'lst'                  => $download->serialize_list(),

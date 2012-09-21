@@ -8,22 +8,25 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-/* @var $Core \Alchemy\Phrasea\Core */
-$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 
-$appbox = appbox::get_instance($Core);
+require_once __DIR__ . "/../../lib/bootstrap.php";
+$app = new Application();
+$appbox = $app['phraseanet.appbox'];
 
 $request = http_request::getInstance();
 $parm = $request->get_parms('token', 'get', 'type');
 
 ob_start(null, 0);
 try {
-    $datas = ((random::helloToken($parm['token'])));
+    $datas = ((random::helloToken($app, $parm['token'])));
 } catch (Exception_NotFound $e) {
     phrasea::headers(204);
 }
@@ -34,11 +37,11 @@ if (($list = @unserialize($datas['datas'])) == false) {
     phrasea::headers(500);
 }
 
-$registry = registry::get_instance();
+$registry = $app['phraseanet.registry'];
 $zipFile = $registry->get('GV_RootPath') . 'tmp/download/' . $datas['value'] . '.zip';
 
 if (isset($parm['get']) && $parm['get'] == '1') {
-    $response = set_export::stream_file($zipFile, $list['export_name'], 'application/zip');
+    $response = set_export::stream_file($app['phraseanet.registry'], $zipFile, $list['export_name'], 'application/zip');
     $response->send();
     set_export::log_download($list, $parm['type'], true, (isset($list['email']) ? $list['email'] : ''));
 
@@ -135,7 +138,7 @@ foreach ($files as $file) {
     $size = 0;
     ?>
                         <tr valign="middle">
-                            <td><?php echo phrasea::sbas_names(phrasea::sbasFromBas($file['base_id'])) ?> (<?php echo phrasea::bas_names($file['base_id']) ?>)</td>
+                            <td><?php echo phrasea::sbas_names(phrasea::sbasFromBas($app, $file['base_id']), $app) ?> (<?php echo phrasea::bas_names($file['base_id'], $app) ?>)</td>
                             <td><?php echo $file['original_name'] ?></td>
                             <td><?php
     foreach ($file['subdefs'] as $k => $v) {

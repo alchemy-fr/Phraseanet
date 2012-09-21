@@ -9,26 +9,24 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-/* @var $Core \Alchemy\Phrasea\Core */
-$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
-
-$em = $Core->getEntityManager();
-
-$appbox = appbox::get_instance($Core);
-$session = $appbox->get_session();
-$session->close_storage();
+require_once __DIR__ . "/../../lib/bootstrap.php";
+$app = new Application();
+$appbox = $app['phraseanet.appbox'];
 $ret = array('status'  => 'unknown', 'message' => false);
 
 $request = http_request::getInstance();
 $parm = $request->get_parms('usr', 'app');
 
-if ($session->is_authenticated()) {
-    $usr_id = $session->get_usr_id();
+if ($app->isAuthenticated()) {
+    $usr_id = $app['phraseanet.user']->get_id();
     if ($usr_id != $parm['usr']) { //i logged with another user
         $ret['status'] = 'disconnected';
         die(p4string::jsonencode($ret));
@@ -38,7 +36,7 @@ if ($session->is_authenticated()) {
     die(p4string::jsonencode($ret));
 }
 
-$user = $Core->getAuthenticatedUser();
+$user = $app['phraseanet.user'];
 
 try {
     $conn = $appbox->get_connection();
@@ -48,24 +46,30 @@ try {
 
 $ret['apps'] = 1;
 
-$session->set_event_module($parm['app'], true);
+
+$session = $app['EM']->find('Entities\Session', $app['session']->get('session_id'));
+
+if (!$session->hasModuleId($parm['app'])) {
+    $module = new \Entities\SessionModule();
+    $module->setModuleId($parm['app']);
+    $module->setSession($session);
+    $app['EM']->persist($module);
+    $app['EM']->persist($session);
+}
 
 $ret['status'] = 'ok';
 $ret['notifications'] = false;
 
-$evt_mngr = $Core['events-manager'];
+$evt_mngr = $app['events-manager'];
 $notif = $evt_mngr->get_notifications();
 
 $browser = Browser::getInstance();
 
-$core = \bootstrap::getCore();
-$twig = $core->getTwig();
-
-$ret['notifications'] = $twig->render('prod/notifications.html.twig', array('notifications' => $notif));
+$ret['notifications'] = $app['twig']->render('prod/notifications.html.twig', array('notifications' => $notif));
 
 $ret['changed'] = array();
 
-$repository = $em->getRepository('\Entities\Basket');
+$repository = $app['EM']->getRepository('\Entities\Basket');
 
 /* @var $repository \Repositories\BasketRepository */
 $baskets = $repository->findUnreadActiveByUser($user);
@@ -75,7 +79,7 @@ foreach ($baskets as $basket) {
 }
 
 
-if (in_array($session->get_session_prefs('message'), array('1', null))) {
+if (in_array($app['session']->get('message'), array('1', null))) {
     $registry = $appbox->get_registry();
     if ($registry->get('GV_maintenance')) {
 

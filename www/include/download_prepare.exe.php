@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -16,9 +17,10 @@ use Symfony\Component\Filesystem\Filesystem;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 
-$gatekeeper = gatekeeper::getInstance($Core);
+$app = new Application();
+$gatekeeper = gatekeeper::getInstance($app);
 $gatekeeper->require_session();
 
 $request = http_request::getInstance();
@@ -26,7 +28,7 @@ $parm = $request->get_parms('token');
 
 $token = (string) ($parm["token"]);
 try {
-    $datas = ((random::helloToken($token)));
+    $datas = ((random::helloToken($app, $token)));
 } catch (Exception_NotFound $e) {
     die('0');
 }
@@ -41,7 +43,7 @@ set_time_limit(0);
 session_write_close();
 ignore_user_abort(true);
 
-$registry = registry::get_instance();
+$registry = $app['phraseanet.registry'];
 $zipFile = $registry->get('GV_RootPath') . 'tmp/download/' . $datas['value'] . '.zip';
 set_export::build_zip(new Filesystem(), $token, $list, $zipFile);
 

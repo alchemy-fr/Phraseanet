@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -17,18 +19,13 @@
 ignore_user_abort(true);
 set_time_limit(0);
 
-/* @var $Core \Alchemy\Phrasea\Core */
-$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
-$appbox = appbox::get_instance($Core);
-$session = $appbox->get_session();
+
+require_once __DIR__ . "/../../lib/bootstrap.php";
+$app = new Application();
 $request = http_request::getInstance();
 $parm = $request->get_parms("app");
 
 
-if ( ! $session->is_authenticated()) {
+if ( ! $app->isAuthenticated()) {
     return;
 }
-
-$session->set_event_module($parm['app'], false);
-
-

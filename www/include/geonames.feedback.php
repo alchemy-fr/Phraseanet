@@ -9,12 +9,15 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
 include(__DIR__ . '/../../lib/bootstrap.php');
+$app = new Application;
 $output = '';
 
 $request = http_request::getInstance();
@@ -24,11 +27,7 @@ $action = $parm['action'];
 
 switch ($action) {
     case 'FIND':
-        $geoname = new geonames();
-        $core = \bootstrap::getCore();
-        $twig = $core->getTwig();
-
-        $output = $twig->render('geonames/city_list.html.twig', array('geonames' => $geoname->find_city($parm['city'])));
+        $output = $app['twig']->render('geonames/city_list.html.twig', array('geonames' => $app['geonames']->find_city($parm['city'])));
         break;
 }
 
