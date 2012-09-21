@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 use Alchemy\Phrasea\CLI;
+use Alchemy\Phrasea\Core\Configuration;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class module_console_schedulerStateTest extends PHPUnit_Framework_TestCase
@@ -21,14 +22,14 @@ class module_console_schedulerStateTest extends PHPUnit_Framework_TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()));
 
-        $task_manager = new task_manager(appbox::get_instance(\bootstrap::getCore()));
+        $task_manager = new task_manager(self::$application);
         $state = $task_manager->getSchedulerState();
 
         $sentence = sprintf('Scheduler is %s', $state['status']);
         $this->assertTrue(strpos($commandTester->getDisplay(), $sentence) !== false);
 
         $commandTester->execute(array('command' => $command->getName(), '--short'=>true));
-        $task_manager = new task_manager(appbox::get_instance(\bootstrap::getCore()));
+        $task_manager = new task_manager(self::$application);
         $state = $task_manager->getSchedulerState();
 
         $sentence = sprintf('%s(%s)', $state['status'], $state['pid']);

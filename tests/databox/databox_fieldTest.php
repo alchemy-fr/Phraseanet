@@ -25,10 +25,10 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
         $this->object_multi = $this->databox->get_meta_structure()->get_element_by_name($this->name_multi);
 
         if ( ! $this->object_mono instanceof databox_field) {
-            $this->object_mono = databox_field::create($this->databox, $this->name_mono, false);
+            $this->object_mono = databox_field::create(self::$application, $this->databox, $this->name_mono, false);
         }
         if ( ! $this->object_multi instanceof databox_field) {
-            $this->object_multi = databox_field::create($this->databox, $this->name_multi, true);
+            $this->object_multi = databox_field::create(self::$application, $this->databox, $this->name_multi, true);
         }
     }
 
@@ -51,10 +51,10 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
 
     public function testGet_instance()
     {
-        $instance = databox_field::get_instance($this->databox, $this->object_mono->get_id());
+        $instance = databox_field::get_instance(self::$application, $this->databox, $this->object_mono->get_id());
         $this->assertEquals($this->object_mono->get_id(), $instance->get_id());
 
-        $instance = databox_field::get_instance($this->databox, $this->object_multi->get_id());
+        $instance = databox_field::get_instance(self::$application, $this->databox, $this->object_multi->get_id());
         $this->assertEquals($this->object_multi->get_id(), $instance->get_id());
     }
 
@@ -163,8 +163,8 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
 
     public function testGet_tag()
     {
-        $this->assertInstanceOf('\\PHPExiftool\\Driver\\Tag', $this->object_mono->get_tag());
-        $this->assertInstanceOf('\\PHPExiftool\\Driver\\Tag', $this->object_multi->get_tag());
+        $this->assertInstanceOf('\\PHPExiftool\\Driver\\TagInterface', $this->object_mono->get_tag());
+        $this->assertInstanceOf('\\PHPExiftool\\Driver\\TagInterface', $this->object_multi->get_tag());
     }
 
     public function testGet_dces_element()

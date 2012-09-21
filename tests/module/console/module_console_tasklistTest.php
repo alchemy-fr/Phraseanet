@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 use Alchemy\Phrasea\CLI;
+use Alchemy\Phrasea\Core\Configuration;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class module_console_tasklistTest extends PHPUnit_Framework_TestCase
@@ -21,12 +22,12 @@ class module_console_tasklistTest extends PHPUnit_Framework_TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()));
 
-        $task_manager = new task_manager(appbox::get_instance(\bootstrap::getCore()));
+        $task_manager = new task_manager(self::$application);
         $lines = explode("\n", trim($commandTester->getDisplay()));
 
-        if (count($task_manager->getTasks($application)) > 0) {
-            $this->assertEquals(count($task_manager->getTasks($application)), count($lines));
-            foreach ($task_manager->getTasks($application) as $task) {
+        if (count($task_manager->getTasks()) > 0) {
+            $this->assertEquals(count($task_manager->getTasks()), count($lines));
+            foreach ($task_manager->getTasks() as $task) {
                 $this->assertTrue(strpos($commandTester->getDisplay(), $task->getTitle()) !== false);
             }
         } else {

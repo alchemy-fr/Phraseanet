@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Core\Configuration;
+
 require_once __DIR__ . '/../../PhraseanetPHPUnitAbstract.class.inc';
 
 class API_OAuth2_AuthCodeTest extends PhraseanetPHPUnitAbstract
@@ -9,20 +11,20 @@ class API_OAuth2_AuthCodeTest extends PhraseanetPHPUnitAbstract
      */
     protected $object;
     protected $code;
-    protected $application;
+
     protected $account;
 
     public function setUp()
     {
         parent::setUp();
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $this->application = API_OAuth2_Application::create($appbox, self::$user, 'test app');
-        $this->account = API_OAuth2_Account::load_with_user($appbox, $this->application, self::$user);
+        $appbox = self::$application['phraseanet.appbox'];
+        $this->application = API_OAuth2_Application::create(self::$application, self::$user, 'test app');
+        $this->account = API_OAuth2_Account::load_with_user(self::$application, $this->application, self::$user);
 
         $expires = time() + 100;
         $this->code = random::generatePassword(8);
 
-        $this->object = API_OAuth2_AuthCode::create($appbox, $this->account, $this->code, $expires);
+        $this->object = API_OAuth2_AuthCode::create(self::$application, $this->account, $this->code, $expires);
     }
 
     public function tearDown()
@@ -74,7 +76,7 @@ class API_OAuth2_AuthCodeTest extends PhraseanetPHPUnitAbstract
 
     public function testLoad_codes_by_account()
     {
-        $this->assertTrue(is_array(API_OAuth2_AuthCode::load_codes_by_account(appbox::get_instance(\bootstrap::getCore()), $this->account)));
-        $this->assertTrue(count(API_OAuth2_AuthCode::load_codes_by_account(appbox::get_instance(\bootstrap::getCore()), $this->account)) > 0);
+        $this->assertTrue(is_array(API_OAuth2_AuthCode::load_codes_by_account(self::$application, $this->account)));
+        $this->assertTrue(count(API_OAuth2_AuthCode::load_codes_by_account(self::$application, $this->account)) > 0);
     }
 }

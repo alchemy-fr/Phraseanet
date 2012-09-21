@@ -112,39 +112,39 @@ class databox_statusTest extends PhraseanetPHPUnitAbstract
 
     public function testOperation_and()
     {
-        $this->assertEquals('0', databox_status::operation_and('0x001', '0x010'));
-        $this->assertEquals('1', databox_status::operation_and('01', '11'));
-        $this->assertEquals('0', databox_status::operation_and('01', '10'));
-        $this->assertEquals('10', databox_status::operation_and('11', '10'));
+        $this->assertEquals('0', databox_status::operation_and(self::$application, '0x001', '0x010'));
+        $this->assertEquals('1', databox_status::operation_and(self::$application, '01', '11'));
+        $this->assertEquals('0', databox_status::operation_and(self::$application, '01', '10'));
+        $this->assertEquals('10', databox_status::operation_and(self::$application, '11', '10'));
     }
 
     public function testOperation_and_not()
     {
-        $this->assertEquals('0', databox_status::operation_and_not('0x001', '0x011'));
-        $this->assertEquals('0', databox_status::operation_and_not('01', '11'));
-        $this->assertEquals('1', databox_status::operation_and_not('01', '10'));
-        $this->assertEquals('1', databox_status::operation_and_not('11', '10'));
-        $this->assertEquals('10', databox_status::operation_and_not('10', '01'));
+        $this->assertEquals('0', databox_status::operation_and_not(self::$application, '0x001', '0x011'));
+        $this->assertEquals('0', databox_status::operation_and_not(self::$application, '01', '11'));
+        $this->assertEquals('1', databox_status::operation_and_not(self::$application, '01', '10'));
+        $this->assertEquals('1', databox_status::operation_and_not(self::$application, '11', '10'));
+        $this->assertEquals('10', databox_status::operation_and_not(self::$application, '10', '01'));
     }
 
     public function testOperation_or()
     {
-        $this->assertEquals('10001', databox_status::operation_or('0x001', '0x011'));
-        $this->assertEquals('11', databox_status::operation_or('01', '11'));
+        $this->assertEquals('10001', databox_status::operation_or(self::$application, '0x001', '0x011'));
+        $this->assertEquals('11', databox_status::operation_or(self::$application, '01', '11'));
     }
 
     public function testDec2bin()
     {
-        $this->assertEquals('1010', databox_status::dec2bin('10'));
+        $this->assertEquals('1010', databox_status::dec2bin(self::$application, '10'));
     }
 
     public function testHex2bin()
     {
-        $this->assertEquals('10100001', databox_status::hex2bin('0x0A1'));
-        $this->assertEquals('10100001', databox_status::hex2bin('0A1'));
+        $this->assertEquals('10100001', databox_status::hex2bin(self::$application, '0x0A1'));
+        $this->assertEquals('10100001', databox_status::hex2bin(self::$application, '0A1'));
 
         try {
-            databox_status::hex2bin('G1');
+            databox_status::hex2bin(self::$application, 'G1');
             $this->fail('Should raise an exception');
         } catch (Exception $e) {
 

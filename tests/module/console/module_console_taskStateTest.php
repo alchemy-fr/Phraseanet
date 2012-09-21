@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 use Alchemy\Phrasea\CLI;
+use Alchemy\Phrasea\Core\Configuration;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class module_console_taskStateTest extends PhraseanetPHPUnitAbstract
@@ -30,12 +31,12 @@ class module_console_taskStateTest extends PhraseanetPHPUnitAbstract
         $this->assertTrue(strpos($commandTester->getDisplay(), $sentence) !== false);
 
         // test good tasks ids
-        $task_manager = new task_manager(appbox::get_instance(\bootstrap::getCore()));
-        $tasks = $task_manager->getTasks($application);
+        $task_manager = new task_manager(self::$application);
+        $tasks = $task_manager->getTasks();
         $tids = array();    // list known ids of tasks so we can generate a 'unknown id' later
         foreach ($tasks as $task) {
             $tids[] = $task->getID();
-            $task = $task_manager->getTask($application, $task->getID());
+            $task = $task_manager->getTask($task->getID());
             $state = $task->getState();
             $pid = $task->getPID();
 
@@ -63,5 +64,3 @@ class module_console_taskStateTest extends PhraseanetPHPUnitAbstract
 
     }
 }
-
-?>

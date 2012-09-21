@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Core\Configuration;
+
 require_once __DIR__ . '/../../PhraseanetPHPUnitAbstract.class.inc';
 
 class API_OAuth2_RefreshTokenTest extends PhraseanetPHPUnitAbstract
@@ -10,21 +12,21 @@ class API_OAuth2_RefreshTokenTest extends PhraseanetPHPUnitAbstract
     protected $object;
     protected $token;
     protected $scope;
-    protected $application;
+
     protected $account;
 
     public function setUp()
     {
         parent::setUp();
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $this->application = API_OAuth2_Application::create($appbox, self::$user, 'test app');
-        $this->account = API_OAuth2_Account::load_with_user($appbox, $this->application, self::$user);
+        $appbox = self::$application['phraseanet.appbox'];
+        $this->application = API_OAuth2_Application::create(self::$application, self::$user, 'test app');
+        $this->account = API_OAuth2_Account::load_with_user(self::$application, $this->application, self::$user);
 
         $expires = time() + 100;
         $this->token = random::generatePassword(8);
         $this->scope = 'scopidou';
 
-        $this->object = API_OAuth2_RefreshToken::create($appbox, $this->account, $expires, $this->token, $this->scope);
+        $this->object = API_OAuth2_RefreshToken::create(self::$application, $this->account, $expires, $this->token, $this->scope);
     }
 
     public function tearDown()

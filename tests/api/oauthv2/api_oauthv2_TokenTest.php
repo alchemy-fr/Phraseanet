@@ -1,13 +1,11 @@
 <?php
 
+use Alchemy\Phrasea\Core\Configuration;
+
 require_once __DIR__ . '/../../PhraseanetPHPUnitAbstract.class.inc';
 
 class API_OAuth2_TokenTest extends PhraseanetPHPUnitAbstract
 {
-    /**
-     * @var API_OAuth2_Application
-     */
-    protected $application;
 
     /**
      * @var API_OAuth2_Token
@@ -17,9 +15,9 @@ class API_OAuth2_TokenTest extends PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $this->application = API_OAuth2_Application::create($appbox, self::$user, 'test app');
-        $account = API_OAuth2_Account::load_with_user($appbox, $this->application, self::$user);
+        $appbox = self::$application['phraseanet.appbox'];
+        $this->application = API_OAuth2_Application::create(self::$application, self::$user, 'test app');
+        $account = API_OAuth2_Account::load_with_user(self::$application, $this->application, self::$user);
 
         try {
             new API_OAuth2_Token($appbox, $account);
@@ -111,7 +109,7 @@ class API_OAuth2_TokenTest extends PhraseanetPHPUnitAbstract
     public function testLoad_by_oauth_token()
     {
         $token = $this->object->get_value();
-        $loaded = API_OAuth2_Token::load_by_oauth_token(appbox::get_instance(\bootstrap::getCore()), $token);
+        $loaded = API_OAuth2_Token::load_by_oauth_token(self::$application, $token);
         $this->assertInstanceOf('API_OAuth2_Token', $loaded);
         $this->assertEquals($this->object, $loaded);
     }
