@@ -1183,7 +1183,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-        echo "lookin basket ".$basket->getId()." for user ". self::$user_alt1->get_id()."\n";
         $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
