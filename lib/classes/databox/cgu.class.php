@@ -9,6 +9,9 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -22,9 +25,9 @@ class databox_cgu
         return $this;
     }
 
-    public static function askAgreement()
+    public static function askAgreement(Application $app)
     {
-        $terms = self::getUnvalidated();
+        $terms = self::getUnvalidated($app);
 
         $out = '';
 
@@ -45,26 +48,25 @@ class databox_cgu
         return $out;
     }
 
-    private static function getUnvalidated($home = false)
+    private static function getUnvalidated(Application $app, $home = false)
     {
         $terms = array();
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
+        $appbox = $app['phraseanet.appbox'];
 
         if ( ! $home) {
-            $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+            $user = $app['phraseanet.user'];
         }
 
         foreach ($appbox->get_databoxes() as $databox) {
             try {
                 $cgus = $databox->get_cgus();
 
-                if ( ! isset($cgus[Session_Handler::get_locale()]))
+                if ( ! isset($cgus[$app['locale']]))
                     throw new Exception('No CGus for this locale');
                 $name = $databox->get_viewname();
 
-                $update = $cgus[Session_Handler::get_locale()]['updated_on'];
-                $value = $cgus[Session_Handler::get_locale()]['value'];
+                $update = $cgus[$app['locale']]['updated_on'];
+                $value = $cgus[$app['locale']]['value'];
                 $userValidation = true;
 
                 if ( ! $home) {
@@ -84,9 +86,9 @@ class databox_cgu
         return $terms;
     }
 
-    public static function getHome()
+    public static function getHome($app)
     {
-        $terms = self::getUnvalidated(true);
+        $terms = self::getUnvalidated($app, true);
 
         $out = '';
 

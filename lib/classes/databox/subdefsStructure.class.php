@@ -14,7 +14,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class databox_subdefsStructure implements IteratorAggregate
+class databox_subdefsStructure implements IteratorAggregate, Countable
 {
     /**
      *
@@ -29,6 +29,16 @@ class databox_subdefsStructure implements IteratorAggregate
     public function getIterator()
     {
         return new ArrayIterator($this->AvSubdefs);
+    }
+
+    public function count()
+    {
+        $n = 0;
+        foreach($this->AvSubdefs as $subdefs) {
+            $n += count($subdefs);
+        }
+
+        return $n;
     }
 
     /**
