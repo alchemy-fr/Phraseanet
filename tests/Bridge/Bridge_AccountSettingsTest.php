@@ -39,7 +39,9 @@ class Bridge_AccountSettingsTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function tearDown()
     {
-        $this->api->delete();
+        if ($this->api) {
+            $this->api->delete();
+        }
         parent::tearDown();
     }
 
