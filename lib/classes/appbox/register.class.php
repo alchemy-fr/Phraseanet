@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     Appbox
@@ -62,7 +64,7 @@ class appbox_register
      * @param  User_Interface $user
      * @return array
      */
-    public function get_collection_awaiting_for_user(User_Interface $user)
+    public function get_collection_awaiting_for_user(Application $app, User_Interface $user)
     {
         $sql = 'SELECT base_id FROM demand WHERE usr_id = :usr_id AND en_cours="1" ';
         $stmt = $this->appbox->get_connection()->prepare($sql);
@@ -71,7 +73,7 @@ class appbox_register
         $stmt->closeCursor();
         $ret = array();
         foreach ($rs as $row) {
-            $ret[] = collection::get_from_base_id($row['base_id']);
+            $ret[] = collection::get_from_base_id($app, $row['base_id']);
         }
 
         return $ret;
@@ -88,7 +90,7 @@ class appbox_register
         $lastMonth = new DateTime('-1 month');
         $sql = "delete from demand where date_modif < :lastMonth";
         $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute(array(':lastMonth' => phraseadate::format_mysql($lastMonth)));
+        $stmt->execute(array(':lastMonth' => $lastMonth->format(DATE_ISO8601)));
         $stmt->closeCursor();
 
         return;
