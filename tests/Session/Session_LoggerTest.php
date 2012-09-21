@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Core\Configuration;
+
 require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
 
 class Session_LoggerTest extends PhraseanetPHPUnitAbstract
@@ -11,29 +13,20 @@ class Session_LoggerTest extends PhraseanetPHPUnitAbstract
 
     /**
      *
-     * @var Session_Handler
-     */
-    protected $session;
-
-    /**
-     *
      * @var databox
      */
     protected $databox;
 
     protected function feed_datas()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $this->session = $appbox->get_session();
+        $appbox = self::$application['phraseanet.appbox'];
         $user = self::$user;
         $auth = new Session_Authentication_None($user);
 
-
-
-        $this->session->authenticate($auth);
+        self::$application->openAccount($auth);
 
         foreach ($user->ACL()->get_granted_sbas() as $databox) {
-            $this->object = $this->session->get_logger($databox);
+            $this->object = self::$application['phraseanet.logger']($databox);
             $this->databox = $databox;
             break;
         }
@@ -47,13 +40,13 @@ class Session_LoggerTest extends PhraseanetPHPUnitAbstract
         $log_id = $this->object->get_id();
         $this->assertTrue(is_int($log_id));
 
-        $registry = registry::get_instance();
+        $registry = self::$application['phraseanet.registry'];
 
         $sql = 'SELECT id FROM log
             WHERE sit_session = :ses_id AND usrid = :usr_id AND site = :site';
         $params = array(
-            ':ses_id' => $this->session->get_ses_id()
-            , ':usr_id' => $this->session->get_usr_id()
+            ':ses_id' => self::$application['session']->get('phrasea_session_id')
+            , ':usr_id' => self::$application['phraseanet.user']->get_id()
             , ':site'   => $registry->get('GV_sit')
         );
 
@@ -63,10 +56,10 @@ class Session_LoggerTest extends PhraseanetPHPUnitAbstract
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $this->assertEquals($this->object->get_id(), $row['id']);
         $log_id = $this->object->get_id();
-        $ses_id = $this->session->get_ses_id();
-        $usr_id = $this->session->get_usr_id();
+        $ses_id = self::$application['session']->get('phrasea_session_id');
+        $usr_id = self::$application['phraseanet.user']->get_id();
 
-        $this->session->logout();
+        self::$application->closeAccount();
 
         $sql = 'SELECT id FROM log
             WHERE sit_session = :ses_id AND usrid = :usr_id AND site = :site';

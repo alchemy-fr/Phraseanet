@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Core\Configuration;
+
 require_once __DIR__ . '/../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
 class Feed_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
@@ -15,10 +17,10 @@ class Feed_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
         $auth = new Session_Authentication_None(self::$user);
-        $appbox->get_session()->authenticate($auth);
-        self::$object = Feed_Adapter::create($appbox, self::$user, self::$title, self::$subtitle);
+        self::$application->openAccount($auth);
+        self::$object = Feed_Adapter::create(self::$application, self::$user, self::$title, self::$subtitle);
     }
 
     public static function tearDownAfterClass()
@@ -71,7 +73,7 @@ class Feed_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertTrue(self::$object->is_public());
 
         $coll = null;
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
         foreach ($appbox->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $coll = $collection;
@@ -117,7 +119,7 @@ class Feed_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
 
         $coll = null;
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
         foreach ($appbox->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $coll = $collection;
@@ -189,8 +191,7 @@ class Feed_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testLoad_with_user()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $this->assertEquals(Feed_Adapter::load_with_user($appbox, self::$user, self::$object->get_id())->get_id(), self::$object->get_id());
+        $this->assertEquals(Feed_Adapter::load_with_user(self::$application, self::$user, self::$object->get_id())->get_id(), self::$object->get_id());
     }
 
     public function testGet_count_total_entries()
@@ -210,7 +211,7 @@ class Feed_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testGet_homepage_link()
     {
         self::$object->set_public(false);
-        $registry = registry::get_instance();
+        $registry = self::$application['phraseanet.registry'];
         $link = self::$object->get_homepage_link($registry, Feed_Adapter::FORMAT_ATOM);
         $this->assertNull($link);
 
@@ -221,7 +222,7 @@ class Feed_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_user_link()
     {
-        $registry = registry::get_instance();
+        $registry = self::$application['phraseanet.registry'];
 
         $link = self::$object->get_user_link($registry, self::$user, Feed_Adapter::FORMAT_ATOM);
         $supposed = '/feeds\/userfeed\/([a-zA-Z0-9]{12})\/' . self::$object->get_id() . '\/atom\//';

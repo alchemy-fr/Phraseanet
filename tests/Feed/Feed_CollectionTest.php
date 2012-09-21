@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Core\Configuration;
+
 require_once __DIR__ . '/../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
 class Feed_CollectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
@@ -15,10 +17,10 @@ class Feed_CollectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
         $auth = new Session_Authentication_None(self::$user);
-        $appbox->get_session()->authenticate($auth);
-        self::$object = Feed_Adapter::create($appbox, self::$user, self::$title, self::$subtitle);
+        self::$application->openAccount($auth);
+        self::$object = Feed_Adapter::create(self::$application, self::$user, self::$title, self::$subtitle);
         self::$object->set_public(true);
     }
 
@@ -30,8 +32,8 @@ class Feed_CollectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testLoad_all()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $coll = Feed_Collection::load_all($appbox, self::$user);
+        $appbox = self::$application['phraseanet.appbox'];
+        $coll = Feed_Collection::load_all(self::$application, self::$user);
 
         foreach ($coll->get_feeds() as $feed) {
             $this->assertInstanceOf('Feed_Adapter', $feed);
@@ -40,8 +42,8 @@ class Feed_CollectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_feeds()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $coll = Feed_Collection::load_public_feeds($appbox);
+        $appbox = self::$application['phraseanet.appbox'];
+        $coll = Feed_Collection::load_public_feeds(self::$application);
 
         foreach ($coll->get_feeds() as $feed) {
             $this->assertInstanceOf('Feed_Adapter', $feed);
@@ -50,16 +52,16 @@ class Feed_CollectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_aggregate()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $coll = Feed_Collection::load_public_feeds($appbox);
+        $appbox = self::$application['phraseanet.appbox'];
+        $coll = Feed_Collection::load_public_feeds(self::$application);
 
         $this->assertInstanceOf('Feed_Aggregate', $coll->get_aggregate());
     }
 
     public function testLoad_public_feeds()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $coll = Feed_Collection::load_public_feeds($appbox);
+        $appbox = self::$application['phraseanet.appbox'];
+        $coll = Feed_Collection::load_public_feeds(self::$application);
 
         foreach ($coll->get_feeds() as $feed) {
             $this->assertTrue($feed->is_public());

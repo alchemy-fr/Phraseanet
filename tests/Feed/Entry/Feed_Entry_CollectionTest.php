@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Core\Configuration;
+
 require_once __DIR__ . '/../../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
 class Feed_Entry_CollectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
@@ -36,13 +38,13 @@ class Feed_Entry_CollectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
         $auth = new Session_Authentication_None(self::$user);
-        $appbox->get_session()->authenticate($auth);
+        self::$application->openAccount($auth);
 
-        self::$feed = Feed_Adapter::create($appbox, self::$user, self::$feed_title, self::$feed_subtitle);
-        $publisher = Feed_Publisher_Adapter::getPublisher($appbox, self::$feed, self::$user);
-        self::$entry = Feed_Entry_Adapter::create($appbox, self::$feed, $publisher, self::$title, self::$subtitle, self::$author_name, self::$author_email);
+        self::$feed = Feed_Adapter::create(self::$application, self::$user, self::$feed_title, self::$feed_subtitle);
+        $publisher = Feed_Publisher_Adapter::getPublisher(self::$application['phraseanet.appbox'], self::$feed, self::$user);
+        self::$entry = Feed_Entry_Adapter::create(self::$application, self::$feed, $publisher, self::$title, self::$subtitle, self::$author_name, self::$author_email);
 
         self::$item = Feed_Entry_Item::create($appbox, self::$entry, static::$records['record_1']);
 

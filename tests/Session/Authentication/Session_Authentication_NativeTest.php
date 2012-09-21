@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Core\Configuration;
+
 require_once __DIR__ . '/../../PhraseanetPHPUnitAbstract.class.inc';
 
 class Session_Authentication_NativeTest extends PhraseanetPHPUnitAbstract
@@ -15,13 +17,13 @@ class Session_Authentication_NativeTest extends PhraseanetPHPUnitAbstract
         parent::setUp();
         $login = 'testlogin';
         $password = 'testpassword';
-        $usr_id = User_Adapter::get_usr_id_from_login($login);
+        $usr_id = User_Adapter::get_usr_id_from_login(self::$application, $login);
         if ($usr_id) {
-            $this->local_user = User_Adapter::getInstance($usr_id, appbox::get_instance(\bootstrap::getCore()));
+            $this->local_user = User_Adapter::getInstance($usr_id, self::$application);
         } else {
-            $this->local_user = User_Adapter::create(appbox::get_instance(\bootstrap::getCore()), $login, $password, null, false);
+            $this->local_user = User_Adapter::create(self::$application, $login, $password, null, false);
         }
-        $this->object = new Session_Authentication_Native(appbox::get_instance(\bootstrap::getCore()), $login, $password);
+        $this->object = new Session_Authentication_Native(self::$application, $login, $password);
     }
 
     public function tearDown()

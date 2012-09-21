@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Core\Configuration;
+
 require_once __DIR__ . '/../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 require_once __DIR__ . '/Bridge_datas.inc';
 
@@ -18,16 +20,16 @@ class Bridge_AccountSettingsTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
         parent::setUp();
         try {
-            $appbox = appbox::get_instance(\bootstrap::getCore());
+            $appbox = self::$application['phraseanet.appbox'];
 
             $sql = 'DELETE FROM bridge_apis WHERE name = "Apitest"';
             $stmt = $appbox->get_connection()->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();
-            $this->api = Bridge_Api::create($appbox, 'Apitest');
+            $this->api = Bridge_Api::create(self::$application, 'Apitest');
             $this->dist_id = 'EZ1565loPP';
             $this->named = 'Fête à pinpins';
-            $this->account = Bridge_Account::create($appbox, $this->api, self::$user, $this->dist_id, $this->named);
+            $this->account = Bridge_Account::create(self::$application, $this->api, self::$user, $this->dist_id, $this->named);
 
             $this->object = new Bridge_AccountSettings($appbox, $this->account);
         } catch (Exception $e) {

@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Core\Configuration;
+
 require_once __DIR__ . '/../../PhraseanetPHPUnitAbstract.class.inc';
 
 class Session_Authentication_GuestTest extends PhraseanetPHPUnitAbstract
@@ -12,7 +14,7 @@ class Session_Authentication_GuestTest extends PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new Session_Authentication_Guest(appbox::get_instance(\bootstrap::getCore()));
+        $this->object = new Session_Authentication_Guest(self::$application);
     }
 
     public function testSignOn()

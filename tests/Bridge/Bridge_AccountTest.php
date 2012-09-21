@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Core\Configuration;
+
 require_once __DIR__ . '/../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 require_once __DIR__ . '/Bridge_datas.inc';
 
@@ -18,20 +20,20 @@ class Bridge_AccountTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
         parent::setUp();
         try {
-            $appbox = appbox::get_instance(\bootstrap::getCore());
+            $appbox = self::$application['phraseanet.appbox'];
 
             $sql = 'DELETE FROM bridge_apis WHERE name = "Apitest"';
             $stmt = $appbox->get_connection()->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();
 
-            $this->api = Bridge_Api::create($appbox, 'Apitest');
+            $this->api = Bridge_Api::create(self::$application, 'Apitest');
             $this->dist_id = 'EZ1565loPP';
             $this->named = 'Fête à pinpins';
-            $account = Bridge_Account::create($appbox, $this->api, self::$user, $this->dist_id, $this->named);
+            $account = Bridge_Account::create(self::$application, $this->api, self::$user, $this->dist_id, $this->named);
             $this->id = $account->get_id();
 
-            $this->object = new Bridge_Account($appbox, $this->api, $this->id);
+            $this->object = new Bridge_Account(self::$application, $this->api, $this->id);
         } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
@@ -39,11 +41,11 @@ class Bridge_AccountTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function tearDown()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
         $this->object->delete();
 
         try {
-            new Bridge_Account($appbox, $this->api, $this->id);
+            new Bridge_Account(self::$application, $this->api, $this->id);
             $this->fail();
         } catch (Bridge_Exception_AccountNotFound $e) {
 
@@ -114,7 +116,7 @@ class Bridge_AccountTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_accounts_by_api()
     {
-        $accounts = Bridge_Account::get_accounts_by_api(appbox::get_instance(\bootstrap::getCore()), $this->api);
+        $accounts = Bridge_Account::get_accounts_by_api(self::$application, $this->api);
         $this->assertTrue(is_array($accounts));
 
         $this->assertGreaterThan(0, count($accounts));
@@ -131,7 +133,7 @@ class Bridge_AccountTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_accounts_by_user()
     {
-        $accounts = Bridge_Account::get_accounts_by_user(appbox::get_instance(\bootstrap::getCore()), self::$user);
+        $accounts = Bridge_Account::get_accounts_by_user(self::$application, self::$user);
 
         $this->assertTrue(is_array($accounts));
         $this->assertTrue(count($accounts) > 0);
@@ -143,7 +145,7 @@ class Bridge_AccountTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testLoad_account()
     {
-        $account = Bridge_Account::load_account(appbox::get_instance(\bootstrap::getCore()), $this->object->get_id());
+        $account = Bridge_Account::load_account(self::$application, $this->object->get_id());
         $this->assertEquals($this->object->get_id(), $account->get_id());
     }
 

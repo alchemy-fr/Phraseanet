@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Core\Configuration;
+
 require_once __DIR__ . '/../../PhraseanetWebTestCaseAbstract.class.inc';
 require_once __DIR__ . '/../Bridge_datas.inc';
 
@@ -18,22 +20,22 @@ class Bridge_Api_AbstractTest extends PhraseanetWebTestCaseAbstract
     {
         parent::setUp();
         $this->auth = $this->getMock("Bridge_Api_Auth_Interface");
-        $this->bridgeApi = $this->getMock('Bridge_Api_Abstract', array("is_configured", "initialize_transport", "set_auth_params", "set_transport_authentication_params"), array(registry::get_instance(), $this->auth, "Mock_Bridge_Api_Abstract"));
+        $this->bridgeApi = $this->getMock('Bridge_Api_Abstract', array("is_configured", "initialize_transport", "set_auth_params", "set_transport_authentication_params"), array(self::$application['phraseanet.registry'], $this->auth, "Mock_Bridge_Api_Abstract"));
     }
 
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
         try {
-            self::$api = Bridge_Api::get_by_api_name(appbox::get_instance(\bootstrap::getCore()), 'apitest');
+            self::$api = Bridge_Api::get_by_api_name(self::$application, 'apitest');
         } catch (Bridge_Exception_ApiNotFound $e) {
-            self::$api = Bridge_Api::create(appbox::get_instance(\bootstrap::getCore()), 'apitest');
+            self::$api = Bridge_Api::create(self::$application, 'apitest');
         }
 
         try {
-            self::$account = Bridge_Account::load_account_from_distant_id(appbox::get_instance(\bootstrap::getCore()), self::$api, self::$user, 'kirikoo');
+            self::$account = Bridge_Account::load_account_from_distant_id(self::$application, self::$api, self::$user, 'kirikoo');
         } catch (Bridge_Exception_AccountNotFound $e) {
-            self::$account = Bridge_Account::create(appbox::get_instance(\bootstrap::getCore()), self::$api, self::$user, 'kirikoo', 'coucou');
+            self::$account = Bridge_Account::create(self::$application, self::$api, self::$user, 'kirikoo', 'coucou');
         }
     }
 

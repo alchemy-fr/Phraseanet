@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Core\Configuration;
+
 require_once __DIR__ . '/../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 require_once __DIR__ . '/Bridge_datas.inc';
 
@@ -15,7 +17,7 @@ class Bridge_ApiTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function setUp()
     {
         parent::setUp();
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
 
         $sql = 'DELETE FROM bridge_apis WHERE name = "Apitest"';
         $stmt = $appbox->get_connection()->prepare($sql);
@@ -23,20 +25,20 @@ class Bridge_ApiTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $stmt->closeCursor();
 
         $this->type = 'Apitest';
-        $api = Bridge_Api::create($appbox, $this->type);
+        $api = Bridge_Api::create(self::$application, $this->type);
 
         $this->id = $api->get_id();
-        $this->object = new Bridge_Api($appbox, $api->get_id());
+        $this->object = new Bridge_Api(self::$application, $api->get_id());
     }
 
     public function tearDown()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
 
         $this->object->delete();
 
         try {
-            new Bridge_Api($appbox, $this->id);
+            new Bridge_Api(self::$application, $this->id);
             $this->fail();
         } catch (Bridge_Exception_ApiNotFound $e) {
 

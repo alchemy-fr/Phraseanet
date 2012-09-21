@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Core\Configuration;
+
 require_once __DIR__ . '/../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
 class Feed_AggregateTest extends PhraseanetPHPUnitAuthenticatedAbstract
@@ -15,14 +17,14 @@ class Feed_AggregateTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
         $auth = new Session_Authentication_None(self::$user);
-        $appbox->get_session()->authenticate($auth);
-        $objects[] = Feed_Adapter::create($appbox, self::$user, self::$title, self::$subtitle);
-        $objects[] = Feed_Adapter::create($appbox, self::$user, self::$title, self::$subtitle);
+        self::$application->openAccount($auth);
+        $objects[] = Feed_Adapter::create(self::$application, self::$user, self::$title, self::$subtitle);
+        $objects[] = Feed_Adapter::create(self::$application, self::$user, self::$title, self::$subtitle);
 
         self::$feeds = $objects;
-        self::$object = new Feed_Aggregate($appbox, self::$feeds);
+        self::$object = new Feed_Aggregate(self::$application, self::$feeds);
     }
 
     public static function tearDownAfterClass()
@@ -57,7 +59,7 @@ class Feed_AggregateTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_homepage_link()
     {
-        $registry = registry::get_instance();
+        $registry = self::$application['phraseanet.registry'];
         $link = self::$object->get_homepage_link($registry, Feed_Adapter::FORMAT_ATOM);
         $this->assertInstanceOf('Feed_Link', $link);
         $this->assertEquals($registry->get('GV_ServerName') . 'feeds/aggregated/atom/', $link->get_href());
@@ -65,7 +67,7 @@ class Feed_AggregateTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_user_link()
     {
-        $registry = registry::get_instance();
+        $registry = self::$application['phraseanet.registry'];
 
         $link = self::$object->get_user_link($registry, self::$user, Feed_Adapter::FORMAT_ATOM);
         $supposed = '/feeds\/userfeed\/aggregated\/([a-zA-Z0-9]{12})\/atom\//';
