@@ -1,5 +1,5 @@
 {
-    "hash": "3f3fffc125c9a2f52244886c6c1d0f0e",
+    "hash": "88749814f91eccae64a05f4e70b11401",
     "packages": [
         {
             "name": "alchemy/Phlickr",
@@ -170,7 +170,7 @@
             "require": {
                 "php": ">=5.3.2"
             },
-            "time": "2012-08-29 08:04:14",
+            "time": "2012-08-29 06:04:14",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -1219,7 +1219,7 @@
             "require": {
                 "php": ">=5.2.4"
             },
-            "time": "2012-06-17 20:55:34",
+            "time": "2012-06-17 18:55:34",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1463,7 +1463,7 @@
             "require": {
                 "php": ">=5.2.4"
             },
-            "time": "2012-08-25 17:32:57",
+            "time": "2012-08-25 15:32:57",
             "type": "library",
             "extra": {
                 "branch-alias": {
