@@ -71,8 +71,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         parent::setUpBeforeClass();
         $appbox = self::$application['phraseanet.appbox'];
 
-        self::$oauthApplication = \API_OAuth2_Application::create(self::$application, self::$user_alt1, 'test API v1');
-        self::$account = \API_OAuth2_Account::load_with_user(self::$application, self::$oauthApplication, self::$user_alt1);
+        self::$oauthApplication = \API_OAuth2_Application::create(self::$application, self::$user, 'test API v1');
+        self::$account = \API_OAuth2_Account::load_with_user(self::$application, self::$oauthApplication, self::$user);
         self::$token = self::$account->get_token()->get_value();
 
         self::$adminToken = null;
@@ -1183,6 +1183,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
+        echo "lookin basket ".$basket->getId()." for user ". self::$user_alt1->get_id()."\n";
         $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
 
