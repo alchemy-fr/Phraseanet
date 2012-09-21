@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  *
@@ -69,10 +71,9 @@ class recordutils_image extends recordutils
      * @param  boolean $hd
      * @return string
      */
-    public static function stamp(\media_subdef $subdef)
+    public static function stamp(Application $app, \media_subdef $subdef)
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $registry = $appbox->get_registry();
+        $registry = $app['phraseanet.registry'];
         $base_id = $subdef->get_record()->get_base_id();
 
         if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE) {
@@ -310,10 +311,9 @@ class recordutils_image extends recordutils
      * @param \media_subdef $subdef
      * @return boolean|string
      */
-    public static function watermark(\media_subdef $subdef)
+    public static function watermark(Application $app, \media_subdef $subdef)
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $registry = $appbox->get_registry();
+        $registry = $app['phraseanet.registry'];
         $base_id = $subdef->get_record()->get_base_id();
 
         if ($subdef->get_name() !== 'preview') {
@@ -365,7 +365,7 @@ class recordutils_image extends recordutils
                 $return_value = proc_close($process);
             }
         } elseif ($registry->get('GV_imagick')) {
-            $collname = phrasea::bas_names($base_id);
+            $collname = phrasea::bas_names($base_id, $app);
             $cmd = $registry->get('GV_imagick');
             $tailleimg = @getimagesize($pathIn);
             $max = ($tailleimg[0] > $tailleimg[1] ? $tailleimg[0] : $tailleimg[1]);
