@@ -58,7 +58,7 @@ class RecordAdd extends Command
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         try {
-            $collection = \collection::get_from_base_id($input->getArgument('base_id'));
+            $collection = \collection::get_from_base_id($app, $input->getArgument('base_id'));
         } catch (\Exception $e) {
             throw new \InvalidArgumentException(sprintf('Collection %s is invalid', $input->getArgument('base_id')));
         }

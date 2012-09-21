@@ -124,7 +124,7 @@ class Step31 implements DatasUpgraderInterface
         $uuid = \uuid::generate_v4();
         try {
             $media = $this->app['mediavorus']->guess($pathfile);
-            $collection = \collection::get_from_coll_id($databox, (int) $record['coll_id']);
+            $collection = \collection::get_from_coll_id($app, $databox, (int) $record['coll_id']);
 
             $file = new File($media, $collection);
             $uuid = $file->getUUID(true, true);
