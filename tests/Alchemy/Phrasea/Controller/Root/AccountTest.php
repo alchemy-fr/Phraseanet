@@ -2,9 +2,9 @@
 
 use Alchemy\Phrasea\Core\Configuration;
 
-require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAbstract.class.inc';
+require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
-class AccountTest extends \PhraseanetWebTestCaseAbstract
+class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected static $authorizedApp;
 
@@ -13,23 +13,10 @@ class AccountTest extends \PhraseanetWebTestCaseAbstract
         parent::setUpBeforeClass();
 
         try {
-            self::$authorizedApp = \API_OAuth2_Application::create(self::$application, self::$user_alt1, 'test API v1');
+            self::$authorizedApp = \API_OAuth2_Application::create(self::$application, self::$user, 'test API v1');
         } catch (\Exception $e) {
 
         }
-    }
-
-    public function setUp()
-    {
-        parent::setUp();
-        $auth = new Session_Authentication_None(self::$user_alt1);
-        self::$application->openAccount($auth);
-    }
-
-    public function tearDown()
-    {
-        self::$application->closeAccount();
-        parent::tearDown();
     }
 
     public static function tearDownAfterClass()
@@ -104,14 +91,14 @@ class AccountTest extends \PhraseanetWebTestCaseAbstract
      */
     public function testPostResetMailWithToken()
     {
-        $token = \random::getUrlToken(self::$application, \random::TYPE_EMAIL, self::$user_alt1->get_id(), null, 'new_email@email.com');
+        $token = \random::getUrlToken(self::$application, \random::TYPE_EMAIL, self::$user->get_id(), null, 'new_email@email.com');
         $this->client->request('POST', '/account/reset-email/', array('token'   => $token));
         $response = $this->client->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('/account/reset-email/?update=ok', $response->headers->get('location'));
 
-        $this->assertEquals('new_email@email.com', self::$user_alt1->get_email());
-        self::$user_alt1->set_email('noone_alt1@example.com');
+        $this->assertEquals('new_email@email.com', self::$user->get_email());
+        self::$user->set_email('noone@example.com');
         try {
             \random::helloToken(self::$application, $token);
             $this->fail('TOken has not been removed');
@@ -372,7 +359,7 @@ class AccountTest extends \PhraseanetWebTestCaseAbstract
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('minet', self::$application['phraseanet.user']->get_lastname());
 
-        $ret = $register->get_collection_awaiting_for_user(self::$application, self::$user_alt1);
+        $ret = $register->get_collection_awaiting_for_user(self::$application, self::$user);
 
         $this->assertEquals(count($ret), count($bases));
     }
@@ -424,7 +411,7 @@ class AccountTest extends \PhraseanetWebTestCaseAbstract
         $account = \API_OAuth2_Account::load_with_user(
                 self::$application
                 , self::$authorizedApp
-                , self::$user_alt1
+                , self::$user
         );
 
         $this->assertEquals($expected, $account->is_revoked());
