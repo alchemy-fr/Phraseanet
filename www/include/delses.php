@@ -10,14 +10,16 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration;
 
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-ignore_user_abort(true);
-set_time_limit(0);
+require_once dirname(dirname(__DIR__)) . "/lib/bootstrap.php";
+
+$app = new Application();
 
 
 require_once __DIR__ . "/../../lib/bootstrap.php";
