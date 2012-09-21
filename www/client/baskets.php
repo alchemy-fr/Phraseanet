@@ -8,59 +8,61 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-/* @var $Core \Alchemy\Phrasea\Core */
-$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 
-$em = $Core->getEntityManager();
+require_once __DIR__ . "/../../lib/bootstrap.php";
+
+$app = new Application();
 
 $Request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
 
 $nbNoview = 0;
 
-$user = $Core->getAuthenticatedUser();
+$user = $app['phraseanet.user'];
 $ACL = $user->ACL();
 
 $out = null;
 
 if ($Request->get("act") == "DELIMG" && $Request->get("p0") != "") {
-    $repository = $em->getRepository('\Entities\BasketElement');
+    $repository = $app['EM']->getRepository('\Entities\BasketElement');
     /* @var $repository \Repositories\BasketElementRepository */
     $basket_element = $repository->findUserElement($Request->get('p0'), $user);
-    $em->remove($basket_element);
-    $em->flush();
+    $app['EM']->remove($basket_element);
+    $app['EM']->flush();
 }
 
 if ($Request->get('act') == "ADDIMG" && ($Request->get("p0") != "" && $Request->get("p0") != null)) {
-    $repository = $em->getRepository('\Entities\Basket');
+    $repository = $app['EM']->getRepository('\Entities\Basket');
     /* @var $repository \Repositories\BasketRepository */
-    $basket = $repository->findUserBasket($Request->get('courChuId'), $user, true);
+    $basket = $repository->findUserBasket($app, $Request->get('courChuId'), $user, true);
 
     $sbas_id = $Request->get('sbas');
-    $record = new record_adapter($sbas_id, $Request->get('p0'));
+    $record = new record_adapter($app, $sbas_id, $Request->get('p0'));
 
     $BasketElement = new \Entities\BasketElement();
     $BasketElement->setRecord($record);
     $BasketElement->setBasket($basket);
     $basket->addBasketElement($BasketElement);
 
-    $em->persist($BasketElement);
-    $em->merge($basket);
+    $app['EM']->persist($BasketElement);
+    $app['EM']->merge($basket);
 
-    $em->flush();
+    $app['EM']->flush();
 }
 
 if ($Request->get('act') == "DELCHU" && ($Request->get("p0") != "" && $Request->get("p0") != null)) {
-    $repository = $em->getRepository('\Entities\Basket');
+    $repository = $app['EM']->getRepository('\Entities\Basket');
     /* @var $repository \Repositories\BasketRepository */
-    $basket = $repository->findUserBasket($Request->get('courChuId'), $user, true);
+    $basket = $repository->findUserBasket($app, $Request->get('courChuId'), $user, true);
 
-    $em->remove($basket);
-    $em->flush();
+    $app['EM']->remove($basket);
+    $app['EM']->flush();
     unset($basket);
 }
 
@@ -72,13 +74,13 @@ if ($Request->get('act') == "NEWCHU" && ($Request->get("p0") != "" && $Request->
     $basket->setName($Request->get('p0'));
     $basket->setOwner($user);
 
-    $em->persist($basket);
-    $em->flush();
+    $app['EM']->persist($basket);
+    $app['EM']->flush();
 
     $courChuId = $basket->getId();
 }
 
-$repository = $em->getRepository('\Entities\Basket');
+$repository = $app['EM']->getRepository('\Entities\Basket');
 /* @var $repository \Repositories\BasketRepository */
 $baskets = $repository->findActiveByUser($user);
 
@@ -129,18 +131,17 @@ $out .= '</td><td style="width:40%">';
 
 
 
-$em = $Core->getEntityManager();
-$repository = $em->getRepository('\Entities\Basket');
+$repository = $app['EM']->getRepository('\Entities\Basket');
 /* @var $repository \Repositories\BasketRepository */
-$basket = $repository->findUserBasket($courChuId, $user, true);
+$basket = $repository->findUserBasket($app, $courChuId, $user, true);
 
 $jscriptnochu = $basket->getName() . " :  " . sprintf(_('paniers:: %d documents dans le panier'), $basket->getElements()->count());
 
 $nbElems = $basket->getElements()->count();
 ?><div id="blocBask" class="bodyLeft" style="height:314px;bottom:0px;"><?php ?><div class="baskTitle"><?php ?><div id="flechenochu" class="flechenochu"></div><?php
-$totSizeMega = $basket->getSize();
+$totSizeMega = $basket->getSize($app);
 echo '<div class="baskName">' . sprintf(_('paniers:: paniers:: %d documents dans le panier'), $nbElems) .
- ($Core->getRegistry()->get('GV_viewSizeBaket') ? ' (' . $totSizeMega . ' Mo)' : '') . '</div>';
+ ($app['phraseanet.registry']->get('GV_viewSizeBaket') ? ' (' . $totSizeMega . ' Mo)' : '') . '</div>';
 ?></div><?php ?><div><?php
 echo $out;
 ?><div class="baskDel" title="<?php echo _('action : supprimer') ?>" onclick="evt_chutier('DELSSEL');"/></div><?php ?><div class="baskCreate" title="<?php echo _('action:: nouveau panier') ?>" onclick="newBasket();"></div><?php ?><div style="float:right;position:relative;width:3px;height:16px;"></div><?php
@@ -160,16 +161,16 @@ if (trim($courChuId) != '') {
 ?></table><?php
 ?></div><?php
 ?><div class="divexterne" style="height:270px;overflow-x:hidden;overflow-y:auto;position:relative"><?php
-    if ($basket->getPusher() instanceof user) {
+    if ($basket->getPusher($app) instanceof user) {
     ?><div class="txtPushClient"><?php
-    echo sprintf(_('paniers:: panier emis par %s'), $basket->getPusher()->get_display_name())
+    echo sprintf(_('paniers:: panier emis par %s'), $basket->getPusher($app)->get_display_name())
     ?></div><?php
 }
 
 foreach ($basket->getElements() as $basket_element) {
     $dim = $dim1 = $top = 0;
 
-    $thumbnail = $basket_element->getRecord()->get_thumbnail();
+    $thumbnail = $basket_element->getRecord($app)->get_thumbnail();
 
     if ($thumbnail->get_width() > $thumbnail->get_height()) { // cas d'un format paysage
         if ($thumbnail->get_width() > 67) {
@@ -198,13 +199,13 @@ foreach ($basket->getElements() as $basket_element) {
 
     $tooltip = "";
 
-    $record = $basket_element->getRecord();
-    if ($Core->getRegistry()->get('GV_rollover_chu')) {
+    $record = $basket_element->getRecord($app);
+    if ($app['phraseanet.registry']->get('GV_rollover_chu')) {
         $tooltip = 'tooltipsrc="/prod/tooltip/caption/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/basket/"';
     }
     ?><div class="diapochu"><?php
     ?><div class="image"><?php
-    ?><img onclick="openPreview('BASK',<?php echo $basket_element->getRecord()->get_number() ?>,<?php echo $courChuId ?>); return(false);"
+    ?><img onclick="openPreview('BASK',<?php echo $basket_element->getRecord($app)->get_number() ?>,<?php echo $courChuId ?>); return(false);"
         <?php echo $tooltip ?> style="position:relative; top:<?php echo $top ?>px; <?php echo $dim ?>"
                      class="<?php echo $classSize ?> baskTips" src="<?php echo $thumbnail->get_url() ?>"><?php
         ?></div><?php ?><div class="tools"><?php ?><div class="baskOneDel" onclick="evt_del_in_chutier('<?php echo $basket_element->getId() ?>');"

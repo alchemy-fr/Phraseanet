@@ -8,19 +8,21 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-/* @var $Core \Alchemy\Phrasea\Core */
+
 require_once __DIR__ . "/../../lib/bootstrap.php";
 
-$Core = \bootstrap::getCore();
-$appbox = appbox::get_instance($Core);
-$session = $appbox->get_session();
+$app = new Application();
+$appbox = $app['phraseanet.appbox'];
 $registry = $appbox->get_registry();
-$user = $Core->getAuthenticatedUser();
+$user = $app['phraseanet.user'];
 
 if ( ! isset($parm)) {
 
@@ -131,7 +133,7 @@ $form = serialize($options);
 
 $perPage = $mod_xy;
 
-$search_engine = new searchEngine_adapter($registry);
+$search_engine = new searchEngine_adapter($app);
 $search_engine->set_options($options);
 
 
@@ -172,7 +174,7 @@ if ($registry->get('GV_thesaurus')) {
 
 
 
-$history = queries::history();
+$history = queries::history($app['phraseanet.appbox'], $app['phraseanet.user']->get_id());
 
 echo '<script language="javascript" type="text/javascript">$("#history").empty().append("' . str_replace('"', '\"', $history) . '")</script>';
 
@@ -182,7 +184,7 @@ $longueur = strlen($parm['qry']);
 $qrys = '<div>' . _('client::answers: rapport de questions par bases') . '</div>';
 
 foreach ($qrySbas as $sbas => $qryBas)
-    $qrys .= '<div style="font-weight:bold;">' . phrasea::sbas_names($sbas) . '</div><div>' . $qryBas . '</div>';
+    $qrys .= '<div style="font-weight:bold;">' . phrasea::sbas_names($sbas, $app) . '</div><div>' . $qryBas . '</div>';
 
 $txt = "<b>" . substr($parm['qry'], 0, 36) . ($longueur > 36 ? "..." : "") . "</b>" . sprintf(_('client::answers: %d reponses'), (int) $nbanswers) . " <a style=\"float:none;display:inline-block;padding:2px 3px\" class=\"infoTips\" title=\"" . str_replace('"', "'", $qrys) . "\">&nbsp;</a>";
 ?>
@@ -285,9 +287,6 @@ if (count($result->get_datas()) > 0) {
         ?></tr><?php
     }
 
-    $core = \bootstrap::getCore();
-    $twig = $core->getTwig();
-
     foreach ($result->get_datas() as $record) {
         /* @var $record record_adapter */
         $base_id = $record->get_base_id();
@@ -301,11 +300,11 @@ if (count($result->get_datas()) > 0) {
 
         try {
             $record->get_subdef('document');
-            $light_info = $twig->render('common/technical_datas.html.twig', array('record' => $record));
+            $light_info = $app['twig']->render('common/technical_datas.html.twig', array('record' => $record));
         } catch (\Exception $e) {
             $light_info = '';
         }
-        $caption = $twig->render('common/caption.html.twig', array('view'   => 'answer', 'record' => $record));
+        $caption = $app['twig']->render('common/caption.html.twig', array('view'   => 'answer', 'record' => $record));
 
 
         if ($i == 0) {
@@ -383,7 +382,7 @@ if (count($result->get_datas()) > 0) {
                         <div class="diapo w160px" style="border-top:none;"><?php ?><div class="buttons"><?php
                     $minilogos = "";
 
-                    $minilogos .= '<div class="minilogos">' . collection::getLogo($record->get_base_id());
+                    $minilogos .= '<div class="minilogos">' . collection::getLogo($record->get_base_id(), $app);
                     $minilogos .= '</div>';
                     $sbas_id = $record->get_sbas_id();
                     echo $minilogos;
@@ -443,7 +442,7 @@ if (count($result->get_datas()) > 0) {
     </div><?php
                     } else {
                                 ?><div><?php echo _('reponses:: Votre recherche ne retourne aucun resultat'); ?></div><?php
-                        phrasea::getHome('HELP', 'client');
+                        phrasea::getHome($app, 'HELP', 'client');
                     }
 
 //function proposalsToHTML(&$proposals)

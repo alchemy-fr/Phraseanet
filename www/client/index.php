@@ -8,24 +8,27 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
-$appbox = appbox::get_instance($Core);
-$session = $appbox->get_session();
+require_once __DIR__ . "/../../lib/bootstrap.php";
+$app = new Application();
+$appbox = $app['phraseanet.appbox'];
 $registry = $appbox->get_registry();
 
-$usr_id = $session->get_usr_id();
+$usr_id = $app['phraseanet.user']->get_id();
 
 phrasea::headers();
 
-User_Adapter::updateClientInfos(2);
-$user = User_Adapter::getInstance($usr_id, $appbox);
+User_Adapter::updateClientInfos($app, 2);
+$user = User_Adapter::getInstance($usr_id, $app);
 ?>
-<html lang="<?php echo $session->get_I18n(); ?>">
+<html lang="<?php echo $app['locale.I18n']; ?>">
     <head>
         <title><?php echo $registry->get('GV_homeTitle') ?> Client</title>
         <meta http-equiv="X-UA-Compatible" content="chrome=1">
@@ -109,11 +112,9 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
         <div id="container" style="position:absolute;top:0;left:0;overflow:hidden;width:100%;height:100%;">
 
 <?php
-$events_mngr = $Core['events-manager'];
+$events_mngr = $app['events-manager'];
 
-$core = \bootstrap::getCore();
-$twig = $core->getTwig();
-echo $twig->render('common/menubar.twig', array('module' => 'client', 'events' => $events_mngr));
+echo $app['twig']->render('common/menubar.twig', array('module' => 'client', 'events' => $events_mngr));
 ?>
             <div style="top:30px;position:relative;float:left;">
                 <div id="left" style="height:100%;width:265px;position:relative;float:left;">
@@ -469,9 +470,9 @@ if ($registry->get('GV_thesaurus')) {
 
                                             <?php
                                             if ($registry->get('GV_client_render_topics') == 'popups')
-                                                echo queries::dropdown_topics();
+                                                echo queries::dropdown_topics($app['locale.I18n']);
                                             elseif ($registry->get('GV_client_render_topics') == 'tree')
-                                                echo queries::tree_topics();
+                                                echo queries::tree_topics($app['locale.I18n']);
                                             ?>
 
                             </div>
@@ -491,7 +492,7 @@ if ($registry->get('GV_thesaurus')) {
                     </div>
                     <div id="answers" style="overflow-x:auto;overflow-y:auto;border:none;padding:0;margin:0;position:relative;left:0;top:0;margin:10px 0;">
 <?php
-echo phrasea::getHome($start_page, 'client');
+echo phrasea::getHome($app, $start_page, 'client');
 ?>
                     </div>
                     <div class="divNavig" id="navigation"></div>
@@ -645,9 +646,9 @@ echo phrasea::getHome($start_page, 'client');
         checkBases(true)
 
 <?php
-if ( ! $user->is_guest() && Session_Handler::isset_cookie('last_act')) {
+if ( ! $user->is_guest() && $app['request']->cookies->has('last_act')) {
     ?>
-          lastAct = $.parseJSON('<?php echo Session_Handler::get_cookie('last_act') ?>');
+          lastAct = $.parseJSON('<?php echo $app['request']->cookies->get('last_act') ?>');
           execLastAct(lastAct);
     <?php
 }
