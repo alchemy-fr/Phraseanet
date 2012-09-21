@@ -4,9 +4,9 @@ namespace Alchemy\Phrasea\Border;
 
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 
-require_once __DIR__ . '/../../../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
+require_once __DIR__ . '/../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
-class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
+class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     /**
      * @var Manager
@@ -59,6 +59,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         $this->object = null;
         parent::tearDown();
     }
+
     /**
      * @covers Alchemy\Phrasea\Border\Manager::process
      * @covers Alchemy\Phrasea\Border\Manager::createLazaret
@@ -142,7 +143,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
                 continue;
             }
 
-            if ($databox_field->is_on_error() || ! $databox_field->get_tag()->getTagname()) {
+            if ($databox_field->is_on_error() || !$databox_field->get_tag()->getTagname()) {
                 continue;
             }
 
@@ -159,7 +160,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
 
                 $data = array('Hello Mono ' . $databox_field->get_tag()->getTagname());
 
-                if (! $first) {
+                if (!$first) {
                     if ($odd) {
                         $value = new \PHPExiftool\Driver\Value\Mono(current($data));
                         $tofetch [$databox_field->get_name()] = $data;
@@ -180,7 +181,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
                 }
             }
 
-            $odd = ! $odd;
+            $odd = !$odd;
         }
 
         $file->addAttribute(new Attribute\Story(self::$records['record_story_1']));
@@ -208,7 +209,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
             }
         }
 
-        if (! $found) {
+        if (!$found) {
             $this->fail('Unable to find story in parents');
         }
 
@@ -230,6 +231,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
             }
         }
     }
+
     /**
      * @covers Alchemy\Phrasea\Border\Manager::createLazaret
      */
@@ -249,7 +251,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
                 continue;
             }
 
-            if ($databox_field->is_on_error() || ! $databox_field->get_tag()->getTagname()) {
+            if ($databox_field->is_on_error() || !$databox_field->get_tag()->getTagname()) {
                 continue;
             }
 
@@ -277,7 +279,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
                 }
             }
 
-            $odd = ! $odd;
+            $odd = !$odd;
         }
 
         $file->addAttribute(new Attribute\Story(self::$records['record_story_1']));
@@ -307,7 +309,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
 
                 $tagname = $attribute->getValue()->getTag()->getTagname();
 
-                if ( ! isset($foundMeta[$tagname])) {
+                if (!isset($foundMeta[$tagname])) {
                     $foundMeta[$tagname] = array();
                 }
 
@@ -316,7 +318,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
 
                 $fieldname = $attribute->getField()->get_name();
 
-                if ( ! isset($foundField[$fieldname])) {
+                if (!isset($foundField[$fieldname])) {
                     $foundField[$fieldname] = array();
                 }
 
@@ -326,11 +328,11 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
             }
         }
 
-        if (! $story_found) {
+        if (!$story_found) {
             $this->fail('Story is not found');
         }
 
-        if (! $status_found) {
+        if (!$status_found) {
             $this->fail('Status is not found');
         }
 
@@ -348,7 +350,6 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         }
     }
 
-//
     /**
      * @covers Alchemy\Phrasea\Border\Manager::process
      */
