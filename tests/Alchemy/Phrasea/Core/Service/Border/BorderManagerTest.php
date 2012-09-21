@@ -156,7 +156,7 @@ class BorderManagerTest extends \PhraseanetPHPUnitAbstract
 
     public function getDataboxAndCollection()
     {
-        $app = new Application('test');
+        $app = self::$application;
         $databox = $collection = null;
         $appbox = $app['phraseanet.appbox'];
 

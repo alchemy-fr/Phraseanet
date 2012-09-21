@@ -16,7 +16,7 @@ class CacheBuilderTest extends PhraseanetPHPUnitAbstract
         );
 
         try {
-            $service = Builder::create(new Application('test'), $configuration);
+            $service = Builder::create(self::$application, $configuration);
             $this->fail("An exception should be raised");
         } catch (\Exception $e) {
 
@@ -29,7 +29,7 @@ class CacheBuilderTest extends PhraseanetPHPUnitAbstract
                 array("type" => "Cache\\ArrayCache")
         );
 
-        $service = Builder::create(new Application('test'), $configuration);
+        $service = Builder::create(self::$application, $configuration);
         $this->assertInstanceOf("\Alchemy\Phrasea\Core\Service\ServiceAbstract", $service);
     }
 }
