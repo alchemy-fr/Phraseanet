@@ -9,6 +9,9 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Version;
+use Alchemy\Phrasea\Core\Configuration;
 use Symfony\Component\Filesystem\Filesystem;
 
 class databox extends base
@@ -94,19 +97,18 @@ class databox extends base
 
     protected $cache;
     protected $connection;
-    protected $registry;
+    protected $app;
 
-    public function __construct($sbas_id)
+    public function __construct(Application $app, $sbas_id)
     {
         assert(is_int($sbas_id));
         assert($sbas_id > 0);
 
-        $this->registry = registry::get_instance();
-        $this->connection = connection::getPDOConnection($sbas_id);
-        $this->Core = \bootstrap::getCore();
+        $this->app = $app;
+        $this->connection = connection::getPDOConnection($app, $sbas_id, null);
         $this->id = $sbas_id;
 
-        $connection_params = phrasea::sbas_params();
+        $connection_params = phrasea::sbas_params($this->app);
 
         if ( ! isset($connection_params[$sbas_id])) {
             throw new Exception_DataboxNotFound(sprintf('databox %d not found', $sbas_id));
@@ -121,13 +123,18 @@ class databox extends base
         return $this;
     }
 
+    public function get_appbox()
+    {
+        return $this->app['phraseanet.appbox'];
+    }
+
     public function get_collections()
     {
         $ret = array();
 
         foreach ($this->get_available_collections() as $coll_id) {
             try {
-                $ret[] = collection::get_from_coll_id($this, $coll_id);
+                $ret[] = collection::get_from_coll_id($this->app, $this, $coll_id);
             } catch (Exception $e) {
 
             }
@@ -144,7 +151,7 @@ class databox extends base
 
         }
 
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($this->app);
 
         $sql = "SELECT b.server_coll_id FROM sbas s, bas b
             WHERE s.sbas_id = b.sbas_id AND b.sbas_id = :sbas_id
@@ -173,12 +180,12 @@ class databox extends base
      */
     public function get_record($record_id, $number = null)
     {
-        return new record_adapter($this->get_sbas_id(), $record_id, $number);
+        return new record_adapter($this->app, $this->get_sbas_id(), $record_id, $number);
     }
 
     public function get_viewname()
     {
-        return phrasea::sbas_names($this->get_sbas_id());
+        return phrasea::sbas_names($this->get_sbas_id(), $this->app);
     }
 
     /**
@@ -187,7 +194,7 @@ class databox extends base
      */
     public function get_statusbits()
     {
-        return databox_status::getStatus($this->get_sbas_id());
+        return databox_status::getStatus($this->app, $this->get_sbas_id());
     }
 
     /**
@@ -320,10 +327,10 @@ class databox extends base
     public function unmount_databox(appbox $appbox)
     {
         foreach ($this->get_collections() as $collection) {
-            $collection->unmount_collection($appbox);
+            $collection->unmount_collection($this->app);
         }
 
-        $query = new User_Query($appbox);
+        $query = new User_Query($this->app);
         $total = $query->on_sbas_ids(array($this->get_sbas_id()))
             ->include_phantoms(false)
             ->include_special_users(true)
@@ -368,7 +375,7 @@ class databox extends base
         return;
     }
 
-    public static function create(appbox &$appbox, connection_pdo &$connection, \SplFileInfo $data_template, registryInterface $registry)
+    public static function create(Application $app, connection_pdo &$connection, \SplFileInfo $data_template, registryInterface $registry)
     {
         if ( ! file_exists($data_template->getRealPath())) {
             throw new \InvalidArgumentException($data_template->getRealPath() . " does not exist");
@@ -395,13 +402,13 @@ class databox extends base
             , ':password' => $password
         );
 
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         if ($row) {
-            return $appbox->get_databox((int) $row['sbas_id']);
+            return $app['phraseanet.appbox']->get_databox((int) $row['sbas_id']);
         }
 
         try {
@@ -420,7 +427,7 @@ class databox extends base
         $stmt->closeCursor();
 
         $sql = 'SELECT MAX(ord) as ord FROM sbas';
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -429,7 +436,7 @@ class databox extends base
 
         $sql = 'INSERT INTO sbas (sbas_id, ord, host, port, dbname, sqlengine, user, pwd)
               VALUES (null, :ord, :host, :port, :dbname, "MYSQL", :user, :password)';
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(
             ':ord'      => $ord
             , ':host'     => $host
@@ -439,12 +446,12 @@ class databox extends base
             , ':password' => $password
         ));
         $stmt->closeCursor();
-        $sbas_id = (int) $appbox->get_connection()->lastInsertId();
+        $sbas_id = (int) $app['phraseanet.appbox']->get_connection()->lastInsertId();
 
-        $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+        $app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 
-        $databox = $appbox->get_databox($sbas_id);
-        $databox->insert_datas();
+        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
+        $databox->insert_datas($app['phraseanet.version']);
         $databox->setNewStructure(
             $data_template, $registry->get('GV_base_datapath_noweb')
         );
@@ -462,11 +469,11 @@ class databox extends base
      * @param  registry $registry
      * @return databox
      */
-    public static function mount(appbox $appbox, $host, $port, $user, $password, $dbname, registry $registry)
+    public static function mount(Application $app, $host, $port, $user, $password, $dbname, registry $registry)
     {
         $connection = new connection_pdo('test', $host, $port, $user, $password, $dbname, array(), $registry);
 
-        $conn = $appbox->get_connection();
+        $conn = $app['phraseanet.appbox']->get_connection();
         $sql = 'SELECT MAX(ord) as ord FROM sbas';
         $stmt = $conn->prepare($sql);
         $stmt->execute();
@@ -490,16 +497,16 @@ class databox extends base
         $stmt->closeCursor();
         $sbas_id = (int) $conn->lastInsertId();
 
-        $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+        $app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 
-        $databox = $appbox->get_databox($sbas_id);
+        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
 
         $databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
-        $appbox->delete_data_from_cache(appbox::CACHE_SBAS_IDS);
+        $app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_SBAS_IDS);
 
-        phrasea::reset_sbasDatas();
+        phrasea::reset_sbasDatas($app['phraseanet.appbox']);
 
-        cache_databox::update($databox->get_sbas_id(), 'structure');
+        cache_databox::update($app, $databox->get_sbas_id(), 'structure');
 
         return $databox;
     }
@@ -541,7 +548,7 @@ class databox extends base
         $stmt->closeCursor();
 
         foreach ($rs as $row) {
-            $meta_struct->add_element(databox_field::get_instance($this, $row['id']));
+            $meta_struct->add_element(databox_field::get_instance($this->app, $this, $row['id']));
         }
         $this->meta_struct = $meta_struct;
         $this->set_data_to_cache($this->meta_struct, self::CACHE_META_STRUCT);
@@ -590,14 +597,12 @@ class databox extends base
 
     public function delete()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-
         $sql = 'DROP DATABASE `' . $this->get_dbname() . '`';
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
-        $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+        $this->app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 
         return;
     }
@@ -643,7 +648,7 @@ class databox extends base
      */
     public function get_mountable_colls()
     {
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($this->app);
         $colls = array();
 
         $sql = 'SELECT server_coll_id FROM bas WHERE sbas_id = :sbas_id';
@@ -678,7 +683,7 @@ class databox extends base
 
     public function get_activable_colls()
     {
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($this->app);
         $base_ids = array();
 
         $sql = 'SELECT base_id FROM bas WHERE sbas_id = :sbas_id AND active = "0"';
@@ -726,12 +731,11 @@ class databox extends base
 
         $this->meta_struct = null;
 
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+        $this->app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_LIST_BASES);
         $this->delete_data_from_cache(self::CACHE_STRUCTURE);
         $this->delete_data_from_cache(self::CACHE_META_STRUCT);
 
-        cache_databox::update($this->get_sbas_id(), 'structure');
+        cache_databox::update($this->app, $this->get_sbas_id(), 'structure');
 
         return $this;
     }
@@ -828,7 +832,7 @@ class databox extends base
 
             $multi = isset($field['multi']) ? (Boolean) $field['multi'] : false;
 
-            $meta_struct_field = databox_field::create($this, $fname, $multi);
+            $meta_struct_field = databox_field::create($this->app, $this, $fname, $multi);
             $meta_struct_field
                 ->set_readonly(isset($field['readonly']) ? $field['readonly'] : 0)
                 ->set_indexable(isset($field['index']) ? $field['index'] : '1')
@@ -858,8 +862,7 @@ class databox extends base
      */
     public function registerAdmin(User_Interface $user)
     {
-        $conn = connection::getPDOConnection();
-        $registry = registry::get_instance();
+        $conn = connection::getPDOConnection($this->app);
 
         $user->ACL()
             ->give_access_to_sbas(array($this->get_sbas_id()))
@@ -888,7 +891,7 @@ class databox extends base
                 $base_ids[] = $base_id = $conn->lastInsertId();
 
                 if ( ! empty($row['logo'])) {
-                    file_put_contents($registry->get('GV_RootPath') . 'config/minilogos/' . $base_id, $row['logo']);
+                    file_put_contents($this->app['phraseanet.registry']->get('GV_RootPath') . 'config/minilogos/' . $base_id, $row['logo']);
                 }
             } catch (Exception $e) {
                 unset($e);
@@ -919,10 +922,8 @@ class databox extends base
      */
     public static function getPrintLogo($sbas_id)
     {
-        $registry = registry::get_instance();
-
         $out = '';
-        if (is_file(($filename = $registry->get('GV_RootPath') . 'config/minilogos/'.\databox::PIC_PDF.'_' . $sbas_id . '.jpg')))
+        if (is_file(($filename = __DIR__ . '/../../config/minilogos/'.\databox::PIC_PDF.'_' . $sbas_id . '.jpg')))
             $out = file_get_contents($filename);
 
         return $out;
@@ -1289,7 +1290,7 @@ class databox extends base
                     $missing_locale[] = $k;
 
         $date_obj = new DateTime();
-        $date = phraseadate::format_mysql($date_obj);
+        $date = $this->app['date-formatter']->format_mysql($date_obj);
         $sql = "INSERT INTO pref (id, prop, value, locale, updated_on, created_on)
               VALUES (null, 'ToU', '', :locale, :date, NOW())";
         $stmt = $this->get_connection()->prepare($sql);

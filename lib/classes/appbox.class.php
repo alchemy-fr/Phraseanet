@@ -9,6 +9,9 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Core\Configuration;
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Cache\Manager as CacheManager;
 use Doctrine\ORM\EntityManager;
 use MediaAlchemyst\Alchemyst;
@@ -45,11 +48,9 @@ class appbox extends base
      *
      * @var <type>
      */
-    protected $session;
     protected $cache;
     protected $connection;
-    protected $registry;
-    protected $Core;
+    protected $app;
 
     const CACHE_LIST_BASES = 'list_bases';
     const CACHE_SBAS_IDS = 'sbas_ids';
@@ -59,10 +60,10 @@ class appbox extends base
      *
      * @return appbox
      */
-    public static function get_instance(\Alchemy\Phrasea\Core $Core, registryInterface &$registry = null)
+    public static function get_instance(Application $app, registryInterface &$registry = null)
     {
         if (!self::$_instance instanceof self) {
-            self::$_instance = new self($Core, $registry);
+            self::$_instance = new static($app, $registry);
         }
 
         return self::$_instance;
@@ -73,20 +74,13 @@ class appbox extends base
      *
      * @return appbox
      */
-    public function __construct(\Alchemy\Phrasea\Core $Core, registryInterface $registry = null)
+    public function __construct(Application $app, registryInterface $registry = null)
     {
-        $this->Core = $Core;
-        if (!$registry)
-            $registry = registry::get_instance($Core);
-        $this->connection = connection::getPDOConnection(null, $registry);
-        $this->registry = $registry;
-        $this->session = Session_Handler::getInstance($this);
+        $this->app = $app;
+        $this->connection = connection::getPDOConnection($app, null, $app['phraseanet.registry']);
+        $choosenConnexion = $app['phraseanet.configuration']->getPhraseanet()->get('database');
 
-        $configuration = $Core->getConfiguration();
-
-        $choosenConnexion = $configuration->getPhraseanet()->get('database');
-
-        $connexion = $configuration->getConnexion($choosenConnexion);
+        $connexion = $app['phraseanet.configuration']->getConnexion($choosenConnexion);
 
         $this->host = $connexion->get('host');
         $this->port = $connexion->get('port');
@@ -165,7 +159,7 @@ class appbox extends base
             $collection->update_logo($pathfile);
         }
 
-        $registry = registry::get_instance();
+        $registry = $this->app['phraseanet.registry'];
 
         $file = $registry->get('GV_RootPath') . 'config/' . $pic_type . '/' . $collection->get_base_id();
         $custom_path = $registry->get('GV_RootPath') . 'www/custom/' . $pic_type . '/' . $collection->get_base_id();
@@ -322,8 +316,7 @@ class appbox extends base
         $stmt->execute(array(':viewname' => $viewname, ':sbas_id'  => $databox->get_sbas_id()));
         $stmt->closeCursor();
 
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+        $this->delete_data_from_cache(appbox::CACHE_LIST_BASES);
         cache_databox::update($databox->get_sbas_id(), 'structure');
 
         return $this;
@@ -338,7 +331,7 @@ class appbox extends base
         return self::BASE_TYPE;
     }
 
-    public function forceUpgrade(Setup_Upgrade &$upgrader, CacheManager $cacheManager, $cacheservice,EntityManager $em, Filesystem $filesystem)
+    public function forceUpgrade(Setup_Upgrade &$upgrader, Application $app)
     {
         $from_version = $this->get_version();
 
@@ -351,16 +344,16 @@ class appbox extends base
          */
         $upgrader->set_current_message(_('Flushing cache'));
 
-        $cacheManager->flushAll();
+        $app['phraseanet.cache-service']->flushAll();
 
         $upgrader->add_steps_complete(1);
 
         $upgrader->set_current_message(_('Creating new tables'));
         //create schema
 
-        if ($em->getConnection()->getDatabasePlatform()->supportsAlterTable()) {
-            $tool = new \Doctrine\ORM\Tools\SchemaTool($em);
-            $metas = $em->getMetadataFactory()->getAllMetadata();
+        if ($app['EM']->getConnection()->getDatabasePlatform()->supportsAlterTable()) {
+            $tool = new \Doctrine\ORM\Tools\SchemaTool($app['EM']);
+            $metas = $app['EM']->getMetadataFactory()->getAllMetadata();
             $tool->updateSchema($metas, true);
         }
 
@@ -378,7 +371,7 @@ class appbox extends base
         ))->ignoreVCS(true)->ignoreDotFiles(true);
 
         foreach ($finder as $file) {
-            $filesystem->remove($file);
+            $app['filesystem']->remove($file);
         }
 
         $upgrader->add_steps_complete(1);
@@ -388,8 +381,6 @@ class appbox extends base
          */
         $upgrader->set_current_message(_('Copying files'));
 
-        $filesystem = $filesystem;
-
         foreach (array(
         'config/custom_files/' => 'www/custom/',
         'config/minilogos/'    => 'www/custom/minilogos/',
@@ -397,7 +388,7 @@ class appbox extends base
         'config/status/'       => 'www/custom/status/',
         'config/wm/'           => 'www/custom/wm/',
         ) as $source => $target) {
-            $filesystem->mirror($registry->get('GV_RootPath') . $source, $registry->get('GV_RootPath') . $target);
+            $app['filesystem']->mirror($registry->get('GV_RootPath') . $source, $registry->get('GV_RootPath') . $target);
         }
 
         $upgrader->add_steps_complete(1);
@@ -408,7 +399,7 @@ class appbox extends base
          * Step 6
          */
         $upgrader->set_current_message(_('Upgrading appbox'));
-        $advices = $this->upgradeDB(true, $upgrader);
+        $advices = $this->upgradeDB(true, $upgrader, $app);
         $upgrader->add_steps_complete(1);
 
         /**
@@ -416,7 +407,7 @@ class appbox extends base
          */
         foreach ($this->get_databoxes() as $s) {
             $upgrader->set_current_message(sprintf(_('Upgrading %s'), $s->get_viewname()));
-            $advices = array_merge($advices, $s->upgradeDB(true, $upgrader));
+            $advices = array_merge($advices, $s->upgradeDB(true, $upgrader, $app));
             $upgrader->add_steps_complete(1);
         }
 
@@ -424,7 +415,7 @@ class appbox extends base
          * Step 8
          */
         $upgrader->set_current_message(_('Post upgrade'));
-        $this->post_upgrade($upgrader);
+        $this->post_upgrade($upgrader, $app);
         $upgrader->add_steps_complete(1);
 
         /**
@@ -432,7 +423,7 @@ class appbox extends base
          */
         $upgrader->set_current_message(_('Flushing cache'));
 
-        $cacheManager->flushAll();
+        $app['phraseanet.cache-service']->flushAll();
 
         $upgrader->add_steps_complete(1);
 
@@ -450,18 +441,16 @@ class appbox extends base
         return $advices;
     }
 
-    protected function post_upgrade(Setup_Upgrade &$upgrader)
+    protected function post_upgrade(Setup_Upgrade &$upgrader, Application $app)
     {
-        $Core = bootstrap::getCore();
-
         $upgrader->add_steps(1 + count($this->get_databoxes()));
-        $this->apply_patches($this->get_version(), $Core->getVersion()->getNumber(), true, $upgrader);
-        $this->setVersion($Core->getVersion()->getNumber());
+        $this->apply_patches($this->get_version(), $app['phraseanet.version']->getNumber(), true, $upgrader, $app);
+        $this->setVersion($app['phraseanet.version']);
         $upgrader->add_steps_complete(1);
 
         foreach ($this->get_databoxes() as $databox) {
-            $databox->apply_patches($databox->get_version(), $Core->getVersion()->getNumber(), true, $upgrader);
-            $databox->setVersion($Core->getVersion()->getNumber());
+            $databox->apply_patches($databox->get_version(), $app['phraseanet.version']->getNumber(), true, $upgrader, $app);
+            $databox->setVersion($app['phraseanet.version']);
             $upgrader->add_steps_complete(1);
         }
 
@@ -476,7 +465,7 @@ class appbox extends base
      * @param  type              $write_file
      * @return type
      */
-    public static function create(\Alchemy\Phrasea\Core $Core, registryInterface &$registry, connection_interface $conn, $dbname, $write_file = false)
+    public static function create(Application $app, registryInterface &$registry, connection_interface $conn, $dbname, Version $version, $write_file = false)
     {
         $credentials = $conn->get_credentials();
 
@@ -494,7 +483,7 @@ class appbox extends base
                 $connexionINI[$key] = (string) $value;
             }
 
-            $Core->getConfiguration()->initialize();
+            $app['phraseanet.configuration']->initialize();
             $connexionINI['driver'] = 'pdo_mysql';
             $connexionINI['charset'] = 'UTF8';
 
@@ -512,9 +501,9 @@ class appbox extends base
 
             $cacheService = "array_cache";
 
-            $Core->getConfiguration()->setConnexions($connexion);
+            $app['phraseanet.configuration']->setConnexions($connexion);
 
-            $services = $Core->getConfiguration()->getConfigurations();
+            $services = $app['phraseanet.configuration']->getConfigurations();
 
             foreach ($services as $serviceName => $service) {
                 if ($serviceName === "doctrine_prod") {
@@ -526,9 +515,9 @@ class appbox extends base
                     );
                 }
             }
-            $Core->getConfiguration()->setConfigurations($services);
+            $app['phraseanet.configuration']->setConfigurations($services);
 
-            $arrayConf = $Core->getConfiguration()->getConfigurations();
+            $arrayConf = $app['phraseanet.configuration']->getConfigurations();
 
             foreach ($arrayConf as $key => $value) {
                 if (is_array($value) && array_key_exists('phraseanet', $value)) {
@@ -540,9 +529,8 @@ class appbox extends base
                 }
             }
 
-            $Core->getConfiguration()->setConfigurations($arrayConf);
-
-            $Core->getConfiguration()->setEnvironnement('prod');
+            $app['phraseanet.configuration']->setConfigurations($arrayConf);
+            $app['phraseanet.configuration']->setEnvironnement('prod');
         }
         try {
             if ($conn->is_multi_db()) {
@@ -562,8 +550,8 @@ class appbox extends base
         }
 
         try {
-            $appbox = self::get_instance($Core, $registry);
-            $appbox->insert_datas();
+            $appbox = static::get_instance($app, $registry);
+            $appbox->insert_datas($version);
         } catch (Exception $e) {
             throw new Exception('Error while installing ' . $e->getMessage());
         }
@@ -585,7 +573,7 @@ class appbox extends base
         $ret = array();
         foreach ($this->retrieve_sbas_ids() as $sbas_id) {
             try {
-                $ret[$sbas_id] = new \databox($sbas_id);
+                $ret[$sbas_id] = new \databox($this->app, $sbas_id);
             } catch (\Exception_DataboxNotFound $e) {
 
             }
@@ -630,15 +618,6 @@ class appbox extends base
         }
 
         return $databoxes[$sbas_id];
-    }
-
-    /**
-     *
-     * @return Session_Handler
-     */
-    public function get_session()
-    {
-        return $this->session;
     }
 
     public static function list_databox_templates()
