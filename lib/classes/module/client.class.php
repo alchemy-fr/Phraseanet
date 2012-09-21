@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  *
@@ -18,9 +20,9 @@
 class module_client
 {
 
-    public function getLanguage($lng)
+    public function getLanguage(Application $app, $lng)
     {
-        $registry = registry::get_instance();
+        $registry = $app['phraseanet.registry'];
         $out = array();
         $out['createWinInvite'] = _('paniers:: Quel nom souhaitez vous donner a votre panier ?');
         $out['chuNameEmpty'] = _('paniers:: Quel nom souhaitez vous donner a votre panier ?');
