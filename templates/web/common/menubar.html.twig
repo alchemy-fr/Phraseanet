@@ -122,7 +122,7 @@
     <div class="PNB" style="left:auto;overflow:hidden;">
       <ol>
 
-    {% if module == "client" or module == "prod" %}
+    {% if app.isAuthenticated()  and (module == "client" or module == "prod") %}
         <li id="notification_trigger">
           <a href="#" style="font-weight:bold;text-decoration:none;">
             <span>
@@ -136,7 +136,11 @@
           </a>
         </li>
 
-        {% endif %}
+        <div style="display:none;z-index:30000;" id="notification_box">
+            {% set notifications = app['events-manager'].get_notifications %}
+            {% include 'prod/notifications.html.twig' %}
+        </div>
+    {% endif %}
         <li>
           {% if app.isAuthenticated() %}
             {% if user.is_guest %}
@@ -195,7 +199,3 @@
     </div>
 </div>
 
-          <div style="display:none;z-index:30000;" id="notification_box">
-          {% set notifications = app['events-manager'].get_notifications %}
-          {% include 'prod/notifications.html.twig' %}
-          </div>
