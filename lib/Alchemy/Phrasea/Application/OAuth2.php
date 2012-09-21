@@ -28,12 +28,12 @@ use Symfony\Component\HttpFoundation\Request;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-return call_user_func(function() {
+return call_user_func(function($environment = 'prod') {
 
-            $app = new PhraseaApplication();
+            $app = new PhraseaApplication($environment);
 
             $app['oauth'] = function($app) {
-                    return new \API_OAuth2_Adapter($app['phraseanet.appbox']);
+                    return new \API_OAuth2_Adapter($app);
                 };
 
             /**
@@ -45,7 +45,6 @@ return call_user_func(function() {
             $authorize_func = function() use ($app) {
                     $request = $app['request'];
                     $oauth2_adapter = $app['oauth'];
-                    $session = $app['phraseanet.appbox']->get_session();
 
                     //Check for auth params, send error or redirect if not valid
                     $params = $oauth2_adapter->getAuthorizationRequestParameters($request);
@@ -53,7 +52,7 @@ return call_user_func(function() {
                     $app_authorized = false;
                     $errorMessage = false;
 
-                    $client = \API_OAuth2_Application::load_from_client_id($app['phraseanet.appbox'], $params['client_id']);
+                    $client = \API_OAuth2_Application::load_from_client_id($app, $params['client_id']);
 
                     $oauth2_adapter->setClient($client);
 
@@ -75,28 +74,27 @@ return call_user_func(function() {
                         );
                     }
 
-                    if ( ! $session->is_authenticated()) {
+                    if (!$app->isAuthenticated()) {
                         if ($action_login !== null) {
                             try {
-                                $session->authenticate(
-                                    new \Session_Authentication_Native(
-                                        $app['phraseanet.appbox'], $request->get("login"), $request->get("password")
-                                    )
+                                $auth = new \Session_Authentication_Native(
+                                        $app, $request->get("login"), $request->get("password")
                                 );
+
+                                $app->openAccount($auth);
                             } catch (\Exception $e) {
 
                                 return new Response($app['twig']->render($template, array("auth" => $oauth2_adapter)));
                             }
                         } else {
-
                             return new Response($app['twig']->render($template, array("auth" => $oauth2_adapter)));
                         }
                     }
 
                     //check if current client is already authorized by current user
                     $user_auth_clients = \API_OAuth2_Application::load_authorized_app_by_user(
-                            $app['phraseanet.appbox']
-                            , $app['phraseanet.core']->getAuthenticatedUser()
+                            $app
+                            , $app['phraseanet.user']
                     );
 
                     foreach ($user_auth_clients as $auth_client) {
@@ -105,20 +103,20 @@ return call_user_func(function() {
                         }
                     }
 
-                    $account = $oauth2_adapter->updateAccount($session->get_usr_id());
+                    $account = $oauth2_adapter->updateAccount($app['phraseanet.user']->get_id());
 
                     $params['account_id'] = $account->get_id();
 
-                    if ( ! $app_authorized && $action_accept === null) {
+                    if (!$app_authorized && $action_accept === null) {
                         $params = array(
                             "auth"         => $oauth2_adapter,
                             "errorMessage" => $errorMessage,
                         );
 
                         return new Response($app['twig']->render($template, $params));
-                    } elseif ( ! $app_authorized && $action_accept !== null) {
+                    } elseif (!$app_authorized && $action_accept !== null) {
                         $app_authorized = (Boolean) $action_accept;
-                        $account->set_revoked( ! $app_authorized);
+                        $account->set_revoked(!$app_authorized);
                     }
 
                     //if native app show template
@@ -172,4 +170,5 @@ return call_user_func(function() {
                 });
 
             return $app;
-        });
+        }, $environment ? : null
+);

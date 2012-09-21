@@ -26,9 +26,9 @@ return call_user_func(function() {
             $app = new PhraseaApplication();
 
             $app->get('/', function(Request $request, SilexApplication $app) {
-                    $registry = $app['phraseanet.core']->getRegistry();
+                    $registry = $app['phraseanet.registry'];
 
-                    $apiAdapter = new \API_V1_adapter($app['phraseanet.appbox'], $app['phraseanet.core']);
+                    $apiAdapter = new \API_V1_adapter($app);
 
                     $result = new \API_V1_result($request, $apiAdapter);
 

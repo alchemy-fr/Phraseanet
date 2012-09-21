@@ -26,9 +26,9 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-return call_user_func(function() {
+return call_user_func(function($environment = 'prod') {
 
-            $app = new PhraseaApplication();
+            $app = new PhraseaApplication($environment);
 
             /**
              * @var API_OAuth2_Token
@@ -40,7 +40,7 @@ return call_user_func(function() {
              * @var Closure
              */
             $app['api'] = function () use ($app) {
-                    return new \API_V1_adapter($app['phraseanet.appbox'], $app['phraseanet.core']);
+                    return new \API_V1_adapter($app);
                 };
 
             /**
@@ -54,38 +54,32 @@ return call_user_func(function() {
              * @ throws \API_V1_exception_forbidden
              */
             $app->before(function($request) use ($app) {
-                    $session = $app['phraseanet.appbox']->get_session();
-                    $registry = $app['phraseanet.core']->getRegistry();
-                    $oauth2_adapter = new \API_OAuth2_Adapter($app['phraseanet.appbox']);
+                    $registry = $app['phraseanet.registry'];
+                    $oauth2_adapter = new \API_OAuth2_Adapter($app);
                     $oauth2_adapter->verifyAccessToken();
 
-                    $user = \User_Adapter::getInstance($oauth2_adapter->get_usr_id(), $app['phraseanet.appbox']);
-                    $app['token'] = \API_OAuth2_Token::load_by_oauth_token($app['phraseanet.appbox'], $oauth2_adapter->getToken());
+                    $app['token'] = \API_OAuth2_Token::load_by_oauth_token($app, $oauth2_adapter->getToken());
 
                     $oAuth2App = $app['token']->get_account()->get_application();
                     /* @var $oAuth2App \API_OAuth2_Application */
 
                     if ($oAuth2App->get_client_id() == \API_OAuth2_Application_Navigator::CLIENT_ID
-                        && ! $registry->get('GV_client_navigator')) {
+                        && !$registry->get('GV_client_navigator')) {
                         throw new \API_V1_exception_forbidden(_('The use of phraseanet Navigator is not allowed'));
                     }
 
-                    if ($session->is_authenticated()) {
+                    if ($app->isAuthenticated()) {
                         return;
                     }
 
-                    if ($oauth2_adapter->has_ses_id()) {
-                        try {
-                            $session->restore($user, $oauth2_adapter->get_ses_id());
+                    $user = \User_Adapter::getInstance($oauth2_adapter->get_usr_id(), $app);
 
-                            return;
-                        } catch (\Exception $e) {
+                    $app->openAccount($user, $oauth2_adapter->get_ses_id());
 
-                        }
-                    }
-                    $auth = new \Session_Authentication_None($user);
-                    $session->authenticate($auth);
-                    $oauth2_adapter->remember_this_ses_id($session->get_ses_id());
+                    /**
+                     * TODO Neutron => remove
+                     */
+                    $oauth2_adapter->remember_this_ses_id($app['session']->get('phrasea_session_id'));
 
                     return;
                 });
@@ -117,7 +111,7 @@ return call_user_func(function() {
                                     break;
                                 case \API_V1_Log::RECORDS_RESSOURCE :
                                     if ((int) $exploded_route[1] > 0 && sizeof($exploded_route) == 4) {
-                                        if ( ! isset($exploded_route[3]))
+                                        if (!isset($exploded_route[3]))
                                             $aspect = "record";
                                         elseif (preg_match("/^set/", $exploded_route[3]))
                                             $action = $exploded_route[3];
@@ -152,7 +146,7 @@ return call_user_func(function() {
                     $pathInfo = $request->getPathInfo();
                     $route = $parseRoute($pathInfo, $response);
                     \API_V1_Log::create(
-                        $app['phraseanet.appbox']
+                        $app
                         , $account
                         , $request->getMethod() . " " . $pathInfo
                         , $response->getStatusCode()
@@ -177,7 +171,7 @@ return call_user_func(function() {
             $mustBeAdmin = function (Request $request) use ($app) {
                     /* @var $user \User_Adapter */
                     $user = $app['token']->get_account()->get_user();
-                    if ( ! $user->is_admin()) {
+                    if (!$user->ACL()->is_admin()) {
                         throw new \API_V1_exception_unauthorized('You are not authorized');
                     }
                 };
@@ -670,21 +664,21 @@ return call_user_func(function() {
              */
             $app->get('/feeds/list/', function(SilexApplication $app) {
                     return $app['api']
-                            ->search_publications($app['request'], $app['phraseanet.core']->getAuthenticatedUser())
+                            ->search_publications($app['request'], $app['phraseanet.user'])
                             ->get_response();
                 }
             );
 
             $app->get('/feeds/content/', function(SilexApplication $app) {
                     return $app['api']
-                            ->get_publications($app['request'], $app['phraseanet.core']->getAuthenticatedUser())
+                            ->get_publications($app['request'], $app['phraseanet.user'])
                             ->get_response();
                 }
             );
 
             $app->get('/feeds/entry/{entry_id}/', function(SilexApplication $app, $entry_id) {
                     return $app['api']
-                            ->get_feed_entry($app['request'], $entry_id, $app['phraseanet.core']->getAuthenticatedUser())
+                            ->get_feed_entry($app['request'], $entry_id, $app['phraseanet.user'])
                             ->get_response();
                 }
             )->assert('entry_id', '\d+');
@@ -702,7 +696,7 @@ return call_user_func(function() {
              */
             $app->get('/feeds/{feed_id}/content/', function(SilexApplication $app, $feed_id) {
                     return $app['api']
-                            ->get_publication($app['request'], $feed_id, $app['phraseanet.core']->getAuthenticatedUser())
+                            ->get_publication($app['request'], $feed_id, $app['phraseanet.user'])
                             ->get_response();
                 }
             )->assert('feed_id', '\d+');
@@ -753,12 +747,12 @@ return call_user_func(function() {
             /**
              * Temporary fix for https://github.com/fabpot/Silex/issues/438
              */
-            $app['dispatcher']->addListener(KernelEvents::RESPONSE, function(FilterResponseEvent $event){
-                if ($event->getResponse() instanceof \API_V1_Response) {
-                    $event->getResponse()->setStatusCode($event->getResponse()->getOriginalStatusCode());
-                }
-            });
+            $app['dispatcher']->addListener(KernelEvents::RESPONSE, function(FilterResponseEvent $event) {
+                    if ($event->getResponse() instanceof \API_V1_Response) {
+                        $event->getResponse()->setStatusCode($event->getResponse()->getOriginalStatusCode());
+                    }
+                });
 
             return $app;
-        }
+        }, $environment ? : null
 );
