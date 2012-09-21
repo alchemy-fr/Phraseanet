@@ -190,7 +190,6 @@ class module_console_fileEnsureProductionSetting extends Command
 
         $listChecks = false;
         try {
-        echo " at ".__FILE__."\n";
             $service = Builder::create($this->container, $configuration);
             $work_message = '<info>Works !</info>';
             $listChecks = true;
@@ -416,7 +415,6 @@ class module_console_fileEnsureProductionSetting extends Command
         $configuration = $this->configuration->getService($templateEngineName);
 
         try {
-        echo " at ".__FILE__."\n";
             Builder::create($this->container, $configuration);
             $work_message = '<info>Works !</info>';
         } catch (\Exception $e) {
@@ -523,7 +521,6 @@ class module_console_fileEnsureProductionSetting extends Command
         $configuration = $this->configuration->getService($ormName);
 
         try {
-        echo " at ".__FILE__."\n";
             $service = Builder::create($this->container, $configuration);
             $work_message = '<info>Works !</info>';
         } catch (\Exception $e) {
@@ -678,7 +675,6 @@ class module_console_fileEnsureProductionSetting extends Command
         try {
             $conf = $this->configuration->getService($ServiceName);
 
-        echo " at ".__FILE__."\n";
             $Service = Builder::create($this->container, $conf);
         } catch (\Exception $e) {
             return false;
@@ -740,7 +736,6 @@ class module_console_fileEnsureProductionSetting extends Command
         try {
             $originalConfiguration = $this->configuration->getService($ServiceName);
 
-        echo " at ".__FILE__."\n";
             $Service = Builder::create($this->container, $originalConfiguration);
         } catch (\Exception $e) {
             return false;
@@ -807,7 +802,6 @@ class module_console_fileEnsureProductionSetting extends Command
         try {
             $originalConfiguration = $this->configuration->getService($ServiceName);
 
-        echo " at ".__FILE__."\n";
             $Service = Builder::create($this->container, $originalConfiguration);
         } catch (\Exception $e) {
             return false;
