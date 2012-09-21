@@ -19,6 +19,7 @@ Entities\Session:
     ip_address:
       type: string
       length: 40
+      nullable: true
     platform:
       type: string
       length: 128
