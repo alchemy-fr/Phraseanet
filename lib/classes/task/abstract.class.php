@@ -107,12 +107,12 @@ abstract class task_abstract
 
         $this->taskid = (integer) $taskid;
 
-        phrasea::use_i18n(Session_Handler::get_locale());
+        phrasea::use_i18n($this->dependencyContainer['locale']);
 
         $this->launched_by = array_key_exists("REQUEST_URI", $_SERVER) ? self::LAUCHED_BY_BROWSER : self::LAUCHED_BY_COMMANDLINE;
 
         try {
-            $conn = connection::getPDOConnection();
+            $conn = connection::getPDOConnection($this->dependencyContainer);
         } catch (Exception $e) {
             $this->log($e->getMessage());
             $this->log(("Warning : abox connection lost, restarting in 10 min."));
@@ -163,7 +163,7 @@ abstract class task_abstract
     public function getState()
     {
         static $stmt = NULL;
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($this->dependencyContainer);
         if ( ! $stmt) {
             $sql = 'SELECT status FROM task2 WHERE task_id = :taskid';
             $stmt = $conn->prepare($sql);
@@ -225,7 +225,7 @@ abstract class task_abstract
             throw new Exception_InvalidArgument(sprintf('unknown status `%s`', $status));
         }
 
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($this->dependencyContainer);
 
         $sql = 'UPDATE task2 SET status = :status WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
@@ -241,7 +241,7 @@ abstract class task_abstract
      */
     public function setActive($active)
     {
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($this->dependencyContainer);
 
         $sql = 'UPDATE task2 SET active = :active WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
@@ -261,7 +261,7 @@ abstract class task_abstract
     public function setTitle($title)
     {
         $title = strip_tags($title);
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($this->dependencyContainer);
 
         $sql = 'UPDATE task2 SET name = :title WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
@@ -289,7 +289,7 @@ abstract class task_abstract
             throw new Exception_InvalidArgument('Bad XML');
         }
 
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($this->dependencyContainer);
 
         $sql = 'UPDATE task2 SET settings = :settings WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
@@ -309,7 +309,7 @@ abstract class task_abstract
      */
     public function resetCrashCounter()
     {
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($this->dependencyContainer);
 
         $sql = 'UPDATE task2 SET crashed = 0 WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
@@ -336,7 +336,7 @@ abstract class task_abstract
      */
     public function incrementCrashCounter()
     {
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($this->dependencyContainer);
 
         $sql = 'UPDATE task2 SET crashed = crashed + 1 WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
@@ -402,7 +402,7 @@ abstract class task_abstract
 
         $this->runner = $runner;
 
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($this->dependencyContainer);
         $sql = 'UPDATE task2 SET runner = :runner WHERE task_id = :taskid';
 
         $params = array(
@@ -432,14 +432,13 @@ abstract class task_abstract
     public function delete()
     {
         if ( ! $this->getPID()) { // do not delete a running task
-            $conn = connection::getPDOConnection();
-            $registry = registry::get_instance();
+            $conn = connection::getPDOConnection($this->dependencyContainer);
             $sql = "DELETE FROM task2 WHERE task_id = :task_id";
             $stmt = $conn->prepare($sql);
             $stmt->execute(array(':task_id' => $this->getID()));
             $stmt->closeCursor();
 
-            $lock_file = $registry->get('GV_RootPath') . 'tmp/locks/task_' . $this->getID() . '.lock';
+            $lock_file = __DIR__ . '/../../../tmp/locks/task_' . $this->getID() . '.lock';
             @unlink($lock_file);
         }
     }
@@ -449,7 +448,7 @@ abstract class task_abstract
      */
     public function setLastExecTime()
     {
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($this->dependencyContainer);
         $sql = 'UPDATE task2 SET last_exec_time=NOW() WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
         $stmt->execute(array(':taskid' => $this->getID()));
@@ -463,7 +462,7 @@ abstract class task_abstract
      */
     public function getLastExecTime()
     {
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($this->dependencyContainer);
 
         $sql = 'SELECT last_exec_time FROM task2 WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
@@ -558,9 +557,7 @@ abstract class task_abstract
      */
     private function getLockfilePath()
     {
-        $core = \bootstrap::getCore();
-
-        $lockdir = $core->getRegistry()->get('GV_RootPath') . 'tmp/locks/';
+        $lockdir = $this->dependencyContainer['phraseanet.registry']->get('GV_RootPath') . 'tmp/locks/';
         $lockfilePath = ($lockdir . 'task_' . $this->getID() . '.lock');
 
         return $lockfilePath;
@@ -849,9 +846,7 @@ abstract class task_abstract
 
         $tid = $app['phraseanet.appbox']->get_connection()->lastInsertId();
 
-        $core = \bootstrap::getCore();
-
-        return new $class_name($tid, $app, $core['monolog']);
+        return new $class_name($tid, $app, $app['monolog']);
     }
 
     public function getUsage()
@@ -885,7 +880,7 @@ abstract class task_abstract
         $p = ($todo > 0) ? ((100 * $done) / $todo) : -1;
 
         try {
-            $conn = connection::getPDOConnection();
+            $conn = connection::getPDOConnection($this->dependencyContainer);
             $sql = 'UPDATE task2 SET completed = :p WHERE task_id = :taskid';
             $stmt = $conn->prepare($sql);
             $stmt->execute(array(

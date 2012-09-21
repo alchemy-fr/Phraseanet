@@ -435,7 +435,7 @@ class task_period_cindexer extends task_abstract
             $args_nopwd[] = '--run';
         }
 
-        $registry = registry::get_instance();
+        $registry = $this->dependencyContainer['phraseanet.registry'];
         $logdir = p4string::addEndSlash($registry->get('GV_RootPath') . 'logs');
 
         $this->new_status = NULL; // new status to set at the end

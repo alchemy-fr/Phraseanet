@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Core\Configuration;
 use Alchemy\Phrasea\Application;
 use Monolog\Logger;
 
@@ -46,20 +47,13 @@ class task_Scheduler
         return $this;
     }
 
-    protected static function get_connection()
-    {
-        return appbox::get_instance(\bootstrap::getCore())->get_connection();
-    }
-
     /**
      * @throws Exception if scheduler is already running
      * @todo doc all possible exception
      */
     public function run()
     {
-
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $registry = $appbox->get_registry();
+        $registry = $this->dependencyContainer['phraseanet.registry'];
 
         //prevent scheduler to fail if GV_cli is not provided
         if ( ! is_executable($registry->get('GV_cli'))) {
@@ -115,7 +109,7 @@ class task_Scheduler
 
         $this->log(sprintf("running scheduler with method %s", $this->method));
 
-        $conn = appbox::get_instance(\bootstrap::getCore())->get_connection();
+        $conn = $this->dependencyContainer['phraseanet.appbox']->get_connection();
 
         $taskPoll = array(); // the poll of tasks
 
@@ -124,10 +118,10 @@ class task_Scheduler
         $sql = "UPDATE sitepreff SET schedstatus='started'";
         $conn->exec($sql);
 
-        $task_manager = new task_manager($appbox);
+        $task_manager = new task_manager($this->dependencyContainer);
 
         // set every 'auto-start' task to start
-        foreach ($task_manager->getTasks($this->dependencyContainer) as $task) {
+        foreach ($task_manager->getTasks() as $task) {
             if ($task->isActive()) {
                 if ( ! $task->getPID()) {
                     /* @var $task task_abstract */
@@ -161,7 +155,7 @@ class task_Scheduler
                     sleep(1);
                 }
                 try {
-                    $conn = appbox::get_instance(\bootstrap::getCore())->get_connection();
+                    $conn = $this->dependencyContainer['phraseanet.appbox']->get_connection();
                 } catch (ErrorException $e) {
                     $ping = false;
                 }
@@ -214,7 +208,7 @@ class task_Scheduler
                 $taskPoll[$tkey]["todel"] = true;
             }
 
-            foreach ($task_manager->getTasks($this->dependencyContainer, true) as $task) {
+            foreach ($task_manager->getTasks(true) as $task) {
                 $tkey = "t_" . $task->getID();
                 $status = $task->getState();
 

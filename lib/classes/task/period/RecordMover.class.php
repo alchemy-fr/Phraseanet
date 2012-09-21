@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Core\Configuration;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -445,7 +447,7 @@ class task_period_RecordMover extends task_appboxAbstract
             }
 
             try {
-                $connbas = connection::getPDOConnection($task['sbas_id']);
+                $connbas = connection::getPDOConnection($this->dependencyContainer, $task['sbas_id']);
             } catch (Exception $e) {
                 $this->log(sprintf("can't connect sbas %s", $task['sbas_id']));
                 continue;
@@ -457,7 +459,7 @@ class task_period_RecordMover extends task_appboxAbstract
 
                     $tmp = array('sbas_id'   => $task['sbas_id'], 'record_id' => $row['record_id'], 'action'    => $task['action']);
 
-                    $rec = new record_adapter($task['sbas_id'], $row['record_id']);
+                    $rec = new record_adapter($this->dependencyContainer, $task['sbas_id'], $row['record_id']);
                     switch ($task['action']) {
 
                         case 'UPDATE':
@@ -500,16 +502,16 @@ class task_period_RecordMover extends task_appboxAbstract
     protected function processOneContent(appbox $appbox, Array $row)
     {
         $logsql = (int) ($this->sxTaskSettings->logsql) > 0;
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = $this->dependencyContainer['phraseanet.appbox'];
         $databox = $appbox->get_databox($row['sbas_id']);
-        $rec = new record_adapter($row['sbas_id'], $row['record_id']);
+        $rec = new record_adapter($this->dependencyContainer, $row['sbas_id'], $row['record_id']);
         switch ($row['action']) {
 
             case 'UPDATE':
 
                 // change collection ?
                 if (array_key_exists('coll', $row)) {
-                    $coll = collection::get_from_coll_id($databox, $row['coll']);
+                    $coll = collection::get_from_coll_id($this->dependencyContainer, $databox, $row['coll']);
                     $rec->move_to_collection($coll, $appbox);
                     if ($logsql) {
                         $this->log(sprintf("on sbas %s move rid %s to coll %s \n", $row['sbas_id'], $row['record_id'], $coll->get_coll_id()));
@@ -572,7 +574,7 @@ class task_period_RecordMover extends task_appboxAbstract
      */
     private function calcSQL($sxtask, $playTest = false)
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $appbox = $this->dependencyContainer['phraseanet.appbox'];
 
         $sbas_id = (int) ($sxtask['sbas_id']);
 
@@ -741,7 +743,7 @@ class task_period_RecordMover extends task_appboxAbstract
      */
     private function calcWhere($sbas_id, &$sxtask)
     {
-        $connbas = connection::getPDOConnection($sbas_id);
+        $connbas = connection::getPDOConnection($this->dependencyContainer, $sbas_id);
 
         $tw = array();
         $join = '';
@@ -845,7 +847,7 @@ class task_period_RecordMover extends task_appboxAbstract
      */
     private function playTest($sbas_id, $sql)
     {
-        $connbas = connection::getPDOConnection($sbas_id);
+        $connbas = connection::getPDOConnection($this->dependencyContainer, $sbas_id);
         $result = array('rids' => array(), 'err' => '', 'n'   => null);
 
         $result['n'] = $connbas->query('SELECT COUNT(*) AS n FROM (' . $sql . ') AS x')->fetchColumn();

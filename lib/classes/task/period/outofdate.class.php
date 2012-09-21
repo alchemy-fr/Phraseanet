@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Core\Configuration;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -310,9 +312,8 @@ class task_period_outofdate extends task_abstract
     // ====================================================================
     public function getInterfaceHTML()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
-        $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+        $appbox = $this->dependencyContainer['phraseanet.appbox'];
+        $user = $this->dependencyContainer['phraseanet.user'];
         ob_start();
 
         $sbas_list = $user->ACL()->get_granted_sbas(array('bas_manage'));
@@ -437,13 +438,13 @@ class task_period_outofdate extends task_abstract
     protected function run2()
     {
         $ret = '';
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($this->dependencyContainer);
 
         $this->sxTaskSettings = simplexml_load_string($this->settings);
 
         $this->sbas_id = (int) ($this->sxTaskSettings->sbas_id);
 
-        $this->connbas = connection::getPDOConnection($this->sbas_id);
+        $this->connbas = connection::getPDOConnection($this->dependencyContainer, $this->sbas_id);
 
         $this->running = true;
         $this->tmask = array();
@@ -465,7 +466,7 @@ class task_period_outofdate extends task_abstract
             }
 
             try {
-                $connbas = connection::getPDOConnection($this->sbas_id);
+                $connbas = connection::getPDOConnection($this->dependencyContainer, $this->sbas_id);
                 if ( ! $connbas->ping()) {
                     throw new Exception('Mysql has gone away');
                 }
@@ -500,7 +501,7 @@ class task_period_outofdate extends task_abstract
                     } else {
                         $period = 60;
                     }
-                    $this->connbas = connection::getPDOConnection($this->sbas_id);
+                    $this->connbas = connection::getPDOConnection($this->dependencyContainer, $this->sbas_id);
 
                     $duration = time();
 
@@ -519,7 +520,7 @@ class task_period_outofdate extends task_abstract
                             $duration = time() - $duration;
                             if ($duration < $period) {
                                 sleep($period - $duration);
-                                $conn = connection::getPDOConnection();
+                                $conn = connection::getPDOConnection($this->dependencyContainer);
                             }
                             break;
                         case 'MAXRECSDONE':
@@ -731,7 +732,7 @@ class task_period_outofdate extends task_abstract
     {
         $ret = NULL;
 
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = $this->dependencyContainer['phraseanet.appbox'];
         $request = http_request::getInstance();
         $parm2 = $request->get_parms(
             'ACT', 'bid'

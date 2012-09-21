@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Core\Configuration;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -261,9 +263,8 @@ class task_period_workflow01 extends task_databoxAbstract
 
     public function getInterfaceHTML()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
-        $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+        $appbox = $this->dependencyContainer['phraseanet.appbox'];
+        $user = $this->dependencyContainer['phraseanet.user'];
         ob_start();
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
@@ -430,9 +431,8 @@ class task_period_workflow01 extends task_databoxAbstract
     {
         $request = http_request::getInstance();
 
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
-        $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+        $appbox = $this->dependencyContainer['phraseanet.appbox'];
+        $user = $this->dependencyContainer['phraseanet.user'];
 
         $parm = $request->get_parms("bid");
 

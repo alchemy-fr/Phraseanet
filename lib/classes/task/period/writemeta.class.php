@@ -8,6 +8,7 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Core\Configuration;
 use PHPExiftool\Driver\Metadata;
 use PHPExiftool\Driver\Value;
 use PHPExiftool\Driver\Tag;
@@ -172,10 +173,8 @@ class task_period_writemeta extends task_databoxAbstract
 
     public function getInterfaceHTML()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
-        $sbas_ids = User_Adapter::getInstance($session->get_usr_id(), $appbox)
-                ->ACL()->get_granted_sbas(array('bas_manage'));
+        $appbox = $this->dependencyContainer['phraseanet.appbox'];
+        $sbas_ids = $this->dependencyContainer['phraseanet.user']->ACL()->get_granted_sbas(array('bas_manage'));
 
         ob_start();
         if (count($sbas_ids) > 0) {
@@ -236,7 +235,7 @@ class task_period_writemeta extends task_databoxAbstract
         $record_id = $row['record_id'];
         $jeton = $row['jeton'];
 
-        $record = new record_adapter($this->sbas_id, $record_id);
+        $record = new record_adapter($this->dependencyContainer, $this->sbas_id, $record_id);
 
         $type = $record->get_type();
         $subdefs = $record->get_subdefs();
@@ -312,7 +311,6 @@ class task_period_writemeta extends task_databoxAbstract
                 $writer->write($file, $metadatas);
 
                 $this->log(sprintf('Success writing meta for sbas_id=%1$d - record_id=%2$d (%3$s)', $this->sbas_id, $record_id, $name));
-
             } catch (\PHPExiftool\Exception\Exception $e) {
                 $this->log(sprintf('Failure writing meta for sbas_id=%1$d - record_id=%2$d (%3$s)', $this->sbas_id, $record_id, $name));
             }

@@ -8,6 +8,7 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Core\Configuration;
 use Alchemy\Phrasea\Metadata\Tag as PhraseaTag;
 use Alchemy\Phrasea\Border\Attribute as BorderAttribute;
 use MediaVorus\MediaVorus;
@@ -196,7 +197,7 @@ class task_period_archive extends task_abstract
      */
     public function getInterfaceHTML()
     {
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = $this->dependencyContainer['phraseanet.appbox'];
 
         ob_start();
         ?>
@@ -260,13 +261,13 @@ class task_period_archive extends task_abstract
     {
         $this->debug = false;
 
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = $this->dependencyContainer['phraseanet.appbox'];
         $conn = $appbox->get_connection();
 
         $this->sxTaskSettings = simplexml_load_string($this->settings);
 
         $base_id = (int) ($this->sxTaskSettings->base_id);
-        $this->sbas_id = \phrasea::sbasFromBas($base_id);
+        $this->sbas_id = \phrasea::sbasFromBas($this->dependencyContainer, $base_id);
 
         if ( ! $this->sbas_id) {
             $this->log('base_id unknown');
@@ -349,7 +350,7 @@ class task_period_archive extends task_abstract
             $loop = 0;
             while ($this->running) {
                 try {
-                    $conn = connection::getPDOConnection();
+                    $conn = connection::getPDOConnection($this->dependencyContainer);
                 } catch (Exception $e) {
                     $this->log($e->getMessage());
                     if ($this->getRunner() == self::RUNNER_SCHEDULER) {
@@ -497,8 +498,8 @@ class task_period_archive extends task_abstract
     {
         clearstatcache();
 
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
-        connection::getPDOConnection();
+        $appbox = $this->dependencyContainer['phraseanet.appbox'];
+        connection::getPDOConnection($this->dependencyContainer);
         $appbox->get_databox($this->sbas_id)->get_connection();
 
         $path_in = p4string::delEndSlash(trim((string) ($this->sxTaskSettings->hotfolder)));
@@ -1407,7 +1408,7 @@ class task_period_archive extends task_abstract
      */
     private function archiveGrp(\DOMDocument $dom, \DOMElement $node, $path, $path_archived, $path_error, array &$nodesToDel)
     {
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = $this->dependencyContainer['phraseanet.appbox'];
         $xpath = new DOMXPath($dom);
 
         // grp folders stay in place
@@ -1432,7 +1433,7 @@ class task_period_archive extends task_abstract
             // if the .grp does not have a representative doc, let's use a generic file
             if ( ! ($rep = $node->getAttribute('grp_representation'))) {
 
-                $registry = registry::get_instance();
+                $registry = $this->dependencyContainer['phraseanet.registry'];
 
                 try {
                     $this->dependencyContainer['filesystem']->copy(p4string::addEndSlash($registry->get('GV_RootPath')) . 'www/skins/icons/substitution/regroup_doc.png', $genericdoc = ($path . '/group.jpg'), true);
@@ -1461,7 +1462,7 @@ class task_period_archive extends task_abstract
             try {
 
                 $databox = $appbox->get_databox($this->sbas_id);
-                $collection = collection::get_from_coll_id($databox, (int) $cid);
+                $collection = collection::get_from_coll_id($this->dependencyContainer, $databox, (int) $cid);
                 if ($captionFileName === null) {
                     $story = $this->createStory($collection, $path . '/' . $representationFileName, null);
                 } else {
@@ -1614,20 +1615,19 @@ class task_period_archive extends task_abstract
             $stat1 = '0';
         }
 
-        $core = \bootstrap::getCore();
-        $media = $core['mediavorus']->guess(new \SplFileInfo($pathfile));
+        $media = $this->dependencyContainer['mediavorus']->guess($pathfile);
 
         $databox = $collection->get_databox();
         $metadatasStructure = $databox->get_meta_structure();
 
-        $metadatas = $this->getIndexByFieldName($metadatasStructure, $media->getEntity()->getMetadatas());
+        $metadatas = $this->getIndexByFieldName($metadatasStructure, $media->getMetadatas());
 
         if ($captionFile !== null && true === $this->dependencyContainer['filesystem']->exists($captionFile)) {
             $caption = $this->readXMLForDatabox($metadatasStructure, $captionFile);
             $captionStatus = $this->parseStatusBit(simplexml_load_file($captionFile));
 
             if ($captionStatus) {
-                $status = databox_status::operation_or($status, $captionStatus);
+                $status = databox_status::operation_or($this->dependencyContainer, $status, $captionStatus);
             }
 
             $metadatas = $this->mergeForDatabox($metadatasStructure, $metadatas, $caption);
@@ -1635,11 +1635,11 @@ class task_period_archive extends task_abstract
 
         $metas = $this->bagToArray($metadatasStructure, $metadatas);
 
-        $story = record_adapter::createStory($collection);
-        $story->substitute_subdef('document', $media, $this->dependencyContainer['filesystem'], $core['media-alchemyst'], $core['mediavorus']);
+        $story = record_adapter::createStory($this->dependencyContainer, $collection);
+        $story->substitute_subdef('document', $media, $this->dependencyContainer);
 
         $story->set_metadatas($metas, true);
-        $story->set_binary_status(databox_status::operation_or($stat0, $stat1));
+        $story->set_binary_status(databox_status::operation_or($this->dependencyContainer, $stat0, $stat1));
         $story->rebuild_subdefs();
         $story->reindex();
 
@@ -1678,29 +1678,28 @@ class task_period_archive extends task_abstract
             $stat1 = '0';
         }
 
-        $core = \bootstrap::getCore();
-        $status = databox_status::operation_or($stat0, $stat1);
+        $status = databox_status::operation_or($this->dependencyContainer, $stat0, $stat1);
 
-        $media = $core['mediavorus']->guess(new \SplFileInfo($pathfile));
+        $media = $this->dependencyContainer['mediavorus']->guess($pathfile);
 
         $databox = $collection->get_databox();
         $metadatasStructure = $databox->get_meta_structure();
 
-        $metadatas = $this->getIndexByFieldName($metadatasStructure, $media->getEntity()->getMetadatas());
+        $metadatas = $this->getIndexByFieldName($metadatasStructure, $media->getMetadatas());
 
         if ($captionFile !== null && true === $this->dependencyContainer['filesystem']->exists($captionFile)) {
             $caption = $this->readXMLForDatabox($metadatasStructure, $captionFile);
             $captionStatus = $this->parseStatusBit(simplexml_load_file($captionFile));
 
             if ($captionStatus) {
-                $status = databox_status::operation_or($status, $captionStatus);
+                $status = databox_status::operation_or($this->dependencyContainer, $status, $captionStatus);
             }
 
             $metadatas = $this->mergeForDatabox($metadatasStructure, $metadatas, $caption);
         }
         $file = new \Alchemy\Phrasea\Border\File($media, $collection);
 
-        $file->addAttribute(new BorderAttribute\Status($status));
+        $file->addAttribute(new BorderAttribute\Status($this->dependencyContainer, $status));
 
         $file->addAttribute(new BorderAttribute\Metadata(new Metadata(new PhraseaTag\TfFilepath(), new \PHPExiftool\Driver\Value\Mono($media->getFile()->getRealPath()))));
         $file->addAttribute(new BorderAttribute\Metadata(new Metadata(new PhraseaTag\TfDirname(), new \PHPExiftool\Driver\Value\Mono(dirname($media->getFile()->getRealPath())))));
@@ -1714,7 +1713,7 @@ class task_period_archive extends task_abstract
         }
 
         if ($grp_rid) {
-            $file->addAttribute(new BorderAttribute\Story(new record_adapter($databox->get_sbas_id(), $grp_rid)));
+            $file->addAttribute(new BorderAttribute\Story(new record_adapter($this->dependencyContainer, $databox->get_sbas_id(), $grp_rid)));
         }
 
         $record = null;
@@ -1723,7 +1722,7 @@ class task_period_archive extends task_abstract
                 $record = $element;
             };
 
-        $core['border-manager']->process($this->getLazaretSession(), $file, $postProcess, $force);
+        $this->dependencyContainer['border-manager']->process($this->getLazaretSession(), $file, $postProcess, $force);
 
         return $record;
     }
@@ -1828,11 +1827,11 @@ class task_period_archive extends task_abstract
      * @param integer      $grp_rid
      * @param array        $nodesToDel      out, filled with files to delete
      */
-    private function archiveFileAndCaption(\DOMDOcument$dom, \DOMElement $node, \DOMElement $captionFileNode = null, $path, $path_archived, $path_error, $grp_rid, array &$nodesToDel)
+    private function archiveFileAndCaption(\DOMDocument $dom, \DOMElement $node, \DOMElement $captionFileNode = null, $path, $path_archived, $path_error, $grp_rid, array &$nodesToDel)
     {
         $ret = false;
 
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = $this->dependencyContainer['phraseanet.appbox'];
         $file = $node->getAttribute('name');
         $cid = $node->getAttribute('cid');
         $captionFileName = $captionFileNode ? $captionFileNode->getAttribute('name') : null;
@@ -1864,7 +1863,7 @@ class task_period_archive extends task_abstract
 
         try {
             $databox = $appbox->get_databox($this->sbas_id);
-            $collection = collection::get_from_coll_id($databox, (int) $cid);
+            $collection = collection::get_from_coll_id($this->dependencyContainer, $databox, (int) $cid);
 
             if ($captionFileName === null) {
                 $record = $this->createRecord($collection, $path . '/' . $file, null, $grp_rid);
@@ -2043,12 +2042,10 @@ class task_period_archive extends task_abstract
             return $this->lazaretSession;
         }
 
-        $core = \bootstrap::getCore();
-
         $lazaretSession = new \Entities\LazaretSession();
 
-        $core['EM']->persist($lazaretSession);
-        $core['EM']->flush();
+        $this->dependencyContainer['EM']->persist($lazaretSession);
+        $this->dependencyContainer['EM']->flush();
 
         $this->lazaretSession = $lazaretSession;
 

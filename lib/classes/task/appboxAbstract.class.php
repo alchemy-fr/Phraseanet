@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Core\Configuration;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -28,7 +30,7 @@ abstract class task_appboxAbstract extends task_abstract
         $this->running = TRUE;
         while ($this->running) {
             try {
-                $conn = connection::getPDOConnection();
+                $conn = connection::getPDOConnection($this->dependencyContainer);
             } catch (Exception $e) {
                 $this->log($e->getMessage());
                 if ($this->getRunner() == self::RUNNER_SCHEDULER) {
@@ -71,7 +73,7 @@ abstract class task_appboxAbstract extends task_abstract
                     break;
                 }
 
-                $appbox = appbox::get_instance(\bootstrap::getCore());
+                $appbox = $this->dependencyContainer['phraseanet.appbox'];
                 try {
                     $this->loadSettings(simplexml_load_string($row['settings']));
                 } catch (Exception $e) {

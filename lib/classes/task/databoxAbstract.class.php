@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Core\Configuration;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -32,7 +34,7 @@ abstract class task_databoxAbstract extends task_abstract
         $this->running = TRUE;
         while ($this->running) {
             try {
-                $conn = connection::getPDOConnection();
+                $conn = connection::getPDOConnection($this->dependencyContainer);
             } catch (PDOException $e) {
                 $this->log($e->getMessage());
                 if ($this->getRunner() == self::RUNNER_SCHEDULER) {
@@ -81,9 +83,9 @@ abstract class task_databoxAbstract extends task_abstract
                 }
 
                 $this->sbas_id = (int) $row['sbas_id'];
-                $this->log('This task works now on ' . phrasea::sbas_names($this->sbas_id));
+                $this->log('This task works now on ' . phrasea::sbas_names($this->sbas_id, $app));
 
-                $appbox = \appbox::get_instance(\bootstrap::getCore());
+                $appbox = $this->dependencyContainer['phraseanet.appbox'];
                 try {
                     // get the records to process
                     $databox = $appbox->get_databox((int) $row['sbas_id']);
