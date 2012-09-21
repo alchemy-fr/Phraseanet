@@ -18,7 +18,7 @@ class StatusTest extends \PhraseanetPHPUnitAbstract
      */
     public function testConstructor($status, $binaryString)
     {
-        $attr = new Status($status);
+        $attr = new Status(self::$application, $status);
         $this->assertEquals($binaryString, $attr->getValue());
     }
 
@@ -41,7 +41,7 @@ class StatusTest extends \PhraseanetPHPUnitAbstract
      */
     public function testInvalidConstruction($status)
     {
-        new Status($status);
+        new Status(self::$application, $status);
     }
 
     public function getInvalidStatuses()
@@ -58,7 +58,7 @@ class StatusTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetName()
     {
-        $status = new Status(123);
+        $status = new Status(self::$application, 123);
         $this->assertEquals(AttributeInterface::NAME_STATUS, $status->getName());
     }
 
@@ -67,7 +67,7 @@ class StatusTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetValue()
     {
-        $status = new Status(123);
+        $status = new Status(self::$application, 123);
         $this->assertEquals('1111011', $status->getValue());
     }
 
@@ -76,7 +76,7 @@ class StatusTest extends \PhraseanetPHPUnitAbstract
      */
     public function testAsString()
     {
-        $status = new Status(123);
+        $status = new Status(self::$application, 123);
         $this->assertEquals('1111011', $status->asString());
     }
 
@@ -85,7 +85,7 @@ class StatusTest extends \PhraseanetPHPUnitAbstract
      */
     public function testLoadFromString()
     {
-        $status = new Status(12345);
+        $status = new Status(self::$application, 12345);
 
         $this->assertEquals($status, Status::loadFromString(self::$application, $status->asString()));
     }

@@ -194,7 +194,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
             }
         }
 
-        $file->addAttribute(new Attribute\Status($status));
+        $file->addAttribute(new Attribute\Status(self::$application, $status));
 
         $this->assertEquals(Manager::RECORD_CREATED, $this->object->process($this->session, $file, $postProcessRecord, Manager::FORCE_RECORD));
 
@@ -287,7 +287,7 @@ class ManagerTest extends \PhraseanetPHPUnitAuthenticatedAbstract
             $status .= '0';
         }
 
-        $file->addAttribute(new Attribute\Status($status));
+        $file->addAttribute(new Attribute\Status(self::$application, $status));
 
         $this->assertEquals(Manager::LAZARET_CREATED, $this->object->process($this->session, $file, $postProcessRecord, Manager::FORCE_LAZARET));
 
