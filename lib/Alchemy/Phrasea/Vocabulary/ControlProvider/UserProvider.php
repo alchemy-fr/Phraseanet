@@ -57,7 +57,7 @@ class UserProvider implements ControlProviderInterface
      */
     public function find($query, \User_Adapter $for_user, \databox $on_databox = null)
     {
-        $user_query = new \User_Query($this->app['phraseanet.appbox']);
+        $user_query = new \User_Query($this->app);
 
         $users = $user_query
                 ->like(\User_Query::LIKE_EMAIL, $query)
@@ -88,7 +88,7 @@ class UserProvider implements ControlProviderInterface
     public function validate($id)
     {
         try {
-            \User_Adapter::getInstance($id, $this->app['phraseanet.appbox']);
+            \User_Adapter::getInstance($id, $this->app);
 
             return true;
         } catch (\Exception $e) {
@@ -105,7 +105,7 @@ class UserProvider implements ControlProviderInterface
      */
     public function getValue($id)
     {
-        $user = \User_Adapter::getInstance($id, $this->app['phraseanet.appbox']);
+        $user = \User_Adapter::getInstance($id, $this->app);
 
         return $user->get_display_name();
     }
@@ -117,6 +117,6 @@ class UserProvider implements ControlProviderInterface
      */
     public function getRessource($id)
     {
-        return \User_Adapter::getInstance($id, $this->app['phraseanet.appbox']);
+        return \User_Adapter::getInstance($id, $this->app);
     }
 }
