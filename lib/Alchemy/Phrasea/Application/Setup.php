@@ -47,6 +47,7 @@ return call_user_func(function() {
                         $connexionInc = new \SplFileInfo(__DIR__ . '/../../../../config/connexion.inc');
                         $configInc = new \SplFileInfo(__DIR__ . '/../../../../config/config.inc');
 
+        echo " config at ".__FILE__."\n";
                         $configuration = Configuration::build();
                         $configuration->upgradeFromOldConf($configInc, $connexionInc);
 
@@ -76,7 +77,8 @@ return call_user_func(function() {
                         return $app->redirect('/login/');
                     }
 
-                    return new Response('Internal Server Error', 500);
+                    throw $e;
+//                    return new Response('Internal Server Error', 500);
                 });
 
             return $app;
