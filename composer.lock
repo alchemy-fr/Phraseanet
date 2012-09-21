@@ -1,5 +1,5 @@
 {
-    "hash": "1f39be194aad6ec6eae4bff3e11c3c7b",
+    "hash": "3f3fffc125c9a2f52244886c6c1d0f0e",
     "packages": [
         {
             "name": "alchemy/Phlickr",
@@ -22,6 +22,10 @@
                 "psr-0": {
                     "Phlickr_": "./"
                 }
+            },
+            "support": {
+                "source": "https://github.com/alchemy-fr/Phlickr/tree/master",
+                "issues": "https://github.com/alchemy-fr/Phlickr/issues"
             }
         },
         {
@@ -45,6 +49,10 @@
                 "classmap": [
                     "lib/"
                 ]
+            },
+            "support": {
+                "source": "https://github.com/alchemy-fr/oauth2-php/tree/master",
+                "issues": "https://github.com/alchemy-fr/oauth2-php/issues"
             }
         },
         {
@@ -68,6 +76,10 @@
                 "classmap": [
                     "./"
                 ]
+            },
+            "support": {
+                "source": "https://github.com/alchemy-fr/PHPMailer_v5.1/tree/master",
+                "issues": "https://github.com/alchemy-fr/PHPMailer_v5.1/issues"
             }
         },
         {
@@ -158,7 +170,7 @@
             "require": {
                 "php": ">=5.3.2"
             },
-            "time": "2012-08-29 04:04:14",
+            "time": "2012-08-29 08:04:14",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -222,7 +234,7 @@
                 "php": ">=5.3.2",
                 "doctrine/common": ">=2.2.0,<=2.2.99"
             },
-            "time": "2012-04-13 05:56:12",
+            "time": "2012-04-13 07:56:12",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -281,7 +293,7 @@
                 "doctrine/common": ">=2.2.0,<2.2.99",
                 "doctrine/dbal": ">=2.2.1,<2.2.99"
             },
-            "time": "2012-04-13 06:02:34",
+            "time": "2012-04-13 08:02:34",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -425,12 +437,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/avalanche123/Imagine",
-                "reference": "9ce870e774361115c240e8e025e4617a3ac31d54"
+                "reference": "272116208a2590894e88cbfb9a3d75ed4dba41f2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/avalanche123/Imagine/zipball/9ce870e774361115c240e8e025e4617a3ac31d54",
-                "reference": "9ce870e774361115c240e8e025e4617a3ac31d54",
+                "url": "https://github.com/avalanche123/Imagine/zipball/272116208a2590894e88cbfb9a3d75ed4dba41f2",
+                "reference": "272116208a2590894e88cbfb9a3d75ed4dba41f2",
                 "shasum": ""
             },
             "require": {
@@ -439,7 +451,7 @@
             "require-dev": {
                 "sami/sami": "dev-master"
             },
-            "time": "1344878988",
+            "time": "1348021247",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -648,7 +660,7 @@
             "require": {
                 "php": ">=5.3.0"
             },
-            "time": "2011-10-24 07:39:02",
+            "time": "2011-10-24 09:39:02",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -1064,12 +1076,12 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/fabpot/Silex.git",
-                "reference": "97e418fcb0df2dd570732b208ce03e40e3dd2e0b"
+                "reference": "9b63007bbdf6a5f68ab402c76fbaf9df56c67342"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/fabpot/Silex/zipball/97e418fcb0df2dd570732b208ce03e40e3dd2e0b",
-                "reference": "97e418fcb0df2dd570732b208ce03e40e3dd2e0b",
+                "url": "https://github.com/fabpot/Silex/zipball/9b63007bbdf6a5f68ab402c76fbaf9df56c67342",
+                "reference": "9b63007bbdf6a5f68ab402c76fbaf9df56c67342",
                 "shasum": ""
             },
             "require": {
@@ -1096,14 +1108,14 @@
                 "symfony/locale": "2.1.*",
                 "twig/twig": ">=1.8.0,<2.0-dev",
                 "swiftmailer/swiftmailer": "4.2.*",
-                "doctrine/dbal": "2.2.*"
+                "doctrine/dbal": ">=2.2.0,<2.4.0-dev"
             },
             "suggest": {
                 "symfony/browser-kit": "2.1.*",
                 "symfony/css-selector": "2.1.*",
                 "symfony/dom-crawler": "2.1.*"
             },
-            "time": "1347738639",
+            "time": "1348229548",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1191,28 +1203,159 @@
             ]
         },
         {
-            "package": "tecnick.com/tcpdf",
-            "version": "dev-master",
-            "source-reference": "01dc4da8b311bf81180dced43d0e8c55a9bee932"
-        },
-        {
-            "name": "tcpdf/tcpdf",
-            "version": "dev-master",
+            "name": "swiftmailer/swiftmailer",
+            "version": "v4.1.8",
             "source": {
                 "type": "git",
-                "url": "https://github.com/tcpdf/tcpdf",
-                "reference": "5.9.176"
+                "url": "git://github.com/swiftmailer/swiftmailer.git",
+                "reference": "v4.1.8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/tcpdf/tcpdf/zipball/5.9.176",
-                "reference": "5.9.176",
+                "url": "https://github.com/swiftmailer/swiftmailer/zipball/v4.1.8",
+                "reference": "v4.1.8",
                 "shasum": ""
             },
             "require": {
-                "php": ">5.2"
+                "php": ">=5.2.4"
             },
-            "time": "1343831860",
+            "time": "2012-06-17 20:55:34",
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "4.1-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "files": [
+                    "lib/swift_required.php"
+                ]
+            },
+            "license": [
+                "LGPL"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Chris Corbyn"
+                }
+            ],
+            "description": "Swiftmailer, free feature-rich PHP mailer",
+            "homepage": "http://swiftmailer.org",
+            "keywords": [
+                "mail",
+                "mailer"
+            ]
+        },
+        {
+            "name": "symfony/symfony",
+            "version": "2.1.x-dev",
+            "source": {
+                "type": "git",
+                "url": "git://github.com/symfony/symfony.git",
+                "reference": "237629ad64b4b6ce2d2c6ad15a2085f128d6f11e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/symfony/symfony/zipball/237629ad64b4b6ce2d2c6ad15a2085f128d6f11e",
+                "reference": "237629ad64b4b6ce2d2c6ad15a2085f128d6f11e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3",
+                "doctrine/common": ">2.2,<2.4-dev",
+                "twig/twig": ">=1.9.1,<2.0-dev"
+            },
+            "replace": {
+                "symfony/doctrine-bridge": "self.version",
+                "symfony/monolog-bridge": "self.version",
+                "symfony/propel1-bridge": "self.version",
+                "symfony/swiftmailer-bridge": "self.version",
+                "symfony/twig-bridge": "self.version",
+                "symfony/framework-bundle": "self.version",
+                "symfony/security-bundle": "self.version",
+                "symfony/twig-bundle": "self.version",
+                "symfony/web-profiler-bundle": "self.version",
+                "symfony/browser-kit": "self.version",
+                "symfony/class-loader": "self.version",
+                "symfony/config": "self.version",
+                "symfony/console": "self.version",
+                "symfony/css-selector": "self.version",
+                "symfony/dependency-injection": "self.version",
+                "symfony/dom-crawler": "self.version",
+                "symfony/event-dispatcher": "self.version",
+                "symfony/filesystem": "self.version",
+                "symfony/finder": "self.version",
+                "symfony/form": "self.version",
+                "symfony/http-foundation": "self.version",
+                "symfony/http-kernel": "self.version",
+                "symfony/locale": "self.version",
+                "symfony/options-resolver": "self.version",
+                "symfony/process": "self.version",
+                "symfony/routing": "self.version",
+                "symfony/security": "self.version",
+                "symfony/serializer": "self.version",
+                "symfony/templating": "self.version",
+                "symfony/translation": "self.version",
+                "symfony/validator": "self.version",
+                "symfony/yaml": "self.version"
+            },
+            "require-dev": {
+                "doctrine/dbal": ">=2.2,<2.4-dev",
+                "doctrine/orm": ">=2.2.3,<2.4-dev",
+                "doctrine/data-fixtures": "1.0.*",
+                "propel/propel1": "dev-master",
+                "monolog/monolog": "dev-master"
+            },
+            "time": "1348209286",
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.1-dev"
+                }
+            },
+            "installation-source": "source",
+            "autoload": {
+                "psr-0": {
+                    "Symfony": "src/",
+                    "SessionHandlerInterface": "src/Symfony/Component/HttpFoundation/Resources/stubs"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                }
+            ],
+            "description": "The Symfony PHP framework",
+            "homepage": "http://symfony.com",
+            "keywords": [
+                "framework"
+            ]
+        },
+        {
+            "name": "tecnick.com/tcpdf",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git://tcpdf.git.sourceforge.net/gitroot/tcpdf/tcpdf",
+                "reference": "01dc4da8b311bf81180dced43d0e8c55a9bee932"
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "time": "1347998372",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -1235,19 +1378,25 @@
                 ]
             },
             "license": [
-                "GPLv3"
+                "LGPLv3"
             ],
             "authors": [
                 {
                     "name": "Nicola Asuni",
-                    "email": "nicola.asuni@tecnick.com",
-                    "homepage": "http://www.tecnick.com/public/code/cp_dpage.php?aiocp_dp=cv_nicola_asuni_contacts"
+                    "email": "info@tecnick.com",
+                    "homepage": "http://nicolaasuni.tecnick.com"
                 }
             ],
-            "description": "TCPDF is a PHP class for generating PDF files on-the-fly without requiring external extensions.",
+            "description": "TCPDF is a PHP class for generating PDF documents.",
             "homepage": "http://www.tcpdf.org/",
             "keywords": [
-                "pdf"
+                "pdf",
+                "TCPDF",
+                "qrcode",
+                "PDFD32000-2008",
+                "datamatrix",
+                "pdf417",
+                "barcodes"
             ]
         },
         {
@@ -1314,7 +1463,7 @@
             "require": {
                 "php": ">=5.2.4"
             },
-            "time": "2012-08-25 13:32:57",
+            "time": "2012-08-25 17:32:57",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1419,7 +1568,7 @@
                 "behat/yii-extension": "for integration with Yii web framework",
                 "behat/mink-extension": "for integration with Mink testing framework"
             },
-            "time": "2012-09-04 12:59:18",
+            "time": "2012-09-04 14:59:18",
             "bin": [
                 "bin/behat"
             ],
@@ -1476,7 +1625,7 @@
                 "symfony/translation": "If you want to use Symfony2 translations adapter",
                 "symfony/config": "If you want to use Config component to manage resources"
             },
-            "time": "2012-08-03 11:25:15",
+            "time": "2012-08-03 13:25:15",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -1506,16 +1655,16 @@
         },
         {
             "name": "behat/mink",
-            "version": "v1.4.0",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "git://github.com/Behat/Mink.git",
-                "reference": "v1.4.0"
+                "reference": "7e4b1e57d6dfd787436e2aad7073f519a0dd175e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/Behat/Mink/zipball/v1.4.0",
-                "reference": "v1.4.0",
+                "url": "https://github.com/Behat/Mink/zipball/7e4b1e57d6dfd787436e2aad7073f519a0dd175e",
+                "reference": "7e4b1e57d6dfd787436e2aad7073f519a0dd175e",
                 "shasum": ""
             },
             "require": {
@@ -1537,9 +1686,14 @@
                 "behat/mink-selenium2-driver": "to enable Selenium2 (webdriver support)",
                 "behat/mink-zombie-driver": "to enable Zombie.js support"
             },
-            "time": "2012-05-29 20:50:10",
+            "time": "1348131331",
             "type": "library",
-            "installation-source": "dist",
+            "extra": {
+                "branch-alias": {
+                    "dev-develop": "1.4.x-dev"
+                }
+            },
+            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "Behat\\Mink": "src/"
@@ -1614,12 +1768,12 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/Behat/MinkExtension.git",
-                "reference": "bea43d65d6f4458a89d360feda556a823e3d567a"
+                "reference": "37dfaecd230d601c30bfefb47d6574cd73083bc5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/Behat/MinkExtension/zipball/bea43d65d6f4458a89d360feda556a823e3d567a",
-                "reference": "bea43d65d6f4458a89d360feda556a823e3d567a",
+                "url": "https://github.com/Behat/MinkExtension/zipball/37dfaecd230d601c30bfefb47d6574cd73083bc5",
+                "reference": "37dfaecd230d601c30bfefb47d6574cd73083bc5",
                 "shasum": ""
             },
             "require": {
@@ -1630,7 +1784,7 @@
             "require-dev": {
                 "behat/mink-goutte-driver": "*"
             },
-            "time": "1347799082",
+            "time": "1348151819",
             "type": "behat-extension",
             "installation-source": "source",
             "autoload": {
@@ -1715,12 +1869,12 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/Behat/MinkSelenium2Driver.git",
-                "reference": "baaf9c08bfa4c88b7179b3856197258a63e1b17e"
+                "reference": "599c232b555ba78c67e03ab328d0c9d49c35e989"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/Behat/MinkSelenium2Driver/zipball/baaf9c08bfa4c88b7179b3856197258a63e1b17e",
-                "reference": "baaf9c08bfa4c88b7179b3856197258a63e1b17e",
+                "url": "https://github.com/Behat/MinkSelenium2Driver/zipball/599c232b555ba78c67e03ab328d0c9d49c35e989",
+                "reference": "599c232b555ba78c67e03ab328d0c9d49c35e989",
                 "shasum": ""
             },
             "require": {
@@ -1728,7 +1882,7 @@
                 "instaclick/php-webdriver": "@dev",
                 "behat/mink": "1.4.*"
             },
-            "time": "1347895517",
+            "time": "1348181707",
             "type": "mink-driver",
             "installation-source": "source",
             "autoload": {
@@ -1763,18 +1917,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/data-fixtures.git",
-                "reference": "379a5f19e23849cf082613e2e91ed02bd2ee4fb1"
+                "reference": "b29bad9738fada9486961f60542f2d2d77c7b501"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/doctrine/data-fixtures/zipball/379a5f19e23849cf082613e2e91ed02bd2ee4fb1",
-                "reference": "379a5f19e23849cf082613e2e91ed02bd2ee4fb1",
+                "url": "https://github.com/doctrine/data-fixtures/zipball/b29bad9738fada9486961f60542f2d2d77c7b501",
+                "reference": "b29bad9738fada9486961f60542f2d2d77c7b501",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.2"
             },
-            "time": "1347551292",
+            "time": "1348136794",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -1856,12 +2010,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/PHP-CS-Fixer.git",
-                "reference": "55701d65622b72cbe0db8d8f9136d36e45b2f7f4"
+                "reference": "0ba03fa8a104a6b5776c7a21c0f591856a617a20"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/fabpot/PHP-CS-Fixer/zipball/55701d65622b72cbe0db8d8f9136d36e45b2f7f4",
-                "reference": "55701d65622b72cbe0db8d8f9136d36e45b2f7f4",
+                "url": "https://github.com/fabpot/PHP-CS-Fixer/zipball/0ba03fa8a104a6b5776c7a21c0f591856a617a20",
+                "reference": "0ba03fa8a104a6b5776c7a21c0f591856a617a20",
                 "shasum": ""
             },
             "require": {
@@ -1870,7 +2024,7 @@
                 "symfony/finder": "2.1.*",
                 "php": ">=5.3.3"
             },
-            "time": "1343202851",
+            "time": "1348206321",
             "bin": [
                 "php-cs-fixer"
             ],
@@ -1911,7 +2065,7 @@
                 "php": ">=5.3.2",
                 "symfony/event-dispatcher": "2.1.*"
             },
-            "time": "2012-09-05 21:30:30",
+            "time": "2012-09-05 23:30:30",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -1955,7 +2109,7 @@
                 "guzzle/common": "self.version",
                 "guzzle/parser": "self.version"
             },
-            "time": "2012-09-02 17:01:34",
+            "time": "2012-09-02 19:01:34",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -1994,7 +2148,7 @@
             "require": {
                 "php": ">=5.3.2"
             },
-            "time": "2012-08-17 03:22:25",
+            "time": "2012-08-17 05:22:25",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -2077,6 +2231,7 @@
         "neutron/silex-filesystem-provider": 20,
         "php-xpdf/php-xpdf": 20,
         "phpexiftool/phpexiftool": 20,
+        "tecnick.com/tcpdf": 20,
         "behat/behat": 0,
         "behat/mink-extension": 20,
         "behat/mink-goutte-driver": 20,
