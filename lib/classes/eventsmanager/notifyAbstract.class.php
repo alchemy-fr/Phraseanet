@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Core\Configuration;
+
 abstract class eventsmanager_notifyAbstract extends eventsmanager_eventAbstract
 {
     protected $events = array('__EVENT__');
@@ -25,7 +27,7 @@ abstract class eventsmanager_notifyAbstract extends eventsmanager_eventAbstract
 
     protected function get_prefs($class, $usr_id)
     {
-        $user = User_Adapter::getInstance($usr_id, appbox::get_instance(\bootstrap::getCore()));
+        $user = User_Adapter::getInstance($usr_id, $this->app);
 
         return $user->getPrefs('notification_' . $class);
     }

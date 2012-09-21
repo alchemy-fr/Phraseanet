@@ -66,7 +66,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
       AND b.actif="1"
           AND u.usr_login NOT LIKE "(#deleted%"';
 
-            $stmt = $this->appbox->get_connection()->prepare($sql);
+            $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
             $stmt->execute();
             $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
@@ -112,7 +112,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
             $send_notif = ($this->get_prefs(__CLASS__, $usr_id) != '0');
             if ($send_notif) {
                 try {
-                    $admin_user = User_Adapter::getInstance($usr_id, $this->appbox);
+                    $admin_user = User_Adapter::getInstance($usr_id, $this->app);
                 } catch (Exception $e) {
                     continue;
                 }
@@ -123,8 +123,8 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
 
                 $to = array('email' => $admin_user->get_email(), 'name'  => $dest);
                 $from = array(
-                    'email' => $this->registry->get('GV_defaulmailsenderaddr'),
-                    'name'  => $this->registry->get('GV_homeTitle')
+                    'email' => $this->app['phraseanet.appbox']->get_registry()->get('GV_defaulmailsenderaddr'),
+                    'name'  => $this->app['phraseanet.appbox']->get_registry()->get('GV_homeTitle')
                 );
 
                 if (self::mail($to, $from, $datas))
@@ -150,16 +150,16 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
         $usr_id = (string) $sx->usr_id;
 
         try {
-            $registered_user = User_Adapter::getInstance($usr_id, $this->appbox);
+            $registered_user = User_Adapter::getInstance($usr_id, $this->app);
         } catch (Exception $e) {
             return array();
         }
 
-        $sender = User_Adapter::getInstance($usr_id, $this->appbox)->get_display_name();
+        $sender = User_Adapter::getInstance($usr_id, $this->app)->get_display_name();
 
         $ret = array(
             'text'  => sprintf(
-                _('%1$s demande votre approbation sur une ou plusieurs %2$scollections%3$s'), $sender, '<a href="' . $this->registry->get('GV_ServerName') . 'admin/?section=registrations" target="_blank">', '</a>'
+                _('%1$s demande votre approbation sur une ou plusieurs %2$scollections%3$s'), $sender, '<a href="' . $this->app['phraseanet.appbox']->get_registry()->get('GV_ServerName') . 'admin/?section=registrations" target="_blank">', '</a>'
             )
             , 'class' => ''
         );
@@ -195,7 +195,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
     public function mail($to, $from, $datas)
     {
         $subject = sprintf(
-            _('admin::register: demande d\'inscription sur %s'), $this->registry->get('GV_homeTitle')
+            _('admin::register: demande d\'inscription sur %s'), $this->app['phraseanet.appbox']->get_registry()->get('GV_homeTitle')
         );
 
         $body = "<div>"
@@ -207,7 +207,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
         $usr_id = (string) $sx->usr_id;
 
         try {
-            $registered_user = User_Adapter::getInstance($usr_id, $this->appbox);
+            $registered_user = User_Adapter::getInstance($usr_id, $this->app);
         } catch (Exception $e) {
             return false;
         }
@@ -242,19 +242,19 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
 
         foreach ($base_ids->base_id as $base_id) {
             $body .= "<li>"
-                . phrasea::sbas_names(phrasea::sbasFromBas((string) $base_id))
+                . phrasea::sbas_names(phrasea::sbasFromBas($this->app, (string) $base_id), $this->app)
                 . ' - '
-                . phrasea::bas_names((string) $base_id) . "</li>\n";
+                . phrasea::bas_names((string) $base_id, $this->app) . "</li>\n";
         }
 
         $body .= "</ul>\n";
 
-        $body .= "<br/>\n<div><a href='" . $this->registry->get('GV_ServerName')
+        $body .= "<br/>\n<div><a href='" . $this->app['phraseanet.appbox']->get_registry()->get('GV_ServerName')
             . "login/?redirect=admin' target='_blank'>"
             . _('admin::register: vous pourrez traiter ses demandes en ligne via l\'interface d\'administration')
             . "</a></div>\n";
 
-        return mail::send_mail($subject, $body, $to, $from);
+        return mail::send_mail($this->app, $subject, $body, $to, $from);
     }
 
     /**
@@ -265,13 +265,12 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
     {
         $bool = false;
 
-        $session = $this->appbox->get_session();
-        if ( ! $session->is_authenticated() || ! login::register_enabled()) {
+        if ( !$this->app->isAuthenticated() || ! login::register_enabled($this->app)) {
             return false;
         }
 
         try {
-            $user = User_Adapter::getInstance($session->get_usr_id(), $this->appbox);
+            $user = $this->app['phraseanet.user'];
         } catch (Exception $e) {
             return false;
         }

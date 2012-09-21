@@ -65,7 +65,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
           AND u.usr_login NOT LIKE "(#deleted%"';
 
         try {
-            $stmt = $this->appbox->get_connection()->prepare($sql);
+            $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
             $stmt->execute();
             $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
@@ -113,7 +113,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
 
             if ($send_notif) {
                 try {
-                    $admin_user = User_Adapter::getInstance($usr_id, $this->appbox);
+                    $admin_user = User_Adapter::getInstance($usr_id, $this->app);
                 } catch (Exception $e) {
                     continue;
                 }
@@ -125,8 +125,8 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
 
                 $to = array('email' => $admin_user->get_email(), 'name'  => $dest);
                 $from = array(
-                    'email' => $this->registry->get('GV_defaulmailsenderaddr'),
-                    'name'  => $this->registry->get('GV_homeTitle')
+                    'email' => $this->app['phraseanet.appbox']->get_registry()->get('GV_defaulmailsenderaddr'),
+                    'name'  => $this->app['phraseanet.appbox']->get_registry()->get('GV_homeTitle')
                 );
 
                 if (self::mail($to, $from, $datas))
@@ -151,12 +151,12 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
 
         $usr_id = (string) $sx->usr_id;
         try {
-            $registered_user = User_Adapter::getInstance($usr_id, $this->appbox);
+            $registered_user = User_Adapter::getInstance($usr_id, $this->app);
         } catch (Exception $e) {
             return array();
         }
 
-        $sender = User_Adapter::getInstance($usr_id, $this->appbox)->get_display_name();
+        $sender = User_Adapter::getInstance($usr_id, $this->app)->get_display_name();
 
         $ret = array(
             'text'  => sprintf(
@@ -196,7 +196,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
     public function mail($to, $from, $datas)
     {
         $subject = sprintf(_('admin::register: Inscription automatique sur %s')
-            , $this->registry->get('GV_homeTitle'));
+            , $this->app['phraseanet.appbox']->get_registry()->get('GV_homeTitle'));
 
         $body = "<div>" . _('admin::register: un utilisateur s\'est inscrit')
             . "</div>\n";
@@ -206,7 +206,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
         $usr_id = (string) $sx->usr_id;
 
         try {
-            $registered_user = User_Adapter::getInstance($usr_id, $this->appbox);
+            $registered_user = User_Adapter::getInstance($usr_id, $this->app);
         } catch (Exception $e) {
             return false;
         }
@@ -240,8 +240,8 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
 
         foreach ($base_ids->base_id as $base_id) {
             $body .= "<li>"
-                . phrasea::sbas_names(phrasea::sbasFromBas((string) $base_id))
-                . ' - ' . phrasea::bas_names((string) $base_id) . "</li>\n";
+                . phrasea::sbas_names(phrasea::sbasFromBas($this->app, (string) $base_id), $this->app)
+                . ' - ' . phrasea::bas_names((string) $base_id, $this->app) . "</li>\n";
         }
 
         $body .= "</ul>\n";
@@ -250,7 +250,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
             . _('admin::register: vous pourrez consulter son compte en ligne via l\'interface d\'administration')
             . "</a></div>\n";
 
-        return mail::send_mail($subject, $body, $to, $from);
+        return mail::send_mail($this->app, $subject, $body, $to, $from);
     }
 
     /**
@@ -260,13 +260,12 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
     public function is_available()
     {
         $bool = false;
-        $session = $this->appbox->get_session();
-        if ( ! $session->is_authenticated() || ! login::register_enabled()) {
+        if ( ! $this->app->isAuthenticated() || ! login::register_enabled($this->app)) {
             return false;
         }
 
         try {
-            $user = User_Adapter::getInstance($session->get_usr_id(), $this->appbox);
+            $user = $this->app['phraseanet.user'];
         } catch (Exception $e) {
             return false;
         }

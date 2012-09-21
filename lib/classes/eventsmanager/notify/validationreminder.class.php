@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  *
@@ -27,10 +29,10 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
      *
      * @return notify_validationreminder
      */
-    public function __construct(appbox &$appbox, \Alchemy\Phrasea\Core $core, eventsmanager_broker &$broker)
+    public function __construct(Application $app, eventsmanager_broker &$broker)
     {
         $this->group = _('Validation');
-        parent::__construct($appbox, $core, $broker);
+        parent::__construct($app, $broker);
 
         return $this;
     }
@@ -88,8 +90,8 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
         $mailed = false;
 
         try {
-            $user_from = User_Adapter::getInstance($params['from'], $this->appbox);
-            $user_to = User_Adapter::getInstance($params['to'], $this->appbox);
+            $user_from = User_Adapter::getInstance($params['from'], $this->app);
+            $user_to = User_Adapter::getInstance($params['to'], $this->app);
         } catch (Exception $e) {
             return false;
         }
@@ -110,19 +112,15 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
                 $mailed = true;
         }
 
-        $core = \bootstrap::getCore();
-
-        $em = $core->getEntityManager();
-
-        $validationParticipant = $em->getRepository('\Entities\ValidationParticipant')->find($params['to']);
+        $validationParticipant = $this->app['EM']->getRepository('\Entities\ValidationParticipant')->find($params['to']);
         /* @var $validationParticipant \Entities\ValidationParticipant */
 
         if (null !== $validationParticipant) {
             $validationParticipant->setReminded(new \DateTime('now'));
 
-            $em->persist($validationParticipant);
+            $this->app['EM']->persist($validationParticipant);
 
-            $em->flush();
+            $this->app['EM']->flush();
         }
 
         return $this->broker->notify($params['to'], __CLASS__, $datas, $mailed);
@@ -142,18 +140,17 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
         $ssel_id = (string) $sx->ssel_id;
 
         try {
-            $registered_user = User_Adapter::getInstance($from, $this->appbox);
+            $registered_user = User_Adapter::getInstance($from, $this->app);
         } catch (Exception $e) {
             return array();
         }
 
-        $sender = User_Adapter::getInstance($from, $this->appbox)->get_display_name();
+        $sender = User_Adapter::getInstance($from, $this->app)->get_display_name();
 
         try {
-            $em = $this->core->getEntityManager();
-            $repository = $em->getRepository('\Entities\Basket');
+            $repository = $this->app['EM']->getRepository('\Entities\Basket');
 
-            $basket = $repository->findUserBasket($ssel_id, $this->core->getAuthenticatedUser(), false);
+            $basket = $repository->findUserBasket($this->app, $ssel_id, $this->app['phraseanet.user'], false);
 
             $basket_name = trim($basket->getName()) ? : _('Une selection');
         } catch (Exception $e) {
@@ -166,7 +163,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
 
         $ret = array(
             'text'  => sprintf(
-                _('Rappel : Il vous reste %1$d jours pour valider %2$s de %3$s'), $this->registry->get('GV_validation_reminder'), $bask_link, $sender
+                _('Rappel : Il vous reste %1$d jours pour valider %2$s de %3$s'), $this->app['phraseanet.appbox']->get_registry()->get('GV_validation_reminder'), $bask_link, $sender
             )
             , 'class' => ($unread == 1 ? 'reload_baskets' : '')
         );
@@ -205,7 +202,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
 
         $body = "<div>"
             . sprintf(
-                _('Il ne vous reste plus que %d jours pour terminer votre validation'), $this->registry->get('GV_validation_reminder'))
+                _('Il ne vous reste plus que %d jours pour terminer votre validation'), $this->app['phraseanet.appbox']->get_registry()->get('GV_validation_reminder'))
             . "</div>\n";
 
         if (trim($url) != '') {
@@ -223,7 +220,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
         $body .= "<br/>\n<br/>\n<br/>\n"
             . _('push::atention: ce lien est unique et son contenu confidentiel, ne divulguez pas');
 
-        return mail::send_mail($subject, $body, $to, $from, array());
+        return mail::send_mail($this->app, $subject, $body, $to, $from, array());
     }
 
     /**

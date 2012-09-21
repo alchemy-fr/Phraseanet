@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -22,10 +24,10 @@ class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstrac
      */
     public $events = array('__ORDER_NOT_DELIVERED__');
 
-    public function __construct(appbox &$appbox, \Alchemy\Phrasea\Core $core, eventsmanager_broker &$broker)
+    public function __construct(Application $app, eventsmanager_broker &$broker)
     {
         $this->group = _('Commande');
-        parent::__construct($appbox, $core, $broker);
+        parent::__construct($app, $broker);
 
         return $this;
     }
@@ -73,8 +75,8 @@ class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstrac
         $send_notif = ($this->get_prefs(__CLASS__, $params['to']) != '0');
         if ($send_notif) {
             try {
-                $user_from = User_Adapter::getInstance($params['from'], $this->appbox);
-                $user_to = User_Adapter::getInstance($params['to'], $this->appbox);
+                $user_from = User_Adapter::getInstance($params['from'], $this->app);
+                $user_to = User_Adapter::getInstance($params['to'], $this->app);
             } catch (Exception $e) {
                 return false;
             }
@@ -103,12 +105,12 @@ class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstrac
         $n = (int) $sx->n;
 
         try {
-            $registered_user = User_Adapter::getInstance($from, $this->appbox);
+            $registered_user = User_Adapter::getInstance($from, $this->app);
         } catch (Exception $e) {
             return array();
         }
 
-        $sender = User_Adapter::getInstance($from, $this->appbox)->get_display_name();
+        $sender = User_Adapter::getInstance($from, $this->app)->get_display_name();
 
         $ret = array(
             'text'  => sprintf(
@@ -139,7 +141,7 @@ class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstrac
                 _('%s a refuse %d elements de votre commande'), $from['name'], $n
             ) . "</div>\n";
 
-        return mail::send_mail($subject, $body, $to, $from, array());
+        return mail::send_mail($this->app, $subject, $body, $to, $from, array());
     }
 
     /**

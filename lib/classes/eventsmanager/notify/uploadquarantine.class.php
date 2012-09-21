@@ -72,14 +72,14 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
             $datas = $domXML->saveXml();
 
             //Sender
-            if (null !== $user = $lazaretFile->getSession()->getUser()) {
+            if (null !== $user = $lazaretFile->getSession()->getUser($this->app)) {
                 $sender = $domXML->createElement('sender');
                 $sender->appendChild($domXML->createTextNode($user->get_display_name()));
                 $root->appendChild($sender);
 
                 $this->notifyUser($user, $datas);
             } else { //No lazaretSession user, fil is uploaded via automated tasks etc ..
-                $query = new User_Query($this->appbox);
+                $query = new User_Query($this->app);
 
                 $users = $query
                     ->on_base_ids(array($lazaretFile->getBaseId()))
@@ -110,8 +110,8 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
             $to = array('email' => $user->get_email(), 'name'  => $user->get_display_name());
 
             $from = array(
-                'email' => $this->registry->get('GV_defaulmailsenderaddr'),
-                'name'  => $this->registry->get('GV_homeTitle')
+                'email' => $this->app['phraseanet.appbox']->get_registry()->get('GV_defaulmailsenderaddr'),
+                'name'  => $this->app['phraseanet.appbox']->get_registry()->get('GV_homeTitle')
             );
 
             if (self::mail($to, $from, $datas)) {
@@ -184,7 +184,7 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
 
         $body = $datas['text'];
 
-        return \mail::send_mail($subject, $body, $to, $from);
+        return \mail::send_mail($this->app, $subject, $body, $to, $from);
     }
 
     /**
@@ -193,12 +193,8 @@ class eventsmanager_notify_uploadquarantine extends eventsmanager_notifyAbstract
      */
     public function is_available()
     {
-        $core = \bootstrap::getCore();
-
-        $user = $core->getAuthenticatedUser();
-
-        if (null !== $user) {
-            return $user->ACL()->has_right('addrecord');
+        if (null !== $this->app['phraseanet.user']) {
+            return $this->app['phraseanet.user']->ACL()->has_right('addrecord');
         }
 
         return false;

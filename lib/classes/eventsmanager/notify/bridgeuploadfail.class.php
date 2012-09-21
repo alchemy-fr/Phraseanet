@@ -81,14 +81,14 @@ class eventsmanager_notify_bridgeuploadfail extends eventsmanager_notifyAbstract
         $send_notif = ($this->get_prefs(__CLASS__, $params['usr_id']) != '0');
 
         if ($send_notif) {
-            $user = User_Adapter::getInstance($params['usr_id'], $this->appbox);
+            $user = User_Adapter::getInstance($params['usr_id'], $this->app);
             $name = $user->get_display_name();
 
             $to = array('email' => $user->get_email(), 'name'  => $name);
 
             $from = array(
-                'email' => $this->registry->get('GV_defaulmailsenderaddr'),
-                'name'  => $this->registry->get('GV_homeTitle')
+                'email' => $this->app['phraseanet.appbox']->get_registry()->get('GV_defaulmailsenderaddr'),
+                'name'  => $this->app['phraseanet.appbox']->get_registry()->get('GV_homeTitle')
             );
 
             if (self::mail($to, $from, $datas))
@@ -116,8 +116,8 @@ class eventsmanager_notify_bridgeuploadfail extends eventsmanager_notifyAbstract
         $rid = (int) $sx->record_id;
 
         try {
-            $account = Bridge_Account::load_account($this->appbox, $account_id);
-            $record = new record_adapter($sbas_id, $rid);
+            $account = Bridge_Account::load_account($this->app, $account_id);
+            $record = new record_adapter($this->app, $sbas_id, $rid);
         } catch (Exception $e) {
             return array();
         }
@@ -160,14 +160,14 @@ class eventsmanager_notify_bridgeuploadfail extends eventsmanager_notifyAbstract
     public function mail($to, $from, $datas)
     {
         $subject = sprintf('Echec upload sur %s'
-            , $this->registry->get('GV_homeTitle'));
+            , $this->app['phraseanet.appbox']->get_registry()->get('GV_homeTitle'));
 
         $sx = simplexml_load_string($datas);
 
         $reason = (string) $sx->reason;
         $body = "reason : " . $reason;
 
-        return mail::send_mail($subject, $body, $to, $from);
+        return mail::send_mail($this->app, $subject, $body, $to, $from);
     }
 
     /**

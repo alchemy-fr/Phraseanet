@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  *
@@ -27,10 +29,10 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
      *
      * @return notify_orderdeliver
      */
-    public function __construct(appbox &$appbox, \Alchemy\Phrasea\Core $core, eventsmanager_broker &$broker)
+    public function __construct(Application $app, eventsmanager_broker &$broker)
     {
         $this->group = _('Commande');
-        parent::__construct($appbox, $core, $broker);
+        parent::__construct($app, $broker);
 
         return $this;
     }
@@ -93,8 +95,8 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
         $send_notif = ($this->get_prefs(__CLASS__, $params['to']) != '0');
         if ($send_notif) {
             try {
-                $user_from = User_Adapter::getInstance($params['from'], $this->appbox);
-                $user_to = User_Adapter::getInstance($params['to'], $this->appbox);
+                $user_from = User_Adapter::getInstance($params['from'], $this->app);
+                $user_to = User_Adapter::getInstance($params['to'], $this->app);
             } catch (Exception $e) {
                 return false;
             }
@@ -130,18 +132,17 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
         $n = (int) $sx->n;
 
         try {
-            $registered_user = User_Adapter::getInstance($from, $this->appbox);
+            $registered_user = User_Adapter::getInstance($from, $this->app);
         } catch (Exception $e) {
             return array();
         }
 
-        $sender = User_Adapter::getInstance($from, $this->appbox)->get_display_name();
+        $sender = User_Adapter::getInstance($from, $this->app)->get_display_name();
 
         try {
-            $em = $this->core->getEntityManager();
-            $repository = $em->getRepository('\Entities\Basket');
+            $repository = $this->app['EM']->getRepository('\Entities\Basket');
 
-            $basket = $repository->findUserBasket($ssel_id, $this->core->getAuthenticatedUser(), false);
+            $basket = $repository->findUserBasket($this->app, $ssel_id, $this->app['phraseanet.user'], false);
         } catch (Exception $e) {
             return array();
         }
@@ -185,12 +186,11 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
     public function mail($to, $from, $ssel_id)
     {
         try {
-            $em = $this->core->getEntityManager();
-            $repository = $em->getRepository('\Entities\Basket');
+            $repository = $this->app['EM']->getRepository('\Entities\Basket');
 
             $basket = $repository->findOneBy(array(
                 'id'        => $ssel_id
-                , 'pusher_id' => $this->core->getAuthenticatedUser()->get_id()
+                , 'pusher_id' => $this->app['phraseanet.user']->get_id()
                 )
             );
         } catch (Exception $e) {
@@ -205,9 +205,9 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
                 _('%s vous a delivre votre commande, consultez la en ligne a l\'adresse suivante'), $from['name']
             ) . "</div>\n";
 
-        $body .= "<br/>\n" . $this->registry->get('GV_ServerName') . 'lightbox/validate/' . $ssel_id;
+        $body .= "<br/>\n" . $this->app['phraseanet.appbox']->get_registry()->get('GV_ServerName') . 'lightbox/validate/' . $ssel_id;
 
-        return mail::send_mail($subject, $body, $to, $from, array());
+        return mail::send_mail($this->app, $subject, $body, $to, $from, array());
     }
 
     /**

@@ -62,7 +62,7 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
 
         $datas = $dom_xml->saveXml();
 
-        $Query = new \User_Query($this->appbox);
+        $Query = new \User_Query($this->app);
 
         $Query->include_phantoms(true)->include_invite(false)->include_templates(false);
 
@@ -93,13 +93,14 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
                     );
 
                     $token = \random::getUrlToken(
+                            $this->app, 
                             \random::TYPE_FEED_ENTRY
                             , $user_to_notif->get_id()
                             , null
                             , $entry->get_id()
                     );
 
-                    $url = $this->appbox->get_registry()->get('GV_ServerName') . 'lightbox/index.php?LOG=' . $token;
+                    $url = $this->app['phraseanet.appbox']->get_registry()->get('GV_ServerName') . 'lightbox/index.php?LOG=' . $token;
 
                     if (self::mail($email, $from, $url, $entry))
                         $mailed = true;
@@ -124,7 +125,7 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
         $sx = simplexml_load_string($datas);
 
         try {
-            $entry = \Feed_Entry_Adapter::load_from_id($this->appbox, (int) $sx->entry_id);
+            $entry = \Feed_Entry_Adapter::load_from_id($this->app, (int) $sx->entry_id);
         } catch (\Exception $e) {
             return array();
         }
@@ -193,6 +194,6 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
         $body .= "<br/>\n<br/>\n<br/>\n"
             . _('push::atention: ce lien est unique et son contenu confidentiel, ne divulguez pas');
 
-        return mail::send_mail($subject, $body, $to, $from, array());
+        return mail::send_mail($this->app, $subject, $body, $to, $from, array());
     }
 }

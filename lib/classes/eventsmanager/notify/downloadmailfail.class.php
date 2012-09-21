@@ -84,14 +84,14 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
         $send_notif = ($this->get_prefs(__CLASS__, $params['usr_id']) != '0');
 
         if ($send_notif) {
-            $user = User_Adapter::getInstance($params['usr_id'], $this->appbox);
+            $user = User_Adapter::getInstance($params['usr_id'], $this->app);
             $name = $user->get_display_name();
 
             $to = array('email' => $user->get_email(), 'name'  => $name);
 
             $from = array(
-                'email' => $this->registry->get('GV_defaulmailsenderaddr'),
-                'name'  => $this->registry->get('GV_homeTitle')
+                'email' => $this->app['phraseanet.appbox']->get_registry()->get('GV_defaulmailsenderaddr'),
+                'name'  => $this->app['phraseanet.appbox']->get_registry()->get('GV_homeTitle')
             );
 
             if (parent::email())
