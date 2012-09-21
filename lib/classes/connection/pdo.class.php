@@ -30,9 +30,9 @@ class connection_pdo extends connection_abstract implements connection_interface
      * @param  array          $options
      * @return connection_pdo
      */
-    public function __construct($name, $hostname, $port, $user, $passwd, $dbname = false, $options = array(), registryInterface $registry = null)
+    public function __construct($name, $hostname, $port, $user, $passwd, $dbname = false, $options = array(), registryInterface $registry)
     {
-        $this->registry = $registry ? $registry : registry::get_instance();
+        $this->registry = $registry;
         $this->name = $name;
         if ($dbname)
             $dsn = 'mysql:dbname=' . $dbname . ';host=' . $hostname . ';port=' . $port . ';';
