@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -16,8 +18,9 @@
  */
 require_once __DIR__ . "/../../lib/bootstrap.php";
 
+$app = new Application();
 $request = http_request::getInstance();
-$registry = registry::get_instance();
+$registry = $app['phraseanet.registry'];
 
 $parm = $request->get_parms(
     "dmin"
@@ -72,8 +75,7 @@ foreach ($popbases as $key => $val) {
 //fill the last entry
 $selection[$id_sbas]['liste'] = $liste;
 
-$core = \bootstrap::getCore();
-$twig = $core->getTwig();
+$twig = $app['twig'];
 
 echo $twig->render(
     'report/ajax_report_content.html.twig', array(

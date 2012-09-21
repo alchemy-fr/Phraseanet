@@ -9,24 +9,27 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-/* @var $Core \Alchemy\Phrasea\Core */
-$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 
-$registry = $Core->getRegistry();
+require_once __DIR__ . "/../../lib/bootstrap.php";
+
+$app = new Application();
+$registry = $app['phraseanet.registry'];
 
 require($registry->get('GV_RootPath') . 'lib/classes/deprecated/countries.php');
 
 phrasea::headers();
-User_Adapter::updateClientInfos(4);
+User_Adapter::updateClientInfos($app, 4);
 
 ///////Construct dashboard
-$user = $Core->getAuthenticatedUser();
-$dashboard = new module_report_dashboard($user);
+$user = $app['phraseanet.user'];
+$dashboard = new module_report_dashboard($app, $user);
 $dashboard->execute();
 
 
@@ -42,6 +45,6 @@ $var = array(
     'ajax_chart'  => false
 );
 
-$twig = $Core->getTwig();
+$twig = $app['twig'];
 
 echo $twig->render('report/report_layout_child.html.twig', $var);
