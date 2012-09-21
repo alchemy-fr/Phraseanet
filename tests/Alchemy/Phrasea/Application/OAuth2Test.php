@@ -1,9 +1,8 @@
 <?php
 
-require_once __DIR__ . '/../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
+use Alchemy\Phrasea\Core\Configuration;
 
-use Symfony\Component\HttpFoundation\Response;
-use Silex\WebTestCase;
+require_once __DIR__ . '/../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 /**
  * Test oauthv2 flow based on ietf authv2 spec
@@ -26,7 +25,9 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
     {
         parent::setUpBeforeClass();
 
-        self::$appli = API_OAuth2_Application::create(appbox::get_instance(\bootstrap::getCore()), self::$user, 'test');
+        self::loadApplication();
+
+        self::$appli = API_OAuth2_Application::create(self::$application, self::$user, 'test');
         self::$appli->set_description('une description')
             ->set_redirect_uri('http://callback.com/callback/')
             ->set_website('http://website.com/')
@@ -36,9 +37,10 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
     public static function tearDownAfterClass()
     {
         if (self::$appli !== false) {
-            self::deleteInsertedRow(appbox::get_instance(\bootstrap::getCore()), self::$appli);
+            self::deleteInsertedRow(self::$application['phraseanet.appbox'], self::$appli);
         }
         parent::tearDownAfterClass();
+        self::$application = null;
     }
 
     public function setUp()
@@ -53,6 +55,13 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
             "scope"         => "",
             "state"         => "valueTest"
         );
+    }
+
+
+    protected static function loadApplication()
+    {
+        $environment = 'test';
+        return self::$application = require __DIR__ . '/../../../../lib/Alchemy/Phrasea/Application/OAuth2.php';
     }
 
     public static function deleteInsertedRow(appbox $appbox, API_OAuth2_Application $app)
@@ -79,7 +88,7 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
     {
         $sql = "SELECT * FROM api_applications WHERE application_id = :app_id";
         $t = array(":app_id" => $rowId);
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
         $conn = $appbox->get_connection();
         $stmt = $conn->prepare($sql);
         $stmt->execute($t);
@@ -92,13 +101,13 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
     {
         $sql = "SELECT api_account_id FROM api_accounts WHERE application_id = :app_id AND usr_id = :usr_id";
         $t = array(":app_id" => self::$appli->get_id(), ":usr_id" => self::$user->get_id());
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
         $conn = $appbox->get_connection();
         $stmt = $conn->prepare($sql);
         $stmt->execute($t);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return new API_OAuth2_Account(appbox::get_instance(\bootstrap::getCore()), $row["api_account_id"]);
+        return new API_OAuth2_Account(self::$application, $row["api_account_id"]);
     }
 
     public function setQueryParameters($parameter, $value)
@@ -112,20 +121,10 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
             unset($this->queryParameters[$parameter]);
     }
 
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../lib/Alchemy/Phrasea/Application/OAuth2.php';
-        
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-        
-        return $app;
-    }
-
     public function testAuthorizeRedirect()
     {
         //session off
-        $apps = API_OAuth2_Application::load_authorized_app_by_user(appbox::get_instance(\bootstrap::getCore()), self::$user);
+        $apps = API_OAuth2_Application::load_authorized_app_by_user(self::$application, self::$user);
         foreach ($apps as $app) {
             if ($app->get_client_id() == self::$appli->get_client_id()) {
                 $authorize = true;

@@ -7,25 +7,11 @@ use Symfony\Component\Filesystem\Filesystem;
 class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 {
 
-    public function setUp()
-    {
-        parent::setUp();
-        $this->client = $this->createClient();
-    }
-
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../lib/Alchemy/Phrasea/Application/Overview.php';
-
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-
-        return $app;
-    }
+    protected static $useExceptionHandler = true;
 
     function testDatafilesRouteAuthenticated()
     {
-        $registry = registry::get_instance();
+        $registry = self::$application['phraseanet.registry'];
         $crawler = $this->client->request('GET', '/datafiles/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/preview/');
         $response = $this->client->getResponse();
 
@@ -37,7 +23,6 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
         $crawler = $this->client->request('GET', '/datafiles/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/asubdefthatdoesnotexists/');
         $response = $this->client->getResponse();
-
         $this->assertEquals(404, $response->getStatusCode());
     }
 
@@ -46,10 +31,10 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $tmp = tempnam(sys_get_temp_dir(), 'testEtag');
         copy(__DIR__ . '/../../../testfiles/cestlafete.jpg', $tmp);
 
-        $media = self::$core['mediavorus']->guess(new \SplFileInfo($tmp));
+        $media = self::$application['mediavorus']->guess($tmp);
 
         $file = new Alchemy\Phrasea\Border\File($media, self::$collection);
-        $record = record_adapter::createFromFile($file, new Filesystem());
+        $record = record_adapter::createFromFile($file, self::$application);
 
         $crawler = $this->client->request('GET', '/datafiles/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/preview/');
         $response = $this->client->getResponse();
@@ -63,7 +48,7 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(0, $response->getAge());
         $this->assertNull($response->getExpires());
 
-        $record->generate_subdefs($record->get_databox(), self::$core['monolog']);
+        $record->generate_subdefs($record->get_databox(), self::$application);
 
         $crawler = $this->client->request('GET', '/datafiles/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/preview/');
         $response = $this->client->getResponse();
@@ -82,8 +67,8 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     function testDatafilesRouteNotAuthenticated()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $appbox->get_session()->logout();
+        $appbox = self::$application['phraseanet.appbox'];
+        self::$application->closeAccount();
         $crawler = $this->client->request('GET', '/datafiles/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/preview/');
         $response = $this->client->getResponse();
         $this->assertEquals(403, $response->getStatusCode());
@@ -95,16 +80,16 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     function testPermalinkAuthenticated()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $this->assertTrue($appbox->get_session()->is_authenticated());
+        $appbox = self::$application['phraseanet.appbox'];
+        $this->assertTrue(self::$application->isAuthenticated());
         $this->get_a_permalink();
     }
 
     function testPermalinkNotAuthenticated()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $appbox->get_session()->logout();
-        $this->assertFalse($appbox->get_session()->is_authenticated());
+        $appbox = self::$application['phraseanet.appbox'];
+        self::$application->closeAccount();
+        $this->assertFalse(self::$application->isAuthenticated());
         $this->get_a_permalink();
     }
 

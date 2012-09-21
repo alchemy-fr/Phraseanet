@@ -1,9 +1,8 @@
 <?php
 
-require_once __DIR__ . '/../../../PhraseanetWebTestCaseAbstract.class.inc';
+use Alchemy\Phrasea\Core\Configuration;
 
-use Silex\WebTestCase;
-use Symfony\Component\HttpFoundation\Response;
+require_once __DIR__ . '/../../../PhraseanetWebTestCaseAbstract.class.inc';
 
 class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
 {
@@ -23,24 +22,14 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
     protected $connection;
     protected $registry = array();
 
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../lib/Alchemy/Phrasea/Application/Setup.php';
-
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-
-        return $app;
-    }
-
     public function setUp()
     {
+        $this->markTestSkipped('To review');
         parent::setUp();
         $this->root = __DIR__ . '/../../../../';
         $this->client = $this->createClient();
         $this->temporaryUnInstall();
-        $this->appbox = appbox::get_instance(\bootstrap::getCore());
-        $this->connection = $this->appbox->get_connection();
+        $this->connection = self::$application['phraseanet.appbox']->get_connection();
 
         $this->registry = array();
 
@@ -59,20 +48,19 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
             'GV_pdftotext',
         );
 
-        $registry = $this->appbox->get_registry();
+        $registry = self::$application['phraseanet.registry'];
 
         foreach ($params as $param) {
             $this->registry[$param] = $registry->get($param);
         }
-        $this->markTestSkipped('To review');
     }
 
     public function tearDown()
     {
         $this->temporaryReInstall();
-        $this->appbox->set_connection($this->connection);
+        self::$application['phraseanet.appbox']->set_connection($this->connection);
 
-        $registry = $this->appbox->get_registry();
+        $registry = self::$application['phraseanet.registry'];
 
         foreach ($this->registry as $param => $value) {
             $registry->set($param, $value, \registry::TYPE_STRING);
@@ -138,9 +126,9 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
         $dbName = isset($settings['dataBox']) ? $settings['dataBox'] : null;
 
 
-        $connection = new connection_pdo('unitTestsAB', $host, $port, $MySQLuser, $MySQLpassword, $abName);
+        $connection = new connection_pdo('unitTestsAB', $host, $port, $MySQLuser, $MySQLpassword, $abName, array(), self::$application['phraseanet.registry']);
 
-        $this->appbox->set_connection($connection);
+        self::$application['phraseanet.appbox']->set_connection($connection);
 
         $dataDir = sys_get_temp_dir() . '/datainstall/';
 

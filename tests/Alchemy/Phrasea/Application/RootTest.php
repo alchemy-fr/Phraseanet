@@ -2,28 +2,9 @@
 
 require_once __DIR__ . '/../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
-use Silex\WebTestCase;
-use Symfony\Component\HttpFoundation\Response;
-
 class ApplicationRootTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
-
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../lib/Alchemy/Phrasea/Application/Root.php';
-        
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-        
-        return $app;
-    }
-
-    public function setUp()
-    {
-        parent::setUp();
-        $this->client = $this->createClient();
-    }
 
     public function testRouteSlash()
     {
@@ -35,11 +16,9 @@ class ApplicationRootTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteRobots()
     {
-        $registry = \registry::get_instance();
+        $original_value = $this->app['phraseanet.registry']->get('GV_allow_search_engine');
 
-        $original_value = $registry->get('GV_allow_search_engine');
-
-        $registry->set('GV_allow_search_engine', false, \registry::TYPE_BOOLEAN);
+        $this->app['phraseanet.registry']->set('GV_allow_search_engine', false, \registry::TYPE_BOOLEAN);
 
         $crawler = $this->client->request('GET', '/robots.txt');
         $response = $this->client->getResponse();
@@ -49,8 +28,7 @@ class ApplicationRootTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertRegExp('/^Disallow: \/$/m', $response->getContent());
 
-        $registry = \registry::get_instance();
-        $registry->set('GV_allow_search_engine', true, \registry::TYPE_BOOLEAN);
+        $this->app['phraseanet.registry']->set('GV_allow_search_engine', true, \registry::TYPE_BOOLEAN);
 
         $crawler = $this->client->request('GET', '/robots.txt');
         $response = $this->client->getResponse();
@@ -60,6 +38,6 @@ class ApplicationRootTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertRegExp('/^Allow: \/$/m', $response->getContent());
 
-        $registry->set('GV_allow_search_engine', $original_value, \registry::TYPE_BOOLEAN);
+        $this->app['phraseanet.registry']->set('GV_allow_search_engine', $original_value, \registry::TYPE_BOOLEAN);
     }
 }
