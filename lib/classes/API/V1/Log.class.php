@@ -5,6 +5,7 @@
  * and open the template in the editor.
  */
 
+use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpFoundation\Request;
 
 class API_V1_Log
@@ -76,19 +77,19 @@ class API_V1_Log
 
     /**
      *
-     * @var appbox
+     * @var Application
      */
-    protected $appbox;
+    protected $app;
 
     /**
      *
-     * @param appbox             $appbox
+     * @param Application             $app
      * @param Request            $request
      * @param API_OAuth2_Account $account
      */
-    public function __construct(appbox &$appbox, $log_id)
+    public function __construct(Application $app, $log_id)
     {
-        $this->appbox = $appbox;
+        $this->app = $app;
         $this->id = (int) $log_id;
 
         $sql = '
@@ -108,13 +109,13 @@ class API_V1_Log
       WHERE
         api_log_id = :log_id';
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':log_id' => $this->id));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         $this->account_id = $row['api_account_id'];
-        $this->account = new API_OAuth2_Account($this->appbox, (int) $row['api_account_id']);
+        $this->account = new API_OAuth2_Account($this->app, (int) $row['api_account_id']);
         $this->aspect = $row['api_log_aspect'];
         $this->date = new DateTime($row['api_log_date']);
         $this->format = $row['api_log_format'];
@@ -143,7 +144,7 @@ class API_V1_Log
             , ':log_id'         => $this->id
         );
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -168,7 +169,7 @@ class API_V1_Log
             , ':log_id' => $this->id
         );
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -193,7 +194,7 @@ class API_V1_Log
             , ':log_id' => $this->id
         );
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -222,7 +223,7 @@ class API_V1_Log
             , ':log_id' => $this->id
         );
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -250,7 +251,7 @@ class API_V1_Log
             , ':log_id'    => $this->id
         );
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -275,7 +276,7 @@ class API_V1_Log
             , ':log_id'  => $this->id
         );
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -300,7 +301,7 @@ class API_V1_Log
             , ':log_id' => $this->id
         );
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -325,7 +326,7 @@ class API_V1_Log
             , ':log_id' => $this->id
         );
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -337,7 +338,7 @@ class API_V1_Log
         return $this->account;
     }
 
-    public static function create(appbox &$appbox, API_OAuth2_Account $account, $route, $status_code, $format, $ressource, $general = null, $aspect = null, $action = null)
+    public static function create(Application $app, API_OAuth2_Account $account, $route, $status_code, $format, $ressource, $general = null, $aspect = null, $action = null)
     {
         $sql = '
       INSERT INTO
@@ -377,12 +378,12 @@ class API_V1_Log
             ':action'      => $action
         );
 
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
-        $log_id = $appbox->get_connection()->lastInsertId();
+        $log_id = $app['phraseanet.appbox']->get_connection()->lastInsertId();
 
-        return new self($appbox, $log_id);
+        return new self($app, $log_id);
     }
 }
