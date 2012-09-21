@@ -1,5 +1,9 @@
 <?php
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Helper\Prod;
+use Symfony\Component\HttpFoundation\Request;
+
 $cwd = str_replace('\\', '/', dirname(__FILE__));
 if (($pos = strpos($cwd, 'lib/conf.d')) !== false)
     $cwd = substr($cwd, 0, $pos);
@@ -20,12 +24,10 @@ foreach ($lngs as $lng => $locales) {
     }
 }
 
-$Core = \bootstrap::getCore();
-
-$extractDateFields = function(\Alchemy\Phrasea\Core $Core) {
+$extractDateFields = function(Application $app) {
         $date_sort_fields = array('' => '');
-        if ($Core->getConfiguration()->isInstalled()) {
-            $ProdHelper = new Alchemy\Phrasea\Helper\Prod($Core, Symfony\Component\HttpFoundation\Request::createFromGlobals());
+        if ($app['phraseanet.configuration']->isInstalled()) {
+            $ProdHelper = new Prod($app, Request::createFromGlobals());
             $datas = $ProdHelper->get_search_datas();
             foreach ($datas['dates'] as $date) {
                 $date_sort_fields[$date['fieldname']] = $date['fieldname'];
@@ -35,10 +37,10 @@ $extractDateFields = function(\Alchemy\Phrasea\Core $Core) {
         return $date_sort_fields;
     };
 
-$date_sort_fields = $extractDateFields($Core);
+$date_sort_fields = $extractDateFields($app);
 
 
-$eventsmanager = $Core['events-manager'];
+$eventsmanager = $app['events-manager'];
 
 $PHP_CONF = array(
     'output_buffering'                => '4096'  //INI_ALL
@@ -252,7 +254,7 @@ $GV = array(
             array(
                 'type'     => 'boolean',
                 'name'     => 'GV_client_navigator',
-                'comment'  => _('reglages:: Authoriser l\'application smartphone *Phraseanet Navigator* à se connecter sur cette instance'),
+                'comment'  => _('reglages:: Authoriser l\'application smartphone *Phraseanet Navigator* a se connecter sur cette instance'),
                 'default'  => false,
                 'required' => true
             )
