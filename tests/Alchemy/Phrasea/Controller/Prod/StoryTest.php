@@ -99,7 +99,7 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testAddElementsToStory()
     {
-        $story = static::$records['record_story_1'];
+        $story = \record_adapter::createStory(self::$application, self::$collection);
 
         $route = sprintf("/prod/story/%s/%s/addElements/", $story->get_sbas_id(), $story->get_record_id());
 
@@ -116,12 +116,13 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertEquals(302, $response->getStatusCode());
 
-        $this->assertEquals(2, static::$records['record_story_1']->get_children()->get_count());
+        $this->assertEquals(2, $story->get_children()->get_count());
+        $story->delete();
     }
 
     public function testAddElementsToStoryJSON()
     {
-        $story = static::$records['record_story_1'];
+        $story = \record_adapter::createStory(self::$application, self::$collection);
 
         $route = sprintf("/prod/story/%s/%s/addElements/", $story->get_sbas_id(), $story->get_record_id());
 
@@ -140,12 +141,13 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertEquals(200, $response->getStatusCode());
 
-        $this->assertEquals(2, static::$records['record_story_1']->get_children()->get_count());
+        $this->assertEquals(2, $story->get_children()->get_count());
+        $story->delete();
     }
 
     public function testRemoveElementFromStory()
     {
-        $story = static::$records['record_story_1'];
+        $story = \record_adapter::createStory(self::$application, self::$collection);
 
         $records = array(
             static::$records['record_1'],
@@ -181,7 +183,8 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             }
             $n ++;
 
-            $this->assertEquals($totalRecords - $n, static::$records['record_story_1']->get_children()->get_count());
+            $this->assertEquals($totalRecords - $n, $story->get_children()->get_count());
         }
+        $story->delete();
     }
 }
