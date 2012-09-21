@@ -237,8 +237,7 @@ class Push implements ControllerProviderInterface
                         $events_manager->trigger('__PUSH_DATAS__', $params);
                     }
 
-                    $app['phraseanet.session']
-                        ->get_logger($BasketElement->getRecord($app)->get_databox())
+                    $app['phraseanet.logger']($BasketElement->getRecord($app)->get_databox())
                         ->log($BasketElement->getRecord($app), \Session_Logger::EVENT_VALIDATE, $user_receiver->get_id(), '');
 
                     $app['EM']->flush();
@@ -413,8 +412,7 @@ class Push implements ControllerProviderInterface
                             $app['EM']->merge($BasketElement);
                             $app['EM']->persist($ValidationData);
 
-                            $app['phraseanet.session']
-                                ->get_logger($BasketElement->getRecord($app)->get_databox())
+                            $app['phraseanet.logger']($BasketElement->getRecord($app)->get_databox())
                                 ->log($BasketElement->getRecord($app), \Session_Logger::EVENT_PUSH, $participant_user->get_id(), '');
 
                             $Participant->addValidationData($ValidationData);

@@ -31,14 +31,12 @@ class Collection implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
-                if (null !== $response = $app['firewall']->requireAdmin($app)) {
-                    return $response;
-                }
+            $response = $app['firewall']->requireRightOnBase($app['request']->attributes->get('bas_id'), 'canadmin');
 
-                if (!$app['phraseanet.user']->ACL()->has_right_on_base($app['request']->attributes->get('bas_id'), 'canadmin')) {
-                    $app->abort(403);
-                }
-            });
+            if($response instanceof Response) {
+                return $response;
+            }
+        });
 
         /**
          * Get a collection

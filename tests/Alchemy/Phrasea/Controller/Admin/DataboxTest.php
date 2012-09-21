@@ -11,7 +11,6 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
     protected static $createdCollections = array();
-    protected static $createdDataboxes = array();
 
     public static function setUpBeforeClass()
     {
@@ -76,63 +75,10 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         return $collection;
     }
 
-    public function createDatabox()
-    {
-        $registry = self::$application['phraseanet.registry'];
-
-        $this->createDatabase();
-
-        $configuration = self::$application['phraseanet.configuration'];
-
-        $choosenConnexion = $configuration->getPhraseanet()->get('database');
-        $connexion = $configuration->getConnexion($choosenConnexion);
-
-        try {
-            $conn = new \connection_pdo('databox_creation', $connexion->get('host'), $connexion->get('port'), $connexion->get('user'), $connexion->get('password'), 'unit_test_db', array(), $registry);
-        } catch (\PDOException $e) {
-
-            $this->markTestSkipped('Could not reach DB');
-        }
-
-        $databox = \databox::create(
-                self::$application, $conn, new \SplFileInfo($registry->get('GV_RootPath') . 'lib/conf.d/data_templates/fr-simple.xml'), $registry
-        );
-
-        self::$createdDataboxes[] = $databox;
-
-        $databox->registerAdmin(self::$application['phraseanet.user']);
-
-        return $databox;
-    }
-
     public function checkRedirection($response, $location)
     {
         $this->assertTrue($response->isRedirect());
         $this->assertEquals($location, $response->headers->get('location'));
-    }
-
-    public static function dropDatabase()
-    {
-        $stmt = self::$application['phraseanet.appbox']
-            ->get_connection()
-            ->prepare('DROP DATABASE IF EXISTS `unit_test_db`');
-        $stmt->execute();
-        $stmt = self::$application['phraseanet.appbox']
-            ->get_connection()
-            ->prepare('DELETE FROM sbas WHERE dbname = "unit_test_db"');
-        $stmt->execute();
-    }
-
-    protected function createDatabase()
-    {
-        self::dropDatabase();
-
-        $stmt = self::$application['phraseanet.appbox']
-            ->get_connection()
-            ->prepare('CREATE DATABASE `unit_test_db`
-              CHARACTER SET utf8 COLLATE utf8_unicode_ci');
-        $stmt->execute();
-        $stmt->closeCursor();
     }
 
     /**
@@ -520,65 +466,6 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::createDatabase
-     */
-    public function testCreateDatabaseEmpty()
-    {
-        $this->setAdmin(true);
-
-        $this->client->request('POST', '/admin/databox/', array(
-            'new_dbname' => ''
-        ));
-
-        $response = $this->client->getResponse();
-        $this->assertTrue($response->isRedirect());
-        $this->assertEquals('/admin/databoxes/?error=no-empty', $response->headers->get('location'));
-    }
-
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::createDatabase
-     */
-    public function testCreateDatabaseSpecialChar()
-    {
-        $this->setAdmin(true);
-
-        $this->client->request('POST', '/admin/databox/', array(
-            'new_dbname' => 'ééààèè'
-        ));
-
-        $response = $this->client->getResponse();
-        $this->assertTrue($response->isRedirect());
-        $this->assertEquals('/admin/databoxes/?error=special-chars', $response->headers->get('location'));
-    }
-
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::createDatabase
-     */
-    public function testCreateDatabase()
-    {
-        $this->setAdmin(true);
-
-        $this->createDatabase();
-
-        $this->client->request('POST', '/admin/databox/', array(
-            'new_dbname'        => 'unit_test_db',
-            'new_data_template' => 'fr-simple',
-        ));
-
-        $response = $this->client->getResponse();
-        $this->assertTrue($response->isRedirect());
-        $uriRedirect = $response->headers->get('location');
-        $this->assertTrue(!!strrpos($uriRedirect, 'success=1'));
-        $explode = explode('/', $uriRedirect);
-        $databoxId = $explode[3];
-        $databox = self::$application['phraseanet.appbox']->get_databox($databoxId);
-        $databox->unmount_databox(self::$application['phraseanet.appbox']);
-        $databox->delete();
-
-        unset($stmt, $databox);
-    }
-
-    /**
      * @covers \Alchemy\Phrasea\Controller\Admin\Database::deleteBase
      */
     public function testDeleteBase()
@@ -599,41 +486,6 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         } catch (\Exception_DataboxNotFound $e) {
 
         }
-    }
-
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Admin\Database::databaseMount
-     */
-    public function testMountBase()
-    {
-        $this->setAdmin(true);
-
-        $base = $this->createDatabox();
-        $base->unmount_databox(self::$application['phraseanet.appbox']);
-
-        $this->client->request('POST', '/admin/databox/mount/', array(
-            'new_dbname' => 'unit_test_db'
-        ));
-
-        $response = $this->client->getResponse();
-
-        $this->assertTrue($response->isRedirect());
-        $uriRedirect = $response->headers->get('location');
-
-
-        $this->assertTrue(!!strrpos($uriRedirect, 'success=1'));
-        $explode = explode('/', $uriRedirect);
-        $databoxId = $explode[3];
-
-        try {
-            $databox = self::$application['phraseanet.appbox']->get_databox($databoxId);
-            $databox->unmount_databox(self::$application['phraseanet.appbox']);
-            $databox->delete();
-        } catch (\Exception_DataboxNotFound $e) {
-            $this->fail('databox not mounted');
-        }
-
-        unset($databox);
     }
 
     /**

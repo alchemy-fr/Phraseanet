@@ -27,6 +27,14 @@ class Query implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
+        $controllers->before(function(Request $request) use ($app) {
+            $response = $app['firewall']->requireAuthentication();
+
+            if($response instanceof Response) {
+                return $response;
+            }
+        });
+
         $controllers->post('/', function(Application $app, Request $request) {
 
                 $appbox = $app['phraseanet.appbox'];
@@ -165,7 +173,7 @@ class Query implements ControllerProviderInterface
                 $prop = null;
 
                 if ($search_engine->is_first_page()) {
-                    $propals = $result->get_suggestions($app['phraseanet.session']->get_I18n());
+                    $propals = $result->get_suggestions($app['locale.I18n']);
                     if (count($propals) > 0) {
                         foreach ($propals as $prop_array) {
                             if ($prop_array['value'] !== $query && $prop_array['hits'] > $result->get_count_total_results()) {

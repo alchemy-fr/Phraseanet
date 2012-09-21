@@ -59,4 +59,99 @@ class DataboxesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue($this->client->getResponse()->isRedirect());
     }
+
+
+    /**
+     * @covers \Alchemy\Phrasea\Controller\Admin\Database::databaseMount
+     */
+    public function testMountBase()
+    {
+        $this->setAdmin(true);
+
+        $base = $this->createDatabox();
+        $base->unmount_databox(self::$application['phraseanet.appbox']);
+
+        $this->client->request('POST', '/admin/databoxes/mount/', array(
+            'new_dbname' => 'unit_test_db'
+        ));
+
+        $response = $this->client->getResponse();
+
+        $this->assertTrue($response->isRedirect());
+        $uriRedirect = $response->headers->get('location');
+
+
+        $this->assertTrue(!!strrpos($uriRedirect, 'success=1'));
+        $explode = explode('/', $uriRedirect);
+        $databoxId = $explode[3];
+
+        try {
+            $databox = self::$application['phraseanet.appbox']->get_databox($databoxId);
+            $databox->unmount_databox(self::$application['phraseanet.appbox']);
+            $databox->delete();
+        } catch (\Exception_DataboxNotFound $e) {
+            $this->fail('databox not mounted');
+        }
+
+        unset($databox);
+    }
+
+    /**
+     * @covers \Alchemy\Phrasea\Controller\Admin\Database::createDatabase
+     */
+    public function testCreateDatabaseEmpty()
+    {
+        $this->setAdmin(true);
+
+        $this->client->request('POST', '/admin/databoxes/', array(
+            'new_dbname' => ''
+        ));
+
+        $response = $this->client->getResponse();
+        $this->assertTrue($response->isRedirect());
+        $this->assertEquals('/admin/databoxes/?error=no-empty', $response->headers->get('location'));
+    }
+
+    /**
+     * @covers \Alchemy\Phrasea\Controller\Admin\Database::createDatabase
+     */
+    public function testCreateDatabaseSpecialChar()
+    {
+        $this->setAdmin(true);
+
+        $this->client->request('POST', '/admin/databoxes/', array(
+            'new_dbname' => 'ééààèè'
+        ));
+
+        $response = $this->client->getResponse();
+        $this->assertTrue($response->isRedirect());
+        $this->assertEquals('/admin/databoxes/?error=special-chars', $response->headers->get('location'));
+    }
+
+    /**
+     * @covers \Alchemy\Phrasea\Controller\Admin\Database::createDatabase
+     */
+    public function testCreateDatabase()
+    {
+        $this->setAdmin(true);
+
+        $this->createDatabase();
+
+        $this->client->request('POST', '/admin/databoxes/', array(
+            'new_dbname'        => 'unit_test_db',
+            'new_data_template' => 'fr-simple',
+        ));
+
+        $response = $this->client->getResponse();
+        $this->assertTrue($response->isRedirect());
+        $uriRedirect = $response->headers->get('location');
+        $this->assertTrue(!!strrpos($uriRedirect, 'success=1'));
+        $explode = explode('/', $uriRedirect);
+        $databoxId = $explode[3];
+        $databox = self::$application['phraseanet.appbox']->get_databox($databoxId);
+        $databox->unmount_databox(self::$application['phraseanet.appbox']);
+        $databox->delete();
+
+        unset($stmt, $databox);
+    }
 }

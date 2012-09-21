@@ -33,28 +33,40 @@
             {% for row in sessions %}
                 <tr>
                     <td>
-                        {% if app['session'].get('phrasea_session_id') != row['session_id'] %}
+                        {% if app['session'].get('phrasea_session_id') != row.Id() %}
                             <img src="/skins/icons/delete.png"/>
                         {% endif %}
                     </td>
                     <td>
-                        {{ app['date-formatter'].getDate(row['created_on']) }}
+                        {{ app['date-formatter'].getDate(row.getCreated()) }}
                     </td>
                     <td>
-                        {{ app['date-formatter'].getDate(row['lastaccess']) }}
+                        {{ app['date-formatter'].getDate(row.getUpdated()) }}
                     </td>
                     <td>
-                        {{ row['ip'] }}
-                        {{ row['ip_infos'] }}
+                        {% set geoname = app['geonames'].find_geoname_from_ip(row.getIpAddress()) %}
+
+                        {% if geoname['city']  %}
+                            {% set ip_infos = geoname['city'] ~ ' (' ~ geoname['country'] ~ ')' %}
+                        {% elseif geoname['fips'] %}
+                            {% set ip_infos = geoname['fips'] ~ ' (' ~ geoname['country'] ~ ')' %}
+                        {% elseif geoname['country'] %}
+                            {% set ip_infos = geoname['country'] %}
+                        {% else %}
+                            {% set ip_infos = '' %}
+                        {% endif %}
+
+                        {{ row.getIpAddress() }}
+                        {{ ip_infos }}
                     </td>
                     <td>
-                        {{ row['browser'] }} {{ row['browser_version'] }}
+                        {{ row.getBrowserName() }} {{ row.getBrowserVersion() }}
                     </td>
                     <td>
-                        {{ row['screen'] }}
+                        {{ row.getScreenWidth() }} x {{ row.getScreenHeight() }}
                     </td>
                     <td>
-                        {% if row['token'] %}oui{% endif %}
+                        {% if row.getToken %}{{ yes }}{% endif %}
                     </td>
                 </tr>
             {% endfor %}

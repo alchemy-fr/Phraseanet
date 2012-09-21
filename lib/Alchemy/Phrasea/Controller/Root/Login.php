@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Root;
 
+use Alchemy\Phrasea\Application as PhraseaApplication;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,10 +31,12 @@ class Login implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
-            if ($app['phraseanet.registry']->get('GV_maintenance')) {
-                return $app->redirect("/login/?redirect=" . $request->request->get('redirect') . "&error=maintenance");
-            }
-        });
+                if ($app['phraseanet.registry']->get('GV_maintenance')) {
+                    return $app->redirect("/login/?redirect=" . $request->request->get('redirect') . "&error=maintenance");
+                }
+            });
+
+
 
         /**
          * Login
@@ -50,21 +53,20 @@ class Login implements ControllerProviderInterface
          */
         $controllers->get('/', $this->call('login'))
             ->before(function(Request $request) use ($app) {
+                    if ($app->isAuthenticated()) {
+                        return $app->redirect('/' . $request->query->get('redirect', 'prod') . '/');
+                    }
+
                     if (null !== $request->query->get('postlog')) {
 
                         // if isset postlog parameter, set cookie and log out current user
                         // then post login operation like getting baskets from an invit session
                         // could be done by Session_handler authentication process
 
-                        $app['phraseanet.session']->set_postlog();
+                        $response = new RedirectResponse("/login/logout/?redirect=" . $request->query->get('redirect', 'prod'));
+                        $response->headers->setCookie(new \Symfony\Component\HttpFoundation\Cookie('postlog', 1));
 
-                        return $app->redirect("/login/logout/?redirect=" . $request->query->get('redirect', 'prod'));
-                    }
-
-
-                    if ($app->isAuthenticated()) {
-
-                        return $app->redirect('/' . $request->query->get('redirect', 'prod') . '/');
+                        return $response;
                     }
                 })
             ->bind('homepage');
@@ -83,11 +85,6 @@ class Login implements ControllerProviderInterface
          * return       : HTML Response
          */
         $controllers->post('/authenticate/', $this->call('authenticate'))
-            ->before(function() use ($app) {
-                    if ($app->isAuthenticated()) {
-                        return $app->redirect('/prod/');
-                    }
-                })
             ->bind('login_authenticate');
 
         /**
@@ -483,9 +480,8 @@ class Login implements ControllerProviderInterface
                     'parms'        => $request->query->all(),
                     'needed'       => $needed,
                     'arrayVerif'   => $arrayVerif,
-                    'geonames'     => new \geonames(),
                     'demandes'     => $request->query->get('demand', array()),
-                    'lng' => \Session_Handler::get_locale()
+                    'lng' => $app['locale']
                 )));
     }
 
@@ -655,20 +651,25 @@ class Login implements ControllerProviderInterface
      * @param   Request         $request The current request
      * @return  RedirectResponse
      */
-    public function logout(Application $app, Request $request)
+    public function logout(PhraseaApplication $app, Request $request)
     {
         $appRedirect = $request->query->get("app");
 
-        try {
-            $session = $app['phraseanet.session'];
+        /**
+         * Move to middleware
+          if ( ! $this->is_authenticated()) {
+          return;
+          }
+         */
+        $app->closeAccount();
 
-            $session->logout();
-            $session->remove_cookies();
-        } catch (\Exception $e) {
-            return $app->redirect("/" . ($appRedirect ? $appRedirect : 'prod'));
-        }
+        $response = new RedirectResponse("/login/?logged_out=user" . ($appRedirect ? sprintf("&redirect=/%s", $appRedirect) : ""));
 
-        return $app->redirect("/login/?logged_out=user" . ($appRedirect ? sprintf("&redirect=/%s", $appRedirect) : ""));
+        $response->headers->removeCookie('persistent');
+        $response->headers->removeCookie('last_act');
+        $response->headers->removeCookie('postlog');
+
+        return $response;
     }
 
     /**
@@ -795,7 +796,7 @@ class Login implements ControllerProviderInterface
     public function authenticate(Application $app, Request $request)
     {
         $appbox = $app['phraseanet.appbox'];
-        $session = $app['phraseanet.session'];
+        $conn = $appbox->get_connection();
         $registry = $app['phraseanet.registry'];
 
         $is_guest = false;
@@ -810,8 +811,6 @@ class Login implements ControllerProviderInterface
              * @todo dispatch an event that can be used to tweak the authentication
              * (LDAP....)
              */
-            // $app['dispatcher']->dispatch();
-
             try {
                 if ($is_guest) {
                     $auth = new \Session_Authentication_Guest($app);
@@ -837,7 +836,132 @@ class Login implements ControllerProviderInterface
                     $auth->set_captcha_challenge($captcha);
                 }
 
-                $session->authenticate($auth);
+
+                $sql = "SELECT session_id FROM cache
+                    WHERE (lastaccess < DATE_SUB(NOW(), INTERVAL 1 MONTH) AND token IS NOT NULL)
+                    OR (lastaccess < DATE_SUB(NOW(), INTERVAL 30 MINUTE) AND token IS NULL)";
+
+                $stmt = $conn->prepare($sql);
+                $stmt->execute();
+                $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+                $stmt->closeCursor();
+
+                foreach ($rs as $row) {
+                    phrasea_close_session($row['session_id']);
+                }
+
+                $date = new \DateTime('+' . (int) $app['phraseanet.registry']->get('GV_validation_reminder') . ' days');
+
+                foreach ($app['EM']
+                    ->getRepository('\Entities\ValidationParticipant')
+                    ->findNotConfirmedAndNotRemindedParticipantsByExpireDate($date) as $participant) {
+
+                    /* @var $participant \Entities\ValidationParticipant */
+
+                    $validationSession = $participant->getSession();
+                    $participantId = $participant->getUsrId();
+                    $basketId = $validationSession->getBasket()->getId();
+
+                    try {
+                        $token = \random::getValidationToken($this->app, $participantId, $basketId);
+                    } catch (\Exception_NotFound $e) {
+                        continue;
+                    }
+
+                    $app['events-manager']->trigger('__VALIDATION_REMINDER__', array(
+                        'to'          => $participantId,
+                        'ssel_id'     => $basketId,
+                        'from'        => $validationSession->getInitiatorId(),
+                        'validate_id' => $validationSession->getId(),
+                        'url'         => $app['phraseanet.registry']->get('GV_ServerName') . 'lightbox/validate/' . $basketId . '/?LOG=' . $token
+                    ));
+                }
+
+
+                /**
+                 * IMPORTANT
+                 */
+                $auth->prelog();
+
+                if ($app->isAuthenticated() && $app['session']->get('usr_id') == $auth->get_user()->get_id()) {
+                    return $app->redirect('/' . $request->request->get('redirect', 'prod'));
+                }
+
+                $user = $auth->signOn();
+
+
+                /**
+                 * TODO NEUTRON save user locale
+                 */
+                /**
+                 * TODO NEUTRON move this to phrasea
+                 */
+                $user->ACL()->inject_rights();
+
+                if ($request->cookies->has('postlog') && $request->cookies->get('postlog') == '1') {
+                    if (!$user->is_guest() && $request->cookies->has('invite-usr_id')) {
+                        if ($user->get_id() != $inviteUsrId = $request->cookies->get('invite-usr_id')) {
+
+                            $repo = $app['EM']->getRepository('Entities\Basket');
+                            $baskets = $repo->findBy(array('usr_id' => $inviteUsrId));
+
+                            foreach ($baskets as $basket) {
+                                $basket->setUsrId($user->get_id());
+                                $app['EM']->persist($basket);
+                            }
+                        }
+                    }
+                }
+
+                $app->openAccount($auth);
+
+                /**
+                 * IMPORTANT
+                 */
+                $auth->postlog();
+
+                if ($app['browser']->isMobile()) {
+                    $response = new RedirectResponse("/lightbox/");
+                } elseif ($request->request->get('redirect')) {
+                    $response = new RedirectResponse('/' . $request->request->get('redirect'));
+                } elseif (true !== $app['browser']->isNewGeneration()) {
+                    $response = new RedirectResponse('/client/');
+                } else {
+                    $response = new RedirectResponse('/prod/');
+                }
+
+                $response->headers->removeCookie('postlog');
+
+                $session = $app['EM']->find('Entities\Session', $app['session']->get('session_id'));
+
+                if ($request->request->get('remember-me') == '1') {
+                    $nonce = \random::generatePassword(16);
+                    $string = $app['browser']->getBrowser() . '_' . $app['browser']->getPlatform();
+
+                    $token = \User_Adapter::salt_password($app, $string, $nonce);
+
+                    $session->setToken($token)
+                        ->setNonce($nonce);
+                    $cookie = new Cookie('persistent', $token);
+                    $response->headers->setCookie($cookie);
+                }
+
+                $width = $height = null;
+                if ($app['request']->cookies->has('screen')) {
+                    $data = explode('x', $this['request']->cookies->get('screen'));
+                    $width = $data[0];
+                    $height = $data[1];
+                }
+                $session->setIpAddress($request->getClientIp())
+                    ->setScreenHeight($height)
+                    ->setScreenWidth($width);
+
+                $app['EM']->persist($session);
+                $app['EM']->flush();
+
+                $response->headers->removeCookie('last_act');
+
+                return $response;
             } catch (\Exception_Session_StorageClosed $e) {
                 return $app->redirect("/login/?redirect=" . $request->request->get('redirect') . "&error=session");
             } catch (\Exception_Session_RequireCaptcha $e) {
@@ -860,16 +984,6 @@ class Login implements ControllerProviderInterface
                 return $app->redirect($url);
             } catch (\Exception $e) {
                 return $app->redirect("/login/?redirect=" . $request->request->get('redirect') . "&error=" . _('An error occured'));
-            }
-
-            if ($app['browser']->isMobile()) {
-                return $app->redirect("/lightbox/");
-            } elseif ($request->request->get('redirect')) {
-                return $app->redirect($request->request->get('redirect'));
-            } elseif (true !== $app['browser']->isNewGeneration()) {
-                return $app->redirect('/client/');
-            } else {
-                return $app->redirect('/prod/');
             }
         } else {
             return $app->redirect("/login/");

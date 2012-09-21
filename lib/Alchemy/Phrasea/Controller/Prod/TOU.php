@@ -32,7 +32,6 @@ class TOU implements ControllerProviderInterface
 
                 try {
                     $user = $app['phraseanet.user'];
-                    $session = $app['phraseanet.session'];
 
                     $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
 
@@ -41,7 +40,7 @@ class TOU implements ControllerProviderInterface
                     );
                     $user->ACL()->revoke_unused_sbas_rights();
 
-                    $session->logout();
+                    $app->closeAccount();
 
                     $ret = array('success' => true, 'message' => '');
                 } catch (\Exception $e) {

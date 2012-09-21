@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use Symfony\Component\HttpFoundation\Request;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 
@@ -25,6 +26,14 @@ class Tooltip implements ControllerProviderInterface
     public function connect(Application $app)
     {
         $controllers = $app['controllers_factory'];
+
+        $controllers->before(function(Request $request) use ($app) {
+            $response = $app['firewall']->requireAuthentication();
+
+            if($response instanceof Response) {
+                return $response;
+            }
+        });
 
         $controllers->post('/basket/{basket_id}/', $this->call('displayBasket'))
             ->assert('basket_id', '\d+');

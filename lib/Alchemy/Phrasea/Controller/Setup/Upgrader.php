@@ -33,7 +33,7 @@ class Upgrader implements ControllerProviderInterface
                 return $app['twig']->render(
                         '/setup/upgrader.html.twig'
                         , array(
-                        'locale'            => \Session_Handler::get_locale()
+                        'locale'            => $app['locale']
                         , 'upgrade_status'    => $upgrade_status
                         , 'available_locales' => $app->getAvailableLanguages()
                         , 'bad_users'         => \User_Adapter::get_wrong_email_users($app)

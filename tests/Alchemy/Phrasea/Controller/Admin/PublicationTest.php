@@ -9,6 +9,7 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
     public static $account = null;
     public static $api = null;
     protected $client;
+    protected static $useExceptionHandler = true;
 
     public function testList()
     {
@@ -67,13 +68,7 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
     public function testUpdateFeedNotOwner()
     {
-        $appbox = self::$application['phraseanet.appbox'];
-        //is not owner
-        $stub = $this->getMock("user_adapter", array(), array(), "", false);
-        //return a different userid
-        $stub->expects($this->any())->method("get_id")->will($this->returnValue(99999999));
-
-        $feed = Feed_Adapter::create(self::$application, $stub, "salut", 'coucou');
+        $feed = Feed_Adapter::create(self::$application, self::$user_alt1, "salut", 'coucou');
         $this->client->request("POST", "/admin/publications/feed/" . $feed->get_id() . "/update/");
         $this->assertTrue($this->client->getResponse()->isRedirect(), 'update fails, i\'m redirected');
         $this->assertTrue(
@@ -152,17 +147,9 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
     public function testIconUploadErrorOwner()
     {
-        $appbox = self::$application['phraseanet.appbox'];
+        $feed = Feed_Adapter::create(self::$application, self::$user_alt1, "salut", 'coucou');
 
-        //is not owner
-        $stub = $this->getMock("user_adapter", array(), array(), "", false);
-        //return a different userid
-        $stub->expects($this->any())->method("get_id")->will($this->returnValue(99999999));
-
-
-        $feed = Feed_Adapter::create(self::$application, $stub, "salut", 'coucou');
-
-        $this->client->request("POST", "/admin/publications/feed/" . $feed->get_id() . "/iconupload/", array(), array(), array('HTTP_ACCEPT'=>'application/json'));
+        $this->client->request("POST", "/admin/publications/feed/" . $feed->get_id() . "/iconupload/", array(), array(), array('HTTP_ACCEPT' => 'application/json'));
 
         $response = $this->client->getResponse();
 
@@ -225,7 +212,7 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
         $feed = Feed_Adapter::create(self::$application, self::$user, "salut", 'coucou');
 
-		$files = array(
+        $files = array(
             'files' => array(
                 new \Symfony\Component\HttpFoundation\File\UploadedFile(
                     __DIR__ . '/../../../../testfiles/logocoll.gif', 'logocoll.gif'

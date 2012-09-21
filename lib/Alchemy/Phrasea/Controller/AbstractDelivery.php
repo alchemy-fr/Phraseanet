@@ -24,7 +24,7 @@ use Symfony\Component\HttpFoundation\Response;
 abstract class AbstractDelivery implements ControllerProviderInterface
 {
 
-    public function deliverContent(Request $request, \Session_Handler $session, \record_adapter $record, $subdef, $watermark, $stamp, Application $app)
+    public function deliverContent(Request $request, \record_adapter $record, $subdef, $watermark, $stamp, Application $app)
     {
         $file = $record->get_subdef($subdef);
 
@@ -39,7 +39,7 @@ abstract class AbstractDelivery implements ControllerProviderInterface
         $log_id = null;
         try {
             $registry = $app['phraseanet.registry'];
-            $logger = $session->get_logger($record->get_databox());
+            $logger = $app['phraseanet.logger']($record->get_databox());
             $log_id = $logger->get_id();
 
             $referrer = 'NO REFERRER';

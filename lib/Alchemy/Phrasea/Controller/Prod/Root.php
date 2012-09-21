@@ -30,6 +30,14 @@ class Root implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
+        $controllers->before(function(Request $request) use ($app) {
+            $response = $app['firewall']->requireAuthentication();
+
+            if($response instanceof Response) {
+                return $response;
+            }
+        });
+
         $controllers->get('/', function(Application $app) {
 
                 \User_Adapter::updateClientInfos($app, 1);
@@ -59,7 +67,7 @@ class Root implements ControllerProviderInterface
 
                 $cssfile = $user->getPrefs('css');
 
-                if ( ! $cssfile && isset($css['000000'])) {
+                if (!$cssfile && isset($css['000000'])) {
                     $cssfile = '000000';
                 }
 
@@ -71,9 +79,9 @@ class Root implements ControllerProviderInterface
                 $queries_topics = '';
 
                 if ($registry->get('GV_client_render_topics') == 'popups') {
-                    $queries_topics = \queries::dropdown_topics($app['phraseanet.session']->get_I18n());
+                    $queries_topics = \queries::dropdown_topics($app['locale.I18n']);
                 } elseif ($registry->get('GV_client_render_topics') == 'tree') {
-                    $queries_topics = \queries::tree_topics($app['phraseanet.session']->get_I18n());
+                    $queries_topics = \queries::tree_topics($app['locale.I18n']);
                 }
 
                 $sbas = $bas2sbas = array();
@@ -125,12 +133,12 @@ class Root implements ControllerProviderInterface
                 $download = new \set_export($app, $request->request->get('lst', ''), (int) $request->request->get('ssel'), $request->request->get('story'));
 
                 return $app['twig']->render('common/dialog_export.html.twig', array(
-                    'download'             => $download,
-                    'ssttid'               => (int) $request->request->get('ssel'),
-                    'lst'                  => $download->serialize_list(),
-                    'default_export_title' => $app['phraseanet.registry']->get('GV_default_export_title'),
-                    'choose_export_title'  => $app['phraseanet.registry']->get('GV_choose_export_title')
-                ));
+                        'download'             => $download,
+                        'ssttid'               => (int) $request->request->get('ssel'),
+                        'lst'                  => $download->serialize_list(),
+                        'default_export_title' => $app['phraseanet.registry']->get('GV_default_export_title'),
+                        'choose_export_title'  => $app['phraseanet.registry']->get('GV_choose_export_title')
+                    ));
             });
 
         return $controllers;

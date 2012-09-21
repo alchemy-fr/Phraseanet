@@ -46,7 +46,7 @@ class Installer implements ControllerProviderInterface
         $extension_constraints = \setup::check_php_extension();
         $opcode_constraints = \setup::check_cache_opcode();
         $php_conf_constraints = \setup::check_php_configuration();
-        $locales_constraints = \setup::check_system_locales();
+        $locales_constraints = \setup::check_system_locales($app);
 
         $constraints_coll = array(
             'php_constraint'          => $php_constraint
@@ -80,7 +80,7 @@ class Installer implements ControllerProviderInterface
         return $app['twig']->render(
                 '/setup/index.html.twig'
                 , array_merge($constraints_coll, array(
-                    'locale'             => \Session_Handler::get_locale()
+                    'locale'             => $app['locale']
                     , 'available_locales'  => $app->getAvailableLanguages()
                     , 'version_number'     => $app['phraseanet.version']->getNumber()
                     , 'version_name'       => $app['phraseanet.version']->getName()
@@ -91,7 +91,7 @@ class Installer implements ControllerProviderInterface
 
     public function getInstallForm(Application $app, Request $request)
     {
-        \phrasea::use_i18n(\Session_Handler::get_locale());
+        \phrasea::use_i18n($app['locale']);
 
         $ld_path = array(__DIR__ . '/../../../../../templates/web');
         $loader = new \Twig_Loader_Filesystem($ld_path);
@@ -106,7 +106,7 @@ class Installer implements ControllerProviderInterface
         $extension_constraints = \setup::check_php_extension();
         $opcode_constraints = \setup::check_cache_opcode();
         $php_conf_constraints = \setup::check_php_configuration();
-        $locales_constraints = \setup::check_system_locales();
+        $locales_constraints = \setup::check_system_locales($app);
 
         $constraints_coll = array(
             'php_constraint'          => $php_constraint
@@ -133,7 +133,7 @@ class Installer implements ControllerProviderInterface
         return $twig->render(
                 '/setup/step2.html.twig'
                 , array(
-                'locale'              => \Session_Handler::get_locale()
+                'locale'              => $app['locale']
                 , 'available_locales'   => $app->getAvailableLanguages()
                 , 'available_templates' => \appbox::list_databox_templates()
                 , 'version_number'      => $app['phraseanet.version']->getNumber()
@@ -150,7 +150,7 @@ class Installer implements ControllerProviderInterface
     public function doInstall(Application $app, Request $request)
     {
         set_time_limit(360);
-        \phrasea::use_i18n(\Session_Handler::get_locale());
+        \phrasea::use_i18n($app['locale']);
 
         $servername = $request->getScheme() . '://' . $request->getHttpHost() . '/';
 
@@ -234,7 +234,7 @@ class Installer implements ControllerProviderInterface
 
             $auth = new \Session_Authentication_None($user);
 
-            $app['phraseanet.session']->authenticate($auth);
+            $app->openAccount($auth);
 
             if ($databox_name && !\p4string::hasAccent($databox_name)) {
                 $template = new \SplFileInfo(__DIR__ . '/../../../../conf.d/data_templates/' . $request->request->get('db_template') . '.xml');

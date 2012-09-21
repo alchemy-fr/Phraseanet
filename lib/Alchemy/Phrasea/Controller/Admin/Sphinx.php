@@ -30,8 +30,12 @@ class Sphinx implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
-                return $app['firewall']->requireAdmin($app);
-            });
+            $response = $app['firewall']->requireAdmin();
+
+            if ($response instanceof Response) {
+                return $response;
+            }
+        });
 
         /**
          * Sphinx configuration

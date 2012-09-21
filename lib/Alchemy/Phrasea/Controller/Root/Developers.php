@@ -341,7 +341,7 @@ class Developers implements ControllerProviderInterface
     public function listApps(Application $app, Request $request)
     {
         return $app['twig']->render('developers/applications.html.twig', array(
-                "apps" => \API_OAuth2_Application::load_dev_app_by_user(
+                "applications" => \API_OAuth2_Application::load_dev_app_by_user(
                     $app, $app['phraseanet.user']
                 )));
     }
@@ -383,7 +383,7 @@ class Developers implements ControllerProviderInterface
         $token = $client->get_user_account($user)->get_token()->get_value();
 
         return $app['twig']->render('developers/application.html.twig', array(
-                "app"   => $client,
+                "application"   => $client,
                 "user"  => $user,
                 "token" => $token
             ));

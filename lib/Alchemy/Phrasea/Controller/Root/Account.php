@@ -31,8 +31,12 @@ class Account implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function() use ($app) {
-                return $app['firewall']->requireAuthentication($app);
-            });
+            $response = $app['firewall']->requireAuthentication();
+
+            if($response instanceof Response) {
+                return $response;
+            }
+        });
 
         /**
          * Get a new account
@@ -449,7 +453,7 @@ class Account implements ControllerProviderInterface
     public function accountAuthorizedApps(Application $app, Request $request)
     {
         return $app['twig']->render('account/authorized_apps.html.twig', array(
-                "apps" => \API_OAuth2_Application::load_app_by_user($app, $app['phraseanet.user']),
+                "applications" => \API_OAuth2_Application::load_app_by_user($app, $app['phraseanet.user']),
             ));
     }
 
@@ -462,7 +466,46 @@ class Account implements ControllerProviderInterface
      */
     public function accountSessionsAccess(Application $app, Request $request)
     {
-        return new Response($app['twig']->render('account/sessions.html.twig'));
+
+                $dql = 'SELECT s FROM Entities\Session s
+                    WHERE s.usr_id = :usr_id
+                    ORDER BY s.created DESC';
+
+                $query = $app['EM']->createQuery($dql);
+                $query->setParameters(array('usr_id'=>$app['session']->get('usr_id')));
+                $sessions = $query->getResult();
+
+//        $sql = 'SELECT session_id, lastaccess, ip, platform, browser, screen
+//              , created_on, browser_version, token
+//            FROM cache WHERE usr_id = :usr_id';
+//
+//
+//        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+//        $stmt->execute(array(':usr_id' => $this->get_usr_id()));
+//        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+//        $stmt->closeCursor();
+//
+//        $geonames = new geonames();
+//
+//        foreach ($rs as $k => $row) {
+//            $datas = $geonames->find_geoname_from_ip($row['ip'], $this->app);
+//
+//            if ($datas['city']) {
+//                $infos = $datas['city'] . ' (' . $datas['country'] . ')';
+//            } elseif ($datas['fips']) {
+//                $infos = $datas['fips'] . ' (' . $datas['country'] . ')';
+//            } elseif ($datas['country']) {
+//                $infos = $datas['country'];
+//            } else {
+//                $infos = '';
+//            }
+//            $rs[$k]['session_id'] = (int) $rs[$k]['session_id'];
+//            $rs[$k]['ip_infos'] = $infos;
+//            $rs[$k]['created_on'] = new \DateTime($row['created_on']);;
+//            $rs[$k]['lastaccess'] = new \DateTime($row['lastaccess']);
+//        }
+
+        return new Response($app['twig']->render('account/sessions.html.twig', array('sessions'=>$sessions)));
     }
 
     /**
@@ -497,7 +540,6 @@ class Account implements ControllerProviderInterface
         }
 
         return new Response($app['twig']->render('account/account.html.twig', array(
-                    'geonames'      => new \geonames(),
                     'user'          => $user,
                     'notice'        => $notice,
                     'evt_mngr'      => $evtMngr,

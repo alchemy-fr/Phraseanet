@@ -40,10 +40,8 @@ class Publications implements ControllerProviderInterface
 
         $controllers->post('/create/', function(PhraseaApplication $app, Request $request) {
 
-                $user = $app['phraseanet.user'];
-
                 $feed = \Feed_Adapter::create(
-                        $app, $user, $request->request->get('title'), $request->request->get('subtitle')
+                        $app, $app['phraseanet.user'], $request->request->get('title'), $request->request->get('subtitle')
                 );
 
                 if ($request->request->get('public') == '1') {

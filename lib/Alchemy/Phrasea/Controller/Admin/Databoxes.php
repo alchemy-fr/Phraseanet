@@ -30,8 +30,13 @@ class Databoxes implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
-                return $app['firewall']->requireAdmin($app);
-            });
+            $response = $app['firewall']->requireAdmin();
+
+            if ($response instanceof Response) {
+                return $response;
+            }
+        });
+
 
         /**
          * Get Databases control panel
@@ -49,6 +54,38 @@ class Databoxes implements ControllerProviderInterface
         $controllers->get('/', $this->call('getDatabases'))
             ->bind('admin_databases');
 
+
+        /**
+         * Create Database
+         *
+         * name         : admin_database_new
+         *
+         * description  : Create Database
+         *
+         * method       : POST
+         *
+         * parameters   : none
+         *
+         * return       : Redirect Response
+         */
+        $controllers->post('/', $this->call('createDatabase'))
+            ->bind('admin_database_new');
+
+        /**
+         * Mount a database
+         *
+         * name         : admin_database_mount
+         *
+         * description  : Upgrade all databases
+         *
+         * method       : POST
+         *
+         * parameters   : none
+         *
+         * return       : Redirect Response
+         */
+        $controllers->post('/mount/', $this->call('databaseMount'))
+            ->bind('admin_database_mount');
 
         /**
          * Upgrade all databases
@@ -157,6 +194,154 @@ class Databoxes implements ControllerProviderInterface
                     'recommendations'   => $upgrader->getRecommendations(),
                     'advices'           => $request->query->get('advices', array()),
                 )));
+    }
+
+    /**
+     * Create a new databox
+     *
+     * @param    Application $app        The silex application
+     * @param    Request     $request    The current HTTP request
+     * @param    integer     $databox_id The requested databox
+     * @return   RedirectResponse
+     */
+    public function createDatabase(Application $app, Request $request)
+    {
+        if ('' === $dbName = $request->request->get('new_dbname', '')) {
+
+            return $app->redirect('/admin/databoxes/?error=no-empty');
+        }
+
+        if (\p4string::hasAccent($dbName)) {
+
+            return $app->redirect('/admin/databoxes/?error=special-chars');
+        }
+
+        $registry = $app['phraseanet.registry'];
+
+        if ((null === $request->request->get('new_settings')) && (null !== $dataTemplate = $request->request->get('new_data_template'))) {
+
+            $configuration = $app['phraseanet.configuration'];
+            $choosenConnexion = $configuration->getPhraseanet()->get('database');
+            $connexion = $configuration->getConnexion($choosenConnexion);
+
+            $hostname = $connexion->get('host');
+            $port = $connexion->get('port');
+            $user = $connexion->get('user');
+            $password = $connexion->get('password');
+
+            $dataTemplate = new \SplFileInfo($registry->get('GV_RootPath') . 'lib/conf.d/data_templates/' . $dataTemplate . '.xml');
+
+            try {
+                $connbas = new \connection_pdo('databox_creation', $hostname, $port, $user, $password, $dbName, array(), $registry);
+            } catch (\PDOException $e) {
+
+                return $app->redirect('/admin/databoxes/?success=0&error=database-failed');
+            }
+
+            try {
+                $base = \databox::create($app, $connbas, $dataTemplate, $registry);
+                $base->registerAdmin($app['phraseanet.user']);
+                $app['phraseanet.user']->ACL()->delete_data_from_cache();
+
+                return $app->redirect('/admin/databox/' . $base->get_sbas_id() . '/?success=1&reload-tree=1');
+            } catch (\Exception $e) {
+
+                return $app->redirect('/admin/databoxes/?success=0&error=base-failed');
+            }
+        }
+
+        if (
+            null !== $request->request->get('new_settings')
+            && (null !== $hostname = $request->request->get('new_hostname'))
+            && (null !== $port = $request->request->get('new_port'))
+            && (null !== $userDb = $request->request->get('new_user'))
+            && (null !== $passwordDb = $request->request->get('new_password'))
+            && (null !== $dataTemplate = $request->request->get('new_data_template'))) {
+
+            try {
+                $data_template = new \SplFileInfo($registry->get('GV_RootPath') . 'lib/conf.d/data_templates/' . $dataTemplate . '.xml');
+                $connbas = new \connection_pdo('databox_creation', $hostname, $port, $userDb, $passwordDb, $dbName, array(), $registry);
+                try {
+                    $base = \databox::create($app, $connbas, $data_template, $registry);
+                    $base->registerAdmin($app['phraseanet.user']);
+
+                    return $app->redirect('/admin/databox/' . $base->get_sbas_id() . '/?success=1&reload-tree=1');
+                } catch (\Exception $e) {
+
+                    return $app->redirect('/admin/databoxes/?success=0&error=base-failed');
+                }
+            } catch (\Exception $e) {
+
+                return $app->redirect('/admin/databoxes/?success=0&error=database-failed');
+            }
+        }
+    }
+
+    /**
+     * Mount a databox
+     *
+     * @param    Application $app        The silex application
+     * @param    Request     $request    The current HTTP request
+     * @return   RedirectResponse
+     */
+    public function databaseMount(Application $app, Request $request)
+    {
+        if ('' === $dbName = trim($request->request->get('new_dbname', ''))) {
+
+            return $app->redirect('/admin/databoxes/?success=0&error=no-empty');
+        }
+
+        if (\p4string::hasAccent($dbName)) {
+
+            return $app->redirect('/admin/databoxes/?success=0&error=special-chars');
+        }
+
+        $appbox = $app['phraseanet.appbox'];
+        $registry = $app['phraseanet.registry'];
+
+        if ((null === $request->request->get('new_settings'))) {
+            try {
+                $configuration = $app['phraseanet.configuration'];
+                $connexion = $configuration->getConnexion();
+
+                $hostname = $connexion->get('host');
+                $port = $connexion->get('port');
+                $user = $connexion->get('user');
+                $password = $connexion->get('password');
+
+                $appbox->get_connection()->beginTransaction();
+                $base = \databox::mount($app, $hostname, $port, $user, $password, $dbName, $registry);
+                $base->registerAdmin($app['phraseanet.user']);
+                $appbox->get_connection()->commit();
+
+                return $app->redirect('/admin/databox/' . $base->get_sbas_id() . '/?success=1&reload-tree=1');
+            } catch (\Exception $e) {
+                $appbox->get_connection()->rollBack();
+
+                return $app->redirect('/admin/databoxes/?success=0&error=mount-failed');
+            }
+        }
+
+        if (
+            null !== $request->request->get('new_settings')
+            && (null !== $hostname = $request->request->get('new_hostname'))
+            && (null !== $port = $request->request->get('new_port'))
+            && (null !== $userDb = $request->request->get('new_user'))
+            && (null !== $passwordDb = $request->request->get('new_password'))) {
+
+            try {
+                $appbox->get_connection()->beginTransaction();
+                $base = \databox::mount($app, $hostname, $port, $userDb, $passwordDb, $dbName, $registry);
+                $base->registerAdmin($app['phraseanet.user']);
+                $appbox->get_connection()->commit();
+
+                return $app->redirect('/admin/databox/' . $base->get_sbas_id() . '/?success=1&reload-tree=1');
+            } catch (\Exception $e) {
+                $appbox->get_connection()->rollBack();
+
+                return $app->redirect('/admin/databoxes/?success=0&error=mount-failed');
+            }
+        }
     }
 
     /**

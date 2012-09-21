@@ -61,7 +61,7 @@ class Permalink extends AbstractDelivery
 
                     $watermark = $stamp = false;
 
-                    if ($app['phraseanet.session']->is_authenticated()) {
+                    if ($app->isAuthenticated()) {
                         $user = \User_Adapter::getInstance($app['phraseanet.user']->get_id(), $app);
 
                         $watermark = !$user->ACL()->has_right_on_base($record->get_base_id(), 'nowatermark');
@@ -77,7 +77,7 @@ class Permalink extends AbstractDelivery
                             }
                         }
 
-                        return $that->deliverContent($app['request'], $app['phraseanet.session'], $record, $subdef, $watermark, $stamp, $app);
+                        return $that->deliverContent($app['request'], $record, $subdef, $watermark, $stamp, $app);
                     } else {
                         $collection = \collection::get_from_base_id($app, $record->get_base_id());
                         switch ($collection->get_pub_wm()) {
@@ -94,7 +94,7 @@ class Permalink extends AbstractDelivery
                         }
                     }
 
-                    return $that->deliverContent($app['request'], $app['phraseanet.session'], $record, $subdef, $watermark, $stamp, $app);
+                    return $that->deliverContent($app['request'], $record, $subdef, $watermark, $stamp, $app);
                 }
             )
             ->assert('sbas_id', '\d+')->assert('record_id', '\d+');

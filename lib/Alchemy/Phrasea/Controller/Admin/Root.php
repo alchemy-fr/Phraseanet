@@ -28,8 +28,18 @@ class Root implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->get('/', function(Application $app, Request $request) {
+        $controllers->before(function(Request $request) use ($app) {
 
+            $response = $app['firewall']->requireAccessToModule('admin');
+
+            if ($response instanceof Response) {
+                return $response;
+            }
+        });
+
+
+
+        $controllers->get('/', function(Application $app, Request $request) {
                     $appbox = $app['phraseanet.appbox'];
                     $user = $app['phraseanet.user'];
 

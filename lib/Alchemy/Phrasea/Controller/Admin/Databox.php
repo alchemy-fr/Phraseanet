@@ -30,25 +30,14 @@ class Databox implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
-                return $app['firewall']->requireAdmin($app);
+
+                $response = $app['firewall']->requireAccessToModule('admin')
+                    ->requireAccessToSbas($request->attributes->get('databox_id'));
+
+                if ($response instanceof Response) {
+                    return $response;
+                }
             });
-
-
-        /**
-         * Create Database
-         *
-         * name         : admin_database_new
-         *
-         * description  : Create Database
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : Redirect Response
-         */
-        $controllers->post('/', $this->call('createDatabase'))
-            ->bind('admin_database_new');
 
         /**
          * Get admin database
@@ -82,23 +71,13 @@ class Databox implements ControllerProviderInterface
          */
         $controllers->post('/{databox_id}/delete/', $this->call('deleteBase'))
             ->assert('databox_id', '\d+')
-            ->bind('admin_database_delete');
+            ->before(function(Request $request) use ($app) {
+                $response = $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
 
-        /**
-         * Mount a database
-         *
-         * name         : admin_database_mount
-         *
-         * description  : Upgrade all databases
-         *
-         * method       : POST
-         *
-         * parameters   : none
-         *
-         * return       : Redirect Response
-         */
-        $controllers->post('/mount/', $this->call('databaseMount'))
-            ->bind('admin_database_mount');
+                if ($response instanceof Response) {
+                    return $response;
+                }
+            })->bind('admin_database_delete');
 
         /**
          * Unmount a database
@@ -115,7 +94,13 @@ class Databox implements ControllerProviderInterface
          */
         $controllers->post('/{databox_id}/unmount/', $this->call('unmountDatabase'))
             ->assert('databox_id', '\d+')
-            ->bind('admin_database_unmount');
+            ->before(function(Request $request) use ($app) {
+                $response = $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
+
+                if ($response instanceof Response) {
+                    return $response;
+                }
+            })->bind('admin_database_unmount');
 
         /**
          * Empty a database
@@ -132,7 +117,13 @@ class Databox implements ControllerProviderInterface
          */
         $controllers->post('/{databox_id}/empty/', $this->call('emptyDatabase'))
             ->assert('databox_id', '\d+')
-            ->bind('admin_database_empty');
+            ->before(function(Request $request) use ($app) {
+                $response = $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
+
+                if ($response instanceof Response) {
+                    return $response;
+                }
+            })->bind('admin_database_empty');
 
         /**
          * Reorder database collection
@@ -149,7 +140,13 @@ class Databox implements ControllerProviderInterface
          */
         $controllers->get('/{databox_id}/collections/order/', $this->call('getReorder'))
             ->assert('databox_id', '\d+')
-            ->bind('admin_database_display_collections_order');
+            ->before(function(Request $request) use ($app) {
+                $response = $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
+
+                if ($response instanceof Response) {
+                    return $response;
+                }
+            })->bind('admin_database_display_collections_order');
 
         /**
          * Reorder database collection
@@ -166,7 +163,13 @@ class Databox implements ControllerProviderInterface
          */
         $controllers->post('/{databox_id}/collections/order/', $this->call('setReorder'))
             ->assert('databox_id', '\d+')
-            ->bind('admin_database_submit_collections_order');
+            ->before(function(Request $request) use ($app) {
+                $response = $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
+
+                if ($response instanceof Response) {
+                    return $response;
+                }
+            })->bind('admin_database_submit_collections_order');
 
         /**
          * Create new collection
@@ -183,7 +186,13 @@ class Databox implements ControllerProviderInterface
          */
         $controllers->post('/{databox_id}/collection/', $this->call('createCollection'))
             ->assert('databox_id', '\d+')
-            ->bind('admin_database_submit_collection');
+            ->before(function(Request $request) use ($app) {
+                $response = $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
+
+                if ($response instanceof Response) {
+                    return $response;
+                }
+            })->bind('admin_database_submit_collection');
 
         /**
          * Get database CGU
@@ -200,7 +209,13 @@ class Databox implements ControllerProviderInterface
          */
         $controllers->get('/{databox_id}/cgus/', $this->call('getDatabaseCGU'))
             ->assert('databox_id', '\d+')
-            ->bind('admin_database_display_cgus');
+            ->before(function(Request $request) use ($app) {
+                $response = $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_modify_struct');
+
+                if ($response instanceof Response) {
+                    return $response;
+                }
+            })->bind('admin_database_display_cgus');
 
         /**
          * Update database CGU
@@ -217,7 +232,13 @@ class Databox implements ControllerProviderInterface
          */
         $controllers->post('/{databox_id}/cgus/', $this->call('updateDatabaseCGU'))
             ->assert('databox_id', '\d+')
-            ->bind('admin_database_submit_cgus');
+            ->before(function(Request $request) use ($app) {
+                $response = $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_modify_struct');
+
+                if ($response instanceof Response) {
+                    return $response;
+                }
+            })->bind('admin_database_submit_cgus');
 
         /**
          * Update document information
@@ -234,7 +255,13 @@ class Databox implements ControllerProviderInterface
          */
         $controllers->get('/{databox_id}/informations/documents/', $this->call('progressBarInfos'))
             ->assert('databox_id', '\d+')
-            ->bind('admin_database_display_document_information');
+            ->before(function(Request $request) use ($app) {
+                $response = $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
+
+                if ($response instanceof Response) {
+                    return $response;
+                }
+            })->bind('admin_database_display_document_information');
 
         /**
          * Get document details
@@ -251,7 +278,13 @@ class Databox implements ControllerProviderInterface
          */
         $controllers->get('/{databox_id}/informations/details/', $this->call('getDetails'))
             ->assert('databox_id', '\d+')
-            ->bind('admin_database_display_document_details');
+            ->before(function(Request $request) use ($app) {
+                $response = $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
+
+                if ($response instanceof Response) {
+                    return $response;
+                }
+            })->bind('admin_database_display_document_details');
 
         /**
          * Mount collection on collection
@@ -269,7 +302,13 @@ class Databox implements ControllerProviderInterface
         $controllers->post('/{databox_id}/collection/{collection_id}/mount/', $this->call('mountCollection'))
             ->assert('databox_id', '\d+')
             ->assert('collection_id', '\d+')
-            ->bind('admin_database_mount_collection');
+            ->before(function(Request $request) use ($app) {
+                $response = $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
+
+                if ($response instanceof Response) {
+                    return $response;
+                }
+            })->bind('admin_database_mount_collection');
 
         /**
          * Get a new collection form
@@ -286,7 +325,13 @@ class Databox implements ControllerProviderInterface
          */
         $controllers->get('/{databox_id}/collection/', $this->call('getNewCollection'))
             ->assert('databox_id', '\d+')
-            ->bind('admin_database_display_new_collection_form');
+            ->before(function(Request $request) use ($app) {
+                $response = $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
+
+                if ($response instanceof Response) {
+                    return $response;
+                }
+            })->bind('admin_database_display_new_collection_form');
 
         /**
          * Add databox logo
@@ -303,7 +348,13 @@ class Databox implements ControllerProviderInterface
          */
         $controllers->post('/{databox_id}/logo/', $this->call('sendLogoPdf'))
             ->assert('databox_id', '\d+')
-            ->bind('admin_database_submit_logo');
+            ->before(function(Request $request) use ($app) {
+                $response = $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
+
+                if ($response instanceof Response) {
+                    return $response;
+                }
+            })->bind('admin_database_submit_logo');
 
         /**
          * Delete databox logo
@@ -320,7 +371,13 @@ class Databox implements ControllerProviderInterface
          */
         $controllers->post('/{databox_id}/logo/delete/', $this->call('deleteLogoPdf'))
             ->assert('databox_id', '\d+')
-            ->bind('admin_database_delete_logo');
+            ->before(function(Request $request) use ($app) {
+                $response = $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
+
+                if ($response instanceof Response) {
+                    return $response;
+                }
+            })->bind('admin_database_delete_logo');
 
         /**
          * Clear databox logs
@@ -337,7 +394,13 @@ class Databox implements ControllerProviderInterface
          */
         $controllers->post('/{databox_id}/clear-logs/', $this->call('clearLogs'))
             ->assert('databox_id', '\d+')
-            ->bind('admin_database_clear_logs');
+            ->before(function(Request $request) use ($app) {
+                $response = $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
+
+                if ($response instanceof Response) {
+                    return $response;
+                }
+            })->bind('admin_database_clear_logs');
 
         /**
          * Reindex database
@@ -354,7 +417,13 @@ class Databox implements ControllerProviderInterface
          */
         $controllers->post('/{databox_id}/reindex/', $this->call('reindex'))
             ->assert('databox_id', '\d+')
-            ->bind('admin_database_reindex');
+            ->before(function(Request $request) use ($app) {
+                $response = $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
+
+                if ($response instanceof Response) {
+                    return $response;
+                }
+            })->bind('admin_database_reindex');
 
         /**
          * Set database indexable
@@ -371,7 +440,13 @@ class Databox implements ControllerProviderInterface
          */
         $controllers->post('/{databox_id}/indexable/', $this->call('setIndexable'))
             ->assert('databox_id', '\d+')
-            ->bind('admin_database_set_indexable');
+            ->before(function(Request $request) use ($app) {
+                $response = $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
+
+                if ($response instanceof Response) {
+                    return $response;
+                }
+            })->bind('admin_database_set_indexable');
 
         /**
          * Set database name
@@ -388,7 +463,13 @@ class Databox implements ControllerProviderInterface
          */
         $controllers->post('/{databox_id}/view-name/', $this->call('changeViewName'))
             ->assert('databox_id', '\d+')
-            ->bind('admin_database_rename');
+            ->before(function(Request $request) use ($app) {
+                $response = $app['firewall']->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
+
+                if ($response instanceof Response) {
+                    return $response;
+                }
+            })->bind('admin_database_rename');
 
         return $controllers;
     }
@@ -433,15 +514,10 @@ class Databox implements ControllerProviderInterface
      */
     public function getDatabaseCGU(Application $app, Request $request, $databox_id)
     {
-        if ( ! $app['phraseanet.user']->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
-            $app->abort(403);
-        }
-
-
         return new Response($app['twig']->render('admin/databox/cgus.html.twig', array(
                     'languages'      => $app->getAvailableLanguages(),
                     'cgus'           => $app['phraseanet.appbox']->get_databox($databox_id)->get_cgus(),
-                    'current_locale' => \Session_Handler::get_locale()
+                    'current_locale' => $app['locale']
                 )));
     }
 
@@ -529,7 +605,7 @@ class Databox implements ControllerProviderInterface
         $success = false;
 
         try {
-            $app['phraseanet.appbox']->set_databox_indexable($app['phraseanet.appbox']->get_databox($databox_id),  ! ! $request->request->get('indexable', false));
+            $app['phraseanet.appbox']->set_databox_indexable($app['phraseanet.appbox']->get_databox($databox_id), !!$request->request->get('indexable', false));
             $success = true;
         } catch (\Exception $e) {
 
@@ -557,15 +633,11 @@ class Databox implements ControllerProviderInterface
      */
     public function updateDatabaseCGU(Application $app, Request $request, $databox_id)
     {
-        if ( ! $app['phraseanet.user']->ACL()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
-            $app->abort(403);
-        }
-
         $databox = $app['phraseanet.appbox']->get_databox($databox_id);
 
         try {
             foreach ($request->request->get('TOU', array()) as $loc => $terms) {
-                $databox->update_cgus($loc, $terms,  ! ! $request->request->get('valid', false));
+                $databox->update_cgus($loc, $terms, !!$request->request->get('valid', false));
             }
         } catch (\Exception $e) {
 
@@ -573,154 +645,6 @@ class Databox implements ControllerProviderInterface
         }
 
         return $app->redirect('/admin/databox/' . $databox_id . '/cgus/?success=1');
-    }
-
-    /**
-     * Create a new databox
-     *
-     * @param    Application $app        The silex application
-     * @param    Request     $request    The current HTTP request
-     * @param    integer     $databox_id The requested databox
-     * @return   RedirectResponse
-     */
-    public function createDatabase(Application $app, Request $request)
-    {
-        if ('' === $dbName = $request->request->get('new_dbname', '')) {
-
-            return $app->redirect('/admin/databoxes/?error=no-empty');
-        }
-
-        if (\p4string::hasAccent($dbName)) {
-
-            return $app->redirect('/admin/databoxes/?error=special-chars');
-        }
-
-        $registry = $app['phraseanet.registry'];
-
-        if ((null === $request->request->get('new_settings')) && (null !== $dataTemplate = $request->request->get('new_data_template'))) {
-
-            $configuration = $app['phraseanet.configuration'];
-            $choosenConnexion = $configuration->getPhraseanet()->get('database');
-            $connexion = $configuration->getConnexion($choosenConnexion);
-
-            $hostname = $connexion->get('host');
-            $port = $connexion->get('port');
-            $user = $connexion->get('user');
-            $password = $connexion->get('password');
-
-            $dataTemplate = new \SplFileInfo($registry->get('GV_RootPath') . 'lib/conf.d/data_templates/' . $dataTemplate . '.xml');
-
-            try {
-                $connbas = new \connection_pdo('databox_creation', $hostname, $port, $user, $password, $dbName, array(), $registry);
-            } catch (\PDOException $e) {
-
-                return $app->redirect('/admin/databoxes/?success=0&error=database-failed');
-            }
-
-            try {
-                $base = \databox::create($app, $connbas, $dataTemplate, $registry);
-                $base->registerAdmin($app['phraseanet.user']);
-                $app['phraseanet.user']->ACL()->delete_data_from_cache();
-
-                return $app->redirect('/admin/databox/' . $base->get_sbas_id() . '/?success=1&reload-tree=1');
-            } catch (\Exception $e) {
-
-                return $app->redirect('/admin/databoxes/?success=0&error=base-failed');
-            }
-        }
-
-        if (
-            null !== $request->request->get('new_settings')
-            && (null !== $hostname = $request->request->get('new_hostname'))
-            && (null !== $port = $request->request->get('new_port'))
-            && (null !== $userDb = $request->request->get('new_user'))
-            && (null !== $passwordDb = $request->request->get('new_password'))
-            && (null !== $dataTemplate = $request->request->get('new_data_template'))) {
-
-            try {
-                $data_template = new \SplFileInfo($registry->get('GV_RootPath') . 'lib/conf.d/data_templates/' . $dataTemplate . '.xml');
-                $connbas = new \connection_pdo('databox_creation', $hostname, $port, $userDb, $passwordDb, $dbName, array(), $registry);
-                try {
-                    $base = \databox::create($app, $connbas, $data_template, $registry);
-                    $base->registerAdmin($app['phraseanet.user']);
-
-                    return $app->redirect('/admin/databox/' . $base->get_sbas_id() . '/?success=1&reload-tree=1');
-                } catch (\Exception $e) {
-
-                    return $app->redirect('/admin/databoxes/?success=0&error=base-failed');
-                }
-            } catch (\Exception $e) {
-
-                return $app->redirect('/admin/databoxes/?success=0&error=database-failed');
-            }
-        }
-    }
-
-    /**
-     * Mount a databox
-     *
-     * @param    Application $app        The silex application
-     * @param    Request     $request    The current HTTP request
-     * @return   RedirectResponse
-     */
-    public function databaseMount(Application $app, Request $request)
-    {
-        if ('' === $dbName = trim($request->request->get('new_dbname', ''))) {
-
-            return $app->redirect('/admin/databoxes/?success=0&error=no-empty');
-        }
-
-        if (\p4string::hasAccent($dbName)) {
-
-            return $app->redirect('/admin/databoxes/?success=0&error=special-chars');
-        }
-
-        $appbox = $app['phraseanet.appbox'];
-        $registry = $app['phraseanet.registry'];
-
-        if ((null === $request->request->get('new_settings'))) {
-            try {
-                $configuration = $app['phraseanet.configuration'];
-                $connexion = $configuration->getConnexion();
-
-                $hostname = $connexion->get('host');
-                $port = $connexion->get('port');
-                $user = $connexion->get('user');
-                $password = $connexion->get('password');
-
-                $appbox->get_connection()->beginTransaction();
-                $base = \databox::mount($app, $hostname, $port, $user, $password, $dbName, $registry);
-                $base->registerAdmin($app['phraseanet.user']);
-                $appbox->get_connection()->commit();
-
-                return $app->redirect('/admin/databox/' . $base->get_sbas_id() . '/?success=1&reload-tree=1');
-            } catch (\Exception $e) {
-                $appbox->get_connection()->rollBack();
-
-                return $app->redirect('/admin/databoxes/?success=0&error=mount-failed');
-            }
-        }
-
-        if (
-            null !== $request->request->get('new_settings')
-            && (null !== $hostname = $request->request->get('new_hostname'))
-            && (null !== $port = $request->request->get('new_port'))
-            && (null !== $userDb = $request->request->get('new_user'))
-            && (null !== $passwordDb = $request->request->get('new_password'))) {
-
-            try {
-                $appbox->get_connection()->beginTransaction();
-                $base = \databox::mount($app, $hostname, $port, $userDb, $passwordDb, $dbName, $registry);
-                $base->registerAdmin($app['phraseanet.user']);
-                $appbox->get_connection()->commit();
-
-                return $app->redirect('/admin/databox/' . $base->get_sbas_id() . '/?success=1&reload-tree=1');
-            } catch (\Exception $e) {
-                $appbox->get_connection()->rollBack();
-
-                return $app->redirect('/admin/databoxes/?success=0&error=mount-failed');
-            }
-        }
     }
 
     /**
@@ -735,10 +659,6 @@ class Databox implements ControllerProviderInterface
     {
         $appbox = $app['phraseanet.appbox'];
         $user = $app['phraseanet.user'];
-
-        if ( ! $user->ACL()->has_right_on_sbas($databox_id, 'bas_manage')) {
-            $app->abort(403);
-        }
 
         $appbox->get_connection()->beginTransaction();
         try {
@@ -988,7 +908,7 @@ class Databox implements ControllerProviderInterface
      */
     public function progressBarInfos(Application $app, Request $request, $databox_id)
     {
-        if ( ! $app['request']->isXmlHttpRequest() || 'json' !== $app['request']->getRequestFormat()) {
+        if (!$app['request']->isXmlHttpRequest() || 'json' !== $app['request']->getRequestFormat()) {
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 

@@ -41,12 +41,10 @@ class Printer implements ControllerProviderInterface
 
                 $request = $app['request'];
 
-                $session = $app['phraseanet.session'];
-
                 $layout = $request->request->get('lay');
 
                 foreach ($printer->get_elements() as $record) {
-                    $session->get_logger($record->get_databox())
+                    $app['phraseanet.logger']($record->get_databox())
                         ->log($record, \Session_Logger::EVENT_PRINT, $layout, '');
                 }
                 $PDF = new PDFExport($app, $printer->get_elements(), $layout);

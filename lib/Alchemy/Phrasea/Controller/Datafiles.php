@@ -33,7 +33,7 @@ class Datafiles extends AbstractDelivery
                 $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
                 $record = new \record_adapter($app, $sbas_id, $record_id);
 
-                if (!$app['phraseanet.session']->is_authenticated()) {
+                if (!$app->isAuthenticated()) {
                     throw new \Exception_Session_NotAuthenticated();
                 }
 
@@ -89,7 +89,7 @@ class Datafiles extends AbstractDelivery
                     }
                 }
 
-                return $that->deliverContent($app['request'], $app['phraseanet.session'], $record, $subdef, $watermark, $stamp, $app);
+                return $that->deliverContent($app['request'], $record, $subdef, $watermark, $stamp, $app);
             })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
 
 

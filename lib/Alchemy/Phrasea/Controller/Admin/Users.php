@@ -288,7 +288,6 @@ class Users implements ControllerProviderInterface
                     ->on_sbas_ids($on_sbas);
 
                 $offset = 0;
-                $geoname = new \geonames();
                 $buffer = array();
 
                 $buffer[] = array(
@@ -322,12 +321,12 @@ class Users implements ControllerProviderInterface
                             , $user->get_lastname()
                             , $user->get_firstname()
                             , $user->get_email()
-                            , \phraseadate::format_mysql($user->get_creation_date())
-                            , \phraseadate::format_mysql($user->get_modification_date())
+                            , $app['date-formatter']->format_mysql($user->get_creation_date())
+                            , $app['date-formatter']->format_mysql($user->get_modification_date())
                             , $user->get_address()
                             , $user->get_city()
                             , $user->get_zipcode()
-                            , $geoname->get_country($user->get_geonameid(), $app)
+                            , $app['geonames']->get_country($user->get_geonameid())
                             , $user->get_tel()
                             , $user->get_fax()
                             , $user->get_job()

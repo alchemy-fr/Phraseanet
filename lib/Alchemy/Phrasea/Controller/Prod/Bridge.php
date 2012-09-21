@@ -11,13 +11,11 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use Alchemy\Phrasea\Helper\Record as RecordHelper;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Alchemy\Phrasea\Helper\Record as RecordHelper;
-
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  *
@@ -31,14 +29,25 @@ class Bridge implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
+        $controllers->before(function(Request $request) use ($app) {
+
+            $response = $app['firewall']
+                ->requireNotGuest()
+                ->requireRight('bas_chupub');
+
+            if ($response instanceof Response) {
+                return $response;
+            }
+        });
+
         $app['require_connection'] = $app->protect(function(\Bridge_Account $account) use ($app) {
                 $app['current_account'] = function() use ($account) {
                         return $account;
                     };
 
-                if ( ! $account->get_api()->get_connector()->is_configured())
+                if (!$account->get_api()->get_connector()->is_configured())
                     throw new \Bridge_Exception_ApiConnectorNotConfigured("Bridge API Connector is not configured");
-                if ( ! $account->get_api()->get_connector()->is_connected())
+                if (!$account->get_api()->get_connector()->is_connected())
                     throw new \Bridge_Exception_ApiConnectorNotConnected("Bridge API Connector is not connected");
 
                 return;
@@ -420,57 +429,6 @@ class Bridge implements ControllerProviderInterface
 
                 return $app->redirect('/prod/bridge/adapter/' . $account->get_id() . '/load-records/?notice=' . sprintf(_('%d elements en attente'), count($route->get_elements())));
             });
-//
-//        $app->error(function(\Exception $e, $code) use ($app) {
-//
-//                $request = $app['request'];
-//
-//                if ($e instanceof \Bridge_Exception) {
-//
-//                    $params = array(
-//                        'message'      => $e->getMessage()
-//                        , 'file'         => $e->getFile()
-//                        , 'line'         => $e->getLine()
-//                        , 'r_method'     => $request->getMethod()
-//                        , 'r_action'     => $request->getRequestUri()
-//                        , 'r_parameters' => ($request->getMethod() == 'GET' ? array() : $request->request->all())
-//                    );
-//
-//                    if ($e instanceof \Bridge_Exception_ApiConnectorNotConfigured) {
-//                        $params = array_merge($params, array('account' => $app['current_account']));
-//
-//                        $response = new Response($app['twig']->render('/prod/actions/Bridge/notconfigured.html.twig', $params), 200);
-//                    } elseif ($e instanceof \Bridge_Exception_ApiConnectorNotConnected) {
-//                        $params = array_merge($params, array('account' => $app['current_account']));
-//
-//                        $response = new Response($app['twig']->render('/prod/actions/Bridge/disconnected.html.twig', $params), 200);
-//                    } elseif ($e instanceof \Bridge_Exception_ApiConnectorAccessTokenFailed) {
-//                        $params = array_merge($params, array('account' => $app['current_account']));
-//
-//                        $response = new Response($app['twig']->render('/prod/actions/Bridge/disconnected.html.twig', $params), 200);
-//                    } elseif ($e instanceof \Bridge_Exception_ApiDisabled) {
-//                        $params = array_merge($params, array('api' => $e->get_api()));
-//
-//                        $response = new Response($app['twig']->render('/prod/actions/Bridge/deactivated.html.twig', $params), 200);
-//                    } else {
-//                        $response = new Response($app['twig']->render('/prod/actions/Bridge/error.html.twig', $params), 200);
-//                    }
-//
-//                    $response->headers->set('Phrasea-StatusCode', 200);
-//
-//                    return $response;
-//                }
-//            });
-
-//        /**
-//         * Temporary fix for https://github.com/fabpot/Silex/issues/438
-//         */
-//        $app['dispatcher']->addListener(KernelEvents::RESPONSE, function(FilterResponseEvent $event){
-//            if ($event->getResponse()->headers->has('Phrasea-StatusCode')) {
-//                $event->getResponse()->setStatusCode($event->getResponse()->headers->get('Phrasea-StatusCode'));
-//                $event->getResponse()->headers->remove('Phrasea-StatusCode');
-//            }
-//        });
 
         return $controllers;
     }

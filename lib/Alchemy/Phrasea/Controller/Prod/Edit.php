@@ -30,6 +30,17 @@ class Edit implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
+        $controllers->before(function(Request $request) use ($app) {
+
+            $response = $app['firewall']
+                ->requireNotGuest()
+                ->requireRight('modifyrecord');
+
+            if ($response instanceof Response) {
+                return $response;
+            }
+        });
+
         $controllers->post('/', function(Application $app, Request $request) {
 
                 $records = RecordsRequest::fromRequest($app, $request, true, array('canmodifrecord'));
@@ -386,13 +397,11 @@ class Edit implements ControllerProviderInterface
                         ->write_metas();
 
                     if ($statbits != '') {
-                        $app['phraseanet.session']
-                            ->get_logger($record->get_databox())
+                        $app['phraseanet.logger']($record->get_databox())
                             ->log($record, \Session_Logger::EVENT_STATUS, '', '');
                     }
                     if ($editDirty) {
-                        $app['phraseanet.session']
-                            ->get_logger($record->get_databox())
+                        $app['phraseanet.logger']($record->get_databox())
                             ->log($record, \Session_Logger::EVENT_EDIT, '', '');
                     }
                 }

@@ -81,7 +81,7 @@ class RSSFeeds implements ControllerProviderInterface
         $controllers->get('/feed/{id}/{format}/', function(Application $app, $id, $format) use ($display_feed) {
                 $feed = new \Feed_Adapter($app, $id);
 
-                if ( ! $feed->is_public()) {
+                if (!$feed->is_public()) {
                     return new Response('Forbidden', 403);
                 }
 
@@ -94,12 +94,9 @@ class RSSFeeds implements ControllerProviderInterface
             })->assert('id', '\d+')->assert('format', '(rss|atom)');
 
         $controllers->get('/userfeed/{token}/{id}/{format}/', function(Application $app, $token, $id, $format) use ($display_feed) {
-                try {
-                    $token = new \Feed_Token($app, $token, $id);
-                    $feed = $token->get_feed();
-                } catch (\Exception_FeedNotFound $e) {
-                    return new Response('Not Found', 404);
-                }
+                $token = new \Feed_Token($app, $token, $id);
+                $feed = $token->get_feed();
+
                 $request = $app['request'];
 
                 $page = (int) $request->query->get('page');
@@ -109,12 +106,8 @@ class RSSFeeds implements ControllerProviderInterface
             })->assert('id', '\d+')->assert('format', '(rss|atom)');
 
         $controllers->get('/userfeed/aggregated/{token}/{format}/', function(Application $app, $token, $format) use ($display_feed) {
-                try {
-                    $token = new \Feed_TokenAggregate($app, $token);
-                    $feed = $token->get_feed();
-                } catch (\Exception_FeedNotFound $e) {
-                    return new Response('', 404);
-                }
+                $token = new \Feed_TokenAggregate($app, $token);
+                $feed = $token->get_feed();
 
                 $request = $app['request'];
 

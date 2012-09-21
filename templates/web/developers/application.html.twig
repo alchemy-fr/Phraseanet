@@ -9,13 +9,13 @@
 {% block content %}
 
 <h1 style='text-align:left'>{% trans 'Application' %}</h1>
-<input type="hidden" value="{{app.get_id}}" name="app_id"/>
+<input type="hidden" value="{{application.get_id}}" name="app_id"/>
 <div>
   <ul class='app-list'>
     <li>
       <div>
-        <span class='app-row'><strong><a  class="link" href="/developers/application/{{app.get_id}}/">{{app.get_name}}</a></strong></span>
-        <span class='app-row'>{{app.get_description }}</span>
+        <span class='app-row'><strong><a  class="link" href="/developers/application/{{application.get_id}}/">{{application.get_name}}</a></strong></span>
+        <span class='app-row'>{{application.get_description }}</span>
       </div>
     </li>
   </ul>
@@ -26,20 +26,20 @@
   <tbody>
     <tr>
       <td>Client ID</td>
-      <td>{{app.get_client_id}}</td>
+      <td>{{application.get_client_id}}</td>
     </tr>
     <tr>
       <td>Client Secret</td>
-      <td>{{app.get_client_secret}}</td>
+      <td>{{application.get_client_secret}}</td>
     </tr>
     <tr>
       <td>{% trans 'URL de callback' %}</td>
-      {% if app.get_type == constant('API_OAuth2_Application::DESKTOP_TYPE') %}
+      {% if application.get_type == constant('API_OAuth2_Application::DESKTOP_TYPE') %}
         <td>
-            <span>{{app.get_redirect_uri}}</span>
+            <span>{{application.get_redirect_uri}}</span>
         </td>
       {% else %}
-        <td class="url_callback"><span class="url_callback_input">{{app.get_redirect_uri}}</span>
+        <td class="url_callback"><span class="url_callback_input">{{application.get_redirect_uri}}</span>
           <button type="button" class="save_callback" style="display:none;">save</button>
           <button type="button" class="modifier_callback" style="display:none;">modifier</button>
         </td>
@@ -55,7 +55,7 @@
     </tr>
     <tr>
       <td>{% trans 'Activer le grant_type de type password pour votre application' %}</td>
-      <td><input class="grant-type" type='checkbox' {{ app.is_password_granted() ? "checked='checked'" : ""}} name="grant" value='{{app.get_id()}}'></td>
+      <td><input class="grant-type" type='checkbox' {{ application.is_password_granted() ? "checked='checked'" : ""}} name="grant" value='{{application.get_id()}}'></td>
     </tr>
   </tbody>
 </table>
@@ -80,7 +80,7 @@
         </tr>
         <tr>
           <td style='width:25%'></td>
-          <td><button id="generate_access" type="button" value="{{app.get_id}}">{% trans 'boutton::generer' %}</button></td>
+          <td><button id="generate_access" type="button" value="{{application.get_id}}">{% trans 'boutton::generer' %}</button></td>
         </tr>
       </tbody>
     </table>
