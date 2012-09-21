@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -27,9 +28,9 @@ class Bridge_Api
 
     /**
      *
-     * @var appbox
+     * @var Application
      */
-    protected $appbox;
+    protected $app;
 
     /**
      *
@@ -57,18 +58,18 @@ class Bridge_Api
 
     /**
      *
-     * @param  appbox     $appbox
+     * @param  Application $app
      * @param  int        $id
      * @return Bridge_Api
      */
-    public function __construct(appbox &$appbox, $id)
+    public function __construct(Application $app, $id)
     {
-        $this->appbox = $appbox;
+        $this->app = $app;
         $this->id = (int) $id;
 
         $sql = 'SELECT id, name, disable_time, created_on, updated_on
             FROM bridge_apis WHERE id = :id';
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':id' => $this->id));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -76,7 +77,7 @@ class Bridge_Api
         if ( ! $row)
             throw new Bridge_Exception_ApiNotFound('Api Not Found');
 
-        $this->connector = self::get_connector_by_name($appbox->get_registry(), $row['name']);
+        $this->connector = self::get_connector_by_name($this->app['phraseanet.appbox']->get_registry(), $row['name']);
         $this->disable_time = $row['disable_time'] ? new DateTime($row['disable_time']) : null;
         $this->updated_on = new DateTime($row['updated_on']);
         $this->created_on = new DateTime($row['created_on']);
@@ -377,7 +378,7 @@ class Bridge_Api
     public function delete()
     {
         do {
-            $accounts = Bridge_Account::get_accounts_by_api($this->appbox, $this);
+            $accounts = Bridge_Account::get_accounts_by_api($this->app, $this);
             foreach ($accounts as $account) {
                 $account->delete();
             }
@@ -385,7 +386,7 @@ class Bridge_Api
 
         $sql = 'DELETE FROM bridge_apis WHERE id = :id';
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':id' => $this->id));
         $stmt->closeCursor();
 
@@ -409,7 +410,7 @@ class Bridge_Api
             , ':update' => $this->updated_on->format(DATE_ISO8601)
         );
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -509,12 +510,12 @@ class Bridge_Api
      * @param  string     $name
      * @return Bridge_Api
      */
-    public static function get_by_api_name(appbox $appbox, $name)
+    public static function get_by_api_name(Application $app, $name)
     {
         $name = strtolower($name);
 
         $sql = 'SELECT id FROM bridge_apis WHERE name = :name';
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':name' => $name));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -522,18 +523,18 @@ class Bridge_Api
         if ( ! $row)
             throw new Bridge_Exception_ApiNotFound('Unknown api name ' . $name);
 
-        return new self($appbox, $row['id']);
+        return new self($app, $row['id']);
     }
 
     /**
      *
-     * @param  appbox     $appbox
+     * @param  Application $app
      * @return Bridge_Api
      */
-    public static function get_availables(appbox &$appbox)
+    public static function get_availables(Application $app)
     {
         $sql = 'SELECT id FROM bridge_apis';
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -542,7 +543,7 @@ class Bridge_Api
 
         foreach ($rs as $row) {
             try {
-                $results[] = new Bridge_Api($appbox, $row['id']);
+                $results[] = new Bridge_Api($app, $row['id']);
             } catch (Exception $e) {
 
             }
@@ -557,18 +558,18 @@ class Bridge_Api
      * @param  string     $name
      * @return Bridge_Api
      */
-    public static function create(appbox &$appbox, $name)
+    public static function create(Application $app, $name)
     {
         $sql = 'INSERT INTO bridge_apis
             (id, name, disable, disable_time, created_on, updated_on)
             VALUES (null, :name, 0, null, NOW(), NOW())';
 
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':name' => strtolower($name)));
         $stmt->closeCursor();
 
-        $api_id = $appbox->get_connection()->lastInsertId();
+        $api_id = $app['phraseanet.appbox']->get_connection()->lastInsertId();
 
-        return new self($appbox, $api_id);
+        return new self($app, $api_id);
     }
 }

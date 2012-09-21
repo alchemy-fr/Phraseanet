@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     Bridge
@@ -21,7 +23,7 @@ class Bridge_Element
      *
      * @var appbox
      */
-    protected $appbox;
+    protected $app;
 
     /**
      *
@@ -114,16 +116,16 @@ class Bridge_Element
      * @param  int            $id
      * @return Bridge_Element
      */
-    public function __construct(appbox &$appbox, Bridge_Account &$account, $id)
+    public function __construct(Application $app, Bridge_Account &$account, $id)
     {
-        $this->appbox = $appbox;
+        $this->app = $app;
         $this->account = $account;
         $this->id = (int) $id;
 
         $sql = 'SELECT sbas_id, record_id, dist_id, status, connector_status, type
                   , title, serialized_datas, created_on, updated_on, uploaded_on
             FROM bridge_elements WHERE id = :id';
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':id' => $this->id));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -131,7 +133,7 @@ class Bridge_Element
         if ( ! $row)
             throw new Bridge_Exception_ElementNotFound('Element Not Found');
 
-        $this->record = new record_adapter($row['sbas_id'], $row['record_id']);
+        $this->record = new record_adapter($app, $row['sbas_id'], $row['record_id']);
         $this->dist_id = $row['dist_id'];
         $this->status = $row['status'];
         $this->connector_status = $row['connector_status'];
@@ -201,7 +203,7 @@ class Bridge_Element
             , ':update'  => $this->updated_on->format(DATE_ISO8601)
         );
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -236,7 +238,7 @@ class Bridge_Element
             , ':update' => $this->updated_on->format(DATE_ISO8601)
         );
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -272,7 +274,7 @@ class Bridge_Element
             , ':update'           => $this->updated_on->format(DATE_ISO8601)
         );
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -333,7 +335,7 @@ class Bridge_Element
             , ':update' => $this->updated_on->format(DATE_ISO8601)
         );
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -368,7 +370,7 @@ class Bridge_Element
             , ':update' => $this->updated_on->format(DATE_ISO8601)
         );
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -413,7 +415,7 @@ class Bridge_Element
             , ':update'      => $this->updated_on->format(DATE_ISO8601)
         );
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -437,7 +439,7 @@ class Bridge_Element
     {
         $sql = 'DELETE FROM bridge_elements WHERE id = :id';
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':id' => $this->id));
         $stmt->closeCursor();
 
@@ -451,13 +453,13 @@ class Bridge_Element
      * @param  int            $quantity
      * @return Bridge_Element
      */
-    public static function get_elements_by_account(appbox $appbox, Bridge_Account $account, $offset_start = 0, $quantity = 50)
+    public static function get_elements_by_account(Application $app, Bridge_Account $account, $offset_start = 0, $quantity = 50)
     {
         $sql = 'SELECT id FROM bridge_elements WHERE account_id = :account_id
             ORDER BY id DESC
             LIMIT ' . (int) $offset_start . ',' . (int) $quantity;
 
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':account_id' => $account->get_id()));
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -465,7 +467,7 @@ class Bridge_Element
         $results = array();
 
         foreach ($rs as $row) {
-            $results[] = new Bridge_Element($appbox, $account, $row['id']);
+            $results[] = new Bridge_Element($app, $account, $row['id']);
         }
 
         return $results;
@@ -482,7 +484,7 @@ class Bridge_Element
      * @param  array          $datas
      * @return Bridge_Element
      */
-    public static function create(appbox &$appbox, Bridge_Account &$account, record_adapter &$record, $title, $status, $type, Array $datas = array())
+    public static function create(Application $app, Bridge_Account &$account, record_adapter &$record, $title, $status, $type, Array $datas = array())
     {
         $sql = 'INSERT INTO bridge_elements
             (id, account_id, sbas_id, record_id, dist_id, title, `type`
@@ -501,12 +503,12 @@ class Bridge_Element
             , ':datas'      => serialize($datas)
         );
 
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
-        $element_id = $appbox->get_connection()->lastInsertId();
+        $element_id = $app['phraseanet.appbox']->get_connection()->lastInsertId();
 
-        return new self($appbox, $account, $element_id);
+        return new self($app, $account, $element_id);
     }
 }
