@@ -33,7 +33,7 @@ class CLI extends Application
      *
      * @param bool $interactive runs in an interactive shell if true.
      */
-    public function run($interactive = false)
+    public function runCLI($interactive = false)
     {
         $app = $this['console'];
         if ($interactive) {
@@ -41,6 +41,11 @@ class CLI extends Application
         }
 
         $app->run();
+    }
+
+    public function run(\Symfony\Component\HttpFoundation\Request $request = null)
+    {
+        $this->runCLI();
     }
 
     /**

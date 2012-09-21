@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea;
 
+use Alchemy\Phrasea\Core\Version;
 use Silex\Application as SilexApplication;
 use Silex\ServiceProviderInterface;
 
@@ -10,12 +11,12 @@ class PhraseanetServiceProvider implements ServiceProviderInterface
 
     public function register(SilexApplication $app)
     {
-        $app['phraseanet.core'] = $app->share(function($app) {
-            return \bootstrap::getCore();
+        $app['phraseanet.appbox'] = $app->share(function($app) {
+            return new \appbox($app);
         });
 
-        $app['phraseanet.appbox'] = $app->share(function($app) {
-            return new \appbox($app['phraseanet.core']);
+        $app['phraseanet.version'] = $app->share(function($app) {
+            return new Version();
         });
     }
 
