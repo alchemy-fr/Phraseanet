@@ -44,9 +44,9 @@ class Bridge_ElementTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function tearDown()
     {
-
-        $appbox = self::$application['phraseanet.appbox'];
-        $this->object->delete();
+        if ($this->object) {
+            $this->object->delete();
+        }
 
         try {
             new Bridge_Element(self::$application, $this->account, $this->id);
@@ -54,8 +54,9 @@ class Bridge_ElementTest extends PhraseanetPHPUnitAuthenticatedAbstract
         } catch (Bridge_Exception_ElementNotFound $e) {
 
         }
-
-        $this->api->delete();
+        if ($this->api) {
+            $this->api->delete();
+        }
         parent::tearDown();
     }
 

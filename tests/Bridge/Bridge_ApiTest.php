@@ -33,10 +33,9 @@ class Bridge_ApiTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function tearDown()
     {
-        $appbox = self::$application['phraseanet.appbox'];
-
-        $this->object->delete();
-
+        if ($this->object) {
+            $this->object->delete();
+        }
         try {
             new Bridge_Api(self::$application, $this->id);
             $this->fail();

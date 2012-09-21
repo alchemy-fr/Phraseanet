@@ -41,8 +41,9 @@ class Bridge_AccountTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function tearDown()
     {
-        $appbox = self::$application['phraseanet.appbox'];
-        $this->object->delete();
+        if ($this->object) {
+            $this->object->delete();
+        }
 
         try {
             new Bridge_Account(self::$application, $this->api, $this->id);
@@ -50,8 +51,9 @@ class Bridge_AccountTest extends PhraseanetPHPUnitAuthenticatedAbstract
         } catch (Bridge_Exception_AccountNotFound $e) {
 
         }
-
-        $this->api->delete();
+        if ($this->api) {
+            $this->api->delete();
+        }
         parent::tearDown();
     }
 
