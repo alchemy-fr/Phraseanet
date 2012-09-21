@@ -9,6 +9,9 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration;
+
 /**
  *
  * @package     module_report
@@ -43,9 +46,9 @@ class module_report_add extends module_report
      * @param $arg2 end date of the report
      * @param $sbas_id id of the databox
      */
-    public function __construct($arg1, $arg2, $sbas_id, $collist)
+    public function __construct(Application $app, $arg1, $arg2, $sbas_id, $collist)
     {
-        parent::__construct($arg1, $arg2, $sbas_id, $collist);
+        parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
         $this->title = _('report:: document ajoute');
     }
 
@@ -76,20 +79,18 @@ class module_report_add extends module_report
 
         $ret = array();
 
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-
         foreach ($rs as $row) {
             $value = $row['val'];
             $caption = $value;
             if ($field == "getter") {
                 try {
-                    $user = User_Adapter::getInstance($value, $appbox);
+                    $user = User_Adapter::getInstance($value, $this->app);
                     $caption = $user->get_display_name();
                 } catch (Exception $e) {
 
                 }
             } elseif ($field == 'date')
-                $caption = phraseadate::getPrettyString(new DateTime($value));
+                $caption = $this->app['date-formatter']->getPrettyString(new DateTime($value));
             elseif ($field == 'size')
                 $caption = p4string::format_octets($value);
 
@@ -99,14 +100,14 @@ class module_report_add extends module_report
         return $ret;
     }
 
-    protected function buildResult($rs)
+    protected function buildResult(Application $app, $rs)
     {
         $i = 0;
         foreach ($rs as $row) {
             foreach ($this->champ as $key => $value) {
                 if ($row[$value]) {
                     if ($value == 'date') {
-                        $this->result[$i][$value] = $this->pretty_string ? phraseadate::getPrettyString(new DateTime($row[$value])) : $row[$value];
+                        $this->result[$i][$value] = $this->pretty_string ? $this->app['date-formatter']->getPrettyString(new DateTime($row[$value])) : $row[$value];
                     } elseif ($value == 'size') {
                         $this->result[$i][$value] = p4string::format_octets($row[$value]);
                     } else

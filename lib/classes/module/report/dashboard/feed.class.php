@@ -9,6 +9,9 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration;
+
 /**
  *
  * @package     module_report
@@ -59,6 +62,7 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
      * @var <array>
      */
     public $report = array();
+    private $app;
 
     /**
      * @desc return l'objet stockee dans le cache si i l existe sinon instancie
@@ -69,9 +73,9 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
      * @param  <string> $dmax
      * @return self
      */
-    public static function getInstance($sbasid, $sbas_coll, $dmin, $dmax)
+    public static function getInstance(Application $app, $sbasid, $sbas_coll, $dmin, $dmax)
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $appbox = $app['phraseanet.appbox'];
         $cache_id = 'feed_' . md5($sbasid . '_' . $sbas_coll . '_' . $dmin . '_' . $dmax);
 
         try {
@@ -80,7 +84,7 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
 
         }
 
-        $tmp = new self($sbasid, $sbas_coll, $dmin, $dmax);
+        $tmp = new self($app, $sbasid, $sbas_coll, $dmin, $dmax);
 
         $appbox->set_data_to_cache($tmp, $cache_id);
 
@@ -95,9 +99,10 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
      * @param <string> $dmin, Y-m-d
      * @param <string> $dmax, Y-m-d
      */
-    public function __construct($sbasid, $sbas_collection, $dmin, $dmax)
+    public function __construct(Application $app, $sbasid, $sbas_collection, $dmin, $dmax)
     {
-        $conn = connection::getPDOConnection($sbasid);
+        $this->app = $app;
+        $conn = connection::getPDOConnection($app, $sbasid);
         $this->dmin = $dmin;
         $this->dmax = $dmax;
         $this->dminsql = $this->dateToSqlDate('dmin');
@@ -117,11 +122,11 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
         if ($d == 'dmax') {
             $datetime = new Datetime($this->dmax);
 
-            return phraseadate::format_mysql($datetime);
+            return $this->app['date-formatter']->format_mysql($datetime);
         } elseif ($d == 'dmin') {
             $datetime = new Datetime($this->dmin);
 
-            return phraseadate::format_mysql($datetime);
+            return $this->app['date-formatter']->format_mysql($datetime);
         }
     }
 
@@ -134,13 +139,13 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
         try {
             //Get number of DLs
             $this->report['nb_dl'] = module_report_download::getNbDl(
-                    $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
+                    $this->app, $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
             );
             //Get Number of connexions
             $this->report['nb_conn'] = module_report_connexion::getNbConn(
-                    $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
+                    $this->app, $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
             );
-            $registry = registry::get_instance();
+            $registry = $this->app['phraseanet.registry'];
             if ($registry->get('GV_anonymousReport') == false) {
                 /**
                  * get Top ten user of
@@ -148,7 +153,7 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
                  * number of weight dl by doc, prev
                  */
                 $top = module_report_activity::topTenUser(
-                        $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
+                        $this->app, $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
                 );
 
                 $this->report['top_ten_user_doc'] = $top['top_ten_doc'];
@@ -161,16 +166,16 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
              *  get avtivity by hour
              */
             $this->report['activity'] = module_report_activity::activity(
-                    $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
+                    $this->app, $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
             );
 
             // get activty by day
             $this->report['activity_day'] = module_report_activity::activityDay(
-                    $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
+                    $this->app, $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
             );
             // get Most document and preview DL
             $topdl = module_report_download::getTopDl(
-                    $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
+                    $this->app, $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
             );
 
             $this->report['top_dl_preview'] = $topdl['preview'];
@@ -179,31 +184,31 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
             if ($registry->get('GV_anonymousReport') == false) {
                 // get users that ask the most questions
                 $this->report['ask'] = module_report_activity::activityQuestion(
-                        $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
+                        $this->app, $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
                 );
             }
             //get the refferer
             $this->report['top_ten_site'] = module_report_activity::activiteTopTenSiteView(
-                    $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
+                    $this->app, $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
             );
             //Get the most asked questions
             $this->report['top_ten_question'] = module_report_activity::activiteTopQuestion(
-                    $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
+                    $this->app, $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
             );
 
             //get the  number of added docuùments
             $this->report['activity_added'] = module_report_activity::activiteAddedDocument(
-                    $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
+                    $this->app, $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
             );
 
             //get number of edited document
             $this->report['activity_edited'] = module_report_activity::activiteEditedDocument(
-                    $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
+                    $this->app, $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
             );
             if ($registry->get('GV_anonymousReport') == false) {
                 //get users that add the most documents
                 $this->report['top_ten_added'] = module_report_activity::activiteAddedTopTenUser(
-                        $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
+                        $this->app, $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
                 );
             }
         } catch (PDOException $e) {

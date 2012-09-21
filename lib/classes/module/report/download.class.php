@@ -9,6 +9,9 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration;
+
 /**
  *
  * @package     module_report
@@ -45,9 +48,9 @@ class module_report_download extends module_report
      * @param $arg2 end date of the report
      * @param $sbas_id id of the databox
      */
-    public function __construct($arg1, $arg2, $sbas_id, $collist)
+    public function __construct(Application $app, $arg1, $arg2, $sbas_id, $collist)
     {
-        parent::__construct($arg1, $arg2, $sbas_id, $collist);
+        parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
         $this->title = _('report:: telechargements');
     }
 
@@ -74,8 +77,6 @@ class module_report_download extends module_report
         $sql = $var['sql'];
         $params = $var['params'];
 
-        $registry = registry::get_instance();
-
         $stmt = $s->getConnBas()->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -84,9 +85,9 @@ class module_report_download extends module_report
         foreach ($rs as $row) {
             $value = $row['val'];
             if ($field == 'coll_id') {
-                $caption = phrasea::bas_names(phrasea::baseFromColl($this->sbas_id, $value));
+                $caption = phrasea::bas_names(phrasea::baseFromColl($this->sbas_id, $value, $this->app), $this->app);
             } elseif ($field == 'ddate')
-                $caption = phraseadate::getPrettyString(new DateTime($value));
+                $caption = $this->app['date-formatter']->getPrettyString(new DateTime($value));
             elseif ($field == 'size')
                 $caption = p4string::format_octets($value);
             else
@@ -103,10 +104,10 @@ class module_report_download extends module_report
      * @param string $sql   the request from buildreq
      * @return $this->result
      */
-    protected function buildResult($rs)
+    protected function buildResult(Application $app, $rs)
     {
         $i = 0;
-        $pref = parent::getPreff($this->sbas_id);
+        $pref = parent::getPreff($app, $this->sbas_id);
 
         foreach ($rs as $row) {
             if ($this->enable_limit && ($i > $this->nb_record))
@@ -117,7 +118,7 @@ class module_report_download extends module_report
             }
 
             if (array_key_exists('record_id', $row)) {
-                $record = new \record_adapter($this->sbas_id, $row['record_id']);
+                $record = new \record_adapter($app, $this->sbas_id, $row['record_id']);
 
                 foreach ($pref as $field) {
                     try {
@@ -163,22 +164,22 @@ class module_report_download extends module_report
         $dateString = $datetime->format(DATE_ATOM);
 
         return $this->pretty_string ?
-            phraseadate::getPrettyString($datetime) : $dateString;
+            $this->app['date-formatter']->getPrettyString($datetime) : $dateString;
     }
 
     private function formatCollId($value)
     {
-        return phrasea::bas_names(phrasea::baseFromColl($this->sbas_id, $value));
+        return phrasea::bas_names(phrasea::baseFromColl($this->sbas_id, $value, $this->app), $this->app);
     }
 
-    public static function getNbDl($dmin, $dmax, $sbas_id, $list_coll_id)
+    public static function getNbDl(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $conn = connection::getPDOConnection($sbas_id);
-        $registry = registry::get_instance();
+        $conn = connection::getPDOConnection($app, $sbas_id);
+        $registry = $app['phraseanet.registry'];
 
         $params = array(':site_id'  => $registry->get('GV_sit'));
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
-        $collfilter = module_report_sqlfilter::constructCollectionFilter($list_coll_id);
+        $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $finalfilter = $datefilter['sql'] . ' AND ';
@@ -208,9 +209,9 @@ class module_report_download extends module_report
         return $row ? $row['nb'] : 0;
     }
 
-    public static function getTopDl($dmin, $dmax, $sbas_id, $list_coll_id)
+    public static function getTopDl(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = $app['phraseanet.appbox'];
         $databox = $appbox->get_databox((int) $sbas_id);
         $conn = $databox->get_connection();
 
@@ -218,7 +219,7 @@ class module_report_download extends module_report
 
         $params = array(':site_id'  => $registry->get('GV_sit'));
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
-        $collfilter = module_report_sqlfilter::constructCollectionFilter($list_coll_id);
+        $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $finalfilter = "";

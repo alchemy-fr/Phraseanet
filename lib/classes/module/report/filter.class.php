@@ -86,7 +86,7 @@ class module_report_filter
                 if ($filter['f'] == 'appli') {
                     $value = implode(' ', phrasea::modulesName(@unserialize($value)));
                 } elseif ($filter['f'] == "ddate") {
-                    $value = phraseadate::getPrettyString(new DateTime($value));
+                    $value = $this->app['date-formatter']->getPrettyString(new DateTime($value));
                 }
 
                 $this->posting_filter[] = array('f' => $field, 'v' => $value);

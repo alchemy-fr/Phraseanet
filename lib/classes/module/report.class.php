@@ -9,6 +9,9 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration;
+
 /**
  *
  * @package     module_report
@@ -229,6 +232,12 @@ class module_report
 
     /**
      *
+     * @var Application
+     */
+    protected $app;
+
+    /**
+     *
      */
     protected $cor_query = array();
     protected $isInformative;
@@ -242,18 +251,17 @@ class module_report
      * @param $arg2 the maximal date of the report
      * @param $sbas_id the id of the base where we want to connect
      */
-    public function __construct($d1, $d2, $sbas_id, $collist)
+    public function __construct(Application $app, $d1, $d2, $sbas_id, $collist)
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
+        $this->app = $app;
         $this->dmin = $d1;
         $this->dmax = $d2;
         $this->sbas_id = $sbas_id;
         $this->list_coll_id = $collist;
-        $this->user_id = $session->get_usr_id();
-        $this->periode = phraseadate::getPrettyString(new DateTime($d1))
-            . ' - ' . phraseadate::getPrettyString(new DateTime($d2));
-        $this->dbname = phrasea::sbas_names($sbas_id);
+        $this->user_id = $this->app['phraseanet.user']->get_id();
+        $this->periode = $this->app['date-formatter']->getPrettyString(new DateTime($d1))
+            . ' - ' . $this->app['date-formatter']->getPrettyString(new DateTime($d2));
+        $this->dbname = phrasea::sbas_names($sbas_id, $app);
         $this->cor = $this->setCor();
         $this->jour = $this->setDay();
         $this->month = $this->setMonth();
@@ -574,7 +582,7 @@ class module_report
                 return new module_report_sqlconnexion($this);
                 break;
             case 'download' :
-                return new module_report_sqldownload($this);
+                return new module_report_sqldownload($this->app, $this);
                 break;
             case 'question' :
                 return new module_report_sqlquestion($this);
@@ -622,7 +630,7 @@ class module_report
      */
     protected function setReport()
     {
-        $registry = registry::get_instance();
+        $registry = $this->app['phraseanet.registry'];
         $this->report['dbid'] = $this->sbas_id;
         $this->report['periode'] = $this->periode;
         $this->report['dbname'] = $this->dbname;
@@ -815,7 +823,7 @@ class module_report
             return $this->report;
         }
 
-        $conn = connection::getPDOConnection($this->sbas_id);
+        $conn = connection::getPDOConnection($this->app, $this->sbas_id);
 
         $this->buildReq($groupby, $on);
 
@@ -836,7 +844,7 @@ class module_report
             //set display
             $this->setDisplay($tab, $groupby);
             //construct results
-            $this->buildResult($rs);
+            $this->buildResult($this->app, $rs);
             //calculate prev and next page
             $this->calculatePages($rs);
             //do we display navigator ?
@@ -850,11 +858,11 @@ class module_report
         }
     }
 
-    public static function getPreff($sbasid)
+    public static function getPreff(Application $app, $sbasid)
     {
         $tab = array();
 
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = $app['phraseanet.appbox'];
         $databox = $appbox->get_databox((int) $sbasid);
 
         foreach ($databox->get_meta_structure() as $databox_field) {

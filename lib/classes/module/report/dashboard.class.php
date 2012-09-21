@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     module_report
@@ -65,6 +67,7 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
      * @var <int>
      */
     public $sbasid;
+    private $app;
 
     /**
      * @desc Construit un dashboard selon les droits du usrid, si sbas vaut null
@@ -72,8 +75,9 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
      * @param <int> $usrid
      * @param <int> $sbasid
      */
-    public function __construct($usr, $sbasid = null)
+    public function __construct(Application $app, $usr, $sbasid = null)
     {
+        $this->app = $app;
         $this->usr = $usr;
         if (is_null($sbasid))
             $this->sbasid = 'all';
@@ -136,11 +140,11 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
         if ($d == 'dmax') {
             $datetime = new Datetime($this->dmax);
 
-            return phraseadate::getPrettyString($datetime);
+            return $this->app['date-formatter']->getPrettyString($datetime);
         } elseif ($d == 'dmin') {
             $datetime = new Datetime($this->dmin);
 
-            return phraseadate::getPrettyString($datetime);
+            return $this->app['date-formatter']->getPrettyString($datetime);
         } else
             throw new Exception('argument must be string dmin or dmax');
     }
@@ -183,12 +187,12 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
             $date = new Datetime($dmax);
             $dmax = $date->format('d-m-Y');
         }
-        $this->legendDay[] = phraseadate::getPrettyString($date);
+        $this->legendDay[] = $this->app['date-formatter']->getPrettyString($date);
 
         while ($dmin != $dmax) {
             $date->modify('-1 day');
             $dmax = $date->format('d-m-Y');
-            $this->legendDay[] = phraseadate::getPrettyString($date);
+            $this->legendDay[] = $this->app['date-formatter']->getPrettyString($date);
             $this->nb_days ++;
         }
         $this->legendDay = array_reverse($this->legendDay);
@@ -277,7 +281,7 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
             $this->authorizedCollection[] = array(
                 'sbas_id' => (int) $sbas,
                 'coll'    => implode(',', $listeColl),
-                'name'    => phrasea::sbas_names($sbas)
+                'name'    => phrasea::sbas_names($sbas, $this->app)
             );
         }
 
@@ -294,7 +298,7 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
         $all_coll = $this->getAllColl();
         $liste = '';
         foreach ($all_coll as $sbas => $info) {
-            $liste .= phrasea::sbas_names($sbas) . ' ' . $separator . ' ';
+            $liste .= phrasea::sbas_names($sbas, $this->app) . ' ' . $separator . ' ';
         }
 
         return $liste;
@@ -315,13 +319,13 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
                 if ($this->sbasid != "all") {
                     if ($this->sbasid == $sbasid) {
                         $this->dashboard[$sbasid] = module_report_dashboard_feed::getInstance(
-                                $sbasid, $coll, $this->dmin, $this->dmax
+                                $this->app, $sbasid, $coll, $this->dmin, $this->dmax
                         );
                         break;
                     }
                 } else {
                     $this->dashboard[$sbasid] = module_report_dashboard_feed::getInstance(
-                            $sbasid, $coll, $this->dmin, $this->dmax
+                            $this->app, $sbasid, $coll, $this->dmin, $this->dmax
                     );
                 }
             } catch (Exception $e) {

@@ -41,11 +41,11 @@ class module_report_sql
     public $groupby = false;
     public $on = false;
 
-    public function __construct(module_report $report)
+    public function __construct(Application $app, module_report $report)
     {
-        $this->conn = connection::getPDOConnection();
-        $this->connbas = connection::getPDOConnection($report->getSbasId());
-        $this->filter = new module_report_sqlfilter($report);
+        $this->conn = connection::getPDOConnection($app);
+        $this->connbas = connection::getPDOConnection($app, $report->getSbasId());
+        $this->filter = new module_report_sqlfilter($app, $report);
         $this->sql = '';
         $this->params = array();
         $this->total_row = 0;

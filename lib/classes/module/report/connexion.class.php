@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     module_report
@@ -40,9 +42,9 @@ class module_report_connexion extends module_report
      * @param $arg2 end date of the report
      * @param $sbas_id id of the databox
      */
-    public function __construct($arg1, $arg2, $sbas_id, $collist)
+    public function __construct(Application $app, $arg1, $arg2, $sbas_id, $collist)
     {
-        parent::__construct($arg1, $arg2, $sbas_id, $collist);
+        parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
         $this->title = _('report::Connexions');
     }
 
@@ -84,7 +86,7 @@ class module_report_connexion extends module_report
             if ($field == "appli")
                 $caption = implode(' ', phrasea::modulesName(@unserialize($value)));
             elseif ($field == 'ddate')
-                $caption = phraseadate::getPrettyString(new DateTime($value));
+                $caption = $this->app['date-formatter']->getPrettyString(new DateTime($value));
             else
                 $caption = $row['val'];
             $ret[] = array('val'   => $caption, 'value' => $value);
@@ -99,7 +101,7 @@ class module_report_connexion extends module_report
      * @param string $sql   the request from buildreq
      * @return $this->result
      */
-    protected function buildResult($rs)
+    protected function buildResult(Application $app, $rs)
     {
         $i = 0;
 
@@ -118,9 +120,9 @@ class module_report_connexion extends module_report
                     foreach ($coll as $id) {
                         if ($this->result[$i][$value] != "") {
                             $this->result[$i][$value].= " / ";
-                            $this->result[$i][$value] .= phrasea::bas_names(phrasea::baseFromColl($this->sbas_id, $id));
+                            $this->result[$i][$value] .= phrasea::bas_names(phrasea::baseFromColl($this->sbas_id, $id, $this->app), $this->app);
                         } elseif ($this->result[$i][$value] == "") {
-                            $this->result[$i][$value] = phrasea::bas_names(phrasea::baseFromColl($this->sbas_id, $id));
+                            $this->result[$i][$value] = phrasea::bas_names(phrasea::baseFromColl($this->sbas_id, $id, $this->app), $this->app);
                         }
                     }
                 } elseif ($value == 'appli') {
@@ -136,7 +138,7 @@ class module_report_connexion extends module_report
                     }
                 } elseif ($value == 'ddate') {
                     $this->result[$i][$value] = $this->pretty_string ?
-                        phraseadate::getPrettyString(new DateTime($row[$value])) :
+                        $this->app['date-formatter']->getPrettyString(new DateTime($row[$value])) :
                         $row[$value];
                 } else {
                     $this->result[$i][$value] = $row[$value];
@@ -146,13 +148,13 @@ class module_report_connexion extends module_report
         }
     }
 
-    public static function getNbConn($dmin, $dmax, $sbas_id, $list_coll_id)
+    public static function getNbConn(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $conn = connection::getPDOConnection($sbas_id);
-        $registry = registry::get_instance();
+        $conn = connection::getPDOConnection($app, $sbas_id);
+        $registry = $app['phraseanet.registry'];
 
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
-        $collfilter = module_report_sqlfilter::constructCollectionFilter($list_coll_id);
+        $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
         $params = array(':site_id' => $registry->get('GV_sit'));
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);

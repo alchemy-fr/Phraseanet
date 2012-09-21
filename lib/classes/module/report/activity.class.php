@@ -9,6 +9,9 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration;
+
 /**
  *
  * @package     module_report
@@ -45,9 +48,9 @@ class module_report_activity extends module_report
         'size'      => 'subdef.size'
     );
 
-    public function __construct($arg1, $arg2, $sbas_id, $collist)
+    public function __construct(Application $app, $arg1, $arg2, $sbas_id, $collist)
     {
-        parent::__construct($arg1, $arg2, $sbas_id, $collist);
+        parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
     }
 
     /**
@@ -97,7 +100,7 @@ class module_report_activity extends module_report
         $this->result = array();
         $this->title = _('report:: activite par heure');
 
-        $s = new module_report_sql($this);
+        $s = new module_report_sql($this->app, $this);
         $filter = $s->getFilters();
         $conn = $s->getConnBas();
 
@@ -158,7 +161,7 @@ class module_report_activity extends module_report
     {
         $result = array();
 
-        $s = new module_report_sql($this);
+        $s = new module_report_sql($this->app, $this);
         $filter = $s->getFilters();
         $conn = $s->getConnBas();
 
@@ -218,7 +221,7 @@ class module_report_activity extends module_report
         $this->report['value'] = array();
         $this->report['value2'] = array();
 
-        $s = new module_report_sql($this);
+        $s = new module_report_sql($this->app, $this);
         $filter = $s->getFilters();
         $conn = $s->getConnBas();
 
@@ -286,11 +289,11 @@ class module_report_activity extends module_report
     public function getAllDownloadByUserBase($usr, $config = false)
     {
         $result = array();
-        $s = new module_report_sql($this);
+        $s = new module_report_sql($this->app, $this);
         $filter = $s->getFilters();
         $conn = $s->getConnBas();
 
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = $this->app['phraseanet.appbox'];
         $databox = $appbox->get_databox($this->sbas_id);
 
         $params = array();
@@ -328,7 +331,7 @@ class module_report_activity extends module_report
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $login = User_Adapter::getInstance($usr, appbox::get_instance(\bootstrap::getCore()))->get_display_name();
+        $login = User_Adapter::getInstance($usr, $this->app)->get_display_name();
 
         $this->setChamp($rs);
         ($config) ? $this->setConfigColumn($config) :
@@ -361,9 +364,9 @@ class module_report_activity extends module_report
     {
         $this->title = _('report:: telechargements par jour');
 
-        $registry = registry::get_instance();
+        $registry = $this->app['phraseanet.registry'];
 
-        $s = new module_report_sql($this);
+        $s = new module_report_sql($this->app, $this);
         $filter = $s->getFilters();
         $conn = $s->getConnBas();
 
@@ -412,7 +415,7 @@ class module_report_activity extends module_report
         $last_date = null;
 
         foreach ($rs as $row) {
-            $date = phraseadate::getPrettyString(new DateTime($row['ddate']));
+            $date = $this->app['date-formatter']->getPrettyString(new DateTime($row['ddate']));
             if ($date != $last_date) {
                 $i ++;
                 $this->result[$i] = array(
@@ -466,7 +469,7 @@ class module_report_activity extends module_report
             $on = "user";
         }
 
-        $s = new module_report_sql($this);
+        $s = new module_report_sql($this->app, $this);
         $filter = $s->getFilters();
         $conn = $s->getConnBas();
 
@@ -555,7 +558,7 @@ class module_report_activity extends module_report
     {
         empty($on) ? $on = "user" : ""; //by default always report on user
 
-        $s = new module_report_sql($this);
+        $s = new module_report_sql($this->app, $this);
         $filter = $s->getFilters();
         $conn = $s->getConnBas();
 
@@ -683,7 +686,7 @@ class module_report_activity extends module_report
 
     public function getPush($tab = false)
     {
-        $s = new module_report_sql($this);
+        $s = new module_report_sql($this->app, $this);
         $filter = $s->getFilters();
         $conn = $s->getConnBas();
         $push = array();
@@ -719,15 +722,13 @@ class module_report_activity extends module_report
         $this->setChamp($rs);
         $this->initDefaultConfigColumn($this->champ);
 
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-
         $i = 0;
         foreach ($rs as $row) {
             foreach ($this->champ as $key => $value) {
                 $this->result[$i][$value] = $row[$value];
                 if ($value == "getter") {
                     try {
-                        $user = User_Adapter::getInstance($row[$value], $appbox);
+                        $user = User_Adapter::getInstance($row[$value], $this->app);
                         $this->result[$i][$value] = $user->get_display_name();
                     } catch (Exception $e) {
 
@@ -736,7 +737,7 @@ class module_report_activity extends module_report
                     $this->result[$i][$value] = p4string::format_octets($row[$value]);
                 } elseif ($value == "date") {
                     $date_obj = new DateTime($row[$value]);
-                    $this->result[$i][$value] = phraseadate::getPrettyString($date_obj);
+                    $this->result[$i][$value] = $this->app['date-formatter']->getPrettyString($date_obj);
                 }
             }
             $i ++;
@@ -753,10 +754,10 @@ class module_report_activity extends module_report
         return($this->report);
     }
 
-    public static function topTenUser($dmin, $dmax, $sbas_id, $list_coll_id)
+    public static function topTenUser(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $conn = connection::getPDOConnection($sbas_id);
-        $registry = registry::get_instance();
+        $conn = connection::getPDOConnection($app, $sbas_id);
+        $registry = $app['phraseanet.registry'];
         $result = array();
         $result['top_ten_doc'] = array();
         $result['top_ten_prev'] = array();
@@ -768,7 +769,7 @@ class module_report_activity extends module_report
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $params = array_merge($params, $datefilter['params']);
 
-        $collfilter = module_report_sqlfilter::constructCollectionFilter($list_coll_id);
+        $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
         $params = array_merge($params, $collfilter['params']);
 
         $sql = "
@@ -834,15 +835,15 @@ class module_report_activity extends module_report
         return $result;
     }
 
-    public static function activity($dmin, $dmax, $sbas_id, $list_coll_id)
+    public static function activity(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $conn = connection::getPDOConnection($sbas_id);
-        $registry = registry::get_instance();
+        $conn = connection::getPDOConnection($app, $sbas_id);
+        $registry = $app['phraseanet.registry'];
         $res = array();
         $datefilter =
             module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $collfilter =
-            module_report_sqlfilter::constructCollectionFilter($list_coll_id);
+            module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
         $params = array(':site_id' => $registry->get('GV_sit'));
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
@@ -874,16 +875,16 @@ class module_report_activity extends module_report
         return $res;
     }
 
-    public static function activityDay($dmin, $dmax, $sbas_id, $list_coll_id)
+    public static function activityDay(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $conn = connection::getPDOConnection($sbas_id);
-        $registry = registry::get_instance();
+        $conn = connection::getPDOConnection($app, $sbas_id);
+        $registry = $app['phraseanet.registry'];
         $result = array();
         $res = array();
         $datefilter =
             module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $collfilter =
-            module_report_sqlfilter::constructCollectionFilter($list_coll_id);
+            module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
         $params = array(':site_id' => $registry->get('GV_sit'));
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
@@ -916,15 +917,15 @@ class module_report_activity extends module_report
         return $res;
     }
 
-    public static function activityQuestion($dmin, $dmax, $sbas_id, $list_coll_id)
+    public static function activityQuestion(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $conn = connection::getPDOConnection($sbas_id);
-        $registry = registry::get_instance();
+        $conn = connection::getPDOConnection($app, $sbas_id);
+        $registry = $app['phraseanet.registry'];
         $result = array();
         $datefilter =
             module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $collfilter =
-            module_report_sqlfilter::constructCollectionFilter($list_coll_id);
+            module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
         $params = array(':site_id' => $registry->get('GV_sit'));
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
@@ -954,15 +955,15 @@ class module_report_activity extends module_report
         return $result;
     }
 
-    public static function activiteTopQuestion($dmin, $dmax, $sbas_id, $list_coll_id)
+    public static function activiteTopQuestion(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $conn = connection::getPDOConnection($sbas_id);
-        $registry = registry::get_instance();
+        $conn = connection::getPDOConnection($app, $sbas_id);
+        $registry = $app['phraseanet.registry'];
         $result = array();
         $datefilter =
             module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $collfilter =
-            module_report_sqlfilter::constructCollectionFilter($list_coll_id);
+            module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
         $params = array(':site_id' => $registry->get('GV_sit'));
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
@@ -999,12 +1000,12 @@ class module_report_activity extends module_report
         return $result;
     }
 
-    public static function activiteTopTenSiteView($dmin, $dmax, $sbas_id, $list_coll_id)
+    public static function activiteTopTenSiteView(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $conn = connection::getPDOConnection($sbas_id);
+        $conn = connection::getPDOConnection($app, $sbas_id);
         $result = array();
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
-        $collfilter = module_report_sqlfilter::constructCollectionFilter($list_coll_id);
+        $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
         $params = array();
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
@@ -1039,12 +1040,12 @@ class module_report_activity extends module_report
         return $result;
     }
 
-    public static function activiteAddedDocument($dmin, $dmax, $sbas_id, $list_coll_id)
+    public static function activiteAddedDocument(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $conn = connection::getPDOConnection($sbas_id);
+        $conn = connection::getPDOConnection($app, $sbas_id);
         $result = array();
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
-        $collfilter = module_report_sqlfilter::constructCollectionFilter($list_coll_id);
+        $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
         $params = array();
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
@@ -1073,12 +1074,12 @@ class module_report_activity extends module_report
         return $result;
     }
 
-    public static function activiteEditedDocument($dmin, $dmax, $sbas_id, $list_coll_id)
+    public static function activiteEditedDocument(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $conn = connection::getPDOConnection($sbas_id);
+        $conn = connection::getPDOConnection($app, $sbas_id);
         $result = array();
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
-        $collfilter = module_report_sqlfilter::constructCollectionFilter($list_coll_id);
+        $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
         $params = array();
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
@@ -1101,19 +1102,19 @@ class module_report_activity extends module_report
         $stmt->closeCursor();
 
         foreach ($rs as $row) {
-            $date = phraseadate::getPrettyString(new DateTime($row['ddate']));
+            $date = $this->app['date-formatter']->getPrettyString(new DateTime($row['ddate']));
             $result[$date] = $row['activity'];
         }
 
         return $result;
     }
 
-    public static function activiteAddedTopTenUser($dmin, $dmax, $sbas_id, $list_coll_id)
+    public static function activiteAddedTopTenUser(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $conn = connection::getPDOConnection($sbas_id);
+        $conn = connection::getPDOConnection($app, $sbas_id);
         $result = array();
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
-        $collfilter = module_report_sqlfilter::constructCollectionFilter($list_coll_id);
+        $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
         $params = array();
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);

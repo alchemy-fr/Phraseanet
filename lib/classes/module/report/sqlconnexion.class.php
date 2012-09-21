@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     module_report
@@ -18,9 +20,9 @@
 class module_report_sqlconnexion extends module_report_sql implements module_report_sqlReportInterface
 {
 
-    public function __construct(module_report $report)
+    public function __construct(Application $app, module_report $report)
     {
-        parent::__construct($report);
+        parent::__construct($app, $report);
     }
 
     public function buildSql()
