@@ -9,11 +9,11 @@ class randomTest extends PhraseanetPHPUnitAbstract
     {
         $expires_on = new DateTime('-5 minutes');
         $usr_id = self::$user->get_id();
-        $token = random::getUrlToken(\random::TYPE_PASSWORD, $usr_id, $expires_on, 'some nice datas');
-        random::cleanTokens();
+        $token = random::getUrlToken(self::$application, \random::TYPE_PASSWORD, $usr_id, $expires_on, 'some nice datas');
+        random::cleanTokens(self::$application);
 
         try {
-            random::helloToken($token);
+            random::helloToken(self::$application, $token);
             $this->fail();
         } catch (Exception_NotFound $e) {
 
@@ -60,13 +60,13 @@ class randomTest extends PhraseanetPHPUnitAbstract
     public function testGetUrlToken()
     {
         $usr_id = self::$user->get_id();
-        $token = random::getUrlToken(\random::TYPE_PASSWORD, $usr_id, null, 'some nice datas');
-        $datas = random::helloToken($token);
+        $token = random::getUrlToken(self::$application, \random::TYPE_PASSWORD, $usr_id, null, 'some nice datas');
+        $datas = random::helloToken(self::$application, $token);
         $this->assertEquals('some nice datas', $datas['datas']);
-        random::updateToken($token, 'some very nice datas');
-        $datas = random::helloToken($token);
+        random::updateToken(self::$application, $token, 'some very nice datas');
+        $datas = random::helloToken(self::$application, $token);
         $this->assertEquals('some very nice datas', $datas['datas']);
-        random::removeToken($token);
+        random::removeToken(self::$application, $token);
     }
 
     public function testRemoveToken()
@@ -82,8 +82,8 @@ class randomTest extends PhraseanetPHPUnitAbstract
     public function testHelloToken()
     {
         $usr_id = self::$user->get_id();
-        $token = random::getUrlToken(\random::TYPE_PASSWORD, $usr_id, null, 'some nice datas');
-        $datas = random::helloToken($token);
+        $token = random::getUrlToken(self::$application, \random::TYPE_PASSWORD, $usr_id, null, 'some nice datas');
+        $datas = random::helloToken(self::$application, $token);
         $this->assertEquals('some nice datas', $datas['datas']);
         $this->assertNull($datas['expire_on']);
         $created_on = new DateTime($datas['created_on']);
@@ -93,9 +93,9 @@ class randomTest extends PhraseanetPHPUnitAbstract
         $this->assertTrue($date >= $created_on);
         $this->assertEquals('password', $datas['type']);
 
-        random::removeToken($token);
+        random::removeToken(self::$application, $token);
         try {
-            random::helloToken($token);
+            random::helloToken(self::$application, $token);
             $this->fail();
         } catch (Exception_NotFound $e) {
 
@@ -103,8 +103,8 @@ class randomTest extends PhraseanetPHPUnitAbstract
 
         $expires_on = new DateTime('+5 minutes');
         $usr_id = self::$user->get_id();
-        $token = random::getUrlToken(\random::TYPE_PASSWORD, $usr_id, $expires_on, 'some nice datas');
-        $datas = random::helloToken($token);
+        $token = random::getUrlToken(self::$application, \random::TYPE_PASSWORD, $usr_id, $expires_on, 'some nice datas');
+        $datas = random::helloToken(self::$application, $token);
         $this->assertEquals('some nice datas', $datas['datas']);
         $sql_expires = new DateTime($datas['expire_on']);
         $this->assertTrue($sql_expires == $expires_on);
@@ -115,9 +115,9 @@ class randomTest extends PhraseanetPHPUnitAbstract
         $this->assertTrue($date >= $created_on);
         $this->assertEquals('password', $datas['type']);
 
-        random::removeToken($token);
+        random::removeToken(self::$application, $token);
         try {
-            random::helloToken($token);
+            random::helloToken(self::$application, $token);
             $this->fail();
         } catch (Exception_NotFound $e) {
 
@@ -126,10 +126,10 @@ class randomTest extends PhraseanetPHPUnitAbstract
 
         $expires_on = new DateTime('-5 minutes');
         $usr_id = self::$user->get_id();
-        $token = random::getUrlToken(\random::TYPE_PASSWORD, $usr_id, $expires_on, 'some nice datas');
+        $token = random::getUrlToken(self::$application, \random::TYPE_PASSWORD, $usr_id, $expires_on, 'some nice datas');
 
         try {
-            random::helloToken($token);
+            random::helloToken(self::$application, $token);
             $this->fail();
         } catch (Exception_NotFound $e) {
 

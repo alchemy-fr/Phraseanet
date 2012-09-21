@@ -12,7 +12,7 @@ class geonamesTest extends PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new geonames();
+        $this->object = new geonames(self::$application);
     }
 
     public function testName_from_id()

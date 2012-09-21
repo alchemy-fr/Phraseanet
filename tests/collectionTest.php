@@ -1,5 +1,6 @@
 <?php
 
+use Alchemy\Phrasea\Core\Configuration;
 use Symfony\Component\Filesystem\Filesystem;
 
 require_once __DIR__ . '/PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
@@ -14,9 +15,9 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
         $auth = new Session_Authentication_None(self::$user);
-        $appbox->get_session()->authenticate($auth);
+        self::$application->openAccount($auth);
 
         $found = false;
         foreach ($appbox->get_databoxes() as $databox) {
@@ -27,7 +28,7 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
         if ( ! $found)
             self::fail('No databox found for collection test');
 
-        self::$object = collection::create($databox, $appbox, 'test_collection', self::$user);
+        self::$object = collection::create(self::$application, $databox, $appbox, 'test_collection', self::$user);
 
         if ( ! self::$object instanceof collection)
             self::fail('Unable to create collection');
@@ -42,7 +43,7 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testEnable()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
         $base_id = self::$object->get_base_id();
         $coll_id = self::$object->get_coll_id();
         self::$object->disable($appbox);
@@ -84,8 +85,8 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testGet_record_amount()
     {
         self::$object->empty_collection();
-        $file = new Alchemy\Phrasea\Border\File(self::$core['mediavorus']->guess(new \SplFileInfo(__DIR__ . '/testfiles/cestlafete.jpg')), self::$object);
-        record_adapter::createFromFile($file, new Filesystem());
+        $file = new Alchemy\Phrasea\Border\File(self::$application['mediavorus']->guess(__DIR__ . '/testfiles/cestlafete.jpg'), self::$object);
+        record_adapter::createFromFile($file, self::$application);
         $this->assertTrue(self::$object->get_record_amount() === 1);
         self::$object->empty_collection();
         $this->assertTrue(self::$object->get_record_amount() === 0);
@@ -131,8 +132,8 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_record_details()
     {
-        $file = new Alchemy\Phrasea\Border\File(self::$core['mediavorus']->guess(new \SplFileInfo(__DIR__ . '/testfiles/cestlafete.jpg')), self::$object);
-        $record = record_adapter::createFromFile($file, new Filesystem());
+        $file = new Alchemy\Phrasea\Border\File(self::$application['mediavorus']->guess(__DIR__ . '/testfiles/cestlafete.jpg'), self::$object);
+        $record = record_adapter::createFromFile($file, self::$application);
         $details = self::$object->get_record_details();
 
         $this->assertTrue(is_array($details));
@@ -182,7 +183,7 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_from_coll_id()
     {
-        $temp_coll = collection::get_from_coll_id(self::$object->get_databox(), self::$object->get_coll_id());
+        $temp_coll = collection::get_from_coll_id(self::$application, self::$object->get_databox(), self::$object->get_coll_id());
         $this->assertEquals(self::$object->get_coll_id(), $temp_coll->get_coll_id());
         $this->assertEquals(self::$object->get_base_id(), $temp_coll->get_base_id());
     }
