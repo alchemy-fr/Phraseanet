@@ -8,27 +8,30 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-/* @var $Core \Alchemy\Phrasea\Core */
-$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
+
+require_once __DIR__ . "/../../lib/bootstrap.php";
+$app = new Application();
 phrasea::headers();
-$appbox = appbox::get_instance($Core);
+$appbox = $app['phraseanet.appbox'];
 $registry = $appbox->get_registry();
-$session = Session_Handler::getInstance($appbox);
 
 $request = http_request::getInstance();
 $parm = $request->get_parms("bas", "rec");
 
-$user = $Core->getAuthenticatedUser();
+$user = $app['phraseanet.user'];
 
 $right = false;
 ?>
 
-<html lang="<?php echo $session->get_I18n(); ?>">
+<html lang="<?php echo $app['locale.I18n']; ?>">
     <head>
         <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css,skins/prod/<?php echo $user->getPrefs('css') ?>/prodcolor.css" />
         <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
@@ -53,8 +56,8 @@ $right = false;
 
             <div id="share">
                 <?php
-                $sbas_id = phrasea::sbasFromBas($parm['bas']);
-                $record = new record_adapter($sbas_id, $parm['rec']);
+                $sbas_id = phrasea::sbasFromBas($app, $parm['bas']);
+                $record = new record_adapter($app, $sbas_id, $parm['rec']);
                 $right = ($user->ACL()->has_right_on_sbas($sbas_id, 'bas_chupub')
                     && $user->ACL()->has_access_to_subdef($record, 'preview'));
 
@@ -86,7 +89,7 @@ $right = false;
                         case 'document':
                             $embed = '<object width="600" height="500" type="application/x-shockwave-flash" data="' . $registry->get('GV_ServerName') . 'include/FlexPaper_flash/FlexPaperViewer.swf" style="visibility: visible; width: 600px; height: 500px; top: 0px;">' .
                                 '<param name="menu" value="false">' .
-                                '<param name="flashvars" value="SwfFile=' . urlencode($url) . '&amp;Scale=0.6&amp;ZoomTransition=easeOut&amp;ZoomTime=0.5&amp;ZoomInterval=0.1&amp;FitPageOnLoad=true&amp;FitWidthOnLoad=true&amp;PrintEnabled=false&amp;FullScreenAsMaxWindow=false&amp;localeChain=' . Session_Handler::get_locale() . '">' .
+                                '<param name="flashvars" value="SwfFile=' . urlencode($url) . '&amp;Scale=0.6&amp;ZoomTransition=easeOut&amp;ZoomTime=0.5&amp;ZoomInterval=0.1&amp;FitPageOnLoad=true&amp;FitWidthOnLoad=true&amp;PrintEnabled=false&amp;FullScreenAsMaxWindow=false&amp;localeChain=' . $app['locale'] . '">' .
                                 '<param name="allowFullScreen" value="true">' .
                                 '<param name="wmode" value="transparent">' .
                                 '</object>';
