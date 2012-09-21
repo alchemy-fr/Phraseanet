@@ -97,7 +97,7 @@ class BorderManager extends ServiceAbstract
                         $collections = array();
                         foreach ($checker['collections'] as $base_id) {
                             try {
-                                $collections[] = \collection::get_from_base_id($base_id);
+                                $collections[] = \collection::get_from_base_id($this->app, $base_id);
                             } catch (\Exception $e) {
                                 throw new \InvalidArgumentException('Invalid collection option');
                             }
