@@ -109,7 +109,23 @@ class Application extends SilexApplication
 //                return new PdoSessionHandler($app['EM']->getConnection()->getWrappedConnection());
 //            });
 
-        $this['imagine.factory'] = 'Gmagick';
+        $this['imagine.factory'] = $this->share(function(Application $app) {
+            if ($app['registry']->get('GV_imagine_driver') != '') {
+                return $app['registry']->get('GV_imagine_driver');
+            }
+
+            if (class_exists('\Gmagick')) {
+                return 'Gmagick';
+            }
+            if (class_exists('\Imagick')) {
+                return 'Imagick';
+            }
+            if (extension_loaded('gd')) {
+                return 'GD';
+            }
+
+            throw new \RuntimeException('No Imagine driver available');
+        });
 
         $this['monolog.handler'] = $this->share(function () {
                 return new \Monolog\Handler\NullHandler();
