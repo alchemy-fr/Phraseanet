@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     Feeds
@@ -63,9 +65,9 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
      * @param  int          $id
      * @return Feed_Adapter
      */
-    public function __construct(appbox &$appbox, $id)
+    public function __construct(Application $app, $id)
     {
-        $this->appbox = $appbox;
+        $this->app = $app;
         $this->id = (int) $id;
 
         $this->load();
@@ -80,7 +82,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
 
             $this->title = $datas['title'];
             $this->subtitle = $datas['subtitle'];
-            $this->collection = $datas['base_id'] ? collection::get_from_base_id($datas['base_id']) : null;
+            $this->collection = $datas['base_id'] ? collection::get_from_base_id($this->app, $datas['base_id']) : null;
             $this->created_on = $datas['created_on'];
             $this->updated_on = $datas['updated_on'];
             $this->public = $datas['public'];
@@ -92,21 +94,21 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
 
         $sql = 'SELECT id, title, subtitle, created_on, updated_on, base_id, public
             FROM feeds WHERE id = :feed_id';
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':feed_id' => $this->id));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        if ( ! $row)
+        if (!$row)
             throw new Exception_FeedNotFound ();
 
         $this->title = $row['title'];
         $this->subtitle = $row['subtitle'];
-        if ( ! is_null($row['base_id']))
-            $this->collection = collection::get_from_base_id($row['base_id']);
+        if (!is_null($row['base_id']))
+            $this->collection = collection::get_from_base_id($this->app, $row['base_id']);
         $this->created_on = new DateTime($row['created_on']);
         $this->updated_on = new DateTime($row['updated_on']);
-        $this->public = ! ! $row['public'];
+        $this->public = !!$row['public'];
 
         $base_id = $this->collection instanceof collection ? $this->collection->get_base_id() : null;
 
@@ -136,7 +138,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
 
         $url = '/skins/icons/rss32.gif';
 
-        $file = $this->appbox->get_registry()->get('GV_RootPath')
+        $file = $this->app['phraseanet.appbox']->get_registry()->get('GV_RootPath')
             . 'www/custom/feed_' . $this->get_id() . '.jpg';
 
         if (file_exists($file)) {
@@ -155,11 +157,11 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
      */
     public function set_icon($file)
     {
-        if ( ! file_exists($file)) {
+        if (!file_exists($file)) {
             throw new \Alchemy\Phrasea\Exception\InvalidArgumentException('File does not exists');
         }
 
-        $registry = registry::get_instance();
+        $registry = $this->app['phraseanet.registry'];
 
         $config_file = $registry->get('GV_RootPath') . 'config/feed_' . $this->get_id() . '.jpg';
         $www_file = $registry->get('GV_RootPath') . 'www/custom/feed_' . $this->get_id() . '.jpg';
@@ -176,10 +178,10 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
         $sql = 'UPDATE feeds SET created_on = :created_on
             WHERE id = :feed_id';
         $params = array(
-            ':created_on' => $created_on->format(DATE_ISO8601)
-            , ':feed_id'    => $this->get_id()
+            ':created_on'     => $created_on->format(DATE_ISO8601)
+            , ':feed_id'        => $this->get_id()
         );
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
         $this->created_on = $created_on;
@@ -190,7 +192,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
 
     public function reset_icon()
     {
-        $registry = registry::get_instance();
+        $registry = $this->app['phraseanet.registry'];
         $config_file = $registry->get('GV_RootPath')
             . 'config/feed_' . $this->get_id() . '.jpg';
         $www_file = $registry->get('GV_RootPath')
@@ -223,6 +225,10 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
     public function is_owner(User_Adapter $user)
     {
         $this->load_publishers();
+
+        if (!$this->owner) {
+            return false;
+        }
 
         return $this->owner->get_user()->get_id() === $user->get_id();
     }
@@ -294,7 +300,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
             return $this;
         }
 
-        Feed_Publisher_Adapter::create($this->appbox, $user, $this, false);
+        Feed_Publisher_Adapter::create($this->app, $user, $this, false);
         $this->publishers = null;
 
         return $this;
@@ -312,16 +318,18 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
 
         $sql = 'SELECT id, usr_id, owner FROM feed_publishers
             WHERE feed_id = :feed_id';
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':feed_id' => $this->id));
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         foreach ($rs as $row) {
-            $publisher = new Feed_Publisher_Adapter($this->appbox, $row['id']);
+            $publisher = new Feed_Publisher_Adapter($this->app, $row['id']);
             $this->publishers[$row['usr_id']] = $publisher;
-            if ($publisher->is_owner())
+            if ($publisher->is_owner()) {
                 $this->owner = $publisher;
+            }
         }
 
         return $this->publishers;
@@ -350,8 +358,8 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
 
         $sql = 'UPDATE feeds SET base_id = :base_id, updated_on = NOW()
             WHERE id = :feed_id';
-        $params = array(':base_id' => $base_id, ':feed_id' => $this->get_id());
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $params = array(':base_id'        => $base_id, ':feed_id'        => $this->get_id());
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
         $this->collection = $collection;
@@ -367,7 +375,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
      */
     public function set_public($boolean)
     {
-        $boolean = ! ! $boolean;
+        $boolean = !!$boolean;
         $sql = 'UPDATE feeds SET public = :public, updated_on = NOW()
             WHERE id = :feed_id';
 
@@ -376,13 +384,13 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
             ':feed_id' => $this->get_id()
         );
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
         $this->public = $boolean;
         $this->delete_data_from_cache();
 
-        $feed_collection = new Feed_Collection($this->appbox, array());
+        $feed_collection = new Feed_Collection($this->app, array());
         $feed_collection->delete_data_from_cache(Feed_Collection::CACHE_PUBLIC);
 
         return $this;
@@ -402,8 +410,8 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
 
         $sql = 'UPDATE feeds SET title = :title, updated_on = NOW()
             WHERE id = :feed_id';
-        $stmt = $this->appbox->get_connection()->prepare($sql);
-        $stmt->execute(array(':title'   => $title, ':feed_id' => $this->get_id()));
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt->execute(array(':title'     => $title, ':feed_id'   => $this->get_id()));
         $stmt->closeCursor();
         $this->title = $title;
         $this->delete_data_from_cache();
@@ -422,8 +430,8 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
 
         $sql = 'UPDATE feeds SET subtitle = :subtitle, updated_on = NOW()
             WHERE id = :feed_id';
-        $params = array(':subtitle' => $subtitle, ':feed_id'  => $this->get_id());
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $params = array(':subtitle'     => $subtitle, ':feed_id'      => $this->get_id());
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
         $this->subtitle = $subtitle;
@@ -440,19 +448,19 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
      * @param  string       $subtitle
      * @return Feed_Adapter
      */
-    public static function create(appbox &$appbox, User_Adapter $user, $title, $subtitle)
+    public static function create(Application $app, User_Adapter $user, $title, $subtitle)
     {
         $sql = 'INSERT INTO feeds (id, title, subtitle, created_on, updated_on)
             VALUES (null, :title, :subtitle, NOW(), NOW())';
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':title'    => $title, ':subtitle' => $subtitle));
         $stmt->closeCursor();
 
-        $feed_id = $appbox->get_connection()->lastInsertId();
+        $feed_id = $app['phraseanet.appbox']->get_connection()->lastInsertId();
 
-        $feed = new self($appbox, $feed_id);
+        $feed = new self($app, $feed_id);
 
-        Feed_Publisher_Adapter::create($appbox, $user, $feed, true);
+        Feed_Publisher_Adapter::create($app, $user, $feed, true);
 
         return $feed;
     }
@@ -464,9 +472,9 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
      * @param  int          $id
      * @return Feed_Adapter
      */
-    public static function load_with_user(appbox &$appbox, User_Adapter &$user, $id)
+    public static function load_with_user(Application $app, User_Adapter &$user, $id)
     {
-        $feed = new self($appbox, $id);
+        $feed = new self($app, $id);
         $coll = $feed->get_collection();
         if (
             $feed->is_public()
@@ -494,7 +502,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
         $sql = 'SELECT count(id) as number
             FROM feed_entries WHERE feed_id = :feed_id';
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':feed_id' => $this->get_id()));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $number = $row ? (int) $row['number'] : 0;
@@ -525,18 +533,18 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
             $publishers->delete();
 
         $sql = 'DELETE FROM feed_tokens WHERE feed_id = :feed_id';
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':feed_id' => $this->get_id()));
         $stmt->closeCursor();
 
         $sql = 'DELETE FROM feeds WHERE id = :feed_id';
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':feed_id' => $this->get_id()));
         $stmt->closeCursor();
 
         $this->delete_data_from_cache();
 
-        $feed_coll = new Feed_Collection($this->appbox, array());
+        $feed_coll = new Feed_Collection($this->app, array());
         $feed_coll->delete_data_from_cache(Feed_Collection::CACHE_PUBLIC);
 
         return;
@@ -562,7 +570,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
         $params = array(
             ':feed_id' => $this->get_id()
         );
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -570,7 +578,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
         $result = new Feed_Entry_Collection();
 
         foreach ($rs as $row) {
-            $entry = new Feed_Entry_Adapter($this->appbox, $this, $row['id']);
+            $entry = new Feed_Entry_Adapter($this->app, $this, $row['id']);
             $result->add_entry($entry);
         }
 
@@ -586,7 +594,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
      */
     public function get_homepage_link(registryInterface $registry, $format, $page = null)
     {
-        if ( ! $this->is_public()) {
+        if (!$this->is_public()) {
             return null;
         }
 
@@ -627,7 +635,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
     {
         $cache_key = self::CACHE_USER_TOKEN . '_' . $user->get_id();
         try {
-            if ( ! $renew) {
+            if (!$renew) {
                 return $this->get_data_from_cache($cache_key);
             }
         } catch (Exception $e) {
@@ -643,12 +651,12 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
             ':feed_id' => $this->get_id()
         );
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        if ( ! $row || $renew === true) {
+        if (!$row || $renew === true) {
             $token = random::generatePassword(12, random::LETTERS_AND_NUMBERS);
             $sql = 'REPLACE INTO feed_tokens (id, token, feed_id, usr_id, aggregated)
               VALUES (null, :token, :feed_id, :usr_id, :aggregated)';
@@ -660,7 +668,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
                 , ':aggregated' => null
             );
 
-            $stmt = $this->appbox->get_connection()->prepare($sql);
+            $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
             $stmt->execute($params);
             $this->delete_data_from_cache($cache_key);
         } else {
@@ -718,16 +726,16 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
 
     public function get_data_from_cache($option = null)
     {
-        return $this->appbox->get_data_from_cache($this->get_cache_key($option));
+        return $this->app['phraseanet.appbox']->get_data_from_cache($this->get_cache_key($option));
     }
 
     public function set_data_to_cache($value, $option = null, $duration = 0)
     {
-        return $this->appbox->set_data_to_cache($value, $this->get_cache_key($option), $duration);
+        return $this->app['phraseanet.appbox']->set_data_to_cache($value, $this->get_cache_key($option), $duration);
     }
 
     public function delete_data_from_cache($option = null)
     {
-        return $this->appbox->delete_data_from_cache($this->get_cache_key($option));
+        return $this->app['phraseanet.appbox']->delete_data_from_cache($this->get_cache_key($option));
     }
 }

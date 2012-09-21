@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     Feeds
@@ -20,11 +22,11 @@ class Feed_TokenAggregate extends Feed_Token
 
     /**
      *
-     * @param  appbox              $appbox
+     * @param  Application         $app
      * @param  string              $token
      * @return Feed_TokenAggregate
      */
-    public function __construct(appbox &$appbox, $token)
+    public function __construct(Application $app, $token)
     {
 
         $sql = 'SELECT usr_id FROM feed_tokens
@@ -34,7 +36,7 @@ class Feed_TokenAggregate extends Feed_Token
             ':token' => $token
         );
 
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -43,7 +45,7 @@ class Feed_TokenAggregate extends Feed_Token
             throw new Exception_FeedNotFound($token);
 
         $this->usr_id = $row['usr_id'];
-        $this->appbox = $appbox;
+        $this->app = $app;
 
         return $this;
     }
@@ -54,9 +56,10 @@ class Feed_TokenAggregate extends Feed_Token
      */
     public function get_feed()
     {
-        if ( ! $this->feed)
-            $this->feed = Feed_Aggregate::load_with_user($this->appbox, $this->get_user());
-
+        if ( ! $this->feed) {
+            $this->feed = Feed_Aggregate::load_with_user($this->app, $this->get_user());
+        }
+        
         return $this->feed;
     }
 }

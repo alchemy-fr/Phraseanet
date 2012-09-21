@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     Feeds
@@ -21,7 +23,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
      *
      * @var appbox
      */
-    protected $appbox;
+    protected $app;
 
     /**
      *
@@ -93,14 +95,14 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
 
     /**
      *
-     * @param  appbox             $appbox
+     * @param  Application        $app
      * @param  Feed_Adapter       $feed
      * @param  int                $id
      * @return Feed_Entry_Adapter
      */
-    public function __construct(appbox &$appbox, Feed_Adapter &$feed, $id)
+    public function __construct(Application $app, Feed_Adapter &$feed, $id)
     {
-        $this->appbox = $appbox;
+        $this->app = $app;
         $this->feed = $feed;
         $this->id = (int) $id;
         $this->load();
@@ -135,7 +137,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
             FROM feed_entries
             WHERE id = :id ';
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':id' => $this->id));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -168,7 +170,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
 
     public function get_link()
     {
-        $registry = registry::get_instance();
+        $registry = $this->app['phraseanet.registry'];
 
         $href = sprintf(
             '%slightbox/feeds/entry/%d/'
@@ -225,7 +227,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
     {
         $sql = 'UPDATE feed_entries
             SET feed_id = :feed_id, updated_on = NOW() WHERE id = :entry_id';
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(
             ':feed_id'  => $feed->get_id(),
             ':entry_id' => $this->get_id(),
@@ -254,7 +256,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
 
         $sql = 'UPDATE feed_entries
             SET title = :title, updated_on = NOW() WHERE id = :entry_id';
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':title'    => $title, ':entry_id' => $this->get_id()));
         $stmt->closeCursor();
         $this->title = $title;
@@ -276,7 +278,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
             SET description = :subtitle, updated_on = NOW()
             WHERE id = :entry_id';
         $params = array(':subtitle' => $subtitle, ':entry_id' => $this->get_id());
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
         $this->subtitle = $subtitle;
@@ -299,7 +301,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
             ':author_name' => $author_name,
             ':entry_id'    => $this->get_id()
         );
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
         $this->author_name = $author_name;
@@ -322,7 +324,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
             ':author_email' => $author_email,
             ':entry_id'     => $this->get_id()
         );
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
         $this->author_email = $author_email;
@@ -340,7 +342,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
             ':created_on' => $datetime->format(DATE_ISO8601),
             ':entry_id'   => $this->get_id()
         );
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
         $this->created_on = $datetime;
@@ -358,7 +360,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
             ':updated_on' => $datetime->format(DATE_ISO8601),
             ':entry_id'   => $this->get_id()
         );
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
         $this->updated_on = $datetime;
@@ -374,7 +376,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
     public function get_publisher()
     {
         if ( ! $this->publisher instanceof Feed_Publisher_Adapter)
-            $this->publisher = new Feed_Publisher_Adapter($this->appbox, $this->publisher_id);
+            $this->publisher = new Feed_Publisher_Adapter($this->app, $this->publisher_id);
 
         return $this->publisher;
     }
@@ -439,7 +441,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
         $items = array();
         foreach ($rs as $item_id) {
             try {
-                $items[] = new Feed_Entry_Item($this->appbox, $this, $item_id);
+                $items[] = new Feed_Entry_Item($this->app['phraseanet.appbox'], $this, $item_id);
             } catch (Exception_NotFound $e) {
 
             }
@@ -460,7 +462,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
 
         $sql = 'SELECT id FROM feed_entry_elements
             WHERE entry_id = :entry_id ORDER BY ord ASC';
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':entry_id' => $this->get_id()));
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -487,7 +489,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
         }
 
         $sql = 'DELETE FROM feed_entries WHERE id = :entry_id';
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':entry_id' => $this->get_id()));
         $stmt->closeCursor();
 
@@ -505,7 +507,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
      * @param  string                 $author_mail
      * @return Feed_Entry_Adapter
      */
-    public static function create(appbox &$appbox, Feed_Adapter $feed
+    public static function create(Application $app, Feed_Adapter $feed
     , Feed_Publisher_Adapter $publisher, $title, $subtitle, $author_name, $author_mail)
     {
         if ( ! $feed->is_publisher($publisher->get_user())) {
@@ -532,18 +534,17 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
             ':author_email' => trim($author_mail),
         );
 
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
-        $entry_id = $appbox->get_connection()->lastInsertId();
+        $entry_id = $app['phraseanet.appbox']->get_connection()->lastInsertId();
 
         $feed->delete_data_from_cache();
 
-        $entry = new self($appbox, $feed, $entry_id);
+        $entry = new self($app, $feed, $entry_id);
 
-        $Core = \bootstrap::getCore();
-        $eventsmanager = $Core['events-manager'];
+        $eventsmanager = $app['events-manager'];
         $eventsmanager->trigger('__FEED_ENTRY_CREATE__', array('entry_id' => $entry_id), $entry);
 
         return $entry;
@@ -551,14 +552,14 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
 
     /**
      *
-     * @param  appbox             $appbox
+     * @param  Application        $app
      * @param  type               $id
      * @return Feed_Entry_Adapter
      */
-    public static function load_from_id(appbox $appbox, $id)
+    public static function load_from_id(Application $app, $id)
     {
         $sql = 'SELECT feed_id FROM feed_entries WHERE id = :entry_id';
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':entry_id' => $id));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -566,9 +567,9 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
         if ( ! $row)
             throw new Exception_Feed_EntryNotFound();
 
-        $feed = new Feed_Adapter($appbox, $row['feed_id']);
+        $feed = new Feed_Adapter($app, $row['feed_id']);
 
-        return new self($appbox, $feed, $id);
+        return new self($app, $feed, $id);
     }
 
     public function get_cache_key($option = null)
@@ -578,16 +579,16 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
 
     public function get_data_from_cache($option = null)
     {
-        return $this->appbox->get_data_from_cache($this->get_cache_key($option));
+        return $this->app['phraseanet.appbox']->get_data_from_cache($this->get_cache_key($option));
     }
 
     public function set_data_to_cache($value, $option = null, $duration = 0)
     {
-        return $this->appbox->set_data_to_cache($value, $this->get_cache_key($option), $duration);
+        return $this->app['phraseanet.appbox']->set_data_to_cache($value, $this->get_cache_key($option), $duration);
     }
 
     public function delete_data_from_cache($option = null)
     {
-        return $this->appbox->delete_data_from_cache($this->get_cache_key($option));
+        return $this->app['phraseanet.appbox']->delete_data_from_cache($this->get_cache_key($option));
     }
 }
