@@ -22,7 +22,6 @@ class ConfigurationServiceProvider implements ServiceProviderInterface
     public function register(SilexApplication $app)
     {
         $app['phraseanet.configuration'] = $app->share(function(Application $app) {
-
             return Configuration::build(null, $app->getEnvironment());
         });
     }

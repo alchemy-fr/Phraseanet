@@ -21,17 +21,15 @@ class ORMServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['EM'] = $app->share(function(Application $app) {
-
-                return Builder::create(
-                        $app, $app['phraseanet.configuration']
-                            ->getService($app['phraseanet.configuration']
-                                ->getOrm())
-                    )->getDriver();
-            });
+            return Builder::create(
+                    $app, $app['phraseanet.configuration']
+                        ->getService($app['phraseanet.configuration']
+                            ->getOrm())
+                )->getDriver();
+        });
     }
 
     public function boot(Application $app)
     {
-
     }
 }

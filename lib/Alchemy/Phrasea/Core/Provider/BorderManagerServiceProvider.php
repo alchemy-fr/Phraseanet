@@ -22,18 +22,17 @@ class BorderManagerServiceProvider implements ServiceProviderInterface
     {
         $app['border-manager'] = $app->share(function(Application $app) {
 
-                $configuration = $app['phraseanet.configuration']
-                    ->getService($app['phraseanet.configuration']
-                    ->getBorder());
+            $configuration = $app['phraseanet.configuration']
+                ->getService($app['phraseanet.configuration']
+                ->getBorder());
 
-                $service = Builder::create($app, $configuration);
+            $service = Builder::create($app, $configuration);
 
-                return $service->getDriver();
-            });
+            return $service->getDriver();
+        });
     }
 
     public function boot(Application $app)
     {
-
     }
 }
