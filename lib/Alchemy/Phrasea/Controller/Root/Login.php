@@ -948,7 +948,7 @@ class Login implements ControllerProviderInterface
 
                 $width = $height = null;
                 if ($app['request']->cookies->has('screen')) {
-                    $data = explode('x', $this['request']->cookies->get('screen'));
+                    $data = explode('x', $app['request']->cookies->get('screen'));
                     $width = $data[0];
                     $height = $data[1];
                 }
