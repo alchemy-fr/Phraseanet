@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     User
@@ -20,9 +22,7 @@ interface User_Interface
 
     public function get_id();
 
-    public function is_admin();
-
-    public function __construct($id, appbox &$appbox);
+    public function __construct($id, Application $app);
 
     public function ACL();
 
@@ -138,9 +138,9 @@ interface User_Interface
 
     public function get_creation_date();
 
-    public function get_notifications_preference($notification_id);
+    public function get_notifications_preference(Application $app, $notification_id);
 
-    public function set_notification_preference($notification_id, $value);
+    public function set_notification_preference(Application $app, $notification_id, $value);
 
     public function get_display_name();
 
@@ -152,25 +152,25 @@ interface User_Interface
 
     public function getPrefs($prop);
 
-    public static function updateClientInfos($app_id);
+    public static function updateClientInfos(Application $app, $app_id);
 
-    public static function get_sys_admins();
+    public static function get_sys_admins(Application $app);
 
-    public static function set_sys_admins($admins);
+    public static function set_sys_admins(Application $app, $admins);
 
-    public static function reset_sys_admins_rights();
+    public static function reset_sys_admins_rights(Application $app);
 
-    public static function get_locale($usr_id);
+    public function get_locale();
 
-    public static function create(appbox &$appbox, $login, $password, $email, $admin, $invite = false);
+    public static function create(Application $app, $login, $password, $email, $admin, $invite = false);
 
-    public static function salt_password($password, $nonce);
+    public static function salt_password(Application $app, $password, $nonce);
 
-    public static function getInstance($id, appbox &$appbox);
+    public static function getInstance($id, Application $app);
 
-    public static function saveQuery($query);
+    public static function saveQuery(Application $app, $query);
 
-    public static function get_usr_id_from_login($login);
+    public static function get_usr_id_from_login(Application $app, $login);
 
-    public static function get_usr_id_from_email($email);
+    public static function get_usr_id_from_email(Application $app, $email);
 }
