@@ -13,11 +13,12 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
+$app = new Application();
 $request = Symfony\Component\HttpFoundation\Request::createFromGlobals();
 
 $locales = \Alchemy\Phrasea\Core::getAvailableLanguages();
 
-$current_locale = \Session_Handler::get_locale();
+$current_locale = $app['locale'];
 
 if ( ! $current_locale) {
     foreach ($locales as $code => $locale) {
