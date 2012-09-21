@@ -73,8 +73,9 @@ return call_user_func(function($environment = 'prod') {
                     }
 
                     $user = \User_Adapter::getInstance($oauth2_adapter->get_usr_id(), $app);
+                    $auth = new \Session_Authentication_None($user);
 
-                    $app->openAccount($user, $oauth2_adapter->get_ses_id());
+                    $app->openAccount($auth, $oauth2_adapter->get_ses_id());
 
                     /**
                      * TODO Neutron => remove
