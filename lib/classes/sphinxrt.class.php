@@ -60,8 +60,7 @@ class sphinxrt
      */
     public function delete(Array $index_ids, $rt_id, $id)
     {
-        $registry = registry::get_instance();
-        require_once $registry->get('GV_RootPath') . 'lib/vendor/sphinx/sphinxapi.php';
+        require_once __DIR__ . '/../../lib/vendor/sphinx/sphinxapi.php';
 
         $cl = new SphinxClient();
 
@@ -85,8 +84,7 @@ class sphinxrt
 
     public function update_status(Array $index_ids, $sbas_id, $record_id, $status)
     {
-        $registry = registry::get_instance();
-        require_once $registry->get('GV_RootPath') . 'lib/vendor/sphinx/sphinxapi.php';
+        require_once __DIR__ . '/../../lib/vendor/sphinx/sphinxapi.php';
 
         $cl = new SphinxClient();
 

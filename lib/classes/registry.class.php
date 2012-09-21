@@ -9,6 +9,9 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Cache\ArrayCache;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -27,6 +30,7 @@ class registry implements registryInterface
      * @var registry
      */
     protected static $_instance;
+    protected $app;
 
     const TYPE_BOOLEAN = 'boolean';
     const TYPE_ARRAY = 'array';
@@ -36,33 +40,19 @@ class registry implements registryInterface
 
     /**
      *
-     * @return registry
-     */
-    public static function get_instance()
-    {
-        if ( ! self::$_instance instanceof self) {
-            self::$_instance = new self();
-        }
-
-        return self::$_instance;
-    }
-
-    /**
-     *
      * @param  \Alchemy\Phrasea\Cache\Cache $cache
      * @return registry
      */
-    protected function __construct()
+    public function __construct(Application $app)
     {
-        $this->cache = new Alchemy\Phrasea\Cache\ArrayCache();
-
-        $configuration = \Alchemy\Phrasea\Core\Configuration::build();
+        $this->app = $app;
+        $this->cache = new ArrayCache();
 
         $this->cache->save('GV_RootPath', dirname(dirname(__DIR__)) . '/');
-        if ($configuration->isInstalled()) {
-            $this->cache->save('GV_ServerName', $configuration->getPhraseanet()->get('servername'));
-            $this->cache->save('GV_debug', $configuration->isDebug());
-            $this->cache->save('GV_maintenance', $configuration->isMaintained());
+        if ($app['phraseanet.configuration']->isInstalled()) {
+            $this->cache->save('GV_ServerName', $app['phraseanet.configuration']->getPhraseanet()->get('servername'));
+            $this->cache->save('GV_debug', $app['phraseanet.configuration']->isDebug());
+            $this->cache->save('GV_maintenance', $app['phraseanet.configuration']->isMaintained());
         }
 
         return $this;
@@ -78,7 +68,7 @@ class registry implements registryInterface
             $rs = array();
             $loaded = false;
             try {
-                $conn = connection::getPDOConnection();
+                $conn = connection::getPDOConnection($this->app);
                 $sql = 'SELECT `key`, `value`, `type` FROM registry';
                 $stmt = $conn->prepare($sql);
                 $stmt->execute();
@@ -95,7 +85,7 @@ class registry implements registryInterface
 
                 switch ($row['type']) {
                     case self::TYPE_BOOLEAN:
-                        $value = ! ! $row['value'];
+                        $value = !!$row['value'];
                         break;
                     case self::TYPE_INTEGER:
                         $value = (int) $row['value'];
@@ -126,10 +116,10 @@ class registry implements registryInterface
      */
     public function get($key, $defaultvalue = null)
     {
-        if ( ! $this->cache->contains($key))
+        if (!$this->cache->contains($key))
             $this->load();
 
-        if ( ! $this->cache->contains($key) && ! is_null($defaultvalue)) {
+        if (!$this->cache->contains($key) && !is_null($defaultvalue)) {
             return $defaultvalue;
         }
 
@@ -159,7 +149,7 @@ class registry implements registryInterface
                 break;
             case self::TYPE_BOOLEAN:
                 $sql_value = $value ? '1' : '0';
-                $value = ! ! $value;
+                $value = !!$value;
                 break;
             case self::TYPE_INTEGER:
                 $sql_value = (int) $value;
@@ -167,7 +157,7 @@ class registry implements registryInterface
                 break;
         }
 
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($this->app);
 
         $sql = 'REPLACE INTO registry (`id`, `key`, `value`, `type`)
             VALUES (null, :key, :value, :type)';
@@ -200,7 +190,7 @@ class registry implements registryInterface
     public function un_set($key)
     {
         $this->load();
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($this->app);
 
         $sql = 'DELETE FROM registry WHERE `key` = :key';
         $stmt = $conn->prepare($sql);

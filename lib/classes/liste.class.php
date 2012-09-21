@@ -1,19 +1,19 @@
 <?php
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration;
+
 class liste
 {
 
-    public static function filter($lst)
+    public static function filter(Application $app, $lst)
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
-
         if ( ! is_array($lst))
             explode(';', $lst);
 
         $okbrec = array();
 
-        $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+        $user = $app['phraseanet.user'];
 
         foreach ($lst as $basrec) {
             $basrec = explode("_", $basrec);
@@ -21,7 +21,7 @@ class liste
                 continue;
             }
             try {
-                $record = new record_adapter($basrec[0], $basrec[1]);
+                $record = new record_adapter($app, $basrec[0], $basrec[1]);
             } catch (Exception $e) {
                 continue;
             }
@@ -41,7 +41,7 @@ class liste
                 continue;
 
             try {
-                $connsbas = connection::getPDOConnection($basrec[0]);
+                $connsbas = connection::getPDOConnection($app, $basrec[0]);
 
                 $sql = 'SELECT record_id FROM record WHERE ((status ^ ' . $user->ACL()->get_mask_xor($record->get_base_id()) . ')
                     & ' . $user->ACL()->get_mask_and($record->get_base_id()) . ')=0' .

@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * This file MUST NOT contains any default PHP function as
@@ -144,12 +146,12 @@ class setup
         return;
     }
 
-    public function create_global_values(registryInterface &$registry, $datas = array())
+    public function create_global_values(Application $app, $datas = array())
     {
         require(__DIR__ . "/../../lib/conf.d/_GV_template.inc");
 
-        if ($registry->is_set('GV_timezone'))
-            date_default_timezone_set($registry->get('GV_timezone'));
+        if ($app['phraseanet.registry']->is_set('GV_timezone'))
+            date_default_timezone_set($app['phraseanet.registry']->get('GV_timezone'));
         else
             date_default_timezone_set('Europe/Berlin');
 
@@ -240,7 +242,10 @@ class setup
 
         if ($error === false) {
             foreach ($vars as $key => $values) {
-                $registry->set($key, $values['value'], $values['type']);
+                if ($key == 'GV_sit' && null !== $app['phraseanet.registry']->get('GV_sit')) {
+                    continue;
+                }
+                $app['phraseanet.registry']->set($key, $values['value'], $values['type']);
             }
 
             return true;
@@ -352,305 +357,302 @@ class setup
         );
     }
 
-
-        public static function check_phrasea()
-        {
-            $constraints = array();
-            if (function_exists('phrasea_info')) {
-                foreach (phrasea_info() as $name => $value) {
-                    switch ($name) {
-                        default:
-                            $result = true;
-                            $message = $name . ' = ' . $value;
-                            break;
-                        case 'temp_writable':
-                            $result = $value == '1';
-                            if ($result)
-                                $message = 'Directory is writeable';
-                            else
-                                $message = 'Directory MUST be writable';
-                            break;
-                        case 'version':
-                            $result = version_compare($value, '1.18.0.3', '>=');
-                            if ($result)
-                                $message = sprintf('Phrasea version %s is ok', $value);
-                            else
-                                $message = sprintf('Phrasea version %s is NOT ok', $value);
-                            break;
-                    }
-                    $blocker = $name == 'temp_writable' ? ($value ? '' : 'blocker') : '';
-                    $constraints[] = new Setup_Constraint($name, $result, $message, true);
+    public static function check_phrasea()
+    {
+        $constraints = array();
+        if (function_exists('phrasea_info')) {
+            foreach (phrasea_info() as $name => $value) {
+                switch ($name) {
+                    default:
+                        $result = true;
+                        $message = $name . ' = ' . $value;
+                        break;
+                    case 'temp_writable':
+                        $result = $value == '1';
+                        if ($result)
+                            $message = 'Directory is writeable';
+                        else
+                            $message = 'Directory MUST be writable';
+                        break;
+                    case 'version':
+                        $result = version_compare($value, '1.18.0.3', '>=');
+                        if ($result)
+                            $message = sprintf('Phrasea version %s is ok', $value);
+                        else
+                            $message = sprintf('Phrasea version %s is NOT ok', $value);
+                        break;
                 }
+                $blocker = $name == 'temp_writable' ? ($value ? '' : 'blocker') : '';
+                $constraints[] = new Setup_Constraint($name, $result, $message, true);
             }
-
-            return new Setup_ConstraintsIterator($constraints);
         }
 
-        public static function check_writability(registryInterface $registry)
-        {
-            $root = p4string::addEndSlash(realpath(__DIR__ . '/../../'));
+        return new Setup_ConstraintsIterator($constraints);
+    }
 
-            $pathes = array(
-                $root . 'config',
-                $root . 'config/stamp',
-                $root . 'config/status',
-                $root . 'config/minilogos',
-                $root . 'config/templates',
-                $root . 'config/topics',
-                $root . 'config/wm',
-                $root . 'logs',
-                $root . 'tmp',
-                $root . 'www/custom',
-                $root . 'tmp/locks',
-                $root . 'tmp/cache_twig',
-                $root . 'tmp/cache_minify',
-                $root . 'tmp/lazaret',
-                $root . 'tmp/desc_tmp',
-                $root . 'tmp/download',
-                $root . 'tmp/batches');
+    public static function check_writability(registryInterface $registry)
+    {
+        $root = p4string::addEndSlash(realpath(__DIR__ . '/../../'));
 
-            if ($registry->is_set('GV_base_datapath_noweb')) {
-                $pathes[] = $registry->get('GV_base_datapath_noweb');
-            }
+        $pathes = array(
+            $root . 'config',
+            $root . 'config/stamp',
+            $root . 'config/status',
+            $root . 'config/minilogos',
+            $root . 'config/templates',
+            $root . 'config/topics',
+            $root . 'config/wm',
+            $root . 'logs',
+            $root . 'tmp',
+            $root . 'www/custom',
+            $root . 'tmp/locks',
+            $root . 'tmp/cache_twig',
+            $root . 'tmp/cache_minify',
+            $root . 'tmp/lazaret',
+            $root . 'tmp/desc_tmp',
+            $root . 'tmp/download',
+            $root . 'tmp/batches');
 
-            $constraints = array();
-
-            foreach ($pathes as $p) {
-                if (!is_writable($p)) {
-                    $message = sprintf('%s not writeable', $p);
-                } else {
-                    $message = sprintf('%s OK', $p);
-                }
-
-                $constraints[] = new Setup_Constraint(
-                        'Writeability test', is_writable($p), $message, true
-                );
-            }
-            $php_constraints = new Setup_ConstraintsIterator($constraints);
-
-            return $php_constraints;
+        if ($registry->is_set('GV_base_datapath_noweb')) {
+            $pathes[] = $registry->get('GV_base_datapath_noweb');
         }
 
-        /**
-         *
-         */
-        public static function check_php_version()
-        {
-            $version_ok = version_compare(PHP_VERSION, '5.3.3', '>');
-            if (!$version_ok) {
-                $message = sprintf(
-                    'Wrong PHP version : % ; PHP >= 5.3.3 required'
-                    , PHP_VERSION
-                );
+        $constraints = array();
+
+        foreach ($pathes as $p) {
+            if (!is_writable($p)) {
+                $message = sprintf('%s not writeable', $p);
             } else {
-                $message = sprintf('PHP version OK : %s', PHP_VERSION);
+                $message = sprintf('%s OK', $p);
             }
-            $constraints = array(
-                new Setup_Constraint('PHP Version', $version_ok, $message)
+
+            $constraints[] = new Setup_Constraint(
+                    'Writeability test', is_writable($p), $message, true
             );
-
-            return new Setup_ConstraintsIterator($constraints);
         }
+        $php_constraints = new Setup_ConstraintsIterator($constraints);
 
-        public static function check_php_extension()
-        {
-            $constraints = array();
-            foreach (self::$PHP_EXT as $ext) {
+        return $php_constraints;
+    }
 
-                if ('pcntl' === $ext && 0 === stripos(strtolower(PHP_OS), 'win')) {
-                    continue;
-                }
+    /**
+     *
+     */
+    public static function check_php_version()
+    {
+        $version_ok = version_compare(PHP_VERSION, '5.3.3', '>');
+        if (!$version_ok) {
+            $message = sprintf(
+                'Wrong PHP version : % ; PHP >= 5.3.3 required'
+                , PHP_VERSION
+            );
+        } else {
+            $message = sprintf('PHP version OK : %s', PHP_VERSION);
+        }
+        $constraints = array(
+            new Setup_Constraint('PHP Version', $version_ok, $message)
+        );
 
-                if (extension_loaded($ext) !== true) {
-                    $blocker = true;
-                    if (in_array($ext, array('ftp', 'twig', 'gmagick', 'imagick', 'pcntl'))) {
-                        $blocker = false;
-                    }
+        return new Setup_ConstraintsIterator($constraints);
+    }
 
-                    $constraints[] = new Setup_Constraint(sprintf('Extension %s', $ext), false, sprintf('%s missing', $ext), $blocker);
-                } else {
-                    $constraints[] = new Setup_Constraint(sprintf('Extension %s', $ext), true, sprintf('%s loaded', $ext));
-                }
+    public static function check_php_extension()
+    {
+        $constraints = array();
+        foreach (self::$PHP_EXT as $ext) {
+
+            if ('pcntl' === $ext && 0 === stripos(strtolower(PHP_OS), 'win')) {
+                continue;
             }
 
-            return new Setup_ConstraintsIterator($constraints);
-        }
-
-        public static function check_cache_server()
-        {
-            $availables_caches = array('memcache', 'redis');
-
-            $constraints = array();
-            foreach ($availables_caches as $ext) {
-                if (extension_loaded($ext) === true) {
-                    $constraints[] = new Setup_Constraint(sprintf('Extension %s', $ext), true, sprintf('%s loaded', $ext), false);
-                } else
-                    $constraints[] = new Setup_Constraint(sprintf('Extension %s', $ext), false, sprintf('%s not loaded', $ext), false);
-            }
-
-            return new Setup_ConstraintsIterator($constraints);
-        }
-
-
-        public static function check_cache_opcode()
-        {
-            $availables = array('XCache', 'apc', 'eAccelerator', 'phpa', 'WinCache');
-            $constraints = array();
-
-            $found = 0;
-            foreach ($availables as $ext) {
-                if (extension_loaded($ext) === true) {
-                    $constraints[] = new Setup_Constraint($ext, true, sprintf('%s loaded', $ext), false);
-                    $found++;
+            if (extension_loaded($ext) !== true) {
+                $blocker = true;
+                if (in_array($ext, array('ftp', 'twig', 'gmagick', 'imagick', 'pcntl'))) {
+                    $blocker = false;
                 }
+
+                $constraints[] = new Setup_Constraint(sprintf('Extension %s', $ext), false, sprintf('%s missing', $ext), $blocker);
+            } else {
+                $constraints[] = new Setup_Constraint(sprintf('Extension %s', $ext), true, sprintf('%s loaded', $ext));
             }
-
-            if ($found > 1)
-                $constraints[] = new Setup_Constraint('Multiple opcode caches', false, _('Many opcode cache load is forbidden'), true);
-            if ($found === 0)
-                $constraints[] = new Setup_Constraint('No opcode cache', false, _('No opcode cache were detected. Phraseanet strongly recommends the use of XCache or APC.'), false);
-
-            return new Setup_ConstraintsIterator($constraints);
         }
 
-        public static function check_php_configuration()
-        {
-            $nonblockers = array('log_errors', 'display_startup_errors', 'display_errors', 'output_buffering');
+        return new Setup_ConstraintsIterator($constraints);
+    }
 
-            $constraints = array();
-            foreach (self::$PHP_REQ as $conf => $value) {
-                if (($tmp = self::test_php_conf($conf, $value)) !== $value) {
-                    $constraints[] = new Setup_Constraint($conf, false, sprintf(_('setup::Configuration mauvaise : pour la variable %1$s, configuration donnee : %2$s ; attendue : %3$s'), $conf, $tmp, $value), true);
-                } else {
-                    $constraints[] = new Setup_Constraint($conf, true, sprintf('%s = `%s` => OK', $conf, $value), true);
-                }
+    public static function check_cache_server()
+    {
+        $availables_caches = array('memcache', 'redis');
+
+        $constraints = array();
+        foreach ($availables_caches as $ext) {
+            if (extension_loaded($ext) === true) {
+                $constraints[] = new Setup_Constraint(sprintf('Extension %s', $ext), true, sprintf('%s loaded', $ext), false);
+            } else
+                $constraints[] = new Setup_Constraint(sprintf('Extension %s', $ext), false, sprintf('%s not loaded', $ext), false);
+        }
+
+        return new Setup_ConstraintsIterator($constraints);
+    }
+
+    public static function check_cache_opcode()
+    {
+        $availables = array('XCache', 'apc', 'eAccelerator', 'phpa', 'WinCache');
+        $constraints = array();
+
+        $found = 0;
+        foreach ($availables as $ext) {
+            if (extension_loaded($ext) === true) {
+                $constraints[] = new Setup_Constraint($ext, true, sprintf('%s loaded', $ext), false);
+                $found++;
             }
-            foreach (self::$PHP_CONF as $conf => $value) {
-                if ($conf == 'memory_limit') {
-                    $memoryFound = self::test_php_conf($conf, $value);
-                    switch (strtolower(substr($memoryFound, -1))) {
-                        case 'g':
-                            $memoryFound *= 1024;
-                        case 'm':
-                            $memoryFound *= 1024;
-                        case 'k':
-                            $memoryFound *= 1024;
-                    }
+        }
 
-                    $memoryRequired = $value;
-                    switch (strtolower(substr($memoryRequired, -1))) {
-                        case 'g':
-                            $memoryRequired *= 1024;
-                        case 'm':
-                            $memoryRequired *= 1024;
-                        case 'k':
-                            $memoryRequired *= 1024;
-                    }
+        if ($found > 1)
+            $constraints[] = new Setup_Constraint('Multiple opcode caches', false, _('Many opcode cache load is forbidden'), true);
+        if ($found === 0)
+            $constraints[] = new Setup_Constraint('No opcode cache', false, _('No opcode cache were detected. Phraseanet strongly recommends the use of XCache or APC.'), false);
 
-                    if ($memoryFound >= $memoryRequired) {
-                        $constraints[] = new Setup_Constraint($conf, true, sprintf('%s = `%s` => OK', $conf, $value), !in_array($conf, $nonblockers));
-                    } else {
-                        $constraints[] = new Setup_Constraint($conf, false, sprintf('Bad configuration for %1$s, found `%2$s`, required `%3$s`', $conf, $tmp, $value), !in_array($conf, $nonblockers));
-                    }
-                } elseif (($tmp = self::test_php_conf($conf, $value)) !== $value) {
-                    $constraints[] = new Setup_Constraint($conf, false, sprintf('Bad configuration for %1$s, found `%2$s`, required `%3$s`', $conf, $tmp, $value), !in_array($conf, $nonblockers));
-                } else {
+        return new Setup_ConstraintsIterator($constraints);
+    }
+
+    public static function check_php_configuration()
+    {
+        $nonblockers = array('log_errors', 'display_startup_errors', 'display_errors', 'output_buffering', 'error_reporting');
+
+        $constraints = array();
+        foreach (self::$PHP_REQ as $conf => $value) {
+            if (($tmp = self::test_php_conf($conf, $value)) !== $value) {
+                $constraints[] = new Setup_Constraint($conf, false, sprintf(_('setup::Configuration mauvaise : pour la variable %1$s, configuration donnee : %2$s ; attendue : %3$s'), $conf, $tmp, $value), true);
+            } else {
+                $constraints[] = new Setup_Constraint($conf, true, sprintf('%s = `%s` => OK', $conf, $value), true);
+            }
+        }
+        foreach (self::$PHP_CONF as $conf => $value) {
+            if ($conf == 'memory_limit') {
+                $memoryFound = self::test_php_conf($conf, $value);
+                switch (strtolower(substr($memoryFound, -1))) {
+                    case 'g':
+                        $memoryFound *= 1024;
+                    case 'm':
+                        $memoryFound *= 1024;
+                    case 'k':
+                        $memoryFound *= 1024;
+                }
+
+                $memoryRequired = $value;
+                switch (strtolower(substr($memoryRequired, -1))) {
+                    case 'g':
+                        $memoryRequired *= 1024;
+                    case 'm':
+                        $memoryRequired *= 1024;
+                    case 'k':
+                        $memoryRequired *= 1024;
+                }
+
+                if ($memoryFound >= $memoryRequired) {
                     $constraints[] = new Setup_Constraint($conf, true, sprintf('%s = `%s` => OK', $conf, $value), !in_array($conf, $nonblockers));
-                }
-            }
-
-            return new Setup_ConstraintsIterator($constraints);
-        }
-
-
-        /**
-         *
-         * @return Setup_ConstraintsIterator
-         */
-        public static function check_system_locales()
-        {
-            $constraints = array();
-
-            if (!extension_loaded('gettext')) {
-                return new Setup_ConstraintsIterator($constraints);
-            }
-
-            foreach (User_Adapter::$locales as $code => $language_name) {
-                phrasea::use_i18n($code, 'test');
-
-                if (_('test::test') == 'test') {
-                    $constraints[] = new Setup_Constraint($language_name, true, sprintf('Locale %s (%s) ok', $language_name, $code), false);
                 } else {
-                    $constraints[] = new Setup_Constraint($language_name, false, sprintf('Locale %s (%s) not installed', $language_name, $code), false);
+                    $constraints[] = new Setup_Constraint($conf, false, sprintf('Bad configuration for %1$s, found `%2$s`, required `%3$s`', $conf, $tmp, $value), !in_array($conf, $nonblockers));
                 }
+            } elseif (($tmp = self::test_php_conf($conf, $value)) !== $value) {
+                $constraints[] = new Setup_Constraint($conf, false, sprintf('Bad configuration for %1$s, found `%2$s`, required `%3$s`', $conf, $tmp, $value), !in_array($conf, $nonblockers));
+            } else {
+                $constraints[] = new Setup_Constraint($conf, true, sprintf('%s = `%s` => OK', $conf, $value), !in_array($conf, $nonblockers));
             }
-            phrasea::use_i18n(Session_Handler::get_locale());
+        }
 
+        return new Setup_ConstraintsIterator($constraints);
+    }
+
+    /**
+     *
+     * @return Setup_ConstraintsIterator
+     */
+    public static function check_system_locales(Application $app)
+    {
+        $constraints = array();
+
+        if (!extension_loaded('gettext')) {
             return new Setup_ConstraintsIterator($constraints);
         }
 
-        private static function test_php_conf($conf, $value)
-        {
-            $is_flag = false;
-            $flags = array('on', 'off', '1', '0');
-            if (in_array(strtolower($value), $flags))
-                $is_flag = true;
-            $current = ini_get($conf);
-            if ($is_flag)
-                $current = strtolower($current);
+        foreach (User_Adapter::$locales as $code => $language_name) {
+            phrasea::use_i18n($code, 'test');
 
-            if (($current === '' || $current === 'off' || $current === '0') && $is_flag) {
-                if ($value === 'off' || $value === '0' || $value === '') {
-                    return 'off';
-                }
+            if (_('test::test') == 'test') {
+                $constraints[] = new Setup_Constraint($language_name, true, sprintf('Locale %s (%s) ok', $language_name, $code), false);
+            } else {
+                $constraints[] = new Setup_Constraint($language_name, false, sprintf('Locale %s (%s) not installed', $language_name, $code), false);
             }
-            if (($current === '1' || $current === 'on') && $is_flag) {
-                if ($value === 'on' || $value === '1') {
-                    return 'on';
-                }
-            }
+        }
+        phrasea::use_i18n($app['locale']);
 
-            return $current;
+        return new Setup_ConstraintsIterator($constraints);
+    }
+
+    private static function test_php_conf($conf, $value)
+    {
+        $is_flag = false;
+        $flags = array('on', 'off', '1', '0');
+        if (in_array(strtolower($value), $flags))
+            $is_flag = true;
+        $current = ini_get($conf);
+        if ($is_flag)
+            $current = strtolower($current);
+
+        if (($current === '' || $current === 'off' || $current === '0') && $is_flag) {
+            if ($value === 'off' || $value === '0' || $value === '') {
+                return 'off';
+            }
+        }
+        if (($current === '1' || $current === 'on') && $is_flag) {
+            if ($value === 'on' || $value === '1') {
+                return 'on';
+            }
         }
 
-        public static function rollback(connection_pdo $conn, connection_pdo $connbas = null)
-        {
-            $structure = simplexml_load_file(__DIR__ . "/../../lib/conf.d/bases_structure.xml");
+        return $current;
+    }
 
-            if (!$structure) {
-                throw new Exception('Unable to load schema');
+    public static function rollback(connection_pdo $conn, connection_pdo $connbas = null)
+    {
+        $structure = simplexml_load_file(__DIR__ . "/../../lib/conf.d/bases_structure.xml");
+
+        if (!$structure) {
+            throw new Exception('Unable to load schema');
+        }
+
+        $appbox = $structure->appbox;
+        $databox = $structure->databox;
+
+        foreach ($appbox->tables->table as $table) {
+            try {
+                $sql = 'DROP TABLE `' . $table['name'] . '`';
+                $stmt = $conn->prepare($sql);
+                $stmt->execute();
+                $stmt->closeCursor();
+            } catch (Exception $e) {
+
             }
-
-            $appbox = $structure->appbox;
-            $databox = $structure->databox;
-
-            foreach ($appbox->tables->table as $table) {
+        }
+        if ($connbas) {
+            foreach ($databox->tables->table as $table) {
                 try {
                     $sql = 'DROP TABLE `' . $table['name'] . '`';
-                    $stmt = $conn->prepare($sql);
+                    $stmt = $connbas->prepare($sql);
                     $stmt->execute();
                     $stmt->closeCursor();
                 } catch (Exception $e) {
 
                 }
             }
-            if ($connbas) {
-                foreach ($databox->tables->table as $table) {
-                    try {
-                        $sql = 'DROP TABLE `' . $table['name'] . '`';
-                        $stmt = $connbas->prepare($sql);
-                        $stmt->execute();
-                        $stmt->closeCursor();
-                    } catch (Exception $e) {
-
-                    }
-                }
-            }
-
-            $appConf = new \Alchemy\Phrasea\Core\Configuration\ApplicationSpecification();
-
-            $appConf->delete();
-
-            return;
         }
+
+        $appConf = new \Alchemy\Phrasea\Core\Configuration\ApplicationSpecification();
+
+        $appConf->delete();
+
+        return;
     }
+}
