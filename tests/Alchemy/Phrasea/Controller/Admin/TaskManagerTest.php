@@ -4,26 +4,6 @@ require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.
 
 class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract {
 
-    /**
-     * @var TaskManager
-     */
-    protected $client;
-    protected $app;
-
-    public function createApplication() {
-        $this->app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Admin.php';
-
-        $this->app['debug'] = true;
-        unset($this->app['exception_handler']);
-
-        return $this->app;
-    }
-
-    public function setUp() {
-        parent::setUp();
-        $this->client = $this->createClient();
-    }
-
     public function testRouteTaskManager() {
         /**
          * get /admin/task-manager/ should redirect to /admin/task-manager/tasks
@@ -35,7 +15,7 @@ class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract {
     }
 
     public function testRouteTaskManager_tasks() {
-        $task_manager = new \task_manager($this->app['phraseanet.appbox']);
+        $task_manager = new \task_manager(self::$application);
 
         $crawler = $this->client->request(
                 'GET', '/task-manager/tasks/', array()
@@ -56,7 +36,7 @@ class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract {
     }
 
     public function testRouteTaskManager_task_create() {
-        $task_manager = new \task_manager($this->app['phraseanet.appbox']);
+        $task_manager = new \task_manager(self::$application);
 
         $nTasks0 = count($task_manager->getTasks());
 
@@ -87,7 +67,7 @@ class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract {
     }
 
     public function testRouteTaskManager_scheduler_log() {
-        $task_manager = new \task_manager($this->app['phraseanet.appbox']);
+        $task_manager = new \task_manager(self::$application);
 
         $this->client->request(
                 'GET', '/task-manager/scheduler/log', array()
