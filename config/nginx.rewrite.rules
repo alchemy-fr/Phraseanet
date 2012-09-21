@@ -45,7 +45,7 @@ rewrite ^/api/v1/.*$              /api/v1/index.php last;
 rewrite ^/api/oauthv2/.*$         /api/oauthv2/index.php last;
 rewrite ^/api/.*$                 /api/index.php last;
 
-rewrite ^/permalink/.*$           /include/overview.php last;
-rewrite ^/datafiles/.*$           /include/overview.php last;
+rewrite ^/permalink/.*$           /index.php last;
+rewrite ^/datafiles/.*$           /index.php last;
 
 rewrite ^/setup/.*$               /setup/installer.php last;

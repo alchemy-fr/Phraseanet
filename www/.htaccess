@@ -49,8 +49,8 @@
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteRule ^api/.*$                /api/index.php [L]
 
-  RewriteRule ^permalink/.*$          /include/overview.php [L]
-  RewriteRule ^datafiles/.*$          /include/overview.php [L]
+  RewriteRule ^permalink/.*$          /index.php [L]
+  RewriteRule ^datafiles/.*$          /index.php [L]
 
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteRule ^setup/.*$              /setup/installer.php [L]
