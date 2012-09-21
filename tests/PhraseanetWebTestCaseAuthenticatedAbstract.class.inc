@@ -9,21 +9,18 @@ use Symfony\Component\HttpFoundation\Response;
 abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPUnitAuthenticatedAbstract
 {
     protected $StubbedACL;
+    protected static $createdDataboxes = array();
 
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $appbox = self::$application['phraseanet.appbox'];
-        $session = $appbox->get_session();
         $auth = new Session_Authentication_None(self::$user);
-        $session->authenticate($auth);
+        self::$application->openAccount($auth);
     }
 
     public static function tearDownAfterClass()
     {
-        $appbox = self::$application['phraseanet.appbox'];
-        $session = $appbox->get_session();
-        $session->logout();
+        self::$application->closeAccount();
         parent::tearDownAfterClass();
     }
 
@@ -39,7 +36,7 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
     public function setAdmin($bool)
     {
         $stubAuthenticatedUser = $this->getMockBuilder('\User_Adapter')//, array('is_admin', 'ACL'), array(self::$application['phraseanet.user']->get_id(), self::$application))
-            ->setMethods(array('ACL'))
+            ->setMethods(array('ACL', 'get_id'))
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -68,7 +65,19 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
             ->will($this->returnValue($bool));
 
         $this->StubbedACL->expects($this->any())
+            ->method('has_access_to_sbas')
+            ->will($this->returnValue($bool));
+
+        $this->StubbedACL->expects($this->any())
+            ->method('has_access_to_base')
+            ->will($this->returnValue($bool));
+
+        $this->StubbedACL->expects($this->any())
             ->method('has_right')
+            ->will($this->returnValue($bool));
+
+        $this->StubbedACL->expects($this->any())
+            ->method('has_access_to_module')
             ->will($this->returnValue($bool));
 
         $this->StubbedACL->expects($this->any())
@@ -83,8 +92,76 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
             ->method('ACL')
             ->will($this->returnValue($this->StubbedACL));
 
+        $stubAuthenticatedUser->expects($this->any())
+            ->method('get_id')
+            ->will($this->returnValue(self::$user->get_id()));
+
         self::$application['phraseanet.user'] = $stubAuthenticatedUser;
 
         $this->client = new Client(self::$application, array());
+    }
+
+    public function createDatabox()
+    {
+        $registry = self::$application['phraseanet.registry'];
+
+        $this->createDatabase();
+
+        $configuration = self::$application['phraseanet.configuration'];
+
+        $choosenConnexion = $configuration->getPhraseanet()->get('database');
+        $connexion = $configuration->getConnexion($choosenConnexion);
+
+        try {
+            $conn = new \connection_pdo('databox_creation', $connexion->get('host'), $connexion->get('port'), $connexion->get('user'), $connexion->get('password'), 'unit_test_db', array(), $registry);
+        } catch (\PDOException $e) {
+
+            $this->markTestSkipped('Could not reach DB');
+        }
+
+        $databox = \databox::create(
+                self::$application, $conn, new \SplFileInfo($registry->get('GV_RootPath') . 'lib/conf.d/data_templates/fr-simple.xml'), $registry
+        );
+
+        self::$createdDataboxes[] = $databox;
+
+
+        $rights = array(
+            'bas_manage'        => '1'
+            , 'bas_modify_struct' => '1'
+            , 'bas_modif_th'      => '1'
+            , 'bas_chupub'        => '1'
+        );
+
+        self::$application['phraseanet.user']->ACL()->update_rights_to_sbas($databox->get_sbas_id(), $rights);
+
+
+        $databox->registerAdmin(self::$application['phraseanet.user']);
+
+        return $databox;
+    }
+
+    public static function dropDatabase()
+    {
+        $stmt = self::$application['phraseanet.appbox']
+            ->get_connection()
+            ->prepare('DROP DATABASE IF EXISTS `unit_test_db`');
+        $stmt->execute();
+        $stmt = self::$application['phraseanet.appbox']
+            ->get_connection()
+            ->prepare('DELETE FROM sbas WHERE dbname = "unit_test_db"');
+        $stmt->execute();
+    }
+
+    protected function createDatabase()
+    {
+        self::dropDatabase();
+
+        $stmt = self::$application['phraseanet.appbox']
+            ->get_connection()
+            ->prepare('CREATE DATABASE `unit_test_db`
+              CHARACTER SET utf8 COLLATE utf8_unicode_ci');
+        $stmt->execute();
+        $stmt->closeCursor();
     }
 }

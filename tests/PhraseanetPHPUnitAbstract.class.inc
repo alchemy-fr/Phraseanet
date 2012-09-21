@@ -5,6 +5,7 @@ require_once __DIR__ . "/PhraseanetPHPUnitListener.class.inc";
 use Alchemy\Phrasea\Application;
 use Doctrine\Common\DataFixtures\Loader;
 use Silex\WebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\DomCrawler\Crawler;
@@ -98,8 +99,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         self::updateTablesSchema();
 
         self::createSetOfUserTests();
-
-//        self::giveRightsToUser(self::$user);
 
         self::setCollection();
 
@@ -552,8 +551,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 unlink(Setup_Upgrade::get_lock_file());
             }
 
-            self::activateEM();
-
             $upgrader = new Setup_Upgrade(self::$application);
 //            $appbox->forceUpgrade($upgrader, self::$application);
             unset($upgrader);
@@ -579,6 +576,8 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             self::$updated = true;
         }
+
+        self::activateEM();
 
         set_time_limit(3600);
 
@@ -809,6 +808,8 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
                     return \record_adapter::createFromFile($file, $app);
                 });
+
+            self::giveRightsToUser(self::$user);
         }
 
         return;
@@ -835,12 +836,20 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
         if (self::$recordsInitialized !== false) {
             foreach (self::$recordsInitialized as $i) {
-                static::$records['record_' . $i]->delete();
+//                static::$records['record_' . $i]->delete();
             }
 
             self::$recordsInitialized = array();
         }
 
         return;
+    }
+
+    protected function assertXMLHTTPBadJsonResponse(Response $response)
+    {
+        $this->assertEquals(200, $response->getStatusCode());
+        $data = json_decode($response->getContent(), true);
+        $this->assertTrue(is_array($data));
+        $this->assertFalse($data['success']);
     }
 }
