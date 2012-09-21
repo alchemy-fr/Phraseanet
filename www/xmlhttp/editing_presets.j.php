@@ -8,17 +8,21 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-/* @var $Core \Alchemy\Phrasea\Core */
-$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 
-$usr_id = $Core->getAuthenticatedUser()->get_id();
+require_once __DIR__ . "/../../lib/bootstrap.php";
 
-$appbox = appbox::get_instance($Core);
+$app = new Application();
+$usr_id = $app['phraseanet.user']->get_id();
+
+$appbox = $app['phraseanet.appbox'];
 
 $request = http_request::getInstance();
 $parm = $request->get_parms(
@@ -41,7 +45,7 @@ switch ($parm['act']) {
         $stmt->execute($params);
         $stmt->closeCursor();
 
-        $ret['html'] = xlist($parm['sbas'], $usr_id);
+        $ret['html'] = xlist($app, $parm['sbas'], $usr_id);
         break;
     case 'SAVE':
         $dom = new DOMDocument('1.0', 'UTF-8');
@@ -65,10 +69,10 @@ switch ($parm['act']) {
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute($params);
 
-        $ret['html'] = xlist($parm['sbas'], $usr_id);
+        $ret['html'] = xlist($app, $parm['sbas'], $usr_id);
         break;
     case 'LIST':
-        $ret['html'] = xlist($parm['sbas'], $usr_id);
+        $ret['html'] = xlist($app, $parm['sbas'], $usr_id);
         break;
     case "LOAD":
         $sql = 'SELECT edit_preset_id, creation_date, title, xml
@@ -93,9 +97,9 @@ switch ($parm['act']) {
         break;
 }
 
-function xlist($sbas_id, $usr_id)
+function xlist(Application $app, $sbas_id, $usr_id)
 {
-    $conn = connection::getPDOConnection();
+    $conn = connection::getPDOConnection($app);
 
     $html = '';
     $sql = 'SELECT edit_preset_id, creation_date, title, xml FROM edit_presets

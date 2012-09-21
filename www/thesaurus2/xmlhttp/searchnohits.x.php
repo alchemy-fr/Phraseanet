@@ -1,8 +1,21 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2012 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration;
+
 require_once __DIR__ . "/../../../lib/bootstrap.php";
-$appbox = \appbox::get_instance(\bootstrap::getCore());
-$registry = registry::get_instance();
+$app = new Application();
+$appbox = $app['phraseanet.appbox'];
+$registry = $app['phraseanet.registry'];
 
 $request = http_request::getInstance();
 $parm = $request->get_parms(
@@ -32,7 +45,7 @@ if ($parm["bid"] !== null) {
     $loaded = false;
     try {
         $databox = $appbox->get_databox((int) $parm['bid']);
-        $connbas = connection::getPDOConnection($parm['bid']);
+        $connbas = connection::getPDOConnection($app, $parm['bid']);
 
         $s_thits = ';';
         $sql = "SELECT DISTINCT value FROM thit";

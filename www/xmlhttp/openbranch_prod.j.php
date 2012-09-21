@@ -9,14 +9,18 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-/* @var $Core \Alchemy\Phrasea\Core */
-$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
-$appbox = \appbox::get_instance(\bootstrap::getCore());
+
+require_once __DIR__ . "/../../lib/bootstrap.php";
+$app = new Application();
+$appbox = $app['phraseanet.appbox'];
 $request = http_request::getInstance();
 $parm = $request->get_parms(
     'sbid'
@@ -34,7 +38,7 @@ phrasea::headers(200, true, 'application/json', 'UTF-8', false);
 
 
 if ( ! $parm['lng']) {
-    $lng2 = Session_Handler::get_locale();
+    $lng2 = $app['locale'];
     $lng2 = explode('_', $lng2);
     if (count($lng2) > 0)
         $parm['lng'] = $lng2[0];
@@ -59,8 +63,8 @@ $thid = implode('.', $tids);
 $loaded = false;
 
 try {
-    $connbas = connection::getPDOConnection($sbid);
-    $dbname = phrasea::sbas_names($sbid);
+    $connbas = connection::getPDOConnection($app, $sbid);
+    $dbname = phrasea::sbas_names($sbid, $app);
 
     $t_nrec = array();
     $lthid = strlen($thid);

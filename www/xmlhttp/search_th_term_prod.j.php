@@ -9,13 +9,16 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-/* @var $Core \Alchemy\Phrasea\Core */
-$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
+
+require_once __DIR__ . "/../../lib/bootstrap.php";
 
 $request = http_request::getInstance();
 $parm = $request->get_parms(
@@ -26,11 +29,12 @@ $parm = $request->get_parms(
     , 'debug'
 );
 
-$appbox = \appbox::get_instance(\bootstrap::getCore());
+$app = new Application();
+$appbox = $app['phraseanet.appbox'];
 phrasea::headers(200, true, 'application/json', 'UTF-8', false);
 
 if ( ! $parm['lng']) {
-    $lng2 = Session_Handler::get_locale();
+    $lng2 = $app['locale'];
     $lng2 = explode('_', $lng2);
     if (count($lng2) > 0)
         $parm['lng'] = $lng2[0];
@@ -56,7 +60,7 @@ try {
 
     $html = "" . '<LI id="TX_P.' . $sbid . '.T" class="expandable">' . "\n";
     $html .= "\t" . '<div class="hitarea expandable-hitarea"></div>' . "\n";
-    $html .= "\t" . '<span>' . phrasea::sbas_names($sbid) . '</span>' . "\n";
+    $html .= "\t" . '<span>' . phrasea::sbas_names($sbid, $app) . '</span>' . "\n";
 
     if ($parm['t']) {
         if ($parm['field'] != '') {

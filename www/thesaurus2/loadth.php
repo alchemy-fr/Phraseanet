@@ -8,14 +8,18 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
 require_once __DIR__ . '/../../lib/bootstrap.php';
-$appbox = \appbox::get_instance(\bootstrap::getCore());
-$registry = registry::get_instance();
+$app = new Application();
+$appbox = $app['phraseanet.appbox'];
+$registry = $app['phraseanet.registry'];
 phrasea::headers();
 
 $request = http_request::getInstance();
@@ -73,11 +77,11 @@ function fixThesaurus(&$domct, &$domth, &$connbas)
 $th = $ct = $name = "";
 $found = false;
 if ($parm["bid"] !== null) {
-    $name = phrasea::sbas_names($parm['bid']);
+    $name = phrasea::sbas_names($parm['bid'], $app);
     $loaded = false;
     try {
         $databox = $appbox->get_databox((int) $parm['bid']);
-        $connbas = connection::getPDOConnection($parm['bid']);
+        $connbas = connection::getPDOConnection($app, $parm['bid']);
 
         $domct = $databox->get_dom_cterms();
         $domth = $databox->get_dom_thesaurus();

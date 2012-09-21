@@ -9,14 +9,18 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-/* @var $Core \Alchemy\Phrasea\Core */
-$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
-$appbox = \appbox::get_instance(\bootstrap::getCore());
+
+require_once __DIR__ . "/../../lib/bootstrap.php";
+$app = new Application();
+$appbox = $app['phraseanet.appbox'];
 $request = http_request::getInstance();
 $parm = $request->get_parms(
     "bid"
@@ -25,7 +29,7 @@ $parm = $request->get_parms(
     , "debug"
 );
 
-$parm['lng'] = $Core->getLocale();
+$parm['lng'] = $app['locale'];
 
 if ($parm["debug"]) {
     phrasea::headers(200, true, 'text/html', 'UTF-8', true);
