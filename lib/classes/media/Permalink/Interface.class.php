@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     subdefs
@@ -38,7 +40,7 @@ interface media_Permalink_Interface
 
     public function set_label($label);
 
-    public static function getPermalink(databox &$databox, media_subdef &$media_subdef);
+    public static function getPermalink(Application $app, databox &$databox, media_subdef &$media_subdef);
 
-    public static function create(databox &$databox, media_subdef &$media_subdef);
+    public static function create(Application $app, databox &$databox, media_subdef &$media_subdef);
 }

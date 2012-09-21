@@ -9,8 +9,10 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+use MediaAlchemyst\Alchemyst;
 use MediaVorus\MediaVorus;
-use MediaVorus\Media\Media;
+use MediaVorus\Media\MediaInterface;
 
 /**
  *
@@ -20,6 +22,7 @@ use MediaVorus\Media\Media;
  */
 class media_subdef extends media_abstract implements cache_cacheableInterface
 {
+    protected $app;
     /**
      *
      * @var string
@@ -143,8 +146,9 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      * @param  type           $substitute
      * @return media_subdef
      */
-    public function __construct(record_adapter &$record, $name, $substitute = false)
+    public function __construct(Application $app, record_adapter &$record, $name, $substitute = false)
     {
+        $this->app = $app;
         $this->name = $name;
         $this->record = $record;
         $this->load($substitute);
@@ -329,7 +333,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     public function get_permalink()
     {
         if ( ! $this->permalink && $this->is_physically_present())
-            $this->permalink = media_Permalink_Adapter::getPermalink($this->record->get_databox(), $this);
+            $this->permalink = media_Permalink_Adapter::getPermalink($this->app, $this->record->get_databox(), $this);
 
         return $this->permalink;
     }
@@ -545,26 +549,24 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      * @param  int               $angle
      * @return media_subdef
      */
-    public function rotate($angle)
+    public function rotate($angle, Alchemyst $alchemyst, MediaVorus $mediavorus)
     {
         if ( ! $this->is_physically_present()) {
             throw new \Alchemy\Phrasea\Exception\RuntimeException('You can not rotate a substitution');
         }
 
-        $Core = \bootstrap::getCore();
-
         $specs = new \MediaAlchemyst\Specification\Image();
         $specs->setRotationAngle($angle);
 
         try {
-            $Core['media-alchemyst']->open($this->get_pathfile())
+            $alchemyst->open($this->get_pathfile())
                 ->turnInto($this->get_pathfile(), $specs)
                 ->close();
         } catch (\MediaAlchemyst\Exception\Exception $e) {
             return $this;
         }
 
-        $media = $Core['mediavorus']->guess(new SplFileInfo($this->get_pathfile()));
+        $media = $mediavorus->guess($this->get_pathfile());
 
         $sql = "UPDATE subdef
               SET height = :height , width = :width, updated_on = NOW()
@@ -597,14 +599,13 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      *
      * @return array An array of technical datas Key/values
      */
-    public function readTechnicalDatas()
+    public function readTechnicalDatas(MediaVorus $mediavorus)
     {
         if ( ! $this->is_physically_present()) {
             return array();
         }
 
-        $Core = \bootstrap::getCore();
-        $media = $Core['mediavorus']->guess(new \SplFileInfo($this->get_pathfile()));
+        $media = $mediavorus->guess($this->get_pathfile());
 
         $datas = array();
 
@@ -631,7 +632,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
         foreach ($methods as $tc_name => $method) {
             if (method_exists($media, $method)) {
-                $result = call_user_method($method, $media);
+                $result = call_user_func(array($media, $method));
 
                 if (null !== $result) {
                     $datas[$tc_name] = $result;
@@ -649,7 +650,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         return $datas;
     }
 
-    public static function create(record_Interface $record, $name, Media $media)
+    public static function create(Application $app, record_Interface $record, $name, MediaInterface $media)
     {
         $databox = $record->get_databox();
         $connbas = $databox->get_connection();
@@ -712,7 +713,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $stmt->execute($params);
         $stmt->closeCursor();
 
-        $subdef = new self($record, $name);
+        $subdef = new self($app, $record, $name);
         $subdef->delete_data_from_cache();
 
         if ($subdef->get_permalink() instanceof media_Permalink_Adapter) {
@@ -736,7 +737,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         }
 
         if (in_array($this->mime, array('video/mp4'))) {
-            $token = p4file::apache_tokenize($this->get_pathfile());
+            $token = p4file::apache_tokenize($this->app['phraseanet.registry'], $this->get_pathfile());
             if ($token) {
                 $this->url = $token;
 
