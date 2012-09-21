@@ -16,7 +16,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new API_V1_adapter(new Application('test'));
+        $this->object = new API_V1_adapter(self::$application);
     }
 
     public function testGet_error_code()
@@ -266,7 +266,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSet_record_status()
     {
-        $app = new Application('test');
+        $app = self::$application;
         $stub = $this->getMock("API_V1_adapter", array("list_record_status"), array($app));
         $databox = static::$records['record_1']->get_databox();
 
@@ -302,7 +302,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSet_record_collection()
     {
-        $app = new Application('test');
+        $app = self::$application;
         $stub = $this->getMock("API_V1_adapter", array("list_record"), array($app));
         $databox = static::$records['record_1']->get_databox();
 
