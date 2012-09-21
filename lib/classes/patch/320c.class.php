@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -51,7 +53,7 @@ class patch_320c implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$databox)
+    public function apply(base &$databox, Application $app)
     {
         $sql = 'TRUNCATE metadatas';
         $stmt = $databox->get_connection()->prepare($sql);
@@ -116,7 +118,7 @@ class patch_320c implements patchInterface
         $databox->delete_data_from_cache(databox::CACHE_STRUCTURE);
         $databox->delete_data_from_cache(databox::CACHE_META_STRUCT);
 
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($app);
 
         $sql = 'DELETE FROM `task2` WHERE class="readmeta"';
         $stmt = $conn->prepare($sql);

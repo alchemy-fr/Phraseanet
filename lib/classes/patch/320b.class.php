@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -51,7 +53,7 @@ class patch_320b implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$appbox)
+    public function apply(base &$appbox, Application $app)
     {
         $sql = 'UPDATE basusr SET nowatermark=1 WHERE needwatermark=0';
         $stmt = $appbox->get_connection()->prepare($sql);

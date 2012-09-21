@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
 use MediaAlchemyst\Exception\Exception as MediaAlchemystException;
 use MediaAlchemyst\Specification\Image as ImageSpec;
 
@@ -54,12 +55,8 @@ class patch_370a7 implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$appbox)
+    public function apply(base &$appbox, Application $app)
     {
-        $Core = \bootstrap::getCore();
-
-        $em = $Core->getEntityManager();
-
         $conn = $appbox->get_connection();
 
         try {
@@ -78,18 +75,18 @@ class patch_370a7 implements patchInterface
 
         //order matters for foreign keys constraints
         //truncate all altered tables
-        $this->truncateTable($em, 'Entities\\LazaretAttribute');
-        $this->truncateTable($em, 'Entities\\LazaretCheck');
-        $this->truncateTable($em, 'Entities\\LazaretFile');
-        $this->truncateTable($em, 'Entities\\LazaretSession');
+        $this->truncateTable($app['EM'], 'Entities\\LazaretAttribute');
+        $this->truncateTable($app['EM'], 'Entities\\LazaretCheck');
+        $this->truncateTable($app['EM'], 'Entities\\LazaretFile');
+        $this->truncateTable($app['EM'], 'Entities\\LazaretSession');
 
         // suspend auto-commit
-        $em->getConnection()->beginTransaction();
+        $app['EM']->getConnection()->beginTransaction();
 
         try {
             foreach ($rs as $row) {
 
-                $filePath = $Core->getRegistry()->get('GV_RootPath') . 'tmp/lazaret/' . $row['filepath'];
+                $filePath = $app['phraseanet.registry']->get('GV_RootPath') . 'tmp/lazaret/' . $row['filepath'];
 
                 if (file_exists($filePath)) {
 
@@ -98,10 +95,10 @@ class patch_370a7 implements patchInterface
                     $spec->setResizeMode(ImageSpec::RESIZE_MODE_INBOUND_FIXEDRATIO);
                     $spec->setDimensions(375, 275);
 
-                    $thumbPath = $Core->getRegistry()->get('GV_RootPath') . 'tmp/lazaret/' . sprintf("thumb_%s", $row['filepath']);
+                    $thumbPath = $app['phraseanet.registry']->getRegistry()->get('GV_RootPath') . 'tmp/lazaret/' . sprintf("thumb_%s", $row['filepath']);
 
                     try {
-                        $Core['media-alchemyst']
+                        $app['media-alchemyst']
                             ->open($filePath)
                             ->turnInto($thumbPath, $spec)
                             ->close();
@@ -109,9 +106,9 @@ class patch_370a7 implements patchInterface
 
                     }
 
-                    $media = $Core['mediavorus']->guess(new \SplFileInfo($filePath));
+                    $media = $app['mediavorus']->guess($filePath);
 
-                    $collection = \collection::get_from_base_id($row['base_id']);
+                    $collection = \collection::get_from_base_id($app, $row['base_id']);
 
                     $borderFile = new \Alchemy\Phrasea\Border\File($media, $collection);
 
@@ -141,14 +138,14 @@ class patch_370a7 implements patchInterface
                     $lazaretFile->setCreated(new \DateTime($row['created_on']));
                     $lazaretFile->setSession($lazaretSession);
 
-                    $em->persist($lazaretFile);
+                    $app['EM']->persist($lazaretFile);
                 }
             }
 
-            $em->flush();
+            $app['EM']->flush();
         } catch (\Exception $e) {
-            $em->getConnection()->rollback();
-            $em->close();
+            $app['EM']->getConnection()->rollback();
+            $app['EM']->close();
         }
 
 

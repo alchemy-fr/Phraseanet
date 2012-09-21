@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -51,7 +53,7 @@ class patch_3604 implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$databox)
+    public function apply(base &$databox, Application $app)
     {
         /**
          * Fail if upgrade has previously failed, no problem
@@ -121,7 +123,7 @@ class patch_3604 implements patchInterface
                 $meta_struct_id = $row['meta_struct_id'];
 
                 if ( ! isset($databox_fields[$meta_struct_id])) {
-                    $databox_fields[$meta_struct_id] = \databox_field::get_instance($databox, $meta_struct_id);
+                    $databox_fields[$meta_struct_id] = \databox_field::get_instance($app, $databox, $meta_struct_id);
                 }
 
                 $values = \caption_field::get_multi_values($row['value'], $databox_fields[$meta_struct_id]->get_separator());

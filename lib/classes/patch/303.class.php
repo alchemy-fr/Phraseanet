@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  *
@@ -52,7 +54,7 @@ class patch_303 implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$appbox)
+    public function apply(base &$appbox, Application $app)
     {
         $this->update_users_log_datas($appbox);
         $this->update_users_search_datas($appbox);

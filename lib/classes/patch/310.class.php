@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  *
@@ -52,7 +54,7 @@ class patch_310 implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$databox)
+    public function apply(base &$databox, Application $app)
     {
         $dom_structure = $databox->get_dom_structure();
         $sx_structure = $databox->get_sxml_structure();

@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  *
@@ -52,7 +54,7 @@ class patch_304 implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$databox)
+    public function apply(base &$databox, Application $app)
     {
         $sql = 'SELECT id FROM pref WHERE prop = "indexes"';
         $stmt = $databox->get_connection()->prepare($sql);

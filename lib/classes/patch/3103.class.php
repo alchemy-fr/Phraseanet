@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  *
@@ -52,7 +54,7 @@ class patch_3103 implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$appbox)
+    public function apply(base &$appbox, Application $app)
     {
         $conn = $appbox->get_connection();
 
@@ -95,7 +97,7 @@ class patch_3103 implements patchInterface
 
                 $expire = new DateTime($row['dateFin']);
                 $expire = $expire->format('u') == 0 ?
-                    null : phraseadate::format_mysql($expire);
+                    null : $app['date-formatter']->format_mysql($expire);
 
                 $params = array(
                     ':ssel_id'    => $row['ssel_id']
@@ -111,11 +113,11 @@ class patch_3103 implements patchInterface
                 $validate_process[$row['ssel_id']][$row['usr_id']] = $conn->lastInsertId();
                 $stmt->closeCursor();
 
-                $sbas_id = phrasea::sbasFromBas($row['base_id']);
-                $record = new record_adapter($sbas_id, $row['record_id']);
+                $sbas_id = phrasea::sbasFromBas($app, $row['base_id']);
+                $record = new record_adapter($app, $sbas_id, $row['record_id']);
 
-                $user = User_Adapter::getInstance($row['usr_id'], $appbox);
-                $pusher = User_Adapter::getInstance($row['pushFrom'], $appbox);
+                $user = User_Adapter::getInstance($row['usr_id'], $app);
+                $pusher = User_Adapter::getInstance($row['pushFrom'], $app);
 
                 if ($row['canHD'])
                     $user->ACL()->grant_hd_on($record, $pusher, 'validate');

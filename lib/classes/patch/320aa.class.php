@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -51,7 +53,7 @@ class patch_320aa implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$appbox)
+    public function apply(base &$appbox, Application $app)
     {
         if (is_file(__DIR__ . '/../../../config/_GV.php')) {
             require __DIR__ . '/../../../config/_GV.php';
