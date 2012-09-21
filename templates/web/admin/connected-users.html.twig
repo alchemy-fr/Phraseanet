@@ -1,37 +1,38 @@
 {% macro tooltip_connected_users(row) %}
 
+{% set user = row.getUser(app) %}
 <span id="tooltip-usr">
     <table id="tabledescexp" cellpadding="0" cellspacing="0">
         <tr>
-            <td class="tooltip-title" colspan="2" valign="center" >usr_id : {{ row['user'].get_id() }}</td>
+            <td class="tooltip-title" colspan="2" valign="center" >usr_id : {{ user.get_id() }}</td>
         </tr>
         <tr>
             <td colspan="2" style="height: 10px;"></td>
         </tr>
         <tr>
-            <td colspan="2"><strong>{{ 'admin::compte-utilisateur nom' | trans }} : </strong>{{ row['user'].get_display_name() }}</td>
+            <td colspan="2"><strong>{{ 'admin::compte-utilisateur nom' | trans }} : </strong>{{ user.get_display_name() }}</td>
         </tr>
         <tr>
-            <td colspan="2"><strong>{{ 'admin::compte-utilisateur societe' | trans }} : </strong>{{ row['user'].get_company() }}</td>
+            <td colspan="2"><strong>{{ 'admin::compte-utilisateur societe' | trans }} : </strong>{{ user.get_company() }}</td>
         </tr>
         <tr>
-            <td colspan="2"><strong>{{ 'admin::compte-utilisateur telephone' | trans }} : </strong>{{ row['user'].get_tel() }}</td>
+            <td colspan="2"><strong>{{ 'admin::compte-utilisateur telephone' | trans }} : </strong>{{ user.get_tel() }}</td>
         </tr>
         <tr>
-            <td colspan="2"><strong>{{ 'admin::compte-utilisateur email' | trans }} : </strong>{{ row['user'].get_email() }}</td>
+            <td colspan="2"><strong>{{ 'admin::compte-utilisateur email' | trans }} : </strong>{{ user.get_email() }}</td>
         </tr>
         <tr>
             <td colspan="2"><strong>{{ 'admin::monitor: bases sur lesquelles l\'utilisateur est connecte : ' | trans }} :</strong></td>
         </tr>
-        {% for databox in row['user'].ACL().get_granted_sbas() %}
+        {% for databox in user.ACL().get_granted_sbas() %}
             <tr>
                 <td colspan="2" style="overflow:hidden;" >{{ databox.get_viewname() }}</td>
             </tr>
         {% endfor %}
         <tr>
             <td colspan="2" valign="center" >
-                <strong>{{ row['platform'] }} / {{ row['browser'] }} - {{ row['browser_version'] }}</strong><br/>
-                {% if row['token'] %}
+                <strong>{{ row.getPlatform() }} / {{ row.getBrowserName() }} - {{ row.getBrowserVersion() }}</strong><br/>
+                {% if row.getToken() %}
                     {{ 'Session persistente' | trans }}
                 {%endif%}
             </td>
@@ -47,36 +48,36 @@
     <table class="whoisTable" >
         <tr>
             <td class="colTitle" nowrap >{{ 'admin::monitor: module production' | trans }}</td>
-            <td class="colValue" nowrap >{{ datas['applications'][1]  }}</td>
+            <td class="colValue" nowrap >{{ data['applications'][1]  }}</td>
         </tr>
         <tr>
             <td class="colTitle" nowrap >{{ 'admin::monitor: module client' | trans }}</td>
-            <td class="colValue" >{{ datas['applications'][2] }}</td>
+            <td class="colValue" >{{ data['applications'][2] }}</td>
         </tr>
         <tr>
             <td  class="colTitle" >{{ 'admin::monitor: module admin' | trans }}</td>
-            <td  class="colValue" >{{ datas['applications'][3] }}</td>
+            <td  class="colValue" >{{ data['applications'][3] }}</td>
         </tr>
         <tr>
             <td  class="colTitle" >{{ 'admin::monitor: module report' | trans }}</td>
-            <td  class="colValue" >{{ datas['applications'][4] }}</td>
+            <td  class="colValue" >{{ data['applications'][4] }}</td>
         </tr>
         <tr>
             <td  class="colTitle" >{{ 'admin::monitor: module thesaurus' | trans }}</td>
-            <td  class="colValue" >{{ datas['applications'][5] }}</td>
+            <td  class="colValue" >{{ data['applications'][5] }}</td>
         </tr>
         <tr>
             <td  class="colTitle" >{{ 'admin::monitor: module comparateur' | trans }}</td>
-            <td  class="colValue" >{{ datas['applications'][6] }}</td>
+            <td  class="colValue" >{{ data['applications'][6] }}</td>
         </tr>
         <tr>
             <td  class="colTitle" >{{ 'admin::monitor: module validation' | trans }}</td>
-            <td  class="colValue" >{{ datas['applications'][7] }}</td>
+            <td  class="colValue" >{{ data['applications'][7] }}</td>
         </tr>
-        {% if datas['applications'][0] != 0 %}
+        {% if data['applications'][0] != 0 %}
         <tr>
             <td  class="colTitle" >{{ 'admin::monitor: total des utilisateurs uniques : ' | trans }}</td>
-            <td  class="colValue" >{{ datas['applications'][0] }}</td>
+            <td  class="colValue" >{{ data['applications'][0] }}</td>
         </tr>
         {% endif %}
     </table>
@@ -96,26 +97,37 @@
             </tr>
         </thead>
         <tbody>
-            {% for row in datas['sessions'] %}
-            <tr title="{{ _self.tooltip_connected_users(row) | e }}" class="{% if loop.index is odd %}odd{% else %}even{% endif %} usrTips" id="TREXP_{{ row["session_id"]}}">
+            {% for row in data['sessions'] %}
+            <tr title="{{ _self.tooltip_connected_users(row) | e }}" class="{% if loop.index is odd %}odd{% else %}even{% endif %} usrTips" id="TREXP_{{ row.getId()}}">
 
-                {% if row["session_id"] == session.get_ses_id() %}
-                    <td style="color:#ff0000"><i>{{ row['user'].get_display_name() }}</i></td>
+                {% if row.getId() == app['session'].get('session_id') %}
+                    <td style="color:#ff0000"><i>{{ user.get_display_name() }}</i></td>
                 {% else %}
-                    <td>{{ row['user'].get_display_name() }}</td>
+                    <td>{{ user.get_display_name() }}</td>
                 {% endif %}
 
                 <td>
-                    {% for app in row["app"] %}
-                        {% if app != 0 %}
-                            {{ app | AppName }}<br>
-                        {% endif %}
+                    {% for module in row.getModules() %}
+                        {{ module.getmoduleId() | AppName }}<br>
                     {% endfor %}
                 </td>
 
-                <td>{{ row["ip"] }}<br/>{{ row["ip_infos"] }}</td>
-                <td>{{ row['created_on'] | formatDate }}</td>
-                <td>{{ row['lastaccess'] | prettyDate }}</td>
+                {% set geoname = app['geonames'].find_geoname_from_ip(row.getIpAddress()) %}
+
+                {% if geoname['city']  %}
+                    {% set ip_infos = geoname['city'] ~ ' (' ~ geoname['country'] ~ ')' %}
+                {% elseif geoname['fips'] %}
+                    {% set ip_infos = geoname['fips'] ~ ' (' ~ geoname['country'] ~ ')' %}
+                {% elseif geoname['country'] %}
+                    {% set ip_infos = geoname['country'] %}
+                {% else %}
+                    {% set ip_infos = '' %}
+                {% endif %}
+
+
+                <td>{{ row.getIpAddress() }}<br/>{{ ip_infos }}</td>
+                <td>{{ app['date-formatter'].getDate(row.getCreated()) }}</td>
+                <td>{{ app['date-formatter'].getPrettyString(row.getUpdated()) }}</td>
 
             </tr>
             {% endfor %}

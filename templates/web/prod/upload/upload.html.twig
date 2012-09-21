@@ -42,7 +42,7 @@
                             <td class="uploader-info">
                                 <p>
                                     {% trans 'You are using the HTML5 uploader.' %}
-                                    {% if not browser.supportFileAPI() %}
+                                    {% if not app['browser'].supportFileAPI() %}
                                         {% trans 'Your browser does not support all HTML5 features properly.' %}
                                     {% endif %}
                                 </p>

@@ -31,7 +31,7 @@
                     <h1 id="namePhr">{{home_title}}</h1>
                 </div>
 
-                {% if not session.is_authenticated %}
+                {% if not app.isAuthenticated() %}
                     <div id="content-box" class="span6 offset3">
                         <form id="login-form" class="form-vertical" method="post">
                             {% for key,value in auth.getParams %}

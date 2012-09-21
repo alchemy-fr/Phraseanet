@@ -76,9 +76,9 @@ $(document).ready(function(){
                           {% endif%}
                         </span>
                         <span class='app-row'>
-                          <font size="1"><i>{{app.get_created_on()|prettyDate}}</i></font>
+                          <font size="1"><i>{{ app['date-formatter'].getPrettyString(app.get_created_on()) }}</i></font>
                         </span>
-                        <span class='app-row'>{{app.get_description() }}</span>
+                        <span class='app-row'>{{ app.get_description() }}</span>
                   </div>
                 </li>
               {%endfor%}

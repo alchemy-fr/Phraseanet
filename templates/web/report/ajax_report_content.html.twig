@@ -3,7 +3,7 @@
     <div class="horizontal-scroller">
         <ul class="tabb">
             {% for key in selection|keys %}
-                <li class ="number_{{ key }}"><a href="#tab-{{ key }}-{{ param.tbl }}">{{ key|sbas_names}}</a></li>
+                <li class ="number_{{ key }}"><a href="#tab-{{ key }}-{{ param.tbl }}">{{ key|sbas_names(app)}}</a></li>
             {% endfor %}
         </ul>
     </div>

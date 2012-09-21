@@ -1,4 +1,4 @@
-{% macro make_bloc(WorkZone, selected_type, selected_id, srt) %}
+{% macro make_bloc(app, WorkZone, selected_type, selected_id, srt) %}
   <div class="alert_datas_changed ui-corner-all">
     <a title="{% trans 'rafraichir' %}" class="basket_refresher" href="#">
       {% trans 'Vous avez recu un nouveau panier' %}
@@ -91,8 +91,8 @@
             <img title="{% trans 'Vous avez envoye une demande de validation de document sur ce panier' %}"
                  class="basketTips" src="/skins/icons/myvalid.png"/>
           {% endif %}
-          {% if basket.getPusher() %}
-            {% set pusher = basket.getPusher().get_display_name() %}
+          {% if basket.getPusher(app) %}
+            {% set pusher = basket.getPusher(app).get_display_name() %}
             <img class="basketTips" title="{% trans %}paniers:: panier recu de {{pusher}}{% endtrans %}"
                  src="/skins/icons/push16.png"/>
           {% endif %}
@@ -171,15 +171,15 @@
     {% for story in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES')) %}
 
 
-        <div tooltipsrc="/prod/tooltip/Story/{{story.getRecord().get_sbas_id()}}/{{story.getRecord().get_record_id()}}/"
+        <div tooltipsrc="/prod/tooltip/Story/{{story.getRecord(app).get_sbas_id()}}/{{story.getRecord(app).get_record_id()}}/"
              id="SSWZ_{{story.getId()}}" sbas="{{story.getSbasId()}}"
-             class="STORY_{{ story.getRecord().get_serialize_key() }} basketTips ui-accordion-header ui-state-default
+             class="STORY_{{ story.getRecord(app).get_serialize_key() }} basketTips ui-accordion-header ui-state-default
                     ui-corner-all header SSTT grouping
                     {% if story.getId() == selected_id and selected_type == 'story' %}active{% endif %}">
-          <a href="/prod/story/{{ story.getRecord().get_sbas_id }}/{{ story.getRecord().get_record_id() }}/">
+          <a href="/prod/story/{{ story.getRecord(app).get_sbas_id }}/{{ story.getRecord(app).get_record_id() }}/">
             <span>
-            {{ story.getRecord().get_base_id()|get_collection_logo|raw }}
-            <i> {{ story.getRecord().get_title() }} </i>
+            {{ story.getRecord(app).get_base_id()|get_collection_logo(app)|raw }}
+            <i> {{ story.getRecord(app).get_title() }} </i>
             </span>
           </a>
           <div class="menu">
@@ -194,25 +194,25 @@
                     <div class="context-menu context-menu-theme-vista">
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner"
-                             onclick="downloadThis('lst={{story.getRecord().get_serialize_key()}}');">{% trans 'action::exporter' %}
+                             onclick="downloadThis('lst={{story.getRecord(app).get_serialize_key()}}');">{% trans 'action::exporter' %}
                         </div>
                       </div>
                       <div title="" class="context-menu-item menu3-custom-item">
-                        <div onclick="editThis('IMGT','{{story.getRecord().get_serialize_key()}}');" style=""
+                        <div onclick="editThis('IMGT','{{story.getRecord(app).get_serialize_key()}}');" style=""
                              class="context-menu-item-inner">{% trans 'action::editer' %}
                         </div>
                       </div>
 
                       <div title="" class="context-menu-item menu3-custom-item">
                         <div class="context-menu-item-inner">
-                          <a class="story_unfix" href="/prod/WorkZone/detachStory/{{story.getRecord().get_sbas_id()}}/{{story.getRecord().get_record_id()}}/">
+                          <a class="story_unfix" href="/prod/WorkZone/detachStory/{{story.getRecord(app).get_sbas_id()}}/{{story.getRecord(app).get_record_id()}}/">
                             {% trans 'action::detacher' %}
                           </a>
                         </div>
                       </div>
                       <div title="" class="context-menu-item menu3-custom-item">
                         <div class="context-menu-item-inner">
-                          <a class="dialog" title="{% trans 'Re-ordonner' %}" href="/prod/story/{{story.getRecord().get_sbas_id()}}/{{story.getRecord().get_record_id()}}/reorder/">
+                          <a class="dialog" title="{% trans 'Re-ordonner' %}" href="/prod/story/{{story.getRecord(app).get_sbas_id()}}/{{story.getRecord(app).get_record_id()}}/reorder/">
                             {% trans 'Re-ordonner' %}
                           </a>
                         </div>
@@ -239,7 +239,7 @@
 {% endmacro %}
 
 
-{% macro element(wz_scope, container, contained, record, ord, user, session) %}
+{% macro element(wz_scope, container, contained, record, ord, user) %}
   {% set box_height = 110 %}
   {% if user.getPrefs('basket_title_display') == '1' %}
       {% set box_height = (box_height + 20) %}
@@ -267,7 +267,7 @@
           <div style="position:absolute;background-color:#959595;color:black;font-weight:bold;padding:3px;z-index:90;">
               {{record.get_number()}}
           </div>
-    {{thumbnail.format(record.get_thumbnail,82,82, '', session, true, false)}}
+    {{thumbnail.format(record.get_thumbnail,82,82, '', true, false)}}
       <div class="bottom">
           <a
             {% if wz_scope == 'groupings' %}
@@ -289,15 +289,15 @@
   </div>
 {% endmacro %}
 
-{% macro display_basket(basket, user, session) %}
+{% macro display_basket(app, basket, user) %}
   {% for basket_element in basket.getElements() %}
-      <span class="wrapCHIM_{{ basket_element.getRecord().get_serialize_key() }}">
-      {{ _self.element('basket', basket, basket_element, basket_element.getRecord(), basket_element.getOrd(), user, session) }}
+      <span class="wrapCHIM_{{ basket_element.getRecord(app).get_serialize_key() }}">
+      {{ _self.element('basket', basket, basket_element, basket_element.getRecord(app), basket_element.getOrd(), user) }}
       </span>
   {% endfor %}
 {% endmacro %}
 
-{% macro display_validation(basket, ordre, user, session) %}
+{% macro display_validation(app, basket, ordre, user) %}
   <div style="margin:5px 0;text-align:center;">
       <form>
           <select name="valid_ord">
@@ -309,18 +309,18 @@
   </div>
 
   {% for basket_element in basket.getElementsByOrder(ordre) %}
-      <span class="wrapCHIM_{{ basket_element.getRecord().get_serialize_key() }} valid">
+      <span class="wrapCHIM_{{ basket_element.getRecord(app).get_serialize_key() }} valid">
           <table style="width: 100%; min-width: 330px; display: inline-block;">
               <tr>
                   <td style="width:80px;">
-                    {{ _self.element('basket', basket, basket_element, basket_element.getRecord(), basket_element.getOrd(), user, session) }}
+                    {{ _self.element('basket', basket, basket_element, basket_element.getRecord(app), basket_element.getOrd(), user) }}
                   </td>
                   <td style="width:100%;">
                       <table style=width:100%>
                           {% for choice in basket_element.getValidationDatas() %}
-                              {% if basket.getValidation().getParticipant(user).getCanSeeOthers() or choice.getParticipant().getUser() == core.getAuthenticatedUser() %}
+                              {% if basket.getValidation().getParticipant(user, app).getCanSeeOthers() or choice.getParticipant().getUser(app) == app['phraseanet.user'] %}
                               <tr>
-                                  <td> {{ choice.getParticipant().getUser().get_display_name() }} </td>
+                                  <td> {{ choice.getParticipant().getUser(app).get_display_name() }} </td>
                                   <td>
                                   {% if choice.getAgreement() == true %}
                                       <img style="cursor:help;" src='/skins/lightbox/agree.png' title="{% trans "L'utilisateur approuve ce document" %}" />

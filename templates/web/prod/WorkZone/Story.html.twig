@@ -73,7 +73,7 @@
 
     {% for record in Story.get_children().get_elements() %}
         <span class="wrapCHIM_{{ record.get_serialize_key() }}">
-        {{ Macros.element('groupings', Story, record, record, record.get_number(), user, session) }}
+        {{ Macros.element('groupings', Story, record, record, record.get_number(), user) }}
         </span>
     {% endfor %}
   </div>

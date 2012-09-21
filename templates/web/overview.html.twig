@@ -83,7 +83,7 @@
         {% import 'common/thumbnail.html.twig' as thumbnail %}
         {% set subdef = record.get_subdef(subdef_name) %}
 
-        {{ thumbnail.format(subdef, subdef.get_width(), subdef.get_height(), '', session, true, false) }}
+        {{ thumbnail.format(subdef, subdef.get_width(), subdef.get_height(), '', true, false) }}
       </div>
             <div class="caption">
         {% include 'common/caption.html.twig' %}

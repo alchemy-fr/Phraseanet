@@ -6,7 +6,7 @@
       <a href="/lightbox/ajax/LOAD_FEED_ITEM/{{feed_entry.get_id()}}/{{element.get_id()}}/">
         <div id="scid_{{element.get_id()}}" class="basket_element ui-corner-all {% if first_item and first_item.get_id() == element.get_id() %}selected{% endif %}">
           <div class="display_id">{{element.get_ord()}}</div>
-          {{thumbnail.format(element.get_record().get_thumbnail() ,114,85, '', session, true, false)}}
+          {{thumbnail.format(element.get_record().get_thumbnail() ,114,85, '', true, false)}}
           <form name="download_form" class="download_form" style="display:none;">
             <input type="hidden" name="basrec" value="{{element.get_record().get_serialize_key()}}"/>
           </form>

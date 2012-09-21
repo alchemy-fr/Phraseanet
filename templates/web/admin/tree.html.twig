@@ -2,7 +2,7 @@
 
 <ul id="tree" class="filetree">
 
-  {% if user.is_admin() %}
+  {% if user.ACL().is_admin() %}
   <li>
     <a target="right" href="/admin/dashboard/" class="ajax">
       <img src="/skins/admin/Dashboard.png" />
@@ -15,7 +15,7 @@
   </li>
   {% endif %}
 
-  {% if user.is_admin() %}
+  {% if user.ACL().is_admin() %}
   <li>
     <a target="right" href="/admin/setup/" class="ajax">
       <img src="/skins/admin/Setup.png" />

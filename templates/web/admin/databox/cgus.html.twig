@@ -1,9 +1,9 @@
 <h1>{% trans'Terms Of Use' %}</h1>
 
-<form target="_self" method="post" action="{{ path('admin_database_submit_cgus', {'databox_id': app.request.attributes.get('databox_id')}) }}">
-    <div class="well well-small">
-        <input class="btn btn-primary" type="submit" value="{% trans'Mettre a jour' %}" id="valid" style="margin-bottom:9px;"/>
-        <label for="valid" class="checkbox">
+<form target="_self" method="post" action="{{ path('admin_database_submit_cgus', {'databox_id': app['request'].attributes.get('databox_id')}) }}">
+    <div class='well'>
+        <input class='btn btn-primary' type="submit" value="{% trans'Mettre a jour' %}" id="valid"/>
+        <label for="valid" class='checkbox'>
             {% trans'admin::CGU Les utilisateurs doivent imperativement revalider ces conditions' %}
             <input type="checkbox" value="1" name="valid"/>
         </label>

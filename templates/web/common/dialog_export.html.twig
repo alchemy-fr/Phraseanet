@@ -120,7 +120,7 @@
                                     <div style="display:none;" class="undisposable">
                                         <div>{% trans 'Les documents ne peuvent pas etre exportes' %}</div>
                                         {% for datas in values.refused%}
-                                            {{ thumbnail.format(datas, 80, 80,'', session, true, false) }}
+                                            {{ thumbnail.format(datas, 80, 80,'', true, false) }}
                                         {% endfor %}
                                     </div>
                                 {% endif %}
@@ -187,7 +187,7 @@
                                         <div style="display:none;" class="undisposable">
                                             <div><i>{% trans 'La sous resolution n\'est pas disponible pour les documents suivants' %}</i></div>
                                             {% for datas in values.refused%}
-                                                {{ thumbnail.format(datas, 80, 80,'', session, true, false) }}
+                                                {{ thumbnail.format(datas, 80, 80,'', true, false) }}
                                             {% endfor %}
                                         </div>
                                     {% endif %}
@@ -233,7 +233,7 @@
                             <div style="display:none;" class="undisposable">
                                 <div><i>{% trans 'La sous resolution n\'est pas disponible pour les documents suivants' %}</i></div>
                                 {% for datas in values.refused%}
-                                    {{ thumbnail.format(datas, 80, 80,'', session, true, false) }}
+                                    {{ thumbnail.format(datas, 80, 80,'', true, false) }}
                                 {% endfor %}
                             </div>
                         {% endif %}
@@ -329,7 +329,7 @@
                 <div class="control-group">
                     <label class="control-label" for="command_geoname_field">{% trans 'admin::compte-utilisateur ville' %} *</label>
                     <div class="controls">
-                        <input class="required geoname_field" type="text" name="geonameid" id="command_geoname_field" geonameid="{{ user.get_geonameid() }}" value="{{ user.get_geonameid()|geoname_display }}" />
+                        <input class="required geoname_field" type="text" name="geonameid" id="command_geoname_field" geonameid="{{ user.get_geonameid() }}" value="{{ app['geonames'].name_from_id(user.get_geonameid()) }}" />
                     </div>
                 </div>
 
@@ -391,7 +391,7 @@
                                         <div style="display:none;" class="undisposable">
                                             <div><i>{% trans 'La sous resolution n\'est pas disponible pour les documents suivants' %}</i></div>
                                             {% for datas in values.refused%}
-                                                {{ thumbnail.format(datas, 80, 80,'', session, true, false) }}
+                                                {{ thumbnail.format(datas, 80, 80,'', true, false) }}
                                             {% endfor %}
                                         </div>
                                     {% endif %}

@@ -1,4 +1,4 @@
-{% macro format(arraySubdefs, displayWidth, displayHeight, extraclass, session, wrap)%}
+{% macro format(arraySubdefs, displayWidth, displayHeight, extraclass, wrap)%}
 
     {% set displayWidth = displayWidth %}
     {% set displayHeight = displayHeight|default(displayWidth) %}
@@ -20,7 +20,7 @@
                 {% set s_width = subdef.get_width() %}
                 {% set s_height = subdef.get_height() %}
             {% endif %}
-            {% if session.is_authenticated() == true %}
+            {% if app.isAuthenticated() == true %}
                 {% set url = subdef.get_url() %}
             {% else %}
                 {% set url = subdef.get_permalink().get_url() %}

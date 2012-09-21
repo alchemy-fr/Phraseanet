@@ -22,7 +22,7 @@
             <img src="/skins/lightbox/save.png"/>
         </button>
         <form name="download_form" style="display:none;">
-            <input type="hidden" name="basrec" value="{{basket_element.getRecord().get_serialize_key()}}"/>
+            <input type="hidden" name="basrec" value="{{basket_element.getRecord(app).get_serialize_key()}}"/>
         </form>
          |
         {% if basket_element.getBasket().getValidation() %}

@@ -30,18 +30,18 @@
                     {% trans 'Session persistante' %}
                 </td>
             </tr>
-            {% for row in session.get_my_sessions() %}
+            {% for row in sessions %}
                 <tr>
                     <td>
-                        {% if session.get_ses_id() != row['session_id'] %}
+                        {% if app['session'].get('phrasea_session_id') != row['session_id'] %}
                             <img src="/skins/icons/delete.png"/>
                         {% endif %}
                     </td>
                     <td>
-                        {{ row['created_on'] |formatDate }}
+                        {{ app['date-formatter'].getDate(row['created_on']) }}
                     </td>
                     <td>
-                        {{ row['lastaccess'] |formatDate }}
+                        {{ app['date-formatter'].getDate(row['lastaccess']) }}
                     </td>
                     <td>
                         {{ row['ip'] }}

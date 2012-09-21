@@ -60,7 +60,7 @@
       <td>
         <input type="hidden" value="{{ element.get_id() }}"/>
         <div class="diapo pending_records">
-          {{thumb.format(element.get_record().get_thumbnail, 40, 40, "", session, true, false)}}
+          {{thumb.format(element.get_record().get_thumbnail, 40, 40, "", true, false)}}
         </div>
       </td>
       <td>
@@ -91,10 +91,10 @@
         {% endif %}
       </td>
       <td>
-        {{ element.get_created_on()|prettyDate }}
+        {{ app['date-formatter'].getPrettyString(element.get_created_on()) }}
       </td>
       <td>
-        {{ element.get_uploaded_on()|prettyDate }}
+        {{ app['date-formatter'].getPrettyString(element.get_uploaded_on()) }}
       </td>
     </tr>
     {% endfor %}

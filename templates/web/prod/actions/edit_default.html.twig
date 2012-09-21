@@ -294,11 +294,11 @@
                                 <input type="checkbox" class="checkbox" id="EditSROptionRX" value="regexp" onchange="changeReplaceMode(this);">
                                 {% trans 'prod::editing:remplace::option : utiliser une expression reguliere' %}
                                 {% set help_link = 'https://secure.wikimedia.org/wikipedia/en/wiki/Regular_expression' %}
-                                {% if session.get_I18n == 'de' %}
+                                {% if app['locale.I18n'] == 'de' %}
                                     {% set help_link = 'https://secure.wikimedia.org/wikipedia/de/wiki/Regul%C3%A4rer_Ausdruck' %}
-                                {% elseif session.get_I18n == 'fr' %}
+                                {% elseif app['locale.I18n'] == 'fr' %}
                                     {% set help_link = 'https://secure.wikimedia.org/wikipedia/fr/wiki/Expression_rationnelle' %}
-                                {% elseif session.get_I18n == 'ar' %}
+                                {% elseif app['locale.I18n'] == 'ar' %}
                                     {% set help_link = 'https://secure.wikimedia.org/wikipedia/ar/wiki/%D8%AA%D8%B9%D8%A7%D8%A8%D9%8A%D8%B1_%D9%86%D9%85%D8%B7%D9%8A%D8%A9' %}
                                 {% endif %}
                                 <a href="{{help_link}}" target="_blank">

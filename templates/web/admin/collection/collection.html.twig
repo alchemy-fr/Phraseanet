@@ -12,12 +12,12 @@
     </h1>
 </div>
 
-{% if app.request.query.get('success') == '1' %}
+{% if app['request'].query.get('success') == '1' %}
     <div class="alert alert-success">
         <a class="close" data-dismiss="alert" href="#">×</a>
         {% trans 'Successful update' %}
     </div>
-{% elseif app.request.query.get('success') == '0' %}
+{% elseif app['request'].query.get('success') == '0' %}
     <div class="alert alert-error">
         <a class="close" data-dismiss="alert" href="#">×</a>
         <strong>{% trans 'An error occured' %}</strong>
@@ -118,8 +118,8 @@
 {# mini logo #}
 <div class="well well-small action-block">
     <h5>{% trans 'admin::base:collection: minilogo actuel' %}</h5>
-    {% if collection.getLogo(bas_id) is not empty %}
-        <div class="thumbnail" style="width:120px;height:24px;margin-top:5px;margin-bottom:5px">{{ collection.getLogo(bas_id) | raw }}</div>
+    {% if collection.getLogo(bas_id, app) is not empty %}
+        <div class="thumbnail" style="width:120px;height:24px;margin-top:5px;margin-bottom:5px">{{ collection.getLogo(bas_id, app) | raw }}</div>
         {% if user.ACL.has_right_on_base(bas_id, 'manage') %}
             <form method="post" action="/admin/collection/{{ bas_id }}/picture/mini-logo/delete/" style="margin:0;">
                 <button class="btn btn-danger btn-mini" >

@@ -1,4 +1,4 @@
-<html lang="{{session.get_I18n}}">
+<html lang="{{app['locale.I18n']}}">
     <head>
         {% include 'login/head.html.twig' %}
     </head>
@@ -10,13 +10,13 @@
             </div>
         </noscript>
 
-        {% if browser.isOldBrowser %}
+        {% if app['browser'].isOldBrowser %}
             <div id="wrongBrowser" style="display:none;text-align:center;width:100%;background:#00a8FF;font-size:14px;font-weight:bold;">
                 <div>
                 {% trans 'phraseanet::browser not compliant' %}<br/>{% trans 'phraseanet::recommend browser' %}
                 </div>
                 <div style="height:30px;text-align:center;margin-top:15px;width:950px;margin-right:auto;margin-left:auto;">
-                {% if browser.getPlatform == 'Windows' %}
+                {% if app['browser'].getPlatform == 'Windows' %}
                             <span style="margin:0 10px;padding:0;white-space:nowrap;height:25px;">
                                 <img style="vertical-align:middle;" src="/skins/login/img/firefox.png"/>
                                 <a href="http://www.mozilla.com/firefox/" target="_blank">Mozilla Firefox</a></span>
@@ -26,7 +26,7 @@
                             <span style="margin:0 10px;padding:0;white-space:nowrap;height:25px;">
                                 <img style="vertical-align:middle;" src="/skins/login/img/chrome.png"/>
                                 <a href="http://www.google.com/chrome/" target="_blank">Google Chrome</a></span>
-                {% elseif browser.getPlatform == 'Apple' %}
+                {% elseif app['browser'].getPlatform == 'Apple' %}
                             <span style="margin:0 10px;padding:0;white-space:nowrap;height:25px;">
                                 <img style="vertical-align:middle;" src="/skins/login/img/firefox.png"/>
                                 <a href="http://www.mozilla.com/firefox/" target="_blank">Mozilla Firefox</a></span>
@@ -44,7 +44,7 @@
                 </div>
             </div>
         {% endif %}
-        {% if display_chrome_frame and session.get_cookie('gfc_box') == false %}
+        {% if display_chrome_frame and app['request'].cookies.get('gfc_box') == false %}
         <!--[if IE]>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/chrome-frame/1.0.2/CFInstall.min.js"></script>
         <link href="https://www.google.com/css/modules/buttons/g-button.css" type="text/css" rel="stylesheet">
@@ -105,7 +105,7 @@
                 var RecaptchaOptions = {
                    theme : 'custom',
                    tabindex : 3,
-                   lang : '{{session.get_locale()}}'
+                   lang : '{{app['locale']}}'
                 };
                 </script>
         {% endif %}
@@ -118,10 +118,10 @@
                         </span><span class="title-desc">{{meta_description}}</span></td>
                         <td style="color:#b1b1b1;text-align:right;">
                                 <a class="tab click" onclick="setTab('help',this);return false;">{% trans 'phraseanet:: aide' %}</a>
-                                {% if login.register_enabled %}
+                                {% if login.register_enabled(app) %}
                                     <a href="/login/register/" class="tab" id="register-tab">{% trans 'login:: register' %}</a>
                                 {% endif %}
-                                {% if login.get_cgus != '' %}
+                                {% if login.get_cgus(app) != '' %}
                                     <a class="tab" onclick="setTab('about',this);return false;">{% trans 'login:: CGUs' %}</a>
                                 {% endif %}
                                 <a class="tab" id="main-tab" onclick="setTab('main',this);return false;">{% trans 'login:: accueil' %}</a>
@@ -146,10 +146,10 @@
                         <input type="hidden" name="redirect" value="{{redirect}}">
                     </form>
                 </div>
-                {% if login.get_cgus != '' %}
+                {% if login.get_cgus(app) != '' %}
                     <div id="id-about" class="tab-content" style="display:none;">
                         <div style="position:relative;float:left;width:930px;height:490px;overflow:auto;">
-                            {{login.get_cgus|raw}}
+                            {{login.get_cgus(app)|raw}}
                         </div>
                     </div>
                 {% endif %}
@@ -162,8 +162,8 @@
                               {% trans 'phraseanet:: language' %}
 
                               <select name="lng" id="lng-select" onchange="setLanguage();">
-                              {% for code, language in core.getAvailableLanguages() %}
-                                <option value="{{ code }}" {% if code == session.get_locale() %}selected="selected"{% endif %}>
+                              {% for code, language in app.getAvailableLanguages() %}
+                                <option value="{{ code }}" {% if code == app['locale'] %}selected="selected"{% endif %}>
                                   {{ language }}
                                 </option>
                               {% endfor %}

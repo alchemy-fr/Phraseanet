@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ session.get_I18n }}" style="overflow:hidden;">
+<html lang="{{ app['locale.I18n'] }}" style="overflow:hidden;">
     <head>
         <meta http-equiv="X-UA-Compatible" content="chrome=1">
         <title>{% if local_title is defined%}{{local_title}} | {% endif %}{{home_title}} - {{ module_name }} </title>

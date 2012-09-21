@@ -163,7 +163,7 @@
 
               </th>
               <th colspan="26">
-                <img src="/skins/lng/inclin-{{session.get_I18n()}}.png" style="width:698px"/>
+                <img src="/skins/lng/inclin-{{app['locale.I18n']}}.png" style="width:698px"/>
               </th>
             </tr>
           </thead>
@@ -186,7 +186,7 @@
 
                 </th>
                 <th colspan="26">
-                  <img src="/skins/lng/inclin-{{session.get_I18n()}}.gif" >
+                  <img src="/skins/lng/inclin-{{app['locale.I18n']}}.gif" >
                 </th>
               </tr>
             </thead>-->
@@ -203,7 +203,7 @@
 
               <tr>
                 <td style="width:122px;overflow:hidden;white-space:nowrap;">
-                  {{rights['sbas_id']|sbas_names}}
+                  {{rights['sbas_id']|sbas_names(app)}}
                 </td>
                 <td class="users_col options">
                   <div>
@@ -353,7 +353,7 @@
               {% endif %}
               <tr>
                 <td style="overflow:hidden;white-space:nowrap;">
-                  {{rights['base_id']|bas_names}}
+                  {{rights['base_id']|bas_names(app)}}
                 </td>
                 <td class="users_col case_right_access" title="{% trans 'Access' %}">
                   {{_self.format_checkbox(user, rights, 'access', users, 'base')}}
@@ -519,7 +519,7 @@
               {% trans 'admin::compte-utilisateur ville' %}
             </td>
             <td>
-              <input type="text" geonameid="{{main_user.get_geonameid()}}" value="{{main_user.get_geonameid()|geoname_name_from_id}}" class="geoname_field" name="geonameid" />
+              <input type="text" geonameid="{{main_user.get_geonameid()}}" value="{{ app['geonames'].name_from_id(main_user.get_geonameid()) }}" class="geoname_field" name="geonameid" />
             </td>
           </tr>
           <tr>

@@ -6,7 +6,7 @@
             <input type="hidden" name="reference" value="{{sbas_id}}"/>
             <div class="clksbas" style="text-align: center;">
                 <label class="checkbox" for="sbasChkr_{{sbas_id}}_{{unique_id}}" onclick="clksbas({{sbas_id}}, $('#sbasChkr_{{sbas_id}}_{{unique_id}}')); return false;">
-                    <span>{{sbas_id|sbas_names}}</span>
+                    <span>{{sbas_id|sbas_names(app)}}</span>
                     <span class="infos_sbas_{{sbas_id}}">
                         {{base["collections"]|length}}/{{base['collections']|length}}
                     </span>
@@ -20,7 +20,7 @@
                         <li class="clkbas">
                             <label style="line-height: 18px;" onclick="infoSbas($('#ck_{{base_id}}_{{unique_id}}'),{{sbas_id}}, false, event); return false;"
                                 for="ck_{{base_id}}_{{unique_id}}" class="ck_{{base_id}} {% if collection["selected"] %}selected{% endif %} checkbox">
-                                {{base_id|get_collection_logo|raw}} {{base_id|bas_names}}
+                                {{base_id|get_collection_logo(app)|raw}} {{base_id|bas_names(app)}}
                                 <input class="ck_{{collection["base_id"]}} checkbas" style="*margin-top:-18px;"
                                     onclick="cancelEvent(event);return false;"
                                     onmousedown="infoSbas(this, {{sbas_id}}, false, event); return false;"
@@ -168,7 +168,7 @@
                     </ul>
                     <div id="baskets" class="PNB ui-tabs-panel ui-accordion" style="top:52px;">
                         {% import 'prod/WorkZone/Macros.html.twig'  as  WorkZoneMacros %}
-                        {{WorkZoneMacros.make_bloc(WorkZone)}}
+                        {{WorkZoneMacros.make_bloc(app, WorkZone)}}
                     </div>
                     {% if GV_thesaurus %}
                     <div id="proposals" class="PNB ui-tabs-panel ui-tabs-hide" style="top:52px;"
@@ -207,7 +207,7 @@
                                                     {% if base['thesaurus'] %}
                                                     <li id="TX_P.{{base['sbas_id']}}.T" class="expandable{% if loop.last %} last{% endif %}">
                                                         <div class="hitarea expandable-hitarea"></div>
-                                                        <span>{{base['sbas_id']|sbas_names}}</span>
+                                                        <span>{{base['sbas_id']|sbas_names(app)}}</span>
                                                         <ul style="display:none">{% trans 'chargement' %}</ul>
                                                     </li>
                                                     {% endif %}
@@ -225,7 +225,7 @@
                                                     {% if base['cterms'] %}
                                                     <li id="CX_P.{{base['sbas_id']}}.C" class="expandable{% if loop.last %} last{% endif %}">
                                                         <div class="hitarea expandable-hitarea"></div>
-                                                        <span>{{base['sbas_id']|sbas_names}}</span>
+                                                        <span>{{base['sbas_id']|sbas_names(app)}}</span>
                                                         <ul style="display:none">{% trans 'chargement' %}</ul>
                                                     </li>
                                                     {% endif %}
@@ -1048,7 +1048,7 @@
                 dataType: "json",
                 data: {
                     app : 1,
-                    usr : {{session.get_usr_id()}}
+                    usr : {{app['phraseanet.user'].get_id()}}
                 },
                 error: function(){
                     window.setTimeout("sessionactive();", 10000);

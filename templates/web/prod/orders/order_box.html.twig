@@ -1,5 +1,5 @@
-{% set success = app.request.query.get('success') %}
-{% set action = app.request.query.get('action') %}
+{% set success = app['request'].query.get('success') %}
+{% set action = app['request'].query.get('action') %}
 
 <div id="order_manager">
     {% if  success == '1' %}
@@ -40,10 +40,10 @@
             </thead>
             <tbody>
                 {% for order in orders %}
-                    {% set deadline = order.get_deadline() | prettyDate %}
+                    {% set deadline = app['date-formatter'].getPrettyString(order.get_deadline()) %}
                     <tr id="order_{{ order.get_order_id() }}" class="order_row" {{ current_date > order.get_deadline() ? "style=color:#777": "" }}>
                         <td>{{ order.get_user().get_display_name() }}</td>
-                        <td>{{ order.get_created_on() | prettyDate }}</td>
+                        <td>{{ app['date-formatter'].getPrettyString(order.get_created_on()) }}</td>
                         <td>
                             {% if deadline != '' %}
                                 {{deadline}}

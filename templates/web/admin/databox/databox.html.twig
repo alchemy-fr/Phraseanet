@@ -8,12 +8,12 @@
     <h1>{{ databox.get_serialized_server_info() }}</h1>
 </div>
 
-{% if app.request.query.get('success') == '1' %}
+{% if app['request'].query.get('success') == '1' %}
     <div class="alert alert-success">
         <a class="close" data-dismiss="alert" href="#">×</a>
         {% trans 'forms::operation effectuee OK' %}
     </div>
-{% elseif app.request.query.get('success') == '0' %}
+{% elseif app['request'].query.get('success') == '0' %}
     <div class="alert alert-error">
         <a class="close" data-dismiss="alert" href="#">×</a>
         <strong>{% trans 'An error occured' %}</strong>
@@ -184,8 +184,8 @@
                 <ul>
                 {% for baseId in databox.get_activable_colls() %}
                     <li>
-                        <form class="form-inline" method="post" action="{{ path('admin_collection_enable', {'bas_id': baseId}) }}">
-                            {{ baseId|bas_names }}
+                        <form class='form-inline' method="post" action="{{ path('admin_collection_enable', {'bas_id': baseId}) }}">
+                            {{ baseId|bas_names(app) }}
                             <a href="#" class="btn btn-mini submiter">{% trans "Activer" %}></a>
                         </form>
                     </li>

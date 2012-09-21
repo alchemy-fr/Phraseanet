@@ -23,7 +23,7 @@
           {% trans 'report::Edition des meta-donnees' %}
         {% elseif action == 'collection' %}
           {% set dest = done['final']|implode(', ') %}
-          {% set coll_name = dest|bas_names %}
+          {% set coll_name = dest|bas_names(app) %}
           {% trans %}report::Changement de collection vers : {{coll_name}}{% endtrans %}
         {% elseif action == 'status' %}
           {% trans 'report::Edition des status' %}
@@ -56,7 +56,7 @@
         {% endif %}
           <span class="actor">
           {% if user.ACL().has_right_on_base(record.get_base_id(), 'canreport') %}
-            {% if done['user'] and done['user'].get_id() != session.get_usr_id() %}
+            {% if done['user'] and done['user'].get_id() != app['phraseanet.user'].get_id() %}
               {% set user_infos = done['user'].get_display_name() %}
               {% trans %}report:: par {{ user_infos }}{% endtrans %}
             {% endif %}

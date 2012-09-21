@@ -48,7 +48,7 @@
                         {% for list in lists %}
                             <li class="list" style="padding:2px;">
                                 <a class="list_loader" href="/prod/push/list/{{ list.getId() }}/">
-                                    {% if list.getOwner(user).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
+                                    {% if list.getOwner(user, app).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
                                         <img src="/skins/prod/Push/list-icon.png" />
                                     {% else %}
                                         <img src="/skins/icons/SHARE16.png" />

@@ -7,7 +7,7 @@
             {% for id, record in route.get_elements %}
                 <div id='pub_record_{{record.get_serialize_key()}}' class="diapo">
                     <div class="title">{{ record.get_title() }}</div>
-                    {{thumb.format(record.get_thumbnail, 80, 80, "", session, true, false)}}
+                    {{thumb.format(record.get_thumbnail, 80, 80, "", true, false)}}
                 </div>
             {% endfor %}
         </div>

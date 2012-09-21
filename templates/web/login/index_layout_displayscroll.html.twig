@@ -1,8 +1,8 @@
 <div style="height:180px;position:relative;">
         <div style="height:95px;width:220px;float:right;margin:25px 10px 0;">
                 <div style="margin-top:0px;height:20px;">
-                    {{login.get_register_link|raw}}
-                    {{login.get_guest_link|raw}}
+                    {{login.get_register_link(app) |raw}}
+                    {{login.get_guest_link(app) |raw}}
                 </div>
                 <div style="margin-top:10px;height:20px;">
                   <a target="_self" class="link" rel="external" href="/login/forgot-password/">

@@ -1,7 +1,7 @@
-{% macro format_diapo(record, session) %}
+{% macro format_diapo(record) %}
     {% import 'common/thumbnail.html.twig' as thumbnail %}
     <div class="diapo">
-        {{thumbnail.format(record.get_thumbnail(), 100, 100, '', session, true, false)}}
+        {{thumbnail.format(record.get_thumbnail(), 100, 100, '', true, false)}}
     </div>
 {% endmacro %}
 
@@ -18,7 +18,7 @@
     <div class="PNB10 record_list" style="overflow:auto;">
         {% for record in publishing %}
             <div class="sortable" style="position:relative;float:left;">
-                {{ _self.format_diapo(record, session) }}
+                {{ _self.format_diapo(record) }}
                 <form>
                     <input type="hidden" name="sbas_id" value="{{record.get_sbas_id()}}" />
                     <input type="hidden" name="record_id" value="{{record.get_record_id()}}" />

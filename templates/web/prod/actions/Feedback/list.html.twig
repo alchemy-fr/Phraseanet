@@ -5,7 +5,7 @@
         <table style="height: 40px;">
             <tr>
                 <td style="white-space:nowrap;">
-                    {% if list.getOwner(user).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
+                    {% if list.getOwner(user, app).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
                         <form class="form-inline" method="POST" name="SaveName" action="/prod/lists/list/{{ list.getId() }}/update/">
                             <label>{% trans 'List Name' %}</label>
                             <input type="text" name="name" style="margin: 0 5px;" value="{{ list.getName() }}"/>
@@ -16,14 +16,14 @@
                     {% endif %}
                 </td>
                 <td style="text-align:right;white-space:nowrap;">
-                    {% if list.getOwner(user).getRole() == constant('\\Entities\\UsrListOwner::ROLE_ADMIN') %}
+                    {% if list.getOwner(user, app).getRole() == constant('\\Entities\\UsrListOwner::ROLE_ADMIN') %}
                         <a href="/prod/lists/list/{{ list.getId() }}/share/" title="{% trans 'Share the list' %}" class="list_sharer">
                             <img src="/skins/prod/Push/list-icon.png" />
                             {% trans "Set sharing permission" %}
                         </a>
                     {% endif %}
                 </td>
-                {% if list.getOwner(user).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_ADMIN') %}
+                {% if list.getOwner(user, app).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_ADMIN') %}
                     <td style="text-align:right;white-space:nowrap;width:150px;">
                         <button class="deleter btn btn-inverse">
                             {% trans 'Delete' %}
@@ -40,20 +40,20 @@
                 <p>
                     {% set length = '<span class="counter current">' ~ list.getEntries().count() ~ '</span>' %}
                     {% trans %}{{ length }} peoples{% endtrans %}
-                    {% if list.getOwner(user).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
+                    {% if list.getOwner(user, app).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
                         <button class="EditToggle btn btn-inverse">{% trans 'Edit' %}</button>
                     {% endif %}
                 </p>
             </div>
             <div class="PNB" style="top:35px;overflow:auto;">
-                {% set role = list.getOwner(user).getRole() %}
+                {% set role = list.getOwner(user, app).getRole() %}
                 {% for entry in list.getEntries() %}
                     {{ ListsMacros.badgeReadonly(entry, role) }}
                 {% endfor %}
             </div>
         </div>
     </div>
-    {% if list.getOwner(user).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
+    {% if list.getOwner(user, app).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
         <div class="PNB content readwrite grey-bg" style="display:none;top:40px;">
             <form name="list-editor-search" method="POST" action="/prod/push/edit-list/{{ list.getId() }}/">
                 <div class="PNB10" style="height:160px;">

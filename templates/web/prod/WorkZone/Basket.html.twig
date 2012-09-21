@@ -68,9 +68,9 @@
 {% import 'prod/WorkZone/Macros.html.twig' as Macros %}
 
 {% if basket.getValidation() %}
-    {{ Macros.display_validation(basket, ordre, user, session) }}
+    {{ Macros.display_validation(app, basket, ordre, user) }}
 {% else %}
-    {{ Macros.display_basket(basket, user, session) }}
+    {{ Macros.display_basket(app, basket, user) }}
 {% endif %}
 
           </div>

@@ -1,9 +1,9 @@
-{% if app.request.query.get('success') == '1' %}
+{% if app['request'].query.get('success') == '1' %}
     <div class="alert alert-success">
         <a class="close" data-dismiss="alert" href="#">×</a>
         {% trans 'Successful update' %}
     </div>
-{% elseif app.request.query.get('success') == '0' %}
+{% elseif app['request'].query.get('success') == '0' %}
     <div class="alert alert-error">
         <a class="close" data-dismiss="alert" href="#">×</a>
         <strong>{% trans 'An error occured' %}</strong>
@@ -13,7 +13,7 @@
     </div>
 {% endif %}
 
-{% if app.request.query.get('notice') == 'restart' %}
+{% if app['request'].query.get('notice') == 'restart' %}
     <div class="alert">
         <a class="close" data-dismiss="alert" href="#">×</a>
         {% trans 'Do not forget to restart the tasks scheduler' %}
@@ -37,14 +37,14 @@
     </ul>
 </div>
 
-{% if user.is_admin() %}
+{% if user.ACL().is_admin() %}
     <div class="db_infos">
         <h2>{% trans 'admin::base: Version' %}</h2>
 
         {% if upgrade_available %}
-            <p>{% trans 'update::Votre application necessite une mise a jour vers : ' %} {{ version_number }}</p>
+            <p>{% trans 'update::Votre application necessite une mise a jour vers : ' %} {{ app['phraseanet.version'].getNumber() }}</p>
         {% else %}
-            <p>{% trans 'update::Votre version est a jour : ' %} {{ version_number }}</p>
+            <p>{% trans 'update::Votre version est a jour : ' %} {{ app['phraseanet.version'].getNumber() }}</p>
         {% endif %}
 
         {% if recommendations | length > 0%}

@@ -59,7 +59,7 @@
         dataType: 'json',
         data: {
           app : 3,
-          usr : {{ session.get_usr_id() }}
+          usr : {{ app['phraseanet.user'].get_id() }}
         },
         error: function(){
           window.setTimeout("sessionactive();", 10000);
