@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Core\Configuration;
+
 require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
 
 class downloadReportTest extends PhraseanetPHPUnitAbstract
@@ -16,7 +18,7 @@ class downloadReportTest extends PhraseanetPHPUnitAbstract
         $this->dmax = $date->format("Y-m-d H:i:s");
         $date->modify('-6 month');
         $this->dmin = $date->format("Y-m-d H:i:s");
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
         $databoxes = $appbox->get_databoxes();
         $this->ret = array();
         foreach ($databoxes as $databox) {
@@ -65,6 +67,7 @@ class downloadReportTest extends PhraseanetPHPUnitAbstract
 
         foreach ($this->ret as $sbasid => $collections) {
             $this->report = new module_report_download(
+                    self::$application,
                     $this->dmin,
                     $this->dmax,
                     $sbasid,
@@ -83,6 +86,7 @@ class downloadReportTest extends PhraseanetPHPUnitAbstract
 
         foreach ($this->ret as $sbasid => $collections) {
             $this->report = new module_report_download(
+                    self::$application,
                     $this->dmin,
                     $this->dmax,
                     $sbasid,
@@ -102,6 +106,7 @@ class downloadReportTest extends PhraseanetPHPUnitAbstract
 
         foreach ($this->ret as $sbasid => $collections) {
             $this->report = new module_report_download(
+                    self::$application,
                     $this->dmin,
                     $this->dmax,
                     $sbasid,
@@ -120,6 +125,7 @@ class downloadReportTest extends PhraseanetPHPUnitAbstract
 
         foreach ($this->ret as $sbasid => $collections) {
             $this->report = new module_report_download(
+                    self::$application,
                     $this->dmin,
                     $this->dmax,
                     $sbasid,

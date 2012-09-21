@@ -9,7 +9,7 @@ class dashboardTest extends PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->dashboard = new module_report_dashboard(self::$user);
+        $this->dashboard = new module_report_dashboard(self::$application, self::$user);
         $this->dashboard->setDate('-2 month', 'now');
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $this->dashboard->legendDay);
         $this->assertNotNull($this->dashboard->dmin);

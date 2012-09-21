@@ -13,7 +13,7 @@ class media_Permalink_AdapterTest extends PhraseanetPHPUnitAbstract
     {
         parent::setUpBeforeClass();
         $databox = static::$records['record_1']->get_databox();
-        static::$object = media_Permalink_Adapter::getPermalink($databox, static::$records['record_1']->get_subdef('document'));
+        static::$object = media_Permalink_Adapter::getPermalink(self::$application, $databox, static::$records['record_1']->get_subdef('document'));
     }
 
     public function testGetPermalink()
@@ -43,7 +43,7 @@ class media_Permalink_AdapterTest extends PhraseanetPHPUnitAbstract
 
     public function testGet_url()
     {
-        $registry = registry::get_instance();
+        $registry = self::$application['phraseanet.registry'];
         $url = $registry->get('GV_ServerName') . 'permalink/v1/' . static::$object->get_label() . '/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/' .
             static::$object->get_token() . '/document/';
 

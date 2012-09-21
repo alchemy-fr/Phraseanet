@@ -39,7 +39,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $basket->setOwner(self::$user);
         $basket->setDescription('hello');
 
-        $em = self::$core->getEntityManager();
+        $em = self::$application['EM'];
 
         $basketElement = new \Entities\BasketElement();
 
@@ -56,7 +56,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $receveid = array(static::$records['record_1']->get_serialize_key() => static::$records['record_1']);
 
         return \set_order::create(
-                \appbox::get_instance(self::$core), new RecordsRequest($receveid, new ArrayCollection($receveid), $basket), self::$user_alt2, 'I need this photos', new \DateTime('+10 minutes')
+                self::$application['phraseanet.appbox'], new RecordsRequest($receveid, new ArrayCollection($receveid), $basket), self::$user_alt2, 'I need this photos', new \DateTime('+10 minutes')
         );
     }
 
@@ -179,11 +179,6 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
         $this->assertInstanceOf('media_subdef', static::$records['record_23']->get_rollover_thumbnail());
         $this->assertNull(static::$records['record_1']->get_rollover_thumbnail());
-    }
-
-    public function testGenerate_subdefs()
-    {
-        $this->markTestIncomplete();
     }
 
     public function testGet_sha256()
@@ -457,7 +452,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_record_by_sha()
     {
-        $tmp_records = record_adapter::get_record_by_sha(static::$records['record_1']->get_sbas_id(), static::$records['record_1']->get_sha256());
+        $tmp_records = record_adapter::get_record_by_sha(self::$application, static::$records['record_1']->get_sbas_id(), static::$records['record_1']->get_sha256());
         $this->assertTrue(is_array($tmp_records));
 
         foreach ($tmp_records as $tmp_record) {
@@ -465,7 +460,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
             $this->assertEquals(static::$records['record_1']->get_sha256(), $tmp_record->get_sha256());
         }
 
-        $tmp_records = record_adapter::get_record_by_sha(static::$records['record_1']->get_sbas_id(), static::$records['record_1']->get_sha256(), static::$records['record_1']->get_record_id());
+        $tmp_records = record_adapter::get_record_by_sha(self::$application, static::$records['record_1']->get_sbas_id(), static::$records['record_1']->get_sha256(), static::$records['record_1']->get_record_id());
         $this->assertTrue(is_array($tmp_records));
         $this->assertTrue(count($tmp_records) === 1);
 
@@ -492,17 +487,9 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         );
     }
 
-    public function testRotate_subdefs()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
     public function testGet_container_baskets()
     {
-        $em = self::$core->getEntityManager();
+        $em = self::$application['EM'];
 
         $basket = $this->insertOneBasket();
         $this->assertInstanceOf('\Entities\Basket', $basket);
@@ -528,7 +515,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
             if ($c_basket->getId() == $basket->getId()) {
                 $found = true;
                 foreach ($c_basket->getElements() as $b_el) {
-                    if ($b_el->getRecord()->get_record_id() == $record_id && $b_el->getRecord()->get_sbas_id() == $sbas_id)
+                    if ($b_el->getRecord(self::$application)->get_record_id() == $record_id && $b_el->getRecord(self::$application)->get_sbas_id() == $sbas_id)
                         $sselcont_id = $b_el->getId();
                 }
             }

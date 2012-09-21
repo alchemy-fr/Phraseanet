@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Core\Configuration;
+
 require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
 
 class pushReportTest extends PhraseanetPHPUnitAbstract
@@ -16,7 +18,7 @@ class pushReportTest extends PhraseanetPHPUnitAbstract
         $this->dmax = $date->format("Y-m-d H:i:s");
         $date->modify('-6 month');
         $this->dmin = $date->format("Y-m-d H:i:s");
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
         $databoxes = $appbox->get_databoxes();
         $this->ret = array();
         foreach ($databoxes as $databox) {
@@ -54,6 +56,7 @@ class pushReportTest extends PhraseanetPHPUnitAbstract
 
         foreach ($this->ret as $sbasid => $collections) {
             $this->report = new module_report_push(
+                    self::$application,
                     $this->dmin,
                     $this->dmax,
                     $sbasid,
@@ -73,6 +76,7 @@ class pushReportTest extends PhraseanetPHPUnitAbstract
 
         foreach ($this->ret as $sbasid => $collections) {
             $this->report = new module_report_push(
+                    self::$application,
                     $this->dmin,
                     $this->dmax,
                     $sbasid,

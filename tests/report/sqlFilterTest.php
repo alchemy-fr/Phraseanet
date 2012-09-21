@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Core\Configuration;
+
 require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
 
 class sqlFilterTest extends PhraseanetPHPUnitAbstract
@@ -18,7 +20,7 @@ class sqlFilterTest extends PhraseanetPHPUnitAbstract
         $dmax = $date->format("Y-m-d H:i:s");
         $date->modify('-6 month');
         $dmin = $date->format("Y-m-d H:i:s");
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$application['phraseanet.appbox'];
         $databoxes = $appbox->get_databoxes();
         $ret = array();
         foreach ($databoxes as $databox) {
@@ -31,6 +33,7 @@ class sqlFilterTest extends PhraseanetPHPUnitAbstract
         }
         foreach ($ret as $sbasid => $collections) {
             $report = new module_report_connexion(
+                    self::$application,
                     $dmin,
                     $dmax,
                     $sbasid,
@@ -46,7 +49,7 @@ class sqlFilterTest extends PhraseanetPHPUnitAbstract
         $this->report->setFilter(array(array('f' => 'user', 'o' => '=', 'v' => 'admin'), array('f' => 'ddate', 'o' => 'LIKE', 'v' => '*'), array('f' => '1', 'o' => 'OR', 'v' => '1')));
         $this->report->setUser_id(self::$user->get_id());
         $this->report->setOrder('user', 'ASC');
-        $this->filter = new module_report_sqlfilter($this->report);
+        $this->filter = new module_report_sqlfilter(self::$application, $this->report);
     }
 
     public function checkFilter($filter)

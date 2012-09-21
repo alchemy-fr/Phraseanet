@@ -39,8 +39,8 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
         $logger = new \Monolog\Logger('test');
         $logger->pushHandler(new \Monolog\Handler\NullHandler());
 
-        self::$recordonbleu = record_adapter::createFromFile($file, new Filesystem());
-        self::$recordonbleu->generate_subdefs(self::$recordonbleu->get_databox(), $logger);
+        self::$recordonbleu = record_adapter::createFromFile($file, self::$application);
+        self::$recordonbleu->generate_subdefs(self::$recordonbleu->get_databox(), self::$application);
 
         foreach (self::$recordonbleu->get_subdefs() as $subdef) {
 
@@ -290,7 +290,7 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
      */
     public function testReadTechnicalDatas()
     {
-        $technical_datas = self::$objectPresent->readTechnicalDatas();
+        $technical_datas = self::$objectPresent->readTechnicalDatas(self::$application['mediavorus']);
         $this->assertArrayHasKey(media_subdef::TC_DATA_WIDTH, $technical_datas);
         $this->assertArrayHasKey(media_subdef::TC_DATA_HEIGHT, $technical_datas);
         $this->assertArrayHasKey(media_subdef::TC_DATA_CHANNELS, $technical_datas);
@@ -298,7 +298,7 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
         $this->assertArrayHasKey(media_subdef::TC_DATA_MIMETYPE, $technical_datas);
         $this->assertArrayHasKey(media_subdef::TC_DATA_FILESIZE, $technical_datas);
 
-        $technical_datas = self::$objectNotPresent->readTechnicalDatas();
+        $technical_datas = self::$objectNotPresent->readTechnicalDatas(self::$application['mediavorus']);
         $this->assertEquals(array(), $technical_datas);
     }
 }
