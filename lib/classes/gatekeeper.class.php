@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -42,16 +43,16 @@ class gatekeeper
      * @var gatekeeper
      */
     protected static $_instance;
-    protected $Core;
+    protected $app;
 
     /**
      *
      * @return gatekeeper
      */
-    public static function getInstance(\Alchemy\Phrasea\Core $Core)
+    public static function getInstance(Application $app)
     {
-        if ( ! (self::$_instance instanceof self))
-            self::$_instance = new self($Core);
+        if (!(self::$_instance instanceof self))
+            self::$_instance = new self($app);
 
         return self::$_instance;
     }
@@ -60,9 +61,9 @@ class gatekeeper
      *
      * @return gatekeeper
      */
-    public function __construct(\Alchemy\Phrasea\Core $Core)
+    public function __construct(Application $app)
     {
-        $this->Core = $Core;
+        $this->app = $app;
 
         return $this;
     }
@@ -75,9 +76,6 @@ class gatekeeper
      */
     public function check_directory(Request $request)
     {
-        $appbox = appbox::get_instance($this->Core);
-        $session = $appbox->get_session();
-
         if (http_request::is_command_line()) {
             return;
         }
@@ -97,17 +95,16 @@ class gatekeeper
             $this->_script_name = array_pop($php_script);
         }
 
-        if ( ! $session->is_authenticated()) {
+        if (!$this->app->isAuthenticated()) {
             try {
-                $cookie = Session_Handler::get_cookie('persistent');
-                $auth = new Session_Authentication_PersistentCookie($appbox, $cookie);
-                $session->restore($auth->get_user(), $auth->get_ses_id());
+                $auth = new Session_Authentication_PersistentCookie($this->app, $request->cookies->get('persistent'));
+                $this->app->openAccount($auth, $auth->getSessionId());
             } catch (Exception $e) {
 
             }
         }
 
-        if ( ! $session->is_authenticated()) {
+        if (!$this->app->isAuthenticated()) {
             switch ($this->_directory) {
                 case 'prod':
                 case 'client':
@@ -143,7 +140,7 @@ class gatekeeper
                 case '':
                     return;
                 case 'setup':
-                    if ($appbox->upgradeavailable()) {
+                    if ($this->app['phraseanet.appbox']->upgradeavailable()) {
                         return;
                     } else {
                         phrasea::redirect('/login/');
@@ -154,7 +151,7 @@ class gatekeeper
                     break;
                 case 'lightbox':
                     $this->token_access();
-                    if ( ! $session->is_authenticated()) {
+                    if (!$this->app->isAuthenticated()) {
                         phrasea::redirect('/login/?redirect=' . $_SERVER['REQUEST_URI']);
                     }
                     break;
@@ -163,23 +160,17 @@ class gatekeeper
             return;
         }
 
-        try {
-            $session->open_phrasea_session();
-        } catch (Exception $e) {
-            phrasea::redirect('/login/logout/?app=' . $this->_directory);
-        }
-
-        $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+        $user = $this->app['phraseanet.user'];
 
         switch ($this->_directory) {
             case 'admin':
             case 'taskmanager':
-                if ( ! $user->ACL()->has_access_to_module('admin')) {
+                if (!$user->ACL()->has_access_to_module('admin')) {
                     phrasea::headers(403);
                 }
                 break;
             case 'thesaurus2':
-                if ( ! $user->ACL()->has_access_to_module('thesaurus')) {
+                if (!$user->ACL()->has_access_to_module('thesaurus')) {
                     phrasea::headers(403);
                 }
                 break;
@@ -189,12 +180,12 @@ class gatekeeper
                 $this->token_access();
                 break;
             case 'upload':
-                if ( ! $user->ACL()->has_right('addrecord')) {
+                if (!$user->ACL()->has_right('addrecord')) {
                     phrasea::headers(403);
                 }
                 break;
             case 'report':
-                if ( ! $user->ACL()->has_right('report')) {
+                if (!$user->ACL()->has_right('report')) {
                     phrasea::headers(403);
                 }
                 break;
@@ -212,16 +203,14 @@ class gatekeeper
      */
     protected function give_guest_access()
     {
-        $appbox = appbox::get_instance($this->Core);
         $request = http_request::getInstance();
-        $session = $appbox->get_session();
 
         $parm = $request->get_parms('nolog', 'redirect');
 
-        if ( ! is_null($parm['nolog']) && phrasea::guest_allowed()) {
+        if (!is_null($parm['nolog']) && phrasea::guest_allowed($this->app)) {
             try {
-                $auth = new Session_Authentication_Guest($appbox);
-                $session->authenticate($auth);
+                $auth = new Session_Authentication_Guest($this->app);
+                $this->app->openAccount($auth);
             } catch (Exception $e) {
                 $url = '/login/?redirect=' . $parm['redirect']
                     . '&error=' . urlencode($e->getMessage());
@@ -240,9 +229,7 @@ class gatekeeper
      */
     protected function token_access()
     {
-        $appbox = appbox::get_instance($this->Core);
         $request = new http_request();
-        $session = $appbox->get_session();
         $parm = $request->get_parms('LOG');
 
         if (is_null($parm["LOG"])) {
@@ -250,16 +237,17 @@ class gatekeeper
         }
 
         try {
-            if ($session->is_authenticated())
-                $session->logout();
-            $auth = new Session_Authentication_Token($appbox, $parm['LOG']);
-            $session->authenticate($auth);
+            if ($this->app->isAuthenticated()) {
+                $this->app->closeAccount();
+            }
+            $auth = new Session_Authentication_Token($this->app, $parm['LOG']);
+            $this->app->openAccount($auth);
         } catch (Exception $e) {
             return phrasea::redirect("/login/?error=" . urlencode($e->getMessage()));
         }
 
         try {
-            $datas = random::helloToken($parm['LOG']);
+            $datas = random::helloToken($this->app, $parm['LOG']);
 
             switch ($datas['type']) {
                 default:
@@ -288,15 +276,7 @@ class gatekeeper
      */
     public function require_session()
     {
-        $appbox = appbox::get_instance($this->Core);
-        $session = $appbox->get_session();
-        if ($session->is_authenticated()) {
-            try {
-                $session->open_phrasea_session();
-            } catch (Exception $e) {
-                phrasea::redirect('/login/logout/');
-            }
-
+        if ($this->app->isAuthenticated()) {
             return true;
         }
         phrasea::headers(403);
