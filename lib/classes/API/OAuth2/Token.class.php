@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     OAuth2 Connector
@@ -270,14 +272,14 @@ class API_OAuth2_Token
      * @param  type             $oauth_token
      * @return API_OAuth2_Token
      */
-    public static function load_by_oauth_token(appbox &$appbox, $oauth_token)
+    public static function load_by_oauth_token(Application $app, $oauth_token)
     {
         $sql = 'SELECT a.api_account_id
             FROM api_oauth_tokens a, api_accounts b
             WHERE a.oauth_token = :oauth_token
               AND a.api_account_id = b.api_account_id';
 
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $params = array(":oauth_token" => $oauth_token);
         $stmt->execute($params);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -286,9 +288,9 @@ class API_OAuth2_Token
         if ( ! $row)
             throw new Exception_NotFound();
 
-        $account = new API_OAuth2_Account($appbox, $row['api_account_id']);
+        $account = new API_OAuth2_Account($app, $row['api_account_id']);
 
-        return new self($appbox, $account);
+        return new self($app['phraseanet.appbox'], $account);
     }
 
     /**
