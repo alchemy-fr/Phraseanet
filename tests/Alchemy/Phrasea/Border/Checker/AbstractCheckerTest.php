@@ -48,7 +48,7 @@ class AbstractCheckerTest extends \PhraseanetPHPUnitAbstract
     public function getDataboxesCombinaison()
     {
         $databox = $collection = null;
-        $app = self::$application;
+        $app = new Application('test');
         $appbox = $app['phraseanet.appbox'];
 
         foreach ($appbox->get_databoxes() as $db) {
@@ -100,7 +100,7 @@ class AbstractCheckerTest extends \PhraseanetPHPUnitAbstract
     public function getCollectionsCombinaison()
     {
         $othercollection = $collection = null;
-        $app = self::$application;
+        $app = new Application('test');
         $appbox = $app['phraseanet.appbox'];
 
         foreach ($appbox->get_databoxes() as $db) {
@@ -171,7 +171,7 @@ class AbstractCheckerTest extends \PhraseanetPHPUnitAbstract
     public function getDataboxAndCollection()
     {
         $databox = $collection = null;
-        $app = self::$application;
+        $app = new Application('test');
         $appbox = $app['phraseanet.appbox'];
 
         foreach ($appbox->get_databoxes() as $db) {
