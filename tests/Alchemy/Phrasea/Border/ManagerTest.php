@@ -184,7 +184,8 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $odd = !$odd;
         }
 
-        $file->addAttribute(new Attribute\Story(self::$records['record_story_1']));
+        $story = \record_adapter::createStory(self::$application, self::$collection);
+        $file->addAttribute(new Attribute\Story($story));
 
         $status = '0';
         foreach (range(1, 64) as $i) {
@@ -230,6 +231,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 $record->delete();
             }
         }
+        $story->delete();
     }
 
     /**

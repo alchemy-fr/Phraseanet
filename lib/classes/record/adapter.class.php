@@ -10,7 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Metadata\Tag\TfFilename;
 use Alchemy\Phrasea\Metadata\Tag\TfBasename;
@@ -2010,8 +2009,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             throw new Exception('This record is not a grouping');
         }
 
-        $appbox = $this->app['phraseanet.appbox'];
-
         $sql = 'SELECT record_id
               FROM regroup g
                 INNER JOIN (record r
@@ -2026,7 +2023,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
               ORDER BY g.ord ASC, dateadd ASC, record_id ASC';
 
         $params = array(
-            ':GV_site'   => $appbox->get_registry()->get('GV_sit')
+            ':GV_site'   => $this->app['phraseanet.registry']->get('GV_sit')
             , ':usr_id'    => $this->app['phraseanet.user']->get_id()
             , ':record_id' => $this->get_record_id()
         );
