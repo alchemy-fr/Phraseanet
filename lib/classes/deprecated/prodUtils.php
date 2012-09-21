@@ -9,22 +9,19 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-function deleteRecord($lst, $del_children)
+function deleteRecord(Application $app, $lst, $del_children)
 {
-    $Core = bootstrap::getCore();
-    $em = $Core->getEntityManager();
-    $BE_repository = $em->getRepository('\Entities\BasketElement');
+    $BE_repository = $app['EM']->getRepository('\Entities\BasketElement');
 
-    $appbox = appbox::get_instance(\bootstrap::getCore());
-    $session = $appbox->get_session();
-    $registry = $Core->getRegistry();
-
-    $user = $Core->getAuthenticatedUser();
+    $user = $app['phraseanet.user'];
     $ACL = $user->ACL();
 
     $lst = explode(";", $lst);
@@ -32,20 +29,18 @@ function deleteRecord($lst, $del_children)
     $tcoll = array();
     $tbase = array();
 
-    $conn = $appbox->get_connection();
-
     foreach ($lst as $basrec) {
         $basrec = explode("_", $basrec);
         if ( ! $basrec || count($basrec) !== 2)
             continue;
 
-        $record = new record_adapter($basrec[0], $basrec[1]);
+        $record = new record_adapter($app, $basrec[0], $basrec[1]);
         $base_id = $record->get_base_id();
         if ( ! isset($tcoll["c" . $base_id])) {
 
             $tcoll["c" . $base_id] = null;
 
-            foreach ($appbox->get_databoxes() as $databox) {
+            foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
                 foreach ($databox->get_collections() as $collection) {
                     if ($collection->get_base_id() == $base_id) {
                         $tcoll["c" . $base_id] = array("base_id" => $databox->get_sbas_id(), "id"      => $base_id);
@@ -70,7 +65,7 @@ function deleteRecord($lst, $del_children)
     foreach ($tbase as $base) {
         try {
             foreach ($base["rids"] as $rid) {
-                $record = new record_adapter($rid[0], $rid[1]);
+                $record = new record_adapter($app, $rid[0], $rid[1]);
                 if ( ! $ACL->has_right_on_base($record->get_base_id(), 'candeleterecord'))
                     continue;
                 if ($del_children == "1") {
@@ -87,7 +82,7 @@ function deleteRecord($lst, $del_children)
                 $basket_elements = $BE_repository->findElementsByRecord($record);
 
                 foreach ($basket_elements as $basket_element) {
-                    $em->remove($basket_element);
+                    $app['EM']->remove($basket_element);
                 }
 
                 $record->delete();
@@ -98,18 +93,16 @@ function deleteRecord($lst, $del_children)
         }
     }
 
-    $em->flush();
+    $app['EM']->flush();
 
     return p4string::jsonencode($ret);
 }
 
-function whatCanIDelete($lst)
+function whatCanIDelete(Application $app, $lst)
 {
+    $appbox = $app['phraseanet.appbox'];
 
-    $appbox = appbox::get_instance(\bootstrap::getCore());
-    $session = $appbox->get_session();
-
-    $usr_id = $session->get_usr_id();
+    $usr_id = $app['phraseanet.user']->get_id();
 
     $conn = $appbox->get_connection();
 
@@ -129,7 +122,7 @@ function whatCanIDelete($lst)
         if (count($exp) !== 2)
             continue;
 
-        $record = new record_adapter($exp[0], $exp[1]);
+        $record = new record_adapter($app, $exp[0], $exp[1]);
         $sqlV = 'SELECT mask_and, mask_xor, sb.*
                FROM (sbas sb, bas b, usr u)
                 LEFT JOIN basusr bu ON
@@ -150,7 +143,7 @@ function whatCanIDelete($lst)
 
         if ($rowV && $rowV['mask_and'] != '' && $rowV['mask_xor'] != '') {
             try {
-                $connbas = connection::getPDOConnection($rowV['sbas_id']);
+                $connbas = connection::getPDOConnection($app, $rowV['sbas_id']);
                 $sqlS2 = 'SELECT record_id FROM record
               WHERE ((status ^ ' . $rowV['mask_xor'] . ') & ' . $rowV['mask_and'] . ')=0
                 AND record_id = :record_id';
