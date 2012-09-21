@@ -54,8 +54,7 @@ class module_console_systemClearCache extends Command
         $filesystem->remove($finder);
 
         if (setup::is_installed()) {
-            $Core = \bootstrap::getCore();
-            $Core['CacheService']->flushAll();
+            $this->getService('phraseanet.cache-service')->flushAll();
         }
 
         $output->write('Finished !', true);

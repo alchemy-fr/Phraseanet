@@ -49,7 +49,7 @@ class module_console_systemConfigCheck extends Command
         $ok = true;
 
         if (setup::is_installed()) {
-            $registry = registry::get_instance();
+            $registry = $this->container['phraseanet.registry'];
 
             $output->writeln(_('*** CHECK BINARY CONFIGURATION ***'));
             $ok = $this->processConstraints(setup::check_binaries($registry), $output) && $ok;
@@ -77,7 +77,7 @@ class module_console_systemConfigCheck extends Command
         $ok = $this->processConstraints(setup::check_phrasea(), $output) && $ok;
         $output->writeln("");
         $output->writeln(_('*** CHECK SYSTEM LOCALES ***'));
-        $ok = $this->processConstraints(setup::check_system_locales(), $output) && $ok;
+        $ok = $this->processConstraints(setup::check_system_locales($this->container), $output) && $ok;
         $output->writeln("");
 
         $output->write('Finished !', true);

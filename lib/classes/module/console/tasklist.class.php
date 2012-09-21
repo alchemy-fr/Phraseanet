@@ -47,8 +47,8 @@ class module_console_tasklist extends Command
 
         try {
             $appbox = $this->getService('phraseanet.appbox');
-            $task_manager = new task_manager($appbox);
-            $tasks = $task_manager->getTasks($this->container);
+            $task_manager = new task_manager($this->container);
+            $tasks = $task_manager->getTasks();
 
             if (count($tasks) === 0) {
                 $output->writeln('No tasks on your install !');

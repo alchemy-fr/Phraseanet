@@ -46,7 +46,6 @@ class module_console_systemUpgrade extends Command
         require_once dirname(__FILE__) . '/../../../../lib/bootstrap.php';
 
         $interactive = !$input->getOption('yes');
-        $Core = $this->getService('phraseanet.core');
 
         if (!$Core->getConfiguration()->isInstalled() && \setup::needUpgradeConfigurationFile()) {
 
@@ -71,7 +70,7 @@ class module_console_systemUpgrade extends Command
                     $connexionInc = new \SplFileInfo(__DIR__ . '/../../../../config/connexion.inc');
                     $configInc = new \SplFileInfo(__DIR__ . '/../../../../config/config.inc');
 
-                    $Core->getConfiguration()->upgradeFromOldConf($configInc, $connexionInc);
+                    $this->getService('phraseanet.configuration')->upgradeFromOldConf($configInc, $connexionInc);
                 } catch (\Exception $e) {
                     throw new RuntimeException('Error while upgrading : ' . $e->getMessage());
                 }
@@ -80,7 +79,7 @@ class module_console_systemUpgrade extends Command
             }
         }
 
-        if (!$Core->getConfiguration()->isInstalled()) {
+        if ( ! $this->getService('phraseanet.configuration')->isInstalled()) {
             throw new \RuntimeException('Phraseanet must be set-up (no connexion.inc / no config.inc)');
         }
 
@@ -101,7 +100,7 @@ class module_console_systemUpgrade extends Command
                 $output->write('<info>Upgrading...</info>', true);
                 $appbox = $this->getService('phraseanet.appbox');
 
-                if (count(User_Adapter::get_wrong_email_users($appbox)) > 0) {
+                if (count(User_Adapter::get_wrong_email_users($this->container)) > 0) {
                     return $output->writeln(sprintf('<error>You have to fix your database before upgrade with the system:mailCheck command </error>'));
                 }
 

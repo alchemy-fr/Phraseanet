@@ -77,15 +77,14 @@ class module_console_taskState extends Command
             return self::EXITCODE_BAD_ARGUMENT;
         }
 
-        $appbox = $this->getService('phraseanet.appbox');
-        $task_manager = new task_manager($appbox);
+        $task_manager = new task_manager($this->container);
 
         $taskPID = $taskState = NULL;
         $exitCode = 0;
 
         $task = NULL;
         try {
-            $task = $task_manager->getTask($this->container, $task_id);
+            $task = $task_manager->getTask($task_id);
             $taskPID = $task->getPID();
             $taskState = $task->getState();
         } catch (Exception_NotFound $e) {

@@ -48,7 +48,7 @@ class module_console_systemMailCheck extends Command
 
         $output->writeln("Processing...");
 
-        $bad_users = User_Adapter::get_wrong_email_users($appbox);
+        $bad_users = User_Adapter::get_wrong_email_users($this->container);
 
         foreach ($bad_users as $email => $users) {
             if ($input->getOption('list')) {
@@ -91,7 +91,7 @@ class module_console_systemMailCheck extends Command
                 $id = $dialog->ask($output, '<question>Which id ?</question>', '');
 
                 try {
-                    $tmp_user = User_Adapter::getInstance($id, $appbox);
+                    $tmp_user = User_Adapter::getInstance($id, $this->container);
 
                     if ($tmp_user->get_email() != $email) {
                         throw new Exception('Invalid user');
