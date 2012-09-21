@@ -23,10 +23,10 @@
         "silex/silex": "1.0.*",
         "swiftmailer/swiftmailer": "4.1.*",
         "symfony/symfony": ">=2.1",
+        "tecnick.com/tcpdf": "dev-master",
         "twig/twig": "1.9.*",
         "twig/extensions": "master",
-        "zend/gdata": ">1.11",
-        "tecnick.com/tcpdf": "dev-master"
+        "zend/gdata": ">1.11"
     },
     "minimum-stability": "dev",
     "require-dev": {
