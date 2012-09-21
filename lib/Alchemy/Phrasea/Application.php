@@ -13,6 +13,7 @@ use FFMpeg\FFMpegServiceProvider;
 use Grom\Silex\ImagineServiceProvider;
 use MediaVorus\MediaVorusServiceProvider;
 use MediaAlchemyst\MediaAlchemystServiceProvider;
+use MediaAlchemyst\Driver\Imagine;
 use Neutron\Silex\Provider\FilesystemServiceProvider;
 use PHPExiftool\PHPExiftoolServiceProvider;
 use Silex\Application as SilexApplication;
@@ -110,18 +111,18 @@ class Application extends SilexApplication
 //            });
 
         $this['imagine.factory'] = $this->share(function(Application $app) {
-            if ($app['registry']->get('GV_imagine_driver') != '') {
-                return $app['registry']->get('GV_imagine_driver');
+            if ($app['phraseanet.registry']->get('GV_imagine_driver') != '') {
+                return $app['phraseanet.registry']->get('GV_imagine_driver');
             }
 
             if (class_exists('\Gmagick')) {
-                return 'Gmagick';
+                return Imagine::DRIVER_GMAGICK;
             }
             if (class_exists('\Imagick')) {
-                return 'Imagick';
+                return Imagine::DRIVER_IMAGICK;
             }
             if (extension_loaded('gd')) {
-                return 'GD';
+                return Imagine::DRIVER_GD;
             }
 
             throw new \RuntimeException('No Imagine driver available');
