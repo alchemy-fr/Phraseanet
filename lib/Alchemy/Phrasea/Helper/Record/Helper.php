@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Helper\Record;
 
-use Alchemy\Phrasea\Core;
+use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -101,36 +101,31 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
 
     /**
      *
-     * @param  \Alchemy\Phrasea\Core $core
+     * @param  Application $app
      * @return Helper
      */
-    public function __construct(Core $core, Request $Request)
+    public function __construct(Application $app, Request $Request)
     {
-        parent::__construct($core, $Request);
+        parent::__construct($app, $Request);
 
-        $this->selection = new \set_selection();
+        $this->selection = new \set_selection($app);
 
         if (trim($Request->get('ssel')) !== '') {
-            $em = $core->getEntityManager();
-            $repository = $em->getRepository('\Entities\Basket');
+            $repository = $app['EM']->getRepository('\Entities\Basket');
 
             /* @var $$repository \Repositories\BasketRepository */
-            $Basket = $repository->findUserBasket($Request->get('ssel'), $core->getAuthenticatedUser(), false);
+            $Basket = $repository->findUserBasket($this->app, $Request->get('ssel'), $app['phraseanet.user'], false);
 
             $this->selection->load_basket($Basket);
 
             $this->is_basket = true;
             $this->original_basket = $Basket;
         } elseif (trim($Request->get('story')) !== '') {
-            $em = $core->getEntityManager();
-            $repository = $em->getRepository('\Entities\StoryWZ');
+            $repository = $app['EM']->getRepository('\Entities\StoryWZ');
 
-            $storyWZ = $repository->findByUserAndId(
-                $core->getAuthenticatedUser()
-                , $Request->get('story')
-            );
+            $storyWZ = $repository->findByUserAndId($app, $app['phraseanet.user'], $Request->get('story'));
 
-            $this->selection->load_list(array($storyWZ->getRecord()->get_serialize_key()), $this->flatten_groupings);
+            $this->selection->load_list(array($storyWZ->getRecord($this->app)->get_serialize_key()), $this->flatten_groupings);
         } else {
             $this->selection->load_list(explode(";", $Request->get('lst')), $this->flatten_groupings);
         }
@@ -198,7 +193,7 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
      */
     public function get_grouping_head()
     {
-        if ( ! $this->is_single_grouping())
+        if (!$this->is_single_grouping())
             throw new \Exception('Cannot use ' . __METHOD__ . ' here');
         foreach ($this->get_elements() as $record) {
             return $record;
@@ -303,7 +298,7 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
     public function grep_records(\Closure $closure)
     {
         foreach ($this->selection->get_elements() as $record) {
-            if ( ! $closure($record)) {
+            if (!$closure($record)) {
                 $this->selection->remove_element($record);
             }
         }

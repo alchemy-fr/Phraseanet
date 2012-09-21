@@ -28,7 +28,7 @@ class Prod extends Helper
         );
 
         $bases = $fields = $dates = array();
-        $user = $this->getCore()->getAuthenticatedUser();
+        $user = $this->app['phraseanet.user'];
 
         if ( ! $user instanceof \User_Adapter) {
             return $search_datas;

@@ -38,11 +38,10 @@ class WorkZone extends Helper
      */
     public function getContent($sort)
     {
-        $em = $this->getCore()->getEntityManager();
-        $current_user = $this->getCore()->getAuthenticatedUser();
+        $current_user = $this->app['phraseanet.user'];
 
         /* @var $repo_baskets \Doctrine\Repositories\BasketRepository */
-        $repo_baskets = $em->getRepository('Entities\Basket');
+        $repo_baskets = $this->app['EM']->getRepository('Entities\Basket');
 
         $sort = in_array($sort, array('date', 'name')) ? $sort : 'name';
 
@@ -52,9 +51,9 @@ class WorkZone extends Helper
         $validations = $repo_baskets->findActiveValidationByUser($current_user, $sort);
 
         /* @var $repo_stories \Doctrine\Repositories\StoryWZRepository */
-        $repo_stories = $em->getRepository('Entities\StoryWZ');
+        $repo_stories = $this->app['EM']->getRepository('Entities\StoryWZ');
 
-        $stories = $repo_stories->findByUser($current_user, $sort);
+        $stories = $repo_stories->findByUser($this->app, $current_user, $sort);
 
         $ret->set(self::BASKETS, $baskets);
         $ret->set(self::VALIDATIONS, $validations);
