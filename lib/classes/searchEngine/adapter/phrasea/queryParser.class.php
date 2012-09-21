@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     searchEngine
@@ -88,9 +90,11 @@ class searchEngine_adapter_phrasea_queryParser
      */
     public $lng = null;
     protected $unicode;
+    protected $app;
 
-    public function __construct($lng = "???")
+    public function __construct(Application $app, $lng = "???")
     {
+        $this->app = $app;
         $this->lng = $lng;
         $this->unicode = new unicode();
 
@@ -1721,7 +1725,7 @@ class searchEngine_adapter_phrasea_queryParser
     public function addsimple($t, $type, $nodetype, $pnum, $tree, $depth)
     {
         $nok = 0;
-        $registry = registry::get_instance();
+        $registry = $this->app['phraseanet.registry'];
         $w = $t["VALUE"];
         if ($w != "?" && $w != "*") {  // on laisse passer les 'isolés' pour les traiter plus tard comme des mots vides
             for ($i = 0; $i < strlen($w); $i ++ ) {

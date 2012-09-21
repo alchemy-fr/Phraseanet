@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     searchEngine
@@ -40,12 +42,12 @@ class searchEngine_adapter
      * @param  registryInterface    $registry
      * @return searchEngine_adapter
      */
-    public function __construct(registryInterface $registry)
+    public function __construct(Application $app)
     {
-        if ($registry->get('GV_sphinx')) {
-            $this->search_engine = new searchEngine_adapter_sphinx_engine();
+        if ($app['phraseanet.registry']->get('GV_sphinx')) {
+            $this->search_engine = new searchEngine_adapter_sphinx_engine($app);
         } elseif (function_exists('phrasea_query2')) {
-            $this->search_engine = new searchEngine_adapter_phrasea_engine();
+            $this->search_engine = new searchEngine_adapter_phrasea_engine($app);
         } else {
             throw new Exception('No search engine available, try phrasea2 or sphinx');
         }

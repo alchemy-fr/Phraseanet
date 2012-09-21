@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     searchEngine
@@ -18,7 +20,7 @@
 interface searchEngine_adapter_interface
 {
 
-    public function __construct();
+    public function __construct(Application $app);
 
     public function set_options(searchEngine_options $options);
 
@@ -42,7 +44,7 @@ interface searchEngine_adapter_interface
 
     public function get_parsed_query();
 
-    public function get_suggestions(Session_Handler $session);
+    public function get_suggestions($I18n);
 
     public function get_error();
 

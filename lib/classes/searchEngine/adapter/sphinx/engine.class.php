@@ -10,6 +10,9 @@ require_once __DIR__ . '/../../../../vendor/sphinx/sphinxapi.php';
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration;
+
 /**
  *
  * @package     searchEngine
@@ -47,14 +50,16 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
      * @var boolean
      */
     protected $search_unique_record = false;
+    protected $app;
 
     /**
      *
      * @return searchEngine_adapter_sphinx_engine
      */
-    public function __construct()
+    public function __construct(Application $app)
     {
-        $registry = registry::get_instance();
+        $this->app = $app;
+        $registry = $this->app['phraseanet.registry'];
 
         $this->sphinx = new SphinxClient ();
         $this->sphinx->SetArrayResult(true);
@@ -82,9 +87,9 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
         $this->locale = $options->get_locale();
 
         foreach ($options->get_bases() as $bas) {
-            $this->distinct_sbas[phrasea::sbasFromBas($bas)] = true;
-            $key = phrasea::sbasFromBas($bas) . '_' . phrasea::collFromBas($bas);
-            $sbas_id = phrasea::sbasFromBas($bas);
+            $this->distinct_sbas[phrasea::sbasFromBas($this->app, $bas)] = true;
+            $key = phrasea::sbasFromBas($this->app, $bas) . '_' . phrasea::collFromBas($this->app, $bas);
+            $sbas_id = phrasea::sbasFromBas($this->app, $bas);
             $sbas_ids[$sbas_id] = $sbas_id;
             $filters[] = crc32($key);
         }
@@ -97,7 +102,7 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
 
         $filters = array();
 
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = $this->app['phraseanet.appbox'];
 
         foreach ($sbas_ids as $sbas_id) {
             $fields = $appbox->get_databox($sbas_id)->get_meta_structure();
@@ -118,14 +123,14 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
             $this->search_in_field = true;
 
             foreach ($options->get_business_fields() as $base_id) {
-                $crc_coll_business[] = crc32(phrasea::collFromBas($base_id) . '_1');
-                $crc_coll_business[] = crc32(phrasea::collFromBas($base_id) . '_0');
+                $crc_coll_business[] = crc32(phrasea::collFromBas($this->app, $base_id) . '_1');
+                $crc_coll_business[] = crc32(phrasea::collFromBas($this->app, $base_id) . '_0');
             }
 
             $non_business = array_diff($options->get_bases(), $options->get_business_fields());
 
             foreach ($non_business as $base_id) {
-                $crc_coll_business[] = crc32(phrasea::collFromBas($base_id) . '_0');
+                $crc_coll_business[] = crc32(phrasea::collFromBas($this->app, $base_id) . '_0');
             }
 
             $this->sphinx->SetFilter('crc_coll_business', $crc_coll_business);
@@ -137,7 +142,7 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
             $this->sphinx->SetFilter('crc_struct_id', $filters);
         }
 
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = $this->app['phraseanet.appbox'];
         /**
          * @todo : enhance : check status better
          */
@@ -265,8 +270,6 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
         assert(is_int($offset));
         assert($offset >= 0);
         assert(is_int($perPage));
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
 
         $page = ceil($offset / $perPage) + 1;
 
@@ -281,7 +284,7 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
 
         $index = '*';
 
-        $params = phrasea::sbas_params();
+        $params = phrasea::sbas_params($this->app);
 
         $index_keys = array();
         foreach ($params as $sbas_id => $params) {
@@ -295,10 +298,10 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
                 $index = '';
                 $found = false;
                 if ($this->query !== '' && $this->options->get_use_stemming()) {
-                    if ($session->get_I18n() == 'fr') {
+                    if ($this->app['locale.I18n'] == 'fr') {
                         $index .= ', documents' . implode('_stemmed_fr, documents', $index_keys) . '_stemmed_fr';
                         $found = true;
-                    } elseif ($session->get_I18n() == 'en') {
+                    } elseif ($this->app['locale.I18n'] == 'en') {
                         $index .= ', documents' . implode('_stemmed_en, documents', $index_keys) . '_stemmed_en';
                         $found = true;
                     }
@@ -309,11 +312,11 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
             } else {
                 $index = '';
                 $found = false;
-                if ($this->query !== '' && $this->options->get_use_stemming() && $session->get_I18n() == 'fr') {
-                    if ($session->get_I18n() == 'fr') {
+                if ($this->query !== '' && $this->options->get_use_stemming() && $this->app['locale.I18n'] == 'fr') {
+                    if ($this->app['locale.I18n'] == 'fr') {
                         $index .= ', metadatas' . implode('_stemmed_fr, metadatas', $index_keys) . '_stemmed_fr';
                         $found = true;
-                    } elseif ($session->get_I18n() == 'en') {
+                    } elseif ($this->app['locale.I18n'] == 'en') {
                         $index .= ', metadatas' . implode('_stemmed_en, metadatas', $index_keys) . '_stemmed_en';
                         $found = true;
                     }
@@ -351,6 +354,7 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
                     try {
                         $record =
                             new record_adapter(
+                                $this->app,
                                 $match['attrs']['sbas_id']
                                 , $match['attrs']['record_id']
                                 , $courcahnum
@@ -444,7 +448,7 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
         $this->sphinx->SetSortMode(SPH_SORT_EXTENDED, "@weight DESC");
         $this->sphinx->SetLimits(0, 10);
 
-        $params = phrasea::sbas_params();
+        $params = phrasea::sbas_params($this->app);
 
         $index_keys = array();
         foreach ($params as $sbas_id => $p) {
@@ -476,17 +480,12 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
         return $ret;
     }
 
-    /**
-     *
-     * @param  Session_Handler $session
-     * @return array
-     */
-    public function get_suggestions(Session_Handler $session, $only_last_word = false)
+    public function get_suggestions($I18n, $only_last_word = false)
     {
         if ( ! $this->current_index)
             $this->current_index = '*';
 
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $appbox = $this->app['phraseanet.appbox'];
         $supposed_qry = mb_strtolower($this->query);
         $pieces = explode(" ", str_replace(array("all", "last", "et", "ou", "sauf", "and", "or", "except", "in", "dans", "'", '"', "(", ")", "_", "-"), ' ', $supposed_qry));
 
@@ -506,7 +505,7 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
             $pieces = array(array_pop($pieces));
         }
 
-        $tag = $session->get_I18n();
+        $tag = $I18n;
 
         $suggestions = array();
 
@@ -650,13 +649,12 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
      */
     public function build_excerpt($query, array $fields, record_adapter $record)
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
+        $appbox = $this->app['phraseanet.appbox'];
         $selected_sbas_id = $record->get_sbas_id();
 
         $index = '';
 
-        $params = phrasea::sbas_params();
+        $params = phrasea::sbas_params($this->app);
 
         $index_keys = array();
         foreach ($params as $sbas_id => $params) {
@@ -670,10 +668,10 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
                 $index = '';
                 $found = false;
                 if ($this->options->get_use_stemming()) {
-                    if ($session->get_I18n() == 'fr') {
+                    if ($this->app['locale.I18n'] == 'fr') {
                         $index .= 'documents' . implode('_stemmed_fr, documents', $index_keys) . '_stemmed_fr';
                         $found = true;
-                    } elseif ($session->get_I18n() == 'en') {
+                    } elseif ($this->app['locale.I18n'] == 'en') {
                         $index .= 'documents' . implode('_stemmed_en, documents', $index_keys) . '_stemmed_en';
                         $found = true;
                     }
@@ -683,11 +681,11 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
             } else {
                 $index = '';
                 $found = false;
-                if ($this->options->get_use_stemming() && $session->get_I18n() == 'fr') {
-                    if ($session->get_I18n() == 'fr') {
+                if ($this->options->get_use_stemming() && $this->app['locale.I18n'] == 'fr') {
+                    if ($this->app['locale.I18n'] == 'fr') {
                         $index .= 'metadatas' . implode('_stemmed_fr, metadatas', $index_keys) . '_stemmed_fr';
                         $found = true;
-                    } elseif ($session->get_I18n() == 'en') {
+                    } elseif ($this->app['locale.I18n'] == 'en') {
                         $index .= 'metadatas' . implode('_stemmed_en, metadatas', $index_keys) . '_stemmed_en';
                         $found = true;
                     }
