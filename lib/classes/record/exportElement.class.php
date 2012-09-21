@@ -9,6 +9,9 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration;
+
 /**
  *
  *
@@ -55,12 +58,12 @@ class record_exportElement extends record_adapter
      * @param  int                  $remain_hd
      * @return record_exportElement
      */
-    public function __construct($sbas_id, $record_id, $directory = '', $remain_hd = false)
+    public function __construct(Application $app, $sbas_id, $record_id, $directory = '', $remain_hd = false)
     {
         $this->directory = $directory;
         $this->remain_hd = $remain_hd;
         $this->size = array();
-        parent::__construct($sbas_id, $record_id);
+        parent::__construct($app, $sbas_id, $record_id);
 
         $this->get_actions($remain_hd);
 
@@ -76,14 +79,13 @@ class record_exportElement extends record_adapter
         $this->downloadable = $downloadable = array();
         $this->orderable = $orderable = array();
 
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
+        $appbox = $this->app['phraseanet.appbox'];
 
         $sd = $this->get_subdefs();
 
-        $sbas_id = phrasea::sbasFromBas($this->base_id);
+        $sbas_id = phrasea::sbasFromBas($this->app, $this->base_id);
 
-        $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+        $user = $this->app['phraseanet.user'];
 
         $subdefgroups = $appbox->get_databox($sbas_id)->get_subdef_structure();
 
@@ -116,7 +118,7 @@ class record_exportElement extends record_adapter
             $go_dl['preview'] = true;
         }
 
-        $query = new User_Query($appbox);
+        $query = new User_Query($this->app);
 
         $masters = $query->on_base_ids(array($this->base_id))
                 ->who_have_right(array('order_master'))
@@ -158,7 +160,7 @@ class record_exportElement extends record_adapter
                 if (trim($label) == '')
                     continue;
 
-                if ($lang == $session->get_I18n()) {
+                if ($lang == $this->app['locale.I18n']) {
                     $subdef_label = $label;
                     break;
                 }

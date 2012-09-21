@@ -9,7 +9,9 @@
  * file that was distributed with this source code.
  */
 
-use MediaVorus\Media\Media;
+use Alchemy\Phrasea\Application;
+use Doctrine\ORM\EntityManager;
+use MediaVorus\Media\MediaInterface;
 use Monolog\Logger;
 use MediaAlchemyst\Alchemyst;
 use MediaVorus\MediaVorus;
@@ -87,7 +89,7 @@ interface record_Interface
 
     public function get_sbas_id();
 
-    public function substitute_subdef($name, Media $media, Filesystem $filesystem, Alchemyst $alchemyst, MediaVorus $mediavorus);
+    public function substitute_subdef($name, MediaInterface $media, Application $app);
 
     public function set_metadatas(Array $metadatas, $force_readonly = false);
 
@@ -103,11 +105,9 @@ interface record_Interface
 
     public function delete();
 
-    public function generate_subdefs(databox $databox, Logger $logger, Filesystem $filesystem, Array $wanted_subdefs = null);
+    public function generate_subdefs(databox $databox, Application $app, Array $wanted_subdefs = null);
 
     public function log_view($log_id, $referrer, $gv_sit);
 
-    public function rotate_subdefs($angle);
-
-    public function get_container_baskets();
+    public function get_container_baskets(EntityManager $em, User_Adapter $user);
 }

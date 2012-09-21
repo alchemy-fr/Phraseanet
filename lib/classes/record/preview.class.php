@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  *
@@ -85,10 +87,8 @@ class record_preview extends record_adapter
      * @param  boolean        $reload_train
      * @return record_preview
      */
-    public function __construct($env, $pos, $contId, $reload_train, searchEngine_adapter $search_engine = null, $query = '')
+    public function __construct(Application $app, $env, $pos, $contId, $reload_train, searchEngine_adapter $search_engine = null, $query = '')
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $Core = bootstrap::getCore();
         $number = null;
         $this->env = $env;
 
@@ -112,7 +112,7 @@ class record_preview extends record_adapter
                 $sbas_id = $contId[0];
                 $record_id = $contId[1];
 
-                $this->container = new record_adapter($sbas_id, $record_id);
+                $this->container = new record_adapter($app, $sbas_id, $record_id);
                 if ($pos == 0) {
                     $number = 0;
                     $title = _('preview:: regroupement ');
@@ -131,11 +131,10 @@ class record_preview extends record_adapter
 
                 break;
             case "BASK":
-                $em = $Core->getEntityManager();
-                $repository = $em->getRepository('\Entities\Basket');
+                $repository = $app['EM']->getRepository('\Entities\Basket');
 
                 /* @var $repository \Repositories\BasketRepository */
-                $Basket = $repository->findUserBasket($contId, $Core->getAuthenticatedUser(), false);
+                $Basket = $repository->findUserBasket($app, $contId, $app['phraseanet.user'], false);
 
                 /* @var $Basket \Entities\Basket */
                 $this->container = $Basket;
@@ -147,23 +146,23 @@ class record_preview extends record_adapter
                     /* @var $element \Entities\BasketElement */
                     $i ++;
                     if ($first) {
-                        $sbas_id = $element->getRecord()->get_sbas_id();
-                        $record_id = $element->getRecord()->get_record_id();
+                        $sbas_id = $element->getRecord($this->app)->get_sbas_id();
+                        $record_id = $element->getRecord($this->app)->get_record_id();
                         $this->name = $Basket->getName();
                         $number = $element->getOrd();
                     }
                     $first = false;
 
                     if ($element->getOrd() == $pos) {
-                        $sbas_id = $element->getRecord()->get_sbas_id();
-                        $record_id = $element->getRecord()->get_record_id();
+                        $sbas_id = $element->getRecord($this->app)->get_sbas_id();
+                        $record_id = $element->getRecord($this->app)->get_record_id();
                         $this->name = $Basket->getName();
                         $number = $element->getOrd();
                     }
                 }
                 break;
             case "FEED":
-                $entry = Feed_Entry_Adapter::load_from_id($appbox, $contId);
+                $entry = Feed_Entry_Adapter::load_from_id($app, $contId);
 
                 $this->container = $entry;
                 $this->total = count($entry->get_content());
@@ -189,7 +188,7 @@ class record_preview extends record_adapter
                 }
                 break;
         }
-        parent::__construct($sbas_id, $record_id, $number);
+        parent::__construct($app, $sbas_id, $record_id, $number);
 
         return $this;
     }
@@ -262,7 +261,7 @@ class record_preview extends record_adapter
             return $this->title;
         }
 
-        $this->title = collection::getLogo($this->get_base_id()) . ' ';
+        $this->title = collection::getLogo($this->get_base_id(), $this->app) . ' ';
 
         switch ($this->env) {
 
@@ -317,14 +316,13 @@ class record_preview extends record_adapter
 
         $tab = array();
 
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
+        $appbox = $this->app['phraseanet.appbox'];
         $registry = $appbox->get_registry();
-        $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+        $user = $this->app['phraseanet.user'];
 
         $report = $user->ACL()->has_right_on_base($this->get_base_id(), 'canreport');
 
-        $connsbas = connection::getPDOConnection($this->get_sbas_id());
+        $connsbas = connection::getPDOConnection($this->app, $this->get_sbas_id());
 
         $sql = 'SELECT d . * , l.user, l.usrid as usr_id, l.site
                 FROM log_docs d, log l
@@ -334,7 +332,7 @@ class record_preview extends record_adapter
 
         if ( ! $report) {
             $sql .= ' AND ((l.usrid = :usr_id AND l.site= :site) OR action="add")';
-            $params[':usr_id'] = $session->get_usr_id();
+            $params[':usr_id'] = $user->get_id();
             $params[':site'] = $registry->get('GV_sit');
         }
 
@@ -346,7 +344,7 @@ class record_preview extends record_adapter
         $stmt->closeCursor();
 
         foreach ($rs as $row) {
-            $hour = phraseadate::getPrettyString(new DateTime($row['date']));
+            $hour = $this->app['date-formatter']->getPrettyString(new DateTime($row['date']));
 
             if ( ! isset($tab[$hour]))
                 $tab[$hour] = array();
@@ -365,7 +363,7 @@ class record_preview extends record_adapter
                 $user = null;
 
                 try {
-                    $user = \User_Adapter::getInstance($row['usr_id'], $appbox);
+                    $user = \User_Adapter::getInstance($row['usr_id'], $this->app);
                 } catch (Exception $e) {
 
                 }
@@ -380,7 +378,7 @@ class record_preview extends record_adapter
 
             if ( ! in_array($row['final'], $tab[$hour][$site][$action][$row['usr_id']]['final'])) {
                 if($action == 'collection') {
-                    $tab[$hour][$site][$action][$row['usr_id']]['final'][] = phrasea::baseFromColl($this->get_sbas_id(), $row['final']);
+                    $tab[$hour][$site][$action][$row['usr_id']]['final'][] = phrasea::baseFromColl($this->get_sbas_id(), $row['final'], $this->app);
                 } else {
                     $tab[$hour][$site][$action][$row['usr_id']]['final'][] = $row['final'];
                 }
@@ -405,10 +403,9 @@ class record_preview extends record_adapter
             return $this->view_popularity;
         }
 
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
+        $appbox = $this->app['phraseanet.appbox'];
 
-        $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+        $user = $this->app['phraseanet.user'];
         $report = $user->ACL()->has_right_on_base(
             $this->get_base_id(), 'canreport');
         $registry = $appbox->get_registry();
@@ -440,7 +437,7 @@ class record_preview extends record_adapter
           AND site_id = :site
           GROUP BY datee ORDER BY datee ASC';
 
-        $connsbas = connection::getPDOConnection($this->get_sbas_id());
+        $connsbas = connection::getPDOConnection($this->app, $this->get_sbas_id());
         $stmt = $connsbas->prepare($sql);
         $stmt->execute(
             array(
@@ -499,10 +496,9 @@ class record_preview extends record_adapter
             return $this->refferer_popularity;
         }
 
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
+        $appbox = $this->app['phraseanet.appbox'];
 
-        $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+        $user = $this->app['phraseanet.user'];
         $report = $user->ACL()->has_right_on_base(
             $this->get_base_id(), 'canreport');
         $registry = $appbox->get_registry();
@@ -513,7 +509,7 @@ class record_preview extends record_adapter
             return $this->refferer_popularity;
         }
 
-        $connsbas = connection::getPDOConnection($this->get_sbas_id());
+        $connsbas = connection::getPDOConnection($this->app, $this->get_sbas_id());
 
         $sql = 'SELECT count( id ) AS views, referrer
           FROM `log_view`
@@ -583,10 +579,9 @@ class record_preview extends record_adapter
             return $this->download_popularity;
         }
 
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
+        $appbox = $this->app['phraseanet.appbox'];
 
-        $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+        $user = $this->app['phraseanet.user'];
         $registry = $appbox->get_registry();
         $report = $user->ACL()->has_right_on_base(
             $this->get_base_id(), 'canreport');
@@ -621,7 +616,7 @@ class record_preview extends record_adapter
         AND site= :site
         GROUP BY datee ORDER BY datee ASC';
 
-        $connsbas = connection::getPDOConnection($this->get_sbas_id());
+        $connsbas = connection::getPDOConnection($this->app, $this->get_sbas_id());
         $stmt = $connsbas->prepare($sql);
         $stmt->execute(
             array(
