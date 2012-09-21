@@ -9,6 +9,9 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration;
+
 /**
  *
  *
@@ -17,13 +20,14 @@
  */
 class set_selection extends set_abstract
 {
-
+    protected $app;
     /**
      *
      * @return set_selection
      */
-    public function __construct()
+    public function __construct(Application $app)
     {
+        $this->app = $app;
         $this->elements = array();
 
         return $this;
@@ -37,7 +41,7 @@ class set_selection extends set_abstract
     public function load_basket(\Entities\Basket $Basket)
     {
         foreach ($Basket->getElements() as $basket_element) {
-            $this->add_element($basket_element->getRecord());
+            $this->add_element($basket_element->getRecord($this->app));
         }
 
         return $this;
@@ -50,10 +54,7 @@ class set_selection extends set_abstract
      */
     public function grep_authorized(Array $rights = array(), Array $sbas_rights = array())
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
-
-        $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+        $user = $this->app['phraseanet.user'];
 
         $to_remove = array();
 
@@ -127,7 +128,7 @@ class set_selection extends set_abstract
             $basrec = explode('_', $basrec);
             if (count($basrec) == 2) {
                 try {
-                    $record = new record_adapter((int) $basrec[0], (int) $basrec[1], count($this->elements));
+                    $record = new record_adapter($this->app, (int) $basrec[0], (int) $basrec[1], count($this->elements));
                 } catch (Exception $e) {
                     continue;
                 }
@@ -152,7 +153,7 @@ class set_selection extends set_abstract
     {
         $ret = array();
         foreach ($this->elements as $record) {
-            $sbas_id = phrasea::sbasFromBas($record->get_base_id());
+            $sbas_id = phrasea::sbasFromBas($this->app, $record->get_base_id());
             $ret[$sbas_id] = $sbas_id;
         }
 

@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Core\Configuration;
+
 /**
  *
  *
@@ -33,14 +35,13 @@ class set_exportftp extends set_export
      */
     public function export_ftp($usr_to, $host, $login, $password, $ssl, $retry, $passif, $destfolder, $makedirectory, $logfile)
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
-        $user_f = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+        $appbox = $this->app['phraseanet.appbox'];
+        $user_f = $this->app['phraseanet.user'];
         $conn = $appbox->get_connection();
 
         $email_dest = '';
         if ($usr_to) {
-            $user_t = User_Adapter::getInstance($usr_to, $appbox);
+            $user_t = User_Adapter::getInstance($usr_to, $this->app);
             $email_dest = $user_t->get_email();
         }
 
@@ -107,7 +108,7 @@ class set_exportftp extends set_export
             , ':sendermail'         => $user_f->get_email()
             , ':text_mail_receiver' => $text_mail_receiver
             , ':text_mail_sender'   => $text_mail_sender
-            , ':usr_id'             => $session->get_usr_id()
+            , ':usr_id'             => $user_f->get_id()
             , ':foldertocreate'     => $makedirectory
             , ':logfile'            => ( ! ! $logfile ? '1' : '0')
         );
