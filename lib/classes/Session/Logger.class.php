@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     Session
@@ -28,6 +30,7 @@ class Session_Logger
      * @var databox
      */
     protected $databox;
+    protected $app;
 
     const EVENT_DELETE = 'delete';
     const EVENT_EDIT = 'edit';
@@ -47,8 +50,9 @@ class Session_Logger
      * @param  int            $log_id
      * @return Session_Logger
      */
-    public function __construct(databox &$databox, $log_id)
+    public function __construct(Application $app, databox &$databox, $log_id)
     {
+        $this->app = $app;
         $this->databox = $databox;
         $this->id = (int) $log_id;
 
@@ -89,18 +93,17 @@ class Session_Logger
     /**
      *
      * @param  databox         $databox
-     * @param  Session_Phrasea $session
      * @param  User_Adapter    $user
      * @param  Browser         $browser
      * @return Session_Logger
      */
-    public static function create(databox &$databox, Browser &$browser, Session_Handler $session, User_Adapter &$user = null)
+    public static function create(Application $app, databox &$databox, Browser &$browser)
     {
         $colls = array();
-        $registry = registry::get_instance();
+        $registry = $app['phraseanet.registry'];
 
-        if ($user) {
-            $bases = $user->ACL()->get_granted_base(array(), array($databox->get_sbas_id()));
+        if ($app['phraseanet.user']) {
+            $bases = $app['phraseanet.user']->ACL()->get_granted_base(array(), array($databox->get_sbas_id()));
             foreach ($bases as $collection) {
                 $colls[] = $collection->get_coll_id();
             }
@@ -116,10 +119,10 @@ class Session_Logger
               , :user_agent, :appli, :fonction, :company, :activity, :country)";
 
         $params = array(
-            ':ses_id'          => $session->get_ses_id(),
-            ':usr_login'       => $user ? $user->get_login() : null,
-            ':site_id'         => $registry->get('GV_sit'),
-            ':usr_id'          => $user ? $user->get_id() : null,
+            ':ses_id'          => $app['session']->get('phrasea_session_id'),
+            ':usr_login'       => $app['phraseanet.user'] ? $app['phraseanet.user']->get_login() : null,
+            ':site_id'         => $app['phraseanet.registry']->get('GV_sit'),
+            ':usr_id'          => $app['phraseanet.user'] ? $app['phraseanet.user']->get_id() : null,
             ':coll_list'       => implode(',', $colls),
             ':browser'         => $browser->getBrowser(),
             ':browser_version' => $browser->getExtendedVersion(),
@@ -128,10 +131,10 @@ class Session_Logger
             ':ip'              => $browser->getIP(),
             ':user_agent'      => $browser->getUserAgent(),
             ':appli'           => serialize(array()),
-            ':fonction' => $user ? $user->get_job() : null,
-            ':company'  => $user ? $user->get_company() : null,
-            ':activity' => $user ? $user->get_position() : null,
-            ':country'  => $user ? $user->get_country() : null
+            ':fonction' => $app['phraseanet.user'] ? $app['phraseanet.user']->get_job() : null,
+            ':company'  => $app['phraseanet.user'] ? $app['phraseanet.user']->get_company() : null,
+            ':activity' => $app['phraseanet.user'] ? $app['phraseanet.user']->get_position() : null,
+            ':country'  => $app['phraseanet.user'] ? $app['phraseanet.user']->get_country() : null
         );
 
         $stmt = $databox->get_connection()->prepare($sql);
@@ -140,12 +143,12 @@ class Session_Logger
         $log_id = $databox->get_connection()->lastInsertId();
         $stmt->closeCursor();
 
-        return new Session_Logger($databox, $log_id);
+        return new Session_Logger($app, $databox, $log_id);
     }
 
-    public static function load(databox $databox, Session_Handler $session)
+    public static function load(Application $app, databox $databox)
     {
-        if ( ! $session->is_authenticated()) {
+        if ( ! $app->isAuthenticated()) {
             throw new Exception_Session_LoggerNotFound('Not authenticated');
         }
 
@@ -154,7 +157,7 @@ class Session_Logger
 
         $params = array(
             ':site'   => $databox->get_registry()->get('GV_sit')
-            , ':ses_id' => $session->get_ses_id()
+            , ':ses_id' => $app['session']->get('phrasea_session_id')
         );
 
         $stmt = $databox->get_connection()->prepare($sql);
@@ -165,6 +168,6 @@ class Session_Logger
         if ( ! $row)
             throw new Exception_Session_LoggerNotFound('Logger not found');
 
-        return new self($databox, $row['id']);
+        return new self($app, $databox, $row['id']);
     }
 }

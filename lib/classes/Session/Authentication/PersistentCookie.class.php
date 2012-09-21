@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     Session
@@ -19,9 +21,9 @@ class Session_Authentication_PersistentCookie implements Session_Authentication_
 {
     /**
      *
-     * @var type
+     * @var Application
      */
-    protected $appbox;
+    protected $app;
 
     /**
      *
@@ -37,18 +39,18 @@ class Session_Authentication_PersistentCookie implements Session_Authentication_
 
     /**
      *
-     * @param  appbox                                  $appbox
+     * @param  Application                                  $appbox
      * @param  type                                    $persistent_cookie
      * @return Session_Authentication_PersistentCookie
      */
-    public function __construct(appbox &$appbox, $persistent_cookie)
+    public function __construct(Application $app, $persistent_cookie)
     {
-        $this->appbox = $appbox;
+        $this->app= $app;
         $this->persistent_cookie = $persistent_cookie;
 
         $browser = Browser::getInstance();
 
-        $conn = $this->appbox->get_connection();
+        $conn = $this->app['phraseanet.appbox']->get_connection();
         $sql = 'SELECT usr_id, session_id, nonce, token FROM cache WHERE token = :token';
         $stmt = $conn->prepare($sql);
         $stmt->execute(array(':token' => $this->persistent_cookie));
@@ -61,11 +63,11 @@ class Session_Authentication_PersistentCookie implements Session_Authentication_
 
         $string = $browser->getBrowser() . '_' . $browser->getPlatform();
 
-        if (User_Adapter::salt_password($string, $row['nonce']) !== $row['token']) {
+        if (User_Adapter::salt_password($this->app, $string, $row['nonce']) !== $row['token']) {
             throw new Exception_Session_WrongToken();
         }
 
-        $this->user = User_Adapter::getInstance($row['usr_id'], $this->appbox);
+        $this->user = User_Adapter::getInstance($row['usr_id'], $this->app);
         $this->ses_id = (int) $row['session_id'];
 
         return $this;
@@ -89,7 +91,7 @@ class Session_Authentication_PersistentCookie implements Session_Authentication_
      *
      * @return int
      */
-    public function get_ses_id()
+    public function getSessionId()
     {
         return $this->ses_id;
     }

@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  * Native Authentication for Phraseanet (login/password)
  *
@@ -20,9 +22,9 @@ class Session_Authentication_Native implements Session_Authentication_Interface
 {
     /**
      *
-     * @var appbox
+     * @var Application
      */
-    protected $appbox;
+    protected $app;
 
     /**
      *
@@ -50,20 +52,20 @@ class Session_Authentication_Native implements Session_Authentication_Interface
 
     /**
      *
-     * @param  appbox                        $appbox
+     * @param  Application                        $app
      * @param  string                        $login
      * @param  string                        $password
      * @return Session_Authentication_Native
      */
-    public function __construct(appbox &$appbox, $login, $password)
+    public function __construct(Application $app, $login, $password)
     {
-        $this->appbox = $appbox;
+        $this->app = $app;
         $this->login = $login;
         $this->password = $password;
 
         try {
-            $usr_id = User_Adapter::get_usr_id_from_login($this->login);
-            $this->user = User_Adapter::getInstance($usr_id, $this->appbox);
+            $usr_id = User_Adapter::get_usr_id_from_login($this->app, $this->login);
+            $this->user = User_Adapter::getInstance($usr_id, $this->app);
         } catch (Exception $e) {
             throw new Exception_Unauthorized('User does not exists anymore');
         }
@@ -129,7 +131,7 @@ class Session_Authentication_Native implements Session_Authentication_Interface
      */
     protected function check_mail_locked()
     {
-        $conn = $this->appbox->get_connection();
+        $conn = $this->app['phraseanet.appbox']->get_connection();
 
         $sql = 'SELECT mail_locked, usr_id
         FROM usr
@@ -152,7 +154,7 @@ class Session_Authentication_Native implements Session_Authentication_Interface
      */
     public function challenge_password(Browser $browser = null)
     {
-        $conn = $this->appbox->get_connection();
+        $conn = $this->app['phraseanet.appbox']->get_connection();
 
         $sql = 'SELECT usr_id
       FROM usr
@@ -163,7 +165,7 @@ class Session_Authentication_Native implements Session_Authentication_Interface
         AND salted_password = 1
         AND model_of="0" AND invite="0"';
 
-        $salt = User_Adapter::salt_password($this->password, $this->user->get_nonce());
+        $salt = User_Adapter::salt_password($this->app, $this->password, $this->user->get_nonce());
         $stmt = $conn->prepare($sql);
         $stmt->execute(array(
             ':login'    => $this->login,
@@ -189,12 +191,12 @@ class Session_Authentication_Native implements Session_Authentication_Interface
      */
     protected function save_badlog(Browser $browser)
     {
-        $conn = $this->appbox->get_connection();
+        $conn = $this->app['phraseanet.appbox']->get_connection();
         $date_obj = new DateTime('-5 month');
 
         $sql = 'DELETE FROM badlog WHERE  date < :date';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':date' => phraseadate::format_mysql($date_obj)));
+        $stmt->execute(array(':date' => $this->app['date-formatter']->format_mysql($date_obj)));
         $stmt->closeCursor();
 
         $sql = 'INSERT INTO badlog (date,login,pwd,ip,locked)
@@ -228,13 +230,13 @@ class Session_Authentication_Native implements Session_Authentication_Interface
             ':password' => hash('sha256', $this->password)
         );
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         if ($row && $row['salted_password'] === '0')
-            throw new Exception_Session_BadSalinity();
+            throw new Exception_Session_BadSalinity('Bad password salinity');
 
         return $this;
     }
@@ -246,8 +248,8 @@ class Session_Authentication_Native implements Session_Authentication_Interface
      */
     protected function check_and_revoke_badlogs($ip)
     {
-        $conn = $this->appbox->get_connection();
-        $registry = $this->appbox->get_registry();
+        $conn = $this->app['phraseanet.appbox']->get_connection();
+        $registry = $this->app['phraseanet.appbox']->get_registry();
 
         $sql = 'SELECT id FROM badlog
             WHERE (login = :login OR ip = :ip) AND locked="1"';
@@ -270,7 +272,7 @@ class Session_Authentication_Native implements Session_Authentication_Interface
             $stmt->closeCursor();
         } elseif ($row_count > 9) {
             if ($this->is_captcha_activated($registry))
-                throw new Exception_Session_RequireCaptcha();
+                throw new Exception_Session_RequireCaptcha('Require captcha');
         }
 
         return $this;
@@ -283,7 +285,7 @@ class Session_Authentication_Native implements Session_Authentication_Interface
      */
     protected function is_captcha_activated(registryInterface $registry)
     {
-        $registry = $this->appbox->get_registry();
+        $registry = $this->app['phraseanet.appbox']->get_registry();
 
         return ($registry->get('GV_captchas')
             && trim($registry->get('GV_captcha_private_key')) !== ''

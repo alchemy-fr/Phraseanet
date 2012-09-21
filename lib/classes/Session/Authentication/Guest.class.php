@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  * Session Authentication Object for guest access
  *
@@ -20,9 +22,9 @@ class Session_Authentication_Guest implements Session_Authentication_Interface
 {
     /**
      *
-     * @var appbox
+     * @var Application
      */
-    protected $appbox;
+    protected $app;
 
     /**
      *
@@ -32,16 +34,16 @@ class Session_Authentication_Guest implements Session_Authentication_Interface
 
     /**
      *
-     * @param  appbox                       $appbox
+     * @param  Application                       $app
      * @return Session_Authentication_Guest
      */
-    public function __construct(appbox &$appbox)
+    public function __construct(Application $app)
     {
-        $this->appbox = $appbox;
+        $this->app = $app;
 
         $nonce = random::generatePassword(16);
         $password = random::generatePassword(24);
-        $this->user = User_Adapter::create($this->appbox, 'invite', $password, null, false, true);
+        $this->user = User_Adapter::create($this->app, 'invite', $password, null, false, true);
 
         return $this;
     }
@@ -70,8 +72,8 @@ class Session_Authentication_Guest implements Session_Authentication_Interface
      */
     public function signOn()
     {
-        $inviteUsrid = User_Adapter::get_usr_id_from_login('invite');
-        $invite_user = User_Adapter::getInstance($inviteUsrid, $this->appbox);
+        $inviteUsrid = User_Adapter::get_usr_id_from_login($this->app, 'invite');
+        $invite_user = User_Adapter::getInstance($inviteUsrid, $this->app);
 
         $usr_base_ids = array_keys($this->user->ACL()->get_granted_base());
         $this->user->ACL()->revoke_access_from_bases($usr_base_ids);
@@ -88,7 +90,11 @@ class Session_Authentication_Guest implements Session_Authentication_Interface
      */
     public function postlog()
     {
+        /**
+         * TODO NEUTRON FIX THIS
+         */
         \Session_Handler::set_cookie('invite-usr_id', $this->user->get_id(), 0, true);
+
         return $this;
     }
 }

@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     Session
@@ -19,9 +21,9 @@ class Session_Authentication_Token implements Session_Authentication_Interface
 {
     /**
      *
-     * @var appbox
+     * @var Application
      */
-    protected $appbox;
+    protected $app;
 
     /**
      *
@@ -36,15 +38,15 @@ class Session_Authentication_Token implements Session_Authentication_Interface
      * @param  type                         $token
      * @return Session_Authentication_Token
      */
-    public function __construct(appbox &$appbox, $token)
+    public function __construct(Application $app, $token)
     {
-        $this->appbox = $appbox;
+        $this->app = $app;
         $this->token = $token;
 
         try {
-            $datas = random::helloToken($token);
+            $datas = random::helloToken($app, $token);
             $usr_id = $datas['usr_id'];
-            $this->user = User_Adapter::getInstance($usr_id, $this->appbox);
+            $this->user = User_Adapter::getInstance($usr_id, $this->app);
         } catch (Exception_NotFound $e) {
             throw new Exception_Session_WrongToken();
         }
