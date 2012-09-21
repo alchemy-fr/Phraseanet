@@ -40,7 +40,7 @@ class UpgradeDBDatasTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(), $this->object->getUpgrades());
 
         $upgrades = array(
-            new Step31(new Application())
+            new Step31(new Application('test'))
         );
         $this->object->setUpgrades($upgrades);
         $this->assertEquals($upgrades, $this->object->getUpgrades());
@@ -53,12 +53,12 @@ class UpgradeDBDatasTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals(array(), $this->object->getUpgrades());
 
-        $step31 = new Step31(new Application());
+        $step31 = new Step31(new Application('test'));
         $this->object->addUpgrade($step31);
 
         $this->assertEquals(array($step31), $this->object->getUpgrades());
 
-        $step35 = new Step35(new Application());
+        $step35 = new Step35(new Application('test'));
         $this->object->addUpgrade($step35);
 
         $this->assertEquals(array($step31, $step35), $this->object->getUpgrades());

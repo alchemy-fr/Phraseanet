@@ -23,7 +23,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
      */
     public function testCheckSetup()
     {
-        $this->object->setContainer(new Application());
+        $this->object->setContainer(new Application('test'));
         $this->object->checkSetup();
     }
 
