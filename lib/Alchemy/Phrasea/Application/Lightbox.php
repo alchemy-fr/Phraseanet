@@ -11,10 +11,10 @@
 
 namespace Alchemy\Phrasea\Application;
 
+use Alchemy\Phrasea\Controller\Exception as ControllerException;
 use Silex\ControllerProviderInterface;
 use Silex\Application as SilexApplication;
 use Symfony\Component\HttpFoundation\Response;
-use Alchemy\Phrasea\Controller\Exception as ControllerException;
 
 class Lightbox implements ControllerProviderInterface
 {
@@ -427,7 +427,7 @@ class Lightbox implements ControllerProviderInterface
                     /* @var $basket \Entities\Basket */
                     $participant = $basket->getValidation()->getParticipant($user, $app);
 
-                    $evt_mngr = \eventsmanager_broker::getInstance($app);
+                    $evt_mngr = $app['events-manager'];
 
                     $expires = new \DateTime('+10 days');
                     $url = $app['phraseanet.appbox']->get_registry()->get('GV_ServerName')
@@ -461,46 +461,6 @@ class Lightbox implements ControllerProviderInterface
                 return $app->json($datas);
             }
         )->assert('ssel_id', '\d+');
-
-        $app->error(function($e) use($app) {
-
-                $registry = $app['phraseanet.registry'];
-
-                $template = 'lightbox/error.html.twig';
-
-                if ($e instanceof Exception_Feed_EntryNotFound) {
-                    $message = _('Feed entry not found');
-                } else {
-                    $message = _('Le panier demande nexiste plus');
-                }
-
-
-                if ($registry->get('GV_debug')) {
-                    $options = array(
-                        'module'      => 'validation',
-                        'module_name' => _('admin::monitor: module validation'),
-                        'error'       => sprintf(
-                            '%s in %s on line %s '
-                            , $e->getMessage()
-                            , $e->getFile()
-                            , $e->getLine()
-                        ),
-                        'message'     => $message,
-                    );
-                } else {
-                    $options = array(
-                        'module'      => 'validation',
-                        'module_name' => _('admin::monitor: module validation'),
-                        'error'       => '',
-                        'message'     => $message,
-                    );
-                }
-                $output = $app['twig']->render($template, $options);
-                $response = new Response($output, 404, array('X-Status-Code' => 404));
-                $response->setCharset('UTF-8');
-
-                return $response;
-            });
 
         return $controllers;
     }
