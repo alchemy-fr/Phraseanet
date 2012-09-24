@@ -1284,7 +1284,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     protected function load_notifications_preferences()
     {
         $Core = bootstrap::getCore();
-        $evt_mngr = eventsmanager_broker::getInstance($this->appbox, $Core);
+        $evt_mngr = $Core['events-manager'];
         $notifications = $evt_mngr->list_notifications_available($this->id);
 
         foreach ($notifications as $notification_group => $nots) {

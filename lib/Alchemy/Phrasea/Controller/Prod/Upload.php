@@ -251,7 +251,7 @@ class Upload implements ControllerProviderInterface
 
                 $appbox = \appbox::get_instance($app['Core']);
 
-                $eventsManager = \eventsmanager_broker::getInstance($appbox, $app['Core']);
+                $eventsManager = $app['Core']['events-manager'];
                 $eventsManager->trigger('__UPLOAD_QUARANTINE__', $params);
 
                 $id = $elementCreated->getId();

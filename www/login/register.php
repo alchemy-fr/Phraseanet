@@ -195,7 +195,7 @@ if ($request->has_post_datas()) {
                     $demandOK[$base_id] = true;
                 }
 
-                $event_mngr = eventsmanager_broker::getInstance($appbox, $Core);
+                $event_mngr = $Core['events-manager'];
 
                 $params = array(
                     'demand'       => $demandOK

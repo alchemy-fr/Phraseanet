@@ -29,8 +29,7 @@ $registry = $Core->getRegistry();
 $gatekeeper = gatekeeper::getInstance($Core);
 $gatekeeper->require_session();
 
-$events_mngr = \eventsmanager_broker::getInstance(\appbox::get_instance($Core), $Core);
-
+$events_mngr = $Core['events-manager'];
 
 $user = $Core->getAuthenticatedUser();
 
