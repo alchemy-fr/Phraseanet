@@ -279,7 +279,7 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
      */
     public function testRotateOnSubstitution()
     {
-        self::$objectNotPresent->rotate(90);
+        self::$objectNotPresent->rotate(90, self::$application['media-alchemyst'], self::$application['mediavorus']);
     }
 
     /**
