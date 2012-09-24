@@ -1,6 +1,7 @@
 <?php
 
 use Symfony\Component\Filesystem\Filesystem;
+use Alchemy\Phrasea\Border\File;
 
 require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
 
@@ -33,11 +34,7 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
     {
         parent::setUpBeforeClass();
 
-        $mediavorus = new \MediaVorus\MediaVorus();
-        $file = new Alchemy\Phrasea\Border\File($mediavorus->guess(new \SplFileInfo(__DIR__ . "/../testfiles/iphone_pic.jpg")), self::$collection);
-
-        $logger = new \Monolog\Logger('test');
-        $logger->pushHandler(new \Monolog\Handler\NullHandler());
+        $file = new File(self::$application['mediavorus']->guess(__DIR__ . "/../testfiles/iphone_pic.jpg"), self::$collection);
 
         self::$recordonbleu = record_adapter::createFromFile($file, self::$application);
         self::$recordonbleu->generate_subdefs(self::$recordonbleu->get_databox(), self::$application);
