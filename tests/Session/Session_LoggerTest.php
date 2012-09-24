@@ -19,14 +19,14 @@ class Session_LoggerTest extends PhraseanetPHPUnitAbstract
 
     protected function feed_datas()
     {
-        $appbox = self::$application['phraseanet.appbox'];
         $user = self::$user;
         $auth = new Session_Authentication_None($user);
 
         self::$application->openAccount($auth);
+        $logger_creater = self::$application['phraseanet.logger'];
 
         foreach ($user->ACL()->get_granted_sbas() as $databox) {
-            $this->object = self::$application['phraseanet.logger']($databox);
+            $this->object = $logger_creater($databox);
             $this->databox = $databox;
             break;
         }
