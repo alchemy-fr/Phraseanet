@@ -160,10 +160,10 @@
             "commit-date": "1346926323"
         },
         {
-            "package": "tcpdf/tcpdf",
+            "package": "tecnick.com/tcpdf",
             "version": "dev-master",
-            "source-reference": "5.9.173",
-            "commit-date": "1343127876"
+            "source-reference": "26c61d177baec9bbcb679bef0d9ca9f32afee977",
+            "commit-date": "1348426060"
         },
         {
             "package": "twig/extensions",
