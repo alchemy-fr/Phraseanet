@@ -489,8 +489,6 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_container_baskets()
     {
-        $em = self::$application['EM'];
-
         $basket = $this->insertOneBasket();
         $this->assertInstanceOf('\Entities\Basket', $basket);
 
@@ -499,19 +497,19 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $basket_element->setRecord(static::$records['record_1']);
         $basket_element->setBasket($basket);
 
-        $em->persist($basket_element);
+        self::$application['EM']->persist($basket_element);
 
         $basket->addBasketElement($basket_element);
-        $basket = $em->merge($basket);
+        $basket = self::$application['EM']->merge($basket);
 
-        $em->flush();
+        self::$application['EM']->flush();
 
         $found = $sselcont_id = false;
 
         $sbas_id = static::$records['record_1']->get_sbas_id();
         $record_id = static::$records['record_1']->get_record_id();
 
-        foreach (static::$records['record_1']->get_container_baskets() as $c_basket) {
+        foreach (static::$records['record_1']->get_container_baskets(self::$application['EM'], self::$application['phraseanet.user']) as $c_basket) {
             if ($c_basket->getId() == $basket->getId()) {
                 $found = true;
                 foreach ($c_basket->getElements() as $b_el) {
