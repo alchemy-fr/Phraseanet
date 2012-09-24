@@ -217,7 +217,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     /**
      * Purge sqlLite test temporary database by truncate all existing tables
      */
-    protected function purgeDatabase()
+    protected static function purgeDatabase()
     {
         $purger = new Doctrine\Common\DataFixtures\Purger\ORMPurger();
         $executor = new Doctrine\Common\DataFixtures\Executor\ORMExecutor(self::$application['EM'], $purger);
