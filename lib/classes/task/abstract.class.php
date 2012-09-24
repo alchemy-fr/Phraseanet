@@ -815,7 +815,7 @@ abstract class task_abstract
      * @param  string        $settings   (xml string)
      * @return task_abstract
      */
-    public static function create(appbox $appbox, $class_name, $settings = null)
+    public static function create(\Pimple $dependencyContainer, $class_name, $settings = null)
     {
         if ( ! class_exists($class_name)) {
             throw new Exception('Unknown task class');
@@ -840,13 +840,13 @@ abstract class task_abstract
             , ':class'    => $class_name
             , ':settings' => $settings
         );
-        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt = $dependencyContainer['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
-        $tid = $app['phraseanet.appbox']->get_connection()->lastInsertId();
+        $tid = $dependencyContainer['phraseanet.appbox']->get_connection()->lastInsertId();
 
-        return new $class_name($tid, $app, $app['monolog']);
+        return new $class_name($tid, $dependencyContainer, $dependencyContainer['monolog']);
     }
 
     public function getUsage()
