@@ -536,7 +536,7 @@ class Session_Handler
 
         $date = new DateTime('+' . (int) $registry->get('GV_validation_reminder') . ' days');
 
-        $eventsMngr = eventsmanager_broker::getInstance($this->appbox, $core);
+        $eventsMngr = $core['events-manager'];
 
         $em = $core->getEntityManager();
         /* @var $em \Doctrine\ORM\EntityManager */

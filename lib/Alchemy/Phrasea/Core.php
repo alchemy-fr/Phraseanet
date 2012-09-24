@@ -209,6 +209,11 @@ class Core extends \Pimple
                 return new \Symfony\Component\Filesystem\Filesystem();
             });
 
+        $this['EM'] = $this->share(function($core){
+            $events = \eventsmanager_broker::getInstance(\appbox::get_instance($core), $core);
+            $events->start();
+        });
+
         $this['pdf-to-text'] = $this->share(function () use ($core) {
 
                 try {
@@ -385,14 +390,6 @@ class Core extends \Pimple
     public function getLocale()
     {
         return $this->getRequest()->getLocale();
-    }
-
-    public function enableEvents()
-    {
-        $events = \eventsmanager_broker::getInstance(\appbox::get_instance($this), $this);
-        $events->start();
-
-        return;
     }
 
     /**

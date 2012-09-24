@@ -249,7 +249,7 @@ class Upload implements ControllerProviderInterface
 
                 $appbox = $app['phraseanet.appbox'];
 
-                $eventsManager = \eventsmanager_broker::getInstance($appbox, $app['phraseanet.core']);
+                $eventsManager = $app['Core']['events-manager'];
                 $eventsManager->trigger('__UPLOAD_QUARANTINE__', $params);
 
                 $id = $elementCreated->getId();

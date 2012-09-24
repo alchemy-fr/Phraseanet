@@ -38,7 +38,7 @@ $extractDateFields = function(\Alchemy\Phrasea\Core $Core) {
 $date_sort_fields = $extractDateFields($Core);
 
 
-$eventsmanager = eventsmanager_broker::getInstance(appbox::get_instance($Core), $Core);
+$eventsmanager = $Core['events-manager'];
 
 $PHP_CONF = array(
     'output_buffering'                => '4096'  //INI_ALL

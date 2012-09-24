@@ -440,7 +440,8 @@ return call_user_func(
                         /* @var $basket \Entities\Basket */
                         $participant = $basket->getValidation()->getParticipant($user);
 
-                        $evt_mngr = \eventsmanager_broker::getInstance($app['phraseanet.appbox'], $app['phraseanet.core']);
+                        $appbox = \appbox::get_instance($app['Core']);
+                        $evt_mngr = $app['Core']['events-manager'];
 
                         $expires = new \DateTime('+10 days');
                         $url = $app['phraseanet.appbox']->get_registry()->get('GV_ServerName')

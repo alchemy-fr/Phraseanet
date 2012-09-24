@@ -53,7 +53,7 @@ $session->set_event_module($parm['app'], true);
 $ret['status'] = 'ok';
 $ret['notifications'] = false;
 
-$evt_mngr = eventsmanager_broker::getInstance($appbox, $Core);
+$evt_mngr = $Core['events-manager'];
 $notif = $evt_mngr->get_notifications();
 
 $browser = Browser::getInstance();

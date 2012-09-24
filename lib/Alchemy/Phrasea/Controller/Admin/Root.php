@@ -88,7 +88,7 @@ class Root implements ControllerProviderInterface
 
                     return new Response($app['twig']->render('admin/index.html.twig', array(
                                 'module'        => 'admin',
-                                'events'        => \eventsmanager_broker::getInstance($appbox, $Core),
+                                'events'        => $app['phraseanet.core']['events-manager'],
                                 'module_name'   => 'Admin',
                                 'notice'        => $request->query->get("notice"),
                                 'feature'       => $feature,

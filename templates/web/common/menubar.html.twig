@@ -127,9 +127,9 @@
           <a href="#" style="font-weight:bold;text-decoration:none;">
             <span>
               {% trans 'Notifications' %}
-              <button class="counter btn btn-danger" style="visibility:{% if events.get_unread_notifications_number > 0 %}visible{% else %}hidden{% endif %};">
-                  {% if events.get_unread_notifications_number > 0 %}
-                    {{events.get_unread_notifications_number}}
+              <button class="counter btn btn-danger" style="visibility:{% if core['events-manager'].get_unread_notifications_number > 0 %}visible{% else %}hidden{% endif %};">
+                  {% if core['events-manager'].get_unread_notifications_number > 0 %}
+                    {{core['events-manager'].get_unread_notifications_number}}
                   {% endif %}
               </button>
             </span>
@@ -196,6 +196,6 @@
 </div>
 
           <div style="display:none;z-index:30000;" id="notification_box">
-          {% set notifications = events.get_notifications %}
-          {% include 'prod/notifications.html.twig' %}
+          {% set notifications = core['events-manager'].get_notifications %}
+          {% include 'prod/notifications.twig' %}
           </div>

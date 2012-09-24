@@ -105,7 +105,7 @@ switch ($action) {
 
     case 'READ_NOTIFICATIONS':
         try {
-            $evt_mngr = eventsmanager_broker::getInstance($appbox, $Core);
+            $evt_mngr = $Core['events-manager'];
             $parm = $request->get_parms('notifications');
             $output = $evt_mngr->read(explode('_', $parm['notifications']), $session->get_usr_id());
             $output = p4string::jsonencode(array('error'   => false, 'message' => ''));
@@ -114,7 +114,7 @@ switch ($action) {
         }
         break;
     case 'NOTIFICATIONS_FULL':
-        $evt_mngr = eventsmanager_broker::getInstance($appbox, $Core);
+        $evt_mngr = $Core['events-manager'];
         $parm = $request->get_parms('page');
         $output = $evt_mngr->get_json_notifications($parm['page']);
         break;

@@ -67,7 +67,7 @@ class Twig extends ServiceAbstract
         }
 
         $core = \bootstrap::execute();
-        $eventsmanager = \eventsmanager_broker::getInstance($appbox, $core);
+        $eventsmanager = $core['events-manager'];
 
         $this->twig->addGlobal('session', $session);
         $this->twig->addGlobal('version_number', $core->getVersion()->getNumber());

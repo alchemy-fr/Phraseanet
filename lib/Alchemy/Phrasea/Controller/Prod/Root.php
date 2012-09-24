@@ -100,7 +100,7 @@ class Root implements ControllerProviderInterface
                     'module_prod'          => new Helper\Prod($app['phraseanet.core'], $app['request']),
                     'cssfile'              => $cssfile,
                     'module'               => 'prod',
-                    'events'               => \eventsmanager_broker::getInstance($appbox, $app['phraseanet.core']),
+                    'events'               => $app['Core']['events-manager'],
                     'GV_defaultQuery_type' => $registry->get('GV_defaultQuery_type'),
                     'GV_multiAndReport'    => $registry->get('GV_multiAndReport'),
                     'GV_thesaurus'         => $registry->get('GV_thesaurus'),
