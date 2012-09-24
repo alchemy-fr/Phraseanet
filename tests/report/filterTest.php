@@ -59,7 +59,7 @@ class filterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testFilter()
     {
-        $filter = new module_report_filter(array(), $this->report->getTransQueryString());
+        $filter = new module_report_filter(self::$application, array(), $this->report->getTransQueryString());
         $this->assertEquals(array(), $filter->getTabFilter());
         $filter->addFilter('x', 'LIKE', 'y');
         $filter->addFilter('x', 'LIKE', 'z');

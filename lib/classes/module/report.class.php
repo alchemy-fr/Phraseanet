@@ -578,16 +578,16 @@ class module_report
     {
         switch ($domain) {
             case 'connexion' :
-                return new module_report_sqlconnexion($this);
+                return new module_report_sqlconnexion($this->app, $this);
                 break;
             case 'download' :
                 return new module_report_sqldownload($this->app, $this);
                 break;
             case 'question' :
-                return new module_report_sqlquestion($this);
+                return new module_report_sqlquestion($this->app, $this);
                 break;
             case 'action' :
-                return new module_report_sqlaction($this);
+                return new module_report_sqlaction($this->app, $this);
                 break;
             default:
                 return $this->req;

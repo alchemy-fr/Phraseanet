@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     module_report
@@ -17,6 +19,7 @@
  */
 class module_report_filter
 {
+    private $app;
     private $posting_filter = array();
     private $cor_query = array();
     private $active_column = array();
@@ -36,8 +39,9 @@ class module_report_filter
         'search'    => 'report:: question',
     );
 
-    public function __construct($current_filter, $correspondance)
+    public function __construct(Application $app, $current_filter, $correspondance)
     {
+        $this->app = $app;
         $this->tab_filter = $current_filter;
         $this->cor_query = $correspondance;
     }
