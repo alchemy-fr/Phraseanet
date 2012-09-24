@@ -66,7 +66,7 @@ class API_OAuth2_AuthCode
     public function get_account()
     {
         if ( ! $this->account)
-            $this->account = new API_OAuth2_Account($this->app['phraseanet.appbox'], $this->account_id);
+            $this->account = new API_OAuth2_Account($this->app, $this->account_id);
 
         return $this->account;
     }
