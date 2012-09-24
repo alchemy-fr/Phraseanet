@@ -31,7 +31,7 @@ class module_console_taskStateTest extends PhraseanetPHPUnitAbstract
         $this->assertTrue(strpos($commandTester->getDisplay(), $sentence) !== false);
 
         // test good tasks ids
-        $task_manager = new task_manager(self::$application);
+        $task_manager = new task_manager($application);
         $tasks = $task_manager->getTasks();
         $tids = array();    // list known ids of tasks so we can generate a 'unknown id' later
         foreach ($tasks as $task) {

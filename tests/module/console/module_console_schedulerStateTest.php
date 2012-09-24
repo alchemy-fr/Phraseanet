@@ -22,14 +22,14 @@ class module_console_schedulerStateTest extends PHPUnit_Framework_TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()));
 
-        $task_manager = new task_manager(self::$application);
+        $task_manager = new task_manager($application);
         $state = $task_manager->getSchedulerState();
 
         $sentence = sprintf('Scheduler is %s', $state['status']);
         $this->assertTrue(strpos($commandTester->getDisplay(), $sentence) !== false);
 
         $commandTester->execute(array('command' => $command->getName(), '--short'=>true));
-        $task_manager = new task_manager(self::$application);
+        $task_manager = new task_manager($application);
         $state = $task_manager->getSchedulerState();
 
         $sentence = sprintf('%s(%s)', $state['status'], $state['pid']);

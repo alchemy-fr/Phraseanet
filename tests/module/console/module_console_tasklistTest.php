@@ -22,7 +22,7 @@ class module_console_tasklistTest extends PHPUnit_Framework_TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()));
 
-        $task_manager = new task_manager(self::$application);
+        $task_manager = new task_manager($application);
         $lines = explode("\n", trim($commandTester->getDisplay()));
 
         if (count($task_manager->getTasks()) > 0) {
