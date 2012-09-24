@@ -58,13 +58,13 @@ class activityTest extends PhraseanetPHPUnitAuthenticatedAbstract
             $report->setUser_id(self::$user->get_id());
             $this->activerPerHours($report);
             $this->ConnexionBase($report);
-            $this->activiteAddedDocument(self::$application, $report, $sbasid, $colllist);
-            $this->activiteAddedTopTenUser(self::$application, $report, $sbasid, $colllist);
-            $this->activiteEditedDocument(self::$application, $report, $sbasid, $colllist);
-            $this->activiteTopTenSiteView(self::$application, $report, $sbasid, $colllist);
-            $this->activity(self::$application, $report, $sbasid, $colllist);
-            $this->activityDay(self::$application, $report, $sbasid, $colllist);
-            $this->activityQuestion(self::$application, $report, $sbasid, $colllist);
+            $this->activiteAddedDocument($report, $sbasid, $colllist);
+            $this->activiteAddedTopTenUser($report, $sbasid, $colllist);
+            $this->activiteEditedDocument($report, $sbasid, $colllist);
+            $this->activiteTopTenSiteView($report, $sbasid, $colllist);
+            $this->activity($report, $sbasid, $colllist);
+            $this->activityDay($report, $sbasid, $colllist);
+            $this->activityQuestion($report, $sbasid, $colllist);
             $this->allDownloadByUserBase($report);
             $this->allQuestion($report);
             $this->detailDownload($report);
@@ -72,7 +72,7 @@ class activityTest extends PhraseanetPHPUnitAuthenticatedAbstract
             $this->otherTest($report);
             $this->push($report);
             $this->topQuestion($report);
-            $this->topTenUser(self::$application, $report, $sbasid, $colllist);
+            $this->topTenUser($report, $sbasid, $colllist);
         }
     }
 
@@ -140,7 +140,7 @@ class activityTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function activity($report, $sbasid, $colllist)
     {
-        $result = $report->activity($this->dmin, $this->dmax, $sbasid, $colllist);
+        $result = $report->activity(self::$application, $this->dmin, $this->dmax, $sbasid, $colllist);
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $result);
     }
 
