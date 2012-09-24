@@ -48,11 +48,6 @@ class bootstrap
             }
         }
 
-
-        if (static::$core->getConfiguration()->isInstalled()) {
-            static::$core->enableEvents();
-        }
-
         if (\setup::is_installed()) {
             $gatekeeper = \gatekeeper::getInstance(static::$core);
             $gatekeeper->check_directory($request);

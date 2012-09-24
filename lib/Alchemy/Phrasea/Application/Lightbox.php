@@ -513,7 +513,7 @@ return call_user_func(
                         $participant = $basket->getValidation()->getParticipant($user);
 
                         $appbox = \appbox::get_instance($app['Core']);
-                        $evt_mngr = \eventsmanager_broker::getInstance($appbox, $app['Core']);
+                        $evt_mngr = $app['Core']['events-manager'];
 
                         $expires = new \DateTime('+10 days');
                         $url = $appbox->get_registry()->get('GV_ServerName')

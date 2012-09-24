@@ -109,7 +109,7 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
         <div id="container" style="position:absolute;top:0;left:0;overflow:hidden;width:100%;height:100%;">
 
 <?php
-$events_mngr = eventsmanager_broker::getInstance($appbox, $Core);
+$events_mngr = $Core['events-manager'];
 
 $core = \bootstrap::getCore();
 $twig = $core->getTwig();
