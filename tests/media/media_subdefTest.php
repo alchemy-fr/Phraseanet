@@ -266,7 +266,7 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
         $width_before = self::$objectPresent->get_width();
         $height_before = self::$objectPresent->get_height();
 
-        self::$objectPresent->rotate(90);
+        self::$objectPresent->rotate(90, self::$application['media-alchemyst'], self::$application['mediavorus']);
 
         $this->assertEquals($width_before, self::$objectPresent->get_height());
         $this->assertEquals($height_before, self::$objectPresent->get_width());

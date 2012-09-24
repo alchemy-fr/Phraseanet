@@ -159,7 +159,7 @@ class Feed_Entry_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testLoad_from_id()
     {
         $appbox = self::$application['phraseanet.appbox'];
-        $test_entry = Feed_Entry_Adapter::load_from_id($appbox, self::$object->get_id());
+        $test_entry = Feed_Entry_Adapter::load_from_id(self::$application, self::$object->get_id());
 
         $this->assertInstanceOf('Feed_Entry_Adapter', $test_entry);
         $this->assertEquals(self::$object->get_id(), $test_entry->get_id());

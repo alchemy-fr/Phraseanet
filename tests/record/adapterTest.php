@@ -56,7 +56,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $receveid = array(static::$records['record_1']->get_serialize_key() => static::$records['record_1']);
 
         return \set_order::create(
-                self::$application['phraseanet.appbox'], new RecordsRequest($receveid, new ArrayCollection($receveid), $basket), self::$user_alt2, 'I need this photos', new \DateTime('+10 minutes')
+                self::$application, new RecordsRequest($receveid, new ArrayCollection($receveid), $basket), self::$user_alt2, 'I need this photos', new \DateTime('+10 minutes')
         );
     }
 
