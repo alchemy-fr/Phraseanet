@@ -15,13 +15,13 @@
         </div>
 {% endif %}
 
-<div class="well-small">
-    <form class="form-horizontal" method='post' action='{{ path('admin_database_submit_collection', {'databox_id': app.request.get('databox_id')}) }}'>
+<div class="well well-small">
+    <form class="form-horizontal" method="post" action="{{ path('admin_database_submit_collection', {'databox_id': app.request.get('databox_id')}) }}">
         <fieldset>
             <div class="control-group">
                 <label class="control-label" for="cnm">{% trans 'admin::base:collection: Nom de la nouvelle collection : ' %}</label>
                 <div class="controls">
-                    <input id="cnm" name='name' class="input-xlarge" type="text">
+                    <input id="cnm" name="name" class="input-xlarge" type="text">
                 </div>
             </div>
             <div class="control-group">
@@ -36,7 +36,7 @@
                         <select id="othcollsel" name="othcollsel" disabled>
                             <option>{% trans "choisir" %}</option>
                             {% for baseId, collection in user.ACL().get_granted_base(["canadmin"]) %}
-                               <option value='{{ baseId }}'>{{ collection.get_name() }}</option>
+                               <option value="{{ baseId }}">{{ collection.get_name() }}</option>
                             {% endfor %}
                         </select>
                     {% endif %}
@@ -44,7 +44,7 @@
             </div>
             <div class="form-actions">
                 <button class="btn btn-primary" type="submit">{% trans 'boutton::valider' %}</button>
-                <a href='{{ path('admin_database', {'databox_id': app.request.get('databox_id')}) }}' target='right' class="btn ajax">{% trans 'boutton::annuler' %}</a>
+                <a href="{{ path('admin_database', {'databox_id': app.request.get('databox_id')}) }}" target="right" class="btn ajax">{% trans 'boutton::annuler' %}</a>
             </div>
         </fieldset>
     </form>

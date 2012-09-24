@@ -30,19 +30,18 @@
 {% endif %}
 
 <div>
-    <div class='well-small'>
+    <div class="well well-small">
         <a href="/admin/users/import/example/csv/"> <i class="icon-share"></i> {% trans  'You can  download an example by clicking here' %}</a>
     </div>
-    <div class='well-small'>
+    <div class="well well-small">
         <a href="/admin/users/import/example/rtf/"> <i class="icon-share"></i> {% trans 'You can download the documentation here' %}</a>
     </div>
-
-        <span class="label" style="display:inline-block" >
-            <i class="icon-plus icon-white"></i>
-            <span>{% trans 'Select a file' %}</span>
-            <input id="fileupload" type="file" name="files" data-url="/admin/users/import/file/" accept="text/csv, text/rtf">
-        </span>
-        <a href="/admin/users/search/" class='btn ajax'>{% trans 'boutton::retour' %}</a>
+    <span class="label" style="display:inline-block;" >
+        <i class="icon-plus icon-white"></i>
+        <span>{% trans 'Select a file' %}</span>
+        <input id="fileupload" type="file" name="files" data-url="/admin/users/import/file/" accept="text/csv, text/rtf">
+    </span>
+    <a href="/admin/users/search/" class="btn ajax">{% trans 'boutton::retour' %}</a>
 </div>
 
 <script>
