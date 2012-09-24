@@ -558,7 +558,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             }
 
             $upgrader = new Setup_Upgrade(self::$application);
-//            $appbox->forceUpgrade($upgrader, self::$application);
+            $appbox->forceUpgrade($upgrader, self::$application);
             unset($upgrader);
 
             $command = __DIR__ . '/../bin/doctrine orm:schema-tool:update --force';
