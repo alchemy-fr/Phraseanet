@@ -301,7 +301,7 @@ class set_order extends set_abstract
         $stmt->closeCursor();
 
         if ($n > 0) {
-            $evt_mngr = eventsmanager_broker::getInstance($appbox, $core);
+            $evt_mngr = $Core['events-manager'];
 
             $params = array(
                 'ssel_id' => $this->ssel_id,
@@ -348,7 +348,7 @@ class set_order extends set_abstract
         }
 
         if ($n > 0) {
-            $evt_mngr = eventsmanager_broker::getInstance($appbox, $Core);
+            $evt_mngr = $Core['events-manager'];
 
             $params = array(
                 'from' => $session->get_usr_id(),

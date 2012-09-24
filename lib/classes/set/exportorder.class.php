@@ -87,7 +87,7 @@ class set_exportorder extends set_export
             return false;
         }
 
-        $evt_mngr = eventsmanager_broker::getInstance(appbox::get_instance($Core), $Core);
+        $evt_mngr = $Core['events-manager'];
 
         $params = array(
             'order_id' => $order_id,

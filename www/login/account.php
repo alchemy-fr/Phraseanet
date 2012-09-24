@@ -124,7 +124,7 @@ if ($request->has_post_datas()) {
     }
 }
 if ($request->has_post_datas()) {
-    $evt_mngr = eventsmanager_broker::getInstance($appbox, $Core);
+    $evt_mngr = $Core['events-manager'];
     $notifications = $evt_mngr->list_notifications_available($appbox->get_session()->get_usr_id());
 
     $datas = array();
@@ -498,7 +498,7 @@ $user = User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox)
                                                     <td colspan="3"><?php echo _('Email notification') ?></td>
                                                 </tr>
                                                 <?php
-                                                $evt_mngr = eventsmanager_broker::getInstance($appbox, $Core);
+                                                $evt_mngr = $Core['events-manager'];
                                                 $notifications = $evt_mngr->list_notifications_available($appbox->get_session()->get_usr_id());
 
                                                 foreach ($notifications as $notification_group => $nots) {
