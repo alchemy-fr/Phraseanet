@@ -2,9 +2,9 @@
 
 use Alchemy\Phrasea\Core\Configuration;
 
-require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
+require_once __DIR__ . '/../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
-class questionReportTest extends PhraseanetPHPUnitAbstract
+class questionReportTest extends PhraseanetPHPUnitAuthenticatedAbstract
 {
     protected $ret;
     protected $dmin;

@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
+require_once __DIR__ . '/../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
-class sqlActionTest extends PhraseanetPHPUnitAbstract
+class sqlActionTest extends PhraseanetPHPUnitAuthenticatedAbstract
 {
     protected $action;
     protected $mock;

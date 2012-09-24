@@ -2,9 +2,9 @@
 
 use Alchemy\Phrasea\Core\Configuration;
 
-require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
+require_once __DIR__ . '/../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
-class sqlFilterTest extends PhraseanetPHPUnitAbstract
+class sqlFilterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 {
     /**
      *

@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
+require_once __DIR__ . '/../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
-class dashboardTest extends PhraseanetPHPUnitAbstract
+class dashboardTest extends PhraseanetPHPUnitAuthenticatedAbstract
 {
     protected $dashboard;
 
