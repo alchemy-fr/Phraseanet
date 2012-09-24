@@ -108,12 +108,12 @@ function doLimit($obj, $param)
         ( ! empty($param['page']) && ! empty($param['limit'])) ? $obj->setLimit($param['page'], $param['limit']) : $obj->setLimit(false, false);
 }
 
-function doFilter($obj, $param, $twig)
+function doFilter(Application $app, $obj, $param, $twig)
 {
     $cor = $obj->getTransQueryString();
     $currentfilter = unserializeFilter($param['liste_filter']);
 
-    $filter = new module_report_filter($currentfilter, $cor);
+    $filter = new module_report_filter($app, $currentfilter, $cor);
 
     if ( ! empty($param['filter_column'])) {
         $field = getFilterField($param);
@@ -163,7 +163,7 @@ function doReport(Application $app, $obj, $param, $conf, $twig, $what = false)
     doOrder($obj, $param);
 
     //return a filter object
-    $filter = doFilter($obj, $param, $twig);
+    $filter = doFilter($app, $obj, $param, $twig);
 
     //set new request filter if user asking for them
     if ($param['precise'] == 1)
@@ -365,7 +365,7 @@ function displayColValue($tab, $column, $twig, $on = false)
 
 function getHistory(Application $app, $obj, $param, $twig, $conf, $dl = false, $title)
 {
-    $filter = doFilter($obj, $param, $twig);
+    $filter = doFilter($app, $obj, $param, $twig);
 
     if ( ! empty($param['user']) && empty($param['on']))
         $filter->addfilter('usrid', '=', $param['user']);
@@ -800,7 +800,7 @@ function what(Application $app, $param, $twig)
     } elseif ($param['from'] != 'DASH' && $param['from'] != "PUSHDOC") {
         $histo = new module_report_download($app, $param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
 
-        $filter = doFilter($histo, $param, $twig);
+        $filter = doFilter($app, $histo, $param, $twig);
         if ( ! empty($param['rid']))
             $filter->addfilter('record_id', '=', $param['rid']);
 

@@ -107,11 +107,11 @@ function doLimit($obj, $param)
     ( ! empty($param['page']) && ! empty($param['limit'])) ? $obj->setLimit($param['page'], $param['limit']) : "";
 }
 
-function doFilter($obj, $param, $twig)
+function doFilter(Application $app, $obj, $param, $twig)
 {
     $cor = $obj->getTransQueryString();
     $currentfilter = unserializeFilter($param['liste_filter']);
-    $filter = new module_report_filter($currentfilter, $cor);
+    $filter = new module_report_filter($app, $currentfilter, $cor);
 
     if ( ! empty($param['filter_column'])) {
         $field = getFilterField($param);
@@ -153,7 +153,7 @@ function doReport(Application $app, $obj, $param, $conf, $twig, $what = false)
     displayListColumn($conf, $param, $twig);
     doOrder($obj, $param);
 
-    $filter = doFilter($obj, $param, $twig);
+    $filter = doFilter($app, $obj, $param, $twig);
     passFilter($filter, $obj);
     $posting_filter = $filter->getPostingFilter();
     $active_column = $filter->getActiveColumn();
@@ -316,9 +316,9 @@ function displayColValue($tab, $column, $twig, $on = false)
     exit();
 }
 
-function getHistory($obj, $param, $twig, $conf, $dl = false, $title)
+function getHistory(Application $app, $obj, $param, $twig, $conf, $dl = false, $title)
 {
-    $filter = doFilter($obj, $param, $twig);
+    $filter = doFilter($app, $obj, $param, $twig);
 
     if ( ! empty($param['user']) && empty($param['on']))
         $filter->addfilter('usrid', '=', $param['user']);
@@ -570,7 +570,7 @@ function infoUsr(Application $app, $param, $twig, $conf)
     }
 
     if (isset($histo)) {
-        $rs = getHistory($histo, $param, $twig, $conf_array, $is_dl, $title);
+        $rs = getHistory($app, $histo, $param, $twig, $conf_array, $is_dl, $title);
         $html = $rs['html'];
         $request = $rs['req'];
         $params = $rs['params'];
@@ -633,7 +633,7 @@ function what(Application $app, $param, $twig)
     if ($param['from'] != 'DASH') {
         $histo = new module_report_download($app, $param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
 
-        $filter = doFilter($histo, $param, $twig);
+        $filter = doFilter($app, $histo, $param, $twig);
         if ( ! empty($param['rid']))
             $filter->addfilter('record_id', '=', $param['rid']);
 
