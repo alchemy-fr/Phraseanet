@@ -800,7 +800,7 @@ class Users implements ControllerProviderInterface
 
         $controllers->get('/import/example/csv/', function(Application $app, Request $request) {
 
-                    $file = new \SplFileInfo($app['phraseanet.registry']->get('GV_RootPath') . 'www/admin/exampleImportUsers.csv');
+                    $file = new \SplFileInfo($app['phraseanet.registry']->get('GV_RootPath') . 'lib/Fixtures/exampleImportUsers.csv');
 
                     if ( ! $file->isFile()) {
                         $app->abort(400);
@@ -820,7 +820,7 @@ class Users implements ControllerProviderInterface
 
         $controllers->get('/import/example/rtf/', function(Application $app, Request $request) {
 
-                    $file = new \SplFileInfo($app['phraseanet.registry']->get('GV_RootPath') . 'www/admin/Fields.rtf');
+                    $file = new \SplFileInfo($app['phraseanet.registry']->get('GV_RootPath') . 'lib/Fixtures/Fields.rtf');
 
                     if ( ! $file->isFile()) {
                         $app->abort(400);

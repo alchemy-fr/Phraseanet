@@ -38,6 +38,12 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      *
      * @var User_Adapter
      */
+    protected static $user_notAdmin;
+
+    /**
+     *
+     * @var User_Adapter
+     */
     protected static $user_alt1;
 
     /**
@@ -601,12 +607,17 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             $appbox = self::$application['phraseanet.appbox'];
 
             $usr_id = User_Adapter::get_usr_id_from_login(self::$application, 'test_phpunit');
+            $usr_id_noadmin = User_Adapter::get_usr_id_from_login(self::$application, 'test_phpunit_not_admin');
             $usr_alt1_id = User_Adapter::get_usr_id_from_login(self::$application, 'test_phpunit_alt1');
             $usr_alt2_id = User_Adapter::get_usr_id_from_login(self::$application, 'test_phpunit_alt2');
 
             if (!$usr_id) {
                 $user = User_Adapter::create(self::$application, 'test_phpunit', random::generatePassword(), 'noone@example.com', false);
                 $usr_id = $user->get_id();
+            }
+            if (!$usr_id_noadmin) {
+                $user = User_Adapter::create(self::$application, 'test_phpunit_not_admin', random::generatePassword(), 'noone_not_admin@example.com', false);
+                $usr_id_noadmin = $user->get_id();
             }
             if (!$usr_alt1_id) {
                 $user = User_Adapter::create(self::$application, 'test_phpunit_alt1', random::generatePassword(), 'noonealt1@example.com', false);
@@ -618,6 +629,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             }
 
             self::$user = User_Adapter::getInstance($usr_id, self::$application);
+            self::$user_notAdmin = User_Adapter::getInstance($usr_id_noadmin, self::$application);
             self::$user_alt1 = User_Adapter::getInstance($usr_alt2_id, self::$application);
             self::$user_alt2 = User_Adapter::getInstance($usr_alt1_id, self::$application);
 
@@ -810,6 +822,9 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 });
 
             self::giveRightsToUser(self::$user);
+            self::$user->ACL()->set_admin(true);
+            self::giveRightsToUser(self::$user_notAdmin);
+            self::$user_notAdmin->ACL()->set_admin(false);
         }
 
         return;

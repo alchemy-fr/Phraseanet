@@ -9,7 +9,7 @@ class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract {
          * get /admin/task-manager/ should redirect to /admin/task-manager/tasks
          */
         $this->client->request(
-                'GET', '/task-manager/', array()
+                'GET', '/admin/task-manager/', array()
         );
         $this->assertTrue($this->client->getResponse()->isRedirect('/admin/task-manager/tasks/'));
     }
@@ -18,13 +18,13 @@ class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract {
         $task_manager = new \task_manager(self::$application);
 
         $crawler = $this->client->request(
-                'GET', '/task-manager/tasks/', array()
+                'GET', '/admin/task-manager/tasks/', array()
         );
         $this->assertTrue($this->client->getResponse()->isOk());
         $this->assertCount(1, $crawler->filter('form#taskManagerForm'));
 
         $crawler = $this->client->request(
-                'GET', '/task-manager/tasks/', array(), array(), array('CONTENT_TYPE' => 'application/json')
+                'GET', '/admin/task-manager/tasks/', array(), array(), array('CONTENT_TYPE' => 'application/json')
         );
         $this->assertTrue($this->client->getResponse()->isOk());
         $this->assertTrue($this->client->getResponse()->headers->contains('Content-Type', 'application/json'));
@@ -41,7 +41,7 @@ class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract {
         $nTasks0 = count($task_manager->getTasks());
 
         $this->client->request(
-                'POST', '/task-manager/tasks/create/', array('tcl' => 'task_period_test')
+                'POST', '/admin/task-manager/tasks/create/', array('tcl' => 'task_period_test')
         );
 
         $nTasks1 = count($task_manager->getTasks(true));  // true: force refresh
@@ -52,13 +52,13 @@ class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract {
         $tid = array_pop(explode('/', $location));
 
         $this->client->request(
-                'GET', '/task-manager/task/' . $tid . '/log', array()
+                'GET', '/admin/task-manager/task/' . $tid . '/log', array()
         );
 
         $this->assertTrue($this->client->getResponse()->isOk());
 
         $this->client->request(
-                'GET', '/task-manager/task/' . $tid . '/delete', array()
+                'GET', '/admin/task-manager/task/' . $tid . '/delete', array()
         );
 
         $this->assertTrue($this->client->getResponse()->isRedirect('/admin/task-manager/tasks/'));
@@ -70,7 +70,7 @@ class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract {
         $task_manager = new \task_manager(self::$application);
 
         $this->client->request(
-                'GET', '/task-manager/scheduler/log', array()
+                'GET', '/admin/task-manager/scheduler/log', array()
         );
 
         $this->assertTrue($this->client->getResponse()->isOk());

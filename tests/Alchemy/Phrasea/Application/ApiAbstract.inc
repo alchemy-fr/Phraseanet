@@ -71,8 +71,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         parent::setUpBeforeClass();
         $appbox = self::$application['phraseanet.appbox'];
 
-        self::$oauthApplication = \API_OAuth2_Application::create(self::$application, self::$user, 'test API v1');
-        self::$account = \API_OAuth2_Account::load_with_user(self::$application, self::$oauthApplication, self::$user);
+        self::$oauthApplication = \API_OAuth2_Application::create(self::$application, self::$user_notAdmin, 'test API v1');
+        self::$account = \API_OAuth2_Account::load_with_user(self::$application, self::$oauthApplication, self::$user_notAdmin);
         self::$token = self::$account->get_token()->get_value();
 
         self::$adminToken = null;
@@ -215,7 +215,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testGetMonitorTasks()
     {
-        $appbox = $this->app["phraseanet.appbox"];
         if (null === self::$adminToken) {
             $this->markTestSkipped('there is no user with admin rights');
         }
@@ -1174,7 +1173,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testBasketContent()
     {
-        $this->setToken(self::$token);
+        $this->setToken(self::$adminToken);
 
         $basketElement = $this->insertOneBasketElement();
         $basket = $basketElement->getBasket();
@@ -1214,7 +1213,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testSetBasketTitle()
     {
-        $this->setToken(self::$token);
+        $this->setToken(self::$adminToken);
 
         $basket = $this->insertOneBasket();
 
@@ -1267,7 +1266,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testSetBasketDescription()
     {
-        $this->setToken(self::$token);
+        $this->setToken(self::$adminToken);
 
         $basket = $this->insertOneBasket();
 
@@ -1293,7 +1292,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testDeleteBasket()
     {
-        $this->setToken(self::$token);
+        $this->setToken(self::$adminToken);
 
         $baskets = $this->insertFiveBasket();
 
@@ -1422,7 +1421,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testAddRecordWrongBaseId()
     {
-        $this->setToken(self::$token);
+        $this->setToken(self::$adminToken);
         $route = '/records/add/';
 
         $params = $this->getAddRecordParameters();
@@ -1654,7 +1653,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
         $created_feed->set_collection(self::$collection_no_access);
 
-        $this->setToken(self::$token);
+        $this->setToken(self::$adminToken);
         $route = '/feeds/entry/' . $created_entry->get_id() . '/';
 
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
