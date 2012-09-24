@@ -1,25 +1,25 @@
 <table id="table-order">
     <tr>
-        <td>
-             <select size=16 name="coll-order" id="coll-order" style="width:140px">
+        <td valign="center" align="center">
+             <select size=16 name="coll-order" id="coll-order" style="width:140px;">
                  {% for collection in databox.get_collections() %}
-                     <option value='{{ collection.get_base_id() }}'> {{ collection.get_name() }}</option>
+                     <option value="{{ collection.get_base_id() }}"> {{ collection.get_name() }}</option>
                  {% endfor %}
              </select>
         </td>
-         <td>
-            <ul>
+         <td valign="center" align="left">
+             <ul style="list-style:none;">
                 <li><button id="upbutton" disabled><i class="icon-chevron-up"></i>{% trans 'admin::base:collorder: monter' %}</button></li>
                 <li><button id="downbutton" disabled ><i class="icon-chevron-down"></i>{% trans 'admin::base:collorder: descendre' %}</button></li>
-                <li><a href="#" id='natcase-reorder'>{% trans 'admin::base:collorder: reinitialiser en ordre alphabetique' %}</a></li>
+                <li><a href="#" id="natcase-reorder">{% trans 'admin::base:collorder: reinitialiser en ordre alphabetique' %}</a></li>
             </ul>
         </td>
     </tr>
     <tr>
-        <td colspan="2" style="height:20px" />
+        <td colspan="2" style="height:20px;" />
     </tr>
     <tr>
-        <td colspan="2" style="text-align:center"><button class='btn btn-primary' id='apply'>{% trans 'boutton::valider' %}</button></td>
+        <td colspan="2" valign="center" align="left"><div class="form-actions"><button class="btn btn-primary" id="apply">{% trans 'boutton::valider' %}</button></div></td>
     </tr>
 </table>
 

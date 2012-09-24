@@ -126,29 +126,29 @@
             <table class="admintable">
                 <thead>
                     <tr>
-                        <th>{% trans 'Id' %}</th>
-                        <th></th>
-                        <th>{% trans 'Email' %}</th>
-                        <th>{% trans 'Owner' %}</th>
+                        <th valign="center" align="left">{% trans 'Id' %}</th>
+                        <th valign="center" align="left"></th>
+                        <th valign="center" align="left">{% trans 'Email' %}</th>
+                        <th valign="center" align="center">{% trans 'Owner' %}</th>
                     </tr>
                 </thead>
                 <tbody>
                 {% for publisher in feed.get_publishers() %}
                     <tr class="{% if loop.index is odd %}odd{% else %}even{% endif %}">
-                        <td>
+                        <td valign="center" align="left">
                             {{ publisher.get_user().get_id() }}
                         </td>
-                        <td>
+                        <td valign="center" align="left">
                             {{ publisher.get_user().get_display_name() }}
                         </td>
-                        <td>
+                        <td valign="center" align="left">
                             {{ publisher.get_user().get_email() }}
                         </td>
-                        <td style="text-align: center;">
+                        <td valign="center" align="center">
                             {% if publisher.is_owner() == true %}
                                 X
                             {% else %}
-                                <form class="no-ajax form_publication" method="post" action="/admin/publications/feed/{{ feed.get_id() }}/removepublisher/">
+                                <form class="no-ajax form_publication" method="post" action="/admin/publications/feed/{{ feed.get_id() }}/removepublisher/" style="margin:0;">
                                     <input type="hidden" value="{{ publisher.get_id() }}" name="publisher_id"/>
                                     <button class="btn btn-mini">{% trans 'boutton::supprimer' %}</button>
                                 </form>
