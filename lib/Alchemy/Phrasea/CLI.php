@@ -19,9 +19,9 @@ class CLI extends Application
      * @param string $name Name for this application.
      * @param string|null $version Version number for this application.
      */
-    function __construct($name, $version = null)
+    function __construct($name, $version = null, $environment = null)
     {
-        parent::__construct();
+        parent::__construct($environment);
 
         $this['console'] = $this->share(function () use ($name, $version) {
                 return new Console\Application($name, $version);
