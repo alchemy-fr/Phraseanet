@@ -1394,7 +1394,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             ':parent_record_id' => 0,
             ':type'             => $file->getType() ? $file->getType()->getType() : 'unknown',
             ':sha256'           => $file->getMedia()->getHash('sha256'),
-            ':uuid'             => $file->getUUID(),
+            ':uuid'             => $file->getUUID(true),
             ':originalname'     => $file->getOriginalName(),
             ':mime'             => $file->getFile()->getMimeType(),
         ));
