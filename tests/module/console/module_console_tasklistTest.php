@@ -14,8 +14,7 @@ class module_console_tasklistTest extends PHPUnit_Framework_TestCase
      */
     public function testExecute()
     {
-        // mock the Kernel or create one depending on your needs
-        $application = new CLI('test');
+        $application = new CLI('test', null, 'test');
         $application->command(new module_console_tasklist('task:list'));
 
         $command = $application['console']->find('task:list');

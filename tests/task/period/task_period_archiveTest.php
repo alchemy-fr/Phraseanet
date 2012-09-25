@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Application;
+
 require_once __DIR__ . '/../../PhraseanetPHPUnitAbstract.class.inc';
 
 class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
@@ -12,7 +14,7 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $app = new \Alchemy\Phrasea\Application();
+        $app = new Application('test');
         $task = \task_period_archive::create($app, 'task_period_archive');
 
         $logger = new \Monolog\Logger('test');

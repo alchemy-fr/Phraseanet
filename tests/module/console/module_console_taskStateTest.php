@@ -14,8 +14,7 @@ class module_console_taskStateTest extends PhraseanetPHPUnitAbstract
      */
     public function testExecute()
     {
-        // mock the Kernel or create one depending on your needs
-        $application = new CLI('test');
+        $application = new CLI('test', null, 'test');
         $application->command(new module_console_taskState('system:taskState'));
 
         $command = $application['console']->find('system:taskState');

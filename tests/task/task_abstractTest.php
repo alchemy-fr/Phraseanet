@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Application;
+
 require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
 
 class task_abstractTest extends PhraseanetPHPUnitAbstract
@@ -13,7 +15,7 @@ class task_abstractTest extends PhraseanetPHPUnitAbstract
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $app = new \Alchemy\Phrasea\Application();
+        $app = new Application('test');
 
         self::$task = task_abstract::create($app, 'task_period_test');
         self::$tid = self::$task->getID();
