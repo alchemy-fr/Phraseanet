@@ -14,13 +14,12 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $app = new Application('test');
-        $task = \task_period_archive::create($app, 'task_period_archive');
+        $task = \task_period_archive::create(self::$application, 'task_period_archive');
 
         $logger = new \Monolog\Logger('test');
         $logger->pushHandler(new \Monolog\Handler\NullHandler());
 
-        self::$object = new archiveTester($task->getID(), $app, $logger);
+        self::$object = new archiveTester($task->getID(), self::$application, $logger);
     }
 
     public static function tearDownAfterClass()
