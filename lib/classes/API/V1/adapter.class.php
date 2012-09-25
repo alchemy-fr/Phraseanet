@@ -1613,6 +1613,7 @@ class API_V1_adapter extends API_V1_Abstract
             'title'        => $entry->get_title(),
             'subtitle'     => $entry->get_subtitle(),
             'items'        => $items,
+            'feed_id'      => $entry->get_feed()->get_id(),
             'feed_url'     => '/feeds/' . $entry->get_feed()->get_id() . '/content/',
             'url'          => '/feeds/entry/' . $entry->get_id() . '/',
         );
