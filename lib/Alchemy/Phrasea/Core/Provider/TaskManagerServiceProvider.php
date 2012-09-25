@@ -20,7 +20,7 @@ class TaskManagerServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['task-manager'] = $app->share(function($app) {
-                return new \task_manager($app['phraseanet.appbox']);
+                return new \task_manager($app);
             });
     }
 

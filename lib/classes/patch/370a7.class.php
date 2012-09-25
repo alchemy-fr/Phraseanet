@@ -10,7 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
-use MediaAlchemyst\Exception\Exception as MediaAlchemystException;
+use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
 use MediaAlchemyst\Specification\Image as ImageSpec;
 
 /**

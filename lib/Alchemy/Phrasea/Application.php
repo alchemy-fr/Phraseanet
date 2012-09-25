@@ -88,12 +88,14 @@ class Application extends SilexApplication
         $this->register(new ImagineServiceProvider());
         $this->register(new FFMpegServiceProvider());
         $this->register(new PHPExiftoolServiceProvider());
+        $this->register(new \Unoconv\UnoconvServiceProvider());
         $this->register(new MediaVorusServiceProvider());
         $this->register(new XPDFServiceProvider());
         $this->register(new MonologServiceProvider());
         $this->register(new MediaAlchemystServiceProvider());
         $this->register(new \Silex\Provider\SessionServiceProvider());
         $this->register(new Core\Provider\GeonamesServiceProvider);
+        $this->register(new Core\Provider\TaskManagerServiceProvider());
 
 
         $this['session.test'] = $this->share(function(Application $app) {

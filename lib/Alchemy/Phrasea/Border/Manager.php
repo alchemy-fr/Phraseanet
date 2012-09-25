@@ -32,7 +32,7 @@ use Alchemy\Phrasea\Border\Attribute\Metadata as MetadataAttr;
 use Entities\LazaretAttribute;
 use Entities\LazaretFile;
 use Entities\LazaretSession;
-use MediaAlchemyst\Exception\Exception as MediaAlchemystException;
+use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
 use MediaAlchemyst\Specification\Image as ImageSpec;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Value\Mono as MonoValue;

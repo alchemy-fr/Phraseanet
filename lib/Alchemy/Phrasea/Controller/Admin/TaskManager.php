@@ -21,14 +21,13 @@ use Symfony\Component\Finder\Finder;
 class TaskManager implements ControllerProviderInterface
 {
 
-
     public function connect(Application $app)
     {
         $controllers = $app['controllers_factory'];
 
         $controllers->get('/', function(Application $app, Request $request) {
 
-                    return $app->redirect('/admin/task-manager/tasks/');
+                return $app->redirect('/admin/task-manager/tasks/');
             });
 
 
@@ -40,42 +39,30 @@ class TaskManager implements ControllerProviderInterface
          *  task manager page in html
          */
         $controllers->get('/tasks/', function(Application $app, Request $request) {
-                $task_manager = new \task_manager($app['phraseanet.appbox']);
 
                 if ($request->getContentType() == 'json') {
 
-                    return $app->json($task_manager->toArray());
+                    return $app->json($app['task-manager']->toArray());
                 } else {
 
                     $template = 'admin/tasks/list.html.twig';
-                    /* @var $twig \Twig_Environment */
-                    $twig = $app['phraseanet.core']->getTwig();
 
-                    return $twig->render($template, array(
-                            'task_manager'  => $task_manager,
-                            'scheduler_key' => \phrasea::scheduler_key()
+                    return $app['twig']->render($template, array(
+                            'task_manager'  => $app['task-manager'],
+                            'scheduler_key' => \phrasea::scheduler_key($app)
                         ));
                 }
             });
 
-            /**
-             * route /admin/task-manager/tasks/create
-             */
+        /**
+         * route /admin/task-manager/tasks/create
+         */
         $controllers->post('/tasks/create/', function(Application $app, Request $request) {
-                $appbox = $app['phraseanet.appbox'];
-                $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
 
-                $tcl = $request->get('tcl');
-                if( $tcl )
-                {
-                    $task = \task_abstract::create($appbox, $tcl);
-                    $tid = $task->getId();
+                $task = \task_abstract::create($app, $request->get('tcl'));
+                $tid = $task->getId();
 
-                    return $app->redirect('/admin/task-manager/task/'.$tid);
-                    // return $tid;
-                }
-
-                return $app->redirect('/admin/task-manager/');
+                return $app->redirect('/admin/task-manager/task/' . $tid);
             });
 
         /*
@@ -88,9 +75,7 @@ class TaskManager implements ControllerProviderInterface
          */
         $controllers->get('/scheduler/stop', function(Application $app, Request $request) use ($app) {
                 try {
-                    $task_manager = new \task_manager($app['phraseanet.appbox']);
-
-                    $task_manager->setSchedulerState(\task_manager::STATE_TOSTOP);
+                    $app['task-manager']->setSchedulerState(\task_manager::STATE_TOSTOP);
 
                     return $app->json(true);
                 } catch (Exception $e) {
@@ -215,13 +200,12 @@ class TaskManager implements ControllerProviderInterface
          *  set a task to 'tostart'
          */
         $controllers->get('/task/{id}/tostart', function(Application $app, Request $request, $id) {
-                $task_manager = new \task_manager($app['phraseanet.appbox']);
 
                 $ret = false;
                 try {
-                    $task = $task_manager->getTask($id);
+                    $task = $app['task-manager']->getTask($id);
                     $pid = (int) ($task->getPID());
-                    if ( ! $pid) {
+                    if (!$pid) {
                         $task->setState(\task_abstract::STATE_TOSTART);
                         $ret = true;
                     }
@@ -238,11 +222,9 @@ class TaskManager implements ControllerProviderInterface
          */
         $controllers->get('/task/{id}/tostop', function(Application $app, Request $request, $id) {
 
-                $task_manager = new \task_manager($app['phraseanet.appbox']);
-
                 $ret = false;
                 try {
-                    $task = $task_manager->getTask($id);
+                    $task = $app['task-manager']->getTask($id);
                     $pid = $task->getPID();
                     $signal = $request->get('signal');
                     $task->setState(\task_abstract::STATE_TOSTOP);
@@ -264,10 +246,9 @@ class TaskManager implements ControllerProviderInterface
          * return json
          */
         $controllers->get('/task/{id}/resetcrashcounter/', function(Application $app, Request $request, $id) {
-                $task_manager = new \task_manager($app['phraseanet.appbox']);
 
                 try {
-                    $task = $task_manager->getTask($id);
+                    $task = $app['task-manager']->getTask($id);
 
                     $task->resetCrashCounter();
 
@@ -284,12 +265,10 @@ class TaskManager implements ControllerProviderInterface
          */
         $controllers->post('/task/{id}/save/', function(Application $app, Request $request, $id) {
 
-                $task_manager = new \task_manager($app['phraseanet.appbox']);
-
                 $dom = new \DOMDocument('1.0', 'UTF-8');
                 $dom->strictErrorChecking = true;
                 try {
-                    if ( ! @$dom->loadXML($request->get('xml'))) {
+                    if (!@$dom->loadXML($request->get('xml'))) {
                         throw new XMLParseErrorException($request->get('xml'));
                     }
                 } catch (XMLParseErrorException $e) {
@@ -300,7 +279,7 @@ class TaskManager implements ControllerProviderInterface
                 }
 
                 try {
-                    $task = $task_manager->getTask($id);
+                    $task = $app['task-manager']->getTask($id);
 
                     $task->setTitle($request->get('title'));
                     $task->setActive(\p4field::isyes($request->get('active')));
@@ -322,10 +301,9 @@ class TaskManager implements ControllerProviderInterface
          */
         $controllers->post('/task/{id}/facility/', function(Application $app, Request $request, $id) {
 
-                $task_manager = new \task_manager($app['phraseanet.appbox']);
                 $ret = '';
                 try {
-                    $task = $task_manager->getTask($id);
+                    $task = $app['task-manager']->getTask($id);
                 } catch (\Exception $e) {
                     return new Response(
                             'Bad task ID',
@@ -366,13 +344,10 @@ class TaskManager implements ControllerProviderInterface
          */
         $controllers->get('/task/{id}', function(Application $app, Request $request, $id) {
 
-                $task_manager = new \task_manager($app['phraseanet.appbox']);
-                $task = $task_manager->getTask($id);
+                $task = $app['task-manager']->getTask($id);
 
-                /* @var $twig \Twig_Environment */
-                $twig = $app['phraseanet.core']->getTwig();
                 $template = 'admin/task.html.twig';
-                return $twig->render($template, array(
+                return $app['twig']->render($template, array(
                         'task' => $task,
                         'view' => 'XML'
                     ));
@@ -383,11 +358,11 @@ class TaskManager implements ControllerProviderInterface
          * check if the xml is valid
          */
         $controllers->post('/task/checkxml/', function(Application $app, Request $request) {
-                $ret = array('ok'  => true, 'err' => null);
+                $ret = array('ok'                      => true, 'err'                     => null);
                 $dom = new \DOMDocument('1.0', 'UTF-8');
                 $dom->strictErrorChecking = true;
                 try {
-                    if ( ! @$dom->loadXML($request->get('xml'))) {
+                    if (!@$dom->loadXML($request->get('xml'))) {
                         throw new XMLParseErrorException($request->get('xml'));
                     }
                     $ret = $app->json($ret);
@@ -400,7 +375,7 @@ class TaskManager implements ControllerProviderInterface
                 return $ret;
             });
 
-            return $controllers;
+        return $controllers;
     }
 
     public function startScheduler(Application $app, Request $request)
@@ -425,6 +400,4 @@ class TaskManager implements ControllerProviderInterface
     {
         return sprintf('%s::%s', __CLASS__, $method);
     }
-
-
 }

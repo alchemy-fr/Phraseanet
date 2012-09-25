@@ -562,7 +562,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $alchemyst->open($this->get_pathfile())
                 ->turnInto($this->get_pathfile(), $specs)
                 ->close();
-        } catch (\MediaAlchemyst\Exception\Exception $e) {
+        } catch (\MediaAlchemyst\Exception\ExceptionInterface $e) {
             return $this;
         }
 
@@ -721,7 +721,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         }
 
         unset($media);
-
         return $subdef;
     }
 

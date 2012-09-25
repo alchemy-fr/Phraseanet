@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Controller;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Silex\Application;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  *
@@ -52,6 +53,10 @@ class Datafiles extends AbstractDelivery
                 }
 
                 $user = $app['phraseanet.user'];
+
+                if (!$record->has_subdef($subdef) || !$record->get_subdef($subdef)->is_physically_present()) {
+                    throw new NotFoundHttpException;
+                }
 
                 if (!$user->ACL()->has_access_to_subdef($record, $subdef)) {
                     throw new \Exception_UnauthorizedAction();

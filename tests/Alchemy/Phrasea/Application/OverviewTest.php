@@ -6,9 +6,6 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 {
-
-    protected static $useExceptionHandler = true;
-
     function testDatafilesRouteAuthenticated()
     {
         $registry = self::$application['phraseanet.registry'];
@@ -20,10 +17,14 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals('inline', $content_disposition[0]);
         $this->assertEquals(static::$records['record_1']->get_preview()->get_mime(), $response->headers->get('content-type'));
         $this->assertEquals(static::$records['record_1']->get_preview()->get_size(), $response->headers->get('content-length'));
+    }
 
+    /**
+     * @expectedException Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     */
+    function testDatafilesNonExistentSubdef()
+    {
         $crawler = $this->client->request('GET', '/datafiles/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/asubdefthatdoesnotexists/');
-        $response = $this->client->getResponse();
-        $this->assertEquals(404, $response->getStatusCode());
     }
 
     function testEtag()
@@ -35,18 +36,6 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
         $file = new Alchemy\Phrasea\Border\File($media, self::$collection);
         $record = record_adapter::createFromFile($file, self::$application);
-
-        $crawler = $this->client->request('GET', '/datafiles/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/preview/');
-        $response = $this->client->getResponse();
-
-        /* @var $response \Symfony\Component\HttpFoundation\Response */
-        $this->assertTrue($response->isOk());
-        $this->assertNull($response->getEtag());
-        $this->assertNull($response->getLastModified());
-        $this->assertNull($response->getMaxAge());
-        $this->assertNull($response->getTtl());
-        $this->assertEquals(0, $response->getAge());
-        $this->assertNull($response->getExpires());
 
         $record->generate_subdefs($record->get_databox(), self::$application);
 

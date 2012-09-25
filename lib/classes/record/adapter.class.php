@@ -1074,7 +1074,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 $app['media-alchemyst']->open($media->getFile()->getRealPath())
                     ->turnInto($path_file_dest, $subdef_def->getSpecs())
                     ->close();
-            } catch (\MediaAlchemyst\Exception\Exception $e) {
+            } catch (\MediaAlchemyst\Exception\ExceptionInterface $e) {
                 return $this;
             }
 
@@ -1786,7 +1786,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             $alchemyst->open($this->get_hd_file()->getPathname());
             $alchemyst->turnInto($pathdest, $subdef_class->getSpecs());
             $alchemyst->close();
-        } catch (\MediaAlchemyst\Exception\Exception $e) {
+        } catch (\MediaAlchemyst\Exception\ExceptionInterface $e) {
             $logger->addError(sprintf('Subdef generation failed for record %d with message %s', $this->get_record_id(), $e->getMessage()));
         }
 

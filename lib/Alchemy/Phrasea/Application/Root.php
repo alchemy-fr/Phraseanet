@@ -30,6 +30,7 @@ use Alchemy\Phrasea\Controller\Admin\Root;
 use Alchemy\Phrasea\Controller\Admin\Setup;
 use Alchemy\Phrasea\Controller\Admin\Sphinx;
 use Alchemy\Phrasea\Controller\Admin\Subdefs;
+use Alchemy\Phrasea\Controller\Admin\TaskManager;
 use Alchemy\Phrasea\Controller\Admin\Users;
 use Alchemy\Phrasea\Controller\Prod\Basket;
 use Alchemy\Phrasea\Controller\Prod\Bridge;
@@ -115,6 +116,7 @@ return call_user_func(function($environment = null) {
             $app->mount('/admin/publications', new Publications());
             $app->mount('/admin/users', new Users());
             $app->mount('/admin/fields', new Fields());
+            $app->mount('/admin/task-manager', new TaskManager());
             $app->mount('/admin/subdefs', new Subdefs());
             $app->mount('/admin/description', new Description());
             $app->mount('/admin/tests/connection', new ConnectionTest());

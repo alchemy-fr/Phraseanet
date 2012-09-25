@@ -138,7 +138,7 @@ class Publications implements ControllerProviderInterface
                             ->open($media->getFile()->getPathname())
                             ->turnInto($tmpname, $spec)
                             ->close();
-                    } catch (\MediaAlchemyst\Exception\Exception $e) {
+                    } catch (\MediaAlchemyst\Exception\ExceptionInterface $e) {
                         throw new \Exception_InternalServerError('Error while resizing');
                     }
 
