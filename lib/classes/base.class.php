@@ -166,11 +166,7 @@ abstract class base implements cache_cacheableInterface
 
     public function get_cache()
     {
-        if ( ! $this->cache) {
-            $this->cache = $this->app['cache'];
-        }
-
-        return $this->cache;
+        return $this->app['cache'];
     }
 
     /**
@@ -180,7 +176,6 @@ abstract class base implements cache_cacheableInterface
      */
     public function get_data_from_cache($option = null)
     {
-
         if ($this->get_base_type() == self::DATA_BOX) {
             \cache_databox::refresh($this->app, $this->id);
         }
