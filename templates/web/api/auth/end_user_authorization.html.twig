@@ -37,7 +37,7 @@
                             {% for key,value in auth.getParams %}
                                 <input type="hidden" name="{{key}}" value="{{value}}">
                             {% endfor %}
-                            {% if errorMessage %}
+                            {% if errorMessage is defined %}
                                 <p class="login_error">{% trans 'Erreur de login / mot de passe' %}</p>
                             {% endif %}
                             <p class="login_hello">
@@ -45,8 +45,8 @@
                                 Bonjour, veuillez vous identifier sur {{home_title}} :
                                 {% endtrans %}
                             </p>
-                            <input id="myLogin" name="login" class="span6" type="text" placeholder="{% trans 'admin::compte-utilisateur identifiant' %}…" />
-                            <input id="myPass" name="password" class="span6" type="password" placeholder="{% trans 'admin::compte-utilisateur mot de passe' %}…" />
+                            <input id="myLogin" name="login" class="span6" type="text" placeholder="{% trans 'admin::compte-utilisateur identifiant' %}" />
+                            <input id="myPass" name="password" class="span6" type="password" placeholder="{% trans 'admin::compte-utilisateur mot de passe' %}" />
                             <input id="button_login" name="action_login" class="btn btn-inverse btn-large span6" type="submit" value="{% trans 'Se connecter' %}" />
                         </form>
                         <p>
