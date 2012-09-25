@@ -134,7 +134,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
     public function testCheckNativeApp()
     {
-        $appbox = $this->app["phraseanet.appbox"];
+        $appbox = self::$application["phraseanet.appbox"];
 
         $registry = $this->getMock('\\registry', array(), array(), '', false);
         $registry
@@ -142,13 +142,13 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             ->method('get')
             ->with($this->equalTo('GV_client_navigator'))
             ->will($this->returnValue(false));
-        $registryBkp = $this->app["phraseanet.registry"];
+        $registryBkp = self::$application["phraseanet.registry"];
 
         $fail = null;
 
         try {
 
-            $this->app["phraseanet.registry"] = $registry;
+            self::$application["phraseanet.registry"] = $registry;
 
             $nativeApp = \API_OAuth2_Application::load_from_client_id(self::$application, \API_OAuth2_Application_Navigator::CLIENT_ID);
 
@@ -165,7 +165,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             $fail = $e;
         }
 
-        $this->app["phraseanet.registry"] = $registryBkp;
+        self::$application["phraseanet.registry"] = $registryBkp;
 
         if ($fail) {
             throw $fail;
@@ -230,7 +230,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->evaluateMeta200($content);
         $response = $content['response'];
 
-        $task_manager = new \task_manager($this->app);
+        $task_manager = new \task_manager(self::$application);
         $tasks = $task_manager->getTasks();
         $this->assertEquals(count($tasks), count($response['tasks']));
 
@@ -320,8 +320,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testGetMonitorTaskById()
     {
-        $appbox = $this->app["phraseanet.appbox"];
-        $task_manager = new \task_manager($this->app);
+        $appbox = self::$application["phraseanet.appbox"];
+        $task_manager = new \task_manager(self::$application);
         $tasks = $task_manager->getTasks();
 
         if (null === self::$adminToken) {
@@ -354,8 +354,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testPostMonitorTaskById()
     {
-        $appbox = $this->app["phraseanet.appbox"];
-        $task_manager = new \task_manager($this->app);
+        $appbox = self::$application["phraseanet.appbox"];
+        $task_manager = new \task_manager(self::$application);
         $tasks = $task_manager->getTasks();
 
         if (null === self::$adminToken) {
@@ -411,8 +411,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             $this->markTestSkipped('there is no user with admin rights');
         }
 
-        $appbox = $this->app["phraseanet.appbox"];
-        $task_manager = new \task_manager($this->app);
+        $appbox = self::$application["phraseanet.appbox"];
+        $task_manager = new \task_manager(self::$application);
         $tasks = $task_manager->getTasks();
 
         if (!count($tasks)) {
@@ -445,8 +445,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testPostMonitorStopTask()
     {
-        $appbox = $this->app["phraseanet.appbox"];
-        $task_manager = new \task_manager($this->app);
+        $appbox = self::$application["phraseanet.appbox"];
+        $task_manager = new \task_manager(self::$application);
 
         $tasks = $task_manager->getTasks();
 
@@ -581,7 +581,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
         foreach (static::$databoxe_ids as $databox_id) {
-            $databox = $this->app['phraseanet.appbox']->get_databox($databox_id);
+            $databox = self::$application['phraseanet.appbox']->get_databox($databox_id);
             $ref_status = $databox->get_statusbits();
             $route = '/databoxes/' . $databox_id . '/status/';
             $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
@@ -630,7 +630,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
         foreach (static::$databoxe_ids as $databox_id) {
-            $databox = $this->app['phraseanet.appbox']->get_databox($databox_id);
+            $databox = self::$application['phraseanet.appbox']->get_databox($databox_id);
             $ref_structure = $databox->get_meta_structure();
 
             try {
