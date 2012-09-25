@@ -1,17 +1,12 @@
 <?php
 
+use Symfony\Component\HttpKernel\Client;
+
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 require_once __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Controller/Prod/Story.php';
 
 class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
-    protected $client;
-
-    public function setUp()
-    {
-        parent::setUp();
-    }
-
     public function testRootPost()
     {
         $route = "/prod/story/";
@@ -154,7 +149,11 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             static::$records['record_2']
         );
 
-        $totalRecords = count($records);
+        foreach($records as $record) {
+            $story->appendChild($record);
+        }
+
+        $totalRecords = $story->get_children()->get_count();
         $n = 0;
         foreach ($records as $record) {
             /* @var $record \record_adapter */
@@ -165,6 +164,8 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 , $record->get_sbas_id()
                 , $record->get_record_id()
             );
+
+            $this->client = new Client(self::$application, array());
 
             if (($n % 2) === 0) {
                 $crawler = $this->client->request('POST', $route);
@@ -180,9 +181,11 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 $response = $this->client->getResponse();
 
                 $this->assertEquals(200, $response->getStatusCode());
+
+                $data = json_decode($response->getContent(), true);
+                $this->assertTrue($data['success']);
             }
             $n ++;
-
             $this->assertEquals($totalRecords - $n, $story->get_children()->get_count());
         }
         $story->delete();
