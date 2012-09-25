@@ -6,6 +6,13 @@ rewrite ^/(mail-export)/([a-zA-Z0-9]*)\/get$  /include/download_anonymous.php?ty
 
 rewrite ^/admin.?$                 /index.php last;
 rewrite ^/lightbox.?$              /index.php last;
+rewrite ^/robots.txt$              /index.php last;
+rewrite ^/feeds/.*$                /index.php last;
+rewrite ^/account/.*$              /index.php last;
+rewrite ^/login/.*$                /index.php last;
+rewrite ^/developers/.*$           /index.php last;
+rewrite ^/permalink/.*$            /index.php last;
+rewrite ^/datafiles/.*$            /index.php last;
 
 rewrite ^/prod/records/edit/.*$   /prod/router.php last;
 rewrite ^/prod/records/movecollection/.*$ /prod/router.php last;
@@ -35,17 +42,10 @@ rewrite ^/prod/export/.*$         /prod/router.php last;
 rewrite ^/prod/record/preview/.*$ /prod/router.php last;
 rewrite ^/prod/notifications/.*$  /prod/router.php last;
 
-rewrite ^/robots.txt$             /index.php last;
-rewrite ^/feeds/.*$               /index.php last;
-rewrite ^/account/.*$             /index.php last;
-rewrite ^/login/.*$               /index.php last;
-rewrite ^/developers/.*$          /index.php last;
 
 rewrite ^/api/v1/.*$              /api/v1/index.php last;
 rewrite ^/api/oauthv2/.*$         /api/oauthv2/index.php last;
 rewrite ^/api/.*$                 /api/index.php last;
 
-rewrite ^/permalink/.*$           /index.php last;
-rewrite ^/datafiles/.*$           /index.php last;
 
 rewrite ^/setup/.*$               /setup/installer.php last;
