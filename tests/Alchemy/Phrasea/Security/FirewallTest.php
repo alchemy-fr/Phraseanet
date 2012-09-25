@@ -11,10 +11,10 @@ class FirewallTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testRequiredAuth()
     {
         $this->markTestSkipped('Introduce seg fault, to investigate');
-        $response = self::$application['firewall']->requireAuthentication($this->app);
+        $response = self::$application['firewall']->requireAuthentication(self::$application);
         $this->assertNull($response);
         self::$application->closeAccount();
-        $response = self::$application['firewall']->requireAuthentication($this->app);
+        $response = self::$application['firewall']->requireAuthentication(self::$application);
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('/login/', $response->headers->get('location'));
     }
