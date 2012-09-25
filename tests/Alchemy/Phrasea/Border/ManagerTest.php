@@ -204,8 +204,8 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $found = false;
 
-        foreach ($record->get_grouping_parents()->get_elements() as $story) {
-            if ($story->get_serialize_key() === self::$records['record_story_1']->get_serialize_key()) {
+        foreach ($record->get_grouping_parents()->get_elements() as $parent_story) {
+            if ($parent_story->get_serialize_key() === $story->get_serialize_key()) {
                 $found = true;
             }
         }
