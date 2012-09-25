@@ -16,6 +16,7 @@ use Grom\Silex\ImagineServiceProvider;
 use MediaVorus\MediaVorusServiceProvider;
 use MediaAlchemyst\MediaAlchemystServiceProvider;
 use MediaAlchemyst\Driver\Imagine;
+use MP4Box\MP4BoxServiceProvider;
 use Neutron\Silex\Provider\FilesystemServiceProvider;
 use PHPExiftool\PHPExiftoolServiceProvider;
 use Silex\Application as SilexApplication;
@@ -97,6 +98,7 @@ class Application extends SilexApplication
         $this->register(new SessionServiceProvider());
         $this->register(new GeonamesServiceProvider);
         $this->register(new TaskManagerServiceProvider());
+        $this->register(new MP4BoxServiceProvider());
 
         $this['session.test'] = $this->share(function(Application $app) {
                 return $app->getEnvironment() == 'test';
