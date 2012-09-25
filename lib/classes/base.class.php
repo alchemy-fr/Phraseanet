@@ -446,7 +446,8 @@ abstract class base implements cache_cacheableInterface
 
                 $collation = trim((string) $field->collation) != '' ? trim((string) $field->collation) : 'utf8_unicode_ci';
 
-                $code = array_pop(array_reverse(explode('_', $collation)));
+                $collations = array_reverse(explode('_', $collation));
+                $code = array_pop($collations);
 
                 $character_set = ' CHARACTER SET ' . $code . ' COLLATE ' . $collation;
             }
@@ -565,7 +566,8 @@ abstract class base implements cache_cacheableInterface
             if (in_array(strtolower((string) $field->type), array('text', 'longtext', 'mediumtext', 'tinytext'))
                 || substr(strtolower((string) $field->type), 0, 7) == 'varchar'
                 || in_array(substr(strtolower((string) $field->type), 0, 4), array('char', 'enum'))) {
-                $code = array_pop(array_reverse(explode('_', $collation)));
+                $collations = array_reverse(explode('_', $collation));
+                $code = array_pop($collations);
 
                 $collation = ' CHARACTER SET ' . $code . ' COLLATE ' . $collation;
 
@@ -793,7 +795,8 @@ abstract class base implements cache_cacheableInterface
                 if (substr($fileinfo->getFilename(), 0, 1) == '.')
                     continue;
 
-                $classname = 'patch_' . array_pop(array_reverse(explode('.', $fileinfo->getFilename())));
+                $versions = array_reverse(explode('.', $fileinfo->getFilename()));
+                $classname = 'patch_' . array_pop($versions);
 
                 $patch = new $classname();
 
