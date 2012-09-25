@@ -7,7 +7,9 @@ use Alchemy\Phrasea\Core\Provider\BrowserServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\CacheServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
+use Alchemy\Phrasea\Core\Provider\GeonamesServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
+use Alchemy\Phrasea\Core\Provider\TaskManagerServiceProvider;
 use Alchemy\Phrasea\Security\Firewall;
 use FFMpeg\FFMpegServiceProvider;
 use Grom\Silex\ImagineServiceProvider;
@@ -18,12 +20,12 @@ use Neutron\Silex\Provider\FilesystemServiceProvider;
 use PHPExiftool\PHPExiftoolServiceProvider;
 use Silex\Application as SilexApplication;
 use Silex\Provider\MonologServiceProvider;
+use Silex\Provider\SessionServiceProvider;
 use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler;
+use Unoconv\UnoconvServiceProvider;
 use XPDF\XPDFServiceProvider;
 
 class Application extends SilexApplication
@@ -54,7 +56,8 @@ class Application extends SilexApplication
             ini_set('memory_limit', '2048M');
         }
 
-        ini_set('error_reporting', '6143');
+        error_reporting(E_STRICT);
+//        ini_set('error_reporting', '6143');
         ini_set('default_charset', 'UTF-8');
         ini_set('session.use_cookies', '1');
         ini_set('session.use_only_cookies', '1');
@@ -63,7 +66,6 @@ class Application extends SilexApplication
         ini_set('session.hash_bits_per_character', '6');
         ini_set('session.cache_limiter', '');
         ini_set('allow_url_fopen', 'on');
-
 
 
         $this['charset'] = 'UTF-8';
@@ -78,7 +80,6 @@ class Application extends SilexApplication
                 return $app->getEnvironment() !== 'prod';
             });
 
-
         $this->register(new BorderManagerServiceProvider());
         $this->register(new CacheServiceProvider());
         $this->register(new ORMServiceProvider());
@@ -88,15 +89,14 @@ class Application extends SilexApplication
         $this->register(new ImagineServiceProvider());
         $this->register(new FFMpegServiceProvider());
         $this->register(new PHPExiftoolServiceProvider());
-        $this->register(new \Unoconv\UnoconvServiceProvider());
+        $this->register(new UnoconvServiceProvider());
         $this->register(new MediaVorusServiceProvider());
         $this->register(new XPDFServiceProvider());
         $this->register(new MonologServiceProvider());
         $this->register(new MediaAlchemystServiceProvider());
-        $this->register(new \Silex\Provider\SessionServiceProvider());
-        $this->register(new Core\Provider\GeonamesServiceProvider);
-        $this->register(new Core\Provider\TaskManagerServiceProvider());
-
+        $this->register(new SessionServiceProvider());
+        $this->register(new GeonamesServiceProvider);
+        $this->register(new TaskManagerServiceProvider());
 
         $this['session.test'] = $this->share(function(Application $app) {
                 return $app->getEnvironment() == 'test';
@@ -107,10 +107,6 @@ class Application extends SilexApplication
                     return $app['request']->cookies->get('locale');
                 }
             });
-
-//        $this['session.storage.handler'] = $this->share(function(Application $app) {
-//                return new PdoSessionHandler($app['EM']->getConnection()->getWrappedConnection());
-//            });
 
         $this['imagine.factory'] = $this->share(function(Application $app) {
             if ($app['phraseanet.registry']->get('GV_imagine_driver') != '') {
@@ -209,15 +205,11 @@ class Application extends SilexApplication
 
 
 
-        $request = Request::createFromGlobals();
-
-
-
-
-        if ($this['phraseanet.registry']->is_set('GV_timezone'))
+        if ($this['phraseanet.registry']->is_set('GV_timezone')) {
             date_default_timezone_set($this['phraseanet.registry']->get('GV_timezone'));
-        else
+        } else {
             date_default_timezone_set('Europe/Berlin');
+        }
 
 //        if ($this['phraseanet.configuration']->isInstalled()) {
 //            if ($this['phraseanet.configuration']->isDisplayingErrors()) {
