@@ -219,7 +219,7 @@ class task_period_cindexer extends task_abstract
                     if(user.value)
                         cmd += " -u=" + user.value;
                     if(password.value)
-                        cmd += " -p=" + password.value;
+                        cmd += " -p=xxxxxx"; // + password.value;
                     if(socket.value)
                         cmd += " --socket=" + socket.value;
                     if(charset.value)
@@ -377,7 +377,7 @@ class task_period_cindexer extends task_abstract
         }
         if ($this->password) {
             $args[] = '-p=' . $this->password;
-            $args_nopwd[] = '-p=******';
+            $args_nopwd[] = '-p=xxxxxxx';
         }
         if ($this->socket) {
             $args[] = '--socket=' . $this->socket;
@@ -442,9 +442,20 @@ class task_period_cindexer extends task_abstract
 
         $pipes = array();
 
-        $this->log(sprintf('cmd=\'%s %s\'', $cmd, implode(' ', $args_nopwd)));
+        $logcmd = $cmd;
+        foreach ($args_nopwd as $arg)
+        {
+            $logcmd .= ' ' . escapeshellarg($arg);
+        }
 
-        $process = proc_open($cmd . ' ' . implode(' ', $args), $descriptors, $pipes, $this->binpath, null, array('bypass_shell' => true));
+        $this->log(sprintf('cmd=\'%s\'', escapeshellcmd($logcmd) ));
+
+        $execmd = $cmd;
+        foreach ($args as $arg)
+        {
+            $execmd .= ' ' . escapeshellarg($arg);
+        }
+        $process = proc_open(escapeshellcmd($execmd), $descriptors, $pipes, $this->binpath, null, array('bypass_shell' => true));
 
         $pid = NULL;
         if (is_resource($process)) {
