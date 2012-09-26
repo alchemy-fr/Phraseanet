@@ -64,36 +64,22 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         parent::setUp();
 
-//        $environment = 'test';
-//        self::$DI['app'] = require __DIR__ . '/../../../../lib/Alchemy/Phrasea/Application/Api.php';
-
-
-
-
         self::$DI['app'] = self::$DI->share(function() {
 
-                $environment = 'test';
-                $app = require __DIR__ . '/../../../../lib/Alchemy/Phrasea/Application/Api.php';
+            $environment = 'test';
+            $app = require __DIR__ . '/../../../../lib/Alchemy/Phrasea/Application/Api.php';
 
-                $app['debug'] = true;
+            $app['debug'] = true;
 
-//                if (!static::$useExceptionHandler) {
-                    unset($app['exception_handler']);
-//                }
+            $app['EM'] = $app->share($app->extend('EM', function($em) {
+                unlink(__DIR__ . '/../../../db.sqlite');
+                copy(__DIR__ . '/../../../db-ref.sqlite', __DIR__ . '/../../../db.sqlite');
 
-                $app['EM'] = $app->share($app->extend('EM', function($em) {
+                return $em;
+            }));
 
-
-                            unlink(__DIR__ . '/../../../db.sqlite');
-                            copy(__DIR__ . '/../../../db-ref.sqlite', __DIR__ . '/db.sqlite');
-
-                            return $em;
-                        }));
-
-                return $app;
-            });
-
-
+            return $app;
+        });
 
     }
 
