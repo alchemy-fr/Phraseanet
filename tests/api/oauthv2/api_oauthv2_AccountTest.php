@@ -34,7 +34,7 @@ class API_OAuth2_AccountTest extends PhraseanetPHPUnitAbstract
     public function testGet_user()
     {
         $this->assertInstanceOf('User_Adapter', $this->object->get_user());
-        $this->assertEquals(self::$DI['user'], $this->object->get_user());
+        $this->assertEquals(self::$DI['user']->get_id(), $this->object->get_user()->get_id());
     }
 
     public function testGet_api_version()
