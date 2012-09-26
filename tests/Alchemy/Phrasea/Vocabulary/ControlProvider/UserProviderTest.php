@@ -12,7 +12,7 @@ class UserProviderTest extends \PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new \Alchemy\Phrasea\Vocabulary\ControlProvider\UserProvider(self::$application);
+        $this->object = new \Alchemy\Phrasea\Vocabulary\ControlProvider\UserProvider(self::$DI['app']);
     }
 
     /**
@@ -36,21 +36,21 @@ class UserProviderTest extends \PhraseanetPHPUnitAbstract
 
     public function testFind()
     {
-        $results = $this->object->find('BABE', self::$DI['user'], self::$collection->get_databox());
+        $results = $this->object->find('BABE', self::$DI['user'], self::$DI['collection']->get_databox());
 
         $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
 
-        $results = $this->object->find(self::$DI['user']->get_email(), self::$DI['user'], self::$collection->get_databox());
-
-        $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
-        $this->assertTrue($results->count() > 0);
-
-        $results = $this->object->find(self::$DI['user']->get_firstname(), self::$DI['user'], self::$collection->get_databox());
+        $results = $this->object->find(self::$DI['user']->get_email(), self::$DI['user'], self::$DI['collection']->get_databox());
 
         $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
         $this->assertTrue($results->count() > 0);
 
-        $results = $this->object->find(self::$DI['user']->get_lastname(), self::$DI['user'], self::$collection->get_databox());
+        $results = $this->object->find(self::$DI['user']->get_firstname(), self::$DI['user'], self::$DI['collection']->get_databox());
+
+        $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
+        $this->assertTrue($results->count() > 0);
+
+        $results = $this->object->find(self::$DI['user']->get_lastname(), self::$DI['user'], self::$DI['collection']->get_databox());
 
         $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
         $this->assertTrue($results->count() > 0);

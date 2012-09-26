@@ -20,9 +20,9 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/lists/all/';
 
-        $this->client->request('GET', $route, array(), array(), array("HTTP_CONTENT_TYPE" => "application/json", "HTTP_ACCEPT"       => "application/json"));
+        self::$DI['client']->request('GET', $route, array(), array(), array("HTTP_CONTENT_TYPE" => "application/json", "HTTP_ACCEPT"       => "application/json"));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
@@ -60,9 +60,9 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $route = '/prod/lists/list/';
 
-        $this->client->request('POST', $route);
+        self::$DI['client']->request('POST', $route);
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
@@ -74,9 +74,9 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertFalse($datas['success']);
 
-        $this->client->request('POST', $route, array('name' => 'New List'));
+        self::$DI['client']->request('POST', $route, array('name' => 'New List'));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
@@ -96,9 +96,9 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/lists/list/' . $list_id . '/';
 
-        $this->client->request('GET', $route, array(), array(), array("HTTP_CONTENT_TYPE" => "application/json", "HTTP_ACCEPT"       => "application/json"));
+        self::$DI['client']->request('GET', $route, array(), array(), array("HTTP_CONTENT_TYPE" => "application/json", "HTTP_ACCEPT"       => "application/json"));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
 
@@ -116,9 +116,9 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/lists/list/' . $list_id . '/update/';
 
-        $this->client->request('POST', $route);
+        self::$DI['client']->request('POST', $route);
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
@@ -131,9 +131,9 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertFalse($datas['success']);
 
 
-        $this->client->request('POST', $route, array('name' => 'New NAME'));
+        self::$DI['client']->request('POST', $route, array('name' => 'New NAME'));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
@@ -153,9 +153,9 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/lists/list/' . $list_id . '/delete/';
 
-        $this->client->request('POST', $route);
+        self::$DI['client']->request('POST', $route);
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
@@ -167,7 +167,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue($datas['success']);
 
-        $repository = self::$application['EM']->getRepository('Entities\UsrList');
+        $repository = self::$DI['app']['EM']->getRepository('Entities\UsrList');
 
         $this->assertNull($repository->find($list_id));
     }
@@ -176,14 +176,14 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $entry = $this->insertOneUsrListEntry(self::$DI['user'], self::$DI['user_alt1']);
         $list_id = $entry->getList()->getId();
-        $usr_id = $entry->getUser(self::$application)->get_id();
+        $usr_id = $entry->getUser(self::$DI['app'])->get_id();
         $entry_id = $entry->getId();
 
         $route = '/prod/lists/list/' . $list_id . '/remove/' . $usr_id . '/';
 
-        $this->client->request('POST', $route, array(), array(), array("HTTP_CONTENT_TYPE" => "application/json", "HTTP_ACCEPT"       => "application/json"));
+        self::$DI['client']->request('POST', $route, array(), array(), array("HTTP_CONTENT_TYPE" => "application/json", "HTTP_ACCEPT"       => "application/json"));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
@@ -195,7 +195,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue($datas['success']);
 
-        $repository = self::$application['EM']->getRepository('Entities\UsrListEntry');
+        $repository = self::$DI['app']['EM']->getRepository('Entities\UsrListEntry');
 
         $this->assertNull($repository->find($entry_id));
     }
@@ -208,9 +208,9 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/lists/list/' . $list->getId() . '/add/';
 
-        $this->client->request('POST', $route, array('usr_ids' => array(self::$DI['user']->get_id())), array(), array("HTTP_CONTENT_TYPE" => "application/json", "HTTP_ACCEPT"       => "application/json"));
+        self::$DI['client']->request('POST', $route, array('usr_ids' => array(self::$DI['user']->get_id())), array(), array("HTTP_CONTENT_TYPE" => "application/json", "HTTP_ACCEPT"       => "application/json"));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
@@ -222,7 +222,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue($datas['success']);
 
-        $repository = self::$application['EM']->getRepository('Entities\UsrList');
+        $repository = self::$DI['app']['EM']->getRepository('Entities\UsrList');
 
         $list = $repository->find($list->getId());
 
@@ -237,9 +237,9 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->get_id() . '/';
 
-        $this->client->request('POST', $route);
+        self::$DI['client']->request('POST', $route);
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(400, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
@@ -247,9 +247,9 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->get_id() . '/';
 
-        $this->client->request('POST', $route, array('role' => 'general'));
+        self::$DI['client']->request('POST', $route, array('role' => 'general'));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(400, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
@@ -258,9 +258,9 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->get_id() . '/';
 
-        $this->client->request('POST', $route, array('role' => \Entities\UsrListOwner::ROLE_ADMIN));
+        self::$DI['client']->request('POST', $route, array('role' => \Entities\UsrListOwner::ROLE_ADMIN));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
@@ -273,7 +273,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue($datas['success']);
 
-        $repository = self::$application['EM']->getRepository('Entities\UsrList');
+        $repository = self::$DI['app']['EM']->getRepository('Entities\UsrList');
 
         $list = $repository->find($list->getId());
 
@@ -289,9 +289,9 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->get_id() . '/';
 
-        $this->client->request('POST', $route, array('role' => \Entities\UsrListOwner::ROLE_ADMIN));
+        self::$DI['client']->request('POST', $route, array('role' => \Entities\UsrListOwner::ROLE_ADMIN));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
@@ -304,7 +304,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue($datas['success']);
 
-        $repository = self::$application['EM']->getRepository('Entities\UsrList');
+        $repository = self::$DI['app']['EM']->getRepository('Entities\UsrList');
 
         $list = $repository->find($list->getId());
 
@@ -314,9 +314,9 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/lists/list/' . $list->getId() . '/unshare/' . self::$DI['user_alt1']->get_id() . '/';
 
-        $this->client->request('POST', $route);
+        self::$DI['client']->request('POST', $route);
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
@@ -325,11 +325,11 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue($datas['success']);
 
-        $repository = self::$application['EM']->getRepository('Entities\UsrList');
+        $repository = self::$DI['app']['EM']->getRepository('Entities\UsrList');
 
         $list = $repository->find($list->getId());
 
-        self::$application['EM']->refresh($list);
+        self::$DI['app']['EM']->refresh($list);
 
         $this->assertEquals(1, $list->getOwners()->count());
     }
@@ -343,9 +343,9 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->get_id() . '/';
 
-        $this->client->request('POST', $route, array('role' => \Entities\UsrListOwner::ROLE_ADMIN));
+        self::$DI['client']->request('POST', $route, array('role' => \Entities\UsrListOwner::ROLE_ADMIN));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
@@ -362,9 +362,9 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user']->get_id() . '/';
 
-        $this->client->request('POST', $route, array('role' => \Entities\UsrListOwner::ROLE_USER));
+        self::$DI['client']->request('POST', $route, array('role' => \Entities\UsrListOwner::ROLE_USER));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
@@ -381,9 +381,9 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->get_id() . '/';
 
-        $this->client->request('POST', $route, array('role' => \Entities\UsrListOwner::ROLE_USER));
+        self::$DI['client']->request('POST', $route, array('role' => \Entities\UsrListOwner::ROLE_USER));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
@@ -398,7 +398,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
 
 
-        $repository = self::$application['EM']->getRepository('Entities\UsrList');
+        $repository = self::$DI['app']['EM']->getRepository('Entities\UsrList');
 
         $list = $repository->find($list->getId());
 
@@ -408,9 +408,9 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = '/prod/lists/list/' . $list->getId() . '/unshare/' . self::$DI['user_alt1']->get_id() . '/';
 
-        $this->client->request('POST', $route);
+        self::$DI['client']->request('POST', $route);
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());

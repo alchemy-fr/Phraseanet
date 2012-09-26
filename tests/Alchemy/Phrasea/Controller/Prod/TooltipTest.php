@@ -12,13 +12,13 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteBasket()
     {
-        $appbox = self::$application['phraseanet.appbox'];
+        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $basket = $this->insertOneBasket();
 
-        $crawler = $this->client->request('POST', '/prod/tooltip/basket/' . $basket->getId() . '/');
-        $pageContent = $this->client->getResponse()->getContent();
-        $this->assertTrue($this->client->getResponse()->isOk());
+        $crawler = self::$DI['client']->request('POST', '/prod/tooltip/basket/' . $basket->getId() . '/');
+        $pageContent = self::$DI['client']->getResponse()->getContent();
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
     /**
@@ -26,9 +26,9 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRouteBasketFail()
     {
-        $crawler = $this->client->request('POST', '/prod/tooltip/basket/notanid/');
-        $pageContent = $this->client->getResponse()->getContent();
-        $this->assertFalse($this->client->getResponse()->isOk());
+        $crawler = self::$DI['client']->request('POST', '/prod/tooltip/basket/notanid/');
+        $pageContent = self::$DI['client']->getResponse()->getContent();
+        $this->assertFalse(self::$DI['client']->getResponse()->isOk());
 
     }
 
@@ -37,9 +37,9 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRouteBasketFail2()
     {
-        $crawler = $this->client->request('POST', '/prod/tooltip/basket/-5/');
-        $pageContent = $this->client->getResponse()->getContent();
-        $this->assertFalse($this->client->getResponse()->isOk());
+        $crawler = self::$DI['client']->request('POST', '/prod/tooltip/basket/-5/');
+        $pageContent = self::$DI['client']->getResponse()->getContent();
+        $this->assertFalse(self::$DI['client']->getResponse()->isOk());
     }
 
     public function testRoutePreview()
@@ -47,9 +47,9 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $route = '/prod/tooltip/preview/' . self::$DI['record_1']->get_sbas_id()
             . '/' . self::$DI['record_1']->get_record_id() . '/';
 
-        $crawler = $this->client->request('POST', $route);
-        $pageContent = $this->client->getResponse()->getContent();
-        $this->assertTrue($this->client->getResponse()->isOk());
+        $crawler = self::$DI['client']->request('POST', $route);
+        $pageContent = self::$DI['client']->getResponse()->getContent();
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
     public function testRouteCaption()
@@ -67,9 +67,9 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         );
 
         foreach ($routes as $route) {
-            $crawler = $this->client->request('POST', $route);
-            $pageContent = $this->client->getResponse()->getContent();
-            $this->assertTrue($this->client->getResponse()->isOk());
+            $crawler = self::$DI['client']->request('POST', $route);
+            $pageContent = self::$DI['client']->getResponse()->getContent();
+            $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         }
     }
 
@@ -88,9 +88,9 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         foreach ($routes as $route) {
             $option = new \searchEngine_options();
-            $crawler = $this->client->request('POST', $route, array('options_serial' => serialize($option)));
+            $crawler = self::$DI['client']->request('POST', $route, array('options_serial' => serialize($option)));
 
-            $this->assertTrue($this->client->getResponse()->isOk());
+            $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         }
     }
 
@@ -99,9 +99,9 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $route = '/prod/tooltip/tc_datas/' . self::$DI['record_1']->get_sbas_id()
             . '/' . self::$DI['record_1']->get_record_id() . '/';
 
-        $crawler = $this->client->request('POST', $route);
-        $pageContent = $this->client->getResponse()->getContent();
-        $this->assertTrue($this->client->getResponse()->isOk());
+        $crawler = self::$DI['client']->request('POST', $route);
+        $pageContent = self::$DI['client']->getResponse()->getContent();
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
     public function testRouteMetasFieldInfos()
@@ -112,9 +112,9 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $route = '/prod/tooltip/metas/FieldInfos/' . $databox->get_sbas_id()
                 . '/' . $field->get_id() . '/';
 
-            $crawler = $this->client->request('POST', $route);
-            $pageContent = $this->client->getResponse()->getContent();
-            $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+            $crawler = self::$DI['client']->request('POST', $route);
+            $pageContent = self::$DI['client']->getResponse()->getContent();
+            $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
         }
     }
 
@@ -135,7 +135,7 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $route = '/prod/tooltip/DCESInfos/' . $databox->get_sbas_id()
                 . '/' . $field->get_id() . '/';
 
-            $crawler = $this->client->request('POST', $route);
+            $crawler = self::$DI['client']->request('POST', $route);
             $node = $crawler->filter('div.popover-content');
             $found = trim($node->count());
 
@@ -145,10 +145,10 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
             if ($field->get_dces_element() !== null) {
                 $this->assertGreaterThan(0, $node->count());
-                $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+                $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
             } else {
                 $this->assertEquals(0, $node->count());
-                $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+                $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
             }
         }
     }
@@ -162,9 +162,9 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $route = '/prod/tooltip/metas/restrictionsInfos/' . $databox->get_sbas_id()
                 . '/' . $field->get_id() . '/';
 
-            $crawler = $this->client->request('POST', $route);
-            $this->assertGreaterThan(0, strlen($this->client->getResponse()->getContent()));
-            $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+            $crawler = self::$DI['client']->request('POST', $route);
+            $this->assertGreaterThan(0, strlen(self::$DI['client']->getResponse()->getContent()));
+            $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
         }
     }
 
@@ -176,15 +176,15 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $route = '/prod/tooltip/Story/' . $databox->get_sbas_id()
             . '/' . self::$DI['record_story_1']->get_record_id() . '/';
 
-        $this->client->request('POST', $route);
-        $this->assertTrue($this->client->getResponse()->isOk());
+        self::$DI['client']->request('POST', $route);
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
     public function testUser()
     {
 
         $route = '/prod/tooltip/user/' . self::$DI['user']->get_id() . '/';
-        $this->client->request('POST', $route);
-        $this->assertTrue($this->client->getResponse()->isOk());
+        self::$DI['client']->request('POST', $route);
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 }

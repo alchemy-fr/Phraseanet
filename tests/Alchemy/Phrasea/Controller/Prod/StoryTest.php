@@ -11,24 +11,24 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $route = "/prod/story/";
 
-        $collections = self::$application['phraseanet.user']
+        $collections = self::$DI['app']['phraseanet.user']
             ->ACL()
             ->get_granted_base(array('canaddrecord'));
 
         $collection = array_shift($collections);
 
-        $crawler = $this->client->request(
+        $crawler = self::$DI['client']->request(
             'POST', $route, array(
             'base_id' => $collection->get_base_id(),
             'name'    => 'test story'
             )
         );
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(302, $response->getStatusCode());
 
-        $query = self::$application['EM']->createQuery(
+        $query = self::$DI['app']['EM']->createQuery(
             'SELECT COUNT(w.id) FROM \Entities\StoryWZ w'
         );
 
@@ -41,20 +41,20 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $route = "/prod/story/";
 
-        $collections = self::$application['phraseanet.user']
+        $collections = self::$DI['app']['phraseanet.user']
             ->ACL()
             ->get_granted_base(array('canaddrecord'));
 
         $collection = array_shift($collections);
 
-        $crawler = $this->client->request(
+        $crawler = self::$DI['client']->request(
             'POST', $route, array(
             'base_id' => $collection->get_base_id(),
             'name'    => 'test story'), array(), array(
             "HTTP_ACCEPT" => "application/json")
         );
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
     }
@@ -63,9 +63,9 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $route = "/prod/story/create/";
 
-        $crawler = $this->client->request('GET', $route);
+        $crawler = self::$DI['client']->request('GET', $route);
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
 
@@ -85,16 +85,16 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $route = sprintf("/prod/story/%d/%d/", $story->get_sbas_id(), $story->get_record_id());
 
-        $crawler = $this->client->request('GET', $route);
+        $crawler = self::$DI['client']->request('GET', $route);
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
     }
 
     public function testAddElementsToStory()
     {
-        $story = \record_adapter::createStory(self::$application, self::$collection);
+        $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
 
         $route = sprintf("/prod/story/%s/%s/addElements/", $story->get_sbas_id(), $story->get_record_id());
 
@@ -105,9 +105,9 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $lst = implode(';', $records);
 
-        $crawler = $this->client->request('POST', $route, array('lst' => $lst));
+        $crawler = self::$DI['client']->request('POST', $route, array('lst' => $lst));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(302, $response->getStatusCode());
 
@@ -117,7 +117,7 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testAddElementsToStoryJSON()
     {
-        $story = \record_adapter::createStory(self::$application, self::$collection);
+        $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
 
         $route = sprintf("/prod/story/%s/%s/addElements/", $story->get_sbas_id(), $story->get_record_id());
 
@@ -128,11 +128,11 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $lst = implode(';', $records);
 
-        $crawler = $this->client->request('POST', $route, array('lst' => $lst)
+        $crawler = self::$DI['client']->request('POST', $route, array('lst' => $lst)
             , array(), array(
             "HTTP_ACCEPT" => "application/json"));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
 
@@ -142,7 +142,7 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRemoveElementFromStory()
     {
-        $story = \record_adapter::createStory(self::$application, self::$collection);
+        $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
 
         $records = array(
             self::$DI['record_1'],
@@ -165,20 +165,20 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 , $record->get_record_id()
             );
 
-            $this->client = new Client(self::$application, array());
+            self::$DI['client'] = new Client(self::$DI['app'], array());
 
             if (($n % 2) === 0) {
-                $crawler = $this->client->request('POST', $route);
+                $crawler = self::$DI['client']->request('POST', $route);
 
-                $response = $this->client->getResponse();
+                $response = self::$DI['client']->getResponse();
 
                 $this->assertEquals(302, $response->getStatusCode());
             } else {
-                $crawler = $this->client->request(
+                $crawler = self::$DI['client']->request(
                     'POST', $route, array(), array(), array(
                     "HTTP_ACCEPT" => "application/json")
                 );
-                $response = $this->client->getResponse();
+                $response = self::$DI['client']->getResponse();
 
                 $this->assertEquals(200, $response->getStatusCode());
 

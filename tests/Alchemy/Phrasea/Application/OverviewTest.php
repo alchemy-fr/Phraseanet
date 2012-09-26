@@ -8,9 +8,9 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 {
     function testDatafilesRouteAuthenticated()
     {
-        $registry = self::$application['phraseanet.registry'];
-        $crawler = $this->client->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/');
-        $response = $this->client->getResponse();
+        $registry = self::$DI['app']['phraseanet.registry'];
+        $crawler = self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/');
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
         $content_disposition = explode(';', $response->headers->get('content-disposition'));
@@ -24,7 +24,7 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
      */
     function testDatafilesNonExistentSubdef()
     {
-        $crawler = $this->client->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/asubdefthatdoesnotexists/');
+        $crawler = self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/asubdefthatdoesnotexists/');
     }
 
     function testEtag()
@@ -32,15 +32,15 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $tmp = tempnam(sys_get_temp_dir(), 'testEtag');
         copy(__DIR__ . '/../../../testfiles/cestlafete.jpg', $tmp);
 
-        $media = self::$application['mediavorus']->guess($tmp);
+        $media = self::$DI['app']['mediavorus']->guess($tmp);
 
-        $file = new Alchemy\Phrasea\Border\File($media, self::$collection);
-        $record = record_adapter::createFromFile($file, self::$application);
+        $file = new Alchemy\Phrasea\Border\File($media, self::$DI['collection']);
+        $record = record_adapter::createFromFile($file, self::$DI['app']);
 
-        $record->generate_subdefs($record->get_databox(), self::$application);
+        $record->generate_subdefs($record->get_databox(), self::$DI['app']);
 
-        $crawler = $this->client->request('GET', '/datafiles/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/preview/');
-        $response = $this->client->getResponse();
+        $crawler = self::$DI['client']->request('GET', '/datafiles/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/preview/');
+        $response = self::$DI['client']->getResponse();
 
         /* @var $response \Symfony\Component\HttpFoundation\Response */
         $this->assertTrue($response->isOk());
@@ -56,29 +56,29 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     function testDatafilesRouteNotAuthenticated()
     {
-        $appbox = self::$application['phraseanet.appbox'];
-        self::$application->closeAccount();
-        $crawler = $this->client->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/');
-        $response = $this->client->getResponse();
+        $appbox = self::$DI['app']['phraseanet.appbox'];
+        self::$DI['app']->closeAccount();
+        $crawler = self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/');
+        $response = self::$DI['client']->getResponse();
         $this->assertEquals(403, $response->getStatusCode());
 
-        $crawler = $this->client->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/notfoundreview/');
-        $response = $this->client->getResponse();
+        $crawler = self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/notfoundreview/');
+        $response = self::$DI['client']->getResponse();
         $this->assertEquals(403, $response->getStatusCode());
     }
 
     function testPermalinkAuthenticated()
     {
-        $appbox = self::$application['phraseanet.appbox'];
-        $this->assertTrue(self::$application->isAuthenticated());
+        $appbox = self::$DI['app']['phraseanet.appbox'];
+        $this->assertTrue(self::$DI['app']->isAuthenticated());
         $this->get_a_permalink();
     }
 
     function testPermalinkNotAuthenticated()
     {
-        $appbox = self::$application['phraseanet.appbox'];
-        self::$application->closeAccount();
-        $this->assertFalse(self::$application->isAuthenticated());
+        $appbox = self::$DI['app']['phraseanet.appbox'];
+        self::$DI['app']->closeAccount();
+        $this->assertFalse(self::$DI['app']->isAuthenticated());
         $this->get_a_permalink();
     }
 
@@ -87,14 +87,14 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $token = self::$DI['record_1']->get_preview()->get_permalink()->get_token();
         $url = '/permalink/v1/whateverIwannt/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/' . $token . '/preview/';
 
-        $crawler = $this->client->request('GET', $url);
-        $response = $this->client->getResponse();
+        $crawler = self::$DI['client']->request('GET', $url);
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
 
         $url = $url . 'view/';
-        $crawler = $this->client->request('GET', $url);
-        $response = $this->client->getResponse();
+        $crawler = self::$DI['client']->request('GET', $url);
+        $response = self::$DI['client']->getResponse();
         $this->assertEquals(200, $response->getStatusCode());
     }
 }

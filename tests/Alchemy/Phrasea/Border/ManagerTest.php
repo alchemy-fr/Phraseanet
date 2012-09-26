@@ -45,10 +45,10 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new Manager(self::$application);
+        $this->object = new Manager(self::$DI['app']);
         $this->session = new \Entities\LazaretSession();
 
-        self::$application['EM']->persist($this->session);
+        self::$DI['app']['EM']->persist($this->session);
     }
 
     /**
@@ -73,8 +73,8 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 $records[] = $record;
             };
 
-        $this->assertEquals(Manager::RECORD_CREATED, $this->object->process($this->session, File::buildFromPathfile(self::$file1, self::$collection, self::$application['mediavorus']), $postProcessRecord));
-        $shaChecker = new Checker\Sha256(self::$application);
+        $this->assertEquals(Manager::RECORD_CREATED, $this->object->process($this->session, File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']['mediavorus']), $postProcessRecord));
+        $shaChecker = new Checker\Sha256(self::$DI['app']);
         $this->object->registerChecker($shaChecker);
 
         $phpunit = $this;
@@ -86,7 +86,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 $records[] = $element;
             };
 
-        $this->assertEquals(Manager::LAZARET_CREATED, $this->object->process($this->session, File::buildFromPathfile(self::$file1, self::$collection, self::$application['mediavorus']), $postProcess));
+        $this->assertEquals(Manager::LAZARET_CREATED, $this->object->process($this->session, File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']['mediavorus']), $postProcess));
 
         $postProcess = function($element, $visa, $code) use ($phpunit, &$records) {
                 $phpunit->assertInstanceOf('\\record_adapter', $element);
@@ -95,7 +95,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 $records[] = $element;
             };
 
-        $this->assertEquals(Manager::RECORD_CREATED, $this->object->process($this->session, File::buildFromPathfile(self::$file1, self::$collection, self::$application['mediavorus']), $postProcess, Manager::FORCE_RECORD));
+        $this->assertEquals(Manager::RECORD_CREATED, $this->object->process($this->session, File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']['mediavorus']), $postProcess, Manager::FORCE_RECORD));
 
         foreach ($records as $record) {
             if ($record instanceof \record_adapter) {
@@ -114,8 +114,8 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $postProcessRecord = function($record) use (&$records) {
                 $records[] = $record;
             };
-        $this->assertEquals(Manager::LAZARET_CREATED, $this->object->process($this->session, File::buildFromPathfile(self::$file1, self::$collection, self::$application['mediavorus']), NULL, Manager::FORCE_LAZARET));
-        $this->assertEquals(Manager::RECORD_CREATED, $this->object->process($this->session, File::buildFromPathfile(self::$file1, self::$collection, self::$application['mediavorus']), $postProcessRecord));
+        $this->assertEquals(Manager::LAZARET_CREATED, $this->object->process($this->session, File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']['mediavorus']), NULL, Manager::FORCE_LAZARET));
+        $this->assertEquals(Manager::RECORD_CREATED, $this->object->process($this->session, File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']['mediavorus']), $postProcessRecord));
 
         foreach ($records as $record) {
             if ($record instanceof \record_adapter) {
@@ -135,10 +135,10 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 $records[] = $record;
             };
 
-        $file = File::buildFromPathfile(self::$file1, self::$collection, self::$application['mediavorus']);
+        $file = File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']['mediavorus']);
         $first = $odd = false;
         $tofetch = array();
-        foreach (self::$collection->get_databox()->get_meta_structure() as $databox_field) {
+        foreach (self::$DI['collection']->get_databox()->get_meta_structure() as $databox_field) {
             if ($databox_field->is_readonly()) {
                 continue;
             }
@@ -184,7 +184,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $odd = !$odd;
         }
 
-        $story = \record_adapter::createStory(self::$application, self::$collection);
+        $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
         $file->addAttribute(new Attribute\Story($story));
 
         $status = '0';
@@ -196,7 +196,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             }
         }
 
-        $file->addAttribute(new Attribute\Status(self::$application, $status));
+        $file->addAttribute(new Attribute\Status(self::$DI['app'], $status));
 
         $this->assertEquals(Manager::RECORD_CREATED, $this->object->process($this->session, $file, $postProcessRecord, Manager::FORCE_RECORD));
 
@@ -245,10 +245,10 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 $lazaret = $element;
             };
 
-        $file = File::buildFromPathfile(self::$file1, self::$collection, self::$application['mediavorus']);
+        $file = File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']['mediavorus']);
         $odd = false;
         $tofetchMeta = $tofetchField = array();
-        foreach (self::$collection->get_databox()->get_meta_structure() as $databox_field) {
+        foreach (self::$DI['collection']->get_databox()->get_meta_structure() as $databox_field) {
             if ($databox_field->is_readonly()) {
                 continue;
             }
@@ -291,7 +291,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $status .= '0';
         }
 
-        $file->addAttribute(new Attribute\Status(self::$application, $status));
+        $file->addAttribute(new Attribute\Status(self::$DI['app'], $status));
 
         $this->assertEquals(Manager::LAZARET_CREATED, $this->object->process($this->session, $file, $postProcessRecord, Manager::FORCE_LAZARET));
 
@@ -301,7 +301,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         /* @var $lazaret \Entities\LazaretFile */
         foreach ($lazaret->getAttributes() as $attr) {
-            $attribute = Attribute\Factory::getFileAttribute(self::$application, $attr->getName(), $attr->getValue());
+            $attribute = Attribute\Factory::getFileAttribute(self::$DI['app'], $attr->getName(), $attr->getValue());
 
             if ($attribute->getName() == AttributeInterface::NAME_STORY) {
                 if ($attribute->getValue()->get_serialize_key() == self::$DI['record_story_1']->get_serialize_key()) {
@@ -357,7 +357,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testLazaretAttributes()
     {
-        $file = File::buildFromPathfile(self::$file1, self::$collection, self::$application['mediavorus']);
+        $file = File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']['mediavorus']);
 
         $objectNameTag = new \PHPExiftool\Driver\Tag\IPTC\ObjectName();
         $monoValue = new \PHPExiftool\Driver\Value\Mono('title');
@@ -371,7 +371,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $file->addAttribute(new Attribute\Metadata($multiData));
 
         $phpunit = $this;
-        $application = self::$application;
+        $application = self::$DI['app'];
 
         $postProcess = function($element, $visa, $code) use ($phpunit, $application) {
                 $phpunit->assertInstanceOf('\\Entities\\LazaretFile', $element);
@@ -392,15 +392,15 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testAddMediaAttributesPDF()
     {
-        $manager = new ManagerTester(self::$application);
+        $manager = new ManagerTester(self::$DI['app']);
 
-        if (null === self::$application['xpdf.pdf2text']) {
+        if (null === self::$DI['app']['xpdf.pdf2text']) {
             $this->markTestSkipped('Pdf To Text could not be instantiate');
         }
 
-        $manager->setPdfToText(self::$application['xpdf.pdf2text']);
+        $manager->setPdfToText(self::$DI['app']['xpdf.pdf2text']);
 
-        $file = File::buildFromPathfile(__DIR__ . '/../../../testfiles/HelloWorld.pdf', self::$collection, self::$application['mediavorus']);
+        $file = File::buildFromPathfile(__DIR__ . '/../../../testfiles/HelloWorld.pdf', self::$DI['collection'], self::$DI['app']['mediavorus']);
 
         $count = count($file->getAttributes());
         $manager->addMediaAttributesTester($file);
@@ -446,9 +446,9 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testAddMediaAttributesAudio()
     {
-        $manager = new ManagerTester(self::$application);
+        $manager = new ManagerTester(self::$DI['app']);
 
-        $file = File::buildFromPathfile(__DIR__ . '/../../../testfiles/test012.wav', self::$collection, self::$application['mediavorus']);
+        $file = File::buildFromPathfile(__DIR__ . '/../../../testfiles/test012.wav', self::$DI['collection'], self::$DI['app']['mediavorus']);
 
         $count = count($file->getAttributes());
         $manager->addMediaAttributesTester($file);
@@ -493,9 +493,9 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testAddMediaAttributes()
     {
-        $manager = new ManagerTester(self::$application);
+        $manager = new ManagerTester(self::$DI['app']);
 
-        $file = File::buildFromPathfile(self::$file1, self::$collection, self::$application['mediavorus']);
+        $file = File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']['mediavorus']);
 
         $count = count($file->getAttributes());
         $manager->addMediaAttributesTester($file);
@@ -546,23 +546,23 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 $records[] = $record;
             };
 
-        $visa = $this->object->getVisa(File::buildFromPathfile(self::$file1, self::$collection, self::$application['mediavorus']));
+        $visa = $this->object->getVisa(File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']['mediavorus']));
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Visa', $visa);
 
         $this->assertTrue($visa->isValid());
 
-        $this->object->process($this->session, File::buildFromPathfile(self::$file1, self::$collection, self::$application['mediavorus']), $postProcessRecord);
+        $this->object->process($this->session, File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']['mediavorus']), $postProcessRecord);
 
-        $visa = $this->object->getVisa(File::buildFromPathfile(self::$file1, self::$collection, self::$application['mediavorus']));
+        $visa = $this->object->getVisa(File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']['mediavorus']));
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Visa', $visa);
 
         $this->assertTrue($visa->isValid());
 
-        $this->object->registerChecker(new Checker\Sha256(self::$application));
+        $this->object->registerChecker(new Checker\Sha256(self::$DI['app']));
 
-        $visa = $this->object->getVisa(File::buildFromPathfile(self::$file1, self::$collection, self::$application['mediavorus']));
+        $visa = $this->object->getVisa(File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']['mediavorus']));
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Visa', $visa);
 
@@ -583,9 +583,9 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->assertEquals(array(), $this->object->getCheckers());
 
-        $shaChecker = new Checker\Sha256(self::$application);
+        $shaChecker = new Checker\Sha256(self::$DI['app']);
         $this->object->registerChecker($shaChecker);
-        $uuidChecker = new Checker\UUID(self::$application);
+        $uuidChecker = new Checker\UUID(self::$DI['app']);
         $this->object->registerChecker($uuidChecker);
 
         $this->assertEquals(array($shaChecker, $uuidChecker), $this->object->getCheckers());
@@ -599,8 +599,8 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->assertEquals(array(), $this->object->getCheckers());
 
-        $shaChecker = new Checker\Sha256(self::$application);
-        $uuidChecker = new Checker\UUID(self::$application);
+        $shaChecker = new Checker\Sha256(self::$DI['app']);
+        $uuidChecker = new Checker\UUID(self::$DI['app']);
         $this->object->registerCheckers(array($shaChecker, $uuidChecker));
 
         $this->assertEquals(array($shaChecker, $uuidChecker), $this->object->getCheckers());
@@ -613,9 +613,9 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->assertEquals(array(), $this->object->getCheckers());
 
-        $shaChecker = new Checker\Sha256(self::$application);
-        $uuidChecker = new Checker\UUID(self::$application);
-        $filenameChecker = new Checker\Filename(self::$application);
+        $shaChecker = new Checker\Sha256(self::$DI['app']);
+        $uuidChecker = new Checker\UUID(self::$DI['app']);
+        $filenameChecker = new Checker\Filename(self::$DI['app']);
         $this->object->registerCheckers(array($shaChecker, $uuidChecker, $filenameChecker));
 
         $this->assertEquals(array($shaChecker, $uuidChecker, $filenameChecker), $this->object->getCheckers());
@@ -629,7 +629,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testBookLazaretPathfile()
     {
-        $manager = new ManagerTester(self::$application);
+        $manager = new ManagerTester(self::$DI['app']);
 
         $file1 = $manager->bookLazaretPathfileTester('babebibobu.txt');
         $file2 = $manager->bookLazaretPathfileTester('babebibobu.txt');

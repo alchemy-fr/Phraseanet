@@ -14,8 +14,8 @@ class SphinxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('GET', '/admin/sphinx/configuration/');
-        $this->assertTrue($this->client->getResponse()->isOk());
+        self::$DI['client']->request('GET', '/admin/sphinx/configuration/');
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
     /**
@@ -26,8 +26,8 @@ class SphinxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(false);
 
-        $this->client->request('GET', '/admin/sphinx/configuration/');
-        $this->assertTrue($this->client->getResponse()->isOk());
+        self::$DI['client']->request('GET', '/admin/sphinx/configuration/');
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
     /**
@@ -37,7 +37,7 @@ class SphinxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/admin/sphinx/configuration/');
-        $this->assertTrue($this->client->getResponse()->isRedirect());
+        self::$DI['client']->request('POST', '/admin/sphinx/configuration/');
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
 }

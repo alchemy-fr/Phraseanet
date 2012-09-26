@@ -5,10 +5,12 @@ require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAbstract.class.inc';
 class ControllerInstallerTest extends \PhraseanetWebTestCaseAbstract
 {
 
-    protected static function loadApplication()
+    public function setUp()
     {
+        parent::setUp();
+
         $environment = 'test';
-        return self::$application = require __DIR__ . '/FakeSetupApplication.inc';
+        return self::$DI['app'] = require __DIR__ . '/FakeSetupApplication.inc';
     }
 
     /**
@@ -16,9 +18,9 @@ class ControllerInstallerTest extends \PhraseanetWebTestCaseAbstract
      */
     public function testRouteSlash()
     {
-        $this->client->request('GET', '/');
+        self::$DI['client']->request('GET', '/');
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
         /* @var $response \Symfony\Component\HttpFoundation\Response */
 
         $this->assertEquals(302, $response->getStatusCode());
@@ -27,20 +29,20 @@ class ControllerInstallerTest extends \PhraseanetWebTestCaseAbstract
 
     public function testRouteInstaller()
     {
-        $this->client->request('GET', '/installer/');
+        self::$DI['client']->request('GET', '/installer/');
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
         /* @var $response \Symfony\Component\HttpFoundation\Response */
 
-        $this->assertEquals(302, $response->getStatusCode(), "test that response is a redirection " . $this->client->getResponse()->getContent());
+        $this->assertEquals(302, $response->getStatusCode(), "test that response is a redirection " . self::$DI['client']->getResponse()->getContent());
         $this->assertEquals('/setup/installer/step2/', $response->headers->get('location'));
     }
 
     public function testRouteInstallerStep2()
     {
-        $this->client->request('GET', '/installer/step2/');
+        self::$DI['client']->request('GET', '/installer/step2/');
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
         /* @var $response \Symfony\Component\HttpFoundation\Response */
 
         $this->assertEquals(200, $response->getStatusCode());

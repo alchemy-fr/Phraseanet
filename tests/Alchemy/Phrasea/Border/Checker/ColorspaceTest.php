@@ -18,7 +18,7 @@ class ColorspaceTest extends \PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new Colorspace(self::$application, array('colorspaces' => array('RGB', 'cmyk')));
+        $this->object = new Colorspace(self::$DI['app'], array('colorspaces' => array('RGB', 'cmyk')));
     }
 
     /**
@@ -37,9 +37,9 @@ class ColorspaceTest extends \PhraseanetPHPUnitAbstract
             ->method('getFile')
             ->will($this->returnValue(new \SplFileInfo(__FILE__)));
 
-        $File = new \Alchemy\Phrasea\Border\File($media, self::$collection);
+        $File = new \Alchemy\Phrasea\Border\File($media, self::$DI['collection']);
 
-        $response = $this->object->check(self::$application['EM'], $File);
+        $response = $this->object->check(self::$DI['app']['EM'], $File);
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertTrue($response->isOk());
@@ -58,6 +58,6 @@ class ColorspaceTest extends \PhraseanetPHPUnitAbstract
      */
     public function testContructorInvalidArgumentException()
     {
-        new Colorspace(self::$application, array(array('RGB', 'cmyk')));
+        new Colorspace(self::$DI['app'], array(array('RGB', 'cmyk')));
     }
 }

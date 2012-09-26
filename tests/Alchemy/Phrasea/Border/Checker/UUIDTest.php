@@ -18,10 +18,10 @@ class UUIDTest extends \PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new UUID(self::$application);
+        $this->object = new UUID(self::$DI['app']);
         $this->filename = __DIR__ . '/../../../../../tmp/test001.CR2';
         copy(__DIR__ . '/../../../../testfiles/test001.CR2', $this->filename);
-        $this->media = self::$application['mediavorus']->guess($this->filename);
+        $this->media = self::$DI['app']['mediavorus']->guess($this->filename);
     }
 
     public function tearDown()
@@ -38,7 +38,7 @@ class UUIDTest extends \PhraseanetPHPUnitAbstract
      */
     public function testCheck()
     {
-        $response = $this->object->check(self::$application['EM'], new File($this->media, self::$collection));
+        $response = $this->object->check(self::$DI['app']['EM'], new File($this->media, self::$DI['collection']));
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
 
@@ -50,7 +50,7 @@ class UUIDTest extends \PhraseanetPHPUnitAbstract
      */
     public function testCheckNoFile()
     {
-        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', array('getUUID'), array($this->media, self::$collection));
+        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', array('getUUID'), array($this->media, self::$DI['collection']));
 
         $mock
             ->expects($this->once())
@@ -58,7 +58,7 @@ class UUIDTest extends \PhraseanetPHPUnitAbstract
             ->will($this->returnValue(\random::generatePassword(3)))
         ;
 
-        $response = $this->object->check(self::$application['EM'], $mock);
+        $response = $this->object->check(self::$DI['app']['EM'], $mock);
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
 

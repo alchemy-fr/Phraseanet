@@ -14,12 +14,12 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRouteDescription()
     {
-        $appbox = self::$application['phraseanet.appbox'];
+        $appbox = self::$DI['app']['phraseanet.appbox'];
         $databox = array_shift($appbox->get_databoxes());
         $name = "testtest" . uniqid();
-        $field = \databox_field::create(self::$application, $databox, $name, false);
+        $field = \databox_field::create(self::$DI['app'], $databox, $name, false);
         $id = $field->get_id();
-        $this->client->request("POST", "/admin/description/" . $databox->get_sbas_id() . "/", array(
+        self::$DI['client']->request("POST", "/admin/description/" . $databox->get_sbas_id() . "/", array(
             'field_ids' => array($id)
             , 'name_' . $id       => $name
             , 'multi_' . $id      => 1
@@ -31,26 +31,26 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             , 'vocabulary_' . $id => 'User'
         ));
 
-        $this->assertTrue($this->client->getResponse()->isRedirect());
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $field->delete();
     }
 
     public function testPostDelete()
     {
-        $appbox = self::$application['phraseanet.appbox'];
+        $appbox = self::$DI['app']['phraseanet.appbox'];
         $databox = array_shift($appbox->get_databoxes());
         $name = "test" . uniqid();
-        $field = \databox_field::create(self::$application, $databox, $name, false);
+        $field = \databox_field::create(self::$DI['app'], $databox, $name, false);
         $id = $field->get_id();
 
-        $this->client->request("POST", "/admin/description/" . $databox->get_sbas_id() . "/", array(
+        self::$DI['client']->request("POST", "/admin/description/" . $databox->get_sbas_id() . "/", array(
             'todelete_ids' => array($id)
         ));
 
-        $this->assertTrue($this->client->getResponse()->isRedirect());
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
 
         try {
-            $field = \databox_field::get_instance(self::$application, $databox, $id);
+            $field = \databox_field::get_instance(self::$DI['app'], $databox, $id);
             $field->delete();
             $this->fail("should raise an exception");
         } catch (\Exception $e) {
@@ -60,16 +60,16 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testPostCreate()
     {
-        $appbox = self::$application['phraseanet.appbox'];
+        $appbox = self::$DI['app']['phraseanet.appbox'];
         $databox = array_shift($appbox->get_databoxes());
 
         $name = 'test' . uniqid();
 
-        $this->client->request("POST", "/admin/description/" . $databox->get_sbas_id() . "/", array(
+        self::$DI['client']->request("POST", "/admin/description/" . $databox->get_sbas_id() . "/", array(
             'newfield' => $name
         ));
 
-        $this->assertTrue($this->client->getResponse()->isRedirect());
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
 
         $fields = $databox->get_meta_structure();
         $find = false;
@@ -88,19 +88,19 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testPostDescriptionException()
     {
-        $appbox = self::$application['phraseanet.appbox'];
+        $appbox = self::$DI['app']['phraseanet.appbox'];
         $databox = array_shift($appbox->get_databoxes());
 
-        $this->client->request("POST", "/admin/description/" . $databox->get_sbas_id() . "/", array(
+        self::$DI['client']->request("POST", "/admin/description/" . $databox->get_sbas_id() . "/", array(
             'todelete_ids' => array('unknow_id')
         ));
 
-        $this->assertTrue($this->client->getResponse()->isRedirect());
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
 
         $name = "test" . uniqid();
-        $field = \databox_field::create(self::$application, $databox, $name, false);
+        $field = \databox_field::create(self::$DI['app'], $databox, $name, false);
         $id = $field->get_id();
-        $this->client->request("POST", "/admin/description/" . $databox->get_sbas_id() . "/", array(
+        self::$DI['client']->request("POST", "/admin/description/" . $databox->get_sbas_id() . "/", array(
             'field_ids' => array($id)
             , 'name_' . $id       => $name
             , 'multi_' . $id      => 1
@@ -112,13 +112,13 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             , 'vocabulary_' . $id => 'Unknow_Vocabulary'
         ));
 
-        $this->assertTrue($this->client->getResponse()->isRedirect());
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $field->delete();
 
         $name = "test" . uniqid();
-        $field = \databox_field::create(self::$application, $databox, $name, false);
+        $field = \databox_field::create(self::$DI['app'], $databox, $name, false);
         $id = $field->get_id();
-        $this->client->request("POST", "/admin/description/" . $databox->get_sbas_id() . "/", array(
+        self::$DI['client']->request("POST", "/admin/description/" . $databox->get_sbas_id() . "/", array(
             'field_ids' => array($id)
             , 'multi_' . $id      => 1
             , 'indexable_' . $id  => 1
@@ -129,16 +129,16 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             , 'vocabulary_' . $id => 'Unknow_Vocabulary'
         ));
 
-        $this->assertTrue($this->client->getResponse()->isRedirect());
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $field->delete();
 
         $name = "test" . uniqid();
-        $field = \databox_field::create(self::$application, $databox, $name, false);
+        $field = \databox_field::create(self::$DI['app'], $databox, $name, false);
         $field->set_indexable(false);
         $field->set_required(true);
         $field->set_readonly(true);
         $id = $field->get_id();
-        $this->client->request("POST", "/admin/description/" . $databox->get_sbas_id() . "/", array(
+        self::$DI['client']->request("POST", "/admin/description/" . $databox->get_sbas_id() . "/", array(
             'field_ids' => array($id)
             , 'name_' . $id       => $name
             , 'multi_' . $id      => 1
@@ -150,7 +150,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             , 'vocabulary_' . $id => 'Unknow_Vocabulary'
         ));
 
-        $this->assertTrue($this->client->getResponse()->isRedirect());
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $this->assertTrue($field->is_readonly());
         $this->assertTrue($field->is_required());
         $this->assertFalse($field->is_multi());
@@ -159,9 +159,9 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
 
         $name = "test" . uniqid();
-        $field = \databox_field::create(self::$application, $databox, $name, false);
+        $field = \databox_field::create(self::$DI['app'], $databox, $name, false);
         $id = $field->get_id();
-        $this->client->request("POST", "/admin/description/" . $databox->get_sbas_id() . "/", array(
+        self::$DI['client']->request("POST", "/admin/description/" . $databox->get_sbas_id() . "/", array(
             'field_ids' => array('unknow_id')
             , 'name_' . $id       => $name
             , 'multi_' . $id      => 1
@@ -173,7 +173,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             , 'vocabulary_' . $id => 'Unknow_Vocabulary'
         ));
 
-        $this->assertTrue($this->client->getResponse()->isRedirect());
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $field->delete();
     }
 
@@ -181,13 +181,13 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(false);
 
-        $databox = array_shift(self::$application['phraseanet.appbox']->get_databoxes());
+        $databox = array_shift(self::$DI['app']['phraseanet.appbox']->get_databoxes());
         $name = "test" . uniqid();
-        $field = \databox_field::create(self::$application, $databox, $name, false);
+        $field = \databox_field::create(self::$DI['app'], $databox, $name, false);
         $id = $field->get_id();
 
         try {
-            $this->client->request("POST", "/admin/description/" . $databox->get_sbas_id() . "/", array(
+            self::$DI['client']->request("POST", "/admin/description/" . $databox->get_sbas_id() . "/", array(
                 'field_ids' => array($id)
                 , 'name_' . $id       => $name
                 , 'multi_' . $id      => 1
@@ -198,7 +198,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 , 'type_' . $id       => 'string'
                 , 'vocabulary_' . $id => 'User'
             ));
-            print($this->client->getResponse()->getContent());
+            print(self::$DI['client']->getResponse()->getContent());
             $this->fail('Should throw an AccessDeniedException');
         } catch (AccessDeniedHttpException $e) {
 
@@ -210,12 +210,12 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testGetDescriptionException()
     {
         $this->setAdmin(false);
-        $appbox = self::$application['phraseanet.appbox'];
+        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $databox = array_shift($appbox->get_databoxes());
 
         try {
-            $this->client->request("GET", "/admin/description/" . $databox->get_sbas_id() . "/");
+            self::$DI['client']->request("GET", "/admin/description/" . $databox->get_sbas_id() . "/");
             $this->fail('Should throw an AccessDeniedException');
         } catch (AccessDeniedHttpException $e) {
 
@@ -224,28 +224,28 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testGetDescription()
     {
-        $appbox = self::$application['phraseanet.appbox'];
+        $appbox = self::$DI['app']['phraseanet.appbox'];
         $databox = array_shift($appbox->get_databoxes());
 
-        $this->client->request("GET", "/admin/description/" . $databox->get_sbas_id() . "/");
-        $this->assertTrue($this->client->getResponse()->isOk());
+        self::$DI['client']->request("GET", "/admin/description/" . $databox->get_sbas_id() . "/");
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
     public function testGetMetadatas()
     {
-        $appbox = self::$application['phraseanet.appbox'];
+        $appbox = self::$DI['app']['phraseanet.appbox'];
         $databox = array_shift($appbox->get_databoxes());
 
-        $this->client->request("GET", "/admin/description/metadatas/search/", array('term' => ''));
-        $this->assertTrue($this->client->getResponse()->isOk());
+        self::$DI['client']->request("GET", "/admin/description/metadatas/search/", array('term' => ''));
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
 
-        $datas = json_decode($this->client->getResponse()->getContent(), true);
+        $datas = json_decode(self::$DI['client']->getResponse()->getContent(), true);
         $this->assertEquals(array(), $datas);
 
-        $this->client->request("GET", "/admin/description/metadatas/search/", array('term' => 'xmp'));
-        $this->assertTrue($this->client->getResponse()->isOk());
+        self::$DI['client']->request("GET", "/admin/description/metadatas/search/", array('term' => 'xmp'));
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
 
-        $datas = json_decode($this->client->getResponse()->getContent(), true);
+        $datas = json_decode(self::$DI['client']->getResponse()->getContent(), true);
         $this->assertTrue(is_array($datas));
         $this->assertGreaterThan(0, count($datas));
     }

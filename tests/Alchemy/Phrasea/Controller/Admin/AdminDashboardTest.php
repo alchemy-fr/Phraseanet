@@ -15,7 +15,7 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testRouteDashboardUnauthorized()
     {
         $this->setAdmin(false);
-        $this->client->request('GET', '/admin/dashboard/');
+        self::$DI['client']->request('GET', '/admin/dashboard/');
     }
 
     /**
@@ -25,12 +25,12 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('GET', '/admin/dashboard/', array(
+        self::$DI['client']->request('GET', '/admin/dashboard/', array(
             'flush_cache' => 'ok',
             'email'       => 'sent'
         ));
 
-        $this->assertTrue($this->client->getResponse()->isOk());
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
     /**
@@ -40,10 +40,10 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/admin/dashboard/flush-cache/');
+        self::$DI['client']->request('POST', '/admin/dashboard/flush-cache/');
 
-        $this->assertTrue($this->client->getResponse()->isRedirect());
-        $this->assertRegexp('/flush_cache=ok/', $this->client->getResponse()->headers->get('location'));
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
+        $this->assertRegexp('/flush_cache=ok/', self::$DI['client']->getResponse()->headers->get('location'));
     }
 
     /**
@@ -53,12 +53,12 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/admin/dashboard/send-mail-test/', array(
+        self::$DI['client']->request('POST', '/admin/dashboard/send-mail-test/', array(
             'email' => self::$DI['user']->get_email()
         ));
 
-        $this->assertTrue($this->client->getResponse()->isRedirect());
-        $this->assertRegexp('/email=/', $this->client->getResponse()->headers->get('location'));
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
+        $this->assertRegexp('/email=/', self::$DI['client']->getResponse()->headers->get('location'));
     }
 
     /**
@@ -69,7 +69,7 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/admin/dashboard/send-mail-test/');
+        self::$DI['client']->request('POST', '/admin/dashboard/send-mail-test/');
     }
     /**
      * @covers \Alchemy\Phrasea\Controller\Admin\Dashboard::resetAdminRights
@@ -78,9 +78,9 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/admin/dashboard/reset-admin-rights/');
+        self::$DI['client']->request('POST', '/admin/dashboard/reset-admin-rights/');
 
-        $this->assertTrue($this->client->getResponse()->isRedirect());
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
 
     /**
@@ -90,17 +90,17 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $admins = array_keys(\User_Adapter::get_sys_admins(self::$application));
+        $admins = array_keys(\User_Adapter::get_sys_admins(self::$DI['app']));
 
-        $user = \User_Adapter::create(self::$application, uniqid('unit_test_user'), uniqid('unit_test_user'),  uniqid('unit_test_user') ."@email.com", false);
+        $user = \User_Adapter::create(self::$DI['app'], uniqid('unit_test_user'), uniqid('unit_test_user'),  uniqid('unit_test_user') ."@email.com", false);
 
         $admins[] = $user->get_id();
 
-        $this->client->request('POST', '/admin/dashboard/add-admins/', array(
+        self::$DI['client']->request('POST', '/admin/dashboard/add-admins/', array(
             'admins' => $admins
         ));
 
-        $this->assertTrue($this->client->getResponse()->isRedirect());
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
 
         $user->delete();
     }

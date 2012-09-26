@@ -15,7 +15,7 @@ class DoctrineMonologTest extends PhraseanetPHPUnitAbstract
     {
 
         $log = new \Alchemy\Phrasea\Core\Service\Log\Doctrine\Monolog(
-                self::$application, $this->options
+                self::$DI['app'], $this->options
         );
 
         $this->assertInstanceOf("\Doctrine\Logger\MonologSQLLogger", $log->getDriver());
@@ -24,7 +24,7 @@ class DoctrineMonologTest extends PhraseanetPHPUnitAbstract
     public function testType()
     {
         $log = new \Alchemy\Phrasea\Core\Service\Log\Doctrine\Monolog(
-                self::$application, $this->options
+                self::$DI['app'], $this->options
         );
 
         $this->assertEquals("doctrine_monolog", $log->getType());
@@ -35,7 +35,7 @@ class DoctrineMonologTest extends PhraseanetPHPUnitAbstract
         try {
             $this->options["output"] = "unknowOutput";
             $log = new \Alchemy\Phrasea\Core\Service\Log\Doctrine\Monolog(
-                    self::$application, $this->options
+                    self::$DI['app'], $this->options
             );
             $log->getDriver();
             $this->fail("should raise an exception");

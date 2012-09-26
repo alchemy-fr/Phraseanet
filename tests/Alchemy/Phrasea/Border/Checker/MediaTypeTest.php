@@ -20,7 +20,7 @@ class MediaTypeTest extends \PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new MediaType(self::$application, array('mediatypes' => array(MediaType::TYPE_IMAGE)));
+        $this->object = new MediaType(self::$DI['app'], array('mediatypes' => array(MediaType::TYPE_IMAGE)));
     }
 
     /**
@@ -28,17 +28,17 @@ class MediaTypeTest extends \PhraseanetPHPUnitAbstract
      */
     public function testCheck()
     {
-        $media = self::$application['mediavorus']->guess(__DIR__ . '/../../../../testfiles/test001.CR2');
-        $file = new File($media, self::$collection);
-        $response = $this->object->check(self::$application['EM'], $file);
+        $media = self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../testfiles/test001.CR2');
+        $file = new File($media, self::$DI['collection']);
+        $response = $this->object->check(self::$DI['app']['EM'], $file);
 
         $this->assertTrue($response->isOk());
 
-        $object = new MediaType(self::$application, array('mediatypes' => array(MediaType::TYPE_VIDEO, MediaType::TYPE_AUDIO)));
+        $object = new MediaType(self::$DI['app'], array('mediatypes' => array(MediaType::TYPE_VIDEO, MediaType::TYPE_AUDIO)));
 
-        $media = self::$application['mediavorus']->guess(__DIR__ . '/../../../../testfiles/test001.CR2');
-        $file = new File($media, self::$collection);
-        $response = $object->check(self::$application['EM'], $file);
+        $media = self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../testfiles/test001.CR2');
+        $file = new File($media, self::$DI['collection']);
+        $response = $object->check(self::$DI['app']['EM'], $file);
 
         $this->assertFalse($response->isOk());
     }
@@ -56,6 +56,6 @@ class MediaTypeTest extends \PhraseanetPHPUnitAbstract
      */
     public function testContructorInvalidArgumentException()
     {
-        new MediaType(self::$application, array(array(MediaType::TYPE_IMAGE)));
+        new MediaType(self::$DI['app'], array(array(MediaType::TYPE_IMAGE)));
     }
 }

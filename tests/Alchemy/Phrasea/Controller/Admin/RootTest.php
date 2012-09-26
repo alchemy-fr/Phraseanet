@@ -11,10 +11,10 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRouteSlash()
     {
-        $this->client->request('GET', '/admin/', array('section' => 'base:featured'));
-        $this->assertTrue($this->client->getResponse()->isOk());
+        self::$DI['client']->request('GET', '/admin/', array('section' => 'base:featured'));
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
 
-        $this->client->request('GET', '/admin/');
-        $this->assertTrue($this->client->getResponse()->isOk());
+        self::$DI['client']->request('GET', '/admin/');
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 }

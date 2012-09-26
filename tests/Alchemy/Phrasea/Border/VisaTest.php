@@ -25,9 +25,9 @@ class VisaTest extends \PhraseanetPHPUnitAbstract
 
         $this->assertEquals(array(), $visa->getResponses());
 
-        $response = new Checker\Response(true, new Checker\Filename(self::$application));
+        $response = new Checker\Response(true, new Checker\Filename(self::$DI['app']));
         $visa->addResponse($response);
-        $response2 = new Checker\Response(false, new Checker\Filename(self::$application));
+        $response2 = new Checker\Response(false, new Checker\Filename(self::$DI['app']));
         $visa->addResponse($response2);
 
         $this->assertSame(array($response, $response2), $visa->getResponses());
@@ -42,12 +42,12 @@ class VisaTest extends \PhraseanetPHPUnitAbstract
 
         $this->assertTrue($visa->isValid());
 
-        $response = new Checker\Response(true, new Checker\Filename(self::$application));
+        $response = new Checker\Response(true, new Checker\Filename(self::$DI['app']));
         $visa->addResponse($response);
 
         $this->assertTrue($visa->isValid());
 
-        $response2 = new Checker\Response(false, new Checker\Filename(self::$application));
+        $response2 = new Checker\Response(false, new Checker\Filename(self::$DI['app']));
         $visa->addResponse($response2);
 
         $this->assertFalse($visa->isValid());

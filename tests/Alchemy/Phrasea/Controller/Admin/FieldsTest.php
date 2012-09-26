@@ -11,18 +11,18 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testCheckMulti()
     {
-        $appbox = self::$application['phraseanet.appbox'];
+        $appbox = self::$DI['app']['phraseanet.appbox'];
         $databox = array_shift($appbox->get_databoxes());
 
         $tag = new PHPExiftool\Driver\Tag\IPTC\ObjectName();
 
-        $field = \databox_field::create(self::$application, $databox, "test" . time(), false);
+        $field = \databox_field::create(self::$DI['app'], $databox, "test" . time(), false);
         $field->set_tag($tag)->save();
 
-        $this->client->request("GET", "/admin/fields/checkmulti/", array(
+        self::$DI['client']->request("GET", "/admin/fields/checkmulti/", array(
             'source' => $tag->getTagname(), 'multi'  => 'false'));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
         $this->assertEquals("application/json", $response->headers->get("content-type"));
         $datas = json_decode($response->getContent());
         $this->assertTrue(is_object($datas));
@@ -33,18 +33,18 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testCheckReadOnly()
     {
-        $appbox = self::$application['phraseanet.appbox'];
+        $appbox = self::$DI['app']['phraseanet.appbox'];
         $databox = array_shift($appbox->get_databoxes());
 
         $tag = new PHPExiftool\Driver\Tag\IPTC\ObjectName();
 
-        $field = \databox_field::create(self::$application, $databox, "test" . time(), false);
+        $field = \databox_field::create(self::$DI['app'], $databox, "test" . time(), false);
         $field->set_tag($tag)->save();
 
-        $this->client->request("GET", "/admin/fields/checkreadonly/", array(
+        self::$DI['client']->request("GET", "/admin/fields/checkreadonly/", array(
             'source'   => $tag->getTagname(), 'readonly' => 'false'));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
         $this->assertEquals("application/json", $response->headers->get("content-type"));
         $datas = json_decode($response->getContent());
         $this->assertTrue(is_object($datas));

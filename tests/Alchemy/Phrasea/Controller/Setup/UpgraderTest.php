@@ -5,10 +5,12 @@ require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAbstract.class.inc';
 class ControllerUpgraderTest extends \PhraseanetWebTestCaseAbstract
 {
 
-    protected static function loadApplication()
+    public function setUp()
     {
+        parent::setUp();
+
         $environment = 'test';
-        return self::$application = require __DIR__ . '/FakeUpgradeApplication.inc';
+        return self::$DI['app'] = require __DIR__ . '/FakeUpgradeApplication.inc';
     }
 
     /**
@@ -16,9 +18,9 @@ class ControllerUpgraderTest extends \PhraseanetWebTestCaseAbstract
      */
     public function testRouteSlash()
     {
-        $this->client->request('GET', '/');
+        self::$DI['client']->request('GET', '/');
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
         /* @var $response \Symfony\Component\HttpFoundation\Response */
 
         $this->assertEquals(302, $response->getStatusCode());
@@ -30,9 +32,9 @@ class ControllerUpgraderTest extends \PhraseanetWebTestCaseAbstract
      */
     public function testRouteUpgrader()
     {
-        $this->client->request('GET', '/upgrader/');
+        self::$DI['client']->request('GET', '/upgrader/');
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
         /* @var $response \Symfony\Component\HttpFoundation\Response */
 
         $this->assertEquals(200, $response->getStatusCode());
@@ -43,9 +45,9 @@ class ControllerUpgraderTest extends \PhraseanetWebTestCaseAbstract
      */
     public function testRouteStatus()
     {
-        $this->client->request('GET', '/upgrader/status/');
+        self::$DI['client']->request('GET', '/upgrader/status/');
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
         /* @var $response \Symfony\Component\HttpFoundation\Response */
 
         $this->assertEquals(200, $response->getStatusCode());
@@ -56,9 +58,9 @@ class ControllerUpgraderTest extends \PhraseanetWebTestCaseAbstract
      */
     public function testRouteExecute()
     {
-        $this->client->request('POST', '/upgrader/execute/');
+        self::$DI['client']->request('POST', '/upgrader/execute/');
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
         /* @var $response \Symfony\Component\HttpFoundation\Response */
         $this->assertEquals(302, $response->getStatusCode());
         $this->assertEquals('/', $response->headers->get('location'));

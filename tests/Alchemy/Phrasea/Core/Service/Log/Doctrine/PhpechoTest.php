@@ -8,7 +8,7 @@ class DoctrinePhpechoTest extends PhraseanetPHPUnitAbstract
     public function testService()
     {
         $log = new \Alchemy\Phrasea\Core\Service\Log\Doctrine\Phpecho(
-                self::$application, array()
+                self::$DI['app'], array()
         );
 
         $this->assertInstanceOf("\Doctrine\DBAL\Logging\EchoSQLLogger", $log->getDriver());
@@ -17,7 +17,7 @@ class DoctrinePhpechoTest extends PhraseanetPHPUnitAbstract
     public function testType()
     {
         $log = new \Alchemy\Phrasea\Core\Service\Log\Doctrine\Phpecho(
-                self::$application, array()
+                self::$DI['app'], array()
         );
 
         $this->assertEquals("phpecho", $log->getType());

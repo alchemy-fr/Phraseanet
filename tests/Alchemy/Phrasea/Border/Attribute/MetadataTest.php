@@ -69,7 +69,7 @@ class MetadataTest extends \PhraseanetPHPUnitAbstract
      */
     public function testLoadFromString()
     {
-        $loaded = Metadata::loadFromString(self::$application, $this->object->asString());
+        $loaded = Metadata::loadFromString(self::$DI['app'], $this->object->asString());
 
         $this->assertEquals($this->object, $loaded);
     }
@@ -82,7 +82,7 @@ class MetadataTest extends \PhraseanetPHPUnitAbstract
     {
         \PHPUnit_Framework_Error_Notice::$enabled = false;
 
-        Metadata::loadFromString(self::$application, 'Hello String');
+        Metadata::loadFromString(self::$DI['app'], 'Hello String');
     }
 
     /**
@@ -91,6 +91,6 @@ class MetadataTest extends \PhraseanetPHPUnitAbstract
      */
     public function testLoadFromStringWrongObject()
     {
-        Metadata::loadFromString(self::$application, serialize(new \stdClass()));
+        Metadata::loadFromString(self::$DI['app'], serialize(new \stdClass()));
     }
 }

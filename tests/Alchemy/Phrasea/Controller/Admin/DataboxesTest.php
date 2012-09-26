@@ -13,11 +13,11 @@ class DataboxesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGetSlash($type, $errorMsgId)
     {
-        $this->client->request('GET', '/admin/databoxes/', array(
+        self::$DI['client']->request('GET', '/admin/databoxes/', array(
             $type => $errorMsgId
         ));
 
-        $this->assertTrue($this->client->getResponse()->isOk());
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
     public function msgProvider()
@@ -45,7 +45,7 @@ class DataboxesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(false);
 
-        $this->client->request('GET', '/admin/databoxes/');
+        self::$DI['client']->request('GET', '/admin/databoxes/');
     }
 
     /**
@@ -55,9 +55,9 @@ class DataboxesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/admin/databoxes/upgrade/');
+        self::$DI['client']->request('POST', '/admin/databoxes/upgrade/');
 
-        $this->assertTrue($this->client->getResponse()->isRedirect());
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
 
 
@@ -69,13 +69,13 @@ class DataboxesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(true);
 
         $base = $this->createDatabox();
-        $base->unmount_databox(self::$application['phraseanet.appbox']);
+        $base->unmount_databox(self::$DI['app']['phraseanet.appbox']);
 
-        $this->client->request('POST', '/admin/databoxes/mount/', array(
+        self::$DI['client']->request('POST', '/admin/databoxes/mount/', array(
             'new_dbname' => 'unit_test_db'
         ));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isRedirect());
         $uriRedirect = $response->headers->get('location');
@@ -86,8 +86,8 @@ class DataboxesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $databoxId = $explode[3];
 
         try {
-            $databox = self::$application['phraseanet.appbox']->get_databox($databoxId);
-            $databox->unmount_databox(self::$application['phraseanet.appbox']);
+            $databox = self::$DI['app']['phraseanet.appbox']->get_databox($databoxId);
+            $databox->unmount_databox(self::$DI['app']['phraseanet.appbox']);
             $databox->delete();
         } catch (\Exception_DataboxNotFound $e) {
             $this->fail('databox not mounted');
@@ -103,11 +103,11 @@ class DataboxesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/admin/databoxes/', array(
+        self::$DI['client']->request('POST', '/admin/databoxes/', array(
             'new_dbname' => ''
         ));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('/admin/databoxes/?error=no-empty', $response->headers->get('location'));
     }
@@ -119,11 +119,11 @@ class DataboxesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(true);
 
-        $this->client->request('POST', '/admin/databoxes/', array(
+        self::$DI['client']->request('POST', '/admin/databoxes/', array(
             'new_dbname' => 'ééààèè'
         ));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('/admin/databoxes/?error=special-chars', $response->headers->get('location'));
     }
@@ -137,19 +137,19 @@ class DataboxesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->createDatabase();
 
-        $this->client->request('POST', '/admin/databoxes/', array(
+        self::$DI['client']->request('POST', '/admin/databoxes/', array(
             'new_dbname'        => 'unit_test_db',
             'new_data_template' => 'fr-simple',
         ));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
         $uriRedirect = $response->headers->get('location');
         $this->assertTrue(!!strrpos($uriRedirect, 'success=1'));
         $explode = explode('/', $uriRedirect);
         $databoxId = $explode[3];
-        $databox = self::$application['phraseanet.appbox']->get_databox($databoxId);
-        $databox->unmount_databox(self::$application['phraseanet.appbox']);
+        $databox = self::$DI['app']['phraseanet.appbox']->get_databox($databoxId);
+        $databox->unmount_databox(self::$DI['app']['phraseanet.appbox']);
         $databox->delete();
 
         unset($stmt, $databox);

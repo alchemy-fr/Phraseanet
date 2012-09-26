@@ -13,9 +13,9 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $route = '/prod/push/sendform/';
 
-        $this->client->request('POST', $route);
+        self::$DI['client']->request('POST', $route);
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
@@ -25,9 +25,9 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $route = '/prod/push/validateform/';
 
-        $this->client->request('POST', $route);
+        self::$DI['client']->request('POST', $route);
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
@@ -52,9 +52,9 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             , 'participants' => $receivers
         );
 
-        $this->client->request('POST', $route, $params);
+        self::$DI['client']->request('POST', $route, $params);
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
@@ -96,9 +96,9 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             , 'participants' => $participants
         );
 
-        $this->client->request('POST', $route, $params);
+        self::$DI['client']->request('POST', $route, $params);
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
@@ -119,9 +119,9 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'query' => ''
         );
 
-        $this->client->request('GET', $route, $params);
+        self::$DI['client']->request('GET', $route, $params);
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());

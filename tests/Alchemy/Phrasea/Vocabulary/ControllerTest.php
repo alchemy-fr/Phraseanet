@@ -9,12 +9,12 @@ class ControllerTest extends \PhraseanetPHPUnitAbstract
 
     public function testGet()
     {
-        $provider = Controller::get(self::$application, 'User');
+        $provider = Controller::get(self::$DI['app'], 'User');
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Vocabulary\\ControlProvider\\UserProvider', $provider);
 
         try {
-            $provider = Controller::get(self::$application, 'Zebulon');
+            $provider = Controller::get(self::$DI['app'], 'Zebulon');
             $this->fail('Should raise an exception');
         } catch (\Exception $e) {
 
@@ -23,7 +23,7 @@ class ControllerTest extends \PhraseanetPHPUnitAbstract
 
     public function testGetAvailable()
     {
-        $available = Controller::getAvailable(self::$application);
+        $available = Controller::getAvailable(self::$DI['app']);
 
         $this->assertTrue(is_array($available));
 

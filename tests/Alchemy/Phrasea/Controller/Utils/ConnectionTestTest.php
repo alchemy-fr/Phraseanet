@@ -25,8 +25,8 @@ class ControllerConnectionTestTest extends \PhraseanetWebTestCaseAbstract
             "dbname"   => $connexion->get('dbname')
         );
 
-        $this->client->request("GET", "/admin/tests/connection/mysql/", $params);
-        $response = $this->client->getResponse();
+        self::$DI['client']->request("GET", "/admin/tests/connection/mysql/", $params);
+        $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
     }
 
@@ -46,10 +46,10 @@ class ControllerConnectionTestTest extends \PhraseanetWebTestCaseAbstract
             "dbname"   => $connexion->get('dbname')
         );
 
-        $this->client->request("GET", "/admin/tests/connection/mysql/", $params);
-        $response = $this->client->getResponse();
-        $content = json_decode($this->client->getResponse()->getContent());
-        $this->assertEquals("application/json", $this->client->getResponse()->headers->get("content-type"));
+        self::$DI['client']->request("GET", "/admin/tests/connection/mysql/", $params);
+        $response = self::$DI['client']->getResponse();
+        $content = json_decode(self::$DI['client']->getResponse()->getContent());
+        $this->assertEquals("application/json", self::$DI['client']->getResponse()->headers->get("content-type"));
         $this->assertTrue($response->isOk());
         $this->assertTrue(is_object($content));
         $this->assertObjectHasAttribute('connection', $content);
@@ -76,10 +76,10 @@ class ControllerConnectionTestTest extends \PhraseanetWebTestCaseAbstract
             "dbname"   => "fake-DTABASE-name"
         );
 
-        $this->client->request("GET", "/admin/tests/connection/mysql/", $params);
-        $response = $this->client->getResponse();
-        $content = json_decode($this->client->getResponse()->getContent());
-        $this->assertEquals("application/json", $this->client->getResponse()->headers->get("content-type"));
+        self::$DI['client']->request("GET", "/admin/tests/connection/mysql/", $params);
+        $response = self::$DI['client']->getResponse();
+        $content = json_decode(self::$DI['client']->getResponse()->getContent());
+        $this->assertEquals("application/json", self::$DI['client']->getResponse()->headers->get("content-type"));
         $this->assertTrue($response->isOk());
         $this->assertTrue(is_object($content));
         $this->assertObjectHasAttribute('connection', $content);

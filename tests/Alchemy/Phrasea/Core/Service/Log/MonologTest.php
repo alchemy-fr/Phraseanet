@@ -19,7 +19,7 @@ class MonologTest extends PhraseanetPHPUnitAbstract
     public function testService()
     {
         $log = new \Alchemy\Phrasea\Core\Service\Log\Monolog(
-                self::$application, $this->options
+                self::$DI['app'], $this->options
         );
 
         $this->assertInstanceOf("\Monolog\Logger", $log->getDriver());
@@ -28,7 +28,7 @@ class MonologTest extends PhraseanetPHPUnitAbstract
     public function testType()
     {
         $log = new \Alchemy\Phrasea\Core\Service\Log\Monolog(
-                self::$application, $this->options
+                self::$DI['app'], $this->options
         );
 
         $this->assertEquals("monolog", $log->getType());
@@ -38,7 +38,7 @@ class MonologTest extends PhraseanetPHPUnitAbstract
     {
         try {
             $log = new \Alchemy\Phrasea\Core\Service\Log\Monolog(
-                    self::$application, $this->options
+                    self::$DI['app'], $this->options
             );
             $this->fail("should raise an exception");
         } catch (\Exception $e) {
@@ -51,7 +51,7 @@ class MonologTest extends PhraseanetPHPUnitAbstract
         try {
             unset($this->options["handler"]);
             $log = new \Alchemy\Phrasea\Core\Service\Log\Monolog(
-                    self::$application, $this->options
+                    self::$DI['app'], $this->options
             );
             $this->fail("should raise an exception");
         } catch (\Exception $e) {
@@ -64,7 +64,7 @@ class MonologTest extends PhraseanetPHPUnitAbstract
         try {
             $this->options["handler"] = "unknowHandler";
             $log = new \Alchemy\Phrasea\Core\Service\Log\Monolog(
-                    self::$application, $this->options
+                    self::$DI['app'], $this->options
             );
             $this->fail("should raise an exception");
         } catch (\Exception $e) {
@@ -77,7 +77,7 @@ class MonologTest extends PhraseanetPHPUnitAbstract
         try {
             unset($this->options["filename"]);
             $log = new \Alchemy\Phrasea\Core\Service\Log\Monolog(
-                    self::$application, $this->options
+                    self::$DI['app'], $this->options
             );
             $this->fail("should raise an exception");
         } catch (\Exception $e) {
@@ -90,7 +90,7 @@ class MonologTest extends PhraseanetPHPUnitAbstract
 
         $this->options["handler"] = "stream";
         $log = new \Alchemy\Phrasea\Core\Service\Log\Monolog(
-                self::$application, $this->options
+                self::$DI['app'], $this->options
         );
         $this->assertInstanceOf("\Monolog\Logger", $log->getDriver());
     }

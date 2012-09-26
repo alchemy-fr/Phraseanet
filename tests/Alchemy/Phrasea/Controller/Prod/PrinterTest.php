@@ -18,9 +18,9 @@ class ControllerPrinterTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $lst = implode(';', $records);
 
-        $crawler = $this->client->request('POST', '/prod/printer/', array('lst' => $lst));
+        $crawler = self::$DI['client']->request('POST', '/prod/printer/', array('lst' => $lst));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isOk());
     }
@@ -45,13 +45,13 @@ class ControllerPrinterTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         );
 
         foreach ($layouts as $layout) {
-            $crawler = $this->client->request('POST', '/prod/printer/print.pdf', array(
+            $crawler = self::$DI['client']->request('POST', '/prod/printer/print.pdf', array(
                 'lst' => $lst,
                 'lay' => $layout
                 )
             );
 
-            $response = $this->client->getResponse();
+            $response = self::$DI['client']->getResponse();
 
             $this->assertEquals("application/pdf", $response->headers->get("content-type"));
 

@@ -34,7 +34,7 @@ class TermTest extends \PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->control = new UserProvider(self::$application);
+        $this->control = new UserProvider(self::$DI['app']);
 
         $this->object = new Term($this->value, $this->context);
         $this->basicObject = new Term($this->basicValue);

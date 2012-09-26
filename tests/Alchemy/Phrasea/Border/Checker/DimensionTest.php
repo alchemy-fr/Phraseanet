@@ -33,35 +33,35 @@ class DimensionTest extends \PhraseanetPHPUnitAbstract
             ->method('getFile')
             ->will($this->returnValue(new \SplFileInfo(__FILE__)));
 
-        $File = new \Alchemy\Phrasea\Border\File($media, self::$collection);
+        $File = new \Alchemy\Phrasea\Border\File($media, self::$DI['collection']);
 
-        $object = new Dimension(self::$application, array('width' => 800));
-        $response = $object->check(self::$application['EM'], $File);
+        $object = new Dimension(self::$DI['app'], array('width' => 800));
+        $response = $object->check(self::$DI['app']['EM'], $File);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertFalse($response->isOk());
 
-        $object = new Dimension(self::$application, array('width' => 500));
-        $response = $object->check(self::$application['EM'], $File);
+        $object = new Dimension(self::$DI['app'], array('width' => 500));
+        $response = $object->check(self::$DI['app']['EM'], $File);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertFalse($response->isOk());
 
-        $object = new Dimension(self::$application, array('width' => 400));
-        $response = $object->check(self::$application['EM'], $File);
+        $object = new Dimension(self::$DI['app'], array('width' => 400));
+        $response = $object->check(self::$DI['app']['EM'], $File);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertTrue($response->isOk());
 
-        $object = new Dimension(self::$application, array('width' => 600, 'height' => 500));
-        $response = $object->check(self::$application['EM'], $File);
+        $object = new Dimension(self::$DI['app'], array('width' => 600, 'height' => 500));
+        $response = $object->check(self::$DI['app']['EM'], $File);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertFalse($response->isOk());
 
-        $object = new Dimension(self::$application, array('width' => 600, 'height' => 400));
-        $response = $object->check(self::$application['EM'], $File);
+        $object = new Dimension(self::$DI['app'], array('width' => 600, 'height' => 400));
+        $response = $object->check(self::$DI['app']['EM'], $File);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertTrue($response->isOk());
 
-        $object = new Dimension(self::$application, array('width' => 200, 'height' => 200));
-        $response = $object->check(self::$application['EM'], $File);
+        $object = new Dimension(self::$DI['app'], array('width' => 200, 'height' => 200));
+        $response = $object->check(self::$DI['app']['EM'], $File);
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertTrue($response->isOk());
     }
@@ -82,7 +82,7 @@ class DimensionTest extends \PhraseanetPHPUnitAbstract
                     $height = $dimensions['height'];
                 }
 
-                new Dimension(self::$application, array('width' => $width,'height' => $height));
+                new Dimension(self::$DI['app'], array('width' => $width,'height' => $height));
                 $this->fail(sprintf('Exception raised with dimensions %s and %s', $width, $height));
             } catch (\InvalidArgumentException $e) {
 
@@ -118,6 +118,6 @@ class DimensionTest extends \PhraseanetPHPUnitAbstract
      */
     public function testContructorInvalidArgumentException()
     {
-        new Dimension(self::$application, array('witdh' => 38));
+        new Dimension(self::$DI['app'], array('witdh' => 38));
     }
 }

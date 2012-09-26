@@ -18,7 +18,7 @@ class ExtensionTest extends \PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new Extension(self::$application, array('extensions' => array('jpg', 'png', 'tiff')));
+        $this->object = new Extension(self::$DI['app'], array('extensions' => array('jpg', 'png', 'tiff')));
     }
 
     /**
@@ -49,9 +49,9 @@ class ExtensionTest extends \PhraseanetPHPUnitAbstract
                 ->method('getFile')
                 ->will($this->returnValue($spl));
 
-            $File = new \Alchemy\Phrasea\Border\File($media, self::$collection);
+            $File = new \Alchemy\Phrasea\Border\File($media, self::$DI['collection']);
 
-            $response = $this->object->check(self::$application['EM'], $File);
+            $response = $this->object->check(self::$DI['app']['EM'], $File);
 
             $this->assertEquals($result, $response->isOk());
         }
@@ -70,6 +70,6 @@ class ExtensionTest extends \PhraseanetPHPUnitAbstract
      */
     public function testContructorInvalidArgumentException()
     {
-        new Dimension(self::$application, array(array('jpg', 'png', 'tiff')));
+        new Dimension(self::$DI['app'], array(array('jpg', 'png', 'tiff')));
     }
 }

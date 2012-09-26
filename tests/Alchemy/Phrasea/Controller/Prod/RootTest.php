@@ -11,10 +11,10 @@ class ControllerRootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRouteSlash()
     {
-        $crawler = $this->client->request('GET', '/prod/');
+        $crawler = self::$DI['client']->request('GET', '/prod/');
 
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
         /* @var $response \Symfony\Component\HttpFoundation\Response */
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());

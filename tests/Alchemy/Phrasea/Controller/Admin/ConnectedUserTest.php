@@ -13,8 +13,8 @@ class ConnectedUserTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testgetSlash()
     {
-        $this->client->request('GET', '/admin/connected-users/');
-        $this->assertTrue($this->client->getResponse()->isOk());
+        self::$DI['client']->request('GET', '/admin/connected-users/');
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
      /**

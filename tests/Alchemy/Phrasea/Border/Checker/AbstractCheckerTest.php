@@ -19,7 +19,7 @@ class AbstractCheckerTest extends \PhraseanetPHPUnitAbstract
     {
         parent::setUp();
 
-        $this->object = new AbstractCheckerTester(self::$application);
+        $this->object = new AbstractCheckerTester(self::$DI['app']);
         $this->file = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', array('getCollection'), array(), 'CheckerTesterMock' . mt_rand(), false);
     }
 

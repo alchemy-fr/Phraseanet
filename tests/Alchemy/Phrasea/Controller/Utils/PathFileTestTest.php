@@ -10,12 +10,12 @@ class ControllerPathFileTestTest extends \PhraseanetWebTestCaseAbstract
     public function testRoutePath()
     {
         $file = new \SplFileObject(__DIR__ . '/../../../../testfiles/cestlafete.jpg');
-        $this->client->request("GET", "/admin/tests/pathurl/path/", array('path' => $file->getPathname()));
+        self::$DI['client']->request("GET", "/admin/tests/pathurl/path/", array('path' => $file->getPathname()));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
-        $this->assertEquals("application/json", $this->client->getResponse()->headers->get("content-type"));
-        $content = json_decode($this->client->getResponse()->getContent());
+        $this->assertEquals("application/json", self::$DI['client']->getResponse()->headers->get("content-type"));
+        $content = json_decode(self::$DI['client']->getResponse()->getContent());
         $this->assertTrue(is_object($content));
         $this->assertObjectHasAttribute('exists', $content);
         $this->assertObjectHasAttribute('file', $content);
@@ -26,12 +26,12 @@ class ControllerPathFileTestTest extends \PhraseanetWebTestCaseAbstract
 
     public function testRouteUrl()
     {
-        $this->client->request("GET", "/admin/tests/pathurl/url/", array('url' => "www.google.com"));
+        self::$DI['client']->request("GET", "/admin/tests/pathurl/url/", array('url' => "www.google.com"));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
-        $this->assertEquals("application/json", $this->client->getResponse()->headers->get("content-type"));
-        $content = json_decode($this->client->getResponse()->getContent());
+        $this->assertEquals("application/json", self::$DI['client']->getResponse()->headers->get("content-type"));
+        $content = json_decode(self::$DI['client']->getResponse()->getContent());
         $this->assertTrue(is_object($content));
     }
 }

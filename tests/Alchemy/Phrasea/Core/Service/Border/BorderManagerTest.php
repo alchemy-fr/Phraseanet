@@ -22,7 +22,7 @@ class BorderManagerTest extends \PhraseanetPHPUnitAbstract
             )
         );
 
-        $manager = new BorderManager(self::$application, $options);
+        $manager = new BorderManager(self::$DI['app'], $options);
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Manager', $manager->getDriver());
     }
@@ -39,7 +39,7 @@ class BorderManagerTest extends \PhraseanetPHPUnitAbstract
                 'options' => array()
             )
         );
-        $manager = new BorderManager(self::$application, $options);
+        $manager = new BorderManager(self::$DI['app'], $options);
 
         $this->assertEquals('border', $manager->getType());
     }
@@ -60,7 +60,7 @@ class BorderManagerTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetUnregisteredCheckers($options)
     {
-        $manager = new BorderManager(self::$application, $options);
+        $manager = new BorderManager(self::$DI['app'], $options);
 
         $this->assertEquals(1, count($manager->getUnregisteredCheckers()));
     }
@@ -71,7 +71,7 @@ class BorderManagerTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetGoodConf($options)
     {
-        $manager = new BorderManager(self::$application, $options);
+        $manager = new BorderManager(self::$DI['app'], $options);
 
         $this->assertEquals(0, count($manager->getUnregisteredCheckers()));
     }

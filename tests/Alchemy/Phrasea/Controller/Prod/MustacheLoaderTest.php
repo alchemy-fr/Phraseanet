@@ -9,35 +9,35 @@ class MustacheLoaderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteSlash()
     {
-        $this->client->request('GET', '/prod/MustacheLoader/');
+        self::$DI['client']->request('GET', '/prod/MustacheLoader/');
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
         /* @var $response \Symfony\Component\HttpFoundation\Response */
         $this->assertEquals(400, $response->getStatusCode());
     }
 
     public function testRouteSlashWrongUrl()
     {
-        $this->client->request('GET', '/prod/MustacheLoader/', array('template' => '/../../../../config/config.yml'));
+        self::$DI['client']->request('GET', '/prod/MustacheLoader/', array('template' => '/../../../../config/config.yml'));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
         $this->assertEquals(400, $response->getStatusCode());
         /* @var $response \Symfony\Component\HttpFoundation\Response */
     }
 
     public function testRouteSlashWrongFile()
     {
-        $this->client->request('GET', '/prod/MustacheLoader/', array('template' => 'patator_lala'));
+        self::$DI['client']->request('GET', '/prod/MustacheLoader/', array('template' => 'patator_lala'));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
         $this->assertEquals(404, $response->getStatusCode());
     }
 
     public function testRouteGood()
     {
-        $this->client->request('GET', '/prod/MustacheLoader/', array('template' => 'Feedback-Badge'));
+        self::$DI['client']->request('GET', '/prod/MustacheLoader/', array('template' => 'Feedback-Badge'));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
         /* @var $response \Symfony\Component\HttpFoundation\Response */
 
         $this->assertEquals(200, $response->getStatusCode());
