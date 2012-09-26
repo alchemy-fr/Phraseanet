@@ -72,7 +72,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             $app['debug'] = true;
 
             $app['EM'] = $app->share($app->extend('EM', function($em) {
-                unlink(__DIR__ . '/../../../db.sqlite');
+                @unlink(__DIR__ . '/../../../db.sqlite');
                 copy(__DIR__ . '/../../../db-ref.sqlite', __DIR__ . '/../../../db.sqlite');
 
                 return $em;

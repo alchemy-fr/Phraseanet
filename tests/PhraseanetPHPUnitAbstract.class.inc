@@ -119,7 +119,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             unset($app['exception_handler']);
 
             $app['EM'] = $app->share($app->extend('EM', function($em) {
-                unlink(__DIR__ . '/db.sqlite');
+                @unlink(__DIR__ . '/db.sqlite');
                 copy(__DIR__ . '/db-ref.sqlite', __DIR__ . '/db.sqlite');
 
                 return $em;
@@ -702,9 +702,9 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             $DI['user'] = $DI->share(
                 $DI->extend('user', function ($user, $DI) use ($collection_no_acces) {
-                        $user->ACL()->revoke_access_from_bases(array($collection_no_acces->get_base_id()));
-                        return $user;
-                    })
+                    $user->ACL()->revoke_access_from_bases(array($collection_no_acces->get_base_id()));
+                    return $user;
+                })
             );
 
             return $collection_no_acces;
@@ -858,7 +858,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $app['session']->set('usr_id', self::$DI['user']->get_id());
     }
 
-    protected function logout()
+    protected function logout(Application $app)
     {
         $app['session']->clear();
     }
