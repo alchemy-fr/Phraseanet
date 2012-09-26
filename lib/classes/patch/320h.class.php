@@ -53,7 +53,7 @@ class patch_320h implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$appbox, Application $app)
+    public function apply(base $appbox, Application $app)
     {
         $sql = 'DELETE FROM basusr WHERE actif = "0"';
 

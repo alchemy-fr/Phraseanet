@@ -54,7 +54,7 @@ class patch_306 implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$databox, Application $app)
+    public function apply(base $databox, Application $app)
     {
         $dom = $databox->get_dom_structure();
         $xpath = $databox->get_xpath_structure();

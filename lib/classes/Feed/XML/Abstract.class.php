@@ -200,7 +200,7 @@ abstract class Feed_XML_Abstract
      * @param  string      $tagcontent
      * @return DOMElement
      */
-    protected function addTag(DOMDocument &$document, DOMNode &$node, $tagname, $tagcontent = null)
+    protected function addTag(DOMDocument $document, DOMNode $node, $tagname, $tagcontent = null)
     {
         $tag = $document->createElement($tagname);
 

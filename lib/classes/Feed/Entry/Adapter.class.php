@@ -100,7 +100,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
      * @param  int                $id
      * @return Feed_Entry_Adapter
      */
-    public function __construct(Application $app, Feed_Adapter &$feed, $id)
+    public function __construct(Application $app, Feed_Adapter $feed, $id)
     {
         $this->app = $app;
         $this->feed = $feed;

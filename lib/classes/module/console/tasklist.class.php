@@ -64,7 +64,7 @@ class module_console_tasklist extends Command
         }
     }
 
-    protected function printTask(task_abstract $task, OutputInterface &$output)
+    protected function printTask(task_abstract $task, OutputInterface $output)
     {
         $message = $task->getID() . "\t" . ($task->getState() ) . "\t" . $task->getTitle();
         $output->writeln($message);

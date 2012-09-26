@@ -53,7 +53,7 @@ class patch_3604 implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$databox, Application $app)
+    public function apply(base $databox, Application $app)
     {
         /**
          * Fail if upgrade has previously failed, no problem

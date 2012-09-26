@@ -183,7 +183,7 @@ class Feed_Publisher_Adapter implements Feed_Publisher_Interface, cache_cacheabl
      * @param  boolean                $owner
      * @return Feed_Publisher_Adapter
      */
-    public static function create(Application $app, User_Adapter &$user, Feed_Adapter &$feed, $owner)
+    public static function create(Application $app, User_Adapter $user, Feed_Adapter $feed, $owner)
     {
         $sql = 'INSERT INTO feed_publishers (id, usr_id, feed_id, owner, created_on, added_by)
             VALUES (null, :usr_id, :feed_id, :owner, NOW(), :added_by)';
@@ -208,7 +208,7 @@ class Feed_Publisher_Adapter implements Feed_Publisher_Interface, cache_cacheabl
      * @param  User_Adapter           $user
      * @return Feed_Publisher_Adapter
      */
-    public static function getPublisher(appbox &$appbox, Feed_Adapter &$feed, User_Adapter &$user)
+    public static function getPublisher(appbox $appbox, Feed_Adapter $feed, User_Adapter $user)
     {
         foreach ($feed->get_publishers() as $publisher) {
             if ($publisher->get_user()->get_id() === $user->get_id()) {

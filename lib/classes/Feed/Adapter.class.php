@@ -472,7 +472,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
      * @param  int          $id
      * @return Feed_Adapter
      */
-    public static function load_with_user(Application $app, User_Adapter &$user, $id)
+    public static function load_with_user(Application $app, User_Adapter $user, $id)
     {
         $feed = new self($app, $id);
         $coll = $feed->get_collection();

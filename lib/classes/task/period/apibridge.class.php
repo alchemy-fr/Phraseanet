@@ -138,7 +138,7 @@ class task_period_apibridge extends task_appboxAbstract
      * @param  Bridge_Element        $element
      * @return task_period_apibridge
      */
-    protected function update_element(Bridge_Element &$element)
+    protected function update_element(Bridge_Element $element)
     {
         $account = $element->get_account();
         $connector_status = $account->get_api()->get_element_status($element);

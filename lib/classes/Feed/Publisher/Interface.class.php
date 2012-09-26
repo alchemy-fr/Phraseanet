@@ -34,7 +34,7 @@ interface Feed_Publisher_Interface
 
     public function delete();
 
-    public static function create(Application $app, User_Adapter &$user, Feed_Adapter &$feed, $owner);
+    public static function create(Application $app, User_Adapter $user, Feed_Adapter $feed, $owner);
 
-    public static function getPublisher(appbox &$appbox, Feed_Adapter &$feed, User_Adapter &$user);
+    public static function getPublisher(appbox $appbox, Feed_Adapter $feed, User_Adapter $user);
 }

@@ -53,7 +53,7 @@ class patch_320c implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$databox, Application $app)
+    public function apply(base $databox, Application $app)
     {
         $sql = 'TRUNCATE metadatas';
         $stmt = $databox->get_connection()->prepare($sql);

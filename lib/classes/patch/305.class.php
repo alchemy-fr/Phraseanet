@@ -54,7 +54,7 @@ class patch_305 implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$appbox, Application $app)
+    public function apply(base $appbox, Application $app)
     {
         $sql = 'REPLACE INTO usr_settings
             (SELECT usr_id, "start_page_query" as prop, last_query as value

@@ -375,7 +375,7 @@ class databox extends base
         return;
     }
 
-    public static function create(Application $app, connection_pdo &$connection, \SplFileInfo $data_template, registryInterface $registry)
+    public static function create(Application $app, connection_pdo $connection, \SplFileInfo $data_template, registryInterface $registry)
     {
         if ( ! file_exists($data_template->getRealPath())) {
             throw new \InvalidArgumentException($data_template->getRealPath() . " does not exist");
@@ -607,7 +607,7 @@ class databox extends base
         return;
     }
 
-    private function addZeros($n, $length = 5)
+    private static function addZeros($n, $length = 5)
     {
         while (strlen($n) < $length) {
             $n = '0' . $n;

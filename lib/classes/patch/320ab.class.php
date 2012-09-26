@@ -53,7 +53,7 @@ class patch_320ab implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$appbox, Application $app)
+    public function apply(base $appbox, Application $app)
     {
         $sql = 'REPLACE INTO records_rights
                         (SELECT null as id, usr_id, b.sbas_id, record_id, "1" as document

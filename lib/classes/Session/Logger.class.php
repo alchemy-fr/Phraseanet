@@ -50,7 +50,7 @@ class Session_Logger
      * @param  int            $log_id
      * @return Session_Logger
      */
-    public function __construct(Application $app, databox &$databox, $log_id)
+    public function __construct(Application $app, databox $databox, $log_id)
     {
         $this->app = $app;
         $this->databox = $databox;
@@ -97,7 +97,7 @@ class Session_Logger
      * @param  Browser         $browser
      * @return Session_Logger
      */
-    public static function create(Application $app, databox &$databox, Browser &$browser)
+    public static function create(Application $app, databox $databox, Browser $browser)
     {
         $colls = array();
         $registry = $app['phraseanet.registry'];

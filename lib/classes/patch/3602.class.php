@@ -53,7 +53,7 @@ class patch_3602 implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$databox, Application $app)
+    public function apply(base $databox, Application $app)
     {
         try {
             $sql = 'ALTER TABLE `metadatas` DROP INDEX `unique`';

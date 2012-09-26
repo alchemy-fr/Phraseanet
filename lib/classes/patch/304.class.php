@@ -54,7 +54,7 @@ class patch_304 implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$databox, Application $app)
+    public function apply(base $databox, Application $app)
     {
         $sql = 'SELECT id FROM pref WHERE prop = "indexes"';
         $stmt = $databox->get_connection()->prepare($sql);

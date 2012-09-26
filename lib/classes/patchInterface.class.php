@@ -11,5 +11,5 @@ interface patchInterface
 
     public function require_all_upgrades();
 
-    public function apply(base &$base, Application $app);
+    public function apply(base $base, Application $app);
 }

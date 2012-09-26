@@ -462,7 +462,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
      */
     public function acceptable_records()
     {
-        return function (record_adapter &$record) {
+        return function (record_adapter $record) {
                 return $record->get_type() === 'video';
             };
     }
@@ -545,7 +545,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
      * @param  Exception $e
      * @return Void
      */
-    public function handle_exception(Exception &$e)
+    public function handle_exception(Exception $e)
     {
         if ($e instanceof DailymotionAuthException) {
             $e = new Bridge_Exception_ActionAuthNeedReconnect($e->getMessage());
@@ -562,7 +562,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
      * @param  array          $options
      * @return string
      */
-    public function upload(record_adapter &$record, array $options = array())
+    public function upload(record_adapter $record, array $options = array())
     {
         switch ($record->get_type()) {
             case self::ELEMENT_TYPE_VIDEO :

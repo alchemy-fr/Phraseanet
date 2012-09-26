@@ -836,7 +836,7 @@ abstract class task_abstract
 
         $params = array(
             ':active'   => 1
-            , ':name'     => $class_name::getName()
+            , ':name'     => ''
             , ':class'    => $class_name
             , ':settings' => $settings
         );
@@ -846,7 +846,10 @@ abstract class task_abstract
 
         $tid = $dependencyContainer['phraseanet.appbox']->get_connection()->lastInsertId();
 
-        return new $class_name($tid, $dependencyContainer, $dependencyContainer['monolog']);
+        $task = new $class_name($tid, $dependencyContainer, $dependencyContainer['monolog']);
+        $task->setTitle($task->getName());
+
+        return $task;
     }
 
     public function getUsage()

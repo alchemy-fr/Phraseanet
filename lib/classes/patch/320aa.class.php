@@ -53,7 +53,7 @@ class patch_320aa implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$appbox, Application $app)
+    public function apply(base $appbox, Application $app)
     {
         if (is_file(__DIR__ . '/../../../config/_GV.php')) {
             require __DIR__ . '/../../../config/_GV.php';

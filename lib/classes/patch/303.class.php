@@ -54,7 +54,7 @@ class patch_303 implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$appbox, Application $app)
+    public function apply(base $appbox, Application $app)
     {
         $this->update_users_log_datas($appbox);
         $this->update_users_search_datas($appbox);
@@ -66,7 +66,7 @@ class patch_303 implements patchInterface
      *
      * @return patch_303
      */
-    public function update_users_log_datas(appbox &$appbox)
+    public function update_users_log_datas(appbox $appbox)
     {
         $col = array('fonction', 'societe', 'activite', 'pays');
 
@@ -112,7 +112,7 @@ class patch_303 implements patchInterface
      *
      * @return patch_303
      */
-    public function update_users_search_datas(appbox &$appbox)
+    public function update_users_search_datas(appbox $appbox)
     {
         foreach ($appbox->get_databoxes() as $databox) {
             $date_debut = '0000-00-00 00:00:00';

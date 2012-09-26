@@ -65,7 +65,7 @@ class API_OAuth2_Token
      * @param  API_OAuth2_Account $account
      * @return API_OAuth2_Token
      */
-    public function __construct(appbox &$appbox, API_OAuth2_Account &$account)
+    public function __construct(appbox $appbox, API_OAuth2_Account $account)
     {
         $this->appbox = $appbox;
         $this->account = $account;
@@ -300,7 +300,7 @@ class API_OAuth2_Token
      * @param  string             $scope
      * @return API_OAuth2_Token
      */
-    public static function create(appbox &$appbox, API_OAuth2_Account &$account, $scope = null)
+    public static function create(appbox $appbox, API_OAuth2_Account $account, $scope = null)
     {
         $sql = 'INSERT INTO api_oauth_tokens
             (oauth_token, session_id, api_account_id, expires, scope)

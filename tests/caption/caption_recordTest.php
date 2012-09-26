@@ -49,7 +49,8 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
                 }
             } else {
                 $tagname = $field->get_name();
-                $value = array_pop($field->get_values());
+                $data = $field->get_values();
+                $value = array_pop($data);
                 $this->assertEquals($value->getValue(), (string) $sxe->description->$tagname);
             }
         }

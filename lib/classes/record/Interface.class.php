@@ -57,7 +57,7 @@ interface record_Interface
 
     public function get_duration();
 
-    public function move_to_collection(collection &$collection, appbox &$appbox);
+    public function move_to_collection(collection $collection, appbox $appbox);
 
     public function get_rollover_thumbnail();
 

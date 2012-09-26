@@ -40,7 +40,7 @@ class collection implements cache_cacheableInterface
     const PIC_STAMP = 'stamp';
     const PIC_PRESENTATION = 'presentation';
 
-    protected function __construct(Application $app, $coll_id, databox &$databox)
+    protected function __construct(Application $app, $coll_id, databox $databox)
     {
         $this->app = $app;
         $this->databox = $databox;
@@ -115,7 +115,7 @@ class collection implements cache_cacheableInterface
         return $this;
     }
 
-    public function enable(appbox &$appbox)
+    public function enable(appbox $appbox)
     {
         $sql = 'UPDATE bas SET active = "1" WHERE base_id = :base_id';
         $stmt = $appbox->get_connection()->prepare($sql);
@@ -131,7 +131,7 @@ class collection implements cache_cacheableInterface
         return $this;
     }
 
-    public function disable(appbox &$appbox)
+    public function disable(appbox $appbox)
     {
         $sql = 'UPDATE bas SET active=0 WHERE base_id = :base_id';
         $stmt = $appbox->get_connection()->prepare($sql);
@@ -534,11 +534,13 @@ class collection implements cache_cacheableInterface
 
         phrasea::reset_baseDatas($appbox);
 
+        $collection = self::get_from_coll_id($app, $databox, $new_id);
+
         if (null !== $user) {
-            self::set_admin($new_bas, $user);
+            $collection->set_admin($new_bas, $user);
         }
 
-        return self::get_from_coll_id($app, $databox, $new_id);
+        return $collection;
     }
 
     public function set_admin($base_id, user_adapter $user)

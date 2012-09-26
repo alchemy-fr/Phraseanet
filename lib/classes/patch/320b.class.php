@@ -53,7 +53,7 @@ class patch_320b implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$appbox, Application $app)
+    public function apply(base $appbox, Application $app)
     {
         $sql = 'UPDATE basusr SET nowatermark=1 WHERE needwatermark=0';
         $stmt = $appbox->get_connection()->prepare($sql);

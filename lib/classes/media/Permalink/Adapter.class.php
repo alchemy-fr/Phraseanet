@@ -74,7 +74,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
      * @param  media_subdef            $media_subdef
      * @return media_Permalink_Adapter
      */
-    protected function __construct(Application $app, databox &$databox, media_subdef &$media_subdef)
+    protected function __construct(Application $app, databox $databox, media_subdef $media_subdef)
     {
         $this->app = $app;
         $this->databox = $databox;
@@ -305,7 +305,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
      * @param  media_subdef            $media_subdef
      * @return media_Permalink_Adapter
      */
-    public static function getPermalink(Application $app, databox &$databox, media_subdef &$media_subdef)
+    public static function getPermalink(Application $app, databox $databox, media_subdef $media_subdef)
     {
         try {
             return new self($app, $databox, $media_subdef);
@@ -322,7 +322,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
      * @param  media_subdef            $media_subdef
      * @return media_Permalink_Adapter
      */
-    public static function create(Application $app, databox &$databox, media_subdef &$media_subdef)
+    public static function create(Application $app, databox $databox, media_subdef $media_subdef)
     {
         $sql = 'INSERT INTO permalinks
             (id, subdef_id, token, activated, created_on, last_modified, label)
@@ -353,7 +353,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
      * @param  string         $name
      * @return record_adapter
      */
-    public static function challenge_token(Application $app, databox &$databox, $token, $record_id, $name)
+    public static function challenge_token(Application $app, databox $databox, $token, $record_id, $name)
     {
         $sql = 'SELECT p.id
             FROM permalinks p, subdef s

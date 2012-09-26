@@ -116,7 +116,7 @@ class Bridge_Element
      * @param  int            $id
      * @return Bridge_Element
      */
-    public function __construct(Application $app, Bridge_Account &$account, $id)
+    public function __construct(Application $app, Bridge_Account $account, $id)
     {
         $this->app = $app;
         $this->account = $account;
@@ -484,7 +484,7 @@ class Bridge_Element
      * @param  array          $datas
      * @return Bridge_Element
      */
-    public static function create(Application $app, Bridge_Account &$account, record_adapter &$record, $title, $status, $type, Array $datas = array())
+    public static function create(Application $app, Bridge_Account $account, record_adapter $record, $title, $status, $type, Array $datas = array())
     {
         $sql = 'INSERT INTO bridge_elements
             (id, account_id, sbas_id, record_id, dist_id, title, `type`

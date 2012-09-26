@@ -32,7 +32,7 @@ class appbox_register
      * @param  appbox          $appbox
      * @return appbox_register
      */
-    public function __construct(appbox &$appbox)
+    public function __construct(appbox $appbox)
     {
         $this->appbox = $appbox;
 

@@ -54,7 +54,7 @@ class patch_3103 implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$appbox, Application $app)
+    public function apply(base $appbox, Application $app)
     {
         $conn = $appbox->get_connection();
 

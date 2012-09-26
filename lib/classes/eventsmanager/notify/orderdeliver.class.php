@@ -29,7 +29,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
      *
      * @return notify_orderdeliver
      */
-    public function __construct(Application $app, eventsmanager_broker &$broker)
+    public function __construct(Application $app, eventsmanager_broker $broker)
     {
         $this->group = _('Commande');
         parent::__construct($app, $broker);

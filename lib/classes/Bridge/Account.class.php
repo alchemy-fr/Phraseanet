@@ -80,7 +80,7 @@ class Bridge_Account
      * @param  int            $id
      * @return Bridge_Account
      */
-    public function __construct(Application $app, Bridge_Api &$api, $id)
+    public function __construct(Application $app, Bridge_Api $api, $id)
     {
         $this->id = (int) $id;
         $this->app = $app;
@@ -292,7 +292,7 @@ class Bridge_Account
      * @param  int            $quantity
      * @return Bridge_Account
      */
-    public static function get_accounts_by_api(Application $app, Bridge_Api &$api, $quantity = 50)
+    public static function get_accounts_by_api(Application $app, Bridge_Api $api, $quantity = 50)
     {
         $sql = 'SELECT id FROM bridge_accounts WHERE api_id = :api_id
             LIMIT 0,' . (int) $quantity;
@@ -317,7 +317,7 @@ class Bridge_Account
      * @param  user_adapter   $user
      * @return Bridge_Account
      */
-    public static function get_accounts_by_user(Application $app, user_adapter &$user)
+    public static function get_accounts_by_user(Application $app, user_adapter $user)
     {
         $sql = 'SELECT id, api_id FROM bridge_accounts WHERE usr_id = :usr_id';
 
@@ -353,7 +353,7 @@ class Bridge_Account
      * @param  string         $name
      * @return Bridge_Account
      */
-    public static function create(Application $app, Bridge_Api &$api, User_Adapter &$user, $dist_id, $name)
+    public static function create(Application $app, Bridge_Api $api, User_Adapter $user, $dist_id, $name)
     {
         $sql = 'INSERT INTO bridge_accounts
             (id, api_id, dist_id, usr_id, name, created_on, updated_on)

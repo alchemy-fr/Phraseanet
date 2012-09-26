@@ -745,14 +745,6 @@ return call_user_func(function($environment = 'prod') {
                     return $response;
                 });
 
-            /**
-             * Temporary fix for https://github.com/fabpot/Silex/issues/438
-             */
-            $app['dispatcher']->addListener(KernelEvents::RESPONSE, function(FilterResponseEvent $event) {
-                    if ($event->getResponse() instanceof \API_V1_Response) {
-                        $event->getResponse()->setStatusCode($event->getResponse()->getOriginalStatusCode());
-                    }
-                });
 
             return $app;
         }, $environment ? : null

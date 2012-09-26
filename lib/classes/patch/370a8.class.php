@@ -60,7 +60,7 @@ class patch_370a8 implements patchInterface
      * @param  base    $appbox
      * @return boolean
      */
-    public function apply(base &$appbox, Application $app)
+    public function apply(base $appbox, Application $app)
     {
         $task_manager = new task_manager($app);
 

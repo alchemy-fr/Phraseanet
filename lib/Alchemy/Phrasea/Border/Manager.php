@@ -502,7 +502,7 @@ class Manager
      * @param  File                        $file The file
      * @return \Doctrine\ORM\EntityManager
      */
-    protected function addMediaAttributes(File &$file)
+    protected function addMediaAttributes(File $file)
     {
 
         if (method_exists($file->getMedia(), 'getWidth')) {

@@ -333,7 +333,8 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
                 $meta_id = null;
 
                 if ($field) {
-                    $meta_id = array_pop($field->get_values())->getId();
+                    $values = $field->get_values();
+                    $meta_id = array_pop($values)->getId();
                 }
 
                 $metadatas[] = array(

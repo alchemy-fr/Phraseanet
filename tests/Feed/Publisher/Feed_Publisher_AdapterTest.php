@@ -25,7 +25,8 @@ class Feed_Publisher_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $auth = new Session_Authentication_None(self::$DI['user']);
         self::$DI['app']->openAccount($auth);
         self::$feed = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], self::$title, self::$subtitle);
-        self::$object = array_pop(self::$feed->get_publishers());
+        $publishers = self::$feed->get_publishers();
+        self::$object = array_pop($publishers);
     }
 
     public static function tearDownAfterClass()

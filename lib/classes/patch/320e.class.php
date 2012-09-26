@@ -53,7 +53,7 @@ class patch_320e implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$databox, Application $app)
+    public function apply(base $databox, Application $app)
     {
         $sql = 'UPDATE record r, subdef s
                             SET r.mime = s.mime

@@ -148,7 +148,7 @@ abstract class set_abstract implements IteratorAggregate
      * @param  record_Interface $record
      * @return set
      */
-    public function add_element(record_Interface &$record)
+    public function add_element(record_Interface $record)
     {
         $this->elements[$record->get_serialize_key()] = $record;
 
@@ -160,7 +160,7 @@ abstract class set_abstract implements IteratorAggregate
      * @param  record_Interface $record
      * @return set
      */
-    public function remove_element(record_Interface &$record)
+    public function remove_element(record_Interface $record)
     {
         $key = $record->get_serialize_key();
         if (isset($this->elements[$key]))

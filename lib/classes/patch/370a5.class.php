@@ -53,7 +53,7 @@ class patch_370a5 implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$databox, Application $app)
+    public function apply(base $databox, Application $app)
     {
 
         $sql = 'SELECT id, src FROM metadatas_structure';

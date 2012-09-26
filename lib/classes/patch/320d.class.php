@@ -53,7 +53,7 @@ class patch_320d implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$appbox, Application $app)
+    public function apply(base $appbox, Application $app)
     {
 
         $sql = 'SELECT base_id, usr_id FROM order_masters';

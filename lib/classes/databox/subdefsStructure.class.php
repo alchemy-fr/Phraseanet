@@ -46,7 +46,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
      * @param  databox $databox
      * @return Array
      */
-    public function __construct(databox &$databox)
+    public function __construct(databox $databox)
     {
         $this->databox = $databox;
 

@@ -17,7 +17,8 @@ class databox_Field_DCES_CoverageTest extends PhraseanetPHPUnitAbstract
 
     public function testGet_label()
     {
-        $name = str_replace('Test', '', array_pop(explode('_', __CLASS__)));
+        $data = explode('_', __CLASS__);
+        $name = str_replace('Test', '', array_pop($data));
         $this->assertEquals($name, $this->object->get_label());
     }
 

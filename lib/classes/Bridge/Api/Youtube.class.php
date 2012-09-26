@@ -428,7 +428,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
      */
     public function acceptable_records()
     {
-        return function (record_adapter &$record) {
+        return function (record_adapter $record) {
                 return $record->get_type() === 'video';
             };
     }
@@ -525,7 +525,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
      * @param  Exception $e
      * @return Void
      */
-    public function handle_exception(Exception &$e)
+    public function handle_exception(Exception $e)
     {
         if ($e instanceof Zend_Gdata_App_HttpException) {
             $response = $e->getResponse();
@@ -655,7 +655,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
      * @param  array          $options
      * @return string         The new distant Id
      */
-    public function upload(record_adapter &$record, array $options = array())
+    public function upload(record_adapter $record, array $options = array())
     {
         switch ($record->get_type()) {
             case 'video':

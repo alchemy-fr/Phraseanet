@@ -258,7 +258,7 @@ abstract class base implements cache_cacheableInterface
         }
     }
 
-    protected function upgradeDb($apply_patches, Setup_Upgrade &$upgrader, Application $app)
+    protected function upgradeDb($apply_patches, Setup_Upgrade $upgrader, Application $app)
     {
         $recommends = array();
 
@@ -771,7 +771,7 @@ abstract class base implements cache_cacheableInterface
         return $return;
     }
 
-    protected function apply_patches($from, $to, $post_process, Setup_Upgrade &$upgrader, Application $app)
+    protected function apply_patches($from, $to, $post_process, Setup_Upgrade $upgrader, Application $app)
     {
         if (version_compare($from, $to, '=')) {
             return true;

@@ -85,7 +85,7 @@ class module_console_systemConfigCheck extends Command
         return (int) ! $ok;
     }
 
-    protected function processConstraints(Setup_ConstraintsIterator $constraints, OutputInterface &$output)
+    protected function processConstraints(Setup_ConstraintsIterator $constraints, OutputInterface $output)
     {
         $hasError = false;
         foreach ($constraints as $constraint) {
@@ -97,7 +97,7 @@ class module_console_systemConfigCheck extends Command
         return ! $hasError;
     }
 
-    protected function processConstraint(Setup_Constraint $constraint, OutputInterface &$output)
+    protected function processConstraint(Setup_Constraint $constraint, OutputInterface $output)
     {
         $ok = true;
         if ($constraint->is_ok()) {

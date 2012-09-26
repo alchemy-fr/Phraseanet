@@ -18,7 +18,7 @@
 interface Feed_Entry_ItemInterface
 {
 
-    public function __construct(appbox &$appbox, Feed_Entry_Adapter &$entry, $id);
+    public function __construct(appbox $appbox, Feed_Entry_Adapter $entry, $id);
 
     public function get_id();
 
@@ -28,5 +28,5 @@ interface Feed_Entry_ItemInterface
 
     public function delete();
 
-    public static function create(appbox &$appbox, Feed_Entry_Adapter &$entry, record_adapter &$record);
+    public static function create(appbox $appbox, Feed_Entry_Adapter $entry, record_adapter $record);
 }

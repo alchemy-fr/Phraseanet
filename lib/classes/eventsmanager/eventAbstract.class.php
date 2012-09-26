@@ -19,7 +19,7 @@ abstract class eventsmanager_eventAbstract
      */
     protected $broker;
 
-    public function __construct(Application $app, eventsmanager_broker &$broker)
+    public function __construct(Application $app, eventsmanager_broker $broker)
     {
         $this->app = $app;
         $this->broker = $broker;

@@ -24,7 +24,7 @@ class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstrac
      */
     public $events = array('__ORDER_NOT_DELIVERED__');
 
-    public function __construct(Application $app, eventsmanager_broker &$broker)
+    public function __construct(Application $app, eventsmanager_broker $broker)
     {
         $this->group = _('Commande');
         parent::__construct($app, $broker);

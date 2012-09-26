@@ -13,6 +13,7 @@ class API_OAuth2_AuthCodeTest extends PhraseanetPHPUnitAbstract
     protected $code;
 
     protected $account;
+    protected $application;
 
     public function setUp()
     {

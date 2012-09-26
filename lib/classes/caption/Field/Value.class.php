@@ -362,7 +362,7 @@ class caption_Field_Value implements cache_cacheableInterface
         return $this;
     }
 
-    public static function create(Application $app, databox_field &$databox_field, record_Interface $record, $value, Vocabulary\ControlProvider\ControlProviderInterface $vocabulary = null, $vocabularyId = null)
+    public static function create(Application $app, databox_field $databox_field, record_Interface $record, $value, Vocabulary\ControlProvider\ControlProviderInterface $vocabulary = null, $vocabularyId = null)
     {
         $connbas = $databox_field->get_connection();
 

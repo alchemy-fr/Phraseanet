@@ -159,7 +159,7 @@ class databox_field implements cache_cacheableInterface
      * @param  <type>        $id
      * @return databox_field
      */
-    protected function __construct(Application $app, databox &$databox, $id)
+    protected function __construct(Application $app, databox $databox, $id)
     {
         $this->app = $app;
         $this->set_databox($databox);
@@ -248,7 +248,7 @@ class databox_field implements cache_cacheableInterface
      * @param  int            $id
      * @return \databox_field
      */
-    public static function get_instance(Application $app, databox &$databox, $id)
+    public static function get_instance(Application $app, databox $databox, $id)
     {
         $cache_key = 'field_' . $id;
         $instance_id = $databox->get_sbas_id() . '_' . $id;
@@ -268,7 +268,7 @@ class databox_field implements cache_cacheableInterface
      *
      * @param databox $databox
      */
-    public function set_databox(databox &$databox)
+    public function set_databox(databox $databox)
     {
         $this->databox = $databox;
     }

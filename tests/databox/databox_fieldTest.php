@@ -352,7 +352,8 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
 
         $this->object_mono->set_name('Bonobo yoyo')->save();
 
-        $value = array_pop(self::$DI['record_1']->get_caption()->get_field('Bonoboyoyo')->get_values());
+        $data = self::$DI['record_1']->get_caption()->get_field('Bonoboyoyo')->get_values();
+        $value = array_pop($data);
         $this->assertEquals($value->getValue(), $AddedValue);
     }
 

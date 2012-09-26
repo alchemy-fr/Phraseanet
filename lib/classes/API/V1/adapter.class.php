@@ -676,7 +676,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         $reasons = $output = null;
 
-        $callback = function($element, $visa, $code) use(&$reasons, &$output) {
+        $callback = function($element, $visa, $code) use (&$reasons, &$output) {
                 if ( ! $visa->isValid()) {
                     $reasons = array();
 
@@ -1420,7 +1420,7 @@ class API_V1_adapter extends API_V1_Abstract
      * @param  User_Adapter  $user
      * @return API_V1_result
      */
-    public function search_publications(Request $request, User_Adapter &$user)
+    public function search_publications(Request $request, User_Adapter $user)
     {
         $result = new API_V1_result($request, $this);
 
@@ -1455,7 +1455,7 @@ class API_V1_adapter extends API_V1_Abstract
      * @param  User_Adapter  $user
      * @return API_V1_result
      */
-    public function get_publication(Request $request, $publication_id, User_Adapter &$user)
+    public function get_publication(Request $request, $publication_id, User_Adapter $user)
     {
         $result = new API_V1_result($request, $this);
 
@@ -1478,7 +1478,7 @@ class API_V1_adapter extends API_V1_Abstract
         return $result;
     }
 
-    public function get_publications(Request $request, User_Adapter &$user)
+    public function get_publications(Request $request, User_Adapter $user)
     {
         $result = new API_V1_result($request, $this);
 
@@ -1501,7 +1501,7 @@ class API_V1_adapter extends API_V1_Abstract
         return $result;
     }
 
-    public function get_feed_entry(Request $request, $entry_id, User_Adapter &$user)
+    public function get_feed_entry(Request $request, $entry_id, User_Adapter $user)
     {
         $result = new API_V1_result($request, $this);
 
@@ -1644,7 +1644,7 @@ class API_V1_adapter extends API_V1_Abstract
      * @param  media_subdef $media
      * @return array
      */
-    protected function list_embedable_media(media_subdef &$media, registryInterface &$registry)
+    protected function list_embedable_media(media_subdef $media, registryInterface $registry)
     {
         if ( ! $media->is_physically_present()) {
             return null;
@@ -1675,7 +1675,7 @@ class API_V1_adapter extends API_V1_Abstract
      * @param  registryInterface       $registry
      * @return type
      */
-    protected function list_permalink(media_Permalink_Adapter &$permalink, registryInterface &$registry)
+    protected function list_permalink(media_Permalink_Adapter $permalink, registryInterface $registry)
     {
         return array(
             'created_on'   => $permalink->get_created_on()->format(DATE_ATOM),

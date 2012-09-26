@@ -116,9 +116,9 @@ class Feed_Collection implements Feed_CollectionInterface, cache_cacheableInterf
         return new self($app, $feeds);
     }
 
-    protected static function retrieve_public_feed_ids(appbox &$appbox)
+    protected static function retrieve_public_feed_ids(appbox $appbox)
     {
-        $key = self::get_cache_key(self::CACHE_PUBLIC);
+        $key = 'feedcollection_' . self::CACHE_PUBLIC;
 
         try {
             return $appbox->get_data_from_cache($key);

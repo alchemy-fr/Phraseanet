@@ -53,7 +53,7 @@ class patch_3603 implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$appbox, Application $app)
+    public function apply(base $appbox, Application $app)
     {
 
         $sql = 'UPDATE usr SET usr_mail = NULL

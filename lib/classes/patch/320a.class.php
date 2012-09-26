@@ -53,7 +53,7 @@ class patch_320a implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$appbox, Application $app)
+    public function apply(base $appbox, Application $app)
     {
         $sql = 'SELECT * FROM usr WHERE nonce IS NULL';
 

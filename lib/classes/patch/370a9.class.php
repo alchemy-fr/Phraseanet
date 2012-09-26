@@ -58,7 +58,7 @@ class patch_370a9 implements patchInterface
      * Add new border manager service to services.yml & config.yml configuration files
      * @param base $appbox
      */
-    public function apply(base &$appbox, Application $app)
+    public function apply(base $appbox, Application $app)
     {
         $services = $app['phraseanet.configuration']->getServices();
 

@@ -29,7 +29,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
      *
      * @return notify_validationdone
      */
-    public function __construct(Application $app, eventsmanager_broker &$broker)
+    public function __construct(Application $app, eventsmanager_broker $broker)
     {
         $this->group = _('Validation');
         parent::__construct($app, $broker);

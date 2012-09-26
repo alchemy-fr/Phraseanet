@@ -146,7 +146,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      * @param  type           $substitute
      * @return media_subdef
      */
-    public function __construct(Application $app, record_adapter &$record, $name, $substitute = false)
+    public function __construct(Application $app, record_adapter $record, $name, $substitute = false)
     {
         $this->app = $app;
         $this->name = $name;

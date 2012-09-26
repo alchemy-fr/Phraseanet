@@ -53,7 +53,7 @@ class patch_370a6 implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$databox, Application $app)
+    public function apply(base $databox, Application $app)
     {
         $structure = $databox->get_structure();
 

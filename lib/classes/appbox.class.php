@@ -60,7 +60,7 @@ class appbox extends base
      *
      * @return appbox
      */
-    public static function get_instance(Application $app, registryInterface &$registry = null)
+    public static function get_instance(Application $app, registryInterface $registry = null)
     {
         if (!self::$_instance instanceof self) {
             self::$_instance = new static($app, $registry);
@@ -331,7 +331,7 @@ class appbox extends base
         return self::BASE_TYPE;
     }
 
-    public function forceUpgrade(Setup_Upgrade &$upgrader, Application $app)
+    public function forceUpgrade(Setup_Upgrade $upgrader, Application $app)
     {
         $from_version = $this->get_version();
 
@@ -441,7 +441,7 @@ class appbox extends base
         return $advices;
     }
 
-    protected function post_upgrade(Setup_Upgrade &$upgrader, Application $app)
+    protected function post_upgrade(Setup_Upgrade $upgrader, Application $app)
     {
         $upgrader->add_steps(1 + count($this->get_databoxes()));
         $this->apply_patches($this->get_version(), $app['phraseanet.version']->getNumber(), true, $upgrader, $app);
@@ -465,7 +465,7 @@ class appbox extends base
      * @param  type              $write_file
      * @return type
      */
-    public static function create(Application $app, registryInterface &$registry, connection_interface $conn, $dbname, Version $version, $write_file = false)
+    public static function create(Application $app, registryInterface $registry, connection_interface $conn, $dbname, Version $version, $write_file = false)
     {
         $credentials = $conn->get_credentials();
 

@@ -53,7 +53,7 @@ class patch_320f implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$appbox, Application $app)
+    public function apply(base $appbox, Application $app)
     {
         $feeds = array();
 
@@ -136,7 +136,7 @@ class patch_320f implements patchInterface
     }
     protected static $feeds = array();
 
-    protected function get_feed(appbox &$appbox, User_Adapter &$user, $pub_restrict, $homelink)
+    protected function get_feed(appbox $appbox, User_Adapter $user, $pub_restrict, $homelink)
     {
         $user_key = 'user_' . $user->get_id();
         if ($homelink == '1')
