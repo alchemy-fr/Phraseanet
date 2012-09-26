@@ -6,7 +6,12 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
     public static $createdCollections = array();
-    protected static $useExceptionHandler = true;
+
+    public function setUp()
+    {
+        parent::setUp();
+        self::$DI['app.use-exception-handler'] = true;
+    }
 
     public function tearDown()
     {

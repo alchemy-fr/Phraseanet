@@ -72,11 +72,11 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
     protected static $feed_4_public_title = 'Feed 4 title';
     protected static $feed_4_public_subtitle = 'Feed 4 subtitle';
     protected $client;
-    protected static $useExceptionHandler = true;
 
     public function setUp()
     {
         parent::setUp();
+        self::$DI['app.use-exception-handler'] = true;
         self::$feed = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], 'title', 'subtitle');
         self::$publisher = Feed_Publisher_Adapter::getPublisher(self::$DI['app']['phraseanet.appbox'], self::$feed, self::$DI['user']);
         self::$entry = Feed_Entry_Adapter::create(self::$DI['app'], self::$feed, self::$publisher, 'title_entry', 'subtitle', 'hello', "test@mail.com");
@@ -109,7 +109,9 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
         copy(__DIR__ . '/../../../../db-ref.sqlite', '/tmp/db.sqlite');
 
         $appbox = $application['phraseanet.appbox'];
-        $this->authenticate($application);
+
+        $application['session']->clear();
+        $application['session']->set('usr_id', self::$DI['user']->get_id());
 
         self::$feed_1_private = Feed_Adapter::create($application, self::$DI['user'], self::$feed_1_private_title, self::$feed_1_private_subtitle);
         self::$feed_1_private->set_public(false);
@@ -162,7 +164,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
         self::$public_feeds = Feed_Collection::load_public_feeds($application);
         self::$private_feeds = Feed_Collection::load_all($application, self::$DI['user']);
-        $application->closeAccount();
+        $application['session']->clear();
     }
 
     public static function tearDownAfterClass()

@@ -14,11 +14,11 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     protected $client;
     protected $tmpFile;
     protected static $need_records = false;
-    protected static $useExceptionHandler = false;
 
     public function setUp()
     {
         parent::setUp();
+        self::$DI['app.use-exception-handler'] = true;
         $this->tmpFile = sys_get_temp_dir() . '/' . time() . mt_rand(1000, 9999) . '.jpg';
         copy(__DIR__ . '/../../../../testfiles/cestlafete.jpg', $this->tmpFile);
     }

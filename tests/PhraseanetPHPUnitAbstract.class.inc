@@ -27,7 +27,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     protected static $testsTime = array();
     protected static $records;
     public static $recordsInitialized = false;
-    protected static $useExceptionHandler = false;
 
     /**
      * Tell if tables were updated with new schemas
@@ -106,17 +105,21 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
         parent::setUp();
 
+        self::$DI['app.use-exception-handler'] = false;
+
         \PHPUnit_Framework_Error_Warning::$enabled = true;
         \PHPUnit_Framework_Error_Notice::$enabled = true;
 
 
-        self::$DI['app'] = self::$DI->share(function() {
+        self::$DI['app'] = self::$DI->share(function($DI) {
             $environment = 'test';
             $app = require __DIR__ . '/../lib/Alchemy/Phrasea/Application/Root.php';
 
             $app['debug'] = true;
 
-            unset($app['exception_handler']);
+            if (!$DI['app.use-exception-handler']) {
+                unset($app['exception_handler']);
+            }
 
             $app['EM'] = $app->share($app->extend('EM', function($em) {
                 @unlink('/tmp/db.sqlite');

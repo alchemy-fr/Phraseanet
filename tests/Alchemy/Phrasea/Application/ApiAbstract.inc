@@ -46,7 +46,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     protected static $adminApplication;
     protected static $databoxe_ids = array();
-    protected static $useExceptionHandler = true;
 
     abstract public function getParameters(array $parameters = array());
 

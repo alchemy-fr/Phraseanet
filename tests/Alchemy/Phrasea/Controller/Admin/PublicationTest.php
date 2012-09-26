@@ -9,7 +9,12 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
     public static $account = null;
     public static $api = null;
     protected $client;
-    protected static $useExceptionHandler = true;
+
+    public function setUp()
+    {
+        parent::setUp();
+        self::$DI['app.use-exception-handler'] = true;
+    }
 
     public function testList()
     {
@@ -31,12 +36,6 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
     {
         $appbox = self::$DI['app']['phraseanet.appbox'];
 
-//        foreach ($appbox->get_databoxes() as $databox) {
-//            foreach ($databox->get_collections() as $collection) {
-//                $base_id = $collection->get_base_id();
-//                break;
-//            }
-//        }
         $feeds = Feed_Collection::load_all(self::$DI['app'], self::$DI['user']);
         $count = sizeof($feeds->get_feeds());
 
