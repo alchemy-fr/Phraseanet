@@ -32,6 +32,9 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteSlash()
     {
+        $auth = new Session_Authentication_None(self::$DI['user']);
+        self::$DI['app']->openAccount($auth);
+
         $baskets = $this->insertFiveBasket();
 
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
@@ -165,6 +168,8 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testValidate()
     {
+        $auth = new Session_Authentication_None(self::$DI['user']);
+        self::$DI['app']->openAccount($auth);
 
         $basket = $this->insertOneValidationBasket();
 
@@ -189,6 +194,9 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testCompare()
     {
+        $auth = new Session_Authentication_None(self::$DI['user']);
+        self::$DI['app']->openAccount($auth);
+
         $basket = $this->insertOneBasket();
 
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
@@ -212,6 +220,9 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testFeedEntry()
     {
+        $auth = new Session_Authentication_None(self::$DI['user']);
+        self::$DI['app']->openAccount($auth);
+
         $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
 
         $crawler = self::$DI['client']->request('GET', '/lightbox/feeds/entry/' . $this->entry->get_id() . '/');

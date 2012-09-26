@@ -11,6 +11,9 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRouteSlash()
     {
+        $auth = new Session_Authentication_None(self::$DI['user']);
+        self::$DI['app']->openAccount($auth);
+
         self::$DI['client']->request('GET', '/admin/', array('section' => 'base:featured'));
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
 
