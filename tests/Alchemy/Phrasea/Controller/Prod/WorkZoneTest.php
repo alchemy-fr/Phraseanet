@@ -21,7 +21,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testAttachStoryToWZ()
     {
-        $story = static::$records['record_story_1'];
+        $story = self::$DI['record_story_1'];
         /* @var $story \Record_Adapter */
         $route = sprintf("/prod/WorkZone/attachStories/");
 
@@ -46,7 +46,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertEquals(1, $count);
 
-        $story2 = static::$records['record_story_2'];
+        $story2 = self::$DI['record_story_2'];
 
         $stories = array($story->get_serialize_key(), $story2->get_serialize_key());
 
@@ -98,7 +98,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDetachStoryFromWZ()
     {
-        $story = static::$records['record_story_1'];
+        $story = self::$DI['record_story_1'];
 
         $route = sprintf("/prod/WorkZone/detachStory/%s/%s/", $story->get_sbas_id(), $story->get_record_id());
         //story not yet Attched
@@ -170,7 +170,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDetachStoryFromWZNotFound()
     {
-        $story = static::$records['record_story_1'];
+        $story = self::$DI['record_story_1'];
 
         $route = sprintf("/prod/WorkZone/detachStory/%s/%s/", $story->get_sbas_id(), 'unknow');
         //story not yet Attched

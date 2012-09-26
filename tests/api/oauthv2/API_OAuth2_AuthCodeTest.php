@@ -18,8 +18,8 @@ class API_OAuth2_AuthCodeTest extends PhraseanetPHPUnitAbstract
     {
         parent::setUp();
         $appbox = self::$application['phraseanet.appbox'];
-        $this->application = API_OAuth2_Application::create(self::$application, self::$user, 'test app');
-        $this->account = API_OAuth2_Account::load_with_user(self::$application, $this->application, self::$user);
+        $this->application = API_OAuth2_Application::create(self::$application, self::$DI['user'], 'test app');
+        $this->account = API_OAuth2_Account::load_with_user(self::$application, $this->application, self::$DI['user']);
 
         $expires = time() + 100;
         $this->code = random::generatePassword(8);

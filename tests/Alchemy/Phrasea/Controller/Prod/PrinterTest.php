@@ -12,8 +12,8 @@ class ControllerPrinterTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testRouteSlash()
     {
         $records = array(
-            static::$records['record_1']->get_serialize_key(),
-            static::$records['record_2']->get_serialize_key()
+            self::$DI['record_1']->get_serialize_key(),
+            self::$DI['record_2']->get_serialize_key()
         );
 
         $lst = implode(';', $records);
@@ -28,10 +28,10 @@ class ControllerPrinterTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testRoutePrintPdf()
     {
         $records = array(
-            static::$records['record_1']->get_serialize_key(),
-            static::$records['record_2']->get_serialize_key(),
-            static::$records['record_3']->get_serialize_key(),
-            static::$records['record_4']->get_serialize_key(),
+            self::$DI['record_1']->get_serialize_key(),
+            self::$DI['record_2']->get_serialize_key(),
+            self::$DI['record_3']->get_serialize_key(),
+            self::$DI['record_4']->get_serialize_key(),
         );
 
         $lst = implode(';', $records);

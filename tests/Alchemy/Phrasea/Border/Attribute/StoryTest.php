@@ -74,7 +74,7 @@ class StoryTest extends \PhraseanetPHPUnitAbstract
      */
     public function testConstructWrongElement()
     {
-        new Story(static::$records['record_1']);
+        new Story(self::$DI['record_1']);
     }
 
     /**
@@ -83,7 +83,7 @@ class StoryTest extends \PhraseanetPHPUnitAbstract
      */
     public function testLoadFromStringWrongElement()
     {
-        Story::loadFromString(self::$application, static::$records['record_1']->get_serialize_key());
+        Story::loadFromString(self::$application, self::$DI['record_1']->get_serialize_key());
     }
 
     /**

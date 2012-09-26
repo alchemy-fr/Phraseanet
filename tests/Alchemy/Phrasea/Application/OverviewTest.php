@@ -9,14 +9,14 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     function testDatafilesRouteAuthenticated()
     {
         $registry = self::$application['phraseanet.registry'];
-        $crawler = $this->client->request('GET', '/datafiles/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/preview/');
+        $crawler = $this->client->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/');
         $response = $this->client->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
         $content_disposition = explode(';', $response->headers->get('content-disposition'));
         $this->assertEquals('inline', $content_disposition[0]);
-        $this->assertEquals(static::$records['record_1']->get_preview()->get_mime(), $response->headers->get('content-type'));
-        $this->assertEquals(static::$records['record_1']->get_preview()->get_size(), $response->headers->get('content-length'));
+        $this->assertEquals(self::$DI['record_1']->get_preview()->get_mime(), $response->headers->get('content-type'));
+        $this->assertEquals(self::$DI['record_1']->get_preview()->get_size(), $response->headers->get('content-length'));
     }
 
     /**
@@ -24,7 +24,7 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
      */
     function testDatafilesNonExistentSubdef()
     {
-        $crawler = $this->client->request('GET', '/datafiles/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/asubdefthatdoesnotexists/');
+        $crawler = $this->client->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/asubdefthatdoesnotexists/');
     }
 
     function testEtag()
@@ -58,11 +58,11 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $appbox = self::$application['phraseanet.appbox'];
         self::$application->closeAccount();
-        $crawler = $this->client->request('GET', '/datafiles/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/preview/');
+        $crawler = $this->client->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/');
         $response = $this->client->getResponse();
         $this->assertEquals(403, $response->getStatusCode());
 
-        $crawler = $this->client->request('GET', '/datafiles/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/notfoundreview/');
+        $crawler = $this->client->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/notfoundreview/');
         $response = $this->client->getResponse();
         $this->assertEquals(403, $response->getStatusCode());
     }
@@ -84,8 +84,8 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     protected function get_a_permalink()
     {
-        $token = static::$records['record_1']->get_preview()->get_permalink()->get_token();
-        $url = '/permalink/v1/whateverIwannt/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/' . $token . '/preview/';
+        $token = self::$DI['record_1']->get_preview()->get_permalink()->get_token();
+        $url = '/permalink/v1/whateverIwannt/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/' . $token . '/preview/';
 
         $crawler = $this->client->request('GET', $url);
         $response = $this->client->getResponse();

@@ -284,7 +284,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $odd = !$odd;
         }
 
-        $file->addAttribute(new Attribute\Story(self::$records['record_story_1']));
+        $file->addAttribute(new Attribute\Story(self::$DI['record_story_1']));
 
         $status = '1';
         foreach (range(1, 63) as $i) {
@@ -304,7 +304,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $attribute = Attribute\Factory::getFileAttribute(self::$application, $attr->getName(), $attr->getValue());
 
             if ($attribute->getName() == AttributeInterface::NAME_STORY) {
-                if ($attribute->getValue()->get_serialize_key() == self::$records['record_story_1']->get_serialize_key()) {
+                if ($attribute->getValue()->get_serialize_key() == self::$DI['record_story_1']->get_serialize_key()) {
                     $story_found = true;
                 }
             } elseif ($attribute->getName() == AttributeInterface::NAME_METADATA) {

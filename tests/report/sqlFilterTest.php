@@ -47,7 +47,7 @@ class sqlFilterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         }
 
         $this->report->setFilter(array(array('f' => 'user', 'o' => '=', 'v' => 'admin'), array('f' => 'ddate', 'o' => 'LIKE', 'v' => '*'), array('f' => '1', 'o' => 'OR', 'v' => '1')));
-        $this->report->setUser_id(self::$user->get_id());
+        $this->report->setUser_id(self::$DI['user']->get_id());
         $this->report->setOrder('user', 'ASC');
         $this->filter = new module_report_sqlfilter(self::$application, $this->report);
     }

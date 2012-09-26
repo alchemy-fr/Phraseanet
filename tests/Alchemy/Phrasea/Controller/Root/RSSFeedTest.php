@@ -77,11 +77,11 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
     public function setUp()
     {
         parent::setUp();
-        self::$feed = Feed_Adapter::create(self::$application, self::$user, 'title', 'subtitle');
-        self::$publisher = Feed_Publisher_Adapter::getPublisher(self::$application['phraseanet.appbox'], self::$feed, self::$user);
+        self::$feed = Feed_Adapter::create(self::$application, self::$DI['user'], 'title', 'subtitle');
+        self::$publisher = Feed_Publisher_Adapter::getPublisher(self::$application['phraseanet.appbox'], self::$feed, self::$DI['user']);
         self::$entry = Feed_Entry_Adapter::create(self::$application, self::$feed, self::$publisher, 'title_entry', 'subtitle', 'hello', "test@mail.com");
-        Feed_Entry_Item::create(self::$application['phraseanet.appbox'], self::$entry, static::$records['record_1']);
-        Feed_Entry_Item::create(self::$application['phraseanet.appbox'], self::$entry, static::$records['record_2']);
+        Feed_Entry_Item::create(self::$application['phraseanet.appbox'], self::$entry, self::$DI['record_1']);
+        Feed_Entry_Item::create(self::$application['phraseanet.appbox'], self::$entry, self::$DI['record_2']);
         self::$feed->set_public(true);
     }
 
@@ -104,21 +104,21 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
         parent::setUpBeforeClass();
 
         $appbox = self::$application['phraseanet.appbox'];
-        $auth = new Session_Authentication_None(self::$user);
+        $auth = new Session_Authentication_None(self::$DI['user']);
         self::$application->openAccount($auth);
 
-        self::$feed_1_private = Feed_Adapter::create(self::$application, self::$user, self::$feed_1_private_title, self::$feed_1_private_subtitle);
+        self::$feed_1_private = Feed_Adapter::create(self::$application, self::$DI['user'], self::$feed_1_private_title, self::$feed_1_private_subtitle);
         self::$feed_1_private->set_public(false);
         self::$feed_1_private->set_icon(__DIR__ . '/../../../../testfiles/logocoll.gif');
 
-        self::$feed_2_private = Feed_Adapter::create(self::$application, self::$user, self::$feed_2_private_title, self::$feed_2_private_subtitle);
+        self::$feed_2_private = Feed_Adapter::create(self::$application, self::$DI['user'], self::$feed_2_private_title, self::$feed_2_private_subtitle);
         self::$feed_2_private->set_public(false);
 
-        self::$feed_3_public = Feed_Adapter::create(self::$application, self::$user, self::$feed_3_public_title, self::$feed_3_public_subtitle);
+        self::$feed_3_public = Feed_Adapter::create(self::$application, self::$DI['user'], self::$feed_3_public_title, self::$feed_3_public_subtitle);
         self::$feed_3_public->set_public(true);
         self::$feed_3_public->set_icon(__DIR__ . '/../../../../testfiles/logocoll.gif');
 
-        self::$feed_4_public = Feed_Adapter::create(self::$application, self::$user, self::$feed_4_public_title, self::$feed_4_public_subtitle);
+        self::$feed_4_public = Feed_Adapter::create(self::$application, self::$DI['user'], self::$feed_4_public_title, self::$feed_4_public_subtitle);
         self::$feed_4_public->set_public(true);
 
         $publisher = array_shift(self::$feed_4_public->get_publishers());
@@ -126,38 +126,38 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
         for ($i = 1; $i != 15; $i ++ ) {
             $entry = Feed_Entry_Adapter::create(self::$application, self::$feed_4_public, $publisher, 'titre entry', 'soustitre entry', 'Jean-Marie Biggaro', 'author@example.com');
 
-            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_1']);
-            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_6']);
-            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_7']);
-            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_8']);
-            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_9']);
-            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_10']);
-            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_1']);
-            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_13']);
-            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_15']);
-            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_16']);
-            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_19']);
+            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_1']);
+            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_6']);
+            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_7']);
+            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_8']);
+            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_9']);
+            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_10']);
+            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_1']);
+            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_13']);
+            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_15']);
+            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_16']);
+            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_19']);
 
             $entry = Feed_Entry_Adapter::create(self::$application, self::$feed_1_private, $publisher, 'titre entry', 'soustitre entry', 'Jean-Marie Biggaro', 'author@example.com');
 
-            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_1']);
-            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_6']);
-            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_7']);
-            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_8']);
-            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_9']);
-            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_10']);
-            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_1']);
-            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_13']);
-            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_15']);
-            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_16']);
-            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_19']);
+            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_1']);
+            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_6']);
+            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_7']);
+            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_8']);
+            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_9']);
+            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_10']);
+            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_1']);
+            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_13']);
+            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_15']);
+            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_16']);
+            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_19']);
 
             self::$feed_4_entries[] = $entry;
         }
 
 
         self::$public_feeds = Feed_Collection::load_public_feeds(self::$application);
-        self::$private_feeds = Feed_Collection::load_all(self::$application, self::$user);
+        self::$private_feeds = Feed_Collection::load_all(self::$application, self::$DI['user']);
         self::$application->closeAccount();
     }
 
@@ -217,10 +217,10 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
     public function testPublicFeed()
     {
         $appbox = self::$application['phraseanet.appbox'];
-        $auth = new Session_Authentication_None(self::$user);
+        $auth = new Session_Authentication_None(self::$DI['user']);
         self::$application->openAccount($auth);
 
-        $link = self::$feed_3_public->get_user_link($appbox->get_registry(), self::$user, Feed_Adapter::FORMAT_ATOM)->get_href();
+        $link = self::$feed_3_public->get_user_link($appbox->get_registry(), self::$DI['user'], Feed_Adapter::FORMAT_ATOM)->get_href();
         $link = str_replace($appbox->get_registry()->get('GV_ServerName') . 'feeds/', '/', $link);
 
         self::$application->closeAccount();
@@ -237,10 +237,10 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
     public function testUserFeedAggregated()
     {
         $appbox = self::$application['phraseanet.appbox'];
-        $auth = new Session_Authentication_None(self::$user);
+        $auth = new Session_Authentication_None(self::$DI['user']);
         self::$application->openAccount($auth);
 
-        $link = self::$private_feeds->get_aggregate()->get_user_link($appbox->get_registry(), self::$user, Feed_Adapter::FORMAT_ATOM)->get_href();
+        $link = self::$private_feeds->get_aggregate()->get_user_link($appbox->get_registry(), self::$DI['user'], Feed_Adapter::FORMAT_ATOM)->get_href();
         $link = str_replace($appbox->get_registry()->get('GV_ServerName') . 'feeds/', '/', $link);
 
         self::$application->closeAccount();
@@ -257,10 +257,10 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
     public function testUserFeed()
     {
         $appbox = self::$application['phraseanet.appbox'];
-        $auth = new Session_Authentication_None(self::$user);
+        $auth = new Session_Authentication_None(self::$DI['user']);
         self::$application->openAccount($auth);
 
-        $link = self::$feed_1_private->get_user_link($appbox->get_registry(), self::$user, Feed_Adapter::FORMAT_ATOM)->get_href();
+        $link = self::$feed_1_private->get_user_link($appbox->get_registry(), self::$DI['user'], Feed_Adapter::FORMAT_ATOM)->get_href();
         $link = str_replace($appbox->get_registry()->get('GV_ServerName') . 'feeds/', '/', $link);
 
         self::$application->closeAccount();
@@ -364,7 +364,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
     public function testPrivateFeedAccess()
     {
-        $private_feed = Feed_Adapter::create(self::$application, self::$user, 'title', 'subtitle');
+        $private_feed = Feed_Adapter::create(self::$application, self::$DI['user'], 'title', 'subtitle');
         $private_feed->set_public(false);
         $this->client->request("GET", "/feeds/feed/" . $private_feed->get_id() . "/rss/");
         $this->assertFalse($this->client->getResponse()->isOk());

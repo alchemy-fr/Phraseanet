@@ -11,12 +11,12 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRouteSlash()
     {
-        $entry1 = $this->insertOneUsrListEntry(self::$user, self::$user);
-        $entry2 = $this->insertOneUsrListEntry(self::$user, self::$user_alt1);
-        $entry3 = $this->insertOneUsrListEntry(self::$user, self::$user);
-        $entry4 = $this->insertOneUsrListEntry(self::$user, self::$user_alt1);
-        $entry5 = $this->insertOneUsrListEntry(self::$user_alt1, self::$user_alt1);
-        $entry6 = $this->insertOneUsrListEntry(self::$user_alt1, self::$user_alt2);
+        $entry1 = $this->insertOneUsrListEntry(self::$DI['user'], self::$DI['user']);
+        $entry2 = $this->insertOneUsrListEntry(self::$DI['user'], self::$DI['user_alt1']);
+        $entry3 = $this->insertOneUsrListEntry(self::$DI['user'], self::$DI['user']);
+        $entry4 = $this->insertOneUsrListEntry(self::$DI['user'], self::$DI['user_alt1']);
+        $entry5 = $this->insertOneUsrListEntry(self::$DI['user_alt1'], self::$DI['user_alt1']);
+        $entry6 = $this->insertOneUsrListEntry(self::$DI['user_alt1'], self::$DI['user_alt2']);
 
         $route = '/prod/lists/all/';
 
@@ -91,7 +91,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testGetList()
     {
-        $entry = $this->insertOneUsrListEntry(self::$user, self::$user_alt1);
+        $entry = $this->insertOneUsrListEntry(self::$DI['user'], self::$DI['user_alt1']);
         $list_id = $entry->getList()->getId();
 
         $route = '/prod/lists/list/' . $list_id . '/';
@@ -111,7 +111,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testPostUpdate()
     {
-        $entry = $this->insertOneUsrListEntry(self::$user, self::$user_alt1);
+        $entry = $this->insertOneUsrListEntry(self::$DI['user'], self::$DI['user_alt1']);
         $list_id = $entry->getList()->getId();
 
         $route = '/prod/lists/list/' . $list_id . '/update/';
@@ -148,7 +148,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testPostDelete()
     {
-        $entry = $this->insertOneUsrListEntry(self::$user, self::$user_alt1);
+        $entry = $this->insertOneUsrListEntry(self::$DI['user'], self::$DI['user_alt1']);
         $list_id = $entry->getList()->getId();
 
         $route = '/prod/lists/list/' . $list_id . '/delete/';
@@ -174,7 +174,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testPostRemoveEntry()
     {
-        $entry = $this->insertOneUsrListEntry(self::$user, self::$user_alt1);
+        $entry = $this->insertOneUsrListEntry(self::$DI['user'], self::$DI['user_alt1']);
         $list_id = $entry->getList()->getId();
         $usr_id = $entry->getUser(self::$application)->get_id();
         $entry_id = $entry->getId();
@@ -202,13 +202,13 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testPostAddEntry()
     {
-        $list = $this->insertOneUsrList(self::$user);
+        $list = $this->insertOneUsrList(self::$DI['user']);
 
         $this->assertEquals(0, $list->getEntries()->count());
 
         $route = '/prod/lists/list/' . $list->getId() . '/add/';
 
-        $this->client->request('POST', $route, array('usr_ids' => array(self::$user->get_id())), array(), array("HTTP_CONTENT_TYPE" => "application/json", "HTTP_ACCEPT"       => "application/json"));
+        $this->client->request('POST', $route, array('usr_ids' => array(self::$DI['user']->get_id())), array(), array("HTTP_CONTENT_TYPE" => "application/json", "HTTP_ACCEPT"       => "application/json"));
 
         $response = $this->client->getResponse();
 
@@ -231,11 +231,11 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testPostShareList()
     {
-        $list = $this->insertOneUsrList(self::$user);
+        $list = $this->insertOneUsrList(self::$DI['user']);
 
         $this->assertEquals(1, $list->getOwners()->count());
 
-        $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$user_alt1->get_id() . '/';
+        $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->get_id() . '/';
 
         $this->client->request('POST', $route);
 
@@ -245,7 +245,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals('UTF-8', $response->getCharset());
 
 
-        $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$user_alt1->get_id() . '/';
+        $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->get_id() . '/';
 
         $this->client->request('POST', $route, array('role' => 'general'));
 
@@ -256,7 +256,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
 
 
-        $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$user_alt1->get_id() . '/';
+        $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->get_id() . '/';
 
         $this->client->request('POST', $route, array('role' => \Entities\UsrListOwner::ROLE_ADMIN));
 
@@ -283,11 +283,11 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testPostUnShareList()
     {
 
-        $list = $this->insertOneUsrList(self::$user);
+        $list = $this->insertOneUsrList(self::$DI['user']);
 
         $this->assertEquals(1, $list->getOwners()->count());
 
-        $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$user_alt1->get_id() . '/';
+        $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->get_id() . '/';
 
         $this->client->request('POST', $route, array('role' => \Entities\UsrListOwner::ROLE_ADMIN));
 
@@ -312,7 +312,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
 
 
-        $route = '/prod/lists/list/' . $list->getId() . '/unshare/' . self::$user_alt1->get_id() . '/';
+        $route = '/prod/lists/list/' . $list->getId() . '/unshare/' . self::$DI['user_alt1']->get_id() . '/';
 
         $this->client->request('POST', $route);
 
@@ -337,11 +337,11 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testPostUnShareFail()
     {
 
-        $list = $this->insertOneUsrList(self::$user);
+        $list = $this->insertOneUsrList(self::$DI['user']);
 
         $this->assertEquals(1, $list->getOwners()->count());
 
-        $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$user_alt1->get_id() . '/';
+        $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->get_id() . '/';
 
         $this->client->request('POST', $route, array('role' => \Entities\UsrListOwner::ROLE_ADMIN));
 
@@ -360,7 +360,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
 
 
-        $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$user->get_id() . '/';
+        $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user']->get_id() . '/';
 
         $this->client->request('POST', $route, array('role' => \Entities\UsrListOwner::ROLE_USER));
 
@@ -379,7 +379,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
 
 
-        $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$user_alt1->get_id() . '/';
+        $route = '/prod/lists/list/' . $list->getId() . '/share/' . self::$DI['user_alt1']->get_id() . '/';
 
         $this->client->request('POST', $route, array('role' => \Entities\UsrListOwner::ROLE_USER));
 
@@ -406,7 +406,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
 
 
-        $route = '/prod/lists/list/' . $list->getId() . '/unshare/' . self::$user_alt1->get_id() . '/';
+        $route = '/prod/lists/list/' . $list->getId() . '/unshare/' . self::$DI['user_alt1']->get_id() . '/';
 
         $this->client->request('POST', $route);
 

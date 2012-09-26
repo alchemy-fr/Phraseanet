@@ -29,7 +29,7 @@ class Bridge_AccountSettingsTest extends PhraseanetPHPUnitAuthenticatedAbstract
             $this->api = Bridge_Api::create(self::$application, 'Apitest');
             $this->dist_id = 'EZ1565loPP';
             $this->named = 'Fête à pinpins';
-            $this->account = Bridge_Account::create(self::$application, $this->api, self::$user, $this->dist_id, $this->named);
+            $this->account = Bridge_Account::create(self::$application, $this->api, self::$DI['user'], $this->dist_id, $this->named);
 
             $this->object = new Bridge_AccountSettings($appbox, $this->account);
         } catch (Exception $e) {

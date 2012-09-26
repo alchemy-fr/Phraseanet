@@ -81,7 +81,7 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testByIds()
     {
-        $story = static::$records['record_story_1'];
+        $story = self::$DI['record_story_1'];
 
         $route = sprintf("/prod/story/%d/%d/", $story->get_sbas_id(), $story->get_record_id());
 
@@ -99,8 +99,8 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $route = sprintf("/prod/story/%s/%s/addElements/", $story->get_sbas_id(), $story->get_record_id());
 
         $records = array(
-            static::$records['record_1']->get_serialize_key(),
-            static::$records['record_2']->get_serialize_key()
+            self::$DI['record_1']->get_serialize_key(),
+            self::$DI['record_2']->get_serialize_key()
         );
 
         $lst = implode(';', $records);
@@ -122,8 +122,8 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $route = sprintf("/prod/story/%s/%s/addElements/", $story->get_sbas_id(), $story->get_record_id());
 
         $records = array(
-            static::$records['record_1']->get_serialize_key(),
-            static::$records['record_2']->get_serialize_key()
+            self::$DI['record_1']->get_serialize_key(),
+            self::$DI['record_2']->get_serialize_key()
         );
 
         $lst = implode(';', $records);
@@ -145,8 +145,8 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $story = \record_adapter::createStory(self::$application, self::$collection);
 
         $records = array(
-            static::$records['record_1'],
-            static::$records['record_2']
+            self::$DI['record_1'],
+            self::$DI['record_2']
         );
 
         foreach($records as $record) {

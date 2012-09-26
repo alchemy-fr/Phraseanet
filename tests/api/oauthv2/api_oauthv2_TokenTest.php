@@ -16,8 +16,8 @@ class API_OAuth2_TokenTest extends PhraseanetPHPUnitAbstract
     {
         parent::setUp();
         $appbox = self::$application['phraseanet.appbox'];
-        $this->application = API_OAuth2_Application::create(self::$application, self::$user, 'test app');
-        $account = API_OAuth2_Account::load_with_user(self::$application, $this->application, self::$user);
+        $this->application = API_OAuth2_Application::create(self::$application, self::$DI['user'], 'test app');
+        $account = API_OAuth2_Account::load_with_user(self::$application, $this->application, self::$DI['user']);
 
         try {
             new API_OAuth2_Token($appbox, $account);

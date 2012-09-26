@@ -13,7 +13,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         parent::setUpBeforeClass();
 
         try {
-            self::$authorizedApp = \API_OAuth2_Application::create(self::$application, self::$user, 'test API v1');
+            self::$authorizedApp = \API_OAuth2_Application::create(self::$application, self::$DI['user'], 'test API v1');
         } catch (\Exception $e) {
 
         }
@@ -91,14 +91,14 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testPostResetMailWithToken()
     {
-        $token = \random::getUrlToken(self::$application, \random::TYPE_EMAIL, self::$user->get_id(), null, 'new_email@email.com');
+        $token = \random::getUrlToken(self::$application, \random::TYPE_EMAIL, self::$DI['user']->get_id(), null, 'new_email@email.com');
         $this->client->request('POST', '/account/reset-email/', array('token'   => $token));
         $response = $this->client->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('/account/reset-email/?update=ok', $response->headers->get('location'));
 
-        $this->assertEquals('new_email@email.com', self::$user->get_email());
-        self::$user->set_email('noone@example.com');
+        $this->assertEquals('new_email@email.com', self::$DI['user']->get_email());
+        self::$DI['user']->set_email('noone@example.com');
         try {
             \random::helloToken(self::$application, $token);
             $this->fail('TOken has not been removed');
@@ -359,7 +359,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('minet', self::$application['phraseanet.user']->get_lastname());
 
-        $ret = $register->get_collection_awaiting_for_user(self::$application, self::$user);
+        $ret = $register->get_collection_awaiting_for_user(self::$application, self::$DI['user']);
 
         $this->assertEquals(count($ret), count($bases));
     }
@@ -411,7 +411,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $account = \API_OAuth2_Account::load_with_user(
                 self::$application
                 , self::$authorizedApp
-                , self::$user
+                , self::$DI['user']
         );
 
         $this->assertEquals($expected, $account->is_revoked());

@@ -55,7 +55,7 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testPostNewApp()
     {
-        $apps = API_OAuth2_Application::load_dev_app_by_user(self::$application, self::$user);
+        $apps = API_OAuth2_Application::load_dev_app_by_user(self::$application, self::$DI['user']);
         $nbApp = count($apps);
 
         $this->client->request('POST', '/developers/application/', array(
@@ -68,7 +68,7 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'scheme-callback' => 'http://'
         ));
 
-        $apps = API_OAuth2_Application::load_dev_app_by_user(self::$application, self::$user);
+        $apps = API_OAuth2_Application::load_dev_app_by_user(self::$application, self::$DI['user']);
 
         $this->assertTrue($this->client->getResponse()->isRedirect());
         $this->assertGreaterThan($nbApp, count($apps));
@@ -88,7 +88,7 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGetApp()
     {
-        $oauthApp = \API_OAuth2_Application::create(self::$application, self::$user, 'test app');
+        $oauthApp = \API_OAuth2_Application::create(self::$application, self::$DI['user'], 'test app');
         $this->client->request('GET', '/developers/application/' . $oauthApp->get_id() . '/');
         $this->assertTrue($this->client->getResponse()->isOk());
         $oauthApp->delete();
@@ -120,7 +120,7 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testDeleteApp()
     {
-        $oauthApp = \API_OAuth2_Application::create(self::$application, self::$user, 'test app');
+        $oauthApp = \API_OAuth2_Application::create(self::$application, self::$DI['user'], 'test app');
 
         $this->XMLHTTPRequest('DELETE', '/developers/application/' . $oauthApp->get_id() . '/');
 
@@ -162,7 +162,7 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRenewAppCallbackError2()
     {
-         $oauthApp = \API_OAuth2_Application::create(self::$application, self::$user, 'test app');
+         $oauthApp = \API_OAuth2_Application::create(self::$application, self::$DI['user'], 'test app');
 
         $this->XMLHTTPRequest('POST', '/developers/application/'.$oauthApp->get_id().'/callback/');
 
@@ -176,7 +176,7 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRenewAppCallback()
     {
-        $oauthApp = \API_OAuth2_Application::create(self::$application, self::$user, 'test app');
+        $oauthApp = \API_OAuth2_Application::create(self::$application, self::$DI['user'], 'test app');
 
         $this->XMLHTTPRequest('POST', '/developers/application/' . $oauthApp->get_id() . '/callback/', array(
             'callback' => 'my.callback.com'
@@ -218,7 +218,7 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRenewAccessToken()
     {
-        $oauthApp = \API_OAuth2_Application::create(self::$application, self::$user, 'test app');
+        $oauthApp = \API_OAuth2_Application::create(self::$application, self::$DI['user'], 'test app');
 
         $this->XMLHTTPRequest('POST', '/developers/application/' . $oauthApp->get_id() . '/access_token/');
 
@@ -256,7 +256,7 @@ class DevelopersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testAuthorizeGrantpasswordToken()
     {
-        $oauthApp = \API_OAuth2_Application::create(self::$application, self::$user, 'test app');
+        $oauthApp = \API_OAuth2_Application::create(self::$application, self::$DI['user'], 'test app');
 
         $this->XMLHTTPRequest('POST', '/developers/application/' . $oauthApp->get_id() . '/authorize_grant_password/', array(
             'grant' => '1'

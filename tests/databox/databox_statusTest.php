@@ -13,7 +13,7 @@ class databox_statusTest extends PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->databox = static::$records['record_1']->get_databox();
+        $this->databox = self::$DI['record_1']->get_databox();
         $this->object = $this->databox->get_statusbits();
     }
 

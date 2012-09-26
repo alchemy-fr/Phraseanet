@@ -13,19 +13,19 @@ class userTest extends PhraseanetPHPUnitAbstract
         try {
             $appbox = self::$application['phraseanet.appbox'];
 
-            self::$user->set_email(null);
+            self::$DI['user']->set_email(null);
 
             $this->assertFalse(User_Adapter::get_usr_id_from_email(self::$application, null));
-            self::$user->set_email('');
+            self::$DI['user']->set_email('');
             $this->assertFalse(User_Adapter::get_usr_id_from_email(self::$application, null));
-            self::$user->set_email('noone@example.com');
-            $this->assertEquals(self::$user->get_id(), User_Adapter::get_usr_id_from_email(self::$application, 'noone@example.com'));
+            self::$DI['user']->set_email('noone@example.com');
+            $this->assertEquals(self::$DI['user']->get_id(), User_Adapter::get_usr_id_from_email(self::$application, 'noone@example.com'));
         } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
         try {
 
-            self::$user->set_email('noonealt1@example.com');
+            self::$DI['user']->set_email('noonealt1@example.com');
             $this->fail('A user already got this address');
         } catch (Exception $e) {
 

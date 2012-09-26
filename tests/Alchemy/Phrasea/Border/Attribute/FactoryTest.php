@@ -41,7 +41,7 @@ class FactoryTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetFileAttributeStory()
     {
-        $attribute = Factory::getFileAttribute(self::$application, AttributeInterface::NAME_STORY, static::$records['record_story_1']->get_serialize_key());
+        $attribute = Factory::getFileAttribute(self::$application, AttributeInterface::NAME_STORY, self::$DI['record_story_1']->get_serialize_key());
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Attribute\\Story', $attribute);
     }
@@ -84,7 +84,7 @@ class FactoryTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetFileAttributeStoryFailsRecord()
     {
-        Factory::getFileAttribute(self::$application, AttributeInterface::NAME_STORY, static::$records['record_1']->get_serialize_key());
+        Factory::getFileAttribute(self::$application, AttributeInterface::NAME_STORY, self::$DI['record_1']->get_serialize_key());
     }
 
     /**

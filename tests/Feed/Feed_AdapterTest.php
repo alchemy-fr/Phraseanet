@@ -18,9 +18,9 @@ class Feed_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
         parent::setUpBeforeClass();
         $appbox = self::$application['phraseanet.appbox'];
-        $auth = new Session_Authentication_None(self::$user);
+        $auth = new Session_Authentication_None(self::$DI['user']);
         self::$application->openAccount($auth);
-        self::$object = Feed_Adapter::create(self::$application, self::$user, self::$title, self::$subtitle);
+        self::$object = Feed_Adapter::create(self::$application, self::$DI['user'], self::$title, self::$subtitle);
     }
 
     public static function tearDownAfterClass()
@@ -58,12 +58,12 @@ class Feed_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testIs_owner()
     {
-        $this->assertTrue(self::$object->is_owner(self::$user));
+        $this->assertTrue(self::$object->is_owner(self::$DI['user']));
     }
 
     public function testIs_publisher()
     {
-        $this->assertTrue(self::$object->is_publisher(self::$user));
+        $this->assertTrue(self::$object->is_publisher(self::$DI['user']));
     }
 
     public function testIs_public()
@@ -104,7 +104,7 @@ class Feed_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testAdd_publisher()
     {
-        self::$object->add_publisher(self::$user);
+        self::$object->add_publisher(self::$DI['user']);
         $publishers = self::$object->get_publishers();
         $this->assertEquals(1, count($publishers));
     }
@@ -191,7 +191,7 @@ class Feed_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testLoad_with_user()
     {
-        $this->assertEquals(Feed_Adapter::load_with_user(self::$application, self::$user, self::$object->get_id())->get_id(), self::$object->get_id());
+        $this->assertEquals(Feed_Adapter::load_with_user(self::$application, self::$DI['user'], self::$object->get_id())->get_id(), self::$object->get_id());
     }
 
     public function testGet_count_total_entries()
@@ -224,18 +224,18 @@ class Feed_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
         $registry = self::$application['phraseanet.registry'];
 
-        $link = self::$object->get_user_link($registry, self::$user, Feed_Adapter::FORMAT_ATOM);
+        $link = self::$object->get_user_link($registry, self::$DI['user'], Feed_Adapter::FORMAT_ATOM);
         $supposed = '/feeds\/userfeed\/([a-zA-Z0-9]{12})\/' . self::$object->get_id() . '\/atom\//';
 
         $atom = $link->get_href();
 
         $this->assertRegExp($supposed, str_replace($registry->get('GV_ServerName'), '', $atom));
-        $this->assertEquals($atom, self::$object->get_user_link($registry, self::$user, Feed_Adapter::FORMAT_ATOM)->get_href());
-        $this->assertEquals($atom, self::$object->get_user_link($registry, self::$user, Feed_Adapter::FORMAT_ATOM)->get_href());
+        $this->assertEquals($atom, self::$object->get_user_link($registry, self::$DI['user'], Feed_Adapter::FORMAT_ATOM)->get_href());
+        $this->assertEquals($atom, self::$object->get_user_link($registry, self::$DI['user'], Feed_Adapter::FORMAT_ATOM)->get_href());
 
-        $this->assertNotEquals($atom, self::$object->get_user_link($registry, self::$user, Feed_Adapter::FORMAT_ATOM, null, true)->get_href());
+        $this->assertNotEquals($atom, self::$object->get_user_link($registry, self::$DI['user'], Feed_Adapter::FORMAT_ATOM, null, true)->get_href());
 
-        $link = self::$object->get_user_link($registry, self::$user, Feed_Adapter::FORMAT_RSS);
+        $link = self::$object->get_user_link($registry, self::$DI['user'], Feed_Adapter::FORMAT_RSS);
         $supposed = '/feeds\/userfeed\/([a-zA-Z0-9]{12})\/' . self::$object->get_id() . '\/rss\//';
         $this->assertRegExp($supposed, str_replace($registry->get('GV_ServerName'), '', $link->get_href()));
     }

@@ -15,7 +15,7 @@ class API_OAuth2_ApplicationTest extends PhraseanetPHPUnitAbstract
     {
         parent::setUp();
         $appbox = self::$application['phraseanet.appbox'];
-        $this->object = API_OAuth2_Application::create(self::$application, self::$user, 'test app');
+        $this->object = API_OAuth2_Application::create(self::$application, self::$DI['user'], 'test app');
     }
 
     public function tearDown()
@@ -34,7 +34,7 @@ class API_OAuth2_ApplicationTest extends PhraseanetPHPUnitAbstract
 
     public function testLoad_dev_app_by_user()
     {
-        $apps = API_OAuth2_Application::load_dev_app_by_user(self::$application, self::$user);
+        $apps = API_OAuth2_Application::load_dev_app_by_user(self::$application, self::$DI['user']);
         $this->assertTrue(is_array($apps));
         $this->assertTrue(count($apps) > 0);
         $found = false;
@@ -50,7 +50,7 @@ class API_OAuth2_ApplicationTest extends PhraseanetPHPUnitAbstract
 
     public function testLoad_app_by_user()
     {
-        $apps = API_OAuth2_Application::load_app_by_user(self::$application, self::$user);
+        $apps = API_OAuth2_Application::load_app_by_user(self::$application, self::$DI['user']);
         $this->assertTrue(is_array($apps));
         $this->assertTrue(count($apps) > 0);
         $found = false;
@@ -192,6 +192,6 @@ class API_OAuth2_ApplicationTest extends PhraseanetPHPUnitAbstract
 
     public function testGet_user_account()
     {
-        $this->assertInstanceOf('API_OAuth2_Account', $this->object->get_user_account(self::$user));
+        $this->assertInstanceOf('API_OAuth2_Account', $this->object->get_user_account(self::$DI['user']));
     }
 }

@@ -11,7 +11,7 @@ class ControllerMoveCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAb
      */
     public function testRouteSlash()
     {
-        $this->client->request('POST', '/prod/records/movecollection/', array('lst' => static::$records['record_1']->get_serialize_key()));
+        $this->client->request('POST', '/prod/records/movecollection/', array('lst' => self::$DI['record_1']->get_serialize_key()));
 
         $response = $this->client->getResponse();
 
@@ -21,7 +21,7 @@ class ControllerMoveCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAb
     public function testApply()
     {
 
-        $this->client->request('POST', '/prod/records/movecollection/apply/', array('lst'     => static::$records['record_1']->get_serialize_key(), 'base_id' => self::$collection->get_base_id()));
+        $this->client->request('POST', '/prod/records/movecollection/apply/', array('lst'     => self::$DI['record_1']->get_serialize_key(), 'base_id' => self::$collection->get_base_id()));
 
         $response = $this->client->getResponse();
 

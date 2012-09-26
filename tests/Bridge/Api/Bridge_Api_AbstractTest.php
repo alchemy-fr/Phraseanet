@@ -33,9 +33,9 @@ class Bridge_Api_AbstractTest extends PhraseanetWebTestCaseAbstract
         }
 
         try {
-            self::$account = Bridge_Account::load_account_from_distant_id(self::$application, self::$api, self::$user, 'kirikoo');
+            self::$account = Bridge_Account::load_account_from_distant_id(self::$application, self::$api, self::$DI['user'], 'kirikoo');
         } catch (Bridge_Exception_AccountNotFound $e) {
-            self::$account = Bridge_Account::create(self::$application, self::$api, self::$user, 'kirikoo', 'coucou');
+            self::$account = Bridge_Account::create(self::$application, self::$api, self::$DI['user'], 'kirikoo', 'coucou');
         }
     }
 

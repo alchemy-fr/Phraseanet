@@ -96,7 +96,7 @@ class EntityBasketTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         $basketElement = new \Entities\BasketElement();
 
-        $basketElement->setRecord(static::$records['record_1']);
+        $basketElement->setRecord(self::$DI['record_1']);
 
         $basketElement->setBasket($this->basket);
 
@@ -112,17 +112,17 @@ class EntityBasketTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testGetPusher()
     {
         $this->assertNull($this->basket->getPusher(self::$application)); //no pusher
-        $this->basket->setPusherId(self::$user->get_id());
+        $this->basket->setPusherId(self::$DI['user']->get_id());
         $this->assertInstanceOf('\User_Adapter', $this->basket->getPusher(self::$application));
-        $this->assertEquals($this->basket->getPusher(self::$application)->get_id(), self::$user->get_id());
+        $this->assertEquals($this->basket->getPusher(self::$application)->get_id(), self::$DI['user']->get_id());
     }
 
     public function testGetOwner()
     {
         $this->assertNotNull($this->basket->getOwner(self::$application)); //no owner
-        $this->basket->setUsrId(self::$user->get_id());
+        $this->basket->setUsrId(self::$DI['user']->get_id());
         $this->assertInstanceOf('\User_Adapter', $this->basket->getOwner(self::$application));
-        $this->assertEquals($this->basket->getOwner(self::$application)->get_id(), self::$user->get_id());
+        $this->assertEquals($this->basket->getOwner(self::$application)->get_id(), self::$DI['user']->get_id());
     }
 
     public function testGetValidation()
@@ -142,7 +142,7 @@ class EntityBasketTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         $validationSession->setExpires($expires);
 
-        $validationSession->setInitiator(self::$user);
+        $validationSession->setInitiator(self::$DI['user']);
 
         $this->em->persist($validationSession);
 

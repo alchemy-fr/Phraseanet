@@ -55,7 +55,7 @@ class activityTest extends PhraseanetPHPUnitAuthenticatedAbstract
                     $sbasid,
                     $colllist
             );
-            $report->setUser_id(self::$user->get_id());
+            $report->setUser_id(self::$DI['user']->get_id());
             $this->activerPerHours($report);
             $this->ConnexionBase($report);
             $this->activiteAddedDocument($report, $sbasid, $colllist);
@@ -90,7 +90,7 @@ class activityTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function allQuestion($report)
     {
-        $allQuestion = $report->getAllQuestionByUser(self::$user->get_id(), 'usrid');
+        $allQuestion = $report->getAllQuestionByUser(self::$DI['user']->get_id(), 'usrid');
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $allQuestion);
     }
 
@@ -104,7 +104,7 @@ class activityTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function allDownloadByUserBase($report)
     {
-        $allDownload = $report->getAllDownloadByUserBase(self::$user->get_id());
+        $allDownload = $report->getAllDownloadByUserBase(self::$DI['user']->get_id());
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $allDownload);
     }
 

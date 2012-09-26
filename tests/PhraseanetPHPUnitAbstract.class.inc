@@ -21,36 +21,18 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
     /**
      *
+     * @var \Pimple
+     */
+    protected static $DI;
+
+    /**
+     *
      * @var Symfony\Component\HttpKernel\Client
      */
     protected $client;
     protected static $records;
     public static $recordsInitialized = false;
     protected static $useExceptionHandler = false;
-
-    /**
-     *
-     * @var User_Adapter
-     */
-    protected static $user;
-
-    /**
-     *
-     * @var User_Adapter
-     */
-    protected static $user_notAdmin;
-
-    /**
-     *
-     * @var User_Adapter
-     */
-    protected static $user_alt1;
-
-    /**
-     *
-     * @var User_Adapter
-     */
-    protected static $user_alt2;
 
     /**
      * Tell if tables were updated with new schemas
@@ -100,15 +82,17 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             exit("\033[0;31mPhraseanet is not set up\033[0;37m\r\n");
         }
 
+        self::$DI = new \Pimple();
+        $application = new Application('test');
+        self::createSetOfUserTests($application);
+
         static::loadApplication();
 
         self::updateTablesSchema();
 
-        self::createSetOfUserTests();
+        self::setCollection($application);
 
-        self::setCollection();
-
-        self::generateRecords();
+        self::generateRecords($application);
     }
 
     protected static function loadApplication()
@@ -165,6 +149,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                     return $em;
                 }));
     }
+    protected static $testsTime = array();
 
     public function setUp()
     {
@@ -181,8 +166,8 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
 //        $this->purgeDatabase();
 
-        self::$user->ACL()->revoke_access_from_bases(array(self::$collection_no_access->get_base_id()));
-        self::$user->ACL()->set_masks_on_base(self::$collection_no_access_by_status->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
+        self::$DI['user']->ACL()->revoke_access_from_bases(array(self::$collection_no_access->get_base_id()));
+        self::$DI['user']->ACL()->set_masks_on_base(self::$collection_no_access_by_status->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
 
         \PHPUnit_Framework_Error_Warning::$enabled = true;
         \PHPUnit_Framework_Error_Notice::$enabled = true;
@@ -254,7 +239,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         try {
             $basketFixture = new PhraseaFixture\Basket\LoadOneBasket();
 
-            $basketFixture->setUser(self::$user);
+            $basketFixture->setUser(self::$DI['user']);
 
             $loader = new Loader();
             $loader->addFixture($basketFixture);
@@ -277,7 +262,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         try {
             $lazaretFixture = new PhraseaFixture\Lazaret\LoadOneFile();
 
-            $lazaretFixture->setUser(self::$user);
+            $lazaretFixture->setUser(self::$DI['user']);
             $lazaretFixture->setCollectionId(self::$collection->get_base_id());
 
             $loader = new Loader();
@@ -358,7 +343,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         try {
             $basketFixture = new PhraseaFixture\Basket\LoadFiveBaskets();
 
-            $basketFixture->setUser(self::$user);
+            $basketFixture->setUser(self::$DI['user']);
 
             $loader = new Loader();
             $loader->addFixture($basketFixture);
@@ -380,7 +365,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $basket = $this->insertOneBasket();
 
         $basketElement = new \Entities\BasketElement();
-        $basketElement->setRecord(static::$records['record_1']);
+        $basketElement->setRecord(self::$DI['record_1']);
         $basketElement->setBasket($basket);
 
         $basket->addBasketElement($basketElement);
@@ -409,7 +394,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
         $Validation = new Entities\ValidationSession();
         $Validation->setBasket($basket);
-        $Validation->setInitiator(self::$user);
+        $Validation->setInitiator(self::$DI['user']);
 
         if (isset($parameters['expires']) && $parameters['expires'] instanceof \DateTime) {
             $Validation->setExpires($parameters['expires']);
@@ -420,7 +405,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $em->merge($basket);
 
         $Participant = new Entities\ValidationParticipant();
-        $Participant->setUser(self::$user);
+        $Participant->setUser(self::$DI['user']);
         $Participant->setCanAgree(true);
         $Participant->setCanSeeOthers(true);
 
@@ -457,13 +442,13 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         try {
             $basketFixture = new PhraseaFixture\Basket\LoadOneBasketEnv();
 
-            $basketFixture->setUser(self::$user);
+            $basketFixture->setUser(self::$DI['user']);
 
-            $basketFixture->addParticipant(self::$user_alt1);
-            $basketFixture->addParticipant(self::$user_alt2);
+            $basketFixture->addParticipant(self::$DI['user_alt1']);
+            $basketFixture->addParticipant(self::$DI['user_alt2']);
 
-            $basketFixture->addBasketElement(static::$records['record_1']);
-            $basketFixture->addBasketElement(static::$records['record_2']);
+            $basketFixture->addBasketElement(self::$DI['record_1']);
+            $basketFixture->addBasketElement(self::$DI['record_2']);
 
             $loader = new Loader();
             $loader->addFixture($basketFixture);
@@ -486,15 +471,15 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     protected function insertOneWZ()
     {
         try {
-            $currentUser = self::$user;
-            $altUser = self::$user_alt1;
+            $currentUser = self::$DI['user'];
+            $altUser = self::$DI['user_alt1'];
             //add one basket
             $basket = new PhraseaFixture\Basket\LoadOneBasket();
             $basket->setUser($currentUser);
             //add one story
             $story = new PhraseaFixture\Story\LoadOneStory();
             $story->setUser($currentUser);
-            $story->setRecord(static::$records['record_1']);
+            $story->setRecord(self::$DI['record_1']);
             //add a validation session initiated by alt user
             $validationSession = new PhraseaFixture\ValidationSession\LoadOneValidationSession();
             $validationSession->setUser($altUser);
@@ -592,50 +577,57 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
     /**
      * Create a set of users for the test suite
-     * self::$user
-     * self::$user_alt1
-     * self::$user_alt2
+     * self::$DI['user']
+     * self::$DI['user_alt1']
+     * self::$DI['user_alt2']
      *
      * @return void;
      */
-    private static function createSetOfUserTests()
+    private static function createSetOfUserTests(Application $application)
     {
-        static $loaded;
+        self::$DI['user'] = self::$DI->share(function () use ($application) {
+                $usr_id = User_Adapter::get_usr_id_from_login($application, 'test_phpunit');
 
-        if (!$loaded) {
+                if (!$usr_id) {
+                    $user = User_Adapter::create($application, 'test_phpunit', random::generatePassword(), 'noone@example.com', false);
+                    $usr_id = $user->get_id();
+                }
 
-            $appbox = self::$application['phraseanet.appbox'];
+                return new User_Adapter($usr_id, $application);
+            });
 
-            $usr_id = User_Adapter::get_usr_id_from_login(self::$application, 'test_phpunit');
-            $usr_id_noadmin = User_Adapter::get_usr_id_from_login(self::$application, 'test_phpunit_not_admin');
-            $usr_alt1_id = User_Adapter::get_usr_id_from_login(self::$application, 'test_phpunit_alt1');
-            $usr_alt2_id = User_Adapter::get_usr_id_from_login(self::$application, 'test_phpunit_alt2');
+        self::$DI['user_notAdmin'] = self::$DI->share(function () use ($application) {
+                $usr_id = User_Adapter::get_usr_id_from_login($application, 'test_phpunit_not_admin');
 
-            if (!$usr_id) {
-                $user = User_Adapter::create(self::$application, 'test_phpunit', random::generatePassword(), 'noone@example.com', false);
-                $usr_id = $user->get_id();
-            }
-            if (!$usr_id_noadmin) {
-                $user = User_Adapter::create(self::$application, 'test_phpunit_not_admin', random::generatePassword(), 'noone_not_admin@example.com', false);
-                $usr_id_noadmin = $user->get_id();
-            }
-            if (!$usr_alt1_id) {
-                $user = User_Adapter::create(self::$application, 'test_phpunit_alt1', random::generatePassword(), 'noonealt1@example.com', false);
-                $usr_alt1_id = $user->get_id();
-            }
-            if (!$usr_alt2_id) {
-                $user = User_Adapter::create(self::$application, 'test_phpunit_alt2', random::generatePassword(), 'noonealt2@example.com', false);
-                $usr_alt2_id = $user->get_id();
-            }
+                if (!$usr_id) {
+                    $user = User_Adapter::create($application, 'test_phpunit_not_admin', random::generatePassword(), 'noone@example.com', false);
+                    $usr_id = $user->get_id();
+                }
 
-            self::$user = User_Adapter::getInstance($usr_id, self::$application);
-            self::$user_notAdmin = User_Adapter::getInstance($usr_id_noadmin, self::$application);
-            self::$user_alt1 = User_Adapter::getInstance($usr_alt2_id, self::$application);
-            self::$user_alt2 = User_Adapter::getInstance($usr_alt1_id, self::$application);
+                return new User_Adapter($usr_id, $application);
+            });
 
-            $loaded = true;
-        }
-        return;
+        self::$DI['user_alt1'] = self::$DI->share(function () use ($application) {
+                $usr_id = User_Adapter::get_usr_id_from_login($application, 'test_phpunit_alt1');
+
+                if (!$usr_id) {
+                    $user = User_Adapter::create($application, 'test_phpunit_alt1', random::generatePassword(), 'noone@example.com', false);
+                    $usr_id = $user->get_id();
+                }
+
+                return new User_Adapter($usr_id, $application);
+            });
+
+        self::$DI['user_alt2'] = self::$DI->share(function () use ($application) {
+                $usr_id = User_Adapter::get_usr_id_from_login($application, 'test_phpunit_alt2');
+
+                if (!$usr_id) {
+                    $user = User_Adapter::create($application, 'test_phpunit_alt2', random::generatePassword(), 'noone@example.com', false);
+                    $usr_id = $user->get_id();
+                }
+
+                return new User_Adapter($usr_id, $application);
+            });
     }
 
     /**
@@ -697,12 +689,12 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      * Set self::$collection
      * @return void
      */
-    private static function setCollection()
+    private static function setCollection(Application $application)
     {
         static $loaded;
 
         if (!$loaded) {
-            $appbox = self::$application['phraseanet.appbox'];
+            $appbox = $application['phraseanet.appbox'];
             $coll = $collection_no_acces = $collection_no_acces_by_status = $db = null;
 
             foreach ($appbox->get_databoxes() as $databox) {
@@ -729,10 +721,10 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 self::fail('Unable to find a collection');
             }
             if (!$collection_no_acces instanceof collection) {
-                $collection_no_acces = collection::create(self::$application, $databox, $appbox, 'BIBOO', self::$user);
+                $collection_no_acces = collection::create($application, $databox, $appbox, 'BIBOO', self::$DI['user']);
             }
             if (!$collection_no_acces_by_status instanceof collection) {
-                $collection_no_acces_by_status = collection::create(self::$application, $databox, $appbox, 'BIBOONOACCESBYSTATUS');
+                $collection_no_acces_by_status = collection::create($application, $databox, $appbox, 'BIBOONOACCESBYSTATUS');
             }
 
             self::$collection = $coll;
@@ -749,16 +741,13 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     /**
      * Generate a set of records for the current tests suites
      */
-    private static function generateRecords()
+    private static function generateRecords(Application $app)
     {
-
         if (self::$recordsInitialized === false) {
 
             $logger = new \Monolog\Logger('tests');
             $logger->pushHandler(new \Monolog\Handler\NullHandler());
             self::$recordsInitialized = array();
-
-            static::$records = new Pimple();
 
             $collection = self::$collection;
 
@@ -776,10 +765,8 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                     throw new Exception(sprintf('File %d not found', $i));
                 };
 
-            $app = self::$application;
-
             foreach (range(1, 24) as $i) {
-                static::$records['record_' . $i] = static::$records->share(function() use ($logger, $collection, $resolvePathfile, $i, $app) {
+                self::$DI['record_' . $i] = self::$DI->share(function() use ($logger, $collection, $resolvePathfile, $i, $app) {
 
                         PhraseanetPHPUnitAbstract::$recordsInitialized[] = $i;
 
@@ -793,7 +780,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                     });
             }
             foreach (range(1, 2) as $i) {
-                static::$records['record_story_' . $i] = static::$records->share(function() use ($collection, $i, $app) {
+                self::$DI['record_story_' . $i] = self::$DI->share(function() use ($collection, $i, $app) {
 
                         PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'story_' . $i;
 
@@ -803,7 +790,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             $collection_no_access = self::$collection_no_access;
 
-            static::$records['record_no_access'] = static::$records->share(function() use ($collection_no_access, $app) {
+            self::$DI['record_no_access'] = self::$DI->share(function() use ($collection_no_access, $app) {
 
                     PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'no_access';
 
@@ -812,7 +799,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                     return \record_adapter::createFromFile($file, $app);
                 });
 
-            static::$records['record_no_access_by_status'] = static::$records->share(function()use($collection_no_access, $app) {
+            self::$DI['record_no_access_by_status'] = self::$DI->share(function()use($collection_no_access, $app) {
 
                     PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'no_access_by_status';
 
@@ -821,10 +808,10 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                     return \record_adapter::createFromFile($file, $app);
                 });
 
-            self::giveRightsToUser(self::$user);
-            self::$user->ACL()->set_admin(true);
-            self::giveRightsToUser(self::$user_notAdmin);
-            self::$user_notAdmin->ACL()->set_admin(false);
+            self::giveRightsToUser(self::$DI['user']);
+            self::$DI['user']->ACL()->set_admin(true);
+            self::giveRightsToUser(self::$DI['user_notAdmin']);
+            self::$DI['user_notAdmin']->ACL()->set_admin(false);
         }
 
         return;
@@ -851,7 +838,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
         if (self::$recordsInitialized !== false) {
             foreach (self::$recordsInitialized as $i) {
-//                static::$records['record_' . $i]->delete();
+//                self::$DI['record_' . $i]->delete();
             }
 
             self::$recordsInitialized = array();

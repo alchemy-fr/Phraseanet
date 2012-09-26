@@ -22,7 +22,7 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testCreateOrder()
     {
         $this->client->request('POST', '/prod/order/', array(
-            'lst'      => static::$records['record_1']->get_serialize_key(),
+            'lst'      => self::$DI['record_1']->get_serialize_key(),
             'deadline' => '+10 minutes'
         ));
 
@@ -35,7 +35,7 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testCreateOrderJson()
     {
         $this->XMLHTTPRequest('POST', '/prod/order/', array(
-            'lst'      => static::$records['record_1']->get_serialize_key(),
+            'lst'      => self::$DI['record_1']->get_serialize_key(),
             'deadline' => '+10 minutes'
         ));
 
@@ -148,10 +148,10 @@ class OrderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     private function createOneOrder($usage)
     {
-        $receveid = array(static::$records['record_1']->get_serialize_key() => static::$records['record_1']);
+        $receveid = array(self::$DI['record_1']->get_serialize_key() => self::$DI['record_1']);
 
         return \set_order::create(
-                self::$application, new RecordsRequest($receveid, new ArrayCollection($receveid)), self::$user_alt2 ,$usage, new \DateTime('+10 minutes')
+                self::$application, new RecordsRequest($receveid, new ArrayCollection($receveid)), self::$DI['user_alt2'] ,$usage, new \DateTime('+10 minutes')
         );
     }
 }

@@ -107,15 +107,15 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSet_bases()
     {
-        $bases = array_keys(self::$user->ACL()->get_granted_base());
-        $this->object->set_bases($bases, self::$user->ACL());
+        $bases = array_keys(self::$DI['user']->ACL()->get_granted_base());
+        $this->object->set_bases($bases, self::$DI['user']->ACL());
         $this->assertEquals(array_values($bases), array_values($this->object->get_bases()));
     }
 
     public function testGet_bases()
     {
-        $bases = array_keys(self::$user->ACL()->get_granted_base());
-        $this->object->set_bases($bases, self::$user->ACL());
+        $bases = array_keys(self::$DI['user']->ACL()->get_granted_base());
+        $this->object->set_bases($bases, self::$DI['user']->ACL());
         $this->assertEquals(array_values($bases), array_values($this->object->get_bases()));
     }
 
@@ -217,8 +217,8 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSerialize()
     {
-        $bases = array_keys(self::$user->ACL()->get_granted_base());
-        $this->object->set_bases($bases, self::$user->ACL());
+        $bases = array_keys(self::$DI['user']->ACL()->get_granted_base());
+        $this->object->set_bases($bases, self::$DI['user']->ACL());
         $this->object->set_date_fields(array());
         $this->object->set_locale('fr_FR');
         $this->object->set_max_date(null);

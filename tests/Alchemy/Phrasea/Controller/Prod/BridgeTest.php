@@ -21,9 +21,9 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
         }
 
         try {
-            self::$account = Bridge_Account::load_account_from_distant_id(self::$application, self::$api, self::$user, 'kirikoo');
+            self::$account = Bridge_Account::load_account_from_distant_id(self::$application, self::$api, self::$DI['user'], 'kirikoo');
         } catch (Bridge_Exception_AccountNotFound $e) {
-            self::$account = Bridge_Account::create(self::$application, self::$api, self::$user, 'kirikoo', 'coucou');
+            self::$account = Bridge_Account::create(self::$application, self::$api, self::$DI['user'], 'kirikoo', 'coucou');
         }
     }
 
@@ -44,8 +44,8 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
     public function testManager()
     {
         $appbox = self::$application['phraseanet.appbox'];
-        $accounts = Bridge_Account::get_accounts_by_user(self::$application, self::$user);
-        $usr_id = self::$user->get_id();
+        $accounts = Bridge_Account::get_accounts_by_user(self::$application, self::$DI['user']);
+        $usr_id = self::$DI['user']->get_id();
 
         $basket = $this->insertOneBasket();
 
@@ -111,7 +111,7 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
                     }
                 });
         try {
-            self::$account = Bridge_Account::load_account_from_distant_id(self::$application, self::$api, self::$user, 'kirikoo');
+            self::$account = Bridge_Account::load_account_from_distant_id(self::$application, self::$api, self::$DI['user'], 'kirikoo');
             $settings = self::$account->get_settings();
             $this->assertEquals("kikoo", $settings->get("auth_token"));
             $this->assertEquals("kooki", $settings->get("refresh_token"));
@@ -124,7 +124,7 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
         }
 
         if ( ! self::$account instanceof Bridge_Account)
-            self::$account = Bridge_Account::create(self::$application, self::$api, self::$user, 'kirikoo', 'coucou');
+            self::$account = Bridge_Account::create(self::$application, self::$api, self::$DI['user'], 'kirikoo', 'coucou');
     }
 
     public function testLogout()
@@ -379,7 +379,7 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue($response->isOk());
 
         $records = array(
-            static::$records['record_1']->get_serialize_key()
+            self::$DI['record_1']->get_serialize_key()
         );
 
         Bridge_Api_Apitest::$hasError = true;

@@ -55,11 +55,11 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $appbox = self::$application['phraseanet.appbox'];
 
         $this->feed = Feed_Adapter::create(
-                self::$application, self::$user, $this->feed_title, $this->feed_subtitle
+                self::$application, self::$DI['user'], $this->feed_title, $this->feed_subtitle
         );
 
         $this->publisher = Feed_Publisher_Adapter::getPublisher(
-                self::$application['phraseanet.appbox'], $this->feed, self::$user
+                self::$application['phraseanet.appbox'], $this->feed, self::$DI['user']
         );
 
         $this->entry = Feed_Entry_Adapter::create(
@@ -72,7 +72,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 , $this->entry_authormail
         );
 
-        $this->item = Feed_Entry_Item::create($appbox, $this->entry, static::$records['record_1']);
+        $this->item = Feed_Entry_Item::create($appbox, $this->entry, self::$DI['record_1']);
     }
 
     public function tearDown()
@@ -94,9 +94,9 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $appbox = self::$application['phraseanet.appbox'];
         $crawler = $this->client->request('POST', '/prod/feeds/requestavailable/');
         $this->assertTrue($this->client->getResponse()->isOk());
-        $feeds = Feed_Collection::load_all(self::$application, self::$user);
+        $feeds = Feed_Collection::load_all(self::$application, self::$DI['user']);
         foreach ($feeds->get_feeds() as $one_feed) {
-            if ($one_feed->is_publisher(self::$user)) {
+            if ($one_feed->is_publisher(self::$DI['user'])) {
                 $this->assertEquals(1, $crawler->filterXPath("//input[@value='" . $one_feed->get_id() . "']")->count());
             }
         }
@@ -110,7 +110,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
             , "subtitle"     => "coucou"
             , "author_name"  => "robert"
             , "author_email" => "robert@kikoo.mail"
-            , 'lst'          => static::$records['record_1']->get_serialize_key()
+            , 'lst'          => self::$DI['record_1']->get_serialize_key()
         );
 
         $crawler = $this->client->request('POST', '/prod/feeds/entry/create/', $params);
@@ -130,7 +130,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
             , "subtitle"     => "coucou"
             , "author_name"  => "robert"
             , "author_email" => "robert@kikoo.mail"
-            , 'lst'          => static::$records['record_1']->get_serialize_key()
+            , 'lst'          => self::$DI['record_1']->get_serialize_key()
         );
         $crawler = $this->client->request('POST', '/prod/feeds/entry/create/', $params);
         $this->assertTrue($this->client->getResponse()->isOk());
@@ -164,11 +164,11 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $appbox = self::$application['phraseanet.appbox'];
 
         $feed = Feed_Adapter::create(
-                self::$application, self::$user_alt1, $this->feed_title, $this->feed_subtitle
+                self::$application, self::$DI['user_alt1'], $this->feed_title, $this->feed_subtitle
         );
 
         $publisher = Feed_Publisher_Adapter::getPublisher(
-                self::$application['phraseanet.appbox'], $feed, self::$user_alt1
+                self::$application['phraseanet.appbox'], $feed, self::$DI['user_alt1']
         );
 
         $entry = Feed_Entry_Adapter::create(
@@ -201,7 +201,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
             "subtitle"     => "cat",
             "author_name"  => "bird",
             "author_email" => "mouse",
-            'lst'          => static::$records['record_1']->get_serialize_key(),
+            'lst'          => self::$DI['record_1']->get_serialize_key(),
         );
 
         $crawler = $this->client->request('POST', '/prod/feeds/entry/' . $this->entry->get_id() . '/update/', $params);
@@ -219,7 +219,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $appbox = self::$application['phraseanet.appbox'];
         $newfeed = Feed_Adapter::create(
-                self::$application, self::$user, $this->feed_title, $this->feed_subtitle
+                self::$application, self::$DI['user'], $this->feed_title, $this->feed_subtitle
         );
 
         $params = array(
@@ -228,7 +228,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
             "subtitle"     => "cat",
             "author_name"  => "bird",
             "author_email" => "mouse",
-            'lst'          => static::$records['record_1']->get_serialize_key(),
+            'lst'          => self::$DI['record_1']->get_serialize_key(),
         );
 
         $crawler = $this->client->request('POST', '/prod/feeds/entry/' . $this->entry->get_id() . '/update/', $params);
@@ -251,7 +251,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $appbox = self::$application['phraseanet.appbox'];
         $newfeed = Feed_Adapter::create(
-                self::$application, self::$user, $this->feed_title, $this->feed_subtitle
+                self::$application, self::$DI['user'], $this->feed_title, $this->feed_subtitle
         );
         $newfeed->set_collection(self::$collection_no_access);
 
@@ -263,7 +263,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
             "subtitle"     => "cat",
             "author_name"  => "bird",
             "author_email" => "mouse",
-            'lst'          => static::$records['record_1']->get_serialize_key(),
+            'lst'          => self::$DI['record_1']->get_serialize_key(),
         );
 
         $crawler = $this->client->request('POST', '/prod/feeds/entry/' . $this->entry->get_id() . '/update/', $params);
@@ -285,7 +285,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
             "subtitle"     => "cat",
             "author_name"  => "bird",
             "author_email" => "mouse",
-            'lst'          => static::$records['record_1']->get_serialize_key(),
+            'lst'          => self::$DI['record_1']->get_serialize_key(),
         );
 
         $crawler = $this->client->request('POST', '/prod/feeds/entry/' . $this->entry->get_id() . '/update/', $params);
@@ -307,7 +307,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
             , "subtitle"     => "cat"
             , "author_name"  => "bird"
             , "author_email" => "mouse"
-            , 'lst'          => static::$records['record_1']->get_serialize_key()
+            , 'lst'          => self::$DI['record_1']->get_serialize_key()
         );
 
         $crawler = $this->client->request('POST', '/prod/feeds/entry/99999999/update/', $params);
@@ -333,7 +333,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
             , "subtitle"     => "cat"
             , "author_name"  => "bird"
             , "author_email" => "mouse"
-            , 'sorted_lst'   => static::$records['record_1']->get_serialize_key() . ";" . static::$records['record_2']->get_serialize_key() . ";12345;" . "unknow_unknow"
+            , 'sorted_lst'   => self::$DI['record_1']->get_serialize_key() . ";" . self::$DI['record_2']->get_serialize_key() . ";12345;" . "unknow_unknow"
         );
 
         $crawler = $this->client->request('POST', '/prod/feeds/entry/' . $this->entry->get_id() . '/update/', $params);
@@ -355,10 +355,10 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
         /**
          * I CREATE A FEED THAT IS NOT MINE
          * */
-        $feed = Feed_Adapter::create(self::$application, self::$user_alt1, "salut", 'coucou');
-        $publisher = Feed_Publisher_Adapter::getPublisher(self::$application['phraseanet.appbox'], $feed, self::$user_alt1);
+        $feed = Feed_Adapter::create(self::$application, self::$DI['user_alt1'], "salut", 'coucou');
+        $publisher = Feed_Publisher_Adapter::getPublisher(self::$application['phraseanet.appbox'], $feed, self::$DI['user_alt1']);
         $entry = Feed_Entry_Adapter::create(self::$application, $feed, $publisher, "hello", "coucou", "salut", "bonjour@phraseanet.com");
-        $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_1']);
+        $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_1']);
 
         $params = array(
             "feed_id"      => $feed->get_id()
@@ -366,7 +366,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
             , "subtitle"     => "cat"
             , "author_name"  => "bird"
             , "author_email" => "mouse"
-            , 'lst'          => static::$records['record_1']->get_serialize_key()
+            , 'lst'          => self::$DI['record_1']->get_serialize_key()
         );
 
         $crawler = $this->client->request('POST', '/prod/feeds/entry/' . $entry->get_id() . '/update/', $params);
@@ -430,11 +430,11 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
         /**
          * I CREATE A FEED
          * */
-        $feed = Feed_Adapter::create(self::$application, self::$user_alt1, "salut", 'coucou');
+        $feed = Feed_Adapter::create(self::$application, self::$DI['user_alt1'], "salut", 'coucou');
 
-        $publisher = Feed_Publisher_Adapter::getPublisher(self::$application['phraseanet.appbox'], $feed, self::$user_alt1);
+        $publisher = Feed_Publisher_Adapter::getPublisher(self::$application['phraseanet.appbox'], $feed, self::$DI['user_alt1']);
         $entry = Feed_Entry_Adapter::create(self::$application, $feed, $publisher, "hello", "coucou", "salut", "bonjour@phraseanet.com");
-        $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_1']);
+        $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_1']);
 
         $crawler = $this->client->request('POST', '/prod/feeds/entry/' . $entry->get_id() . '/delete/');
 
@@ -461,14 +461,14 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertTrue($this->client->getResponse()->isOk());
 
-        $feeds = Feed_Collection::load_all(self::$application, self::$user);
+        $feeds = Feed_Collection::load_all(self::$application, self::$DI['user']);
 
         foreach ($feeds->get_feeds() as $one_feed) {
 
             $path = CssSelector::toXPath("ul.submenu a[href='/prod/feeds/feed/" . $one_feed->get_id() . "/']");
-            $msg = sprintf("user %s has access to feed %s", self::$user->get_id(), $one_feed->get_id());
+            $msg = sprintf("user %s has access to feed %s", self::$DI['user']->get_id(), $one_feed->get_id());
 
-            if ($one_feed->has_access(self::$user)) {
+            if ($one_feed->has_access(self::$DI['user'])) {
                 $this->assertEquals(1, $crawler->filterXPath($path)->count(), $msg);
             } else {
                 $this->fail('Feed_collection::load_all should return feed where I got access');
@@ -480,16 +480,16 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $appbox = self::$application['phraseanet.appbox'];
 
-        $feeds = Feed_Collection::load_all(self::$application, self::$user);
+        $feeds = Feed_Collection::load_all(self::$application, self::$DI['user']);
 
         $crawler = $this->client->request('GET', '/prod/feeds/feed/' . $this->feed->get_id() . "/");
         $pageContent = $this->client->getResponse()->getContent();
 
         foreach ($feeds->get_feeds() as $one_feed) {
             $path = CssSelector::toXPath("ul.submenu a[href='/prod/feeds/feed/" . $one_feed->get_id() . "/']");
-            $msg = sprintf("user %s has access to feed %s", self::$user->get_id(), $one_feed->get_id());
+            $msg = sprintf("user %s has access to feed %s", self::$DI['user']->get_id(), $one_feed->get_id());
 
-            if ($one_feed->has_access(self::$user)) {
+            if ($one_feed->has_access(self::$DI['user'])) {
                 $this->assertEquals(1, $crawler->filterXPath($path)->count(), $msg);
             } else {
                 $this->fail('Feed_collection::load_all should return feed where I got access');
@@ -500,14 +500,14 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testSuscribeAggregate()
     {
         $appbox = self::$application['phraseanet.appbox'];
-        $feeds = Feed_Collection::load_all(self::$application, self::$user);
+        $feeds = Feed_Collection::load_all(self::$application, self::$DI['user']);
         $crawler = $this->client->request('GET', '/prod/feeds/subscribe/aggregated/');
         $this->assertTrue($this->client->getResponse()->isOk());
         $this->assertEquals("application/json", $this->client->getResponse()->headers->get("content-type"));
         $pageContent = json_decode($this->client->getResponse()->getContent());
         $this->assertTrue(is_object($pageContent));
         $this->assertTrue(is_string($pageContent->texte));
-        $suscribe_link = $feeds->get_aggregate()->get_user_link(self::$application['phraseanet.registry'], self::$user, Feed_Adapter::FORMAT_RSS, null, false)->get_href();
+        $suscribe_link = $feeds->get_aggregate()->get_user_link(self::$application['phraseanet.registry'], self::$DI['user'], Feed_Adapter::FORMAT_RSS, null, false)->get_href();
         $this->assertContains($suscribe_link, $pageContent->texte);
     }
 
@@ -519,7 +519,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $pageContent = json_decode($this->client->getResponse()->getContent());
         $this->assertTrue(is_object($pageContent));
         $this->assertTrue(is_string($pageContent->texte));
-        $suscribe_link = $this->feed->get_user_link(self::$application['phraseanet.registry'], self::$user, Feed_Adapter::FORMAT_RSS, null, false)->get_href();
+        $suscribe_link = $this->feed->get_user_link(self::$application['phraseanet.registry'], self::$DI['user'], Feed_Adapter::FORMAT_RSS, null, false)->get_href();
         $this->assertContains($suscribe_link, $pageContent->texte);
     }
 }

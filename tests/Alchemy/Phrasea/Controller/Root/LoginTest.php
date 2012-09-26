@@ -106,9 +106,9 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testRegisterConfirmMailUnlocked()
     {
         $email = $this->generateEmail();
-        $token = \random::getUrlToken(self::$application, \random::TYPE_EMAIL, self::$user->get_id(), null, $email);
+        $token = \random::getUrlToken(self::$application, \random::TYPE_EMAIL, self::$DI['user']->get_id(), null, $email);
 
-        self::$user->set_mail_locked(false);
+        self::$DI['user']->set_mail_locked(false);
 
         $this->client->request('GET', '/login/register-confirm/', array('code'    => $token));
         $response = $this->client->getResponse();
@@ -124,17 +124,17 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $email = $this->generateEmail();
         $appboxRegister = new \appbox_register(self::$application['phraseanet.appbox']);
-        $token = \random::getUrlToken(self::$application, \random::TYPE_EMAIL, self::$user->get_id(), null, $email);
+        $token = \random::getUrlToken(self::$application, \random::TYPE_EMAIL, self::$DI['user']->get_id(), null, $email);
 
-        self::$user->set_mail_locked(true);
+        self::$DI['user']->set_mail_locked(true);
         $this->deleteRequest();
-        $appboxRegister->add_request(self::$user, self::$collection);
+        $appboxRegister->add_request(self::$DI['user'], self::$collection);
         $this->client->request('GET', '/login/register-confirm/', array('code'    => $token));
         $response = $this->client->getResponse();
 
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('/login/?redirect=prod&notice=confirm-ok-wait', $response->headers->get('location'));
-        $this->assertFalse(self::$user->get_mail_locked());
+        $this->assertFalse(self::$DI['user']->get_mail_locked());
     }
 
     /**
@@ -143,9 +143,9 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testRegisterConfirmMailNoCollAwait()
     {
         $email = $this->generateEmail();
-        $token = \random::getUrlToken(self::$application, \random::TYPE_EMAIL, self::$user->get_id(), null, $email);
+        $token = \random::getUrlToken(self::$application, \random::TYPE_EMAIL, self::$DI['user']->get_id(), null, $email);
 
-        self::$user->set_mail_locked(true);
+        self::$DI['user']->set_mail_locked(true);
 
         $this->deleteRequest();
 
@@ -186,7 +186,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRenewPasswordMail()
     {
-        $this->client->request('POST', '/login/forgot-password/', array('mail'    => self::$user->get_email()));
+        $this->client->request('POST', '/login/forgot-password/', array('mail'    => self::$DI['user']->get_email()));
         $response = $this->client->getResponse();
 
         $this->assertTrue($response->isRedirect());
@@ -231,7 +231,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRenewPassword()
     {
-        $token = \random::getUrlToken(self::$application, \random::TYPE_PASSWORD, self::$user->get_id());
+        $token = \random::getUrlToken(self::$application, \random::TYPE_PASSWORD, self::$DI['user']->get_id());
 
         $this->client->request('POST', '/login/forgot-password/', array(
             'token'                 => $token,
@@ -608,7 +608,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testSendConfirmMail()
     {
-        $this->client->request('GET', '/login/send-mail-confirm/', array('usr_id' => self::$user->get_id()));
+        $this->client->request('GET', '/login/send-mail-confirm/', array('usr_id' => self::$DI['user']->get_id()));
 
         $response = $this->client->getResponse();
         $this->assertTrue($response->isRedirect());
@@ -654,7 +654,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         self::$application->closeAccount();
         $this->client->request('POST', '/login/authenticate/', array(
-            'login' => self::$user->get_login(),
+            'login' => self::$DI['user']->get_login(),
             'pwd'   => 'test'
         ));
 
@@ -670,16 +670,16 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         self::$application->closeAccount();
         $password = \random::generatePassword();
-        self::$user->set_mail_locked(true);
+        self::$DI['user']->set_mail_locked(true);
         $this->client->request('POST', '/login/authenticate/', array(
-            'login' => self::$user->get_login(),
+            'login' => self::$DI['user']->get_login(),
             'pwd'   => $password
         ));
 
         $this->assertTrue($this->client->getResponse()->isRedirect());
         $this->assertRegexp('/error=mail-not-confirmed/', $this->client->getResponse()->headers->get('location'));
         $this->assertFalse(self::$application->isAuthenticated());
-        self::$user->set_mail_locked(false);
+        self::$DI['user']->set_mail_locked(false);
     }
 
     /**
@@ -694,7 +694,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->client = new Client(self::$application, array());
 
         $this->client->request('POST', '/login/authenticate/', array(
-            'login' => self::$user->get_login(),
+            'login' => self::$DI['user']->get_login(),
             'pwd'   => $password
         ));
         self::$application['phraseanet.registry']->set('GV_maintenance', false, \registry::TYPE_BOOLEAN);
@@ -712,7 +712,7 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $sql = "DELETE FROM demand WHERE usr_id = :usr_id";
         $stmt = self::$application['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => self::$user->get_id()));
+        $stmt->execute(array(':usr_id' => self::$DI['user']->get_id()));
         $stmt->closeCursor();
     }
 

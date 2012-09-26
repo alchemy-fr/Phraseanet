@@ -38,13 +38,13 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $route = '/prod/push/send/';
 
         $records = array(
-            static::$records['record_1']->get_serialize_key(),
-            static::$records['record_2']->get_serialize_key(),
+            self::$DI['record_1']->get_serialize_key(),
+            self::$DI['record_2']->get_serialize_key(),
         );
 
         $receivers = array(
-            array('usr_id' => self::$user_alt1->get_id(), 'HD'     => 1)
-            , array('usr_id' => self::$user_alt2->get_id(), 'HD'     => 0)
+            array('usr_id' => self::$DI['user_alt1']->get_id(), 'HD'     => 1)
+            , array('usr_id' => self::$DI['user_alt2']->get_id(), 'HD'     => 0)
         );
 
         $params = array(
@@ -72,19 +72,19 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $route = '/prod/push/validate/';
 
         $records = array(
-            static::$records['record_1']->get_serialize_key(),
-            static::$records['record_2']->get_serialize_key(),
+            self::$DI['record_1']->get_serialize_key(),
+            self::$DI['record_2']->get_serialize_key(),
         );
 
         $participants = array(
             array(
-                'usr_id'     => self::$user_alt1->get_id(),
+                'usr_id'     => self::$DI['user_alt1']->get_id(),
                 'agree'      => 0,
                 'see_others' => 1,
                 'HD'         => 0,
             )
             , array(
-                'usr_id'     => self::$user_alt2->get_id(),
+                'usr_id'     => self::$DI['user_alt2']->get_id(),
                 'agree'      => 1,
                 'see_others' => 0,
                 'HD'         => 1,

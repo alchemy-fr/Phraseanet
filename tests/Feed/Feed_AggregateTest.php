@@ -18,10 +18,10 @@ class Feed_AggregateTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
         parent::setUpBeforeClass();
         $appbox = self::$application['phraseanet.appbox'];
-        $auth = new Session_Authentication_None(self::$user);
+        $auth = new Session_Authentication_None(self::$DI['user']);
         self::$application->openAccount($auth);
-        $objects[] = Feed_Adapter::create(self::$application, self::$user, self::$title, self::$subtitle);
-        $objects[] = Feed_Adapter::create(self::$application, self::$user, self::$title, self::$subtitle);
+        $objects[] = Feed_Adapter::create(self::$application, self::$DI['user'], self::$title, self::$subtitle);
+        $objects[] = Feed_Adapter::create(self::$application, self::$DI['user'], self::$title, self::$subtitle);
 
         self::$feeds = $objects;
         self::$object = new Feed_Aggregate(self::$application, self::$feeds);
@@ -69,18 +69,18 @@ class Feed_AggregateTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
         $registry = self::$application['phraseanet.registry'];
 
-        $link = self::$object->get_user_link($registry, self::$user, Feed_Adapter::FORMAT_ATOM);
+        $link = self::$object->get_user_link($registry, self::$DI['user'], Feed_Adapter::FORMAT_ATOM);
         $supposed = '/feeds\/userfeed\/aggregated\/([a-zA-Z0-9]{12})\/atom\//';
 
         $atom = $link->get_href();
 
         $this->assertRegExp($supposed, str_replace($registry->get('GV_ServerName'), '', $atom));
-        $this->assertEquals($atom, self::$object->get_user_link($registry, self::$user, Feed_Adapter::FORMAT_ATOM)->get_href());
-        $this->assertEquals($atom, self::$object->get_user_link($registry, self::$user, Feed_Adapter::FORMAT_ATOM)->get_href());
+        $this->assertEquals($atom, self::$object->get_user_link($registry, self::$DI['user'], Feed_Adapter::FORMAT_ATOM)->get_href());
+        $this->assertEquals($atom, self::$object->get_user_link($registry, self::$DI['user'], Feed_Adapter::FORMAT_ATOM)->get_href());
 
-        $this->assertNotEquals($atom, self::$object->get_user_link($registry, self::$user, Feed_Adapter::FORMAT_ATOM, null, true)->get_href());
+        $this->assertNotEquals($atom, self::$object->get_user_link($registry, self::$DI['user'], Feed_Adapter::FORMAT_ATOM, null, true)->get_href());
 
-        $link = self::$object->get_user_link($registry, self::$user, Feed_Adapter::FORMAT_RSS);
+        $link = self::$object->get_user_link($registry, self::$DI['user'], Feed_Adapter::FORMAT_RSS);
         $supposed = '/feeds\/userfeed\/aggregated\/([a-zA-Z0-9]{12})\/rss\//';
         $this->assertRegExp($supposed, str_replace($registry->get('GV_ServerName'), '', $link->get_href()));
     }

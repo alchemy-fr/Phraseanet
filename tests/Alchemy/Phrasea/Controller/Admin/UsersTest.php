@@ -12,7 +12,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->usersParameters = array("users" => implode(';', array(self::$user->get_id(), self::$user_alt1->get_id())));
+        $this->usersParameters = array("users" => implode(';', array(self::$DI['user']->get_id(), self::$DI['user_alt1']->get_id())));
     }
 
     public function testRouteRightsPost()
@@ -96,8 +96,8 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteQuota()
     {
-        $base_id = array_pop(array_keys(self::$user->ACL()->get_granted_base()));
-        $params = array('base_id' => $base_id, 'users'   => self::$user->get_id());
+        $base_id = array_pop(array_keys(self::$DI['user']->ACL()->get_granted_base()));
+        $params = array('base_id' => $base_id, 'users'   => self::$DI['user']->get_id());
 
         $this->client->request('POST', '/admin/users/rights/quotas/', $params);
         $response = $this->client->getResponse();
@@ -116,8 +116,8 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteQuotaRemove()
     {
-        $base_id = array_pop(array_keys(self::$user->ACL()->get_granted_base()));
-        $params = array('base_id' => $base_id, 'users'   => self::$user->get_id());
+        $base_id = array_pop(array_keys(self::$DI['user']->ACL()->get_granted_base()));
+        $params = array('base_id' => $base_id, 'users'   => self::$DI['user']->get_id());
 
         $this->client->request('POST', '/admin/users/rights/quotas/apply/', $params);
         $response = $this->client->getResponse();
@@ -126,8 +126,8 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteRightTime()
     {
-        $base_id = array_pop(array_keys(self::$user->ACL()->get_granted_base()));
-        $params = array('base_id' => $base_id, 'users'   => self::$user->get_id());
+        $base_id = array_pop(array_keys(self::$DI['user']->ACL()->get_granted_base()));
+        $params = array('base_id' => $base_id, 'users'   => self::$DI['user']->get_id());
 
         $this->client->request('POST', '/admin/users/rights/time/', $params);
         $response = $this->client->getResponse();
@@ -154,8 +154,8 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteRightMask()
     {
-        $base_id = array_pop(array_keys(self::$user->ACL()->get_granted_base()));
-        $params = array('base_id' => $base_id, 'users'   => self::$user->get_id());
+        $base_id = array_pop(array_keys(self::$DI['user']->ACL()->get_granted_base()));
+        $params = array('base_id' => $base_id, 'users'   => self::$DI['user']->get_id());
 
         $this->client->request('POST', '/admin/users/rights/masks/', $params);
         $response = $this->client->getResponse();
@@ -206,7 +206,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $templateName = uniqid('template_');
         $template = User_Adapter::create(self::$application, $templateName, "test", $templateName . "@email.com", false);
-        $template->set_template(self::$user);
+        $template->set_template(self::$DI['user']);
 
         $username = uniqid('user_');
         $user = User_Adapter::create(self::$application, $username, "test", $username . "@email.com", false);

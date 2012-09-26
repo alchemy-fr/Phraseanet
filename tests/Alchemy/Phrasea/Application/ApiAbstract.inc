@@ -71,14 +71,14 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         parent::setUpBeforeClass();
         $appbox = self::$application['phraseanet.appbox'];
 
-        self::$oauthApplication = \API_OAuth2_Application::create(self::$application, self::$user_notAdmin, 'test API v1');
-        self::$account = \API_OAuth2_Account::load_with_user(self::$application, self::$oauthApplication, self::$user_notAdmin);
+        self::$oauthApplication = \API_OAuth2_Application::create(self::$application, self::$DI['user_notAdmin'], 'test API v1');
+        self::$account = \API_OAuth2_Account::load_with_user(self::$application, self::$oauthApplication, self::$DI['user_notAdmin']);
         self::$token = self::$account->get_token()->get_value();
 
         self::$adminToken = null;
 
-        self::$adminApplication = \API_OAuth2_Application::create(self::$application, self::$user, 'test2 API v1');
-        self::$adminAccount = \API_OAuth2_Account::load_with_user(self::$application, self::$adminApplication, self::$user);
+        self::$adminApplication = \API_OAuth2_Application::create(self::$application, self::$DI['user'], 'test2 API v1');
+        self::$adminAccount = \API_OAuth2_Account::load_with_user(self::$application, self::$adminApplication, self::$DI['user']);
         self::$adminToken = self::$adminAccount->get_token()->get_value();
     }
 
@@ -152,7 +152,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
             $nativeApp = \API_OAuth2_Application::load_from_client_id(self::$application, \API_OAuth2_Application_Navigator::CLIENT_ID);
 
-            $account = \API_OAuth2_Account::create(self::$application, self::$user, $nativeApp);
+            $account = \API_OAuth2_Account::create(self::$application, self::$DI['user'], $nativeApp);
             $token = $account->get_token()->get_value();
             $this->setToken($token);
             $this->client->request('GET', '/databoxes/list/', $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
@@ -515,7 +515,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/';
+        $route = '/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
         $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
@@ -787,9 +787,9 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $this->injectMetadatas(static::$records['record_1']);
+        $this->injectMetadatas(self::$DI['record_1']);
 
-        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/caption/';
+        $route = '/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/caption/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
         $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
@@ -816,7 +816,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/metadatas/';
+        $route = '/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/metadatas/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
         $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
@@ -842,7 +842,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/status/';
+        $route = '/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/status/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
         $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
@@ -851,7 +851,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->evaluateResponse200($this->client->getResponse());
         $this->evaluateMeta200($content);
 
-        $this->evaluateRecordsStatusResponse(static::$records['record_1'], $content);
+        $this->evaluateRecordsStatusResponse(self::$DI['record_1'], $content);
 
         $route = '/records/24892534/51654651553/status/';
         $this->evaluateNotFoundRoute($route, array('GET'));
@@ -870,9 +870,9 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $keys = array_keys(static::$records['record_1']->get_subdefs());
+        $keys = array_keys(self::$DI['record_1']->get_subdefs());
 
-        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/embed/';
+        $route = '/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
         $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
@@ -884,7 +884,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertArrayHasKey('embed', $content['response']);
 
         foreach ($content['response']['embed'] as $embed) {
-            $this->checkEmbed($embed, static::$records['record_1']);
+            $this->checkEmbed($embed, self::$DI['record_1']);
         }
         $route = '/records/24892534/51654651553/embed/';
         $this->evaluateNotFoundRoute($route, array('GET'));
@@ -901,7 +901,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/embed/';
+        $route = '/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
 
         $this->client->request('GET', $route, $this->getParameters(array('mimes' => array('image/jpg', 'image/jpeg'))), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
@@ -909,7 +909,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $this->assertArrayHasKey('embed', $content['response']);
 
         foreach ($content['response']['embed'] as $embed) {
-            $this->checkEmbed($embed, static::$records['record_1']);
+            $this->checkEmbed($embed, self::$DI['record_1']);
         }
     }
 
@@ -920,7 +920,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/embed/';
+        $route = '/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
 
         $this->client->request('GET', $route, $this->getParameters(array('devices' => array('nodevice'))), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize($this->client->getResponse()->getContent());
@@ -935,7 +935,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/related/';
+        $route = '/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/related/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
         $this->client->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
@@ -1028,10 +1028,10 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/setstatus/';
+        $route = '/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/setstatus/';
 
-        $record_status = strrev(static::$records['record_1']->get_status());
-        $status_bits = static::$records['record_1']->get_databox()->get_statusbits();
+        $record_status = strrev(self::$DI['record_1']->get_status());
+        $status_bits = self::$DI['record_1']->get_databox()->get_statusbits();
 
         $tochange = array();
         foreach ($status_bits as $n => $datas) {
@@ -1046,7 +1046,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         /**
          * Get fresh record_1
          */
-        $testRecord = new \record_adapter(self::$application, static::$records['record_1']->get_sbas_id(), static::$records['record_1']->get_record_id());
+        $testRecord = new \record_adapter(self::$application, self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_record_id());
 
         $this->evaluateResponse200($this->client->getResponse());
         $this->evaluateMeta200($content);
@@ -1493,7 +1493,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $title = 'Yellow title';
         $subtitle = 'Trololololo !';
 
-        $created_feed = \Feed_Adapter::create(self::$application, self::$user, $title, $subtitle);
+        $created_feed = \Feed_Adapter::create(self::$application, self::$DI['user'], $title, $subtitle);
 
         $this->setToken(self::$token);
         $route = '/feeds/list/';
@@ -1545,11 +1545,11 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $author = "W. Shakespeare";
         $author_email = "gontran.bonheur@gmail.com";
 
-        $created_feed = \Feed_Adapter::create(self::$application, self::$user, $title, $subtitle);
-        $publisher = \Feed_Publisher_Adapter::getPublisher(self::$application['phraseanet.appbox'], $created_feed, self::$user);
+        $created_feed = \Feed_Adapter::create(self::$application, self::$DI['user'], $title, $subtitle);
+        $publisher = \Feed_Publisher_Adapter::getPublisher(self::$application['phraseanet.appbox'], $created_feed, self::$DI['user']);
 
         $created_entry = \Feed_Entry_Adapter::create(self::$application, $created_feed, $publisher, $entry_title, $entry_subtitle, $author, $author_email);
-        $created_item = \Feed_Entry_Item::create($appbox, $created_entry, static::$records['record_1']);
+        $created_item = \Feed_Entry_Item::create($appbox, $created_entry, self::$DI['record_1']);
 
 
         $this->setToken(self::$token);
@@ -1605,11 +1605,11 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $author = "W. Shakespeare";
         $author_email = "gontran.bonheur@gmail.com";
 
-        $created_feed = \Feed_Adapter::create(self::$application, self::$user, $title, $subtitle);
-        $publisher = \Feed_Publisher_Adapter::getPublisher(self::$application['phraseanet.appbox'], $created_feed, self::$user);
+        $created_feed = \Feed_Adapter::create(self::$application, self::$DI['user'], $title, $subtitle);
+        $publisher = \Feed_Publisher_Adapter::getPublisher(self::$application['phraseanet.appbox'], $created_feed, self::$DI['user']);
 
         $created_entry = \Feed_Entry_Adapter::create(self::$application, $created_feed, $publisher, $entry_title, $entry_subtitle, $author, $author_email);
-        $created_item = \Feed_Entry_Item::create($appbox, $created_entry, static::$records['record_1']);
+        $created_item = \Feed_Entry_Item::create($appbox, $created_entry, self::$DI['record_1']);
 
         $this->setToken(self::$token);
         $route = '/feeds/entry/' . $created_entry->get_id() . '/';
@@ -1645,11 +1645,11 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $author = "W. Shakespeare";
         $author_email = "gontran.bonheur@gmail.com";
 
-        $created_feed = \Feed_Adapter::create(self::$application, self::$user, $title, $subtitle);
-        $publisher = \Feed_Publisher_Adapter::getPublisher(self::$application['phraseanet.appbox'], $created_feed, self::$user);
+        $created_feed = \Feed_Adapter::create(self::$application, self::$DI['user'], $title, $subtitle);
+        $publisher = \Feed_Publisher_Adapter::getPublisher(self::$application['phraseanet.appbox'], $created_feed, self::$DI['user']);
 
         $created_entry = \Feed_Entry_Adapter::create(self::$application, $created_feed, $publisher, $entry_title, $entry_subtitle, $author, $author_email);
-        $created_item = \Feed_Entry_Item::create($appbox, $created_entry, static::$records['record_1']);
+        $created_item = \Feed_Entry_Item::create($appbox, $created_entry, self::$DI['record_1']);
 
         $created_feed->set_collection(self::$collection_no_access);
 
@@ -1683,11 +1683,11 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $author = "W. Shakespeare";
         $author_email = "gontran.bonheur@gmail.com";
 
-        $created_feed = \Feed_Adapter::create(self::$application, self::$user, $title, $subtitle);
-        $publisher = \Feed_Publisher_Adapter::getPublisher(self::$application['phraseanet.appbox'], $created_feed, self::$user);
+        $created_feed = \Feed_Adapter::create(self::$application, self::$DI['user'], $title, $subtitle);
+        $publisher = \Feed_Publisher_Adapter::getPublisher(self::$application['phraseanet.appbox'], $created_feed, self::$DI['user']);
 
         $created_entry = \Feed_Entry_Adapter::create(self::$application, $created_feed, $publisher, $entry_title, $entry_subtitle, $author, $author_email);
-        $created_item = \Feed_Entry_Item::create($appbox, $created_entry, static::$records['record_1']);
+        $created_item = \Feed_Entry_Item::create($appbox, $created_entry, self::$DI['record_1']);
 
         $this->setToken(self::$token);
         $route = '/feeds/' . $created_feed->get_id() . '/content/';

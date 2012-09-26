@@ -14,7 +14,7 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $auth = new Session_Authentication_None(self::$user);
+        $auth = new Session_Authentication_None(self::$DI['user']);
         self::$application->openAccount($auth);
     }
 
@@ -94,7 +94,7 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
 
         $stubAuthenticatedUser->expects($this->any())
             ->method('get_id')
-            ->will($this->returnValue(self::$user->get_id()));
+            ->will($this->returnValue(self::$DI['user']->get_id()));
 
         self::$application['phraseanet.user'] = $stubAuthenticatedUser;
 

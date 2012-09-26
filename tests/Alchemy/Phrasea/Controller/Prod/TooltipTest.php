@@ -44,8 +44,8 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRoutePreview()
     {
-        $route = '/prod/tooltip/preview/' . static::$records['record_1']->get_sbas_id()
-            . '/' . static::$records['record_1']->get_record_id() . '/';
+        $route = '/prod/tooltip/preview/' . self::$DI['record_1']->get_sbas_id()
+            . '/' . self::$DI['record_1']->get_record_id() . '/';
 
         $crawler = $this->client->request('POST', $route);
         $pageContent = $this->client->getResponse()->getContent();
@@ -55,8 +55,8 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testRouteCaption()
     {
 
-        $route_base = '/prod/tooltip/caption/' . static::$records['record_1']->get_sbas_id()
-            . '/' . static::$records['record_1']->get_record_id() . '/%s/';
+        $route_base = '/prod/tooltip/caption/' . self::$DI['record_1']->get_sbas_id()
+            . '/' . self::$DI['record_1']->get_record_id() . '/%s/';
 
         $routes = array(
             sprintf($route_base, 'answer')
@@ -75,8 +75,8 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteCaptionSearchEngine()
     {
-        $route_base = '/prod/tooltip/caption/' . static::$records['record_1']->get_sbas_id()
-            . '/' . static::$records['record_1']->get_record_id() . '/%s/';
+        $route_base = '/prod/tooltip/caption/' . self::$DI['record_1']->get_sbas_id()
+            . '/' . self::$DI['record_1']->get_record_id() . '/%s/';
 
         $routes = array(
             sprintf($route_base, 'answer')
@@ -96,8 +96,8 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteTCDatas()
     {
-        $route = '/prod/tooltip/tc_datas/' . static::$records['record_1']->get_sbas_id()
-            . '/' . static::$records['record_1']->get_record_id() . '/';
+        $route = '/prod/tooltip/tc_datas/' . self::$DI['record_1']->get_sbas_id()
+            . '/' . self::$DI['record_1']->get_record_id() . '/';
 
         $crawler = $this->client->request('POST', $route);
         $pageContent = $this->client->getResponse()->getContent();
@@ -106,7 +106,7 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteMetasFieldInfos()
     {
-        $databox = static::$records['record_1']->get_databox();
+        $databox = self::$DI['record_1']->get_databox();
 
         foreach ($databox->get_meta_structure() as $field) {
             $route = '/prod/tooltip/metas/FieldInfos/' . $databox->get_sbas_id()
@@ -120,7 +120,7 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteMetasDCESInfos()
     {
-        $databox = static::$records['record_1']->get_databox();
+        $databox = self::$DI['record_1']->get_databox();
         $dces = array(
             databox_field::DCES_CONTRIBUTOR => new databox_Field_DCES_Contributor()
             , databox_field::DCES_COVERAGE    => new databox_Field_DCES_Coverage()
@@ -155,7 +155,7 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteMetaRestrictions()
     {
-        $databox = static::$records['record_1']->get_databox();
+        $databox = self::$DI['record_1']->get_databox();
 
         foreach ($databox->get_meta_structure() as $field) {
 
@@ -170,11 +170,11 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteStory()
     {
-        $databox = static::$records['record_story_1']->get_databox();
+        $databox = self::$DI['record_story_1']->get_databox();
 
 
         $route = '/prod/tooltip/Story/' . $databox->get_sbas_id()
-            . '/' . static::$records['record_story_1']->get_record_id() . '/';
+            . '/' . self::$DI['record_story_1']->get_record_id() . '/';
 
         $this->client->request('POST', $route);
         $this->assertTrue($this->client->getResponse()->isOk());
@@ -183,7 +183,7 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testUser()
     {
 
-        $route = '/prod/tooltip/user/' . self::$user->get_id() . '/';
+        $route = '/prod/tooltip/user/' . self::$DI['user']->get_id() . '/';
         $this->client->request('POST', $route);
         $this->assertTrue($this->client->getResponse()->isOk());
     }

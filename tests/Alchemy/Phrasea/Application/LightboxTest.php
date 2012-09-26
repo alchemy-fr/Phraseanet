@@ -18,10 +18,10 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         parent::setUp();
         $this->client = $this->createClient();
         $appbox = self::$application['phraseanet.appbox'];
-        $this->feed = Feed_Adapter::create(self::$application, self::$user, "salut", 'coucou');
+        $this->feed = Feed_Adapter::create(self::$application, self::$DI['user'], "salut", 'coucou');
         $publisher = array_shift($this->feed->get_publishers());
         $this->entry = Feed_Entry_Adapter::create(self::$application, $this->feed, $publisher, 'title', "sub Titkle", " jean pierre", "jp@test.com");
-        $this->item = Feed_Entry_Item::create($appbox, $this->entry, static::$records['record_1']);
+        $this->item = Feed_Entry_Item::create($appbox, $this->entry, self::$DI['record_1']);
     }
 
     public function tearDown()

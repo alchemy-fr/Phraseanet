@@ -27,7 +27,7 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
 
         self::loadApplication();
 
-        self::$appli = API_OAuth2_Application::create(self::$application, self::$user, 'test');
+        self::$appli = API_OAuth2_Application::create(self::$application, self::$DI['user'], 'test');
         self::$appli->set_description('une description')
             ->set_redirect_uri('http://callback.com/callback/')
             ->set_website('http://website.com/')
@@ -100,7 +100,7 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
     public static function getAccount()
     {
         $sql = "SELECT api_account_id FROM api_accounts WHERE application_id = :app_id AND usr_id = :usr_id";
-        $t = array(":app_id" => self::$appli->get_id(), ":usr_id" => self::$user->get_id());
+        $t = array(":app_id" => self::$appli->get_id(), ":usr_id" => self::$DI['user']->get_id());
         $appbox = self::$application['phraseanet.appbox'];
         $conn = $appbox->get_connection();
         $stmt = $conn->prepare($sql);
@@ -124,7 +124,7 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
     public function testAuthorizeRedirect()
     {
         //session off
-        $apps = API_OAuth2_Application::load_authorized_app_by_user(self::$application, self::$user);
+        $apps = API_OAuth2_Application::load_authorized_app_by_user(self::$application, self::$DI['user']);
         foreach ($apps as $app) {
             if ($app->get_client_id() == self::$appli->get_client_id()) {
                 $authorize = true;

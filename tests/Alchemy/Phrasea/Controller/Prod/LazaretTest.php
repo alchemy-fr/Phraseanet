@@ -36,7 +36,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $fileLazaret
             ->expects($this->any())
             ->method('getRecordsToSubstitute')
-            ->will($this->returnValue(array(static::$records['record_1'])));
+            ->will($this->returnValue(array(self::$DI['record_1'])));
 
         $fileLazaret
             ->expects($this->any())
@@ -396,7 +396,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         //expect to fetch record
         $databox->expects($this->once())
             ->method('get_record')
-            ->with($this->equalTo(self::$records['record_1']->get_record_id()))
+            ->with($this->equalTo(self::$DI['record_1']->get_record_id()))
             ->will($this->returnValue($record));
 
         $collection = $this->getMock('collection', array(), array(), '', false);
@@ -411,7 +411,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         //expect to fetch possible records to subtitute
         $lazaretFile->expects($this->once())
             ->method('getRecordsToSubstitute')
-            ->will($this->returnValue(array(self::$records['record_2'], self::$records['record_1'])));
+            ->will($this->returnValue(array(self::$DI['record_2'], self::$DI['record_1'])));
 
         copy(__DIR__ . '/../../../../testfiles/cestlafete.jpg', __DIR__ . '/../../../../../tmp/lazaret/cestlafete.jpg');
 
@@ -448,7 +448,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->client = new Client(self::$application, array());
 
         $this->client->request('POST', '/prod/lazaret/' . $id . '/accept/', array(
-            'record_id' => self::$records['record_1']->get_record_id()
+            'record_id' => self::$DI['record_1']->get_record_id()
         ));
 
         $response = $this->client->getResponse();
@@ -497,7 +497,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->client = new Client(self::$application, array());
 
         $this->client->request('POST', '/prod/lazaret/' . $id . '/accept/', array(
-            'record_id' => self::$records['record_1']->get_record_id()
+            'record_id' => self::$DI['record_1']->get_record_id()
         ));
 
         $response = $this->client->getResponse();
@@ -627,7 +627,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         //The lazaret session
         $lazaretSession = new \Entities\LazaretSession();
-        $lazaretSession->setUsrId(self::$user->get_id());
+        $lazaretSession->setUsrId(self::$DI['user']->get_id());
         $lazaretSession->setUpdated(new \DateTime('now'));
         $lazaretSession->setCreated(new \DateTime('-1 day'));
 

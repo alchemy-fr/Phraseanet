@@ -8,16 +8,16 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRootPost()
     {
-        static::$records['record_1'];
-        static::$records['record_2'];
+        self::$DI['record_1'];
+        self::$DI['record_2'];
         $route = '/prod/baskets/';
 
         $records = array(
-            static::$records['record_1']->get_serialize_key(),
-            static::$records['record_2']->get_serialize_key(),
+            self::$DI['record_1']->get_serialize_key(),
+            self::$DI['record_2']->get_serialize_key(),
             ' ',
             '42',
-            static::$records['record_no_access']->get_serialize_key()
+            self::$DI['record_no_access']->get_serialize_key()
         );
 
         $lst = implode(';', $records);
@@ -112,7 +112,7 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $basket = $this->insertOneBasket();
 
-        $record = static::$records['record_1'];
+        $record = self::$DI['record_1'];
 
         $basket_element = new \Entities\BasketElement();
         $basket_element->setBasket($basket);
@@ -143,7 +143,7 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $basket = $this->insertOneBasket();
 
-        $record = static::$records['record_1'];
+        $record = self::$DI['record_1'];
 
         $basket_element = new \Entities\BasketElement();
         $basket_element->setBasket($basket);
@@ -379,12 +379,12 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $route = sprintf('/prod/baskets/%s/addElements/', $basket->getId());
 
         $records = array(
-            static::$records['record_1']->get_serialize_key(),
-            static::$records['record_2']->get_serialize_key(),
+            self::$DI['record_1']->get_serialize_key(),
+            self::$DI['record_2']->get_serialize_key(),
             ' ',
             '42',
             'abhak',
-            static::$records['record_no_access']->get_serialize_key(),
+            self::$DI['record_no_access']->get_serialize_key(),
         );
 
         $lst = implode(';', $records);
@@ -416,7 +416,7 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $expires->modify('+1 week');
 
         $validationSession->setExpires($expires);
-        $validationSession->setInitiator(self::$user);
+        $validationSession->setInitiator(self::$DI['user']);
 
         self::$application['EM']->persist($validationSession);
 
@@ -426,7 +426,7 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
         $validationParticipant = new \Entities\ValidationParticipant();
         $validationParticipant->setSession($validationSession);
-        $validationParticipant->setUser(self::$user_alt1);
+        $validationParticipant->setUser(self::$DI['user_alt1']);
 
         self::$application['EM']->persist($validationParticipant);
 
@@ -437,12 +437,12 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $route = sprintf('/prod/baskets/%s/addElements/', $basket->getId());
 
         $records = array(
-            static::$records['record_1']->get_serialize_key(),
-            static::$records['record_2']->get_serialize_key(),
+            self::$DI['record_1']->get_serialize_key(),
+            self::$DI['record_2']->get_serialize_key(),
             ' ',
             '42',
             'abhak',
-            static::$records['record_no_access']->get_serialize_key(),
+            self::$DI['record_no_access']->get_serialize_key(),
         );
 
         $lst = implode(';', $records);
@@ -469,8 +469,8 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $route = sprintf('/prod/baskets/%s/addElements/', $basket->getId());
 
         $records = array(
-            static::$records['record_1']->get_serialize_key(),
-            static::$records['record_2']->get_serialize_key()
+            self::$DI['record_1']->get_serialize_key(),
+            self::$DI['record_2']->get_serialize_key()
         );
 
         $lst = implode(';', $records);

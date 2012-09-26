@@ -30,7 +30,7 @@ class Bridge_AccountTest extends PhraseanetPHPUnitAuthenticatedAbstract
             $this->api = Bridge_Api::create(self::$application, 'Apitest');
             $this->dist_id = 'EZ1565loPP';
             $this->named = 'Fête à pinpins';
-            $account = Bridge_Account::create(self::$application, $this->api, self::$user, $this->dist_id, $this->named);
+            $account = Bridge_Account::create(self::$application, $this->api, self::$DI['user'], $this->dist_id, $this->named);
             $this->id = $account->get_id();
 
             $this->object = new Bridge_Account(self::$application, $this->api, $this->id);
@@ -78,7 +78,7 @@ class Bridge_AccountTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testGet_user()
     {
         $this->assertInstanceOf('User_Adapter', $this->object->get_user());
-        $this->assertEquals(self::$user->get_id(), $this->object->get_user()->get_id());
+        $this->assertEquals(self::$DI['user']->get_id(), $this->object->get_user()->get_id());
     }
 
     public function testGet_name()
@@ -135,7 +135,7 @@ class Bridge_AccountTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_accounts_by_user()
     {
-        $accounts = Bridge_Account::get_accounts_by_user(self::$application, self::$user);
+        $accounts = Bridge_Account::get_accounts_by_user(self::$application, self::$DI['user']);
 
         $this->assertTrue(is_array($accounts));
         $this->assertTrue(count($accounts) > 0);

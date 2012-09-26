@@ -11,7 +11,7 @@ class ControllerEditTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRouteSlash()
     {
-        $this->client->request('POST', '/prod/records/edit/', array('lst' => static::$records['record_1']->get_serialize_key()));
+        $this->client->request('POST', '/prod/records/edit/', array('lst' => self::$DI['record_1']->get_serialize_key()));
 
         $response = $this->client->getResponse();
 
@@ -20,7 +20,7 @@ class ControllerEditTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testApply()
     {
-        $this->client->request('POST', '/prod/records/edit/apply/', array('lst' => static::$records['record_1']->get_serialize_key()));
+        $this->client->request('POST', '/prod/records/edit/apply/', array('lst' => self::$DI['record_1']->get_serialize_key()));
 
         $response = $this->client->getResponse();
 

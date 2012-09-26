@@ -10,7 +10,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function tearDown()
     {
-        self::$application['phraseanet.user'] = self::$user;
+        self::$application['phraseanet.user'] = self::$DI['user'];
         foreach (self::$createdCollections as $collection) {
             try {
                 $collection->unmount_collection(self::$application);
@@ -256,12 +256,12 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(true);
 
         $this->client->request('POST', '/admin/collection/' . self::$collection->get_base_id() . '/order/admins/', array(
-            'admins' => array(self::$user_alt1->get_id())
+            'admins' => array(self::$DI['user_alt1']->get_id())
         ));
 
         $this->checkRedirection($this->client->getResponse(), '/admin/collection/' . self::$collection->get_base_id() . '/?success=1');
 
-        $this->assertTrue(self::$user_alt1->ACL()->has_right_on_base(self::$collection->get_base_id(), 'order_master'));
+        $this->assertTrue(self::$DI['user_alt1']->ACL()->has_right_on_base(self::$collection->get_base_id(), 'order_master'));
     }
 
     /**

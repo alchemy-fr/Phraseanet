@@ -56,7 +56,7 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
         }
 
         self::$objectNotPresent->remove_file();
-        self::$storyPresent = self::$records['record_story_1']->get_subdef('thumbnail');
+        self::$storyPresent = self::$DI['record_story_1']->get_subdef('thumbnail');
     }
 
     /**

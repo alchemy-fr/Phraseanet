@@ -14,12 +14,12 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
     {
         $request = new Request(array(
                 'lst' => implode(';', array(
-                    self::$records['record_24']->get_serialize_key(),
-                    self::$records['record_24']->get_serialize_key(),
-                    self::$records['record_2']->get_serialize_key(),
-                    self::$records['record_story_2']->get_serialize_key(),
-                    self::$records['record_no_access']->get_serialize_key(),
-                    self::$records['record_no_access_by_status']->get_serialize_key(),
+                    self::$DI['record_24']->get_serialize_key(),
+                    self::$DI['record_24']->get_serialize_key(),
+                    self::$DI['record_2']->get_serialize_key(),
+                    self::$DI['record_story_2']->get_serialize_key(),
+                    self::$DI['record_no_access']->get_serialize_key(),
+                    self::$DI['record_no_access_by_status']->get_serialize_key(),
                     '',
                     '0_490',
                     '0_',
@@ -42,18 +42,18 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         $exploded = explode(';', $serialized);
 
         $this->assertEquals(3, count($exploded));
-        $this->assertContains(self::$records['record_24']->get_serialize_key(), $exploded);
-        $this->assertContains(self::$records['record_2']->get_serialize_key(), $exploded);
-        $this->assertContains(self::$records['record_story_2']->get_serialize_key(), $exploded);
-        $this->assertNotContains(self::$records['record_no_access']->get_serialize_key(), $exploded);
-        $this->assertNotContains(self::$records['record_no_access_by_status']->get_serialize_key(), $exploded);
+        $this->assertContains(self::$DI['record_24']->get_serialize_key(), $exploded);
+        $this->assertContains(self::$DI['record_2']->get_serialize_key(), $exploded);
+        $this->assertContains(self::$DI['record_story_2']->get_serialize_key(), $exploded);
+        $this->assertNotContains(self::$DI['record_no_access']->get_serialize_key(), $exploded);
+        $this->assertNotContains(self::$DI['record_no_access_by_status']->get_serialize_key(), $exploded);
     }
 
     public function testSimpleSimple()
     {
         $request = new Request(array(
                 'lst' => implode(';', array(
-                    self::$records['record_2']->get_serialize_key(),
+                    self::$DI['record_2']->get_serialize_key(),
                 ))
             ));
 
@@ -71,17 +71,17 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         $exploded = explode(';', $serialized);
 
         $this->assertEquals(1, count($exploded));
-        $this->assertContains(self::$records['record_2']->get_serialize_key(), $exploded);
+        $this->assertContains(self::$DI['record_2']->get_serialize_key(), $exploded);
     }
 
     public function testSimpleWithoutSbasRights()
     {
         self::$application['phraseanet.user']->ACL()
-            ->update_rights_to_sbas(self::$records['record_2']->get_sbas_id(), array('bas_chupub' => 0));
+            ->update_rights_to_sbas(self::$DI['record_2']->get_sbas_id(), array('bas_chupub' => 0));
 
         $request = new Request(array(
                 'lst' => implode(';', array(
-                    self::$records['record_2']->get_serialize_key(),
+                    self::$DI['record_2']->get_serialize_key(),
                 ))
             ));
 
@@ -97,17 +97,17 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         $exploded = explode(';', $serialized);
 
         $this->assertEquals('', $serialized);
-        $this->assertNotContains(self::$records['record_2']->get_serialize_key(), $exploded);
+        $this->assertNotContains(self::$DI['record_2']->get_serialize_key(), $exploded);
     }
 
     public function testSimpleWithoutBasRights()
     {
         self::$application['phraseanet.user']->ACL()
-            ->update_rights_to_base(self::$records['record_2']->get_base_id(), array('chgstatus' => 0));
+            ->update_rights_to_base(self::$DI['record_2']->get_base_id(), array('chgstatus' => 0));
 
         $request = new Request(array(
                 'lst' => implode(';', array(
-                    self::$records['record_2']->get_serialize_key(),
+                    self::$DI['record_2']->get_serialize_key(),
                 ))
             ));
 
@@ -123,19 +123,19 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         $exploded = explode(';', $serialized);
 
         $this->assertEquals('', $serialized);
-        $this->assertNotContains(self::$records['record_2']->get_serialize_key(), $exploded);
+        $this->assertNotContains(self::$DI['record_2']->get_serialize_key(), $exploded);
     }
 
     public function testSimpleFlatten()
     {
         $request = new Request(array(
                 'lst' => implode(';', array(
-                    self::$records['record_24']->get_serialize_key(),
-                    self::$records['record_24']->get_serialize_key(),
-                    self::$records['record_2']->get_serialize_key(),
-                    self::$records['record_story_2']->get_serialize_key(),
-                    self::$records['record_no_access']->get_serialize_key(),
-                    self::$records['record_no_access_by_status']->get_serialize_key(),
+                    self::$DI['record_24']->get_serialize_key(),
+                    self::$DI['record_24']->get_serialize_key(),
+                    self::$DI['record_2']->get_serialize_key(),
+                    self::$DI['record_story_2']->get_serialize_key(),
+                    self::$DI['record_no_access']->get_serialize_key(),
+                    self::$DI['record_no_access_by_status']->get_serialize_key(),
                 ))
             ));
 
@@ -152,11 +152,11 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
         $exploded = explode(';', $serialized);
 
         $this->assertEquals(2, count($exploded));
-        $this->assertContains(self::$records['record_2']->get_serialize_key(), $exploded);
-        $this->assertContains(self::$records['record_24']->get_serialize_key(), $exploded);
-        $this->assertNotContains(self::$records['record_story_2']->get_serialize_key(), $exploded);
-        $this->assertNotContains(self::$records['record_no_access']->get_serialize_key(), $exploded);
-        $this->assertNotContains(self::$records['record_no_access_by_status']->get_serialize_key(), $exploded);
+        $this->assertContains(self::$DI['record_2']->get_serialize_key(), $exploded);
+        $this->assertContains(self::$DI['record_24']->get_serialize_key(), $exploded);
+        $this->assertNotContains(self::$DI['record_story_2']->get_serialize_key(), $exploded);
+        $this->assertNotContains(self::$DI['record_no_access']->get_serialize_key(), $exploded);
+        $this->assertNotContains(self::$DI['record_no_access_by_status']->get_serialize_key(), $exploded);
     }
 
     public function testSimpleBasket()
@@ -183,10 +183,10 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
     public function getBasket()
     {
         $elements = array(
-            self::$records['record_24'],
-            self::$records['record_2'],
-            self::$records['record_no_access'],
-            self::$records['record_no_access_by_status'],
+            self::$DI['record_24'],
+            self::$DI['record_2'],
+            self::$DI['record_no_access'],
+            self::$DI['record_no_access_by_status'],
         );
 
         $basket = new \Entities\Basket();
@@ -253,7 +253,7 @@ class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
     protected function getStoryWZ()
     {
         $story = new \Entities\StoryWZ();
-        $story->setRecord(self::$records['record_story_2']);
+        $story->setRecord(self::$DI['record_story_2']);
         $story->setUser(self::$application['phraseanet.user']);
 
         self::$application['EM']->persist($story);

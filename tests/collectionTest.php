@@ -20,7 +20,7 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
         parent::setUpBeforeClass();
         $appbox = self::$application['phraseanet.appbox'];
-        $auth = new Session_Authentication_None(self::$user);
+        $auth = new Session_Authentication_None(self::$DI['user']);
         self::$application->openAccount($auth);
 
         $found = false;
@@ -32,12 +32,12 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
         if ( ! $found)
             self::fail('No databox found for collection test');
 
-        self::$object = collection::create(self::$application, $databox, $appbox, 'test_collection', self::$user);
+        self::$object = collection::create(self::$application, $databox, $appbox, 'test_collection', self::$DI['user']);
 
         if ( ! self::$object instanceof collection)
             self::fail('Unable to create collection');
 
-        self::$objectDisable = collection::create(self::$application, $databox, $appbox, 'test_collection', self::$user);
+        self::$objectDisable = collection::create(self::$application, $databox, $appbox, 'test_collection', self::$DI['user']);
         self::$objectDisable->disable(self::$application['phraseanet.appbox']);
         if ( ! self::$objectDisable instanceof collection)
             self::fail('Unable to create disable collection');

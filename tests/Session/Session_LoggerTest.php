@@ -19,7 +19,7 @@ class Session_LoggerTest extends PhraseanetPHPUnitAbstract
 
     protected function feed_datas()
     {
-        $user = self::$user;
+        $user = self::$DI['user'];
         $auth = new Session_Authentication_None($user);
 
         self::$application->openAccount($auth);

@@ -8,7 +8,7 @@ class randomTest extends PhraseanetPHPUnitAbstract
     public function testCleanTokens()
     {
         $expires_on = new DateTime('-5 minutes');
-        $usr_id = self::$user->get_id();
+        $usr_id = self::$DI['user']->get_id();
         $token = random::getUrlToken(self::$application, \random::TYPE_PASSWORD, $usr_id, $expires_on, 'some nice datas');
         random::cleanTokens(self::$application);
 
@@ -59,7 +59,7 @@ class randomTest extends PhraseanetPHPUnitAbstract
 
     public function testGetUrlToken()
     {
-        $usr_id = self::$user->get_id();
+        $usr_id = self::$DI['user']->get_id();
         $token = random::getUrlToken(self::$application, \random::TYPE_PASSWORD, $usr_id, null, 'some nice datas');
         $datas = random::helloToken(self::$application, $token);
         $this->assertEquals('some nice datas', $datas['datas']);
@@ -81,7 +81,7 @@ class randomTest extends PhraseanetPHPUnitAbstract
 
     public function testHelloToken()
     {
-        $usr_id = self::$user->get_id();
+        $usr_id = self::$DI['user']->get_id();
         $token = random::getUrlToken(self::$application, \random::TYPE_PASSWORD, $usr_id, null, 'some nice datas');
         $datas = random::helloToken(self::$application, $token);
         $this->assertEquals('some nice datas', $datas['datas']);
@@ -102,7 +102,7 @@ class randomTest extends PhraseanetPHPUnitAbstract
         }
 
         $expires_on = new DateTime('+5 minutes');
-        $usr_id = self::$user->get_id();
+        $usr_id = self::$DI['user']->get_id();
         $token = random::getUrlToken(self::$application, \random::TYPE_PASSWORD, $usr_id, $expires_on, 'some nice datas');
         $datas = random::helloToken(self::$application, $token);
         $this->assertEquals('some nice datas', $datas['datas']);
@@ -125,7 +125,7 @@ class randomTest extends PhraseanetPHPUnitAbstract
 
 
         $expires_on = new DateTime('-5 minutes');
-        $usr_id = self::$user->get_id();
+        $usr_id = self::$DI['user']->get_id();
         $token = random::getUrlToken(self::$application, \random::TYPE_PASSWORD, $usr_id, $expires_on, 'some nice datas');
 
         try {

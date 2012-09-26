@@ -18,9 +18,9 @@ class Feed_CollectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
         parent::setUpBeforeClass();
         $appbox = self::$application['phraseanet.appbox'];
-        $auth = new Session_Authentication_None(self::$user);
+        $auth = new Session_Authentication_None(self::$DI['user']);
         self::$application->openAccount($auth);
-        self::$object = Feed_Adapter::create(self::$application, self::$user, self::$title, self::$subtitle);
+        self::$object = Feed_Adapter::create(self::$application, self::$DI['user'], self::$title, self::$subtitle);
         self::$object->set_public(true);
     }
 
@@ -33,7 +33,7 @@ class Feed_CollectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testLoad_all()
     {
         $appbox = self::$application['phraseanet.appbox'];
-        $coll = Feed_Collection::load_all(self::$application, self::$user);
+        $coll = Feed_Collection::load_all(self::$application, self::$DI['user']);
 
         foreach ($coll->get_feeds() as $feed) {
             $this->assertInstanceOf('Feed_Adapter', $feed);

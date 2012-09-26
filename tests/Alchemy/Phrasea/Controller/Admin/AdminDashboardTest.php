@@ -54,7 +54,7 @@ class AdminDashboardTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->setAdmin(true);
 
         $this->client->request('POST', '/admin/dashboard/send-mail-test/', array(
-            'email' => self::$user->get_email()
+            'email' => self::$DI['user']->get_email()
         ));
 
         $this->assertTrue($this->client->getResponse()->isRedirect());
