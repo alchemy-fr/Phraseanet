@@ -11,19 +11,6 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
     protected $StubbedACL;
     protected static $createdDataboxes = array();
 
-    public static function setUpBeforeClass()
-    {
-        parent::setUpBeforeClass();
-        $auth = new Session_Authentication_None(self::$DI['user']);
-        self::$application->openAccount($auth);
-    }
-
-    public static function tearDownAfterClass()
-    {
-        self::$application->closeAccount();
-        parent::tearDownAfterClass();
-    }
-
     public function setUp()
     {
         parent::setUp();
@@ -35,7 +22,7 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
 
     public function setAdmin($bool)
     {
-        $stubAuthenticatedUser = $this->getMockBuilder('\User_Adapter')//, array('is_admin', 'ACL'), array(self::$application['phraseanet.user']->get_id(), self::$application))
+        $stubAuthenticatedUser = $this->getMockBuilder('\User_Adapter')//, array('is_admin', 'ACL'), array(self::$DI['app']['phraseanet.user']->get_id(), self::$DI['app']))
             ->setMethods(array('ACL', 'get_id'))
             ->disableOriginalConstructor()
             ->getMock();
@@ -82,11 +69,11 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
 
         $this->StubbedACL->expects($this->any())
             ->method('get_granted_base')
-            ->will($this->returnValue(array(self::$collection)));
+            ->will($this->returnValue(array(self::$DI['collection'])));
 
         $this->StubbedACL->expects($this->any())
             ->method('get_granted_sbas')
-            ->will($this->returnValue(array(self::$collection->get_databox())));
+            ->will($this->returnValue(array(self::$DI['collection']->get_databox())));
 
         $stubAuthenticatedUser->expects($this->any())
             ->method('ACL')
@@ -96,18 +83,20 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
             ->method('get_id')
             ->will($this->returnValue(self::$DI['user']->get_id()));
 
-        self::$application['phraseanet.user'] = $stubAuthenticatedUser;
+        self::$DI['app']['phraseanet.user'] = $stubAuthenticatedUser;
 
-        $this->client = new Client(self::$application, array());
+        self::$DI['client'] = self::$DI->share(function($DI) {
+                return new Client($DI['app'], array());
+            });
     }
 
     public function createDatabox()
     {
-        $registry = self::$application['phraseanet.registry'];
+        $registry = self::$DI['app']['phraseanet.registry'];
 
         $this->createDatabase();
 
-        $configuration = self::$application['phraseanet.configuration'];
+        $configuration = self::$DI['app']['phraseanet.configuration'];
 
         $choosenConnexion = $configuration->getPhraseanet()->get('database');
         $connexion = $configuration->getConnexion($choosenConnexion);
@@ -120,7 +109,7 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
         }
 
         $databox = \databox::create(
-                self::$application, $conn, new \SplFileInfo($registry->get('GV_RootPath') . 'lib/conf.d/data_templates/fr-simple.xml'), $registry
+                self::$DI['app'], $conn, new \SplFileInfo($registry->get('GV_RootPath') . 'lib/conf.d/data_templates/fr-simple.xml'), $registry
         );
 
         self::$createdDataboxes[] = $databox;
@@ -133,21 +122,21 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
             , 'bas_chupub'        => '1'
         );
 
-        self::$application['phraseanet.user']->ACL()->update_rights_to_sbas($databox->get_sbas_id(), $rights);
+        self::$DI['app']['phraseanet.user']->ACL()->update_rights_to_sbas($databox->get_sbas_id(), $rights);
 
 
-        $databox->registerAdmin(self::$application['phraseanet.user']);
+        $databox->registerAdmin(self::$DI['app']['phraseanet.user']);
 
         return $databox;
     }
 
     public static function dropDatabase()
     {
-        $stmt = self::$application['phraseanet.appbox']
+        $stmt = self::$DI['app']['phraseanet.appbox']
             ->get_connection()
             ->prepare('DROP DATABASE IF EXISTS `unit_test_db`');
         $stmt->execute();
-        $stmt = self::$application['phraseanet.appbox']
+        $stmt = self::$DI['app']['phraseanet.appbox']
             ->get_connection()
             ->prepare('DELETE FROM sbas WHERE dbname = "unit_test_db"');
         $stmt->execute();
@@ -157,7 +146,7 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
     {
         self::dropDatabase();
 
-        $stmt = self::$application['phraseanet.appbox']
+        $stmt = self::$DI['app']['phraseanet.appbox']
             ->get_connection()
             ->prepare('CREATE DATABASE `unit_test_db`
               CHARACTER SET utf8 COLLATE utf8_unicode_ci');
