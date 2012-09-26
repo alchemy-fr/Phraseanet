@@ -187,7 +187,6 @@ class task_period_cindexer extends task_abstract
                 parent.calccmd();
             </script>
             <?php
-
             return("");
         } else { // ... so we NEVER come here
             // bad xml
@@ -256,7 +255,6 @@ class task_period_cindexer extends task_abstract
             }
         </script>
         <?php
-
         return;
     }
 
@@ -323,7 +321,6 @@ class task_period_cindexer extends task_abstract
             <div style="margin:10px; padding:5px; border:1px #000000 solid; font-family:monospace; font-size:16px; text-align:left; color:#00e000; background-color:#404040" id="cmd">cmd</div>
         </center>
         <?php
-
         return ob_get_clean();
     }
 
@@ -458,16 +455,14 @@ class task_period_cindexer extends task_abstract
         $pipes = array();
 
         $logcmd = $cmd;
-        foreach ($args_nopwd as $arg)
-        {
+        foreach ($args_nopwd as $arg) {
             $logcmd .= ' ' . escapeshellarg($arg);
         }
 
-        $this->log(sprintf('cmd=\'%s\'', escapeshellcmd($logcmd) ));
+        $this->log(sprintf('cmd=\'%s\'', escapeshellcmd($logcmd)));
 
         $execmd = $cmd;
-        foreach ($args as $arg)
-        {
+        foreach ($args as $arg) {
             $execmd .= ' ' . escapeshellarg($arg);
         }
         $process = proc_open(escapeshellcmd($execmd), $descriptors, $pipes, $this->binpath, null, array('bypass_shell' => true));
