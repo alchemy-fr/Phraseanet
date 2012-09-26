@@ -71,7 +71,6 @@ class Bridge_AccountTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertInstanceOf('Bridge_Api', self::$object->get_api());
         $this->assertEquals(self::$api, self::$object->get_api());
         $this->assertEquals(self::$api->get_id(), self::$object->get_api()->get_id());
-        var_dump(microtime(true)-$start);
     }
 
     public function testGet_dist_id()
