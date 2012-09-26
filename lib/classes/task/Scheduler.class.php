@@ -54,10 +54,6 @@ class task_Scheduler
      */
     public function run()
     {
-        if (function_exists('pcntl_signal')) {
-            // avoid <defunct> php when a task ends
-            pcntl_signal(SIGCHLD, SIG_IGN);
-        }
 
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $registry = $appbox->get_registry();
@@ -76,6 +72,9 @@ class task_Scheduler
         }
 
         if (function_exists('pcntl_fork')) {
+            // avoid <defunct> php when a task ends
+            pcntl_signal(SIGCHLD, SIG_IGN);
+
             $this->method = self::METHOD_FORK;
         }
 
