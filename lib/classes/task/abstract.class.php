@@ -321,7 +321,7 @@ abstract class task_abstract
 
     abstract public function help();
 
-    public function __construct($taskid, Logger $logger = NULL)
+    public function __construct($taskid, Logger $logger)
     {
         $this->logger = $logger;
 

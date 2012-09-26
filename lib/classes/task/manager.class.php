@@ -41,9 +41,9 @@ class task_manager
 
         $core = \bootstrap::getCore();
 
-//        if ( ! $logger) {
-//            $logger = $core['monolog'];
-//        }
+        if ( ! $logger) {
+            $logger = $core['monolog'];
+        }
 
         $sql = "SELECT task2.* FROM task2 ORDER BY task_id ASC";
         $stmt = $this->appbox->get_connection()->prepare($sql);
@@ -81,9 +81,9 @@ class task_manager
     {
         $core = \bootstrap::getCore();
 
-//        if ( ! $logger) {
-//            $logger = $core['monolog'];
-//        }
+        if ( ! $logger) {
+            $logger = $core['monolog'];
+        }
 
         $tasks = $this->getTasks(false, $logger);
 
