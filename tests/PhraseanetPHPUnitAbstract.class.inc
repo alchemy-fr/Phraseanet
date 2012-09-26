@@ -708,7 +708,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             return $collection_no_acces;
         });
 
-        self::$DI['collection_no_access_by_status'] = self::$DI->share(function($DI) use ($application, $databox, $appbox, $collection_no_acces) {
+        self::$DI['collection_no_access_by_status'] = self::$DI->share(function($DI) use ($application, $databox, $appbox, $collection_no_acces_by_status) {
             if (!$collection_no_acces_by_status instanceof collection) {
                 $collection_no_acces_by_status = collection::create($application, $databox, $appbox, 'BIBOONOACCESBYSTATUS', $DI['user']);
             }

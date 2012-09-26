@@ -10,6 +10,17 @@ require_once __DIR__ . '/../../../PhraseanetPHPUnitAuthenticatedAbstract.class.i
 class RecordsRequestTest extends \PhraseanetPHPUnitAuthenticatedAbstract
 {
 
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+
+        self::$DI['app'] = new Application('test');
+
+        self::giveRightsToUser(self::$DI['app'], self::$DI['user']);
+        self::$DI['user']->ACL()->revoke_access_from_bases(array(self::$DI['collection_no_access']->get_base_id()));
+        self::$DI['user']->ACL()->set_masks_on_base(self::$DI['collection_no_access_by_status']->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
+    }
+
     public function testSimple()
     {
         $request = new Request(array(

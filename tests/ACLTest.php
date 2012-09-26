@@ -39,6 +39,12 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
         } catch (Exception $e) {
 
         }
+
+        self::giveRightsToUser($application, self::$DI['user']);
+        self::$DI['user']->ACL()->revoke_access_from_bases(array(self::$DI['collection_no_access']->get_base_id()));
+        self::$DI['user']->ACL()->set_masks_on_base(self::$DI['collection_no_access_by_status']->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
+
+
         parent::tearDownAfterClass();
     }
 
