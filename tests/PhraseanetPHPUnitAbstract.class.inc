@@ -561,7 +561,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 $usr_id = $user->get_id();
             }
 
-            $user = new User_Adapter($usr_id, $application);
+            $user = User_Adapter::getInstance($usr_id, $application);
 
             return $user;
         });
@@ -574,7 +574,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 $usr_id = $user->get_id();
             }
 
-            return new User_Adapter($usr_id, $application);
+            return User_Adapter::getInstance($usr_id, $application);
         });
 
         self::$DI['user_alt1'] = self::$DI->share(function () use ($application) {
@@ -585,7 +585,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 $usr_id = $user->get_id();
             }
 
-            return new User_Adapter($usr_id, $application);
+            return User_Adapter::getInstance($usr_id, $application);
         });
 
         self::$DI['user_alt2'] = self::$DI->share(function () use ($application) {
@@ -596,7 +596,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 $usr_id = $user->get_id();
             }
 
-            return new User_Adapter($usr_id, $application);
+            return User_Adapter::getInstance($usr_id, $application);
         });
     }
 

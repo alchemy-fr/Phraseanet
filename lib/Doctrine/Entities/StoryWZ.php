@@ -149,7 +149,7 @@ class StoryWZ
     public function getUser(Application $app)
     {
         if ($this->getUsrId()) {
-            return new \User_Adapter($this->getUsrId(), $app);
+            return \User_Adapter::getInstance($this->getUsrId(), $app);
         }
     }
 

@@ -331,7 +331,7 @@ class Basket
     public function getPusher(Application $app)
     {
         if ($this->getPusherId()) {
-            return new \User_Adapter($this->getPusherId(), $app);
+            return \User_Adapter::getInstance($this->getPusherId(), $app);
         }
     }
 
@@ -343,7 +343,7 @@ class Basket
     public function getOwner(Application $app)
     {
         if ($this->getUsrId()) {
-            return new \User_Adapter($this->getUsrId(), $app);
+            return \User_Adapter::getInstance($this->getUsrId(), $app);
         }
     }
     /**
