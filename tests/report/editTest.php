@@ -18,7 +18,7 @@ class editTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->dmax = $date->format("Y-m-d H:i:s");
         $date->modify('-6 month');
         $this->dmin = $date->format("Y-m-d H:i:s");
-        $appbox = self::$application['phraseanet.appbox'];
+        $appbox = self::$DI['app']['phraseanet.appbox'];
         $databoxes = $appbox->get_databoxes();
         $this->ret = array();
         foreach ($databoxes as $databox) {
@@ -44,7 +44,7 @@ class editTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         foreach ($this->ret as $sbasid => $collections) {
             $this->report = new module_report_edit(
-                    self::$application,
+                    self::$DI['app'],
                     $this->dmin,
                     $this->dmax,
                     $sbasid,
@@ -64,7 +64,7 @@ class editTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         foreach ($this->ret as $sbasid => $collections) {
             $this->report = new module_report_edit(
-                    self::$application,
+                    self::$DI['app'],
                     $this->dmin,
                     $this->dmax,
                     $sbasid,

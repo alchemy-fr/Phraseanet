@@ -21,10 +21,10 @@ class Feed_Publisher_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $appbox = self::$application['phraseanet.appbox'];
+        $appbox = self::$DI['app']['phraseanet.appbox'];
         $auth = new Session_Authentication_None(self::$DI['user']);
-        self::$application->openAccount($auth);
-        self::$feed = Feed_Adapter::create(self::$application, self::$DI['user'], self::$title, self::$subtitle);
+        self::$DI['app']->openAccount($auth);
+        self::$feed = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], self::$title, self::$subtitle);
         self::$object = array_pop(self::$feed->get_publishers());
     }
 

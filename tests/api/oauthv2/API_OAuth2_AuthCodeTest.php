@@ -17,14 +17,14 @@ class API_OAuth2_AuthCodeTest extends PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $appbox = self::$application['phraseanet.appbox'];
-        $this->application = API_OAuth2_Application::create(self::$application, self::$DI['user'], 'test app');
-        $this->account = API_OAuth2_Account::load_with_user(self::$application, $this->application, self::$DI['user']);
+        $appbox = self::$DI['app']['phraseanet.appbox'];
+        $this->application = API_OAuth2_Application::create(self::$DI['app'], self::$DI['user'], 'test app');
+        $this->account = API_OAuth2_Account::load_with_user(self::$DI['app'], $this->application, self::$DI['user']);
 
         $expires = time() + 100;
         $this->code = random::generatePassword(8);
 
-        $this->object = API_OAuth2_AuthCode::create(self::$application, $this->account, $this->code, $expires);
+        $this->object = API_OAuth2_AuthCode::create(self::$DI['app'], $this->account, $this->code, $expires);
     }
 
     public function tearDown()
@@ -76,7 +76,7 @@ class API_OAuth2_AuthCodeTest extends PhraseanetPHPUnitAbstract
 
     public function testLoad_codes_by_account()
     {
-        $this->assertTrue(is_array(API_OAuth2_AuthCode::load_codes_by_account(self::$application, $this->account)));
-        $this->assertTrue(count(API_OAuth2_AuthCode::load_codes_by_account(self::$application, $this->account)) > 0);
+        $this->assertTrue(is_array(API_OAuth2_AuthCode::load_codes_by_account(self::$DI['app'], $this->account)));
+        $this->assertTrue(count(API_OAuth2_AuthCode::load_codes_by_account(self::$DI['app'], $this->account)) > 0);
     }
 }

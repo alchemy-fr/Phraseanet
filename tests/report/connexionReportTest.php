@@ -19,7 +19,7 @@ class connexionReportTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->dmax = $date->format("Y-m-d H:i:s");
         $date->modify('-6 month');
         $this->dmin = $date->format("Y-m-d H:i:s");
-        $appbox = self::$application['phraseanet.appbox'];
+        $appbox = self::$DI['app']['phraseanet.appbox'];
         $databoxes = $appbox->get_databoxes();
         $this->ret = array();
         foreach ($databoxes as $databox) {
@@ -59,7 +59,7 @@ class connexionReportTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $nbResult = 0;
         foreach ($this->ret as $sbasid => $collections) {
             $this->report = new module_report_connexion(
-                    self::$application,
+                    self::$DI['app'],
                     $this->dmin,
                     $this->dmax,
                     $sbasid,
@@ -81,7 +81,7 @@ class connexionReportTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         foreach ($this->ret as $sbasid => $collections) {
             $this->report = new module_report_connexion(
-                    self::$application,
+                    self::$DI['app'],
                     $this->dmin,
                     $this->dmax,
                     $sbasid,

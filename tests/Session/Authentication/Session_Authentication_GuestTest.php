@@ -14,7 +14,7 @@ class Session_Authentication_GuestTest extends PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new Session_Authentication_Guest(self::$application);
+        $this->object = new Session_Authentication_Guest(self::$DI['app']);
     }
 
     public function testSignOn()

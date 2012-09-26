@@ -22,8 +22,8 @@ class Session_LoggerTest extends PhraseanetPHPUnitAbstract
         $user = self::$DI['user'];
         $auth = new Session_Authentication_None($user);
 
-        self::$application->openAccount($auth);
-        $logger_creater = self::$application['phraseanet.logger'];
+        self::$DI['app']->openAccount($auth);
+        $logger_creater = self::$DI['app']['phraseanet.logger'];
 
         foreach ($user->ACL()->get_granted_sbas() as $databox) {
             $this->object = $logger_creater($databox);
@@ -40,13 +40,13 @@ class Session_LoggerTest extends PhraseanetPHPUnitAbstract
         $log_id = $this->object->get_id();
         $this->assertTrue(is_int($log_id));
 
-        $registry = self::$application['phraseanet.registry'];
+        $registry = self::$DI['app']['phraseanet.registry'];
 
         $sql = 'SELECT id FROM log
             WHERE sit_session = :ses_id AND usrid = :usr_id AND site = :site';
         $params = array(
-            ':ses_id' => self::$application['session']->get('phrasea_session_id')
-            , ':usr_id' => self::$application['phraseanet.user']->get_id()
+            ':ses_id' => self::$DI['app']['session']->get('phrasea_session_id')
+            , ':usr_id' => self::$DI['app']['phraseanet.user']->get_id()
             , ':site'   => $registry->get('GV_sit')
         );
 
@@ -56,10 +56,10 @@ class Session_LoggerTest extends PhraseanetPHPUnitAbstract
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $this->assertEquals($this->object->get_id(), $row['id']);
         $log_id = $this->object->get_id();
-        $ses_id = self::$application['session']->get('phrasea_session_id');
-        $usr_id = self::$application['phraseanet.user']->get_id();
+        $ses_id = self::$DI['app']['session']->get('phrasea_session_id');
+        $usr_id = self::$DI['app']['phraseanet.user']->get_id();
 
-        self::$application->closeAccount();
+        self::$DI['app']->closeAccount();
 
         $sql = 'SELECT id FROM log
             WHERE sit_session = :ses_id AND usrid = :usr_id AND site = :site';

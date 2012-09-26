@@ -31,7 +31,7 @@ class reportTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->dmax = $date->format("Y-m-d H:i:s");
         $date->modify('-6 month');
         $this->dmin = $date->format("Y-m-d H:i:s");
-        $appbox = self::$application['phraseanet.appbox'];
+        $appbox = self::$DI['app']['phraseanet.appbox'];
         $databoxes = $appbox->get_databoxes();
         $this->ret = array();
         foreach ($databoxes as $databox) {
@@ -47,7 +47,7 @@ class reportTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testReport()
     {
         foreach ($this->ret as $sbasid => $collections) {
-            $this->report = new module_report(self::$application, $this->dmin, $this->dmax, $sbasid, $collections);
+            $this->report = new module_report(self::$DI['app'], $this->dmin, $this->dmax, $sbasid, $collections);
             $this->report->setUser_id(self::$DI['user']->get_id());
             $this->assertEquals($collections, $this->report->getListCollId());
             $this->host($this->report);
@@ -104,7 +104,7 @@ class reportTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
 
 
-        $report = new module_report(self::$application, $this->dmin, $this->dmax, 1, '');
+        $report = new module_report(self::$DI['app'], $this->dmin, $this->dmax, 1, '');
         $bool = true;
         $report->setPrettyString($bool);
         $this->assertEquals($bool, $report->getPrettyString());
@@ -161,7 +161,7 @@ class reportTest extends PhraseanetPHPUnitAuthenticatedAbstract
             $r = new \ReflectionObject($report);
             $p = $r->getProperty('app');
             $p->setAccessible(true);
-            $p->setValue($report, self::$application);
+            $p->setValue($report, self::$DI['app']);
 
             $report->setRequest('SELECT
           user,

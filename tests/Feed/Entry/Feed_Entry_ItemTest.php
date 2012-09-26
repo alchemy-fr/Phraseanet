@@ -33,13 +33,13 @@ class Feed_Entry_ItemTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $appbox = self::$application['phraseanet.appbox'];
+        $appbox = self::$DI['app']['phraseanet.appbox'];
         $auth = new Session_Authentication_None(self::$DI['user']);
-        self::$application->openAccount($auth);
+        self::$DI['app']->openAccount($auth);
 
-        self::$feed = Feed_Adapter::create(self::$application, self::$DI['user'], self::$feed_title, self::$feed_subtitle);
-        $publisher = Feed_Publisher_Adapter::getPublisher(self::$application['phraseanet.appbox'], self::$feed, self::$DI['user']);
-        self::$entry = Feed_Entry_Adapter::create(self::$application, self::$feed, $publisher, self::$title, self::$subtitle, self::$author_name, self::$author_email);
+        self::$feed = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], self::$feed_title, self::$feed_subtitle);
+        $publisher = Feed_Publisher_Adapter::getPublisher(self::$DI['app']['phraseanet.appbox'], self::$feed, self::$DI['user']);
+        self::$entry = Feed_Entry_Adapter::create(self::$DI['app'], self::$feed, $publisher, self::$title, self::$subtitle, self::$author_name, self::$author_email);
 
         self::$object = Feed_Entry_Item::create($appbox, self::$entry, self::$DI['record_1']);
     }

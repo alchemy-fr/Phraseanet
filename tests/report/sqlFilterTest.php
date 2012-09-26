@@ -20,7 +20,7 @@ class sqlFilterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $dmax = $date->format("Y-m-d H:i:s");
         $date->modify('-6 month');
         $dmin = $date->format("Y-m-d H:i:s");
-        $appbox = self::$application['phraseanet.appbox'];
+        $appbox = self::$DI['app']['phraseanet.appbox'];
         $databoxes = $appbox->get_databoxes();
         $ret = array();
         foreach ($databoxes as $databox) {
@@ -33,7 +33,7 @@ class sqlFilterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         }
         foreach ($ret as $sbasid => $collections) {
             $report = new module_report_connexion(
-                    self::$application,
+                    self::$DI['app'],
                     $dmin,
                     $dmax,
                     $sbasid,
@@ -49,7 +49,7 @@ class sqlFilterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->report->setFilter(array(array('f' => 'user', 'o' => '=', 'v' => 'admin'), array('f' => 'ddate', 'o' => 'LIKE', 'v' => '*'), array('f' => '1', 'o' => 'OR', 'v' => '1')));
         $this->report->setUser_id(self::$DI['user']->get_id());
         $this->report->setOrder('user', 'ASC');
-        $this->filter = new module_report_sqlfilter(self::$application, $this->report);
+        $this->filter = new module_report_sqlfilter(self::$DI['app'], $this->report);
     }
 
     public function checkFilter($filter)

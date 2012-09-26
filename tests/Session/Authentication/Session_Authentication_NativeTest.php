@@ -17,13 +17,13 @@ class Session_Authentication_NativeTest extends PhraseanetPHPUnitAbstract
         parent::setUp();
         $login = 'testlogin';
         $password = 'testpassword';
-        $usr_id = User_Adapter::get_usr_id_from_login(self::$application, $login);
+        $usr_id = User_Adapter::get_usr_id_from_login(self::$DI['app'], $login);
         if ($usr_id) {
-            $this->local_user = User_Adapter::getInstance($usr_id, self::$application);
+            $this->local_user = User_Adapter::getInstance($usr_id, self::$DI['app']);
         } else {
-            $this->local_user = User_Adapter::create(self::$application, $login, $password, null, false);
+            $this->local_user = User_Adapter::create(self::$DI['app'], $login, $password, null, false);
         }
-        $this->object = new Session_Authentication_Native(self::$application, $login, $password);
+        $this->object = new Session_Authentication_Native(self::$DI['app'], $login, $password);
     }
 
     public function tearDown()

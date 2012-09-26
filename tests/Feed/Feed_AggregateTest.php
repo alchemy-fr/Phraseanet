@@ -17,14 +17,14 @@ class Feed_AggregateTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $appbox = self::$application['phraseanet.appbox'];
+        $appbox = self::$DI['app']['phraseanet.appbox'];
         $auth = new Session_Authentication_None(self::$DI['user']);
-        self::$application->openAccount($auth);
-        $objects[] = Feed_Adapter::create(self::$application, self::$DI['user'], self::$title, self::$subtitle);
-        $objects[] = Feed_Adapter::create(self::$application, self::$DI['user'], self::$title, self::$subtitle);
+        self::$DI['app']->openAccount($auth);
+        $objects[] = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], self::$title, self::$subtitle);
+        $objects[] = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], self::$title, self::$subtitle);
 
         self::$feeds = $objects;
-        self::$object = new Feed_Aggregate(self::$application, self::$feeds);
+        self::$object = new Feed_Aggregate(self::$DI['app'], self::$feeds);
     }
 
     public static function tearDownAfterClass()
@@ -59,7 +59,7 @@ class Feed_AggregateTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_homepage_link()
     {
-        $registry = self::$application['phraseanet.registry'];
+        $registry = self::$DI['app']['phraseanet.registry'];
         $link = self::$object->get_homepage_link($registry, Feed_Adapter::FORMAT_ATOM);
         $this->assertInstanceOf('Feed_Link', $link);
         $this->assertEquals($registry->get('GV_ServerName') . 'feeds/aggregated/atom/', $link->get_href());
@@ -67,7 +67,7 @@ class Feed_AggregateTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_user_link()
     {
-        $registry = self::$application['phraseanet.registry'];
+        $registry = self::$DI['app']['phraseanet.registry'];
 
         $link = self::$object->get_user_link($registry, self::$DI['user'], Feed_Adapter::FORMAT_ATOM);
         $supposed = '/feeds\/userfeed\/aggregated\/([a-zA-Z0-9]{12})\/atom\//';

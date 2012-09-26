@@ -15,9 +15,9 @@ class API_OAuth2_AccountTest extends PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $appbox = self::$application['phraseanet.appbox'];
-        $this->application = API_OAuth2_Application::create(self::$application, self::$DI['user'], 'test app');
-        $this->object = API_OAuth2_Account::load_with_user(self::$application, $this->application, self::$DI['user']);
+        $appbox = self::$DI['app']['phraseanet.appbox'];
+        $this->application = API_OAuth2_Application::create(self::$DI['app'], self::$DI['user'], 'test app');
+        $this->object = API_OAuth2_Account::load_with_user(self::$DI['app'], $this->application, self::$DI['user']);
     }
 
     public function tearDown()
@@ -74,7 +74,7 @@ class API_OAuth2_AccountTest extends PhraseanetPHPUnitAbstract
 
     public function testLoad_with_user()
     {
-        $loaded = API_OAuth2_Account::load_with_user(self::$application, $this->application, self::$DI['user']);
+        $loaded = API_OAuth2_Account::load_with_user(self::$DI['app'], $this->application, self::$DI['user']);
         $this->assertInstanceOf('API_OAuth2_Account', $loaded);
         $this->assertEquals($this->object, $loaded);
     }

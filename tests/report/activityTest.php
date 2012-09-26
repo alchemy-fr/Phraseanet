@@ -23,7 +23,7 @@ class activityTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->dmax = $date->format("Y-m-d H:i:s");
         $date->modify('-6 month');
         $this->dmin = $date->format("Y-m-d H:i:s");
-        $appbox = self::$application['phraseanet.appbox'];
+        $appbox = self::$DI['app']['phraseanet.appbox'];
         $databoxes = $appbox->get_databoxes();
         $this->ret = array();
         foreach ($databoxes as $databox) {
@@ -49,7 +49,7 @@ class activityTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         foreach ($this->ret as $sbasid => $colllist) {
             $report = new module_report_activity(
-                    self::$application,
+                    self::$DI['app'],
                     $this->dmin,
                     $this->dmax,
                     $sbasid,
@@ -134,49 +134,49 @@ class activityTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function topTenUser($report, $sbasid, $colllist)
     {
-        $result = $report->topTenUser(self::$application, $this->dmin, $this->dmax, $sbasid, $colllist);
+        $result = $report->topTenUser(self::$DI['app'], $this->dmin, $this->dmax, $sbasid, $colllist);
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $result);
     }
 
     public function activity($report, $sbasid, $colllist)
     {
-        $result = $report->activity(self::$application, $this->dmin, $this->dmax, $sbasid, $colllist);
+        $result = $report->activity(self::$DI['app'], $this->dmin, $this->dmax, $sbasid, $colllist);
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $result);
     }
 
     public function activityDay($report, $sbasid, $colllist)
     {
-        $result = $report->activityDay(self::$application, $this->dmin, $this->dmax, $sbasid, $colllist);
+        $result = $report->activityDay(self::$DI['app'], $this->dmin, $this->dmax, $sbasid, $colllist);
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $result);
     }
 
     public function activityQuestion($report, $sbasid, $colllist)
     {
-        $result = $report->activityQuestion(self::$application, $this->dmin, $this->dmax, $sbasid, $colllist);
+        $result = $report->activityQuestion(self::$DI['app'], $this->dmin, $this->dmax, $sbasid, $colllist);
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $result);
     }
 
     public function activiteTopTenSiteView($report, $sbasid, $colllist)
     {
-        $result = $report->activiteTopTenSiteView(self::$application, $this->dmin, $this->dmax, $sbasid, $colllist);
+        $result = $report->activiteTopTenSiteView(self::$DI['app'], $this->dmin, $this->dmax, $sbasid, $colllist);
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $result);
     }
 
     public function activiteAddedDocument($report, $sbasid, $colllist)
     {
-        $result = $report->activiteAddedDocument(self::$application, $this->dmin, $this->dmax, $sbasid, $colllist);
+        $result = $report->activiteAddedDocument(self::$DI['app'], $this->dmin, $this->dmax, $sbasid, $colllist);
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $result);
     }
 
     public function activiteEditedDocument($report, $sbasid, $colllist)
     {
-        $result = $report->activiteEditedDocument(self::$application, $this->dmin, $this->dmax, $sbasid, $colllist);
+        $result = $report->activiteEditedDocument(self::$DI['app'], $this->dmin, $this->dmax, $sbasid, $colllist);
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $result);
     }
 
     public function activiteAddedTopTenUser($report, $sbasid, $colllist)
     {
-        $result = $report->activiteAddedTopTenUser(self::$application, $this->dmin, $this->dmax, $sbasid, $colllist);
+        $result = $report->activiteAddedTopTenUser(self::$DI['app'], $this->dmin, $this->dmax, $sbasid, $colllist);
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $result);
     }
 }

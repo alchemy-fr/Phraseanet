@@ -12,7 +12,7 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new caption_record(self::$application, self::$DI['record_1'], self::$DI['record_1']->get_databox());
+        $this->object = new caption_record(self::$DI['app'], self::$DI['record_1'], self::$DI['record_1']->get_databox());
     }
 
     /**
@@ -25,7 +25,7 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
             $n = $databox_field->is_multi() ? 3 : 1;
 
             for ($i = 0; $i < $n; $i ++ ) {
-                \caption_Field_Value::create(self::$application, $databox_field, self::$DI['record_1'], \random::generatePassword());
+                \caption_Field_Value::create(self::$DI['app'], $databox_field, self::$DI['record_1'], \random::generatePassword());
             }
         }
 

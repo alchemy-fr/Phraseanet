@@ -9,7 +9,7 @@ class sqlTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
         parent::setUp();
         $report = $this->getMock('module_report', array(), array(), '', false);
-        $this->sql = new module_report_sql(self::$application, $report);
+        $this->sql = new module_report_sql(self::$DI['app'], $report);
     }
 
     public function testSql()

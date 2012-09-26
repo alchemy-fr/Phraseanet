@@ -14,12 +14,12 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $task = \task_period_archive::create(self::$application, 'task_period_archive');
+        $task = \task_period_archive::create(self::$DI['app'], 'task_period_archive');
 
         $logger = new \Monolog\Logger('test');
         $logger->pushHandler(new \Monolog\Handler\NullHandler());
 
-        self::$object = new archiveTester($task->getID(), self::$application, $logger);
+        self::$object = new archiveTester($task->getID(), self::$DI['app'], $logger);
     }
 
     public static function tearDownAfterClass()
@@ -246,7 +246,7 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
 
     public function getXml()
     {
-        $meta_struct = self::$collection->get_databox()->get_meta_structure();
+        $meta_struct = self::$DI['collection']->get_databox()->get_meta_structure();
 
         $xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
                 <record record_id="2">
@@ -309,7 +309,7 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
 
         file_put_contents($tmp, $xml);
 
-        $story = self::$object->createStory(self::$collection, $tmpFile, $tmp);
+        $story = self::$object->createStory(self::$DI['collection'], $tmpFile, $tmp);
 
         unlink($tmpFile);
 
@@ -330,7 +330,7 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
 
         file_put_contents($tmp, $xml);
 
-        $story = self::$object->createRecord(self::$collection, $tmpFile, $tmp, null, \Alchemy\Phrasea\Border\Manager::FORCE_RECORD);
+        $story = self::$object->createRecord(self::$DI['collection'], $tmpFile, $tmp, null, \Alchemy\Phrasea\Border\Manager::FORCE_RECORD);
 
         unlink($tmpFile);
 
@@ -417,8 +417,8 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetIndexByFieldName()
     {
-        $meta_struct = self::$collection->get_databox()->get_meta_structure();
-        $media = self::$application['mediavorus']->guess(__DIR__ . '/../../testfiles/test001.CR2');
+        $meta_struct = self::$DI['collection']->get_databox()->get_meta_structure();
+        $media = self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../testfiles/test001.CR2');
 
         $bagByName = self::$object->getIndexByFieldNameTester($meta_struct, $media->getMetadatas());
 
@@ -440,7 +440,7 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
      */
     public function testBagToArray()
     {
-        $meta_struct = self::$collection->get_databox()->get_meta_structure();
+        $meta_struct = self::$DI['collection']->get_databox()->get_meta_structure();
 
         $bag = new PHPExiftool\Driver\Metadata\MetadataBag();
 
@@ -517,7 +517,7 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
      */
     public function testMergeForDatabox()
     {
-        $meta_struct = self::$collection->get_databox()->get_meta_structure();
+        $meta_struct = self::$DI['collection']->get_databox()->get_meta_structure();
 
         $bag1 = new PHPExiftool\Driver\Metadata\MetadataBag();
         $bag2 = new PHPExiftool\Driver\Metadata\MetadataBag();
@@ -587,7 +587,7 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
      */
     public function testReadXMLForDataboxFail()
     {
-        $meta_struct = self::$collection->get_databox()->get_meta_structure();
+        $meta_struct = self::$DI['collection']->get_databox()->get_meta_structure();
         self::$object->readXMLForDataboxTester($meta_struct, 'non existant file');
     }
 
@@ -597,7 +597,7 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
      */
     public function testReadXMLForDataboxWrongXML()
     {
-        $meta_struct = self::$collection->get_databox()->get_meta_structure();
+        $meta_struct = self::$DI['collection']->get_databox()->get_meta_structure();
         self::$object->readXMLForDataboxTester($meta_struct, __FILE__);
     }
 

@@ -17,7 +17,7 @@ class Bridge_ApiTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function setUp()
     {
         parent::setUp();
-        $appbox = self::$application['phraseanet.appbox'];
+        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $sql = 'DELETE FROM bridge_apis WHERE name = "Apitest"';
         $stmt = $appbox->get_connection()->prepare($sql);
@@ -25,10 +25,10 @@ class Bridge_ApiTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $stmt->closeCursor();
 
         $this->type = 'Apitest';
-        $api = Bridge_Api::create(self::$application, $this->type);
+        $api = Bridge_Api::create(self::$DI['app'], $this->type);
 
         $this->id = $api->get_id();
-        $this->object = new Bridge_Api(self::$application, $api->get_id());
+        $this->object = new Bridge_Api(self::$DI['app'], $api->get_id());
     }
 
     public function tearDown()
@@ -37,7 +37,7 @@ class Bridge_ApiTest extends PhraseanetPHPUnitAuthenticatedAbstract
             $this->object->delete();
         }
         try {
-            new Bridge_Api(self::$application, $this->id);
+            new Bridge_Api(self::$DI['app'], $this->id);
             $this->fail();
         } catch (Bridge_Exception_ApiNotFound $e) {
 

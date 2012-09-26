@@ -9,17 +9,17 @@ class userTest extends PhraseanetPHPUnitAbstract
 
     public function testMail()
     {
-        $this->assertFalse(User_Adapter::get_usr_id_from_email(self::$application, null));
+        $this->assertFalse(User_Adapter::get_usr_id_from_email(self::$DI['app'], null));
         try {
-            $appbox = self::$application['phraseanet.appbox'];
+            $appbox = self::$DI['app']['phraseanet.appbox'];
 
             self::$DI['user']->set_email(null);
 
-            $this->assertFalse(User_Adapter::get_usr_id_from_email(self::$application, null));
+            $this->assertFalse(User_Adapter::get_usr_id_from_email(self::$DI['app'], null));
             self::$DI['user']->set_email('');
-            $this->assertFalse(User_Adapter::get_usr_id_from_email(self::$application, null));
+            $this->assertFalse(User_Adapter::get_usr_id_from_email(self::$DI['app'], null));
             self::$DI['user']->set_email('noone@example.com');
-            $this->assertEquals(self::$DI['user']->get_id(), User_Adapter::get_usr_id_from_email(self::$application, 'noone@example.com'));
+            $this->assertEquals(self::$DI['user']->get_id(), User_Adapter::get_usr_id_from_email(self::$DI['app'], 'noone@example.com'));
         } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
@@ -30,6 +30,6 @@ class userTest extends PhraseanetPHPUnitAbstract
         } catch (Exception $e) {
 
         }
-        $this->assertFalse(User_Adapter::get_usr_id_from_email(self::$application, null));
+        $this->assertFalse(User_Adapter::get_usr_id_from_email(self::$DI['app'], null));
     }
 }

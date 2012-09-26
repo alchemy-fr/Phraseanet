@@ -15,9 +15,9 @@ class API_OAuth2_TokenTest extends PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $appbox = self::$application['phraseanet.appbox'];
-        $this->application = API_OAuth2_Application::create(self::$application, self::$DI['user'], 'test app');
-        $account = API_OAuth2_Account::load_with_user(self::$application, $this->application, self::$DI['user']);
+        $appbox = self::$DI['app']['phraseanet.appbox'];
+        $this->application = API_OAuth2_Application::create(self::$DI['app'], self::$DI['user'], 'test app');
+        $account = API_OAuth2_Account::load_with_user(self::$DI['app'], $this->application, self::$DI['user']);
 
         try {
             new API_OAuth2_Token($appbox, $account);
@@ -109,7 +109,7 @@ class API_OAuth2_TokenTest extends PhraseanetPHPUnitAbstract
     public function testLoad_by_oauth_token()
     {
         $token = $this->object->get_value();
-        $loaded = API_OAuth2_Token::load_by_oauth_token(self::$application, $token);
+        $loaded = API_OAuth2_Token::load_by_oauth_token(self::$DI['app'], $token);
         $this->assertInstanceOf('API_OAuth2_Token', $loaded);
         $this->assertEquals($this->object, $loaded);
     }

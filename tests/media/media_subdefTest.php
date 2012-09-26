@@ -34,10 +34,10 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
     {
         parent::setUpBeforeClass();
 
-        $file = new File(self::$application['mediavorus']->guess(__DIR__ . "/../testfiles/iphone_pic.jpg"), self::$collection);
+        $file = new File(self::$DI['app']['mediavorus']->guess(__DIR__ . "/../testfiles/iphone_pic.jpg"), self::$DI['collection']);
 
-        self::$recordonbleu = record_adapter::createFromFile($file, self::$application);
-        self::$recordonbleu->generate_subdefs(self::$recordonbleu->get_databox(), self::$application);
+        self::$recordonbleu = record_adapter::createFromFile($file, self::$DI['app']);
+        self::$recordonbleu->generate_subdefs(self::$recordonbleu->get_databox(), self::$DI['app']);
 
         foreach (self::$recordonbleu->get_subdefs() as $subdef) {
 
@@ -266,7 +266,7 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
         $width_before = self::$objectPresent->get_width();
         $height_before = self::$objectPresent->get_height();
 
-        self::$objectPresent->rotate(90, self::$application['media-alchemyst'], self::$application['mediavorus']);
+        self::$objectPresent->rotate(90, self::$DI['app']['media-alchemyst'], self::$DI['app']['mediavorus']);
 
         $this->assertEquals($width_before, self::$objectPresent->get_height());
         $this->assertEquals($height_before, self::$objectPresent->get_width());
@@ -279,7 +279,7 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
      */
     public function testRotateOnSubstitution()
     {
-        self::$objectNotPresent->rotate(90, self::$application['media-alchemyst'], self::$application['mediavorus']);
+        self::$objectNotPresent->rotate(90, self::$DI['app']['media-alchemyst'], self::$DI['app']['mediavorus']);
     }
 
     /**
@@ -287,7 +287,7 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
      */
     public function testReadTechnicalDatas()
     {
-        $technical_datas = self::$objectPresent->readTechnicalDatas(self::$application['mediavorus']);
+        $technical_datas = self::$objectPresent->readTechnicalDatas(self::$DI['app']['mediavorus']);
         $this->assertArrayHasKey(media_subdef::TC_DATA_WIDTH, $technical_datas);
         $this->assertArrayHasKey(media_subdef::TC_DATA_HEIGHT, $technical_datas);
         $this->assertArrayHasKey(media_subdef::TC_DATA_CHANNELS, $technical_datas);
@@ -295,7 +295,7 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
         $this->assertArrayHasKey(media_subdef::TC_DATA_MIMETYPE, $technical_datas);
         $this->assertArrayHasKey(media_subdef::TC_DATA_FILESIZE, $technical_datas);
 
-        $technical_datas = self::$objectNotPresent->readTechnicalDatas(self::$application['mediavorus']);
+        $technical_datas = self::$objectNotPresent->readTechnicalDatas(self::$DI['app']['mediavorus']);
         $this->assertEquals(array(), $technical_datas);
     }
 }

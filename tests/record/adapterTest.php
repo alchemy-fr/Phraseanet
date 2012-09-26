@@ -39,7 +39,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $basket->setOwner(self::$DI['user']);
         $basket->setDescription('hello');
 
-        $em = self::$application['EM'];
+        $em = self::$DI['app']['EM'];
 
         $basketElement = new \Entities\BasketElement();
 
@@ -55,10 +55,10 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         $receveid = array(self::$DI['record_1']->get_serialize_key() => self::$DI['record_1']);
 
-        self::$application['phraseanet.user']->ACL()->update_rights_to_base(self::$DI['record_1']->get_base_id(), array('order_master' => true));
+        self::$DI['app']['phraseanet.user']->ACL()->update_rights_to_base(self::$DI['record_1']->get_base_id(), array('order_master' => true));
 
         return \set_order::create(
-                self::$application, new RecordsRequest($receveid, new ArrayCollection($receveid), $basket), self::$DI['user_alt2'], 'I need this photos', new \DateTime('+10 minutes')
+                self::$DI['app'], new RecordsRequest($receveid, new ArrayCollection($receveid), $basket), self::$DI['user_alt2'], 'I need this photos', new \DateTime('+10 minutes')
         );
     }
 
@@ -127,9 +127,9 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testGet_base_id()
     {
         $this->assertTrue(is_int(self::$DI['record_1']->get_base_id()));
-        $this->assertEquals(self::$collection->get_base_id(), self::$DI['record_1']->get_base_id());
+        $this->assertEquals(self::$DI['collection']->get_base_id(), self::$DI['record_1']->get_base_id());
         $this->assertTrue(is_int(self::$DI['record_story_1']->get_base_id()));
-        $this->assertEquals(self::$collection->get_base_id(), self::$DI['record_story_1']->get_base_id());
+        $this->assertEquals(self::$DI['collection']->get_base_id(), self::$DI['record_story_1']->get_base_id());
     }
 
     public function testGet_record_id()
@@ -283,7 +283,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testSet_metadatas()
     {
 
-        $meta_structure_el = self::$collection->get_databox()->get_meta_structure()->get_elements();
+        $meta_structure_el = self::$DI['collection']->get_databox()->get_meta_structure()->get_elements();
 
         $current_caption = self::$DI['record_1']->get_caption();
 
@@ -454,7 +454,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_record_by_sha()
     {
-        $tmp_records = record_adapter::get_record_by_sha(self::$application, self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_sha256());
+        $tmp_records = record_adapter::get_record_by_sha(self::$DI['app'], self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_sha256());
         $this->assertTrue(is_array($tmp_records));
 
         foreach ($tmp_records as $tmp_record) {
@@ -462,7 +462,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
             $this->assertEquals(self::$DI['record_1']->get_sha256(), $tmp_record->get_sha256());
         }
 
-        $tmp_records = record_adapter::get_record_by_sha(self::$application, self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_sha256(), self::$DI['record_1']->get_record_id());
+        $tmp_records = record_adapter::get_record_by_sha(self::$DI['app'], self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_sha256(), self::$DI['record_1']->get_record_id());
         $this->assertTrue(is_array($tmp_records));
         $this->assertTrue(count($tmp_records) === 1);
 
@@ -499,23 +499,23 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $basket_element->setRecord(self::$DI['record_1']);
         $basket_element->setBasket($basket);
 
-        self::$application['EM']->persist($basket_element);
+        self::$DI['app']['EM']->persist($basket_element);
 
         $basket->addBasketElement($basket_element);
-        $basket = self::$application['EM']->merge($basket);
+        $basket = self::$DI['app']['EM']->merge($basket);
 
-        self::$application['EM']->flush();
+        self::$DI['app']['EM']->flush();
 
         $found = $sselcont_id = false;
 
         $sbas_id = self::$DI['record_1']->get_sbas_id();
         $record_id = self::$DI['record_1']->get_record_id();
 
-        foreach (self::$DI['record_1']->get_container_baskets(self::$application['EM'], self::$application['phraseanet.user']) as $c_basket) {
+        foreach (self::$DI['record_1']->get_container_baskets(self::$DI['app']['EM'], self::$DI['app']['phraseanet.user']) as $c_basket) {
             if ($c_basket->getId() == $basket->getId()) {
                 $found = true;
                 foreach ($c_basket->getElements() as $b_el) {
-                    if ($b_el->getRecord(self::$application)->get_record_id() == $record_id && $b_el->getRecord(self::$application)->get_sbas_id() == $sbas_id)
+                    if ($b_el->getRecord(self::$DI['app'])->get_record_id() == $record_id && $b_el->getRecord(self::$DI['app'])->get_sbas_id() == $sbas_id)
                         $sselcont_id = $b_el->getId();
                 }
             }
