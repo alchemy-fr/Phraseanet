@@ -223,12 +223,12 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
     public function testPublicFeed()
     {
         $appbox = self::$DI['app']['phraseanet.appbox'];
-        $application->authenticate(self::$DI['app']);
+        $this->authenticate(self::$DI['app']);
 
         $link = self::$feed_3_public->get_user_link($appbox->get_registry(), self::$DI['user'], Feed_Adapter::FORMAT_ATOM)->get_href();
         $link = str_replace($appbox->get_registry()->get('GV_ServerName') . 'feeds/', '/', $link);
 
-        self::$DI['app']->closeAccount();
+        $this->logout(self::$DI['app']);
 
         self::$DI['client']->request('GET', "/feeds" . $link);
         $response = self::$DI['client']->getResponse();
@@ -242,12 +242,12 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
     public function testUserFeedAggregated()
     {
         $appbox = self::$DI['app']['phraseanet.appbox'];
-        $application->authenticate(self::$DI['app']);
+        $this->authenticate(self::$DI['app']);
 
         $link = self::$private_feeds->get_aggregate()->get_user_link($appbox->get_registry(), self::$DI['user'], Feed_Adapter::FORMAT_ATOM)->get_href();
         $link = str_replace($appbox->get_registry()->get('GV_ServerName') . 'feeds/', '/', $link);
 
-        self::$DI['app']->closeAccount();
+        $this->logout(self::$DI['app']);
 
         self::$DI['client']->request('GET', "/feeds" . $link);
         $response = self::$DI['client']->getResponse();
@@ -261,12 +261,12 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
     public function testUserFeed()
     {
         $appbox = self::$DI['app']['phraseanet.appbox'];
-        $application->authenticate(self::$DI['app']);
+        $this->authenticate(self::$DI['app']);
 
         $link = self::$feed_1_private->get_user_link($appbox->get_registry(), self::$DI['user'], Feed_Adapter::FORMAT_ATOM)->get_href();
         $link = str_replace($appbox->get_registry()->get('GV_ServerName') . 'feeds/', '/', $link);
 
-        self::$DI['app']->closeAccount();
+        $this->logout(self::$DI['app']);
 
         self::$DI['client']->request('GET', "/feeds" . $link);
         $response = self::$DI['client']->getResponse();
