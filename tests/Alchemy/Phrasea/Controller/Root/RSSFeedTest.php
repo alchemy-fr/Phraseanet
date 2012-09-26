@@ -105,8 +105,8 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
         $application = new Alchemy\Phrasea\Application('test');
 
-        @unlink(__DIR__ . '/../../../../db.sqlite');
-        copy(__DIR__ . '/../../../../db-ref.sqlite', __DIR__ . '/../../../../db.sqlite');
+        @unlink('/tmp/db.sqlite');
+        copy(__DIR__ . '/../../../../db-ref.sqlite', '/tmp/db.sqlite');
 
         $appbox = $application['phraseanet.appbox'];
         $this->authenticate($application);
