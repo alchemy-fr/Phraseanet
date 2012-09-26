@@ -24,12 +24,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      * @var \Pimple
      */
     protected static $DI;
-
-    /**
-     *
-     * @var Symfony\Component\HttpKernel\Client
-     */
-    protected $client;
+    protected static $testsTime = array();
     protected static $records;
     public static $recordsInitialized = false;
     protected static $useExceptionHandler = false;
@@ -39,19 +34,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      * @var boolean
      */
     protected static $updated;
-
-    /**
-     *
-     * @var collection
-     */
-    protected static $collection;
-
-    /**
-     *
-     * @var collection
-     */
-    protected static $collection_no_access;
-    protected static $collection_no_access_by_status;
 
     /**
      * Test start time
@@ -64,6 +46,13 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      * @var \Alchemy\Phrasea\Application
      */
     protected static $application;
+    public $app;
+    protected $start;
+    /**
+     *
+     * @var Symfony\Component\HttpKernel\Client
+     */
+    protected $client;
 
     /**
      * This method is called before the first test of this test class is run.
@@ -72,58 +61,30 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     {
         parent::setUpBeforeClass();
 
-        //launch chrono
-        if (!self::$time_start) {
+        if (!self::$updated) {
             self::$time_start = microtime(true);
+
+            if (!setup::is_installed()) {
+                exit("\033[0;31mPhraseanet is not set up\033[0;37m\r\n");
+            }
+            self::$DI = new \Pimple();
+
+            $application = new Application('test');
+
+            self::createSetOfUserTests($application);
+
+            self::updateTablesSchema($application);
+
+            self::setCollection($application);
+
+            self::generateRecords($application);
+
+            self::$updated = true;
         }
-
-        //check if app is set up
-        if (!setup::is_installed()) {
-            exit("\033[0;31mPhraseanet is not set up\033[0;37m\r\n");
-        }
-
-        self::$DI = new \Pimple();
-        $application = new Application('test');
-        self::createSetOfUserTests($application);
-
-        static::loadApplication();
-
-        self::updateTablesSchema();
-
-        self::setCollection($application);
-
-        self::generateRecords($application);
-    }
-
-    protected static function loadApplication()
-    {
-        $environment = 'test';
-        self::$application = require __DIR__ . '/../lib/Alchemy/Phrasea/Application/Root.php';
-
-        return self::$application;
-    }
-
-    /**
-     * This method is called after the last test of this test class is run.
-     */
-    public static function tearDownAfterClass()
-    {
-        foreach (self::$application as $provoviderkey => $providers) {
-            unset(self::$application[$provoviderkey]);
-        }
-        self::$application = null;
-        parent::tearDownAfterClass();
     }
 
     public function createApplication()
     {
-        self::$application['debug'] = true;
-
-        if (!static::$useExceptionHandler) {
-            unset(self::$application['exception_handler']);
-        }
-
-        return self::$application;
     }
 
     /**
@@ -138,39 +99,46 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         }
     }
 
-    protected static function activateEM()
-    {
-        self::$application['EM'] = self::$application->share(self::$application->extend('EM', function($em) {
-
-                    $tool = new \Doctrine\ORM\Tools\SchemaTool($em);
-                    $metas = $em->getMetadataFactory()->getAllMetadata();
-                    $tool->createSchema($metas);
-
-                    return $em;
-                }));
-    }
-    protected static $testsTime = array();
 
     public function setUp()
     {
+        $this->start = $start = microtime(true);
+
         parent::setUp();
-
-        $start = microtime(true);
-        static::loadApplication();
-        self::activateEM();
-        $this->createApplication();
-        $this->client = new Client(self::$application, array());
-
-        $browser = Browser::getInstance();
-        $browser->setUserAgent(self::USER_AGENT_FIREFOX8MAC);
-
-//        $this->purgeDatabase();
-
-        self::$DI['user']->ACL()->revoke_access_from_bases(array(self::$collection_no_access->get_base_id()));
-        self::$DI['user']->ACL()->set_masks_on_base(self::$collection_no_access_by_status->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
 
         \PHPUnit_Framework_Error_Warning::$enabled = true;
         \PHPUnit_Framework_Error_Notice::$enabled = true;
+
+
+        self::$DI['app'] = self::$DI->share(function() {
+            $environment = 'test';
+            $app = require __DIR__ . '/../lib/Alchemy/Phrasea/Application/Root.php';
+
+            $app['debug'] = true;
+
+            unset($app['exception_handler']);
+
+            $app['EM'] = $app->share($app->extend('EM', function($em) {
+                unlink(__DIR__ . '/db.sqlite');
+                copy(__DIR__ . '/db-ref.sqlite', __DIR__ . '/db.sqlite');
+
+                return $em;
+            }));
+
+
+            $app['browser'] = $app->share($app->extend('browser', function($browser) {
+
+                $browser->setUserAgent(PhraseanetPHPUnitAbstract::USER_AGENT_FIREFOX8MAC);
+                return $browser;
+            }));
+
+            return $app;
+        });
+
+
+        self::$DI['client'] = self::$DI->share(function($DI) {
+            return new Client($DI['app'], array());
+        });
     }
 
     public function tearDown()
@@ -189,6 +157,12 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $refl = null;
 
         parent::tearDown();
+
+        $duration = (microtime(true) - $this->start);
+        if ($duration > 0.75) {
+            echo "test in " . get_class($this) . " last " . $duration . "\n";
+        }
+        $this->start = null;
     }
 
     /**
@@ -200,9 +174,11 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     public function insertFixtureInDatabase(Doctrine\Common\DataFixtures\Loader $fixtureLoader, $append = true)
     {
         $purger = new Doctrine\Common\DataFixtures\Purger\ORMPurger();
-        $executor = new Doctrine\Common\DataFixtures\Executor\ORMExecutor(self::$application['EM'], $purger);
+        $executor = new Doctrine\Common\DataFixtures\Executor\ORMExecutor(self::$DI['app']['EM'], $purger);
         $executor->execute($fixtureLoader->getFixtures(), $append);
-        $this->client = new Client(self::$application, array());
+        self::$DI['client'] = self::$DI->share(function($DI) {
+            return new Client($DI['app'], array());
+        });
     }
 
     /**
@@ -211,9 +187,9 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     protected static function purgeDatabase()
     {
         $purger = new Doctrine\Common\DataFixtures\Purger\ORMPurger();
-        $executor = new Doctrine\Common\DataFixtures\Executor\ORMExecutor(self::$application['EM'], $purger);
+        $executor = new Doctrine\Common\DataFixtures\Executor\ORMExecutor(self::$DI['app']['EM'], $purger);
         $executor->execute(array());
-        self::$application["phraseanet.cache-service"]->flushAll();
+        self::$DI['app']["phraseanet.cache-service"]->flushAll();
     }
 
     protected function assertDateAtom($date)
@@ -226,7 +202,9 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $app['browser']->setUserAgent($user_agent);
         $app->register(new \Silex\Provider\TwigServiceProvider());
         $app->setupTwig();
-        $this->client = new Client($app, array());
+        self::$DI['client'] = self::$DI->share(function($DI) use($app) {
+            return new Client($app, array());
+        });
     }
 
     /**
@@ -263,7 +241,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             $lazaretFixture = new PhraseaFixture\Lazaret\LoadOneFile();
 
             $lazaretFixture->setUser(self::$DI['user']);
-            $lazaretFixture->setCollectionId(self::$collection->get_base_id());
+            $lazaretFixture->setCollectionId(self::$DI['collection']->get_base_id());
 
             $loader = new Loader();
             $loader->addFixture($lazaretFixture);
@@ -370,7 +348,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
         $basket->addBasketElement($basketElement);
 
-        $em = self::$application['EM'];
+        $em = self::$DI['app']['EM'];
 
         $em->persist($basketElement);
 
@@ -387,7 +365,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      */
     protected function insertOneValidationBasket(array $parameters = array())
     {
-        $em = self::$application['EM'];
+        $em = self::$DI['app']['EM'];
 
         $basketElement = $this->insertOneBasketElement();
         $basket = $basketElement->getBasket();
@@ -473,13 +451,16 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         try {
             $currentUser = self::$DI['user'];
             $altUser = self::$DI['user_alt1'];
-            //add one basket
+
+            // add one basket
             $basket = new PhraseaFixture\Basket\LoadOneBasket();
             $basket->setUser($currentUser);
+
             //add one story
             $story = new PhraseaFixture\Story\LoadOneStory();
             $story->setUser($currentUser);
             $story->setRecord(self::$DI['record_1']);
+
             //add a validation session initiated by alt user
             $validationSession = new PhraseaFixture\ValidationSession\LoadOneValidationSession();
             $validationSession->setUser($altUser);
@@ -518,32 +499,28 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      */
     protected function XMLHTTPRequest($method, $uri, array $parameters = array(), $httpAccept = 'application/json')
     {
-        if (!$this->client instanceof Client) {
-            throw new \Exception('Not client seems intitialized');
-        }
-
-        return $this->client->request($method, $uri, $parameters, array(), array(
-                'HTTP_ACCEPT'           => $httpAccept,
-                'HTTP_X-Requested-With' => 'XMLHttpRequest',
-            ));
+        return self::$DI['client']->request($method, $uri, $parameters, array(), array(
+            'HTTP_ACCEPT'           => $httpAccept,
+            'HTTP_X-Requested-With' => 'XMLHttpRequest',
+        ));
     }
 
     /**
      * Update the sql tables with the current schema
      * @return void
      */
-    private static function updateTablesSchema()
+    private static function updateTablesSchema(Application $application)
     {
         if (!self::$updated) {
 
-            $appbox = self::$application['phraseanet.appbox'];
+            $appbox = $application['phraseanet.appbox'];
 
             if (file_exists(Setup_Upgrade::get_lock_file())) {
                 unlink(Setup_Upgrade::get_lock_file());
             }
 
-            $upgrader = new Setup_Upgrade(self::$application);
-            $appbox->forceUpgrade($upgrader, self::$application);
+            $upgrader = new Setup_Upgrade($application);
+            $appbox->forceUpgrade($upgrader, $application);
             unset($upgrader);
 
             $command = __DIR__ . '/../bin/doctrine orm:schema-tool:update --force';
@@ -568,8 +545,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             self::$updated = true;
         }
 
-        self::activateEM();
-
         set_time_limit(3600);
 
         return;
@@ -586,48 +561,48 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     private static function createSetOfUserTests(Application $application)
     {
         self::$DI['user'] = self::$DI->share(function () use ($application) {
-                $usr_id = User_Adapter::get_usr_id_from_login($application, 'test_phpunit');
+            $usr_id = User_Adapter::get_usr_id_from_login($application, 'test_phpunit');
 
-                if (!$usr_id) {
-                    $user = User_Adapter::create($application, 'test_phpunit', random::generatePassword(), 'noone@example.com', false);
-                    $usr_id = $user->get_id();
-                }
+            if (!$usr_id) {
+                $user = User_Adapter::create($application, 'test_phpunit', random::generatePassword(), 'noone@example.com', false);
+                $usr_id = $user->get_id();
+            }
 
-                return new User_Adapter($usr_id, $application);
-            });
+            return new User_Adapter($usr_id, $application);
+        });
 
         self::$DI['user_notAdmin'] = self::$DI->share(function () use ($application) {
-                $usr_id = User_Adapter::get_usr_id_from_login($application, 'test_phpunit_not_admin');
+            $usr_id = User_Adapter::get_usr_id_from_login($application, 'test_phpunit_not_admin');
 
-                if (!$usr_id) {
-                    $user = User_Adapter::create($application, 'test_phpunit_not_admin', random::generatePassword(), 'noone@example.com', false);
-                    $usr_id = $user->get_id();
-                }
+            if (!$usr_id) {
+                $user = User_Adapter::create($application, 'test_phpunit_not_admin', random::generatePassword(), 'noone_not_admin@example.com', false);
+                $usr_id = $user->get_id();
+            }
 
-                return new User_Adapter($usr_id, $application);
-            });
+            return new User_Adapter($usr_id, $application);
+        });
 
         self::$DI['user_alt1'] = self::$DI->share(function () use ($application) {
-                $usr_id = User_Adapter::get_usr_id_from_login($application, 'test_phpunit_alt1');
+            $usr_id = User_Adapter::get_usr_id_from_login($application, 'test_phpunit_alt1');
 
-                if (!$usr_id) {
-                    $user = User_Adapter::create($application, 'test_phpunit_alt1', random::generatePassword(), 'noone@example.com', false);
-                    $usr_id = $user->get_id();
-                }
+            if (!$usr_id) {
+                $user = User_Adapter::create($application, 'test_phpunit_alt1', random::generatePassword(), 'noonealt1@example.com', false);
+                $usr_id = $user->get_id();
+            }
 
-                return new User_Adapter($usr_id, $application);
-            });
+            return new User_Adapter($usr_id, $application);
+        });
 
         self::$DI['user_alt2'] = self::$DI->share(function () use ($application) {
-                $usr_id = User_Adapter::get_usr_id_from_login($application, 'test_phpunit_alt2');
+            $usr_id = User_Adapter::get_usr_id_from_login($application, 'test_phpunit_alt2');
 
-                if (!$usr_id) {
-                    $user = User_Adapter::create($application, 'test_phpunit_alt2', random::generatePassword(), 'noone@example.com', false);
-                    $usr_id = $user->get_id();
-                }
+            if (!$usr_id) {
+                $user = User_Adapter::create($application, 'test_phpunit_alt2', random::generatePassword(), 'noonealt2@example.com', false);
+                $usr_id = $user->get_id();
+            }
 
-                return new User_Adapter($usr_id, $application);
-            });
+            return new User_Adapter($usr_id, $application);
+        });
     }
 
     /**
@@ -635,9 +610,9 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      *
      * @param \User_Adapter $user
      */
-    private static function giveRightsToUser(\User_Adapter $user)
+    public static function giveRightsToUser(Application $app, \User_Adapter $user)
     {
-        $appbox = self::$application['phraseanet.appbox'];
+        $appbox = $app['phraseanet.appbox'];
 
         $user->ACL()->give_access_to_sbas(array_keys($appbox->get_databoxes()));
 
@@ -686,54 +661,70 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     }
 
     /**
-     * Set self::$collection
+     * Set self::$DI['collection']
      * @return void
      */
     private static function setCollection(Application $application)
     {
-        static $loaded;
+        $appbox = $application['phraseanet.appbox'];
+        $coll = $collection_no_acces = $collection_no_acces_by_status = $db = null;
 
-        if (!$loaded) {
-            $appbox = $application['phraseanet.appbox'];
-            $coll = $collection_no_acces = $collection_no_acces_by_status = $db = null;
-
-            foreach ($appbox->get_databoxes() as $databox) {
-                $db = $databox;
-                foreach ($databox->get_collections() as $collection) {
-                    if ($collection_no_acces instanceof collection && !$collection_no_acces_by_status) {
-                        $collection_no_acces_by_status = $collection;
-                    }
-                    if ($coll instanceof collection && !$collection_no_acces) {
-                        $collection_no_acces = $collection;
-                    }
-                    if (!$coll) {
-                        $coll = $collection;
-                    }
-                    if ($coll instanceof collection
-                        && $collection_no_acces instanceof collection
-                        && $collection_no_acces_by_status instanceof collection) {
-                        break 2;
-                    }
+        foreach ($appbox->get_databoxes() as $databox) {
+            $db = $databox;
+            foreach ($databox->get_collections() as $collection) {
+                if ($collection_no_acces instanceof collection && !$collection_no_acces_by_status) {
+                    $collection_no_acces_by_status = $collection;
+                }
+                if ($coll instanceof collection && !$collection_no_acces) {
+                    $collection_no_acces = $collection;
+                }
+                if (!$coll) {
+                    $coll = $collection;
+                }
+                if ($coll instanceof collection
+                    && $collection_no_acces instanceof collection
+                    && $collection_no_acces_by_status instanceof collection) {
+                    break 2;
                 }
             }
-
-            if (!$coll instanceof collection) {
-                self::fail('Unable to find a collection');
-            }
-            if (!$collection_no_acces instanceof collection) {
-                $collection_no_acces = collection::create($application, $databox, $appbox, 'BIBOO', self::$DI['user']);
-            }
-            if (!$collection_no_acces_by_status instanceof collection) {
-                $collection_no_acces_by_status = collection::create($application, $databox, $appbox, 'BIBOONOACCESBYSTATUS');
-            }
-
-            self::$collection = $coll;
-
-            self::$collection_no_access = $collection_no_acces;
-            self::$collection_no_access_by_status = $collection_no_acces_by_status;
-
-            $loaded = true;
         }
+
+        if (!$coll instanceof collection) {
+            self::fail('Unable to find a collection');
+        }
+
+        self::$DI['collection'] = $coll;
+
+        self::$DI['collection_no_access'] = self::$DI->share(function($DI) use ($application, $databox, $appbox, $collection_no_acces) {
+            if (!$collection_no_acces instanceof collection) {
+                $collection_no_acces = collection::create($application, $databox, $appbox, 'BIBOO', $DI['user']);
+            }
+
+            $DI['user'] = $DI->share(
+                $DI->extend('user', function ($user, $DI) use ($collection_no_acces) {
+                        $user->ACL()->revoke_access_from_bases(array($collection_no_acces->get_base_id()));
+                        return $user;
+                    })
+            );
+
+            return $collection_no_acces;
+        });
+
+        self::$DI['collection_no_access_by_status'] = self::$DI->share(function($DI) use ($application, $databox, $appbox, $collection_no_acces) {
+            if (!$collection_no_acces_by_status instanceof collection) {
+                $collection_no_acces_by_status = collection::create($application, $databox, $appbox, 'BIBOONOACCESBYSTATUS', $DI['user']);
+            }
+
+            $DI['user'] = $DI->share(
+                $DI->extend('user', function ($user, $DI) use ($collection_no_acces_by_status) {
+                        $user->ACL()->set_masks_on_base($collection_no_acces_by_status->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
+                        return $user;
+                    })
+            );
+
+            return $collection_no_acces_by_status;
+        });
+
 
         return;
     }
@@ -748,8 +739,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             $logger = new \Monolog\Logger('tests');
             $logger->pushHandler(new \Monolog\Handler\NullHandler());
             self::$recordsInitialized = array();
-
-            $collection = self::$collection;
 
             $resolvePathfile = function($i) {
                     $finder = new Symfony\Component\Finder\Finder();
@@ -766,52 +755,68 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 };
 
             foreach (range(1, 24) as $i) {
-                self::$DI['record_' . $i] = self::$DI->share(function() use ($logger, $collection, $resolvePathfile, $i, $app) {
+                self::$DI['record_' . $i] = self::$DI->share(function($DI) use ($logger, $resolvePathfile, $i, $app) {
 
+                    $start = microtime(true);
+
+                    echo "\t\t\tcreating record $i ...\n";
                         PhraseanetPHPUnitAbstract::$recordsInitialized[] = $i;
 
-                        $file = new Alchemy\Phrasea\Border\File($app['mediavorus']->guess($resolvePathfile($i)->getPathname()), $collection);
+                    echo "\t\t\tcreating record $i step #1 ".(microtime(true)-$start)."\n";
+                        $file = new Alchemy\Phrasea\Border\File($app['mediavorus']->guess($resolvePathfile($i)->getPathname()), $DI['collection']);
 
+                    echo "\t\t\tcreating record $i step #2 ".(microtime(true)-$start)."\n";
                         $record = record_adapter::createFromFile($file, $app);
 
+                    echo "\t\t\tcreating record $i step #3 ".(microtime(true)-$start)."\n";
                         $record->generate_subdefs($record->get_databox(), $app);
+                    echo "\t\t\tcreating record $i step #4 ".(microtime(true)-$start)."\n";
 
                         return $record;
                     });
             }
             foreach (range(1, 2) as $i) {
-                self::$DI['record_story_' . $i] = self::$DI->share(function() use ($collection, $i, $app) {
+                self::$DI['record_story_' . $i] = self::$DI->share(function($DI) use ($i, $app) {
 
                         PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'story_' . $i;
 
-                        return record_adapter::createStory($app, $collection);
+                        return record_adapter::createStory($app, $DI['collection']);
                     });
             }
 
-            $collection_no_access = self::$collection_no_access;
-
-            self::$DI['record_no_access'] = self::$DI->share(function() use ($collection_no_access, $app) {
+            self::$DI['record_no_access'] = self::$DI->share(function($DI) use ($app) {
 
                     PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'no_access';
 
-                    $file = new Alchemy\Phrasea\Border\File($app['mediavorus']->guess(__DIR__ . '/testfiles/cestlafete.jpg'), $collection_no_access);
+                    $file = new Alchemy\Phrasea\Border\File($app['mediavorus']->guess(__DIR__ . '/testfiles/cestlafete.jpg'), $DI['collection_no_access']);
 
                     return \record_adapter::createFromFile($file, $app);
                 });
 
-            self::$DI['record_no_access_by_status'] = self::$DI->share(function()use($collection_no_access, $app) {
+            self::$DI['record_no_access_by_status'] = self::$DI->share(function($DI)use($app) {
 
                     PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'no_access_by_status';
 
-                    $file = new Alchemy\Phrasea\Border\File($app['mediavorus']->guess(__DIR__ . '/testfiles/cestlafete.jpg'), $collection_no_access);
+                    $file = new Alchemy\Phrasea\Border\File($app['mediavorus']->guess(__DIR__ . '/testfiles/cestlafete.jpg'), $DI['collection_no_access']);
 
                     return \record_adapter::createFromFile($file, $app);
                 });
 
-            self::giveRightsToUser(self::$DI['user']);
-            self::$DI['user']->ACL()->set_admin(true);
-            self::giveRightsToUser(self::$DI['user_notAdmin']);
-            self::$DI['user_notAdmin']->ACL()->set_admin(false);
+            self::$DI['user'] = self::$DI->share(
+                self::$DI->extend('user', function ($user, $DI) use ($app) {
+                        PhraseanetPHPUnitAbstract::giveRightsToUser($app, $user);
+                        $user->ACL()->set_admin(true);
+                        return $user;
+                    })
+            );
+
+            self::$DI['user_notAdmin'] = self::$DI->share(
+                self::$DI->extend('user_notAdmin', function ($user, $DI) use ($app) {
+                        PhraseanetPHPUnitAbstract::giveRightsToUser($app, $user);
+                        $user->ACL()->set_admin(false);
+                        return $user;
+                    })
+            );
         }
 
         return;
@@ -838,13 +843,24 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
         if (self::$recordsInitialized !== false) {
             foreach (self::$recordsInitialized as $i) {
-//                self::$DI['record_' . $i]->delete();
+                self::$DI['record_' . $i]->delete();
             }
 
             self::$recordsInitialized = array();
         }
 
         return;
+    }
+
+    protected function authenticate(Application $app)
+    {
+        $app['session']->clear();
+        $app['session']->set('usr_id', self::$DI['user']->get_id());
+    }
+
+    protected function logout()
+    {
+        $app['session']->clear();
     }
 
     protected function assertXMLHTTPBadJsonResponse(Response $response)

@@ -1,7 +1,6 @@
 <?php
 
-use Alchemy\Phrasea\Core\Configuration;
-use Symfony\Component\Filesystem\Filesystem;
+use Alchemy\Phrasea\Application;
 
 require_once __DIR__ . '/PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
@@ -19,9 +18,8 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-        $auth = new Session_Authentication_None(self::$DI['user']);
-        self::$DI['app']->openAccount($auth);
+        $application = new Application('test');
+        $appbox = $application['phraseanet.appbox'];
 
         $found = false;
         foreach ($appbox->get_databoxes() as $databox) {

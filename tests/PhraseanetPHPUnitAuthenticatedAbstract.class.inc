@@ -12,14 +12,12 @@ abstract class PhraseanetPHPUnitAuthenticatedAbstract extends PhraseanetPHPUnitA
     public function setUp()
     {
         parent::setUp();
-
-        self::$DI['app']['session']->clear();
-        self::$DI['app']['session']->set('usr_id', self::$DI['user']->get_id());
+        $this->authenticate(self::$DI['app']);
     }
 
     public function tearDown()
     {
-        self::$DI['app']['session']->clear();
+        $this->logout(self::$DI['app']);
         parent::tearDown();
     }
 }

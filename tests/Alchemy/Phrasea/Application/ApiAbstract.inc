@@ -83,9 +83,9 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
                 $app['EM'] = $app->share($app->extend('EM', function($em) {
 
-                            $tool = new \Doctrine\ORM\Tools\SchemaTool($em);
-                            $metas = $em->getMetadataFactory()->getAllMetadata();
-                            $tool->createSchema($metas);
+
+                            unlink(__DIR__ . '/../../../db.sqlite');
+                            copy(__DIR__ . '/../../../db-ref.sqlite', __DIR__ . '/db.sqlite');
 
                             return $em;
                         }));

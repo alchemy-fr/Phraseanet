@@ -105,13 +105,11 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
         $application = new Alchemy\Phrasea\Application('test');
 
-        $tool = new \Doctrine\ORM\Tools\SchemaTool($application['EM']);
-        $metas = $application['EM']->getMetadataFactory()->getAllMetadata();
-        $tool->createSchema($metas);
+        unlink(__DIR__ . '/../../../../db.sqlite');
+        copy(__DIR__ . '/../../../../db-ref.sqlite', __DIR__ . '/db.sqlite');
 
         $appbox = $application['phraseanet.appbox'];
-        $auth = new Session_Authentication_None(self::$DI['user']);
-        $application->openAccount($auth);
+        $application->authenticate($application);
 
         self::$feed_1_private = Feed_Adapter::create($application, self::$DI['user'], self::$feed_1_private_title, self::$feed_1_private_subtitle);
         self::$feed_1_private->set_public(false);
@@ -223,8 +221,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
     public function testPublicFeed()
     {
         $appbox = self::$DI['app']['phraseanet.appbox'];
-        $auth = new Session_Authentication_None(self::$DI['user']);
-        self::$DI['app']->openAccount($auth);
+        $application->authenticate(self::$DI['app']);
 
         $link = self::$feed_3_public->get_user_link($appbox->get_registry(), self::$DI['user'], Feed_Adapter::FORMAT_ATOM)->get_href();
         $link = str_replace($appbox->get_registry()->get('GV_ServerName') . 'feeds/', '/', $link);
@@ -243,8 +240,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
     public function testUserFeedAggregated()
     {
         $appbox = self::$DI['app']['phraseanet.appbox'];
-        $auth = new Session_Authentication_None(self::$DI['user']);
-        self::$DI['app']->openAccount($auth);
+        $application->authenticate(self::$DI['app']);
 
         $link = self::$private_feeds->get_aggregate()->get_user_link($appbox->get_registry(), self::$DI['user'], Feed_Adapter::FORMAT_ATOM)->get_href();
         $link = str_replace($appbox->get_registry()->get('GV_ServerName') . 'feeds/', '/', $link);
@@ -263,8 +259,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
     public function testUserFeed()
     {
         $appbox = self::$DI['app']['phraseanet.appbox'];
-        $auth = new Session_Authentication_None(self::$DI['user']);
-        self::$DI['app']->openAccount($auth);
+        $application->authenticate(self::$DI['app']);
 
         $link = self::$feed_1_private->get_user_link($appbox->get_registry(), self::$DI['user'], Feed_Adapter::FORMAT_ATOM)->get_href();
         $link = str_replace($appbox->get_registry()->get('GV_ServerName') . 'feeds/', '/', $link);
