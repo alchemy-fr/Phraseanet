@@ -59,7 +59,7 @@ class Datafiles extends AbstractDelivery
                 }
 
                 if (!$user->ACL()->has_access_to_subdef($record, $subdef)) {
-                    throw new \Exception_UnauthorizedAction();
+                    throw new \Exception_UnauthorizedAction(sprintf('User has not access to subdef %s', $subdef));
                 }
 
                 $stamp = false;
