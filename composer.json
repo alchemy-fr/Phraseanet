@@ -30,10 +30,6 @@
     },
     "minimum-stability": "dev",
     "require-dev": {
-        "behat/behat": "2.4.*@stable",
-        "behat/mink-extension": "dev-master",
-        "behat/mink-goutte-driver": "dev-master",
-        "behat/mink-selenium2-driver": "dev-master",
         "doctrine/data-fixtures": "dev-master",
         "fabpot/php-cs-fixer": "dev-master"
     },
