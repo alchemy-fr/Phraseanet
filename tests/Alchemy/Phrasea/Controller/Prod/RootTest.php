@@ -11,8 +11,10 @@ class ControllerRootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRouteSlash()
     {
-        $crawler = self::$DI['client']->request('GET', '/prod/');
+        $auth = new Session_Authentication_None(self::$DI['user']);
+        self::$DI['app']->openAccount($auth);
 
+        $crawler = self::$DI['client']->request('GET', '/prod/');
 
         $response = self::$DI['client']->getResponse();
         /* @var $response \Symfony\Component\HttpFoundation\Response */
