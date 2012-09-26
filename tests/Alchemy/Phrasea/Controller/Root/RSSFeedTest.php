@@ -109,7 +109,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
         copy(__DIR__ . '/../../../../db-ref.sqlite', __DIR__ . '/../../../../db.sqlite');
 
         $appbox = $application['phraseanet.appbox'];
-        $application->authenticate($application);
+        $this->authenticate($application);
 
         self::$feed_1_private = Feed_Adapter::create($application, self::$DI['user'], self::$feed_1_private_title, self::$feed_1_private_subtitle);
         self::$feed_1_private->set_public(false);

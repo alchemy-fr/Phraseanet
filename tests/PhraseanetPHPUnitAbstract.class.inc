@@ -159,9 +159,9 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         parent::tearDown();
 
         $duration = (microtime(true) - $this->start);
-        if ($duration > 0.75) {
-            echo "test in " . get_class($this) . " last " . $duration . "\n";
-        }
+//        if ($duration > 0.75) {
+//            echo "test in " . get_class($this) . " last " . $duration . "\n";
+//        }
         $this->start = null;
     }
 
@@ -560,7 +560,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      */
     private static function createSetOfUserTests(Application $application)
     {
-        self::$DI['user'] = self::$DI->share(function () use ($application) {
+        self::$DI['user'] = self::$DI->share(function ($DI) use ($application) {
             $usr_id = User_Adapter::get_usr_id_from_login($application, 'test_phpunit');
 
             if (!$usr_id) {
@@ -568,7 +568,9 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 $usr_id = $user->get_id();
             }
 
-            return new User_Adapter($usr_id, $application);
+            $user = new User_Adapter($usr_id, $application);
+
+            return $user;
         });
 
         self::$DI['user_notAdmin'] = self::$DI->share(function () use ($application) {
@@ -703,9 +705,12 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             $DI['user'] = $DI->share(
                 $DI->extend('user', function ($user, $DI) use ($collection_no_acces) {
                     $user->ACL()->revoke_access_from_bases(array($collection_no_acces->get_base_id()));
+                    $DI['client'] = new Client($DI['app'], array());
                     return $user;
                 })
             );
+
+            $DI['user'];
 
             return $collection_no_acces;
         });
@@ -718,9 +723,12 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             $DI['user'] = $DI->share(
                 $DI->extend('user', function ($user, $DI) use ($collection_no_acces_by_status) {
                         $user->ACL()->set_masks_on_base($collection_no_acces_by_status->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
+                        $DI['client'] = new Client($DI['app'], array());
                         return $user;
                     })
             );
+
+            $DI['user'];
 
             return $collection_no_acces_by_status;
         });
@@ -759,18 +767,18 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
                     $start = microtime(true);
 
-                    echo "\t\t\tcreating record $i ...\n";
+//                    echo "\t\t\tcreating record $i ...\n";
                         PhraseanetPHPUnitAbstract::$recordsInitialized[] = $i;
 
-                    echo "\t\t\tcreating record $i step #1 ".(microtime(true)-$start)."\n";
+//                    echo "\t\t\tcreating record $i step #1 ".(microtime(true)-$start)."\n";
                         $file = new Alchemy\Phrasea\Border\File($app['mediavorus']->guess($resolvePathfile($i)->getPathname()), $DI['collection']);
 
-                    echo "\t\t\tcreating record $i step #2 ".(microtime(true)-$start)."\n";
+//                    echo "\t\t\tcreating record $i step #2 ".(microtime(true)-$start)."\n";
                         $record = record_adapter::createFromFile($file, $app);
 
-                    echo "\t\t\tcreating record $i step #3 ".(microtime(true)-$start)."\n";
+//                    echo "\t\t\tcreating record $i step #3 ".(microtime(true)-$start)."\n";
                         $record->generate_subdefs($record->get_databox(), $app);
-                    echo "\t\t\tcreating record $i step #4 ".(microtime(true)-$start)."\n";
+//                    echo "\t\t\tcreating record $i step #4 ".(microtime(true)-$start)."\n";
 
                         return $record;
                     });
