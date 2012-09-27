@@ -282,7 +282,7 @@ class File
      *
      * @return \Alchemy\Phrasea\Border\File
      */
-    public function buildFromPathfile($pathfile, \collection $collection, MediaVorus $mediavorus, $originalName = null)
+    public static function buildFromPathfile($pathfile, \collection $collection, MediaVorus $mediavorus, $originalName = null)
     {
         try {
             $media = $mediavorus->guess($pathfile);
