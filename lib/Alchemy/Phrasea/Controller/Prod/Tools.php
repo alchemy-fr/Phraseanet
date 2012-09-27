@@ -134,7 +134,7 @@ class Tools implements ControllerProviderInterface
                                     , $request->request->get('record_id')
                             );
 
-                            $media = $app['Core']['mediavorus']->guess($tempoFile);
+                            $media = $app['phraseanet.core']['mediavorus']->guess($tempoFile);
 
                             $record->substitute_subdef('document', $media);
 

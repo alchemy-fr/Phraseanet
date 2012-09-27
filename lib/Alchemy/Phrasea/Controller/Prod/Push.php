@@ -178,7 +178,7 @@ class Push implements ControllerProviderInterface
                         throw new ControllerException(_('No elements to push'));
                     }
 
-                    $events_manager = $app['Core']['events-manager'];
+                    $events_manager = $app['phraseanet.core']['events-manager'];
 
                     foreach ($receivers as $receiver) {
                         try {
@@ -284,7 +284,7 @@ class Push implements ControllerProviderInterface
                     $pusher = new RecordHelper\Push($app['phraseanet.core'], $app['request']);
                     $user = $app['phraseanet.core']->getAuthenticatedUser();
 
-                    $events_manager = $app['Core']['events-manager'];
+                    $events_manager = $app['phraseanet.core']['events-manager'];
 
                     $repository = $em->getRepository('\Entities\Basket');
 
