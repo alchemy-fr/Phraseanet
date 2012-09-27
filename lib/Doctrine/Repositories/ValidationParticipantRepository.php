@@ -37,7 +37,7 @@ class ValidationParticipantRepository extends EntityRepository
             JOIN s.basket b
             WHERE p.is_confirmed = 0
             AND p.reminded IS NULL
-            AND s.expires < :date';
+            AND s.expires < :date AND s.expires > CURRENT_TIMESTAMP()';
 
         return $this->_em->createQuery($dql)
                 ->setParameter('date', $expireDate, Type::DATETIME)
