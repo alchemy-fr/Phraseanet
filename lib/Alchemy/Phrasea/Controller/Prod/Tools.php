@@ -121,13 +121,20 @@ class Tools implements ControllerProviderInterface
                         $fileName = $file->getClientOriginalName();
                         $size = $file->getClientSize();
 
+                        $tempoFile = tempnam(sys_get_temp_dir(), 'substit');
+                        unlink($tempoFile);
+                        mkdir($tempoFile);
+                        $tempoFile = $tempoFile . DIRECTORY_SEPARATOR . $fileName;
+                        copy($file->getPathname(), $tempoFile);
+
+
                         try {
                             $record = new \record_adapter(
                                     $request->request->get('sbas_id')
                                     , $request->request->get('record_id')
                             );
 
-                            $media = $app['phraseanet.core']['mediavorus']->guess($file);
+                            $media = $app['Core']['mediavorus']->guess($tempoFile);
 
                             $record->substitute_subdef('document', $media);
 
@@ -139,6 +146,10 @@ class Tools implements ControllerProviderInterface
                         } catch (\Exception $e) {
                             $errorMessage = $e->getMessage();
                         }
+
+                        unlink($tempoFile);
+                        rmdir(dirname($tempoFile));
+                        unlink($file->getPathname());
                     } else {
                         $errorMessage = _('file is not valid');
                     }
