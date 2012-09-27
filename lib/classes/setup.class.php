@@ -150,11 +150,6 @@ class setup
     {
         require(__DIR__ . "/../../lib/conf.d/_GV_template.inc");
 
-        if ($app['phraseanet.registry']->is_set('GV_timezone'))
-            date_default_timezone_set($app['phraseanet.registry']->get('GV_timezone'));
-        else
-            date_default_timezone_set('Europe/Berlin');
-
         $debug = $log_errors = false;
         $vars = array();
 
@@ -528,6 +523,11 @@ class setup
                 $constraints[] = new Setup_Constraint($conf, true, sprintf('%s = `%s` => OK', $conf, $value), true);
             }
         }
+
+        if (!ini_get('date.timezone')) {
+            $constraints[] = new Setup_Constraint('date.timezone', false, _('You must configure date.timezone'), true);
+        }
+
         foreach (self::$PHP_CONF as $conf => $value) {
             if ($conf == 'memory_limit') {
                 $memoryFound = self::test_php_conf($conf, $value);

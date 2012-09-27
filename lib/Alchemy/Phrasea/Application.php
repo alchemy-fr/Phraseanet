@@ -10,12 +10,12 @@ use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\GeonamesServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TaskManagerServiceProvider;
-use Alchemy\Phrasea\Security\Firewall;
 use FFMpeg\FFMpegServiceProvider;
 use Grom\Silex\ImagineServiceProvider;
 use MediaVorus\MediaVorusServiceProvider;
 use MediaAlchemyst\MediaAlchemystServiceProvider;
 use MediaAlchemyst\Driver\Imagine;
+use Monolog\Handler\NullHandler;
 use MP4Box\MP4BoxServiceProvider;
 use Neutron\Silex\Provider\FilesystemServiceProvider;
 use PHPExiftool\PHPExiftoolServiceProvider;
@@ -27,11 +27,12 @@ use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
 use Unoconv\UnoconvServiceProvider;
+use XPDF\PdfToText;
 use XPDF\XPDFServiceProvider;
 
 class Application extends SilexApplication
 {
-    protected static $availableLanguages = array(
+    private static $availableLanguages = array(
         'ar_SA' => 'العربية'
         , 'de_DE' => 'Deutsch'
         , 'en_GB' => 'English'
@@ -51,14 +52,14 @@ class Application extends SilexApplication
 
         $this->environment = $environment;
 
-        ini_set('output_buffering', '4096');
-
         if ((int) ini_get('memory_limit') < 2048) {
             ini_set('memory_limit', '2048M');
         }
 
-        error_reporting(E_STRICT);
-//        ini_set('error_reporting', '6143');
+        error_reporting(E_ALL | E_STRICT);
+
+        ini_set('display_errors', 'on');
+        ini_set('output_buffering', '4096');
         ini_set('default_charset', 'UTF-8');
         ini_set('session.use_cookies', '1');
         ini_set('session.use_only_cookies', '1');
@@ -67,48 +68,57 @@ class Application extends SilexApplication
         ini_set('session.hash_bits_per_character', '6');
         ini_set('session.cache_limiter', '');
         ini_set('allow_url_fopen', 'on');
+        mb_internal_encoding("UTF-8");
 
+        !defined('JETON_MAKE_SUBDEF') ? define('JETON_MAKE_SUBDEF', 0x01) : '';
+        !defined('JETON_WRITE_META_DOC') ? define('JETON_WRITE_META_DOC', 0x02) : '';
+        !defined('JETON_WRITE_META_SUBDEF') ? define('JETON_WRITE_META_SUBDEF', 0x04) : '';
+        !defined('JETON_WRITE_META') ? define('JETON_WRITE_META', 0x06) : '';
 
         $this['charset'] = 'UTF-8';
 
-        $this->register(new ConfigurationServiceProvider());
-
-
-        $this->register(new PhraseanetServiceProvider());
-
-
         $this['debug'] = $this->share(function(Application $app) {
-                return $app->getEnvironment() !== 'prod';
-            });
-
-        $this->register(new BorderManagerServiceProvider());
-        $this->register(new CacheServiceProvider());
-        $this->register(new ORMServiceProvider());
-        $this->register(new ValidatorServiceProvider());
-        $this->register(new UrlGeneratorServiceProvider());
-        $this->register(new BrowserServiceProvider());
-        $this->register(new ImagineServiceProvider());
-        $this->register(new FFMpegServiceProvider());
-        $this->register(new PHPExiftoolServiceProvider());
-        $this->register(new UnoconvServiceProvider());
-        $this->register(new MediaVorusServiceProvider());
-        $this->register(new XPDFServiceProvider());
-        $this->register(new MonologServiceProvider());
-        $this->register(new MediaAlchemystServiceProvider());
-        $this->register(new SessionServiceProvider());
-        $this->register(new GeonamesServiceProvider);
-        $this->register(new TaskManagerServiceProvider());
-        $this->register(new MP4BoxServiceProvider());
+            return $app->getEnvironment() !== 'prod';
+        });
 
         $this['session.test'] = $this->share(function(Application $app) {
-                return $app->getEnvironment() == 'test';
-            });
+            return $app->getEnvironment() == 'test';
+        });
 
-        $this['locale'] = $this->share(function(Application $app) {
-                if ($app['request']->cookies->has('locale')) {
-                    return $app['request']->cookies->get('locale');
-                }
-            });
+        if ($this['debug'] === true) {
+            ini_set('display_errors', 'on');
+            ini_set('log_errors', 'on');
+            ini_set('error_log', __DIR__ . '/../../../logs/php_error.log');
+        } else {
+            ini_set('display_errors', 'off');
+            ini_set('log_errors', 'off');
+        }
+
+        $this->register(new BorderManagerServiceProvider());
+        $this->register(new BrowserServiceProvider());
+        $this->register(new ConfigurationServiceProvider());
+        $this->register(new CacheServiceProvider());
+        $this->register(new ImagineServiceProvider());
+        $this->register(new FFMpegServiceProvider());
+        $this->register(new FilesystemServiceProvider());
+        $this->register(new GeonamesServiceProvider);
+        $this->register(new MediaAlchemystServiceProvider());
+        $this->register(new MediaVorusServiceProvider());
+        $this->register(new MonologServiceProvider());
+        $this->register(new MP4BoxServiceProvider());
+        $this->register(new ORMServiceProvider());
+        $this->register(new PhraseanetServiceProvider());
+        $this->register(new PHPExiftoolServiceProvider());
+        $this->register(new SessionServiceProvider());
+        $this->register(new TaskManagerServiceProvider());
+        $this->register(new UnoconvServiceProvider());
+        $this->register(new UrlGeneratorServiceProvider());
+        $this->register(new ValidatorServiceProvider());
+        $this->register(new XPDFServiceProvider());
+
+//        $this->register(new \Silex\Provider\HttpCacheServiceProvider());
+//        $this->register(new \Silex\Provider\SecurityServiceProvider());
+//        $this->register(new \Silex\Provider\SwiftmailerServiceProvider());
 
         $this['imagine.factory'] = $this->share(function(Application $app) {
             if ($app['phraseanet.registry']->get('GV_imagine_driver') != '') {
@@ -128,248 +138,171 @@ class Application extends SilexApplication
             throw new \RuntimeException('No Imagine driver available');
         });
 
+        $this['monolog.name'] = 'Phraseanet logger';
         $this['monolog.handler'] = $this->share(function () {
-                return new \Monolog\Handler\NullHandler();
-            });
-
-
-        $this['phraseanet.registry'] = $this->share(function(Application $app) {
-                return new \registry($app);
-            });
+            return new NullHandler();
+        });
 
         $app = $this;
         $this['phraseanet.logger'] = $this->protect(function($databox) use ($app) {
-                try {
-                    return \Session_Logger::load($app, $databox);
-                } catch (\Exception_Session_LoggerNotFound $e) {
-                    return \Session_Logger::create($app, $databox, $app['browser']);
-                }
-            });
+            try {
+                return \Session_Logger::load($app, $databox);
+            } catch (\Exception_Session_LoggerNotFound $e) {
+                return \Session_Logger::create($app, $databox, $app['browser']);
+            }
+        });
 
         $this['phraseanet.user'] = function(Application $app) {
-                if ($app->isAuthenticated()) {
-                    return \User_Adapter::getInstance($app['session']->get('usr_id'), $app);
-                }
+            if ($app->isAuthenticated()) {
+                return \User_Adapter::getInstance($app['session']->get('usr_id'), $app);
+            }
 
-                return null;
-            };
+            return null;
+        };
 
         $this['date-formatter'] = $this->share(function(Application $app) {
-                return new \phraseadate($app);
-            });
+            return new \phraseadate($app);
+        });
 
+        $this['xpdf.pdf2text'] = $this->share(
+            $this->extend('xpdf.pdf2text', function(PdfToText $pdf2text, Application $app){
+                if ($app['phraseanet.registry']->get('GV_pdfmaxpages')) {
+                    $pdf2text->setPageQuantity($app['phraseanet.registry']->get('GV_pdfmaxpages'));
+                }
 
-        /**
-         * Rajouter
-          if ($core->getRegistry()->get('GV_pdfmaxpages')) {
-          $pdftotext->setPageQuantity($core->getRegistry()->get('GV_pdfmaxpages'));
-          }
-         */
-        /**
-         * Rajouter log rooms
-         */
+                return $pdf2text;
+            })
+        );
+
         $this->register(new TwigServiceProvider(), array(
             'twig.options' => array(
                 'cache'           => realpath(__DIR__ . '/../../../../../../tmp/cache_twig/'),
             )
         ));
-        $this['firewall'] = $this->share(function() use ($app) {
-                return new Firewall($app);
-            });
-
 
         $this->setupTwig();
 
-
-        $this->register(new FilesystemServiceProvider());
-
         $request = Request::createFromGlobals();
 
+        /**
+         * dirty hack for flash uploader
+         */
         if (!!stripos($request->server->get('HTTP_USER_AGENT'), 'flash') && $request->getRequestUri() === '/prod/upload/') {
             if (null !== $sessionId = $request->get('php_session_id')) {
                 session_id($sessionId);
             }
         }
 
-        $this['events-manager'] = $this->share(function(Application $app) {
-                $events = new \eventsmanager_broker($app);
-                $events->start();
-
-                return $events;
-            });
-
-
-//        $request = Request::createFromGlobals();
-//        $gatekeeper = \gatekeeper::getInstance($this);
-//        $gatekeeper->check_directory($request);
-
-        \phrasea::start($this['phraseanet.configuration']);
-
-
-
-        if ($this['phraseanet.registry']->is_set('GV_timezone')) {
-            date_default_timezone_set($this['phraseanet.registry']->get('GV_timezone'));
-        } else {
-            date_default_timezone_set('Europe/Berlin');
-        }
-
-//        if ($this['phraseanet.configuration']->isInstalled()) {
-//            if ($this['phraseanet.configuration']->isDisplayingErrors()) {
-        ini_set('display_errors', 'on');
-        error_reporting(E_ALL);
-//            } else {
-//                ini_set('display_errors', 'off');
-//            }
-//        }
-
-
-
-
-
-
-
-
-
-        $php_log = $this['phraseanet.registry']->get('GV_RootPath') . 'logs/php_error.log';
-
-        ini_set('error_log', $php_log);
-
-        if ($this['phraseanet.registry']->get('GV_log_errors')) {
-            ini_set('log_errors', 'on');
-        } else {
-            ini_set('log_errors', 'off');
-        }
-
-        /**
-         * TODO NEUTRON add content nego
-         */
-        $request->setDefaultLocale(
-            $this['phraseanet.registry']->get('GV_default_lng', 'en_GB')
-        );
-
-
-        $cookies = $request->cookies;
-
-        if (isset(static::$availableLanguages[$cookies->get('locale')])) {
-            $request->setLocale($cookies->get('locale'));
-        }
-
-        $app['locale'] = $request->getLocale();
-        $data = explode('_', $app['locale']);
-        $app['locale.I18n'] = $data[0];
-        $app['locale.l10n'] = $data[1];
-
-        mb_internal_encoding("UTF-8");
-        \phrasea::use_i18n($request->getLocale());
-
-
-        !defined('JETON_MAKE_SUBDEF') ? define('JETON_MAKE_SUBDEF', 0x01) : '';
-        !defined('JETON_WRITE_META_DOC') ? define('JETON_WRITE_META_DOC', 0x02) : '';
-        !defined('JETON_WRITE_META_SUBDEF') ? define('JETON_WRITE_META_SUBDEF', 0x04) : '';
-        !defined('JETON_WRITE_META') ? define('JETON_WRITE_META', 0x06) : '';
-
-
         $this->before(function(Request $request) {
             $contentTypes = $request->getAcceptableContentTypes();
-                $request->setRequestFormat(
-                    $request->getFormat(
-                        array_shift(
-                            $contentTypes
-                        )
+            $request->setRequestFormat(
+                $request->getFormat(
+                    array_shift(
+                        $contentTypes
                     )
-                );
-            });
+                )
+            );
+        });
 
-//        $this->register(new \Silex\Provider\HttpCacheServiceProvider());
-//        $this->register(new \Silex\Provider\MonologServiceProvider());
-//        $this->register(new \Silex\Provider\SecurityServiceProvider());
-//        $this->register(new \Silex\Provider\SwiftmailerServiceProvider());
-//        $this->register(new \Silex\Provider\UrlGeneratorServiceProvider());
+        $this['locale.I18n'] = $this->share(function(Application $app){
+            $data = explode('_', $app['locale']);
+
+            return $data[0];
+        });
+        $this['locale.l10n'] = $this->share(function(Application $app){
+            $data = explode('_', $app['locale']);
+
+            return $data[1];
+        });
+
+        $this['locale'] = $this->share(function(Application $app) {
+            if ($app['request']->cookies->has('locale')
+                && isset(static::$availableLanguages[$app['request']->cookies->get('locale')])) {
+                $app['request']->setLocale($app['request']->cookies->get('locale'));
+
+                return $app['request']->getLocale();
+            }
+
+            $app['request']->setDefaultLocale(
+                $app['phraseanet.registry']->get('GV_default_lng', 'en_GB')
+            );
+        });
+
+        $this->before(function(Request $request) use ($app) {
+            \phrasea::use_i18n($app['locale']);
+        });
+
+        \phrasea::start($this['phraseanet.configuration']);
     }
 
     public function setupTwig()
     {
-
-        $app = $this;
         $this['twig'] = $this->share(
             $this->extend('twig', function ($twig, $app) {
 
-                    if ($app['browser']->isTablet() || $app['browser']->isMobile()) {
-                        $app['twig.loader.filesystem']->setPaths(array(
-                            realpath(__DIR__ . '/../../../config/templates/mobile'),
-                            realpath(__DIR__ . '/../../../templates/mobile'),
-                        ));
-                    } else {
-                        $app['twig.loader.filesystem']->setPaths(array(
-                            realpath(__DIR__ . '/../../../config/templates/web'),
-                            realpath(__DIR__ . '/../../../templates/web'),
-                        ));
-                    }
+                if ($app['browser']->isTablet() || $app['browser']->isMobile()) {
+                    $app['twig.loader.filesystem']->setPaths(array(
+                        realpath(__DIR__ . '/../../../config/templates/mobile'),
+                        realpath(__DIR__ . '/../../../templates/mobile'),
+                    ));
+                } else {
+                    $app['twig.loader.filesystem']->setPaths(array(
+                        realpath(__DIR__ . '/../../../config/templates/web'),
+                        realpath(__DIR__ . '/../../../templates/web'),
+                    ));
+                }
 
-                    $twig->addGlobal('app', $app);
-                    $twig->addGlobal('display_chrome_frame', $app['phraseanet.appbox']->get_registry()->is_set('GV_display_gcf') ? $app['phraseanet.appbox']->get_registry()->get('GV_display_gcf') : true);
-                    $twig->addGlobal('user', $app['phraseanet.user']);
-                    $twig->addGlobal('current_date', new \DateTime());
-                    $twig->addGlobal('home_title', $app['phraseanet.appbox']->get_registry()->get('GV_homeTitle'));
-                    $twig->addGlobal('meta_description', $app['phraseanet.appbox']->get_registry()->get('GV_metaDescription'));
-                    $twig->addGlobal('meta_keywords', $app['phraseanet.appbox']->get_registry()->get('GV_metaKeywords'));
-                    $twig->addGlobal('maintenance', $app['phraseanet.appbox']->get_registry()->get('GV_maintenance'));
-                    $twig->addGlobal('registry', $app['phraseanet.appbox']->get_registry());
+                $twig->addGlobal('app', $app);
+                $twig->addGlobal('display_chrome_frame', $app['phraseanet.appbox']->get_registry()->is_set('GV_display_gcf') ? $app['phraseanet.appbox']->get_registry()->get('GV_display_gcf') : true);
+                $twig->addGlobal('user', $app['phraseanet.user']);
+                $twig->addGlobal('current_date', new \DateTime());
+                $twig->addGlobal('home_title', $app['phraseanet.appbox']->get_registry()->get('GV_homeTitle'));
+                $twig->addGlobal('meta_description', $app['phraseanet.appbox']->get_registry()->get('GV_metaDescription'));
+                $twig->addGlobal('meta_keywords', $app['phraseanet.appbox']->get_registry()->get('GV_metaKeywords'));
+                $twig->addGlobal('maintenance', $app['phraseanet.appbox']->get_registry()->get('GV_maintenance'));
+                $twig->addGlobal('registry', $app['phraseanet.appbox']->get_registry());
 
-                    $twig->addExtension(new \Twig_Extension_Core());
-                    $twig->addExtension(new \Twig_Extension_Optimizer());
-                    $twig->addExtension(new \Twig_Extension_Escaper());
-                    $twig->addExtension(new \Twig_Extensions_Extension_Debug());
-                    // add filter trans
-                    $twig->addExtension(new \Twig_Extensions_Extension_I18n());
-                    // add filter localizeddate
-                    $twig->addExtension(new \Twig_Extensions_Extension_Intl());
-                    // add filters truncate, wordwrap, nl2br
-                    $twig->addExtension(new \Twig_Extensions_Extension_Text());
-                    $twig->addExtension(new \Alchemy\Phrasea\Twig\JSUniqueID());
+                $twig->addExtension(new \Twig_Extension_Core());
+                $twig->addExtension(new \Twig_Extension_Optimizer());
+                $twig->addExtension(new \Twig_Extension_Escaper());
+                $twig->addExtension(new \Twig_Extensions_Extension_Debug());
+                // add filter trans
+                $twig->addExtension(new \Twig_Extensions_Extension_I18n());
+                // add filter localizeddate
+                $twig->addExtension(new \Twig_Extensions_Extension_Intl());
+                // add filters truncate, wordwrap, nl2br
+                $twig->addExtension(new \Twig_Extensions_Extension_Text());
+                $twig->addExtension(new \Alchemy\Phrasea\Twig\JSUniqueID());
 
-                    include_once __DIR__ . '/Twig/Functions.inc.php';
+                include_once __DIR__ . '/Twig/Functions.inc.php';
 
-                    $twig->addTest('null', new \Twig_Test_Function('is_null'));
-                    $twig->addTest('loopable', new \Twig_Test_Function('is_loopable'));
+                $twig->addTest('null', new \Twig_Test_Function('is_null'));
+                $twig->addTest('loopable', new \Twig_Test_Function('is_loopable'));
 
-                    $twig->addFilter('serialize', new \Twig_Filter_Function('serialize'));
-                    $twig->addFilter('stristr', new \Twig_Filter_Function('stristr'));
-                    $twig->addFilter('implode', new \Twig_Filter_Function('implode'));
-                    $twig->addFilter('get_class', new \Twig_Filter_Function('get_class'));
-                    $twig->addFilter('stripdoublequotes', new \Twig_Filter_Function('stripdoublequotes'));
-                    $twig->addFilter('get_collection_logo', new \Twig_Filter_Function('collection::getLogo'));
-                    $twig->addFilter('floor', new \Twig_Filter_Function('floor'));
-                    $twig->addFilter('bas_names', new \Twig_Filter_Function('phrasea::bas_names'));
-                    $twig->addFilter('sbas_names', new \Twig_Filter_Function('phrasea::sbas_names'));
-                    $twig->addFilter('urlencode', new \Twig_Filter_Function('urlencode'));
-                    $twig->addFilter('key_exists', new \Twig_Filter_Function('array_key_exists'));
-                    $twig->addFilter('array_keys', new \Twig_Filter_Function('array_keys'));
-                    $twig->addFilter('round', new \Twig_Filter_Function('round'));
-                    $twig->addFilter('formatOctets', new \Twig_Filter_Function('p4string::format_octets'));
-                    $twig->addFilter('base_from_coll', new \Twig_Filter_Function('phrasea::baseFromColl'));
-                    $twig->addFilter('AppName', new \Twig_Filter_Function('Alchemy\Phrasea\Controller\Admin\ConnectedUsers::appName'));
+                $twig->addFilter('serialize', new \Twig_Filter_Function('serialize'));
+                $twig->addFilter('stristr', new \Twig_Filter_Function('stristr'));
+                $twig->addFilter('implode', new \Twig_Filter_Function('implode'));
+                $twig->addFilter('get_class', new \Twig_Filter_Function('get_class'));
+                $twig->addFilter('stripdoublequotes', new \Twig_Filter_Function('stripdoublequotes'));
+                $twig->addFilter('get_collection_logo', new \Twig_Filter_Function('collection::getLogo'));
+                $twig->addFilter('floor', new \Twig_Filter_Function('floor'));
+                $twig->addFilter('bas_names', new \Twig_Filter_Function('phrasea::bas_names'));
+                $twig->addFilter('sbas_names', new \Twig_Filter_Function('phrasea::sbas_names'));
+                $twig->addFilter('urlencode', new \Twig_Filter_Function('urlencode'));
+                $twig->addFilter('key_exists', new \Twig_Filter_Function('array_key_exists'));
+                $twig->addFilter('array_keys', new \Twig_Filter_Function('array_keys'));
+                $twig->addFilter('round', new \Twig_Filter_Function('round'));
+                $twig->addFilter('formatOctets', new \Twig_Filter_Function('p4string::format_octets'));
+                $twig->addFilter('base_from_coll', new \Twig_Filter_Function('phrasea::baseFromColl'));
+                $twig->addFilter('AppName', new \Twig_Filter_Function('Alchemy\Phrasea\Controller\Admin\ConnectedUsers::appName'));
 
-                    return $twig;
-                }));
+                return $twig;
+            })
+        );
     }
-//    public function run(Request $request = null)
-//    {
-//        $app = $this;
-//
-//        $this->error(function($e) use ($app) {
-//
-//                if ($app['debug']) {
-//                    return new Response($e->getMessage(), 500);
-//                } else {
-//                    return new Response(_('An error occured'), 500);
-//                }
-//            });
-//        parent::run($request);
-//    }
 
     /**
-     * Tell if current seession is authenticated
+     * Tell if current a session is open
      *
      * @return boolean
      */
@@ -379,15 +312,12 @@ class Application extends SilexApplication
     }
 
     /**
-     * Return available language for phraseanet
+     * Open user session
      *
-     * @return Array
+     * @param \Session_Authentication_Interface $auth
+     * @param integer $ses_id use previous phrasea session id
+     * @throws \Exception_InternalServerError
      */
-    public static function getAvailableLanguages()
-    {
-        return static::$availableLanguages;
-    }
-
     public function openAccount(\Session_Authentication_Interface $auth, $ses_id = null)
     {
         $user = $auth->get_user();
@@ -423,6 +353,9 @@ class Application extends SilexApplication
         }
     }
 
+    /**
+     * Closes user session
+     */
     public function closeAccount()
     {
         if ($this['session']->has('phrasea_session_id')) {
@@ -430,6 +363,18 @@ class Application extends SilexApplication
         }
 
         $this['session']->clear();
+
+        return $this;
+    }
+
+    /**
+     * Return available language for phraseanet
+     *
+     * @return Array
+     */
+    public static function getAvailableLanguages()
+    {
+        return static::$availableLanguages;
     }
 }
 

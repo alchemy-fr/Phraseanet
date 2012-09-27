@@ -330,7 +330,7 @@ class API_V1_adapter extends API_V1_Abstract
                 'description' => $registry->get('GV_metaDescription'),
                 'httpServer'  => array(
                     'logErrors'       => $registry->get('GV_log_errors'),
-                    'phpTimezone'     => $registry->get('GV_timezone'),
+                    'phpTimezone'     => ini_get('date.timezone'),
                     'siteId'          => $registry->get('GV_sit'),
                     'staticUrl'       => $registry->get('GV_STATIC_URL'),
                     'defaultLanguage' => $registry->get('id_GV_default_lng'),

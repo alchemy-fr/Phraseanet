@@ -81,13 +81,6 @@ $GV = array(
         'section' => _('GV::section:: Serveur HTTP'),
         'vars'    => array(
             array(
-                'type'     => 'timezone',
-                'name'     => 'GV_timezone',
-                'comment'  => _('reglages:: Timezone de l\'installation'),
-                'default'  => 'Europe/Paris',
-                'required' => true
-            ),
-            array(
                 'type'     => 'string',
                 'name'     => 'GV_sit',
                 'comment'  => _('reglages:: Nom de linstallation'),
