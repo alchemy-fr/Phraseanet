@@ -19,6 +19,14 @@
   {% endif %}
 {% endfor %}
 
+{# image section #}
+{% set allowRotate = '0' %}
+{% for record in selection %}
+  {% if record.get_type() == 'image' %}
+      {% set allowRotate = '1' %}
+  {% endif %}
+{% endfor %}
+
 <div id='prod-tool-box' class="PNB10">
 
     {# jquery Tabs #}
@@ -42,16 +50,12 @@
                         {% endif %}
                     {% endfor %}
                 {% endif %}
-                {% if selectionLength == 1%}
-                    {% for record in selection %}
-                        {% if record.get_type() == 'image' %}
-                            <li>
-                                <a href="#image">
-                                    {% trans "image tool"%}
-                                </a>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
+                {% if allowRotate == 1%}
+                    <li>
+                        <a href="#image">
+                            {% trans "image tool"%}
+                        </a>
+                    </li>
                 {% endif %}
                 {% if selectionLength == 1 and registry.get('GV_seeOngChgDoc') %}
                     <li>
@@ -226,35 +230,30 @@
       {% endfor %}
     {% endif %}
 
-    {# image section #}
-    {% if selectionLength == 1%}
-      {% for record in selection %}
-        {% if record.get_type() == 'image' %}
-          <div id="image" class="tabBox">
-            <form name="formpushdoc" action="/prod/tools/rotate/" method="post">
-              <fieldset style='border:1px solid #999;padding:20px;'>
-                <legend style='color:#EEE'>&nbsp;<b>{% trans "image rotation" %}</b>&nbsp;</legend>
-                  <label for="ROTA_90" class="radio">
-                      <input type="radio" name="rotation" id="ROTA_90" value="90" checked="checked">
-                      {% trans "rotation 90 degres horaire"%}
-                  </label>
-                  <br />
-                  <label for="ROTA_C90" class="radio">
-                      <input type="radio" name="rotation" id="ROTA_C90" value="-90">
-                      {% trans "rotation 90 degres anti-horaires"%}
-                  </label>
-                  <input type="hidden" name="lst" value="{{helper.get_serialize_list()}}" />
-                  <input type="hidden" name="element" value="" />
-                  <input type="hidden" name="cchd" value="" />
-              </fieldset>
-              <div style='text-align:right;padding-top:10px;'>
-                <button class="action_submiter btn btn-inverse">{% trans "validate" %}</button>
-                <button class="action_cancel btn btn-inverse">{% trans "cancel" %}</button>
-              </div>
-            </form>
-          </div>
-        {% endif %}
-      {% endfor %}
+    {% if allowRotate == 1 %}
+        <div id="image" class="tabBox">
+          <form name="formpushdoc" action="/prod/tools/rotate/" method="post">
+            <fieldset style='border:1px solid #999;padding:20px;'>
+              <legend style='color:#EEE'>&nbsp;<b>{% trans "image rotation" %}</b>&nbsp;</legend>
+                <label for="ROTA_90" class="radio">
+                    <input type="radio" name="rotation" id="ROTA_90" value="90" checked="checked">
+                    {% trans "rotation 90 degres horaire"%}
+                </label>
+                <br />
+                <label for="ROTA_C90" class="radio">
+                    <input type="radio" name="rotation" id="ROTA_C90" value="-90">
+                    {% trans "rotation 90 degres anti-horaires"%}
+                </label>
+                <input type="hidden" name="lst" value="{{helper.get_serialize_list()}}" />
+                <input type="hidden" name="element" value="" />
+                <input type="hidden" name="cchd" value="" />
+            </fieldset>
+            <div style='text-align:right;padding-top:10px;'>
+              <button class="action_submiter btn btn-inverse">{% trans "validate" %}</button>
+              <button class="action_cancel btn btn-inverse">{% trans "cancel" %}</button>
+            </div>
+          </form>
+        </div>
     {% endif %}
 
     {# hd sub section #}
@@ -425,6 +424,8 @@ $(document).ready(function(){
     $(".action_cancel", scope).bind("click", function(){
         var dialog = p4.Dialog.get(1);
         dialog.Close();
+
+        return false;
     });
 
     //thumbExtractor
