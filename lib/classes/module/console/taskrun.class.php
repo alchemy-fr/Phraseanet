@@ -145,7 +145,7 @@ class module_console_taskrun extends Command
 
         if (time() - $start > 0) {
             if ($this->shedulerPID) {
-                if ( ! posix_kill($this->shedulerPID, 0)) {
+                if (function_exists('posix_kill') && !posix_kill($this->shedulerPID, 0)) {
                     if (method_exists($this->task, 'signal')) {
                         $this->task->signal('SIGNAL_SCHEDULER_DIED');
                     } else {
