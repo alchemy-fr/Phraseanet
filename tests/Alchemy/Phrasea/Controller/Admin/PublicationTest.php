@@ -47,7 +47,8 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
         $count_after = sizeof($feeds->get_feeds());
         $this->assertGreaterThan($count, $count_after);
 
-        $feed = array_pop($feeds->get_feeds());
+        $all_feeds = $feeds->get_feeds();
+        $feed = array_pop($all_feeds);
 
         $feed->delete();
     }

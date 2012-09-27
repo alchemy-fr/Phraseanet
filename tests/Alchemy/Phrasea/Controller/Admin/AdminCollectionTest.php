@@ -69,7 +69,8 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function createOneCollection()
     {
-        $collection = \collection::create(self::$DI['app'], array_shift(self::$DI['app']['phraseanet.appbox']->get_databoxes()), self::$DI['app']['phraseanet.appbox'], 'TESTTODELETE');
+        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
+        $collection = \collection::create(self::$DI['app'], array_shift($databoxes), self::$DI['app']['phraseanet.appbox'], 'TESTTODELETE');
 
         self::$createdCollections[] = $collection;
 

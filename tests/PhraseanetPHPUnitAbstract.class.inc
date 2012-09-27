@@ -40,11 +40,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      */
     protected static $time_start;
 
-    /**
-     *
-     * @var \Alchemy\Phrasea\Application
-     */
-    protected static $application;
     public $app;
     protected $start;
     /**

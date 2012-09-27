@@ -12,7 +12,8 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testCheckMulti()
     {
         $appbox = self::$DI['app']['phraseanet.appbox'];
-        $databox = array_shift($appbox->get_databoxes());
+        $databoxes = $appbox->get_databoxes();
+        $databox = array_shift($databoxes);
 
         $tag = new PHPExiftool\Driver\Tag\IPTC\ObjectName();
 
@@ -34,7 +35,8 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testCheckReadOnly()
     {
         $appbox = self::$DI['app']['phraseanet.appbox'];
-        $databox = array_shift($appbox->get_databoxes());
+        $databoxes = $appbox->get_databoxes();
+        $databox = array_shift($databoxes);
 
         $tag = new PHPExiftool\Driver\Tag\IPTC\ObjectName();
 

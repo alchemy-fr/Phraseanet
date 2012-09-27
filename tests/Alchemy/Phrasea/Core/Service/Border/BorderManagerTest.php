@@ -49,7 +49,8 @@ class BorderManagerTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetMandatoryOptions()
     {
-        $this->assertInternalType('array', BorderManager::getMandatoryOptions());
+        $manager = new BorderManager(self::$DI['app'], array('enabled'  => true, 'checkers' => array()));
+        $this->assertInternalType('array', $manager->getMandatoryOptions());
     }
 
     /**
@@ -161,10 +162,10 @@ class BorderManagerTest extends \PhraseanetPHPUnitAbstract
         $appbox = $app['phraseanet.appbox'];
 
         foreach ($appbox->get_databoxes() as $db) {
-            if ( ! $databox) {
+            if (!$databox) {
                 $databox = $db;
             }
-            if ( ! $collection) {
+            if (!$collection) {
                 foreach ($db->get_collections() as $coll) {
                     $collection = $coll;
                     break;

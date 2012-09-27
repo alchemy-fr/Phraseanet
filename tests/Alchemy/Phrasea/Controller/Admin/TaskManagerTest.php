@@ -49,7 +49,8 @@ class TaskManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract {
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
 
         $location = self::$DI['client']->getResponse()->headers->get('location');
-        $tid = array_pop(explode('/', $location));
+        $data = explode('/', $location);
+        $tid = array_pop($data);
 
         self::$DI['client']->request(
                 'GET', '/admin/task-manager/task/' . $tid . '/log', array()

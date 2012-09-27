@@ -55,8 +55,9 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
         $query = self::$DI['app']['EM']->createQuery('SELECT b FROM \Entities\Basket b');
 
+        $result = $query->getResult();
 
-        $basket = array_shift($query->getResult());
+        $basket = array_shift($result);
         /* @var $basket \Entities\Basket */
         $this->assertEquals(2, $basket->getElements()->count());
     }

@@ -343,7 +343,8 @@ class LoginTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         /**
          * @todo change this
          */
-        if ( ! \login::register_enabled(self::$DI['app'])) {
+        $login = new \login();
+        if ( ! $login->register_enabled(self::$DI['app'])) {
             $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         } else {
             $this->assertTrue(self::$DI['client']->getResponse()->isOk());

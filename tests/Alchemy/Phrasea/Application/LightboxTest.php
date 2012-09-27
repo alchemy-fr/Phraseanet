@@ -18,7 +18,8 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         parent::setUp();
         $appbox = self::$DI['app']['phraseanet.appbox'];
         $this->feed = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "salut", 'coucou');
-        $publisher = array_shift($this->feed->get_publishers());
+        $publishers = $this->feed->get_publishers();
+        $publisher = array_shift($publishers);
         $this->entry = Feed_Entry_Adapter::create(self::$DI['app'], $this->feed, $publisher, 'title', "sub Titkle", " jean pierre", "jp@test.com");
         $this->item = Feed_Entry_Item::create($appbox, $this->entry, self::$DI['record_1']);
     }

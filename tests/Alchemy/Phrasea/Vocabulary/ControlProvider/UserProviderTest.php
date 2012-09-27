@@ -24,7 +24,8 @@ class UserProviderTest extends \PhraseanetPHPUnitAbstract
 
         $this->assertTrue(is_scalar($type));
 
-        $classname = array_pop(explode('\\', get_class($this->object)));
+        $data = explode('\\', get_class($this->object));
+        $classname = array_pop($data);
 
         $this->assertEquals($classname, $type . 'Provider');
     }

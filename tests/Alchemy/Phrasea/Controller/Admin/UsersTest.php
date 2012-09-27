@@ -96,7 +96,8 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteQuota()
     {
-        $base_id = array_pop(array_keys(self::$DI['user']->ACL()->get_granted_base()));
+        $keys = array_keys(self::$DI['user']->ACL()->get_granted_base());
+        $base_id = array_pop($keys);
         $params = array('base_id' => $base_id, 'users'   => self::$DI['user']->get_id());
 
         self::$DI['client']->request('POST', '/admin/users/rights/quotas/', $params);
@@ -116,7 +117,8 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteQuotaRemove()
     {
-        $base_id = array_pop(array_keys(self::$DI['user']->ACL()->get_granted_base()));
+        $keys = array_keys(self::$DI['user']->ACL()->get_granted_base());
+        $base_id = array_pop($keys);
         $params = array('base_id' => $base_id, 'users'   => self::$DI['user']->get_id());
 
         self::$DI['client']->request('POST', '/admin/users/rights/quotas/apply/', $params);
@@ -126,7 +128,8 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteRightTime()
     {
-        $base_id = array_pop(array_keys(self::$DI['user']->ACL()->get_granted_base()));
+        $keys = array_keys(self::$DI['user']->ACL()->get_granted_base());
+        $base_id = array_pop($keys);
         $params = array('base_id' => $base_id, 'users'   => self::$DI['user']->get_id());
 
         self::$DI['client']->request('POST', '/admin/users/rights/time/', $params);
@@ -154,7 +157,8 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteRightMask()
     {
-        $base_id = array_pop(array_keys(self::$DI['user']->ACL()->get_granted_base()));
+        $keys = array_keys(self::$DI['user']->ACL()->get_granted_base());
+        $base_id = array_pop($keys);
         $params = array('base_id' => $base_id, 'users'   => self::$DI['user']->get_id());
 
         self::$DI['client']->request('POST', '/admin/users/rights/masks/', $params);

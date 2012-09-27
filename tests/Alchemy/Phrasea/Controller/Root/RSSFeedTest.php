@@ -127,7 +127,8 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
         self::$feed_4_public = Feed_Adapter::create($application, self::$DI['user'], self::$feed_4_public_title, self::$feed_4_public_subtitle);
         self::$feed_4_public->set_public(true);
 
-        $publisher = array_shift(self::$feed_4_public->get_publishers());
+        $publishers = self::$feed_4_public->get_publishers();
+        $publisher = array_shift($publishers);
 
         for ($i = 1; $i != 15; $i++) {
             $entry = Feed_Entry_Adapter::create($application, self::$feed_4_public, $publisher, 'titre entry', 'soustitre entry', 'Jean-Marie Biggaro', 'author@example.com');
@@ -280,7 +281,8 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
     public function testGetFeedFormat()
     {
         $feeds = Feed_Collection::load_public_feeds(self::$DI['app']);
-        $feed = array_shift($feeds->get_feeds());
+        $all_feeds = $feeds->get_feeds();
+        $feed = array_shift($all_feeds);
 
         $crawler = self::$DI['client']->request("GET", "/feeds/feed/" . $feed->get_id() . "/rss/");
         $this->assertEquals("application/rss+xml", self::$DI['client']->getResponse()->headers->get("content-type"));
