@@ -635,7 +635,7 @@ function TXdblClick(e)
           {
             var sbid = tid.split(".")[1];
             var term = $(x).hasClass('separator') ? $(x).prev().text() : $(x).text();
-            console.log('do thes');
+
             doThesSearch('T', sbid, term, null);
           }
           break;
