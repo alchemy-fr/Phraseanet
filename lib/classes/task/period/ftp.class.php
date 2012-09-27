@@ -50,7 +50,8 @@ class task_period_ftp extends task_appboxAbstract
             , "proxyport"
             , "period"
         );
-        if (($dom = @DOMDocument::loadXML($oldxml)) != FALSE) {
+        $dom = new DOMDocument();
+        if ((@$dom->loadXML($oldxml)) != FALSE) {
             $xmlchanged = false;
             foreach (array("str:proxy", "str:proxyport", "str:period") as $pname) {
                 $ptype = substr($pname, 0, 3);
@@ -167,7 +168,8 @@ class task_period_ftp extends task_appboxAbstract
 
         if ($parm["xml"] === null) {
             // pas de xml 'raw' : on accepte les champs 'graphic view'
-            if (($domTaskSettings = @DOMDocument::loadXML($taskrow["settings"])) != FALSE) {
+            $domTaskSettings = new DOMDocument();
+            if ((@$domTaskSettings->loadXML($taskrow["settings"])) != FALSE) {
                 $xmlchanged = false;
                 foreach (array("proxy", "proxyport", "period") as $f) {
                     if ($parm[$f] !== NULL) {
@@ -194,7 +196,8 @@ class task_period_ftp extends task_appboxAbstract
         }
 
         // si on doit changer le xml, on verifie qu'il est valide
-        if ($parm["xml"] && ! @DOMDocument::loadXML($parm["xml"])) {
+        $domdoc = new DOMDocument();
+        if ($parm["xml"] && ! @$domdoc->loadXML($parm["xml"])) {
             return(false);
         }
 

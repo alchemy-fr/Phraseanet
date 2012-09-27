@@ -828,7 +828,8 @@ abstract class task_abstract
                     (null, 0, "stopped", 0, :active,
                       :name, "0000/00/00 00:00:00", :class, :settings)';
 
-        if ($settings && ! DOMDocument::loadXML($settings)) {
+        $domdoc = new DOMDocument();
+        if ($settings && ! $domdoc->loadXML($settings)) {
             throw new Exception('settings invalide');
         } elseif ( ! $settings) {
             $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n</tasksettings>";
