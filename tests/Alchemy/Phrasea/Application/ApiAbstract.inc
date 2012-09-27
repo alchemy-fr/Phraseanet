@@ -153,21 +153,12 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
 
     public function testCheckNativeApp()
     {
-        $appbox = self::$DI['app']["phraseanet.appbox"];
-
-        $registry = $this->getMock('\\registry', array(), array(), '', false);
-        $registry
-            ->expects($this->any())
-            ->method('get')
-            ->with($this->equalTo('GV_client_navigator'))
-            ->will($this->returnValue(false));
-        $registryBkp = self::$DI['app']["phraseanet.registry"];
+        $value = self::$DI['app']["phraseanet.registry"]->get('GV_client_navigator');
+        self::$DI['app']["phraseanet.registry"]->set('GV_client_navigator', false, \registry::TYPE_BOOLEAN);
 
         $fail = null;
 
         try {
-
-            self::$DI['app']["phraseanet.registry"] = $registry;
 
             $nativeApp = \API_OAuth2_Application::load_from_client_id(self::$DI['app'], \API_OAuth2_Application_Navigator::CLIENT_ID);
 
@@ -184,7 +175,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             $fail = $e;
         }
 
-        self::$DI['app']["phraseanet.registry"] = $registryBkp;
+        self::$DI['app']["phraseanet.registry"]->set('GV_client_navigator', $value, \registry::TYPE_BOOLEAN);
 
         if ($fail) {
             throw $fail;
