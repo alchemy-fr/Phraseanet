@@ -35,6 +35,7 @@ $finder
     ->name('.gitignore')
     ->name('check_cs.php')
     ->name('cleaner.php')
+    ->name('build-env.sh')
     ->name('phpunit.xml.dist')
     ->name('launchpadToLocales.php')
     ->name('localesToLaunchPad.php')
