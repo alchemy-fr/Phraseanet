@@ -47,7 +47,7 @@ class module_console_systemUpgrade extends Command
 
         $interactive = !$input->getOption('yes');
 
-        if (!$Core->getConfiguration()->isInstalled() && \setup::needUpgradeConfigurationFile()) {
+        if (!$this->container['phraseanet.configuration']->isInstalled() && \setup::needUpgradeConfigurationFile()) {
 
             if ($interactive) {
                 $output->writeln('This version of Phraseanet requires a config/config.yml, config/connexion.yml, config/service.yml');
@@ -64,7 +64,7 @@ class module_console_systemUpgrade extends Command
             if ($continue == 'y') {
                 try {
                     if (\setup::requireGVUpgrade()) {
-                        setup::upgradeGV($Core['Registry']);
+                        setup::upgradeGV($this->container['phraseanet.registry']);
                     }
 
                     $connexionInc = new \SplFileInfo(__DIR__ . '/../../../../config/connexion.inc');
