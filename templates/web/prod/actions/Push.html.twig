@@ -48,7 +48,7 @@
                         {% for list in lists %}
                             <li class="list" style="padding:2px;">
                                 <a class="list_loader" href="/prod/push/list/{{ list.getId() }}/">
-                                    {% if list.getOwner(user, app).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
+                                    {% if list.getOwner(app['phraseanet.user'], app).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
                                         <img src="/skins/prod/Push/list-icon.png" />
                                     {% else %}
                                         <img src="/skins/icons/SHARE16.png" />
@@ -73,7 +73,7 @@
                                 <input class="search" name="users-search" placeholder="{% trans 'Users' %}" type="text" style="width:210px;"/>
                                 <br/>
                                 {% trans 'Select a user in the list'%} <br/>
-                                {% if user.ACL().has_right('manageusers') %}
+                                {% if app['phraseanet.user'].ACL().has_right('manageusers') %}
                                     {% trans 'or' %}
                                     <a href="/prod/push/add-user/" class="user_adder link">{% trans 'Add user' %}</a>
                                 {% endif %}

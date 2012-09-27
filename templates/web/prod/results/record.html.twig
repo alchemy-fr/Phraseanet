@@ -1,8 +1,8 @@
-{% macro block(record, user, highlight, searchEngine, prefix, entry_id)%}
+{% macro block(record, highlight, searchEngine, prefix, entry_id)%}
     {% import 'common/thumbnail.html.twig' as thumbnail %}
     {% import 'common/doctype_icons.html.twig' as doctype_icons %}
     {% import 'common/drop_down_options.html.twig' as drop_down %}
-    {% set th_size = user.getPrefs('images_size')%}
+    {% set th_size = app['phraseanet.user'].getPrefs('images_size')%}
     {% set sbas_id = record.get_sbas_id %}
     {% if entry_id %}
         <div style="width:{{th_size+30}}px;" sbas="{{sbas_id}}"
@@ -31,8 +31,8 @@
             </div>
             {% set rollover_gif = record.get_rollover_thumbnail() %}
 
-            {% set user_technical_display = user.getPrefs('technical_display') %}
-            {% set user_rollover_thumbnail = user.getPrefs('rollover_thumbnail') %}
+            {% set user_technical_display = app['phraseanet.user'].getPrefs('technical_display') %}
+            {% set user_rollover_thumbnail = app['phraseanet.user'].getPrefs('rollover_thumbnail') %}
 
             {% set extraclass = '' %}
             {% if user_rollover_thumbnail == 'caption' and searchEngine is not null %}
@@ -47,7 +47,7 @@
             {% endif %}
             <div class="thumb {{extraclass}} " tooltipsrc="{{tooltipsrc}}" style="height:{{th_size}}px; z-index:90;">
                 <div class="doc_infos">
-                {% if user.getPrefs('doctype_display') == '1' %}
+                {% if app['phraseanet.user'].getPrefs('doctype_display') == '1' %}
                 {{doctype_icons.format(record)}}
                 {% endif %}
                 <span class="duration">
@@ -79,8 +79,8 @@
                     {% set l_width = l_width + 20 %}
                     {% endif %}
                     <td style='text-align:right;width:{{l_width}}px;' valign='bottom'>
-                    {{drop_down.prod(record, user, entry_id)}}
-                    {% if record.has_preview() and user.ACL().has_access_to_subdef(record, 'preview') %}
+                    {{drop_down.prod(record, entry_id)}}
+                    {% if record.has_preview() and app['phraseanet.user'].ACL().has_access_to_subdef(record, 'preview') %}
                     <div tooltipsrc="/prod/tooltip/preview/{{record.get_sbas_id()}}/{{record.get_record_id()}}/" class="previewTips"></div>
                     {% endif %}
                     {% if user_rollover_thumbnail == 'preview' %}

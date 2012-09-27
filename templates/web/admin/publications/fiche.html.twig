@@ -97,7 +97,7 @@
                 <div class="controls">
                     <select id="edit_pub_base_id" class="input-large" name="base_id" {% if feed.is_public() %}disabled="disabled"{% endif %}>
                         <option value="">{% trans 'Non-Restreinte (publique)' %}</option>
-                        {% for databox in user.ACL().get_granted_sbas('bas_chupub') %}
+                        {% for databox in app['phraseanet.user'].ACL().get_granted_sbas('bas_chupub') %}
                             <optgroup label="{{ databox.get_viewname() }}">
                                 {% for collection in databox.get_collections() %}
                                     <option {% if feed.get_collection() and feed.get_collection().get_base_id() == collection.get_base_id() %}selected="selected"{% endif %} value="{{ collection.get_base_id() }}">{{ collection.get_name() }}</option>

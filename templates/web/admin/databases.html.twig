@@ -37,7 +37,7 @@
     </ul>
 </div>
 
-{% if user.ACL().is_admin() %}
+{% if app['phraseanet.user'].ACL().is_admin() %}
     <div class="db_infos">
         <h2>{% trans 'admin::base: Version' %}</h2>
 

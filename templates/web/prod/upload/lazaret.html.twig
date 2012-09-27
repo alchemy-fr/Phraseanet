@@ -303,8 +303,8 @@
             </h5>
             <ul class="thumbnails">
                 {% for record in records %}
-                    {% if user.ACL().has_right_on_base(record.get_base_id(), "canaddrecord")
-                        and user.ACL().has_right_on_base(record.get_base_id(), "candeleterecord") %}
+                    {% if app['phraseanet.user'].ACL().has_right_on_base(record.get_base_id(), "canaddrecord")
+                        and app['phraseanet.user'].ACL().has_right_on_base(record.get_base_id(), "candeleterecord") %}
                         <li class="records-subititution span3">
                             <div class="thumbnail">
                                 <div class="record-thumb" style="text-align:center;">

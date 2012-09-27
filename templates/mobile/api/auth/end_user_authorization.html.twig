@@ -54,8 +54,8 @@
                         </p>
                     </div>
                 {% else %}
-                    {% if user is not none %}
-                        {% set username = '<b>' ~ user.get_display_name() ~ '</b>' %}
+                    {% if app['phraseanet.user'] is not none %}
+                        {% set username = '<b>' ~ app['phraseanet.user'].get_display_name() ~ '</b>' %}
                         <div id="hello-box" class="span6 offset3">
                             <p class="login_hello">
                                 {% trans %}

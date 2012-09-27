@@ -239,12 +239,12 @@
 {% endmacro %}
 
 
-{% macro element(wz_scope, container, contained, record, ord, user) %}
+{% macro element(wz_scope, container, contained, record, ord) %}
   {% set box_height = 110 %}
-  {% if user.getPrefs('basket_title_display') == '1' %}
+  {% if app['phraseanet.user'].getPrefs('basket_title_display') == '1' %}
       {% set box_height = (box_height + 20) %}
   {% endif %}
-  {% if user.getPrefs('basket_status_display') == '1' %}
+  {% if app['phraseanet.user'].getPrefs('basket_status_display') == '1' %}
       {% set box_height = (box_height + 20) %}
   {% endif %}
 
@@ -254,12 +254,12 @@
        class="CHIM diapo CHIM_{{record.get_serialize_key()}}" style="height:{{box_height}}px;"
        id="CHIM_{% if wz_scope == 'groupings' %}{{record.get_serialize_key()}}{% else %}{{ contained.getId() }}{% endif %}">
        <input type="hidden" name="id" value="{{ record.get_serialize_key() }}"/>
-      {% if user.getPrefs('basket_title_display') == '1' %}
+      {% if app['phraseanet.user'].getPrefs('basket_title_display') == '1' %}
           <div class="title">
               {{record.get_title()}}
           </div>
       {% endif %}
-      {% if user.getPrefs('basket_status_display') == '1' %}
+      {% if app['phraseanet.user'].getPrefs('basket_status_display') == '1' %}
           <div class="status" style="position:relative;height:20px;overflow-y:visible;z-index:15;">
               {{record.get_status_icons|raw}}
           </div>
@@ -282,22 +282,22 @@
             class="WorkZoneElementRemover {{ wz_scope }}" title="{% trans 'delete'%}" >
             X
           </a>
-          {% if user.getPrefs('basket_caption_display') == '1' %}
+          {% if app['phraseanet.user'].getPrefs('basket_caption_display') == '1' %}
               <div class="captionRolloverTips" tooltipsrc="/prod/tooltip/caption/{{record.get_sbas_id()}}/{{record.get_record_id()}}/basket/?number={{record.get_number()}}"></div>
           {% endif %}
       </div>
   </div>
 {% endmacro %}
 
-{% macro display_basket(app, basket, user) %}
+{% macro display_basket(app, basket) %}
   {% for basket_element in basket.getElements() %}
       <span class="wrapCHIM_{{ basket_element.getRecord(app).get_serialize_key() }}">
-      {{ _self.element('basket', basket, basket_element, basket_element.getRecord(app), basket_element.getOrd(), user) }}
+      {{ _self.element('basket', basket, basket_element, basket_element.getRecord(app), basket_element.getOrd()) }}
       </span>
   {% endfor %}
 {% endmacro %}
 
-{% macro display_validation(app, basket, ordre, user) %}
+{% macro display_validation(app, basket, ordre) %}
   <div style="margin:5px 0;text-align:center;">
       <form>
           <select name="valid_ord">
@@ -313,12 +313,12 @@
           <table style="width: 100%; min-width: 330px; display: inline-block;">
               <tr>
                   <td style="width:80px;">
-                    {{ _self.element('basket', basket, basket_element, basket_element.getRecord(app), basket_element.getOrd(), user) }}
+                    {{ _self.element('basket', basket, basket_element, basket_element.getRecord(app), basket_element.getOrd()) }}
                   </td>
                   <td style="width:100%;">
                       <table style=width:100%>
                           {% for choice in basket_element.getValidationDatas() %}
-                              {% if basket.getValidation().getParticipant(user, app).getCanSeeOthers() or choice.getParticipant().getUser(app) == app['phraseanet.user'] %}
+                              {% if basket.getValidation().getParticipant(app['phraseanet.user'], app).getCanSeeOthers() or choice.getParticipant().getUser(app) == app['phraseanet.user'] %}
                               <tr>
                                   <td> {{ choice.getParticipant().getUser(app).get_display_name() }} </td>
                                   <td>

@@ -1,4 +1,4 @@
-{% macro format(feed, entry, user)%}
+{% macro format(feed, entry)%}
   {% import 'prod/results/record.html.twig' as record_format %}
 
   <div class="entry ui-corner-all" id="entry_{{ entry.get_id() }}">
@@ -15,7 +15,7 @@
           </h1>
         </td>
         <td style="width:60px;text-align:right;">
-          {% if entry.get_feed().is_owner(user) or entry.is_publisher(user) %}
+          {% if entry.get_feed().is_owner(app['phraseanet.user']) or entry.is_publisher(app['phraseanet.user']) %}
           <a class="tools options feed_edit" href="/prod/feeds/entry/{{ entry.get_id() }}/edit/">
             <img src="/skins/icons/file-edit.png" title="{% trans 'boutton::editer' %}"/>
           </a>
@@ -56,7 +56,7 @@
     {% for item in entry.get_content() %}
       {% set record = item.get_record() %}
       {% set prefix = 'PUBLI_' ~ item.get_id() %}
-      {{record_format.block(record, user, false, null, prefix, entry.get_id())}}
+      {{record_format.block(record, false, null, prefix, entry.get_id())}}
     {% endfor %}
     </div>
   </div>

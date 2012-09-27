@@ -100,7 +100,7 @@
                     <div id="record_infos" class="PNB">
                         <div class="container PNB">
               {% if basket_element %}
-                {% set business = user.ACL().has_right_on_base(basket_element.getRecord(app).get_base_id(), 'canmodifrecord') %}
+                {% set business = app['phraseanet.user'].ACL().has_right_on_base(basket_element.getRecord(app).get_base_id(), 'canmodifrecord') %}
                 {{caption.format_caption(basket_element.getRecord(app), '', null, business)}}
               {% endif %}
             </div>
@@ -184,7 +184,7 @@
     <div id="dialog_dwnl" title="{% trans 'action : exporter' %}" style="display:none;"></div>
   <script type="text/javascript">
     {% if basket.getValidation() %}
-    p4.releasable = {% if basket.getValidation().getParticipant(user, app).isReleasable() %}"{% trans 'Do you want to send your report ?' %}"{% else %}false{% endif %}
+    p4.releasable = {% if basket.getValidation().getParticipant(app['phraseanet.user'], app).isReleasable() %}"{% trans 'Do you want to send your report ?' %}"{% else %}false{% endif %}
     {% endif %}
   </script>
 {% endblock %}

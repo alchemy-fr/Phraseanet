@@ -20,7 +20,7 @@
   <br/>
 {% endif %}
 
-{% set th_size = user.getPrefs('images_size')%}
+{% set th_size = app['phraseanet.user'].getPrefs('images_size')%}
 
 {% if app['locale.I18n'] == 'fr' %}
     <div class="client_help">

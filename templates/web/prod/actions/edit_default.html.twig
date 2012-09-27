@@ -1,11 +1,11 @@
-{% macro format_diapo(record, user, resizable) %}
+{% macro format_diapo(record, resizable) %}
 
     {% if resizable == false %}
         {% set cont_width = 130 %}
         {% set cont_height = 140 %}
     {% else %}
-        {% set cont_width = user.getPrefs('editing_images_size') %}
-        {% set cont_height = user.getPrefs('editing_images_size') %}
+        {% set cont_width = app['phraseanet.user'].getPrefs('editing_images_size') %}
+        {% set cont_height = app['phraseanet.user'].getPrefs('editing_images_size') %}
     {% endif %}
 
     {% set i = record.get_number() %}
@@ -27,7 +27,7 @@
     {% endif %}
 
     {% set class_status = 'nostatus' %}
-    {% if user.ACL().has_right_on_base(record.get_base_id(), 'chgstatus') %}
+    {% if app['phraseanet.user'].ACL().has_right_on_base(record.get_base_id(), 'chgstatus') %}
         {% set class_status = '' %}
     {% endif %}
 
@@ -66,13 +66,13 @@
     </div>
 {% endmacro %}
 
-{% macro HTML_fieldlist(recordsRequest, fields, user) %}
+{% macro HTML_fieldlist(recordsRequest, fields) %}
     <div class="edit_field" id="EditFieldBox_status" onclick="return(edit_mdwn_status(event));" >
         {%trans 'prod::editing::fields: status ' %}
     </div>
     {% set cssfile = '000000' %}
-    {% if user.getPrefs('css') %}
-        {% set cssfile = user.getPrefs('css') %}
+    {% if app['phraseanet.user'].getPrefs('css') %}
+        {% set cssfile = app['phraseanet.user'].getPrefs('css') %}
     {% endif %}
     {% for field in fields %}
         {% set i = field.get_id() %}
@@ -95,10 +95,10 @@
     {% endfor %}
 {% endmacro %}
 
-{% macro HTML_Train(recordsRequest, user, is_reg) %}
+{% macro HTML_Train(recordsRequest, is_reg) %}
     {% for record in recordsRequest %}
         {% if loop.index != 1 or is_reg != '1' %}
-            {{_self.format_diapo(record, user, true)}}
+            {{_self.format_diapo(record, true)}}
         {% endif %}
     {% endfor %}
 {% endmacro %}
@@ -127,7 +127,7 @@
             <input style="font-size:2px; width:5px;" type="text" id="editFakefocus" />
         </form>
     </div>
-    <div id="EDIT_TOP" style="height:{{user.getPrefs('editing_top_box')}};">
+    <div id="EDIT_TOP" style="height:{{app['phraseanet.user'].getPrefs('editing_top_box')}};">
         <div id="EDIT_MENU">
             <div id="EDIT_ZOOMSLIDER" >
             </div>
@@ -135,26 +135,24 @@
         {% if recordsRequest.isSingleStory() %}
             <div class="GRP_IMAGE_REP">
                 <div id="EDIT_GRPDIAPO">
-                    {{_self.format_diapo(recordsRequest.singleStory(), user, false)}}
+                    {{_self.format_diapo(recordsRequest.singleStory(), false)}}
                 </div>
             </div>
             <div id="EDIT_FILM2" style="left:170px;">
-                {{_self.HTML_Train(edit, user, '1')}}
+                {{_self.HTML_Train(edit, '1')}}
             </div>
         {% else %}
             <div id="EDIT_FILM2" class='ui-corner-all'>
-                {{_self.HTML_Train(recordsRequest, user)}}
+                {{_self.HTML_Train(recordsRequest)}}
             </div>
         {% endif %}
     </div>
 
-<!--<div id='EDIT_HSPLIT' class='gui_hsplitter' style='position:absolute; top:{{user.getPrefs('editing_top_box')}};z-index:9999'></div>-->
-
     <div id='EDIT_MID'>
         <div id='EDIT_MID_L' class='ui-corner-all'>
-            <div id="divS_wrapper" style="width:{{user.getPrefs('editing_right_box')}}">
+            <div id="divS_wrapper" style="width:{{app['phraseanet.user'].getPrefs('editing_right_box')}}">
                 <div id="divS">
-                    {{_self.HTML_fieldlist(recordsRequest, fields, user)}}
+                    {{_self.HTML_fieldlist(recordsRequest, fields)}}
                 </div>
             </div>
             <div id="idEditZone">
@@ -232,8 +230,7 @@
                 <div id="idExplain" class="PNB"></div>
             </div>
         </div>
-        <!--<div id='EDIT_VSPLIT2' class='gui_vsplitter gui_vsplitter2' style='position:absolute;  right:{{user.getPrefs('editing_left_box')}};z-index:9999;'></div>-->
-        <div id="EDIT_MID_R" style="width:{{user.getPrefs('editing_left_box')}}">
+        <div id="EDIT_MID_R" style="width:{{app['phraseanet.user'].getPrefs('editing_left_box')}}">
             <div style='position:absolute; top:0; left:0; right:0; bottom:0;' class='tabs'>
                 <ul>
                     {% if thesaurus %}

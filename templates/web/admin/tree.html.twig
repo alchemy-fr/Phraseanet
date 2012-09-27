@@ -2,7 +2,7 @@
 
 <ul id="tree" class="filetree">
 
-  {% if user.ACL().is_admin() %}
+  {% if app['phraseanet.user'].ACL().is_admin() %}
   <li>
     <a target="right" href="/admin/dashboard/" class="ajax">
       <img src="/skins/admin/Dashboard.png" />
@@ -15,7 +15,7 @@
   </li>
   {% endif %}
 
-  {% if user.ACL().is_admin() %}
+  {% if app['phraseanet.user'].ACL().is_admin() %}
   <li>
     <a target="right" href="/admin/setup/" class="ajax">
       <img src="/skins/admin/Setup.png" />
@@ -38,7 +38,7 @@
     </a>
   </li>
 
-  {% if user.ACL().has_right('manageusers') %}
+  {% if app['phraseanet.user'].ACL().has_right('manageusers') %}
   <li class="{% if feature == 'users' %}selected{% endif %}">
     <a target="right" href="/admin/users/search/" class="ajax zone_editusers">
       <img src="/skins/admin/Users.png" />
@@ -53,7 +53,7 @@
   </li>
   {% endif %}
 
-  {% if user.ACL().has_right('bas_chupub') %}
+  {% if app['phraseanet.user'].ACL().has_right('bas_chupub') %}
   <li class="">
     <a target="right" href="/admin/publications/list/" class="ajax">
       <img src="/skins/icons/rss16.png" />
@@ -62,7 +62,7 @@
   </li>
   {% endif %}
 
-  {% if user.ACL().has_right('taskmanager') %}
+  {% if app['phraseanet.user'].ACL().has_right('taskmanager') %}
   <li class="{% if feature == 'taskmanager' %}selected{% endif %}">
     <a target="right" href="/admin/task-manager/tasks/" class="ajax">
       <img src="/skins/admin/TaskManager.png" />
@@ -105,7 +105,7 @@
         </div>
         <ul>
 
-        {% if user.ACL().has_right_on_sbas( sbas_id , 'bas_modify_struct') %}
+        {% if app['phraseanet.user'].ACL().has_right_on_sbas( sbas_id , 'bas_modify_struct') %}
           <li>
             <a target="right" class="ajax" href="/admin/structure/{{ sbas_id }}/">
               <img src="/skins/icons/miniadjust01.gif"/>
@@ -146,7 +146,7 @@
         {% set seeUsrGene = false %}
 
         {% for coll in databox.get_collections() %}
-          {% if user.ACL.has_right_on_base( coll.get_base_id() , 'canadmin') %}
+          {% if app['phraseanet.user'].ACL.has_right_on_base( coll.get_base_id() , 'canadmin') %}
             {% set seeUsrGene = true %}
           {% endif %}
         {% endfor %}
@@ -161,9 +161,9 @@
         {% endif %}
 
         {% for collection in databox.get_collections() %}
-          {% if (collection.get_base_id() in user.ACL.get_granted_base(['canadmin'])|keys
-              or collection.get_base_id() in user.ACL.get_granted_base(['manage'])|keys
-              or collection.get_base_id() in user.ACL.get_granted_base(['modify_struct'])|keys) %}
+          {% if (collection.get_base_id() in app['phraseanet.user'].ACL.get_granted_base(['canadmin'])|keys
+              or collection.get_base_id() in app['phraseanet.user'].ACL.get_granted_base(['manage'])|keys
+              or collection.get_base_id() in app['phraseanet.user'].ACL.get_granted_base(['modify_struct'])|keys) %}
 
           <li>
             <div style="padding:0 0 2px 0;">
@@ -173,7 +173,7 @@
             </div>
             <ul>
 
-            {% if (user.ACL.has_right_on_base(collection.get_base_id(), 'modify_struct')) %}
+            {% if (app['phraseanet.user'].ACL.has_right_on_base(collection.get_base_id(), 'modify_struct')) %}
               <li>
                 <a target="right" href="/admin/collection/{{ collection.get_base_id() }}/suggested-values/" class="ajax">
                   <img src="/skins/icons/foldph20open_0.gif"/>
@@ -182,10 +182,10 @@
               </li>
             {% endif %}
 
-            {% if (user.ACL.has_right_on_base( collection.get_base_id(), 'canadmin')) %}
-              {% if (user.ACL.has_right_on_base( collection.get_base_id(), 'canmodifrecord')
-                 and user.ACL.has_right_on_base( collection.get_base_id(), 'manage')
-                 and user.ACL.has_right_on_sbas( sbas_id, 'bas_manage') ) %}
+            {% if (app['phraseanet.user'].ACL.has_right_on_base( collection.get_base_id(), 'canadmin')) %}
+              {% if (app['phraseanet.user'].ACL.has_right_on_base( collection.get_base_id(), 'canmodifrecord')
+                 and app['phraseanet.user'].ACL.has_right_on_base( collection.get_base_id(), 'manage')
+                 and app['phraseanet.user'].ACL.has_right_on_sbas( sbas_id, 'bas_manage') ) %}
               <li>
                 <a target="right" href="/admin/users/search/?base_id[]={{ collection.get_base_id() }}" class="ajax">
                   <img src="/skins/admin/Users.png"/>

@@ -9,9 +9,9 @@
                 {% if basket.getValidation() %}
                     <div class="agreement">
               <img src="/skins/lightbox/agree.png"
-                class="agree_button {%if element.getUserValidationDatas(user, app).getAgreement() == false or element.getUserValidationDatas(user, app).getAgreement() is null %}not_decided{%endif%} agree_{{element.getId()}}" />
+                class="agree_button {%if element.getUserValidationDatas(app['phraseanet.user'], app).getAgreement() == false or element.getUserValidationDatas(app['phraseanet.user'], app).getAgreement() is null %}not_decided{%endif%} agree_{{element.getId()}}" />
               <img src="/skins/lightbox/disagree.png"
-                class="disagree_button {%if element.getUserValidationDatas(user, app).getAgreement() == true or element.getUserValidationDatas(user, app).getAgreement() is null %}not_decided{%endif%} disagree_{{element.getId()}}" />
+                class="disagree_button {%if element.getUserValidationDatas(app['phraseanet.user'], app).getAgreement() == true or element.getUserValidationDatas(app['phraseanet.user'], app).getAgreement() is null %}not_decided{%endif%} disagree_{{element.getId()}}" />
                     </div>
                 {% endif %}
                 {{thumbnail.format(element.getRecord(app).get_thumbnail,114,85, '', true, false)}}

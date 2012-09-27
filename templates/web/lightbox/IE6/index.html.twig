@@ -56,7 +56,7 @@
                                                   </h2>
                                                   {% if basket.getValidation().isFinished() %}
                                                       {% trans '(validation) session terminee' %}
-                                                  {% elseif basket.getValidation().getParticipant(user, app).getIsConfirmed() %}
+                                                  {% elseif basket.getValidation().getParticipant(app['phraseanet.user'], app).getIsConfirmed() %}
                                                       {% trans '(validation) envoyee' %}
                                                   {% else %}
                                                       {% trans '(validation) a envoyer' %}
@@ -72,7 +72,7 @@
                                           <tr>
                                               <td colspan="2">
                                                   <div>{{ basket.getDescription() }}</div>
-                                                  <div>{{ basket.getValidation.getValidationString(app, user) }}</div>
+                                                  <div>{{ basket.getValidation.getValidationString(app, app['phraseanet.user']) }}</div>
                                               </td>
                                           </tr>
                                       </table>

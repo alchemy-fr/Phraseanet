@@ -1,5 +1,5 @@
 {% for validationDatas in basket_element.getValidationDatas() %}
-  {% set is_mine = validationDatas.getParticipant().getUser(app).get_id() == user.get_id() %}
+  {% set is_mine = validationDatas.getParticipant().getUser(app).get_id() == app['phraseanet.user'].get_id() %}
   {% if validationDatas.getNote() != '' or (validationDatas.getAgreement() is not null and is_mine)  %}
   <li>
     <h3 style="text-align:left;">

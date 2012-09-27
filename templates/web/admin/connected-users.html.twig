@@ -101,9 +101,9 @@
             <tr title="{{ _self.tooltip_connected_users(row) | e }}" class="{% if loop.index is odd %}odd{% else %}even{% endif %} usrTips" id="TREXP_{{ row.getId()}}">
 
                 {% if row.getId() == app['session'].get('session_id') %}
-                    <td style="color:#ff0000"><i>{{ user.get_display_name() }}</i></td>
+                    <td style="color:#ff0000"><i>{{ row.getUser(app).get_display_name() }}</i></td>
                 {% else %}
-                    <td>{{ user.get_display_name() }}</td>
+                    <td>{{ row.getUser(app).get_display_name() }}</td>
                 {% endif %}
 
                 <td>

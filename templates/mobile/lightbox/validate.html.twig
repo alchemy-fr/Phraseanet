@@ -24,8 +24,8 @@
     <ul class="image_set">
     {% for basket_element in basket.getElements() %}
       <li class="image_box" id="sselcontid_{{basket_element.getId()}}">
-        {% if basket_element.getBasket().getValidation() and basket_element.getBasket().getValidation().getParticipant(user, app).getCanAgree() %}
-          <div class="valid_choice valid_choice_{{basket_element.getId()}} {% if basket_element.getUserValidationDatas(user, app).getAgreement() == true %}agree{% elseif basket_element.getUserValidationDatas(user, app).getAgreement() == false and basket_element.getUserValidationDatas(user, app).getAgreement() is not null %}disagree{% endif %}">
+        {% if basket_element.getBasket().getValidation() and basket_element.getBasket().getValidation().getParticipant(app['phraseanet.user'], app).getCanAgree() %}
+          <div class="valid_choice valid_choice_{{basket_element.getId()}} {% if basket_element.getUserValidationDatas(app['phraseanet.user'], app).getAgreement() == true %}agree{% elseif basket_element.getUserValidationDatas(app['phraseanet.user'], app).getAgreement() == false and basket_element.getUserValidationDatas(app['phraseanet.user'], app).getAgreement() is not null %}disagree{% endif %}">
           </div>
         {% endif %}
         <a href="/lightbox/ajax/LOAD_BASKET_ELEMENT/{{basket_element.getId()}}/">

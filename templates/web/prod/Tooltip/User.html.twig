@@ -1,7 +1,7 @@
 {% extends 'prod/Tooltip/Tooltip.html.twig'%}
 
 {% set title %}
-    user.get_display_name()
+    app['phraseanet.user'].get_display_name()
 {% endset %}
 {% set width = 300 %}
 {% set maxwidth = null %}
@@ -12,12 +12,12 @@
             <img style="margin:14px 8px;" src="/skins/icons/user.png"/>
         </div>
         <div class="PNB" style="left:100px;">
-            <h1> {{ user.get_display_name() }}</h1>
+            <h1> {{ app['phraseanet.user'].get_display_name() }}</h1>
             <ul>
-                <li>{{ user.get_email() }}</li>
-                <li>{{ user.get_company() }}</li>
-                <li>{{ user.get_job() }}</li>
-                <li>{{ user.get_position() }}</li>
+                <li>{{ app['phraseanet.user'].get_email() }}</li>
+                <li>{{ app['phraseanet.user'].get_company() }}</li>
+                <li>{{ app['phraseanet.user'].get_job() }}</li>
+                <li>{{ app['phraseanet.user'].get_position() }}</li>
             </ul>
         </div>
     </div>

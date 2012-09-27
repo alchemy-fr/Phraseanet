@@ -80,7 +80,7 @@
                 <div class="right_column_wrapper caption right_column_wrapper_caption PNB">
                     <div id="record_infos" class="PNB">
                         <div class="container PNB">
-              {% set business = user.ACL().has_right_on_base(first_item.get_record().get_base_id(), 'canmodifrecord') %}
+              {% set business = app['phraseanet.user'].ACL().has_right_on_base(first_item.get_record().get_base_id(), 'canmodifrecord') %}
               {% if first_item %}
                 {{caption.format_caption(first_item.get_record(), '', null, business)}}
               {% endif %}

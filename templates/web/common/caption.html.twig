@@ -6,7 +6,7 @@
 {% import 'common/caption_templates/preview.html.twig' as cap_prev %}
 
 {% if user %}
-  {% set business = user.ACL().has_right_on_base(record.get_base_id(), 'canmodifrecord') %}
+  {% set business = app['phraseanet.user'].ACL().has_right_on_base(record.get_base_id(), 'canmodifrecord') %}
 {% else %}
   {% set business = false %}
 {% endif %}

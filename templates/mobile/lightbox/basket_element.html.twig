@@ -21,12 +21,12 @@
   <div data-role="content">
     {{ thumbnail.format100percent(record.get_preview(),'', record.get_thumbnail()) }}
     {% if basket_element.getBasket().getValidation() %}
-      {% if basket_element.getBasket().getValidation().getParticipant(user, app).getCanAgree() %}
+      {% if basket_element.getBasket().getValidation().getParticipant(app['phraseanet.user'], app).getCanAgree() %}
         <fieldset data-role="controlgroup" data-type="horizontal" style="text-align:center;">
-          <input {% if basket_element.getUserValidationDatas(user, app).getAgreement() == true%}checked="checked"{% endif %} type="radio" name="radio-view" id="radio-view-yes_{{basket_element.getId()}}" value="yes"  />
+          <input {% if basket_element.getUserValidationDatas(app['phraseanet.user'], app).getAgreement() == true%}checked="checked"{% endif %} type="radio" name="radio-view" id="radio-view-yes_{{basket_element.getId()}}" value="yes"  />
             <label class="agreement_radio" style="width:130px;text-align:center;" for="radio-view-yes_{{basket_element.getId()}}">{% trans 'validation:: OUI' %}</label>
 
-          <input {% if basket_element.getUserValidationDatas(user, app).getAgreement() == false and basket_element.getUserValidationDatas(user, app).getAgreement() is not null %}checked="checked"{% endif %} type="radio" name="radio-view" id="radio-view-no_{{basket_element.getId()}}" value="no"  />
+          <input {% if basket_element.getUserValidationDatas(app['phraseanet.user'], app).getAgreement() == false and basket_element.getUserValidationDatas(app['phraseanet.user'], app).getAgreement() is not null %}checked="checked"{% endif %} type="radio" name="radio-view" id="radio-view-no_{{basket_element.getId()}}" value="no"  />
             <label class="agreement_radio" style="width:130px;text-align:center;" for="radio-view-no_{{basket_element.getId()}}">{% trans 'validation:: NON' %}</label>
         </fieldset>
       {% endif %}

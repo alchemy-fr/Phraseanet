@@ -102,7 +102,7 @@
                     <div id="record_infos">
                         <div class="container">
               {% if basket_element %}
-                {% set business = user.ACL().has_right_on_base(basket_element.getRecord(app).get_base_id(), 'canmodifrecord') %}
+                {% set business = app['phraseanet.user'].ACL().has_right_on_base(basket_element.getRecord(app).get_base_id(), 'canmodifrecord') %}
                 {{caption.format_caption(basket_element.getRecord(app), '', null, business)}}
               {% endif %}
             </div>
