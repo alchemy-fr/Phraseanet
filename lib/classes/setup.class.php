@@ -80,7 +80,68 @@ class setup
     public static function needUpgradeConfigurationFile()
     {
         return (is_file(__DIR__ . "/../../config/connexion.inc")
-            && is_file(__DIR__ . "/../../config/config.inc"));
+            && is_file(__DIR__ . "/../../config/config.inc") ||
+            self::requireGVUpgrade());
+    }
+
+    public static function requireGVUpgrade()
+    {
+        return is_file(__DIR__ . "/../../config/connexion.inc")
+            && is_file(__DIR__ . "/../../config/_GV.php")
+            && !is_file(__DIR__ . "/../../config/config.inc");
+    }
+
+    public static function upgradeGV(registryInterface $registry)
+    {
+        $GV = array();
+        if (is_file(__DIR__ . '/../../config/_GV.php')) {
+            require __DIR__ . '/../../config/_GV.php';
+        } else {
+            return;
+        }
+
+        require __DIR__ . '/../../lib/conf.d/_GV_template.inc';
+
+        define('GV_STATIC_URL', '');
+        define('GV_sphinx', false);
+        define('GV_sphinx_host', '');
+        define('GV_sphinx_port', '');
+        define('GV_sphinx_rt_host', '');
+        define('GV_sphinx_rt_port', '');
+
+        foreach ($GV as $section => $datas_section) {
+            foreach ($datas_section['vars'] as $datas) {
+
+                $registry->un_set($datas['name']);
+                eval('$test = defined("' . $datas["name"] . '");');
+                if (!$test) {
+                    continue;
+                }
+                eval('$val = ' . $datas["name"] . ';');
+
+                $val = $val === true ? '1' : $val;
+                $val = $val === false ? '0' : $val;
+
+                switch ($datas['type']) {
+                    case registry::TYPE_ENUM_MULTI:
+                    case registry::TYPE_INTEGER:
+                    case registry::TYPE_BOOLEAN:
+                    case registry::TYPE_STRING:
+                    case registry::TYPE_ARRAY:
+                        $type = $datas['type'];
+                        break;
+                    default:
+                        $type = registry::TYPE_STRING;
+                        break;
+                }
+                $registry->set($datas['name'], $val, $type);
+            }
+        }
+        $registry->un_set('registry_loaded');
+
+        rename(__DIR__ . '/../../config/_GV.php', __DIR__ . '/../../config/_GV.php.old');
+
+        return;
     }
 
     public function create_global_values(registryInterface &$registry, $datas = array())
@@ -120,16 +181,16 @@ class setup
                         $datas[$variable['name']] = (string) trim($datas[$variable['name']]);
                         break;
                     case 'enum':
-                        if ( ! isset($variable['available'])) {
+                        if (!isset($variable['available'])) {
                             $variable['error'] = 'avalaibility';
-                        } elseif ( ! is_array($variable['available'])) {
+                        } elseif (!is_array($variable['available'])) {
                             $variable['error'] = 'avalaibility';
-                        } elseif ( ! in_array($datas[$variable['name']], $variable['available'])) {
+                        } elseif (!in_array($datas[$variable['name']], $variable['available'])) {
                             $variable['error'] = 'avalaibility';
                         }
                         break;
                     case 'enum_multi':
-                        if ( ! isset($datas[$variable['name']]))
+                        if (!isset($datas[$variable['name']]))
                             $datas[$variable['name']] = null;
                         $datas[$variable['name']] = ($datas[$variable['name']]);
                         $type = 'array';
@@ -210,7 +271,7 @@ class setup
         $constraints = array();
 
         foreach ($binaries as $name => $binary) {
-            if (trim($binary) == '' || ( ! is_file($binary))) {
+            if (trim($binary) == '' || (!is_file($binary))) {
                 $constraints[] = new Setup_Constraint(
                         $name
                         , false
@@ -218,7 +279,7 @@ class setup
                         , false
                 );
             } else {
-                if ( ! is_executable($binary)) {
+                if (!is_executable($binary)) {
                     $constraints[] = new Setup_Constraint(
                             $name
                             , false
@@ -355,7 +416,7 @@ class setup
             $constraints = array();
 
             foreach ($pathes as $p) {
-                if ( ! is_writable($p)) {
+                if (!is_writable($p)) {
                     $message = sprintf('%s not writeable', $p);
                 } else {
                     $message = sprintf('%s OK', $p);
@@ -376,7 +437,7 @@ class setup
         public static function check_php_version()
         {
             $version_ok = version_compare(PHP_VERSION, '5.3.3', '>');
-            if ( ! $version_ok) {
+            if (!$version_ok) {
                 $message = sprintf(
                     'Wrong PHP version : % ; PHP >= 5.3.3 required'
                     , PHP_VERSION
@@ -440,7 +501,7 @@ class setup
             foreach ($availables as $ext) {
                 if (extension_loaded($ext) === true) {
                     $constraints[] = new Setup_Constraint($ext, true, sprintf('%s loaded', $ext), false);
-                    $found ++;
+                    $found++;
                 }
             }
 
@@ -487,14 +548,14 @@ class setup
                     }
 
                     if ($memoryFound >= $memoryRequired) {
-                        $constraints[] = new Setup_Constraint($conf, true, sprintf('%s = `%s` => OK', $conf, $value), ! in_array($conf, $nonblockers));
+                        $constraints[] = new Setup_Constraint($conf, true, sprintf('%s = `%s` => OK', $conf, $value), !in_array($conf, $nonblockers));
                     } else {
-                        $constraints[] = new Setup_Constraint($conf, false, sprintf('Bad configuration for %1$s, found `%2$s`, required `%3$s`', $conf, $tmp, $value), ! in_array($conf, $nonblockers));
+                        $constraints[] = new Setup_Constraint($conf, false, sprintf('Bad configuration for %1$s, found `%2$s`, required `%3$s`', $conf, $tmp, $value), !in_array($conf, $nonblockers));
                     }
                 } elseif (($tmp = self::test_php_conf($conf, $value)) !== $value) {
-                    $constraints[] = new Setup_Constraint($conf, false, sprintf('Bad configuration for %1$s, found `%2$s`, required `%3$s`', $conf, $tmp, $value), ! in_array($conf, $nonblockers));
+                    $constraints[] = new Setup_Constraint($conf, false, sprintf('Bad configuration for %1$s, found `%2$s`, required `%3$s`', $conf, $tmp, $value), !in_array($conf, $nonblockers));
                 } else {
-                    $constraints[] = new Setup_Constraint($conf, true, sprintf('%s = `%s` => OK', $conf, $value), ! in_array($conf, $nonblockers));
+                    $constraints[] = new Setup_Constraint($conf, true, sprintf('%s = `%s` => OK', $conf, $value), !in_array($conf, $nonblockers));
                 }
             }
 
@@ -510,7 +571,7 @@ class setup
         {
             $constraints = array();
 
-            if ( ! extension_loaded('gettext')) {
+            if (!extension_loaded('gettext')) {
                 return new Setup_ConstraintsIterator($constraints);
             }
 
@@ -556,7 +617,7 @@ class setup
         {
             $structure = simplexml_load_file(__DIR__ . "/../../lib/conf.d/bases_structure.xml");
 
-            if ( ! $structure) {
+            if (!$structure) {
                 throw new Exception('Unable to load schema');
             }
 

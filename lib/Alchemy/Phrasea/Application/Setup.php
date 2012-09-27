@@ -39,6 +39,11 @@ return call_user_func(function() {
 
                         $app['upgrade'] = true;
                     } elseif (\setup::needUpgradeConfigurationFile()) {
+
+                        if (\setup::requireGVUpgrade()) {
+                            setup::upgradeGV($app['phraseanet.core']['Registry']);
+                        }
+
                         $connexionInc = new \SplFileInfo(__DIR__ . '/../../../../config/connexion.inc');
                         $configInc = new \SplFileInfo(__DIR__ . '/../../../../config/config.inc');
 

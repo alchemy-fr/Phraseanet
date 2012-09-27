@@ -45,13 +45,10 @@ class module_console_systemUpgrade extends Command
     {
         require_once dirname(__FILE__) . '/../../../../lib/bootstrap.php';
 
-        $old_connexion_file = __DIR__ . '/../../../../config/connexion.inc';
-        $old_config_file = __DIR__ . '/../../../../config/config.inc';
-
         $interactive = !$input->getOption('yes');
         $Core = $this->getService('phraseanet.core');
 
-        if (!$Core->getConfiguration()->isInstalled() && file_exists($old_config_file) && file_exists($old_connexion_file)) {
+        if (!$Core->getConfiguration()->isInstalled() && \setup::needUpgradeConfigurationFile()) {
 
             if ($interactive) {
                 $output->writeln('This version of Phraseanet requires a config/config.yml, config/connexion.yml, config/service.yml');
@@ -67,8 +64,12 @@ class module_console_systemUpgrade extends Command
 
             if ($continue == 'y') {
                 try {
-                    $connexionInc = new \SplFileInfo($old_connexion_file);
-                    $configInc = new \SplFileInfo($old_config_file);
+                    if (\setup::requireGVUpgrade()) {
+                        setup::upgradeGV($Core['Registry']);
+                    }
+
+                    $connexionInc = new \SplFileInfo(__DIR__ . '/../../../../config/connexion.inc');
+                    $configInc = new \SplFileInfo(__DIR__ . '/../../../../config/config.inc');
 
                     $Core->getConfiguration()->upgradeFromOldConf($configInc, $connexionInc);
                 } catch (\Exception $e) {
