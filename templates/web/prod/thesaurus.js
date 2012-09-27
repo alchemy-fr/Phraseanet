@@ -1285,10 +1285,12 @@ function startThesaurus(){
       {
         C_MenuOption(menuItem, menu, "ACCEPT", {'lng':'{{lng_code}}'});
       }
-    },
+    }
+    ,
     {% endfor %}
     {
       label:'{% trans 'prod::thesaurusTab:cmenu:Remplacer par...' %}',
+      disabled:true,
       onclick:function(menuItem, menu)
       {
         C_MenuOption(menuItem, menu, 'REPLACE', null);
@@ -1296,6 +1298,7 @@ function startThesaurus(){
     },
     {
       label:'{% trans 'boutton::supprimer' %}',
+      disabled:true,
       onclick:function(menuItem, menu)
       {
         C_MenuOption(menuItem, menu, 'DELETE', null);
