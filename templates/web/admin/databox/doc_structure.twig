@@ -234,7 +234,12 @@
 
                     if(business.attr('checked')) {
                         $(this).val('0');
-                        alert('{% trans 'A field can not be set both as title and business field. Remove business field flag before setting title' %}');
+
+                        {% set sentence %}
+                            {% trans 'A field can not be set both as title and business field. Remove business field flag before setting title' %}
+                        {% endset %}
+
+                        alert('{{ sentence |e("js") }}');
                     }
                 });
 
@@ -248,7 +253,12 @@
 
                     if(thumbtitle.val() != '0') {
                         $(this).removeAttr('checked');
-                        alert('{% trans 'A field can not be set both as title and business field. Remove the title before setting the business flag' %}');
+
+                        {% set sentence %}
+                            {% trans 'A field can not be set both as title and business field. Remove the title before setting the business flag' %}
+                        {% endset %}
+
+                        alert('{{ sentence |e("js") }}');
                     }
                 });
 
@@ -329,7 +339,10 @@
                 });
 
                 $('.meta_deleter', container).bind('click', function(){
-                    if(confirm('{% trans 'Etes vous sur de vouloir supprimer cette metadonnee ? Elle sera definitivement perdue' %}'))
+                    {% set sentence %}
+                        {% trans 'Etes vous sur de vouloir supprimer cette metadonnee ? Elle sera definitivement perdue' %}
+                    {% endset %}
+                    if(confirm('{{ sentence |e("js") }}'))
                     {
                         var field = $('input[name="field_ids[]"]', $(this).parent());
                         var field_id = $('input', $(this)).val();
