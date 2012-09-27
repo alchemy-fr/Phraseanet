@@ -435,7 +435,8 @@ class Login implements ControllerProviderInterface
      */
     public function displayRegisterForm(Application $app, Request $request)
     {
-        if (false === \login::register_enabled($app)) {
+        $login = new \login();
+        if (false === $login->register_enabled($app)) {
             return $app->redirect('/login/?notice=no-register-available');
         }
 

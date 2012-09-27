@@ -86,7 +86,8 @@ class patch_320f implements patchInterface
                 continue;
             }
 
-            $entry = Feed_Entry_Adapter::create($app, $feed, array_shift($feed->get_publishers()), $row['name'], $row['descript'], $user->get_display_name(), $user->get_email());
+            $publishers = $feed->get_publishers();
+            $entry = Feed_Entry_Adapter::create($app, $feed, array_shift($publishers), $row['name'], $row['descript'], $user->get_display_name(), $user->get_email());
             $date_create = new DateTime($row['pub_date']);
             if ($date_create < $date_ref) {
                 $date_ref = $date_create;
@@ -159,7 +160,8 @@ class patch_320f implements patchInterface
             if ($homelink) {
                 $feed->set_public(true);
             } elseif ($pub_restrict == 1) {
-                $collection = array_shift($user->ACL()->get_granted_base());
+                $collections = $user->ACL()->get_granted_base();
+                $collection = array_shift($collections);
                 if ( ! ($collection instanceof collection)) {
                     foreach ($appbox->get_databoxes() as $databox) {
                         foreach ($databox->get_collections() as $coll) {

@@ -54,7 +54,8 @@ class Edit implements ControllerProviderInterface
                 $multipleDataboxes = count($records->databoxes()) > 1;
 
                 if (!$multipleDataboxes) {
-                    $databox = array_pop($records->databoxes());
+                    $databoxes = $records->databoxes();
+                    $databox = array_pop($databoxes);
 
                     /**
                      * generate javascript fields
@@ -311,7 +312,8 @@ class Edit implements ControllerProviderInterface
                     return;
                 }
 
-                $databox = array_pop($records->databoxes());
+                $databoxes = $records->databoxes();
+                $databox = array_pop($databoxes);
 
                 $meta_struct = $databox->get_meta_structure();
                 $write_edit_el = false;
@@ -360,7 +362,8 @@ class Edit implements ControllerProviderInterface
                         $meta_id = null;
 
                         if ($field && !$field->is_multi()) {
-                            $meta_id = array_pop($field->get_values())->getId();
+                            $values = $field->get_values();
+                            $meta_id = array_pop($values)->getId();
                         }
 
                         $metas = array(

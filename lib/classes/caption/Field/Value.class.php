@@ -372,7 +372,8 @@ class caption_Field_Value implements cache_cacheableInterface
         if ( ! $databox_field->is_multi()) {
             try {
                 $field = $record->get_caption()->get_field($databox_field->get_name());
-                $caption_field_value = array_pop($field->get_values());
+                $values = $field->get_values();
+                $caption_field_value = array_pop($values);
                 /* @var $value \caption_Field_Value */
                 $caption_field_value->set_value($value);
 

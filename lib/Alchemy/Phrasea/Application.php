@@ -270,10 +270,11 @@ class Application extends SilexApplication
 
 
         $this->before(function(Request $request) {
+            $contentTypes = $request->getAcceptableContentTypes();
                 $request->setRequestFormat(
                     $request->getFormat(
                         array_shift(
-                            $request->getAcceptableContentTypes()
+                            $contentTypes
                         )
                     )
                 );

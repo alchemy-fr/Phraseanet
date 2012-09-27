@@ -905,7 +905,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
             try {
                 $field = $this->get_caption()->get_field($data_field->get_name())->get_meta_id();
-                $value = array_pop($field->get_values());
+                $values = $field->get_values();
+                $value = array_pop($values);
                 $meta_id = $value->getId();
             } catch (\Exception $e) {
                 $meta_id = null;

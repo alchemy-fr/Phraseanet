@@ -878,7 +878,8 @@ class module_report
     public static function getHost($url)
     {
         $parse_url = parse_url(trim($url));
-        $result = isset($parse_url['host']) ? $parse_url['host'] : array_shift(explode('/', $parse_url['path'], 2));
+        $paths = explode('/', $parse_url['path'], 2);
+        $result = isset($parse_url['host']) ? $parse_url['host'] : array_shift($paths);
 
         return trim($result);
     }

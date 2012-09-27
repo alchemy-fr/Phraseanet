@@ -314,7 +314,8 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
                 foreach ($result['list'] as $entry) {
                     //get 1st image
                     $list_element = $this->list_containers_content($object, $entry['id'], array('thumbnail_medium_url'), 1);
-                    $first_element = array_shift($list_element->get_elements());
+                    $elements = $list_element->get_elements();
+                    $first_element = array_shift($elements);
                     $thumbnail = $first_element instanceof Bridge_Api_Dailymotion_Element ? $first_element->get_thumbnail() : '';
 
                     $url = $this->get_url_playlist($entry['id'], $entry['name'], $username);

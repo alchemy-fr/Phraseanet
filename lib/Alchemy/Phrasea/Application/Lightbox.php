@@ -263,9 +263,11 @@ class Lightbox implements ControllerProviderInterface
                     $template = 'lightbox/IE6/feed.html.twig';
                 }
 
+                $content = $feed_entry->get_content();
+
                 $output = $app['twig']->render($template, array(
                     'feed_entry'  => $feed_entry,
-                    'first_item'  => array_shift($feed_entry->get_content()),
+                    'first_item'  => array_shift($content),
                     'local_title' => $feed_entry->get_title(),
                     'module'      => 'lightbox',
                     'module_name' => _('admin::monitor: module validation')
