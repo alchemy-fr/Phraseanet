@@ -30,6 +30,11 @@ use Unoconv\UnoconvServiceProvider;
 use XPDF\PdfToText;
 use XPDF\XPDFServiceProvider;
 
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+
 class Application extends SilexApplication
 {
     private static $availableLanguages = array(
@@ -81,10 +86,6 @@ class Application extends SilexApplication
             return $app->getEnvironment() !== 'prod';
         });
 
-        $this['session.test'] = $this->share(function(Application $app) {
-            return $app->getEnvironment() == 'test';
-        });
-
         if ($this['debug'] === true) {
             ini_set('display_errors', 'on');
             ini_set('log_errors', 'on');
@@ -109,7 +110,9 @@ class Application extends SilexApplication
         $this->register(new ORMServiceProvider());
         $this->register(new PhraseanetServiceProvider());
         $this->register(new PHPExiftoolServiceProvider());
-        $this->register(new SessionServiceProvider());
+        $this->register(new SessionServiceProvider(), array(
+            'session.test' => $this->getEnvironment() == 'test'
+        ));
         $this->register(new TaskManagerServiceProvider());
         $this->register(new UnoconvServiceProvider());
         $this->register(new UrlGeneratorServiceProvider());
@@ -152,13 +155,7 @@ class Application extends SilexApplication
             }
         });
 
-        $this['phraseanet.user'] = function(Application $app) {
-            if ($app->isAuthenticated()) {
-                return \User_Adapter::getInstance($app['session']->get('usr_id'), $app);
-            }
-
-            return null;
-        };
+        $this->reinitUser();
 
         $this['date-formatter'] = $this->share(function(Application $app) {
             return new \phraseadate($app);
@@ -193,46 +190,67 @@ class Application extends SilexApplication
             }
         }
 
-        $this->before(function(Request $request) {
-            $contentTypes = $request->getAcceptableContentTypes();
-            $request->setRequestFormat(
-                $request->getFormat(
-                    array_shift(
-                        $contentTypes
-                    )
-                )
-            );
+        $app['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'addLocale'), 256);
+        $app['dispatcher']->addListener(KernelEvents::RESPONSE, array($this, 'addUTF8Charset'), -128);
+
+        $this['locale'] = $this->share(function(){
+            return $this['phraseanet.registry']->get('GV_default_lng', 'en_GB');
         });
 
-        $this['locale.I18n'] = $this->share(function(Application $app){
+        $this['locale.I18n'] = function(Application $app){
             $data = explode('_', $app['locale']);
 
             return $data[0];
-        });
-        $this['locale.l10n'] = $this->share(function(Application $app){
+        };
+
+        $this['locale.l10n'] = function(Application $app){
             $data = explode('_', $app['locale']);
 
             return $data[1];
-        });
-
-        $this['locale'] = $this->share(function(Application $app) {
-            if ($app['request']->cookies->has('locale')
-                && isset(static::$availableLanguages[$app['request']->cookies->get('locale')])) {
-                $app['request']->setLocale($app['request']->cookies->get('locale'));
-
-                return $app['request']->getLocale();
-            }
-
-            $app['request']->setDefaultLocale(
-                $app['phraseanet.registry']->get('GV_default_lng', 'en_GB')
-            );
-        });
-
-        $this->before(function(Request $request) use ($app) {
-            \phrasea::use_i18n($app['locale']);
-        });
+        };
 
         \phrasea::start($this['phraseanet.configuration']);
+    }
+
+    public function addUTF8Charset(FilterResponseEvent $event)
+    {
+        if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
+            return;
+        }
+
+        $event->setResponse($event->getResponse()->setCharset('UTF-8'));
+    }
+
+    public function addLocale(GetResponseEvent $event)
+    {
+        /**
+         * add content negotiation here
+         */
+        $contentTypes = $event->getRequest()->getAcceptableContentTypes();
+        $event->getRequest()->setRequestFormat(
+            $event->getRequest()->getFormat(
+                array_shift(
+                    $contentTypes
+                )
+            )
+        );
+
+        $this['locale'] = $this->share(function(Application $app) use ($event) {
+            if ($event->getRequest()->cookies->has('locale')
+                && isset(static::$availableLanguages[$event->getRequest()->cookies->get('locale')])) {
+                $event->getRequest()->setLocale($event->getRequest()->cookies->get('locale'));
+
+                return $event->getRequest()->getLocale();
+            }
+
+            $event->getRequest()->setDefaultLocale(
+                $app['phraseanet.registry']->get('GV_default_lng', 'en_GB')
+            );
+
+            return $event->getRequest()->getLocale();
+        });
+
+        \phrasea::use_i18n($this['locale']);
     }
 
     public function setupTwig()
@@ -351,6 +369,18 @@ class Application extends SilexApplication
         foreach ($user->ACL()->get_granted_sbas() as $databox) {
             \cache_databox::insertClient($this, $databox);
         }
+        $this->reinitUser();
+    }
+
+    private function reinitUser()
+    {
+        $this['phraseanet.user'] = $this->share(function(Application $app) {
+            if ($app->isAuthenticated()) {
+                return \User_Adapter::getInstance($app['session']->get('usr_id'), $app);
+            }
+
+            return null;
+        });
     }
 
     /**
@@ -363,6 +393,7 @@ class Application extends SilexApplication
         }
 
         $this['session']->clear();
+        $this->reinitUser();
 
         return $this;
     }
