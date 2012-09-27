@@ -496,7 +496,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $found = false;
         foreach ($tasks as $task) {
-            if ($task->getName() === \task_period_emptyColl::getName()) {
+            if (get_class($task) === 'task_period_emptyColl') {
                 $found = true;
                 $task->delete();
             }

@@ -95,12 +95,14 @@ if ($parm["bid"] !== null) {
         $now = date("YmdHis");
 
         if ( ! $domct && $parm['repair'] == 'on') {
-            $domct = DOMDocument::load("./blank_cterms.xml");
+            $domct = new DOMDocument();
+            $domct->load("./blank_cterms.xml");
             $domct->documentElement->setAttribute("creation_date", $now);
             $databox->saveCterms($domct);
         }
         if ( ! $domth && $parm['repair'] == 'on') {
-            $domth = DOMDocument::load("./blank_thesaurus.xml");
+            $domth = new DOMDocument();
+            $domth->load("./blank_thesaurus.xml");
             $domth->documentElement->setAttribute("creation_date", $now);
             $databox->saveThesaurus($domth);
         }

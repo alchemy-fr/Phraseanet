@@ -1097,8 +1097,9 @@ class Collection implements ControllerProviderInterface
         $collection = \collection::get_from_base_id($app, $bas_id);
 
         try {
-            if ($mdesc = \DOMDocument::loadXML($request->request->get('str'))) {
-                $collection->set_prefs($mdesc);
+            $domdoc = new \DOMDocument();
+            if ($domdoc->loadXML($request->request->get('str'))) {
+                $collection->set_prefs($domdoc);
                 $success = true;
             }
         } catch (\Exception $e) {

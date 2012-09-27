@@ -9,14 +9,9 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     protected $client;
     protected static $createdCollections = array();
 
-//    public static function setUpBeforeClass()
-//    {
-//        parent::setUpBeforeClass();
-//        self::dropDatabase();
-//    }
-
     public function setUp()
     {
+        self::$DI['app'] = new Application('test');
         self::dropDatabase();
         parent::setUp();
     }
@@ -639,7 +634,7 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $found = false;
         foreach ($tasks as $task) {
-            if ($task->getName() === \task_period_emptyColl::getName()) {
+            if (get_class($task) === 'task_period_emptyColl') {
                 $found = true;
                 $task->delete();
             }

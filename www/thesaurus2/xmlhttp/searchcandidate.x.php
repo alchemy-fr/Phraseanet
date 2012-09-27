@@ -95,7 +95,8 @@ if ($parm["bid"] !== null) {
 
             if (count($fields) > 0) {
                 // on cherche le terme dans les candidats
-                if ($domct = @DOMDocument::loadXML($rowbas["cterms"])) {
+                $domct = new DOMDocument;
+                if ($domct->loadXML($rowbas["cterms"])) {
                     $xpathct = new DOMXPath($domct);
 
                     $q = "@w='" . thesaurus::xquery_escape($unicode->remove_indexer_chars($parm["t"])) . "'";
