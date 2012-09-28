@@ -26,8 +26,8 @@ class eventsmanager_broker
     public function start()
     {
         $iterators_pool = array(
-            'event' => (is_array($this->app['phraseanet.appbox']->get_registry()->get('GV_events')) ? $this->app['phraseanet.appbox']->get_registry()->get('GV_events') : array()),
-            'notify' => (is_array($this->app['phraseanet.appbox']->get_registry()->get('GV_notifications')) ? $this->app['phraseanet.appbox']->get_registry()->get('GV_notifications') : array())
+            'event' => (is_array($this->app['phraseanet.registry']->get('GV_events')) ? $this->app['phraseanet.registry']->get('GV_events') : array()),
+            'notify' => (is_array($this->app['phraseanet.registry']->get('GV_notifications')) ? $this->app['phraseanet.registry']->get('GV_notifications') : array())
         );
 
         foreach ($iterators_pool as $type => $iterators) {

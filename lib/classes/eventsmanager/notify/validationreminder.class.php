@@ -163,7 +163,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
 
         $ret = array(
             'text'  => sprintf(
-                _('Rappel : Il vous reste %1$d jours pour valider %2$s de %3$s'), $this->app['phraseanet.appbox']->get_registry()->get('GV_validation_reminder'), $bask_link, $sender
+                _('Rappel : Il vous reste %1$d jours pour valider %2$s de %3$s'), $this->app['phraseanet.registry']->get('GV_validation_reminder'), $bask_link, $sender
             )
             , 'class' => ($unread == 1 ? 'reload_baskets' : '')
         );
@@ -202,7 +202,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
 
         $body = "<div>"
             . sprintf(
-                _('Il ne vous reste plus que %d jours pour terminer votre validation'), $this->app['phraseanet.appbox']->get_registry()->get('GV_validation_reminder'))
+                _('Il ne vous reste plus que %d jours pour terminer votre validation'), $this->app['phraseanet.registry']->get('GV_validation_reminder'))
             . "</div>\n";
 
         if (trim($url) != '') {

@@ -126,13 +126,13 @@ class task_manager
 
     public function getSchedulerProcess()
     {
-        $phpcli = $this->appbox->get_registry()->get('GV_cli');
+        $phpcli = $this->app['phraseanet.registry']->get('GV_cli');
 
-        $cmd = $phpcli . ' -f ' . $this->appbox->get_registry()->get('GV_RootPath') . "bin/console scheduler:start";
+        $cmd = $phpcli . ' -f ' . $this->app['phraseanet.registry']->get('GV_RootPath') . "bin/console scheduler:start";
 
         return new Process($cmd);
     }
- 
+
     public function setSchedulerState($status)
     {
         $av_status = array(

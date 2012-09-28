@@ -228,7 +228,7 @@ class Feed implements ControllerProviderInterface
             $user = $app['phraseanet.user'];
 
             $feeds = \Feed_Collection::load_all($app, $user);
-            $registry = $app['phraseanet.appbox']->get_registry();
+            $registry = $app['phraseanet.registry'];
 
             $output = array(
                 'texte' => '<p>' . _('publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.')
@@ -244,7 +244,7 @@ class Feed implements ControllerProviderInterface
             $renew = ($request->query->get('renew') === 'true');
             $user = $app['phraseanet.user'];
             $feed = \Feed_Adapter::load_with_user($app, $user, $id);
-            $registry = $app['phraseanet.appbox']->get_registry();
+            $registry = $app['phraseanet.registry'];
 
             $output = array(
                 'texte' => '<p>' . _('publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.')

@@ -211,8 +211,7 @@ class set_order extends set_abstract
     public function __construct(Application $app, $id)
     {
         $this->app = $app;
-        $appbox = $app['phraseanet.appbox'];
-        $conn = $appbox->get_connection();
+        $conn = $app['phraseanet.appbox']->get_connection();
 
         $sql = 'SELECT o.id, o.usr_id, o.created_on, o.`usage`, o.deadline,
               COUNT(e.id) as total, o.ssel_id, COUNT(e2.id) as todo
@@ -459,8 +458,7 @@ class set_order extends set_abstract
      */
     public function deny_elements(Array $elements_ids)
     {
-        $appbox = $this->app['phraseanet.appbox'];
-        $conn = $appbox->get_connection();
+        $conn = $app['phraseanet.appbox']->get_connection();
 
         $n = 0;
 

@@ -76,7 +76,7 @@ class phrasea
     public function getHome(Application $app, $type = 'PUBLI', $context = 'prod')
     {
         $appbox = $app['phraseanet.appbox'];
-        $registry = $appbox->get_registry();
+        $registry = $app['phraseanet.registry'];
         $user = $app['phraseanet.user'];
         if ($type == 'HELP') {
             if (file_exists($registry->get('GV_RootPath') . "config/help_" . $app['locale.I18n'] . ".php")) {

@@ -205,7 +205,7 @@ class appbox extends base
             }
         }
 
-        $registry = $databox->get_registry();
+        $registry = $this->app['phraseanet.registry'];
         $file = $registry->get('GV_RootPath') . 'config/minilogos/' . $pic_type . '_' . $databox->get_sbas_id() . '.jpg';
         $custom_path = $registry->get('GV_RootPath') . 'www/custom/minilogos/' . $pic_type . '_' . $databox->get_sbas_id() . '.jpg';
 
@@ -323,7 +323,7 @@ class appbox extends base
 
         $upgrader->add_steps(7 + count($this->get_databoxes()));
 
-        $registry = $this->get_registry();
+        $registry = $this->app['phraseanet.registry'];
 
         /**
          * Step 1

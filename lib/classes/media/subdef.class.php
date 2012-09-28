@@ -276,7 +276,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      */
     protected function find_substitute_file()
     {
-        $registry = $this->record->get_databox()->get_registry();
+        $registry = $this->app['phraseanet.registry'];
 
         if ($this->record->is_grouping()) {
             $this->mime = 'image/png';

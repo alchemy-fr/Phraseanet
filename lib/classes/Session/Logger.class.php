@@ -156,7 +156,7 @@ class Session_Logger
             WHERE site = :site AND sit_session = :ses_id';
 
         $params = array(
-            ':site'   => $databox->get_registry()->get('GV_sit')
+            ':site'   => $app['phraseanet.registry']->get('GV_sit')
             , ':ses_id' => $app['session']->get('phrasea_session_id')
         );
 

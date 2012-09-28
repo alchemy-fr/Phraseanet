@@ -62,7 +62,7 @@ return call_user_func(function($environment = 'prod') {
 
         $custom_template = sprintf(
             "%sconfig/templates/web/api/auth/end_user_authorization/%s.html.twig"
-            , $app['phraseanet.appbox']->get_registry()->get('GV_RootPath')
+            , $app['phraseanet.registry']->get('GV_RootPath')
             , $client->get_id()
         );
 

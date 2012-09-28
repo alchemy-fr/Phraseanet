@@ -205,7 +205,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
                 _('%s vous a delivre votre commande, consultez la en ligne a l\'adresse suivante'), $from['name']
             ) . "</div>\n";
 
-        $body .= "<br/>\n" . $this->app['phraseanet.appbox']->get_registry()->get('GV_ServerName') . 'lightbox/validate/' . $ssel_id;
+        $body .= "<br/>\n" . $this->app['phraseanet.registry']->get('GV_ServerName') . 'lightbox/validate/' . $ssel_id;
 
         return mail::send_mail($this->app, $subject, $body, $to, $from, array());
     }

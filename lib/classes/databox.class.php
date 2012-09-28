@@ -348,7 +348,7 @@ class databox extends base
             $n+=50;
         }
 
-        $params = array(':site_id' => $this->get_registry()->get('GV_sit'));
+        $params = array(':site_id' => $this->app['phraseanet.registry']->get('GV_sit'));
 
         $sql = 'DELETE FROM clients WHERE site_id = :site_id';
         $stmt = $this->get_connection()->prepare($sql);

@@ -51,7 +51,7 @@ class module_console_checkExtension extends Command
 
         $appbox = $this->getService('phraseanet.appbox');
 
-        $registry = $appbox->get_registry();
+        $registry = $this->container['phraseanet.registry'];
 
         $usrId = $input->getArgument('usr_id');
 

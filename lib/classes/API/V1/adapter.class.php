@@ -829,7 +829,7 @@ class API_V1_adapter extends API_V1_Abstract
     public function search_records(Request $request)
     {
         $user = $this->app['phraseanet.user'];
-        $registry = $this->app['phraseanet.appbox']->get_registry();
+        $registry = $this->app['phraseanet.registry'];
         $result = new API_V1_result($request, $this);
 
         $search_type = ($request->get('search_type')
@@ -1044,7 +1044,7 @@ class API_V1_adapter extends API_V1_Abstract
         $mimes = $request->get('mimes', array());
 
         foreach ($record->get_embedable_medias($devices, $mimes) as $name => $media) {
-            $ret[] = $this->list_embedable_media($media, $this->app['phraseanet.appbox']->get_registry());
+            $ret[] = $this->list_embedable_media($media, $this->app['phraseanet.registry']);
         }
 
         $result->set_datas(array("embed" => $ret));

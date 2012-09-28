@@ -288,7 +288,6 @@ class Databoxes implements ControllerProviderInterface
             return $app->redirect('/admin/databoxes/?success=0&error=special-chars');
         }
 
-        $appbox = $app['phraseanet.appbox'];
         $registry = $app['phraseanet.registry'];
 
         if ((null === $request->request->get('new_settings'))) {
@@ -301,14 +300,14 @@ class Databoxes implements ControllerProviderInterface
                 $user = $connexion->get('user');
                 $password = $connexion->get('password');
 
-                $appbox->get_connection()->beginTransaction();
+                $app['phraseanet.appbox']->get_connection()->beginTransaction();
                 $base = \databox::mount($app, $hostname, $port, $user, $password, $dbName, $registry);
                 $base->registerAdmin($app['phraseanet.user']);
-                $appbox->get_connection()->commit();
+                $app['phraseanet.appbox']->get_connection()->commit();
 
                 return $app->redirect('/admin/databox/' . $base->get_sbas_id() . '/?success=1&reload-tree=1');
             } catch (\Exception $e) {
-                $appbox->get_connection()->rollBack();
+                $app['phraseanet.appbox']->get_connection()->rollBack();
                 return $app->redirect('/admin/databoxes/?success=0&error=mount-failed');
             }
         }
@@ -321,14 +320,14 @@ class Databoxes implements ControllerProviderInterface
             && (null !== $passwordDb = $request->request->get('new_password'))) {
 
             try {
-                $appbox->get_connection()->beginTransaction();
+                $app['phraseanet.appbox']->get_connection()->beginTransaction();
                 $base = \databox::mount($app, $hostname, $port, $userDb, $passwordDb, $dbName, $registry);
                 $base->registerAdmin($app['phraseanet.user']);
-                $appbox->get_connection()->commit();
+                $app['phraseanet.appbox']->get_connection()->commit();
 
                 return $app->redirect('/admin/databox/' . $base->get_sbas_id() . '/?success=1&reload-tree=1');
             } catch (\Exception $e) {
-                $appbox->get_connection()->rollBack();
+                $app['phraseanet.appbox']->get_connection()->rollBack();
 
                 return $app->redirect('/admin/databoxes/?success=0&error=mount-failed');
             }

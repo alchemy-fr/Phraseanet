@@ -304,7 +304,7 @@ class task_period_ftp extends task_appboxAbstract
     protected function processOneContent(appbox $appbox, Array $ftp_export)
     {
         $conn = $appbox->get_connection();
-        $registry = $appbox->get_registry();
+        $registry = $app['phraseanet.registry'];
 
         $id = $ftp_export['id'];
         $ftp_export[$id]["crash"] = $ftp_export["crash"];

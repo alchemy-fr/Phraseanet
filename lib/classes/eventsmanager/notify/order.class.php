@@ -108,8 +108,8 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
 
                 $to = array('email' => $user->get_email(), 'name'  => $dest);
                 $from = array(
-                    'email' => $this->app['phraseanet.appbox']->get_registry()->get('GV_defaulmailsenderaddr'),
-                    'name'  => $this->app['phraseanet.appbox']->get_registry()->get('GV_homeTitle')
+                    'email' => $this->app['phraseanet.registry']->get('GV_defaulmailsenderaddr'),
+                    'name'  => $this->app['phraseanet.registry']->get('GV_homeTitle')
                 );
 
                 if (self::mail($to, $from, $datas)) {
@@ -183,7 +183,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
     public function mail($to, $from, $datas)
     {
         $subject = sprintf(_('admin::register: Nouvelle commande sur %s')
-            , $this->app['phraseanet.appbox']->get_registry()->get('GV_homeTitle'));
+            , $this->app['phraseanet.registry']->get('GV_homeTitle'));
 
         $body = "<div>"
             . _('admin::register: un utilisateur a commande des documents')

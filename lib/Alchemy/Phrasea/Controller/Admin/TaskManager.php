@@ -85,7 +85,7 @@ class TaskManager implements ControllerProviderInterface
 
         $controllers->get('/scheduler/log', function(Application $app, Request $request) {
             $appbox = $app['phraseanet.appbox'];
-            $registry = $appbox->get_registry();
+            $registry = $app['phraseanet.registry'];
             $logdir = \p4string::addEndSlash($registry->get('GV_RootPath') . 'logs');
 
             $rname = '/scheduler((\.log)|(-.*\.log))$/';
@@ -129,7 +129,7 @@ class TaskManager implements ControllerProviderInterface
 
         $controllers->get('/task/{id}/log', function(Application $app, Request $request, $id) {
             $appbox = $app['phraseanet.appbox'];
-            $registry = $appbox->get_registry();
+            $registry = $app['phraseanet.registry'];
             $logdir = \p4string::addEndSlash($registry->get('GV_RootPath') . 'logs');
 
             $rname = '/task_' . $id . '((\.log)|(-.*\.log))$/';

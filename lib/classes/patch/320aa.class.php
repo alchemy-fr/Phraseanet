@@ -60,7 +60,7 @@ class patch_320aa implements patchInterface
         } else {
             return;
         }
-        
+
         require __DIR__ . '/../../../lib/conf.d/_GV_template.inc';
 
         define('GV_STATIC_URL', '');
@@ -70,7 +70,7 @@ class patch_320aa implements patchInterface
         define('GV_sphinx_rt_host', '');
         define('GV_sphinx_rt_port', '');
 
-        $registry = $appbox->get_registry();
+        $registry = $app['phraseanet.registry'];
 
         foreach ($GV as $section => $datas_section) {
             foreach ($datas_section['vars'] as $datas) {

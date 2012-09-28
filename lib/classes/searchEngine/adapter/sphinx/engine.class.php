@@ -102,10 +102,8 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
 
         $filters = array();
 
-        $appbox = $this->app['phraseanet.appbox'];
-
         foreach ($sbas_ids as $sbas_id) {
-            $fields = $appbox->get_databox($sbas_id)->get_meta_structure();
+            $fields = $this->app['phraseanet.appbox']->get_databox($sbas_id)->get_meta_structure();
 
             foreach ($fields as $field) {
                 if ( ! in_array($field->get_id(), $options->get_fields()))
@@ -142,12 +140,11 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
             $this->sphinx->SetFilter('crc_struct_id', $filters);
         }
 
-        $appbox = $this->app['phraseanet.appbox'];
         /**
          * @todo : enhance : check status better
          */
         foreach ($sbas_ids as $sbas_id) {
-            $s_status = $appbox->get_databox($sbas_id)->get_statusbits();
+            $s_status = $this->app['phraseanet.appbox']->get_databox($sbas_id)->get_statusbits();
             $status_opts = $options->get_status();
             foreach ($s_status as $n => $status) {
                 if ( ! array_key_exists($n, $status_opts))
@@ -485,14 +482,13 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
         if ( ! $this->current_index)
             $this->current_index = '*';
 
-        $appbox = $this->app['phraseanet.appbox'];
         $supposed_qry = mb_strtolower($this->query);
         $pieces = explode(" ", str_replace(array("all", "last", "et", "ou", "sauf", "and", "or", "except", "in", "dans", "'", '"', "(", ")", "_", "-"), ' ', $supposed_qry));
 
         $clef = 'sph_sugg_' . crc32(serialize($this->options) . ' ' . $this->current_index . implode(' ', $pieces) . ' ' . ($only_last_word ? '1' : '0'));
 
         try {
-            return $appbox->get_data_from_cache($clef);
+            return $this->app['phraseanet.appbox']->get_data_from_cache($clef);
         } catch (Exception $e) {
 
         }
@@ -578,7 +574,7 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
             $clef_unique_datas = 'sph_sugg_' . crc32(serialize($this->options) . $this->current_index . $f);
 
             try {
-                $datas = $appbox->get_data_from_cache($clef_unique_datas);
+                $datas = $this->app['phraseanet.appbox']->get_data_from_cache($clef_unique_datas);
             } catch (Exception $e) {
                 $datas = false;
             }
@@ -594,7 +590,7 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
                 if ($tmp_res !== false && isset($tmp_res['total_found'])) {
                     $found = (int) $tmp_res['total_found'];
                 }
-                $appbox->set_data_to_cache($found, $clef_unique_datas, 3600);
+                $this->app['phraseanet.appbox']->set_data_to_cache($found, $clef_unique_datas, 3600);
             }
 
             if ($found > 0) {
@@ -617,7 +613,7 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
                 unset($propals[$key]);
         }
 
-        $appbox->set_data_to_cache($propals, $clef, 3600);
+        $this->app['phraseanet.appbox']->set_data_to_cache($propals, $clef, 3600);
 
         return $propals;
     }
@@ -649,7 +645,6 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
      */
     public function build_excerpt($query, array $fields, record_adapter $record)
     {
-        $appbox = $this->app['phraseanet.appbox'];
         $selected_sbas_id = $record->get_sbas_id();
 
         $index = '';

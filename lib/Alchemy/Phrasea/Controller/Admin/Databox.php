@@ -652,10 +652,9 @@ class Databox implements ControllerProviderInterface
      */
     public function mountCollection(Application $app, Request $request, $databox_id, $collection_id)
     {
-        $appbox = $app['phraseanet.appbox'];
         $user = $app['phraseanet.user'];
 
-        $appbox->get_connection()->beginTransaction();
+        $app['phraseanet.appbox']->get_connection()->beginTransaction();
         try {
             $baseId = \collection::mount_collection($app, $app['phraseanet.appbox']->get_databox($databox_id), $collection_id, $user);
 
@@ -676,11 +675,11 @@ class Databox implements ControllerProviderInterface
                 $n += 50;
             }
 
-            $appbox->get_connection()->commit();
+            $app['phraseanet.appbox']->get_connection()->commit();
 
             return $app->redirect('/admin/databox/' . $databox_id . '/?mount=ok');
         } catch (\Exception $e) {
-            $appbox->get_connection()->rollBack();
+            $app['phraseanet.appbox']->get_connection()->rollBack();
 
             return $app->redirect('/admin/databox/' . $databox_id . '/?mount=ko');
         }
@@ -899,7 +898,7 @@ class Databox implements ControllerProviderInterface
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 
-        $appbox = $app['phraseanet.appbox'];
+        $app['phraseanet.appbox'] = $app['phraseanet.appbox'];
 
         $ret = array(
             'success'           => false,
@@ -914,10 +913,10 @@ class Databox implements ControllerProviderInterface
         );
 
         try {
-            $databox = $appbox->get_databox($databox_id);
+            $databox = $app['phraseanet.appbox']->get_databox($databox_id);
             $datas = $databox->get_indexed_record_amount();
 
-            $ret['indexable'] = $appbox->is_databox_indexable($databox);
+            $ret['indexable'] = $app['phraseanet.appbox']->is_databox_indexable($databox);
             $ret['viewname'] = (($databox->get_dbname() == $databox->get_viewname()) ? _('admin::base: aucun alias') : $databox->get_viewname());
             $ret['records'] = $databox->get_record_amount();
             $ret['sbas_id'] = $databox_id;

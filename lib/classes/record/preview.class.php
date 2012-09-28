@@ -317,7 +317,7 @@ class record_preview extends record_adapter
         $tab = array();
 
         $appbox = $this->app['phraseanet.appbox'];
-        $registry = $appbox->get_registry();
+        $registry = $this->app['phraseanet.registry'];
         $user = $this->app['phraseanet.user'];
 
         $report = $user->ACL()->has_right_on_base($this->get_base_id(), 'canreport');
@@ -408,7 +408,7 @@ class record_preview extends record_adapter
         $user = $this->app['phraseanet.user'];
         $report = $user->ACL()->has_right_on_base(
             $this->get_base_id(), 'canreport');
-        $registry = $appbox->get_registry();
+        $registry = $this->app['phraseanet.registry'];
 
         if ( ! $report && ! $registry->get('GV_google_api')) {
             $this->view_popularity = false;
@@ -501,7 +501,7 @@ class record_preview extends record_adapter
         $user = $this->app['phraseanet.user'];
         $report = $user->ACL()->has_right_on_base(
             $this->get_base_id(), 'canreport');
-        $registry = $appbox->get_registry();
+        $registry = $this->app['phraseanet.registry'];
 
         if ( ! $report && ! $registry->get('GV_google_api')) {
             $this->refferer_popularity = false;
@@ -582,7 +582,7 @@ class record_preview extends record_adapter
         $appbox = $this->app['phraseanet.appbox'];
 
         $user = $this->app['phraseanet.user'];
-        $registry = $appbox->get_registry();
+        $registry = $this->app['phraseanet.registry'];
         $report = $user->ACL()->has_right_on_base(
             $this->get_base_id(), 'canreport');
 

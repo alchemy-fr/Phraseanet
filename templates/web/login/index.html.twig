@@ -44,7 +44,7 @@
                 </div>
             </div>
         {% endif %}
-        {% if app['phraseanet.appbox'].get_registry().get('GV_display_gcf', 1) and app['request'].cookies.get('gfc_box') == false %}
+        {% if app['phraseanet.registry'].get('GV_display_gcf', 1) and app['request'].cookies.get('gfc_box') == false %}
         <!--[if IE]>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/chrome-frame/1.0.2/CFInstall.min.js"></script>
         <link href="https://www.google.com/css/modules/buttons/g-button.css" type="text/css" rel="stylesheet">

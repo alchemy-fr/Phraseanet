@@ -138,7 +138,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
 
         $url = '/skins/icons/rss32.gif';
 
-        $file = $this->app['phraseanet.appbox']->get_registry()->get('GV_RootPath')
+        $file = $this->app['phraseanet.registry']->get('GV_RootPath')
             . 'www/custom/feed_' . $this->get_id() . '.jpg';
 
         if (file_exists($file)) {

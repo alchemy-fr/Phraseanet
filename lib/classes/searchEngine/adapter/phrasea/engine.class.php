@@ -243,10 +243,8 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
             $query .= ' AND recordtype=' . $this->opt_record_type;
         }
 
-        $appbox = $this->app['phraseanet.appbox'];
-
         $sql = 'SELECT query, query_time FROM cache WHERE session_id = :ses_id';
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':ses_id' => $this->app['session']->get('phrasea_session_id')));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -364,8 +362,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
      */
     protected function query()
     {
-        $appbox = $this->app['phraseanet.appbox'];
-        $registry = $appbox->get_registry();
+        $registry = $this->app['phraseanet.registry'];
 
         $dateLog = date("Y-m-d H:i:s");
         $nbanswers = 0;
@@ -378,7 +375,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
             , ':ses_id' => $this->app['session']->get('phrasea_session_id')
         );
 
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -424,7 +421,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
             if ($this->results[$sbas_id])
                 $nbanswers += $this->results[$sbas_id]["nbanswers"];
 
-            $logger = $this->app['phraseanet.logger']($appbox->get_databox($sbas_id));
+            $logger = $this->app['phraseanet.logger']($this->app['phraseanet.appbox']->get_databox($sbas_id));
 
             $conn2 = connection::getPDOConnection($this->app, $sbas_id);
 
@@ -464,7 +461,6 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
      */
     protected function singleParse($sbas)
     {
-        $appbox = $this->app['phraseanet.appbox'];
         $this->qp[$sbas] = new searchEngine_adapter_phrasea_queryParser($this->app, $this->app['locale']);
         $this->qp[$sbas]->debug = false;
         if ($sbas == 'main')
@@ -494,9 +490,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
             $qry .= trim($query);
         }
 
-        $appbox = $this->app['phraseanet.appbox'];
-
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $coll) {
                 if (in_array($coll->get_base_id(), $this->opt_bases)) {
                     $this->queries[$databox->get_sbas_id()] = $qry;
@@ -550,7 +544,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
         foreach ($this->queries as $sbas => $qryBas)
             $this->singleParse($sbas);
 
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
             if ( ! isset($this->queries[$databox->get_sbas_id()]))
                 continue;
 

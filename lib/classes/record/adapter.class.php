@@ -505,7 +505,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $this->base_id = $collection->get_base_id();
 
         try {
-            $sphinx_rt = sphinxrt::get_instance($appbox->get_registry());
+            $sphinx_rt = sphinxrt::get_instance($this->app['phraseanet.registry']);
 
             $sbas_id = $this->get_sbas_id();
             $sbas_params = phrasea::sbas_params($this->app);
@@ -1575,7 +1575,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $connbas = $this->get_databox()->get_connection();
         $sbas_id = $this->get_databox()->get_sbas_id();
         $appbox = $this->app['phraseanet.appbox'];
-        $registry = $appbox->get_registry();
+        $registry = $this->app['phraseanet.registry'];
         $conn = $appbox->get_connection();
 
         $ftodel = array();
@@ -2066,7 +2066,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             WHERE rid_child = :record_id';
 
         $params = array(
-            ':GV_site'   => $appbox->get_registry()->get('GV_sit')
+            ':GV_site'   => $this->app['phraseanet.registry']->get('GV_sit')
             , ':usr_id'    => $this->app['phraseanet.user']->get_id()
             , ':record_id' => $this->get_record_id()
         );

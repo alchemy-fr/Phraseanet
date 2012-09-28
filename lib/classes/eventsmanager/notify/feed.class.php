@@ -93,14 +93,14 @@ class eventsmanager_notify_feed extends eventsmanager_notifyAbstract
                     );
 
                     $token = \random::getUrlToken(
-                            $this->app, 
+                            $this->app,
                             \random::TYPE_FEED_ENTRY
                             , $user_to_notif->get_id()
                             , null
                             , $entry->get_id()
                     );
 
-                    $url = $this->app['phraseanet.appbox']->get_registry()->get('GV_ServerName') . 'lightbox/index.php?LOG=' . $token;
+                    $url = $this->app['phraseanet.registry']->get('GV_ServerName') . 'lightbox/index.php?LOG=' . $token;
 
                     if (self::mail($email, $from, $url, $entry))
                         $mailed = true;

@@ -125,8 +125,8 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
 
                 $to = array('email' => $admin_user->get_email(), 'name'  => $dest);
                 $from = array(
-                    'email' => $this->app['phraseanet.appbox']->get_registry()->get('GV_defaulmailsenderaddr'),
-                    'name'  => $this->app['phraseanet.appbox']->get_registry()->get('GV_homeTitle')
+                    'email' => $this->app['phraseanet.registry']->get('GV_defaulmailsenderaddr'),
+                    'name'  => $this->app['phraseanet.registry']->get('GV_homeTitle')
                 );
 
                 if (self::mail($to, $from, $datas))
@@ -196,7 +196,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
     public function mail($to, $from, $datas)
     {
         $subject = sprintf(_('admin::register: Inscription automatique sur %s')
-            , $this->app['phraseanet.appbox']->get_registry()->get('GV_homeTitle'));
+            , $this->app['phraseanet.registry']->get('GV_homeTitle'));
 
         $body = "<div>" . _('admin::register: un utilisateur s\'est inscrit')
             . "</div>\n";
@@ -261,7 +261,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
     {
         $bool = false;
         $login = new \login();
-        
+
         if ( ! $this->app->isAuthenticated() || ! $login->register_enabled($this->app)) {
             return false;
         }

@@ -145,7 +145,7 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
         }
 
         $bask_link = '<a href="'
-            . $this->app['phraseanet.appbox']->get_registry()->get('GV_ServerName') . 'lightbox/validate/'
+            . $this->app['phraseanet.registry']->get('GV_ServerName') . 'lightbox/validate/'
             . (string) $sx->ssel_id . '/" target="_blank">'
             . $basket_name . '</a>';
 

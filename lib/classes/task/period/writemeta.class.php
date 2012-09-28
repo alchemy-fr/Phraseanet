@@ -173,7 +173,6 @@ class task_period_writemeta extends task_databoxAbstract
 
     public function getInterfaceHTML()
     {
-        $appbox = $this->dependencyContainer['phraseanet.appbox'];
         $sbas_ids = $this->dependencyContainer['phraseanet.user']->ACL()->get_granted_sbas(array('bas_manage'));
 
         ob_start();

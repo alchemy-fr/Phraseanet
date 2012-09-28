@@ -312,7 +312,6 @@ class task_period_outofdate extends task_abstract
     // ====================================================================
     public function getInterfaceHTML()
     {
-        $appbox = $this->dependencyContainer['phraseanet.appbox'];
         $user = $this->dependencyContainer['phraseanet.user'];
         ob_start();
 
@@ -732,7 +731,6 @@ class task_period_outofdate extends task_abstract
     {
         $ret = NULL;
 
-        $appbox = $this->dependencyContainer['phraseanet.appbox'];
         $request = http_request::getInstance();
         $parm2 = $request->get_parms(
             'ACT', 'bid'
@@ -752,7 +750,7 @@ class task_period_outofdate extends task_abstract
                 if ($parm2['bid'] != '') {
                     $sbas_id = (int) $parm2['bid'];
                     try {
-                        $databox = $appbox->get_databox($sbas_id);
+                        $databox = $this->dependencyContainer['phraseanet.appbox']->get_databox($sbas_id);
                         $meta_struct = $databox->get_meta_structure();
 
                         foreach ($meta_struct as $meta) {

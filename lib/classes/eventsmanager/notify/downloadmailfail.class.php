@@ -90,8 +90,8 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
             $to = array('email' => $user->get_email(), 'name'  => $name);
 
             $from = array(
-                'email' => $this->app['phraseanet.appbox']->get_registry()->get('GV_defaulmailsenderaddr'),
-                'name'  => $this->app['phraseanet.appbox']->get_registry()->get('GV_homeTitle')
+                'email' => $this->app['phraseanet.registry']->get('GV_defaulmailsenderaddr'),
+                'name'  => $this->app['phraseanet.registry']->get('GV_homeTitle')
             );
 
             if (parent::email())

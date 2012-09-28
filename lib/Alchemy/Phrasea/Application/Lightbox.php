@@ -418,7 +418,7 @@ class Lightbox implements ControllerProviderInterface
                 $evt_mngr = $app['events-manager'];
 
                 $expires = new \DateTime('+10 days');
-                $url = $app['phraseanet.appbox']->get_registry()->get('GV_ServerName')
+                $url = $app['phraseanet.registry']->get('GV_ServerName')
                     . 'lightbox/index.php?LOG=' . \random::getUrlToken(
                         $app, \random::TYPE_VALIDATE
                         , $basket->getValidation()->getInitiator($app)->get_id()

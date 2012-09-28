@@ -263,7 +263,6 @@ class task_period_workflow01 extends task_databoxAbstract
 
     public function getInterfaceHTML()
     {
-        $appbox = $this->dependencyContainer['phraseanet.appbox'];
         $user = $this->dependencyContainer['phraseanet.user'];
         ob_start();
         ?>
@@ -431,7 +430,6 @@ class task_period_workflow01 extends task_databoxAbstract
     {
         $request = http_request::getInstance();
 
-        $appbox = $this->dependencyContainer['phraseanet.appbox'];
         $user = $this->dependencyContainer['phraseanet.user'];
 
         $parm = $request->get_parms("bid");
@@ -446,7 +444,7 @@ class task_period_workflow01 extends task_databoxAbstract
 
         $sbas_id = (int) $parm['bid'];
         try {
-            $databox = $appbox->get_databox($sbas_id);
+            $databox = $this->dependencyContainer['phraseanet.appbox']->get_databox($sbas_id);
             foreach ($databox->get_meta_structure() as $meta) {
                 if ($meta->get_type() !== 'date') {
                     continue;

@@ -502,8 +502,7 @@ class task_period_RecordMover extends task_appboxAbstract
     protected function processOneContent(appbox $appbox, Array $row)
     {
         $logsql = (int) ($this->sxTaskSettings->logsql) > 0;
-        $appbox = $this->dependencyContainer['phraseanet.appbox'];
-        $databox = $appbox->get_databox($row['sbas_id']);
+        $databox = $this->dependencyContainer['phraseanet.appbox']->get_databox($row['sbas_id']);
         $rec = new record_adapter($this->dependencyContainer, $row['sbas_id'], $row['record_id']);
         switch ($row['action']) {
 
@@ -512,7 +511,7 @@ class task_period_RecordMover extends task_appboxAbstract
                 // change collection ?
                 if (array_key_exists('coll', $row)) {
                     $coll = collection::get_from_coll_id($this->dependencyContainer, $databox, $row['coll']);
-                    $rec->move_to_collection($coll, $appbox);
+                    $rec->move_to_collection($coll, $this->dependencyContainer['phraseanet.appbox']);
                     if ($logsql) {
                         $this->log(sprintf("on sbas %s move rid %s to coll %s \n", $row['sbas_id'], $row['record_id'], $coll->get_coll_id()));
                     }
@@ -574,8 +573,6 @@ class task_period_RecordMover extends task_appboxAbstract
      */
     private function calcSQL($sxtask, $playTest = false)
     {
-        $appbox = $this->dependencyContainer['phraseanet.appbox'];
-
         $sbas_id = (int) ($sxtask['sbas_id']);
 
         $ret = array(
@@ -592,7 +589,7 @@ class task_period_RecordMover extends task_appboxAbstract
         );
 
         try {
-            $dbox = $appbox->get_databox($sbas_id);
+            $dbox = $this->dependencyContainer['phraseanet.appbox']->get_databox($sbas_id);
 
             $ret['basename'] = $dbox->get_viewname();
             $ret['basename_htmlencoded'] = htmlentities($ret['basename']);

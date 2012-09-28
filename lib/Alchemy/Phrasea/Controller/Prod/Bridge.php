@@ -70,7 +70,7 @@ class Bridge implements ControllerProviderInterface
 
         $controllers->get('/login/{api_name}/', function(Application $app, $api_name) {
             $appbox = $app['phraseanet.appbox'];
-            $connector = \Bridge_Api::get_connector_by_name($appbox->get_registry(), $api_name);
+            $connector = \Bridge_Api::get_connector_by_name($app['phraseanet.registry'], $api_name);
 
             return $app->redirect($connector->get_auth_url());
         });

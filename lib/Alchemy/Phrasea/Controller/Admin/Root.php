@@ -38,7 +38,6 @@ class Root implements ControllerProviderInterface
         });
 
         $controllers->get('/', function(Application $app, Request $request) {
-            $appbox = $app['phraseanet.appbox'];
             $user = $app['phraseanet.user'];
 
             \User_Adapter::updateClientInfos($app, 3);
@@ -70,7 +69,7 @@ class Root implements ControllerProviderInterface
             }
 
             $databoxes = $off_databoxes = array();
-            foreach ($appbox->get_databoxes() as $databox) {
+            foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
                 try {
                     if (!$user->ACL()->has_access_to_sbas($databox->get_sbas_id())) {
                         continue;
@@ -105,7 +104,6 @@ class Root implements ControllerProviderInterface
         })->bind('admin');
 
         $controllers->get('/tree/', function(Application $app, Request $request) {
-            $appbox = $app['phraseanet.appbox'];
             $user = $app['phraseanet.user'];
 
             \User_Adapter::updateClientInfos($app, 3);
@@ -138,7 +136,7 @@ class Root implements ControllerProviderInterface
             }
 
             $databoxes = $off_databoxes = array();
-            foreach ($appbox->get_databoxes() as $databox) {
+            foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
                 try {
                     if (!$user->ACL()->has_access_to_sbas($databox->get_sbas_id())) {
                         continue;

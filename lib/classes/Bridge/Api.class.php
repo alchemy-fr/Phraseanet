@@ -77,7 +77,7 @@ class Bridge_Api
         if ( ! $row)
             throw new Bridge_Exception_ApiNotFound('Api Not Found');
 
-        $this->connector = self::get_connector_by_name($this->app['phraseanet.appbox']->get_registry(), $row['name']);
+        $this->connector = self::get_connector_by_name($this->app['phraseanet.registry'], $row['name']);
         $this->disable_time = $row['disable_time'] ? new DateTime($row['disable_time']) : null;
         $this->updated_on = new DateTime($row['updated_on']);
         $this->created_on = new DateTime($row['created_on']);

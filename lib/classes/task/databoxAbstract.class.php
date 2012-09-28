@@ -85,10 +85,9 @@ abstract class task_databoxAbstract extends task_abstract
                 $this->sbas_id = (int) $row['sbas_id'];
                 $this->log('This task works now on ' . phrasea::sbas_names($this->sbas_id, $app));
 
-                $appbox = $this->dependencyContainer['phraseanet.appbox'];
                 try {
                     // get the records to process
-                    $databox = $appbox->get_databox((int) $row['sbas_id']);
+                    $databox = $this->dependencyContainer['phraseanet.appbox']->get_databox((int) $row['sbas_id']);
                 } catch (Exception $e) {
                     $this->log(sprintf('Warning : can\' connect to sbas(%s)', $row['sbas_id']));
                     continue;

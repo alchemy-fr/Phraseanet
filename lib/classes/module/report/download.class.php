@@ -214,7 +214,7 @@ class module_report_download extends module_report
         $databox = $appbox->get_databox((int) $sbas_id);
         $conn = $databox->get_connection();
 
-        $registry = $databox->get_registry();
+        $registry = $app['phraseanet.registry'];
 
         $params = array(':site_id'  => $registry->get('GV_sit'));
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);

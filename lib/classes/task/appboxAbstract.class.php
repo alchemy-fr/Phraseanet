@@ -73,7 +73,6 @@ abstract class task_appboxAbstract extends task_abstract
                     break;
                 }
 
-                $appbox = $this->dependencyContainer['phraseanet.appbox'];
                 try {
                     $this->loadSettings(simplexml_load_string($row['settings']));
                 } catch (Exception $e) {
@@ -81,7 +80,7 @@ abstract class task_appboxAbstract extends task_abstract
                     continue;
                 }
 
-                $process_ret = $this->process($appbox);
+                $process_ret = $this->process($this->dependencyContainer['phraseanet.appbox']);
 
                 switch ($process_ret) {
                     case self::STATE_MAXMEGSREACHED:

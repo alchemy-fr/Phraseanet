@@ -38,7 +38,7 @@ class Query implements ControllerProviderInterface
         $controllers->post('/', function(Application $app, Request $request) {
 
             $appbox = $app['phraseanet.appbox'];
-            $registry = $appbox->get_registry();
+            $registry = $app['phraseanet.registry'];
 
             $user = $app['phraseanet.user'];
 

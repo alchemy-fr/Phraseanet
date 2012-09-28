@@ -56,8 +56,8 @@ class patch_303 implements patchInterface
 
     public function apply(base $appbox, Application $app)
     {
-        $this->update_users_log_datas($appbox);
-        $this->update_users_search_datas($appbox);
+        $this->update_users_log_datas($appbox, $app);
+        $this->update_users_search_datas($appbox, $app);
 
         return true;
     }
@@ -66,7 +66,7 @@ class patch_303 implements patchInterface
      *
      * @return patch_303
      */
-    public function update_users_log_datas(appbox $appbox)
+    public function update_users_log_datas(appbox $appbox, Application $app)
     {
         $col = array('fonction', 'societe', 'activite', 'pays');
 
@@ -90,7 +90,7 @@ class patch_303 implements patchInterface
         foreach ($appbox->get_databoxes() as $databox) {
             foreach ($tab_usr as $id => $columns) {
                 $f_req = array();
-                $params = array(':usr_id' => $id, ':site'   => $appbox->get_registry()->get('GV_sit'));
+                $params = array(':usr_id' => $id, ':site'   => $app['phraseanet.registry']->get('GV_sit'));
                 foreach ($columns as $column => $value) {
                     $column = trim($column);
                     $f_req[] = $column . " = :" . $column;
@@ -112,7 +112,7 @@ class patch_303 implements patchInterface
      *
      * @return patch_303
      */
-    public function update_users_search_datas(appbox $appbox)
+    public function update_users_search_datas(appbox $appbox, Application $app)
     {
         foreach ($appbox->get_databoxes() as $databox) {
             $date_debut = '0000-00-00 00:00:00';

@@ -434,7 +434,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
      */
     public function get_protected_rss_url($renew = false)
     {
-        $registry = $this->app['phraseanet.appbox']->get_registry();
+        $registry = $this->app['phraseanet.registry'];
 
         $token = $title = false;
 
@@ -1632,7 +1632,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     public function get_locale()
     {
-        $registry = $this->app['phraseanet.appbox']->get_registry();
+        $registry = $this->app['phraseanet.registry'];
 
         $sql = "SELECT locale FROM usr WHERE usr_id = :usr_id";
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);

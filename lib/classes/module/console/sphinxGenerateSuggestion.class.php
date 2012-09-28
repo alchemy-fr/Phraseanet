@@ -42,7 +42,7 @@ class module_console_sphinxGenerateSuggestion extends Command
         define('SUGGEST_DEBUG', 0);
 
         $appbox = $this->getService('phraseanet.appbox');
-        $registry = $appbox->get_registry();
+        $registry = $this->container['phraseanet.registry'];
 
         $params = phrasea::sbas_params($this->container);
 

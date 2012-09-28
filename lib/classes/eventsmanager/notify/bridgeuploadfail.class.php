@@ -87,8 +87,8 @@ class eventsmanager_notify_bridgeuploadfail extends eventsmanager_notifyAbstract
             $to = array('email' => $user->get_email(), 'name'  => $name);
 
             $from = array(
-                'email' => $this->app['phraseanet.appbox']->get_registry()->get('GV_defaulmailsenderaddr'),
-                'name'  => $this->app['phraseanet.appbox']->get_registry()->get('GV_homeTitle')
+                'email' => $this->app['phraseanet.registry']->get('GV_defaulmailsenderaddr'),
+                'name'  => $this->app['phraseanet.registry']->get('GV_homeTitle')
             );
 
             if (self::mail($to, $from, $datas))
@@ -160,7 +160,7 @@ class eventsmanager_notify_bridgeuploadfail extends eventsmanager_notifyAbstract
     public function mail($to, $from, $datas)
     {
         $subject = sprintf('Echec upload sur %s'
-            , $this->app['phraseanet.appbox']->get_registry()->get('GV_homeTitle'));
+            , $this->app['phraseanet.registry']->get('GV_homeTitle'));
 
         $sx = simplexml_load_string($datas);
 

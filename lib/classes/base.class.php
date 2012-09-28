@@ -135,15 +135,6 @@ abstract class base implements cache_cacheableInterface
 
     /**
      *
-     * @return registry
-     */
-    public function get_registry()
-    {
-        return $this->app['phraseanet.registry'];
-    }
-
-    /**
-     *
      * @return connection_pdo
      */
     public function get_connection()
