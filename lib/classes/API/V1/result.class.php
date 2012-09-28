@@ -361,12 +361,9 @@ class API_V1_result
     public function get_response()
     {
         $response = new Response(
-                $this->format()
-                , $this->get_http_code()
-                , array(
-                    'Content-Type' => $this->get_content_type(),
-                    'X-Status-Code'=> $this->get_http_code(),
-                )
+                $this->format(),
+                $this->get_http_code(),
+                array('Content-Type'  => $this->get_content_type())
         );
         $response->setCharset('UTF-8');
 

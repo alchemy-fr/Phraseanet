@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Application;
 
-use Alchemy\Phrasea\BaseApplication;
+use Alchemy\Phrasea\Application as PhraseaApplication;
 use Silex\Application as SilexApplication;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -21,7 +21,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 return call_user_func(function($environment = 'prod') {
 
-    $app = new BaseApplication($environment);
+    $app = new PhraseaApplication($environment);
+
     /**
      * disable session
      */
@@ -693,6 +694,7 @@ return call_user_func(function($environment = 'prod') {
 
         $result = $app['api']->get_error_message($app['request'], $code, $e->getMessage());
         $response = $result->get_response();
+        $response->headers->set('X-Status-Code', $result->get_http_code());
 
         foreach ($headers as $key => $value) {
             $response->headers->set($key, $value);
