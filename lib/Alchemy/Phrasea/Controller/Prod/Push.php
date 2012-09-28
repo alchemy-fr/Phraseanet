@@ -146,13 +146,9 @@ class Push implements ControllerProviderInterface
             );
 
             try {
-                $registry = $app['phraseanet.registry'];
-
                 $pusher = new RecordHelper\Push($app, $app['request']);
 
                 $user = $app['phraseanet.user'];
-
-                $appbox = $app['phraseanet.appbox'];
 
                 $push_name = $request->request->get('name');
 
@@ -216,7 +212,7 @@ class Push implements ControllerProviderInterface
 
                     $app['EM']->flush();
 
-                    $url = $registry->get('GV_ServerName')
+                    $url = $app['phraseanet.registry']->get('GV_ServerName')
                         . 'lightbox/index.php?LOG='
                         . \random::getUrlToken($app, \random::TYPE_VIEW, $user_receiver->get_id(), null, $Basket->getId());
 
@@ -259,14 +255,11 @@ class Push implements ControllerProviderInterface
 
         $controllers->post('/validate/', function(Application $app) {
             $request = $app['request'];
-            $appbox = $app['phraseanet.appbox'];
 
             $ret = array(
                 'success' => false,
                 'message' => _('Unable to send the documents')
             );
-
-            $registry = $app['phraseanet.registry'];
 
             $app['EM']->beginTransaction();
 
@@ -338,8 +331,6 @@ class Push implements ControllerProviderInterface
                 } else {
                     $Validation = $Basket->getValidation();
                 }
-
-                $appbox = $app['phraseanet.appbox'];
 
                 $found = false;
                 foreach ($participants as $key => $participant) {
@@ -419,7 +410,7 @@ class Push implements ControllerProviderInterface
 
                     $app['EM']->flush();
 
-                    $url = $registry->get('GV_ServerName')
+                    $url = $app['phraseanet.registry']->get('GV_ServerName')
                         . 'lightbox/index.php?LOG='
                         . \random::getUrlToken($app, \random::TYPE_VIEW, $participant_user->get_id(), null, $Basket->getId());
 
@@ -530,8 +521,6 @@ class Push implements ControllerProviderInterface
 
                 return $app->json($result);
             }
-
-            $appbox = $app['phraseanet.appbox'];
 
             $user = null;
             $email = $request->request->get('email');

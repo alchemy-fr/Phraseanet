@@ -10,7 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 
 /**
  *
@@ -19,8 +18,6 @@ use Alchemy\Phrasea\Core\Configuration;
  */
 require_once __DIR__ . "/../../lib/bootstrap.php";
 $app = new Application();
-$appbox = $app['phraseanet.appbox'];
-$registry = $app['phraseanet.registry'];
 
 $request = http_request::getInstance();
 $parm = $request->get_parms(
@@ -38,7 +35,7 @@ $refresh = array();
 $sbas_id = (int) $parm["sbid"];
 
 try {
-    $databox = $appbox->get_databox($sbas_id);
+    $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
     $connbas = $databox->get_connection();
 
     $domct = $databox->get_dom_cterms();

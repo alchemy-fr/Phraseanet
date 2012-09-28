@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-use Alchemy\Phrasea\Core\Configuration;
-
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3

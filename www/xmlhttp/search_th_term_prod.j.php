@@ -10,7 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 
 /**
  *
@@ -30,7 +29,6 @@ $parm = $request->get_parms(
 );
 
 $app = new Application();
-$appbox = $app['phraseanet.appbox'];
 phrasea::headers(200, true, 'application/json', 'UTF-8', false);
 
 if ( ! $parm['lng']) {
@@ -55,7 +53,7 @@ $dbname = '';
 $loaded = false;
 
 try {
-    $databox = $appbox->get_databox($sbid);
+    $databox = $app['phraseanet.appbox']->get_databox($sbid);
     $unicode = new unicode();
 
     $html = "" . '<LI id="TX_P.' . $sbid . '.T" class="expandable">' . "\n";

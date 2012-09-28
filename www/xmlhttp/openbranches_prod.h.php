@@ -10,7 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 
 /**
  *
@@ -19,8 +18,6 @@ use Alchemy\Phrasea\Core\Configuration;
  */
 require_once __DIR__ . "/../../lib/bootstrap.php";
 $app = new Application();
-$appbox = $app['phraseanet.appbox'];
-$registry = $app['phraseanet.registry'];
 
 $request = http_request::getInstance();
 $parm = $request->get_parms(
@@ -40,7 +37,7 @@ $zhtml = '';
 if ($parm['bid'] !== null) {
     $loaded = false;
 
-    $databox = $appbox->get_databox((int) $parm['bid']);
+    $databox = $app['phraseanet.appbox']->get_databox((int) $parm['bid']);
     $dom = $databox->get_dom_thesaurus();
     $unicode = new unicode();
     if ($dom) {

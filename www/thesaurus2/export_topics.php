@@ -9,7 +9,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 
 /**
  *
@@ -21,8 +20,6 @@ require_once __DIR__ . "/../../lib/bootstrap.php";
 phrasea::headers(200, true);
 
 $app = new Application();
-$appbox = $app['phraseanet.appbox'];
-$registry = $app['phraseanet.registry'];
 
 $request = http_request::getInstance();
 $parm = $request->get_parms(
@@ -119,7 +116,7 @@ $now = date('YmdHis');
 if ($parm["typ"] == "TH" || $parm["typ"] == "CT") {
     $loaded = false;
     try {
-        $databox = $appbox->get_databox((int) $parm['bid']);
+        $databox = $app['phraseanet.appbox']->get_databox((int) $parm['bid']);
         if ($parm["typ"] == "TH") {
             $domth = $databox->get_dom_thesaurus();
         } else {
@@ -157,9 +154,9 @@ if ($parm["typ"] == "TH" || $parm["typ"] == "CT") {
                 } elseif ($parm['ofm'] == 'tofiles') {
                     $fname = 'topics_' . $lng . '.xml';
 
-                    @rename($registry->get('GV_RootPath') . 'config/topics/' . $fname, $registry->get('GV_RootPath') . 'config/topics/topics_' . $lng . '_BKP_' . $now . '.xml');
+                    @rename($app['phraseanet.registry']->get('GV_RootPath') . 'config/topics/' . $fname, $app['phraseanet.registry']->get('GV_RootPath') . 'config/topics/topics_' . $lng . '_BKP_' . $now . '.xml');
 
-                    if ($dom->save($registry->get('GV_RootPath') . 'config/topics/' . $fname))
+                    if ($dom->save($app['phraseanet.registry']->get('GV_RootPath') . 'config/topics/' . $fname))
                         echo p4string::MakeString(sprintf(_('thesaurus:: fichier genere : %s'), $fname));
                     else
                         echo p4string::MakeString(_('thesaurus:: erreur lors de l\'enregsitrement du fichier'));

@@ -229,7 +229,7 @@ class set_export extends set_abstract
 
         $this->ftp_datas = array();
 
-        if ($registry->get('GV_activeFTP') && ($hasadminright || $registry->get('GV_ftp_for_user'))) {
+        if ($this->app['phraseanet.registry']->get('GV_activeFTP') && ($hasadminright || $this->app['phraseanet.registry']->get('GV_ftp_for_user'))) {
             $display_ftp = $display_download;
             $this->total_ftp = $this->total_download;
 
@@ -249,7 +249,7 @@ class set_export extends set_abstract
                       )
                   GROUP BY usr_id  ";
                 $params = array();
-            } elseif ($registry->get('GV_ftp_for_user')) {
+            } elseif ($this->app['phraseanet.registry']->get('GV_ftp_for_user')) {
                 $sql = "SELECT usr.usr_id,usr_login,usr.addrFTP,usr.loginFTP,usr.sslFTP,
                 usr.pwdFTP,usr.destFTP,prefixFTPfolder,
                 usr.passifFTP,usr.retryFTP,usr.usr_mail
@@ -396,8 +396,6 @@ class set_export extends set_abstract
         }
 
         $includeBusinessFields = !!$includeBusinessFields;
-
-        $registry = $this->app['phraseanet.registry'];
 
         $unicode = new unicode();
 
@@ -628,7 +626,7 @@ class set_export extends set_abstract
             $files[$id]["export_name"] = $tmp_name;
 
             if (in_array('caption', $subdefs)) {
-                $caption_dir = $registry->get('GV_RootPath') . 'tmp/desc_tmp/'
+                $caption_dir = $this->app['phraseanet.registry']->get('GV_RootPath') . 'tmp/desc_tmp/'
                     . time() . $this->app['phraseanet.user']->get_id() . '/';
 
                 $filesystem->mkdir($caption_dir, 0750);
@@ -649,7 +647,7 @@ class set_export extends set_abstract
                 $files[$id]["subdefs"]['caption']['businessfields'] = $BF ? '1' : '0';
             }
             if (in_array('caption-yaml', $subdefs)) {
-                $caption_dir = $registry->get('GV_RootPath') . 'tmp/desc_tmp/'
+                $caption_dir = $this->app['phraseanet.registry']->get('GV_RootPath') . 'tmp/desc_tmp/'
                     . time() . $this->app['phraseanet.user']->get_id() . '/';
 
                 $filesystem->mkdir($caption_dir, 0750);

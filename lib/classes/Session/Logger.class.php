@@ -100,7 +100,6 @@ class Session_Logger
     public static function create(Application $app, databox $databox, Browser $browser)
     {
         $colls = array();
-        $registry = $app['phraseanet.registry'];
 
         if ($app['phraseanet.user']) {
             $bases = $app['phraseanet.user']->ACL()->get_granted_base(array(), array($databox->get_sbas_id()));

@@ -9,7 +9,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 
 /**
  *
@@ -18,8 +17,6 @@ use Alchemy\Phrasea\Core\Configuration;
  */
 require_once __DIR__ . '/../../lib/bootstrap.php';
 $app = new Application();
-$appbox = $app['phraseanet.appbox'];
-$registry = $app['phraseanet.registry'];
 phrasea::headers();
 
 $request = http_request::getInstance();
@@ -38,11 +35,11 @@ function fixW(&$node, $depth = 0)
             fixW($c, $depth + 1);
     }
 }
-if ($hdir = opendir($registry->get('GV_RootPath') . "www/thesaurus2/patch")) {
+if ($hdir = opendir($app['phraseanet.registry']->get('GV_RootPath') . "www/thesaurus2/patch")) {
     while (false !== ($file = readdir($hdir))) {
         if (substr($file, 0, 1) == ".")
             continue;
-        if (is_file($f = $registry->get('GV_RootPath') . "www/thesaurus2/patch/" . $file)) {
+        if (is_file($f = $app['phraseanet.registry']->get('GV_RootPath') . "www/thesaurus2/patch/" . $file)) {
             require_once($f);
             print("<!-- patch '$f' included -->\n");
         }
@@ -80,7 +77,7 @@ if ($parm["bid"] !== null) {
     $name = phrasea::sbas_names($parm['bid'], $app);
     $loaded = false;
     try {
-        $databox = $appbox->get_databox((int) $parm['bid']);
+        $databox = $app['phraseanet.appbox']->get_databox((int) $parm['bid']);
         $connbas = connection::getPDOConnection($app, $parm['bid']);
 
         $domct = $databox->get_dom_cterms();

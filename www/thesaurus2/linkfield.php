@@ -9,7 +9,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 
 /**
  *
@@ -21,7 +20,6 @@ require_once __DIR__ . "/../../lib/bootstrap.php";
 
 phrasea::headers(200, true);
 $app = new Application();
-$appbox = $app['phraseanet.appbox'];
 
 $request = http_request::getInstance();
 $parm = $request->get_parms(
@@ -76,7 +74,7 @@ $parm = $request->get_parms(
 
             $loaded = false;
             try {
-                $databox = $appbox->get_databox((int) $parm['bid']);
+                $databox = $app['phraseanet.appbox']->get_databox((int) $parm['bid']);
                 $domstruct = $databox->get_dom_structure();
                 $domth = $databox->get_dom_thesaurus();
 

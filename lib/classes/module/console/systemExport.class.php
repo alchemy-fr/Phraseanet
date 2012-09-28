@@ -128,13 +128,11 @@ class module_console_systemExport extends Command
             $output->writeln("Export datas from selected base_ids");
         }
 
-        $appbox = $this->getService('phraseanet.appbox');
-
         $total = $errors = 0;
 
         $unicode = new \unicode();
 
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach ($this->getService('phraseanet.appbox')->get_databoxes() as $databox) {
             $output->writeln(sprintf("Processing <info>%s</info>", $databox->get_viewname()));
 
             if (count($restrictSbasIds) > 0 && ! in_array($databox->get_sbas_id(), $restrictSbasIds)) {

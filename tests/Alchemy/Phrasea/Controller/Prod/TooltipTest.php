@@ -1,7 +1,5 @@
 <?php
 
-use Alchemy\Phrasea\Core\Configuration;
-
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 require_once __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php';
@@ -12,7 +10,6 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteBasket()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $basket = $this->insertOneBasket();
 

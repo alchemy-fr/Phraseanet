@@ -73,7 +73,6 @@ class recordutils_image extends recordutils
      */
     public static function stamp(Application $app, \media_subdef $subdef)
     {
-        $registry = $app['phraseanet.registry'];
         $base_id = $subdef->get_record()->get_base_id();
 
         if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE) {
@@ -84,7 +83,7 @@ class recordutils_image extends recordutils
             return $subdef->get_pathfile();
         }
 
-        if ( ! $registry->get('GV_imagick')) {
+        if ( ! $app['phraseanet.registry']->get('GV_imagick')) {
             return $subdef->get_pathfile();
         }
 
@@ -102,7 +101,7 @@ class recordutils_image extends recordutils
 
         $pathIn = $subdef->get_path() . $subdef->get_file();
         $pathOut = $subdef->get_path() . 'stamp_' . $subdef->get_file();
-        $pathTmpStamp = $registry->get('GV_RootPath') . 'tmp/' . time() . '-stamptmp_' . $subdef->get_file();
+        $pathTmpStamp = $app['phraseanet.registry']->get('GV_RootPath') . 'tmp/' . time() . '-stamptmp_' . $subdef->get_file();
 
         if ($xpprefs->query('/baseprefs/stamp')->length == 0) {
             return $subdef->get_pathfile();
@@ -158,7 +157,7 @@ class recordutils_image extends recordutils
         $text_xpos = 0;
         $text_width = $image_width;
 
-        $logofile = $registry->get('GV_RootPath') . 'config/stamp/' . $base_id;
+        $logofile = $app['phraseanet.registry']->get('GV_RootPath') . 'config/stamp/' . $base_id;
         $logopos = null;
         $imlogo = null; // gd image
         $logo_phywidth = $logo_phyheight = 0; // physical size
@@ -287,7 +286,7 @@ class recordutils_image extends recordutils
 
         $newh = $image_height + $stampheight;
 
-        $cmd = $registry->get('GV_imagick');
+        $cmd = $app['phraseanet.registry']->get('GV_imagick');
         $cmd .= ' -extent "' . $image_width . 'x' . $newh
             . '" -draw "image SrcOver 0,' . $image_height . ' '
             . $image_width . ',' . $stampheight . '\'' . $pathTmpStamp . '\'"';
@@ -313,7 +312,6 @@ class recordutils_image extends recordutils
      */
     public static function watermark(Application $app, \media_subdef $subdef)
     {
-        $registry = $app['phraseanet.registry'];
         $base_id = $subdef->get_record()->get_base_id();
 
         if ($subdef->get_name() !== 'preview') {
@@ -340,10 +338,10 @@ class recordutils_image extends recordutils
             return $pathOut;
         }
 
-        if ($registry->get('GV_pathcomposite') &&
-            file_exists($registry->get('GV_RootPath') . 'config/wm/' . $base_id)) { // si il y a un WM
-            $cmd = $registry->get('GV_pathcomposite') . " ";
-            $cmd .= $registry->get('GV_RootPath') . 'config/wm/' . $base_id . " ";
+        if ($app['phraseanet.registry']->get('GV_pathcomposite') &&
+            file_exists($app['phraseanet.registry']->get('GV_RootPath') . 'config/wm/' . $base_id)) { // si il y a un WM
+            $cmd = $app['phraseanet.registry']->get('GV_pathcomposite') . " ";
+            $cmd .= $app['phraseanet.registry']->get('GV_RootPath') . 'config/wm/' . $base_id . " ";
             $cmd .= " \"" . $pathIn . "\" "; #  <<-- la preview original
             $cmd .= " -strip -watermark 90% -gravity center ";
             $cmd .= " \"" . $pathOut . "\"";  # <-- la preview temporaire
@@ -364,9 +362,9 @@ class recordutils_image extends recordutils
                 fclose($pipes[2]);
                 $return_value = proc_close($process);
             }
-        } elseif ($registry->get('GV_imagick')) {
+        } elseif ($app['phraseanet.registry']->get('GV_imagick')) {
             $collname = phrasea::bas_names($base_id, $app);
-            $cmd = $registry->get('GV_imagick');
+            $cmd = $app['phraseanet.registry']->get('GV_imagick');
             $tailleimg = @getimagesize($pathIn);
             $max = ($tailleimg[0] > $tailleimg[1] ? $tailleimg[0] : $tailleimg[1]);
 

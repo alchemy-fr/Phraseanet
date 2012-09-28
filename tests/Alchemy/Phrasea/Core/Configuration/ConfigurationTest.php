@@ -2,8 +2,6 @@
 
 require_once __DIR__ . '/../../../../PhraseanetPHPUnitAbstract.class.inc';
 
-use Alchemy\Phrasea\Core\Configuration;
-
 class ConfigurationTest extends \PhraseanetPHPUnitAbstract
 {
     /**

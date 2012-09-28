@@ -59,12 +59,6 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
     const CACHE_USER_TOKEN = 'usr_token';
     const MAX_ENTRIES = 20;
 
-    /**
-     *
-     * @param  appbox       $appbox
-     * @param  int          $id
-     * @return Feed_Adapter
-     */
     public function __construct(Application $app, $id)
     {
         $this->app = $app;
@@ -161,10 +155,8 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
             throw new \Alchemy\Phrasea\Exception\InvalidArgumentException('File does not exists');
         }
 
-        $registry = $this->app['phraseanet.registry'];
-
-        $config_file = $registry->get('GV_RootPath') . 'config/feed_' . $this->get_id() . '.jpg';
-        $www_file = $registry->get('GV_RootPath') . 'www/custom/feed_' . $this->get_id() . '.jpg';
+        $config_file = $this->app['phraseanet.registry']->get('GV_RootPath') . 'config/feed_' . $this->get_id() . '.jpg';
+        $www_file = $this->app['phraseanet.registry']->get('GV_RootPath') . 'www/custom/feed_' . $this->get_id() . '.jpg';
 
         copy($file, $config_file);
         copy($file, $www_file);
@@ -192,10 +184,9 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
 
     public function reset_icon()
     {
-        $registry = $this->app['phraseanet.registry'];
-        $config_file = $registry->get('GV_RootPath')
+        $config_file = $this->app['phraseanet.registry']->get('GV_RootPath')
             . 'config/feed_' . $this->get_id() . '.jpg';
-        $www_file = $registry->get('GV_RootPath')
+        $www_file = $this->app['phraseanet.registry']->get('GV_RootPath')
             . 'www/custom/feed_' . $this->get_id() . '.jpg';
 
         if (is_file($config_file))
@@ -440,14 +431,6 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
         return $this;
     }
 
-    /**
-     *
-     * @param  appbox       $appbox
-     * @param  User_Adapter $user
-     * @param  string       $title
-     * @param  string       $subtitle
-     * @return Feed_Adapter
-     */
     public static function create(Application $app, User_Adapter $user, $title, $subtitle)
     {
         $sql = 'INSERT INTO feeds (id, title, subtitle, created_on, updated_on)
@@ -465,13 +448,6 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
         return $feed;
     }
 
-    /**
-     *
-     * @param  appbox       $appbox
-     * @param  User_Adapter $user
-     * @param  int          $id
-     * @return Feed_Adapter
-     */
     public static function load_with_user(Application $app, User_Adapter $user, $id)
     {
         $feed = new self($app, $id);

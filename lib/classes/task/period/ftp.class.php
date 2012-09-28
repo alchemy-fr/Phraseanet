@@ -304,7 +304,6 @@ class task_period_ftp extends task_appboxAbstract
     protected function processOneContent(appbox $appbox, Array $ftp_export)
     {
         $conn = $appbox->get_connection();
-        $registry = $app['phraseanet.registry'];
 
         $id = $ftp_export['id'];
         $ftp_export[$id]["crash"] = $ftp_export["crash"];
@@ -340,13 +339,13 @@ class task_period_ftp extends task_appboxAbstract
 
         if (($ses_id = phrasea_create_session($usr_id)) == null) {
             $this->logger->addDebug("Unable to create session");
-            continue;
+            return;
         }
 
         if ( ! ($ph_session = phrasea_open_session($ses_id, $usr_id))) {
             $this->logger->addDebug("Unable to open session");
             phrasea_close_session($ses_id);
-            continue;
+            return;
         }
 
         try {
@@ -417,14 +416,14 @@ class task_period_ftp extends task_appboxAbstract
                     if ($subdef == 'caption') {
                         $desc = $record->get_caption()->serialize(\caption_record::SERIALIZE_XML, $ftp_export["businessfields"]);
 
-                        $localfile = $registry->get('GV_RootPath') . 'tmp/' . md5($desc . time() . mt_rand());
+                        $localfile = $this->dependencyContainer['phraseanet.registry']->get('GV_RootPath') . 'tmp/' . md5($desc . time() . mt_rand());
                         if (file_put_contents($localfile, $desc) === false) {
                             throw new Exception('Impossible de creer un fichier temporaire');
                         }
                     } elseif ($subdef == 'caption-yaml') {
                         $desc = $record->get_caption()->serialize(\caption_record::SERIALIZE_YAML, $ftp_export["businessfields"]);
 
-                        $localfile = $registry->get('GV_RootPath') . 'tmp/' . md5($desc . time() . mt_rand());
+                        $localfile = $this->dependencyContainer['phraseanet.registry']->get('GV_RootPath') . 'tmp/' . md5($desc . time() . mt_rand());
                         if (file_put_contents($localfile, $desc) === false) {
                             throw new Exception('Impossible de creer un fichier temporaire');
                         }
@@ -513,7 +512,7 @@ class task_period_ftp extends task_appboxAbstract
                     $buffer .= $root . '/' . $folder . $filename . "\n";
                 }
 
-                $tmpfile = $registry->get('GV_RootPath') . 'tmp/tmpftpbuffer' . $date->format('U') . '.txt';
+                $tmpfile = $this->dependencyContainer['phraseanet.registry']->get('GV_RootPath') . 'tmp/tmpftpbuffer' . $date->format('U') . '.txt';
 
                 file_put_contents($tmpfile, $buffer);
 
@@ -604,7 +603,6 @@ class task_period_ftp extends task_appboxAbstract
     public function send_mails(appbox $appbox, $id)
     {
         $conn = $appbox->get_connection();
-        $registry = $this->dependencyContainer['phraseanet.registry'];
 
         $sql = 'SELECT filename, base_id, record_id, subdef, error, done'
             . ' FROM ftp_export_elements WHERE ftp_export_id = :export_id';
@@ -671,7 +669,7 @@ class task_period_ftp extends task_appboxAbstract
 
         $subject = sprintf(
             _('task::ftp:Status about your FTP transfert from %1$s to %2$s')
-            , $registry->get('GV_homeTitle'), $ftp_server
+            , $this->dependencyContainer['phraseanet.registry']->get('GV_homeTitle'), $ftp_server
         );
 
         mail::ftp_sent($this->dependencyContainer, $sendermail, $subject, $sender_message);

@@ -32,8 +32,6 @@ class RSSFeeds implements ControllerProviderInterface
             $perPage = 5;
             $entries = $feed->get_entries((($page - 1) * $perPage), $perPage);
 
-            $registry = $app['phraseanet.registry'];
-
             if ($format == \Feed_Adapter::FORMAT_RSS) {
                 $content = new \Feed_XML_RSS();
             }
@@ -47,9 +45,9 @@ class RSSFeeds implements ControllerProviderInterface
             }
 
             if ($user instanceof \User_Adapter)
-                $link = $feed->get_user_link($registry, $user, $format, $page);
+                $link = $feed->get_user_link($app['phraseanet.registry'], $user, $format, $page);
             else
-                $link = $feed->get_homepage_link($registry, $format, $page);
+                $link = $feed->get_homepage_link($app['phraseanet.registry'], $format, $page);
 
             $content->set_updated_on(new \DateTime());
             $content->set_title($feed->get_title());
@@ -59,14 +57,14 @@ class RSSFeeds implements ControllerProviderInterface
 
             if ($user instanceof \User_Adapter) {
                 if ($page > 1)
-                    $content->set_previous_page($feed->get_user_link($registry, $user, $format, ($page - 1)));
+                    $content->set_previous_page($feed->get_user_link($app['phraseanet.registry'], $user, $format, ($page - 1)));
                 if ($total > ($page * $perPage))
-                    $content->set_next_page($feed->get_user_link($registry, $user, $format, ($page + 1)));
+                    $content->set_next_page($feed->get_user_link($app['phraseanet.registry'], $user, $format, ($page + 1)));
             } else {
                 if ($page > 1)
-                    $content->set_previous_page($feed->get_homepage_link($registry, $format, ($page - 1)));
+                    $content->set_previous_page($feed->get_homepage_link($app['phraseanet.registry'], $format, ($page - 1)));
                 if ($total > ($page * $perPage))
-                    $content->set_next_page($feed->get_homepage_link($registry, $format, ($page + 1)));
+                    $content->set_next_page($feed->get_homepage_link($app['phraseanet.registry'], $format, ($page + 1)));
             }
             foreach ($entries->get_entries() as $entry)
                 $content->set_item($entry);

@@ -49,10 +49,6 @@ class module_console_checkExtension extends Command
             return 1;
         }
 
-        $appbox = $this->getService('phraseanet.appbox');
-
-        $registry = $this->container['phraseanet.registry'];
-
         $usrId = $input->getArgument('usr_id');
 
         try {
@@ -175,7 +171,7 @@ class module_console_checkExtension extends Command
                 , $base["sbas_id"]
                 , $base["searchcoll"]
                 , $base["arrayq"]
-                , $registry->get('GV_sit')
+                , $this->container['phraseanet.registry']->get('GV_sit')
                 , $usrId
                 , false
                 , PHRASEA_MULTIDOC_DOCONLY

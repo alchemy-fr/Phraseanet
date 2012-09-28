@@ -1,7 +1,6 @@
 <?php
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 
 class eventsmanager_broker
 {

@@ -1,7 +1,5 @@
 <?php
 
-use Alchemy\Phrasea\Core\Configuration;
-
 require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
 
 class Setup_UpgradeTest extends PhraseanetPHPUnitAbstract
@@ -14,7 +12,6 @@ class Setup_UpgradeTest extends PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $this->object = new Setup_Upgrade(self::$DI['app']);
     }
 

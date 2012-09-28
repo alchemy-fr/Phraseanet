@@ -249,7 +249,6 @@ class Session_Authentication_Native implements Session_Authentication_Interface
     protected function check_and_revoke_badlogs($ip)
     {
         $conn = $this->app['phraseanet.appbox']->get_connection();
-        $registry = $this->app['phraseanet.registry'];
 
         $sql = 'SELECT id FROM badlog
             WHERE (login = :login OR ip = :ip) AND locked="1"';
@@ -271,7 +270,7 @@ class Session_Authentication_Native implements Session_Authentication_Interface
             $stmt->execute(array(':login' => $this->login, ':ip'    => $ip));
             $stmt->closeCursor();
         } elseif ($row_count > 9) {
-            if ($this->is_captcha_activated($registry))
+            if ($this->is_captcha_activated($this->app['phraseanet.registry']))
                 throw new Exception_Session_RequireCaptcha('Require captcha');
         }
 
@@ -285,8 +284,6 @@ class Session_Authentication_Native implements Session_Authentication_Interface
      */
     protected function is_captcha_activated(registryInterface $registry)
     {
-        $registry = $this->app['phraseanet.registry'];
-
         return ($registry->get('GV_captchas')
             && trim($registry->get('GV_captcha_private_key')) !== ''
             && trim($registry->get('GV_captcha_public_key') !== ''));

@@ -18,10 +18,9 @@ class Bridge_AccountSettingsTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
         parent::setUp();
         try {
-            $appbox = self::$DI['app']['phraseanet.appbox'];
 
             $sql = 'DELETE FROM bridge_apis WHERE name = "Apitest"';
-            $stmt = $appbox->get_connection()->prepare($sql);
+            $stmt = self::$DI['app']['phraseanet.appbox']->get_connection()->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();
             $this->api = Bridge_Api::create(self::$DI['app'], 'Apitest');
@@ -29,7 +28,7 @@ class Bridge_AccountSettingsTest extends PhraseanetPHPUnitAuthenticatedAbstract
             $this->named = 'Fête à pinpins';
             $this->account = Bridge_Account::create(self::$DI['app'], $this->api, self::$DI['user'], $this->dist_id, $this->named);
 
-            $this->object = new Bridge_AccountSettings($appbox, $this->account);
+            $this->object = new Bridge_AccountSettings(self::$DI['app']['phraseanet.appbox'], $this->account);
         } catch (Exception $e) {
             $this->fail($e->getMessage());
         }

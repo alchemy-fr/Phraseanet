@@ -74,18 +74,17 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
      */
     public static function getInstance(Application $app, $sbasid, $sbas_coll, $dmin, $dmax)
     {
-        $appbox = $app['phraseanet.appbox'];
         $cache_id = 'feed_' . md5($sbasid . '_' . $sbas_coll . '_' . $dmin . '_' . $dmax);
 
         try {
-            return $appbox->get_data_from_cache($cache_id);
+            return $app['phraseanet.appbox']->get_data_from_cache($cache_id);
         } catch (Exception $e) {
 
         }
 
         $tmp = new self($app, $sbasid, $sbas_coll, $dmin, $dmax);
 
-        $appbox->set_data_to_cache($tmp, $cache_id);
+        $app['phraseanet.appbox']->set_data_to_cache($tmp, $cache_id);
 
         return $tmp;
     }
@@ -144,8 +143,7 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
             $this->report['nb_conn'] = module_report_connexion::getNbConn(
                     $this->app, $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
             );
-            $registry = $this->app['phraseanet.registry'];
-            if ($registry->get('GV_anonymousReport') == false) {
+            if ($this->app['phraseanet.registry']->get('GV_anonymousReport') == false) {
                 /**
                  * get Top ten user of
                  * number of dl doc, prev
@@ -180,7 +178,7 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
             $this->report['top_dl_preview'] = $topdl['preview'];
             $this->report['top_dl_document'] = $topdl['document'];
 
-            if ($registry->get('GV_anonymousReport') == false) {
+            if ($this->app['phraseanet.registry']->get('GV_anonymousReport') == false) {
                 // get users that ask the most questions
                 $this->report['ask'] = module_report_activity::activityQuestion(
                         $this->app, $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
@@ -204,7 +202,7 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
             $this->report['activity_edited'] = module_report_activity::activiteEditedDocument(
                     $this->app, $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection
             );
-            if ($registry->get('GV_anonymousReport') == false) {
+            if ($this->app['phraseanet.registry']->get('GV_anonymousReport') == false) {
                 //get users that add the most documents
                 $this->report['top_ten_added'] = module_report_activity::activiteAddedTopTenUser(
                         $this->app, $this->dminsql, $this->dmaxsql, $this->sbasid, $this->collection

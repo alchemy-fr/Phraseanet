@@ -47,11 +47,9 @@ class module_console_systemBackupDB extends Command
     {
         $output->write('Phraseanet is going to be backup...', true);
 
-        $appbox = $this->getService('phraseanet.appbox');
+        $ok = $this->dump_base($this->getService('phraseanet.appbox'), $input, $output) && $ok;
 
-        $ok = $this->dump_base($appbox, $input, $output) && $ok;
-
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach ($this->getService('phraseanet.appbox')->get_databoxes() as $databox) {
             $ok = $this->dump_base($databox, $input, $output) && $ok;
         }
 

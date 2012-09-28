@@ -18,7 +18,6 @@ use Alchemy\Phrasea\Application;
 
 require_once __DIR__ . "/../../lib/bootstrap.php";
 $app = new Application();
-$appbox = $app['phraseanet.appbox'];
 phrasea::headers();
 
 $request = http_request::getInstance();

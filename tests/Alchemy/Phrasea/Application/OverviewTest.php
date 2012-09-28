@@ -56,7 +56,6 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     function testDatafilesRouteNotAuthenticated()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         self::$DI['app']->closeAccount();
         $crawler = self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/');
         $response = self::$DI['client']->getResponse();
@@ -69,14 +68,12 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     function testPermalinkAuthenticated()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $this->assertTrue(self::$DI['app']->isAuthenticated());
         $this->get_a_permalink();
     }
 
     function testPermalinkNotAuthenticated()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         self::$DI['app']->closeAccount();
         $this->assertFalse(self::$DI['app']->isAuthenticated());
         $this->get_a_permalink();

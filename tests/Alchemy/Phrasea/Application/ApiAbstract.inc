@@ -89,8 +89,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $environment = 'test';
         $application = require __DIR__ . '/../../../../lib/Alchemy/Phrasea/Application/Api.php';
 
-        $appbox = $application['phraseanet.appbox'];
-
         self::$oauthApplication = \API_OAuth2_Application::create($application, self::$DI['user_notAdmin'], 'test API v1');
         self::$account = \API_OAuth2_Account::load_with_user($application, self::$oauthApplication, self::$DI['user_notAdmin']);
         self::$token = self::$account->get_token()->get_value();
@@ -255,7 +253,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testGetScheduler()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         if (null === self::$adminToken) {
             $this->markTestSkipped('there is no user with admin rights');
         }
@@ -330,7 +327,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testGetMonitorTaskById()
     {
-        $appbox = self::$DI['app']["phraseanet.appbox"];
         $task_manager = new \task_manager(self::$DI['app']);
         $tasks = $task_manager->getTasks();
 
@@ -364,7 +360,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testPostMonitorTaskById()
     {
-        $appbox = self::$DI['app']["phraseanet.appbox"];
         $task_manager = new \task_manager(self::$DI['app']);
         $tasks = $task_manager->getTasks();
 
@@ -421,7 +416,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
             $this->markTestSkipped('there is no user with admin rights');
         }
 
-        $appbox = self::$DI['app']["phraseanet.appbox"];
         $task_manager = new \task_manager(self::$DI['app']);
         $tasks = $task_manager->getTasks();
 
@@ -455,7 +449,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testPostMonitorStopTask()
     {
-        $appbox = self::$DI['app']["phraseanet.appbox"];
         $task_manager = new \task_manager(self::$DI['app']);
 
         $tasks = $task_manager->getTasks();
@@ -1546,7 +1539,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testFeedsContent()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $title = 'Yellow title';
         $subtitle = 'Trololololo !';
@@ -1559,7 +1551,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $publisher = \Feed_Publisher_Adapter::getPublisher(self::$DI['app']['phraseanet.appbox'], $created_feed, self::$DI['user']);
 
         $created_entry = \Feed_Entry_Adapter::create(self::$DI['app'], $created_feed, $publisher, $entry_title, $entry_subtitle, $author, $author_email);
-        $created_item = \Feed_Entry_Item::create($appbox, $created_entry, self::$DI['record_1']);
+        $created_item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $created_entry, self::$DI['record_1']);
 
 
         $this->setToken(self::$token);
@@ -1606,7 +1598,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testFeedEntry()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $title = 'Yellow title';
         $subtitle = 'Trololololo !';
@@ -1619,7 +1610,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $publisher = \Feed_Publisher_Adapter::getPublisher(self::$DI['app']['phraseanet.appbox'], $created_feed, self::$DI['user']);
 
         $created_entry = \Feed_Entry_Adapter::create(self::$DI['app'], $created_feed, $publisher, $entry_title, $entry_subtitle, $author, $author_email);
-        $created_item = \Feed_Entry_Item::create($appbox, $created_entry, self::$DI['record_1']);
+        $created_item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $created_entry, self::$DI['record_1']);
 
         $this->setToken(self::$token);
         $route = '/feeds/entry/' . $created_entry->get_id() . '/';
@@ -1646,7 +1637,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testFeedEntryNoAccess()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $title = 'Yellow title';
         $subtitle = 'Trololololo !';
@@ -1659,7 +1649,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $publisher = \Feed_Publisher_Adapter::getPublisher(self::$DI['app']['phraseanet.appbox'], $created_feed, self::$DI['user']);
 
         $created_entry = \Feed_Entry_Adapter::create(self::$DI['app'], $created_feed, $publisher, $entry_title, $entry_subtitle, $author, $author_email);
-        $created_item = \Feed_Entry_Item::create($appbox, $created_entry, self::$DI['record_1']);
+        $created_item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $created_entry, self::$DI['record_1']);
 
         $created_feed->set_collection(self::$DI['collection_no_access']);
 
@@ -1684,8 +1674,6 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testFeedContent()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-
         $title = 'Yellow title';
         $subtitle = 'Trololololo !';
         $entry_title = 'Superman';
@@ -1697,7 +1685,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $publisher = \Feed_Publisher_Adapter::getPublisher(self::$DI['app']['phraseanet.appbox'], $created_feed, self::$DI['user']);
 
         $created_entry = \Feed_Entry_Adapter::create(self::$DI['app'], $created_feed, $publisher, $entry_title, $entry_subtitle, $author, $author_email);
-        $created_item = \Feed_Entry_Item::create($appbox, $created_entry, self::$DI['record_1']);
+        $created_item = \Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $created_entry, self::$DI['record_1']);
 
         $this->setToken(self::$token);
         $route = '/feeds/' . $created_feed->get_id() . '/content/';

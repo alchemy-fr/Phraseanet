@@ -9,7 +9,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 
 /**
  *
@@ -19,8 +18,6 @@ use Alchemy\Phrasea\Core\Configuration;
 
 require_once __DIR__ . "/../../lib/bootstrap.php";
 $app = new Application();
-$appbox = $app['phraseanet.appbox'];
-$registry = $app['phraseanet.registry'];
 
 $user = $app['phraseanet.user'];
 
@@ -30,7 +27,7 @@ $parm = $request->get_parms("lst", "SSTTID", "story");
 $gatekeeper = gatekeeper::getInstance($app);
 $gatekeeper->require_session();
 
-if ($registry->get('GV_needAuth2DL') && $user->is_guest()) {
+if ($app['phraseanet.registry']->get('GV_needAuth2DL') && $user->is_guest()) {
     ?>
     <script>
         parent.hideDwnl();
@@ -49,8 +46,8 @@ echo $app['twig']->render('common/dialog_export.html.twig', array(
     'ssttid'               => $parm['SSTTID'],
     'lst'                  => $download->serialize_list(),
     'user'                 => $user,
-    'default_export_title' => $registry->get('GV_default_export_title'),
-    'choose_export_title'  => $registry->get('GV_choose_export_title')
+    'default_export_title' => $app['phraseanet.registry']->get('GV_default_export_title'),
+    'choose_export_title'  => $app['phraseanet.registry']->get('GV_choose_export_title')
 ));
 
 

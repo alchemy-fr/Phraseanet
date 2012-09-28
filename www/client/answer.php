@@ -9,7 +9,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 
 /**
  *
@@ -20,8 +19,6 @@ use Alchemy\Phrasea\Core\Configuration;
 require_once __DIR__ . "/../../lib/bootstrap.php";
 
 $app = new Application();
-$appbox = $app['phraseanet.appbox'];
-$registry = $app['phraseanet.registry'];
 $user = $app['phraseanet.user'];
 
 if ( ! isset($parm)) {
@@ -156,12 +153,12 @@ $page = $result->get_current_page();
 
 $ACL = $user->ACL();
 
-if ($registry->get('GV_thesaurus')) {
+if ($app['phraseanet.registry']->get('GV_thesaurus')) {
     ?>
     <script language="javascript">
         document.getElementById('proposals').innerHTML = "<div style='height:0px; overflow:hidden'>\n<?php echo p4string::MakeString($parm['qry'], "JS") ?>\n</div>\n<?php echo p4string::MakeString($proposals, "JS") ?>";
     <?php
-    if ($registry->get('GV_clientAutoShowProposals')) {
+    if ($app['phraseanet.registry']->get('GV_clientAutoShowProposals')) {
         ?>
               if("<?php echo p4string::MakeString($proposals, "JS") ?>" != "<div class=\"proposals\"></div>")
               chgOng(4);

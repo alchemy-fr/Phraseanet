@@ -10,7 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 
 /**
  *
@@ -20,7 +19,6 @@ use Alchemy\Phrasea\Core\Configuration;
 
 require_once __DIR__ . "/../../lib/bootstrap.php";
 $app = new Application();
-$appbox = $app['phraseanet.appbox'];
 $request = http_request::getInstance();
 $parm = $request->get_parms(
     'sbid'
@@ -143,7 +141,7 @@ try {
     if ($parm['debug'])
         printf("/* %s */\n", var_export($t_nrec, true));
 
-    $databox = $appbox->get_databox($sbid);
+    $databox = $app['phraseanet.appbox']->get_databox($sbid);
     if ($parm['type'] == 'T') {
         $xqroot = 'thesaurus';
         $dom = $databox->get_dom_thesaurus();

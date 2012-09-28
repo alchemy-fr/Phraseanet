@@ -2,8 +2,6 @@
 
 require_once __DIR__ . '/../../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
-use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 use Symfony\Component\HttpFoundation\Request;
 
 class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
@@ -103,9 +101,8 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_databox_collections()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $request = new Request();
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             $result = $this->object->get_databox_collections($request, $databox->get_sbas_id());
             $this->assertEquals(200, $result->get_http_code());
             $this->assertEquals('application/json', $result->get_content_type());
@@ -115,7 +112,6 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_record()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
         $result = $this->object->get_record($request, self::$DI['record_1']->get_sbas_id(), "-40");
@@ -130,9 +126,8 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_databox_status()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             $result = $this->object->get_databox_status($request, $databox->get_sbas_id());
             $this->assertEquals(200, $result->get_http_code());
             $this->assertEquals('application/json', $result->get_content_type());
@@ -142,9 +137,8 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_databox_metadatas()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             $result = $this->object->get_databox_metadatas($request, $databox->get_sbas_id());
             $this->assertEquals(200, $result->get_http_code());
             $this->assertEquals('application/json', $result->get_content_type());
@@ -154,9 +148,8 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_databox_terms()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             $result = $this->object->get_databox_terms($request, $databox->get_sbas_id());
             $this->assertEquals(200, $result->get_http_code());
             $this->assertEquals('application/json', $result->get_content_type());
@@ -175,7 +168,6 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_record_related()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
         $result = $this->object->get_record_related($request, self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_record_id());
@@ -186,7 +178,6 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_record_metadatas()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
         $result = $this->object->get_record_metadatas($request, self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_record_id());
@@ -197,7 +188,6 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_record_status()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $request = new Request();
         $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
@@ -209,7 +199,6 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_record_embed()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
         $result = $this->object->get_record_embed($request, self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_record_id());
@@ -220,7 +209,6 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSet_record_metadatas()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $databox = self::$DI['record_1']->get_databox();
         $request = new Request(array("salut" => "salut c'est la fete"), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
         $result = $this->object->set_record_metadatas($request, self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_record_id());
@@ -372,7 +360,6 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testDelete_basket()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $usr_id = self::$DI['app']['phraseanet.user']->get_id();
         $user = User_Adapter::getInstance($usr_id, self::$DI['app']);
 
@@ -405,7 +392,6 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_basket()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $usr_id = self::$DI['app']['phraseanet.user']->get_id();
 
         $basket = $this->insertOneBasket();
@@ -419,7 +405,6 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSet_basket_title()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $usr_id = self::$DI['app']['phraseanet.user']->get_id();
 
         $basket = $this->insertOneBasket();
@@ -439,7 +424,6 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSet_basket_description()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $usr_id = self::$DI['app']['phraseanet.user']->get_id();
 
         $basket = $this->insertOneBasket();
@@ -459,7 +443,6 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSearch_publications()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
         $feed = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "hello", "salut");
         $result = $this->object->search_publications($request, self::$DI['user']);
@@ -477,14 +460,13 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_publication()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $date = new DateTime();
         $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept'    => 'application/json'));
         $feed = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "hello", "salut");
         $feed_publisher = Feed_Publisher_Adapter::getPublisher(self::$DI['app']['phraseanet.appbox'], $feed, self::$DI['user']);
         $feed_entry = Feed_Entry_Adapter::create(self::$DI['app'], $feed, $feed_publisher, "coucou", "hello", "me", "my@email.com");
-        $feed_entry_item = Feed_Entry_Item::create($appbox, $feed_entry, self::$DI['record_1']);
+        $feed_entry_item = Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $feed_entry, self::$DI['record_1']);
         $coll = Feed_Collection::load_all(self::$DI['app'], self::$DI['user']);
         foreach ($coll->get_feeds() as $feed) {
             $result = $this->object->get_publication($request, $feed->get_id(), self::$DI['user']);

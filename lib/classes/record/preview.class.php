@@ -316,8 +316,6 @@ class record_preview extends record_adapter
 
         $tab = array();
 
-        $appbox = $this->app['phraseanet.appbox'];
-        $registry = $this->app['phraseanet.registry'];
         $user = $this->app['phraseanet.user'];
 
         $report = $user->ACL()->has_right_on_base($this->get_base_id(), 'canreport');
@@ -333,7 +331,7 @@ class record_preview extends record_adapter
         if ( ! $report) {
             $sql .= ' AND ((l.usrid = :usr_id AND l.site= :site) OR action="add")';
             $params[':usr_id'] = $user->get_id();
-            $params[':site'] = $registry->get('GV_sit');
+            $params[':site'] = $this->app['phraseanet.registry']->get('GV_sit');
         }
 
         $sql .= 'ORDER BY d.date, usrid DESC';
@@ -403,14 +401,11 @@ class record_preview extends record_adapter
             return $this->view_popularity;
         }
 
-        $appbox = $this->app['phraseanet.appbox'];
-
         $user = $this->app['phraseanet.user'];
         $report = $user->ACL()->has_right_on_base(
             $this->get_base_id(), 'canreport');
-        $registry = $this->app['phraseanet.registry'];
 
-        if ( ! $report && ! $registry->get('GV_google_api')) {
+        if ( ! $report && ! $this->app['phraseanet.registry']->get('GV_google_api')) {
             $this->view_popularity = false;
 
             return $this->view_popularity;
@@ -442,7 +437,7 @@ class record_preview extends record_adapter
         $stmt->execute(
             array(
                 ':record_id' => $this->get_record_id(),
-                ':site'      => $registry->get('GV_sit')
+                ':site'      => $this->app['phraseanet.registry']->get('GV_sit')
             )
         );
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -496,14 +491,11 @@ class record_preview extends record_adapter
             return $this->refferer_popularity;
         }
 
-        $appbox = $this->app['phraseanet.appbox'];
-
         $user = $this->app['phraseanet.user'];
         $report = $user->ACL()->has_right_on_base(
             $this->get_base_id(), 'canreport');
-        $registry = $this->app['phraseanet.registry'];
 
-        if ( ! $report && ! $registry->get('GV_google_api')) {
+        if ( ! $report && ! $this->app['phraseanet.registry']->get('GV_google_api')) {
             $this->refferer_popularity = false;
 
             return $this->refferer_popularity;
@@ -527,22 +519,22 @@ class record_preview extends record_adapter
         foreach ($rs as $row) {
             if ($row['referrer'] == 'NO REFERRER')
                 $row['referrer'] = _('report::acces direct');
-            if ($row['referrer'] == $registry->get('GV_ServerName') . 'prod/')
+            if ($row['referrer'] == $this->app['phraseanet.registry']->get('GV_ServerName') . 'prod/')
                 $row['referrer'] = _('admin::monitor: module production');
-            if ($row['referrer'] == $registry->get('GV_ServerName') . 'client/')
+            if ($row['referrer'] == $this->app['phraseanet.registry']->get('GV_ServerName') . 'client/')
                 $row['referrer'] = _('admin::monitor: module client');
-            if (strpos($row['referrer'], $registry->get('GV_ServerName') . 'login/') !== false)
+            if (strpos($row['referrer'], $this->app['phraseanet.registry']->get('GV_ServerName') . 'login/') !== false)
                 $row['referrer'] = _('report:: page d\'accueil');
             if (strpos($row['referrer'], 'http://apps.cooliris.com/') !== false)
                 $row['referrer'] = _('report:: visualiseur cooliris');
 
-            if (strpos($row['referrer'], $registry->get('GV_ServerName') . 'document/') !== false) {
+            if (strpos($row['referrer'], $this->app['phraseanet.registry']->get('GV_ServerName') . 'document/') !== false) {
                 if (strpos($row['referrer'], '/view/') !== false)
                     $row['referrer'] = _('report::presentation page preview');
                 else
                     $row['referrer'] = _('report::acces direct');
             }
-            if (strpos($row['referrer'], $registry->get('GV_ServerName') . 'permalink/') !== false) {
+            if (strpos($row['referrer'], $this->app['phraseanet.registry']->get('GV_ServerName') . 'permalink/') !== false) {
                 if (strpos($row['referrer'], '/view/') !== false)
                     $row['referrer'] = _('report::presentation page preview');
                 else
@@ -579,15 +571,12 @@ class record_preview extends record_adapter
             return $this->download_popularity;
         }
 
-        $appbox = $this->app['phraseanet.appbox'];
-
         $user = $this->app['phraseanet.user'];
-        $registry = $this->app['phraseanet.registry'];
         $report = $user->ACL()->has_right_on_base(
             $this->get_base_id(), 'canreport');
 
         $ret = false;
-        if ( ! $report && ! $registry->get('GV_google_api')) {
+        if ( ! $report && ! $this->app['phraseanet.registry']->get('GV_google_api')) {
             $this->download_popularity = false;
 
             return $this->download_popularity;
@@ -621,7 +610,7 @@ class record_preview extends record_adapter
         $stmt->execute(
             array(
                 ':record_id' => $this->get_record_id(),
-                ':site'      => $registry->get('GV_sit')
+                ':site'      => $this->app['phraseanet.registry']->get('GV_sit')
             )
         );
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);

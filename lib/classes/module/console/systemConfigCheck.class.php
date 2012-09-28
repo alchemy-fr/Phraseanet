@@ -52,7 +52,7 @@ class module_console_systemConfigCheck extends Command
             $registry = $this->container['phraseanet.registry'];
 
             $output->writeln(_('*** CHECK BINARY CONFIGURATION ***'));
-            $ok = $this->processConstraints(setup::check_binaries($registry), $output) && $ok;
+            $ok = $this->processConstraints(setup::check_binaries($this->container['phraseanet.registry']), $output) && $ok;
             $output->writeln("");
         } else {
             $registry = new Setup_Registry();

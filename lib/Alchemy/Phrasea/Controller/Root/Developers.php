@@ -245,7 +245,6 @@ class Developers implements ControllerProviderInterface
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 
-        $appbox = $app['phraseanet.appbox'];
         $error = false;
         $accessToken = null;
 
@@ -258,7 +257,7 @@ class Developers implements ControllerProviderInterface
             if ($token instanceof \API_OAuth2_Token) {
                 $token->renew();
             } else {
-                $token = \API_OAuth2_Token::create($appbox, $account);
+                $token = \API_OAuth2_Token::create($app['phraseanet.appbox'], $account);
             }
 
             $accessToken = $token->get_value();

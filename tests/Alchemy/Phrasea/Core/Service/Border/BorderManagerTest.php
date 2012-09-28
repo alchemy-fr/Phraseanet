@@ -159,9 +159,8 @@ class BorderManagerTest extends \PhraseanetPHPUnitAbstract
     {
         $app = new Application('test');
         $databox = $collection = null;
-        $appbox = $app['phraseanet.appbox'];
 
-        foreach ($appbox->get_databoxes() as $db) {
+        foreach ($app['phraseanet.appbox']->get_databoxes() as $db) {
             if (!$databox) {
                 $databox = $db;
             }

@@ -38,7 +38,6 @@ abstract class AbstractDelivery implements ControllerProviderInterface
 
         $log_id = null;
         try {
-            $registry = $app['phraseanet.registry'];
             $logger = $app['phraseanet.logger']($record->get_databox());
             $log_id = $logger->get_id();
 
@@ -48,7 +47,7 @@ abstract class AbstractDelivery implements ControllerProviderInterface
                 $referrer = $_SERVER['HTTP_REFERER'];
             }
 
-            $record->log_view($log_id, $referrer, $registry->get('GV_sit'));
+            $record->log_view($log_id, $referrer, $app['phraseanet.registry']->get('GV_sit'));
         } catch (\Exception $e) {
 
         }

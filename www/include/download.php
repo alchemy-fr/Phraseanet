@@ -10,8 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
-use Symfony\Component\Filesystem\Filesystem;
 
 /**
  *
@@ -24,7 +22,6 @@ require_once __DIR__ . "/../../lib/bootstrap.php";
 $Request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
 
 $app = new Application();
-$appbox = $app['phraseanet.appbox'];
 
 $gatekeeper = gatekeeper::getInstance($app);
 $gatekeeper->require_session();
@@ -41,7 +38,7 @@ if ($parm["type"] == "title")
 else
     $titre = false;
 
-$list = $download->prepare_export($app['phraseanet.user'], new Filesystem(), $parm['obj'], $titre, $parm['businessfields']);
+$list = $download->prepare_export($app['phraseanet.user'], $app['filesystem'], $parm['obj'], $titre, $parm['businessfields']);
 
 $exportname = "Export_" . date("Y-n-d") . '_' . mt_rand(100, 999);
 

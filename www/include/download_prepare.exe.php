@@ -43,8 +43,7 @@ set_time_limit(0);
 session_write_close();
 ignore_user_abort(true);
 
-$registry = $app['phraseanet.registry'];
-$zipFile = $registry->get('GV_RootPath') . 'tmp/download/' . $datas['value'] . '.zip';
+$zipFile = $app['phraseanet.registry']->get('GV_RootPath') . 'tmp/download/' . $datas['value'] . '.zip';
 set_export::build_zip(new Filesystem(), $token, $list, $zipFile);
 
 echo '1';

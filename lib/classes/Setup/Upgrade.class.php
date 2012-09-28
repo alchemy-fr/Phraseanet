@@ -52,11 +52,6 @@ class Setup_Upgrade
      */
     protected $completed_steps = 0;
 
-    /**
-     *
-     * @param  appbox        $appbox
-     * @return Setup_Upgrade
-     */
     public function __construct(Application $app, $force = false)
     {
         if ($force) {

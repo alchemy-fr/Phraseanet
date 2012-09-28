@@ -9,7 +9,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 
 /**
  *
@@ -22,7 +21,6 @@ require_once __DIR__ . "/../../lib/bootstrap.php";
 $app = new Application();
 $usr_id = $app['phraseanet.user']->get_id();
 
-$appbox = $app['phraseanet.appbox'];
 
 $request = http_request::getInstance();
 $parm = $request->get_parms(
@@ -41,7 +39,7 @@ switch ($parm['act']) {
             ':usr_id'       => $usr_id
         );
 
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -66,7 +64,7 @@ switch ($parm['act']) {
             , ':presets' => $dom->saveXML()
         );
 
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
 
         $ret['html'] = xlist($app, $parm['sbas'], $usr_id);
@@ -79,7 +77,7 @@ switch ($parm['act']) {
             FROM edit_presets
             WHERE edit_preset_id = :edit_preset_id';
 
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':edit_preset_id' => $parm['presetid']));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();

@@ -37,7 +37,6 @@ class sphinx_configuration
     {
         $available_charsets = array();
         $dir = __DIR__ . '/charsetTable/';
-        $registry = $this->app['phraseanet.registry'];
         foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::LEAVES_ONLY) as $file) {
             if ($file->isDir() || strpos($file->getPathname(), '/.svn/') !== false) {
                 continue;

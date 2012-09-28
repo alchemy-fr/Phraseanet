@@ -434,8 +434,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
      */
     public function get_protected_rss_url($renew = false)
     {
-        $registry = $this->app['phraseanet.registry'];
-
         $token = $title = false;
 
         if (!$renew) {
@@ -455,7 +453,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
             $token = random::getUrlToken($this->app, \random::TYPE_RSS, $this->id);
         }
 
-        return new system_url($registry->get('GV_ServerName') . 'atom/' . $token);
+        return new system_url($this->app['phraseanet.registry']->get('GV_ServerName') . 'atom/' . $token);
     }
 
     /**
@@ -1245,8 +1243,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
             return $this;
         }
 
-        $registry = $this->app['phraseanet.registry'];
-
         $sql = 'SELECT prop, value FROM usr_settings WHERE usr_id= :id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':id' => $this->id));
@@ -1259,8 +1255,8 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
         foreach (self::$def_values as $k => $v) {
             if (!isset($this->_prefs[$k])) {
-                if ($k == 'start_page_query' && $registry->get('GV_defaultQuery')) {
-                    $v = $registry->get('GV_defaultQuery');
+                if ($k == 'start_page_query' && $this->app['phraseanet.registry']->get('GV_defaultQuery')) {
+                    $v = $this->app['phraseanet.registry']->get('GV_defaultQuery');
                 }
 
                 $this->_prefs[$k] = $v;
@@ -1464,7 +1460,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     public static function updateClientInfos(Application $app, $app_id)
     {
-        $appbox = $app['phraseanet.appbox'];
         if (!$app->isAuthenticated()) {
             return;
         }
@@ -1501,7 +1496,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
             foreach ($sbas_ids as $sbas_id) {
                 try {
-                    $logger = $app['phraseanet.logger']($appbox->get_databox($sbas_id));
+                    $logger = $app['phraseanet.logger']($app['phraseanet.appbox']->get_databox($sbas_id));
 
                     $connbas = connection::getPDOConnection($app, $sbas_id);
                     $sql = 'SELECT appli FROM log WHERE id = :log_id';
@@ -1557,15 +1552,13 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     public static function set_sys_admins(Application $app, $admins)
     {
         try {
-            $appbox = $app['phraseanet.appbox'];
-
             $sql = "UPDATE usr SET create_db='0' WHERE create_db='1' AND usr_id != :usr_id";
-            $stmt = $appbox->get_connection()->prepare($sql);
+            $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
             $stmt->execute(array(':usr_id' => $app['phraseanet.user']->get_id()));
             $stmt->closeCursor();
 
             $sql = "UPDATE usr SET create_db='1' WHERE usr_id IN (" . implode(',', $admins) . ")";
-            $stmt = $appbox->get_connection()->prepare($sql);
+            $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();
 
@@ -1581,9 +1574,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     {
         $users = self::get_sys_admins($app);
 
-        $appbox = $app['phraseanet.appbox'];
-
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach (array_keys($users) as $usr_id) {
                 $user = User_Adapter::getInstance($usr_id, $app);
                 $user->ACL()->give_access_to_sbas(array($databox->get_sbas_id()));
@@ -1632,15 +1623,13 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     public function get_locale()
     {
-        $registry = $this->app['phraseanet.registry'];
-
         $sql = "SELECT locale FROM usr WHERE usr_id = :usr_id";
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':usr_id' => $this->get_id()));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $locale = $row['locale'] ? : $registry->get('GV_default_lng', 'en_GB');
+        $locale = $row['locale'] ? : $this->app['phraseanet.registry']->get('GV_default_lng', 'en_GB');
 
         return $locale;
     }
@@ -1690,9 +1679,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     public static function salt_password(Application $app, $password, $nonce)
     {
-        $registry = $app['phraseanet.registry'];
-
-        return hash_hmac('sha512', $password . $nonce, $registry->get('GV_sit'));
+        return hash_hmac('sha512', $password . $nonce, $app['phraseanet.registry']->get('GV_sit'));
     }
     protected $nonce;
 

@@ -25,12 +25,6 @@ class Feed_Aggregate extends Feed_Abstract implements Feed_Interface
      */
     protected $feeds;
 
-    /**
-     *
-     * @param  appbox         $appbox
-     * @param  array          $feeds
-     * @return Feed_Aggregate
-     */
     public function __construct(Application $app, Array $feeds)
     {
         $this->title = 'AGGREGGATE';

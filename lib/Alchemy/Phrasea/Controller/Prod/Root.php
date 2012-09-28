@@ -42,10 +42,8 @@ class Root implements ControllerProviderInterface
 
             \User_Adapter::updateClientInfos($app, 1);
 
-            $appbox = $app['phraseanet.appbox'];
-            $registry = $app['phraseanet.registry'];
             $user = $app['phraseanet.user'];
-            $cssPath = $registry->get('GV_RootPath') . 'www/skins/prod/';
+            $cssPath = $app['phraseanet.registry']->get('GV_RootPath') . 'www/skins/prod/';
 
             $css = array();
             $cssfile = false;
@@ -78,15 +76,15 @@ class Root implements ControllerProviderInterface
 
             $queries_topics = '';
 
-            if ($registry->get('GV_client_render_topics') == 'popups') {
+            if ($app['phraseanet.registry']->get('GV_client_render_topics') == 'popups') {
                 $queries_topics = \queries::dropdown_topics($app['locale.I18n']);
-            } elseif ($registry->get('GV_client_render_topics') == 'tree') {
+            } elseif ($app['phraseanet.registry']->get('GV_client_render_topics') == 'tree') {
                 $queries_topics = \queries::tree_topics($app['locale.I18n']);
             }
 
             $sbas = $bas2sbas = array();
 
-            foreach ($appbox->get_databoxes() as $databox) {
+            foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
                 $sbas_id = $databox->get_sbas_id();
 
                 $sbas['s' + $sbas_id] = array(
@@ -109,13 +107,13 @@ class Root implements ControllerProviderInterface
                 'cssfile'              => $cssfile,
                 'module'               => 'prod',
                 'events'               => $app['events-manager'],
-                'GV_defaultQuery_type' => $registry->get('GV_defaultQuery_type'),
-                'GV_multiAndReport'    => $registry->get('GV_multiAndReport'),
-                'GV_thesaurus'         => $registry->get('GV_thesaurus'),
+                'GV_defaultQuery_type' => $app['phraseanet.registry']->get('GV_defaultQuery_type'),
+                'GV_multiAndReport'    => $app['phraseanet.registry']->get('GV_multiAndReport'),
+                'GV_thesaurus'         => $app['phraseanet.registry']->get('GV_thesaurus'),
                 'cgus_agreement'       => \databox_cgu::askAgreement($app),
                 'css'                  => $css,
                 'feeds'                => $feeds,
-                'GV_google_api'        => $registry->get('GV_google_api'),
+                'GV_google_api'        => $app['phraseanet.registry']->get('GV_google_api'),
                 'queries_topics'       => $queries_topics,
                 'search_status'        => \databox_status::getSearchStatus($app),
                 'queries_history'      => \queries::history($app['phraseanet.appbox'], $app['phraseanet.user']->get_id()),

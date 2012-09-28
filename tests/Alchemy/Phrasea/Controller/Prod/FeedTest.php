@@ -42,7 +42,6 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         parent::setUp();
 
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $this->feed = Feed_Adapter::create(
                 self::$DI['app'], self::$DI['user'], $this->feed_title, $this->feed_subtitle
@@ -62,7 +61,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 , $this->entry_authormail
         );
 
-        $this->item = Feed_Entry_Item::create($appbox, $this->entry, self::$DI['record_1']);
+        $this->item = Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $this->entry, self::$DI['record_1']);
     }
 
     public static function setUpBeforeClass()
@@ -92,7 +91,6 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRequestAvailable()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $crawler = self::$DI['client']->request('POST', '/prod/feeds/requestavailable/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $feeds = Feed_Collection::load_all(self::$DI['app'], self::$DI['user']);
@@ -144,7 +142,6 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testEntryEdit()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $crawler = self::$DI['client']->request('GET', '/prod/feeds/entry/' . $this->entry->get_id() . '/edit/');
         $pageContent = self::$DI['client']->getResponse()->getContent();
@@ -162,7 +159,6 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testEntryEditUnauthorized()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $feed = Feed_Adapter::create(
                 self::$DI['app'], self::$DI['user_alt1'], $this->feed_title, $this->feed_subtitle
@@ -195,7 +191,6 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testEntryUpdate()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $params = array(
             "title"        => "dog",
@@ -218,7 +213,6 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testEntryUpdateChangeFeed()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $newfeed = Feed_Adapter::create(
                 self::$DI['app'], self::$DI['user'], $this->feed_title, $this->feed_subtitle
         );
@@ -250,13 +244,11 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testEntryUpdateChangeFeedNoAccess()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $newfeed = Feed_Adapter::create(
                 self::$DI['app'], self::$DI['user'], $this->feed_title, $this->feed_subtitle
         );
         $newfeed->set_collection(self::$DI['collection_no_access']);
 
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $params = array(
             "feed_id"      => $newfeed->get_id(),
@@ -300,7 +292,6 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testEntryUpdateNotFound()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $params = array(
             "feed_id"      => 9999999
@@ -326,7 +317,6 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testEntryUpdateFailed()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $params = array(
             "feed_id"      => 9999999
@@ -352,14 +342,13 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testEntryUpdateUnauthorized()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         /**
          * I CREATE A FEED THAT IS NOT MINE
          * */
         $feed = Feed_Adapter::create(self::$DI['app'], self::$DI['user_alt1'], "salut", 'coucou');
         $publisher = Feed_Publisher_Adapter::getPublisher(self::$DI['app']['phraseanet.appbox'], $feed, self::$DI['user_alt1']);
         $entry = Feed_Entry_Adapter::create(self::$DI['app'], $feed, $publisher, "hello", "coucou", "salut", "bonjour@phraseanet.com");
-        $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_1']);
+        $item = Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_1']);
 
         $params = array(
             "feed_id"      => $feed->get_id()
@@ -387,7 +376,6 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDelete()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/' . $this->entry->get_id() . '/delete/');
 
@@ -410,7 +398,6 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDeleteNotFound()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/9999999/delete/');
 
@@ -427,7 +414,6 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDeleteUnauthorized()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         /**
          * I CREATE A FEED
          * */
@@ -435,7 +421,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $publisher = Feed_Publisher_Adapter::getPublisher(self::$DI['app']['phraseanet.appbox'], $feed, self::$DI['user_alt1']);
         $entry = Feed_Entry_Adapter::create(self::$DI['app'], $feed, $publisher, "hello", "coucou", "salut", "bonjour@phraseanet.com");
-        $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_1']);
+        $item = Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $entry, self::$DI['record_1']);
 
         $crawler = self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->get_id() . '/delete/');
 
@@ -454,7 +440,6 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRoot()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $crawler = self::$DI['client']->request('GET', '/prod/feeds/');
 
@@ -479,7 +464,6 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testGetFeed()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $feeds = Feed_Collection::load_all(self::$DI['app'], self::$DI['user']);
 
@@ -500,7 +484,6 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testSuscribeAggregate()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $feeds = Feed_Collection::load_all(self::$DI['app'], self::$DI['user']);
         $crawler = self::$DI['client']->request('GET', '/prod/feeds/subscribe/aggregated/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());

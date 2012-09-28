@@ -1,7 +1,5 @@
 <?php
 
-use Alchemy\Phrasea\Core\Configuration;
-
 abstract class eventsmanager_notifyAbstract extends eventsmanager_eventAbstract
 {
     protected $events = array('__EVENT__');

@@ -1,7 +1,5 @@
 <?php
 
-use Alchemy\Phrasea\Core\Configuration;
-
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthenticatedAbstract
@@ -34,8 +32,6 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
     public function testCreate()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-
         $feeds = Feed_Collection::load_all(self::$DI['app'], self::$DI['user']);
         $count = sizeof($feeds->get_feeds());
 
@@ -55,7 +51,6 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
     public function testGetFeed()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $feed = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "salut", 'coucou');
         $crawler = self::$DI['client']->request('GET', '/admin/publications/feed/' . $feed->get_id() . '/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
@@ -81,7 +76,6 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
     public function testUpdatedFeedException()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $feed = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "salut", 'coucou');
 
@@ -109,8 +103,6 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
     public function testUpdatedFeedOwner()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-
         $feed = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "salut", 'coucou');
 
         self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->get_id() . "/update/", array(
@@ -164,8 +156,6 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
     public function testIconUploadErrorFileData()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-
         $feed = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "salut", 'coucou');
 
         self::$DI['client']->request(
@@ -186,8 +176,6 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
     public function testIconUploadErrorFileType()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-
         $feed = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "salut", 'coucou');
 
         self::$DI['client']->request(
@@ -208,8 +196,6 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
     public function testIconUpload()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-
         $feed = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "salut", 'coucou');
 
         $files = array(
@@ -242,8 +228,6 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
     public function testAddPublisher()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-
         $feed = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "salut", 'coucou');
 
         self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->get_id() . "/addpublisher/", array(
@@ -268,8 +252,6 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
     public function testAddPublisherException()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-
         $feed = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "salut", 'coucou');
 
         self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->get_id() . "/addpublisher/");
@@ -288,8 +270,6 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
     public function testRemovePublisher()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-
         $feed = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "salut", 'coucou');
 
         self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->get_id() . "/removepublisher/", array(
@@ -314,8 +294,6 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
     public function testRemovePublisherException()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-
         $feed = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "salut", 'coucou');
 
         self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->get_id() . "/removepublisher/");
@@ -336,8 +314,6 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
     public function testDeleteFeed()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-
         $feed = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "salut", 'coucou');
 
         self::$DI['client']->request("POST", "/admin/publications/feed/" . $feed->get_id() . "/delete/");

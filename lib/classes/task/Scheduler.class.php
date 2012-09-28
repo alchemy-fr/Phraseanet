@@ -9,7 +9,6 @@
  * file that was distributed with this source code.
  */
 
-use Alchemy\Phrasea\Core\Configuration;
 use Alchemy\Phrasea\Application;
 use Monolog\Logger;
 
@@ -53,10 +52,8 @@ class task_Scheduler
      */
     public function run()
     {
-        $registry = $this->dependencyContainer['phraseanet.registry'];
-
         //prevent scheduler to fail if GV_cli is not provided
-        if ( ! is_executable($registry->get('GV_cli'))) {
+        if ( ! is_executable($this->dependencyContainer['phraseanet.registry']->get('GV_cli'))) {
             throw new \RuntimeException('PHP cli is not provided in registry');
         }
 
@@ -75,7 +72,7 @@ class task_Scheduler
             $this->method = self::METHOD_FORK;
         }
 
-        $lockdir = $registry->get('GV_RootPath') . 'tmp/locks/';
+        $lockdir = $this->dependencyContainer['phraseanet.registry']->get('GV_RootPath') . 'tmp/locks/';
 
         for ($try = 1; true; $try ++ ) {
             $lockfile = ($lockdir . 'scheduler.lock');
@@ -217,10 +214,10 @@ class task_Scheduler
                     $taskPoll[$tkey] = array(
                         "task"           => $task,
                         "current_status" => $status,
-                        "cmd"            => $registry->get('GV_cli'),
+                        "cmd"            => $this->dependencyContainer['phraseanet.registry']->get('GV_cli'),
                         "args"           => array(
                             '-f',
-                            $registry->get('GV_RootPath') . 'bin/console',
+                            $this->dependencyContainer['phraseanet.registry']->get('GV_RootPath') . 'bin/console',
                             '--',
                             '-q',
                             'task:run',
@@ -331,7 +328,7 @@ class task_Scheduler
                                     $taskPoll[$tkey]["cmd"] . ' ' . implode(' ', $taskPoll[$tkey]["args"])
                                     , $descriptors
                                     , $taskPoll[$tkey]["pipes"]
-                                    , $registry->get('GV_RootPath') . "bin/"
+                                    , $this->dependencyContainer['phraseanet.registry']->get('GV_RootPath') . "bin/"
                                     , null
                                     , array('bypass_shell' => true)
                                 );

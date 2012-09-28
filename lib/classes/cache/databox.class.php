@@ -10,7 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 
 /**
  *
@@ -39,8 +38,6 @@ class cache_databox
 
         $date = new \DateTime('-3 seconds');
 
-        $registry = $app['phraseanet.registry'];
-
         $last_update = null;
 
         try {
@@ -64,7 +61,7 @@ class cache_databox
 
         $sql = 'SELECT type, value FROM memcached WHERE site_id = :site_id';
         $stmt = $connsbas->prepare($sql);
-        $stmt->execute(array(':site_id' => $registry->get('GV_ServerName')));
+        $stmt->execute(array(':site_id' => $app['phraseanet.registry']->get('GV_ServerName')));
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -92,7 +89,7 @@ class cache_databox
               WHERE site_id = :site_id AND type="record" AND value = :value';
 
                     $params = array(
-                        ':site_id' => $registry->get('GV_ServerName')
+                        ':site_id' => $app['phraseanet.registry']->get('GV_ServerName')
                         , ':value'   => $row['value']
                     );
 
@@ -116,7 +113,7 @@ class cache_databox
               WHERE site_id = :site_id AND type="structure" AND value = :value';
 
                     $params = array(
-                        ':site_id' => $registry->get('GV_ServerName')
+                        ':site_id' => $app['phraseanet.registry']->get('GV_ServerName')
                         , ':value'   => $row['value']
                     );
 
@@ -156,14 +153,13 @@ class cache_databox
 
         $connbas = \connection::getPDOConnection($app, $sbas_id);
 
-        $registry = $app['phraseanet.registry'];
 
         $sql = 'SELECT distinct site_id as site_id
             FROM clients
             WHERE site_id != :site_id';
 
         $stmt = $connbas->prepare($sql);
-        $stmt->execute(array(':site_id' => $registry->get('GV_ServerName')));
+        $stmt->execute(array(':site_id' => $app['phraseanet.registry']->get('GV_ServerName')));
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -185,11 +181,10 @@ class cache_databox
     {
         $connbas = $databox->get_connection();
 
-        $registry = $app['phraseanet.registry'];
 
         $sql = 'SELECT site_id FROM clients WHERE site_id = :site_id';
         $stmt = $connbas->prepare($sql);
-        $stmt->execute(array(':site_id' => $registry->get('GV_ServerName')));
+        $stmt->execute(array(':site_id' => $app['phraseanet.registry']->get('GV_ServerName')));
         $rowCount = $stmt->rowCount();
         $stmt->closeCursor();
 
@@ -199,7 +194,7 @@ class cache_databox
 
         $sql = 'INSERT INTO clients (site_id) VALUES (:site_id)';
         $stmt = $connbas->prepare($sql);
-        $stmt->execute(array(':site_id' => $registry->get('GV_ServerName')));
+        $stmt->execute(array(':site_id' => $app['phraseanet.registry']->get('GV_ServerName')));
         $stmt->closeCursor();
 
         return;

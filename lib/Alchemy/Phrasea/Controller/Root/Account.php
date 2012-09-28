@@ -262,8 +262,6 @@ class Account implements ControllerProviderInterface
      */
     public function resetEmail(Application $app, Request $request)
     {
-        $appbox = $app['phraseanet.appbox'];
-
         if (null !== $token = $request->request->get('token')) {
             try {
                 $datas = \random::helloToken($app, $token);
@@ -363,8 +361,6 @@ class Account implements ControllerProviderInterface
      */
     public function renewPassword(Application $app, Request $request)
     {
-        $appbox = $app['phraseanet.appbox'];
-
         if ((null !== $password = $request->request->get('form_password')) && (null !== $passwordConfirm = $request->request->get('form_password_confirm'))) {
             if ($password !== $passwordConfirm) {
                 return $app->redirect('/account/reset-password/?pass-error=pass-match');
@@ -402,7 +398,6 @@ class Account implements ControllerProviderInterface
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 
-        $appbox = $app['phraseanet.appbox'];
         $error = false;
 
         try {
@@ -479,7 +474,6 @@ class Account implements ControllerProviderInterface
      */
     public function displayAccount(Application $app, Request $request)
     {
-        $appbox = $app['phraseanet.appbox'];
         $user = $app['phraseanet.user'];
         $evtMngr = $app['events-manager'];
 
@@ -518,7 +512,6 @@ class Account implements ControllerProviderInterface
      */
     public function updateAccount(Application $app, Request $request)
     {
-        $appbox = $app['phraseanet.appbox'];
         $user = $app['phraseanet.user'];
         $evtMngr = $app['events-manager'];
         $notice = 'account-update-bad';
@@ -526,7 +519,7 @@ class Account implements ControllerProviderInterface
         $demands = (array) $request->request->get('demand', array());
 
         if (0 !== count($demands)) {
-            $register = new \appbox_register($appbox);
+            $register = new \appbox_register($app['phraseanet.appbox']);
 
             foreach ($demands as $baseId) {
                 try {
@@ -575,7 +568,7 @@ class Account implements ControllerProviderInterface
             }
 
             try {
-                $appbox->get_connection()->beginTransaction();
+                $app['phraseanet.appbox']->get_connection()->beginTransaction();
 
                 $user->set_gender($request->request->get("form_gender"))
                     ->set_firstname($request->request->get("form_firstname"))
@@ -598,11 +591,11 @@ class Account implements ControllerProviderInterface
                     ->set_ftp_dir_prefix($request->request->get("form_prefixFTPfolder"))
                     ->set_defaultftpdatas($defaultDatas);
 
-                $appbox->get_connection()->commit();
+                $app['phraseanet.appbox']->get_connection()->commit();
 
                 $notice = 'account-update-ok';
             } catch (Exception $e) {
-                $appbox->get_connection()->rollBack();
+                $app['phraseanet.appbox']->get_connection()->rollBack();
             }
         }
 

@@ -27,8 +27,6 @@ class Users implements ControllerProviderInterface
 
     public function connect(Application $app)
     {
-        $appbox = $app['phraseanet.appbox'];
-
         $controllers = $app['controllers_factory'];
 
         $controllers->post('/rights/', function(Application $app) {
@@ -194,7 +192,7 @@ class Users implements ControllerProviderInterface
             return $app->redirect('/admin/users/search/');
         });
 
-        $controllers->get('/typeahead/search/', function(Application $app) use ($appbox) {
+        $controllers->get('/typeahead/search/', function(Application $app) {
             $request = $app['request'];
 
             $user_query = new \User_Query($app);
@@ -257,7 +255,7 @@ class Users implements ControllerProviderInterface
             return $app->json($datas);
         });
 
-        $controllers->post('/export/csv/', function(Application $app) use ($appbox) {
+        $controllers->post('/export/csv/', function(Application $app) {
             $request = $app['request'];
             $user_query = new \User_Query($app);
 
@@ -333,12 +331,12 @@ class Users implements ControllerProviderInterface
             return $response;
         });
 
-        $controllers->get('/demands/', function(Application $app, Request $request) use ($appbox) {
+        $controllers->get('/demands/', function(Application $app, Request $request) {
             $user = $app['phraseanet.user'];
 
             $lastMonth = time() - (3 * 4 * 7 * 24 * 60 * 60);
             $sql = "DELETE FROM demand WHERE date_modif < :date";
-            $stmt = $appbox->get_connection()->prepare($sql);
+            $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
             $stmt->execute(array(':date' => date('Y-m-d', $lastMonth)));
             $stmt->closeCursor();
 
@@ -346,7 +344,7 @@ class Users implements ControllerProviderInterface
 
             $sql = 'SELECT usr_id, usr_login FROM usr WHERE model_of = :usr_id';
 
-            $stmt = $appbox->get_connection()->prepare($sql);
+            $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
             $stmt->execute(array(':usr_id' => $user->get_id()));
             $models = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
@@ -360,7 +358,7 @@ class Users implements ControllerProviderInterface
             WHERE (base_id='" . implode("' OR base_id='", $baslist) . "') ORDER BY demand.usr_id DESC,demand.base_id ASC
         ";
 
-            $stmt = $appbox->get_connection()->prepare($sql);
+            $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
             $stmt->execute();
             $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
@@ -392,7 +390,7 @@ class Users implements ControllerProviderInterface
             ));
         })->bind('users_display_demands');
 
-        $controllers->post('/demands/', function(Application $app, Request $request) use ($appbox) {
+        $controllers->post('/demands/', function(Application $app, Request $request) {
 
             $templates = $deny = $accept = $options = array();
 
@@ -463,7 +461,7 @@ class Users implements ControllerProviderInterface
                     WHERE usr_id = :usr_id
                     AND (base_id = " . implode(' OR base_id = ', $base_ids) . ")";
 
-                    $stmt = $appbox->get_connection()->prepare($sql);
+                    $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
                     $stmt->execute(array(':usr_id' => $usr));
                     $stmt->closeCursor();
                 }
@@ -473,7 +471,7 @@ class Users implements ControllerProviderInterface
                 WHERE usr_id = :usr_id
                 AND base_id = :base_id";
 
-                $stmt = $appbox->get_connection()->prepare($sql);
+                $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
 
                 foreach ($deny as $usr => $bases) {
                     $cache_to_update[$usr] = true;
@@ -515,7 +513,7 @@ class Users implements ControllerProviderInterface
                         $done[$usr][$bas] = true;
 
                         $sql = "DELETE FROM demand WHERE usr_id = :usr_id AND base_id = :base_id";
-                        $stmt = $appbox->get_connection()->prepare($sql);
+                        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
                         $stmt->execute(array(':usr_id'  => $usr, ':base_id' => $bas));
                         $stmt->closeCursor();
                     }
@@ -530,7 +528,7 @@ class Users implements ControllerProviderInterface
                 foreach ($done as $usr => $bases) {
                     $sql = 'SELECT usr_mail FROM usr WHERE usr_id = :usr_id';
 
-                    $stmt = $appbox->get_connection()->prepare($sql);
+                    $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
                     $stmt->execute(array(':usr_id' => $usr));
                     $row = $stmt->fetch(\PDO::FETCH_ASSOC);
                     $stmt->closeCursor();

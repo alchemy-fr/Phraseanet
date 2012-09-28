@@ -10,7 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 use Alchemy\Phrasea\Vocabulary;
 
 /**
@@ -195,8 +194,7 @@ class caption_Field_Value implements cache_cacheableInterface
         $this->record->get_caption()->delete_data_from_cache();
 
         try {
-            $registry = $this->app['phraseanet.registry'];
-            $sphinx_rt = sphinxrt::get_instance($registry);
+            $sphinx_rt = sphinxrt::get_instance($this->app['phraseanet.registry']);
 
             $sbas_params = phrasea::sbas_params($this->app);
 
@@ -279,8 +277,7 @@ class caption_Field_Value implements cache_cacheableInterface
         $this->delete_data_from_cache();
 
         try {
-            $registry = $this->app['phraseanet.registry'];
-            $sphinx_rt = sphinxrt::get_instance($registry);
+            $sphinx_rt = sphinxrt::get_instance($this->app['phraseanet.registry']);
 
             $sbas_params = phrasea::sbas_params($this->app);
 
@@ -309,8 +306,6 @@ class caption_Field_Value implements cache_cacheableInterface
         $this->record->get_caption()->delete_data_from_cache();
         $sbas_id = $this->databox_field->get_databox()->get_sbas_id();
         try {
-            $registry = $this->app['phraseanet.registry'];
-
             $sbas_params = phrasea::sbas_params($this->app);
 
             if (isset($sbas_params[$sbas_id])) {
@@ -323,7 +318,7 @@ class caption_Field_Value implements cache_cacheableInterface
                     )
                 );
 
-                $sphinx_rt = sphinxrt::get_instance($registry);
+                $sphinx_rt = sphinxrt::get_instance($this->app['phraseanet.registry']);
                 $sphinx_rt->replace_in_metas(
                     "metas_realtime" . $sbas_crc
                     , $this->id

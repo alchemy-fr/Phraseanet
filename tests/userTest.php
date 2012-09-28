@@ -1,7 +1,5 @@
 <?php
 
-use Alchemy\Phrasea\Core\Configuration;
-
 require_once __DIR__ . '/PhraseanetPHPUnitAbstract.class.inc';
 
 class userTest extends PhraseanetPHPUnitAbstract
@@ -11,8 +9,6 @@ class userTest extends PhraseanetPHPUnitAbstract
     {
         $this->assertFalse(User_Adapter::get_usr_id_from_email(self::$DI['app'], null));
         try {
-            $appbox = self::$DI['app']['phraseanet.appbox'];
-
             self::$DI['user']->set_email(null);
 
             $this->assertFalse(User_Adapter::get_usr_id_from_email(self::$DI['app'], null));

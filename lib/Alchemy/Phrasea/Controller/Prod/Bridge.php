@@ -55,7 +55,6 @@ class Bridge implements ControllerProviderInterface
 
         $controllers->post('/manager/', function(Application $app) {
             $route = new RecordHelper\Bridge($app, $app['request']);
-            $appbox = $app['phraseanet.appbox'];
             $user = $app['phraseanet.user'];
 
             $params = array(
@@ -69,7 +68,6 @@ class Bridge implements ControllerProviderInterface
         });
 
         $controllers->get('/login/{api_name}/', function(Application $app, $api_name) {
-            $appbox = $app['phraseanet.appbox'];
             $connector = \Bridge_Api::get_connector_by_name($app['phraseanet.registry'], $api_name);
 
             return $app->redirect($connector->get_auth_url());
@@ -78,7 +76,6 @@ class Bridge implements ControllerProviderInterface
         $controllers->get('/callback/{api_name}/', function(Application $app, $api_name) {
             $error_message = '';
             try {
-                $appbox = $app['phraseanet.appbox'];
                 $user = $app['phraseanet.user'];
                 $api = \Bridge_Api::get_by_api_name($app, $api_name);
                 $connector = $api->get_connector();
@@ -112,7 +109,6 @@ class Bridge implements ControllerProviderInterface
         });
 
         $controllers->get('/adapter/{account_id}/logout/', function(Application $app, $account_id) {
-            $appbox = $app['phraseanet.appbox'];
             $account = \Bridge_Account::load_account($app, $account_id);
             $app['require_connection']($account);
             $account->get_api()->get_connector()->disconnect();
@@ -124,7 +120,6 @@ class Bridge implements ControllerProviderInterface
             $page = max((int) $app['request']->query->get('page'), 0);
             $quantity = 10;
             $offset_start = max(($page - 1) * $quantity, 0);
-            $appbox = $app['phraseanet.appbox'];
             $account = \Bridge_Account::load_account($app, $account_id);
             $elements = \Bridge_Element::get_elements_by_account($app, $account, $offset_start, $quantity);
 
@@ -145,7 +140,6 @@ class Bridge implements ControllerProviderInterface
             $page = max((int) $app['request']->query->get('page'), 0);
             $quantity = 5;
             $offset_start = max(($page - 1) * $quantity, 0);
-            $appbox = $app['phraseanet.appbox'];
             $account = \Bridge_Account::load_account($app, $account_id);
 
             $app['require_connection']($account);
@@ -169,7 +163,6 @@ class Bridge implements ControllerProviderInterface
             $page = max((int) $app['request']->query->get('page'), 0);
             $quantity = 5;
             $offset_start = max(($page - 1) * $quantity, 0);
-            $appbox = $app['phraseanet.appbox'];
             $account = \Bridge_Account::load_account($app, $account_id);
 
             $app['require_connection']($account);
@@ -189,7 +182,6 @@ class Bridge implements ControllerProviderInterface
 
         $controllers->get('/action/{account_id}/{action}/{element_type}/', function(Application $app, $account_id, $action, $element_type) {
 
-            $appbox = $app['phraseanet.appbox'];
             $account = \Bridge_Account::load_account($app, $account_id);
 
             $app['require_connection']($account);
@@ -253,7 +245,6 @@ class Bridge implements ControllerProviderInterface
         })->assert('account_id', '\d+');
 
         $controllers->post('/action/{account_id}/{action}/{element_type}/', function(Application $app, $account_id, $action, $element_type) {
-            $appbox = $app['phraseanet.appbox'];
             $account = \Bridge_Account::load_account($app, $account_id);
 
             $app['require_connection']($account);
@@ -356,7 +347,6 @@ class Bridge implements ControllerProviderInterface
 
         $controllers->get('/upload/', function(Application $app) {
             $request = $app['request'];
-            $appbox = $app['phraseanet.appbox'];
             $account = \Bridge_Account::load_account($app, $request->query->get('account_id'));
             $app['require_connection']($account);
 
@@ -381,7 +371,6 @@ class Bridge implements ControllerProviderInterface
         $controllers->post('/upload/', function(Application $app) {
             $errors = array();
             $request = $app['request'];
-            $appbox = $app['phraseanet.appbox'];
             $account = \Bridge_Account::load_account($app, $request->request->get('account_id'));
             $app['require_connection']($account);
 

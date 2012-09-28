@@ -49,9 +49,8 @@ class AbstractCheckerTest extends \PhraseanetPHPUnitAbstract
     {
         $databox = $collection = null;
         $app = new Application('test');
-        $appbox = $app['phraseanet.appbox'];
 
-        foreach ($appbox->get_databoxes() as $db) {
+        foreach ($app['phraseanet.appbox']->get_databoxes() as $db) {
             if (! $collection) {
                 foreach ($db->get_collections() as $coll) {
                     $collection = $coll;
@@ -101,9 +100,8 @@ class AbstractCheckerTest extends \PhraseanetPHPUnitAbstract
     {
         $othercollection = $collection = null;
         $app = new Application('test');
-        $appbox = $app['phraseanet.appbox'];
 
-        foreach ($appbox->get_databoxes() as $db) {
+        foreach ($app['phraseanet.appbox']->get_databoxes() as $db) {
             if (! $collection) {
                 foreach ($db->get_collections() as $coll) {
                     $collection = $coll;
@@ -172,9 +170,8 @@ class AbstractCheckerTest extends \PhraseanetPHPUnitAbstract
     {
         $databox = $collection = null;
         $app = new Application('test');
-        $appbox = $app['phraseanet.appbox'];
 
-        foreach ($appbox->get_databoxes() as $db) {
+        foreach ($app['phraseanet.appbox']->get_databoxes() as $db) {
             if (! $databox) {
                 $databox = $db;
             }

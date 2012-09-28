@@ -174,9 +174,8 @@ class module_report_download extends module_report
     public static function getNbDl(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
         $conn = connection::getPDOConnection($app, $sbas_id);
-        $registry = $app['phraseanet.registry'];
 
-        $params = array(':site_id'  => $registry->get('GV_sit'));
+        $params = array(':site_id'  => $app['phraseanet.registry']->get('GV_sit'));
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
@@ -210,13 +209,10 @@ class module_report_download extends module_report
 
     public static function getTopDl(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
-        $appbox = $app['phraseanet.appbox'];
-        $databox = $appbox->get_databox((int) $sbas_id);
+        $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
         $conn = $databox->get_connection();
 
-        $registry = $app['phraseanet.registry'];
-
-        $params = array(':site_id'  => $registry->get('GV_sit'));
+        $params = array(':site_id'  => $app['phraseanet.registry']->get('GV_sit'));
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);

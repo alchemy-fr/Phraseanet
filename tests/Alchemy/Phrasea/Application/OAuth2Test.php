@@ -1,7 +1,5 @@
 <?php
 
-use Alchemy\Phrasea\Core\Configuration;
-
 require_once __DIR__ . '/../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 /**
@@ -83,8 +81,7 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
     {
         $sql = "SELECT * FROM api_applications WHERE application_id = :app_id";
         $t = array(":app_id" => $rowId);
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-        $conn = $appbox->get_connection();
+        $conn = self::$DI['app']['phraseanet.appbox']->get_connection();
         $stmt = $conn->prepare($sql);
         $stmt->execute($t);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -96,8 +93,7 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
     {
         $sql = "SELECT api_account_id FROM api_accounts WHERE application_id = :app_id AND usr_id = :usr_id";
         $t = array(":app_id" => self::$appli->get_id(), ":usr_id" => self::$DI['user']->get_id());
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-        $conn = $appbox->get_connection();
+        $conn = self::$DI['app']['phraseanet.appbox']->get_connection();
         $stmt = $conn->prepare($sql);
         $stmt->execute($t);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);

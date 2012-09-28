@@ -22,8 +22,7 @@ class geonames
 
     public function name_from_id($geonameid)
     {
-        $registry = $this->app['phraseanet.registry'];
-        $url = $registry->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
+        $url = $this->app['phraseanet.registry']->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
             . 'get_name.php?geonameid='
             . $geonameid;
 
@@ -48,8 +47,7 @@ class geonames
             return '';
         }
 
-        $registry = $this->app['phraseanet.registry'];
-        $url = $registry->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
+        $url = $this->app['phraseanet.registry']->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
             . 'get_name.php?geonameid='
             . $geonameid;
 
@@ -68,8 +66,7 @@ class geonames
 
     public function get_country_code($geonameid)
     {
-        $registry = $this->app['phraseanet.registry'];
-        $url = $registry->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
+        $url = $this->app['phraseanet.registry']->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
             . 'get_name.php?geonameid='
             . $geonameid;
 
@@ -107,8 +104,7 @@ class geonames
             return $output;
         }
 
-        $registry = $this->app['phraseanet.registry'];
-        $url = $registry->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
+        $url = $this->app['phraseanet.registry']->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
             . 'find_city.php?city='
             . urlencode($cityName) . '&maxResult=30';
 
@@ -154,8 +150,7 @@ class geonames
             'latitude'     => ''
         );
 
-        $registry = $this->app['phraseanet.registry'];
-        $url = $registry->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
+        $url = $this->app['phraseanet.registry']->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
             . 'geoip.php?ip='
             . urlencode($ip);
 

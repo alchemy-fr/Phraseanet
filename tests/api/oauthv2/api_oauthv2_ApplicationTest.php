@@ -1,7 +1,5 @@
 <?php
 
-use Alchemy\Phrasea\Core\Configuration;
-
 require_once __DIR__ . '/../../PhraseanetPHPUnitAbstract.class.inc';
 
 class API_OAuth2_ApplicationTest extends PhraseanetPHPUnitAbstract
@@ -14,7 +12,6 @@ class API_OAuth2_ApplicationTest extends PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $this->object = API_OAuth2_Application::create(self::$DI['app'], self::$DI['user'], 'test app');
     }
 

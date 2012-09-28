@@ -538,8 +538,6 @@ abstract class base implements cache_cacheableInterface
         $correct_table = array('fields' => array(), 'indexes' => array(), 'collation' => array());
         $alter = $alter_pre = $return = array();
 
-        $registry = $this->app['phraseanet.registry'];
-
         foreach ($table->fields->field as $field) {
             $expr = trim((string) $field->type);
 
@@ -770,11 +768,9 @@ abstract class base implements cache_cacheableInterface
 
         $list_patches = array();
 
-        $registry = $this->app['phraseanet.registry'];
-
         $upgrader->add_steps(1)->set_current_message(_('Looking for patches'));
 
-        $iterator = new DirectoryIterator($registry->get('GV_RootPath') . 'lib/classes/patch/');
+        $iterator = new DirectoryIterator($this->app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/patch/');
 
         foreach ($iterator as $fileinfo) {
             if ( ! $fileinfo->isDot()) {

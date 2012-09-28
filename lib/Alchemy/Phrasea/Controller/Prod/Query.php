@@ -37,9 +37,6 @@ class Query implements ControllerProviderInterface
 
         $controllers->post('/', function(Application $app, Request $request) {
 
-            $appbox = $app['phraseanet.appbox'];
-            $registry = $app['phraseanet.registry'];
-
             $user = $app['phraseanet.user'];
 
             $query = (string) $request->request->get('qry');
@@ -196,7 +193,7 @@ class Query implements ControllerProviderInterface
 
             $json['results'] = $app['twig']->render($template, array(
                 'results'         => $result,
-                'GV_social_tools' => $registry->get('GV_social_tools'),
+                'GV_social_tools' => $app['phraseanet.registry']->get('GV_social_tools'),
                 'highlight'       => $search_engine->get_query(),
                 'searchEngine'    => $search_engine,
                 'suggestions'     => $prop

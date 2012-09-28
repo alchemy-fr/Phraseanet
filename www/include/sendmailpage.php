@@ -10,8 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
-use Symfony\Component\Filesystem\Filesystem;
 
 /**
  *
@@ -29,7 +27,6 @@ require_once __DIR__ . '/../../lib/bootstrap.php';
 $app = new Application();
 $Request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
 
-$registry = $app['phraseanet.registry'];
 
 $gatekeeper = gatekeeper::getInstance($app);
 $gatekeeper->require_session();
@@ -55,7 +52,7 @@ if ($Request->get("ssttid", "") != "") {
 
 $download = new set_export($app, $Request->get('lst', ''), $Request->get('ssttid', ''));
 
-$list = $download->prepare_export($app['phraseanet.user'], new Filesystem(), $Request->get('obj'), $titre, $Request->get('businessfields'));
+$list = $download->prepare_export($app['phraseanet.user'], $app['filesystem'], $Request->get('obj'), $titre, $Request->get('businessfields'));
 $list['export_name'] = $exportname . '.zip';
 $list['email'] = $Request->get("destmail", "");
 
@@ -96,12 +93,12 @@ if (count($dest) > 0 && $token) {
 
     //BUILDING ZIP
 
-    $zipFile = $registry->get('GV_RootPath') . 'tmp/download/' . $token . '.zip';
+    $zipFile = $app['phraseanet.registry']->get('GV_RootPath') . 'tmp/download/' . $token . '.zip';
     set_export::build_zip(new Filesystem(), $token, $list, $zipFile);
 
     $res = $dest;
 
-    $url = $registry->get('GV_ServerName') . 'mail-export/' . $token . '/';
+    $url = $app['phraseanet.registry']->get('GV_ServerName') . 'mail-export/' . $token . '/';
 
     foreach ($dest as $key => $email) {
         if (($result = mail::send_documents($app, trim($email), $url, $from, $endate_obj, $Request->get("textmail"), $reading_confirm_to)) === true) {

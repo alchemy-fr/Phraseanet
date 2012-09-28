@@ -55,9 +55,8 @@ class Upgrader implements ControllerProviderInterface
             session_write_close();
             ignore_user_abort(true);
 
-            $appbox = $app['phraseanet.appbox'];
             $upgrader = new \Setup_Upgrade($app);
-            $appbox->forceUpgrade($upgrader, $app);
+            $app['phraseanet.appbox']->forceUpgrade($upgrader, $app);
 
             /**
              * @todo Show recomandation instead of redirect

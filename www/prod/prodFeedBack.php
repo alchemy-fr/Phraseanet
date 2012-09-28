@@ -10,8 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
-use Symfony\Component\Filesystem\Filesystem;
 
 /**
  *
@@ -20,8 +18,6 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 require_once __DIR__ . "/../../lib/bootstrap.php";
 $app = new Application();
-$appbox = $app['phraseanet.appbox'];
-$registry = $app['phraseanet.registry'];
 
 $user = $app['phraseanet.user'];
 
@@ -84,7 +80,7 @@ switch ($action) {
         break;
 
     case 'CSS':
-        require ($registry->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
+        require ($app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
         $parm = $request->get_parms('color');
         $output = $user->setPrefs('css', $parm['color']);
         break;
@@ -96,12 +92,12 @@ switch ($action) {
         break;
 
     case 'DELETE':
-        require ($registry->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
+        require ($app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
         $parm = $request->get_parms('lst');
         $output = whatCanIDelete($app, $parm['lst']);
         break;
     case 'DODELETE':
-        require ($registry->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
+        require ($app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
         $parm = $request->get_parms('lst', 'del_children');
         $output = deleteRecord($app, $parm['lst'], $parm['del_children']);
         break;
@@ -194,7 +190,7 @@ switch ($action) {
             $output = p4string::jsonencode(array('error'   => true, 'message' => _('Les documents ne peuvent etre envoyes par FTP')));
         } else {
             try {
-                $download->prepare_export($app['phraseanet.user'], new Filesystem(), $parm['obj'], false, $parm['businessfields']);
+                $download->prepare_export($app['phraseanet.user'], $app['filesystem'], $parm['obj'], false, $parm['businessfields']);
                 $download->export_ftp(
                     $parm['usr_dest']
                     , $parm['addr']

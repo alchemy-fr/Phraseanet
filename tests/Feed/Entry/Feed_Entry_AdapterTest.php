@@ -1,7 +1,5 @@
 <?php
 
-use Alchemy\Phrasea\Core\Configuration;
-
 require_once __DIR__ . '/../../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
 class Feed_Entry_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
@@ -27,7 +25,6 @@ class Feed_Entry_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $auth = new Session_Authentication_None(self::$DI['user']);
         self::$DI['app']->openAccount($auth);
 
@@ -102,7 +99,6 @@ class Feed_Entry_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSetFeed()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $new_feed = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], self::$feed_title, self::$feed_subtitle);
 
         $publisher = Feed_Publisher_Adapter::getPublisher(self::$DI['app']['phraseanet.appbox'], $new_feed, self::$DI['user']);
@@ -158,7 +154,6 @@ class Feed_Entry_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testLoad_from_id()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $test_entry = Feed_Entry_Adapter::load_from_id(self::$DI['app'], self::$object->get_id());
 
         $this->assertInstanceOf('Feed_Entry_Adapter', $test_entry);

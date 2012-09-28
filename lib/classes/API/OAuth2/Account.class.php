@@ -77,13 +77,6 @@ class API_OAuth2_Account
      */
     protected $token;
 
-    /**
-     * Constructor
-     *
-     * @param  appbox             $appbox
-     * @param  int                $account_id
-     * @return API_OAuth2_Account
-     */
     public function __construct(Application $app, $account_id)
     {
         $this->app = $app;
@@ -230,13 +223,6 @@ class API_OAuth2_Account
         return;
     }
 
-    /**
-     *
-     * @param  appbox                 $appbox
-     * @param  User_Adapter           $user
-     * @param  API_OAuth2_Application $application
-     * @return API_OAuth2_Account
-     */
     public static function create(Application $app, User_Adapter $user, API_OAuth2_Application $application)
     {
         $sql = 'INSERT INTO api_accounts
@@ -261,13 +247,6 @@ class API_OAuth2_Account
         return new self($app, $account_id);
     }
 
-    /**
-     *
-     * @param  appbox                 $appbox
-     * @param  API_OAuth2_Application $application
-     * @param  User_Adapter           $user
-     * @return API_OAuth2_Account
-     */
     public static function load_with_user(Application $app, API_OAuth2_Application $application, User_Adapter $user)
     {
         $sql = 'SELECT api_account_id FROM api_accounts

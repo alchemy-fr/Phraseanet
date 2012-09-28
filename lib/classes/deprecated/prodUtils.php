@@ -10,7 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 
 /**
  *
@@ -100,11 +99,9 @@ function deleteRecord(Application $app, $lst, $del_children)
 
 function whatCanIDelete(Application $app, $lst)
 {
-    $appbox = $app['phraseanet.appbox'];
-
     $usr_id = $app['phraseanet.user']->get_id();
 
-    $conn = $appbox->get_connection();
+    $conn = $app['phraseanet.appbox']->get_connection();
 
     $nbdocsel = 0;
     $nbgrp = 0;

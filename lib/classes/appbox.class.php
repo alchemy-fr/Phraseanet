@@ -9,11 +9,8 @@
  * file that was distributed with this source code.
  */
 
-use Alchemy\Phrasea\Core\Configuration;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Version;
-use Alchemy\Phrasea\Cache\Manager as CacheManager;
-use Doctrine\ORM\EntityManager;
 use MediaAlchemyst\Alchemyst;
 use MediaAlchemyst\Specification\Image as ImageSpecification;
 use Symfony\Component\Filesystem\Filesystem;
@@ -145,10 +142,8 @@ class appbox extends base
             $collection->update_logo($pathfile);
         }
 
-        $registry = $this->app['phraseanet.registry'];
-
-        $file = $registry->get('GV_RootPath') . 'config/' . $pic_type . '/' . $collection->get_base_id();
-        $custom_path = $registry->get('GV_RootPath') . 'www/custom/' . $pic_type . '/' . $collection->get_base_id();
+        $file = $this->app['phraseanet.registry']->get('GV_RootPath') . 'config/' . $pic_type . '/' . $collection->get_base_id();
+        $custom_path = $this->app['phraseanet.registry']->get('GV_RootPath') . 'www/custom/' . $pic_type . '/' . $collection->get_base_id();
 
         foreach (array($file, $custom_path) as $target) {
 
@@ -205,9 +200,8 @@ class appbox extends base
             }
         }
 
-        $registry = $this->app['phraseanet.registry'];
-        $file = $registry->get('GV_RootPath') . 'config/minilogos/' . $pic_type . '_' . $databox->get_sbas_id() . '.jpg';
-        $custom_path = $registry->get('GV_RootPath') . 'www/custom/minilogos/' . $pic_type . '_' . $databox->get_sbas_id() . '.jpg';
+        $file = $this->app['phraseanet.registry']->get('GV_RootPath') . 'config/minilogos/' . $pic_type . '_' . $databox->get_sbas_id() . '.jpg';
+        $custom_path = $this->app['phraseanet.registry']->get('GV_RootPath') . 'www/custom/minilogos/' . $pic_type . '_' . $databox->get_sbas_id() . '.jpg';
 
         foreach (array($file, $custom_path) as $target) {
 
@@ -323,8 +317,6 @@ class appbox extends base
 
         $upgrader->add_steps(7 + count($this->get_databoxes()));
 
-        $registry = $this->app['phraseanet.registry'];
-
         /**
          * Step 1
          */
@@ -352,8 +344,8 @@ class appbox extends base
 
         $finder = new Symfony\Component\Finder\Finder();
         $finder->in(array(
-            $registry->get('GV_RootPath') . 'tmp/cache_minify/',
-            $registry->get('GV_RootPath') . 'tmp/cache_minify/',
+            $this->app['phraseanet.registry']->get('GV_RootPath') . 'tmp/cache_minify/',
+            $this->app['phraseanet.registry']->get('GV_RootPath') . 'tmp/cache_minify/',
         ))->ignoreVCS(true)->ignoreDotFiles(true);
 
         foreach ($finder as $file) {
@@ -374,7 +366,7 @@ class appbox extends base
         'config/status/'       => 'www/custom/status/',
         'config/wm/'           => 'www/custom/wm/',
         ) as $source => $target) {
-            $app['filesystem']->mirror($registry->get('GV_RootPath') . $source, $registry->get('GV_RootPath') . $target);
+            $app['filesystem']->mirror($this->app['phraseanet.registry']->get('GV_RootPath') . $source, $this->app['phraseanet.registry']->get('GV_RootPath') . $target);
         }
 
         $upgrader->add_steps_complete(1);

@@ -70,12 +70,10 @@ class patch_320aa implements patchInterface
         define('GV_sphinx_rt_host', '');
         define('GV_sphinx_rt_port', '');
 
-        $registry = $app['phraseanet.registry'];
-
         foreach ($GV as $section => $datas_section) {
             foreach ($datas_section['vars'] as $datas) {
 
-                $registry->un_set($datas['name']);
+                $app['phraseanet.registry']->un_set($datas['name']);
                 eval('$test = defined("' . $datas["name"] . '");');
                 if ( ! $test) {
                     continue;
@@ -97,10 +95,10 @@ class patch_320aa implements patchInterface
                         $type = registry::TYPE_STRING;
                         break;
                 }
-                $registry->set($datas['name'], $val, $type);
+                $app['phraseanet.registry']->set($datas['name'], $val, $type);
             }
         }
-        $registry->un_set('registry_loaded');
+        $app['phraseanet.registry']->un_set('registry_loaded');
 
         return true;
     }

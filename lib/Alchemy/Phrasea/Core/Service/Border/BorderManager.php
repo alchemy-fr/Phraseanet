@@ -38,7 +38,6 @@ class BorderManager extends ServiceAbstract
      */
     protected function init()
     {
-        $appbox = $this->app['phraseanet.appbox'];
         $borderManager = new Manager($this->app);
 
         if ($this->app['xpdf.pdf2text']) {
@@ -84,7 +83,7 @@ class BorderManager extends ServiceAbstract
                         $databoxes = array();
                         foreach ($checker['databoxes'] as $sbas_id) {
                             try {
-                                $databoxes[] = $appbox->get_databox($sbas_id);
+                                $databoxes[] = $this->app['phraseanet.appbox']->get_databox($sbas_id);
                             } catch (\Exception $e) {
                                 throw new \InvalidArgumentException('Invalid databox option');
                             }

@@ -10,7 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 
 /**
  *
@@ -19,8 +18,6 @@ use Alchemy\Phrasea\Core\Configuration;
  */
 require_once __DIR__ . "/../../lib/bootstrap.php";
 $app = new Application();
-$appbox = $app['phraseanet.appbox'];
-$registry = $app['phraseanet.registry'];
 
 $request = http_request::getInstance();
 $parm = $request->get_parms(
@@ -55,7 +52,7 @@ foreach ($tsbas as $sbas) {
     if (count($sbas['tids']) <= 0)
         continue;
 
-    $databox = $appbox->get_databox((int) $sbas['sbas']['sbas_id']);
+    $databox = $app['phraseanet.appbox']->get_databox((int) $sbas['sbas']['sbas_id']);
     try {
         $connbas = connection::getPDOConnection($app, $sbas['sbas']['sbas_id']);
     } catch (Exception $e) {

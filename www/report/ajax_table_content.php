@@ -253,8 +253,7 @@ function unserializeFilter($serialized_filter)
 
 function doUserConf(Application $app, $conf, $param)
 {
-    $registry = $app['phraseanet.registry'];
-    if ($registry->get('GV_anonymousReport') == true) {
+    if ($app['phraseanet.registry']->get('GV_anonymousReport') == true) {
         if (isset($conf['user']))
             unset($conf['user']);
         if (isset($conf['ip']))
@@ -538,8 +537,7 @@ function usr(Application $app, $param, $twig)
 
 function infoUsr(Application $app, $param, $twig, $conf)
 {
-    $registry = $app['phraseanet.registry'];
-    if ($registry->get('GV_anonymousReport') == true) {
+    if ($app['phraseanet.registry']->get('GV_anonymousReport') == true) {
         $conf = array(
             $param['on'] => array($param['on'], 0, 0, 0, 0),
             'nb' => array(_('report:: nombre'), 0, 0, 0, 0)
@@ -579,7 +577,7 @@ function infoUsr(Application $app, $param, $twig, $conf)
     $info = new module_report_nav($app, $param['dmin'], $param['dmax'], $param['sbasid'], $param['collection']);
     $report = $info->buildTabGrpInfo($request, $params, $param['user'], $conf['conf'], $param['on']);
     $report['periode'] = ""; //delete the periode
-    if ($registry->get('GV_anonymousReport') == false) {
+    if ($app['phraseanet.registry']->get('GV_anonymousReport') == false) {
         $html_info .= doHtml($report, $param, $twig, 'report/report.html.twig');
         (empty($param['on']) && isset($report['result'])) ? $title = $report['result'][0]['identifiant'] : $title = $param['user'];
     }
@@ -592,7 +590,6 @@ function infoUsr(Application $app, $param, $twig, $conf)
 
 function what(Application $app, $param, $twig)
 {
-    $registry = $app['phraseanet.registry'];
 
     $config = array(
         'photo' => array(_('report:: document'), 0, 0, 0, 0),
@@ -646,7 +643,7 @@ function what(Application $app, $param, $twig)
         $html .= doHtml($report, $param, $twig, 'report/report.html.twig');
     }
 
-    if ($registry->get('GV_anonymousReport') == false && $param['from'] != 'DOC' && $param['from'] != 'DASH' && $param['from'] != "GEN") {
+    if ($app['phraseanet.registry']->get('GV_anonymousReport') == false && $param['from'] != 'DOC' && $param['from'] != 'DASH' && $param['from'] != "GEN") {
         $conf = array(
             'identifiant' => array(_('report:: identifiant'), 0, 0, 0, 0),
             'nom' => array(_('report:: nom'), 0, 0, 0, 0),

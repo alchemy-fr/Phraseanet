@@ -10,7 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 
 /**
  *
@@ -19,7 +18,6 @@ use Alchemy\Phrasea\Core\Configuration;
  */
 require_once __DIR__ . "/../../lib/bootstrap.php";
 $app = new Application();
-$appbox = $app['phraseanet.appbox'];
 $ret = array('status'  => 'unknown', 'message' => false);
 
 $request = http_request::getInstance();
@@ -39,7 +37,7 @@ if ($app->isAuthenticated()) {
 $user = $app['phraseanet.user'];
 
 try {
-    $conn = $appbox->get_connection();
+    $conn = $app['phraseanet.appbox']->get_connection();
 } catch (Exception $e) {
     return p4string::jsonencode($ret);
 }
@@ -80,15 +78,14 @@ foreach ($baskets as $basket) {
 
 
 if (in_array($app['session']->get('message'), array('1', null))) {
-    $registry = $app['phraseanet.registry'];
-    if ($registry->get('GV_maintenance')) {
+    if ($app['phraseanet.registry']->get('GV_maintenance')) {
 
         $ret['message'] .= '<div>' . _('The application is going down for maintenance, please logout.') . '</div>';
     }
 
-    if ($registry->get('GV_message_on')) {
+    if ($app['phraseanet.registry']->get('GV_message_on')) {
 
-        $ret['message'] .= '<div>' . strip_tags($registry->get('GV_message')) . '</div>';
+        $ret['message'] .= '<div>' . strip_tags($app['phraseanet.registry']->get('GV_message')) . '</div>';
     }
 }
 

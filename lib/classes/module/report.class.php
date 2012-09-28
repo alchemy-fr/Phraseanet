@@ -629,13 +629,12 @@ class module_report
      */
     protected function setReport()
     {
-        $registry = $this->app['phraseanet.registry'];
         $this->report['dbid'] = $this->sbas_id;
         $this->report['periode'] = $this->periode;
         $this->report['dbname'] = $this->dbname;
         $this->report['dmin'] = $this->dmin;
         $this->report['dmax'] = $this->dmax;
-        $this->report['server'] = $registry->get('GV_ServerName');
+        $this->report['server'] = $this->app['phraseanet.registry']->get('GV_ServerName');
         $this->report['filter'] = $this->tab_filter;
         $this->report['posting_filter'] = $this->posting_filter;
         $this->report['active_column'] = $this->active_column;
@@ -861,8 +860,7 @@ class module_report
     {
         $tab = array();
 
-        $appbox = $app['phraseanet.appbox'];
-        $databox = $appbox->get_databox((int) $sbasid);
+        $databox = $app['phraseanet.appbox']->get_databox((int) $sbasid);
 
         foreach ($databox->get_meta_structure() as $databox_field) {
             /* @var $databox_field \databox_field */

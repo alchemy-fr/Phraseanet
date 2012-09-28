@@ -9,7 +9,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 
 /**
  *
@@ -19,7 +18,6 @@ use Alchemy\Phrasea\Core\Configuration;
 
 require_once __DIR__ . "/../../lib/bootstrap.php";
 $app = new Application();
-$appbox = $app['phraseanet.appbox'];
 phrasea::headers(200, true);
 
 $request = http_request::getInstance();

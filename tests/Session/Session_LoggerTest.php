@@ -1,7 +1,5 @@
 <?php
 
-use Alchemy\Phrasea\Core\Configuration;
-
 require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
 
 class Session_LoggerTest extends PhraseanetPHPUnitAbstract

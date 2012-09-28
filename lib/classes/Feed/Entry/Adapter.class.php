@@ -170,11 +170,9 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
 
     public function get_link()
     {
-        $registry = $this->app['phraseanet.registry'];
-
         $href = sprintf(
             '%slightbox/feeds/entry/%d/'
-            , $registry->get('GV_ServerName')
+            , $this->app['phraseanet.registry']->get('GV_ServerName')
             , $this->get_id()
         );
 
@@ -496,17 +494,6 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
         return;
     }
 
-    /**
-     *
-     * @param  appbox                 $appbox
-     * @param  Feed_Adapter           $feed
-     * @param  Feed_Publisher_Adapter $publisher
-     * @param  string                 $title
-     * @param  string                 $subtitle
-     * @param  string                 $author_name
-     * @param  string                 $author_mail
-     * @return Feed_Entry_Adapter
-     */
     public static function create(Application $app, Feed_Adapter $feed
     , Feed_Publisher_Adapter $publisher, $title, $subtitle, $author_name, $author_mail)
     {

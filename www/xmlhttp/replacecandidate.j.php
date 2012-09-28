@@ -10,7 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 
 /**
  *
@@ -19,8 +18,6 @@ use Alchemy\Phrasea\Core\Configuration;
  */
 require_once __DIR__ . "/../../lib/bootstrap.php";
 $app = new Application();
-$appbox = $app['phraseanet.appbox'];
-$registry = $app['phraseanet.registry'];
 
 $request = http_request::getInstance();
 $parm = $request->get_parms(
@@ -41,7 +38,7 @@ $result = array('n_recsChanged' => 0); // , 'n_termsDeleted'=>0, 'n_termsReplace
 
 try {
 
-    $databox = $appbox->get_databox((int) $parm['sbid']);
+    $databox = $app['phraseanet.appbox']->get_databox((int) $parm['sbid']);
     $domth = $databox->get_dom_thesaurus();
     $domct = $databox->get_dom_cterms();
 

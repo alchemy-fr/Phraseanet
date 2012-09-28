@@ -38,9 +38,7 @@ class module_console_fieldsList extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $appbox = $this->getService('phraseanet.appbox');
-
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach ($this->getService('phraseanet.appbox')->get_databoxes() as $databox) {
             /* @var $databox \databox */
             $output->writeln(
                 sprintf(

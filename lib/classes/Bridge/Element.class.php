@@ -109,13 +109,6 @@ class Bridge_Element
     const STATUS_PENDING = 'pending';
     const STATUS_ERROR = 'error';
 
-    /**
-     *
-     * @param  appbox         $appbox
-     * @param  Bridge_Account $account
-     * @param  int            $id
-     * @return Bridge_Element
-     */
     public function __construct(Application $app, Bridge_Account $account, $id)
     {
         $this->app = $app;
@@ -446,13 +439,6 @@ class Bridge_Element
         return;
     }
 
-    /**
-     *
-     * @param  appbox         $appbox
-     * @param  Bridge_Account $account
-     * @param  int            $quantity
-     * @return Bridge_Element
-     */
     public static function get_elements_by_account(Application $app, Bridge_Account $account, $offset_start = 0, $quantity = 50)
     {
         $sql = 'SELECT id FROM bridge_elements WHERE account_id = :account_id
@@ -473,17 +459,6 @@ class Bridge_Element
         return $results;
     }
 
-    /**
-     *
-     * @param  appbox         $appbox
-     * @param  Bridge_Account $account
-     * @param  record_adapter $record
-     * @param  string         $title
-     * @param  string         $status
-     * @param  string         $type
-     * @param  array          $datas
-     * @return Bridge_Element
-     */
     public static function create(Application $app, Bridge_Account $account, record_adapter $record, $title, $status, $type, Array $datas = array())
     {
         $sql = 'INSERT INTO bridge_elements

@@ -276,13 +276,11 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      */
     protected function find_substitute_file()
     {
-        $registry = $this->app['phraseanet.registry'];
-
         if ($this->record->is_grouping()) {
             $this->mime = 'image/png';
             $this->width = 256;
             $this->height = 256;
-            $this->path = $registry->get('GV_RootPath') . 'www/skins/icons/substitution/';
+            $this->path = $this->app['phraseanet.registry']->get('GV_RootPath') . 'www/skins/icons/substitution/';
             $this->file = 'regroup_thumb.png';
             $this->url = '/skins/icons/substitution/regroup_thumb.png';
         } else {
@@ -292,7 +290,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $this->mime = 'image/png';
             $this->width = 256;
             $this->height = 256;
-            $this->path = $registry->get('GV_RootPath') . 'www/skins/icons/substitution/';
+            $this->path = $this->app['phraseanet.registry']->get('GV_RootPath') . 'www/skins/icons/substitution/';
             $this->file = str_replace('+', '%20', $mime) . '.png';
             $this->url = '/skins/icons/substitution/' . $this->file;
         }
@@ -300,7 +298,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $this->is_physically_present = false;
 
         if ( ! file_exists($this->path . $this->file)) {
-            $this->path = $registry->get('GV_RootPath') . 'www/skins/icons/';
+            $this->path = $this->app['phraseanet.registry']->get('GV_RootPath') . 'www/skins/icons/';
             $this->file = 'substitution.png';
             $this->url = '/skins/icons/' . $this->file;
         }

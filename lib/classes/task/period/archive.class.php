@@ -8,10 +8,8 @@
  * file that was distributed with this source code.
  */
 
-use Alchemy\Phrasea\Core\Configuration;
 use Alchemy\Phrasea\Metadata\Tag as PhraseaTag;
 use Alchemy\Phrasea\Border\Attribute as BorderAttribute;
-use MediaVorus\MediaVorus;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Metadata\MetadataBag;
 use Symfony\Component\Filesystem\Exception\IOException;
@@ -197,8 +195,6 @@ class task_period_archive extends task_abstract
      */
     public function getInterfaceHTML()
     {
-        $appbox = $this->dependencyContainer['phraseanet.appbox'];
-
         ob_start();
         ?>
         <form id="graphicForm" name="graphicForm" onsubmit="return(false);" method="post">
@@ -207,7 +203,7 @@ class task_period_archive extends task_abstract
             <select name="base_id">
                 <option value="">...</option>
         <?php
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach ($this->dependencyContainer['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 print("<option value=\"" . $collection->get_base_id() . "\">" . $databox->get_viewname() . " / " . $collection->get_name() . "</option>");
             }
@@ -261,8 +257,7 @@ class task_period_archive extends task_abstract
     {
         $this->debug = false;
 
-        $appbox = $this->dependencyContainer['phraseanet.appbox'];
-        $conn = $appbox->get_connection();
+        $conn = $this->dependencyContainer['phraseanet.appbox']->get_connection();
 
         $this->sxTaskSettings = simplexml_load_string($this->settings);
 
@@ -275,7 +270,7 @@ class task_period_archive extends task_abstract
             return 'tostop';
         }
 
-        $databox = $appbox->get_databox($this->sbas_id);
+        $databox = $this->dependencyContainer['phraseanet.appbox']->get_databox($this->sbas_id);
 
         $this->TColls = array();
         $collection = null;
@@ -498,9 +493,8 @@ class task_period_archive extends task_abstract
     {
         clearstatcache();
 
-        $appbox = $this->dependencyContainer['phraseanet.appbox'];
         connection::getPDOConnection($this->dependencyContainer);
-        $appbox->get_databox($this->sbas_id)->get_connection();
+        $this->dependencyContainer['phraseanet.appbox']->get_databox($this->sbas_id)->get_connection();
 
         $path_in = p4string::delEndSlash(trim((string) ($this->sxTaskSettings->hotfolder)));
         if (false === $this->dependencyContainer['filesystem']->exists($path_in . "/.phrasea.xml")) {
@@ -1408,7 +1402,6 @@ class task_period_archive extends task_abstract
      */
     private function archiveGrp(\DOMDocument $dom, \DOMElement $node, $path, $path_archived, $path_error, array &$nodesToDel)
     {
-        $appbox = $this->dependencyContainer['phraseanet.appbox'];
         $xpath = new DOMXPath($dom);
 
         // grp folders stay in place
@@ -1433,10 +1426,8 @@ class task_period_archive extends task_abstract
             // if the .grp does not have a representative doc, let's use a generic file
             if ( ! ($rep = $node->getAttribute('grp_representation'))) {
 
-                $registry = $this->dependencyContainer['phraseanet.registry'];
-
                 try {
-                    $this->dependencyContainer['filesystem']->copy(p4string::addEndSlash($registry->get('GV_RootPath')) . 'www/skins/icons/substitution/regroup_doc.png', $genericdoc = ($path . '/group.jpg'), true);
+                    $this->dependencyContainer['filesystem']->copy(p4string::addEndSlash($this->dependencyContainer['phraseanet.registry']->get('GV_RootPath')) . 'www/skins/icons/substitution/regroup_doc.png', $genericdoc = ($path . '/group.jpg'), true);
                 } catch (IOException $e) {
                     $this->log($e->getMessage());
                 }
@@ -1461,7 +1452,7 @@ class task_period_archive extends task_abstract
 
             try {
 
-                $databox = $appbox->get_databox($this->sbas_id);
+                $databox = $this->dependencyContainer['phraseanet.appbox']->get_databox($this->sbas_id);
                 $collection = collection::get_from_coll_id($this->dependencyContainer, $databox, (int) $cid);
                 if ($captionFileName === null) {
                     $story = $this->createStory($collection, $path . '/' . $representationFileName, null);
@@ -1831,7 +1822,6 @@ class task_period_archive extends task_abstract
     {
         $ret = false;
 
-        $appbox = $this->dependencyContainer['phraseanet.appbox'];
         $file = $node->getAttribute('name');
         $cid = $node->getAttribute('cid');
         $captionFileName = $captionFileNode ? $captionFileNode->getAttribute('name') : null;
@@ -1862,7 +1852,7 @@ class task_period_archive extends task_abstract
         }
 
         try {
-            $databox = $appbox->get_databox($this->sbas_id);
+            $databox = $this->dependencyContainer['phraseanet.appbox']->get_databox($this->sbas_id);
             $collection = collection::get_from_coll_id($this->dependencyContainer, $databox, (int) $cid);
 
             if ($captionFileName === null) {

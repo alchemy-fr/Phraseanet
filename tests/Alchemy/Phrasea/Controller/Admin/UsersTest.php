@@ -1,7 +1,5 @@
 <?php
 
-use Alchemy\Phrasea\Core\Configuration;
-
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
@@ -31,7 +29,6 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteDelete()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $username = uniqid('user_');
         $user = User_Adapter::create(self::$DI['app'], $username, "test", $username . "@email.com", false);
@@ -51,7 +48,6 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteRightsApply()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $username = uniqid('user_');
         $user = User_Adapter::create(self::$DI['app'], $username, "test", $username . "@email.com", false);
@@ -78,7 +74,6 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->markTestIncomplete();
         $_GET = array();
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $username = uniqid('user_');
         $user = User_Adapter::create(self::$DI['app'], $username, "test", $username . "@email.com", false);
         $base_id = self::$DI['collection']->get_base_id();
@@ -139,7 +134,6 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteRightTimeApply()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $username = uniqid('user_');
         $user = User_Adapter::create(self::$DI['app'], $username, "test", $username . "@email.com", false);
         $base_id = self::$DI['collection']->get_base_id();
@@ -206,7 +200,6 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteApplyTp()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $templateName = uniqid('template_');
         $template = User_Adapter::create(self::$DI['app'], $templateName, "test", $templateName . "@email.com", false);
@@ -251,7 +244,6 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteCreateUser()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $username = uniqid('user_');
         $user = User_Adapter::create(self::$DI['app'], $username, "test", $username . "@email.com", false);
@@ -286,13 +278,12 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testResetRights()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $username = uniqid('user_');
         $user = User_Adapter::create(self::$DI['app'], $username, "test", $username . "@email.com", false);
 
-        $user->ACL()->give_access_to_sbas(array_keys($appbox->get_databoxes()));
+        $user->ACL()->give_access_to_sbas(array_keys(self::$DI['app']['phraseanet.appbox']->get_databoxes()));
 
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
 
             $rights = array(
                 'bas_manage'        => '1'

@@ -19,8 +19,7 @@ use Alchemy\Phrasea\Application;
 function xmlhttp($url)
 {
     $app = new Application();
-    $registry = $app['phraseanet.registry'];
-    $fullurl = $registry->get('GV_ServerName') . $url;
+    $fullurl = $app['phraseanet.registry']->get('GV_ServerName') . $url;
     $xml = http_query::getUrl($fullurl);
     $ret = new DOMDocument();
     $ret->loadXML($xml);

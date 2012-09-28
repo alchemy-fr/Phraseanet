@@ -11,7 +11,6 @@ require_once __DIR__ . '/../../../../vendor/sphinx/sphinxapi.php';
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 
 /**
  *
@@ -59,12 +58,11 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
     public function __construct(Application $app)
     {
         $this->app = $app;
-        $registry = $this->app['phraseanet.registry'];
 
         $this->sphinx = new SphinxClient ();
         $this->sphinx->SetArrayResult(true);
 
-        $this->sphinx->SetServer($registry->get('GV_sphinx_host'), (int) $registry->get('GV_sphinx_port'));
+        $this->sphinx->SetServer($this->app['phraseanet.registry']->get('GV_sphinx_host'), (int) $this->app['phraseanet.registry']->get('GV_sphinx_port'));
         $this->sphinx->SetConnectTimeout(1);
 
         return $this;

@@ -20,7 +20,6 @@ require_once __DIR__ . "/../../lib/bootstrap.php";
 
 $app = new Application();
 $request = http_request::getInstance();
-$registry = $app['phraseanet.registry'];
 
 $parm = $request->get_parms(
     "dmin"
@@ -81,7 +80,7 @@ echo $twig->render(
     'report/ajax_report_content.html.twig', array(
     'selection' => $selection,
     'param'     => $parm,
-    'anonymous' => $registry->get('GV_anonymousReport'),
+    'anonymous' => $app['phraseanet.registry']->get('GV_anonymousReport'),
     'ajax'      => true
     )
 );

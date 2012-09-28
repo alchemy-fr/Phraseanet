@@ -10,7 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 
 /**
  *
@@ -362,8 +361,6 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
      */
     protected function query()
     {
-        $registry = $this->app['phraseanet.registry'];
-
         $dateLog = date("Y-m-d H:i:s");
         $nbanswers = 0;
 
@@ -408,7 +405,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
                 , $sbas_id
                 , $this->colls[$sbas_id]
                 , $this->arrayq[$sbas_id]
-                , $registry->get('GV_sit')
+                , $this->app['phraseanet.registry']->get('GV_sit')
                 , (string) $this->app['phraseanet.user']->get_id()
                 , false
                 , $this->opt_search_type == 1 ? PHRASEA_MULTIDOC_REGONLY : PHRASEA_MULTIDOC_DOCONLY

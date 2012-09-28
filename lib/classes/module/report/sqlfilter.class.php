@@ -63,9 +63,8 @@ class module_report_sqlfilter
     public function getReportFilter()
     {
         $finalfilter = '';
-        $registry = $this->app['phraseanet.registry'];
 
-        $params = array(':log_site' => $registry->get('GV_sit'));
+        $params = array(':log_site' => $this->app['phraseanet.registry']->get('GV_sit'));
 
         if ($this->filter['date']) {
             $finalfilter .= $this->filter['date']['sql'] . ' AND ';
@@ -86,13 +85,12 @@ class module_report_sqlfilter
 
     public function getGvSitFilter()
     {
-        $registry = $this->app['phraseanet.registry'];
         $params = array();
         $sql = '';
 
-        if ($registry->is_set('GV_sit')) {
+        if ($this->app['phraseanet.registry']->is_set('GV_sit')) {
             $sql = 'log.site = :log_site_gv_filter';
-            $params[':log_site_gv_filter'] = $registry->get('GV_sit');
+            $params[':log_site_gv_filter'] = $this->app['phraseanet.registry']->get('GV_sit');
         }
 
         return array('sql'    => $sql, 'params' => $params);

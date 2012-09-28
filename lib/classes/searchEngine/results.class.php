@@ -9,8 +9,6 @@
  * file that was distributed with this source code.
  */
 
-use Alchemy\Phrasea\Core\Configuration;
-
 /**
  *
  * @package     searchEngine

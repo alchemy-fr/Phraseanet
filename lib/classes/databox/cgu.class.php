@@ -10,7 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 
 /**
  *
@@ -51,13 +50,12 @@ class databox_cgu
     private static function getUnvalidated(Application $app, $home = false)
     {
         $terms = array();
-        $appbox = $app['phraseanet.appbox'];
 
         if ( ! $home) {
             $user = $app['phraseanet.user'];
         }
 
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
             try {
                 $cgus = $databox->get_cgus();
 

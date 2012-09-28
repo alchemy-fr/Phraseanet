@@ -9,7 +9,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 
 /**
  *
@@ -19,9 +18,7 @@ use Alchemy\Phrasea\Core\Configuration;
 
 require_once __DIR__ . "/../../lib/bootstrap.php";
 $app = new Application();
-$appbox = $app['phraseanet.appbox'];
-$registry = $app['phraseanet.registry'];
-require_once($registry->get('GV_RootPath') . "lib/classes/deprecated/inscript.api.php");
+require_once($app['phraseanet.registry']->get('GV_RootPath') . "lib/classes/deprecated/inscript.api.php");
 
 $request = http_request::getInstance();
 $parm = $request->get_parms("action", "usr", "cgus", "date", "bas", "col");

@@ -1,7 +1,5 @@
 <?php
 
-use Alchemy\Phrasea\Core\Configuration;
-
 require_once __DIR__ . '/../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
 class sqlFilterTest extends PhraseanetPHPUnitAuthenticatedAbstract
@@ -20,8 +18,7 @@ class sqlFilterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $dmax = $date->format("Y-m-d H:i:s");
         $date->modify('-6 month');
         $dmin = $date->format("Y-m-d H:i:s");
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-        $databoxes = $appbox->get_databoxes();
+        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
         $ret = array();
         foreach ($databoxes as $databox) {
             $colls = $databox->get_collections();

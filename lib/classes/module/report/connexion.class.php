@@ -151,12 +151,11 @@ class module_report_connexion extends module_report
     public static function getNbConn(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
         $conn = connection::getPDOConnection($app, $sbas_id);
-        $registry = $app['phraseanet.registry'];
 
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $collfilter = module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
-        $params = array(':site_id' => $registry->get('GV_sit'));
+        $params = array(':site_id' => $app['phraseanet.registry']->get('GV_sit'));
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $finalfilter = $datefilter['sql'] . ' AND ';

@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-use Alchemy\Phrasea\Core\Configuration;
 use PHPExiftool\Driver\Metadata;
 use PHPExiftool\Driver\Value;
 use PHPExiftool\Driver\Tag;

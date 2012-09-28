@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Helper\User;
 
-use Alchemy\Phrasea\Core\Configuration;
 use Alchemy\Phrasea\Helper\Helper;
 
 /**
@@ -173,10 +172,9 @@ class Manage extends Helper
 
             if ($sendCredentials) {
                 $urlToken = \random::getUrlToken($this->app, \random::TYPE_PASSWORD, $createdUser->get_id());
-                $registry = $this->app['phraseanet.registry'];
 
                 if (false !== $urlToken) {
-                    $url = sprintf('%slogin/forgot-password/?token=%s', $registry->get('GV_ServerName'), $urlToken);
+                    $url = sprintf('%slogin/forgot-password/?token=%s', $this->app['phraseanet.registry']->get('GV_ServerName'), $urlToken);
                     \mail::send_credentials($this->app, $url, $createdUser->get_login(), $createdUser->get_email());
                 }
             }

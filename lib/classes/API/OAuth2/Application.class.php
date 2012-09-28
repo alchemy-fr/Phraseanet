@@ -664,12 +664,6 @@ class API_OAuth2_Application
         return new self($app, $row['application_id']);
     }
 
-    /**
-     *
-     * @param  appbox       $appbox
-     * @param  User_Adapter $user
-     * @return array
-     */
     public static function load_dev_app_by_user(Application $app, User_Adapter $user)
     {
         $sql = 'SELECT a.application_id
@@ -689,12 +683,6 @@ class API_OAuth2_Application
         return $apps;
     }
 
-    /**
-     *
-     * @param  appbox                 $appbox
-     * @param  user_adapter           $user
-     * @return API_OAuth2_Application
-     */
     public static function load_app_by_user(Application $app, user_adapter $user)
     {
         $sql = 'SELECT a.application_id

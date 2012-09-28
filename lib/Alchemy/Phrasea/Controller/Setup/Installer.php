@@ -211,23 +211,22 @@ class Installer implements ControllerProviderInterface
                 }
             }
 
-            $registry = $app['phraseanet.registry'];
             \setup::create_global_values($app);
 
 //                    $appbox->set_registry($registry);
 
-            $registry->set('GV_base_datapath_noweb', \p4string::addEndSlash($request->request->get('datapath_noweb')), \registry::TYPE_STRING);
-            $registry->set('GV_ServerName', $servername, \registry::TYPE_STRING);
-            $registry->set('GV_cli', $request->request->get('binary_php'), \registry::TYPE_STRING);
-            $registry->set('GV_imagick', $request->request->get('binary_convert'), \registry::TYPE_STRING);
-            $registry->set('GV_pathcomposite', $request->request->get('binary_composite'), \registry::TYPE_STRING);
-            $registry->set('GV_swf_extract', $request->request->get('binary_swfextract'), \registry::TYPE_STRING);
-            $registry->set('GV_pdf2swf', $request->request->get('binary_pdf2swf'), \registry::TYPE_STRING);
-            $registry->set('GV_swf_render', $request->request->get('binary_swfrender'), \registry::TYPE_STRING);
-            $registry->set('GV_unoconv', $request->request->get('binary_unoconv'), \registry::TYPE_STRING);
-            $registry->set('GV_ffmpeg', $request->request->get('binary_ffmpeg'), \registry::TYPE_STRING);
-            $registry->set('GV_mp4box', $request->request->get('binary_MP4Box'), \registry::TYPE_STRING);
-            $registry->set('GV_pdftotext', $request->request->get('binary_xpdf'), \registry::TYPE_STRING);
+            $app['phraseanet.registry']->set('GV_base_datapath_noweb', \p4string::addEndSlash($request->request->get('datapath_noweb')), \registry::TYPE_STRING);
+            $app['phraseanet.registry']->set('GV_ServerName', $servername, \registry::TYPE_STRING);
+            $app['phraseanet.registry']->set('GV_cli', $request->request->get('binary_php'), \registry::TYPE_STRING);
+            $app['phraseanet.registry']->set('GV_imagick', $request->request->get('binary_convert'), \registry::TYPE_STRING);
+            $app['phraseanet.registry']->set('GV_pathcomposite', $request->request->get('binary_composite'), \registry::TYPE_STRING);
+            $app['phraseanet.registry']->set('GV_swf_extract', $request->request->get('binary_swfextract'), \registry::TYPE_STRING);
+            $app['phraseanet.registry']->set('GV_pdf2swf', $request->request->get('binary_pdf2swf'), \registry::TYPE_STRING);
+            $app['phraseanet.registry']->set('GV_swf_render', $request->request->get('binary_swfrender'), \registry::TYPE_STRING);
+            $app['phraseanet.registry']->set('GV_unoconv', $request->request->get('binary_unoconv'), \registry::TYPE_STRING);
+            $app['phraseanet.registry']->set('GV_ffmpeg', $request->request->get('binary_ffmpeg'), \registry::TYPE_STRING);
+            $app['phraseanet.registry']->set('GV_mp4box', $request->request->get('binary_MP4Box'), \registry::TYPE_STRING);
+            $app['phraseanet.registry']->set('GV_pdftotext', $request->request->get('binary_xpdf'), \registry::TYPE_STRING);
 
             $user = \User_Adapter::create($app, $request->request->get('email'), $request->request->get('password'), $request->request->get('email'), true);
 
@@ -239,7 +238,7 @@ class Installer implements ControllerProviderInterface
 
             if ($databox_name && !\p4string::hasAccent($databox_name)) {
                 $template = new \SplFileInfo(__DIR__ . '/../../../../conf.d/data_templates/' . $request->request->get('db_template') . '.xml');
-                $databox = \databox::create($app, $connbas, $template, $registry);
+                $databox = \databox::create($app, $connbas, $template, $app['phraseanet.registry']);
                 $user->ACL()
                     ->give_access_to_sbas(array($databox->get_sbas_id()))
                     ->update_rights_to_sbas(

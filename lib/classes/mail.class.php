@@ -7,12 +7,11 @@ class mail
 
     public static function mail_test(Application $app, $email)
     {
-        $registry = $app['phraseanet.registry'];
-        $from = array('email' => $registry->get('GV_defaulmailsenderaddr'), 'name'  => $registry->get('GV_defaulmailsenderaddr'));
+        $from = array('email' => $app['phraseanet.registry']->get('GV_defaulmailsenderaddr'), 'name'  => $app['phraseanet.registry']->get('GV_defaulmailsenderaddr'));
 
         $subject = _('mail:: test d\'envoi d\'email');
 
-        $message = sprintf(_('Ce mail est un test d\'envoi de mail depuis %s'), $registry->get('GV_ServerName'));
+        $message = sprintf(_('Ce mail est un test d\'envoi de mail depuis %s'), $app['phraseanet.registry']->get('GV_ServerName'));
 
         $to = array('email' => $email, 'name'  => $email);
 
@@ -72,8 +71,7 @@ class mail
 
     public static function register_confirm(Application $app, $email, $accept, $deny)
     {
-        $registry = $app['phraseanet.registry'];
-        $subject = sprintf(_('login::register:email: Votre compte %s'), $registry->get('GV_homeTitle'));
+        $subject = sprintf(_('login::register:email: Votre compte %s'), $app['phraseanet.registry']->get('GV_homeTitle'));
 
         $body = '<div>' . _('login::register:email: Voici un compte rendu du traitement de vos demandes d\'acces :') . "</div>\n";
 
@@ -91,11 +89,10 @@ class mail
 
     public static function reset_email(Application $app, $email, $usr_id)
     {
-        $registry = $app['phraseanet.registry'];
         $date = new DateTime('1 day');
         $token = random::getUrlToken($app, \random::TYPE_EMAIL, $usr_id, $date, $email);
 
-        $url = $registry->get('GV_ServerName') . 'account/reset-email/?token=' . $token;
+        $url = $app['phraseanet.registry']->get('GV_ServerName') . 'account/reset-email/?token=' . $token;
 
         $subject = _('login::register: sujet email : confirmation de votre adresse email');
 
@@ -109,8 +106,7 @@ class mail
 
     public static function change_mail_information(Application $app, $display_name, $old_email, $new_email)
     {
-        $registry = $app['phraseanet.registry'];
-        $subject = sprintf(_('Update of your email address on %s'), $registry->get('GV_homeTitle'));
+        $subject = sprintf(_('Update of your email address on %s'), $app['phraseanet.registry']->get('GV_homeTitle'));
 
         $body = "<div>" . sprintf(_('Dear %s,'), $display_name) . "</div>\n<br/>\n";
         $body .= "<div>" . _('Your contact email address has been updated') . "</div>\n<br/>\n";
@@ -134,9 +130,7 @@ class mail
 
     public static function send_credentials(Application $app, $url, $login, $email)
     {
-        $registry = $app['phraseanet.registry'];
-
-        $subject = sprintf(_('Your account on %s'), $registry->get('GV_homeTitle'));
+        $subject = sprintf(_('Your account on %s'), $app['phraseanet.registry']->get('GV_homeTitle'));
 
         $body = "<div>" . sprintf(_('Your account with the login %s as been created'), $login) . "</div><br/>\n\n";
         $body .= "<div>" . _('Please follow this url to setup your password') . "</div>\n";
@@ -149,13 +143,11 @@ class mail
 
     public static function mail_confirm_registered(Application $app, $email)
     {
-        $registry = $app['phraseanet.registry'];
-
         $subject = _('login::register: sujet email : confirmation de votre adresse email');
 
         $body = "<div>" . _('login::register: merci d\'avoir confirme votre adresse email') . "</div>\n";
         $body .= "<br/><div>" . _('login::register: vous pouvez maintenant vous connecter a l\'adresse suivante : ') . "</div>\n";
-        $body .= "<div><a href='" . $registry->get('GV_ServerName') . "' target='_blank'>" . $registry->get('GV_ServerName') . "</a></div>\n";
+        $body .= "<div><a href='" . $app['phraseanet.registry']->get('GV_ServerName') . "' target='_blank'>" . $app['phraseanet.registry']->get('GV_ServerName') . "</a></div>\n";
 
         $to = array('email' => $email, 'name'  => $email);
 
@@ -183,14 +175,13 @@ class mail
 
     public static function mail_confirmation(Application $app, $email, $usr_id)
     {
-        $registry = $app['phraseanet.registry'];
         $expire = new DateTime('+3 days');
         $token = random::getUrlToken($app, \random::TYPE_PASSWORD, $usr_id, $expire, $email);
 
         $subject = _('login::register: sujet email : confirmation de votre adresse email');
 
         $body = "<div>" . _('login::register: email confirmation email Pour valider votre inscription a la base de donnees, merci de confirmer votre e-mail en suivant le lien ci-dessous.') . "</div>\n";
-        $body .= "<br/>\n<div><a href='" . $registry->get('GV_ServerName') . "register-confirm/?code=" . $token . "' target='_blank'>" . $registry->get('GV_ServerName') . "register-confirm/code=" . $token . "</a></div>\n";
+        $body .= "<br/>\n<div><a href='" . $app['phraseanet.registry']->get('GV_ServerName') . "register-confirm/?code=" . $token . "' target='_blank'>" . $app['phraseanet.registry']->get('GV_ServerName') . "register-confirm/code=" . $token . "</a></div>\n";
 
         $to = array('email' => $email, 'name'  => $email);
 
@@ -204,8 +195,6 @@ class mail
 
     public static function send_mail(Application $app, $subject, $body, $to, $from = false, $files = array(), $reading_confirm_to = false)
     {
-        $registry = $app['phraseanet.registry'];
-
         if ( ! isset($to['email']) || ! PHPMailer::ValidateAddress($to['email'])) {
             return false;
         }
@@ -216,7 +205,7 @@ class mail
         $body .= '<div style="font-style:italic;">' . _('si cet email contient des liens non cliquables copiez/collez ces liens dans votre navigateur.') . '</div>';
         $body .= "<br/>\n";
         $body .= '<div style="font-style:italic;">' . _('phraseanet::signature automatique des notifications par mail, infos a l\'url suivante') . "</div>\n";
-        $body .= '<div><a href="' . $registry->get('GV_ServerName') . '">' . $registry->get('GV_ServerName') . "</a></div>\n";
+        $body .= '<div><a href="' . $app['phraseanet.registry']->get('GV_ServerName') . '">' . $app['phraseanet.registry']->get('GV_ServerName') . "</a></div>\n";
         $body = '<body>' . $body . '</body>';
 
         $body = str_replace('https://', 'http://', $body);
@@ -225,23 +214,21 @@ class mail
             $mail->CharSet = 'utf-8';
             $mail->Encoding = 'base64'; //'quoted-printable';
 
-            $registry = $app['phraseanet.registry'];
-
-            if ($registry->get('GV_smtp')) {
+            if ($app['phraseanet.registry']->get('GV_smtp')) {
                 $mail->IsSMTP();
-                if ($registry->get('GV_smtp_host') != '')
-                    $mail->Host = $registry->get('GV_smtp_host');
+                if ($app['phraseanet.registry']->get('GV_smtp_host') != '')
+                    $mail->Host = $app['phraseanet.registry']->get('GV_smtp_host');
 
-                if ($registry->get('GV_smtp_auth')) {
+                if ($app['phraseanet.registry']->get('GV_smtp_auth')) {
                     $mail->SMTPAuth = true;
 
-                    if ($registry->get('GV_smtp_secure') === true) {
+                    if ($app['phraseanet.registry']->get('GV_smtp_secure') === true) {
                         $mail->SMTPSecure = "ssl";
                     }
-                    $mail->Host = $registry->get('GV_smtp_host');
-                    $mail->Port = $registry->get('GV_smtp_port');
-                    $mail->Username = $registry->get('GV_smtp_user');
-                    $mail->Password = $registry->get('GV_smtp_password');
+                    $mail->Host = $app['phraseanet.registry']->get('GV_smtp_host');
+                    $mail->Port = $app['phraseanet.registry']->get('GV_smtp_port');
+                    $mail->Username = $app['phraseanet.registry']->get('GV_smtp_user');
+                    $mail->Password = $app['phraseanet.registry']->get('GV_smtp_password');
                 }
             }
 
@@ -250,7 +237,7 @@ class mail
 
             $mail->AddAddress($to['email'], $to['name']);
 
-            $mail->SetFrom($registry->get('GV_defaulmailsenderaddr'), $registry->get('GV_homeTitle'));
+            $mail->SetFrom($app['phraseanet.registry']->get('GV_defaulmailsenderaddr'), $app['phraseanet.registry']->get('GV_homeTitle'));
 
             $mail->Subject = $subject;
 

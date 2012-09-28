@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\Out\Module;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 use Alchemy\Phrasea\Out\Tool\PhraseaPDF;
 
 /**
@@ -311,7 +310,6 @@ class PDF
 
     protected function print_preview($withtdm, $write_caption)
     {
-        $registry = $this->app['phraseanet.registry'];
         $user = $this->app['phraseanet.user'];
 
         if ($withtdm === true) {
@@ -340,7 +338,7 @@ class PDF
             $RIGHT_TEXT = "";
             $RIGHT_IMG = NULL;
 
-            $LEFT__IMG = $registry->get('GV_RootPath') . "config/minilogos/logopdf_"
+            $LEFT__IMG = $this->app['phraseanet.registry']->get('GV_RootPath') . "config/minilogos/logopdf_"
                 . $rec->get_sbas_id() . "";
 
             if (!is_file($LEFT__IMG)) {
@@ -361,7 +359,7 @@ class PDF
             if ($vn == "" || $vn == "1") {
                 $RIGHT_TEXT = \phrasea::bas_names($rec->get_base_id(), $this->app);
             } elseif ($vn == "2") {
-                $RIGHT_IMG = $registry->get('GV_RootPath') . "config/minilogos/" . $rec->get_base_id();
+                $RIGHT_IMG = $this->app['phraseanet.registry']->get('GV_RootPath') . "config/minilogos/" . $rec->get_base_id();
             }
 
             $xtmp = $this->pdf->GetX();

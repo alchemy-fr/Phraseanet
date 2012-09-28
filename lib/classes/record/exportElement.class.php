@@ -10,7 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 
 /**
  *
@@ -79,15 +78,13 @@ class record_exportElement extends record_adapter
         $this->downloadable = $downloadable = array();
         $this->orderable = $orderable = array();
 
-        $appbox = $this->app['phraseanet.appbox'];
-
         $sd = $this->get_subdefs();
 
         $sbas_id = phrasea::sbasFromBas($this->app, $this->base_id);
 
         $user = $this->app['phraseanet.user'];
 
-        $subdefgroups = $appbox->get_databox($sbas_id)->get_subdef_structure();
+        $subdefgroups = $this->app['phraseanet.appbox']->get_databox($sbas_id)->get_subdef_structure();
 
         $subdefs = array();
 

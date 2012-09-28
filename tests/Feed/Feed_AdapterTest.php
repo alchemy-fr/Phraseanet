@@ -1,7 +1,5 @@
 <?php
 
-use Alchemy\Phrasea\Core\Configuration;
-
 require_once __DIR__ . '/../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
 class Feed_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
@@ -17,7 +15,6 @@ class Feed_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $auth = new Session_Authentication_None(self::$DI['user']);
         self::$DI['app']->openAccount($auth);
         self::$object = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], self::$title, self::$subtitle);
@@ -73,8 +70,7 @@ class Feed_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertTrue(self::$object->is_public());
 
         $coll = null;
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $coll = $collection;
                 break;
@@ -119,8 +115,7 @@ class Feed_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
 
         $coll = null;
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $coll = $collection;
                 break;

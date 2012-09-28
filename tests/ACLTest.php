@@ -25,7 +25,6 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $application = new Application('test');
         $usr_id = User_Adapter::get_usr_id_from_login($application, 'test_phpunit2');
         try {
-            $appbox = $application['phraseanet.appbox'];
             $template = User_Adapter::getInstance($usr_id, $application);
             $template->delete();
         } catch (Exception $e) {
@@ -33,7 +32,6 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
         }
         $usr_id = User_Adapter::get_usr_id_from_login($application, 'test_phpunit3');
         try {
-            $appbox = $application['phraseanet.appbox'];
             $cobaye = User_Adapter::getInstance($usr_id, $application);
             $cobaye->delete();
         } catch (Exception $e) {
@@ -65,12 +63,11 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testApply_model()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $template = User_Adapter::create(self::$DI['app'], 'test_phpunit2', 'blabla2', 'test2@example.com', false);
         $template->set_template(self::$DI['user']);
 
         $base_ids = array();
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
                 $base_ids[] = $base_id;
@@ -80,7 +77,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         $cobaye = User_Adapter::create(self::$DI['app'], 'test_phpunit3', 'blabla3', 'test3@example.com', false);
         $cobaye->ACL()->apply_model($template, $base_ids);
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
                 $this->assertTrue($cobaye->ACL()->has_access_to_base($base_id));
@@ -93,10 +90,9 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testRevoke_access_from_bases()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $base_ids = array();
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
                 self::$DI['user']->ACL()->revoke_access_from_bases(array($base_id));
@@ -115,9 +111,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGive_access_to_base()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
                 $this->assertFalse(self::$DI['user']->ACL()->has_access_to_base($base_id));
@@ -129,7 +123,6 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGive_access_to_sbas()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             $sbas_id = $databox->get_sbas_id();
@@ -148,8 +141,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testRevoke_unused_sbas_rights()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             $sbas_id = $databox->get_sbas_id();
             $base_ids = array();
             foreach ($databox->get_collections() as $collection) {
@@ -171,8 +163,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSet_quotas_on_base()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
                 $droits = 50;
@@ -192,12 +183,11 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testDuplicate_right_from_bas()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $first = true;
         $base_ref = null;
 
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
 
@@ -230,7 +220,6 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testHas_right_on_base()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $rights_false = array(
             'imgtools'      => false
@@ -246,7 +235,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
         );
 
 
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
                 self::$DI['user']->ACL()->give_access_to_base(array($base_id));
@@ -277,8 +266,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testRemaining_download()
     {
 
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
                 $droits = 50;
@@ -298,8 +286,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testRemove_remaining()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
                 $droits = 50;
@@ -325,7 +312,6 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testHas_right()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
 
         $rights = array(
@@ -336,7 +322,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertFalse(self::$DI['user']->ACL()->has_right('bas_modify_struct'));
         $this->assertFalse(self::$DI['user']->ACL()->has_right('bas_modif_th'));
 
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             self::$DI['user']->ACL()->give_access_to_sbas(array($databox->get_sbas_id()));
             self::$DI['user']->ACL()->update_rights_to_sbas($databox->get_sbas_id(), $rights);
             break;
@@ -348,7 +334,6 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testHas_right_on_sbas()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $rights_false = array(
             'bas_modify_struct' => false
@@ -365,7 +350,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
         );
 
 
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             self::$DI['user']->ACL()->give_access_to_sbas(array($databox->get_sbas_id()));
             self::$DI['user']->ACL()->update_rights_to_sbas($databox->get_sbas_id(), $rights_false);
             $this->assertFalse(self::$DI['user']->ACL()->has_right_on_sbas($databox->get_sbas_id(), 'bas_modify_struct'));
@@ -387,8 +372,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_mask_and()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
 
@@ -407,8 +391,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_mask_xor()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
 
@@ -428,10 +411,9 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testHas_access_to_base()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $base_ids = array();
         $n = 0;
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_ids[] = $collection->get_base_id();
                 $n ++;
@@ -449,7 +431,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
 
         $sql = 'SELECT actif FROM basusr WHERE usr_id = :usr_id AND base_id = :base_id';
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = self::$DI['app']['phraseanet.appbox']->get_connection()->prepare($sql);
 
         foreach ($bases as $base_id) {
             $stmt->execute(array(':usr_id'  => self::$DI['app']['phraseanet.user']->get_id(), ':base_id' => $base_id));
@@ -485,10 +467,9 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testGet_granted_base()
     {
 
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $base_ids = array();
         $n = 0;
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_ids[] = $collection->get_base_id();
                 $n ++;
@@ -518,10 +499,9 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_granted_sbas()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $sbas_ids = array();
         $n = 0;
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             $sbas_ids[] = $databox->get_sbas_id();
             $n ++;
         }
@@ -545,9 +525,8 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testHas_access_to_module()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             $base_ids = array();
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
@@ -566,7 +545,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertFalse(self::$DI['user']->ACL()->has_access_to_module('report'));
 
         $found = false;
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
                 $base_ids[] = $base_id;
@@ -581,7 +560,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertFalse(self::$DI['user']->ACL()->has_access_to_module('thesaurus'));
         $this->assertFalse(self::$DI['user']->ACL()->has_access_to_module('upload'));
 
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             self::$DI['user']->ACL()->update_rights_to_sbas($databox->get_sbas_id(), array('bas_modif_th' => true));
             $found = true;
         }
@@ -591,7 +570,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
 
         $found = false;
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
                 $base_ids[] = $base_id;
@@ -609,11 +588,10 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testis_limited()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $found = false;
 
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
 
@@ -656,11 +634,10 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testget_limits()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
         $found = false;
 
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
 

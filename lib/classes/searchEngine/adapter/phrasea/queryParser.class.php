@@ -1725,16 +1725,15 @@ class searchEngine_adapter_phrasea_queryParser
     public function addsimple($t, $type, $nodetype, $pnum, $tree, $depth)
     {
         $nok = 0;
-        $registry = $this->app['phraseanet.registry'];
         $w = $t["VALUE"];
         if ($w != "?" && $w != "*") {  // on laisse passer les 'isolés' pour les traiter plus tard comme des mots vides
             for ($i = 0; $i < strlen($w); $i ++ ) {
                 $c = substr($w, $i, 1);
                 if ($c == "?" || $c == "*") {
-                    if ($nok < $registry->get('GV_min_letters_truncation')) {
+                    if ($nok < $this->app['phraseanet.registry']->get('GV_min_letters_truncation')) {
                         if ($this->errmsg != "")
                             $this->errmsg .= sprintf("\\n");
-                        $this->errmsg .= _('qparser:: Formulation incorrecte, necessite plus de caractere : ') . "<br>" . $registry->get('GV_min_letters_truncation');
+                        $this->errmsg .= _('qparser:: Formulation incorrecte, necessite plus de caractere : ') . "<br>" . $this->app['phraseanet.registry']->get('GV_min_letters_truncation');
 
                         return(null);
                     }

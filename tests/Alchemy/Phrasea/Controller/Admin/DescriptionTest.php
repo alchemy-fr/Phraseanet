@@ -14,8 +14,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRouteDescription()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-        $databoxes = $appbox->get_databoxes();
+        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
         $databox = array_shift($databoxes);
         $name = "testtest" . uniqid();
         $field = \databox_field::create(self::$DI['app'], $databox, $name, false);
@@ -38,8 +37,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testPostDelete()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-        $databoxes = $appbox->get_databoxes();
+        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
         $databox = array_shift($databoxes);
         $name = "test" . uniqid();
         $field = \databox_field::create(self::$DI['app'], $databox, $name, false);
@@ -62,8 +60,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testPostCreate()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-        $databoxes = $appbox->get_databoxes();
+        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
         $databox = array_shift($databoxes);
 
         $name = 'test' . uniqid();
@@ -91,8 +88,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testPostDescriptionException()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-        $databoxes = $appbox->get_databoxes();
+        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
         $databox = array_shift($databoxes);
 
         self::$DI['client']->request("POST", "/admin/description/" . $databox->get_sbas_id() . "/", array(
@@ -215,9 +211,8 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testGetDescriptionException()
     {
         $this->setAdmin(false);
-        $appbox = self::$DI['app']['phraseanet.appbox'];
 
-        $databoxes = $appbox->get_databoxes();
+        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
         $databox = array_shift($databoxes);
 
         try {
@@ -230,8 +225,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testGetDescription()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-        $databoxes = $appbox->get_databoxes();
+        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
         $databox = array_shift($databoxes);
 
         self::$DI['client']->request("GET", "/admin/description/" . $databox->get_sbas_id() . "/");
@@ -240,8 +234,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testGetMetadatas()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-        $databoxes = $appbox->get_databoxes();
+        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
         $databox = array_shift($databoxes);
 
         self::$DI['client']->request("GET", "/admin/description/metadatas/search/", array('term' => ''));

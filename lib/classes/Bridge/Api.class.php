@@ -504,12 +504,6 @@ class Bridge_Api
         return new $classname($registry, $auth);
     }
 
-    /**
-     *
-     * @param  appbox     $appbox
-     * @param  string     $name
-     * @return Bridge_Api
-     */
     public static function get_by_api_name(Application $app, $name)
     {
         $name = strtolower($name);
@@ -552,12 +546,6 @@ class Bridge_Api
         return $results;
     }
 
-    /**
-     *
-     * @param  appbox     $appbox
-     * @param  string     $name
-     * @return Bridge_Api
-     */
     public static function create(Application $app, $name)
     {
         $sql = 'INSERT INTO bridge_apis

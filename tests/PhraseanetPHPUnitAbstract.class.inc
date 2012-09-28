@@ -511,14 +511,12 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     {
         if (!self::$updated) {
 
-            $appbox = $application['phraseanet.appbox'];
-
             if (file_exists(Setup_Upgrade::get_lock_file())) {
                 unlink(Setup_Upgrade::get_lock_file());
             }
 
             $upgrader = new Setup_Upgrade($application);
-            $appbox->forceUpgrade($upgrader, $application);
+            $application['phraseanet.appbox']->forceUpgrade($upgrader, $application);
             unset($upgrader);
 
             $command = __DIR__ . '/../bin/doctrine orm:schema-tool:update --force';
@@ -602,11 +600,9 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      */
     public static function giveRightsToUser(Application $app, \User_Adapter $user)
     {
-        $appbox = $app['phraseanet.appbox'];
+        $user->ACL()->give_access_to_sbas(array_keys($app['phraseanet.appbox']->get_databoxes()));
 
-        $user->ACL()->give_access_to_sbas(array_keys($appbox->get_databoxes()));
-
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
 
             $rights = array(
                 'bas_manage'        => '1'
@@ -656,10 +652,9 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      */
     private static function setCollection(Application $application)
     {
-        $appbox = $application['phraseanet.appbox'];
         $coll = $collection_no_acces = $collection_no_acces_by_status = $db = null;
 
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach ($application['phraseanet.appbox']->get_databoxes() as $databox) {
             $db = $databox;
             foreach ($databox->get_collections() as $collection) {
                 if ($collection_no_acces instanceof collection && !$collection_no_acces_by_status) {
@@ -685,9 +680,9 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
         self::$DI['collection'] = $coll;
 
-        self::$DI['collection_no_access'] = self::$DI->share(function($DI) use ($application, $databox, $appbox, $collection_no_acces) {
+        self::$DI['collection_no_access'] = self::$DI->share(function($DI) use ($application, $databox, $collection_no_acces) {
             if (!$collection_no_acces instanceof collection) {
-                $collection_no_acces = collection::create($application, $databox, $appbox, 'BIBOO', $DI['user']);
+                $collection_no_acces = collection::create($application, $databox, $application['phraseanet.appbox'], 'BIBOO', $DI['user']);
             }
 
             $DI['user'] = $DI->share(
@@ -703,9 +698,9 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             return $collection_no_acces;
         });
 
-        self::$DI['collection_no_access_by_status'] = self::$DI->share(function($DI) use ($application, $databox, $appbox, $collection_no_acces_by_status) {
+        self::$DI['collection_no_access_by_status'] = self::$DI->share(function($DI) use ($application, $databox, $collection_no_acces_by_status) {
             if (!$collection_no_acces_by_status instanceof collection) {
-                $collection_no_acces_by_status = collection::create($application, $databox, $appbox, 'BIBOONOACCESBYSTATUS', $DI['user']);
+                $collection_no_acces_by_status = collection::create($application, $databox, $application['phraseanet.appbox'], 'BIBOONOACCESBYSTATUS', $DI['user']);
             }
 
             $DI['user'] = $DI->share(

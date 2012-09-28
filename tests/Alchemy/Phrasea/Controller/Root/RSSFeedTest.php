@@ -1,7 +1,5 @@
 <?php
 
-use Alchemy\Phrasea\Core\Configuration;
-
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAbstract.class.inc';
 require_once __DIR__ . '/../../../../FeedValidator.inc';
 
@@ -108,8 +106,6 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
         @unlink('/tmp/db.sqlite');
         copy(__DIR__ . '/../../../../db-ref.sqlite', '/tmp/db.sqlite');
 
-        $appbox = $application['phraseanet.appbox'];
-
         $application['session']->clear();
         $application['session']->set('usr_id', self::$DI['user']->get_id());
 
@@ -133,31 +129,31 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
         for ($i = 1; $i != 15; $i++) {
             $entry = Feed_Entry_Adapter::create($application, self::$feed_4_public, $publisher, 'titre entry', 'soustitre entry', 'Jean-Marie Biggaro', 'author@example.com');
 
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_1']);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_6']);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_7']);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_8']);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_9']);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_10']);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_1']);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_13']);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_15']);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_16']);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_19']);
+            $item = Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_1']);
+            $item = Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_6']);
+            $item = Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_7']);
+            $item = Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_8']);
+            $item = Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_9']);
+            $item = Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_10']);
+            $item = Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_1']);
+            $item = Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_13']);
+            $item = Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_15']);
+            $item = Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_16']);
+            $item = Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_19']);
 
             $entry = Feed_Entry_Adapter::create($application, self::$feed_1_private, $publisher, 'titre entry', 'soustitre entry', 'Jean-Marie Biggaro', 'author@example.com');
 
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_1']);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_6']);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_7']);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_8']);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_9']);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_10']);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_1']);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_13']);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_15']);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_16']);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$DI['record_19']);
+            $item = Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_1']);
+            $item = Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_6']);
+            $item = Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_7']);
+            $item = Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_8']);
+            $item = Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_9']);
+            $item = Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_10']);
+            $item = Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_1']);
+            $item = Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_13']);
+            $item = Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_15']);
+            $item = Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_16']);
+            $item = Feed_Entry_Item::create($application['phraseanet.appbox'], $entry, self::$DI['record_19']);
 
             self::$feed_4_entries[] = $entry;
         }
@@ -223,7 +219,6 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
     public function testPublicFeed()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $this->authenticate(self::$DI['app']);
 
         $link = self::$feed_3_public->get_user_link(self::$DI['app']['phraseanet.registry'], self::$DI['user'], Feed_Adapter::FORMAT_ATOM)->get_href();
@@ -242,7 +237,6 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
     public function testUserFeedAggregated()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $this->authenticate(self::$DI['app']);
 
         $link = self::$private_feeds->get_aggregate()->get_user_link(self::$DI['app']['phraseanet.registry'], self::$DI['user'], Feed_Adapter::FORMAT_ATOM)->get_href();
@@ -261,7 +255,6 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
     public function testUserFeed()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $this->authenticate(self::$DI['app']);
 
         $link = self::$feed_1_private->get_user_link(self::$DI['app']['phraseanet.registry'], self::$DI['user'], Feed_Adapter::FORMAT_ATOM)->get_href();

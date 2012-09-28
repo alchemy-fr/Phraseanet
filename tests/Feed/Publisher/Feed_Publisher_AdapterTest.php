@@ -1,7 +1,5 @@
 <?php
 
-use Alchemy\Phrasea\Core\Configuration;
-
 require_once __DIR__ . '/../../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
 class Feed_Publisher_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
@@ -21,7 +19,6 @@ class Feed_Publisher_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $auth = new Session_Authentication_None(self::$DI['user']);
         self::$DI['app']->openAccount($auth);
         self::$feed = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], self::$title, self::$subtitle);

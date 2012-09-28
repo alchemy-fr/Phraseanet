@@ -3,7 +3,6 @@
 require_once __DIR__ . '/../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 use Alchemy\Phrasea\CLI;
-use Alchemy\Phrasea\Core\Configuration;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class module_console_schedulerStateTest extends PHPUnit_Framework_TestCase

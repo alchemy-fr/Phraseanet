@@ -19,10 +19,9 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
         parent::setUpBeforeClass();
         $application = new Application('test');
-        $appbox = $application['phraseanet.appbox'];
 
         $found = false;
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach ($application['phraseanet.appbox']->get_databoxes() as $databox) {
             $found = true;
             break;
         }
@@ -30,12 +29,12 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
         if ( ! $found)
             self::fail('No databox found for collection test');
 
-        self::$object = collection::create(self::$DI['app'], $databox, $appbox, 'test_collection', self::$DI['user']);
+        self::$object = collection::create(self::$DI['app'], $databox, $application['phraseanet.appbox'], 'test_collection', self::$DI['user']);
 
         if ( ! self::$object instanceof collection)
             self::fail('Unable to create collection');
 
-        self::$objectDisable = collection::create(self::$DI['app'], $databox, $appbox, 'test_collection', self::$DI['user']);
+        self::$objectDisable = collection::create(self::$DI['app'], $databox, $application['phraseanet.appbox'], 'test_collection', self::$DI['user']);
         self::$objectDisable->disable(self::$DI['app']['phraseanet.appbox']);
         if ( ! self::$objectDisable instanceof collection)
             self::fail('Unable to create disable collection');
@@ -50,16 +49,15 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testDisable()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $base_id = self::$object->get_base_id();
         $coll_id = self::$object->get_coll_id();
-        self::$object->disable($appbox);
+        self::$object->disable(self::$DI['app']['phraseanet.appbox']);
         $this->assertTrue(is_int(self::$object->get_base_id()));
         $this->assertTrue(is_int(self::$object->get_coll_id()));
         $this->assertFalse(self::$object->is_active());
 
         $sbas_id = self::$object->get_databox()->get_sbas_id();
-        $databox = $appbox->get_databox($sbas_id);
+        $databox = self::$DI['app']['phraseanet.appbox']->get_databox($sbas_id);
 
         foreach ($databox->get_collections() as $collection) {
             $this->assertTrue($collection->get_base_id() !== $base_id);

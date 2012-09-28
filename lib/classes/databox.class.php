@@ -10,8 +10,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Version;
-use Alchemy\Phrasea\Core\Configuration;
 use Symfony\Component\Filesystem\Filesystem;
 
 class databox extends base

@@ -81,7 +81,6 @@ class module_console_taskrun extends Command
             throw new \RuntimeException('Argument must be an Id.');
         }
 
-        $appbox = $this->getService('phraseanet.appbox');
         $task_manager = new task_manager($this->container);
 
         if ($input->getOption('runner') === task_abstract::RUNNER_MANUAL) {

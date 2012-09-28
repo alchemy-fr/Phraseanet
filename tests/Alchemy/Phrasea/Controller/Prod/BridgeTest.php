@@ -1,7 +1,5 @@
 <?php
 
-use Alchemy\Phrasea\Core\Configuration;
-
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 require_once __DIR__ . '/../../../../Bridge/Bridge_datas.inc';
 
@@ -43,7 +41,6 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testManager()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $accounts = Bridge_Account::get_accounts_by_user(self::$DI['app'], self::$DI['user']);
         $usr_id = self::$DI['user']->get_id();
 
@@ -70,7 +67,6 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testCallBackAccountAlreadyDefined()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $crawler = self::$DI['client']->request('GET', '/prod/bridge/callback/apitest/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $pageContent = self::$DI['client']->getResponse()->getContent();

@@ -1,7 +1,5 @@
 <?php
 
-use Alchemy\Phrasea\Core\Configuration;
-
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
@@ -11,8 +9,7 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testCheckMulti()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-        $databoxes = $appbox->get_databoxes();
+        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
         $databox = array_shift($databoxes);
 
         $tag = new PHPExiftool\Driver\Tag\IPTC\ObjectName();
@@ -34,8 +31,7 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testCheckReadOnly()
     {
-        $appbox = self::$DI['app']['phraseanet.appbox'];
-        $databoxes = $appbox->get_databoxes();
+        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
         $databox = array_shift($databoxes);
 
         $tag = new PHPExiftool\Driver\Tag\IPTC\ObjectName();

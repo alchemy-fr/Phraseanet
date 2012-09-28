@@ -238,8 +238,6 @@ class Upload implements ControllerProviderInterface
             } else {
                 $params = array('lazaret_file' => $elementCreated);
 
-                $appbox = $app['phraseanet.appbox'];
-
                 $eventsManager = $app['events-manager'];
                 $eventsManager->trigger('__UPLOAD_QUARANTINE__', $params);
 

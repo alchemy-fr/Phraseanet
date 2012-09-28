@@ -10,9 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 use Alchemy\Phrasea\Controller\RecordsRequest;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  *
@@ -458,7 +456,7 @@ class set_order extends set_abstract
      */
     public function deny_elements(Array $elements_ids)
     {
-        $conn = $app['phraseanet.appbox']->get_connection();
+        $conn = $this->app['phraseanet.appbox']->get_connection();
 
         $n = 0;
 
@@ -480,7 +478,7 @@ class set_order extends set_abstract
         }
 
         if ($n > 0) {
-            $evt_mngr = $app['events-manager'];
+            $evt_mngr = $this->app['events-manager'];
 
             $params = array(
                 'from' => $this->app['phraseanet.user']->get_id(),

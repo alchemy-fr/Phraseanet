@@ -32,12 +32,6 @@ class Session_Authentication_Token implements Session_Authentication_Interface
     protected $token;
     protected $user;
 
-    /**
-     *
-     * @param  appbox                       $appbox
-     * @param  type                         $token
-     * @return Session_Authentication_Token
-     */
     public function __construct(Application $app, $token)
     {
         $this->app = $app;

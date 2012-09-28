@@ -9,7 +9,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 
 /**
  *
@@ -17,7 +16,6 @@ use Alchemy\Phrasea\Core\Configuration;
  * @link        www.phraseanet.com
  */
 $app = new Application();
-$appbox = $app['phraseanet.appbox'];
 
 $user = $app['phraseanet.user'];
 

@@ -9,7 +9,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 
 /**
  *
@@ -20,8 +19,6 @@ use Alchemy\Phrasea\Core\Configuration;
 require_once __DIR__ . "/../../lib/bootstrap.php";
 $app = new Application();
 phrasea::headers();
-$appbox = $app['phraseanet.appbox'];
-$registry = $app['phraseanet.registry'];
 
 $request = http_request::getInstance();
 $parm = $request->get_parms("bas", "rec");
@@ -77,7 +74,7 @@ $right = false;
                 if ($url != '') {
                     switch ($type) {
                         case 'video':
-                            $embed = '<object width="100%" height="100%" type="application/x-shockwave-flash" data="' . $registry->get('GV_ServerName') . 'include/jslibs/flowplayer/flowplayer-3.2.12.swf">' .
+                            $embed = '<object width="100%" height="100%" type="application/x-shockwave-flash" data="' . $app['phraseanet.registry']->get('GV_ServerName') . 'include/jslibs/flowplayer/flowplayer-3.2.12.swf">' .
                                 '<param value="true" name="allowfullscreen">' .
                                 '<param value="always" name="allowscriptaccess">' .
                                 '<param value="high" name="quality">' .
@@ -87,7 +84,7 @@ $right = false;
                                 '</object>';
                             break;
                         case 'document':
-                            $embed = '<object width="600" height="500" type="application/x-shockwave-flash" data="' . $registry->get('GV_ServerName') . 'include/FlexPaper_flash/FlexPaperViewer.swf" style="visibility: visible; width: 600px; height: 500px; top: 0px;">' .
+                            $embed = '<object width="600" height="500" type="application/x-shockwave-flash" data="' . $app['phraseanet.registry']->get('GV_ServerName') . 'include/FlexPaper_flash/FlexPaperViewer.swf" style="visibility: visible; width: 600px; height: 500px; top: 0px;">' .
                                 '<param name="menu" value="false">' .
                                 '<param name="flashvars" value="SwfFile=' . urlencode($url) . '&amp;Scale=0.6&amp;ZoomTransition=easeOut&amp;ZoomTime=0.5&amp;ZoomInterval=0.1&amp;FitPageOnLoad=true&amp;FitWidthOnLoad=true&amp;PrintEnabled=false&amp;FullScreenAsMaxWindow=false&amp;localeChain=' . $app['locale'] . '">' .
                                 '<param name="allowFullScreen" value="true">' .
@@ -95,8 +92,8 @@ $right = false;
                                 '</object>';
                             break;
                         case 'audio':
-                            $embed = '<object width="290" height="24" data="' . $registry->get('GV_ServerName') . 'include/jslibs/audio-player/player.swf" type="application/x-shockwave-flash">' .
-                                '<param value="' . $registry->get('GV_ServerName') . 'include/jslibs/audio-player/player.swf" name="movie"/>' .
+                            $embed = '<object width="290" height="24" data="' . $app['phraseanet.registry']->get('GV_ServerName') . 'include/jslibs/audio-player/player.swf" type="application/x-shockwave-flash">' .
+                                '<param value="' . $app['phraseanet.registry']->get('GV_ServerName') . 'include/jslibs/audio-player/player.swf" name="movie"/>' .
                                 '<param value="playerID=1&amp;autostart=yes&amp;soundFile=' . urlencode($url) . '" name="FlashVars"/>' .
                                 '<param value="high" name="quality"/>' .
                                 '<param value="false" name="menu"/>' .

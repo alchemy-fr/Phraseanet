@@ -45,9 +45,8 @@ class module_console_fieldsRename extends Command
     {
         $new_name = $input->getArgument('name');
 
-        $appbox = $this->getService('phraseanet.appbox');
         try {
-            $databox = $appbox->get_databox((int) $input->getArgument('sbas_id'));
+            $databox = $this->getService('phraseanet.appbox')->get_databox((int) $input->getArgument('sbas_id'));
         } catch (\Exception $e) {
             $output->writeln("<error>Invalid databox id </error>");
 

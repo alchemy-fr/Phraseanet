@@ -394,7 +394,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     {
         $dstatus = databox_status::getDisplayStatus($this->app);
         $sbas_id = $this->get_sbas_id();
-        $appbox = $this->app['phraseanet.appbox'];
         $user = $this->app['phraseanet.user'];
 
         $status = '';
@@ -1351,7 +1350,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $story = new self($app, $databox->get_sbas_id(), $story_id);
 
         try {
-        $appbox = $app['phraseanet.appbox'];
             $log_id = $app['phraseanet.logger']($databox)->get_id();
 
             $sql = 'INSERT INTO log_docs (id, log_id, date, record_id, action, final, comment)
@@ -1405,7 +1403,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $record = new self($app, $databox->get_sbas_id(), $record_id);
 
         try {
-        $appbox = $app['phraseanet.appbox'];
             $log_id = $app['phraseanet.logger']($databox)->get_id();
 
             $sql = 'INSERT INTO log_docs (id, log_id, date, record_id, action, final, comment)
@@ -1574,9 +1571,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     {
         $connbas = $this->get_databox()->get_connection();
         $sbas_id = $this->get_databox()->get_sbas_id();
-        $appbox = $this->app['phraseanet.appbox'];
-        $registry = $this->app['phraseanet.registry'];
-        $conn = $appbox->get_connection();
+        $conn = $this->app['phraseanet.appbox']->get_connection();
 
         $ftodel = array();
         foreach ($this->get_subdefs() as $subdef) {
@@ -1611,7 +1606,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $stmt->closeCursor();
 
         try {
-            $sphinx_rt = sphinxrt::get_instance($registry);
+            $sphinx_rt = sphinxrt::get_instance($this->app['phraseanet.registry']);
 
             $sbas_params = phrasea::sbas_params($this->app);
 
@@ -2050,8 +2045,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      */
     public function get_grouping_parents()
     {
-        $appbox = $this->app['phraseanet.appbox'];
-
         $sql = 'SELECT r.record_id
             FROM regroup g
               INNER JOIN (record r

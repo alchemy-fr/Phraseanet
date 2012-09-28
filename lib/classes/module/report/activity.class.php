@@ -292,8 +292,7 @@ class module_report_activity extends module_report
         $filter = $s->getFilters();
         $conn = $s->getConnBas();
 
-        $appbox = $this->app['phraseanet.appbox'];
-        $databox = $appbox->get_databox($this->sbas_id);
+        $databox = $this->app['phraseanet.appbox']->get_databox($this->sbas_id);
 
         $params = array();
         $date_filter = $filter->getDateFilter();
@@ -363,7 +362,6 @@ class module_report_activity extends module_report
     {
         $this->title = _('report:: telechargements par jour');
 
-        $registry = $this->app['phraseanet.registry'];
 
         $s = new module_report_sql($this->app, $this);
         $filter = $s->getFilters();
@@ -756,14 +754,13 @@ class module_report_activity extends module_report
     public static function topTenUser(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
         $conn = connection::getPDOConnection($app, $sbas_id);
-        $registry = $app['phraseanet.registry'];
         $result = array();
         $result['top_ten_doc'] = array();
         $result['top_ten_prev'] = array();
         $result['top_ten_poiddoc'] = array();
         $result['top_ten_poidprev'] = array();
 
-        $params = array(':site_id' => $registry->get('GV_sit'));
+        $params = array(':site_id' => $app['phraseanet.registry']->get('GV_sit'));
 
         $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $params = array_merge($params, $datefilter['params']);
@@ -837,14 +834,13 @@ class module_report_activity extends module_report
     public static function activity(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
         $conn = connection::getPDOConnection($app, $sbas_id);
-        $registry = $app['phraseanet.registry'];
         $res = array();
         $datefilter =
             module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $collfilter =
             module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
-        $params = array(':site_id' => $registry->get('GV_sit'));
+        $params = array(':site_id' => $app['phraseanet.registry']->get('GV_sit'));
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $sql = "
@@ -877,7 +873,6 @@ class module_report_activity extends module_report
     public static function activityDay(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
         $conn = connection::getPDOConnection($app, $sbas_id);
-        $registry = $app['phraseanet.registry'];
         $result = array();
         $res = array();
         $datefilter =
@@ -885,7 +880,7 @@ class module_report_activity extends module_report
         $collfilter =
             module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
-        $params = array(':site_id' => $registry->get('GV_sit'));
+        $params = array(':site_id' => $app['phraseanet.registry']->get('GV_sit'));
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $sql = "
@@ -919,14 +914,13 @@ class module_report_activity extends module_report
     public static function activityQuestion(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
         $conn = connection::getPDOConnection($app, $sbas_id);
-        $registry = $app['phraseanet.registry'];
         $result = array();
         $datefilter =
             module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $collfilter =
             module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
-        $params = array(':site_id' => $registry->get('GV_sit'));
+        $params = array(':site_id' => $app['phraseanet.registry']->get('GV_sit'));
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $sql = "
@@ -957,14 +951,13 @@ class module_report_activity extends module_report
     public static function activiteTopQuestion(Application $app, $dmin, $dmax, $sbas_id, $list_coll_id)
     {
         $conn = connection::getPDOConnection($app, $sbas_id);
-        $registry = $app['phraseanet.registry'];
         $result = array();
         $datefilter =
             module_report_sqlfilter::constructDateFilter($dmin, $dmax);
         $collfilter =
             module_report_sqlfilter::constructCollectionFilter($app, $list_coll_id);
 
-        $params = array(':site_id' => $registry->get('GV_sit'));
+        $params = array(':site_id' => $app['phraseanet.registry']->get('GV_sit'));
         $params = array_merge($params, $datefilter['params'], $collfilter['params']);
 
         $sql = "

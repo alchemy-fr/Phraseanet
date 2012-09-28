@@ -23,11 +23,6 @@ use Alchemy\Phrasea\Command\RescanTechnicalDatas;
 use Alchemy\Phrasea\Command\BuildMissingSubdefs;
 use Alchemy\Phrasea\Command\RecordAdd;
 use Alchemy\Phrasea\Command\CreateCollection;
-use Alchemy\Phrasea\PhraseanetServiceProvider;
-use Alchemy\Phrasea\Core\Provider\BrowserServiceProvider;
-use Silex\Provider\UrlGeneratorServiceProvider;
-use Silex\Provider\ValidatorServiceProvider;
-use Silex\Provider\TwigServiceProvider;
 use Alchemy\Phrasea\CLI;
 
 require_once dirname(__FILE__) . '/../lib/classes/bootstrap.class.php';

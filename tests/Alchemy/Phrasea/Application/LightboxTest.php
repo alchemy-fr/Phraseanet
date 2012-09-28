@@ -1,7 +1,5 @@
 <?php
 
-use Alchemy\Phrasea\Core\Configuration;
-
 require_once __DIR__ . '/../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
@@ -16,12 +14,11 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     public function setUp()
     {
         parent::setUp();
-        $appbox = self::$DI['app']['phraseanet.appbox'];
         $this->feed = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "salut", 'coucou');
         $publishers = $this->feed->get_publishers();
         $publisher = array_shift($publishers);
         $this->entry = Feed_Entry_Adapter::create(self::$DI['app'], $this->feed, $publisher, 'title', "sub Titkle", " jean pierre", "jp@test.com");
-        $this->item = Feed_Entry_Item::create($appbox, $this->entry, self::$DI['record_1']);
+        $this->item = Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $this->entry, self::$DI['record_1']);
     }
 
     public function tearDown()

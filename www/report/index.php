@@ -20,9 +20,8 @@ use Alchemy\Phrasea\Application;
 require_once __DIR__ . "/../../lib/bootstrap.php";
 
 $app = new Application();
-$registry = $app['phraseanet.registry'];
 
-require($registry->get('GV_RootPath') . 'lib/classes/deprecated/countries.php');
+require($app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/deprecated/countries.php');
 
 phrasea::headers();
 User_Adapter::updateClientInfos($app, 4);
@@ -36,11 +35,11 @@ $dashboard->execute();
 $var = array(
     'ajax_dash'   => true,
     'dashboard'   => $dashboard,
-    'home_title'  => $registry->get('GV_homeTitle'),
+    'home_title'  => $app['phraseanet.registry']->get('GV_homeTitle'),
     'module'      => "report",
     "module_name" => "Report",
-    'anonymous'   => $registry->get('GV_anonymousReport'),
-    'g_anal'      => $registry->get('GV_googleAnalytics'),
+    'anonymous'   => $app['phraseanet.registry']->get('GV_anonymousReport'),
+    'g_anal'      => $app['phraseanet.registry']->get('GV_googleAnalytics'),
     'ajax'        => false,
     'ajax_chart'  => false
 );

@@ -9,7 +9,6 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Configuration;
 
 /**
  *
@@ -19,7 +18,6 @@ use Alchemy\Phrasea\Core\Configuration;
 
 require_once __DIR__ . "/../../lib/bootstrap.php";
 $app = new Application();
-$appbox = $app['phraseanet.appbox'];
 
 $request = http_request::getInstance();
 $parm = $request->get_parms('token', 'get', 'type');
@@ -37,8 +35,7 @@ if (($list = @unserialize($datas['datas'])) == false) {
     phrasea::headers(500);
 }
 
-$registry = $app['phraseanet.registry'];
-$zipFile = $registry->get('GV_RootPath') . 'tmp/download/' . $datas['value'] . '.zip';
+$zipFile = $app['phraseanet.registry']->get('GV_RootPath') . 'tmp/download/' . $datas['value'] . '.zip';
 
 if (isset($parm['get']) && $parm['get'] == '1') {
     $response = set_export::stream_file($app['phraseanet.registry'], $zipFile, $list['export_name'], 'application/zip');
@@ -66,8 +63,8 @@ phrasea::headers();
 <html>
     <head>
         <title><?php echo _('phraseanet:: Telechargement de documents'); ?> anonyme</title>
-        <meta content="<?php echo $registry->get('GV_metaDescription') ?>" name="description"/>
-        <meta content="<?php echo $registry->get('GV_metaKeywords') ?>" name="keywords"/>
+        <meta content="<?php echo $app['phraseanet.registry']->get('GV_metaDescription') ?>" name="description"/>
+        <meta content="<?php echo $app['phraseanet.registry']->get('GV_metaKeywords') ?>" name="keywords"/>
         <link rel="shortcut icon" type="image/x-icon" href="/prod/favicon.ico" />
         <style type="text/css">
             *,body{

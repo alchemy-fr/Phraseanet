@@ -446,7 +446,6 @@ class collection implements cache_cacheableInterface
 
     public function unmount_collection(Application $app)
     {
-        $appbox = $app['phraseanet.appbox'];
         $params = array(':base_id' => $this->get_base_id());
 
         $query = new User_Query($app);
@@ -466,26 +465,26 @@ class collection implements cache_cacheableInterface
         }
 
         $sql = "DELETE FROM basusr WHERE base_id = :base_id";
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
         $sql = "DELETE FROM sselcont WHERE base_id = :base_id";
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
         $sql = "DELETE FROM bas WHERE base_id = :base_id";
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
         $sql = "DELETE FROM demand WHERE base_id = :base_id";
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
-        phrasea::reset_baseDatas($appbox);
+        phrasea::reset_baseDatas($app['phraseanet.appbox']);
 
         return $this;
     }
@@ -601,11 +600,10 @@ class collection implements cache_cacheableInterface
 
         if ( ! isset(self::$_logos[$base_id_key])) {
 
-            $registry = $app['phraseanet.registry'];
-            if (is_file($registry->get('GV_RootPath') . 'config/minilogos/' . $base_id)) {
+            if (is_file($app['phraseanet.registry']->get('GV_RootPath') . 'config/minilogos/' . $base_id)) {
                 $name = phrasea::bas_names($base_id, $app);
                 self::$_logos[$base_id_key] = '<img title="' . $name
-                    . '" src="' . $registry->get('GV_STATIC_URL')
+                    . '" src="' . $app['phraseanet.registry']->get('GV_STATIC_URL')
                     . '/custom/minilogos/' . $base_id . '" />';
             } elseif ($printname) {
                 self::$_logos[$base_id_key] = phrasea::bas_names($base_id, $app);
