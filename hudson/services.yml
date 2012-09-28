@@ -41,8 +41,6 @@ Orm:
           service: Cache\array_cache
         metadata:
           service: Cache\array_cache
-      log:
-        service: Log\query_logger
 
   # Doctrine production service options
   doctrine_prod:

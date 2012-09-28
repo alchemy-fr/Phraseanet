@@ -105,7 +105,6 @@ class Application extends SilexApplication
             }
         } else {
             ini_set('display_errors', 'off');
-            ini_set('log_errors', 'off');
         }
 
         $this->register(new BorderManagerServiceProvider());
