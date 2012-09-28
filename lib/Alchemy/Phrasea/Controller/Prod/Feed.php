@@ -33,43 +33,63 @@ class Feed implements ControllerProviderInterface
          * I got a selection of docs, which publications are available forthese docs ?
          */
         $controllers->post('/requestavailable/', function(Application $app, Request $request) {
-                $user = $app['phraseanet.user'];
-                $feeds = \Feed_Collection::load_all($app, $user);
-                $publishing = RecordsRequest::fromRequest($app, $request, true, array(), array('bas_chupub'));
+            $user = $app['phraseanet.user'];
+            $feeds = \Feed_Collection::load_all($app, $user);
+            $publishing = RecordsRequest::fromRequest($app, $request, true, array(), array('bas_chupub'));
 
-                return new Response($app['twig']->render('prod/actions/publish/publish.html.twig', array('publishing' => $publishing, 'feeds'      => $feeds)));
-            });
+            return $app['twig']->render('prod/actions/publish/publish.html.twig', array('publishing' => $publishing, 'feeds'      => $feeds));
+        });
 
         /**
-         * I've selected a publication for my ocs, let's publish them
+         * I've selected a publication for my docs, let's publish them
          */
         $controllers->post('/entry/create/', function(Application $app, Request $request) {
-                try {
-                    $user = $app['phraseanet.user'];
-                    $feed = new \Feed_Adapter($app, $request->request->get('feed_id'));
-                    $publisher = \Feed_Publisher_Adapter::getPublisher($app['phraseanet.appbox'], $feed, $user);
+            try {
+                $user = $app['phraseanet.user'];
+                $feed = new \Feed_Adapter($app, $request->request->get('feed_id'));
+                $publisher = \Feed_Publisher_Adapter::getPublisher($app['phraseanet.appbox'], $feed, $user);
 
-                    $title = $request->request->get('title');
-                    $subtitle = $request->request->get('subtitle');
-                    $author_name = $request->request->get('author_name');
-                    $author_mail = $request->request->get('author_mail');
+                $title = $request->request->get('title');
+                $subtitle = $request->request->get('subtitle');
+                $author_name = $request->request->get('author_name');
+                $author_mail = $request->request->get('author_mail');
 
-                    $entry = \Feed_Entry_Adapter::create($app, $feed, $publisher, $title, $subtitle, $author_name, $author_mail);
+                $entry = \Feed_Entry_Adapter::create($app, $feed, $publisher, $title, $subtitle, $author_name, $author_mail);
 
-                    $publishing = RecordsRequest::fromRequest($app, $request, true, array(), array('bas_chupub'));
+                $publishing = RecordsRequest::fromRequest($app, $request, true, array(), array('bas_chupub'));
 
-                    foreach ($publishing as $record) {
-                        $item = \Feed_Entry_Item::create($app['phraseanet.appbox'], $entry, $record);
-                    }
-                    $datas = array('error'   => false, 'message' => false);
-                } catch (\Exception $e) {
-                    $datas = array('error'   => true, 'message' => _('An error occured'), 'details' => $e->getMessage());
+                foreach ($publishing as $record) {
+                    $item = \Feed_Entry_Item::create($app['phraseanet.appbox'], $entry, $record);
                 }
+                $datas = array('error'   => false, 'message' => false);
+            } catch (\Exception $e) {
+                $datas = array('error'   => true, 'message' => _('An error occured'), 'details' => $e->getMessage());
+            }
 
-                return $app->json($datas);
-            });
+            return $app->json($datas);
+        });
 
         $controllers->get('/entry/{id}/edit/', function(Application $app, Request $request, $id) {
+
+            $user = $app['phraseanet.user'];
+
+            $entry = \Feed_Entry_Adapter::load_from_id($app, $id);
+
+            if ($entry->get_publisher()->get_user()->get_id() !== $user->get_id()) {
+                throw new \Exception_UnauthorizedAction();
+            }
+
+            $feeds = \Feed_Collection::load_all($app, $user);
+
+            $datas = $app['twig']->render('prod/actions/publish/publish_edit.html.twig', array('entry' => $entry, 'feeds' => $feeds));
+
+            return new Response($datas);
+        })->assert('id', '\d+');
+
+        $controllers->post('/entry/{id}/update/', function(Application $app, Request $request, $id) {
+            $datas = array('error'   => true, 'message' => '', 'datas'   => '');
+            try {
+                $app['phraseanet.appbox']->get_connection()->beginTransaction();
 
                 $user = $app['phraseanet.user'];
 
@@ -79,182 +99,162 @@ class Feed implements ControllerProviderInterface
                     throw new \Exception_UnauthorizedAction();
                 }
 
-                $feeds = \Feed_Collection::load_all($app, $user);
+                $title = $request->request->get('title');
+                $subtitle = $request->request->get('subtitle');
+                $author_name = $request->request->get('author_name');
+                $author_mail = $request->request->get('author_mail');
 
-                $datas = $app['twig']->render('prod/actions/publish/publish_edit.html.twig', array('entry' => $entry, 'feeds' => $feeds));
+                $entry->set_author_email($author_mail)
+                    ->set_author_name($author_name)
+                    ->set_title($title)
+                    ->set_subtitle($subtitle);
 
-                return new Response($datas);
-            })->assert('id', '\d+');
-
-        $controllers->post('/entry/{id}/update/', function(Application $app, Request $request, $id) {
-                $datas = array('error'   => true, 'message' => '', 'datas'   => '');
-                try {
-                    $app['phraseanet.appbox']->get_connection()->beginTransaction();
-
-                    $user = $app['phraseanet.user'];
-
-                    $entry = \Feed_Entry_Adapter::load_from_id($app, $id);
-
-                    if ($entry->get_publisher()->get_user()->get_id() !== $user->get_id()) {
-                        throw new \Exception_UnauthorizedAction();
+                $current_feed_id = $entry->get_feed()->get_id();
+                $new_feed_id = $request->request->get('feed_id', $current_feed_id);
+                if ($current_feed_id != $new_feed_id) {
+                    try {
+                        $new_feed = \Feed_Adapter::load_with_user($app, $user, $new_feed_id);
+                    } catch (\Exception_NotFound $e) {
+                        throw new \Exception_Forbidden('You have no access to this feed');
                     }
 
-                    $title = $request->request->get('title');
-                    $subtitle = $request->request->get('subtitle');
-                    $author_name = $request->request->get('author_name');
-                    $author_mail = $request->request->get('author_mail');
-
-                    $entry->set_author_email($author_mail)
-                        ->set_author_name($author_name)
-                        ->set_title($title)
-                        ->set_subtitle($subtitle);
-
-                    $current_feed_id = $entry->get_feed()->get_id();
-                    $new_feed_id = $request->request->get('feed_id', $current_feed_id);
-                    if ($current_feed_id != $new_feed_id) {
-                        try {
-                            $new_feed = \Feed_Adapter::load_with_user($app, $user, $new_feed_id);
-                        } catch (\Exception_NotFound $e) {
-                            throw new \Exception_Forbidden('You have no access to this feed');
-                        }
-
-                        if ( ! $new_feed->is_publisher($user)) {
-                            throw new \Exception_Forbidden('You are not publisher of this feed');
-                        }
-
-                        $entry->set_feed($new_feed);
+                    if (!$new_feed->is_publisher($user)) {
+                        throw new \Exception_Forbidden('You are not publisher of this feed');
                     }
 
-                    $items = explode(';', $request->request->get('sorted_lst'));
-
-                    foreach ($items as $item_sort) {
-                        $item_sort_datas = explode('_', $item_sort);
-                        if (count($item_sort_datas) != 2) {
-                            continue;
-                        }
-
-                        $item = new \Feed_Entry_Item($app['phraseanet.appbox'], $entry, $item_sort_datas[0]);
-
-                        $item->set_ord($item_sort_datas[1]);
-                    }
-                    $app['phraseanet.appbox']->get_connection()->commit();
-
-                    $entry = $app['twig']->render('prod/feeds/entry.html.twig', array('entry' => $entry));
-
-                    $datas = array('error'   => false, 'message' => 'succes', 'datas'   => $entry);
-                } catch (\Exception_Feed_EntryNotFound $e) {
-                    $app['phraseanet.appbox']->get_connection()->rollBack();
-                    $datas['message'] = _('Feed entry not found');
-                } catch (\Exception_NotFound $e) {
-                    $app['phraseanet.appbox']->get_connection()->rollBack();
-                    $datas['message'] = _('Feed not found');
-                } catch (\Exception_Forbidden $e) {
-                    $app['phraseanet.appbox']->get_connection()->rollBack();
-                    $datas['message'] = _('You are not authorized to access this feed');
-                } catch (\Exception $e) {
-                    $app['phraseanet.appbox']->get_connection()->rollBack();
-                    $datas['message'] = $e->getMessage();
+                    $entry->set_feed($new_feed);
                 }
 
-                return $app->json($datas);
-            })->assert('id', '\d+');
+                $items = explode(';', $request->request->get('sorted_lst'));
+
+                foreach ($items as $item_sort) {
+                    $item_sort_datas = explode('_', $item_sort);
+                    if (count($item_sort_datas) != 2) {
+                        continue;
+                    }
+
+                    $item = new \Feed_Entry_Item($app['phraseanet.appbox'], $entry, $item_sort_datas[0]);
+
+                    $item->set_ord($item_sort_datas[1]);
+                }
+                $app['phraseanet.appbox']->get_connection()->commit();
+
+                $entry = $app['twig']->render('prod/feeds/entry.html.twig', array('entry' => $entry));
+
+                $datas = array('error'   => false, 'message' => 'succes', 'datas'   => $entry);
+            } catch (\Exception_Feed_EntryNotFound $e) {
+                $app['phraseanet.appbox']->get_connection()->rollBack();
+                $datas['message'] = _('Feed entry not found');
+            } catch (\Exception_NotFound $e) {
+                $app['phraseanet.appbox']->get_connection()->rollBack();
+                $datas['message'] = _('Feed not found');
+            } catch (\Exception_Forbidden $e) {
+                $app['phraseanet.appbox']->get_connection()->rollBack();
+                $datas['message'] = _('You are not authorized to access this feed');
+            } catch (\Exception $e) {
+                $app['phraseanet.appbox']->get_connection()->rollBack();
+                $datas['message'] = $e->getMessage();
+            }
+
+            return $app->json($datas);
+        })->assert('id', '\d+');
 
         $controllers->post('/entry/{id}/delete/', function(Application $app, Request $request, $id) {
-                $datas = array('error'   => true, 'message' => '');
-                try {
-                    $app['phraseanet.appbox']->get_connection()->beginTransaction();
+            $datas = array('error'   => true, 'message' => '');
+            try {
+                $app['phraseanet.appbox']->get_connection()->beginTransaction();
 
-                    $user = $app['phraseanet.user'];
+                $user = $app['phraseanet.user'];
 
-                    $entry = \Feed_Entry_Adapter::load_from_id($app, $id);
+                $entry = \Feed_Entry_Adapter::load_from_id($app, $id);
 
-                    if ($entry->get_publisher()->get_user()->get_id() !== $user->get_id()
-                        && $entry->get_feed()->is_owner($user) === false) {
-                        throw new \Exception_UnauthorizedAction(_('Action Forbidden : You are not the publisher'));
-                    }
-
-                    $entry->delete();
-
-                    $app['phraseanet.appbox']->get_connection()->commit();
-                    $datas = array('error'   => false, 'message' => 'succes');
-                } catch (\Exception_Feed_EntryNotFound $e) {
-                    $app['phraseanet.appbox']->get_connection()->rollBack();
-                    $datas['message'] = _('Feed entry not found');
-                } catch (\Exception $e) {
-                    $app['phraseanet.appbox']->get_connection()->rollBack();
-                    $datas['message'] = $e->getMessage();
+                if ($entry->get_publisher()->get_user()->get_id() !== $user->get_id()
+                    && $entry->get_feed()->is_owner($user) === false) {
+                    throw new \Exception_UnauthorizedAction(_('Action Forbidden : You are not the publisher'));
                 }
 
-                return $app->json($datas);
-            })->assert('id', '\d+');
+                $entry->delete();
+
+                $app['phraseanet.appbox']->get_connection()->commit();
+                $datas = array('error'   => false, 'message' => 'succes');
+            } catch (\Exception_Feed_EntryNotFound $e) {
+                $app['phraseanet.appbox']->get_connection()->rollBack();
+                $datas['message'] = _('Feed entry not found');
+            } catch (\Exception $e) {
+                $app['phraseanet.appbox']->get_connection()->rollBack();
+                $datas['message'] = $e->getMessage();
+            }
+
+            return $app->json($datas);
+        })->assert('id', '\d+');
 
         $controllers->get('/', function(Application $app, Request $request) {
-                $request = $app['request'];
-                $page = (int) $request->query->get('page');
-                $page = $page > 0 ? $page : 1;
+            $request = $app['request'];
+            $page = (int) $request->query->get('page');
+            $page = $page > 0 ? $page : 1;
 
-                $user = $app['phraseanet.user'];
+            $user = $app['phraseanet.user'];
 
-                $feeds = \Feed_Collection::load_all($app, $user);
+            $feeds = \Feed_Collection::load_all($app, $user);
 
-                $datas = $app['twig']->render('prod/feeds/feeds.html.twig'
-                    , array(
-                    'feeds' => $feeds
-                    , 'feed'  => $feeds->get_aggregate()
-                    , 'page'  => $page
-                    )
-                );
+            $datas = $app['twig']->render('prod/feeds/feeds.html.twig'
+                , array(
+                'feeds' => $feeds
+                , 'feed'  => $feeds->get_aggregate()
+                , 'page'  => $page
+                )
+            );
 
-                return new Response($datas);
-            });
+            return new Response($datas);
+        });
 
         $controllers->get('/feed/{id}/', function(Application $app, Request $request, $id) {
-                $page = (int) $request->query->get('page');
-                $page = $page > 0 ? $page : 1;
+            $page = (int) $request->query->get('page');
+            $page = $page > 0 ? $page : 1;
 
-                $user = $app['phraseanet.user'];
+            $user = $app['phraseanet.user'];
 
-                $feed = \Feed_Adapter::load_with_user($app, $user, $id);
-                $feeds = \Feed_Collection::load_all($app, $user);
+            $feed = \Feed_Adapter::load_with_user($app, $user, $id);
+            $feeds = \Feed_Collection::load_all($app, $user);
 
-                $datas = $app['twig']->render('prod/feeds/feeds.html.twig', array('feed'  => $feed, 'feeds' => $feeds, 'page'  => $page));
+            $datas = $app['twig']->render('prod/feeds/feeds.html.twig', array('feed'  => $feed, 'feeds' => $feeds, 'page'  => $page));
 
-                return new Response($datas);
-            })->assert('id', '\d+');
+            return new Response($datas);
+        })->assert('id', '\d+');
 
         $controllers->get('/subscribe/aggregated/', function(Application $app, Request $request) {
-                $renew = ($request->query->get('renew') === 'true');
+            $renew = ($request->query->get('renew') === 'true');
 
-                $user = $app['phraseanet.user'];
+            $user = $app['phraseanet.user'];
 
-                $feeds = \Feed_Collection::load_all($app, $user);
-                $registry = $app['phraseanet.appbox']->get_registry();
+            $feeds = \Feed_Collection::load_all($app, $user);
+            $registry = $app['phraseanet.appbox']->get_registry();
 
-                $output = array(
-                    'texte' => '<p>' . _('publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.')
-                    . '</p><p>' . _('publications::Ne le partagez pas, il est strictement confidentiel') . '</p>
-                <div><input type="text" readonly="readonly" class="input_select_copy" value="' . $feeds->get_aggregate()->get_user_link($registry, $user, \Feed_Adapter::FORMAT_RSS, null, $renew)->get_href() . '"/></div>',
-                    'titre' => _('publications::votre rss personnel')
-                );
+            $output = array(
+                'texte' => '<p>' . _('publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.')
+                . '</p><p>' . _('publications::Ne le partagez pas, il est strictement confidentiel') . '</p>
+            <div><input type="text" readonly="readonly" class="input_select_copy" value="' . $feeds->get_aggregate()->get_user_link($registry, $user, \Feed_Adapter::FORMAT_RSS, null, $renew)->get_href() . '"/></div>',
+                'titre' => _('publications::votre rss personnel')
+            );
 
-                return $app->json($output);
-            });
+            return $app->json($output);
+        });
 
         $controllers->get('/subscribe/{id}/', function(Application $app, Request $request, $id) {
-                $renew = ($request->query->get('renew') === 'true');
-                $user = $app['phraseanet.user'];
-                $feed = \Feed_Adapter::load_with_user($app, $user, $id);
-                $registry = $app['phraseanet.appbox']->get_registry();
+            $renew = ($request->query->get('renew') === 'true');
+            $user = $app['phraseanet.user'];
+            $feed = \Feed_Adapter::load_with_user($app, $user, $id);
+            $registry = $app['phraseanet.appbox']->get_registry();
 
-                $output = array(
-                    'texte' => '<p>' . _('publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.')
-                    . '</p><p>' . _('publications::Ne le partagez pas, il est strictement confidentiel') . '</p>
-                <div><input type="text" style="width:100%" value="' . $feed->get_user_link($registry, $user, \Feed_Adapter::FORMAT_RSS, null, $renew)->get_href() . '"/></div>',
-                    'titre' => _('publications::votre rss personnel')
-                );
+            $output = array(
+                'texte' => '<p>' . _('publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.')
+                . '</p><p>' . _('publications::Ne le partagez pas, il est strictement confidentiel') . '</p>
+            <div><input type="text" style="width:100%" value="' . $feed->get_user_link($registry, $user, \Feed_Adapter::FORMAT_RSS, null, $renew)->get_href() . '"/></div>',
+                'titre' => _('publications::votre rss personnel')
+            );
 
-                return $app->json($output);
-            })->assert('id', '\d+');
+            return $app->json($output);
+        })->assert('id', '\d+');
 
         return $controllers;
     }

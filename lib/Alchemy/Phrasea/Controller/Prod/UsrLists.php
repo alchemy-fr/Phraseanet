@@ -179,7 +179,7 @@ class UsrLists implements ControllerProviderInterface
         );
 
         try {
-            if ( ! $list_name) {
+            if (!$list_name) {
                 throw new ControllerException(_('List name is required'));
             }
 
@@ -249,15 +249,15 @@ class UsrLists implements ControllerProviderInterface
         }
 
         return $app->json(array(
-                'result' => array(
-                    'id'      => $list->getId(),
-                    'name'    => $list->getName(),
-                    'created' => $list->getCreated()->format(DATE_ATOM),
-                    'updated' => $list->getUpdated()->format(DATE_ATOM),
-                    'owners'  => $owners,
-                    'users'   => $entries
-                )
-            ));
+            'result' => array(
+                'id'      => $list->getId(),
+                'name'    => $list->getName(),
+                'created' => $list->getCreated()->format(DATE_ATOM),
+                'updated' => $list->getUpdated()->format(DATE_ATOM),
+                'owners'  => $owners,
+                'users'   => $entries
+            )
+        ));
     }
 
     public function updateList(Application $app, $list_id)
@@ -272,7 +272,7 @@ class UsrLists implements ControllerProviderInterface
         try {
             $list_name = $request->request->get('name');
 
-            if ( ! $list_name) {
+            if (!$list_name) {
                 throw new ControllerException(_('List name is required'));
             }
 
@@ -388,7 +388,7 @@ class UsrLists implements ControllerProviderInterface
         $user = $app['phraseanet.user'];
 
         try {
-            if ( ! is_array($request->request->get('usr_ids'))) {
+            if (!is_array($request->request->get('usr_ids'))) {
                 throw new ControllerException('Invalid or missing parameter usr_ids');
             }
 
@@ -484,9 +484,9 @@ class UsrLists implements ControllerProviderInterface
             UsrListOwner::ROLE_ADMIN,
         );
 
-        if ( ! $app['request']->request->get('role'))
+        if (!$app['request']->request->get('role'))
             throw new \Exception_BadRequest('Missing role parameter');
-        elseif ( ! in_array($app['request']->request->get('role'), $availableRoles))
+        elseif (!in_array($app['request']->request->get('role'), $availableRoles))
             throw new \Exception_BadRequest('Role is invalid');
 
         try {

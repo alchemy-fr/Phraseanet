@@ -30,7 +30,7 @@ class UserPreferences implements ControllerProviderInterface
         $controllers->before(function(Request $request) use ($app) {
             $response = $app['firewall']->requireAuthentication();
 
-            if($response instanceof Response) {
+            if ($response instanceof Response) {
                 return $response;
             }
         });

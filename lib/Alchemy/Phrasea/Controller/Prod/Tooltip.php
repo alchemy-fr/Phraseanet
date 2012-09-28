@@ -30,7 +30,7 @@ class Tooltip implements ControllerProviderInterface
         $controllers->before(function(Request $request) use ($app) {
             $response = $app['firewall']->requireAuthentication();
 
-            if($response instanceof Response) {
+            if ($response instanceof Response) {
                 return $response;
             }
         });
@@ -122,14 +122,13 @@ class Tooltip implements ControllerProviderInterface
         }
 
         return $app['twig']->render(
-                'prod/Tooltip/Caption.html.twig'
-                , array(
-                'record'       => $record,
-                'view'         => $context,
-                'highlight'    => $app['request']->request->get('query'),
-                'searchEngine' => $search_engine,
-                )
-        );
+            'prod/Tooltip/Caption.html.twig'
+            , array(
+            'record'       => $record,
+            'view'         => $context,
+            'highlight'    => $app['request']->request->get('query'),
+            'searchEngine' => $search_engine,
+        ));
     }
 
     public function displayTechnicalDatas(Application $app, $sbas_id, $record_id)

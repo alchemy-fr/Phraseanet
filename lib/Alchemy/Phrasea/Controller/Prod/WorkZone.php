@@ -32,7 +32,7 @@ class WorkZone implements ControllerProviderInterface
         $controllers->before(function(Request $request) use ($app) {
             $response = $app['firewall']->requireAuthentication();
 
-            if($response instanceof Response) {
+            if ($response instanceof Response) {
                 return $response;
             }
         });
@@ -121,7 +121,7 @@ class WorkZone implements ControllerProviderInterface
 
     public function attachStories(Application $app, Request $request)
     {
-        if ( ! $request->request->get('stories')) {
+        if (!$request->request->get('stories')) {
             throw new \Exception_BadRequest();
         }
 
@@ -137,16 +137,16 @@ class WorkZone implements ControllerProviderInterface
             $element = explode('_', $element);
             $Story = new \record_adapter($app, $element[0], $element[1]);
 
-            if ( ! $Story->is_grouping()) {
+            if (!$Story->is_grouping()) {
                 throw new \Exception('You can only attach stories');
             }
 
-            if ( ! $user->ACL()->has_access_to_base($Story->get_base_id())) {
+            if (!$user->ACL()->has_access_to_base($Story->get_base_id())) {
                 throw new \Exception_Forbidden('You do not have access to this Story');
             }
 
             if ($StoryWZRepo->findUserStory($app, $user, $Story)) {
-                $alreadyFixed ++;
+                $alreadyFixed++;
                 continue;
             }
 
@@ -155,7 +155,7 @@ class WorkZone implements ControllerProviderInterface
             $StoryWZ->setRecord($Story);
 
             $app['EM']->persist($StoryWZ);
-            $done ++;
+            $done++;
         }
 
         $app['EM']->flush();
@@ -190,9 +190,9 @@ class WorkZone implements ControllerProviderInterface
 
         if ($request->getRequestFormat() == 'json') {
             return $app->json(array(
-                    'success' => true
-                    , 'message' => $message
-                ));
+                'success' => true
+                , 'message' => $message
+            ));
         }
 
         return $app->redirect('/{sbas_id}/{record_id}/');
@@ -209,7 +209,7 @@ class WorkZone implements ControllerProviderInterface
         /* @var $repository \Repositories\StoryWZRepository */
         $StoryWZ = $repository->findUserStory($app, $user, $Story);
 
-        if ( ! $StoryWZ) {
+        if (!$StoryWZ) {
             throw new \Exception_NotFound('Story not found');
         }
 
@@ -218,9 +218,9 @@ class WorkZone implements ControllerProviderInterface
 
         if ($request->getRequestFormat() == 'json') {
             return $app->json(array(
-                    'success' => true
-                    , 'message' => _('Story detached from the WorkZone')
-                ));
+                'success' => true
+                , 'message' => _('Story detached from the WorkZone')
+            ));
         }
 
         return $app->redirect('/');

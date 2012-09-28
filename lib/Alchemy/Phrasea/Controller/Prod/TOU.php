@@ -28,27 +28,27 @@ class TOU implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->post('/deny/{sbas_id}/', function(Application $app, Request $request, $sbas_id) {
-                $ret = array('success' => false, 'message' => '');
+            $ret = array('success' => false, 'message' => '');
 
-                try {
-                    $user = $app['phraseanet.user'];
+            try {
+                $user = $app['phraseanet.user'];
 
-                    $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
+                $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
 
-                    $user->ACL()->revoke_access_from_bases(
-                        $user->ACL()->get_granted_base(array(), array($databox->get_sbas_id()))
-                    );
-                    $user->ACL()->revoke_unused_sbas_rights();
+                $user->ACL()->revoke_access_from_bases(
+                    $user->ACL()->get_granted_base(array(), array($databox->get_sbas_id()))
+                );
+                $user->ACL()->revoke_unused_sbas_rights();
 
-                    $app->closeAccount();
+                $app->closeAccount();
 
-                    $ret = array('success' => true, 'message' => '');
-                } catch (\Exception $e) {
+                $ret = array('success' => true, 'message' => '');
+            } catch (\Exception $e) {
 
-                }
+            }
 
-                return $app->json($ret);
-            });
+            return $app->json($ret);
+        });
 
         return $controllers;
     }

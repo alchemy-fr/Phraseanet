@@ -183,11 +183,9 @@ class Lazaret implements ControllerProviderInterface
             );
         }
 
-        $html = $app['twig']->render(
+        return $app['twig']->render(
             'prod/upload/lazaret.html.twig', array('lazaretFiles' => $lazaretFiles)
         );
-
-        return new Response($html);
     }
 
     /**
@@ -242,7 +240,7 @@ class Lazaret implements ControllerProviderInterface
         $ret = array('success' => false, 'message' => '', 'result'  => array());
 
         //Optional parameter
-        $keepAttributes = ! ! $request->request->get('keep_attributes', false);
+        $keepAttributes = !!$request->request->get('keep_attributes', false);
         $attributesToKeep = $request->request->get('attributes', array());
 
         //Mandatory parameter
@@ -288,8 +286,8 @@ class Lazaret implements ControllerProviderInterface
                 foreach ($lazaretFile->getAttributes() as $attr) {
 
                     //Check which ones to keep
-                    if ( ! ! count($attributesToKeep)) {
-                        if ( ! in_array($attr->getId(), $attributesToKeep)) {
+                    if (!!count($attributesToKeep)) {
+                        if (!in_array($attr->getId(), $attributesToKeep)) {
                             continue;
                         }
                     }
@@ -460,7 +458,7 @@ class Lazaret implements ControllerProviderInterface
             break;
         }
 
-        if ( ! $found) {
+        if (!$found) {
             $ret['message'] = _('The destination record provided is not allowed');
 
             return $app->json($ret);
@@ -514,11 +512,9 @@ class Lazaret implements ControllerProviderInterface
 
         $lazaretThumbFileName = $app['phraseanet.registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getThumbFilename();
 
-        $response = \set_export::stream_file(
+        return \set_export::stream_file(
                 $app['phraseanet.registry'], $lazaretThumbFileName, $lazaretFile->getOriginalName(), 'image/jpeg', 'inline'
         );
-
-        return $response;
     }
 
     /**
