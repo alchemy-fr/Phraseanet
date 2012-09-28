@@ -15,7 +15,6 @@ before_script:
   - sudo mysql -e "GRANT ALL PRIVILEGES ON ab_unitTests.* TO 'phraseaUnitTests'@'localhost' IDENTIFIED BY 'iWvGxPE8' WITH GRANT OPTION"
   - sudo mysql -e "GRANT ALL PRIVILEGES ON db_unitTests.* TO 'phraseaUnitTests'@'localhost' IDENTIFIED BY 'iWvGxPE8' WITH GRANT OPTION"
   - mysql -e "source `pwd`/hudson/fixtures.sql"
-  - mysql -e 'SET GLOBAL time_zone = "+02:00";'
   - mysql -e 'SET @@global.sql_mode= "";'
   - git clone git://github.com/alchemy-fr/Phraseanet-Extension.git
   - sh -c "cd Phraseanet-Extension && ./configure && make && sudo make install"
