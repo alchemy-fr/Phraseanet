@@ -105,12 +105,11 @@ class Session_Authentication_Native implements Session_Authentication_Interface
      */
     public function signOn()
     {
-        $browser = Browser::getInstance();
-        $this->check_and_revoke_badlogs($browser->getIP());
+        $this->check_and_revoke_badlogs($this->app['request']->getClientIP());
 
         $this->check_bad_salinity()
             ->check_mail_locked()
-            ->challenge_password($browser);
+            ->challenge_password($this->app['browser']);
 
         return $this->user;
     }

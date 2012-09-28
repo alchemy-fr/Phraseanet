@@ -42,8 +42,6 @@ class Session_Authentication_PersistentCookie implements Session_Authentication_
         $this->app= $app;
         $this->persistent_cookie = $persistent_cookie;
 
-        $browser = Browser::getInstance();
-
         $conn = $this->app['phraseanet.appbox']->get_connection();
         $sql = 'SELECT usr_id, session_id, nonce, token FROM cache WHERE token = :token';
         $stmt = $conn->prepare($sql);
@@ -55,7 +53,7 @@ class Session_Authentication_PersistentCookie implements Session_Authentication_
             throw new Exception_Session_WrongToken();
         }
 
-        $string = $browser->getBrowser() . '_' . $browser->getPlatform();
+        $string = $app['browser']->getBrowser() . '_' . $app['browser']->getPlatform();
 
         if (User_Adapter::salt_password($this->app, $string, $row['nonce']) !== $row['token']) {
             throw new Exception_Session_WrongToken();

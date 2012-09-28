@@ -58,8 +58,6 @@ $ret['notifications'] = false;
 
 $notif = $app['events-manager']->get_notifications();
 
-$browser = Browser::getInstance();
-
 $ret['notifications'] = $app['twig']->render('prod/notifications.html.twig', array('notifications' => $notif));
 
 $ret['changed'] = array();
