@@ -67,9 +67,7 @@ if ($url) {
         'export_file' => $exportname
     );
 
-
-    $events_mngr = $app['events-manager'];
-    $events_mngr->trigger('__DOWNLOAD__', $params);
+    $app['events-manager']->trigger('__DOWNLOAD__', $params);
 
     return phrasea::redirect('/download/' . $url);
 }

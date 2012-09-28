@@ -56,8 +56,7 @@ if (!$session->hasModuleId($parm['app'])) {
 $ret['status'] = 'ok';
 $ret['notifications'] = false;
 
-$evt_mngr = $app['events-manager'];
-$notif = $evt_mngr->get_notifications();
+$notif = $app['events-manager']->get_notifications();
 
 $browser = Browser::getInstance();
 

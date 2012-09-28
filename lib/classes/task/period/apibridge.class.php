@@ -166,8 +166,7 @@ class task_period_apibridge extends task_appboxAbstract
                     , 'sbas_id'    => $element->get_record()->get_sbas_id()
                     , 'record_id'  => $element->get_record()->get_record_id()
                 );
-                $events_mngr = $this->dependencyContainer['events-manager'];
-                $events_mngr->trigger('__BRIDGE_UPLOAD_FAIL__', $params);
+                $this->dependencyContainer['events-manager']->trigger('__BRIDGE_UPLOAD_FAIL__', $params);
 
                 break;
             default:

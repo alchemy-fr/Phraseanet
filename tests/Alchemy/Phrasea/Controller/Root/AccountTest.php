@@ -310,7 +310,6 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testUpdateAccount()
     {
-        $evtMngr = self::$DI['app']['events-manager'];
         $register = new \appbox_register(self::$DI['app']['phraseanet.appbox']);
         $bases = $notifs = array();
 
@@ -324,7 +323,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $this->markTestSkipped('No collections');
         }
 
-        foreach ($evtMngr->list_notifications_available(self::$DI['app']['phraseanet.user']->get_id()) as $notifications) {
+        foreach (self::$DI['app']['events-manager']->list_notifications_available(self::$DI['app']['phraseanet.user']->get_id()) as $notifications) {
             foreach ($notifications as $notification) {
                 $notifs[] = $notification['id'];
             }

@@ -166,8 +166,6 @@ class Push implements ControllerProviderInterface
                     throw new ControllerException(_('No elements to push'));
                 }
 
-                $events_manager = $app['events-manager'];
-
                 foreach ($receivers as $receiver) {
                     try {
                         $user_receiver = \User_Adapter::getInstance($receiver['usr_id'], $app);
@@ -226,7 +224,7 @@ class Push implements ControllerProviderInterface
                         , 'ssel_id'    => $Basket->getId()
                     );
 
-                    $events_manager->trigger('__PUSH_DATAS__', $params);
+                    $app['events-manager']->trigger('__PUSH_DATAS__', $params);
                 }
 
                 $app['phraseanet.logger']($BasketElement->getRecord($app)->get_databox())
@@ -263,8 +261,6 @@ class Push implements ControllerProviderInterface
 
             try {
                 $pusher = new RecordHelper\Push($app, $app['request']);
-
-                $events_manager = $app['events-manager'];
 
                 $repository = $app['EM']->getRepository('\Entities\Basket');
 
@@ -423,7 +419,7 @@ class Push implements ControllerProviderInterface
                         , 'ssel_id'    => $Basket->getId()
                     );
 
-                    $events_manager->trigger('__PUSH_VALIDATION__', $params);
+                    $app['events-manager']->trigger('__PUSH_VALIDATION__', $params);
                 }
 
                 $Basket = $app['EM']->merge($Basket);

@@ -31,8 +31,6 @@ $Request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
 $gatekeeper = gatekeeper::getInstance($app);
 $gatekeeper->require_session();
 
-$events_mngr = $app['events-manager'];
-
 $from = array('name'  => $app['phraseanet.user']->get_display_name(), 'email' => $app['phraseanet.user']->get_email());
 
 $titre = $Request->get("type") == "title" ? : false;
@@ -77,7 +75,7 @@ foreach ($mails as $email) {
             , 'reason' => \eventsmanager_notify_downloadmailfail::MAIL_NO_VALID
         );
 
-        $events_mngr->trigger('__EXPORT_MAIL_FAIL__', $params);
+        $app['events-manager']->trigger('__EXPORT_MAIL_FAIL__', $params);
     }
 }
 
@@ -115,7 +113,7 @@ if (count($dest) > 0 && $token) {
                 , 'reason' => \eventsmanager_notify_downloadmailfail::MAIL_FAIL
             );
 
-            $events_mngr->trigger('__EXPORT_MAIL_FAIL__', $params);
+            $app['events-manager']->trigger('__EXPORT_MAIL_FAIL__', $params);
         }
     }
 } elseif ( ! $token && count($dest) > 0) {
@@ -128,7 +126,7 @@ if (count($dest) > 0 && $token) {
             , 'reason' => 0
         );
 
-        $events_mngr->trigger('__EXPORT_MAIL_FAIL__', $params);
+        $app['events-manager']->trigger('__EXPORT_MAIL_FAIL__', $params);
     }
 }
 

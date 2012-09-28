@@ -119,9 +119,7 @@ class set_order extends set_abstract
             return null;
         }
 
-        $evt_mngr = $app['events-manager'];
-
-        $evt_mngr->trigger('__NEW_ORDER__', array(
+        $app['events-manager']->trigger('__NEW_ORDER__', array(
             'order_id' => $orderId,
             'usr_id'   => $orderer->get_id()
         ));
@@ -433,8 +431,6 @@ class set_order extends set_abstract
         $stmt->closeCursor();
 
         if ($n > 0) {
-            $evt_mngr = $app['events-manager'];
-
             $params = array(
                 'ssel_id' => $this->ssel_id,
                 'from'    => $app['phraseanet.user']->get_id(),
@@ -442,7 +438,7 @@ class set_order extends set_abstract
                 'n'       => $n
             );
 
-            $evt_mngr->trigger('__ORDER_DELIVER__', $params);
+            $app['events-manager']->trigger('__ORDER_DELIVER__', $params);
         }
 
         return $this;
@@ -477,15 +473,13 @@ class set_order extends set_abstract
         }
 
         if ($n > 0) {
-            $evt_mngr = $this->app['events-manager'];
-
             $params = array(
                 'from' => $this->app['phraseanet.user']->get_id(),
                 'to'   => $this->user->get_id(),
                 'n'    => $n
             );
 
-            $evt_mngr->trigger('__ORDER_NOT_DELIVERED__', $params);
+            $this->app['events-manager']->trigger('__ORDER_NOT_DELIVERED__', $params);
         }
 
         return $this;

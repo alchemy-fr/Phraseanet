@@ -101,18 +101,16 @@ switch ($action) {
 
     case 'READ_NOTIFICATIONS':
         try {
-            $evt_mngr = $app['events-manager'];
             $parm = $request->get_parms('notifications');
-            $output = $evt_mngr->read(explode('_', $parm['notifications']), $app['phraseanet.user']->get_id());
+            $output = $app['events-manager']->read(explode('_', $parm['notifications']), $app['phraseanet.user']->get_id());
             $output = p4string::jsonencode(array('error'   => false, 'message' => ''));
         } catch (Exception $e) {
             $output = p4string::jsonencode(array('error'   => true, 'message' => $e->getMessage()));
         }
         break;
     case 'NOTIFICATIONS_FULL':
-        $evt_mngr = $app['events-manager'];
         $parm = $request->get_parms('page');
-        $output = $evt_mngr->get_json_notifications($parm['page']);
+        $output = $app['events-manager']->get_json_notifications($parm['page']);
         break;
 
 

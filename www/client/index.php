@@ -109,9 +109,7 @@ $user = User_Adapter::getInstance($usr_id, $app);
         <div id="container" style="position:absolute;top:0;left:0;overflow:hidden;width:100%;height:100%;">
 
 <?php
-$events_mngr = $app['events-manager'];
-
-echo $app['twig']->render('common/menubar.twig', array('module' => 'client', 'events' => $events_mngr));
+echo $app['twig']->render('common/menubar.twig', array('module' => 'client'));
 ?>
             <div style="top:30px;position:relative;float:left;">
                 <div id="left" style="height:100%;width:265px;position:relative;float:left;">

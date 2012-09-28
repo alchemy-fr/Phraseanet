@@ -412,8 +412,6 @@ class Lightbox implements ControllerProviderInterface
                 /* @var $basket \Entities\Basket */
                 $participant = $basket->getValidation()->getParticipant($app['phraseanet.user'], $app);
 
-                $evt_mngr = $app['events-manager'];
-
                 $expires = new \DateTime('+10 days');
                 $url = $app['phraseanet.registry']->get('GV_ServerName')
                     . 'lightbox/index.php?LOG=' . \random::getUrlToken(
@@ -431,7 +429,7 @@ class Lightbox implements ControllerProviderInterface
                     'to'      => $to
                 );
 
-                $evt_mngr->trigger('__VALIDATION_DONE__', $params);
+                $app['events-manager']->trigger('__VALIDATION_DONE__', $params);
 
                 $participant->setIsConfirmed(true);
 

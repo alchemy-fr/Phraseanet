@@ -470,8 +470,6 @@ class Account implements ControllerProviderInterface
      */
     public function displayAccount(Application $app, Request $request)
     {
-        $evtMngr = $app['events-manager'];
-
         switch ($notice = $request->query->get('notice', '')) {
             case 'pass-ok':
                 $notice = _('login::notification: Mise a jour du mot de passe avec succes');
@@ -493,8 +491,8 @@ class Account implements ControllerProviderInterface
         return $app['twig']->render('account/account.html.twig', array(
             'user'          => $app['phraseanet.user'],
             'notice'        => $notice,
-            'evt_mngr'      => $evtMngr,
-            'notifications' => $evtMngr->list_notifications_available($app['phraseanet.user']->get_id()),
+            'evt_mngr'      => $app['events-manager'],
+            'notifications' => $app['events-manager']->list_notifications_available($app['phraseanet.user']->get_id()),
         ));
     }
 
@@ -507,7 +505,6 @@ class Account implements ControllerProviderInterface
      */
     public function updateAccount(Application $app, Request $request)
     {
-        $evtMngr = $app['events-manager'];
         $notice = 'account-update-bad';
 
         $demands = (array) $request->request->get('demand', array());
@@ -595,7 +592,7 @@ class Account implements ControllerProviderInterface
 
         $requestedNotifications = (array) $request->request->get('notifications', array());
 
-        foreach ($evtMngr->list_notifications_available($app['phraseanet.user']->get_id()) as $notifications) {
+        foreach ($app['events-manager']->list_notifications_available($app['phraseanet.user']->get_id()) as $notifications) {
             foreach ($notifications as $notification) {
                 $notifId = $notification['id'];
                 $notifName = sprintf('notification_%d', $notifId);

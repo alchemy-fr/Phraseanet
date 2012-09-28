@@ -39,9 +39,6 @@ $extractDateFields = function(Application $app) {
 
 $date_sort_fields = $extractDateFields($app);
 
-
-$eventsmanager = $app['events-manager'];
-
 $PHP_CONF = array(
     'output_buffering'                => '4096'  //INI_ALL
     , 'memory_limit'                    => '1024M'  //INI_ALL
@@ -260,16 +257,16 @@ $GV = array(
                 'name'      => 'GV_events',
                 'default'   => null,
                 'comment'   => _('reglages:: Evenements'),
-                'available' => $eventsmanager->list_all('event'),
-                'default'   => array_keys($eventsmanager->list_all('event'))
+                'available' => $app['events-manager']->list_all('event'),
+                'default'   => array_keys($app['events-manager']->list_all('event'))
             ),
             array(
                 'type'      => 'enum_multi',
                 'name'      => 'GV_notifications',
                 'default'   => null,
                 'comment'   => _('reglages:: Notifications'),
-                'available' => $eventsmanager->list_all('notify'),
-                'default'   => array_keys($eventsmanager->list_all('notify'))
+                'available' => $app['events-manager']->list_all('notify'),
+                'default'   => array_keys($app['events-manager']->list_all('notify'))
             )
         )
     ), array(

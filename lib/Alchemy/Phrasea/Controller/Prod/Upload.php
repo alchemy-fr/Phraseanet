@@ -238,8 +238,7 @@ class Upload implements ControllerProviderInterface
             } else {
                 $params = array('lazaret_file' => $elementCreated);
 
-                $eventsManager = $app['events-manager'];
-                $eventsManager->trigger('__UPLOAD_QUARANTINE__', $params);
+                $app['events-manager']->trigger('__UPLOAD_QUARANTINE__', $params);
 
                 $id = $elementCreated->getId();
                 $element = 'lazaret';

@@ -616,16 +616,14 @@ class Login implements ControllerProviderInterface
                 $demandOK[$base_id] = true;
             }
 
-            $event_mngr = $app['events-manager'];
-
             $params = array(
                 'demand'       => $demandOK,
                 'autoregister' => $autoReg,
                 'usr_id'       => $user->get_id()
             );
 
-            $event_mngr->trigger('__REGISTER_AUTOREGISTER__', $params);
-            $event_mngr->trigger('__REGISTER_APPROVAL__', $params);
+            $app['events-manager']->trigger('__REGISTER_AUTOREGISTER__', $params);
+            $app['events-manager']->trigger('__REGISTER_APPROVAL__', $params);
 
             $user->set_mail_locked(true);
             if (true === \mail::mail_confirmation($app, $user->get_email(), $user->get_id())) {
