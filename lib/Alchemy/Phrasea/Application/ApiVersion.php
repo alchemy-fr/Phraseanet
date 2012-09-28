@@ -15,45 +15,35 @@ use Silex\Application as SilexApplication;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- *
- * @package     APIv1
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
-return call_user_func(function() {
 
-            $app = new PhraseaApplication();
+return call_user_func(function($environment = 'prod') {
 
-            $app->get('/', function(Request $request, SilexApplication $app) {
-                    $registry = $app['phraseanet.registry'];
+    $app = new PhraseaApplication($environment);
 
-                    $apiAdapter = new \API_V1_adapter($app);
+    $app->get('/', function(Request $request, SilexApplication $app) {
+        $apiAdapter = new \API_V1_adapter($app);
 
-                    $result = new \API_V1_result($request, $apiAdapter);
+        $result = new \API_V1_result($request, $apiAdapter);
 
-                    return $result->set_datas(
-                            array(
-                                'name'          => $registry->get('GV_homeTitle'),
-                                'type'          => 'phraseanet',
-                                'description'   => $registry->get('GV_metaDescription'),
-                                'documentation' => 'https://docs.phraseanet.com/Devel',
-                                'versions'      => array(
-                                    '1' => array(
-                                        'number'                  => $apiAdapter->get_version(),
-                                        'uri'                     => '/api/v1/',
-                                        'authenticationProtocol'  => 'OAuth2',
-                                        'authenticationVersion'   => 'draft#v9',
-                                        'authenticationEndPoints' => array(
-                                            'authorization_token' => '/api/oauthv2/authorize',
-                                            'access_token'        => '/api/oauthv2/token'
-                                        )
-                                    )
-                                )
-                            )
-                        )->get_response();
-                });
+        return $result->set_datas(array(
+            'name'          => $app['phraseanet.registry']->get('GV_homeTitle'),
+            'type'          => 'phraseanet',
+            'description'   => $app['phraseanet.registry']->get('GV_metaDescription'),
+            'documentation' => 'https://docs.phraseanet.com/Devel',
+            'versions'      => array(
+                '1' => array(
+                    'number'                  => $apiAdapter->get_version(),
+                    'uri'                     => '/api/v1/',
+                    'authenticationProtocol'  => 'OAuth2',
+                    'authenticationVersion'   => 'draft#v9',
+                    'authenticationEndPoints' => array(
+                        'authorization_token' => '/api/oauthv2/authorize',
+                        'access_token'        => '/api/oauthv2/token'
+                    )
+                )
+            )
+        ))->get_response();
+    });
 
-            return $app;
-        }
-);
+    return $app;
+}, isset($environment) ? $environment : null);
