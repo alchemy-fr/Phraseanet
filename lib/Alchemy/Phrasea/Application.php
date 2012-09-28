@@ -99,8 +99,10 @@ class Application extends SilexApplication
 
         if ($this['debug'] === true) {
             ini_set('display_errors', 'on');
-            ini_set('log_errors', 'on');
-            ini_set('error_log', __DIR__ . '/../../../logs/php_error.log');
+            if($this->getEnvironment() === 'dev') {
+                ini_set('log_errors', 'on');
+                ini_set('error_log', __DIR__ . '/../../../logs/php_error.log');
+            }
         } else {
             ini_set('display_errors', 'off');
             ini_set('log_errors', 'off');
