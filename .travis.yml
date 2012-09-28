@@ -17,6 +17,7 @@ before_script:
   - mysql -e "source `pwd`/hudson/fixtures.sql"
   - mysql -e 'SET GLOBAL time_zone = "+02:00";'
   - mysql -e 'SET @@global.sql_mode= "";'
+  - echo "date.timezone = Europe/Paris" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
   - git clone git://github.com/alchemy-fr/Phraseanet-Extension.git
   - sh -c "cd Phraseanet-Extension && ./configure && make && sudo make install"
   - echo "extension=phrasea2.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
