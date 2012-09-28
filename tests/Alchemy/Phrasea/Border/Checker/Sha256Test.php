@@ -43,7 +43,7 @@ class Sha256Test extends \PhraseanetPHPUnitAbstract
 
         self::$DI['app']['border-manager']->process($session, File::buildFromPathfile($this->media->getFile()->getPathname(), self::$DI['collection'], self::$DI['app']), null, \Alchemy\Phrasea\Border\Manager::FORCE_RECORD);
 
-        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', array('getSha256'), array($this->media, self::$DI['collection']));
+        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', array('getSha256'), array(self::$DI['app'], $this->media, self::$DI['collection']));
 
         $mock
             ->expects($this->once())
@@ -63,7 +63,7 @@ class Sha256Test extends \PhraseanetPHPUnitAbstract
      */
     public function testCheckNoFile()
     {
-        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', array('getSha256'), array($this->media, self::$DI['collection']));
+        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', array('getSha256'), array(self::$DI['app'], $this->media, self::$DI['collection']));
 
         $mock
             ->expects($this->once())
