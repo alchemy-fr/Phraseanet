@@ -206,8 +206,8 @@ class Application extends SilexApplication
         $app['dispatcher']->addListener(KernelEvents::RESPONSE, array($this, 'addUTF8Charset'), -128);
         $app['dispatcher']->addListener(KernelEvents::RESPONSE, array($this, 'disableCookiesIfRequired'), -256);
 
-        $this['locale'] = $this->share(function(){
-            return $this['phraseanet.registry']->get('GV_default_lng', 'en_GB');
+        $this['locale'] = $this->share(function(Application $app){
+            return $app['phraseanet.registry']->get('GV_default_lng', 'en_GB');
         });
 
         $this['locale.I18n'] = function(Application $app){
