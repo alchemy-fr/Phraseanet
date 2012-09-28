@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 return call_user_func(function($environment = 'prod') {
 
     $app = new PhraseaApplication($environment);
+    $app->disableCookies();
 
     $app->get('/', function(Request $request, SilexApplication $app) {
         $apiAdapter = new \API_V1_adapter($app);

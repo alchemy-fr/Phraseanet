@@ -39,6 +39,7 @@ use Unoconv\UnoconvServiceProvider;
 use XPDF\PdfToText;
 use XPDF\XPDFServiceProvider;
 
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -54,6 +55,7 @@ class Application extends SilexApplication
         , 'fr_FR' => 'Français'
     );
     private $environment;
+    private $sessionCookieEnabled = true;
 
     public function getEnvironment()
     {
@@ -201,6 +203,7 @@ class Application extends SilexApplication
 
         $app['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'addLocale'), 256);
         $app['dispatcher']->addListener(KernelEvents::RESPONSE, array($this, 'addUTF8Charset'), -128);
+        $app['dispatcher']->addListener(KernelEvents::RESPONSE, array($this, 'disableCookiesIfRequired'), -256);
 
         $this['locale'] = $this->share(function(){
             return $this['phraseanet.registry']->get('GV_default_lng', 'en_GB');
@@ -228,6 +231,29 @@ class Application extends SilexApplication
         }
 
         $event->setResponse($event->getResponse()->setCharset('UTF-8'));
+    }
+
+    public function disableCookiesIfRequired(FilterResponseEvent $event)
+    {
+        if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
+            return;
+        }
+
+        if ($this->sessionCookieEnabled) {
+            return;
+        }
+
+        $response = $event->getResponse();
+
+        foreach ($response->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY) as $cookie_domains) {
+            foreach($cookie_domains as $cookie_paths) {
+                foreach($cookie_paths as $cookie) {
+                    $response->headers->removeCookie($cookie->getName(), $cookie->getPath(), $cookie->getDomain());
+                }
+            }
+        }
+
+        $event->setResponse($response);
     }
 
     public function addLocale(GetResponseEvent $event)
@@ -415,5 +441,11 @@ class Application extends SilexApplication
     public static function getAvailableLanguages()
     {
         return static::$availableLanguages;
+    }
+
+    public function disableCookies()
+    {
+        $this['session.test'] = true;
+        $this->sessionCookieEnabled = false;
     }
 }
