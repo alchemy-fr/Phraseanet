@@ -1,5 +1,7 @@
 <?php
 
+use Symfony\Component\HttpFoundation\Request;
+
 require_once __DIR__ . '/../../PhraseanetPHPUnitAbstract.class.inc';
 
 class Session_Authentication_NativeTest extends PhraseanetPHPUnitAbstract
@@ -15,6 +17,9 @@ class Session_Authentication_NativeTest extends PhraseanetPHPUnitAbstract
         parent::setUp();
         $login = 'testlogin';
         $password = 'testpassword';
+
+        self::$DI['app']['request'] = Request::createFromGlobals();
+
         $usr_id = User_Adapter::get_usr_id_from_login(self::$DI['app'], $login);
         if ($usr_id) {
             $this->local_user = User_Adapter::getInstance($usr_id, self::$DI['app']);
