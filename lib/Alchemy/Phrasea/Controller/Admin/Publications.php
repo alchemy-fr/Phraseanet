@@ -92,11 +92,9 @@ class Publications implements ControllerProviderInterface
 
             $feed = new \Feed_Adapter($app, $id);
 
-            $user = $app['phraseanet.user'];
-
             $request = $app["request"];
 
-            if (!$feed->is_owner($user)) {
+            if (!$feed->is_owner($app['phraseanet.user'])) {
                 $datas['message'] = 'You are not allowed to do that';
 
                 return $app->json($datas);

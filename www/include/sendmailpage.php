@@ -33,9 +33,7 @@ $gatekeeper->require_session();
 
 $events_mngr = $app['events-manager'];
 
-$user = $app['phraseanet.user'];
-
-$from = array('name'  => $user->get_display_name(), 'email' => $user->get_email());
+$from = array('name'  => $app['phraseanet.user']->get_display_name(), 'email' => $app['phraseanet.user']->get_email());
 
 $titre = $Request->get("type") == "title" ? : false;
 
@@ -88,7 +86,7 @@ if (count($dest) > 0 && $token) {
     $reading_confirm_to = false;
 
     if ($Request->get('reading_confirm') == '1') {
-        $reading_confirm_to = $user->get_email();
+        $reading_confirm_to = $app['phraseanet.user']->get_email();
     }
 
     //BUILDING ZIP

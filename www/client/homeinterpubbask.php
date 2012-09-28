@@ -17,12 +17,9 @@ use Alchemy\Phrasea\Application;
  */
 $app = new Application();
 
-$user = $app['phraseanet.user'];
+$feeds = \Feed_Collection::load_all($app, $app['phraseanet.user']);
 
-$feeds = \Feed_Collection::load_all($app, $user);
-
-
-$th_size = $user->getPrefs('images_size');
+$th_size = $app['phraseanet.user']->getPrefs('images_size');
 
 ?>
 <div style="height:50px;" class="homePubTitleBox">

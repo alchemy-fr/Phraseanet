@@ -20,9 +20,8 @@ use Alchemy\Phrasea\Application;
 require_once __DIR__ . "/../../lib/bootstrap.php";
 
 $app = new Application();
-$user = $app['phraseanet.user'];
 
-if ( ! $user->ACL()->has_right('report'))
+if ( ! $app['phraseanet.user']->ACL()->has_right('report'))
     phrasea::headers(403);
 
 
@@ -31,7 +30,7 @@ $dmin = isset($_POST['dmin']) ? $_POST['dmin'] : false;
 $dmax = isset($_POST['dmax']) ? $_POST['dmax'] : false;
 ///////Construct dashboard
 try {
-    $dashboard = new module_report_dashboard($app, $user, $sbasid);
+    $dashboard = new module_report_dashboard($app, $app['phraseanet.user'], $sbasid);
 
     if ($dmin && $dmax) {
         $dashboard->setDate($dmin, $dmax);

@@ -310,10 +310,9 @@ class task_period_outofdate extends task_abstract
     // ====================================================================
     public function getInterfaceHTML()
     {
-        $user = $this->dependencyContainer['phraseanet.user'];
         ob_start();
 
-        $sbas_list = $user->ACL()->get_granted_sbas(array('bas_manage'));
+        $sbas_list = $this->dependencyContainer['phraseanet.user']->ACL()->get_granted_sbas(array('bas_manage'));
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
             <?php echo _('task::outofdate:Base') ?>&nbsp;:&nbsp;

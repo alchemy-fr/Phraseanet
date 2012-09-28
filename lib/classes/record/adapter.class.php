@@ -394,14 +394,13 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     {
         $dstatus = databox_status::getDisplayStatus($this->app);
         $sbas_id = $this->get_sbas_id();
-        $user = $this->app['phraseanet.user'];
 
         $status = '';
 
         if (isset($dstatus[$sbas_id])) {
             foreach ($dstatus[$sbas_id] as $n => $statbit) {
                 if ($statbit['printable'] == '0' &&
-                    !$user->ACL()->has_right_on_base($this->base_id, 'chgstatus')) {
+                    !$this->app['phraseanet.user']->ACL()->has_right_on_base($this->base_id, 'chgstatus')) {
                     continue;
                 }
 

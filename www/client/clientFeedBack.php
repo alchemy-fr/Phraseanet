@@ -20,7 +20,6 @@ use Alchemy\Phrasea\Application;
 require_once __DIR__ . "/../../lib/bootstrap.php";
 
 $app = new Application();
-$user = $app['phraseanet.user'];
 
 $lng = $app['locale'];
 
@@ -99,10 +98,10 @@ switch ($parm['action']) {
         $output = phrasea::getHome($app, 'PUBLI', 'client');
         break;
     case 'CSS':
-        $output = $user->setPrefs('css', $parm['color']);
+        $output = $app['phraseanet.user']->setPrefs('css', $parm['color']);
         break;
     case 'BASK_STATUS':
-        $output = $user->setPrefs('client_basket_status', $parm['mode']);
+        $output = $app['phraseanet.user']->setPrefs('client_basket_status', $parm['mode']);
         break;
     case 'BASKUPDATE':
         $noview = 0;
@@ -110,7 +109,7 @@ switch ($parm['action']) {
         $repository = $app['EM']->getRepository('\Entities\Basket');
 
         /* @var $repository \Repositories\BasketRepository */
-        $baskets = $repository->findActiveByUser($user);
+        $baskets = $repository->findActiveByUser($app['phraseanet.user']);
 
         foreach ($baskets as $basket) {
             if ( ! $basket->getIsRead())

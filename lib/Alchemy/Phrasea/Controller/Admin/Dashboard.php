@@ -223,12 +223,10 @@ class Dashboard implements ControllerProviderInterface
      */
     public function addAdmins(Application $app, Request $request)
     {
-        $user = $app['phraseanet.user'];
-
         if (count($admins = $request->request->get('admins', array())) > 0) {
 
-            if (!in_array($user->get_id(), $admins)) {
-                $admins[] = $user->get_id();
+            if (!in_array($app['phraseanet.user']->get_id(), $admins)) {
+                $admins[] = $app['phraseanet.user']->get_id();
             }
 
             if ($admins > 0) {

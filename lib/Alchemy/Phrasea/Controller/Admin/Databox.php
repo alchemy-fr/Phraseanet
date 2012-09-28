@@ -652,11 +652,9 @@ class Databox implements ControllerProviderInterface
      */
     public function mountCollection(Application $app, Request $request, $databox_id, $collection_id)
     {
-        $user = $app['phraseanet.user'];
-
         $app['phraseanet.appbox']->get_connection()->beginTransaction();
         try {
-            $baseId = \collection::mount_collection($app, $app['phraseanet.appbox']->get_databox($databox_id), $collection_id, $user);
+            $baseId = \collection::mount_collection($app, $app['phraseanet.appbox']->get_databox($databox_id), $collection_id, $app['phraseanet.user']);
 
             if (null == $othCollSel = $request->request->get("othcollsel")) {
                 $app->abort(400);

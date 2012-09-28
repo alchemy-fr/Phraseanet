@@ -33,7 +33,6 @@ class set_exportftp extends set_export
      */
     public function export_ftp($usr_to, $host, $login, $password, $ssl, $retry, $passif, $destfolder, $makedirectory, $logfile)
     {
-        $user_f = $this->app['phraseanet.user'];
         $conn = $this->app['phraseanet.appbox']->get_connection();
 
         $email_dest = '';
@@ -44,7 +43,7 @@ class set_exportftp extends set_export
 
         $text_mail_receiver = "Bonjour,\n"
             . "L'utilisateur "
-            . $user_f->get_display_name() . " (login : " . $user_f->get_login() . ") "
+            . $this->app['phraseanet.user']->get_display_name() . " (login : " . $this->app['phraseanet.user']->get_login() . ") "
             . "a fait un transfert FTP sur le serveur ayant comme adresse \""
             . $host . "\" avec le login \"" . $login . "\"  "
             . "et pour repertoire de destination \""
@@ -102,10 +101,10 @@ class set_exportftp extends set_export
             , ':pwd'                => $password
             , ':passif'             => ($passif == "1" ? "1" : "0")
             , ':destfolder'         => $destfolder
-            , ':sendermail'         => $user_f->get_email()
+            , ':sendermail'         => $this->app['phraseanet.user']->get_email()
             , ':text_mail_receiver' => $text_mail_receiver
             , ':text_mail_sender'   => $text_mail_sender
-            , ':usr_id'             => $user_f->get_id()
+            , ':usr_id'             => $this->app['phraseanet.user']->get_id()
             , ':foldertocreate'     => $makedirectory
             , ':logfile'            => ( ! ! $logfile ? '1' : '0')
         );

@@ -20,8 +20,6 @@ require_once __DIR__ . "/../../lib/bootstrap.php";
 $app = new Application();
 phrasea::headers();
 
-$user = $app['phraseanet.user'];
-
 $request = http_request::getInstance();
 $parm = $request->get_parms(
     "act"
@@ -35,7 +33,7 @@ $parm = $request->get_parms(
 ?>
 <html lang="<?php echo $app['locale.I18n']; ?>">
     <head>
-        <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/prod/<?php echo $user->getPrefs('css') ?>/prodcolor.css" />
+        <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/prod/<?php echo $app['phraseanet.user']->getPrefs('css') ?>/prodcolor.css" />
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <script type="text/javascript">
 

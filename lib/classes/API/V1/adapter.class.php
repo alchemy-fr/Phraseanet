@@ -727,9 +727,7 @@ class API_V1_adapter extends API_V1_Abstract
         $offset_start = max($request->get('offset_start', 0), 0);
         $per_page = min(max($request->get('per_page', 10), 1), 20);
 
-        $user = $app['phraseanet.user'];
-        /* @var $user \User_Adapter */
-        $baseIds = array_keys($user->ACL()->get_granted_base(array('canaddrecord')));
+        $baseIds = array_keys($app['phraseanet.user']->ACL()->get_granted_base(array('canaddrecord')));
 
         $lazaretFiles = array();
 
@@ -825,7 +823,6 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function search_records(Request $request)
     {
-        $user = $this->app['phraseanet.user'];
         $result = new API_V1_result($request, $this);
 
         $search_type = ($request->get('search_type')
@@ -866,15 +863,14 @@ class API_V1_adapter extends API_V1_Abstract
 
         $options = new searchEngine_options();
 
-        $params['bases'] = is_array($params['bases']) ? $params['bases'] : array_keys($user->ACL()->get_granted_base());
+        $params['bases'] = is_array($params['bases']) ? $params['bases'] : array_keys($this->app['phraseanet.user']->ACL()->get_granted_base());
 
-        /* @var $user \User_Adapter */
-        if ($user->ACL()->has_right('modifyrecord')) {
+        if ($this->app['phraseanet.user']->ACL()->has_right('modifyrecord')) {
             $options->set_business_fields(array());
 
             $BF = array();
 
-            foreach ($user->ACL()->get_granted_base(array('canmodifrecord')) as $collection) {
+            foreach ($this->app['phraseanet.user']->ACL()->get_granted_base(array('canmodifrecord')) as $collection) {
                 if (count($params['bases']) === 0 || in_array($collection->get_base_id(), $params['bases'])) {
                     $BF[] = $collection->get_base_id();
                 }
@@ -884,7 +880,7 @@ class API_V1_adapter extends API_V1_Abstract
             $options->set_business_fields(array());
         }
 
-        $options->set_bases($params['bases'], $user->ACL());
+        $options->set_bases($params['bases'], $this->app['phraseanet.user']->ACL());
 
         if ( ! is_array($params['fields'])) {
             $params['fields'] = array();
@@ -1222,10 +1218,8 @@ class API_V1_adapter extends API_V1_Abstract
             throw new API_V1_exception_badrequest('Missing basket name parameter');
         }
 
-        $user = $this->app['phraseanet.user'];
-
         $Basket = new \Entities\Basket();
-        $Basket->setOwner($user);
+        $Basket->setOwner($this->app['phraseanet.user']);
         $Basket->setName($name);
 
         $this->app['EM']->persist($Basket);

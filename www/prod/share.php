@@ -23,14 +23,12 @@ phrasea::headers();
 $request = http_request::getInstance();
 $parm = $request->get_parms("bas", "rec");
 
-$user = $app['phraseanet.user'];
-
 $right = false;
 ?>
 
 <html lang="<?php echo $app['locale.I18n']; ?>">
     <head>
-        <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css,skins/prod/<?php echo $user->getPrefs('css') ?>/prodcolor.css" />
+        <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css,skins/prod/<?php echo $app['phraseanet.user']->getPrefs('css') ?>/prodcolor.css" />
         <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
         <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
 
@@ -55,8 +53,8 @@ $right = false;
                 <?php
                 $sbas_id = phrasea::sbasFromBas($app, $parm['bas']);
                 $record = new record_adapter($app, $sbas_id, $parm['rec']);
-                $right = ($user->ACL()->has_right_on_sbas($sbas_id, 'bas_chupub')
-                    && $user->ACL()->has_access_to_subdef($record, 'preview'));
+                $right = ($app['phraseanet.user']->ACL()->has_right_on_sbas($sbas_id, 'bas_chupub')
+                    && $app['phraseanet.user']->ACL()->has_access_to_subdef($record, 'preview'));
 
                 if ( ! $right)
                     exit('ERROR<br><input class="input-button" type="button" value="' . _('boutton::fermer') . '" onclick="parent.hideDwnl();" /> </body></html>');

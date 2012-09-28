@@ -465,8 +465,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     public static function saveQuery(Application $app, $query)
     {
         try {
-            $user = $app['phraseanet.user'];
-
             $sql = "INSERT INTO dsel (id, name, usr_id, query)
         VALUES (null, :name, :usr_id, :query)";
             $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
@@ -477,8 +475,8 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
             ));
             $stmt->closeCursor();
 
-            if ($user->getPrefs('start_page') == 'LAST_QUERY')
-                $user->setPrefs('start_page_query', $query);
+            if ($app['phraseanet.user']->getPrefs('start_page') == 'LAST_QUERY')
+                $app['phraseanet.user']->setPrefs('start_page_query', $query);
         } catch (Exception $e) {
             return false;
         }

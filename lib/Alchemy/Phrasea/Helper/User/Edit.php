@@ -70,9 +70,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     protected function delete_user(\User_Adapter $user)
     {
-        $master = $this->app['phraseanet.user'];
-
-        $list = array_keys($master->ACL()->get_granted_base(array('canadmin')));
+        $list = array_keys($this->app['phraseanet.user']->ACL()->get_granted_base(array('canadmin')));
 
         $user->ACL()->revoke_access_from_bases($list);
 
@@ -85,9 +83,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     public function get_users_rights()
     {
-        $user = $this->app['phraseanet.user'];
-
-        $list = array_keys($user->ACL()->get_granted_base(array('canadmin')));
+        $list = array_keys($this->app['phraseanet.user']->ACL()->get_granted_base(array('canadmin')));
 
         $sql = "SELECT
             b.sbas_id,
@@ -555,9 +551,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             throw new \Exception_Forbidden('You are not the owner of the template');
         }
 
-        $current_user = $this->app['phraseanet.user'];
-
-        $base_ids = array_keys($current_user->ACL()->get_granted_base(array('canadmin')));
+        $base_ids = array_keys($this->app['phraseanet.user']->ACL()->get_granted_base(array('canadmin')));
 
         foreach ($this->users as $usr_id) {
             $user = \User_adapter::getInstance($usr_id, $this->app);
@@ -625,9 +619,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     public function resetRights()
     {
-        $authUser = $this->app['phraseanet.user'];
-        $adminACL = $authUser->ACL();
-        $base_ids = array_keys($adminACL->get_granted_base(array('canadmin')));
+        $base_ids = array_keys($this->app['phraseanet.user']->ACL()->get_granted_base(array('canadmin')));
 
         foreach ($this->users as $usr_id) {
             $user = \User_Adapter::getInstance($usr_id, $this->app);
@@ -636,7 +628,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             if ($user->is_template()) {
                 $template = $user;
 
-                if ($template->get_template_owner()->get_id() !== $authUser->get_id()) {
+                if ($template->get_template_owner()->get_id() !== $this->app['phraseanet.user']->get_id()) {
                     continue;
                 }
             }

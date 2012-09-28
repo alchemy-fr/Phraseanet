@@ -230,7 +230,6 @@ class set_order extends set_abstract
             throw new Exception_NotFound('unknown order ' . $id);
 
         $current_user = User_Adapter::getInstance($row['usr_id'], $app);
-        $user = $app['phraseanet.user'];
 
         $this->id = $row['id'];
         $this->user = $current_user;
@@ -241,7 +240,7 @@ class set_order extends set_abstract
         $this->total = (int) $row['total'];
         $this->ssel_id = (int) $row['ssel_id'];
 
-        $base_ids = array_keys($user->ACL()->get_granted_base(array('order_master')));
+        $base_ids = array_keys($app['phraseanet.user']->ACL()->get_granted_base(array('order_master')));
 
         $sql = 'SELECT e.base_id, e.record_id, e.order_master_id, e.id, e.deny
               FROM order_elements e

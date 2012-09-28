@@ -215,13 +215,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
             return false;
         }
 
-        try {
-            $user = $this->app['phraseanet.user'];
-        } catch (Exception $e) {
-            return false;
-        }
-
-        if ($user->ACL()->has_right('push')) {
+        if ($this->app['phraseanet.user']->ACL()->has_right('push')) {
             $bool = true;
         }
 

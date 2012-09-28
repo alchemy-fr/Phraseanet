@@ -56,7 +56,6 @@ class Manage extends Helper
             , 'offset_start' => 0
         );
 
-        $user = $this->app['phraseanet.user'];
         $query = new \User_Query($this->app);
 
         if (is_array($this->query_parms['base_id']))
@@ -68,7 +67,7 @@ class Manage extends Helper
             ->like($this->query_parms['like_field'], $this->query_parms['like_value'])
             ->get_inactives($this->query_parms['inactives'])
             ->include_templates(false)
-            ->on_bases_where_i_am($user->ACL(), array('canadmin'))
+            ->on_bases_where_i_am($this->app['phraseanet.user']->ACL(), array('canadmin'))
             ->execute();
 
         return $this->results->get_results();
@@ -95,7 +94,6 @@ class Manage extends Helper
             , 'offset_start' => $offset_start
         );
 
-        $user = $this->app['phraseanet.user'];
         $query = new \User_Query($this->app);
 
         if (is_array($this->query_parms['base_id']))
@@ -107,7 +105,7 @@ class Manage extends Helper
             ->like($this->query_parms['like_field'], $this->query_parms['like_value'])
             ->get_inactives($this->query_parms['inactives'])
             ->include_templates(true)
-            ->on_bases_where_i_am($user->ACL(), array('canadmin'))
+            ->on_bases_where_i_am($this->app['phraseanet.user']->ACL(), array('canadmin'))
             ->limit($offset_start, $results_quantity)
             ->execute();
 
@@ -196,11 +194,9 @@ class Manage extends Helper
             throw new \Exception_InvalidArgument(_('Invalid template name'));
         }
 
-        $user = $this->app['phraseanet.user'];
-
         $created_user = \User_Adapter::create($this->app, $name, \random::generatePassword(16), null, false, false);
-        $created_user->set_template($user);
-        $this->usr_id = $user->get_id();
+        $created_user->set_template($this->app['phraseanet.user']);
+        $this->usr_id = $this->app['phraseanet.user']->get_id();
 
         return $created_user;
     }

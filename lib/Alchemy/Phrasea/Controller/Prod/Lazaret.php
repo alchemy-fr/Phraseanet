@@ -169,9 +169,7 @@ class Lazaret implements ControllerProviderInterface
      */
     public function listElement(Application $app, Request $request)
     {
-        $user = $app['phraseanet.user'];
-        /* @var $user \User_Adapter */
-        $baseIds = array_keys($user->ACL()->get_granted_base(array('canaddrecord')));
+        $baseIds = array_keys($app['phraseanet.user']->ACL()->get_granted_base(array('canaddrecord')));
 
         $lazaretFiles = null;
 

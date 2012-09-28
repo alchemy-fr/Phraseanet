@@ -31,14 +31,12 @@ class TOU implements ControllerProviderInterface
             $ret = array('success' => false, 'message' => '');
 
             try {
-                $user = $app['phraseanet.user'];
-
                 $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
 
-                $user->ACL()->revoke_access_from_bases(
-                    $user->ACL()->get_granted_base(array(), array($databox->get_sbas_id()))
+                $app['phraseanet.user']->ACL()->revoke_access_from_bases(
+                    $app['phraseanet.user']->ACL()->get_granted_base(array(), array($databox->get_sbas_id()))
                 );
-                $user->ACL()->revoke_unused_sbas_rights();
+                $app['phraseanet.user']->ACL()->revoke_unused_sbas_rights();
 
                 $app->closeAccount();
 

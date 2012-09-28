@@ -233,24 +233,22 @@ class RecordsRequest extends ArrayCollection
 
         $to_remove = array();
 
-        $user = $app['phraseanet.user'];
-
         foreach ($elements as $id => $record) {
 
-            if (!$user->ACL()->has_access_to_record($record)) {
+            if (!$app['phraseanet.user']->ACL()->has_access_to_record($record)) {
                 $to_remove[] = $id;
                 continue;
             }
 
             foreach ($rightsColl as $right) {
-                if (!$user->ACL()->has_right_on_base($record->get_base_id(), $right)) {
+                if (!$app['phraseanet.user']->ACL()->has_right_on_base($record->get_base_id(), $right)) {
                     $to_remove[] = $id;
                     continue;
                 }
             }
 
             foreach ($rightsDatabox as $right) {
-                if (!$user->ACL()->has_right_on_sbas($record->get_sbas_id(), $right)) {
+                if (!$app['phraseanet.user']->ACL()->has_right_on_sbas($record->get_sbas_id(), $right)) {
                     $to_remove[] = $id;
                     continue;
                 }

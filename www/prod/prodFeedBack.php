@@ -19,8 +19,6 @@ use Alchemy\Phrasea\Application;
 require_once __DIR__ . "/../../lib/bootstrap.php";
 $app = new Application();
 
-$user = $app['phraseanet.user'];
-
 $output = '';
 
 $request = http_request::getInstance();
@@ -39,15 +37,14 @@ switch ($action) {
         $options = new searchEngine_options();
 
 
-        $parm['bas'] = is_array($parm['bas']) ? $parm['bas'] : array_keys($user->ACL()->get_granted_base());
+        $parm['bas'] = is_array($parm['bas']) ? $parm['bas'] : array_keys($app['phraseanet.user']->ACL()->get_granted_base());
 
-        /* @var $user \User_Adapter */
-        if ($user->ACL()->has_right('modifyrecord')) {
+        if ($app['phraseanet.user']->ACL()->has_right('modifyrecord')) {
             $options->set_business_fields(array());
 
             $BF = array();
 
-            foreach ($user->ACL()->get_granted_base(array('canmodifrecord')) as $collection) {
+            foreach ($app['phraseanet.user']->ACL()->get_granted_base(array('canmodifrecord')) as $collection) {
                 if (count($params['bases']) === 0 || in_array($collection->get_base_id(), $params['bases'])) {
                     $BF[] = $collection->get_base_id();
                 }
@@ -58,7 +55,7 @@ switch ($action) {
         }
 
 
-        $options->set_bases($parm['bas'], $user->ACL());
+        $options->set_bases($parm['bas'], $app['phraseanet.user']->ACL());
         if (!!is_array($parm['fields']))
             $parm['fields'] = array();
         $options->set_fields($parm['fields']);
@@ -82,7 +79,7 @@ switch ($action) {
     case 'CSS':
         require ($app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
         $parm = $request->get_parms('color');
-        $output = $user->setPrefs('css', $parm['color']);
+        $output = $app['phraseanet.user']->setPrefs('css', $parm['color']);
         break;
 
     case 'SAVETEMPPREF':

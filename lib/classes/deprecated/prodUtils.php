@@ -20,8 +20,7 @@ function deleteRecord(Application $app, $lst, $del_children)
 {
     $BE_repository = $app['EM']->getRepository('\Entities\BasketElement');
 
-    $user = $app['phraseanet.user'];
-    $ACL = $user->ACL();
+    $ACL = $app['phraseanet.user']->ACL();
 
     $lst = explode(";", $lst);
 

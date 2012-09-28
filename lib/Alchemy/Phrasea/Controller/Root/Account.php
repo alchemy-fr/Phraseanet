@@ -283,10 +283,8 @@ class Account implements ControllerProviderInterface
             $app->abort(400, _('Could not perform request, please contact an administrator.'));
         }
 
-        $user = $app['phraseanet.user'];
-
         try {
-            $auth = new \Session_Authentication_Native($app, $user->get_login(), $password);
+            $auth = new \Session_Authentication_Native($app, $app['phraseanet.user']->get_login(), $password);
             $auth->challenge_password();
         } catch (\Exception $e) {
             return $app->redirect('/account/reset-email/?notice=bad-password');
@@ -299,7 +297,7 @@ class Account implements ControllerProviderInterface
             return $app->redirect('/account/reset-email/?notice=mail-match');
         }
 
-        if (!\mail::reset_email($app, $email, $user->get_id()) === true) {
+        if (!\mail::reset_email($app, $email, $app['phraseanet.user']->get_id()) === true) {
             return $app->redirect('/account/reset-email/?notice=mail-server');
         }
 
@@ -371,12 +369,10 @@ class Account implements ControllerProviderInterface
             }
 
             try {
-                $user = $app['phraseanet.user'];
-
-                $auth = new \Session_Authentication_Native($app, $user->get_login(), $request->request->get('form_old_password', ''));
+                $auth = new \Session_Authentication_Native($app, $app['phraseanet.user']->get_login(), $request->request->get('form_old_password', ''));
                 $auth->challenge_password();
 
-                $user->set_password($passwordConfirm);
+                $app['phraseanet.user']->set_password($passwordConfirm);
 
                 return $app->redirect('/account/?notice=pass-ok');
             } catch (\Exception $e) {
@@ -474,7 +470,6 @@ class Account implements ControllerProviderInterface
      */
     public function displayAccount(Application $app, Request $request)
     {
-        $user = $app['phraseanet.user'];
         $evtMngr = $app['events-manager'];
 
         switch ($notice = $request->query->get('notice', '')) {
@@ -496,10 +491,10 @@ class Account implements ControllerProviderInterface
         }
 
         return $app['twig']->render('account/account.html.twig', array(
-            'user'          => $user,
+            'user'          => $app['phraseanet.user'],
             'notice'        => $notice,
             'evt_mngr'      => $evtMngr,
-            'notifications' => $evtMngr->list_notifications_available($user->get_id()),
+            'notifications' => $evtMngr->list_notifications_available($app['phraseanet.user']->get_id()),
         ));
     }
 
@@ -512,7 +507,6 @@ class Account implements ControllerProviderInterface
      */
     public function updateAccount(Application $app, Request $request)
     {
-        $user = $app['phraseanet.user'];
         $evtMngr = $app['events-manager'];
         $notice = 'account-update-bad';
 
@@ -523,7 +517,7 @@ class Account implements ControllerProviderInterface
 
             foreach ($demands as $baseId) {
                 try {
-                    $register->add_request($user, \collection::get_from_base_id($app, $baseId));
+                    $register->add_request($app['phraseanet.user'], \collection::get_from_base_id($app, $baseId));
                     $notice = 'demand-ok';
                 } catch (\Exception $e) {
 
@@ -570,7 +564,7 @@ class Account implements ControllerProviderInterface
             try {
                 $app['phraseanet.appbox']->get_connection()->beginTransaction();
 
-                $user->set_gender($request->request->get("form_gender"))
+                $app['phraseanet.user']->set_gender($request->request->get("form_gender"))
                     ->set_firstname($request->request->get("form_firstname"))
                     ->set_lastname($request->request->get("form_lastname"))
                     ->set_address($request->request->get("form_address"))
@@ -601,15 +595,15 @@ class Account implements ControllerProviderInterface
 
         $requestedNotifications = (array) $request->request->get('notifications', array());
 
-        foreach ($evtMngr->list_notifications_available($user->get_id()) as $notifications) {
+        foreach ($evtMngr->list_notifications_available($app['phraseanet.user']->get_id()) as $notifications) {
             foreach ($notifications as $notification) {
                 $notifId = $notification['id'];
                 $notifName = sprintf('notification_%d', $notifId);
 
                 if (isset($requestedNotifications[$notifId])) {
-                    $user->setPrefs($notifName, '1');
+                    $app['phraseanet.user']->setPrefs($notifName, '1');
                 } else {
-                    $user->setPrefs($notifName, '0');
+                    $app['phraseanet.user']->setPrefs($notifName, '0');
                 }
             }
         }

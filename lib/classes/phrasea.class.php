@@ -75,7 +75,6 @@ class phrasea
 
     public function getHome(Application $app, $type = 'PUBLI', $context = 'prod')
     {
-        $user = $app['phraseanet.user'];
         if ($type == 'HELP') {
             if (file_exists($app['phraseanet.registry']->get('GV_RootPath') . "config/help_" . $app['locale.I18n'] . ".php")) {
                 require($app['phraseanet.registry']->get('GV_RootPath') . "config/help_" . $app['locale.I18n'] . ".php");
@@ -99,17 +98,16 @@ class phrasea
 
             $bas = array();
 
-            $searchSet = json_decode($user->getPrefs('search'));
+            $searchSet = json_decode($app['phraseanet.user']->getPrefs('search'));
 
             if ($searchSet && isset($searchSet->bases)) {
                 foreach ($searchSet->bases as $bases)
                     $bas = array_merge($bas, $bases);
             } else {
-                $user = $app['phraseanet.user'];
-                $bas = array_keys($user->ACL()->get_granted_base());
+                $bas = array_keys($app['phraseanet.user']->ACL()->get_granted_base());
             }
 
-            $start_page_query = $user->getPrefs('start_page_query');
+            $start_page_query = $app['phraseanet.user']->getPrefs('start_page_query');
 
             if ($context == "prod") {
                 $parm["bas"] = $bas;
@@ -126,7 +124,7 @@ class phrasea
                 $parm["datefield"] = '';
             }
             if ($context == "client") {
-                $parm["mod"] = $user->getPrefs('client_view');
+                $parm["mod"] = $app['phraseanet.user']->getPrefs('client_view');
                 $parm["bas"] = $bas;
                 $parm["qry"] = $start_page_query;
                 $parm["pag"] = '';

@@ -52,18 +52,16 @@ class Datafiles extends AbstractDelivery
                 }
             }
 
-            $user = $app['phraseanet.user'];
-
             if (!$record->has_subdef($subdef) || !$record->get_subdef($subdef)->is_physically_present()) {
                 throw new NotFoundHttpException;
             }
 
-            if (!$user->ACL()->has_access_to_subdef($record, $subdef)) {
+            if (!$app['phraseanet.user']->ACL()->has_access_to_subdef($record, $subdef)) {
                 throw new \Exception_UnauthorizedAction(sprintf('User has not access to subdef %s', $subdef));
             }
 
             $stamp = false;
-            $watermark = !$user->ACL()->has_right_on_base($record->get_base_id(), 'nowatermark');
+            $watermark = !$app['phraseanet.user']->ACL()->has_right_on_base($record->get_base_id(), 'nowatermark');
 
             if ($watermark && !$all_access) {
                 $subdef_class = $databox
@@ -71,9 +69,9 @@ class Datafiles extends AbstractDelivery
                     ->get_subdef($record->get_type(), $subdef)
                     ->get_class();
 
-                if ($subdef_class == \databox_subdef::CLASS_PREVIEW && $user->ACL()->has_preview_grant($record)) {
+                if ($subdef_class == \databox_subdef::CLASS_PREVIEW && $app['phraseanet.user']->ACL()->has_preview_grant($record)) {
                     $watermark = false;
-                } elseif ($subdef_class == \databox_subdef::CLASS_DOCUMENT && $user->ACL()->has_hd_grant($record)) {
+                } elseif ($subdef_class == \databox_subdef::CLASS_DOCUMENT && $app['phraseanet.user']->ACL()->has_hd_grant($record)) {
                     $watermark = false;
                 }
             }
@@ -84,8 +82,8 @@ class Datafiles extends AbstractDelivery
 
                 /* @var $repository \Repositories\BasketElementRepository */
 
-                $ValidationByRecord = $repository->findReceivedValidationElementsByRecord($record, $user);
-                $ReceptionByRecord = $repository->findReceivedElementsByRecord($record, $user);
+                $ValidationByRecord = $repository->findReceivedValidationElementsByRecord($record, $app['phraseanet.user']);
+                $ReceptionByRecord = $repository->findReceivedElementsByRecord($record, $app['phraseanet.user']);
 
                 if ($ValidationByRecord && count($ValidationByRecord) > 0) {
                     $watermark = false;

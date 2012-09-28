@@ -197,8 +197,6 @@ class Users implements ControllerProviderInterface
 
             $user_query = new \User_Query($app);
 
-            $user = $app['phraseanet.user'];
-
             $like_value = $request->query->get('term');
             $rights = $request->query->get('filter_rights') ? : array();
             $have_right = $request->query->get('have_right') ? : array();
@@ -206,7 +204,7 @@ class Users implements ControllerProviderInterface
             $on_base = $request->query->get('on_base') ? : array();
 
             $elligible_users = $user_query
-                ->on_sbas_where_i_am($user->ACL(), $rights)
+                ->on_sbas_where_i_am($app['phraseanet.user']->ACL(), $rights)
                 ->like(\User_Query::LIKE_EMAIL, $like_value)
                 ->like(\User_Query::LIKE_FIRSTNAME, $like_value)
                 ->like(\User_Query::LIKE_LASTNAME, $like_value)
@@ -259,13 +257,12 @@ class Users implements ControllerProviderInterface
             $request = $app['request'];
             $user_query = new \User_Query($app);
 
-            $user = $app['phraseanet.user'];
             $like_value = $request->request->get('like_value');
             $like_field = $request->request->get('like_field');
             $on_base = $request->request->get('base_id') ? : null;
             $on_sbas = $request->request->get('sbas_id') ? : null;
 
-            $elligible_users = $user_query->on_bases_where_i_am($user->ACL(), array('canadmin'))
+            $elligible_users = $user_query->on_bases_where_i_am($app['phraseanet.user']->ACL(), array('canadmin'))
                 ->like($like_field, $like_value)
                 ->on_base_ids($on_base)
                 ->on_sbas_ids($on_sbas);
@@ -332,7 +329,6 @@ class Users implements ControllerProviderInterface
         });
 
         $controllers->get('/demands/', function(Application $app, Request $request) {
-            $user = $app['phraseanet.user'];
 
             $lastMonth = time() - (3 * 4 * 7 * 24 * 60 * 60);
             $sql = "DELETE FROM demand WHERE date_modif < :date";
@@ -340,12 +336,12 @@ class Users implements ControllerProviderInterface
             $stmt->execute(array(':date' => date('Y-m-d', $lastMonth)));
             $stmt->closeCursor();
 
-            $baslist = array_keys($user->ACL()->get_granted_base(array('canadmin')));
+            $baslist = array_keys($app['phraseanet.user']->ACL()->get_granted_base(array('canadmin')));
 
             $sql = 'SELECT usr_id, usr_login FROM usr WHERE model_of = :usr_id';
 
             $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-            $stmt->execute(array(':usr_id' => $user->get_id()));
+            $stmt->execute(array(':usr_id' => $app['phraseanet.user']->get_id()));
             $models = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
@@ -561,7 +557,6 @@ class Users implements ControllerProviderInterface
         })->bind('users_display_import_file');
 
         $controllers->post('/import/file/', function(Application $app, Request $request) {
-            $user = $app['phraseanet.user'];
 
             if ((null === $file = $request->files->get('files')) || !$file->isValid()) {
 
@@ -678,12 +673,12 @@ class Users implements ControllerProviderInterface
                   INNER JOIN basusr
                     ON (basusr.usr_id=usr.usr_id)
                 WHERE usr.model_of = :usr_id
-                  AND base_id in(" . implode(', ', array_keys($user->ACL()->get_granted_base(array('manage')))) . ")
+                  AND base_id in(" . implode(', ', array_keys($app['phraseanet.user']->ACL()->get_granted_base(array('manage')))) . ")
                   AND usr_login not like '(#deleted_%)'
                 GROUP BY usr_id";
 
                 $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
-                $stmt->execute(array(':usr_id' => $user->get_id()));
+                $stmt->execute(array(':usr_id' => $app['phraseanet.user']->get_id()));
                 $models = $stmt->fetchAll(\PDO::FETCH_ASSOC);
                 $stmt->closeCursor();
 
@@ -697,7 +692,6 @@ class Users implements ControllerProviderInterface
 
         $controllers->post('/import/', function(Application $app, Request $request) {
             $nbCreation = 0;
-            $user = $app['phraseanet.user'];
 
             if ((null === $serializedArray = $request->request->get('sr')) || ('' === $serializedArray)) {
                 $app->abort(400);
@@ -763,7 +757,7 @@ class Users implements ControllerProviderInterface
                     $NewUser = \User_Adapter::create($app, $curUser['usr_login'], $curUser['usr_password'], $curUser['usr_mail'], false);
 
                     $NewUser->ACL()->apply_model(
-                        \User_Adapter::getInstance($model, $app), array_keys($user->ACL()->get_granted_base(array('manage')))
+                        \User_Adapter::getInstance($model, $app), array_keys($app['phraseanet.user']->ACL()->get_granted_base(array('manage')))
                     );
 
                     $nbCreation++;

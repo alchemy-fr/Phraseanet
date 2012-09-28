@@ -216,11 +216,9 @@ class UsrLists implements ControllerProviderInterface
 
     public function displayList(Application $app, Request $request, $list_id)
     {
-        $user = $app['phraseanet.user'];
-
         $repository = $app['EM']->getRepository('\Entities\UsrList');
 
-        $list = $repository->findUserListByUserAndId($app, $user, $list_id);
+        $list = $repository->findUserListByUserAndId($app, $app['phraseanet.user'], $list_id);
 
         $entries = new ArrayCollection();
         $owners = new ArrayCollection();
@@ -276,13 +274,11 @@ class UsrLists implements ControllerProviderInterface
                 throw new ControllerException(_('List name is required'));
             }
 
-            $user = $app['phraseanet.user'];
-
             $repository = $app['EM']->getRepository('\Entities\UsrList');
 
-            $list = $repository->findUserListByUserAndId($app, $user, $list_id);
+            $list = $repository->findUserListByUserAndId($app, $app['phraseanet.user'], $list_id);
 
-            if ($list->getOwner($user, $app)->getRole() < UsrListOwner::ROLE_EDITOR) {
+            if ($list->getOwner($app['phraseanet.user'], $app)->getRole() < UsrListOwner::ROLE_EDITOR) {
                 throw new ControllerException(_('You are not authorized to do this'));
             }
 
@@ -311,11 +307,9 @@ class UsrLists implements ControllerProviderInterface
         try {
             $repository = $app['EM']->getRepository('\Entities\UsrList');
 
-            $user = $app['phraseanet.user'];
+            $list = $repository->findUserListByUserAndId($app, $app['phraseanet.user'], $list_id);
 
-            $list = $repository->findUserListByUserAndId($app, $user, $list_id);
-
-            if ($list->getOwner($user, $app)->getRole() < UsrListOwner::ROLE_ADMIN) {
+            if ($list->getOwner($app['phraseanet.user'], $app)->getRole() < UsrListOwner::ROLE_ADMIN) {
                 throw new ControllerException(_('You are not authorized to do this'));
             }
 
@@ -347,12 +341,10 @@ class UsrLists implements ControllerProviderInterface
         try {
             $repository = $app['EM']->getRepository('\Entities\UsrList');
 
-            $user = $app['phraseanet.user'];
-
-            $list = $repository->findUserListByUserAndId($app, $user, $list_id);
+            $list = $repository->findUserListByUserAndId($app, $app['phraseanet.user'], $list_id);
             /* @var $list \Entities\UsrList */
 
-            if ($list->getOwner($user, $app)->getRole() < UsrListOwner::ROLE_EDITOR) {
+            if ($list->getOwner($app['phraseanet.user'], $app)->getRole() < UsrListOwner::ROLE_EDITOR) {
                 throw new ControllerException(_('You are not authorized to do this'));
             }
 
@@ -385,8 +377,6 @@ class UsrLists implements ControllerProviderInterface
 
     public function addUsers(Application $app, Request $request, $list_id)
     {
-        $user = $app['phraseanet.user'];
-
         try {
             if (!is_array($request->request->get('usr_ids'))) {
                 throw new ControllerException('Invalid or missing parameter usr_ids');
@@ -394,10 +384,10 @@ class UsrLists implements ControllerProviderInterface
 
             $repository = $app['EM']->getRepository('\Entities\UsrList');
 
-            $list = $repository->findUserListByUserAndId($app, $user, $list_id);
+            $list = $repository->findUserListByUserAndId($app, $app['phraseanet.user'], $list_id);
             /* @var $list \Entities\UsrList */
 
-            if ($list->getOwner($user, $app)->getRole() < UsrListOwner::ROLE_EDITOR) {
+            if ($list->getOwner($app['phraseanet.user'], $app)->getRole() < UsrListOwner::ROLE_EDITOR) {
                 throw new ControllerException(_('You are not authorized to do this'));
             }
 
@@ -453,17 +443,15 @@ class UsrLists implements ControllerProviderInterface
 
     public function displayShares(Application $app, Request $request, $list_id)
     {
-        $user = $app['phraseanet.user'];
-
         $list = null;
 
         try {
             $repository = $app['EM']->getRepository('\Entities\UsrList');
 
-            $list = $repository->findUserListByUserAndId($app, $user, $list_id);
+            $list = $repository->findUserListByUserAndId($app, $app['phraseanet.user'], $list_id);
             /* @var $list \Entities\UsrList */
 
-            if ($list->getOwner($user, $app)->getRole() < UsrListOwner::ROLE_ADMIN) {
+            if ($list->getOwner($app['phraseanet.user'], $app)->getRole() < UsrListOwner::ROLE_ADMIN) {
                 $list = null;
                 throw new \Exception(_('You are not authorized to do this'));
             }
@@ -476,8 +464,6 @@ class UsrLists implements ControllerProviderInterface
 
     public function shareWithUser(Application $app, $list_id, $usr_id)
     {
-        $user = $app['phraseanet.user'];
-
         $availableRoles = array(
             UsrListOwner::ROLE_USER,
             UsrListOwner::ROLE_EDITOR,
@@ -492,17 +478,17 @@ class UsrLists implements ControllerProviderInterface
         try {
             $repository = $app['EM']->getRepository('\Entities\UsrList');
 
-            $list = $repository->findUserListByUserAndId($app, $user, $list_id);
+            $list = $repository->findUserListByUserAndId($app, $app['phraseanet.user'], $list_id);
             /* @var $list \Entities\UsrList */
 
-            if ($list->getOwner($user, $app)->getRole() < UsrListOwner::ROLE_EDITOR) {
+            if ($list->getOwner($app['phraseanet.user'], $app)->getRole() < UsrListOwner::ROLE_EDITOR) {
                 throw new ControllerException(_('You are not authorized to do this'));
             }
 
             $new_owner = \User_Adapter::getInstance($usr_id, $app);
 
             if ($list->hasAccess($new_owner, $app)) {
-                if ($new_owner->get_id() == $user->get_id()) {
+                if ($new_owner->get_id() == $app['phraseanet.user']->get_id()) {
                     throw new ControllerException('You can not downgrade your Admin right');
                 }
 
@@ -545,15 +531,13 @@ class UsrLists implements ControllerProviderInterface
 
     public function unshareWithUser(Application $app, $list_id, $usr_id)
     {
-        $user = $app['phraseanet.user'];
-
         try {
             $repository = $app['EM']->getRepository('\Entities\UsrList');
 
-            $list = $repository->findUserListByUserAndId($app, $user, $list_id);
+            $list = $repository->findUserListByUserAndId($app, $app['phraseanet.user'], $list_id);
             /* @var $list \Entities\UsrList */
 
-            if ($list->getOwner($user, $app)->getRole() < UsrListOwner::ROLE_ADMIN) {
+            if ($list->getOwner($app['phraseanet.user'], $app)->getRole() < UsrListOwner::ROLE_ADMIN) {
                 throw new \Exception(_('You are not authorized to do this'));
             }
 

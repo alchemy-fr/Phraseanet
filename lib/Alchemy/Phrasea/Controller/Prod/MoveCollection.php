@@ -64,14 +64,12 @@ class MoveCollection implements ControllerProviderInterface
         );
 
         try {
-            $user = $app['phraseanet.user'];
-
             if (null === $request->request->get('base_id')) {
                 $datas['message'] = _('Missing target collection');
                 return $app->json($datas);
             }
 
-            if (!$user->ACL()->has_right_on_base($request->request->get('base_id'), 'canaddrecord')) {
+            if (!$app['phraseanet.user']->ACL()->has_right_on_base($request->request->get('base_id'), 'canaddrecord')) {
                 $datas['message'] = sprintf(_("You do not have the permission to move records to %s"), \phrasea::bas_names($move->getBaseIdDestination(), $app));
                 return $app->json($datas);
             }
@@ -88,7 +86,7 @@ class MoveCollection implements ControllerProviderInterface
 
                 if ($request->request->get("chg_coll_son") == "1") {
                     foreach ($record->get_children() as $child) {
-                        if ($user->ACL()->has_right_on_base($child->get_base_id(), 'candeleterecord')) {
+                        if ($app['phraseanet.user']->ACL()->has_right_on_base($child->get_base_id(), 'candeleterecord')) {
                             $child->move_to_collection($collection, $app['phraseanet.appbox']);
                         }
                     }

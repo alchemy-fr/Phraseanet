@@ -19,15 +19,13 @@ use Alchemy\Phrasea\Application;
 require_once __DIR__ . "/../../lib/bootstrap.php";
 $app = new Application();
 
-$user = $app['phraseanet.user'];
-
 $request = http_request::getInstance();
 $parm = $request->get_parms("lst", "SSTTID", "story");
 
 $gatekeeper = gatekeeper::getInstance($app);
 $gatekeeper->require_session();
 
-if ($app['phraseanet.registry']->get('GV_needAuth2DL') && $user->is_guest()) {
+if ($app['phraseanet.registry']->get('GV_needAuth2DL') && $app['phraseanet.user']->is_guest()) {
     ?>
     <script>
         parent.hideDwnl();
@@ -39,13 +37,12 @@ if ($app['phraseanet.registry']->get('GV_needAuth2DL') && $user->is_guest()) {
 
 
 $download = new set_export($app, $parm['lst'], $parm['SSTTID'], $parm['story']);
-$user = $app['phraseanet.user'];
 
 echo $app['twig']->render('common/dialog_export.html.twig', array(
     'download'             => $download,
     'ssttid'               => $parm['SSTTID'],
     'lst'                  => $download->serialize_list(),
-    'user'                 => $user,
+    'user'                 => $app['phraseanet.user'],
     'default_export_title' => $app['phraseanet.registry']->get('GV_default_export_title'),
     'choose_export_title'  => $app['phraseanet.registry']->get('GV_choose_export_title')
 ));

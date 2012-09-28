@@ -344,20 +344,19 @@ class Lightbox implements ControllerProviderInterface
                     'datas'      => _('Erreur lors de la mise a jour des donnes ')
                 );
 
-                $user = $app['phraseanet.user'];
                 $repository = $app['EM']->getRepository('\Entities\BasketElement');
 
                 /* @var $repository \Repositories\BasketElementRepository */
                 $basket_element = $repository->findUserElement(
                     $sselcont_id
-                    , $user
+                    , $app['phraseanet.user']
                 );
                 /* @var $basket_element \Entities\BasketElement */
-                $validationDatas = $basket_element->getUserValidationDatas($user, $app);
+                $validationDatas = $basket_element->getUserValidationDatas($app['phraseanet.user'], $app);
 
                 if (!$basket_element->getBasket()
                         ->getValidation()
-                        ->getParticipant($user, $app)->getCanAgree()) {
+                        ->getParticipant($app['phraseanet.user'], $app)->getCanAgree()) {
                     throw new ControllerException('You can not agree on this');
                 }
 
@@ -365,7 +364,7 @@ class Lightbox implements ControllerProviderInterface
 
                 $participant = $basket_element->getBasket()
                     ->getValidation()
-                    ->getParticipant($user, $app);
+                    ->getParticipant($app['phraseanet.user'], $app);
 
                 $app['EM']->merge($basket_element);
 
@@ -390,8 +389,6 @@ class Lightbox implements ControllerProviderInterface
 
         $controllers->post('/ajax/SET_RELEASE/{ssel_id}/', function(SilexApplication $app, $ssel_id) {
 
-            $user = $app['phraseanet.user'];
-
             $repository = $app['EM']->getRepository('\Entities\Basket');
 
             $datas = array('error' => true, 'datas' => '');
@@ -400,7 +397,7 @@ class Lightbox implements ControllerProviderInterface
                 /* @var $repository \Repositories\BasketRepository */
                 $basket = $repository->findUserBasket(
                     $app, $ssel_id
-                    , $user
+                    , $app['phraseanet.user']
                     , false
                 );
 
@@ -408,12 +405,12 @@ class Lightbox implements ControllerProviderInterface
                     throw new ControllerException('There is no validation session attached to this basket');
                 }
 
-                if (!$basket->getValidation()->getParticipant($user, $app)->getCanAgree()) {
+                if (!$basket->getValidation()->getParticipant($app['phraseanet.user'], $app)->getCanAgree()) {
                     throw new ControllerException('You have not right to agree');
                 }
 
                 /* @var $basket \Entities\Basket */
-                $participant = $basket->getValidation()->getParticipant($user, $app);
+                $participant = $basket->getValidation()->getParticipant($app['phraseanet.user'], $app);
 
                 $evt_mngr = $app['events-manager'];
 

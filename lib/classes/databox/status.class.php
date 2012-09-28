@@ -125,9 +125,7 @@ class databox_status
             return self::$_statuses;
         }
 
-        $user = $app['phraseanet.user'];
-
-        $sbas_ids = $user->ACL()->get_granted_sbas();
+        $sbas_ids = $app['phraseanet.user']->ACL()->get_granted_sbas();
 
         $statuses = array();
 
@@ -146,11 +144,9 @@ class databox_status
 
     public static function getSearchStatus(Application $app)
     {
-        $user = $app['phraseanet.user'];
-
         $statuses = array();
 
-        $sbas_ids = $user->ACL()->get_granted_sbas();
+        $sbas_ids = $app['phraseanet.user']->ACL()->get_granted_sbas();
 
         $see_all = array();
 
@@ -158,7 +154,7 @@ class databox_status
             $see_all[$databox->get_sbas_id()] = false;
 
             foreach ($databox->get_collections() as $collection) {
-                if ($user->ACL()->has_right_on_base($collection->get_base_id(), 'chgstatus')) {
+                if ($app['phraseanet.user']->ACL()->has_right_on_base($collection->get_base_id(), 'chgstatus')) {
                     $see_all[$databox->get_sbas_id()] = true;
                     break;
                 }
@@ -176,8 +172,9 @@ class databox_status
 
             $see_this = isset($see_all[$sbas_id]) ? $see_all[$sbas_id] : false;
 
-            if ($user->ACL()->has_right_on_sbas($sbas_id, 'bas_modify_struct'))
+            if ($app['phraseanet.user']->ACL()->has_right_on_sbas($sbas_id, 'bas_modify_struct')) {
                 $see_this = true;
+            }
 
             foreach ($status as $bit => $props) {
 

@@ -51,10 +51,6 @@ class databox_cgu
     {
         $terms = array();
 
-        if ( ! $home) {
-            $user = $app['phraseanet.user'];
-        }
-
         foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
             try {
                 $cgus = $databox->get_cgus();
@@ -68,10 +64,10 @@ class databox_cgu
                 $userValidation = true;
 
                 if ( ! $home) {
-                    if ( ! $user->ACL()->has_access_to_sbas($databox->get_sbas_id())) {
+                    if ( ! $app['phraseanet.user']->ACL()->has_access_to_sbas($databox->get_sbas_id())) {
                         continue;
                     }
-                    $userValidation = ($user->getPrefs('terms_of_use_' . $databox->get_sbas_id()) !== $update && trim($value) !== '');
+                    $userValidation = ($app['phraseanet.user']->getPrefs('terms_of_use_' . $databox->get_sbas_id()) !== $update && trim($value) !== '');
                 }
 
                 if ($userValidation)

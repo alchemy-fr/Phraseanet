@@ -27,8 +27,7 @@ phrasea::headers();
 User_Adapter::updateClientInfos($app, 4);
 
 ///////Construct dashboard
-$user = $app['phraseanet.user'];
-$dashboard = new module_report_dashboard($app, $user);
+$dashboard = new module_report_dashboard($app, $app['phraseanet.user']);
 $dashboard->execute();
 
 

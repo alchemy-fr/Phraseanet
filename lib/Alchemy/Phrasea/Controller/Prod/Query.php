@@ -36,12 +36,9 @@ class Query implements ControllerProviderInterface
         });
 
         $controllers->post('/', function(Application $app, Request $request) {
-
-            $user = $app['phraseanet.user'];
-
             $query = (string) $request->request->get('qry');
 
-            $mod = $user->getPrefs('view');
+            $mod = $app['phraseanet.user']->getPrefs('view');
 
             $json = array();
 
@@ -49,13 +46,12 @@ class Query implements ControllerProviderInterface
 
             $bas = is_array($request->request->get('bas')) ? $request->request->get('bas') : array_keys($user->ACL()->get_granted_base());
 
-            /* @var $user \User_Adapter */
-            if ($user->ACL()->has_right('modifyrecord')) {
+            if ($app['phraseanet.user']->ACL()->has_right('modifyrecord')) {
                 $options->set_business_fields(array());
 
                 $BF = array();
 
-                foreach ($user->ACL()->get_granted_base(array('canmodifrecord')) as $collection) {
+                foreach ($app['phraseanet.user']->ACL()->get_granted_base(array('canmodifrecord')) as $collection) {
                     if (count($bas) === 0 || in_array($collection->get_base_id(), $bas)) {
                         $BF[] = $collection->get_base_id();
                     }
@@ -70,7 +66,7 @@ class Query implements ControllerProviderInterface
 
             $options->set_fields($fields);
             $options->set_status($status);
-            $options->set_bases($bas, $user->ACL());
+            $options->set_bases($bas, $app['phraseanet.user']->ACL());
 
             $options->set_search_type($request->request->get('search_type'));
             $options->set_record_type($request->request->get('recordtype'));
@@ -82,7 +78,7 @@ class Query implements ControllerProviderInterface
 
             $form = serialize($options);
 
-            $perPage = (int) $user->getPrefs('images_per_page');
+            $perPage = (int) $app['phraseanet.user']->getPrefs('images_per_page');
 
             $search_engine = new \searchEngine_adapter($app);
             $search_engine->set_options($options);

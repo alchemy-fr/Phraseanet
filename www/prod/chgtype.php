@@ -23,8 +23,6 @@ phrasea::headers();
 $request = http_request::getInstance();
 $parm = $request->get_parms("ACT", "typelst");
 
-$user = $app['phraseanet.user'];
-
 if ($parm['ACT'] == 'SEND') {
     $lst = $parm['typelst'];
 
@@ -47,7 +45,7 @@ if ($parm['ACT'] == 'SEND') {
     ?>
     <html lang="<?php echo $app['locale.I18n']; ?>">
         <head>
-            <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/prod/<?php echo $user->getPrefs('css') ?>/prodcolor.css" />
+            <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/prod/<?php echo $app['phraseanet.user']->getPrefs('css') ?>/prodcolor.css" />
         </head>
         <body onload="parent.hideDwnl();">
     <?php

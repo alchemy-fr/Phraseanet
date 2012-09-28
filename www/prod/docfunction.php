@@ -26,12 +26,11 @@ phrasea::headers();
 $request = http_request::getInstance();
 $parm = $request->get_parms("act", "lst", "SSTTID", "story");
 
-$user = $app['phraseanet.user'];
 ?>
 <html lang="<?php echo $app['locale.I18n']; ?>">
     <head>
         <base target="_self">
-        <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,include/jslibs/jquery-ui-1.8.17/css/dark-hive/jquery-ui-1.8.17.custom.css,skins/prod/<?php echo $user->getPrefs('css') ?>/prodcolor.css" />
+        <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,include/jslibs/jquery-ui-1.8.17/css/dark-hive/jquery-ui-1.8.17.custom.css,skins/prod/<?php echo $app['phraseanet.user']->getPrefs('css') ?>/prodcolor.css" />
 
         <script type="text/javascript">
 

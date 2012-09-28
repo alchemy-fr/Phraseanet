@@ -261,7 +261,6 @@ class task_period_workflow01 extends task_databoxAbstract
 
     public function getInterfaceHTML()
     {
-        $user = $this->dependencyContainer['phraseanet.user'];
         ob_start();
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
@@ -270,7 +269,7 @@ class task_period_workflow01 extends task_databoxAbstract
             <select onchange="chgsbas(this);setDirty();" name="sbas_id">
                 <option value="">...</option>
                 <?php
-                $sbas_ids = $user->ACL()->get_granted_sbas(array('bas_manage'));
+                $sbas_ids = $this->dependencyContainer['phraseanet.user']->ACL()->get_granted_sbas(array('bas_manage'));
                 foreach ($sbas_ids as $databox) {
                     print('<option value="' . $databox->get_sbas_id() . '">' . p4string::MakeString($databox->get_viewname(), "form") . '</option>');
                 }
@@ -428,8 +427,6 @@ class task_period_workflow01 extends task_databoxAbstract
     {
         $request = http_request::getInstance();
 
-        $user = $this->dependencyContainer['phraseanet.user'];
-
         $parm = $request->get_parms("bid");
 
         phrasea::headers(200, true, 'text/json', 'UTF-8', false);
@@ -463,7 +460,7 @@ class task_period_workflow01 extends task_databoxAbstract
                     'label' => $s['labelon'] ? $s['labelon'] : $s['name']);
             }
 
-            $base_ids = $user->ACL()->get_granted_base(array(), array($sbas_id));
+            $base_ids = $this->dependencyContainer['phraseanet.user']->ACL()->get_granted_base(array(), array($sbas_id));
             foreach ($base_ids as $collection) {
                 $retjs['collections'][] = array('id'   => (string) ($collection->get_coll_id()), 'name' => $collection->get_name());
             }

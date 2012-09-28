@@ -160,17 +160,15 @@ class gatekeeper
             return;
         }
 
-        $user = $this->app['phraseanet.user'];
-
         switch ($this->_directory) {
             case 'admin':
             case 'taskmanager':
-                if (!$user->ACL()->has_access_to_module('admin')) {
+                if (!$this->app['phraseanet.user']->ACL()->has_access_to_module('admin')) {
                     phrasea::headers(403);
                 }
                 break;
             case 'thesaurus2':
-                if (!$user->ACL()->has_access_to_module('thesaurus')) {
+                if (!$this->app['phraseanet.user']->ACL()->has_access_to_module('thesaurus')) {
                     phrasea::headers(403);
                 }
                 break;
@@ -180,12 +178,12 @@ class gatekeeper
                 $this->token_access();
                 break;
             case 'upload':
-                if (!$user->ACL()->has_right('addrecord')) {
+                if (!$this->app['phraseanet.user']->ACL()->has_right('addrecord')) {
                     phrasea::headers(403);
                 }
                 break;
             case 'report':
-                if (!$user->ACL()->has_right('report')) {
+                if (!$this->app['phraseanet.user']->ACL()->has_right('report')) {
                     phrasea::headers(403);
                 }
                 break;

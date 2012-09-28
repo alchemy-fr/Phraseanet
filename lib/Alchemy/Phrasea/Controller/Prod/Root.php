@@ -42,7 +42,6 @@ class Root implements ControllerProviderInterface
 
             \User_Adapter::updateClientInfos($app, 1);
 
-            $user = $app['phraseanet.user'];
             $cssPath = $app['phraseanet.registry']->get('GV_RootPath') . 'www/skins/prod/';
 
             $css = array();
@@ -63,13 +62,13 @@ class Root implements ControllerProviderInterface
                 $css[$baseName] = $baseName;
             }
 
-            $cssfile = $user->getPrefs('css');
+            $cssfile = $app['phraseanet.user']->getPrefs('css');
 
             if (!$cssfile && isset($css['000000'])) {
                 $cssfile = '000000';
             }
 
-            $user_feeds = \Feed_Collection::load_all($app, $user);
+            $user_feeds = \Feed_Collection::load_all($app, $app['phraseanet.user']);
             $feeds = array_merge(array($user_feeds->get_aggregate()), $user_feeds->get_feeds());
 
             $thjslist = "";

@@ -370,19 +370,17 @@ class Developers implements ControllerProviderInterface
      */
     public function getApp(Application $app, Request $request, $id)
     {
-        $user = $app['phraseanet.user'];
-
         try {
             $client = new \API_OAuth2_Application($app, $id);
         } catch (\Exception_NotFound $e) {
             $app->abort(404);
         }
 
-        $token = $client->get_user_account($user)->get_token()->get_value();
+        $token = $client->get_user_account($app['phraseanet.user'])->get_token()->get_value();
 
         return $app['twig']->render('developers/application.html.twig', array(
             "application" => $client,
-            "user"        => $user,
+            "user"        => $app['phraseanet.user'],
             "token"       => $token
         ));
     }

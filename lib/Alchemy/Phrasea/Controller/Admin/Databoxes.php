@@ -121,11 +121,9 @@ class Databoxes implements ControllerProviderInterface
             $upgradeAvailable = true;
         }
 
-        $user = $app['phraseanet.user'];
-
         $sbasIds = array_merge(
-            array_keys($user->ACL()->get_granted_sbas(array('bas_manage')))
-            , array_keys($user->ACL()->get_granted_sbas(array('bas_modify_struct')))
+            array_keys($app['phraseanet.user']->ACL()->get_granted_sbas(array('bas_manage')))
+            , array_keys($app['phraseanet.user']->ACL()->get_granted_sbas(array('bas_modify_struct')))
         );
 
         $sbas = array();

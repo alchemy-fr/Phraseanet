@@ -159,7 +159,6 @@ return call_user_func(function($environment = 'prod') {
      * Check wether the current user is Admin or not
      */
     $mustBeAdmin = function (Request $request) use ($app) {
-        /* @var $user \User_Adapter */
         $user = $app['token']->get_account()->get_user();
         if (!$user->ACL()->is_admin()) {
             throw new \API_V1_exception_unauthorized('You are not authorized');

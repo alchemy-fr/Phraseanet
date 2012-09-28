@@ -240,13 +240,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
             return false;
         }
 
-        try {
-            $user = $this->app['phraseanet.user'];
-        } catch (Exception $e) {
-            return false;
-        }
-
-        if ($user->ACL()->has_right('order_master')) {
+        if ($this->app['phraseanet.user']->ACL()->has_right('order_master')) {
             $bool = true;
         }
 

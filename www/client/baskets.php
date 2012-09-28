@@ -24,15 +24,14 @@ $Request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
 
 $nbNoview = 0;
 
-$user = $app['phraseanet.user'];
-$ACL = $user->ACL();
+$ACL = $app['phraseanet.user']->ACL();
 
 $out = null;
 
 if ($Request->get("act") == "DELIMG" && $Request->get("p0") != "") {
     $repository = $app['EM']->getRepository('\Entities\BasketElement');
     /* @var $repository \Repositories\BasketElementRepository */
-    $basket_element = $repository->findUserElement($Request->get('p0'), $user);
+    $basket_element = $repository->findUserElement($Request->get('p0'), $app['phraseanet.user']);
     $app['EM']->remove($basket_element);
     $app['EM']->flush();
 }
@@ -40,7 +39,7 @@ if ($Request->get("act") == "DELIMG" && $Request->get("p0") != "") {
 if ($Request->get('act') == "ADDIMG" && ($Request->get("p0") != "" && $Request->get("p0") != null)) {
     $repository = $app['EM']->getRepository('\Entities\Basket');
     /* @var $repository \Repositories\BasketRepository */
-    $basket = $repository->findUserBasket($app, $Request->get('courChuId'), $user, true);
+    $basket = $repository->findUserBasket($app, $Request->get('courChuId'), $app['phraseanet.user'], true);
 
     $sbas_id = $Request->get('sbas');
     $record = new record_adapter($app, $sbas_id, $Request->get('p0'));
@@ -59,7 +58,7 @@ if ($Request->get('act') == "ADDIMG" && ($Request->get("p0") != "" && $Request->
 if ($Request->get('act') == "DELCHU" && ($Request->get("p0") != "" && $Request->get("p0") != null)) {
     $repository = $app['EM']->getRepository('\Entities\Basket');
     /* @var $repository \Repositories\BasketRepository */
-    $basket = $repository->findUserBasket($app, $Request->get('courChuId'), $user, true);
+    $basket = $repository->findUserBasket($app, $Request->get('courChuId'), $app['phraseanet.user'], true);
 
     $app['EM']->remove($basket);
     $app['EM']->flush();
@@ -72,7 +71,7 @@ $courChuId = $Request->get('courChuId');
 if ($Request->get('act') == "NEWCHU" && ($Request->get("p0") != "" && $Request->get("p0") != null)) {
     $basket = new \Entities\Basket();
     $basket->setName($Request->get('p0'));
-    $basket->setOwner($user);
+    $basket->setOwner($app['phraseanet.user']);
 
     $app['EM']->persist($basket);
     $app['EM']->flush();
@@ -82,7 +81,7 @@ if ($Request->get('act') == "NEWCHU" && ($Request->get("p0") != "" && $Request->
 
 $repository = $app['EM']->getRepository('\Entities\Basket');
 /* @var $repository \Repositories\BasketRepository */
-$baskets = $repository->findActiveByUser($user);
+$baskets = $repository->findActiveByUser($app['phraseanet.user']);
 
 $out = "<table style='width:99%' class='baskIndicator' id='baskMainTable'><tr><td>";
 $out .= '<select id="chutier_name" name="chutier_name" onChange="chg_chu();" style="width:120px;">';
@@ -133,7 +132,7 @@ $out .= '</td><td style="width:40%">';
 
 $repository = $app['EM']->getRepository('\Entities\Basket');
 /* @var $repository \Repositories\BasketRepository */
-$basket = $repository->findUserBasket($app, $courChuId, $user, true);
+$basket = $repository->findUserBasket($app, $courChuId, $app['phraseanet.user'], true);
 
 $jscriptnochu = $basket->getName() . " :  " . sprintf(_('paniers:: %d documents dans le panier'), $basket->getElements()->count());
 
@@ -210,10 +209,10 @@ foreach ($basket->getElements() as $basket_element) {
                      class="<?php echo $classSize ?> baskTips" src="<?php echo $thumbnail->get_url() ?>"><?php
         ?></div><?php ?><div class="tools"><?php ?><div class="baskOneDel" onclick="evt_del_in_chutier('<?php echo $basket_element->getId() ?>');"
                                                           title="<?php echo _('action : supprimer') ?>"></div><?php
-    if ($user->ACL()->has_right_on_base($record->get_base_id(), 'candwnldhd') ||
-        $user->ACL()->has_right_on_base($record->get_base_id(), 'candwnldpreview') ||
-        $user->ACL()->has_right_on_base($record->get_base_id(), 'cancmd') ||
-        $user->ACL()->has_preview_grant($record)) {
+    if ($app['phraseanet.user']->ACL()->has_right_on_base($record->get_base_id(), 'candwnldhd') ||
+        $app['phraseanet.user']->ACL()->has_right_on_base($record->get_base_id(), 'candwnldpreview') ||
+        $app['phraseanet.user']->ACL()->has_right_on_base($record->get_base_id(), 'cancmd') ||
+        $app['phraseanet.user']->ACL()->has_preview_grant($record)) {
             ?><div class="baskOneDownload" onclick="evt_dwnl('<?php echo $record->get_sbas_id() ?>_<?php echo $record->get_record_id() ?>');" title="<?php echo _('action : exporter') ?>"></div><?php
     }
         ?></div><?php

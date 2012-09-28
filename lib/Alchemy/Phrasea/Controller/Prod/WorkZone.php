@@ -74,8 +74,6 @@ class WorkZone implements ControllerProviderInterface
 
     public function browserSearch(Application $app)
     {
-        $user = $app['phraseanet.user'];
-
         $request = $app['request'];
 
         $BasketRepo = $app['EM']->getRepository('\Entities\Basket');
@@ -86,7 +84,7 @@ class WorkZone implements ControllerProviderInterface
         $offsetStart = max(($Page - 1) * $PerPage, 0);
 
         $Baskets = $BasketRepo->findWorkzoneBasket(
-            $user
+            $app['phraseanet.user']
             , $request->query->get('Query')
             , $request->query->get('Year')
             , $request->query->get('Type')
@@ -125,8 +123,6 @@ class WorkZone implements ControllerProviderInterface
             throw new \Exception_BadRequest();
         }
 
-        $user = $app['phraseanet.user'];
-
         $StoryWZRepo = $app['EM']->getRepository('\Entities\StoryWZ');
 
         $alreadyFixed = $done = 0;
@@ -141,17 +137,17 @@ class WorkZone implements ControllerProviderInterface
                 throw new \Exception('You can only attach stories');
             }
 
-            if (!$user->ACL()->has_access_to_base($Story->get_base_id())) {
+            if (!$app['phraseanet.user']->ACL()->has_access_to_base($Story->get_base_id())) {
                 throw new \Exception_Forbidden('You do not have access to this Story');
             }
 
-            if ($StoryWZRepo->findUserStory($app, $user, $Story)) {
+            if ($StoryWZRepo->findUserStory($app, $app['phraseanet.user'], $Story)) {
                 $alreadyFixed++;
                 continue;
             }
 
             $StoryWZ = new StoryWZ();
-            $StoryWZ->setUser($user);
+            $StoryWZ->setUser($app['phraseanet.user']);
             $StoryWZ->setRecord($Story);
 
             $app['EM']->persist($StoryWZ);
@@ -202,12 +198,10 @@ class WorkZone implements ControllerProviderInterface
     {
         $Story = new \record_adapter($app, $sbas_id, $record_id);
 
-        $user = $app['phraseanet.user'];
-
         $repository = $app['EM']->getRepository('\Entities\StoryWZ');
 
         /* @var $repository \Repositories\StoryWZRepository */
-        $StoryWZ = $repository->findUserStory($app, $user, $Story);
+        $StoryWZ = $repository->findUserStory($app, $app['phraseanet.user'], $Story);
 
         if (!$StoryWZ) {
             throw new \Exception_NotFound('Story not found');

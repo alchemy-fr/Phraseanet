@@ -34,8 +34,6 @@ if ($app->isAuthenticated()) {
     die(p4string::jsonencode($ret));
 }
 
-$user = $app['phraseanet.user'];
-
 try {
     $conn = $app['phraseanet.appbox']->get_connection();
 } catch (Exception $e) {
@@ -70,7 +68,7 @@ $ret['changed'] = array();
 $repository = $app['EM']->getRepository('\Entities\Basket');
 
 /* @var $repository \Repositories\BasketRepository */
-$baskets = $repository->findUnreadActiveByUser($user);
+$baskets = $repository->findUnreadActiveByUser($app['phraseanet.user']);
 
 foreach ($baskets as $basket) {
     $ret['changed'][] = $basket->getId();

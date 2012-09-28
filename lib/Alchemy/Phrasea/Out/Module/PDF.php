@@ -124,8 +124,6 @@ class PDF
 
     protected function print_thumbnailGrid($links = false)
     {
-        $user = $this->app['phraseanet.user'];
-
         $NDiapoW = 3;
         $NDiapoH = 4;
 
@@ -168,7 +166,7 @@ class PDF
 
             $fimg = $subdef->get_pathfile();
 
-            if (!$user->ACL()->has_right_on_base($rec->get_base_id(), "nowatermark")
+            if (!$this->app['phraseanet.user']->ACL()->has_right_on_base($rec->get_base_id(), "nowatermark")
                 && $subdef->get_type() == \media_subdef::TYPE_IMAGE) {
                 $fimg = \recordutils_image::watermark($this->app, $subdef);
             }
@@ -310,8 +308,6 @@ class PDF
 
     protected function print_preview($withtdm, $write_caption)
     {
-        $user = $this->app['phraseanet.user'];
-
         if ($withtdm === true) {
             $this->print_thumbnailGrid($this->pdf, $this->records, true);
         }
@@ -433,7 +429,7 @@ class PDF
 
             $f = $subdef->get_pathfile();
 
-            if (!$user->ACL()->has_right_on_base($rec->get_base_id(), "nowatermark")
+            if (!$this->app['phraseanet.user']->ACL()->has_right_on_base($rec->get_base_id(), "nowatermark")
                 && $subdef->get_type() == \media_subdef::TYPE_IMAGE)
                 $f = \recordutils_image::watermark($this->app, $subdef);
 

@@ -19,7 +19,6 @@ use Alchemy\Phrasea\Application;
 require_once __DIR__ . "/../../lib/bootstrap.php";
 
 $app = new Application();
-$user = $app['phraseanet.user'];
 
 if ( ! isset($parm)) {
 
@@ -82,15 +81,14 @@ $tbases = array();
 
 $options = new searchEngine_options();
 
-$parm['bas'] = is_array($parm['bas']) ? $parm['bas'] : array_keys($user->ACL()->get_granted_base());
+$parm['bas'] = is_array($parm['bas']) ? $parm['bas'] : array_keys($app['phraseanet.user']->ACL()->get_granted_base());
 
-/* @var $user \User_Adapter */
-if ($user->ACL()->has_right('modifyrecord')) {
+if ($app['phraseanet.user']->ACL()->has_right('modifyrecord')) {
     $options->set_business_fields(array());
 
     $BF = array();
 
-    foreach ($user->ACL()->get_granted_base(array('canmodifrecord')) as $collection) {
+    foreach ($app['phraseanet.user']->ACL()->get_granted_base(array('canmodifrecord')) as $collection) {
         if (count($parm['bas']) === 0 || in_array($collection->get_base_id(), $parm['bas'])) {
             $BF[] = $collection->get_base_id();
         }
@@ -100,7 +98,7 @@ if ($user->ACL()->has_right('modifyrecord')) {
     $options->set_business_fields(array());
 }
 
-$options->set_bases($parm['bas'], $user->ACL());
+$options->set_bases($parm['bas'], $app['phraseanet.user']->ACL());
 if ( ! is_array($parm['infield']))
     $parm['infield'] = array();
 
@@ -151,7 +149,7 @@ $npages = $result->get_total_pages();
 
 $page = $result->get_current_page();
 
-$ACL = $user->ACL();
+$ACL = $app['phraseanet.user']->ACL();
 
 if ($app['phraseanet.registry']->get('GV_thesaurus')) {
     ?>

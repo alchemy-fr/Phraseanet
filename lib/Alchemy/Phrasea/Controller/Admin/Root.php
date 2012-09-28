@@ -38,8 +38,6 @@ class Root implements ControllerProviderInterface
         });
 
         $controllers->get('/', function(Application $app, Request $request) {
-            $user = $app['phraseanet.user'];
-
             \User_Adapter::updateClientInfos($app, 3);
 
             $section = $request->query->get('section', false);
@@ -71,7 +69,7 @@ class Root implements ControllerProviderInterface
             $databoxes = $off_databoxes = array();
             foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
                 try {
-                    if (!$user->ACL()->has_access_to_sbas($databox->get_sbas_id())) {
+                    if (!$app['phraseanet.user']->ACL()->has_access_to_sbas($databox->get_sbas_id())) {
                         continue;
                     }
                     $databox->get_connection();
@@ -104,8 +102,6 @@ class Root implements ControllerProviderInterface
         })->bind('admin');
 
         $controllers->get('/tree/', function(Application $app, Request $request) {
-            $user = $app['phraseanet.user'];
-
             \User_Adapter::updateClientInfos($app, 3);
 
             $section = $request->query->get('section', false);
@@ -138,7 +134,7 @@ class Root implements ControllerProviderInterface
             $databoxes = $off_databoxes = array();
             foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
                 try {
-                    if (!$user->ACL()->has_access_to_sbas($databox->get_sbas_id())) {
+                    if (!$app['phraseanet.user']->ACL()->has_access_to_sbas($databox->get_sbas_id())) {
                         continue;
                     }
 

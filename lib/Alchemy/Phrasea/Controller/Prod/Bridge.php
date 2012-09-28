@@ -55,10 +55,9 @@ class Bridge implements ControllerProviderInterface
 
         $controllers->post('/manager/', function(Application $app) {
             $route = new RecordHelper\Bridge($app, $app['request']);
-            $user = $app['phraseanet.user'];
 
             $params = array(
-                'user_accounts'      => \Bridge_Account::get_accounts_by_user($app, $user)
+                'user_accounts'      => \Bridge_Account::get_accounts_by_user($app, $app['phraseanet.user'])
                 , 'available_apis'     => \Bridge_Api::get_availables($app)
                 , 'route'              => $route
                 , 'current_account_id' => ''
@@ -76,7 +75,6 @@ class Bridge implements ControllerProviderInterface
         $controllers->get('/callback/{api_name}/', function(Application $app, $api_name) {
             $error_message = '';
             try {
-                $user = $app['phraseanet.user'];
                 $api = \Bridge_Api::get_by_api_name($app, $api_name);
                 $connector = $api->get_connector();
 
@@ -85,9 +83,9 @@ class Bridge implements ControllerProviderInterface
                 $user_id = $connector->get_user_id();
 
                 try {
-                    $account = \Bridge_Account::load_account_from_distant_id($app, $api, $user, $user_id);
+                    $account = \Bridge_Account::load_account_from_distant_id($app, $api, $app['phraseanet.user'], $user_id);
                 } catch (\Bridge_Exception_AccountNotFound $e) {
-                    $account = \Bridge_Account::create($app, $api, $user, $user_id, $connector->get_user_name());
+                    $account = \Bridge_Account::create($app, $api, $app['phraseanet.user'], $user_id, $connector->get_user_name());
                 }
                 $settings = $account->get_settings();
 

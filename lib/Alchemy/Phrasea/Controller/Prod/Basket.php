@@ -422,15 +422,12 @@ class Basket implements ControllerProviderInterface
         $basket = $app['EM']->getRepository('\Entities\Basket')
             ->findUserBasket($app, $basket_id, $app['phraseanet.user'], true);
 
-        $user = $app['phraseanet.user'];
-        /* @var $user \User_Adapter */
-
         $n = 0;
 
         foreach ($request->request->get('elements') as $bask_element_id) {
             try {
                 $basket_element = $app['EM']->getRepository('\Entities\BasketElement')
-                    ->findUserElement($bask_element_id, $user);
+                    ->findUserElement($bask_element_id, $app['phraseanet.user']);
             } catch (\Exception $e) {
                 continue;
             }

@@ -82,8 +82,6 @@ class record_exportElement extends record_adapter
 
         $sbas_id = phrasea::sbasFromBas($this->app, $this->base_id);
 
-        $user = $this->app['phraseanet.user'];
-
         $subdefgroups = $this->app['phraseanet.appbox']->get_databox($sbas_id)->get_subdef_structure();
 
         $subdefs = array();
@@ -101,17 +99,17 @@ class record_exportElement extends record_adapter
             'thumbnail' => true
         );
 
-        if ($user->ACL()->has_right_on_base($this->get_base_id(), 'candwnldhd')) {
+        if ($this->app['phraseanet.user']->ACL()->has_right_on_base($this->get_base_id(), 'candwnldhd')) {
             $go_dl['document'] = true;
         }
-        if ($user->ACL()->has_right_on_base($this->get_base_id(), 'candwnldpreview')) {
+        if ($this->app['phraseanet.user']->ACL()->has_right_on_base($this->get_base_id(), 'candwnldpreview')) {
             $go_dl['preview'] = true;
         }
-        if ($user->ACL()->has_hd_grant($this)) {
+        if ($this->app['phraseanet.user']->ACL()->has_hd_grant($this)) {
             $go_dl['document'] = true;
             $go_dl['preview'] = true;
         }
-        if ($user->ACL()->has_preview_grant($this)) {
+        if ($this->app['phraseanet.user']->ACL()->has_preview_grant($this)) {
             $go_dl['preview'] = true;
         }
 
@@ -121,14 +119,14 @@ class record_exportElement extends record_adapter
                 ->who_have_right(array('order_master'))
                 ->execute()->get_results();
 
-        $go_cmd = (count($masters) > 0 && $user->ACL()->has_right_on_base($this->base_id, 'cancmd'));
+        $go_cmd = (count($masters) > 0 && $this->app['phraseanet.user']->ACL()->has_right_on_base($this->base_id, 'cancmd'));
 
         $orderable['document'] = false;
         $downloadable['document'] = false;
 
         if (isset($sd['document']) && is_file($sd['document']->get_pathfile())) {
             if ($go_dl['document'] === true) {
-                if ($user->ACL()->is_restricted_download($this->base_id)) {
+                if ($this->app['phraseanet.user']->ACL()->is_restricted_download($this->base_id)) {
                     $this->remain_hd --;
                     if ($this->remain_hd >= 0)
                         $downloadable['document'] = array(
@@ -176,7 +174,7 @@ class record_exportElement extends record_adapter
                 if (isset($sd[$name]) && is_file($sd[$name]->get_pathfile())) {
                     if ($class == 'document') {
 
-                        if ($user->ACL()->is_restricted_download($this->base_id)) {
+                        if ($this->app['phraseanet.user']->ACL()->is_restricted_download($this->base_id)) {
                             $this->remain_hd --;
                             if ($this->remain_hd >= 0)
                                 $downloadable[$name] = array(
