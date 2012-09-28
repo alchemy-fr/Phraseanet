@@ -55,6 +55,9 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     {
         parent::setUpBeforeClass();
 
+exec('/bin/df -h', $result);
+print("\n--- system info ---\n\n".implode("\n", $result)."\n\n-- end system info --\n\n");
+
         if (!self::$updated) {
             self::$time_start = microtime(true);
 
