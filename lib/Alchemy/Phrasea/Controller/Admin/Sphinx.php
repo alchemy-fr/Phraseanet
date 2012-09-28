@@ -84,14 +84,14 @@ class Sphinx implements ControllerProviderInterface
         $selected_libstemmer = $app['phraseanet.registry']->get('sphinx_user_stemmer');
 
         $options = array(
-            'charset_tables' => ( ! is_array($selected_charsets) ? array() : $selected_charsets),
-            'libstemmer' => ( ! is_array($selected_libstemmer) ? array() : $selected_libstemmer)
+            'charset_tables' => (!is_array($selected_charsets) ? array() : $selected_charsets),
+            'libstemmer' => (!is_array($selected_libstemmer) ? array() : $selected_libstemmer)
         );
 
-        return new Response($app['twig']->render('admin/sphinx/configuration.html.twig', array(
-                    'configuration' => new \sphinx_configuration($app),
-                    'options'       => $options
-                )));
+        return $app['twig']->render('admin/sphinx/configuration.html.twig', array(
+            'configuration' => new \sphinx_configuration($app),
+            'options'       => $options
+        ));
     }
 
     /**

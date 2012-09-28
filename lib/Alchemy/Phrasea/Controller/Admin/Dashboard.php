@@ -160,7 +160,7 @@ class Dashboard implements ControllerProviderInterface
             'php_configuration_constraints' => \setup::check_php_configuration(),
         );
 
-        return new Response($app['twig']->render('admin/dashboard.html.twig', $parameters));
+        return $app['twig']->render('admin/dashboard.html.twig', $parameters);
     }
 
     /**
@@ -194,7 +194,6 @@ class Dashboard implements ControllerProviderInterface
         };
 
         if (\mail::mail_test($app, $mail)) {
-
             return $app->redirect('/admin/dashboard/?email=sent');
         }
 
@@ -228,7 +227,7 @@ class Dashboard implements ControllerProviderInterface
 
         if (count($admins = $request->request->get('admins', array())) > 0) {
 
-            if ( ! in_array($user->get_id(), $admins)) {
+            if (!in_array($user->get_id(), $admins)) {
                 $admins[] = $user->get_id();
             }
 

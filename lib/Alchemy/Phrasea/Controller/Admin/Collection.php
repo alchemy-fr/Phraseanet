@@ -18,11 +18,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Collection implements ControllerProviderInterface
 {
 
@@ -33,7 +28,7 @@ class Collection implements ControllerProviderInterface
         $controllers->before(function(Request $request) use ($app) {
             $response = $app['firewall']->requireRightOnBase($app['request']->attributes->get('bas_id'), 'canadmin');
 
-            if($response instanceof Response) {
+            if ($response instanceof Response) {
                 return $response;
             }
         });
@@ -418,12 +413,12 @@ class Collection implements ControllerProviderInterface
                 break;
         }
 
-        return new Response($app['twig']->render('admin/collection/collection.html.twig', array(
-                    'collection' => $collection,
-                    'admins'     => $admins,
-                    'errorMsg'   => $errorMsg,
-                    'reloadTree' => $request->query->get('reload-tree') === '1'
-                )));
+        return $app['twig']->render('admin/collection/collection.html.twig', array(
+            'collection' => $collection,
+            'admins'     => $admins,
+            'errorMsg'   => $errorMsg,
+            'reloadTree' => $request->query->get('reload-tree') === '1'
+        ));
     }
 
     /**
@@ -542,10 +537,10 @@ class Collection implements ControllerProviderInterface
         if ('json' === $app['request']->getRequestFormat()) {
 
             return $app->json(array(
-                    'success' => $success,
-                    'msg'     => $success ? _('Successful removal') : _('An error occured'),
-                    'bas_id'  => $collection->get_base_id()
-                ));
+                'success' => $success,
+                'msg'     => $success ? _('Successful removal') : _('An error occured'),
+                'bas_id'  => $collection->get_base_id()
+            ));
         }
 
         return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success);
@@ -575,10 +570,10 @@ class Collection implements ControllerProviderInterface
         if ('json' === $app['request']->getRequestFormat()) {
 
             return $app->json(array(
-                    'success' => $success,
-                    'msg'     => $success ? _('Successful removal') : _('An error occured'),
-                    'bas_id'  => $collection->get_base_id()
-                ));
+                'success' => $success,
+                'msg'     => $success ? _('Successful removal') : _('An error occured'),
+                'bas_id'  => $collection->get_base_id()
+            ));
         }
 
         return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success);
@@ -608,10 +603,10 @@ class Collection implements ControllerProviderInterface
         if ('json' === $app['request']->getRequestFormat()) {
 
             return $app->json(array(
-                    'success' => $success,
-                    'msg'     => $success ? _('Successful removal') : _('An error occured'),
-                    'bas_id'  => $collection->get_base_id()
-                ));
+                'success' => $success,
+                'msg'     => $success ? _('Successful removal') : _('An error occured'),
+                'bas_id'  => $collection->get_base_id()
+            ));
         }
 
         return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success);
@@ -642,10 +637,10 @@ class Collection implements ControllerProviderInterface
         if ('json' === $app['request']->getRequestFormat()) {
 
             return $app->json(array(
-                    'success' => $success,
-                    'msg'     => $success ? _('Successful removal') : _('An error occured'),
-                    'bas_id'  => $collection->get_base_id()
-                ));
+                'success' => $success,
+                'msg'     => $success ? _('Successful removal') : _('An error occured'),
+                'bas_id'  => $collection->get_base_id()
+            ));
         }
 
         return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success);
@@ -666,12 +661,10 @@ class Collection implements ControllerProviderInterface
         }
 
         if ($file->getClientSize() > 1024 * 1024) {
-
             return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-too-big');
         }
 
         if (!$file->isValid()) {
-
             return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-invalid');
         }
 
@@ -682,7 +675,6 @@ class Collection implements ControllerProviderInterface
 
             $app['filesystem']->remove($file->getPathname());
         } catch (\Exception $e) {
-
             return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-error');
         }
 
@@ -704,12 +696,10 @@ class Collection implements ControllerProviderInterface
         }
 
         if ($file->getClientSize() > 1024 * 1024) {
-
             return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-too-big');
         }
 
         if (!$file->isValid()) {
-
             return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-invalid');
         }
 
@@ -720,7 +710,6 @@ class Collection implements ControllerProviderInterface
 
             $app['filesystem']->remove($file->getPathname());
         } catch (\Exception $e) {
-
             return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-error');
         }
 
@@ -742,12 +731,10 @@ class Collection implements ControllerProviderInterface
         }
 
         if ($file->getClientSize() > 65535) {
-
             return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-too-big');
         }
 
         if (!$file->isValid()) {
-
             return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-invalid');
         }
 
@@ -755,10 +742,8 @@ class Collection implements ControllerProviderInterface
 
         try {
             $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, $file, \collection::PIC_WM);
-
             $app['filesystem']->remove($file->getPathname());
         } catch (\Exception $e) {
-
             return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-error');
         }
 
@@ -780,12 +765,10 @@ class Collection implements ControllerProviderInterface
         }
 
         if ($file->getClientSize() > 65535) {
-
             return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-too-big');
         }
 
         if (!$file->isValid()) {
-
             return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-invalid');
         }
 
@@ -793,10 +776,8 @@ class Collection implements ControllerProviderInterface
 
         try {
             $app['phraseanet.appbox']->write_collection_pic($app['media-alchemyst'], $app['filesystem'], $collection, $file, \collection::PIC_LOGO);
-
             $app['filesystem']->remove($file->getPathname());
         } catch (\Exception $e) {
-
             return $app->redirect('/admin/collection/' . $bas_id . '/?success=0&error=file-error');
         }
 
@@ -834,18 +815,16 @@ class Collection implements ControllerProviderInterface
         if ('json' === $app['request']->getRequestFormat()) {
 
             return $app->json(array(
-                    'success' => $success,
-                    'msg'     => $msg
-                ));
+                'success' => $success,
+                'msg'     => $msg
+            ));
         }
 
         if ($collection->get_record_amount() > 0) {
-
             return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=0&error=collection-not-empty');
         }
 
         if ($success) {
-
             return $app->redirect('/admin/databox/' . $collection->get_sbas_id() . '/?success=1&reload-tree=1');
         }
 
@@ -874,11 +853,10 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-
             return $app->json(array(
-                    'success' => $success,
-                    'msg'     => $success ? _('The publication has been stopped') : _('An error occured')
-                ));
+                'success' => $success,
+                'msg'     => $success ? _('The publication has been stopped') : _('An error occured')
+            ));
         }
 
         return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success);
@@ -910,11 +888,10 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-
             return $app->json(array(
-                    'success' => $success,
-                    'msg'     => $success ? _('Successful update') : _('An error occured')
-                ));
+                'success' => $success,
+                'msg'     => $success ? _('Successful update') : _('An error occured')
+            ));
         }
 
         return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success . '&reload-tree=1');
@@ -946,11 +923,10 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-
             return $app->json(array(
-                    'success' => $success,
-                    'msg'     => $success ? _('Successful update') : _('An error occured')
-                ));
+                'success' => $success,
+                'msg'     => $success ? _('Successful update') : _('An error occured')
+            ));
         }
 
         return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success);
@@ -978,11 +954,10 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-
             return $app->json(array(
-                    'success' => $success,
-                    'msg'     => $success ? _('Successful update') : _('An error occured')
-                ));
+                'success' => $success,
+                'msg'     => $success ? _('Successful update') : _('An error occured')
+            ));
         }
 
         return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success);
@@ -1010,11 +985,10 @@ class Collection implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-
             return $app->json(array(
-                    'success' => $success,
-                    'msg'     => $success ? _('Successful update') : _('An error occured')
-                ));
+                'success' => $success,
+                'msg'     => $success ? _('Successful update') : _('An error occured')
+            ));
         }
 
         return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=' . (int) $success);
@@ -1073,13 +1047,13 @@ class Collection implements ControllerProviderInterface
             }
         }
 
-        return new Response($app['twig']->render('admin/collection/suggested_value.html.twig', array(
-                    'collection'      => $collection,
-                    'databox'         => $databox,
-                    'suggestedValues' => $suggestedValues,
-                    'structFields'    => $structFields,
-                    'basePrefs'       => $basePrefs,
-                )));
+        return $app['twig']->render('admin/collection/suggested_value.html.twig', array(
+            'collection'      => $collection,
+            'databox'         => $databox,
+            'suggestedValues' => $suggestedValues,
+            'structFields'    => $structFields,
+            'basePrefs'       => $basePrefs,
+        ));
     }
 
     /**
@@ -1109,10 +1083,10 @@ class Collection implements ControllerProviderInterface
         if ('json' === $app['request']->getRequestFormat()) {
 
             return $app->json(array(
-                    'success' => $success,
-                    'msg'     => $success ? _('Successful update') : _('An error occured'),
-                    'bas_id'  => $collection->get_base_id()
-                ));
+                'success' => $success,
+                'msg'     => $success ? _('Successful update') : _('An error occured'),
+                'bas_id'  => $collection->get_base_id()
+            ));
         }
 
         return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/suggested-values/?success=' . (int) $success);
@@ -1205,10 +1179,10 @@ class Collection implements ControllerProviderInterface
             $out['total']['giga'] = $out['total']['totsiz'] / (1024 * 1024 * 1024);
         }
 
-        return new Response($app['twig']->render('admin/collection/details.html.twig', array(
-                    'collection' => $collection,
-                    'table'      => $out,
-                )));
+        return $app['twig']->render('admin/collection/details.html.twig', array(
+            'collection' => $collection,
+            'table'      => $out,
+        ));
     }
 
     /**

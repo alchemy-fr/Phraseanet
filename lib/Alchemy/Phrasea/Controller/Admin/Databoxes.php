@@ -186,14 +186,14 @@ class Databoxes implements ControllerProviderInterface
 
         $upgrader = new \Setup_Upgrade($app);
 
-        return new Response($app['twig']->render('admin/databases.html.twig', array(
-                    'files'             => new \DirectoryIterator($app['phraseanet.registry']->get('GV_RootPath') . 'lib/conf.d/data_templates'),
-                    'sbas'              => $sbas,
-                    'upgrade_available' => $upgradeAvailable,
-                    'error_msg'         => $errorMsg,
-                    'recommendations'   => $upgrader->getRecommendations(),
-                    'advices'           => $request->query->get('advices', array()),
-                )));
+        return $app['twig']->render('admin/databases.html.twig', array(
+            'files'             => new \DirectoryIterator($app['phraseanet.registry']->get('GV_RootPath') . 'lib/conf.d/data_templates'),
+            'sbas'              => $sbas,
+            'upgrade_available' => $upgradeAvailable,
+            'error_msg'         => $errorMsg,
+            'recommendations'   => $upgrader->getRecommendations(),
+            'advices'           => $request->query->get('advices', array()),
+        ));
     }
 
     /**
@@ -207,12 +207,10 @@ class Databoxes implements ControllerProviderInterface
     public function createDatabase(Application $app, Request $request)
     {
         if ('' === $dbName = $request->request->get('new_dbname', '')) {
-
             return $app->redirect('/admin/databoxes/?error=no-empty');
         }
 
         if (\p4string::hasAccent($dbName)) {
-
             return $app->redirect('/admin/databoxes/?error=special-chars');
         }
 
@@ -234,7 +232,6 @@ class Databoxes implements ControllerProviderInterface
             try {
                 $connbas = new \connection_pdo('databox_creation', $hostname, $port, $user, $password, $dbName, array(), $registry);
             } catch (\PDOException $e) {
-
                 return $app->redirect('/admin/databoxes/?success=0&error=database-failed');
             }
 
@@ -245,7 +242,6 @@ class Databoxes implements ControllerProviderInterface
 
                 return $app->redirect('/admin/databox/' . $base->get_sbas_id() . '/?success=1&reload-tree=1');
             } catch (\Exception $e) {
-
                 return $app->redirect('/admin/databoxes/?success=0&error=base-failed');
             }
         }
@@ -267,11 +263,9 @@ class Databoxes implements ControllerProviderInterface
 
                     return $app->redirect('/admin/databox/' . $base->get_sbas_id() . '/?success=1&reload-tree=1');
                 } catch (\Exception $e) {
-
                     return $app->redirect('/admin/databoxes/?success=0&error=base-failed');
                 }
             } catch (\Exception $e) {
-
                 return $app->redirect('/admin/databoxes/?success=0&error=database-failed');
             }
         }
@@ -287,12 +281,10 @@ class Databoxes implements ControllerProviderInterface
     public function databaseMount(Application $app, Request $request)
     {
         if ('' === $dbName = trim($request->request->get('new_dbname', ''))) {
-
             return $app->redirect('/admin/databoxes/?success=0&error=no-empty');
         }
 
         if (\p4string::hasAccent($dbName)) {
-
             return $app->redirect('/admin/databoxes/?success=0&error=special-chars');
         }
 
@@ -317,7 +309,6 @@ class Databoxes implements ControllerProviderInterface
                 return $app->redirect('/admin/databox/' . $base->get_sbas_id() . '/?success=1&reload-tree=1');
             } catch (\Exception $e) {
                 $appbox->get_connection()->rollBack();
-
                 return $app->redirect('/admin/databoxes/?success=0&error=mount-failed');
             }
         }
@@ -364,13 +355,10 @@ class Databoxes implements ControllerProviderInterface
 
             return $app->redirect('/admin/databoxes/?success=1&notice=restart&' . http_build_query(array('advices' => $advices)));
         } catch (\Exception_Setup_UpgradeAlreadyStarted $e) {
-
             return $app->redirect('/admin/databoxes/?success=0&error=already-started');
         } catch (\Exception_Setup_FixBadEmailAddresses $e) {
-
             return $app->redirect('/admin/databoxes/?success=0&error=bad-email');
         } catch (\Exception $e) {
-
             return $app->redirect('/admin/databoxes/?success=0&error=unknow');
         }
     }

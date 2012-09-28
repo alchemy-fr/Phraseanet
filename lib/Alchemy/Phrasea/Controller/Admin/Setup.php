@@ -16,7 +16,6 @@ namespace Alchemy\Phrasea\Controller\Admin;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-
 use Alchemy\Phrasea\Application;
 use Silex\Application as SilexApplication;
 use Silex\ControllerProviderInterface;
@@ -88,23 +87,21 @@ class Setup implements ControllerProviderInterface
      */
     public function getGlobals(Application $app, Request $request)
     {
-//        \phrasea::start($app['phraseanet.configuration']);
-
         require_once __DIR__ . "/../../../../conf.d/_GV_template.inc";
 
         if (null !== $update = $request->query->get('update')) {
-            if ( ! ! $update) {
+            if (!!$update) {
                 $update = _('Update succeed');
             } else {
                 $update = _('Update failed');
             }
         }
 
-        return new Response($app['twig']->render('admin/setup.html.twig', array(
-                    'GV'                => $GV,
-                    'update_post_datas' => $update,
-                    'listTimeZone'      => \DateTimeZone::listAbbreviations()
-                )));
+        return $app['twig']->render('admin/setup.html.twig', array(
+            'GV'                => $GV,
+            'update_post_datas' => $update,
+            'listTimeZone'      => \DateTimeZone::listAbbreviations()
+        ));
     }
 
     /**

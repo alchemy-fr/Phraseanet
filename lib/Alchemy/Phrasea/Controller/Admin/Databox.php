@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
-use Alchemy\Phrasea\Core\Configuration;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,13 +30,13 @@ class Databox implements ControllerProviderInterface
 
         $controllers->before(function(Request $request) use ($app) {
 
-                $response = $app['firewall']->requireAccessToModule('admin')
-                    ->requireAccessToSbas($request->attributes->get('databox_id'));
+            $response = $app['firewall']->requireAccessToModule('admin')
+                ->requireAccessToSbas($request->attributes->get('databox_id'));
 
-                if ($response instanceof Response) {
-                    return $response;
-                }
-            });
+            if ($response instanceof Response) {
+                return $response;
+            }
+        });
 
         /**
          * Get admin database
@@ -496,12 +495,12 @@ class Databox implements ControllerProviderInterface
                 break;
         }
 
-        return new Response($app['twig']->render('admin/databox/databox.html.twig', array(
-                    'databox'    => $databox,
-                    'showDetail' => (int) $request->query->get("sta") < 1,
-                    'errorMsg'   => $errorMsg,
-                    'reloadTree' => $request->query->get('reload-tree') === '1'
-                )));
+        return $app['twig']->render('admin/databox/databox.html.twig', array(
+            'databox'    => $databox,
+            'showDetail' => (int) $request->query->get("sta") < 1,
+            'errorMsg'   => $errorMsg,
+            'reloadTree' => $request->query->get('reload-tree') === '1'
+        ));
     }
 
     /**
@@ -514,11 +513,11 @@ class Databox implements ControllerProviderInterface
      */
     public function getDatabaseCGU(Application $app, Request $request, $databox_id)
     {
-        return new Response($app['twig']->render('admin/databox/cgus.html.twig', array(
-                    'languages'      => $app->getAvailableLanguages(),
-                    'cgus'           => $app['phraseanet.appbox']->get_databox($databox_id)->get_cgus(),
-                    'current_locale' => $app['locale']
-                )));
+        return $app['twig']->render('admin/databox/cgus.html.twig', array(
+            'languages'      => $app->getAvailableLanguages(),
+            'cgus'           => $app['phraseanet.appbox']->get_databox($databox_id)->get_cgus(),
+            'current_locale' => $app['locale']
+        ));
     }
 
     /**
@@ -550,12 +549,11 @@ class Databox implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-
             return $app->json(array(
-                    'success' => $success,
-                    'msg'     => $msg,
-                    'sbas_id' => $databox->get_sbas_id()
-                ));
+                'success' => $success,
+                'msg'     => $msg,
+                'sbas_id' => $databox->get_sbas_id()
+            ));
         }
 
         return $app->redirect('/admin/databox/' . $databox->get_sbas_id() . '/?success=' . (int) $success . ($databox->get_record_amount() > 0 ? '&error=databox-not-empty' : ''));
@@ -581,12 +579,11 @@ class Databox implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-
             return $app->json(array(
-                    'success' => $success,
-                    'msg'     => $success ? _('Successful update') : _('An error occured'),
-                    'sbas_id' => $databox_id
-                ));
+                'success' => $success,
+                'msg'     => $success ? _('Successful update') : _('An error occured'),
+                'sbas_id' => $databox_id
+            ));
         }
 
         return $app->redirect('/admin/databox/' . $databox_id . '/?success=' . (int) $success);
@@ -612,12 +609,11 @@ class Databox implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-
             return $app->json(array(
-                    'success' => $success,
-                    'msg'     => $success ? _('Successful update') : _('An error occured'),
-                    'sbas_id' => $databox_id
-                ));
+                'success' => $success,
+                'msg'     => $success ? _('Successful update') : _('An error occured'),
+                'sbas_id' => $databox_id
+            ));
         }
 
         return $app->redirect('/admin/databox/' . $databox_id . '/?success=' . (int) $success);
@@ -640,7 +636,6 @@ class Databox implements ControllerProviderInterface
                 $databox->update_cgus($loc, $terms, !!$request->request->get('valid', false));
             }
         } catch (\Exception $e) {
-
             return $app->redirect('/admin/databox/' . $databox_id . '/cgus/?success=0');
         }
 
@@ -711,15 +706,12 @@ class Databox implements ControllerProviderInterface
 
                     return $app->redirect('/admin/databox/' . $databox_id . '/?success=1');
                 } else {
-
                     return $app->redirect('/admin/databox/' . $databox_id . '/?success=0&error=file-too-big');
                 }
             } else {
-
                 return $app->redirect('/admin/databox/' . $databox_id . '/?success=0&error=file-invalid');
             }
         } catch (\Exception $e) {
-
             return $app->redirect('/admin/databox/' . $databox_id . '/??success=0&error=file-error');
         }
     }
@@ -744,12 +736,11 @@ class Databox implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-
             return $app->json(array(
-                    'success' => $success,
-                    'msg'     => $success ? _('Successful removal') : _('An error occured'),
-                    'sbas_id' => $databox_id
-                ));
+                'success' => $success,
+                'msg'     => $success ? _('Successful removal') : _('An error occured'),
+                'sbas_id' => $databox_id
+            ));
         }
 
         return $app->redirect('/admin/databox/' . $databox_id . '/?success=' . (int) $success);
@@ -775,12 +766,11 @@ class Databox implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-
             return $app->json(array(
-                    'success' => $success,
-                    'msg'     => $success ? _('Successful update') : _('An error occured'),
-                    'sbas_id' => $databox_id
-                ));
+                'success' => $success,
+                'msg'     => $success ? _('Successful update') : _('An error occured'),
+                'sbas_id' => $databox_id
+            ));
         }
 
         return $app->redirect('/admin/databox/' . $databox_id . '/?success=' . (int) $success);
@@ -810,12 +800,11 @@ class Databox implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-
             return $app->json(array(
-                    'success' => $success,
-                    'msg'     => $success ? _('Successful update') : _('An error occured'),
-                    'sbas_id' => $databox_id
-                ));
+                'success' => $success,
+                'msg'     => $success ? _('Successful update') : _('An error occured'),
+                'sbas_id' => $databox_id
+            ));
         }
 
         return $app->redirect('/admin/databox/' . $databox_id . '/?success=' . (int) $success);
@@ -843,12 +832,11 @@ class Databox implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-
             return $app->json(array(
-                    'success' => $success,
-                    'msg'     => $success ? _('The publication has been stopped') : _('An error occured'),
-                    'sbas_id' => $databox_id
-                ));
+                'success' => $success,
+                'msg'     => $success ? _('The publication has been stopped') : _('An error occured'),
+                'sbas_id' => $databox_id
+            ));
         }
 
         return $app->redirect('/admin/databox/' . $databox_id . '/?success=' . (int) $success . '&reload-tree=1');
@@ -887,12 +875,11 @@ class Databox implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-
             return $app->json(array(
-                    'success' => $success,
-                    'msg'     => $msg,
-                    'sbas_id' => $databox_id
-                ));
+                'success' => $success,
+                'msg'     => $msg,
+                'sbas_id' => $databox_id
+            ));
         }
 
         return $app->redirect('/admin/databox/' . $databox_id . '/?success=' . (int) $success);
@@ -960,9 +947,9 @@ class Databox implements ControllerProviderInterface
      */
     public function getReorder(Application $app, Request $request, $databox_id)
     {
-        return new Response($app['twig']->render('admin/collection/reorder.html.twig', array(
-                    'databox' => $app['phraseanet.appbox']->get_databox($databox_id),
-                )));
+        return $app['twig']->render('admin/collection/reorder.html.twig', array(
+            'databox' => $app['phraseanet.appbox']->get_databox($databox_id),
+        ));
     }
 
     /**
@@ -990,12 +977,11 @@ class Databox implements ControllerProviderInterface
         }
 
         if ('json' === $app['request']->getRequestFormat()) {
-
             return $app->json(array(
-                    'success' => $success,
-                    'msg'     => $success ? _('Successful update') : _('An error occured'),
-                    'sbas_id' => $databox_id
-                ));
+                'success' => $success,
+                'msg'     => $success ? _('Successful update') : _('An error occured'),
+                'sbas_id' => $databox_id
+            ));
         }
 
         return $app->redirect('/admin/databox/' . $databox_id . '/collections/order?success=' . (int) $success);
@@ -1011,7 +997,7 @@ class Databox implements ControllerProviderInterface
      */
     public function getNewCollection(Application $app, Request $request, $databox_id)
     {
-        return new Response($app['twig']->render('admin/collection/create.html.twig'));
+        return $app['twig']->render('admin/collection/create.html.twig');
     }
 
     /**
@@ -1049,7 +1035,6 @@ class Databox implements ControllerProviderInterface
 
             return $app->redirect('/admin/collection/' . $collection->get_base_id() . '/?success=1&reload-tree=1');
         } catch (\Exception $e) {
-
             return $app->redirect('/admin/databox/' . $databox_id . '/collection/error=error');
         }
     }
@@ -1142,11 +1127,11 @@ class Databox implements ControllerProviderInterface
             $out['total']['giga'] = $out['total']['totsiz'] / (1024 * 1024 * 1024);
         }
 
-        return new Response($app['twig']->render('admin/databox/details.html.twig', array(
-                    'databox' => $databox,
-                    'table'   => $out,
-                    'bcmath'  => extension_loaded("bcmath"),
-                )));
+        return $app['twig']->render('admin/databox/details.html.twig', array(
+            'databox' => $databox,
+            'table'   => $out,
+            'bcmath'  => extension_loaded("bcmath"),
+        ));
     }
 
     /**
