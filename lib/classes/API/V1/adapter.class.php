@@ -826,7 +826,6 @@ class API_V1_adapter extends API_V1_Abstract
     public function search_records(Request $request)
     {
         $user = $this->app['phraseanet.user'];
-        $registry = $this->app['phraseanet.registry'];
         $result = new API_V1_result($request, $this);
 
         $search_type = ($request->get('search_type')

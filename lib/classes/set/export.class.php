@@ -43,7 +43,6 @@ class set_export extends set_abstract
     public function __construct(Application $app, $lst, $sstid, $storyWZid = null)
     {
         $this->app = $app;
-        $registry = $this->app['phraseanet.registry'];
 
         $user = $app['phraseanet.user'];
 
