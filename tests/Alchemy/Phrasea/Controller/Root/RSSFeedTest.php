@@ -226,8 +226,8 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
         $appbox = self::$DI['app']['phraseanet.appbox'];
         $this->authenticate(self::$DI['app']);
 
-        $link = self::$feed_3_public->get_user_link($appbox->get_registry(), self::$DI['user'], Feed_Adapter::FORMAT_ATOM)->get_href();
-        $link = str_replace($appbox->get_registry()->get('GV_ServerName') . 'feeds/', '/', $link);
+        $link = self::$feed_3_public->get_user_link(self::$DI['app']['phraseanet.registry'], self::$DI['user'], Feed_Adapter::FORMAT_ATOM)->get_href();
+        $link = str_replace(self::$DI['app']['phraseanet.registry']->get('GV_ServerName') . 'feeds/', '/', $link);
 
         $this->logout(self::$DI['app']);
 
@@ -245,8 +245,8 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
         $appbox = self::$DI['app']['phraseanet.appbox'];
         $this->authenticate(self::$DI['app']);
 
-        $link = self::$private_feeds->get_aggregate()->get_user_link($appbox->get_registry(), self::$DI['user'], Feed_Adapter::FORMAT_ATOM)->get_href();
-        $link = str_replace($appbox->get_registry()->get('GV_ServerName') . 'feeds/', '/', $link);
+        $link = self::$private_feeds->get_aggregate()->get_user_link(self::$DI['app']['phraseanet.registry'], self::$DI['user'], Feed_Adapter::FORMAT_ATOM)->get_href();
+        $link = str_replace(self::$DI['app']['phraseanet.registry']->get('GV_ServerName') . 'feeds/', '/', $link);
 
         $this->logout(self::$DI['app']);
 
@@ -264,8 +264,8 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
         $appbox = self::$DI['app']['phraseanet.appbox'];
         $this->authenticate(self::$DI['app']);
 
-        $link = self::$feed_1_private->get_user_link($appbox->get_registry(), self::$DI['user'], Feed_Adapter::FORMAT_ATOM)->get_href();
-        $link = str_replace($appbox->get_registry()->get('GV_ServerName') . 'feeds/', '/', $link);
+        $link = self::$feed_1_private->get_user_link(self::$DI['app']['phraseanet.registry'], self::$DI['user'], Feed_Adapter::FORMAT_ATOM)->get_href();
+        $link = str_replace(self::$DI['app']['phraseanet.registry']->get('GV_ServerName') . 'feeds/', '/', $link);
 
         $this->logout(self::$DI['app']);
 
