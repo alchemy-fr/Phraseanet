@@ -36,7 +36,7 @@ User_Adapter::updateClientInfos($app, 5);
 ?>
 <html lang="<?php echo $app['locale.I18n'] ?>">
     <head>
-        <title><?php echo $appbox->get_registry()->get('GV_homeTitle'); ?> - <?php echo p4string::MakeString(_('phraseanet:: thesaurus')) ?></title>
+        <title><?php echo $app['phraseanet.registry']->get('GV_homeTitle'); ?> - <?php echo p4string::MakeString(_('phraseanet:: thesaurus')) ?></title>
 
         <style id="STYLES">
             DIV.glossaire DIV.r1_

@@ -80,7 +80,7 @@ foreach ($baskets as $basket) {
 
 
 if (in_array($app['session']->get('message'), array('1', null))) {
-    $registry = $appbox->get_registry();
+    $registry = $app['phraseanet.registry'];
     if ($registry->get('GV_maintenance')) {
 
         $ret['message'] .= '<div>' . _('The application is going down for maintenance, please logout.') . '</div>';

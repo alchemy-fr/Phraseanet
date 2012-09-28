@@ -20,7 +20,7 @@ use Alchemy\Phrasea\Core\Configuration;
 require_once __DIR__ . "/../../lib/bootstrap.php";
 $app = new Application();
 $appbox = $app['phraseanet.appbox'];
-$registry = $appbox->get_registry();
+$registry = $app['phraseanet.registry'];
 require_once($registry->get('GV_RootPath') . "lib/classes/deprecated/inscript.api.php");
 
 $request = http_request::getInstance();

@@ -22,7 +22,7 @@ phrasea::headers(200, true);
 
 $app = new Application();
 $appbox = $app['phraseanet.appbox'];
-$registry = $appbox->get_registry();
+$registry = $app['phraseanet.registry'];
 
 $request = http_request::getInstance();
 $parm = $request->get_parms(

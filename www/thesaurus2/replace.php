@@ -21,7 +21,7 @@ require_once __DIR__ . "/../../lib/bootstrap.php";
 phrasea::headers(200, true);
 $app = new Application();
 $appbox = $app['phraseanet.appbox'];
-$registry = $appbox->get_registry();
+$registry = $app['phraseanet.registry'];
 require($registry->get('GV_RootPath') . "www/thesaurus2/xmlhttp.php");
 
 $request = http_request::getInstance();

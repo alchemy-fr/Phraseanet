@@ -47,7 +47,7 @@ ORDER BY sbas.ord";
 <html lang="<?php echo $app['locale.I18n']; ?>">
     <head>
         <meta http-equiv="X-UA-Compatible" content="chrome=1">
-        <title><?php echo $appbox->get_registry()->get('GV_homeTitle'); ?> - <?php echo p4string::MakeString(_('phraseanet:: thesaurus')) ?></title>
+        <title><?php echo $app['phraseanet.registry']->get('GV_homeTitle'); ?> - <?php echo p4string::MakeString(_('phraseanet:: thesaurus')) ?></title>
 
         <link rel="shortcut icon" type="image/x-icon" href="/thesaurus2/favicon.ico">
         <link REL="stylesheet" TYPE="text/css" HREF="./thesaurus.css?u=<?php echo mt_rand() ?>" />

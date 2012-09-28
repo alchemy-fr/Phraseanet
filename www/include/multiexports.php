@@ -20,7 +20,7 @@ use Alchemy\Phrasea\Core\Configuration;
 require_once __DIR__ . "/../../lib/bootstrap.php";
 $app = new Application();
 $appbox = $app['phraseanet.appbox'];
-$registry = $appbox->get_registry();
+$registry = $app['phraseanet.registry'];
 
 $user = $app['phraseanet.user'];
 
