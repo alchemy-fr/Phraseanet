@@ -17,6 +17,7 @@
         "mediavorus/mediavorus": "dev-master",
         "media-alchemyst/media-alchemyst": "dev-master",
         "monolog/monolog": "1.0.*",
+        "neutron/silex-badfaith-provider": "dev-master",
         "neutron/silex-filesystem-provider": "dev-master",
         "php-xpdf/php-xpdf": "dev-master",
         "phpexiftool/phpexiftool": "dev-master",
@@ -34,6 +35,10 @@
         "fabpot/php-cs-fixer": "dev-master"
     },
     "repositories": [
+    {
+        "type": "vcs",
+        "url": "https://github.com/winmillwill/BadFaith"
+    },
     {
         "type": "vcs",
         "url": "https://github.com/alchemy-fr/oauth2-php"

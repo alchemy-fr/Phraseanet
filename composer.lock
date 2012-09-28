@@ -1,6 +1,40 @@
 {
-    "hash": "e58c2c014983e1d3783e97775fdeb0e5",
+    "hash": "e840de1ed18fe9e614a0c2598f57cd43",
     "packages": [
+        {
+            "name": "BadFaith/BadFaith",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/winmillwill/BadFaith",
+                "reference": "9f80653350aa1f342a53a2f3a690422256686707"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/winmillwill/BadFaith/zipball/9f80653350aa1f342a53a2f3a690422256686707",
+                "reference": "9f80653350aa1f342a53a2f3a690422256686707",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "time": "1343419801",
+            "type": "library",
+            "installation-source": "source",
+            "autoload": {
+                "psr-0": {
+                    "BadFaith": "lib/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Accept-* Header parsing for PHP",
+            "support": {
+                "source": "https://github.com/winmillwill/BadFaith/tree/master",
+                "issues": "https://github.com/winmillwill/BadFaith/issues"
+            }
+        },
         {
             "name": "alchemy/Phlickr",
             "version": "dev-master",
@@ -222,7 +256,7 @@
                 "php": ">=5.3.2",
                 "doctrine/common": ">=2.2.0,<=2.2.99"
             },
-            "time": "2012-04-12 21:56:12",
+            "time": "2012-04-13 07:56:12",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -281,7 +315,7 @@
                 "doctrine/common": ">=2.2.0,<2.2.99",
                 "doctrine/dbal": ">=2.2.1,<2.2.99"
             },
-            "time": "2012-04-12 22:02:34",
+            "time": "2012-04-13 08:02:34",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -392,6 +426,7 @@
                 "knplabs/knp-snappy": "dev-master",
                 "imagine/imagine": "*"
             },
+            "time": "1338686843",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -416,8 +451,7 @@
                 "snappy",
                 "pdf",
                 "imagine"
-            ],
-            "time": "1338686843"
+            ]
         },
         {
             "name": "imagine/Imagine",
@@ -648,7 +682,7 @@
             "require": {
                 "php": ">=5.3.0"
             },
-            "time": "2011-10-23 23:39:02",
+            "time": "2011-10-24 09:39:02",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -675,6 +709,48 @@
             ]
         },
         {
+            "name": "neutron/silex-badfaith-provider",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/romainneutron/BadFaith-ServiceProvider",
+                "reference": "2354975dba05a0c003db19c9824703ea0707c029"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/romainneutron/BadFaith-ServiceProvider/zipball/2354975dba05a0c003db19c9824703ea0707c029",
+                "reference": "2354975dba05a0c003db19c9824703ea0707c029",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3",
+                "silex/silex": ">=1.0",
+                "symfony/browser-kit": ">=1.0",
+                "badfaith/badfaith": "*"
+            },
+            "require-dev": {
+                "fabpot/php-cs-fixer": "master"
+            },
+            "time": "1348756812",
+            "type": "library",
+            "installation-source": "source",
+            "autoload": {
+                "psr-0": {
+                    "Neutron": "src"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Romain Neutron",
+                    "email": "imprec@gmail.com",
+                    "homepage": "http://www.lickmychip.com/"
+                }
+            ]
+        },
+        {
             "name": "neutron/silex-filesystem-provider",
             "version": "dev-master",
             "source": {
@@ -696,6 +772,7 @@
             "require-dev": {
                 "fabpot/php-cs-fixer": "master"
             },
+            "time": "1346932827",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -712,8 +789,7 @@
                     "email": "imprec@gmail.com",
                     "homepage": "http://www.lickmychip.com/"
                 }
-            ],
-            "time": "1346932827"
+            ]
         },
         {
             "name": "php-ffmpeg/php-ffmpeg",
@@ -1207,7 +1283,7 @@
             "require": {
                 "php": ">=5.2.4"
             },
-            "time": "2012-06-17 10:55:34",
+            "time": "2012-06-17 20:55:34",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1245,12 +1321,12 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/symfony/symfony.git",
-                "reference": "21d16e60fa2d4dc12a489817070896daf806b55d"
+                "reference": "f62fa8a79edc94240a7fd3ef3096ddd789eced4f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/symfony/symfony/zipball/21d16e60fa2d4dc12a489817070896daf806b55d",
-                "reference": "21d16e60fa2d4dc12a489817070896daf806b55d",
+                "url": "https://github.com/symfony/symfony/zipball/f62fa8a79edc94240a7fd3ef3096ddd789eced4f",
+                "reference": "f62fa8a79edc94240a7fd3ef3096ddd789eced4f",
                 "shasum": ""
             },
             "require": {
@@ -1299,7 +1375,7 @@
                 "propel/propel1": "dev-master",
                 "monolog/monolog": "dev-master"
             },
-            "time": "1348488710",
+            "time": "1348749927",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1619,6 +1695,7 @@
         "grom/silex-service-provider": 20,
         "mediavorus/mediavorus": 20,
         "media-alchemyst/media-alchemyst": 20,
+        "neutron/silex-badfaith-provider": 20,
         "neutron/silex-filesystem-provider": 20,
         "php-xpdf/php-xpdf": 20,
         "phpexiftool/phpexiftool": 20,
