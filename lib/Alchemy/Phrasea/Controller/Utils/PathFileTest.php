@@ -28,21 +28,19 @@ class PathFileTest implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->get('/path/', function(Application $app, Request $request) {
-
-                return $app->json(array(
-                        'exists'     => file_exists($request->query->get('path'))
-                        , 'file'       => is_file($request->query->get('path'))
-                        , 'dir'        => is_dir($request->query->get('path'))
-                        , 'readable'   => is_readable($request->query->get('path'))
-                        , 'writeable'  => is_writable($request->query->get('path'))
-                        , 'executable' => is_executable($request->query->get('path'))
-                    ));
-            });
+            return $app->json(array(
+                    'exists'     => file_exists($request->query->get('path'))
+                    , 'file'       => is_file($request->query->get('path'))
+                    , 'dir'        => is_dir($request->query->get('path'))
+                    , 'readable'   => is_readable($request->query->get('path'))
+                    , 'writeable'  => is_writable($request->query->get('path'))
+                    , 'executable' => is_executable($request->query->get('path'))
+                ));
+        });
 
         $controllers->get('/url/', function(Application $app, Request $request) {
-
-                return $app->json(array('code' => \http_query::getHttpCodeFromUrl($request->query->get('url'))));
-            });
+            return $app->json(array('code' => \http_query::getHttpCodeFromUrl($request->query->get('url'))));
+        });
 
         return $controllers;
     }

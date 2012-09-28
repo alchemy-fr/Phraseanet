@@ -31,8 +31,8 @@ class Developers implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function() use ($app) {
-                $app['firewall']->requireAuthentication($app);
-            });
+            $app['firewall']->requireAuthentication($app);
+        });
 
         /**
          * List of apps created by the user
@@ -184,7 +184,7 @@ class Developers implements ControllerProviderInterface
      */
     public function deleteApp(Application $app, Request $request, $id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
+        if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 
@@ -197,7 +197,7 @@ class Developers implements ControllerProviderInterface
             $error = true;
         }
 
-        return $app->json(array('success' => ! $error));
+        return $app->json(array('success' => !$error));
     }
 
     /**
@@ -210,7 +210,7 @@ class Developers implements ControllerProviderInterface
      */
     public function renewAppCallback(Application $app, Request $request, $id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
+        if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 
@@ -228,7 +228,7 @@ class Developers implements ControllerProviderInterface
             $error = true;
         }
 
-        return $app->json(array('success' => ! $error));
+        return $app->json(array('success' => !$error));
     }
 
     /**
@@ -241,7 +241,7 @@ class Developers implements ControllerProviderInterface
      */
     public function renewAccessToken(Application $app, Request $request, $id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
+        if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 
@@ -266,7 +266,7 @@ class Developers implements ControllerProviderInterface
             $error = true;
         }
 
-        return $app->json(array('success' => ! $error, 'token'   => $accessToken));
+        return $app->json(array('success' => !$error, 'token'   => $accessToken));
     }
 
     /**
@@ -279,7 +279,7 @@ class Developers implements ControllerProviderInterface
      */
     public function authorizeGrantpassword(Application $app, Request $request, $id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
+        if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 
@@ -292,7 +292,7 @@ class Developers implements ControllerProviderInterface
             $error = true;
         }
 
-        return $app->json(array('success' => ! $error));
+        return $app->json(array('success' => !$error));
     }
 
     /**
@@ -341,9 +341,8 @@ class Developers implements ControllerProviderInterface
     public function listApps(Application $app, Request $request)
     {
         return $app['twig']->render('developers/applications.html.twig', array(
-                "applications" => \API_OAuth2_Application::load_dev_app_by_user(
-                    $app, $app['phraseanet.user']
-                )));
+            "applications" => \API_OAuth2_Application::load_dev_app_by_user($app, $app['phraseanet.user'])
+        ));
     }
 
     /**
@@ -356,10 +355,10 @@ class Developers implements ControllerProviderInterface
     public function displayFormApp(Application $app, Request $request)
     {
         return $app['twig']->render('developers/application_form.html.twig', array(
-                "violations" => null,
-                'form'       => null,
-                'request'    => $request
-            ));
+            "violations" => null,
+            'form'       => null,
+            'request'    => $request
+        ));
     }
 
     /**
@@ -383,10 +382,10 @@ class Developers implements ControllerProviderInterface
         $token = $client->get_user_account($user)->get_token()->get_value();
 
         return $app['twig']->render('developers/application.html.twig', array(
-                "application"   => $client,
-                "user"  => $user,
-                "token" => $token
-            ));
+            "application" => $client,
+            "user"        => $user,
+            "token"       => $token
+        ));
     }
 
     /**

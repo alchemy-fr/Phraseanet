@@ -78,14 +78,14 @@ class Installer implements ControllerProviderInterface
         ));
 
         return $app['twig']->render(
-                '/setup/index.html.twig'
-                , array_merge($constraints_coll, array(
-                    'locale'             => $app['locale']
-                    , 'available_locales'  => $app->getAvailableLanguages()
-                    , 'version_number'     => $app['phraseanet.version']->getNumber()
-                    , 'version_name'       => $app['phraseanet.version']->getName()
-                    , 'current_servername' => $request->getScheme() . '://' . $request->getHttpHost() . '/'
-                ))
+            '/setup/index.html.twig'
+            , array_merge($constraints_coll, array(
+                'locale'             => $app['locale']
+                , 'available_locales'  => $app->getAvailableLanguages()
+                , 'version_number'     => $app['phraseanet.version']->getNumber()
+                , 'version_name'       => $app['phraseanet.version']->getName()
+                , 'current_servername' => $request->getScheme() . '://' . $request->getHttpHost() . '/'
+            ))
         );
     }
 
@@ -131,20 +131,19 @@ class Installer implements ControllerProviderInterface
         }
 
         return $twig->render(
-                '/setup/step2.html.twig'
-                , array(
-                'locale'              => $app['locale']
-                , 'available_locales'   => $app->getAvailableLanguages()
-                , 'available_templates' => \appbox::list_databox_templates()
-                , 'version_number'      => $app['phraseanet.version']->getNumber()
-                , 'version_name'        => $app['phraseanet.version']->getName()
-                , 'warnings'            => $warnings
-                , 'error'               => $request->query->get('error')
-                , 'current_servername'  => $request->getScheme() . '://' . $request->getHttpHost() . '/'
-                , 'discovered_binaries' => \setup::discover_binaries()
-                , 'rootpath'            => dirname(dirname(dirname(dirname(__DIR__)))) . '/'
-                )
-        );
+            '/setup/step2.html.twig'
+            , array(
+            'locale'              => $app['locale']
+            , 'available_locales'   => $app->getAvailableLanguages()
+            , 'available_templates' => \appbox::list_databox_templates()
+            , 'version_number'      => $app['phraseanet.version']->getNumber()
+            , 'version_name'        => $app['phraseanet.version']->getName()
+            , 'warnings'            => $warnings
+            , 'error'               => $request->query->get('error')
+            , 'current_servername'  => $request->getScheme() . '://' . $request->getHttpHost() . '/'
+            , 'discovered_binaries' => \setup::discover_binaries()
+            , 'rootpath'            => dirname(dirname(dirname(dirname(__DIR__)))) . '/'
+        ));
     }
 
     public function doInstall(Application $app, Request $request)

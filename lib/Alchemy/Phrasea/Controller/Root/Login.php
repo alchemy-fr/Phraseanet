@@ -31,10 +31,10 @@ class Login implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
-                if ($app['phraseanet.registry']->get('GV_maintenance')) {
-                    return $app->redirect("/login/?redirect=" . $request->request->get('redirect') . "&error=maintenance");
-                }
-            });
+            if ($app['phraseanet.registry']->get('GV_maintenance')) {
+                return $app->redirect("/login/?redirect=" . $request->request->get('redirect') . "&error=maintenance");
+            }
+        });
 
 
 
@@ -418,12 +418,12 @@ class Login implements ControllerProviderInterface
             }
         }
 
-        return new Response($app['twig']->render('login/forgot-password.html.twig', array(
-                    'tokenize'    => $tokenize,
-                    'passwordMsg' => $passwordMsg,
-                    'errorMsg'    => $errorMsg,
-                    'sentMsg'     => $sentMsg
-                )));
+        return $app['twig']->render('login/forgot-password.html.twig', array(
+            'tokenize'    => $tokenize,
+            'passwordMsg' => $passwordMsg,
+            'errorMsg'    => $errorMsg,
+            'sentMsg'     => $sentMsg
+        ));
     }
 
     /**
@@ -476,14 +476,14 @@ class Login implements ControllerProviderInterface
 
         $arrayVerif = $this->getRegisterFieldConfiguration($app);
 
-        return new Response($app['twig']->render('login/register.html.twig', array(
-                    'inscriptions' => giveMeBases($app),
-                    'parms'        => $request->query->all(),
-                    'needed'       => $needed,
-                    'arrayVerif'   => $arrayVerif,
-                    'demandes'     => $request->query->get('demand', array()),
-                    'lng' => $app['locale']
-                )));
+        return $app['twig']->render('login/register.html.twig', array(
+            'inscriptions' => giveMeBases($app),
+            'parms'        => $request->query->all(),
+            'needed'       => $needed,
+            'arrayVerif'   => $arrayVerif,
+            'demandes'     => $request->query->get('demand', array()),
+            'lng' => $app['locale']
+        ));
     }
 
     /**

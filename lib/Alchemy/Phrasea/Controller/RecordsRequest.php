@@ -208,8 +208,7 @@ class RecordsRequest extends ArrayCollection
             $repository = $app['EM']->getRepository('\Entities\StoryWZ');
 
             $storyWZ = $repository->findByUserAndId(
-                $app,
-                $app['phraseanet.user']
+                $app, $app['phraseanet.user']
                 , $request->get('story')
             );
 

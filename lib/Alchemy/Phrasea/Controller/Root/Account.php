@@ -33,7 +33,7 @@ class Account implements ControllerProviderInterface
         $controllers->before(function() use ($app) {
             $response = $app['firewall']->requireAuthentication();
 
-            if($response instanceof Response) {
+            if ($response instanceof Response) {
                 return $response;
             }
         });
@@ -248,9 +248,9 @@ class Account implements ControllerProviderInterface
             }
         }
 
-        return new Response($app['twig']->render('account/reset-password.html.twig', array(
+        return $app['twig']->render('account/reset-password.html.twig', array(
                     'passwordMsg' => $passwordMsg
-                )));
+                ));
     }
 
     /**
@@ -291,21 +291,17 @@ class Account implements ControllerProviderInterface
             $auth = new \Session_Authentication_Native($app, $user->get_login(), $password);
             $auth->challenge_password();
         } catch (\Exception $e) {
-
             return $app->redirect('/account/reset-email/?notice=bad-password');
         }
-        if ( ! \PHPMailer::ValidateAddress($email)) {
-
+        if (!\PHPMailer::ValidateAddress($email)) {
             return $app->redirect('/account/reset-email/?notice=mail-invalid');
         }
 
         if ($email !== $emailConfirm) {
-
             return $app->redirect('/account/reset-email/?notice=mail-match');
         }
 
-        if ( ! \mail::reset_email($app, $email, $user->get_id()) === true) {
-
+        if (!\mail::reset_email($app, $email, $user->get_id()) === true) {
             return $app->redirect('/account/reset-email/?notice=mail-server');
         }
 
@@ -352,10 +348,10 @@ class Account implements ControllerProviderInterface
             }
         }
 
-        return new Response($app['twig']->render('account/reset-email.html.twig', array(
-                    'noticeMsg' => $noticeMsg,
-                    'updateMsg' => $updateMsg,
-                )));
+        return $app['twig']->render('account/reset-email.html.twig', array(
+            'noticeMsg' => $noticeMsg,
+            'updateMsg' => $updateMsg,
+        ));
     }
 
     /**
@@ -371,13 +367,10 @@ class Account implements ControllerProviderInterface
 
         if ((null !== $password = $request->request->get('form_password')) && (null !== $passwordConfirm = $request->request->get('form_password_confirm'))) {
             if ($password !== $passwordConfirm) {
-
                 return $app->redirect('/account/reset-password/?pass-error=pass-match');
             } elseif (strlen(trim($password)) < 5) {
-
                 return $app->redirect('/account/reset-password/?pass-error=pass-short');
             } elseif (trim($password) != str_replace(array("\r\n", "\n", "\r", "\t", " "), "_", $password)) {
-
                 return $app->redirect('/account/reset-password/?pass-error=pass-invalid');
             }
 
@@ -405,7 +398,7 @@ class Account implements ControllerProviderInterface
      */
     public function grantAccess(Application $app, Request $request, $application_id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
+        if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 
@@ -424,7 +417,7 @@ class Account implements ControllerProviderInterface
             $error = true;
         }
 
-        return $app->json(array('success' => ! $error));
+        return $app->json(array('success' => !$error));
     }
 
     /**
@@ -438,9 +431,9 @@ class Account implements ControllerProviderInterface
     {
         require_once $app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php';
 
-        return new Response($app['twig']->render('account/access.html.twig', array(
-                    'inscriptions' => giveMeBases($app, $app['phraseanet.user']->get_id())
-                )));
+        return $app['twig']->render('account/access.html.twig', array(
+            'inscriptions' => giveMeBases($app, $app['phraseanet.user']->get_id())
+        ));
     }
 
     /**
@@ -453,8 +446,8 @@ class Account implements ControllerProviderInterface
     public function accountAuthorizedApps(Application $app, Request $request)
     {
         return $app['twig']->render('account/authorized_apps.html.twig', array(
-                "applications" => \API_OAuth2_Application::load_app_by_user($app, $app['phraseanet.user']),
-            ));
+            "applications" => \API_OAuth2_Application::load_app_by_user($app, $app['phraseanet.user']),
+        ));
     }
 
     /**
@@ -466,46 +459,15 @@ class Account implements ControllerProviderInterface
      */
     public function accountSessionsAccess(Application $app, Request $request)
     {
+        $dql = 'SELECT s FROM Entities\Session s
+            WHERE s.usr_id = :usr_id
+            ORDER BY s.created DESC';
 
-                $dql = 'SELECT s FROM Entities\Session s
-                    WHERE s.usr_id = :usr_id
-                    ORDER BY s.created DESC';
+        $query = $app['EM']->createQuery($dql);
+        $query->setParameters(array('usr_id'  => $app['session']->get('usr_id')));
+        $sessions = $query->getResult();
 
-                $query = $app['EM']->createQuery($dql);
-                $query->setParameters(array('usr_id'=>$app['session']->get('usr_id')));
-                $sessions = $query->getResult();
-
-//        $sql = 'SELECT session_id, lastaccess, ip, platform, browser, screen
-//              , created_on, browser_version, token
-//            FROM cache WHERE usr_id = :usr_id';
-//
-//
-//        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-//        $stmt->execute(array(':usr_id' => $this->get_usr_id()));
-//        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-//        $stmt->closeCursor();
-//
-//        $geonames = new geonames();
-//
-//        foreach ($rs as $k => $row) {
-//            $datas = $geonames->find_geoname_from_ip($row['ip'], $this->app);
-//
-//            if ($datas['city']) {
-//                $infos = $datas['city'] . ' (' . $datas['country'] . ')';
-//            } elseif ($datas['fips']) {
-//                $infos = $datas['fips'] . ' (' . $datas['country'] . ')';
-//            } elseif ($datas['country']) {
-//                $infos = $datas['country'];
-//            } else {
-//                $infos = '';
-//            }
-//            $rs[$k]['session_id'] = (int) $rs[$k]['session_id'];
-//            $rs[$k]['ip_infos'] = $infos;
-//            $rs[$k]['created_on'] = new \DateTime($row['created_on']);;
-//            $rs[$k]['lastaccess'] = new \DateTime($row['lastaccess']);
-//        }
-
-        return new Response($app['twig']->render('account/sessions.html.twig', array('sessions'=>$sessions)));
+        return $app['twig']->render('account/sessions.html.twig', array('sessions' => $sessions));
     }
 
     /**
@@ -539,12 +501,12 @@ class Account implements ControllerProviderInterface
                 break;
         }
 
-        return new Response($app['twig']->render('account/account.html.twig', array(
-                    'user'          => $user,
-                    'notice'        => $notice,
-                    'evt_mngr'      => $evtMngr,
-                    'notifications' => $evtMngr->list_notifications_available($user->get_id()),
-                )));
+        return $app['twig']->render('account/account.html.twig', array(
+            'user'          => $user,
+            'notice'        => $notice,
+            'evt_mngr'      => $evtMngr,
+            'notifications' => $evtMngr->list_notifications_available($user->get_id()),
+        ));
     }
 
     /**
