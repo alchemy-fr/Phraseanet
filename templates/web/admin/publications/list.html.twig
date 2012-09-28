@@ -81,7 +81,7 @@
                     {% endif %}
                 </td>
                 <td valign="center" align="center">
-                    {% if feed.is_owner(user) %}
+                    {% if feed.is_owner(app['phraseanet.user']) %}
                         <form class="no-ajax form_publication" action="/admin/publications/feed/{{feed.get_id()}}/delete/" method="post" style="margin:0;">
                             <button class="feed_remover btn btn-mini">{% trans 'boutton::supprimer' %}</button>
                         </form>

@@ -46,9 +46,9 @@
 
 {% block rss %}
     {% for feed in feeds %}
-        {% set link = feed.get_user_link(registry, app['phraseanet.user'], 'rss') %}
+        {% set link = feed.get_user_link(app['phraseanet.registry'], app['phraseanet.user'], 'rss') %}
         <link rel="alternate" type="{{ link.get_mimetype() }}" title="{{ link.get_title() }}" href="{{ link.get_href() }}" />
-        {% set link = feed.get_user_link(registry, app['phraseanet.user'], 'atom') %}
+        {% set link = feed.get_user_link(app['phraseanet.registry'], app['phraseanet.user'], 'atom') %}
         <link rel="alternate" type="{{ link.get_mimetype() }}" title="{{ link.get_title() }}" href="{{ link.get_href() }}" />
     {% endfor %}
 {% endblock %}

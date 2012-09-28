@@ -6,7 +6,7 @@
     {% if error %}
         <div class="error alert alert-error">{{ error }}</div>
     {% endif %}
-    {% if feed.is_owner(user) %}
+    {% if feed.is_owner(app['phraseanet.user']) %}
         <h2>{% trans 'Edition' %}</h2>
         <div class="control-group">
             <div id="pub_icon">

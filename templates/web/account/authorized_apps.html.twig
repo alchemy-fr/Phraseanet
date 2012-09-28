@@ -58,7 +58,7 @@ $(document).ready(function(){
               {% for application in applications %}
                 <li id='app_{{application.get_id}}'>
                   <div>
-                    {% set account = application.get_user_account(user) %}
+                    {% set account = application.get_user_account(app['phraseanet.user']) %}
                       {% if account.is_revoked() is empty %}
                         <button type='button' class='revoke app-btn' value='{{application.get_id()}}'>{% trans 'Revoquer l\'access' %}</button>
                       {% else %}

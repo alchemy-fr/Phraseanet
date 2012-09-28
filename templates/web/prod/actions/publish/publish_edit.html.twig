@@ -47,7 +47,7 @@
         <div class="list">
           {% set feed_id = entry.get_feed().get_id() %}
           {% for feed in feeds.get_feeds() %}
-             {% if feed.is_publisher(user) %}
+             {% if feed.is_publisher(app['phraseanet.user']) %}
                 <div class="feed {% if loop.index is odd%}odd{% endif %} {% if feed_id == feed.get_id() %}selected{% endif %}">
                     <span>{{ feed.get_title() }}</span>
                     <input type="hidden" value="{{ feed.get_id() }}"/>

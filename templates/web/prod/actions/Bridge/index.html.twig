@@ -64,7 +64,7 @@
                                                     </tr>
                                                 </table>
                                             </button>
-                                            <input type="hidden" name="url" value="{{api.generate_login_url(registry, api.get_connector().get_name()) }}" />
+                                            <input type="hidden" name="url" value="{{api.generate_login_url(app['phraseanet.registry'], api.get_connector().get_name()) }}" />
                                         </form>
                                     {% endif %}
                                 {% endfor %}

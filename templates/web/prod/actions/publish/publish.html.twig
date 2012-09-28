@@ -54,7 +54,7 @@
                 <h1>{% trans 'Fils disponibles' %}</h1>
                 <div class="list">
                     {% for feed in feeds.get_feeds() %}
-                        {% if feed.is_publisher(user) %}
+                        {% if feed.is_publisher(app['phraseanet.user']) %}
                             <div class="feed {% if loop.index is odd%}odd{% endif %}">
                                 <span>{{ feed.get_title() }}</span>
                                 {% if feed.is_public() %}

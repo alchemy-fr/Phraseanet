@@ -49,7 +49,7 @@
             <td class="content">
               <h1 class="title">
                 <img class="loader" src="/skins/prod/Basket/Browser/loader.gif" />
-                {% if Basket.getValidation() is empty or Basket.getValidation().isInitiator(user) %}
+                {% if Basket.getValidation() is empty or Basket.getValidation().isInitiator(app['phraseanet.user']) %}
                 <a href="/prod/baskets/{{ Basket.getId() }}/archive/?archive=1" class="archiver archive_toggler" style="display:{{ Basket.getArchived ? 'none' : '' }};">
                   <span>
                     <img src="/skins/prod/Basket/Browser/archive.png"/>

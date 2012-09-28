@@ -5,9 +5,9 @@
 <meta content="phraseanet" name="generator"/>
 
 {% for feed in feeds %}
-    {% set link = feed.get_homepage_link(registry, 'rss') %}
+    {% set link = feed.get_homepage_link(app['phraseanet.registry'], 'rss') %}
     <link rel="alternate" type="{{ link.get_mimetype() }}" title="{{ link.get_title() }}" href="{{ link.get_href() }}" />
-    {% set link = feed.get_homepage_link(registry, 'atom') %}
+    {% set link = feed.get_homepage_link(app['phraseanet.registry'], 'atom') %}
     <link rel="alternate" type="{{ link.get_mimetype() }}" title="{{ link.get_title() }}" href="{{ link.get_href() }}" />
 {% endfor %}
 
