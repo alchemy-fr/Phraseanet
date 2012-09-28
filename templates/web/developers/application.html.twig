@@ -47,11 +47,11 @@
     </tr>
     <tr>
       <td>Authorize endpoint</td>
-      <td>{{registry.get('GV_ServerName')}}api/oauthv2/authorize</td>
+      <td>{{app['phraseanet.registry'].get('GV_ServerName')}}api/oauthv2/authorize</td>
     </tr>
     <tr>
       <td>Access endpoint</td>
-      <td>{{registry.get('GV_ServerName')}}api/oauthv2/token</td>
+      <td>{{app['phraseanet.registry'].get('GV_ServerName')}}api/oauthv2/token</td>
     </tr>
     <tr>
       <td>{% trans 'Activer le grant_type de type password pour votre application' %}</td>

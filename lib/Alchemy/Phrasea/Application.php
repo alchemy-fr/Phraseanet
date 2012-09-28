@@ -306,14 +306,7 @@ class Application extends SilexApplication
                 }
 
                 $twig->addGlobal('app', $app);
-                $twig->addGlobal('display_chrome_frame', $app['phraseanet.appbox']->get_registry()->is_set('GV_display_gcf') ? $app['phraseanet.appbox']->get_registry()->get('GV_display_gcf') : true);
-                $twig->addGlobal('user', $app['phraseanet.user']);
                 $twig->addGlobal('current_date', new \DateTime());
-                $twig->addGlobal('home_title', $app['phraseanet.appbox']->get_registry()->get('GV_homeTitle'));
-                $twig->addGlobal('meta_description', $app['phraseanet.appbox']->get_registry()->get('GV_metaDescription'));
-                $twig->addGlobal('meta_keywords', $app['phraseanet.appbox']->get_registry()->get('GV_metaKeywords'));
-                $twig->addGlobal('maintenance', $app['phraseanet.appbox']->get_registry()->get('GV_maintenance'));
-                $twig->addGlobal('registry', $app['phraseanet.appbox']->get_registry());
 
                 $twig->addExtension(new \Twig_Extension_Core());
                 $twig->addExtension(new \Twig_Extension_Optimizer());

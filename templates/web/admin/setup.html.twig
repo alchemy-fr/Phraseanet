@@ -8,25 +8,25 @@
     <div class="control-group">
         <label class="control-label">Adresse : </label>
         <div class="controls">
-            <input type="text" class="input-xlarge" readonly="readonly" value="{{ registry.get('GV_ServerName') }}" />
+            <input type="text" class="input-xlarge" readonly="readonly" value="{{ app['phraseanet.registry'].get('GV_ServerName') }}" />
         </div>
     </div>
     <div class="control-group">
         <label class="control-label">Installation : </label>
         <div class="controls">
-            <input type="text" class="input-xlarge" readonly="readonly" value="{{ registry.get('GV_RootPath') }}" />
+            <input type="text" class="input-xlarge" readonly="readonly" value="{{ app['phraseanet.registry'].get('GV_RootPath') }}" />
         </div>
     </div>
     <div class="control-group">
         <label class="control-label">Maintenance : </label>
         <div class="controls">
-            <input type="checkbox" readonly="readonly" disabled="disabled" {{ maintenance == true ? "checked='checked'" : '' }} />
+            <input type="checkbox" readonly="readonly" disabled="disabled" {{ app['phraseanet.registry'].get('GV_maintenance') == true ? "checked='checked'" : '' }} />
         </div>
     </div>
     <div class="control-group">
         <label class="control-label">Debug : </label>
         <div class="controls">
-            <input type="checkbox" readonly="readonly" disabled="disabled" {{ registry.get('GV_debug') == true ? "checked='checked'" : '' }} />
+            <input type="checkbox" readonly="readonly" disabled="disabled" {{ app['phraseanet.registry'].get('GV_debug') == true ? "checked='checked'" : '' }} />
         </div>
     </div>
 </form>
@@ -55,8 +55,8 @@
 
                 {% set currentValue = '' %}
                 {% set is_new = false %}
-                {% if registry.is_set(value['name']) %}
-                    {% set currentValue =  registry.get(value['name']) %}
+                {% if app['phraseanet.registry'].is_set(value['name']) %}
+                    {% set currentValue =  app['phraseanet.registry'].get(value['name']) %}
                     {% set is_new = true %}
                 {% elseif value['default'] is defined %}
                     {% set currentValue = value['default'] %}

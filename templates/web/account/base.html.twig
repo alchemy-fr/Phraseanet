@@ -1,6 +1,6 @@
  <html lang="{{ app['locale.I18n'] }}">
     <head>
-        <title>{{ home_title }} {% block title %}{% endblock %}</title>
+        <title>{{ app['phraseanet.registry'].get('GV_homeTitle') }} {% block title %}{% endblock %}</title>
         <link rel="stylesheet" type="text/css" href="/include/minify/f=/skins/login/home.css,/skins/html5/bootstrap/css/bootstrap.min.css,/skins/html5/bootstrap/css/bootstrap-responsive.min.css,/skins/login/css/main.css"/>
         <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js,include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
         {% block head %}{% endblock %}
@@ -12,7 +12,7 @@
                 <table style="width: 100%;">
                     <tr style="height: 35px;">
                         <td style="width: 580px;">
-                            <span class="title-name">{{ home_title }}</span>
+                            <span class="title-name">{{ app['phraseanet.registry'].get('GV_homeTitle') }}</span>
                             <span class="title-desc">{{ block('title') }}</span>
                         </td>
                         <td style="color: #b1b1b1; text-align: right;">

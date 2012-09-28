@@ -59,7 +59,7 @@
             {% trans 'admin::base: nombre de mots indexes sur la base' %}
             {{ databox.get_index_amount() }}
         </li>
-        {% if registry.get('GV_thesaurus') %}
+        {% if app['phraseanet.registry'].get('GV_thesaurus') %}
             <li>
             {% trans 'admin::base: nombre de termes de Thesaurus indexes :' %}
             {{ databox.get_thesaurus_hits() }}

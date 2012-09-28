@@ -11,7 +11,7 @@
   </li>
   {% else %}
   <li>
-    <span>{{ registry.get('GV_ServerName') }}</span>
+    <span>{{ app['phraseanet.registry'].get('GV_ServerName') }}</span>
   </li>
   {% endif %}
 
@@ -22,7 +22,7 @@
       <span>Setup</span>
     </a>
   </li>
-  {% if registry.get('GV_sphinx') %}
+  {% if app['phraseanet.registry'].get('GV_sphinx') %}
   <li>
     <a target="right" href="/admin/sphinx/configuration/" class="ajax">
       <span>Sphinx Conf</span>

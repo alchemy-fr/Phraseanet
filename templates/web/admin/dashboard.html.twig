@@ -148,7 +148,7 @@
         <ul class="setup">
             {% if app['cache'].isServer() %}
                 {% set stats = app['cache'].getStats() %}
-                <li>{% trans 'setup::Serveur actif sur %s' %} {{registry.get('GV_cache_server_host')}} : {{registry.get('GV_cache_server_port')}}</li>
+                <li>{% trans 'setup::Serveur actif sur %s' %} {{app['phraseanet.registry'].get('GV_cache_server_host')}} : {{app['phraseanet.registry'].get('GV_cache_server_port')}}</li>
                 <table>
                     {% for name, stat in stats%}
                         <tr class="even"><td>{{ name }}</td><td> {{ stat }}</td></tr>

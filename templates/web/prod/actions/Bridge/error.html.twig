@@ -21,7 +21,7 @@
   <div style="text-align:center;margin:10px 0;">
     Details : {{message}}
   </div>
-  {% if registry.get('GV_debug') %}
+  {% if app['phraseanet.registry'].get('GV_debug') %}
   <div>
     {{file}}:{{line}}
   </div>

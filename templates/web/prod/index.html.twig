@@ -89,9 +89,9 @@
         }
     </style>
 
-    <link type="text/css" rel="stylesheet" href="{{registry.get('GV_STATIC_URL')}}/include/minify/f=include/jslibs/jquery.contextmenu.css,include/jslibs/colorpicker/css/colorpicker.css,include/jslibs/jquery-treeview/jquery.treeview.css,skins/common/main.css,skins/account/geonames.css,include/jquery.image_enhancer.css,include/jslibs/jquery-ui-1.8.17/css/dark-hive/jquery-ui-1.8.17.custom.css" >
-    <link id="skinCss" type="text/css" rel="stylesheet" href="{{registry.get('GV_STATIC_URL')}}/include/minify/f=skins/prod/{{cssfile}}/prodcolor.css" >
-    <link type="text/css" rel="stylesheet" href="{{registry.get('GV_STATIC_URL')}}/include/minify/f=include/vendor/humane-js/themes/libnotify.css,skins/prod/Prod.css,skins/prod/Basket.css,skins/prod/Push.css" >
+    <link type="text/css" rel="stylesheet" href="{{app['phraseanet.registry'].get('GV_STATIC_URL')}}/include/minify/f=include/jslibs/jquery.contextmenu.css,include/jslibs/colorpicker/css/colorpicker.css,include/jslibs/jquery-treeview/jquery.treeview.css,skins/common/main.css,skins/account/geonames.css,include/jquery.image_enhancer.css,include/jslibs/jquery-ui-1.8.17/css/dark-hive/jquery-ui-1.8.17.custom.css" >
+    <link id="skinCss" type="text/css" rel="stylesheet" href="{{app['phraseanet.registry'].get('GV_STATIC_URL')}}/include/minify/f=skins/prod/{{cssfile}}/prodcolor.css" >
+    <link type="text/css" rel="stylesheet" href="{{app['phraseanet.registry'].get('GV_STATIC_URL')}}/include/minify/f=include/vendor/humane-js/themes/libnotify.css,skins/prod/Prod.css,skins/prod/Basket.css,skins/prod/Push.css" >
 
     <!--[if IE 7]>
             <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/prod/ie7.css" >
@@ -264,7 +264,7 @@
                                 {% trans 'Browse Baskets' %}
                             </a>
                         </div>
-                        {% if registry.get('GV_multiAndReport') %}
+                        {% if app['phraseanet.registry'].get('GV_multiAndReport') %}
                             <div class="context-menu-item-inner"@>
                                 <a title="{% trans 'action:: nouveau reportage' %}" class="dialog small-dialog" href="/prod/story/create/">
                                     <img style="cursor:pointer;" src="/skins/icons/mtadd_0.gif" title="{% trans 'action:: nouveau reportage' %}" />
@@ -349,7 +349,7 @@
                                             <div  class="btn-toolbar">
                                                 <input class="btn btn-inverse" type="button" value="{% trans 'Re-initialiser' %}" onclick="reset_adv_search();" />
                                             </div>
-                                            {% if registry.get('GV_sphinx') %}
+                                            {% if app['phraseanet.registry'].get('GV_sphinx') %}
                                                 <span>{% trans 'Trier par ' %}</span>
                                                 <select name="sort" class="input-mini">
                                                     <option value="relevance">{% trans 'pertinence'%}</option>
@@ -367,7 +367,7 @@
                                                     <option value=""></option>
                                                     {% for field_id, field in search_datas['fields'] %}
                                                         {% if field['type'] == 'date' %}
-                                                            <option class="field_switch field_{{field['sbas']|join(' field_')}}" value="{{field_id}}" {% if registry.get('GV_phrasea_sort') == field['fieldname'] %}selected="selected"{% endif %}>{{ field['fieldname'] }}</option>
+                                                            <option class="field_switch field_{{field['sbas']|join(' field_')}}" value="{{field_id}}" {% if app['phraseanet.registry'].get('GV_phrasea_sort') == field['fieldname'] %}selected="selected"{% endif %}>{{ field['fieldname'] }}</option>
                                                         {% endif %}
                                                     {% endfor %}
                                                 </select>
@@ -1033,9 +1033,9 @@
     <script type="text/javascript">
         {% include "prod/thesaurus.js" %}
     </script>
-    <script type="text/javascript" src="{{registry.get('GV_STATIC_URL')}}/include/minify/g=prod"></script>
-    <script type="text/javascript" src="{{registry.get('GV_STATIC_URL')}}/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
-    <script type="text/javascript" src="{{registry.get('GV_STATIC_URL')}}/include/minify/f=include/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
+    <script type="text/javascript" src="{{app['phraseanet.registry'].get('GV_STATIC_URL')}}/include/minify/g=prod"></script>
+    <script type="text/javascript" src="{{app['phraseanet.registry'].get('GV_STATIC_URL')}}/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
+    <script type="text/javascript" src="{{app['phraseanet.registry'].get('GV_STATIC_URL')}}/include/minify/f=include/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             p4.reg_delete="{% if app['phraseanet.user'].getPrefs("warning_on_delete_story") %}true{% else %}false{% endif %}";

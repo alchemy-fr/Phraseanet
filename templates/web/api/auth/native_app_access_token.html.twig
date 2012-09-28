@@ -34,7 +34,7 @@
             <div id="main" class="row">
 
                 <div id="title-box" class="span6 offset3">
-                    <h1 id="namePhr">{{home_title}}</h1>
+                    <h1 id="namePhr">{{ app['phraseanet.registry'].get('GV_homeTitle') }}</h1>
                 </div>
 
                 {% if user is not none %}

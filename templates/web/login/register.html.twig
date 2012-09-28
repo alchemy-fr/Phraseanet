@@ -286,7 +286,7 @@
             <hr />
         </div><!-- /form_register_table -->
 
-        {% if registry.get('GV_autoselectDB') %}
+        {% if app['phraseanet.registry'].get('GV_autoselectDB') %}
             <div style="display: none;">
         {% endif %}
 
@@ -367,7 +367,7 @@
 
             </div>
 
-        {% if registry.get('GV_autoselectDB') %}
+        {% if app['phraseanet.registry'].get('GV_autoselectDB') %}
             </div>
         {% endif %}
 

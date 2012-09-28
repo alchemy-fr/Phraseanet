@@ -498,7 +498,7 @@
                     }
                 });
 
-                {% set max_download = registry.get('GV_download_max', 120) %}
+                {% set max_download = app['phraseanet.registry'].get('GV_download_max', 120) %}
                 {% set alert_too_big_one %}
                         {% trans %} You can not directly download more than {{max_download}} Mo ; time to package all documents is too long{% endtrans %}
                 {% endset %}

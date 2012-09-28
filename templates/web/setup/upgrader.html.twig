@@ -76,7 +76,7 @@
                     </p>
                     <p>
                       <code style="width:90%">
-                        {{registry.get('GV_cli')}} {% if registry.get('GV_PHP_INI') %} -c {{registry.get('GV_PHP_INI')}}{% endif %} bin/console system:mailCheck
+                        {{app['phraseanet.registry'].get('GV_cli')}} {% if app['phraseanet.registry'].get('GV_PHP_INI') %} -c {{app['phraseanet.registry'].get('GV_PHP_INI')}}{% endif %} bin/console system:mailCheck
                       </code>
                     </p>
                     {% else %}
@@ -85,7 +85,7 @@
                     </p>
                     <p>
                       <code style="width:90%">
-                        {{registry.get('GV_cli')}} {% if registry.get('GV_PHP_INI') %} -c {{registry.get('GV_PHP_INI')}}{% endif %} bin/console system:upgrade
+                        {{app['phraseanet.registry'].get('GV_cli')}} {% if app['phraseanet.registry'].get('GV_PHP_INI') %} -c {{app['phraseanet.registry'].get('GV_PHP_INI')}}{% endif %} bin/console system:upgrade
                       </code>
                     </p>
                     <p>

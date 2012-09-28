@@ -13,7 +13,7 @@
       {% endif %}
 
       {% set tooltip = '' %}
-      {% if registry.get('GV_rollover_reg_preview') %}
+      {% if app['phraseanet.registry'].get('GV_rollover_reg_preview') %}
         {% set tooltip = 'tooltipsrc="/prod/tooltip/caption/' ~ child.getRecord(app).get_sbas_id() ~ '/' ~ child.getRecord(app).get_record_id() ~ '/basket/"' %}
       {% endif %}
 
