@@ -1,7 +1,5 @@
 <?php
 
-use Alchemy\Phrasea\Core\Configuration;
-
 require_once __DIR__ . '/../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 require_once __DIR__ . '/Bridge_datas.inc';
 

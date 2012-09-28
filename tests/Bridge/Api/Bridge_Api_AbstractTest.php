@@ -1,6 +1,6 @@
 <?php
 
-use Alchemy\Phrasea\Core\Configuration;
+use Alchemy\Phrasea\Application;
 
 require_once __DIR__ . '/../../PhraseanetWebTestCaseAbstract.class.inc';
 require_once __DIR__ . '/../Bridge_datas.inc';
@@ -26,16 +26,17 @@ class Bridge_Api_AbstractTest extends PhraseanetWebTestCaseAbstract
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
+        $application = new Application('test');
         try {
-            self::$api = Bridge_Api::get_by_api_name(self::$DI['app'], 'apitest');
+            self::$api = Bridge_Api::get_by_api_name($application, 'apitest');
         } catch (Bridge_Exception_ApiNotFound $e) {
-            self::$api = Bridge_Api::create(self::$DI['app'], 'apitest');
+            self::$api = Bridge_Api::create($application, 'apitest');
         }
 
         try {
-            self::$account = Bridge_Account::load_account_from_distant_id(self::$DI['app'], self::$api, self::$DI['user'], 'kirikoo');
+            self::$account = Bridge_Account::load_account_from_distant_id($application, self::$api, self::$DI['user'], 'kirikoo');
         } catch (Bridge_Exception_AccountNotFound $e) {
-            self::$account = Bridge_Account::create(self::$DI['app'], self::$api, self::$DI['user'], 'kirikoo', 'coucou');
+            self::$account = Bridge_Account::create($application, self::$api, self::$DI['user'], 'kirikoo', 'coucou');
         }
     }
 
