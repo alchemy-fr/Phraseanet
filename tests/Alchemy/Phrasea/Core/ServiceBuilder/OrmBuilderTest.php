@@ -25,8 +25,6 @@ class OrmBuilderTest extends PhraseanetPHPUnitAbstract
 
     public function testCreate()
     {
-        $registry = $this->getMock("\RegistryInterface");
-
         $configuration = new ParameterBag(
                 array("type"    => "Orm\\Doctrine", "options" => array(
                         "debug" => false

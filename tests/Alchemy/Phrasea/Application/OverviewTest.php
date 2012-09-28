@@ -8,7 +8,6 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 {
     function testDatafilesRouteAuthenticated()
     {
-        $registry = self::$DI['app']['phraseanet.registry'];
         $crawler = self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/');
         $response = self::$DI['client']->getResponse();
 

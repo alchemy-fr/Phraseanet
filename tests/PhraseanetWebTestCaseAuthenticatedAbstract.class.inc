@@ -92,8 +92,6 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
 
     public function createDatabox()
     {
-        $registry = self::$DI['app']['phraseanet.registry'];
-
         $this->createDatabase();
 
         $configuration = self::$DI['app']['phraseanet.configuration'];
@@ -102,14 +100,14 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
         $connexion = $configuration->getConnexion($choosenConnexion);
 
         try {
-            $conn = new \connection_pdo('databox_creation', $connexion->get('host'), $connexion->get('port'), $connexion->get('user'), $connexion->get('password'), 'unit_test_db', array(), $registry);
+            $conn = new \connection_pdo('databox_creation', $connexion->get('host'), $connexion->get('port'), $connexion->get('user'), $connexion->get('password'), 'unit_test_db', array(), self::$DI['app']['phraseanet.registry']);
         } catch (\PDOException $e) {
 
             $this->markTestSkipped('Could not reach DB');
         }
 
         $databox = \databox::create(
-                self::$DI['app'], $conn, new \SplFileInfo($registry->get('GV_RootPath') . 'lib/conf.d/data_templates/fr-simple.xml'), $registry
+                self::$DI['app'], $conn, new \SplFileInfo(self::$DI['app']['phraseanet.registry']->get('GV_RootPath') . 'lib/conf.d/data_templates/fr-simple.xml'), self::$DI['app']['phraseanet.registry']
         );
 
         self::$createdDataboxes[] = $databox;

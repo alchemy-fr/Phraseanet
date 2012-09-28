@@ -38,14 +38,12 @@ class Session_LoggerTest extends PhraseanetPHPUnitAbstract
         $log_id = $this->object->get_id();
         $this->assertTrue(is_int($log_id));
 
-        $registry = self::$DI['app']['phraseanet.registry'];
-
         $sql = 'SELECT id FROM log
             WHERE sit_session = :ses_id AND usrid = :usr_id AND site = :site';
         $params = array(
             ':ses_id' => self::$DI['app']['session']->get('phrasea_session_id')
             , ':usr_id' => self::$DI['app']['phraseanet.user']->get_id()
-            , ':site'   => $registry->get('GV_sit')
+            , ':site'   => self::$DI['app']['phraseanet.registry']->get('GV_sit')
         );
 
         $stmt = $this->databox->get_connection()->prepare($sql);
@@ -64,7 +62,7 @@ class Session_LoggerTest extends PhraseanetPHPUnitAbstract
         $params = array(
             ':ses_id' => $ses_id
             , ':usr_id' => $usr_id
-            , ':site'   => $registry->get('GV_sit')
+            , ':site'   => self::$DI['app']['phraseanet.registry']->get('GV_sit')
         );
 
         $stmt = $this->databox->get_connection()->prepare($sql);

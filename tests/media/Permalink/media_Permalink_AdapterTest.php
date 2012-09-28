@@ -43,11 +43,10 @@ class media_Permalink_AdapterTest extends PhraseanetPHPUnitAbstract
 
     public function testGet_url()
     {
-        $registry = self::$DI['app']['phraseanet.registry'];
-        $url = $registry->get('GV_ServerName') . 'permalink/v1/' . static::$object->get_label() . '/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/' .
+        $url = self::$DI['app']['phraseanet.registry']->get('GV_ServerName') . 'permalink/v1/' . static::$object->get_label() . '/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/' .
             static::$object->get_token() . '/document/';
 
-        $this->assertEquals($url, static::$object->get_url($registry));
+        $this->assertEquals($url, static::$object->get_url(self::$DI['app']['phraseanet.registry']));
     }
 
     /**

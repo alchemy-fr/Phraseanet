@@ -45,10 +45,8 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
             'GV_pdftotext',
         );
 
-        $registry = self::$DI['app']['phraseanet.registry'];
-
         foreach ($params as $param) {
-            $this->registry[$param] = $registry->get($param);
+            $this->registry[$param] = self::$DI['app']['phraseanet.registry']->get($param);
         }
     }
 
@@ -57,10 +55,8 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
         $this->temporaryReInstall();
         self::$DI['app']['phraseanet.appbox']->set_connection($this->connection);
 
-        $registry = self::$DI['app']['phraseanet.registry'];
-
         foreach ($this->registry as $param => $value) {
-            $registry->set($param, $value, \registry::TYPE_STRING);
+            self::$DI['app']['phraseanet.registry']->set($param, $value, \registry::TYPE_STRING);
         }
 
         parent::tearDown();
