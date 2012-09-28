@@ -1688,7 +1688,7 @@ class task_period_archive extends task_abstract
 
             $metadatas = $this->mergeForDatabox($metadatasStructure, $metadatas, $caption);
         }
-        $file = new \Alchemy\Phrasea\Border\File($media, $collection);
+        $file = new \Alchemy\Phrasea\Border\File($this->dependencyContainer, $media, $collection);
 
         $file->addAttribute(new BorderAttribute\Status($this->dependencyContainer, $status));
 

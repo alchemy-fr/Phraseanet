@@ -34,7 +34,7 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
     {
         parent::setUpBeforeClass();
 
-        $file = new File(self::$DI['app']['mediavorus']->guess(__DIR__ . "/../testfiles/iphone_pic.jpg"), self::$DI['collection']);
+        $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . "/../testfiles/iphone_pic.jpg"), self::$DI['collection']);
 
         self::$recordonbleu = record_adapter::createFromFile($file, self::$DI['app']);
         self::$recordonbleu->generate_subdefs(self::$recordonbleu->get_databox(), self::$DI['app']);

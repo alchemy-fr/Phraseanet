@@ -33,7 +33,7 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
         $media = self::$DI['app']['mediavorus']->guess($tmp);
 
-        $file = new Alchemy\Phrasea\Border\File($media, self::$DI['collection']);
+        $file = new Alchemy\Phrasea\Border\File(self::$DI['app'], $media, self::$DI['collection']);
         $record = record_adapter::createFromFile($file, self::$DI['app']);
 
         $record->generate_subdefs($record->get_databox(), self::$DI['app']);

@@ -263,7 +263,7 @@ class Lazaret implements ControllerProviderInterface
 
         try {
             $borderFile = Border\File::buildFromPathfile(
-                    $lazaretFileName, $lazaretFile->getCollection($app), $app['mediavorus'], $lazaretFile->getOriginalName()
+                    $lazaretFileName, $lazaretFile->getCollection($app), $app, $lazaretFile->getOriginalName()
             );
 
             $record = null;

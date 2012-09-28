@@ -38,7 +38,7 @@ class UUIDTest extends \PhraseanetPHPUnitAbstract
      */
     public function testCheck()
     {
-        $response = $this->object->check(self::$DI['app']['EM'], new File($this->media, self::$DI['collection']));
+        $response = $this->object->check(self::$DI['app']['EM'], new File(self::$DI['app'], $this->media, self::$DI['collection']));
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
 

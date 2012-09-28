@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Border;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Media\Type\Audio;
 use Alchemy\Phrasea\Media\Type\Document;
 use Alchemy\Phrasea\Media\Type\Flash;
@@ -46,6 +47,7 @@ class File
     protected $media;
     protected $uuid;
     protected $sha256;
+    protected $app;
     protected $originalName;
     protected $md5;
     protected $attributes;
@@ -53,14 +55,16 @@ class File
     /**
      * Constructor
      *
+     * @param Applciation    $app          Application context
      * @param MediaInterface $media        The media
      * @param \collection    $collection   The destination collection
      * @param string         $originalName The original name of the file
      *                                      (if not provided, original name is
      *                                      extracted from the pathfile)
      */
-    public function __construct(MediaInterface $media, \collection $collection, $originalName = null)
+    public function __construct(Application $app, MediaInterface $media, \collection $collection, $originalName = null)
     {
+        $this->app = $app;
         $this->media = $media;
         $this->collection = $collection;
         $this->attributes = array();
@@ -128,8 +132,6 @@ class File
         }
 
         if ($write) {
-            $writer = new Writer(new Exiftool());
-
             $value = new MonoValue($this->uuid);
             $metadatas = new MetadataBag();
 
@@ -141,13 +143,13 @@ class File
              * PHPExiftool throws exception on some files not supported
              */
             try {
-                $writer->write($this->getFile()->getRealPath(), $metadatas);
+                $this->app['exiftool.writer']->write($this->getFile()->getRealPath(), $metadatas);
             } catch (PHPExiftoolException $e) {
 
             }
         }
 
-        $writer = $reader = $metadatas = null;
+        $reader = $metadatas = null;
 
         return $this->uuid;
     }
@@ -282,14 +284,14 @@ class File
      *
      * @return \Alchemy\Phrasea\Border\File
      */
-    public static function buildFromPathfile($pathfile, \collection $collection, MediaVorus $mediavorus, $originalName = null)
+    public static function buildFromPathfile($pathfile, \collection $collection, Application $app, $originalName = null)
     {
         try {
-            $media = $mediavorus->guess($pathfile);
+            $media = $app['mediavorus']->guess($pathfile);
         } catch (FileNotFoundException $e) {
             throw new \InvalidArgumentException(sprintf('Unable to build media file from non existant %s', $pathfile));
         }
 
-        return new File($media, $collection, $originalName);
+        return new File($app, $media, $collection, $originalName);
     }
 }

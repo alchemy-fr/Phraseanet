@@ -37,7 +37,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
 
         $this->media = self::$DI['app']['mediavorus']->guess($this->filename);
 
-        $this->object = new File($this->media, self::$DI['collection'], 'originalName.txt');
+        $this->object = new File(self::$DI['app'], $this->media, self::$DI['collection'], 'originalName.txt');
     }
 
     /**
@@ -73,20 +73,20 @@ class FileTest extends \PhraseanetPHPUnitAbstract
 
         copy(__DIR__ . '/../../../testfiles/p4logo.jpg', $file);
 
-        $borderFile = new File(self::$DI['app']['mediavorus']->guess($file), self::$DI['collection']);
+        $borderFile = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess($file), self::$DI['collection']);
         $uuid = $borderFile->getUUID(true, false);
 
         $this->assertTrue(\uuid::is_valid($uuid));
         $this->assertEquals($uuid, $borderFile->getUUID());
 
-        $borderFile = new File(self::$DI['app']['mediavorus']->guess($file), self::$DI['collection']);
+        $borderFile = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess($file), self::$DI['collection']);
         $newuuid = $borderFile->getUUID(true, true);
 
         $this->assertTrue(\uuid::is_valid($newuuid));
         $this->assertNotEquals($uuid, $newuuid);
         $this->assertEquals($newuuid, $borderFile->getUUID());
 
-        $borderFile = new File(self::$DI['app']['mediavorus']->guess($file), self::$DI['collection']);
+        $borderFile = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess($file), self::$DI['collection']);
         $uuid = $borderFile->getUUID();
 
         $this->assertTrue(\uuid::is_valid($uuid));
@@ -152,7 +152,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      */
     public function testOriginalNameAuto()
     {
-        $object = new File(self::$DI['app']['mediavorus']->guess($this->filename), self::$DI['collection']);
+        $object = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess($this->filename), self::$DI['collection']);
         $this->assertSame('iphone_pic.jpg', $object->getOriginalName());
     }
 
@@ -194,16 +194,16 @@ class FileTest extends \PhraseanetPHPUnitAbstract
     public function testBuildFromPathfile()
     {
         $media = self::$DI['app']['mediavorus']->guess($this->filename);
-        $file1 = new File($media, self::$DI['collection']);
+        $file1 = new File(self::$DI['app'], $media, self::$DI['collection']);
 
-        $file2 = File::buildFromPathfile($this->filename, self::$DI['collection'], self::$DI['app']['mediavorus']);
+        $file2 = File::buildFromPathfile($this->filename, self::$DI['collection'], self::$DI['app']);
 
         $this->assertEquals($file1, $file2);
 
         $media = self::$DI['app']['mediavorus']->guess($this->filename);
-        $file3 = new File($media, self::$DI['collection'], 'coco lapin');
+        $file3 = new File(self::$DI['app'], $media, self::$DI['collection'], 'coco lapin');
 
-        $file4 = File::buildFromPathfile($this->filename, self::$DI['collection'], self::$DI['app']['mediavorus'], 'coco lapin');
+        $file4 = File::buildFromPathfile($this->filename, self::$DI['collection'], self::$DI['app'], 'coco lapin');
 
         $this->assertEquals($file3, $file4);
         $this->assertNotEquals($file1, $file4);
@@ -215,7 +215,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      */
     public function testBuildFromWrongPathfile()
     {
-        File::buildFromPathfile('unexistent.file', self::$DI['collection'], self::$DI['app']['mediavorus']);
+        File::buildFromPathfile('unexistent.file', self::$DI['collection'], self::$DI['app']);
     }
 
     protected function getMediaMock($type)
@@ -238,7 +238,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
     {
         $image = $this->getMediaMock(MediaInterface::TYPE_IMAGE);
 
-        $file = new File($image, self::$DI['collection'], 'hello');
+        $file = new File(self::$DI['app'], $image, self::$DI['collection'], 'hello');
 
         $this->assertEquals(new Image(), $file->getType());
     }
@@ -250,7 +250,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
     {
         $document = $this->getMediaMock(MediaInterface::TYPE_DOCUMENT);
 
-        $file = new File($document, self::$DI['collection'], 'hello');
+        $file = new File(self::$DI['app'], $document, self::$DI['collection'], 'hello');
 
         $this->assertEquals(new Document(), $file->getType());
     }
@@ -262,7 +262,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
     {
         $audio = $this->getMediaMock(MediaInterface::TYPE_AUDIO);
 
-        $file = new File($audio, self::$DI['collection'], 'hello');
+        $file = new File(self::$DI['app'], $audio, self::$DI['collection'], 'hello');
 
         $this->assertEquals(new Audio(), $file->getType());
     }
@@ -274,7 +274,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
     {
         $video = $this->getMediaMock(MediaInterface::TYPE_VIDEO);
 
-        $file = new File($video, self::$DI['collection'], 'hello');
+        $file = new File(self::$DI['app'], $video, self::$DI['collection'], 'hello');
 
         $this->assertEquals(new Video(), $file->getType());
     }
@@ -286,7 +286,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
     {
         $flash = $this->getMediaMock(MediaInterface::TYPE_FLASH);
 
-        $file = new File($flash, self::$DI['collection'], 'hello');
+        $file = new File(self::$DI['app'], $flash, self::$DI['collection'], 'hello');
 
         $this->assertEquals(new Flash(), $file->getType());
     }
@@ -298,7 +298,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
     {
         $noType = $this->getMediaMock(null);
 
-        $file = new File($noType, self::$DI['collection'], 'hello');
+        $file = new File(self::$DI['app'], $noType, self::$DI['collection'], 'hello');
 
         $this->assertNull($file->getType());
     }

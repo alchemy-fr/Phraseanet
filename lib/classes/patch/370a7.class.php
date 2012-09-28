@@ -110,7 +110,7 @@ class patch_370a7 implements patchInterface
 
                     $collection = \collection::get_from_base_id($app, $row['base_id']);
 
-                    $borderFile = new \Alchemy\Phrasea\Border\File($media, $collection);
+                    $borderFile = new \Alchemy\Phrasea\Border\File($app, $media, $collection);
 
                     $lazaretSession = new \Entities\LazaretSession();
                     $lazaretSession->setUsrId($row['usr_id']);

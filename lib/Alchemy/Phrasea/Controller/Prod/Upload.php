@@ -192,7 +192,7 @@ class Upload implements ControllerProviderInterface
 
             $app['EM']->persist($lazaretSession);
 
-            $packageFile = new File($media, $collection, $file->getClientOriginalName());
+            $packageFile = new File($app, $media, $collection, $file->getClientOriginalName());
 
             $postStatus = $request->request->get('status');
 

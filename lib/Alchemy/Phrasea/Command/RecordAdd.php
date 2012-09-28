@@ -93,7 +93,7 @@ class RecordAdd extends Command
             $media = $this->container['mediavorus']->guess($file);
         }
 
-        $file = new File($media, $collection, $originalName);
+        $file = new File($this->container, $media, $collection, $originalName);
         $session = new LazaretSession();
         $this->container['EM']->persist($session);
 

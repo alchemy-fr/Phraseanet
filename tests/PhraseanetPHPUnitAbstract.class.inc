@@ -754,7 +754,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                         PhraseanetPHPUnitAbstract::$recordsInitialized[] = $i;
 
 //                    echo "\t\t\tcreating record $i step #1 ".(microtime(true)-$start)."\n";
-                        $file = new Alchemy\Phrasea\Border\File($app['mediavorus']->guess($resolvePathfile($i)->getPathname()), $DI['collection']);
+                        $file = new Alchemy\Phrasea\Border\File($app, $app['mediavorus']->guess($resolvePathfile($i)->getPathname()), $DI['collection']);
 
 //                    echo "\t\t\tcreating record $i step #2 ".(microtime(true)-$start)."\n";
                         $record = record_adapter::createFromFile($file, $app);
@@ -779,7 +779,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
                     PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'no_access';
 
-                    $file = new Alchemy\Phrasea\Border\File($app['mediavorus']->guess(__DIR__ . '/testfiles/cestlafete.jpg'), $DI['collection_no_access']);
+                    $file = new Alchemy\Phrasea\Border\File($app, $app['mediavorus']->guess(__DIR__ . '/testfiles/cestlafete.jpg'), $DI['collection_no_access']);
 
                     return \record_adapter::createFromFile($file, $app);
                 });
@@ -788,7 +788,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
                     PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'no_access_by_status';
 
-                    $file = new Alchemy\Phrasea\Border\File($app['mediavorus']->guess(__DIR__ . '/testfiles/cestlafete.jpg'), $DI['collection_no_access']);
+                    $file = new Alchemy\Phrasea\Border\File($app, $app['mediavorus']->guess(__DIR__ . '/testfiles/cestlafete.jpg'), $DI['collection_no_access']);
 
                     return \record_adapter::createFromFile($file, $app);
                 });

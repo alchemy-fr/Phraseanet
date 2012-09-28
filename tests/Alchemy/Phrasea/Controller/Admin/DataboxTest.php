@@ -570,7 +570,7 @@ class DataboxTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $base = $this->createDatabox();
         $collection = \collection::create(self::$DI['app'], $base, self::$DI['app']['phraseanet.appbox'], 'TESTTODELETE');
         self::$createdCollections[] = $collection;
-        $file = new \Alchemy\Phrasea\Border\File(self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../testfiles/test001.CR2'), $collection);
+        $file = new \Alchemy\Phrasea\Border\File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../testfiles/test001.CR2'), $collection);
         \record_adapter::createFromFile($file, self::$DI['app']);
 
         if ($collection->get_record_amount() === 0) {

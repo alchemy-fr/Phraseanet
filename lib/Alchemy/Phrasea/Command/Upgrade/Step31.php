@@ -126,7 +126,7 @@ class Step31 implements DatasUpgraderInterface
             $media = $this->app['mediavorus']->guess($pathfile);
             $collection = \collection::get_from_coll_id($app, $databox, (int) $record['coll_id']);
 
-            $file = new File($media, $collection);
+            $file = new File($this->app, $media, $collection);
             $uuid = $file->getUUID(true, true);
             $sha256 = $file->getSha256();
 
