@@ -1140,12 +1140,12 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/fabpot/Silex.git",
-                "reference": "0d02614d88bf6ec0410e7c9c0df556d8c3ef47ca"
+                "reference": "810fcb19c74317289d06b531641cf5dd33f7bf6f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/fabpot/Silex/zipball/0d02614d88bf6ec0410e7c9c0df556d8c3ef47ca",
-                "reference": "0d02614d88bf6ec0410e7c9c0df556d8c3ef47ca",
+                "url": "https://github.com/fabpot/Silex/zipball/810fcb19c74317289d06b531641cf5dd33f7bf6f",
+                "reference": "810fcb19c74317289d06b531641cf5dd33f7bf6f",
                 "shasum": ""
             },
             "require": {
@@ -1179,7 +1179,7 @@
                 "symfony/css-selector": "2.1.*",
                 "symfony/dom-crawler": "2.1.*"
             },
-            "time": "1348695490",
+            "time": "1348836914",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1321,12 +1321,12 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/symfony/symfony.git",
-                "reference": "f62fa8a79edc94240a7fd3ef3096ddd789eced4f"
+                "reference": "0d92a245517c2cfbc0e39a0e2c8d220e928eaa04"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/symfony/symfony/zipball/f62fa8a79edc94240a7fd3ef3096ddd789eced4f",
-                "reference": "f62fa8a79edc94240a7fd3ef3096ddd789eced4f",
+                "url": "https://github.com/symfony/symfony/zipball/0d92a245517c2cfbc0e39a0e2c8d220e928eaa04",
+                "reference": "0d92a245517c2cfbc0e39a0e2c8d220e928eaa04",
                 "shasum": ""
             },
             "require": {
@@ -1375,7 +1375,7 @@
                 "propel/propel1": "dev-master",
                 "monolog/monolog": "dev-master"
             },
-            "time": "1348749927",
+            "time": "1348842916",
             "type": "library",
             "extra": {
                 "branch-alias": {
