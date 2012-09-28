@@ -180,9 +180,11 @@ class Installer implements ControllerProviderInterface
 
         \setup::rollback($conn, $connbas);
 
+        $app['phraseanet.registry'] = $setupRegistry;
+
         try {
 
-            $appbox = \appbox::create($app, $setupRegistry, $conn, $appbox_name, $app['phraseanet.appbox'], true);
+            $appbox = \appbox::create($app, $conn, $appbox_name, $app['phraseanet.appbox'], true);
 
             $configuration = Configuration::build();
 

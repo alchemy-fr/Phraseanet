@@ -95,7 +95,7 @@ class patch_370a7 implements patchInterface
                     $spec->setResizeMode(ImageSpec::RESIZE_MODE_INBOUND_FIXEDRATIO);
                     $spec->setDimensions(375, 275);
 
-                    $thumbPath = $app['phraseanet.registry']->getRegistry()->get('GV_RootPath') . 'tmp/lazaret/' . sprintf("thumb_%s", $row['filepath']);
+                    $thumbPath = $app['phraseanet.registry']->get('GV_RootPath') . 'tmp/lazaret/' . sprintf("thumb_%s", $row['filepath']);
 
                     try {
                         $app['media-alchemyst']

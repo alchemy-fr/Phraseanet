@@ -56,25 +56,11 @@ class appbox extends base
     const CACHE_SBAS_IDS = 'sbas_ids';
 
     /**
-     * Singleton pattern
-     *
-     * @return appbox
-     */
-    public static function get_instance(Application $app, registryInterface $registry = null)
-    {
-        if (!self::$_instance instanceof self) {
-            self::$_instance = new static($app, $registry);
-        }
-
-        return self::$_instance;
-    }
-
-    /**
      * Constructor
      *
      * @return appbox
      */
-    public function __construct(Application $app, registryInterface $registry = null)
+    public function __construct(Application $app)
     {
         $this->app = $app;
         $this->connection = connection::getPDOConnection($app, null, $app['phraseanet.registry']);
@@ -465,7 +451,7 @@ class appbox extends base
      * @param  type              $write_file
      * @return type
      */
-    public static function create(Application $app, registryInterface $registry, connection_interface $conn, $dbname, Version $version, $write_file = false)
+    public static function create(Application $app, connection_interface $conn, $dbname, Version $version, $write_file = false)
     {
         $credentials = $conn->get_credentials();
 
@@ -487,7 +473,7 @@ class appbox extends base
             $connexionINI['driver'] = 'pdo_mysql';
             $connexionINI['charset'] = 'UTF8';
 
-            $serverName = $registry->get('GV_ServerName');
+            $serverName = $app['phraseanet.registry']->get('GV_ServerName');
 
             $root = __DIR__ . '/../../';
 
@@ -550,7 +536,7 @@ class appbox extends base
         }
 
         try {
-            $appbox = static::get_instance($app, $registry);
+            $appbox = new self($app);
             $appbox->insert_datas($version);
         } catch (Exception $e) {
             throw new Exception('Error while installing ' . $e->getMessage());
