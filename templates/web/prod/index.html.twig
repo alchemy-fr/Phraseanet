@@ -367,7 +367,7 @@
                                                     <option value=""></option>
                                                     {% for field_id, field in search_datas['fields'] %}
                                                         {% if field['type'] == 'date' %}
-                                                            <option class="field_switch field_{{field['sbas']|implode(' field_')}}" value="{{field_id}}" {% if registry.get('GV_phrasea_sort') == field['fieldname'] %}selected="selected"{% endif %}>{{ field['fieldname'] }}</option>
+                                                            <option class="field_switch field_{{field['sbas']|join(' field_')}}" value="{{field_id}}" {% if registry.get('GV_phrasea_sort') == field['fieldname'] %}selected="selected"{% endif %}>{{ field['fieldname'] }}</option>
                                                         {% endif %}
                                                     {% endfor %}
                                                 </select>
@@ -382,7 +382,7 @@
                                                     <option value="phraseanet--all--fields">{% trans 'rechercher dans tous les champs' %}</option>
                                                     {% for field_id, field in search_datas['fields'] %}
                                                         {% if field['type'] != 'date' %}
-                                                            <option class="field_switch field_{{field['sbas']|implode(' field_')}}" value="{{field_id}}">{{field['fieldname']}}</option>
+                                                            <option class="field_switch field_{{field['sbas']|join(' field_')}}" value="{{field_id}}">{{field['fieldname']}}</option>
                                                         {% endif %}
                                                     {% endfor %}
                                                 </select>
@@ -402,8 +402,8 @@
                                                                         <img src="{{s['imgoff']}}" title="{{s['labeloff']}}" />
                                                                     {% endif %}
                                                                     <label class="checkbox inline">
-                                                                        <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|implode('field_')}}"
-                                                                        type="checkbox" value="{{s['sbas']|implode(' field_')}}"
+                                                                        <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|join('field_')}}"
+                                                                        type="checkbox" value="{{s['sbas']|join(' field_')}}"
                                                                         n="{{n}}" name="status[{{n}}][off][]" />
                                                                         {{s['labeloff']}}
                                                                     </label>
@@ -413,8 +413,8 @@
                                                                         <img src="{{s['imgon']}}" title="{{s['labelon']}}" />
                                                                     {% endif %}
                                                                     <label class="checkbox inline">
-                                                                        <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|implode('field_')}}"
-                                                                        type="checkbox" value="{{s['sbas']|implode(' field_')}}"
+                                                                        <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|join('field_')}}"
+                                                                        type="checkbox" value="{{s['sbas']|join(' field_')}}"
                                                                         n="{{n}}" name="status[{{n}}][on][]"/>
                                                                         {{s['labelon']}}
                                                                     </label>
@@ -437,9 +437,9 @@
                                                                 <select name="datefield" class="input-medium">
                                                                     {% for field_id, field in search_datas['dates'] %}
                                                                         <option onchange="checkFilters(true);"
-                                                                            class="field_switch field_{{field['sbas']|implode(' field_')}}" value="{{ field['fieldname'] }}">{{field['fieldname']}}</option>
+                                                                            class="field_switch field_{{field['sbas']|join(' field_')}}" value="{{ field['fieldname'] }}">{{field['fieldname']}}</option>
                                                                     {% endfor %}
-                                                                    <option value="{{search_datas['dates']|array_keys|implode('|')}}" selected="selected">
+                                                                    <option value="{{search_datas['dates']|keys|join('|')}}" selected="selected">
                                                                         {% trans 'rechercher dans tous les champs' %}
                                                                     </option>
                                                                 </select>

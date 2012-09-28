@@ -74,7 +74,7 @@
                             <textarea {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}">{{ currentValue }}</textarea>
                         {% elseif value['type'] == 'enum' %}
                             <select {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}">
-                                {% if value['available'] is defined and value['available'] is loopable %}
+                                {% if value['available'] is defined and value['available'] is iterable %}
                                     {% for key, val in value['available'] %}
                                         <option value="{{ key }}" {{ currentValue == key ? 'selected="selected"' : '' }} >{{ val }}</option>
                                     {% endfor %}
@@ -88,10 +88,10 @@
                                 {% endif %}
                             </select>
                         {% elseif value['type'] == 'enum_multi' %}
-                            {% if value['available'] is defined and value['available'] is loopable %}
+                            {% if value['available'] is defined and value['available'] is iterable %}
                                 {% for key, availableValue in value['available'] %}
                                     <label class="checkbox">
-                                        <input type="checkbox" name="{{ value['name'] ~ '[]' }}" {{ readonly ? 'readonly="readonly"' : ''}} value="{{ key }}" {{ currentValue is loopable and key in currentValue| keys ? 'checked="checked"' : '' }} /> {{ availableValue }}</label>
+                                        <input type="checkbox" name="{{ value['name'] ~ '[]' }}" {{ readonly ? 'readonly="readonly"' : ''}} value="{{ key }}" {{ currentValue is iterable and key in currentValue| keys ? 'checked="checked"' : '' }} /> {{ availableValue }}</label>
                                 {% endfor %}
                             {% else %}
                                 <p class='alert'>

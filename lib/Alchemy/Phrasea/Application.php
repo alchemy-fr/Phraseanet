@@ -327,23 +327,15 @@ class Application extends SilexApplication
                 $twig->addExtension(new \Twig_Extensions_Extension_Text());
                 $twig->addExtension(new \Alchemy\Phrasea\Twig\JSUniqueID());
 
-                include_once __DIR__ . '/Twig/Functions.inc.php';
-
-                $twig->addTest('null', new \Twig_Test_Function('is_null'));
-                $twig->addTest('loopable', new \Twig_Test_Function('is_loopable'));
-
                 $twig->addFilter('serialize', new \Twig_Filter_Function('serialize'));
                 $twig->addFilter('stristr', new \Twig_Filter_Function('stristr'));
-                $twig->addFilter('implode', new \Twig_Filter_Function('implode'));
                 $twig->addFilter('get_class', new \Twig_Filter_Function('get_class'));
                 $twig->addFilter('stripdoublequotes', new \Twig_Filter_Function('stripdoublequotes'));
                 $twig->addFilter('get_collection_logo', new \Twig_Filter_Function('collection::getLogo'));
                 $twig->addFilter('floor', new \Twig_Filter_Function('floor'));
                 $twig->addFilter('bas_names', new \Twig_Filter_Function('phrasea::bas_names'));
                 $twig->addFilter('sbas_names', new \Twig_Filter_Function('phrasea::sbas_names'));
-                $twig->addFilter('urlencode', new \Twig_Filter_Function('urlencode'));
                 $twig->addFilter('key_exists', new \Twig_Filter_Function('array_key_exists'));
-                $twig->addFilter('array_keys', new \Twig_Filter_Function('array_keys'));
                 $twig->addFilter('round', new \Twig_Filter_Function('round'));
                 $twig->addFilter('formatOctets', new \Twig_Filter_Function('p4string::format_octets'));
                 $twig->addFilter('base_from_coll', new \Twig_Filter_Function('phrasea::baseFromColl'));
