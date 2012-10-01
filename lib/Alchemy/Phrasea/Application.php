@@ -34,7 +34,6 @@ use Silex\Provider\SessionServiceProvider;
 use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
-use Symfony\Component\HttpFoundation\Request;
 use Unoconv\UnoconvServiceProvider;
 use XPDF\PdfToText;
 use XPDF\XPDFServiceProvider;
@@ -191,11 +190,11 @@ class Application extends SilexApplication
 
         $this->setupTwig();
 
-        $app['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'initPhrasea'), 256);
-        $app['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'addLocale'), 255);
-        $app['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'initSession'), 254);
-        $app['dispatcher']->addListener(KernelEvents::RESPONSE, array($this, 'addUTF8Charset'), -128);
-        $app['dispatcher']->addListener(KernelEvents::RESPONSE, array($this, 'disableCookiesIfRequired'), -256);
+        $this['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'initPhrasea'), 256);
+        $this['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'addLocale'), 255);
+        $this['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'initSession'), 254);
+        $this['dispatcher']->addListener(KernelEvents::RESPONSE, array($this, 'addUTF8Charset'), -128);
+        $this['dispatcher']->addListener(KernelEvents::RESPONSE, array($this, 'disableCookiesIfRequired'), -256);
 
         $this['locale'] = $this->share(function(Application $app){
             return $app['phraseanet.registry']->get('GV_default_lng', 'en_GB');
