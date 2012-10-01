@@ -10,7 +10,7 @@ use Symfony\Component\Console;
  * Largely inspired by Cilex
  * @see https://github.com/Cilex/Cilex
  */
-class CLI extends Application
+class CLISetup extends Setup
 {
 
     /**
