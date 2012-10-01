@@ -43,7 +43,7 @@
                     <div class="container left">
                         {% if first_item %}
               {% set preview = first_item.get_record().get_preview() %}
-              {{thumbnail.format(preview, preview.get_width(), preview.get_height(),'',session, false)}}
+              {{thumbnail.format(preview, preview.get_width(), preview.get_height(),'',session, false, false)}}
             {% endif %}
                     </div>
                 </div>

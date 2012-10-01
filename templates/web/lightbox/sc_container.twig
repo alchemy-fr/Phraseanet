@@ -15,7 +15,7 @@
                 class="disagree_button {%if element.getUserValidationDatas(user).getAgreement() == true or element.getUserValidationDatas(user).getAgreement() is null %}not_decided{%endif%} disagree_{{element.getId()}}" />
             </div>
           {% endif %}
-          {{thumbnail.format(element.getRecord().get_thumbnail,114,85, '', session, true)}}
+          {{thumbnail.format(element.getRecord().get_thumbnail,114,85, '', session, true, false)}}
           <form name="download_form" class="download_form" style="display:none;">
             <input type="hidden" name="basrec" value="{{element.getRecord().get_serialize_key()}}"/>
           </form>
