@@ -191,18 +191,9 @@ class Application extends SilexApplication
 
         $this->setupTwig();
 
-        $request = Request::createFromGlobals();
-
-        /**
-         * dirty hack for flash uploader
-         */
-        if (!!stripos($request->server->get('HTTP_USER_AGENT'), 'flash') && $request->getRequestUri() === '/prod/upload/') {
-            if (null !== $sessionId = $request->get('php_session_id')) {
-                session_id($sessionId);
-            }
-        }
-
-        $app['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'addLocale'), 256);
+        $app['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'initPhrasea'), 256);
+        $app['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'addLocale'), 255);
+        $app['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'initSession'), 254);
         $app['dispatcher']->addListener(KernelEvents::RESPONSE, array($this, 'addUTF8Charset'), -128);
         $app['dispatcher']->addListener(KernelEvents::RESPONSE, array($this, 'disableCookiesIfRequired'), -256);
 
@@ -221,6 +212,29 @@ class Application extends SilexApplication
 
             return $data[1];
         };
+    }
+
+    public function initSession(GetResponseEvent $event)
+    {
+        if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
+            return;
+        }
+
+        /**
+         * dirty hack for flash uploader
+         */
+        if (!!stripos($event->getRequest()->server->get('HTTP_USER_AGENT'), 'flash') && $event->getRequest()->getRequestUri() === '/prod/upload/') {
+            if (null !== $sessionId = $event->getRequest()->get('php_session_id')) {
+                session_id($sessionId);
+            }
+        }
+    }
+
+    public function initPhrasea(GetResponseEvent $event)
+    {
+        if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
+            return;
+        }
 
         \phrasea::start($this['phraseanet.configuration']);
     }
