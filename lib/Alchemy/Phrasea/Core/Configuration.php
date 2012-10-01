@@ -244,7 +244,15 @@ class Configuration
 
     public function initialize()
     {
-        return $this->specifications->initialize();
+        $this->specifications->initialize();
+        $this->setEnvironnement('prod');
+
+        return $this;
+    }
+
+    public function delete()
+    {
+        return $this->specifications->delete();
     }
 
     public function setConfigurations($configurations)
