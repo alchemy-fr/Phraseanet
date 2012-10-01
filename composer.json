@@ -30,6 +30,7 @@
         "zend/gdata": ">1.11"
     },
     "minimum-stability": "dev",
+    "process-timeout" : 900,
     "require-dev": {
         "doctrine/data-fixtures": "dev-master",
         "fabpot/php-cs-fixer": "dev-master"

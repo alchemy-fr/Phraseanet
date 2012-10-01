@@ -76,29 +76,27 @@ switch ($action) {
 
         break;
 
-    case 'CSS':
-        require ($app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
-        $parm = $request->get_parms('color');
-        $output = $app['phraseanet.user']->setPrefs('css', $parm['color']);
-        break;
-
-    case 'SAVETEMPPREF':
-        $parm = $request->get_parms('prop', 'value');
-        $app['session']->set('user-pref-' . $parm['prop'], $parm['value']);
-        $output = 1;
-        break;
-
-    case 'DELETE':
-        require ($app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
-        $parm = $request->get_parms('lst');
-        $output = whatCanIDelete($app, $parm['lst']);
-        break;
-    case 'DODELETE':
-        require ($app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
-        $parm = $request->get_parms('lst', 'del_children');
-        $output = deleteRecord($app, $parm['lst'], $parm['del_children']);
-        break;
-
+//    case 'CSS':
+//        require ($app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
+//        $parm = $request->get_parms('color');
+//        $output = $app['phraseanet.user']->setPrefs('css', $parm['color']);
+//        break;
+//
+//    case 'SAVETEMPPREF':
+//        $parm = $request->get_parms('prop', 'value');
+//        $app['session']->set('user-pref-' . $parm['prop'], $parm['value']);
+//        $output = 1;
+//        break;
+//    case 'DELETE':
+//        require ($app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
+//        $parm = $request->get_parms('lst');
+//        $output = whatCanIDelete($app, $parm['lst']);
+//        break;
+//    case 'DODELETE':
+//        require ($app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
+//        $parm = $request->get_parms('lst', 'del_children');
+//        $output = deleteRecord($app, $parm['lst'], $parm['del_children']);
+//        break;
     case 'READ_NOTIFICATIONS':
         try {
             $parm = $request->get_parms('notifications');
@@ -112,10 +110,6 @@ switch ($action) {
         $parm = $request->get_parms('page');
         $output = $app['events-manager']->get_json_notifications($parm['page']);
         break;
-
-
-
-
 
     case 'VIDEOTOKEN':
         $parm = $request->get_parms(!'sbas_id', 'record_id');

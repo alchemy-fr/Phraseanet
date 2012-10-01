@@ -45,6 +45,7 @@ use Alchemy\Phrasea\Controller\Prod\Printer;
 use Alchemy\Phrasea\Controller\Prod\Push;
 use Alchemy\Phrasea\Controller\Prod\Query;
 use Alchemy\Phrasea\Controller\Prod\Root as Prod;
+use Alchemy\Phrasea\Controller\Prod\Share;
 use Alchemy\Phrasea\Controller\Prod\Story;
 use Alchemy\Phrasea\Controller\Prod\Tools;
 use Alchemy\Phrasea\Controller\Prod\Tooltip;
@@ -146,6 +147,7 @@ return call_user_func(function($environment = null) {
     $app->mount('/prod/tools/', new Tools());
     $app->mount('/prod/lazaret/', new Lazaret());
     $app->mount('/prod/upload/', new Upload());
+    $app->mount('/prod/share/', new Share());
     $app->mount('/prod/', new Prod());
 
     $app->error(function(\Exception $e) use ($app) {

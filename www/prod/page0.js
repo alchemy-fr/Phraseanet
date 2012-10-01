@@ -2459,7 +2459,7 @@ function checkDeleteThis(type, el)
 }
 function shareThis(bas,rec)
 {
-    var url = "/prod/share.php?bas="+bas+"&rec="+rec;
+    var url = "/prod/share/record/"+bas+"/"+rec+ "/";
 
     $('#MODALDL').attr('src','about:blank');
     $('#MODALDL').attr('src',url);
