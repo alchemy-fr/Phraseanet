@@ -517,6 +517,10 @@ function initAnswerForm(){
                 }
 
                 afterSearch();
+
+                $("#answers img.lazyload").lazyload({
+                    container: $('#answers')
+                });
             }
         });
         return false;
