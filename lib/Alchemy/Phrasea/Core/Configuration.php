@@ -75,60 +75,6 @@ class Configuration
         return $this;
     }
 
-    public function upgradeFromOldConf(\SplFileInfo $configInc, \SplFileInfo $connexionInc)
-    {
-        $this->initialize();
-
-        $retrieve_old_credentials = function(\SplFileInfo $connexionInc) {
-                require $connexionInc->getPathname();
-
-                return array(
-                    'hostname' => $hostname,
-                    'port'     => $port,
-                    'user'     => $user,
-                    'password' => $password,
-                    'dbname'   => $dbname,
-                );
-            };
-
-        $credentials = $retrieve_old_credentials($connexionInc);
-
-        $connexions = $this->getConnexions();
-
-        foreach ($credentials as $key => $value) {
-            $key = $key == 'hostname' ? 'host' : $key;
-            $connexions['main_connexion'][$key] = (string) $value;
-        }
-
-        $this->setConnexions($connexions);
-
-        $configs = $this->getConfigurations();
-
-        $retrieve_old_parameters = function(\SplFileInfo $configInc) {
-            require $configInc->getPathname();
-
-            return array(
-                'servername' => $servername
-            );
-        };
-
-        $old_parameters = $retrieve_old_parameters($configInc);
-
-        foreach ($configs as $env => $conf) {
-            if ( ! is_array($configs[$env]) || ! array_key_exists('phraseanet', $configs[$env])) {
-                continue;
-            }
-
-            $configs[$env]['phraseanet']['servername'] = $old_parameters['servername'];
-        }
-
-        $this->setConfigurations($configs);
-
-        $this->setEnvironnement('prod');
-
-        return $this;
-    }
-
     public function get($name)
     {
         return $this->configuration->get($name);
