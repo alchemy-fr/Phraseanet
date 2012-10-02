@@ -38,11 +38,6 @@ class module_console_systemBackupDB extends Command
         return $this;
     }
 
-    public function requireSetup()
-    {
-        return true;
-    }
-
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         $output->write('Phraseanet is going to be backup...', true);

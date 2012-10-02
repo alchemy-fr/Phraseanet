@@ -32,11 +32,6 @@ class module_console_systemConfigCheck extends Command
         return $this;
     }
 
-    public function requireSetup()
-    {
-        return false;
-    }
-
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         if ( ! function_exists('_')) {

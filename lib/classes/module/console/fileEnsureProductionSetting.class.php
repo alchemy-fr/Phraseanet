@@ -57,11 +57,6 @@ class module_console_fileEnsureProductionSetting extends Command
         return $this;
     }
 
-    public function requireSetup()
-    {
-        return true;
-    }
-
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         $this->configuration = $this->container['phraseanet.configuration'];

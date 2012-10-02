@@ -31,11 +31,6 @@ class module_console_sphinxGenerateSuggestion extends Command
         return $this;
     }
 
-    public function requireSetup()
-    {
-        return true;
-    }
-
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         define('FREQ_THRESHOLD', 10);

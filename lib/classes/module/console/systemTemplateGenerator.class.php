@@ -33,11 +33,6 @@ class module_console_systemTemplateGenerator extends Command
         return $this;
     }
 
-    public function requireSetup()
-    {
-        return false;
-    }
-
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         $tplDirs = array(

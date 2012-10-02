@@ -57,16 +57,9 @@ class module_console_taskState extends Command
         return $this;
     }
 
-    public function requireSetup()
-    {
-        return false;
-    }
-
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        try {
-            $this->checkSetup();
-        } catch (\RuntimeException $e) {
+        if (!$this->container['phraseanet.configuration']->isInstalled()) {
             return self::EXITCODE_SETUP_ERROR;
         }
 

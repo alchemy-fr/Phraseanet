@@ -36,51 +36,22 @@ class module_console_systemUpgrade extends Command
         return $this;
     }
 
-    public function requireSetup()
-    {
-        return false;
-    }
-
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         require_once dirname(__FILE__) . '/../../../../lib/bootstrap.php';
 
         $interactive = !$input->getOption('yes');
 
-        if (!$this->container['phraseanet.configuration']->isInstalled() && \setup::needUpgradeConfigurationFile()) {
-
-            if ($interactive) {
-                $output->writeln('This version of Phraseanet requires a config/config.yml, config/connexion.yml, config/service.yml');
-                $output->writeln('Would you like it to be created based on your settings ?');
-
-                $dialog = $this->getHelperSet()->get('dialog');
-                do {
-                    $continue = mb_strtolower($dialog->ask($output, '<question>' . _('Create automatically') . ' (Y/n)</question>', 'y'));
-                } while (!in_array($continue, array('y', 'n')));
-            } else {
-                $continue = 'y';
-            }
-
-            if ($continue == 'y') {
-                try {
-                    if (\setup::requireGVUpgrade()) {
-                        setup::upgradeGV($this->container['phraseanet.registry']);
-                    }
-
-                    $connexionInc = new \SplFileInfo(__DIR__ . '/../../../../config/connexion.inc');
-                    $configInc = new \SplFileInfo(__DIR__ . '/../../../../config/config.inc');
-
-                    $this->getService('phraseanet.configuration')->upgradeFromOldConf($configInc, $connexionInc);
-                } catch (\Exception $e) {
-                    throw new RuntimeException('Error while upgrading : ' . $e->getMessage());
-                }
-            } else {
-                throw new RuntimeException('Phraseanet is not set up');
+        while ($migrations = $this->container['phraseanet.configuration-tester']->getMigrations()) {
+            foreach ($migrations as $migration) {
+                echo get_class($migration) . "\n";
+                $migration->migrate();
+                echo get_class($migration) . " finished\n";
             }
         }
 
-        if ( ! $this->getService('phraseanet.configuration')->isInstalled()) {
-            throw new \RuntimeException('Phraseanet must be set-up (no connexion.inc / no config.inc)');
+        if (!$this->getService('phraseanet.configuration')->isInstalled()) {
+            throw new \RuntimeException('Phraseanet must be set-up');
         }
 
         $output->write('Phraseanet is going to be upgraded', true);

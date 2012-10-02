@@ -36,11 +36,6 @@ class module_console_checkExtension extends Command
         return $this;
     }
 
-    public function requireSetup()
-    {
-        return true;
-    }
-
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         if ( ! extension_loaded('phrasea2')) {

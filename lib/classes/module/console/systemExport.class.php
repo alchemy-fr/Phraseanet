@@ -71,11 +71,6 @@ class module_console_systemExport extends Command
         return $this;
     }
 
-    public function requireSetup()
-    {
-        return true;
-    }
-
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         $docPerDir = max(1, (int) $input->getOption('docperdir'));

@@ -1,0 +1,71 @@
+#!/usr/bin/env php
+<?php
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2010 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace KonsoleKommander;
+
+/**
+ *
+ * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
+ * @link        www.phraseanet.com
+ */
+use Alchemy\Phrasea\Core\Configuration;
+use Alchemy\Phrasea\Core\Version;
+use Alchemy\Phrasea\Command\UpgradeDBDatas;
+use Alchemy\Phrasea\Command\RescanTechnicalDatas;
+use Alchemy\Phrasea\Command\BuildMissingSubdefs;
+use Alchemy\Phrasea\Command\RecordAdd;
+use Alchemy\Phrasea\Command\CreateCollection;
+use Alchemy\Phrasea\CLI;
+
+require_once dirname(__FILE__) . '/../lib/bootstrap.php';
+
+try {
+    $app = new CLI("
+  _____  _    _ _____            _____ ______          _   _ ______ _______
+ |  __ \| |  | |  __ \    /\    / ____|  ____|   /\   | \ | |  ____|__   __|
+ | |__) | |__| | |__) |  /  \  | (___ | |__     /  \  |  \| | |__     | |
+ |  ___/|  __  |  _  /  / /\ \  \___ \|  __|   / /\ \ | . ` |  __|    | |
+ | |    | |  | | | \ \ / ____ \ ____) | |____ / ____ \| |\  | |____   | |
+ |_|    |_|  |_|_|  \_|_/    \_\_____/|______/_/    \_\_| \_|______|  |_|
+                          __
+               ________  / /___  ______
+              / ___/ _ \/ __/ / / / __ \
+             (__  )  __/ /_/ /_/ / /_/ /
+            /____/\___/\__/\__,_/ .___/
+                              /_/
+
+ Phraseanet Copyright (C) 2004 Alchemy
+ This program comes with ABSOLUTELY NO WARRANTY.
+ This is free software, and you are welcome to redistribute it
+ under certain conditions; type `about:license' for details.\n\n"
+            . ' SETUP', Version::getName() . ' ' . Version::getNumber());
+
+    $tester = new \Alchemy\Phrasea\Setup\ConfigurationTester($app);
+
+
+    $app->command(new \module_console_aboutAuthors('about:authors'));
+    $app->command(new \module_console_aboutLicense('about:license'));
+
+    if ($tester->isInstalled()) {
+        $app->command(new \module_console_systemUpgrade('system:upgrade'));
+        $app->command(new UpgradeDBDatas('system:upgrade-datas'));
+    }
+
+    $app->command(new \module_console_systemConfigCheck('check:system'));
+    $app->command(new \Alchemy\Phrasea\Command\Setup\Install('system:install'));
+
+    $result_code = is_int($app->run()) ? : 1;
+} catch (\Exception $e) {
+    $result_code = 1;
+    echo sprintf("\nAn error occured :\n\n\t\033[0;31m%s\033[0;37m\n\n", $e->getMessage());
+}
+
+exit($result_code);

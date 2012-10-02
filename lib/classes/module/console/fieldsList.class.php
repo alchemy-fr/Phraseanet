@@ -31,11 +31,6 @@ class module_console_fieldsList extends Command
         return $this;
     }
 
-    public function requireSetup()
-    {
-        return true;
-    }
-
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         foreach ($this->getService('phraseanet.appbox')->get_databoxes() as $databox) {
