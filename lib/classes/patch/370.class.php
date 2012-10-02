@@ -78,7 +78,7 @@ class patch_370 implements patchInterface
 
         foreach ($XPath->query('/record/subdefs/subdefgroup/subdef/acodc') as $acodec) {
             if ($acodec->nodeValue == 'faac') {
-                $acodec->nodeValue = 'libfaac';
+                $acodec->nodeValue = 'libvo_aacenc';
             }
         }
 

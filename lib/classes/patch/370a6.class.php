@@ -63,7 +63,7 @@ class patch_370a6 implements patchInterface
         $xpath = new DOMXpath($DOM);
 
         foreach ($xpath->query('/record/subdefs/subdefgroup[@name="video"]/subdef[@name="preview"]/acodec') as $node) {
-                $node->nodeValue = 'libfaac';
+                $node->nodeValue = 'libvo_aacenc';
         }
 
         foreach ($xpath->query('/record/subdefs/subdefgroup[@name="video"]/subdef[@name="preview"]/vcodec') as $node) {
@@ -148,7 +148,7 @@ class patch_370a6 implements patchInterface
         $newSubdefOptionsOgg['vcodec'] = 'libtheora';
         $newSubdefOptionsOgg['acodec'] = 'libvorbis';
 
-        $newSubdefOptionsX264['acodec'] = 'libfaac';
+        $newSubdefOptionsX264['acodec'] = 'libvo_aacenc';
         $newSubdefOptionsX264['vcodec'] = 'libx264';
 
         $root->set_subdef($groupname, $baseSubdef->get_name() . '_mobile_webM', $baseSubdef->get_class(), false, $newSubdefOptionsWebM);
