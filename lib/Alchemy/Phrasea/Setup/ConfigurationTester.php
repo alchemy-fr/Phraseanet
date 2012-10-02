@@ -62,11 +62,11 @@ class ConfigurationTester
      */
     public function isUpgradable()
     {
-        $upgradable = version_compare($this->app['phraseanet.appbox']->get_version(), $this->app['phraseanet.version'], "<");
+        $upgradable = version_compare($this->app['phraseanet.appbox']->get_version(), $this->app['phraseanet.version']->getNumber(), "<");
 
         if (!$upgradable) {
             foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
-                if (version_compare($databox->get_version(), $this->app['phraseanet.version'], "<")) {
+                if (version_compare($databox->get_version(), $this->app['phraseanet.version']->getNumber(), "<")) {
                     $upgradable = true;
                     break;
                 }
