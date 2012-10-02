@@ -83,7 +83,7 @@
         {% import 'common/thumbnail.html' as thumbnail %}
         {% set subdef = record.get_subdef(subdef_name) %}
 
-        {{ thumbnail.format(subdef, subdef.get_width(), subdef.get_height(), '', session, true) }}
+        {{ thumbnail.format(subdef, subdef.get_width(), subdef.get_height(), '', session, true, false) }}
       </div>
             <div class="caption">
         {% include 'common/caption.html' %}

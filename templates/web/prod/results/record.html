@@ -59,9 +59,9 @@
                 {% if rollover_gif %}
                 {% set extraclass = 'rollover-gif-out' %}
                 {% endif %}
-                {{thumbnail.format(record.get_thumbnail(), th_size, th_size, extraclass, session, true)}}
+                {{thumbnail.format(record.get_thumbnail(), th_size, th_size, extraclass, session, true, true)}}
                 {% if rollover_gif %}
-                {{thumbnail.format(rollover_gif, th_size, th_size, 'rollover-gif-hover', session, true )}}
+                {{thumbnail.format(rollover_gif, th_size, th_size, 'rollover-gif-hover', session, true, true )}}
                 {% endif %}
                 </div>
             </div>

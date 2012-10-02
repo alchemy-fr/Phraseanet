@@ -5298,6 +5298,13 @@
             </fields>
           </index>
           <index>
+            <name>sit_session</name>
+            <type>INDEX</type>
+            <fields>
+              <field>sit_session</field>
+            </fields>
+          </index>
+          <index>
             <name>user</name>
             <type>INDEX</type>
             <fields>

@@ -478,6 +478,10 @@ function initAnswerForm(){
 
 
                 $('#answers').empty().append(datas.results).removeClass('loading');
+
+                $("#answers img.lazyload").lazyload({
+                    container: $('#answers')
+                });
                 $('#tool_results').empty().append(datas.infos);
                 $('#tool_navigate').empty().append(datas.navigation);
 
