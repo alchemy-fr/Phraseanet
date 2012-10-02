@@ -47,14 +47,6 @@ class RescanTechnicalDatas extends Command
     /**
      * {@inheritdoc}
      */
-    public function requireSetup()
-    {
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         $quantity = $this->computeQuantity();

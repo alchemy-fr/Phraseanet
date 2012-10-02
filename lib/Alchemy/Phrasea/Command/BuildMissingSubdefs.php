@@ -39,14 +39,6 @@ class BuildMissingSubdefs extends Command
     /**
      * {@inheritdoc}
      */
-    public function requireSetup()
-    {
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         if ($input->getOption('verbose')) {

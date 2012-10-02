@@ -49,11 +49,6 @@ class Install extends Command
         return $this;
     }
 
-    public function requireSetup()
-    {
-        return false;
-    }
-
     /**
      * {@inheritdoc}
      */

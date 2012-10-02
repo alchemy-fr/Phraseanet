@@ -47,14 +47,6 @@ class RecordAdd extends Command
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function requireSetup()
-    {
-        return true;
-    }
-
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         try {

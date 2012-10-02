@@ -42,14 +42,6 @@ class CreateCollection extends Command
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function requireSetup()
-    {
-        return true;
-    }
-
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         $databox = $this->container['phraseanet.appbox']
