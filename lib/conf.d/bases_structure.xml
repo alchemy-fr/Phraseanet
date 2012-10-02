@@ -2657,7 +2657,7 @@
           <field>
             <name>pwd</name>
             <type>char(64)</type>
-            <null></null>
+            <null>YES</null>
 
             <extra></extra>
 
