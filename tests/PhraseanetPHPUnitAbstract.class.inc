@@ -63,7 +63,8 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             $application = new Application('test');
 
             if (!$application['phraseanet.configuration-tester']->isInstalled()) {
-                exit("\033[0;31mPhraseanet is not set up\033[0;37m\r\n");
+                echo "\033[0;31mPhraseanet is not set up\033[0;37m\n";
+                exit(1);
             }
 
             self::createSetOfUserTests($application);
