@@ -61,7 +61,7 @@
                             {% endif %}
                         {% endif %}
                     </div>
-                    {{ thumbnail.format(element.get_thumbnail,80, 80, '', session, true) }}
+                    {{ thumbnail.format(element.get_thumbnail,80, 80, '', session, true, false) }}
                     <input type="hidden" name="order_element_id" value="{{order_element_id}}"/>
                 </div>
             {% endfor %}

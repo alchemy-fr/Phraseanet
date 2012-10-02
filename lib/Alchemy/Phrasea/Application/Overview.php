@@ -81,57 +81,59 @@ return call_user_func(
                         throw new \Exception_Session_NotAuthenticated();
                     }
 
-                    $all_access = false;
-                    $subdefStruct = $databox->get_subdef_structure();
+                    $stamp = $watermark = $all_access = false;
 
-                    if ($subdefStruct->getSubdefGroup($record->get_type())) {
-                        foreach ($subdefStruct->getSubdefGroup($record->get_type()) as $subdefObj) {
-                            if ($subdefObj->get_name() == $subdef) {
-                                if ($subdefObj->get_class() == 'thumbnail') {
-                                    $all_access = true;
+                    if ($subdef != 'thumbnail') {
+                        $subdefStruct = $databox->get_subdef_structure();
+
+                        if ($subdefStruct->getSubdefGroup($record->get_type())) {
+                            foreach ($subdefStruct->getSubdefGroup($record->get_type()) as $subdefObj) {
+                                if ($subdefObj->get_name() == $subdef) {
+                                    if ($subdefObj->get_class() == 'thumbnail') {
+                                        $all_access = true;
+                                    }
+                                    break;
                                 }
-                                break;
                             }
                         }
-                    }
 
-                    $user = \User_Adapter::getInstance($session->get_usr_id(), \appbox::get_instance($app['Core']));
+                        $user = \User_Adapter::getInstance($session->get_usr_id(), \appbox::get_instance($app['Core']));
 
-                    if (!$user->ACL()->has_access_to_subdef($record, $subdef)) {
-                        throw new \Exception_UnauthorizedAction();
-                    }
-
-                    $stamp = false;
-                    $watermark = !$user->ACL()->has_right_on_base($record->get_base_id(), 'nowatermark');
-
-                    if ($watermark && !$all_access) {
-                        $subdef_class = $databox
-                            ->get_subdef_structure()
-                            ->get_subdef($record->get_type(), $subdef)
-                            ->get_class();
-
-                        if ($subdef_class == \databox_subdef::CLASS_PREVIEW && $user->ACL()->has_preview_grant($record)) {
-                            $watermark = false;
-                        } elseif ($subdef_class == \databox_subdef::CLASS_DOCUMENT && $user->ACL()->has_hd_grant($record)) {
-                            $watermark = false;
+                        if (!$user->ACL()->has_access_to_subdef($record, $subdef)) {
+                            throw new \Exception_UnauthorizedAction();
                         }
-                    }
 
-                    if ($watermark && !$all_access) {
+                        $watermark = !$user->ACL()->has_right_on_base($record->get_base_id(), 'nowatermark');
 
-                        $em = $app['Core']->getEntityManager();
+                        if ($watermark && !$all_access) {
+                            $subdef_class = $databox
+                                ->get_subdef_structure()
+                                ->get_subdef($record->get_type(), $subdef)
+                                ->get_class();
 
-                        $repository = $em->getRepository('\Entities\BasketElement');
+                            if ($subdef_class == \databox_subdef::CLASS_PREVIEW && $user->ACL()->has_preview_grant($record)) {
+                                $watermark = false;
+                            } elseif ($subdef_class == \databox_subdef::CLASS_DOCUMENT && $user->ACL()->has_hd_grant($record)) {
+                                $watermark = false;
+                            }
+                        }
 
-                        /* @var $repository \Repositories\BasketElementRepository */
+                        if ($watermark && !$all_access) {
 
-                        $ValidationByRecord = $repository->findReceivedValidationElementsByRecord($record, $user);
-                        $ReceptionByRecord = $repository->findReceivedElementsByRecord($record, $user);
+                            $em = $app['Core']->getEntityManager();
 
-                        if ($ValidationByRecord && count($ValidationByRecord) > 0) {
-                            $watermark = false;
-                        } elseif ($ReceptionByRecord && count($ReceptionByRecord) > 0) {
-                            $watermark = false;
+                            $repository = $em->getRepository('\Entities\BasketElement');
+
+                            /* @var $repository \Repositories\BasketElementRepository */
+
+                            $ValidationByRecord = $repository->findReceivedValidationElementsByRecord($record, $user);
+                            $ReceptionByRecord = $repository->findReceivedElementsByRecord($record, $user);
+
+                            if ($ValidationByRecord && count($ValidationByRecord) > 0) {
+                                $watermark = false;
+                            } elseif ($ReceptionByRecord && count($ReceptionByRecord) > 0) {
+                                $watermark = false;
+                            }
                         }
                     }
 

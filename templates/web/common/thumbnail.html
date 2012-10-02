@@ -1,4 +1,4 @@
-{% macro format(thumbnail, b_w, b_h, extraclass, session, wrap)%}
+{% macro format(thumbnail, b_w, b_h, extraclass, session, wrap, lazyload)%}
   {% set record_type = thumbnail.get_type() %}
 
 
@@ -92,9 +92,9 @@
             {menu: "false",flashvars: "playerID=2&autostart=yes&noinfo=yes&animation=no&remaining=yes&soundFile={{url}}", movie: "/include/jslibs/audio-player/player.swf",	allowFullScreen :"true",wmode: "transparent"}, false);</script>
         {% else %}
           {% set url = url ~ '?tag=' ~ thumbnail.getEtag() %}
-          <img class="record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
+          <img class="lazyload record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
                style="width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;"
-               src="{{url}}" ondragstart="return false;">
+               src="{% if lazyload %}/skins/grey.gif{% else %}{{ url }}{% endif %}" data-original="{{ url }}" ondragstart="return false;">
           <input type="hidden" name="width" value="{{thumbnail.get_width()}}"/>
           <input type="hidden" name="height" value="{{thumbnail.get_height()}}"/>
         {% endif %}

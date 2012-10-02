@@ -50,7 +50,7 @@
                             {% set width = bask_prev.get_width() %}
                             {% set height = bask_prev.get_height() %}
 
-                            {{ thumbnail.format(bask_prev, width,height, '', session, false) }}
+                            {{ thumbnail.format(bask_prev, width,height, '', session, false, false) }}
 
                         {% endif %}
                         {% include 'lightbox/selector_box.twig' %}

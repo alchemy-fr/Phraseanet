@@ -121,7 +121,7 @@
                                         <div style="display:none;" class="undisposable">
                                             <div>{% trans 'Les documents ne peuvent pas etre exportes' %}</div>
                                             {% for datas in values.refused%}
-                                                {{ thumbnail.format(datas, 80, 80,'', session, true) }}
+                                                {{ thumbnail.format(datas, 80, 80,'', session, true, false) }}
                                             {% endfor %}
                                         </div>
                                     {% endif %}
@@ -188,7 +188,7 @@
                                             <div style="display:none;" class="undisposable">
                                                 <div><i>{% trans 'La sous resolution n\'est pas disponible pour les documents suivants' %}</i></div>
                                                 {% for datas in values.refused%}
-                                                    {{ thumbnail.format(datas, 80, 80,'', session, true) }}
+                                                    {{ thumbnail.format(datas, 80, 80,'', session, true, false) }}
                                                 {% endfor %}
                                             </div>
                                         {% endif %}
@@ -349,7 +349,7 @@
                                             <div style="display:none;" class="undisposable">
                                                 <div><i>{% trans 'La sous resolution n\'est pas disponible pour les documents suivants' %}</i></div>
                                                 {% for datas in values.refused%}
-                                                    {{ thumbnail.format(datas, 80, 80,'', session, true) }}
+                                                    {{ thumbnail.format(datas, 80, 80,'', session, true, false) }}
                                                 {% endfor %}
                                             </div>
                                         {% endif %}
@@ -409,7 +409,7 @@
                                             <div style="display:none;" class="undisposable">
                                                 <div><i>{% trans 'La sous resolution n\'est pas disponible pour les documents suivants' %}</i></div>
                                                 {% for datas in values.refused%}
-                                                    {{ thumbnail.format(datas, 80, 80,'', session, true) }}
+                                                    {{ thumbnail.format(datas, 80, 80,'', session, true, false) }}
                                                 {% endfor %}
                                             </div>
                                         {% endif %}
