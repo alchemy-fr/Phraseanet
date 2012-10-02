@@ -14,12 +14,15 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $task = \task_period_archive::create(self::$DI['app'], 'task_period_archive');
+
+        $app = new Application('test');
+
+        $task = \task_period_archive::create($app, 'task_period_archive');
 
         $logger = new \Monolog\Logger('test');
         $logger->pushHandler(new \Monolog\Handler\NullHandler());
 
-        self::$object = new archiveTester($task->getID(), self::$DI['app'], $logger);
+        self::$object = new archiveTester($task->getID(), $app, $logger);
     }
 
     public static function tearDownAfterClass()
@@ -449,11 +452,21 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
 
         foreach ($meta_struct as $databox_field) {
             $tagname = $databox_field->get_tag()->getTagname();
+
             if ( ! $tagname) {
                 continue;
             }
 
-            if ($databox_field->is_multi()) {
+            if($databox_field->get_type() == 'date') {
+
+                $date = new \DateTime();
+                $bag->set($tagname, new PHPExiftool\Driver\Metadata\Metadata(
+                        $databox_field->get_tag(),
+                        new \PHPExiftool\Driver\Value\Mono($date->format('Y/m/d H:i:s'))
+                ));
+                $toFetch[$tagname] = array($date->format('Y/m/d H:i:s'));
+
+            } elseif ($databox_field->is_multi()) {
                 if ($first_multi) {
                     $bag->set($tagname, new PHPExiftool\Driver\Metadata\Metadata(
                             $databox_field->get_tag(),
