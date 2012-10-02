@@ -26,7 +26,7 @@ foreach ($lngs as $lng => $locales) {
 
 $extractDateFields = function(Application $app) {
         $date_sort_fields = array('' => '');
-        if ($app['phraseanet.configuration']->isInstalled()) {
+        if ($app['phraseanet.configuration-tester']->isInstalled()) {
             $ProdHelper = new Prod($app, Request::createFromGlobals());
             $datas = $ProdHelper->get_search_datas();
             foreach ($datas['dates'] as $date) {

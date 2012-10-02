@@ -50,7 +50,7 @@ class module_console_systemUpgrade extends Command
             }
         }
 
-        if (!$this->getService('phraseanet.configuration')->isInstalled()) {
+        if (!$this->getService('phraseanet.configuration-tester')->isInstalled()) {
             throw new \RuntimeException('Phraseanet must be set-up');
         }
 

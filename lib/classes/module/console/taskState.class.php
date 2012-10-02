@@ -59,7 +59,7 @@ class module_console_taskState extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        if (!$this->container['phraseanet.configuration']->isInstalled()) {
+        if (!$this->container['phraseanet.configuration-tester']->isInstalled()) {
             return self::EXITCODE_SETUP_ERROR;
         }
 

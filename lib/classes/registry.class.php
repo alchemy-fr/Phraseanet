@@ -49,7 +49,7 @@ class registry implements registryInterface
         $this->cache = new ArrayCache();
 
         $this->cache->save('GV_RootPath', dirname(dirname(__DIR__)) . '/');
-        if ($app['phraseanet.configuration']->isInstalled()) {
+        if ($app['phraseanet.configuration-tester']->isInstalled()) {
             $this->cache->save('GV_ServerName', $app['phraseanet.configuration']->getPhraseanet()->get('servername'));
             $this->cache->save('GV_debug', $app['phraseanet.configuration']->isDebug());
             $this->cache->save('GV_maintenance', $app['phraseanet.configuration']->isMaintained());

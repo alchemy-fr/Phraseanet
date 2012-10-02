@@ -48,7 +48,7 @@ class module_console_systemClearCache extends Command
 
         $filesystem->remove($finder);
 
-        if ($this->container['phraseanet.configuration']->isInstalled()) {
+        if ($this->container['phraseanet.configuration-tester']->isInstalled()) {
             $this->getService('phraseanet.cache-service')->flushAll();
         }
 

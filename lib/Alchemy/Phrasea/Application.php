@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Core\Provider\BrowserServiceProvider;
 use Alchemy\Phrasea\Core\Provider\BorderManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\CacheServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
+use Alchemy\Phrasea\Core\Provider\ConfigurationTesterServiceProvider;
 use Alchemy\Phrasea\Core\Provider\GeonamesServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TaskManagerServiceProvider;
@@ -109,6 +110,7 @@ class Application extends SilexApplication
         $this->register(new BorderManagerServiceProvider());
         $this->register(new BrowserServiceProvider());
         $this->register(new ConfigurationServiceProvider());
+        $this->register(new ConfigurationTesterServiceProvider);
         $this->register(new CacheServiceProvider());
         $this->register(new ImagineServiceProvider());
         $this->register(new FFMpegServiceProvider());

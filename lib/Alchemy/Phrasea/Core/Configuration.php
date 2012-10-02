@@ -178,16 +178,6 @@ class Configuration
         return new ParameterBag($this->configuration->get('phraseanet'));
     }
 
-    /**
-     * Tell if the application is installed
-     *
-     * @return boolean
-     */
-    public function isInstalled()
-    {
-        return $this->specifications->isSetup();
-    }
-
     public function initialize()
     {
         $this->specifications->initialize();

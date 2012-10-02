@@ -43,7 +43,7 @@ class module_console_systemConfigCheck extends Command
 
         $ok = true;
 
-        if ($this->container['phraseanet.configuration']->isInstalled()) {
+        if ($this->container['phraseanet.configuration-tester']->isInstalled()) {
             $registry = $this->container['phraseanet.registry'];
 
             $output->writeln(_('*** CHECK BINARY CONFIGURATION ***'));

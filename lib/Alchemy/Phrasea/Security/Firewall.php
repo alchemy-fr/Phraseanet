@@ -16,7 +16,7 @@ class Firewall
 
     public function requireSetUp()
     {
-        if (!\setup::is_installed()) {
+        if (!$this->app['phraseanet.configuration-tester']->isInstalled()) {
             return $this->app->redirect("/setup/");
         }
 

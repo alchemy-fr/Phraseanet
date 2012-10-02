@@ -72,80 +72,6 @@ class setup
         , 'magic_quotes_gpc'     => 'off'  //INI_PER_DIR -- just for check
     );
 
-    public static function is_installed()
-    {
-        $appConf = new \Alchemy\Phrasea\Core\Configuration\ApplicationSpecification();
-
-        return $appConf->isSetup();
-    }
-
-    public static function needUpgradeConfigurationFile()
-    {
-        return (is_file(__DIR__ . "/../../config/connexion.inc")
-            && is_file(__DIR__ . "/../../config/config.inc") ||
-            self::requireGVUpgrade());
-    }
-
-    public static function requireGVUpgrade()
-    {
-        return is_file(__DIR__ . "/../../config/connexion.inc")
-            && is_file(__DIR__ . "/../../config/_GV.php")
-            && !is_file(__DIR__ . "/../../config/config.inc");
-    }
-
-    public static function upgradeGV(registryInterface $registry)
-    {
-        $GV = array();
-        if (is_file(__DIR__ . '/../../config/_GV.php')) {
-            require __DIR__ . '/../../config/_GV.php';
-        } else {
-            return;
-        }
-
-        require __DIR__ . '/../../lib/conf.d/_GV_template.inc';
-
-        define('GV_STATIC_URL', '');
-        define('GV_sphinx', false);
-        define('GV_sphinx_host', '');
-        define('GV_sphinx_port', '');
-        define('GV_sphinx_rt_host', '');
-        define('GV_sphinx_rt_port', '');
-
-        foreach ($GV as $section => $datas_section) {
-            foreach ($datas_section['vars'] as $datas) {
-
-                $registry->un_set($datas['name']);
-                eval('$test = defined("' . $datas["name"] . '");');
-                if (!$test) {
-                    continue;
-                }
-                eval('$val = ' . $datas["name"] . ';');
-
-                $val = $val === true ? '1' : $val;
-                $val = $val === false ? '0' : $val;
-
-                switch ($datas['type']) {
-                    case registry::TYPE_ENUM_MULTI:
-                    case registry::TYPE_INTEGER:
-                    case registry::TYPE_BOOLEAN:
-                    case registry::TYPE_STRING:
-                    case registry::TYPE_ARRAY:
-                        $type = $datas['type'];
-                        break;
-                    default:
-                        $type = registry::TYPE_STRING;
-                        break;
-                }
-                $registry->set($datas['name'], $val, $type);
-            }
-        }
-        $registry->un_set('registry_loaded');
-
-        rename(__DIR__ . '/../../config/_GV.php', __DIR__ . '/../../config/_GV.php.old');
-
-        return;
-    }
-
     public static function create_global_values(Application $app, $datas = array())
     {
         require(__DIR__ . "/../../lib/conf.d/_GV_template.inc");
@@ -613,46 +539,5 @@ class setup
         }
 
         return $current;
-    }
-
-    public static function rollback(connection_pdo $conn, connection_pdo $connbas = null)
-    {
-        $structure = simplexml_load_file(__DIR__ . "/../../lib/conf.d/bases_structure.xml");
-
-        if (!$structure) {
-            throw new Exception('Unable to load schema');
-        }
-
-        $appbox = $structure->appbox;
-        $databox = $structure->databox;
-
-        foreach ($appbox->tables->table as $table) {
-            try {
-                $sql = 'DROP TABLE `' . $table['name'] . '`';
-                $stmt = $conn->prepare($sql);
-                $stmt->execute();
-                $stmt->closeCursor();
-            } catch (Exception $e) {
-
-            }
-        }
-        if ($connbas) {
-            foreach ($databox->tables->table as $table) {
-                try {
-                    $sql = 'DROP TABLE `' . $table['name'] . '`';
-                    $stmt = $connbas->prepare($sql);
-                    $stmt->execute();
-                    $stmt->closeCursor();
-                } catch (Exception $e) {
-
-                }
-            }
-        }
-
-        $appConf = new \Alchemy\Phrasea\Core\Configuration\ApplicationSpecification();
-
-        $appConf->delete();
-
-        return;
     }
 }
