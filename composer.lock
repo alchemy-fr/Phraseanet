@@ -426,7 +426,6 @@
                 "knplabs/knp-snappy": "dev-master",
                 "imagine/imagine": "*"
             },
-            "time": "1338686843",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -451,7 +450,8 @@
                 "snappy",
                 "pdf",
                 "imagine"
-            ]
+            ],
+            "time": "1338686843"
         },
         {
             "name": "imagine/Imagine",
@@ -459,12 +459,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/avalanche123/Imagine",
-                "reference": "1b680f289cd16159e7ba8792338b7d232f16217b"
+                "reference": "1cb89a88d68d8bc9592ddc57c1214510d349912f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/avalanche123/Imagine/zipball/1b680f289cd16159e7ba8792338b7d232f16217b",
-                "reference": "1b680f289cd16159e7ba8792338b7d232f16217b",
+                "url": "https://github.com/avalanche123/Imagine/zipball/1cb89a88d68d8bc9592ddc57c1214510d349912f",
+                "reference": "1cb89a88d68d8bc9592ddc57c1214510d349912f",
                 "shasum": ""
             },
             "require": {
@@ -473,7 +473,7 @@
             "require-dev": {
                 "sami/sami": "dev-master"
             },
-            "time": "1348524613",
+            "time": "1348858156",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -506,12 +506,12 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/KnpLabs/snappy.git",
-                "reference": "60942da93ad3c42c827bb749d3726c2050398cb6"
+                "reference": "17da0d095913d089db5546ce884e844a144b3e1f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/KnpLabs/snappy/zipball/60942da93ad3c42c827bb749d3726c2050398cb6",
-                "reference": "60942da93ad3c42c827bb749d3726c2050398cb6",
+                "url": "https://github.com/KnpLabs/snappy/zipball/17da0d095913d089db5546ce884e844a144b3e1f",
+                "reference": "17da0d095913d089db5546ce884e844a144b3e1f",
                 "shasum": ""
             },
             "require": {
@@ -520,7 +520,7 @@
             "suggest": {
                 "symfony/process": "Process Component of Symfony2."
             },
-            "time": "1347526653",
+            "time": "1348990625",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -557,12 +557,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst",
-                "reference": "35a8090f2a646ff3917d087d8f67090262118610"
+                "reference": "9bdc783d0c4b72bb35ad8c9b1f9b016558b21ddc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/alchemy-fr/Media-Alchemyst/zipball/35a8090f2a646ff3917d087d8f67090262118610",
-                "reference": "35a8090f2a646ff3917d087d8f67090262118610",
+                "url": "https://github.com/alchemy-fr/Media-Alchemyst/zipball/9bdc783d0c4b72bb35ad8c9b1f9b016558b21ddc",
+                "reference": "9bdc783d0c4b72bb35ad8c9b1f9b016558b21ddc",
                 "shasum": ""
             },
             "require": {
@@ -583,7 +583,7 @@
                 "grom/silex-service-provider": "dev-master",
                 "silex/silex": "dev-master"
             },
-            "time": "1346933661",
+            "time": "1349188691",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -731,7 +731,6 @@
             "require-dev": {
                 "fabpot/php-cs-fixer": "master"
             },
-            "time": "1348756812",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -748,7 +747,8 @@
                     "email": "imprec@gmail.com",
                     "homepage": "http://www.lickmychip.com/"
                 }
-            ]
+            ],
+            "time": "1348756812"
         },
         {
             "name": "neutron/silex-filesystem-provider",
@@ -772,7 +772,6 @@
             "require-dev": {
                 "fabpot/php-cs-fixer": "master"
             },
-            "time": "1346932827",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -789,7 +788,8 @@
                     "email": "imprec@gmail.com",
                     "homepage": "http://www.lickmychip.com/"
                 }
-            ]
+            ],
+            "time": "1346932827"
         },
         {
             "name": "php-ffmpeg/php-ffmpeg",
@@ -1140,12 +1140,12 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/fabpot/Silex.git",
-                "reference": "810fcb19c74317289d06b531641cf5dd33f7bf6f"
+                "reference": "fc82b4255ef081dd7d464c5320ca93a902f9190f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/fabpot/Silex/zipball/810fcb19c74317289d06b531641cf5dd33f7bf6f",
-                "reference": "810fcb19c74317289d06b531641cf5dd33f7bf6f",
+                "url": "https://github.com/fabpot/Silex/zipball/fc82b4255ef081dd7d464c5320ca93a902f9190f",
+                "reference": "fc82b4255ef081dd7d464c5320ca93a902f9190f",
                 "shasum": ""
             },
             "require": {
@@ -1179,7 +1179,7 @@
                 "symfony/css-selector": "2.1.*",
                 "symfony/dom-crawler": "2.1.*"
             },
-            "time": "1348836914",
+            "time": "1349013590",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1321,12 +1321,12 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/symfony/symfony.git",
-                "reference": "0d92a245517c2cfbc0e39a0e2c8d220e928eaa04"
+                "reference": "49ca64824567b8018a5bb614f35e6da8622ccd1f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/symfony/symfony/zipball/0d92a245517c2cfbc0e39a0e2c8d220e928eaa04",
-                "reference": "0d92a245517c2cfbc0e39a0e2c8d220e928eaa04",
+                "url": "https://github.com/symfony/symfony/zipball/49ca64824567b8018a5bb614f35e6da8622ccd1f",
+                "reference": "49ca64824567b8018a5bb614f35e6da8622ccd1f",
                 "shasum": ""
             },
             "require": {
@@ -1375,7 +1375,7 @@
                 "propel/propel1": "dev-master",
                 "monolog/monolog": "dev-master"
             },
-            "time": "1348842916",
+            "time": "1349173376",
             "type": "library",
             "extra": {
                 "branch-alias": {
