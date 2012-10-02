@@ -2221,6 +2221,9 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     protected function evaluateRecordsCaptionResponse($content)
     {
         $this->assertArrayHasKey('caption_metadatas', $content['response']);
+
+        $this->assertGreaterThan(0, count($content['response']['caption_metadatas']));
+
         foreach ($content['response']['caption_metadatas'] as $field) {
             $this->assertTrue(is_array($field), 'Un bloc field est un objet');
             $this->assertArrayHasKey('meta_structure_id', $field);
