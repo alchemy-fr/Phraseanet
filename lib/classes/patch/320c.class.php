@@ -96,8 +96,8 @@ class patch_320c implements patchInterface
         $xp_struct = $databox->get_xpath_structure();
 
         foreach ($sxe->description->children() as $fname => $field) {
-            $src = trim(isset($field['src']) ? $field['src'] : '');
 
+            $src = trim(isset($field['src']) ? $field['src'] : '');
             if (array_key_exists($src, $phrasea_maps)) {
                 $src = $phrasea_maps[$src];
             }
@@ -111,9 +111,7 @@ class patch_320c implements patchInterface
         }
 
         $databox->saveStructure($dom_struct);
-
-        $ext_databox = new extended_databox($databox->get_sbas_id());
-        $ext_databox->migrate_fields();
+        $databox->feed_meta_fields();
 
         $databox->delete_data_from_cache(databox::CACHE_STRUCTURE);
         $databox->delete_data_from_cache(databox::CACHE_META_STRUCT);
@@ -127,21 +125,5 @@ class patch_320c implements patchInterface
         unset($stmt);
 
         return true;
-    }
-}
-
-class extended_databox extends databox
-{
-
-    public function __construct($sbas_id)
-    {
-        parent::__construct($sbas_id);
-    }
-
-    public function migrate_fields()
-    {
-        $this->feed_meta_fields();
-
-        return $this;
     }
 }

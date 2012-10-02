@@ -144,7 +144,7 @@ class API_V1_adapter extends API_V1_Abstract
             'pid'            => $task->getPID(),
             'title'          => $task->getTitle(),
             'last_exec_time' => $task->getLastExecTime() ? $task->getLastExecTime()->format(DATE_ATOM) : null,
-            'auto_start'     => ! ! $task->isActive(),
+            'auto_start'     => !!$task->isActive(),
             'runner'         => $task->getRunner(),
             'crash_counter'  => $task->getCrashCounter()
         );
@@ -186,7 +186,7 @@ class API_V1_adapter extends API_V1_Abstract
         $taskManager = new \task_manager($app);
 
         $task = $taskManager->getTask($taskId);
-        if ( ! in_array($task->getState(), array(\task_abstract::STATE_TOSTART, \task_abstract::STATE_STARTED))) {
+        if (!in_array($task->getState(), array(\task_abstract::STATE_TOSTART, \task_abstract::STATE_STARTED))) {
             $task->setState(\task_abstract::STATE_TOSTART);
         }
 
@@ -209,7 +209,7 @@ class API_V1_adapter extends API_V1_Abstract
         $taskManager = new \task_manager($app);
 
         $task = $taskManager->getTask($taskId);
-        if ( ! in_array($task->getState(), array(\task_abstract::STATE_TOSTOP, \task_abstract::STATE_STOPPED))) {
+        if (!in_array($task->getState(), array(\task_abstract::STATE_TOSTOP, \task_abstract::STATE_STOPPED))) {
             $task->setState(\task_abstract::STATE_TOSTOP);
         }
         $result->set_datas(array('task' => $this->list_task($task)));
@@ -247,7 +247,7 @@ class API_V1_adapter extends API_V1_Abstract
         }
 
         if ($autostart) {
-            $task->setActive( ! ! $autostart);
+            $task->setActive(!!$autostart);
         }
 
         $result->set_datas(array('task' => $this->list_task($task)));
@@ -615,7 +615,7 @@ class API_V1_adapter extends API_V1_Abstract
         $record = $this->app['phraseanet.appbox']->get_databox($databox_id)->get_record($record_id);
         $fields = $record->get_caption()->get_fields();
 
-        $ret = array();
+        $ret = array('caption_metadatas' => array());
 
         foreach ($fields as $field) {
             $ret['caption_metadatas'][] = array(
@@ -636,24 +636,24 @@ class API_V1_adapter extends API_V1_Abstract
             throw new API_V1_exception_badrequest('Missing file parameter');
         }
 
-        if ( ! $request->files->get('file') instanceof Symfony\Component\HttpFoundation\File\UploadedFile) {
+        if (!$request->files->get('file') instanceof Symfony\Component\HttpFoundation\File\UploadedFile) {
             throw new API_V1_exception_badrequest('You can upload one file at time');
         }
 
         $file = $request->files->get('file');
         /* @var $file Symfony\Component\HttpFoundation\File\UploadedFile */
 
-        if ( ! $file->isValid()) {
+        if (!$file->isValid()) {
             throw new API_V1_exception_badrequest('Datas corrupted, please try again');
         }
 
-        if ( ! $request->get('base_id')) {
+        if (!$request->get('base_id')) {
             throw new API_V1_exception_badrequest('Missing base_id parameter');
         }
 
         $collection = \collection::get_from_base_id($this->app, $request->get('base_id'));
 
-        if ( ! $app['phraseanet.user']->ACL()->has_right_on_base($request->get('base_id'), 'canaddrecord')) {
+        if (!$app['phraseanet.user']->ACL()->has_right_on_base($request->get('base_id'), 'canaddrecord')) {
             throw new API_V1_exception_forbidden(sprintf('You do not have access to collection %s', $collection->get_name()));
         }
 
@@ -674,7 +674,7 @@ class API_V1_adapter extends API_V1_Abstract
         $reasons = $output = null;
 
         $callback = function($element, $visa, $code) use (&$reasons, &$output) {
-                if ( ! $visa->isValid()) {
+                if (!$visa->isValid()) {
                     $reasons = array();
 
                     foreach ($visa->getResponses() as $response) {
@@ -765,7 +765,7 @@ class API_V1_adapter extends API_V1_Abstract
             throw new \API_V1_exception_notfound(sprintf('Lazaret file id %d not found', $lazaret_id));
         }
 
-        if ( ! $app['phraseanet.user']->ACL()->has_right_on_base($lazaretFile->getBaseId(), 'canaddrecord')) {
+        if (!$app['phraseanet.user']->ACL()->has_right_on_base($lazaretFile->getBaseId(), 'canaddrecord')) {
             throw new \API_V1_exception_forbidden('You do not have access to this quarantine item');
         }
 
@@ -882,11 +882,11 @@ class API_V1_adapter extends API_V1_Abstract
 
         $options->set_bases($params['bases'], $this->app['phraseanet.user']->ACL());
 
-        if ( ! is_array($params['fields'])) {
+        if (!is_array($params['fields'])) {
             $params['fields'] = array();
         }
         $options->set_fields($params['fields']);
-        if ( ! is_array($params['status'])) {
+        if (!is_array($params['status'])) {
             $params['status'] = array();
         }
         $options->set_status($params['status']);
@@ -1052,12 +1052,12 @@ class API_V1_adapter extends API_V1_Abstract
         try {
             $metadatas = $request->get('metadatas');
 
-            if ( ! is_array($metadatas)) {
+            if (!is_array($metadatas)) {
                 throw new Exception('Metadatas should be an array');
             }
 
             foreach ($metadatas as $metadata) {
-                if ( ! is_array($metadata)) {
+                if (!is_array($metadata)) {
                     throw new Exception('Each Metadata value should be an array');
                 }
             }
@@ -1083,17 +1083,17 @@ class API_V1_adapter extends API_V1_Abstract
 
             $datas = strrev($record->get_status());
 
-            if ( ! is_array($status)) {
+            if (!is_array($status)) {
                 throw new API_V1_exception_badrequest();
             }
             foreach ($status as $n => $value) {
                 if ($n > 63 || $n < 4) {
                     throw new API_V1_exception_badrequest();
                 }
-                if ( ! in_array($value, array('0', '1'))) {
+                if (!in_array($value, array('0', '1'))) {
                     throw new API_V1_exception_badrequest();
                 }
-                if ( ! isset($status_bits[$n])) {
+                if (!isset($status_bits[$n])) {
                     throw new API_V1_exception_badrequest ();
                 }
 
@@ -1370,7 +1370,7 @@ class API_V1_adapter extends API_V1_Abstract
         $this->app['EM']->merge($Basket);
         $this->app['EM']->flush();
 
-        $result->set_datas(array( "basket" => $this->list_basket($Basket)));
+        $result->set_datas(array("basket" => $this->list_basket($Basket)));
 
         return $result;
     }
@@ -1499,7 +1499,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         $collection = $entry->get_feed()->get_collection();
 
-        if (null !== $collection && ! $user->ACL()->has_access_to_base($collection->get_base_id())) {
+        if (null !== $collection && !$user->ACL()->has_access_to_base($collection->get_base_id())) {
             throw new \API_V1_exception_forbidden('You have not access to the parent feed');
         }
 
@@ -1528,7 +1528,7 @@ class API_V1_adapter extends API_V1_Abstract
             'total_entries' => $feed->get_count_total_entries(),
             'icon'          => $feed->get_icon_url(),
             'public'        => $feed->is_public(),
-            'readonly'      => ! $feed->is_publisher($user),
+            'readonly'      => !$feed->is_publisher($user),
             'deletable'     => $feed->is_owner($user),
             'created_on'    => $feed->get_created_on()->format(DATE_ATOM),
             'updated_on'    => $feed->get_updated_on()->format(DATE_ATOM),
@@ -1636,7 +1636,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     protected function list_embedable_media(media_subdef $media, registryInterface $registry)
     {
-        if ( ! $media->is_physically_present()) {
+        if (!$media->is_physically_present()) {
             return null;
         }
 
@@ -1690,7 +1690,7 @@ class API_V1_adapter extends API_V1_Abstract
         $status = strrev($status);
         $ret = array();
         foreach ($databox->get_statusbits() as $bit => $status_datas) {
-            $ret[] = array('bit'   => $bit, 'state' => ! ! substr($status, ($bit - 1), 1));
+            $ret[] = array('bit'   => $bit, 'state' => !!substr($status, ($bit - 1), 1));
         }
 
         return $ret;
@@ -1745,8 +1745,8 @@ class API_V1_adapter extends API_V1_Abstract
             'name'              => $basket->getName(),
             'pusher_usr_id'     => $basket->getPusherId(),
             'updated_on'        => $basket->getUpdated()->format(DATE_ATOM),
-            'unread'            => ! $basket->getIsRead(),
-            'validation_basket' => ! ! $basket->getValidation()
+            'unread'            => !$basket->getIsRead(),
+            'validation_basket' => !!$basket->getValidation()
         );
 
         if ($basket->getValidation()) {
@@ -1917,8 +1917,8 @@ class API_V1_adapter extends API_V1_Abstract
                 'label_off'  => $datas['labeloff'],
                 'img_on'     => $datas['img_on'],
                 'img_off'    => $datas['img_off'],
-                'searchable' => ! ! $datas['searchable'],
-                'printable'  => ! ! $datas['printable'],
+                'searchable' => !!$datas['searchable'],
+                'printable'  => !!$datas['printable'],
             );
         }
 

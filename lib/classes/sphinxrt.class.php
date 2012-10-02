@@ -19,9 +19,11 @@ class sphinxrt
     protected static $_instance;
     protected static $_failure = false;
     protected $connection;
+    protected $registry;
 
     protected function __construct(registry $registry)
     {
+        $this->registry = $registry;
         try {
             $dsn = sprintf('mysql:host=%s;port=%s;', $registry->get('GV_sphinx_rt_host'), $registry->get('GV_sphinx_rt_port'));
             $this->connection = @new PDO($dsn);
@@ -64,7 +66,7 @@ class sphinxrt
 
         $cl = new SphinxClient();
 
-        $cl->SetServer($registry->get('GV_sphinx_host'), (int) $registry->get('GV_sphinx_port'));
+        $cl->SetServer($this->registry->get('GV_sphinx_host'), (int) $this->registry->get('GV_sphinx_port'));
         $cl->SetConnectTimeout(1);
 
         foreach ($index_ids as $index_id)
@@ -92,7 +94,7 @@ class sphinxrt
             return $this;
         }
 
-        $cl->SetServer($registry->get('GV_sphinx_host'), (int) $registry->get('GV_sphinx_port'));
+        $cl->SetServer($this->registry->get('GV_sphinx_host'), (int) $this->registry->get('GV_sphinx_port'));
         $cl->SetConnectTimeout(1);
 
         $status = strrev($status);

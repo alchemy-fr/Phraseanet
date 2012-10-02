@@ -174,8 +174,6 @@ class patch_320f implements patchInterface
                 }
 
                 if ( ! ($collection instanceof collection)) {
-                    echo "unable to find a collection to protect feeds";
-
                     return false;
                 }
                 $feed->set_collection($collection);
