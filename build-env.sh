@@ -12,7 +12,7 @@ if [ "$1" = "faac" ]
 then
     sudo mysql -e "source `pwd`/hudson/fixtures-faac.sql"
 else
-    echo "Loading fixture with lib_vo_aacenc, use 'build-env.sh faac' to load with faac library"
+    echo "Loading fixture with libvo_aacenc, use 'build-env.sh faac' to load with faac library"
     sudo mysql -e "source `pwd`/hudson/fixtures.sql"
 fi
 
