@@ -170,12 +170,6 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
         }
     }
 
-    public function testisInstalled()
-    {
-        $this->assertFalse($this->confNotInstalled->isInstalled());
-        $this->assertTrue($this->object->isInstalled());
-    }
-
     public function testGetConfiguration()
     {
         $config = $this->object->getConfiguration();
@@ -365,7 +359,6 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
     public function testRefresh()
     {
         $this->confNotInstalled->refresh();
-        $this->assertFalse($this->confNotInstalled->isInstalled());
         $this->assertInstanceOf("\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag", $this->confNotInstalled->getConfiguration());
 
         $handler = new Configuration\Handler($this->stubConfTest);

@@ -58,12 +58,13 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         if (!self::$updated) {
             self::$time_start = microtime(true);
 
-            if (!setup::is_installed()) {
-                exit("\033[0;31mPhraseanet is not set up\033[0;37m\r\n");
-            }
             self::$DI = new \Pimple();
 
             $application = new Application('test');
+
+            if (!$application['phraseanet.configuration-tester']->isInstalled()) {
+                exit("\033[0;31mPhraseanet is not set up\033[0;37m\r\n");
+            }
 
             self::createSetOfUserTests($application);
 
