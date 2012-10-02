@@ -44,9 +44,7 @@ class module_console_systemUpgrade extends Command
 
         while ($migrations = $this->container['phraseanet.configuration-tester']->getMigrations()) {
             foreach ($migrations as $migration) {
-                echo get_class($migration) . "\n";
                 $migration->migrate();
-                echo get_class($migration) . " finished\n";
             }
         }
 
