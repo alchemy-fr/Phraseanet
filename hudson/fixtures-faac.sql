@@ -77,6 +77,8 @@ CREATE TABLE `bas` (
 LOCK TABLES `bas` WRITE;
 /*!40000 ALTER TABLE `bas` DISABLE KEYS */;
 INSERT INTO `bas` VALUES (2,0,1,2,'',1);
+INSERT INTO `bas` VALUES (3,1,1,3,'',1);
+INSERT INTO `bas` VALUES (4,2,1,4,'',1);
 /*!40000 ALTER TABLE `bas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1247,6 +1249,8 @@ CREATE TABLE `coll` (
 LOCK TABLES `coll` WRITE;
 /*!40000 ALTER TABLE `coll` DISABLE KEYS */;
 INSERT INTO `coll` VALUES (2,'test','test','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n			<baseprefs>\n				<status>0</status>\n				<sugestedValues>\n				</sugestedValues>\n			</baseprefs>','','0000-00-00 00:00:00','none');
+INSERT INTO `coll` VALUES (3,'test2','test2','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n			<baseprefs>\n				<status>0</status>\n				<sugestedValues>\n				</sugestedValues>\n			</baseprefs>','','0000-00-00 00:00:00','none');
+INSERT INTO `coll` VALUES (4,'test3','test3','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n			<baseprefs>\n				<status>0</status>\n				<sugestedValues>\n				</sugestedValues>\n			</baseprefs>','','0000-00-00 00:00:00','none');
 /*!40000 ALTER TABLE `coll` ENABLE KEYS */;
 UNLOCK TABLES;
 
