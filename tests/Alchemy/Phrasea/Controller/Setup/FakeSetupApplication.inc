@@ -12,8 +12,8 @@ return call_user_func(function() {
             $app['install'] = true;
 
             $app->get('/', function() use ($app) {
-                    return $app->redirect('/setup/installer/');
-                });
+                return $app->redirect('/setup/installer/');
+            });
 
             $app->mount('/installer/', new Controller\Installer());
             $app->mount('/test', new ControllerUtils\PathFileTest());
