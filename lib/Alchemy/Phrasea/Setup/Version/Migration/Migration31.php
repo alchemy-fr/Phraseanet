@@ -51,6 +51,21 @@ class Migration31
             character_set_connection = 'utf8', character_set_database = 'utf8',
             character_set_server = 'utf8'");
 
+        define('GV_STATIC_URL', '');
+        define('GV_sphinx', false);
+        define('GV_sphinx_host', '');
+        define('GV_sphinx_port', '');
+        define('GV_sphinx_rt_host', '');
+        define('GV_sphinx_rt_port', '');
+
+        $connection->exec("CREATE TABLE IF NOT EXISTS `registry` (
+            `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+            `key` char(32) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+            `value` varchar(1024) COLLATE utf8_unicode_ci NOT NULL,
+            `type` enum('string','boolean','array','integer') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'string',
+            PRIMARY KEY (`id`),
+            UNIQUE KEY `UNIQUE` (`key`)
+          ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;");
 
         $sql = 'REPLACE INTO registry (`id`, `key`, `value`, `type`)
             VALUES (null, :key, :value, :type)';
@@ -60,26 +75,30 @@ class Migration31
             foreach ($datas_section['vars'] as $datas) {
 
                 eval('$test = defined("' . $datas["name"] . '");');
-                if (!$test) {
+
+                if ($test) {
+                    eval('$val = ' . $datas["name"] . ';');
+                } elseif (isset($datas['default'])) {
+                    $val = $datas['default'];
+                } else {
                     continue;
                 }
-                eval('$val = ' . $datas["name"] . ';');
 
                 $val = $val === true ? '1' : $val;
                 $val = $val === false ? '0' : $val;
 
                 $type = $datas['type'];
                 switch ($datas['type']) {
-                    case registry::TYPE_ENUM_MULTI:
-                    case registry::TYPE_ARRAY:
+                    case \registry::TYPE_ENUM_MULTI:
+                    case \registry::TYPE_ARRAY:
                         $val = serialize($val);
                         break;
-                    case registry::TYPE_INTEGER:
+                    case \registry::TYPE_INTEGER:
                         break;
-                    case registry::TYPE_BOOLEAN:
+                    case \registry::TYPE_BOOLEAN:
                         $val = $val ? '1' : '0';
                         break;
-                    case registry::TYPE_STRING:
+                    case \registry::TYPE_STRING:
                         $val = (int) $val;
                     default:
                         $val = (string) $val;
