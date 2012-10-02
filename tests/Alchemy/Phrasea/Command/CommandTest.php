@@ -19,15 +19,6 @@ class CommandTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Alchemy\Phrasea\Command\Command::checkSetup
-     */
-    public function testCheckSetup()
-    {
-        $this->object->setContainer(new Application('test'));
-        $this->object->checkSetup();
-    }
-
-    /**
      * @covers Alchemy\Phrasea\Command\Command::getFormattedDuration
      */
     public function testGetFormattedDuration()
@@ -39,11 +30,6 @@ class CommandTest extends \PHPUnit_Framework_TestCase
 
 class AbstractCommandTester extends Command
 {
-    public function requireSetup()
-    {
-        return true;
-    }
-
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
 

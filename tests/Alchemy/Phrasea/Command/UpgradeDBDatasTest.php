@@ -22,14 +22,6 @@ class UpgradeDBDatasTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Alchemy\Phrasea\Command\UpgradeDBDatas::requireSetup
-     */
-    public function testRequireSetup()
-    {
-        $this->assertInternalType('boolean', $this->object->requireSetup());
-    }
-
-    /**
      * @covers Alchemy\Phrasea\Command\UpgradeDBDatas::setUpgrades
      * @covers Alchemy\Phrasea\Command\UpgradeDBDatas::addUpgrade
      * @covers Alchemy\Phrasea\Command\UpgradeDBDatas::getUpgrades
