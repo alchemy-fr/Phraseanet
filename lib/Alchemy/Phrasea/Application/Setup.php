@@ -11,68 +11,35 @@
 
 namespace Alchemy\Phrasea\Application;
 
-use Alchemy\Phrasea\Core\Configuration;
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Setup;
 use Alchemy\Phrasea\Controller\Setup\Installer;
-use Alchemy\Phrasea\Controller\Setup\Upgrader;
 use Alchemy\Phrasea\Controller\Utils\ConnectionTest;
 use Alchemy\Phrasea\Controller\Utils\PathFileTest;
 
-return call_user_func(function($environment = null) {
+return call_user_func(function() {
 
-        $app = new PhraseaApplication();
+    $app = new Setup();
 
-        $app['install'] = false;
-        $app['upgrade'] = false;
+    $app->get('/', function(PhraseaApplication $app) {
+        if($app['phraseanet.configuration']->isInstalled()) {
+            return $app->redirect('/login/');
+        }
 
-        $app->before(function($a) use ($app) {
-            if (\setup::is_installed()) {
-                if (!$app['phraseanet.appbox']->need_major_upgrade()) {
-                    throw new \Exception_Setup_PhraseaAlreadyInstalled();
-                }
+        return $app->redirect('/setup/installer/');
+    });
 
-                $app['upgrade'] = true;
-            } elseif (\setup::needUpgradeConfigurationFile()) {
+    $app->mount('/installer/', new Installer());
+    $app->mount('/test', new PathFileTest());
+    $app->mount('/connection_test', new ConnectionTest());
 
-                if (\setup::requireGVUpgrade()) {
-                    setup::upgradeGV($app['phraseanet.core']['Registry']);
-                }
+    $app->error(function($e) use ($app) {
+        if ($e instanceof \Exception_Setup_PhraseaAlreadyInstalled) {
+            return $app->redirect('/login/');
+        }
 
-                $connexionInc = new \SplFileInfo(__DIR__ . '/../../../../config/connexion.inc');
-                $configInc = new \SplFileInfo(__DIR__ . '/../../../../config/config.inc');
+        return new Response('Internal Server Error', 500, array('X-Status-Code' => 500));
+    });
 
-                $configuration = Configuration::build();
-                $configuration->upgradeFromOldConf($configInc, $connexionInc);
-
-                $app['install'] = true;
-            } else {
-                $app['install'] = true;
-            }
-
-            return;
-        });
-
-        $app->get('/', function() use ($app) {
-            if ($app['install'] === true) {
-                return $app->redirect('/setup/installer/');
-            }if ($app['upgrade'] === true) {
-                return $app->redirect('/setup/upgrader/');
-            }
-        });
-
-        $app->mount('/installer/', new Installer());
-        $app->mount('/upgrader/', new Upgrader());
-        $app->mount('/test', new PathFileTest());
-        $app->mount('/connection_test', new ConnectionTest());
-
-        $app->error(function($e) use ($app) {
-            if ($e instanceof \Exception_Setup_PhraseaAlreadyInstalled) {
-                return $app->redirect('/login/');
-            }
-
-            return new Response('Internal Server Error', 500, array('X-Status-Code' => 500));
-        });
-
-        return $app;
-    }, isset($environment) ? $environment : null
-);
+    return $app;
+});
