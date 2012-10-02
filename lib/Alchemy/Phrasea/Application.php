@@ -287,8 +287,9 @@ class Application extends SilexApplication
         );
 
         $this['locale'] = $this->share(function(Application $app) use ($event) {
+            $languages = $app->getAvailableLanguages();
             if ($event->getRequest()->cookies->has('locale')
-                && isset(static::$availableLanguages[$event->getRequest()->cookies->get('locale')])) {
+                && isset($languages[$event->getRequest()->cookies->get('locale')])) {
                 $event->getRequest()->setLocale($event->getRequest()->cookies->get('locale'));
 
                 return $event->getRequest()->getLocale();
