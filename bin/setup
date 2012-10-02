@@ -48,14 +48,18 @@ try {
  under certain conditions; type `about:license' for details.\n\n"
             . ' SETUP', Version::getName() . ' ' . Version::getNumber());
 
-    $tester = new \Alchemy\Phrasea\Setup\ConfigurationTester($app);
-
-
     $app->command(new \module_console_aboutAuthors('about:authors'));
     $app->command(new \module_console_aboutLicense('about:license'));
 
-    if ($tester->isInstalled()) {
+    if(
+        $app['phraseanet.configuration-tester']->isMigrable()
+        || $app['phraseanet.configuration-tester']->isUpgradable()
+        || $app['phraseanet.configuration-tester']->isInstalled()
+        ) {
         $app->command(new \module_console_systemUpgrade('system:upgrade'));
+    }
+
+    if ($app['phraseanet.configuration-tester']->isInstalled()) {
         $app->command(new UpgradeDBDatas('system:upgrade-datas'));
     }
 

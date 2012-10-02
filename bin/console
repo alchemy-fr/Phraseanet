@@ -45,8 +45,11 @@ try {
  under certain conditions; type `about:license' for details.\n\n"
             . ' KONSOLE KOMMANDER', Version::getName() . ' ' . Version::getNumber());
 
-    if (!$app['phraseanet.configuration']->isInstalled()) {
+    if (!$app['phraseanet.configuration-tester']->isInstalled()) {
         throw new \RuntimeException('Phraseanet is not installed, use setup command instead');
+    }
+    if (!$app['phraseanet.configuration-tester']->isUpToDate()) {
+        throw new \RuntimeException('Phraseanet is not up-to-date, use setup command instead');
     }
 
     $app->command(new \module_console_aboutAuthors('about:authors'));
@@ -54,7 +57,6 @@ try {
 
     $app->command(new \module_console_checkExtension('check:extension'));
 
-    $app->command(new \module_console_systemUpgrade('system:upgrade'));
     $app->command(new UpgradeDBDatas('system:upgrade-datas'));
 
     $app->command(new \module_console_sphinxGenerateSuggestion('sphinx:generate-suggestions'));
