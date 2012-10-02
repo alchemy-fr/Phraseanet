@@ -207,11 +207,6 @@ abstract class base implements cache_cacheableInterface
         throw new Exception(__METHOD__ . ' must be defined in extended class');
     }
 
-    public function need_major_upgrade()
-    {
-        return (version_compare($this->get_version(), '3.2.0.0a1', '<') === true);
-    }
-
     public function get_version()
     {
         if ($this->version) {
@@ -240,6 +235,9 @@ abstract class base implements cache_cacheableInterface
         return $this->version;
     }
 
+    /**
+     * TODO NEUTRON : drop
+     */
     public function upgradeavailable()
     {
         if ($this->get_version()) {
@@ -391,7 +389,7 @@ abstract class base implements cache_cacheableInterface
      *
      * @return base
      */
-    protected function insert_datas(Version $version)
+    public function insert_datas()
     {
         $this->load_schema();
 
@@ -399,7 +397,7 @@ abstract class base implements cache_cacheableInterface
             $this->createTable($table);
         }
 
-        $this->setVersion($version);
+        $this->setVersion($this->app['phraseanet.version']);
 
         return $this;
     }

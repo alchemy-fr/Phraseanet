@@ -449,7 +449,7 @@ class databox extends base
         $app['phraseanet.appbox']->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 
         $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
-        $databox->insert_datas($app['phraseanet.version']);
+        $databox->insert_datas();
         $databox->setNewStructure(
             $data_template, $registry->get('GV_base_datapath_noweb')
         );

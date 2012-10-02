@@ -49,6 +49,8 @@ class appbox extends base
     protected $connection;
     protected $app;
 
+    protected $databoxes;
+
     const CACHE_LIST_BASES = 'list_bases';
     const CACHE_SBAS_IDS = 'sbas_ids';
 
@@ -437,109 +439,6 @@ class appbox extends base
 
     /**
      *
-     * @param  registryInterface $registry
-     * @param  type              $conn
-     * @param  type              $dbname
-     * @param  type              $write_file
-     * @return type
-     */
-    public static function create(Application $app, connection_interface $conn, $dbname, Version $version, $write_file = false)
-    {
-        $credentials = $conn->get_credentials();
-
-        if ($conn->is_multi_db() && trim($dbname) === '') {
-            throw new \Exception(_('Nom de base de donnee incorrect'));
-        }
-
-        if ($write_file) {
-            if ($conn->is_multi_db() && !isset($credentials['dbname'])) {
-                $credentials['dbname'] = $dbname;
-            }
-
-            foreach ($credentials as $key => $value) {
-                $key = $key == 'hostname' ? 'host' : $key;
-                $connexionINI[$key] = (string) $value;
-            }
-
-            $app['phraseanet.configuration']->initialize();
-            $connexionINI['driver'] = 'pdo_mysql';
-            $connexionINI['charset'] = 'UTF8';
-
-            $serverName = $app['phraseanet.registry']->get('GV_ServerName');
-
-            $root = __DIR__ . '/../../';
-
-            $connexion = array(
-                'main_connexion' => $connexionINI,
-                'test_connexion' => array(
-                    'driver'  => 'pdo_sqlite',
-                    'path'    => ':memory:',
-                    'charset' => 'UTF8'
-                ));
-
-            $cacheService = "array_cache";
-
-            $app['phraseanet.configuration']->setConnexions($connexion);
-
-            $services = $app['phraseanet.configuration']->getConfigurations();
-
-            foreach ($services as $serviceName => $service) {
-                if ($serviceName === "doctrine_prod") {
-
-                    $services["doctrine_prod"]["options"]["cache"] = array(
-                        "query"    => $cacheService,
-                        "result"   => $cacheService,
-                        "metadata" => $cacheService
-                    );
-                }
-            }
-            $app['phraseanet.configuration']->setConfigurations($services);
-
-            $arrayConf = $app['phraseanet.configuration']->getConfigurations();
-
-            foreach ($arrayConf as $key => $value) {
-                if (is_array($value) && array_key_exists('phraseanet', $value)) {
-                    $arrayConf[$key]["phraseanet"]["servername"] = $serverName;
-                }
-
-                if (is_array($value) && $key === 'prod') {
-                    $arrayConf[$key]["cache"] = $cacheService;
-                }
-            }
-
-            $app['phraseanet.configuration']->setConfigurations($arrayConf);
-            $app['phraseanet.configuration']->setEnvironnement('prod');
-        }
-        try {
-            if ($conn->is_multi_db()) {
-                $conn->query('CREATE DATABASE `' . $dbname . '`
-            CHARACTER SET utf8 COLLATE utf8_unicode_ci');
-            }
-        } catch (Exception $e) {
-
-        }
-
-        try {
-            if ($conn->is_multi_db()) {
-                $conn->query('USE `' . $dbname . '`');
-            }
-        } catch (Exception $e) {
-            throw new Exception(_('setup::la base de donnees existe deja et vous n\'avez pas les droits ou vous n\'avez pas les droits de la creer') . $e->getMessage());
-        }
-
-        try {
-            $appbox = new self($app);
-            $appbox->insert_datas($version);
-        } catch (Exception $e) {
-            throw new Exception('Error while installing ' . $e->getMessage());
-        }
-
-        return $appbox;
-    }
-    protected $databoxes;
-
-    /**
-     *
      * @return Array
      */
     public function get_databoxes()
@@ -596,19 +495,6 @@ class appbox extends base
         }
 
         return $databoxes[$sbas_id];
-    }
-
-    public static function list_databox_templates()
-    {
-        $files = array();
-        $dir = new DirectoryIterator(__DIR__ . '/../conf.d/data_templates/');
-        foreach ($dir as $fileinfo) {
-            if ($fileinfo->isFile()) {
-                $files[] = substr($fileinfo->getFilename(), 0, (strlen($fileinfo->getFilename()) - 4));
-            }
-        }
-
-        return $files;
     }
 
     /**
