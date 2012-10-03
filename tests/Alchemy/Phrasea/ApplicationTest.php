@@ -17,11 +17,16 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
 
     public function testLoad()
     {
+        /**
+         * Warm up
+         */
+        $app = new Application();
+
         $start = microtime(true);
         $app = new Application();
         $duration = microtime(true) - $start;
 
-        $this->assertLessThan(0.02, $duration);
+        $this->assertLessThan(0.001, $duration);
     }
 
     public function testDebug()
@@ -43,7 +48,7 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
 
     public function testCookie()
     {
-        $app = $this->getCookieApp();
+        $app = $this->getApp();
 
         $client = $this->getClientWithCookie($app);
         $client->request('GET', '/');
@@ -57,7 +62,7 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
 
     public function testTestDisableCookie()
     {
-        $app = $this->getCookieApp();
+        $app = $this->getApp();
         $app->disableCookies();
 
         $client = $this->getClientWithCookie($app);
@@ -88,6 +93,74 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         $this->assertFalse($app->isAuthenticated());
     }
 
+    public function testCookieLocale()
+    {
+        $app = $this->getAppThatReturnLocale();
+
+        foreach (array('fr_FR', 'en_GB', 'de_DE') as $locale) {
+            $client = $this->getClientWithCookie($app, $locale);
+            $client->request('GET', '/');
+
+            $this->assertEquals($locale, $client->getResponse()->getContent());
+        }
+    }
+
+    public function testNoCookieLocaleReturnsDefaultLocale()
+    {
+        $app = $this->getAppThatReturnLocale();
+        $this->mockRegistryAndReturnLocale($app, 'en_USA');
+
+        $client = $this->getClientWithCookie($app, null);
+        $client->request('GET', '/');
+
+        $this->assertEquals('en_USA', $client->getResponse()->getContent());
+    }
+
+    public function testWrongCookieLocaleReturnsDefaultLocale()
+    {
+        $app = $this->getAppThatReturnLocale();
+        $this->mockRegistryAndReturnLocale($app, 'en_USA');
+
+        $client = $this->getClientWithCookie($app, 'de_PL');
+        $client->request('GET', '/');
+
+        $this->assertEquals('en_USA', $client->getResponse()->getContent());
+    }
+
+    public function testNoCookieReturnsContentNegotiated()
+    {
+        $app = $this->getAppThatReturnLocale();
+        $this->mockRegistryAndReturnLocale($app, 'en_USA');
+
+        $client = $this->getClientWithCookie($app, null);
+        $client->request('GET', '/', array(), array(), array('accept_language' => 'en-US;q=0.75,en;q=0.8,fr-FR;q=0.9'));
+
+        $this->assertEquals('fr_FR', $client->getResponse()->getContent());
+    }
+
+    private function getAppThatReturnLocale()
+    {
+        $app = new Application('test');
+
+        $app->get('/', function(Application $app, Request $request) {
+
+            return $app['locale'];
+        });
+        unset($app['exception_handler']);
+
+        return $app;
+    }
+
+    private function mockRegistryAndReturnLocale(Application $app, $locale)
+    {
+        $app['phraseanet.registry'] = $this->getMockBuilder('\registry')
+            ->disableOriginalConstructor()
+            ->getmock();
+        $app['phraseanet.registry']->expects($this->any())
+            ->method('get')
+            ->will($this->returnValue($locale));
+    }
+
     private function getAuthMock()
     {
         $auth = $this->getMockBuilder('Session_Authentication_Interface')
@@ -100,7 +173,7 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         return $auth;
     }
 
-    private function getCookieApp()
+    private function getApp()
     {
         $app = new Application('test');
         $app->get('/', function(Application $app, Request $request) {
@@ -117,11 +190,12 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         return $app;
     }
 
-    private function getClientWithCookie(Application $app)
+    private function getClientWithCookie(Application $app, $locale = 'fr_FR')
     {
         $cookieJar = new CookieJar();
-        $cookieJar->set(new BrowserCookie('locale', 'fr_FR'));
-
+        if ($locale) {
+            $cookieJar->set(new BrowserCookie('locale', $locale));
+        }
         return new Client($app, array(), null, $cookieJar);
     }
 }

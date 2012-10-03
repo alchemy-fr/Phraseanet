@@ -27,6 +27,7 @@ use MediaAlchemyst\MediaAlchemystServiceProvider;
 use MediaAlchemyst\Driver\Imagine;
 use Monolog\Handler\NullHandler;
 use MP4Box\MP4BoxServiceProvider;
+use Neutron\Silex\Provider\BadFaithServiceProvider;
 use Neutron\Silex\Provider\FilesystemServiceProvider;
 use PHPExiftool\PHPExiftoolServiceProvider;
 use Silex\Application as SilexApplication;
@@ -107,6 +108,7 @@ class Application extends SilexApplication
             ini_set('display_errors', 'off');
         }
 
+        $this->register(new BadFaithServiceProvider());
         $this->register(new BorderManagerServiceProvider());
         $this->register(new BrowserServiceProvider());
         $this->register(new ConfigurationServiceProvider());
@@ -287,6 +289,13 @@ class Application extends SilexApplication
         );
 
         $this['locale'] = $this->share(function(Application $app) use ($event) {
+            $event->getRequest()->setDefaultLocale(
+                $app['phraseanet.registry']->get('GV_default_lng', 'en_GB')
+            );
+            $event->getRequest()->setLocale(
+                $app['phraseanet.registry']->get('GV_default_lng', 'en_GB')
+            );
+
             $languages = $app->getAvailableLanguages();
             if ($event->getRequest()->cookies->has('locale')
                 && isset($languages[$event->getRequest()->cookies->get('locale')])) {
@@ -295,9 +304,15 @@ class Application extends SilexApplication
                 return $event->getRequest()->getLocale();
             }
 
-            $event->getRequest()->setDefaultLocale(
-                $app['phraseanet.registry']->get('GV_default_lng', 'en_GB')
-            );
+            foreach($app['bad-faith']->headerLists['accept_language']->items as $language) {
+                $code = $language->lang.'_'.$language->sublang;
+                if(isset($languages[$code])) {
+
+                    $event->getRequest()->setLocale($code);
+                    return $event->getRequest()->getLocale();
+                    break;
+                }
+            }
 
             return $event->getRequest()->getLocale();
         });
