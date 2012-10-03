@@ -10,7 +10,7 @@ use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\BrowserKit\CookieJar;
 use Symfony\Component\BrowserKit\Cookie as BrowserCookie;
 
-require __DIR__ . '/../../PhraseanetPHPUnitAbstract.class.inc';
+require_once __DIR__ . '/../../PhraseanetPHPUnitAbstract.class.inc';
 
 class ApplicationTest extends \PhraseanetPHPUnitAbstract
 {
