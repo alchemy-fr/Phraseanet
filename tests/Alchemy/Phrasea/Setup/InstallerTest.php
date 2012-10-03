@@ -16,7 +16,6 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->markTestSkipped();
         \connection::close_connections();
     }
 
@@ -24,6 +23,12 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
     {
         \connection::close_connections();
         parent::tearDown();
+    }
+
+    public static function tearDownAfterClass()
+    {
+        \connection::close_connections();
+        parent::tearDownAfterClass();
     }
 
     /**
@@ -51,10 +56,5 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($specifications->isSetup());
         $this->assertTrue($app['phraseanet.configuration-tester']->isUpToDate());
-
-        $client = new Client($app);
-        $client->request('GET', '/login/');
-
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
     }
 }
