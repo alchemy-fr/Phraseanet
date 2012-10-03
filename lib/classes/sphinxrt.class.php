@@ -24,12 +24,17 @@ class sphinxrt
     protected function __construct(registry $registry)
     {
         $this->registry = $registry;
+
+        if(!$registry->get('GV_sphinx') || !$registry->get('GV_sphinx_rt_host') || !$registry->get('GV_sphinx_rt_port')) {
+            throw new \Exception('Sphinx not configured');
+        }
+
         try {
             $dsn = sprintf('mysql:host=%s;port=%s;', $registry->get('GV_sphinx_rt_host'), $registry->get('GV_sphinx_rt_port'));
             $this->connection = @new PDO($dsn);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             self::$_failure = true;
-            throw new Exception('Unable to connect to sphinx rt');
+            throw new \Exception('Unable to connect to sphinx rt');
         }
 
         return $this;

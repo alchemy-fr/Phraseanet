@@ -103,12 +103,12 @@ class Migration31 implements MigrationInterface
                         $val = serialize($val);
                         break;
                     case \registry::TYPE_INTEGER:
+                        $val = (int) $val;
                         break;
                     case \registry::TYPE_BOOLEAN:
                         $val = $val ? '1' : '0';
                         break;
                     case \registry::TYPE_STRING:
-                        $val = (int) $val;
                     default:
                         $val = (string) $val;
                         $type = \registry::TYPE_STRING;

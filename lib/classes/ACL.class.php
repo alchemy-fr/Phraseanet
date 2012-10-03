@@ -665,8 +665,9 @@ class ACL implements cache_cacheableInterface
             foreach ($databox->get_collections() as $collection) {
                 $continue = false;
 
-                if (!array_key_exists($collection->get_base_id(), $this->_rights_bas))
+                if (!array_key_exists($collection->get_base_id(), $this->_rights_bas)) {
                     continue;
+                }
 
                 $base_id = $collection->get_base_id();
                 $datas = $this->_rights_bas[$base_id];
@@ -677,12 +678,13 @@ class ACL implements cache_cacheableInterface
                         break;
                     }
                 }
-                if ($continue || $this->is_limited($base_id))
+                if ($continue || $this->is_limited($base_id)) {
                     continue;
+                }
 
                 try {
                     $ret[$base_id] = collection::get_from_base_id($this->app, $base_id);
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
 
                 }
             }
@@ -823,7 +825,7 @@ class ACL implements cache_cacheableInterface
             FROM usr WHERE usr_id = :usr_id';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->user->get_id()));
+        $stmt->execute(array(':usr_id'       => $this->user->get_id()));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
         unset($stmt);

@@ -27,7 +27,10 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
 
     public static function tearDownAfterClass()
     {
+        $app = new Application('test');
         \connection::close_connections();
+        \phrasea::reset_sbasDatas($app['phraseanet.appbox']);
+        \phrasea::reset_baseDatas($app['phraseanet.appbox']);
         parent::tearDownAfterClass();
     }
 
@@ -53,6 +56,8 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
 
         $installer = new Installer($app, 'admin@example.com', 'sdfsdsd', $abConn, 'http://local.phrasea.test.installer/', $dataPath, $dbConn, $template);
         $installer->install();
+
+        \User_Adapter::unsetInstances();
 
         $this->assertTrue($specifications->isSetup());
         $this->assertTrue($app['phraseanet.configuration-tester']->isUpToDate());

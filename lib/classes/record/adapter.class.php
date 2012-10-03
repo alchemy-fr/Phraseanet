@@ -1617,7 +1617,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 }
                 $sphinx_rt->delete(array("documents" . $sbas_crc, "documents" . $sbas_crc . "_stemmed_fr", "documents" . $sbas_crc . "_stemmed_en"), "docs_realtime" . $sbas_crc, $this->get_record_id());
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             unset($e);
         }
 

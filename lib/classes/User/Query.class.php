@@ -542,7 +542,7 @@ class User_Query implements User_QueryInterface
 
         $sql_count = 'SELECT COUNT(DISTINCT usr.usr_id) as total '
             . $this->generate_sql_constraints();
-        
+
         $stmt = $conn->prepare($sql_count);
         $stmt->execute($this->sql_params);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);

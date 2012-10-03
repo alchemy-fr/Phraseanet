@@ -322,6 +322,21 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         return $this;
     }
 
+    public static function unsetInstances()
+    {
+        foreach (self::$_instance as $id => $user) {
+            self::unsetInstance($id);
+        }
+    }
+
+    public static function unsetInstance($id)
+    {
+        if (isset(self::$_instance[$id])) {
+            self::$_instance[$id] = null;
+            unset(self::$_instance[$id]);
+        }
+    }
+
     /**
      *
      * @param  type         $id

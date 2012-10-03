@@ -25,11 +25,6 @@ class registry implements registryInterface
      */
     protected $cache;
 
-    /**
-     *
-     * @var registry
-     */
-    protected static $_instance;
     protected $app;
 
     const TYPE_BOOLEAN = 'boolean';
