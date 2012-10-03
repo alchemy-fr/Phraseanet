@@ -62,7 +62,7 @@ class appbox extends base
     public function __construct(Application $app)
     {
         $this->app = $app;
-        $this->connection = connection::getPDOConnection($app, null, $app['phraseanet.registry']);
+        $this->connection = connection::getPDOConnection($app);
         $choosenConnexion = $app['phraseanet.configuration']->getPhraseanet()->get('database');
 
         $connexion = $app['phraseanet.configuration']->getConnexion($choosenConnexion);

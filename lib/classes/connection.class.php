@@ -108,7 +108,7 @@ class connection
      * @param  string         $name
      * @return connection_pdo
      */
-    public static function getPDOConnection(Application $app, $name = null, registryInterface $registry = null)
+    public static function getPDOConnection(Application $app, $name = null)
     {
         self::instantiate($app);
         if (trim($name) == '') {
@@ -147,9 +147,7 @@ class connection
             }
 
             try {
-                $registry = $registry ? : $app['phraseanet.registry'];
-                self::$_PDO_instance[$name] = new connection_pdo($name, $hostname, $port, $user, $password, $dbname, array(), $registry);
-                self::$_PDO_instance[$name]->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
+                self::$_PDO_instance[$name] = new connection_pdo($name, $hostname, $port, $user, $password, $dbname, array(), $app['debug']);
             } catch (Exception $e) {
                 throw new Exception('Connection not available');
             }

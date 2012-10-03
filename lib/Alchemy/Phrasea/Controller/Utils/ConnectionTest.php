@@ -39,7 +39,7 @@ class ConnectionTest implements ControllerProviderInterface
             $connection_ok = $db_ok = $is_databox = $is_appbox = $empty = false;
 
             try {
-                $conn = new \connection_pdo('test', $hostname, $port, $user, $password, null, array(), $app['phraseanet.registry']);
+                $conn = new \connection_pdo('test', $hostname, $port, $user, $password, null, array(), false);
                 $connection_ok = true;
             } catch (\Exception $e) {
 
@@ -47,7 +47,7 @@ class ConnectionTest implements ControllerProviderInterface
 
             if ($dbname && $connection_ok === true) {
                 try {
-                    $conn = new \connection_pdo('test', $hostname, $port, $user, $password, $dbname, array(), $app['phraseanet.registry']);
+                    $conn = new \connection_pdo('test', $hostname, $port, $user, $password, $dbname, array(), false);
                     $db_ok = true;
 
                     $sql = "SHOW TABLE STATUS";

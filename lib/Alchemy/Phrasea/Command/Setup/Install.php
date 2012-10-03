@@ -139,14 +139,14 @@ class Install extends Command
                 $abName = $dialog->ask($output, "DB name (phraseanet) : ", 'phraseanet');
 
                 try {
-                    $abConn = new \connection_pdo('appbox', $hostname, $port, $dbUser, $dbPassword, $abName, array(), $setupRegistry);
+                    $abConn = new \connection_pdo('appbox', $hostname, $port, $dbUser, $dbPassword, $abName, array(), $this->container['debug']);
                     $output->writeln("\n\t<info>Application-Box : Connection successful !</info>\n");
                 } catch (\Exception $e) {
                     $output->writeln("\n\t<error>Invalid connection parameters</error>\n");
                 }
             } while (!$abConn);
         } else {
-            $abConn = new \connection_pdo('appbox', $input->getOption('db-host'), $input->getOption('db-port'), $input->getOption('db-user'), $input->getOption('db-password'), $input->getOption('appbox'), array(), $setupRegistry);
+            $abConn = new \connection_pdo('appbox', $input->getOption('db-host'), $input->getOption('db-port'), $input->getOption('db-user'), $input->getOption('db-password'), $input->getOption('appbox'), array(), $this->container['debug']);
             $output->writeln("\n\t<info>Application-Box : Connection successful !</info>\n");
         }
 
@@ -155,6 +155,9 @@ class Install extends Command
 
     private function getDBConn(InputInterface $input, OutputInterface $output, DialogHelper $dialog)
     {
+        /**
+         * TODO NEUTRON, can not work
+         */
         $dbConn = null;
         if (!$input->getOption('databox')) {
             do {
@@ -163,7 +166,7 @@ class Install extends Command
 
                 if ($dbName) {
                     try {
-                        $dbConn = new \connection_pdo('databox', $hostname, $port, $dbUser, $dbPassword, $dbName, array(), $setupRegistry);
+                        $dbConn = new \connection_pdo('databox', $hostname, $port, $dbUser, $dbPassword, $dbName, array(), $this->container['debug']);
                         $output->writeln("\n\t<info>Data-Box : Connection successful !</info>\n");
 
                         do {
@@ -179,7 +182,7 @@ class Install extends Command
                 }
             } while ($retry);
         } else {
-            $dbConn = new \connection_pdo('databox', $input->getOption('db-host'), $input->getOption('db-port'), $input->getOption('db-user'), $input->getOption('db-password'), $input->getOption('databox'), array(), $setupRegistry);
+            $dbConn = new \connection_pdo('databox', $input->getOption('db-host'), $input->getOption('db-port'), $input->getOption('db-user'), $input->getOption('db-password'), $input->getOption('databox'), array(), $this->container['debug']);
             $output->writeln("\n\t<info>Data-Box : Connection successful !</info>\n");
             $template = $input->getOption('db-template') ? : 'en';
         }

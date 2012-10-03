@@ -165,14 +165,14 @@ class Installer implements ControllerProviderInterface
         $setupRegistry = new \Setup_Registry();
 
         try {
-            $abConn = new \connection_pdo('appbox', $hostname, $port, $user_ab, $ab_password, $appbox_name, array(), $setupRegistry);
+            $abConn = new \connection_pdo('appbox', $hostname, $port, $user_ab, $ab_password, $appbox_name, array(), $app['debug']);
         } catch (\Exception $e) {
             return $app->redirect('/setup/installer/step2/?error=' . _('Appbox is unreachable'));
         }
 
         try {
             if ($databox_name) {
-                $dbConn = new \connection_pdo('databox', $hostname, $port, $user_ab, $ab_password, $databox_name, array(), $setupRegistry);
+                $dbConn = new \connection_pdo('databox', $hostname, $port, $user_ab, $ab_password, $databox_name, array(), $app['debug']);
             }
         } catch (\Exception $e) {
             return $app->redirect('/setup/installer/step2/?error=' . _('Databox is unreachable'));

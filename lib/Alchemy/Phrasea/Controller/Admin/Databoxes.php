@@ -226,7 +226,7 @@ class Databoxes implements ControllerProviderInterface
             $dataTemplate = new \SplFileInfo($app['phraseanet.registry']->get('GV_RootPath') . 'lib/conf.d/data_templates/' . $dataTemplate . '.xml');
 
             try {
-                $connbas = new \connection_pdo('databox_creation', $hostname, $port, $user, $password, $dbName, array(), $app['phraseanet.registry']);
+                $connbas = new \connection_pdo('databox_creation', $hostname, $port, $user, $password, $dbName, array(), $app['debug']);
             } catch (\PDOException $e) {
                 return $app->redirect('/admin/databoxes/?success=0&error=database-failed');
             }
@@ -252,7 +252,7 @@ class Databoxes implements ControllerProviderInterface
 
             try {
                 $data_template = new \SplFileInfo($app['phraseanet.registry']->get('GV_RootPath') . 'lib/conf.d/data_templates/' . $dataTemplate . '.xml');
-                $connbas = new \connection_pdo('databox_creation', $hostname, $port, $userDb, $passwordDb, $dbName, array(), $app['phraseanet.registry']);
+                $connbas = new \connection_pdo('databox_creation', $hostname, $port, $userDb, $passwordDb, $dbName, array(), $app['debug']);
                 try {
                     $base = \databox::create($app, $connbas, $data_template, $app['phraseanet.registry']);
                     $base->registerAdmin($app['phraseanet.user']);

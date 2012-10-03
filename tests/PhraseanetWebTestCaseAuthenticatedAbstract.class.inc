@@ -100,7 +100,7 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
         $connexion = $configuration->getConnexion($choosenConnexion);
 
         try {
-            $conn = new \connection_pdo('databox_creation', $connexion->get('host'), $connexion->get('port'), $connexion->get('user'), $connexion->get('password'), 'unit_test_db', array(), self::$DI['app']['phraseanet.registry']);
+            $conn = new \connection_pdo('databox_creation', $connexion->get('host'), $connexion->get('port'), $connexion->get('user'), $connexion->get('password'), 'unit_test_db', array(), false);
         } catch (\PDOException $e) {
 
             $this->markTestSkipped('Could not reach DB');

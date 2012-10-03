@@ -103,7 +103,7 @@ class databox extends base
         assert($sbas_id > 0);
 
         $this->app = $app;
-        $this->connection = connection::getPDOConnection($app, $sbas_id, null);
+        $this->connection = connection::getPDOConnection($app, $sbas_id);
         $this->id = $sbas_id;
 
         $connection_params = phrasea::sbas_params($this->app);
@@ -469,7 +469,7 @@ class databox extends base
      */
     public static function mount(Application $app, $host, $port, $user, $password, $dbname, registry $registry)
     {
-        $connection = new connection_pdo('test', $host, $port, $user, $password, $dbname, array(), $registry);
+        $connection = new connection_pdo('test', $host, $port, $user, $password, $dbname, array(), $app['debug']);
 
         $conn = $app['phraseanet.appbox']->get_connection();
         $sql = 'SELECT MAX(ord) as ord FROM sbas';

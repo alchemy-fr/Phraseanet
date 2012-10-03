@@ -119,7 +119,7 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
         $dbName = isset($settings['dataBox']) ? $settings['dataBox'] : null;
 
 
-        $connection = new connection_pdo('unitTestsAB', $host, $port, $MySQLuser, $MySQLpassword, $abName, array(), self::$DI['app']['phraseanet.registry']);
+        $connection = new connection_pdo('unitTestsAB', $host, $port, $MySQLuser, $MySQLpassword, $abName, array(), false);
 
         self::$DI['app']['phraseanet.appbox']->set_connection($connection);
 
