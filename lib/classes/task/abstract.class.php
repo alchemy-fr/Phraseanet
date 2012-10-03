@@ -102,6 +102,31 @@ abstract class task_abstract
     );
 
     /**
+     *
+     * escape a shell cmd
+     *
+     * @param String $cmd
+     * @return String
+     */
+    static public function escapeShellCmd($cmd)
+    {
+        // fix buggy escapeshellcmd() under windows
+        return defined('PHP_WINDOWS_VERSION_BUILD') ? escapeshellarg($cmd) : escapeshellcmd($cmd);
+    }
+
+    /**
+     *
+     * escape a shell arg
+     *
+     * @param String $arg
+     * @return String
+     */
+    static public function escapeShellArg($arg)
+    {
+        return escapeshellarg($arg);
+    }
+
+    /**
      * get the state of the task (task_abstract::STATE_*)
      *
      * @return String
@@ -110,14 +135,14 @@ abstract class task_abstract
     {
         static $stmt = NULL;
         $conn = connection::getPDOConnection();
-        if ( ! $stmt) {
+        if (!$stmt) {
             $sql = 'SELECT status FROM task2 WHERE task_id = :taskid';
             $stmt = $conn->prepare($sql);
         }
         $stmt->execute(array(':taskid' => $this->taskid));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
-        if ( ! $row) {
+        if (!$row) {
             throw new Exception('Unknown task id');
         }
         unset($conn);
@@ -167,7 +192,7 @@ abstract class task_abstract
             self::STATE_TODELETE
         );
 
-        if ( ! in_array($status, $av_status)) {
+        if (!in_array($status, $av_status)) {
             throw new Exception_InvalidArgument(sprintf('unknown status `%s`', $status));
         }
 
@@ -194,7 +219,7 @@ abstract class task_abstract
         $stmt->execute(array(':active' => ($active ? '1' : '0'), ':taskid' => $this->getID()));
         $stmt->closeCursor();
 
-        $this->active = ! ! $active;
+        $this->active = !!$active;
 
         return $this;
     }
@@ -285,7 +310,7 @@ abstract class task_abstract
         $stmt->execute(array(':taskid' => $this->getID()));
         $stmt->closeCursor();
 
-        return ++ $this->crash_counter;
+        return++$this->crash_counter;
     }
 
     /**
@@ -349,12 +374,12 @@ abstract class task_abstract
         $stmt->execute(array(':taskid' => $this->getID()));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
-        if ( ! $row) {
+        if (!$row) {
             throw new Exception('Unknown task id');
         }
         $this->title = $row['name'];
         $this->crash_counter = (integer) $row['crashed'];
-        $this->active = ! ! $row['active'];
+        $this->active = !!$row['active'];
         $this->settings = $row['settings'];
         $this->runner = $row['runner'];
         $this->completed_percentage = (int) $row['completed'];
@@ -418,7 +443,7 @@ abstract class task_abstract
      */
     public function delete()
     {
-        if ( ! $this->getPID()) { // do not delete a running task
+        if (!$this->getPID()) { // do not delete a running task
             $conn = connection::getPDOConnection();
             $registry = registry::get_instance();
             $sql = "DELETE FROM task2 WHERE task_id = :task_id";
@@ -508,7 +533,7 @@ abstract class task_abstract
         if ($this->running) {       // && $this->records_done == 0)
             $when_started = time() - $when_started;
             if ($when_started < $this->period) {
-                for ($t = $this->period - $when_started; $this->running && $t > 0; $t -- ) { // DON'T do sleep($this->period - $when_started) because it prevents ticks !
+                for ($t = $this->period - $when_started; $this->running && $t > 0; $t--) { // DON'T do sleep($this->period - $when_started) because it prevents ticks !
                     $s = $this->getState();
                     if ($s == self::STATE_TOSTOP) {
                         $this->setState(self::STATE_STOPPED);
@@ -534,7 +559,7 @@ abstract class task_abstract
             throw new \InvalidArgumentException(sprintf("(%s) is not > 0"));
         }
 
-        while ($this->running && $nsec -- > 0) {
+        while ($this->running && $nsec-- > 0) {
             sleep(1);
         }
     }
@@ -658,13 +683,13 @@ abstract class task_abstract
                 $this->log("Exception : " . $e->getMessage() . " " . basename($e->getFile()) . " " . $e->getLine());
             }
 
-            $this->records_done ++;
+            $this->records_done++;
             $this->setProgress($rowsdone, $rowstodo);
 
             // post-process
             $this->postProcessOneContent($box, $row);
 
-            $rowsdone ++;
+            $rowsdone++;
 
             $current_memory = memory_get_usage();
             if ($current_memory >> 20 >= $this->maxmegs) {
@@ -688,7 +713,7 @@ abstract class task_abstract
                 $this->running = FALSE;
             }
 
-            if ( ! $this->running) {
+            if (!$this->running) {
                 break;
             }
         }
@@ -750,7 +775,7 @@ abstract class task_abstract
 
     protected function incrementLoops()
     {
-        if ($this->getRunner() == self::RUNNER_SCHEDULER && ++ $this->loop >= $this->maxloops) {
+        if ($this->getRunner() == self::RUNNER_SCHEDULER && ++$this->loop >= $this->maxloops) {
             $this->log(sprintf(('%d loops done, restarting'), $this->loop));
             $this->setState(self::STATE_TORESTART);
 
@@ -797,7 +822,7 @@ abstract class task_abstract
      */
     public static function create(appbox $appbox, $class_name, $settings = null)
     {
-        if ( ! class_exists($class_name)) {
+        if (!class_exists($class_name)) {
             throw new Exception('Unknown task class');
         }
 
@@ -808,9 +833,9 @@ abstract class task_abstract
                     (null, 0, "stopped", 0, :active,
                       :name, "0000/00/00 00:00:00", :class, :settings)';
 
-        if ($settings && ! DOMDocument::loadXML($settings)) {
+        if ($settings && !DOMDocument::loadXML($settings)) {
             throw new Exception('settings invalide');
-        } elseif ( ! $settings) {
+        } elseif (!$settings) {
             $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n</tasksettings>";
         }
 
