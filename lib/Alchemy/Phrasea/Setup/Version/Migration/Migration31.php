@@ -29,6 +29,11 @@ class Migration31 implements MigrationInterface
             throw new \LogicException('Required config files not found');
         }
 
+        /**
+         * Required for GV :/
+         */
+        $app = $this->app;
+
         require __DIR__ . '/../../../../../../config/_GV.php';
         require __DIR__ . '/../../../../../../lib/conf.d/_GV_template.inc';
 
