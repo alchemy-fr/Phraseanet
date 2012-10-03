@@ -12,10 +12,18 @@ require_once __DIR__ . '/TestSpecifications.inc';
 
 class InstallerTest extends \PHPUnit_Framework_TestCase
 {
+
     public function setUp()
     {
-        \connection::close_connections();
         parent::setUp();
+        $this->markTestSkipped();
+        \connection::close_connections();
+    }
+
+    public function tearDown()
+    {
+        \connection::close_connections();
+        parent::tearDown();
     }
 
     /**
