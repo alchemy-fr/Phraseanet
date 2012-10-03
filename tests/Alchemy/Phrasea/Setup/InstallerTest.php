@@ -6,6 +6,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Setup\TestSpecifications;
 use Alchemy\Phrasea\Core\Configuration;
 use Symfony\Component\Yaml\Parser;
+use Symfony\Component\HttpKernel\Client;
 
 require_once __DIR__ . '/TestSpecifications.inc';
 
@@ -42,5 +43,10 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($specifications->isSetup());
         $this->assertTrue($app['phraseanet.configuration-tester']->isUpToDate());
+
+        $client = new Client($app);
+        $client->request('GET', '/login/');
+
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
     }
 }
