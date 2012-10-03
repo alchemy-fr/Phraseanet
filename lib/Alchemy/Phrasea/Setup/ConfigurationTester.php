@@ -3,8 +3,10 @@
 namespace Alchemy\Phrasea\Setup;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Setup\System\ProbeInterface as SystemProbeInterface;
 use Alchemy\Phrasea\Setup\Version\Probe\Probe31;
 use Alchemy\Phrasea\Setup\Version\Probe\Probe35;
+use Alchemy\Phrasea\Setup\Version\Probe\ProbeInterface as VersionProbeInterface;
 
 class ConfigurationTester
 {
@@ -20,12 +22,16 @@ class ConfigurationTester
             new Probe31($this->app),
             new Probe35($this->app),
         );
-
     }
 
-    public function registerProbe(ProbeInterface $probe)
+    public function registerProbe(SystemProbeInterface $probe)
     {
         $this->probes[] = $probe;
+    }
+
+    public function registerVersionProbe(VersionProbeInterface $probe)
+    {
+        $this->versionProbes[] = $probe;
     }
 
     /**
@@ -53,7 +59,7 @@ class ConfigurationTester
      */
     public function isBlank()
     {
-        return !$this->isMigrable() && !$this->isUpgradable() && !$this->isInstalled();
+        return !$this->isInstalled() && !$this->isMigrable();
     }
 
     /**
@@ -62,7 +68,11 @@ class ConfigurationTester
      */
     public function isUpgradable()
     {
-        $upgradable = version_compare($this->app['phraseanet.appbox']->get_version(), $this->app['phraseanet.version']->getNumber(), "<");
+        if (!$this->isInstalled()) {
+            return false;
+        }
+
+        $upgradable = version_compare($this->app['phraseanet.appbox']->get_version(), $this->app['phraseanet.version']->getNumber(), ">");
 
         if (!$upgradable) {
             foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
@@ -89,8 +99,8 @@ class ConfigurationTester
     {
         $migrations = array();
 
-        foreach($this->versionProbes as $probe) {
-            if($probe->isMigrable()) {
+        foreach ($this->versionProbes as $probe) {
+            if ($probe->isMigrable()) {
                 $migrations[] = $probe->getMigration();
             }
         }
