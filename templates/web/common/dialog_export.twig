@@ -516,18 +516,20 @@
                     }
                 });
 
-                {% spaceless %}
-                    {% set max_download = registry.get('GV_download_max', 120) %}
-                    {% set alert_too_big%}
-                        "{% trans %} You can not directly download more than {{max_download}} Mo ; time to package all documents is too long{% endtrans %}"+
-                        "{% trans 'You can alternatively receive an email when the download is ready.' %}"+
-                        "{% trans 'Would you like to receive an e-mail when your download is ready ?' %}"
-                    {% endset %}
-                {% endspaceless %}
-                    
+                {% set max_download = registry.get('GV_download_max', 120) %}
+                {% set alert_too_big_one %}
+                        {% trans %} You can not directly download more than {{max_download}} Mo ; time to package all documents is too long{% endtrans %}
+                {% endset %}
+                {% set alert_too_big_two %}
+                        {% trans 'You can alternatively receive an email when the download is ready.' %}
+                {% endset %}
+                {% set alert_too_big_three %}
+                        {% trans 'Would you like to receive an e-mail when your download is ready ?' %}
+                {% endset %}
+
                 if(count>1 && total/1024/1024 > {{max_download}})
                 {
-                    if(confirm("{{alert_too_big|escape("js")}}"))
+                    if(confirm("{{alert_too_big_one|e('js') ~ "\\n" ~ alert_too_big_two ~ "\\n" ~ alert_too_big_three}}"))
                     {
                         $('input[name="obj[]"]:checked', $('#download')).each(function(i,n){
                         $('input[name="obj[]"][value="'+$(n).val()+'"]', $('#sendmail')).attr('checked', true);
