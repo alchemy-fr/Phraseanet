@@ -14,6 +14,7 @@ rewrite ^/developers/.*$                    /index.php last;
 rewrite ^/permalink/.*$                     /index.php last;
 rewrite ^/datafiles/.*$                     /index.php last;
 rewrite ^/prod/records/edit/.*$             /index.php last;
+rewrite ^/prod/records/property/.*$         /index.php last;
 rewrite ^/prod/records/movecollection/.*$   /index.php last;
 rewrite ^/prod/records/delete/.*$           /index.php last;
 rewrite ^/prod/order/.*$                    /index.php last;
