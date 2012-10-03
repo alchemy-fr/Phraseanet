@@ -469,7 +469,7 @@ class PDF
                     $t = str_replace(
                         array("&lt;", "&gt;", "&amp;")
                         , array("<", ">", "&")
-                        , $field->get_serialized_values()
+                        , strip_tags($field->get_serialized_values())
                     );
 
                     $this->pdf->Write(5, $t);
