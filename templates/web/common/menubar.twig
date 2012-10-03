@@ -6,7 +6,7 @@
               Phraseanet
             </span>
         </li>
-        {% if session.is_authenticated %}
+        {% if module != "lightbox" and session.is_authenticated %}
           <li>
             {% if module == "prod" %}
               <a target="_self" href="/client/">
@@ -69,7 +69,7 @@
           {# MODULE #}
           <li>
             <a id="validation_link" target="_blank" href="/lightbox/">
-              <span class="{% if module == "lightbox" %}selected{% endif %}">
+              <span>
               {% trans 'admin::monitor: module validation' %}
               </span>
             </a>
