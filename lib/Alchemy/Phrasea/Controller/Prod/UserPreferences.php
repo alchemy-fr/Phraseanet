@@ -28,11 +28,7 @@ class UserPreferences implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
-            $response = $app['firewall']->requireAuthentication();
-
-            if ($response instanceof Response) {
-                return $response;
-            }
+            $app['firewall']->requireAuthentication();
         });
 
         $controllers->post('/save/', $this->call('savePreference'));

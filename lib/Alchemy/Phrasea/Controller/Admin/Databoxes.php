@@ -30,11 +30,7 @@ class Databoxes implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
-            $response = $app['firewall']->requireAdmin();
-
-            if ($response instanceof Response) {
-                return $response;
-            }
+            $app['firewall']->requireAdmin();
         });
 
 

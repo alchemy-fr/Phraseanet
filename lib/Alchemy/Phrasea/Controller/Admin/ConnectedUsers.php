@@ -24,12 +24,7 @@ class ConnectedUsers implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
-
-            $response = $app['firewall']->requireAccessToModule('Admin');
-
-            if ($response instanceof Response) {
-                return $response;
-            }
+            $app['firewall']->requireAccessToModule('Admin');
         });
 
 

@@ -31,14 +31,9 @@ class Edit implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
-
-            $response = $app['firewall']
+            $app['firewall']
                 ->requireNotGuest()
                 ->requireRight('modifyrecord');
-
-            if ($response instanceof Response) {
-                return $response;
-            }
         });
 
         $controllers->post('/', function(Application $app, Request $request) {

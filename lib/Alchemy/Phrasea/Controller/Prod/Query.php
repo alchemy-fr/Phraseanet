@@ -28,11 +28,7 @@ class Query implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
-            $response = $app['firewall']->requireAuthentication();
-
-            if ($response instanceof Response) {
-                return $response;
-            }
+            $app['firewall']->requireAuthentication();
         });
 
         $controllers->post('/', function(Application $app, Request $request) {

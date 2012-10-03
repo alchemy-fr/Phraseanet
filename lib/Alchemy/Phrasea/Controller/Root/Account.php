@@ -31,11 +31,7 @@ class Account implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function() use ($app) {
-            $response = $app['firewall']->requireAuthentication();
-
-            if ($response instanceof Response) {
-                return $response;
-            }
+            $app['firewall']->requireAuthentication();
         });
 
         /**

@@ -30,11 +30,7 @@ class WorkZone implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
-            $response = $app['firewall']->requireAuthentication();
-
-            if ($response instanceof Response) {
-                return $response;
-            }
+            $app['firewall']->requireAuthentication();
         });
 
         $controllers->get('/', $this->call('displayWorkzone'));

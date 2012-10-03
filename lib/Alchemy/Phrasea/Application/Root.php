@@ -57,13 +57,15 @@ use Alchemy\Phrasea\Controller\Utils\ConnectionTest;
 use Alchemy\Phrasea\Controller\Utils\PathFileTest;
 use Silex\Application as SilexApp;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 return call_user_func(function($environment = null) {
 
     $app = new PhraseaApplication($environment);
 
     $app->before(function () use ($app) {
-        return $app['firewall']->requireSetup($app);
+        $app['firewall']->requireSetup($app);
     });
 
     $app->get('/', function(SilexApp $app) {
@@ -180,6 +182,14 @@ return call_user_func(function($environment = null) {
             );
 
             return $app->json($datas, 200, array('X-Status-Code' => 200));
+        }
+
+        if($e instanceof HttpExceptionInterface) {
+            $headers = $e->getHeaders();
+
+            if(isset($headers['X-Phraseanet-Redirect'])) {
+                return new RedirectResponse($headers['X-Phraseanet-Redirect'], 302, array('X-Status-Code' => 302));
+            }
         }
 
         if ($e instanceof \Exception_BadRequest) {

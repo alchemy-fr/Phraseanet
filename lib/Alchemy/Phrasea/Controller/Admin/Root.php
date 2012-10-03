@@ -29,12 +29,7 @@ class Root implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
-
-            $response = $app['firewall']->requireAccessToModule('admin');
-
-            if ($response instanceof Response) {
-                return $response;
-            }
+            $app['firewall']->requireAccessToModule('admin');
         });
 
         $controllers->get('/', function(Application $app, Request $request) {

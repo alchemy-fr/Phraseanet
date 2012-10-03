@@ -30,14 +30,9 @@ class Bridge implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
-
-            $response = $app['firewall']
+            $app['firewall']
                 ->requireNotGuest()
                 ->requireRight('bas_chupub');
-
-            if ($response instanceof Response) {
-                return $response;
-            }
         });
 
         $app['require_connection'] = $app->protect(function(\Bridge_Account $account) use ($app) {
