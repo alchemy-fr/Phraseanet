@@ -99,6 +99,10 @@ class ConfigurationTester
     {
         $migrations = array();
 
+        if ($this->isUpToDate()) {
+            return $migrations;
+        }
+
         foreach ($this->versionProbes as $probe) {
             if ($probe->isMigrable()) {
                 $migrations[] = $probe->getMigration();

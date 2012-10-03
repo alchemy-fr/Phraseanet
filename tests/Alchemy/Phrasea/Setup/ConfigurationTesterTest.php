@@ -22,6 +22,25 @@ class ConfigurationTesterTest extends AbstractSetupTester
         $this->assertFalse($tester->isUpgradable());
     }
 
+    public function testNotMigrableEvenIfOldFilesFrom31Present()
+    {
+        $gvFile = __DIR__ . '/../../../../config/_GV.php';
+        $connexionFile = __DIR__ . '/../../../../config/connexion.inc';
+
+        file_put_contents($connexionFile, "");
+        file_put_contents($gvFile, "");
+
+        $tester = $this->getTester();
+        $this->assertFalse($tester->isMigrable());
+        $this->assertFalse($tester->isBlank());
+        $this->assertTrue($tester->isInstalled());
+        $this->assertTrue($tester->isUpToDate());
+        $this->assertFalse($tester->isUpgradable());
+
+        unlink($gvFile);
+        unlink($connexionFile);
+    }
+
     /**
      * @covers Alchemy\Phrasea\Setup\ConfigurationTester
      */
@@ -66,7 +85,21 @@ class ConfigurationTesterTest extends AbstractSetupTester
             ->method('isMigrable')
             ->will($this->returnValue(true));
 
-        $tester = $this->getTester();
+        $app = new Application('test');
+
+        $app['phraseanet.version'] = $this->getMockBuilder('Alchemy\\Phrasea\\Core\\Version')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        /**
+         * Must return version + 1
+         */
+        $app['phraseanet.version']->expects($this->any())
+            ->method('getNumber')
+            ->will($this->returnValue('3.9'));
+
+        $tester = $this->getTester($app);
+        
         $tester->registerVersionProbe($probe);
 
         $this->assertTrue($tester->isMigrable());

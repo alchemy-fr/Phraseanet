@@ -14,7 +14,7 @@ namespace Alchemy\Phrasea\Setup\Version\Probe;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Setup\Version\Migration\Migration31;
 
-class Probe31
+class Probe31 implements ProbeInterface
 {
     private $app;
 
