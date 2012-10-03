@@ -2036,6 +2036,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         foreach ($methods as $method) {
             $crawler = self::$DI['client']->request($method, $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
             $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+            $this->assertTrue(self::$DI['client']->getResponse()->headers->has('Allow'));
             $this->evaluateResponseMethodNotAllowed(self::$DI['client']->getResponse());
             $this->evaluateMetaMethodNotAllowed($content);
         }
