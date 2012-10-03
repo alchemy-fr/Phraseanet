@@ -1298,7 +1298,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $stmt->closeCursor();
 
         try {
-            $sphinx = sphinxrt::get_instance();
+            $sphinx = sphinxrt::get_instance($this->app['phraseanet.registry']);
 
             $sbas_params = phrasea::sbas_params($this->app);
             $sbas_id = $this->get_sbas_id();

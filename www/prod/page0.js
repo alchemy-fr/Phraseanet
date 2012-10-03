@@ -1703,29 +1703,29 @@ function chgCollThis(datas)
     });
 }
 
-function chgStatusThis(url)
-{
-    url = "docfunction.php?"+url;
-    $('#MODALDL').attr('src','about:blank');
-    $('#MODALDL').attr('src',url);
-
-
-    var t = (bodySize.y - 400) / 2;
-    var l = (bodySize.x - 550) / 2;
-
-    $('#MODALDL').css({
-        'display': 'block',
-        'opacity': 0,
-        'width': '550px',
-        'position': 'absolute',
-        'top': t,
-        'left': l,
-        'height': '400px'
-    }).fadeTo(500, 1);
-
-    showOverlay(2);
-    $('#tooltip').hide();
-}
+//function chgStatusThis(url)
+//{
+//    url = "docfunction.php?"+url;
+//    $('#MODALDL').attr('src','about:blank');
+//    $('#MODALDL').attr('src',url);
+//
+//
+//    var t = (bodySize.y - 400) / 2;
+//    var l = (bodySize.x - 550) / 2;
+//
+//    $('#MODALDL').css({
+//        'display': 'block',
+//        'opacity': 0,
+//        'width': '550px',
+//        'position': 'absolute',
+//        'top': t,
+//        'left': l,
+//        'height': '400px'
+//    }).fadeTo(500, 1);
+//
+//    showOverlay(2);
+//    $('#tooltip').hide();
+//}
 
 
 function pushThis(sstt_id, lst, story)
@@ -2152,52 +2152,39 @@ function activeIcons()
     });
 
     $('.TOOL_chgstatus_btn').live('click', function(){
-        var value="";
-
-
-        if($(this).hasClass('results_window'))
-        {
-            if(p4.Results.Selection.length() > 0)
-                value = "lst=" + p4.Results.Selection.serialize();
-        }
-        else
-        {
-            if($(this).hasClass('basket_window'))
-            {
-                if(p4.WorkZone.Selection.length() > 0)
-                    value = "lst=" + p4.WorkZone.Selection.serialize();
-                else
-                    value = "SSTTID=" + $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+        var params = {};
+        var $this = $(this);
+        console.log(p4.Results.Selection.length());
+        if ($this.hasClass('results_window')) {
+            if (p4.Results.Selection.length() > 0) {
+                params.lst = p4.Results.Selection.serialize();
             }
-            else
-            {
-                if($(this).hasClass('basket_element'))
-                {
-                    value = "SSTTID=" + $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+        } else {
+            if ($this.hasClass('basket_window')) {
+                if (p4.WorkZone.Selection.length() > 0) {
+                    params.lst = p4.WorkZone.Selection.serialize();
+                } else {
+                    params.ssel = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
                 }
-                else
-                {
-                    if($(this).hasClass('story_window'))
-                    {
-                        if(p4.WorkZone.Selection.length() > 0)
-                        {
-                            value = "lst=" + p4.WorkZone.Selection.serialize();
-                        }
-                        else
-                        {
-                            value = "story=" + $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+            } else {
+                if ($this.hasClass('basket_element')) {
+                     params.ssel = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+                } else {
+                    if ($this.hasClass('story_window')) {
+                        if (p4.WorkZone.Selection.length() > 0) {
+                            params.lst = p4.WorkZone.Selection.serialize();
+                        } else {
+                            params.story = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
                         }
                     }
                 }
             }
         }
 
-        if(value !== '')
-        {
-            chgStatusThis(value);
-        }
-        else
-        {
+        if (false === $.isEmptyObject(params)) {
+            var dialog = p4.Dialog.Create();
+            dialog.load('/prod/records/property/', 'GET', params);
+        } else {
             alert(language.nodocselected);
         }
     });

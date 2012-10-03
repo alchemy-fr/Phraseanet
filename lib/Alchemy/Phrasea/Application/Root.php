@@ -44,6 +44,7 @@ use Alchemy\Phrasea\Controller\Prod\Order;
 use Alchemy\Phrasea\Controller\Prod\Printer;
 use Alchemy\Phrasea\Controller\Prod\Push;
 use Alchemy\Phrasea\Controller\Prod\Query;
+use Alchemy\Phrasea\Controller\Prod\Record\Property;
 use Alchemy\Phrasea\Controller\Prod\Root as Prod;
 use Alchemy\Phrasea\Controller\Prod\Story;
 use Alchemy\Phrasea\Controller\Prod\Tools;
@@ -135,6 +136,7 @@ return call_user_func(function($environment = null) {
     $app->mount('/prod/lists', new UsrLists());
     $app->mount('/prod/MustacheLoader', new MustacheLoader());
     $app->mount('/prod/records/edit', new Edit());
+    $app->mount('/prod/records/property', new Property());
     $app->mount('/prod/records/movecollection', new MoveCollection());
     $app->mount('/prod/bridge/', new Bridge());
     $app->mount('/prod/push/', new Push());
