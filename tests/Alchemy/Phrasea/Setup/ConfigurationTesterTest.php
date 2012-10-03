@@ -4,23 +4,10 @@ namespace Alchemy\Phrasea\Setup;
 
 use Alchemy\Phrasea\Application;
 
-class ConfigurationTesterTest extends \PHPUnit_Framework_TestCase
+require_once __DIR__ . '/AbstractSetupTester.inc';
+
+class ConfigurationTesterTest extends AbstractSetupTester
 {
-    private $tearDownHandlers = array();
-
-    public function setUp()
-    {
-        parent::setUp();
-    }
-
-    public function tearDown()
-    {
-        foreach ($this->tearDownHandlers as $handler) {
-            $handler();
-        }
-
-        parent::tearDown();
-    }
 
     /**
      * @covers Alchemy\Phrasea\Setup\ConfigurationTester
@@ -126,45 +113,6 @@ class ConfigurationTesterTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($tester->isInstalled());
         $this->assertFalse($tester->isUpToDate());
         $this->assertTrue($tester->isUpgradable());
-    }
-
-    private function uninstall()
-    {
-        rename(__DIR__ . '/../../../../config/config.yml', __DIR__ . '/../../../../config/config.yml.test');
-        rename(__DIR__ . '/../../../../config/connexions.yml', __DIR__ . '/../../../../config/connexions.yml.test');
-        rename(__DIR__ . '/../../../../config/services.yml', __DIR__ . '/../../../../config/services.yml.test');
-
-        $this->tearDownHandlers[] = function() {
-                rename(__DIR__ . '/../../../../config/config.yml.test', __DIR__ . '/../../../../config/config.yml');
-                rename(__DIR__ . '/../../../../config/connexions.yml.test', __DIR__ . '/../../../../config/connexions.yml');
-                rename(__DIR__ . '/../../../../config/services.yml.test', __DIR__ . '/../../../../config/services.yml');
-            };
-    }
-
-    private function goBackTo31()
-    {
-        $this->uninstall();
-
-        file_put_contents(__DIR__ . '/../../../../config/_GV.php', "<?php\n");
-        file_put_contents(__DIR__ . '/../../../../config/connexion.inc', "<?php\n");
-
-        $this->tearDownHandlers[] = function() {
-                unlink(__DIR__ . '/../../../../config/_GV.php');
-                unlink(__DIR__ . '/../../../../config/connexion.inc');
-            };
-    }
-
-    private function goBackTo35()
-    {
-        $this->uninstall();
-
-        file_put_contents(__DIR__ . '/../../../../config/config.inc', "<?php\n\$servername = 'http://local.phrasea';\n");
-        file_put_contents(__DIR__ . '/../../../../config/connexion.inc', "<?php\n");
-
-        $this->tearDownHandlers[] = function() {
-                unlink(__DIR__ . '/../../../../config/config.inc');
-                unlink(__DIR__ . '/../../../../config/connexion.inc');
-            };
     }
 
     private function getTester(Application $app = null)
