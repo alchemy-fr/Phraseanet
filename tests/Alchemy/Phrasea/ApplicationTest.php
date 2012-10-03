@@ -15,6 +15,9 @@ require_once __DIR__ . '/../../PhraseanetPHPUnitAbstract.class.inc';
 class ApplicationTest extends \PhraseanetPHPUnitAbstract
 {
 
+    /**
+     * @covers Alchemy\Phrasea\Application
+     */
     public function testLoad()
     {
         /**
@@ -29,6 +32,9 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         $this->assertLessThan(0.005, $duration);
     }
 
+    /**
+     * @covers Alchemy\Phrasea\Application
+     */
     public function testDebug()
     {
         $app = new Application();
@@ -39,13 +45,22 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
 
         $app = new Application('test');
         $this->assertTrue($app['debug']);
+
+        $app = new Application('dev');
+        $this->assertTrue($app['debug']);
     }
 
+    /**
+     * @covers Alchemy\Phrasea\Application
+     */
     public function testTestLocale()
     {
         $app = new Application();
     }
 
+    /**
+     * @covers Alchemy\Phrasea\Application
+     */
     public function testCookie()
     {
         $app = $this->getApp();
@@ -60,6 +75,9 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         $this->assertEquals(2, count($cookies['']['/']));
     }
 
+    /**
+     * @covers Alchemy\Phrasea\Application
+     */
     public function testTestDisableCookie()
     {
         $app = $this->getApp();
@@ -73,6 +91,9 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         $this->assertEquals(0, count($cookies));
     }
 
+    /**
+     * @covers Alchemy\Phrasea\Application
+     */
     public function testOpenAccount()
     {
         $app = new Application('test');
@@ -82,6 +103,9 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         $this->assertTrue($app->isAuthenticated());
     }
 
+    /**
+     * @covers Alchemy\Phrasea\Application
+     */
     public function testCloseAccount()
     {
         $app = new Application('test');
@@ -93,6 +117,9 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         $this->assertFalse($app->isAuthenticated());
     }
 
+    /**
+     * @covers Alchemy\Phrasea\Application
+     */
     public function testCookieLocale()
     {
         $app = $this->getAppThatReturnLocale();
@@ -105,6 +132,9 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         }
     }
 
+    /**
+     * @covers Alchemy\Phrasea\Application
+     */
     public function testNoCookieLocaleReturnsDefaultLocale()
     {
         $app = $this->getAppThatReturnLocale();
@@ -116,6 +146,9 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         $this->assertEquals('en_USA', $client->getResponse()->getContent());
     }
 
+    /**
+     * @covers Alchemy\Phrasea\Application
+     */
     public function testWrongCookieLocaleReturnsDefaultLocale()
     {
         $app = $this->getAppThatReturnLocale();
@@ -127,6 +160,9 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         $this->assertEquals('en_USA', $client->getResponse()->getContent());
     }
 
+    /**
+     * @covers Alchemy\Phrasea\Application
+     */
     public function testNoCookieReturnsContentNegotiated()
     {
         $app = $this->getAppThatReturnLocale();
