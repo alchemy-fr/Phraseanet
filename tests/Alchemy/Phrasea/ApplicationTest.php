@@ -26,7 +26,7 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         $app = new Application();
         $duration = microtime(true) - $start;
 
-        $this->assertLessThan(0.001, $duration);
+        $this->assertLessThan(0.005, $duration);
     }
 
     public function testDebug()
