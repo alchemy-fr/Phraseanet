@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Setup\Version\Migration;
 
 use Alchemy\Phrasea\Application;
 
-class Migration31
+class Migration31 implements MigrationInterface
 {
     private $app;
 
@@ -24,7 +24,11 @@ class Migration31
 
     public function migrate()
     {
-        $app = $this->app;
+        if (!file_exists(__DIR__ . '/../../../../../../config/_GV.php')
+            || !file_exists(__DIR__ . '/../../../../../../lib/conf.d/_GV_template.inc')) {
+            throw new \LogicException('Required config files not found');
+        }
+
         require __DIR__ . '/../../../../../../config/_GV.php';
         require __DIR__ . '/../../../../../../lib/conf.d/_GV_template.inc';
 

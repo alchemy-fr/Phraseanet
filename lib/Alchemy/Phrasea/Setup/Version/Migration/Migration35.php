@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Setup\Version\Migration;
 
 use Alchemy\Phrasea\Application;
 
-class Migration35
+class Migration35 implements MigrationInterface
 {
     private $app;
 
@@ -24,6 +24,11 @@ class Migration35
 
     public function migrate()
     {
+        if (!file_exists(__DIR__ . '/../../../../../../config/connexion.inc')
+            || !file_exists(__DIR__ . '/../../../../../../config/config.inc')) {
+            throw new \LogicException('Required config files not found');
+        }
+
         $this->app['phraseanet.configuration']->initialize();
 
         $retrieve_old_credentials = function() {
