@@ -4,7 +4,7 @@ rewrite ^/(download)/([a-zA-Z0-9]*)\/get$     /include/download_prepare.php?type
 rewrite ^/(mail-export)/([a-zA-Z0-9]*)\/?$    /include/download_anonymous.php?type=$1&token=$2 last;
 rewrite ^/(mail-export)/([a-zA-Z0-9]*)\/get$  /include/download_anonymous.php?type=$1&token=$2&get=1 last;
 
-rewrite ^/admin.?$                          /index.php last;
+rewrite ^/admin/.*$                          /index.php last;
 rewrite ^/lightbox.?$                       /index.php last;
 rewrite ^/robots.txt$                       /index.php last;
 rewrite ^/feeds/.*$                         /index.php last;
