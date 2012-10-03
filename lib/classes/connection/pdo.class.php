@@ -30,7 +30,7 @@ class connection_pdo extends connection_abstract implements connection_interface
      * @param  array          $options
      * @return connection_pdo
      */
-    public function __construct($name, $hostname, $port, $user, $passwd, $dbname = false, $options = array(), $debug)
+    public function __construct($name, $hostname, $port, $user, $passwd, $dbname = false, $options = array(), $debug = false)
     {
         $this->debug = $debug;
         $this->name = $name;

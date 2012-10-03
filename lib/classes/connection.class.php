@@ -58,7 +58,7 @@ class connection
      */
     public static function printLog(Application $app)
     {
-        if (!$app['phraseanet.registry']->get('GV_debug')) {
+        if (!$app['debug']) {
             return;
         }
 
@@ -72,7 +72,7 @@ class connection
 
             $totalTime += $entry['time'];
             $string = $entry['time'] . "\t" . ' - ' . $query . ' - ' . "\n";
-            file_put_contents($app['phraseanet.registry']->get('GV_RootPath') . 'logs/mysql_log.log', $string, FILE_APPEND);
+            file_put_contents(__DIR__ . '/../../logs/mysql_log.log', $string, FILE_APPEND);
         }
         $string = count(self::$log) . ' queries - ' . $totalTime
             . "\nEND OF QUERY " . $_SERVER['PHP_SELF']
@@ -86,7 +86,7 @@ class connection
         }
         $string .= "\n\n\n\n";
 
-        file_put_contents($app['phraseanet.registry']->get('GV_RootPath') . 'logs/mysql_log.log', $string, FILE_APPEND);
+        file_put_contents(__DIR__ . '/../../logs/mysql_log.log', $string, FILE_APPEND);
 
         return;
     }
@@ -169,6 +169,15 @@ class connection
         if (isset(self::$_PDO_instance[$name])) {
             self::$_PDO_instance[$name] = null;
             unset(self::$_PDO_instance[$name]);
+        }
+
+        return;
+    }
+
+    public static function close_connections()
+    {
+        foreach (self::$_PDO_instance as $name => $conn) {
+            self::close_PDO_connection($name);
         }
 
         return;

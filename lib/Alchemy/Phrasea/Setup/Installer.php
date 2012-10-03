@@ -215,19 +215,21 @@ class Installer
 
         $this->app['phraseanet.configuration']->setConnexions($connexion);
 
-        $services = $this->app['phraseanet.configuration']->getConfigurations();
+        $services = $this->app['phraseanet.configuration']->getServices();
 
         foreach ($services as $serviceName => $service) {
-            if ($serviceName === "doctrine_prod") {
+            foreach ($service as $name => $desc) {
+                if ($name === "doctrine_prod") {
 
-                $services["doctrine_prod"]["options"]["cache"] = array(
-                    "query"    => $cacheService,
-                    "result"   => $cacheService,
-                    "metadata" => $cacheService
-                );
+                    $services[$serviceName]["doctrine_prod"]["options"]["cache"] = array(
+                        "query"    => $cacheService,
+                        "result"   => $cacheService,
+                        "metadata" => $cacheService
+                    );
+                }
             }
         }
-        $this->app['phraseanet.configuration']->setConfigurations($services);
+        $this->app['phraseanet.configuration']->setServices($services);
 
         $arrayConf = $this->app['phraseanet.configuration']->getConfigurations();
 
