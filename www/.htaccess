@@ -6,8 +6,8 @@
   RewriteRule ^(mail-export)/([a-zA-Z0-9]*)\/?$   /include/download_anonymous.php?type=$1&token=$2 [L]
   RewriteRule ^(mail-export)/([a-zA-Z0-9]*)\/get$ /include/download_anonymous.php?type=$1&token=$2&get=1 [L]
 
-  RewriteRule ^lightbox.?$                      /index.php [L]
-  RewriteRule ^admin.?$                         /index.php [L]
+  RewriteRule ^lightbox/.?$                      /index.php [L]
+  RewriteRule ^admin/.?$                         /index.php [L]
   RewriteRule ^permalink/.*$                    /index.php [L]
   RewriteRule ^datafiles/.*$                    /index.php [L]
   RewriteRule ^robots.txt$                      /index.php [L]
