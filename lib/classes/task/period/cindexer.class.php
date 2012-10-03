@@ -454,16 +454,16 @@ class task_period_cindexer extends task_abstract
 
         $pipes = array();
 
-        $logcmd =  (DIRECTORY_SEPARATOR === '/') ? escapeshellcmd($cmd) : escapeshellarg($cmd) ;
+        $logcmd =  self::escapeShellCmd($cmd) ;
         foreach ($args_nopwd as $arg) {
-            $logcmd .= ' ' . escapeshellarg($arg);
+            $logcmd .= ' ' . self::escapeShellArg($arg);
         }
 
-        $this->log(sprintf('cmd=\'%s\'', escapeshellcmd($logcmd)));
+        $this->log(sprintf('cmd=\'%s\'', $logcmd));
 
-        $execmd =  (DIRECTORY_SEPARATOR === '/') ? escapeshellcmd($cmd) : escapeshellarg($cmd) ;
+        $execmd =  self::escapeShellCmd($cmd) ;
         foreach ($args as $arg) {
-            $execmd .= ' ' . escapeshellarg($arg);
+            $execmd .= ' ' . self::escapeShellArg($arg);
         }
         $process = proc_open($execmd, $descriptors, $pipes, $this->binpath, null, array('bypass_shell' => true));
 

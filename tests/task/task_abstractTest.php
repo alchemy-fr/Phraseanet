@@ -170,4 +170,29 @@ class task_abstractTest extends PhraseanetPHPUnitAbstract
         $methodU->invokeArgs(self::$task, array($fd));
 
     }
+
+    /**
+     * @covers \task_abstract::escapeShellCmd
+     * @todo Implement testEscapeShellCmd().
+     */
+    public function testEscapeShellCmd()
+    {
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
+    }
+
+    /**
+     * @covers \task_abstract::escapeShellArg
+     * @todo Implement testEscapeShellArg().
+     */
+    public function testEscapeShellArg()
+    {
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
+    }
+
 }
