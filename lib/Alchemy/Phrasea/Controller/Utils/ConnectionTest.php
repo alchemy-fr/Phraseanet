@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Controller\Utils;
 
 use Silex\Application;
 use Silex\ControllerProviderInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  *
@@ -26,6 +27,9 @@ class ConnectionTest implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
+        /**
+         * TODO NEUTRON check firewall
+         */
         $controllers->get('/mysql/', function(Application $app) {
             require_once __DIR__ . '/../../../../classes/connection/pdo.class.php';
 
