@@ -197,7 +197,7 @@ class Root implements ControllerProviderInterface
                 $updateOk = true;
             }
 
-            if (false !== $errorsStructure = $request->get('error', false)) {
+            if (false !== $errorsStructure = $request->query->get('error', false)) {
                 $errorsStructure = true;
             }
 

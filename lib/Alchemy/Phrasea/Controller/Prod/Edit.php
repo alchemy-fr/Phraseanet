@@ -301,7 +301,7 @@ class Edit implements ControllerProviderInterface
                 }
             }
 
-            if (!is_array($request->get('mds'))) {
+            if (!is_array($request->request->get('mds'))) {
                 return;
             }
 
@@ -319,7 +319,7 @@ class Edit implements ControllerProviderInterface
 
             $elements = $records->toArray();
 
-            foreach ($request->get('mds') as $rec) {
+            foreach ($request->request->get('mds') as $rec) {
                 try {
                     $record = $databox->get_record($rec['record_id']);
                 } catch (\Exception $e) {

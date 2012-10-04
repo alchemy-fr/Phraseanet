@@ -61,7 +61,7 @@ class TaskManager implements ControllerProviderInterface
          */
         $controllers->post('/tasks/create/', function(Application $app, Request $request) {
 
-            $task = \task_abstract::create($app, $request->get('tcl'));
+            $task = \task_abstract::create($app, $request->request->get('tcl'));
             $tid = $task->getId();
 
             return $app->redirect('/admin/task-manager/task/' . $tid);
@@ -96,13 +96,11 @@ class TaskManager implements ControllerProviderInterface
             $finder
                 ->files()->name($rname)
                 ->in($logdir)
-                //                   ->date('> now - 1 days')
                 ->sortByModifiedTime();
 
             $found = false;
             foreach ($finder->getIterator() as $file) {
-                // printf("%s <br/>\n", ($file->getRealPath()));
-                if ($request->get('clr') == $file->getFilename()) {
+                if ($request->query->get('clr') == $file->getFilename()) {
                     file_put_contents($file->getRealPath(), '');
                     $found = true;
                 }
@@ -138,13 +136,11 @@ class TaskManager implements ControllerProviderInterface
             $finder
                 ->files()->name($rname)
                 ->in($logdir)
-                //                   ->date('> now - 1 days')
                 ->sortByModifiedTime();
 
             $found = false;
             foreach ($finder->getIterator() as $file) {
-                // printf("%s <br/>\n", ($file->getRealPath()));
-                if ($request->get('clr') == $file->getFilename()) {
+                if ($request->query->get('clr') == $file->getFilename()) {
                     file_put_contents($file->getRealPath(), '');
                     $found = true;
                 }
@@ -222,7 +218,7 @@ class TaskManager implements ControllerProviderInterface
             try {
                 $task = $app['task-manager']->getTask($id);
                 $pid = $task->getPID();
-                $signal = $request->get('signal');
+                $signal = $request->query->get('signal');
                 $task->setState(\task_abstract::STATE_TOSTOP);
 
                 if ((int) $pid > 0 && (int) $signal > 0 && function_exists('posix_kill')) {
@@ -264,8 +260,8 @@ class TaskManager implements ControllerProviderInterface
             $dom = new \DOMDocument('1.0', 'UTF-8');
             $dom->strictErrorChecking = true;
             try {
-                if (!@$dom->loadXML($request->get('xml'))) {
-                    throw new XMLParseErrorException($request->get('xml'));
+                if (!@$dom->loadXML($request->request->get('xml'))) {
+                    throw new XMLParseErrorException($request->request->get('xml'));
                 }
             } catch (XMLParseErrorException $e) {
                 return new Response(
@@ -277,9 +273,9 @@ class TaskManager implements ControllerProviderInterface
             try {
                 $task = $app['task-manager']->getTask($id);
 
-                $task->setTitle($request->get('title'));
-                $task->setActive(\p4field::isyes($request->get('active')));
-                $task->setSettings($request->get('xml'));
+                $task->setTitle($request->request->get('title'));
+                $task->setActive(\p4field::isyes($request->request->get('active')));
+                $task->setSettings($request->request->get('xml'));
 
                 return $app->json(true);
             } catch (\Exception $e) {
@@ -307,10 +303,10 @@ class TaskManager implements ControllerProviderInterface
                 );
             }
 
-            switch ($request->get('__action')) {
+            switch ($request->request->get('__action')) {
                 case 'FORM2XML':
-                    if (@simplexml_load_string($request->get('__xml'))) {
-                        $ret = $task->graphic2xml($request->get('__xml'));
+                    if (@simplexml_load_string($request->request->get('__xml'))) {
+                        $ret = $task->graphic2xml($request->request->get('__xml'));
                     } else {
                         $ret = new Response(
                                 'Bad XML',
@@ -358,8 +354,8 @@ class TaskManager implements ControllerProviderInterface
             $dom = new \DOMDocument('1.0', 'UTF-8');
             $dom->strictErrorChecking = true;
             try {
-                if (!@$dom->loadXML($request->get('xml'))) {
-                    throw new XMLParseErrorException($request->get('xml'));
+                if (!@$dom->loadXML($request->request->get('xml'))) {
+                    throw new XMLParseErrorException($request->request->get('xml'));
                 }
                 $ret = $app->json($ret);
             } catch (XMLParseErrorException $e) {
