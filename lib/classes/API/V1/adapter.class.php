@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Attribute\Status;
 use Alchemy\Phrasea\Border\Manager as BorderManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -663,7 +664,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         $media = $app['mediavorus']->guess($file->getPathname());
 
-        $Package = new Alchemy\Phrasea\Border\File($this->app, $media, $collection, $file->getClientOriginalName());
+        $Package = new File($this->app, $media, $collection, $file->getClientOriginalName());
 
         if ($request->get('status')) {
             $Package->addAttribute(new Status($app, $request->get('status')));
