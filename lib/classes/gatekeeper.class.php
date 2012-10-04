@@ -76,10 +76,6 @@ class gatekeeper
      */
     public function check_directory(Request $request)
     {
-        if (http_request::is_command_line()) {
-            return;
-        }
-
         if (isset($_SERVER['PHP_SELF']) && trim($_SERVER['PHP_SELF'])) {
             $this->_PHP_SELF = $_SERVER['PHP_SELF'];
 
@@ -96,17 +92,7 @@ class gatekeeper
         }
 
         if (!$this->app->isAuthenticated()) {
-            try {
-                $auth = new Session_Authentication_PersistentCookie($this->app, $request->cookies->get('persistent'));
-                $this->app->openAccount($auth, $auth->getSessionId());
-            } catch (Exception $e) {
-
-            }
-        }
-
-        if (!$this->app->isAuthenticated()) {
             switch ($this->_directory) {
-                case 'prod':
                 case 'client':
                     $this->give_guest_access();
                     if ($request->isXmlHttpRequest()) {
@@ -126,59 +112,14 @@ class gatekeeper
                 case 'report':
                     phrasea::redirect('/login/?redirect=' . $_SERVER['REQUEST_URI']);
                     break;
-                case 'login':
-                    if ($appbox->need_major_upgrade()) {
-                        phrasea::redirect("/setup/");
-                    }
-
-                    return;
-                    break;
-                case 'api':
-                    return;
-                    break;
-                case 'include':
-                case '':
-                    return;
-                case 'setup':
-                    if ($this->app['phraseanet.appbox']->upgradeavailable()) {
-                        return;
-                    } else {
-                        phrasea::redirect('/login/');
-                    }
-                    break;
-                default:
-                    phrasea::redirect('/login/');
-                    break;
-                case 'lightbox':
-                    $this->token_access();
-                    if (!$this->app->isAuthenticated()) {
-                        phrasea::redirect('/login/?redirect=' . $_SERVER['REQUEST_URI']);
-                    }
-                    break;
             }
         } elseif ($_SERVER['PHP_SELF'] === '/login/logout/') {
             return;
         }
 
         switch ($this->_directory) {
-            case 'admin':
-            case 'taskmanager':
-                if (!$this->app['phraseanet.user']->ACL()->has_access_to_module('admin')) {
-                    phrasea::headers(403);
-                }
-                break;
             case 'thesaurus2':
                 if (!$this->app['phraseanet.user']->ACL()->has_access_to_module('thesaurus')) {
-                    phrasea::headers(403);
-                }
-                break;
-            case 'client':
-            case 'prod':
-            case 'lightbox':
-                $this->token_access();
-                break;
-            case 'upload':
-                if (!$this->app['phraseanet.user']->ACL()->has_right('addrecord')) {
                     phrasea::headers(403);
                 }
                 break;
@@ -220,51 +161,6 @@ class gatekeeper
         return $this;
     }
 
-    /**
-     * If token is present in URL, sign on and redirect
-     *
-     * @return gatekeeper
-     */
-    protected function token_access()
-    {
-        $request = new http_request();
-        $parm = $request->get_parms('LOG');
-
-        if (is_null($parm["LOG"])) {
-            return $this;
-        }
-
-        try {
-            if ($this->app->isAuthenticated()) {
-                $this->app->closeAccount();
-            }
-            $auth = new Session_Authentication_Token($this->app, $parm['LOG']);
-            $this->app->openAccount($auth);
-        } catch (Exception $e) {
-            return phrasea::redirect("/login/?error=" . urlencode($e->getMessage()));
-        }
-
-        try {
-            $datas = random::helloToken($this->app, $parm['LOG']);
-
-            switch ($datas['type']) {
-                default:
-                    return $this;
-                    break;
-                case \random::TYPE_FEED_ENTRY:
-                    return phrasea::redirect("/lightbox/feeds/entry/" . $datas['datas'] . "/");
-                    break;
-                case \random::TYPE_VALIDATE:
-                case \random::TYPE_VIEW:
-                    return phrasea::redirect("/lightbox/validate/" . $datas['datas'] . "/");
-                    break;
-            }
-        } catch (Exception_NotFound $e) {
-
-        }
-
-        return $this;
-    }
 
     /**
      * Checks if session is open
