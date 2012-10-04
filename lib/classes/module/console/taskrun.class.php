@@ -94,7 +94,7 @@ class module_console_taskrun extends Command
 
         if ($input->getOption('verbose')) {
             $handler = new Handler\StreamHandler(fopen('php://stdout', 'a'));
-            $this->container['phraseanet.core']['monolog']->pushHandler($handler);
+            $this->container['monolog']->pushHandler($handler);
         }
 
         $logfile = __DIR__ . '/../../../../logs/task_' . $task_id . '.log';
