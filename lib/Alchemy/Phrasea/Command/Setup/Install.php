@@ -153,11 +153,10 @@ class Install extends Command
         return $abConn;
     }
 
-    private function getDBConn(InputInterface $input, OutputInterface $output, DialogHelper $dialog)
+    private function getDBConn(InputInterface $input, OutputInterface $output, \connection_pdo $abConn, DialogHelper $dialog)
     {
-        /**
-         * TODO NEUTRON, can not work
-         */
+        $credentials = $abConn->get_credentials();
+
         $dbConn = null;
         if (!$input->getOption('databox')) {
             do {
@@ -166,7 +165,7 @@ class Install extends Command
 
                 if ($dbName) {
                     try {
-                        $dbConn = new \connection_pdo('databox', $hostname, $port, $dbUser, $dbPassword, $dbName, array(), $this->container['debug']);
+                        $dbConn = new \connection_pdo('databox', $credentials['hostname'], $credentials['port'], $credentials['user'], $credentials['password'], $dbName, array(), $this->container['debug']);
                         $output->writeln("\n\t<info>Data-Box : Connection successful !</info>\n");
 
                         do {
