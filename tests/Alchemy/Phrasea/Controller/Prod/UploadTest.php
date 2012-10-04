@@ -3,7 +3,8 @@
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 use Alchemy\Phrasea\Application;
-use Silex\WebTestCase;
+use Alchemy\Phrasea\Border\Manager;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Response;
 
 class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
@@ -75,7 +76,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $params = array('base_id' => self::$DI['collection']->get_base_id());
         $files = array(
             'files' => array(
-                new \Symfony\Component\HttpFoundation\File\UploadedFile(
+                new UploadedFile(
                     $this->tmpFile, 'KIKOO.JPG'
                 )
             )
@@ -105,7 +106,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $params = array('base_id' => 0);
         $files = array(
             'files' => array(
-                new \Symfony\Component\HttpFoundation\File\UploadedFile(
+                new UploadedFile(
                    $this->tmpFile, 'KIKOO.JPG'
                 )
             )
@@ -129,7 +130,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $params = array('base_id' => self::$DI['collection_no_access']->get_base_id());
         $files = array(
             'files' => array(
-                new \Symfony\Component\HttpFoundation\File\UploadedFile(
+                new UploadedFile(
                     $this->tmpFile, 'KIKOO.JPG'
                 )
             )
@@ -150,7 +151,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testUploadInvalidFile()
     {
-        $file = new \Symfony\Component\HttpFoundation\File\UploadedFile(
+        $file = new UploadedFile(
                 $this->tmpFile, 'KIKOO.JPG', 'image/jpeg', 123, UPLOAD_ERR_NO_FILE
         );
 
@@ -175,7 +176,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $params = array();
         $files = array(
             'files' => array(
-                new \Symfony\Component\HttpFoundation\File\UploadedFile(
+                new UploadedFile(
                     $this->tmpFile, 'KIKOO.JPG'
                 )
             )
@@ -199,10 +200,10 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $params = array('base_id' => self::$DI['collection']->get_base_id());
         $files = array(
             'files' => array(
-                new \Symfony\Component\HttpFoundation\File\UploadedFile(
+                new UploadedFile(
                     $this->tmpFile, 'KIKOO.JPG'
                 ),
-                new \Symfony\Component\HttpFoundation\File\UploadedFile(
+                new UploadedFile(
                     $this->tmpFile, 'KIKOO.JPG'
                 )
             )
@@ -225,12 +226,12 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $params = array(
             'base_id'     => self::$DI['collection']->get_base_id(),
-            'forceAction' => \Alchemy\Phrasea\Border\Manager::FORCE_RECORD,
+            'forceAction' => Manager::FORCE_RECORD,
         );
 
         $files = array(
             'files' => array(
-                new \Symfony\Component\HttpFoundation\File\UploadedFile(
+                new UploadedFile(
                     $this->tmpFile, 'KIKOO.JPG'
                 )
             )
@@ -260,13 +261,13 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $params = array(
             'base_id'     => self::$DI['collection']->get_base_id(),
-            'forceAction' => \Alchemy\Phrasea\Border\Manager::FORCE_RECORD,
+            'forceAction' => Manager::FORCE_RECORD,
             'status'      => array( self::$DI['collection']->get_base_id() => array( 4 => 1)),
         );
 
         $files = array(
             'files' => array(
-                new \Symfony\Component\HttpFoundation\File\UploadedFile(
+                new UploadedFile(
                     $this->tmpFile, 'KIKOO.JPG'
                 )
             )

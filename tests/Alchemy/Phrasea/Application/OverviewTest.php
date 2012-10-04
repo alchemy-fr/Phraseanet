@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
+use Alchemy\Phrasea\Border\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -34,7 +35,7 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
         $media = self::$DI['app']['mediavorus']->guess($tmp);
 
-        $file = new Alchemy\Phrasea\Border\File(self::$DI['app'], $media, self::$DI['collection']);
+        $file = new File(self::$DI['app'], $media, self::$DI['collection']);
         $record = record_adapter::createFromFile($file, self::$DI['app']);
 
         $record->generate_subdefs($record->get_databox(), self::$DI['app']);

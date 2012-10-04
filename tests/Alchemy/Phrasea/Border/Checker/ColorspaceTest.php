@@ -2,6 +2,8 @@
 
 namespace Alchemy\Phrasea\Border\Checker;
 
+use Alchemy\Phrasea\Border\File;
+
 require_once __DIR__ . '/../../../../PhraseanetPHPUnitAbstract.class.inc';
 
 class ColorspaceTest extends \PhraseanetPHPUnitAbstract
@@ -37,7 +39,7 @@ class ColorspaceTest extends \PhraseanetPHPUnitAbstract
             ->method('getFile')
             ->will($this->returnValue(new \SplFileInfo(__FILE__)));
 
-        $File = new \Alchemy\Phrasea\Border\File(self::$DI['app'], $media, self::$DI['collection']);
+        $File = new File(self::$DI['app'], $media, self::$DI['collection']);
 
         $response = $this->object->check(self::$DI['app']['EM'], $File);
 

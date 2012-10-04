@@ -335,7 +335,7 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
 
         file_put_contents($tmp, $xml);
 
-        $story = self::$object->createRecord(self::$DI['collection'], $tmpFile, $tmp, null, \Alchemy\Phrasea\Border\Manager::FORCE_RECORD);
+        $story = self::$object->createRecord(self::$DI['collection'], $tmpFile, $tmp, null, Manager::FORCE_RECORD);
 
         unlink($tmpFile);
 

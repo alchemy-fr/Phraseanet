@@ -2,6 +2,8 @@
 
 namespace Alchemy\Phrasea\Border\Checker;
 
+use Alchemy\Phrasea\Border\File;
+
 require_once __DIR__ . '/../../../../PhraseanetPHPUnitAbstract.class.inc';
 
 class DimensionTest extends \PhraseanetPHPUnitAbstract
@@ -33,7 +35,7 @@ class DimensionTest extends \PhraseanetPHPUnitAbstract
             ->method('getFile')
             ->will($this->returnValue(new \SplFileInfo(__FILE__)));
 
-        $File = new \Alchemy\Phrasea\Border\File(self::$DI['app'], $media, self::$DI['collection']);
+        $File = new File(self::$DI['app'], $media, self::$DI['collection']);
 
         $object = new Dimension(self::$DI['app'], array('width' => 800));
         $response = $object->check(self::$DI['app']['EM'], $File);

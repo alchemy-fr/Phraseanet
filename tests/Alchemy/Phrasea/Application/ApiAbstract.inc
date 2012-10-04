@@ -4,8 +4,8 @@ namespace Alchemy\Phrasea\Application;
 
 require_once __DIR__ . '/../../../PhraseanetWebTestCaseAbstract.class.inc';
 
+use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Manager;
-use Silex\WebTestCase;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -1091,7 +1091,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $file = new \Alchemy\Phrasea\Border\File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../testfiles/test001.CR2'), self::$DI['collection']);
+        $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../testfiles/test001.CR2'), self::$DI['collection']);
         $record = \record_adapter::createFromFile($file, self::$DI['app']);
 
         $route = '/records/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/setmetadatas/';
@@ -1211,7 +1211,7 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
      */
     public function testMoveRecordToCollection()
     {
-        $file = new \Alchemy\Phrasea\Border\File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../testfiles/test001.CR2'), self::$DI['collection']);
+        $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../testfiles/test001.CR2'), self::$DI['collection']);
         $record = \record_adapter::createFromFile($file, self::$DI['app']);
 
         $this->setToken(self::$token);
@@ -1912,8 +1912,8 @@ abstract class ApiAbstract extends \PhraseanetWebTestCaseAbstract
         $tmpname = tempnam(sys_get_temp_dir(), 'test_quarantine');
         copy(__DIR__ . '/../../../testfiles/iphone_pic.jpg', $tmpname);
 
-        $file = \Alchemy\Phrasea\Border\File::buildFromPathfile($tmpname, self::$DI['collection'], self::$DI['app']);
-        self::$DI['app']['border-manager']->process($lazaretSession, $file, $callback, \Alchemy\Phrasea\Border\Manager::FORCE_LAZARET);
+        $file = File::buildFromPathfile($tmpname, self::$DI['collection'], self::$DI['app']);
+        self::$DI['app']['border-manager']->process($lazaretSession, $file, $callback, Manager::FORCE_LAZARET);
 
         return $quarantineItem;
     }

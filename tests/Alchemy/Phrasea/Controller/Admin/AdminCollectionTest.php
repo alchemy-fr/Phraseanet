@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Border\File;
 
 class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
@@ -110,7 +111,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $collection = $this->createOneCollection();
 
-        $file = new \Alchemy\Phrasea\Border\File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../testfiles/test001.CR2'), $collection);
+        $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../testfiles/test001.CR2'), $collection);
         \record_adapter::createFromFile($file, self::$DI['app']);
 
         self::$DI['client']->request('GET', '/admin/collection/' . $collection->get_base_id() . '/informations/details/');
@@ -430,7 +431,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $collection = $this->createOneCollection();
 
-        $file = new \Alchemy\Phrasea\Border\File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../testfiles/test001.CR2'), $collection);
+        $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../testfiles/test001.CR2'), $collection);
         \record_adapter::createFromFile($file, self::$DI['app']);
 
         if ($collection->get_record_amount() === 0) {
@@ -827,7 +828,7 @@ class AdminCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $collection = $this->createOneCollection();
 
-        $file = new \Alchemy\Phrasea\Border\File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../testfiles/test001.CR2'), $collection);
+        $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../testfiles/test001.CR2'), $collection);
         \record_adapter::createFromFile($file, self::$DI['app']);
 
         if ($collection->get_record_amount() === 0) {
