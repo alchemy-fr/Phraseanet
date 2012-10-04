@@ -126,6 +126,11 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
      * @var string
      */
     protected $login;
+    /**
+     *
+     * @var string
+     */
+    protected $locale;
 
     /**
      *
@@ -1036,7 +1041,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
             usr_prenom, usr_sexe as gender, usr_mail, adresse, usr_creationdate, usr_modificationdate,
             ville, cpostal, tel, fax, fonction, societe, geonameid, lastModel, invite,
             defaultftpdatasent, mail_notifications, activeftp, addrftp, loginftp,
-            pwdFTP, passifftp, destftp, prefixFTPfolder, mail_locked, model_of
+            pwdFTP, passifftp, destftp, prefixFTPfolder, mail_locked, model_of, locale
           FROM usr WHERE usr_id= :id ';
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
@@ -1075,6 +1080,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         $this->zip = $row['cpostal'];
         $this->gender = $row['gender'];
         $this->tel = $row['tel'];
+        $this->locale = $row['locale'];
         $this->fax = $row['fax'];
         $this->job = $row['fonction'];
         $this->position = $row['activite'];
@@ -1634,15 +1640,24 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     public function get_locale()
     {
-        $sql = "SELECT locale FROM usr WHERE usr_id = :usr_id";
+        return $this->locale ?: $this->app['phraseanet.registry']->get('GV_default_lng', 'en_GB');
+    }
+
+    public function set_locale($locale)
+    {
+        if (!in_array($locale, $this->app->getAvailableLanguages())) {
+            throw new \InvalidArgumentException(sprintf('Locale %s is not recognized', $locale));
+        }
+
+        $sql = 'UPDATE usr SET lccale = :locale WHERE usr_id = :usr_id';
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
-        $stmt->execute(array(':usr_id' => $this->get_id()));
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->execute(array(':locale'     => $locale, ':usr_id'  => $this->get_id()));
         $stmt->closeCursor();
+        $this->delete_data_from_cache();
 
-        $locale = $row['locale'] ? : $this->app['phraseanet.registry']->get('GV_default_lng', 'en_GB');
+        $this->locale = $locale;
 
-        return $locale;
+        return $this->locale;
     }
 
     public static function create(Application $app, $login, $password, $email, $admin, $invite = false)
