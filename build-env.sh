@@ -16,5 +16,4 @@ else
     sudo mysql -e "source `pwd`/hudson/fixtures.sql"
 fi
 
-sudo mysql -e 'SET GLOBAL time_zone = "+02:00";'
 sudo mysql -e 'SET @@global.sql_mode= "";'
