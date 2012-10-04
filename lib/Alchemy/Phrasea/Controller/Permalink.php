@@ -13,7 +13,6 @@ namespace Alchemy\Phrasea\Controller;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Silex\Application;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  *

@@ -11,9 +11,6 @@
 
 namespace Alchemy\Phrasea\Controller\Setup;
 
-use Alchemy\Phrasea\Core\Configuration;
-use Alchemy\Phrasea\Core\Service\Builder as ServiceBuilder;
-use Doctrine\ORM\Tools\SchemaTool;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
