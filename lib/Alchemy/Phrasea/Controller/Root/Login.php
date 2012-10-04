@@ -912,7 +912,9 @@ class Login implements ControllerProviderInterface
 
                 $app->openAccount($auth);
 
-                $auth->get_user()->set_locale($app['locale']);
+                if ($auth->get_user()->get_locale() != $app['locale']) {
+                    $auth->get_user()->set_locale($app['locale']);
+                }
 
                 /**
                  * IMPORTANT
