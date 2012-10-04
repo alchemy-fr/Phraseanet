@@ -803,7 +803,7 @@ class Login implements ControllerProviderInterface
 
         $is_guest = false;
 
-        if (null !== $request->request->get('nolog') && \phrasea::guest_allowed($app)) {
+        if (null !== $request->get('nolog') && \phrasea::guest_allowed($app)) {
             $is_guest = true;
         }
 

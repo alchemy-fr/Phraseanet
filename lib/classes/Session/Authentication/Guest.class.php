@@ -10,6 +10,10 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
 /**
  * Session Authentication Object for guest access
@@ -90,11 +94,20 @@ class Session_Authentication_Guest implements Session_Authentication_Interface
      */
     public function postlog()
     {
-        /**
-         * TODO NEUTRON FIX THIS
-         */
-        \Session_Handler::set_cookie('invite-usr_id', $this->user->get_id(), 0, true);
+        $this->app['dispatcher']->addListener(KernelEvents::RESPONSE, array($this, 'addInviteCookie'), -128);
 
         return $this;
+    }
+
+    public function addInviteCookie(FilterResponseEvent $event)
+    {
+        if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
+            return;
+        }
+
+        $response = $event->getResponse();
+        $response->headers->setCookie(new Cookie('invite-usr-id', $this->user->get_id()));
+
+        $event->setResponse($response);
     }
 }
