@@ -66,7 +66,7 @@ return call_user_func(function($environment = null) {
     $app = new PhraseaApplication($environment);
 
     $app->before(function () use ($app) {
-        $app['firewall']->requireSetup($app);
+        $app['firewall']->requireSetup();
     });
 
     $app->before(function(Request $request) use ($app) {
