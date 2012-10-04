@@ -361,7 +361,7 @@ class Session_Handler
      * @param  Session_Authentication_Interface $auth
      * @return Session_Handler
      */
-    public function authenticate(Session_Authentication_Interface $auth)
+    public function authenticate(Session_Authentication_Interface $auth, $persistent = false)
     {
         if ($this->appbox->get_registry()->get('GV_maintenance')) {
             throw new Exception_ServiceUnavailable();
@@ -404,7 +404,9 @@ class Session_Handler
         $this->delete_postlog();
 
         $auth->postlog();
-        $this->add_persistent_cookie();
+        if ($persistent) {
+            $this->add_persistent_cookie();
+        }
         self::set_cookie('last_act', '', -400000, true);
 
         return $this;

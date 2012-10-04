@@ -63,7 +63,7 @@ if (( ! is_null($parm['login']) && ! is_null($parm['pwd'])) || $is_guest) {
             $auth = new Session_Authentication_Native($appbox, $parm['login'], $parm['pwd']);
             $auth->set_captcha_challenge($captcha);
         }
-        $session->authenticate($auth);
+        $session->authenticate($auth, (Boolean) $parm['remember']);
     } catch (Exception_Session_StorageClosed $e) {
         return phrasea::redirect("/login/?redirect=" . $parm['redirect'] . "&error=session");
     } catch (Exception_Session_RequireCaptcha $e) {
