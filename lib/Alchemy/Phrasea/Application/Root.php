@@ -55,7 +55,6 @@ use Alchemy\Phrasea\Controller\Prod\UsrLists;
 use Alchemy\Phrasea\Controller\Prod\WorkZone;
 use Alchemy\Phrasea\Controller\Utils\ConnectionTest;
 use Alchemy\Phrasea\Controller\Utils\PathFileTest;
-use Silex\Application as SilexApp;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -70,7 +69,7 @@ return call_user_func(function($environment = null) {
     });
 
     $app->before(function(Request $request) use ($app) {
-        if (!$app->isAuthenticated() && $request->cookies->has('persistent')) {
+        if ($request->cookies->has('persistent') && !$app->isAuthenticated()) {
             try {
                 $auth = new \Session_Authentication_PersistentCookie($app, $request->cookies->get('persistent'));
                 $app->openAccount($auth, $auth->getSessionId());
@@ -80,7 +79,7 @@ return call_user_func(function($environment = null) {
         }
     });
 
-    $app->get('/', function(SilexApp $app) {
+    $app->get('/', function(PhraseaApplication $app) {
         if ($app['browser']->isMobile()) {
             return $app->redirect("/login/?redirect=lightbox");
         } elseif ($app['browser']->isNewGeneration()) {
@@ -90,7 +89,7 @@ return call_user_func(function($environment = null) {
         }
     });
 
-    $app->get('/robots.txt', function(SilexApp $app) {
+    $app->get('/robots.txt', function(PhraseaApplication $app) {
 
         if ($app['phraseanet.registry']->get('GV_allow_search_engine') === true) {
             $buffer = "User-Agent: *\n" . "Allow: /\n";
