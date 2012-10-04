@@ -2,8 +2,8 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Phrasea;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\SearchEngine\ConfigurationPanelInterface;
-use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 
 class ConfigurationPanel implements ConfigurationPanelInterface
@@ -18,7 +18,6 @@ class ConfigurationPanel implements ConfigurationPanelInterface
 
     public function get(Application $app, Request $request)
     {
-
         return $app['twig']->render('admin/search-engine/phrasea.html.twig', array());
     }
 
@@ -26,5 +25,4 @@ class ConfigurationPanel implements ConfigurationPanelInterface
     {
 
     }
-
 }

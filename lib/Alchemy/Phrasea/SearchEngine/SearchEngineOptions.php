@@ -186,7 +186,7 @@ class SearchEngineOptions implements \Serializable
      */
     public function useStemming($boolean)
     {
-        $this->stemming = ! ! $boolean;
+        $this->stemming = !!$boolean;
 
         return $this;
     }
@@ -285,15 +285,18 @@ class SearchEngineOptions implements \Serializable
     {
         $tmp = array();
         foreach ($status as $n => $options) {
-            if (count($options) > 1)
+            if (count($options) > 1) {
                 continue;
+            }
             if (isset($options['on'])) {
-                foreach ($options['on'] as $sbas_id)
+                foreach ($options['on'] as $sbas_id) {
                     $tmp[$n][$sbas_id] = 1;
+                }
             }
             if (isset($options['off'])) {
-                foreach ($options['off'] as $sbas_id)
+                foreach ($options['off'] as $sbas_id) {
                     $tmp[$n][$sbas_id] = 0;
+                }
             }
         }
 
@@ -359,7 +362,7 @@ class SearchEngineOptions implements \Serializable
      */
     public function setMinDate($min_date)
     {
-        if ( ! is_null($min_date) && trim($min_date) !== '') {
+        if (!is_null($min_date) && trim($min_date) !== '') {
             $this->date_min = DateTime::createFromFormat('Y/m/d H:i:s', $min_date . ' 00:00:00');
         }
 
@@ -382,8 +385,8 @@ class SearchEngineOptions implements \Serializable
      */
     public function setMaxDate($max_date)
     {
-        if ( ! is_null($max_date) && trim($max_date) !== '') {
-            $this->date_max = DateTime::createFromFormat('Y/m/d H:i:s', $max_date . ' 23:59:59');
+        if (!is_null($max_date) && trim($max_date) !== '') {
+            $this->date_max = \DateTime::createFromFormat('Y/m/d H:i:s', $max_date . ' 23:59:59');
         }
 
         return $this;
@@ -427,7 +430,7 @@ class SearchEngineOptions implements \Serializable
     {
         $ret = array();
         foreach ($this as $key => $value) {
-            if ($value instanceof DateTime) {
+            if ($value instanceof \DateTime) {
                 $value = $value->format('d-m-Y h:i:s');
             }
             if (in_array($key, array('collections', 'business_fields'))) {
