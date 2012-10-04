@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Controller\Exception as ControllerException;
 use Silex\ControllerProviderInterface;
 use Silex\Application as SilexApplication;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class Lightbox implements ControllerProviderInterface
@@ -21,6 +22,42 @@ class Lightbox implements ControllerProviderInterface
     public function connect(SilexApplication $app)
     {
         $controllers = $app['controllers_factory'];
+
+        $controllers->before(function(Request $request) use ($app) {
+            if (!$request->query->has('LOG')) {
+                return;
+            }
+
+            if ($app->isAuthenticated()) {
+                $app->closeAccount();
+            }
+
+            try {
+                $auth = new \Session_Authentication_Token($app, $request->query->get('LOG'));
+                $app->openAccount($auth);
+            } catch (Exception $e) {
+                return $app->redirect("/login/?error=" . urlencode($e->getMessage()));
+            }
+
+            try {
+                $datas = \random::helloToken($app, $request->query->get('LOG'));
+            } catch (\Exception_NotFound $e) {
+                return;
+            }
+            switch ($datas['type']) {
+                case \random::TYPE_FEED_ENTRY:
+                    return $app->redirect("/lightbox/feeds/entry/" . $datas['datas'] . "/");
+                    break;
+                case \random::TYPE_VALIDATE:
+                case \random::TYPE_VIEW:
+                    return $app->redirect("/lightbox/validate/" . $datas['datas'] . "/");
+                    break;
+            }
+        });
+
+        $controllers->before(function(Request $request) use ($app) {
+            $app['firewall']->requireAuthentication();
+        });
 
         $controllers->get('/', function (SilexApplication $app) {
             \User_Adapter::updateClientInfos($app, 6);

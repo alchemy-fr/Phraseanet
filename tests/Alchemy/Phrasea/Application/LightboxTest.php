@@ -30,7 +30,8 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteSlash()
     {
-        $auth = new Session_Authentication_None(self::$DI['user']);
+        \phrasea::start(self::$DI['app']['phraseanet.configuration']);
+        $auth = new Session_Authentication_None(self::$DI['user'], self::$DI['app']['session']->get('phrasea_session_id'));
         self::$DI['app']->openAccount($auth);
 
         $baskets = $this->insertFiveBasket();
@@ -54,6 +55,19 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $crawler = self::$DI['client']->request('GET', '/lightbox/');
         $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
         $this->assertEquals('UTF-8', self::$DI['client']->getResponse()->getCharset());
+    }
+
+    public function testAuthenticationWithToken()
+    {
+        self::$DI['app']->closeAccount();
+
+        $Basket = $this->insertOneBasket();
+        $token = \random::getUrlToken(self::$DI['app'], \random::TYPE_VIEW, self::$DI['user_alt2']->get_id(), null, $Basket->getId());
+
+        self::$DI['client']->request('GET', '/lightbox/?LOG='.$token);
+
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
+        $this->assertRegExp('/\/lightbox\/validate\/\d+\//', self::$DI['client']->getResponse()->headers->get('location'));
     }
 
     public function testAjaxNoteForm()
