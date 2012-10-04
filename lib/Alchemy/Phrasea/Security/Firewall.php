@@ -16,7 +16,7 @@ class Firewall
     public function requireSetUp()
     {
         if (!$this->app['phraseanet.configuration-tester']->isInstalled()) {
-            $this->app->abort(403, 'Phraseanet is not installed', array('X-Phraseanet-Redirect' => '/setup/'));
+            $this->app->abort(302, 'Phraseanet is not installed', array('X-Phraseanet-Redirect' => '/setup/'));
         }
 
         return null;
@@ -113,7 +113,16 @@ class Firewall
     public function requireAuthentication()
     {
         if (!$this->app->isAuthenticated()) {
-            $this->app->abort(403, 'You are not authenticated', array('X-Phraseanet-Redirect' => '/login/'));
+            $this->app->abort(302, 'You are not authenticated', array('X-Phraseanet-Redirect' => '/login/'));
+        }
+
+        return $this;
+    }
+
+    public function requireNotAuthenticated()
+    {
+        if ($this->app->isAuthenticated()) {
+            $this->app->abort(302, 'You are authenticated', array('X-Phraseanet-Redirect' => '/prod/'));
         }
 
         return $this;

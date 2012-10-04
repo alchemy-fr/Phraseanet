@@ -27,6 +27,10 @@ class TOU implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
+        $controllers->before(function(Request $request) use ($app) {
+            $app['firewall']->requireAuthentication();
+        });
+
         $controllers->post('/deny/{sbas_id}/', function(Application $app, Request $request, $sbas_id) {
             $ret = array('success' => false, 'message' => '');
 

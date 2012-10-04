@@ -24,6 +24,10 @@ class TaskManager implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
+        $controllers->before(function(Request $request) use ($app) {
+            $app['firewall']->requireAdmin();
+        });
+
         $controllers->get('/', function(Application $app, Request $request) {
             return $app->redirect('/admin/task-manager/tasks/');
         });

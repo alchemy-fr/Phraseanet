@@ -28,6 +28,12 @@ class MoveCollection implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
+        $controllers->before(function(Request $request) use ($app) {
+            $app['firewall']->requireAuthentication()
+                ->requireRight('addrecord')
+                ->requireRight('deleterecord');
+        });
+
         $controllers->post('/', $this->call('displayForm'));
         $controllers->post('/apply/', $this->call('apply'));
 

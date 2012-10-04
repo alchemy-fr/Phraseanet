@@ -29,6 +29,10 @@ class Feed implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
+        $controllers->before(function(Request $request) use ($app) {
+            $app['firewall']->requireAuthentication();
+        });
+
         /**
          * I got a selection of docs, which publications are available forthese docs ?
          */
@@ -65,6 +69,8 @@ class Feed implements ControllerProviderInterface
             }
 
             return $app->json($datas);
+        })->before(function(Request $request) use ($app) {
+            $app['firewall']->requireRight('bas_chupub');
         });
 
         $controllers->get('/entry/{id}/edit/', function(Application $app, Request $request, $id) {
@@ -79,7 +85,10 @@ class Feed implements ControllerProviderInterface
             $datas = $app['twig']->render('prod/actions/publish/publish_edit.html.twig', array('entry' => $entry, 'feeds' => $feeds));
 
             return new Response($datas);
-        })->assert('id', '\d+');
+        })->assert('id', '\d+')
+          ->before(function(Request $request) use ($app) {
+            $app['firewall']->requireRight('bas_chupub');
+        });
 
         $controllers->post('/entry/{id}/update/', function(Application $app, Request $request, $id) {
             $datas = array('error'   => true, 'message' => '', 'datas'   => '');
@@ -150,7 +159,9 @@ class Feed implements ControllerProviderInterface
             }
 
             return $app->json($datas);
-        })->assert('id', '\d+');
+        })->assert('id', '\d+')->before(function(Request $request) use ($app) {
+            $app['firewall']->requireRight('bas_chupub');
+        });
 
         $controllers->post('/entry/{id}/delete/', function(Application $app, Request $request, $id) {
             $datas = array('error'   => true, 'message' => '');
@@ -177,7 +188,9 @@ class Feed implements ControllerProviderInterface
             }
 
             return $app->json($datas);
-        })->assert('id', '\d+');
+        })->assert('id', '\d+')->before(function(Request $request) use ($app) {
+            $app['firewall']->requireRight('bas_chupub');
+        });
 
         $controllers->get('/', function(Application $app, Request $request) {
             $request = $app['request'];

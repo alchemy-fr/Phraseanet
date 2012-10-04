@@ -30,23 +30,18 @@ class Description implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
+        $controllers->before(function(Request $request) use ($app) {
+            $app['firewall']->requireAccessToModule('admin')
+                ->requireRightOnSbas($request->attributes->get('sbas_id'), 'bas_modify_struct');
+        });
+
         $controllers->get('/metadatas/search/', $this->call('metadataTypeAhead'));
 
         $controllers->post('/{sbas_id}/', $this->call('updateDataboxStructure'))
-            ->before(function(Request $request) use ($app) {
-                if (false === $app['phraseanet.user']->ACL()
-                        ->has_right_on_sbas($request->attributes->get('sbas_id'), 'bas_modify_struct')) {
-                    throw new AccessDeniedHttpException('You are not allowed to access this zone');
-                }
-            })->assert('sbas_id', '\d+');
+            ->assert('sbas_id', '\d+');
 
         $controllers->get('/{sbas_id}/', $this->call('getDataboxStructure'))
-            ->before(function(Request $request) use ($app) {
-                if (false === $app['phraseanet.user']->ACL()
-                        ->has_right_on_sbas($request->attributes->get('sbas_id'), 'bas_modify_struct')) {
-                    throw new AccessDeniedHttpException('You are not allowed to access this zone');
-                }
-            })->assert('sbas_id', '\d+');
+            ->assert('sbas_id', '\d+');
 
         return $controllers;
     }

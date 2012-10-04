@@ -28,6 +28,13 @@ class Publications implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
+        /**
+         * TODO NEUTRON verifier correlation avec tree
+         */
+        $controllers->before(function(Request $request) use ($app) {
+            $app['firewall']->requireAccessToModule('admin');
+        });
+
         $controllers->get('/list/', function(PhraseaApplication $app) {
 
             $feeds = \Feed_Collection::load_all(

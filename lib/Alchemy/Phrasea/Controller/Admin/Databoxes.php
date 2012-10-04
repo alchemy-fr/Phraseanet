@@ -30,7 +30,7 @@ class Databoxes implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
-            $app['firewall']->requireAdmin();
+            $app['firewall']->requireAccessToModule('admin');
         });
 
 
@@ -65,7 +65,10 @@ class Databoxes implements ControllerProviderInterface
          * return       : Redirect Response
          */
         $controllers->post('/', $this->call('createDatabase'))
-            ->bind('admin_database_new');
+            ->bind('admin_database_new')
+            ->before(function(Request $request) use ($app) {
+                $app['firewall']->requireAdmin();
+            });
 
         /**
          * Mount a database
@@ -81,7 +84,10 @@ class Databoxes implements ControllerProviderInterface
          * return       : Redirect Response
          */
         $controllers->post('/mount/', $this->call('databaseMount'))
-            ->bind('admin_database_mount');
+            ->bind('admin_database_mount')
+            ->before(function(Request $request) use ($app) {
+                $app['firewall']->requireAdmin();
+            });
 
         /**
          * Upgrade all databases
@@ -97,7 +103,10 @@ class Databoxes implements ControllerProviderInterface
          * return       : Redirect Response
          */
         $controllers->post('/upgrade/', $this->call('databasesUpgrade'))
-            ->bind('admin_databases_upgrade');
+            ->bind('admin_databases_upgrade')
+            ->before(function(Request $request) use ($app) {
+                $app['firewall']->requireAdmin();
+            });
 
         return $controllers;
     }
@@ -111,11 +120,7 @@ class Databoxes implements ControllerProviderInterface
      */
     public function getDatabases(Application $app, Request $request)
     {
-        $createBase = $mountBase = $upgradeAvailable = false;
-
-        if ($app['phraseanet.appbox']->upgradeavailable()) {
-            $upgradeAvailable = true;
-        }
+        $createBase = $mountBase = false;
 
         $sbasIds = array_merge(
             array_keys($app['phraseanet.user']->ACL()->get_granted_sbas(array('bas_manage')))
@@ -133,9 +138,6 @@ class Databoxes implements ControllerProviderInterface
 
             try {
                 $databox = $app['phraseanet.appbox']->get_databox($sbasId);
-                if ($databox->upgradeavailable()) {
-                    $upgradeAvailable = true;
-                }
 
                 $sbas[$sbasId] = array(
                     'version'     => $databox->get_version(),
@@ -183,7 +185,6 @@ class Databoxes implements ControllerProviderInterface
         return $app['twig']->render('admin/databases.html.twig', array(
             'files'             => new \DirectoryIterator($app['phraseanet.registry']->get('GV_RootPath') . 'lib/conf.d/data_templates'),
             'sbas'              => $sbas,
-            'upgrade_available' => $upgradeAvailable,
             'error_msg'         => $errorMsg,
             'recommendations'   => $upgrader->getRecommendations(),
             'advices'           => $request->query->get('advices', array()),

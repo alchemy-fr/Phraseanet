@@ -14,7 +14,6 @@ namespace Alchemy\Phrasea\Controller\Prod;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Finder\Finder;
 use Alchemy\Phrasea\Helper;
 
@@ -31,6 +30,14 @@ class Root implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
+
+            if (!$app->isAuthenticated() && null !== $request->query->get('nolog') && \phrasea::guest_allowed($app)) {
+                $auth = new Session_Authentication_Guest($app);
+                $app->openAccount($auth);
+
+                return $app->redirect('/prod/');
+            }
+
             $app['firewall']->requireAuthentication();
         });
 

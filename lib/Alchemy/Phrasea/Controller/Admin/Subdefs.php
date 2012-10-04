@@ -28,6 +28,11 @@ class Subdefs implements ControllerProviderInterface
 
         $controllers = $app['controllers_factory'];
 
+        $controllers->before(function(Request $request) use ($app) {
+            $app['firewall']->requireAccessToModule('admin')
+                ->requireRightOnSbas($request->attributes->get('sbas_id'), 'bas_modify_struct');
+        });
+
         $controllers->get('/{sbas_id}/', function(Application $app, $sbas_id) {
             $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
 

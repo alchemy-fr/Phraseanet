@@ -29,6 +29,10 @@ class Story implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
+        $controllers->before(function(Request $request) use ($app) {
+            $app['firewall']->requireAuthentication();
+        });
+
         $controllers->get('/create/', function(Application $app) {
             return $app['twig']->render('prod/Story/Create.html.twig', array());
         });

@@ -26,7 +26,8 @@ class Collection implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
-            $app['firewall']->requireRightOnBase($app['request']->attributes->get('bas_id'), 'canadmin');
+            $app['firewall']->requireAccessToModule('admin')
+                ->requireRightOnBase($app['request']->attributes->get('bas_id'), 'canadmin');
         });
 
         /**

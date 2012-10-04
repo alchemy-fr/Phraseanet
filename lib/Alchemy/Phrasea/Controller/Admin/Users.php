@@ -29,6 +29,11 @@ class Users implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
+        $controllers->before(function(Request $request) use ($app) {
+            $app['firewall']->requireAccessToModule('admin')
+                ->requireRight('manageusers');
+        });
+
         $controllers->post('/rights/', function(Application $app) {
             $rights = new UserHelper\Edit($app, $app['request']);
 

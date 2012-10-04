@@ -35,6 +35,11 @@ class Order implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
+        $controllers->before(function(Request $request) use ($app) {
+            $app['firewall']->requireAuthentication()
+                ->requireRight('order');
+        });
+
         /**
          * List all orders
          *
@@ -50,7 +55,7 @@ class Order implements ControllerProviderInterface
          */
         $controllers->get('/', $this->call('displayOrders'))
             ->before(function(Request $request) use ($app) {
-                $app['firewall']->requireOrdersAdmin($app);
+                $app['firewall']->requireOrdersAdmin();
             })
             ->bind('prod_orders');
 
@@ -85,7 +90,7 @@ class Order implements ControllerProviderInterface
          */
         $controllers->get('/{order_id}/', $this->call('displayOneOrder'))
             ->before(function(Request $request) use ($app) {
-                $app['firewall']->requireOrdersAdmin($app);
+                $app['firewall']->requireOrdersAdmin();
             })
             ->bind('prod_order')
             ->assert('order_id', '\d+');
@@ -105,7 +110,7 @@ class Order implements ControllerProviderInterface
          */
         $controllers->post('/{order_id}/send/', $this->call('sendOrder'))
             ->before(function(Request $request) use ($app) {
-                $app['firewall']->requireOrdersAdmin($app);
+                $app['firewall']->requireOrdersAdmin();
             })
             ->bind('prod_order_send')
             ->assert('order_id', '\d+');
@@ -125,7 +130,7 @@ class Order implements ControllerProviderInterface
          */
         $controllers->post('/{order_id}/deny/', $this->call('denyOrder'))
             ->before(function(Request $request) use ($app) {
-                $app['firewall']->requireOrdersAdmin($app);
+                $app['firewall']->requireOrdersAdmin();
             })
             ->bind('prod_order_deny')
             ->assert('order_id', '\d+');

@@ -95,6 +95,11 @@ class Push implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
+        $controllers->before(function(Request $request) use ($app) {
+            $app['firewall']->requireAuthentication()
+                ->requireRight('push');
+        });
+
         $userFormatter = $this->getUserFormatter();
 
         $listFormatter = $this->getListFormatter();

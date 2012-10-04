@@ -28,6 +28,10 @@ class Fields implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
+        $controllers->before(function(Request $request) use ($app) {
+            $app['firewall']->requireAccessToModule('admin');
+        });
+
         $controllers->get('/checkmulti/', function(PhraseaApplication $app, Request $request) {
             $multi = ($request->query->get('multi') === 'true');
 

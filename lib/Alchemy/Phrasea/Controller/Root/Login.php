@@ -53,9 +53,7 @@ class Login implements ControllerProviderInterface
          */
         $controllers->get('/', $this->call('login'))
             ->before(function(Request $request) use ($app) {
-                    if ($app->isAuthenticated()) {
-                        return $app->redirect('/' . $request->query->get('redirect', 'prod') . '/');
-                    }
+                    $app['firewall']->requireNotAuthenticated();
 
                     if (null !== $request->query->get('postlog')) {
 
@@ -85,7 +83,9 @@ class Login implements ControllerProviderInterface
          * return       : HTML Response
          */
         $controllers->post('/authenticate/', $this->call('authenticate'))
-            ->bind('login_authenticate');
+            ->before(function(Request $request) use ($app) {
+                $app['firewall']->requireNotAuthenticated();
+            })->bind('login_authenticate');
 
         /**
          * Logout
@@ -101,7 +101,9 @@ class Login implements ControllerProviderInterface
          * return       : HTML Response
          */
         $controllers->get('/logout/', $this->call('logout'))
-            ->bind('logout');
+            ->before(function(Request $request) use ($app) {
+                $app['firewall']->requireAuthentication();
+            })->bind('logout');
 
         /**
          * Register a new user
@@ -117,7 +119,9 @@ class Login implements ControllerProviderInterface
          * return       : HTML Response
          */
         $controllers->get('/register/', $this->call('displayRegisterForm'))
-            ->bind('login_register');
+            ->before(function(Request $request) use ($app) {
+                $app['firewall']->requireNotAuthenticated();
+            })->bind('login_register');
 
         /**
          * Register a new user
@@ -133,7 +137,9 @@ class Login implements ControllerProviderInterface
          * return       : HTML Response
          */
         $controllers->post('/register/', $this->call('register'))
-            ->bind('submit_login_register');
+            ->before(function(Request $request) use ($app) {
+                $app['firewall']->requireNotAuthenticated();
+            })->bind('submit_login_register');
 
         /**
          * Register confirm
@@ -149,7 +155,9 @@ class Login implements ControllerProviderInterface
          * return       : HTML Response
          */
         $controllers->get('/register-confirm/', $this->call('registerConfirm'))
-            ->bind('login_register_confirm');
+            ->before(function(Request $request) use ($app) {
+                $app['firewall']->requireNotAuthenticated();
+            })->bind('login_register_confirm');
 
         /**
          * Send confirmation mail
@@ -165,7 +173,9 @@ class Login implements ControllerProviderInterface
          * return       : HTML Response
          */
         $controllers->get('/send-mail-confirm/', $this->call('sendConfirmMail'))
-            ->bind('login_send_mail');
+            ->before(function(Request $request) use ($app) {
+                $app['firewall']->requireNotAuthenticated();
+            })->bind('login_send_mail');
 
         /**
          * Forgot password
@@ -181,7 +191,9 @@ class Login implements ControllerProviderInterface
          * return       : HTML Response
          */
         $controllers->get('/forgot-password/', $this->call('displayForgotPasswordForm'))
-            ->bind('login_forgot_password');
+            ->before(function(Request $request) use ($app) {
+                $app['firewall']->requireNotAuthenticated();
+            })->bind('login_forgot_password');
 
         /**
          * Renew password
@@ -197,7 +209,9 @@ class Login implements ControllerProviderInterface
          * return       : HTML Response
          */
         $controllers->post('/forgot-password/', $this->call('renewPassword'))
-            ->bind('submit_login_forgot_password');
+            ->before(function(Request $request) use ($app) {
+                $app['firewall']->requireNotAuthenticated();
+            })->bind('submit_login_forgot_password');
 
         return $controllers;
     }
@@ -826,8 +840,7 @@ class Login implements ControllerProviderInterface
 
 
                 $sql = "SELECT session_id FROM cache
-                    WHERE (lastaccess < DATE_SUB(NOW(), INTERVAL 1 MONTH) AND token IS NOT NULL)
-                    OR (lastaccess < DATE_SUB(NOW(), INTERVAL 30 MINUTE) AND token IS NULL)";
+                    WHERE lastaccess < DATE_SUB(NOW(), INTERVAL 1 MONTH)";
 
                 $stmt = $conn->prepare($sql);
                 $stmt->execute();
