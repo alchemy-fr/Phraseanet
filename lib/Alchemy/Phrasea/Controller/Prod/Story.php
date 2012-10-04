@@ -11,11 +11,12 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use Alchemy\Phrasea\Controller\Exception as ControllerException;
+use Alchemy\Phrasea\Controller\RecordsRequest;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Alchemy\Phrasea\Controller\Exception as ControllerException;
 
 /**
  *
@@ -47,23 +48,12 @@ class Story implements ControllerProviderInterface
 
             $Story = \record_adapter::createStory($app, $collection);
 
-            foreach (explode(';', $request->request->get('lst')) as $sbas_rec) {
-                $sbas_rec = explode('_', $sbas_rec);
+            $records = RecordsRequest::fromRequest($app, $request, true);
 
-                if (count($sbas_rec) !== 2) {
+            foreach ($records as $record) {
+                if ($Story->hasChild($record)) {
                     continue;
                 }
-
-                $record = new \record_adapter($app, $sbas_rec[0], $sbas_rec[1]);
-
-                if (!$app['phraseanet.user']->ACL()->has_access_to_base($record->get_base_id())
-                    && !$app['phraseanet.user']->ACL()->has_hd_grant($record)
-                    && !$app['phraseanet.user']->ACL()->has_preview_grant($record)) {
-                    continue;
-                }
-
-                if ($Story->hasChild($record))
-                    continue;
 
                 $Story->appendChild($record);
             }
@@ -129,25 +119,14 @@ class Story implements ControllerProviderInterface
 
             $n = 0;
 
-            foreach (explode(';', $request->request->get('lst')) as $sbas_rec) {
-                $sbas_rec = explode('_', $sbas_rec);
+            $records = RecordsRequest::fromRequest($app, $request, true);
 
-                if (count($sbas_rec) !== 2)
-                    continue;
-
-                $record = new \record_adapter($app, $sbas_rec[0], $sbas_rec[1]);
-
-                if (!$app['phraseanet.user']->ACL()->has_access_to_base($record->get_base_id())
-                    && !$app['phraseanet.user']->ACL()->has_hd_grant($record)
-                    && !$app['phraseanet.user']->ACL()->has_preview_grant($record)) {
+            foreach ($records as $record) {
+                if ($Story->hasChild($record)) {
                     continue;
                 }
 
-                if ($Story->hasChild($record))
-                    continue;
-
                 $Story->appendChild($record);
-
                 $n++;
             }
 
