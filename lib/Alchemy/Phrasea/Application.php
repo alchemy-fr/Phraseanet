@@ -337,7 +337,6 @@ class Application extends SilexApplication
                     ));
                 }
 
-                $twig->addGlobal('app', $app);
                 $twig->addGlobal('current_date', new \DateTime());
 
                 $twig->addExtension(new \Twig_Extension_Core());
