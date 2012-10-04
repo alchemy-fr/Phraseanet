@@ -2,8 +2,7 @@
 
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
-use Symfony\Component\HttpKernel\Client;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
@@ -200,8 +199,8 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 , 'vocabulary_' . $id => 'User'
             ));
             print(self::$DI['client']->getResponse()->getContent());
-            $this->fail('Should throw an AccessDeniedException');
-        } catch (AccessDeniedHttpException $e) {
+            $this->fail('Should throw an HttpException');
+        } catch (HttpException $e) {
 
         }
 
@@ -217,8 +216,8 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         try {
             self::$DI['client']->request("GET", "/admin/description/" . $databox->get_sbas_id() . "/");
-            $this->fail('Should throw an AccessDeniedException');
-        } catch (AccessDeniedHttpException $e) {
+            $this->fail('Should throw an HttpException');
+        } catch (HttpException $e) {
 
         }
     }
@@ -234,6 +233,8 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testGetMetadatas()
     {
+        $this->setAdmin(true);
+
         $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
         $databox = array_shift($databoxes);
 

@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 use Symfony\Component\Filesystem\Filesystem;
+use \Symfony\Component\HttpKernel\Exception\HttpException;
 
 class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 {
@@ -56,13 +57,25 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     function testDatafilesRouteNotAuthenticated()
     {
         self::$DI['app']->closeAccount();
-        $crawler = self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/');
-        $response = self::$DI['client']->getResponse();
-        $this->assertEquals(403, $response->getStatusCode());
+        try {
+            $crawler = self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/preview/');
+            $this->fail('should throw an HttpException');
+        } catch (HttpException $e) {
+            $response = self::$DI['client']->getResponse();
+            $this->assertEquals(403, $e->getStatusCode());
+        }
+    }
 
-        $crawler = self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/notfoundreview/');
-        $response = self::$DI['client']->getResponse();
-        $this->assertEquals(403, $response->getStatusCode());
+    function testDatafilesRouteNotAuthenticatedUnknownSubdef()
+    {
+        self::$DI['app']->closeAccount();
+        try {
+            $crawler = self::$DI['client']->request('GET', '/datafiles/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/notfoundreview/');
+            $this->fail('should throw an HttpException');
+        } catch (HttpException $e) {
+            $response = self::$DI['client']->getResponse();
+            $this->assertEquals(403, $e->getStatusCode());
+        }
     }
 
     function testPermalinkAuthenticated()
