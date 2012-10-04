@@ -59,6 +59,7 @@ $groups = array(
         , '//include/jslibs/json2.js'
         , '//include/jslibs/colorpicker/js/colorpicker.js'
         , '//include/jslibs/jquery.mousewheel.js'
+        , '//include/jslibs/jquery.lazyload/jquery.lazyload.1.8.1.js'
         , '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jquery.common.js'

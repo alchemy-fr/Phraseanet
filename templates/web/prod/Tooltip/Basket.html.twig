@@ -23,7 +23,7 @@
         {% for element in basket.getElements() %}
             {% if loop.index <= 9 %}
             <div style="margin:5px;position:relative;float:left;width:80px;height:80px;overflow:hidden;">
-                {{ thumbnail.format(element.getRecord().get_thumbnail(), 80, 80 , '', session) }}
+                {{ thumbnail.format(element.getRecord().get_thumbnail(), 80, 80 , '', session, false, false) }}
             </div>
             {% endif %}
         {% endfor %}

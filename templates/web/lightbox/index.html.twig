@@ -42,7 +42,7 @@
                           <tr>
                               <td style="width:170px;">
                                   {% if basket_length > 0%}
-                                      {{thumbnail.format(basket.getElements().first().getRecord().get_thumbnail, 170, 170, '', session, true)}}
+                                      {{thumbnail.format(basket.getElements().first().getRecord().get_thumbnail, 170, 170, '', session, true, false)}}
                                   {% endif %}
                               </td>
                               <td style="width:20px;">
@@ -107,7 +107,7 @@
                           <tr>
                               <td style="width:170px;">
                                   {% if basket_length > 0%}
-                                      {{thumbnail.format(basket.getElements().first().getRecord().get_thumbnail, 170, 170, '', session, true)}}
+                                      {{thumbnail.format(basket.getElements().first().getRecord().get_thumbnail, 170, 170, '', session, true, false)}}
                                   {% endif %}
                               </td>
                               <td style="width:20px;">

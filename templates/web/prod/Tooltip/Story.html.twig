@@ -20,7 +20,7 @@
         {% for element in Story.get_children().get_elements() %}
             {% if loop.index <= 9 %}
             <div style="margin:5px;position:relative;float:left;width:80px;height:80px;overflow:hidden;">
-                {{ thumbnail.format(element.get_thumbnail(), 80, 80 , '', session) }}
+                {{ thumbnail.format(element.get_thumbnail(), 80, 80 , '', session, false, false) }}
             </div>
             {% endif %}
         {% endfor %}

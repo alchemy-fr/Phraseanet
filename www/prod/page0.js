@@ -57,8 +57,15 @@ function getHome(cas, page){
                 success: function(data){
                     answAjaxrunning = false;
                     var answers = $('#answers');
+
                     $('.next_publi_link', answers).remove();
+
                     answers.append(data);
+
+                    answers.find("img.lazyload").lazyload({
+                        container: answers
+                    });
+
                     afterSearch();
                     if(page > 0)
                     {
@@ -478,6 +485,10 @@ function initAnswerForm(){
 
 
                 $('#answers').empty().append(datas.results).removeClass('loading');
+
+                $("#answers img.lazyload").lazyload({
+                    container: $('#answers')
+                });
                 $('#tool_results').empty().append(datas.infos);
                 $('#tool_navigate').empty().append(datas.navigation);
 
@@ -949,6 +960,10 @@ $(document).ready(function(){
                 {
                     $('.see_more.loading', $answers).remove();
                     $answers.append(data);
+
+                    $answers.find("img.lazyload").lazyload({
+                        container: $answers
+                    });
 
                     if(!no_scroll)
                     {

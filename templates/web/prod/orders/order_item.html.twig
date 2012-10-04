@@ -58,7 +58,7 @@
             {% for order_element_id,element in order %}
                 <li>
                     <div id="order_wrapper_{{order.get_order_id()}}_{{element.get_base_id()}}_{{element.get_record_id()}}" class="order_wrapper {% if element.get_order_master_id() == false %}selectable{% endif %}">
-                        {{ thumbnail.format(element.get_thumbnail() ,80, 80, '', session, true) }}
+                        {{ thumbnail.format(element.get_thumbnail() ,80, 80, '', session, true, false) }}
                         {% if element.get_order_master_id() %}
                             {% set name = element.get_order_master_name() %}
                             {% if element.get_deny() == 1 %}

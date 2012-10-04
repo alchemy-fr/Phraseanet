@@ -40,7 +40,7 @@
             <td class="thumbnail">
               {% set BasketElement = Basket.getElements().first() %}
               {% if BasketElement %}
-                {{thumbnail.format(BasketElement.getRecord().get_thumbnail(), 80, 80, '', session, true)}}
+                {{thumbnail.format(BasketElement.getRecord().get_thumbnail(), 80, 80, '', session, true, false)}}
               {% endif %}
               <div class="counter">
                  {{ Basket.getElements().count() }}
