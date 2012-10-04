@@ -890,12 +890,8 @@ class Login implements ControllerProviderInterface
 
                 $user = $auth->signOn();
 
-
                 /**
-                 * TODO NEUTRON save user locale
-                 */
-                /**
-                 * TODO NEUTRON move this to phrasea
+                 * TODO NEUTRON move this to phrasea engine
                  */
                 $user->ACL()->inject_rights();
 
@@ -915,6 +911,8 @@ class Login implements ControllerProviderInterface
                 }
 
                 $app->openAccount($auth);
+
+                $auth->get_user()->set_locale($app['locale']);
 
                 /**
                  * IMPORTANT

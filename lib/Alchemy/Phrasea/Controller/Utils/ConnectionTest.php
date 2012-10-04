@@ -28,7 +28,7 @@ class ConnectionTest implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         /**
-         * TODO NEUTRON check firewall
+         * @todo : check this as it would lead to a security issue
          */
         $controllers->get('/mysql/', function(Application $app) {
             require_once __DIR__ . '/../../../../classes/connection/pdo.class.php';

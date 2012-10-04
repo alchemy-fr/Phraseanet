@@ -32,7 +32,8 @@ class Publications implements ControllerProviderInterface
          * TODO NEUTRON verifier correlation avec tree
          */
         $controllers->before(function(Request $request) use ($app) {
-            $app['firewall']->requireAccessToModule('admin');
+            $app['firewall']->requireAccessToModule('admin')
+                ->requireRight('bas_chupub');
         });
 
         $controllers->get('/list/', function(PhraseaApplication $app) {

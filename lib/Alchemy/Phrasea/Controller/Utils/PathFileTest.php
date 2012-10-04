@@ -28,7 +28,7 @@ class PathFileTest implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         /**
-         * TODO NEUTRON check firewall
+         * @todo : check this as it would lead to a security issue
          */
         $controllers->get('/path/', function(Application $app, Request $request) {
             return $app->json(array(

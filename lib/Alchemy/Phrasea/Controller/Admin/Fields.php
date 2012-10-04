@@ -29,7 +29,8 @@ class Fields implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
-            $app['firewall']->requireAccessToModule('admin');
+            $app['firewall']->requireAccessToModule('admin')
+                ->requireRight('bas_modify_struct');
         });
 
         $controllers->get('/checkmulti/', function(PhraseaApplication $app, Request $request) {
