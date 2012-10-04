@@ -235,18 +235,6 @@ abstract class base implements cache_cacheableInterface
         return $this->version;
     }
 
-    /**
-     * TODO NEUTRON : drop
-     */
-    public function upgradeavailable()
-    {
-        if ($this->get_version()) {
-            return version_compare(\Alchemy\Phrasea\Core\Version::getNumber(), $this->get_version(), '>');
-        } else {
-            return true;
-        }
-    }
-
     protected function upgradeDb($apply_patches, Setup_Upgrade $upgrader, Application $app)
     {
         $recommends = array();

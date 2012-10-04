@@ -41,7 +41,7 @@
     <div class="db_infos">
         <h2>{% trans 'admin::base: Version' %}</h2>
 
-        {% if upgrade_available %}
+        {% if not app['phraseanet.configuration-tester'].isUpToDate() %}
             <p>{% trans 'update::Votre application necessite une mise a jour vers : ' %} {{ app['phraseanet.version'].getNumber() }}</p>
         {% else %}
             <p>{% trans 'update::Votre version est a jour : ' %} {{ app['phraseanet.version'].getNumber() }}</p>
