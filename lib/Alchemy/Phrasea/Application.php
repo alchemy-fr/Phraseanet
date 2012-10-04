@@ -223,12 +223,15 @@ class Application extends SilexApplication
             return;
         }
 
-        /**
-         * dirty hack for flash uploader
-         */
-        if (!!stripos($event->getRequest()->server->get('HTTP_USER_AGENT'), 'flash') && $event->getRequest()->getRequestUri() === '/prod/upload/') {
-            if (null !== $sessionId = $event->getRequest()->get('php_session_id')) {
-                session_id($sessionId);
+        if (false !== stripos($event->getRequest()->server->get('HTTP_USER_AGENT'), 'flash')
+            && $event->getRequest()->getRequestUri() === '/prod/upload/') {
+
+            if (null !== $sessionId = $event->getRequest()->request->get('php_session_id')) {
+
+                $request = $event->getRequest();
+                $request->cookies->set($this['session']->getName(), $sessionId);
+
+                return $request;
             }
         }
     }

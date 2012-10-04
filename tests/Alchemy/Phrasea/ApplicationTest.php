@@ -174,6 +174,23 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
         $this->assertEquals('fr_FR', $client->getResponse()->getContent());
     }
 
+    /**
+     * @covers Alchemy\Phrasea\Application
+     */
+    public function testFlashSession()
+    {
+        $app = new Application('test');
+        $sessionId = null;
+        $app->post('/prod/upload/', function(Application $app) use (&$sessionId) {
+            $sessionId = $app['session']->getId();
+        });
+
+        $client = new Client($app);
+
+        $client->request('POST', '/prod/upload/', array('php_session_id'=>'123456'), array(), array('HTTP_USER_AGENT'=>'flash'));
+        $this->assertEquals('123456', $sessionId);
+    }
+
     private function getAppThatReturnLocale()
     {
         $app = new Application('test');
