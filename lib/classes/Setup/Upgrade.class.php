@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  * UpgradeManager for Phraseanet.
  * Datas are written in a lock file.
@@ -50,12 +52,7 @@ class Setup_Upgrade
      */
     protected $completed_steps = 0;
 
-    /**
-     *
-     * @param  appbox        $appbox
-     * @return Setup_Upgrade
-     */
-    public function __construct(appbox &$appbox, $force = false)
+    public function __construct(Application $app, $force = false)
     {
         if ($force) {
             self::remove_lock_file();
@@ -65,9 +62,9 @@ class Setup_Upgrade
             throw new Exception_Setup_UpgradeAlreadyStarted('The upgrade is already started');
         }
 
-        $this->appbox = $appbox;
+        $this->appbox = $app['phraseanet.appbox'];
 
-        if (count(User_Adapter::get_wrong_email_users($appbox)) > 0) {
+        if (count(User_Adapter::get_wrong_email_users($app)) > 0) {
             throw new Exception_Setup_FixBadEmailAddresses('Please fix the database before starting');
         }
 

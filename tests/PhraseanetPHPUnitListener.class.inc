@@ -26,12 +26,12 @@ class PhraseanetPHPUnitListener implements PHPUnit_Framework_TestListener
         return;
     }
 
-    public function getSkipped()
+    public static function getSkipped()
     {
         return static::$skipped;
     }
 
-    public function resetSkipped()
+    public static function resetSkipped()
     {
         static::$skipped = array();
 

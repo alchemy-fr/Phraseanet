@@ -8,7 +8,7 @@ class ServiceXcacheCacheTest extends PhraseanetPHPUnitAbstract
     public function testService()
     {
         $cache = new \Alchemy\Phrasea\Core\Service\Cache\XcacheCache(
-                self::$core, array()
+                self::$DI['app'], array()
         );
 
         if (extension_loaded('xcache')) {
@@ -27,7 +27,7 @@ class ServiceXcacheCacheTest extends PhraseanetPHPUnitAbstract
     public function testServiceException()
     {
         $cache = new \Alchemy\Phrasea\Core\Service\Cache\XcacheCache(
-                self::$core, array()
+                self::$DI['app'], array()
         );
 
         try {
@@ -41,7 +41,7 @@ class ServiceXcacheCacheTest extends PhraseanetPHPUnitAbstract
     public function testType()
     {
         $cache = new \Alchemy\Phrasea\Core\Service\Cache\XcacheCache(
-                self::$core, array()
+                self::$DI['app'], array()
         );
 
         $this->assertEquals("xcache", $cache->getType());

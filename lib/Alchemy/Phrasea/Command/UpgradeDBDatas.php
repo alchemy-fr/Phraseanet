@@ -76,14 +76,6 @@ EOF
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function requireSetup()
-    {
-        return true;
-    }
-
     public function setUpgrades(array $upgrades)
     {
         $this->upgrades = array();

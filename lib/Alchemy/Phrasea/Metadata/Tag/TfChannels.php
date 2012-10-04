@@ -2,7 +2,9 @@
 
 namespace Alchemy\Phrasea\Metadata\Tag;
 
-class TfChannels extends \PHPExiftool\Driver\Tag
+use PHPExiftool\Driver\AbstractTag;
+
+class TfChannels extends AbstractTag
 {
     protected $Id = 'tf-channels';
     protected $Name = 'tf-channels';

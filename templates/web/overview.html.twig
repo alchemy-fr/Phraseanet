@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block stylesheet %}
-    <link type="text/css" rel="stylesheet" href="{{registry.get('GV_STATIC_URL')}}/include/minify/f=include/jslibs/yui2.8/build/reset/reset.css" >
+    <link type="text/css" rel="stylesheet" href="{{app['phraseanet.registry'].get('GV_STATIC_URL')}}/include/minify/f=include/jslibs/yui2.8/build/reset/reset.css" >
         <style type="text/css">
       html{
 
@@ -83,7 +83,7 @@
         {% import 'common/thumbnail.html.twig' as thumbnail %}
         {% set subdef = record.get_subdef(subdef_name) %}
 
-        {{ thumbnail.format(subdef, subdef.get_width(), subdef.get_height(), '', session, true, false) }}
+        {{ thumbnail.format(subdef, subdef.get_width(), subdef.get_height(), '', true, false) }}
       </div>
             <div class="caption">
         {% include 'common/caption.html.twig' %}

@@ -6,32 +6,16 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
 
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Prod.php';
-        
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-        
-        return $app;
-    }
-
-    public function setUp()
-    {
-        parent::setUp();
-        $this->client = $this->createClient();
-    }
-
     /**
      * Default route test
      */
     public function testRoutePOSTSendSlash()
     {
-        $route = '/push/sendform/';
+        $route = '/prod/push/sendform/';
 
-        $this->client->request('POST', $route);
+        self::$DI['client']->request('POST', $route);
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
@@ -39,11 +23,11 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRoutePOSTValidateSlash()
     {
-        $route = '/push/validateform/';
+        $route = '/prod/push/validateform/';
 
-        $this->client->request('POST', $route);
+        self::$DI['client']->request('POST', $route);
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
@@ -51,16 +35,16 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRoutePOSTsend()
     {
-        $route = '/push/send/';
+        $route = '/prod/push/send/';
 
         $records = array(
-            static::$records['record_1']->get_serialize_key(),
-            static::$records['record_2']->get_serialize_key(),
+            self::$DI['record_1']->get_serialize_key(),
+            self::$DI['record_2']->get_serialize_key(),
         );
 
         $receivers = array(
-            array('usr_id' => self::$user_alt1->get_id(), 'HD'     => 1)
-            , array('usr_id' => self::$user_alt2->get_id(), 'HD'     => 0)
+            array('usr_id' => self::$DI['user_alt1']->get_id(), 'HD'     => 1)
+            , array('usr_id' => self::$DI['user_alt2']->get_id(), 'HD'     => 0)
         );
 
         $params = array(
@@ -68,9 +52,9 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             , 'participants' => $receivers
         );
 
-        $this->client->request('POST', $route, $params);
+        self::$DI['client']->request('POST', $route, $params);
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
@@ -85,22 +69,22 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRoutePOSTvalidate()
     {
-        $route = '/push/validate/';
+        $route = '/prod/push/validate/';
 
         $records = array(
-            static::$records['record_1']->get_serialize_key(),
-            static::$records['record_2']->get_serialize_key(),
+            self::$DI['record_1']->get_serialize_key(),
+            self::$DI['record_2']->get_serialize_key(),
         );
 
         $participants = array(
             array(
-                'usr_id'     => self::$user_alt1->get_id(),
+                'usr_id'     => self::$DI['user_alt1']->get_id(),
                 'agree'      => 0,
                 'see_others' => 1,
                 'HD'         => 0,
             )
             , array(
-                'usr_id'     => self::$user_alt2->get_id(),
+                'usr_id'     => self::$DI['user_alt2']->get_id(),
                 'agree'      => 1,
                 'see_others' => 0,
                 'HD'         => 1,
@@ -112,9 +96,9 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             , 'participants' => $participants
         );
 
-        $this->client->request('POST', $route, $params);
+        self::$DI['client']->request('POST', $route, $params);
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());
@@ -129,15 +113,15 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteGETsearchuser()
     {
-        $route = '/push/search-user/';
+        $route = '/prod/push/search-user/';
 
         $params = array(
             'query' => ''
         );
 
-        $this->client->request('GET', $route, $params);
+        self::$DI['client']->request('GET', $route, $params);
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('UTF-8', $response->getCharset());

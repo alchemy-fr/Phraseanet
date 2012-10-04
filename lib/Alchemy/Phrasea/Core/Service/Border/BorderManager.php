@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Service\Border;
 
-use Alchemy\Phrasea\Border;
+use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Core\Service\ServiceAbstract;
 
 /**
@@ -38,11 +38,10 @@ class BorderManager extends ServiceAbstract
      */
     protected function init()
     {
-        $appbox = \appbox::get_instance($this->core);
-        $borderManager = new Border\Manager($this->core['EM'], $this->core['file-system']);
+        $borderManager = new Manager($this->app);
 
-        if ($this->core['pdf-to-text']) {
-            $borderManager->setPdfToText($this->core['pdf-to-text']);
+        if ($this->app['xpdf.pdf2text']) {
+            $borderManager->setPdfToText($this->app['xpdf.pdf2text']);
         }
 
         $options = $this->getOptions();
@@ -78,13 +77,13 @@ class BorderManager extends ServiceAbstract
                 }
 
                 try {
-                    $checkerObj = new $className($options);
+                    $checkerObj = new $className($this->app, $options);
                     if (isset($checker['databoxes'])) {
 
                         $databoxes = array();
                         foreach ($checker['databoxes'] as $sbas_id) {
                             try {
-                                $databoxes[] = $appbox->get_databox($sbas_id);
+                                $databoxes[] = $this->app['phraseanet.appbox']->get_databox($sbas_id);
                             } catch (\Exception $e) {
                                 throw new \InvalidArgumentException('Invalid databox option');
                             }
@@ -97,7 +96,7 @@ class BorderManager extends ServiceAbstract
                         $collections = array();
                         foreach ($checker['collections'] as $base_id) {
                             try {
-                                $collections[] = \collection::get_from_base_id($base_id);
+                                $collections[] = \collection::get_from_base_id($this->app, $base_id);
                             } catch (\Exception $e) {
                                 throw new \InvalidArgumentException('Invalid collection option');
                             }

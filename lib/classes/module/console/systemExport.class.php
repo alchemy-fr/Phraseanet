@@ -71,15 +71,8 @@ class module_console_systemExport extends Command
         return $this;
     }
 
-    public function requireSetup()
-    {
-        return true;
-    }
-
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $core = $this->getService('phraseanet.core');
-
         $docPerDir = max(1, (int) $input->getOption('docperdir'));
 
         /**
@@ -130,13 +123,11 @@ class module_console_systemExport extends Command
             $output->writeln("Export datas from selected base_ids");
         }
 
-        $appbox = $this->getService('phraseanet.appbox');
-
         $total = $errors = 0;
 
         $unicode = new \unicode();
 
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach ($this->getService('phraseanet.appbox')->get_databoxes() as $databox) {
             $output->writeln(sprintf("Processing <info>%s</info>", $databox->get_viewname()));
 
             if (count($restrictSbasIds) > 0 && ! in_array($databox->get_sbas_id(), $restrictSbasIds)) {
@@ -167,7 +158,7 @@ class module_console_systemExport extends Command
                 . '/' . $unicode->remove_nonazAZ09($databox->get_viewname(), true, true)
                 . '/';
 
-            $core['file-system']->mkdir($local_export);
+            $this->getService('filesystem')->mkdir($local_export);
 
             $sql = 'SELECT record_id FROM record WHERE parent_record_id = 0 ';
 
@@ -200,7 +191,7 @@ class module_console_systemExport extends Command
                     $dir_increment ++;
                     $in_dir_files = array();
                     $current_dir = $local_export . sprintf($dir_format, $dir_increment) . '/';
-                    $core['file-system']->mkdir($current_dir);
+                    $this->getService('filesystem')->mkdir($current_dir);
                 }
 
                 if ($sanitize) {
@@ -253,8 +244,8 @@ class module_console_systemExport extends Command
             return false;
         }
 
-        $core = $this->getService('phraseanet.core');
-        $core['file-system']->copy($record->get_subdef('document')->get_pathfile(), $outfile);
+        $this->getService('filesystem')
+            ->copy($record->get_subdef('document')->get_pathfile(), $outfile);
 
         $dest_file = new \SplFileInfo($outfile);
 

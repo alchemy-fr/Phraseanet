@@ -19,7 +19,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         /**
          * Reset thumbtitle in order to have consistent tests (testGet_title)
          */
-        foreach (static::$records['record_1']->get_databox()->get_meta_structure() as $databox_field) {
+        foreach (self::$DI['record_1']->get_databox()->get_meta_structure() as $databox_field) {
 
             /* @var $databox_field \databox_field */
             $databox_field->set_thumbtitle(false)->save();
@@ -36,14 +36,14 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $basket = new \Entities\Basket();
 
         $basket->setName('hello');
-        $basket->setOwner(self::$user);
+        $basket->setOwner(self::$DI['user']);
         $basket->setDescription('hello');
 
-        $em = self::$core->getEntityManager();
+        $em = self::$DI['app']['EM'];
 
         $basketElement = new \Entities\BasketElement();
 
-        $basketElement->setRecord(static::$records['record_1']);
+        $basketElement->setRecord(self::$DI['record_1']);
         $basketElement->setBasket($basket);
 
         $em->persist($basketElement);
@@ -53,18 +53,20 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $em->persist($basket);
         $em->flush();
 
-        $receveid = array(static::$records['record_1']->get_serialize_key() => static::$records['record_1']);
+        $receveid = array(self::$DI['record_1']->get_serialize_key() => self::$DI['record_1']);
+
+        self::$DI['app']['phraseanet.user']->ACL()->update_rights_to_base(self::$DI['record_1']->get_base_id(), array('order_master' => true));
 
         return \set_order::create(
-                \appbox::get_instance(self::$core), new RecordsRequest($receveid, new ArrayCollection($receveid), $basket), self::$user_alt2, 'I need this photos', new \DateTime('+10 minutes')
+                self::$DI['app'], new RecordsRequest($receveid, new ArrayCollection($receveid), $basket), self::$DI['user_alt2'], 'I need this photos', new \DateTime('+10 minutes')
         );
     }
 
     public function testGet_creation_date()
     {
         $date_obj = new DateTime();
-        $this->assertTrue((static::$records['record_1']->get_creation_date() instanceof DateTime));
-        $this->assertTrue((static::$records['record_1']->get_creation_date() <= $date_obj));
+        $this->assertTrue((self::$DI['record_1']->get_creation_date() instanceof DateTime));
+        $this->assertTrue((self::$DI['record_1']->get_creation_date() <= $date_obj));
     }
 
     protected function assertDateAtom($date)
@@ -74,26 +76,26 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_uuid()
     {
-        $this->assertTrue(uuid::is_valid(static::$records['record_1']->get_uuid()));
+        $this->assertTrue(uuid::is_valid(self::$DI['record_1']->get_uuid()));
     }
 
     public function testGet_modification_date()
     {
         $date_obj = new DateTime();
-        $this->assertTrue((static::$records['record_1']->get_creation_date() instanceof DateTime));
-        $this->assertTrue((static::$records['record_1']->get_creation_date() <= $date_obj));
+        $this->assertTrue((self::$DI['record_1']->get_creation_date() instanceof DateTime));
+        $this->assertTrue((self::$DI['record_1']->get_creation_date() <= $date_obj));
     }
 
     public function testGet_number()
     {
-        static::$records['record_1']->set_number(24);
-        $this->assertEquals(24, static::$records['record_1']->get_number());
-        static::$records['record_1']->set_number(42);
-        $this->assertEquals(42, static::$records['record_1']->get_number());
-        static::$records['record_1']->set_number(0);
-        $this->assertEquals(0, static::$records['record_1']->get_number());
-        static::$records['record_1']->set_number(null);
-        $this->assertEquals(0, static::$records['record_1']->get_number());
+        self::$DI['record_1']->set_number(24);
+        $this->assertEquals(24, self::$DI['record_1']->get_number());
+        self::$DI['record_1']->set_number(42);
+        $this->assertEquals(42, self::$DI['record_1']->get_number());
+        self::$DI['record_1']->set_number(0);
+        $this->assertEquals(0, self::$DI['record_1']->get_number());
+        self::$DI['record_1']->set_number(null);
+        $this->assertEquals(0, self::$DI['record_1']->get_number());
     }
 
     public function testSet_number()
@@ -104,46 +106,46 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testSet_type()
     {
         try {
-            static::$records['record_1']->set_type('jambon');
+            self::$DI['record_1']->set_type('jambon');
             $this->fail();
         } catch (Exception $e) {
 
         }
-        $old_type = static::$records['record_1']->get_type();
-        static::$records['record_1']->set_type('video');
-        $this->assertEquals('video', static::$records['record_1']->get_type());
-        static::$records['record_1']->set_type($old_type);
-        $this->assertEquals($old_type, static::$records['record_1']->get_type());
+        $old_type = self::$DI['record_1']->get_type();
+        self::$DI['record_1']->set_type('video');
+        $this->assertEquals('video', self::$DI['record_1']->get_type());
+        self::$DI['record_1']->set_type($old_type);
+        $this->assertEquals($old_type, self::$DI['record_1']->get_type());
     }
 
     public function testIs_grouping()
     {
-        $this->assertFalse(static::$records['record_1']->is_grouping());
-        $this->assertTrue(static::$records['record_story_1']->is_grouping());
+        $this->assertFalse(self::$DI['record_1']->is_grouping());
+        $this->assertTrue(self::$DI['record_story_1']->is_grouping());
     }
 
     public function testGet_base_id()
     {
-        $this->assertTrue(is_int(static::$records['record_1']->get_base_id()));
-        $this->assertEquals(self::$collection->get_base_id(), static::$records['record_1']->get_base_id());
-        $this->assertTrue(is_int(static::$records['record_story_1']->get_base_id()));
-        $this->assertEquals(self::$collection->get_base_id(), static::$records['record_story_1']->get_base_id());
+        $this->assertTrue(is_int(self::$DI['record_1']->get_base_id()));
+        $this->assertEquals(self::$DI['collection']->get_base_id(), self::$DI['record_1']->get_base_id());
+        $this->assertTrue(is_int(self::$DI['record_story_1']->get_base_id()));
+        $this->assertEquals(self::$DI['collection']->get_base_id(), self::$DI['record_story_1']->get_base_id());
     }
 
     public function testGet_record_id()
     {
-        $this->assertTrue(is_int(static::$records['record_1']->get_record_id()));
-        $this->assertTrue(is_int(static::$records['record_story_1']->get_record_id()));
+        $this->assertTrue(is_int(self::$DI['record_1']->get_record_id()));
+        $this->assertTrue(is_int(self::$DI['record_story_1']->get_record_id()));
     }
 
     public function testGet_thumbnail()
     {
-        $this->assertTrue((static::$records['record_1']->get_thumbnail() instanceof media_subdef));
+        $this->assertTrue((self::$DI['record_1']->get_thumbnail() instanceof media_subdef));
     }
 
     public function testGet_embedable_medias()
     {
-        $embeddables = static::$records['record_1']->get_embedable_medias();
+        $embeddables = self::$DI['record_1']->get_embedable_medias();
         $this->assertTrue(is_array($embeddables));
         foreach ($embeddables as $subdef) {
             $this->assertInstanceOf('media_subdef', $subdef);
@@ -160,63 +162,58 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_type()
     {
-        $this->assertTrue(in_array(static::$records['record_1']->get_type(), array('video', 'audio', 'image', 'document', 'flash', 'unknown')));
+        $this->assertTrue(in_array(self::$DI['record_1']->get_type(), array('video', 'audio', 'image', 'document', 'flash', 'unknown')));
     }
 
     public function testGet_formated_duration()
     {
-        $this->assertTrue(strpos(static::$records['record_23']->get_formated_duration(), '00:17') === 0);
-        $this->assertEquals('', static::$records['record_1']->get_formated_duration());
+        $this->assertTrue(strpos(self::$DI['record_23']->get_formated_duration(), '00:17') === 0);
+        $this->assertEquals('', self::$DI['record_1']->get_formated_duration());
     }
 
     public function testGet_duration()
     {
-        $this->assertEquals(17, round(static::$records['record_23']->get_duration()));
-        $this->assertEquals(false, static::$records['record_1']->get_duration());
+        $this->assertEquals(17, round(self::$DI['record_23']->get_duration()));
+        $this->assertEquals(false, self::$DI['record_1']->get_duration());
     }
 
     public function testGet_rollover_thumbnail()
     {
-        $this->assertInstanceOf('media_subdef', static::$records['record_23']->get_rollover_thumbnail());
-        $this->assertNull(static::$records['record_1']->get_rollover_thumbnail());
-    }
-
-    public function testGenerate_subdefs()
-    {
-        $this->markTestIncomplete();
+        $this->assertInstanceOf('media_subdef', self::$DI['record_23']->get_rollover_thumbnail());
+        $this->assertNull(self::$DI['record_1']->get_rollover_thumbnail());
     }
 
     public function testGet_sha256()
     {
-        $this->assertNotNull(static::$records['record_1']->get_sha256());
-        $this->assertRegExp('/[a-zA-Z0-9]{64}/', static::$records['record_1']->get_sha256());
-        $this->assertNull(static::$records['record_story_1']->get_sha256());
+        $this->assertNotNull(self::$DI['record_1']->get_sha256());
+        $this->assertRegExp('/[a-zA-Z0-9]{64}/', self::$DI['record_1']->get_sha256());
+        $this->assertNull(self::$DI['record_story_1']->get_sha256());
     }
 
     public function testGet_mime()
     {
-        $this->assertRegExp('/image\/\w+/', static::$records['record_1']->get_mime());
+        $this->assertRegExp('/image\/\w+/', self::$DI['record_1']->get_mime());
     }
 
     public function testGet_status()
     {
-        $this->assertRegExp('/[01]{64}/', static::$records['record_1']->get_status());
+        $this->assertRegExp('/[01]{64}/', self::$DI['record_1']->get_status());
     }
 
     public function testGet_subdef()
     {
-        $this->assertInstanceOf('media_subdef', static::$records['record_1']->get_subdef('document'));
-        $this->assertInstanceOf('media_subdef', static::$records['record_1']->get_subdef('preview'));
-        $this->assertInstanceOf('media_subdef', static::$records['record_1']->get_subdef('thumbnail'));
-        $this->assertInstanceOf('media_subdef', static::$records['record_23']->get_subdef('document'));
-        $this->assertInstanceOf('media_subdef', static::$records['record_23']->get_subdef('preview'));
-        $this->assertInstanceOf('media_subdef', static::$records['record_23']->get_subdef('thumbnail'));
-        $this->assertInstanceOf('media_subdef', static::$records['record_23']->get_subdef('thumbnailGIF'));
+        $this->assertInstanceOf('media_subdef', self::$DI['record_1']->get_subdef('document'));
+        $this->assertInstanceOf('media_subdef', self::$DI['record_1']->get_subdef('preview'));
+        $this->assertInstanceOf('media_subdef', self::$DI['record_1']->get_subdef('thumbnail'));
+        $this->assertInstanceOf('media_subdef', self::$DI['record_23']->get_subdef('document'));
+        $this->assertInstanceOf('media_subdef', self::$DI['record_23']->get_subdef('preview'));
+        $this->assertInstanceOf('media_subdef', self::$DI['record_23']->get_subdef('thumbnail'));
+        $this->assertInstanceOf('media_subdef', self::$DI['record_23']->get_subdef('thumbnailGIF'));
     }
 
     public function testGet_subdefs()
     {
-        $subdefs = static::$records['record_1']->get_subdefs();
+        $subdefs = self::$DI['record_1']->get_subdefs();
         $this->assertTrue(is_array($subdefs));
         foreach ($subdefs as $subdef) {
             $this->assertInstanceOf('media_subdef', $subdef);
@@ -236,43 +233,43 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_technical_infos()
     {
-        $this->assertTrue(is_array(static::$records['record_1']->get_technical_infos()));
+        $this->assertTrue(is_array(self::$DI['record_1']->get_technical_infos()));
     }
 
     public function testGet_caption()
     {
-        $this->assertTrue((static::$records['record_1']->get_caption() instanceof caption_record));
+        $this->assertTrue((self::$DI['record_1']->get_caption() instanceof caption_record));
     }
 
     public function testGet_original_name()
     {
-        $this->assertEquals('test001.CR2', static::$records['record_1']->get_original_name());
+        $this->assertEquals('test001.CR2', self::$DI['record_1']->get_original_name());
     }
 
     public function testGet_title()
     {
-        $this->assertEquals('test001.CR2', static::$records['record_1']->get_title());
-        $this->assertEquals('test023.mp4', static::$records['record_23']->get_title());
+        $this->assertEquals('test001.CR2', self::$DI['record_1']->get_title());
+        $this->assertEquals('test023.mp4', self::$DI['record_23']->get_title());
     }
 
     public function testGet_preview()
     {
-        $this->assertTrue((static::$records['record_1']->get_preview() instanceof media_subdef));
+        $this->assertTrue((self::$DI['record_1']->get_preview() instanceof media_subdef));
     }
 
     public function testHas_preview()
     {
-        $this->assertTrue(static::$records['record_1']->has_preview());
+        $this->assertTrue(self::$DI['record_1']->has_preview());
     }
 
     public function testGet_serialize_key()
     {
-        $this->assertTrue(static::$records['record_1']->get_serialize_key() == static::$records['record_1']->get_sbas_id() . '_' . static::$records['record_1']->get_record_id());
+        $this->assertTrue(self::$DI['record_1']->get_serialize_key() == self::$DI['record_1']->get_sbas_id() . '_' . self::$DI['record_1']->get_record_id());
     }
 
     public function testGet_sbas_id()
     {
-        $this->assertTrue(is_int(static::$records['record_1']->get_sbas_id()));
+        $this->assertTrue(is_int(self::$DI['record_1']->get_sbas_id()));
     }
 
     public function testSubstitute_subdef()
@@ -286,9 +283,9 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testSet_metadatas()
     {
 
-        $meta_structure_el = self::$collection->get_databox()->get_meta_structure()->get_elements();
+        $meta_structure_el = self::$DI['collection']->get_databox()->get_meta_structure()->get_elements();
 
-        $current_caption = static::$records['record_1']->get_caption();
+        $current_caption = self::$DI['record_1']->get_caption();
 
         $metadatas = array();
 
@@ -336,7 +333,8 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
                 $meta_id = null;
 
                 if ($field) {
-                    $meta_id = array_pop($field->get_values())->getId();
+                    $values = $field->get_values();
+                    $meta_id = array_pop($values)->getId();
                 }
 
                 $metadatas[] = array(
@@ -353,9 +351,9 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
             }
         }
 
-        static::$records['record_1']->set_metadatas($metadatas, true);
+        self::$DI['record_1']->set_metadatas($metadatas, true);
 
-        $caption = static::$records['record_1']->get_caption();
+        $caption = self::$DI['record_1']->get_caption();
 
 
 
@@ -391,56 +389,56 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testReindex()
     {
-        static::$records['record_1']->reindex();
+        self::$DI['record_1']->reindex();
         $sql = 'SELECT record_id FROM record
             WHERE (status & 7) IN (4,5,6) AND record_id = :record_id';
-        $stmt = static::$records['record_1']->get_databox()->get_connection()->prepare($sql);
+        $stmt = self::$DI['record_1']->get_databox()->get_connection()->prepare($sql);
 
-        $stmt->execute(array(':record_id' => static::$records['record_1']->get_record_id()));
+        $stmt->execute(array(':record_id' => self::$DI['record_1']->get_record_id()));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         if ( ! $row)
             $this->fail();
-        if ($row['record_id'] != static::$records['record_1']->get_record_id())
+        if ($row['record_id'] != self::$DI['record_1']->get_record_id())
             $this->fail();
     }
 
     public function testRebuild_subdefs()
     {
 
-        static::$records['record_1']->rebuild_subdefs();
+        self::$DI['record_1']->rebuild_subdefs();
         $sql = 'SELECT record_id
               FROM record
               WHERE jeton & ' . JETON_MAKE_SUBDEF . ' > 0
               AND record_id = :record_id';
-        $stmt = static::$records['record_1']->get_databox()->get_connection()->prepare($sql);
+        $stmt = self::$DI['record_1']->get_databox()->get_connection()->prepare($sql);
 
-        $stmt->execute(array(':record_id' => static::$records['record_1']->get_record_id()));
+        $stmt->execute(array(':record_id' => self::$DI['record_1']->get_record_id()));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         if ( ! $row)
             $this->fail();
-        if ($row['record_id'] != static::$records['record_1']->get_record_id())
+        if ($row['record_id'] != self::$DI['record_1']->get_record_id())
             $this->fail();
     }
 
     public function testWrite_metas()
     {
-        static::$records['record_1']->write_metas();
+        self::$DI['record_1']->write_metas();
         $sql = 'SELECT record_id, coll_id, jeton
             FROM record WHERE (jeton & ' . JETON_WRITE_META . ' > 0)
             AND record_id = :record_id';
-        $stmt = static::$records['record_1']->get_databox()->get_connection()->prepare($sql);
+        $stmt = self::$DI['record_1']->get_databox()->get_connection()->prepare($sql);
 
-        $stmt->execute(array(':record_id' => static::$records['record_1']->get_record_id()));
+        $stmt->execute(array(':record_id' => self::$DI['record_1']->get_record_id()));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         if ( ! $row)
             $this->fail();
-        if ($row['record_id'] != static::$records['record_1']->get_record_id())
+        if ($row['record_id'] != self::$DI['record_1']->get_record_id())
             $this->fail();
     }
 
@@ -457,28 +455,28 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_record_by_sha()
     {
-        $tmp_records = record_adapter::get_record_by_sha(static::$records['record_1']->get_sbas_id(), static::$records['record_1']->get_sha256());
+        $tmp_records = record_adapter::get_record_by_sha(self::$DI['app'], self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_sha256());
         $this->assertTrue(is_array($tmp_records));
 
         foreach ($tmp_records as $tmp_record) {
             $this->assertInstanceOf('record_adapter', $tmp_record);
-            $this->assertEquals(static::$records['record_1']->get_sha256(), $tmp_record->get_sha256());
+            $this->assertEquals(self::$DI['record_1']->get_sha256(), $tmp_record->get_sha256());
         }
 
-        $tmp_records = record_adapter::get_record_by_sha(static::$records['record_1']->get_sbas_id(), static::$records['record_1']->get_sha256(), static::$records['record_1']->get_record_id());
+        $tmp_records = record_adapter::get_record_by_sha(self::$DI['app'], self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_sha256(), self::$DI['record_1']->get_record_id());
         $this->assertTrue(is_array($tmp_records));
         $this->assertTrue(count($tmp_records) === 1);
 
         foreach ($tmp_records as $tmp_record) {
             $this->assertInstanceOf('record_adapter', $tmp_record);
-            $this->assertEquals(static::$records['record_1']->get_sha256(), $tmp_record->get_sha256());
-            $this->assertEquals(static::$records['record_1']->get_record_id(), $tmp_record->get_record_id());
+            $this->assertEquals(self::$DI['record_1']->get_sha256(), $tmp_record->get_sha256());
+            $this->assertEquals(self::$DI['record_1']->get_record_id(), $tmp_record->get_record_id());
         }
     }
 
     public function testGet_hd_file()
     {
-        $this->assertInstanceOf('\SplFileInfo', static::$records['record_1']->get_hd_file());
+        $this->assertInstanceOf('\SplFileInfo', self::$DI['record_1']->get_hd_file());
     }
 
     /**
@@ -492,43 +490,33 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         );
     }
 
-    public function testRotate_subdefs()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
     public function testGet_container_baskets()
     {
-        $em = self::$core->getEntityManager();
-
         $basket = $this->insertOneBasket();
         $this->assertInstanceOf('\Entities\Basket', $basket);
 
         /* @var $basket \Entities\Basket */
         $basket_element = new \Entities\BasketElement();
-        $basket_element->setRecord(static::$records['record_1']);
+        $basket_element->setRecord(self::$DI['record_1']);
         $basket_element->setBasket($basket);
 
-        $em->persist($basket_element);
+        self::$DI['app']['EM']->persist($basket_element);
 
         $basket->addBasketElement($basket_element);
-        $basket = $em->merge($basket);
+        $basket = self::$DI['app']['EM']->merge($basket);
 
-        $em->flush();
+        self::$DI['app']['EM']->flush();
 
         $found = $sselcont_id = false;
 
-        $sbas_id = static::$records['record_1']->get_sbas_id();
-        $record_id = static::$records['record_1']->get_record_id();
+        $sbas_id = self::$DI['record_1']->get_sbas_id();
+        $record_id = self::$DI['record_1']->get_record_id();
 
-        foreach (static::$records['record_1']->get_container_baskets() as $c_basket) {
+        foreach (self::$DI['record_1']->get_container_baskets(self::$DI['app']['EM'], self::$DI['app']['phraseanet.user']) as $c_basket) {
             if ($c_basket->getId() == $basket->getId()) {
                 $found = true;
                 foreach ($c_basket->getElements() as $b_el) {
-                    if ($b_el->getRecord()->get_record_id() == $record_id && $b_el->getRecord()->get_sbas_id() == $sbas_id)
+                    if ($b_el->getRecord(self::$DI['app'])->get_record_id() == $record_id && $b_el->getRecord(self::$DI['app'])->get_sbas_id() == $sbas_id)
                         $sselcont_id = $b_el->getId();
                 }
             }

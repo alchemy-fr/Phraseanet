@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  *
@@ -35,9 +37,9 @@ class API_OAuth2_Adapter extends OAuth2
 
     /**
      *
-     * @var appbox
+     * @var Application
      */
-    protected $appbox;
+    protected $app;
 
     /**
      * request parameter
@@ -83,14 +85,14 @@ class API_OAuth2_Adapter extends OAuth2
 
     /**
      *
-     * @param  appbox             $appbox
+     * @param  Application          $app
      * @return API_OAuth2_Adapter
      */
-    public function __construct(appbox $appbox)
+    public function __construct(Application $app)
     {
         parent::__construct();
         $this->params = array();
-        $this->appbox = $appbox;
+        $this->app = $app;
 
         return $this;
     }
@@ -179,7 +181,7 @@ class API_OAuth2_Adapter extends OAuth2
     protected function checkClientCredentials($client_id, $client_secret = NULL)
     {
         try {
-            $application = API_OAuth2_Application::load_from_client_id($this->appbox, $client_id);
+            $application = API_OAuth2_Application::load_from_client_id($this->app, $client_id);
 
             if ($client_secret === NULL) {
                 return true;
@@ -202,7 +204,7 @@ class API_OAuth2_Adapter extends OAuth2
      */
     protected function getRedirectUri($client_id)
     {
-        $application = API_OAuth2_Application::load_from_client_id($this->appbox, $client_id);
+        $application = API_OAuth2_Application::load_from_client_id($this->app, $client_id);
 
         return $application->get_redirect_uri();
     }
@@ -219,7 +221,7 @@ class API_OAuth2_Adapter extends OAuth2
         $result = null;
 
         try {
-            $token = API_OAuth2_Token::load_by_oauth_token($this->appbox, $oauth_token);
+            $token = API_OAuth2_Token::load_by_oauth_token($this->app, $oauth_token);
 
             $result = array(
                 'scope'       => $token->get_scope()
@@ -251,8 +253,8 @@ class API_OAuth2_Adapter extends OAuth2
      */
     protected function setAccessToken($oauth_token, $account_id, $expires, $scope = NULL)
     {
-        $account = new API_OAuth2_Account($this->appbox, $account_id);
-        $token = API_OAuth2_Token::create($this->appbox, $account, $scope);
+        $account = new API_OAuth2_Account($this->app, $account_id);
+        $token = API_OAuth2_Token::create($this->app, $account, $scope);
         $token->set_value($oauth_token)->set_expires($expires);
 
         return $this;
@@ -292,7 +294,7 @@ class API_OAuth2_Adapter extends OAuth2
     protected function getAuthCode($code)
     {
         try {
-            $code = new API_OAuth2_AuthCode($this->appbox, $code);
+            $code = new API_OAuth2_AuthCode($this->app, $code);
 
             return array(
                 'redirect_uri' => $code->get_redirect_uri()
@@ -320,8 +322,8 @@ class API_OAuth2_Adapter extends OAuth2
      */
     protected function setAuthCode($code, $account_id, $redirect_uri, $expires, $scope = NULL)
     {
-        $account = new API_OAuth2_Account($this->appbox, $account_id);
-        $code = API_OAuth2_AuthCode::create($this->appbox, $account, $code, $expires);
+        $account = new API_OAuth2_Account($this->app, $account_id);
+        $code = API_OAuth2_AuthCode::create($this->app, $account, $code, $expires);
         $code->set_redirect_uri($redirect_uri)->set_scope($scope);
 
         return $this;
@@ -332,8 +334,8 @@ class API_OAuth2_Adapter extends OAuth2
      */
     protected function setRefreshToken($refresh_token, $account_id, $expires, $scope = NULL)
     {
-        $account = new API_OAuth2_Account($this->appbox, $account_id);
-        API_OAuth2_RefreshToken::create($this->appbox, $account, $expires, $refresh_token, $scope);
+        $account = new API_OAuth2_Account($this->app, $account_id);
+        API_OAuth2_RefreshToken::create($this->app, $account, $expires, $refresh_token, $scope);
 
         return $this;
     }
@@ -344,7 +346,7 @@ class API_OAuth2_Adapter extends OAuth2
     protected function getRefreshToken($refresh_token)
     {
         try {
-            $token = new API_OAuth2_RefreshToken($this->appbox, $refresh_token);
+            $token = new API_OAuth2_RefreshToken($this->app, $refresh_token);
 
             return array(
                 'token'     => $token->get_value()
@@ -363,7 +365,7 @@ class API_OAuth2_Adapter extends OAuth2
      */
     protected function unsetRefreshToken($refresh_token)
     {
-        $token = new API_OAuth2_RefreshToken($this->appbox, $refresh_token);
+        $token = new API_OAuth2_RefreshToken($this->app, $refresh_token);
         $token->delete();
 
         return $this;
@@ -511,8 +513,8 @@ class API_OAuth2_Adapter extends OAuth2
             throw new logicalException("Client property must be set before update an account");
 
         try {
-            $user = User_Adapter::getInstance($usr_id, $this->appbox);
-            $account = API_OAuth2_Account::load_with_user($this->appbox, $this->client, $user);
+            $user = User_Adapter::getInstance($usr_id, $this->app);
+            $account = API_OAuth2_Account::load_with_user($this->app, $this->client, $user);
         } catch (Exception $e) {
             $account = $this->createAccount($usr_id);
         }
@@ -527,9 +529,9 @@ class API_OAuth2_Adapter extends OAuth2
      */
     private function createAccount($usr_id)
     {
-        $user = User_Adapter::getInstance($usr_id, $this->appbox);
+        $user = User_Adapter::getInstance($usr_id, $this->app);
 
-        return API_OAuth2_Account::create($this->appbox, $user, $this->client);
+        return API_OAuth2_Account::create($this->app, $user, $this->client);
     }
 
     /**
@@ -576,7 +578,7 @@ class API_OAuth2_Adapter extends OAuth2
     public function remember_this_ses_id($ses_id)
     {
         try {
-            $token = API_OAuth2_Token::load_by_oauth_token($this->appbox, $this->token);
+            $token = API_OAuth2_Token::load_by_oauth_token($this->app, $this->token);
             $token->set_session_id($ses_id);
 
             return true;
@@ -702,7 +704,7 @@ class API_OAuth2_Adapter extends OAuth2
                     $this->errorJsonResponse(OAUTH2_HTTP_BAD_REQUEST, OAUTH2_ERROR_EXPIRED_TOKEN);
                 break;
             case OAUTH2_GRANT_TYPE_USER_CREDENTIALS:
-                $application = API_OAuth2_Application::load_from_client_id($this->appbox, $client[0]);
+                $application = API_OAuth2_Application::load_from_client_id($this->app, $client[0]);
 
                 if ( ! $application->is_password_granted()) {
                     $this->errorJsonResponse(OAUTH2_HTTP_BAD_REQUEST, OAUTH2_ERROR_UNSUPPORTED_GRANT_TYPE, 'Password grant type is not enable for your client');
@@ -792,15 +794,13 @@ class API_OAuth2_Adapter extends OAuth2
     protected function checkUserCredentials($client_id, $username, $password)
     {
         try {
-            $appbox = appbox::get_instance(\bootstrap::getCore());
+            $application = API_OAuth2_Application::load_from_client_id($this->app, $client_id);
 
-            $application = API_OAuth2_Application::load_from_client_id($appbox, $client_id);
-
-            $auth = new \Session_Authentication_Native($appbox, $username, $password);
+            $auth = new \Session_Authentication_Native($this->app, $username, $password);
 
             $auth->challenge_password();
 
-            $account = API_OAuth2_Account::load_with_user($appbox, $application, $auth->get_user());
+            $account = API_OAuth2_Account::load_with_user($this->app, $application, $auth->get_user());
 
             return array(
                 'redirect_uri' => $application->get_redirect_uri()

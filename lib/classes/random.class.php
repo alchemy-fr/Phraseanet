@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 class random
 {
     /**
@@ -36,14 +38,13 @@ class random
      *
      * @return Void
      */
-    public static function cleanTokens()
+    public static function cleanTokens(Application $app)
     {
         try {
-            $conn = connection::getPDOConnection();
+            $conn = connection::getPDOConnection($app);
 
             $date = new DateTime();
-            $date = phraseadate::format_mysql($date);
-            $registry = registry::get_instance();
+            $date = $app['date-formatter']->format_mysql($date);
 
             $sql = 'SELECT * FROM tokens WHERE expire_on < :date
               AND datas IS NOT NULL AND (type="download" OR type="email")';
@@ -55,7 +56,7 @@ class random
                 switch ($row['type']) {
                     case 'download':
                     case 'email':
-                        $file = $registry->get('GV_RootPath') . 'tmp/download/' . $row['value'] . '.zip';
+                        $file = __DIR__ . '/../../tmp/download/' . $row['value'] . '.zip';
                         if (is_file($file))
                             unlink($file);
                         break;
@@ -108,10 +109,10 @@ class random
      * @param  mixed content $datas
      * @return boolean
      */
-    public static function getUrlToken($type, $usr, DateTime $end_date = null, $datas = '')
+    public static function getUrlToken(Application $app, $type, $usr, DateTime $end_date = null, $datas = '')
     {
-        self::cleanTokens();
-        $conn = connection::getPDOConnection();
+        self::cleanTokens($app);
+        $conn = connection::getPDOConnection($app);
         $token = $test = false;
 
         switch ($type) {
@@ -164,12 +165,12 @@ class random
         return $token;
     }
 
-    public static function removeToken($token)
+    public static function removeToken(Application $app, $token)
     {
-        self::cleanTokens();
+        self::cleanTokens($app);
 
         try {
-            $conn = connection::getPDOConnection();
+            $conn = connection::getPDOConnection($app);
             $sql = 'DELETE FROM tokens WHERE value = :token';
             $stmt = $conn->prepare($sql);
             $stmt->execute(array(':token' => $token));
@@ -183,10 +184,10 @@ class random
         return false;
     }
 
-    public static function updateToken($token, $datas)
+    public static function updateToken(Application $app, $token, $datas)
     {
         try {
-            $conn = connection::getPDOConnection();
+            $conn = connection::getPDOConnection($app);
 
             $sql = 'UPDATE tokens SET datas = :datas
               WHERE value = :token';
@@ -203,11 +204,11 @@ class random
         return false;
     }
 
-    public static function helloToken($token)
+    public static function helloToken(Application $app, $token)
     {
-        self::cleanTokens();
+        self::cleanTokens($app);
 
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($app);
         $sql = 'SELECT * FROM tokens
             WHERE value = :token
               AND (expire_on > NOW() OR expire_on IS NULL)';
@@ -230,9 +231,9 @@ class random
      * @return string The desired token
      * @throws \Exception_NotFound
      */
-    public static function getValidationToken($userId, $basketId)
+    public static function getValidationToken(Application $app, $userId, $basketId)
     {
-        $conn = \connection::getPDOConnection();
+        $conn = \connection::getPDOConnection($app);
         $sql = '
             SELECT value FROM tokens
             WHERE type = :type

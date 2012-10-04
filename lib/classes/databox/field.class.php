@@ -9,7 +9,12 @@
  * file that was distributed with this source code.
  */
 
-use \Alchemy\Phrasea\Vocabulary;
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Vocabulary;
+use Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface;
+use Alchemy\Phrasea\Metadata\Tag\Nosource;
+use PHPExiftool\Driver\TagInterface;
+use PHPExiftool\Driver\TagFactory;
 
 /**
  *
@@ -154,8 +159,9 @@ class databox_field implements cache_cacheableInterface
      * @param  <type>        $id
      * @return databox_field
      */
-    protected function __construct(databox &$databox, $id)
+    protected function __construct(Application $app, databox $databox, $id)
     {
+        $this->app = $app;
         $this->set_databox($databox);
         $this->sbas_id = $databox->get_sbas_id();
 
@@ -191,7 +197,7 @@ class databox_field implements cache_cacheableInterface
         $this->tbranch = $row['tbranch'];
 
         try {
-            $this->Vocabulary = Vocabulary\Controller::get($row['VocabularyControlType']);
+            $this->Vocabulary = Vocabulary\Controller::get($this->app, $row['VocabularyControlType']);
             $this->VocabularyRestriction = ! ! $row['RestrictToVocabularyControl'];
         } catch (Exception $e) {
 
@@ -242,7 +248,7 @@ class databox_field implements cache_cacheableInterface
      * @param  int            $id
      * @return \databox_field
      */
-    public static function get_instance(databox &$databox, $id)
+    public static function get_instance(Application $app, databox $databox, $id)
     {
         $cache_key = 'field_' . $id;
         $instance_id = $databox->get_sbas_id() . '_' . $id;
@@ -250,7 +256,7 @@ class databox_field implements cache_cacheableInterface
             try {
                 self::$_instance[$instance_id] = $databox->get_data_from_cache($cache_key);
             } catch (Exception $e) {
-                self::$_instance[$instance_id] = new self($databox, $id);
+                self::$_instance[$instance_id] = new self($app, $databox, $id);
                 $databox->set_data_to_cache(self::$_instance[$instance_id], $cache_key);
             }
         }
@@ -262,7 +268,7 @@ class databox_field implements cache_cacheableInterface
      *
      * @param databox $databox
      */
-    public function set_databox(databox &$databox)
+    public function set_databox(databox $databox)
     {
         $this->databox = $databox;
     }
@@ -287,7 +293,7 @@ class databox_field implements cache_cacheableInterface
 
     public function delete()
     {
-        caption_field::delete_all_metadatas($this);
+        caption_field::delete_all_metadatas($this->app, $this);
 
         $connbas = $this->get_connection();
         $sql = 'DELETE FROM metadatas_structure WHERE id = :id';
@@ -461,16 +467,16 @@ class databox_field implements cache_cacheableInterface
 
             $tag = new $classname();
         } else {
-            $tag = \PHPExiftool\Driver\TagFactory::getFromRDFTagname($tagName);
+            $tag = TagFactory::getFromRDFTagname($tagName);
         }
 
         return $tag;
     }
 
-    public function set_tag(\PHPExiftool\Driver\Tag $tag = null)
+    public function set_tag(TagInterface $tag = null)
     {
         if ($tag === null) {
-            $tag = new \Alchemy\Phrasea\Metadata\Tag\Nosource();
+            $tag = new Nosource();
         }
 
         $this->tag = $tag;
@@ -531,10 +537,10 @@ class databox_field implements cache_cacheableInterface
     /**
      * Set a vocabulary
      *
-     * @param  Vocabulary\ControlProvider\ControlProviderInterface $vocabulary
+     * @param  ControlProviderInterface $vocabulary
      * @return \databox_field
      */
-    public function setVocabularyControl(Vocabulary\ControlProvider\ControlProviderInterface $vocabulary = null)
+    public function setVocabularyControl(ControlProviderInterface $vocabulary = null)
     {
         $this->Vocabulary = $vocabulary;
 
@@ -787,7 +793,7 @@ class databox_field implements cache_cacheableInterface
         return $this->on_error;
     }
 
-    public static function create(databox $databox, $name, $multi)
+    public static function create(Application $app, databox $databox, $name, $multi)
     {
         $sorter = 0;
 
@@ -823,7 +829,7 @@ class databox_field implements cache_cacheableInterface
 
         $databox->delete_data_from_cache(databox::CACHE_META_STRUCT);
 
-        return self::get_instance($databox, $id);
+        return self::get_instance($app, $databox, $id);
     }
 
     public static function generateName($name)
@@ -857,9 +863,7 @@ class databox_field implements cache_cacheableInterface
      */
     public function __wakeup()
     {
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
-        $databox = $appbox->get_databox($this->sbas_id);
-        $this->set_databox($databox);
+        $this->set_databox($this->app['phraseanet.appbox']->get_databox($this->sbas_id));
 
         return;
     }

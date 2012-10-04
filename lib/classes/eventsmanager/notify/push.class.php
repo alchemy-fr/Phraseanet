@@ -112,12 +112,12 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
         $from = (string) $sx->from;
 
         try {
-            $registered_user = User_Adapter::getInstance($from, $this->appbox);
+            $registered_user = User_Adapter::getInstance($from, $this->app);
         } catch (Exception $e) {
             return array();
         }
 
-        $sender = User_Adapter::getInstance($from, $this->appbox)->get_display_name();
+        $sender = User_Adapter::getInstance($from, $this->app)->get_display_name();
 
         $ret = array(
             'text'  => sprintf(
@@ -182,6 +182,6 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
         $body .= "<br/>\n<br/>\n<br/>\n"
             . _('push::atention: ce lien est unique et son contenu confidentiel, ne divulguez pas');
 
-        return mail::send_mail($subject, $body, $to, $from, array(), $accuse);
+        return mail::send_mail($this->app, $subject, $body, $to, $from, array(), $accuse);
     }
 }

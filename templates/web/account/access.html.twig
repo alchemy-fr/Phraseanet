@@ -11,17 +11,17 @@
         {% for sbasId, baseInsc in inscriptions %}
             {% if baseInsc['CollsRegistered'] or baseInsc['CollsRefuse'] or baseInsc['CollsWait'] or baseInsc['CollsIntime'] or baseInsc['CollsOuttime'] or baseInsc['CollsNonactif'] or baseInsc['CollsCGU'] or baseInsc['Colls'] %}
                 <tr>
-                    <td colspan="3" style="text-align: center;"><h3>{{ sbasId | sbas_names }}</h3></td>
+                    <td colspan="3" style="text-align: center;"><h3>{{ sbasId | sbas_names(app) }}</h3></td>
                 </tr>
             {% endif %}
 
             {% if baseInsc['CollsRegistered'] is not none %}
                 {% for base in  baseInsc['CollsRegistered']%}
                     {% for collId, isTrue in base %}
-                        {% set base_id = sbasId |base_from_coll(collId) %}
+                        {% set base_id = sbasId |base_from_coll(collId, app) %}
                         <tr>
                             <td colspan="3" style="text-align:center;">
-                                {% trans 'login::register: acces authorise sur la collection ' %}{{ sbasId |sbas_names }}
+                                {% trans 'login::register: acces authorise sur la collection ' %}{{ sbasId |sbas_names(app) }}
                                 {% if isTrue | trim != '' %}
                                     <a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas={{sbasId}}&col='{{collId}}">{% trans 'login::register::CGU: lire les CGU' %}</a>
                                 {% endif %}
@@ -37,10 +37,10 @@
 
             {% if baseInsc['CollsRefuse'] %}
                 {% for collId, isTrue in baseInsc['CollsRefuse'] %}
-                    {% set base_id = sbasId |base_from_coll(collId) %}
+                    {% set base_id = sbasId |base_from_coll(collId, app) %}
                     <tr>
                         <td colspan="3" style="text-align: center;">
-                            <span style="color: red;">{% trans 'login::register: acces refuse sur la collection ' %}{{ sbasId |sbas_names }}</span>
+                            <span style="color: red;">{% trans 'login::register: acces refuse sur la collection ' %}{{ sbasId |sbas_names(app) }}</span>
                             {% if isTrue | trim != '' %}
                                 <a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas={{sbasId}}&col='{{collId}}">{% trans 'login::register::CGU: lire les CGU' %}</a>
                             {% endif %}
@@ -55,10 +55,10 @@
 
             {% if baseInsc['CollsWait'] %}
                 {% for collId, isTrue in baseInsc['CollsWait'] %}
-                    {% set base_id = sbasId |base_from_coll(collId) %}
+                    {% set base_id = sbasId |base_from_coll(collId, app) %}
                     <tr>
                         <td colspan="3" style="text-align: center;">
-                            <span style="color: orange;">{% trans 'login::register: en attente d\'acces sur' %} {{ sbasId |sbas_names }}</span>
+                            <span style="color: orange;">{% trans 'login::register: en attente d\'acces sur' %} {{ sbasId |sbas_names(app) }}</span>
                             {% if isTrue | trim != '' %}
                                 <a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas={{sbasId}}&col='{{collId}}">{% trans 'login::register::CGU: lire les CGU' %}</a>
                             {% endif %}
@@ -70,10 +70,10 @@
 
             {% if baseInsc['CollsIntime'] %}
                 {% for collId, isTrue in baseInsc['CollsIntime'] %}
-                    {% set base_id = sbasId |base_from_coll(collId) %}
+                    {% set base_id = sbasId |base_from_coll(collId, app) %}
                     <tr>
                         <td colspan="3" style="text-align: center;">
-                            <span>{% trans 'login::register: acces temporaire sur' %} {{ sbasId |sbas_names }}</span>
+                            <span>{% trans 'login::register: acces temporaire sur' %} {{ sbasId |sbas_names(app) }}</span>
                             {% if isTrue |trim != '' %}
                                 <a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas={{sbasId}}&col='{{collId}}">{% trans 'login::register::CGU: lire les CGU' %}</a>
                             {% endif %}
@@ -85,10 +85,10 @@
 
             {% if baseInsc['CollsOuttime'] %}
                 {% for collId, isTrue in baseInsc['CollsOuttime'] %}
-                    {% set base_id = sbasId |base_from_coll(collId) %}
+                    {% set base_id = sbasId |base_from_coll(collId, app) %}
                     <tr>
                         <td colspan="3" style="text-align: center;">
-                            <span style="color:red;">{% trans 'login::register: acces temporaire termine sur ' %}{{ sbasId |sbas_names }}</span>
+                            <span style="color:red;">{% trans 'login::register: acces temporaire termine sur ' %}{{ sbasId |sbas_names(app) }}</span>
                             {% if isTrue |trim != '' %}
                                 <a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas={{sbasId}}&col='{{collId}}">{% trans 'login::register::CGU: lire les CGU' %}</a>
                             {% endif %}
@@ -100,10 +100,10 @@
 
             {% if baseInsc['CollsNonactif'] %}
                 {% for collId, isTrue in baseInsc['CollsNonactif'] %}
-                    {% set base_id = sbasId |base_from_coll(collId) %}
+                    {% set base_id = sbasId |base_from_coll(collId, app) %}
                     <tr>
                         <td colspan="3" style="text-align: center;">
-                            <span style="color:red;">{% trans 'login::register: acces supendu sur' %} {{ sbasId |sbas_names }}</span>
+                            <span style="color:red;">{% trans 'login::register: acces supendu sur' %} {{ sbasId |sbas_names(app) }}</span>
                             {% if isTrue |trim != '' %}
                                 <a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas={{sbasId}}&col='{{collId}}">{% trans 'login::register::CGU: lire les CGU' %}</a>
                             {% endif %}
@@ -124,7 +124,7 @@
                         </tr>
                     {% endif %}
                     {% for collId, collName in baseInsc['Colls'] %}
-                        {% set base_id = sbasId |base_from_coll(collId) %}
+                        {% set base_id = sbasId |base_from_coll(collId, app) %}
                         <tr>
                             <td style="text-align: right;">{{ collName }}</td>
                             <td></td>
@@ -137,7 +137,7 @@
                 {% endif %}
                 {% if baseInsc['CollsCGU'] %}
                     {% for collId, collDesc in baseInsc['CollsCGU'] %}
-                        {% set base_id = sbasId |base_from_coll(collId) %}
+                        {% set base_id = sbasId |base_from_coll(collId, app) %}
                         <tr>
                             <td colspan="3" style="text-align: center;"><hr style="width: 80%"/></td>
                         </tr>

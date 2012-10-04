@@ -55,7 +55,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
             $sql = 'SELECT DISTINCT e.base_id
           FROM order_elements e
           WHERE e.order_id = :order_id';
-            $stmt = $this->appbox->get_connection()->prepare($sql);
+            $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
             $stmt->execute(array(':order_id' => $order_id));
             $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
@@ -65,7 +65,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
                 $base_ids[] = $row['base_id'];
             }
 
-            $query = new User_Query($this->appbox);
+            $query = new User_Query($this->app);
             $users = $query->on_base_ids($base_ids)
                     ->who_have_right(array('order_master'))
                     ->execute()->get_results();
@@ -104,12 +104,12 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
 
             $send_notif = ($this->get_prefs(__CLASS__, $usr_id) != '0');
             if ($send_notif) {
-                $dest = User_Adapter::getInstance($usr_id, $this->appbox)->get_display_name();
+                $dest = User_Adapter::getInstance($usr_id, $this->app)->get_display_name();
 
                 $to = array('email' => $user->get_email(), 'name'  => $dest);
                 $from = array(
-                    'email' => $this->registry->get('GV_defaulmailsenderaddr'),
-                    'name'  => $this->registry->get('GV_homeTitle')
+                    'email' => $this->app['phraseanet.registry']->get('GV_defaulmailsenderaddr'),
+                    'name'  => $this->app['phraseanet.registry']->get('GV_homeTitle')
                 );
 
                 if (self::mail($to, $from, $datas)) {
@@ -137,12 +137,12 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
         $order_id = (string) $sx->order_id;
 
         try {
-            $registered_user = User_Adapter::getInstance($usr_id, $this->appbox);
+            $registered_user = User_Adapter::getInstance($usr_id, $this->app);
         } catch (Exception $e) {
             return array();
         }
 
-        $sender = User_Adapter::getInstance($usr_id, $this->appbox)->get_display_name();
+        $sender = User_Adapter::getInstance($usr_id, $this->app)->get_display_name();
 
         $ret = array(
             'text'  => sprintf(_('%1$s a passe une %2$scommande%3$s')
@@ -183,7 +183,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
     public function mail($to, $from, $datas)
     {
         $subject = sprintf(_('admin::register: Nouvelle commande sur %s')
-            , $this->registry->get('GV_homeTitle'));
+            , $this->app['phraseanet.registry']->get('GV_homeTitle'));
 
         $body = "<div>"
             . _('admin::register: un utilisateur a commande des documents')
@@ -194,7 +194,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
         $usr_id = (string) $sx->usr_id;
 
         try {
-            $registered_user = User_Adapter::getInstance($usr_id, $this->appbox);
+            $registered_user = User_Adapter::getInstance($usr_id, $this->app);
         } catch (Exception $e) {
             return false;
         }
@@ -226,7 +226,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
             . _('Retrouvez son bon de commande dans l\'interface')
             . "</div>\n";
 
-        return mail::send_mail($subject, $body, $to, $from);
+        return mail::send_mail($this->app, $subject, $body, $to, $from);
     }
 
     /**
@@ -236,18 +236,11 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
     public function is_available()
     {
         $bool = false;
-        $session = $this->appbox->get_session();
-        if ( ! $session->is_authenticated()) {
+        if ( !$this->app->isAuthenticated()) {
             return false;
         }
 
-        try {
-            $user = User_Adapter::getInstance($session->get_usr_id(), $this->appbox);
-        } catch (Exception $e) {
-            return false;
-        }
-
-        if ($user->ACL()->has_right('order_master')) {
+        if ($this->app['phraseanet.user']->ACL()->has_right('order_master')) {
             $bool = true;
         }
 

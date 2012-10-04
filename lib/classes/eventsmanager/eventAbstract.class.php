@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Application;
+
 abstract class eventsmanager_eventAbstract
 {
     protected $events = array();
@@ -7,21 +9,9 @@ abstract class eventsmanager_eventAbstract
 
     /**
      *
-     * @var appbox
+     * @var Application
      */
-    protected $appbox;
-
-    /**
-     *
-     * @var registryInterface
-     */
-    protected $registry;
-
-    /**
-     *
-     * @var \Alchemy\Phrasea\Core
-     */
-    protected $core;
+    protected $app;
 
     /**
      *
@@ -29,11 +19,9 @@ abstract class eventsmanager_eventAbstract
      */
     protected $broker;
 
-    public function __construct(appbox &$appbox, \Alchemy\Phrasea\Core $core, eventsmanager_broker &$broker)
+    public function __construct(Application $app, eventsmanager_broker $broker)
     {
-        $this->appbox = $appbox;
-        $this->registry = $core->getRegistry();
-        $this->core = $core;
+        $this->app = $app;
         $this->broker = $broker;
 
         return $this;

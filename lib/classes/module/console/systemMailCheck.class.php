@@ -37,23 +37,16 @@ class module_console_systemMailCheck extends Command
         return $this;
     }
 
-    public function requireSetup()
-    {
-        return true;
-    }
-
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $appbox = $this->getService('phraseanet.appbox');
-
         $output->writeln("Processing...");
 
-        $bad_users = User_Adapter::get_wrong_email_users($appbox);
+        $bad_users = User_Adapter::get_wrong_email_users($this->container);
 
         foreach ($bad_users as $email => $users) {
             if ($input->getOption('list')) {
-                $this->write_infos($email, $users, $output, $appbox);
-            } elseif ($this->manage_group($email, $users, $output, $appbox) === false) {
+                $this->write_infos($email, $users, $output, $this->getService('phraseanet.appbox'));
+            } elseif ($this->manage_group($email, $users, $output, $this->getService('phraseanet.appbox')) === false) {
                 break;
             }
 
@@ -91,7 +84,7 @@ class module_console_systemMailCheck extends Command
                 $id = $dialog->ask($output, '<question>Which id ?</question>', '');
 
                 try {
-                    $tmp_user = User_Adapter::getInstance($id, $appbox);
+                    $tmp_user = User_Adapter::getInstance($id, $this->container);
 
                     if ($tmp_user->get_email() != $email) {
                         throw new Exception('Invalid user');

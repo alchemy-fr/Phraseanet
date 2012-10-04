@@ -117,10 +117,10 @@ class UsrListOwner extends \Entities\UsrListOwner implements \Doctrine\ORM\Proxy
         return parent::setUser($user);
     }
 
-    public function getUser()
+    public function getUser(\Alchemy\Phrasea\Application $app)
     {
         $this->__load();
-        return parent::getUser();
+        return parent::getUser($app);
     }
 
 

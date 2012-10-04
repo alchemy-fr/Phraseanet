@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  *
@@ -27,10 +29,10 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
      *
      * @return notify_validationdone
      */
-    public function __construct(appbox &$appbox, \Alchemy\Phrasea\Core $core, eventsmanager_broker &$broker)
+    public function __construct(Application $app, eventsmanager_broker $broker)
     {
         $this->group = _('Validation');
-        parent::__construct($appbox, $core, $broker);
+        parent::__construct($app, $broker);
 
         return $this;
     }
@@ -90,8 +92,8 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
 
         if ($send_notif) {
             try {
-                $user_from = User_Adapter::getInstance($params['from'], $this->appbox);
-                $user_to = User_Adapter::getInstance($params['to'], $this->appbox);
+                $user_from = User_Adapter::getInstance($params['from'], $this->app);
+                $user_to = User_Adapter::getInstance($params['to'], $this->app);
             } catch (Exception $e) {
                 return false;
             }
@@ -126,7 +128,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
         $ssel_id = (string) $sx->ssel_id;
 
         try {
-            $registered_user = User_Adapter::getInstance($from, $this->appbox);
+            $registered_user = User_Adapter::getInstance($from, $this->app);
         } catch (Exception $e) {
             return array();
         }
@@ -134,10 +136,9 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
         $sender = $registered_user->get_display_name();
 
         try {
-            $em = $this->core->getEntityManager();
-            $repository = $em->getRepository('\Entities\Basket');
+            $repository = $this->app['EM']->getRepository('\Entities\Basket');
 
-            $basket = $repository->findUserBasket($ssel_id, $this->core->getAuthenticatedUser(), false);
+            $basket = $repository->findUserBasket($this->app, $ssel_id, $this->app['phraseanet.user'], false);
         } catch (Exception $e) {
             return array();
         }
@@ -182,10 +183,9 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
     public function mail($to, $from, $ssel_id, $url)
     {
         try {
-            $em = $this->core->getEntityManager();
-            $repository = $em->getRepository('\Entities\Basket');
+            $repository = $this->app['EM']->getRepository('\Entities\Basket');
 
-            $basket = $repository->findUserBasket($ssel_id, $this->core->getAuthenticatedUser(), false);
+            $basket = $repository->findUserBasket($this->app, $ssel_id, $this->app['phraseanet.user'], false);
         } catch (Exception $e) {
             return false;
         }
@@ -200,7 +200,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
 
         $body .= "<br/>\n" . $url;
 
-        return mail::send_mail($subject, $body, $to, $from, array());
+        return mail::send_mail($this->app, $subject, $body, $to, $from, array());
     }
 
     /**
@@ -211,18 +211,11 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
     {
         $bool = false;
 
-        $session = $this->appbox->get_session();
-        if ( ! $session->is_authenticated()) {
+        if ( ! $this->app->isAuthenticated()) {
             return false;
         }
 
-        try {
-            $user = User_Adapter::getInstance($session->get_usr_id(), $this->appbox);
-        } catch (Exception $e) {
-            return false;
-        }
-
-        if ($user->ACL()->has_right('push')) {
+        if ($this->app['phraseanet.user']->ACL()->has_right('push')) {
             $bool = true;
         }
 

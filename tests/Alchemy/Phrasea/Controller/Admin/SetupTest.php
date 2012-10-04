@@ -4,27 +4,14 @@ require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.
 
 class SetupTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
-    protected $client;
-
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Admin.php';
-
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-
-        return $app;
-    }
 
     /**
      * @covers Alchemy\Phrasea\Controller\Admin\Setup::getGlobals
      */
     public function testGetSlash()
     {
-        $this->setAdmin(true);
-
-        $this->client->request('GET', '/setup/');
-        $this->assertTrue($this->client->getResponse()->isOk());
+        self::$DI['client']->request('GET', '/admin/setup/');
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
     /**
@@ -35,8 +22,8 @@ class SetupTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $this->setAdmin(false);
 
-        $this->client->request('GET', '/setup/');
-        $this->assertTrue($this->client->getResponse()->isOk());
+        self::$DI['client']->request('GET', '/admin/setup/');
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
     /**
@@ -44,9 +31,9 @@ class SetupTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testPostGlobals()
     {
-        $this->setAdmin(true);
+//        $this->setAdmin(true);
 
-        $this->client->request('POST', '/setup/');
-        $this->assertTrue($this->client->getResponse()->isRedirect());
+        self::$DI['client']->request('POST', '/admin/setup/');
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
 }

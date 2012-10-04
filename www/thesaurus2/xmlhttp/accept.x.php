@@ -9,14 +9,15 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
 require_once __DIR__ . "/../../../lib/bootstrap.php";
-$appbox = \appbox::get_instance(\bootstrap::getCore());
-$registry = registry::get_instance();
+$app = new Application();
 
 require("../xmlhttp.php");
 
@@ -47,8 +48,8 @@ if ($parm["bid"] !== null) {
     $loaded = false;
 
     try {
-        $databox = $appbox->get_databox((int) $parm['bid']);
-        $connbas = connection::getPDOConnection($parm['bid']);
+        $databox = $app['phraseanet.appbox']->get_databox((int) $parm['bid']);
+        $connbas = connection::getPDOConnection($app, $parm['bid']);
 
         $dom = $databox->get_dom_cterms();
         $xpath = new DOMXPath($dom);
@@ -91,7 +92,7 @@ function acceptBranch($sbas_id, &$node)
             printf("sql: %s<br/>\n", $sql);
         else {
             try {
-                $connbas = connection::getPDOConnection($sbas_id);
+                $connbas = connection::getPDOConnection($app, $sbas_id);
                 $stmt = $connbas->prepare($sql);
                 $stmt->execute(array(':thit_new' => $thit_newid, 'thit_old'  => $thit_oldid));
                 $stmt->closeCursor();

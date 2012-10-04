@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
 use Monolog\Logger;
 
 /**
@@ -30,9 +31,11 @@ class task_Scheduler
      */
     private $logger;
     private $method;
+    private $dependencyContainer;
 
-    public function __construct(Logger $logger)
+    public function __construct(Application $application, Logger $logger)
     {
+        $this->dependencyContainer = $application;
         $this->logger = $logger;
     }
 
@@ -43,23 +46,14 @@ class task_Scheduler
         return $this;
     }
 
-    protected static function get_connection()
-    {
-        return appbox::get_instance(\bootstrap::getCore())->get_connection();
-    }
-
     /**
      * @throws Exception if scheduler is already running
      * @todo doc all possible exception
      */
     public function run()
     {
-
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $registry = $appbox->get_registry();
-
         //prevent scheduler to fail if GV_cli is not provided
-        if ( ! is_executable($registry->get('GV_cli'))) {
+        if ( ! is_executable($this->dependencyContainer['phraseanet.registry']->get('GV_cli'))) {
             throw new \RuntimeException('PHP cli is not provided in registry');
         }
 
@@ -78,7 +72,7 @@ class task_Scheduler
             $this->method = self::METHOD_FORK;
         }
 
-        $lockdir = $registry->get('GV_RootPath') . 'tmp/locks/';
+        $lockdir = $this->dependencyContainer['phraseanet.registry']->get('GV_RootPath') . 'tmp/locks/';
 
         for ($try = 1; true; $try ++ ) {
             $lockfile = ($lockdir . 'scheduler.lock');
@@ -112,7 +106,7 @@ class task_Scheduler
 
         $this->log(sprintf("running scheduler with method %s", $this->method));
 
-        $conn = appbox::get_instance(\bootstrap::getCore())->get_connection();
+        $conn = $this->dependencyContainer['phraseanet.appbox']->get_connection();
 
         $taskPoll = array(); // the poll of tasks
 
@@ -121,7 +115,7 @@ class task_Scheduler
         $sql = "UPDATE sitepreff SET schedstatus='started'";
         $conn->exec($sql);
 
-        $task_manager = new task_manager($appbox);
+        $task_manager = new task_manager($this->dependencyContainer);
 
         // set every 'auto-start' task to start
         foreach ($task_manager->getTasks() as $task) {
@@ -158,7 +152,7 @@ class task_Scheduler
                     sleep(1);
                 }
                 try {
-                    $conn = appbox::get_instance(\bootstrap::getCore())->get_connection();
+                    $conn = $this->dependencyContainer['phraseanet.appbox']->get_connection();
                 } catch (ErrorException $e) {
                     $ping = false;
                 }
@@ -220,10 +214,10 @@ class task_Scheduler
                     $taskPoll[$tkey] = array(
                         "task"           => $task,
                         "current_status" => $status,
-                        "cmd"            => $registry->get('GV_cli'),
+                        "cmd"            => $this->dependencyContainer['phraseanet.registry']->get('GV_cli'),
                         "args"           => array(
                             '-f',
-                            $registry->get('GV_RootPath') . 'bin/console',
+                            $this->dependencyContainer['phraseanet.registry']->get('GV_RootPath') . 'bin/console',
                             '--',
                             '-q',
                             'task:run',
@@ -334,7 +328,7 @@ class task_Scheduler
                                     $taskPoll[$tkey]["cmd"] . ' ' . implode(' ', $taskPoll[$tkey]["args"])
                                     , $descriptors
                                     , $taskPoll[$tkey]["pipes"]
-                                    , $registry->get('GV_RootPath') . "bin/"
+                                    , $this->dependencyContainer['phraseanet.registry']->get('GV_RootPath') . "bin/"
                                     , null
                                     , array('bypass_shell' => true)
                                 );

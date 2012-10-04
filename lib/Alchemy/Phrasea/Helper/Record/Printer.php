@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Helper\Record;
 
-use Alchemy\Phrasea\Core;
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Helper\Record\Helper as RecordHelper;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -30,12 +30,12 @@ class Printer extends RecordHelper
 
     /**
      *
-     * @param  \Alchemy\Phrasea\Core $core
+     * @param  Application $app
      * @return Printer
      */
-    public function __construct(Core $core, Request $Request)
+    public function __construct(Application $app, Request $Request)
     {
-        parent::__construct($core, $Request);
+        parent::__construct($app, $Request);
 
         $grep = function(\record_adapter $record) {
 

@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     Feeds
@@ -18,7 +20,7 @@
 interface Feed_Entry_Interface
 {
 
-    public function __construct(appbox &$appbox, Feed_Adapter &$feed, $id);
+    public function __construct(Application $app, Feed_Adapter $feed, $id);
 
     public function get_feed();
 
@@ -50,8 +52,8 @@ interface Feed_Entry_Interface
 
     public function delete();
 
-    public static function create(appbox &$appbox, Feed_Adapter $feed
+    public static function create(Application $app, Feed_Adapter $feed
     , Feed_Publisher_Adapter $publisher, $title, $subtitle, $author_name, $author_mail);
 
-    public static function load_from_id(appbox $appbox, $id);
+    public static function load_from_id(Application $app, $id);
 }

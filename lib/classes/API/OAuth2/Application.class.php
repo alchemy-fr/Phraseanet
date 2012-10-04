@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     OAuth2 Connector
@@ -36,9 +38,9 @@ class API_OAuth2_Application
 
     /**
      *
-     * @var appbox
+     * @var Application
      */
-    protected $appbox;
+    protected $app;
 
     /**
      *
@@ -126,13 +128,13 @@ class API_OAuth2_Application
 
     /**
      *
-     * @param  appbox                 $appbox
+     * @param  Application             $app
      * @param  int                    $application_id
      * @return API_OAuth2_Application
      */
-    public function __construct(appbox &$appbox, $application_id)
+    public function __construct(Application $app, $application_id)
     {
-        $this->appbox = $appbox;
+        $this->app = $app;
         $this->id = (int) $application_id;
 
         $sql = '
@@ -143,7 +145,7 @@ class API_OAuth2_Application
             FROM api_applications
             WHERE application_id = :application_id';
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':application_id' => $this->id));
 
         if (0 === $stmt->rowCount()) {
@@ -152,7 +154,7 @@ class API_OAuth2_Application
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
-        $this->creator = ! $row['creator'] ? null : User_Adapter::getInstance($row['creator'], $this->appbox);
+        $this->creator = ! $row['creator'] ? null : User_Adapter::getInstance($row['creator'], $this->app);
         $this->type = $row['type'];
         $this->name = $row['name'];
         $this->description = $row['description'];
@@ -228,7 +230,7 @@ class API_OAuth2_Application
             , ':application_id' => $this->id
         );
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -261,7 +263,7 @@ class API_OAuth2_Application
             , ':application_id' => $this->id
         );
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -295,7 +297,7 @@ class API_OAuth2_Application
             , ':application_id' => $this->id
         );
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -329,7 +331,7 @@ class API_OAuth2_Application
             , ':application_id' => $this->id
         );
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -363,7 +365,7 @@ class API_OAuth2_Application
             , ':application_id' => $this->id
         );
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -397,7 +399,7 @@ class API_OAuth2_Application
             , ':application_id' => $this->id
         );
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -449,7 +451,7 @@ class API_OAuth2_Application
             , ':application_id' => $this->id
         );
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -483,7 +485,7 @@ class API_OAuth2_Application
             , ':application_id' => $this->id
         );
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -516,7 +518,7 @@ class API_OAuth2_Application
             , ':application_id' => $this->id
         );
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -538,7 +540,7 @@ class API_OAuth2_Application
             , ':id'     => $this->id
         );
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -546,7 +548,7 @@ class API_OAuth2_Application
         if ( ! $row)
             throw new Exception_NotFound();
 
-        return new API_OAuth2_Account($this->appbox, $row['api_account_id']);
+        return new API_OAuth2_Account($this->app, $row['api_account_id']);
     }
 
     /**
@@ -562,7 +564,7 @@ class API_OAuth2_Application
         $sql = 'DELETE FROM api_applications
             WHERE application_id = :application_id';
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':application_id' => $this->get_id()));
         $stmt->closeCursor();
 
@@ -578,7 +580,7 @@ class API_OAuth2_Application
         $sql = 'SELECT api_account_id FROM api_accounts
             WHERE application_id = :application_id';
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':application_id' => $this->get_id()));
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -586,7 +588,7 @@ class API_OAuth2_Application
         $accounts = array();
 
         foreach ($rs as $row) {
-            $accounts[] = new API_OAuth2_Account($this->appbox, $row['api_account_id']);
+            $accounts[] = new API_OAuth2_Account($this->app, $row['api_account_id']);
         }
 
         return $accounts;
@@ -594,12 +596,12 @@ class API_OAuth2_Application
 
     /**
      *
-     * @param  appbox                 $appbox
+     * @param  Application               $app
      * @param  User_Adapter           $user
      * @param  type                   $name
      * @return API_OAuth2_Application
      */
-    public static function create(appbox &$appbox, User_Adapter $user = null, $name)
+    public static function create(Application $app, User_Adapter $user = null, $name)
     {
         $sql = '
             INSERT INTO api_applications (
@@ -625,16 +627,16 @@ class API_OAuth2_Application
             ':grant_password' => 0
         );
 
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
-        $application_id = $appbox->get_connection()->lastInsertId();
+        $application_id = $app['phraseanet.appbox']->get_connection()->lastInsertId();
 
-        $application = new self($appbox, $application_id);
+        $application = new self($app, $application_id);
 
         if ($user) {
-            API_OAuth2_Account::create($appbox, $user, $application);
+            API_OAuth2_Account::create($app, $user, $application);
         }
 
         return $application;
@@ -642,16 +644,16 @@ class API_OAuth2_Application
 
     /**
      *
-     * @param  appbox                 $appbox
+     * @param  Application             $app
      * @param  type                   $client_id
      * @return API_OAuth2_Application
      */
-    public static function load_from_client_id(appbox &$appbox, $client_id)
+    public static function load_from_client_id(Application $app, $client_id)
     {
         $sql = 'SELECT application_id FROM api_applications
               WHERE client_id = :client_id';
 
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':client_id' => $client_id));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -659,60 +661,48 @@ class API_OAuth2_Application
         if ( ! $row)
             throw new Exception_NotFound();
 
-        return new self($appbox, $row['application_id']);
+        return new self($app, $row['application_id']);
     }
 
-    /**
-     *
-     * @param  appbox       $appbox
-     * @param  User_Adapter $user
-     * @return array
-     */
-    public static function load_dev_app_by_user(appbox &$appbox, User_Adapter $user)
+    public static function load_dev_app_by_user(Application $app, User_Adapter $user)
     {
         $sql = 'SELECT a.application_id
         FROM api_applications a, api_accounts b
         WHERE a.creator = :usr_id AND a.application_id = b.application_id';
 
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':usr_id' => $user->get_id()));
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         $apps = array();
         foreach ($rs as $row) {
-            $apps[] = new API_OAuth2_Application($appbox, $row['application_id']);
+            $apps[] = new API_OAuth2_Application($app, $row['application_id']);
         }
 
         return $apps;
     }
 
-    /**
-     *
-     * @param  appbox                 $appbox
-     * @param  user_adapter           $user
-     * @return API_OAuth2_Application
-     */
-    public static function load_app_by_user(appbox $appbox, user_adapter $user)
+    public static function load_app_by_user(Application $app, user_adapter $user)
     {
         $sql = 'SELECT a.application_id
         FROM api_accounts a, api_applications c
         WHERE usr_id = :usr_id AND c.application_id = a.application_id';
 
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':usr_id' => $user->get_id()));
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         $apps = array();
         foreach ($rs as $row) {
-            $apps[] = new API_OAuth2_Application($appbox, $row['application_id']);
+            $apps[] = new API_OAuth2_Application($app, $row['application_id']);
         }
 
         return $apps;
     }
 
-    public static function load_authorized_app_by_user(appbox $appbox, user_adapter $user)
+    public static function load_authorized_app_by_user(Application $app, user_adapter $user)
     {
         $sql = '
         SELECT a.application_id
@@ -720,14 +710,14 @@ class API_OAuth2_Application
         WHERE usr_id = :usr_id AND c.application_id = a.application_id
         AND revoked = 0';
 
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':usr_id' => $user->get_id()));
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         $apps = array();
         foreach ($rs as $row) {
-            $apps[] = new API_OAuth2_Application($appbox, $row['application_id']);
+            $apps[] = new API_OAuth2_Application($app, $row['application_id']);
         }
 
         return $apps;

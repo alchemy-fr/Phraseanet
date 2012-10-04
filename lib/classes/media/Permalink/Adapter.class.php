@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     subdefs
@@ -64,6 +66,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
      * @var string
      */
     protected $label;
+    protected $app;
 
     /**
      *
@@ -71,9 +74,9 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
      * @param  media_subdef            $media_subdef
      * @return media_Permalink_Adapter
      */
-    protected function __construct(databox &$databox, media_subdef &$media_subdef)
+    protected function __construct(Application $app, databox $databox, media_subdef $media_subdef)
     {
-
+        $this->app = $app;
         $this->databox = $databox;
         $this->media_subdef = $media_subdef;
 
@@ -142,10 +145,8 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
      */
     public function get_url()
     {
-        $registry = registry::get_instance();
-
         return sprintf('%spermalink/v1/%s/%d/%d/%s/%s/'
-                , $registry->get('GV_ServerName')
+                , $this->app['phraseanet.registry']->get('GV_ServerName')
                 , $this->get_label()
                 , $this->media_subdef->get_sbas_id()
                 , $this->media_subdef->get_record_id()
@@ -304,15 +305,15 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
      * @param  media_subdef            $media_subdef
      * @return media_Permalink_Adapter
      */
-    public static function getPermalink(databox &$databox, media_subdef &$media_subdef)
+    public static function getPermalink(Application $app, databox $databox, media_subdef $media_subdef)
     {
         try {
-            return new self($databox, $media_subdef);
+            return new self($app, $databox, $media_subdef);
         } catch (Exception $e) {
 
         }
 
-        return self::create($databox, $media_subdef);
+        return self::create($app, $databox, $media_subdef);
     }
 
     /**
@@ -321,7 +322,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
      * @param  media_subdef            $media_subdef
      * @return media_Permalink_Adapter
      */
-    public static function create(databox &$databox, media_subdef &$media_subdef)
+    public static function create(Application $app, databox $databox, media_subdef $media_subdef)
     {
         $sql = 'INSERT INTO permalinks
             (id, subdef_id, token, activated, created_on, last_modified, label)
@@ -338,7 +339,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
         $stmt->closeCursor();
         unset($stmt);
 
-        $permalink = self::getPermalink($databox, $media_subdef);
+        $permalink = self::getPermalink($app, $databox, $media_subdef);
         $permalink->set_label(strip_tags($media_subdef->get_record()->get_title()));
 
         return $permalink;
@@ -352,7 +353,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
      * @param  string         $name
      * @return record_adapter
      */
-    public static function challenge_token(databox &$databox, $token, $record_id, $name)
+    public static function challenge_token(Application $app, databox $databox, $token, $record_id, $name)
     {
         $sql = 'SELECT p.id
             FROM permalinks p, subdef s
@@ -377,7 +378,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
         unset($stmt);
 
         if ($row) {
-            return new record_adapter($databox->get_sbas_id(), $record_id);
+            return new record_adapter($app, $databox->get_sbas_id(), $record_id);
         }
 
         return null;

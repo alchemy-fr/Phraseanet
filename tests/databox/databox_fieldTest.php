@@ -16,7 +16,7 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->databox = static::$records['record_1']->get_databox();
+        $this->databox = self::$DI['record_1']->get_databox();
         $this->name_mono = 'Field Test Mono';
         $this->name_multi = 'Field Test Multi';
 
@@ -25,10 +25,10 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
         $this->object_multi = $this->databox->get_meta_structure()->get_element_by_name($this->name_multi);
 
         if ( ! $this->object_mono instanceof databox_field) {
-            $this->object_mono = databox_field::create($this->databox, $this->name_mono, false);
+            $this->object_mono = databox_field::create(self::$DI['app'], $this->databox, $this->name_mono, false);
         }
         if ( ! $this->object_multi instanceof databox_field) {
-            $this->object_multi = databox_field::create($this->databox, $this->name_multi, true);
+            $this->object_multi = databox_field::create(self::$DI['app'], $this->databox, $this->name_multi, true);
         }
     }
 
@@ -51,10 +51,10 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
 
     public function testGet_instance()
     {
-        $instance = databox_field::get_instance($this->databox, $this->object_mono->get_id());
+        $instance = databox_field::get_instance(self::$DI['app'], $this->databox, $this->object_mono->get_id());
         $this->assertEquals($this->object_mono->get_id(), $instance->get_id());
 
-        $instance = databox_field::get_instance($this->databox, $this->object_multi->get_id());
+        $instance = databox_field::get_instance(self::$DI['app'], $this->databox, $this->object_multi->get_id());
         $this->assertEquals($this->object_multi->get_id(), $instance->get_id());
     }
 
@@ -77,9 +77,9 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
     public function testGet_databox()
     {
         $this->assertInstanceOf('\databox', $this->object_mono->get_databox());
-        $this->assertEquals(static::$records['record_1']->get_databox()->get_sbas_id(), $this->object_mono->get_databox()->get_sbas_id());
+        $this->assertEquals(self::$DI['record_1']->get_databox()->get_sbas_id(), $this->object_mono->get_databox()->get_sbas_id());
         $this->assertInstanceOf('\databox', $this->object_multi->get_databox());
-        $this->assertEquals(static::$records['record_1']->get_databox()->get_sbas_id(), $this->object_multi->get_databox()->get_sbas_id());
+        $this->assertEquals(self::$DI['record_1']->get_databox()->get_sbas_id(), $this->object_multi->get_databox()->get_sbas_id());
     }
 
     /**
@@ -163,8 +163,8 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
 
     public function testGet_tag()
     {
-        $this->assertInstanceOf('\\PHPExiftool\\Driver\\Tag', $this->object_mono->get_tag());
-        $this->assertInstanceOf('\\PHPExiftool\\Driver\\Tag', $this->object_multi->get_tag());
+        $this->assertInstanceOf('\\PHPExiftool\\Driver\\TagInterface', $this->object_mono->get_tag());
+        $this->assertInstanceOf('\\PHPExiftool\\Driver\\TagInterface', $this->object_multi->get_tag());
     }
 
     public function testGet_dces_element()
@@ -342,7 +342,7 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
     {
         $AddedValue = 'scalar value';
 
-        static::$records['record_1']->set_metadatas(array(
+        self::$DI['record_1']->set_metadatas(array(
             array(
                 'meta_id'        => null,
                 'meta_struct_id' => $this->object_mono->get_id(),
@@ -352,7 +352,8 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
 
         $this->object_mono->set_name('Bonobo yoyo')->save();
 
-        $value = array_pop(static::$records['record_1']->get_caption()->get_field('Bonoboyoyo')->get_values());
+        $data = self::$DI['record_1']->get_caption()->get_field('Bonoboyoyo')->get_values();
+        $value = array_pop($data);
         $this->assertEquals($value->getValue(), $AddedValue);
     }
 

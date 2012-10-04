@@ -2,7 +2,9 @@
 
 namespace Alchemy\Phrasea\Metadata\Tag;
 
-class Nosource extends \PHPExiftool\Driver\Tag
+use PHPExiftool\Driver\AbstractTag;
+
+class Nosource extends AbstractTag
 {
     protected $Id = '';
     protected $Name = '';

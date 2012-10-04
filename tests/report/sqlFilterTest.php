@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
+require_once __DIR__ . '/../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
-class sqlFilterTest extends PhraseanetPHPUnitAbstract
+class sqlFilterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 {
     /**
      *
@@ -18,8 +18,7 @@ class sqlFilterTest extends PhraseanetPHPUnitAbstract
         $dmax = $date->format("Y-m-d H:i:s");
         $date->modify('-6 month');
         $dmin = $date->format("Y-m-d H:i:s");
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $databoxes = $appbox->get_databoxes();
+        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
         $ret = array();
         foreach ($databoxes as $databox) {
             $colls = $databox->get_collections();
@@ -31,6 +30,7 @@ class sqlFilterTest extends PhraseanetPHPUnitAbstract
         }
         foreach ($ret as $sbasid => $collections) {
             $report = new module_report_connexion(
+                    self::$DI['app'],
                     $dmin,
                     $dmax,
                     $sbasid,
@@ -44,9 +44,9 @@ class sqlFilterTest extends PhraseanetPHPUnitAbstract
         }
 
         $this->report->setFilter(array(array('f' => 'user', 'o' => '=', 'v' => 'admin'), array('f' => 'ddate', 'o' => 'LIKE', 'v' => '*'), array('f' => '1', 'o' => 'OR', 'v' => '1')));
-        $this->report->setUser_id(self::$user->get_id());
+        $this->report->setUser_id(self::$DI['user']->get_id());
         $this->report->setOrder('user', 'ASC');
-        $this->filter = new module_report_sqlfilter($this->report);
+        $this->filter = new module_report_sqlfilter(self::$DI['app'], $this->report);
     }
 
     public function checkFilter($filter)

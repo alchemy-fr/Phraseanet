@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Application;
+
 require_once __DIR__ . '/../../PhraseanetPHPUnitAbstract.class.inc';
 
 class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
@@ -12,13 +14,15 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $appbox = \appbox::get_instance(\bootstrap::getCore('test'));
-        $task = \task_period_archive::create($appbox, 'task_period_archive');
+
+        $app = new Application('test');
+
+        $task = \task_period_archive::create($app, 'task_period_archive');
 
         $logger = new \Monolog\Logger('test');
         $logger->pushHandler(new \Monolog\Handler\NullHandler());
 
-        self::$object = new archiveTester($task->getID(), $logger);
+        self::$object = new archiveTester($task->getID(), $app, $logger);
     }
 
     public static function tearDownAfterClass()
@@ -245,7 +249,7 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
 
     public function getXml()
     {
-        $meta_struct = self::$collection->get_databox()->get_meta_structure();
+        $meta_struct = self::$DI['collection']->get_databox()->get_meta_structure();
 
         $xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
                 <record record_id="2">
@@ -308,7 +312,7 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
 
         file_put_contents($tmp, $xml);
 
-        $story = self::$object->createStory(self::$collection, $tmpFile, $tmp);
+        $story = self::$object->createStory(self::$DI['collection'], $tmpFile, $tmp);
 
         unlink($tmpFile);
 
@@ -329,7 +333,7 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
 
         file_put_contents($tmp, $xml);
 
-        $story = self::$object->createRecord(self::$collection, $tmpFile, $tmp, null, \Alchemy\Phrasea\Border\Manager::FORCE_RECORD);
+        $story = self::$object->createRecord(self::$DI['collection'], $tmpFile, $tmp, null, \Alchemy\Phrasea\Border\Manager::FORCE_RECORD);
 
         unlink($tmpFile);
 
@@ -416,10 +420,10 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetIndexByFieldName()
     {
-        $meta_struct = self::$collection->get_databox()->get_meta_structure();
-        $media = self::$core['mediavorus']->guess(new \SplFileInfo(__DIR__ . '/../../testfiles/test001.CR2'));
+        $meta_struct = self::$DI['collection']->get_databox()->get_meta_structure();
+        $media = self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../testfiles/test001.CR2');
 
-        $bagByName = self::$object->getIndexByFieldNameTester($meta_struct, $media->getEntity()->getMetadatas());
+        $bagByName = self::$object->getIndexByFieldNameTester($meta_struct, $media->getMetadatas());
 
         $this->assertInstanceOf('\\PHPExiftool\\Driver\\Metadata\\MetadataBag', $bagByName);
 
@@ -439,7 +443,7 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
      */
     public function testBagToArray()
     {
-        $meta_struct = self::$collection->get_databox()->get_meta_structure();
+        $meta_struct = self::$DI['collection']->get_databox()->get_meta_structure();
 
         $bag = new PHPExiftool\Driver\Metadata\MetadataBag();
 
@@ -448,11 +452,21 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
 
         foreach ($meta_struct as $databox_field) {
             $tagname = $databox_field->get_tag()->getTagname();
+
             if ( ! $tagname) {
                 continue;
             }
 
-            if ($databox_field->is_multi()) {
+            if($databox_field->get_type() == 'date') {
+
+                $date = new \DateTime();
+                $bag->set($tagname, new PHPExiftool\Driver\Metadata\Metadata(
+                        $databox_field->get_tag(),
+                        new \PHPExiftool\Driver\Value\Mono($date->format('Y/m/d H:i:s'))
+                ));
+                $toFetch[$tagname] = array($date->format('Y/m/d H:i:s'));
+
+            } elseif ($databox_field->is_multi()) {
                 if ($first_multi) {
                     $bag->set($tagname, new PHPExiftool\Driver\Metadata\Metadata(
                             $databox_field->get_tag(),
@@ -516,7 +530,7 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
      */
     public function testMergeForDatabox()
     {
-        $meta_struct = self::$collection->get_databox()->get_meta_structure();
+        $meta_struct = self::$DI['collection']->get_databox()->get_meta_structure();
 
         $bag1 = new PHPExiftool\Driver\Metadata\MetadataBag();
         $bag2 = new PHPExiftool\Driver\Metadata\MetadataBag();
@@ -586,7 +600,7 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
      */
     public function testReadXMLForDataboxFail()
     {
-        $meta_struct = self::$collection->get_databox()->get_meta_structure();
+        $meta_struct = self::$DI['collection']->get_databox()->get_meta_structure();
         self::$object->readXMLForDataboxTester($meta_struct, 'non existant file');
     }
 
@@ -596,7 +610,7 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
      */
     public function testReadXMLForDataboxWrongXML()
     {
-        $meta_struct = self::$collection->get_databox()->get_meta_structure();
+        $meta_struct = self::$DI['collection']->get_databox()->get_meta_structure();
         self::$object->readXMLForDataboxTester($meta_struct, __FILE__);
     }
 

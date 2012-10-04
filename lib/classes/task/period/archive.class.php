@@ -10,7 +10,6 @@
 
 use Alchemy\Phrasea\Metadata\Tag as PhraseaTag;
 use Alchemy\Phrasea\Border\Attribute as BorderAttribute;
-use MediaVorus\MediaVorus;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Metadata\MetadataBag;
 use Symfony\Component\Filesystem\Exception\IOException;
@@ -58,20 +57,6 @@ class task_period_archive extends task_abstract
      * @var \Entities\LazaretSession
      */
     protected $lazaretSession;
-
-    /**
-     *
-     * @var \Symfony\Component\Filesystem\Filesystem
-     */
-    protected $filesystem;
-
-    public function __construct($taskid, Monolog\Logger $logger)
-    {
-        parent::__construct($taskid, $logger);
-
-        $core = \bootstrap::getCore();
-        $this->filesystem = $core['file-system'];
-    }
 
     /**
      *
@@ -210,8 +195,6 @@ class task_period_archive extends task_abstract
      */
     public function getInterfaceHTML()
     {
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
-
         ob_start();
         ?>
         <form id="graphicForm" name="graphicForm" onsubmit="return(false);" method="post">
@@ -220,7 +203,7 @@ class task_period_archive extends task_abstract
             <select name="base_id">
                 <option value="">...</option>
         <?php
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach ($this->dependencyContainer['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 print("<option value=\"" . $collection->get_base_id() . "\">" . $databox->get_viewname() . " / " . $collection->get_name() . "</option>");
             }
@@ -274,13 +257,12 @@ class task_period_archive extends task_abstract
     {
         $this->debug = false;
 
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
-        $conn = $appbox->get_connection();
+        $conn = $this->dependencyContainer['phraseanet.appbox']->get_connection();
 
         $this->sxTaskSettings = simplexml_load_string($this->settings);
 
         $base_id = (int) ($this->sxTaskSettings->base_id);
-        $this->sbas_id = \phrasea::sbasFromBas($base_id);
+        $this->sbas_id = \phrasea::sbasFromBas($this->dependencyContainer, $base_id);
 
         if ( ! $this->sbas_id) {
             $this->log('base_id unknown');
@@ -288,7 +270,7 @@ class task_period_archive extends task_abstract
             return 'tostop';
         }
 
-        $databox = $appbox->get_databox($this->sbas_id);
+        $databox = $this->dependencyContainer['phraseanet.appbox']->get_databox($this->sbas_id);
 
         $this->TColls = array();
         $collection = null;
@@ -324,7 +306,7 @@ class task_period_archive extends task_abstract
 
             if ($pathhd) {
                 try {
-                    $this->filesystem->mkdir($pathhd, 0750);
+                    $this->dependencyContainer['filesystem']->mkdir($pathhd, 0750);
                 } catch (IOException $e) {
                     $this->log($e->getMessage());
                     $this->running = false;
@@ -363,7 +345,7 @@ class task_period_archive extends task_abstract
             $loop = 0;
             while ($this->running) {
                 try {
-                    $conn = connection::getPDOConnection();
+                    $conn = connection::getPDOConnection($this->dependencyContainer);
                 } catch (Exception $e) {
                     $this->log($e->getMessage());
                     if ($this->getRunner() == self::RUNNER_SCHEDULER) {
@@ -511,12 +493,11 @@ class task_period_archive extends task_abstract
     {
         clearstatcache();
 
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
-        connection::getPDOConnection();
-        $appbox->get_databox($this->sbas_id)->get_connection();
+        connection::getPDOConnection($this->dependencyContainer);
+        $this->dependencyContainer['phraseanet.appbox']->get_databox($this->sbas_id)->get_connection();
 
         $path_in = p4string::delEndSlash(trim((string) ($this->sxTaskSettings->hotfolder)));
-        if (false === $this->filesystem->exists($path_in . "/.phrasea.xml")) {
+        if (false === $this->dependencyContainer['filesystem']->exists($path_in . "/.phrasea.xml")) {
             $this->log(sprintf(('NO .phrasea.xml AT ROOT v2 \'%s\' !'), $path_in));
 
             return 'WAIT';
@@ -527,7 +508,7 @@ class task_period_archive extends task_abstract
             $path_archived = $path_in . '_archived';
 
             try {
-                $this->filesystem->mkdir($path_archived, 0755);
+                $this->dependencyContainer['filesystem']->mkdir($path_archived, 0755);
             } catch (IOException $e) {
                 $this->log($e->getMessage());
 
@@ -538,7 +519,7 @@ class task_period_archive extends task_abstract
             $path_error = $path_in . '_error';
 
             try {
-                $this->filesystem->mkdir($path_error, 0755);
+                $this->dependencyContainer['filesystem']->mkdir($path_error, 0755);
             } catch (IOException $e) {
                 $this->log($e->getMessage());
 
@@ -707,9 +688,9 @@ class task_period_archive extends task_abstract
                 // test for magic file
                 if (($magicfile = trim((string) ($sxDotPhrasea->magicfile))) != '') {
                     $magicmethod = strtoupper($sxDotPhrasea->magicfile['method']);
-                    if ($magicmethod == 'LOCK' && true === $this->filesystem->exists($path . '/' . $magicfile)) {
+                    if ($magicmethod == 'LOCK' && true === $this->dependencyContainer['filesystem']->exists($path . '/' . $magicfile)) {
                         return;
-                    } elseif ($magicmethod == 'UNLOCK' && false === $this->filesystem->exists($path . '/' . $magicfile)) {
+                    } elseif ($magicmethod == 'UNLOCK' && false === $this->dependencyContainer['filesystem']->exists($path . '/' . $magicfile)) {
                         return;
                     }
                 }
@@ -814,9 +795,9 @@ class task_period_archive extends task_abstract
                 // test magicfile
                 if (($magicfile = trim((string) ($sxDotPhrasea->magicfile))) != '') {
                     $magicmethod = strtoupper($sxDotPhrasea->magicfile['method']);
-                    if ($magicmethod == 'LOCK' && true === $this->filesystem->exists($path . '/' . $magicfile)) {
+                    if ($magicmethod == 'LOCK' && true === $this->dependencyContainer['filesystem']->exists($path . '/' . $magicfile)) {
                         return 0;
-                    } elseif ($magicmethod == 'UNLOCK' && false === $this->filesystem->exists($path . '/' . $magicfile)) {
+                    } elseif ($magicmethod == 'UNLOCK' && false === $this->dependencyContainer['filesystem']->exists($path . '/' . $magicfile)) {
                         return 0;
                     }
                 }
@@ -1084,7 +1065,7 @@ class task_period_archive extends task_abstract
                     $nodesToDel[] = $n;
 
                     try {
-                        $this->filesystem->remove($path . '/' . $name);
+                        $this->dependencyContainer['filesystem']->remove($path . '/' . $name);
                     } catch (IOException $e) {
                         $this->log($e->getMessage());
                     }
@@ -1097,13 +1078,13 @@ class task_period_archive extends task_abstract
                         $this->log(sprintf(('copy \'%s\' to \'error\''), $subpath . '/' . $name));
 
                         try {
-                            $this->filesystem->mkdir($path_error, 0755);
+                            $this->dependencyContainer['filesystem']->mkdir($path_error, 0755);
                         } catch (IOException $e) {
                             $this->log($e->getMessage());
                         }
 
                         try {
-                            $this->filesystem->copy($path . '/' . $name, $path_error . '/' . $name, true);
+                            $this->dependencyContainer['filesystem']->copy($path . '/' . $name, $path_error . '/' . $name, true);
                         } catch (IOException $e) {
                             $this->log($e->getMessage());
                         }
@@ -1112,7 +1093,7 @@ class task_period_archive extends task_abstract
                     $nodesToDel[] = $n;
 
                     try {
-                        $this->filesystem->remove($path . '/' . $name);
+                        $this->dependencyContainer['filesystem']->remove($path . '/' . $name);
                     } catch (IOException $e) {
                         $this->log($e->getMessage());
                     }
@@ -1198,7 +1179,7 @@ class task_period_archive extends task_abstract
             } elseif ($magicmethod == 'UNLOCK') {
 
                 try {
-                    $this->filesystem->remove($path . '/' . $magicfile);
+                    $this->dependencyContainer['filesystem']->remove($path . '/' . $magicfile);
                 } catch (IOException $e) {
                     $this->log($e->getMessage());
                 }
@@ -1329,13 +1310,13 @@ class task_period_archive extends task_abstract
                     $this->log(sprintf(('copy \'%s\' to \'archived\''), $subpath . '/' . $name));
 
                     try {
-                        $this->filesystem->mkdir($path_archived);
+                        $this->dependencyContainer['filesystem']->mkdir($path_archived);
                     } catch (IOException $e) {
                         $this->log($e->getMessage());
                     }
 
                     try {
-                        $this->filesystem->copy($path . '/' . $name, $path_archived . '/' . $name, true);
+                        $this->dependencyContainer['filesystem']->copy($path . '/' . $name, $path_archived . '/' . $name, true);
                     } catch (IOException $e) {
                         $this->log($e->getMessage());
                     }
@@ -1350,13 +1331,13 @@ class task_period_archive extends task_abstract
                     $this->log(sprintf(('copy \'%s\' to \'error\''), $subpath . '/' . $name));
 
                     try {
-                        $this->filesystem->mkdir($path_error);
+                        $this->dependencyContainer['filesystem']->mkdir($path_error);
                     } catch (IOException $e) {
                         $this->log($e->getMessage());
                     }
 
                     try {
-                        $this->filesystem->copy($path . '/' . $name, $path_error . '/' . $name, true);
+                        $this->dependencyContainer['filesystem']->copy($path . '/' . $name, $path_error . '/' . $name, true);
                     } catch (IOException $e) {
                         $this->log($e->getMessage());
                     }
@@ -1371,7 +1352,7 @@ class task_period_archive extends task_abstract
                     $this->log(sprintf(('delete \'%s\''), $subpath . '/' . $name));
 
                     try {
-                        $this->filesystem->remove($path . '/' . $name);
+                        $this->dependencyContainer['filesystem']->remove($path . '/' . $name);
                         $this->movedFiles ++;
                     } catch (IOException $e) {
                         $this->log($e->getMessage());
@@ -1421,7 +1402,6 @@ class task_period_archive extends task_abstract
      */
     private function archiveGrp(\DOMDocument $dom, \DOMElement $node, $path, $path_archived, $path_error, array &$nodesToDel)
     {
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
         $xpath = new DOMXPath($dom);
 
         // grp folders stay in place
@@ -1446,10 +1426,8 @@ class task_period_archive extends task_abstract
             // if the .grp does not have a representative doc, let's use a generic file
             if ( ! ($rep = $node->getAttribute('grp_representation'))) {
 
-                $registry = registry::get_instance();
-
                 try {
-                    $this->filesystem->copy(p4string::addEndSlash($registry->get('GV_RootPath')) . 'www/skins/icons/substitution/regroup_doc.png', $genericdoc = ($path . '/group.jpg'), true);
+                    $this->dependencyContainer['filesystem']->copy(p4string::addEndSlash($this->dependencyContainer['phraseanet.registry']->get('GV_RootPath')) . 'www/skins/icons/substitution/regroup_doc.png', $genericdoc = ($path . '/group.jpg'), true);
                 } catch (IOException $e) {
                     $this->log($e->getMessage());
                 }
@@ -1474,8 +1452,8 @@ class task_period_archive extends task_abstract
 
             try {
 
-                $databox = $appbox->get_databox($this->sbas_id);
-                $collection = collection::get_from_coll_id($databox, (int) $cid);
+                $databox = $this->dependencyContainer['phraseanet.appbox']->get_databox($this->sbas_id);
+                $collection = collection::get_from_coll_id($this->dependencyContainer, $databox, (int) $cid);
                 if ($captionFileName === null) {
                     $story = $this->createStory($collection, $path . '/' . $representationFileName, null);
                 } else {
@@ -1489,7 +1467,7 @@ class task_period_archive extends task_abstract
 
                 if ($genericdoc) {
                     try {
-                        $this->filesystem->remove($genericdoc);
+                        $this->dependencyContainer['filesystem']->remove($genericdoc);
                         $this->movedFiles ++;
                     } catch (IOException $e) {
                         $this->log($e->getMessage());
@@ -1506,13 +1484,13 @@ class task_period_archive extends task_abstract
                     $this->log(sprintf(('copy \'%s\' to \'archived\''), $subpath . '/' . $grpFolder . '/.grouping.xml'));
 
                     try {
-                        $this->filesystem->mkdir($path_archived . '/' . $grpFolder, 0755);
+                        $this->dependencyContainer['filesystem']->mkdir($path_archived . '/' . $grpFolder, 0755);
                     } catch (IOException $e) {
                         $this->log($e->getMessage());
                     }
 
                     try {
-                        $this->filesystem->copy($path . '/' . $grpFolder . '/.grouping.xml', $path_archived . '/' . $grpFolder . '/.grouping.xml', true);
+                        $this->dependencyContainer['filesystem']->copy($path . '/' . $grpFolder . '/.grouping.xml', $path_archived . '/' . $grpFolder . '/.grouping.xml', true);
                     } catch (IOException $e) {
                         $this->log($e->getMessage());
                     }
@@ -1524,20 +1502,20 @@ class task_period_archive extends task_abstract
                         $this->log(sprintf(('copy \'%s\' to \'archived\''), $subpath . '/' . $captionFileName));
 
                         try {
-                            $this->filesystem->mkdir($path_archived, 0755);
+                            $this->dependencyContainer['filesystem']->mkdir($path_archived, 0755);
                         } catch (IOException $e) {
                             $this->log($e->getMessage());
                         }
 
                         try {
-                            $this->filesystem->copy($path . '/' . $captionFileName, $path_archived . '/' . $captionFileName, true);
+                            $this->dependencyContainer['filesystem']->copy($path . '/' . $captionFileName, $path_archived . '/' . $captionFileName, true);
                         } catch (IOException $e) {
                             $this->log($e->getMessage());
                         }
                     }
 
                     try {
-                        $this->filesystem->remove($path . '/' . $captionFileName);
+                        $this->dependencyContainer['filesystem']->remove($path . '/' . $captionFileName);
                         $this->movedFiles ++;
                     } catch (IOException $e) {
                         $this->log($e->getMessage());
@@ -1553,20 +1531,20 @@ class task_period_archive extends task_abstract
                         $this->log(sprintf(('copy \'%s\' to \'archived\''), $subpath . '/' . $representationFileName));
 
                         try {
-                            $this->filesystem->mkdir($path_archived, 0755);
+                            $this->dependencyContainer['filesystem']->mkdir($path_archived, 0755);
                         } catch (IOException $e) {
                             $this->log($e->getMessage());
                         }
 
                         try {
-                            $this->filesystem->copy($path . '/' . $representationFileName, $path_archived . '/' . $representationFileName, true);
+                            $this->dependencyContainer['filesystem']->copy($path . '/' . $representationFileName, $path_archived . '/' . $representationFileName, true);
                         } catch (IOException $e) {
                             $this->log($e->getMessage());
                         }
                     }
 
                     try {
-                        $this->filesystem->remove($path . '/' . $representationFileName);
+                        $this->dependencyContainer['filesystem']->remove($path . '/' . $representationFileName);
                         $this->movedFiles ++;
                     } catch (IOException $e) {
                         $this->log($e->getMessage());
@@ -1582,7 +1560,7 @@ class task_period_archive extends task_abstract
         }
 
         // here the .grouping.xml should exists
-        if ($this->filesystem->exists($groupingFile)) {
+        if ($this->dependencyContainer['filesystem']->exists($groupingFile)) {
             // a .grouping.xml must stay in place
             // -- don't do, done in phase4
 
@@ -1628,20 +1606,19 @@ class task_period_archive extends task_abstract
             $stat1 = '0';
         }
 
-        $core = \bootstrap::getCore();
-        $media = $core['mediavorus']->guess(new \SplFileInfo($pathfile));
+        $media = $this->dependencyContainer['mediavorus']->guess($pathfile);
 
         $databox = $collection->get_databox();
         $metadatasStructure = $databox->get_meta_structure();
 
-        $metadatas = $this->getIndexByFieldName($metadatasStructure, $media->getEntity()->getMetadatas());
+        $metadatas = $this->getIndexByFieldName($metadatasStructure, $media->getMetadatas());
 
-        if ($captionFile !== null && true === $this->filesystem->exists($captionFile)) {
+        if ($captionFile !== null && true === $this->dependencyContainer['filesystem']->exists($captionFile)) {
             $caption = $this->readXMLForDatabox($metadatasStructure, $captionFile);
             $captionStatus = $this->parseStatusBit(simplexml_load_file($captionFile));
 
             if ($captionStatus) {
-                $status = databox_status::operation_or($status, $captionStatus);
+                $status = databox_status::operation_or($this->dependencyContainer, $status, $captionStatus);
             }
 
             $metadatas = $this->mergeForDatabox($metadatasStructure, $metadatas, $caption);
@@ -1649,11 +1626,11 @@ class task_period_archive extends task_abstract
 
         $metas = $this->bagToArray($metadatasStructure, $metadatas);
 
-        $story = record_adapter::createStory($collection);
-        $story->substitute_subdef('document', $media);
+        $story = record_adapter::createStory($this->dependencyContainer, $collection);
+        $story->substitute_subdef('document', $media, $this->dependencyContainer);
 
         $story->set_metadatas($metas, true);
-        $story->set_binary_status(databox_status::operation_or($stat0, $stat1));
+        $story->set_binary_status(databox_status::operation_or($this->dependencyContainer, $stat0, $stat1));
         $story->rebuild_subdefs();
         $story->reindex();
 
@@ -1692,29 +1669,28 @@ class task_period_archive extends task_abstract
             $stat1 = '0';
         }
 
-        $core = \bootstrap::getCore();
-        $status = databox_status::operation_or($stat0, $stat1);
+        $status = databox_status::operation_or($this->dependencyContainer, $stat0, $stat1);
 
-        $media = $core['mediavorus']->guess(new \SplFileInfo($pathfile));
+        $media = $this->dependencyContainer['mediavorus']->guess($pathfile);
 
         $databox = $collection->get_databox();
         $metadatasStructure = $databox->get_meta_structure();
 
-        $metadatas = $this->getIndexByFieldName($metadatasStructure, $media->getEntity()->getMetadatas());
+        $metadatas = $this->getIndexByFieldName($metadatasStructure, $media->getMetadatas());
 
-        if ($captionFile !== null && true === $this->filesystem->exists($captionFile)) {
+        if ($captionFile !== null && true === $this->dependencyContainer['filesystem']->exists($captionFile)) {
             $caption = $this->readXMLForDatabox($metadatasStructure, $captionFile);
             $captionStatus = $this->parseStatusBit(simplexml_load_file($captionFile));
 
             if ($captionStatus) {
-                $status = databox_status::operation_or($status, $captionStatus);
+                $status = databox_status::operation_or($this->dependencyContainer, $status, $captionStatus);
             }
 
             $metadatas = $this->mergeForDatabox($metadatasStructure, $metadatas, $caption);
         }
-        $file = new \Alchemy\Phrasea\Border\File($media, $collection);
+        $file = new \Alchemy\Phrasea\Border\File($this->dependencyContainer, $media, $collection);
 
-        $file->addAttribute(new BorderAttribute\Status($status));
+        $file->addAttribute(new BorderAttribute\Status($this->dependencyContainer, $status));
 
         $file->addAttribute(new BorderAttribute\Metadata(new Metadata(new PhraseaTag\TfFilepath(), new \PHPExiftool\Driver\Value\Mono($media->getFile()->getRealPath()))));
         $file->addAttribute(new BorderAttribute\Metadata(new Metadata(new PhraseaTag\TfDirname(), new \PHPExiftool\Driver\Value\Mono(dirname($media->getFile()->getRealPath())))));
@@ -1728,7 +1704,7 @@ class task_period_archive extends task_abstract
         }
 
         if ($grp_rid) {
-            $file->addAttribute(new BorderAttribute\Story(new record_adapter($databox->get_sbas_id(), $grp_rid)));
+            $file->addAttribute(new BorderAttribute\Story(new record_adapter($this->dependencyContainer, $databox->get_sbas_id(), $grp_rid)));
         }
 
         $record = null;
@@ -1737,7 +1713,7 @@ class task_period_archive extends task_abstract
                 $record = $element;
             };
 
-        $core['border-manager']->process($this->getLazaretSession(), $file, $postProcess, $force);
+        $this->dependencyContainer['border-manager']->process($this->getLazaretSession(), $file, $postProcess, $force);
 
         return $record;
     }
@@ -1842,11 +1818,10 @@ class task_period_archive extends task_abstract
      * @param integer      $grp_rid
      * @param array        $nodesToDel      out, filled with files to delete
      */
-    private function archiveFileAndCaption(\DOMDOcument$dom, \DOMElement $node, \DOMElement $captionFileNode = null, $path, $path_archived, $path_error, $grp_rid, array &$nodesToDel)
+    private function archiveFileAndCaption(\DOMDocument $dom, \DOMElement $node, \DOMElement $captionFileNode = null, $path, $path_archived, $path_error, $grp_rid, array &$nodesToDel)
     {
         $ret = false;
 
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
         $file = $node->getAttribute('name');
         $cid = $node->getAttribute('cid');
         $captionFileName = $captionFileNode ? $captionFileNode->getAttribute('name') : null;
@@ -1877,8 +1852,8 @@ class task_period_archive extends task_abstract
         }
 
         try {
-            $databox = $appbox->get_databox($this->sbas_id);
-            $collection = collection::get_from_coll_id($databox, (int) $cid);
+            $databox = $this->dependencyContainer['phraseanet.appbox']->get_databox($this->sbas_id);
+            $collection = collection::get_from_coll_id($this->dependencyContainer, $databox, (int) $cid);
 
             if ($captionFileName === null) {
                 $record = $this->createRecord($collection, $path . '/' . $file, null, $grp_rid);
@@ -1908,13 +1883,13 @@ class task_period_archive extends task_abstract
             $this->log(sprintf(('copy \'%s\' to \'archived\''), $subpath . '/' . $file));
 
             try {
-                $this->filesystem->mkdir($path_archived);
+                $this->dependencyContainer['filesystem']->mkdir($path_archived);
             } catch (IOException $e) {
                 $this->log($e->getMessage());
             }
 
             try {
-                $this->filesystem->copy($path . '/' . $file, $path_archived . '/' . $file, true);
+                $this->dependencyContainer['filesystem']->copy($path . '/' . $file, $path_archived . '/' . $file, true);
             } catch (IOException $e) {
                 $this->log($e->getMessage());
             }
@@ -1923,7 +1898,7 @@ class task_period_archive extends task_abstract
                 $this->log(sprintf(('copy \'%s\' to \'archived\''), $subpath . '/' . $captionFileName));
 
                 try {
-                    $this->filesystem->copy($path . '/' . $captionFileName, $path_archived . '/' . $captionFileName, true);
+                    $this->dependencyContainer['filesystem']->copy($path . '/' . $captionFileName, $path_archived . '/' . $captionFileName, true);
                 } catch (IOException $e) {
                     $this->log($e->getMessage());
                 }
@@ -1936,13 +1911,13 @@ class task_period_archive extends task_abstract
             $this->log(sprintf(('copy \'%s\' to \'error\''), $subpath . '/' . $file));
 
             try {
-                $this->filesystem->mkdir($path_error);
+                $this->dependencyContainer['filesystem']->mkdir($path_error);
             } catch (IOException $e) {
                 $this->log($e->getMessage());
             }
 
             try {
-                $this->filesystem->copy($path . '/' . $file, $path_error . '/' . $file, true);
+                $this->dependencyContainer['filesystem']->copy($path . '/' . $file, $path_error . '/' . $file, true);
             } catch (IOException $e) {
                 $this->log($e->getMessage());
             }
@@ -1951,7 +1926,7 @@ class task_period_archive extends task_abstract
                 $this->log(sprintf(('copy \'%s\' to \'error\''), $subpath . '/' . $captionFileName));
 
                 try {
-                    $this->filesystem->copy($path . '/' . $captionFileName, $path_error . '/' . $captionFileName, true);
+                    $this->dependencyContainer['filesystem']->copy($path . '/' . $captionFileName, $path_error . '/' . $captionFileName, true);
                 } catch (IOException $e) {
                     $this->log($e->getMessage());
                 }
@@ -1966,7 +1941,7 @@ class task_period_archive extends task_abstract
             $file = $node->getAttribute('name');
 
             try {
-                $this->filesystem->remove($path . '/' . $file);
+                $this->dependencyContainer['filesystem']->remove($path . '/' . $file);
             } catch (IOException $e) {
                 $this->log($e->getMessage());
             }
@@ -1980,7 +1955,7 @@ class task_period_archive extends task_abstract
             $file = $captionFileNode->getAttribute('name');
 
             try {
-                $this->filesystem->remove($path . '/' . $file);
+                $this->dependencyContainer['filesystem']->remove($path . '/' . $file);
                 $this->movedFiles ++;
             } catch (IOException $e) {
                 $this->log($e->getMessage());
@@ -2057,12 +2032,10 @@ class task_period_archive extends task_abstract
             return $this->lazaretSession;
         }
 
-        $core = \bootstrap::getCore();
-
         $lazaretSession = new \Entities\LazaretSession();
 
-        $core['EM']->persist($lazaretSession);
-        $core['EM']->flush();
+        $this->dependencyContainer['EM']->persist($lazaretSession);
+        $this->dependencyContainer['EM']->flush();
 
         $this->lazaretSession = $lazaretSession;
 
@@ -2207,7 +2180,7 @@ class task_period_archive extends task_abstract
 
     protected function readXMLForDatabox(\databox_descriptionStructure $metadatasStructure, $pathfile)
     {
-        if (false === $this->filesystem->exists($pathfile)) {
+        if (false === $this->dependencyContainer['filesystem']->exists($pathfile)) {
             throw new \InvalidArgumentException(sprintf('file %s does not exists', $pathfile));
         }
 

@@ -19,7 +19,7 @@ class EntityBasketTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->em = self::$core->getEntityManager();
+        $this->em = self::$DI['app']['EM'];
         $this->basket = $this->insertOneBasket();
     }
 
@@ -96,7 +96,7 @@ class EntityBasketTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         $basketElement = new \Entities\BasketElement();
 
-        $basketElement->setRecord(static::$records['record_1']);
+        $basketElement->setRecord(self::$DI['record_1']);
 
         $basketElement->setBasket($this->basket);
 
@@ -111,18 +111,18 @@ class EntityBasketTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGetPusher()
     {
-        $this->assertNull($this->basket->getPusher()); //no pusher
-        $this->basket->setPusherId(self::$user->get_id());
-        $this->assertInstanceOf('\User_Adapter', $this->basket->getPusher());
-        $this->assertEquals($this->basket->getPusher()->get_id(), self::$user->get_id());
+        $this->assertNull($this->basket->getPusher(self::$DI['app'])); //no pusher
+        $this->basket->setPusherId(self::$DI['user']->get_id());
+        $this->assertInstanceOf('\User_Adapter', $this->basket->getPusher(self::$DI['app']));
+        $this->assertEquals($this->basket->getPusher(self::$DI['app'])->get_id(), self::$DI['user']->get_id());
     }
 
     public function testGetOwner()
     {
-        $this->assertNotNull($this->basket->getOwner()); //no owner
-        $this->basket->setUsrId(self::$user->get_id());
-        $this->assertInstanceOf('\User_Adapter', $this->basket->getOwner());
-        $this->assertEquals($this->basket->getOwner()->get_id(), self::$user->get_id());
+        $this->assertNotNull($this->basket->getOwner(self::$DI['app'])); //no owner
+        $this->basket->setUsrId(self::$DI['user']->get_id());
+        $this->assertInstanceOf('\User_Adapter', $this->basket->getOwner(self::$DI['app']));
+        $this->assertEquals($this->basket->getOwner(self::$DI['app'])->get_id(), self::$DI['user']->get_id());
     }
 
     public function testGetValidation()
@@ -142,7 +142,7 @@ class EntityBasketTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         $validationSession->setExpires($expires);
 
-        $validationSession->setInitiator(self::$user);
+        $validationSession->setInitiator(self::$DI['user']);
 
         $this->em->persist($validationSession);
 

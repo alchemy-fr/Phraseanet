@@ -42,24 +42,16 @@ class CreateCollection extends Command
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function requireSetup()
-    {
-        return true;
-    }
-
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         $databox = $this->container['phraseanet.appbox']
             ->get_databox((int) $input->getArgument('databox_id'));
 
-        $new_collection = \collection::create($databox, $this->container['phraseanet.appbox'], $input->getArgument('collname'));
+        $new_collection = \collection::create($app, $databox, $this->container['phraseanet.appbox'], $input->getArgument('collname'));
 
         if ($new_collection && $input->getOption('duplicate_rights_from_base_id')) {
 
-            $query = new \User_Query($this->container['phraseanet.appbox']);
+            $query = new \User_Query($this->container);
             $total = $query->on_base_ids(array($input->getOption('duplicate_rights_from_base_id')))->get_total();
 
             $n = 0;
@@ -72,6 +64,6 @@ class CreateCollection extends Command
             }
         }
 
-        \User_Adapter::reset_sys_admins_rights();
+        \User_Adapter::reset_sys_admins_rights($this->container);
     }
 }

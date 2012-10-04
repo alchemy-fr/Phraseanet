@@ -72,8 +72,8 @@ class task_period_apibridge extends task_appboxAbstract
     protected function processOneContent(appbox $appbox, Array $row)
     {
         try {
-            $account = Bridge_Account::load_account($appbox, $row['account_id']);
-            $element = new Bridge_Element($appbox, $account, $row['id']);
+            $account = Bridge_Account::load_account($this->dependencyContainer, $row['account_id']);
+            $element = new Bridge_Element($this->dependencyContainer, $account, $row['id']);
 
             $this->log("process " . $element->get_id() . " with status " . $element->get_status());
 
@@ -136,9 +136,8 @@ class task_period_apibridge extends task_appboxAbstract
      * @param  Bridge_Element        $element
      * @return task_period_apibridge
      */
-    protected function update_element(Bridge_Element &$element)
+    protected function update_element(Bridge_Element $element)
     {
-        $Core = bootstrap::getCore();
         $account = $element->get_account();
         $connector_status = $account->get_api()->get_element_status($element);
 
@@ -167,8 +166,7 @@ class task_period_apibridge extends task_appboxAbstract
                     , 'sbas_id'    => $element->get_record()->get_sbas_id()
                     , 'record_id'  => $element->get_record()->get_record_id()
                 );
-                $events_mngr = $Core['events-manager'];
-                $events_mngr->trigger('__BRIDGE_UPLOAD_FAIL__', $params);
+                $this->dependencyContainer['events-manager']->trigger('__BRIDGE_UPLOAD_FAIL__', $params);
 
                 break;
             default:

@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Border\Checker;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Doctrine\ORM\EntityManager;
 
@@ -21,13 +22,18 @@ use Doctrine\ORM\EntityManager;
 class Sha256 extends AbstractChecker
 {
 
+    public function __construct(Application $app)
+    {
+        parent::__construct($app);
+    }
+
     /**
      * {@inheritdoc}
      */
     public function check(EntityManager $em, File $file)
     {
         $boolean = ! count(\record_adapter::get_record_by_sha(
-                    $file->getCollection()->get_databox()->get_sbas_id(), $file->getSha256()
+                    $this->app, $file->getCollection()->get_databox()->get_sbas_id(), $file->getSha256()
                 ));
 
         return new Response($boolean, $this);

@@ -8,29 +8,29 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-/* @var $Core \Alchemy\Phrasea\Core */
-$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
-$Request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
-$em = $Core->getEntityManager();
 
-$appbox = appbox::get_instance($Core);
-$session = $appbox->get_session();
+require_once __DIR__ . "/../../lib/bootstrap.php";
+
+$Request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
+
+$app = new Application();
 phrasea::headers();
 
 $request = http_request::getInstance();
 $parm = $request->get_parms("act", "lst", "SSTTID", "story");
 
-$user = $Core->getAuthenticatedUser();
 ?>
-<html lang="<?php echo $session->get_I18n(); ?>">
+<html lang="<?php echo $app['locale.I18n']; ?>">
     <head>
         <base target="_self">
-        <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,include/jslibs/jquery-ui-1.8.17/css/dark-hive/jquery-ui-1.8.17.custom.css,skins/prod/<?php echo $user->getPrefs('css') ?>/prodcolor.css" />
+        <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,include/jslibs/jquery-ui-1.8.17/css/dark-hive/jquery-ui-1.8.17.custom.css,skins/prod/<?php echo $app['phraseanet.user']->getPrefs('css') ?>/prodcolor.css" />
 
         <script type="text/javascript">
 
@@ -236,30 +236,30 @@ $user = $Core->getAuthenticatedUser();
     if ($parm['SSTTID'] != '' && ($parm['lst'] == null || $parm['lst'] == '')) {
         $parm['lst'] = array();
 
-        $repository = $em->getRepository('\Entities\Basket');
+        $repository = $app['EM']->getRepository('\Entities\Basket');
         /* @var $repository \Repositories\BasketRepository */
 
-        $Basket = $repository->findUserBasket($Request->get('SSTTID'), $Core->getAuthenticatedUser(), false);
+        $Basket = $repository->findUserBasket($app, $Request->get('SSTTID'), $app['phraseanet.user'], false);
 
         foreach ($Basket->getElements() as $basket_element) {
             /* @var $basket_element \Entities\BasketElement */
-            $record = $basket_element->getRecord();
+            $record = $basket_element->getRecord($app);
             $parm['lst'][] = $record->get_serialize_key();
         }
         $parm['lst'] = implode(';', $parm['lst']);
     }
 
     if ($parm['story']) {
-        $repository = $em->getRepository('\Entities\StoryWZ');
+        $repository = $app['EM']->getRepository('\Entities\StoryWZ');
 
-        $Story = $repository->findByUserAndId($Core->getAuthenticatedUser(), $parm['story']);
+        $Story = $repository->findByUserAndId($app, $app['phraseanet.user'], $parm['story']);
 
         $parm['lst'] = explode(';', $parm['lst']);
-        $parm['lst'][] = $Story->getRecord()->get_serialize_key();
+        $parm['lst'][] = $Story->getRecord($app)->get_serialize_key();
         $parm['lst'] = implode(';', $parm['lst']);
     }
 
-    $lst = liste::filter(explode(';', $parm['lst']));
+    $lst = liste::filter($app, explode(';', $parm['lst']));
 
     foreach ($lst as $basrec) {
         if ($basrec && count($basrec) == 2) {
@@ -272,7 +272,7 @@ $user = $Core->getAuthenticatedUser();
 
     $types = null;
 
-    $dstatus = databox_status::getDisplayStatus();
+    $dstatus = databox_status::getDisplayStatus($app);
 
     foreach ($lst as $onebasrec) {
         if ($onebasrec != '') {
@@ -281,7 +281,7 @@ $user = $Core->getAuthenticatedUser();
             if (count($basrec) !== 2)
                 continue;
             $sbasid = $basrec[0];
-            $record = new record_adapter($basrec[0], $basrec[1]);
+            $record = new record_adapter($app, $basrec[0], $basrec[1]);
 
 
             // on verifie que on a le droits de changer les status sur les collections des documents droppe
@@ -346,7 +346,7 @@ if ($sbasSet !== null) {
         $ndocsum = 0;
 
     foreach ($sbasSet as $sbasid => $truth) {
-        echo "<center><br><span style='font-weight:bold;'>" . phrasea::sbas_names($sbasid) . "</span><br><br>";
+        echo "<center><br><span style='font-weight:bold;'>" . phrasea::sbas_names($sbasid, $app) . "</span><br><br>";
 
         if ($nrecs[$sbasid] == 0 && $nbgrouping[$sbasid] > 0)
             echo '<div>', sprintf(_('prod::status: edition de status de %d regroupements'), $nbgrouping[$sbasid]), '</div>';
@@ -480,7 +480,7 @@ foreach ($types as $sbas_id => $typeBR) {
     if ( ! $first)
         echo '<hr/>';
     $first = false;
-    echo '<h5>' . phrasea::sbas_names($sbas_id) . "</h5>";
+    echo '<h5>' . phrasea::sbas_names($sbas_id, $app) . "</h5>";
 
     $arryEnum = array('document', 'flash', 'audio', 'video', 'image');
 
@@ -501,7 +501,7 @@ foreach ($types as $sbas_id => $typeBR) {
             $rec2 = explode('_', $rec);
             if (sizeof($rec2) == 2) {
                 $sbas_id = $rec2[0];
-                $record = new record_adapter($sbas_id, $rec2[1]);
+                $record = new record_adapter($app, $sbas_id, $rec2[1]);
 
                 $dis = '';
                 $class = 'select' . $sbas_id;

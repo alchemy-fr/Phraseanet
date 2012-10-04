@@ -145,7 +145,7 @@ class Feed_XML_Atom extends Feed_XML_Abstract implements Feed_XML_Interface
         $this->addTag($document, $entry_node, 'content', $entry->get_subtitle());
 
         foreach ($entry->get_content() as $content) {
-            $this->addContent($document, $entry_node, $content);
+            $this->addContent($document, $entry_node, $entry, $content);
         }
 
         return $entry_node;

@@ -50,7 +50,8 @@ class task_period_ftp extends task_appboxAbstract
             , "proxyport"
             , "period"
         );
-        if (($dom = @DOMDocument::loadXML($oldxml)) != FALSE) {
+        $dom = new DOMDocument();
+        if ((@$dom->loadXML($oldxml)) != FALSE) {
             $xmlchanged = false;
             foreach (array("str:proxy", "str:proxyport", "str:period") as $pname) {
                 $ptype = substr($pname, 0, 3);
@@ -167,7 +168,8 @@ class task_period_ftp extends task_appboxAbstract
 
         if ($parm["xml"] === null) {
             // pas de xml 'raw' : on accepte les champs 'graphic view'
-            if (($domTaskSettings = @DOMDocument::loadXML($taskrow["settings"])) != FALSE) {
+            $domTaskSettings = new DOMDocument();
+            if ((@$domTaskSettings->loadXML($taskrow["settings"])) != FALSE) {
                 $xmlchanged = false;
                 foreach (array("proxy", "proxyport", "period") as $f) {
                     if ($parm[$f] !== NULL) {
@@ -194,7 +196,8 @@ class task_period_ftp extends task_appboxAbstract
         }
 
         // si on doit changer le xml, on verifie qu'il est valide
-        if ($parm["xml"] && ! @DOMDocument::loadXML($parm["xml"])) {
+        $domdoc = new DOMDocument();
+        if ($parm["xml"] && ! @$domdoc->loadXML($parm["xml"])) {
             return(false);
         }
 
@@ -250,7 +253,7 @@ class task_period_ftp extends task_appboxAbstract
         $sql = "SELECT id FROM ftp_export WHERE crash>=nbretry
             AND date < :date";
 
-        $params = array(':date' => phraseadate::format_mysql(new DateTime('-30 days')));
+        $params = array(':date' => $this->dependencyContainer['date-formatter']->format_mysql(new DateTime('-30 days')));
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
@@ -301,7 +304,6 @@ class task_period_ftp extends task_appboxAbstract
     protected function processOneContent(appbox $appbox, Array $ftp_export)
     {
         $conn = $appbox->get_connection();
-        $registry = $appbox->get_registry();
 
         $id = $ftp_export['id'];
         $ftp_export[$id]["crash"] = $ftp_export["crash"];
@@ -337,13 +339,13 @@ class task_period_ftp extends task_appboxAbstract
 
         if (($ses_id = phrasea_create_session($usr_id)) == null) {
             $this->logger->addDebug("Unable to create session");
-            continue;
+            return;
         }
 
         if ( ! ($ph_session = phrasea_open_session($ses_id, $usr_id))) {
             $this->logger->addDebug("Unable to open session");
             phrasea_close_session($ses_id);
-            continue;
+            return;
         }
 
         try {
@@ -404,8 +406,8 @@ class task_period_ftp extends task_appboxAbstract
                 $subdef = $file['subdef'];
 
                 try {
-                    $sbas_id = phrasea::sbasFromBas($base_id);
-                    $record = new record_adapter($sbas_id, $record_id);
+                    $sbas_id = phrasea::sbasFromBas($this->dependencyContainer, $base_id);
+                    $record = new record_adapter($this->dependencyContainer, $sbas_id, $record_id);
 
                     $sdcaption = $record->get_caption()->serialize(caption_record::SERIALIZE_XML, $ftp_export["businessfields"]);
 
@@ -414,14 +416,14 @@ class task_period_ftp extends task_appboxAbstract
                     if ($subdef == 'caption') {
                         $desc = $record->get_caption()->serialize(\caption_record::SERIALIZE_XML, $ftp_export["businessfields"]);
 
-                        $localfile = $registry->get('GV_RootPath') . 'tmp/' . md5($desc . time() . mt_rand());
+                        $localfile = $this->dependencyContainer['phraseanet.registry']->get('GV_RootPath') . 'tmp/' . md5($desc . time() . mt_rand());
                         if (file_put_contents($localfile, $desc) === false) {
                             throw new Exception('Impossible de creer un fichier temporaire');
                         }
                     } elseif ($subdef == 'caption-yaml') {
                         $desc = $record->get_caption()->serialize(\caption_record::SERIALIZE_YAML, $ftp_export["businessfields"]);
 
-                        $localfile = $registry->get('GV_RootPath') . 'tmp/' . md5($desc . time() . mt_rand());
+                        $localfile = $this->dependencyContainer['phraseanet.registry']->get('GV_RootPath') . 'tmp/' . md5($desc . time() . mt_rand());
                         if (file_put_contents($localfile, $desc) === false) {
                             throw new Exception('Impossible de creer un fichier temporaire');
                         }
@@ -464,12 +466,12 @@ class task_period_ftp extends task_appboxAbstract
                     $stmt = $conn->prepare($sql);
                     $stmt->execute(array(':file_id' => $file['id']));
                     $stmt->closeCursor();
-                    $this->logexport($appbox->get_session(), $record, $obj, $ftpLog);
+                    $this->logexport($record, $obj, $ftpLog);
                 } catch (Exception $e) {
                     $state .= $line = sprintf(_('task::ftp:File "%1$s" (record %2$s) de la base "%3$s"' .
                                 ' (Export du Document) : Transfert cancelled (le document n\'existe plus)')
                             , basename($localfile), $record_id
-                            , phrasea::sbas_names(phrasea::sbasFromBas($base_id))) . "\n<br/>";
+                            , phrasea::sbas_names(phrasea::sbasFromBas($this->dependencyContainer, $base_id), $app)) . "\n<br/>";
 
                     $this->logger->addDebug($line);
 
@@ -510,7 +512,7 @@ class task_period_ftp extends task_appboxAbstract
                     $buffer .= $root . '/' . $folder . $filename . "\n";
                 }
 
-                $tmpfile = $registry->get('GV_RootPath') . 'tmp/tmpftpbuffer' . $date->format('U') . '.txt';
+                $tmpfile = $this->dependencyContainer['phraseanet.registry']->get('GV_RootPath') . 'tmp/tmpftpbuffer' . $date->format('U') . '.txt';
 
                 file_put_contents($tmpfile, $buffer);
 
@@ -601,7 +603,6 @@ class task_period_ftp extends task_appboxAbstract
     public function send_mails(appbox $appbox, $id)
     {
         $conn = $appbox->get_connection();
-        $registry = registry::get_instance();
 
         $sql = 'SELECT filename, base_id, record_id, subdef, error, done'
             . ' FROM ftp_export_elements WHERE ftp_export_id = :export_id';
@@ -620,13 +621,13 @@ class task_period_ftp extends task_appboxAbstract
                 $transferts[] =
                     '<li>' . sprintf(_('task::ftp:Record %1$s - %2$s de la base (%3$s - %4$s) - %5$s')
                         , $row["record_id"], $row["filename"]
-                        , phrasea::sbas_names(phrasea::sbasFromBas($row["base_id"]))
-                        , phrasea::bas_names($row['base_id']), $row['subdef']) . ' : ' . _('Transfert OK') . '</li>';
+                        , phrasea::sbas_names(phrasea::sbasFromBas($this->dependencyContainer, $row["base_id"]), $app)
+                        , phrasea::bas_names($row['base_id'], $app), $row['subdef']) . ' : ' . _('Transfert OK') . '</li>';
             } else {
                 $transferts[] =
                     '<li>' . sprintf(_('task::ftp:Record %1$s - %2$s de la base (%3$s - %4$s) - %5$s')
                         , $row["record_id"], $row["filename"]
-                        , phrasea::sbas_names(phrasea::sbasFromBas($row["base_id"])), phrasea::bas_names($row['base_id'])
+                        , phrasea::sbas_names(phrasea::sbasFromBas($this->dependencyContainer, $row["base_id"]), $app), phrasea::bas_names($row['base_id'], $app)
                         , $row['subdef']) . ' : ' . _('Transfert Annule') . '</li>';
                 $transfert_status = _('task::ftp:Certains documents n\'ont pas pu etre tranferes');
             }
@@ -668,18 +669,18 @@ class task_period_ftp extends task_appboxAbstract
 
         $subject = sprintf(
             _('task::ftp:Status about your FTP transfert from %1$s to %2$s')
-            , $registry->get('GV_homeTitle'), $ftp_server
+            , $this->dependencyContainer['phraseanet.registry']->get('GV_homeTitle'), $ftp_server
         );
 
-        mail::ftp_sent($sendermail, $subject, $sender_message);
+        mail::ftp_sent($this->dependencyContainer, $sendermail, $subject, $sender_message);
 
-        mail::ftp_receive($mail, $receiver_message);
+        mail::ftp_receive($this->dependencyContainer, $mail, $receiver_message);
     }
 
-    public function logexport(Session_Handler $session, record_adapter $record, $obj, $ftpLog)
+    public function logexport(record_adapter $record, $obj, $ftpLog)
     {
         foreach ($obj as $oneObj) {
-            $session->get_logger($record->get_databox())
+            $this->app['phraseanet.logger']($record->get_databox())
                 ->log($record, Session_Logger::EVENT_EXPORTFTP, $ftpLog, '');
         }
 

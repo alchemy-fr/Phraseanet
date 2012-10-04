@@ -15,7 +15,6 @@ use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -31,8 +30,8 @@ class Developers implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function() use ($app) {
-                $app['phraseanet.core']['Firewall']->requireAuthentication($app);
-            });
+            $app['firewall']->requireAuthentication();
+        });
 
         /**
          * List of apps created by the user
@@ -184,20 +183,20 @@ class Developers implements ControllerProviderInterface
      */
     public function deleteApp(Application $app, Request $request, $id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
+        if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 
         $error = false;
 
         try {
-            $clientApp = new \API_OAuth2_Application($app['phraseanet.appbox'], $id);
+            $clientApp = new \API_OAuth2_Application($app, $id);
             $clientApp->delete();
         } catch (\Exception_NotFound $e) {
             $error = true;
         }
 
-        return $app->json(array('success' => ! $error));
+        return $app->json(array('success' => !$error));
     }
 
     /**
@@ -210,14 +209,14 @@ class Developers implements ControllerProviderInterface
      */
     public function renewAppCallback(Application $app, Request $request, $id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
+        if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 
         $error = false;
 
         try {
-            $clientApp = new \API_OAuth2_Application($app['phraseanet.appbox'], $id);
+            $clientApp = new \API_OAuth2_Application($app, $id);
 
             if (null !== $request->request->get("callback")) {
                 $clientApp->set_redirect_uri($request->request->get("callback"));
@@ -228,7 +227,7 @@ class Developers implements ControllerProviderInterface
             $error = true;
         }
 
-        return $app->json(array('success' => ! $error));
+        return $app->json(array('success' => !$error));
     }
 
     /**
@@ -241,24 +240,23 @@ class Developers implements ControllerProviderInterface
      */
     public function renewAccessToken(Application $app, Request $request, $id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
+        if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 
-        $appbox = $app['phraseanet.appbox'];
         $error = false;
         $accessToken = null;
 
         try {
-            $clientApp = new \API_OAuth2_Application($appbox, $id);
-            $account = $clientApp->get_user_account($app['phraseanet.core']->getAuthenticatedUser());
+            $clientApp = new \API_OAuth2_Application($app, $id);
+            $account = $clientApp->get_user_account($app['phraseanet.user']);
 
             $token = $account->get_token();
 
             if ($token instanceof \API_OAuth2_Token) {
                 $token->renew();
             } else {
-                $token = \API_OAuth2_Token::create($appbox, $account);
+                $token = \API_OAuth2_Token::create($app['phraseanet.appbox'], $account);
             }
 
             $accessToken = $token->get_value();
@@ -266,7 +264,7 @@ class Developers implements ControllerProviderInterface
             $error = true;
         }
 
-        return $app->json(array('success' => ! $error, 'token'   => $accessToken));
+        return $app->json(array('success' => !$error, 'token'   => $accessToken));
     }
 
     /**
@@ -279,20 +277,20 @@ class Developers implements ControllerProviderInterface
      */
     public function authorizeGrantpassword(Application $app, Request $request, $id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
+        if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 
         $error = false;
 
         try {
-            $clientApp = new \API_OAuth2_Application($app['phraseanet.appbox'], $id);
+            $clientApp = new \API_OAuth2_Application($app, $id);
             $clientApp->set_grant_password((bool) $request->request->get('grant', false));
         } catch (\Exception_NotFound $e) {
             $error = true;
         }
 
-        return $app->json(array('success' => ! $error));
+        return $app->json(array('success' => !$error));
     }
 
     /**
@@ -313,7 +311,7 @@ class Developers implements ControllerProviderInterface
         $violations = $app['validator']->validate($form);
 
         if ($violations->count() === 0) {
-            $application = \API_OAuth2_Application::create($app['phraseanet.appbox'], $app['phraseanet.core']->getAuthenticatedUser(), $form->getName());
+            $application = \API_OAuth2_Application::create($app, $app['phraseanet.user'], $form->getName());
             $application
                 ->set_description($form->getDescription())
                 ->set_redirect_uri($form->getSchemeCallback() . $form->getCallback())
@@ -341,9 +339,8 @@ class Developers implements ControllerProviderInterface
     public function listApps(Application $app, Request $request)
     {
         return $app['twig']->render('developers/applications.html.twig', array(
-                "apps" => \API_OAuth2_Application::load_dev_app_by_user(
-                    $app['phraseanet.appbox'], $app['phraseanet.core']->getAuthenticatedUser()
-                )));
+            "applications" => \API_OAuth2_Application::load_dev_app_by_user($app, $app['phraseanet.user'])
+        ));
     }
 
     /**
@@ -356,10 +353,10 @@ class Developers implements ControllerProviderInterface
     public function displayFormApp(Application $app, Request $request)
     {
         return $app['twig']->render('developers/application_form.html.twig', array(
-                "violations" => null,
-                'form'       => null,
-                'request'    => $request
-            ));
+            "violations" => null,
+            'form'       => null,
+            'request'    => $request
+        ));
     }
 
     /**
@@ -372,21 +369,19 @@ class Developers implements ControllerProviderInterface
      */
     public function getApp(Application $app, Request $request, $id)
     {
-        $user = $app['phraseanet.core']->getAuthenticatedUser();
-
         try {
-            $client = new \API_OAuth2_Application($app['phraseanet.appbox'], $id);
+            $client = new \API_OAuth2_Application($app, $id);
         } catch (\Exception_NotFound $e) {
             $app->abort(404);
         }
 
-        $token = $client->get_user_account($user)->get_token()->get_value();
+        $token = $client->get_user_account($app['phraseanet.user'])->get_token()->get_value();
 
         return $app['twig']->render('developers/application.html.twig', array(
-                "app"   => $client,
-                "user"  => $user,
-                "token" => $token
-            ));
+            "application" => $client,
+            "user"        => $app['phraseanet.user'],
+            "token"       => $token
+        ));
     }
 
     /**

@@ -6,14 +6,14 @@
     <thead>
         <tr>
             <th class='col'>
-                {% if app.request.query.get('sort') == 'col' %}
+                {% if app['request'].query.get('sort') == 'col' %}
                     <img src="/skins/icons/tsort_desc.gif">
                 {% endif %}
                 {% trans 'phraseanet:: collection' %}
             </th>
 
             <th class="obj">
-                {% if app.request.query.get('sort') == 'obj' %}
+                {% if app['request'].query.get('sort') == 'obj' %}
                     <img src="/skins/icons/tsort_desc.gif">
                 {% endif %}
                 {% trans 'admin::base: objet' %}

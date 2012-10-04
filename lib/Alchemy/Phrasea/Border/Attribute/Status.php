@@ -11,11 +11,13 @@
 
 namespace Alchemy\Phrasea\Border\Attribute;
 
-class Status implements Attribute
+use Alchemy\Phrasea\Application;
+
+class Status implements AttributeInterface
 {
     protected $status;
 
-    public function __construct($status)
+    public function __construct(Application $app, $status)
     {
         /**
          * We store a binary string
@@ -27,11 +29,11 @@ class Status implements Attribute
         } elseif (ctype_digit($status)) {
             $status = decbin((int) $status);
         } elseif (strpos($status, '0x') === 0 && ctype_xdigit(substr($status, 2))) {
-            $status = \databox_status::hex2bin($status);
+            $status = \databox_status::hex2bin($app, $status);
         } elseif (strpos($status, '0b') === 0 && preg_match('/^[01]+$/', substr($status, 2))) {
             $status = substr($status, 2);
         } elseif (ctype_xdigit($status)) {
-            $status = \databox_status::hex2bin($status);
+            $status = \databox_status::hex2bin($app, $status);
         } else {
             throw new \InvalidArgumentException('Invalid status argument');
         }
@@ -54,8 +56,8 @@ class Status implements Attribute
         return $this->status;
     }
 
-    public static function loadFromString($string)
+    public static function loadFromString(Application $app, $string)
     {
-        return new static($string);
+        return new static($app, $string);
     }
 }

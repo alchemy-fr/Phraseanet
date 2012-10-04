@@ -8,22 +8,22 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-/* @var $Core \Alchemy\Phrasea\Core */
-$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
-$appbox = appbox::get_instance($Core);
-$registry = $appbox->get_registry();
-$session = $appbox->get_session();
+
+require_once __DIR__ . "/../../lib/bootstrap.php";
+$app = new Application();
 
 $request = http_request::getInstance();
 $parm = $request->get_parms('token', 'get', 'type');
 
 try {
-    $datas = ((random::helloToken($parm['token'])));
+    $datas = ((random::helloToken($app, $parm['token'])));
 } catch (Exception_NotFound $e) {
     phrasea::headers(204);
 }
@@ -36,14 +36,13 @@ if (($list = @unserialize($datas['datas'])) == false) {
 }
 
 try {
-    $appbox = appbox::get_instance(\bootstrap::getCore());
-    $auth = new Session_Authentication_Token($appbox, $parm['token']);
-    $session->authenticate($auth);
+    $auth = new Session_Authentication_Token($app, $parm['token']);
+    $app->openAccount($auth);
 } catch (Exception $e) {
     phrasea::headers(204);
 }
 
-$gatekeeper = gatekeeper::getInstance($Core);
+$gatekeeper = gatekeeper::getInstance($app);
 $gatekeeper->require_session();
 
 $unique_file = false;
@@ -64,14 +63,14 @@ if ($n_files == 1) {
     $mime = $u_file['mime'];
     $zip_done = true;
 } else {
-    $zipFile = $registry->get('GV_RootPath') . 'tmp/download/' . $datas['value'] . '.zip';
+    $zipFile = $app['phraseanet.registry']->get('GV_RootPath') . 'tmp/download/' . $datas['value'] . '.zip';
     $mime = 'application/zip';
 }
 
 $files = $list['files'];
 
 if (isset($parm['get']) && $parm['get'] == '1') {
-    $response = set_export::stream_file($zipFile, $export_name, $mime, 'attachment');
+    $response = set_export::stream_file($app['phraseanet.registry'], $zipFile, $export_name, $mime, 'attachment');
     $response->send();
     set_export::log_download($list, $parm['type']);
 
@@ -89,11 +88,11 @@ if (isset($list['complete'])) {
 
 phrasea::headers();
 ?>
-<html lang="<?php echo $session->get_I18n(); ?>">
+<html lang="<?php echo $app['locale.I18n']; ?>">
     <head>
         <title><?php echo _('phraseanet:: Telechargement de documents'); ?></title>
-        <meta content="<?php echo $registry->get('GV_metaDescription'); ?>" name="description"/>
-        <meta content="<?php echo $registry->get('GV_metaKeywords'); ?>" name="keywords"/>
+        <meta content="<?php echo $app['phraseanet.registry']->get('GV_metaDescription'); ?>" name="description"/>
+        <meta content="<?php echo $app['phraseanet.registry']->get('GV_metaKeywords'); ?>" name="keywords"/>
         <link rel="shortcut icon" type="image/x-icon" href="/prod/favicon.ico" />
         <style type="text/css">
             *,body{
@@ -161,7 +160,7 @@ foreach ($files as $file) {
     $size = 0;
     ?>
                         <tr valign="middle">
-                            <td><?php echo phrasea::sbas_names(phrasea::sbasFromBas($file['base_id'])) ?> (<?php echo phrasea::bas_names($file['base_id']) ?>)</td>
+                            <td><?php echo phrasea::sbas_names(phrasea::sbasFromBas($app, $file['base_id']), $app) ?> (<?php echo phrasea::bas_names($file['base_id'], $app) ?>)</td>
                             <td><?php echo $file['original_name'] ?></td>
                             <td><?php
     foreach ($file['subdefs'] as $k => $v) {
@@ -171,8 +170,8 @@ foreach ($files as $file) {
     ?></td>
                             <td><?php echo p4string::format_octets($size) ?></td>
                             <td style="text-align:center;"><?php
-                    $sbas_id = phrasea::sbasFromBas($file['base_id']);
-                    $record = new record_adapter($sbas_id, $file['record_id']);
+                    $sbas_id = phrasea::sbasFromBas($app, $file['base_id']);
+                    $record = new record_adapter($app, $sbas_id, $file['record_id']);
                     $thumbnail = $record->get_thumbnail();
 
                     if ($thumbnail->is_paysage()) {

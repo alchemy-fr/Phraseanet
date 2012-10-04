@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Application;
+
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
@@ -11,7 +13,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         parent::setUpBeforeClass();
 
         try {
-            self::$authorizedApp = \API_OAuth2_Application::create(\appbox::get_instance(\bootstrap::getCore()), self::$user, 'test API v1');
+            self::$authorizedApp = \API_OAuth2_Application::create(new Application('test'), self::$DI['user'], 'test API v1');
         } catch (\Exception $e) {
 
         }
@@ -26,31 +28,15 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
          parent::tearDownAfterClass();
     }
 
-    public function setUp()
-    {
-        parent::setUp();
-        $this->client = $this->createClient();
-    }
-
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Root.php';
-
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-
-        return $app;
-    }
-
     /**
      * @covers \Alchemy\Phrasea\Controller\Root\Account::displayAccount
      * @covers \Alchemy\Phrasea\Controller\Root\Account::call
      */
     public function testGetAccount()
     {
-        $crawler = $this->client->request('GET', '/account/');
+        $crawler = self::$DI['client']->request('GET', '/account/');
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isOk());
 
@@ -66,11 +52,11 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGetAccountNotice($msg)
     {
-        $crawler = $this->client->request('GET', '/account/', array(
+        $crawler = self::$DI['client']->request('GET', '/account/', array(
             'notice' => $msg
             ));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isOk());
 
@@ -93,9 +79,9 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGetAccountAccess()
     {
-        $this->client->request('GET', '/account/access/');
+        self::$DI['client']->request('GET', '/account/access/');
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isOk());
     }
@@ -105,16 +91,16 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testPostResetMailWithToken()
     {
-        $token = \random::getUrlToken(\random::TYPE_EMAIL, self::$user->get_id(), null, 'new_email@email.com');
-        $this->client->request('POST', '/account/reset-email/', array('token'   => $token));
-        $response = $this->client->getResponse();
+        $token = \random::getUrlToken(self::$DI['app'], \random::TYPE_EMAIL, self::$DI['user']->get_id(), null, 'new_email@email.com');
+        self::$DI['client']->request('POST', '/account/reset-email/', array('token'   => $token));
+        $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('/account/reset-email/?update=ok', $response->headers->get('location'));
 
-        $this->assertEquals('new_email@email.com', self::$user->get_email());
-        self::$user->set_email('noone@example.com');
+        $this->assertEquals('new_email@email.com', self::$DI['user']->get_email());
+        self::$DI['user']->set_email('noone@example.com');
         try {
-            \random::helloToken($token);
+            \random::helloToken(self::$DI['app'], $token);
             $this->fail('TOken has not been removed');
         } catch (\Exception_NotFound $e) {
 
@@ -126,8 +112,8 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testPostResetMailWithBadToken()
     {
-        $this->client->request('POST', '/account/reset-email/', array('token'   => '134dT0k3n'));
-        $response = $this->client->getResponse();
+        self::$DI['client']->request('POST', '/account/reset-email/', array('token'   => '134dT0k3n'));
+        $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('/account/reset-email/?update=ko', $response->headers->get('location'));
     }
@@ -138,7 +124,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testPostResetMailBadRequest()
     {
-        $this->client->request('POST', '/account/reset-email/');
+        self::$DI['client']->request('POST', '/account/reset-email/');
     }
 
     /**
@@ -146,13 +132,13 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testPostResetMailBadPassword()
     {
-        $this->client->request('POST', '/account/reset-email/', array(
+        self::$DI['client']->request('POST', '/account/reset-email/', array(
             'form_password'      => 'changeme',
             'form_email'         => 'new@email.com',
             'form_email_confirm' => 'new@email.com',
         ));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('/account/reset-email/?notice=bad-password', $response->headers->get('location'));
     }
@@ -163,14 +149,14 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testPostResetMailBadEmail()
     {
         $password = \random::generatePassword();
-        self::$user->set_password($password);
-        $this->client->request('POST', '/account/reset-email/', array(
+        self::$DI['app']['phraseanet.user']->set_password($password);
+        self::$DI['client']->request('POST', '/account/reset-email/', array(
             'form_password'      => $password,
             'form_email'         => "invalid#!&&@@email.x",
             'form_email_confirm' => 'invalid#!&&@@email.x',
         ));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('/account/reset-email/?notice=mail-invalid', $response->headers->get('location'));
     }
@@ -181,14 +167,14 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testPostResetMailEmailNotIdentical()
     {
         $password = \random::generatePassword();
-        self::$user->set_password($password);
-        $this->client->request('POST', '/account/reset-email/', array(
+        self::$DI['app']['phraseanet.user']->set_password($password);
+        self::$DI['client']->request('POST', '/account/reset-email/', array(
             'form_password'      => $password,
             'form_email'         => 'email1@email.com',
             'form_email_confirm' => 'email2@email.com',
         ));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('/account/reset-email/?notice=mail-match', $response->headers->get('location'));
     }
@@ -199,14 +185,14 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testPostResetMailEmail()
     {
         $password = \random::generatePassword();
-        self::$user->set_password($password);
-        $this->client->request('POST', '/account/reset-email/', array(
+        self::$DI['app']['phraseanet.user']->set_password($password);
+        self::$DI['client']->request('POST', '/account/reset-email/', array(
             'form_password'      => $password,
             'form_email'         => 'email1@email.com',
             'form_email_confirm' => 'email1@email.com',
         ));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('/account/reset-email/?update=mail-send', $response->headers->get('location'));
     }
@@ -216,11 +202,11 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGetResetMailNotice($notice)
     {
-        $crawler = $this->client->request('GET', '/account/reset-email/', array(
+        $crawler = self::$DI['client']->request('GET', '/account/reset-email/', array(
             'notice' => $notice
             ));
 
-        $this->assertTrue($this->client->getResponse()->isOk());
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
 
         $this->assertEquals(2, $crawler->filter('.notice')->count());
     }
@@ -240,11 +226,11 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGetResetMailUpdate($updateMessage)
     {
-        $crawler = $this->client->request('GET', '/account/reset-email/', array(
+        $crawler = self::$DI['client']->request('GET', '/account/reset-email/', array(
             'update' => $updateMessage
             ));
 
-        $this->assertTrue($this->client->getResponse()->isOk());
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
 
         $this->assertEquals(1, $crawler->filter('.alert-info')->count());
     }
@@ -263,9 +249,9 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGetAccountSecuritySessions()
     {
-        $this->client->request('GET', '/account/security/sessions/');
+        self::$DI['client']->request('GET', '/account/security/sessions/');
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isOk());
     }
@@ -275,9 +261,9 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGetAccountSecurityApplications()
     {
-        $this->client->request('GET', '/account/security/applications/');
+        self::$DI['client']->request('GET', '/account/security/applications/');
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isOk());
     }
@@ -287,9 +273,9 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGetResetPassword()
     {
-        $this->client->request('GET', '/account/reset-password/');
+        self::$DI['client']->request('GET', '/account/reset-password/');
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isOk());
     }
@@ -299,11 +285,11 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGetResetPasswordPassError($msg)
     {
-        $crawler = $this->client->request('GET', '/account/reset-password/', array(
+        $crawler = self::$DI['client']->request('GET', '/account/reset-password/', array(
             'pass-error' => $msg
             ));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isOk());
 
@@ -324,11 +310,10 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testUpdateAccount()
     {
-        $evtMngr = \eventsmanager_broker::getInstance($this->app['phraseanet.appbox'], $this->app['phraseanet.core']);
-        $register = new \appbox_register($this->app['phraseanet.appbox']);
+        $register = new \appbox_register(self::$DI['app']['phraseanet.appbox']);
         $bases = $notifs = array();
 
-        foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $bases[] = $collection->get_base_id();
             }
@@ -338,7 +323,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $this->markTestSkipped('No collections');
         }
 
-        foreach ($evtMngr->list_notifications_available($this->app['phraseanet.core']->getAUthenticatedUser()->get_id()) as $notifications) {
+        foreach (self::$DI['app']['events-manager']->list_notifications_available(self::$DI['app']['phraseanet.user']->get_id()) as $notifications) {
             foreach ($notifications as $notification) {
                 $notifs[] = $notification['id'];
             }
@@ -346,7 +331,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         array_shift($notifs);
 
-        $this->client->request('POST', '/account/', array(
+        self::$DI['client']->request('POST', '/account/', array(
             'demand'               => $bases,
             'form_gender'          => 'M',
             'form_firstname'       => 'gros',
@@ -369,11 +354,11 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'mail_notifications' => '1'
         ));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
-        $this->assertEquals('minet', $this->app['phraseanet.core']->getAUthenticatedUser()->get_lastname());
+        $this->assertEquals('minet', self::$DI['app']['phraseanet.user']->get_lastname());
 
-        $ret = $register->get_collection_awaiting_for_user(self::$user);
+        $ret = $register->get_collection_awaiting_for_user(self::$DI['app'], self::$DI['user']);
 
         $this->assertEquals(count($ret), count($bases));
     }
@@ -383,13 +368,13 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testAUthorizedAppGrantAccessBadRequest()
     {
-        $this->client->request('GET', '/account/security/application/3/grant/');
+        self::$DI['client']->request('GET', '/account/security/application/3/grant/');
     }
 
     public function testAUthorizedAppGrantAccessNotSuccessfull()
     {
-        $this->client->request('GET', '/account/security/application/3/grant/', array(), array(), array('HTTP_ACCEPT'           => 'application/json', 'HTTP_X-Requested-With' => 'XMLHttpRequest'));
-        $response = $this->client->getResponse();
+        self::$DI['client']->request('GET', '/account/security/application/3/grant/', array(), array(), array('HTTP_ACCEPT'           => 'application/json', 'HTTP_X-Requested-With' => 'XMLHttpRequest'));
+        $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isOk());
         $json = json_decode($response->getContent());
@@ -407,14 +392,14 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $this->markTestSkipped('Application could not be created');
         }
 
-        $this->client->request('GET', '/account/security/application/' . self::$authorizedApp->get_id() . '/grant/', array(
+        self::$DI['client']->request('GET', '/account/security/application/' . self::$authorizedApp->get_id() . '/grant/', array(
             'revoke' => $revoke
             ), array(), array(
             'HTTP_ACCEPT'           => 'application/json',
             'HTTP_X-Requested-With' => 'XMLHttpRequest'
         ));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isOk());
         $json = json_decode($response->getContent());
@@ -423,9 +408,9 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue($json->success);
 
         $account = \API_OAuth2_Account::load_with_user(
-                $this->app['phraseanet.appbox']
+                self::$DI['app']
                 , self::$authorizedApp
-                , self::$user
+                , self::$DI['user']
         );
 
         $this->assertEquals($expected, $account->is_revoked());
@@ -446,15 +431,15 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testPostRenewPasswordBadArguments($oldPassword, $password, $passwordConfirm, $redirect)
     {
-        self::$user->set_password($oldPassword);
+        self::$DI['app']['phraseanet.user']->set_password($oldPassword);
 
-        $this->client->request('POST', '/account/reset-password/', array(
+        self::$DI['client']->request('POST', '/account/reset-password/', array(
             'form_password'         => $password,
             'form_password_confirm' => $passwordConfirm,
             'form_old_password'     => $oldPassword
         ));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isRedirect());
         $this->assertEquals($redirect, $response->headers->get('location'));
@@ -462,13 +447,13 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testPostRenewPasswordBadOldPassword()
     {
-        $this->client->request('POST', '/account/reset-password/', array(
+        self::$DI['client']->request('POST', '/account/reset-password/', array(
             'form_password'         => 'password',
             'form_password_confirm' => 'password',
             'form_old_password'     => 'oulala'
         ));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('/account/?notice=pass-ko', $response->headers->get('location'));
@@ -478,15 +463,15 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $password = \random::generatePassword();
 
-        self::$user->set_password($password);
+        self::$DI['app']['phraseanet.user']->set_password($password);
 
-        $this->client->request('POST', '/account/reset-password/', array(
+        self::$DI['client']->request('POST', '/account/reset-password/', array(
             'form_password'         => 'password',
             'form_password_confirm' => 'password',
             'form_old_password'     => $password
         ));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isRedirect());
         $this->assertEquals('/account/?notice=pass-ok', $response->headers->get('location'));

@@ -36,11 +36,6 @@ class module_console_checkExtension extends Command
         return $this;
     }
 
-    public function requireSetup()
-    {
-        return true;
-    }
-
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         if ( ! extension_loaded('phrasea2')) {
@@ -49,15 +44,10 @@ class module_console_checkExtension extends Command
             return 1;
         }
 
-        $Core = $this->getService('phraseanet.core');
-        $appbox = $this->getService('phraseanet.appbox');
-
-        $registry = $appbox->get_registry();
-
         $usrId = $input->getArgument('usr_id');
 
         try {
-            $TestUser = \User_Adapter::getInstance($usrId, $appbox);
+            $TestUser = \User_Adapter::getInstance($usrId, $this->container);
         } catch (\Exception $e) {
             $output->writeln("<error>Wrong user !</error>");
 
@@ -78,7 +68,7 @@ class module_console_checkExtension extends Command
             $output->writeln("<info>$function</info>");
         }
 
-        $configuration = $Core->getConfiguration();
+        $configuration = $this->getService('phraseanet.configuration');
         $choosenConnection = $configuration->getPhraseanet()->get('database');
         $connexion = $configuration->getConnexion($choosenConnection);
         $hostname = $connexion->get('host');
@@ -157,7 +147,7 @@ class module_console_checkExtension extends Command
                 $tbases[$kbase]["searchcoll"] = $tcoll;
                 $tbases[$kbase]["mask_xor"] = $tbases[$kbase]["mask_and"] = 0;
 
-                $qp = new searchEngine_adapter_phrasea_queryParser();
+                $qp = new searchEngine_adapter_phrasea_queryParser($this->container);
                 $treeq = $qp->parsequery($input->getOption('query'));
                 $arrayq = $qp->makequery($treeq);
 
@@ -176,7 +166,7 @@ class module_console_checkExtension extends Command
                 , $base["sbas_id"]
                 , $base["searchcoll"]
                 , $base["arrayq"]
-                , $registry->get('GV_sit')
+                , $this->container['phraseanet.registry']->get('GV_sit')
                 , $usrId
                 , false
                 , PHRASEA_MULTIDOC_DOCONLY

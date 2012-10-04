@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     module_report
@@ -19,9 +21,9 @@ class module_report_sqldownload extends module_report_sql implements module_repo
 {
     protected $restrict = false;
 
-    public function __construct(module_report $report)
+    public function __construct(Application $app, module_report $report)
     {
-        parent::__construct($report);
+        parent::__construct($app, $report);
         if ($report->isInformative()) {
             $this->restrict = true;
         }
@@ -29,7 +31,6 @@ class module_report_sqldownload extends module_report_sql implements module_repo
 
     public function buildSql()
     {
-        $registry = registry::get_instance();
         $report_filters = $this->filter->getReportFilter();
         $record_filters = $this->filter->getRecordFilter() ? : array('sql'    => '', 'params' => array());
         $this->params = array_merge($report_filters['params'], $record_filters['params']);

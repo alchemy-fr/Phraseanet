@@ -2,9 +2,6 @@
 
 require_once __DIR__ . '/../../../../PhraseanetPHPUnitAbstract.class.inc';
 
-use Alchemy\Phrasea\Core as PhraseaCore;
-use Alchemy\Phrasea\Core\Configuration;
-
 class ConfigurationTest extends \PhraseanetPHPUnitAbstract
 {
     /**
@@ -171,12 +168,6 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
         } catch (\Exception $e) {
 
         }
-    }
-
-    public function testisInstalled()
-    {
-        $this->assertFalse($this->confNotInstalled->isInstalled());
-        $this->assertTrue($this->object->isInstalled());
     }
 
     public function testGetConfiguration()
@@ -368,7 +359,6 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
     public function testRefresh()
     {
         $this->confNotInstalled->refresh();
-        $this->assertFalse($this->confNotInstalled->isInstalled());
         $this->assertInstanceOf("\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag", $this->confNotInstalled->getConfiguration());
 
         $handler = new Configuration\Handler($this->stubConfTest);

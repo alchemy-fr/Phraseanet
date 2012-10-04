@@ -410,7 +410,7 @@ class Bridge_Api_Apitest extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
     }
 
-    public function upload(record_adapter &$record, array $options = array())
+    public function upload(record_adapter $record, array $options = array())
     {
 
     }

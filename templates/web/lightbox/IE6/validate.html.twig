@@ -30,8 +30,8 @@
                                     <div class="display_id">{% if basket_element %}{{basket_element.getOrd()}}{% endif %}</div>
                                 </td>
                                 <td style="text-align:left;width:auto;">
-                                    <div class="title title15" title="{% if basket_element %}{{basket_element.getRecord().get_title}}{% endif %}">
-                                        {% if basket_element %}{{basket_element.getRecord().get_title}}{% endif %}
+                                    <div class="title title15" title="{% if basket_element %}{{basket_element.getRecord(app).get_title}}{% endif %}">
+                                        {% if basket_element %}{{basket_element.getRecord(app).get_title}}{% endif %}
                                     </div>
                                 </td>
                                 <td style="text-align:right;width:230px;">
@@ -45,12 +45,12 @@
                     <div class="container left">
                         {% if basket_element %}
 
-                            {% set bask_prev = basket_element.getRecord().get_preview() %}
+                            {% set bask_prev = basket_element.getRecord(app).get_preview() %}
 
                             {% set width = bask_prev.get_width() %}
                             {% set height = bask_prev.get_height() %}
 
-                            {{ thumbnail.format(bask_prev, width,height, '', session, false, false) }}
+                            {{ thumbnail.format(bask_prev, width,height, '', false, false) }}
 
                         {% endif %}
                         {% include 'lightbox/selector_box.html.twig' %}
@@ -66,8 +66,8 @@
                                     <div class="display_id"></div>
                                 </td>
                                 <td style="text-align:left;width:auto;">
-                                    <div class="title title15" title="{% if basket_element %}{{basket_element.getRecord().get_title}}{% endif %}">
-                                        {% if basket_element %}{{basket_element.getRecord().get_title}}{% endif %}
+                                    <div class="title title15" title="{% if basket_element %}{{basket_element.getRecord(app).get_title}}{% endif %}">
+                                        {% if basket_element %}{{basket_element.getRecord(app).get_title}}{% endif %}
                                     </div>
                                 </td>
                                 <td style="text-align:right;width:230px;">
@@ -102,8 +102,8 @@
                     <div id="record_infos">
                         <div class="container">
               {% if basket_element %}
-                {% set business = user.ACL().has_right_on_base(basket_element.getRecord().get_base_id(), 'canmodifrecord') %}
-                {{caption.format_caption(basket_element.getRecord(), '', null, business)}}
+                {% set business = app['phraseanet.user'].ACL().has_right_on_base(basket_element.getRecord(app).get_base_id(), 'canmodifrecord') %}
+                {{caption.format_caption(basket_element.getRecord(app), '', null, business)}}
               {% endif %}
             </div>
                     </div>

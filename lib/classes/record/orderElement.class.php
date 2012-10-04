@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  *
@@ -36,12 +38,12 @@ class record_orderElement extends record_adapter
      * @param boolean $deny
      * @param int     $order_master_id
      */
-    public function __construct($sbas_id, $record_id, $deny, $order_master_id)
+    public function __construct(Application $app, $sbas_id, $record_id, $deny, $order_master_id)
     {
         $this->deny = ! ! $deny;
         $this->order_master_id = $order_master_id;
 
-        parent::__construct($sbas_id, $record_id);
+        parent::__construct($app, $sbas_id, $record_id);
 
         $this->get_subdefs();
 
@@ -55,7 +57,7 @@ class record_orderElement extends record_adapter
     public function get_order_master_name()
     {
         if ($this->order_master_id) {
-            $user = User_Adapter::getInstance($this->order_master_id, appbox::get_instance(\bootstrap::getCore()));
+            $user = User_Adapter::getInstance($this->order_master_id, $this->app);
 
             return $user->get_display_name();
         }

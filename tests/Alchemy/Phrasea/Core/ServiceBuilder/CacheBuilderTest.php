@@ -1,5 +1,9 @@
 <?php
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Service\Builder;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
+
 require_once __DIR__ . '/../../../../PhraseanetPHPUnitAbstract.class.inc';
 
 class CacheBuilderTest extends PhraseanetPHPUnitAbstract
@@ -7,12 +11,12 @@ class CacheBuilderTest extends PhraseanetPHPUnitAbstract
 
     public function testCreateException()
     {
-        $configuration = new Symfony\Component\DependencyInjection\ParameterBag\ParameterBag(
+        $configuration = new ParameterBag(
                 array("type" => "unknow")
         );
 
         try {
-            $service = Alchemy\Phrasea\Core\Service\Builder::create(self::$core, $configuration);
+            $service = Builder::create(self::$DI['app'], $configuration);
             $this->fail("An exception should be raised");
         } catch (\Exception $e) {
 
@@ -21,11 +25,11 @@ class CacheBuilderTest extends PhraseanetPHPUnitAbstract
 
     public function testCreate()
     {
-        $configuration = new Symfony\Component\DependencyInjection\ParameterBag\ParameterBag(
+        $configuration = new ParameterBag(
                 array("type" => "Cache\\ArrayCache")
         );
 
-        $service = Alchemy\Phrasea\Core\Service\Builder::create(self::$core, $configuration);
+        $service = Builder::create(self::$DI['app'], $configuration);
         $this->assertInstanceOf("\Alchemy\Phrasea\Core\Service\ServiceAbstract", $service);
     }
 }

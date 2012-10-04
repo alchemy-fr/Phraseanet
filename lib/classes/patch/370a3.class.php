@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -51,14 +53,12 @@ class patch_370a3 implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$appbox)
+    public function apply(base $appbox, Application $app)
     {
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
-
         try {
-            \API_OAuth2_Application::load_from_client_id($appbox, \API_OAuth2_Application_Navigator::CLIENT_ID);
+            \API_OAuth2_Application::load_from_client_id($app, \API_OAuth2_Application_Navigator::CLIENT_ID);
         } catch (\Exception_NotFound $e) {
-            $client = \API_OAuth2_Application::create($appbox, null, \API_OAuth2_Application_Navigator::CLIENT_NAME);
+            $client = \API_OAuth2_Application::create($app, null, \API_OAuth2_Application_Navigator::CLIENT_NAME);
 
             $client->set_activated(false);
             $client->set_grant_password(true);

@@ -2,12 +2,9 @@
 
 require_once __DIR__ . '/../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
-use Silex\WebTestCase;
-use Symfony\Component\HttpFoundation\Response;
-
 class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 {
-    protected $app;
+
     protected $client;
     protected $feed;
     protected $entry;
@@ -17,12 +14,11 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->client = $this->createClient();
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $this->feed = Feed_Adapter::create($appbox, self::$user, "salut", 'coucou');
-        $publisher = array_shift($this->feed->get_publishers());
-        $this->entry = Feed_Entry_Adapter::create($appbox, $this->feed, $publisher, 'title', "sub Titkle", " jean pierre", "jp@test.com");
-        $this->item = Feed_Entry_Item::create($appbox, $this->entry, static::$records['record_1']);
+        $this->feed = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], "salut", 'coucou');
+        $publishers = $this->feed->get_publishers();
+        $publisher = array_shift($publishers);
+        $this->entry = Feed_Entry_Adapter::create(self::$DI['app'], $this->feed, $publisher, 'title', "sub Titkle", " jean pierre", "jp@test.com");
+        $this->item = Feed_Entry_Item::create(self::$DI['app']['phraseanet.appbox'], $this->entry, self::$DI['record_1']);
     }
 
     public function tearDown()
@@ -32,39 +28,46 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         parent::tearDown();
     }
 
-    public function createApplication()
-    {
-        $this->app = require __DIR__ . '/../../../../lib/Alchemy/Phrasea/Application/Lightbox.php';
-
-        $this->app['debug'] = true;
-        unset($this->app['exception_handler']);
-
-        return $this->app;
-    }
-
     public function testRouteSlash()
     {
+        \phrasea::start(self::$DI['app']['phraseanet.configuration']);
+        $auth = new Session_Authentication_None(self::$DI['user'], self::$DI['app']['session']->get('phrasea_session_id'));
+        self::$DI['app']->openAccount($auth);
+
         $baskets = $this->insertFiveBasket();
 
-        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, $this->app);
+        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
 
-        $crawler = $this->client->request('GET', '/');
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals('UTF-8', $this->client->getResponse()->getCharset());
+        $crawler = self::$DI['client']->request('GET', '/lightbox/');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('UTF-8', self::$DI['client']->getResponse()->getCharset());
         $this->assertEquals(5, $crawler->filter('div.basket_wrapper')->count());
 
-        $this->set_user_agent(self::USER_AGENT_IE6, $this->app);
+        $this->set_user_agent(self::USER_AGENT_IE6, self::$DI['app']);
 
-        $crawler = $this->client->request('GET', '/');
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals('UTF-8', $this->client->getResponse()->getCharset());
+        $crawler = self::$DI['client']->request('GET', '/lightbox/');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('UTF-8', self::$DI['client']->getResponse()->getCharset());
         $this->assertEquals($crawler->filter('div.basket_wrapper')->count(), count($baskets));
 
-        $this->set_user_agent(self::USER_AGENT_IPHONE, $this->app);
+        $this->set_user_agent(self::USER_AGENT_IPHONE, self::$DI['app']);
 
-        $crawler = $this->client->request('GET', '/');
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals('UTF-8', $this->client->getResponse()->getCharset());
+        $crawler = self::$DI['client']->request('GET', '/lightbox/');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('UTF-8', self::$DI['client']->getResponse()->getCharset());
+    }
+
+    public function testAuthenticationWithToken()
+    {
+        self::$DI['app']->closeAccount();
+
+        $Basket = $this->insertOneBasket();
+        $token = \random::getUrlToken(self::$DI['app'], \random::TYPE_VIEW, self::$DI['user_alt2']->get_id(), null, $Basket->getId());
+
+        self::$DI['client']->request('GET', '/lightbox/?LOG='.$token);
+
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
+        $this->assertRegExp('/\/lightbox\/validate\/\d+\//', self::$DI['client']->getResponse()->headers->get('location'));
     }
 
     public function testAjaxNoteForm()
@@ -72,51 +75,35 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $basket = $this->insertOneValidationBasket();
         $basket_element = $basket->getELements()->first();
 
-        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, $this->app);
+        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
 
-        $crawler = $this->client->request('GET', '/ajax/NOTE_FORM/' . $basket_element->getId() . '/');
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals('', trim($this->client->getResponse()->getContent()));
+        $crawler = self::$DI['client']->request('GET', '/lightbox/ajax/NOTE_FORM/' . $basket_element->getId() . '/');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('', trim(self::$DI['client']->getResponse()->getContent()));
 
-        $this->set_user_agent(self::USER_AGENT_IE6, $this->app);
+        $this->set_user_agent(self::USER_AGENT_IE6, self::$DI['app']);
 
-        $crawler = $this->client->request('GET', '/ajax/NOTE_FORM/' . $basket_element->getId() . '/');
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals('', trim($this->client->getResponse()->getContent()));
+        $crawler = self::$DI['client']->request('GET', '/lightbox/ajax/NOTE_FORM/' . $basket_element->getId() . '/');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('', trim(self::$DI['client']->getResponse()->getContent()));
 
-        $this->set_user_agent(self::USER_AGENT_IPHONE, $this->app);
+        $this->set_user_agent(self::USER_AGENT_IPHONE, self::$DI['app']);
 
-        $crawler = $this->client->request('GET', '/ajax/NOTE_FORM/' . $basket_element->getId() . '/');
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertNotEquals('', trim($this->client->getResponse()->getContent()));
+        $crawler = self::$DI['client']->request('GET', '/lightbox/ajax/NOTE_FORM/' . $basket_element->getId() . '/');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertNotEquals('', trim(self::$DI['client']->getResponse()->getContent()));
     }
 
     public function testAjaxElement()
     {
         $basket_element = $this->insertOneBasketElement();
 
-        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, $this->app);
+        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
 
-        $crawler = $this->client->request('GET', '/ajax/LOAD_BASKET_ELEMENT/' . $basket_element->getId() . '/');
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals('application/json', $this->client->getResponse()->headers->get('Content-type'));
-        $datas = json_decode($this->client->getResponse()->getContent());
-
-        $this->assertObjectHasAttribute('number', $datas);
-        $this->assertObjectHasAttribute('title', $datas);
-        $this->assertObjectHasAttribute('preview', $datas);
-        $this->assertObjectHasAttribute('options_html', $datas);
-        $this->assertObjectHasAttribute('agreement_html', $datas);
-        $this->assertObjectHasAttribute('selector_html', $datas);
-        $this->assertObjectHasAttribute('note_html', $datas);
-        $this->assertObjectHasAttribute('caption', $datas);
-
-        $this->set_user_agent(self::USER_AGENT_IE6, $this->app);
-
-        $crawler = $this->client->request('GET', '/ajax/LOAD_BASKET_ELEMENT/' . $basket_element->getId() . '/');
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals('application/json', $this->client->getResponse()->headers->get('Content-type'));
-        $datas = json_decode($this->client->getResponse()->getContent());
+        $crawler = self::$DI['client']->request('GET', '/lightbox/ajax/LOAD_BASKET_ELEMENT/' . $basket_element->getId() . '/');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('application/json', self::$DI['client']->getResponse()->headers->get('Content-type'));
+        $datas = json_decode(self::$DI['client']->getResponse()->getContent());
 
         $this->assertObjectHasAttribute('number', $datas);
         $this->assertObjectHasAttribute('title', $datas);
@@ -127,37 +114,37 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertObjectHasAttribute('note_html', $datas);
         $this->assertObjectHasAttribute('caption', $datas);
 
-        $this->set_user_agent(self::USER_AGENT_IPHONE, $this->app);
+        $this->set_user_agent(self::USER_AGENT_IE6, self::$DI['app']);
 
-        $crawler = $this->client->request('GET', '/ajax/LOAD_BASKET_ELEMENT/' . $basket_element->getId() . '/');
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertNotEquals('application/json', $this->client->getResponse()->headers->get('Content-type'));
+        $crawler = self::$DI['client']->request('GET', '/lightbox/ajax/LOAD_BASKET_ELEMENT/' . $basket_element->getId() . '/');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('application/json', self::$DI['client']->getResponse()->headers->get('Content-type'));
+        $datas = json_decode(self::$DI['client']->getResponse()->getContent());
+
+        $this->assertObjectHasAttribute('number', $datas);
+        $this->assertObjectHasAttribute('title', $datas);
+        $this->assertObjectHasAttribute('preview', $datas);
+        $this->assertObjectHasAttribute('options_html', $datas);
+        $this->assertObjectHasAttribute('agreement_html', $datas);
+        $this->assertObjectHasAttribute('selector_html', $datas);
+        $this->assertObjectHasAttribute('note_html', $datas);
+        $this->assertObjectHasAttribute('caption', $datas);
+
+        $this->set_user_agent(self::USER_AGENT_IPHONE, self::$DI['app']);
+
+        $crawler = self::$DI['client']->request('GET', '/lightbox/ajax/LOAD_BASKET_ELEMENT/' . $basket_element->getId() . '/');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertNotEquals('application/json', self::$DI['client']->getResponse()->headers->get('Content-type'));
     }
 
     public function testAjaxFeedItem()
     {
-        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, $this->app);
+        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
 
-        $crawler = $this->client->request('GET', '/ajax/LOAD_FEED_ITEM/' . $this->entry->get_id() . '/' . $this->item->get_id() . '/');
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals('application/json', $this->client->getResponse()->headers->get('Content-type'));
-        $datas = json_decode($this->client->getResponse()->getContent());
-
-        $this->assertObjectHasAttribute('number', $datas);
-        $this->assertObjectHasAttribute('title', $datas);
-        $this->assertObjectHasAttribute('preview', $datas);
-        $this->assertObjectHasAttribute('options_html', $datas);
-        $this->assertObjectHasAttribute('agreement_html', $datas);
-        $this->assertObjectHasAttribute('selector_html', $datas);
-        $this->assertObjectHasAttribute('note_html', $datas);
-        $this->assertObjectHasAttribute('caption', $datas);
-
-        $this->set_user_agent(self::USER_AGENT_IE6, $this->app);
-
-        $crawler = $this->client->request('GET', '/ajax/LOAD_FEED_ITEM/' . $this->entry->get_id() . '/' . $this->item->get_id() . '/');
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals('application/json', $this->client->getResponse()->headers->get('Content-type'));
-        $datas = json_decode($this->client->getResponse()->getContent());
+        $crawler = self::$DI['client']->request('GET', '/lightbox/ajax/LOAD_FEED_ITEM/' . $this->entry->get_id() . '/' . $this->item->get_id() . '/');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('application/json', self::$DI['client']->getResponse()->headers->get('Content-type'));
+        $datas = json_decode(self::$DI['client']->getResponse()->getContent());
 
         $this->assertObjectHasAttribute('number', $datas);
         $this->assertObjectHasAttribute('title', $datas);
@@ -168,89 +155,113 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertObjectHasAttribute('note_html', $datas);
         $this->assertObjectHasAttribute('caption', $datas);
 
-        $this->set_user_agent(self::USER_AGENT_IPHONE, $this->app);
+        $this->set_user_agent(self::USER_AGENT_IE6, self::$DI['app']);
 
-        $crawler = $this->client->request('GET', '/ajax/LOAD_FEED_ITEM/' . $this->entry->get_id() . '/' . $this->item->get_id() . '/');
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertNotEquals('application/json', $this->client->getResponse()->headers->get('Content-type'));
+        $crawler = self::$DI['client']->request('GET', '/lightbox/ajax/LOAD_FEED_ITEM/' . $this->entry->get_id() . '/' . $this->item->get_id() . '/');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('application/json', self::$DI['client']->getResponse()->headers->get('Content-type'));
+        $datas = json_decode(self::$DI['client']->getResponse()->getContent());
+
+        $this->assertObjectHasAttribute('number', $datas);
+        $this->assertObjectHasAttribute('title', $datas);
+        $this->assertObjectHasAttribute('preview', $datas);
+        $this->assertObjectHasAttribute('options_html', $datas);
+        $this->assertObjectHasAttribute('agreement_html', $datas);
+        $this->assertObjectHasAttribute('selector_html', $datas);
+        $this->assertObjectHasAttribute('note_html', $datas);
+        $this->assertObjectHasAttribute('caption', $datas);
+
+        $this->set_user_agent(self::USER_AGENT_IPHONE, self::$DI['app']);
+
+        $crawler = self::$DI['client']->request('GET', '/lightbox/ajax/LOAD_FEED_ITEM/' . $this->entry->get_id() . '/' . $this->item->get_id() . '/');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertNotEquals('application/json', self::$DI['client']->getResponse()->headers->get('Content-type'));
     }
 
     public function testValidate()
     {
+        $auth = new Session_Authentication_None(self::$DI['user']);
+        self::$DI['app']->openAccount($auth);
 
         $basket = $this->insertOneValidationBasket();
 
-        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, $this->app);
+        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
 
-        $crawler = $this->client->request('GET', '/validate/' . $basket->getId() . '/');
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals('UTF-8', $this->client->getResponse()->getCharset());
+        $crawler = self::$DI['client']->request('GET', '/lightbox/validate/' . $basket->getId() . '/');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('UTF-8', self::$DI['client']->getResponse()->getCharset());
 
-        $this->set_user_agent(self::USER_AGENT_IE6, $this->app);
+        $this->set_user_agent(self::USER_AGENT_IE6, self::$DI['app']);
 
-        $crawler = $this->client->request('GET', '/validate/' . $basket->getId() . '/');
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals('UTF-8', $this->client->getResponse()->getCharset());
+        $crawler = self::$DI['client']->request('GET', '/lightbox/validate/' . $basket->getId() . '/');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('UTF-8', self::$DI['client']->getResponse()->getCharset());
 
-        $this->set_user_agent(self::USER_AGENT_IPHONE, $this->app);
+        $this->set_user_agent(self::USER_AGENT_IPHONE, self::$DI['app']);
 
-        $crawler = $this->client->request('GET', '/validate/' . $basket->getId() . '/');
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals('UTF-8', $this->client->getResponse()->getCharset());
+        $crawler = self::$DI['client']->request('GET', '/lightbox/validate/' . $basket->getId() . '/');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('UTF-8', self::$DI['client']->getResponse()->getCharset());
     }
 
     public function testCompare()
     {
+        $auth = new Session_Authentication_None(self::$DI['user']);
+        self::$DI['app']->openAccount($auth);
+
         $basket = $this->insertOneBasket();
 
-        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, $this->app);
+        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
 
-        $crawler = $this->client->request('GET', '/compare/' . $basket->getId() . '/');
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals('UTF-8', $this->client->getResponse()->getCharset());
+        $crawler = self::$DI['client']->request('GET', '/lightbox/compare/' . $basket->getId() . '/');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('UTF-8', self::$DI['client']->getResponse()->getCharset());
 
-        $this->set_user_agent(self::USER_AGENT_IE6, $this->app);
+        $this->set_user_agent(self::USER_AGENT_IE6, self::$DI['app']);
 
-        $crawler = $this->client->request('GET', '/compare/' . $basket->getId() . '/');
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals('UTF-8', $this->client->getResponse()->getCharset());
+        $crawler = self::$DI['client']->request('GET', '/lightbox/compare/' . $basket->getId() . '/');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('UTF-8', self::$DI['client']->getResponse()->getCharset());
 
-        $this->set_user_agent(self::USER_AGENT_IPHONE, $this->app);
+        $this->set_user_agent(self::USER_AGENT_IPHONE, self::$DI['app']);
 
-        $crawler = $this->client->request('GET', '/compare/' . $basket->getId() . '/');
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals('UTF-8', $this->client->getResponse()->getCharset());
+        $crawler = self::$DI['client']->request('GET', '/lightbox/compare/' . $basket->getId() . '/');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('UTF-8', self::$DI['client']->getResponse()->getCharset());
     }
 
     public function testFeedEntry()
     {
-        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, $this->app);
+        $auth = new Session_Authentication_None(self::$DI['user']);
+        self::$DI['app']->openAccount($auth);
 
-        $crawler = $this->client->request('GET', '/feeds/entry/' . $this->entry->get_id() . '/');
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals('UTF-8', $this->client->getResponse()->getCharset());
+        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
 
-        $this->set_user_agent(self::USER_AGENT_IE6, $this->app);
+        $crawler = self::$DI['client']->request('GET', '/lightbox/feeds/entry/' . $this->entry->get_id() . '/');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('UTF-8', self::$DI['client']->getResponse()->getCharset());
 
-        $crawler = $this->client->request('GET', '/feeds/entry/' . $this->entry->get_id() . '/');
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals('UTF-8', $this->client->getResponse()->getCharset());
+        $this->set_user_agent(self::USER_AGENT_IE6, self::$DI['app']);
 
-        $this->set_user_agent(self::USER_AGENT_IPHONE, $this->app);
+        $crawler = self::$DI['client']->request('GET', '/lightbox/feeds/entry/' . $this->entry->get_id() . '/');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('UTF-8', self::$DI['client']->getResponse()->getCharset());
 
-        $crawler = $this->client->request('GET', '/feeds/entry/' . $this->entry->get_id() . '/');
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals('UTF-8', $this->client->getResponse()->getCharset());
+        $this->set_user_agent(self::USER_AGENT_IPHONE, self::$DI['app']);
+
+        $crawler = self::$DI['client']->request('GET', '/lightbox/feeds/entry/' . $this->entry->get_id() . '/');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('UTF-8', self::$DI['client']->getResponse()->getCharset());
     }
 
     public function testAjaxReport()
     {
         $validationBasket = $this->insertOneValidationBasket();
 
-        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, $this->app);
-        $crawler = $this->client->request('GET', '/ajax/LOAD_REPORT/' . $validationBasket->getId() . '/');
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals('UTF-8', $this->client->getResponse()->getCharset());
+        $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC, self::$DI['app']);
+        $crawler = self::$DI['client']->request('GET', '/lightbox/ajax/LOAD_REPORT/' . $validationBasket->getId() . '/');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('UTF-8', self::$DI['client']->getResponse()->getCharset());
     }
 
     public function testAjaxSetNote()
@@ -258,19 +269,19 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $validationBasket = $this->insertOneValidationBasket();
         $validationBasketElement = $validationBasket->getElements()->first();
 
-        $crawler = $this->client->request('POST', '/ajax/SET_NOTE/' . $validationBasketElement->getId() . '/');
-        $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
+        $crawler = self::$DI['client']->request('POST', '/lightbox/ajax/SET_NOTE/' . $validationBasketElement->getId() . '/');
+        $this->assertEquals(400, self::$DI['client']->getResponse()->getStatusCode());
 
-        $crawler = $this->client->request(
+        $crawler = self::$DI['client']->request(
             'POST'
-            , '/ajax/SET_NOTE/' . $validationBasketElement->getId() . '/'
+            , '/lightbox/ajax/SET_NOTE/' . $validationBasketElement->getId() . '/'
             , array('note' => 'une jolie note')
         );
 
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), sprintf('set note to element %s ', $validationBasketElement->getId()));
-        $this->assertEquals('application/json', $this->client->getResponse()->headers->get('Content-type'));
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode(), sprintf('set note to element %s ', $validationBasketElement->getId()));
+        $this->assertEquals('application/json', self::$DI['client']->getResponse()->headers->get('Content-type'));
 
-        $datas = json_decode($this->client->getResponse()->getContent());
+        $datas = json_decode(self::$DI['client']->getResponse()->getContent());
         $this->assertTrue(is_object($datas), 'asserting good json datas');
         $this->assertObjectHasAttribute('datas', $datas);
         $this->assertObjectHasAttribute('error', $datas);
@@ -281,22 +292,22 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $validationBasket = $this->insertOneValidationBasket();
         $validationBasketElement = $validationBasket->getElements()->first();
 
-        $crawler = $this->client->request(
+        $crawler = self::$DI['client']->request(
             'POST'
-            , '/ajax/SET_ELEMENT_AGREEMENT/' . $validationBasketElement->getId() . '/'
+            , '/lightbox/ajax/SET_ELEMENT_AGREEMENT/' . $validationBasketElement->getId() . '/'
         );
-        $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(400, self::$DI['client']->getResponse()->getStatusCode());
 
-        $crawler = $this->client->request(
+        $crawler = self::$DI['client']->request(
             'POST'
-            , '/ajax/SET_ELEMENT_AGREEMENT/' . $validationBasketElement->getId() . '/'
+            , '/lightbox/ajax/SET_ELEMENT_AGREEMENT/' . $validationBasketElement->getId() . '/'
             , array('agreement' => 1)
         );
 
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), sprintf('set note to element %s ', $validationBasketElement->getId()));
-        $this->assertEquals('application/json', $this->client->getResponse()->headers->get('Content-type'));
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode(), sprintf('set note to element %s ', $validationBasketElement->getId()));
+        $this->assertEquals('application/json', self::$DI['client']->getResponse()->headers->get('Content-type'));
 
-        $datas = json_decode($this->client->getResponse()->getContent());
+        $datas = json_decode(self::$DI['client']->getResponse()->getContent());
         $this->assertTrue(is_object($datas), 'asserting good json datas');
         $this->assertObjectHasAttribute('datas', $datas);
         $this->assertObjectHasAttribute('error', $datas);
@@ -306,21 +317,21 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $basket = $this->insertOneBasket();
 
-        $crawler = $this->client->request('POST', '/ajax/SET_RELEASE/' . $basket->getId() . '/');
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals('application/json', $this->client->getResponse()->headers->get('Content-type'));
-        $datas = json_decode($this->client->getResponse()->getContent());
+        $crawler = self::$DI['client']->request('POST', '/lightbox/ajax/SET_RELEASE/' . $basket->getId() . '/');
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode());
+        $this->assertEquals('application/json', self::$DI['client']->getResponse()->headers->get('Content-type'));
+        $datas = json_decode(self::$DI['client']->getResponse()->getContent());
         $this->assertTrue(is_object($datas), 'asserting good json datas');
         $this->assertTrue($datas->error);
 
         $validationBasket = $this->insertOneValidationBasket();
 
-        $crawler = $this->client->request('POST', '/ajax/SET_RELEASE/' . $validationBasket->getId() . '/');
+        $crawler = self::$DI['client']->request('POST', '/lightbox/ajax/SET_RELEASE/' . $validationBasket->getId() . '/');
 
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), sprintf('set note to element %s ', $validationBasket->getId()));
-        $this->assertEquals('application/json', $this->client->getResponse()->headers->get('Content-type'));
+        $this->assertEquals(200, self::$DI['client']->getResponse()->getStatusCode(), sprintf('set note to element %s ', $validationBasket->getId()));
+        $this->assertEquals('application/json', self::$DI['client']->getResponse()->headers->get('Content-type'));
 
-        $datas = json_decode($this->client->getResponse()->getContent());
+        $datas = json_decode(self::$DI['client']->getResponse()->getContent());
         $this->assertTrue(is_object($datas), 'asserting good json datas');
         $this->assertObjectHasAttribute('datas', $datas);
         $this->assertObjectHasAttribute('error', $datas);

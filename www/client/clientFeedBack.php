@@ -9,21 +9,19 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-/* @var $Core \Alchemy\Phrasea\Core */
-$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 
-$em = $Core->getEntityManager();
+require_once __DIR__ . "/../../lib/bootstrap.php";
 
-$appbox = appbox::get_instance($Core);
-$registry = $appbox->get_registry();
-$user = $Core->getAuthenticatedUser();
+$app = new Application();
 
-$lng = Session_Handler::get_locale();
+$lng = $app['locale'];
 
 $output = '';
 
@@ -32,32 +30,29 @@ $parm = $request->get_parms('action', 'env', 'pos', 'cont', 'roll', 'mode', 'col
 
 switch ($parm['action']) {
     case 'LANGUAGE':
-        $output = module_client::getLanguage($lng);
+        $output = module_client::getLanguage($app, $lng);
         break;
     case 'PREVIEW':
 
-        $core = \bootstrap::getCore();
-        $twig = $core->getTwig();
-
         $search_engine = null;
         if ($parm['env'] == 'RESULT' && ($options = unserialize($parm['options_serial'])) !== false) {
-            $search_engine = new searchEngine_adapter($registry);
+            $search_engine = new searchEngine_adapter($app);
             $search_engine->set_options($options);
         }
 
-        $record = new record_preview($parm['env'], $parm['pos'], $parm['cont'], $parm['roll'], $search_engine, $parm['query']);
+        $record = new record_preview($app, $parm['env'], $parm['pos'], $parm['cont'], $parm['roll'], $search_engine, $parm['query']);
 
         $train = '';
 
         if ($record->is_from_reg()) {
-            $train = $twig->render('prod/preview/reg_train.html.twig', array(
+            $train = $app['twig']->render('prod/preview/reg_train.html.twig', array(
                 'record' => $record
                 )
             );
         }
 
         if ($record->is_from_basket() && $parm['roll']) {
-            $train = $twig->render('prod/preview/basket_train.html.twig', array(
+            $train = $app['twig']->render('prod/preview/basket_train.html.twig', array(
                 'record' => $record
                 )
             );
@@ -65,7 +60,7 @@ switch ($parm['action']) {
 
 
         if ($record->is_from_feed()) {
-            $train = $twig->render('prod/preview/feed_train.html.twig', array(
+            $train = $app['twig']->render('prod/preview/feed_train.html.twig', array(
                 'record' => $record
                 )
             );
@@ -73,25 +68,25 @@ switch ($parm['action']) {
 
         $output = p4string::jsonencode(
                 array(
-                    "desc" => $twig->render('prod/preview/caption.html.twig', array(
+                    "desc" => $app['twig']->render('prod/preview/caption.html.twig', array(
                         'record'       => $record
                         , 'highlight'    => $parm['query']
                         , 'searchEngine' => $search_engine
                         )
                     )
-                    , "html_preview" => $twig->render('common/preview.html.twig', array('record' => $record)
+                    , "html_preview" => $app['twig']->render('common/preview.html.twig', array('record' => $record)
                     )
-                    , "others" => $twig->render('prod/preview/appears_in.html.twig', array(
+                    , "others" => $app['twig']->render('prod/preview/appears_in.html.twig', array(
                         'parents' => $record->get_grouping_parents(),
-                        'baskets' => $record->get_container_baskets()
+                        'baskets' => $record->get_container_baskets($app['EM'], $app['phraseanet.user'])
                         )
                     )
                     , "current" => $train
-                    , "history" => $twig->render('prod/preview/short_history.html.twig', array('record'     => $record)
+                    , "history" => $app['twig']->render('prod/preview/short_history.html.twig', array('record'     => $record)
                     )
-                    , "popularity" => $twig->render('prod/preview/popularity.html.twig', array('record' => $record)
+                    , "popularity" => $app['twig']->render('prod/preview/popularity.html.twig', array('record' => $record)
                     )
-                    , "tools"  => $twig->render('prod/preview/tools.html.twig', array('record' => $record)
+                    , "tools"  => $app['twig']->render('prod/preview/tools.html.twig', array('record' => $record)
                     )
                     , "pos"    => $record->get_number()
                     , "title"  => $record->get_title($parm['query'], $search_engine)
@@ -100,21 +95,21 @@ switch ($parm['action']) {
 
         break;
     case 'HOME':
-        $output = phrasea::getHome('PUBLI', 'client');
+        $output = phrasea::getHome($app, 'PUBLI', 'client');
         break;
     case 'CSS':
-        $output = $user->setPrefs('css', $parm['color']);
+        $output = $app['phraseanet.user']->setPrefs('css', $parm['color']);
         break;
     case 'BASK_STATUS':
-        $output = $user->setPrefs('client_basket_status', $parm['mode']);
+        $output = $app['phraseanet.user']->setPrefs('client_basket_status', $parm['mode']);
         break;
     case 'BASKUPDATE':
         $noview = 0;
 
-        $repository = $em->getRepository('\Entities\Basket');
+        $repository = $app['EM']->getRepository('\Entities\Basket');
 
         /* @var $repository \Repositories\BasketRepository */
-        $baskets = $repository->findActiveByUser($user);
+        $baskets = $repository->findActiveByUser($app['phraseanet.user']);
 
         foreach ($baskets as $basket) {
             if ( ! $basket->getIsRead())

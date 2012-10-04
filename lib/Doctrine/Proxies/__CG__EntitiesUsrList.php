@@ -99,16 +99,16 @@ class UsrList extends \Entities\UsrList implements \Doctrine\ORM\Proxy\Proxy
         return parent::getOwners();
     }
 
-    public function hasAccess(\User_Adapter $user)
+    public function hasAccess(\User_Adapter $user, \Alchemy\Phrasea\Application $app)
     {
         $this->__load();
-        return parent::hasAccess($user);
+        return parent::hasAccess($user, $app);
     }
 
-    public function getOwner(\User_Adapter $user)
+    public function getOwner(\User_Adapter $user, \Alchemy\Phrasea\Application $app)
     {
         $this->__load();
-        return parent::getOwner($user);
+        return parent::getOwner($user, $app);
     }
 
     public function addUsrListEntry(\Entities\UsrListEntry $entry)
@@ -123,10 +123,10 @@ class UsrList extends \Entities\UsrList implements \Doctrine\ORM\Proxy\Proxy
         return parent::getEntries();
     }
 
-    public function has(\User_Adapter $user)
+    public function has(\User_Adapter $user, \Alchemy\Phrasea\Application $app)
     {
         $this->__load();
-        return parent::has($user);
+        return parent::has($user, $app);
     }
 
 

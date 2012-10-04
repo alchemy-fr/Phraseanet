@@ -4,7 +4,7 @@ namespace Alchemy\Phrasea\Border\Attribute;
 
 require_once __DIR__ . '/../../../../PhraseanetPHPUnitAbstract.class.inc';
 
-class StatusTest extends \PHPUnit_Framework_TestCase
+class StatusTest extends \PhraseanetPHPUnitAbstract
 {
     /**
      * @var Status
@@ -18,13 +18,12 @@ class StatusTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructor($status, $binaryString)
     {
-        $attr = new Status($status);
+        $attr = new Status(self::$DI['app'], $status);
         $this->assertEquals($binaryString, $attr->getValue());
     }
 
     public function getValidStatuses()
     {
-
         return array(
           array(123, '1111011'),
           array('123', '1111011'),
@@ -42,12 +41,11 @@ class StatusTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidConstruction($status)
     {
-        new Status($status);
+        new Status(self::$DI['app'], $status);
     }
 
     public function getInvalidStatuses()
     {
-
         return array(
           array('0b00z2'),
           array('0x00g2'),
@@ -60,8 +58,8 @@ class StatusTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetName()
     {
-        $status = new Status(123);
-        $this->assertEquals(Attribute::NAME_STATUS, $status->getName());
+        $status = new Status(self::$DI['app'], 123);
+        $this->assertEquals(AttributeInterface::NAME_STATUS, $status->getName());
     }
 
     /**
@@ -69,7 +67,7 @@ class StatusTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetValue()
     {
-        $status = new Status(123);
+        $status = new Status(self::$DI['app'], 123);
         $this->assertEquals('1111011', $status->getValue());
     }
 
@@ -78,7 +76,7 @@ class StatusTest extends \PHPUnit_Framework_TestCase
      */
     public function testAsString()
     {
-        $status = new Status(123);
+        $status = new Status(self::$DI['app'], 123);
         $this->assertEquals('1111011', $status->asString());
     }
 
@@ -87,8 +85,8 @@ class StatusTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoadFromString()
     {
-        $status = new Status(12345);
+        $status = new Status(self::$DI['app'], 12345);
 
-        $this->assertEquals($status, Status::loadFromString($status->asString()));
+        $this->assertEquals($status, Status::loadFromString(self::$DI['app'], $status->asString()));
     }
 }

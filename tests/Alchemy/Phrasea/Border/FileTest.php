@@ -2,6 +2,19 @@
 
 namespace Alchemy\Phrasea\Border;
 
+use Alchemy\Phrasea\Media\Type\Image;
+use Alchemy\Phrasea\Media\Type\Flash;
+use Alchemy\Phrasea\Media\Type\Audio;
+use Alchemy\Phrasea\Media\Type\Video;
+use Alchemy\Phrasea\Media\Type\Document;
+use MediaVorus\Media\MediaInterface;
+use PHPExiftool\Driver\Tag\MXF\ObjectName;
+use PHPExiftool\Driver\Value\Mono;
+use PHPExiftool\Driver\Tag\IPTC\Keywords;
+use PHPExiftool\Driver\Value\Multi;
+use PHPExiftool\Driver\Metadata\Metadata as PHPExiftoolMetadata;
+use Alchemy\Phrasea\Border\Attribute\Metadata;
+
 require_once __DIR__ . '/../../../PhraseanetPHPUnitAbstract.class.inc';
 
 class FileTest extends \PhraseanetPHPUnitAbstract
@@ -22,9 +35,9 @@ class FileTest extends \PhraseanetPHPUnitAbstract
         $this->filename = __DIR__ . '/../../../../tmp/iphone_pic.jpg';
         copy(__DIR__ . '/../../../testfiles/iphone_pic.jpg', $this->filename);
 
-        $this->media = self::$core['mediavorus']->guess(new \SplFileInfo($this->filename));
+        $this->media = self::$DI['app']['mediavorus']->guess($this->filename);
 
-        $this->object = new File($this->media, self::$collection, 'originalName.txt');
+        $this->object = new File(self::$DI['app'], $this->media, self::$DI['collection'], 'originalName.txt');
     }
 
     /**
@@ -60,20 +73,20 @@ class FileTest extends \PhraseanetPHPUnitAbstract
 
         copy(__DIR__ . '/../../../testfiles/p4logo.jpg', $file);
 
-        $borderFile = new File(self::$core['mediavorus']->guess(new \SplFileInfo($file)), self::$collection);
+        $borderFile = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess($file), self::$DI['collection']);
         $uuid = $borderFile->getUUID(true, false);
 
         $this->assertTrue(\uuid::is_valid($uuid));
         $this->assertEquals($uuid, $borderFile->getUUID());
 
-        $borderFile = new File(self::$core['mediavorus']->guess(new \SplFileInfo($file)), self::$collection);
+        $borderFile = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess($file), self::$DI['collection']);
         $newuuid = $borderFile->getUUID(true, true);
 
         $this->assertTrue(\uuid::is_valid($newuuid));
         $this->assertNotEquals($uuid, $newuuid);
         $this->assertEquals($newuuid, $borderFile->getUUID());
 
-        $borderFile = new File(self::$core['mediavorus']->guess(new \SplFileInfo($file)), self::$collection);
+        $borderFile = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess($file), self::$DI['collection']);
         $uuid = $borderFile->getUUID();
 
         $this->assertTrue(\uuid::is_valid($uuid));
@@ -123,7 +136,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetCollection()
     {
-        $this->assertSame(self::$collection, $this->object->getCollection());
+        $this->assertSame(self::$DI['collection'], $this->object->getCollection());
     }
 
     /**
@@ -139,7 +152,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      */
     public function testOriginalNameAuto()
     {
-        $object = new File(self::$core['mediavorus']->guess(new \SplFileInfo($this->filename)), self::$collection);
+        $object = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess($this->filename), self::$DI['collection']);
         $this->assertSame('iphone_pic.jpg', $object->getOriginalName());
     }
 
@@ -156,20 +169,20 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      */
     public function testAddAttribute()
     {
-        $tag = new \PHPExiftool\Driver\Tag\MXF\ObjectName();
-        $value = new \PHPExiftool\Driver\Value\Mono('Object name');
+        $tag = new ObjectName();
+        $value = new Mono('Object name');
 
-        $metadata1 = new \PHPExiftool\Driver\Metadata\Metadata($tag, $value);
-        $attribute1 = new Attribute\Metadata($metadata1);
+        $metadata1 = new PHPExiftoolMetadata($tag, $value);
+        $attribute1 = new Metadata($metadata1);
 
         $this->object->addAttribute($attribute1);
         $this->assertSame(array($attribute1), $this->object->getAttributes());
 
-        $tag = new \PHPExiftool\Driver\Tag\IPTC\Keywords();
-        $value = new \PHPExiftool\Driver\Value\Multi(array('Later', 'Alligator'));
+        $tag = new Keywords();
+        $value = new Multi(array('Later', 'Alligator'));
 
-        $metadata2 = new \PHPExiftool\Driver\Metadata\Metadata($tag, $value);
-        $attribute2 = new Attribute\Metadata($metadata2);
+        $metadata2 = new PHPExiftoolMetadata($tag, $value);
+        $attribute2 = new Metadata($metadata2);
 
         $this->object->addAttribute($attribute2);
         $this->assertSame(array($attribute1, $attribute2), $this->object->getAttributes());
@@ -180,18 +193,17 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      */
     public function testBuildFromPathfile()
     {
-        $media = self::$core['mediavorus']->guess(new \SplFileInfo($this->filename));
-        $file1 = new File($media, self::$collection);
+        $media = self::$DI['app']['mediavorus']->guess($this->filename);
+        $file1 = new File(self::$DI['app'], $media, self::$DI['collection']);
 
-        $file2 = File::buildFromPathfile($this->filename, self::$collection);
+        $file2 = File::buildFromPathfile($this->filename, self::$DI['collection'], self::$DI['app']);
 
         $this->assertEquals($file1, $file2);
 
+        $media = self::$DI['app']['mediavorus']->guess($this->filename);
+        $file3 = new File(self::$DI['app'], $media, self::$DI['collection'], 'coco lapin');
 
-        $media = self::$core['mediavorus']->guess(new \SplFileInfo($this->filename));
-        $file3 = new File($media, self::$collection, 'coco lapin');
-
-        $file4 = File::buildFromPathfile($this->filename, self::$collection, 'coco lapin');
+        $file4 = File::buildFromPathfile($this->filename, self::$DI['collection'], self::$DI['app'], 'coco lapin');
 
         $this->assertEquals($file3, $file4);
         $this->assertNotEquals($file1, $file4);
@@ -203,7 +215,20 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      */
     public function testBuildFromWrongPathfile()
     {
-        File::buildFromPathfile('unexistent.file', self::$collection);
+        File::buildFromPathfile('unexistent.file', self::$DI['collection'], self::$DI['app']);
+    }
+
+    protected function getMediaMock($type)
+    {
+        $mock = $this->getMockBuilder('\\MediaVorus\\Media\\Image')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $mock->expects($this->once())
+            ->method('getType')
+            ->will($this->returnValue($type));
+
+        return $mock;
     }
 
     /**
@@ -211,15 +236,11 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetTypeImage()
     {
-        $image = $this->getMock('\\MediaVorus\\Media\\Image', array('getType'), array(), '', false);
+        $image = $this->getMediaMock(MediaInterface::TYPE_IMAGE);
 
-        $image->expects($this->once())
-            ->method('getType')
-            ->will($this->returnValue(\MediaVorus\Media\Media::TYPE_IMAGE));
+        $file = new File(self::$DI['app'], $image, self::$DI['collection'], 'hello');
 
-        $file = new File($image, self::$collection, 'hello');
-
-        $this->assertEquals(new \Alchemy\Phrasea\Media\Type\Image(), $file->getType());
+        $this->assertEquals(new Image(), $file->getType());
     }
 
     /**
@@ -227,15 +248,11 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetTypeDocument()
     {
-        $image = $this->getMock('\\MediaVorus\\Media\\Document', array('getType'), array(), '', false);
+        $document = $this->getMediaMock(MediaInterface::TYPE_DOCUMENT);
 
-        $image->expects($this->once())
-            ->method('getType')
-            ->will($this->returnValue(\MediaVorus\Media\Media::TYPE_DOCUMENT));
+        $file = new File(self::$DI['app'], $document, self::$DI['collection'], 'hello');
 
-        $file = new File($image, self::$collection, 'hello');
-
-        $this->assertEquals(new \Alchemy\Phrasea\Media\Type\Document(), $file->getType());
+        $this->assertEquals(new Document(), $file->getType());
     }
 
     /**
@@ -243,15 +260,11 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetTypeAudio()
     {
-        $image = $this->getMock('\\MediaVorus\\Media\\Audio', array('getType'), array(), '', false);
+        $audio = $this->getMediaMock(MediaInterface::TYPE_AUDIO);
 
-        $image->expects($this->once())
-            ->method('getType')
-            ->will($this->returnValue(\MediaVorus\Media\Media::TYPE_AUDIO));
+        $file = new File(self::$DI['app'], $audio, self::$DI['collection'], 'hello');
 
-        $file = new File($image, self::$collection, 'hello');
-
-        $this->assertEquals(new \Alchemy\Phrasea\Media\Type\Audio(), $file->getType());
+        $this->assertEquals(new Audio(), $file->getType());
     }
 
     /**
@@ -259,15 +272,11 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetTypeVideo()
     {
-        $image = $this->getMock('\\MediaVorus\\Media\\Video', array('getType'), array(), '', false);
+        $video = $this->getMediaMock(MediaInterface::TYPE_VIDEO);
 
-        $image->expects($this->once())
-            ->method('getType')
-            ->will($this->returnValue(\MediaVorus\Media\Media::TYPE_VIDEO));
+        $file = new File(self::$DI['app'], $video, self::$DI['collection'], 'hello');
 
-        $file = new File($image, self::$collection, 'hello');
-
-        $this->assertEquals(new \Alchemy\Phrasea\Media\Type\Video(), $file->getType());
+        $this->assertEquals(new Video(), $file->getType());
     }
 
     /**
@@ -275,15 +284,11 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetTypeFlash()
     {
-        $image = $this->getMock('\\MediaVorus\\Media\\Flash', array('getType'), array(), '', false);
+        $flash = $this->getMediaMock(MediaInterface::TYPE_FLASH);
 
-        $image->expects($this->once())
-            ->method('getType')
-            ->will($this->returnValue(\MediaVorus\Media\Media::TYPE_FLASH));
+        $file = new File(self::$DI['app'], $flash, self::$DI['collection'], 'hello');
 
-        $file = new File($image, self::$collection, 'hello');
-
-        $this->assertEquals(new \Alchemy\Phrasea\Media\Type\Flash(), $file->getType());
+        $this->assertEquals(new Flash(), $file->getType());
     }
 
     /**
@@ -291,13 +296,9 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetTypeNoType()
     {
-        $image = $this->getMock('\\MediaVorus\\Media\\DefaultMedia', array('getType'), array(), '', false);
+        $noType = $this->getMediaMock(null);
 
-        $image->expects($this->once())
-            ->method('getType')
-            ->will($this->returnValue(null));
-
-        $file = new File($image, self::$collection, 'hello');
+        $file = new File(self::$DI['app'], $noType, self::$DI['collection'], 'hello');
 
         $this->assertNull($file->getType());
     }

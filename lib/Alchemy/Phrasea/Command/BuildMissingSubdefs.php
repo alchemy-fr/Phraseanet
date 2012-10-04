@@ -39,19 +39,11 @@ class BuildMissingSubdefs extends Command
     /**
      * {@inheritdoc}
      */
-    public function requireSetup()
-    {
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         if ($input->getOption('verbose')) {
             $handler = new StreamHandler('php://stdout');
-            $this->container['phraseanet.core']['monolog']->pushHandler($handler);
+            $this->container['monolog']->pushHandler($handler);
         }
 
         $start = microtime(true);
@@ -98,8 +90,8 @@ class BuildMissingSubdefs extends Command
                         }
 
                         if ($todo) {
-                            $record->generate_subdefs($databox, $this->container['phraseanet.core']['monolog'], array($subdef->get_name()));
-                            $this->container['phraseanet.core']['monolog']->addInfo("generate " . $subdef->get_name() . " for record " . $record->get_record_id());
+                            $record->generate_subdefs($databox, $this->container, array($subdef->get_name()));
+                            $this->container['monolog']->addInfo("generate " . $subdef->get_name() . " for record " . $record->get_record_id());
                             $n ++;
                         }
                     }
@@ -109,11 +101,11 @@ class BuildMissingSubdefs extends Command
             }
         }
 
-        $this->container['phraseanet.core']['monolog']->addInfo($n . " subdefs done");
+        $this->container['monolog']->addInfo($n . " subdefs done");
         $stop = microtime(true);
         $duration = $stop - $start;
 
-        $this->container['phraseanet.core']['monolog']->addInfo(sprintf("process took %s, (%f sd/s.)", $this->getFormattedDuration($duration), round($n / $duration, 3)));
+        $this->container['monolog']->addInfo(sprintf("process took %s, (%f sd/s.)", $this->getFormattedDuration($duration), round($n / $duration, 3)));
 
         return;
     }

@@ -99,10 +99,10 @@ class UsrListEntry extends \Entities\UsrListEntry implements \Doctrine\ORM\Proxy
         return parent::getList();
     }
 
-    public function getUser()
+    public function getUser(\Alchemy\Phrasea\Application $app)
     {
         $this->__load();
-        return parent::getUser();
+        return parent::getUser($app);
     }
 
     public function setUser(\User_Adapter $user)

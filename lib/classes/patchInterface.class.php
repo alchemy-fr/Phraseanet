@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Application;
+
 interface patchInterface
 {
 
@@ -9,5 +11,5 @@ interface patchInterface
 
     public function require_all_upgrades();
 
-    public function apply(base &$base);
+    public function apply(base $base, Application $app);
 }

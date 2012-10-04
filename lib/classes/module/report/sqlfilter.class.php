@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     module_report
@@ -20,10 +22,12 @@ class module_report_sqlfilter
     public $conn;
     private $filter;
     private $cor_query = array();
+    private $app;
 
-    public function __construct(module_report $report)
+    public function __construct(Application $app, module_report $report)
     {
-        $this->conn = connection::getPDOConnection($report->getSbasid());
+        $this->app = $app;
+        $this->conn = connection::getPDOConnection($app, $report->getSbasid());
 
         if (is_array($report->getTransQueryString()))
             $this->cor_query = $report->getTransQueryString();
@@ -39,12 +43,12 @@ class module_report_sqlfilter
         );
     }
 
-    public static function constructCollectionFilter($list_coll_id)
+    public static function constructCollectionFilter(Application $app, $list_coll_id)
     {
         $ret = array('sql'    => '', 'params' => array());
         $coll_filter = array();
         foreach (explode(',', $list_coll_id) as $val) {
-            $coll_filter [] = " position('," . phrasea::collFromBas($val) . ",' in concat(',' ,coll_list, ',')) > 0 ";
+            $coll_filter [] = " position('," . phrasea::collFromBas($app, $val) . ",' in concat(',' ,coll_list, ',')) > 0 ";
         }
         $ret['sql'] = implode(' OR ', $coll_filter);
 
@@ -59,9 +63,8 @@ class module_report_sqlfilter
     public function getReportFilter()
     {
         $finalfilter = '';
-        $registry = registry::get_instance();
 
-        $params = array(':log_site' => $registry->get('GV_sit'));
+        $params = array(':log_site' => $this->app['phraseanet.registry']->get('GV_sit'));
 
         if ($this->filter['date']) {
             $finalfilter .= $this->filter['date']['sql'] . ' AND ';
@@ -82,13 +85,12 @@ class module_report_sqlfilter
 
     public function getGvSitFilter()
     {
-        $registry = registry::get_instance();
         $params = array();
         $sql = '';
 
-        if ($registry->is_set('GV_sit')) {
+        if ($this->app['phraseanet.registry']->is_set('GV_sit')) {
             $sql = 'log.site = :log_site_gv_filter';
-            $params[':log_site_gv_filter'] = $registry->get('GV_sit');
+            $params[':log_site_gv_filter'] = $this->app['phraseanet.registry']->get('GV_sit');
         }
 
         return array('sql'    => $sql, 'params' => $params);
@@ -191,7 +193,7 @@ class module_report_sqlfilter
         $tab = explode(",", $report->getListCollId());
         if (count($tab) > 0) {
             foreach ($tab as $val) {
-                $coll_filter[] = " position('," . phrasea::collFromBas($val) . ",' in concat(',' ,coll_list, ',')) > 0 ";
+                $coll_filter[] = " position('," . phrasea::collFromBas($this->app, $val) . ",' in concat(',' ,coll_list, ',')) > 0 ";
             }
             $this->filter['collection'] = array('sql'    => implode(' OR ', $coll_filter), 'params' => array());
         }
@@ -208,7 +210,7 @@ class module_report_sqlfilter
             $tab = explode(",", $report->getListCollId());
             foreach ($tab as $val) {
                 $dl_coll_filter[] = "record.coll_id = :record_fil" . $n;
-                $params[":record_fil" . $n] = phrasea::collFromBas($val);
+                $params[":record_fil" . $n] = phrasea::collFromBas($this->app, $val);
                 $n ++;
             }
             $this->filter['record'] = array('sql'    => implode(' OR ', $dl_coll_filter), 'params' => $params);

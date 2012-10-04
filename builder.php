@@ -7,14 +7,17 @@
 
 printf('Retrieve vendors ...' . PHP_EOL);
 
-system('./vendors.php');
-/**
- *
- * Vendors has to be called two times.
- * We should fix that
- *
- */
-system('./vendors.php');
+$composer = __DIR__ . '/composer.phar';
+if ( ! file_exists($composer)) {
+    system('curl -s http://getcomposer.org/installer | php');
+}
+
+if ( ! is_executable($composer)) {
+    system('chmod +x ' . $composer);
+}
+
+system($composer . ' self-update');
+system($composer . ' install');
 
 require_once __DIR__ . '/lib/classes/bootstrap.class.php';
 
@@ -35,6 +38,7 @@ $finder
     ->name('.gitignore')
     ->name('check_cs.php')
     ->name('cleaner.php')
+    ->name('build-env.sh')
     ->name('phpunit.xml.dist')
     ->name('launchpadToLocales.php')
     ->name('localesToLaunchPad.php')

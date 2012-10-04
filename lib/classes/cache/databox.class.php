@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     cache
@@ -24,7 +26,7 @@ class cache_databox
      * @param  int           $sbas_id
      * @return cache_databox
      */
-    public static function refresh($sbas_id)
+    public static function refresh(Application $app, $sbas_id)
     {
         if (self::$refreshing) {
             return;
@@ -32,17 +34,14 @@ class cache_databox
 
         self::$refreshing = true;
 
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
-        $databox = $appbox->get_databox((int) $sbas_id);
+        $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
 
         $date = new \DateTime('-3 seconds');
-
-        $registry = \registry::get_instance();
 
         $last_update = null;
 
         try {
-            $last_update = $appbox->get_data_from_cache('memcached_update_' . $sbas_id);
+            $last_update = $app['phraseanet.appbox']->get_data_from_cache('memcached_update_' . $sbas_id);
         } catch (\Exception $e) {
 
         }
@@ -58,11 +57,11 @@ class cache_databox
             return;
         }
 
-        $connsbas = \connection::getPDOConnection($sbas_id);
+        $connsbas = \connection::getPDOConnection($app, $sbas_id);
 
         $sql = 'SELECT type, value FROM memcached WHERE site_id = :site_id';
         $stmt = $connsbas->prepare($sql);
-        $stmt->execute(array(':site_id' => $registry->get('GV_ServerName')));
+        $stmt->execute(array(':site_id' => $app['phraseanet.registry']->get('GV_ServerName')));
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -90,7 +89,7 @@ class cache_databox
               WHERE site_id = :site_id AND type="record" AND value = :value';
 
                     $params = array(
-                        ':site_id' => $registry->get('GV_ServerName')
+                        ':site_id' => $app['phraseanet.registry']->get('GV_ServerName')
                         , ':value'   => $row['value']
                     );
 
@@ -98,7 +97,7 @@ class cache_databox
                     $stmt->execute($params);
                     $stmt->closeCursor();
 
-                    $record = new \record_adapter($sbas_id, $row['value']);
+                    $record = new \record_adapter($app, $sbas_id, $row['value']);
                     $record->get_caption()->delete_data_from_cache();
 
                     foreach ($record->get_subdefs() as $subdef) {
@@ -107,14 +106,14 @@ class cache_databox
 
                     break;
                 case 'structure':
-                    $appbox->delete_data_from_cache(\appbox::CACHE_LIST_BASES);
-                    $appbox->delete_data_from_cache(\appbox::CACHE_SBAS_IDS);
+                    $app['phraseanet.appbox']->delete_data_from_cache(\appbox::CACHE_LIST_BASES);
+                    $app['phraseanet.appbox']->delete_data_from_cache(\appbox::CACHE_SBAS_IDS);
 
                     $sql = 'DELETE FROM memcached
               WHERE site_id = :site_id AND type="structure" AND value = :value';
 
                     $params = array(
-                        ':site_id' => $registry->get('GV_ServerName')
+                        ':site_id' => $app['phraseanet.registry']->get('GV_ServerName')
                         , ':value'   => $row['value']
                     );
 
@@ -128,9 +127,9 @@ class cache_databox
         $date = new \DateTime();
         $now = $date->format(DATE_ISO8601);
 
-        $appbox->set_data_to_cache($now, 'memcached_update_' . $sbas_id);
+        $app['phraseanet.appbox']->set_data_to_cache($now, 'memcached_update_' . $sbas_id);
 
-        $conn = \connection::getPDOConnection();
+        $conn = \connection::getPDOConnection($app);
 
         $sql = 'UPDATE sitepreff SET memcached_update = :date';
         $stmt = $conn->prepare($sql);
@@ -149,19 +148,18 @@ class cache_databox
      * @param  mixed content $value
      * @return Void
      */
-    public static function update($sbas_id, $type, $value = '')
+    public static function update(Application $app, $sbas_id, $type, $value = '')
     {
 
-        $connbas = \connection::getPDOConnection($sbas_id);
+        $connbas = \connection::getPDOConnection($app, $sbas_id);
 
-        $registry = \registry::get_instance();
 
         $sql = 'SELECT distinct site_id as site_id
             FROM clients
             WHERE site_id != :site_id';
 
         $stmt = $connbas->prepare($sql);
-        $stmt->execute(array(':site_id' => $registry->get('GV_ServerName')));
+        $stmt->execute(array(':site_id' => $app['phraseanet.registry']->get('GV_ServerName')));
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -179,15 +177,14 @@ class cache_databox
         return;
     }
 
-    public static function insertClient(\databox $databox)
+    public static function insertClient(Application $app, \databox $databox)
     {
         $connbas = $databox->get_connection();
 
-        $registry = \registry::get_instance();
 
         $sql = 'SELECT site_id FROM clients WHERE site_id = :site_id';
         $stmt = $connbas->prepare($sql);
-        $stmt->execute(array(':site_id' => $registry->get('GV_ServerName')));
+        $stmt->execute(array(':site_id' => $app['phraseanet.registry']->get('GV_ServerName')));
         $rowCount = $stmt->rowCount();
         $stmt->closeCursor();
 
@@ -197,7 +194,7 @@ class cache_databox
 
         $sql = 'INSERT INTO clients (site_id) VALUES (:site_id)';
         $stmt = $connbas->prepare($sql);
-        $stmt->execute(array(':site_id' => $registry->get('GV_ServerName')));
+        $stmt->execute(array(':site_id' => $app['phraseanet.registry']->get('GV_ServerName')));
         $stmt->closeCursor();
 
         return;

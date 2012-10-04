@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\Checker;
 
 /**
@@ -57,11 +58,9 @@ class patch_370a9 implements patchInterface
      * Add new border manager service to services.yml & config.yml configuration files
      * @param base $appbox
      */
-    public function apply(base &$appbox)
+    public function apply(base $appbox, Application $app)
     {
-        $core = bootstrap::getCore();
-
-        $services = $core->getConfiguration()->getServices();
+        $services = $app['phraseanet.configuration']->getServices();
 
         if ( ! isset($services['Border'])) {
             $services['Border'] = array(
@@ -129,19 +128,18 @@ class patch_370a9 implements patchInterface
             );
         }
 
-        $services = $core->getConfiguration()->setServices($services);
+        $app['phraseanet.configuration']->setServices($services);
+        $configs = $app['phraseanet.configuration']->getConfigurations();
 
-        $configs = $core->getConfiguration()->getConfigurations();
-
-        $envs = array('prod', 'dev', 'test');
-
-        foreach ($envs as $env) {
-            if (isset($configs[$env]) && is_array($configs[$env]) && ! isset($configs[$env]['border-manager'])) {
+        foreach (array('prod', 'dev', 'test') as $env) {
+            if (isset($configs[$env])
+                && is_array($configs[$env])
+                && ! isset($configs[$env]['border-manager'])) {
                 $configs[$env]['border-manager'] = 'border_manager';
             }
         }
 
-        $core->getConfiguration()->setConfigurations($configs);
+        $app['phraseanet.configuration']->setConfigurations($configs);
     }
 }
 

@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class ApplicationSpecification implements Specification
+class ApplicationSpecification implements SpecificationInterface
 {
     protected $parser;
 
@@ -69,21 +69,6 @@ class ApplicationSpecification implements Specification
         return $this->parser->parse(
                 file_get_contents($this->getServicesPathFile())
         );
-    }
-
-    protected function getConfigurationsFile()
-    {
-        return new SymfonyFile($this->getConfigurationsPathFile(), true);
-    }
-
-    protected function getConnexionsFile()
-    {
-        return new SymfonyFile($this->getConnexionsPathFile(), true);
-    }
-
-    protected function getServicesFile()
-    {
-        return new SymfonyFile($this->getServicesPathFile(), true);
     }
 
     public function delete()
@@ -159,5 +144,20 @@ class ApplicationSpecification implements Specification
     protected function getRealRootPath()
     {
         return realpath(__DIR__ . '/../../../../../');
+    }
+
+    protected function getConfigurationsFile()
+    {
+        return new SymfonyFile($this->getConfigurationsPathFile(), true);
+    }
+
+    protected function getConnexionsFile()
+    {
+        return new SymfonyFile($this->getConnexionsPathFile(), true);
+    }
+
+    protected function getServicesFile()
+    {
+        return new SymfonyFile($this->getServicesPathFile(), true);
     }
 }

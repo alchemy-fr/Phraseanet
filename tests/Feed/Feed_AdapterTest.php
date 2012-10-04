@@ -15,10 +15,9 @@ class Feed_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $auth = new Session_Authentication_None(self::$user);
-        $appbox->get_session()->authenticate($auth);
-        self::$object = Feed_Adapter::create($appbox, self::$user, self::$title, self::$subtitle);
+        $auth = new Session_Authentication_None(self::$DI['user']);
+        self::$DI['app']->openAccount($auth);
+        self::$object = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], self::$title, self::$subtitle);
     }
 
     public static function tearDownAfterClass()
@@ -56,12 +55,12 @@ class Feed_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testIs_owner()
     {
-        $this->assertTrue(self::$object->is_owner(self::$user));
+        $this->assertTrue(self::$object->is_owner(self::$DI['user']));
     }
 
     public function testIs_publisher()
     {
-        $this->assertTrue(self::$object->is_publisher(self::$user));
+        $this->assertTrue(self::$object->is_publisher(self::$DI['user']));
     }
 
     public function testIs_public()
@@ -71,8 +70,7 @@ class Feed_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertTrue(self::$object->is_public());
 
         $coll = null;
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $coll = $collection;
                 break;
@@ -102,7 +100,7 @@ class Feed_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testAdd_publisher()
     {
-        self::$object->add_publisher(self::$user);
+        self::$object->add_publisher(self::$DI['user']);
         $publishers = self::$object->get_publishers();
         $this->assertEquals(1, count($publishers));
     }
@@ -117,8 +115,7 @@ class Feed_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
 
         $coll = null;
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $coll = $collection;
                 break;
@@ -189,8 +186,7 @@ class Feed_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testLoad_with_user()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $this->assertEquals(Feed_Adapter::load_with_user($appbox, self::$user, self::$object->get_id())->get_id(), self::$object->get_id());
+        $this->assertEquals(Feed_Adapter::load_with_user(self::$DI['app'], self::$DI['user'], self::$object->get_id())->get_id(), self::$object->get_id());
     }
 
     public function testGet_count_total_entries()
@@ -210,33 +206,30 @@ class Feed_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testGet_homepage_link()
     {
         self::$object->set_public(false);
-        $registry = registry::get_instance();
-        $link = self::$object->get_homepage_link($registry, Feed_Adapter::FORMAT_ATOM);
+        $link = self::$object->get_homepage_link(self::$DI['app']['phraseanet.registry'], Feed_Adapter::FORMAT_ATOM);
         $this->assertNull($link);
 
         self::$object->set_public(true);
-        $link = self::$object->get_homepage_link($registry, Feed_Adapter::FORMAT_ATOM);
+        $link = self::$object->get_homepage_link(self::$DI['app']['phraseanet.registry'], Feed_Adapter::FORMAT_ATOM);
         $this->assertInstanceOf('Feed_Link', $link);
     }
 
     public function testGet_user_link()
     {
-        $registry = registry::get_instance();
-
-        $link = self::$object->get_user_link($registry, self::$user, Feed_Adapter::FORMAT_ATOM);
+        $link = self::$object->get_user_link(self::$DI['app']['phraseanet.registry'], self::$DI['user'], Feed_Adapter::FORMAT_ATOM);
         $supposed = '/feeds\/userfeed\/([a-zA-Z0-9]{12})\/' . self::$object->get_id() . '\/atom\//';
 
         $atom = $link->get_href();
 
-        $this->assertRegExp($supposed, str_replace($registry->get('GV_ServerName'), '', $atom));
-        $this->assertEquals($atom, self::$object->get_user_link($registry, self::$user, Feed_Adapter::FORMAT_ATOM)->get_href());
-        $this->assertEquals($atom, self::$object->get_user_link($registry, self::$user, Feed_Adapter::FORMAT_ATOM)->get_href());
+        $this->assertRegExp($supposed, str_replace(self::$DI['app']['phraseanet.registry']->get('GV_ServerName'), '', $atom));
+        $this->assertEquals($atom, self::$object->get_user_link(self::$DI['app']['phraseanet.registry'], self::$DI['user'], Feed_Adapter::FORMAT_ATOM)->get_href());
+        $this->assertEquals($atom, self::$object->get_user_link(self::$DI['app']['phraseanet.registry'], self::$DI['user'], Feed_Adapter::FORMAT_ATOM)->get_href());
 
-        $this->assertNotEquals($atom, self::$object->get_user_link($registry, self::$user, Feed_Adapter::FORMAT_ATOM, null, true)->get_href());
+        $this->assertNotEquals($atom, self::$object->get_user_link(self::$DI['app']['phraseanet.registry'], self::$DI['user'], Feed_Adapter::FORMAT_ATOM, null, true)->get_href());
 
-        $link = self::$object->get_user_link($registry, self::$user, Feed_Adapter::FORMAT_RSS);
+        $link = self::$object->get_user_link(self::$DI['app']['phraseanet.registry'], self::$DI['user'], Feed_Adapter::FORMAT_RSS);
         $supposed = '/feeds\/userfeed\/([a-zA-Z0-9]{12})\/' . self::$object->get_id() . '\/rss\//';
-        $this->assertRegExp($supposed, str_replace($registry->get('GV_ServerName'), '', $link->get_href()));
+        $this->assertRegExp($supposed, str_replace(self::$DI['app']['phraseanet.registry']->get('GV_ServerName'), '', $link->get_href()));
     }
 
     public function testGet_title()

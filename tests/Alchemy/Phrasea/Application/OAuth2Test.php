@@ -2,9 +2,6 @@
 
 require_once __DIR__ . '/../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
-use Symfony\Component\HttpFoundation\Response;
-use Silex\WebTestCase;
-
 /**
  * Test oauthv2 flow based on ietf authv2 spec
  * @link http://tools.ietf.org/html/draft-ietf-oauth-v2-18
@@ -26,7 +23,10 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
     {
         parent::setUpBeforeClass();
 
-        self::$appli = API_OAuth2_Application::create(appbox::get_instance(\bootstrap::getCore()), self::$user, 'test');
+        $environment = 'test';
+        $application = require __DIR__ . '/../../../../lib/Alchemy/Phrasea/Application/OAuth2.php';
+
+        self::$appli = API_OAuth2_Application::create($application, self::$DI['user'], 'test');
         self::$appli->set_description('une description')
             ->set_redirect_uri('http://callback.com/callback/')
             ->set_website('http://website.com/')
@@ -36,7 +36,7 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
     public static function tearDownAfterClass()
     {
         if (self::$appli !== false) {
-            self::deleteInsertedRow(appbox::get_instance(\bootstrap::getCore()), self::$appli);
+            self::deleteInsertedRow(self::$DI['app']['phraseanet.appbox'], self::$appli);
         }
         parent::tearDownAfterClass();
     }
@@ -44,7 +44,9 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
     public function setUp()
     {
         parent::setUp();
-        $this->client = $this->createClient();
+
+        $environment = 'test';
+        self::$DI['app'] = require __DIR__ . '/../../../../lib/Alchemy/Phrasea/Application/OAuth2.php';
 
         $this->queryParameters = array(
             "response_type" => "code",
@@ -79,8 +81,7 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
     {
         $sql = "SELECT * FROM api_applications WHERE application_id = :app_id";
         $t = array(":app_id" => $rowId);
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $conn = $appbox->get_connection();
+        $conn = self::$DI['app']['phraseanet.appbox']->get_connection();
         $stmt = $conn->prepare($sql);
         $stmt->execute($t);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -91,14 +92,13 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
     public static function getAccount()
     {
         $sql = "SELECT api_account_id FROM api_accounts WHERE application_id = :app_id AND usr_id = :usr_id";
-        $t = array(":app_id" => self::$appli->get_id(), ":usr_id" => self::$user->get_id());
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $conn = $appbox->get_connection();
+        $t = array(":app_id" => self::$appli->get_id(), ":usr_id" => self::$DI['user']->get_id());
+        $conn = self::$DI['app']['phraseanet.appbox']->get_connection();
         $stmt = $conn->prepare($sql);
         $stmt->execute($t);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return new API_OAuth2_Account(appbox::get_instance(\bootstrap::getCore()), $row["api_account_id"]);
+        return new API_OAuth2_Account(self::$DI['app'], $row["api_account_id"]);
     }
 
     public function setQueryParameters($parameter, $value)
@@ -112,25 +112,15 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
             unset($this->queryParameters[$parameter]);
     }
 
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../lib/Alchemy/Phrasea/Application/OAuth2.php';
-        
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-        
-        return $app;
-    }
-
     public function testAuthorizeRedirect()
     {
         //session off
-        $apps = API_OAuth2_Application::load_authorized_app_by_user(appbox::get_instance(\bootstrap::getCore()), self::$user);
+        $apps = API_OAuth2_Application::load_authorized_app_by_user(self::$DI['app'], self::$DI['user']);
         foreach ($apps as $app) {
             if ($app->get_client_id() == self::$appli->get_client_id()) {
                 $authorize = true;
 
-                $this->client->followRedirects();
+                self::$DI['client']->followRedirects();
             }
         }
     }
@@ -140,12 +130,12 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
         $acc = self::getAccount();
         $acc->set_revoked(true); // revoked to show form
 
-        $crawler = $this->client->request('GET', '/authorize', $this->queryParameters);
-        $this->assertTrue($this->client->getResponse()->isSuccessful());
-        $this->assertRegExp("/" . self::$appli->get_client_id() . "/", $this->client->getResponse()->getContent());
-        $this->assertRegExp("/" . str_replace("/", '\/', self::$appli->get_redirect_uri()) . "/", $this->client->getResponse()->getContent());
-        $this->assertRegExp("/" . $this->queryParameters["response_type"] . "/", $this->client->getResponse()->getContent());
-        $this->assertRegExp("/" . $this->queryParameters["scope"] . "/", $this->client->getResponse()->getContent());
-        $this->assertRegExp("/" . $this->queryParameters["state"] . "/", $this->client->getResponse()->getContent());
+        $crawler = self::$DI['client']->request('GET', '/authorize', $this->queryParameters);
+        $this->assertTrue(self::$DI['client']->getResponse()->isSuccessful());
+        $this->assertRegExp("/" . self::$appli->get_client_id() . "/", self::$DI['client']->getResponse()->getContent());
+        $this->assertRegExp("/" . str_replace("/", '\/', self::$appli->get_redirect_uri()) . "/", self::$DI['client']->getResponse()->getContent());
+        $this->assertRegExp("/" . $this->queryParameters["response_type"] . "/", self::$DI['client']->getResponse()->getContent());
+        $this->assertRegExp("/" . $this->queryParameters["scope"] . "/", self::$DI['client']->getResponse()->getContent());
+        $this->assertRegExp("/" . $this->queryParameters["state"] . "/", self::$DI['client']->getResponse()->getContent());
     }
 }

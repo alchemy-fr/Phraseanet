@@ -9,8 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Controller\RecordsRequest;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  *
@@ -67,6 +67,7 @@ class set_order extends set_abstract
      * @var int
      */
     protected $ssel_id;
+    protected $app;
 
     /**
      * Create a new order entry
@@ -77,30 +78,30 @@ class set_order extends set_abstract
      * @param \DateTime $deadline
      * @return boolean
      */
-    public static function create(appbox $appbox, RecordsRequest $records, \User_Adapter $orderer, $usage, \DateTime $deadline = null)
+    public static function create(Application $app, RecordsRequest $records, \User_Adapter $orderer, $usage, \DateTime $deadline = null)
     {
-        $appbox->get_connection()->beginTransaction();
+        $app['phraseanet.appbox']->get_connection()->beginTransaction();
 
         try {
             $sql = 'INSERT INTO `order` (`id`, `usr_id`, `created_on`, `usage`, `deadline`)
             VALUES (null, :from_usr_id, NOW(), :usage, :deadline)';
 
-            $stmt = $appbox->get_connection()->prepare($sql);
+            $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
 
             $stmt->execute(array(
                 ':from_usr_id' => $orderer->get_id(),
                 ':usage'       => $usage,
-                ':deadline'    => (null !== $deadline ? phraseadate::format_mysql($deadline) : $deadline)
+                ':deadline'    => (null !== $deadline ? $app['date-formatter']->format_mysql($deadline) : $deadline)
             ));
 
             $stmt->closeCursor();
 
-            $orderId = $appbox->get_connection()->lastInsertId();
+            $orderId = $app['phraseanet.appbox']->get_connection()->lastInsertId();
 
             $sql = 'INSERT INTO order_elements (id, order_id, base_id, record_id, order_master_id)
             VALUES (null, :order_id, :base_id, :record_id, null)';
 
-            $stmt = $appbox->get_connection()->prepare($sql);
+            $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
 
             foreach ($records as $record) {
                 $stmt->execute(array(
@@ -111,21 +112,19 @@ class set_order extends set_abstract
             }
 
             $stmt->closeCursor();
-            $appbox->get_connection()->commit();
+            $app['phraseanet.appbox']->get_connection()->commit();
         } catch (Exception $e) {
-            $appbox->get_connection()->rollBack();
+            $app['phraseanet.appbox']->get_connection()->rollBack();
 
             return null;
         }
 
-        $evt_mngr = eventsmanager_broker::getInstance($appbox, \bootstrap::getCore());
-
-        $evt_mngr->trigger('__NEW_ORDER__', array(
+        $app['events-manager']->trigger('__NEW_ORDER__', array(
             'order_id' => $orderId,
             'usr_id'   => $orderer->get_id()
         ));
 
-        return new static($orderId);
+        return new static($app, $orderId);
     }
 
     /**
@@ -137,7 +136,7 @@ class set_order extends set_abstract
      * @param   integer $perPage
      * @return  array
      */
-    public static function listOrders(appbox $appbox, array $baseIds, $offsetStart = 0, $perPage = 10, $sort = null)
+    public static function listOrders(Application $app, array $baseIds, $offsetStart = 0, $perPage = 10, $sort = null)
     {
 
         $sql = 'SELECT distinct o.id, o.usr_id, created_on, deadline, `usage`
@@ -150,14 +149,14 @@ class set_order extends set_abstract
 
         $elements = array();
 
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         foreach ($rs as $row) {
             $id = (int) $row['id'];
-            $elements[$id] = new set_order($id);
+            $elements[$id] = new static($app, $id);
         }
 
         unset($stmt);
@@ -205,11 +204,10 @@ class set_order extends set_abstract
      * @param  int       $id
      * @return set_order
      */
-    public function __construct($id)
+    public function __construct(Application $app, $id)
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
-        $conn = $appbox->get_connection();
+        $this->app = $app;
+        $conn = $app['phraseanet.appbox']->get_connection();
 
         $sql = 'SELECT o.id, o.usr_id, o.created_on, o.`usage`, o.deadline,
               COUNT(e.id) as total, o.ssel_id, COUNT(e2.id) as todo
@@ -229,8 +227,7 @@ class set_order extends set_abstract
         if ( ! $row)
             throw new Exception_NotFound('unknown order ' . $id);
 
-        $current_user = User_Adapter::getInstance($row['usr_id'], $appbox);
-        $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+        $current_user = User_Adapter::getInstance($row['usr_id'], $app);
 
         $this->id = $row['id'];
         $this->user = $current_user;
@@ -241,7 +238,7 @@ class set_order extends set_abstract
         $this->total = (int) $row['total'];
         $this->ssel_id = (int) $row['ssel_id'];
 
-        $base_ids = array_keys($user->ACL()->get_granted_base(array('order_master')));
+        $base_ids = array_keys($app['phraseanet.user']->ACL()->get_granted_base(array('order_master')));
 
         $sql = 'SELECT e.base_id, e.record_id, e.order_master_id, e.id, e.deny
               FROM order_elements e
@@ -260,7 +257,8 @@ class set_order extends set_abstract
             $order_master_id = $row['order_master_id'] ? $row['order_master_id'] : false;
 
             $elements[$row['id']] = new record_orderElement(
-                    phrasea::sbasFromBas($row['base_id']),
+                    $app,
+                    phrasea::sbasFromBas($this->app, $row['base_id']),
                     $row['record_id'],
                     $row['deny'],
                     $order_master_id
@@ -341,12 +339,9 @@ class set_order extends set_abstract
      * @param  boolean   $force
      * @return set_order
      */
-    public function send_elements(Array $elements_ids, $force)
+    public function send_elements(Application $app, Array $elements_ids, $force)
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
-        $conn = $appbox->get_connection();
-        $pusher = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+        $conn = $app['phraseanet.appbox']->get_connection();
 
         $basrecs = array();
         foreach ($elements_ids as $id) {
@@ -358,17 +353,15 @@ class set_order extends set_abstract
             }
         }
 
-        $core = \bootstrap::getCore();
-
-        $em = $core->getEntityManager();
+        $dest_user = $this->user;
 
         $Basket = null;
         /* @var $repository \Repositories\BasketRepository */
         if ($this->ssel_id) {
-            $repository = $em->getRepository('\Entities\Basket');
+            $repository = $app['EM']->getRepository('\Entities\Basket');
 
             try {
-                $Basket = $repository->findUserBasket($this->ssel_id, $core->getAuthenticatedUser(), false);
+                $Basket = $repository->findUserBasket($app, $this->ssel_id, $dest_user, false);
             } catch (\Exception $e) {
                 $Basket = null;
             }
@@ -378,10 +371,10 @@ class set_order extends set_abstract
             $Basket = new \Entities\Basket();
             $Basket->setName(sprintf(_('Commande du %s'), $this->created_on->format('Y-m-d')));
             $Basket->setOwner($this->user);
-            $Basket->setPusher($core->getAuthenticatedUser());
+            $Basket->setPusher($app['phraseanet.user']);
 
-            $em->persist($Basket);
-            $em->flush();
+            $app['EM']->persist($Basket);
+            $app['EM']->flush();
 
             $this->ssel_id = $Basket->getId();
 
@@ -406,8 +399,8 @@ class set_order extends set_abstract
 
         foreach ($basrecs as $order_element_id => $basrec) {
             try {
-                $sbas_id = phrasea::sbasFromBas($basrec['base_id']);
-                $record = new record_adapter($sbas_id, $basrec['record_id']);
+                $sbas_id = phrasea::sbasFromBas($app, $basrec['base_id']);
+                $record = new record_adapter($app, $sbas_id, $basrec['record_id']);
 
                 $BasketElement = new \Entities\BasketElement();
                 $BasketElement->setRecord($record);
@@ -415,10 +408,10 @@ class set_order extends set_abstract
 
                 $Basket->addBasketElement($BasketElement);
 
-                $em->persist($BasketElement);
+                $app['EM']->persist($BasketElement);
 
                 $params = array(
-                    ':usr_id'           => $session->get_usr_id()
+                    ':usr_id'           => $app['phraseanet.user']->get_id()
                     , ':order_id'         => $this->id
                     , ':order_element_id' => $order_element_id
                 );
@@ -426,7 +419,7 @@ class set_order extends set_abstract
                 $stmt->execute($params);
 
                 $n ++;
-                $this->user->ACL()->grant_hd_on($record, $pusher, 'order');
+                $this->user->ACL()->grant_hd_on($record, $app['phraseanet.user'], 'order');
 
                 unset($record);
             } catch (Exception $e) {
@@ -434,20 +427,18 @@ class set_order extends set_abstract
             }
         }
 
-        $em->flush();
+        $app['EM']->flush();
         $stmt->closeCursor();
 
         if ($n > 0) {
-            $evt_mngr = $Core['events-manager'];
-
             $params = array(
                 'ssel_id' => $this->ssel_id,
-                'from'    => $session->get_usr_id(),
+                'from'    => $app['phraseanet.user']->get_id(),
                 'to'      => $this->user->get_id(),
                 'n'       => $n
             );
 
-            $evt_mngr->trigger('__ORDER_DELIVER__', $params);
+            $app['events-manager']->trigger('__ORDER_DELIVER__', $params);
         }
 
         return $this;
@@ -460,10 +451,7 @@ class set_order extends set_abstract
      */
     public function deny_elements(Array $elements_ids)
     {
-        $Core = bootstrap::getCore();
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
-        $conn = $appbox->get_connection();
+        $conn = $this->app['phraseanet.appbox']->get_connection();
 
         $n = 0;
 
@@ -474,7 +462,7 @@ class set_order extends set_abstract
                 AND ISNULL(order_master_id)';
 
             $params = array(
-                ':order_master_id'  => $session->get_usr_id()
+                ':order_master_id'  => $this->app['phraseanet.user']->get_id()
                 , ':order_id'         => $this->id
                 , ':order_element_id' => $order_element_id
             );
@@ -485,15 +473,13 @@ class set_order extends set_abstract
         }
 
         if ($n > 0) {
-            $evt_mngr = $Core['events-manager'];
-
             $params = array(
-                'from' => $session->get_usr_id(),
+                'from' => $this->app['phraseanet.user']->get_id(),
                 'to'   => $this->user->get_id(),
                 'n'    => $n
             );
 
-            $evt_mngr->trigger('__ORDER_NOT_DELIVERED__', $params);
+            $this->app['events-manager']->trigger('__ORDER_NOT_DELIVERED__', $params);
         }
 
         return $this;

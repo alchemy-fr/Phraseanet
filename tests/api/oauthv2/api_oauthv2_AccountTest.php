@@ -4,10 +4,6 @@ require_once __DIR__ . '/../../PhraseanetPHPUnitAbstract.class.inc';
 
 class API_OAuth2_AccountTest extends PhraseanetPHPUnitAbstract
 {
-    /**
-     * @var API_OAuth2_Application
-     */
-    protected $application;
 
     /**
      * @var API_OAuth2_Account
@@ -17,9 +13,8 @@ class API_OAuth2_AccountTest extends PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $this->application = API_OAuth2_Application::create($appbox, self::$user, 'test app');
-        $this->object = API_OAuth2_Account::load_with_user($appbox, $this->application, self::$user);
+        $this->application = API_OAuth2_Application::create(self::$DI['app'], self::$DI['user'], 'test app');
+        $this->object = API_OAuth2_Account::load_with_user(self::$DI['app'], $this->application, self::$DI['user']);
     }
 
     public function tearDown()
@@ -36,7 +31,7 @@ class API_OAuth2_AccountTest extends PhraseanetPHPUnitAbstract
     public function testGet_user()
     {
         $this->assertInstanceOf('User_Adapter', $this->object->get_user());
-        $this->assertEquals(self::$user, $this->object->get_user());
+        $this->assertEquals(self::$DI['user']->get_id(), $this->object->get_user()->get_id());
     }
 
     public function testGet_api_version()
@@ -76,7 +71,7 @@ class API_OAuth2_AccountTest extends PhraseanetPHPUnitAbstract
 
     public function testLoad_with_user()
     {
-        $loaded = API_OAuth2_Account::load_with_user(appbox::get_instance(\bootstrap::getCore()), $this->application, self::$user);
+        $loaded = API_OAuth2_Account::load_with_user(self::$DI['app'], $this->application, self::$DI['user']);
         $this->assertInstanceOf('API_OAuth2_Account', $loaded);
         $this->assertEquals($this->object, $loaded);
     }

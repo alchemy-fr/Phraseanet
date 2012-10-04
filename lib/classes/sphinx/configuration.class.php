@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -16,6 +18,7 @@
  */
 class sphinx_configuration
 {
+    protected $app;
     const OPT_ALL_SBAS = 'all';
     const OPT_LIBSTEMMER_NONE = 'none';
     const OPT_LIBSTEMMER_FR = 'fr';
@@ -25,23 +28,21 @@ class sphinx_configuration
     const OPT_MIN_PREFIX_LEN = 0;
     const OPT_MIN_INFIX_LEN = 1;
 
-    public function __construct()
+    public function __construct(Application $app)
     {
-
+        $this->app = $app;
     }
 
     public function get_available_charsets()
     {
         $available_charsets = array();
         $dir = __DIR__ . '/charsetTable/';
-        echo $dir;
-        $registry = registry::get_instance();
         foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::LEAVES_ONLY) as $file) {
             if ($file->isDir() || strpos($file->getPathname(), '/.svn/') !== false) {
                 continue;
             }
             if ($file->isFile()) {
-                $classname = str_replace(array($registry->get('GV_RootPath') . 'lib/classes/', '.class.php', '/'), array('', '', '_'), $file->getPathname());
+                $classname = str_replace(array(realpath(__DIR__ . '/..') . '/', '.class.php', '/'), array('', '', '_'), $file->getPathname());
                 $available_charsets[$classname] = new $classname;
             }
         }
@@ -71,7 +72,7 @@ class sphinx_configuration
 
         $options['charset_tables'] = array_unique($options['charset_tables']);
 
-        $lb = phrasea::sbas_params();
+        $lb = phrasea::sbas_params($this->app);
 
         $conf = '';
 
@@ -88,7 +89,7 @@ class sphinx_configuration
         $charsets = explode("\n", $charsets);
         $last_detect = false;
 
-        for ($i = (count($charsets) - 1); $i >= 0; $i -- ) {
+        for ($i = (count($charsets) - 1); $i >= 0; $i--) {
             if (trim($charsets[$i]) === '') {
                 unset($charsets[$i]);
                 continue;

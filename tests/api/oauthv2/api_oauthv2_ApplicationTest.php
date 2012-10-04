@@ -12,8 +12,7 @@ class API_OAuth2_ApplicationTest extends PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $this->object = API_OAuth2_Application::create($appbox, self::$user, 'test app');
+        $this->object = API_OAuth2_Application::create(self::$DI['app'], self::$DI['user'], 'test app');
     }
 
     public function tearDown()
@@ -25,14 +24,14 @@ class API_OAuth2_ApplicationTest extends PhraseanetPHPUnitAbstract
     public function testLoad_from_client_id()
     {
         $client_id = $this->object->get_client_id();
-        $loaded = API_OAuth2_Application::load_from_client_id(appbox::get_instance(\bootstrap::getCore()), $client_id);
+        $loaded = API_OAuth2_Application::load_from_client_id(self::$DI['app'], $client_id);
         $this->assertInstanceOf('API_OAuth2_Application', $loaded);
         $this->assertEquals($this->object, $loaded);
     }
 
     public function testLoad_dev_app_by_user()
     {
-        $apps = API_OAuth2_Application::load_dev_app_by_user(appbox::get_instance(\bootstrap::getCore()), self::$user);
+        $apps = API_OAuth2_Application::load_dev_app_by_user(self::$DI['app'], self::$DI['user']);
         $this->assertTrue(is_array($apps));
         $this->assertTrue(count($apps) > 0);
         $found = false;
@@ -48,7 +47,7 @@ class API_OAuth2_ApplicationTest extends PhraseanetPHPUnitAbstract
 
     public function testLoad_app_by_user()
     {
-        $apps = API_OAuth2_Application::load_app_by_user(appbox::get_instance(\bootstrap::getCore()), self::$user);
+        $apps = API_OAuth2_Application::load_app_by_user(self::$DI['app'], self::$DI['user']);
         $this->assertTrue(is_array($apps));
         $this->assertTrue(count($apps) > 0);
         $found = false;
@@ -190,6 +189,6 @@ class API_OAuth2_ApplicationTest extends PhraseanetPHPUnitAbstract
 
     public function testGet_user_account()
     {
-        $this->assertInstanceOf('API_OAuth2_Account', $this->object->get_user_account(self::$user));
+        $this->assertInstanceOf('API_OAuth2_Account', $this->object->get_user_account(self::$DI['user']));
     }
 }

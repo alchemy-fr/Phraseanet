@@ -18,10 +18,10 @@ class Sha256Test extends \PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new Sha256;
+        $this->object = new Sha256(self::$DI['app']);
         $this->filename = __DIR__ . '/../../../../../tmp/test001.CR2';
         copy(__DIR__ . '/../../../../testfiles/test001.CR2', $this->filename);
-        $this->media = self::$core['mediavorus']->guess(new \SplFileInfo($this->filename));
+        $this->media = self::$DI['app']['mediavorus']->guess($this->filename);
     }
 
     public function tearDown()
@@ -39,11 +39,11 @@ class Sha256Test extends \PhraseanetPHPUnitAbstract
     public function testCheck()
     {
         $session = new \Entities\LazaretSession();
-        self::$core['EM']->persist($session);
+        self::$DI['app']['EM']->persist($session);
 
-        self::$core['border-manager']->process($session, File::buildFromPathfile($this->media->getFile()->getPathname(), self::$collection), null, \Alchemy\Phrasea\Border\Manager::FORCE_RECORD);
+        self::$DI['app']['border-manager']->process($session, File::buildFromPathfile($this->media->getFile()->getPathname(), self::$DI['collection'], self::$DI['app']), null, \Alchemy\Phrasea\Border\Manager::FORCE_RECORD);
 
-        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', array('getSha256'), array($this->media, self::$collection));
+        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', array('getSha256'), array(self::$DI['app'], $this->media, self::$DI['collection']));
 
         $mock
             ->expects($this->once())
@@ -51,7 +51,7 @@ class Sha256Test extends \PhraseanetPHPUnitAbstract
             ->will($this->returnValue($this->media->getHash('sha256', __DIR__ . '/../../../../testfiles/test001.CR2')))
         ;
 
-        $response = $this->object->check(self::$core['EM'], $mock);
+        $response = $this->object->check(self::$DI['app']['EM'], $mock);
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
 
@@ -63,7 +63,7 @@ class Sha256Test extends \PhraseanetPHPUnitAbstract
      */
     public function testCheckNoFile()
     {
-        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', array('getSha256'), array($this->media, self::$collection));
+        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', array('getSha256'), array(self::$DI['app'], $this->media, self::$DI['collection']));
 
         $mock
             ->expects($this->once())
@@ -71,7 +71,7 @@ class Sha256Test extends \PhraseanetPHPUnitAbstract
             ->will($this->returnValue(\random::generatePassword(3)))
         ;
 
-        $response = $this->object->check(self::$core['EM'], $mock);
+        $response = $this->object->check(self::$DI['app']['EM'], $mock);
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
 

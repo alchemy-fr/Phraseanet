@@ -54,7 +54,7 @@ class Feed_Entry_Item implements Feed_Entry_ItemInterface, cache_cacheableInterf
      * @param  int                $id
      * @return Feed_Entry_Item
      */
-    public function __construct(appbox &$appbox, Feed_Entry_Adapter &$entry, $id)
+    public function __construct(appbox $appbox, Feed_Entry_Adapter $entry, $id)
     {
         $this->appbox = $appbox;
         $this->id = (int) $id;
@@ -173,7 +173,7 @@ class Feed_Entry_Item implements Feed_Entry_ItemInterface, cache_cacheableInterf
      * @param  record_adapter     $record
      * @return Feed_Entry_Item
      */
-    public static function create(appbox &$appbox, Feed_Entry_Adapter &$entry, record_adapter &$record)
+    public static function create(appbox $appbox, Feed_Entry_Adapter $entry, record_adapter $record)
     {
         $sql = 'SELECT (MAX(ord)+1) as sorter FROM feed_entry_elements
             WHERE entry_id = :entry_id';

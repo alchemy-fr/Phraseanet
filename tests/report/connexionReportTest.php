@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
+require_once __DIR__ . '/../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
-class connexionReportTest extends PhraseanetPHPUnitAbstract
+class connexionReportTest extends PhraseanetPHPUnitAuthenticatedAbstract
 {
     protected $ret;
     protected $dmin;
@@ -17,8 +17,7 @@ class connexionReportTest extends PhraseanetPHPUnitAbstract
         $this->dmax = $date->format("Y-m-d H:i:s");
         $date->modify('-6 month');
         $this->dmin = $date->format("Y-m-d H:i:s");
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $databoxes = $appbox->get_databoxes();
+        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
         $this->ret = array();
         foreach ($databoxes as $databox) {
             $colls = $databox->get_collections();
@@ -57,6 +56,7 @@ class connexionReportTest extends PhraseanetPHPUnitAbstract
         $nbResult = 0;
         foreach ($this->ret as $sbasid => $collections) {
             $this->report = new module_report_connexion(
+                    self::$DI['app'],
                     $this->dmin,
                     $this->dmax,
                     $sbasid,
@@ -78,6 +78,7 @@ class connexionReportTest extends PhraseanetPHPUnitAbstract
 
         foreach ($this->ret as $sbasid => $collections) {
             $this->report = new module_report_connexion(
+                    self::$DI['app'],
                     $this->dmin,
                     $this->dmax,
                     $sbasid,

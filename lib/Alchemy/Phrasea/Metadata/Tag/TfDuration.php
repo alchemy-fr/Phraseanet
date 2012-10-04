@@ -2,7 +2,9 @@
 
 namespace Alchemy\Phrasea\Metadata\Tag;
 
-class TfDuration extends \PHPExiftool\Driver\Tag
+use PHPExiftool\Driver\AbstractTag;
+
+class TfDuration extends AbstractTag
 {
     protected $Id = 'tf-duration';
     protected $Name = 'tf-duration';

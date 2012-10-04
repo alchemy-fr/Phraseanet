@@ -76,22 +76,22 @@ class Step35 implements DatasUpgraderInterface
                     $stmt->execute(array(':record_id' => $row['record_id']));
 
                     try {
-                        $record = new \record_adapter($databox->get_sbas_id(), $row['record_id']);
+                        $record = new \record_adapter($app, $databox->get_sbas_id(), $row['record_id']);
                     } catch (\Exception $e) {
-                        $this->app['phraseanet.core']['monolog']->addError(sprintf("Unable to load record %d on databox %d : %s", $record->get_record_id(), $record->get_sbas_id(), $record->get_sbas_id(), $e->getMessage()));
+                        $this->app['monolog']->addError(sprintf("Unable to load record %d on databox %d : %s", $record->get_record_id(), $record->get_sbas_id(), $record->get_sbas_id(), $e->getMessage()));
                         continue;
                     }
 
                     try {
                         $this->updateMetadatas($record, $row['xml']);
                     } catch (Exception $e) {
-                        $this->app['phraseanet.core']['monolog']->addError(sprintf("Error while upgrading metadatas for record %d on databox %d : %s", $record->get_record_id(), $record->get_sbas_id(), $e->getMessage()));
+                        $this->app['monolog']->addError(sprintf("Error while upgrading metadatas for record %d on databox %d : %s", $record->get_record_id(), $record->get_sbas_id(), $e->getMessage()));
                     }
 
                     try {
                         $record->set_binary_status($row['status']);
                     } catch (Exception $e) {
-                        $this->app['phraseanet.core']['monolog']->addError(sprintf("Error while upgrading status for record %d on databox %d : %s", $record->get_record_id(), $record->get_sbas_id(), $e->getMessage()));
+                        $this->app['monolog']->addError(sprintf("Error while upgrading status for record %d on databox %d : %s", $record->get_record_id(), $record->get_sbas_id(), $e->getMessage()));
                     }
                     unset($record);
                 }

@@ -31,20 +31,12 @@ class module_console_sphinxGenerateSuggestion extends Command
         return $this;
     }
 
-    public function requireSetup()
-    {
-        return true;
-    }
-
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         define('FREQ_THRESHOLD', 10);
         define('SUGGEST_DEBUG', 0);
 
-        $appbox = $this->getService('phraseanet.appbox');
-        $registry = $appbox->get_registry();
-
-        $params = phrasea::sbas_params();
+        $params = phrasea::sbas_params($this->container);
 
         foreach ($params as $sbas_id => $p) {
             $index = crc32(
@@ -55,9 +47,9 @@ class module_console_sphinxGenerateSuggestion extends Command
                 )
             );
 
-            $tmp_file = $registry->get('GV_RootPath') . 'tmp/dict' . $index . '.txt';
+            $tmp_file = $this->container['phraseanet.registry']->get('GV_RootPath') . 'tmp/dict' . $index . '.txt';
 
-            $databox = $appbox->get_databox($sbas_id);
+            $databox = $this->getService('phraseanet.appbox')->get_databox($sbas_id);
 
             $output->writeln("process Databox " . $databox->get_viewname() . " / $index\n");
 
@@ -77,7 +69,7 @@ class module_console_sphinxGenerateSuggestion extends Command
             exec($cmd);
 
             try {
-                $connbas = connection::getPDOConnection($sbas_id);
+                $connbas = connection::getPDOConnection($this->container, $sbas_id);
             } catch (Exception $e) {
                 continue;
             }

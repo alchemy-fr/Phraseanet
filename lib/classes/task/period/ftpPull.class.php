@@ -45,7 +45,8 @@ class task_period_ftpPull extends task_appboxAbstract
             , "password", "ssl", "ftppath", "localpath"
             , "passive", "period"
         );
-        if ($dom = @DOMDocument::loadXML($oldxml)) {
+        $dom = new DOMDocument();
+        if (@$dom->loadXML($oldxml)) {
             $xmlchanged = false;
             foreach (array("str:proxy", "str:proxyport", "str:period", "boo:passive", "boo:ssl", "str:password", "str:user", "str:ftppath", "str:localpath", "str:port", "str:host") as $pname) {
                 $ptype = substr($pname, 0, 3);
@@ -189,7 +190,8 @@ class task_period_ftpPull extends task_appboxAbstract
 
         if ($parm["xml"] === null) {
             // pas de xml 'raw' : on accepte les champs 'graphic view'
-            if (($domTaskSettings = DOMDocument::loadXML($taskrow["settings"])) != FALSE) {
+            $domdoc = new DOMDocument();
+            if (($domTaskSettings = $domdoc->loadXML($taskrow["settings"])) != FALSE) {
                 $xmlchanged = false;
                 foreach (array("proxy", "proxyport", "period", "host", "port", "user", "password", "ssl", "passive", "localpath", "ftppath") as $f) {
                     if ($parm[$f] !== NULL) {
@@ -216,7 +218,8 @@ class task_period_ftpPull extends task_appboxAbstract
         }
 
         // si on doit changer le xml, on verifie qu'il est valide
-        if ($parm["xml"] && ! DOMDocument::loadXML($parm["xml"])) {
+        $domdoc = new DOMDocument();
+        if ($parm["xml"] && ! $domdoc->loadXML($parm["xml"])) {
 
             return(false);
         }
@@ -272,8 +275,6 @@ class task_period_ftpPull extends task_appboxAbstract
 
     protected function retrieveContent(appbox $appbox)
     {
-        $core = \bootstrap::getCore();
-
         foreach (array('localpath', 'host', 'port', 'user', 'password', 'ftppath') as $f) {
             if (trim((string) ($this->{$f})) === '') {
                 $this->log('setting \'' . $f . '\' must be set');
@@ -281,7 +282,7 @@ class task_period_ftpPull extends task_appboxAbstract
             }
         }
 
-        $core['file-system']->mkdir($this->localpath, 0750);
+        $this->dependencyContainer['filesystem']->mkdir($this->localpath, 0750);
 
         if ( ! is_dir($this->localpath)) {
             $this->log('\'' . $this->localpath . '\' does not exists');
@@ -342,7 +343,7 @@ class task_period_ftpPull extends task_appboxAbstract
                         throw new Exception("Un fichier du meme nom ($finalpath) existe deja...");
                     }
 
-                    $core['file-system']->mkdir(dirname($finalpath), 0750);
+                    $this->dependencyContainer['filesystem']->mkdir(dirname($finalpath), 0750);
 
                     $ftp->get($finalpath, $filepath);
                     $ftp->delete($filepath);

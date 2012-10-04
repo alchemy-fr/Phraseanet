@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2012 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Alchemy\Phrasea;
 
 use Symfony\Component\Console;
@@ -19,13 +28,15 @@ class CLI extends Application
      * @param string $name Name for this application.
      * @param string|null $version Version number for this application.
      */
-    function __construct($name, $version = null)
+    function __construct($name, $version = null, $environment = null)
     {
-        parent::__construct();
+        parent::__construct($environment);
+
+        $this['session.test'] = true;
 
         $this['console'] = $this->share(function () use ($name, $version) {
-                return new Console\Application($name, $version);
-            });
+            return new Console\Application($name, $version);
+        });
     }
 
     /**
@@ -33,7 +44,7 @@ class CLI extends Application
      *
      * @param bool $interactive runs in an interactive shell if true.
      */
-    public function run($interactive = false)
+    public function runCLI($interactive = false)
     {
         $app = $this['console'];
         if ($interactive) {
@@ -41,6 +52,11 @@ class CLI extends Application
         }
 
         $app->run();
+    }
+
+    public function run(\Symfony\Component\HttpFoundation\Request $request = null)
+    {
+        $this->runCLI();
     }
 
     /**

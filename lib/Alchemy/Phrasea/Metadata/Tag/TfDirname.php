@@ -2,7 +2,9 @@
 
 namespace Alchemy\Phrasea\Metadata\Tag;
 
-class TfDirname extends \PHPExiftool\Driver\Tag
+use PHPExiftool\Driver\AbstractTag;
+
+class TfDirname extends AbstractTag
 {
     protected $Id = 'tf-dirname';
     protected $Name = 'tf-dirname';

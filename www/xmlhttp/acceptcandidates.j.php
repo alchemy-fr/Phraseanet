@@ -9,14 +9,15 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
 require_once __DIR__ . "/../../lib/bootstrap.php";
-$appbox = \appbox::get_instance(\bootstrap::getCore());
-$registry = registry::get_instance();
+$app = new Application();
 
 $request = http_request::getInstance();
 $parm = $request->get_parms(
@@ -34,7 +35,7 @@ $refresh = array();
 $sbas_id = (int) $parm["sbid"];
 
 try {
-    $databox = $appbox->get_databox($sbas_id);
+    $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
     $connbas = $databox->get_connection();
 
     $domct = $databox->get_dom_cterms();

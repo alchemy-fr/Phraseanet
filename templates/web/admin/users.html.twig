@@ -1,12 +1,12 @@
 
-{% extends request.isXmlHttpRequest ? "admin/common/ajax_wrap.html.twig" : "admin/common/iframe_wrap.html.twig" %}
+{% extends app['request'].isXmlHttpRequest ? "admin/common/ajax_wrap.html.twig" : "admin/common/iframe_wrap.html.twig" %}
 
 {% block content %}
 
-{% if app.request.query.get('user-updated') is not none%}
+{% if app['request'].query.get('user-updated') is not none%}
     <div class="alert alert-success">
     <button class="close" data-dismiss="alert" type="button">×</button>
-    {% set user_count = app.request.get('user-updated') %}
+    {% set user_count = app['request'].get('user-updated') %}
         {% trans %}
             {{ user_count }} user has been crreated
         {% plural user_count %}
@@ -140,7 +140,7 @@
                             {{usr.get_applied_template()}}
                         </td>
                         <td>
-                            {{usr.get_creation_date()|formatDate}}
+                            {{ app['date-formatter'].getDate(usr.get_creation_date()) }}
                         </td>
                     </tr>
                 {% endfor %}

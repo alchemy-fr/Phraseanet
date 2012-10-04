@@ -68,7 +68,7 @@ $(document).ready(function() {
         <div class="control-group">
             <label class="form_label control-label" for="form_login">{% trans 'admin::compte-utilisateur identifiant' %}</label>
             <div class="controls">
-                <p>{{ user.get_login() }}</p>
+                <p>{{ app['phraseanet.user'].get_login() }}</p>
                 <p class="form_alert help-block"></p>
             </div>
         </div>

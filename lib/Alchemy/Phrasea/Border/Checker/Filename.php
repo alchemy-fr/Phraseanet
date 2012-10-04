@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Border\Checker;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Doctrine\ORM\EntityManager;
 
@@ -26,13 +27,14 @@ class Filename extends AbstractChecker
      *
      * @param boolean $sensitive Toggle case-sensitive mode, default : false
      */
-    public function __construct(array $options = array())
+    public function __construct(Application $app, array $options = array())
     {
         if ( ! isset($options['sensitive'])) {
             $options['sensitive'] = false;
         }
 
         $this->sensitive = (boolean) $options['sensitive'];
+        parent::__construct($app);
     }
 
     /**

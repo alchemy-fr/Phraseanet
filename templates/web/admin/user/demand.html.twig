@@ -113,11 +113,11 @@
     <h1>{% trans 'admin:: demandes en cours' %}</h1>
 </div>
 
-{% if app.request.query.get('success') == '1' %}
-    <div class="alert alert-success">
-        <a class="close" data-dismiss="alert" href="#">×</a>
-        {% trans 'Requests for the application registrations were recorded successfully' %}
-    </div>
+{% if app['request'].query.get('success') == '1' %}
+        <div class="alert alert-success">
+            <a class="close" data-dismiss="alert" href="#">×</a>
+            {% trans 'Requests for the application registrations were recorded successfully' %}
+        </div>
 {% endif %}
 
 {% if table['user'] | length > 0 %}
@@ -181,8 +181,8 @@
                                     <dd>{{ row['pays'] }}</dd>
                                 </dl>
                             </td>
-                            <td>
-                                {{ row["date_modif"]|prettyDate }}
+                             <td>
+                                {{ app['date-formatter'].getPrettyString(row["date_modif"]) }}
                             </td>
                             <td>
                                 {# Delete this when the JS 'll be updated --
@@ -202,7 +202,7 @@
                                                 <input name="watermark[]" value="{{ row['usr_id'] }}_{{ basId }}" onclick="checkAdd(this)" id="{{  'watermark_' ~ row['usr_id'] ~ '_' ~ basId }}" class="{{ 'disabler_' ~  row['usr_id'] ~ '_' ~ basId }} watermark_checker tipInfoUsr {{ 'checker_' ~ row['usr_id'] }}" title="{% trans 'admin:: watermarquer les documents' %}" type="checkbox"/>
                                             </td>
                                             <td>
-                                                {{ basId| bas_names }}
+                                                {{ basId| bas_names(app) }}
                                             </td>
                                         </tr>
                                     {% endfor %}

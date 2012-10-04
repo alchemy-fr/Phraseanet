@@ -123,10 +123,10 @@ class BasketElement extends \Entities\BasketElement implements \Doctrine\ORM\Pro
         return parent::getBasket();
     }
 
-    public function getRecord()
+    public function getRecord(\Alchemy\Phrasea\Application $app)
     {
         $this->__load();
-        return parent::getRecord();
+        return parent::getRecord($app);
     }
 
     public function setRecord(\record_adapter $record)
@@ -153,10 +153,10 @@ class BasketElement extends \Entities\BasketElement implements \Doctrine\ORM\Pro
         return parent::getValidationDatas();
     }
 
-    public function getUserValidationDatas(\User_Adapter $user)
+    public function getUserValidationDatas(\User_Adapter $user, \Alchemy\Phrasea\Application $app)
     {
         $this->__load();
-        return parent::getUserValidationDatas($user);
+        return parent::getUserValidationDatas($user, $app);
     }
 
 

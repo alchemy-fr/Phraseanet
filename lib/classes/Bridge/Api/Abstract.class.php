@@ -50,7 +50,7 @@ abstract class Bridge_Api_Abstract
      * @param  Bridge_AccountSettings $settings
      * @return Bridge_Api_Abstract
      */
-    public function set_auth_settings(Bridge_AccountSettings &$settings)
+    public function set_auth_settings(Bridge_AccountSettings $settings)
     {
         $this->_auth->set_settings($settings);
         $this->set_transport_authentication_params();
@@ -154,7 +154,7 @@ abstract class Bridge_Api_Abstract
      * @param  Exception $e
      * @return Void
      */
-    public function handle_exception(Exception &$e)
+    public function handle_exception(Exception $e)
     {
         return;
     }

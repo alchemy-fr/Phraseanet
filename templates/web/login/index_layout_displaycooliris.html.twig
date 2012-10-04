@@ -1,8 +1,8 @@
 <div style="height:130px;position:relative;">
         <div style="height:95px;width:220px;float:right;margin:25px 10px 0;">
                 <div style="margin-top:0px;height:20px;">
-                    {{login.get_register_link|raw}}
-                    {{login.get_guest_link|raw}}
+                    {{login.get_register_link(app) |raw}}
+                    {{login.get_guest_link(app) |raw}}
                 </div>
                 <div style="margin-top:10px;height:20px;">
                   <a target="_self" class="link" rel="external" href="/login/forgot-password/">
@@ -11,7 +11,7 @@
                 </div>
                 <div style="margin-top:10px;height:25px;">
                     <div style="float:left;text-align:left;">
-                        <input {% if maintenance == true %}disabled{% endif %} tabindex="5"
+                        <input {% if app['phraseanet.registry'].get('GV_maintenance') == true %}disabled{% endif %} tabindex="5"
                             type="submit" value="{% trans 'login:: connexion' %}"/>
             <input tabindex="4" class="checkbox" type="checkbox" name="remember" id="remember-me" value="1" />
             <label for="remember-me">{% trans 'login::Remember me' %}</label>
@@ -34,13 +34,13 @@
                 <div style="margin-top:10px;">
                     <div style="margin-top:3px;">{% trans 'admin::compte-utilisateur identifiant' %}</div>
                     <div style="margin-top:3px;">
-                        <input {% if maintenance == true %}disabled{% endif %} tabindex="1" name="login"
+                        <input {% if app['phraseanet.registry'].get('GV_maintenance') == true %}disabled{% endif %} tabindex="1" name="login"
                             id="login" type="text" style="width:100%" />
                     </div>
                 </div>
                 <div style="margin-top:10px;">
                     <div style="margin-top:3px;">{% trans 'admin::compte-utilisateur mot de passe' %}</div>
-                    <div style="margin-top:3px;"><input {% if maintenance == true %}disabled{% endif %} tabindex="2" name="pwd" id="pwd"
+                    <div style="margin-top:3px;"><input {% if app['phraseanet.registry'].get('GV_maintenance') == true %}disabled{% endif %} tabindex="2" name="pwd" id="pwd"
                         value="" type="password" style="width:100%" />
                     </div>
                 </div>

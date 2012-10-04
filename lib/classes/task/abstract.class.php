@@ -1,5 +1,6 @@
 <?php
 
+use Alchemy\Phrasea\Application;
 use Monolog\Logger;
 
 abstract class task_abstract
@@ -95,11 +96,55 @@ abstract class task_abstract
     protected $completed_percentage;
     protected $period = 60;
     protected $taskid = NULL;
-    protected $system = '';  // "DARWIN", "WINDOWS" , "LINUX"...
-    protected $argt = array(
-        "--help" => array(
-            'set'    => false, "values" => array(), "usage" => " (no help available)")
-    );
+    protected $system = '';
+    protected $dependencyContainer;
+
+    public function __construct($taskid, Pimple $dependencyContainer, Logger $logger)
+    {
+        $this->dependencyContainer = $dependencyContainer;
+
+        $this->logger = $logger;
+
+        $this->taskid = (integer) $taskid;
+
+        phrasea::use_i18n($this->dependencyContainer['locale']);
+
+        $this->launched_by = array_key_exists("REQUEST_URI", $_SERVER) ? self::LAUCHED_BY_BROWSER : self::LAUCHED_BY_COMMANDLINE;
+
+        try {
+            $conn = connection::getPDOConnection($this->dependencyContainer);
+        } catch (Exception $e) {
+            $this->log($e->getMessage());
+            $this->log(("Warning : abox connection lost, restarting in 10 min."));
+
+            $this->sleep(60 * 10);
+
+            $this->running = false;
+
+            return '';
+        }
+        $sql = 'SELECT crashed, pid, status, active, settings, name, completed, runner
+              FROM task2 WHERE task_id = :taskid';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(array(':taskid' => $this->getID()));
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+        if ( ! $row) {
+            throw new Exception('Unknown task id');
+        }
+        $this->title = $row['name'];
+        $this->crash_counter = (integer) $row['crashed'];
+        $this->active = ! ! $row['active'];
+        $this->settings = $row['settings'];
+        $this->runner = $row['runner'];
+        $this->completed_percentage = (int) $row['completed'];
+        $this->settings = $row['settings'];
+
+        $sx = @simplexml_load_string($this->settings);
+        if ($sx) {
+            $this->loadSettings($sx);
+        }
+    }
 
     /**
      *
@@ -118,7 +163,7 @@ abstract class task_abstract
     public function getState()
     {
         static $stmt = NULL;
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($this->dependencyContainer);
         if ( ! $stmt) {
             $sql = 'SELECT status FROM task2 WHERE task_id = :taskid';
             $stmt = $conn->prepare($sql);
@@ -180,7 +225,7 @@ abstract class task_abstract
             throw new Exception_InvalidArgument(sprintf('unknown status `%s`', $status));
         }
 
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($this->dependencyContainer);
 
         $sql = 'UPDATE task2 SET status = :status WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
@@ -196,7 +241,7 @@ abstract class task_abstract
      */
     public function setActive($active)
     {
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($this->dependencyContainer);
 
         $sql = 'UPDATE task2 SET active = :active WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
@@ -216,7 +261,7 @@ abstract class task_abstract
     public function setTitle($title)
     {
         $title = strip_tags($title);
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($this->dependencyContainer);
 
         $sql = 'UPDATE task2 SET name = :title WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
@@ -244,7 +289,7 @@ abstract class task_abstract
             throw new Exception_InvalidArgument('Bad XML');
         }
 
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($this->dependencyContainer);
 
         $sql = 'UPDATE task2 SET settings = :settings WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
@@ -264,7 +309,7 @@ abstract class task_abstract
      */
     public function resetCrashCounter()
     {
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($this->dependencyContainer);
 
         $sql = 'UPDATE task2 SET crashed = 0 WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
@@ -291,7 +336,7 @@ abstract class task_abstract
      */
     public function incrementCrashCounter()
     {
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($this->dependencyContainer);
 
         $sql = 'UPDATE task2 SET crashed = crashed + 1 WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
@@ -334,51 +379,6 @@ abstract class task_abstract
 
     abstract public function help();
 
-    public function __construct($taskid, Logger $logger)
-    {
-        $this->logger = $logger;
-
-        $this->taskid = (integer) $taskid;
-
-        phrasea::use_i18n(Session_Handler::get_locale());
-
-        $this->launched_by = array_key_exists("REQUEST_URI", $_SERVER) ? self::LAUCHED_BY_BROWSER : self::LAUCHED_BY_COMMANDLINE;
-
-        try {
-            $conn = connection::getPDOConnection();
-        } catch (Exception $e) {
-            $this->log($e->getMessage());
-            $this->log(("Warning : abox connection lost, restarting in 10 min."));
-
-            $this->sleep(60 * 10);
-
-            $this->running = false;
-
-            return '';
-        }
-        $sql = 'SELECT crashed, pid, status, active, settings, name, completed, runner
-              FROM task2 WHERE task_id = :taskid';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':taskid' => $this->getID()));
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-        if ( ! $row) {
-            throw new Exception('Unknown task id');
-        }
-        $this->title = $row['name'];
-        $this->crash_counter = (integer) $row['crashed'];
-        $this->active = ! ! $row['active'];
-        $this->settings = $row['settings'];
-        $this->runner = $row['runner'];
-        $this->completed_percentage = (int) $row['completed'];
-        $this->settings = $row['settings'];
-
-        $sx = @simplexml_load_string($this->settings);
-        if ($sx) {
-            $this->loadSettings($sx);
-        }
-    }
-
     /**
      *
      * @return enum (self::RUNNER_MANUAL or self::RUNNER_SCHEDULER)
@@ -402,7 +402,7 @@ abstract class task_abstract
 
         $this->runner = $runner;
 
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($this->dependencyContainer);
         $sql = 'UPDATE task2 SET runner = :runner WHERE task_id = :taskid';
 
         $params = array(
@@ -432,14 +432,13 @@ abstract class task_abstract
     public function delete()
     {
         if ( ! $this->getPID()) { // do not delete a running task
-            $conn = connection::getPDOConnection();
-            $registry = registry::get_instance();
+            $conn = connection::getPDOConnection($this->dependencyContainer);
             $sql = "DELETE FROM task2 WHERE task_id = :task_id";
             $stmt = $conn->prepare($sql);
             $stmt->execute(array(':task_id' => $this->getID()));
             $stmt->closeCursor();
 
-            $lock_file = $registry->get('GV_RootPath') . 'tmp/locks/task_' . $this->getID() . '.lock';
+            $lock_file = __DIR__ . '/../../../tmp/locks/task_' . $this->getID() . '.lock';
             @unlink($lock_file);
         }
     }
@@ -449,7 +448,7 @@ abstract class task_abstract
      */
     public function setLastExecTime()
     {
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($this->dependencyContainer);
         $sql = 'UPDATE task2 SET last_exec_time=NOW() WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
         $stmt->execute(array(':taskid' => $this->getID()));
@@ -463,7 +462,7 @@ abstract class task_abstract
      */
     public function getLastExecTime()
     {
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($this->dependencyContainer);
 
         $sql = 'SELECT last_exec_time FROM task2 WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
@@ -558,9 +557,7 @@ abstract class task_abstract
      */
     private function getLockfilePath()
     {
-        $core = \bootstrap::getCore();
-
-        $lockdir = $core->getRegistry()->get('GV_RootPath') . 'tmp/locks/';
+        $lockdir = $this->dependencyContainer['phraseanet.registry']->get('GV_RootPath') . 'tmp/locks/';
         $lockfilePath = ($lockdir . 'task_' . $this->getID() . '.lock');
 
         return $lockfilePath;
@@ -818,7 +815,7 @@ abstract class task_abstract
      * @param  string        $settings   (xml string)
      * @return task_abstract
      */
-    public static function create(appbox $appbox, $class_name, $settings = null)
+    public static function create(\Pimple $dependencyContainer, $class_name, $settings = null)
     {
         if ( ! class_exists($class_name)) {
             throw new Exception('Unknown task class');
@@ -831,7 +828,8 @@ abstract class task_abstract
                     (null, 0, "stopped", 0, :active,
                       :name, "0000/00/00 00:00:00", :class, :settings)';
 
-        if ($settings && ! DOMDocument::loadXML($settings)) {
+        $domdoc = new DOMDocument();
+        if ($settings && ! $domdoc->loadXML($settings)) {
             throw new Exception('settings invalide');
         } elseif ( ! $settings) {
             $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n</tasksettings>";
@@ -839,19 +837,20 @@ abstract class task_abstract
 
         $params = array(
             ':active'   => 1
-            , ':name'     => $class_name::getName()
+            , ':name'     => ''
             , ':class'    => $class_name
             , ':settings' => $settings
         );
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $dependencyContainer['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
-        $tid = $appbox->get_connection()->lastInsertId();
+        $tid = $dependencyContainer['phraseanet.appbox']->get_connection()->lastInsertId();
 
-        $core = \bootstrap::getCore();
+        $task = new $class_name($tid, $dependencyContainer, $dependencyContainer['monolog']);
+        $task->setTitle($task->getName());
 
-        return new $class_name($tid, $core['monolog']);
+        return $task;
     }
 
     public function getUsage()
@@ -885,7 +884,7 @@ abstract class task_abstract
         $p = ($todo > 0) ? ((100 * $done) / $todo) : -1;
 
         try {
-            $conn = connection::getPDOConnection();
+            $conn = connection::getPDOConnection($this->dependencyContainer);
             $sql = 'UPDATE task2 SET completed = :p WHERE task_id = :taskid';
             $stmt = $conn->prepare($sql);
             $stmt->execute(array(

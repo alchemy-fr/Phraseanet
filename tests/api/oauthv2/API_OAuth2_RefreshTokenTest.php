@@ -10,21 +10,20 @@ class API_OAuth2_RefreshTokenTest extends PhraseanetPHPUnitAbstract
     protected $object;
     protected $token;
     protected $scope;
-    protected $application;
+
     protected $account;
 
     public function setUp()
     {
         parent::setUp();
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $this->application = API_OAuth2_Application::create($appbox, self::$user, 'test app');
-        $this->account = API_OAuth2_Account::load_with_user($appbox, $this->application, self::$user);
+        $this->application = API_OAuth2_Application::create(self::$DI['app'], self::$DI['user'], 'test app');
+        $this->account = API_OAuth2_Account::load_with_user(self::$DI['app'], $this->application, self::$DI['user']);
 
         $expires = time() + 100;
         $this->token = random::generatePassword(8);
         $this->scope = 'scopidou';
 
-        $this->object = API_OAuth2_RefreshToken::create($appbox, $this->account, $expires, $this->token, $this->scope);
+        $this->object = API_OAuth2_RefreshToken::create(self::$DI['app'], $this->account, $expires, $this->token, $this->scope);
     }
 
     public function tearDown()

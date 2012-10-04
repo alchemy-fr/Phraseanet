@@ -105,16 +105,16 @@ class StoryWZ extends \Entities\StoryWZ implements \Doctrine\ORM\Proxy\Proxy
         return parent::setUser($user);
     }
 
-    public function getUser()
+    public function getUser(\Alchemy\Phrasea\Application $app)
     {
         $this->__load();
-        return parent::getUser();
+        return parent::getUser($app);
     }
 
-    public function getRecord()
+    public function getRecord(\Alchemy\Phrasea\Application $app)
     {
         $this->__load();
-        return parent::getRecord();
+        return parent::getRecord($app);
     }
 
     public function setRecord(\record_adapter $record)

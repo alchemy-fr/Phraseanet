@@ -13,22 +13,21 @@ class module_console_schedulerStateTest extends PHPUnit_Framework_TestCase
      */
     public function testExecute()
     {
-        // mock the Kernel or create one depending on your needs
-        $application = new CLI('test');
+        $application = new CLI('test', null, 'test');
         $application->command(new module_console_schedulerState('system:schedulerState'));
 
         $command = $application['console']->find('system:schedulerState');
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()));
 
-        $task_manager = new task_manager(appbox::get_instance(\bootstrap::getCore()));
+        $task_manager = new task_manager($application);
         $state = $task_manager->getSchedulerState();
 
         $sentence = sprintf('Scheduler is %s', $state['status']);
         $this->assertTrue(strpos($commandTester->getDisplay(), $sentence) !== false);
 
         $commandTester->execute(array('command' => $command->getName(), '--short'=>true));
-        $task_manager = new task_manager(appbox::get_instance(\bootstrap::getCore()));
+        $task_manager = new task_manager($application);
         $state = $task_manager->getSchedulerState();
 
         $sentence = sprintf('%s(%s)', $state['status'], $state['pid']);

@@ -20,9 +20,9 @@
   <br/>
 {% endif %}
 
-{% set th_size = user.getPrefs('images_size')%}
+{% set th_size = app['phraseanet.user'].getPrefs('images_size')%}
 
-{% if session.get_i18n() == 'fr' %}
+{% if app['locale.I18n'] == 'fr' %}
     <div class="client_help">
     <h5>{% trans 'La recherche s\'effectue grâce à la boîte de dialogue qui se trouve en haut à gauche de l\'écran.' %}
     {% trans 'Sachez que vous pouvez utiliser les opérateurs ou caractères spéciaux suivants :' %}</h5>

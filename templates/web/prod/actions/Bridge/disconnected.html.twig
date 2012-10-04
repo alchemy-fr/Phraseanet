@@ -11,7 +11,7 @@
                             <button class="login_button new_bridge_button btn btn-inverse">
                                 {% trans 'login:: connexion' %}
                             </button>
-                            <input type="hidden" name="url" value="{{account.get_api().generate_login_url(registry, account.get_api().get_connector().get_name()) }}" />
+                            <input type="hidden" name="url" value="{{account.get_api().generate_login_url(app['phraseanet.registry'], account.get_api().get_connector().get_name()) }}" />
                         </form>
                     </td>
                     <td>

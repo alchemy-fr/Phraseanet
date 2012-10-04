@@ -83,7 +83,7 @@
               </div>
                 <br/>
               <div>
-                {{ element.get_created_on|prettyDate }}
+                {{ app['date-formatter'].getPrettyString(element.get_created_on) }}
 
                 {% if element.get_category != '' %}
                   {% set category = element.get_category %}

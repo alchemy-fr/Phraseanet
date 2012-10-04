@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
+use Alchemy\Phrasea\Application;
 use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -18,19 +19,9 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function setUp()
     {
         parent::setUp();
+        self::$DI['app.use-exception-handler'] = true;
         $this->tmpFile = sys_get_temp_dir() . '/' . time() . mt_rand(1000, 9999) . '.jpg';
         copy(__DIR__ . '/../../../../testfiles/cestlafete.jpg', $this->tmpFile);
-        $this->client = $this->createClient();
-    }
-
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Prod.php';
-
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-
-        return $app;
     }
 
     public function tearDown()
@@ -41,14 +32,25 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         parent::tearDown();
     }
 
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+
+        self::$DI['app'] = new Application('test');
+
+        self::giveRightsToUser(self::$DI['app'], self::$DI['user']);
+        self::$DI['user']->ACL()->revoke_access_from_bases(array(self::$DI['collection_no_access']->get_base_id()));
+        self::$DI['user']->ACL()->set_masks_on_base(self::$DI['collection_no_access_by_status']->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
+    }
+
     /**
      * @covers Alchemy\Phrasea\Controller\Prod\Upload::getFlashUploadForm
      * @covers Alchemy\Phrasea\Controller\Prod\Upload::call
      */
     public function testFlashUploadForm()
     {
-        $this->client->request('GET', '/upload/flash-version/');
-        $response = $this->client->getResponse();
+        self::$DI['client']->request('GET', '/prod/upload/flash-version/');
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
     }
@@ -58,8 +60,8 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testUploadForm()
     {
-        $this->client->request('GET', '/upload/');
-        $response = $this->client->getResponse();
+        self::$DI['client']->request('GET', '/prod/upload/');
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
     }
@@ -70,7 +72,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testUpload()
     {
-        $params = array('base_id' => self::$collection->get_base_id());
+        $params = array('base_id' => self::$DI['collection']->get_base_id());
         $files = array(
             'files' => array(
                 new \Symfony\Component\HttpFoundation\File\UploadedFile(
@@ -78,9 +80,9 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 )
             )
         );
-        $this->client->request('POST', '/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->checkJsonResponse($response);
 
@@ -108,10 +110,10 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 )
             )
         );
-        $this->client->request('POST', '/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
 
-        $response = $this->client->getResponse();
-        
+        $response = self::$DI['client']->getResponse();
+
         $this->checkJsonResponse($response);
 
         $datas = json_decode($response->getContent(), true);
@@ -124,7 +126,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testUploadNoAccessBaseId()
     {
-        $params = array('base_id' => self::$collection_no_access->get_base_id());
+        $params = array('base_id' => self::$DI['collection_no_access']->get_base_id());
         $files = array(
             'files' => array(
                 new \Symfony\Component\HttpFoundation\File\UploadedFile(
@@ -132,9 +134,9 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 )
             )
         );
-        $this->client->request('POST', '/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->checkJsonResponse($response);
 
@@ -152,11 +154,11 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 $this->tmpFile, 'KIKOO.JPG', 'image/jpeg', 123, UPLOAD_ERR_NO_FILE
         );
 
-        $params = array('base_id' => self::$collection->get_base_id());
+        $params = array('base_id' => self::$DI['collection']->get_base_id());
         $files = array('files' => array($file));
-        $this->client->request('POST', '/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->checkJsonResponse($response);
 
@@ -178,9 +180,9 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 )
             )
         );
-        $this->client->request('POST', '/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->checkJsonResponse($response);
 
@@ -194,7 +196,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testUpload2Files()
     {
-        $params = array('base_id' => self::$collection->get_base_id());
+        $params = array('base_id' => self::$DI['collection']->get_base_id());
         $files = array(
             'files' => array(
                 new \Symfony\Component\HttpFoundation\File\UploadedFile(
@@ -205,9 +207,9 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 )
             )
         );
-        $this->client->request('POST', '/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->checkJsonResponse($response);
 
@@ -222,7 +224,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testUploadForceRecord()
     {
         $params = array(
-            'base_id'     => self::$collection->get_base_id(),
+            'base_id'     => self::$DI['collection']->get_base_id(),
             'forceAction' => \Alchemy\Phrasea\Border\Manager::FORCE_RECORD,
         );
 
@@ -233,9 +235,9 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 )
             )
         );
-        $this->client->request('POST', '/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->checkJsonResponse($response);
 
@@ -246,7 +248,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(\Alchemy\Phrasea\Border\Manager::RECORD_CREATED, $datas['code']);
 
         $id = explode('_', $datas['id']);
-        $record = new \record_adapter($id[0], $id[1]);
+        $record = new \record_adapter(self::$DI['app'], $id[0], $id[1]);
         $this->assertFalse($record->is_grouping());
         $this->assertEquals(array(), $datas['reasons']);
     }
@@ -257,9 +259,9 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testUploadRecordStatus()
     {
         $params = array(
-            'base_id'     => self::$collection->get_base_id(),
+            'base_id'     => self::$DI['collection']->get_base_id(),
             'forceAction' => \Alchemy\Phrasea\Border\Manager::FORCE_RECORD,
-            'status'      => array( self::$collection->get_base_id() => array( 4 => 1)),
+            'status'      => array( self::$DI['collection']->get_base_id() => array( 4 => 1)),
         );
 
         $files = array(
@@ -269,9 +271,9 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 )
             )
         );
-        $this->client->request('POST', '/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->checkJsonResponse($response);
 
@@ -282,7 +284,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertEquals(\Alchemy\Phrasea\Border\Manager::RECORD_CREATED, $datas['code']);
 
         $id = explode('_', $datas['id']);
-        $record = new \record_adapter($id[0], $id[1]);
+        $record = new \record_adapter(self::$DI['app'], $id[0], $id[1]);
         $this->assertFalse($record->is_grouping());
         $this->assertEquals(1, substr(strrev($record->get_status()), 4, 1));
         $this->assertEquals(array(), $datas['reasons']);
@@ -293,11 +295,11 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testUploadNoFiles()
     {
-        $params = array('base_id' => self::$collection->get_base_id());
+        $params = array('base_id' => self::$DI['collection']->get_base_id());
         $files = array();
-        $this->client->request('POST', '/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+        self::$DI['client']->request('POST', '/prod/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->checkJsonResponse($response);
 
@@ -311,9 +313,9 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testUploadWithoutAnything()
     {
-        $this->client->request('POST', '/upload/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        self::$DI['client']->request('POST', '/prod/upload/', array(), array(), array('HTTP_Accept' => 'application/json'));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->checkJsonResponse($response);
 

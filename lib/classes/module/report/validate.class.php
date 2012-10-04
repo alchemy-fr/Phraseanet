@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     module_report
@@ -43,9 +45,9 @@ class module_report_validate extends module_report
      * @param $arg2 end date of the report
      * @param $sbas_id id of the databox
      */
-    public function __construct($arg1, $arg2, $sbas_id, $collist)
+    public function __construct(Application $app, $arg1, $arg2, $sbas_id, $collist)
     {
-        parent::__construct($arg1, $arg2, $sbas_id, $collist);
+        parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
         $this->title = _('report:: validated documents');
     }
 
@@ -82,13 +84,13 @@ class module_report_validate extends module_report
             $caption = $value;
             if ($field == "getter") {
                 try {
-                    $user = User_Adapter::getInstance($value, $appbox);
+                    $user = User_Adapter::getInstance($value, $this->app);
                     $caption = $user->get_display_name();
                 } catch (Exception $e) {
 
                 }
             } elseif ($field == 'date') {
-                $caption = phraseadate::getPrettyString(new DateTime($value));
+                $caption = $this->app['date-formatter']->getPrettyString(new DateTime($value));
             } elseif ($field == 'size') {
                 $caption = p4string::format_octets($value);
             }
@@ -99,7 +101,7 @@ class module_report_validate extends module_report
         return $ret;
     }
 
-    protected function buildResult($rs)
+    protected function buildResult(Application $app, $rs)
     {
         $i = 0;
 
@@ -110,7 +112,7 @@ class module_report_validate extends module_report
                 if ($row[$value]) {
                     if ($value == 'date') {
                         $this->result[$i][$value] = $this->pretty_string ?
-                            phraseadate::getPrettyString(new DateTime($row[$value])) :
+                            $app['date-formatter']->getPrettyString(new DateTime($row[$value])) :
                             $row[$value];
                     } elseif ($value == 'size') {
                         $this->result[$i][$value] = p4string::format_octets($row[$value]);

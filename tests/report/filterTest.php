@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
+require_once __DIR__ . '/../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
-class filterTest extends PhraseanetPHPUnitAbstract
+class filterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 {
     protected $ret;
     protected $dmin;
@@ -16,8 +16,7 @@ class filterTest extends PhraseanetPHPUnitAbstract
         $this->dmax = $date->format("Y-m-d H:i:s");
         $date->modify('-6 month');
         $this->dmin = $date->format("Y-m-d H:i:s");
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $databoxes = $appbox->get_databoxes();
+        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
         $this->ret = array();
         foreach ($databoxes as $databox) {
             $colls = $databox->get_collections();
@@ -45,6 +44,7 @@ class filterTest extends PhraseanetPHPUnitAbstract
 
         foreach ($this->ret as $sbasid => $collections) {
             $this->report = new module_report_connexion(
+                    self::$DI['app'],
                     $this->dmin,
                     $this->dmax,
                     $sbasid,
@@ -56,7 +56,7 @@ class filterTest extends PhraseanetPHPUnitAbstract
 
     public function testFilter()
     {
-        $filter = new module_report_filter(array(), $this->report->getTransQueryString());
+        $filter = new module_report_filter(self::$DI['app'], array(), $this->report->getTransQueryString());
         $this->assertEquals(array(), $filter->getTabFilter());
         $filter->addFilter('x', 'LIKE', 'y');
         $filter->addFilter('x', 'LIKE', 'z');

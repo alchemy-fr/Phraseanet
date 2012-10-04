@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  *
@@ -27,10 +29,10 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
      *
      * @return notify_validate
      */
-    public function __construct(appbox &$appbox, \Alchemy\Phrasea\Core $core, eventsmanager_broker &$broker)
+    public function __construct(Application $app, eventsmanager_broker $broker)
     {
         $this->group = _('Validation');
-        parent::__construct($appbox, $core, $broker);
+        parent::__construct($app, $broker);
 
         return $this;
     }
@@ -125,18 +127,17 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
         $ssel_id = (string) $sx->ssel_id;
 
         try {
-            $registered_user = User_Adapter::getInstance($from, $this->appbox);
+            $registered_user = User_Adapter::getInstance($from, $this->app);
         } catch (Exception $e) {
             return array();
         }
 
-        $sender = User_Adapter::getInstance($from, $this->appbox)->get_display_name();
+        $sender = User_Adapter::getInstance($from, $this->app)->get_display_name();
 
         try {
-            $em = $this->core->getEntityManager();
-            $repository = $em->getRepository('\Entities\Basket');
+            $repository = $this->app['EM']->getRepository('\Entities\Basket');
 
-            $basket = $repository->findUserBasket($ssel_id, $this->core->getAuthenticatedUser(), false);
+            $basket = $repository->findUserBasket($this->app, $ssel_id, $this->app['phraseanet.user'], false);
 
             $basket_name = trim($basket->getName()) ? : _('Une selection');
         } catch (Exception $e) {
@@ -144,7 +145,7 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
         }
 
         $bask_link = '<a href="'
-            . $this->registry->get('GV_ServerName') . 'lightbox/validate/'
+            . $this->app['phraseanet.registry']->get('GV_ServerName') . 'lightbox/validate/'
             . (string) $sx->ssel_id . '/" target="_blank">'
             . $basket_name . '</a>';
 
@@ -202,7 +203,7 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
         $body .= "<br/>\n<br/>\n<br/>\n"
             . _('push::atention: ce lien est unique et son contenu confidentiel, ne divulguez pas');
 
-        return mail::send_mail($subject, $body, $to, $from, array(), $accuse);
+        return mail::send_mail($this->app, $subject, $body, $to, $from, array(), $accuse);
     }
 
     /**

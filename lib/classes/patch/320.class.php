@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  *
@@ -52,7 +54,7 @@ class patch_320 implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$databox)
+    public function apply(base $databox, Application $app)
     {
         $sql = 'UPDATE record SET parent_record_id = "1"
                             WHERE parent_record_id != "0"';

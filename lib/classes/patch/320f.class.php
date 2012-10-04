@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -51,7 +53,7 @@ class patch_320f implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$appbox)
+    public function apply(base $appbox, Application $app)
     {
         $feeds = array();
 
@@ -76,7 +78,7 @@ class patch_320f implements patchInterface
         $date_ref = new DateTime();
 
         foreach ($rs as $row) {
-            $user = User_Adapter::getInstance($row['usr_id'], $appbox);
+            $user = User_Adapter::getInstance($row['usr_id'], $app);
 
             $feed = $this->get_feed($appbox, $user, $row['pub_restrict'], $row['homelink']);
 
@@ -84,7 +86,8 @@ class patch_320f implements patchInterface
                 continue;
             }
 
-            $entry = Feed_Entry_Adapter::create($appbox, $feed, array_shift($feed->get_publishers()), $row['name'], $row['descript'], $user->get_display_name(), $user->get_email());
+            $publishers = $feed->get_publishers();
+            $entry = Feed_Entry_Adapter::create($app, $feed, array_shift($publishers), $row['name'], $row['descript'], $user->get_display_name(), $user->get_email());
             $date_create = new DateTime($row['pub_date']);
             if ($date_create < $date_ref) {
                 $date_ref = $date_create;
@@ -104,7 +107,7 @@ class patch_320f implements patchInterface
 
             foreach ($rs as $row) {
                 try {
-                    $record = new record_adapter(phrasea::sbasFromBas($row['base_id']), $row['record_id']);
+                    $record = new record_adapter($app, phrasea::sbasFromBas($app, $row['base_id']), $row['record_id']);
                     $item = Feed_Entry_Item::create($appbox, $entry, $record);
                 } catch (Exception_NotFound $e) {
 
@@ -134,7 +137,7 @@ class patch_320f implements patchInterface
     }
     protected static $feeds = array();
 
-    protected function get_feed(appbox &$appbox, User_Adapter &$user, $pub_restrict, $homelink)
+    protected function get_feed(appbox $appbox, User_Adapter $user, $pub_restrict, $homelink)
     {
         $user_key = 'user_' . $user->get_id();
         if ($homelink == '1')
@@ -152,12 +155,13 @@ class patch_320f implements patchInterface
             else
                 $title = $user->get_display_name() . ' - ' . 'public Feed';
 
-            $feed = Feed_Adapter::create($appbox, $user, $title, '');
+            $feed = Feed_Adapter::create($app, $user, $title, '');
 
             if ($homelink) {
                 $feed->set_public(true);
             } elseif ($pub_restrict == 1) {
-                $collection = array_shift($user->ACL()->get_granted_base());
+                $collections = $user->ACL()->get_granted_base();
+                $collection = array_shift($collections);
                 if ( ! ($collection instanceof collection)) {
                     foreach ($appbox->get_databoxes() as $databox) {
                         foreach ($databox->get_collections() as $coll) {
@@ -170,8 +174,6 @@ class patch_320f implements patchInterface
                 }
 
                 if ( ! ($collection instanceof collection)) {
-                    echo "unable to find a collection to protect feeds";
-
                     return false;
                 }
                 $feed->set_collection($collection);

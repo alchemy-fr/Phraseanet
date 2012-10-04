@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\HttpFoundation\Response;
+
 /**
  *
  *
@@ -358,12 +360,11 @@ class API_V1_result
      */
     public function get_response()
     {
-        $response = new \API_V1_Response(
-                $this->format()
-                , $this->get_http_code()
-                , array('Content-Type' => $this->get_content_type())
+        $response = new Response(
+                $this->format(),
+                $this->get_http_code(),
+                array('Content-Type'  => $this->get_content_type())
         );
-        $response->setOriginalStatusCode($this->get_http_code());
         $response->setCharset('UTF-8');
 
         return $response;

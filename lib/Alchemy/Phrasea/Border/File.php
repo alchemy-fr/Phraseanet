@@ -11,14 +11,23 @@
 
 namespace Alchemy\Phrasea\Border;
 
-use Alchemy\Phrasea\Media\Type as MediaType;
-use MediaVorus\Media\Media;
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Media\Type\Audio;
+use Alchemy\Phrasea\Media\Type\Document;
+use Alchemy\Phrasea\Media\Type\Flash;
+use Alchemy\Phrasea\Media\Type\Image;
+use Alchemy\Phrasea\Media\Type\Video;
+use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
+use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
+use MediaVorus\Exception\FileNotFoundException;
 use PHPExiftool\Writer;
 use PHPExiftool\Driver\TagFactory;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Metadata\MetadataBag;
 use PHPExiftool\Driver\Value\Mono as MonoValue;
+use PHPExiftool\Exiftool;
+use PHPExiftool\Exception\ExceptionInterface as PHPExiftoolException;
 
 /**
  * Phraseanet candidate File package
@@ -33,11 +42,12 @@ class File
 
     /**
      *
-     * @var \MediaVorus\Media\Media
+     * @var \MediaVorus\Media\MediaInterface
      */
     protected $media;
     protected $uuid;
     protected $sha256;
+    protected $app;
     protected $originalName;
     protected $md5;
     protected $attributes;
@@ -45,14 +55,16 @@ class File
     /**
      * Constructor
      *
-     * @param Media       $media        The media
-     * @param \collection $collection   The destination collection
-     * @param string      $originalName The original name of the file
+     * @param Applciation    $app          Application context
+     * @param MediaInterface $media        The media
+     * @param \collection    $collection   The destination collection
+     * @param string         $originalName The original name of the file
      *                                      (if not provided, original name is
      *                                      extracted from the pathfile)
      */
-    public function __construct(Media $media, \collection $collection, $originalName = null)
+    public function __construct(Application $app, MediaInterface $media, \collection $collection, $originalName = null)
     {
+        $this->app = $app;
         $this->media = $media;
         $this->collection = $collection;
         $this->attributes = array();
@@ -94,8 +106,8 @@ class File
             'Canon:ImageUniqueID',
         );
 
-        if ( ! $this->uuid) {
-            $metadatas = $this->media->getEntity()->getMetadatas();
+        if (! $this->uuid) {
+            $metadatas = $this->media->getMetadatas();
 
             $uuid = null;
 
@@ -109,7 +121,7 @@ class File
                 }
             }
 
-            if ( ! $uuid && $generate) {
+            if (! $uuid && $generate) {
                 /**
                  * @todo Check if a file exists with the same checksum
                  */
@@ -120,8 +132,6 @@ class File
         }
 
         if ($write) {
-            $writer = new Writer();
-
             $value = new MonoValue($this->uuid);
             $metadatas = new MetadataBag();
 
@@ -133,13 +143,13 @@ class File
              * PHPExiftool throws exception on some files not supported
              */
             try {
-                $writer->write($this->getFile()->getRealPath(), $metadatas);
-            } catch (\PHPExiftool\Exception\Exception $e) {
+                $this->app['exiftool.writer']->write($this->getFile()->getRealPath(), $metadatas);
+            } catch (PHPExiftoolException $e) {
 
             }
         }
 
-        $writer = $reader = $metadatas = null;
+        $reader = $metadatas = null;
 
         return $this->uuid;
     }
@@ -151,20 +161,20 @@ class File
     public function getType()
     {
         switch ($this->media->getType()) {
-            case Media::TYPE_AUDIO:
-                return new MediaType\Audio();
+            case MediaInterface::TYPE_AUDIO:
+                return new Audio();
                 break;
-            case Media::TYPE_DOCUMENT:
-                return new MediaType\Document();
+            case MediaInterface::TYPE_DOCUMENT:
+                return new Document();
                 break;
-            case Media::TYPE_FLASH:
-                return new MediaType\Flash();
+            case MediaInterface::TYPE_FLASH:
+                return new Flash();
                 break;
-            case Media::TYPE_IMAGE:
-                return new MediaType\Image();
+            case MediaInterface::TYPE_IMAGE:
+                return new Image();
                 break;
-            case Media::TYPE_VIDEO:
-                return new MediaType\Video();
+            case MediaInterface::TYPE_VIDEO:
+                return new Video();
                 break;
         }
 
@@ -178,7 +188,7 @@ class File
      */
     public function getSha256()
     {
-        if ( ! $this->sha256) {
+        if (! $this->sha256) {
             $this->sha256 = $this->media->getHash('sha256');
         }
 
@@ -192,7 +202,7 @@ class File
      */
     public function getMD5()
     {
-        if ( ! $this->md5) {
+        if (! $this->md5) {
             $this->md5 = $this->media->getHash('md5');
         }
 
@@ -220,9 +230,9 @@ class File
     }
 
     /**
-     * Returns an instance of MediaVorus\Media\Media corresponding to the file
+     * Returns an instance of MediaVorus\Media\MediaInterface corresponding to the file
      *
-     * @return MediaVorus\Media\Media
+     * @return MediaVorus\Media\MediaInterface
      */
     public function getMedia()
     {
@@ -240,7 +250,7 @@ class File
     }
 
     /**
-     * Returns an array of Attribute\Attribute associated to the file
+     * Returns an array of AttributeInterface associated to the file
      *
      * @return array
      */
@@ -252,10 +262,10 @@ class File
     /**
      * Adds an attribute to the file package
      *
-     * @param  Attribute\Attribute $attribute The attribute
+     * @param  AttributeInterface $attribute The attribute
      * @return File
      */
-    public function addAttribute(Attribute\Attribute $attribute)
+    public function addAttribute(AttributeInterface $attribute)
     {
         array_push($this->attributes, $attribute);
 
@@ -267,22 +277,21 @@ class File
      *
      * @param string      $pathfile     The path to the file
      * @param \collection $collection   The destination collection
+     * @param MediaVorus  $mediavorus   A MediaVorus object
      * @param string      $originalName An optionnal original name (if
      *                                      different from the $pathfile filename)
      * @throws \InvalidArgumentException
      *
      * @return \Alchemy\Phrasea\Border\File
      */
-    public function buildFromPathfile($pathfile, \collection $collection, $originalName = null)
+    public static function buildFromPathfile($pathfile, \collection $collection, Application $app, $originalName = null)
     {
-        $core = \bootstrap::getCore();
-
         try {
-            $media = $core['mediavorus']->guess(new \SplFileInfo($pathfile));
-        } catch (\MediaVorus\Exception\FileNotFoundException $e) {
+            $media = $app['mediavorus']->guess($pathfile);
+        } catch (FileNotFoundException $e) {
             throw new \InvalidArgumentException(sprintf('Unable to build media file from non existant %s', $pathfile));
         }
 
-        return new File($media, $collection, $originalName);
+        return new File($app, $media, $collection, $originalName);
     }
 }

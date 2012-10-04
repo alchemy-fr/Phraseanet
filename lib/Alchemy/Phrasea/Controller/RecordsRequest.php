@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2012 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Alchemy\Phrasea\Controller;
 
 use Entities\Basket;
@@ -12,7 +21,16 @@ class RecordsRequest extends ArrayCollection
     protected $received;
     protected $basket;
     protected $databoxes;
+    protected $collections;
 
+    /**
+     * Constructor
+     *
+     * @param array $elements
+     * @param ArrayCollection $received
+     * @param Basket $basket
+     * @param Boolean $flatten
+     */
     public function __construct(array $elements, ArrayCollection $received, Basket $basket = null, $flatten = false)
     {
         parent::__construct($elements);
@@ -36,9 +54,14 @@ class RecordsRequest extends ArrayCollection
         }
     }
 
+    /**
+     * Return all distinct databoxes related to the contained records
+     *
+     * @return array
+     */
     public function databoxes()
     {
-        if ( ! $this->databoxes) {
+        if (!$this->databoxes) {
             $this->databoxes = array();
 
             foreach ($this as $record) {
@@ -53,16 +76,53 @@ class RecordsRequest extends ArrayCollection
         return $this->databoxes;
     }
 
+    /**
+     * Return all distinct collections related to the contained records
+     *
+     * @return array
+     */
+    public function collections()
+    {
+        if (!$this->collections) {
+            $this->collections = array();
+
+            foreach ($this as $record) {
+                if (false === array_key_exists($record->get_base_id(), $this->collections)) {
+                    $this->collections[$record->get_base_id()] = $record->get_collection();
+                }
+            }
+
+            $this->collections = array_values($this->collections);
+        }
+
+        return $this->collections;
+    }
+
+    /**
+     * Return all received records
+     *
+     * @return ArrayCollection
+     */
     public function received()
     {
         return $this->received;
     }
 
+    /**
+     * Return basket entity if provided, null otherwise
+     *
+     * @return Basket|null
+     */
     public function basket()
     {
         return $this->basket;
     }
 
+    /**
+     * Filter contents and return only stories
+     *
+     * @return ArrayCollection
+     */
     public function stories()
     {
         return new ArrayCollection(
@@ -72,6 +132,11 @@ class RecordsRequest extends ArrayCollection
         );
     }
 
+    /**
+     * Return true if the request contains a single story
+     *
+     * @return Boolean
+     */
     public function isSingleStory()
     {
         if ($this->count() === 1) {
@@ -83,6 +148,11 @@ class RecordsRequest extends ArrayCollection
         return false;
     }
 
+    /**
+     * Return the first story if a single story is contained, null otherwise
+     *
+     * @return record_adapter|null
+     */
     public function singleStory()
     {
         if ($this->isSingleStory()) {
@@ -92,6 +162,11 @@ class RecordsRequest extends ArrayCollection
         return null;
     }
 
+    /**
+     * Return a serialized list of elements
+     *
+     * @return string
+     */
     public function serializedList()
     {
         if ($this->isSingleStory()) {
@@ -122,22 +197,22 @@ class RecordsRequest extends ArrayCollection
         $basket = null;
 
         if ($request->get('ssel')) {
-            $repository = $app['phraseanet.core']['EM']->getRepository('\Entities\Basket');
+            $repository = $app['EM']->getRepository('\Entities\Basket');
 
-            $basket = $repository->findUserBasket($request->get('ssel'), $app['phraseanet.core']->getAuthenticatedUser(), false);
+            $basket = $repository->findUserBasket($app, $request->get('ssel'), $app['phraseanet.user'], false);
 
             foreach ($basket->getElements() as $basket_element) {
-                $received[$basket_element->getRecord()->get_serialize_key()] = $basket_element->getRecord();
+                $received[$basket_element->getRecord($app)->get_serialize_key()] = $basket_element->getRecord($app);
             }
         } elseif ($request->get('story')) {
-            $repository = $app['phraseanet.core']['EM']->getRepository('\Entities\StoryWZ');
+            $repository = $app['EM']->getRepository('\Entities\StoryWZ');
 
             $storyWZ = $repository->findByUserAndId(
-                $app['phraseanet.core']->getAuthenticatedUser()
+                $app, $app['phraseanet.user']
                 , $request->get('story')
             );
 
-            $received[$storyWZ->getRecord()->get_serialize_key()] = $storyWZ->getRecord();
+            $received[$storyWZ->getRecord($app)->get_serialize_key()] = $storyWZ->getRecord($app);
         } else {
             foreach (explode(";", $request->get('lst')) as $bas_rec) {
                 $basrec = explode('_', $bas_rec);
@@ -145,7 +220,7 @@ class RecordsRequest extends ArrayCollection
                     continue;
                 }
                 try {
-                    $record = new \record_adapter((int) $basrec[0], (int) $basrec[1]);
+                    $record = new \record_adapter($app, (int) $basrec[0], (int) $basrec[1]);
                     $received[$record->get_serialize_key()] = $record;
                     unset($record);
                 } catch (\Exception_NotFound $e) {
@@ -158,24 +233,22 @@ class RecordsRequest extends ArrayCollection
 
         $to_remove = array();
 
-        $user = $app['phraseanet.core']->getAuthenticatedUser();
-
         foreach ($elements as $id => $record) {
 
-            if ( ! $user->ACL()->has_access_to_record($record)) {
+            if (!$app['phraseanet.user']->ACL()->has_access_to_record($record)) {
                 $to_remove[] = $id;
                 continue;
             }
 
             foreach ($rightsColl as $right) {
-                if ( ! $user->ACL()->has_right_on_base($record->get_base_id(), $right)) {
+                if (!$app['phraseanet.user']->ACL()->has_right_on_base($record->get_base_id(), $right)) {
                     $to_remove[] = $id;
                     continue;
                 }
             }
 
             foreach ($rightsDatabox as $right) {
-                if ( ! $user->ACL()->has_right_on_sbas($record->get_sbas_id(), $right)) {
+                if (!$app['phraseanet.user']->ACL()->has_right_on_sbas($record->get_sbas_id(), $right)) {
                     $to_remove[] = $id;
                     continue;
                 }

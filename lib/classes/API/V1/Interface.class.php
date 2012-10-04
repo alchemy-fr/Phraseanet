@@ -245,7 +245,7 @@ interface API_V1_Interface
      * Parameters :
      *
      */
-    public function search_publications(Request $request, User_Adapter &$user);
+    public function search_publications(Request $request, User_Adapter $user);
 
     /**
      * Route : /publications/PUBLICATION_ID/remove/FORMAT/
@@ -267,11 +267,11 @@ interface API_V1_Interface
      *    PUBLICATION_ID : required INT
      *
      */
-    public function get_publication(Request $request, $publication_id, User_Adapter &$user);
+    public function get_publication(Request $request, $publication_id, User_Adapter $user);
 
-    public function get_publications(Request $request, User_Adapter &$user);
+    public function get_publications(Request $request, User_Adapter $user);
 
-    public function get_feed_entry(Request $request, $entry, User_Adapter &$user);
+    public function get_feed_entry(Request $request, $entry, User_Adapter $user);
     /**
      * Route : /users/search/FORMAT/
      *

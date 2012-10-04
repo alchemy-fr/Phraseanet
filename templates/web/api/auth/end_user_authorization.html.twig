@@ -23,6 +23,8 @@
         <![endif]-->
     </head>
 
+    {% set home_title = app['phraseanet.registry'].get('GV_homeTitle') %}
+
     <body>
         <div id="page" class="container">
             <div id="main" class="row">
@@ -31,13 +33,13 @@
                     <h1 id="namePhr">{{home_title}}</h1>
                 </div>
 
-                {% if not session.is_authenticated %}
+                {% if not app.isAuthenticated() %}
                     <div id="content-box" class="span6 offset3">
                         <form id="login-form" class="form-vertical" method="post">
                             {% for key,value in auth.getParams %}
                                 <input type="hidden" name="{{key}}" value="{{value}}">
                             {% endfor %}
-                            {% if errorMessage %}
+                            {% if errorMessage is defined %}
                                 <p class="login_error">{% trans 'Erreur de login / mot de passe' %}</p>
                             {% endif %}
                             <p class="login_hello">
@@ -45,8 +47,8 @@
                                 Bonjour, veuillez vous identifier sur {{home_title}} :
                                 {% endtrans %}
                             </p>
-                            <input id="myLogin" name="login" class="span6" type="text" placeholder="{% trans 'admin::compte-utilisateur identifiant' %}…" />
-                            <input id="myPass" name="password" class="span6" type="password" placeholder="{% trans 'admin::compte-utilisateur mot de passe' %}…" />
+                            <input id="myLogin" name="login" class="span6" type="text" placeholder="{% trans 'admin::compte-utilisateur identifiant' %}" />
+                            <input id="myPass" name="password" class="span6" type="password" placeholder="{% trans 'admin::compte-utilisateur mot de passe' %}" />
                             <input id="button_login" name="action_login" class="btn btn-inverse btn-large span6" type="submit" value="{% trans 'Se connecter' %}" />
                         </form>
                         <p>
@@ -55,7 +57,7 @@
                     </div>
                 {% else %}
                     {% if user is not none %}
-                        {% set username = '<b>' ~ user.get_display_name() ~ '</b>' %}
+                        {% set username = '<b>' ~ app['phraseanet.user'].get_display_name() ~ '</b>' %}
                         <div id="hello-box" class="span6 offset3">
                             <p class="login_hello">
                                 {% trans %}

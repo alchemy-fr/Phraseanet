@@ -1,15 +1,15 @@
 <?php
 
-require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
+require_once __DIR__ . '/../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
-class dashboardTest extends PhraseanetPHPUnitAbstract
+class dashboardTest extends PhraseanetPHPUnitAuthenticatedAbstract
 {
     protected $dashboard;
 
     public function setUp()
     {
         parent::setUp();
-        $this->dashboard = new module_report_dashboard(self::$user);
+        $this->dashboard = new module_report_dashboard(self::$DI['app'], self::$DI['user']);
         $this->dashboard->setDate('-2 month', 'now');
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $this->dashboard->legendDay);
         $this->assertNotNull($this->dashboard->dmin);

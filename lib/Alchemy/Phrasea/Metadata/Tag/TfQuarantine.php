@@ -2,7 +2,9 @@
 
 namespace Alchemy\Phrasea\Metadata\Tag;
 
-class TfQuarantine extends \PHPExiftool\Driver\Tag
+use PHPExiftool\Driver\AbstractTag;
+
+class TfQuarantine extends AbstractTag
 {
     protected $Id = 'tf-quarantine';
     protected $Name = 'tf-quarantine';

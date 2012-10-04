@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     User
@@ -18,7 +20,7 @@
 interface User_QueryInterface
 {
 
-    public function __construct(appbox &$appbox);
+    public function __construct(Application $app);
 
     public function get_results();
 

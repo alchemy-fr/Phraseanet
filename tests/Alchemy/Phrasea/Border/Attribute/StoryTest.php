@@ -10,6 +10,7 @@ class StoryTest extends \PhraseanetPHPUnitAbstract
      * @var Story
      */
     protected $object;
+    protected $story;
 
     /**
      * @covers Alchemy\Phrasea\Border\Attribute\Attribute
@@ -18,7 +19,8 @@ class StoryTest extends \PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new Story(static::$records['record_story_1']);
+        $this->story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);;
+        $this->object = new Story($this->story);
     }
 
     /**
@@ -26,6 +28,7 @@ class StoryTest extends \PhraseanetPHPUnitAbstract
      */
     public function tearDown()
     {
+        $this->story->delete();
         $this->object = null;
         parent::tearDown();
     }
@@ -36,7 +39,7 @@ class StoryTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetName()
     {
-        $this->assertEquals(Attribute::NAME_STORY, $this->object->getName());
+        $this->assertEquals(AttributeInterface::NAME_STORY, $this->object->getName());
     }
 
     /**
@@ -44,7 +47,7 @@ class StoryTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetValue()
     {
-        $this->assertSame(static::$records['record_story_1'], $this->object->getValue());
+        $this->assertSame($this->story, $this->object->getValue());
     }
 
     /**
@@ -60,7 +63,7 @@ class StoryTest extends \PhraseanetPHPUnitAbstract
      */
     public function testLoadFromString()
     {
-        $loaded = Story::loadFromString($this->object->asString());
+        $loaded = Story::loadFromString(self::$DI['app'], $this->object->asString());
 
         $this->assertEquals($this->object, $loaded);
     }
@@ -71,7 +74,7 @@ class StoryTest extends \PhraseanetPHPUnitAbstract
      */
     public function testConstructWrongElement()
     {
-        new Story(static::$records['record_1']);
+        new Story(self::$DI['record_1']);
     }
 
     /**
@@ -80,7 +83,7 @@ class StoryTest extends \PhraseanetPHPUnitAbstract
      */
     public function testLoadFromStringWrongElement()
     {
-        Story::loadFromString(static::$records['record_1']->get_serialize_key());
+        Story::loadFromString(self::$DI['app'], self::$DI['record_1']->get_serialize_key());
     }
 
     /**
@@ -91,6 +94,6 @@ class StoryTest extends \PhraseanetPHPUnitAbstract
     {
         \PHPUnit_Framework_Error_Warning::$enabled = false;
 
-        Story::loadFromString(self::$collection->get_databox()->get_sbas_id() . '_0');
+        Story::loadFromString(self::$DI['app'], self::$DI['collection']->get_databox()->get_sbas_id() . '_0');
     }
 }

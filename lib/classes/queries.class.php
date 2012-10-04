@@ -18,23 +18,19 @@
 class queries
 {
 
-    public static function tree_topics()
+    public static function tree_topics($I18N)
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
-        $registry = $appbox->get_registry();
-
         $out = '';
 
         $xmlTopics = null;
         $sxTopics = null;
 
-        if (file_exists($registry->get('GV_RootPath') . 'config/topics/topics_' . $session->get_I18n() . '.xml'))
-            $xmlTopics = $registry->get('GV_RootPath') . 'config/topics/topics_' . $session->get_I18n() . '.xml';
+        if (file_exists(__DIR__ . '/../../config/topics/topics_' . $I18N . '.xml'))
+            $xmlTopics = __DIR__ . '/../../config/topics/topics_' . $I18N . '.xml';
 
         if ( ! $xmlTopics) {
-            if (file_exists($registry->get('GV_RootPath') . 'config/topics/topics.xml')) {
-                $xmlTopics = $registry->get('GV_RootPath') . 'config/topics/topics.xml';
+            if (file_exists(__DIR__ . '/../../config/topics/topics.xml')) {
+                $xmlTopics = __DIR__ . '/../../config/topics/topics.xml';
             }
         }
 
@@ -65,40 +61,32 @@ class queries
         return $out;
     }
 
-    public static function topics_exists()
+    public static function topics_exists($I18n)
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
-        $registry = $appbox->get_registry();
-
-        if (file_exists($registry->get('GV_RootPath') . 'config/topics/topics_' . $session->get_I18n() . '.xml')) {
+        if (file_exists(__DIR__ . '/../../config/topics/topics_' . $I18n . '.xml')) {
             return true;
         }
 
-        if (file_exists($registry->get('GV_RootPath') . 'config/topics/topics.xml')) {
+        if (file_exists(__DIR__ . '/../../config/topics/topics.xml')) {
             return true;
         }
 
         return false;
     }
 
-    public static function dropdown_topics()
+    public static function dropdown_topics($I18n)
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
-        $registry = $appbox->get_registry();
-
         $out = '';
 
         $xmlTopics = '';
         $sxTopics = null;
 
-        if (file_exists($registry->get('GV_RootPath') . 'config/topics/topics_' . $session->get_I18n() . '.xml'))
-            $xmlTopics = $registry->get('GV_RootPath') . 'config/topics/topics_' . $session->get_I18n() . '.xml';
+        if (file_exists(__DIR__ . '/../../config/topics/topics_' . $I18n . '.xml'))
+            $xmlTopics = __DIR__ . '/../../config/topics/topics_' . $I18n . '.xml';
 
         if ($xmlTopics == '') {
-            if (file_exists($registry->get('GV_RootPath') . 'config/topics/topics.xml')) {
-                $xmlTopics = $registry->get('GV_RootPath') . 'config/topics/topics.xml';
+            if (file_exists(__DIR__ . '/../../config/topics/topics.xml')) {
+                $xmlTopics = __DIR__ . '/../../config/topics/topics.xml';
             }
         }
 
@@ -200,13 +188,9 @@ class queries
         return $out;
     }
 
-    public static function history()
+    public static function history(appbox $appbox, $usr_id)
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
         $conn = $appbox->get_connection();
-
-        $usr_id = $session->get_usr_id();
 
         $sql = "SELECT query from dsel where usr_id = :usr_id
             ORDER BY id DESC LIMIT 0,25";
@@ -219,8 +203,6 @@ class queries
         $history = '<ul>';
 
         foreach ($rs as $row) {
-            $longueur = strlen($row["query"]);
-
             $history .= '<li onclick="doSpecialSearch(\'' . str_replace(array("'", '"'), array("\'", '&quot;'), $row["query"]) . '\')">' . $row["query"] . '</li>';
         }
 

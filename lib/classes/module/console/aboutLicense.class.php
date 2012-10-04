@@ -37,9 +37,4 @@ class module_console_aboutLicense extends Command
 
         return 0;
     }
-
-    public function requireSetup()
-    {
-        return false;
-    }
 }

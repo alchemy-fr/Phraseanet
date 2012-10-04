@@ -15,10 +15,9 @@ class Feed_CollectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $auth = new Session_Authentication_None(self::$user);
-        $appbox->get_session()->authenticate($auth);
-        self::$object = Feed_Adapter::create($appbox, self::$user, self::$title, self::$subtitle);
+        $auth = new Session_Authentication_None(self::$DI['user']);
+        self::$DI['app']->openAccount($auth);
+        self::$object = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], self::$title, self::$subtitle);
         self::$object->set_public(true);
     }
 
@@ -30,8 +29,7 @@ class Feed_CollectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testLoad_all()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $coll = Feed_Collection::load_all($appbox, self::$user);
+        $coll = Feed_Collection::load_all(self::$DI['app'], self::$DI['user']);
 
         foreach ($coll->get_feeds() as $feed) {
             $this->assertInstanceOf('Feed_Adapter', $feed);
@@ -40,8 +38,7 @@ class Feed_CollectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_feeds()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $coll = Feed_Collection::load_public_feeds($appbox);
+        $coll = Feed_Collection::load_public_feeds(self::$DI['app']);
 
         foreach ($coll->get_feeds() as $feed) {
             $this->assertInstanceOf('Feed_Adapter', $feed);
@@ -50,16 +47,14 @@ class Feed_CollectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_aggregate()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $coll = Feed_Collection::load_public_feeds($appbox);
+        $coll = Feed_Collection::load_public_feeds(self::$DI['app']);
 
         $this->assertInstanceOf('Feed_Aggregate', $coll->get_aggregate());
     }
 
     public function testLoad_public_feeds()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $coll = Feed_Collection::load_public_feeds($appbox);
+        $coll = Feed_Collection::load_public_feeds(self::$DI['app']);
 
         foreach ($coll->get_feeds() as $feed) {
             $this->assertTrue($feed->is_public());

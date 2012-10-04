@@ -4,10 +4,6 @@ require_once __DIR__ . '/../../PhraseanetPHPUnitAbstract.class.inc';
 
 class API_OAuth2_TokenTest extends PhraseanetPHPUnitAbstract
 {
-    /**
-     * @var API_OAuth2_Application
-     */
-    protected $application;
 
     /**
      * @var API_OAuth2_Token
@@ -17,18 +13,17 @@ class API_OAuth2_TokenTest extends PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $this->application = API_OAuth2_Application::create($appbox, self::$user, 'test app');
-        $account = API_OAuth2_Account::load_with_user($appbox, $this->application, self::$user);
+        $this->application = API_OAuth2_Application::create(self::$DI['app'], self::$DI['user'], 'test app');
+        $account = API_OAuth2_Account::load_with_user(self::$DI['app'], $this->application, self::$DI['user']);
 
         try {
-            new API_OAuth2_Token($appbox, $account);
+            new API_OAuth2_Token(self::$DI['app']['phraseanet.appbox'], $account);
             $this->fail();
         } catch (Exception $e) {
 
         }
 
-        $this->object = API_OAuth2_Token::create($appbox, $account);
+        $this->object = API_OAuth2_Token::create(self::$DI['app']['phraseanet.appbox'], $account);
     }
 
     public function tearDown()
@@ -111,7 +106,7 @@ class API_OAuth2_TokenTest extends PhraseanetPHPUnitAbstract
     public function testLoad_by_oauth_token()
     {
         $token = $this->object->get_value();
-        $loaded = API_OAuth2_Token::load_by_oauth_token(appbox::get_instance(\bootstrap::getCore()), $token);
+        $loaded = API_OAuth2_Token::load_by_oauth_token(self::$DI['app'], $token);
         $this->assertInstanceOf('API_OAuth2_Token', $loaded);
         $this->assertEquals($this->object, $loaded);
     }

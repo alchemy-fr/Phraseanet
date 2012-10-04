@@ -53,32 +53,32 @@ $(document).ready(function(){
       <td style='width:600px;'>
         <div id="content-apps">
           <h3>{% trans 'Vous avez autorise ces applications a acceder a votre compte' %}</h3>
-          {% if apps|length > 0 %}
+          {% if applications|length > 0 %}
             <ul class='app-list'>
-              {% for app in apps %}
-                <li id='app_{{app.get_id}}'>
+              {% for application in applications %}
+                <li id='app_{{application.get_id}}'>
                   <div>
-                    {% set account = app.get_user_account(user) %}
+                    {% set account = application.get_user_account(app['phraseanet.user']) %}
                       {% if account.is_revoked() is empty %}
-                        <button type='button' class='revoke app-btn' value='{{app.get_id()}}'>{% trans 'Revoquer l\'access' %}</button>
+                        <button type='button' class='revoke app-btn' value='{{application.get_id()}}'>{% trans 'Revoquer l\'access' %}</button>
                       {% else %}
-                        <button type='button' class='authorize app-btn' value='{{app.get_id()}}'>{% trans 'Authoriser l\'access' %}</button>
+                        <button type='button' class='authorize app-btn' value='{{application.get_id()}}'>{% trans 'Authoriser l\'access' %}</button>
                       {% endif %}
                         <span class='app-row'>
-                          <a href="{{app.get_website()}}" target="_blank">
-                            <strong>{{app.get_name()}}</strong>
+                          <a href="{{application.get_website()}}" target="_blank">
+                            <strong>{{application.get_name()}}</strong>
                           </a>
-                          {% if app.get_creator() is not none %}
-                            {% set user_name = app.get_creator().get_display_name() %}
+                          {% if application.get_creator() is not none %}
+                            {% set user_name = application.get_creator().get_display_name() %}
                             {% trans %}
                             par {{user_name}}
                             {% endtrans %}
                           {% endif%}
                         </span>
                         <span class='app-row'>
-                          <font size="1"><i>{{app.get_created_on()|prettyDate}}</i></font>
+                          <font size="1"><i>{{ app['date-formatter'].getPrettyString(application.get_created_on()) }}</i></font>
                         </span>
-                        <span class='app-row'>{{app.get_description() }}</span>
+                        <span class='app-row'>{{ application.get_description() }}</span>
                   </div>
                 </li>
               {%endfor%}

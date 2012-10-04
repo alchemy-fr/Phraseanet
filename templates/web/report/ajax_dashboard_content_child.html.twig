@@ -45,7 +45,7 @@
             {{ dash.table('report:: Les questions les plus posees' , 'report:: utilisateurs' , 'report:: question', item.ask, dashboard.getTitleDate('dmin'), dashboard.getTitleDate('dmax'), "false", "false") }}
         {%endif %}
         {% if "top_ten_question"|key_exists(item) %}
-            {{dash.top_ten_question(home_title, "report:: question",  "report:: poids preview" , item.top_ten_question,dashboard.getTitleDate('dmin') , dashboard.getTitleDate('dmax')) }}
+            {{dash.top_ten_question(app['phraseanet.registry'].get('GV_homeTitle'), "report:: question",  "report:: poids preview" , item.top_ten_question,dashboard.getTitleDate('dmin') , dashboard.getTitleDate('dmax')) }}
         {%endif %}
         {% if "top_ten_site"|key_exists(item) %}
                 {{ dash.table('report:: site d\'ou les photo sont les plus consultees' , 'report:: site' , 'report:: nombre de vue', item.top_ten_site, dashboard.getTitleDate('dmin'), dashboard.getTitleDate('dmax'), "false", "false") }}

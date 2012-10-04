@@ -41,6 +41,11 @@ class Upload implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
+        $controllers->before(function(Request $request) use ($app) {
+            $app['firewall']->requireAuthentication()
+                ->requireRight('addrecord');
+        });
+
         /**
          * Upload form route
          *
@@ -106,13 +111,12 @@ class Upload implements ControllerProviderInterface
         $maxFileSize = $this->getUploadMaxFileSize();
 
         return $app['twig']->render(
-                'prod/upload/upload-flash.html.twig', array(
-                'sessionId'           => session_id(),
-                'collections'         => $this->getGrantedCollections($app['phraseanet.core']->getAuthenticatedUser()),
-                'maxFileSize'         => $maxFileSize,
-                'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
-                )
-        );
+            'prod/upload/upload-flash.html.twig', array(
+            'sessionId'           => session_id(),
+            'collections'         => $this->getGrantedCollections($app['phraseanet.user']),
+            'maxFileSize'         => $maxFileSize,
+            'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
+        ));
     }
 
     /**
@@ -128,12 +132,11 @@ class Upload implements ControllerProviderInterface
         $maxFileSize = $this->getUploadMaxFileSize();
 
         return $app['twig']->render(
-                'prod/upload/upload.html.twig', array(
-                'collections'         => $this->getGrantedCollections($app['phraseanet.core']->getAuthenticatedUser()),
-                'maxFileSize'         => $maxFileSize,
-                'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
-                )
-        );
+            'prod/upload/upload.html.twig', array(
+            'collections'         => $this->getGrantedCollections($app['phraseanet.user']),
+            'maxFileSize'         => $maxFileSize,
+            'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
+        ));
     }
 
     /**
@@ -165,17 +168,17 @@ class Upload implements ControllerProviderInterface
 
         $base_id = $request->request->get('base_id');
 
-        if ( ! $base_id) {
+        if (!$base_id) {
             throw new \Exception_BadRequest('Missing base_id parameter');
         }
 
-        if ( ! $app['phraseanet.core']->getAuthenticatedUser()->ACL()->has_right_on_base($base_id, 'canaddrecord')) {
+        if (!$app['phraseanet.user']->ACL()->has_right_on_base($base_id, 'canaddrecord')) {
             throw new \Exception_Forbidden('User is not allowed to add record on this collection');
         }
 
         $file = current($request->files->get('files'));
 
-        if ( ! $file->isValid()) {
+        if (!$file->isValid()) {
             throw new \Exception_BadRequest('Uploaded file is invalid');
         }
 
@@ -184,24 +187,17 @@ class Upload implements ControllerProviderInterface
             $uploadedFilename = $file->getRealPath();
             $renamedFilename = $file->getRealPath() . '.' . pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
 
-            $originalname = $file->getClientOriginalName();
-            $clientMimeType = $file->getClientMimeType();
-            $size = $file->getSize();
-            $error = $file->getError();
+            $app['filesystem']->rename($uploadedFilename, $renamedFilename);
 
-            $app['phraseanet.core']['file-system']->rename($uploadedFilename, $renamedFilename);
-
-            $file = new UploadedFile($renamedFilename, $originalname, $clientMimeType, $size, $error);
-
-            $media = $app['phraseanet.core']['mediavorus']->guess($file);
-            $collection = \collection::get_from_base_id($base_id);
+            $media = $app['mediavorus']->guess($renamedFilename);
+            $collection = \collection::get_from_base_id($app, $base_id);
 
             $lazaretSession = new LazaretSession();
-            $lazaretSession->setUsrId($app['phraseanet.core']->getAuthenticatedUser()->get_id());
+            $lazaretSession->setUsrId($app['phraseanet.user']->get_id());
 
-            $app['phraseanet.core']['EM']->persist($lazaretSession);
+            $app['EM']->persist($lazaretSession);
 
-            $packageFile = new File($media, $collection, $file->getClientOriginalName());
+            $packageFile = new File($app, $media, $collection, $file->getClientOriginalName());
 
             $postStatus = $request->request->get('status');
 
@@ -212,7 +208,7 @@ class Upload implements ControllerProviderInterface
                 foreach (range(0, 63) as $i) {
                     $status .= isset($postStatus[$i]) ? ($postStatus[$i] ? '1' : '0') : '0';
                 }
-                $packageFile->addAttribute(new Status(strrev($status)));
+                $packageFile->addAttribute(new Status($app, strrev($status)));
             }
 
             $forceBehavior = $request->request->get('forceAction');
@@ -222,7 +218,7 @@ class Upload implements ControllerProviderInterface
 
             $callback = function($element, $visa, $code) use (&$reasons, &$elementCreated) {
                     foreach ($visa->getResponses() as $response) {
-                        if ( ! $response->isOk()) {
+                        if (!$response->isOk()) {
                             $reasons[] = $response->getMessage();
                         }
                     }
@@ -230,13 +226,13 @@ class Upload implements ControllerProviderInterface
                     $elementCreated = $element;
                 };
 
-            $code = $app['phraseanet.core']['border-manager']->process(
+            $code = $app['border-manager']->process(
                 $lazaretSession, $packageFile, $callback, $forceBehavior
             );
 
-            $app['phraseanet.core']['file-system']->rename($renamedFilename, $uploadedFilename);
+            $app['filesystem']->rename($renamedFilename, $uploadedFilename);
 
-            if ( ! ! $forceBehavior) {
+            if (!!$forceBehavior) {
                 $reasons = array();
             }
 
@@ -247,10 +243,7 @@ class Upload implements ControllerProviderInterface
             } else {
                 $params = array('lazaret_file' => $elementCreated);
 
-                $appbox = $app['phraseanet.appbox'];
-
-                $eventsManager = $app['phraseanet.core']['events-manager'];
-                $eventsManager->trigger('__UPLOAD_QUARANTINE__', $params);
+                $app['events-manager']->trigger('__UPLOAD_QUARANTINE__', $params);
 
                 $id = $elementCreated->getId();
                 $element = 'lazaret';
@@ -300,7 +293,7 @@ class Upload implements ControllerProviderInterface
 
         foreach ($user->ACL()->get_granted_base(array('canaddrecord')) as $collection) {
             $databox = $collection->get_databox();
-            if ( ! isset($collections[$databox->get_sbas_id()])) {
+            if (!isset($collections[$databox->get_sbas_id()])) {
                 $collections[$databox->get_sbas_id()] = array(
                     'databox'             => $databox,
                     'databox_collections' => array()

@@ -4,41 +4,23 @@ require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.
 
 class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
-    protected $client;
-
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Admin.php';
-
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-
-        return $app;
-    }
-
-    public function setUp()
-    {
-        parent::setUp();
-        $this->client = $this->createClient();
-    }
-
     /**
      * Default route test
      */
     public function testCheckMulti()
     {
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
-        $databox = array_shift($appbox->get_databoxes());
+        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
+        $databox = array_shift($databoxes);
 
         $tag = new PHPExiftool\Driver\Tag\IPTC\ObjectName();
 
-        $field = \databox_field::create($databox, "test" . time(), false);
+        $field = \databox_field::create(self::$DI['app'], $databox, "test" . time(), false);
         $field->set_tag($tag)->save();
 
-        $this->client->request("GET", "/fields/checkmulti/", array(
+        self::$DI['client']->request("GET", "/admin/fields/checkmulti/", array(
             'source' => $tag->getTagname(), 'multi'  => 'false'));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
         $this->assertEquals("application/json", $response->headers->get("content-type"));
         $datas = json_decode($response->getContent());
         $this->assertTrue(is_object($datas));
@@ -49,18 +31,18 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testCheckReadOnly()
     {
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
-        $databox = array_shift($appbox->get_databoxes());
+        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
+        $databox = array_shift($databoxes);
 
         $tag = new PHPExiftool\Driver\Tag\IPTC\ObjectName();
 
-        $field = \databox_field::create($databox, "test" . time(), false);
+        $field = \databox_field::create(self::$DI['app'], $databox, "test" . time(), false);
         $field->set_tag($tag)->save();
 
-        $this->client->request("GET", "/fields/checkreadonly/", array(
+        self::$DI['client']->request("GET", "/admin/fields/checkreadonly/", array(
             'source'   => $tag->getTagname(), 'readonly' => 'false'));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
         $this->assertEquals("application/json", $response->headers->get("content-type"));
         $datas = json_decode($response->getContent());
         $this->assertTrue(is_object($datas));
