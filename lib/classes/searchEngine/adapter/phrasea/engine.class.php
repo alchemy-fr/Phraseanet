@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     searchEngine
@@ -124,13 +126,15 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
      * @var string
      */
     protected $opt_record_type;
+    protected $app;
 
     /**
      *
      * @return searchEngine_adapter_phrasea_engine
      */
-    public function __construct()
+    public function __construct(Application $app)
     {
+        $this->app = $app;
         return $this;
     }
 
@@ -238,12 +242,9 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
             $query .= ' AND recordtype=' . $this->opt_record_type;
         }
 
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
-
         $sql = 'SELECT query, query_time FROM cache WHERE session_id = :ses_id';
-        $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute(array(':ses_id' => $session->get_ses_id()));
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt->execute(array(':ses_id' => $this->app['session']->get('phrasea_session_id')));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -265,7 +266,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
             self::addQuery($query);
             self::query();
         } else {
-            $this->total_available = $this->total_results = $session->get_session_prefs('phrasea_engine_n_results');
+            $this->total_available = $this->total_results = $this->app['session']->get('phrasea_engine_n_results');
         }
 
         $results = new set_result();
@@ -275,7 +276,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
         $this->offset_start = $courcahnum = (($page - 1) * $perPage);
 
         $res = phrasea_fetch_results(
-            $session->get_ses_id(), (int) (($page - 1) * $perPage) + 1, $perPage, false
+            $this->app['session']->get('phrasea_session_id'), (int) (($page - 1) * $perPage) + 1, $perPage, false
         );
 
         $rs = array();
@@ -284,9 +285,10 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
 
         foreach ($rs as $irec => $data) {
             try {
-                $sbas_id = phrasea::sbasFromBas($data['base_id']);
+                $sbas_id = phrasea::sbasFromBas($this->app, $data['base_id']);
 
                 $record = new record_adapter(
+                        $this->app,
                         $sbas_id,
                         $data['record_id'],
                         $courcahnum
@@ -308,9 +310,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
      */
     public function reset_cache()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
-        phrasea_clear_cache($session->get_ses_id());
+        phrasea_clear_cache($this->app['session']->get('phrasea_session_id'));
         $this->reseted = true;
 
         return $this;
@@ -332,12 +332,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
         return $status;
     }
 
-    /**
-     *
-     * @param  Session_Handler $session
-     * @return array
-     */
-    public function get_suggestions(Session_Handler $session)
+    public function get_suggestions($I18n)
     {
         $props = array();
         foreach ($this->qp['main']->proposals['QUERIES'] as $prop) {
@@ -366,10 +361,6 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
      */
     protected function query()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
-        $registry = $appbox->get_registry();
-
         $dateLog = date("Y-m-d H:i:s");
         $nbanswers = 0;
 
@@ -378,10 +369,10 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
 
         $params = array(
             'query'   => $this->get_parsed_query()
-            , ':ses_id' => $session->get_ses_id()
+            , ':ses_id' => $this->app['session']->get('phrasea_session_id')
         );
 
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -406,16 +397,16 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
             $BF = array();
 
             foreach ($this->options->get_business_fields() as $base_id) {
-                $BF[] = phrasea::collFromBas($base_id);
+                $BF[] = phrasea::collFromBas($this->app, $base_id);
             }
 
             $this->results[$sbas_id] = phrasea_query2(
-                $session->get_ses_id()
+                $this->app['session']->get('phrasea_session_id')
                 , $sbas_id
                 , $this->colls[$sbas_id]
                 , $this->arrayq[$sbas_id]
-                , $registry->get('GV_sit')
-                , (string) $session->get_usr_id()
+                , $this->app['phraseanet.registry']->get('GV_sit')
+                , (string) $this->app['phraseanet.user']->get_id()
                 , false
                 , $this->opt_search_type == 1 ? PHRASEA_MULTIDOC_REGONLY : PHRASEA_MULTIDOC_DOCONLY
                 , $sort
@@ -427,9 +418,9 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
             if ($this->results[$sbas_id])
                 $nbanswers += $this->results[$sbas_id]["nbanswers"];
 
-            $logger = $session->get_logger($appbox->get_databox($sbas_id));
+            $logger = $this->app['phraseanet.logger']($this->app['phraseanet.appbox']->get_databox($sbas_id));
 
-            $conn2 = connection::getPDOConnection($sbas_id);
+            $conn2 = connection::getPDOConnection($this->app, $sbas_id);
 
             $sql3 = "INSERT INTO log_search
                (id, log_id, date, search, results, coll_id )
@@ -451,9 +442,9 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
 
         $this->total_time = $total_time;
 
-        User_Adapter::saveQuery($this->query);
+        User_Adapter::saveQuery($this->app, $this->query);
 
-        $session->set_session_prefs('phrasea_engine_n_results', $nbanswers);
+        $this->app['session']->set('phrasea_engine_n_results', $nbanswers);
 
         $this->total_available = $this->total_results = $nbanswers;
 
@@ -467,9 +458,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
      */
     protected function singleParse($sbas)
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
-        $this->qp[$sbas] = new searchEngine_adapter_phrasea_queryParser(Session_Handler::get_locale());
+        $this->qp[$sbas] = new searchEngine_adapter_phrasea_queryParser($this->app, $this->app['locale']);
         $this->qp[$sbas]->debug = false;
         if ($sbas == 'main')
             $simple_treeq = $this->qp[$sbas]->parsequery($this->query);
@@ -498,9 +487,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
             $qry .= trim($query);
         }
 
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
             foreach ($databox->get_collections() as $coll) {
                 if (in_array($coll->get_base_id(), $this->opt_bases)) {
                     $this->queries[$databox->get_sbas_id()] = $qry;
@@ -554,7 +541,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
         foreach ($this->queries as $sbas => $qryBas)
             $this->singleParse($sbas);
 
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
             if ( ! isset($this->queries[$databox->get_sbas_id()]))
                 continue;
 
@@ -597,10 +584,8 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
     {
         $ret = array();
 
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
         $res = phrasea_fetch_results(
-            $session->get_ses_id(), ($record->get_number() + 1), 1, true, "[[em]]", "[[/em]]"
+            $this->app['session']->get('phrasea_session_id'), ($record->get_number() + 1), 1, true, "[[em]]", "[[/em]]"
         );
 
         if ( ! isset($res['results']) || ! is_array($res['results'])) {

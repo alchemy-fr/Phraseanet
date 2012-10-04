@@ -11,6 +11,8 @@
 
 namespace Entities;
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -133,9 +135,9 @@ class UsrListEntry
         return $this->list;
     }
 
-    public function getUser()
+    public function getUser(Application $app)
     {
-        return \User_Adapter::getInstance($this->getUsrId(), \appbox::get_instance(\bootstrap::getCore()));
+        return \User_Adapter::getInstance($this->getUsrId(), $app);
     }
 
     public function setUser(\User_Adapter $user)

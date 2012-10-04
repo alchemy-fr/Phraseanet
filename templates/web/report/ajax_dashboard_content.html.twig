@@ -4,7 +4,7 @@
         <div id="liste_dash"  class="center">
             {% for key in dashboard.authorizedCollection|keys %}
                 {% if not loop.first %}
-                    <em id="em_{{ key }}" >{{ key|sbas_names }}</em>
+                    <em id="em_{{ key }}" >{{ key|sbas_names(app) }}</em>
                 {% else %}
                 <em id="em_all" class="selected_em" >Toutes les bases</em>
                 {% endif %}

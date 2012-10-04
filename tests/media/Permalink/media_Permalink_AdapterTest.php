@@ -12,8 +12,8 @@ class media_Permalink_AdapterTest extends PhraseanetPHPUnitAbstract
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $databox = static::$records['record_1']->get_databox();
-        static::$object = media_Permalink_Adapter::getPermalink($databox, static::$records['record_1']->get_subdef('document'));
+        $databox = self::$DI['record_1']->get_databox();
+        static::$object = media_Permalink_Adapter::getPermalink(self::$DI['app'], $databox, self::$DI['record_1']->get_subdef('document'));
     }
 
     public function testGetPermalink()
@@ -43,11 +43,10 @@ class media_Permalink_AdapterTest extends PhraseanetPHPUnitAbstract
 
     public function testGet_url()
     {
-        $registry = registry::get_instance();
-        $url = $registry->get('GV_ServerName') . 'permalink/v1/' . static::$object->get_label() . '/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/' .
+        $url = self::$DI['app']['phraseanet.registry']->get('GV_ServerName') . 'permalink/v1/' . static::$object->get_label() . '/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/' .
             static::$object->get_token() . '/document/';
 
-        $this->assertEquals($url, static::$object->get_url($registry));
+        $this->assertEquals($url, static::$object->get_url(self::$DI['app']['phraseanet.registry']));
     }
 
     /**

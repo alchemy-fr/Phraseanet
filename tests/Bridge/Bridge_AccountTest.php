@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Application;
+
 require_once __DIR__ . '/../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 require_once __DIR__ . '/Bridge_datas.inc';
 
@@ -8,113 +10,117 @@ class Bridge_AccountTest extends PhraseanetPHPUnitAuthenticatedAbstract
     /**
      * @var Bridge_Account
      */
-    protected $object;
-    protected $api;
-    protected $dist_id;
-    protected $named;
-    protected $id;
+    protected static $object;
+    protected static $api;
+    protected static $dist_id;
+    protected static $named;
+    protected static $id;
 
-    public function setUp()
+    public static function setUpBeforeClass()
     {
-        parent::setUp();
+        parent::setUpBeforeClass();
         try {
-            $appbox = appbox::get_instance(\bootstrap::getCore());
+            $application = new Application('test');
 
             $sql = 'DELETE FROM bridge_apis WHERE name = "Apitest"';
-            $stmt = $appbox->get_connection()->prepare($sql);
+            $stmt = $application['phraseanet.appbox']->get_connection()->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();
 
-            $this->api = Bridge_Api::create($appbox, 'Apitest');
-            $this->dist_id = 'EZ1565loPP';
-            $this->named = 'Fête à pinpins';
-            $account = Bridge_Account::create($appbox, $this->api, self::$user, $this->dist_id, $this->named);
-            $this->id = $account->get_id();
+            self::$api = Bridge_Api::create($application, 'Apitest');
+            self::$dist_id = 'EZ1565loPP';
+            self::$named = 'Fête à pinpins';
+            $account = Bridge_Account::create($application, self::$api, self::$DI['user'], self::$dist_id, self::$named);
+            self::$id = $account->get_id();
 
-            $this->object = new Bridge_Account($appbox, $this->api, $this->id);
+            self::$object = new Bridge_Account($application, self::$api, self::$id);
         } catch (Exception $e) {
-            $this->fail($e->getMessage());
+            self::$fail($e->getMessage());
         }
     }
 
-    public function tearDown()
+    public static function tearDownAfterClass()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $this->object->delete();
+        if (self::$object) {
+            self::$object->delete();
+        }
 
         try {
-            new Bridge_Account($appbox, $this->api, $this->id);
-            $this->fail();
+            $application = new Application('test');
+            new Bridge_Account($application, self::$api, self::$id);
+            self::$fail();
         } catch (Bridge_Exception_AccountNotFound $e) {
 
         }
-
-        $this->api->delete();
-        parent::tearDown();
+        if (self::$api) {
+            self::$api->delete();
+        }
+        parent::tearDownAfterClass();
     }
 
     public function testGet_id()
     {
-        $this->assertTrue(is_int($this->object->get_id()));
-        $this->assertEquals($this->id, $this->object->get_id());
+        $this->assertTrue(is_int(self::$object->get_id()));
+        $this->assertEquals(self::$id, self::$object->get_id());
     }
 
     public function testGet_api()
     {
-        $this->assertInstanceOf('Bridge_Api', $this->object->get_api());
-        $this->assertEquals($this->api, $this->object->get_api());
-        $this->assertEquals($this->api->get_id(), $this->object->get_api()->get_id());
+        $start = microtime(true);
+        $this->assertInstanceOf('Bridge_Api', self::$object->get_api());
+        $this->assertEquals(self::$api, self::$object->get_api());
+        $this->assertEquals(self::$api->get_id(), self::$object->get_api()->get_id());
     }
 
     public function testGet_dist_id()
     {
-        $this->assertEquals($this->dist_id, $this->object->get_dist_id());
+        $this->assertEquals(self::$dist_id, self::$object->get_dist_id());
     }
 
     public function testGet_user()
     {
-        $this->assertInstanceOf('User_Adapter', $this->object->get_user());
-        $this->assertEquals(self::$user->get_id(), $this->object->get_user()->get_id());
+        $this->assertInstanceOf('User_Adapter', self::$object->get_user());
+        $this->assertEquals(self::$DI['user']->get_id(), self::$object->get_user()->get_id());
     }
 
     public function testGet_name()
     {
-        $this->assertEquals($this->named, $this->object->get_name());
+        $this->assertEquals(self::$named, self::$object->get_name());
     }
 
     public function testGet_created_on()
     {
-        $this->assertInstanceOf('DateTime', $this->object->get_created_on());
-        $this->assertTrue($this->object->get_created_on() <= new DateTime());
+        $this->assertInstanceOf('DateTime', self::$object->get_created_on());
+        $this->assertTrue(self::$object->get_created_on() <= new DateTime());
     }
 
     public function testGet_updated_on()
     {
-        $this->assertInstanceOf('DateTime', $this->object->get_updated_on());
-        $this->assertTrue($this->object->get_updated_on() <= new DateTime());
-        $this->assertTrue($this->object->get_updated_on() >= $this->object->get_created_on());
+        $this->assertInstanceOf('DateTime', self::$object->get_updated_on());
+        $this->assertTrue(self::$object->get_updated_on() <= new DateTime());
+        $this->assertTrue(self::$object->get_updated_on() >= self::$object->get_created_on());
 
-        $update1 = $this->object->get_updated_on();
+        $update1 = self::$object->get_updated_on();
         sleep(2);
-        $this->object->set_name('prout');
+        self::$object->set_name('prout');
 
-        $update2 = $this->object->get_updated_on();
+        $update2 = self::$object->get_updated_on();
         $this->assertTrue($update2 > $update1);
     }
 
     public function testSet_name()
     {
         $new_name = 'YODELALI &é"\'(-è_çà)';
-        $this->object->set_name($new_name);
-        $this->assertEquals($new_name, $this->object->get_name());
+        self::$object->set_name($new_name);
+        $this->assertEquals($new_name, self::$object->get_name());
         $new_name = 'BACHI BOUZOUKS';
-        $this->object->set_name($new_name);
-        $this->assertEquals($new_name, $this->object->get_name());
+        self::$object->set_name($new_name);
+        $this->assertEquals($new_name, self::$object->get_name());
     }
 
     public function testGet_accounts_by_api()
     {
-        $accounts = Bridge_Account::get_accounts_by_api(appbox::get_instance(\bootstrap::getCore()), $this->api);
+        $accounts = Bridge_Account::get_accounts_by_api(self::$DI['app'], self::$api);
         $this->assertTrue(is_array($accounts));
 
         $this->assertGreaterThan(0, count($accounts));
@@ -126,12 +132,12 @@ class Bridge_AccountTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_settings()
     {
-        $this->assertInstanceOf('Bridge_AccountSettings', $this->object->get_settings());
+        $this->assertInstanceOf('Bridge_AccountSettings', self::$object->get_settings());
     }
 
     public function testGet_accounts_by_user()
     {
-        $accounts = Bridge_Account::get_accounts_by_user(appbox::get_instance(\bootstrap::getCore()), self::$user);
+        $accounts = Bridge_Account::get_accounts_by_user(self::$DI['app'], self::$DI['user']);
 
         $this->assertTrue(is_array($accounts));
         $this->assertTrue(count($accounts) > 0);
@@ -143,8 +149,8 @@ class Bridge_AccountTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testLoad_account()
     {
-        $account = Bridge_Account::load_account(appbox::get_instance(\bootstrap::getCore()), $this->object->get_id());
-        $this->assertEquals($this->object->get_id(), $account->get_id());
+        $account = Bridge_Account::load_account(self::$DI['app'], self::$object->get_id());
+        $this->assertEquals(self::$object->get_id(), $account->get_id());
     }
 
     public function testLoad_account_from_distant_id()

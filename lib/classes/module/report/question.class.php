@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     module_report
@@ -41,9 +43,9 @@ class module_report_question extends module_report
      * @param $arg2 end date of the report
      * @param $sbas_id id of the databox
      */
-    public function __construct($arg1, $arg2, $sbas_id, $collist)
+    public function __construct(Application $app, $arg1, $arg2, $sbas_id, $collist)
     {
-        parent::__construct($arg1, $arg2, $sbas_id, $collist);
+        parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
         $this->title = _('report:: question');
     }
 
@@ -77,7 +79,7 @@ class module_report_question extends module_report
             if ($field == 'appli')
                 $caption = implode(' ', phrasea::modulesName(@unserialize($row['val'])));
             elseif ($field == "ddate")
-                $caption = phraseadate::getPrettyString(new DateTime($value));
+                $caption = $this->app['date-formatter']->getPrettyString(new DateTime($value));
             else
                 $caption = $row['val'];
             $ret[] = array('val'   => $caption, 'value' => $value);
@@ -86,7 +88,7 @@ class module_report_question extends module_report
         return $ret;
     }
 
-    protected function buildResult($rs)
+    protected function buildResult(Application $app, $rs)
     {
         $tab = array();
         $i = 0;
@@ -97,7 +99,7 @@ class module_report_question extends module_report
                 if ($row[$value]) {
                     if ($value == 'ddate')
                         $this->result[$i][$value] =
-                            $this->pretty_string ? phraseadate::getPrettyString(new DateTime($row[$value])) : $row[$value];
+                            $this->pretty_string ? $this->app['date-formatter']->getPrettyString(new DateTime($row[$value])) : $row[$value];
                     else
                         $this->result[$i][$value] = $row[$value];
                 } else

@@ -12,7 +12,7 @@ class PdfTextTest extends \PHPUnit_Framework_TestCase
     {
         $object = new PdfText();
 
-        $this->assertInstanceOf('\\PHPExiftool\\Driver\\Tag', $object);
+        $this->assertInstanceOf('\\PHPExiftool\\Driver\\TagInterface', $object);
         $this->assertInternalType('string', $object->getDescription());
         $this->assertInternalType('string', $object->getGroupName());
         $this->assertInternalType('string', $object->getId());

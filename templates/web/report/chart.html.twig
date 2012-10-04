@@ -14,7 +14,7 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <th>{% trans "report:: Connexion" %} {{  sbas_id|sbas_names }}</th>
+                        <th>{% trans "report:: Connexion" %} {{  sbas_id|sbas_names(app) }}</th>
                         {% for key, value in rs %}
                             <td>{{ value }}</td>
                         {% endfor %}
@@ -40,7 +40,7 @@
                 {% for key, value in dashboard_array.dashboard.activity_day %}
                     {% if loop.index == 1 %}
                         <tr>
-                            <th>{% trans "report:: Connexion" %} {{ key|sbas_names}}</th>
+                            <th>{% trans "report:: Connexion" %} {{ key|sbas_names(app)}}</th>
                             {% if value|length > 0 %}
                                 {% for k, v in value %}
                                     <td>{{ v }}</td>

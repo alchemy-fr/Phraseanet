@@ -2,7 +2,7 @@
   <ul>
     {% for child in record.get_container().getElements() %}
 
-      {% set thumbnail = child.getRecord().get_thumbnail() %}
+      {% set thumbnail = child.getRecord(app).get_thumbnail() %}
       {% if thumbnail.is_paysage() %}
         {% set style = 'width:65px;top:' %}
         {% set top = ((66 - (65 / (thumbnail.get_width() / thumbnail.get_height()))) / 2)|round %}
@@ -13,8 +13,8 @@
       {% endif %}
 
       {% set tooltip = '' %}
-      {% if registry.get('GV_rollover_reg_preview') %}
-        {% set tooltip = 'tooltipsrc="/prod/tooltip/caption/' ~ child.getRecord().get_sbas_id() ~ '/' ~ child.getRecord().get_record_id() ~ '/basket/"' %}
+      {% if app['phraseanet.registry'].get('GV_rollover_reg_preview') %}
+        {% set tooltip = 'tooltipsrc="/prod/tooltip/caption/' ~ child.getRecord(app).get_sbas_id() ~ '/' ~ child.getRecord(app).get_record_id() ~ '/basket/"' %}
       {% endif %}
 
       {% set class = '' %}

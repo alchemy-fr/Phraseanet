@@ -12,8 +12,7 @@ class Setup_UpgradeTest extends PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $this->object = new Setup_Upgrade($appbox);
+        $this->object = new Setup_Upgrade(self::$DI['app']);
     }
 
     public function tearDown()

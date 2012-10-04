@@ -38,8 +38,4 @@ class module_console_aboutAuthors extends Command
         return 0;
     }
 
-    public function requireSetup()
-    {
-        return false;
-    }
 }

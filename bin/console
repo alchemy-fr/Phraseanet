@@ -16,28 +16,15 @@ namespace KonsoleKommander;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-use Alchemy\Phrasea\Core\Configuration;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Command\UpgradeDBDatas;
 use Alchemy\Phrasea\Command\RescanTechnicalDatas;
 use Alchemy\Phrasea\Command\BuildMissingSubdefs;
 use Alchemy\Phrasea\Command\RecordAdd;
 use Alchemy\Phrasea\Command\CreateCollection;
-use Alchemy\Phrasea\PhraseanetServiceProvider;
-use Alchemy\Phrasea\Core\Provider\BrowserServiceProvider;
-use Silex\Provider\UrlGeneratorServiceProvider;
-use Silex\Provider\ValidatorServiceProvider;
-use Silex\Provider\TwigServiceProvider;
 use Alchemy\Phrasea\CLI;
 
-require_once dirname(__FILE__) . '/../lib/classes/bootstrap.class.php';
-
-\bootstrap::register_autoloads();
-
-$configuration = Configuration::build();
-if ($configuration->isInstalled()) {
-    require_once dirname(__FILE__) . '/../lib/bootstrap.php';
-}
+require_once dirname(__FILE__) . '/../lib/bootstrap.php';
 
 try {
     $app = new CLI("
@@ -58,14 +45,18 @@ try {
  under certain conditions; type `about:license' for details.\n\n"
             . ' KONSOLE KOMMANDER', Version::getName() . ' ' . Version::getNumber());
 
+    if (!$app['phraseanet.configuration-tester']->isInstalled()) {
+        throw new \RuntimeException('Phraseanet is not installed, use setup command instead');
+    }
+    if (!$app['phraseanet.configuration-tester']->isUpToDate()) {
+        throw new \RuntimeException('Phraseanet is not up-to-date, use setup command instead');
+    }
 
-    $app->command(new \module_console_aboutAuthors('about:authors'));
     $app->command(new \module_console_aboutAuthors('about:authors'));
     $app->command(new \module_console_aboutLicense('about:license'));
 
     $app->command(new \module_console_checkExtension('check:extension'));
 
-    $app->command(new \module_console_systemUpgrade('system:upgrade'));
     $app->command(new UpgradeDBDatas('system:upgrade-datas'));
 
     $app->command(new \module_console_sphinxGenerateSuggestion('sphinx:generate-suggestions'));
@@ -99,8 +90,9 @@ try {
     $app->command(new BuildMissingSubdefs('records:build-missing-subdefs'));
 
     $result_code = is_int($app->run()) ? : 1;
-} catch (Exception $e) {
-    echo sprintf("an error occured : %s", $e->getMessage());
+} catch (\Exception $e) {
+    $result_code = 1;
+    echo sprintf("\nAn error occured :\n\n\t\033[0;31m%s\033[0;37m\n\n", $e->getMessage());
 }
 
 exit($result_code);

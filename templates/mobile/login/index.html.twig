@@ -14,7 +14,7 @@
 {% block content %}
   <div data-role="page">
     <div data-role="header">
-      <h1>{{home_title}}</h1>
+      <h1>{{ app['phraseanet.registry'].get('GV_homeTitle') }}</h1>
     </div>
     <div data-role="content">
       <form name="send" action="/login/authenticate/" method="post" id="authentication">
@@ -26,15 +26,15 @@
           alert("{{confirmWarning|striptags}}");
           {% endif %}
         </script>
-        {% if meta_description != '' %}
-              <div class="info">{{meta_description}}</div>
+        {% if app['phraseanet.registry'].get('GV_metaDescription') != '' %}
+              <div class="info">{{ app['phraseanet.registry'].get('GV_metaDescription') }}</div>
         {% endif %}
         <div data-role="fieldcontain">
           <fieldset>
             <div data-role="fieldcontain">
-              <input autocapitalize="off" autocorrect="off" type="text" name="login" id="name" value="" {% if maintenance == true %}disabled{% endif %} tabindex="1"
+              <input autocapitalize="off" autocorrect="off" type="text" name="login" id="name" value="" {% if app['phraseanet.registry'].get('GV_maintenance') == true %}disabled{% endif %} tabindex="1"
                       placeholder="{% trans 'admin::compte-utilisateur identifiant' %}"  />
-              <input autocapitalize="off" autocorrect="off" {% if maintenance == true %}disabled{% endif %} tabindex="2"
+              <input autocapitalize="off" autocorrect="off" {% if app['phraseanet.registry'].get('GV_maintenance') == true %}disabled{% endif %} tabindex="2"
                 placeholder="{% trans 'admin::compte-utilisateur mot de passe' %}" name="pwd" id="pwd" value="" type="password" />
               <input type="hidden" name="redirect" value="{{redirect}}">
               <fieldset data-role="controlgroup">

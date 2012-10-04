@@ -2,7 +2,9 @@
 
 namespace Alchemy\Phrasea\Metadata\Tag;
 
-class TfArchivedate extends \PHPExiftool\Driver\Tag
+use PHPExiftool\Driver\AbstractTag;
+
+class TfArchivedate extends AbstractTag
 {
     protected $Id = 'tf-archivedate';
     protected $Name = 'tf-archivedate';

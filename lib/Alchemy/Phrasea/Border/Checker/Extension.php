@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Border\Checker;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Doctrine\ORM\EntityManager;
 
@@ -18,13 +19,14 @@ class Extension extends AbstractChecker
 {
     protected $extensions;
 
-    public function __construct(array $options)
+    public function __construct(Application $app, array $options)
     {
         if ( ! isset($options['extensions'])) {
             throw new \InvalidArgumentException('Missing "extensions" options');
         }
 
         $this->extensions = array_map('strtolower', (array) $options['extensions']);
+        parent::__construct($app);
     }
 
     public function check(EntityManager $em, File $file)

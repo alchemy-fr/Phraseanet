@@ -3,7 +3,9 @@
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 require_once __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Controller/Prod/Lazaret.php';
 
+use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 use Silex\WebTestCase;
+use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
 
 class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
@@ -14,24 +16,6 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     protected $client;
     protected static $need_records = false;
-
-    public function setUp()
-    {
-        parent::setUp();
-        $this->client = $this->createClient();
-    }
-
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Prod.php';
-
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-
-        $app['phraseanet.core']['file-system'] = $this->getMock('Symfony\Component\Filesystem\Filesystem', array('remove'));
-
-        return $app;
-    }
 
     public function tearDown()
     {
@@ -45,14 +29,14 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testListElement()
     {
-        $originalEm = $this->app['phraseanet.core']['EM'];
+        $originalEm = self::$DI['app']['EM'];
 
         $fileLazaret = $this->getMock('Entities\LazaretFile', array('getRecordsToSubstitute', 'getSession', 'getCollection'), array(), '', false);
 
         $fileLazaret
             ->expects($this->any())
             ->method('getRecordsToSubstitute')
-            ->will($this->returnValue(array(static::$records['record_1'])));
+            ->will($this->returnValue(array(self::$DI['record_1'])));
 
         $fileLazaret
             ->expects($this->any())
@@ -62,7 +46,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $fileLazaret
             ->expects($this->any())
             ->method('getCollection')
-            ->will($this->returnValue(self::$collection));
+            ->will($this->returnValue(self::$DI['collection']));
 
         //mock one Repositories\LazaretFile::getFiles
         $repo = $this->getMock('Repositories\LazaretFile', array('findPerPage'), array(), '', false);
@@ -79,17 +63,19 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->with($this->EqualTo('Entities\LazaretFile'))
             ->will($this->returnValue($repo));
 
-        $route = '/lazaret/';
+        $route = '/prod/lazaret/';
 
-        $this->app['phraseanet.core']['EM'] = $em;
+        self::$DI['app']['EM'] = $em;
+        self::$DI['client'] = new Client(self::$DI['app'], array());
 
-        $crawler = $this->client->request(
+        $crawler = self::$DI['client']->request(
             'GET', $route
         );
 
-        $this->app['phraseanet.core']['EM'] = $originalEm;
+        $this->assertResponseOk(self::$DI['client']->getResponse());
 
-        $this->assertResponseOk($this->client->getResponse());
+        self::$DI['app']['EM'] = $originalEm;
+        self::$DI['client'] = new Client(self::$DI['app'], array());
 
         $this->assertEquals(1, $crawler->filter('.records-subititution')->count());
 
@@ -101,7 +87,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGetElement()
     {
-        $originalEm = $this->app['phraseanet.core']['EM'];
+        $originalEm = self::$DI['app']['EM'];
 
         $em = $this->getMock('Doctrine\ORM\EntityManager', array('find'), array(), '', false);
 
@@ -114,15 +100,17 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->with($this->EqualTo('Entities\LazaretFile'), $this->EqualTo($id))
             ->will($this->returnValue($lazaretFile));
 
-        $this->app['phraseanet.core']['EM'] = $em;
+        self::$DI['app']['EM'] = $em;
+        self::$DI['client'] = new Client(self::$DI['app'], array());
 
-        $this->client->request('GET', '/lazaret/' . $id . '/');
+        self::$DI['client']->request('GET', '/prod/lazaret/' . $id . '/');
 
-        $this->app['phraseanet.core']['EM'] = $originalEm;
-
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertResponseOk($response);
+
+        self::$DI['app']['EM'] = $originalEm;
+        self::$DI['client'] = new Client(self::$DI['app'], array());
 
         $content = json_decode($response->getContent());
 
@@ -145,7 +133,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGetElementException()
     {
-        $originalEm = $this->app['phraseanet.core']['EM'];
+        $originalEm = self::$DI['app']['EM'];
 
         $em = $this->getMock('Doctrine\ORM\EntityManager', array('find'), array(), '', false);
 
@@ -156,13 +144,15 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->with($this->EqualTo('Entities\LazaretFile'), $this->EqualTo($id))
             ->will($this->returnValue(null));
 
-        $this->app['phraseanet.core']['EM'] = $em;
+        self::$DI['app']['EM'] = $em;
+        self::$DI['client'] = new Client(self::$DI['app'], array());
 
-        $this->client->request('GET', '/lazaret/' . $id . '/');
+        self::$DI['client']->request('GET', '/prod/lazaret/' . $id . '/');
 
-        $this->app['phraseanet.core']['EM'] = $originalEm;
+        $response = self::$DI['client']->getResponse();
 
-        $response = $this->client->getResponse();
+        self::$DI['app']['EM'] = $originalEm;
+        self::$DI['client'] = new Client(self::$DI['app'], array());
 
         $this->assertResponseOk($response);
         $this->assertBadJsonContent(json_decode($response->getContent()));
@@ -175,15 +165,15 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testAddElement()
     {
-        $originalEm = $this->app['phraseanet.core']['EM'];
+        $originalEm = self::$DI['app']['EM'];
 
         //mock Doctrine\ORM\EntityManager
         $em = $this->getMock('Doctrine\ORM\EntityManager', array(), array(), '', false);
 
         $lazaretFile = $this->getOneLazaretFile();
 
-        $lazaretFileName = $this->app['phraseanet.core']->getRegistry()->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getFilename();
-        $lazaretThumbFileName = $this->app['phraseanet.core']->getRegistry()->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getThumbFilename();
+        $lazaretFileName = self::$DI['app']['phraseanet.registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getFilename();
+        $lazaretThumbFileName = self::$DI['app']['phraseanet.registry']->get('GV_RootPath') . 'tmp/lazaret/' . $lazaretFile->getThumbFilename();
 
         copy(__DIR__ . '/../../../../testfiles/cestlafete.jpg', $lazaretFileName);
         copy(__DIR__ . '/../../../../testfiles/cestlafete.jpg', $lazaretThumbFileName);
@@ -202,9 +192,9 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $lazaretAttribute->expects($this->exactly(4))
             ->method('getName')
             ->will($this->onConsecutiveCalls(
-                    Alchemy\Phrasea\Border\Attribute\Attribute::NAME_METADATA, Alchemy\Phrasea\Border\Attribute\Attribute::NAME_STORY, Alchemy\Phrasea\Border\Attribute\Attribute::NAME_STATUS, Alchemy\Phrasea\Border\Attribute\Attribute::NAME_METAFIELD
+            AttributeInterface::NAME_METADATA, AttributeInterface::NAME_STORY, AttributeInterface::NAME_STATUS, AttributeInterface::NAME_METAFIELD
                 ));
-        $story = record_adapter::createStory(self::$collection);
+        $story = record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
         //Provide some valid test values
         $lazaretAttribute->expects($this->exactly(4))
             ->method('getValue')
@@ -233,17 +223,20 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $em->expects($this->once())
             ->method('flush');
 
-        $this->app['phraseanet.core']['EM'] = $em;
+        self::$DI['app']['EM'] = $em;
+        self::$DI['client'] = new Client(self::$DI['app'], array());
 
-        $this->client->request('POST', '/lazaret/' . $id . '/force-add/', array(
+        self::$DI['client']->request('POST', '/prod/lazaret/' . $id . '/force-add/', array(
             'bas_id'          => $lazaretFile->getBaseId(),
             'keep_attributes' => 1,
             'attributes'      => array(1, 2, 3, 4) //Check only the four first attributes
         ));
 
-        $this->app['phraseanet.core']['EM'] = $originalEm;
+        $response = self::$DI['client']->getResponse();
 
-        $response = $this->client->getResponse();
+        self::$DI['app']['EM'] = $originalEm;
+        self::$DI['client'] = new Client(self::$DI['app'], array());
+
         $this->assertResponseOk($response);
         $this->assertGoodJsonContent(json_decode($response->getContent()));
 
@@ -257,7 +250,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testAddElementBadRequestException()
     {
-        $originalEm = $this->app['phraseanet.core']['EM'];
+        $originalEm = self::$DI['app']['EM'];
 
         //mock Doctrine\ORM\EntityManager
         $em = $this->getMock('Doctrine\ORM\EntityManager', array(), array(), '', false);
@@ -272,17 +265,19 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->with($this->EqualTo('Entities\LazaretFile'), $this->EqualTo($id))
             ->will($this->returnValue($lazaretFile));
 
-        $this->app['phraseanet.core']['EM'] = $em;
+        self::$DI['app']['EM'] = $em;
+        self::$DI['client'] = new Client(self::$DI['app'], array());
 
         //Ommit base_id mandatory param
-        $this->client->request('POST', '/lazaret/' . $id . '/force-add/', array(
+        self::$DI['client']->request('POST', '/prod/lazaret/' . $id . '/force-add/', array(
             'keep_attributes' => 1,
             'attributes'      => array(1, 2, 3, 4) //Check only the four first attributes
         ));
 
-        $this->app['phraseanet.core']['EM'] = $originalEm;
+        $response = self::$DI['client']->getResponse();
 
-        $response = $this->client->getResponse();
+        self::$DI['app']['EM'] = $originalEm;
+        self::$DI['client'] = new Client(self::$DI['app'], array());
 
         $this->assertResponseOk($response);
         $this->assertBadJsonContent(json_decode($response->getContent()));
@@ -295,17 +290,19 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testAddElementException()
     {
-        $originalEm = $this->app['phraseanet.core']['EM'];
+        $originalEm = self::$DI['app']['EM'];
+        self::$DI['client'] = new Client(self::$DI['app'], array());
 
-        $this->client->request('POST', '/lazaret/99999/force-add/', array(
+        self::$DI['client']->request('POST', '/prod/lazaret/99999/force-add/', array(
             'bas_id'          => 1,
             'keep_attributes' => 1,
             'attributes'      => array(1, 2, 3, 4) //Check only the four first attributes
         ));
 
-        $this->app['phraseanet.core']['EM'] = $originalEm;
+        $response = self::$DI['client']->getResponse();
 
-        $response = $this->client->getResponse();
+        self::$DI['app']['EM'] = $originalEm;
+        self::$DI['client'] = new Client(self::$DI['app'], array());
 
         $this->assertResponseOk($response);
         $this->assertBadJsonContent(json_decode($response->getContent()));
@@ -318,18 +315,16 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $lazaretFile = $this->insertOneLazaretFile();
 
-        $route = sprintf('/lazaret/%s/deny/', $lazaretFile->getId());
+        $route = sprintf('/prod/lazaret/%s/deny/', $lazaretFile->getId());
 
-        $this->client->request('POST', $route);
+        self::$DI['client']->request('POST', $route);
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertResponseOk($response);
         $this->assertGoodJsonContent(json_decode($response->getContent()));
 
-        $query = self::$core->getEntityManager()->createQuery(
-            'SELECT COUNT(l.id) FROM \Entities\LazaretFile l'
-        );
+        $query = self::$DI['app']['EM']->createQuery('SELECT COUNT(l.id) FROM \Entities\LazaretFile l');
 
         $count = $query->getSingleScalarResult();
 
@@ -345,16 +340,15 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $lazaretFile = $this->insertOneLazaretFile();
 
-        $route = sprintf('/lazaret/empty/');
+        $route = sprintf('/prod/lazaret/empty/');
+        self::$DI['client']->request('POST', $route);
 
-        $this->client->request('POST', $route);
-
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertResponseOk($response);
         $this->assertGoodJsonContent(json_decode($response->getContent()));
 
-        $query = self::$core->getEntityManager()->createQuery(
+        $query = self::$DI['app']['EM']->createQuery(
             'SELECT COUNT(l.id) FROM \Entities\LazaretFile l'
         );
 
@@ -370,11 +364,11 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testDenyElementException()
     {
-        $route = sprintf('/lazaret/%s/deny/', '99999');
+        $route = sprintf('/prod/lazaret/%s/deny/', '99999');
 
-        $this->client->request('POST', $route);
+        self::$DI['client']->request('POST', $route);
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertResponseOk($response);
         $this->assertBadJsonContent(json_decode($response->getContent()));
@@ -385,7 +379,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testAcceptElement()
     {
-        $originalEm = $this->app['phraseanet.core']['EM'];
+        $originalEm = self::$DI['app']['EM'];
 
         //mock Doctrine\ORM\EntityManager
         $em = $this->getMock('Doctrine\ORM\EntityManager', array(), array(), '', false);
@@ -402,7 +396,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         //expect to fetch record
         $databox->expects($this->once())
             ->method('get_record')
-            ->with($this->equalTo(self::$records['record_1']->get_record_id()))
+            ->with($this->equalTo(self::$DI['record_1']->get_record_id()))
             ->will($this->returnValue($record));
 
         $collection = $this->getMock('collection', array(), array(), '', false);
@@ -417,7 +411,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         //expect to fetch possible records to subtitute
         $lazaretFile->expects($this->once())
             ->method('getRecordsToSubstitute')
-            ->will($this->returnValue(array(self::$records['record_2'], self::$records['record_1'])));
+            ->will($this->returnValue(array(self::$DI['record_2'], self::$DI['record_1'])));
 
         copy(__DIR__ . '/../../../../testfiles/cestlafete.jpg', __DIR__ . '/../../../../../tmp/lazaret/cestlafete.jpg');
 
@@ -450,15 +444,17 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $em->expects($this->once())
             ->method('flush');
 
-        $this->app['phraseanet.core']['EM'] = $em;
+        self::$DI['app']['EM'] = $em;
+        self::$DI['client'] = new Client(self::$DI['app'], array());
 
-        $this->client->request('POST', '/lazaret/' . $id . '/accept/', array(
-            'record_id' => self::$records['record_1']->get_record_id()
+        self::$DI['client']->request('POST', '/prod/lazaret/' . $id . '/accept/', array(
+            'record_id' => self::$DI['record_1']->get_record_id()
         ));
 
-        $this->app['phraseanet.core']['EM'] = $originalEm;
+        $response = self::$DI['client']->getResponse();
 
-        $response = $this->client->getResponse();
+        self::$DI['app']['EM'] = $originalEm;
+        self::$DI['client'] = new Client(self::$DI['app'], array());
         $content = json_decode($response->getContent());
 
         $this->assertResponseOk($response);
@@ -472,7 +468,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testAcceptElementNoRecordException()
     {
-        $originalEm = $this->app['phraseanet.core']['EM'];
+        $originalEm = self::$DI['app']['EM'];
 
         //mock Doctrine\ORM\EntityManager
         $em = $this->getMock('Doctrine\ORM\EntityManager', array(), array(), '', false);
@@ -497,15 +493,17 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $id = 1;
 
-        $this->app['phraseanet.core']['EM'] = $em;
+        self::$DI['app']['EM'] = $em;
+        self::$DI['client'] = new Client(self::$DI['app'], array());
 
-        $this->client->request('POST', '/lazaret/' . $id . '/accept/', array(
-            'record_id' => self::$records['record_1']->get_record_id()
+        self::$DI['client']->request('POST', '/prod/lazaret/' . $id . '/accept/', array(
+            'record_id' => self::$DI['record_1']->get_record_id()
         ));
 
-        $this->app['phraseanet.core']['EM'] = $originalEm;
+        $response = self::$DI['client']->getResponse();
 
-        $response = $this->client->getResponse();
+        self::$DI['app']['EM'] = $originalEm;
+        self::$DI['client'] = new Client(self::$DI['app'], array());
 
         $this->assertResponseOk($response);
         $this->assertBadJsonContent(json_decode($response->getContent()));
@@ -518,11 +516,11 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testAcceptElementException()
     {
-        $route = sprintf('/lazaret/%s/accept/', '99999');
+        $route = sprintf('/prod/lazaret/%s/accept/', '99999');
 
-        $this->client->request('POST', $route, array('record_id' => 1));
+        self::$DI['client']->request('POST', $route, array('record_id' => 1));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertResponseOk($response);
         $this->assertBadJsonContent(json_decode($response->getContent()));
@@ -533,7 +531,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testAcceptElementBadRequestException()
     {
-        $originalEm = $this->app['phraseanet.core']['EM'];
+        $originalEm = self::$DI['app']['EM'];
 
         //mock Doctrine\ORM\EntityManager
         $em = $this->getMock('Doctrine\ORM\EntityManager', array(), array(), '', false);
@@ -548,14 +546,16 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->with($this->EqualTo('Entities\LazaretFile'), $this->EqualTo($id))
             ->will($this->returnValue($lazaretFile));
 
-        $this->app['phraseanet.core']['EM'] = $em;
+        self::$DI['app']['EM'] = $em;
+        self::$DI['client'] = new Client(self::$DI['app'], array());
 
         //Ommit record_id mandatory param
-        $this->client->request('POST', '/lazaret/' . $id . '/accept/');
+        self::$DI['client']->request('POST', '/prod/lazaret/' . $id . '/accept/');
 
-        $this->app['phraseanet.core']['EM'] = $originalEm;
+        $response = self::$DI['client']->getResponse();
 
-        $response = $this->client->getResponse();
+        self::$DI['app']['EM'] = $originalEm;
+        self::$DI['client'] = new Client(self::$DI['app'], array());
 
         $this->assertResponseOk($response);
         $this->assertBadJsonContent(json_decode($response->getContent()));
@@ -568,7 +568,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testThumbnailElement()
     {
-        $originalEm = $this->app['phraseanet.core']['EM'];
+        $originalEm = self::$DI['app']['EM'];
 
         //mock Doctrine\ORM\EntityManager
         $em = $this->getMock('Doctrine\ORM\EntityManager', array(), array(), '', false);
@@ -593,13 +593,15 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->with($this->EqualTo('Entities\LazaretFile'), $this->EqualTo($id))
             ->will($this->returnValue($lazaretFile));
 
-        $this->app['phraseanet.core']['EM'] = $em;
+        self::$DI['app']['EM'] = $em;
+        self::$DI['client'] = new Client(self::$DI['app'], array());
 
-        $this->client->request('GET', '/lazaret/' . $id . '/thumbnail/');
+        self::$DI['client']->request('GET', '/prod/lazaret/' . $id . '/thumbnail/');
 
-        $this->app['phraseanet.core']['EM'] = $originalEm;
+        $response = self::$DI['client']->getResponse();
 
-        $response = $this->client->getResponse();
+        self::$DI['app']['EM'] = $originalEm;
+        self::$DI['client'] = new Client(self::$DI['app'], array());
 
         $this->assertResponseOk($response);
 
@@ -611,11 +613,11 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testThumbnailException()
     {
-        $route = sprintf('/lazaret/%s/thumbnail/', '99999');
+        $route = sprintf('/prod/lazaret/%s/thumbnail/', '99999');
 
-        $this->client->request('GET', $route);
+        self::$DI['client']->request('GET', $route);
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertFalse($response->isOk());
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
@@ -625,7 +627,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         //The lazaret session
         $lazaretSession = new \Entities\LazaretSession();
-        $lazaretSession->setUsrId(self::$user->get_id());
+        $lazaretSession->setUsrId(self::$DI['user']->get_id());
         $lazaretSession->setUpdated(new \DateTime('now'));
         $lazaretSession->setCreated(new \DateTime('-1 day'));
 
@@ -634,7 +636,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $lazaretFile->setOriginalName('test');
         $lazaretFile->setFilename('test001.CR2');
         $lazaretFile->setThumbFilename('test001.CR2');
-        $lazaretFile->setBaseId(self::$collection->get_base_id());
+        $lazaretFile->setBaseId(self::$DI['collection']->get_base_id());
         $lazaretFile->setSession($lazaretSession);
         $lazaretFile->setSha256('3191af52748620e0d0da50a7b8020e118bd8b8a0845120b0bb');
         $lazaretFile->setUuid('7b8ef0e3-dc8f-4b66-9e2f-bd049d175124');

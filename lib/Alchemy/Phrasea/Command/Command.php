@@ -31,47 +31,13 @@ abstract class Command extends SymfoCommand
     protected $container = null;
 
     /**
-     * Constructor
-     * @param type $name
-     */
-    public function __construct($name)
-    {
-        parent::__construct($name);
-    }
-
-    /**
-     * Tell whether the command requires Phraseanet to be set-up or not
-     *
-     * @return Boolean
-     */
-    abstract public function requireSetup();
-
-    /**
-     * Check if Phraseanet is set-up and if the current command requires
-     * Phraseanet to be set-up
-     *
-     * @throws \RuntimeException
-     * @return Boolean
-     */
-    public function checkSetup()
-    {
-        if ($this->requireSetup()) {
-            if ($this->container['phraseanet.core'] && ! $this->container['phraseanet.core']->getConfiguration()->isInstalled()) {
-                throw new \RuntimeException('Phraseanet must be set-up');
-            }
-        }
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->checkSetup();
-
         if ($input->getOption('verbose')) {
             $handler = new StreamHandler('php://stdout');
-            $this->container['phraseanet.core']['monolog']->pushHandler($handler);
+            $this->container['monolog']->pushHandler($handler);
         }
 
         return $this->doExecute($input, $output);

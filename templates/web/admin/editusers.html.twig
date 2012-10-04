@@ -163,7 +163,7 @@
 
               </th>
               <th colspan="26">
-                <img src="/skins/lng/inclin-{{session.get_I18n()}}.png" style="width:698px"/>
+                <img src="/skins/lng/inclin-{{app['locale.I18n']}}.png" style="width:698px"/>
               </th>
             </tr>
           </thead>
@@ -186,7 +186,7 @@
 
                 </th>
                 <th colspan="26">
-                  <img src="/skins/lng/inclin-{{session.get_I18n()}}.gif" >
+                  <img src="/skins/lng/inclin-{{app['locale.I18n']}}.gif" >
                 </th>
               </tr>
             </thead>-->
@@ -203,7 +203,7 @@
 
               <tr>
                 <td style="width:122px;overflow:hidden;white-space:nowrap;">
-                  {{rights['sbas_id']|sbas_names}}
+                  {{rights['sbas_id']|sbas_names(app)}}
                 </td>
                 <td class="users_col options">
                   <div>
@@ -337,44 +337,44 @@
                   </div>
                 </td>
                 <td style="text-align:center;width:19px;" title="{% trans 'Allowed to publish' %}">
-                  {{_self.format_checkbox(user, rights, 'bas_chupub', users, 'sbas')}}
+                  {{_self.format_checkbox(app['phraseanet.user'], rights, 'bas_chupub', users, 'sbas')}}
                 </td>
                 <td style="text-align:center;width:19px;" title="{% trans 'Manage Thesaurus' %}">
-                  {{_self.format_checkbox(user, rights, 'bas_modif_th', users, 'sbas')}}
+                  {{_self.format_checkbox(app['phraseanet.user'], rights, 'bas_modif_th', users, 'sbas')}}
                 </td>
                 <td style="text-align:center;width:19px;" title="{% trans 'Manage Database' %}">
-                  {{_self.format_checkbox(user, rights, 'bas_manage', users, 'sbas')}}
+                  {{_self.format_checkbox(app['phraseanet.user'], rights, 'bas_manage', users, 'sbas')}}
                 </td>
                 <td style="text-align:center;width:19px;" title="{% trans 'Manage DB fields' %}">
-                  {{_self.format_checkbox(user, rights, 'bas_modify_struct', users, 'sbas')}}
+                  {{_self.format_checkbox(app['phraseanet.user'], rights, 'bas_modify_struct', users, 'sbas')}}
                 </td>
                 <td style="text-align:center;width:48px;"></td>
               </tr>
               {% endif %}
               <tr>
                 <td style="overflow:hidden;white-space:nowrap;">
-                  {{rights['base_id']|bas_names}}
+                  {{rights['base_id']|bas_names(app)}}
                 </td>
                 <td class="users_col case_right_access" title="{% trans 'Access' %}">
-                  {{_self.format_checkbox(user, rights, 'access', users, 'base')}}
+                  {{_self.format_checkbox(app['phraseanet.user'], rights, 'access', users, 'base')}}
                 </td>
                 <td class="users_col case_right_actif" title="{% trans 'Active' %}">
-                  {{_self.format_checkbox(user, rights, 'actif', users, 'base')}}
+                  {{_self.format_checkbox(app['phraseanet.user'], rights, 'actif', users, 'base')}}
                 </td>
                 <td class="users_col case_right_canputinalbum" title="{% trans 'Allowed to add in basket' %}">
-                  {{_self.format_checkbox(user, rights, 'canputinalbum', users, 'base')}}
+                  {{_self.format_checkbox(app['phraseanet.user'], rights, 'canputinalbum', users, 'base')}}
                 </td>
                 <td class="users_col case_right_candwnldpreview" title="{% trans 'Access to preview' %}">
-                  {{_self.format_checkbox(user, rights, 'candwnldpreview', users, 'base')}}
+                  {{_self.format_checkbox(app['phraseanet.user'], rights, 'candwnldpreview', users, 'base')}}
                 </td>
                 <td class="users_col case_right_nowatermark" title="{% trans 'Remove watermark' %}">
-                  {{_self.format_checkbox(user, rights, 'nowatermark', users, 'base')}}
+                  {{_self.format_checkbox(app['phraseanet.user'], rights, 'nowatermark', users, 'base')}}
                 </td>
                 <td class="users_col case_right_candwnldhd" title="{% trans 'Access to HD' %}">
-                  {{_self.format_checkbox(user, rights, 'candwnldhd', users, 'base')}}
+                  {{_self.format_checkbox(app['phraseanet.user'], rights, 'candwnldhd', users, 'base')}}
                 </td>
                 <td class="users_col case_right_cancmd" title="{% trans 'Allowed to order' %}">
-                  {{_self.format_checkbox(user, rights, 'cancmd', users, 'base')}}
+                  {{_self.format_checkbox(app['phraseanet.user'], rights, 'cancmd', users, 'base')}}
                 </td>
                 <td class="users_col case_right_quota" title="{% trans 'Set download quotas' %}">
                   <div class="quota_trigger quota_{{rights['base_id']}}">
@@ -410,34 +410,34 @@
                 <td style="text-align:center;width:100px;"></td>
 
                 <td class="users_col case_right_canaddrecord" title="{% trans 'Allowed to add' %}">
-                  {{_self.format_checkbox(user, rights, 'canaddrecord', users, 'base')}}
+                  {{_self.format_checkbox(app['phraseanet.user'], rights, 'canaddrecord', users, 'base')}}
                 </td>
                 <td class="users_col case_right_canmodifrecord" title="{% trans 'Allowed to edit' %}">
-                  {{_self.format_checkbox(user, rights, 'canmodifrecord', users, 'base')}}
+                  {{_self.format_checkbox(app['phraseanet.user'], rights, 'canmodifrecord', users, 'base')}}
                 </td>
                 <td class="users_col case_right_chgstatus" title="{% trans 'Allowed to change statuses' %}">
-                  {{_self.format_checkbox(user, rights, 'chgstatus', users, 'base')}}
+                  {{_self.format_checkbox(app['phraseanet.user'], rights, 'chgstatus', users, 'base')}}
                 </td>
                 <td class="users_col case_right_candeleterecord" title="{% trans 'Allowed to delete' %}">
-                  {{_self.format_checkbox(user, rights, 'candeleterecord', users, 'base')}}
+                  {{_self.format_checkbox(app['phraseanet.user'], rights, 'candeleterecord', users, 'base')}}
                 </td>
                 <td class="users_col case_right_imgtools" title="{% trans 'Access to image tools' %}">
-                  {{_self.format_checkbox(user, rights, 'imgtools', users, 'base')}}
+                  {{_self.format_checkbox(app['phraseanet.user'], rights, 'imgtools', users, 'base')}}
                 </td>
                 <td class="users_col case_right_canadmin" title="{% trans 'Manage users' %}">
-                  {{_self.format_checkbox(user, rights, 'canadmin', users, 'base')}}
+                  {{_self.format_checkbox(app['phraseanet.user'], rights, 'canadmin', users, 'base')}}
                 </td>
                 <td class="users_col case_right_canreport" title="{% trans 'Allowed to access report' %}">
-                  {{_self.format_checkbox(user, rights, 'canreport', users, 'base')}}
+                  {{_self.format_checkbox(app['phraseanet.user'], rights, 'canreport', users, 'base')}}
                 </td>
                 <td class="users_col case_right_canpush" title="{% trans 'Allowed to push' %}">
-                  {{_self.format_checkbox(user, rights, 'canpush', users, 'base')}}
+                  {{_self.format_checkbox(app['phraseanet.user'], rights, 'canpush', users, 'base')}}
                 </td>
                 <td class="users_col case_right_manage" title="{% trans 'Manage collection' %}">
-                  {{_self.format_checkbox(user, rights, 'manage', users, 'base')}}
+                  {{_self.format_checkbox(app['phraseanet.user'], rights, 'manage', users, 'base')}}
                 </td>
                 <td class="users_col case_right_modify" title="{% trans 'Manage values lists' %}">
-                  {{_self.format_checkbox(user, rights, 'modify_struct', users, 'base')}}
+                  {{_self.format_checkbox(app['phraseanet.user'], rights, 'modify_struct', users, 'base')}}
                 </td>
                 <td colspan="5">
 
@@ -519,7 +519,7 @@
               {% trans 'admin::compte-utilisateur ville' %}
             </td>
             <td>
-              <input type="text" geonameid="{{main_user.get_geonameid()}}" value="{{main_user.get_geonameid()|geoname_name_from_id}}" class="geoname_field" name="geonameid" />
+              <input type="text" geonameid="{{main_user.get_geonameid()}}" value="{{ app['geonames'].name_from_id(main_user.get_geonameid()) }}" class="geoname_field" name="geonameid" />
             </td>
           </tr>
           <tr>

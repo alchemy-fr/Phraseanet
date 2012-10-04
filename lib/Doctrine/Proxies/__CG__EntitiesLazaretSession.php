@@ -57,10 +57,10 @@ class LazaretSession extends \Entities\LazaretSession implements \Doctrine\ORM\P
         return parent::setUsrId($usrId);
     }
 
-    public function getUser()
+    public function getUser(\Alchemy\Phrasea\Application $app)
     {
         $this->__load();
-        return parent::getUser();
+        return parent::getUser($app);
     }
 
     public function setCreated($created)

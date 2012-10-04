@@ -9,8 +9,12 @@
  * file that was distributed with this source code.
  */
 
-use Symfony\Component\HttpFoundation\File\File as SymfoFile;
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Version;
+use MediaAlchemyst\Alchemyst;
 use MediaAlchemyst\Specification\Image as ImageSpecification;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 
 /**
  *
@@ -41,48 +45,27 @@ class appbox extends base
      *
      * @var <type>
      */
-    protected $session;
     protected $cache;
     protected $connection;
-    protected $registry;
-    protected $Core;
+    protected $app;
+
+    protected $databoxes;
 
     const CACHE_LIST_BASES = 'list_bases';
     const CACHE_SBAS_IDS = 'sbas_ids';
-
-    /**
-     * Singleton pattern
-     *
-     * @return appbox
-     */
-    public static function get_instance(\Alchemy\Phrasea\Core $Core, registryInterface &$registry = null)
-    {
-        if ( ! self::$_instance instanceof self) {
-            self::$_instance = new self($Core, $registry);
-        }
-
-        return self::$_instance;
-    }
 
     /**
      * Constructor
      *
      * @return appbox
      */
-    public function __construct(\Alchemy\Phrasea\Core $Core, registryInterface $registry = null)
+    public function __construct(Application $app)
     {
-        $this->Core = $Core;
-        if ( ! $registry)
-            $registry = registry::get_instance($Core);
-        $this->connection = connection::getPDOConnection(null, $registry);
-        $this->registry = $registry;
-        $this->session = Session_Handler::getInstance($this);
+        $this->app = $app;
+        $this->connection = connection::getPDOConnection($app);
+        $choosenConnexion = $app['phraseanet.configuration']->getPhraseanet()->get('database');
 
-        $configuration = $Core->getConfiguration();
-
-        $choosenConnexion = $configuration->getPhraseanet()->get('database');
-
-        $connexion = $configuration->getConnexion($choosenConnexion);
+        $connexion = $app['phraseanet.configuration']->getConnexion($choosenConnexion);
 
         $this->host = $connexion->get('host');
         $this->port = $connexion->get('port');
@@ -93,14 +76,13 @@ class appbox extends base
         return $this;
     }
 
-    public function write_collection_pic(collection $collection, SymfoFile $pathfile = null, $pic_type)
+    public function write_collection_pic(Alchemyst $alchemyst, Filesystem $filesystem, collection $collection, SymfoFile $pathfile = null, $pic_type)
     {
-        $core = \bootstrap::getCore();
         $filename = null;
 
-        if ( ! is_null($pathfile)) {
+        if (!is_null($pathfile)) {
 
-            if ( ! in_array(mb_strtolower($pathfile->getMimeType()), array('image/gif', 'image/png', 'image/jpeg', 'image/jpg', 'image/pjpeg'))) {
+            if (!in_array(mb_strtolower($pathfile->getMimeType()), array('image/gif', 'image/png', 'image/jpeg', 'image/jpg', 'image/pjpeg'))) {
                 throw new \InvalidArgumentException('Invalid file format');
             }
 
@@ -115,7 +97,7 @@ class appbox extends base
                 $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox') . '.jpg';
 
                 try {
-                    $core['media-alchemyst']
+                    $alchemyst
                         ->open($pathfile->getPathname())
                         ->turninto($tmp, $imageSpec)
                         ->close();
@@ -132,7 +114,7 @@ class appbox extends base
                 $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox') . '.jpg';
 
                 try {
-                    $core['media-alchemyst']
+                    $alchemyst
                         ->open($pathfile->getPathname())
                         ->turninto($tmp, $imageSpec)
                         ->close();
@@ -162,43 +144,40 @@ class appbox extends base
             $collection->update_logo($pathfile);
         }
 
-        $registry = registry::get_instance();
-
-        $file = $registry->get('GV_RootPath') . 'config/' . $pic_type . '/' . $collection->get_base_id();
-        $custom_path = $registry->get('GV_RootPath') . 'www/custom/' . $pic_type . '/' . $collection->get_base_id();
+        $file = $this->app['phraseanet.registry']->get('GV_RootPath') . 'config/' . $pic_type . '/' . $collection->get_base_id();
+        $custom_path = $this->app['phraseanet.registry']->get('GV_RootPath') . 'www/custom/' . $pic_type . '/' . $collection->get_base_id();
 
         foreach (array($file, $custom_path) as $target) {
 
             if (is_file($target)) {
 
-                $core['file-system']->remove($target);
+                $filesystem->remove($target);
             }
 
             if (null === $target || null === $filename) {
                 continue;
             }
 
-            $core['file-system']->mkdir(dirname($target), 0750);
-            $core['file-system']->copy($filename, $target, true);
-            $core['file-system']->chmod($target, 0760);
+            $filesystem->mkdir(dirname($target), 0750);
+            $filesystem->copy($filename, $target, true);
+            $filesystem->chmod($target, 0760);
         }
 
         return $this;
     }
 
-    public function write_databox_pic(databox $databox, SymfoFile $pathfile = null, $pic_type)
+    public function write_databox_pic(Alchemyst $alchemyst, Filesystem $filesystem, databox $databox, SymfoFile $pathfile = null, $pic_type)
     {
-        $core = \bootstrap::getCore();
         $filename = null;
 
-        if ( ! is_null($pathfile)) {
+        if (!is_null($pathfile)) {
 
-            if ( ! in_array(mb_strtolower($pathfile->getMimeType()), array('image/jpeg', 'image/jpg', 'image/pjpeg', 'image/png', 'image/gif'))) {
+            if (!in_array(mb_strtolower($pathfile->getMimeType()), array('image/jpeg', 'image/jpg', 'image/pjpeg', 'image/png', 'image/gif'))) {
                 throw new \InvalidArgumentException('Invalid file format');
             }
         }
 
-        if ( ! in_array($pic_type, array(databox::PIC_PDF))) {
+        if (!in_array($pic_type, array(databox::PIC_PDF))) {
             throw new \InvalidArgumentException('unknown pic_type');
         }
 
@@ -213,7 +192,7 @@ class appbox extends base
             $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox') . '.jpg';
 
             try {
-                $core['media-alchemyst']
+                $alchemyst
                     ->open($pathfile->getPathname())
                     ->turninto($tmp, $imageSpec)
                     ->close();
@@ -223,23 +202,22 @@ class appbox extends base
             }
         }
 
-        $registry = $databox->get_registry();
-        $file = $registry->get('GV_RootPath') . 'config/minilogos/' . $pic_type . '_' . $databox->get_sbas_id() . '.jpg';
-        $custom_path = $registry->get('GV_RootPath') . 'www/custom/minilogos/' . $pic_type . '_' . $databox->get_sbas_id() . '.jpg';
+        $file = $this->app['phraseanet.registry']->get('GV_RootPath') . 'config/minilogos/' . $pic_type . '_' . $databox->get_sbas_id() . '.jpg';
+        $custom_path = $this->app['phraseanet.registry']->get('GV_RootPath') . 'www/custom/minilogos/' . $pic_type . '_' . $databox->get_sbas_id() . '.jpg';
 
         foreach (array($file, $custom_path) as $target) {
 
             if (is_file($target)) {
-                $core['file-system']->remove($target);
+                $filesystem->remove($target);
             }
 
             if (is_null($filename)) {
                 continue;
             }
 
-            $core['file-system']->mkdir(dirname($target));
-            $core['file-system']->copy($filename, $target);
-            $core['file-system']->chmod($target, 0760);
+            $filesystem->mkdir(dirname($target));
+            $filesystem->copy($filename, $target);
+            $filesystem->chmod($target, 0760);
         }
 
         $databox->delete_data_from_cache('printLogo');
@@ -273,7 +251,7 @@ class appbox extends base
      */
     public function set_databox_indexable(databox $databox, $boolean)
     {
-        $boolean = ! ! $boolean;
+        $boolean = !!$boolean;
         $sql = 'UPDATE sbas SET indexable = :indexable WHERE sbas_id = :sbas_id';
 
         $stmt = $this->get_connection()->prepare($sql);
@@ -320,8 +298,7 @@ class appbox extends base
         $stmt->execute(array(':viewname' => $viewname, ':sbas_id'  => $databox->get_sbas_id()));
         $stmt->closeCursor();
 
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+        $this->delete_data_from_cache(appbox::CACHE_LIST_BASES);
         cache_databox::update($databox->get_sbas_id(), 'structure');
 
         return $this;
@@ -336,31 +313,27 @@ class appbox extends base
         return self::BASE_TYPE;
     }
 
-    public function forceUpgrade(Setup_Upgrade &$upgrader)
+    public function forceUpgrade(Setup_Upgrade $upgrader, Application $app)
     {
         $from_version = $this->get_version();
 
         $upgrader->add_steps(7 + count($this->get_databoxes()));
-
-        $registry = $this->get_registry();
 
         /**
          * Step 1
          */
         $upgrader->set_current_message(_('Flushing cache'));
 
-        $this->Core['CacheService']->flushAll();
+        $app['phraseanet.cache-service']->flushAll();
 
         $upgrader->add_steps_complete(1);
 
         $upgrader->set_current_message(_('Creating new tables'));
-        $core = bootstrap::getCore();
-        $em = $core->getEntityManager();
         //create schema
 
-        if ($em->getConnection()->getDatabasePlatform()->supportsAlterTable()) {
-            $tool = new \Doctrine\ORM\Tools\SchemaTool($em);
-            $metas = $em->getMetadataFactory()->getAllMetadata();
+        if ($app['EM']->getConnection()->getDatabasePlatform()->supportsAlterTable()) {
+            $tool = new \Doctrine\ORM\Tools\SchemaTool($app['EM']);
+            $metas = $app['EM']->getMetadataFactory()->getAllMetadata();
             $tool->updateSchema($metas, true);
         }
 
@@ -373,12 +346,12 @@ class appbox extends base
 
         $finder = new Symfony\Component\Finder\Finder();
         $finder->in(array(
-            $registry->get('GV_RootPath') . 'tmp/cache_minify/',
-            $registry->get('GV_RootPath') . 'tmp/cache_minify/',
+            $this->app['phraseanet.registry']->get('GV_RootPath') . 'tmp/cache_minify/',
+            $this->app['phraseanet.registry']->get('GV_RootPath') . 'tmp/cache_minify/',
         ))->ignoreVCS(true)->ignoreDotFiles(true);
 
         foreach ($finder as $file) {
-            $core['file-system']->remove($file);
+            $app['filesystem']->remove($file);
         }
 
         $upgrader->add_steps_complete(1);
@@ -388,8 +361,6 @@ class appbox extends base
          */
         $upgrader->set_current_message(_('Copying files'));
 
-        $filesystem = $core['file-system'];
-
         foreach (array(
         'config/custom_files/' => 'www/custom/',
         'config/minilogos/'    => 'www/custom/minilogos/',
@@ -397,7 +368,7 @@ class appbox extends base
         'config/status/'       => 'www/custom/status/',
         'config/wm/'           => 'www/custom/wm/',
         ) as $source => $target) {
-            $filesystem->mirror($registry->get('GV_RootPath') . $source, $registry->get('GV_RootPath') . $target);
+            $app['filesystem']->mirror($this->app['phraseanet.registry']->get('GV_RootPath') . $source, $this->app['phraseanet.registry']->get('GV_RootPath') . $target);
         }
 
         $upgrader->add_steps_complete(1);
@@ -408,7 +379,7 @@ class appbox extends base
          * Step 6
          */
         $upgrader->set_current_message(_('Upgrading appbox'));
-        $advices = $this->upgradeDB(true, $upgrader);
+        $advices = $this->upgradeDB(true, $upgrader, $app);
         $upgrader->add_steps_complete(1);
 
         /**
@@ -416,7 +387,7 @@ class appbox extends base
          */
         foreach ($this->get_databoxes() as $s) {
             $upgrader->set_current_message(sprintf(_('Upgrading %s'), $s->get_viewname()));
-            $advices = array_merge($advices, $s->upgradeDB(true, $upgrader));
+            $advices = array_merge($advices, $s->upgradeDB(true, $upgrader, $app));
             $upgrader->add_steps_complete(1);
         }
 
@@ -424,7 +395,7 @@ class appbox extends base
          * Step 8
          */
         $upgrader->set_current_message(_('Post upgrade'));
-        $this->post_upgrade($upgrader);
+        $this->post_upgrade($upgrader, $app);
         $upgrader->add_steps_complete(1);
 
         /**
@@ -432,7 +403,7 @@ class appbox extends base
          */
         $upgrader->set_current_message(_('Flushing cache'));
 
-        $this->Core['CacheService']->flushAll();
+        $app['phraseanet.cache-service']->flushAll();
 
         $upgrader->add_steps_complete(1);
 
@@ -450,127 +421,21 @@ class appbox extends base
         return $advices;
     }
 
-    protected function post_upgrade(Setup_Upgrade &$upgrader)
+    protected function post_upgrade(Setup_Upgrade $upgrader, Application $app)
     {
-        $Core = bootstrap::getCore();
-
         $upgrader->add_steps(1 + count($this->get_databoxes()));
-        $this->apply_patches($this->get_version(), $Core->getVersion()->getNumber(), true, $upgrader);
-        $this->setVersion($Core->getVersion()->getNumber());
+        $this->apply_patches($this->get_version(), $app['phraseanet.version']->getNumber(), true, $upgrader, $app);
+        $this->setVersion($app['phraseanet.version']);
         $upgrader->add_steps_complete(1);
 
         foreach ($this->get_databoxes() as $databox) {
-            $databox->apply_patches($databox->get_version(), $Core->getVersion()->getNumber(), true, $upgrader);
-            $databox->setVersion($Core->getVersion()->getNumber());
+            $databox->apply_patches($databox->get_version(), $app['phraseanet.version']->getNumber(), true, $upgrader, $app);
+            $databox->setVersion($app['phraseanet.version']);
             $upgrader->add_steps_complete(1);
         }
 
         return $this;
     }
-
-    /**
-     *
-     * @param  registryInterface $registry
-     * @param  type              $conn
-     * @param  type              $dbname
-     * @param  type              $write_file
-     * @return type
-     */
-    public static function create(\Alchemy\Phrasea\Core $Core, registryInterface &$registry, connection_interface $conn, $dbname, $write_file = false)
-    {
-        $credentials = $conn->get_credentials();
-
-        if ($conn->is_multi_db() && trim($dbname) === '') {
-            throw new \Exception(_('Nom de base de donnee incorrect'));
-        }
-
-        if ($write_file) {
-            if ($conn->is_multi_db() && ! isset($credentials['dbname'])) {
-                $credentials['dbname'] = $dbname;
-            }
-
-            foreach ($credentials as $key => $value) {
-                $key = $key == 'hostname' ? 'host' : $key;
-                $connexionINI[$key] = (string) $value;
-            }
-
-            $Core->getConfiguration()->initialize();
-            $connexionINI['driver'] = 'pdo_mysql';
-            $connexionINI['charset'] = 'UTF8';
-
-            $serverName = $registry->get('GV_ServerName');
-
-            $root = __DIR__ . '/../../';
-
-            $connexion = array(
-                'main_connexion' => $connexionINI,
-                'test_connexion' => array(
-                    'driver'  => 'pdo_sqlite',
-                    'path'    => ':memory:',
-                    'charset' => 'UTF8'
-                ));
-
-            $cacheService = "array_cache";
-
-            $Core->getConfiguration()->setConnexions($connexion);
-
-            $services = $Core->getConfiguration()->getConfigurations();
-
-            foreach ($services as $serviceName => $service) {
-                if ($serviceName === "doctrine_prod") {
-
-                    $services["doctrine_prod"]["options"]["cache"] = array(
-                        "query"    => $cacheService,
-                        "result"   => $cacheService,
-                        "metadata" => $cacheService
-                    );
-                }
-            }
-            $Core->getConfiguration()->setConfigurations($services);
-
-            $arrayConf = $Core->getConfiguration()->getConfigurations();
-
-            foreach ($arrayConf as $key => $value) {
-                if (is_array($value) && array_key_exists('phraseanet', $value)) {
-                    $arrayConf[$key]["phraseanet"]["servername"] = $serverName;
-                }
-
-                if (is_array($value) && $key === 'prod') {
-                    $arrayConf[$key]["cache"] = $cacheService;
-                }
-            }
-
-            $Core->getConfiguration()->setConfigurations($arrayConf);
-
-            $Core->getConfiguration()->setEnvironnement('prod');
-        }
-        try {
-            if ($conn->is_multi_db()) {
-                $conn->query('CREATE DATABASE `' . $dbname . '`
-            CHARACTER SET utf8 COLLATE utf8_unicode_ci');
-            }
-        } catch (Exception $e) {
-
-        }
-
-        try {
-            if ($conn->is_multi_db()) {
-                $conn->query('USE `' . $dbname . '`');
-            }
-        } catch (Exception $e) {
-            throw new Exception(_('setup::la base de donnees existe deja et vous n\'avez pas les droits ou vous n\'avez pas les droits de la creer') . $e->getMessage());
-        }
-
-        try {
-            $appbox = self::get_instance($Core, $registry);
-            $appbox->insert_datas();
-        } catch (Exception $e) {
-            throw new Exception('Error while installing ' . $e->getMessage());
-        }
-
-        return $appbox;
-    }
-    protected $databoxes;
 
     /**
      *
@@ -585,7 +450,7 @@ class appbox extends base
         $ret = array();
         foreach ($this->retrieve_sbas_ids() as $sbas_id) {
             try {
-                $ret[$sbas_id] = new \databox($sbas_id);
+                $ret[$sbas_id] = new \databox($this->app, $sbas_id);
             } catch (\Exception_DataboxNotFound $e) {
 
             }
@@ -625,33 +490,11 @@ class appbox extends base
     {
         $databoxes = $this->get_databoxes();
 
-        if ( ! array_key_exists($sbas_id, $databoxes)) {
+        if (!array_key_exists($sbas_id, $databoxes)) {
             throw new Exception_DataboxNotFound('Databox `' . $sbas_id . '` not found');
         }
 
         return $databoxes[$sbas_id];
-    }
-
-    /**
-     *
-     * @return Session_Handler
-     */
-    public function get_session()
-    {
-        return $this->session;
-    }
-
-    public static function list_databox_templates()
-    {
-        $files = array();
-        $dir = new DirectoryIterator(__DIR__ . '/../conf.d/data_templates/');
-        foreach ($dir as $fileinfo) {
-            if ($fileinfo->isFile()) {
-                $files[] = substr($fileinfo->getFilename(), 0, (strlen($fileinfo->getFilename()) - 4));
-            }
-        }
-
-        return $files;
     }
 
     /**

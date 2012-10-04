@@ -2,7 +2,13 @@
 
 namespace Alchemy\Phrasea\Border\Attribute;
 
-class MetadataTest extends \PHPUnit_Framework_TestCase
+use PHPExiftool\Driver\Tag\IPTC\ObjectName;
+use PHPExiftool\Driver\Value\Mono;
+use PHPExiftool\Driver\Metadata\Metadata as ExiftoolMeta;
+
+require_once __DIR__ . '/../../../../PhraseanetPHPUnitAbstract.class.inc';
+
+class MetadataTest extends \PhraseanetPHPUnitAbstract
 {
     /**
      * @var Metadata
@@ -14,13 +20,13 @@ class MetadataTest extends \PHPUnit_Framework_TestCase
      * @covers Alchemy\Phrasea\Border\Attribute\Attribute
      * @covers Alchemy\Phrasea\Border\Attribute\Metadata::__construct
      */
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
-        $tag = new \PHPExiftool\Driver\Tag\MXF\ObjectName();
-        $value = new \PHPExiftool\Driver\Value\Mono('Stockhausen !');
+        $tag = new ObjectName();
+        $value = new Mono('Stockhausen !');
 
-        $this->metadata = new \PHPExiftool\Driver\Metadata\Metadata($tag, $value);
+        $this->metadata = new ExiftoolMeta($tag, $value);
 
         $this->object = new Metadata($this->metadata);
     }
@@ -28,7 +34,7 @@ class MetadataTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers Alchemy\Phrasea\Border\Attribute\Metadata::__destruct
      */
-    protected function tearDown()
+    public function tearDown()
     {
         $this->object = null;
         parent::tearDown();
@@ -39,7 +45,7 @@ class MetadataTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetName()
     {
-        $this->assertEquals(Attribute::NAME_METADATA, $this->object->getName());
+        $this->assertEquals(AttributeInterface::NAME_METADATA, $this->object->getName());
     }
 
     /**
@@ -63,7 +69,7 @@ class MetadataTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoadFromString()
     {
-        $loaded = Metadata::loadFromString($this->object->asString());
+        $loaded = Metadata::loadFromString(self::$DI['app'], $this->object->asString());
 
         $this->assertEquals($this->object, $loaded);
     }
@@ -76,7 +82,7 @@ class MetadataTest extends \PHPUnit_Framework_TestCase
     {
         \PHPUnit_Framework_Error_Notice::$enabled = false;
 
-        Metadata::loadFromString('Hello String');
+        Metadata::loadFromString(self::$DI['app'], 'Hello String');
     }
 
     /**
@@ -85,6 +91,6 @@ class MetadataTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoadFromStringWrongObject()
     {
-        Metadata::loadFromString(serialize(new \stdClass()));
+        Metadata::loadFromString(self::$DI['app'], serialize(new \stdClass()));
     }
 }

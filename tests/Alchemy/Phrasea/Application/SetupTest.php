@@ -2,9 +2,6 @@
 
 require_once __DIR__ . '/../../../PhraseanetWebTestCaseAbstract.class.inc';
 
-use Silex\WebTestCase;
-use Symfony\Component\HttpFoundation\Response;
-
 class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
 {
     protected $client;
@@ -23,24 +20,13 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
     protected $connection;
     protected $registry = array();
 
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../lib/Alchemy/Phrasea/Application/Setup.php';
-
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-
-        return $app;
-    }
-
     public function setUp()
     {
+        $this->markTestSkipped('To review');
         parent::setUp();
         $this->root = __DIR__ . '/../../../../';
-        $this->client = $this->createClient();
         $this->temporaryUnInstall();
-        $this->appbox = appbox::get_instance(\bootstrap::getCore());
-        $this->connection = $this->appbox->get_connection();
+        $this->connection = self::$DI['app']['phraseanet.appbox']->get_connection();
 
         $this->registry = array();
 
@@ -59,23 +45,18 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
             'GV_pdftotext',
         );
 
-        $registry = $this->appbox->get_registry();
-
         foreach ($params as $param) {
-            $this->registry[$param] = $registry->get($param);
+            $this->registry[$param] = self::$DI['app']['phraseanet.registry']->get($param);
         }
-        $this->markTestSkipped('To review');
     }
 
     public function tearDown()
     {
         $this->temporaryReInstall();
-        $this->appbox->set_connection($this->connection);
-
-        $registry = $this->appbox->get_registry();
+        self::$DI['app']['phraseanet.appbox']->set_connection($this->connection);
 
         foreach ($this->registry as $param => $value) {
-            $registry->set($param, $value, \registry::TYPE_STRING);
+            self::$DI['app']['phraseanet.registry']->set($param, $value, \registry::TYPE_STRING);
         }
 
         parent::tearDown();
@@ -86,15 +67,15 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
      */
     public function testRouteSlash()
     {
-        $crawler = $this->client->request('GET', '/');
-        $response = $this->client->getResponse();
+        $crawler = self::$DI['client']->request('GET', '/');
+        $response = self::$DI['client']->getResponse();
         $this->assertEquals(302, $response->getStatusCode());
         $this->assertEquals('/setup/installer/', $response->headers->get('location'));
 
         $this->temporaryReInstall();
 
-        $crawler = $this->client->request('GET', '/');
-        $response = $this->client->getResponse();
+        $crawler = self::$DI['client']->request('GET', '/');
+        $response = self::$DI['client']->getResponse();
         $this->assertEquals(302, $response->getStatusCode());
         $this->assertEquals('/login/', $response->headers->get('location'));
     }
@@ -104,8 +85,8 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
      */
     public function testRouteSetupInstaller()
     {
-        $crawler = $this->client->request('GET', '/installer/');
-        $response = $this->client->getResponse();
+        $crawler = self::$DI['client']->request('GET', '/installer/');
+        $response = self::$DI['client']->getResponse();
         $this->assertEquals(302, $response->getStatusCode());
         $this->assertEquals('/setup/installer/step2/', $response->headers->get('location'));
     }
@@ -115,8 +96,8 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
      */
     public function testRouteSetupInstallerStep2()
     {
-        $crawler = $this->client->request('GET', '/installer/step2/');
-        $response = $this->client->getResponse();
+        $crawler = self::$DI['client']->request('GET', '/installer/step2/');
+        $response = self::$DI['client']->getResponse();
         $this->assertEquals(200, $response->getStatusCode());
     }
 
@@ -138,9 +119,9 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
         $dbName = isset($settings['dataBox']) ? $settings['dataBox'] : null;
 
 
-        $connection = new connection_pdo('unitTestsAB', $host, $port, $MySQLuser, $MySQLpassword, $abName);
+        $connection = new connection_pdo('unitTestsAB', $host, $port, $MySQLuser, $MySQLpassword, $abName, array(), false);
 
-        $this->appbox->set_connection($connection);
+        self::$DI['app']['phraseanet.appbox']->set_connection($connection);
 
         $dataDir = sys_get_temp_dir() . '/datainstall/';
 
@@ -171,8 +152,8 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
             'binary_phraseanet_indexer' => '/path/to/phraseanet_indexer',
         );
 
-        $crawler = $this->client->request('POST', '/installer/install/', $params);
-        $response = $this->client->getResponse();
+        $crawler = self::$DI['client']->request('POST', '/installer/install/', $params);
+        $response = self::$DI['client']->getResponse();
 
         $this->assertEquals(302, $response->getStatusCode());
         $this->assertTrue(false === strpos($response->headers->get('location'), '/setup/installer/'));

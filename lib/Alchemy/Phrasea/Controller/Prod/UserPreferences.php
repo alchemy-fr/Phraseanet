@@ -27,6 +27,10 @@ class UserPreferences implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
+        $controllers->before(function(Request $request) use ($app) {
+            $app['firewall']->requireAuthentication();
+        });
+
         $controllers->post('/save/', $this->call('savePreference'));
 
         return $controllers;
@@ -37,9 +41,7 @@ class UserPreferences implements ControllerProviderInterface
         $ret = array('success' => false, 'message' => _('Error while saving preference'));
 
         try {
-            $user = $app['phraseanet.core']->getAuthenticatedUser();
-
-            $ret = $user->setPrefs($request->request->get('prop'), $request->request->get('value'));
+            $ret = $app['phraseanet.user']->setPrefs($request->request->get('prop'), $request->request->get('value'));
 
             if ($ret == $request->request->get('value'))
                 $output = "1"; else

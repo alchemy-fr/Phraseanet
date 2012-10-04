@@ -11,13 +11,15 @@
 
 namespace Alchemy\Phrasea\Border\Attribute;
 
+use Alchemy\Phrasea\Application;
+
 /**
  * Phraseanet Border Story Attribute
  *
  * This attribute is used to store a destination story for a file, prior to
  * their record creation
  */
-class Story implements Attribute
+class Story implements AttributeInterface
 {
     protected $story;
 
@@ -74,12 +76,12 @@ class Story implements Attribute
      *
      * @return Story
      */
-    public static function loadFromString($string)
+    public static function loadFromString(Application $app, $string)
     {
         $ids = explode('_', $string);
 
         try {
-            $story = new \record_adapter($ids[0], $ids[1]);
+            $story = new \record_adapter($app, $ids[0], $ids[1]);
         } catch (\Exception_NotFound $e) {
             throw new \InvalidArgumentException('Unable to fetch a story from string');
         }

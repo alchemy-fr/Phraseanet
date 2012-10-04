@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     caption
@@ -34,6 +36,7 @@ class caption_field implements cache_cacheableInterface
      * @var record
      */
     protected $record;
+    protected $app;
 
     protected static $localCache = array();
 
@@ -44,8 +47,9 @@ class caption_field implements cache_cacheableInterface
      * @param  int              $id
      * @return caption_field
      */
-    public function __construct(databox_field &$databox_field, record_Interface $record)
+    public function __construct(Application $app, databox_field $databox_field, record_Interface $record)
     {
+        $this->app = $app;
         $this->record = $record;
         $this->databox_field = $databox_field;
         $this->values = array();
@@ -53,7 +57,7 @@ class caption_field implements cache_cacheableInterface
         $rs = $this->get_metadatas_ids();
 
         foreach ($rs as $row) {
-            $this->values[$row['id']] = new caption_Field_Value($databox_field, $record, $row['id']);
+            $this->values[$row['id']] = new caption_Field_Value($this->app, $databox_field, $record, $row['id']);
 
             /**
              * Inconsistent, should not happen
@@ -337,7 +341,7 @@ class caption_field implements cache_cacheableInterface
         return;
     }
 
-    public static function delete_all_metadatas(databox_field $databox_field)
+    public static function delete_all_metadatas(Application $app, databox_field $databox_field)
     {
         $sql = 'SELECT count(id) as count_id FROM metadatas
             WHERE meta_struct_id = :meta_struct_id';
@@ -373,7 +377,7 @@ class caption_field implements cache_cacheableInterface
             foreach ($rs as $row) {
                 try {
                     $record = $databox_field->get_databox()->get_record($row['record_id']);
-                    $caption_field = new caption_field($databox_field, $record);
+                    $caption_field = new caption_field($app, $databox_field, $record);
                     $caption_field->delete();
                     $record->set_metadatas(array());
                     unset($caption_field);

@@ -4,7 +4,9 @@ services:
   - mysql
 
 before_script:
-  - cp hudson/*.yml config/
+  - rm -f config/services.yml config/connexions.yml config/config.yml config/config.inc config/connexion.inc config/_GV.php config/_GV.php.old
+  - cp -f hudson/connexion.inc config/
+  - cp -f hudson/_GV.php config/
   - curl -s http://getcomposer.org/installer | php
   - php composer.phar install --dev
   - sudo apt-get update
@@ -15,7 +17,6 @@ before_script:
   - sudo mysql -e "GRANT ALL PRIVILEGES ON ab_unitTests.* TO 'phraseaUnitTests'@'localhost' IDENTIFIED BY 'iWvGxPE8' WITH GRANT OPTION"
   - sudo mysql -e "GRANT ALL PRIVILEGES ON db_unitTests.* TO 'phraseaUnitTests'@'localhost' IDENTIFIED BY 'iWvGxPE8' WITH GRANT OPTION"
   - mysql -e "source `pwd`/hudson/fixtures.sql"
-  - mysql -e 'SET GLOBAL time_zone = "+02:00";'
   - mysql -e 'SET @@global.sql_mode= "";'
   - git clone git://github.com/alchemy-fr/Phraseanet-Extension.git
   - sh -c "cd Phraseanet-Extension && ./configure && make && sudo make install"
@@ -24,6 +25,7 @@ before_script:
   - tar -xzf gmagick-1.1.0RC2.tgz
   - sh -c "cd gmagick-1.1.0RC2 && phpize && ./configure --with-gmagick=/usr/local && make && sudo make install"
   - echo "extension=gmagick.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
+  - bin/setup system:upgrade -y
 
 notifications:
   irc:

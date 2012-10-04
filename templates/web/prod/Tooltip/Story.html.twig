@@ -10,7 +10,7 @@
     <div class="noToolTipResize" style="margin:5px;width:{{ width - 40 }}px;height:300px;position:relative;">
     <div style="margin:5px 0;text-align:right;font-style:italic;position:relative;">
         {% set nb_records = Story.get_children().get_elements()|length %}
-        {% set date = Story.get_modification_date() | prettyDate %}
+        {% set date = app['date-formatter'].getPrettyString(Story.get_modification_date()) %}
         {% trans %}
         {{ nb_records }} records
         {% endtrans %}
@@ -20,7 +20,7 @@
         {% for element in Story.get_children().get_elements() %}
             {% if loop.index <= 9 %}
             <div style="margin:5px;position:relative;float:left;width:80px;height:80px;overflow:hidden;">
-                {{ thumbnail.format(element.get_thumbnail(), 80, 80 , '', session, false, false) }}
+                {{ thumbnail.format(element.get_thumbnail(), 80, 80 , '', false, false) }}
             </div>
             {% endif %}
         {% endfor %}

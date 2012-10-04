@@ -31,6 +31,10 @@ class Basket implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
+        $controllers->before(function(Request $request) use ($app) {
+            $app['firewall']->requireAuthentication();
+        });
+
         /**
          * Get a basket
          */
@@ -126,20 +130,18 @@ class Basket implements ControllerProviderInterface
 
     public function displayBasket(Application $app, Request $request, $basket_id)
     {
-        $em = $app['phraseanet.core']->getEntityManager();
-
-        $basket = $em->getRepository('\Entities\Basket')
-            ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), false);
+        $basket = $app['EM']->getRepository('\Entities\Basket')
+            ->findUserBasket($app, $basket_id, $app['phraseanet.user'], false);
 
         if ($basket->getIsRead() === false) {
             $basket->setIsRead(true);
-            $em->flush();
+            $app['EM']->flush();
         }
 
         if ($basket->getValidation()) {
-            if ($basket->getValidation()->getParticipant($app['phraseanet.core']->getAuthenticatedUser())->getIsAware() === false) {
-                $basket->getValidation()->getParticipant($app['phraseanet.core']->getAuthenticatedUser())->setIsAware(true);
-                $em->flush();
+            if ($basket->getValidation()->getParticipant($app['phraseanet.user'], $app)->getIsAware() === false) {
+                $basket->getValidation()->getParticipant($app['phraseanet.user'], $app)->setIsAware(true);
+                $app['EM']->flush();
             }
         }
 
@@ -156,22 +158,20 @@ class Basket implements ControllerProviderInterface
         $request = $app['request'];
         /* @var $request \Symfony\Component\HttpFoundation\Request */
 
-        $em = $app['phraseanet.core']->getEntityManager();
-
         $Basket = new BasketEntity();
 
         $Basket->setName($request->request->get('name', ''));
-        $Basket->setOwner($app['phraseanet.core']->getAuthenticatedUser());
+        $Basket->setOwner($app['phraseanet.user']);
         $Basket->setDescription($request->request->get('desc'));
 
-        $em->persist($Basket);
+        $app['EM']->persist($Basket);
 
         $n = 0;
 
         $records = RecordsRequest::fromRequest($app, $request, true);
 
         foreach ($records as $record) {
-            if ($Basket->hasRecord($record)) {
+            if ($Basket->hasRecord($app, $record)) {
                 continue;
             }
 
@@ -179,14 +179,14 @@ class Basket implements ControllerProviderInterface
             $basket_element->setRecord($record);
             $basket_element->setBasket($Basket);
 
-            $em->persist($basket_element);
+            $app['EM']->persist($basket_element);
 
             $Basket->addBasketElement($basket_element);
 
-            $n ++;
+            $n++;
         }
 
-        $em->flush();
+        $app['EM']->flush();
 
         if ($request->getRequestFormat() == 'json') {
             $data = array(
@@ -205,13 +205,11 @@ class Basket implements ControllerProviderInterface
 
     public function deleteBasket(Application $app, Request $request, $basket_id)
     {
-        $em = $app['phraseanet.core']->getEntityManager();
+        $basket = $app['EM']->getRepository('\Entities\Basket')
+            ->findUserBasket($app, $basket_id, $app['phraseanet.user'], true);
 
-        $basket = $em->getRepository('\Entities\Basket')
-            ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), true);
-
-        $em->remove($basket);
-        $em->flush();
+        $app['EM']->remove($basket);
+        $app['EM']->flush();
 
         $data = array(
             'success' => true
@@ -227,20 +225,17 @@ class Basket implements ControllerProviderInterface
 
     public function removeBasketElement(Application $app, Request $request, $basket_id, $basket_element_id)
     {
-        /* @var $em \Doctrine\ORM\EntityManager */
-        $em = $app['phraseanet.core']->getEntityManager();
-
-        $basket = $em->getRepository('\Entities\Basket')
-            ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), true);
+        $basket = $app['EM']->getRepository('\Entities\Basket')
+            ->findUserBasket($app, $basket_id, $app['phraseanet.user'], true);
 
         foreach ($basket->getElements() as $basket_element) {
             /* @var $basket_element \Entities\BasketElement */
             if ($basket_element->getId() == $basket_element_id) {
-                $em->remove($basket_element);
+                $app['EM']->remove($basket_element);
             }
         }
 
-        $em->flush();
+        $app['EM']->flush();
 
         $data = array(
             'success' => true
@@ -259,16 +254,14 @@ class Basket implements ControllerProviderInterface
         $success = false;
 
         try {
-            $em = $app['phraseanet.core']->getEntityManager();
-
-            $basket = $em->getRepository('\Entities\Basket')
-                ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), true);
+            $basket = $app['EM']->getRepository('\Entities\Basket')
+                ->findUserBasket($app, $basket_id, $app['phraseanet.user'], true);
 
             $basket->setName($request->request->get('name', ''));
             $basket->setDescription($request->request->get('description'));
 
-            $em->merge($basket);
-            $em->flush();
+            $app['EM']->merge($basket);
+            $app['EM']->flush();
 
             $success = true;
             $msg = _('Basket has been updated');
@@ -295,17 +288,18 @@ class Basket implements ControllerProviderInterface
 
     public function displayUpdateForm(Application $app, $basket_id)
     {
-        $basket = $app['phraseanet.core']->getEntityManager()
+        $basket = $app['EM']
             ->getRepository('\Entities\Basket')
-            ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), true);
+            ->findUserBasket($app, $basket_id, $app['phraseanet.user'], true);
 
         return $app['twig']->render('prod/Baskets/Update.html.twig', array('basket' => $basket));
     }
 
     public function displayReorderForm(Application $app, $basket_id)
     {
-        $basket = $app['phraseanet.core']->getEntityManager()->getRepository('\Entities\Basket')
-            ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), true);
+        $basket = $app['EM']
+            ->getRepository('\Entities\Basket')
+            ->findUserBasket($app, $basket_id, $app['phraseanet.user'], true);
 
         return $app['twig']->render('prod/Baskets/Reorder.html.twig', array('basket' => $basket));
     }
@@ -314,11 +308,8 @@ class Basket implements ControllerProviderInterface
     {
         $ret = array('success' => false, 'message' => _('An error occured'));
         try {
-            /* @var $em \Doctrine\ORM\EntityManager */
-            $em = $app['phraseanet.core']->getEntityManager();
-
-            $basket = $em->getRepository('\Entities\Basket')
-                ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), true);
+            $basket = $app['EM']->getRepository('\Entities\Basket')
+                ->findUserBasket($app, $basket_id, $app['phraseanet.user'], true);
 
             $order = $app['request']->request->get('element');
 
@@ -327,11 +318,11 @@ class Basket implements ControllerProviderInterface
                 if (isset($order[$basketElement->getId()])) {
                     $basketElement->setOrd($order[$basketElement->getId()]);
 
-                    $em->merge($basketElement);
+                    $app['EM']->merge($basketElement);
                 }
             }
 
-            $em->flush();
+            $app['EM']->flush();
             $ret = array('success' => true, 'message' => _('Basket updated'));
         } catch (\Exception $e) {
 
@@ -342,17 +333,15 @@ class Basket implements ControllerProviderInterface
 
     public function archiveBasket(Application $app, Request $request, $basket_id)
     {
-        $em = $app['phraseanet.core']->getEntityManager();
+        $basket = $app['EM']->getRepository('\Entities\Basket')
+            ->findUserBasket($app, $basket_id, $app['phraseanet.user'], true);
 
-        $basket = $em->getRepository('\Entities\Basket')
-            ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), true);
-
-        $archive_status = ! ! $request->request->get('archive');
+        $archive_status = !!$request->request->get('archive');
 
         $basket->setArchived($archive_status);
 
-        $em->merge($basket);
-        $em->flush();
+        $app['EM']->merge($basket);
+        $app['EM']->flush();
 
         if ($archive_status) {
             $message = _('Basket has been archived');
@@ -375,24 +364,22 @@ class Basket implements ControllerProviderInterface
 
     public function addElements(Application $app, Request $request, $basket_id)
     {
-        $em = $app['phraseanet.core']->getEntityManager();
-
-        $basket = $em->getRepository('\Entities\Basket')
-            ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), true);
+        $basket = $app['EM']->getRepository('\Entities\Basket')
+            ->findUserBasket($app, $basket_id, $app['phraseanet.user'], true);
 
         $n = 0;
 
         $records = RecordsRequest::fromRequest($app, $request, true);
 
         foreach ($records as $record) {
-            if ($basket->hasRecord($record))
+            if ($basket->hasRecord($app, $record))
                 continue;
 
             $basket_element = new BasketElement();
             $basket_element->setRecord($record);
             $basket_element->setBasket($basket);
 
-            $em->persist($basket_element);
+            $app['EM']->persist($basket_element);
 
             $basket->addBasketElement($basket_element);
 
@@ -405,14 +392,14 @@ class Basket implements ControllerProviderInterface
                     $validationData->setParticipant($participant);
                     $validationData->setBasketElement($basket_element);
 
-                    $em->persist($validationData);
+                    $app['EM']->persist($validationData);
                 }
             }
 
-            $n ++;
+            $n++;
         }
 
-        $em->flush();
+        $app['EM']->flush();
 
         $data = array(
             'success' => true
@@ -428,31 +415,25 @@ class Basket implements ControllerProviderInterface
 
     public function stealElements(Application $app, Request $request, $basket_id)
     {
-        $em = $app['phraseanet.core']->getEntityManager();
-
-        /* @var $em \Doctrine\ORM\EntityManager */
-        $basket = $em->getRepository('\Entities\Basket')
-            ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), true);
-
-        $user = $app['phraseanet.core']->getAuthenticatedUser();
-        /* @var $user \User_Adapter */
+        $basket = $app['EM']->getRepository('\Entities\Basket')
+            ->findUserBasket($app, $basket_id, $app['phraseanet.user'], true);
 
         $n = 0;
 
         foreach ($request->request->get('elements') as $bask_element_id) {
             try {
-                $basket_element = $em->getRepository('\Entities\BasketElement')
-                    ->findUserElement($bask_element_id, $user);
+                $basket_element = $app['EM']->getRepository('\Entities\BasketElement')
+                    ->findUserElement($bask_element_id, $app['phraseanet.user']);
             } catch (\Exception $e) {
                 continue;
             }
 
             $basket_element->setBasket($basket);
             $basket->addBasketElement($basket_element);
-            $n ++;
+            $n++;
         }
 
-        $em->flush();
+        $app['EM']->flush();
 
         $data = array(
             'success' => true

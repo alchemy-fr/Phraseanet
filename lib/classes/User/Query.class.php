@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -21,9 +22,9 @@ class User_Query implements User_QueryInterface
 {
     /**
      *
-     * @var appbox
+     * @var Application
      */
-    protected $appbox;
+    protected $app;
 
     /**
      *
@@ -173,11 +174,11 @@ class User_Query implements User_QueryInterface
      *
      * @return User_Query
      */
-    public function __construct(appbox &$appbox)
+    public function __construct(Application $app)
     {
-        $this->appbox = $appbox;
+        $this->app = $app;
 
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
             $this->active_sbas[] = $databox->get_sbas_id();
             foreach ($databox->get_collections() as $collection) {
                 $this->active_bases[] = $collection->get_base_id();
@@ -205,9 +206,6 @@ class User_Query implements User_QueryInterface
     {
         $this->sql_params = array();
 
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
-
         $sql = '
       FROM usr LEFT JOIN basusr ON (usr.usr_id = basusr.usr_id)
        LEFT JOIN sbasusr ON (usr.usr_id = sbasusr.usr_id)
@@ -225,11 +223,11 @@ class User_Query implements User_QueryInterface
         }
 
         if ($this->only_templates === true) {
-            $sql .= ' AND model_of = ' . $session->get_usr_id();
+            $sql .= ' AND model_of = ' . $this->app['phraseanet.user']->get_id();
         } elseif ($this->include_templates === false) {
             $sql .= ' AND model_of=0';
         } else {
-            $sql .= ' AND (model_of=0 OR model_of = ' . $session->get_usr_id() . ' ) ';
+            $sql .= ' AND (model_of=0 OR model_of = ' . $this->app['phraseanet.user']->get_id() . ' ) ';
         }
 
         if ($this->activities) {
@@ -459,7 +457,7 @@ class User_Query implements User_QueryInterface
      */
     public function execute()
     {
-        $conn = $this->appbox->get_connection();
+        $conn = $this->app['phraseanet.appbox']->get_connection();
 
         $sorter = array();
 
@@ -522,7 +520,7 @@ class User_Query implements User_QueryInterface
         $users = new ArrayCollection();
 
         foreach ($rs as $row) {
-            $users[] = User_Adapter::getInstance($row['usr_id'], $this->appbox);
+            $users[] = User_Adapter::getInstance($row['usr_id'], $this->app);
         }
 
         $this->results = $users;
@@ -540,7 +538,7 @@ class User_Query implements User_QueryInterface
             return $this->total;
         }
 
-        $conn = $this->appbox->get_connection();
+        $conn = $this->app['phraseanet.appbox']->get_connection();
 
         $sql_count = 'SELECT COUNT(DISTINCT usr.usr_id) as total '
             . $this->generate_sql_constraints();
@@ -883,7 +881,7 @@ class User_Query implements User_QueryInterface
 
     public function getRelatedActivities()
     {
-        $conn = $this->appbox->get_connection();
+        $conn = $this->app['phraseanet.appbox']->get_connection();
 
         $sql = 'SELECT DISTINCT usr.activite ' . $this->generate_sql_constraints();
 
@@ -908,7 +906,7 @@ class User_Query implements User_QueryInterface
 
     public function getRelatedPositions()
     {
-        $conn = $this->appbox->get_connection();
+        $conn = $this->app['phraseanet.appbox']->get_connection();
 
         $sql = 'SELECT DISTINCT usr.fonction ' . $this->generate_sql_constraints();
 
@@ -935,7 +933,7 @@ class User_Query implements User_QueryInterface
     {
         require_once __DIR__ . '/../../classes/deprecated/countries.php';
 
-        $conn = $this->appbox->get_connection();
+        $conn = $this->app['phraseanet.appbox']->get_connection();
 
         $sql = 'SELECT DISTINCT usr.pays ' . $this->generate_sql_constraints();
 
@@ -948,7 +946,7 @@ class User_Query implements User_QueryInterface
 
         $pays = array();
 
-        $ctry = \getCountries(\Session_Handler::get_locale());
+        $ctry = \getCountries($this->app['locale']);
 
         foreach ($rs as $row) {
             if (trim($row['pays']) === '')
@@ -963,7 +961,7 @@ class User_Query implements User_QueryInterface
 
     public function getRelatedCompanies()
     {
-        $conn = $this->appbox->get_connection();
+        $conn = $this->app['phraseanet.appbox']->get_connection();
 
         $sql = 'SELECT DISTINCT usr.societe ' . $this->generate_sql_constraints();
 
@@ -988,7 +986,7 @@ class User_Query implements User_QueryInterface
 
     public function getRelatedTemplates()
     {
-        $conn = $this->appbox->get_connection();
+        $conn = $this->app['phraseanet.appbox']->get_connection();
 
         $sql = 'SELECT DISTINCT usr.lastModel ' . $this->generate_sql_constraints();
 

@@ -11,8 +11,10 @@
 
 namespace Alchemy\Phrasea\Cache;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Service\Builder;
-use Alchemy\Phrasea\Core;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  *
@@ -26,11 +28,10 @@ class Manager
      * @var \SplFileInfo
      */
     protected $cacheFile;
-    protected $core;
+    protected $app;
 
     /**
      *
-     * @var \Alchemy\Phrasea\Core\Configuration\Parser
      */
     protected $parser;
 
@@ -40,11 +41,11 @@ class Manager
      */
     protected $registry = array();
 
-    public function __construct(Core $core, \SplFileInfo $file)
+    public function __construct(Application $app, \SplFileInfo $file)
     {
         $this->cacheFile = $file;
-        $this->parser = new \Symfony\Component\Yaml\Yaml();
-        $this->core = $core;
+        $this->parser = new Yaml();
+        $this->app = $app;
 
         $this->registry = $this->parser->parse($file) ? : array();
     }
@@ -68,15 +69,15 @@ class Manager
     public function get($cacheKey, $service_name)
     {
         try {
-            $configuration = $this->core->getConfiguration()->getService($service_name);
-            $service = Builder::create($this->core, $configuration);
+            $configuration = $this->app['phraseanet.configuration']->getService($service_name);
+            $service = Builder::create($this->app, $configuration);
             $driver = $service->getDriver();
             $write = true;
         } catch (\Exception $e) {
-            $configuration = new \Symfony\Component\DependencyInjection\ParameterBag\ParameterBag(
+            $configuration = new ParameterBag(
                     array('type'   => 'Cache\\ArrayCache')
             );
-            $service = Builder::create($this->core, $configuration);
+            $service = Builder::create($this->app, $configuration);
             $driver = $service->getDriver();
             $write = false;
         }

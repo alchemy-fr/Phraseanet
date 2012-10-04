@@ -361,7 +361,7 @@ class Feed_XML_RSS extends Feed_XML_Abstract implements Feed_XML_Interface
          *
          */
         foreach ($entry->get_content() as $content) {
-            $this->addContent($document, $item, $content);
+            $this->addContent($document, $item, $entry, $content);
         }
 
         return $item;

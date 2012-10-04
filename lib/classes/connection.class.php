@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -33,13 +35,19 @@ class connection
      * @var Array
      */
     public static $log = array();
+    protected $app;
+
+    public function __construct(Application $app)
+    {
+        $this->app = $app;
+    }
 
     /**
      *
      */
     public function __destruct()
     {
-        self::printLog();
+        self::printLog($this->app);
 
         return;
     }
@@ -48,10 +56,9 @@ class connection
      *
      * @return Void
      */
-    public static function printLog()
+    public static function printLog(Application $app)
     {
-        $registry = registry::get_instance();
-        if ( ! $registry->get('GV_debug')) {
+        if (!$app['debug']) {
             return;
         }
 
@@ -65,7 +72,7 @@ class connection
 
             $totalTime += $entry['time'];
             $string = $entry['time'] . "\t" . ' - ' . $query . ' - ' . "\n";
-            file_put_contents($registry->get('GV_RootPath') . 'logs/mysql_log.log', $string, FILE_APPEND);
+            file_put_contents(__DIR__ . '/../../logs/mysql_log.log', $string, FILE_APPEND);
         }
         $string = count(self::$log) . ' queries - ' . $totalTime
             . "\nEND OF QUERY " . $_SERVER['PHP_SELF']
@@ -79,7 +86,7 @@ class connection
         }
         $string .= "\n\n\n\n";
 
-        file_put_contents($registry->get('GV_RootPath') . 'logs/mysql_log.log', $string, FILE_APPEND);
+        file_put_contents(__DIR__ . '/../../logs/mysql_log.log', $string, FILE_APPEND);
 
         return;
     }
@@ -88,10 +95,10 @@ class connection
      *
      * @return type
      */
-    protected static function instantiate()
+    protected static function instantiate(Application $app)
     {
-        if ( ! self::$_selfinstance)
-            self::$_selfinstance = new self();
+        if (!self::$_selfinstance)
+            self::$_selfinstance = new self($app);
 
         return;
     }
@@ -101,9 +108,9 @@ class connection
      * @param  string         $name
      * @return connection_pdo
      */
-    public static function getPDOConnection($name = null, registryInterface $registry = null)
+    public static function getPDOConnection(Application $app, $name = null)
     {
-        self::instantiate();
+        self::instantiate($app);
         if (trim($name) == '') {
             $name = 'appbox';
         } elseif (is_int((int) $name)) {
@@ -112,19 +119,17 @@ class connection
             return false;
         }
 
-        if ( ! isset(self::$_PDO_instance[$name])) {
+        if (!isset(self::$_PDO_instance[$name])) {
             $hostname = $port = $user = $password = $dbname = false;
 
             $connection_params = array();
 
             if (trim($name) !== 'appbox') {
-                $connection_params = phrasea::sbas_params();
+                $connection_params = phrasea::sbas_params($app);
             } else {
-                $configuration = \Alchemy\Phrasea\Core\Configuration::build();
+                $choosenConnexion = $app['phraseanet.configuration']->getPhraseanet()->get('database');
 
-                $choosenConnexion = $configuration->getPhraseanet()->get('database');
-
-                $connexion = $configuration->getConnexion($choosenConnexion);
+                $connexion = $app['phraseanet.configuration']->getConnexion($choosenConnexion);
 
                 $hostname = $connexion->get('host');
                 $port = $connexion->get('port');
@@ -142,8 +147,7 @@ class connection
             }
 
             try {
-                self::$_PDO_instance[$name] = new connection_pdo($name, $hostname, $port, $user, $password, $dbname, array(), $registry);
-                self::$_PDO_instance[$name]->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
+                self::$_PDO_instance[$name] = new connection_pdo($name, $hostname, $port, $user, $password, $dbname, array(), $app['debug']);
             } catch (Exception $e) {
                 throw new Exception('Connection not available');
             }
@@ -165,6 +169,15 @@ class connection
         if (isset(self::$_PDO_instance[$name])) {
             self::$_PDO_instance[$name] = null;
             unset(self::$_PDO_instance[$name]);
+        }
+
+        return;
+    }
+
+    public static function close_connections()
+    {
+        foreach (self::$_PDO_instance as $name => $conn) {
+            self::close_PDO_connection($name);
         }
 
         return;

@@ -14,12 +14,12 @@
 </div>
 
 
-{% if app.request.query.get('success') == '1' %}
+{% if app['request'].query.get('success') == '1' %}
     <div class="alert alert-success">
         <a class="close" data-dismiss="alert" href="#">×</a>
         {% trans 'Successful update' %}
     </div>
-{% elseif app.request.query.get('success') == '0' %}
+{% elseif app['request'].query.get('success') == '0' %}
     <div class="alert alert-error">
         <a class="close" data-dismiss="alert" href="#">×</a>
         <strong>{% trans 'An error occured' %}</strong>
@@ -51,7 +51,7 @@
         </td>
 
         <td style="text-align:center;height:30px;font-size:12px; border:0px;background-position: 0px 0px;background-repeat: repeat-x" nowrap>
-            {% trans 'admin::sugval: Valeurs suggerees/Preferences de la collection' %} {{ app.request.attributes.get('bas_id')|bas_names }}
+            {% trans 'admin::sugval: Valeurs suggerees/Preferences de la collection' %} {{ app['request'].attributes.get('bas_id')|bas_names(app) }}
         </td>
 
         <td style="height:30px;width:20px;font-size:12px;border:0px; text-align:right">
@@ -134,7 +134,7 @@
     </tr>
 </table>
 
-<form method="post" name="chgStructure" action="/admin/collection/{{ app.request.attributes.get('bas_id') }}/suggested-values/" onsubmit="return(false);" target="right" style="visibility:hidden;">
+<form method="post" name="chgStructure" action="/admin/collection/{{ app['request'].attributes.get('bas_id') }}/suggested-values/" onsubmit="return(false);" target="right" style="visibility:hidden;">
     <textarea nowrap style="visibility:hidden;white-space:pre" name="str" id="idstr">{{ collection.get_prefs() }}</textarea>
 </form>
 

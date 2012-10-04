@@ -14,7 +14,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Alchemy\Phrasea\Core;
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Service\Builder;
 
 /**
  * @todo write tests
@@ -56,18 +57,9 @@ class module_console_fileEnsureDevSetting extends Command
         return $this;
     }
 
-    public function requireSetup()
-    {
-        return true;
-    }
-
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $specifications = new \Alchemy\Phrasea\Core\Configuration\ApplicationSpecification();
-
-        $environnement = $input->getArgument('conf');
-
-        $this->configuration = \Alchemy\Phrasea\Core\Configuration::build($specifications, $environnement);
+        $this->configuration = $this->container['phraseanet.configuration'];
 
         $this->checkParse($output);
         $output->writeln(sprintf("Will Ensure Development Settings on <info>%s</info>", $this->configuration->getEnvironnement()));
@@ -131,15 +123,15 @@ class module_console_fileEnsureDevSetting extends Command
     private function checkParse(OutputInterface $output)
     {
 
-        if ( ! $this->configuration->getConfigurations()) {
+        if (!$this->configuration->getConfigurations()) {
             throw new \Exception("Unable to load configurations\n");
         }
 
-        if ( ! $this->configuration->getConnexions()) {
+        if (!$this->configuration->getConnexions()) {
             throw new \Exception("Unable to load connexions\n");
         }
 
-        if ( ! $this->configuration->getServices()) {
+        if (!$this->configuration->getServices()) {
             throw new \Exception("Unable to load services\n");
         }
 
@@ -155,11 +147,11 @@ class module_console_fileEnsureDevSetting extends Command
                 $work_message = '<info>Works !</info>';
             } else {
                 $work_message = '<comment>Cache server recommended</comment>';
-                $this->alerts ++;
+                $this->alerts++;
             }
         } else {
             $work_message = '<error>Failed - could not connect !</error>';
-            $this->errors ++;
+            $this->errors++;
         }
 
         $verification = sprintf("\t--> Verify <info>%s</info> : %s", 'MainCache', $work_message);
@@ -177,11 +169,11 @@ class module_console_fileEnsureDevSetting extends Command
                 $work_message = '<info>Works !</info>';
             } else {
                 $work_message = '<error>No cache required</error>';
-                $this->errors ++;
+                $this->errors++;
             }
         } else {
             $work_message = '<error>Failed - could not connect !</error>';
-            $this->errors ++;
+            $this->errors++;
         }
 
         $verification = sprintf("\t--> Verify <info>%s</info> : %s", 'OpcodeCache', $work_message);
@@ -197,12 +189,12 @@ class module_console_fileEnsureDevSetting extends Command
 
         $listChecks = false;
         try {
-            $service = Core\Service\Builder::create(\bootstrap::getCore(), $configuration);
+            $service = Builder::create($this->container, $configuration);
             $work_message = '<info>Works !</info>';
             $listChecks = true;
         } catch (\Exception $e) {
             $work_message = '<error>Failed - could not load Border Manager service !</error>';
-            $this->errors ++;
+            $this->errors++;
         }
 
         $output->writeln(sprintf("\t--> Verify Border Manager<info>%s</info> : %s", $serviceName, $work_message));
@@ -225,7 +217,7 @@ class module_console_fileEnsureDevSetting extends Command
         foreach ($phraseanet->all() as $conf => $value) {
             switch ($conf) {
                 default:
-                    $this->alerts ++;
+                    $this->alerts++;
                     $this->printConf($output, $conf, $value, false, '<comment>Not recognized</comment>');
                     break;
                 case 'servername':
@@ -236,13 +228,13 @@ class module_console_fileEnsureDevSetting extends Command
 
                     if (empty($url)) {
                         $message = "<error>should not be empty</error>";
-                        $this->errors ++;
+                        $this->errors++;
                     } elseif ($url == 'http://sub.domain.tld/') {
-                        $this->alerts ++;
+                        $this->alerts++;
                         $message = "<comment>may be wrong</comment>";
-                    } elseif ( ! filter_var($url, FILTER_VALIDATE_URL)) {
+                    } elseif (!filter_var($url, FILTER_VALIDATE_URL)) {
                         $message = "<error>not valid</error>";
-                        $this->errors ++;
+                        $this->errors++;
                     } else {
                         $message = "<info>OK</info>";
                     }
@@ -254,7 +246,7 @@ class module_console_fileEnsureDevSetting extends Command
 
                     if ($value !== false) {
                         $message = '<error>Should be true</error>';
-                        $this->errors ++;
+                        $this->errors++;
                     }
 
                     $this->printConf($output, $conf, $value, false, $message);
@@ -266,7 +258,7 @@ class module_console_fileEnsureDevSetting extends Command
 
                     if ($value !== true) {
                         $message = '<error>Should be true</error>';
-                        $this->errors ++;
+                        $this->errors++;
                     }
 
                     $this->printConf($output, $conf, $value, false, $message);
@@ -279,11 +271,11 @@ class module_console_fileEnsureDevSetting extends Command
                             $message = '<info>OK</info>';
                         } else {
                             $message = '<error>Connection not available</error>';
-                            $this->errors ++;
+                            $this->errors++;
                         }
                     } catch (\Exception $e) {
                         $message = '<error>Unknown connection</error>';
-                        $this->errors ++;
+                        $this->errors++;
                     }
                     $this->printConf($output, $conf, $value, false, $message);
                     break;
@@ -292,7 +284,7 @@ class module_console_fileEnsureDevSetting extends Command
 
         if (count($required) > 0) {
             $output->writeln(sprintf('<error>Miss required keys %s</error>', implode(', ', $required)));
-            $this->errors ++;
+            $this->errors++;
         }
 
         return;
@@ -308,34 +300,34 @@ class module_console_fileEnsureDevSetting extends Command
                 $work_message = '<info>Works !</info>';
             } else {
                 $work_message = '<error>Failed - could not connect !</error>';
-                $this->errors ++;
+                $this->errors++;
             }
         } catch (\Exception $e) {
 
             $work_message = '<error>Failed - could not connect !</error>';
-            $this->errors ++;
+            $this->errors++;
         }
 
         $output->writeln(sprintf("\t--> Verify connection <info>%s</info> : %s", $connexionName, $work_message));
 
         $required = array('driver');
 
-        if ( ! $connexion->has('driver')) {
+        if (!$connexion->has('driver')) {
             $output->writeln("\n<error>Connection has no driver</error>");
-            $this->errors ++;
+            $this->errors++;
         } elseif ($connexion->get('driver') == 'pdo_mysql') {
             $required = array('driver', 'dbname', 'charset', 'password', 'user', 'port', 'host');
         } elseif ($connexion->get('driver') == 'pdo_sqlite') {
             $required = array('driver', 'path', 'charset');
         } else {
             $output->writeln("\n<error>Your driver is not managed</error>");
-            $this->errors ++;
+            $this->errors++;
         }
 
         foreach ($connexion->all() as $conf => $value) {
             switch ($conf) {
                 default:
-                    $this->alerts ++;
+                    $this->alerts++;
                     $this->printConf($output, $conf, $value, false, '<comment>Not recognized</comment>');
                     break;
                 case 'charset':
@@ -343,7 +335,7 @@ class module_console_fileEnsureDevSetting extends Command
                     $message = '<info>OK</info>';
                     if ($value !== 'UTF8') {
                         $message = '<comment>Not recognized</comment>';
-                        $this->alerts ++;
+                        $this->alerts++;
                     }
                     $this->printConf($output, $conf, $value, false, $message);
                     break;
@@ -358,9 +350,9 @@ class module_console_fileEnsureDevSetting extends Command
                     $required = array_diff($required, array($conf));
                     $message = '<info>OK</info>';
 
-                    if ( ! is_scalar($value)) {
+                    if (!is_scalar($value)) {
                         $message = '<error>Should be scalar</error>';
-                        $this->errors ++;
+                        $this->errors++;
                     }
 
                     $this->printConf($output, $conf, $value, false, $message);
@@ -369,9 +361,9 @@ class module_console_fileEnsureDevSetting extends Command
                     $required = array_diff($required, array($conf));
                     $message = '<info>OK</info>';
 
-                    if ( ! ctype_digit($value)) {
+                    if (!ctype_digit($value)) {
                         $message = '<error>Should be ctype_digit</error>';
-                        $this->errors ++;
+                        $this->errors++;
                     }
 
                     $this->printConf($output, $conf, $value, false, $message);
@@ -380,9 +372,9 @@ class module_console_fileEnsureDevSetting extends Command
                     $required = array_diff($required, array($conf));
                     $message = '<info>OK</info>';
 
-                    if ( ! is_scalar($value)) {
+                    if (!is_scalar($value)) {
                         $message = '<error>Should be scalar</error>';
-                        $this->errors ++;
+                        $this->errors++;
                     }
 
                     $value = '***********';
@@ -394,7 +386,7 @@ class module_console_fileEnsureDevSetting extends Command
 
                     if ($value !== 'pdo_mysql') {
                         $message = '<error>MySQL recommended</error>';
-                        $this->errors ++;
+                        $this->errors++;
                     }
                     $this->printConf($output, $conf, $value, false, $message);
                     break;
@@ -403,7 +395,7 @@ class module_console_fileEnsureDevSetting extends Command
 
         if (count($required) > 0) {
             $output->writeln(sprintf('<error>Miss required keys %s</error>', implode(', ', $required)));
-            $this->errors ++;
+            $this->errors++;
         }
 
         return;
@@ -429,23 +421,23 @@ class module_console_fileEnsureDevSetting extends Command
         $configuration = $this->configuration->getService($templateEngineName);
 
         try {
-            Core\Service\Builder::create(\bootstrap::getCore(), $configuration);
+            Builder::create($this->container, $configuration);
             $work_message = '<info>Works !</info>';
         } catch (\Exception $e) {
             $work_message = '<error>Failed - could not load template engine !</error>';
-            $this->errors ++;
+            $this->errors++;
         }
 
         $output->writeln(sprintf("\t--> Verify Template engine <info>%s</info> : %s", $templateEngineName, $work_message));
 
-        if ( ! $configuration->has('type')) {
+        if (!$configuration->has('type')) {
             $output->writeln("\n<error>Configuration has no type</error>");
-            $this->errors ++;
+            $this->errors++;
         } elseif ($configuration->get('type') == 'TemplateEngine\\Twig') {
             $required = array('debug', 'charset', 'strict_variables', 'autoescape', 'optimizer');
         } else {
             $output->writeln("\n<error>Your type is not managed</error>");
-            $this->errors ++;
+            $this->errors++;
         }
 
         foreach ($configuration->all() as $conf => $value) {
@@ -455,7 +447,7 @@ class module_console_fileEnsureDevSetting extends Command
 
                     if ($value !== 'TemplateEngine\\Twig') {
                         $message = '<error>Not recognized</error>';
-                        $this->alerts ++;
+                        $this->alerts++;
                     }
 
                     $this->printConf($output, $conf, $value, false, $message);
@@ -463,15 +455,15 @@ class module_console_fileEnsureDevSetting extends Command
                 case 'options':
                     $message = '<info>OK</info>';
 
-                    if ( ! is_array($value)) {
+                    if (!is_array($value)) {
                         $message = '<error>Should be array</error>';
-                        $this->errors ++;
+                        $this->errors++;
                     }
 
                     $this->printConf($output, $conf, 'array()', false, $message);
                     break;
                 default:
-                    $this->alerts ++;
+                    $this->alerts++;
                     $this->printConf($output, $conf, 'unknown', false, '<comment>Not recognized</comment>');
                     break;
             }
@@ -486,7 +478,7 @@ class module_console_fileEnsureDevSetting extends Command
 
                     if ($value !== true) {
                         $message = '<error>Should be false</error>';
-                        $this->errors ++;
+                        $this->errors++;
                     }
 
                     $this->printConf($output, "\t" . $conf, $value, false, $message);
@@ -498,7 +490,7 @@ class module_console_fileEnsureDevSetting extends Command
 
                     if ($value !== true) {
                         $message = '<error>Should be true</error>';
-                        $this->errors ++;
+                        $this->errors++;
                     }
 
                     $this->printConf($output, "\t" . $conf, $value, false, $message);
@@ -509,13 +501,13 @@ class module_console_fileEnsureDevSetting extends Command
 
                     if ($value !== 'utf-8') {
                         $message = '<comment>Not recognized</comment>';
-                        $this->alerts ++;
+                        $this->alerts++;
                     }
 
                     $this->printConf($output, "\t" . $conf, $value, false, $message);
                     break;
                 default:
-                    $this->alerts ++;
+                    $this->alerts++;
                     $this->printConf($output, "\t" . $conf, $value, false, '<comment>Not recognized</comment>');
                     break;
             }
@@ -523,7 +515,7 @@ class module_console_fileEnsureDevSetting extends Command
 
         if (count($required) > 0) {
             $output->writeln(sprintf('<error>Miss required keys %s</error>', implode(', ', $required)));
-            $this->errors ++;
+            $this->errors++;
         }
 
         return;
@@ -535,23 +527,23 @@ class module_console_fileEnsureDevSetting extends Command
         $configuration = $this->configuration->getService($ormName);
 
         try {
-            $service = Core\Service\Builder::create(\bootstrap::getCore(), $configuration);
+            $service = Builder::create($this->container, $configuration);
             $work_message = '<info>Works !</info>';
         } catch (\Exception $e) {
             $work_message = '<error>Failed - could not connect !</error>';
-            $this->errors ++;
+            $this->errors++;
         }
 
         $output->writeln(sprintf("\t--> Verify ORM engine <info>%s</info> : %s", $ormName, $work_message));
 
-        if ( ! $configuration->has('type')) {
+        if (!$configuration->has('type')) {
             $output->writeln("\n<error>Configuration has no type</error>");
-            $this->errors ++;
+            $this->errors++;
         } elseif ($configuration->get('type') == 'Orm\\Doctrine') {
             $required = array('debug', 'dbal', 'cache');
         } else {
             $output->writeln("\n<error>Your type is not managed</error>");
-            $this->errors ++;
+            $this->errors++;
         }
 
         foreach ($configuration->all() as $conf => $value) {
@@ -563,15 +555,15 @@ class module_console_fileEnsureDevSetting extends Command
                 case 'options':
                     $message = '<info>OK</info>';
 
-                    if ( ! is_array($value)) {
+                    if (!is_array($value)) {
                         $message = '<error>Should be array</error>';
-                        $this->errors ++;
+                        $this->errors++;
                     }
 
                     $this->printConf($output, $conf, 'array()', false, $message);
                     break;
                 default:
-                    $this->alerts ++;
+                    $this->alerts++;
                     $this->printConf($output, $conf, 'unknown', false, '<comment>Not recognized</comment>');
                     break;
             }
@@ -588,9 +580,9 @@ class module_console_fileEnsureDevSetting extends Command
                     $required = array_diff($required, array($conf));
                     $message = '<info>OK</info>';
 
-                    if ( ! is_array($value)) {
+                    if (!is_array($value)) {
                         $message = '<error>Should be Array</error>';
-                        $this->errors ++;
+                        $this->errors++;
                     }
 
                     $this->printConf($output, $conf, 'array()', false, $message);
@@ -607,12 +599,12 @@ class module_console_fileEnsureDevSetting extends Command
                                         if ($this->recommendedCacheService($output, $value_cache, $server)) {
                                             $work_message = '<info>Works !</info>';
                                         } else {
-                                            $this->errors ++;
+                                            $this->errors++;
                                             $work_message = '<error>No cache required</error>';
                                         }
                                     } else {
                                         $work_message = '<error>Failed - could not connect !</error>';
-                                        $this->errors ++;
+                                        $this->errors++;
                                     }
 
                                     $verification = sprintf("\t--> Verify <info>%s</info> : %s", $name, $work_message);
@@ -621,20 +613,20 @@ class module_console_fileEnsureDevSetting extends Command
                                     $this->verifyCacheOptions($output, $value_cache);
                                     break;
                                 default:
-                                    $this->alerts ++;
+                                    $this->alerts++;
                                     $this->printConf($output, "\t" . $key_cache, $value_cache, false, '<comment>Not recognized</comment>');
                                     break;
                             }
-                            if ( ! isset($cache_type['service'])) {
+                            if (!isset($cache_type['service'])) {
                                 $output->writeln('<error>Miss service for %s</error>', $cache_type);
-                                $this->errors ++;
+                                $this->errors++;
                             }
                         }
                     }
 
                     if (count($required_caches) > 0) {
                         $output->writeln(sprintf('<error>Miss required caches %s</error>', implode(', ', $required_caches)));
-                        $this->errors ++;
+                        $this->errors++;
                     }
                     break;
                 case 'debug':
@@ -643,7 +635,7 @@ class module_console_fileEnsureDevSetting extends Command
 
                     if ($value !== true) {
                         $message = '<error>Should be true</error>';
-                        $this->errors ++;
+                        $this->errors++;
                     }
 
                     $this->printConf($output, $conf, $value, false, $message);
@@ -656,12 +648,12 @@ class module_console_fileEnsureDevSetting extends Command
                         $message = '<info>OK</info>';
                     } catch (\Exception $e) {
                         $message = '<error>Failed</error>';
-                        $this->errors ++;
+                        $this->errors++;
                     }
                     $this->printConf($output, $conf, $value, false, $message);
                     break;
                 default:
-                    $this->alerts ++;
+                    $this->alerts++;
                     $this->printConf($output, $conf, $value, false, '<comment>Not recognized</comment>');
                     break;
             }
@@ -669,7 +661,7 @@ class module_console_fileEnsureDevSetting extends Command
 
         if (count($required) > 0) {
             $output->writeln(sprintf('<error>Miss required keys %s</error>', implode(', ', $required)));
-            $this->errors ++;
+            $this->errors++;
         }
 
         return;
@@ -680,9 +672,7 @@ class module_console_fileEnsureDevSetting extends Command
         try {
             $conf = $this->configuration->getService($ServiceName);
 
-            $Service = Core\Service\Builder::create(
-                    \bootstrap::getCore(), $conf
-            );
+            $Service = Builder::create($this->container, $conf);
         } catch (\Exception $e) {
             return false;
         }
@@ -706,9 +696,9 @@ class module_console_fileEnsureDevSetting extends Command
                         $required_options = array_diff($required_options, array($conf));
                         $message = '<info>OK</info>';
 
-                        if ( ! is_scalar($value)) {
+                        if (!is_scalar($value)) {
                             $message = '<error>Should be scalar</error>';
-                            $this->errors ++;
+                            $this->errors++;
                         }
 
                         $this->printConf($output, "\t\t" . $conf, $value, false, $message);
@@ -717,15 +707,15 @@ class module_console_fileEnsureDevSetting extends Command
                         $required_options = array_diff($required_options, array($conf));
                         $message = '<info>OK</info>';
 
-                        if ( ! ctype_digit($value)) {
+                        if (!ctype_digit($value)) {
                             $message = '<comment>Not recognized</comment>';
-                            $this->alerts ++;
+                            $this->alerts++;
                         }
 
                         $this->printConf($output, "\t\t" . $conf, $value, false, $message);
                         break;
                     default:
-                        $this->alerts ++;
+                        $this->alerts++;
                         $this->printConf($output, "\t\t" . $conf, $value, false, '<comment>Not recognized</comment>');
                         break;
                 }
@@ -734,7 +724,7 @@ class module_console_fileEnsureDevSetting extends Command
 
         if (count($required_options) > 0) {
             $output->writeln(sprintf('<error>Miss required keys %s</error>', implode(', ', $required_options)));
-            $this->errors ++;
+            $this->errors++;
         }
     }
 
@@ -743,9 +733,7 @@ class module_console_fileEnsureDevSetting extends Command
         try {
             $originalConfiguration = $this->configuration->getService($ServiceName);
 
-            $Service = Core\Service\Builder::create(
-                    \bootstrap::getCore(), $originalConfiguration
-            );
+            $Service = Builder::create($this->container, $originalConfiguration);
         } catch (\Exception $e) {
             return false;
         }
@@ -762,7 +750,7 @@ class module_console_fileEnsureDevSetting extends Command
                     return false;
                     break;
                 case 'memcache':
-                    if ( ! @memcache_connect($Service->getHost(), $Service->getPort())) {
+                    if (!@memcache_connect($Service->getHost(), $Service->getPort())) {
                         return false;
                     }
                     break;
@@ -773,7 +761,7 @@ class module_console_fileEnsureDevSetting extends Command
                         $memcached->addServer($Service->getHost(), $Service->getPort());
                         $stats = $memcached->getStats();
 
-                        if ( ! isset($stats[$key]) || ! $stats[$key]) {
+                        if (!isset($stats[$key]) || !$stats[$key]) {
                             throw new \Exception('Unable to connect to memcached server');
                         }
 
@@ -811,9 +799,7 @@ class module_console_fileEnsureDevSetting extends Command
         try {
             $originalConfiguration = $this->configuration->getService($ServiceName);
 
-            $Service = Core\Service\Builder::create(
-                    \bootstrap::getCore(), $originalConfiguration
-            );
+            $Service = Builder::create($this->container, $originalConfiguration);
         } catch (\Exception $e) {
             return false;
         }
@@ -836,7 +822,7 @@ class module_console_fileEnsureDevSetting extends Command
                 $value = 'true';
             }
             $output->writeln(sprintf("\t%s: %s %s", $scope, $value, $message));
-        } elseif ( ! empty($value)) {
+        } elseif (!empty($value)) {
             $output->writeln(sprintf("\t%s: %s %s", $scope, $value, $message));
         }
     }

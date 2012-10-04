@@ -9,7 +9,8 @@
  * file that was distributed with this source code.
  */
 
-use \Monolog\Logger;
+use Monolog\Logger;
+use Alchemy\Phrasea\Application;
 
 /**
  *
@@ -23,12 +24,12 @@ class task_manager
     const STATE_STARTED = 'started';
     const STATE_TOSTOP = 'tostop';
 
-    protected $appbox;
+    protected $app;
     protected $tasks;
 
-    public function __construct(appbox &$appbox)
+    public function __construct(Application $app)
     {
-        $this->appbox = $appbox;
+        $this->app = $app;
 
         return $this;
     }
@@ -67,18 +68,16 @@ class task_manager
 
     public function getTasks($refresh = false, Logger $logger = null)
     {
-        if ($this->tasks && ! $refresh) {
+        if ($this->tasks && !$refresh) {
             return $this->tasks;
         }
 
-        $core = \bootstrap::getCore();
-
-        if ( ! $logger) {
-            $logger = $core['monolog'];
+        if (!$logger) {
+            $logger = $this->app['monolog'];
         }
 
         $sql = "SELECT task2.* FROM task2 ORDER BY task_id ASC";
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -89,11 +88,11 @@ class task_manager
             $row['pid'] = NULL;
 
             $classname = $row['class'];
-            if ( ! class_exists($classname)) {
+            if (!class_exists($classname)) {
                 continue;
             }
             try {
-                $tasks[$row['task_id']] = new $classname($row['task_id'], $logger);
+                $tasks[$row['task_id']] = new $classname($row['task_id'], $this->app, $logger);
             } catch (Exception $e) {
 
             }
@@ -111,15 +110,13 @@ class task_manager
      */
     public function getTask($task_id, Logger $logger = null)
     {
-        $core = \bootstrap::getCore();
-
-        if ( ! $logger) {
-            $logger = $core['monolog'];
+        if (!$logger) {
+            $logger = $this->app['monolog'];
         }
 
         $tasks = $this->getTasks(false, $logger);
 
-        if ( ! isset($tasks[$task_id])) {
+        if (!isset($tasks[$task_id])) {
             throw new Exception_NotFound('Unknown task_id ' . $task_id);
         }
 
@@ -128,13 +125,13 @@ class task_manager
 
     public function getSchedulerProcess()
     {
-        $phpcli = $this->appbox->get_registry()->get('GV_cli');
+        $phpcli = $this->app['phraseanet.registry']->get('GV_cli');
 
-        $cmd = $phpcli . ' -f ' . $this->appbox->get_registry()->get('GV_RootPath') . "bin/console scheduler:start";
+        $cmd = $phpcli . ' -f ' . $this->app['phraseanet.registry']->get('GV_RootPath') . "bin/console scheduler:start";
 
         return new Process($cmd);
     }
- 
+
     public function setSchedulerState($status)
     {
         $av_status = array(
@@ -144,11 +141,11 @@ class task_manager
             self::STATE_TOSTOP
         );
 
-        if ( ! in_array($status, $av_status))
+        if (!in_array($status, $av_status))
             throw new Exception(sprintf('unknown status `%s` ', $status));
 
         $sql = "UPDATE sitepreff SET schedstatus = :schedstatus, schedqtime=NOW()";
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':schedstatus' => $status));
         $stmt->closeCursor();
 
@@ -157,19 +154,17 @@ class task_manager
 
     public function getSchedulerState()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-
         $sql = "SELECT UNIX_TIMESTAMP()-UNIX_TIMESTAMP(schedqtime) AS qdelay
             , schedqtime AS updated_on
             , schedstatus AS status FROM sitepreff";
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute();
         $ret = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         $pid = NULL;
 
-        $lockdir = $appbox->get_registry()->get('GV_RootPath') . 'tmp/locks/';
+        $lockdir = $this->app['phraseanet.registry']->get('GV_RootPath') . 'tmp/locks/';
         if (($schedlock = fopen($lockdir . 'scheduler.lock', 'a+')) != FALSE) {
             if (flock($schedlock, LOCK_EX | LOCK_NB) === FALSE) {
                 // already locked : running !
@@ -189,7 +184,7 @@ class task_manager
 
         if ($pid === NULL && $ret['status'] !== 'stopped') {
             // auto fix
-            $this->appbox->get_connection()->exec('UPDATE sitepreff SET schedstatus=\'stopped\'');
+            $this->app['phraseanet.appbox']->get_connection()->exec('UPDATE sitepreff SET schedstatus=\'stopped\'');
             $ret['status'] = 'stopped';
         }
         $ret['pid'] = $pid;
@@ -199,17 +194,17 @@ class task_manager
 
     public static function getAvailableTasks()
     {
-        $registry = registry::get_instance();
-        $taskdir = array($registry->get('GV_RootPath') . "lib/classes/task/period/"
-            , $registry->get('GV_RootPath') . "config/classes/task/period/"
+        $taskdir = array(
+            __DIR__ . "/period/",
+            __DIR__ . "/../../../config/classes/task/period/",
         );
 
         $tasks = array();
         foreach ($taskdir as $path) {
             if (($hdir = @opendir($path)) != FALSE) {
                 $max = 9999;
-                while (($max -- > 0) && (($file = readdir($hdir)) !== false)) {
-                    if ( ! is_file($path . '/' . $file) || substr($file, 0, 1) == "." || substr($file, -10) != ".class.php") {
+                while (($max-- > 0) && (($file = readdir($hdir)) !== false)) {
+                    if (!is_file($path . '/' . $file) || substr($file, 0, 1) == "." || substr($file, -10) != ".class.php") {
                         continue;
                     }
 

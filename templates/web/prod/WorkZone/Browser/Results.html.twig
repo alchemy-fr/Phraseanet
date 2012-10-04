@@ -40,7 +40,7 @@
             <td class="thumbnail">
               {% set BasketElement = Basket.getElements().first() %}
               {% if BasketElement %}
-                {{thumbnail.format(BasketElement.getRecord().get_thumbnail(), 80, 80, '', session, true, false)}}
+                {{thumbnail.format(BasketElement.getRecord(app).get_thumbnail(), 80, 80, '', true, false)}}
               {% endif %}
               <div class="counter">
                  {{ Basket.getElements().count() }}
@@ -49,7 +49,7 @@
             <td class="content">
               <h1 class="title">
                 <img class="loader" src="/skins/prod/Basket/Browser/loader.gif" />
-                {% if Basket.getValidation() is empty or Basket.getValidation().isInitiator(user) %}
+                {% if Basket.getValidation() is empty or Basket.getValidation().isInitiator(app['phraseanet.user']) %}
                 <a href="/prod/baskets/{{ Basket.getId() }}/archive/?archive=1" class="archiver archive_toggler" style="display:{{ Basket.getArchived ? 'none' : '' }};">
                   <span>
                     <img src="/skins/prod/Basket/Browser/archive.png"/>
@@ -66,9 +66,9 @@
                 </a>
               </h1>
 
-              {% if Basket.getPusher() %}
+              {% if Basket.getPusher(app) %}
               <p>
-                {% set user_name = '<a href="/user/' ~ Basket.getPusher().get_id() ~ '/" tooltipsrc="/prod/tooltip/user/' ~ Basket.getPusher().get_id() ~ '/" class="UserTips">' ~ Basket.getPusher().get_display_name() ~ '</a>' %}
+                {% set user_name = '<a href="/user/' ~ Basket.getPusher(app).get_id() ~ '/" tooltipsrc="/prod/tooltip/user/' ~ Basket.getPusher(app).get_id() ~ '/" class="UserTips">' ~ Basket.getPusher(app).get_display_name() ~ '</a>' %}
                 {% trans %}
                   Received from {{ user_name }}
                 {% endtrans %}
@@ -86,9 +86,9 @@
                   {% endif %}
 
                   {% set list_participants = list_participants ~ '<a class="UserTips" tooltipsrc="/prod/tooltip/user/'
-                                        ~ Participant.getUser().get_id()
-                                        ~ '/"  href="/user/' ~ Participant.getUser().get_id() ~ '/">' %}
-                  {% set list_participants = list_participants ~ Participant.getUser().get_display_name %}
+                                        ~ Participant.getUser(app).get_id()
+                                        ~ '/"  href="/user/' ~ Participant.getUser(app).get_id() ~ '/">' %}
+                  {% set list_participants = list_participants ~ Participant.getUser(app).get_display_name %}
                   {% set list_participants = list_participants ~ '</a>' %}
                 {% endfor %}
                 {% trans %}

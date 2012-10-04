@@ -169,7 +169,7 @@
                     {% trans 'admin::compte-utilisateur ville' %}
                 </label>
                 <div class="controls">
-                    <input type="text" id="form_geonameid" class="input_element geoname_field" name="form_geonameid" geonameid="{{ parms['form_geonameid'] is defined ? parms['form_geonameid'] : '' }}" value="{{ parms['form_geonameid'] is defined ? geonames.name_from_id(parms['form_geonameid']) : ''}}" />
+                    <input type="text" id="form_geonameid" class="input_element geoname_field" name="form_geonameid" geonameid="{{ parms['form_geonameid'] is defined ? parms['form_geonameid'] : '' }}" value="{{ parms['form_geonameid'] is defined ? geonames.name_from_id(parms['form_geonameid'], app) : ''}}" />
                     <p class="form_alert help-block">{{ needed['form_geonameid'] is defined ? needed['form_geonameid'] : '' }}</p>
                 </div>
             </div>
@@ -286,7 +286,7 @@
             <hr />
         </div><!-- /form_register_table -->
 
-        {% if registry.get('GV_autoselectDB') %}
+        {% if app['phraseanet.registry'].get('GV_autoselectDB') %}
             <div style="display: none;">
         {% endif %}
 
@@ -311,7 +311,7 @@
                         {% if (baseInsc['CollsCGU'] or baseInsc['Colls']) and baseInsc['inscript'] %}
                             <tr>
                                 <td colspan="3" style="text-align: center;">
-                                    <h3 style="margin: 15px 0pt 2px;" class="inscriptbase">{{ sbasId |sbas_names }}</h3>
+                                    <h3 style="margin: 15px 0pt 2px;" class="inscriptbase">{{ sbasId |sbas_names(app) }}</h3>
                                 </td>
                             </tr>
                             {% if baseInsc['Colls'] %}
@@ -324,7 +324,7 @@
                                     </tr>
                                 {% endif %}
                                 {% for collId, collName in baseInsc['Colls'] %}
-                                    {% set baseId = sbasId |base_from_coll(collId) %}
+                                    {% set baseId = sbasId |base_from_coll(collId, app) %}
                                     <tr>
                                         <td style="text-align: right;">{{ collName }}</td>
                                         <td></td>
@@ -335,10 +335,10 @@
                                     </tr>
                                 {% endfor %}
                             {% endif %}
-                                    
+
                             {% if baseInsc['CollsCGU'] %}
                                 {% for collId, collDesc in baseInsc['CollsCGU'] %}
-                                    {% set baseId = sbasId |base_from_coll(collId) %}
+                                    {% set baseId = sbasId |base_from_coll(collId, app) %}
                                     <tr>
                                         <td colspan="3" style="text-align: center;">
                                             <hr style="width: 80%"/>
@@ -367,7 +367,7 @@
 
             </div>
 
-        {% if registry.get('GV_autoselectDB') %}
+        {% if app['phraseanet.registry'].get('GV_autoselectDB') %}
             </div>
         {% endif %}
 

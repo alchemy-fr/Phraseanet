@@ -8,17 +8,17 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-/* @var $Core \Alchemy\Phrasea\Core */
-$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
-$appbox = appbox::get_instance($Core);
-$session = $appbox->get_session();
-$registry = $appbox->get_registry();
-require_once($registry->get('GV_RootPath') . "lib/classes/deprecated/inscript.api.php");
+
+require_once __DIR__ . "/../../lib/bootstrap.php";
+$app = new Application();
+require_once($app['phraseanet.registry']->get('GV_RootPath') . "lib/classes/deprecated/inscript.api.php");
 
 $request = http_request::getInstance();
 $parm = $request->get_parms("action", "usr", "cgus", "date", "bas", "col");
@@ -26,11 +26,11 @@ $parm = $request->get_parms("action", "usr", "cgus", "date", "bas", "col");
 $tab = null;
 
 if ($parm['action'] == 'PRINT') {
-    $inscriptions = giveMeBases();
+    $inscriptions = giveMeBases($app);
 
     phrasea::headers();
     ?>
-    <html lang="<?php echo $session->get_I18n(); ?>">
+    <html lang="<?php echo $app['locale.I18n']; ?>">
         <head>
             <style>
                 p{
@@ -45,7 +45,7 @@ if ($parm['action'] == 'PRINT') {
             $pot = false;
             if ($baseInsc['CGU']) {
                 //je pr�sente la base
-                echo '<h3 style="text-align:center;background:#EFEFEF;">' . phrasea::sbas_names($sbasId) . '</h3>';
+                echo '<h3 style="text-align:center;background:#EFEFEF;">' . phrasea::sbas_names($sbasId, $app) . '</h3>';
                 $pot = '<p>' . str_replace(array("\r\n", "\n", "\n"), "<br/>", (string) $baseInsc['CGU']) . '</p>';
             }
             $found = false;

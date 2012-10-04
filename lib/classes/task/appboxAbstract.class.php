@@ -28,7 +28,7 @@ abstract class task_appboxAbstract extends task_abstract
         $this->running = TRUE;
         while ($this->running) {
             try {
-                $conn = connection::getPDOConnection();
+                $conn = connection::getPDOConnection($this->dependencyContainer);
             } catch (Exception $e) {
                 $this->log($e->getMessage());
                 if ($this->getRunner() == self::RUNNER_SCHEDULER) {
@@ -71,7 +71,6 @@ abstract class task_appboxAbstract extends task_abstract
                     break;
                 }
 
-                $appbox = appbox::get_instance(\bootstrap::getCore());
                 try {
                     $this->loadSettings(simplexml_load_string($row['settings']));
                 } catch (Exception $e) {
@@ -79,7 +78,7 @@ abstract class task_appboxAbstract extends task_abstract
                     continue;
                 }
 
-                $process_ret = $this->process($appbox);
+                $process_ret = $this->process($this->dependencyContainer['phraseanet.appbox']);
 
                 switch ($process_ret) {
                     case self::STATE_MAXMEGSREACHED:

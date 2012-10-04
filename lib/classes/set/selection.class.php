@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  *
@@ -17,13 +19,14 @@
  */
 class set_selection extends set_abstract
 {
-
+    protected $app;
     /**
      *
      * @return set_selection
      */
-    public function __construct()
+    public function __construct(Application $app)
     {
+        $this->app = $app;
         $this->elements = array();
 
         return $this;
@@ -37,7 +40,7 @@ class set_selection extends set_abstract
     public function load_basket(\Entities\Basket $Basket)
     {
         foreach ($Basket->getElements() as $basket_element) {
-            $this->add_element($basket_element->getRecord());
+            $this->add_element($basket_element->getRecord($this->app));
         }
 
         return $this;
@@ -50,11 +53,6 @@ class set_selection extends set_abstract
      */
     public function grep_authorized(Array $rights = array(), Array $sbas_rights = array())
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
-
-        $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
-
         $to_remove = array();
 
         foreach ($this->elements as $id => $record) {
@@ -62,26 +60,26 @@ class set_selection extends set_abstract
             $sbas_id = $record->get_sbas_id();
             $record_id = $record->get_record_id();
             if ( ! $rights) {
-                if ($user->ACL()->has_hd_grant($record)) {
+                if ($this->app['phraseanet.user']->ACL()->has_hd_grant($record)) {
                     continue;
                 }
 
-                if ($user->ACL()->has_preview_grant($record)) {
+                if ($this->app['phraseanet.user']->ACL()->has_preview_grant($record)) {
                     continue;
                 }
-                if ( ! $user->ACL()->has_access_to_base($base_id)) {
+                if ( ! $this->app['phraseanet.user']->ACL()->has_access_to_base($base_id)) {
                     $to_remove[] = $id;
                     continue;
                 }
             } else {
                 foreach ($rights as $right) {
-                    if ( ! $user->ACL()->has_right_on_base($base_id, $right)) {
+                    if ( ! $this->app['phraseanet.user']->ACL()->has_right_on_base($base_id, $right)) {
                         $to_remove[] = $id;
                         continue;
                     }
                 }
                 foreach ($sbas_rights as $right) {
-                    if ( ! $user->ACL()->has_right_on_sbas($sbas_id, $right)) {
+                    if ( ! $this->app['phraseanet.user']->ACL()->has_right_on_sbas($sbas_id, $right)) {
                         $to_remove[] = $id;
                         continue;
                     }
@@ -93,8 +91,8 @@ class set_selection extends set_abstract
 
                 $sql = 'SELECT record_id
                 FROM record
-                WHERE ((status ^ ' . $user->ACL()->get_mask_xor($base_id) . ')
-                        & ' . $user->ACL()->get_mask_and($base_id) . ')=0
+                WHERE ((status ^ ' . $this->app['phraseanet.user']->ACL()->get_mask_xor($base_id) . ')
+                        & ' . $this->app['phraseanet.user']->ACL()->get_mask_and($base_id) . ')=0
                 AND record_id = :record_id';
 
                 $stmt = $connsbas->prepare($sql);
@@ -127,7 +125,7 @@ class set_selection extends set_abstract
             $basrec = explode('_', $basrec);
             if (count($basrec) == 2) {
                 try {
-                    $record = new record_adapter((int) $basrec[0], (int) $basrec[1], count($this->elements));
+                    $record = new record_adapter($this->app, (int) $basrec[0], (int) $basrec[1], count($this->elements));
                 } catch (Exception $e) {
                     continue;
                 }
@@ -152,7 +150,7 @@ class set_selection extends set_abstract
     {
         $ret = array();
         foreach ($this->elements as $record) {
-            $sbas_id = phrasea::sbasFromBas($record->get_base_id());
+            $sbas_id = phrasea::sbasFromBas($this->app, $record->get_base_id());
             $ret[$sbas_id] = $sbas_id;
         }
 

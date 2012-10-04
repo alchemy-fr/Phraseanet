@@ -3,11 +3,12 @@
 namespace Alchemy\Phrasea\Border\Checker;
 
 use Alchemy\Phrasea\Border\File;
+use Alchemy\Phrasea\Application;
 use Doctrine\ORM\EntityManager;
 
 require_once __DIR__ . "/../../../../PhraseanetPHPUnitAbstract.class.inc";
 
-class AbstractCheckerTest extends \PHPUnit_Framework_TestCase
+class AbstractCheckerTest extends \PhraseanetPHPUnitAbstract
 {
     /**
      * @var AbstractChecker
@@ -18,13 +19,14 @@ class AbstractCheckerTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->object = new AbstractCheckerTester();
+        $this->object = new AbstractCheckerTester(self::$DI['app']);
         $this->file = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', array('getCollection'), array(), 'CheckerTesterMock' . mt_rand(), false);
     }
 
     public function tearDown()
     {
         $this->file = null;
+        parent::tearDown();
     }
 
     /**
@@ -46,16 +48,16 @@ class AbstractCheckerTest extends \PHPUnit_Framework_TestCase
     public function getDataboxesCombinaison()
     {
         $databox = $collection = null;
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $app = new Application('test');
 
-        foreach ($appbox->get_databoxes() as $db) {
-            if ( ! $collection) {
+        foreach ($app['phraseanet.appbox']->get_databoxes() as $db) {
+            if (! $collection) {
                 foreach ($db->get_collections() as $coll) {
                     $collection = $coll;
                     break;
                 }
             }
-            if ( ! $collection) {
+            if (! $collection) {
                 $this->fail('Unable to get a collection');
             }
 
@@ -97,17 +99,17 @@ class AbstractCheckerTest extends \PHPUnit_Framework_TestCase
     public function getCollectionsCombinaison()
     {
         $othercollection = $collection = null;
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $app = new Application('test');
 
-        foreach ($appbox->get_databoxes() as $db) {
-            if ( ! $collection) {
+        foreach ($app['phraseanet.appbox']->get_databoxes() as $db) {
+            if (! $collection) {
                 foreach ($db->get_collections() as $coll) {
                     $collection = $coll;
                     break;
                 }
             }
 
-            if ( ! $othercollection && $collection) {
+            if (! $othercollection && $collection) {
                 foreach ($db->get_collections() as $coll) {
                     if ($coll->get_base_id() != $collection->get_base_id()) {
                         $othercollection = $coll;
@@ -167,13 +169,13 @@ class AbstractCheckerTest extends \PHPUnit_Framework_TestCase
     public function getDataboxAndCollection()
     {
         $databox = $collection = null;
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $app = new Application('test');
 
-        foreach ($appbox->get_databoxes() as $db) {
-            if ( ! $databox) {
+        foreach ($app['phraseanet.appbox']->get_databoxes() as $db) {
+            if (! $databox) {
                 $databox = $db;
             }
-            if ( ! $collection) {
+            if (! $collection) {
                 foreach ($db->get_collections() as $coll) {
                     $collection = $coll;
                     break;

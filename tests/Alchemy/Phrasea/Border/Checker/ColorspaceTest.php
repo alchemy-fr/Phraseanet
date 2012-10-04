@@ -18,7 +18,7 @@ class ColorspaceTest extends \PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new Colorspace(array('colorspaces' => array('RGB', 'cmyk')));
+        $this->object = new Colorspace(self::$DI['app'], array('colorspaces' => array('RGB', 'cmyk')));
     }
 
     /**
@@ -26,17 +26,20 @@ class ColorspaceTest extends \PhraseanetPHPUnitAbstract
      */
     public function testCheck()
     {
-        $spl = new \SplFileInfo(__DIR__ . '/../../../../testfiles/test001.CR2');
-
-        $media = $this->getMock('\\MediaVorus\\Media\\Image', array('getColorSpace'), array($spl));
-
+        $media = $this
+            ->getMockBuilder('\\MediaVorus\\Media\\Image')
+            ->disableOriginalConstructor()
+            ->getMock();
         $media->expects($this->once())
             ->method('getColorSpace')
             ->will($this->returnValue('RGB'));
+        $media->expects($this->any())
+            ->method('getFile')
+            ->will($this->returnValue(new \SplFileInfo(__FILE__)));
 
-        $File = new \Alchemy\Phrasea\Border\File($media, self::$collection);
+        $File = new \Alchemy\Phrasea\Border\File(self::$DI['app'], $media, self::$DI['collection']);
 
-        $response = $this->object->check(self::$core['EM'], $File);
+        $response = $this->object->check(self::$DI['app']['EM'], $File);
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
         $this->assertTrue($response->isOk());
@@ -50,11 +53,11 @@ class ColorspaceTest extends \PhraseanetPHPUnitAbstract
         $this->assertInternalType('string', $this->object->getMessage());
     }
 
-     /**
+    /**
      * @expectedException InvalidArgumentException
      */
     public function testContructorInvalidArgumentException()
     {
-        new Colorspace(array(array('RGB', 'cmyk')));
+        new Colorspace(self::$DI['app'], array(array('RGB', 'cmyk')));
     }
 }

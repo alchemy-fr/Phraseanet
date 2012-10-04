@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     OAuth2 Connector
@@ -21,7 +23,7 @@
  */
 class API_OAuth2_AuthCode
 {
-    protected $appbox;
+    protected $app;
     protected $code;
     protected $account;
     protected $account_id;
@@ -29,14 +31,14 @@ class API_OAuth2_AuthCode
     protected $expires;
     protected $scope;
 
-    public function __construct(appbox &$appbox, $code)
+    public function __construct(Application $app, $code)
     {
-        $this->appbox = $appbox;
+        $this->app = $app;
         $this->code = $code;
         $sql = 'SELECT code, api_account_id, redirect_uri, UNIX_TIMESTAMP(expires) AS expires, scope
             FROM api_oauth_codes WHERE code = :code';
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':code' => $this->code));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -64,7 +66,7 @@ class API_OAuth2_AuthCode
     public function get_account()
     {
         if ( ! $this->account)
-            $this->account = new API_OAuth2_Account($this->appbox, $this->account_id);
+            $this->account = new API_OAuth2_Account($this->app, $this->account_id);
 
         return $this->account;
     }
@@ -81,7 +83,7 @@ class API_OAuth2_AuthCode
 
         $params = array(':redirect_uri' => $redirect_uri, ':code'         => $this->code);
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -111,7 +113,7 @@ class API_OAuth2_AuthCode
 
         $params = array(':scope' => $scope, ':code'  => $this->code);
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -124,7 +126,7 @@ class API_OAuth2_AuthCode
     {
         $sql = 'DELETE FROM api_oauth_codes WHERE code = :code';
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':code' => $this->code));
         $stmt->closeCursor();
 
@@ -133,16 +135,16 @@ class API_OAuth2_AuthCode
 
     /**
      *
-     * @param  appbox             $appbox
+     * @param  Application             $app
      * @param  API_OAuth2_Account $account
      * @return array
      */
-    public static function load_codes_by_account(appbox &$appbox, API_OAuth2_Account $account)
+    public static function load_codes_by_account(Application $app, API_OAuth2_Account $account)
     {
         $sql = 'SELECT code FROM api_oauth_codes
             WHERE api_account_id = :account_id';
 
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
 
         $params = array(":account_id" => $account->get_id());
         $stmt->execute($params);
@@ -152,7 +154,7 @@ class API_OAuth2_AuthCode
         $codes = array();
 
         foreach ($rs as $row) {
-            $codes[] = new API_OAuth2_AuthCode($appbox, $row['code']);
+            $codes[] = new API_OAuth2_AuthCode($app, $row['code']);
         }
 
         return $codes;
@@ -160,19 +162,19 @@ class API_OAuth2_AuthCode
 
     /**
      *
-     * @param  appbox              $appbox
+     * @param  Application              $app
      * @param  API_OAuth2_Account  $account
      * @param  type                $code
      * @param  int                 $expires
      * @return API_OAuth2_AuthCode
      */
-    public static function create(appbox &$appbox, API_OAuth2_Account $account, $code, $expires)
+    public static function create(Application $app, API_OAuth2_Account $account, $code, $expires)
     {
 
         $sql = 'INSERT INTO api_oauth_codes (code, api_account_id, expires)
             VALUES (:code, :account_id, FROM_UNIXTIME(:expires))';
 
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
 
         $params = array(
             ":code"       => $code,
@@ -182,6 +184,6 @@ class API_OAuth2_AuthCode
         $stmt->execute($params);
         $stmt->closeCursor();
 
-        return new self($appbox, $code);
+        return new self($app, $code);
     }
 }

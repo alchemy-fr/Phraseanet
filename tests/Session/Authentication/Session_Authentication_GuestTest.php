@@ -12,7 +12,7 @@ class Session_Authentication_GuestTest extends PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new Session_Authentication_Guest(appbox::get_instance(\bootstrap::getCore()));
+        $this->object = new Session_Authentication_Guest(self::$DI['app']);
     }
 
     public function testSignOn()

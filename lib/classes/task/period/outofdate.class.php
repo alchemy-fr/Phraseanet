@@ -310,12 +310,9 @@ class task_period_outofdate extends task_abstract
     // ====================================================================
     public function getInterfaceHTML()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
-        $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
         ob_start();
 
-        $sbas_list = $user->ACL()->get_granted_sbas(array('bas_manage'));
+        $sbas_list = $this->dependencyContainer['phraseanet.user']->ACL()->get_granted_sbas(array('bas_manage'));
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
             <?php echo _('task::outofdate:Base') ?>&nbsp;:&nbsp;
@@ -437,13 +434,13 @@ class task_period_outofdate extends task_abstract
     protected function run2()
     {
         $ret = '';
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($this->dependencyContainer);
 
         $this->sxTaskSettings = simplexml_load_string($this->settings);
 
         $this->sbas_id = (int) ($this->sxTaskSettings->sbas_id);
 
-        $this->connbas = connection::getPDOConnection($this->sbas_id);
+        $this->connbas = connection::getPDOConnection($this->dependencyContainer, $this->sbas_id);
 
         $this->running = true;
         $this->tmask = array();
@@ -465,7 +462,7 @@ class task_period_outofdate extends task_abstract
             }
 
             try {
-                $connbas = connection::getPDOConnection($this->sbas_id);
+                $connbas = connection::getPDOConnection($this->dependencyContainer, $this->sbas_id);
                 if ( ! $connbas->ping()) {
                     throw new Exception('Mysql has gone away');
                 }
@@ -500,7 +497,7 @@ class task_period_outofdate extends task_abstract
                     } else {
                         $period = 60;
                     }
-                    $this->connbas = connection::getPDOConnection($this->sbas_id);
+                    $this->connbas = connection::getPDOConnection($this->dependencyContainer, $this->sbas_id);
 
                     $duration = time();
 
@@ -519,7 +516,7 @@ class task_period_outofdate extends task_abstract
                             $duration = time() - $duration;
                             if ($duration < $period) {
                                 sleep($period - $duration);
-                                $conn = connection::getPDOConnection();
+                                $conn = connection::getPDOConnection($this->dependencyContainer);
                             }
                             break;
                         case 'MAXRECSDONE':
@@ -731,7 +728,6 @@ class task_period_outofdate extends task_abstract
     {
         $ret = NULL;
 
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
         $request = http_request::getInstance();
         $parm2 = $request->get_parms(
             'ACT', 'bid'
@@ -751,7 +747,7 @@ class task_period_outofdate extends task_abstract
                 if ($parm2['bid'] != '') {
                     $sbas_id = (int) $parm2['bid'];
                     try {
-                        $databox = $appbox->get_databox($sbas_id);
+                        $databox = $this->dependencyContainer['phraseanet.appbox']->get_databox($sbas_id);
                         $meta_struct = $databox->get_meta_structure();
 
                         foreach ($meta_struct as $meta) {

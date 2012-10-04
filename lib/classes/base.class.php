@@ -9,6 +9,9 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Version;
+
 abstract class base implements cache_cacheableInterface
 {
     protected $version;
@@ -132,27 +135,6 @@ abstract class base implements cache_cacheableInterface
 
     /**
      *
-     * @return registry
-     */
-    public function get_registry()
-    {
-        return $this->registry;
-    }
-
-    /**
-     *
-     * @param  registryInterface $registry
-     * @return base
-     */
-    public function set_registry(registryInterface $registry)
-    {
-        $this->registry = $registry;
-
-        return $this;
-    }
-
-    /**
-     *
      * @return connection_pdo
      */
     public function get_connection()
@@ -175,11 +157,7 @@ abstract class base implements cache_cacheableInterface
 
     public function get_cache()
     {
-        if ( ! $this->cache) {
-            $this->cache = $this->Core->getCache();
-        }
-
-        return $this->cache;
+        return $this->app['cache'];
     }
 
     /**
@@ -189,9 +167,8 @@ abstract class base implements cache_cacheableInterface
      */
     public function get_data_from_cache($option = null)
     {
-
         if ($this->get_base_type() == self::DATA_BOX) {
-            \cache_databox::refresh($this->id);
+            \cache_databox::refresh($this->app, $this->id);
         }
 
         return $this->get_cache()->get($this->get_cache_key($option));
@@ -204,12 +181,12 @@ abstract class base implements cache_cacheableInterface
 
     public function delete_data_from_cache($option = null)
     {
-
+        $appbox = $this->get_base_type() == self::APPLICATION_BOX ? $this : $this->get_appbox();
         if ($option === appbox::CACHE_LIST_BASES) {
             $keys = array($this->get_cache_key(appbox::CACHE_LIST_BASES));
-            phrasea::reset_sbasDatas();
-            phrasea::reset_baseDatas();
-            phrasea::clear_sbas_params();
+            phrasea::reset_sbasDatas($appbox);
+            phrasea::reset_baseDatas($appbox);
+            phrasea::clear_sbas_params($this->app);
             $keys[] = $this->get_cache_key(appbox::CACHE_SBAS_IDS);
 
             return $this->get_cache()->deleteMulti($keys);
@@ -228,11 +205,6 @@ abstract class base implements cache_cacheableInterface
     public function get_cache_key($option = null)
     {
         throw new Exception(__METHOD__ . ' must be defined in extended class');
-    }
-
-    public function need_major_upgrade()
-    {
-        return (version_compare($this->get_version(), '3.2.0.0a1', '<') === true);
     }
 
     public function get_version()
@@ -263,16 +235,7 @@ abstract class base implements cache_cacheableInterface
         return $this->version;
     }
 
-    public function upgradeavailable()
-    {
-        if ($this->get_version()) {
-            return version_compare(\Alchemy\Phrasea\Core\Version::getNumber(), $this->get_version(), '>');
-        } else {
-            return true;
-        }
-    }
-
-    protected function upgradeDb($apply_patches, Setup_Upgrade &$upgrader)
+    protected function upgradeDb($apply_patches, Setup_Upgrade $upgrader, Application $app)
     {
         $recommends = array();
 
@@ -280,8 +243,9 @@ abstract class base implements cache_cacheableInterface
 
         $schema = $this->get_schema();
 
-        foreach ($schema->tables->table as $table)
+        foreach ($schema->tables->table as $table) {
             $allTables[(string) $table['name']] = $table;
+        }
 
         $upgrader->add_steps(count($allTables) + 1);
 
@@ -309,7 +273,6 @@ abstract class base implements cache_cacheableInterface
 
         foreach ($rs as $row) {
             $tname = $row["Name"];
-
             if (isset($allTables[$tname])) {
                 $upgrader->set_current_message(sprintf(_('Updating table %s'), $tname));
 
@@ -349,23 +312,21 @@ abstract class base implements cache_cacheableInterface
         }
         $current_version = $this->get_version();
 
-        $Core = bootstrap::getCore();
-
         $upgrader->set_current_message(sprintf(_('Applying patches on %s'), $this->get_dbname()));
         if ($apply_patches) {
-            $this->apply_patches($current_version, $Core->getVersion()->getNumber(), false, $upgrader);
+            $this->apply_patches($current_version, $app['phraseanet.version']->getNumber(), false, $upgrader, $app);
         }
         $upgrader->add_steps_complete(1);
 
         return $recommends;
     }
 
-    protected function setVersion($version)
+    protected function setVersion(Version $version)
     {
         try {
             $sql = '';
             if ($this->get_base_type() === self::APPLICATION_BOX)
-                $sql = 'UPDATE sitepreff SET version = "' . $version . '"';
+                $sql = 'UPDATE sitepreff SET version = "' . $version->getNumber() . '"';
             if ($this->get_base_type() === self::DATA_BOX) {
                 $sql = 'DELETE FROM pref WHERE prop="version" AND locale IS NULL';
                 $this->get_connection()->query($sql);
@@ -373,15 +334,15 @@ abstract class base implements cache_cacheableInterface
             }
             if ($sql !== '') {
                 $stmt = $this->get_connection()->prepare($sql);
-                $stmt->execute(array(':version' => $version));
+                $stmt->execute(array(':version' => $version->getNumber()));
                 $stmt->closeCursor();
 
-                $this->version = $version;
+                $this->version = $version->getNumber();
 
                 return true;
             }
         } catch (Exception $e) {
-            throw new Exception('Unable to set the database version');
+            throw new Exception('Unable to set the database version : '.$e->getMessage());
         }
 
         return;
@@ -416,7 +377,7 @@ abstract class base implements cache_cacheableInterface
      *
      * @return base
      */
-    protected function insert_datas()
+    public function insert_datas()
     {
         $this->load_schema();
 
@@ -424,8 +385,7 @@ abstract class base implements cache_cacheableInterface
             $this->createTable($table);
         }
 
-        $Core = bootstrap::getCore();
-        $this->setVersion($Core->getVersion()->getNumber());
+        $this->setVersion($this->app['phraseanet.version']);
 
         return $this;
     }
@@ -458,7 +418,8 @@ abstract class base implements cache_cacheableInterface
 
                 $collation = trim((string) $field->collation) != '' ? trim((string) $field->collation) : 'utf8_unicode_ci';
 
-                $code = array_pop(array_reverse(explode('_', $collation)));
+                $collations = array_reverse(explode('_', $collation));
+                $code = array_pop($collations);
 
                 $character_set = ' CHARACTER SET ' . $code . ' COLLATE ' . $collation;
             }
@@ -508,7 +469,7 @@ abstract class base implements cache_cacheableInterface
                 foreach ($default->data as $data) {
                     $k = trim($data['key']);
                     if ($k === 'usr_password')
-                        $data = User_Adapter::salt_password($data, $nonce);
+                        $data = User_Adapter::salt_password($this->app, $data, $nonce);
                     if ($k === 'nonce')
                         $data = $nonce;
                     $v = trim(str_replace(array("\r\n", "\r", "\n", "\t"), '', $data));
@@ -563,8 +524,6 @@ abstract class base implements cache_cacheableInterface
         $correct_table = array('fields' => array(), 'indexes' => array(), 'collation' => array());
         $alter = $alter_pre = $return = array();
 
-        $registry = registry::get_instance();
-
         foreach ($table->fields->field as $field) {
             $expr = trim((string) $field->type);
 
@@ -577,7 +536,8 @@ abstract class base implements cache_cacheableInterface
             if (in_array(strtolower((string) $field->type), array('text', 'longtext', 'mediumtext', 'tinytext'))
                 || substr(strtolower((string) $field->type), 0, 7) == 'varchar'
                 || in_array(substr(strtolower((string) $field->type), 0, 4), array('char', 'enum'))) {
-                $code = array_pop(array_reverse(explode('_', $collation)));
+                $collations = array_reverse(explode('_', $collation));
+                $code = array_pop($collations);
 
                 $collation = ' CHARACTER SET ' . $code . ' COLLATE ' . $collation;
 
@@ -786,7 +746,7 @@ abstract class base implements cache_cacheableInterface
         return $return;
     }
 
-    protected function apply_patches($from, $to, $post_process, Setup_Upgrade &$upgrader)
+    protected function apply_patches($from, $to, $post_process, Setup_Upgrade $upgrader, Application $app)
     {
         if (version_compare($from, $to, '=')) {
             return true;
@@ -794,18 +754,17 @@ abstract class base implements cache_cacheableInterface
 
         $list_patches = array();
 
-        $registry = registry::get_instance();
-
         $upgrader->add_steps(1)->set_current_message(_('Looking for patches'));
 
-        $iterator = new DirectoryIterator($registry->get('GV_RootPath') . 'lib/classes/patch/');
+        $iterator = new DirectoryIterator($this->app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/patch/');
 
         foreach ($iterator as $fileinfo) {
             if ( ! $fileinfo->isDot()) {
                 if (substr($fileinfo->getFilename(), 0, 1) == '.')
                     continue;
 
-                $classname = 'patch_' . array_pop(array_reverse(explode('.', $fileinfo->getFilename())));
+                $versions = array_reverse(explode('.', $fileinfo->getFilename()));
+                $classname = 'patch_' . array_pop($versions);
 
                 $patch = new $classname();
 
@@ -837,7 +796,7 @@ abstract class base implements cache_cacheableInterface
         $success = true;
 
         foreach ($list_patches as $patch) {
-            if ( ! $patch->apply($this))
+            if ( ! $patch->apply($this, $app))
                 $success = false;
             $upgrader->add_steps_complete(1);
         }

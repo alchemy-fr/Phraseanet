@@ -7,13 +7,13 @@ use Alchemy\Phrasea\Controller\Setup as Controller;
 use Alchemy\Phrasea\Controller\Utils as ControllerUtils;
 
 return call_user_func(function() {
-            $app = new PhraseaApplication();
+            $app = new PhraseaApplication('test');
 
             $app['install'] = true;
 
             $app->get('/', function() use ($app) {
-                    return $app->redirect('/setup/installer/');
-                });
+                return $app->redirect('/setup/installer/');
+            });
 
             $app->mount('/installer/', new Controller\Installer());
             $app->mount('/test', new ControllerUtils\PathFileTest());

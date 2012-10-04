@@ -57,7 +57,7 @@
                         </a>
                     </li>
                 {% endif %}
-                {% if selectionLength == 1 and registry.get('GV_seeOngChgDoc') %}
+                {% if selectionLength == 1 and app['phraseanet.registry'].get('GV_seeOngChgDoc') %}
                     <li>
                         <a href="#substitution">
                             {% trans "substitution" %}
@@ -261,7 +261,7 @@
       {% for record in selection %}
         <div id="substitution" class="tabBox">
 
-         {% if registry.get('GV_seeOngChgDoc') %}
+         {% if app['phraseanet.registry'].get('GV_seeOngChgDoc') %}
             <div id="substitution-hd">
               <form
                 name ="formchgHD"
@@ -295,7 +295,7 @@
             </div>
           {% endif %}
 
-          {% if registry.get('GV_seeNewThumb') %}
+          {% if app['phraseanet.registry'].get('GV_seeNewThumb') %}
             <div id="substitution-sd">
               <form
                 name="formchgHD"

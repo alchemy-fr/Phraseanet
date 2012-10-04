@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     Feeds
@@ -23,19 +25,13 @@ class Feed_Aggregate extends Feed_Abstract implements Feed_Interface
      */
     protected $feeds;
 
-    /**
-     *
-     * @param  appbox         $appbox
-     * @param  array          $feeds
-     * @return Feed_Aggregate
-     */
-    public function __construct(appbox &$appbox, Array $feeds)
+    public function __construct(Application $app, Array $feeds)
     {
         $this->title = 'AGGREGGATE';
         $this->subtitle = 'AGREGGATE SUBTITLE';
         $this->created_on = new DateTime();
         $this->updated_on = new DateTime();
-        $this->appbox = $appbox;
+        $this->app = $app;
 
         $tmp_feeds = array();
 
@@ -96,16 +92,13 @@ class Feed_Aggregate extends Feed_Abstract implements Feed_Interface
             ORDER BY id DESC
             LIMIT ' . $offset_start . ', ' . $how_many;
 
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         foreach ($rs as $row) {
-            $entry = new Feed_Entry_Adapter(
-                    $this->appbox
-                    , $this->feeds[$row['feed_id']], $row['id']
-            );
+            $entry = new Feed_Entry_Adapter($this->app, $this->feeds[$row['feed_id']], $row['id']);
             $result->add_entry($entry);
         }
 
@@ -126,7 +119,7 @@ class Feed_Aggregate extends Feed_Abstract implements Feed_Interface
             FROM feed_entries
             WHERE feed_id
               IN (' . implode(', ', array_keys($this->feeds)) . ') ';
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $number = $row ? (int) $row['number'] : 0;
@@ -189,12 +182,12 @@ class Feed_Aggregate extends Feed_Abstract implements Feed_Interface
     {
         $sql = 'SELECT token FROM feed_tokens
             WHERE usr_id = :usr_id AND aggregated = "1"';
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':usr_id' => $user->get_id()));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        if ( ! $row || $renew === true) {
+        if (!$row || $renew === true) {
             $token = random::generatePassword(12, random::LETTERS_AND_NUMBERS);
             $sql = 'REPLACE INTO feed_tokens (id, token, feed_id, usr_id, aggregated)
               VALUES (null, :token, :feed_id, :usr_id, :aggregated)';
@@ -206,7 +199,7 @@ class Feed_Aggregate extends Feed_Abstract implements Feed_Interface
                 , ':aggregated' => '1'
             );
 
-            $stmt = $this->appbox->get_connection()->prepare($sql);
+            $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
             $stmt->execute($params);
         } else {
             $token = $row['token'];
@@ -217,15 +210,15 @@ class Feed_Aggregate extends Feed_Abstract implements Feed_Interface
 
     /**
      *
-     * @param  appbox         $appbox
+     * @param  Application    $app
      * @param  User_Adapter   $user
      * @return Feed_Aggregate
      */
-    public static function load_with_user(appbox &$appbox, User_Adapter &$user)
+    public static function load_with_user(Application $app, User_Adapter $user)
     {
-        $feeds = Feed_Collection::load_all($appbox, $user);
+        $feeds = Feed_Collection::load_all($app, $user);
 
-        return new self($appbox, $feeds->get_feeds());
+        return new self($app, $feeds->get_feeds());
     }
 
     /**

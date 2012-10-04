@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     Feeds
@@ -45,7 +47,7 @@ class Feed_Token
      *
      * @var appbox
      */
-    protected $appbox;
+    protected $app;
 
     /**
      *
@@ -54,7 +56,7 @@ class Feed_Token
      * @param  int        $feed_id
      * @return Feed_Token
      */
-    public function __construct(appbox &$appbox, $token, $feed_id)
+    public function __construct(Application $app, $token, $feed_id)
     {
         $sql = 'SELECT feed_id, usr_id FROM feed_tokens
             WHERE feed_id = :feed_id
@@ -65,7 +67,7 @@ class Feed_Token
             , ':token'   => $token
         );
 
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -75,7 +77,7 @@ class Feed_Token
 
         $this->feed_id = (int) $row['feed_id'];
         $this->usr_id = (int) $row['usr_id'];
-        $this->appbox = $appbox;
+        $this->app = $app;
 
         return $this;
     }
@@ -87,7 +89,7 @@ class Feed_Token
     public function get_user()
     {
         if ( ! $this->user)
-            $this->user = User_Adapter::getInstance($this->usr_id, $this->appbox);
+            $this->user = User_Adapter::getInstance($this->usr_id, $this->app);
 
         return $this->user;
     }
@@ -99,7 +101,7 @@ class Feed_Token
     public function get_feed()
     {
         if ( ! $this->feed)
-            $this->feed = Feed_Adapter::load_with_user($this->appbox, $this->get_user(), $this->feed_id);
+            $this->feed = Feed_Adapter::load_with_user($this->app, $this->get_user(), $this->feed_id);
 
         return $this->feed;
     }

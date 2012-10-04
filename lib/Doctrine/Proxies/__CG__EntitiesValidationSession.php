@@ -159,10 +159,10 @@ class ValidationSession extends \Entities\ValidationSession implements \Doctrine
         return parent::getParticipants();
     }
 
-    public function getParticipant(\User_Adapter $user)
+    public function getParticipant(\User_Adapter $user, \Alchemy\Phrasea\Application $app)
     {
         $this->__load();
-        return parent::getParticipant($user);
+        return parent::getParticipant($user, $app);
     }
 
     public function setInitiatorId($initiatorId)
@@ -189,10 +189,10 @@ class ValidationSession extends \Entities\ValidationSession implements \Doctrine
         return parent::setInitiator($user);
     }
 
-    public function getInitiator()
+    public function getInitiator(\Alchemy\Phrasea\Application $app)
     {
         $this->__load();
-        return parent::getInitiator();
+        return parent::getInitiator($app);
     }
 
     public function isFinished()
@@ -201,10 +201,10 @@ class ValidationSession extends \Entities\ValidationSession implements \Doctrine
         return parent::isFinished();
     }
 
-    public function getValidationString(\User_Adapter $user)
+    public function getValidationString(\Alchemy\Phrasea\Application $app, \User_Adapter $user)
     {
         $this->__load();
-        return parent::getValidationString($user);
+        return parent::getValidationString($app, $user);
     }
 
 

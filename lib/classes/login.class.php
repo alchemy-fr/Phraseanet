@@ -1,19 +1,20 @@
 <?php
 
+use Alchemy\Phrasea\Application;
+
 class login
 {
 
-    public function get_cgus()
+    public function get_cgus(Application $app)
     {
-        return databox_cgu::getHome();
+        return databox_cgu::getHome($app);
     }
 
-    public function register_enabled()
+    public function register_enabled(Application $app)
     {
-        $registry = registry::get_instance();
-        require_once $registry->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php';
+        require_once __DIR__ . '/deprecated/inscript.api.php';
 
-        $bases = giveMeBases();
+        $bases = giveMeBases($app);
 
         if ($bases) {
             foreach ($bases as $base) {
@@ -26,22 +27,22 @@ class login
         return false;
     }
 
-    public function get_register_link()
+    public function get_register_link(Application $app)
     {
         $demandLinkBox = '';
 
-        if (self::register_enabled()) {
+        if (self::register_enabled($app)) {
             $demandLinkBox = '<a href="/login/register/" rel="external" class="link pointer" id="register-tab">' . _('login:: register') . '</a>';
         }
 
         return $demandLinkBox;
     }
 
-    public function get_guest_link()
+    public function get_guest_link(Application $app)
     {
         $inviteBox = '';
 
-        if (phrasea::guest_allowed()) {
+        if (phrasea::guest_allowed($app)) {
             $inviteBox = '<a class="link" rel="external" href="/prod/?nolog=1">' . _('login:: guest Access') . '</a>';
         }
 

@@ -33,7 +33,7 @@
               <input type="hidden" name="usr_id" value="{{ owner.getUser().get_id() }}" />
             </td>
             <td style="padding-right:10px;min-width:100px;">
-              {% if user.get_id() == owner.getUser(user).get_id() %}
+              {% if app['phraseanet.user'].get_id() == owner.getUser(app).get_id() %}
                 {% if owner.getRole() == constant('\\Entities\\UsrListOwner::ROLE_ADMIN') %}
                   {% trans 'You are Admin' %}
                 {% endif %}
@@ -53,7 +53,7 @@
               {% endif %}
             </td>
             <td style="width:15px">
-               {% if user.get_id() != owner.getUser(user).get_id() %}
+               {% if app['phraseanet.user'].get_id() != owner.getUser(app).get_id() %}
                   <a href="#" class="deleter">
                     <img src="/skins/prod/Push/close_badge.png" title="{% trans 'Remove' %}"/>
                   </a>

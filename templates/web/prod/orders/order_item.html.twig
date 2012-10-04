@@ -6,8 +6,8 @@
 </div>
 
 <div id="order_manager">
-    {% set success = app.request.query.get('success') %}
-    {% set action = app.request.query.get('action') %}
+    {% set success = app['request'].query.get('success') %}
+    {% set action = app['request'].query.get('action') %}
 
     {% if  success == '1' %}
         <div class="alert alert-success">
@@ -33,11 +33,11 @@
             </tr>
             <tr>
                 <td>{% trans 'Date de commande' %}</td>
-                <td>{{ order.get_created_on() | prettyDate }}</td>
+                <td>{{ app['date-formatter'].getPrettyString(order.get_created_on()) }}</td>
             </tr>
             <tr>
                 <td>{% trans 'Deadline' %}</td>
-                <td>{{ order.get_deadline() | prettyDate }}</td>
+                <td>{{ app['date-formatter'].getPrettyString(order.get_deadline()) }}</td>
             </tr>
             <tr>
                 <td>{% trans 'Utilisation prevue' %}</td>
@@ -58,7 +58,7 @@
             {% for order_element_id,element in order %}
                 <li>
                     <div id="order_wrapper_{{order.get_order_id()}}_{{element.get_base_id()}}_{{element.get_record_id()}}" class="order_wrapper {% if element.get_order_master_id() == false %}selectable{% endif %}">
-                        {{ thumbnail.format(element.get_thumbnail() ,80, 80, '', session, true, false) }}
+                        {{ thumbnail.format(element.get_thumbnail() ,80, 80, '', true, false) }}
                         {% if element.get_order_master_id() %}
                             {% set name = element.get_order_master_name() %}
                             {% if element.get_deny() == 1 %}

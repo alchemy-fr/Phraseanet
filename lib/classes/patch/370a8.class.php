@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -58,9 +60,9 @@ class patch_370a8 implements patchInterface
      * @param  base    $appbox
      * @return boolean
      */
-    public function apply(base &$appbox)
+    public function apply(base $appbox, Application $app)
     {
-        $task_manager = new task_manager($appbox);
+        $task_manager = new task_manager($app);
 
         $ttasks = array();
         $conn = $appbox->get_connection();
@@ -254,7 +256,7 @@ class patch_370a8 implements patchInterface
          * save new tasks
          */
         foreach ($tdom as $newtask) {
-            $task = task_abstract::create($appbox, 'task_period_RecordMover', $newtask['dom']->saveXML());
+            $task = task_abstract::create($app, 'task_period_RecordMover', $newtask['dom']->saveXML());
         }
 
         return true;

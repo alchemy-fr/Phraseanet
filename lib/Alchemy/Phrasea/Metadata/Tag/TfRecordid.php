@@ -2,7 +2,9 @@
 
 namespace Alchemy\Phrasea\Metadata\Tag;
 
-class TfRecordid extends \PHPExiftool\Driver\Tag
+use PHPExiftool\Driver\AbstractTag;
+
+class TfRecordid extends AbstractTag
 {
     protected $Id = 'tf-recordid';
     protected $Name = 'tf-recordid';

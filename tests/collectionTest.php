@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Application;
+
 require_once __DIR__ . '/PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
 class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
@@ -8,16 +10,18 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
      * @var collection
      */
     protected static $object;
+    /**
+     * @var collection
+     */
+    protected static $objectDisable;
 
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $auth = new Session_Authentication_None(self::$user);
-        $appbox->get_session()->authenticate($auth);
+        $application = new Application('test');
 
         $found = false;
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach ($application['phraseanet.appbox']->get_databoxes() as $databox) {
             $found = true;
             break;
         }
@@ -25,10 +29,15 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
         if ( ! $found)
             self::fail('No databox found for collection test');
 
-        self::$object = collection::create($databox, $appbox, 'test_collection', self::$user);
+        self::$object = collection::create(self::$DI['app'], $databox, $application['phraseanet.appbox'], 'test_collection', self::$DI['user']);
 
         if ( ! self::$object instanceof collection)
             self::fail('Unable to create collection');
+
+        self::$objectDisable = collection::create(self::$DI['app'], $databox, $application['phraseanet.appbox'], 'test_collection', self::$DI['user']);
+        self::$objectDisable->disable(self::$DI['app']['phraseanet.appbox']);
+        if ( ! self::$objectDisable instanceof collection)
+            self::fail('Unable to create disable collection');
     }
 
     public static function tearDownAfterClass()
@@ -38,52 +47,47 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
         parent::tearDownAfterClass();
     }
 
-    public function testEnable()
+    public function testDisable()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
         $base_id = self::$object->get_base_id();
         $coll_id = self::$object->get_coll_id();
-        self::$object->disable($appbox);
+        self::$object->disable(self::$DI['app']['phraseanet.appbox']);
         $this->assertTrue(is_int(self::$object->get_base_id()));
         $this->assertTrue(is_int(self::$object->get_coll_id()));
         $this->assertFalse(self::$object->is_active());
 
         $sbas_id = self::$object->get_databox()->get_sbas_id();
-        $databox = $appbox->get_databox($sbas_id);
+        $databox = self::$DI['app']['phraseanet.appbox']->get_databox($sbas_id);
 
         foreach ($databox->get_collections() as $collection) {
             $this->assertTrue($collection->get_base_id() !== $base_id);
             $this->assertTrue($collection->get_coll_id() !== $coll_id);
         }
-
-        self::$object->enable($appbox);
-        $this->assertTrue(is_int(self::$object->get_base_id()));
-        $this->assertTrue(is_int(self::$object->get_coll_id()));
-        $this->assertTrue(self::$object->is_active());
-
-        $databox = $appbox->get_databox($sbas_id);
-
-        $n = $m = 0;
-        foreach ($databox->get_collections() as $collection) {
-            if ($collection->get_base_id() === $base_id)
-                $n ++;
-            if ($collection->get_coll_id() === $coll_id)
-                $m ++;
-        }
-        $this->assertEquals($n, 1);
-        $this->assertEquals($m, 1);
     }
 
-    public function testDisable()
+    public function testEnable()
     {
-        $this->testEnable();
+        self::$objectDisable->enable(self::$DI['app']['phraseanet.appbox']);
+        $this->assertTrue(is_int(self::$objectDisable->get_base_id()));
+        $this->assertTrue(is_int(self::$objectDisable->get_coll_id()));
+        $this->assertTrue(self::$objectDisable->is_active());
+
+        $n = $m = 0;
+        foreach (self::$objectDisable->get_databox()->get_collections() as $collection) {
+            if ($collection->get_base_id() === self::$objectDisable->get_base_id())
+                $n ++;
+            if ($collection->get_coll_id() === self::$objectDisable->get_coll_id())
+                $m ++;
+        }
+        $this->assertEquals(1, $n);
+        $this->assertEquals(1, $m);
     }
 
     public function testGet_record_amount()
     {
         self::$object->empty_collection();
-        $file = new Alchemy\Phrasea\Border\File(self::$core['mediavorus']->guess(new \SplFileInfo(__DIR__ . '/testfiles/cestlafete.jpg')), self::$object);
-        record_adapter::createFromFile($file);
+        $file = new Alchemy\Phrasea\Border\File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/testfiles/cestlafete.jpg'), self::$object);
+        record_adapter::createFromFile($file, self::$DI['app']);
         $this->assertTrue(self::$object->get_record_amount() === 1);
         self::$object->empty_collection();
         $this->assertTrue(self::$object->get_record_amount() === 0);
@@ -129,8 +133,8 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_record_details()
     {
-        $file = new Alchemy\Phrasea\Border\File(self::$core['mediavorus']->guess(new \SplFileInfo(__DIR__ . '/testfiles/cestlafete.jpg')), self::$object);
-        $record = record_adapter::createFromFile($file);
+        $file = new Alchemy\Phrasea\Border\File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/testfiles/cestlafete.jpg'), self::$object);
+        $record = record_adapter::createFromFile($file, self::$DI['app']);
         $details = self::$object->get_record_details();
 
         $this->assertTrue(is_array($details));
@@ -180,7 +184,7 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_from_coll_id()
     {
-        $temp_coll = collection::get_from_coll_id(self::$object->get_databox(), self::$object->get_coll_id());
+        $temp_coll = collection::get_from_coll_id(self::$DI['app'], self::$object->get_databox(), self::$object->get_coll_id());
         $this->assertEquals(self::$object->get_coll_id(), $temp_coll->get_coll_id());
         $this->assertEquals(self::$object->get_base_id(), $temp_coll->get_base_id());
     }

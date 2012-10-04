@@ -1,5 +1,5 @@
 {% for validationDatas in basket_element.getValidationDatas() %}
-  {% set is_mine = validationDatas.getParticipant().getUser().get_id() == user.get_id() %}
+  {% set is_mine = validationDatas.getParticipant().getUser(app).get_id() == app['phraseanet.user'].get_id() %}
   {% if validationDatas.getNote() != '' or (validationDatas.getAgreement() is not null and is_mine)  %}
   <li>
     <h3 style="text-align:left;">
@@ -7,7 +7,7 @@
       <img style="vertical-align:middle;"
            src="/skins/lightbox/{% if validationDatas.getAgreement() == true %}agree.png{% else %}disagree.png{% endif %}" />
       {% endif %}
-      {{ validationDatas.getParticipant().getUser().get_display_name() }}
+      {{ validationDatas.getParticipant().getUser(app).get_display_name() }}
     </h3>
     {% if validationDatas.getNote() != '' %}
     <p style="text-align:left;">{% trans 'validation:: note'%} : {{ validationDatas.getNote()|nl2br }}</p>

@@ -14,21 +14,21 @@
         <div id="content-apps">
         <h1>Phraseanet Developer Center</h1>
         <h3>{% trans 'Mes applications' %}</h3>
-        {% if apps|length > 0 %}
+        {% if applications|length > 0 %}
         <ul class='app-list'>
-          {% for app in apps %}
-            <li id='app_{{app.get_id()}}'>
+          {% for application in applications %}
+            <li id='app_{{application.get_id()}}'>
               <div>
                 <button class='delete_app' type='button'>{% trans  'button::supprimer'%}</button>
                     <span class='app-row'>
                       <strong>
-                        <a  class="link" href="/developers/application/{{app.get_id()}}/">
-                          {{app.get_name()}}
+                        <a  class="link" href="/developers/application/{{application.get_id()}}/">
+                          {{application.get_name()}}
                         </a>
                       </strong>
                     </span>
-                    <span class='app-row'>{{app.get_description() }}</span>
-                    <span class='app-row'>{{app.get_website()}}</span>
+                    <span class='app-row'>{{application.get_description() }}</span>
+                    <span class='app-row'>{{application.get_website()}}</span>
               </div>
             </li>
           {%endfor%}

@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     Feeds
@@ -19,9 +21,9 @@ class Feed_Publisher_Adapter implements Feed_Publisher_Interface, cache_cacheabl
 {
     /**
      *
-     * @var appbox
+     * @var Application
      */
-    protected $appbox;
+    protected $app;
 
     /**
      *
@@ -55,13 +57,13 @@ class Feed_Publisher_Adapter implements Feed_Publisher_Interface, cache_cacheabl
 
     /**
      *
-     * @param  appbox                 $appbox
+     * @param  Application            $app
      * @param  int                    $id
      * @return Feed_Publisher_Adapter
      */
-    public function __construct(appbox &$appbox, $id)
+    public function __construct(Application $app, $id)
     {
-        $this->appbox = $appbox;
+        $this->app = $app;
         $this->id = (int) $id;
         $this->load();
 
@@ -77,8 +79,8 @@ class Feed_Publisher_Adapter implements Feed_Publisher_Interface, cache_cacheabl
         try {
             $datas = $this->get_data_from_cache();
 
-            $this->user = User_Adapter::getInstance($datas['usr_id'], $this->appbox);
-            $this->added_by = User_Adapter::getInstance($datas['added_by_usr_id'], $this->appbox);
+            $this->user = User_Adapter::getInstance($datas['usr_id'], $this->app);
+            $this->added_by = User_Adapter::getInstance($datas['added_by_usr_id'], $this->app);
             $this->created_on = $datas['created_on'];
             $this->owner = $datas['owner'];
 
@@ -89,7 +91,7 @@ class Feed_Publisher_Adapter implements Feed_Publisher_Interface, cache_cacheabl
 
         $sql = 'SELECT id, usr_id, owner, created_on, added_by
             FROM feed_publishers WHERE id = :feed_publisher_id';
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':feed_publisher_id' => $this->id));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -97,10 +99,10 @@ class Feed_Publisher_Adapter implements Feed_Publisher_Interface, cache_cacheabl
         if ( ! $row)
             throw new Exception_Feed_PublisherNotFound();
 
-        $this->user = User_Adapter::getInstance($row['usr_id'], $this->appbox);
+        $this->user = User_Adapter::getInstance($row['usr_id'], $this->app);
         $this->owner = ! ! $row['owner'];
         $this->created_on = new DateTime($row['created_on']);
-        $this->added_by = User_Adapter::getInstance($row['added_by'], $this->appbox);
+        $this->added_by = User_Adapter::getInstance($row['added_by'], $this->app);
 
         $datas = array(
             'usr_id'          => $this->user->get_id()
@@ -166,7 +168,7 @@ class Feed_Publisher_Adapter implements Feed_Publisher_Interface, cache_cacheabl
     public function delete()
     {
         $sql = 'DELETE FROM feed_publishers WHERE id = :feed_publisher_id';
-        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':feed_publisher_id' => $this->get_id()));
         $stmt->closeCursor();
 
@@ -175,28 +177,28 @@ class Feed_Publisher_Adapter implements Feed_Publisher_Interface, cache_cacheabl
 
     /**
      *
-     * @param  appbox                 $appbox
+     * @param  Application                 $app
      * @param  User_Adapter           $user
      * @param  Feed_Adapter           $feed
      * @param  boolean                $owner
      * @return Feed_Publisher_Adapter
      */
-    public static function create(appbox &$appbox, User_Adapter &$user, Feed_Adapter &$feed, $owner)
+    public static function create(Application $app, User_Adapter $user, Feed_Adapter $feed, $owner)
     {
         $sql = 'INSERT INTO feed_publishers (id, usr_id, feed_id, owner, created_on, added_by)
             VALUES (null, :usr_id, :feed_id, :owner, NOW(), :added_by)';
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $params = array(
             ':usr_id'   => $user->get_id()
             , ':feed_id'  => $feed->get_id()
             , ':owner'    => $owner ? '1' : null
-            , ':added_by' => $owner ? $user->get_id() : $appbox->get_session()->get_usr_id()
+            , ':added_by' => $owner ? $user->get_id() : $app['phraseanet.user']->get_id()
         );
         $stmt->execute($params);
-        $id = $appbox->get_connection()->lastInsertId();
+        $id = $app['phraseanet.appbox']->get_connection()->lastInsertId();
         $stmt->closeCursor();
 
-        return new self($appbox, $id);
+        return new self($app, $id);
     }
 
     /**
@@ -206,7 +208,7 @@ class Feed_Publisher_Adapter implements Feed_Publisher_Interface, cache_cacheabl
      * @param  User_Adapter           $user
      * @return Feed_Publisher_Adapter
      */
-    public static function getPublisher(appbox &$appbox, Feed_Adapter &$feed, User_Adapter &$user)
+    public static function getPublisher(appbox $appbox, Feed_Adapter $feed, User_Adapter $user)
     {
         foreach ($feed->get_publishers() as $publisher) {
             if ($publisher->get_user()->get_id() === $user->get_id()) {
@@ -223,16 +225,16 @@ class Feed_Publisher_Adapter implements Feed_Publisher_Interface, cache_cacheabl
 
     public function get_data_from_cache($option = null)
     {
-        return $this->appbox->get_data_from_cache($this->get_cache_key($option));
+        return $this->app['phraseanet.appbox']->get_data_from_cache($this->get_cache_key($option));
     }
 
     public function set_data_to_cache($value, $option = null, $duration = 0)
     {
-        return $this->appbox->set_data_to_cache($value, $this->get_cache_key($option), $duration);
+        return $this->app['phraseanet.appbox']->set_data_to_cache($value, $this->get_cache_key($option), $duration);
     }
 
     public function delete_data_from_cache($option = null)
     {
-        return $this->appbox->delete_data_from_cache($this->get_cache_key($option));
+        return $this->app['phraseanet.appbox']->delete_data_from_cache($this->get_cache_key($option));
     }
 }

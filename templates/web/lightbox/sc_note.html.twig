@@ -9,16 +9,16 @@
     <hr/>
     {% for validationDatas in basket_element.getValidationDatas() %}
       {% if validationDatas.getNote() != '' %}
-    <div class="note_wrapper ui-corner-all {% if validationDatas.getParticipant().getUser().get_id() == user.get_id() %}my_note{% endif %} ">
+    <div class="note_wrapper ui-corner-all {% if validationDatas.getParticipant().getUser(app).get_id() == app['phraseanet.user'].get_id() %}my_note{% endif %} ">
       <span class="note_author title15">
-        {{validationDatas.getParticipant().getUser().get_display_name()}}
+        {{validationDatas.getParticipant().getUser(app).get_display_name()}}
       </span> : {{ validationDatas.getNote()|nl2br }}
     </div>
       {% endif %}
     {% endfor %}
 
     <form>
-      <textarea>{{basket_element.getUserValidationDatas(user).getNote()}}</textarea>
+      <textarea>{{basket_element.getUserValidationDatas(app['phraseanet.user'], app).getNote()}}</textarea>
       <div class="buttons">
         <button class="note_closer ui-corner-all">
           {% trans 'boutton::fermer' %}

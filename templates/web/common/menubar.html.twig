@@ -6,7 +6,7 @@
               Phraseanet
             </span>
         </li>
-        {% if module != "lightbox" and session.is_authenticated %}
+        {% if module != "lightbox" and app.isAuthenticated() %}
           <li>
             {% if module == "prod" %}
               <a target="_self" href="/client/">
@@ -15,7 +15,7 @@
                 </span>
               </a>
             {% else %}
-              {% if browser.isNewGeneration %}
+              {% if app['browser'].isNewGeneration %}
                 {% if module == "client" %}
                   <a target="_self" href="/prod/">
                     <span class="">
@@ -33,7 +33,7 @@
             {% endif %}
           </li>
 
-          {% if browser.isNewGeneration and registry.get('GV_thesaurus') == true and user.ACL.has_access_to_module('thesaurus') %}
+          {% if app['browser'].isNewGeneration and app['phraseanet.registry'].get('GV_thesaurus') == true and app['phraseanet.user'].ACL.has_access_to_module('thesaurus') %}
           <li>
             <a target="_blank" href="/thesaurus2/">
               <span class="{% if module == "thesaurus" %}selected{% endif %}">
@@ -45,7 +45,7 @@
 
 
           {# MODULE #}
-          {% if user.ACL.has_access_to_module('admin') %}
+          {% if app['phraseanet.user'].ACL.has_access_to_module('admin') %}
           <li>
             <a target="_blank" href="/admin/">
               <span class="{% if module == "admin" %}selected{% endif %}">
@@ -56,7 +56,7 @@
           {% endif %}
 
           {# MODULE #}
-          {% if user.ACL.has_access_to_module('report') %}
+          {% if app['phraseanet.user'].ACL.has_access_to_module('report') %}
           <li>
             <a target="_blank" href="/report/">
               <span class="{% if module == "report" %}selected{% endif %}">
@@ -77,11 +77,11 @@
 
           {# MODULE #}
           {% if module == "prod" %}
-            {% if user.ACL.has_access_to_module('upload') %}
+            {% if app['phraseanet.user'].ACL.has_access_to_module('upload') %}
             <li>
                 {% set link = '/prod/upload/' %}
 
-                {% if not browser.supportFileAPI() %}
+                {% if not app['browser'].supportFileAPI() %}
                     {% set link = '/prod/upload/flash-version/' %}
                 {% endif %}
 
@@ -105,7 +105,7 @@
           </li>
           {% endif %}
 
-          {% if module == "prod" and user.ACL.has_right('order_master') %}
+          {% if module == "prod" and app['phraseanet.user'].ACL.has_right('order_master') %}
           <li>
             <a href="{{ path('prod_orders') }}" class="dialog full-dialog" title="{% trans 'Orders manager' %}">
               <span>
@@ -122,31 +122,35 @@
     <div class="PNB" style="left:auto;overflow:hidden;">
       <ol>
 
-    {% if module == "client" or module == "prod" %}
+    {% if app.isAuthenticated()  and (module == "client" or module == "prod") %}
         <li id="notification_trigger">
           <a href="#" style="font-weight:bold;text-decoration:none;">
             <span>
               {% trans 'Notifications' %}
-              <button class="counter btn btn-danger" style="visibility:{% if core['events-manager'].get_unread_notifications_number > 0 %}visible{% else %}hidden{% endif %};">
-                  {% if core['events-manager'].get_unread_notifications_number > 0 %}
-                    {{core['events-manager'].get_unread_notifications_number}}
+              <button class="counter btn btn-danger" style="visibility:{% if app['events-manager'].get_unread_notifications_number > 0 %}visible{% else %}hidden{% endif %};">
+                  {% if app['events-manager'].get_unread_notifications_number > 0 %}
+                    {{app['events-manager'].get_unread_notifications_number}}
                   {% endif %}
               </button>
             </span>
           </a>
         </li>
 
-        {% endif %}
+        <div style="display:none;z-index:30000;" id="notification_box">
+            {% set notifications = app['events-manager'].get_notifications %}
+            {% include 'prod/notifications.html.twig' %}
+        </div>
+    {% endif %}
         <li>
-          {% if session.is_authenticated %}
-            {% if user.is_guest %}
+          {% if app.isAuthenticated() %}
+            {% if app['phraseanet.user'].is_guest %}
               <span>
                 {% trans 'Guest' %}
               </span>
             {% else %}
               <a target="_blank" href="/account/" title="{% trans 'login:: Mon compte' %}">
                 <span>
-                  {{user.get_login()}}
+                  {{app['phraseanet.user'].get_login()}}
                 </span>
               </a>
             {% endif %}
@@ -172,7 +176,7 @@
                               </div>
                           {% endif %}
                               <div title="" class="context-menu-item menu3-custom-item">
-                                  <div style="" class="context-menu-item-inner infoDialog" infos="<div><span style='color:#F7F7F7;font-size:18px;'>PHRASEANET</span> {{version_name}} (V{{version_number}})</div><div></div><br/><div><a href='http://www.gnu.org/licenses/gpl.html' target='_blank'><img src='http://www.gnu.org/graphics/gplv3-88x31.png' style='vertical-align:middle;'/><span>License GNU GPL v3</span></a></div><br/><div><a href='http://www.phraseanet.com/' target='_blank'>  &copy; Copyright Alchemy 2005-{{ "now"|date("Y") }}</a></div>">{% trans 'phraseanet:: a propos' %}</div>
+                                  <div style="" class="context-menu-item-inner infoDialog" infos="<div><span style='color:#F7F7F7;font-size:18px;'>PHRASEANET</span> {{ app['phraseanet.version'].getName() }} (V{{ app['phraseanet.version'].getNumber() }})</div><div></div><br/><div><a href='http://www.gnu.org/licenses/gpl.html' target='_blank'><img src='http://www.gnu.org/graphics/gplv3-88x31.png' style='vertical-align:middle;'/><span>License GNU GPL v3</span></a></div><br/><div><a href='http://www.phraseanet.com/' target='_blank'>  &copy; Copyright Alchemy 2005-{{ "now"|date("Y") }}</a></div>">{% trans 'phraseanet:: a propos' %}</div>
                               </div>
                           </div>
                       </td>
@@ -181,7 +185,7 @@
           </table>
         </li>
         <li>
-        {% if session.is_authenticated %}
+        {% if app.isAuthenticated() %}
           <a href="/login/logout/?app={{module}}" target="_self">
             <span>
               {% trans 'phraseanet:: deconnection' %}
@@ -195,7 +199,3 @@
     </div>
 </div>
 
-          <div style="display:none;z-index:30000;" id="notification_box">
-          {% set notifications = core['events-manager'].get_notifications %}
-          {% include 'prod/notifications.html.twig' %}
-          </div>

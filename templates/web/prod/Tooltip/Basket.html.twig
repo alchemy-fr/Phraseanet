@@ -13,7 +13,7 @@
     </div>
     <div style="margin:5px 0;text-align:right;font-style:italic;position:relative;">
         {% set nb_records = basket.getElements()|length %}
-        {% set date = basket.getUpdated() | prettyDate %}
+        {% set date = app['date-formatter'].getPrettyString(basket.getUpdated()) %}
         {% trans %}
         {{ nb_records }} records
         {% endtrans %}
@@ -23,7 +23,7 @@
         {% for element in basket.getElements() %}
             {% if loop.index <= 9 %}
             <div style="margin:5px;position:relative;float:left;width:80px;height:80px;overflow:hidden;">
-                {{ thumbnail.format(element.getRecord().get_thumbnail(), 80, 80 , '', session, false, false) }}
+                {{ thumbnail.format(element.getRecord(app).get_thumbnail(), 80, 80 , '', false, false) }}
             </div>
             {% endif %}
         {% endfor %}

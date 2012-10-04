@@ -47,7 +47,8 @@ class patch_th_2_0_1
             $stmt->execute();
             $stmt->closeCursor();
 
-            $domct = @DOMDocument::load("../thesaurus2/blank_cterms.xml");
+            $domct = new DOMDocument();
+            $domct->load("../thesaurus2/blank_cterms.xml");
             $ct = $domct->documentElement;
             $ct->setAttribute("creation_date", $now = date("YmdHis"));
             $ct->setAttribute("modification_date", $now);

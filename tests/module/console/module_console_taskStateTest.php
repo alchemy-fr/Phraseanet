@@ -13,8 +13,7 @@ class module_console_taskStateTest extends PhraseanetPHPUnitAbstract
      */
     public function testExecute()
     {
-        // mock the Kernel or create one depending on your needs
-        $application = new CLI('test');
+        $application = new CLI('test', null, 'test');
         $application->command(new module_console_taskState('system:taskState'));
 
         $command = $application['console']->find('system:taskState');
@@ -30,7 +29,7 @@ class module_console_taskStateTest extends PhraseanetPHPUnitAbstract
         $this->assertTrue(strpos($commandTester->getDisplay(), $sentence) !== false);
 
         // test good tasks ids
-        $task_manager = new task_manager(appbox::get_instance(\bootstrap::getCore()));
+        $task_manager = new task_manager($application);
         $tasks = $task_manager->getTasks();
         $tids = array();    // list known ids of tasks so we can generate a 'unknown id' later
         foreach ($tasks as $task) {
@@ -63,5 +62,3 @@ class module_console_taskStateTest extends PhraseanetPHPUnitAbstract
 
     }
 }
-
-?>

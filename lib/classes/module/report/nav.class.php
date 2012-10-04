@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     module_report
@@ -49,18 +51,17 @@ class module_report_nav extends module_report
      * @param $arg2 end date of the report
      * @param $sbas_id databox id
      */
-    public function __construct($arg1, $arg2, $sbas_id, $collist)
+    public function __construct(Application $app, $arg1, $arg2, $sbas_id, $collist)
     {
-        parent::__construct($arg1, $arg2, $sbas_id, $collist);
+        parent::__construct($app, $arg1, $arg2, $sbas_id, $collist);
         $this->total_pourcent = $this->setTotalPourcent();
     }
 
     private function setTotalPourcent()
     {
-        $registry = registry::get_instance();
         $x = $this->getTransQueryString();
 
-        $s = new module_report_sql($this);
+        $s = new module_report_sql($this->app, $this);
         $filter = $s->getFilters();
 
         $params = array();
@@ -120,9 +121,7 @@ class module_report_nav extends module_report
     {
         $i = 0;
 
-        $registry = registry::get_instance();
-
-        $s = new module_report_sql($this);
+        $s = new module_report_sql($this->app, $this);
         $filter = $s->getFilters();
         $this->title = _('report:: navigateur');
 
@@ -183,9 +182,7 @@ class module_report_nav extends module_report
      */
     public function buildTabOs($tab = false)
     {
-
-        $registry = registry::get_instance();
-        $s = new module_report_sql($this);
+        $s = new module_report_sql($this->app, $this);
         $filter = $s->getFilters();
         $i = 0;
         $this->title = _('report:: Plateforme');
@@ -243,9 +240,7 @@ class module_report_nav extends module_report
      */
     public function buildTabRes($tab = false)
     {
-
-        $registry = registry::get_instance();
-        $s = new module_report_sql($this);
+        $s = new module_report_sql($this->app, $this);
         $filter = $s->getFilters();
         $this->title = _('report:: resolution');
         $i = 0;
@@ -304,7 +299,7 @@ class module_report_nav extends module_report
      */
     public function buildTabCombo($tab = false)
     {
-        $s = new module_report_sql($this);
+        $s = new module_report_sql($this->app, $this);
         $filter = $s->getFilters();
         $this->title = _('report:: navigateurs et plateforme');
         $i = 0;
@@ -367,8 +362,7 @@ class module_report_nav extends module_report
     public function buildTabModule($tab = false)
     {
         $this->initialize();
-        $registry = registry::get_instance();
-        $s = new module_report_sql($this);
+        $s = new module_report_sql($this->app, $this);
         $filter = $s->getFilters();
         $this->title = _('report:: modules');
         $x = array();
@@ -450,13 +444,11 @@ class module_report_nav extends module_report
      */
     public function buildTabGrpInfo($req, array $params, $val, $tab = false, $on = false)
     {
-
         $this->initialize();
-        $registry = registry::get_instance();
         empty($on) ? $on = false : "";
         $filter_id_apbox = $filter_id_datbox = array();
-        $conn = connection::getPDOConnection();
-        $conn2 = connection::getPDOConnection($this->sbas_id);
+        $conn = connection::getPDOConnection($this->app);
+        $conn2 = connection::getPDOConnection($this->app, $this->sbas_id);
 
         $datefilter = array();
 
@@ -543,8 +535,8 @@ class module_report_nav extends module_report
     public function buildTabUserWhat($bid, $rid, $tab = false)
     {
         $this->initialize();
-        $sbas_id = phrasea::sbasFromBas($bid);
-        $record = new record_adapter($sbas_id, $rid);
+        $sbas_id = phrasea::sbasFromBas($this->app, $bid);
+        $record = new record_adapter($this->app, $sbas_id, $rid);
 
         $this->setDisplay($tab);
         $this->champ = array(
@@ -566,7 +558,7 @@ class module_report_nav extends module_report
             "<img style='width:" . $x->get_width() . "px;height:" . $x->get_height() . "px;'
                         src='" . $x->get_url() . "'>"
             , 'record_id' => $record->get_record_id()
-            , 'date'      => phraseadate::getPrettyString($document->get_creation_date())
+            , 'date'      => $this->app['date-formatter']->getPrettyString($document->get_creation_date())
             , 'type'      => $document->get_mime()
             , 'titre'     => $record->get_title()
             , 'taille'    => $document->get_size()
@@ -580,7 +572,7 @@ class module_report_nav extends module_report
 
     public function buildTabInfoNav($tab = false, $navigator)
     {
-        $conn = connection::getPDOConnection($this->sbas_id);
+        $conn = connection::getPDOConnection($this->app, $this->sbas_id);
         $this->title = sprintf(
             _('report:: Information sur le navigateur %s'), $navigator);
 

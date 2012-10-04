@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="{{ session.get_I18n }}">
+<html lang="{{ app['locale.I18n'] }}">
     <head>
         <meta charset="UTF-8" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-        <title>{{home_title}} - {{ module_name }} </title>
+        <title>{{ app['phraseanet.registry'].get('GV_homeTitle') }} - {{ module_name }} </title>
         <link rel="stylesheet" href="/include/jslibs/jquery.mobile-1.0a4/jquery.mobile-1.0a4.min.css" />
         <script src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
         {% block stylesheet %}{% endblock %}

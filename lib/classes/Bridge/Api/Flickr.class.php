@@ -511,7 +511,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
      * @param  array          $options
      * @return string         The new distant Id
      */
-    public function upload(record_adapter &$record, Array $options = array())
+    public function upload(record_adapter $record, Array $options = array())
     {
         $uploader = new Phlickr_Uploader($this->_api);
 
@@ -534,7 +534,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
      */
     public function acceptable_records()
     {
-        return function (record_adapter &$record) {
+        return function (record_adapter $record) {
                 return in_array($record->get_type(), array('image'));
             };
     }

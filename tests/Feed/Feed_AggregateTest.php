@@ -15,14 +15,13 @@ class Feed_AggregateTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $auth = new Session_Authentication_None(self::$user);
-        $appbox->get_session()->authenticate($auth);
-        $objects[] = Feed_Adapter::create($appbox, self::$user, self::$title, self::$subtitle);
-        $objects[] = Feed_Adapter::create($appbox, self::$user, self::$title, self::$subtitle);
+        $auth = new Session_Authentication_None(self::$DI['user']);
+        self::$DI['app']->openAccount($auth);
+        $objects[] = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], self::$title, self::$subtitle);
+        $objects[] = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], self::$title, self::$subtitle);
 
         self::$feeds = $objects;
-        self::$object = new Feed_Aggregate($appbox, self::$feeds);
+        self::$object = new Feed_Aggregate(self::$DI['app'], self::$feeds);
     }
 
     public static function tearDownAfterClass()
@@ -57,30 +56,27 @@ class Feed_AggregateTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_homepage_link()
     {
-        $registry = registry::get_instance();
-        $link = self::$object->get_homepage_link($registry, Feed_Adapter::FORMAT_ATOM);
+        $link = self::$object->get_homepage_link(self::$DI['app']['phraseanet.registry'], Feed_Adapter::FORMAT_ATOM);
         $this->assertInstanceOf('Feed_Link', $link);
-        $this->assertEquals($registry->get('GV_ServerName') . 'feeds/aggregated/atom/', $link->get_href());
+        $this->assertEquals(self::$DI['app']['phraseanet.registry']->get('GV_ServerName') . 'feeds/aggregated/atom/', $link->get_href());
     }
 
     public function testGet_user_link()
     {
-        $registry = registry::get_instance();
-
-        $link = self::$object->get_user_link($registry, self::$user, Feed_Adapter::FORMAT_ATOM);
+        $link = self::$object->get_user_link(self::$DI['app']['phraseanet.registry'], self::$DI['user'], Feed_Adapter::FORMAT_ATOM);
         $supposed = '/feeds\/userfeed\/aggregated\/([a-zA-Z0-9]{12})\/atom\//';
 
         $atom = $link->get_href();
 
-        $this->assertRegExp($supposed, str_replace($registry->get('GV_ServerName'), '', $atom));
-        $this->assertEquals($atom, self::$object->get_user_link($registry, self::$user, Feed_Adapter::FORMAT_ATOM)->get_href());
-        $this->assertEquals($atom, self::$object->get_user_link($registry, self::$user, Feed_Adapter::FORMAT_ATOM)->get_href());
+        $this->assertRegExp($supposed, str_replace(self::$DI['app']['phraseanet.registry']->get('GV_ServerName'), '', $atom));
+        $this->assertEquals($atom, self::$object->get_user_link(self::$DI['app']['phraseanet.registry'], self::$DI['user'], Feed_Adapter::FORMAT_ATOM)->get_href());
+        $this->assertEquals($atom, self::$object->get_user_link(self::$DI['app']['phraseanet.registry'], self::$DI['user'], Feed_Adapter::FORMAT_ATOM)->get_href());
 
-        $this->assertNotEquals($atom, self::$object->get_user_link($registry, self::$user, Feed_Adapter::FORMAT_ATOM, null, true)->get_href());
+        $this->assertNotEquals($atom, self::$object->get_user_link(self::$DI['app']['phraseanet.registry'], self::$DI['user'], Feed_Adapter::FORMAT_ATOM, null, true)->get_href());
 
-        $link = self::$object->get_user_link($registry, self::$user, Feed_Adapter::FORMAT_RSS);
+        $link = self::$object->get_user_link(self::$DI['app']['phraseanet.registry'], self::$DI['user'], Feed_Adapter::FORMAT_RSS);
         $supposed = '/feeds\/userfeed\/aggregated\/([a-zA-Z0-9]{12})\/rss\//';
-        $this->assertRegExp($supposed, str_replace($registry->get('GV_ServerName'), '', $link->get_href()));
+        $this->assertRegExp($supposed, str_replace(self::$DI['app']['phraseanet.registry']->get('GV_ServerName'), '', $link->get_href()));
     }
 
     public function testGet_created_on()

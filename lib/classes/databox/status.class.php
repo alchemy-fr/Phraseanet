@@ -9,8 +9,11 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
 use MediaAlchemyst\Specification\Image as ImageSpecification;
-use \Symfony\Component\HttpFoundation\File\UploadedFile;
+use MediaAlchemyst\Alchemyst;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 /**
@@ -56,25 +59,22 @@ class databox_status
      * @param  int    $sbas_id
      * @return status
      */
-    private function __construct($sbas_id)
+    private function __construct(Application $app, $sbas_id)
     {
-
         $this->status = array();
 
         $path = $url = false;
 
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
-        $sbas_params = phrasea::sbas_params();
-        $registry = registry::get_instance();
+        $sbas_params = phrasea::sbas_params($app);
 
         if ( ! isset($sbas_params[$sbas_id])) {
             return;
         }
 
-        $path = $this->path = $registry->get('GV_RootPath') . "config/status/" . urlencode($sbas_params[$sbas_id]["host"]) . "-" . urlencode($sbas_params[$sbas_id]["port"]) . "-" . urlencode($sbas_params[$sbas_id]["dbname"]);
+        $path = $this->path = $app['phraseanet.registry']->get('GV_RootPath') . "config/status/" . urlencode($sbas_params[$sbas_id]["host"]) . "-" . urlencode($sbas_params[$sbas_id]["port"]) . "-" . urlencode($sbas_params[$sbas_id]["dbname"]);
         $url = $this->url = "/custom/status/" . urlencode($sbas_params[$sbas_id]["host"]) . "-" . urlencode($sbas_params[$sbas_id]["port"]) . "-" . urlencode($sbas_params[$sbas_id]["dbname"]);
 
-        $databox = $appbox->get_databox((int) $sbas_id);
+        $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
         $xmlpref = $databox->get_structure();
         $sxe = simplexml_load_string($xmlpref);
 
@@ -110,26 +110,22 @@ class databox_status
         return $this;
     }
 
-    public static function getStatus($sbas_id)
+    public static function getStatus(Application $app, $sbas_id)
     {
 
         if ( ! isset(self::$_status[$sbas_id]))
-            self::$_status[$sbas_id] = new databox_status($sbas_id);
+            self::$_status[$sbas_id] = new databox_status($app, $sbas_id);
 
         return self::$_status[$sbas_id]->status;
     }
 
-    public static function getDisplayStatus()
+    public static function getDisplayStatus(Application $app)
     {
         if (self::$_statuses) {
             return self::$_statuses;
         }
 
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
-        $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
-
-        $sbas_ids = $user->ACL()->get_granted_sbas();
+        $sbas_ids = $app['phraseanet.user']->ACL()->get_granted_sbas();
 
         $statuses = array();
 
@@ -146,15 +142,11 @@ class databox_status
         return self::$_statuses;
     }
 
-    public static function getSearchStatus()
+    public static function getSearchStatus(Application $app)
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
-        $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
-
         $statuses = array();
 
-        $sbas_ids = $user->ACL()->get_granted_sbas();
+        $sbas_ids = $app['phraseanet.user']->ACL()->get_granted_sbas();
 
         $see_all = array();
 
@@ -162,7 +154,7 @@ class databox_status
             $see_all[$databox->get_sbas_id()] = false;
 
             foreach ($databox->get_collections() as $collection) {
-                if ($user->ACL()->has_right_on_base($collection->get_base_id(), 'chgstatus')) {
+                if ($app['phraseanet.user']->ACL()->has_right_on_base($collection->get_base_id(), 'chgstatus')) {
                     $see_all[$databox->get_sbas_id()] = true;
                     break;
                 }
@@ -180,8 +172,9 @@ class databox_status
 
             $see_this = isset($see_all[$sbas_id]) ? $see_all[$sbas_id] : false;
 
-            if ($user->ACL()->has_right_on_sbas($sbas_id, 'bas_modify_struct'))
+            if ($app['phraseanet.user']->ACL()->has_right_on_sbas($sbas_id, 'bas_modify_struct')) {
                 $see_this = true;
+            }
 
             foreach ($status as $bit => $props) {
 
@@ -226,41 +219,30 @@ class databox_status
         return $stats;
     }
 
-    public static function getPath($sbas_id)
+    public static function getPath(Application $app, $sbas_id)
     {
         if ( ! isset(self::$_status[$sbas_id])) {
-            self::$_status[$sbas_id] = new databox_status($sbas_id);
+            self::$_status[$sbas_id] = new databox_status($app, $sbas_id);
         }
 
         return self::$_status[$sbas_id]->path;
     }
 
-    public static function getUrl($sbas_id)
+    public static function getUrl(Application $app, $sbas_id)
     {
         if ( ! isset(self::$_status[$sbas_id])) {
-            self::$_status[$sbas_id] = new databox_status($sbas_id);
+            self::$_status[$sbas_id] = new databox_status($app, $sbas_id);
         }
 
         return self::$_status[$sbas_id]->url;
     }
 
-    public static function deleteStatus($sbas_id, $bit)
+    public static function deleteStatus(Application $app, \databox $databox, $bit)
     {
-        $core = \bootstrap::getCore();
-        $appbox = \appbox::get_instance($core);
-
-        $user = $core->getAuthenticatedUser();
-
-        if ( ! $user->ACL()->has_right_on_sbas($sbas_id, 'bas_modify_struct')) {
-            return false;
-        }
-
-        $status = self::getStatus($sbas_id);
+        $status = self::getStatus($app, $sbas_id);
 
         if (isset($status[$bit])) {
-            $connbas = connection::getPDOConnection($sbas_id);
-
-            $databox = $appbox->get_databox((int) $sbas_id);
+            $connbas = connection::getPDOConnection($app, $sbas_id);
 
             $doc = $databox->get_dom_structure();
             if ($doc) {
@@ -283,11 +265,11 @@ class databox_status
                 $databox->saveStructure($doc);
 
                 if (null !== $status[$bit]['img_off']) {
-                    $core['file-system']->remove($status[$bit]['path_off']);
+                    $app['filesystem']->remove($status[$bit]['path_off']);
                 }
 
                 if (null !== $status[$bit]['img_on']) {
-                    $core['file-system']->remove($status[$bit]['path_on']);
+                    $app['filesystem']->remove($status[$bit]['path_on']);
                 }
 
                 unset(self::$_status[$sbas_id]->status[$bit]);
@@ -299,21 +281,11 @@ class databox_status
         return false;
     }
 
-    public static function updateStatus($sbas_id, $bit, $properties)
+    public static function updateStatus(Application $app, $sbas_id, $bit, $properties)
     {
-        $core = \bootstrap::getCore();
+         self::getStatus($app, $sbas_id);
 
-        $user = $core->getAuthenticatedUser();
-
-        if ( ! $user->ACL()->has_right_on_sbas($sbas_id, 'bas_modify_struct')) {
-            return false;
-        }
-
-         self::getStatus($sbas_id);
-
-        $appbox = \appbox::get_instance($core);
-
-        $databox = $appbox->get_databox((int) $sbas_id);
+        $databox = $app['phraseanet.appbox']->get_databox((int) $sbas_id);
 
         $doc = $databox->get_dom_structure($sbas_id);
         if ($doc) {
@@ -382,17 +354,9 @@ class databox_status
         return false;
     }
 
-    public static function deleteIcon($sbas_id, $bit, $switch)
+    public static function deleteIcon(Application $app, $sbas_id, $bit, $switch)
     {
-        $core = \bootstrap::getCore();
-
-        $user = $core->getAuthenticatedUser();
-
-        if ( ! $user->ACL()->has_right_on_sbas($sbas_id, 'bas_modify_struct')) {
-            return false;
-        }
-
-        $status = self::getStatus($sbas_id);
+        $status = self::getStatus($app, $sbas_id);
 
         $switch = in_array($switch, array('on', 'off')) ? $switch : false;
 
@@ -402,7 +366,7 @@ class databox_status
 
         if ($status[$bit]['img_' . $switch]) {
             if (isset($status[$bit]['path_' . $switch])) {
-                $core['file-system']->remove($status[$bit]['path_' . $switch]);
+                $app['filesystem']->remove($status[$bit]['path_' . $switch]);
             }
 
             $status[$bit]['img_' . $switch] = false;
@@ -412,24 +376,16 @@ class databox_status
         return true;
     }
 
-    public static function updateIcon($sbas_id, $bit, $switch, UploadedFile $file)
+    public static function updateIcon(Application $app, $sbas_id, $bit, $switch, UploadedFile $file)
     {
-        $core = \bootstrap::getCore();
-        $user = $core->getAuthenticatedUser();
-        $registry = $core->getRegistry();
-
-        if ( ! $user->ACL()->has_right_on_sbas($sbas_id, 'bas_modify_struct')) {
-            throw new Exception_Forbidden();
-        }
-
         $switch = in_array($switch, array('on', 'off')) ? $switch : false;
 
         if ( ! $switch) {
             throw new Exception_InvalidArgument();
         }
 
-        $url = self::getUrl($sbas_id);
-        $path = self::getPath($sbas_id);
+        $url = self::getUrl($app, $sbas_id);
+        $path = self::getPath($app, $sbas_id);
 
         if ($file->getSize() >= 65535) {
             throw new Exception_Upload_FileTooBig();
@@ -439,20 +395,19 @@ class databox_status
             throw new Exception_Upload_Error();
         }
 
-        self::deleteIcon($sbas_id, $bit, $switch);
+        self::deleteIcon($app, $sbas_id, $bit, $switch);
 
         $name = "-stat_" . $bit . "_" . ($switch == 'on' ? '1' : '0') . ".gif";
 
         try {
-            $file = $file->move($registry->get('GV_RootPath') . "config/status/", $path.$name);
+            $file = $file->move($app['phraseanet.registry']->get('GV_RootPath') . "config/status/", $path.$name);
         } catch (FileException $e) {
             throw new Exception_Upload_CannotWriteFile();
         }
 
+        $custom_path = $app['phraseanet.registry']->get('GV_RootPath') . 'www/custom/status/';
 
-        $custom_path = $registry->get('GV_RootPath') . 'www/custom/status/';
-
-        $core['file-system']->mkdir($custom_path, 0750);
+        $app['filesystem']->mkdir($custom_path, 0750);
 
         //resize status icon 16x16px
         $imageSpec = new ImageSpecification();
@@ -463,7 +418,7 @@ class databox_status
         $destPath = sprintf("%s%s", $custom_path, basename($path . $name));
 
         try {
-            $core['media-alchemyst']
+            $app['media-alchemyst']
                 ->open($filePath)
                 ->turninto($destPath, $imageSpec)
                 ->close();
@@ -477,17 +432,17 @@ class databox_status
         return true;
     }
 
-    public static function operation_and($stat1, $stat2)
+    public static function operation_and(Application $app, $stat1, $stat2)
     {
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($app);
 
         $status = '0';
 
         if (substr($stat1, 0, 2) === '0x') {
-            $stat1 = self::hex2bin(substr($stat1, 2));
+            $stat1 = self::hex2bin($app, substr($stat1, 2));
         }
         if (substr($stat2, 0, 2) === '0x') {
-            $stat2 = self::hex2bin(substr($stat2, 2));
+            $stat2 = self::hex2bin($app, substr($stat2, 2));
         }
 
         $sql = 'select bin(0b' . trim($stat1) . ' & 0b' . trim($stat2) . ') as result';
@@ -504,17 +459,17 @@ class databox_status
         return $status;
     }
 
-    public static function operation_and_not($stat1, $stat2)
+    public static function operation_and_not(Application $app, $stat1, $stat2)
     {
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($app);
 
         $status = '0';
 
         if (substr($stat1, 0, 2) === '0x') {
-            $stat1 = self::hex2bin(substr($stat1, 2));
+            $stat1 = self::hex2bin($app, substr($stat1, 2));
         }
         if (substr($stat2, 0, 2) === '0x') {
-            $stat2 = self::hex2bin(substr($stat2, 2));
+            $stat2 = self::hex2bin($app, substr($stat2, 2));
         }
 
         $sql = 'select bin(0b' . trim($stat1) . ' & ~0b' . trim($stat2) . ') as result';
@@ -531,17 +486,17 @@ class databox_status
         return $status;
     }
 
-    public static function operation_or($stat1, $stat2)
+    public static function operation_or(Application $app, $stat1, $stat2)
     {
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($app);
 
         $status = '0';
 
         if (substr($stat1, 0, 2) === '0x') {
-            $stat1 = self::hex2bin(substr($stat1, 2));
+            $stat1 = self::hex2bin($app, substr($stat1, 2));
         }
         if (substr($stat2, 0, 2) === '0x') {
-            $stat2 = self::hex2bin(substr($stat2, 2));
+            $stat2 = self::hex2bin($app, substr($stat2, 2));
         }
 
         $sql = 'select bin(0b' . trim($stat1) . ' | 0b' . trim($stat2) . ') as result';
@@ -558,7 +513,7 @@ class databox_status
         return $status;
     }
 
-    public static function dec2bin($status)
+    public static function dec2bin(Application $app, $status)
     {
         $status = (string) $status;
 
@@ -566,7 +521,7 @@ class databox_status
             throw new \Exception('Non-decimal value');
         }
 
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($app);
 
         $sql = 'select bin(' . $status . ') as result';
 
@@ -584,7 +539,7 @@ class databox_status
         return $status;
     }
 
-    public static function hex2bin($status)
+    public static function hex2bin(Application $app, $status)
     {
         $status = (string) $status;
         if (substr($status, 0, 2) === '0x') {
@@ -595,7 +550,7 @@ class databox_status
             throw new \Exception('Non-hexadecimal value');
         }
 
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($app);
 
         $sql = 'select BIN( CAST( 0x' . trim($status) . ' AS UNSIGNED ) ) as result';
 

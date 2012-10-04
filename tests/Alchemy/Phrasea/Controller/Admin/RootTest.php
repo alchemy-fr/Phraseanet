@@ -6,31 +6,18 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
 
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Admin.php';
-
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-
-        return $app;
-    }
-
-    public function setUp()
-    {
-        parent::setUp();
-        $this->client = $this->createClient();
-    }
-
     /**
      * Default route test
      */
     public function testRouteSlash()
     {
-        $this->client->request('GET', '/', array('section' => 'base:featured'));
-        $this->assertTrue($this->client->getResponse()->isOk());
+        $auth = new Session_Authentication_None(self::$DI['user']);
+        self::$DI['app']->openAccount($auth);
 
-        $this->client->request('GET', '/');
-        $this->assertTrue($this->client->getResponse()->isOk());
+        self::$DI['client']->request('GET', '/admin/', array('section' => 'base:featured'));
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
+
+        self::$DI['client']->request('GET', '/admin/');
+        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 }

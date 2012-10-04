@@ -1,4 +1,4 @@
-{% macro format(thumbnail, b_w, b_h, extraclass, session, wrap, lazyload)%}
+{% macro format(thumbnail, b_w, b_h, extraclass, wrap, lazyload)%}
   {% set record_type = thumbnail.get_type() %}
 
 
@@ -42,7 +42,7 @@
 
 
 
-  {% if session.is_authenticated() == true %}
+  {% if app.isAuthenticated() == true %}
   {% set url = thumbnail.get_url() %}
   {% else %}
   {% set url = thumbnail.get_permalink().get_url() %}
@@ -76,7 +76,7 @@
             swfobject.embedSWF("/include/FlexPaper_flash/FlexPaperViewer.swf",
             "preview_{{thumbnail.get_sbas_id()}}_{{thumbnail.get_record_id()}}_{{random}}",
             "100%", "100%", "9.0.0", false, false,
-            {menu: "false",flashvars: "SwfFile={{url}}&Scale=0.6&ZoomTransition=easeOut&ZoomTime=0.5&ZoomInterval=0.1&FitPageOnLoad=true&FitWidthOnLoad=true&PrintEnabled=true&FullScreenAsMaxWindow=false&localeChain={{session.get_locale()}}",	movie: "/include/FlexPaper_flash/FlexPaperViewer.swf",	allowFullScreen :"true",wmode: "transparent"}, false);</script>
+            {menu: "false",flashvars: "SwfFile={{url}}&Scale=0.6&ZoomTransition=easeOut&ZoomTime=0.5&ZoomInterval=0.1&FitPageOnLoad=true&FitWidthOnLoad=true&PrintEnabled=true&FullScreenAsMaxWindow=false&localeChain={{app['locale']}}",	movie: "/include/FlexPaper_flash/FlexPaperViewer.swf",	allowFullScreen :"true",wmode: "transparent"}, false);</script>
 
         {% elseif record_type == 'AUDIO_MP3' %}
           {% set random = thumbnail.get_random() %}
@@ -107,7 +107,7 @@
 
 
 
-{% macro format_fit(thumbnail, b_w, b_h, extraclass, session, wrap)%}
+{% macro format_fit(thumbnail, b_w, b_h, extraclass, wrap)%}
   {% set record_type = thumbnail.get_type() %}
 
   {% if record_type == 'AUDIO_MP3' %}
@@ -146,7 +146,7 @@
 
 
 
-  {% if session.is_authenticated() == true %}
+  {% if app.isAuthenticated() == true %}
   {% set url = thumbnail.get_url() %}
   {% else %}
   {% set url = thumbnail.get_permalink().get_url() %}
@@ -178,7 +178,7 @@
             swfobject.embedSWF("/include/FlexPaper_flash/FlexPaperViewer.swf",
             "preview_{{thumbnail.get_sbas_id()}}_{{thumbnail.get_record_id()}}_{{random}}",
             "100%", "100%", "9.0.0", false, false,
-            {menu: "false",flashvars: "SwfFile={{url}}&Scale=0.6&ZoomTransition=easeOut&ZoomTime=0.5&ZoomInterval=0.1&FitPageOnLoad=true&FitWidthOnLoad=true&PrintEnabled=true&FullScreenAsMaxWindow=false&localeChain={{session.get_locale()}}",	movie: "/include/FlexPaper_flash/FlexPaperViewer.swf",	allowFullScreen :"true",wmode: "transparent"}, false);</script>
+            {menu: "false",flashvars: "SwfFile={{url}}&Scale=0.6&ZoomTransition=easeOut&ZoomTime=0.5&ZoomInterval=0.1&FitPageOnLoad=true&FitWidthOnLoad=true&PrintEnabled=true&FullScreenAsMaxWindow=false&localeChain={{app['locale']}}",	movie: "/include/FlexPaper_flash/FlexPaperViewer.swf",	allowFullScreen :"true",wmode: "transparent"}, false);</script>
 
         {% elseif record_type == 'AUDIO_MP3' %}
           {% set random = thumbnail.get_random() %}

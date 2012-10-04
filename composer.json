@@ -13,29 +13,32 @@
         "data-uri/data-uri": "dev-master",
         "doctrine/orm": "2.2.2",
         "gedmo/doctrine-extensions": "2.2.*",
+        "grom/silex-service-provider": "dev-master",
         "mediavorus/mediavorus": "dev-master",
         "media-alchemyst/media-alchemyst": "dev-master",
         "monolog/monolog": "1.0.*",
+        "neutron/silex-badfaith-provider": "dev-master",
+        "neutron/silex-filesystem-provider": "dev-master",
         "php-xpdf/php-xpdf": "dev-master",
         "phpexiftool/phpexiftool": "dev-master",
         "silex/silex": "1.0.*",
         "swiftmailer/swiftmailer": "4.1.*",
         "symfony/symfony": ">=2.1",
+        "tecnick.com/tcpdf": "dev-master",
         "twig/twig": "1.9.*",
         "twig/extensions": "master",
-        "zend/gdata": ">1.11",
-        "tecnick.com/tcpdf": "dev-master"
+        "zend/gdata": ">1.11"
     },
     "minimum-stability": "dev",
     "require-dev": {
-        "behat/behat": "2.4.*@stable",
-        "behat/mink-extension": "dev-master",
-        "behat/mink-goutte-driver": "dev-master",
-        "behat/mink-selenium2-driver": "dev-master",
         "doctrine/data-fixtures": "dev-master",
         "fabpot/php-cs-fixer": "dev-master"
     },
     "repositories": [
+    {
+        "type": "vcs",
+        "url": "https://github.com/winmillwill/BadFaith"
+    },
     {
         "type": "vcs",
         "url": "https://github.com/alchemy-fr/oauth2-php"

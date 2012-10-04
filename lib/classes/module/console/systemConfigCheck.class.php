@@ -32,11 +32,6 @@ class module_console_systemConfigCheck extends Command
         return $this;
     }
 
-    public function requireSetup()
-    {
-        return false;
-    }
-
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         if ( ! function_exists('_')) {
@@ -48,11 +43,11 @@ class module_console_systemConfigCheck extends Command
 
         $ok = true;
 
-        if (setup::is_installed()) {
-            $registry = registry::get_instance();
+        if ($this->container['phraseanet.configuration-tester']->isInstalled()) {
+            $registry = $this->container['phraseanet.registry'];
 
             $output->writeln(_('*** CHECK BINARY CONFIGURATION ***'));
-            $ok = $this->processConstraints(setup::check_binaries($registry), $output) && $ok;
+            $ok = $this->processConstraints(setup::check_binaries($this->container['phraseanet.registry']), $output) && $ok;
             $output->writeln("");
         } else {
             $registry = new Setup_Registry();
@@ -77,7 +72,7 @@ class module_console_systemConfigCheck extends Command
         $ok = $this->processConstraints(setup::check_phrasea(), $output) && $ok;
         $output->writeln("");
         $output->writeln(_('*** CHECK SYSTEM LOCALES ***'));
-        $ok = $this->processConstraints(setup::check_system_locales(), $output) && $ok;
+        $ok = $this->processConstraints(setup::check_system_locales($this->container), $output) && $ok;
         $output->writeln("");
 
         $output->write('Finished !', true);
@@ -85,7 +80,7 @@ class module_console_systemConfigCheck extends Command
         return (int) ! $ok;
     }
 
-    protected function processConstraints(Setup_ConstraintsIterator $constraints, OutputInterface &$output)
+    protected function processConstraints(Setup_ConstraintsIterator $constraints, OutputInterface $output)
     {
         $hasError = false;
         foreach ($constraints as $constraint) {
@@ -97,7 +92,7 @@ class module_console_systemConfigCheck extends Command
         return ! $hasError;
     }
 
-    protected function processConstraint(Setup_Constraint $constraint, OutputInterface &$output)
+    protected function processConstraint(Setup_Constraint $constraint, OutputInterface $output)
     {
         $ok = true;
         if ($constraint->is_ok()) {

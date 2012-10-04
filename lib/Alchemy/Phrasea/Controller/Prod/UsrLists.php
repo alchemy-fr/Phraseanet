@@ -32,6 +32,10 @@ class UsrLists implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
+        $controllers->before(function(Request $request) use ($app) {
+            $app['firewall']->requireAuthentication();
+        });
+
         /**
          * Get all lists
          */
@@ -103,11 +107,9 @@ class UsrLists implements ControllerProviderInterface
         $lists = new ArrayCollection();
 
         try {
-            $em = $app['phraseanet.core']->getEntityManager();
+            $repository = $app['EM']->getRepository('\Entities\UsrList');
 
-            $repository = $em->getRepository('\Entities\UsrList');
-
-            $lists = $repository->findUserLists($app['phraseanet.core']->getAuthenticatedUser());
+            $lists = $repository->findUserLists($app['phraseanet.user']);
 
             $result = array();
 
@@ -116,24 +118,24 @@ class UsrLists implements ControllerProviderInterface
 
                 foreach ($list->getOwners() as $owner) {
                     $owners[] = array(
-                        'usr_id'       => $owner->getUser()->get_id(),
-                        'display_name' => $owner->getUser()->get_display_name(),
-                        'position'     => $owner->getUser()->get_position(),
-                        'job'          => $owner->getUser()->get_job(),
-                        'company'      => $owner->getUser()->get_company(),
-                        'email'        => $owner->getUser()->get_email(),
+                        'usr_id'       => $owner->getUser($app)->get_id(),
+                        'display_name' => $owner->getUser($app)->get_display_name(),
+                        'position'     => $owner->getUser($app)->get_position(),
+                        'job'          => $owner->getUser($app)->get_job(),
+                        'company'      => $owner->getUser($app)->get_company(),
+                        'email'        => $owner->getUser($app)->get_email(),
                         'role'         => $owner->getRole()
                     );
                 }
 
                 foreach ($list->getEntries() as $entry) {
                     $entries[] = array(
-                        'usr_id'       => $owner->getUser()->get_id(),
-                        'display_name' => $owner->getUser()->get_display_name(),
-                        'position'     => $owner->getUser()->get_position(),
-                        'job'          => $owner->getUser()->get_job(),
-                        'company'      => $owner->getUser()->get_company(),
-                        'email'        => $owner->getUser()->get_email(),
+                        'usr_id'       => $owner->getUser($app)->get_id(),
+                        'display_name' => $owner->getUser($app)->get_display_name(),
+                        'position'     => $owner->getUser($app)->get_position(),
+                        'job'          => $owner->getUser($app)->get_job(),
+                        'company'      => $owner->getUser($app)->get_company(),
+                        'email'        => $owner->getUser($app)->get_email(),
                     );
                 }
 
@@ -181,25 +183,23 @@ class UsrLists implements ControllerProviderInterface
         );
 
         try {
-            if ( ! $list_name) {
+            if (!$list_name) {
                 throw new ControllerException(_('List name is required'));
             }
-
-            $em = $app['phraseanet.core']->getEntityManager();
 
             $List = new UsrList();
 
             $Owner = new UsrListOwner();
             $Owner->setRole(UsrListOwner::ROLE_ADMIN);
-            $Owner->setUser($app['phraseanet.core']->getAuthenticatedUser());
+            $Owner->setUser($app['phraseanet.user']);
             $Owner->setList($List);
 
             $List->setName($list_name);
             $List->addUsrListOwner($Owner);
 
-            $em->persist($Owner);
-            $em->persist($List);
-            $em->flush();
+            $app['EM']->persist($Owner);
+            $app['EM']->persist($List);
+            $app['EM']->flush();
 
             $datas = array(
                 'success' => true
@@ -220,49 +220,46 @@ class UsrLists implements ControllerProviderInterface
 
     public function displayList(Application $app, Request $request, $list_id)
     {
-        $user = $app['phraseanet.core']->getAuthenticatedUser();
-        $em = $app['phraseanet.core']->getEntityManager();
+        $repository = $app['EM']->getRepository('\Entities\UsrList');
 
-        $repository = $em->getRepository('\Entities\UsrList');
-
-        $list = $repository->findUserListByUserAndId($user, $list_id);
+        $list = $repository->findUserListByUserAndId($app, $app['phraseanet.user'], $list_id);
 
         $entries = new ArrayCollection();
         $owners = new ArrayCollection();
 
         foreach ($list->getOwners() as $owner) {
             $owners[] = array(
-                'usr_id'       => $owner->getUser()->get_id(),
-                'display_name' => $owner->getUser()->get_display_name(),
-                'position'     => $owner->getUser()->get_position(),
-                'job'          => $owner->getUser()->get_job(),
-                'company'      => $owner->getUser()->get_company(),
-                'email'        => $owner->getUser()->get_email(),
-                'role'         => $owner->getRole()
+                'usr_id'       => $owner->getUser($app)->get_id(),
+                'display_name' => $owner->getUser($app)->get_display_name(),
+                'position'     => $owner->getUser($app)->get_position(),
+                'job'          => $owner->getUser($app)->get_job(),
+                'company'      => $owner->getUser($app)->get_company(),
+                'email'        => $owner->getUser($app)->get_email(),
+                'role'         => $owner->getRole($app)
             );
         }
 
         foreach ($list->getEntries() as $entry) {
             $entries[] = array(
-                'usr_id'       => $entry->getUser()->get_id(),
-                'display_name' => $entry->getUser()->get_display_name(),
-                'position'     => $entry->getUser()->get_position(),
-                'job'          => $entry->getUser()->get_job(),
-                'company'      => $entry->getUser()->get_company(),
-                'email'        => $entry->getUser()->get_email(),
+                'usr_id'       => $entry->getUser($app)->get_id(),
+                'display_name' => $entry->getUser($app)->get_display_name(),
+                'position'     => $entry->getUser($app)->get_position(),
+                'job'          => $entry->getUser($app)->get_job(),
+                'company'      => $entry->getUser($app)->get_company(),
+                'email'        => $entry->getUser($app)->get_email(),
             );
         }
 
         return $app->json(array(
-                'result' => array(
-                    'id'      => $list->getId(),
-                    'name'    => $list->getName(),
-                    'created' => $list->getCreated()->format(DATE_ATOM),
-                    'updated' => $list->getUpdated()->format(DATE_ATOM),
-                    'owners'  => $owners,
-                    'users'   => $entries
-                )
-            ));
+            'result' => array(
+                'id'      => $list->getId(),
+                'name'    => $list->getName(),
+                'created' => $list->getCreated()->format(DATE_ATOM),
+                'updated' => $list->getUpdated()->format(DATE_ATOM),
+                'owners'  => $owners,
+                'users'   => $entries
+            )
+        ));
     }
 
     public function updateList(Application $app, $list_id)
@@ -277,24 +274,21 @@ class UsrLists implements ControllerProviderInterface
         try {
             $list_name = $request->request->get('name');
 
-            if ( ! $list_name) {
+            if (!$list_name) {
                 throw new ControllerException(_('List name is required'));
             }
 
-            $user = $app['phraseanet.core']->getAuthenticatedUser();
-            $em = $app['phraseanet.core']->getEntityManager();
+            $repository = $app['EM']->getRepository('\Entities\UsrList');
 
-            $repository = $em->getRepository('\Entities\UsrList');
+            $list = $repository->findUserListByUserAndId($app, $app['phraseanet.user'], $list_id);
 
-            $list = $repository->findUserListByUserAndId($user, $list_id);
-
-            if ($list->getOwner($user)->getRole() < UsrListOwner::ROLE_EDITOR) {
+            if ($list->getOwner($app['phraseanet.user'], $app)->getRole() < UsrListOwner::ROLE_EDITOR) {
                 throw new ControllerException(_('You are not authorized to do this'));
             }
 
             $list->setName($list_name);
 
-            $em->flush();
+            $app['EM']->flush();
 
             $datas = array(
                 'success' => true
@@ -314,21 +308,17 @@ class UsrLists implements ControllerProviderInterface
 
     public function removeList(Application $app, $list_id)
     {
-        $em = $app['phraseanet.core']->getEntityManager();
-
         try {
-            $repository = $em->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('\Entities\UsrList');
 
-            $user = $app['phraseanet.core']->getAuthenticatedUser();
+            $list = $repository->findUserListByUserAndId($app, $app['phraseanet.user'], $list_id);
 
-            $list = $repository->findUserListByUserAndId($user, $list_id);
-
-            if ($list->getOwner($user)->getRole() < UsrListOwner::ROLE_ADMIN) {
+            if ($list->getOwner($app['phraseanet.user'], $app)->getRole() < UsrListOwner::ROLE_ADMIN) {
                 throw new ControllerException(_('You are not authorized to do this'));
             }
 
-            $em->remove($list);
-            $em->flush();
+            $app['EM']->remove($list);
+            $app['EM']->flush();
 
             $datas = array(
                 'success' => true
@@ -352,26 +342,22 @@ class UsrLists implements ControllerProviderInterface
 
     public function removeUser(Application $app, $list_id, $usr_id)
     {
-        $em = $app['phraseanet.core']->getEntityManager();
-
         try {
-            $repository = $em->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('\Entities\UsrList');
 
-            $user = $app['phraseanet.core']->getAuthenticatedUser();
-
-            $list = $repository->findUserListByUserAndId($user, $list_id);
+            $list = $repository->findUserListByUserAndId($app, $app['phraseanet.user'], $list_id);
             /* @var $list \Entities\UsrList */
 
-            if ($list->getOwner($user)->getRole() < UsrListOwner::ROLE_EDITOR) {
+            if ($list->getOwner($app['phraseanet.user'], $app)->getRole() < UsrListOwner::ROLE_EDITOR) {
                 throw new ControllerException(_('You are not authorized to do this'));
             }
 
-            $entry_repository = $em->getRepository('\Entities\UsrListEntry');
+            $entry_repository = $app['EM']->getRepository('\Entities\UsrListEntry');
 
             $user_entry = $entry_repository->findEntryByListAndUsrId($list, $usr_id);
 
-            $em->remove($user_entry);
-            $em->flush();
+            $app['EM']->remove($user_entry);
+            $app['EM']->flush();
 
             $datas = array(
                 'success' => true
@@ -395,29 +381,26 @@ class UsrLists implements ControllerProviderInterface
 
     public function addUsers(Application $app, Request $request, $list_id)
     {
-        $em = $app['phraseanet.core']->getEntityManager();
-        $user = $app['phraseanet.core']->getAuthenticatedUser();
-
         try {
-            if ( ! is_array($request->request->get('usr_ids'))) {
+            if (!is_array($request->request->get('usr_ids'))) {
                 throw new ControllerException('Invalid or missing parameter usr_ids');
             }
 
-            $repository = $em->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('\Entities\UsrList');
 
-            $list = $repository->findUserListByUserAndId($user, $list_id);
+            $list = $repository->findUserListByUserAndId($app, $app['phraseanet.user'], $list_id);
             /* @var $list \Entities\UsrList */
 
-            if ($list->getOwner($user)->getRole() < UsrListOwner::ROLE_EDITOR) {
+            if ($list->getOwner($app['phraseanet.user'], $app)->getRole() < UsrListOwner::ROLE_EDITOR) {
                 throw new ControllerException(_('You are not authorized to do this'));
             }
 
             $inserted_usr_ids = array();
 
             foreach ($request->request->get('usr_ids') as $usr_id) {
-                $user_entry = \User_Adapter::getInstance($usr_id, $app['phraseanet.appbox']);
+                $user_entry = \User_Adapter::getInstance($usr_id, $app);
 
-                if ($list->has($user_entry))
+                if ($list->has($user_entry, $app))
                     continue;
 
                 $entry = new UsrListEntry();
@@ -426,12 +409,12 @@ class UsrLists implements ControllerProviderInterface
 
                 $list->addUsrListEntry($entry);
 
-                $em->persist($entry);
+                $app['EM']->persist($entry);
 
                 $inserted_usr_ids[] = $user_entry->get_id();
             }
 
-            $em->flush();
+            $app['EM']->flush();
 
             if (count($inserted_usr_ids) > 1) {
                 $datas = array(
@@ -464,18 +447,15 @@ class UsrLists implements ControllerProviderInterface
 
     public function displayShares(Application $app, Request $request, $list_id)
     {
-        $em = $app['phraseanet.core']->getEntityManager();
-        $user = $app['phraseanet.core']->getAuthenticatedUser();
-
         $list = null;
 
         try {
-            $repository = $em->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('\Entities\UsrList');
 
-            $list = $repository->findUserListByUserAndId($user, $list_id);
+            $list = $repository->findUserListByUserAndId($app, $app['phraseanet.user'], $list_id);
             /* @var $list \Entities\UsrList */
 
-            if ($list->getOwner($user)->getRole() < UsrListOwner::ROLE_ADMIN) {
+            if ($list->getOwner($app['phraseanet.user'], $app)->getRole() < UsrListOwner::ROLE_ADMIN) {
                 $list = null;
                 throw new \Exception(_('You are not authorized to do this'));
             }
@@ -488,38 +468,35 @@ class UsrLists implements ControllerProviderInterface
 
     public function shareWithUser(Application $app, $list_id, $usr_id)
     {
-        $em = $app['phraseanet.core']->getEntityManager();
-        $user = $app['phraseanet.core']->getAuthenticatedUser();
-
         $availableRoles = array(
             UsrListOwner::ROLE_USER,
             UsrListOwner::ROLE_EDITOR,
             UsrListOwner::ROLE_ADMIN,
         );
 
-        if ( ! $app['request']->request->get('role'))
+        if (!$app['request']->request->get('role'))
             throw new \Exception_BadRequest('Missing role parameter');
-        elseif ( ! in_array($app['request']->request->get('role'), $availableRoles))
+        elseif (!in_array($app['request']->request->get('role'), $availableRoles))
             throw new \Exception_BadRequest('Role is invalid');
 
         try {
-            $repository = $em->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('\Entities\UsrList');
 
-            $list = $repository->findUserListByUserAndId($user, $list_id);
+            $list = $repository->findUserListByUserAndId($app, $app['phraseanet.user'], $list_id);
             /* @var $list \Entities\UsrList */
 
-            if ($list->getOwner($user)->getRole() < UsrListOwner::ROLE_EDITOR) {
+            if ($list->getOwner($app['phraseanet.user'], $app)->getRole() < UsrListOwner::ROLE_EDITOR) {
                 throw new ControllerException(_('You are not authorized to do this'));
             }
 
-            $new_owner = \User_Adapter::getInstance($usr_id, $app['phraseanet.appbox']);
+            $new_owner = \User_Adapter::getInstance($usr_id, $app);
 
-            if ($list->hasAccess($new_owner)) {
-                if ($new_owner->get_id() == $user->get_id()) {
+            if ($list->hasAccess($new_owner, $app)) {
+                if ($new_owner->get_id() == $app['phraseanet.user']->get_id()) {
                     throw new ControllerException('You can not downgrade your Admin right');
                 }
 
-                $owner = $list->getOwner($new_owner);
+                $owner = $list->getOwner($new_owner, $app);
             } else {
                 $owner = new UsrListOwner();
                 $owner->setList($list);
@@ -527,14 +504,14 @@ class UsrLists implements ControllerProviderInterface
 
                 $list->addUsrListOwner($owner);
 
-                $em->persist($owner);
+                $app['EM']->persist($owner);
             }
 
             $role = $app['request']->request->get('role');
 
             $owner->setRole($role);
 
-            $em->flush();
+            $app['EM']->flush();
 
             $datas = array(
                 'success' => true
@@ -558,25 +535,22 @@ class UsrLists implements ControllerProviderInterface
 
     public function unshareWithUser(Application $app, $list_id, $usr_id)
     {
-        $em = $app['phraseanet.core']->getEntityManager();
-        $user = $app['phraseanet.core']->getAuthenticatedUser();
-
         try {
-            $repository = $em->getRepository('\Entities\UsrList');
+            $repository = $app['EM']->getRepository('\Entities\UsrList');
 
-            $list = $repository->findUserListByUserAndId($user, $list_id);
+            $list = $repository->findUserListByUserAndId($app, $app['phraseanet.user'], $list_id);
             /* @var $list \Entities\UsrList */
 
-            if ($list->getOwner($user)->getRole() < UsrListOwner::ROLE_ADMIN) {
+            if ($list->getOwner($app['phraseanet.user'], $app)->getRole() < UsrListOwner::ROLE_ADMIN) {
                 throw new \Exception(_('You are not authorized to do this'));
             }
 
-            $owners_repository = $em->getRepository('\Entities\UsrListOwner');
+            $owners_repository = $app['EM']->getRepository('\Entities\UsrListOwner');
 
             $owner = $owners_repository->findByListAndUsrId($list, $usr_id);
 
-            $em->remove($owner);
-            $em->flush();
+            $app['EM']->remove($owner);
+            $app['EM']->flush();
 
             $datas = array(
                 'success' => true

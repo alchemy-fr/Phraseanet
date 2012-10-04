@@ -8,18 +8,17 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-/* @var $Core \Alchemy\Phrasea\Core */
-$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
-$appbox = appbox::get_instance(\bootstrap::getCore());
-$session = $appbox->get_session();
-phrasea::headers();
 
-$user = $Core->getAuthenticatedUser();
+require_once __DIR__ . "/../../lib/bootstrap.php";
+$app = new Application();
+phrasea::headers();
 
 $request = http_request::getInstance();
 $parm = $request->get_parms(
@@ -32,9 +31,9 @@ $parm = $request->get_parms(
     , 'dlgH'
 );
 ?>
-<html lang="<?php echo $session->get_I18n(); ?>">
+<html lang="<?php echo $app['locale.I18n']; ?>">
     <head>
-        <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/prod/<?php echo $user->getPrefs('css') ?>/prodcolor.css" />
+        <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/prod/<?php echo $app['phraseanet.user']->getPrefs('css') ?>/prodcolor.css" />
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <script type="text/javascript">
 
@@ -49,14 +48,14 @@ $parm = $request->get_parms(
     <body onload="loaded();" style="overflow:hidden; padding:0px; margin:0px;">
         <?php
         if ($parm["act"] == "START" || $parm["act"] == "WORK") {
-            $ACL = User_Adapter::getInstance($session->get_usr_id(), $appbox)->ACL();
+            $ACL = $app['phraseanet.user']->ACL();
 
             if ($parm["act"] == "WORK") {
                 if ($parm["chg_status_son"] == "1") {
                     $lst = explode(";", $parm["lst"]);
                     foreach ($lst as $basrec) {
                         $basrec = explode('_', $basrec);
-                        $record = new record_adapter($basrec[0], $basrec[1]);
+                        $record = new record_adapter($app, $basrec[0], $basrec[1]);
 
                         if ($record->is_grouping()) {
                             foreach ($record->get_children() as $oneson) {
@@ -92,16 +91,16 @@ $parm = $request->get_parms(
                         continue;
 
                     try {
-                        $record = new record_adapter($basrec[0], $basrec[1]);
+                        $record = new record_adapter($app, $basrec[0], $basrec[1]);
                         $base_id = $record->get_base_id();
                         if (isset($mska[$basrec[0]]) && isset($msko[$basrec[0]])) {
-                            $record = new record_adapter($basrec[0], $basrec[1]);
+                            $record = new record_adapter($app, $basrec[0], $basrec[1]);
                             $status = $record->get_status();
-                            $status = databox_status::operation_and($status, $mska[$basrec[0]]);
-                            $status = databox_status::operation_or($status, $msko[$basrec[0]]);
+                            $status = databox_status::operation_and($app, $status, $mska[$basrec[0]]);
+                            $status = databox_status::operation_or($app, $status, $msko[$basrec[0]]);
                             $record->set_binary_status($status);
 
-                            $session->get_logger($record->get_databox())
+                            $app['phraseanet.logger']($record->get_databox())
                                 ->log($record, Session_Logger::EVENT_STATUS, '', '');
 
                             $maj ++;

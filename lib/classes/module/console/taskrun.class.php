@@ -63,16 +63,9 @@ class module_console_taskrun extends Command
         }
     }
 
-    public function requireSetup()
-    {
-        return false;
-    }
-
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        try {
-            $this->checkSetup();
-        } catch (\RuntimeException $e) {
+        if (!$this->container['phraseanet.configuration-tester']->isInstalled()) {
             return self::EXITCODE_SETUP_ERROR;
         }
 
@@ -81,8 +74,7 @@ class module_console_taskrun extends Command
             throw new \RuntimeException('Argument must be an Id.');
         }
 
-        $appbox = $this->getService('phraseanet.appbox');
-        $task_manager = new task_manager($appbox);
+        $task_manager = new task_manager($this->container);
 
         if ($input->getOption('runner') === task_abstract::RUNNER_MANUAL) {
             $schedStatus = $task_manager->getSchedulerState();
@@ -102,14 +94,13 @@ class module_console_taskrun extends Command
 
         if ($input->getOption('verbose')) {
             $handler = new Handler\StreamHandler(fopen('php://stdout', 'a'));
-            $this->container['phraseanet.core']['monolog']->pushHandler($handler);
+            $this->container['monolog']->pushHandler($handler);
         }
 
         $logfile = __DIR__ . '/../../../../logs/task_' . $task_id . '.log';
         $handler = new Handler\RotatingFileHandler($logfile, 10);
-        $this->container['phraseanet.core']['monolog']->pushHandler($handler);
-        $logger = $this->container['phraseanet.core']['monolog'];
-        $this->task = $task_manager->getTask($task_id, $logger);
+        $this->container['monolog']->pushHandler($handler);
+        $this->task = $task_manager->getTask($task_id, $this->container['monolog']);
 
         register_tick_function(array($this, 'tick_handler'), true);
         declare(ticks = 1);

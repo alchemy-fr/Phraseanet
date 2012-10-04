@@ -261,9 +261,6 @@ class task_period_workflow01 extends task_databoxAbstract
 
     public function getInterfaceHTML()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
-        $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
         ob_start();
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
@@ -272,7 +269,7 @@ class task_period_workflow01 extends task_databoxAbstract
             <select onchange="chgsbas(this);setDirty();" name="sbas_id">
                 <option value="">...</option>
                 <?php
-                $sbas_ids = $user->ACL()->get_granted_sbas(array('bas_manage'));
+                $sbas_ids = $this->dependencyContainer['phraseanet.user']->ACL()->get_granted_sbas(array('bas_manage'));
                 foreach ($sbas_ids as $databox) {
                     print('<option value="' . $databox->get_sbas_id() . '">' . p4string::MakeString($databox->get_viewname(), "form") . '</option>');
                 }
@@ -430,10 +427,6 @@ class task_period_workflow01 extends task_databoxAbstract
     {
         $request = http_request::getInstance();
 
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
-        $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
-
         $parm = $request->get_parms("bid");
 
         phrasea::headers(200, true, 'text/json', 'UTF-8', false);
@@ -446,7 +439,7 @@ class task_period_workflow01 extends task_databoxAbstract
 
         $sbas_id = (int) $parm['bid'];
         try {
-            $databox = $appbox->get_databox($sbas_id);
+            $databox = $this->dependencyContainer['phraseanet.appbox']->get_databox($sbas_id);
             foreach ($databox->get_meta_structure() as $meta) {
                 if ($meta->get_type() !== 'date') {
                     continue;
@@ -467,7 +460,7 @@ class task_period_workflow01 extends task_databoxAbstract
                     'label' => $s['labelon'] ? $s['labelon'] : $s['name']);
             }
 
-            $base_ids = $user->ACL()->get_granted_base(array(), array($sbas_id));
+            $base_ids = $this->dependencyContainer['phraseanet.user']->ACL()->get_granted_base(array(), array($sbas_id));
             foreach ($base_ids as $collection) {
                 $retjs['collections'][] = array('id'   => (string) ($collection->get_coll_id()), 'name' => $collection->get_name());
             }

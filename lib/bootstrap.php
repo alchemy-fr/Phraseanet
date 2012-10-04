@@ -15,6 +15,6 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . '/classes/bootstrap.class.php';
+require_once __DIR__ . '/classes/bootstrap.class.php';
 
-return bootstrap::execute();
+bootstrap::register_autoloads();

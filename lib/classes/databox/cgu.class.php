@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -22,9 +24,9 @@ class databox_cgu
         return $this;
     }
 
-    public static function askAgreement()
+    public static function askAgreement(Application $app)
     {
-        $terms = self::getUnvalidated();
+        $terms = self::getUnvalidated($app);
 
         $out = '';
 
@@ -45,33 +47,27 @@ class databox_cgu
         return $out;
     }
 
-    private static function getUnvalidated($home = false)
+    private static function getUnvalidated(Application $app, $home = false)
     {
         $terms = array();
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
 
-        if ( ! $home) {
-            $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
-        }
-
-        foreach ($appbox->get_databoxes() as $databox) {
+        foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
             try {
                 $cgus = $databox->get_cgus();
 
-                if ( ! isset($cgus[Session_Handler::get_locale()]))
+                if ( ! isset($cgus[$app['locale']]))
                     throw new Exception('No CGus for this locale');
                 $name = $databox->get_viewname();
 
-                $update = $cgus[Session_Handler::get_locale()]['updated_on'];
-                $value = $cgus[Session_Handler::get_locale()]['value'];
+                $update = $cgus[$app['locale']]['updated_on'];
+                $value = $cgus[$app['locale']]['value'];
                 $userValidation = true;
 
                 if ( ! $home) {
-                    if ( ! $user->ACL()->has_access_to_sbas($databox->get_sbas_id())) {
+                    if ( ! $app['phraseanet.user']->ACL()->has_access_to_sbas($databox->get_sbas_id())) {
                         continue;
                     }
-                    $userValidation = ($user->getPrefs('terms_of_use_' . $databox->get_sbas_id()) !== $update && trim($value) !== '');
+                    $userValidation = ($app['phraseanet.user']->getPrefs('terms_of_use_' . $databox->get_sbas_id()) !== $update && trim($value) !== '');
                 }
 
                 if ($userValidation)
@@ -84,9 +80,9 @@ class databox_cgu
         return $terms;
     }
 
-    public static function getHome()
+    public static function getHome($app)
     {
-        $terms = self::getUnvalidated(true);
+        $terms = self::getUnvalidated($app, true);
 
         $out = '';
 

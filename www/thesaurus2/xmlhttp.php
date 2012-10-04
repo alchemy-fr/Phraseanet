@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -16,8 +18,8 @@
  */
 function xmlhttp($url)
 {
-    $registry = registry::get_instance();
-    $fullurl = $registry->get('GV_ServerName') . $url;
+    $app = new Application();
+    $fullurl = $app['phraseanet.registry']->get('GV_ServerName') . $url;
     $xml = http_query::getUrl($fullurl);
     $ret = new DOMDocument();
     $ret->loadXML($xml);

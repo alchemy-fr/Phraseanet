@@ -32,11 +32,6 @@ class module_console_systemClearCache extends Command
         return $this;
     }
 
-    public function requireSetup()
-    {
-        return false;
-    }
-
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         $finder = new Finder();
@@ -53,9 +48,8 @@ class module_console_systemClearCache extends Command
 
         $filesystem->remove($finder);
 
-        if (setup::is_installed()) {
-            $Core = \bootstrap::getCore();
-            $Core['CacheService']->flushAll();
+        if ($this->container['phraseanet.configuration-tester']->isInstalled()) {
+            $this->getService('phraseanet.cache-service')->flushAll();
         }
 
         $output->write('Finished !', true);

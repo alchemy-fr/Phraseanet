@@ -99,10 +99,10 @@ class ValidationParticipant extends \Entities\ValidationParticipant implements \
         return parent::setUser($user);
     }
 
-    public function getUser()
+    public function getUser(\Alchemy\Phrasea\Application $app)
     {
         $this->__load();
-        return parent::getUser();
+        return parent::getUser($app);
     }
 
     public function setReminded($reminded)

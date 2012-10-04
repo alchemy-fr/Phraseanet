@@ -1,9 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html lang="{{ session.get_I18n }}">
+<html lang="{{ app['locale.I18n'] }}">
   <head>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>{% if local_title is defined%}{{local_title}} | {% endif %}{{home_title}} - {{ module_name }} </title>
-    <link type="text/css" rel="stylesheet" href="{{registry.get('GV_STATIC_URL')}}/skins/common/main.css">
+    <title>{% if local_title is defined%}{{local_title}} | {% endif %}{{ app['phraseanet.registry'].get('GV_homeTitle') }} - {{ module_name }} </title>
+    <link type="text/css" rel="stylesheet" href="{{app['phraseanet.registry'].get('GV_STATIC_URL')}}/skins/common/main.css">
     {% block stylesheet %}{% endblock %}
     {% block icon %}{% endblock %}
     {% block rss %}{% endblock %}

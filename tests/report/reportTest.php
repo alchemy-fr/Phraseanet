@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
+require_once __DIR__ . '/../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
-class reportTest extends PhraseanetPHPUnitAbstract
+class reportTest extends PhraseanetPHPUnitAuthenticatedAbstract
 {
     protected $ret;
     protected $dmin;
@@ -29,8 +29,7 @@ class reportTest extends PhraseanetPHPUnitAbstract
         $this->dmax = $date->format("Y-m-d H:i:s");
         $date->modify('-6 month');
         $this->dmin = $date->format("Y-m-d H:i:s");
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $databoxes = $appbox->get_databoxes();
+        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
         $this->ret = array();
         foreach ($databoxes as $databox) {
             $colls = $databox->get_collections();
@@ -45,8 +44,8 @@ class reportTest extends PhraseanetPHPUnitAbstract
     public function testReport()
     {
         foreach ($this->ret as $sbasid => $collections) {
-            $this->report = new module_report($this->dmin, $this->dmax, $sbasid, $collections);
-            $this->report->setUser_id(self::$user->get_id());
+            $this->report = new module_report(self::$DI['app'], $this->dmin, $this->dmax, $sbasid, $collections);
+            $this->report->setUser_id(self::$DI['user']->get_id());
             $this->assertEquals($collections, $this->report->getListCollId());
             $this->host($this->report);
         }
@@ -102,7 +101,7 @@ class reportTest extends PhraseanetPHPUnitAbstract
     {
 
 
-        $report = new module_report($this->dmin, $this->dmax, 1, '');
+        $report = new module_report(self::$DI['app'], $this->dmin, $this->dmax, 1, '');
         $bool = true;
         $report->setPrettyString($bool);
         $this->assertEquals($bool, $report->getPrettyString());
@@ -155,6 +154,12 @@ class reportTest extends PhraseanetPHPUnitAbstract
             $report = $this->getMock('module_report', array('buildReq', 'buildResult'), array(), '', FALSE);
             $report->setSbas_id($sbasid);
             $this->assertEquals($sbasid, $report->getSbas_id());
+
+            $r = new \ReflectionObject($report);
+            $p = $r->getProperty('app');
+            $p->setAccessible(true);
+            $p->setValue($report, self::$DI['app']);
+
             $report->setRequest('SELECT
           user,
           usrid,

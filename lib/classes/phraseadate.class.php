@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Application;
+
 /*
  * Phraseanet Date class, mostly inspired by :
  *
@@ -16,16 +18,21 @@
 class phraseadate
 {
 
+    private $app;
+
+    public function __construct(Application $app)
+    {
+        $this->app = $app;
+    }
+
     /**
      *
      * @param  DateTime $date
      * @return string
      */
-    public static function getTime(DateTime $date)
+    public function getTime(DateTime $date)
     {
-        $locale = Session_Handler::get_locale();
-
-        switch ($locale) {
+        switch ($this->app['locale']) {
             default:
             case 'fr_FR':
             case 'de_DE':
@@ -44,7 +51,7 @@ class phraseadate
      * @param  DateTime $date
      * @return string
      */
-    public static function getDate(DateTime $date)
+    public function getDate(DateTime $date)
     {
         $compareTo = new DateTime('now');
         $diff = $compareTo->format('U') - $date->format('U');
@@ -55,9 +62,9 @@ class phraseadate
         }
 
         if ($dayDiff < 365) {
-            return self::formatDate($date, Session_Handler::get_locale(), 'DAY_MONTH');
+            return $this->formatDate($date, $this->app['locale'], 'DAY_MONTH');
         } else {
-            return self::formatDate($date, Session_Handler::get_locale(), 'DAY_MONTH_YEAR');
+            return $this->formatDate($date, $this->app['locale'], 'DAY_MONTH_YEAR');
         }
     }
 
@@ -66,7 +73,7 @@ class phraseadate
      * @param  DateTime $date
      * @return string
      */
-    public static function getPrettyString(DateTime $date = null)
+    public function getPrettyString(DateTime $date = null)
     {
         if (is_null($date)) {
             return null;
@@ -80,7 +87,7 @@ class phraseadate
             return '';
         }
 
-        $date_string = self::formatDate($date, Session_Handler::get_locale(), 'DAY_MONTH');
+        $date_string = $this->formatDate($date, $this->app['locale'], 'DAY_MONTH');
 
         if ($dayDiff == 0) {
             if ($diff < 60) {
@@ -101,7 +108,7 @@ class phraseadate
         } elseif ($dayDiff < 365 && $dayDiff > 0) {
             return $date_string;
         } else {
-            return self::formatDate($date, Session_Handler::get_locale(), 'DAY_MONTH_YEAR');
+            return $this->formatDate($date, $this->app['locale'], 'DAY_MONTH_YEAR');
         }
     }
 
@@ -110,7 +117,7 @@ class phraseadate
      * @param  DateTime $date
      * @return string
      */
-    public static function format_mysql(DateTime $date)
+    public function format_mysql(DateTime $date)
     {
         return $date->format(DATE_ISO8601);
     }
@@ -171,7 +178,7 @@ class phraseadate
      * @param  string $format
      * @return string
      */
-    public static function isodateToDate($isodelimdate, $format)
+    public function isodateToDate($isodelimdate, $format)
     {
         $tc = array();
         $bal = array();
@@ -234,7 +241,7 @@ class phraseadate
      * @param  string $format
      * @return string
      */
-    public static function dateToIsodate($strdate, $format)
+    public function dateToIsodate($strdate, $format)
     {
         $v_y = $v_m = $v_d = $v_h = $v_n = $v_s = 0;
         $v = str_replace(

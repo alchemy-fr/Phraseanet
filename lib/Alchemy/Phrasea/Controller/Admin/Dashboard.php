@@ -29,8 +29,8 @@ class Dashboard implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
-                return $app['phraseanet.core']['Firewall']->requireAdmin($app);
-            });
+            $app['firewall']->requireAdmin();
+        });
 
         /**
          * Get admin dashboard
@@ -134,7 +134,7 @@ class Dashboard implements ControllerProviderInterface
         }
 
         try {
-            $engine = new \searchEngine_adapter($app['phraseanet.core']['Registry']);
+            $engine = new \searchEngine_adapter($app);
             $searchEngineStatus = $engine->get_status();
         } catch (\Exception $e) {
             $searchEngineStatus = null;
@@ -142,12 +142,12 @@ class Dashboard implements ControllerProviderInterface
 
         $parameters = array(
             'cache_flushed'                 => $request->query->get('flush_cache') === 'ok',
-            'admins'                        => \User_Adapter::get_sys_admins(),
+            'admins'                        => \User_Adapter::get_sys_admins($app),
             'email_status'                  => $emailStatus,
             'search_engine_status'          => $searchEngineStatus,
             'php_version_constraints'       => \setup::check_php_version(),
-            'writability_constraints'       => \setup::check_writability($app['phraseanet.core']['Registry']),
-            'binaries_constraints'          => \setup::check_binaries($app['phraseanet.core']['Registry']),
+            'writability_constraints'       => \setup::check_writability($app['phraseanet.registry']),
+            'binaries_constraints'          => \setup::check_binaries($app['phraseanet.registry']),
             'php_extension_constraints'     => \setup::check_php_extension(),
             'cache_constraints'             => \setup::check_cache_server(),
             'phrasea_constraints'           => \setup::check_phrasea(),
@@ -155,7 +155,7 @@ class Dashboard implements ControllerProviderInterface
             'php_configuration_constraints' => \setup::check_php_configuration(),
         );
 
-        return new Response($app['phraseanet.core']['Twig']->render('admin/dashboard.html.twig', $parameters));
+        return $app['twig']->render('admin/dashboard.html.twig', $parameters);
     }
 
     /**
@@ -167,7 +167,7 @@ class Dashboard implements ControllerProviderInterface
      */
     public function flush(Application $app, Request $request)
     {
-        if ($app['phraseanet.core']['CacheService']->flushAll()) {
+        if ($app['phraseanet.cache-service']->flushAll()) {
 
             return $app->redirect('/admin/dashboard/?flush_cache=ok');
         }
@@ -188,8 +188,7 @@ class Dashboard implements ControllerProviderInterface
             $app->abort(400, 'Bad request missing email parameter');
         };
 
-        if (\mail::mail_test($mail)) {
-
+        if (\mail::mail_test($app, $mail)) {
             return $app->redirect('/admin/dashboard/?email=sent');
         }
 
@@ -205,7 +204,7 @@ class Dashboard implements ControllerProviderInterface
      */
     public function resetAdminRights(Application $app, Request $request)
     {
-        \User_Adapter::reset_sys_admins_rights();
+        \User_Adapter::reset_sys_admins_rights($app);
 
         return $app->redirect('/admin/dashboard/');
     }
@@ -219,17 +218,15 @@ class Dashboard implements ControllerProviderInterface
      */
     public function addAdmins(Application $app, Request $request)
     {
-        $user = $app['phraseanet.core']->getAuthenticatedUser();
-
         if (count($admins = $request->request->get('admins', array())) > 0) {
 
-            if ( ! in_array($user->get_id(), $admins)) {
-                $admins[] = $user->get_id();
+            if (!in_array($app['phraseanet.user']->get_id(), $admins)) {
+                $admins[] = $app['phraseanet.user']->get_id();
             }
 
             if ($admins > 0) {
-                \User_Adapter::set_sys_admins(array_filter($admins));
-                \User_Adapter::reset_sys_admins_rights();
+                \User_Adapter::set_sys_admins($app, array_filter($admins));
+                \User_Adapter::reset_sys_admins_rights($app);
             }
         }
 

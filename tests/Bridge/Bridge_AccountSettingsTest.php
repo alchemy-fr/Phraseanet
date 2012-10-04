@@ -18,18 +18,17 @@ class Bridge_AccountSettingsTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
         parent::setUp();
         try {
-            $appbox = appbox::get_instance(\bootstrap::getCore());
 
             $sql = 'DELETE FROM bridge_apis WHERE name = "Apitest"';
-            $stmt = $appbox->get_connection()->prepare($sql);
+            $stmt = self::$DI['app']['phraseanet.appbox']->get_connection()->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();
-            $this->api = Bridge_Api::create($appbox, 'Apitest');
+            $this->api = Bridge_Api::create(self::$DI['app'], 'Apitest');
             $this->dist_id = 'EZ1565loPP';
             $this->named = 'Fête à pinpins';
-            $this->account = Bridge_Account::create($appbox, $this->api, self::$user, $this->dist_id, $this->named);
+            $this->account = Bridge_Account::create(self::$DI['app'], $this->api, self::$DI['user'], $this->dist_id, $this->named);
 
-            $this->object = new Bridge_AccountSettings($appbox, $this->account);
+            $this->object = new Bridge_AccountSettings(self::$DI['app']['phraseanet.appbox'], $this->account);
         } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
@@ -37,7 +36,9 @@ class Bridge_AccountSettingsTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function tearDown()
     {
-        $this->api->delete();
+        if ($this->api) {
+            $this->api->delete();
+        }
         parent::tearDown();
     }
 

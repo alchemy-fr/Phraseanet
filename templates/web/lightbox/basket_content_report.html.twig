@@ -3,7 +3,7 @@
 
 <div style="margin:0 7px;overflow:hidden;">
     {% for basket_element in basket.getElements() %}
-    {% set record = basket_element.getRecord() %}
+    {% set record = basket_element.getRecord(app) %}
         <span class="wrapCHIM_{{basket_element.getId()}} valid">
             <div style="margin:20px;">
                 <table style="width: 100%; min-width: 330px;">
@@ -14,7 +14,7 @@
                                 <div class="display_id">
                                     {{basket_element.getOrd()}}
                 </div>
-                {{thumbnail.format(record.get_thumbnail(),165, 125, '', session, true, false)}}
+                {{thumbnail.format(record.get_thumbnail(),165, 125, '', true, false)}}
                             </div>
                         </td>
                         <td style="width:10px;">
@@ -33,7 +33,7 @@
                                             {% set imguser = '<img src="/skins/lightbox/disagree.png" />' %}
                                             {% set styleuser = '' %}
                                         {% endif %}
-                                        <b style="{{styleuser}}">{{imguser|raw}} {{validationDatas.getParticipant().getUser().get_display_name()}}</b>
+                                        <b style="{{styleuser}}">{{imguser|raw}} {{validationDatas.getParticipant().getUser(app).get_display_name()}}</b>
                                         {% if validationDatas.getNote() != '' %}
                                              : {{validationDatas.getNote()|nl2br}}
                                         {% endif %}

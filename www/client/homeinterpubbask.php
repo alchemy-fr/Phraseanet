@@ -8,23 +8,19 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-$Core = \bootstrap::getCore();
-$appbox = appbox::get_instance($Core);
+$app = new Application();
 
-$user = $Core->getAuthenticatedUser();
+$feeds = \Feed_Collection::load_all($app, $app['phraseanet.user']);
 
-$feeds = \Feed_Collection::load_all($appbox, $user);
+$th_size = $app['phraseanet.user']->getPrefs('images_size');
 
-
-$th_size = $user->getPrefs('images_size');
-
-$core = \bootstrap::getCore();
-$twig = $core->getTwig();
 ?>
 <div style="height:50px;" class="homePubTitleBox">
     <div style="float:left;width:350px;"><h1 style="font-size:20px;margin-top:15px;">
@@ -51,7 +47,7 @@ foreach ($feeds->get_aggregate()->get_entries(0, 5)->get_entries() as $entry) {
         . $entry->get_title() .
         '</a> </h2>' .
         '<span class="publiInfos">' .
-        ' ' . \phraseadate::getPrettyString($entry->get_created_on()) .
+        ' ' . $app['date-formatter']->getPrettyString($entry->get_created_on()) .
         '  ';
 
     if ($entry->get_author_email())
@@ -64,7 +60,7 @@ foreach ($feeds->get_aggregate()->get_entries(0, 5)->get_entries() as $entry) {
 
     if ($entry->get_updated_on() > $entry->get_created_on())
         $feed .= '<br/><span style="font-style:italic;">' . _('publications:: derniere mise a jour')
-            . ' ' . \phraseadate::getPrettyString($entry->get_updated_on()) . '</span><br/><br/>';
+            . ' ' . $app['date-formatter']->getPrettyString($entry->get_updated_on()) . '</span><br/><br/>';
 
     $feed .= '</span></div><div class="descPubli"><div style="margin:10px 0 10px 20px;width:80%;">';
 
@@ -88,7 +84,7 @@ foreach ($feeds->get_aggregate()->get_entries(0, 5)->get_entries() as $entry) {
         $thumbnail = $record->get_thumbnail();
 
         $title = $record->get_title();
-        $caption = $twig->render(
+        $caption = $app['twig']->render(
             'common/caption.html.twig', array('view'   => 'internal_publi', 'record' => $record)
         );
 

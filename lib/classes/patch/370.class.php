@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -51,7 +53,7 @@ class patch_370 implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$databox)
+    public function apply(base $databox, Application $app)
     {
         $conn = $databox->get_connection();
 
@@ -76,7 +78,7 @@ class patch_370 implements patchInterface
 
         foreach ($XPath->query('/record/subdefs/subdefgroup/subdef/acodc') as $acodec) {
             if ($acodec->nodeValue == 'faac') {
-                $acodec->nodeValue = 'libfaac';
+                $acodec->nodeValue = 'libvo_aacenc';
             }
         }
 

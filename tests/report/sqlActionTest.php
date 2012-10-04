@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
+require_once __DIR__ . '/../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
-class sqlActionTest extends PhraseanetPHPUnitAbstract
+class sqlActionTest extends PhraseanetPHPUnitAuthenticatedAbstract
 {
     protected $action;
     protected $mock;
@@ -13,7 +13,7 @@ class sqlActionTest extends PhraseanetPHPUnitAbstract
 
         $this->mock = $this->getMock('module_report', array(), array(), '', false);
 
-        $this->action = new module_report_sqlaction($this->mock);
+        $this->action = new module_report_sqlaction(self::$DI['app'], $this->mock);
     }
 
     public function testGetAction()

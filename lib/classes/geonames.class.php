@@ -1,17 +1,28 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2012 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+use Alchemy\Phrasea\Application;
+
 class geonames
 {
-    protected static $NamesFromId = array();
-    protected static $CountryFromId = array();
-    protected static $CountryCodeFromId = array();
-    protected static $GeonameFromIp = array();
-    protected static $Searches = array();
+    private $app;
+
+    public function __construct(Application $app)
+    {
+        $this->app = $app;
+    }
 
     public function name_from_id($geonameid)
     {
-        $registry = registry::get_instance();
-        $url = $registry->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
+        $url = $this->app['phraseanet.registry']->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
             . 'get_name.php?geonameid='
             . $geonameid;
 
@@ -36,8 +47,7 @@ class geonames
             return '';
         }
 
-        $registry = registry::get_instance();
-        $url = $registry->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
+        $url = $this->app['phraseanet.registry']->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
             . 'get_name.php?geonameid='
             . $geonameid;
 
@@ -56,8 +66,7 @@ class geonames
 
     public function get_country_code($geonameid)
     {
-        $registry = registry::get_instance();
-        $url = $registry->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
+        $url = $this->app['phraseanet.registry']->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
             . 'get_name.php?geonameid='
             . $geonameid;
 
@@ -95,8 +104,7 @@ class geonames
             return $output;
         }
 
-        $registry = registry::get_instance();
-        $url = $registry->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
+        $url = $this->app['phraseanet.registry']->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
             . 'find_city.php?city='
             . urlencode($cityName) . '&maxResult=30';
 
@@ -142,8 +150,7 @@ class geonames
             'latitude'     => ''
         );
 
-        $registry = registry::get_instance();
-        $url = $registry->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
+        $url = $this->app['phraseanet.registry']->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
             . 'geoip.php?ip='
             . urlencode($ip);
 

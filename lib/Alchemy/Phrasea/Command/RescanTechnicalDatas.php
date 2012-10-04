@@ -47,14 +47,6 @@ class RescanTechnicalDatas extends Command
     /**
      * {@inheritdoc}
      */
-    public function requireSetup()
-    {
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         $quantity = $this->computeQuantity();
@@ -84,7 +76,7 @@ class RescanTechnicalDatas extends Command
 
             foreach ($rs as $row) {
                 $record = $databox->get_record($row['record_id']);
-                $record->insertTechnicalDatas();
+                $record->insertTechnicalDatas($this->getService('mediavorus'));
                 unset($record);
                 $output->write("\r" . $n . " records done");
                 $n ++;

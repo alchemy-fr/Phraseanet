@@ -29,6 +29,10 @@ class WorkZone implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
+        $controllers->before(function(Request $request) use ($app) {
+            $app['firewall']->requireAuthentication();
+        });
+
         $controllers->get('/', $this->call('displayWorkzone'));
 
         $controllers->get('/Browse/', $this->call('browse'));
@@ -50,7 +54,7 @@ class WorkZone implements ControllerProviderInterface
     public function displayWorkzone(Application $app)
     {
         $params = array(
-            'WorkZone'      => new WorkzoneHelper($app['phraseanet.core'], $app['request'])
+            'WorkZone'      => new WorkzoneHelper($app, $app['request'])
             , 'selected_type' => $app['request']->query->get('type')
             , 'selected_id'   => $app['request']->query->get('id')
             , 'srt'           => $app['request']->query->get('sort')
@@ -66,14 +70,9 @@ class WorkZone implements ControllerProviderInterface
 
     public function browserSearch(Application $app)
     {
-        $user = $app['phraseanet.core']->getAuthenticatedUser();
-
         $request = $app['request'];
 
-        $em = $app['phraseanet.core']->getEntityManager();
-        /* @var $em \Doctrine\ORM\EntityManager */
-
-        $BasketRepo = $em->getRepository('\Entities\Basket');
+        $BasketRepo = $app['EM']->getRepository('\Entities\Basket');
 
         $Page = (int) $request->query->get('Page', 0);
 
@@ -81,7 +80,7 @@ class WorkZone implements ControllerProviderInterface
         $offsetStart = max(($Page - 1) * $PerPage, 0);
 
         $Baskets = $BasketRepo->findWorkzoneBasket(
-            $user
+            $app['phraseanet.user']
             , $request->query->get('Query')
             , $request->query->get('Year')
             , $request->query->get('Type')
@@ -107,26 +106,20 @@ class WorkZone implements ControllerProviderInterface
 
     public function browseBasket(Application $app, Request $request, $basket_id)
     {
-        $basket = $app['phraseanet.core']
-            ->getEntityManager()
+        $basket = $app['EM']
             ->getRepository('\Entities\Basket')
-            ->findUserBasket($basket_id, $app['phraseanet.core']->getAuthenticatedUser(), false);
+            ->findUserBasket($app, $basket_id, $app['phraseanet.user'], false);
 
         return $app['twig']->render('prod/WorkZone/Browser/Basket.html.twig', array('Basket' => $basket));
     }
 
     public function attachStories(Application $app, Request $request)
     {
-        if ( ! $request->request->get('stories')) {
+        if (!$request->request->get('stories')) {
             throw new \Exception_BadRequest();
         }
 
-        $user = $app['phraseanet.core']->getAuthenticatedUser();
-
-        $em = $app['phraseanet.core']->getEntityManager();
-        /* @var $em \Doctrine\ORM\EntityManager */
-
-        $StoryWZRepo = $em->getRepository('\Entities\StoryWZ');
+        $StoryWZRepo = $app['EM']->getRepository('\Entities\StoryWZ');
 
         $alreadyFixed = $done = 0;
 
@@ -134,30 +127,30 @@ class WorkZone implements ControllerProviderInterface
 
         foreach ($stories as $element) {
             $element = explode('_', $element);
-            $Story = new \record_adapter($element[0], $element[1]);
+            $Story = new \record_adapter($app, $element[0], $element[1]);
 
-            if ( ! $Story->is_grouping()) {
+            if (!$Story->is_grouping()) {
                 throw new \Exception('You can only attach stories');
             }
 
-            if ( ! $user->ACL()->has_access_to_base($Story->get_base_id())) {
+            if (!$app['phraseanet.user']->ACL()->has_access_to_base($Story->get_base_id())) {
                 throw new \Exception_Forbidden('You do not have access to this Story');
             }
 
-            if ($StoryWZRepo->findUserStory($user, $Story)) {
-                $alreadyFixed ++;
+            if ($StoryWZRepo->findUserStory($app, $app['phraseanet.user'], $Story)) {
+                $alreadyFixed++;
                 continue;
             }
 
             $StoryWZ = new StoryWZ();
-            $StoryWZ->setUser($user);
+            $StoryWZ->setUser($app['phraseanet.user']);
             $StoryWZ->setRecord($Story);
 
-            $em->persist($StoryWZ);
-            $done ++;
+            $app['EM']->persist($StoryWZ);
+            $done++;
         }
 
-        $em->flush();
+        $app['EM']->flush();
 
         if ($alreadyFixed === 0) {
             if ($done <= 1) {
@@ -189,9 +182,9 @@ class WorkZone implements ControllerProviderInterface
 
         if ($request->getRequestFormat() == 'json') {
             return $app->json(array(
-                    'success' => true
-                    , 'message' => $message
-                ));
+                'success' => true
+                , 'message' => $message
+            ));
         }
 
         return $app->redirect('/{sbas_id}/{record_id}/');
@@ -199,29 +192,25 @@ class WorkZone implements ControllerProviderInterface
 
     public function detachStory(Application $app, Request $request, $sbas_id, $record_id)
     {
-        $Story = new \record_adapter($sbas_id, $record_id);
+        $Story = new \record_adapter($app, $sbas_id, $record_id);
 
-        $user = $app['phraseanet.core']->getAuthenticatedUser();
-
-        $em = $app['phraseanet.core']->getEntityManager();
-
-        $repository = $em->getRepository('\Entities\StoryWZ');
+        $repository = $app['EM']->getRepository('\Entities\StoryWZ');
 
         /* @var $repository \Repositories\StoryWZRepository */
-        $StoryWZ = $repository->findUserStory($user, $Story);
+        $StoryWZ = $repository->findUserStory($app, $app['phraseanet.user'], $Story);
 
-        if ( ! $StoryWZ) {
+        if (!$StoryWZ) {
             throw new \Exception_NotFound('Story not found');
         }
 
-        $em->remove($StoryWZ);
-        $em->flush();
+        $app['EM']->remove($StoryWZ);
+        $app['EM']->flush();
 
         if ($request->getRequestFormat() == 'json') {
             return $app->json(array(
-                    'success' => true
-                    , 'message' => _('Story detached from the WorkZone')
-                ));
+                'success' => true
+                , 'message' => _('Story detached from the WorkZone')
+            ));
         }
 
         return $app->redirect('/');

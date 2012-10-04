@@ -25,13 +25,12 @@ class Feed_Entry_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $auth = new Session_Authentication_None(self::$user);
-        $appbox->get_session()->authenticate($auth);
+        $auth = new Session_Authentication_None(self::$DI['user']);
+        self::$DI['app']->openAccount($auth);
 
-        self::$feed = Feed_Adapter::create($appbox, self::$user, self::$feed_title, self::$feed_subtitle);
-        $publisher = Feed_Publisher_Adapter::getPublisher($appbox, self::$feed, self::$user);
-        self::$object = Feed_Entry_Adapter::create($appbox, self::$feed, $publisher, self::$title, self::$subtitle, self::$author_name, self::$author_email);
+        self::$feed = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], self::$feed_title, self::$feed_subtitle);
+        $publisher = Feed_Publisher_Adapter::getPublisher(self::$DI['app']['phraseanet.appbox'], self::$feed, self::$DI['user']);
+        self::$object = Feed_Entry_Adapter::create(self::$DI['app'], self::$feed, $publisher, self::$title, self::$subtitle, self::$author_name, self::$author_email);
     }
 
     public static function tearDownAfterClass()
@@ -74,7 +73,7 @@ class Feed_Entry_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
             self::$object->set_title('');
             $this->fail();
         } catch (Exception_InvalidArgument $e) {
-            
+
         }
     }
 
@@ -100,11 +99,10 @@ class Feed_Entry_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testSetFeed()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $new_feed = Feed_Adapter::create($appbox, self::$user, self::$feed_title, self::$feed_subtitle);
+        $new_feed = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], self::$feed_title, self::$feed_subtitle);
 
-        $publisher = Feed_Publisher_Adapter::getPublisher($appbox, $new_feed, self::$user);
-        $entry = Feed_Entry_Adapter::create($appbox, self::$feed, $publisher, self::$title, self::$subtitle, self::$author_name, self::$author_email);
+        $publisher = Feed_Publisher_Adapter::getPublisher(self::$DI['app']['phraseanet.appbox'], $new_feed, self::$DI['user']);
+        $entry = Feed_Entry_Adapter::create(self::$DI['app'], self::$feed, $publisher, self::$title, self::$subtitle, self::$author_name, self::$author_email);
 
         $this->assertEquals(self::$feed, $entry->get_feed());
         $entry->set_feed($new_feed);
@@ -125,7 +123,7 @@ class Feed_Entry_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testGet_publisher()
     {
         $this->assertInstanceOf('Feed_Publisher_Adapter', self::$object->get_publisher());
-        $this->assertEquals(self::$object->get_publisher()->get_user()->get_id(), self::$user->get_id());
+        $this->assertEquals(self::$object->get_publisher()->get_user()->get_id(), self::$DI['user']->get_id());
     }
 
     public function testGet_created_on()
@@ -156,8 +154,7 @@ class Feed_Entry_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testLoad_from_id()
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $test_entry = Feed_Entry_Adapter::load_from_id($appbox, self::$object->get_id());
+        $test_entry = Feed_Entry_Adapter::load_from_id(self::$DI['app'], self::$object->get_id());
 
         $this->assertInstanceOf('Feed_Entry_Adapter', $test_entry);
         $this->assertEquals(self::$object->get_id(), $test_entry->get_id());

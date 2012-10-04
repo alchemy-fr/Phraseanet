@@ -159,9 +159,9 @@ class task_period_subdef extends task_databoxAbstract
                 , $this->sbas_id, $record_id));
 
         try {
-            $record = new record_adapter($this->sbas_id, $record_id);
+            $record = new record_adapter($this->dependencyContainer, $this->sbas_id, $record_id);
 
-            $record->generate_subdefs($databox, $this->logger);
+            $record->generate_subdefs($databox, $this->dependencyContainer);
         } catch (\Exception $e) {
             $this->log(
                 sprintf(
@@ -205,7 +205,7 @@ class task_period_subdef extends task_databoxAbstract
                 ));
 
             try {
-                $connbas = connection::getPDOConnection($this->sbas_id);
+                $connbas = connection::getPDOConnection($this->dependencyContainer, $this->sbas_id);
                 $sql = 'UPDATE record
                 SET status=(status & ~0x03),
                     jeton=(jeton | ' . JETON_WRITE_META_SUBDEF . ')

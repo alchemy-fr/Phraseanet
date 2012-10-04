@@ -6,52 +6,37 @@ class MustacheLoaderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
 
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Prod.php';
-        
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-        
-        return $app;
-    }
-
-    public function setUp()
-    {
-        parent::setUp();
-        $this->client = $this->createClient();
-    }
-
     public function testRouteSlash()
     {
+        self::$DI['client']->request('GET', '/prod/MustacheLoader/');
 
-        $this->client->request('GET', '/MustacheLoader/');
-
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
         /* @var $response \Symfony\Component\HttpFoundation\Response */
-
         $this->assertEquals(400, $response->getStatusCode());
-        $this->assertFalse($response->isOk());
+    }
 
-        $this->client->request('GET', '/MustacheLoader/', array('template' => '/../../../../config/config.yml'));
+    public function testRouteSlashWrongUrl()
+    {
+        self::$DI['client']->request('GET', '/prod/MustacheLoader/', array('template' => '/../../../../config/config.yml'));
 
-        $response = $this->client->getResponse();
-        /* @var $response \Symfony\Component\HttpFoundation\Response */
-
+        $response = self::$DI['client']->getResponse();
         $this->assertEquals(400, $response->getStatusCode());
-        $this->assertFalse($response->isOk());
-
-        $this->client->request('GET', '/MustacheLoader/', array('template' => 'patator_lala'));
-
-        $response = $this->client->getResponse();
         /* @var $response \Symfony\Component\HttpFoundation\Response */
+    }
 
+    public function testRouteSlashWrongFile()
+    {
+        self::$DI['client']->request('GET', '/prod/MustacheLoader/', array('template' => 'patator_lala'));
+
+        $response = self::$DI['client']->getResponse();
         $this->assertEquals(404, $response->getStatusCode());
-        $this->assertFalse($response->isOk());
+    }
 
-        $this->client->request('GET', '/MustacheLoader/', array('template' => 'Feedback-Badge'));
+    public function testRouteGood()
+    {
+        self::$DI['client']->request('GET', '/prod/MustacheLoader/', array('template' => 'Feedback-Badge'));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
         /* @var $response \Symfony\Component\HttpFoundation\Response */
 
         $this->assertEquals(200, $response->getStatusCode());

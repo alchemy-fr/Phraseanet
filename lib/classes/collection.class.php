@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -31,14 +33,16 @@ class collection implements cache_cacheableInterface
     protected $databox;
     protected $is_active;
     protected $binary_logo;
+    protected $app;
 
     const PIC_LOGO = 'minilogos';
     const PIC_WM = 'wm';
     const PIC_STAMP = 'stamp';
     const PIC_PRESENTATION = 'presentation';
 
-    protected function __construct($coll_id, databox &$databox)
+    protected function __construct(Application $app, $coll_id, databox $databox)
     {
+        $this->app = $app;
         $this->databox = $databox;
         $this->sbas_id = (int) $databox->get_sbas_id();
         $this->coll_id = (int) $coll_id;
@@ -78,7 +82,7 @@ class collection implements cache_cacheableInterface
         $this->name = $row['asciiname'];
         $this->prefs = $row['prefs'];
 
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($this->app);
 
         $sql = 'SELECT server_coll_id, sbas_id, base_id, active FROM bas
             WHERE server_coll_id = :coll_id AND sbas_id = :sbas_id';
@@ -111,7 +115,7 @@ class collection implements cache_cacheableInterface
         return $this;
     }
 
-    public function enable(appbox &$appbox)
+    public function enable(appbox $appbox)
     {
         $sql = 'UPDATE bas SET active = "1" WHERE base_id = :base_id';
         $stmt = $appbox->get_connection()->prepare($sql);
@@ -120,15 +124,14 @@ class collection implements cache_cacheableInterface
 
         $this->is_active = true;
         $this->delete_data_from_cache();
-        $appbox = appbox::get_instance(\bootstrap::getCore());
         $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
         $this->databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
-        cache_databox::update($this->databox->get_sbas_id(), 'structure');
+        cache_databox::update($this->app, $this->databox->get_sbas_id(), 'structure');
 
         return $this;
     }
 
-    public function disable(appbox &$appbox)
+    public function disable(appbox $appbox)
     {
         $sql = 'UPDATE bas SET active=0 WHERE base_id = :base_id';
         $stmt = $appbox->get_connection()->prepare($sql);
@@ -136,10 +139,9 @@ class collection implements cache_cacheableInterface
         $stmt->closeCursor();
         $this->is_active = false;
         $this->delete_data_from_cache();
-        $appbox = appbox::get_instance(\bootstrap::getCore());
         $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
         $this->databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
-        cache_databox::update($this->databox->get_sbas_id(), 'structure');
+        cache_databox::update($this->app, $this->databox->get_sbas_id(), 'structure');
 
         return $this;
     }
@@ -158,7 +160,7 @@ class collection implements cache_cacheableInterface
         $stmt->closeCursor();
 
         foreach ($rs as $row) {
-            $record = new record_adapter($this->databox->get_sbas_id(), $row['record_id']);
+            $record = $this->databox->get_record($row['record_id']);
             $record->delete();
             unset($record);
         }
@@ -218,7 +220,7 @@ class collection implements cache_cacheableInterface
 
         $this->delete_data_from_cache();
 
-        phrasea::reset_baseDatas();
+        phrasea::reset_baseDatas($this->databox->get_appbox());
 
         return $this;
     }
@@ -331,7 +333,7 @@ class collection implements cache_cacheableInterface
         $stmt->execute(array(':coll_id' => $this->get_coll_id()));
         $stmt->closeCursor();
 
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $appbox = $this->databox->get_appbox();
 
         $sql = "DELETE FROM bas WHERE base_id = :base_id";
         $stmt = $appbox->get_connection()->prepare($sql);
@@ -363,17 +365,16 @@ class collection implements cache_cacheableInterface
      * @param  int        $base_id
      * @return collection
      */
-    public static function get_from_base_id($base_id)
+    public static function get_from_base_id(Application $app, $base_id)
     {
-        $coll_id = phrasea::collFromBas($base_id);
-        $sbas_id = phrasea::sbasFromBas($base_id);
+        $coll_id = phrasea::collFromBas($app, $base_id);
+        $sbas_id = phrasea::sbasFromBas($app, $base_id);
         if ( ! $sbas_id || ! $coll_id) {
             throw new Exception_Databox_CollectionNotFound(sprintf("Collection could not be found"));
         }
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
-        $databox = $appbox->get_databox($sbas_id);
+        $databox = $app['phraseanet.appbox']->get_databox($sbas_id);
 
-        return self::get_from_coll_id($databox, $coll_id);
+        return self::get_from_coll_id($app, $databox, $coll_id);
     }
 
     /**
@@ -382,13 +383,13 @@ class collection implements cache_cacheableInterface
      * @param  int        $coll_id
      * @return collection
      */
-    public static function get_from_coll_id(databox $databox, $coll_id)
+    public static function get_from_coll_id(Application $app, databox $databox, $coll_id)
     {
         assert(is_int($coll_id));
 
         $key = sprintf('%d_%d', $databox->get_sbas_id(), $coll_id);
         if ( ! isset(self::$_collections[$key])) {
-            self::$_collections[$key] = new self($coll_id, $databox);
+            self::$_collections[$key] = new self($app, $coll_id, $databox);
         }
 
         return self::$_collections[$key];
@@ -443,11 +444,11 @@ class collection implements cache_cacheableInterface
         return $this->available;
     }
 
-    public function unmount_collection(appbox &$appbox)
+    public function unmount_collection(Application $app)
     {
         $params = array(':base_id' => $this->get_base_id());
 
-        $query = new User_Query($appbox);
+        $query = new User_Query($app);
         $total = $query->on_base_ids(array($this->get_base_id()))
                 ->include_phantoms(false)
                 ->include_special_users(true)
@@ -464,39 +465,36 @@ class collection implements cache_cacheableInterface
         }
 
         $sql = "DELETE FROM basusr WHERE base_id = :base_id";
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
         $sql = "DELETE FROM sselcont WHERE base_id = :base_id";
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
         $sql = "DELETE FROM bas WHERE base_id = :base_id";
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
         $sql = "DELETE FROM demand WHERE base_id = :base_id";
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
-        phrasea::reset_baseDatas();
+        phrasea::reset_baseDatas($app['phraseanet.appbox']);
 
         return $this;
     }
 
-    public static function create(databox $databox, appbox $appbox, $name, User_Adapter $user = null)
+    public static function create(Application $app, databox $databox, appbox $appbox, $name, User_Adapter $user = null)
     {
         $sbas_id = $databox->get_sbas_id();
         $connbas = $databox->get_connection();
         $conn = $appbox->get_connection();
         $new_bas = false;
-
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
 
         $prefs = '<?xml version="1.0" encoding="UTF-8"?>
             <baseprefs>
@@ -531,16 +529,17 @@ class collection implements cache_cacheableInterface
         $databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
 
         $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
-        cache_databox::update($sbas_id, 'structure');
+        cache_databox::update($app, $sbas_id, 'structure');
 
-        phrasea::reset_baseDatas();
+        phrasea::reset_baseDatas($appbox);
+
+        $collection = self::get_from_coll_id($app, $databox, $new_id);
 
         if (null !== $user) {
-            self::set_admin($new_bas, $user);
-            $appbox->get_session()->renew_phrasea_session();
+            $collection->set_admin($new_bas, $user);
         }
 
-        return self::get_from_coll_id($databox, $new_id);
+        return $collection;
     }
 
     public function set_admin($base_id, user_adapter $user)
@@ -571,47 +570,43 @@ class collection implements cache_cacheableInterface
         return true;
     }
 
-    public static function mount_collection($sbas_id, $coll_id, User_Adapter $user)
+    public static function mount_collection(Application $app, databox $databox, $coll_id, User_Adapter $user)
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
 
         $sql = "INSERT INTO bas (base_id, active, server_coll_id, sbas_id, aliases)
             VALUES
             (null, 1, :server_coll_id, :sbas_id, '')";
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $databox->get_appbox()->get_connection()->prepare($sql);
         $stmt->execute(array(':server_coll_id' => $coll_id, ':sbas_id'        => $sbas_id));
         $stmt->closeCursor();
 
-        $new_bas = $appbox->get_connection()->lastInsertId();
-        $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+        $new_bas = $databox->get_appbox()->get_connection()->lastInsertId();
+        $databox->get_appbox()->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 
-        $databox = $appbox->get_databox((int) $sbas_id);
         $databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
 
-        cache_databox::update($sbas_id, 'structure');
+        cache_databox::update($app, $sbas_id, 'structure');
 
-        phrasea::reset_baseDatas();
+        phrasea::reset_baseDatas($databox->get_appbox());
 
         self::set_admin($new_bas, $user);
 
         return $new_bas;
     }
 
-    public static function getLogo($base_id, $printname = false)
+    public static function getLogo($base_id, Application $app, $printname = false)
     {
         $base_id_key = $base_id . '_' . ($printname ? '1' : '0');
 
         if ( ! isset(self::$_logos[$base_id_key])) {
 
-            $registry = registry::get_instance();
-            if (is_file($registry->get('GV_RootPath') . 'config/minilogos/' . $base_id)) {
-                $name = phrasea::bas_names($base_id);
+            if (is_file($app['phraseanet.registry']->get('GV_RootPath') . 'config/minilogos/' . $base_id)) {
+                $name = phrasea::bas_names($base_id, $app);
                 self::$_logos[$base_id_key] = '<img title="' . $name
-                    . '" src="' . $registry->get('GV_STATIC_URL')
+                    . '" src="' . $app['phraseanet.registry']->get('GV_STATIC_URL')
                     . '/custom/minilogos/' . $base_id . '" />';
             } elseif ($printname) {
-                self::$_logos[$base_id_key] = phrasea::bas_names($base_id);
+                self::$_logos[$base_id_key] = phrasea::bas_names($base_id, $app);
             }
         }
 
@@ -622,8 +617,7 @@ class collection implements cache_cacheableInterface
     {
         if ( ! isset(self::$_watermarks['base_id'])) {
 
-            $registry = registry::get_instance();
-            if (is_file($registry->get('GV_RootPath') . 'config/wm/' . $base_id))
+            if (is_file(__DIR__  . '/../../config/wm/' . $base_id))
                 self::$_watermarks['base_id'] = '<img src="/custom/wm/' . $base_id . '" />';
         }
 
@@ -634,8 +628,7 @@ class collection implements cache_cacheableInterface
     {
         if ( ! isset(self::$_presentations['base_id'])) {
 
-            $registry = registry::get_instance();
-            if (is_file($registry->get('GV_RootPath') . 'config/presentation/' . $base_id))
+            if (is_file(__DIR__ . '/../../config/presentation/' . $base_id))
                 self::$_presentations['base_id'] = '<img src="/custom/presentation/' . $base_id . '" />';
         }
 
@@ -646,8 +639,7 @@ class collection implements cache_cacheableInterface
     {
         if ( ! isset(self::$_stamps['base_id'])) {
 
-            $registry = registry::get_instance();
-            if (is_file($registry->get('GV_RootPath') . 'config/stamp/' . $base_id))
+            if (is_file(__DIR__ . '/../../config/stamp/' . $base_id))
                 self::$_stamps['base_id'] = '<img src="/custom/stamp/' . $base_id . '" />';
         }
 

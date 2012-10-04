@@ -57,7 +57,7 @@
         </thead>
         <tbody>
           {% for user in results %}
-          <tr class="{% if list.has(user) %} selected {% endif %}{% if loop.index is odd %} odd {% endif %}">
+          <tr class="{% if list.has(user, app) %} selected {% endif %}{% if loop.index is odd %} odd {% endif %}">
             <td>
               {{ user.get_login() }}
               <input name="usr_id" value="{{ user.get_id() }}" type="hidden" />
@@ -78,7 +78,7 @@
               {{ user.get_login() }}
             </td>
             <td>
-              {{ user.get_creation_date() | formatDate }}
+              {{ app['date-formatter'].getDate(user.get_creation_date()) }}
             </td>
           </tr>
           {% endfor %}
@@ -178,7 +178,7 @@
 
 {% macro badgeReadonly(entry, role) %}
   <div class="badge">
-    <input type="hidden" value="{{ entry.getUser().get_id() }}" name="id">
+    <input type="hidden" value="{{ entry.getUser(app).get_id() }}" name="id">
     {% if role >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
       <a class="deleter" href="#">
         <img src="/skins/prod/Push/close_badge.png">
@@ -190,7 +190,7 @@
           <img src="/skins/icons/user.png"/>
         </td>
         <td class="infos" >
-          <span class="name">{{ entry.getUser().get_display_name() }}</span>
+          <span class="name">{{ entry.getUser(app).get_display_name() }}</span>
           <span class="subtite"></span>
         </td>
       </tr>

@@ -35,7 +35,7 @@ class Bridge_AccountSettings
      * @param  Bridge_Account         $account
      * @return Bridge_AccountSettings
      */
-    public function __construct(appbox &$appbox, Bridge_Account &$account)
+    public function __construct(appbox $appbox, Bridge_Account $account)
     {
         $this->appbox = $appbox;
         $this->account = $account;

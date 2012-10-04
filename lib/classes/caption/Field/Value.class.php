@@ -9,7 +9,8 @@
  * file that was distributed with this source code.
  */
 
-use \Alchemy\Phrasea\Vocabulary;
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Vocabulary;
 
 /**
  *
@@ -53,6 +54,7 @@ class caption_Field_Value implements cache_cacheableInterface
      * @var record_adapter
      */
     protected $record;
+    protected $app;
 
     protected static $localCache = array();
 
@@ -63,11 +65,12 @@ class caption_Field_Value implements cache_cacheableInterface
      * @param  type                 $id
      * @return \caption_Field_Value
      */
-    public function __construct(databox_field $databox_field, record_adapter $record, $id)
+    public function __construct(Application $app, databox_field $databox_field, record_adapter $record, $id)
     {
         $this->id = (int) $id;
         $this->databox_field = $databox_field;
         $this->record = $record;
+        $this->app = $app;
 
         $this->retrieveValues();
     }
@@ -78,7 +81,7 @@ class caption_Field_Value implements cache_cacheableInterface
             $datas = $this->get_data_from_cache();
 
             $this->value = $datas['value'];
-            $this->VocabularyType = $datas['vocabularyType'] ? Vocabulary\Controller::get($datas['vocabularyType']) : null;
+            $this->VocabularyType = $datas['vocabularyType'] ? Vocabulary\Controller::get($this->app, $datas['vocabularyType']) : null;
             $this->VocabularyId = $datas['vocabularyId'];
 
             return $this;
@@ -99,7 +102,7 @@ class caption_Field_Value implements cache_cacheableInterface
         $this->value = $row ? $row['value'] : null;
 
         try {
-            $this->VocabularyType = $row['VocabularyType'] ? Vocabulary\Controller::get($row['VocabularyType']) : null;
+            $this->VocabularyType = $row['VocabularyType'] ? Vocabulary\Controller::get($this->app, $row['VocabularyType']) : null;
             $this->VocabularyId = $row['VocabularyId'];
         } catch (\Exception $e) {
 
@@ -191,10 +194,9 @@ class caption_Field_Value implements cache_cacheableInterface
         $this->record->get_caption()->delete_data_from_cache();
 
         try {
-            $registry = registry::get_instance();
-            $sphinx_rt = sphinxrt::get_instance($registry);
+            $sphinx_rt = sphinxrt::get_instance($this->app['phraseanet.registry']);
 
-            $sbas_params = phrasea::sbas_params();
+            $sbas_params = phrasea::sbas_params($this->app);
 
             if (isset($sbas_params[$sbas_id])) {
                 $params = $sbas_params[$sbas_id];
@@ -275,10 +277,9 @@ class caption_Field_Value implements cache_cacheableInterface
         $this->delete_data_from_cache();
 
         try {
-            $registry = registry::get_instance();
-            $sphinx_rt = sphinxrt::get_instance($registry);
+            $sphinx_rt = sphinxrt::get_instance($this->app['phraseanet.registry']);
 
-            $sbas_params = phrasea::sbas_params();
+            $sbas_params = phrasea::sbas_params($this->app);
 
             if (isset($sbas_params[$sbas_id])) {
                 $params = $sbas_params[$sbas_id];
@@ -305,9 +306,7 @@ class caption_Field_Value implements cache_cacheableInterface
         $this->record->get_caption()->delete_data_from_cache();
         $sbas_id = $this->databox_field->get_databox()->get_sbas_id();
         try {
-            $registry = registry::get_instance();
-
-            $sbas_params = phrasea::sbas_params();
+            $sbas_params = phrasea::sbas_params($this->app);
 
             if (isset($sbas_params[$sbas_id])) {
                 $params = $sbas_params[$sbas_id];
@@ -319,14 +318,14 @@ class caption_Field_Value implements cache_cacheableInterface
                     )
                 );
 
-                $sphinx_rt = sphinxrt::get_instance($registry);
+                $sphinx_rt = sphinxrt::get_instance($this->app['phraseanet.registry']);
                 $sphinx_rt->replace_in_metas(
                     "metas_realtime" . $sbas_crc
                     , $this->id
                     , $this->databox_field->get_id()
                     , $this->record->get_record_id()
                     , $sbas_id
-                    , phrasea::collFromBas($this->record->get_base_id())
+                    , phrasea::collFromBas($this->app, $this->record->get_base_id())
                     , ($this->record->is_grouping() ? '1' : '0')
                     , $this->record->get_type()
                     , $value
@@ -348,7 +347,7 @@ class caption_Field_Value implements cache_cacheableInterface
 
                 $sphinx_rt->replace_in_documents(
                     "docs_realtime" . $sbas_crc, //$this->id,
-                    $this->record->get_record_id(), $all_datas, $sbas_id, phrasea::collFromBas($this->record->get_base_id()), ($this->record->is_grouping() ? '1' : '0'), $this->record->get_type(), $this->record->get_creation_date()
+                    $this->record->get_record_id(), $all_datas, $sbas_id, phrasea::collFromBas($this->app, $this->record->get_base_id()), ($this->record->is_grouping() ? '1' : '0'), $this->record->get_type(), $this->record->get_creation_date()
                 );
             }
         } catch (Exception $e) {
@@ -358,7 +357,7 @@ class caption_Field_Value implements cache_cacheableInterface
         return $this;
     }
 
-    public static function create(databox_field &$databox_field, record_Interface $record, $value, Vocabulary\ControlProvider\ControlProviderInterface $vocabulary = null, $vocabularyId = null)
+    public static function create(Application $app, databox_field $databox_field, record_Interface $record, $value, Vocabulary\ControlProvider\ControlProviderInterface $vocabulary = null, $vocabularyId = null)
     {
         $connbas = $databox_field->get_connection();
 
@@ -368,7 +367,8 @@ class caption_Field_Value implements cache_cacheableInterface
         if ( ! $databox_field->is_multi()) {
             try {
                 $field = $record->get_caption()->get_field($databox_field->get_name());
-                $caption_field_value = array_pop($field->get_values());
+                $values = $field->get_values();
+                $caption_field_value = array_pop($values);
                 /* @var $value \caption_Field_Value */
                 $caption_field_value->set_value($value);
 
@@ -403,7 +403,7 @@ class caption_Field_Value implements cache_cacheableInterface
         $stmt_ins->closeCursor();
         $meta_id = $connbas->lastInsertId();
 
-        $caption_field_value = new self($databox_field, $record, $meta_id);
+        $caption_field_value = new self($app, $databox_field, $record, $meta_id);
         $caption_field_value->update_cache_value($value);
 
         $record->get_caption()->delete_data_from_cache();
@@ -431,8 +431,6 @@ class caption_Field_Value implements cache_cacheableInterface
             return $value;
         }
 
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
         $unicode = new unicode();
 
         $DOM_branchs = $XPATH_thesaurus->query($tbranch);
@@ -455,7 +453,7 @@ class caption_Field_Value implements cache_cacheableInterface
             if ($nodes->length > 0) {
                 $lngfound = false;
                 foreach ($nodes as $node) {
-                    if ($node->getAttribute("lng") == $session->get_I18n()) {
+                    if ($node->getAttribute("lng") == $this->app['locale.I18n']) {
                         // le terme est dans la bonne langue, on le rend cliquable
                         list($term, $context) = $this->splitTermAndContext($fvalue);
                         $term = str_replace(array("<em>", "</em>"), array("", ""), $term);
@@ -470,7 +468,7 @@ class caption_Field_Value implements cache_cacheableInterface
                         break;
                     }
 
-                    $synonyms = $XPATH_thesaurus->query("sy[@lng='" . $session->usr_i18 . "']", $node->parentNode);
+                    $synonyms = $XPATH_thesaurus->query("sy[@lng='" . $this->app['locale.I18n'] . "']", $node->parentNode);
                     foreach ($synonyms as $synonym) {
                         $k = $synonym->getAttribute("k");
                         if ($synonym->getAttribute("w") != $term_noacc || $k != $context_noacc) {

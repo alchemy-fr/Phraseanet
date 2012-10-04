@@ -6,30 +6,14 @@ class ControllerMoveCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAb
 {
     protected $client;
 
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Prod.php';
-        
-        $app['debug'] = true;
-        unset($app['exception_handler']);
-        
-        return $app;
-    }
-
-    public function setUp()
-    {
-        parent::setUp();
-        $this->client = $this->createClient();
-    }
-
     /**
      * Default route test
      */
     public function testRouteSlash()
     {
-        $this->client->request('POST', '/records/movecollection/', array('lst' => static::$records['record_1']->get_serialize_key()));
+        self::$DI['client']->request('POST', '/prod/records/movecollection/', array('lst' => self::$DI['record_1']->get_serialize_key()));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isOk());
     }
@@ -37,9 +21,9 @@ class ControllerMoveCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAb
     public function testApply()
     {
 
-        $this->client->request('POST', '/records/movecollection/apply/', array('lst'     => static::$records['record_1']->get_serialize_key(), 'base_id' => self::$collection->get_base_id()));
+        self::$DI['client']->request('POST', '/prod/records/movecollection/apply/', array('lst'     => self::$DI['record_1']->get_serialize_key(), 'base_id' => self::$DI['collection']->get_base_id()));
 
-        $response = $this->client->getResponse();
+        $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isOk());
     }

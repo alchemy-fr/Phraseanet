@@ -19,15 +19,22 @@ class sphinxrt
     protected static $_instance;
     protected static $_failure = false;
     protected $connection;
+    protected $registry;
 
     protected function __construct(registry $registry)
     {
+        $this->registry = $registry;
+
+        if(!$registry->get('GV_sphinx') || !$registry->get('GV_sphinx_rt_host') || !$registry->get('GV_sphinx_rt_port')) {
+            throw new \Exception('Sphinx not configured');
+        }
+
         try {
             $dsn = sprintf('mysql:host=%s;port=%s;', $registry->get('GV_sphinx_rt_host'), $registry->get('GV_sphinx_rt_port'));
             $this->connection = @new PDO($dsn);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             self::$_failure = true;
-            throw new Exception('Unable to connect to sphinx rt');
+            throw new \Exception('Unable to connect to sphinx rt');
         }
 
         return $this;
@@ -60,12 +67,11 @@ class sphinxrt
      */
     public function delete(Array $index_ids, $rt_id, $id)
     {
-        $registry = registry::get_instance();
-        require_once $registry->get('GV_RootPath') . 'lib/vendor/sphinx/sphinxapi.php';
+        require_once __DIR__ . '/../../lib/vendor/sphinx/sphinxapi.php';
 
         $cl = new SphinxClient();
 
-        $cl->SetServer($registry->get('GV_sphinx_host'), (int) $registry->get('GV_sphinx_port'));
+        $cl->SetServer($this->registry->get('GV_sphinx_host'), (int) $this->registry->get('GV_sphinx_port'));
         $cl->SetConnectTimeout(1);
 
         foreach ($index_ids as $index_id)
@@ -85,8 +91,7 @@ class sphinxrt
 
     public function update_status(Array $index_ids, $sbas_id, $record_id, $status)
     {
-        $registry = registry::get_instance();
-        require_once $registry->get('GV_RootPath') . 'lib/vendor/sphinx/sphinxapi.php';
+        require_once __DIR__ . '/../../lib/vendor/sphinx/sphinxapi.php';
 
         $cl = new SphinxClient();
 
@@ -94,7 +99,7 @@ class sphinxrt
             return $this;
         }
 
-        $cl->SetServer($registry->get('GV_sphinx_host'), (int) $registry->get('GV_sphinx_port'));
+        $cl->SetServer($this->registry->get('GV_sphinx_host'), (int) $this->registry->get('GV_sphinx_port'));
         $cl->SetConnectTimeout(1);
 
         $status = strrev($status);

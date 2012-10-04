@@ -119,12 +119,9 @@ class searchEngine_results
      *
      * @return array
      */
-    public function get_suggestions()
+    public function get_suggestions($I18n)
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
-
-        return $this->engine->get_suggestions($session);
+        return $this->engine->get_suggestions($I18n);
     }
 
     /**

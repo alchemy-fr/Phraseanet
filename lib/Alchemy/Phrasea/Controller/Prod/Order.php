@@ -35,6 +35,11 @@ class Order implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
+        $controllers->before(function(Request $request) use ($app) {
+            $app['firewall']->requireAuthentication()
+                ->requireRight('order');
+        });
+
         /**
          * List all orders
          *
@@ -50,8 +55,8 @@ class Order implements ControllerProviderInterface
          */
         $controllers->get('/', $this->call('displayOrders'))
             ->before(function(Request $request) use ($app) {
-                    $app['phraseanet.core']['Firewall']->requireOrdersAdmin($app);
-                })
+                $app['firewall']->requireOrdersAdmin();
+            })
             ->bind('prod_orders');
 
         /**
@@ -85,8 +90,8 @@ class Order implements ControllerProviderInterface
          */
         $controllers->get('/{order_id}/', $this->call('displayOneOrder'))
             ->before(function(Request $request) use ($app) {
-                    $app['phraseanet.core']['Firewall']->requireOrdersAdmin($app);
-                })
+                $app['firewall']->requireOrdersAdmin();
+            })
             ->bind('prod_order')
             ->assert('order_id', '\d+');
 
@@ -105,8 +110,8 @@ class Order implements ControllerProviderInterface
          */
         $controllers->post('/{order_id}/send/', $this->call('sendOrder'))
             ->before(function(Request $request) use ($app) {
-                    $app['phraseanet.core']['Firewall']->requireOrdersAdmin($app);
-                })
+                $app['firewall']->requireOrdersAdmin();
+            })
             ->bind('prod_order_send')
             ->assert('order_id', '\d+');
 
@@ -125,8 +130,8 @@ class Order implements ControllerProviderInterface
          */
         $controllers->post('/{order_id}/deny/', $this->call('denyOrder'))
             ->before(function(Request $request) use ($app) {
-                    $app['phraseanet.core']['Firewall']->requireOrdersAdmin($app);
-                })
+                $app['firewall']->requireOrdersAdmin();
+            })
             ->bind('prod_order_deny')
             ->assert('order_id', '\d+');
 
@@ -149,28 +154,28 @@ class Order implements ControllerProviderInterface
 
         try {
             $records = RecordsRequest::fromRequest($app, $request, true, array('cancmd'));
-            $query = new \User_Query($app['phraseanet.appbox']);
+            $query = new \User_Query($app);
 
             foreach ($records as $key => $record) {
                 if ($collectionHasOrderAdmins->containsKey($record->get_base_id())) {
-                    if ( ! $collectionHasOrderAdmins->get($record->get_base_id())) {
+                    if (!$collectionHasOrderAdmins->get($record->get_base_id())) {
                         $records->remove($key);
                     }
                 }
 
-                $hasOneAdmin = ! ! count($query->on_base_ids(array($record->get_base_id()))
+                $hasOneAdmin = !!count($query->on_base_ids(array($record->get_base_id()))
                             ->who_have_right(array('order_master'))
                             ->execute()->get_results());
 
                 $collectionHasOrderAdmins->set($record->get_base_id(), $hasOneAdmin);
 
-                if ( ! $hasOneAdmin) {
+                if (!$hasOneAdmin) {
                     $toRemove[] = $key;
                 }
             }
 
             foreach ($toRemove as $key) {
-                if($records->containsKey($key)) {
+                if ($records->containsKey($key)) {
                     $records->remove($key);
                 }
             }
@@ -185,7 +190,7 @@ class Order implements ControllerProviderInterface
 
             if (count($records) > 0) {
                 \set_order::create(
-                    $app['phraseanet.appbox'], $records, $app['phraseanet.core']->getAuthenticatedUser(), $request->request->get('use', ''), ( (null !== $deadLine = $request->request->get('deadline')) ? new \DateTime($deadLine) : $deadLine)
+                    $app, $records, $app['phraseanet.user'], $request->request->get('use', ''), ( (null !== $deadLine = $request->request->get('deadline')) ? new \DateTime($deadLine) : $deadLine)
                 );
 
                 $success = true;
@@ -200,15 +205,15 @@ class Order implements ControllerProviderInterface
         if ('json' === $app['request']->getRequestFormat()) {
 
             return $app->json(array(
-                    'success' => $success,
-                    'msg'     => $msg,
-                ));
+                'success' => $success,
+                'msg'     => $msg,
+            ));
         }
 
         return $app->redirect($app['url_generator']->generate('prod_orders', array(
-                    'success' => (int) $success,
-                    'action'  => 'send'
-                )));
+            'success' => (int) $success,
+            'action'  => 'send'
+        )));
     }
 
     /**
@@ -226,19 +231,19 @@ class Order implements ControllerProviderInterface
         $perPage = (int) $request->query->get('per-page', 10);
         $sort = $request->query->get('sort');
 
-        $baseIds = array_keys($app['phraseanet.core']->getAuthenticatedUser()->ACL()->get_granted_base(array('order_master')));
+        $baseIds = array_keys($app['phraseanet.user']->ACL()->get_granted_base(array('order_master')));
 
-        $ordersList = \set_order::listOrders($app['phraseanet.appbox'], $baseIds, $offsetStart, $perPage, $sort);
+        $ordersList = \set_order::listOrders($app, $baseIds, $offsetStart, $perPage, $sort);
         $total = \set_order::countTotalOrder($app['phraseanet.appbox'], $baseIds);
 
         return $app['twig']->render('prod/orders/order_box.html.twig', array(
-                'page'         => $page,
-                'perPage'      => $perPage,
-                'total'        => $total,
-                'previousPage' => $page < 2 ? false : ($page - 1),
-                'nextPage'     => $page >= ceil($total / $perPage) ? false : $page + 1,
-                'orders'       => new ArrayCollection($ordersList)
-            ));
+            'page'         => $page,
+            'perPage'      => $perPage,
+            'total'        => $total,
+            'previousPage' => $page < 2 ? false : ($page - 1),
+            'nextPage'     => $page >= ceil($total / $perPage) ? false : $page + 1,
+            'orders'       => new ArrayCollection($ordersList)
+        ));
     }
 
     /**
@@ -252,14 +257,14 @@ class Order implements ControllerProviderInterface
     public function displayOneOrder(Application $app, Request $request, $order_id)
     {
         try {
-            $order = new \set_order($order_id);
+            $order = new \set_order($app, $order_id);
         } catch (\Exception_NotFound $e) {
             $app->abort(404);
         }
 
         return $app['twig']->render('prod/orders/order_item.html.twig', array(
-                'order' => $order
-            ));
+            'order' => $order
+        ));
     }
 
     /**
@@ -275,13 +280,13 @@ class Order implements ControllerProviderInterface
         $success = false;
 
         try {
-            $order = new \set_order($order_id);
+            $order = new \set_order($app, $order_id);
         } catch (\Exception_NotFound $e) {
             $app->abort(404);
         }
 
         try {
-            $order->send_elements($request->request->get('elements', array()),  ! ! $request->request->get('force', false));
+            $order->send_elements($app, $request->request->get('elements', array()), !!$request->request->get('force', false));
             $success = true;
         } catch (\Exception $e) {
 
@@ -290,16 +295,16 @@ class Order implements ControllerProviderInterface
         if ('json' === $app['request']->getRequestFormat()) {
 
             return $app->json(array(
-                    'success'  => $success,
-                    'msg'      => $success ? _('Order has been sent') : _('An error occured while sending, please retry  or contact an admin if problem persists'),
-                    'order_id' => $order_id
-                ));
+                'success'  => $success,
+                'msg'      => $success ? _('Order has been sent') : _('An error occured while sending, please retry  or contact an admin if problem persists'),
+                'order_id' => $order_id
+            ));
         }
 
         return $app->redirect($app['url_generator']->generate('prod_orders', array(
-                    'success' => (int) $success,
-                    'action'  => 'send'
-                )));
+            'success' => (int) $success,
+            'action'  => 'send'
+        )));
     }
 
     /**
@@ -315,7 +320,7 @@ class Order implements ControllerProviderInterface
         $success = false;
 
         try {
-            $order = new \set_order($order_id);
+            $order = new \set_order($app, $order_id);
         } catch (\Exception_NotFound $e) {
             $app->abort(404);
         }
@@ -330,16 +335,16 @@ class Order implements ControllerProviderInterface
         if ('json' === $app['request']->getRequestFormat()) {
 
             return $app->json(array(
-                    'success'  => $success,
-                    'msg'      => $success ? _('Order has been denied') : _('An error occured while denying, please retry  or contact an admin if problem persists'),
-                    'order_id' => $order_id
-                ));
+                'success'  => $success,
+                'msg'      => $success ? _('Order has been denied') : _('An error occured while denying, please retry  or contact an admin if problem persists'),
+                'order_id' => $order_id
+            ));
         }
 
         return $app->redirect($app['url_generator']->generate('prod_orders', array(
-                    'success' => (int) $success,
-                    'action'  => 'send'
-                )));
+            'success' => (int) $success,
+            'action'  => 'send'
+        )));
     }
 
     /**

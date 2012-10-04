@@ -34,11 +34,11 @@
             <div id="main" class="row">
 
                 <div id="title-box" class="span6 offset3">
-                    <h1 id="namePhr">{{home_title}}</h1>
+                    <h1 id="namePhr">{{ app['phraseanet.registry'].get('GV_homeTitle') }}</h1>
                 </div>
 
                 {% if user is not none %}
-                    {% set username = '<b>' ~ user.get_display_name() ~ '</b>' %}
+                    {% set username = '<b>' ~ app['phraseanet.user'].get_display_name() ~ '</b>' %}
                     <div id="hello-box" class="span6 offset3">
                         <p class="login_hello">
                             {% trans %}
@@ -62,7 +62,7 @@
                         </div>
                     {% else %}
                         <div id="top-text-box">
-                            <h4>{% trans %}Code d'acc&egrave;s{% endtrans %}</h4>
+                            <h4>{% trans %}Code d'acces{% endtrans %}</h4>
                         </div>
                         <div id="main-text-box">
                             <p>

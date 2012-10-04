@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     caption
@@ -18,7 +20,7 @@
 interface caption_interface
 {
 
-    public function __construct(record_Interface &$record, databox &$databox);
+    public function __construct(Application $app, record_Interface $record, databox $databox);
 
     public function get_highlight_fields($highlight = '', Array $grep_fields = null, searchEngine_adapter $searchEngine = null);
 }

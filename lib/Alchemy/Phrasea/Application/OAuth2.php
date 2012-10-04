@@ -19,7 +19,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 /**
  *
- *
  * @package     OAuth2 Connector
  *
  * @see         http://oauth.net/2/
@@ -28,148 +27,146 @@ use Symfony\Component\HttpFoundation\Request;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-return call_user_func(function() {
+return call_user_func(function($environment = 'prod') {
 
-            $app = new PhraseaApplication();
+    $app = new PhraseaApplication($environment);
 
-            $app['oauth'] = function($app) {
-                    return new \API_OAuth2_Adapter($app['phraseanet.appbox']);
-                };
+    $app['oauth'] = function($app) {
+        return new \API_OAuth2_Adapter($app);
+    };
 
-            /**
-             * AUTHORIZE ENDPOINT
-             *
-             * Authorization endpoint - used to obtain authorization from the
-             * resource owner via user-agent redirection.
-             */
-            $authorize_func = function() use ($app) {
-                    $request = $app['request'];
-                    $oauth2_adapter = $app['oauth'];
-                    $session = $app['phraseanet.appbox']->get_session();
+    /**
+     * AUTHORIZE ENDPOINT
+     *
+     * Authorization endpoint - used to obtain authorization from the
+     * resource owner via user-agent redirection.
+     */
+    $authorize_func = function() use ($app) {
+        $request = $app['request'];
+        $oauth2_adapter = $app['oauth'];
 
-                    //Check for auth params, send error or redirect if not valid
-                    $params = $oauth2_adapter->getAuthorizationRequestParameters($request);
+        //Check for auth params, send error or redirect if not valid
+        $params = $oauth2_adapter->getAuthorizationRequestParameters($request);
 
-                    $app_authorized = false;
-                    $errorMessage = false;
+        $app_authorized = false;
+        $errorMessage = false;
 
-                    $client = \API_OAuth2_Application::load_from_client_id($app['phraseanet.appbox'], $params['client_id']);
+        $client = \API_OAuth2_Application::load_from_client_id($app, $params['client_id']);
 
-                    $oauth2_adapter->setClient($client);
+        $oauth2_adapter->setClient($client);
 
-                    $action_accept = $request->get("action_accept");
-                    $action_login = $request->get("action_login");
+        $action_accept = $request->get("action_accept");
+        $action_login = $request->get("action_login");
 
-                    $template = "api/auth/end_user_authorization.html.twig";
+        $template = "api/auth/end_user_authorization.html.twig";
 
-                    $custom_template = sprintf(
-                        "%sconfig/templates/web/api/auth/end_user_authorization/%s.html.twig"
-                        , $app['phraseanet.appbox']->get_registry()->get('GV_RootPath')
-                        , $client->get_id()
+        $custom_template = sprintf(
+            "%sconfig/templates/web/api/auth/end_user_authorization/%s.html.twig"
+            , $app['phraseanet.registry']->get('GV_RootPath')
+            , $client->get_id()
+        );
+
+        if (file_exists($custom_template)) {
+            $template = sprintf(
+                'api/auth/end_user_authorization/%s.html.twig'
+                , $client->get_id()
+            );
+        }
+
+        if (!$app->isAuthenticated()) {
+            if ($action_login !== null) {
+                try {
+                    $auth = new \Session_Authentication_Native(
+                            $app, $request->get("login"), $request->get("password")
                     );
 
-                    if (file_exists($custom_template)) {
-                        $template = sprintf(
-                            'api/auth/end_user_authorization/%s.html.twig'
-                            , $client->get_id()
-                        );
-                    }
+                    $app->openAccount($auth);
+                } catch (\Exception $e) {
 
-                    if ( ! $session->is_authenticated()) {
-                        if ($action_login !== null) {
-                            try {
-                                $session->authenticate(
-                                    new \Session_Authentication_Native(
-                                        $app['phraseanet.appbox'], $request->get("login"), $request->get("password")
-                                    )
-                                );
-                            } catch (\Exception $e) {
+                    return new Response($app['twig']->render($template, array("auth" => $oauth2_adapter)));
+                }
+            } else {
+                return new Response($app['twig']->render($template, array("auth" => $oauth2_adapter)));
+            }
+        }
 
-                                return new Response($app['twig']->render($template, array("auth" => $oauth2_adapter)));
-                            }
-                        } else {
+        //check if current client is already authorized by current user
+        $user_auth_clients = \API_OAuth2_Application::load_authorized_app_by_user(
+                $app
+                , $app['phraseanet.user']
+        );
 
-                            return new Response($app['twig']->render($template, array("auth" => $oauth2_adapter)));
-                        }
-                    }
+        foreach ($user_auth_clients as $auth_client) {
+            if ($client->get_client_id() == $auth_client->get_client_id()) {
+                $app_authorized = true;
+            }
+        }
 
-                    //check if current client is already authorized by current user
-                    $user_auth_clients = \API_OAuth2_Application::load_authorized_app_by_user(
-                            $app['phraseanet.appbox']
-                            , $app['phraseanet.core']->getAuthenticatedUser()
-                    );
+        $account = $oauth2_adapter->updateAccount($app['phraseanet.user']->get_id());
 
-                    foreach ($user_auth_clients as $auth_client) {
-                        if ($client->get_client_id() == $auth_client->get_client_id()) {
-                            $app_authorized = true;
-                        }
-                    }
+        $params['account_id'] = $account->get_id();
 
-                    $account = $oauth2_adapter->updateAccount($session->get_usr_id());
+        if (!$app_authorized && $action_accept === null) {
+            $params = array(
+                "auth"         => $oauth2_adapter,
+                "errorMessage" => $errorMessage,
+            );
 
-                    $params['account_id'] = $account->get_id();
+            return new Response($app['twig']->render($template, $params));
+        } elseif (!$app_authorized && $action_accept !== null) {
+            $app_authorized = (Boolean) $action_accept;
+            $account->set_revoked(!$app_authorized);
+        }
 
-                    if ( ! $app_authorized && $action_accept === null) {
-                        $params = array(
-                            "auth"         => $oauth2_adapter,
-                            "errorMessage" => $errorMessage,
-                        );
+        //if native app show template
+        if ($oauth2_adapter->isNativeApp($params['redirect_uri'])) {
+            $params = $oauth2_adapter->finishNativeClientAuthorization($app_authorized, $params);
 
-                        return new Response($app['twig']->render($template, $params));
-                    } elseif ( ! $app_authorized && $action_accept !== null) {
-                        $app_authorized = (Boolean) $action_accept;
-                        $account->set_revoked( ! $app_authorized);
-                    }
+            return new Response($app['twig']->render("api/auth/native_app_access_token.html.twig", $params));
+        } else {
+            $oauth2_adapter->finishClientAuthorization($app_authorized, $params);
+        }
+    };
 
-                    //if native app show template
-                    if ($oauth2_adapter->isNativeApp($params['redirect_uri'])) {
-                        $params = $oauth2_adapter->finishNativeClientAuthorization($app_authorized, $params);
+    $app->match('/authorize', $authorize_func)->method('GET|POST');
 
-                        return new Response($app['twig']->render("api/auth/native_app_access_token.html.twig", $params));
-                    } else {
-                        $oauth2_adapter->finishClientAuthorization($app_authorized, $params);
-                    }
-                };
+    /**
+     *  TOKEN ENDPOINT
+     *  Token endpoint - used to exchange an authorization grant for an access token.
+     */
+    $app->post('/token', function(\Silex\Application $app, Request $request) {
 
-            $app->match('/authorize', $authorize_func)->method('GET|POST');
+        $app['oauth']->grantAccessToken();
+        ob_flush();
+        flush();
 
-            /**
-             *  TOKEN ENDPOINT
-             *  Token endpoint - used to exchange an authorization grant for an access token.
-             */
-            $app->post('/token', function(\Silex\Application $app, Request $request) {
+        return;
+    })->requireHttps();
 
-                    $app['oauth']->grantAccessToken();
-                    ob_flush();
-                    flush();
+    /**
+     * Error Handler
+     */
+    $app->error(function (\Exception $e) use ($app) {
+        if ($e instanceof NotFoundHttpException || $e instanceof \Exception_NotFound) {
+            return new Response('The requested page could not be found.', 404, array('X-Status-Code' => 404));
+        }
 
-                    return;
-                })->requireHttps();
+        $code = 500;
+        $msg = 'We are sorry, but something went wrong';
+        $headers = array();
 
-            /**
-             * Error Handler
-             */
-            $app->error(function (\Exception $e) use ($app) {
-                    if ($e instanceof NotFoundHttpException || $e instanceof \Exception_NotFound) {
-                        return new Response('The requested page could not be found.', 404, array('X-Status-Code' => 404));
-                    }
+        if ($e instanceof HttpExceptionInterface) {
+            $headers = $e->getHeaders();
+            $msg = $e->getMessage();
+            $code = $e->getStatusCode();
 
-                    $code = 500;
-                    $msg = 'We are sorry, but something went wrong';
-                    $headers = array();
+            if (isset($headers['content-type']) && $headers['content-type'] == 'application/json') {
+                $msg = json_encode(array('msg'  => $msg, 'code' => $code));
+            }
+        }
 
-                    if ($e instanceof HttpExceptionInterface) {
-                        $headers = $e->getHeaders();
-                        $msg = $e->getMessage();
-                        $code = $e->getStatusCode();
+        return new Response($msg, $code, $headers);
+    });
 
-                        if (isset($headers['content-type']) && $headers['content-type'] == 'application/json') {
-                            $msg = json_encode(array('msg'  => $msg, 'code' => $code));
-                        }
-                    }
-
-                    return new Response($msg, $code, $headers);
-                });
-
-            return $app;
-        });
+    return $app;
+}, isset($environment) ? $environment : null);

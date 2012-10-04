@@ -9,6 +9,10 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration;
+use Alchemy\Phrasea\Exception\RuntimeException;
+
 class phrasea
 {
     private static $_bas2sbas = false;
@@ -26,10 +30,10 @@ class phrasea
     const CACHE_SBAS_FROM_BAS = 'sbas_from_bas';
     const CACHE_SBAS_PARAMS = 'sbas_params';
 
-    public static function is_scheduler_started()
+    public static function is_scheduler_started(Application $app)
     {
         $retval = false;
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($app);
         $sql = 'SELECT schedstatus FROM sitepreff';
 
         $stmt = $conn->prepare($sql);
@@ -44,10 +48,8 @@ class phrasea
         return $retval;
     }
 
-    public static function start(\Alchemy\Phrasea\Core $Core)
+    public static function start(Configuration $configuration)
     {
-        $configuration = $Core->getConfiguration();
-
         $choosenConnexion = $configuration->getPhraseanet()->get('database');
 
         $connexion = $configuration->getConnexion($choosenConnexion);
@@ -58,35 +60,36 @@ class phrasea
         $password = $connexion->get('password');
         $dbname = $connexion->get('dbname');
 
-        if ( ! extension_loaded('phrasea2'))
-            printf("Missing Extension php-phrasea");
+        if (!extension_loaded('phrasea2')) {
+            throw new RuntimeException('Phrasea extension is required');
+        }
 
-        if (function_exists('phrasea_conn'))
-            if (phrasea_conn($hostname, $port, $user, $password, $dbname) !== true)
-                self::headers(500);
+        if (!function_exists('phrasea_conn')) {
+            throw new RuntimeException('Phrasea extension requires upgrade');
+        }
+
+        if (phrasea_conn($hostname, $port, $user, $password, $dbname) !== true) {
+            throw new RuntimeException('Unable to initialize Phrasea connection');
+        }
     }
 
-    public function getHome($type = 'PUBLI', $context = 'prod')
+    public function getHome(Application $app, $type = 'PUBLI', $context = 'prod')
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
-        $registry = $appbox->get_registry();
-        $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
         if ($type == 'HELP') {
-            if (file_exists($registry->get('GV_RootPath') . "config/help_" . $session->get_I18n() . ".php")) {
-                require($registry->get('GV_RootPath') . "config/help_" . $session->get_I18n() . ".php");
-            } elseif (file_exists($registry->get('GV_RootPath') . 'config/help.php')) {// on verifie si il y a une home personnalisee sans langage
-                require($registry->get('GV_RootPath') . 'config/help.php');
+            if (file_exists($app['phraseanet.registry']->get('GV_RootPath') . "config/help_" . $app['locale.I18n'] . ".php")) {
+                require($app['phraseanet.registry']->get('GV_RootPath') . "config/help_" . $app['locale.I18n'] . ".php");
+            } elseif (file_exists($app['phraseanet.registry']->get('GV_RootPath') . 'config/help.php')) {// on verifie si il y a une home personnalisee sans langage
+                require($app['phraseanet.registry']->get('GV_RootPath') . 'config/help.php');
             } else {
-                require($registry->get('GV_RootPath') . 'www/client/help.php');
+                require($app['phraseanet.registry']->get('GV_RootPath') . 'www/client/help.php');
             }
         }
 
         if ($type == 'PUBLI') {
             if ($context == 'prod')
-                require($registry->get('GV_RootPath') . "www/prod/homeinterpubbask.php");
+                require($app['phraseanet.registry']->get('GV_RootPath') . "www/prod/homeinterpubbask.php");
             else
-                require($registry->get('GV_RootPath') . "www/client/homeinterpubbask.php");
+                require($app['phraseanet.registry']->get('GV_RootPath') . "www/client/homeinterpubbask.php");
         }
 
         if (in_array($type, array('QUERY', 'LAST_QUERY'))) {
@@ -95,17 +98,16 @@ class phrasea
 
             $bas = array();
 
-            $searchSet = json_decode($user->getPrefs('search'));
+            $searchSet = json_decode($app['phraseanet.user']->getPrefs('search'));
 
             if ($searchSet && isset($searchSet->bases)) {
                 foreach ($searchSet->bases as $bases)
                     $bas = array_merge($bas, $bases);
             } else {
-                $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
-                $bas = array_keys($user->ACL()->get_granted_base());
+                $bas = array_keys($app['phraseanet.user']->ACL()->get_granted_base());
             }
 
-            $start_page_query = $user->getPrefs('start_page_query');
+            $start_page_query = $app['phraseanet.user']->getPrefs('start_page_query');
 
             if ($context == "prod") {
                 $parm["bas"] = $bas;
@@ -122,7 +124,7 @@ class phrasea
                 $parm["datefield"] = '';
             }
             if ($context == "client") {
-                $parm["mod"] = $user->getPrefs('client_view');
+                $parm["mod"] = $app['phraseanet.user']->getPrefs('client_view');
                 $parm["bas"] = $bas;
                 $parm["qry"] = $start_page_query;
                 $parm["pag"] = '';
@@ -135,7 +137,7 @@ class phrasea
                 $parm["datemax"] = '';
                 $parm["recordtype"] = '';
                 $parm["datefield"] = '';
-                $parm["sort"] = $registry->get('GV_phrasea_sort');
+                $parm["sort"] = $app['phraseanet.registry']->get('GV_phrasea_sort');
                 $parm["stemme"] = '';
                 $parm["dateminfield"] = array();
                 $parm["datemaxfield"] = array();
@@ -144,30 +146,28 @@ class phrasea
                 $parm["ord"] = 0;
             }
 
-            require($registry->get('GV_RootPath') . 'www/' . $context . "/answer.php");
+            require($app['phraseanet.registry']->get('GV_RootPath') . 'www/' . $context . "/answer.php");
         }
 
         return;
     }
 
-    public static function clear_sbas_params()
+    public static function clear_sbas_params(Application $app)
     {
         self::$_sbas_params = null;
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $appbox->delete_data_from_cache(self::CACHE_SBAS_PARAMS);
+        $app['phraseanet.appbox']->delete_data_from_cache(self::CACHE_SBAS_PARAMS);
 
         return true;
     }
 
-    public static function sbas_params()
+    public static function sbas_params(Application $app)
     {
         if (self::$_sbas_params) {
             return self::$_sbas_params;
         }
 
-        $appbox = appbox::get_instance(\bootstrap::getCore());
         try {
-            self::$_sbas_params = $appbox->get_data_from_cache(self::CACHE_SBAS_PARAMS);
+            self::$_sbas_params = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_SBAS_PARAMS);
 
             return self::$_sbas_params;
         } catch (Exception $e) {
@@ -177,7 +177,7 @@ class phrasea
         self::$_sbas_params = array();
 
         $sql = 'SELECT sbas_id, host, port, user, pwd, dbname FROM sbas';
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -186,19 +186,18 @@ class phrasea
             self::$_sbas_params[$row['sbas_id']] = $row;
         }
 
-        $appbox->set_data_to_cache(self::$_sbas_params, self::CACHE_SBAS_PARAMS);
+        $app['phraseanet.appbox']->set_data_to_cache(self::$_sbas_params, self::CACHE_SBAS_PARAMS);
 
         return self::$_sbas_params;
     }
 
-    public static function guest_allowed()
+    public static function guest_allowed(Application $app)
     {
-        $usr_id = User_Adapter::get_usr_id_from_login('invite');
-        if ( ! $usr_id) {
+        $usr_id = User_Adapter::get_usr_id_from_login($app, 'invite');
+        if (!$usr_id) {
             return false;
         }
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $user = User_Adapter::getInstance($usr_id, $appbox);
+        $user = User_Adapter::getInstance($usr_id, $app);
 
         return count($user->ACL()->get_granted_base()) > 0;
     }
@@ -243,15 +242,14 @@ class phrasea
         return $array;
     }
 
-    public static function sbasFromBas($base_id)
+    public static function sbasFromBas(Application $app, $base_id)
     {
-        if ( ! self::$_bas2sbas) {
-            $appbox = appbox::get_instance(\bootstrap::getCore());
+        if (!self::$_bas2sbas) {
             try {
-                self::$_bas2sbas = $appbox->get_data_from_cache(self::CACHE_SBAS_FROM_BAS);
+                self::$_bas2sbas = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_SBAS_FROM_BAS);
             } catch (Exception $e) {
                 $sql = 'SELECT base_id, sbas_id FROM bas';
-                $stmt = $appbox->get_connection()->prepare($sql);
+                $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
                 $stmt->execute();
                 $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $stmt->closeCursor();
@@ -260,17 +258,17 @@ class phrasea
                     self::$_bas2sbas[$row['base_id']] = (int) $row['sbas_id'];
                 }
 
-                $appbox->set_data_to_cache(self::$_bas2sbas, self::CACHE_SBAS_FROM_BAS);
+                $app['phraseanet.appbox']->set_data_to_cache(self::$_bas2sbas, self::CACHE_SBAS_FROM_BAS);
             }
         }
 
         return isset(self::$_bas2sbas[$base_id]) ? self::$_bas2sbas[$base_id] : false;
     }
 
-    public static function baseFromColl($sbas_id, $coll_id)
+    public static function baseFromColl($sbas_id, $coll_id, Application $app)
     {
-        if ( ! self::$_coll2bas) {
-            $conn = connection::getPDOConnection();
+        if (!self::$_coll2bas) {
+            $conn = connection::getPDOConnection($app);
             $sql = 'SELECT base_id, server_coll_id, sbas_id FROM bas';
             $stmt = $conn->prepare($sql);
             $stmt->execute();
@@ -278,7 +276,7 @@ class phrasea
             $stmt->closeCursor();
 
             foreach ($rs as $row) {
-                if ( ! isset(self::$_coll2bas[$row['sbas_id']]))
+                if (!isset(self::$_coll2bas[$row['sbas_id']]))
                     self::$_coll2bas[$row['sbas_id']] = array();
                 self::$_coll2bas[$row['sbas_id']][$row['server_coll_id']] = (int) $row['base_id'];
             }
@@ -287,10 +285,9 @@ class phrasea
         return isset(self::$_coll2bas[$sbas_id][$coll_id]) ? self::$_coll2bas[$sbas_id][$coll_id] : false;
     }
 
-    public static function reset_baseDatas()
+    public static function reset_baseDatas(appbox $appbox)
     {
         self::$_coll2bas = self::$_bas2coll = self::$_bas_names = self::$_bas2sbas = null;
-        $appbox = appbox::get_instance(\bootstrap::getCore());
         $appbox->delete_data_from_cache(
             array(
                 self::CACHE_BAS_2_COLL
@@ -303,10 +300,9 @@ class phrasea
         return;
     }
 
-    public static function reset_sbasDatas()
+    public static function reset_sbasDatas(appbox $appbox)
     {
         self::$_sbas_names = self::$_sbas_params = self::$_bas2sbas = null;
-        $appbox = appbox::get_instance(\bootstrap::getCore());
         $appbox->delete_data_from_cache(
             array(
                 self::CACHE_SBAS_NAMES
@@ -318,10 +314,10 @@ class phrasea
         return;
     }
 
-    public static function collFromBas($base_id)
+    public static function collFromBas(Application $app, $base_id)
     {
-        if ( ! self::$_bas2coll) {
-            $conn = connection::getPDOConnection();
+        if (!self::$_bas2coll) {
+            $conn = connection::getPDOConnection($app);
             $sql = 'SELECT base_id, server_coll_id FROM bas';
             $stmt = $conn->prepare($sql);
             $stmt->execute();
@@ -336,15 +332,14 @@ class phrasea
         return isset(self::$_bas2coll[$base_id]) ? self::$_bas2coll[$base_id] : false;
     }
 
-    public static function sbas_names($sbas_id)
+    public static function sbas_names($sbas_id, Application $app)
     {
-        if ( ! self::$_sbas_names) {
-            $appbox = appbox::get_instance(\bootstrap::getCore());
+        if (!self::$_sbas_names) {
             try {
-                self::$_sbas_names = $appbox->get_data_from_cache(self::CACHE_SBAS_NAMES);
+                self::$_sbas_names = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_SBAS_NAMES);
             } catch (Exception $e) {
                 $sql = 'SELECT sbas_id, viewname, dbname FROM sbas';
-                $stmt = $appbox->get_connection()->prepare($sql);
+                $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
                 $stmt->execute();
                 $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $stmt->closeCursor();
@@ -353,27 +348,26 @@ class phrasea
                     $row['viewname'] = trim($row['viewname']);
                     self::$_sbas_names[$row['sbas_id']] = $row['viewname'] ? $row['viewname'] : $row['dbname'];
                 }
-                $appbox->set_data_to_cache(self::$_sbas_names, self::CACHE_SBAS_NAMES);
+                $app['phraseanet.appbox']->set_data_to_cache(self::$_sbas_names, self::CACHE_SBAS_NAMES);
             }
         }
 
         return isset(self::$_sbas_names[$sbas_id]) ? self::$_sbas_names[$sbas_id] : 'Unknown base';
     }
 
-    public static function bas_names($base_id)
+    public static function bas_names($base_id, Application $app)
     {
-        if ( ! self::$_bas_names) {
-            $appbox = appbox::get_instance(\bootstrap::getCore());
+        if (!self::$_bas_names) {
             try {
-                self::$_bas_names = $appbox->get_data_from_cache(self::CACHE_BAS_NAMES);
+                self::$_bas_names = $app['phraseanet.appbox']->get_data_from_cache(self::CACHE_BAS_NAMES);
             } catch (Exception $e) {
-                foreach ($appbox->get_databoxes() as $databox) {
+                foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
                     foreach ($databox->get_collections() as $collection) {
                         self::$_bas_names[$collection->get_base_id()] = $collection->get_name();
                     }
                 }
 
-                $appbox->set_data_to_cache(self::$_bas_names, self::CACHE_BAS_NAMES);
+                $app['phraseanet.appbox']->set_data_to_cache(self::$_bas_names, self::CACHE_BAS_NAMES);
             }
         }
 
@@ -423,9 +417,9 @@ class phrasea
         return;
     }
 
-    public static function scheduler_key($renew = false)
+    public static function scheduler_key(Application $app, $renew = false)
     {
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($app);
 
         $schedulerkey = false;
 

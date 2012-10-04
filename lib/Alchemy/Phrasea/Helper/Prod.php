@@ -28,15 +28,14 @@ class Prod extends Helper
         );
 
         $bases = $fields = $dates = array();
-        $user = $this->getCore()->getAuthenticatedUser();
 
-        if ( ! $user instanceof \User_Adapter) {
+        if ( ! $this->app['phraseanet.user'] instanceof \User_Adapter) {
             return $search_datas;
         }
 
-        $searchSet = $user->getPrefs('search');
+        $searchSet = $this->app['phraseanet.user']->getPrefs('search');
 
-        foreach ($user->ACL()->get_granted_sbas() as $databox) {
+        foreach ($this->app['phraseanet.user']->ACL()->get_granted_sbas() as $databox) {
             $sbas_id = $databox->get_sbas_id();
 
             $bases[$sbas_id] = array(
@@ -46,7 +45,7 @@ class Prod extends Helper
                 'sbas_id' => $sbas_id
             );
 
-            foreach ($user->ACL()->get_granted_base(array(), array($databox->get_sbas_id())) as $coll) {
+            foreach ($this->app['phraseanet.user']->ACL()->get_granted_base(array(), array($databox->get_sbas_id())) as $coll) {
                 $selected = ($searchSet &&
                     isset($searchSet->bases) &&
                     isset($searchSet->bases->$sbas_id)) ? (in_array($coll->get_base_id(), $searchSet->bases->$sbas_id)) : true;
@@ -85,7 +84,7 @@ class Prod extends Helper
             if ( ! $bases[$sbas_id]['thesaurus']) {
                 continue;
             }
-            if ( ! $user->ACL()->has_right_on_sbas($sbas_id, 'bas_modif_th')) {
+            if ( ! $this->app['phraseanet.user']->ACL()->has_right_on_sbas($sbas_id, 'bas_modif_th')) {
                 continue;
             }
 

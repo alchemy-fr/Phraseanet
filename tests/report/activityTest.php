@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
+require_once __DIR__ . '/../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
-class activityTest extends PhraseanetPHPUnitAbstract
+class activityTest extends PhraseanetPHPUnitAuthenticatedAbstract
 {
     protected $ret;
     protected $dmin;
@@ -21,8 +21,7 @@ class activityTest extends PhraseanetPHPUnitAbstract
         $this->dmax = $date->format("Y-m-d H:i:s");
         $date->modify('-6 month');
         $this->dmin = $date->format("Y-m-d H:i:s");
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $databoxes = $appbox->get_databoxes();
+        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
         $this->ret = array();
         foreach ($databoxes as $databox) {
             $colls = $databox->get_collections();
@@ -47,12 +46,13 @@ class activityTest extends PhraseanetPHPUnitAbstract
 
         foreach ($this->ret as $sbasid => $colllist) {
             $report = new module_report_activity(
+                    self::$DI['app'],
                     $this->dmin,
                     $this->dmax,
                     $sbasid,
                     $colllist
             );
-            $report->setUser_id(self::$user->get_id());
+            $report->setUser_id(self::$DI['user']->get_id());
             $this->activerPerHours($report);
             $this->ConnexionBase($report);
             $this->activiteAddedDocument($report, $sbasid, $colllist);
@@ -87,7 +87,7 @@ class activityTest extends PhraseanetPHPUnitAbstract
 
     public function allQuestion($report)
     {
-        $allQuestion = $report->getAllQuestionByUser(self::$user->get_id(), 'usrid');
+        $allQuestion = $report->getAllQuestionByUser(self::$DI['user']->get_id(), 'usrid');
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $allQuestion);
     }
 
@@ -101,7 +101,7 @@ class activityTest extends PhraseanetPHPUnitAbstract
 
     public function allDownloadByUserBase($report)
     {
-        $allDownload = $report->getAllDownloadByUserBase(self::$user->get_id());
+        $allDownload = $report->getAllDownloadByUserBase(self::$DI['user']->get_id());
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $allDownload);
     }
 
@@ -131,49 +131,49 @@ class activityTest extends PhraseanetPHPUnitAbstract
 
     public function topTenUser($report, $sbasid, $colllist)
     {
-        $result = $report->topTenUser($this->dmin, $this->dmax, $sbasid, $colllist);
+        $result = $report->topTenUser(self::$DI['app'], $this->dmin, $this->dmax, $sbasid, $colllist);
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $result);
     }
 
     public function activity($report, $sbasid, $colllist)
     {
-        $result = $report->activity($this->dmin, $this->dmax, $sbasid, $colllist);
+        $result = $report->activity(self::$DI['app'], $this->dmin, $this->dmax, $sbasid, $colllist);
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $result);
     }
 
     public function activityDay($report, $sbasid, $colllist)
     {
-        $result = $report->activityDay($this->dmin, $this->dmax, $sbasid, $colllist);
+        $result = $report->activityDay(self::$DI['app'], $this->dmin, $this->dmax, $sbasid, $colllist);
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $result);
     }
 
     public function activityQuestion($report, $sbasid, $colllist)
     {
-        $result = $report->activityQuestion($this->dmin, $this->dmax, $sbasid, $colllist);
+        $result = $report->activityQuestion(self::$DI['app'], $this->dmin, $this->dmax, $sbasid, $colllist);
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $result);
     }
 
     public function activiteTopTenSiteView($report, $sbasid, $colllist)
     {
-        $result = $report->activiteTopTenSiteView($this->dmin, $this->dmax, $sbasid, $colllist);
+        $result = $report->activiteTopTenSiteView(self::$DI['app'], $this->dmin, $this->dmax, $sbasid, $colllist);
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $result);
     }
 
     public function activiteAddedDocument($report, $sbasid, $colllist)
     {
-        $result = $report->activiteAddedDocument($this->dmin, $this->dmax, $sbasid, $colllist);
+        $result = $report->activiteAddedDocument(self::$DI['app'], $this->dmin, $this->dmax, $sbasid, $colllist);
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $result);
     }
 
     public function activiteEditedDocument($report, $sbasid, $colllist)
     {
-        $result = $report->activiteEditedDocument($this->dmin, $this->dmax, $sbasid, $colllist);
+        $result = $report->activiteEditedDocument(self::$DI['app'], $this->dmin, $this->dmax, $sbasid, $colllist);
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $result);
     }
 
     public function activiteAddedTopTenUser($report, $sbasid, $colllist)
     {
-        $result = $report->activiteAddedTopTenUser($this->dmin, $this->dmax, $sbasid, $colllist);
+        $result = $report->activiteAddedTopTenUser(self::$DI['app'], $this->dmin, $this->dmax, $sbasid, $colllist);
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $result);
     }
 }

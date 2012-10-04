@@ -19,11 +19,11 @@ class Feed_Publisher_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $auth = new Session_Authentication_None(self::$user);
-        $appbox->get_session()->authenticate($auth);
-        self::$feed = Feed_Adapter::create($appbox, self::$user, self::$title, self::$subtitle);
-        self::$object = array_pop(self::$feed->get_publishers());
+        $auth = new Session_Authentication_None(self::$DI['user']);
+        self::$DI['app']->openAccount($auth);
+        self::$feed = Feed_Adapter::create(self::$DI['app'], self::$DI['user'], self::$title, self::$subtitle);
+        $publishers = self::$feed->get_publishers();
+        self::$object = array_pop($publishers);
     }
 
     public static function tearDownAfterClass()
@@ -35,7 +35,7 @@ class Feed_Publisher_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testGet_user()
     {
         $this->assertInstanceOf('user_Adapter', self::$object->get_user());
-        $this->assertEquals(self::$user->get_id(), self::$object->get_user()->get_id());
+        $this->assertEquals(self::$DI['user']->get_id(), self::$object->get_user()->get_id());
     }
 
     public function testIs_owner()

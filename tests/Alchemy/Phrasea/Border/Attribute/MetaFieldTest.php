@@ -20,11 +20,11 @@ class MetaFieldTest extends \PhraseanetPHPUnitAbstract
     public function setUp()
     {
         $this->value = "Un éléphant ça trompe";
-        foreach (self::$collection->get_databox()->get_meta_structure() as $databox_field) {
+        foreach (self::$DI['collection']->get_databox()->get_meta_structure() as $databox_field) {
             $this->databox_field = $databox_field;
             break;
         }
-        if ( ! $this->databox_field) {
+        if (! $this->databox_field) {
             $this->markTestSkipped('No databox field found');
         }
         $this->object = new MetaField($this->databox_field, $this->value);
@@ -66,7 +66,7 @@ class MetaFieldTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetName()
     {
-        $this->assertEquals(Attribute::NAME_METAFIELD, $this->object->getName());
+        $this->assertEquals(AttributeInterface::NAME_METAFIELD, $this->object->getName());
     }
 
     /**
@@ -98,7 +98,7 @@ class MetaFieldTest extends \PhraseanetPHPUnitAbstract
      */
     public function testLoadFromString()
     {
-        $this->assertEquals($this->object, MetaField::loadFromString($this->object->asString()));
+        $this->assertEquals($this->object, MetaField::loadFromString(self::$DI['app'], $this->object->asString()));
     }
 
     /**
@@ -107,7 +107,7 @@ class MetaFieldTest extends \PhraseanetPHPUnitAbstract
      */
     public function testLoadFromStringFail()
     {
-        MetaField::loadFromString('Elephant');
+        MetaField::loadFromString(self::$DI['app'], 'Elephant');
     }
 
     /**
@@ -118,6 +118,6 @@ class MetaFieldTest extends \PhraseanetPHPUnitAbstract
     {
         \PHPUnit_Framework_Error_Warning::$enabled = false;
         \PHPUnit_Framework_Error_Notice::$enabled = false;
-        MetaField::loadFromString(serialize(array('Elephant', 'sbas_id' => self::$collection->get_sbas_id(), 'id' => 0)));
+        MetaField::loadFromString(self::$DI['app'], serialize(array('Elephant', 'sbas_id' => self::$DI['collection']->get_sbas_id(), 'id' => 0)));
     }
 }

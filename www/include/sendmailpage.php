@@ -9,56 +9,53 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-/* @var $Core \Alchemy\Phrasea\Core */
+
 
 
 set_time_limit(0);
 session_write_close();
 ignore_user_abort(true);
 
-$Core = require_once __DIR__ . '/../../lib/bootstrap.php';
+require_once __DIR__ . '/../../lib/bootstrap.php';
+$app = new Application();
 $Request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
 
-$registry = $Core->getRegistry();
 
-$gatekeeper = gatekeeper::getInstance($Core);
+$gatekeeper = gatekeeper::getInstance($app);
 $gatekeeper->require_session();
 
-$events_mngr = $Core['events-manager'];
-
-$user = $Core->getAuthenticatedUser();
-
-$from = array('name'  => $user->get_display_name(), 'email' => $user->get_email());
+$from = array('name'  => $app['phraseanet.user']->get_display_name(), 'email' => $app['phraseanet.user']->get_email());
 
 $titre = $Request->get("type") == "title" ? : false;
 
 $exportname = "Export_" . date("Y-n-d") . '_' . mt_rand(100, 999);
 
 if ($Request->get("ssttid", "") != "") {
-    $em = $Core->getEntityManager();
-    $repository = $em->getRepository('\Entities\Basket');
+    $repository = $app['EM']->getRepository('\Entities\Basket');
 
     /* @var $repository \Repositories\BasketRepository */
-    $Basket = $repository->findUserBasket($Request->get('ssttid'), $Core->getAuthenticatedUser(), false);
+    $Basket = $repository->findUserBasket($app, $Request->get('ssttid'), $app['phraseanet.user'], false);
 
     $exportname = str_replace(' ', '_', $Basket->getName()) . "_" . date("Y-n-d");
 }
 
-$download = new set_export($Request->get('lst', ''), $Request->get('ssttid', ''));
+$download = new set_export($app, $Request->get('lst', ''), $Request->get('ssttid', ''));
 
-$list = $download->prepare_export($Request->get('obj'), $titre, $Request->get('businessfields'));
+$list = $download->prepare_export($app['phraseanet.user'], $app['filesystem'], $Request->get('obj'), $titre, $Request->get('businessfields'));
 $list['export_name'] = $exportname . '.zip';
 $list['email'] = $Request->get("destmail", "");
 
 $endate_obj = new DateTime('+1 day');
 $endDate = $endate_obj;
 
-$token = random::getUrlToken(\random::TYPE_EMAIL, false, $endDate, serialize($list));
+$token = random::getUrlToken($app, \random::TYPE_EMAIL, false, $endDate, serialize($list));
 
 //GET EMAILS
 
@@ -71,14 +68,14 @@ foreach ($mails as $email) {
         $dest[] = $email;
     } else {
         $params = array(
-            'usr_id' => $Core->getAuthenticatedUser()->get_id()
+            'usr_id' => $app['phraseanet.user']->get_id()
             , 'lst'    => $Request->get('lst', '')
             , 'ssttid' => $Request->get('ssttid')
             , 'dest'   => $email
             , 'reason' => \eventsmanager_notify_downloadmailfail::MAIL_NO_VALID
         );
 
-        $events_mngr->trigger('__EXPORT_MAIL_FAIL__', $params);
+        $app['events-manager']->trigger('__EXPORT_MAIL_FAIL__', $params);
     }
 }
 
@@ -87,20 +84,20 @@ if (count($dest) > 0 && $token) {
     $reading_confirm_to = false;
 
     if ($Request->get('reading_confirm') == '1') {
-        $reading_confirm_to = $user->get_email();
+        $reading_confirm_to = $app['phraseanet.user']->get_email();
     }
 
     //BUILDING ZIP
 
-    $zipFile = $registry->get('GV_RootPath') . 'tmp/download/' . $token . '.zip';
-    set_export::build_zip($token, $list, $zipFile);
+    $zipFile = $app['phraseanet.registry']->get('GV_RootPath') . 'tmp/download/' . $token . '.zip';
+    set_export::build_zip(new Filesystem(), $token, $list, $zipFile);
 
     $res = $dest;
 
-    $url = $registry->get('GV_ServerName') . 'mail-export/' . $token . '/';
+    $url = $app['phraseanet.registry']->get('GV_ServerName') . 'mail-export/' . $token . '/';
 
     foreach ($dest as $key => $email) {
-        if (($result = mail::send_documents(trim($email), $url, $from, $endate_obj, $Request->get("textmail"), $reading_confirm_to)) === true) {
+        if (($result = mail::send_documents($app, trim($email), $url, $from, $endate_obj, $Request->get("textmail"), $reading_confirm_to)) === true) {
             unset($res[$key]);
         }
     }
@@ -109,27 +106,27 @@ if (count($dest) > 0 && $token) {
     if (count($res) > 0) {
         foreach ($res as $email) {
             $params = array(
-                'usr_id' => $Core->getAuthenticatedUser()->get_id()
+                'usr_id' => $app['phraseanet.user']->get_id()
                 , 'lst'    => $Request->get('lst')
                 , 'ssttid' => $Request->get('ssttid')
                 , 'dest'   => $email
                 , 'reason' => \eventsmanager_notify_downloadmailfail::MAIL_FAIL
             );
 
-            $events_mngr->trigger('__EXPORT_MAIL_FAIL__', $params);
+            $app['events-manager']->trigger('__EXPORT_MAIL_FAIL__', $params);
         }
     }
 } elseif ( ! $token && count($dest) > 0) {
     foreach ($res as $email) {
         $params = array(
-            'usr_id' => $Core->getAuthenticatedUser()->get_id()
+            'usr_id' => $app['phraseanet.user']->get_id()
             , 'lst'    => $Request->get('lst')
             , 'ssttid' => $Request->get('ssttid')
             , 'dest'   => $email
             , 'reason' => 0
         );
 
-        $events_mngr->trigger('__EXPORT_MAIL_FAIL__', $params);
+        $app['events-manager']->trigger('__EXPORT_MAIL_FAIL__', $params);
     }
 }
 

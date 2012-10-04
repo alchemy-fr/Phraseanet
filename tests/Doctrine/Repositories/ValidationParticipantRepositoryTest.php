@@ -11,7 +11,7 @@ class ValidationParticipantRepositoryTest extends PhraseanetPHPUnitAuthenticated
             'expires' => new \DateTime('+1 days')
         ));
 
-        $em = self::$core->getEntityManager();
+        $em = self::$DI['app']['EM'];
         $repo = $em->getRepository('\Entities\ValidationParticipant');
         /* @var $repo \Repositories\ValidationParticipantRepository */
         $expireDate = new \DateTime('+2 days');

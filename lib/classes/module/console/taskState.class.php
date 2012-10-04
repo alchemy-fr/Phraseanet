@@ -57,16 +57,9 @@ class module_console_taskState extends Command
         return $this;
     }
 
-    public function requireSetup()
-    {
-        return false;
-    }
-
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        try {
-            $this->checkSetup();
-        } catch (\RuntimeException $e) {
+        if (!$this->container['phraseanet.configuration-tester']->isInstalled()) {
             return self::EXITCODE_SETUP_ERROR;
         }
 
@@ -77,8 +70,7 @@ class module_console_taskState extends Command
             return self::EXITCODE_BAD_ARGUMENT;
         }
 
-        $appbox = $this->getService('phraseanet.appbox');
-        $task_manager = new task_manager($appbox);
+        $task_manager = new task_manager($this->container);
 
         $taskPID = $taskState = NULL;
         $exitCode = 0;

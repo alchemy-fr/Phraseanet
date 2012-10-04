@@ -314,7 +314,8 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
                 foreach ($result['list'] as $entry) {
                     //get 1st image
                     $list_element = $this->list_containers_content($object, $entry['id'], array('thumbnail_medium_url'), 1);
-                    $first_element = array_shift($list_element->get_elements());
+                    $elements = $list_element->get_elements();
+                    $first_element = array_shift($elements);
                     $thumbnail = $first_element instanceof Bridge_Api_Dailymotion_Element ? $first_element->get_thumbnail() : '';
 
                     $url = $this->get_url_playlist($entry['id'], $entry['name'], $username);
@@ -462,7 +463,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
      */
     public function acceptable_records()
     {
-        return function (record_adapter &$record) {
+        return function (record_adapter $record) {
                 return $record->get_type() === 'video';
             };
     }
@@ -545,7 +546,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
      * @param  Exception $e
      * @return Void
      */
-    public function handle_exception(Exception &$e)
+    public function handle_exception(Exception $e)
     {
         if ($e instanceof DailymotionAuthException) {
             $e = new Bridge_Exception_ActionAuthNeedReconnect($e->getMessage());
@@ -562,7 +563,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
      * @param  array          $options
      * @return string
      */
-    public function upload(record_adapter &$record, array $options = array())
+    public function upload(record_adapter $record, array $options = array())
     {
         switch ($record->get_type()) {
             case self::ELEMENT_TYPE_VIDEO :

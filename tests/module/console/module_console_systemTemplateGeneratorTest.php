@@ -10,15 +10,15 @@ class module_console_systemTemplateGeneratorTest extends PHPUnit_Framework_TestC
 
     public function testExecute()
     {
-        // mock the Kernel or create one depending on your needs
-        $application = new CLI('test');
+        $application = new CLI('test', null, 'test');
         $application->command(new module_console_systemTemplateGenerator('system:templateGenerator'));
 
         $command = $application['console']->find('system:templateGenerator');
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()));
 
-        $last_line = array_pop(explode("\n", trim($commandTester->getDisplay())));
+        $data = explode("\n", trim($commandTester->getDisplay()));
+        $last_line = array_pop($data);
 
         $this->assertTrue(strpos($last_line, 'templates failed') === false, 'Some templates failed');
         $this->assertTrue(strpos($last_line, 'templates generated') !== true, 'Some templates have been generated');

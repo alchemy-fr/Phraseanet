@@ -200,7 +200,7 @@ abstract class Feed_XML_Abstract
      * @param  string      $tagcontent
      * @return DOMElement
      */
-    protected function addTag(DOMDocument &$document, DOMNode &$node, $tagname, $tagcontent = null)
+    protected function addTag(DOMDocument $document, DOMNode $node, $tagname, $tagcontent = null)
     {
         $tag = $document->createElement($tagname);
 
@@ -218,7 +218,7 @@ abstract class Feed_XML_Abstract
      * @param  Feed_Entry_Item    $content
      * @return Feed_XML_Interface
      */
-    protected function addContent(DOMDocument $document, DOMNode $item, Feed_Entry_Item $content)
+    protected function addContent(DOMDocument $document, DOMNode $item, Feed_Entry_Adapter $entry, Feed_Entry_Item $content)
     {
         $preview_sd = $content->get_record()->get_subdef('preview');
         $preview_permalink = $preview_sd->get_permalink();

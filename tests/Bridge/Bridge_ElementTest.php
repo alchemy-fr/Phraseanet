@@ -20,40 +20,40 @@ class Bridge_ElementTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function setUp()
     {
         parent::setUp();
-        $appbox = appbox::get_instance(\bootstrap::getCore());
 
         $sql = 'DELETE FROM bridge_apis WHERE name = "Apitest"';
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = self::$DI['app']['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
-        $this->api = Bridge_Api::create($appbox, 'Apitest');
+        $this->api = Bridge_Api::create(self::$DI['app'], 'Apitest');
         $this->dist_id = 'EZ1565loPP';
         $this->named = 'Fête à pinpins';
-        $this->account = Bridge_Account::create($appbox, $this->api, self::$user, $this->dist_id, $this->named);
+        $this->account = Bridge_Account::create(self::$DI['app'], $this->api, self::$DI['user'], $this->dist_id, $this->named);
 
         $this->title = 'GOGACKO';
         $this->status = 'Processing';
 
-        $element = Bridge_Element::create($appbox, $this->account, static::$records['record_1'], $this->title, $this->status, $this->account->get_api()->get_connector()->get_default_element_type());
+        $element = Bridge_Element::create(self::$DI['app'], $this->account, self::$DI['record_1'], $this->title, $this->status, $this->account->get_api()->get_connector()->get_default_element_type());
         $this->id = $element->get_id();
-        $this->object = new Bridge_Element($appbox, $this->account, $this->id);
+        $this->object = new Bridge_Element(self::$DI['app'], $this->account, $this->id);
     }
 
     public function tearDown()
     {
-
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $this->object->delete();
+        if ($this->object) {
+            $this->object->delete();
+        }
 
         try {
-            new Bridge_Element($appbox, $this->account, $this->id);
+            new Bridge_Element(self::$DI['app'], $this->account, $this->id);
             $this->fail();
         } catch (Bridge_Exception_ElementNotFound $e) {
 
         }
-
-        $this->api->delete();
+        if ($this->api) {
+            $this->api->delete();
+        }
         parent::tearDown();
     }
 
@@ -72,8 +72,8 @@ class Bridge_ElementTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testGet_record()
     {
         $this->assertInstanceOf('record_adapter', $this->object->get_record());
-        $this->assertEquals(static::$records['record_1']->get_sbas_id(), $this->object->get_record()->get_sbas_id());
-        $this->assertEquals(static::$records['record_1']->get_record_id(), $this->object->get_record()->get_record_id());
+        $this->assertEquals(self::$DI['record_1']->get_sbas_id(), $this->object->get_record()->get_sbas_id());
+        $this->assertEquals(self::$DI['record_1']->get_record_id(), $this->object->get_record()->get_record_id());
     }
 
     public function testGet_dist_id()
@@ -143,7 +143,7 @@ class Bridge_ElementTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_elements_by_account()
     {
-        $elements = Bridge_Element::get_elements_by_account(appbox::get_instance(\bootstrap::getCore()), $this->account);
+        $elements = Bridge_Element::get_elements_by_account(self::$DI['app'], $this->account);
         $this->assertTrue(is_array($elements));
         $this->assertGreaterThan(0, count($elements));
 

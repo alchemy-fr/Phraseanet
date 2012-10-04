@@ -12,12 +12,12 @@
     </h1>
 </div>
 
-{% if app.request.query.get('success') == '1' %}
+{% if app['request'].query.get('success') == '1' %}
     <div class="alert alert-success">
         <a class="close" data-dismiss="alert" href="#">×</a>
         {% trans 'Successful update' %}
     </div>
-{% elseif app.request.query.get('success') == '0' %}
+{% elseif app['request'].query.get('success') == '0' %}
     <div class="alert alert-error">
         <a class="close" data-dismiss="alert" href="#">×</a>
         <strong>{% trans 'An error occured' %}</strong>
@@ -34,7 +34,7 @@
     <li>{{ collection.get_record_amount() }} records <a target="_self" href="/admin/collection/{{ collection.get_base_id() }}/informations/details/">{% trans 'phraseanet:: details' %}</a></li>
 </ul>
 
-{% if user.ACL.has_right_on_base(bas_id, 'manage') %}
+{% if app['phraseanet.user'].ACL.has_right_on_base(bas_id, 'manage') %}
 <div class="well well-small">
     <h5>{% trans 'admin::collection:: Gestionnaires des commandes' %}</h5>
     <form id="admin_adder" action="/admin/collection/{{ bas_id }}/order/admins/" method="post" style="margin:0;">
@@ -118,9 +118,9 @@
 {# mini logo #}
 <div class="well well-small action-block">
     <h5>{% trans 'admin::base:collection: minilogo actuel' %}</h5>
-    {% if collection.getLogo(bas_id) is not empty %}
-        <div class="thumbnail" style="width:120px;height:24px;margin-top:5px;margin-bottom:5px">{{ collection.getLogo(bas_id) | raw }}</div>
-        {% if user.ACL.has_right_on_base(bas_id, 'manage') %}
+    {% if collection.getLogo(bas_id, app) is not empty %}
+        <div class="thumbnail" style="width:120px;height:24px;margin-top:5px;margin-bottom:5px">{{ collection.getLogo(bas_id, app) | raw }}</div>
+        {% if app['phraseanet.user'].ACL.has_right_on_base(bas_id, 'manage') %}
             <form method="post" action="/admin/collection/{{ bas_id }}/picture/mini-logo/delete/" style="margin:0;">
                 <button class="btn btn-danger btn-mini" >
                     <i class="icon-trash icon-white"></i>
@@ -128,7 +128,7 @@
                 </button>
             </form>
         {% endif%}
-    {% elseif user.ACL.has_right_on_base(bas_id, 'manage') %}
+    {% elseif app['phraseanet.user'].ACL.has_right_on_base(bas_id, 'manage') %}
         <span>{% trans 'admin::base:collection: aucun fichier (minilogo, watermark ...)' %}</span>
         <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="/admin/collection/{{ bas_id }}/picture/mini-logo/" style="margin:0;">
             <input name="newLogo" type="file" accept="image/*" />
@@ -141,7 +141,7 @@
     <h5>{% trans "Watermark" %}</h5>
     {% if collection.getWatermark(bas_id) is not empty %}
         <div class="thumbnail">{{ collection.getWatermark(bas_id)| raw }}</div>
-        {% if user.ACL.has_right_on_base(bas_id, 'manage') %}
+        {% if app['phraseanet.user'].ACL.has_right_on_base(bas_id, 'manage') %}
             <form method="post" action="/admin/collection/{{ bas_id }}/picture/watermark/delete/" style="margin:0;">
                 <button class="btn btn-danger btn-mini">
                     <i class="icon-trash icon-white"></i>
@@ -149,7 +149,7 @@
                 </button>
             </form>
         {% endif%}
-    {% elseif user.ACL.has_right_on_base(bas_id, 'manage') %}
+    {% elseif app['phraseanet.user'].ACL.has_right_on_base(bas_id, 'manage') %}
         <span>{% trans 'admin::base:collection: aucun fichier (minilogo, watermark ...)' %}</span>
         <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="/admin/collection/{{ bas_id }}/picture/watermark/" style="margin:0;">
             <input name="newWm" type="file" accept="image/*" />
@@ -162,7 +162,7 @@
     <h5>{% trans "Stamp logo" %}</h5>
     {% if collection.getStamp(bas_id) is not empty %}
         <div class="thumbnail" style="max-height:120px;max-width:260px">{{ collection.getStamp(bas_id)| raw }}</div>
-        {% if user.ACL.has_right_on_base(bas_id, 'manage') %}
+        {% if app['phraseanet.user'].ACL.has_right_on_base(bas_id, 'manage') %}
             <form method="post" action="/admin/collection/{{ bas_id }}/picture/stamp-logo/delete/" style="margin:0;">
                 <button class="btn btn-danger btn-mini">
                     <i class="icon-trash icon-white"></i>
@@ -170,7 +170,7 @@
                 </button>
             </form>
         {% endif%}
-    {% elseif user.ACL.has_right_on_base(bas_id, 'manage') %}
+    {% elseif app['phraseanet.user'].ACL.has_right_on_base(bas_id, 'manage') %}
         <span>{% trans 'admin::base:collection: aucun fichier (minilogo, watermark ...)' %}</span>
         <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="/admin/collection/{{ bas_id }}/picture/stamp-logo/" style="margin:0;">
             <input name="newStamp" type="file" accept="image/*" />
@@ -183,7 +183,7 @@
     <h5>{% trans 'admin::base:collection: image de presentation : ' %}</h5>
     {% if collection.getPresentation(bas_id) is not empty %}
         <div class="thumbnail" style="width:650px;height:200px">{{ collection.getPresentation(bas_id)| raw }}</div>
-        {% if user.ACL.has_right_on_base(bas_id, 'manage') %}
+        {% if app['phraseanet.user'].ACL.has_right_on_base(bas_id, 'manage') %}
             <form method="post" action="/admin/collection/{{ bas_id }}/picture/banner/delete/" style="margin:0;">
                 <button class="btn btn-danger btn-mini">
                     <i class="icon-trash icon-white"></i>
@@ -191,7 +191,7 @@
                 </button>
             </form>
         {% endif%}
-    {% elseif user.ACL.has_right_on_base(bas_id, 'manage') %}
+    {% elseif app['phraseanet.user'].ACL.has_right_on_base(bas_id, 'manage') %}
         <span>{% trans 'admin::base:collection: aucun fichier (minilogo, watermark ...)' %}</span>
         <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="/admin/collection/{{ bas_id }}/picture/banner/" style="margin:0;">
             <input name="newBanner" type="file" accept="image/*" />

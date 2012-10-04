@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
@@ -53,12 +54,8 @@ class patch_361 implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$appbox)
+    public function apply(base $appbox, Application $app)
     {
-        $Core = \bootstrap::getCore();
-
-        $em = $Core->getEntityManager();
-
         $conn = $appbox->get_connection();
 
         $sql = 'SELECT sbas_id, record_id, id FROM BasketElements';
@@ -71,7 +68,7 @@ class patch_361 implements patchInterface
             $sbas_id = (int) $row['sbas_id'];
 
             try {
-                $connbas = connection::getPDOConnection($sbas_id);
+                $connbas = connection::getPDOConnection($app, $sbas_id);
             } catch (\Exception $e) {
                 $conn->exec('DELETE FROM ValidationDatas WHERE basket_element_id = ' . $row['id']);
                 $conn->exec('DELETE FROM BasketElements WHERE id = ' . $row['id']);
@@ -95,7 +92,7 @@ class patch_361 implements patchInterface
         $n = 0;
         $perPage = 100;
 
-        $query = $em->createQuery($dql)
+        $query = $app['EM']->createQuery($dql)
             ->setFirstResult($n)
             ->setMaxResults($perPage);
 
@@ -104,7 +101,7 @@ class patch_361 implements patchInterface
         $count = count($paginator);
 
         while ($n < $count) {
-            $query = $em->createQuery($dql)
+            $query = $app['EM']->createQuery($dql)
                 ->setFirstResult($n)
                 ->setMaxResults($perPage);
 
@@ -123,10 +120,10 @@ class patch_361 implements patchInterface
             }
 
             $n += $perPage;
-            $em->flush();
+            $app['EM']->flush();
         }
 
-        $em->flush();
+        $app['EM']->flush();
 
         return true;
     }

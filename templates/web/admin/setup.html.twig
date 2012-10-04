@@ -8,25 +8,25 @@
     <div class="control-group">
         <label class="control-label">Adresse : </label>
         <div class="controls">
-            <input type="text" class="input-xlarge" readonly="readonly" value="{{ registry.get('GV_ServerName') }}" />
+            <input type="text" class="input-xlarge" readonly="readonly" value="{{ app['phraseanet.registry'].get('GV_ServerName') }}" />
         </div>
     </div>
     <div class="control-group">
         <label class="control-label">Installation : </label>
         <div class="controls">
-            <input type="text" class="input-xlarge" readonly="readonly" value="{{ registry.get('GV_RootPath') }}" />
+            <input type="text" class="input-xlarge" readonly="readonly" value="{{ app['phraseanet.registry'].get('GV_RootPath') }}" />
         </div>
     </div>
     <div class="control-group">
         <label class="control-label">Maintenance : </label>
         <div class="controls">
-            <input type="checkbox" readonly="readonly" disabled="disabled" {{ maintenance == true ? "checked='checked'" : '' }} />
+            <input type="checkbox" readonly="readonly" disabled="disabled" {{ app['phraseanet.registry'].get('GV_maintenance') == true ? "checked='checked'" : '' }} />
         </div>
     </div>
     <div class="control-group">
         <label class="control-label">Debug : </label>
         <div class="controls">
-            <input type="checkbox" readonly="readonly" disabled="disabled" {{ registry.get('GV_debug') == true ? "checked='checked'" : '' }} />
+            <input type="checkbox" readonly="readonly" disabled="disabled" {{ app['phraseanet.registry'].get('GV_debug') == true ? "checked='checked'" : '' }} />
         </div>
     </div>
 </form>
@@ -55,8 +55,8 @@
 
                 {% set currentValue = '' %}
                 {% set is_new = false %}
-                {% if registry.is_set(value['name']) %}
-                    {% set currentValue =  registry.get(value['name']) %}
+                {% if app['phraseanet.registry'].is_set(value['name']) %}
+                    {% set currentValue =  app['phraseanet.registry'].get(value['name']) %}
                     {% set is_new = true %}
                 {% elseif value['default'] is defined %}
                     {% set currentValue = value['default'] %}
@@ -74,7 +74,7 @@
                             <textarea {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}">{{ currentValue }}</textarea>
                         {% elseif value['type'] == 'enum' %}
                             <select {{ readonly ? 'readonly="readonly"' : '' }} name="{{ value['name'] }}" id="id_{{ value['name'] }}">
-                                {% if value['available'] is defined and value['available'] is loopable %}
+                                {% if value['available'] is defined and value['available'] is iterable %}
                                     {% for key, val in value['available'] %}
                                         <option value="{{ key }}" {{ currentValue == key ? 'selected="selected"' : '' }} >{{ val }}</option>
                                     {% endfor %}
@@ -88,10 +88,10 @@
                                 {% endif %}
                             </select>
                         {% elseif value['type'] == 'enum_multi' %}
-                            {% if value['available'] is defined and value['available'] is loopable %}
+                            {% if value['available'] is defined and value['available'] is iterable %}
                                 {% for key, availableValue in value['available'] %}
                                     <label class="checkbox">
-                                        <input type="checkbox" name="{{ value['name'] ~ '[]' }}" {{ readonly ? 'readonly="readonly"' : ''}} value="{{ key }}" {{ currentValue is loopable and key in currentValue| keys ? 'checked="checked"' : '' }} /> {{ availableValue }}</label>
+                                        <input type="checkbox" name="{{ value['name'] ~ '[]' }}" {{ readonly ? 'readonly="readonly"' : ''}} value="{{ key }}" {{ currentValue is iterable and key in currentValue| keys ? 'checked="checked"' : '' }} /> {{ availableValue }}</label>
                                 {% endfor %}
                             {% else %}
                                 <p class='alert'>

@@ -63,7 +63,7 @@
     <h1>{% trans 'a propos'%}</h1>
   </div>
     <div data-role="content">
-    <p>Phraseanet Version {{core.getVersion().getName()}} - {{core.getVersion().getNumber()}}</p>
+    <p>Phraseanet Version {{ app['phraseanet.version'].getName() }} - {{ app['phraseanet.version'].getNumber() }}</p>
     <p>
       <a href='http://www.gnu.org/licenses/gpl.html' target='_blank'>
         <img src='https://www.gnu.org/graphics/gplv3-88x31.png' style='vertical-align:middle;'/>
@@ -92,7 +92,7 @@
                 {% set basket_length = basket.getElements().count() %}
                 <li>
                   {% if basket.getElements().first() %}
-                  <img src="{{ basket.getElements().first().getRecord().get_thumbnail.get_url()}}" />
+                  <img src="{{ basket.getElements().first().getRecord(app).get_thumbnail.get_url()}}" />
                   {% endif %}
                   <h3><a href="/lightbox/validate/{{basket.getId()}}/">{{basket.getName()}}</a></h3>
                   <p>{{ basket.getDescription() }}</p>
@@ -121,7 +121,7 @@
                 {% set basket_length = basket.getElements().count() %}
                 <li>
                   {% if basket.getElements().first() %}
-                  <img src="{{ basket.getElements().first().getRecord().get_thumbnail.get_url()}}" />
+                  <img src="{{ basket.getElements().first().getRecord(app).get_thumbnail.get_url()}}" />
                   {% endif %}
                   <h3><a href="/lightbox/validate/{{ basket.getId() }}/">{{ basket.getName() }}</a></h3>
                   <p>{{ basket.getDescription() }}</p>

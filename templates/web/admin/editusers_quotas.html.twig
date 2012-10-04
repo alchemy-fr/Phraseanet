@@ -38,11 +38,11 @@
 
 <h1>{% trans 'Quotas' %}</h1>
 <div>
-{% set base = base_id|sbasFromBas|sbas_names %}
+{% set base = collection.get_databox().get_viewname() %}
 {% trans %}Base {{base}}{% endtrans %}
 </div>
 <div>
-{% set collection = base_id|bas_names %}
+{% set collection = base_id|bas_names(app) %}
 {% trans %}Collection {{collection}}{% endtrans %}
 </div>
 <form>

@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     Session
@@ -19,9 +21,9 @@ class Session_Authentication_PersistentCookie implements Session_Authentication_
 {
     /**
      *
-     * @var type
+     * @var Application
      */
-    protected $appbox;
+    protected $app;
 
     /**
      *
@@ -35,38 +37,31 @@ class Session_Authentication_PersistentCookie implements Session_Authentication_
      */
     protected $ses_id;
 
-    /**
-     *
-     * @param  appbox                                  $appbox
-     * @param  type                                    $persistent_cookie
-     * @return Session_Authentication_PersistentCookie
-     */
-    public function __construct(appbox &$appbox, $persistent_cookie)
+    public function __construct(Application $app, $persistent_cookie)
     {
-        $this->appbox = $appbox;
+        $this->app= $app;
         $this->persistent_cookie = $persistent_cookie;
 
-        $browser = Browser::getInstance();
 
-        $conn = $this->appbox->get_connection();
-        $sql = 'SELECT usr_id, session_id, nonce, token FROM cache WHERE token = :token';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':token' => $this->persistent_cookie));
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $dql = 'SELECT s FROM Entities\Session s
+            WHERE s.token = :token';
 
-        if ( ! $row || count($row) == 0) {
-            throw new Exception_Session_WrongToken();
+        $query = $app['EM']->createQuery($dql);
+        $query->setParameters(array('token'  => $persistent_cookie));
+        $session = $query->getOneOrNullResult();
+
+        if ( ! $session) {
+            throw new \Exception_Session_WrongToken('Persistent cookie value does not have any valid session');
         }
 
-        $string = $browser->getBrowser() . '_' . $browser->getPlatform();
+        $string = $app['browser']->getBrowser() . '_' . $app['browser']->getPlatform();
 
-        if (User_Adapter::salt_password($string, $row['nonce']) !== $row['token']) {
-            throw new Exception_Session_WrongToken();
+        if (\User_Adapter::salt_password($this->app, $string, $session->getNonce()) !== $session->getToken()) {
+            throw new \Exception_Session_WrongToken('Persistent cookie value is corrupted');
         }
 
-        $this->user = User_Adapter::getInstance($row['usr_id'], $this->appbox);
-        $this->ses_id = (int) $row['session_id'];
+        $this->user = $session->getUser($app);
+        $this->ses_id = $session->getId();
 
         return $this;
     }
@@ -89,7 +84,7 @@ class Session_Authentication_PersistentCookie implements Session_Authentication_
      *
      * @return int
      */
-    public function get_ses_id()
+    public function getSessionId()
     {
         return $this->ses_id;
     }

@@ -31,8 +31,8 @@ class Account implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function() use ($app) {
-                return $app['phraseanet.core']['Firewall']->requireAuthentication($app);
-            });
+            $app['firewall']->requireAuthentication();
+        });
 
         /**
          * Get a new account
@@ -244,9 +244,9 @@ class Account implements ControllerProviderInterface
             }
         }
 
-        return new Response($app['twig']->render('account/reset-password.html.twig', array(
+        return $app['twig']->render('account/reset-password.html.twig', array(
                     'passwordMsg' => $passwordMsg
-                )));
+                ));
     }
 
     /**
@@ -258,14 +258,12 @@ class Account implements ControllerProviderInterface
      */
     public function resetEmail(Application $app, Request $request)
     {
-        $appbox = $app['phraseanet.appbox'];
-
         if (null !== $token = $request->request->get('token')) {
             try {
-                $datas = \random::helloToken($token);
-                $user = \User_Adapter::getInstance((int) $datas['usr_id'], $appbox);
+                $datas = \random::helloToken($app, $token);
+                $user = \User_Adapter::getInstance((int) $datas['usr_id'], $app);
                 $user->set_email($datas['datas']);
-                \random::removeToken($token);
+                \random::removeToken($app, $token);
 
                 return $app->redirect('/account/reset-email/?update=ok');
             } catch (\Exception $e) {
@@ -281,27 +279,21 @@ class Account implements ControllerProviderInterface
             $app->abort(400, _('Could not perform request, please contact an administrator.'));
         }
 
-        $user = $app['phraseanet.core']->getAuthenticatedUser();
-
         try {
-            $auth = new \Session_Authentication_Native($appbox, $user->get_login(), $password);
+            $auth = new \Session_Authentication_Native($app, $app['phraseanet.user']->get_login(), $password);
             $auth->challenge_password();
         } catch (\Exception $e) {
-
             return $app->redirect('/account/reset-email/?notice=bad-password');
         }
-        if ( ! \PHPMailer::ValidateAddress($email)) {
-
+        if (!\PHPMailer::ValidateAddress($email)) {
             return $app->redirect('/account/reset-email/?notice=mail-invalid');
         }
 
         if ($email !== $emailConfirm) {
-
             return $app->redirect('/account/reset-email/?notice=mail-match');
         }
 
-        if ( ! \mail::reset_email($email, $user->get_id()) === true) {
-
+        if (!\mail::reset_email($app, $email, $app['phraseanet.user']->get_id()) === true) {
             return $app->redirect('/account/reset-email/?notice=mail-server');
         }
 
@@ -348,10 +340,10 @@ class Account implements ControllerProviderInterface
             }
         }
 
-        return new Response($app['twig']->render('account/reset-email.html.twig', array(
-                    'noticeMsg' => $noticeMsg,
-                    'updateMsg' => $updateMsg,
-                )));
+        return $app['twig']->render('account/reset-email.html.twig', array(
+            'noticeMsg' => $noticeMsg,
+            'updateMsg' => $updateMsg,
+        ));
     }
 
     /**
@@ -363,27 +355,20 @@ class Account implements ControllerProviderInterface
      */
     public function renewPassword(Application $app, Request $request)
     {
-        $appbox = $app['phraseanet.appbox'];
-
         if ((null !== $password = $request->request->get('form_password')) && (null !== $passwordConfirm = $request->request->get('form_password_confirm'))) {
             if ($password !== $passwordConfirm) {
-
                 return $app->redirect('/account/reset-password/?pass-error=pass-match');
             } elseif (strlen(trim($password)) < 5) {
-
                 return $app->redirect('/account/reset-password/?pass-error=pass-short');
             } elseif (trim($password) != str_replace(array("\r\n", "\n", "\r", "\t", " "), "_", $password)) {
-
                 return $app->redirect('/account/reset-password/?pass-error=pass-invalid');
             }
 
             try {
-                $user = $app['phraseanet.core']->getAuthenticatedUser();
-
-                $auth = new \Session_Authentication_Native($appbox, $user->get_login(), $request->request->get('form_old_password', ''));
+                $auth = new \Session_Authentication_Native($app, $app['phraseanet.user']->get_login(), $request->request->get('form_old_password', ''));
                 $auth->challenge_password();
 
-                $user->set_password($passwordConfirm);
+                $app['phraseanet.user']->set_password($passwordConfirm);
 
                 return $app->redirect('/account/?notice=pass-ok');
             } catch (\Exception $e) {
@@ -401,18 +386,17 @@ class Account implements ControllerProviderInterface
      */
     public function grantAccess(Application $app, Request $request, $application_id)
     {
-        if ( ! $request->isXmlHttpRequest() || ! array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
+        if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
             $app->abort(400, _('Bad request format, only JSON is allowed'));
         }
 
-        $appbox = $app['phraseanet.appbox'];
         $error = false;
 
         try {
             $account = \API_OAuth2_Account::load_with_user(
-                    $appbox
-                    , new \API_OAuth2_Application($appbox, $application_id)
-                    , $app['phraseanet.core']->getAuthenticatedUser()
+                    $app
+                    , new \API_OAuth2_Application($app, $application_id)
+                    , $app['phraseanet.user']
             );
 
             $account->set_revoked((bool) $request->query->get('revoke'), false);
@@ -420,7 +404,7 @@ class Account implements ControllerProviderInterface
             $error = true;
         }
 
-        return $app->json(array('success' => ! $error));
+        return $app->json(array('success' => !$error));
     }
 
     /**
@@ -432,11 +416,11 @@ class Account implements ControllerProviderInterface
      */
     public function accountAccess(Application $app, Request $request)
     {
-        require_once $app['phraseanet.core']['Registry']->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php';
+        require_once $app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php';
 
-        return new Response($app['twig']->render('account/access.html.twig', array(
-                    'inscriptions' => giveMeBases($app['phraseanet.core']->getAuthenticatedUser()->get_id())
-                )));
+        return $app['twig']->render('account/access.html.twig', array(
+            'inscriptions' => giveMeBases($app, $app['phraseanet.user']->get_id())
+        ));
     }
 
     /**
@@ -449,8 +433,8 @@ class Account implements ControllerProviderInterface
     public function accountAuthorizedApps(Application $app, Request $request)
     {
         return $app['twig']->render('account/authorized_apps.html.twig', array(
-                "apps" => \API_OAuth2_Application::load_app_by_user(\appbox::get_instance($app['phraseanet.core']), $app['phraseanet.core']->getAuthenticatedUser()),
-            ));
+            "applications" => \API_OAuth2_Application::load_app_by_user($app, $app['phraseanet.user']),
+        ));
     }
 
     /**
@@ -462,7 +446,15 @@ class Account implements ControllerProviderInterface
      */
     public function accountSessionsAccess(Application $app, Request $request)
     {
-        return new Response($app['twig']->render('account/sessions.html.twig'));
+        $dql = 'SELECT s FROM Entities\Session s
+            WHERE s.usr_id = :usr_id
+            ORDER BY s.created DESC';
+
+        $query = $app['EM']->createQuery($dql);
+        $query->setParameters(array('usr_id'  => $app['session']->get('usr_id')));
+        $sessions = $query->getResult();
+
+        return $app['twig']->render('account/sessions.html.twig', array('sessions' => $sessions));
     }
 
     /**
@@ -474,10 +466,6 @@ class Account implements ControllerProviderInterface
      */
     public function displayAccount(Application $app, Request $request)
     {
-        $appbox = $app['phraseanet.appbox'];
-        $user = $app['phraseanet.core']->getAuthenticatedUser();
-        $evtMngr = \eventsmanager_broker::getInstance($appbox, $app['phraseanet.core']);
-
         switch ($notice = $request->query->get('notice', '')) {
             case 'pass-ok':
                 $notice = _('login::notification: Mise a jour du mot de passe avec succes');
@@ -496,13 +484,12 @@ class Account implements ControllerProviderInterface
                 break;
         }
 
-        return new Response($app['twig']->render('account/account.html.twig', array(
-                    'geonames'      => new \geonames(),
-                    'user'          => $user,
-                    'notice'        => $notice,
-                    'evt_mngr'      => $evtMngr,
-                    'notifications' => $evtMngr->list_notifications_available($user->get_id()),
-                )));
+        return $app['twig']->render('account/account.html.twig', array(
+            'user'          => $app['phraseanet.user'],
+            'notice'        => $notice,
+            'evt_mngr'      => $app['events-manager'],
+            'notifications' => $app['events-manager']->list_notifications_available($app['phraseanet.user']->get_id()),
+        ));
     }
 
     /**
@@ -514,19 +501,16 @@ class Account implements ControllerProviderInterface
      */
     public function updateAccount(Application $app, Request $request)
     {
-        $appbox = $app['phraseanet.appbox'];
-        $user = $app['phraseanet.core']->getAuthenticatedUser();
-        $evtMngr = \eventsmanager_broker::getInstance($appbox, $app['phraseanet.core']);
         $notice = 'account-update-bad';
 
         $demands = (array) $request->request->get('demand', array());
 
         if (0 !== count($demands)) {
-            $register = new \appbox_register($appbox);
+            $register = new \appbox_register($app['phraseanet.appbox']);
 
             foreach ($demands as $baseId) {
                 try {
-                    $register->add_request($user, \collection::get_from_base_id($baseId));
+                    $register->add_request($app['phraseanet.user'], \collection::get_from_base_id($app, $baseId));
                     $notice = 'demand-ok';
                 } catch (\Exception $e) {
 
@@ -571,9 +555,9 @@ class Account implements ControllerProviderInterface
             }
 
             try {
-                $appbox->get_connection()->beginTransaction();
+                $app['phraseanet.appbox']->get_connection()->beginTransaction();
 
-                $user->set_gender($request->request->get("form_gender"))
+                $app['phraseanet.user']->set_gender($request->request->get("form_gender"))
                     ->set_firstname($request->request->get("form_firstname"))
                     ->set_lastname($request->request->get("form_lastname"))
                     ->set_address($request->request->get("form_address"))
@@ -594,25 +578,25 @@ class Account implements ControllerProviderInterface
                     ->set_ftp_dir_prefix($request->request->get("form_prefixFTPfolder"))
                     ->set_defaultftpdatas($defaultDatas);
 
-                $appbox->get_connection()->commit();
+                $app['phraseanet.appbox']->get_connection()->commit();
 
                 $notice = 'account-update-ok';
             } catch (Exception $e) {
-                $appbox->get_connection()->rollBack();
+                $app['phraseanet.appbox']->get_connection()->rollBack();
             }
         }
 
         $requestedNotifications = (array) $request->request->get('notifications', array());
 
-        foreach ($evtMngr->list_notifications_available($user->get_id()) as $notifications) {
+        foreach ($app['events-manager']->list_notifications_available($app['phraseanet.user']->get_id()) as $notifications) {
             foreach ($notifications as $notification) {
                 $notifId = $notification['id'];
                 $notifName = sprintf('notification_%d', $notifId);
 
                 if (isset($requestedNotifications[$notifId])) {
-                    $user->setPrefs($notifName, '1');
+                    $app['phraseanet.user']->setPrefs($notifName, '1');
                 } else {
-                    $user->setPrefs($notifName, '0');
+                    $app['phraseanet.user']->setPrefs($notifName, '0');
                 }
             }
         }

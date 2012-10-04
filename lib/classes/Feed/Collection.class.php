@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @package     Feeds
@@ -25,33 +27,33 @@ class Feed_Collection implements Feed_CollectionInterface, cache_cacheableInterf
 
     /**
      *
-     * @var appbox
+     * @var Application
      */
-    protected $appbox;
+    protected $app;
 
     const CACHE_PUBLIC = 'public';
 
     /**
      *
-     * @param  appbox          $appbox
+     * @param  Application     $app
      * @param  array           $feeds
      * @return Feed_Collection
      */
-    public function __construct(appbox $appbox, Array $feeds)
+    public function __construct(Application $app, Array $feeds)
     {
         $this->feeds = $feeds;
-        $this->appbox = $appbox;
+        $this->app = $app;
 
         return $this;
     }
 
     /**
      *
-     * @param  appbox          $appbox
+     * @param  Application $app
      * @param  User_Adapter    $user
      * @return Feed_Collection
      */
-    public static function load_all(appbox $appbox, User_Adapter $user)
+    public static function load_all(Application $app, User_Adapter $user)
     {
         $base_ids = array_keys($user->ACL()->get_granted_base());
 
@@ -66,7 +68,7 @@ class Feed_Collection implements Feed_CollectionInterface, cache_cacheableInterf
         $sql .= ' OR public = "1"
             ORDER BY created_on DESC';
 
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -74,10 +76,10 @@ class Feed_Collection implements Feed_CollectionInterface, cache_cacheableInterf
         $feeds = array();
 
         foreach ($rs as $row) {
-            $feeds[] = new Feed_Adapter($appbox, $row['id']);
+            $feeds[] = new Feed_Adapter($app, $row['id']);
         }
 
-        return new self($appbox, $feeds);
+        return new self($app, $feeds);
     }
 
     /**
@@ -95,28 +97,28 @@ class Feed_Collection implements Feed_CollectionInterface, cache_cacheableInterf
      */
     public function get_aggregate()
     {
-        return new Feed_Aggregate($this->appbox, $this->feeds);
+        return new Feed_Aggregate($this->app, $this->feeds);
     }
 
     /**
      *
-     * @param  appbox          $appbox
+     * @param  Application $app
      * @return Feed_Collection
      */
-    public static function load_public_feeds(appbox $appbox)
+    public static function load_public_feeds(Application $app)
     {
-        $rs = self::retrieve_public_feed_ids($appbox);
+        $rs = self::retrieve_public_feed_ids($app['phraseanet.appbox']);
         $feeds = array();
         foreach ($rs as $feed_id) {
-            $feeds[] = new Feed_Adapter($appbox, $feed_id);
+            $feeds[] = new Feed_Adapter($app, $feed_id);
         }
 
-        return new self($appbox, $feeds);
+        return new self($app, $feeds);
     }
 
-    protected static function retrieve_public_feed_ids(appbox &$appbox)
+    protected static function retrieve_public_feed_ids(appbox $appbox)
     {
-        $key = self::get_cache_key(self::CACHE_PUBLIC);
+        $key = 'feedcollection_' . self::CACHE_PUBLIC;
 
         try {
             return $appbox->get_data_from_cache($key);
@@ -148,16 +150,16 @@ class Feed_Collection implements Feed_CollectionInterface, cache_cacheableInterf
 
     public function get_data_from_cache($option = null)
     {
-        return $this->appbox->get_data_from_cache($this->get_cache_key($option));
+        return $this->app['phraseanet.appbox']->get_data_from_cache($this->get_cache_key($option));
     }
 
     public function set_data_to_cache($value, $option = null, $duration = 0)
     {
-        return $this->appbox->set_data_to_cache($value, $this->get_cache_key($option), $duration);
+        return $this->app['phraseanet.appbox']->set_data_to_cache($value, $this->get_cache_key($option), $duration);
     }
 
     public function delete_data_from_cache($option = null)
     {
-        return $this->appbox->delete_data_from_cache($this->get_cache_key($option));
+        return $this->app['phraseanet.appbox']->delete_data_from_cache($this->get_cache_key($option));
     }
 }

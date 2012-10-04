@@ -8,26 +8,26 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
-$appbox = appbox::get_instance($Core);
-$session = $appbox->get_session();
-$registry = $appbox->get_registry();
+require_once __DIR__ . "/../../lib/bootstrap.php";
+$app = new Application();
 
-$usr_id = $session->get_usr_id();
+$usr_id = $app['phraseanet.user']->get_id();
 
 phrasea::headers();
 
-User_Adapter::updateClientInfos(2);
-$user = User_Adapter::getInstance($usr_id, $appbox);
+User_Adapter::updateClientInfos($app, 2);
+$user = User_Adapter::getInstance($usr_id, $app);
 ?>
-<html lang="<?php echo $session->get_I18n(); ?>">
+<html lang="<?php echo $app['locale.I18n']; ?>">
     <head>
-        <title><?php echo $registry->get('GV_homeTitle') ?> Client</title>
+        <title><?php echo $app['phraseanet.registry']->get('GV_homeTitle') ?> Client</title>
         <meta http-equiv="X-UA-Compatible" content="chrome=1">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
@@ -59,7 +59,7 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
         <?php
 //listage des css
         $css = array();
-        $cssPath = $registry->get('GV_RootPath') . 'www/skins/client/';
+        $cssPath = $app['phraseanet.registry']->get('GV_RootPath') . 'www/skins/client/';
 
         if ($hdir = opendir($cssPath)) {
             while (false !== ($file = readdir($hdir))) {
@@ -109,11 +109,7 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
         <div id="container" style="position:absolute;top:0;left:0;overflow:hidden;width:100%;height:100%;">
 
 <?php
-$events_mngr = $Core['events-manager'];
-
-$core = \bootstrap::getCore();
-$twig = $core->getTwig();
-echo $twig->render('common/menubar.twig', array('module' => 'client', 'events' => $events_mngr));
+echo $app['twig']->render('common/menubar.twig', array('module' => 'client'));
 ?>
             <div style="top:30px;position:relative;float:left;">
                 <div id="left" style="height:100%;width:265px;position:relative;float:left;">
@@ -123,9 +119,9 @@ echo $twig->render('common/menubar.twig', array('module' => 'client', 'events' =
 
 
             $tong = array(
-                $registry->get('GV_ong_search')    => 1,
-                $registry->get('GV_ong_advsearch') => 2,
-                $registry->get('GV_ong_topics')    => 3
+                $app['phraseanet.registry']->get('GV_ong_search')    => 1,
+                $app['phraseanet.registry']->get('GV_ong_advsearch') => 2,
+                $app['phraseanet.registry']->get('GV_ong_topics')    => 3
             );
             unset($tong[0]);
             if (count($tong) == 0)
@@ -144,7 +140,7 @@ $activeTab = '';
 foreach ($tong as $kong => $ong) {
     if ($kong == 0)
         continue;
-    $k = $kong == $registry->get('GV_ong_actif') ? 'actif' : 'inactif';
+    $k = $kong == $app['phraseanet.registry']->get('GV_ong_actif') ? 'actif' : 'inactif';
     switch ($ong) {
         case 1:
             if ($k == 'actif')
@@ -203,7 +199,7 @@ foreach ($tong as $kong => $ong) {
 
                                             </div>
 <?php
-if ($registry->get('GV_client_coll_ckbox') === 'popup') {
+if ($app['phraseanet.registry']->get('GV_client_coll_ckbox') === 'popup') {
     // liste des collections : popup
     ?>
                                                 <div>
@@ -212,7 +208,7 @@ if ($registry->get('GV_client_coll_ckbox') === 'popup') {
 
                                                 <?php
                                                 $allbases = array();
-                                                $showbases = (count($appbox->get_databoxes()) > 0);
+                                                $showbases = (count($app['phraseanet.appbox']->get_databoxes()) > 0);
                                                 $options = '';
 
 
@@ -281,13 +277,13 @@ if ($registry->get('GV_client_coll_ckbox') === 'popup') {
                                                     <?php
                                                     $sel1 = "";
                                                     $sel2 = "";
-                                                    ($registry->get('GV_defaultQuery_type') == 0 ? $sel1 = " checked='checked'" : $sel2 = " checked='checked'")
+                                                    ($app['phraseanet.registry']->get('GV_defaultQuery_type') == 0 ? $sel1 = " checked='checked'" : $sel2 = " checked='checked'")
                                                     ?>
 
                                                 <input type="radio" value="0" class="checkbox" <?php echo $sel1 ?> id="search_type_docs" name="search_type" /><label for="search_type_docs"><?php echo _('phraseanet::type:: documents') ?></label>
                                                 <input type="radio" value="1" class="checkbox" <?php echo $sel2 ?> id="search_type_group" name="search_type" /><label for="search_type_group"><?php echo _('phraseanet::type:: reportages') ?></label>
 
-                                                <input type="hidden" name="sort" value="<?php echo $registry->get('GV_phrasea_sort'); ?>"/>
+                                                <input type="hidden" name="sort" value="<?php echo $app['phraseanet.registry']->get('GV_phrasea_sort'); ?>"/>
 
                                                 <input type="hidden" name="ord" id="searchOrd" value="<?php echo PHRASEA_ORDER_DESC ?>" />
                                             </div>
@@ -303,29 +299,29 @@ if ($registry->get('GV_client_coll_ckbox') === 'popup') {
 
                                         <div class="onglets" style="white-space: nowrap; margin-left: 5px; width: 227px;">
 <?php
-if ($registry->get('GV_client_coll_ckbox') == 'checkbox') {
+if ($app['phraseanet.registry']->get('GV_client_coll_ckbox') == 'checkbox') {
     ?>
                                                 <span id="idOnglet1" class="actif actives" onclick="chgOng(1);">
     <?php echo _('phraseanet:: collections') ?> <img onclick="removeFilters();" id="filter_danger" src="/skins/icons/alert.png" title="<?php echo _('client::recherche: cliquez ici pour desactiver tous les filtres de toutes base') ?>" style="vertical-align:bottom;width:12px;height:12px;display:none;"/>
                                                 </span>
     <?php
 }
-if ($registry->get('GV_thesaurus')) {
+if ($app['phraseanet.registry']->get('GV_thesaurus')) {
     ?>
-                                                <span id="idOnglet4" class="<?php echo ($registry->get('GV_client_coll_ckbox') == 'checkbox') ? "inactif" : "actif" ?> actives" onclick="chgOng(4);">
+                                                <span id="idOnglet4" class="<?php echo ($app['phraseanet.registry']->get('GV_client_coll_ckbox') == 'checkbox') ? "inactif" : "actif" ?> actives" onclick="chgOng(4);">
     <?php echo _('phraseanet:: propositions') ?>
                                                 </span>
     <?php
 }
 ?>
-                                            <span id="idOnglet5" class="<?php echo ( ! ($registry->get('GV_client_coll_ckbox') == 'checkbox') && ! $registry->get('GV_thesaurus')) ? 'actif' : 'inactif' ?> actives" onclick="chgOng(5);">
+                                            <span id="idOnglet5" class="<?php echo ( ! ($app['phraseanet.registry']->get('GV_client_coll_ckbox') == 'checkbox') && ! $app['phraseanet.registry']->get('GV_thesaurus')) ? 'actif' : 'inactif' ?> actives" onclick="chgOng(5);">
                                             <?php echo _('phraseanet:: historique') ?>
                                             </span>
                                         </div>
                                     </div>
                                     <div id="searchMiddle" style="">
                                             <?php
-                                            if ($registry->get('GV_client_coll_ckbox') == 'checkbox') {
+                                            if ($app['phraseanet.registry']->get('GV_client_coll_ckbox') == 'checkbox') {
                                                 ?>
                                             <div id="onglet1" style="display:block;height:100%;overflow-x: hidden; overflow-y: auto;" class="searchZone" >
                                                 <div>
@@ -339,7 +335,7 @@ if ($registry->get('GV_thesaurus')) {
                                                     <div class="basesContainer">
                                                     <?php
                                                     foreach ($user->ACL()->get_granted_sbas() as $databox) {
-                                                        if ($registry->get('GV_view_bas_and_coll')) {
+                                                        if ($app['phraseanet.registry']->get('GV_view_bas_and_coll')) {
                                                             ?>
                                                                 <div class="basContainer">
                                                                     <div class="basContTitle">
@@ -430,7 +426,7 @@ if ($registry->get('GV_thesaurus')) {
                                                                 echo '<div><input type="checkbox" class="checkbox basItem basItem' . $databox->get_sbas_id() . '" ' . $s . ' name="bas[]"  id="basChk' . $coll->get_base_id() . '" value="' . $coll->get_base_id() . '"><label for="basChk' . $coll->get_base_id() . '">' . $coll->get_name() . '</label></div>';
                                                             }
                                                                     ?></div><?php
-                                                            if ($registry->get('GV_view_bas_and_coll'))
+                                                            if ($app['phraseanet.registry']->get('GV_view_bas_and_coll'))
                                                                 echo '</div>';
                                                         }
                                                                 ?>
@@ -440,10 +436,10 @@ if ($registry->get('GV_thesaurus')) {
 
                                                                 <?php
                                                             }
-                                                            if ($registry->get('GV_thesaurus')) {
+                                                            if ($app['phraseanet.registry']->get('GV_thesaurus')) {
                                                                 ?>
 
-                                                <div id="onglet4" style="display:<?php echo ($registry->get('GV_client_coll_ckbox') == 'checkbox') ? 'none' : 'block' ?>;height:100%;overflow-x: hidden; overflow-y: auto;" class="searchZone" >
+                                                <div id="onglet4" style="display:<?php echo ($app['phraseanet.registry']->get('GV_client_coll_ckbox') == 'checkbox') ? 'none' : 'block' ?>;height:100%;overflow-x: hidden; overflow-y: auto;" class="searchZone" >
                                                     <div>
                                                         <div id="proposals" style="width:235px; overflow:hidden">
 
@@ -453,7 +449,7 @@ if ($registry->get('GV_thesaurus')) {
                                                             <?php
                                                         }
                                                         ?>
-                                            <div id="onglet5" style="display:<?php echo ( ! ($registry->get('GV_client_coll_ckbox') == 'checkbox') && ! $registry->get('GV_thesaurus')) ? 'block' : 'none' ?>;height:100%;overflow-x: hidden; overflow-y: auto;" class="searchZone" >
+                                            <div id="onglet5" style="display:<?php echo ( ! ($app['phraseanet.registry']->get('GV_client_coll_ckbox') == 'checkbox') && ! $app['phraseanet.registry']->get('GV_thesaurus')) ? 'block' : 'none' ?>;height:100%;overflow-x: hidden; overflow-y: auto;" class="searchZone" >
                                                 <div id="history">
                                                 </div>
                                             </div>
@@ -468,10 +464,10 @@ if ($registry->get('GV_thesaurus')) {
                             <div id="idongTopic" style="overflow-x:hidden;overflow-y:auto;">
 
                                             <?php
-                                            if ($registry->get('GV_client_render_topics') == 'popups')
-                                                echo queries::dropdown_topics();
-                                            elseif ($registry->get('GV_client_render_topics') == 'tree')
-                                                echo queries::tree_topics();
+                                            if ($app['phraseanet.registry']->get('GV_client_render_topics') == 'popups')
+                                                echo queries::dropdown_topics($app['locale.I18n']);
+                                            elseif ($app['phraseanet.registry']->get('GV_client_render_topics') == 'tree')
+                                                echo queries::tree_topics($app['locale.I18n']);
                                             ?>
 
                             </div>
@@ -491,7 +487,7 @@ if ($registry->get('GV_thesaurus')) {
                     </div>
                     <div id="answers" style="overflow-x:auto;overflow-y:auto;border:none;padding:0;margin:0;position:relative;left:0;top:0;margin:10px 0;">
 <?php
-echo phrasea::getHome($start_page, 'client');
+echo phrasea::getHome($app, $start_page, 'client');
 ?>
                     </div>
                     <div class="divNavig" id="navigation"></div>
@@ -645,9 +641,9 @@ echo phrasea::getHome($start_page, 'client');
         checkBases(true)
 
 <?php
-if ( ! $user->is_guest() && Session_Handler::isset_cookie('last_act')) {
+if ( ! $user->is_guest() && $app['request']->cookies->has('last_act')) {
     ?>
-          lastAct = $.parseJSON('<?php echo Session_Handler::get_cookie('last_act') ?>');
+          lastAct = $.parseJSON('<?php echo $app['request']->cookies->get('last_act') ?>');
           execLastAct(lastAct);
     <?php
 }
@@ -667,7 +663,7 @@ if ($baskStatus == '0') {
 });
     </script>
 <?php
-if (trim($registry->get('GV_googleAnalytics')) != '') {
+if (trim($app['phraseanet.registry']->get('GV_googleAnalytics')) != '') {
     ?>
         <script type="text/javascript">
         var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
@@ -675,7 +671,7 @@ if (trim($registry->get('GV_googleAnalytics')) != '') {
         </script>
         <script type="text/javascript">
         try {
-            var pageTracker = _gat._getTracker("<?php echo $registry->get('GV_googleAnalytics') ?>");
+            var pageTracker = _gat._getTracker("<?php echo $app['phraseanet.registry']->get('GV_googleAnalytics') ?>");
             pageTracker._setDomainName("none");
             pageTracker._setAllowLinker(true);
             pageTracker._trackPageview();

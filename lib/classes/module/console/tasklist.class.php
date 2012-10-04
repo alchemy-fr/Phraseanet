@@ -32,22 +32,14 @@ class module_console_tasklist extends Command
         return $this;
     }
 
-    public function requireSetup()
-    {
-        return false;
-    }
-
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        try {
-            $this->checkSetup();
-        } catch (\RuntimeException $e) {
+        if (!$this->container['phraseanet.configuration-tester']->isInstalled()) {
             return self::EXITCODE_SETUP_ERROR;
         }
 
         try {
-            $appbox = $this->getService('phraseanet.appbox');
-            $task_manager = new task_manager($appbox);
+            $task_manager = new task_manager($this->container);
             $tasks = $task_manager->getTasks();
 
             if (count($tasks) === 0) {
@@ -64,7 +56,7 @@ class module_console_tasklist extends Command
         }
     }
 
-    protected function printTask(task_abstract $task, OutputInterface &$output)
+    protected function printTask(task_abstract $task, OutputInterface $output)
     {
         $message = $task->getID() . "\t" . ($task->getState() ) . "\t" . $task->getTitle();
         $output->writeln($message);

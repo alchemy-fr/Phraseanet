@@ -38,23 +38,20 @@ class WorkZone extends Helper
      */
     public function getContent($sort)
     {
-        $em = $this->getCore()->getEntityManager();
-        $current_user = $this->getCore()->getAuthenticatedUser();
-
         /* @var $repo_baskets \Doctrine\Repositories\BasketRepository */
-        $repo_baskets = $em->getRepository('Entities\Basket');
+        $repo_baskets = $this->app['EM']->getRepository('Entities\Basket');
 
         $sort = in_array($sort, array('date', 'name')) ? $sort : 'name';
 
         $ret = new \Doctrine\Common\Collections\ArrayCollection();
 
-        $baskets = $repo_baskets->findActiveByUser($current_user, $sort);
-        $validations = $repo_baskets->findActiveValidationByUser($current_user, $sort);
+        $baskets = $repo_baskets->findActiveByUser($this->app['phraseanet.user'], $sort);
+        $validations = $repo_baskets->findActiveValidationByUser($this->app['phraseanet.user'], $sort);
 
         /* @var $repo_stories \Doctrine\Repositories\StoryWZRepository */
-        $repo_stories = $em->getRepository('Entities\StoryWZ');
+        $repo_stories = $this->app['EM']->getRepository('Entities\StoryWZ');
 
-        $stories = $repo_stories->findByUser($current_user, $sort);
+        $stories = $repo_stories->findByUser($this->app, $this->app['phraseanet.user'], $sort);
 
         $ret->set(self::BASKETS, $baskets);
         $ret->set(self::VALIDATIONS, $validations);

@@ -1,8 +1,8 @@
 
-{% macro format_diapo(record, session) %}
+{% macro format_diapo(record) %}
   {% import 'common/thumbnail.html.twig' as thumbnail %}
   <div class="diapo">
-    {{thumbnail.format(record.get_thumbnail(), 100, 100, '', session, true, false)}}
+    {{thumbnail.format(record.get_thumbnail(), 100, 100, '', true, false)}}
   </div>
 {% endmacro %}
 
@@ -18,7 +18,7 @@
   <div class="PNB10 record_list" style="overflow:auto;">
   {% for content in entry.get_content() %}
     <div class="sortable" style="position:relative;float:left;">
-      {{ _self.format_diapo(content.get_record(), session) }}
+      {{ _self.format_diapo(content.get_record()) }}
       <form>
         <input type="hidden" name="item_id" value="{{content.get_id()}}" />
       </form>
@@ -47,7 +47,7 @@
         <div class="list">
           {% set feed_id = entry.get_feed().get_id() %}
           {% for feed in feeds.get_feeds() %}
-             {% if feed.is_publisher(user) %}
+             {% if feed.is_publisher(app['phraseanet.user']) %}
                 <div class="feed {% if loop.index is odd%}odd{% endif %} {% if feed_id == feed.get_id() %}selected{% endif %}">
                     <span>{{ feed.get_title() }}</span>
                     <input type="hidden" value="{{ feed.get_id() }}"/>

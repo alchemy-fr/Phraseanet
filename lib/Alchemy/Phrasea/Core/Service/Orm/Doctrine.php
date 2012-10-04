@@ -11,9 +11,15 @@
 
 namespace Alchemy\Phrasea\Core\Service\Orm;
 
-use Alchemy\Phrasea\Core;
+use Alchemy\Phrasea\Core\Service\Builder;
 use Alchemy\Phrasea\Core\Service\ServiceAbstract;
+use Doctrine\Common\EventManager;
+use Doctrine\ORM\Mapping\Driver\DriverChain;
+use Doctrine\ORM\Mapping\Driver\YamlDriver;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Configuration as ORMConfiguration;
 use Doctrine\DBAL\Types\Type;
+use Gedmo\Timestampable\TimestampableListener;
 
 /**
  *
@@ -33,9 +39,9 @@ class Doctrine extends ServiceAbstract
     {
         $options = $this->getOptions();
 
-        $config = new \Doctrine\ORM\Configuration();
+        $config = new ORMConfiguration();
 
-        $this->debug = ! ! $options["debug"];
+        $this->debug = !!$options["debug"];
 
         $logServiceName = isset($options["log"]['service']) ? $options["log"]['service'] : false;
 
@@ -45,18 +51,18 @@ class Doctrine extends ServiceAbstract
 
         $cache = isset($options["cache"]) ? $options["cache"] : false;
 
-        if ( ! $cache || $this->debug) {
-            $metaCache = $this->core['CacheService']->get('ORMmetadata', 'Cache\\ArrayCache');
-            $queryCache = $this->core['CacheService']->get('ORMquery', 'Cache\\ArrayCache');
+        if (!$cache || $this->debug) {
+            $metaCache = $this->app['phraseanet.cache-service']->get('ORMmetadata', 'Cache\\ArrayCache');
+            $queryCache = $this->app['phraseanet.cache-service']->get('ORMquery', 'Cache\\ArrayCache');
         } else {
             $query = isset($cache["query"]['service']) ? $cache["query"]['service'] : 'Cache\\ArrayCache';
             $meta = isset($cache["metadata"]['service']) ? $cache["metadata"]['service'] : 'Cache\\ArrayCache';
 
-            $queryCache = $this->core['CacheService']->get('ORMquery', $query);
-            $metaCache = $this->core['CacheService']->get('ORMmetadata', $meta);
+            $queryCache = $this->app['phraseanet.cache-service']->get('ORMquery', $query);
+            $metaCache = $this->app['phraseanet.cache-service']->get('ORMmetadata', $meta);
         }
 
-        $resultCache = $this->core['CacheService']->get('ORMresult', 'Cache\\ArrayCache');
+        $resultCache = $this->app['phraseanet.cache-service']->get('ORMresult', 'Cache\\ArrayCache');
 
         $config->setMetadataCacheImpl($metaCache->getDriver());
 
@@ -67,11 +73,9 @@ class Doctrine extends ServiceAbstract
         //define autoregeneration of proxies base on debug mode
         $config->setAutoGenerateProxyClasses($this->debug);
 
-        $chainDriverImpl = new \Doctrine\ORM\Mapping\Driver\DriverChain();
+        $chainDriverImpl = new DriverChain();
 
-        $driverYaml = new \Doctrine\ORM\Mapping\Driver\YamlDriver(
-                array(__DIR__ . '/../../../../../conf.d/Doctrine')
-        );
+        $driverYaml = new YamlDriver(array(__DIR__ . '/../../../../../conf.d/Doctrine'));
 
         $chainDriverImpl->addDriver($driverYaml, 'Entities');
 
@@ -85,7 +89,7 @@ class Doctrine extends ServiceAbstract
 
         $connexion = isset($options["dbal"]) ? $options["dbal"] : false;
 
-        if ( ! $connexion) {
+        if (!$connexion) {
             throw new \Exception(sprintf(
                     "Missing dbal configuration for '%s' service"
                     , __CLASS__
@@ -94,17 +98,19 @@ class Doctrine extends ServiceAbstract
         }
 
         try {
-            $dbalConf = $this->core->getConfiguration()->getConnexion($connexion)->all();
+            $dbalConf = $this->app['phraseanet.configuration']
+                ->getConnexion($connexion)
+                ->all();
         } catch (\Exception $e) {
             throw new \Exception("Connexion '%s' is not declared");
         }
 
-        $evm = new \Doctrine\Common\EventManager();
+        $evm = new EventManager();
 
-        $evm->addEventSubscriber(new \Gedmo\Timestampable\TimestampableListener());
+        $evm->addEventSubscriber(new TimestampableListener());
 
         try {
-            $this->entityManager = \Doctrine\ORM\EntityManager::create($dbalConf, $config, $evm);
+            $this->entityManager = EntityManager::create($dbalConf, $config, $evm);
         } catch (\Exception $e) {
             throw new \Exception(sprintf(
                     "Failed to create doctrine service for the following reason '%s'"
@@ -123,23 +129,23 @@ class Doctrine extends ServiceAbstract
 
         $platform = $this->entityManager->getConnection()->getDatabasePlatform();
 
-        if ( ! Type::hasType('blob')) {
+        if (!Type::hasType('blob')) {
             Type::addType('blob', 'Types\Blob');
         }
 
-        if ( ! Type::hasType('enum')) {
+        if (!Type::hasType('enum')) {
             Type::addType('enum', 'Types\Enum');
         }
 
-        if ( ! Type::hasType('longblob')) {
+        if (!Type::hasType('longblob')) {
             Type::addType('longblob', 'Types\LongBlob');
         }
 
-        if ( ! Type::hasType('varbinary')) {
+        if (!Type::hasType('varbinary')) {
             Type::addType('varbinary', 'Types\VarBinary');
         }
 
-        if ( ! Type::hasType('binary')) {
+        if (!Type::hasType('binary')) {
             Type::addType('binary', 'Types\Binary');
         }
 
@@ -155,7 +161,7 @@ class Doctrine extends ServiceAbstract
     private function getLog($serviceName)
     {
         try {
-            $configuration = $this->core->getConfiguration()->getService($serviceName);
+            $configuration = $this->app['phraseanet.configuration']->getService($serviceName);
         } catch (\Exception $e) {
             $message = sprintf(
                 "%s from %s service"
@@ -170,7 +176,7 @@ class Doctrine extends ServiceAbstract
 
         $type = $configuration->get("type");
 
-        if ( ! in_array($type, $this->loggers)) {
+        if (!in_array($type, $this->loggers)) {
             throw new \Exception(sprintf(
                     "The logger type '%s' declared in %s service is not valid.
           Available types are %s."
@@ -181,7 +187,7 @@ class Doctrine extends ServiceAbstract
             );
         }
 
-        $service = Core\Service\Builder::create($this->core, $configuration);
+        $service = Builder::create($this->app, $configuration);
 
         return $service->getDriver();
     }

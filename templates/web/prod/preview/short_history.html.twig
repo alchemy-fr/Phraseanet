@@ -22,30 +22,30 @@
         {% elseif action == 'edit' %}
           {% trans 'report::Edition des meta-donnees' %}
         {% elseif action == 'collection' %}
-          {% set dest = done['final']|implode(', ') %}
-          {% set coll_name = dest|bas_names %}
+          {% set dest = done['final']|join(', ') %}
+          {% set coll_name = dest|bas_names(app) %}
           {% trans %}report::Changement de collection vers : {{coll_name}}{% endtrans %}
         {% elseif action == 'status' %}
           {% trans 'report::Edition des status' %}
         {% elseif action == 'print' %}
-          {% set format = done['final']|implode(', ') %}
+          {% set format = done['final']|join(', ') %}
           {% trans %}report::Impression des formats : {{format}}{% endtrans %}
         {% elseif action == 'substit' %}
-          {% set dest = done['final']|implode(', ') %}
+          {% set dest = done['final']|join(', ') %}
           {% trans %}report::Substitution de {{dest}}{% endtrans %}
         {% elseif action == 'publish' %}
-          {% set dest = done['final']|implode(', ') %}
+          {% set dest = done['final']|join(', ') %}
           {% trans %}report::Publication de {{dest}}{% endtrans %}
         {% elseif action == 'download' %}
-          {% set dest = done['final']|implode(', ') %}
+          {% set dest = done['final']|join(', ') %}
           {% trans %}report::Telechargement de {{dest}}{% endtrans %}
         {% elseif action == 'mail' %}
-          {% set dest = done['comment']|implode(', ') %}
-          {% set content = done['final']|implode(', ') %}
+          {% set dest = done['comment']|join(', ') %}
+          {% set content = done['final']|join(', ') %}
           {% trans %}Envoi par mail a {{dest}} de {{content}}{% endtrans %}
         {% elseif action == 'ftp' %}
-          {% set dest = done['comment']|implode(', ') %}
-          {% set content = done['final']|implode(', ') %}
+          {% set dest = done['comment']|join(', ') %}
+          {% set content = done['final']|join(', ') %}
           {% trans %}Envoi par ftp a {{dest}} de {{content}}{% endtrans %}
         {% elseif action == 'delete' %}
           {% trans 'report::supression du document' %}
@@ -55,8 +55,8 @@
           {% trans 'report::Modification du document -- je ne me souviens plus de quoi...' %}
         {% endif %}
           <span class="actor">
-          {% if user.ACL().has_right_on_base(record.get_base_id(), 'canreport') %}
-            {% if done['user'] and done['user'].get_id() != session.get_usr_id() %}
+          {% if app['phraseanet.user'].ACL().has_right_on_base(record.get_base_id(), 'canreport') %}
+            {% if done['user'] and done['user'].get_id() != app['phraseanet.user'].get_id() %}
               {% set user_infos = done['user'].get_display_name() %}
               {% trans %}report:: par {{ user_infos }}{% endtrans %}
             {% endif %}

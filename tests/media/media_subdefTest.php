@@ -1,5 +1,8 @@
 <?php
 
+use Symfony\Component\Filesystem\Filesystem;
+use Alchemy\Phrasea\Border\File;
+
 require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
 
 class media_subdefTest extends \PhraseanetPHPUnitAbstract
@@ -31,14 +34,10 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
     {
         parent::setUpBeforeClass();
 
-        $mediavorus = new \MediaVorus\MediaVorus();
-        $file = new Alchemy\Phrasea\Border\File($mediavorus->guess(new \SplFileInfo(__DIR__ . "/../testfiles/iphone_pic.jpg")), self::$collection);
+        $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . "/../testfiles/iphone_pic.jpg"), self::$DI['collection']);
 
-        $logger = new \Monolog\Logger('test');
-        $logger->pushHandler(new \Monolog\Handler\NullHandler());
-
-        self::$recordonbleu = record_adapter::createFromFile($file);
-        self::$recordonbleu->generate_subdefs(self::$recordonbleu->get_databox(), $logger);
+        self::$recordonbleu = record_adapter::createFromFile($file, self::$DI['app']);
+        self::$recordonbleu->generate_subdefs(self::$recordonbleu->get_databox(), self::$DI['app']);
 
         foreach (self::$recordonbleu->get_subdefs() as $subdef) {
 
@@ -57,7 +56,7 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
         }
 
         self::$objectNotPresent->remove_file();
-        self::$storyPresent = self::$records['record_story_1']->get_subdef('thumbnail');
+        self::$storyPresent = self::$DI['record_story_1']->get_subdef('thumbnail');
     }
 
     /**
@@ -267,7 +266,7 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
         $width_before = self::$objectPresent->get_width();
         $height_before = self::$objectPresent->get_height();
 
-        self::$objectPresent->rotate(90);
+        self::$objectPresent->rotate(90, self::$DI['app']['media-alchemyst'], self::$DI['app']['mediavorus']);
 
         $this->assertEquals($width_before, self::$objectPresent->get_height());
         $this->assertEquals($height_before, self::$objectPresent->get_width());
@@ -280,7 +279,7 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
      */
     public function testRotateOnSubstitution()
     {
-        self::$objectNotPresent->rotate(90);
+        self::$objectNotPresent->rotate(90, self::$DI['app']['media-alchemyst'], self::$DI['app']['mediavorus']);
     }
 
     /**
@@ -288,7 +287,7 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
      */
     public function testReadTechnicalDatas()
     {
-        $technical_datas = self::$objectPresent->readTechnicalDatas();
+        $technical_datas = self::$objectPresent->readTechnicalDatas(self::$DI['app']['mediavorus']);
         $this->assertArrayHasKey(media_subdef::TC_DATA_WIDTH, $technical_datas);
         $this->assertArrayHasKey(media_subdef::TC_DATA_HEIGHT, $technical_datas);
         $this->assertArrayHasKey(media_subdef::TC_DATA_CHANNELS, $technical_datas);
@@ -296,7 +295,7 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
         $this->assertArrayHasKey(media_subdef::TC_DATA_MIMETYPE, $technical_datas);
         $this->assertArrayHasKey(media_subdef::TC_DATA_FILESIZE, $technical_datas);
 
-        $technical_datas = self::$objectNotPresent->readTechnicalDatas();
+        $technical_datas = self::$objectNotPresent->readTechnicalDatas(self::$DI['app']['mediavorus']);
         $this->assertEquals(array(), $technical_datas);
     }
 }

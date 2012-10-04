@@ -2,6 +2,8 @@
 
 namespace Alchemy\Phrasea\Border\Checker;
 
+use Alchemy\Phrasea\Border\File;
+
 require_once __DIR__ . '/../../../../PhraseanetPHPUnitAbstract.class.inc';
 
 class MediaTypeTest extends \PhraseanetPHPUnitAbstract
@@ -18,7 +20,7 @@ class MediaTypeTest extends \PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new MediaType(array('mediatypes' => array(MediaType::TYPE_IMAGE)));
+        $this->object = new MediaType(self::$DI['app'], array('mediatypes' => array(MediaType::TYPE_IMAGE)));
     }
 
     /**
@@ -26,17 +28,17 @@ class MediaTypeTest extends \PhraseanetPHPUnitAbstract
      */
     public function testCheck()
     {
-        $media = self::$core['mediavorus']->guess(new \SplFileInfo(__DIR__ . '/../../../../testfiles/test001.CR2'));
-        $file = new \Alchemy\Phrasea\Border\File($media, self::$collection);
-        $response = $this->object->check(self::$core['EM'], $file);
+        $media = self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../testfiles/test001.CR2');
+        $file = new File(self::$DI['app'], $media, self::$DI['collection']);
+        $response = $this->object->check(self::$DI['app']['EM'], $file);
 
         $this->assertTrue($response->isOk());
 
-        $object = new MediaType(array('mediatypes' => array(MediaType::TYPE_VIDEO, MediaType::TYPE_AUDIO)));
+        $object = new MediaType(self::$DI['app'], array('mediatypes' => array(MediaType::TYPE_VIDEO, MediaType::TYPE_AUDIO)));
 
-        $media = self::$core['mediavorus']->guess(new \SplFileInfo(__DIR__ . '/../../../../testfiles/test001.CR2'));
-        $file = new \Alchemy\Phrasea\Border\File($media, self::$collection);
-        $response = $object->check(self::$core['EM'], $file);
+        $media = self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../testfiles/test001.CR2');
+        $file = new File(self::$DI['app'], $media, self::$DI['collection']);
+        $response = $object->check(self::$DI['app']['EM'], $file);
 
         $this->assertFalse($response->isOk());
     }
@@ -54,6 +56,6 @@ class MediaTypeTest extends \PhraseanetPHPUnitAbstract
      */
     public function testContructorInvalidArgumentException()
     {
-        new MediaType(array(array(MediaType::TYPE_IMAGE)));
+        new MediaType(self::$DI['app'], array(array(MediaType::TYPE_IMAGE)));
     }
 }

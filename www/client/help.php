@@ -13,8 +13,8 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-$help_lng = $session->get_I18n();
-if ( ! in_array($session->get_I18n(), array('fr', 'en', 'us')))
+$help_lng = $app['locale.I18n'];
+if ( ! in_array($app['locale.I18n'], array('fr', 'en', 'us')))
     $help_lng = 'fr';
 
 if ($help_lng == 'fr') {

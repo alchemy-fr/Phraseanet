@@ -6,51 +6,134 @@ use Silex\Application;
 
 class Firewall
 {
+    private $app;
 
-    public function requireSetUp(Application $app)
+    public function __construct(Application $app)
     {
-        if ( ! \setup::is_installed()) {
-
-            return $app->redirect("/setup/");
-        }
+        $this->app = $app;
     }
 
-    public function requireAdmin(Application $app)
+    public function requireSetUp()
     {
-        if (null !== $response = $this->requireAuthentication($app)) {
-
-            return $response;
+        if (!$this->app['phraseanet.configuration-tester']->isInstalled()) {
+            $this->app->abort(302, 'Phraseanet is not installed', array('X-Phraseanet-Redirect' => '/setup/'));
         }
 
-        if ( ! $app['phraseanet.core']->getAuthenticatedUser()->is_admin()) {
-            $app->abort(403);
-        }
+        return null;
     }
 
-    public function requireAuthentication(Application $app)
+    public function requireAdmin()
     {
-        if (false === $app['phraseanet.core']->isAuthenticated()) {
+        $this->requireNotGuest();
 
-            return $app->redirect('/login/');
+        if (!$this->app['phraseanet.user']->ACL()->is_admin()) {
+            $this->app->abort(403, 'Admin role is required');
         }
 
-        if ($app['phraseanet.core']->getAuthenticatedUser()->is_guest()) {
-
-            return $app->redirect('/login/');
-        }
-
-        try {
-            $session = $app['phraseanet.appbox']->get_session();
-            $session->open_phrasea_session();
-        } catch (\Exception $e) {
-
-            return $app->redirect('/login/logout/');
-        }
+        return $this;
     }
 
-    public function requireOrdersAdmin(Application $app) {
-        if ( false === ! ! count($app['phraseanet.core']->getAuthenticatedUser()->ACL()->get_granted_base(array('order_master')))) {
-            $app->abort(403);
+    public function requireAccessToModule($module)
+    {
+        $this->requireAuthentication();
+
+        if (!$this->app['phraseanet.user']->ACL()->has_access_to_module($module)) {
+            $this->app->abort(403, 'You do not have required rights');
         }
+
+        return $this;
+    }
+
+    public function requireAccessToSbas($sbas_id)
+    {
+        $this->requireAuthentication();
+
+        if (!$this->app['phraseanet.user']->ACL()->has_access_to_sbas($sbas_id)) {
+            $this->app->abort(403, 'You do not have required rights');
+        }
+
+        return $this;
+    }
+
+    public function requireAccessToBase($base_id)
+    {
+        $this->requireAuthentication();
+
+        if (!$this->app['phraseanet.user']->ACL()->has_access_to_base($base_id)) {
+            $this->app->abort(403, 'You do not have required rights');
+        }
+
+        return $this;
+    }
+
+    public function requireRight($right)
+    {
+        $this->requireAuthentication();
+
+        if (!$this->app['phraseanet.user']->ACL()->has_right($right)) {
+            $this->app->abort(403, 'You do not have required rights');
+        }
+
+        return $this;
+    }
+
+    public function requireRightOnBase($base_id, $right)
+    {
+        $this->requireAuthentication();
+
+        if (!$this->app['phraseanet.user']->ACL()->has_right_on_base($base_id, $right)) {
+            $this->app->abort(403, 'You do not have required rights');
+        }
+
+        return $this;
+    }
+
+    public function requireRightOnSbas($sbas_id, $right)
+    {
+        $this->requireAuthentication();
+
+        if (!$this->app['phraseanet.user']->ACL()->has_right_on_sbas($sbas_id, $right)) {
+            $this->app->abort(403, 'You do not have required rights');
+        }
+
+        return $this;
+    }
+
+    public function requireNotGuest()
+    {
+        $this->requireAuthentication();
+
+        if ($this->app['phraseanet.user']->is_guest()) {
+            $this->app->abort(403, 'Guests do not have admin role');
+        }
+
+        return $this;
+    }
+
+    public function requireAuthentication()
+    {
+        if (!$this->app->isAuthenticated()) {
+            $this->app->abort(302, 'You are not authenticated', array('X-Phraseanet-Redirect' => '/login/'));
+        }
+
+        return $this;
+    }
+
+    public function requireNotAuthenticated()
+    {
+        if ($this->app->isAuthenticated()) {
+            $this->app->abort(302, 'You are authenticated', array('X-Phraseanet-Redirect' => '/prod/'));
+        }
+
+        return $this;
+    }
+
+    public function requireOrdersAdmin()
+    {
+        if (false === !!count($this->app['phraseanet.user']->ACL()->get_granted_base(array('order_master')))) {
+            $this->app->abort(403, 'You are not an order admin');
+        }
+
+        return $this;
     }
 }

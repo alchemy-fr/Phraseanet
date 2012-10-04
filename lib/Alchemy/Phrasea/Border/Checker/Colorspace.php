@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Border\Checker;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Doctrine\ORM\EntityManager;
 
@@ -22,13 +23,14 @@ class Colorspace extends AbstractChecker
     const COLORSPACE_CMYK = 'cmyk';
     const COLORSPACE_GRAYSCALE = 'grayscale';
 
-    public function __construct(array $options)
+    public function __construct(Application $app, array $options)
     {
         if ( ! isset($options['colorspaces'])) {
             throw new \InvalidArgumentException('Missing "colorspaces" options');
         }
 
         $this->colorspaces = array_map('strtolower', (array) $options['colorspaces']);
+        parent::__construct($app);
     }
 
     public function check(EntityManager $em, File $file)

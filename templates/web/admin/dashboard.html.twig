@@ -146,9 +146,9 @@
 
         <h2>{% trans 'setup:: Serveur Memcached' %}</h2>
         <ul class="setup">
-            {% if core.getCache().isServer() %}
-                {% set stats = core.getCache().getStats() %}
-                <li>{% trans 'setup::Serveur actif sur %s' %} {{registry.get('GV_cache_server_host')}} : {{registry.get('GV_cache_server_port')}}</li>
+            {% if app['cache'].isServer() %}
+                {% set stats = app['cache'].getStats() %}
+                <li>{% trans 'setup::Serveur actif sur %s' %} {{app['phraseanet.registry'].get('GV_cache_server_host')}} : {{app['phraseanet.registry'].get('GV_cache_server_port')}}</li>
                 <table>
                     {% for name, stat in stats%}
                         <tr class="even"><td>{{ name }}</td><td> {{ stat }}</td></tr>
@@ -158,7 +158,7 @@
                 <li class="non-blocker">{% trans 'setup::Aucun serveur memcached rattache.' %}</li>
             {% endif %}
         </ul>
-        {% if core.getCache().isServer() %}
+        {% if app['cache'].isServer() %}
             <form id="cache_flusher" method="post" action="/admin/dashboard/flush-cache/">
                 <input type="submit" id="flush_button" class="btn btn-warning" value="Flush All Caches" />
             </form>
@@ -166,10 +166,10 @@
 
         <h2>{% trans 'OPCode cache' %}</h2>
         <ul class="setup">
-            {% if core['OpcodeCache'].getName() == 'array' %}
+            {% if app['opcode-cache'].getName() == 'array' %}
                 <li class="non-blocker">{% trans 'Array opcode cache is activated, but phrasea strongly recommand the use of APC or Xcache in production' %}</li>
             {% else %}
-                <li>{{ core['OpcodeCache'].getName() }}</li>
+                <li>{{ app['opcode-cache'].getName() }}</li>
             {% endif %}
         </ul>
 

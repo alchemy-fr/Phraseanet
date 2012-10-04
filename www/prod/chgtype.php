@@ -8,21 +8,20 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-/* @var $Core \Alchemy\Phrasea\Core */
-$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
-$appbox = appbox::get_instance($Core);
-$session = $appbox->get_session();
+
+require_once __DIR__ . "/../../lib/bootstrap.php";
+$app = new Application();
 phrasea::headers();
 
 $request = http_request::getInstance();
 $parm = $request->get_parms("ACT", "typelst");
-
-$user = $Core->getAuthenticatedUser();
 
 if ($parm['ACT'] == 'SEND') {
     $lst = $parm['typelst'];
@@ -34,7 +33,7 @@ if ($parm['ACT'] == 'SEND') {
             if (strpos($el[0], 'img') !== false) {
                 $basrec = explode('_', substr($el[0], 3));
                 try {
-                    $record = new record_adapter($basrec[0], $basrec[1]);
+                    $record = new record_adapter($app, $basrec[0], $basrec[1]);
                     $record->set_type($el[1]);
                     unset($record);
                 } catch (Exception $e) {
@@ -44,9 +43,9 @@ if ($parm['ACT'] == 'SEND') {
         }
     }
     ?>
-    <html lang="<?php echo $session->get_I18n(); ?>">
+    <html lang="<?php echo $app['locale.I18n']; ?>">
         <head>
-            <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/prod/<?php echo $user->getPrefs('css') ?>/prodcolor.css" />
+            <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/prod/<?php echo $app['phraseanet.user']->getPrefs('css') ?>/prodcolor.css" />
         </head>
         <body onload="parent.hideDwnl();">
     <?php

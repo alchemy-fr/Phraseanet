@@ -41,8 +41,6 @@ class Manage extends Helper
     public function export()
     {
         $request = $this->request;
-        $appbox = \appbox::get_instance($this->core);
-        $session = $appbox->get_session();
 
         $offset_start = (int) $request->get('offset_start');
         $offset_start = $offset_start < 0 ? 0 : $offset_start;
@@ -58,8 +56,7 @@ class Manage extends Helper
             , 'offset_start' => 0
         );
 
-        $user = \User_Adapter::getInstance($session->get_usr_id(), $appbox);
-        $query = new \User_Query($appbox);
+        $query = new \User_Query($this->app);
 
         if (is_array($this->query_parms['base_id']))
             $query->on_base_ids($this->query_parms['base_id']);
@@ -70,7 +67,7 @@ class Manage extends Helper
             ->like($this->query_parms['like_field'], $this->query_parms['like_value'])
             ->get_inactives($this->query_parms['inactives'])
             ->include_templates(false)
-            ->on_bases_where_i_am($user->ACL(), array('canadmin'))
+            ->on_bases_where_i_am($this->app['phraseanet.user']->ACL(), array('canadmin'))
             ->execute();
 
         return $this->results->get_results();
@@ -79,7 +76,6 @@ class Manage extends Helper
     public function search()
     {
         $request = $this->request;
-        $appbox = \appbox::get_instance($this->core);
 
         $offset_start = (int) $this->request->get('offset_start');
         $offset_start = $offset_start < 0 ? 0 : $offset_start;
@@ -98,8 +94,7 @@ class Manage extends Helper
             , 'offset_start' => $offset_start
         );
 
-        $user = $this->getCore()->getAuthenticatedUser();
-        $query = new \User_Query($appbox);
+        $query = new \User_Query($this->app);
 
         if (is_array($this->query_parms['base_id']))
             $query->on_base_ids($this->query_parms['base_id']);
@@ -110,22 +105,22 @@ class Manage extends Helper
             ->like($this->query_parms['like_field'], $this->query_parms['like_value'])
             ->get_inactives($this->query_parms['inactives'])
             ->include_templates(true)
-            ->on_bases_where_i_am($user->ACL(), array('canadmin'))
+            ->on_bases_where_i_am($this->app['phraseanet.user']->ACL(), array('canadmin'))
             ->limit($offset_start, $results_quantity)
             ->execute();
 
         try {
-            $invite_id = \User_Adapter::get_usr_id_from_login('invite');
-            $invite = \User_Adapter::getInstance($invite_id, $appbox);
+            $invite_id = \User_Adapter::get_usr_id_from_login($this->app, 'invite');
+            $invite = \User_Adapter::getInstance($invite_id, $this->app);
         } catch (\Exception $e) {
-            $invite = \User_Adapter::create($appbox, 'invite', 'invite', '', false);
+            $invite = \User_Adapter::create($this->app, 'invite', 'invite', '', false);
         }
 
         try {
-            $autoregister_id = \User_Adapter::get_usr_id_from_login('autoregister');
-            $autoregister = \User_Adapter::getInstance($autoregister_id, $appbox);
+            $autoregister_id = \User_Adapter::get_usr_id_from_login($this->app, 'autoregister');
+            $autoregister = \User_Adapter::getInstance($autoregister_id, $this->app);
         } catch (\Exception $e) {
-            $autoregister = \User_Adapter::create($appbox, 'autoregister', 'autoregister', '', false);
+            $autoregister = \User_Adapter::create($this->app, 'autoregister', 'autoregister', '', false);
         }
 
         foreach ($this->query_parms as $k => $v) {
@@ -133,7 +128,7 @@ class Manage extends Helper
                 $this->query_parms[$k] = false;
         }
 
-        $query = new \User_Query($appbox);
+        $query = new \User_Query($this->app);
         $templates = $query
                 ->only_templates(true)
                 ->execute()->get_results();
@@ -155,9 +150,7 @@ class Manage extends Helper
             throw new \Exception_InvalidArgument(_('Invalid mail address'));
         }
 
-        $appbox = \appbox::get_instance($this->core);
-
-        $conn = $appbox->get_connection();
+        $conn = $this->app['phraseanet.appbox']->get_connection();
         $sql = 'SELECT usr_id FROM usr WHERE usr_mail = :email';
         $stmt = $conn->prepare($sql);
         $stmt->execute(array(':email' => $email));
@@ -168,27 +161,26 @@ class Manage extends Helper
             $sendCredentials = ! ! $this->request->get('send_credentials', false);
             $validateMail = ! ! $this->request->get('validate_mail', false);
 
-            $createdUser = \User_Adapter::create($appbox, $email, \random::generatePassword(16), $email, false, false);
+            $createdUser = \User_Adapter::create($this->app, $email, \random::generatePassword(16), $email, false, false);
             /* @var $createdUser \User_Adapter */
             if ($validateMail) {
                 $createdUser->set_mail_locked(true);
-                \mail::mail_confirmation($email, $createdUser->get_id());
+                \mail::mail_confirmation($this->app, $email, $createdUser->get_id());
             }
 
             if ($sendCredentials) {
-                $urlToken = \random::getUrlToken(\random::TYPE_PASSWORD, $createdUser->get_id());
-                $registry = \bootstrap::getCore()->getRegistry();
+                $urlToken = \random::getUrlToken($this->app, \random::TYPE_PASSWORD, $createdUser->get_id());
 
                 if (false !== $urlToken) {
-                    $url = sprintf('%slogin/forgot-password/?token=%s', $registry->get('GV_ServerName'), $urlToken);
-                    \mail::send_credentials($url, $createdUser->get_login(), $createdUser->get_email());
+                    $url = sprintf('%slogin/forgot-password/?token=%s', $this->app['phraseanet.registry']->get('GV_ServerName'), $urlToken);
+                    \mail::send_credentials($this->app, $url, $createdUser->get_login(), $createdUser->get_email());
                 }
             }
 
             $this->usr_id = $createdUser->get_id();
         } else {
             $this->usr_id = $row['usr_id'];
-            $createdUser = \User_Adapter::getInstance($this->usr_id, $appbox);
+            $createdUser = \User_Adapter::getInstance($this->usr_id, $this->app);
         }
 
         return $createdUser;
@@ -202,12 +194,9 @@ class Manage extends Helper
             throw new \Exception_InvalidArgument(_('Invalid template name'));
         }
 
-        $appbox = \appbox::get_instance($this->core);
-        $user = $this->getCore()->getAuthenticatedUser();
-
-        $created_user = \User_Adapter::create($appbox, $name, \random::generatePassword(16), null, false, false);
-        $created_user->set_template($user);
-        $this->usr_id = $user->get_id();
+        $created_user = \User_Adapter::create($this->app, $name, \random::generatePassword(16), null, false, false);
+        $created_user->set_template($this->app['phraseanet.user']);
+        $this->usr_id = $this->app['phraseanet.user']->get_id();
 
         return $created_user;
     }

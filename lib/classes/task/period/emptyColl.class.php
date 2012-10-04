@@ -48,7 +48,7 @@ class task_period_emptyColl extends task_appboxAbstract
 
             return array();
         }
-        $collection = collection::get_from_base_id($this->base_id);
+        $collection = collection::get_from_base_id($this->dependencyContainer, $this->base_id);
         $this->total_records = $collection->get_record_amount();
         $collection->empty_collection(200);
         $this->records_done += $this->total_records;

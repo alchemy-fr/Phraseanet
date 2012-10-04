@@ -12,7 +12,7 @@ class registryTest extends PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = registry::get_instance();
+        $this->object = self::$DI['app']['phraseanet.registry'];
     }
 
     public function testGet()

@@ -1,5 +1,9 @@
 <?php
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Service\Builder;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
+
 require_once __DIR__ . '/../../../../PhraseanetPHPUnitAbstract.class.inc';
 
 class LogBuilderTest extends PhraseanetPHPUnitAbstract
@@ -7,12 +11,12 @@ class LogBuilderTest extends PhraseanetPHPUnitAbstract
 
     public function testCreateException()
     {
-        $configuration = new Symfony\Component\DependencyInjection\ParameterBag\ParameterBag(
+        $configuration = new ParameterBag(
                 array("type"    => "unknow", "options" => array())
         );
 
         try {
-            $service = Alchemy\Phrasea\Core\Service\Builder::create(self::$core, $configuration);
+            $service = Builder::create(self::$DI['app'], $configuration);
             $this->fail("An exception should be raised");
         } catch (\Exception $e) {
 
@@ -21,7 +25,7 @@ class LogBuilderTest extends PhraseanetPHPUnitAbstract
 
     public function testCreate()
     {
-        $configuration = new Symfony\Component\DependencyInjection\ParameterBag\ParameterBag(
+        $configuration = new ParameterBag(
                 array("type"    => "Log\\Doctrine\\Monolog", "options" => array(
                         "handler"  => "rotate"
                         , "filename" => "test"
@@ -32,17 +36,17 @@ class LogBuilderTest extends PhraseanetPHPUnitAbstract
                 )
         );
 
-        $service = Alchemy\Phrasea\Core\Service\Builder::create(self::$core, $configuration);
+        $service = Builder::create(self::$DI['app'], $configuration);
         $this->assertInstanceOf("\Alchemy\Phrasea\Core\Service\ServiceAbstract", $service);
     }
 
     public function testCreateNamespace()
     {
-        $configuration = new Symfony\Component\DependencyInjection\ParameterBag\ParameterBag(
+        $configuration = new ParameterBag(
                 array("type"    => "Log\\Doctrine\\Phpecho", "options" => array())
         );
 
-        $service = Alchemy\Phrasea\Core\Service\Builder::create(self::$core, $configuration);
+        $service = Builder::create(self::$DI['app'], $configuration);
         $this->assertInstanceOf("\Alchemy\Phrasea\Core\Service\ServiceAbstract", $service);
     }
 }

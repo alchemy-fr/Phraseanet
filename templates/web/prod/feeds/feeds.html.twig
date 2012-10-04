@@ -54,7 +54,7 @@
     {% set entries = feed.get_entries(offset_start,5).get_entries() %}
 
     {% for entry in entries %}
-        {{ _entry.format(feed, entry, user, session) }}
+        {{ _entry.format(feed, entry) }}
     {% endfor %}
     {% if entries|length == 0 %}
         <p>{% trans 'Aucune entree pour le moment' %}</p>

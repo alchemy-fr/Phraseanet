@@ -8,18 +8,18 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-/* @var $Core \Alchemy\Phrasea\Core */
-$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
+
+require_once __DIR__ . "/../../lib/bootstrap.php";
 phrasea::headers(200, true);
 
-$appbox = appbox::get_instance($Core);
-$session = $appbox->get_session();
-$registry = $appbox->get_registry();
+$app = new Application();
 
 $request = http_request::getInstance();
 $parm = $request->get_parms(
@@ -40,7 +40,7 @@ if ($parm['ofm'] == 'toscreen') {
     //header('Content-Disposition: attachment; filename="topics.xml"');
 }
 
-$lng = Session_Handler::get_locale();
+$lng = $app['locale'];
 
 if ($parm["dlg"]) {
     $opener = "window.dialogArguments.win";
@@ -85,7 +85,7 @@ switch ($parm['obrf']) {
 
 $now = date('YmdHis');
 ?>
-<html lang="<?php echo $session->get_I18n(); ?>">
+<html lang="<?php echo $app['locale.I18n']; ?>">
     <head>
         <title><?php echo p4string::MakeString(_('thesaurus:: export en topics')) ?></title>
 
@@ -116,7 +116,7 @@ $now = date('YmdHis');
 if ($parm["typ"] == "TH" || $parm["typ"] == "CT") {
     $loaded = false;
     try {
-        $databox = $appbox->get_databox((int) $parm['bid']);
+        $databox = $app['phraseanet.appbox']->get_databox((int) $parm['bid']);
         if ($parm["typ"] == "TH") {
             $domth = $databox->get_dom_thesaurus();
         } else {
@@ -154,9 +154,9 @@ if ($parm["typ"] == "TH" || $parm["typ"] == "CT") {
                 } elseif ($parm['ofm'] == 'tofiles') {
                     $fname = 'topics_' . $lng . '.xml';
 
-                    @rename($registry->get('GV_RootPath') . 'config/topics/' . $fname, $registry->get('GV_RootPath') . 'config/topics/topics_' . $lng . '_BKP_' . $now . '.xml');
+                    @rename($app['phraseanet.registry']->get('GV_RootPath') . 'config/topics/' . $fname, $app['phraseanet.registry']->get('GV_RootPath') . 'config/topics/topics_' . $lng . '_BKP_' . $now . '.xml');
 
-                    if ($dom->save($registry->get('GV_RootPath') . 'config/topics/' . $fname))
+                    if ($dom->save($app['phraseanet.registry']->get('GV_RootPath') . 'config/topics/' . $fname))
                         echo p4string::MakeString(sprintf(_('thesaurus:: fichier genere : %s'), $fname));
                     else
                         echo p4string::MakeString(_('thesaurus:: erreur lors de l\'enregsitrement du fichier'));

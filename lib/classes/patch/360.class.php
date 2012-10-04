@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -51,7 +53,7 @@ class patch_360 implements patchInterface
         return $this->concern;
     }
 
-    public function apply(base &$appbox)
+    public function apply(base $appbox, Application $app)
     {
         $tables = array('StoryWZ', 'ValidationDatas', 'ValidationParticipants', 'ValidationSessions', 'BasketElements', 'Baskets');
 
