@@ -56,6 +56,7 @@ use Alchemy\Phrasea\Controller\Prod\WorkZone;
 use Alchemy\Phrasea\Controller\Utils\ConnectionTest;
 use Alchemy\Phrasea\Controller\Utils\PathFileTest;
 use Silex\Application as SilexApp;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
@@ -66,6 +67,17 @@ return call_user_func(function($environment = null) {
 
     $app->before(function () use ($app) {
         $app['firewall']->requireSetup($app);
+    });
+
+    $app->before(function(Request $request) use ($app) {
+        if (!$app->isAuthenticated() && $request->cookies->has('persistent')) {
+            try {
+                $auth = new \Session_Authentication_PersistentCookie($app, $request->cookies->get('persistent'));
+                $app->openAccount($auth, $auth->getSessionId());
+            } catch (\Exception $e) {
+
+            }
+        }
     });
 
     $app->get('/', function(SilexApp $app) {

@@ -42,25 +42,26 @@ class Session_Authentication_PersistentCookie implements Session_Authentication_
         $this->app= $app;
         $this->persistent_cookie = $persistent_cookie;
 
-        $conn = $this->app['phraseanet.appbox']->get_connection();
-        $sql = 'SELECT usr_id, session_id, nonce, token FROM cache WHERE token = :token';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':token' => $this->persistent_cookie));
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
 
-        if ( ! $row || count($row) == 0) {
-            throw new Exception_Session_WrongToken();
+        $dql = 'SELECT s FROM Entities\Session s
+            WHERE s.token = :token';
+
+        $query = $app['EM']->createQuery($dql);
+        $query->setParameters(array('token'  => $persistent_cookie));
+        $session = $query->getOneOrNullResult();
+
+        if ( ! $session) {
+            throw new \Exception_Session_WrongToken('Persistent cookie value does not have any valid session');
         }
 
         $string = $app['browser']->getBrowser() . '_' . $app['browser']->getPlatform();
 
-        if (User_Adapter::salt_password($this->app, $string, $row['nonce']) !== $row['token']) {
-            throw new Exception_Session_WrongToken();
+        if (\User_Adapter::salt_password($this->app, $string, $session->getNonce()) !== $session->getToken()) {
+            throw new \Exception_Session_WrongToken('Persistent cookie value is corrupted');
         }
 
-        $this->user = User_Adapter::getInstance($row['usr_id'], $this->app);
-        $this->ses_id = (int) $row['session_id'];
+        $this->user = $session->getUser($app);
+        $this->ses_id = $session->getId();
 
         return $this;
     }
