@@ -6,8 +6,6 @@ if (($pos = strpos($cwd, 'lib/conf.d')) !== false)
 
 $EOL = PHP_EOL;
 
-$GV_sit = md5(time() . '--' . mt_rand(1000000, 9999999));
-
 include_once dirname(__FILE__) . "/../../lib/classes/User/Interface.class.php";
 include_once dirname(__FILE__) . "/../../lib/classes/User/Adapter.class.php";
 
@@ -83,14 +81,6 @@ $GV = array(
                 'name'     => 'GV_timezone',
                 'comment'  => _('reglages:: Timezone de l\'installation'),
                 'default'  => 'Europe/Paris',
-                'required' => true
-            ),
-            array(
-                'type'     => \registry::TYPE_STRING,
-                'name'     => 'GV_sit',
-                'comment'  => _('reglages:: Nom de linstallation'),
-                'default'  => $GV_sit,
-                'readonly' => true,
                 'required' => true
             ),
             array(

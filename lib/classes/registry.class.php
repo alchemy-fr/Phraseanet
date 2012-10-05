@@ -65,10 +65,15 @@ class registry implements registryInterface
 
         $this->cache->save('GV_RootPath', dirname(dirname(__DIR__)) . '/');
         if ($configuration->isInstalled()) {
+
+            $config = $configuration->getConfigurations();
+
             $this->cache->save('GV_ServerName', $configuration->getPhraseanet()->get('servername'));
             $this->cache->save('GV_debug', $configuration->isDebug());
             $this->cache->save('GV_maintenance', $configuration->isMaintained());
-
+            if (isset($config['key'])) {
+                $this->cache->save('GV_sit', $config['key']);
+            }
             $binariesFile = __DIR__ . '/../../config/binaries.yml';
 
             if (file_exists($binariesFile)) {

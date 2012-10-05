@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Core\Configuration;
 use Symfony\Component\Yaml\Dumper;
 
 /**
@@ -112,6 +113,25 @@ class patch_373 implements patchInterface
             $stmt->execute(array(':key' => $name));
         }
 
+        $stmt->closeCursor();
+
+        $GV_sit = null;
+
+        $sql = 'SELECT value FROM registry WHERE `key` = :key';
+        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt->execute(array(':key'=>'GV_sit'));
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $configuration = Configuration::build();
+
+        $configs = $configuration->getConfigurations();
+        $configs['key'] = $row['value'];
+        $configuration->setConfigurations($configs);
+
+        $sql = 'DELETE FROM registry WHERE `key` = :key';
+        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt->execute(array(':key'=>'GV_sit'));
         $stmt->closeCursor();
 
         return true;

@@ -492,7 +492,7 @@ class appbox extends base
 
             $Core->getConfiguration()->setConnexions($connexion);
 
-            $services = $Core->getConfiguration()->getConfigurations();
+            $services = $Core->getConfiguration()->getServices();
 
             foreach ($services as $serviceName => $service) {
                 if ($serviceName === "doctrine_prod") {
@@ -504,9 +504,11 @@ class appbox extends base
                     );
                 }
             }
-            $Core->getConfiguration()->setConfigurations($services);
+            $Core->getConfiguration()->setServices($services);
 
             $arrayConf = $Core->getConfiguration()->getConfigurations();
+
+            $arrayConf['key'] = md5(time() . '--' . mt_rand(1000000, 9999999));
 
             foreach ($arrayConf as $key => $value) {
                 if (is_array($value) && array_key_exists('phraseanet', $value)) {
