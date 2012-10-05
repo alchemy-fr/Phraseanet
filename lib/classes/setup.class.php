@@ -246,17 +246,17 @@ class setup
         $finder = new \Symfony\Component\Process\ExecutableFinder();
 
         $binaries = array(
-            'PHP CLI'                 => $registry->get('GV_cli', $finder->find('php')),
-            'ImageMagick (convert)'   => $registry->get('GV_imagick', $finder->find('convert')),
-            'PDF 2 SWF'               => $registry->get('GV_pdf2swf', $finder->find('pdf2swf')),
-            'Unoconv'                 => $registry->get('GV_unoconv', $finder->find('unoconv')),
-            'SWFextract'              => $registry->get('GV_swf_extract', $finder->find('swfextract')),
-            'SWFrender'               => $registry->get('GV_swf_render', $finder->find('swfrender')),
-            'MP4Box'                  => $registry->get('GV_mp4box', $finder->find('MP4Box')),
-            'xpdf (pdf2text)'         => $registry->get('GV_pdftotext', $finder->find('pdftotext')),
-            'ImageMagick (composite)' => $registry->get('GV_pathcomposite', $finder->find('composite')),
-            'FFmpeg'                  => $registry->get('GV_ffmpeg', $finder->find('ffmpeg')),
-            'FFprobe'                 => $registry->get('GV_ffprobe', $finder->find('ffprobe')),
+            'PHP CLI'                 => $registry->get('php_binary', $finder->find('php')),
+            'ImageMagick (convert)'   => $registry->get('convert_binary', $finder->find('convert')),
+            'PDF 2 SWF'               => $registry->get('pdf2swf_binary', $finder->find('pdf2swf')),
+            'Unoconv'                 => $registry->get('unoconv_binary', $finder->find('unoconv')),
+            'SWFextract'              => $registry->get('swf_extract_binary', $finder->find('swfextract')),
+            'SWFrender'               => $registry->get('swf_render_binary', $finder->find('swfrender')),
+            'MP4Box'                  => $registry->get('mp4box_binary', $finder->find('MP4Box')),
+            'xpdf (pdf2text)'         => $registry->get('pdftotext_binary', $finder->find('pdftotext')),
+            'ImageMagick (composite)' => $registry->get('composite_binary', $finder->find('composite')),
+            'FFmpeg'                  => $registry->get('ffmpeg_binary', $finder->find('ffmpeg')),
+            'FFprobe'                 => $registry->get('ffprobe_binary', $finder->find('ffprobe')),
             'phraseanet_indexer'      => $finder->find('phraseanet_indexer'),
         );
 

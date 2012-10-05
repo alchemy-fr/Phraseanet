@@ -85,7 +85,7 @@ class recordutils_image extends recordutils
             return $subdef->get_pathfile();
         }
 
-        if ( ! $registry->get('GV_imagick')) {
+        if ( ! $registry->get('convert_binary')) {
             return $subdef->get_pathfile();
         }
 
@@ -288,7 +288,7 @@ class recordutils_image extends recordutils
 
         $newh = $image_height + $stampheight;
 
-        $builder = ProcessBuilder::create(array($registry->get('GV_imagick')));
+        $builder = ProcessBuilder::create(array($registry->get('convert_binary')));
         $builder->add('-extent')
             ->add($image_width . 'x' . $newh)
             ->add('-draw')
@@ -346,7 +346,7 @@ class recordutils_image extends recordutils
             file_exists($registry->get('GV_RootPath') . 'config/wm/' . $base_id)) {
 
             $builder = ProcessBuilder::create(array(
-                    $registry->get('GV_pathcomposite'),
+                    $registry->get('composite_binary'),
                     $registry->get('GV_RootPath') . 'config/wm/' . $base_id,
                     $pathIn,
                     '-strip', '-watermark', '90%', '-gravity', 'center',
@@ -354,7 +354,7 @@ class recordutils_image extends recordutils
                 ));
 
             $builder->getProcess()->run();
-        } elseif ($registry->get('GV_imagick')) {
+        } elseif ($registry->get('convert_binary')) {
             $collname = phrasea::bas_names($base_id);
             $tailleimg = @getimagesize($pathIn);
             $max = ($tailleimg[0] > $tailleimg[1] ? $tailleimg[0] : $tailleimg[1]);
@@ -370,7 +370,7 @@ class recordutils_image extends recordutils
                 $decalage = 1;
 
             $builder = ProcessBuilder::create(array(
-                $registry->get('GV_imagick'),
+                $registry->get('convert_binary'),
                 '-fill', 'white', '-draw', 'line 0,0 ' . $tailleimg[0] . ',' . $tailleimg[1] . '',
                 '-fill', 'black', '-draw', 'line 1,0 ' . $tailleimg[0] + 1 . ',' . $tailleimg[1] . '',
                 '-fill', 'white', '-draw', 'line ' . $tailleimg[0] . ',0 0,' . $tailleimg[1] . '',

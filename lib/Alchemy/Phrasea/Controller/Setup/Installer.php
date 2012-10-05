@@ -11,11 +11,11 @@
 
 namespace Alchemy\Phrasea\Controller\Setup;
 
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ControllerCollection;
+use \Symfony\Component\Yaml\Dumper;
 
 /**
  *
@@ -211,23 +211,31 @@ class Installer implements ControllerProviderInterface
                         }
                     }
 
+                    $binaries = array(
+                        'php'         => $request->get('binary_php'),
+                        'convert'     => $request->get('binary_convert'),
+                        'composite'   => $request->get('binary_composite'),
+                        'swf_extract' => $request->get('binary_swfextract'),
+                        'pdf2swf'     => $request->get('binary_pdf2swf'),
+                        'swf_render'  => $request->get('binary_swfrender'),
+                        'unoconv'     => $request->get('binary_unoconv'),
+                        'ffmpeg'      => $request->get('binary_ffmpeg'),
+                        'mp4box'      => $request->get('binary_MP4Box'),
+                        'pdftotext'   => $request->get('binary_xpdf'),
+                    );
+
+                    $binariesFile = __DIR__ . '/../../../../../config/binaries.yml';
+                    $dumper = new Dumper();
+                    file_put_contents($binariesFile, $dumper->dump(array('binaries' => $binaries), 4));
+
+                    @chmod($binariesFile, 0600);
+
                     $registry = \registry::get_instance();
                     \setup::create_global_values($registry);
 
                     $appbox->set_registry($registry);
 
                     $registry->set('GV_base_datapath_noweb', \p4string::addEndSlash($request->get('datapath_noweb')), \registry::TYPE_STRING);
-                    $registry->set('GV_ServerName', $servername, \registry::TYPE_STRING);
-                    $registry->set('GV_cli', $request->get('binary_php'), \registry::TYPE_STRING);
-                    $registry->set('GV_imagick', $request->get('binary_convert'), \registry::TYPE_STRING);
-                    $registry->set('GV_pathcomposite', $request->get('binary_composite'), \registry::TYPE_STRING);
-                    $registry->set('GV_swf_extract', $request->get('binary_swfextract'), \registry::TYPE_STRING);
-                    $registry->set('GV_pdf2swf', $request->get('binary_pdf2swf'), \registry::TYPE_STRING);
-                    $registry->set('GV_swf_render', $request->get('binary_swfrender'), \registry::TYPE_STRING);
-                    $registry->set('GV_unoconv', $request->get('binary_unoconv'), \registry::TYPE_STRING);
-                    $registry->set('GV_ffmpeg', $request->get('binary_ffmpeg'), \registry::TYPE_STRING);
-                    $registry->set('GV_mp4box', $request->get('binary_MP4Box'), \registry::TYPE_STRING);
-                    $registry->set('GV_pdftotext', $request->get('binary_xpdf'), \registry::TYPE_STRING);
 
                     $user = \User_Adapter::create($appbox, $request->get('email'), $request->get('password'), $request->get('email'), true);
 

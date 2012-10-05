@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\Yaml\Parser;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -66,6 +68,17 @@ class registry implements registryInterface
             $this->cache->save('GV_ServerName', $configuration->getPhraseanet()->get('servername'));
             $this->cache->save('GV_debug', $configuration->isDebug());
             $this->cache->save('GV_maintenance', $configuration->isMaintained());
+
+            $binariesFile = __DIR__ . '/../../config/binaries.yml';
+
+            if (file_exists($binariesFile)) {
+                $parser = new Parser();
+                $binaries = $parser->parse(file_get_contents($binariesFile));
+
+                foreach ($binaries['binaries'] as $name => $path) {
+                    $this->cache->save($name, $path);
+                }
+            }
         }
 
         return $this;
@@ -151,7 +164,7 @@ class registry implements registryInterface
     public function set($key, $value, $type)
     {
         $this->load();
-        
+
         switch ($type) {
             case self::TYPE_ENUM_MULTI:
                 $sql_value = serialize($value);

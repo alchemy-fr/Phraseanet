@@ -45,7 +45,7 @@ if (defined('PHP_WINDOWS_VERSION_BUILD')) {
     $nullfile = 'NUL';
 }
 
-$phpcli = $registry->get('GV_cli');
+$phpcli = $registry->get('php_binary');
 
 $cmd = escapeshellarg($phpcli) . ' -f ' . __DIR__ . "/../../bin/console scheduler:start";
 

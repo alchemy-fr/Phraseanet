@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\Yaml\Dumper;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -56,14 +58,10 @@ class patch_373 implements patchInterface
      */
     public function apply(base &$appbox)
     {
-        $registry = $appbox->get_registry();
-
-        $sql = 'UPDATE registry SET type = :type, value = :value
-                WHERE `key` = :key';
-
+        $sql = 'SELECT * FROM registry WHERE `key` = :key';
         $stmt = $appbox->get_connection()->prepare($sql);
 
-        $binaries = array(
+        $Regbinaries = array(
             'GV_cli',
             'GV_imagick',
             'GV_pathcomposite',
@@ -75,18 +73,43 @@ class patch_373 implements patchInterface
             'GV_ffprobe',
             'GV_mp4box',
             'GV_pdftotext',
-            'GV_cli',
         );
 
-        foreach ($binaries as $binary) {
+        $mapping = array(
+            'GV_cli'           => 'php_binary',
+            'GV_imagick'       => 'convert_binary',
+            'GV_pathcomposite' => 'composite_binary',
+            'GV_swf_extract'   => 'swf_extract_binary',
+            'GV_pdf2swf'       => 'pdf2swf_binary',
+            'GV_swf_render'    => 'swf_render_binary',
+            'GV_unoconv'       => 'unoconv_binary',
+            'GV_ffmpeg'        => 'ffmpeg_binary',
+            'GV_ffprobe'       => 'ffprobe_binary',
+            'GV_mp4box'        => 'mp4box_binary',
+            'GV_pdftotext'     => 'pdftotext_binary',
+        );
 
-            $value = is_executable($registry->get($binary)) ? $registry->get($binary) : '';
+        foreach ($Regbinaries as $name) {
+            $stmt->execute(array(':key' => $name));
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+            $value = is_executable($row['value']) ? $row['value'] : '';
 
-            $stmt->execute(array(
-                ':type'  => \registry::TYPE_BINARY,
-                ':key'   => $binary,
-                ':value' => $value,
-            ));
+            $binaries[$mapping[$name]] = $value;
+        }
+
+        $stmt->closeCursor();
+
+        $binariesFile = __DIR__ . '/../../../config/binaries.yml';
+        $dumper = new Dumper();
+        file_put_contents($binariesFile, $dumper->dump(array('binaries' => $binaries), 4));
+
+        @chmod($binariesFile, 0600);
+
+        $sql = 'DELETE FROM registry WHERE `key` = :key';
+        $stmt = $appbox->get_connection()->prepare($sql);
+
+        foreach ($Regbinaries as $name) {
+            $stmt->execute(array(':key' => $name));
         }
 
         $stmt->closeCursor();

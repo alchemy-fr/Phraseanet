@@ -166,32 +166,32 @@ class Core extends \Pimple
 
                 $conf = new ParameterBag();
 
-                if ($core->getRegistry()->get('GV_ffmpeg')) {
-                    $conf->set('ffmpeg', $core->getRegistry()->get('GV_ffmpeg'));
+                if ($core->getRegistry()->get('ffmpeg_binary')) {
+                    $conf->set('ffmpeg', $core->getRegistry()->get('ffmpeg_binary'));
                 }
                 if ($core->getRegistry()->get('GV_ffmpeg_threads')) {
                     $conf->set('ffmpeg.threads', $core->getRegistry()->get('GV_ffmpeg_threads'));
                 }
-                if ($core->getRegistry()->get('GV_ffprobe')) {
-                    $conf->set('ffprobe', $core->getRegistry()->get('GV_ffprobe'));
+                if ($core->getRegistry()->get('ffprobe_binary')) {
+                    $conf->set('ffprobe', $core->getRegistry()->get('ffprobe_binary'));
                 }
                 if ($core->getRegistry()->get('GV_imagine_driver')) {
                     $conf->set('imagine', $core->getRegistry()->get('GV_imagine_driver'));
                 }
-                if ($core->getRegistry()->get('GV_mp4box')) {
-                    $conf->set('MP4Box', $core->getRegistry()->get('GV_mp4box'));
+                if ($core->getRegistry()->get('mp4box_binary')) {
+                    $conf->set('MP4Box', $core->getRegistry()->get('mp4box_binary'));
                 }
-                if ($core->getRegistry()->get('GV_unoconv')) {
-                    $conf->set('Unoconv', $core->getRegistry()->get('GV_unoconv'));
+                if ($core->getRegistry()->get('unoconv_binary')) {
+                    $conf->set('Unoconv', $core->getRegistry()->get('unoconv_binary'));
                 }
-                if ($core->getRegistry()->get('GV_pdf2swf')) {
-                    $conf->set('Pdf2Swf', $core->getRegistry()->get('GV_pdf2swf'));
+                if ($core->getRegistry()->get('pdf2swf')) {
+                    $conf->set('Pdf2Swf', $core->getRegistry()->get('pdf2swf_binary'));
                 }
-                if ($core->getRegistry()->get('GV_swf_render')) {
-                    $conf->set('SwfRender', $core->getRegistry()->get('GV_swf_render'));
+                if ($core->getRegistry()->get('swf_render_binary')) {
+                    $conf->set('SwfRender', $core->getRegistry()->get('swf_render_binary'));
                 }
-                if ($core->getRegistry()->get('GV_swf_extract')) {
-                    $conf->set('SwfExtract', $core->getRegistry()->get('GV_swf_extract'));
+                if ($core->getRegistry()->get('swf_extract_binary')) {
+                    $conf->set('SwfExtract', $core->getRegistry()->get('swf_extract_binary'));
                 }
 
                 $drivers = new \MediaAlchemyst\DriversContainer($conf, $core['monolog']);
@@ -223,8 +223,8 @@ class Core extends \Pimple
         $this['pdf-to-text'] = $this->share(function () use ($core) {
 
                 try {
-                    if ($core->getRegistry()->get('GV_pdftotext')) {
-                        $pdftotext = new PdfToText($core->getRegistry()->get('GV_pdftotext'), $core['monolog']);
+                    if ($core->getRegistry()->get('pdftotext_binary')) {
+                        $pdftotext = new PdfToText($core->getRegistry()->get('pdftotext_binary'), $core['monolog']);
                     } else {
                         $pdftotext = PdfToText::load($core['monolog']);
                     }

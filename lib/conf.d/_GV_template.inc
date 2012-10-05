@@ -386,13 +386,6 @@ $GV = array(
                 'default' => false
             ),
             array(
-                'type'     => \registry::TYPE_BINARY,
-                'name'     => 'GV_cli',
-                'comment'  => _('reglages:: executable PHP CLI'),
-                'default'  => '',
-                'required' => true
-            ),
-            array(
                 'type'    => \registry::TYPE_STRING,
                 'name'    => 'GV_PHP_INI',
                 'comment' => _('reglages:: path du php.ini specifique (vide si non utilise)'),
@@ -411,76 +404,10 @@ $GV = array(
                 )
             ),
             array(
-                'type'     => \registry::TYPE_BINARY,
-                'name'     => 'GV_imagick',
-                'default'  => '',
-                'comment'  => _('reglages:: chemin de l\'executable convert'),
-                'required' => true
-            ),
-            array(
-                'type'     => \registry::TYPE_BINARY,
-                'name'     => 'GV_pathcomposite',
-                'default'  => '',
-                'comment'  => _('reglages:: chemin de l\'executable composite'),
-                'required' => true
-            ),
-            array(
-                'type'     => \registry::TYPE_BINARY,
-                'name'     => 'GV_swf_extract',
-                'comment'  => _('reglages:: chemin de l\'executable swfextract'),
-                'default'  => '',
-                'required' => false
-            ),
-            array(
-                'type'     => \registry::TYPE_BINARY,
-                'name'     => 'GV_pdf2swf',
-                'comment'  => _('reglages:: chemin de l\'executable pdf2swf'),
-                'default'  => '',
-                'required' => false
-            ),
-            array(
-                'type'     => \registry::TYPE_BINARY,
-                'name'     => 'GV_swf_render',
-                'comment'  => _('reglages:: chemin de l\'executable swfrender'),
-                'default'  => '',
-                'required' => false
-            ),
-            array(
-                'type'     => \registry::TYPE_BINARY,
-                'name'     => 'GV_unoconv',
-                'comment'  => _('reglages:: chemin de l\'executable unoconv'),
-                'default'  => '',
-                'required' => false
-            ),
-            array(
-                'type'    => \registry::TYPE_BINARY,
-                'name'    => 'GV_ffmpeg',
-                'comment' => _('reglages:: chemin de l\'executable FFmpeg'),
-                'default' => ''
-            ),
-            array(
                 'type'    => \registry::TYPE_INTEGER,
                 'name'    => 'GV_ffmpeg_threads',
                 'comment' => _('Number of threads allowed for FFmpeg'),
                 'default' => 2
-            ),
-            array(
-                'type'    => \registry::TYPE_BINARY,
-                'name'    => 'GV_ffprobe',
-                'comment' => _('FFprobe path'),
-                'default' => ''
-            ),
-            array(
-                'type'    => \registry::TYPE_BINARY,
-                'name'    => 'GV_mp4box',
-                'comment' => _('reglages:: chemin de l\'executable MP4Box'),
-                'default' => ''
-            ),
-            array(
-                'type'    => \registry::TYPE_BINARY,
-                'name'    => 'GV_pdftotext',
-                'comment' => _('reglages:: chemin de l\'executable pdftotext (xpdf)'),
-                'default' => ''
             ),
             array(
                 'type'    => \registry::TYPE_INTEGER,
