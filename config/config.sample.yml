@@ -3,6 +3,7 @@
 #Declare which environment will be used by the application
 
 environment : prod
+key : null
 
 #Declare all your environment configurations
 
