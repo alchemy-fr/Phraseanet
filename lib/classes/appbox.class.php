@@ -104,23 +104,6 @@ class appbox extends base
                 throw new \InvalidArgumentException('Invalid file format');
             }
             $filename = $pathfile->getPathname();
-
-            //resize collection logo
-            $imageSpec = new ImageSpecification();
-            $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
-            $imageSpec->setDimensions(120, 24);
-
-            $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox') . '.jpg';
-
-            try {
-                $core['media-alchemyst']
-                    ->open($pathfile->getPathname())
-                    ->turninto($tmp, $imageSpec)
-                    ->close();
-                $filename = $tmp;
-            } catch (\MediaAlchemyst\Exception $e) {
-
-            }
         }
 
         switch ($pic_type) {
@@ -128,6 +111,23 @@ class appbox extends base
                 $collection->reset_watermark();
                 break;
             case collection::PIC_LOGO:
+
+                $imageSpec = new ImageSpecification();
+                $imageSpec->setResizeMode(ImageSpecification::RESIZE_MODE_INBOUND_FIXEDRATIO);
+                $imageSpec->setDimensions(120, 24);
+
+                $tmp = tempnam(sys_get_temp_dir(), 'tmpdatabox') . '.jpg';
+
+                try {
+                    $core['media-alchemyst']
+                        ->open($pathfile->getPathname())
+                        ->turninto($tmp, $imageSpec)
+                        ->close();
+                    $filename = $tmp;
+                } catch (\MediaAlchemyst\Exception $e) {
+
+                }
+                break;
             case collection::PIC_PRESENTATION:
                 break;
             case collection::PIC_STAMP:
