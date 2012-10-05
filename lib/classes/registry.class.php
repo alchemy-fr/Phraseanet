@@ -32,7 +32,11 @@ class registry implements registryInterface
     const TYPE_ARRAY = 'array';
     const TYPE_ENUM_MULTI = 'enum_multi';
     const TYPE_INTEGER = 'integer';
+    const TYPE_ENUM = 'enum';
     const TYPE_STRING = 'string';
+    const TYPE_TEXT = 'text';
+    const TYPE_TIMEZONE = 'timezone';
+    const TYPE_BINARY = 'binary';
 
     /**
      *
@@ -105,9 +109,19 @@ class registry implements registryInterface
                         $value = unserialize($row['value']);
                         break;
                     case self::TYPE_STRING:
+                    case self::TYPE_ENUM:
+                    case self::TYPE_TIMEZONE:
+                    case self::TYPE_TEXT:
+                    case self::TYPE_BINARY:
                     default:
                         $value = $row['value'];
                         break;
+                }
+
+                if ($row['type'] == self::TYPE_BINARY) {
+                    if (!is_executable($value)) {
+                        continue;
+                    }
                 }
 
                 $this->cache->save($row['key'], $value);
@@ -153,6 +167,10 @@ class registry implements registryInterface
                 $value = (array) $value;
                 break;
             case self::TYPE_STRING;
+            case self::TYPE_ENUM:
+            case self::TYPE_TIMEZONE:
+            case self::TYPE_TEXT:
+            case self::TYPE_BINARY:
             default:
                 $sql_value = (string) $value;
                 $value = (string) $value;
