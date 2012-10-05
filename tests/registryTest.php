@@ -157,4 +157,14 @@ class registryTest extends PhraseanetPHPUnitAbstract
         $this->object->un_set('key_test');
         $this->assertFalse($this->object->is_set('key_test'));
     }
+
+    public function testGVSit()
+    {
+        $this->assertNotNull($this->object->get('GV_sit'));
+    }
+    public function testGVSitNotModifiable()
+    {
+        $gv_sit = $this->object->get('GV_sit');
+        $this->assertEquals($gv_sit, $this->object->get('GV_sit'));
+    }
 }
