@@ -331,7 +331,7 @@ class task_Scheduler
                                 $descriptors[2] = array('file', $nullfile, 'a+');
 
                                 $taskPoll[$tkey]["process"] = proc_open(
-                                    $taskPoll[$tkey]["cmd"] . ' ' . implode(' ', $taskPoll[$tkey]["args"])
+                                    escapeshellarg($taskPoll[$tkey]["cmd"]) . ' ' . implode(' ', array_map('escapeshellarg', $taskPoll[$tkey]["args"]))
                                     , $descriptors
                                     , $taskPoll[$tkey]["pipes"]
                                     , $registry->get('GV_RootPath') . "bin/"
