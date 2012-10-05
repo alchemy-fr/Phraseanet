@@ -127,7 +127,6 @@ class setup
                     case registry::TYPE_INTEGER:
                     case registry::TYPE_BOOLEAN:
                     case registry::TYPE_STRING:
-                    case registry::TYPE_ARRAY:
                         $type = $datas['type'];
                         break;
                     default:
@@ -174,13 +173,15 @@ class setup
                     }
                 }
 
-                $type = 'string';
+                $type = $variable['type'];
                 switch ($variable['type']) {
-                    case 'string':
-                    case 'password':
+                    case \registry::TYPE_STRING:
+                    case \registry::TYPE_BINARY:
+                    case \registry::TYPE_TEXT:
+                    case \registry::TYPE_TIMEZONE:
                         $datas[$variable['name']] = (string) trim($datas[$variable['name']]);
                         break;
-                    case 'enum':
+                    case \registry::TYPE_ENUM:
                         if (!isset($variable['available'])) {
                             $variable['error'] = 'avalaibility';
                         } elseif (!is_array($variable['available'])) {
@@ -189,25 +190,16 @@ class setup
                             $variable['error'] = 'avalaibility';
                         }
                         break;
-                    case 'enum_multi':
+                    case \registry::TYPE_ENUM_MULTI:
                         if (!isset($datas[$variable['name']]))
                             $datas[$variable['name']] = null;
                         $datas[$variable['name']] = ($datas[$variable['name']]);
-                        $type = 'array';
                         break;
-                    case 'boolean':
+                    case \registry::TYPE_BOOLEAN:
                         $datas[$variable['name']] = strtolower($datas[$variable['name']]) === 'true' ? '1' : '0';
-                        $type = 'boolean';
                         break;
-                    case 'integer':
+                    case \registry::TYPE_INTEGER:
                         $datas[$variable['name']] = (int) trim($datas[$variable['name']]);
-                        $type = 'integer';
-                        break;
-                    case 'text':
-                        $datas[$variable['name']] = trim($datas[$variable['name']]);
-                        break;
-                    case 'timezone':
-                        $datas[$variable['name']] = trim($datas[$variable['name']]);
                         break;
                     default:
                         $error = true;

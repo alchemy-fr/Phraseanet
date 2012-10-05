@@ -29,7 +29,6 @@ class registry implements registryInterface
     protected static $_instance;
 
     const TYPE_BOOLEAN = 'boolean';
-    const TYPE_ARRAY = 'array';
     const TYPE_ENUM_MULTI = 'enum_multi';
     const TYPE_INTEGER = 'integer';
     const TYPE_ENUM = 'enum';
@@ -105,7 +104,6 @@ class registry implements registryInterface
                         $value = (int) $row['value'];
                         break;
                     case self::TYPE_ENUM_MULTI:
-                    case self::TYPE_ARRAY:
                         $value = unserialize($row['value']);
                         break;
                     case self::TYPE_STRING:
@@ -116,12 +114,6 @@ class registry implements registryInterface
                     default:
                         $value = $row['value'];
                         break;
-                }
-
-                if ($row['type'] == self::TYPE_BINARY) {
-                    if (!is_executable($value)) {
-                        continue;
-                    }
                 }
 
                 $this->cache->save($row['key'], $value);
@@ -159,9 +151,8 @@ class registry implements registryInterface
     public function set($key, $value, $type)
     {
         $this->load();
-
+        
         switch ($type) {
-            case self::TYPE_ARRAY:
             case self::TYPE_ENUM_MULTI:
                 $sql_value = serialize($value);
                 $value = (array) $value;
@@ -183,6 +174,12 @@ class registry implements registryInterface
                 $sql_value = (int) $value;
                 $value = (int) $value;
                 break;
+        }
+
+        if ($value != '' && $type == self::TYPE_BINARY) {
+            if (!is_executable($value)) {
+                return $this;
+            }
         }
 
         $conn = connection::getPDOConnection();
