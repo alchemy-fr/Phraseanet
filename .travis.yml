@@ -7,7 +7,6 @@ before_script:
   - cp hudson/*.yml config/
   - curl -s http://getcomposer.org/installer | php
   - php composer.phar install --dev
-  - sudo apt-get update
   - sudo apt-get install -y xpdf ffmpeg libavcodec-extra-53 openoffice.org-writer unoconv ghostscript gsfonts dcraw ufraw graphicsmagick libgraphicsmagick1-dev libfreetype6-dev libjpeg-dev libgif-dev libtiff-dev libdjvulibre-dev libwmf-dev libmagickcore-dev libmagickwand-dev libpng-dev gettext zlib1g-dev build-essential libfaac-dev libmp3lame0 libx264-dev libvpx-dev libtheora-dev libvorbis-dev gpac
   - sudo apt-get autoremove
   - sudo apt-get clean
@@ -17,6 +16,7 @@ before_script:
   - mysql -e "source `pwd`/hudson/fixtures.sql"
   - mysql -e 'SET GLOBAL time_zone = "+02:00";'
   - mysql -e 'SET @@global.sql_mode= "";'
+  - mysql -e 'SET @@global.wait_timeout= 999999;'
   - git clone git://github.com/alchemy-fr/Phraseanet-Extension.git
   - sh -c "cd Phraseanet-Extension && ./configure && make && sudo make install"
   - echo "extension=phrasea2.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
