@@ -728,6 +728,9 @@ class Login implements ControllerProviderInterface
             case 'session' :
                 $warning = _('Error while authentication, please retry or contact an admin if problem persists');
                 break;
+            case 'unexpected' :
+                $warning = _('An unexpected error occured during authentication process, please contact an admin');
+                break;
         }
 
         if (ctype_digit($request->query->get('usr'))) {
@@ -984,7 +987,7 @@ class Login implements ControllerProviderInterface
 
                 return $app->redirect($url);
             } catch (\Exception $e) {
-                return $app->redirect("/login/?redirect=" . $request->request->get('redirect') . "&error=" . _('An error occured'));
+                return $app->redirect("/login/?redirect=" . $request->request->get('redirect') . "&error=unexpected");
             }
         } else {
             return $app->redirect("/login/");

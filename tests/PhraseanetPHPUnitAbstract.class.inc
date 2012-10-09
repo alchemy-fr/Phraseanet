@@ -7,7 +7,6 @@ use Alchemy\Phrasea\Border\File;
 use Doctrine\Common\DataFixtures\Loader;
 use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\DomCrawler\Crawler;
 
