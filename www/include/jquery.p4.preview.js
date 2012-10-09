@@ -256,14 +256,12 @@ function getAnswerTrain(pos, tools, query,options_serial)
 	$('#PREVIEWCURRENTCONT').fadeOut('fast');
 	$.ajax({
 		type: "POST",
-		url: "/prod/prodFeedBack.php",
+		url: "/prod/query/answer-train/",
 		dataType: 'json',
 		data: {
-			action: "ANSWERTRAIN",
 			pos:pos,
-      options_serial:options_serial,
-      query:query
-
+            options_serial:options_serial,
+            query:query
 		},
 		success: function(data){
 			setCurrent(data.current);
@@ -279,10 +277,9 @@ function getRegTrain(contId,pos,tools)
 {
 	$.ajax({
 		type: "POST",
-		url: "./prodFeedBack.php",
+		url: "/prod/query/reg-train/",
 		dataType: 'json',
 		data: {
-			action: "REGTRAIN",
 			cont:contId,
 			pos:pos
 		},
