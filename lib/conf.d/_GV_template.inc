@@ -764,6 +764,12 @@ $GV = array(
                 'name'    => 'GV_needAuth2DL',
                 'comment' => _('reglages:: Il est necessaire d\'etre connecte pour pouvoir telecharger en compte invite'),
                 'default' => true
+            ),
+            array(
+                'type'    => 'boolean',
+                'name'    => 'GV_requireTOUValidationForExport',
+                'comment' => _('Users must accept Terms of Use for each export'),
+                'default' => false
             )
         )
     ), array(
