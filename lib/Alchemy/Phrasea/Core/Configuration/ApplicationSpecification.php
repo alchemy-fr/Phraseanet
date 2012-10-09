@@ -79,7 +79,7 @@ class ApplicationSpecification implements Specification
             );
         }
 
-        return array('bianries' => array());
+        return array('binaries' => array());
     }
 
     public function getServices()
