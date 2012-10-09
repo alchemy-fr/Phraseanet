@@ -224,11 +224,7 @@ class Installer implements ControllerProviderInterface
                         'pdftotext'   => $request->get('binary_xpdf'),
                     );
 
-                    $binariesFile = __DIR__ . '/../../../../../config/binaries.yml';
-                    $dumper = new Dumper();
-                    file_put_contents($binariesFile, $dumper->dump(array('binaries' => $binaries), 4));
-
-                    @chmod($binariesFile, 0600);
+                    $app['Core']->getConfiguration()->setBinaries(array('binaries' => $binaries));
 
                     $registry = \registry::get_instance();
                     \setup::create_global_values($registry);

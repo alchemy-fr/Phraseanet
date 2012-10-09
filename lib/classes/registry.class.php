@@ -74,15 +74,11 @@ class registry implements registryInterface
             if (isset($config['key'])) {
                 $this->cache->save('GV_sit', $config['key']);
             }
-            $binariesFile = __DIR__ . '/../../config/binaries.yml';
+            
+            $binaries = $configuration->getBinaries();
 
-            if (file_exists($binariesFile)) {
-                $parser = new Parser();
-                $binaries = $parser->parse(file_get_contents($binariesFile));
-
-                foreach ($binaries['binaries'] as $name => $path) {
-                    $this->cache->save($name, $path);
-                }
+            foreach ($binaries['binaries'] as $name => $path) {
+                $this->cache->save($name, $path);
             }
         }
 
