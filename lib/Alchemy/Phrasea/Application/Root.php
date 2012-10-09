@@ -35,6 +35,7 @@ use Alchemy\Phrasea\Controller\Admin\Users;
 use Alchemy\Phrasea\Controller\Prod\Basket;
 use Alchemy\Phrasea\Controller\Prod\Bridge;
 use Alchemy\Phrasea\Controller\Prod\Edit;
+use Alchemy\Phrasea\Controller\Prod\Export;
 use Alchemy\Phrasea\Controller\Prod\Feed;
 use Alchemy\Phrasea\Controller\Prod\Language;
 use Alchemy\Phrasea\Controller\Prod\Lazaret;
@@ -51,11 +52,12 @@ use Alchemy\Phrasea\Controller\Prod\Tools;
 use Alchemy\Phrasea\Controller\Prod\Tooltip;
 use Alchemy\Phrasea\Controller\Prod\TOU;
 use Alchemy\Phrasea\Controller\Prod\Upload;
-use Alchemy\Phrasea\Controller\Prod\UserPreferences;
 use Alchemy\Phrasea\Controller\Prod\UsrLists;
 use Alchemy\Phrasea\Controller\Prod\WorkZone;
 use Alchemy\Phrasea\Controller\Utils\ConnectionTest;
 use Alchemy\Phrasea\Controller\Utils\PathFileTest;
+use Alchemy\Phrasea\Controller\User\Notifications;
+use Alchemy\Phrasea\Controller\User\Preferences;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -127,7 +129,6 @@ return call_user_func(function($environment = null) {
     $app->mount('/admin/tests/connection', new ConnectionTest());
     $app->mount('/admin/tests/pathurl', new PathFileTest());
 
-    $app->mount('/prod/UserPreferences/', new UserPreferences());
     $app->mount('/prod/query/', new Query());
     $app->mount('/prod/order/', new Order());
     $app->mount('/prod/baskets', new Basket());
@@ -141,6 +142,8 @@ return call_user_func(function($environment = null) {
     $app->mount('/prod/bridge/', new Bridge());
     $app->mount('/prod/push/', new Push());
     $app->mount('/prod/printer/', new Printer());
+    $app->mount('/prod/share/', new Share());
+    $app->mount('/prod/export/', new Export());
     $app->mount('/prod/TOU/', new TOU());
     $app->mount('/prod/feeds', new Feed());
     $app->mount('/prod/tooltip', new Tooltip());
@@ -149,6 +152,9 @@ return call_user_func(function($environment = null) {
     $app->mount('/prod/lazaret/', new Lazaret());
     $app->mount('/prod/upload/', new Upload());
     $app->mount('/prod/', new Prod());
+
+    $app->mount('/user/preferences/', new Preferences());
+    $app->mount('/user/notifications/', new Notifications());
 
     $app->error(function(\Exception $e) use ($app) {
         $request = $app['request'];
