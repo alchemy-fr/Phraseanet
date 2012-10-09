@@ -56,6 +56,26 @@ class TOU implements ControllerProviderInterface
                 return new Response($datas, 200, array('Content-Type' => 'application/json'));
             });
 
+        $controllers->get('/', function(Application $app, Request $request) {
+
+                $appbox = \appbox::get_instance($app['Core']);
+
+                $data = array();
+
+                foreach ($appbox->get_databoxes() as $databox) {
+
+                    $cgus = $databox->get_cgus();
+
+                    if (!isset($cgus[\Session_Handler::get_locale()])) {
+                        continue;
+                    }
+
+                    $data[$databox->get_viewname()] = $cgus[\Session_Handler::get_locale()]['value'];
+                }
+
+                return new Response($app['Core']['Twig']->render('/prod/TOU.html.twig', array('TOUs' => $data)));
+            });
+
         return $controllers;
     }
 }

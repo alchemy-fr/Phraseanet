@@ -106,18 +106,20 @@
                         <input type="hidden" name="ssttid" value="{{ssttid}}"/>
                         {% for name, values in download.get_display_download() %}
                             {% if values.available > 0 %}
-                                <div style="margin: 10px 0 20px 0; padding: 0 10px;">
+                                <div style="margin: 10px 0 20px 0; xpadding: 0 10px;">
                                     <label for="download_{{name}}" class="checkbox">
                                         <input class="{{values.class}}" type="checkbox" id="download_{{name}}" name="obj[]" value="{{name}}" />
                                         <input type="hidden" name="download_{{name}}" value="{{values.size}}" />
                                         <input type="hidden" name="count_{{name}}" value="{{values.available}}" />
                                         {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size | formatOctets}})
+                                        {% if values.refused|length > 0 %}
+                                            {% set title%}
+                                                {% trans 'Documents indisponibles' %}
+                                            {% endset %}
+                                            <a href="#" class="undisposable_link" title="{{title|trim}}"> + </a>
+                                        {% endif %}
                                     </label>
-                                    {% set title%}
-                                        {% trans 'Documents indisponibles' %}
-                                    {% endset %}
                                     {% if values.refused|length > 0 %}
-                                        <a href="#" class="undisposable_link" title="{{title|e}}"> + </a>
                                         <div style="display:none;" class="undisposable">
                                             <div>{% trans 'Les documents ne peuvent pas etre exportes' %}</div>
                                             {% for datas in values.refused%}
@@ -137,6 +139,19 @@
                             </div>
                         {% endif %}
                         {{ _self.choose_title('download', choose_export_title, default_export_title) }}
+
+                        {% if registry.get('GV_requireTOUValidationForExport') == true %}
+                            <div style="margin:0 20px;">
+                                <label for="TOU_acceptDL" class="checkbox">
+                                    <input type="checkbox" name="TOU_accept" id="TOU_acceptDL" value="1"  />
+                                    {% set beginning_link = '<a href="/prod/TOU/" class="TOUview">' %}
+                                    {% set end_link = '</a>' %}
+                                    {% trans %}
+                                        By checking this box, you accept {{ beginning_link }} Terms of Use {{ end_link }}
+                                    {% endtrans %}
+                                </label>
+                            </div>
+                        {% endif %}
                         <div class="buttons_line">
                             <button type="button" class="download_button btn btn-inverse">{% trans 'boutton::telecharger'%}</button>
                             <button type="button" class="close_button btn btn-inverse">{% trans 'boutton::annuler'%}</button>
@@ -179,12 +194,17 @@
                                         <label for="sendmail_{{name}}" class="checkbox">
                                             <input class="{{values.class}}" type="checkbox" id="sendmail_{{name}}" name="obj[]" value="{{name}}" />
                                             {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size | formatOctets}})
+                                            {% if values.refused|length > 0 %}
+                                                {% set title%}
+                                                    {% trans 'Documents indisponibles' %}
+                                                {% endset %}
+                                                <a href="#" class="undisposable_link" title="{{title|trim}}"> + </a>
+                                            {% endif %}
                                         </label>
                                         {% set title%}
                                             {% trans 'Documents indisponibles' %}
                                         {% endset %}
                                         {% if values.refused|length > 0 %}
-                                            <a href="#" class="undisposable_link" title="{{title|e}}"> + </a>
                                             <div style="display:none;" class="undisposable">
                                                 <div><i>{% trans 'La sous resolution n\'est pas disponible pour les documents suivants' %}</i></div>
                                                 {% for datas in values.refused%}
@@ -205,6 +225,19 @@
                             </div>
                         {% endif %}
                         {{ _self.choose_title('sendmail', choose_export_title, default_export_title) }}
+
+                        {% if registry.get('GV_requireTOUValidationForExport') == true %}
+                            <div style="margin:0 20px;">
+                                <label for="TOU_acceptMail" class="checkbox">
+                                    <input type="checkbox" name="TOU_accept" id="TOU_acceptMail" value="1"  />
+                                    {% set beginning_link = '<a href="/prod/TOU/" class="TOUview">' %}
+                                    {% set end_link = '</a>' %}
+                                    {% trans %}
+                                        By checking this box, you accept {{ beginning_link }} Terms of Use {{ end_link }}
+                                    {% endtrans %}
+                                </label>
+                            </div>
+                        {% endif %}
                         <div class="buttons_line">
                             <button type="button" class="sendmail_button btn btn-inverse">{% trans 'boutton::envoyer'%}</button>
                             <img class="sendmail_button_loader" src="/skins/icons/loader404040.gif" style="visibility:hidden;margin:0 5px;"/>
@@ -345,7 +378,10 @@
                                             {% trans 'Documents indisponibles' %}
                                         {% endset %}
                                         {% if values.refused|length > 0 %}
-                                            <a href="#" class="undisposable_link" title="{{title|e}}"> + </a>
+                                            {% set title%}
+                                                {% trans 'Documents indisponibles' %}
+                                            {% endset %}
+                                            <a href="#" class="undisposable_link" title="{{title|trim}}"> + </a>
                                             <div style="display:none;" class="undisposable">
                                                 <div><i>{% trans 'La sous resolution n\'est pas disponible pour les documents suivants' %}</i></div>
                                                 {% for datas in values.refused%}
@@ -357,6 +393,19 @@
                                 {% endif %}
                             {% endfor %}
                         </div>
+
+                        {% if registry.get('GV_requireTOUValidationForExport') == true %}
+                            <div style="margin:0 20px;">
+                                <label for="TOU_acceptOrder" class="checkbox">
+                                    <input type="checkbox" name="TOU_accept" id="TOU_acceptOrder" value="1"  />
+                                    {% set beginning_link = '<a href="/prod/TOU/" class="TOUview">' %}
+                                    {% set end_link = '</a>' %}
+                                    {% trans %}
+                                        By checking this box, you accept {{ beginning_link }} Terms of Use {{ end_link }}
+                                    {% endtrans %}
+                                </label>
+                            </div>
+                        {% endif %}
                         <div class="buttons_line">
                             <button type="button" class="order_button btn btn-inverse">{% trans 'boutton::commander'%}</button>
                             <img class="order_button_loader" src="/skins/icons/loader404040.gif" style="visibility:hidden;margin:0 5px;"/>
@@ -400,12 +449,14 @@
                                         <label for="ftp_{{name}}" class="checkbox">
                                             <input class="{{values.class}}" type="checkbox" id="ftp_{{name}}" name="obj[]" value="{{name}}" />
                                             {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size | formatOctets}}))
-                                        </label>
-                                        {% set title%}
-                                            {% trans 'Documents indisponibles' %}
-                                        {% endset %}
                                         {% if values.refused|length > 0 %}
-                                            <a href="#" class="undisposable_link" title="{{title|e}}"> + </a>
+                                            {% set title%}
+                                                {% trans 'Documents indisponibles' %}
+                                            {% endset %}
+                                            <a href="#" class="undisposable_link" title="{{title|trim}}"> + </a>
+                                        {% endif %}
+                                        </label>
+                                        {% if values.refused|length > 0 %}
                                             <div style="display:none;" class="undisposable">
                                                 <div><i>{% trans 'La sous resolution n\'est pas disponible pour les documents suivants' %}</i></div>
                                                 {% for datas in values.refused%}
@@ -422,6 +473,19 @@
                                 <label for="business_ftp" class="checkbox">
                                     <input type="checkbox" name="businessfields" id="business_ftp" value="1"  />
                                     {% trans 'Include Business-fields in caption' %}
+                                </label>
+                            </div>
+                        {% endif %}
+
+                        {% if registry.get('GV_requireTOUValidationForExport') == true %}
+                            <div style="margin:0 20px;">
+                                <label for="TOU_acceptFTP" class="checkbox">
+                                    <input type="checkbox" name="TOU_accept" id="TOU_acceptFTP" value="1"  />
+                                    {% set beginning_link = '<a href="/prod/TOU/" class="TOUview">' %}
+                                    {% set end_link = '</a>' %}
+                                    {% trans %}
+                                        By checking this box, you accept {{ beginning_link }} Terms of Use {{ end_link }}
+                                    {% endtrans %}
                                 </label>
                             </div>
                         {% endif %}
@@ -453,6 +517,25 @@
     </div>
 
     <script type="text/javascript">
+
+        function check_TOU(container)
+        {
+            var checkbox = $('input[name="TOU_accept"]', $(container));
+            var go = checkbox.length === 0 || checkbox.attr('checked');
+
+            if(!go)
+            {
+                {% set alert_message %}
+                    {% trans 'You must agree to the Terms of Use to continue.' %}
+                {% endset %}
+                alert("{{alert_message|e}}");
+
+                return false;
+            }
+
+            return true;
+        }
+
         function check_subdefs(container)
         {
             var go = required = false;
@@ -496,13 +579,29 @@
         }
 
         $(document).ready(function(){
+            $('a.TOUview').bind('click', function(){
+                var options = {
+                  size : 'Medium',
+                  closeButton: true,
+                  title :'{% trans "Terms of Use" %}'
+                };
+
+                $dialog = p4.Dialog.Create(options, 2);
+
+                $.get($(this).attr('href'), function(content){$dialog.setContent(content);});
+            });
             $('.close_button').bind('click',function(){
                 $('#dialog_dwnl').dialog('close').dialog('destroy');
             });
             initialize_geoname_field($('#command_geoname_field'));
             $('#download .download_button').bind('click',function(){
-                if(!check_subdefs($('#download')))
+                if(!check_subdefs($('#download'))) {
                     return false;
+                }
+
+                if (!check_TOU($('#download'))) {
+                    return false;
+                }
 
                 var total = 0;
                 var count = 0;
@@ -548,6 +647,10 @@
             $('#order .order_button').bind('click',function(){
                 $('#order .order_button_loader').css('visibility','visible');
 
+                if (!check_TOU($('#order'))) {
+                    return false;
+                }
+
                 var options = $('#order form').serialize()+'&action=ORDER&use='+escape(tinyMCE.get('order_usage').getContent());
 
                 var $this = $(this);
@@ -573,6 +676,10 @@
             $('#ftp .ftp_button').bind('click',function(){
                 if(!check_subdefs($('#ftp')))
                     return false;
+
+                if (!check_TOU($('#ftp'))) {
+                    return false;
+                }
 
                 $('#ftp .ftp_button_loader').css('visibility','visible');
 
@@ -616,10 +723,14 @@
             });
 
             $('#sendmail .sendmail_button').bind('click',function(){
-                if(!check_subdefs($('#sendmail')))
-                {
+                if(!check_subdefs($('#sendmail'))) {
                     return false;
                 }
+
+                if (!check_TOU($('#sendmail'))) {
+                    return false;
+                }
+
                 $('#sendmail .close_button').trigger("click");
                 //$('#sendmail .sendmail_button_loader').css('visibility','visible');
                 //$(this).attr('disabled','disabled');
@@ -631,7 +742,7 @@
                 dateFormat : 'yy-mm-dd'
             });
             $('#dialog_dwnl a.undisposable_link').bind('click',function(){
-                $(this).next('.undisposable').slideToggle();
+                $(this).parent().parent().find('.undisposable').slideToggle();
 
                 return false;
             });
