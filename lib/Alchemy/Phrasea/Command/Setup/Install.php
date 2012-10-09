@@ -38,8 +38,8 @@ class Install extends Command
             ->addOption('db-user', null, InputOption::VALUE_OPTIONAL, 'MySQL server user', 'phrasea')
             ->addOption('db-password', null, InputOption::VALUE_OPTIONAL, 'MySQL server password', null)
             ->addOption('db-template', null, InputOption::VALUE_OPTIONAL, 'Metadata structure language template', null)
-            ->addOption('databox', null, InputOption::VALUE_OPTIONAL, 'Database name for the DataBox', 'ab_phraseanet')
-            ->addOption('appbox', null, InputOption::VALUE_OPTIONAL, 'Database name for the ApplicationBox', 'db_phraseanet')
+            ->addOption('databox', null, InputOption::VALUE_OPTIONAL, 'Database name for the DataBox', null)
+            ->addOption('appbox', null, InputOption::VALUE_OPTIONAL, 'Database name for the ApplicationBox', null)
             ->addOption('indexer', null, InputOption::VALUE_OPTIONAL, 'Path to Phraseanet Indexer', 'auto')
             ->addOption('data-path', null, InputOption::VALUE_OPTIONAL, 'Path to data repository', realpath(__DIR__ . '/../../../../../datas'))
             ->addOption('server-name', null, InputOption::VALUE_OPTIONAL, 'Server name')
@@ -129,7 +129,7 @@ class Install extends Command
     {
         $abConn = null;
         if (!$input->getOption('appbox')) {
-            $output->writeln("\n<info>--- Database credentiels ---</info>\n");
+            $output->writeln("\n<info>--- Database credantials ---</info>\n");
 
             do {
                 $hostname = $dialog->ask($output, "DB hostname (localhost) : ", 'localhost');
