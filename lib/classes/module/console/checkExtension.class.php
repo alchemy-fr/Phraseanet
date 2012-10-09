@@ -149,7 +149,7 @@ class module_console_checkExtension extends Command
                 $tbases[$kbase]["searchcoll"] = $tcoll;
                 $tbases[$kbase]["mask_xor"] = $tbases[$kbase]["mask_and"] = 0;
 
-                $qp = new PhraseaEngineQueryParser();
+                $qp = new PhraseaEngineQueryParser($this->container);
                 $treeq = $qp->parsequery($input->getOption('query'));
                 $arrayq = $qp->makequery($treeq);
 

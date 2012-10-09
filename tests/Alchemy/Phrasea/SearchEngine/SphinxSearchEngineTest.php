@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\SearchEngine\SphinxSearch\SphinxSearchEngine;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
@@ -16,8 +17,10 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
-        self::$searchEngine = new SphinxSearchEngine('127.0.0.1', 9306, '127.0.0.1', 9308);
+        
+        $app = new Application('test');
+        $appbox = $app['phraseanet.appbox'];
+        self::$searchEngine = new SphinxSearchEngine($app, '127.0.0.1', 9306, '127.0.0.1', 9308);
 
         self::$config = tempnam(sys_get_temp_dir(), 'tmp_sphinx.conf');
         $configFile = self::$searchEngine->configurationPanel()->generateSphinxConf($appbox->get_databoxes(), self::$searchEngine->configurationPanel()->getConfiguration());
@@ -34,8 +37,12 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
 
         self::$searchd = new Process($searchd . ' -c ' . self::$config);
         self::$searchd->run();
-
-        self::$searchEngine = new SphinxSearchEngine('127.0.0.1', 9306, '127.0.0.1', 9308);
+        
+        self::$searchEngine = new SphinxSearchEngine($app, '127.0.0.1', 9306, '127.0.0.1', 9308);
+    }
+    
+    public function initialize()
+    {
     }
 
     public static function tearDownAfterClass()
@@ -51,14 +58,9 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
         parent::tearDownAfterClass();
     }
 
-    public function setUp()
-    {
-        parent::setUp();
-    }
-
     public function testAutocomplete()
     {
-        $record = self::$records['record_24'];
+        $record = self::$DI['record_24'];
 
         $toupdate = array();
 
@@ -90,7 +92,7 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
         $process = new Process($indexer . ' --all --rotate -c ' . self::$config);
         $process->run();
 
-        $appbox = \appbox::get_instance(self::$core);
+        $appbox = self::$DI['app']['phraseanet.appbox'];
         self::$searchEngine->buildSuggestions($appbox->get_databoxes(), self::$config, 0);
 
         $suggestions = self::$searchEngine->autoComplete('jean');

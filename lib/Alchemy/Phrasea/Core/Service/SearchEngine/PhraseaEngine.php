@@ -20,7 +20,7 @@ class PhraseaEngine extends ServiceAbstract
 
     protected function init()
     {
-        $this->searchEngine = new PhraseaSearchEngine();
+        $this->searchEngine = PhraseaSearchEngine::create($this->app);
 
         return $this;
     }

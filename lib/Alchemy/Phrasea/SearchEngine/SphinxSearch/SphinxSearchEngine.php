@@ -11,15 +11,14 @@
 
 namespace Alchemy\Phrasea\SearchEngine\SphinxSearch;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Doctrine\Common\Collections\ArrayCollection;
-use Silex\Application;
 use Symfony\Component\Process\ExecutableFinder;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Process\Process;
 
 require_once __DIR__ . '/../../../../vendor/sphinx/sphinxapi.php';
@@ -45,9 +44,11 @@ class SphinxSearchEngine implements SearchEngineInterface
     protected $rt_conn;
     protected $configurationPanel;
     protected $options;
+    protected $app;
 
-    public function __construct($host, $port, $rt_host, $rt_port)
+    public function __construct(Application $app, $host, $port, $rt_host, $rt_port)
     {
+        $this->app = $app;
         $this->options = new SearchEngineOptions();
 
         $this->sphinx = new \SphinxClient();
@@ -297,9 +298,10 @@ class SphinxSearchEngine implements SearchEngineInterface
                     try {
                         $record =
                             new \record_adapter(
-                                $match['attrs']['sbas_id']
-                                , $match['attrs']['record_id']
-                                , $resultOffset
+                                $this->app,
+                                $match['attrs']['sbas_id'],
+                                $match['attrs']['record_id'],
+                                $resultOffset
                         );
 
                         $results->add($record);

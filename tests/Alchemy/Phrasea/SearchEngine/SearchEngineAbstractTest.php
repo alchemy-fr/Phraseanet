@@ -8,35 +8,37 @@ require_once __DIR__ . '/../../../PhraseanetPHPUnitAuthenticatedAbstract.class.i
 
 abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedAbstract
 {
+
     protected static $searchEngine;
-
-    public static function setUpBeforeClass()
-    {
-        parent::setUpBeforeClass();
-
-        foreach (self::$records['record_24']->get_databox()->get_meta_structure()->get_elements() as $field) {
-            if ( ! $field->isBusiness()) {
-                continue;
-            }
-            $found = true;
-        }
-
-        if ( ! $found) {
-            $field = \databox_field::create(self::$records['record_24']->get_databox(), 'testBusiness' . mt_rand(), false);
-            $field->set_business(true);
-            $field->save();
-        }
-    }
+    protected static $initialized = false;
 
     public function setUp()
     {
         parent::setUp();
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
-        foreach ($appbox->get_databoxes() as $databox) {
-            break;
+        
+        if (!self::$initialized) {
+            $found = false;
+            foreach (self::$DI['record_24']->get_databox()->get_meta_structure()->get_elements() as $field) {
+                if (!$field->isBusiness()) {
+                    continue;
+                }
+                $found = true;
+            }
+
+            if (!$found) {
+                $field = \databox_field::create(self::$DI['app'], self::$DI['record_24']->get_databox(), 'testBusiness' . mt_rand(), false);
+                $field->set_business(true);
+                $field->save();
+            }
+
+            foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+                break;
+            }
         }
 
-        if ( ! self::$searchEngine instanceof SearchEngineInterface) {
+            $this->initialize();
+
+        if (!self::$searchEngine instanceof SearchEngineInterface) {
             $this->markTestSkipped('Unable to initialize search Engine');
         }
 
@@ -45,6 +47,8 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
         self::$searchEngine->setOptions($options);
     }
+    
+    abstract public function initialize();
 
     protected function updateIndex()
     {
@@ -86,7 +90,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
             if ($indexable !== $field->is_indexable() || $field->isBusiness() !== $business) {
                 continue;
             }
-
+            
             try {
                 $values = $record->get_caption()->get_field($field->get_name())->get_values();
                 $value = array_pop($values);
@@ -110,7 +114,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
     public function testRecordNotIndexed()
     {
-        $record = self::$records['record_24'];
+        $record = self::$DI['record_24'];
         $query_string = 'boomboklot' . $record->get_record_id() . 'defaultNotIndexed';
 
         $this->editRecord($query_string, $record);
@@ -122,7 +126,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
     public function testAddRecord()
     {
-        $record = self::$records['record_24'];
+        $record = self::$DI['record_24'];
         $query_string = 'boomboklot' . $record->get_record_id() . 'defaultAdd';
 
         $this->editRecord($query_string, $record);
@@ -137,7 +141,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
     public function testUpdateRecord()
     {
-        $record = self::$records['record_24'];
+        $record = self::$DI['record_24'];
 
         self::$searchEngine->addRecord($record);
         $this->updateIndex();
@@ -156,7 +160,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
     protected function getDefaultOptions()
     {
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$DI['app']['phraseanet.appbox'];
         foreach ($appbox->get_databoxes() as $databox) {
             break;
         }
@@ -173,7 +177,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $options->setLocale('fr');
         self::$searchEngine->setOptions($options);
 
-        $record = self::$records['record_24'];
+        $record = self::$DI['record_24'];
         $query_string = 'boomboklot' . $record->get_record_id() . 'stemmedfr';
 
         $this->editRecord($query_string, $record);
@@ -189,7 +193,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
     public function testUpdateQueryOnField()
     {
         $options = $this->getDefaultOptions();
-        $record = self::$records['record_24'];
+        $record = self::$DI['record_24'];
 
         $query_string = 'boomboklot' . $record->get_record_id() . 'onfield';
 
@@ -208,7 +212,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
     public function testBusinessFieldAvailable()
     {
         $options = $this->getDefaultOptions();
-        $record = self::$records['record_24'];
+        $record = self::$DI['record_24'];
 
         $query_string = 'boomboklot' . $record->get_record_id() . 'businessAvailable';
 
@@ -226,7 +230,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
     public function testBusinessFieldNotAvailable()
     {
-        $record = self::$records['record_24'];
+        $record = self::$DI['record_24'];
         $query_string = 'boomboklot' . $record->get_record_id() . 'businessNotAvailable';
 
         $this->editRecord($query_string, $record, true, true);
@@ -243,7 +247,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
     {
         $options = $this->getDefaultOptions();
 
-        $record = self::$records['record_24'];
+        $record = self::$DI['record_24'];
         $query_string = 'boomboklot' . $record->get_record_id() . 'anotherfield';
 
         $selectedField = $this->editRecord($query_string, $record);
@@ -267,11 +271,11 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
     public function testUpdateNonIndexableRecord()
     {
-        $record = self::$records['record_24'];
+        $record = self::$DI['record_24'];
         $query_string = 'boomboklot_no_index_' . $record->get_record_id() . '_';
 
         $field = $this->editRecord($query_string, $record, false);
-        if ( ! $field) {
+        if (!$field) {
             $this->markTestSkipped('No non-indexable field found');
         }
 
@@ -285,7 +289,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
     public function testDeleteRecord()
     {
-        $record = self::$records['record_24'];
+        $record = self::$DI['record_24'];
         $query_string = 'boomboklot' . $record->get_record_id() . 'deleteRecord';
 
         $this->editRecord($query_string, $record);
@@ -324,7 +328,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
     public function testAddStory()
     {
-        $story = self::$records['record_story_1'];
+        $story = self::$DI['record_story_1'];
         $query_string = 'story' . $story->get_record_id() . 'addStory';
 
         $options = $this->getDefaultOptions();
@@ -344,7 +348,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
     public function testUpdateStory()
     {
-        $story = self::$records['record_story_1'];
+        $story = self::$DI['record_story_1'];
 
         $options = $this->getDefaultOptions();
         $options->setSearchType(SearchEngineOptions::RECORD_GROUPING);
@@ -368,7 +372,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
     public function testStatusQueryOnOverOff()
     {
         $options = $this->getDefaultOptions();
-        $record = self::$records['record_24'];
+        $record = self::$DI['record_24'];
         $record->set_binary_status('00000');
 
         $query_string = 'boomboklot' . $record->get_record_id() . 'statusQueryOff';
@@ -389,7 +393,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
     {
         $options = $this->getDefaultOptions();
 
-        $record = self::$records['record_24'];
+        $record = self::$DI['record_24'];
         $record->set_binary_status('10000');
 
         $options->setStatus(array(4 => array('on' => array($record->get_databox()->get_sbas_id()))));
@@ -410,7 +414,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
     {
         $options = $this->getDefaultOptions();
 
-        $record = self::$records['record_24'];
+        $record = self::$DI['record_24'];
         $record->set_binary_status('10000');
 
         $options->setStatus(array(4 => array('off' => array($record->get_databox()->get_sbas_id()))));
@@ -431,9 +435,9 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
     {
         $options = $this->getDefaultOptions();
 
-        $record = self::$records['record_24'];
+        $record = self::$DI['record_24'];
         $record->set_binary_status('00000');
-        
+
         $options->setStatus(array(4 => array('off' => array($record->get_databox()->get_sbas_id()))));
         self::$searchEngine->setOptions($options);
 
@@ -451,7 +455,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
     public function testStatusQueryUpdate()
     {
         $options = $this->getDefaultOptions();
-        $record = self::$records['record_24'];
+        $record = self::$DI['record_24'];
         $record->set_binary_status('00000');
 
         $query_string = 'boomboklot' . $record->get_record_id() . 'statusQueryUpdate';
@@ -479,7 +483,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
     public function testExcerptFromSimpleQuery()
     {
-        $record = self::$records['record_24'];
+        $record = self::$DI['record_24'];
         $query_string = 'boomboklot' . $record->get_record_id() . 'excerptSimpleQuery';
 
         $this->editRecord($query_string, $record);
@@ -491,6 +495,8 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $results = self::$searchEngine->query($query_string, 0, 1);
         $fields = array();
         $foundRecord = $results->results()->first();
+        
+        $this->assertInstanceOf('\record_adapter', $foundRecord);
 
         foreach ($foundRecord->get_caption()->get_fields() as $field) {
             $fields[$field->get_name()] = array(
@@ -507,7 +513,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
             }
         }
 
-        if ( ! $found) {
+        if (!$found) {
             $this->fail('Unable to build the excerpt');
         }
     }

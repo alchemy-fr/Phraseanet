@@ -2,7 +2,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine;
 
-use Silex\Application;
+use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpFoundation\Request;
 
 interface ConfigurationPanelInterface

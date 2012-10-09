@@ -1517,6 +1517,22 @@
             <default></default>
             <comment></comment>
           </field>
+          <field>
+            <name>duration</name>
+            <type>float</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>total</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
         </fields>
         <indexes>
           <index>

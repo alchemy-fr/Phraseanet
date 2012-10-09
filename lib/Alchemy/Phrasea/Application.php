@@ -20,6 +20,7 @@ use Alchemy\Phrasea\Core\Provider\ConfigurationTesterServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FtpServiceProvider;
 use Alchemy\Phrasea\Core\Provider\GeonamesServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
+use Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TaskManagerServiceProvider;
 use FFMpeg\FFMpegServiceProvider;
 use Grom\Silex\ImagineServiceProvider;
@@ -126,6 +127,7 @@ class Application extends SilexApplication
         $this->register(new ORMServiceProvider());
         $this->register(new PhraseanetServiceProvider());
         $this->register(new PHPExiftoolServiceProvider());
+        $this->register(new SearchEngineServiceProvider());
         $this->register(new SessionServiceProvider(), array(
             'session.test' => $this->getEnvironment() == 'test'
         ));

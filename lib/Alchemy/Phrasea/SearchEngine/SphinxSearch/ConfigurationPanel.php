@@ -3,7 +3,7 @@
 namespace Alchemy\Phrasea\SearchEngine\SphinxSearch;
 
 use Alchemy\Phrasea\SearchEngine\ConfigurationPanelInterface;
-use Silex\Application;
+use Alchemy\Phrasea\Application;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\Request;
 

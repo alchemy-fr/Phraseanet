@@ -22,7 +22,7 @@ class SphinxSearch extends ServiceAbstract
     {
         $options = $this->getOptions();
 
-        $this->searchEngine = new SphinxSearchEngine($options['host'], $options['port'], $options['rt_host'], $options['rt_port']);
+        $this->searchEngine = new SphinxSearchEngine($this->app, $options['host'], $options['port'], $options['rt_host'], $options['rt_port']);
 
         return $this;
     }

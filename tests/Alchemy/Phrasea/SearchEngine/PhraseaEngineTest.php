@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\SearchEngine\Phrasea\PhraseaEngine;
 use Symfony\Component\Process\Process;
 
@@ -9,15 +10,14 @@ require_once __DIR__ . '/SearchEngineAbstractTest.php';
 
 class PhraseaEngineTest extends SearchEngineAbstractTest
 {
-    public static function setUpBeforeClass()
+    public function initialize()
     {
-        parent::setUpBeforeClass();
-        self::$searchEngine = new PhraseaEngine();
+        self::$searchEngine = PhraseaEngine::create(self::$DI['app']);
     }
 
     protected function updateIndex()
     {
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $appbox = self::$DI['app']['phraseanet.appbox'];
         $cmd = '/usr/local/bin/phraseanet_indexer '
             . ' -h=' . $appbox->get_host() . ' -P=' . $appbox->get_port()
             . ' -b=' . $appbox->get_dbname() . ' -u=' . $appbox->get_user()
