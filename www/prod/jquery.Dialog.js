@@ -88,17 +88,17 @@ var p4 = p4 || {};
         width = bodySize.x - 30 ;
         break;
       case 'Medium':
-        width = 730;
-        height = 520;
+        width = Math.min(bodySize.x - 30, 730);
+        height = Math.min(bodySize.y - 30, 520);
         break;
       default:
       case 'Small':
-        width = 420;
-        height = 300;
+        width = Math.min(bodySize.x - 30, 420);
+        height = Math.min(bodySize.y - 30, 300);
         break;
       case 'Alert':
-        width = 300;
-        height = 150;
+        width = Math.min(bodySize.x - 30, 300);
+        height = Math.min(bodySize.y - 30, 150);
         break;
     }
 
