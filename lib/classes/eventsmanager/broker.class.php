@@ -161,7 +161,7 @@ class eventsmanager_broker
             ORDER BY created_on DESC
             LIMIT ' . ((int) $page * $n) . ', ' . $n;
 
-        $datas = array('notifications' => array(), 'next' => '');
+        $data = array('notifications' => array(), 'next' => '');
 
         $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':usr_id' => $this->app['phraseanet.user']->get_id()));
@@ -170,9 +170,9 @@ class eventsmanager_broker
 
         foreach ($rs as $row) {
             $type = 'eventsmanager_' . $row['type'];
-            $data = $this->pool_classes[$type]->datas($row['datas'], $row['unread']);
+            $content = $this->pool_classes[$type]->datas($row['datas'], $row['unread']);
 
-            if ( ! isset($this->pool_classes[$type]) || count($datas) === 0) {
+            if ( ! isset($this->pool_classes[$type]) || count($content) === 0) {
                 $sql = 'DELETE FROM notifications WHERE id = :id';
                 $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
                 $stmt->execute(array(':id' => $row['id']));
@@ -183,24 +183,24 @@ class eventsmanager_broker
             $date_key = str_replace('-', '_', substr($row['created_on'], 0, 10));
             $display_date = $this->app['date-formatter']->getDate(new DateTime($row['created_on']));
 
-            if ( ! isset($datas['notifications'][$date_key])) {
-                $datas['notifications'][$date_key] = array(
+            if ( ! isset($data['notifications'][$date_key])) {
+                $data['notifications'][$date_key] = array(
                     'display'       => $display_date
                     , 'notifications' => array()
                 );
             }
 
-            $datas['notifications'][$date_key]['notifications'][$row['id']] = array(
-                'classname' => $data['class']
+            $data['notifications'][$date_key]['notifications'][$row['id']] = array(
+                'classname' => $content['class']
                 , 'time'      => $this->app['date-formatter']->getTime(new DateTime($row['created_on']))
                 , 'icon'      => '<img src="' . $this->pool_classes[$type]->icon_url() . '" style="vertical-align:middle;width:16px;margin:2px;" />'
                 , 'id'        => $row['id']
-                , 'text'      => $data['text']
+                , 'text'      => $content['text']
             );
         }
 
         if (((int) $page + 1) * $n < $total) {
-            $datas['next'] = '<a href="#" onclick="print_notifications(' . ((int) $page + 1) . ');return false;">' . _('charger d\'avantages de notifications') . '</a>';
+            $data['next'] = '<a href="#" onclick="print_notifications(' . ((int) $page + 1) . ');return false;">' . _('charger d\'avantages de notifications') . '</a>';
         }
 
         return p4string::jsonencode($datas);
