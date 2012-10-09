@@ -100,11 +100,8 @@ class patch_373 implements patchInterface
 
         $stmt->closeCursor();
 
-        $binariesFile = __DIR__ . '/../../../config/binaries.yml';
-        $dumper = new Dumper();
-        file_put_contents($binariesFile, $dumper->dump(array('binaries' => $binaries), 4));
-
-        @chmod($binariesFile, 0600);
+        $configuration = Configuration::build();
+        $configuration->setBinaries(array('binaries' => $binaries));
 
         $sql = 'DELETE FROM registry WHERE `key` = :key';
         $stmt = $appbox->get_connection()->prepare($sql);
@@ -122,8 +119,6 @@ class patch_373 implements patchInterface
         $stmt->execute(array(':key'=>'GV_sit'));
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
-
-        $configuration = Configuration::build();
 
         $configs = $configuration->getConfigurations();
         $configs['key'] = $row['value'];
