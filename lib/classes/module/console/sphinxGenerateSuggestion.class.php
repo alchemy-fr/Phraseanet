@@ -15,9 +15,11 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
+
 use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\ProcessBuilder;
 
 class module_console_sphinxGenerateSuggestion extends Command
 {
@@ -67,14 +69,20 @@ class module_console_sphinxGenerateSuggestion extends Command
                 return 1;
             }
 
+            $builder = ProcessBuilder::create(array('/usr/local/bin/indexer'));
+            $builder->add('metadatas' . $index)
+                ->add('--buildstops')
+                ->add($tmp_file)
+                ->add(1000000)
+                ->add('--buildfreqs');
+
+            $builder->getProcess()->run();
+
             if ( ! file_exists($tmp_file)) {
                 $output->writeln("<error> file '" . $tmp_file . "' does not exist</error>");
 
                 return 1;
             }
-
-            $cmd = '/usr/local/bin/indexer metadatas' . $index . '  --buildstops ' . $tmp_file . ' 1000000 --buildfreqs';
-            exec($cmd);
 
             try {
                 $connbas = connection::getPDOConnection($sbas_id);

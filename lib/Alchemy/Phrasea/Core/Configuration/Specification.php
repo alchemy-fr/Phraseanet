@@ -26,11 +26,15 @@ interface Specification
 
     public function setServices($services);
 
+    public function setBinaries($binaries);
+
     public function getConfigurations();
 
     public function getConnexions();
 
     public function getServices();
+
+    public function getBinaries();
 
     public function initialize();
 
