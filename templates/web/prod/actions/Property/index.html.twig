@@ -1,3 +1,5 @@
+{% import 'common/thumbnail.html.twig' as thumbnail %}
+
 {% set nbReceivedDocuments = records.received().count() %}
 {% set nbEditableDocuments = records.count() %}
 
@@ -8,8 +10,8 @@
     </ul>
 
     <div id='property-statut'>
-        <p class="header" style='text-align:center;'>
-            <h4>
+        <p class="header">
+            <h4 style='text-align:center;'>
                 {% trans %}
                     You have selected one document.
                 {% plural nbReceivedDocuments %}
@@ -42,8 +44,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td colspan="6" style='font-size:11px;'>
+                        <tr style='border-bottom:1px solid #FFF;'>
+                            <td colspan="6" style='font-size:11px;text-align:center'>
                                 {% if nbRecords == 0 and nbStories > 0 %}
                                     <i>({% trans %}Status edition of stories{% endtrans %})</i>
                                 {% elseif nbRecords > 0 and nbStories == 0 %}
@@ -61,7 +63,7 @@
                                 {% set inverse = 1 %}
                             {% endif %}
                             <tr>
-                                <td colspan="6">
+                                <td colspan="6" style='text-align:center;'>
                                     <h6>{{ values['name']|title }}</h6>
                                 </td>
                             </tr>
@@ -74,7 +76,7 @@
                                     {% endif %}
                                 </td>
                                 <td style='text-align:right'>
-                                    <label for="status-radio-{{ sbasId ~ "-" ~ bit ~ '-off'}}">
+                                    <label for="status-radio-{{ sbasId ~ "-" ~ bit ~ '-off'}}" {% if inverse == 2 %}style='color:#FF3333'{% endif%}>
                                         {{ values['labeloff']|default('off') }}
                                     </label>
                                 </td>
@@ -85,7 +87,7 @@
                                     <input id="status-radio-{{ sbasId ~ "-" ~ bit ~ '-on'}}" type="radio" name="status[{{ sbasId }}][{{ bit }}]" value="1" {% if inverse == 0 %}checked="checked"{% endif %}/>
                                 </td>
                                 <td style='text-align:left'>
-                                    <label for="status-radio-{{ sbasId ~ "-" ~ bit ~ '-on'}}">
+                                    <label for="status-radio-{{ sbasId ~ "-" ~ bit ~ '-on'}}" {% if inverse == 2 %}style='color:#FF3333'{% endif%}>
                                         {{ values['labelon']|default('on') }}
                                     </label>
                                 </td>
@@ -114,19 +116,73 @@
             </div>
         </form>
     </div>
-    <div id='property-type'>TODO</div>
+
+    <div id='property-type'>
+        {% set typesEnum = [
+                constant('\\Alchemy\\Phrasea\\Media\\Type\\Type::TYPE_AUDIO'),
+                constant('\\Alchemy\\Phrasea\\Media\\Type\\Type::TYPE_VIDEO'),
+                constant('\\Alchemy\\Phrasea\\Media\\Type\\Type::TYPE_DOCUMENT'),
+                constant('\\Alchemy\\Phrasea\\Media\\Type\\Type::TYPE_FLASH'),
+                constant('\\Alchemy\\Phrasea\\Media\\Type\\Type::TYPE_IMAGE')
+            ]
+        %}
+
+        <form name="change-records-type" action="/prod/records/property/type/" method="POST">
+            <div class='well-small 'style="text-align:center;">
+                <select name='force_types' style="width:250px">
+                    <option value="">{% trans 'Apply to all selected documents' %}</option>
+                    {% for option in typesEnum %}
+                        <option value="{{ option }}">{{ option }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <input name="lst" type="hidden" value="{{ records.serializedList() }}"/>
+            {% for sbasId,databoxTypes in recordsType %}
+                <h2 style="text-align:center;" clas="header">{{ sbasId|sbas_names(app) }}</h2>
+                {% for currentType, recordsByType in databoxTypes %}
+                    <ul class="thumbnails" style="margin:20px auto;">
+                        {% for record in recordsByType %}
+                            <li class="span2">
+                                <div class="thumbnail" style='min-height:205px'>
+                                    {{ thumbnail.format(record.get_thumbnail(), 160, 120, '', false, false) }}
+                                    <div class="caption">
+                                        <h5>{{ record.get_title() }}</h5>
+                                        <p>
+                                            <select name="types[{{record.get_serialize_key()}}]" style='width:100%'>
+                                                {% for option in typesEnum %}
+                                                    <option value="{{ option }}" {{ record.is_grouping() ? "disabled='disabled'": "" }} {{ option == record.get_type() ? "selected='selected'" : '' }}>{{ option }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </p>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endfor %}
+            {% endfor %}
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-primary submiter">{% trans "Apply changes" %}</button>
+                <button type="button" class="btn">{% trans "Cancel" %}</button>
+            </div>
+         </form>
+    </div>
 </div>
 
 <script type="text/javascript">
     $(document).ready(function(){
         $("#tabs-records-property").tabs();
+
         var $dialog = p4.Dialog.get(1);
         var $dialogBox = $dialog.getDomElement();
 
-        var form = $("form[name=change-records-status]", $dialogBox);
-        var button = $(".submiter", form);
+        var button = $(".submiter", $dialogBox);
 
         button.bind("click", function(){
+
+            var form = $(this).closest("form");
+
             $.ajax({
                 type: form.attr("method"),
                 url: form.attr("action"),

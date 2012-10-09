@@ -101,6 +101,7 @@ class Language implements ControllerProviderInterface
             $out['feedbackCanContribute'] = _('User contribute to the feedback');
             $out['feedbackCanSeeOthers'] = _('User can see others choices');
             $out['forceSendDocument'] = _('Force sending of the document ?');
+            $out['export'] = _('Export');
 
             return $app->json($out);
         });

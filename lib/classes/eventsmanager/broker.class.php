@@ -203,7 +203,7 @@ class eventsmanager_broker
             $data['next'] = '<a href="#" onclick="print_notifications(' . ((int) $page + 1) . ');return false;">' . _('charger d\'avantages de notifications') . '</a>';
         }
 
-        return p4string::jsonencode($datas);
+        return p4string::jsonencode($data);
     }
 
     public function get_unread_notifications_number()

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Controller\Root;
+namespace Alchemy\Phrasea\Controller\User;
 
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -31,10 +31,7 @@ class Notifications implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
         $controllers->before(function(Request $request) use ($app) {
-                $response = $app['firewall']->requireNotGuest();
-                if ($response instanceof Response) {
-                    return $response;
-                }
+                $app['firewall']->requireNotGuest();
             });
 
 
@@ -82,8 +79,12 @@ class Notifications implements ControllerProviderInterface
      */
     public function setNotificationsReaded(Application $app, Request $request)
     {
+        if(!$request->isXmlHttpRequest()) {
+            $app->abort(400);
+        }
+
         try {
-            $app['events-manager']->read(explode('_', (array) $request->query->get('notifications', array())), $app['phraseanet.user']->get_id());
+            $app['events-manager']->read(explode('_', (string) $request->query->get('notifications')), $app['phraseanet.user']->get_id());
 
             return $app->json(array('success'   => true, 'message' => ''));
         } catch (Exception $e) {
@@ -101,8 +102,12 @@ class Notifications implements ControllerProviderInterface
      */
     public function listNotifications(Application $app, Request $request)
     {
+        if(!$request->isXmlHttpRequest()) {
+            $app->abort(400);
+        }
+
         $page = (int) $request->query->get('page', 1);
-        return $app->json($app['events-manager']->get_json_notifications(), ($page < 1 ? 1 : $page));
+        return $app->json($app['events-manager']->get_json_notifications(($page < 1 ? 1 : $page)));
     }
 
     /**
