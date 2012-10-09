@@ -81,7 +81,7 @@ abstract class task_databoxAbstract extends task_abstract
                 }
 
                 $this->sbas_id = (int) $row['sbas_id'];
-                $this->log('This task works now on ' . phrasea::sbas_names($this->sbas_id, $app));
+                $this->log('This task works now on ' . phrasea::sbas_names($this->sbas_id, $this->dependencyContainer));
 
                 try {
                     // get the records to process
