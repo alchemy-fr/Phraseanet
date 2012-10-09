@@ -74,11 +74,12 @@ class registry implements registryInterface
             if (isset($config['key'])) {
                 $this->cache->save('GV_sit', $config['key']);
             }
-            
-            $binaries = $configuration->getBinaries();
 
-            foreach ($binaries['binaries'] as $name => $path) {
-                $this->cache->save($name, $path);
+            $binaries = $configuration->getBinaries();
+            if (isset($binaries['binaries'])) {
+                foreach ($binaries['binaries'] as $name => $path) {
+                    $this->cache->save($name, $path);
+                }
             }
         }
 
