@@ -2501,40 +2501,28 @@ function printThis(value)
 
 function downloadThis(datas)
 {
-    var dialog_box = $('#dialog_dwnl');
+    var dialog = p4.Dialog.Create({title: language['export']});
 
-    dialog_box = $('#dialog_dwnl');
+    dialog.getDomElement().bind("dialogbeforeclose", function(event, ui) {
+        tinyMCE.execCommand('mceRemoveControl',true,'sendmail_message');
+        tinyMCE.execCommand('mceRemoveControl',true,'order_usage');
+    });
 
-    dialog_box.empty().addClass('loading').dialog({
-        width:Math.min(bodySize.x - 30, 800),
-        height:Math.min(bodySize.y - 30, 600),
-        modal:true,
-        closeOnEscape : true,
-        resizable : false,
-        zIndex:1300,
-        overlay: {
-            backgroundColor: '#000',
-            opacity: 0.7
-        },
-        beforeclose:function(){
-            tinyMCE.execCommand('mceRemoveControl',true,'sendmail_message');
-            tinyMCE.execCommand('mceRemoveControl',true,'order_usage');
-        }
-    }).dialog('open');
+    $.post("/prod/export/multi-export/", datas, function(data) {
 
-    $.post("/prod/multi-export/", datas, function(data) {
+        dialog.setContent(data);
 
-        dialog_box.removeClass('loading').empty().append(data);
-        $('.tabs', dialog_box).tabs();
+        $('.tabs', dialog.getDomElement()).tabs();
+
         tinyMCE.execCommand('mceAddControl',true,'sendmail_message');
         tinyMCE.execCommand('mceAddControl',true,'order_usage');
 
-        $('.close_button', dialog_box).bind('click',function(){
-            dialog_box.dialog('close').dialog('destroy');
-        });
+        $('.close_button', dialog.getDomElement()).bind('click',function(){
+            dialog.Close();
+		});
+
         return false;
     });
-
 }
 
 
