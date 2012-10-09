@@ -129,7 +129,7 @@ class Install extends Command
     {
         $abConn = null;
         if (!$input->getOption('appbox')) {
-            $output->writeln("\n<info>--- Database credantials ---</info>\n");
+            $output->writeln("\n<info>--- Database credentials ---</info>\n");
 
             do {
                 $hostname = $dialog->ask($output, "DB hostname (localhost) : ", 'localhost');
