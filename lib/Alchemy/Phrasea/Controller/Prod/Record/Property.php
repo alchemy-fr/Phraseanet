@@ -196,7 +196,7 @@ class Property implements ControllerProviderInterface
         $applyStatusToChildren = $request->request->get('apply_to_children', array());
         $records = RecordsRequest::fromRequest($app, $request, false, array('chgstatus'));
         $updated = array();
-        $postStatus = $request->request->get('status');
+        $postStatus = (array) $request->request->get('status');
 
         foreach ($records as $record) {
             $sbasId = $record->get_databox()->get_sbas_id();
@@ -228,9 +228,9 @@ class Property implements ControllerProviderInterface
      */
     public function changeType(Application $app, Request $request)
     {
-        $typeLst = $request->request('types', array());
-        $records = RecordsRequest::fromRequest($app, $request, false, array('modifyrecord'));
-        $forceType = $request->request('force_types', '');
+        $typeLst = $request->request->get('types', array());
+        $records = RecordsRequest::fromRequest($app, $request, false, array('canmodifrecord'));
+        $forceType = $request->request->get('force_types', '');
         $updated = array();
 
         foreach ($records as $record) {
@@ -238,7 +238,7 @@ class Property implements ControllerProviderInterface
                 $recordType = !empty($forceType) ? $forceType : (isset($typeLst[$record->get_serialize_key()]) ? $typeLst[$record->get_serialize_key()] : null);
 
                 if ($recordType) {
-                    $record->setType($recordType);
+                    $record->set_type($recordType);
                     $updated[$record->get_serialize_key()] = $recordType;
                 }
             } catch (\Exception $e) {
