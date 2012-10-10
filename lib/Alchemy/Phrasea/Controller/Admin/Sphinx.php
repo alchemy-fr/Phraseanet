@@ -100,11 +100,11 @@ class Sphinx implements ControllerProviderInterface
     public function submitConfiguration(Application $app, Request $request)
     {
         $app['phraseanet.registry']->set(
-            'sphinx_charset_tables', $request->request->get('charset_tables', array()), \registry::TYPE_ARRAY
+            'sphinx_charset_tables', $request->request->get('charset_tables', array()), \registry::TYPE_ENUM_MULTI
         );
 
         $app['phraseanet.registry']->set(
-            'sphinx_user_stemmer', $request->request->get('libstemmer', array()), \registry::TYPE_ARRAY
+            'sphinx_user_stemmer', $request->request->get('libstemmer', array()), \registry::TYPE_ENUM_MULTI
         );
 
         return $app->redirect('/admin/sphinx/configuration/?success=1');
