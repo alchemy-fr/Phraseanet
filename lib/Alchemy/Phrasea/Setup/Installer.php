@@ -76,6 +76,17 @@ class Installer
         foreach ($this->registryData as $key => $value) {
             $this->app['phraseanet.registry']->set($key, $value, \registry::TYPE_STRING);
         }
+
+        $app = $this->app;
+        require __DIR__ . '/../../../../lib/conf.d/_GV_template.inc';
+
+        foreach ($GV as $section) {
+            foreach ($section['vars'] as $var) {
+                if (isset($var['default'])) {
+                    $this->app['phraseanet.registry']->set($var['name'], $var['default'], $var['type']);
+                }
+            }
+        }
     }
 
     private function createDB()
@@ -83,12 +94,12 @@ class Installer
         $template = new \SplFileInfo(__DIR__ . '/../../../conf.d/data_templates/' . $this->template . '-simple.xml');
         $databox = \databox::create($this->app, $this->dbConn, $template, $this->app['phraseanet.registry']);
         $this->app['phraseanet.user']->ACL()
-            ->give_access_to_sbas(array($databox->get_sbas_id()))
-            ->update_rights_to_sbas(
-                $databox->get_sbas_id(), array(
-                'bas_manage'        => 1, 'bas_modify_struct' => 1,
-                'bas_modif_th'      => 1, 'bas_chupub'        => 1
-                )
+                ->give_access_to_sbas(array($databox->get_sbas_id()))
+                ->update_rights_to_sbas(
+                        $databox->get_sbas_id(), array(
+                    'bas_manage'        => 1, 'bas_modify_struct' => 1,
+                    'bas_modif_th'      => 1, 'bas_chupub'        => 1
+                        )
         );
 
         $collection = \collection::create($this->app, $databox, $this->app['phraseanet.appbox'], 'test', $this->app['phraseanet.user']);
@@ -100,7 +111,7 @@ class Installer
             , 'actif'           => 1, 'canreport'       => 1, 'canaddrecord'    => 1, 'canmodifrecord'  => 1
             , 'candeleterecord' => 1, 'chgstatus'       => 1, 'imgtools'        => 1, 'manage'          => 1
             , 'modify_struct'   => 1, 'nowatermark'     => 1
-            )
+                )
         );
 
         foreach (array('cindexer', 'subdef', 'writemeta') as $task) {
@@ -115,14 +126,14 @@ class Installer
                 $dbname = $credentials['dbname'];
 
                 $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n<binpath>"
-                    . str_replace('/phraseanet_indexer', '', $this->phraseaIndexer)
-                    . "</binpath><host>" . $host . "</host><port>"
-                    . $port . "</port><base>"
-                    . $dbname . "</base><user>"
-                    . $user_ab . "</user><password>"
-                    . $password . "</password><socket>25200</socket>"
-                    . "<use_sbas>1</use_sbas><nolog>0</nolog><clng></clng>"
-                    . "<winsvc_run>0</winsvc_run><charset>utf8</charset></tasksettings>";
+                        . str_replace('/phraseanet_indexer', '', $this->phraseaIndexer)
+                        . "</binpath><host>" . $host . "</host><port>"
+                        . $port . "</port><base>"
+                        . $dbname . "</base><user>"
+                        . $user_ab . "</user><password>"
+                        . $password . "</password><socket>25200</socket>"
+                        . "<use_sbas>1</use_sbas><nolog>0</nolog><clng></clng>"
+                        . "<winsvc_run>0</winsvc_run><charset>utf8</charset></tasksettings>";
             } else {
                 $settings = null;
             }
@@ -158,7 +169,7 @@ class Installer
                 $stmt->execute();
                 $stmt->closeCursor();
             } catch (\PDOException $e) {
-
+                
             }
         }
         if ($this->dbConn) {
@@ -169,7 +180,7 @@ class Installer
                     $stmt->execute();
                     $stmt->closeCursor();
                 } catch (\PDOException $e) {
-
+                    
                 }
             }
         }
@@ -218,7 +229,7 @@ class Installer
                 'driver'  => 'pdo_sqlite',
                 'path'    => '/tmp/db.sqlite',
                 'charset' => 'UTF8'
-            ));
+                ));
 
         $cacheService = "array_cache";
 
@@ -254,4 +265,5 @@ class Installer
 
         $this->app['phraseanet.configuration']->setConfigurations($arrayConf);
     }
+
 }
