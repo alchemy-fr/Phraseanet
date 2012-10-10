@@ -99,7 +99,7 @@ class Migration31 implements MigrationInterface
                 $type = $datas['type'];
                 switch ($datas['type']) {
                     case \registry::TYPE_ENUM_MULTI:
-                    case \registry::TYPE_ARRAY:
+                    case \registry::TYPE_ENUM:
                         $val = serialize($val);
                         break;
                     case \registry::TYPE_INTEGER:
@@ -109,6 +109,11 @@ class Migration31 implements MigrationInterface
                         $val = $val ? '1' : '0';
                         break;
                     case \registry::TYPE_STRING:
+                    case \registry::TYPE_BINARY:
+                    case \registry::TYPE_TEXT:
+                    case \registry::TYPE_TIMEZONE:
+                        $val = (string) $val;
+                        break;
                     default:
                         $val = (string) $val;
                         $type = \registry::TYPE_STRING;

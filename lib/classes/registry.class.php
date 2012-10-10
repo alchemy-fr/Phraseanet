@@ -90,7 +90,7 @@ class registry implements registryInterface
 
             }
             foreach ($rs as $row) {
-                if (in_array($row['key'], array('GV_ServerName', 'GV_debug', 'GV_maintenance'))) {
+                if (in_array($row['key'], array('GV_ServerName', 'GV_sit', 'GV_debug', 'GV_maintenance'))) {
                     continue;
                 }
 
@@ -104,11 +104,13 @@ class registry implements registryInterface
                     case self::TYPE_ENUM_MULTI:
                         $value = unserialize($row['value']);
                         break;
+                    case self::TYPE_BINARY:
+                        continue;
+                        break;
                     case self::TYPE_STRING:
                     case self::TYPE_ENUM:
                     case self::TYPE_TIMEZONE:
                     case self::TYPE_TEXT:
-                    case self::TYPE_BINARY:
                     default:
                         $value = $row['value'];
                         break;
@@ -178,7 +180,7 @@ class registry implements registryInterface
             return $this;
         }
 
-        $conn = connection::getPDOConnection();
+        $conn = connection::getPDOConnection($this->app);
 
         $sql = 'REPLACE INTO registry (`id`, `key`, `value`, `type`)
             VALUES (null, :key, :value, :type)';
