@@ -15,7 +15,7 @@ class NotificationsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testListNotifications()
     {
         $notifications = new Notifications();
-        $request = Request::create('/user/notifications/', 'GET', array(), array(), array() ,array('HTTP_X-Requested-With' => 'XMLHttpRequest'));
+        $request = Request::create('/user/notifications/', 'GET', array(), array(), array(), array('HTTP_X-Requested-With' => 'XMLHttpRequest'));
         $response = $notifications->listNotifications(self::$DI['app'], $request);
         $this->assertTrue($response->isOk());
         unset($notifications, $request, $response);
@@ -52,8 +52,8 @@ class NotificationsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $notifications = new Notifications();
         $request = Request::create('/user/notifications/read/', 'POST', array(
-            'notifications' => array()
-        ), array(), array() ,array('HTTP_X-Requested-With' => 'XMLHttpRequest'));
+                'notifications' => array()
+                ), array(), array(), array('HTTP_X-Requested-With' => 'XMLHttpRequest'));
         $response = $notifications->setNotificationsReaded(self::$DI['app'], $request);
         $this->assertTrue($response->isOk());
         $datas = (array) json_decode($response->getContent());
@@ -75,7 +75,7 @@ class NotificationsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->disableOriginalConstructor()
             ->getMock();
 
-        self::$DI['app']['phraseanet.user'] ->expects($this->once())
+        self::$DI['app']['phraseanet.user']->expects($this->once())
             ->method('is_guest')
             ->will($this->returnValue(true));
 

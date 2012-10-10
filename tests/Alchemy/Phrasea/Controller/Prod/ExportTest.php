@@ -24,7 +24,7 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $stmtFtp->closeCursor();
 
         $stmtElements = $conn->prepare($sql2);
-        $stmtElements->execute(array(':base_id' => self::$DI['record_1']->get_base_id(), ':record_id' => self::$DI['record_1']->get_record_id()));
+        $stmtElements->execute(array(':base_id'   => self::$DI['record_1']->get_base_id(), ':record_id' => self::$DI['record_1']->get_record_id()));
         $stmtElements->closeCursor();
 
         unset($conn, $stmtFtp, $stmtElements);

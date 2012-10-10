@@ -76,111 +76,33 @@
     </div>
 {% endmacro %}
 
-{% if app['phraseanet.registry'].get('GV_needAuth2DL') and app['phraseanet.user'].is_guest() %}
-    <script type="text/javascript">
-        p4.Dialog.get(1).Close();
-        parent.login({act:"dwnl",lst:"{{ lst }}",SSTTID:"{{ ssttid }}"});
-    </script>
-{% else %}
+{% if download.get_total_download() <= 0 and download.get_total_order() <= 0 and download.get_total_ftp() <= 0%}
+    <div class="buttons_line" style="text-align: left;">
+        <p>{% trans 'Les documents ne peuvent pas etre exportes' %}</p>
+        <button type="button" class="close_button">{% trans 'boutton::fermer'%}</button>
+    </div>
+{% endif %}
 
-    {% if download.get_total_download() <= 0 and download.get_total_order() <= 0 and download.get_total_ftp() <= 0%}
-        <div class="buttons_line" style="text-align: left;">
-            <p>{% trans 'Les documents ne peuvent pas etre exportes' %}</p>
-            <button type="button" class="close_button">{% trans 'boutton::fermer'%}</button>
-        </div>
+<div class="tabs">
+    <ul>
+    {% if download.get_total_download() > 0 %}
+        <li><a href="#download">{% trans 'export:: telechargement' %}</a></li>
+        <li><a href="#sendmail">{% trans 'export:: envoi par mail' %}</a></li>
+    {% endif %}
+    {% if download.get_total_order() > 0 %}
+        <li><a href="#order">{% trans 'export:: commande' %}</a></li>
+    {% endif %}
+    {% if download.get_total_ftp() > 0 %}
+        <li><a href="#ftp">{% trans 'export:: FTP' %}</a></li>
     {% endif %}
     </ul>
-    {% if download.get_total_download() > 0 %}
-        <div id="download">
-            <div style="padding:10px; text-align: center;">
-                <h4>{% trans 'export:: telechargement' %}</h4>
-                <form method="post" target="_blank" action="/include/download.php" style="text-align: left;">
-                    <input type="hidden" name="lst" value="{{lst}}"/>
-                    <input type="hidden" name="ssttid" value="{{ssttid}}"/>
-                    {% for name, values in download.get_display_download() %}
-                        {% if values.available > 0 %}
-                            <div class="well-small">
-                                <label for="download_{{name}}" class="checkbox">
-                                    <input class="{{values.class}}" type="checkbox" id="download_{{name}}" name="obj[]" value="{{name}}" />
-                                    <input type="hidden" name="download_{{name}}" value="{{values.size}}" />
-                                    <input type="hidden" name="count_{{name}}" value="{{values.available}}" />
-                                    {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size | formatOctets}})
-                                    {% if values.refused|length > 0 %}
-                                        {% set title%}
-                                            {% trans 'Documents indisponibles' %}
-                                        {% endset %}
-                                        <a href="#" class="undisposable_link" title="{{title|trim}}"> + </a>
-                                    {% endif %}
-                                </label>
-                                {% if values.refused|length > 0 %}
-                                    <div style="display:none;" class="undisposable well-small">
-                                        <div>{% trans 'Les documents ne peuvent pas etre exportes' %}</div>
-                                        {% for datas in values.refused%}
-                                            {{ thumbnail.format(datas, 80, 80,'', true, false) }}
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                    {% if download.has_business_fields_access() %}
-                        <div class="businessfields well-small" style="margin-left:20px;display:none;">
-                            <label for="business_download" class="checkbox">
-                                <input type="checkbox" name="businessfields" id="business_download" value="1"  />
-                                {% trans 'Include Business-fields in caption' %}
-                            </label>
-                        </div>
-                    {% endif %}
-                    {{ _self.choose_title('download', choose_export_title, default_export_title) }}
-
-                    {% if app['phraseanet.registry'].get('GV_requireTOUValidationForExport') == true %}
-                        <div class="well-small">
-                            <label for="TOU_acceptDL" class="checkbox">
-                                <input type="checkbox" name="TOU_accept" id="TOU_acceptDL" value="1"  />
-                                {% set beginning_link = '<a href="/prod/TOU/" class="TOUview">' %}
-                                {% set end_link = '</a>' %}
-                                {% trans %}
-                                    By checking this box, you accept {{ beginning_link }} Terms of Use {{ end_link }}
-                                {% endtrans %}
-                            </label>
-                        </div>
-                    {% endif %}
-                    <div class="buttons_line">
-                        <button type="button" class="download_button btn btn-inverse">{% trans 'boutton::telecharger'%}</button>
-                        <button type="button" class="close_button btn btn-inverse">{% trans 'boutton::annuler'%}</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <div id="sendmail">
-            <div style="padding:10px; text-align: center;">
-                <h4>{% trans 'export:: envoi par mail' %}</h4>
-                <form action="/include/sendmailpage.php" method="post" target="sendmail_target" style="text-align: left;">
-                    <input type="hidden" name="lst" value="{{lst}}"/>
-                    <input type="hidden" name="ssttid" value="{{ssttid}}"/>
-                    <div>
-                        {% trans 'export::mail: destinataire' %}
-                        <input type="text" value="" name="destmail" class="required span4">
-                        {% set my_email = app['phraseanet.user'].get_email() %}
-                        {% if my_email != '' %}
-                            <label class="checkbox">
-                                <input type="checkbox" name="reading_confirm" value="1" />
-                                {% trans %}Recevoir un accuse de reception a {{my_email}}{% endtrans %}
-                            </label>
-                        {% else %}
-                            <label class="checkbox">
-                                {% trans 'Accuse de reception indisponible, vous n\'avez pas declare d\'adresse email' %}
-                                <input type="checkbox" name="reading_confirm" value="1" readonly />
-                            </label>
-                        {% endif %}
-                        <span style="font-style: italic; color: #999999;">{% trans 'Entrez plusieurs adresses email en les separant par des points-virgules' %}</span>
-                    </div>
-                    <div>
-                        <p>{% trans 'export::mail: contenu du mail' %}</p>
-                        <textarea rows="10" style="width:100%; white-space:pre;" name="textmail" id="sendmail_message"></textarea>
-                    </div>
-                    <div>
-                        <p>{% trans 'export::mail: fichiers joint' %}</p>
+        {% if download.get_total_download() > 0 %}
+            <div id="download">
+                <div style="padding:10px; text-align: center;">
+                    <h4>{% trans 'export:: telechargement' %}</h4>
+                    <form method="post" target="_blank" action="/include/download.php" style="text-align: left;">
+                        <input type="hidden" name="lst" value="{{lst}}"/>
+                        <input type="hidden" name="ssttid" value="{{ssttid}}"/>
                         {% for name, values in download.get_display_download() %}
                             {% if values.available > 0 %}
                                 <div class="well-small">

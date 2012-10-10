@@ -177,11 +177,11 @@ class Property implements ControllerProviderInterface
         }
 
         return new Response($app['twig']->render('prod/actions/Property/index.html.twig', array(
-                'records'     => $records,
-                'statusBit'   => $statusBit,
-                'recordsType' => $recordsType,
-                'nRec'        => $nRec
-            )));
+                    'records'     => $records,
+                    'statusBit'   => $statusBit,
+                    'recordsType' => $recordsType,
+                    'nRec'        => $nRec
+                )));
     }
 
     /**

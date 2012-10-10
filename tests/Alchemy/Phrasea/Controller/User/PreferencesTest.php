@@ -15,7 +15,7 @@ class PreferencesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testSaveUserPref()
     {
         $preferences = new Preferences();
-        $request = Request::create('/user/preferences/', 'POST', array('prop'  => 'prop_test','value' => 'val_test'), array(), array() ,array('HTTP_X-Requested-With' => 'XMLHttpRequest'));
+        $request = Request::create('/user/preferences/', 'POST', array('prop'  => 'prop_test', 'value' => 'val_test'), array(), array(), array('HTTP_X-Requested-With' => 'XMLHttpRequest'));
 
         self::$DI['app']['phraseanet.user'] = $this->getMockBuilder('\User_Adapter')
             ->setMethods(array('setPrefs'))
@@ -43,7 +43,7 @@ class PreferencesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testSaveUserPrefNoXMLHTTPRequests()
     {
         $preferences = new Preferences();
-        $request = Request::create('/user/preferences/', 'POST', array('prop'  => 'prop_test','value' => 'val_test'));
+        $request = Request::create('/user/preferences/', 'POST', array('prop'  => 'prop_test', 'value' => 'val_test'));
         $preferences->saveUserPref(self::$DI['app'], $request);
         unset($preferences, $request);
     }
@@ -55,7 +55,7 @@ class PreferencesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testSaveTempPrefNoXMLHTTPRequests()
     {
         $preferences = new Preferences();
-        $request = Request::create('/user/preferences/temporary/', 'POST', array('prop'  => 'prop_test','value' => 'val_test'));
+        $request = Request::create('/user/preferences/temporary/', 'POST', array('prop'  => 'prop_test', 'value' => 'val_test'));
         $preferences->saveUserPref(self::$DI['app'], $request);
         unset($preferences, $request);
     }
@@ -66,7 +66,7 @@ class PreferencesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testSaveTemporaryPref()
     {
         $preferences = new Preferences();
-        $request = Request::create('/user/preferences/temporary/', 'POST', array('prop'  => 'prop_test','value' => 'val_test'), array(), array() ,array('HTTP_X-Requested-With' => 'XMLHttpRequest'));
+        $request = Request::create('/user/preferences/temporary/', 'POST', array('prop'  => 'prop_test', 'value' => 'val_test'), array(), array(), array('HTTP_X-Requested-With' => 'XMLHttpRequest'));
         $response = $preferences->saveTemporaryPref(self::$DI['app'], $request);
         $this->assertTrue($response->isOk());
         $datas = (array) json_decode($response->getContent());

@@ -53,8 +53,8 @@ class Share implements ControllerProviderInterface
          */
         $controllers->get('/record/{base_id}/{record_id}/', $this->call('shareRecord'))
             ->before(function(Request $request) use ($app) {
-                $app['firewall']->requireRightOnBase(\phrasea::sbasFromBas($app, $request->attributes->get('base_id')), 'bas_chupub');
-            })
+                    $app['firewall']->requireRightOnBase(\phrasea::sbasFromBas($app, $request->attributes->get('base_id')), 'bas_chupub');
+                })
             ->bind('share_record');
 
         return $controllers;
@@ -73,13 +73,13 @@ class Share implements ControllerProviderInterface
     {
         $record = new \record_adapter($app, \phrasea::sbasFromBas($app, $base_id), $record_id);
 
-        if ( ! $app['phraseanet.user']->ACL()->has_access_to_subdef($record, 'preview')){
+        if (!$app['phraseanet.user']->ACL()->has_access_to_subdef($record, 'preview')) {
             $app->abort(403);
         }
 
         return new Response($app['twig']->render('prod/Share/record.html.twig', array(
-            'record'         => $record,
-        )));
+                    'record' => $record,
+                )));
     }
 
     /**

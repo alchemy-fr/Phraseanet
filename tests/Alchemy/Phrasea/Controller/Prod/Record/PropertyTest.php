@@ -42,7 +42,7 @@ class PropertyTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $property = new Property();
         $request = Request::create('/prod/records/property/status/', 'POST', array(
                 'apply_to_children' => array(self::$DI['record_story_1']->get_sbas_id() => true),
-                'status'                            => array(
+                'status'                                   => array(
                     self::$DI['record_1']->get_sbas_id() => array(6     => true, 8     => true, 11    => true)
                 ),
                 'lst' => implode(';', array(
@@ -79,21 +79,21 @@ class PropertyTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         unset($property, $request, $response, $datas, $story, $record);
     }
 
-     /**
+    /**
      * @covers Alchemy\Phrasea\Controller\Prod\Record\Property::changeType
      */
     public function testChangeType()
     {
         $property = new Property();
         $request = Request::create('/prod/records/property/type/', 'POST', array(
-            'lst' => implode(';', array(
-                self::$DI['record_1']->get_serialize_key(), self::$DI['record_2']->get_serialize_key()
-            )),
-            'types' => array(
-                self::$DI['record_1']->get_serialize_key() => 'document',
-                self::$DI['record_2']->get_serialize_key() => 'flash',
-            )
-        ));
+                'lst' => implode(';', array(
+                    self::$DI['record_1']->get_serialize_key(), self::$DI['record_2']->get_serialize_key()
+                )),
+                'types' => array(
+                    self::$DI['record_1']->get_serialize_key() => 'document',
+                    self::$DI['record_2']->get_serialize_key() => 'flash',
+                )
+            ));
         $response = $property->changeType(self::$DI['app'], $request);
         $datas = (array) json_decode($response->getContent());
         $this->assertArrayHasKey('success', $datas);

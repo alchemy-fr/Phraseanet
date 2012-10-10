@@ -31,8 +31,8 @@ class Preferences implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
         $controllers->before(function(Request $request) use ($app) {
-            $app['firewall']->requireAuthentication();
-        });
+                $app['firewall']->requireAuthentication();
+            });
 
         /**
          * Save preferences
@@ -78,7 +78,7 @@ class Preferences implements ControllerProviderInterface
      */
     public function saveTemporaryPref(Application $app, Request $request)
     {
-        if(!$request->isXmlHttpRequest()) {
+        if (!$request->isXmlHttpRequest()) {
             $app->abort(400);
         }
 
@@ -86,7 +86,7 @@ class Preferences implements ControllerProviderInterface
         $value = $request->request->get('value');
         $success = false;
 
-        if($prop && $value) {
+        if ($prop && $value) {
             $app['session']->set('pref.' . $prop, $value);
             $success = true;
         }
@@ -103,7 +103,7 @@ class Preferences implements ControllerProviderInterface
      */
     public function saveUserPref(Application $app, Request $request)
     {
-        if(!$request->isXmlHttpRequest()) {
+        if (!$request->isXmlHttpRequest()) {
             $app->abort(400);
         }
 
@@ -112,8 +112,8 @@ class Preferences implements ControllerProviderInterface
         $value = $request->request->get('value');
 
         $success = false;
-        if($prop && $value) {
-            $success = ! ! $app['phraseanet.user']->setPrefs($prop, $value);
+        if ($prop && $value) {
+            $success = !!$app['phraseanet.user']->setPrefs($prop, $value);
             $msg = _('Preference saved !');
         }
 
