@@ -33,12 +33,51 @@ class Query implements ControllerProviderInterface
                 $app['firewall']->requireAuthentication();
             });
 
+        /**
+         * Query Phraseanet
+         *
+         * name         : prod_query
+         *
+         * description  : Query Phraseanet
+         *
+         * method       : POST
+         *
+         * parameters   : none
+         *
+         * return       : JSON Response
+         */
         $controllers->post('/', $this->call('query'))
             ->bind('prod_query');
-        
+
+        /**
+         * Get a preview answer train
+         *
+         * name         : preview_answer_train
+         *
+         * description  : Get a preview answer train
+         *
+         * method       : POST
+         *
+         * parameters   : none
+         *
+         * return       : JSON Response
+         */
         $controllers->post('/answer-train/', $this->call('queryAnswerTrain'))
             ->bind('preview_answer_train');
 
+        /**
+         * Get a preview reg train
+         *
+         * name         : preview_reg_train
+         *
+         * description  : Get a preview reg train
+         *
+         * method       : POST
+         *
+         * parameters   : none
+         *
+         * return       : JSON Response
+         */
         $controllers->post('/reg-train/', $this->call('queryRegTrain'))
             ->bind('preview_reg_train');
 
@@ -225,6 +264,7 @@ class Query implements ControllerProviderInterface
     }
 
     /**
+     * Get a preview answer train
      *
      * @param   Application $app
      * @param   Request     $request
@@ -253,6 +293,7 @@ class Query implements ControllerProviderInterface
     }
 
     /**
+     * Get a preview reg train
      *
      * @param   Application $app
      * @param   Request     $request

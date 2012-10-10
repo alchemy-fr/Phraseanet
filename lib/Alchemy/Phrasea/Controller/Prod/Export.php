@@ -165,7 +165,7 @@ class Export implements ControllerProviderInterface
         $download = new \set_exportftp($app, $request->request->get('lst'), $request->request->get('ssttid'));
 
         if (null === $address = $request->request->get('addr')) {
-            $app->abort(400, _('Missing ftp adress'));
+            $app->abort(400, _('Missing ftp address'));
         }
 
         if (null === $login = $request->request->get('login')) {

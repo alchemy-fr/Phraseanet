@@ -79,17 +79,17 @@ class Notifications implements ControllerProviderInterface
      */
     public function setNotificationsReaded(Application $app, Request $request)
     {
-        if(!$request->isXmlHttpRequest()) {
+        if (!$request->isXmlHttpRequest()) {
             $app->abort(400);
         }
 
         try {
             $app['events-manager']->read(explode('_', (string) $request->query->get('notifications')), $app['phraseanet.user']->get_id());
 
-            return $app->json(array('success'   => true, 'message' => ''));
+            return $app->json(array('success' => true, 'message' => ''));
         } catch (Exception $e) {
 
-            return $app->json(array('success'   => false, 'message' => $e->getMessage()));
+            return $app->json(array('success' => false, 'message' => $e->getMessage()));
         }
     }
 
@@ -102,7 +102,7 @@ class Notifications implements ControllerProviderInterface
      */
     public function listNotifications(Application $app, Request $request)
     {
-        if(!$request->isXmlHttpRequest()) {
+        if (!$request->isXmlHttpRequest()) {
             $app->abort(400);
         }
 

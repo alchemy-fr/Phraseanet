@@ -76,33 +76,26 @@
     </div>
 {% endmacro %}
 
-{% if app['phraseanet.registry'].get('GV_needAuth2DL') and app['phraseanet.user'].is_guest() %}
-    <script type="text/javascript">
-        p4.Dialog.get(1).Close();
-        parent.login({act:"dwnl",lst:"{{ lst }}",SSTTID:"{{ ssttid }}"});
-    </script>
-{% else %}
+{% if download.get_total_download() <= 0 and download.get_total_order() <= 0 and download.get_total_ftp() <= 0%}
+    <div class="buttons_line" style="text-align: left;">
+        <p>{% trans 'Les documents ne peuvent pas etre exportes' %}</p>
+        <button type="button" class="close_button">{% trans 'boutton::fermer'%}</button>
+    </div>
+{% endif %}
 
-    {% if download.get_total_download() <= 0 and download.get_total_order() <= 0 and download.get_total_ftp() <= 0%}
-        <div class="buttons_line" style="text-align: left;">
-            <p>{% trans 'Les documents ne peuvent pas etre exportes' %}</p>
-            <button type="button" class="close_button">{% trans 'boutton::fermer'%}</button>
-        </div>
+<div class="tabs">
+    <ul>
+    {% if download.get_total_download() > 0 %}
+        <li><a href="#download">{% trans 'export:: telechargement' %}</a></li>
+        <li><a href="#sendmail">{% trans 'export:: envoi par mail' %}</a></li>
     {% endif %}
-
-    <div class="tabs">
-        <ul>
-        {% if download.get_total_download() > 0 %}
-            <li><a href="#download">{% trans 'export:: telechargement' %}</a></li>
-            <li><a href="#sendmail">{% trans 'export:: envoi par mail' %}</a></li>
-        {% endif %}
-        {% if download.get_total_order() > 0 %}
-            <li><a href="#order">{% trans 'export:: commande' %}</a></li>
-        {% endif %}
-        {% if download.get_total_ftp() > 0 %}
-            <li><a href="#ftp">{% trans 'export:: FTP' %}</a></li>
-        {% endif %}
-        </ul>
+    {% if download.get_total_order() > 0 %}
+        <li><a href="#order">{% trans 'export:: commande' %}</a></li>
+    {% endif %}
+    {% if download.get_total_ftp() > 0 %}
+        <li><a href="#ftp">{% trans 'export:: FTP' %}</a></li>
+    {% endif %}
+    </ul>
         {% if download.get_total_download() > 0 %}
             <div id="download">
                 <div style="padding:10px; text-align: center;">
