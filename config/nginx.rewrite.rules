@@ -29,7 +29,7 @@ rewrite ^/prod/story/.*$                    /index.php last;
 rewrite ^/prod/WorkZone/.*$                 /index.php last;
 rewrite ^/prod/language/.*$                 /index.php last;
 rewrite ^/prod/tools/.*$                    /index.php last;
-rewrite ^/prod/TOU/.*$                      /index.php last;
+rewrite ^/prod/TOU/.?$                      /index.php last;
 rewrite ^/prod/upload/.*$                   /index.php last;
 rewrite ^/prod/lazaret/.*$                  /index.php last;
 rewrite ^/prod/UserPreferences/.*$          /index.php last;

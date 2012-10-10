@@ -899,18 +899,4 @@ abstract class task_abstract
 
         return $this;
     }
-    
-    /**
-     * Escape a shell command.
-     * 
-     * As this function is buggy under windows, this method check the 
-     * environment
-     * 
-     * @param string $command
-     * @return string
-     */
-    protected static function escapeShellCmd($command)
-    {
-        return defined('PHP_WINDOWS_VERSION_BUILD') ? escapeshellarg($command) : escapeshellcmd($command);
-    }
 }

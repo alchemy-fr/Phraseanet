@@ -28,10 +28,13 @@ class registry implements registryInterface
     protected $app;
 
     const TYPE_BOOLEAN = 'boolean';
-    const TYPE_ARRAY = 'array';
     const TYPE_ENUM_MULTI = 'enum_multi';
     const TYPE_INTEGER = 'integer';
+    const TYPE_ENUM = 'enum';
     const TYPE_STRING = 'string';
+    const TYPE_TEXT = 'text';
+    const TYPE_TIMEZONE = 'timezone';
+    const TYPE_BINARY = 'binary';
 
     /**
      *
@@ -48,6 +51,19 @@ class registry implements registryInterface
             $this->cache->save('GV_ServerName', $app['phraseanet.configuration']->getPhraseanet()->get('servername'));
             $this->cache->save('GV_debug', $app['phraseanet.configuration']->isDebug());
             $this->cache->save('GV_maintenance', $app['phraseanet.configuration']->isMaintained());
+
+            $config = $app['phraseanet.configuration']->getConfigurations();
+
+            if (isset($config['key'])) {
+                $this->cache->save('GV_sit', $config['key']);
+            }
+
+            $binaries = $app['phraseanet.configuration']->getBinaries();
+            if (isset($binaries['binaries'])) {
+                foreach ($binaries['binaries'] as $name => $path) {
+                    $this->cache->save($name, $path);
+                }
+            }
         }
 
         return $this;
@@ -86,10 +102,13 @@ class registry implements registryInterface
                         $value = (int) $row['value'];
                         break;
                     case self::TYPE_ENUM_MULTI:
-                    case self::TYPE_ARRAY:
                         $value = unserialize($row['value']);
                         break;
                     case self::TYPE_STRING:
+                    case self::TYPE_ENUM:
+                    case self::TYPE_TIMEZONE:
+                    case self::TYPE_TEXT:
+                    case self::TYPE_BINARY:
                     default:
                         $value = $row['value'];
                         break;
@@ -132,12 +151,15 @@ class registry implements registryInterface
         $this->load();
 
         switch ($type) {
-            case self::TYPE_ARRAY:
             case self::TYPE_ENUM_MULTI:
                 $sql_value = serialize($value);
                 $value = (array) $value;
                 break;
             case self::TYPE_STRING;
+            case self::TYPE_ENUM:
+            case self::TYPE_TIMEZONE:
+            case self::TYPE_TEXT:
+            case self::TYPE_BINARY:
             default:
                 $sql_value = (string) $value;
                 $value = (string) $value;
@@ -152,7 +174,11 @@ class registry implements registryInterface
                 break;
         }
 
-        $conn = connection::getPDOConnection($this->app);
+        if ($type == self::TYPE_BINARY) {
+            return $this;
+        }
+
+        $conn = connection::getPDOConnection();
 
         $sql = 'REPLACE INTO registry (`id`, `key`, `value`, `type`)
             VALUES (null, :key, :value, :type)';

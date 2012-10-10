@@ -50,6 +50,13 @@ class ApplicationSpecification implements SpecificationInterface
         );
     }
 
+    public function setBinaries($binaries)
+    {
+        return file_put_contents(
+                $this->getBinariesPathFile(), $this->parser->dump($binaries, 7)
+        );
+    }
+
     public function getConfigurations()
     {
         return $this->parser->parse(
@@ -62,6 +69,17 @@ class ApplicationSpecification implements SpecificationInterface
         return $this->parser->parse(
                 file_get_contents($this->getConnexionsPathFile())
         );
+    }
+
+    public function getBinaries()
+    {
+        if (file_exists($this->getBinariesPathFile())) {
+            return $this->parser->parse(
+                    file_get_contents($this->getBinariesPathFile())
+            );
+        }
+
+        return array('binaries' => array());
     }
 
     public function getServices()
@@ -108,6 +126,7 @@ class ApplicationSpecification implements SpecificationInterface
             chmod($this->getConnexionsPathFile(), 0700);
             chmod($this->getConfigurationsPathFile(), 0700);
             chmod($this->getServicesPathFile(), 0700);
+            chmod($this->getBinariesPathFile(), 0700);
         }
     }
 
@@ -139,6 +158,11 @@ class ApplicationSpecification implements SpecificationInterface
     protected function getServicesPathFile()
     {
         return $this->getRealRootPath() . '/config/services.yml';
+    }
+
+    protected function getBinariesPathFile()
+    {
+        return $this->getRealRootPath() . '/config/binaries.yml';
     }
 
     protected function getRealRootPath()

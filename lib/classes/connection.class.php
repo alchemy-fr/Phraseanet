@@ -82,7 +82,7 @@ class connection
         }
         $string .= "\nPOST datas :\n ";
         foreach ($_POST as $key => $value) {
-            $string .= "\t\t" . $key . ' = ' . $value . "\n";
+            $string .= "\t\t" . $key . ' = ' . (is_scalar($value) ? $value : 'non-scalar value') . "\n";
         }
         $string .= "\n\n\n\n";
 

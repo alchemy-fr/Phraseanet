@@ -2519,8 +2519,8 @@ function downloadThis(datas)
     dialog_box = $('#dialog_dwnl');
 
     dialog_box.empty().addClass('loading').dialog({
-        width:800,
-        height:600,
+        width:Math.min(bodySize.x - 30, 800),
+        height:Math.min(bodySize.y - 30, 600),
         modal:true,
         closeOnEscape : true,
         resizable : false,

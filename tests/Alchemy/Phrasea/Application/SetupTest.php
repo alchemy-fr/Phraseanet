@@ -33,16 +33,16 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
         $params = array(
             'GV_base_datapath_noweb',
             'GV_ServerName',
-            'GV_cli',
-            'GV_imagick',
-            'GV_pathcomposite',
-            'GV_swf_extract',
-            'GV_pdf2swf',
-            'GV_swf_render',
-            'GV_unoconv',
-            'GV_ffmpeg',
-            'GV_mp4box',
-            'GV_pdftotext',
+            'php_binary',
+            'convert_binary',
+            'composite_binary',
+            'swf_extract_binary',
+            'pdf2swf_binary',
+            'swf_render_binary',
+            'unoconv_binary',
+            'ffmpeg_binary',
+            'mp4box_binary',
+            'pdftotext_binary',
         );
 
         foreach ($params as $param) {

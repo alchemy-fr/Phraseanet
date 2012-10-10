@@ -53,7 +53,7 @@ class task_Scheduler
     public function run()
     {
         //prevent scheduler to fail if GV_cli is not provided
-        if ( ! is_executable($this->dependencyContainer['phraseanet.registry']->get('GV_cli'))) {
+        if ( ! is_executable($this->dependencyContainer['phraseanet.registry']->get('php_binary'))) {
             throw new \RuntimeException('PHP cli is not provided in registry');
         }
 
@@ -214,7 +214,7 @@ class task_Scheduler
                     $taskPoll[$tkey] = array(
                         "task"           => $task,
                         "current_status" => $status,
-                        "cmd"            => $this->dependencyContainer['phraseanet.registry']->get('GV_cli'),
+                        "cmd"            => $this->dependencyContainer['phraseanet.registry']->get('php_binary'),
                         "args"           => array(
                             '-f',
                             $this->dependencyContainer['phraseanet.registry']->get('GV_RootPath') . 'bin/console',
@@ -325,7 +325,7 @@ class task_Scheduler
                                 $descriptors[2] = array('file', $nullfile, 'a+');
 
                                 $taskPoll[$tkey]["process"] = proc_open(
-                                    $taskPoll[$tkey]["cmd"] . ' ' . implode(' ', $taskPoll[$tkey]["args"])
+                                    escapeshellarg($taskPoll[$tkey]["cmd"]) . ' ' . implode(' ', array_map('escapeshellarg', $taskPoll[$tkey]["args"]))
                                     , $descriptors
                                     , $taskPoll[$tkey]["pipes"]
                                     , $this->dependencyContainer['phraseanet.registry']->get('GV_RootPath') . "bin/"

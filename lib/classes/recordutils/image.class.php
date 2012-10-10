@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\Process\ProcessBuilder;
 
 /**
  *
@@ -83,7 +84,7 @@ class recordutils_image extends recordutils
             return $subdef->get_pathfile();
         }
 
-        if ( ! $app['phraseanet.registry']->get('GV_imagick')) {
+        if ( ! $app['phraseanet.registry']->get('convert_binary')) {
             return $subdef->get_pathfile();
         }
 
@@ -286,15 +287,15 @@ class recordutils_image extends recordutils
 
         $newh = $image_height + $stampheight;
 
-        $cmd = $app['phraseanet.registry']->get('GV_imagick');
-        $cmd .= ' -extent "' . $image_width . 'x' . $newh
-            . '" -draw "image SrcOver 0,' . $image_height . ' '
-            . $image_width . ',' . $stampheight . '\'' . $pathTmpStamp . '\'"';
+        $builder = ProcessBuilder::create(array($app['phraseanet.registry']->get('convert_binary')));
+        $builder->add('-extent')
+            ->add($image_width . 'x' . $newh)
+            ->add('-draw')
+            ->add('image SrcOver 0,' . $image_height . ' ' . $image_width . ',' . $stampheight . '"' . $pathTmpStamp . '"')
+            ->add($pathIn)
+            ->add($pathOut);
 
-        $cmd.= " \"" . $pathIn . "\""; #  <<-- le doc original
-        $cmd.= " \"" . $pathOut . "\"";  # <-- le doc stampe
-
-        exec($cmd);
+        $builder->getProcess()->run();
 
         unlink($pathTmpStamp);
 
@@ -302,7 +303,7 @@ class recordutils_image extends recordutils
             return $pathOut;
         }
 
-        return $subdef->get_pathfile();;
+        return $subdef->get_pathfile();
     }
 
     /**
@@ -330,7 +331,7 @@ class recordutils_image extends recordutils
 
         $pathOut = $subdef->get_path() . 'watermark_' . $subdef->get_file();
 
-        if ( ! is_file($pathIn)) {
+        if (!is_file($pathIn)) {
             return false;
         }
 
@@ -339,32 +340,19 @@ class recordutils_image extends recordutils
         }
 
         if ($app['phraseanet.registry']->get('GV_pathcomposite') &&
-            file_exists($app['phraseanet.registry']->get('GV_RootPath') . 'config/wm/' . $base_id)) { // si il y a un WM
-            $cmd = $app['phraseanet.registry']->get('GV_pathcomposite') . " ";
-            $cmd .= $app['phraseanet.registry']->get('GV_RootPath') . 'config/wm/' . $base_id . " ";
-            $cmd .= " \"" . $pathIn . "\" "; #  <<-- la preview original
-            $cmd .= " -strip -watermark 90% -gravity center ";
-            $cmd .= " \"" . $pathOut . "\"";  # <-- la preview temporaire
+            file_exists($app['phraseanet.registry']->get('GV_RootPath') . 'config/wm/' . $base_id)) {
 
-            $descriptorspec = array(0 => array("pipe", "r"),
-                1 => array("pipe", "w"),
-                2 => array("pipe", "w")
-            );
-            $process = proc_open($cmd, $descriptorspec, $pipes);
-            if (is_resource($process)) {
-                fclose($pipes[0]);
-                $err = "";
-                while ( ! feof($pipes[1]))
-                    $out = fgets($pipes[1], 1024);
-                fclose($pipes[1]);
-                while ( ! feof($pipes[2]))
-                    $err .= fgets($pipes[2], 1024);
-                fclose($pipes[2]);
-                $return_value = proc_close($process);
-            }
-        } elseif ($app['phraseanet.registry']->get('GV_imagick')) {
+            $builder = ProcessBuilder::create(array(
+                    $app['phraseanet.registry']->get('composite_binary'),
+                    $app['phraseanet.registry']->get('GV_RootPath') . 'config/wm/' . $base_id,
+                    $pathIn,
+                    '-strip', '-watermark', '90%', '-gravity', 'center',
+                    $pathOut
+                ));
+
+            $builder->getProcess()->run();
+        } elseif ($app['phraseanet.registry']->get('convert_binary')) {
             $collname = phrasea::bas_names($base_id, $app);
-            $cmd = $app['phraseanet.registry']->get('GV_imagick');
             $tailleimg = @getimagesize($pathIn);
             $max = ($tailleimg[0] > $tailleimg[1] ? $tailleimg[0] : $tailleimg[1]);
 
@@ -378,50 +366,23 @@ class recordutils_image extends recordutils
             else
                 $decalage = 1;
 
-            $cmd .= " -fill white -draw \"line 0,0 "
-                . $tailleimg[0] . "," . $tailleimg[1] . "\"";
-            $cmd .= " -fill black -draw \"line 1,0 "
-                . ($tailleimg[0] + 1) . "," . ($tailleimg[1]) . "\"";
+            $builder = ProcessBuilder::create(array(
+                $app['phraseanet.registry']->get('convert_binary'),
+                '-fill', 'white', '-draw', 'line 0,0 ' . $tailleimg[0] . ',' . $tailleimg[1] . '',
+                '-fill', 'black', '-draw', 'line 1,0 ' . $tailleimg[0] + 1 . ',' . $tailleimg[1] . '',
+                '-fill', 'white', '-draw', 'line ' . $tailleimg[0] . ',0 0,' . $tailleimg[1] . '',
+                '-fill', 'black', '-draw', 'line ' . ($tailleimg[0] + 1) . ',0 0,' . $tailleimg[1] . '',
+                '-fill', 'white', '-gravity', 'NorthWest', '-pointsize', $tailleText, '-draw', 'text 0,0 ' . $collname,
+                '-fill', 'black', '-gravity', 'NorthWest', '-pointsize', $tailleText, '-draw', 'text ' . $decalage . ', 1 ' . $collname,
+                '-fill', 'white', '-gravity', 'center', '-pointsize', $tailleText, '-draw', 'text 0,0 ' . $collname,
+                '-fill', 'black', '-gravity', 'center', '-pointsize', $tailleText, '-draw', 'text ' . $decalage . ', 1 ' . $collname,
+                '-fill', 'white', '-gravity', 'SouthEast', '-pointsize', $tailleText, '-draw', 'text 0,0 ' . $collname,
+                '-fill', 'black', '-gravity', 'SouthEast', '-pointsize', $tailleText, '-draw', 'text ' . $decalage . ', 1 ' . $collname,
+                $pathIn, $pathOut
+            ));
 
-            $cmd .= " -fill white -draw \"line "
-                . $tailleimg[0] . ",0 0," . $tailleimg[1] . "\"";
-            $cmd .= " -fill black -draw \"line "
-                . ($tailleimg[0] + 1) . ",0 1," . ($tailleimg[1]) . "\"";
-
-            $cmd .= " -fill white -gravity NorthWest -pointsize "
-                . " $tailleText -draw \"text 0,0 '$collname'\"";
-            $cmd .= " -fill black -gravity NorthWest -pointsize "
-                . " $tailleText -draw \"text $decalage,1 '$collname'\"";
-
-            $cmd .= " -fill white -gravity center -pointsize "
-                . " $tailleText -draw \"text 0,0 '$collname'\"";
-            $cmd .= " -fill black -gravity center -pointsize "
-                . " $tailleText -draw \"text $decalage,1 '$collname'\"";
-
-            $cmd .= " -fill white -gravity SouthEast -pointsize "
-                . " $tailleText -draw \"text 0,0 '$collname'\"";
-            $cmd .= " -fill black -gravity SouthEast -pointsize "
-                . " $tailleText -draw \"text $decalage,1 '$collname'\"";
-
-            $cmd.= " \"" . $pathIn . "\""; #  <<-- la preview original
-            $cmd.= " \"" . $pathOut . "\"";  # <-- la preview temporaire
-
-            $descriptorspec = array(0 => array("pipe", "r"),
-                1 => array("pipe", "w"),
-                2 => array("pipe", "w")
-            );
-            $process = proc_open($cmd, $descriptorspec, $pipes);
-            if (is_resource($process)) {
-                fclose($pipes[0]);
-                $err = "";
-                while ( ! feof($pipes[1]))
-                    $out = fgets($pipes[1], 1024);
-                fclose($pipes[1]);
-                while ( ! feof($pipes[2]))
-                    $err .= fgets($pipes[2], 1024);
-                fclose($pipes[2]);
-                $return_value = proc_close($process);
-            }
+            $process = $builder->getProcess();
+            $process->run();
         }
 
         if (is_file($pathOut)) {

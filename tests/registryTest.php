@@ -89,33 +89,6 @@ class registryTest extends PhraseanetPHPUnitAbstract
         $this->assertTrue($this->object->get('key_test') === true);
 
         /**
-         * Set value with type array
-         */
-        $this->object->set('key_test', 'value1', registry::TYPE_ARRAY);
-        $this->assertTrue($this->object->get('key_test') === array('value1'));
-
-        $this->object->set('key_test', 1, registry::TYPE_ARRAY);
-        $this->assertTrue($this->object->get('key_test') === array(1));
-
-        $this->object->set('key_test', '1', registry::TYPE_ARRAY);
-        $this->assertTrue($this->object->get('key_test') === array('1'));
-
-        $this->object->set('key_test', array('caca'), registry::TYPE_ARRAY);
-        $this->assertTrue($this->object->get('key_test') === array('caca'));
-
-        $this->object->set('key_test', '0', registry::TYPE_ARRAY);
-        $this->assertTrue($this->object->get('key_test') === array('0'));
-
-        $this->object->set('key_test', 0, registry::TYPE_ARRAY);
-        $this->assertTrue($this->object->get('key_test') === array(0));
-
-        $this->object->set('key_test', false, registry::TYPE_ARRAY);
-        $this->assertTrue($this->object->get('key_test') === array(false));
-
-        $this->object->set('key_test', true, registry::TYPE_ARRAY);
-        $this->assertTrue($this->object->get('key_test') === array(true));
-
-        /**
          * Set value with type enum_multi
          */
         $this->object->set('key_test', 'value1', registry::TYPE_ENUM_MULTI);
@@ -183,5 +156,15 @@ class registryTest extends PhraseanetPHPUnitAbstract
         $this->testIs_set();
         $this->object->un_set('key_test');
         $this->assertFalse($this->object->is_set('key_test'));
+    }
+
+    public function testGVSit()
+    {
+        $this->assertNotNull($this->object->get('GV_sit'));
+    }
+    public function testGVSitNotModifiable()
+    {
+        $gv_sit = $this->object->get('GV_sit');
+        $this->assertEquals($gv_sit, $this->object->get('GV_sit'));
     }
 }

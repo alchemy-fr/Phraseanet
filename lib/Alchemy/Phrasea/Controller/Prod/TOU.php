@@ -52,6 +52,24 @@ class TOU implements ControllerProviderInterface
             return $app->json($ret);
         });
 
+        $controllers->get('/', function(Application $app, Request $request) {
+
+                $data = array();
+
+                foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
+
+                    $cgus = $databox->get_cgus();
+
+                    if (!isset($cgus[$app['locale']])) {
+                        continue;
+                    }
+
+                    $data[$databox->get_viewname()] = $cgus[$app['locale']]['value'];
+                }
+
+                return new Response($app['Core']['Twig']->render('/prod/TOU.html.twig', array('TOUs' => $data)));
+            });
+
         return $controllers;
     }
 }

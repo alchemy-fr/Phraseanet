@@ -29,7 +29,7 @@
   RewriteRule ^prod/push/.*$                    /index.php [L]
   RewriteRule ^prod/printer/.*$                 /index.php [L]
   RewriteRule ^prod/story/.*$                   /index.php [L]
-  RewriteRule ^prod/TOU/.*$                     /index.php [L]
+  RewriteRule ^prod/TOU/.?$                     /index.php [L]
   RewriteRule ^prod/WorkZone/.*$                /index.php [L]
   RewriteRule ^prod/language/.*$                /index.php [L]
   RewriteRule ^prod/tools/.*$                   /index.php [L]

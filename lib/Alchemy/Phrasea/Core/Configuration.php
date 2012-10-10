@@ -201,6 +201,11 @@ class Configuration
         return $this->specifications->setServices($services);
     }
 
+    public function setBinaries($binaries)
+    {
+        return $this->specifications->setBinaries($binaries);
+    }
+
     public function setConnexions($connexions)
     {
         return $this->specifications->setConnexions($connexions);
@@ -214,6 +219,11 @@ class Configuration
     public function getServices()
     {
         return $this->specifications->getServices();
+    }
+
+    public function getBinaries()
+    {
+        return $this->specifications->getBinaries();
     }
 
     public function getConnexions()
