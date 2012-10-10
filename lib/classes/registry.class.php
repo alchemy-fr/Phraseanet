@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\Yaml\Parser;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -29,10 +31,13 @@ class registry implements registryInterface
     protected static $_instance;
 
     const TYPE_BOOLEAN = 'boolean';
-    const TYPE_ARRAY = 'array';
     const TYPE_ENUM_MULTI = 'enum_multi';
     const TYPE_INTEGER = 'integer';
+    const TYPE_ENUM = 'enum';
     const TYPE_STRING = 'string';
+    const TYPE_TEXT = 'text';
+    const TYPE_TIMEZONE = 'timezone';
+    const TYPE_BINARY = 'binary';
 
     /**
      *
@@ -60,9 +65,22 @@ class registry implements registryInterface
 
         $this->cache->save('GV_RootPath', dirname(dirname(__DIR__)) . '/');
         if ($configuration->isInstalled()) {
+
+            $config = $configuration->getConfigurations();
+
             $this->cache->save('GV_ServerName', $configuration->getPhraseanet()->get('servername'));
             $this->cache->save('GV_debug', $configuration->isDebug());
             $this->cache->save('GV_maintenance', $configuration->isMaintained());
+            if (isset($config['key'])) {
+                $this->cache->save('GV_sit', $config['key']);
+            }
+
+            $binaries = $configuration->getBinaries();
+            if (isset($binaries['binaries'])) {
+                foreach ($binaries['binaries'] as $name => $path) {
+                    $this->cache->save($name, $path);
+                }
+            }
         }
 
         return $this;
@@ -101,10 +119,13 @@ class registry implements registryInterface
                         $value = (int) $row['value'];
                         break;
                     case self::TYPE_ENUM_MULTI:
-                    case self::TYPE_ARRAY:
                         $value = unserialize($row['value']);
                         break;
                     case self::TYPE_STRING:
+                    case self::TYPE_ENUM:
+                    case self::TYPE_TIMEZONE:
+                    case self::TYPE_TEXT:
+                    case self::TYPE_BINARY:
                     default:
                         $value = $row['value'];
                         break;
@@ -147,12 +168,15 @@ class registry implements registryInterface
         $this->load();
 
         switch ($type) {
-            case self::TYPE_ARRAY:
             case self::TYPE_ENUM_MULTI:
                 $sql_value = serialize($value);
                 $value = (array) $value;
                 break;
             case self::TYPE_STRING;
+            case self::TYPE_ENUM:
+            case self::TYPE_TIMEZONE:
+            case self::TYPE_TEXT:
+            case self::TYPE_BINARY:
             default:
                 $sql_value = (string) $value;
                 $value = (string) $value;
@@ -165,6 +189,12 @@ class registry implements registryInterface
                 $sql_value = (int) $value;
                 $value = (int) $value;
                 break;
+        }
+
+        if ($value != '' && $type == self::TYPE_BINARY) {
+            if (!is_executable($value)) {
+                return $this;
+            }
         }
 
         $conn = connection::getPDOConnection();

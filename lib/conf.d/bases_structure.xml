@@ -1633,7 +1633,7 @@
           </field>
           <field>
             <name>type</name>
-            <type>enum('string','boolean','array','integer')</type>
+            <type>enum('string','boolean','array','integer','text','binary','timezone','enum_multi','enum')</type>
             <null></null>
             <extra></extra>
             <default>string</default>

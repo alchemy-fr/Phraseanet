@@ -59,7 +59,7 @@ class task_Scheduler
         $registry = $appbox->get_registry();
 
         //prevent scheduler to fail if GV_cli is not provided
-        if ( ! is_executable($registry->get('GV_cli'))) {
+        if ( ! is_executable($registry->get('php_binary'))) {
             throw new \RuntimeException('PHP cli is not provided in registry');
         }
 
@@ -220,7 +220,7 @@ class task_Scheduler
                     $taskPoll[$tkey] = array(
                         "task"           => $task,
                         "current_status" => $status,
-                        "cmd"            => $registry->get('GV_cli'),
+                        "cmd"            => $registry->get('php_binary'),
                         "args"           => array(
                             '-f',
                             $registry->get('GV_RootPath') . 'bin/console',
@@ -331,7 +331,7 @@ class task_Scheduler
                                 $descriptors[2] = array('file', $nullfile, 'a+');
 
                                 $taskPoll[$tkey]["process"] = proc_open(
-                                    $taskPoll[$tkey]["cmd"] . ' ' . implode(' ', $taskPoll[$tkey]["args"])
+                                    escapeshellarg($taskPoll[$tkey]["cmd"]) . ' ' . implode(' ', array_map('escapeshellarg', $taskPoll[$tkey]["args"]))
                                     , $descriptors
                                     , $taskPoll[$tkey]["pipes"]
                                     , $registry->get('GV_RootPath') . "bin/"

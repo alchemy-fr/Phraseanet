@@ -58,7 +58,7 @@ class patch_320aa implements patchInterface
         } else {
             return;
         }
-        
+
         require __DIR__ . '/../../../lib/conf.d/_GV_template.inc';
 
         define('GV_STATIC_URL', '');
@@ -88,7 +88,6 @@ class patch_320aa implements patchInterface
                     case registry::TYPE_INTEGER:
                     case registry::TYPE_BOOLEAN:
                     case registry::TYPE_STRING:
-                    case registry::TYPE_ARRAY:
                         $type = $datas['type'];
                         break;
                     default:

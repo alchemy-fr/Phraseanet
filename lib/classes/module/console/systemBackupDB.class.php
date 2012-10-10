@@ -18,6 +18,7 @@
 use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\ProcessBuilder;
 
 class module_console_systemBackupDB extends Command
 {
@@ -73,18 +74,22 @@ class module_console_systemBackupDB extends Command
 
         $output->write(sprintf('Generating %s ... ', $filename));
 
-        $command = sprintf(
-            'mysqldump --host %s --port %s --user %s --password=%s'
-            . ' --database %s --default-character-set=utf8 > %s'
-            , $base->get_host()
-            , $base->get_port()
-            , $base->get_user()
-            , $base->get_passwd()
-            , $base->get_dbname()
-            , escapeshellarg($filename)
-        );
+        $builder = ProcessBuilder::create(array(
+                'mysqldump',
+                '--host='.$base->get_host(),
+                '--port='.$base->get_port(),
+                '--user='.$base->get_user(),
+                '--password='.$base->get_passwd(),
+                '--databases', $base->get_dbname(),
+                '--default-character-set=utf8'
+            ));
 
-        system($command);
+        $proces = $builder->getProcess();
+        $proces->run();
+
+        if ($proces->isSuccessful()) {
+            file_put_contents($filename, $proces->getOutput());
+        }
 
         if (file_exists($filename) && filesize($filename) > 0) {
             $output->writeln('OK');

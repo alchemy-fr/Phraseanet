@@ -164,19 +164,20 @@ foreach ($GV as $section) {
 
         switch ($value['type']) {
 
-            case 'boolean':
+            case \registry::TYPE_BOOLEAN:
                 $input = '
                     <input class="checkbox" ' . ($readonly ? 'readonly="readonly"' : '') . ' ' . ( $currentValue == '0' ? 'checked="selected"' : '' ) . ' type="radio"  name="' . $value['name'] . '" value="False" id="id_' . $value['name'] . '_no" /><label for="id_' . $value['name'] . '_no">False</label>
                     <input class="checkbox" ' . ($readonly ? 'readonly="readonly"' : '') . ' ' . ( $currentValue == '1' ? 'checked="checked"' : '' ) . ' type="radio"  name="' . $value['name'] . '" value="True" id="id_' . $value['name'] . '_yes" /><label for="id_' . $value['name'] . '_yes">True</label>
                     ';
                 break;
-            case 'string':
+            case \registry::TYPE_BINARY:
+            case \registry::TYPE_STRING:
                 $input = '<input ' . ($readonly ? 'readonly="readonly"' : '') . ' name="' . $value['name'] . '" id="id_' . $value['name'] . '" type="text" value="' . str_replace('"', '&quot;', $currentValue) . '"/>';
                 break;
-            case 'text':
+            case \registry::TYPE_TEXT:
                 $input = '<textarea ' . ($readonly ? 'readonly="readonly"' : '') . ' name="' . $value['name'] . '" id="id_' . $value['name'] . '">' . str_replace('"', '&quot;', $currentValue) . '</textarea>';
                 break;
-            case 'enum':
+            case \registry::TYPE_ENUM:
                 $input = '<select ' . ($readonly ? 'readonly="readonly"' : '') . ' name="' . $value['name'] . '" id="id_' . $value['name'] . '">';
                 if (isset($value['available']) && is_array($value['available'])) {
                     foreach ($value['available'] as $k => $v)
@@ -186,7 +187,7 @@ foreach ($GV as $section) {
                 }
                 $input .= '</select>';
                 break;
-            case 'enum_multi':
+            case \registry::TYPE_ENUM_MULTI:
                 if (isset($value['available']) && is_array($value['available'])) {
                     foreach ($value['available'] as $k => $v)
                         $input .= '<input class="checkbox" type="checkbox" name="' . $value['name'] . '[]" ' . ($readonly ? 'readonly="readonly"' : '') . ' value="' . $k . '" ' . ( ( ! is_array($currentValue) || in_array($k, $currentValue)) ? 'checked="checked"' : '' ) . '/><label>' . $v . '</label><br>';
@@ -194,16 +195,11 @@ foreach ($GV as $section) {
                     echo '<p style="color:red;">erreur avec la valeur ' . $value['name'] . '</p>';
                 }
                 break;
-            case 'list':
-
-                break;
-            case 'integer':
+            case \registry::TYPE_INTEGER:
                 $input .= '<input ' . ($readonly ? 'readonly="readonly"' : '') . ' name="' . $value['name'] . '" id="id_' . $value['name'] . '" type="text" value="' . $currentValue . '"/>';
                 break;
-            case 'password':
-                $input .= '<input ' . ($readonly ? 'readonly="readonly"' : '') . ' name="' . $value['name'] . '" id="id_' . $value['name'] . '" type="password" value="' . str_replace('"', '\"', stripslashes($currentValue)) . '"/>';
                 break;
-            case 'timezone':
+            case \registry::TYPE_TIMEZONE:
                 if (trim($currentValue) === '') {
                     $datetime = new DateTime();
                     $currentValue = $datetime->getTimezone()->getName();
