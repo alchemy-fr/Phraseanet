@@ -373,7 +373,7 @@ class AccountTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testAUthorizedAppGrantAccessNotSuccessfull()
     {
-        self::$DI['client']->request('GET', '/account/security/application/3/grant/', array(), array(), array('HTTP_ACCEPT'           => 'application/json', 'HTTP_X-Requested-With' => 'XMLHttpRequest'));
+        self::$DI['client']->request('GET', '/account/security/application/0/grant/', array(), array(), array('HTTP_ACCEPT'           => 'application/json', 'HTTP_X-Requested-With' => 'XMLHttpRequest'));
         $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isOk());

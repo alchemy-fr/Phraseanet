@@ -3,6 +3,7 @@
 require_once __DIR__ . "/PhraseanetPHPUnitListener.class.inc";
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Border\File;
 use Doctrine\Common\DataFixtures\Loader;
 use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -748,51 +749,44 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 };
 
             foreach (range(1, 24) as $i) {
-                self::$DI['record_' . $i] = self::$DI->share(function($DI) use ($logger, $resolvePathfile, $i, $app) {
+                self::$DI['record_' . $i] = self::$DI->share(function($DI) use ($logger, $resolvePathfile, $i) {
 
-                    $start = microtime(true);
-
-//                    echo "\t\t\tcreating record $i ...\n";
                         PhraseanetPHPUnitAbstract::$recordsInitialized[] = $i;
 
-//                    echo "\t\t\tcreating record $i step #1 ".(microtime(true)-$start)."\n";
-                        $file = new Alchemy\Phrasea\Border\File($app, $app['mediavorus']->guess($resolvePathfile($i)->getPathname()), $DI['collection']);
+                        $file = new File($DI['app'], $DI['app']['mediavorus']->guess($resolvePathfile($i)->getPathname()), $DI['collection']);
 
-//                    echo "\t\t\tcreating record $i step #2 ".(microtime(true)-$start)."\n";
-                        $record = record_adapter::createFromFile($file, $app);
+                        $record = record_adapter::createFromFile($file, $DI['app']);
 
-//                    echo "\t\t\tcreating record $i step #3 ".(microtime(true)-$start)."\n";
-                        $record->generate_subdefs($record->get_databox(), $app);
-//                    echo "\t\t\tcreating record $i step #4 ".(microtime(true)-$start)."\n";
+                        $record->generate_subdefs($record->get_databox(), $DI['app']);
 
                         return $record;
                     });
             }
             foreach (range(1, 2) as $i) {
-                self::$DI['record_story_' . $i] = self::$DI->share(function($DI) use ($i, $app) {
+                self::$DI['record_story_' . $i] = self::$DI->share(function($DI) use ($i) {
 
                         PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'story_' . $i;
 
-                        return record_adapter::createStory($app, $DI['collection']);
+                        return record_adapter::createStory($DI['app'], $DI['collection']);
                     });
             }
 
-            self::$DI['record_no_access'] = self::$DI->share(function($DI) use ($app) {
+            self::$DI['record_no_access'] = self::$DI->share(function($DI) {
 
                     PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'no_access';
 
-                    $file = new Alchemy\Phrasea\Border\File($app, $app['mediavorus']->guess(__DIR__ . '/testfiles/cestlafete.jpg'), $DI['collection_no_access']);
+                    $file = new File($DI['app'], $DI['app']['mediavorus']->guess(__DIR__ . '/testfiles/cestlafete.jpg'), $DI['collection_no_access']);
 
-                    return \record_adapter::createFromFile($file, $app);
+                    return \record_adapter::createFromFile($file, $DI['app']);
                 });
 
-            self::$DI['record_no_access_by_status'] = self::$DI->share(function($DI)use($app) {
+            self::$DI['record_no_access_by_status'] = self::$DI->share(function($DI) {
 
                     PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'no_access_by_status';
 
-                    $file = new Alchemy\Phrasea\Border\File($app, $app['mediavorus']->guess(__DIR__ . '/testfiles/cestlafete.jpg'), $DI['collection_no_access']);
+                    $file = new File($DI['app'], $DI['app']['mediavorus']->guess(__DIR__ . '/testfiles/cestlafete.jpg'), $DI['collection_no_access']);
 
-                    return \record_adapter::createFromFile($file, $app);
+                    return \record_adapter::createFromFile($file, $DI['app']);
                 });
 
             self::$DI['user'] = self::$DI->share(
