@@ -16,6 +16,9 @@ use Silex\ServiceProviderInterface;
 
 class FtpServiceProvider implements ServiceProviderInterface
 {
+    /**
+     * {@inheritDoc}
+     */
     public function register(Application $app)
     {
         $app['phraseanet.ftp.client'] = $app->protect(function ($host, $port = 21, $timeout = 90, $ssl = false, $proxy = false, $proxyport = false) {
@@ -23,6 +26,9 @@ class FtpServiceProvider implements ServiceProviderInterface
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function boot(Application $app)
     {
     }

@@ -104,7 +104,7 @@ class Property implements ControllerProviderInterface
             $app->abort(400);
         }
 
-        $records = RecordsRequest::fromRequest($app, $request, false, array('chgstatus'));
+        $records = RecordsRequest::fromRequest($app, $request, false, array('chgstatus', 'canmodifrecord'));
         $databoxStatus = \databox_status::getDisplayStatus($app);
         $statusBit = $recordsType = $nRec = $toRemove = array();
 

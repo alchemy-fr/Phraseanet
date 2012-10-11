@@ -9,12 +9,11 @@ class ShareTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     protected $client;
 
     /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\Prod\Share::shareRecord
      * @covers Alchemy\Phrasea\Controller\Prod\Share::connect
      * @covers Alchemy\Phrasea\Controller\Prod\Share::call
      */
-    public function testRouteSlashNoRequiredRight()
+    public function testMountedRouteSlash()
     {
         $url = sprintf('/prod/share/record/%d/%d/', self::$DI['record_1']->get_base_id(), self::$DI['record_1']->get_record_id());
         self::$DI['client']->request('GET', $url);
@@ -38,7 +37,7 @@ class ShareTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         //has_right_on_base return true
         $stubbedACL->expects($this->once())
-            ->method('has_right_on_base')
+            ->method('has_right_on_sbas')
             ->will($this->returnValue(true));
 
         //has_access_to_subdef return true

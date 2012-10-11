@@ -51,11 +51,11 @@ class Preferences implements ControllerProviderInterface
             ->bind('save_pref');
 
         /**
-         * Save CSS preferences
+         * Save temporary preferences
          *
-         * name         : save_css_pref
+         * name         : save_temp_pref
          *
-         * description  : Save CSS preferences
+         * description  : Save temporary preferences
          *
          * method       : POST
          *
@@ -64,13 +64,13 @@ class Preferences implements ControllerProviderInterface
          * return       : JSON Response
          */
         $controllers->post('/temporary/', $this->call('saveTemporaryPref'))
-            ->bind('save_css_pref');
+            ->bind('save_temp_pref');
 
         return $controllers;
     }
 
     /**
-     *  Save user production preferenes
+     *  Save temporary user preferences
      *
      * @param   Application     $app
      * @param   Request         $request
@@ -95,7 +95,7 @@ class Preferences implements ControllerProviderInterface
     }
 
     /**
-     *  Save css production preferenes
+     *  Save user preferenes
      *
      * @param   Application     $app
      * @param   Request         $request
