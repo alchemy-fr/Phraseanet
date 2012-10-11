@@ -60,8 +60,7 @@ class Tools implements ControllerProviderInterface
             }
 
             $var = array(
-                'helper'    => $records,
-                'selection' => $selection,
+                'records'   => $records,
                 'record'    => $record,
                 'metadatas' => $metadatas,
             );
@@ -95,9 +94,7 @@ class Tools implements ControllerProviderInterface
         $controllers->post('/image/', function(Application $app, Request $request) {
             $return = array('success' => true);
 
-            $helper = new Helper\Record\Tools($app, $request);
-
-            $selection = $helper->get_elements();
+            $selection = RecordsRequest::fromRequest($app, $request, false, array('canmodifrecord'));
 
             foreach ($selection as $record) {
 
