@@ -39,6 +39,7 @@ rewrite ^/prod/query/.*$                    /index.php last;
 rewrite ^/prod/export/.*$                   /index.php last;
 rewrite ^/prod/record/preview/.*$           /index.php last;
 rewrite ^/prod/notifications/.*$            /index.php last;
+rewrite ^/prod/share/.*$                    /index.php last;
 
 rewrite ^/user/preferences/.*$              /index.php last;
 rewrite ^/user/notifications/.*$            /index.php last;
