@@ -2446,27 +2446,8 @@ function checkDeleteThis(type, el)
 }
 function shareThis(bas,rec)
 {
-    var url = "/prod/share/record/"+bas+"/"+rec+ "/";
-
-    $('#MODALDL').attr('src','about:blank');
-    $('#MODALDL').attr('src',url);
-
-
-    var t = (bodySize.y - 400) / 2;
-    var l = (bodySize.x - 550) / 2;
-
-    $('#MODALDL').css({
-        'display': 'block',
-        'opacity': 0,
-        'width': '550px',
-        'position': 'absolute',
-        'top': t,
-        'left': l,
-        'height': '400px'
-    }).fadeTo(500, 1);
-
-    showOverlay(2);
-    $('#tooltip').hide();
+    var dialog = p4.Dialog.Create({title: language['share'], size:'Small'});
+    dialog.load("/prod/share/record/"+bas+"/"+rec+ "/","GET");
 }
 
 function printThis(value)
