@@ -15,6 +15,7 @@ use Monolog\Handler\StreamHandler;
 use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 
 /**
  * Rebuild only missing subdefs
@@ -64,7 +65,7 @@ class BuildMissingSubdefs extends Command
 
                 try {
                     $record->get_hd_file();
-                } catch (\Exception_Media_SubdefNotFound $e) {
+                } catch (FileNotFoundException $e) {
                     continue;
                 }
 
