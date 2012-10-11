@@ -65,174 +65,175 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 return call_user_func(function($environment = null) {
 
-    $app = new PhraseaApplication($environment);
+        $app = new PhraseaApplication($environment);
 
-    $app->before(function () use ($app) {
-        $app['firewall']->requireSetup();
-    });
+        $app->before(function () use ($app) {
+                $app['firewall']->requireSetup();
+            });
 
-    $app->before(function(Request $request) use ($app) {
-        if ($request->cookies->has('persistent') && !$app->isAuthenticated()) {
-            try {
-                $auth = new \Session_Authentication_PersistentCookie($app, $request->cookies->get('persistent'));
-                $app->openAccount($auth, $auth->getSessionId());
-            } catch (\Exception $e) {
+        $app->before(function(Request $request) use ($app) {
+                if ($request->cookies->has('persistent') && !$app->isAuthenticated()) {
+                    try {
+                        $auth = new \Session_Authentication_PersistentCookie($app, $request->cookies->get('persistent'));
+                        $app->openAccount($auth, $auth->getSessionId());
+                    } catch (\Exception $e) {
 
-            }
-        }
-    });
+                    }
+                }
+            });
 
-    $app->get('/', function(PhraseaApplication $app) {
-        if ($app['browser']->isMobile()) {
-            return $app->redirect("/login/?redirect=lightbox");
-        } elseif ($app['browser']->isNewGeneration()) {
-            return $app->redirect("/login/?redirect=prod");
-        } else {
-            return $app->redirect("/login/?redirect=client");
-        }
-    });
+        $app->get('/', function(PhraseaApplication $app) {
+                if ($app['browser']->isMobile()) {
+                    return $app->redirect("/login/?redirect=lightbox");
+                } elseif ($app['browser']->isNewGeneration()) {
+                    return $app->redirect("/login/?redirect=prod");
+                } else {
+                    return $app->redirect("/login/?redirect=client");
+                }
+            });
 
-    $app->get('/robots.txt', function(PhraseaApplication $app) {
+        $app->get('/robots.txt', function(PhraseaApplication $app) {
 
-        if ($app['phraseanet.registry']->get('GV_allow_search_engine') === true) {
-            $buffer = "User-Agent: *\n" . "Allow: /\n";
-        } else {
-            $buffer = "User-Agent: *\n" . "Disallow: /\n";
-        }
+                if ($app['phraseanet.registry']->get('GV_allow_search_engine') === true) {
+                    $buffer = "User-Agent: *\n" . "Allow: /\n";
+                } else {
+                    $buffer = "User-Agent: *\n" . "Disallow: /\n";
+                }
 
-        return new Response($buffer, 200, array('Content-Type' => 'text/plain'));
-    })->bind('robots');
+                return new Response($buffer, 200, array('Content-Type' => 'text/plain'));
+            })->bind('robots');
 
-    $app->mount('/feeds/', new RSSFeeds());
-    $app->mount('/account/', new Account());
-    $app->mount('/login/', new Login());
-    $app->mount('/developers/', new Developers());
-    $app->mount('/lightbox/', new Lightbox());
+        $app->mount('/feeds/', new RSSFeeds());
+        $app->mount('/account/', new Account());
+        $app->mount('/login/', new Login());
+        $app->mount('/developers/', new Developers());
+        $app->mount('/lightbox/', new Lightbox());
 
-    $app->mount('/datafiles/', new Datafiles());
-    $app->mount('/permalink/', new Permalink());
+        $app->mount('/datafiles/', new Datafiles());
+        $app->mount('/permalink/', new Permalink());
 
-    $app->mount('/admin/', new Root());
-    $app->mount('/admin/dashboard', new Dashboard());
-    $app->mount('/admin/collection', new Collection());
-    $app->mount('/admin/databox', new Databox());
-    $app->mount('/admin/databoxes', new Databoxes());
-    $app->mount('/admin/setup', new Setup());
-    $app->mount('/admin/sphinx', new Sphinx());
-    $app->mount('/admin/connected-users', new ConnectedUsers());
-    $app->mount('/admin/publications', new Publications());
-    $app->mount('/admin/users', new Users());
-    $app->mount('/admin/fields', new Fields());
-    $app->mount('/admin/task-manager', new TaskManager());
-    $app->mount('/admin/subdefs', new Subdefs());
-    $app->mount('/admin/description', new Description());
-    $app->mount('/admin/tests/connection', new ConnectionTest());
-    $app->mount('/admin/tests/pathurl', new PathFileTest());
+        $app->mount('/admin/', new Root());
+        $app->mount('/admin/dashboard', new Dashboard());
+        $app->mount('/admin/collection', new Collection());
+        $app->mount('/admin/databox', new Databox());
+        $app->mount('/admin/databoxes', new Databoxes());
+        $app->mount('/admin/setup', new Setup());
+        $app->mount('/admin/sphinx', new Sphinx());
+        $app->mount('/admin/connected-users', new ConnectedUsers());
+        $app->mount('/admin/publications', new Publications());
+        $app->mount('/admin/users', new Users());
+        $app->mount('/admin/fields', new Fields());
+        $app->mount('/admin/task-manager', new TaskManager());
+        $app->mount('/admin/subdefs', new Subdefs());
+        $app->mount('/admin/description', new Description());
+        $app->mount('/admin/tests/connection', new ConnectionTest());
+        $app->mount('/admin/tests/pathurl', new PathFileTest());
 
-    $app->mount('/prod/query/', new Query());
-    $app->mount('/prod/order/', new Order());
-    $app->mount('/prod/baskets', new Basket());
-    $app->mount('/prod/story', new Story());
-    $app->mount('/prod/WorkZone', new WorkZone());
-    $app->mount('/prod/lists', new UsrLists());
-    $app->mount('/prod/MustacheLoader', new MustacheLoader());
-    $app->mount('/prod/records/edit', new Edit());
-    $app->mount('/prod/records/property', new Property());
-    $app->mount('/prod/records/movecollection', new MoveCollection());
-    $app->mount('/prod/bridge/', new Bridge());
-    $app->mount('/prod/push/', new Push());
-    $app->mount('/prod/printer/', new Printer());
-    $app->mount('/prod/share/', new Share());
-    $app->mount('/prod/export/', new Export());
-    $app->mount('/prod/TOU/', new TOU());
-    $app->mount('/prod/feeds', new Feed());
-    $app->mount('/prod/tooltip', new Tooltip());
-    $app->mount('/prod/language', new Language());
-    $app->mount('/prod/tools/', new Tools());
-    $app->mount('/prod/lazaret/', new Lazaret());
-    $app->mount('/prod/upload/', new Upload());
-    $app->mount('/prod/', new Prod());
+        $app->mount('/prod/query/', new Query());
+        $app->mount('/prod/order/', new Order());
+        $app->mount('/prod/baskets', new Basket());
+        $app->mount('/prod/story', new Story());
+        $app->mount('/prod/WorkZone', new WorkZone());
+        $app->mount('/prod/lists', new UsrLists());
+        $app->mount('/prod/MustacheLoader', new MustacheLoader());
+        $app->mount('/prod/records/edit', new Edit());
+        $app->mount('/prod/records/property', new Property());
+        $app->mount('/prod/records/movecollection', new MoveCollection());
+        $app->mount('/prod/bridge/', new Bridge());
+        $app->mount('/prod/push/', new Push());
+        $app->mount('/prod/printer/', new Printer());
+        $app->mount('/prod/share/', new Share());
+        $app->mount('/prod/export/', new Export());
+        $app->mount('/prod/TOU/', new TOU());
+        $app->mount('/prod/feeds', new Feed());
+        $app->mount('/prod/tooltip', new Tooltip());
+        $app->mount('/prod/language', new Language());
+        $app->mount('/prod/tools/', new Tools());
+        $app->mount('/prod/lazaret/', new Lazaret());
+        $app->mount('/prod/upload/', new Upload());
+        $app->mount('/prod/share/', new Share());
+        $app->mount('/prod/', new Prod());
 
-    $app->mount('/user/preferences/', new Preferences());
-    $app->mount('/user/notifications/', new Notifications());
+        $app->mount('/user/preferences/', new Preferences());
+        $app->mount('/user/notifications/', new Notifications());
 
-    $app->error(function(\Exception $e) use ($app) {
-        $request = $app['request'];
+        $app->error(function(\Exception $e) use ($app) {
+                $request = $app['request'];
 
-        if ($e instanceof \Bridge_Exception) {
-            $params = array(
-                'message'      => $e->getMessage()
-                , 'file'         => $e->getFile()
-                , 'line'         => $e->getLine()
-                , 'r_method'     => $request->getMethod()
-                , 'r_action'     => $request->getRequestUri()
-                , 'r_parameters' => ($request->getMethod() == 'GET' ? array() : $request->request->all())
-            );
+                if ($e instanceof \Bridge_Exception) {
+                    $params = array(
+                        'message'      => $e->getMessage()
+                        , 'file'         => $e->getFile()
+                        , 'line'         => $e->getLine()
+                        , 'r_method'     => $request->getMethod()
+                        , 'r_action'     => $request->getRequestUri()
+                        , 'r_parameters' => ($request->getMethod() == 'GET' ? array() : $request->request->all())
+                    );
 
-            if ($e instanceof \Bridge_Exception_ApiConnectorNotConfigured) {
-                $params = array_merge($params, array('account' => $app['current_account']));
+                    if ($e instanceof \Bridge_Exception_ApiConnectorNotConfigured) {
+                        $params = array_merge($params, array('account' => $app['current_account']));
 
-                $response = new Response($app['twig']->render('/prod/actions/Bridge/notconfigured.html.twig', $params), 200, array('X-Status-Code' => 200));
-            } elseif ($e instanceof \Bridge_Exception_ApiConnectorNotConnected) {
-                $params = array_merge($params, array('account' => $app['current_account']));
+                        $response = new Response($app['twig']->render('/prod/actions/Bridge/notconfigured.html.twig', $params), 200, array('X-Status-Code' => 200));
+                    } elseif ($e instanceof \Bridge_Exception_ApiConnectorNotConnected) {
+                        $params = array_merge($params, array('account' => $app['current_account']));
 
-                $response = new Response($app['twig']->render('/prod/actions/Bridge/disconnected.html.twig', $params), 200, array('X-Status-Code' => 200));
-            } elseif ($e instanceof \Bridge_Exception_ApiConnectorAccessTokenFailed) {
-                $params = array_merge($params, array('account' => $app['current_account']));
+                        $response = new Response($app['twig']->render('/prod/actions/Bridge/disconnected.html.twig', $params), 200, array('X-Status-Code' => 200));
+                    } elseif ($e instanceof \Bridge_Exception_ApiConnectorAccessTokenFailed) {
+                        $params = array_merge($params, array('account' => $app['current_account']));
 
-                $response = new Response($app['twig']->render('/prod/actions/Bridge/disconnected.html.twig', $params), 200, array('X-Status-Code' => 200));
-            } elseif ($e instanceof \Bridge_Exception_ApiDisabled) {
-                $params = array_merge($params, array('api' => $e->get_api()));
+                        $response = new Response($app['twig']->render('/prod/actions/Bridge/disconnected.html.twig', $params), 200, array('X-Status-Code' => 200));
+                    } elseif ($e instanceof \Bridge_Exception_ApiDisabled) {
+                        $params = array_merge($params, array('api' => $e->get_api()));
 
-                $response = new Response($app['twig']->render('/prod/actions/Bridge/deactivated.html.twig', $params), 200, array('X-Status-Code' => 200));
-            } else {
-                $response = new Response($app['twig']->render('/prod/actions/Bridge/error.html.twig', $params), 200, array('X-Status-Code' => 200));
-            }
+                        $response = new Response($app['twig']->render('/prod/actions/Bridge/deactivated.html.twig', $params), 200, array('X-Status-Code' => 200));
+                    } else {
+                        $response = new Response($app['twig']->render('/prod/actions/Bridge/error.html.twig', $params), 200, array('X-Status-Code' => 200));
+                    }
 
-            $response->headers->set('Phrasea-StatusCode', 200);
+                    $response->headers->set('Phrasea-StatusCode', 200);
 
-            return $response;
-        }
+                    return $response;
+                }
 
-        if ($request->getRequestFormat() == 'json') {
-            $datas = array(
-                'success' => false
-                , 'message' => $e->getMessage()
-            );
+                if ($request->getRequestFormat() == 'json') {
+                    $datas = array(
+                        'success' => false
+                        , 'message' => $e->getMessage()
+                    );
 
-            return $app->json($datas, 200, array('X-Status-Code' => 200));
-        }
+                    return $app->json($datas, 200, array('X-Status-Code' => 200));
+                }
 
-        if($e instanceof HttpExceptionInterface) {
-            $headers = $e->getHeaders();
+                if ($e instanceof HttpExceptionInterface) {
+                    $headers = $e->getHeaders();
 
-            if(isset($headers['X-Phraseanet-Redirect'])) {
-                return new RedirectResponse($headers['X-Phraseanet-Redirect'], 302, array('X-Status-Code' => 302));
-            }
-        }
+                    if (isset($headers['X-Phraseanet-Redirect'])) {
+                        return new RedirectResponse($headers['X-Phraseanet-Redirect'], 302, array('X-Status-Code' => 302));
+                    }
+                }
 
-        if ($e instanceof \Exception_BadRequest) {
-            return new Response('Bad Request', 400, array('X-Status-Code' => 400));
-        }
-        if ($e instanceof \Exception_Forbidden) {
-            return new Response('Forbidden', 403, array('X-Status-Code' => 403));
-        }
+                if ($e instanceof \Exception_BadRequest) {
+                    return new Response('Bad Request', 400, array('X-Status-Code' => 400));
+                }
+                if ($e instanceof \Exception_Forbidden) {
+                    return new Response('Forbidden', 403, array('X-Status-Code' => 403));
+                }
 
-        if ($e instanceof \Exception_Session_NotAuthenticated) {
-            $code = 403;
-            $message = 'Forbidden';
-        } elseif ($e instanceof \Exception_NotAllowed) {
-            $code = 403;
-            $message = 'Forbidden';
-        } elseif ($e instanceof \Exception_NotFound) {
-            $code = 404;
-            $message = 'Not Found';
-        } else {
-            throw $e;
-        }
+                if ($e instanceof \Exception_Session_NotAuthenticated) {
+                    $code = 403;
+                    $message = 'Forbidden';
+                } elseif ($e instanceof \Exception_NotAllowed) {
+                    $code = 403;
+                    $message = 'Forbidden';
+                } elseif ($e instanceof \Exception_NotFound) {
+                    $code = 404;
+                    $message = 'Not Found';
+                } else {
+                    throw $e;
+                }
 
-        return new Response($message, $code, array('X-Status-Code' => $code));
-    });
+                return new Response($message, $code, array('X-Status-Code' => $code));
+            });
 
-    return $app;
-}, isset($environment) ? $environment : null);
+        return $app;
+    }, isset($environment) ? $environment : null);

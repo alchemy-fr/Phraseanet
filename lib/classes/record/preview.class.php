@@ -87,7 +87,7 @@ class record_preview extends record_adapter
      * @param  boolean        $reload_train
      * @return record_preview
      */
-    public function __construct(Application $app, $env, $pos, $contId, $reload_train, searchEngine_adapter $search_engine = null, $query = '')
+    public function __construct(Application $app, $env, $pos, $contId, $reload_train = false, searchEngine_adapter $search_engine = null, $query = '')
     {
         $number = null;
         $this->env = $env;
