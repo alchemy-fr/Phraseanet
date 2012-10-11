@@ -218,7 +218,7 @@
                             {% endif %}
                             {{ _self.choose_title('download', choose_export_title, default_export_title) }}
 
-                            {% if registry.get('GV_requireTOUValidationForExport') == true %}
+                            {% if app['phraseanet.registry'].get('GV_requireTOUValidationForExport') == true %}
                                 <div style="margin:0 20px;">
                                     <label for="TOU_acceptDL" class="checkbox">
                                         <input type="checkbox" name="TOU_accept" id="TOU_acceptDL" value="1"  />
