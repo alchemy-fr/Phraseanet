@@ -16,7 +16,7 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $conn = self::$DI['app']['phraseanet.appbox']->get_connection();
 
-        $sql = 'DELETE FROM ftp_export WHERE email_dest = :email_dest';
+        $sql = 'DELETE FROM ftp_export WHERE mail = :email_dest';
         $sql2 = 'DELETE FROM ftp_export_elements WHERE (base_id = :base_id AND record_id = :record_id)';
 
         $stmtFtp = $conn->prepare($sql);

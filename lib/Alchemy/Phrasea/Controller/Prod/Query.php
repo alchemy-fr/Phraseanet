@@ -274,13 +274,13 @@ class Query implements ControllerProviderInterface
     {
         $searchEngine = null;
 
-        if (($options = unserialize($request->request->get('options_serial'))) !== false) {
+        if (($options = unserialize($request->request->get('options_serial', ''))) !== false) {
             $searchEngine = new \searchEngine_adapter($app);
             $searchEngine->set_options($options);
         }
 
         $pos = $request->request->get('pos');
-        $query = $request->request->get('query');
+        $query = $request->request->get('query', '');
 
         $record = new \record_preview($app, 'RESULT', $pos, '', '', $searchEngine, $query);
 
@@ -303,10 +303,10 @@ class Query implements ControllerProviderInterface
     {
         $record = new \record_preview($app, 'REG', $request->request->get('pos'), $request->request->get('cont'));
 
-        return $app['twig']->render('prod/preview/reg_train.html.twig', array(
-                'container_records' => $record->get_container()->get_children(),
-                'record'            => $record
-            ));
+        return new Response($app['twig']->render('prod/preview/reg_train.html.twig', array(
+                    'container_records' => $record->get_container()->get_children(),
+                    'record'            => $record
+                )));
     }
 
     /**
