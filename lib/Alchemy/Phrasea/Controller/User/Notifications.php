@@ -52,26 +52,26 @@ class Notifications implements ControllerProviderInterface
             ->bind('get_notifications');
 
         /**
-         * Read notifications
+         * Set notifications as readed
          *
-         * name         : read_notifications
+         * name         : set_notifications_readed
          *
-         * description  : Read notification
+         * description  : Set notifications as readed
          *
-         * method       : GET
+         * method       : POST
          *
          * parameters   : none
          *
          * return       : JSON Response
          */
         $controllers->post('/read/', $this->call('setNotificationsReaded'))
-            ->bind('');
+            ->bind('set_notifications_readed');
 
         return $controllers;
     }
 
     /**
-     * Get the new notifications
+     * Set notifications as readed
      *
      * @param   Application     $app
      * @param   Request         $request
@@ -82,9 +82,9 @@ class Notifications implements ControllerProviderInterface
         if (!$request->isXmlHttpRequest()) {
             $app->abort(400);
         }
-
+        
         try {
-            $app['events-manager']->read(explode('_', (string) $request->query->get('notifications')), $app['phraseanet.user']->get_id());
+            $app['events-manager']->read(explode('_', (string) $request->request->get('notifications')), $app['phraseanet.user']->get_id());
 
             return $app->json(array('success' => true, 'message' => ''));
         } catch (Exception $e) {

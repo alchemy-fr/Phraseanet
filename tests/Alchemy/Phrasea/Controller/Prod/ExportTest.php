@@ -8,12 +8,15 @@ use Symfony\Component\HttpFoundation\Request;
 class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
-
+    protected static $GV_activeFTP;
     /**
      * Delete inserted rows from FTP export
      */
     public static function tearDownAfterClass()
     {
+        self::$DI['app']['phraseanet.registry']->set('GV_activeFTP', self::$GV_activeFTP, \registry::TYPE_BOOLEAN);
+        self::$GV_activeFTP = null;
+
         $conn = self::$DI['app']['phraseanet.appbox']->get_connection();
 
         $sql = 'DELETE FROM ftp_export WHERE mail = :email_dest';
@@ -143,7 +146,7 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
         $export = new Export();
         $request = Request::create('/prod/export/ftp/', 'POST', array(
-                'lst'        => self::$DI['record_1']->get_serialize_key(),
+                'lst'        => self::$DI['record_2']->get_serialize_key(),
                 'user_dest'  => self::$DI['user']->get_id(),
                 'addr'       => 'local.phrasea.test',
                 'login'      => self::$DI['user']->get_email(),
@@ -151,6 +154,10 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 'NAMMKDFOLD' => 'test2/',
                 'obj'        => array('preview')
             ));
+
+        self::$GV_activeFTP = self::$DI['app']['phraseanet.registry']->get('GV_activeFTP');
+        self::$DI['app']['phraseanet.registry']->set('GV_activeFTP', '1', \registry::TYPE_BOOLEAN);
+
         //inserted rows from this function are deleted in tearDownAfterClass
         $response = $export->exportFtp(self::$DI['app'], $request);
         $this->assertTrue($response->isOk());

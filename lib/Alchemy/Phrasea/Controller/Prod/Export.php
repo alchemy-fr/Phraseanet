@@ -144,7 +144,7 @@ class Export implements ControllerProviderInterface
             $ftpClient->close();
             $msg = _('Connection to FTP succeed');
             $success = true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $msg = sprintf(_('Error while connecting to FTP'));
         }
 
@@ -196,16 +196,23 @@ class Export implements ControllerProviderInterface
                         'success' => true,
                         'message' => _('Export saved in the waiting queue')
                     ));
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
 
                 return $app->json(array(
                         'success' => false,
-                        'message' => _('Something gone wrong')
+                        'message' => _('Something went wrong') . $e->getMessage()
                     ));
             }
         }
     }
 
+    /**
+     * Export document by mail
+     *
+     * @param   Application $app
+     * @param   Request     $request
+     * @return JsonResponse
+     */
     public function exportMail(Application $app, Request $request)
     {
         set_time_limit(0);
@@ -281,6 +288,11 @@ class Export implements ControllerProviderInterface
                 ));
             }
         }
+
+        return $app->json(array(
+                'success' => true,
+                'message' => ''
+            ));
     }
 
     /**
