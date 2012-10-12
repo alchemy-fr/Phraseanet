@@ -11,6 +11,8 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Cache\ArrayCache;
+use Symfony\Component\Yaml\Dumper;
+use Symfony\Component\Yaml\Parser;
 
 /**
  *
@@ -35,6 +37,9 @@ class registry implements registryInterface
     const TYPE_TEXT = 'text';
     const TYPE_TIMEZONE = 'timezone';
     const TYPE_BINARY = 'binary';
+
+    private $parser;
+    private $dumper;
 
     /**
      *
@@ -102,7 +107,7 @@ class registry implements registryInterface
                         $value = (int) $row['value'];
                         break;
                     case self::TYPE_ENUM_MULTI:
-                        $value = unserialize($row['value']);
+                        $value = $this->getParser()->parse($row['value']);
                         break;
                     case self::TYPE_BINARY:
                         continue;
@@ -154,8 +159,10 @@ class registry implements registryInterface
 
         switch ($type) {
             case self::TYPE_ENUM_MULTI:
-                $sql_value = serialize($value);
-                $value = (array) $value;
+                if (!is_array($value)) {
+                    throw new \LogicException('Enum multi should be array');
+                }
+                $sql_value = $this->getDumper()->dump($value);
                 break;
             case self::TYPE_STRING;
             case self::TYPE_ENUM:
@@ -223,5 +230,23 @@ class registry implements registryInterface
         $this->cache->delete($key);
 
         return $this;
+    }
+
+    private function getParser()
+    {
+        if ($this->parser) {
+            return $this->parser;
+        }
+
+        return $this->parser = new Parser();
+    }
+
+    private function getDumper()
+    {
+        if ($this->dumper) {
+            return $this->dumper;
+        }
+
+        return $this->dumper = new Dumper();
     }
 }

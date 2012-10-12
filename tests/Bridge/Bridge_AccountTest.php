@@ -35,7 +35,7 @@ class Bridge_AccountTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
             self::$object = new Bridge_Account($application, self::$api, self::$id);
         } catch (Exception $e) {
-            self::$fail($e->getMessage());
+            self::fail($e->getMessage());
         }
     }
 

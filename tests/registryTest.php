@@ -91,29 +91,8 @@ class registryTest extends PhraseanetPHPUnitAbstract
         /**
          * Set value with type enum_multi
          */
-        $this->object->set('key_test', 'value1', registry::TYPE_ENUM_MULTI);
-        $this->assertTrue($this->object->get('key_test') === array('value1'));
-
-        $this->object->set('key_test', 1, registry::TYPE_ENUM_MULTI);
-        $this->assertTrue($this->object->get('key_test') === array(1));
-
-        $this->object->set('key_test', '1', registry::TYPE_ENUM_MULTI);
-        $this->assertTrue($this->object->get('key_test') === array('1'));
-
         $this->object->set('key_test', array('caca'), registry::TYPE_ENUM_MULTI);
         $this->assertTrue($this->object->get('key_test') === array('caca'));
-
-        $this->object->set('key_test', '0', registry::TYPE_ENUM_MULTI);
-        $this->assertTrue($this->object->get('key_test') === array('0'));
-
-        $this->object->set('key_test', 0, registry::TYPE_ENUM_MULTI);
-        $this->assertTrue($this->object->get('key_test') === array(0));
-
-        $this->object->set('key_test', false, registry::TYPE_ENUM_MULTI);
-        $this->assertTrue($this->object->get('key_test') === array(false));
-
-        $this->object->set('key_test', true, registry::TYPE_ENUM_MULTI);
-        $this->assertTrue($this->object->get('key_test') === array(true));
     }
 
     public function testSetArrayToString()
