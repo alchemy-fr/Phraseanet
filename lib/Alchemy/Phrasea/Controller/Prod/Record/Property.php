@@ -34,10 +34,7 @@ class Property implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
-                $response = $app['firewall']->requireNotGuest();
-                if ($response instanceof Response) {
-                    return $response;
-                }
+                $app['firewall']->requireNotGuest();
             });
 
         /**

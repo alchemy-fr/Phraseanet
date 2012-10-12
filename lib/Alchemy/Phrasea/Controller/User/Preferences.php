@@ -16,11 +16,6 @@ use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Preferences implements ControllerProviderInterface
 {
 
@@ -85,13 +80,15 @@ class Preferences implements ControllerProviderInterface
         $prop = $request->request->get('prop');
         $value = $request->request->get('value');
         $success = false;
+        $msg = _('Error while saving preference');
 
         if ($prop && $value) {
             $app['session']->set('pref.' . $prop, $value);
             $success = true;
+            $msg = _('Preference saved !');
         }
 
-        return new JsonResponse(array('success' => $success));
+        return new JsonResponse(array('success' => $success, 'message' => $msg));
     }
 
     /**

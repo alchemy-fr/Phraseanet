@@ -101,7 +101,7 @@ class Query implements ControllerProviderInterface
 
         $options = new \searchEngine_options();
 
-        $bas = is_array($request->request->get('bas')) ? $request->request->get('bas') : array_keys($user->ACL()->get_granted_base());
+        $bas = is_array($request->request->get('bas')) ? $request->request->get('bas') : array_keys($app['phraseanet.user']->ACL()->get_granted_base());
 
         if ($app['phraseanet.user']->ACL()->has_right('modifyrecord')) {
             $options->set_business_fields(array());
@@ -279,7 +279,7 @@ class Query implements ControllerProviderInterface
             $searchEngine->set_options($options);
         }
 
-        $pos = $request->request->get('pos');
+        $pos = (int) $request->request->get('pos');
         $query = $request->request->get('query', '');
 
         $record = new \record_preview($app, 'RESULT', $pos, '', '', $searchEngine, $query);

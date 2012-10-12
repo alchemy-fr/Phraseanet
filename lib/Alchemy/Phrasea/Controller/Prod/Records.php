@@ -112,6 +112,7 @@ class Deletion implements ControllerProviderInterface
 
                 foreach ($basketElements as $element) {
                     $app['EM']->remove($element);
+                    $deleted[] = $element->getRecord($app)->get_serialize_key();
                 }
 
                 $record->delete();

@@ -82,12 +82,12 @@ class Notifications implements ControllerProviderInterface
         if (!$request->isXmlHttpRequest()) {
             $app->abort(400);
         }
-        
+
         try {
             $app['events-manager']->read(explode('_', (string) $request->request->get('notifications')), $app['phraseanet.user']->get_id());
 
             return $app->json(array('success' => true, 'message' => ''));
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
             return $app->json(array('success' => false, 'message' => $e->getMessage()));
         }
