@@ -273,7 +273,6 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
     public function testGetFeedFormat()
     {
-        $this->markTestSkipped('');
         $feeds = Feed_Collection::load_public_feeds(self::$DI['app']);
         $all_feeds = $feeds->get_feeds();
         $feed = array_shift($all_feeds);

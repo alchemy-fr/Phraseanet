@@ -14,11 +14,11 @@ class QueryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testQueryAnswerTrain()
     {
-        $this->markTestSkipped('Unable to create phrasea session');
+//        $this->markTestSkipped('Unable to create phrasea session');
 
         //populate phrasea_session
-        $auth = new \Session_Authentication_None(self::$DI['user']);
-        self::$DI['app']->openAccount($auth);
+//        $auth = new \Session_Authentication_None(self::$DI['user']);
+//        self::$DI['app']->openAccount($auth);
 
         $query = new Query();
         $options = new \searchEngine_options();

@@ -200,7 +200,7 @@ class Export implements ControllerProviderInterface
 
                 return $app->json(array(
                         'success' => false,
-                        'message' => _('Something went wrong') . $e->getMessage()
+                        'message' => _('Something went wrong')
                     ));
             }
         }
@@ -219,11 +219,14 @@ class Export implements ControllerProviderInterface
         session_write_close();
         ignore_user_abort(true);
 
+        $lst = $request->request->get('lst', '');
+        $ssttid = $request->request->get('ssttid', '');
+
         //prepare export
-        $download = new \set_export($app, $request->get('lst', ''), $request->get('ssttid', ''));
-        $list = $download->prepare_export($app['phraseanet.user'], $app['filesystem'], $request->get('obj'), $request->get("type") == "title" ? : false, $request->get('businessfields'));
+        $download = new \set_export($app, $lst, $ssttid);
+        $list = $download->prepare_export($app['phraseanet.user'], $app['filesystem'], $request->request->get('obj'), $request->request->get("type") == "title" ? : false, $request->request->get('businessfields'));
         $list['export_name'] = sprintf("%s.zip", $download->getExportName());
-        $list['email'] = $request->get("destmail", "");
+        $list['email'] = $request->request->get("destmail", "");
 
         $destMails = array();
         //get destination mails
@@ -233,8 +236,8 @@ class Export implements ControllerProviderInterface
             } else {
                 $app['events-manager']->trigger('__EXPORT_MAIL_FAIL__', array(
                     'usr_id' => $app['phraseanet.user']->get_id(),
-                    'lst'    => $request->get('lst', ''),
-                    'ssttid' => $request->get('ssttid', ''),
+                    'lst'    => $lst,
+                    'ssttid' => $ssttid,
                     'dest'   => $mail,
                     'reason' => \eventsmanager_notify_downloadmailfail::MAIL_NO_VALID
                 ));
@@ -260,7 +263,7 @@ class Export implements ControllerProviderInterface
 
             //send mails
             foreach ($destMails as $key => $mail) {
-                if (\mail::send_documents($app, trim($mail), $url, $from, $endDateObject, $request->get('textmail'), $request->get('reading_confirm') == '1' ? : false)) {
+                if (\mail::send_documents($app, trim($mail), $url, $from, $endDateObject, $request->request->get('textmail'), $request->request->get('reading_confirm') == '1' ? : false)) {
                     unset($remaingEmails[$key]);
                 }
             }
@@ -270,8 +273,8 @@ class Export implements ControllerProviderInterface
                 foreach ($remaingEmails as $mail) {
                     $app['events-manager']->trigger('__EXPORT_MAIL_FAIL__', array(
                         'usr_id' => $app['phraseanet.user']->get_id(),
-                        'lst'    => $request->get('lst', ''),
-                        'ssttid' => $request->get('ssttid', ''),
+                        'lst'    => $lst,
+                        'ssttid' => $ssttid,
                         'dest'   => $mail,
                         'reason' => \eventsmanager_notify_downloadmailfail::MAIL_FAIL
                     ));
@@ -281,8 +284,8 @@ class Export implements ControllerProviderInterface
             foreach ($destMails as $mail) {
                 $app['events-manager']->trigger('__EXPORT_MAIL_FAIL__', array(
                     'usr_id' => $app['phraseanet.user']->get_id(),
-                    'lst'    => $request->get('lst', ''),
-                    'ssttid' => $request->get('ssttid', ''),
+                    'lst'    => $lst,
+                    'ssttid' => $ssttid,
                     'dest'   => $mail,
                     'reason' => 0
                 ));

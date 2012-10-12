@@ -1703,31 +1703,6 @@ function chgCollThis(datas)
     });
 }
 
-//function chgStatusThis(url)
-//{
-//    url = "docfunction.php?"+url;
-//    $('#MODALDL').attr('src','about:blank');
-//    $('#MODALDL').attr('src',url);
-//
-//
-//    var t = (bodySize.y - 400) / 2;
-//    var l = (bodySize.x - 550) / 2;
-//
-//    $('#MODALDL').css({
-//        'display': 'block',
-//        'opacity': 0,
-//        'width': '550px',
-//        'position': 'absolute',
-//        'top': t,
-//        'left': l,
-//        'height': '400px'
-//    }).fadeTo(500, 1);
-//
-//    showOverlay(2);
-//    $('#tooltip').hide();
-//}
-
-
 function pushThis(sstt_id, lst, story)
 {
     $dialog = p4.Dialog.Create({
@@ -1735,20 +1710,15 @@ function pushThis(sstt_id, lst, story)
         title:'Push'
     });
 
-    $.post("/prod/push/sendform/"
-        , {
-            lst : lst,
-            ssel : sstt_id,
-            story : story
-        }
-        , function(data){
-            $dialog.setContent(data);
-            return;
-        }
-        );
-
+    $.post("/prod/push/sendform/", {
+        lst : lst,
+        ssel : sstt_id,
+        story : story
+    }, function(data){
+        $dialog.setContent(data);
+        return;
+    });
 }
-
 
 function feedbackThis(sstt_id, lst, story)
 {
@@ -1758,17 +1728,14 @@ function feedbackThis(sstt_id, lst, story)
         title:'Feedback'
     });
 
-    $.post("/prod/push/validateform/"
-        , {
-            lst : lst,
-            ssel : sstt_id,
-            story : story
-        }
-        , function(data){
-            $dialog.setContent(data);
-            return;
-        }
-        );
+    $.post("/prod/push/validateform/", {
+        lst : lst,
+        ssel : sstt_id,
+        story : story
+    }, function(data){
+        $dialog.setContent(data);
+        return;
+    });
 }
 
 function toolREFACTOR(datas){
