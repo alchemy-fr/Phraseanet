@@ -94,8 +94,12 @@ class record_preview extends record_adapter
 
         switch ($env) {
             case "RESULT":
+
+                if(null === $search_engine) {
+                    throw new \LogicException('Search Engine should be provided');
+                }
+
                 $results = $search_engine->query_per_offset($query, (int) ($pos), 1);
-                $mypreview = array();
 
                 if ($results->get_datas()->is_empty()) {
                     throw new Exception('Record introuvable');
