@@ -136,7 +136,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             return $app;
         });
 
-
         self::$DI['client'] = self::$DI->share(function($DI) {
             return new Client($DI['app'], array());
         });

@@ -99,7 +99,6 @@ class Migration31 implements MigrationInterface
                 $type = $datas['type'];
                 switch ($datas['type']) {
                     case \registry::TYPE_ENUM_MULTI:
-                    case \registry::TYPE_ENUM:
                         $val = serialize($val);
                         break;
                     case \registry::TYPE_INTEGER:
@@ -112,6 +111,7 @@ class Migration31 implements MigrationInterface
                     case \registry::TYPE_BINARY:
                     case \registry::TYPE_TEXT:
                     case \registry::TYPE_TIMEZONE:
+                    case \registry::TYPE_ENUM:
                         $val = (string) $val;
                         break;
                     default:
@@ -127,6 +127,13 @@ class Migration31 implements MigrationInterface
                 ));
             }
         }
+
+        $stmt->execute(array(
+            ':key'   => 'GV_sit',
+            ':value' => GV_sit,
+            ':type'  => \registry::TYPE_STRING,
+        ));
+
         $stmt->closeCursor();
 
         rename(__DIR__ . '/../../../../../../config/_GV.php', __DIR__ . '/../../../../../../config/_GV.php.old');

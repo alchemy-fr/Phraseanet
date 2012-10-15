@@ -122,6 +122,8 @@ class ApplicationSpecification implements SpecificationInterface
             , $this->getConfigurationsPathFile()
         );
 
+        $this->setBinaries(array('binaries' => array()));
+
         if (function_exists('chmod')) {
             chmod($this->getConnexionsPathFile(), 0700);
             chmod($this->getConfigurationsPathFile(), 0700);

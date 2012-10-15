@@ -37,7 +37,10 @@ abstract class AbstractSetupTester extends \PHPUnit_Framework_TestCase
 
         $this->uninstall();
 
-        file_put_contents(__DIR__ . '/../../../../config/_GV.php', "<?php\ndefine('GV_ServerName', 'http://local.phrasea.tester/');\n");
+        copy(__DIR__ . '/../../../../hudson/_GV.php', __DIR__ . '/../../../../config/_GV.php');
+
+        file_put_contents( __DIR__ . '/../../../../config/_GV.php', str_replace('http://local.phrasea/', 'http://local.phrasea.tester/', file_get_contents( __DIR__ . '/../../../../config/_GV.php')));
+
         file_put_contents(__DIR__ . '/../../../../config/connexion.inc', "<?php\n
 \$hostname = '".$credentials['hostname']."';
 \$port = '".$credentials['port']."';
@@ -56,7 +59,7 @@ abstract class AbstractSetupTester extends \PHPUnit_Framework_TestCase
     {
         $app = new Application('test');
         $credentials = $app['phraseanet.appbox']->get_connection()->get_credentials();
-        
+
         $this->uninstall();
 
         file_put_contents(__DIR__ . '/../../../../config/config.inc', "<?php\n\$servername = 'http://local.phrasea';\n");

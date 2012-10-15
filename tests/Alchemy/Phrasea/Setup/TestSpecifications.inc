@@ -35,4 +35,9 @@ class TestSpecifications extends ApplicationSpecification
     {
         return $this->rootDir . 'services.yml';
     }
+
+    protected function getBinariesPathFile()
+    {
+        return $this->rootDir . 'binaries.yml';
+    }
 }

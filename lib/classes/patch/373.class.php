@@ -9,8 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Configuration;
-use Symfony\Component\Yaml\Dumper;
 
 /**
  *
@@ -57,7 +57,7 @@ class patch_373 implements patchInterface
     /**
      * @param base $databox
      */
-    public function apply(base &$appbox)
+    public function apply(base $appbox, Application $app)
     {
         $sql = 'SELECT * FROM registry WHERE `key` = :key';
         $stmt = $appbox->get_connection()->prepare($sql);
@@ -100,8 +100,7 @@ class patch_373 implements patchInterface
 
         $stmt->closeCursor();
 
-        $configuration = Configuration::build();
-        $configuration->setBinaries(array('binaries' => $binaries));
+        $app['phraseanet.configuration']->setBinaries(array('binaries' => $binaries));
 
         $sql = 'DELETE FROM registry WHERE `key` = :key';
         $stmt = $appbox->get_connection()->prepare($sql);
@@ -112,18 +111,16 @@ class patch_373 implements patchInterface
 
         $stmt->closeCursor();
 
-        $GV_sit = null;
-
         $sql = 'SELECT value FROM registry WHERE `key` = :key';
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute(array(':key'=>'GV_sit'));
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $configs = $configuration->getConfigurations();
+        $configs = $app['phraseanet.configuration']->getConfigurations();
         $configs['key'] = $row['value'];
-        $configuration->setConfigurations($configs);
-
+        $app['phraseanet.configuration']->setConfigurations($configs);
+        
         $sql = 'DELETE FROM registry WHERE `key` = :key';
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute(array(':key'=>'GV_sit'));
