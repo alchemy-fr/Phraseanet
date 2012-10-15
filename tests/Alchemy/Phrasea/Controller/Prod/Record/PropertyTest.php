@@ -10,15 +10,40 @@ class PropertyTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     protected $client;
 
     /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Record\Property::displayProperty
+     * @covers Alchemy\Phrasea\Controller\Prod\Record\Property::displayStatusProperty
      */
-    public function testDisplayProperty()
+    public function testDisplayStatusProperty()
     {
         $property = new Property();
         $request = Request::create('/prod/records/property/', 'GET', array(
                 'lst' => implode(';', array(self::$DI['record_no_access']->get_serialize_key(), self::$DI['record_1']->get_serialize_key(), self::$DI['record_4']->get_serialize_key()))
                 ), array(), array(), array('HTTP_X-Requested-With' => 'XMLHttpRequest'));
-        $response = $property->displayProperty(self::$DI['app'], $request);
+        $response = $property->displayStatusProperty(self::$DI['app'], $request);
+        $this->assertTrue($response->isOk());
+    }
+
+    /**
+     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
+     * @covers Alchemy\Phrasea\Controller\Prod\Record\Property::displayStatusProperty
+     */
+    public function testDisplayStatusPropertyNotXMLHTTPRequets()
+    {
+        $property = new Property();
+        $request = Request::create('/prod/records/property/', 'GET');
+        $property->displayStatusProperty(self::$DI['app'], $request);
+        unset($property, $request);
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Controller\Prod\Record\Property::displayTypeProperty
+     */
+    public function testDisplayTypeProperty()
+    {
+        $property = new Property();
+        $request = Request::create('/prod/records/property/', 'GET', array(
+                'lst' => implode(';', array(self::$DI['record_no_access']->get_serialize_key(), self::$DI['record_1']->get_serialize_key(), self::$DI['record_4']->get_serialize_key()))
+                ), array(), array(), array('HTTP_X-Requested-With' => 'XMLHttpRequest'));
+        $response = $property->displayTypeProperty(self::$DI['app'], $request);
         $this->assertTrue($response->isOk());
     }
 
@@ -26,18 +51,18 @@ class PropertyTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      * @covers Alchemy\Phrasea\Controller\Prod\Record\Property::displayProperty
      */
-    public function testDisplayPropertyNotXMLHTTPRequets()
+    public function testDisplayTypePropertyNotXMLHTTPRequets()
     {
         $property = new Property();
         $request = Request::create('/prod/records/property/', 'GET');
-        $property->displayProperty(self::$DI['app'], $request);
+        $property->displayTypeProperty(self::$DI['app'], $request);
         unset($property, $request);
     }
 
     /**
      * @covers Alchemy\Phrasea\Controller\Prod\Record\Property::changeStatus
      */
-    public function testChangeSTatus()
+    public function testChangeStatus()
     {
         $property = new Property();
         $request = Request::create('/prod/records/property/status/', 'POST', array(

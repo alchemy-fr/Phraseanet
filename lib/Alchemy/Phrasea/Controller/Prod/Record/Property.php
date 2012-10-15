@@ -38,11 +38,11 @@ class Property implements ControllerProviderInterface
             });
 
         /**
-         * Display records property
+         * Display records status property
          *
-         * name         : display_property
+         * name         : display_status_property
          *
-         * description  : Display records property
+         * description  : Display records status property
          *
          * method       : GET
          *
@@ -50,8 +50,24 @@ class Property implements ControllerProviderInterface
          *
          * return       : HTML Response
          */
-        $controllers->get('/', $this->call('displayProperty'))
-            ->bind('display_property');
+        $controllers->get('/', $this->call('displayStatusProperty'))
+            ->bind('display_status_property');
+
+        /**
+         * Display records status property
+         *
+         * name         : display_type_property
+         *
+         * description  : Display records status property
+         *
+         * method       : GET
+         *
+         * parameters   : none
+         *
+         * return       : HTML Response
+         */
+        $controllers->get('/type/', $this->call('displayTypeProperty'))
+            ->bind('display_type_property');
 
         /**
          * Change records status
@@ -89,81 +105,53 @@ class Property implements ControllerProviderInterface
     }
 
     /**
-     *  Display property
+     *  Display Status property
      *
      * @param   Application     $app
      * @param   Request         $request
      * @return  Response
      */
-    public function displayProperty(Application $app, Request $request)
+    public function displayStatusProperty(Application $app, Request $request)
     {
         if (!$request->isXmlHttpRequest()) {
             $app->abort(400);
         }
 
-        $records = RecordsRequest::fromRequest($app, $request, false, array('chgstatus', 'canmodifrecord'));
+        $records = RecordsRequest::fromRequest($app, $request, false, array('chgstatus'));
         $databoxStatus = \databox_status::getDisplayStatus($app);
-        $statusBit = $recordsType = $nRec = $toRemove = array();
+        $statusBit = $nRec = array();
 
-        foreach ($records as $key => $record) {
-            if (!$app['phraseanet.user']->ACL()->has_hd_grant($record) ||
-                !$app['phraseanet.user']->ACL()->has_preview_grant($record)) {
-                try {
-                    $stmt = $record->get_databox()->get_connection()->prepare(sprintf('SELECT record_id FROM record WHERE ((status ^ %s) & %s) = 0 AND record_id = :record_id', $app['phraseanet.user']->ACL()->get_mask_xor($record->get_base_id()), $app['phraseanet.user']->ACL()->get_mask_and($record->get_base_id())));
-                    $stmt->execute(array(':record_id' => $record->get_record_id()));
+        foreach ($records as $record) {
 
-                    if (0 === $stmt->rowCount()) {
-                        $toRemove[] = $key;
-                    } else {
-                        //perform logic
-                        $sbasId = $record->get_databox()->get_sbas_id();
+            if ($this->isEligible($app, $record)) {
+                //perform logic
+                $sbasId = $record->get_databox()->get_sbas_id();
 
-                        if (!isset($nRec[$sbasId])) {
-                            $nRec[$sbasId] = array('stories' => 0, 'records' => 0);
-                        }
+                if (!isset($nRec[$sbasId])) {
+                    $nRec[$sbasId] = array('stories' => 0, 'records' => 0);
+                }
 
-                        $nRec[$sbasId]['records']++;
+                $nRec[$sbasId]['records']++;
 
-                        if ($record->is_grouping()) {
-                            $nRec[$sbasId]['stories']++;
-                        }
+                if ($record->is_grouping()) {
+                    $nRec[$sbasId]['stories']++;
+                }
 
-                        if (!isset($recordsType[$sbasId])) {
-                            $recordsType[$sbasId] = array();
-                        }
+                if (!isset($statusBit[$sbasId])) {
 
-                        if (!isset($recordsType[$sbasId][$record->get_type()])) {
-                            $recordsType[$sbasId][$record->get_type()] = array();
-                        }
+                    $statusBit[$sbasId] = isset($databoxStatus[$sbasId]) ? $databoxStatus[$sbasId] : array();
 
-                        $recordsType[$sbasId][$record->get_type()][] = $record;
-
-                        if (!isset($statusBit[$sbasId])) {
-
-                            $statusBit[$sbasId] = isset($databoxStatus[$sbasId]) ? $databoxStatus[$sbasId] : array();
-
-                            foreach (array_keys($statusBit[$sbasId]) as $bit) {
-                                $statusBit[$sbasId][$bit]['nset'] = 0;
-                            }
-                        }
-
-                        $status = strrev($record->get_status());
-
-                        foreach (array_keys($statusBit[$sbasId]) as $bit) {
-                            $statusBit[$sbasId][$bit]["nset"] += substr($status, $bit, 1) !== "0" ? 1 : 0;
-                        }
+                    foreach (array_keys($statusBit[$sbasId]) as $bit) {
+                        $statusBit[$sbasId][$bit]['nset'] = 0;
                     }
+                }
 
-                    $stmt->closeCursor();
-                    unset($stmt);
-                } catch (\Exception $e) {
-                    $toRemove[] = $key;
+                $status = strrev($record->get_status());
+
+                foreach (array_keys($statusBit[$sbasId]) as $bit) {
+                    $statusBit[$sbasId][$bit]["nset"] += substr($status, $bit, 1) !== "0" ? 1 : 0;
                 }
             }
-        }
-
-        foreach ($toRemove as $key) {
-            $records->remove($key);
         }
 
         foreach ($records->databoxes() as $databox) {
@@ -174,10 +162,50 @@ class Property implements ControllerProviderInterface
         }
 
         return new Response($app['twig']->render('prod/actions/Property/index.html.twig', array(
+                    'records'   => $records,
+                    'statusBit' => $statusBit,
+                    'nRec'      => $nRec
+                )));
+    }
+
+    /**
+     * Display type property
+     *
+     * @param   Application $app
+     * @param   Request     $request
+     * @return  Response
+     */
+    public function displayTypeProperty(Application $app, Request $request)
+    {
+        if (!$request->isXmlHttpRequest()) {
+            $app->abort(400);
+        }
+
+        $records = RecordsRequest::fromRequest($app, $request, false, array('canmodifrecord'));
+
+        $recordsType = array();
+
+        foreach ($records as $record) {
+
+            if ($this->isEligible($app, $record)) {
+                //perform logic
+                $sbasId = $record->get_databox()->get_sbas_id();
+
+                if (!isset($recordsType[$sbasId])) {
+                    $recordsType[$sbasId] = array();
+                }
+
+                if (!isset($recordsType[$sbasId][$record->get_type()])) {
+                    $recordsType[$sbasId][$record->get_type()] = array();
+                }
+
+                $recordsType[$sbasId][$record->get_type()][] = $record;
+            }
+        }
+
+        return new Response($app['twig']->render('prod/actions/Property/type.html.twig', array(
                     'records'     => $records,
-                    'statusBit'   => $statusBit,
                     'recordsType' => $recordsType,
-                    'nRec'        => $nRec
                 )));
     }
 
@@ -275,6 +303,38 @@ class Property implements ControllerProviderInterface
         }
 
         return null;
+    }
+
+    /**
+     *
+     * @param   Application     $app
+     * @param   record_adapter  $record
+     * @return  boolean
+     */
+    private function isEligible(Application $app, \record_adapter $record)
+    {
+        $eligible = false;
+
+        if (!$app['phraseanet.user']->ACL()->has_hd_grant($record) ||
+            !$app['phraseanet.user']->ACL()->has_preview_grant($record)) {
+            try {
+                $stmt = $record->get_databox()->get_connection()->prepare(sprintf('SELECT record_id FROM record WHERE ((status ^ %s) & %s) = 0 AND record_id = :record_id', $app['phraseanet.user']->ACL()->get_mask_xor($record->get_base_id()), $app['phraseanet.user']->ACL()->get_mask_and($record->get_base_id())));
+                $stmt->execute(array(':record_id' => $record->get_record_id()));
+
+                if ($stmt->rowCount() > 0) {
+                    $eligible = true;
+                }
+
+                $stmt->closeCursor();
+                unset($stmt);
+            } catch (\Exception $e) {
+
+            }
+        } else {
+            $eligible = true;
+        }
+
+        return $eligible;
     }
 
     /**
