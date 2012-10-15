@@ -2121,7 +2121,7 @@ function activeIcons()
     $('.TOOL_chgstatus_btn').live('click', function(){
         var params = {};
         var $this = $(this);
-        console.log(p4.Results.Selection.length());
+
         if ($this.hasClass('results_window')) {
             if (p4.Results.Selection.length() > 0) {
                 params.lst = p4.Results.Selection.serialize();

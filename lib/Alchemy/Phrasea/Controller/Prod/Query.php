@@ -272,18 +272,22 @@ class Query implements ControllerProviderInterface
      */
     public function queryAnswerTrain(Application $app, Request $request)
     {
-        $searchEngine = null;
-
-        if (($options = unserialize($request->request->get('options_serial', ''))) !== false) {
-            $searchEngine = new \searchEngine_adapter($app);
-            $searchEngine->set_options($options);
+        if (null === $optionsSerial = $request->request->get('options_serial')) {
+            $app->abort(400, 'Search engine options are missing');
         }
 
-        $pos = (int) $request->request->get('pos');
+        if (($options = unserialize($optionsSerial)) !== false) {
+            $searchEngine = new \searchEngine_adapter($app);
+            $searchEngine->set_options($options);
+        } else {
+            $app->abort(400, 'Provided search engine options are not valid');
+        }
+
+        $pos = (int) $request->request->get('pos', 1);
         $query = $request->request->get('query', '');
 
         $record = new \record_preview($app, 'RESULT', $pos, '', '', $searchEngine, $query);
-
+        
         return $app->json(array(
                 'current' => $app['twig']->render('prod/preview/result_train.html.twig', array(
                     'records'  => $record->get_train($pos, $query, $searchEngine),
