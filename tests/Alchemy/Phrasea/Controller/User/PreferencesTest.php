@@ -39,7 +39,7 @@ class PreferencesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testSaveUserPrefNoXMLHTTPRequests()
     {
-        self::$DI->request('POST', '/user/preferences/',  array('prop'  => 'prop_test', 'value' => 'val_test'));
+        self::$DI['client']->request('POST', '/user/preferences/',  array('prop'  => 'prop_test', 'value' => 'val_test'));
     }
 
     /**
@@ -48,7 +48,7 @@ class PreferencesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testSaveTempPrefNoXMLHTTPRequests()
     {
-        self::$DI->request('POST', '/user/preferences/temporary/',  array('prop'  => 'prop_test', 'value' => 'val_test'));
+        self::$DI['client']->request('POST', '/user/preferences/temporary/',  array('prop'  => 'prop_test', 'value' => 'val_test'));
     }
 
     /**
