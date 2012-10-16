@@ -39,7 +39,7 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testDisplayMultiExport()
     {
-        self::$DI['client']->request('GET', '/prod/export/multi-export/', array('lst' => self::$DI['record_1']->get_serialize_key()));
+        self::$DI['client']->request('POST', '/prod/export/multi-export/', array('lst' => self::$DI['record_1']->get_serialize_key()));
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
         unset($response);
