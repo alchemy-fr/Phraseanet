@@ -470,3 +470,4 @@ class Application extends SilexApplication
         $this->sessionCookieEnabled = false;
     }
 }
+
