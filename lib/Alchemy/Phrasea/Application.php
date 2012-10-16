@@ -49,11 +49,10 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 class Application extends SilexApplication
 {
     private static $availableLanguages = array(
-        'ar_SA' => 'العربية'
-        , 'de_DE' => 'Deutsch'
+        'de_DE' => 'Deutsch'
         , 'en_GB' => 'English'
-        , 'es_ES' => 'Español'
         , 'fr_FR' => 'Français'
+        , 'nl_NL' => 'Dutch'
     );
     private $environment;
     private $sessionCookieEnabled = true;
