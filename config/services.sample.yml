@@ -142,6 +142,9 @@ Cache:
   xcache_cache:
     type: Cache\XcacheCache
 
+  wincache_cache:
+    type: Cache\WinCacheCache
+
 Border:
   #Define Border service
   #The border service handles checks validation constraints against incoming files

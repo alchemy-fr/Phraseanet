@@ -212,16 +212,16 @@ class Installer implements ControllerProviderInterface
                     }
 
                     $binaries = array(
-                        'php'         => $request->get('binary_php'),
-                        'convert'     => $request->get('binary_convert'),
-                        'composite'   => $request->get('binary_composite'),
-                        'swf_extract' => $request->get('binary_swfextract'),
-                        'pdf2swf'     => $request->get('binary_pdf2swf'),
-                        'swf_render'  => $request->get('binary_swfrender'),
-                        'unoconv'     => $request->get('binary_unoconv'),
-                        'ffmpeg'      => $request->get('binary_ffmpeg'),
-                        'mp4box'      => $request->get('binary_MP4Box'),
-                        'pdftotext'   => $request->get('binary_xpdf'),
+                        'php_binary'         => $request->get('binary_php'),
+                        'convert_binary'     => $request->get('binary_convert'),
+                        'composite_binary'   => $request->get('binary_composite'),
+                        'swf_extract_binary' => $request->get('binary_swfextract'),
+                        'pdf2swf_binary'     => $request->get('binary_pdf2swf'),
+                        'swf_render_binary'  => $request->get('binary_swfrender'),
+                        'unoconv_binary'     => $request->get('binary_unoconv'),
+                        'ffmpeg_binary'      => $request->get('binary_ffmpeg'),
+                        'mp4box_binary'      => $request->get('binary_MP4Box'),
+                        'pdftotext_binary'   => $request->get('binary_xpdf'),
                     );
 
                     $app['Core']->getConfiguration()->setBinaries(array('binaries' => $binaries));

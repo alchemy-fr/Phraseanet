@@ -1302,7 +1302,11 @@ class ACL implements cache_cacheableInterface
 
         $this->give_access_to_base(array($base_id_dest));
 
-        $rights = array();
+        $rights = array(
+            'mask_and' => $row['mask_and'],
+            'mask_xor' => $row['mask_xor'],
+        );
+
         if ($row['canputinalbum'])
             $rights['canputinalbum'] = true;
         if ($row['candwnldhd'])
@@ -1335,6 +1339,14 @@ class ACL implements cache_cacheableInterface
             $rights['modify_struct'] = true;
 
         $this->update_rights_to_base($base_id_dest, $rights);
+
+        if ($row['time_limited']) {
+            $this->set_limits($base_id_dest, $row['time_limited'], new \DateTime($row['limited_from']), new \DateTime($row['limited_to']));
+        }
+
+        if ($row['restrict_dwnld']) {
+            $this->set_quotas_on_base($base_id_dest, $row['month_dwnld_max'], $row['remain_dwnld']);
+        }
 
         return $this;
     }
