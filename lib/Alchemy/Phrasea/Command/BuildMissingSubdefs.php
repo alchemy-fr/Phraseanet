@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Command;
 
 use Monolog\Handler;
 use Alchemy\Phrasea\Command\Command;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -79,7 +80,7 @@ class BuildMissingSubdefs extends Command
 
                 try {
                     $record->get_hd_file();
-                } catch (\Exception_Media_SubdefNotFound $e) {
+                } catch (FileNotFoundException $e) {
                     continue;
                 }
 
