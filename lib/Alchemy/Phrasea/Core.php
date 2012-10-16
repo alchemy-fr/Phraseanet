@@ -44,11 +44,10 @@ require_once __DIR__ . '/Core/Configuration/ApplicationSpecification.php';
 class Core extends \Pimple
 {
     protected static $availableLanguages = array(
-        'ar_SA'                 => 'العربية'
-        , 'de_DE'                 => 'Deutsch'
+        'de_DE'                 => 'Deutsch'
         , 'en_GB'                 => 'English'
-        , 'es_ES'                 => 'Español'
         , 'fr_FR'                 => 'Français'
+        , 'nl_NL'                 => 'Dutch'
     );
     protected static $autoloader_initialized = false;
 
