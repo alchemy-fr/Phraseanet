@@ -39,7 +39,7 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testDisplayMultiExport()
     {
-        $response = self::$DI->request('GET', '/prod/export/multi-export/', array('lst' => self::$DI['record_1']->get_serialize_key()));
+        $response = self::$DI['client']->request('GET', '/prod/export/multi-export/', array('lst' => self::$DI['record_1']->get_serialize_key()));
         $this->assertTrue($response->isOk());
         unset($response);
     }
@@ -85,7 +85,7 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 return $ftpStub;
             });
 
-        $response = self::$DI->request('POST', '/prod/export/ftp/test/', array('lst' => self::$DI['record_1']->get_serialize_key()));
+        $response = self::$DI['client']->request('POST', '/prod/export/ftp/test/', array('lst' => self::$DI['record_1']->get_serialize_key()));
         $datas = (array) json_decode($response->getContent());
         $this->assertArrayHasKey('success', $datas);
         $this->assertFalse($datas['success']);
@@ -98,7 +98,7 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testExportFtpNoDocs()
     {
-        $response = self::$DI->request('POST', '/prod/export/ftp/',  array('addr'       => '', 'login'      => '', 'destfolder' => '', 'NAMMKDFOLD' => '', 'obj'        => array()));
+        $response = self::$DI['client']->request('POST', '/prod/export/ftp/',  array('addr'       => '', 'login'      => '', 'destfolder' => '', 'NAMMKDFOLD' => '', 'obj'        => array()));
         $this->assertTrue($response->isOk());
         $datas = (array) json_decode($response->getContent());
         $this->assertArrayHasKey('success', $datas);
@@ -114,7 +114,7 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testExportFtpBadRequest($params)
     {
-        self::$DI->request('POST', '/prod/export/ftp/', $params);
+        self::$DI['client']->request('POST', '/prod/export/ftp/', $params);
     }
 
     public function getMissingArguments()
@@ -137,7 +137,7 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['app']['phraseanet.registry']->set('GV_activeFTP', '1', \registry::TYPE_BOOLEAN);
 
         //inserted rows from this function are deleted in tearDownAfterClass
-        $response = self::$DI->request('POST', '/prod/export/ftp/', array(
+        $response = self::$DI['client']->request('POST', '/prod/export/ftp/', array(
                 'lst'        => self::$DI['record_2']->get_serialize_key(),
                 'user_dest'  => self::$DI['user']->get_id(),
                 'addr'       => 'local.phrasea.test',

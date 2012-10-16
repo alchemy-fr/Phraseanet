@@ -21,7 +21,7 @@ class QueryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $options = new \searchEngine_options();
         $serializedOptions = serialize($options);
         self::$DI['record_story_1'];
-        $response = self::$DI->request('POST', '/prod/query/answer-train/', array(
+        $response = self::$DI['client']->request('POST', '/prod/query/answer-train/', array(
             'options_serial' => $serializedOptions,
             'pos'            => 1,
             'query'          => ''
@@ -43,7 +43,7 @@ class QueryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 'cont' => self::$DI['record_story_1']->get_serialize_key()
             ));
 
-        $response = self::$DI->request('POST', '/prod/query/reg-train/', array(
+        $response = self::$DI['client']->request('POST', '/prod/query/reg-train/', array(
             'pos'  => 1,
             'cont' => self::$DI['record_story_1']->get_serialize_key()
             ));

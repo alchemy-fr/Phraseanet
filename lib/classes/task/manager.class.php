@@ -11,6 +11,7 @@
 
 use Monolog\Logger;
 use Alchemy\Phrasea\Application;
+use Symfony\Component\Process\Process;
 
 /**
  *

@@ -25,7 +25,7 @@ class NotificationsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testListNotificationsNoXMLHTTPRequests()
     {
-        self::$DI->request('GET', '/user/notifications/');
+        self::$DI['client']->request('GET', '/user/notifications/');
     }
 
     /**
@@ -34,7 +34,7 @@ class NotificationsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testSetNotificationsReadedNoXMLHTTPRequests()
     {
-        self::$DI->request('POST', '/user/notifications/read/');
+        self::$DI['client']->request('POST', '/user/notifications/read/');
     }
 
     /**
