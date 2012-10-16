@@ -105,7 +105,7 @@
                     <input type="hidden" name="ssttid" value="{{ssttid}}"/>
                     {% for name, values in download.get_display_download() %}
                         {% if values.available > 0 %}
-                            <div style="margin: 10px 0 20px 0; padding: 0 10px;">
+                            <div class="well-small">
                                 <label for="download_{{name}}" class="checkbox">
                                     <input class="{{values.class}}" type="checkbox" id="download_{{name}}" name="obj[]" value="{{name}}" />
                                     <input type="hidden" name="download_{{name}}" value="{{values.size}}" />
@@ -119,7 +119,7 @@
                                     {% endif %}
                                 </label>
                                 {% if values.refused|length > 0 %}
-                                    <div style="display:none;" class="undisposable">
+                                    <div style="display:none;" class="undisposable well-small">
                                         <div>{% trans 'Les documents ne peuvent pas etre exportes' %}</div>
                                         {% for datas in values.refused%}
                                             {{ thumbnail.format(datas, 80, 80,'', true, false) }}
@@ -130,7 +130,7 @@
                         {% endif %}
                     {% endfor %}
                     {% if download.has_business_fields_access() %}
-                        <div class="businessfields" style="margin-left:20px;display:none;">
+                        <div class="businessfields well-small" style="margin-left:20px;display:none;">
                             <label for="business_download" class="checkbox">
                                 <input type="checkbox" name="businessfields" id="business_download" value="1"  />
                                 {% trans 'Include Business-fields in caption' %}
@@ -140,7 +140,7 @@
                     {{ _self.choose_title('download', choose_export_title, default_export_title) }}
 
                     {% if registry.get('GV_requireTOUValidationForExport') == true %}
-                        <div style="margin:0 20px;">
+                        <div class="well-small">
                             <label for="TOU_acceptDL" class="checkbox">
                                 <input type="checkbox" name="TOU_accept" id="TOU_acceptDL" value="1"  />
                                 {% set beginning_link = '<a href="/prod/TOU/" class="TOUview">' %}

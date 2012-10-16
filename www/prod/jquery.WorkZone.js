@@ -613,6 +613,7 @@ var p4 = p4 || {};
             function(){
               answerSizer();
               linearize();
+              $('#answers').trigger('resize');
             });
           frame.addClass('closed');
           $('.escamote', frame).hide();
