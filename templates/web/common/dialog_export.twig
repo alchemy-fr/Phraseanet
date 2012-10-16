@@ -190,7 +190,7 @@
                             <p>{% trans 'export::mail: fichiers joint' %}</p>
                             {% for name, values in download.get_display_download() %}
                                 {% if values.available > 0 %}
-                                    <div style="margin: 10px 0 20px 0; padding: 0 10px;">
+                                    <div class="well-small">
                                         <label for="sendmail_{{name}}" class="checkbox">
                                             <input class="{{values.class}}" type="checkbox" id="sendmail_{{name}}" name="obj[]" value="{{name}}" />
                                             {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size | formatOctets}})
@@ -205,7 +205,7 @@
                                             {% trans 'Documents indisponibles' %}
                                         {% endset %}
                                         {% if values.refused|length > 0 %}
-                                            <div style="display:none;" class="undisposable">
+                                            <div style="display:none;" class="well-small undisposable">
                                                 <div><i>{% trans 'La sous resolution n\'est pas disponible pour les documents suivants' %}</i></div>
                                                 {% for datas in values.refused%}
                                                     {{ thumbnail.format(datas, 80, 80,'', session, true, false) }}
@@ -217,7 +217,7 @@
                             {% endfor %}
                         </div>
                         {% if download.has_business_fields_access() %}
-                            <div class="businessfields" style="margin-left:20px;display:none;">
+                            <div class="businessfields well-small" style="margin-left:20px;display:none;">
                                 <label for="business_sendmail" class="checkbox">
                                     <input type="checkbox" name="businessfields" id="business_sendmail" value="1"  />
                                     {% trans 'Include Business-fields in caption' %}
@@ -227,7 +227,7 @@
                         {{ _self.choose_title('sendmail', choose_export_title, default_export_title) }}
 
                         {% if registry.get('GV_requireTOUValidationForExport') == true %}
-                            <div style="margin:0 20px;">
+                            <div class='well-small'>
                                 <label for="TOU_acceptMail" class="checkbox">
                                     <input type="checkbox" name="TOU_accept" id="TOU_acceptMail" value="1"  />
                                     {% set beginning_link = '<a href="/prod/TOU/" class="TOUview">' %}
@@ -367,7 +367,7 @@
                         <div>
                             {% for name, values in download.get_display_orderable() %}
                                 {% if values.available > 0 %}
-                                    <div style="margin: 10px 0 20px 0; padding: 0 10px;">
+                                    <div class="well-small">
                                         {% set docs_orderable = values.available %}
                                         {% trans %}{{docs_orderable}} documents commandes{% endtrans %}
                                         {% set docs_not_orderable = values.total - values.available %}
@@ -382,7 +382,7 @@
                                                 {% trans 'Documents indisponibles' %}
                                             {% endset %}
                                             <a href="#" class="undisposable_link" title="{{title|trim}}"> + </a>
-                                            <div style="display:none;" class="undisposable">
+                                            <div style="display:none;" class="well-small undisposable">
                                                 <div><i>{% trans 'La sous resolution n\'est pas disponible pour les documents suivants' %}</i></div>
                                                 {% for datas in values.refused%}
                                                     {{ thumbnail.format(datas, 80, 80,'', session, true, false) }}
@@ -395,7 +395,7 @@
                         </div>
 
                         {% if registry.get('GV_requireTOUValidationForExport') == true %}
-                            <div style="margin:0 20px;">
+                            <div class="well-small">
                                 <label for="TOU_acceptOrder" class="checkbox">
                                     <input type="checkbox" name="TOU_accept" id="TOU_acceptOrder" value="1"  />
                                     {% set beginning_link = '<a href="/prod/TOU/" class="TOUview">' %}
@@ -445,7 +445,7 @@
                             <p>{% trans 'export::mail: fichiers joint' %}</p>
                             {% for name, values in download.get_display_ftp() %}
                                 {% if values.available > 0 %}
-                                    <div style="margin: 10px 0 20px 0; padding: 0 10px;">
+                                    <div class="well-small">
                                         <label for="ftp_{{name}}" class="checkbox">
                                             <input class="{{values.class}}" type="checkbox" id="ftp_{{name}}" name="obj[]" value="{{name}}" />
                                             {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size | formatOctets}}))
@@ -457,7 +457,7 @@
                                         {% endif %}
                                         </label>
                                         {% if values.refused|length > 0 %}
-                                            <div style="display:none;" class="undisposable">
+                                            <div style="display:none;" class="well-small undisposable">
                                                 <div><i>{% trans 'La sous resolution n\'est pas disponible pour les documents suivants' %}</i></div>
                                                 {% for datas in values.refused%}
                                                     {{ thumbnail.format(datas, 80, 80,'', session, true, false) }}
@@ -469,7 +469,7 @@
                             {% endfor %}
                         </div>
                         {% if download.has_business_fields_access() %}
-                            <div class="businessfields" style="margin-left:20px;display:none;">
+                            <div class="businessfields well-small" style="margin-left:20px;display:none;">
                                 <label for="business_ftp" class="checkbox">
                                     <input type="checkbox" name="businessfields" id="business_ftp" value="1"  />
                                     {% trans 'Include Business-fields in caption' %}
@@ -478,7 +478,7 @@
                         {% endif %}
 
                         {% if registry.get('GV_requireTOUValidationForExport') == true %}
-                            <div style="margin:0 20px;">
+                            <div class="well-small">
                                 <label for="TOU_acceptFTP" class="checkbox">
                                     <input type="checkbox" name="TOU_accept" id="TOU_acceptFTP" value="1"  />
                                     {% set beginning_link = '<a href="/prod/TOU/" class="TOUview">' %}
