@@ -116,7 +116,7 @@ class PhraseaEngineQueryParser
     public function parsequery($phq)
     {
         if ($this->debug) {
-            for ($i = 0; $i < mb_strlen($phq, 'UTF-8'); $i ++ ) {
+            for ($i = 0; $i < mb_strlen($phq, 'UTF-8'); $i++) {
                 $c = mb_substr($phq, $i, 1, 'UTF-8');
                 printf("// %s : '%s' (%d octets)\n", $i, $c, strlen($c));
             }
@@ -353,7 +353,7 @@ class PhraseaEngineQueryParser
 
     public function priority_opk(&$tree, $depth = 0)
     {
-        if ( ! $tree) {
+        if (!$tree) {
             return;
         }
 
@@ -373,7 +373,7 @@ class PhraseaEngineQueryParser
 
     public function distrib_opk(&$tree, $depth = 0)
     {
-        if ( ! $tree) {
+        if (!$tree) {
             return;
         }
 
@@ -400,7 +400,7 @@ class PhraseaEngineQueryParser
 
     public function thesaurus2_apply(&$tree, $bid)
     {
-        if ( ! $tree) {
+        if (!$tree) {
             return;
         }
 
@@ -459,7 +459,7 @@ class PhraseaEngineQueryParser
     {
         if ($depth == 0)
             $ret = $tree;
-        if ( ! $useThesaurus) {
+        if (!$useThesaurus) {
             return;  // full-text only : inchangé
         }
 
@@ -475,7 +475,7 @@ class PhraseaEngineQueryParser
                 if (isset($tree["RB"]["CONTEXT"]))
                     $copy["CONTEXT"] = $tree["CONTEXT"] = $tree["RB"]["CONTEXT"];
                 else
-                if ( ! $keepfuzzy)
+                if (!$keepfuzzy)
                     $copy["CONTEXT"] = $tree["CONTEXT"] = "*";
 
                 $copy["RB"]["SREF"] = &$tree["RB"];
@@ -536,7 +536,7 @@ class PhraseaEngineQueryParser
             if ($context !== null)
                 $tmp["RB"]["CONTEXT"] = $context;
             else
-            if ( ! $keepfuzzy)
+            if (!$keepfuzzy)
                 $tmp["RB"]["CONTEXT"] = "*";
             // corrige les profondeurs des 2 copies du 'simple' d'origine
             $tmp["LB"]["DEPTH"] += 1;
@@ -563,7 +563,7 @@ class PhraseaEngineQueryParser
             if ($context !== null)
                 $tmp["CONTEXT"] = $context;
             else
-            if ( ! $keepfuzzy)
+            if (!$keepfuzzy)
                 $tmp["CONTEXT"] = "*";
             // corrige la profondeur de la copie du 'simple' d'origine
             $tmp["RB"]["DEPTH"] += 1;
@@ -583,7 +583,7 @@ class PhraseaEngineQueryParser
         if ($depth == 0)
             $this->proposals["BASES"]["b$bid"] = array("BID"   => $bid, "NAME"  => $name, "TERMS" => array());
 
-        if ( ! $tree) {
+        if (!$tree) {
             return(0);
         }
 
@@ -608,7 +608,7 @@ class PhraseaEngineQueryParser
             for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
                 if ($n->nodeName == "sy") {
                     $lng = $n->getAttribute("lng");
-                    if ( ! array_key_exists($lng, $tsy))
+                    if (!array_key_exists($lng, $tsy))
                         $tsy[$lng] = array();
                     $zsy = array("v" => $n->getAttribute("v"), "w" => $n->getAttribute("w"), "k" => $n->getAttribute("k"));
 
@@ -660,7 +660,7 @@ class PhraseaEngineQueryParser
                     }
                 }
                 $n->removeAttribute("marked");
-                for ($i = 0; array_key_exists($syfound . $i, $tsort) && $i < 9999; $i ++ )
+                for ($i = 0; array_key_exists($syfound . $i, $tsort) && $i < 9999; $i++)
                     ;
                 $tsort[$syfound . $i] = $n;
             }
@@ -733,7 +733,7 @@ class PhraseaEngineQueryParser
             $t = $w = implode(" ", $w);
 
         if (isset($tree["CONTEXT"])) {
-            if ( ! $tree["CONTEXT"]) {
+            if (!$tree["CONTEXT"]) {
                 $x0 = "@w=\"" . $w . "\" and not(@k)";
             } else {
                 if ($tree["CONTEXT"] == "*") {
@@ -755,7 +755,7 @@ class PhraseaEngineQueryParser
         $dxp = new DOMXPath($domthe);
         $nodes = $dxp->query($x);
 
-        if ( ! isset($tree["RB"]["SREF"]["TIDS"]))
+        if (!isset($tree["RB"]["SREF"]["TIDS"]))
             $tree["RB"]["SREF"]["TIDS"] = array();
         if ($nodes->length >= 1) {
             if ($nodes->length == 1) {
@@ -766,8 +766,8 @@ class PhraseaEngineQueryParser
                 // on cherche plusieurs id's, on utilisera la syntaxe 'regexp' (l'extension repérera elle meme la syntaxe car la value finira par '$')
                 $val = "";
                 foreach ($nodes as $node) {
-                    if ( ! isset($tree["CONTEXT"]))
-                        $ambigus ++;
+                    if (!isset($tree["CONTEXT"]))
+                        $ambigus++;
                     $this->addtoTIDS($tree["RB"], $bid, $node);
                 }
             }
@@ -777,74 +777,15 @@ class PhraseaEngineQueryParser
             $this->proposals["BASES"]["b$bid"]["TERMS"][$path]["HTML"] = $prophtml;
         } else {
             // le mot n'est pas dans le thesaurus
+            $tree = null;
         }
 
         return($ambigus);
     }
-    /*
-      function dead_setTids(&$tree, &$simple, $bid, &$domthe, $searchsynonyms)
-      {
-      // if($this->debug)
-      print("setTids:\n\$tree=" . var_export($tree, true) . "\n");
-
-      $ambigus = 0;
-      if(is_array($w = $simple["VALUE"]))
-      $t = $w = implode(" ", $w);
-
-      if (isset($tree["CONTEXT"])) {
-      if (!$tree["CONTEXT"]) {
-      $x0 = "@w=\"" . $w ."\" and not(@k)";
-      } else {
-      if ($tree["CONTEXT"]=="*") {
-      $x0 = "@w=\"" . $w ."\"";
-      } else {
-      $x0 = "@w=\"" . $w ."\" and @k=\"" . $tree["CONTEXT"] . "\"";
-      $t .= " (" . $tree["CONTEXT"] . ")";
-      }
-      }
-      } else {
-      $x0 = "@w=\"" . $w ."\"";
-      }
-
-      $x = "/thesaurus//sy[" . $x0 ."]";
-
-      if($this->debug)
-      printf("searching thesaurus with xpath='%s'<br/>\n", $x);
-
-      $dxp = new DOMXPath($domthe);
-      $nodes = $dxp->query($x);
-
-      if(!isset($tree["RB"]["SREF"]["TIDS"]))
-      $tree["RB"]["SREF"]["TIDS"] = array();
-      if ($nodes->length >= 1) {
-      if ($nodes->length == 1) {
-      // on cherche un id simple, on utilisera la syntaxe sql 'like' (l'extension repérera elle méme la syntaxe car la value finira par '%')
-      $this->addtoTIDS($tree["RB"], $bid, $nodes->item(0));
-      // $this->thesaurusDOMNodes[] = $nodes->item(0);
-      } else {
-      // on cherche plusieurs id's, on utilisera la syntaxe 'regexp' (l'extension repérera elle meme la syntaxe car la value finira par '$')
-      $val = "";
-      foreach ($nodes as $node) {
-      if(!isset($tree["CONTEXT"]))
-      $ambigus++;
-      $this->addtoTIDS($tree["RB"], $bid, $node);
-      }
-      }
-      $path = $tree["RB"]["SREF"]["PATH"];
-      $prophtml = "";
-      $this->propAsHTML($domthe->documentElement, $prophtml, $path);
-      $this->proposals["TERMS"][$path]["HTML"] = $prophtml;
-      } else {
-      // le mot n'est pas dans le thesaurus
-      }
-
-      return($ambigus);
-      }
-     */
 
     public function containsColonOperator(&$tree)
     {
-        if ( ! $tree) {
+        if (!$tree) {
             return(false);
         }
         if ($tree["CLASS"] == "OPK" && $tree["NODETYPE"] == PHRASEA_OP_COLON && ($tree["RB"]["CLASS"] == "SIMPLE" || $tree["RB"]["CLASS"] == "QSIMPLE")) {
@@ -872,7 +813,7 @@ class PhraseaEngineQueryParser
         if ($this->debug)
             printf("found node id='%s', v='%s' w='%s', k='%s', p='%s' for node-path=%s \n", $id, $DOMnode->getAttribute("v"), $w, $k, $p, $path);
 
-        if ( ! $k)
+        if (!$k)
             $k = null;
 
         $found = false;
@@ -891,11 +832,11 @@ class PhraseaEngineQueryParser
 //        }
             }
         }
-        if ( ! $found)
+        if (!$found)
             $extendednode["SREF"]["TIDS"][] = array("bid" => $bid, "pid" => $pid, "id"  => $id, "w"   => $w, "k"   => $k, "lng" => $lng, "p"   => $p);
 
         // on liste les propositions de thésaurus pour ce node (dans l'arbre simple)
-        if ( ! isset($this->proposals["BASES"]["b$bid"]["TERMS"][$path])) {
+        if (!isset($this->proposals["BASES"]["b$bid"]["TERMS"][$path])) {
             //  $this->proposals["TERMS"][$path] = array("TERM"=>implode(" ", $extendednode["VALUE"]), "PROPOSALS"=>array());
             $term = implode(" ", $extendednode["VALUE"]);
             if (isset($extendednode["CONTEXT"]) && $extendednode["CONTEXT"]) {
@@ -916,7 +857,7 @@ class PhraseaEngineQueryParser
         // puis par remonter au père
         for ($node = $DOMnode->parentNode; $node && $node->nodeType == XML_ELEMENT_NODE && $node->parentNode; $node = $node->parentNode) {
             $id = $node->getAttribute("id");
-            if ( ! $id)
+            if (!$id)
                 break; // on a dépassé la racine du thésaurus
             $node->setAttribute("marked", "1");
         }
@@ -939,7 +880,7 @@ class PhraseaEngineQueryParser
                     $txt .= $tab . "\t\"" . $w . "";
                     $txt .= $tab . "\t<span id='thamb_w_" . $ambiguites["n"] . "'></span>\"";
                     $txt .= $tab . "</span></b>\n";
-                    $ambiguites["n"] ++;
+                    $ambiguites["n"]++;
                 } else {
                     if (isset($tree["CONTEXT"]))
                         $w .= "[" . $tree["CONTEXT"] . "]";
@@ -974,7 +915,7 @@ class PhraseaEngineQueryParser
 
     public function get_ambigu(&$tree, $mouseCallback = "void", $depth = 0)
     {
-        if ( ! $tree) {
+        if (!$tree) {
             return("");
         }
 
@@ -996,22 +937,22 @@ class PhraseaEngineQueryParser
 
     public function set_default(&$tree, &$emptyw, $depth = 0)
     {
-        if ( ! $tree) {
+        if (!$tree) {
             return(true);
         }
 
         if ($tree["CLASS"] == "OPS" || $tree["CLASS"] == "OPK") {
             if ($tree["CLASS"] == "OPS") {
-                if ( ! $this->set_default($tree["LB"], $emptyw, $depth + 1)) {
+                if (!$this->set_default($tree["LB"], $emptyw, $depth + 1)) {
                     return(false);
                 }
-                if ( ! $this->set_default($tree["RB"], $emptyw, $depth + 1)) {
+                if (!$this->set_default($tree["RB"], $emptyw, $depth + 1)) {
                     return(false);
                 }
             } else { // OPK !
                 // jy 20041223 : ne pas appliquer d'op. par def. derriere un op arith.
                 // ex : "d < 1/2/2003" : grouper la liste "1","2","2004" en "mot" unique
-                if ( ! $tree["LB"] || ($tree["LB"]["CLASS"] != "SIMPLE" && $tree["LB"]["CLASS"] != "QSIMPLE") || (is_array($tree["LB"]["VALUE"]) && count($tree["LB"]["VALUE"]) != 1)) {
+                if (!$tree["LB"] || ($tree["LB"]["CLASS"] != "SIMPLE" && $tree["LB"]["CLASS"] != "QSIMPLE") || (is_array($tree["LB"]["VALUE"]) && count($tree["LB"]["VALUE"]) != 1)) {
                     // un op. arith. doit étre précédé d'un seul nom de champ
                     if ($this->errmsg != "")
                         $this->errmsg .= sprintf("\\n");
@@ -1019,7 +960,7 @@ class PhraseaEngineQueryParser
 
                     return(false);
                 }
-                if ( ! $tree["RB"] || ($tree["RB"]["CLASS"] != "SIMPLE" && $tree["RB"]["CLASS"] != "QSIMPLE")) {
+                if (!$tree["RB"] || ($tree["RB"]["CLASS"] != "SIMPLE" && $tree["RB"]["CLASS"] != "QSIMPLE")) {
                     // un op. arith. doit étre suivi d'une valeur
                     if ($this->errmsg != "")
                         $this->errmsg .= sprintf("\\n");
@@ -1038,21 +979,21 @@ class PhraseaEngineQueryParser
             /** gestion des branches null
              *   a revoir car ca ppete pas d'erreur mais corrige automatiquement
              * ** */
-            if ( ! isset($tree["RB"]))
+            if (!isset($tree["RB"]))
                 $tree = $tree["LB"];
             else
-            if ( ! isset($tree["LB"]))
+            if (!isset($tree["LB"]))
                 $tree = $tree["RB"];
         } else {
             if (($tree["CLASS"] == "SIMPLE" || $tree["CLASS"] == "QSIMPLE")) {
                 if (is_array($tree["VALUE"])) {
                     $treetmp = null;
                     $pnum = 0;
-                    for ($i = 0; $i < count($tree["VALUE"]); $i ++ ) {
+                    for ($i = 0; $i < count($tree["VALUE"]); $i++) {
                         // gestion mot vide
                         if (isset($emptyw[$tree["VALUE"][$i]]) || $tree["VALUE"][$i] == "?" || $tree["VALUE"][$i] == "*") {
                             // on a forcé les '?' ou '*' isolés comme des mots vides
-                            $pnum ++;
+                            $pnum++;
                         } else {
                             if ($treetmp == null) {
                                 $treetmp = array("CLASS"    => $tree["CLASS"],
@@ -1111,7 +1052,7 @@ class PhraseaEngineQueryParser
                 unset($tree["LB"]);
                 unset($tree["RB"]);
                 unset($tree["PNUM"]);
-                $nmodif ++;
+                $nmodif++;
             } else {
                 $nmodif += $this->factor_or2($tree["LB"], $depth + 1);
                 $nmodif += $this->factor_or2($tree["RB"], $depth + 1);
@@ -1225,7 +1166,7 @@ class PhraseaEngineQueryParser
         }
         $tmp = $onedate;
 
-        if ( ! is_array($tmp))
+        if (!is_array($tmp))
             $tmp = explode(" ", $tmp);
 
         switch (sizeof($tmp)) {
@@ -1479,7 +1420,7 @@ class PhraseaEngineQueryParser
                     if ($inquote) {
                         // quand on est entre guillements les tokens perdent leur signification
                         $tree = $this->addtotree($tree, $t, $depth, $inquote);
-                        if ( ! $tree) {
+                        if (!$tree) {
                             return(null);
                         }
                     } else {
@@ -1498,16 +1439,16 @@ class PhraseaEngineQueryParser
                     if ($inquote) {
                         // quand on est entre guillements les tokens perdent leur signification
                         $tree = $this->addtotree($tree, $t, $depth, $inquote);
-                        if ( ! $tree) {
+                        if (!$tree) {
                             return(null);
                         }
                     } else {  // '(' : appel récursif
-                        if ( ! $tree)
+                        if (!$tree)
                             $tree = $this->maketree($depth + 1);
                         else {
                             if (($tree["CLASS"] == "OPS" || $tree["CLASS"] == "OPK") && $tree["RB"] == null) {
                                 $tree["RB"] = $this->maketree($depth + 1);
-                                if ( ! $tree["RB"])
+                                if (!$tree["RB"])
                                     $tree = null;
                             } else {
                                 // ici on applique l'opérateur par défaut
@@ -1520,7 +1461,7 @@ class PhraseaEngineQueryParser
                                     "RB"       => $this->maketree($depth + 1));
                             }
                         }
-                        if ( ! $tree) {
+                        if (!$tree) {
                             return(null);
                         }
                     }
@@ -1549,12 +1490,12 @@ class PhraseaEngineQueryParser
                             print("OPENING QUOTE!<br>");
                         }
                         // ouverture des guillemets -> récursivité
-                        if ( ! $tree)
+                        if (!$tree)
                             $tree = $this->maketree($depth + 1, true);
                         else {
                             if (($tree["CLASS"] == "OPS" || $tree["CLASS"] == "OPK") && $tree["RB"] == null) {
                                 $tree["RB"] = $this->maketree($depth + 1, true);
-                                if ( ! $tree["RB"])
+                                if (!$tree["RB"])
                                     $tree = null;
                             } else {
                                 // ici on applique l'opérateur par défaut
@@ -1567,7 +1508,7 @@ class PhraseaEngineQueryParser
                                     "RB"       => $this->maketree($depth + 1, true));
                             }
                         }
-                        if ( ! $tree) {
+                        if (!$tree) {
                             return(null);
                         }
                     }
@@ -1579,7 +1520,7 @@ class PhraseaEngineQueryParser
                         var_dump($tree);
                         print("-------------------------\n");
                     }
-                    if ( ! $tree) {
+                    if (!$tree) {
                         return(null);
                     }
                     break;
@@ -1604,7 +1545,7 @@ class PhraseaEngineQueryParser
             print("-------------------------\n");
         }
 
-        if ( ! $t) {
+        if (!$t) {
             return($tree);
         }
 
@@ -1618,7 +1559,7 @@ class PhraseaEngineQueryParser
                     // un [xxx] suit un terme : il introduit un contexte
                     $tree["CONTEXT"] = $t["VALUE"];
                 } elseif ($tree["CLASS"] == "OPS" || $tree["CLASS"] == "OPK") {
-                    if ( ! isset($tree["RB"]) || ! $tree["RB"]) {
+                    if (!isset($tree["RB"]) || !$tree["RB"]) {
                         // un [xxx] peut suivre un opérateur, c'est un paramétre normalement numérique
                         $tree["PNUM"] = $t["VALUE"];
                     } else {
@@ -1645,7 +1586,7 @@ class PhraseaEngineQueryParser
                 break;
             case "TOK_CMP":
                 // < > <= >= <> = : sont des opérateurs de comparaison
-                if ( ! $tree) {
+                if (!$tree) {
                     // printf("\nUne question ne peut commencer par '" . $t["VALUE"] . "'<br>");
                     if ($this->errmsg != "")
                         $this->errmsg .= "\\n";
@@ -1665,9 +1606,9 @@ class PhraseaEngineQueryParser
                 return(array("CLASS"    => "OPK", "VALUE"    => $t["VALUE"], "NODETYPE" => $this->opk[$t["VALUE"]]["NODETYPE"], "PNUM"     => null, "DEPTH"    => $depth, "LB"       => $tree, "RB"       => null));
                 break;
             case "TOK_WORD":
-                if ($t["CLASS"] == "TOK_WORD" && isset($this->ops[$t["VALUE"]]) && ! $inquote) {
+                if ($t["CLASS"] == "TOK_WORD" && isset($this->ops[$t["VALUE"]]) && !$inquote) {
                     // ce mot est un opérateur phrasea
-                    if ( ! $tree) {
+                    if (!$tree) {
                         // printf("\n581 : Une question ne peut commencer par un opérateur<br>");
                         if ($this->errmsg != "")
                             $this->errmsg .= "\\n";
@@ -1700,7 +1641,7 @@ class PhraseaEngineQueryParser
                     // ce mot n'est pas un opérateur
                     $pnum = null;
                     $nodetype = PHRASEA_KEYLIST;
-                    if ($t["CLASS"] == "TOK_WORD" && isset($this->spw[$t["VALUE"]]) && ! $inquote) {
+                    if ($t["CLASS"] == "TOK_WORD" && isset($this->spw[$t["VALUE"]]) && !$inquote) {
                         // mais c'est un mot 'spécial' de phrasea ('last', 'all')
                         $type = $this->spw[$t["VALUE"]]["CLASS"];
                         $nodetype = $this->spw[$t["VALUE"]]["NODETYPE"];
@@ -1729,22 +1670,22 @@ class PhraseaEngineQueryParser
         $nok = 0;
         $w = $t["VALUE"];
         if ($w != "?" && $w != "*") {  // on laisse passer les 'isolés' pour les traiter plus tard comme des mots vides
-            for ($i = 0; $i < strlen($w); $i ++ ) {
+            for ($i = 0; $i < strlen($w); $i++) {
                 $c = substr($w, $i, 1);
                 if ($c == "?" || $c == "*") {
                     if ($nok < $this->app['phraseanet.registry']->get('GV_min_letters_truncation')) {
                         if ($this->errmsg != "")
                             $this->errmsg .= sprintf("\\n");
-                        $this->errmsg .= _('qparser:: Formulation incorrecte, necessite plus de caractere : ') . "<br>" . $registry->get('GV_min_letters_truncation');
+                        $this->errmsg .= _('qparser:: Formulation incorrecte, necessite plus de caractere : ') . "<br>" . $this->app['phraseanet.registry']->get('GV_min_letters_truncation');
 
                         return(null);
                     }
                     // $nok = 0;
                 } else
-                    $nok ++;
+                    $nok++;
             }
         }
-        if ( ! $tree) {
+        if (!$tree) {
             return(array("CLASS"    => $type, "NODETYPE" => $nodetype, "VALUE"    => array($t["VALUE"]), "PNUM"  => $pnum, "DEPTH" => $depth));
         }
         switch ($tree["CLASS"]) {
@@ -1929,8 +1870,8 @@ class PhraseaEngineQueryParser
                 $l = mb_strlen($this->phq, 'UTF-8');
                 $t = "";
                 $c_utf8 = "";
-                for ($i = 0; $i < $l; $i ++ ) {
-                    if ( ! $this->unicode->has_indexer_bad_char(($c_utf8 = mb_substr($this->phq, $i, 1, 'UTF-8')))) {
+                for ($i = 0; $i < $l; $i++) {
+                    if (!$this->unicode->has_indexer_bad_char(($c_utf8 = mb_substr($this->phq, $i, 1, 'UTF-8')))) {
                         //  $c = mb_strtolower($c);
                         //  $t .= isset($this->noaccent[$c]) ? $this->noaccent[$c] : $c;
                         $t .= $this->unicode->remove_diacritics(mb_strtolower($c_utf8));
