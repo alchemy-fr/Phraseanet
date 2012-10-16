@@ -185,18 +185,18 @@ class Installer implements ControllerProviderInterface
             $installer->setPhraseaIndexerPath($request->request->get('binary_phraseanet_indexer'));
 
             foreach (array(
-            'GV_cli'           => $request->request->get('binary_php'),
-            'GV_imagick'       => $request->request->get('binary_convert'),
-            'GV_pathcomposite' => $request->request->get('binary_composite'),
-            'GV_swf_extract'   => $request->request->get('binary_swfextract'),
-            'GV_pdf2swf'       => $request->request->get('binary_pdf2swf'),
-            'GV_swf_render'    => $request->request->get('binary_swfrender'),
-            'GV_unoconv'       => $request->request->get('binary_unoconv'),
-            'GV_ffmpeg'        => $request->request->get('binary_ffmpeg'),
-            'GV_mp4box'        => $request->request->get('binary_MP4Box'),
-            'GV_pdftotext'     => $request->request->get('binary_xpdf'),
+            'php_binary'           => $request->request->get('binary_php'),
+            'convert_binary'       => $request->request->get('binary_convert'),
+            'composite_binary'     => $request->request->get('binary_composite'),
+            'swf_extract_binary'   => $request->request->get('binary_swfextract'),
+            'pdf2swf_binary'       => $request->request->get('binary_pdf2swf'),
+            'swf_render_binary'    => $request->request->get('binary_swfrender'),
+            'unoconv_binary'       => $request->request->get('binary_unoconv'),
+            'ffmpeg_binary'        => $request->request->get('binary_ffmpeg'),
+            'mp4box_binary'        => $request->request->get('binary_MP4Box'),
+            'pdftotext_binary'     => $request->request->get('binary_xpdf'),
             ) as $key => $path) {
-                $installer->addRegistryData($key, $path);
+                $installer->addBinaryData($key, $path);
             }
 
             $installer->install();

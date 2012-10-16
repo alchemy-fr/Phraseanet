@@ -114,7 +114,7 @@ class Install extends Command
         $installer = new Installer($this->container, $email, $password, $abConn, $serverName, $dataPath, $dbConn, $template);
 
         foreach ($this->detectBinaries() as $name => $path) {
-            $installer->addRegistryData($name, $path);
+            $installer->addBinaryData($name, $path);
         }
 
         $installer->setPhraseaIndexerPath($indexer);
@@ -261,17 +261,17 @@ class Install extends Command
     private function detectBinaries()
     {
         return array(
-            'GV_cli'           => $this->executableFinder->find('php'),
-            'GV_imagick'       => $this->executableFinder->find('convert'),
-            'GV_pathcomposite' => $this->executableFinder->find('composite'),
-            'GV_pdf2swf'       => $this->executableFinder->find('pdf2swf'),
-            'GV_swf_extract'   => $this->executableFinder->find('swfextract'),
-            'GV_swf_render'    => $this->executableFinder->find('swfrender'),
-            'GV_unoconv'       => $this->executableFinder->find('unoconv'),
-            'GV_ffmpeg'        => $this->executableFinder->find('ffmpeg'),
-            'GV_ffmpeg'        => $this->executableFinder->find('avconv'),
-            'GV_mp4box'        => $this->executableFinder->find('MP4Box'),
-            'GV_pdftotext'     => $this->executableFinder->find('pdf2text'),
+            'php_binary'           => $this->executableFinder->find('php'),
+            'convert_binary'       => $this->executableFinder->find('convert'),
+            'composite_binary'     => $this->executableFinder->find('composite'),
+            'pdf2swf_binary'       => $this->executableFinder->find('pdf2swf'),
+            'swf_extract_binary'   => $this->executableFinder->find('swfextract'),
+            'swf_render_binary'    => $this->executableFinder->find('swfrender'),
+            'unoconv_binary'       => $this->executableFinder->find('unoconv'),
+            'ffmpeg_binary'        => $this->executableFinder->find('ffmpeg', $this->executableFinder->find('avconv')),
+            'ffprobe_binary'       => $this->executableFinder->find('ffprobe', $this->executableFinder->find('avprobe')),
+            'mp4box_binary'        => $this->executableFinder->find('MP4Box'),
+            'pdftotext_binary'     => $this->executableFinder->find('pdf2text'),
         );
     }
 }

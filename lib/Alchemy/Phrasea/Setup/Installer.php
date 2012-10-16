@@ -24,7 +24,7 @@ class Installer
     private $phraseaIndexer;
     private $serverName;
     private $dataPath;
-    private $registryData = array();
+    private $binaryData = array();
 
     public function __construct(Application $app, $email, $password, \connection_interface $abConn, $serverName, $dataPath, \connection_interface $dbConn = null, $template = null)
     {
@@ -38,9 +38,11 @@ class Installer
         $this->dataPath = $dataPath;
     }
 
-    public function addRegistryData($key, $path)
+    public function addBinaryData($key, $path)
     {
-        $this->registryData[$key] = $path;
+        if ($path) {
+            $this->binaryData[$key] = $path;
+        }
     }
 
     public function install()
@@ -73,7 +75,7 @@ class Installer
         $this->app['phraseanet.registry']->set('GV_base_datapath_noweb', $this->dataPath, \registry::TYPE_STRING);
         $this->app['phraseanet.registry']->set('GV_ServerName', $this->serverName, \registry::TYPE_STRING);
 
-        foreach ($this->registryData as $key => $value) {
+        foreach ($this->binaryData as $key => $value) {
             $this->app['phraseanet.registry']->set($key, $value, \registry::TYPE_STRING);
         }
 
@@ -94,12 +96,12 @@ class Installer
         $template = new \SplFileInfo(__DIR__ . '/../../../conf.d/data_templates/' . $this->template . '-simple.xml');
         $databox = \databox::create($this->app, $this->dbConn, $template, $this->app['phraseanet.registry']);
         $this->app['phraseanet.user']->ACL()
-                ->give_access_to_sbas(array($databox->get_sbas_id()))
-                ->update_rights_to_sbas(
-                        $databox->get_sbas_id(), array(
-                    'bas_manage'        => 1, 'bas_modify_struct' => 1,
-                    'bas_modif_th'      => 1, 'bas_chupub'        => 1
-                        )
+            ->give_access_to_sbas(array($databox->get_sbas_id()))
+            ->update_rights_to_sbas(
+                $databox->get_sbas_id(), array(
+                'bas_manage'        => 1, 'bas_modify_struct' => 1,
+                'bas_modif_th'      => 1, 'bas_chupub'        => 1
+                )
         );
 
         $collection = \collection::create($this->app, $databox, $this->app['phraseanet.appbox'], 'test', $this->app['phraseanet.user']);
@@ -111,7 +113,7 @@ class Installer
             , 'actif'           => 1, 'canreport'       => 1, 'canaddrecord'    => 1, 'canmodifrecord'  => 1
             , 'candeleterecord' => 1, 'chgstatus'       => 1, 'imgtools'        => 1, 'manage'          => 1
             , 'modify_struct'   => 1, 'nowatermark'     => 1
-                )
+            )
         );
 
         foreach (array('cindexer', 'subdef', 'writemeta') as $task) {
@@ -126,14 +128,14 @@ class Installer
                 $dbname = $credentials['dbname'];
 
                 $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n<binpath>"
-                        . str_replace('/phraseanet_indexer', '', $this->phraseaIndexer)
-                        . "</binpath><host>" . $host . "</host><port>"
-                        . $port . "</port><base>"
-                        . $dbname . "</base><user>"
-                        . $user_ab . "</user><password>"
-                        . $password . "</password><socket>25200</socket>"
-                        . "<use_sbas>1</use_sbas><nolog>0</nolog><clng></clng>"
-                        . "<winsvc_run>0</winsvc_run><charset>utf8</charset></tasksettings>";
+                    . str_replace('/phraseanet_indexer', '', $this->phraseaIndexer)
+                    . "</binpath><host>" . $host . "</host><port>"
+                    . $port . "</port><base>"
+                    . $dbname . "</base><user>"
+                    . $user_ab . "</user><password>"
+                    . $password . "</password><socket>25200</socket>"
+                    . "<use_sbas>1</use_sbas><nolog>0</nolog><clng></clng>"
+                    . "<winsvc_run>0</winsvc_run><charset>utf8</charset></tasksettings>";
             } else {
                 $settings = null;
             }
@@ -169,7 +171,7 @@ class Installer
                 $stmt->execute();
                 $stmt->closeCursor();
             } catch (\PDOException $e) {
-                
+
             }
         }
         if ($this->dbConn) {
@@ -180,7 +182,7 @@ class Installer
                     $stmt->execute();
                     $stmt->closeCursor();
                 } catch (\PDOException $e) {
-                    
+
                 }
             }
         }
@@ -229,7 +231,7 @@ class Installer
                 'driver'  => 'pdo_sqlite',
                 'path'    => '/tmp/db.sqlite',
                 'charset' => 'UTF8'
-                ));
+            ));
 
         $cacheService = "array_cache";
 
@@ -264,6 +266,6 @@ class Installer
         }
 
         $this->app['phraseanet.configuration']->setConfigurations($arrayConf);
+        $this->app['phraseanet.configuration']->setBinaries(array('binaries' => $this->binaryData));
     }
-
 }
