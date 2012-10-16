@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Setup\Version\Migration;
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\Yaml\Dumper;
 
 class Migration31 implements MigrationInterface
 {
@@ -51,6 +52,8 @@ class Migration31 implements MigrationInterface
 
         $params = $retrieve_old_credentials();
 
+        $dumper = new Dumper();
+
         $dsn = 'mysql:dbname=' . $params['dbname'] . ';host=' . $params['hostname'] . ';port=' . $params['port'] . ';';
         $connection = new \PDO($dsn, $params['user'], $params['password']);
 
@@ -71,10 +74,15 @@ class Migration31 implements MigrationInterface
             `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
             `key` char(32) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
             `value` varchar(1024) COLLATE utf8_unicode_ci NOT NULL,
-            `type` enum('string','boolean','array','integer') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'string',
+            `type` char(16) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'string',
             PRIMARY KEY (`id`),
             UNIQUE KEY `UNIQUE` (`key`)
           ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;");
+
+        // if table already existed
+        $connection->exec('
+            ALTER TABLE  `registry` CHANGE  `type`  `type` CHAR( 16 )
+            CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT  "string"');
 
         $sql = 'REPLACE INTO registry (`id`, `key`, `value`, `type`)
             VALUES (null, :key, :value, :type)';
@@ -99,7 +107,7 @@ class Migration31 implements MigrationInterface
                 $type = $datas['type'];
                 switch ($datas['type']) {
                     case \registry::TYPE_ENUM_MULTI:
-                        $val = serialize($val);
+                        $val = $dumper->dump($val, 4);
                         break;
                     case \registry::TYPE_INTEGER:
                         $val = (int) $val;

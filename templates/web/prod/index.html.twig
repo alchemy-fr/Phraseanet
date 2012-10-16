@@ -1071,10 +1071,8 @@
 
         function setCss(color) {
             $("#skinCss").attr("href","/include/minify/f=skins/prod/"+color+"/prodcolor.css");
-            $.post("prodFeedBack.php", {
-                action: "CSS",
+            $.post("/prod/preferences/css/", {
                 color: color,
-                t: Math.random()
             }, function(data){
                 return;
             });

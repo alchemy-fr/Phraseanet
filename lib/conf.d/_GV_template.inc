@@ -675,7 +675,7 @@ $GV = array(
                 'default' => true
             ),
             array(
-                'type'    => 'boolean',
+                'type'    => \registry::TYPE_BOOLEAN,
                 'name'    => 'GV_requireTOUValidationForExport',
                 'comment' => _('Users must accept Terms of Use for each export'),
                 'default' => false

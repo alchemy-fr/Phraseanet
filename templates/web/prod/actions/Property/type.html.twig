@@ -1,0 +1,78 @@
+{% import 'common/thumbnail.html.twig' as thumbnail %}
+
+{% set typesEnum = [
+        constant('\\Alchemy\\Phrasea\\Media\\Type\\Type::TYPE_AUDIO'),
+        constant('\\Alchemy\\Phrasea\\Media\\Type\\Type::TYPE_VIDEO'),
+        constant('\\Alchemy\\Phrasea\\Media\\Type\\Type::TYPE_DOCUMENT'),
+        constant('\\Alchemy\\Phrasea\\Media\\Type\\Type::TYPE_FLASH'),
+        constant('\\Alchemy\\Phrasea\\Media\\Type\\Type::TYPE_IMAGE')
+    ]
+%}
+
+<form style='padding:15px;' name="change-records-type" action="/prod/records/property/type/" method="POST">
+    <div class='well-small 'style="text-align:center;">
+        <select name='force_types' style="width:250px">
+            <option value="">{% trans 'Apply to all selected documents' %}</option>
+            {% for option in typesEnum %}
+                <option value="{{ option }}">{{ option }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <input name="lst" type="hidden" value="{{ records.serializedList() }}"/>
+    {% for sbasId,databoxTypes in recordsType %}
+        <h2 style="text-align:center;" clas="header">{{ sbasId|sbas_names(app) }}</h2>
+        {% for currentType, recordsByType in databoxTypes %}
+            <ul class="thumbnails" style="margin:20px auto;">
+                {% for record in recordsByType %}
+                    <li class="span2">
+                        <div class="thumbnail" style='min-height:205px'>
+                            {{ thumbnail.format(record.get_thumbnail(), 160, 120, '', false, false) }}
+                            <div class="caption">
+                                <h5>{{ record.get_title() }}</h5>
+                                <p>
+                                    <select name="types[{{record.get_serialize_key()}}]" style='width:100%'>
+                                        {% for option in typesEnum %}
+                                            <option value="{{ option }}" {{ record.is_grouping() ? "disabled='disabled'": "" }} {{ option == record.get_type() ? "selected='selected'" : '' }}>{{ option }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </p>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    {% endfor %}
+
+    <div class="form-actions">
+        <button type="button" class="btn btn-primary submiter">{% trans "Apply changes" %}</button>
+        <button type="button" class="btn cancel">{% trans "Cancel" %}</button>
+    </div>
+ </form>
+
+<script type="text/javascript">
+    var $dialog = p4.Dialog.get(1);
+    var $dialogBox = $dialog.getDomElement();
+
+    $("button.submiter", $dialogBox).bind("click", function(){
+        var $this = $(this);
+        var form = $(this).closest("form");
+
+        $.ajax({
+            type: form.attr("method"),
+            url: form.attr("action"),
+            data: form.serializeArray(),
+            dataType: 'json',
+            beforeSend:function(){
+                $this.attr("disabled", true);
+                //@todo add loader
+            },
+            success: function(data){
+                $dialog.Close();
+            },
+            complete: function(){
+                $this.attr("disabled", false);
+            }
+        });
+    });
+</script>

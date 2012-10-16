@@ -779,45 +779,34 @@ function evt_print(basrec){
 
 function evt_dwnl(lst)
 {
-	var dialog_box = $('#dialog_dwnl');
-
-	dialog_box = $('#dialog_dwnl');
-
-	dialog_box.empty().addClass('loading').dialog({
-		width:800,
-		height:600,
-		modal:true,
-		closeOnEscape : true,
-		resizable : false,
-    zIndex:10000,
-		overlay: {
-			backgroundColor: '#000',
-			opacity: 0.7
-		},
-		beforeclose:function(){
-			tinyMCE.execCommand('mceRemoveControl',true,'sendmail_message');
-			tinyMCE.execCommand('mceRemoveControl',true,'order_usage');
-		}
-	}).dialog('open');
-
-	if(typeof(lst) == 'undefined')
+	if(typeof(lst) == 'undefined') {
 		var datas = "&SSTTID="+$('#chutier_name')[0].options[$('#chutier_name')[0].selectedIndex].value;
-	else
+    } else {
 		var datas =	"&lst=" + lst;
+    }
 
-	$.post("/include/multiexports.php", datas, function(data) {
+    var dialog = p4.Dialog.Create({title: typeof(language) !== 'undefined' ? language['export']: ''});
 
-		dialog_box.removeClass('loading').empty().append(data);
-		$('.tabs', dialog_box).tabs();
-		tinyMCE.execCommand('mceAddControl',true,'sendmail_message');
-		tinyMCE.execCommand('mceAddControl',true,'order_usage');
+    dialog.getDomElement().bind("dialogbeforeclose", function(event, ui) {
+        tinyMCE.execCommand('mceRemoveControl',true,'sendmail_message');
+        tinyMCE.execCommand('mceRemoveControl',true,'order_usage');
+    });
 
-		$('.close_button', dialog_box).bind('click',function(){
-			dialog_box.dialog('close').dialog('destroy');
+    $.post("/prod/export/multi-export/", datas, function(data) {
+
+        dialog.setContent(data);
+
+        $('.tabs', dialog.getDomElement()).tabs();
+
+        tinyMCE.execCommand('mceAddControl',true,'sendmail_message');
+        tinyMCE.execCommand('mceAddControl',true,'order_usage');
+
+        $('.close_button', dialog.getDomElement()).bind('click',function(){
+			dialog.Close();
 		});
-		return false;
-	});
 
+        return false;
+    });
 }
 
 function profil(value)

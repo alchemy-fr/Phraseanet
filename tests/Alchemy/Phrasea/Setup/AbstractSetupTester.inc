@@ -53,6 +53,8 @@ abstract class AbstractSetupTester extends \PHPUnit_Framework_TestCase
             @unlink(__DIR__ . '/../../../../config/_GV.php');
             @unlink(__DIR__ . '/../../../../config/connexion.inc');
         };
+
+        return $app;
     }
 
     protected function goBackTo35()
@@ -72,8 +74,10 @@ abstract class AbstractSetupTester extends \PHPUnit_Framework_TestCase
             ");
 
         $this->tearDownHandlers[] = function() {
-                @unlink(__DIR__ . '/../../../../config/config.inc');
-                @unlink(__DIR__ . '/../../../../config/connexion.inc');
-            };
+            @unlink(__DIR__ . '/../../../../config/config.inc');
+            @unlink(__DIR__ . '/../../../../config/connexion.inc');
+        };
+
+        return $app;
     }
 }

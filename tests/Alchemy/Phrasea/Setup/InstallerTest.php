@@ -61,5 +61,20 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($specifications->isSetup());
         $this->assertTrue($app['phraseanet.configuration-tester']->isUpToDate());
+
+        $sql = 'SELECT `key`, value FROM registry WHERE type = :type';
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
+        $stmt->execute(array(':type' => \registry::TYPE_ENUM_MULTI));
+        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $this->assertEquals(2, count($rs));
+
+        foreach($rs as $row) {
+            $value = $parser->parse($row['value']);
+            $this->assertInternalType('array', $value);
+        }
+
+        \connection::close_connections();
     }
 }
