@@ -60,11 +60,10 @@ class CoreTest extends PhraseanetPHPUnitAbstract
     {
         $languages = \Alchemy\Phrasea\Core::getAvailableLanguages();
         $this->assertTrue(is_array($languages));
-        $this->assertEquals(5, count($languages));
-        $this->assertTrue(array_key_exists("ar_SA", $languages));
+        $this->assertEquals(4, count($languages));
+        $this->assertTrue(array_key_exists("nl_NL", $languages));
         $this->assertTrue(array_key_exists("de_DE", $languages));
         $this->assertTrue(array_key_exists("en_GB", $languages));
-        $this->assertTrue(array_key_exists("es_ES", $languages));
         $this->assertTrue(array_key_exists("fr_FR", $languages));
     }
 
