@@ -14,11 +14,9 @@ class NotificationsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testListNotifications()
     {
-        $notifications = new Notifications();
-        $request = Request::create('/user/notifications/', 'GET', array(), array(), array(), array('HTTP_X-Requested-With' => 'XMLHttpRequest'));
-        $response = $notifications->listNotifications(self::$DI['app'], $request);
+        $response = $this->XMLHTTPRequest('GET', '/user/notifications/');
         $this->assertTrue($response->isOk());
-        unset($notifications, $request, $response);
+        unset($response);
     }
 
     /**
@@ -27,10 +25,7 @@ class NotificationsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testListNotificationsNoXMLHTTPRequests()
     {
-        $notifications = new Notifications();
-        $request = Request::create('/user/notifications/', 'GET');
-        $notifications->listNotifications(self::$DI['app'], $request);
-        unset($notifications, $request);
+        self::$DI->request('GET', '/user/notifications/');
     }
 
     /**
@@ -39,10 +34,7 @@ class NotificationsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testSetNotificationsReadedNoXMLHTTPRequests()
     {
-        $notifications = new Notifications();
-        $request = Request::create('/user/notifications/read/', 'POST');
-        $notifications->listNotifications(self::$DI['app'], $request);
-        unset($notifications, $request);
+        self::$DI->request('POST', '/user/notifications/read/');
     }
 
     /**
@@ -50,17 +42,15 @@ class NotificationsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testSetNotificationsReaded()
     {
-        $notifications = new Notifications();
-        $request = Request::create('/user/notifications/read/', 'POST', array(
-                'notifications' => array()
-                ), array(), array(), array('HTTP_X-Requested-With' => 'XMLHttpRequest'));
-        $response = $notifications->setNotificationsReaded(self::$DI['app'], $request);
+        $response = $this->XMLHTTPRequest('POST', '/user/notifications/read/', array(
+            'notifications' => array()
+            ));
         $this->assertTrue($response->isOk());
         $datas = (array) json_decode($response->getContent());
         $this->assertArrayHasKey('success', $datas);
         $this->assertTrue($datas['success']);
         $this->assertArrayHasKey('message', $datas);
-        unset($notifications, $request, $response);
+        unset($response);
     }
 
     /**

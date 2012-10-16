@@ -14,9 +14,6 @@ class PreferencesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testSaveUserPref()
     {
-        $preferences = new Preferences();
-        $request = Request::create('/user/preferences/', 'POST', array('prop'  => 'prop_test', 'value' => 'val_test'), array(), array(), array('HTTP_X-Requested-With' => 'XMLHttpRequest'));
-
         self::$DI['app']['phraseanet.user'] = $this->getMockBuilder('\User_Adapter')
             ->setMethods(array('setPrefs'))
             ->disableOriginalConstructor()
@@ -27,13 +24,13 @@ class PreferencesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->with($this->equalTo('prop_test'), $this->equalTo('val_test'))
             ->will($this->returnValue(true));
 
-        $response = $preferences->saveUserPref(self::$DI['app'], $request);
+        $response = $this->XMLHTTPRequest('POST', '/user/preferences/', array('prop'  => 'prop_test', 'value' => 'val_test'));
         $this->assertTrue($response->isOk());
         $datas = (array) json_decode($response->getContent());
         $this->assertArrayHasKey('success', $datas);
         $this->assertTrue($datas['success']);
         $this->assertArrayHasKey('message', $datas);
-        unset($preferences, $request, $response, $datas);
+        unset($response, $datas);
     }
 
     /**
@@ -42,10 +39,7 @@ class PreferencesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testSaveUserPrefNoXMLHTTPRequests()
     {
-        $preferences = new Preferences();
-        $request = Request::create('/user/preferences/', 'POST', array('prop'  => 'prop_test', 'value' => 'val_test'));
-        $preferences->saveUserPref(self::$DI['app'], $request);
-        unset($preferences, $request);
+        self::$DI->request('POST', '/user/preferences/',  array('prop'  => 'prop_test', 'value' => 'val_test'));
     }
 
     /**
@@ -54,10 +48,7 @@ class PreferencesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testSaveTempPrefNoXMLHTTPRequests()
     {
-        $preferences = new Preferences();
-        $request = Request::create('/user/preferences/temporary/', 'POST', array('prop'  => 'prop_test', 'value' => 'val_test'));
-        $preferences->saveUserPref(self::$DI['app'], $request);
-        unset($preferences, $request);
+        self::$DI->request('POST', '/user/preferences/temporary/',  array('prop'  => 'prop_test', 'value' => 'val_test'));
     }
 
     /**
@@ -65,15 +56,13 @@ class PreferencesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testSaveTemporaryPref()
     {
-        $preferences = new Preferences();
-        $request = Request::create('/user/preferences/temporary/', 'POST', array('prop'  => 'prop_test', 'value' => 'val_test'), array(), array(), array('HTTP_X-Requested-With' => 'XMLHttpRequest'));
-        $response = $preferences->saveTemporaryPref(self::$DI['app'], $request);
+        $response = $this->XMLHTTPRequest('POST', "/user/preferences/temporary/", array('prop'  => 'prop_test', 'value' => 'val_test'));
         $this->assertTrue($response->isOk());
         $datas = (array) json_decode($response->getContent());
         $this->assertArrayHasKey('success', $datas);
         $this->assertTrue($datas['success']);
         $this->assertEquals('val_test', self::$DI['app']['session']->get('pref.prop_test'));
-        unset($preferences, $request, $response, $datas);
+        unset($response, $datas);
     }
 
     /**

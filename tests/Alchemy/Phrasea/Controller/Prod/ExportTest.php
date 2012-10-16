@@ -9,6 +9,7 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
     protected static $GV_activeFTP;
+
     /**
      * Delete inserted rows from FTP export
      */
@@ -38,11 +39,9 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testDisplayMultiExport()
     {
-        $export = new Export();
-        $request = Request::create('/prod/export/multi-export/', 'GET', array('lst'     => self::$DI['record_1']->get_serialize_key()));
-        $response = $export->displayMultiExport(self::$DI['app'], $request);
+        $response = self::$DI->request('GET', '/prod/export/multi-export/', array('lst' => self::$DI['record_1']->get_serialize_key()));
         $this->assertTrue($response->isOk());
-        unset($export, $request, $response);
+        unset($response);
     }
 
     /**
@@ -58,14 +57,12 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                         ->getMock();
             });
 
-        $export = new Export();
-        $request = Request::create('/prod/export/ftp/test/', 'POST', array(), array(), array(), array('HTTP_X-Requested-With' => 'XMLHttpRequest'));
-        $response = $export->testFtpConnexion(self::$DI['app'], $request);
+        $response = $this->XMLHTTPRequest('POST', '/prod/export/ftp/test/', array('lst' => self::$DI['record_1']->get_serialize_key()));
         $datas = (array) json_decode($response->getContent());
         $this->assertArrayHasKey('success', $datas);
         $this->assertTrue($datas['success']);
         $this->assertArrayHasKey('message', $datas);
-        unset($export, $request, $response, $datas);
+        unset($response, $datas);
     }
 
     /**
@@ -88,15 +85,12 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 return $ftpStub;
             });
 
-
-        $export = new Export();
-        $request = Request::create('/prod/export/ftp/test/', 'POST');
-        $response = $export->testFtpConnexion(self::$DI['app'], $request);
+        $response = self::$DI->request('POST', '/prod/export/ftp/test/', array('lst' => self::$DI['record_1']->get_serialize_key()));
         $datas = (array) json_decode($response->getContent());
         $this->assertArrayHasKey('success', $datas);
         $this->assertFalse($datas['success']);
         $this->assertArrayHasKey('message', $datas);
-        unset($export, $request, $response, $datas);
+        unset($response, $datas);
     }
 
     /**
@@ -104,15 +98,13 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testExportFtpNoDocs()
     {
-        $export = new Export();
-        $request = Request::create('/prod/export/ftp/', 'POST', array('addr'       => '', 'login'      => '', 'destfolder' => '', 'NAMMKDFOLD' => '', 'obj'        => array()));
-        $response = $export->exportFtp(self::$DI['app'], $request);
+        $response = self::$DI->request('POST', '/prod/export/ftp/',  array('addr'       => '', 'login'      => '', 'destfolder' => '', 'NAMMKDFOLD' => '', 'obj'        => array()));
         $this->assertTrue($response->isOk());
         $datas = (array) json_decode($response->getContent());
         $this->assertArrayHasKey('success', $datas);
         $this->assertArrayHasKey('message', $datas);
         $this->assertFalse($datas['success']);
-        unset($export, $request, $response, $datas);
+        unset($response, $datas);
     }
 
     /**
@@ -122,10 +114,7 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testExportFtpBadRequest($params)
     {
-        $export = new Export();
-        $request = Request::create('/prod/export/ftp/', 'POST', $params);
-        $response = $export->exportFtp(self::$DI['app'], $request);
-        unset($export, $request, $response);
+        self::$DI->request('POST', '/prod/export/ftp/', $params);
     }
 
     public function getMissingArguments()
@@ -144,8 +133,11 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testExportFtp()
     {
-        $export = new Export();
-        $request = Request::create('/prod/export/ftp/', 'POST', array(
+        self::$GV_activeFTP = self::$DI['app']['phraseanet.registry']->get('GV_activeFTP');
+        self::$DI['app']['phraseanet.registry']->set('GV_activeFTP', '1', \registry::TYPE_BOOLEAN);
+
+        //inserted rows from this function are deleted in tearDownAfterClass
+        $response = self::$DI->request('POST', '/prod/export/ftp/', array(
                 'lst'        => self::$DI['record_2']->get_serialize_key(),
                 'user_dest'  => self::$DI['user']->get_id(),
                 'addr'       => 'local.phrasea.test',
@@ -154,18 +146,12 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 'NAMMKDFOLD' => 'test2/',
                 'obj'        => array('preview')
             ));
-
-        self::$GV_activeFTP = self::$DI['app']['phraseanet.registry']->get('GV_activeFTP');
-        self::$DI['app']['phraseanet.registry']->set('GV_activeFTP', '1', \registry::TYPE_BOOLEAN);
-
-        //inserted rows from this function are deleted in tearDownAfterClass
-        $response = $export->exportFtp(self::$DI['app'], $request);
         $this->assertTrue($response->isOk());
         $datas = (array) json_decode($response->getContent());
         $this->assertArrayHasKey('success', $datas);
         $this->assertArrayHasKey('message', $datas);
         $this->assertTrue($datas['success']);
-        unset($export, $request, $response, $datas);
+        unset($response, $datas);
     }
 
     /**
