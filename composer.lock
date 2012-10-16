@@ -1,5 +1,5 @@
 {
-    "hash": "e840de1ed18fe9e614a0c2598f57cd43",
+    "hash": "4bd6154d84bfda09742947180344306c",
     "packages": [
         {
             "name": "BadFaith/BadFaith",
@@ -118,7 +118,6 @@
                 "reference": "02275fbf499c67e557af06cf362f6b6da9bbb6c8",
                 "shasum": ""
             },
-            "time": "1349828484",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -132,7 +131,8 @@
                 "api",
                 "sdk",
                 "dailymotion"
-            ]
+            ],
+            "time": "1349828484"
         },
         {
             "name": "data-uri/data-uri",
@@ -557,12 +557,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst",
-                "reference": "d3177018e88db602d940f9561d95b6e9a18a3384"
+                "reference": "c3f4cf5943fd5a08c8e4eb5d9188a5aba357e53d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/alchemy-fr/Media-Alchemyst/zipball/d3177018e88db602d940f9561d95b6e9a18a3384",
-                "reference": "d3177018e88db602d940f9561d95b6e9a18a3384",
+                "url": "https://github.com/alchemy-fr/Media-Alchemyst/zipball/c3f4cf5943fd5a08c8e4eb5d9188a5aba357e53d",
+                "reference": "c3f4cf5943fd5a08c8e4eb5d9188a5aba357e53d",
                 "shasum": ""
             },
             "require": {
@@ -582,7 +582,7 @@
                 "grom/silex-service-provider": "dev-master",
                 "phpexiftool/phpexiftool": "dev-master"
             },
-            "time": "1349697968",
+            "time": "1350326603",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -796,25 +796,25 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHP-FFmpeg",
-                "reference": "686199f87e41ed1ebe647d5c5cae91e85321faf7"
+                "reference": "8ddbc82630a37d1c2134fb4d69e2dd57459adf3b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/alchemy-fr/PHP-FFmpeg/zipball/686199f87e41ed1ebe647d5c5cae91e85321faf7",
-                "reference": "686199f87e41ed1ebe647d5c5cae91e85321faf7",
+                "url": "https://github.com/alchemy-fr/PHP-FFmpeg/zipball/8ddbc82630a37d1c2134fb4d69e2dd57459adf3b",
+                "reference": "8ddbc82630a37d1c2134fb4d69e2dd57459adf3b",
                 "shasum": ""
             },
             "require": {
-                "monolog/monolog": "1.0.*",
                 "php": ">=5.3.3",
-                "symfony/process": ">=2.0,<=2.2"
+                "symfony/process": ">=2.0,<=2.2",
+                "monolog/monolog": "1.*"
             },
             "require-dev": {
                 "fabpot/php-cs-fixer": "master",
                 "sami/sami": "dev-master",
                 "silex/silex": "dev-master"
             },
-            "time": "1349853909",
+            "time": "1349965750",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -872,7 +872,6 @@
                 "fabpot/php-cs-fixer": "dev-master",
                 "silex/silex": "dev-master"
             },
-            "time": "1349804408",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -895,7 +894,8 @@
                     "homepage": "http://www.phraseanet.com/"
                 }
             ],
-            "description": "PHP MP4Box, an Object Oriented library for easy file conversion with MP4 Box"
+            "description": "PHP MP4Box, an Object Oriented library for easy file conversion with MP4 Box",
+            "time": "1349804408"
         },
         {
             "name": "php-unoconv/php-unoconv",
@@ -920,7 +920,6 @@
                 "silex/silex": "dev-master",
                 "fabpot/php-cs-fixer": "dev-master"
             },
-            "time": "1349713000",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -943,7 +942,8 @@
                     "homepage": "http://www.phraseanet.com/"
                 }
             ],
-            "description": "Unoconv PHP, an Object Oriented library for easy file conversion with LibreOffice's unoconv"
+            "description": "Unoconv PHP, an Object Oriented library for easy file conversion with LibreOffice's unoconv",
+            "time": "1349713000"
         },
         {
             "name": "php-xpdf/php-xpdf",
@@ -969,7 +969,6 @@
                 "sami/sami": "dev-master",
                 "silex/silex": "dev-master"
             },
-            "time": "1349703734",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -996,7 +995,8 @@
             "keywords": [
                 "pdf",
                 "xpdf"
-            ]
+            ],
+            "time": "1349703734"
         },
         {
             "name": "phpexiftool/exiftool",
@@ -1139,12 +1139,12 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/fabpot/Silex.git",
-                "reference": "fc82b4255ef081dd7d464c5320ca93a902f9190f"
+                "reference": "ffb53a4979b731d08dde6c7b455a9374a9ddd804"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/fabpot/Silex/zipball/fc82b4255ef081dd7d464c5320ca93a902f9190f",
-                "reference": "fc82b4255ef081dd7d464c5320ca93a902f9190f",
+                "url": "https://github.com/fabpot/Silex/zipball/ffb53a4979b731d08dde6c7b455a9374a9ddd804",
+                "reference": "ffb53a4979b731d08dde6c7b455a9374a9ddd804",
                 "shasum": ""
             },
             "require": {
@@ -1178,6 +1178,7 @@
                 "symfony/css-selector": "2.1.*",
                 "symfony/dom-crawler": "2.1.*"
             },
+            "time": "1350048193",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1208,8 +1209,7 @@
             "homepage": "http://silex.sensiolabs.org",
             "keywords": [
                 "microframework"
-            ],
-            "time": "1349013590"
+            ]
         },
         {
             "name": "swftools/swftools",
@@ -1235,7 +1235,6 @@
                 "sami/sami": "dev-master",
                 "silex/silex": "dev-master"
             },
-            "time": "1349705213",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -1263,7 +1262,8 @@
                 "flash",
                 "swf",
                 "adobe flash"
-            ]
+            ],
+            "time": "1349705213"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -1320,12 +1320,12 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/symfony/symfony.git",
-                "reference": "85dd3c20a3b3905bae6ee7a18085d23eceaff724"
+                "reference": "defccb35161e29c99cb0b2f18b6d6e97a6a1632b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/symfony/symfony/zipball/85dd3c20a3b3905bae6ee7a18085d23eceaff724",
-                "reference": "85dd3c20a3b3905bae6ee7a18085d23eceaff724",
+                "url": "https://github.com/symfony/symfony/zipball/defccb35161e29c99cb0b2f18b6d6e97a6a1632b",
+                "reference": "defccb35161e29c99cb0b2f18b6d6e97a6a1632b",
                 "shasum": ""
             },
             "require": {
@@ -1372,9 +1372,9 @@
                 "doctrine/orm": ">=2.2.3,<2.4-dev",
                 "doctrine/data-fixtures": "1.0.*",
                 "propel/propel1": "dev-master",
-                "monolog/monolog": "dev-master"
+                "monolog/monolog": "1.*"
             },
-            "time": "1349788762",
+            "time": "1350396939",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1468,17 +1468,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Twig-extensions",
-                "reference": "f904575642b1213db69b4a98f08397e722ba1cae"
+                "reference": "dcdff02fbac1282e6b8f4d0558cc7e9580105688"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/fabpot/Twig-extensions/zipball/f904575642b1213db69b4a98f08397e722ba1cae",
-                "reference": "f904575642b1213db69b4a98f08397e722ba1cae",
+                "url": "https://github.com/fabpot/Twig-extensions/zipball/dcdff02fbac1282e6b8f4d0558cc7e9580105688",
+                "reference": "dcdff02fbac1282e6b8f4d0558cc7e9580105688",
                 "shasum": ""
             },
             "require": {
                 "twig/twig": "1.*"
             },
+            "time": "1349889206",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1506,34 +1507,33 @@
                 "debug",
                 "i18n",
                 "text"
-            ],
-            "time": "1346770278"
+            ]
         },
         {
             "name": "twig/twig",
-            "version": "v1.9.2",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "git://github.com/fabpot/Twig.git",
-                "reference": "v1.9.2"
+                "reference": "bac6bc7851c51692af1d855065e88b564e047b3b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/fabpot/Twig/zipball/v1.9.2",
-                "reference": "v1.9.2",
+                "url": "https://github.com/fabpot/Twig/zipball/bac6bc7851c51692af1d855065e88b564e047b3b",
+                "reference": "bac6bc7851c51692af1d855065e88b564e047b3b",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.2.4"
             },
-            "time": "2012-08-25 05:32:57",
+            "time": "1350391198",
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.9-dev"
+                    "dev-master": "1.10-dev"
                 }
             },
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "Twig_": "lib/"
@@ -1600,91 +1600,7 @@
             "time": "1336132669"
         }
     ],
-    "packages-dev": [
-        {
-            "name": "doctrine/data-fixtures",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/doctrine/data-fixtures.git",
-                "reference": "b29bad9738fada9486961f60542f2d2d77c7b501"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/doctrine/data-fixtures/zipball/b29bad9738fada9486961f60542f2d2d77c7b501",
-                "reference": "b29bad9738fada9486961f60542f2d2d77c7b501",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.2"
-            },
-            "type": "library",
-            "installation-source": "source",
-            "autoload": {
-                "psr-0": {
-                    "Doctrine\\Common\\DataFixtures": "lib/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jonathan Wage",
-                    "email": "jonwage@gmail.com",
-                    "homepage": "http://www.jwage.com/"
-                }
-            ],
-            "description": "Data Fixtures for all Doctrine Object Managers",
-            "homepage": "http://www.doctrine-project.org",
-            "keywords": [
-                "database"
-            ],
-            "time": "1348136794"
-        },
-        {
-            "name": "fabpot/php-cs-fixer",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/fabpot/PHP-CS-Fixer.git",
-                "reference": "24df86b1a29a9f6151e495615123308542bcfb05"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/fabpot/PHP-CS-Fixer/zipball/24df86b1a29a9f6151e495615123308542bcfb05",
-                "reference": "24df86b1a29a9f6151e495615123308542bcfb05",
-                "shasum": ""
-            },
-            "require": {
-                "symfony/console": "2.1.*",
-                "symfony/filesystem": "2.1.*",
-                "symfony/finder": "2.1.*",
-                "php": ">=5.3.3"
-            },
-            "time": "1349504510",
-            "bin": [
-                "php-cs-fixer"
-            ],
-            "type": "application",
-            "installation-source": "source",
-            "autoload": {
-                "psr-0": {
-                    "Symfony\\CS": "."
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                }
-            ],
-            "description": "A script to automatically fix Symfony Coding Standard"
-        }
-    ],
+    "packages-dev": null,
     "aliases": [
 
     ],
