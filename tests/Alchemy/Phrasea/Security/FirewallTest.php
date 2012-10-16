@@ -8,7 +8,6 @@ class FirewallTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRequiredAuth()
     {
-        $this->markTestSkipped('Introduce seg fault, to investigate');
         $response = self::$DI['app']['firewall']->requireAuthentication(self::$DI['app']);
         $this->assertNull($response);
         self::$DI['app']->closeAccount();
