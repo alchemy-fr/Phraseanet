@@ -14,7 +14,8 @@ class NotificationsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testListNotifications()
     {
-        $response = $this->XMLHTTPRequest('GET', '/user/notifications/');
+        $this->XMLHTTPRequest('GET', '/user/notifications/');
+        $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
         unset($response);
     }
@@ -42,9 +43,10 @@ class NotificationsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testSetNotificationsReaded()
     {
-        $response = $this->XMLHTTPRequest('POST', '/user/notifications/read/', array(
+        $this->XMLHTTPRequest('POST', '/user/notifications/read/', array(
             'notifications' => array()
             ));
+        $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
         $datas = (array) json_decode($response->getContent());
         $this->assertArrayHasKey('success', $datas);
