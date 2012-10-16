@@ -14,7 +14,8 @@ class PropertyTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testDisplayStatusProperty()
     {
-        $response = $this->XMLHTTPRequest('GET', '/prod/records/property/', array('lst' => implode(';', array(self::$DI['record_no_access']->get_serialize_key(), self::$DI['record_1']->get_serialize_key(), self::$DI['record_4']->get_serialize_key()))));
+        $this->XMLHTTPRequest('GET', '/prod/records/property/', array('lst' => implode(';', array(self::$DI['record_no_access']->get_serialize_key(), self::$DI['record_1']->get_serialize_key(), self::$DI['record_4']->get_serialize_key()))));
+        $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
         unset($response);
     }
@@ -33,7 +34,8 @@ class PropertyTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testDisplayTypeProperty()
     {
-        $response = $this->XMLHTTPRequest('GET', '/prod/records/property/type/',array('lst' => implode(';', array(self::$DI['record_no_access']->get_serialize_key(), self::$DI['record_1']->get_serialize_key(), self::$DI['record_4']->get_serialize_key()))));
+        $this->XMLHTTPRequest('GET', '/prod/records/property/type/',array('lst' => implode(';', array(self::$DI['record_no_access']->get_serialize_key(), self::$DI['record_1']->get_serialize_key(), self::$DI['record_4']->get_serialize_key()))));
+        $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
         unset($response);
     }
@@ -52,7 +54,7 @@ class PropertyTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testChangeStatus()
     {
-        $response =  self::$DI['client']->request('POST', '/prod/records/property/status/', array(
+        self::$DI['client']->request('POST', '/prod/records/property/status/', array(
                 'apply_to_children' => array(self::$DI['record_story_1']->get_sbas_id() => true),
                 'status'                                   => array(
                     self::$DI['record_1']->get_sbas_id() => array(6     => true, 8     => true, 11    => true)
@@ -61,6 +63,7 @@ class PropertyTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                     self::$DI['record_1']->get_serialize_key(), self::$DI['record_story_1']->get_serialize_key()
                 ))
             ));
+        $response = self::$DI['client']->getResponse();
         $datas = (array) json_decode($response->getContent());
         $this->assertArrayHasKey('success', $datas);
         $this->assertTrue($datas['success']);
@@ -95,7 +98,7 @@ class PropertyTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testChangeType()
     {
-        $response = self::$DI['client']->request('POST', '/prod/records/property/type/',  array(
+        self::$DI['client']->request('POST', '/prod/records/property/type/',  array(
                 'lst' => implode(';', array(
                     self::$DI['record_1']->get_serialize_key(), self::$DI['record_2']->get_serialize_key()
                 )),
@@ -104,6 +107,7 @@ class PropertyTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                     self::$DI['record_2']->get_serialize_key() => 'flash',
                 )
             ));
+        $response = self::$DI['client']->getResponse();
         $datas = (array) json_decode($response->getContent());
         $this->assertArrayHasKey('success', $datas);
         $this->assertTrue($datas['success']);
