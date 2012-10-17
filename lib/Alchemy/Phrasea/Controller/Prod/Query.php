@@ -276,7 +276,7 @@ class Query implements ControllerProviderInterface
             $app->abort(400, 'Search engine options are missing');
         }
 
-        if (($options = unserialize($optionsSerial)) !== false) {
+        if (false !== $options = unserialize($optionsSerial)) {
             $searchEngine = new \searchEngine_adapter($app);
             $searchEngine->set_options($options);
         } else {
@@ -287,7 +287,7 @@ class Query implements ControllerProviderInterface
         $query = $request->request->get('query', '');
 
         $record = new \record_preview($app, 'RESULT', $pos, '', '', $searchEngine, $query);
-        
+
         return $app->json(array(
                 'current' => $app['twig']->render('prod/preview/result_train.html.twig', array(
                     'records'  => $record->get_train($pos, $query, $searchEngine),
