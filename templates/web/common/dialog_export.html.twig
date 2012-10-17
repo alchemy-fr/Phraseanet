@@ -557,12 +557,16 @@
             return true;
         }
 
+        {% set TOUTitle %}
+            {% trans "Terms of Use" %}
+        {% endset %}
+
         $(document).ready(function(){
             $('a.TOUview').bind('click', function(){
                 var options = {
                   size : 'Medium',
                   closeButton: true,
-                  title :'{% trans "Terms of Use" %}'
+                  title :'{{ TOUTitle|e('js') }}'
                 };
 
                 $dialog = p4.Dialog.Create(options, 2);
