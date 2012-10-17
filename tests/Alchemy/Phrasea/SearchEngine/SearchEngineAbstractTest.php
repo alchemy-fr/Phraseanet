@@ -8,7 +8,6 @@ require_once __DIR__ . '/../../../PhraseanetPHPUnitAuthenticatedAbstract.class.i
 
 abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedAbstract
 {
-
     protected static $searchEngine;
     protected static $initialized = false;
 
@@ -36,7 +35,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
             }
         }
 
-            $this->initialize();
+        $this->initialize();
 
         if (!self::$initialized) {
             $found = false;
@@ -545,8 +544,6 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $results = self::$searchEngine->query($query_string, 0, 1);
         $fields = array();
         $foundRecord = $results->results()->first();
-
-        $this->assertInstanceOf('\record_adapter', $foundRecord);
 
         $this->assertInstanceOf('\record_adapter', $foundRecord);
 
