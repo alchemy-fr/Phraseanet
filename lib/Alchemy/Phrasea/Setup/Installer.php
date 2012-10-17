@@ -255,6 +255,8 @@ class Installer
 
         $arrayConf = $this->app['phraseanet.configuration']->getConfigurations();
 
+        $arrayConf['key'] = md5(mt_rand(100000000, 999999999));
+
         foreach ($arrayConf as $key => $value) {
             if (is_array($value) && array_key_exists('phraseanet', $value)) {
                 $arrayConf[$key]["phraseanet"]["servername"] = $serverName;

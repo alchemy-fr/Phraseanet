@@ -61,5 +61,8 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($specifications->isSetup());
         $this->assertTrue($app['phraseanet.configuration-tester']->isUpToDate());
+        $confs = $app['phraseanet.configuration']->getConfigurations();
+        $this->assertArrayHasKey('key', $confs);
+        $this->assertGreaterThan(10, strlen($confs['key']));
     }
 }
