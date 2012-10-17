@@ -9,21 +9,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Controller\Prod\Records;
+namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
-class Deletion implements ControllerProviderInterface
+class Records implements ControllerProviderInterface
 {
 
     /**
@@ -32,12 +26,10 @@ class Deletion implements ControllerProviderInterface
     public function connect(Application $app)
     {
         $controllers = $app['controllers_factory'];
+
         $controllers->before(function(Request $request) use ($app) {
-                $response = $app['firewall']->requireNotGuest();
-                if ($response instanceof Response) {
-                    return $response;
-                }
-            });
+            $app['firewall']->requireNotGuest();
+        });
 
         /**
          * Delete a record or a list of records
@@ -52,7 +44,7 @@ class Deletion implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->post('/', $this->call('deleteRecord'))
+        $controllers->post('/delete/', $this->call('doDeleteRecords'))
             ->bind('record_delete');
 
         /**
@@ -60,15 +52,15 @@ class Deletion implements ControllerProviderInterface
          *
          * name         : record_what_can_i_delete
          *
-         * description  : Save CSS preferences
+         * description  : Verify if I can delete records
          *
          * method       : POST
          *
          * parameters   : none
          *
-         * return       : JSON Response
+         * return       : HTML Response
          */
-        $controllers->get('/', $this->call('whatCanIDelete'))
+        $controllers->post('/delete/what/', $this->call('whatCanIDelete'))
             ->bind('record_what_can_i_delete');
 
         /**
@@ -97,11 +89,11 @@ class Deletion implements ControllerProviderInterface
      * @param   Request         $request
      * @return  HtmlResponse
      */
-    public function deleteRecord(Application $app, Request $request)
+    public function doDeleteRecords(Application $app, Request $request)
     {
         $records = RecordsRequest::fromRequest($app, $request, !!$app->request->get('del_children'), array(
-                'candeleterecord'
-            ));
+            'candeleterecord'
+        ));
 
         $basketElementsRepository = $app['EM']->getRepository('\Entities\BasketElement');
         $deleted = array();
@@ -137,13 +129,13 @@ class Deletion implements ControllerProviderInterface
     public function whatICanDelete(Application $app, Request $request)
     {
         $records = RecordsRequest::fromRequest($app, $request, !!$app->request->get('del_children'), array(
-                'candeleterecord'
-            ));
+            'candeleterecord'
+        ));
 
         return $app['twig']->render('prod/actions/delete_records_confirm.html.twig', array(
-                'lst'       => explode(';', $records->serializedList()),
-                'groupings' => $records->stories()->count(),
-            ));
+            'lst'       => $records->serializedList(),
+            'groupings' => $records->stories()->count(),
+        ));
     }
 
     /**

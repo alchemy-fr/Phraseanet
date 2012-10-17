@@ -18,11 +18,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Export implements ControllerProviderInterface
 {
 
@@ -113,7 +108,12 @@ class Export implements ControllerProviderInterface
      */
     public function displayMultiExport(Application $app, Request $request)
     {
-        $download = new \set_export($app, $request->request->get('lst', ''), (int) $request->request->get('ssel'), $request->request->get('story'));
+        $download = new \set_export(
+            $app,
+            $request->request->get('lst', ''),
+            $request->request->get('ssel', ''),
+            $request->request->get('story')
+        );
 
         return new Response($app['twig']->render('common/dialog_export.html.twig', array(
             'download'             => $download,
@@ -165,44 +165,62 @@ class Export implements ControllerProviderInterface
         $download = new \set_exportftp($app, $request->request->get('lst'), $request->request->get('ssttid'));
 
         if (null === $address = $request->request->get('addr')) {
-            $app->abort(400, _('Missing ftp address'));
+            $app->abort(400, _('addr parameter is missing'));
         }
 
         if (null === $login = $request->request->get('login')) {
-            $app->abort(400, _('Missing ftp lofin'));
+            $app->abort(400, _('login parameter is missing'));
         }
 
         if (null === $destFolder = $request->request->get('destfolder')) {
-            $app->abort(400, _('Missing destination folder'));
+            $app->abort(400, _('destfolder parameter is missing'));
         }
 
         if (null === $folderTocreate = $request->request->get('NAMMKDFOLD')) {
-            $app->abort(400, _('Missing folder to create'));
+            $app->abort(400, _('NAMMKDFOLD parameter is missing'));
         }
 
         if (null === $subdefs = $request->request->get('obj')) {
-            $app->abort(400, _('Missing subdefs to export'));
+            $app->abort(400, _('obj parameter is missing'));
         }
 
         if (count($download->get_display_ftp()) == 0) {
 
-            return $app->json(array('success' => false, 'message' => _('Documents can be sent by FTP')));
-        } else {
-            try {
-                $download->prepare_export($app['phraseanet.user'], $app['filesystem'], $request->request->get('obj'), false, $request->request->get('businessfields'));
-                $download->export_ftp($request->request->get('user_dest'), $address, $login, $request->request->get('pwd', ''), $request->request->get('ssl'), $request->request->get('nbretry'), $request->request->get('passif'), $destFolder, $folderTocreate, $request->request->get('logfile'));
+            return $app->json(array('success' => false, 'message' => _("You do not have required rights to send these documents over FTP")));
+        }
 
-                return $app->json(array(
-                    'success' => true,
-                    'message' => _('Export saved in the waiting queue')
-                ));
-            } catch (\Exception $e) {
+        try {
+            $download->prepare_export(
+                $app['phraseanet.user'],
+                $app['filesystem'],
+                $request->request->get('obj'),
+                false,
+                $request->request->get('businessfields')
+            );
 
-                return $app->json(array(
-                    'success' => false,
-                    'message' => _('Something went wrong')
-                ));
-            }
+            $download->export_ftp(
+                $request->request->get('user_dest'),
+                $address,
+                $login,
+                $request->request->get('pwd', ''),
+                $request->request->get('ssl'),
+                $request->request->get('nbretry'),
+                $request->request->get('passif'),
+                $destFolder,
+                $folderTocreate,
+                $request->request->get('logfile')
+            );
+
+            return $app->json(array(
+                'success' => true,
+                'message' => _('Export saved in the waiting queue')
+            ));
+        } catch (\Exception $e) {
+
+            return $app->json(array(
+                'success' => false,
+                'message' => _('Something went wrong')
+            ));
         }
     }
 
@@ -224,7 +242,14 @@ class Export implements ControllerProviderInterface
 
         //prepare export
         $download = new \set_export($app, $lst, $ssttid);
-        $list = $download->prepare_export($app['phraseanet.user'], $app['filesystem'], $request->request->get('obj'), $request->request->get("type") == "title" ? : false, $request->request->get('businessfields'));
+        $list = $download->prepare_export(
+            $app['phraseanet.user'],
+            $app['filesystem'],
+            $request->request->get('obj'),
+            $request->request->get("type") == "title" ? : false,
+            $request->request->get('businessfields')
+        );
+
         $list['export_name'] = sprintf("%s.zip", $download->getExportName());
         $list['email'] = $request->request->get("destmail", "");
 
@@ -250,7 +275,12 @@ class Export implements ControllerProviderInterface
 
         if (count($destMails) > 0 && $token) {
             //zip documents
-            \set_export::build_zip(new Filesystem(), $token, $list, $app['phraseanet.registry']->get('GV_RootPath') . 'tmp/download/' . $token . '.zip');
+            \set_export::build_zip(
+                new Filesystem(),
+                $token,
+                $list,
+                $app['phraseanet.registry']->get('GV_RootPath') . 'tmp/download/' . $token . '.zip'
+            );
 
             $remaingEmails = $destMails;
 
@@ -263,7 +293,16 @@ class Export implements ControllerProviderInterface
 
             //send mails
             foreach ($destMails as $key => $mail) {
-                if (\mail::send_documents($app, trim($mail), $url, $from, $endDateObject, $request->request->get('textmail'), $request->request->get('reading_confirm') == '1' ? : false)) {
+                if (\mail::send_documents(
+                        $app,
+                        trim($mail),
+                        $url,
+                        $from,
+                        $endDateObject,
+                        $request->request->get('textmail'),
+                        $request->request->get('reading_confirm') == '1' ? : false
+                    )
+                ) {
                     unset($remaingEmails[$key]);
                 }
             }

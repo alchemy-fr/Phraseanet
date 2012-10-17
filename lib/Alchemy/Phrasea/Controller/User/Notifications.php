@@ -16,11 +16,6 @@ use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Notifications implements ControllerProviderInterface
 {
 
@@ -30,10 +25,10 @@ class Notifications implements ControllerProviderInterface
     public function connect(Application $app)
     {
         $controllers = $app['controllers_factory'];
+
         $controllers->before(function(Request $request) use ($app) {
             $app['firewall']->requireNotGuest();
         });
-
 
         /**
          * Read all notifications
@@ -64,7 +59,7 @@ class Notifications implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->post('/read/', $this->call('setNotificationsReaded'))
+        $controllers->post('/read/', $this->call('readNotifications'))
             ->bind('set_notifications_readed');
 
         return $controllers;
@@ -77,14 +72,17 @@ class Notifications implements ControllerProviderInterface
      * @param   Request         $request
      * @return  JsonResponse
      */
-    public function setNotificationsReaded(Application $app, Request $request)
+    public function readNotifications(Application $app, Request $request)
     {
         if (!$request->isXmlHttpRequest()) {
             $app->abort(400);
         }
 
         try {
-            $app['events-manager']->read(explode('_', (string) $request->request->get('notifications')), $app['phraseanet.user']->get_id());
+            $app['events-manager']->read(
+                explode('_', (string) $request->request->get('notifications')),
+                $app['phraseanet.user']->get_id()
+            );
 
             return $app->json(array('success' => true, 'message' => ''));
         } catch (\Exception $e) {

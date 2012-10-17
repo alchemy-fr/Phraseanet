@@ -61,7 +61,7 @@ define('GV_smtp_port', '');
 define('GV_smtp_secure', false);
 define('GV_smtp_user', '');
 define('GV_smtp_password', '');
-define('GV_activeFTP', false);
+define('GV_activeFTP', true);
 define('GV_ftp_for_user', false);
 define('GV_download_max', '120');
 define('GV_ong_search', '1');

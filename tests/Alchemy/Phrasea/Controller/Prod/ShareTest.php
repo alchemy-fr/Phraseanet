@@ -90,6 +90,10 @@ class ShareTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             ->method('ACL')
             ->will($this->returnValue($stubbedACL));
 
-        $share->shareRecord(self::$DI['app'], $this->getMock('Symfony\Component\HttpFoundation\Request'), self::$DI['record_1']->get_base_id(), self::$DI['record_1']->get_record_id());
+        $share->shareRecord(
+            self::$DI['app'],
+            $this->getMock('Symfony\Component\HttpFoundation\Request'),
+            self::$DI['record_1']->get_base_id(), self::$DI['record_1']->get_record_id()
+        );
     }
 }

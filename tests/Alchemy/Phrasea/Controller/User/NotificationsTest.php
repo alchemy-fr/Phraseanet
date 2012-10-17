@@ -44,13 +44,13 @@ class NotificationsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testSetNotificationsReaded()
     {
         $this->XMLHTTPRequest('POST', '/user/notifications/read/', array(
-            'notifications' => array()
-            ));
+            'notifications' => ''
+        ));
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
         $datas = (array) json_decode($response->getContent());
         $this->assertArrayHasKey('success', $datas);
-        $this->assertTrue($datas['success']);
+        $this->assertTrue($datas['success'], $response->getContent());
         $this->assertArrayHasKey('message', $datas);
         unset($response);
     }

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Controller\Prod\Record;
+namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Silex\Application;
@@ -18,11 +18,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class Property implements ControllerProviderInterface
 {
 
@@ -122,35 +117,31 @@ class Property implements ControllerProviderInterface
         $statusBit = $nRec = array();
 
         foreach ($records as $record) {
+            //perform logic
+            $sbasId = $record->get_databox()->get_sbas_id();
 
-            if ($this->isEligible($app, $record)) {
-                //perform logic
-                $sbasId = $record->get_databox()->get_sbas_id();
+            if (!isset($nRec[$sbasId])) {
+                $nRec[$sbasId] = array('stories' => 0, 'records' => 0);
+            }
 
-                if (!isset($nRec[$sbasId])) {
-                    $nRec[$sbasId] = array('stories' => 0, 'records' => 0);
-                }
+            $nRec[$sbasId]['records']++;
 
-                $nRec[$sbasId]['records']++;
+            if ($record->is_grouping()) {
+                $nRec[$sbasId]['stories']++;
+            }
 
-                if ($record->is_grouping()) {
-                    $nRec[$sbasId]['stories']++;
-                }
-
-                if (!isset($statusBit[$sbasId])) {
-
-                    $statusBit[$sbasId] = isset($databoxStatus[$sbasId]) ? $databoxStatus[$sbasId] : array();
-
-                    foreach (array_keys($statusBit[$sbasId]) as $bit) {
-                        $statusBit[$sbasId][$bit]['nset'] = 0;
-                    }
-                }
-
-                $status = strrev($record->get_status());
+            if (!isset($statusBit[$sbasId])) {
+                $statusBit[$sbasId] = isset($databoxStatus[$sbasId]) ? $databoxStatus[$sbasId] : array();
 
                 foreach (array_keys($statusBit[$sbasId]) as $bit) {
-                    $statusBit[$sbasId][$bit]["nset"] += substr($status, $bit, 1) !== "0" ? 1 : 0;
+                    $statusBit[$sbasId][$bit]['nset'] = 0;
                 }
+            }
+
+            $status = strrev($record->get_status());
+
+            foreach (array_keys($statusBit[$sbasId]) as $bit) {
+                $statusBit[$sbasId][$bit]["nset"] += substr($status, $bit, 1) !== "0" ? 1 : 0;
             }
         }
 
@@ -186,21 +177,18 @@ class Property implements ControllerProviderInterface
         $recordsType = array();
 
         foreach ($records as $record) {
+            //perform logic
+            $sbasId = $record->get_databox()->get_sbas_id();
 
-            if ($this->isEligible($app, $record)) {
-                //perform logic
-                $sbasId = $record->get_databox()->get_sbas_id();
-
-                if (!isset($recordsType[$sbasId])) {
-                    $recordsType[$sbasId] = array();
-                }
-
-                if (!isset($recordsType[$sbasId][$record->get_type()])) {
-                    $recordsType[$sbasId][$record->get_type()] = array();
-                }
-
-                $recordsType[$sbasId][$record->get_type()][] = $record;
+            if (!isset($recordsType[$sbasId])) {
+                $recordsType[$sbasId] = array();
             }
+
+            if (!isset($recordsType[$sbasId][$record->get_type()])) {
+                $recordsType[$sbasId][$record->get_type()] = array();
+            }
+
+            $recordsType[$sbasId][$record->get_type()][] = $record;
         }
 
         return new Response($app['twig']->render('prod/actions/Property/type.html.twig', array(
@@ -303,38 +291,6 @@ class Property implements ControllerProviderInterface
         }
 
         return null;
-    }
-
-    /**
-     *
-     * @param   Application     $app
-     * @param   record_adapter  $record
-     * @return  boolean
-     */
-    private function isEligible(Application $app, \record_adapter $record)
-    {
-        $eligible = false;
-
-        if (!$app['phraseanet.user']->ACL()->has_hd_grant($record) ||
-            !$app['phraseanet.user']->ACL()->has_preview_grant($record)) {
-            try {
-                $stmt = $record->get_databox()->get_connection()->prepare(sprintf('SELECT record_id FROM record WHERE ((status ^ %s) & %s) = 0 AND record_id = :record_id', $app['phraseanet.user']->ACL()->get_mask_xor($record->get_base_id()), $app['phraseanet.user']->ACL()->get_mask_and($record->get_base_id())));
-                $stmt->execute(array(':record_id' => $record->get_record_id()));
-
-                if ($stmt->rowCount() > 0) {
-                    $eligible = true;
-                }
-
-                $stmt->closeCursor();
-                unset($stmt);
-            } catch (\Exception $e) {
-
-            }
-        } else {
-            $eligible = true;
-        }
-
-        return $eligible;
     }
 
     /**

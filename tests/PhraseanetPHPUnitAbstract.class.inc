@@ -23,7 +23,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      *
      * @var \Pimple
      */
-    protected static $DI;
+    public static $DI;
     protected static $testsTime = array();
     protected static $records;
     public static $recordsInitialized = false;
@@ -139,6 +139,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         self::$DI['client'] = self::$DI->share(function($DI) {
             return new Client($DI['app'], array());
         });
+
     }
 
     public function tearDown()
@@ -158,11 +159,15 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
         parent::tearDown();
 
-        $duration = (microtime(true) - $this->start);
+//        $duration = (microtime(true) - $this->start);
 //        if ($duration > 0.75) {
 //            echo "test in " . get_class($this) . " last " . $duration . "\n";
 //        }
         $this->start = null;
+
+        //In case some executed script modify 'max_execution_time' ini var
+        //Initialize set_time_limit(0) which is the default value for PHP CLI
+        set_time_limit(0);
     }
 
     /**

@@ -25,6 +25,7 @@ class Preferences implements ControllerProviderInterface
     public function connect(Application $app)
     {
         $controllers = $app['controllers_factory'];
+
         $controllers->before(function(Request $request) use ($app) {
             $app['firewall']->requireAuthentication();
         });
@@ -83,7 +84,7 @@ class Preferences implements ControllerProviderInterface
         $msg = _('Error while saving preference');
 
         if ($prop && $value) {
-            $app['session']->set('pref.' . $prop, $value);
+            $app['session']->set('phraseanet.' . $prop, $value);
             $success = true;
             $msg = _('Preference saved !');
         }

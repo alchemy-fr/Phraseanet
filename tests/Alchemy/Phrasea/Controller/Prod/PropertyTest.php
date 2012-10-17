@@ -1,16 +1,13 @@
 <?php
 
-require_once __DIR__ . '/../../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
-
-use Alchemy\Phrasea\Controller\Prod\Record\Property;
-use Symfony\Component\HttpFoundation\Request;
+require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 class PropertyTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
 
     /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Record\Property::displayStatusProperty
+     * @covers Alchemy\Phrasea\Controller\Prod\Property::displayStatusProperty
      */
     public function testDisplayStatusProperty()
     {
@@ -22,7 +19,7 @@ class PropertyTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     /**
      * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
-     * @covers Alchemy\Phrasea\Controller\Prod\Record\Property::displayStatusProperty
+     * @covers Alchemy\Phrasea\Controller\Prod\Property::displayStatusProperty
      */
     public function testDisplayStatusPropertyNotXMLHTTPRequets()
     {
@@ -30,7 +27,7 @@ class PropertyTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Record\Property::displayTypeProperty
+     * @covers Alchemy\Phrasea\Controller\Prod\Property::displayTypeProperty
      */
     public function testDisplayTypeProperty()
     {
@@ -42,7 +39,7 @@ class PropertyTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     /**
      * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
-     * @covers Alchemy\Phrasea\Controller\Prod\Record\Property::displayProperty
+     * @covers Alchemy\Phrasea\Controller\Prod\Property::displayProperty
      */
     public function testDisplayTypePropertyNotXMLHTTPRequets()
     {
@@ -50,19 +47,19 @@ class PropertyTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Record\Property::changeStatus
+     * @covers Alchemy\Phrasea\Controller\Prod\Property::changeStatus
      */
     public function testChangeStatus()
     {
         self::$DI['client']->request('POST', '/prod/records/property/status/', array(
-                'apply_to_children' => array(self::$DI['record_story_1']->get_sbas_id() => true),
-                'status'                                   => array(
-                    self::$DI['record_1']->get_sbas_id() => array(6     => true, 8     => true, 11    => true)
-                ),
-                'lst' => implode(';', array(
-                    self::$DI['record_1']->get_serialize_key(), self::$DI['record_story_1']->get_serialize_key()
-                ))
-            ));
+            'apply_to_children' => array(self::$DI['record_story_1']->get_sbas_id() => true),
+            'status'                                   => array(
+                self::$DI['record_1']->get_sbas_id() => array(6     => true, 8     => true, 11    => true)
+            ),
+            'lst' => implode(';', array(
+                self::$DI['record_1']->get_serialize_key(), self::$DI['record_story_1']->get_serialize_key()
+            ))
+        ));
         $response = self::$DI['client']->getResponse();
         $datas = (array) json_decode($response->getContent());
         $this->assertArrayHasKey('success', $datas);
@@ -94,19 +91,19 @@ class PropertyTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Record\Property::changeType
+     * @covers Alchemy\Phrasea\Controller\Prod\Property::changeType
      */
     public function testChangeType()
     {
         self::$DI['client']->request('POST', '/prod/records/property/type/',  array(
-                'lst' => implode(';', array(
-                    self::$DI['record_1']->get_serialize_key(), self::$DI['record_2']->get_serialize_key()
-                )),
-                'types' => array(
-                    self::$DI['record_1']->get_serialize_key() => 'document',
-                    self::$DI['record_2']->get_serialize_key() => 'flash',
-                )
-            ));
+            'lst' => implode(';', array(
+                self::$DI['record_1']->get_serialize_key(), self::$DI['record_2']->get_serialize_key()
+            )),
+            'types' => array(
+                self::$DI['record_1']->get_serialize_key() => 'document',
+                self::$DI['record_2']->get_serialize_key() => 'flash',
+            )
+        ));
         $response = self::$DI['client']->getResponse();
         $datas = (array) json_decode($response->getContent());
         $this->assertArrayHasKey('success', $datas);
