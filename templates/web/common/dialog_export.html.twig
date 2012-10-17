@@ -112,8 +112,10 @@
                         {% for name, values in download.get_display_download() %}
                             {% if values.available > 0 %}
                                 <div class="well-small">
-                                    <label for="sendmail_{{name}}" class="checkbox">
-                                        <input class="{{values.class}}" type="checkbox" id="sendmail_{{name}}" name="obj[]" value="{{name}}" />
+                                    <label for="download_{{name}}" class="checkbox">
+                                        <input class="{{values.class}}" type="checkbox" id="download_{{name}}" name="obj[]" value="{{name}}" />
+                                        <input type="hidden" name="download_{{name}}" value="{{values.size}}" />
+                                        <input type="hidden" name="count_{{name}}" value="{{values.available}}" />
                                         {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size | formatOctets}})
                                         {% if values.refused|length > 0 %}
                                             {% set title%}
@@ -124,7 +126,7 @@
                                     </label>
                                     {% if values.refused|length > 0 %}
                                         <div style="display:none;" class="well-small undisposable">
-                                            <div><i>{% trans 'La sous resolution n\'est pas disponible pour les documents suivants' %}</i></div>
+                                            <div>{% trans 'Les documents ne peuvent pas etre exportes' %}</div>
                                             {% for datas in values.refused%}
                                                 {{ thumbnail.format(datas, 80, 80,'', true, false) }}
                                             {% endfor %}
@@ -133,27 +135,31 @@
                                 </div>
                             {% endif %}
                         {% endfor %}
-                    </div>
-                    {% if download.has_business_fields_access() %}
-                        <div class="businessfields well-small" style="margin-left:20px;display:none;">
-                            <label for="business_sendmail" class="checkbox">
-                                <input type="checkbox" name="businessfields" id="business_sendmail" value="1"  />
-                                {% trans 'Include Business-fields in caption' %}
-                            </label>
-                        </div>
-                    {% endif %}
-                    {{ _self.choose_title('sendmail', choose_export_title, default_export_title) }}
+                        {% if download.has_business_fields_access() %}
+                            <div class="businessfields well-small" style="margin-left:20px;display:none;">
+                                <label for="business_download" class="checkbox">
+                                    <input type="checkbox" name="businessfields" id="business_download" value="1"  />
+                                    {% trans 'Include Business-fields in caption' %}
+                                </label>
+                            </div>
+                        {% endif %}
+                        {{ _self.choose_title('download', choose_export_title, default_export_title) }}
 
-                    {% if app['phraseanet.registry'].get('GV_requireTOUValidationForExport') == true %}
-                        <div class="well-small">
-                            <label for="TOU_acceptMail" class="checkbox">
-                                <input type="checkbox" name="TOU_accept" id="TOU_acceptMail" value="1"  />
-                                {% set beginning_link = '<a href="/prod/TOU/" class="TOUview">' %}
-                                {% set end_link = '</a>' %}
-                                {% trans %}
-                                    By checking this box, you accept {{ beginning_link }} Terms of Use {{ end_link }}
-                                {% endtrans %}
-                            </label>
+                        {% if app['phraseanet.registry'].get('GV_requireTOUValidationForExport') == true %}
+                            <div class="well-small">
+                                <label for="TOU_acceptDL" class="checkbox">
+                                    <input type="checkbox" name="TOU_accept" id="TOU_acceptDL" value="1"  />
+                                    {% set beginning_link = '<a href="/prod/TOU/" class="TOUview">' %}
+                                    {% set end_link = '</a>' %}
+                                    {% trans %}
+                                        By checking this box, you accept {{ beginning_link }} Terms of Use {{ end_link }}
+                                    {% endtrans %}
+                                </label>
+                            </div>
+                        {% endif %}
+                        <div class="buttons_line">
+                            <button type="button" class="download_button btn btn-inverse">{% trans 'boutton::telecharger'%}</button>
+                            <button type="button" class="close_button btn btn-inverse">{% trans 'boutton::annuler'%}</button>
                         </div>
                     </form>
                 </div>
@@ -189,7 +195,7 @@
                             <p>{% trans 'export::mail: fichiers joint' %}</p>
                             {% for name, values in download.get_display_download() %}
                                 {% if values.available > 0 %}
-                                    <div style="margin: 10px 0 20px 0; padding: 0 10px;">
+                                    <div class="well-small">
                                         <label for="sendmail_{{name}}" class="checkbox">
                                             <input class="{{values.class}}" type="checkbox" id="sendmail_{{name}}" name="obj[]" value="{{name}}" />
                                             {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size | formatOctets}})
@@ -201,7 +207,7 @@
                                             {% endif %}
                                         </label>
                                         {% if values.refused|length > 0 %}
-                                            <div style="display:none;" class="undisposable">
+                                            <div style="display:none;" class="well-small undisposable">
                                                 <div><i>{% trans 'La sous resolution n\'est pas disponible pour les documents suivants' %}</i></div>
                                                 {% for datas in values.refused%}
                                                     {{ thumbnail.format(datas, 80, 80,'', true, false) }}
@@ -213,26 +219,25 @@
                             {% endfor %}
                         </div>
                         {% if download.has_business_fields_access() %}
-                            <div class="businessfields" style="margin-left:20px;display:none;">
+                            <div class="businessfields well-small" style="margin-left:20px;display:none;">
                                 <label for="business_sendmail" class="checkbox">
                                     <input type="checkbox" name="businessfields" id="business_sendmail" value="1"  />
                                     {% trans 'Include Business-fields in caption' %}
                                 </label>
                             </div>
                         {% endif %}
-                        {% set title%}
-                            {% trans 'Documents indisponibles' %}
-                        {% endset %}
-                        {% if values.refused|length > 0 %}
-                            {% set title%}
-                                {% trans 'Documents indisponibles' %}
-                            {% endset %}
-                            <a href="#" class="undisposable_link" title="{{title|trim}}"> + </a>
-                            <div style="display:none;" class="well-small undisposable">
-                                <div><i>{% trans 'La sous resolution n\'est pas disponible pour les documents suivants' %}</i></div>
-                                {% for datas in values.refused%}
-                                    {{ thumbnail.format(datas, 80, 80,'', true, false) }}
-                                {% endfor %}
+                        {{ _self.choose_title('sendmail', choose_export_title, default_export_title) }}
+
+                        {% if app['phraseanet.registry'].get('GV_requireTOUValidationForExport') == true %}
+                            <div class="well-small">
+                                <label for="TOU_acceptMail" class="checkbox">
+                                    <input type="checkbox" name="TOU_accept" id="TOU_acceptMail" value="1"  />
+                                    {% set beginning_link = '<a href="/prod/TOU/" class="TOUview">' %}
+                                    {% set end_link = '</a>' %}
+                                    {% trans %}
+                                        By checking this box, you accept {{ beginning_link }} Terms of Use {{ end_link }}
+                                    {% endtrans %}
+                                </label>
                             </div>
                         {% endif %}
                         <div class="buttons_line">
@@ -261,7 +266,7 @@
                                     {% trans 'Documents indisponibles' %}
                                 {% endset %}
                                 <a href="#" class="undisposable_link" title="{{title|trim}}"> + </a>
-                                <div style="display:none;" class="undisposable">
+                                <div style="display:none;" class="well-small undisposable">
                                     <div><i>{% trans 'La sous resolution n\'est pas disponible pour les documents suivants' %}</i></div>
                                     {% for datas in values.refused%}
                                         {{ thumbnail.format(datas, 80, 80,'', true, false) }}
@@ -370,46 +375,11 @@
                             <input type="text" id="usr_fax" name="fax" value="{{ app['phraseanet.user'].get_fax() }}"/>
                         </div>
                     </div>
-                    <div>
-                        <p>{% trans 'export::mail: fichiers joint' %}</p>
-                        {% for name, values in download.get_display_ftp() %}
-                            {% if values.available > 0 %}
-                                <div class="well-small">
-                                    <label for="ftp_{{name}}" class="checkbox">
-                                        <input class="{{values.class}}" type="checkbox" id="ftp_{{name}}" name="obj[]" value="{{name}}" />
-                                        {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size | formatOctets}}))
-                                        {% if values.refused|length > 0 %}
-                                            {% set title%}
-                                                {% trans 'Documents indisponibles' %}
-                                            {% endset %}
-                                            <a href="#" class="undisposable_link" title="{{title|trim}}"> + </a>
-                                        {% endif %}
-                                    </label>
-                                    {% if values.refused|length > 0 %}
-                                        <div style="display:none;" class="well-small undisposable">
-                                            <div><i>{% trans 'La sous resolution n\'est pas disponible pour les documents suivants' %}</i></div>
-                                            {% for datas in values.refused%}
-                                                {{ thumbnail.format(datas, 80, 80,'', true, false) }}
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                    {% if download.has_business_fields_access() %}
-                        <div class="businessfields well-small" style="margin-left:20px;display:none;">
-                            <label for="business_ftp" class="checkbox">
-                                <input type="checkbox" name="businessfields" id="business_ftp" value="1"  />
-                                {% trans 'Include Business-fields in caption' %}
-                            </label>
-                        </div>
-                    {% endif %}
 
                     {% if app['phraseanet.registry'].get('GV_requireTOUValidationForExport') == true %}
                         <div class="well-small">
-                            <label for="TOU_acceptFTP" class="checkbox">
-                                <input type="checkbox" name="TOU_accept" id="TOU_acceptFTP" value="1"  />
+                            <label for="TOU_acceptOrder" class="checkbox">
+                                <input type="checkbox" name="TOU_accept" id="TOU_acceptOrder" value="1"  />
                                 {% set beginning_link = '<a href="/prod/TOU/" class="TOUview">' %}
                                 {% set end_link = '</a>' %}
                                 {% trans %}
@@ -457,7 +427,7 @@
                             <p>{% trans 'export::mail: fichiers joint' %}</p>
                             {% for name, values in download.get_display_ftp() %}
                                 {% if values.available > 0 %}
-                                    <div style="margin: 10px 0 20px 0; padding: 0 10px;">
+                                    <div class="well-small">
                                         <label for="ftp_{{name}}" class="checkbox">
                                             <input class="{{values.class}}" type="checkbox" id="ftp_{{name}}" name="obj[]" value="{{name}}" />
                                             {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size | formatOctets}}))
@@ -469,7 +439,7 @@
                                             {% endif %}
                                         </label>
                                         {% if values.refused|length > 0 %}
-                                            <div style="display:none;" class="undisposable">
+                                            <div style="display:none;" class="well-small undisposable">
                                                 <div><i>{% trans 'La sous resolution n\'est pas disponible pour les documents suivants' %}</i></div>
                                                 {% for datas in values.refused%}
                                                     {{ thumbnail.format(datas, 80, 80,'', true, false) }}
@@ -490,7 +460,7 @@
                         {% endif %}
 
                         {% if app['phraseanet.registry'].get('GV_requireTOUValidationForExport') == true %}
-                            <div style="margin:0 20px;">
+                            <div class="well-small">
                                 <label for="TOU_acceptFTP" class="checkbox">
                                     <input type="checkbox" name="TOU_accept" id="TOU_acceptFTP" value="1"  />
                                     {% set beginning_link = '<a href="/prod/TOU/" class="TOUview">' %}
