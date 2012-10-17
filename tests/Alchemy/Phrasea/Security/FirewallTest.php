@@ -8,11 +8,16 @@ class FirewallTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRequiredAuth()
     {
-        $response = self::$DI['app']['firewall']->requireAuthentication(self::$DI['app']);
-        $this->assertNull($response);
+        $res = self::$DI['app']['firewall']->requireAuthentication(self::$DI['app']);
+        $this->assertInstanceOf('\\Alchemy\\Phrasea\\Security\\Firewall', $res);
+    }
+
+    /**
+     * @expectedException Symfony\Component\HttpKernel\Exception\HttpException
+     */
+    public function testRequiredAuthNotAuthenticated()
+    {
         self::$DI['app']->closeAccount();
-        $response = self::$DI['app']['firewall']->requireAuthentication(self::$DI['app']);
-        $this->assertTrue($response->isRedirect());
-        $this->assertEquals('/login/', $response->headers->get('location'));
+        self::$DI['app']['firewall']->requireAuthentication(self::$DI['app']);
     }
 }
