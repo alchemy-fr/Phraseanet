@@ -60,7 +60,7 @@ class patch_373 implements patchInterface
     public function apply(base $appbox, Application $app)
     {
         $sql = 'SELECT * FROM registry WHERE `key` = :key';
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
 
         $Regbinaries = array(
             'GV_cli',
@@ -90,6 +90,8 @@ class patch_373 implements patchInterface
             'GV_pdftotext'     => 'pdftotext_binary',
         );
 
+        $binaries = array();
+
         foreach ($Regbinaries as $name) {
             $stmt->execute(array(':key' => $name));
             $row = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -103,7 +105,7 @@ class patch_373 implements patchInterface
         $app['phraseanet.configuration']->setBinaries(array('binaries' => $binaries));
 
         $sql = 'DELETE FROM registry WHERE `key` = :key';
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
 
         foreach ($Regbinaries as $name) {
             $stmt->execute(array(':key' => $name));
@@ -112,7 +114,7 @@ class patch_373 implements patchInterface
         $stmt->closeCursor();
 
         $sql = 'SELECT value FROM registry WHERE `key` = :key';
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':key'=>'GV_sit'));
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -120,9 +122,9 @@ class patch_373 implements patchInterface
         $configs = $app['phraseanet.configuration']->getConfigurations();
         $configs['key'] = $row['value'];
         $app['phraseanet.configuration']->setConfigurations($configs);
-        
+
         $sql = 'DELETE FROM registry WHERE `key` = :key';
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute(array(':key'=>'GV_sit'));
         $stmt->closeCursor();
 
