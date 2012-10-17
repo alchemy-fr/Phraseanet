@@ -8,14 +8,13 @@ require_once __DIR__ . '/../../../PhraseanetPHPUnitAuthenticatedAbstract.class.i
 
 abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedAbstract
 {
-
     protected static $searchEngine;
     protected static $initialized = false;
 
     public function setUp()
     {
         parent::setUp();
-        
+
         if (!self::$initialized) {
             $found = false;
             foreach (self::$DI['record_24']->get_databox()->get_meta_structure()->get_elements() as $field) {
@@ -36,7 +35,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
             }
         }
 
-            $this->initialize();
+        $this->initialize();
 
         if (!self::$searchEngine instanceof SearchEngineInterface) {
             $this->markTestSkipped('Unable to initialize search Engine');
@@ -47,7 +46,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
         self::$searchEngine->setOptions($options);
     }
-    
+
     abstract public function initialize();
 
     protected function updateIndex()
@@ -57,12 +56,32 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
     public function testQueryRecordId()
     {
-        $this->markTestSkipped('No yet implemented');
+        $record = self::$DI['record_24'];
+        $query_string = 'recordid=' . $record->get_record_id();
+
+        self::$searchEngine->resetCache();
+        $results = self::$searchEngine->query($query_string, 0, 1);
+        $this->assertEquals(1, $results->total());
+
+        $result = $results->results()->first();
+
+        $this->assertEquals($record->get_record_id(), $result->get_record_id());
+        $this->assertEquals($record->get_sbas_id(), $result->get_sbas_id());
     }
 
     public function testQueryStoryId()
     {
-        $this->markTestSkipped('No yet implemented');
+        $record = self::$DI['record_24'];
+        $query_string = 'storyid=' . $record->get_record_id();
+
+        self::$searchEngine->resetCache();
+        $results = self::$searchEngine->query($query_string, 0, 1);
+        $this->assertEquals(1, $results->total());
+
+        $result = $results->results()->first();
+
+        $this->assertEquals($record->get_record_id(), $result->get_record_id());
+        $this->assertEquals($record->get_sbas_id(), $result->get_sbas_id());
     }
 
     public function testQueryByDateMin()
@@ -90,7 +109,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
             if ($indexable !== $field->is_indexable() || $field->isBusiness() !== $business) {
                 continue;
             }
-            
+
             try {
                 $values = $record->get_caption()->get_field($field->get_name())->get_values();
                 $value = array_pop($values);
@@ -399,7 +418,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $options->setStatus(array(4 => array('on' => array($record->get_databox()->get_sbas_id()))));
         self::$searchEngine->setOptions($options);
 
-        $query_string = 'boomboklot' . $record->get_record_id() . 'statusQueryOff';
+        $query_string = 'boomboklot' . $record->get_record_id() . 'statusQueryOnOverOn';
         $this->editRecord($query_string, $record);
 
         self::$searchEngine->addRecord($record);
@@ -495,7 +514,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $results = self::$searchEngine->query($query_string, 0, 1);
         $fields = array();
         $foundRecord = $results->results()->first();
-        
+
         $this->assertInstanceOf('\record_adapter', $foundRecord);
 
         foreach ($foundRecord->get_caption()->get_fields() as $field) {

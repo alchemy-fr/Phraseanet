@@ -17,7 +17,7 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        
+
         $app = new Application('test');
         $appbox = $app['phraseanet.appbox'];
         self::$searchEngine = new SphinxSearchEngine($app, '127.0.0.1', 9306, '127.0.0.1', 9308);
@@ -37,10 +37,10 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
 
         self::$searchd = new Process($searchd . ' -c ' . self::$config);
         self::$searchd->run();
-        
+
         self::$searchEngine = new SphinxSearchEngine($app, '127.0.0.1', 9306, '127.0.0.1', 9308);
     }
-    
+
     public function initialize()
     {
     }

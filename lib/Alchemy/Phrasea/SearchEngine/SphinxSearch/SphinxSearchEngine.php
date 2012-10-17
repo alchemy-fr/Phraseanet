@@ -94,7 +94,7 @@ class SphinxSearchEngine implements SearchEngineInterface
      */
     public function configurationPanel()
     {
-        if ( ! $this->configurationPanel) {
+        if (!$this->configurationPanel) {
             $this->configurationPanel = new ConfigurationPanel($this);
         }
 
@@ -109,13 +109,22 @@ class SphinxSearchEngine implements SearchEngineInterface
     public function addRecord(\record_adapter $record)
     {
         $all_datas = array();
+        $status = array();
+
+        $binStatus = strrev($record->get_status());
+        
+        for ($i = 4; $i < 32; $i++) {
+            if ($binStatus[$i]) {
+                $status[] = crc32($record->get_databox()->get_sbas_id() . '_' . $i);
+            }
+        }
 
         foreach ($record->get_caption()->get_fields(null, true) as $field) {
-            if ( ! $field->is_indexable()) {
+            if (!$field->is_indexable()) {
                 continue;
             }
 
-            if ( ! $field->get_databox_field()->isBusiness()) {
+            if (!$field->get_databox_field()->isBusiness()) {
                 $all_datas[] = $field->get_serialized_values();
             }
 
@@ -137,7 +146,8 @@ class SphinxSearchEngine implements SearchEngineInterface
                     ,0
                     ," . (int) $value->getDatabox_field()->isBusiness() . "
                     ," . crc32($record->get_collection()->get_coll_id() . '_' . (int) $value->getDatabox_field()->isBusiness()) . "
-                    ," . $record->get_creation_date()->format('U') . " )";
+                    ," . $record->get_creation_date()->format('U') . "
+                    ,(" . implode(',', $status) . ")  )";
 
                 $this->rt_conn->exec($sql);
             }
@@ -155,7 +165,8 @@ class SphinxSearchEngine implements SearchEngineInterface
             ," . crc32($record->get_sbas_id() . '_' . $record->get_record_id()) . "
             ," . crc32($record->get_type()) . "
             ,0
-            ," . $record->get_creation_date()->format('U') . " )");
+            ," . $record->get_creation_date()->format('U') . "
+            ,(" . implode(',', $status) . ") )");
 
         return $this;
     }
@@ -308,7 +319,7 @@ class SphinxSearchEngine implements SearchEngineInterface
                     } catch (Exception $e) {
 
                     }
-                    $resultOffset ++;
+                    $resultOffset++;
                 }
             }
 
@@ -449,9 +460,9 @@ class SphinxSearchEngine implements SearchEngineInterface
         $status_opts = $options->getStatus();
         foreach ($options->databoxes() as $databox) {
             foreach ($databox->get_statusbits() as $n => $status) {
-                if ( ! array_key_exists($n, $status_opts))
+                if (!array_key_exists($n, $status_opts))
                     continue;
-                if ( ! array_key_exists($databox->get_sbas_id(), $status_opts[$n]))
+                if (!array_key_exists($databox->get_sbas_id(), $status_opts[$n]))
                     continue;
                 $crc = crc32($databox->get_sbas_id() . '_' . $n);
                 $this->sphinx->SetFilter('status', array($crc), ($status_opts[$n][$databox->get_sbas_id()] == '0'));
@@ -614,7 +625,7 @@ class SphinxSearchEngine implements SearchEngineInterface
         $t = "__" . $keyword . "__";
 
         $trigrams = "";
-        for ($i = 0; $i < strlen($t) - 2; $i ++ ) {
+        for ($i = 0; $i < strlen($t) - 2; $i++) {
             $trigrams .= substr($t, $i, 3) . " ";
         }
 
@@ -649,7 +660,7 @@ class SphinxSearchEngine implements SearchEngineInterface
             return array();
         }
 
-        if ( ! $res || ! isset($res["matches"])) {
+        if (!$res || !isset($res["matches"])) {
             return array();
         }
 
@@ -732,7 +743,7 @@ class SphinxSearchEngine implements SearchEngineInterface
         $executableFinder = new ExecutableFinder();
         $indexer = $executableFinder->find('indexer');
 
-        if ( ! is_executable($indexer)) {
+        if (!is_executable($indexer)) {
             throw new RuntimeException('Indexer does not seem to be executable');
         }
 
@@ -788,7 +799,7 @@ class SphinxSearchEngine implements SearchEngineInterface
             $trigrams = $this->BuildTrigrams($keyword);
 
             $out[] = "( $n, '$keyword', '$trigrams', $freq )";
-            $n ++;
+            $n++;
         }
 
         if ($out) {

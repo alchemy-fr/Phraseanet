@@ -329,6 +329,7 @@ class ConfigurationPanel implements ConfigurationPanelInterface
     rt_attr_uint          = business
     rt_attr_uint          = crc_coll_business
     rt_attr_timestamp     = created_on
+    rt_attr_multi         = status
   }
 
   #--------------------------------------
@@ -442,6 +443,7 @@ class ConfigurationPanel implements ConfigurationPanelInterface
     rt_attr_uint          = crc_type
     rt_attr_uint          = deleted
     rt_attr_timestamp     = created_on
+    rt_attr_multi         = status
   }
 
 #------------------------------------------------------------------------------
