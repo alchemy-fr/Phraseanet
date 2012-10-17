@@ -1,5 +1,5 @@
 {
-    "hash": "4bd6154d84bfda09742947180344306c",
+    "hash": "2b34a4340174fc534085a984bdb4163c",
     "packages": [
         {
             "name": "BadFaith/BadFaith",
@@ -49,14 +49,14 @@
                 "reference": "89993abd6a02b42e0b765114c34c26c4056762fa",
                 "shasum": ""
             },
+            "time": "1334339011",
             "type": "library",
             "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "Phlickr_": "./"
                 }
-            },
-            "time": "1334339011"
+            }
         },
         {
             "name": "alchemy/oauth2php",
@@ -72,14 +72,14 @@
                 "reference": "5f949209461e8f4c31e8476155188923aafa2ae5",
                 "shasum": ""
             },
+            "time": "1333122427",
             "type": "library",
             "installation-source": "source",
             "autoload": {
                 "classmap": [
                     "lib/"
                 ]
-            },
-            "time": "1333122427"
+            }
         },
         {
             "name": "alchemy/phpmailer",
@@ -95,14 +95,14 @@
                 "reference": "3bdb8bc7a8f304c27900d7b2ddc00068c86c781f",
                 "shasum": ""
             },
+            "time": "1333125389",
             "type": "library",
             "installation-source": "source",
             "autoload": {
                 "classmap": [
                     "./"
                 ]
-            },
-            "time": "1333125389"
+            }
         },
         {
             "name": "dailymotion/sdk",
@@ -118,6 +118,7 @@
                 "reference": "02275fbf499c67e557af06cf362f6b6da9bbb6c8",
                 "shasum": ""
             },
+            "time": "1349828484",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -131,8 +132,7 @@
                 "api",
                 "sdk",
                 "dailymotion"
-            ],
-            "time": "1349828484"
+            ]
         },
         {
             "name": "data-uri/data-uri",
@@ -256,7 +256,7 @@
                 "php": ">=5.3.2",
                 "doctrine/common": ">=2.2.0,<=2.2.99"
             },
-            "time": "2012-04-13 07:56:12",
+            "time": "2012-04-13 00:56:12",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -275,7 +275,8 @@
                 },
                 {
                     "name": "Guilherme Blanco",
-                    "email": "guilhermeblanco@gmail.com"
+                    "email": "guilhermeblanco@gmail.com",
+                    "homepage": "http://www.instaclick.com"
                 },
                 {
                     "name": "Roman Borschel",
@@ -315,7 +316,7 @@
                 "doctrine/common": ">=2.2.0,<2.2.99",
                 "doctrine/dbal": ">=2.2.1,<2.2.99"
             },
-            "time": "2012-04-13 08:02:34",
+            "time": "2012-04-13 01:02:34",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -334,7 +335,8 @@
                 },
                 {
                     "name": "Guilherme Blanco",
-                    "email": "guilhermeblanco@gmail.com"
+                    "email": "guilhermeblanco@gmail.com",
+                    "homepage": "http://www.instaclick.com"
                 },
                 {
                     "name": "Roman Borschel",
@@ -374,6 +376,7 @@
                 "doctrine/orm": ">=2.1",
                 "doctrine/mongodb-odm": "*"
             },
+            "time": "1339767845",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -404,8 +407,7 @@
                 "nestedset",
                 "sortable",
                 "timestampable"
-            ],
-            "time": "1339767845"
+            ]
         },
         {
             "name": "grom/silex-service-provider",
@@ -681,7 +683,7 @@
             "require": {
                 "php": ">=5.3.0"
             },
-            "time": "2011-10-24 09:39:02",
+            "time": "2011-10-24 02:39:02",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -814,7 +816,6 @@
                 "sami/sami": "dev-master",
                 "silex/silex": "dev-master"
             },
-            "time": "1349965750",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -847,7 +848,8 @@
                 "ffmpeg",
                 "avprobe",
                 "ffprobe"
-            ]
+            ],
+            "time": "1349965750"
         },
         {
             "name": "php-mp4box/php-mp4box",
@@ -969,6 +971,7 @@
                 "sami/sami": "dev-master",
                 "silex/silex": "dev-master"
             },
+            "time": "1349703734",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -995,8 +998,7 @@
             "keywords": [
                 "pdf",
                 "xpdf"
-            ],
-            "time": "1349703734"
+            ]
         },
         {
             "name": "phpexiftool/exiftool",
@@ -1015,6 +1017,7 @@
             "require": {
                 "phpexiftool/phpexiftool": "*"
             },
+            "time": "1346256086",
             "type": "library",
             "installation-source": "source",
             "license": [
@@ -1031,8 +1034,7 @@
             "keywords": [
                 "exiftool",
                 "metadatas"
-            ],
-            "time": "1346256086"
+            ]
         },
         {
             "name": "phpexiftool/phpexiftool",
@@ -1063,6 +1065,7 @@
                 "sami/sami": "dev-master",
                 "silex/silex": "dev-master"
             },
+            "time": "1346681208",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -1084,8 +1087,7 @@
             "keywords": [
                 "metadata",
                 "exiftool"
-            ],
-            "time": "1346681208"
+            ]
         },
         {
             "name": "pimple/pimple",
@@ -1104,6 +1106,7 @@
             "require": {
                 "php": ">=5.3.0"
             },
+            "time": "1347278988",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1130,8 +1133,7 @@
             "keywords": [
                 "dependency injection",
                 "container"
-            ],
-            "time": "1347278988"
+            ]
         },
         {
             "name": "silex/silex",
@@ -1282,7 +1284,7 @@
             "require": {
                 "php": ">=5.2.4"
             },
-            "time": "2012-06-17 20:55:34",
+            "time": "2012-06-17 13:55:34",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1479,7 +1481,6 @@
             "require": {
                 "twig/twig": "1.*"
             },
-            "time": "1349889206",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1507,7 +1508,8 @@
                 "debug",
                 "i18n",
                 "text"
-            ]
+            ],
+            "time": "1349889206"
         },
         {
             "name": "twig/twig",
@@ -1575,6 +1577,7 @@
             "require": {
                 "php": ">5.2.4"
             },
+            "time": "1336132669",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -1596,11 +1599,94 @@
             "keywords": [
                 "zend",
                 "gdata"
-            ],
-            "time": "1336132669"
+            ]
         }
     ],
-    "packages-dev": null,
+    "packages-dev": [
+        {
+            "name": "doctrine/data-fixtures",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/doctrine/data-fixtures.git",
+                "reference": "v1.0.0-ALPHA3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/doctrine/data-fixtures/zipball/v1.0.0-ALPHA3",
+                "reference": "v1.0.0-ALPHA3",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2"
+            },
+            "time": "1348136794",
+            "type": "library",
+            "installation-source": "source",
+            "autoload": {
+                "psr-0": {
+                    "Doctrine\\Common\\DataFixtures": "lib/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jonathan Wage",
+                    "email": "jonwage@gmail.com",
+                    "homepage": "http://www.jwage.com/"
+                }
+            ],
+            "description": "Data Fixtures for all Doctrine Object Managers",
+            "homepage": "http://www.doctrine-project.org",
+            "keywords": [
+                "database"
+            ]
+        },
+        {
+            "name": "fabpot/php-cs-fixer",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fabpot/PHP-CS-Fixer.git",
+                "reference": "24df86b1a29a9f6151e495615123308542bcfb05"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/fabpot/PHP-CS-Fixer/zipball/24df86b1a29a9f6151e495615123308542bcfb05",
+                "reference": "24df86b1a29a9f6151e495615123308542bcfb05",
+                "shasum": ""
+            },
+            "require": {
+                "symfony/console": "2.1.*",
+                "symfony/filesystem": "2.1.*",
+                "symfony/finder": "2.1.*",
+                "php": ">=5.3.3"
+            },
+            "time": "1349504510",
+            "bin": [
+                "php-cs-fixer"
+            ],
+            "type": "application",
+            "installation-source": "source",
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\CS": "."
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                }
+            ],
+            "description": "A script to automatically fix Symfony Coding Standard"
+        }
+    ],
     "aliases": [
 
     ],
