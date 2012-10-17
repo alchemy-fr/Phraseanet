@@ -119,18 +119,18 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             }
 
             $app['EM'] = $app->share($app->extend('EM', function($em) {
-                        @unlink('/tmp/db.sqlite');
-                        copy(__DIR__ . '/db-ref.sqlite', '/tmp/db.sqlite');
+                @unlink('/tmp/db.sqlite');
+                copy(__DIR__ . '/db-ref.sqlite', '/tmp/db.sqlite');
 
-                        return $em;
-                    }));
+                return $em;
+            }));
 
 
             $app['browser'] = $app->share($app->extend('browser', function($browser) {
 
-                        $browser->setUserAgent(PhraseanetPHPUnitAbstract::USER_AGENT_FIREFOX8MAC);
-                        return $browser;
-                    }));
+                $browser->setUserAgent(PhraseanetPHPUnitAbstract::USER_AGENT_FIREFOX8MAC);
+                return $browser;
+            }));
 
             return $app;
         });
@@ -500,9 +500,9 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     protected function XMLHTTPRequest($method, $uri, array $parameters = array(), $httpAccept = 'application/json')
     {
         return self::$DI['client']->request($method, $uri, $parameters, array(), array(
-                'HTTP_ACCEPT'           => $httpAccept,
-                'HTTP_X-Requested-With' => 'XMLHttpRequest',
-            ));
+            'HTTP_ACCEPT'           => $httpAccept,
+            'HTTP_X-Requested-With' => 'XMLHttpRequest',
+        ));
     }
 
     /**
@@ -689,10 +689,10 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             $DI['user'] = $DI->share(
                 $DI->extend('user', function ($user, $DI) use ($collection_no_acces) {
-                        $user->ACL()->revoke_access_from_bases(array($collection_no_acces->get_base_id()));
-                        $DI['client'] = new Client($DI['app'], array());
-                        return $user;
-                    })
+                    $user->ACL()->revoke_access_from_bases(array($collection_no_acces->get_base_id()));
+                    $DI['client'] = new Client($DI['app'], array());
+                    return $user;
+                })
             );
 
             $DI['user'];
@@ -707,10 +707,10 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             $DI['user'] = $DI->share(
                 $DI->extend('user', function ($user, $DI) use ($collection_no_acces_by_status) {
-                        $user->ACL()->set_masks_on_base($collection_no_acces_by_status->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
-                        $DI['client'] = new Client($DI['app'], array());
-                        return $user;
-                    })
+                    $user->ACL()->set_masks_on_base($collection_no_acces_by_status->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
+                    $DI['client'] = new Client($DI['app'], array());
+                    return $user;
+                })
             );
 
             $DI['user'];

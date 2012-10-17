@@ -34,8 +34,8 @@ class Export implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
-                $app['firewall']->requireNotGuest();
-            });
+            $app['firewall']->requireNotGuest();
+        });
 
         /**
          * Display multi export
@@ -116,12 +116,12 @@ class Export implements ControllerProviderInterface
         $download = new \set_export($app, $request->request->get('lst', ''), (int) $request->request->get('ssel'), $request->request->get('story'));
 
         return new Response($app['twig']->render('common/dialog_export.html.twig', array(
-                    'download'             => $download,
-                    'ssttid'               => $request->request->get('ssel'),
-                    'lst'                  => $download->serialize_list(),
-                    'default_export_title' => $app['phraseanet.registry']->get('GV_default_export_title'),
-                    'choose_export_title'  => $app['phraseanet.registry']->get('GV_choose_export_title')
-                )));
+            'download'             => $download,
+            'ssttid'               => $request->request->get('ssel'),
+            'lst'                  => $download->serialize_list(),
+            'default_export_title' => $app['phraseanet.registry']->get('GV_default_export_title'),
+            'choose_export_title'  => $app['phraseanet.registry']->get('GV_choose_export_title')
+        )));
     }
 
     /**
@@ -149,9 +149,9 @@ class Export implements ControllerProviderInterface
         }
 
         return $app->json(array(
-                'success' => $success,
-                'message' => $msg
-            ));
+            'success' => $success,
+            'message' => $msg
+        ));
     }
 
     /**
@@ -193,15 +193,15 @@ class Export implements ControllerProviderInterface
                 $download->export_ftp($request->request->get('user_dest'), $address, $login, $request->request->get('pwd', ''), $request->request->get('ssl'), $request->request->get('nbretry'), $request->request->get('passif'), $destFolder, $folderTocreate, $request->request->get('logfile'));
 
                 return $app->json(array(
-                        'success' => true,
-                        'message' => _('Export saved in the waiting queue')
-                    ));
+                    'success' => true,
+                    'message' => _('Export saved in the waiting queue')
+                ));
             } catch (\Exception $e) {
 
                 return $app->json(array(
-                        'success' => false,
-                        'message' => _('Something went wrong')
-                    ));
+                    'success' => false,
+                    'message' => _('Something went wrong')
+                ));
             }
         }
     }
@@ -293,9 +293,9 @@ class Export implements ControllerProviderInterface
         }
 
         return $app->json(array(
-                'success' => true,
-                'message' => ''
-            ));
+            'success' => true,
+            'message' => ''
+        ));
     }
 
     /**

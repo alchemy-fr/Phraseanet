@@ -34,8 +34,8 @@ class Property implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
-                $app['firewall']->requireNotGuest();
-            });
+            $app['firewall']->requireNotGuest();
+        });
 
         /**
          * Display records status property
@@ -162,10 +162,10 @@ class Property implements ControllerProviderInterface
         }
 
         return new Response($app['twig']->render('prod/actions/Property/index.html.twig', array(
-                    'records'   => $records,
-                    'statusBit' => $statusBit,
-                    'nRec'      => $nRec
-                )));
+            'records'   => $records,
+            'statusBit' => $statusBit,
+            'nRec'      => $nRec
+        )));
     }
 
     /**
@@ -204,9 +204,9 @@ class Property implements ControllerProviderInterface
         }
 
         return new Response($app['twig']->render('prod/actions/Property/type.html.twig', array(
-                    'records'     => $records,
-                    'recordsType' => $recordsType,
-                )));
+            'records'     => $records,
+            'recordsType' => $recordsType,
+        )));
     }
 
     /**

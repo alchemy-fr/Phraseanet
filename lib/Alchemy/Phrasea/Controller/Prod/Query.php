@@ -30,8 +30,8 @@ class Query implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
-                $app['firewall']->requireAuthentication();
-            });
+            $app['firewall']->requireAuthentication();
+        });
 
         /**
          * Query Phraseanet
@@ -289,11 +289,11 @@ class Query implements ControllerProviderInterface
         $record = new \record_preview($app, 'RESULT', $pos, '', '', $searchEngine, $query);
 
         return $app->json(array(
-                'current' => $app['twig']->render('prod/preview/result_train.html.twig', array(
-                    'records'  => $record->get_train($pos, $query, $searchEngine),
-                    'selected' => $pos
-                ))
-            ));
+            'current' => $app['twig']->render('prod/preview/result_train.html.twig', array(
+                'records'  => $record->get_train($pos, $query, $searchEngine),
+                'selected' => $pos
+            ))
+        ));
     }
 
     /**
@@ -308,9 +308,9 @@ class Query implements ControllerProviderInterface
         $record = new \record_preview($app, 'REG', $request->request->get('pos'), $request->request->get('cont'));
 
         return new Response($app['twig']->render('prod/preview/reg_train.html.twig', array(
-                    'container_records' => $record->get_container()->get_children(),
-                    'record'            => $record
-                )));
+            'container_records' => $record->get_container()->get_children(),
+            'record'            => $record
+        )));
     }
 
     /**
