@@ -792,25 +792,18 @@ class set_export extends set_abstract
                 );
                 $response->headers->set('X-Sendfile', $file);
                 $response->headers->set('X-Accel-Redirect', $file_xaccel);
+
                 $response->headers->set('Pragma', 'public', true);
+                $response->setMaxAge(0);
+
                 $response->headers->set('Content-Type', $mime);
                 $response->headers->set('Content-Length', filesize($file));
                 $response->headers->set('Content-Disposition', $headerDisposition);
 
                 return $response;
             } else {
-                /**
-                 *
-                 * Header "Pragma: public" SHOULD be present.
-                 * In case it is not present, download on IE 8 and previous over HTTPS
-                 * will fail.
-                 *
-                 * @todo : merge this shitty fix with Response object.
-                 *
-                 */
-                if ( ! headers_sent()) {
-                    header("Pragma: public");
-                }
+                $response->headers->set('Pragma', 'public', true);
+                $response->setMaxAge(0);
 
                 $response->headers->set('Content-Type', $mime);
                 $response->headers->set('Content-Length', filesize($file));
