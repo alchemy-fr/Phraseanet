@@ -91,7 +91,7 @@ class Records implements ControllerProviderInterface
      */
     public function doDeleteRecords(Application $app, Request $request)
     {
-        $records = RecordsRequest::fromRequest($app, $request, !!$app->request->get('del_children'), array(
+        $records = RecordsRequest::fromRequest($app, $request, !!$request->request->get('del_children'), array(
             'candeleterecord'
         ));
 
@@ -126,15 +126,14 @@ class Records implements ControllerProviderInterface
      * @param   Request         $request
      * @return  JsonResponse
      */
-    public function whatICanDelete(Application $app, Request $request)
+    public function whatCanIDelete(Application $app, Request $request)
     {
-        $records = RecordsRequest::fromRequest($app, $request, !!$app->request->get('del_children'), array(
+        $records = RecordsRequest::fromRequest($app, $request, !!$request->request->get('del_children'), array(
             'candeleterecord'
         ));
 
         return $app['twig']->render('prod/actions/delete_records_confirm.html.twig', array(
-            'lst'       => $records->serializedList(),
-            'groupings' => $records->stories()->count(),
+            'records'   => $records
         ));
     }
 
@@ -149,13 +148,11 @@ class Records implements ControllerProviderInterface
      */
     public function renewUrl(Application $app, Request $request)
     {
-        $records = RecordsRequest::fromRequest($app, $request, !!$app->request->get('renew_children_url'));
+        $records = RecordsRequest::fromRequest($app, $request, !!$request->request->get('renew_children_url'));
 
         $renewed = array();
         foreach ($records as $record) {
-            $renewed[] = array(
-                $record->get_serialized_key() => $record->get_preview()->renew_url(),
-            );
+            $renewed[$record->get_serialize_key()] = $record->get_preview()->renew_url();
         };
 
         return $app->json($renewed);
