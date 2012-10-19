@@ -33,11 +33,8 @@ function cancelCgus(id)
 
 	$.ajax({
 		type: "POST",
-		url: "/prod/prodFeedBack.php",
-		data: {
-			sbas_id:id,
-			action:'DENY_CGU'
-		},
+		url: "/prod/TOU/deny/"+id+"/",
+		data: {},
 		success: function(data){
 			if(data == '1')
 			{

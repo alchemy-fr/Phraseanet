@@ -63,9 +63,8 @@ var p4 = p4 || {};
 
     $.ajax({
       type: "POST",
-      url: "/prod/prodFeedBack.php",
+      url: "/user/preferences/temporary/",
       data: {
-        action: "SAVETEMPPREF",
         prop:name,
         value:value
       },

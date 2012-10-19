@@ -1623,67 +1623,27 @@ function toggleRemoveReg(el)
 
 function deleteThis(lst)
 {
-    var n = lst.split(';').length;
+    if(lst.split(';').length === 0 ) {
+        alert(langage.nodocselected);
+        return false;
+    }
+
+    var $dialog = p4.Dialog.Create({
+        size:'Small',
+        title: language.deleteRecords
+    });
 
     $.ajax({
         type: "POST",
-        url: "/prod/prodFeedBack.php",
-        dataType: 'json',
-        data: {
-            action: "DELETE",
-            lst: lst
-        },
+        url: "/prod/records/delete/what/",
+        dataType: 'html',
+        data: {lst: lst},
         success: function(data){
-
-            if(data.lst.length > 0)
-            {
-                if(data.lst.length != n)
-                {
-                    alert(language.candeletesome);
-                }
-
-                var texte = '<p style="padding: 10px 0pt; background-color: red; color: black; font-weight: bold;">' + '<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>'+language.confirmDelete;
-                if(data.groupings > 0)
-                    texte += '<div><input type="checkbox" id="del_children" /><label for="del_children">' + language.confirmGroup + '</label></div>';
-                texte += '</p>';
-
-                var buttons = {};
-
-                buttons[language.deleteTitle+' ('+data.lst.length+')'] = function() {
-                    $("#DIALOG").dialog('close').dialog('destroy');
-                    doDelete(data.lst);
-                };
-
-                buttons[language.annuler] = function() {
-                    $("#DIALOG").dialog('close').dialog('destroy');
-                };
-
-
-                $("#DIALOG").dialog('destroy').attr('title',language.deleteTitle)
-                .empty()
-                .append(texte)
-                .dialog({
-
-                    autoOpen:false,
-                    closeOnEscape:true,
-                    resizable:false,
-                    draggable:false,
-                    modal:true,
-                    draggable:false,
-                    overlay: {
-                        backgroundColor: '#000',
-                        opacity: 0.7
-                    }
-                }).dialog('open').dialog('option','buttons',buttons);
-                $('#tooltip').hide();
-
-            }
-            else
-            {
-                alert(language.candeletedocuments);
-            }
+            $dialog.setContent(data);
         }
     });
+
+    return false;
 }
 
 function chgCollThis(datas)
@@ -1897,7 +1857,6 @@ function activeIcons()
                 }
             }
         }
-
         if(type !== '')
         {
             checkDeleteThis(type, el);
@@ -2600,10 +2559,9 @@ function doDelete(lst)
         children = '1';
     $.ajax({
         type: "POST",
-        url: "/prod/prodFeedBack.php",
+        url: "/prod/delete/",
         dataType: 'json',
         data: {
-            action: "DODELETE",
             lst: lst.join(';'),
             del_children: children
         },
