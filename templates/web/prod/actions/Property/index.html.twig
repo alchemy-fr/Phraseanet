@@ -114,9 +114,12 @@
                     </tfoot>
                 </table>
             {% endfor %}
-            <div class="form-actions">
+            <div class="form-actions" style="background:transparent">
                 <button type="button" class="btn btn-primary submiter">{% trans "Apply changes" %}</button>
                 <button type="button" class="btn cancel">{% trans "Cancel" %}</button>
+                <span class="form-action-loader" style="display:none;">
+                    <img src="../skins/icons/loader414141.gif" />
+                </span>
             </div>
         </form>
     </div>
@@ -139,6 +142,7 @@
         $("button.submiter", $dialogBox).bind("click", function(){
             var $this = $(this);
             var form = $(this).closest("form");
+            var loader = form.find("form-action-loader");
 
             $.ajax({
                 type: form.attr("method"),
@@ -147,13 +151,14 @@
                 dataType: 'json',
                 beforeSend:function(){
                     $this.attr("disabled", true);
-                    //@todo add loader
+                    loader.show();
                 },
                 success: function(data){
                     $dialog.Close();
                 },
                 complete: function(){
                     $this.attr("disabled", false);
+                    loader.hide();
                 }
             });
         });
