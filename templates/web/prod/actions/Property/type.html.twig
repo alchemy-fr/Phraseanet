@@ -57,6 +57,10 @@
     var $dialog = p4.Dialog.get(1);
     var $dialogBox = $dialog.getDomElement();
 
+    $("button.cancel", $dialogBox).bind("click", function(){
+        $dialog.Close();
+    });
+
     $("button.submiter", $dialogBox).bind("click", function(){
         var $this = $(this);
         var form = $(this).closest("form");
