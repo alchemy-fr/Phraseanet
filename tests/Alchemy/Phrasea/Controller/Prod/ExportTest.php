@@ -112,7 +112,13 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testExportFtpNoDocs()
     {
-        self::$DI['client']->request('POST', '/prod/export/ftp/',  array('addr'       => '', 'login'      => '', 'destfolder' => '', 'NAMMKDFOLD' => '', 'obj'        => array()));
+        self::$DI['client']->request('POST', '/prod/export/ftp/',  array(
+            'addr'       => 'test.ftp',
+            'login'      => 'login',
+            'destfolder' => 'documents',
+            'NAMMKDFOLD' => 'documents',
+            'obj'        => array('preview')
+        ));
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
         $datas = (array) json_decode($response->getContent());
@@ -179,7 +185,6 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRequireAuthentication()
     {
-        $this->markTestSkipped();
         $this->logout(self::$DI['app']);
         self::$DI['client']->request('POST', '/prod/export/multi-export/');
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());

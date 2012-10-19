@@ -164,29 +164,19 @@ class Export implements ControllerProviderInterface
     {
         $download = new \set_exportftp($app, $request->request->get('lst'), $request->request->get('ssttid'));
 
-        if (null === $address = $request->request->get('addr')) {
-            $app->abort(400, _('addr parameter is missing'));
-        }
+        $mandatoryParameters = array('addr', 'login', 'destfolder', 'NAMMKDFOLD', 'obj');
 
-        if (null === $login = $request->request->get('login')) {
-            $app->abort(400, _('login parameter is missing'));
-        }
-
-        if (null === $destFolder = $request->request->get('destfolder')) {
-            $app->abort(400, _('destfolder parameter is missing'));
-        }
-
-        if (null === $folderTocreate = $request->request->get('NAMMKDFOLD')) {
-            $app->abort(400, _('NAMMKDFOLD parameter is missing'));
-        }
-
-        if (null === $subdefs = $request->request->get('obj')) {
-            $app->abort(400, _('obj parameter is missing'));
+        foreach ($mandatoryParameters as $parameter) {
+            if (!$request->request->get($parameter)) {
+                $app->abort(400, sprintf('required parameter `%s` is missing', $parameter));
+            }
         }
 
         if (count($download->get_display_ftp()) == 0) {
-
-            return $app->json(array('success' => false, 'message' => _("You do not have required rights to send these documents over FTP")));
+            return $app->json(array(
+                'success' => false,
+                'message' => _("You do not have required rights to send these documents over FTP")
+            ));
         }
 
         try {
@@ -200,14 +190,14 @@ class Export implements ControllerProviderInterface
 
             $download->export_ftp(
                 $request->request->get('user_dest'),
-                $address,
-                $login,
+                $request->request->get('addr'),
+                $request->request->get('login'),
                 $request->request->get('pwd', ''),
                 $request->request->get('ssl'),
                 $request->request->get('nbretry'),
                 $request->request->get('passif'),
-                $destFolder,
-                $folderTocreate,
+                $request->request->get('destfolder'),
+                $request->request->get('NAMMKDFOLD'),
                 $request->request->get('logfile')
             );
 

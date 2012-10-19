@@ -278,7 +278,7 @@ class Property implements ControllerProviderInterface
             $currentStatus = strrev($record->get_status());
 
             $newStatus = '';
-            foreach (range(0, 63) as $i) {
+            foreach (range(0, 31) as $i) {
                 $newStatus .= isset($postStatus[$i]) ? ($postStatus[$i] ? '1' : '0') : $currentStatus[$i];
             }
 
