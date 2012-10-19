@@ -348,8 +348,6 @@ class caption_field implements cache_cacheableInterface
 
     public static function delete_all_metadatas(Application $app, databox_field $databox_field)
     {
-        $core = \bootstrap::getCore();
-
         $sql = 'SELECT count(id) as count_id FROM metadatas
             WHERE meta_struct_id = :meta_struct_id';
 
