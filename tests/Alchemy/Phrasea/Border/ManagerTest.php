@@ -187,16 +187,16 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
         $file->addAttribute(new Attribute\Story($story));
 
-        $status = '0';
-        foreach (range(1, 64) as $i) {
-            if ($i == 5) {
+        $status = '';
+        foreach (range(0, 31) as $i) {
+            if ($i == 4 || $i == 8) {
                 $status .= '1';
             } else {
                 $status .= '0';
             }
         }
 
-        $file->addAttribute(new Attribute\Status(self::$DI['app'], $status));
+        $file->addAttribute(new Attribute\Status(self::$DI['app'], strrev($status)));
 
         $this->assertEquals(Manager::RECORD_CREATED, $this->object->process($this->session, $file, $postProcessRecord, Manager::FORCE_RECORD));
 
@@ -214,8 +214,11 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $this->fail('Unable to find story in parents');
         }
 
-        $this->assertEquals(64, strlen($record->get_status()));
-        $this->assertEquals('1', substr($record->get_status(), 0, 1));
+        $status = strrev($record->get_status());
+
+        $this->assertEquals(32, strlen($status));
+        $this->assertEquals('1', substr($status, 4, 1));
+        $this->assertEquals('1', substr($status, 8, 1));
 
         foreach ($tofetch as $name => $values) {
 
@@ -287,7 +290,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $file->addAttribute(new Attribute\Story(self::$DI['record_story_1']));
 
         $status = '1';
-        foreach (range(1, 63) as $i) {
+        foreach (range(1, 31) as $i) {
             $status .= '0';
         }
 
@@ -338,7 +341,7 @@ class ManagerTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $this->fail('Status is not found');
         }
 
-        $this->assertEquals(64, strlen($status_found));
+        $this->assertEquals(32, strlen($status_found));
         $this->assertEquals('1', substr($status_found, 0, 1));
 
         foreach ($tofetchField as $name => $values) {

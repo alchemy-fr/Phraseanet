@@ -197,7 +197,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testGet_sha256()
     {
         $this->assertNotNull(self::$DI['record_1']->get_sha256());
-        $this->assertRegExp('/[a-zA-Z0-9]{64}/', self::$DI['record_1']->get_sha256());
+        $this->assertRegExp('/[a-zA-Z0-9]{32}/', self::$DI['record_1']->get_sha256());
         $this->assertNull(self::$DI['record_story_1']->get_sha256());
     }
 
@@ -208,7 +208,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_status()
     {
-        $this->assertRegExp('/[01]{64}/', self::$DI['record_1']->get_status());
+        $this->assertRegExp('/[01]{32}/', self::$DI['record_1']->get_status());
     }
 
     public function testGet_subdef()

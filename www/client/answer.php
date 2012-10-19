@@ -9,6 +9,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 
 /**
  *
@@ -79,75 +80,106 @@ $mod_xy = $mod_col * $mod_row;
 
 $tbases = array();
 
-$options = new searchEngine_options();
+$options = new SearchEngineOptions();
+$options->disallowBusinessFields();
 
-$parm['bas'] = is_array($parm['bas']) ? $parm['bas'] : array_keys($app['phraseanet.user']->ACL()->get_granted_base());
+$bas = $app['phraseanet.user']->ACL()->get_granted_base();
+
+if (is_array($parm['bas'])) {
+    $bas = array_map(function($base_id) use ($app) {
+            return \collection::get_from_base_id($app, $base_id);
+        }, $parm['bas']);
+}
+
+$databoxes = array();
+
+foreach ($bas as $collection) {
+    if (!isset($databoxes[$collection->get_sbas_id()])) {
+        $databoxes[$collection->get_sbas_id()] = $collection->get_databox();
+    }
+}
 
 if ($app['phraseanet.user']->ACL()->has_right('modifyrecord')) {
-    $options->set_business_fields(array());
+    $BF = array_filter($bas, function($collection) use ($app) {
+            return $app['phraseanet.user']->ACL()->has_right_on_base($collection->get_base_id(), 'canmodifrecord');
+        });
 
-    $BF = array();
+    $options->allowBusinessFieldsOn($BF);
+}
 
-    foreach ($app['phraseanet.user']->ACL()->get_granted_base(array('canmodifrecord')) as $collection) {
-        if (count($parm['bas']) === 0 || in_array($collection->get_base_id(), $parm['bas'])) {
-            $BF[] = $collection->get_base_id();
+$status = is_array($parm['status']) ? $parm['status'] : array();
+$fields = is_array($parm['infield']) ? $parm['infield'] : array();
+
+$databoxFields = array();
+
+foreach ($databoxes as $databox) {
+    foreach ($fields as $field) {
+        try {
+            $databoxField = $databox->get_meta_structure()->get_element_by_name($field);
+        } catch (\Exception $e) {
+            continue;
+        }
+        if ($databoxField) {
+            $databoxFields[] = $databoxField;
         }
     }
-    $options->set_business_fields($BF);
-} else {
-    $options->set_business_fields(array());
 }
 
-$options->set_bases($parm['bas'], $app['phraseanet.user']->ACL());
-if ( ! is_array($parm['infield']))
-    $parm['infield'] = array();
 
-foreach ($parm['infield'] as $offset => $value) {
-    if (trim($value) === '')
-        unset($parm['infield'][$offset]);
+$options->setFields($databoxFields);
+$options->setStatus($status);
+$options->onCollections($bas);
+
+$options->setSearchType($parm['search_type']);
+$options->setRecordType($parm['recordtype']);
+$options->setMinDate($parm['datemin']);
+$options->setMaxDate($parm['datemax']);
+
+
+$databoxDateFields = array();
+
+foreach ($databoxes as $databox) {
+    foreach (explode('|', $parm['datefield']) as $field) {
+        try {
+            $databoxField = $databox->get_meta_structure()->get_element_by_name($field);
+        } catch (\Exception $e) {
+            continue;
+        }
+        if ($databoxField) {
+            $databoxDateFields[] = $databoxField;
+        }
+    }
 }
-
-$options->set_fields($parm['infield']);
-if ( ! is_array($parm['status']))
-    $parm['status'] = array();
-$options->set_status($parm['status']);
-$options->set_search_type($parm['search_type']);
-$options->set_record_type($parm['recordtype']);
-$options->set_min_date($parm['datemin']);
-$options->set_max_date($parm['datemax']);
-$options->set_date_fields(explode('|', $parm['datefield']));
-$options->set_sort($parm['sort'], $parm['ord']);
-$options->set_use_stemming($parm['stemme']);
 
 if ($parm['ord'] === NULL)
     $parm['ord'] = \searchEngine_options::SORT_MODE_DESC;
 else
     $parm['ord'] = (int) $parm['ord'];
 
+$options->setDateFields($databoxDateFields);
+$options->setSort($parm['sort'], $parm['ord']);
+$options->useStemming($parm['stemme']);
+
 $form = serialize($options);
 
 $perPage = $mod_xy;
 
-$search_engine = new searchEngine_adapter($app);
-$search_engine->set_options($options);
+$app['phraseanet.SE']->set_options($options);
 
-
+$firstPage = $parm['pag'] < 1;
 if ($parm['pag'] < 1) {
-    $search_engine->set_is_first_page(true);
-    $search_engine->reset_cache();
+    $app['phraseanet.SE']->resetCache();
     $parm['pag'] = 1;
 }
 
-$result = $search_engine->query_per_page($parm['qry'], (int) $parm["pag"], $perPage);
+$result = $app['phraseanet.SE']->query($parm['qry'], (((int) $parm["pag"] - 1) * $perPage), $perPage);
+
+$proposals = $firstPage ? $result->propositions() : false;
+
+$npages = $result->total();
 
 
-
-$proposals = $search_engine->is_first_page() ? $result->get_propositions() : false;
-
-$npages = $result->get_total_pages();
-
-
-$page = $result->get_current_page();
+$page = $result->currentPage($perPage);
 
 $ACL = $app['phraseanet.user']->ACL();
 
@@ -173,7 +205,7 @@ $history = queries::history($app['phraseanet.appbox'], $app['phraseanet.user']->
 
 echo '<script language="javascript" type="text/javascript">$("#history").empty().append("' . str_replace('"', '\"', $history) . '")</script>';
 
-$nbanswers = $result->get_count_available_results();
+$nbanswers = $result->available();
 $longueur = strlen($parm['qry']);
 
 $qrys = '<div>' . _('client::answers: rapport de questions par bases') . '</div>';
@@ -190,7 +222,7 @@ $txt = "<b>" . substr($parm['qry'], 0, 36) . ($longueur > 36 ? "..." : "") . "</
     });
 </script>
 <?php
-$npages = $result->get_total_pages();
+$npages = $result->totalPages($perPage);
 $pages = '';
 $ecart = 3;
 $max = (2 * $ecart) + 3;
@@ -266,11 +298,9 @@ if ($mod_col == 1)
 else
     $layoutmode = "grid";
 
-$count = $result->get_datas();
-
 $i = 0;
 
-if (count($result->get_datas()) > 0) {
+if (count($result->results()) > 0) {
     ?><div><table id="grid" cellpadding="0" cellspacing="0" border="0" style="xwidth:95%;"><?php
     if ($mod_col == 1) { // MODE LISTE
         ?><tr style="visibility:hidden"><td class="w160px" /><td /></tr><?php
@@ -282,7 +312,7 @@ if (count($result->get_datas()) > 0) {
         ?></tr><?php
     }
 
-    foreach ($result->get_datas() as $record) {
+    foreach ($result->results() as $record) {
         /* @var $record record_adapter */
         $base_id = $record->get_base_id();
         $sbas_id = $record->get_sbas_id();
@@ -427,7 +457,7 @@ if (count($result->get_datas()) > 0) {
         <script type="text/javascript">
             $(document).ready(function(){
 
-                p4.tot = <?php echo $result->get_count_available_results(); ?>;
+                p4.tot = <?php echo $result->available(); ?>;
                 p4.tot_options = '<?php echo serialize($options) ?>';
                 p4.tot_query = '<?php echo $parm['qry'] ?>';
 

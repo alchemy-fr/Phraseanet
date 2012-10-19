@@ -586,7 +586,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
         $status = $row['status'];
         $n = strlen($status);
-        while ($n < 64) {
+        while ($n < 32) {
             $status = '0' . $status;
             $n++;
         }

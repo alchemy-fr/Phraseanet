@@ -153,5 +153,21 @@ interface SearchEngineInterface
      * @return SearchEngineInterface
      */
     public function resetCache();
+
+    /**
+     * Clear the cache of the SE for the current user (if applicable)
+     *
+     * @return SearchEngineInterface
+     */
+    public function clearCache();
+
+    /**
+     * Clear all cache prior to the given date (if applicable)
+     *
+     * If no date provided, clear all entries
+     *
+     * @return SearchEngineInterface
+     */
+    public function clearAllCache(\DateTime $date = null);
 }
 

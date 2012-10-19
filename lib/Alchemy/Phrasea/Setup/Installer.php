@@ -149,8 +149,6 @@ class Installer
         $user = \User_Adapter::create($this->app, $this->email, $this->password, $this->email, true);
 
         $this->app['session']->set('usr_id', $user->get_id());
-
-        \phrasea::start($this->app['phraseanet.configuration']);
     }
 
     private function rollbackInstall()

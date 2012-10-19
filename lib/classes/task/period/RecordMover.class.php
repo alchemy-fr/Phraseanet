@@ -520,7 +520,7 @@ class task_period_RecordMover extends task_appboxAbstract
                     $status = str_split($rec->get_status());
                     foreach (str_split(strrev($row['sb'])) as $bit => $val) {
                         if ($val == '0' || $val == '1') {
-                            $status[63 - $bit] = $val;
+                            $status[31 - $bit] = $val;
                         }
                     }
                     $status = implode('', $status);

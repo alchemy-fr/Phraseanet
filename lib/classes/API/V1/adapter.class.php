@@ -702,7 +702,7 @@ class API_V1_adapter extends API_V1_Abstract
                 $behavior = null;
                 break;
             default:
-                throw new API_V1_exception_badrequest('Invalid forceBehavior value');
+                throw new API_V1_exception_badrequest(sprintf('Invalid forceBehavior value `%s`', $request->get('forceBehavior')));
                 break;
         }
 
@@ -1212,7 +1212,7 @@ class API_V1_adapter extends API_V1_Abstract
                 throw new API_V1_exception_badrequest();
             }
             foreach ($status as $n => $value) {
-                if ($n > 63 || $n < 4) {
+                if ($n > 31 || $n < 4) {
                     throw new API_V1_exception_badrequest();
                 }
                 if (!in_array($value, array('0', '1'))) {

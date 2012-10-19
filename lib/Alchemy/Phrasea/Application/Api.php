@@ -69,7 +69,7 @@ return call_user_func(function($environment = 'prod') {
         $auth = new \Session_Authentication_None($user);
 
         $app->openAccount($auth, $oauth2_adapter->get_ses_id());
-        $oauth2_adapter->remember_this_ses_id($app['session']->get('phrasea_session_id'));
+        $oauth2_adapter->remember_this_ses_id($app['session']->get('session_id'));
 
         return;
     }, 256);

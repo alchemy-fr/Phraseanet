@@ -3,7 +3,7 @@
 
 {% block content %}
 
-  {% for record in results.get_datas() %}
+  {% for record in results.results() %}
     {{record_format.block(record, highlight, searchEngine, 'IMGT', false)}}
   {% endfor %}
 

@@ -89,11 +89,12 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
         $binaryFinder = new ExecutableFinder();
         $indexer = $binaryFinder->find('indexer');
 
-        $process = new Process($indexer . ' --all --rotate -c ' . self::$config);
-        $process->run();
-
         $appbox = self::$DI['app']['phraseanet.appbox'];
         self::$searchEngine->buildSuggestions($appbox->get_databoxes(), self::$config, 0);
+
+        $process = new Process($indexer . ' --all --rotate -c ' . self::$config);
+        $process->run();
+        usleep(500000);
 
         $suggestions = self::$searchEngine->autoComplete('jean');
         $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $suggestions);

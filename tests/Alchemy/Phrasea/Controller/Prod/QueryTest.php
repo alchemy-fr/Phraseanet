@@ -1,5 +1,7 @@
 <?php
 
+namespace Alchemy\Phrasea\Controller\Prod;
+
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 use Alchemy\Phrasea\Controller\Prod\Query;
@@ -7,7 +9,22 @@ use Symfony\Component\HttpFoundation\Request;
 
 class QueryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
-    protected $client;
+
+    /**
+     * @covers Alchemy\Phrasea\Controller\Prod\Query::query
+     */
+    public function testQuery()
+    {
+        $route = '/prod/query/';
+
+        self::$DI['client']->request('POST', $route);
+
+        $response = self::$DI['client']->getResponse();
+
+        $this->assertEquals('application/json', $response->headers->get('Content-type'));
+        $data = json_decode($response->getContent(), true);
+        $this->assertInternalType('array', $data);
+    }
 
     /**
      * @covers Alchemy\Phrasea\Controller\Prod\Query::queryAnswerTrain
@@ -23,7 +40,7 @@ class QueryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $acl = self::$DI['app']['phraseanet.user']->ACL();
         $options->set_bases(array_keys($acl->get_granted_base()), $acl);
         $serializedOptions = serialize($options);
-        
+
         self::$DI['client']->request('POST', '/prod/query/answer-train/', array(
             'options_serial' => $serializedOptions,
             'pos'            => 0,

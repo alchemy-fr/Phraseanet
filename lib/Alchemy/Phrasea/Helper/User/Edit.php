@@ -232,7 +232,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $nrows = 0;
 
-        for ($bit = 0; $bit < 64; $bit++)
+        for ($bit = 0; $bit < 32; $bit++)
             $tbits_and[$bit] = $tbits_xor[$bit] = array("nset" => 0);
 
         foreach ($rs as $row) {
@@ -266,7 +266,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $vand_and = $vand_or = $vxor_and = $vxor_or = "0000";
 
-        for ($bit = 4; $bit < 64; $bit++) {
+        for ($bit = 4; $bit < 32; $bit++) {
             if (($tbits_and[$bit]["nset"] != 0 && $tbits_and[$bit]["nset"] != $nrows) || ($tbits_xor[$bit]["nset"] != 0 && $tbits_xor[$bit]["nset"] != $nrows)) {
                 if (isset($tbits_left[$bit]) && isset($tbits_right[$bit])) {
                     $tbits_left[$bit]["nset"] = 2;

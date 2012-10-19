@@ -118,7 +118,7 @@ class Session_Logger
               , :user_agent, :appli, :fonction, :company, :activity, :country)";
 
         $params = array(
-            ':ses_id'          => $app['session']->get('phrasea_session_id'),
+            ':ses_id'          => $app['session']->get('session_id'),
             ':usr_login'       => $app['phraseanet.user'] ? $app['phraseanet.user']->get_login() : null,
             ':site_id'         => $app['phraseanet.registry']->get('GV_sit'),
             ':usr_id'          => $app['phraseanet.user'] ? $app['phraseanet.user']->get_id() : null,
@@ -156,7 +156,7 @@ class Session_Logger
 
         $params = array(
             ':site'   => $app['phraseanet.registry']->get('GV_sit')
-            , ':ses_id' => $app['session']->get('phrasea_session_id')
+            , ':ses_id' => $app['session']->get('session_id')
         );
 
         $stmt = $databox->get_connection()->prepare($sql);
