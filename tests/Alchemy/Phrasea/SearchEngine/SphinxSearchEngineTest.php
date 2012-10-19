@@ -145,6 +145,10 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
         $appbox = self::$DI['app']['phraseanet.appbox'];
         self::$searchEngine->buildSuggestions($appbox->get_databoxes(), self::$config, 0);
 
+        $process = new Process($indexer . ' --all --rotate -c ' . self::$config);
+        $process->run();
+        usleep(500000);
+
         $suggestions = self::$searchEngine->autoComplete('jean');
         $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $suggestions);
 

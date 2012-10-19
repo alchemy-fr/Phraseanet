@@ -112,7 +112,7 @@ class SphinxSearchEngine implements SearchEngineInterface
         $status = array();
 
         $binStatus = strrev($record->get_status());
-        
+
         for ($i = 4; $i < 32; $i++) {
             if ($binStatus[$i]) {
                 $status[] = crc32($record->get_databox()->get_sbas_id() . '_' . $i);
@@ -807,6 +807,22 @@ class SphinxSearchEngine implements SearchEngineInterface
         }
 
         return null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function clearCache()
+    {
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function clearAllCache(\DateTime $date = null)
+    {
+        return $this;
     }
 }
 
