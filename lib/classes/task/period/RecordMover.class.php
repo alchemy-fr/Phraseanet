@@ -525,7 +525,7 @@ class task_period_RecordMover extends task_appboxAbstract
                     }
                     $status = implode('', $status);
                     $rec->set_binary_status($status);
-                    $this['SearchEngine']->updateRecord($rec);
+                    $this->dependencyContainer['phraseanet.SE']->updateRecord($rec);
                     if ($logsql) {
                         $this->log(sprintf("on sbas %s set rid %s status to %s \n", $row['sbas_id'], $row['record_id'], $status));
                     }
@@ -536,14 +536,14 @@ class task_period_RecordMover extends task_appboxAbstract
                 if ($row['deletechildren'] && $rec->is_grouping()) {
                     foreach ($rec->get_children() as $child) {
                         $child->delete();
-                        $this['SearchEngine']->removeRecord($child);
+                        $this->dependencyContainer['phraseanet.SE']->removeRecord($child);
                         if ($logsql) {
                             $this->log(sprintf("on sbas %s delete (grp child) rid %s \n", $row['sbas_id'], $child->get_record_id()));
                         }
                     }
                 }
                 $rec->delete();
-                $this['SearchEngine']->removeRecord($rec);
+                $this->dependencyContainer['phraseanet.SE']->removeRecord($rec);
                 if ($logsql) {
                     $this->log(sprintf("on sbas %s delete rid %s \n", $row['sbas_id'], $rec->get_record_id()));
                 }

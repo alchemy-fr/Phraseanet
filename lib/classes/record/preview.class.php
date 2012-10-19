@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 
 /**
  *
@@ -87,7 +88,7 @@ class record_preview extends record_adapter
      * @param  boolean        $reload_train
      * @return record_preview
      */
-    public function __construct(Application $app, $env, $pos, $contId, $reload_train = false, searchEngine_adapter $search_engine = null, $query = '')
+    public function __construct(Application $app, $env, $pos, $contId, $reload_train, SearchEngineInterface $search_engine = null, $query = '')
     {
         $number = null;
         $this->env = $env;
@@ -95,12 +96,11 @@ class record_preview extends record_adapter
 
         switch ($env) {
             case "RESULT":
-
                 if(null === $search_engine) {
                     throw new \LogicException('Search Engine should be provided');
                 }
 
-                $results = $search_engine->query_per_offset($query, (int) ($pos), 1);
+                $results = $search_engine->query($query, (int) ($pos), 1);
 
                 if ($results->get_datas()->is_empty()) {
                     throw new Exception('Record introuvable');
@@ -122,7 +122,6 @@ class record_preview extends record_adapter
                     $number = 0;
                     $title = _('preview:: regroupement ');
                 } else {
-//          $this->container = new record_adapter($sbas_id, $record_id);
                     $children = $this->container->get_children();
                     foreach ($children as $child) {
                         $sbas_id = $child->get_sbas_id();
@@ -198,7 +197,7 @@ class record_preview extends record_adapter
         return $this;
     }
 
-    public function get_train($pos = 0, $query = '', searchEngine_adapter $search_engine = null)
+    public function get_train($pos = 0, $query = '', SearchEngineInterface $search_engine = null)
     {
         if ($this->train) {
             return $this->train;
@@ -209,7 +208,7 @@ class record_preview extends record_adapter
                 $perPage = 56;
                 $index = ($pos - 3) < 0 ? 0 : ($pos - 3);
                 $page = (int) ceil($pos / $perPage);
-                $results = $search_engine->query_per_offset($query, $index, $perPage);
+                $results = $search_engine->query($query, $index, $perPage);
 
                 $this->train = $results->get_datas();
                 break;
@@ -260,7 +259,7 @@ class record_preview extends record_adapter
      *
      * @return String
      */
-    public function get_title($highlight = '', searchEngine_adapter $search_engine = null)
+    public function get_title($highlight = '', SearchEngineInterface $search_engine = null)
     {
         if ($this->title) {
             return $this->title;

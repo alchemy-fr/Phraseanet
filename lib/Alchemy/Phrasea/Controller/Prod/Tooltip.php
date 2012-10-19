@@ -108,12 +108,11 @@ class Tooltip implements ControllerProviderInterface
         $number = (int) $app['request']->request->get('number');
         $record = new \record_adapter($app, $sbas_id, $record_id, $number);
 
-        $search_engine = null;
+        $search_engine = $app['phraseanet.SE'];
 
         if ($context == 'answer') {
             if (($search_engine_options = unserialize($app['request']->request->get('options_serial'))) !== false) {
-                $search_engine = new \searchEngine_adapter($app);
-                $search_engine->set_options($search_engine_options);
+                $search_engine->setOptions($search_engine_options);
             }
         }
 

@@ -520,7 +520,7 @@ class module_console_fileEnsureProductionSetting extends Command
         $configuration = $this->configuration->getService($SEName);
 
         try {
-            $service = Core\Service\Builder::create(\bootstrap::getCore(), $configuration);
+            $service = Builder::create($this->container, $configuration);
             $work_message = '<info>Works !</info>';
         } catch (\Exception $e) {
             $work_message = sprintf('<error>Failed : %s !</error>', $e->getMessage());

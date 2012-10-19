@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -99,62 +100,102 @@ class Query implements ControllerProviderInterface
 
         $json = array();
 
-        $options = new \searchEngine_options();
+        $options = new SearchEngineOptions();
+        $options->disallowBusinessFields();
 
-        $bas = is_array($request->request->get('bas')) ? $request->request->get('bas') : array_keys($app['phraseanet.user']->ACL()->get_granted_base());
+        $bas = $user->ACL()->get_granted_base();
+
+        if (is_array($request->request->get('bas'))) {
+            $bas = array_map(function($base_id) use ($app) {
+                    return \collection::get_from_base_id($app, $base_id);
+                }, $request->request->get('bas'));
+        }
+
+        $databoxes = array();
+
+        foreach ($bas as $collection) {
+            if (!isset($databoxes[$collection->get_sbas_id()])) {
+                $databoxes[$collection->get_sbas_id()] = $collection->get_databox();
+            }
+        }
 
         if ($app['phraseanet.user']->ACL()->has_right('modifyrecord')) {
-            $options->set_business_fields(array());
+            $BF = array_filter($bas, function($collection) use ($app) {
+                    return $app['phraseanet.user']->ACL()->has_right_on_base($collection->get_base_id(), 'canmodifrecord');
+                });
 
-            $BF = array();
-
-            foreach ($app['phraseanet.user']->ACL()->get_granted_base(array('canmodifrecord')) as $collection) {
-                if (count($bas) === 0 || in_array($collection->get_base_id(), $bas)) {
-                    $BF[] = $collection->get_base_id();
-                }
-            }
-            $options->set_business_fields($BF);
-        } else {
-            $options->set_business_fields(array());
+            $options->allowBusinessFieldsOn($BF);
         }
 
         $status = is_array($request->request->get('status')) ? $request->request->get('status') : array();
         $fields = is_array($request->request->get('fields')) ? $request->request->get('fields') : array();
 
-        $options->set_fields($fields);
-        $options->set_status($status);
-        $options->set_bases($bas, $app['phraseanet.user']->ACL());
+        $databoxFields = array();
 
-        $options->set_search_type($request->request->get('search_type'));
-        $options->set_record_type($request->request->get('recordtype'));
-        $options->set_min_date($request->request->get('datemin'));
-        $options->set_max_date($request->request->get('datemax'));
-        $options->set_date_fields(explode('|', $request->request->get('datefield')));
-        $options->set_sort($request->request->get('sort'), $request->request->get('ord', \searchEngine_options::SORT_MODE_DESC));
-        $options->set_use_stemming($request->request->get('stemme'));
+        foreach ($databoxes as $databox) {
+            foreach ($fields as $field) {
+                try {
+                    $databoxField = $databox->get_meta_structure()->get_element_by_name($field);
+                } catch (\Exception $e) {
+                    continue;
+                }
+                if ($databoxField) {
+                    $databoxFields[] = $databoxField;
+                }
+            }
+        }
+
+
+        $options->setFields($databoxFields);
+        $options->setStatus($status);
+        $options->onCollections($bas);
+
+        $options->setSearchType($request->request->get('search_type'));
+        $options->setRecordType($request->request->get('recordtype'));
+        $options->setMinDate($request->request->get('datemin'));
+        $options->setMaxDate($request->request->get('datemax'));
+
+
+        $databoxDateFields = array();
+
+        foreach ($databoxes as $databox) {
+            foreach (explode('|', $request->request->get('datefield')) as $field) {
+                try {
+                    $databoxField = $databox->get_meta_structure()->get_element_by_name($field);
+                } catch (\Exception $e) {
+                    continue;
+                }
+                if ($databoxField) {
+                    $databoxDateFields[] = $databoxField;
+                }
+            }
+        }
+
+        $options->setDateFields($databoxDateFields);
+        $options->setSort($request->request->get('sort'), $request->request->get('ord', PHRASEA_ORDER_DESC));
+        $options->useStemming($request->request->get('stemme'));
 
         $form = serialize($options);
 
         $perPage = (int) $app['phraseanet.user']->getPrefs('images_per_page');
 
-        $search_engine = new \searchEngine_adapter($app);
-        $search_engine->set_options($options);
+        $app['phraseanet.SE']->setOptions($options);
 
         $page = (int) $request->request->get('pag');
+        $firstPage = $page < 1;
 
         if ($page < 1) {
-            $search_engine->set_is_first_page(true);
-            $search_engine->reset_cache();
+            $app['phraseanet.SE']->resetCache();
             $page = 1;
         }
 
-        $result = $search_engine->query_per_page($query, $page, $perPage);
+        $result = $app['phraseanet.SE']->query($query, (($page - 1) * $perPage), $perPage);
 
-        $proposals = $search_engine->is_first_page() ? $result->get_propositions() : false;
+        $proposals = $firstPage ? $result->proposals() : false;
 
-        $npages = $result->get_total_pages();
+        $npages = $result->totalPages($perPage);
 
-        $page = $result->get_current_page();
+        $page = $result->currentPage($perPage);
 
         $string = '';
 
@@ -205,28 +246,28 @@ class Query implements ControllerProviderInterface
 
         $explain .= "<img src=\"/skins/icons/answers.gif\" /><span><b>";
 
-        if ($result->get_count_total_results() != $result->get_count_available_results()) {
-            $explain .= sprintf(_('reponses:: %d Resultats rappatries sur un total de %d trouves'), $result->get_count_available_results(), $result->get_count_total_results());
+        if ($result->total() != $result->available()) {
+            $explain .= sprintf(_('reponses:: %d Resultats rappatries sur un total de %d trouves'), $result->available(), $result->total());
         } else {
-            $explain .= sprintf(_('reponses:: %d Resultats'), $result->get_count_total_results());
+            $explain .= sprintf(_('reponses:: %d Resultats'), $result->total());
         }
 
         $explain .= " </b></span>";
-        $explain .= '<br><div>' . $result->get_query_time() . ' s</div>dans index ' . $result->get_search_indexes();
+        $explain .= '<br><div>' . $result->duration() . ' s</div>dans index ' . $result->indexes();
         $explain .= "</div>";
 
-        $infoResult = '<a href="#" class="infoDialog" infos="' . str_replace('"', '&quot;', $explain) . '">' . sprintf(_('reponses:: %d reponses'), $result->get_count_total_results()) . '</a> | ' . sprintf(_('reponses:: %s documents selectionnes'), '<span id="nbrecsel"></span>');
+        $infoResult = '<a href="#" class="infoDialog" infos="' . str_replace('"', '&quot;', $explain) . '">' . sprintf(_('reponses:: %d reponses'), $result->total()) . '</a> | ' . sprintf(_('reponses:: %s documents selectionnes'), '<span id="nbrecsel"></span>');
 
         $json['infos'] = $infoResult;
         $json['navigation'] = $string;
 
         $prop = null;
 
-        if ($search_engine->is_first_page()) {
-            $propals = $result->get_suggestions($app['locale.I18n']);
+        if ($firstPage) {
+            $propals = $result->suggestions();
             if (count($propals) > 0) {
                 foreach ($propals as $prop_array) {
-                    if ($prop_array['value'] !== $query && $prop_array['hits'] > $result->get_count_total_results()) {
+                    if ($prop_array['value'] !== $query && $prop_array['hits'] > $result->total()) {
                         $prop = $prop_array['value'];
                         break;
                     }
@@ -234,7 +275,7 @@ class Query implements ControllerProviderInterface
             }
         }
 
-        if ($result->get_count_total_results() === 0) {
+        if ($result->total() === 0) {
             $template = 'prod/results/help.html.twig';
         } else {
             if ($mod == 'thumbs') {
@@ -247,17 +288,17 @@ class Query implements ControllerProviderInterface
         $json['results'] = $app['twig']->render($template, array(
             'results'         => $result,
             'GV_social_tools' => $app['phraseanet.registry']->get('GV_social_tools'),
-            'highlight'       => $search_engine->get_query(),
-            'searchEngine'    => $search_engine,
+            'highlight'       => $result->query(),
+            'searchEngine'    => $app['phraseanet.SE'],
             'suggestions'     => $prop
             )
         );
 
         $json['query'] = $query;
         $json['phrasea_props'] = $proposals;
-        $json['total_answers'] = (int) $result->get_count_available_results();
-        $json['next_page'] = ($page < $npages && $result->get_count_available_results() > 0) ? ($page + 1) : false;
-        $json['prev_page'] = ($page > 1 && $result->get_count_available_results() > 0) ? ($page - 1) : false;
+        $json['total_answers'] = (int) $result->available();
+        $json['next_page'] = ($page < $npages && $result->available() > 0) ? ($page + 1) : false;
+        $json['prev_page'] = ($page > 1 && $result->available() > 0) ? ($page - 1) : false;
         $json['form'] = $form;
 
         return $app->json($json);

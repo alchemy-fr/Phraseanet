@@ -1634,7 +1634,7 @@ class task_period_archive extends task_abstract
         $story->set_binary_status(databox_status::operation_or($this->dependencyContainer, $stat0, $stat1));
         $story->rebuild_subdefs();
 
-        $this['phraseanet.SE']->addStory($story);
+        $this->dependencyContainer['phraseanet.SE']->addStory($story);
 
         $media = $databox = null;
 

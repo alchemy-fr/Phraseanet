@@ -13,6 +13,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Attribute\Status;
 use Alchemy\Phrasea\Border\Manager as BorderManager;
+use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -893,7 +894,7 @@ class API_V1_adapter extends API_V1_Abstract
         $params = array(
             'fields' => is_array($request->get('fields')) ? $request->get('fields') : array(),
             'status' => is_array($request->get('status')) ? $request->get('status') : array(),
-            'bases' => is_array($request->get('bases')) ? $request->get('bases') : array(),
+            'bases' => is_array($request->get('bases')) ? $request->get('bases') : null,
             'search_type'  => $search_type,
             'recordtype'   => $record_type,
             'datemin'      => $request->get('date_min') ? : '',
@@ -915,63 +916,102 @@ class API_V1_adapter extends API_V1_Abstract
             }
         }
 
-        $options = new searchEngine_options();
+        $options = new SearchEngineOptions();
+        $options->disallowBusinessFields();
 
-        $params['bases'] = is_array($params['bases']) ? $params['bases'] : array_keys($this->app['phraseanet.user']->ACL()->get_granted_base());
+        $bas = $this->app['phraseanet.user']->ACL()->get_granted_base();
+
+        $app = $this->app;
+
+        if (is_array($params['bases'])) {
+            $bas = array_map(function($base_id) use ($app) {
+                    return \collection::get_from_base_id($app, $base_id);
+                }, $params['bases']);
+        }
+
+        $databoxes = array();
+
+        foreach ($bas as $collection) {
+            if (!isset($databoxes[$collection->get_sbas_id()])) {
+                $databoxes[$collection->get_sbas_id()] = $collection->get_databox();
+            }
+        }
 
         if ($this->app['phraseanet.user']->ACL()->has_right('modifyrecord')) {
-            $options->set_business_fields(array());
+            $BF = array_filter($bas, function($collection) use ($app) {
+                    return $app['phraseanet.user']->ACL()->has_right_on_base($collection->get_base_id(), 'canmodifrecord');
+                });
 
-            $BF = array();
+            $options->allowBusinessFieldsOn($BF);
+        }
 
-            foreach ($this->app['phraseanet.user']->ACL()->get_granted_base(array('canmodifrecord')) as $collection) {
-                if (count($params['bases']) === 0 || in_array($collection->get_base_id(), $params['bases'])) {
-                    $BF[] = $collection->get_base_id();
+        $options->onCollections($bas);
+
+        $status = is_array($request->request->get('status')) ? $request->request->get('status') : array();
+        $fields = is_array($request->request->get('fields')) ? $request->request->get('fields') : array();
+
+        $databoxFields = array();
+
+        foreach ($databoxes as $databox) {
+            foreach ($fields as $field) {
+                try {
+                    $databoxField = $databox->get_meta_structure()->get_element_by_name($field);
+                } catch (\Exception $e) {
+                    continue;
+                }
+                if ($databoxField) {
+                    $databoxFields[] = $databoxField;
                 }
             }
-            $options->set_business_fields($BF);
-        } else {
-            $options->set_business_fields(array());
         }
 
-        $options->set_bases($params['bases'], $this->app['phraseanet.user']->ACL());
+        $options->setFields($databoxFields);
+        $options->setStatus($status);
 
-        if (!is_array($params['fields'])) {
-            $params['fields'] = array();
+        $options->setSearchType($params['search_type']);
+        $options->setRecordType($params['recordtype']);
+        $options->setMinDate($params['datemin']);
+        $options->setMaxDate($params['datemax']);
+
+        $databoxDateFields = array();
+
+        foreach ($databoxes as $databox) {
+            foreach (explode('|', $request->request->get('datefield')) as $field) {
+                try {
+                    $databoxField = $databox->get_meta_structure()->get_element_by_name($field);
+                } catch (\Exception $e) {
+                    continue;
+                }
+                if ($databoxField) {
+                    $databoxDateFields[] = $databoxField;
+                }
+            }
         }
-        $options->set_fields($params['fields']);
-        if (!is_array($params['status'])) {
-            $params['status'] = array();
-        }
-        $options->set_status($params['status']);
-        $options->set_search_type($params['search_type']);
-        $options->set_record_type($params['recordtype']);
-        $options->set_min_date($params['datemin']);
-        $options->set_max_date($params['datemax']);
-        $options->set_date_fields(explode('|', $params['datefield']));
-        $options->set_sort($params['sort'], $params['ord']);
-        $options->set_use_stemming($params['stemme']);
+
+        $options->setDateFields($databoxDateFields);
+
+        $options->setSort($params['sort'], $params['ord']);
+        $options->useStemming($params['stemme']);
 
         $perPage = (int) $params['per_page'];
-        $search_engine = new searchEngine_adapter($this->app);
-        $search_engine->set_options($options);
 
-        $search_engine->reset_cache();
+        $this->app['phraseanet.SE']->setOptions($options);
+        $this->app['phraseanet.SE']->resetCache();
 
-        $search_result = $search_engine->query_per_offset($params['query'], $params["offset_start"], $perPage);
+        $search_result = $this->app['phraseanet.SE']->query($params['query'], $params["offset_start"], $perPage);
 
         $ret = array(
             'offset_start'      => $params["offset_start"],
             'per_page'          => $perPage,
-            'available_results' => $search->available(),
-            'total_results'     => $search->total(),
-            'error'             => $search->error(),
-            'warning'           => $search->warning(),
-            'query_time'        => $search->duration(),
-            'search_indexes'    => $search->indexes(),
-            'suggestions'       => $search->suggestions()->toArray(),
+            'available_results' => $search_result->available(),
+            'total_results'     => $search_result->total(),
+            'error'             => $search_result->error(),
+            'warning'           => $search_result->warning(),
+            'query_time'        => $search_result->duration(),
+            'search_indexes'    => $search_result->indexes(),
+            'suggestions'       => $search_result->suggestions()->toArray(),
             'results'           => array(),
-            'query'             => $search_engine->get_query(),
+            'query'             => $search_result->query(),
         );
 
         return array($ret, $search_result);
@@ -1222,7 +1262,7 @@ class API_V1_adapter extends API_V1_Abstract
             $record->move_to_collection($collection, $this->app['phraseanet.appbox']);
             $result->set_datas(array("record" => $this->list_record($record)));
         } catch (Exception $e) {
-            $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('An error occured'));
+            $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, $e->getMessage());
         }
 
         return $result;

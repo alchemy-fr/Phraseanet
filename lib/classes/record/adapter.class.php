@@ -13,6 +13,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Metadata\Tag\TfFilename;
 use Alchemy\Phrasea\Metadata\Tag\TfBasename;
+use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Doctrine\ORM\EntityManager;
 use MediaAlchemyst\Specification\SpecificationInterface;
 use MediaVorus\Media\MediaInterface;
@@ -501,7 +502,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
         $this->base_id = $collection->get_base_id();
 
-        $this->app['phrasea.SE']->updateRecord($this);
+        $this->app['phraseanet.SE']->updateRecord($this);
 
         $this->app['phraseanet.logger']($this->get_databox())
             ->log($this, Session_Logger::EVENT_MOVE, $collection->get_coll_id(), '');
@@ -878,7 +879,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      *
      * @return string
      */
-    public function get_title($highlight = false, searchEngine_adapter $searchEngine = null, $removeExtension = null)
+    public function get_title($highlight = false, SearchEngineInterface $searchEngine = null, $removeExtension = null)
     {
         $cache = !$highlight && !$searchEngine && !$removeExtension;
 

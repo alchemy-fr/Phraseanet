@@ -133,18 +133,11 @@ class Dashboard implements ControllerProviderInterface
                 break;
         }
 
-        try {
-            $engine = new \searchEngine_adapter($app);
-            $searchEngineStatus = $engine->get_status();
-        } catch (\Exception $e) {
-            $searchEngineStatus = null;
-        }
-
         $parameters = array(
             'cache_flushed'                 => $request->query->get('flush_cache') === 'ok',
             'admins'                        => \User_Adapter::get_sys_admins($app),
             'email_status'                  => $emailStatus,
-            'search_engine_status'          => $searchEngineStatus,
+            'search_engine_status'          => $app['phraseanet.SE']->status(),
             'php_version_constraints'       => \setup::check_php_version(),
             'writability_constraints'       => \setup::check_writability($app['phraseanet.registry']),
             'binaries_constraints'          => \setup::check_binaries($app['phraseanet.registry']),
