@@ -99,6 +99,11 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $this->markTestSkipped('No yet implemented');
     }
 
+    public function testQueryInField()
+    {
+        $this->markTestSkipped('No yet implemented');
+    }
+
     protected function editRecord($string2add, \record_adapter &$record, $indexable = true, $business = false)
     {
         $toupdate = array();

@@ -31,5 +31,10 @@ class PhraseaEngineTest extends SearchEngineAbstractTest
     {
         return;
     }
+
+    public function testQueryStoryId()
+    {
+        $this->markTestSkipped('Phrasea does not support `storyid=` request');
+    }
 }
 

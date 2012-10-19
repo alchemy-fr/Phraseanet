@@ -103,7 +103,7 @@ class SearchEngineOptions implements \Serializable
     /**
      * Constructor
      *
-     * @return searchEngine_options
+     * @return SearchEngineOptions
      */
     public function __construct()
     {
@@ -132,7 +132,7 @@ class SearchEngineOptions implements \Serializable
      *
      * @param  const                $sort_by
      * @param  const                $sort_ord
-     * @return searchEngine_options
+     * @return SearchEngineOptions
      */
     public function setSort($sort_by, $sort_ord = self::SORT_MODE_DESC)
     {
@@ -182,7 +182,7 @@ class SearchEngineOptions implements \Serializable
     /**
      *
      * @param  boolean              $boolean
-     * @return searchEngine_options
+     * @return SearchEngineOptions
      */
     public function useStemming($boolean)
     {
@@ -203,7 +203,7 @@ class SearchEngineOptions implements \Serializable
     /**
      *
      * @param  int                  $search_type
-     * @return searchEngine_options
+     * @return SearchEngineOptions
      */
     public function setSearchType($search_type)
     {
@@ -279,7 +279,7 @@ class SearchEngineOptions implements \Serializable
     /**
      *
      * @param  array                $status
-     * @return searchEngine_options
+     * @return SearchEngineOptions
      */
     public function setStatus(Array $status)
     {
@@ -317,7 +317,7 @@ class SearchEngineOptions implements \Serializable
     /**
      *
      * @param  string               $record_type
-     * @return searchEngine_options
+     * @return SearchEngineOptions
      */
     public function setRecordType($record_type)
     {
@@ -358,7 +358,7 @@ class SearchEngineOptions implements \Serializable
     /**
      *
      * @param  string               $min_date
-     * @return searchEngine_options
+     * @return SearchEngineOptions
      */
     public function setMinDate($min_date)
     {
@@ -381,7 +381,7 @@ class SearchEngineOptions implements \Serializable
     /**
      *
      * @param  string               $max_date
-     * @return searchEngine_options
+     * @return SearchEngineOptions
      */
     public function setMaxDate($max_date)
     {
@@ -404,7 +404,7 @@ class SearchEngineOptions implements \Serializable
     /**
      *
      * @param  array                $fields
-     * @return searchEngine_options
+     * @return SearchEngineOptions
      */
     public function setDateFields(Array $fields)
     {
@@ -448,7 +448,7 @@ class SearchEngineOptions implements \Serializable
     /**
      *
      * @param  string               $serialized
-     * @return searchEngine_options
+     * @return SearchEngineOptions
      */
     public function unserialize($serialized)
     {

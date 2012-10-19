@@ -11,11 +11,15 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
      * @var record_adapter
      */
     protected static $grouping;
-    protected static $updated;
+    protected static $initialized;
 
     public function setUp()
     {
         parent::setUp();
+
+        if (self::$initialized) {
+            return;
+        }
 
         /**
          * Reset thumbtitle in order to have consistent tests (testGet_title)
@@ -28,6 +32,8 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
             }
             self::$updated = true;
         }
+
+        self::$initialized = true;
     }
 
     /**
@@ -387,7 +393,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testRebuild_subdefs()
     {
-        static::$records['record_1']->rebuild_subdefs();
+        self::$DI['record_1']->rebuild_subdefs();
         $sql = 'SELECT record_id
               FROM record
               WHERE jeton & ' . JETON_MAKE_SUBDEF . ' > 0

@@ -42,17 +42,14 @@ class PhraseaEngine implements SearchEngineInterface
     {
         $this->app = $app;
         $this->options = new SearchEngineOptions();
-
-        $this->initialize();
-        $this->checkSession();
     }
-    
+
     private function checkSession()
     {
         if (!$this->app['phraseanet.user']) {
             throw new \RuntimeException('Phrasea currently support only authenticated queries');
         }
-        
+
         if (!phrasea_open_session($this->app['session']->get('phrasea_session_id'), $this->app['phraseanet.user']->get_id())) {
             if (!$ses_id = phrasea_create_session((string) $this->app['phraseanet.user']->get_id())) {
                 throw new \Exception_InternalServerError('Unable to create phrasea session');
@@ -60,13 +57,13 @@ class PhraseaEngine implements SearchEngineInterface
             $this->app['session']->set('phrasea_session_id', $ses_id);
         }
     }
-    
+
     private function initialize()
     {
         if(!self::$initialized) {
-            
+
             \phrasea::start($this->app['phraseanet.configuration']);
-        
+
             self::$initialized = true;
         }
     }
@@ -216,6 +213,9 @@ class PhraseaEngine implements SearchEngineInterface
      */
     public function query($query, $offset, $perPage)
     {
+        $this->initialize();
+        $this->checkSession();
+
         assert(is_int($offset));
         assert($offset >= 0);
         assert(is_int($perPage));
@@ -260,7 +260,7 @@ class PhraseaEngine implements SearchEngineInterface
              */
             $this->total_available = $this->total_results = $this->app['session']->get('phrasea_engine_n_results');
         }
-        
+
         $res = phrasea_fetch_results(
             $this->app['session']->get('phrasea_session_id'), $offset + 1, $perPage, false
         );
@@ -279,7 +279,7 @@ class PhraseaEngine implements SearchEngineInterface
         foreach ($rs as $data) {
             try {
                 $records->add(new \record_adapter(
-                        $this->app, 
+                        $this->app,
                         \phrasea::sbasFromBas($this->app, $data['base_id']),
                         $data['record_id'],
                         $resultNumber
@@ -293,7 +293,7 @@ class PhraseaEngine implements SearchEngineInterface
 
         return new SearchEngineResult($records, $query, $row['duration'], $offset, $row['total'], $row['total'], $error, '', new ArrayCollection(), new ArrayCollection(), '');
     }
-    
+
     public static function create(Application $app)
     {
         return new static($app);
@@ -386,7 +386,7 @@ class PhraseaEngine implements SearchEngineInterface
         if ($this->app['phraseanet.user']) {
             \User_Adapter::saveQuery($this->app, $query);
         }
-        
+
         return $this;
     }
 
