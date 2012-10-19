@@ -63,7 +63,7 @@ class PreferencesTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $datas = (array) json_decode($response->getContent());
         $this->assertArrayHasKey('success', $datas);
         $this->assertTrue($datas['success']);
-        $this->assertEquals('val_test', self::$DI['app']['session']->get('pref.prop_test'));
+        $this->assertEquals('val_test', self::$DI['app']['session']->get('phraseanet.prop_test'));
         unset($response, $datas);
     }
 
