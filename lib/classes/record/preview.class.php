@@ -87,15 +87,19 @@ class record_preview extends record_adapter
      * @param  boolean        $reload_train
      * @return record_preview
      */
-    public function __construct(Application $app, $env, $pos, $contId, $reload_train, searchEngine_adapter $search_engine = null, $query = '')
+    public function __construct(Application $app, $env, $pos, $contId, $reload_train = false, searchEngine_adapter $search_engine = null, $query = '')
     {
         $number = null;
         $this->env = $env;
 
         switch ($env) {
             case "RESULT":
+
+                if(null === $search_engine) {
+                    throw new \LogicException('Search Engine should be provided');
+                }
+
                 $results = $search_engine->query_per_offset($query, (int) ($pos), 1);
-                $mypreview = array();
 
                 if ($results->get_datas()->is_empty()) {
                     throw new Exception('Record introuvable');

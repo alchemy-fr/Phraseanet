@@ -174,10 +174,9 @@ function print_notifications(page)
 
 	$.ajax({
 		type: "POST",
-		url: "/prod/prodFeedBack.php",
+		url: "/user/notifications/",
 		dataType : 'json',
 		data: {
-			action: "NOTIFICATIONS_FULL",
 			page:page
 		},
 		error: function(data){
@@ -252,9 +251,8 @@ function read_notifications()
 
 	$.ajax({
 		type: "POST",
-		url: "/prod/prodFeedBack.php",
+		url: "/user/notifications/read/",
 		data: {
-			action: "READ_NOTIFICATIONS",
 			notifications:notifications.join('_')
 		},
 		success: function(data){
@@ -304,9 +302,8 @@ function setPref(name,value)
 
 	jQuery.data['pref_'+name] = $.ajax({
 		type: "POST",
-		url: "/prod/UserPreferences/save/",
+		url: "/user/preferences/",
 		data: {
-			action: "SAVEPREF",
 			prop:name,
 			value:value
 		},

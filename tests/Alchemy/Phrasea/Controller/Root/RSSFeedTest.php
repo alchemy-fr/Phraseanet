@@ -495,7 +495,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
         $available_medium = array('image', 'audio', 'video');
         array_walk($content, $this->removeBadItems($content, $available_medium));
         $media_group = $xpath->query("/rss/channel/item[" . $count . "]/media:group");
-        $this->assertEquals(sizeof($content), $media_group->length);
+        $this->assertEquals(sizeof($content), $media_group->length, sizeof($content)." != ".$media_group->length);
 
         foreach ($media_group as $media) {
             $entry_item = array_shift($content);

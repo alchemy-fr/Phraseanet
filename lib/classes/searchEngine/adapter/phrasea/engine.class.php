@@ -266,7 +266,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
             self::addQuery($query);
             self::query();
         } else {
-            $this->total_available = $this->total_results = $this->app['session']->get('phrasea_engine_n_results');
+            $this->total_available = $this->total_results = $this->app['session']->get('phraseanet.phrasea_engine_n_results');
         }
 
         $results = new set_result();
@@ -444,7 +444,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
 
         User_Adapter::saveQuery($this->app, $this->query);
 
-        $this->app['session']->set('phrasea_engine_n_results', $nbanswers);
+        $this->app['session']->set('phraseanet.phrasea_engine_n_results', $nbanswers);
 
         $this->total_available = $this->total_results = $nbanswers;
 

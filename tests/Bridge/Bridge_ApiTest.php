@@ -66,7 +66,7 @@ class Bridge_ApiTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertTrue($this->object->is_disabled());
         sleep(3);
         $update2 = $this->object->get_updated_on();
-        $this->assertTrue($update2 > $update1);
+        $this->assertTrue($update2 > $update1, $update2->format('Y-m-d, H:i:s') ." sould be > to " . $update1->format('Y-m-d, H:i:s'));
         $this->assertFalse($this->object->is_disabled());
         $this->object->enable();
         $this->assertFalse($this->object->is_disabled());

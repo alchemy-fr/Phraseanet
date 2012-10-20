@@ -16,10 +16,10 @@
   RewriteRule ^developers/.*$                   /index.php [L]
   RewriteRule ^login/.*$                        /index.php [L]
   RewriteRule ^prod/records/edit/.*$            /index.php [L]
+  RewriteRule ^prod/records/property/.*$        /index.php [L]
   RewriteRule ^prod/records/movecollection/.*$  /index.php [L]
   RewriteRule ^prod/records/delete/.*$          /index.php [L]
   RewriteRule ^prod/order/.*$                   /index.php [L]
-  RewriteRule ^prod/UserPreferences/.*$         /index.php [L]
   RewriteRule ^prod/bridge/.*$                  /index.php [L]
   RewriteRule ^prod/MustacheLoader/.*$          /index.php [L]
   RewriteRule ^prod/feeds/.*$                   /index.php [L]
@@ -40,6 +40,10 @@
   RewriteRule ^prod/export/.*$                  /index.php [L]
   RewriteRule ^prod/record/preview/.*$          /index.php [L]
   RewriteRule ^prod/notifications/.*$           /index.php [L]
+  RewriteRule ^prod/share/.*$                   /index.php [L]
+
+  RewriteRule ^user/preferences/.*$             /index.php [L]
+  RewriteRule ^user/notifications/.*$           /index.php [L]
 
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteRule ^api/v1/.*$             /api/v1/index.php [L]

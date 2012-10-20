@@ -372,7 +372,7 @@ class TaskManager implements ControllerProviderInterface
 
     public function startScheduler(Application $app, Request $request)
     {
-        $app['session']->close();
+        $app['session']->save();
         set_time_limit(0);
         ignore_user_abort(true);
 
