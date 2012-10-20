@@ -108,6 +108,10 @@ class SphinxSearchEngine implements SearchEngineInterface
 
     public function addRecord(\record_adapter $record)
     {
+        if (!$this->rt_conn) {
+            throw new RuntimeException('Unable to connect to sphinx real-time index');
+        }
+
         $all_datas = array();
         $status = array();
 
@@ -173,6 +177,10 @@ class SphinxSearchEngine implements SearchEngineInterface
 
     public function removeRecord(\record_adapter $record)
     {
+        if (!$this->rt_conn) {
+            throw new RuntimeException('Unable to connect to sphinx real-time index');
+        }
+
         $CRCdatabox = $this->CRCdatabox($record->get_databox());
         $indexes = array(
             "metadatas" . $CRCdatabox,
