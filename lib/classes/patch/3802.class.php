@@ -63,10 +63,10 @@ class patch_3802 implements patchInterface
         $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
         $stmt->execute();
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $stmt->closeCurosr();
+        $stmt->closeCursor();
 
         if ($row['Auto_increment']) {
-            $sql = sprintf('ALTER TABLE Sessions  AUTO_INCREMENT = %d', $row['Auto_increment']);
+            $sql = sprintf('ALTER TABLE Sessions AUTO_INCREMENT = %d', $row['Auto_increment']);
             $app['phraseanet.appbox']->get_connection()->exec($sql);
         }
 
