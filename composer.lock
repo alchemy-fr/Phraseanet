@@ -862,6 +862,48 @@
             ]
         },
         {
+            "name": "neutron/sphinxsearch-api",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/romainneutron/Sphinx-Search-API-PHP-Client",
+                "reference": "2.0.5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/romainneutron/Sphinx-Search-API-PHP-Client/zipball/2.0.5",
+                "reference": "2.0.5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=4"
+            },
+            "time": "1350903759",
+            "type": "library",
+            "installation-source": "source",
+            "autoload": {
+                "classmap": [
+                    "sphinxapi.php"
+                ]
+            },
+            "license": [
+                "GPL"
+            ],
+            "authors": [
+                {
+                    "name": "Andrew Aksyonoff",
+                    "homepage": "http://sphinxsearch.com/"
+                }
+            ],
+            "description": "SphinxSearch PHP API",
+            "homepage": "http://sphinxsearch.com/",
+            "keywords": [
+                "api",
+                "Sphinx Search",
+                "search-engine"
+            ]
+        },
+        {
             "name": "php-ffmpeg/php-ffmpeg",
             "version": "dev-master",
             "source": {
@@ -1080,7 +1122,8 @@
             "keywords": [
                 "pdf",
                 "xpdf"
-            ]
+            ],
+            "time": "1349703734"
         },
         {
             "name": "phpexiftool/exiftool",
@@ -1117,7 +1160,8 @@
             "keywords": [
                 "exiftool",
                 "metadatas"
-            ]
+            ],
+            "time": "1346256086"
         },
         {
             "name": "phpexiftool/phpexiftool",
@@ -1171,7 +1215,8 @@
             "keywords": [
                 "metadata",
                 "exiftool"
-            ]
+            ],
+            "time": "1346681208"
         },
         {
             "name": "pimple/pimple",
@@ -1218,7 +1263,8 @@
             "keywords": [
                 "dependency injection",
                 "container"
-            ]
+            ],
+            "time": "1347278988"
         },
         {
             "name": "silex/silex",
