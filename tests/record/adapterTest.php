@@ -433,10 +433,15 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
      */
     public function testSet_binary_status()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $status = '';
+
+        while(strlen($status) < 32) {
+            $status .= '1';
+        }
+
+        self::$DI['record_1']->set_binary_status($status);
+
+        $this->assertEquals($status, self::$DI['record_1']->get_status());
     }
 
     public function testGet_record_by_sha()
