@@ -22,7 +22,7 @@ class PhraseaEngineTest extends SearchEngineAbstractTest
             . ' -h=' . $appbox->get_host() . ' -P=' . $appbox->get_port()
             . ' -b=' . $appbox->get_dbname() . ' -u=' . $appbox->get_user()
             . ' -p=' . $appbox->get_passwd()
-            . ' --default-character-set=utf8 -n -o -d=64 --quit';
+            . ' --default-character-set=utf8 -n -o --quit';
         $process = new Process($cmd);
         $process->run();
     }
