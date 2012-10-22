@@ -34,6 +34,7 @@ use Alchemy\Phrasea\Controller\Admin\TaskManager;
 use Alchemy\Phrasea\Controller\Admin\Users;
 use Alchemy\Phrasea\Controller\Prod\Basket;
 use Alchemy\Phrasea\Controller\Prod\Bridge;
+use Alchemy\Phrasea\Controller\Prod\Download;
 use Alchemy\Phrasea\Controller\Prod\Edit;
 use Alchemy\Phrasea\Controller\Prod\Export;
 use Alchemy\Phrasea\Controller\Prod\Feed;
@@ -134,6 +135,7 @@ return call_user_func(function($environment = null) {
     $app->mount('/prod/query/', new Query());
     $app->mount('/prod/order/', new Order());
     $app->mount('/prod/baskets', new Basket());
+    $app->mount('/prod/download', new Download());
     $app->mount('/prod/story', new Story());
     $app->mount('/prod/WorkZone', new WorkZone());
     $app->mount('/prod/lists', new UsrLists());
