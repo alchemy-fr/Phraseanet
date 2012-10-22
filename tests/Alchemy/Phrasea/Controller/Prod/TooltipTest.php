@@ -89,7 +89,7 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         foreach ($routes as $route) {
             $option = new SearchEngineOptions();
-            $crawler = self::$DI['client']->request('POST', $route, array('options_serial' => serialize($option)));
+            $crawler = self::$DI['client']->request('POST', $route, array('options_serial' => $option->serialize()));
 
             $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         }

@@ -132,8 +132,17 @@ $options->onCollections($bas);
 
 $options->setSearchType($parm['search_type']);
 $options->setRecordType($parm['recordtype']);
-$options->setMinDate($parm['datemin']);
-$options->setMaxDate($parm['datemax']);
+
+$min_date = $max_date = null;
+if ($parm['datemin']) {
+    $min_date = \DateTime::createFromFormat('Y/m/d H:i:s', $parm['datemin'] . ' 00:00:00');
+}
+if ($parm['datemax']) {
+    $max_date = \DateTime::createFromFormat('Y/m/d H:i:s', $parm['datemax'] . ' 23:59:59');
+}
+
+$options->setMinDate($min_date);
+$options->setMaxDate($max_date);
 
 
 $databoxDateFields = array();
@@ -160,7 +169,7 @@ $options->setDateFields($databoxDateFields);
 $options->setSort($parm['sort'], $parm['ord']);
 $options->useStemming($parm['stemme']);
 
-$form = serialize($options);
+$form = $options->serialize();
 
 $perPage = $mod_xy;
 
@@ -458,7 +467,7 @@ if (count($result->results()) > 0) {
             $(document).ready(function(){
 
                 p4.tot = <?php echo $result->available(); ?>;
-                p4.tot_options = '<?php echo serialize($options) ?>';
+                p4.tot_options = '<?php echo $options->serialize() ?>';
                 p4.tot_query = '<?php echo $parm['qry'] ?>';
 
             });

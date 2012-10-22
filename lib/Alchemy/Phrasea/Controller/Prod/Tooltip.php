@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Symfony\Component\HttpFoundation\Request;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -111,8 +112,11 @@ class Tooltip implements ControllerProviderInterface
         $search_engine = $app['phraseanet.SE'];
 
         if ($context == 'answer') {
-            if (($search_engine_options = unserialize($app['request']->request->get('options_serial'))) !== false) {
+            try {
+                $search_engine_options = SearchEngineOptions::hydrate($app, $app['request']->request->get('options_serial'));
                 $search_engine->setOptions($search_engine_options);
+            } catch (\Exception $e) {
+
             }
         }
 

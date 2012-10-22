@@ -85,10 +85,9 @@ class record_preview extends record_adapter
      * @param  string         $env
      * @param  int            $pos
      * @param  mixed content  $contId
-     * @param  boolean        $reload_train
      * @return record_preview
      */
-    public function __construct(Application $app, $env, $pos, $contId, $reload_train, SearchEngineInterface $search_engine = null, $query = '')
+    public function __construct(Application $app, $env, $pos, $contId, SearchEngineInterface $search_engine = null, $query = '')
     {
         $number = null;
         $this->env = $env;
@@ -102,10 +101,10 @@ class record_preview extends record_adapter
 
                 $results = $search_engine->query($query, (int) ($pos), 1);
 
-                if ($results->get_datas()->is_empty()) {
+                if ($results->results()->isEmpty()) {
                     throw new Exception('Record introuvable');
                 }
-                foreach ($results->get_datas() as $record) {
+                foreach ($results->results() as $record) {
                     $number = $pos;
                     $sbas_id = $record->get_sbas_id();
                     $record_id = $record->get_record_id();
@@ -210,7 +209,7 @@ class record_preview extends record_adapter
                 $page = (int) ceil($pos / $perPage);
                 $results = $search_engine->query($query, $index, $perPage);
 
-                $this->train = $results->get_datas();
+                $this->train = $results->results()->toArray();
                 break;
             case 'BASK':
                 $this->train = $this->container->getElements();

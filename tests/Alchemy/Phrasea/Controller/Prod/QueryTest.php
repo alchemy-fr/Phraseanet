@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\Controller\Prod;
 
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
+use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\Controller\Prod\Query;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -36,10 +37,9 @@ class QueryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['app']->openAccount($auth);
         self::$DI['record_24'];
 
-        $options = new \searchEngine_options();
-        $acl = self::$DI['app']['phraseanet.user']->ACL();
-        $options->set_bases(array_keys($acl->get_granted_base()), $acl);
-        $serializedOptions = serialize($options);
+        $options = new SearchEngineOptions();
+        $options->onCollections(self::$DI['app']['phraseanet.user']->ACL()->get_granted_base());
+        $serializedOptions = $options->serialize();
 
         self::$DI['client']->request('POST', '/prod/query/answer-train/', array(
             'options_serial' => $serializedOptions,

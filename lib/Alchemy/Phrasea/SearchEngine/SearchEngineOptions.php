@@ -11,7 +11,9 @@
 
 namespace Alchemy\Phrasea\SearchEngine;
 
-class SearchEngineOptions implements \Serializable
+use Alchemy\Phrasea\Application;
+
+class SearchEngineOptions
 {
     const RECORD_RECORD = 0;
     const RECORD_GROUPING = 1;
@@ -99,16 +101,6 @@ class SearchEngineOptions implements \Serializable
      */
     protected $sort_ord = self::SORT_MODE_DESC;
     protected $business_fields = array();
-
-    /**
-     * Constructor
-     *
-     * @return SearchEngineOptions
-     */
-    public function __construct()
-    {
-        return $this;
-    }
 
     /**
      *
@@ -356,15 +348,15 @@ class SearchEngineOptions implements \Serializable
     }
 
     /**
-     *
-     * @param  string               $min_date
      * @return SearchEngineOptions
      */
-    public function setMinDate($min_date)
+    public function setMinDate(\DateTime $min_date = null)
     {
-        if (!is_null($min_date) && trim($min_date) !== '') {
-            $this->date_min = DateTime::createFromFormat('Y/m/d H:i:s', $min_date . ' 00:00:00');
+        if ($min_date && $this->date_max && $min_date > $this->date_max) {
+            throw new \LogicException('Min-date should be before max-date');
         }
+
+        $this->date_min = $min_date;
 
         return $this;
     }
@@ -383,11 +375,13 @@ class SearchEngineOptions implements \Serializable
      * @param  string               $max_date
      * @return SearchEngineOptions
      */
-    public function setMaxDate($max_date)
+    public function setMaxDate(\DateTime $max_date = null)
     {
-        if (!is_null($max_date) && trim($max_date) !== '') {
-            $this->date_max = \DateTime::createFromFormat('Y/m/d H:i:s', $max_date . ' 23:59:59');
+        if ($max_date && $this->date_max && $max_date < $this->date_min) {
+            throw new \LogicException('Min-date should be before max-date');
         }
+
+        $this->date_max = $max_date;
 
         return $this;
     }
@@ -431,7 +425,12 @@ class SearchEngineOptions implements \Serializable
         $ret = array();
         foreach ($this as $key => $value) {
             if ($value instanceof \DateTime) {
-                $value = $value->format('d-m-Y h:i:s');
+                $value = $value->format(DATE_ATOM);
+            }
+            if (in_array($key, array('date_fields', 'fields'))) {
+                $value = array_map(function(\databox_field $field) {
+                        return $field->get_databox()->get_sbas_id() . '_' . $field->get_id();
+                    }, $value);
             }
             if (in_array($key, array('collections', 'business_fields'))) {
                 $value = array_map(function($collection) {
@@ -450,32 +449,107 @@ class SearchEngineOptions implements \Serializable
      * @param  string               $serialized
      * @return SearchEngineOptions
      */
-    public function unserialize($serialized)
+    public static function hydrate(Application $app, $serialized)
     {
-        $serialized = json_decode($serialized);
+        $serialized = json_decode($serialized, true);
 
-        foreach ($serialized as $key => $value) {
-            if (is_null($value)) {
-                $value = null;
-            } elseif (in_array($key, array('date_min', 'date_max'))) {
-                $value = new DateTime($value);
-            } elseif ($value instanceof stdClass) {
-                $tmpvalue = (array) $value;
-                $value = array();
-
-                foreach ($tmpvalue as $k => $data) {
-                    $k = ctype_digit($k) ? (int) $k : $k;
-                    $value[$k] = $data;
-                }
-            } elseif (in_array($key, array('collections', 'business_fields'))) {
-                $value = array_map(function($base_id) {
-                        return \collection::get_from_base_id($base_id);
-                    }, $value);
-            }
-
-            $this->$key = $value;
+        if (!is_array($serialized)) {
+            throw new \InvalidArgumentException('SearchEngineOptions data are corrupted');
         }
 
-        return $this;
+        $options = new SearchEngineOptions();
+        $options->disallowBusinessFields();
+
+        foreach ($serialized as $key => $value) {
+
+            switch (true) {
+                case is_null($value):
+                    $value = null;
+                    break;
+                case in_array($key, array('date_min', 'date_max')):
+                    $value = \DateTime::createFromFormat(DATE_ATOM, $value);
+                    break;
+                case $value instanceof stdClass:
+                    $tmpvalue = (array) $value;
+                    $value = array();
+
+                    foreach ($tmpvalue as $k => $data) {
+                        $k = ctype_digit($k) ? (int) $k : $k;
+                        $value[$k] = $data;
+                    }
+                    break;
+                case in_array($key, array('date_fields', 'fields')):
+                    $value = array_map(function($serialized) use ($app) {
+                        $data = explode('_', $serialized);
+
+                        return \databox_field::get_instance($app, $app['phraseanet.appbox']->get_databox($data[0]), $data[1]);
+                            return \collection::get_from_base_id($app, $base_id);
+                        }, $value);
+                    break;
+                case in_array($key, array('collections', 'business_fields')):
+                    $value = array_map(function($base_id) use ($app) {
+                            return \collection::get_from_base_id($app, $base_id);
+                        }, $value);
+                    break;
+            }
+
+            $sort_by = $sort_ord = null;
+
+            switch ($key) {
+                case 'record_type':
+                    $options->setRecordType($value);
+                    break;
+                case 'search_type':
+                    $options->setSearchType($value);
+                    break;
+                case 'status':
+                    $options->setStatus($value);
+                    break;
+                case 'date_min':
+                    $options->setMinDate($value);
+                    break;
+                case 'date_max':
+                    $options->setMaxDate($value);
+                    break;
+                case 'i18n':
+                    $options->setLocale($value);
+                    break;
+                case 'stemming':
+                    $options->useStemming($value);
+                    break;
+                case 'sort_by':
+                    $sort_by = $value;
+                    break;
+                case 'sort_ord':
+                    $sort_ord = $value;
+                    break;
+                case 'date_fields':
+                    $options->setDateFields($value);
+                    break;
+                case 'fields':
+                    $options->setFields($value);
+                    break;
+                case 'collections':
+                    $options->onCollections($value);
+                    break;
+                case 'business_fields':
+                    $options->allowBusinessFieldsOn($value);
+                    break;
+                default:
+                    throw new \RuntimeException(sprintf('Unable to handle key `%s`', $key));
+                    break;
+            }
+
+        }
+
+        if ($sort_by) {
+            if ($sort_ord) {
+                $options->setSort($sort_by, $sort_ord);
+            } else {
+                $options->setSort($sort_by);
+            }
+        }
+
+        return $options;
     }
 }

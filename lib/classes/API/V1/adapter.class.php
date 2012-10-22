@@ -970,8 +970,17 @@ class API_V1_adapter extends API_V1_Abstract
 
         $options->setSearchType($params['search_type']);
         $options->setRecordType($params['recordtype']);
-        $options->setMinDate($params['datemin']);
-        $options->setMaxDate($params['datemax']);
+
+        $min_date = $max_date = null;
+        if ($params['datemin']) {
+            $min_date = \DateTime::createFromFormat('Y/m/d H:i:s', $params['datemin'] . ' 00:00:00');
+        }
+        if ($params['datemax']) {
+            $max_date = \DateTime::createFromFormat('Y/m/d H:i:s', $params['datemax'] . ' 23:59:59');
+        }
+
+        $options->setMinDate($min_date);
+        $options->setMaxDate($max_date);
 
         $databoxDateFields = array();
 

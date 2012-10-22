@@ -152,9 +152,17 @@ class Query implements ControllerProviderInterface
 
         $options->setSearchType($request->request->get('search_type'));
         $options->setRecordType($request->request->get('recordtype'));
-        $options->setMinDate($request->request->get('datemin'));
-        $options->setMaxDate($request->request->get('datemax'));
 
+        $min_date = $max_date = null;
+        if ($request->request->get('datemin')) {
+            $min_date = \DateTime::createFromFormat('Y/m/d H:i:s', $request->request->get('datemin') . ' 00:00:00');
+        }
+        if ($request->request->get('datemax')) {
+            $max_date = \DateTime::createFromFormat('Y/m/d H:i:s', $request->request->get('datemax') . ' 23:59:59');
+        }
+
+        $options->setMinDate($min_date);
+        $options->setMaxDate($max_date);
 
         $databoxDateFields = array();
 
@@ -175,7 +183,7 @@ class Query implements ControllerProviderInterface
         $options->setSort($request->request->get('sort'), $request->request->get('ord', PHRASEA_ORDER_DESC));
         $options->useStemming($request->request->get('stemme'));
 
-        $form = serialize($options);
+        $form = $options->serialize();
 
         $perPage = (int) $app['phraseanet.user']->getPrefs('images_per_page');
 
@@ -317,21 +325,21 @@ class Query implements ControllerProviderInterface
             $app->abort(400, 'Search engine options are missing');
         }
 
-        if (false !== $options = unserialize($optionsSerial)) {
-            $searchEngine = new \searchEngine_adapter($app);
-            $searchEngine->set_options($options);
-        } else {
+        try {
+            $options = SearchEngineOptions::hydrate($app, $optionsSerial);
+            $app['phraseanet.SE']->setOptions($options);
+        } catch (\Exception $e) {
             $app->abort(400, 'Provided search engine options are not valid');
         }
 
         $pos = (int) $request->request->get('pos', 0);
         $query = $request->request->get('query', '');
 
-        $record = new \record_preview($app, 'RESULT', $pos, '', '', $searchEngine, $query);
+        $record = new \record_preview($app, 'RESULT', $pos, '', $app['phraseanet.SE'], $query);
 
         return $app->json(array(
             'current' => $app['twig']->render('prod/preview/result_train.html.twig', array(
-                'records'  => $record->get_train($pos, $query, $searchEngine),
+                'records'  => $record->get_train($pos, $query, $app['phraseanet.SE']),
                 'selected' => $pos
             ))
         ));

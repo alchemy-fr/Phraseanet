@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 
 /**
  *
