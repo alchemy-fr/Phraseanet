@@ -1,5 +1,5 @@
 {
-    "hash": "a670b100c70cc2d3beac275230c03ccf",
+    "hash": "0c4df0865a1cef8b2458b8e7a46ded7e",
     "packages": [
         {
             "name": "BadFaith/BadFaith",
@@ -1235,7 +1235,6 @@
             "require": {
                 "php": ">=5.3.0"
             },
-            "time": "2012-11-11 08:32:34",
             "type": "library",
             "extra": {
                 "branch-alias": {
