@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Controller\Prod;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class Download implements ControllerProviderInterface
@@ -46,7 +47,6 @@ class Download implements ControllerProviderInterface
         $controllers->post('/', $this->call('download'))
             ->bind('download');
 
-
         return $controllers;
     }
 
@@ -64,6 +64,10 @@ class Download implements ControllerProviderInterface
         $subdefs = $request->request->get('obj', array());
 
         $download = new \set_export($app, $lst, $ssttid);
+
+        if(0 === $download->get_total_download()) {
+            $app->abort(403);
+        }
 
         $list = $download->prepare_export(
             $app['phraseanet.user'],
@@ -95,7 +99,7 @@ class Download implements ControllerProviderInterface
             'export_file' => $download->getExportName()
         ));
 
-        return $app->redirect('/download/' . $token .'/');
+        return $app->redirect('/prod/download/' . $token . '/');
     }
 
     /**
