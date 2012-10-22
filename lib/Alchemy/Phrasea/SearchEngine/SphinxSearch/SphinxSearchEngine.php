@@ -21,8 +21,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
 
-require_once __DIR__ . '/../../../../vendor/sphinx/sphinxapi.php';
-
 class SphinxSearchEngine implements SearchEngineInterface
 {
     /**
