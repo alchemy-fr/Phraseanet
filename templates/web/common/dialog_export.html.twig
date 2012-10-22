@@ -106,7 +106,7 @@
             <div id="download">
                 <div style="padding:10px; text-align: center;">
                     <h4>{% trans 'export:: telechargement' %}</h4>
-                    <form method="post" target="_blank" action="/include/download.php" style="text-align: left;">
+                    <form method="post" target="_blank" action="{{ path('download') }}" style="text-align: left;">
                         <input type="hidden" name="lst" value="{{lst}}"/>
                         <input type="hidden" name="ssttid" value="{{ssttid}}"/>
                         {% for name, values in download.get_display_download() %}
@@ -753,4 +753,3 @@
         });
     </script>
 {% endif %}
-    
