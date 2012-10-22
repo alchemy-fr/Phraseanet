@@ -32,6 +32,7 @@ class set_export extends set_abstract
     protected $ftp_datas;
     protected $list;
     protected $businessFieldsAccess;
+    protected $exportName;
 
     /**
      *
@@ -61,6 +62,7 @@ class set_export extends set_abstract
 
             /* @var $repository \Repositories\BasketRepository */
             $Basket = $repository->findUserBasket($this->app, $sstid, $app['phraseanet.user'], false);
+            $this->exportName = str_replace(' ', '_', $Basket->getName()) . "_" . date("Y-n-d");
 
             foreach ($Basket->getElements() as $basket_element) {
                 /* @var $basket_element \Entities\BasketElement */
@@ -87,6 +89,8 @@ class set_export extends set_abstract
                 $remain_hd[$base_id] = $current_element->get_remain_hd();
             }
         } else {
+            $this->exportName = "Export_" . date("Y-n-d") . '_' . mt_rand(100, 999);
+
             $tmp_lst = explode(';', $lst);
             $n = 1;
             foreach ($tmp_lst as $basrec) {
@@ -311,6 +315,16 @@ class set_export extends set_abstract
     }
 
     /**
+     * Return export name
+     *
+     * @return string
+     */
+    public function getExportName()
+    {
+        return $this->exportName;
+    }
+
+    /**
      *
      * @return Array
      */
@@ -480,7 +494,7 @@ class set_export extends set_abstract
                         break;
                     case 'document':
                         $subdef_export = true;
-                        $path = recordutils_image::stamp($app, $sd[$name]);
+                        $path = \recordutils_image::stamp($this->app , $sd[$name]);
                         $tmp_pathfile = array(
                             'path' => $sd[$name]->get_path()
                             , 'file' => $sd[$name]->get_file()
@@ -504,7 +518,7 @@ class set_export extends set_abstract
                         if (!$user->ACL()->has_right_on_base($download_element->get_base_id(), "nowatermark")
                             && !$user->ACL()->has_preview_grant($download_element)
                             && $sd[$name]->get_type() == media_subdef::TYPE_IMAGE) {
-                            $path = recordutils_image::watermark($app, $sd[$name]);
+                            $path = recordutils_image::watermark($this->app, $sd[$name]);
                             if (file_exists($path)) {
                                 $tmp_pathfile = array(
                                     'path'        => dirname($path)
@@ -641,6 +655,7 @@ class set_export extends set_abstract
                 $files[$id]["subdefs"]['caption']["size"] = filesize($path . $file);
                 $files[$id]["subdefs"]['caption']['businessfields'] = $BF ? '1' : '0';
             }
+
             if (in_array('caption-yaml', $subdefs)) {
                 $caption_dir = $this->app['phraseanet.registry']->get('GV_RootPath') . 'tmp/desc_tmp/'
                     . time() . $this->app['phraseanet.user']->get_id() . '/';

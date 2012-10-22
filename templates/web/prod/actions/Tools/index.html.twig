@@ -1,9 +1,9 @@
-{% set selectionLength = selection|length %}
+{% set selectionLength = records|length %}
 
 {% set nbHdSubstitute = 0 %}
 {% set nbThumbSubstitute = 0 %}
 
-{% for record in selection %}
+{% for record in records %}
   {% set subdefs = record.get_subdefs() %}
   {% if subdefs|length > 0 %}
     {% for key, subdef in subdefs if subdef.is_substituted() %}
@@ -21,7 +21,7 @@
 
 {# image section #}
 {% set allowRotate = '0' %}
-{% for record in selection %}
+{% for record in records %}
   {% if record.get_type() == 'image' %}
       {% set allowRotate = '1' %}
   {% endif %}
@@ -40,7 +40,7 @@
                     </a>
                 </li>
                 {% if selectionLength == 1%}
-                    {% for record in selection %}
+                    {% for record in records %}
                         {% if record.get_type() == 'video' %}
                             <li>
                                 <a href="#thumbExtractor">
@@ -101,7 +101,7 @@
                         </select>
                     </div>
                     <input type="hidden" name="ACT" value="SEND" />
-                    <input type="hidden" name="lst" value="{{helper.serializedList()}}" />
+                    <input type="hidden" name="lst" value="{{records.serializedList()}}" />
                 </fieldset>
                 <div style='text-align:right;padding-top:10px;'>
                     <button class="action_submiter btn btn-inverse" type="button">{% trans "validate" %}</button>
@@ -111,7 +111,7 @@
         </div>
 
      {% if selectionLength == 1 %}
-      {% for record in selection %}
+      {% for record in records %}
         {% if record.get_type() == 'video' %}
           <div id="thumbExtractor"  class="tabBox">
             <div class="PNB10 main_title">
@@ -244,7 +244,7 @@
                     <input type="radio" name="rotation" id="ROTA_C90" value="-90">
                     {% trans "rotation 90 degres anti-horaires"%}
                 </label>
-                <input type="hidden" name="lst" value="{{helper.get_serialize_list()}}" />
+                <input type="hidden" name="lst" value="{{records.serializedList()}}" />
                 <input type="hidden" name="element" value="" />
                 <input type="hidden" name="cchd" value="" />
             </fieldset>
@@ -258,7 +258,7 @@
 
     {# hd sub section #}
     {% if selectionLength == 1 %}
-      {% for record in selection %}
+      {% for record in records %}
         <div id="substitution" class="tabBox">
 
          {% if app['phraseanet.registry'].get('GV_seeOngChgDoc') %}
@@ -327,7 +327,7 @@
 
     {# exiftool section #}
     {% if metadatas %}
-      {% for record in selection %}
+      {% for record in records %}
         <div id="exiftool"  class="tabBox">
           {% set thumbnail = record.get_thumbnail() %}
 

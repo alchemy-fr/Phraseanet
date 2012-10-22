@@ -35,6 +35,7 @@ use Alchemy\Phrasea\Controller\Admin\Users;
 use Alchemy\Phrasea\Controller\Prod\Basket;
 use Alchemy\Phrasea\Controller\Prod\Bridge;
 use Alchemy\Phrasea\Controller\Prod\Edit;
+use Alchemy\Phrasea\Controller\Prod\Export;
 use Alchemy\Phrasea\Controller\Prod\Feed;
 use Alchemy\Phrasea\Controller\Prod\Language;
 use Alchemy\Phrasea\Controller\Prod\Lazaret;
@@ -44,17 +45,21 @@ use Alchemy\Phrasea\Controller\Prod\Order;
 use Alchemy\Phrasea\Controller\Prod\Printer;
 use Alchemy\Phrasea\Controller\Prod\Push;
 use Alchemy\Phrasea\Controller\Prod\Query;
+use Alchemy\Phrasea\Controller\Prod\Property;
+use Alchemy\Phrasea\Controller\Prod\Records;
 use Alchemy\Phrasea\Controller\Prod\Root as Prod;
+use Alchemy\Phrasea\Controller\Prod\Share;
 use Alchemy\Phrasea\Controller\Prod\Story;
 use Alchemy\Phrasea\Controller\Prod\Tools;
 use Alchemy\Phrasea\Controller\Prod\Tooltip;
 use Alchemy\Phrasea\Controller\Prod\TOU;
 use Alchemy\Phrasea\Controller\Prod\Upload;
-use Alchemy\Phrasea\Controller\Prod\UserPreferences;
 use Alchemy\Phrasea\Controller\Prod\UsrLists;
 use Alchemy\Phrasea\Controller\Prod\WorkZone;
 use Alchemy\Phrasea\Controller\Utils\ConnectionTest;
 use Alchemy\Phrasea\Controller\Utils\PathFileTest;
+use Alchemy\Phrasea\Controller\User\Notifications;
+use Alchemy\Phrasea\Controller\User\Preferences;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -126,7 +131,6 @@ return call_user_func(function($environment = null) {
     $app->mount('/admin/tests/connection', new ConnectionTest());
     $app->mount('/admin/tests/pathurl', new PathFileTest());
 
-    $app->mount('/prod/UserPreferences/', new UserPreferences());
     $app->mount('/prod/query/', new Query());
     $app->mount('/prod/order/', new Order());
     $app->mount('/prod/baskets', new Basket());
@@ -134,11 +138,15 @@ return call_user_func(function($environment = null) {
     $app->mount('/prod/WorkZone', new WorkZone());
     $app->mount('/prod/lists', new UsrLists());
     $app->mount('/prod/MustacheLoader', new MustacheLoader());
+    $app->mount('/prod/records/', new Records());
     $app->mount('/prod/records/edit', new Edit());
+    $app->mount('/prod/records/property', new Property());
     $app->mount('/prod/records/movecollection', new MoveCollection());
     $app->mount('/prod/bridge/', new Bridge());
     $app->mount('/prod/push/', new Push());
     $app->mount('/prod/printer/', new Printer());
+    $app->mount('/prod/share/', new Share());
+    $app->mount('/prod/export/', new Export());
     $app->mount('/prod/TOU/', new TOU());
     $app->mount('/prod/feeds', new Feed());
     $app->mount('/prod/tooltip', new Tooltip());
@@ -147,6 +155,9 @@ return call_user_func(function($environment = null) {
     $app->mount('/prod/lazaret/', new Lazaret());
     $app->mount('/prod/upload/', new Upload());
     $app->mount('/prod/', new Prod());
+
+    $app->mount('/user/preferences/', new Preferences());
+    $app->mount('/user/notifications/', new Notifications());
 
     $app->error(function(\Exception $e) use ($app) {
         $request = $app['request'];
@@ -195,10 +206,10 @@ return call_user_func(function($environment = null) {
             return $app->json($datas, 200, array('X-Status-Code' => 200));
         }
 
-        if($e instanceof HttpExceptionInterface) {
+        if ($e instanceof HttpExceptionInterface) {
             $headers = $e->getHeaders();
 
-            if(isset($headers['X-Phraseanet-Redirect'])) {
+            if (isset($headers['X-Phraseanet-Redirect'])) {
                 return new RedirectResponse($headers['X-Phraseanet-Redirect'], 302, array('X-Status-Code' => 302));
             }
         }

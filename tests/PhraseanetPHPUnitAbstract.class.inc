@@ -7,7 +7,6 @@ use Alchemy\Phrasea\Border\File;
 use Doctrine\Common\DataFixtures\Loader;
 use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -24,7 +23,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      *
      * @var \Pimple
      */
-    protected static $DI;
+    public static $DI;
     protected static $testsTime = array();
     protected static $records;
     public static $recordsInitialized = false;
@@ -40,9 +39,9 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      * @var float
      */
     protected static $time_start;
-
     public $app;
     protected $start;
+
     /**
      *
      * @var Symfony\Component\HttpKernel\Client
@@ -82,6 +81,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
     public function createApplication()
     {
+
     }
 
     /**
@@ -95,7 +95,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             self::$time_start = null;
         }
     }
-
 
     public function setUp()
     {
@@ -136,9 +135,11 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             return $app;
         });
 
+
         self::$DI['client'] = self::$DI->share(function($DI) {
             return new Client($DI['app'], array());
         });
+
     }
 
     public function tearDown()
@@ -158,11 +159,16 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
         parent::tearDown();
 
-        $duration = (microtime(true) - $this->start);
+//        $duration = (microtime(true) - $this->start);
 //        if ($duration > 0.75) {
 //            echo "test in " . get_class($this) . " last " . $duration . "\n";
 //        }
         $this->start = null;
+
+        //In case some executed script modify 'max_execution_time' ini var
+        //Initialize set_time_limit(0) which is the default value for PHP CLI
+        
+        set_time_limit(0);
     }
 
     /**
@@ -707,17 +713,16 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
             $DI['user'] = $DI->share(
                 $DI->extend('user', function ($user, $DI) use ($collection_no_acces_by_status) {
-                        $user->ACL()->set_masks_on_base($collection_no_acces_by_status->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
-                        $DI['client'] = new Client($DI['app'], array());
-                        return $user;
-                    })
+                    $user->ACL()->set_masks_on_base($collection_no_acces_by_status->get_base_id(), '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000', '0000000000000000000000000000000000000000000000000001000000000000');
+                    $DI['client'] = new Client($DI['app'], array());
+                    return $user;
+                })
             );
 
             $DI['user'];
 
             return $collection_no_acces_by_status;
         });
-
 
         return;
     }
@@ -734,74 +739,75 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             self::$recordsInitialized = array();
 
             $resolvePathfile = function($i) {
-                    $finder = new Symfony\Component\Finder\Finder();
+                $finder = new Symfony\Component\Finder\Finder();
 
-                    $name = $i < 10 ? 'test00' . $i . '.*' : 'test0' . $i . '.*';
+                $name = $i < 10 ? 'test00' . $i . '.*' : 'test0' . $i . '.*';
 
-                    $finder->name($name)->in(__DIR__ . '/testfiles/');
+                $finder->name($name)->in(__DIR__ . '/testfiles/');
 
-                    foreach ($finder as $file) {
-                        return $file;
-                    }
+                foreach ($finder as $file) {
+                    return $file;
+                }
 
-                    throw new Exception(sprintf('File %d not found', $i));
-                };
+                throw new Exception(sprintf('File %d not found', $i));
+            };
 
             foreach (range(1, 24) as $i) {
                 self::$DI['record_' . $i] = self::$DI->share(function($DI) use ($logger, $resolvePathfile, $i) {
 
-                        PhraseanetPHPUnitAbstract::$recordsInitialized[] = $i;
+                    PhraseanetPHPUnitAbstract::$recordsInitialized[] = $i;
 
-                        $file = new File($DI['app'], $DI['app']['mediavorus']->guess($resolvePathfile($i)->getPathname()), $DI['collection']);
+                    $file = new File($DI['app'], $DI['app']['mediavorus']->guess($resolvePathfile($i)->getPathname()), $DI['collection']);
 
-                        $record = record_adapter::createFromFile($file, $DI['app']);
+                    $record = record_adapter::createFromFile($file, $DI['app']);
 
-                        $record->generate_subdefs($record->get_databox(), $DI['app']);
+                    $record->generate_subdefs($record->get_databox(), $DI['app']);
 
-                        return $record;
-                    });
+                    return $record;
+                });
             }
+
             foreach (range(1, 2) as $i) {
                 self::$DI['record_story_' . $i] = self::$DI->share(function($DI) use ($i) {
 
-                        PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'story_' . $i;
+                    PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'story_' . $i;
 
-                        return record_adapter::createStory($DI['app'], $DI['collection']);
-                    });
+                    return record_adapter::createStory($DI['app'], $DI['collection']);
+                });
             }
 
             self::$DI['record_no_access'] = self::$DI->share(function($DI) {
 
-                    PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'no_access';
+                PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'no_access';
 
-                    $file = new File($DI['app'], $DI['app']['mediavorus']->guess(__DIR__ . '/testfiles/cestlafete.jpg'), $DI['collection_no_access']);
+                $file = new File($DI['app'], $DI['app']['mediavorus']->guess(__DIR__ . '/testfiles/cestlafete.jpg'), $DI['collection_no_access']);
 
-                    return \record_adapter::createFromFile($file, $DI['app']);
-                });
+                return \record_adapter::createFromFile($file, $DI['app']);
+            });
 
             self::$DI['record_no_access_by_status'] = self::$DI->share(function($DI) {
 
-                    PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'no_access_by_status';
+                PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'no_access_by_status';
 
-                    $file = new File($DI['app'], $DI['app']['mediavorus']->guess(__DIR__ . '/testfiles/cestlafete.jpg'), $DI['collection_no_access']);
+                $file = new File($DI['app'], $DI['app']['mediavorus']->guess(__DIR__ . '/testfiles/cestlafete.jpg'), $DI['collection_no_access']);
 
-                    return \record_adapter::createFromFile($file, $DI['app']);
-                });
+                return \record_adapter::createFromFile($file, $DI['app']);
+            });
 
             self::$DI['user'] = self::$DI->share(
                 self::$DI->extend('user', function ($user, $DI) use ($app) {
-                        PhraseanetPHPUnitAbstract::giveRightsToUser($app, $user);
-                        $user->ACL()->set_admin(true);
-                        return $user;
-                    })
+                    PhraseanetPHPUnitAbstract::giveRightsToUser($app, $user);
+                    $user->ACL()->set_admin(true);
+                    return $user;
+                })
             );
 
             self::$DI['user_notAdmin'] = self::$DI->share(
                 self::$DI->extend('user_notAdmin', function ($user, $DI) use ($app) {
-                        PhraseanetPHPUnitAbstract::giveRightsToUser($app, $user);
-                        $user->ACL()->set_admin(false);
-                        return $user;
-                    })
+                    PhraseanetPHPUnitAbstract::giveRightsToUser($app, $user);
+                    $user->ACL()->set_admin(false);
+                    return $user;
+                })
             );
         }
 

@@ -1,0 +1,170 @@
+
+{% set nbReceivedDocuments = records.received().count() %}
+{% set nbEditableDocuments = records.count() %}
+
+<div id='tabs-records-property'>
+
+    {# This value is fetched when click on 2nd tab #}
+    <input type="hidden" name='original_selection' value="{{ app.request.query.get('lst') }}">
+
+    <ul>
+        <li><a href="#property-statut">{% trans 'Records Statut' %}</a></li>
+        {# <span>&nbsp;</span> element is required for the jQuery loading spinner appears && disappears properly #}
+        <li><a href="/prod/records/property/type/">{% trans 'Records type' %}&nbsp;<span>&nbsp;</span></a></li>
+    </ul>
+
+    <div id='property-statut'>
+        <p class="header">
+            <h4 style='text-align:center;'>
+                {% trans %}
+                    You have selected one document.
+                {% plural nbReceivedDocuments %}
+                    You have selected {{ nbReceivedDocuments }} documents.
+                {% endtrans %}
+
+                {% if nbEditableDocuments < nbReceivedDocuments %}
+                    {% trans %}
+                        Only one document is editable.
+                    {% plural nbEditableDocuments %}
+                        Only {{ nbEditableDocuments }} documents are editable.
+                    {% endtrans %}
+                {% endif %}
+            </h4>
+        </p>
+
+        <form style='padding:15px;' name="change-records-status" action="/prod/records/property/status/" method="POST">
+            <input name="lst" type="hidden" value="{{ records.serializedList() }}"/>
+            {% for databox in records.databoxes() %}
+                {% set sbasId = databox.get_sbas_id() %}
+                {% set nbItems = attribute(nRec, sbasId) %}
+                {% set nbRecords = nbItems['records'] %}
+                {% set nbStories = nbItems['stories'] %}
+                <table style='width:auto;margin:0 auto'>
+                    <thead>
+                        <tr>
+                            <th colspan="6">
+                                {{ databox.get_viewname()|title }}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style='border-bottom:1px solid #FFF;'>
+                            <td colspan="6" style='font-size:11px;text-align:center'>
+                                {% if nbRecords == 0 and nbStories > 0 %}
+                                    <i>({% trans %}Status edition of stories{% endtrans %})</i>
+                                {% elseif nbRecords > 0 and nbStories == 0 %}
+                                    <i>({% trans %}Status edition of documents{% endtrans %})</i>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% set databoxStatus = attribute(statusBit, sbasId) %}
+                        {% for bit,values in databoxStatus %}
+                            {% set inverse = 0 %}
+
+                            {% if values["status"] == "2" %}
+                                {% set inverse = 2 %}
+                            {% elseif values["status"] == "0" %}
+                                {% set inverse = 1 %}
+                            {% endif %}
+                            <tr>
+                                <td colspan="6" style='text-align:center;'>
+                                    <h6>{{ values['name']|title }}</h6>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style='text-align:right'>
+                                    {% if values['img_off'] is not empty %}
+                                        <label for="status-radio-{{ sbasId ~ "-" ~ bit ~ '-off'}}">
+                                            <img src="{{ values['img_off'] }}" width="16" height="16" />
+                                        </label>
+                                    {% endif %}
+                                </td>
+                                <td style='text-align:right'>
+                                    <label for="status-radio-{{ sbasId ~ "-" ~ bit ~ '-off'}}" {% if inverse == 2 %}style='color:#FF3333'{% endif%}>
+                                        {{ values['labeloff']|default('off') }}
+                                    </label>
+                                </td>
+                                <td style='text-align:right'>
+                                    <input id="status-radio-{{ sbasId ~ "-" ~ bit ~ '-off'}}" type="radio" name="status[{{ sbasId }}][{{ bit }}]" value="0" {% if inverse == 1 %}checked="checked"{% endif %}/>
+                                </td>
+                                <td style='text-align:left'>
+                                    <input id="status-radio-{{ sbasId ~ "-" ~ bit ~ '-on'}}" type="radio" name="status[{{ sbasId }}][{{ bit }}]" value="1" {% if inverse == 0 %}checked="checked"{% endif %}/>
+                                </td>
+                                <td style='text-align:left'>
+                                    <label for="status-radio-{{ sbasId ~ "-" ~ bit ~ '-on'}}" {% if inverse == 2 %}style='color:#FF3333'{% endif%}>
+                                        {{ values['labelon']|default('on') }}
+                                    </label>
+                                </td>
+                                <td style='text-align:left'>
+                                    {% if values['img_on'] is not empty %}
+                                        <label for="status-radio-{{ sbasId ~ "-" ~ bit ~ '-on'}}">
+                                            <img src="{{ values['img_on'] }}" width="16" height="16" />
+                                        </label>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        {% if nbStories > 0 %}
+                            <tr>
+                                <td colspan="6"><input type="checkbox" name="apply_to_children[{{ sbasId }}]"/></td>
+                            </tr>
+                        {% endif %}
+                    </tfoot>
+                </table>
+            {% endfor %}
+            <div class="form-actions" style="background:transparent">
+                <button type="button" class="btn btn-primary submiter">{% trans "Apply changes" %}</button>
+                <button type="button" class="btn cancel">{% trans "Cancel" %}</button>
+                <span class="form-action-loader" style="display:none;">
+                    <img src="../skins/icons/loader414141.gif" />
+                </span>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#tabs-records-property").tabs({
+           ajaxOptions: {
+               data : {
+                   lst: $("input[name=original_selection]", $(this)).val()
+               }
+           },
+           cache: true //Load template only once
+        });
+
+        var $dialog = p4.Dialog.get(1);
+        var $dialogBox = $dialog.getDomElement();
+
+        $("button.cancel", $dialogBox).bind("click", function(){
+            $dialog.Close();
+        });
+
+        $("button.submiter", $dialogBox).bind("click", function(){
+            var $this = $(this);
+            var form = $(this).closest("form");
+            var loader = form.find("form-action-loader");
+
+            $.ajax({
+                type: form.attr("method"),
+                url: form.attr("action"),
+                data: form.serializeArray(),
+                dataType: 'json',
+                beforeSend:function(){
+                    $this.attr("disabled", true);
+                    loader.show();
+                },
+                success: function(data){
+                    $dialog.Close();
+                },
+                complete: function(){
+                    $this.attr("disabled", false);
+                    loader.hide();
+                }
+            });
+        });
+    });
+</script>

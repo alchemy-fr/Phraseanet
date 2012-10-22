@@ -14,6 +14,7 @@ rewrite ^/developers/.*$                    /index.php last;
 rewrite ^/permalink/.*$                     /index.php last;
 rewrite ^/datafiles/.*$                     /index.php last;
 rewrite ^/prod/records/edit/.*$             /index.php last;
+rewrite ^/prod/records/property/.*$         /index.php last;
 rewrite ^/prod/records/movecollection/.*$   /index.php last;
 rewrite ^/prod/records/delete/.*$           /index.php last;
 rewrite ^/prod/order/.*$                    /index.php last;
@@ -32,13 +33,16 @@ rewrite ^/prod/tools/.*$                    /index.php last;
 rewrite ^/prod/TOU/.?$                      /index.php last;
 rewrite ^/prod/upload/.*$                   /index.php last;
 rewrite ^/prod/lazaret/.*$                  /index.php last;
-rewrite ^/prod/UserPreferences/.*$          /index.php last;
-rewrite ^/prod/multi-export/$               /index.php last;
+rewrite ^/prod/export/$                     /index.php last;
 rewrite ^/prod/$                            /index.php last;
 rewrite ^/prod/query/.*$                    /index.php last;
 rewrite ^/prod/export/.*$                   /index.php last;
 rewrite ^/prod/record/preview/.*$           /index.php last;
 rewrite ^/prod/notifications/.*$            /index.php last;
+rewrite ^/prod/share/.*$                    /index.php last;
+
+rewrite ^/user/preferences/.*$              /index.php last;
+rewrite ^/user/notifications/.*$            /index.php last;
 
 
 rewrite ^/api/v1/.*$              /api/v1/index.php last;

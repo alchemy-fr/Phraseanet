@@ -300,7 +300,7 @@ class task_period_ftpPull extends task_appboxAbstract
         }
 
         try {
-            $ftp = new ftpclient($this->host, $port, 90, $this->ssl, $this->proxy, $this->proxyport);
+            $ftp = $this->dependencyContainer['phraseanet.ftp.client']($this->host, $this->port, 90, $this->ssl, $this->proxy, $this->proxyport);
             $ftp->login($this->user, $this->password);
             $ftp->chdir($this->ftppath);
             $list_1 = $ftp->list_directory(true);

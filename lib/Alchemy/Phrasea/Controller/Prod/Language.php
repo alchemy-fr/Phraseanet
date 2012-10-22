@@ -40,6 +40,7 @@ class Language implements ControllerProviderInterface
             $out['confirmDelete'] = _('reponses:: Ces enregistrements vont etre definitivement supprimes et ne pourront etre recuperes. Etes vous sur ?');
             $out['cancel'] = _('boutton::annuler');
             $out['deleteTitle'] = _('boutton::supprimer');
+            $out['deleteRecords'] = _('Delete records');
             $out['edit_hetero'] = _('prod::editing valeurs heterogenes, choisir \'remplacer\', \'ajouter\' ou \'annuler\'');
             $out['confirm_abandon'] = _('prod::editing::annulation: abandonner les modification ?');
             $out['loading'] = _('phraseanet::chargement');
@@ -101,6 +102,8 @@ class Language implements ControllerProviderInterface
             $out['feedbackCanContribute'] = _('User contribute to the feedback');
             $out['feedbackCanSeeOthers'] = _('User can see others choices');
             $out['forceSendDocument'] = _('Force sending of the document ?');
+            $out['export'] = _('Export');
+            $out['share'] = _('Share');
 
             return $app->json($out);
         });

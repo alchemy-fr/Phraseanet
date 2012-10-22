@@ -350,7 +350,7 @@ class task_period_ftp extends task_appboxAbstract
 
         try {
             $ssl = ($ftp_export['ssl'] == '1');
-            $ftp_client = new ftpclient($ftp_server, 21, 300, $ssl, $this->proxy, $this->proxyport);
+            $ftp_client = $this->dependencyContainer['phraseanet.ftp.client']($ftp_server, 21, 300, $ssl, $this->proxy, $this->proxyport);
             $ftp_client->login($ftp_user_name, $ftp_user_pass);
 
             if ($ftp_export["passif"] == "1") {
@@ -471,7 +471,7 @@ class task_period_ftp extends task_appboxAbstract
                     $state .= $line = sprintf(_('task::ftp:File "%1$s" (record %2$s) de la base "%3$s"' .
                                 ' (Export du Document) : Transfert cancelled (le document n\'existe plus)')
                             , basename($localfile), $record_id
-                            , phrasea::sbas_names(phrasea::sbasFromBas($this->dependencyContainer, $base_id), $app)) . "\n<br/>";
+                            , phrasea::sbas_names(phrasea::sbasFromBas($this->dependencyContainer, $base_id), $this->dependencyContainer)) . "\n<br/>";
 
                     $this->logger->addDebug($line);
 
@@ -621,13 +621,13 @@ class task_period_ftp extends task_appboxAbstract
                 $transferts[] =
                     '<li>' . sprintf(_('task::ftp:Record %1$s - %2$s de la base (%3$s - %4$s) - %5$s')
                         , $row["record_id"], $row["filename"]
-                        , phrasea::sbas_names(phrasea::sbasFromBas($this->dependencyContainer, $row["base_id"]), $app)
-                        , phrasea::bas_names($row['base_id'], $app), $row['subdef']) . ' : ' . _('Transfert OK') . '</li>';
+                        , phrasea::sbas_names(phrasea::sbasFromBas($this->dependencyContainer, $row["base_id"]), $this->dependencyContainer)
+                        , phrasea::bas_names($row['base_id'], $this->dependencyContainer), $row['subdef']) . ' : ' . _('Transfert OK') . '</li>';
             } else {
                 $transferts[] =
                     '<li>' . sprintf(_('task::ftp:Record %1$s - %2$s de la base (%3$s - %4$s) - %5$s')
                         , $row["record_id"], $row["filename"]
-                        , phrasea::sbas_names(phrasea::sbasFromBas($this->dependencyContainer, $row["base_id"]), $app), phrasea::bas_names($row['base_id'], $app)
+                        , phrasea::sbas_names(phrasea::sbasFromBas($this->dependencyContainer, $row["base_id"]), $this->dependencyContainer), phrasea::bas_names($row['base_id'], $this->dependencyContainer)
                         , $row['subdef']) . ' : ' . _('Transfert Annule') . '</li>';
                 $transfert_status = _('task::ftp:Certains documents n\'ont pas pu etre tranferes');
             }

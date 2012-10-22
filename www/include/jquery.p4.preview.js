@@ -7,22 +7,20 @@ $(document).ready(function(){
 });
 
 
-function getNewVideoToken(sbas_id, record_id, obj)
+function getNewVideoToken(lst, obj)
 {
 	$.ajax({
 		type: "POST",
-		url: "/prod/prodFeedBack.php",
+		url: "/prod/records/renew-url/",
 		dataType: 'json',
 		data: {
-			action:'VIDEOTOKEN',
-			sbas_id : sbas_id,
-			record_id : record_id
+			lst: lst
 		},
 		success: function(data){
-			if(!data.url)
+			if(!data[lst])
 				return;
 			obj.unload();
-			obj.setClip(data);
+			obj.setClip({url:data[lst]});
 			obj.play();
 			return;
 		}
@@ -256,14 +254,12 @@ function getAnswerTrain(pos, tools, query,options_serial)
 	$('#PREVIEWCURRENTCONT').fadeOut('fast');
 	$.ajax({
 		type: "POST",
-		url: "/prod/prodFeedBack.php",
+		url: "/prod/query/answer-train/",
 		dataType: 'json',
 		data: {
-			action: "ANSWERTRAIN",
 			pos:pos,
-      options_serial:options_serial,
-      query:query
-
+            options_serial:options_serial,
+            query:query
 		},
 		success: function(data){
 			setCurrent(data.current);
@@ -279,10 +275,9 @@ function getRegTrain(contId,pos,tools)
 {
 	$.ajax({
 		type: "POST",
-		url: "./prodFeedBack.php",
+		url: "/prod/query/reg-train/",
 		dataType: 'json',
 		data: {
-			action: "REGTRAIN",
 			cont:contId,
 			pos:pos
 		},

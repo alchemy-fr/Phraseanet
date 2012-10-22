@@ -319,7 +319,7 @@
                                     <tr>
                                         <td colspan="3" style="text-align: center;">
                                             {% trans 'login::register: L\'acces aux bases ci-dessous implique l\'acceptation des Conditions Generales d\'Utilisation (CGU) suivantes' %}<br/>
-                                            <a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas=' . $sbasId . '">{% trans 'login::register::CGU: ouvrir dans une nouvelle fenetre' %}</a>
+                                            <a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas={{ sbasId }}">{% trans 'login::register::CGU: ouvrir dans une nouvelle fenetre' %}</a>
                                         </td>
                                     </tr>
                                 {% endif %}

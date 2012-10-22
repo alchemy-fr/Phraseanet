@@ -31,8 +31,19 @@ class SetupTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testPostGlobals()
     {
-//        $this->setAdmin(true);
+        $registry = $this->getMockBuilder('\registry')
+                    ->disableOriginalConstructor()
+                    ->getMock();
 
+        $registry->expects($this->atLeastOnce())
+            ->method('set')
+            ->with(
+                $this->stringStartsWith('GV_'),
+                $this->anything(),
+                $this->isType('string'));
+
+        self::$DI['app']['phraseanet.registry'] = $registry;
+        self::$DI['client'] = new Symfony\Component\HttpKernel\Client(self::$DI['app']);
         self::$DI['client']->request('POST', '/admin/setup/');
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
     }
