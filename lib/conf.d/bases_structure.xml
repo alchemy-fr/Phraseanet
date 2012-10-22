@@ -2123,7 +2123,7 @@
           <field>
             <name>destfolder</name>
             <type>char(255)</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
 
 
@@ -2182,7 +2182,7 @@
           <field>
             <name>foldertocreate</name>
             <type>char(255)</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
             <default></default>
             <comment></comment>
