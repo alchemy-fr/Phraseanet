@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
-class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
+class DownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
 
@@ -33,6 +33,7 @@ class ExportTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
         $this->assertRegExp('#download/[a-zA-Z0-9]*/$#', $response->headers->get('location'));
+        unset($response, $eventManagerStub);
     }
 
     /**

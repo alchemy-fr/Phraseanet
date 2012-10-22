@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Application as SilexApp;
+
 class recordutils
 {
 
@@ -22,12 +24,12 @@ class recordutils
 
     }
 
-    public static function watermark($bas, $rec)
+    public static function watermark(SilexApp $app, \media_subdef $subdef)
     {
 
     }
 
-    public static function stamp($bas, $rec)
+    public static function stamp(SilexApp $app, \media_subdef $subdef)
     {
 
     }
