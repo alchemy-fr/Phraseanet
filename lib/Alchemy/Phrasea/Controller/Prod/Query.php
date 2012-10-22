@@ -103,7 +103,7 @@ class Query implements ControllerProviderInterface
         $options = new SearchEngineOptions();
         $options->disallowBusinessFields();
 
-        $bas = $user->ACL()->get_granted_base();
+        $bas = $app['phraseanet.user']->ACL()->get_granted_base();
 
         if (is_array($request->request->get('bas'))) {
             $bas = array_map(function($base_id) use ($app) {
