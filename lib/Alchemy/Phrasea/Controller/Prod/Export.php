@@ -266,7 +266,7 @@ class Export implements ControllerProviderInterface
         if (count($destMails) > 0 && $token) {
             //zip documents
             \set_export::build_zip(
-                new Filesystem(),
+                $app,
                 $token,
                 $list,
                 $app['phraseanet.registry']->get('GV_RootPath') . 'tmp/download/' . $token . '.zip'
