@@ -27,23 +27,6 @@ class DoDownload implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        $controllers->before(function(Request $request) use ($app) {
-
-                /**
-                 * @todo do not authenticate user
-                 */
-                if (null === $token = $request->attributes->get('token')) {
-                    $app->abort(403);
-                }
-
-//                try {
-//                    $auth = new \Session_Authentication_Token($app, $token);
-//                    $app->openAccount($auth);
-//                } catch (\Exception $e) {
-//                    $app->abort(403);
-//                }
-            });
-
         /**
          * Prepare a set of documents for download
          *
@@ -167,8 +150,8 @@ class DoDownload implements ControllerProviderInterface
         $exportName = $list['export_name'];
 
         if($list['count'] === 1) {
-            $file = array_pop($list['files']);
-            $subdef = array_pop($file['subdefs']);
+            $file = end($list['files']);
+            $subdef = end($file['subdefs']);
             $exportName = sprintf('%s%s.%s', $file['export_name'], $subdef['ajout'], $subdef['exportExt']);
             $exportFile = \p4string::addEndSlash($subdef['path']) . $subdef['file'];
             $mime = $subdef['mime'];
