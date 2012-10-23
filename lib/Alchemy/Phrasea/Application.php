@@ -363,6 +363,7 @@ class Application extends SilexApplication
                 $twig->addFilter('floor', new \Twig_Filter_Function('floor'));
                 $twig->addFilter('bas_names', new \Twig_Filter_Function('phrasea::bas_names'));
                 $twig->addFilter('sbas_names', new \Twig_Filter_Function('phrasea::sbas_names'));
+                $twig->addFilter('sbas_from_bas', new \Twig_Filter_Function('phrasea::sbasFromBas'));
                 $twig->addFilter('key_exists', new \Twig_Filter_Function('array_key_exists'));
                 $twig->addFilter('round', new \Twig_Filter_Function('round'));
                 $twig->addFilter('formatOctets', new \Twig_Filter_Function('p4string::format_octets'));
