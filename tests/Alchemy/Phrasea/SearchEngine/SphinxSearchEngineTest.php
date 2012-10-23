@@ -37,9 +37,7 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
 
         self::$searchd = new Process($searchd . ' -c ' . self::$config);
         self::$searchd->run();
-
-        sleep(1);
-
+        
         self::$searchEngine = new SphinxSearchEngine($app, '127.0.0.1', 9306, '127.0.0.1', 9308);
     }
 
