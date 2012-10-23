@@ -36,12 +36,12 @@ class DoDownload implements ControllerProviderInterface
                     $app->abort(403);
                 }
 
-                try {
-                    $auth = new \Session_Authentication_Token($app, $token);
-                    $app->openAccount($auth);
-                } catch (\Exception $e) {
-                    $app->abort(403);
-                }
+//                try {
+//                    $auth = new \Session_Authentication_Token($app, $token);
+//                    $app->openAccount($auth);
+//                } catch (\Exception $e) {
+//                    $app->abort(403);
+//                }
             });
 
         /**
@@ -59,7 +59,7 @@ class DoDownload implements ControllerProviderInterface
          */
         $controllers->get('/{token}/prepare/', $this->call('prepareDownload'))
             ->bind('prepare_download')
-            ->assert('token', '^[a-zA-Z0-9]{8,16}$');
+            ->assert('token', '[a-zA-Z0-9]{8,16}');
 
         /**
          * Download a set of documents
@@ -76,7 +76,7 @@ class DoDownload implements ControllerProviderInterface
          */
         $controllers->post('/{token}/get/', $this->call('downloadDocuments'))
             ->bind('document_download')
-            ->assert('token', '^[a-zA-Z0-9]{8,16}$');
+            ->assert('token', '[a-zA-Z0-9]{8,16}');
 
         /**
          * Build a zip with all downloaded documents
@@ -93,7 +93,7 @@ class DoDownload implements ControllerProviderInterface
          */
         $controllers->post('/{token}/execute/', $this->call('downloadExecute'))
             ->bind('execute_download')
-            ->assert('token', '^[a-zA-Z0-9]{8,16}$');
+            ->assert('token', '[a-zA-Z0-9]{8,16}');
 
 
         return $controllers;
@@ -111,31 +111,38 @@ class DoDownload implements ControllerProviderInterface
         try {
             $datas = \random::helloToken($app, $token);
         } catch (\Exception_NotFound $e) {
-            $app->abort(404);
+            $app->abort(404, 'Invalid token');
         }
 
-        if (!is_string($datas['datas'])) {
-            $app->abort(404);
-        }
-
-        if (false === $list = @unserialize($datas['datas'])) {
-            $app->abort(500);
+        if (false === $list = @unserialize((string)$datas['datas'])) {
+            $app->abort(500, 'Invalid datas');
         }
 
         $records = array();
+
         foreach($list['files'] as $file) {
+            if(!is_array($file) || !isset($file['base_id']) || !isset($file['record_id'])) {
+                continue;
+            }
             $sbasId = \phrasea::sbasFromBas($app, $file['base_id']);
-            $records[sprintf('%s_%s', $sbasId, $file['record_id'])] = new \record_adapter($app, $sbasId, $file['record_id']);
+
+            try {
+                $record = new \record_adapter($app, $sbasId, $file['record_id']);
+            } catch (\Exception $e){
+                continue;
+            }
+
+            $records[sprintf('%s_%s', $sbasId, $file['record_id'])] = $record;
         }
 
-        return $app['twig']->render(
+        return new Response($app['twig']->render(
             '/prod/actions/Download/prepare.html.twig', array(
             'module_name'   => _('Export download'),
             'module'        => _('Export'),
             'list'          => $list,
-             'records'      => $records,
+            'records'       => $records,
             'token'         => $token
-        ));
+        )));
     }
 
     /**
@@ -150,11 +157,11 @@ class DoDownload implements ControllerProviderInterface
         try {
             $datas = \random::helloToken($app, $token);
         } catch (\Exception_NotFound $e) {
-            $app->abort(404);
+            $app->abort(404, 'Invalid token');
         }
 
         if (false === $list = @unserialize((string) $datas['datas'])) {
-            $app->abort(500);
+            $app->abort(500, 'Invalid datas');
         }
 
         $exportName = $list['export_name'];
@@ -166,16 +173,16 @@ class DoDownload implements ControllerProviderInterface
             $exportFile = \p4string::addEndSlash($subdef['path']) . $subdef['file'];
             $mime = $subdef['mime'];
         } else {
-            $exportFile = $app['phraseanet.registry']->get('GV_RootPath') . 'tmp/download/' . $datas['value'] . '.zip';
+            $exportFile = __DIR__ . '/../../../../../tmp/download/' . $datas['value'] . '.zip';
             $mime = 'application/zip';
         }
 
         if(!$app['filesystem']->exists($exportFile)) {
-            $app->abort(404);
+            $app->abort(404, 'Download file not found');
         }
 
-        $app['dispatcher']->addListener(KernelEvents::TERMINATE, function () use ($list, $request) {
-            \set_export::log_download($list, $request->request->get('type'));
+        $app->finish(function ($request, $response) use ($list, $app) {
+            \set_export::log_download($app, $list, $request->request->get('type'));
         });
 
         $response = \set_export::stream_file(
@@ -186,7 +193,7 @@ class DoDownload implements ControllerProviderInterface
             'attachment'
         );
 
-        $response->send();
+        return $response;
     }
 
 
@@ -204,7 +211,7 @@ class DoDownload implements ControllerProviderInterface
         } catch (\Exception_NotFound $e) {
             return $app->json(array(
                 'success' => false,
-                'message' => 'Token not found'
+                'message' => 'Invalid token'
             ));
         }
 
@@ -221,10 +228,10 @@ class DoDownload implements ControllerProviderInterface
         ignore_user_abort(true);
 
         \set_export::build_zip(
-            new Filesystem(),
+            $app,
             $token,
             $list,
-            $app['phraseanet.registry']->get('GV_RootPath') . 'tmp/download/' . $datas['value'] . '.zip' // Dest file
+            sprintf('%s/../../../../../tmp/download/%s.zip', __DIR__, $datas['value']) // Dest file
         );
 
         return $app->json(array(

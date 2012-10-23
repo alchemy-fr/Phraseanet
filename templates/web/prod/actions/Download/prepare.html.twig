@@ -1,33 +1,34 @@
 {% extends "common/index_bootstrap.html.twig" %}
 
 {% block content %}
-    <h1>{% trans "Telechargement de documents" %}</h1>
+    <h1>{% trans "Download of documents" %}</h1>
+
     <div class="well-small">
        {% if (list['complete'] is not defined or not list['complete']) and list['count'] > 1%}
             <p>
-                {% trans "telechargement::Veuillez patienter, vos fichiers sont en train d\'etre rassembles pour le telechargement, cette operation peut prendre quelques minutes." %}
+                {% trans "Please wait while your files are being gathered for the download, this operation may take a few minutes." %}
             </p>
        {% elseif list['complete'] is defined and list['complete'] %}
             <p>
-                {% set url = "/download/"~ token ~"/get/" %}
+                {% set url = path('document_download', {'token': token}) %}
                 {% trans %}
-                    telechargement::Vos documents sont prets. Si le telechargement ne demarre pas, <a href="{{ url }}" target="_self">cliquez ici</a>
+                    Your documents are ready. If the download does not start, <a href="{{ url }}" target="_self">click here</a>
                 {% endtrans %}
             </p>
        {% endif %}
     </div>
 
     <div class="well-small">
-        <table>
+        <table class="table">
             <caption>
-                {% trans "telechargement::Le fichier contient les elements suivants" %}
+                {% trans "The file contains the following elements" %}
             </caption>
             <thead>
                 <tr>
-                    <th>{% trans "phrseanet:: base" %}</th>
-                    <th>{% trans "document:: nom" %}</th>
-                    <th>{% trans "phrseanet:: sous definition" %}</th>
-                    <th>{% trans "poids" %}</th>
+                    <th>{% trans "Base" %}</th>
+                    <th>{% trans "Name" %}</th>
+                    <th>{% trans "Sub definition" %}</th>
+                    <th>{% trans "Weight" %}</th>
                     <th></th>
                 </tr>
             </thead>
@@ -69,16 +70,15 @@
     </div>
 
     <div style="display:none">
-        <form name="download" action="/download/{{token}}/get/" method="post" target="file_frame"></form>
+        <form name="download" action="{{ path('document_download', {'token': token}) }}" method="post" target="file_frame"></form>
         <iframe name="file_frame"></iframe>
     </div>
 
     <script type="text/javascript">
         $(document).ready(function(){
             {% if list['complete'] is not defined and list['count'] > 1 %}
-                $.post("/include/download_prepare.exe.php", {
-                    token: "{{ token }}"
-                }, function(data){
+                $.post("{{ path('execute_download', {'token': token}) }}", function(data){
+                    var data = $.parseJSON(data);
                     if(data.success) {
                         $('form[name=download]').submit();
                     }
