@@ -696,7 +696,7 @@ class set_export extends set_abstract
      * @param  string $zipFile
      * @return string
      */
-    public static function build_zip(Filesystem $filesystem, $token, Array $list, $zipFile)
+    public static function build_zip(Application $app, $token, Array $list, $zipFile)
     {
         $zip = new ZipArchiveImproved();
 
@@ -711,7 +711,7 @@ class set_export extends set_abstract
 
         $list['complete'] = false;
 
-        random::updateToken($this->app, $token, serialize($list));
+        random::updateToken($app, $token, serialize($list));
 
         $unicode = new \unicode();
 
@@ -747,10 +747,10 @@ class set_export extends set_abstract
         $list['complete'] = true;
         $unicode = null;
 
-        random::updateToken($this->app, $token, serialize($list));
+        random::updateToken($app, $token, serialize($list));
 
-        $filesystem->remove($toRemove);
-        $filesystem->chmod($zipFile, 0760);
+        $app['filesystem']->remove($toRemove);
+        $app['filesystem']->chmod($zipFile, 0760);
 
         return $zipFile;
     }
@@ -856,7 +856,7 @@ class set_export extends set_abstract
      * @param  boolean $anonymous
      * @return Void
      */
-    public static function log_download(Array $list, $type, $anonymous = false, $comment = '')
+    public static function log_download(Application $app, Array $list, $type, $anonymous = false, $comment = '')
     {
         $tmplog = array();
         $files = $list['files'];
@@ -870,11 +870,11 @@ class set_export extends set_abstract
 
         foreach ($files as $record) {
             foreach ($record["subdefs"] as $o => $obj) {
-                $sbas_id = phrasea::sbasFromBas($this->app, $record['base_id']);
+                $sbas_id = phrasea::sbasFromBas($app, $record['base_id']);
 
-                $record_object = new record_adapter($this->app, $sbas_id, $record['record_id']);
+                $record_object = new record_adapter($app, $sbas_id, $record['record_id']);
 
-                $this->app['phraseanet.logger']($record_object->get_databox())
+                $app['phraseanet.logger']($record_object->get_databox())
                     ->log($record_object, $event_name, $o, $comment);
 
                 if ($o != "caption") {
@@ -884,7 +884,7 @@ class set_export extends set_abstract
                     $log["shortXml"] = $record_object->get_caption()->serialize(caption_record::SERIALIZE_XML);
                     $tmplog[$record_object->get_base_id()][] = $log;
                     if (!$anonymous && $o == 'document') {
-                        $this->app['phraseanet.user']->ACL()->remove_remaining($record_object->get_base_id());
+                        $app['phraseanet.user']->ACL()->remove_remaining($record_object->get_base_id());
                     }
                 }
 
@@ -905,14 +905,14 @@ class set_export extends set_abstract
             SET remain_dwnld = :remain_dl
             WHERE base_id = :base_id AND usr_id = :usr_id";
 
-            $stmt = $this->app['phraseanet.appbox']->get_connection()->prepare($sql);
+            $stmt = $app['phraseanet.appbox']->get_connection()->prepare($sql);
 
             foreach ($list_base as $base_id) {
-                if ($this->app['phraseanet.user']->ACL()->is_restricted_download($base_id)) {
+                if ($app['phraseanet.user']->ACL()->is_restricted_download($base_id)) {
                     $params = array(
-                        ':remain_dl' => $this->app['phraseanet.user']->ACL()->remaining_download($base_id)
+                        ':remain_dl' => $app['phraseanet.user']->ACL()->remaining_download($base_id)
                         , ':base_id'   => $base_id
-                        , ':usr_id'    => $this->app['phraseanet.user']->get_id()
+                        , ':usr_id'    => $app['phraseanet.user']->get_id()
                     );
 
                     $stmt->execute($params);
