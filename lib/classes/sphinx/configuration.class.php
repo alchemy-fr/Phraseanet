@@ -137,7 +137,7 @@ class sphinx_configuration
         foreach ($lb as $id => $params) {
 
             $serialized = str_replace(array('.', '%'), '_', sprintf('%s_%s_%s_%s', $params['host'], $params['port'], $params['user'], $params['dbname']));
-            $index_crc = crc32($serialized);
+            $index_crc = sprintf("%u", crc32($serialized));
 
             $conf .= '
 

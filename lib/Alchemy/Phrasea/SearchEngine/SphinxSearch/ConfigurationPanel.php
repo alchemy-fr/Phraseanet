@@ -489,8 +489,8 @@ searchd
   # listen                = 192.168.0.1:9312
   # listen                = 9312
   # listen                = /var/run/searchd.sock
-  listen                  = 9306
-  listen                  = 9308:mysql41
+  listen                  = 127.0.0.1:19306
+  listen                  = 127.0.0.1:19308:mysql41
 
   # log file, searchd run info is logged here
   # optional, default is \'searchd.log\'

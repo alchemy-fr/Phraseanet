@@ -117,7 +117,7 @@ class SphinxSearchEngine implements SearchEngineInterface
 
         for ($i = 4; $i < 32; $i++) {
             if ($binStatus[$i]) {
-                $status[] = crc32($record->get_databox()->get_sbas_id() . '_' . $i);
+                $status[] = sprintf("%u", crc32($record->get_databox()->get_sbas_id() . '_' . $i));
             }
         }
 
@@ -126,13 +126,12 @@ class SphinxSearchEngine implements SearchEngineInterface
                 continue;
             }
 
-            if (!$field->get_databox_field()->isBusiness()) {
+            if (!$field->get_databox_field()->isBusiness()) {            
                 $all_datas[] = $field->get_serialized_values();
             }
 
             foreach ($field->get_values() as $value) {
-
-                $sql = "REPLACE INTO "
+                $this->rt_conn->exec("REPLACE INTO "
                     . "metas_realtime" . $this->CRCdatabox($record->get_databox()) . " VALUES (
                     '" . $value->getId() . "'
                     ,'" . str_replace("'", "\'", $value->getValue()) . "'
@@ -141,21 +140,19 @@ class SphinxSearchEngine implements SearchEngineInterface
                     ," . $record->get_sbas_id() . "
                     ," . $record->get_collection()->get_coll_id() . "
                     ," . (int) $record->is_grouping() . "
-                    ," . crc32($record->get_sbas_id() . '_' . $value->getDatabox_field()->get_id()) . "
-                    ," . crc32($record->get_sbas_id() . '_' . $record->get_collection()->get_coll_id()) . "
-                    ," . crc32($record->get_sbas_id() . '_' . $record->get_record_id()) . "
-                    ," . crc32($record->get_type()) . "
+                    ," . sprintf("%u", crc32($record->get_sbas_id() . '_' . $value->getDatabox_field()->get_id())) . "
+                    ," . sprintf("%u", crc32($record->get_sbas_id() . '_' . $record->get_collection()->get_coll_id())) . "
+                    ," . sprintf("%u", crc32($record->get_sbas_id() . '_' . $record->get_record_id())) . "
+                    ," . sprintf("%u", crc32($record->get_type())) . "
                     ,0
                     ," . (int) $value->getDatabox_field()->isBusiness() . "
-                    ," . crc32($record->get_collection()->get_coll_id() . '_' . (int) $value->getDatabox_field()->isBusiness()) . "
+                    ," . sprintf("%u", crc32($record->get_collection()->get_coll_id() . '_' . (int) $value->getDatabox_field()->isBusiness())) . "
                     ," . $record->get_creation_date()->format('U') . "
-                    ,(" . implode(',', $status) . ")  )";
-
-                $this->rt_conn->exec($sql);
+                    ,(" . implode(',', $status) . ")  )");
             }
         }
 
-        $this->rt_conn->exec("REPLACE INTO "
+        $sql = "REPLACE INTO "
             . "docs_realtime" . $this->CRCdatabox($record->get_databox()) . " VALUES (
             '" . $record->get_record_id() . "'
             ,'" . str_replace("'", "\'", implode(' ', $all_datas)) . "'
@@ -163,13 +160,15 @@ class SphinxSearchEngine implements SearchEngineInterface
             ," . $record->get_sbas_id() . "
             ," . $record->get_collection()->get_coll_id() . "
             ," . (int) $record->is_grouping() . "
-            ," . crc32($record->get_sbas_id() . '_' . $record->get_collection()->get_coll_id()) . "
-            ," . crc32($record->get_sbas_id() . '_' . $record->get_record_id()) . "
-            ," . crc32($record->get_type()) . "
+            ," . sprintf("%u", crc32($record->get_sbas_id() . '_' . $record->get_collection()->get_coll_id())) . "
+            ," . sprintf("%u", crc32($record->get_sbas_id() . '_' . $record->get_record_id())) . "
+            ," . sprintf("%u", crc32($record->get_type())) . "
             ,0
             ," . $record->get_creation_date()->format('U') . "
-            ,(" . implode(',', $status) . ") )");
-
+            ,(" . implode(',', $status) . ") )";
+        
+        $this->rt_conn->exec($sql);
+                
         return $this;
     }
 
@@ -388,13 +387,13 @@ class SphinxSearchEngine implements SearchEngineInterface
      */
     public function CRCdatabox(\databox $databox)
     {
-        return crc32(
+        return sprintf("%u", crc32(
                 str_replace(
                     array('.', '%')
                     , '_'
                     , sprintf('%s_%s_%s_%s', $databox->get_host(), $databox->get_port(), $databox->get_user(), $databox->get_dbname())
                 )
-        );
+        ));
     }
 
     /**
@@ -412,7 +411,7 @@ class SphinxSearchEngine implements SearchEngineInterface
         $filters = array();
 
         foreach ($options->collections() as $collection) {
-            $filters[] = crc32($collection->get_databox()->get_sbas_id() . '_' . $collection->get_coll_id());
+            $filters[] = sprintf("%u", crc32($collection->get_databox()->get_sbas_id() . '_' . $collection->get_coll_id()));
         }
 
         $this->sphinx->SetFilter('crc_sbas_coll', $filters);
@@ -425,7 +424,7 @@ class SphinxSearchEngine implements SearchEngineInterface
 
             $filters = array();
             foreach ($options->fields() as $field) {
-                $filters[] = crc32($field->get_databox()->get_sbas_id() . '_' . $field->get_id());
+                $filters[] = sprintf("%u", crc32($field->get_databox()->get_sbas_id() . '_' . $field->get_id()));
             }
 
             $this->sphinx->SetFilter('crc_struct_id', $filters);
@@ -436,8 +435,8 @@ class SphinxSearchEngine implements SearchEngineInterface
             $crc_coll_business = array();
 
             foreach ($options->businessFieldsOn() as $collection) {
-                $crc_coll_business[] = crc32($collection->get_coll_id() . '_1');
-                $crc_coll_business[] = crc32($collection->get_coll_id() . '_0');
+                $crc_coll_business[] = sprintf("%u", crc32($collection->get_coll_id() . '_1'));
+                $crc_coll_business[] = sprintf("%u", crc32($collection->get_coll_id() . '_0'));
             }
 
             $non_business = array();
@@ -452,7 +451,7 @@ class SphinxSearchEngine implements SearchEngineInterface
             }
 
             foreach ($non_business as $collection) {
-                $crc_coll_business[] = crc32($collection->get_coll_id() . '_0');
+                $crc_coll_business[] = sprintf("%u", crc32($collection->get_coll_id() . '_0'));
             }
 
             $this->sphinx->SetFilter('crc_coll_business', $crc_coll_business);
@@ -470,14 +469,14 @@ class SphinxSearchEngine implements SearchEngineInterface
                     continue;
                 if (!array_key_exists($databox->get_sbas_id(), $status_opts[$n]))
                     continue;
-                $crc = crc32($databox->get_sbas_id() . '_' . $n);
+                $crc = sprintf("%u", crc32($databox->get_sbas_id() . '_' . $n));
                 $this->sphinx->SetFilter('status', array($crc), ($status_opts[$n][$databox->get_sbas_id()] == '0'));
             }
         }
 
 
         if ($options->getRecordType()) {
-            $this->sphinx->SetFilter('crc_type', array(crc32($options->getRecordType())));
+            $this->sphinx->SetFilter('crc_type', array(sprintf("%u", crc32($options->getRecordType()))));
         }
 
 

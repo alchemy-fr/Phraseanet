@@ -41,13 +41,13 @@ class module_console_sphinxGenerateSuggestion extends Command
         $params = phrasea::sbas_params($this->container);
 
         foreach ($params as $sbas_id => $p) {
-            $index = crc32(
+            $index = sprintf("%u", crc32(
                 str_replace(
                     array('.', '%')
                     , '_'
                     , sprintf('%s_%s_%s_%s', $p['host'], $p['port'], $p['user'], $p['dbname'])
                 )
-            );
+            ));
 
             $tmp_file = $this->container['phraseanet.registry']->get('GV_RootPath') . 'tmp/dict' . $index . '.txt';
 

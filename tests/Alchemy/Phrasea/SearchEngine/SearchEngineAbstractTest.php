@@ -81,6 +81,9 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $record = self::$DI['record_24'];
         $query_string = 'recordid=' . $record->get_record_id();
 
+        self::$searchEngine->addRecord($record);
+        $this->updateIndex();
+        
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
         $this->assertEquals(1, $results->total());
@@ -96,6 +99,9 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $record = self::$DI['record_24'];
         $query_string = 'storyid=' . $record->get_record_id();
 
+        self::$searchEngine->addRecord($record);
+        $this->updateIndex();
+        
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
         $this->assertEquals(1, $results->total());
@@ -243,7 +249,8 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
         $query_string = 'boomboklot' . $record->get_record_id() . 'onfield';
 
-        $options->setFields(array($this->editRecord($query_string, $record)));
+        $field = $this->editRecord($query_string, $record);
+        $options->setFields(array($field));
 
         self::$searchEngine->setOptions($options);
 

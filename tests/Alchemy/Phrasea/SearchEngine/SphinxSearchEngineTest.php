@@ -20,7 +20,7 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
 
         $app = new Application('test');
         $appbox = $app['phraseanet.appbox'];
-        self::$searchEngine = new SphinxSearchEngine($app, '127.0.0.1', 9306, '127.0.0.1', 9308);
+        self::$searchEngine = new SphinxSearchEngine($app, '127.0.0.1', 19306, '127.0.0.1', 19308);
 
         self::$config = tempnam(sys_get_temp_dir(), 'tmp_sphinx.conf');
         $configFile = self::$searchEngine->configurationPanel()->generateSphinxConf($appbox->get_databoxes(), self::$searchEngine->configurationPanel()->getConfiguration());
@@ -37,8 +37,15 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
 
         self::$searchd = new Process($searchd . ' -c ' . self::$config);
         self::$searchd->run();
+
+        self::$searchEngine = new SphinxSearchEngine($app, '127.0.0.1', 19306, '127.0.0.1', 19308);
+    }
+    
+    public function tearDown()
+    {
+        self::$searchEngine->removeRecord(self::$DI['record_24']);
         
-        self::$searchEngine = new SphinxSearchEngine($app, '127.0.0.1', 9306, '127.0.0.1', 9308);
+        parent::tearDown();
     }
 
     public function initialize()
