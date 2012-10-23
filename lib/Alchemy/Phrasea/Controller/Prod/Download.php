@@ -99,7 +99,7 @@ class Download implements ControllerProviderInterface
             'export_file' => $download->getExportName()
         ));
 
-        return $app->redirect('/prod/download/' . $token . '/');
+        return $app->redirect('/download/' . $token . '/');
     }
 
     /**
