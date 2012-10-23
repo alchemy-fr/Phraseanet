@@ -51,13 +51,13 @@ class DoDownload implements ControllerProviderInterface
          *
          * description  : Prepare a set of documents for download
          *
-         * method       : POST
+         * method       : GET
          *
          * parameters   : none
          *
          * return       : HTML Response
          */
-        $controllers->post('/{token}/prepare/', $this->call('prepareDownload'))
+        $controllers->get('/{token}/prepare/', $this->call('prepareDownload'))
             ->bind('prepare_download')
             ->assert('token', '^[a-zA-Z0-9]{8,16}$');
 
@@ -128,12 +128,14 @@ class DoDownload implements ControllerProviderInterface
             $records[sprintf('%s_%s', $sbasId, $file['record_id'])] = new \record_adapter($app, $sbasId, $file['record_id']);
         }
 
-        return new Reponse($app['twig']->render(
+        return $app['twig']->render(
             '/prod/actions/Download/prepare.html.twig', array(
-            'datas'   => $list,
-            'records' => $records,
-            'token'   => $token
-        )));
+            'module_name'   => _('Export download'),
+            'module'        => _('Export'),
+            'list'          => $list,
+             'records'      => $records,
+            'token'         => $token
+        ));
     }
 
     /**
@@ -168,7 +170,7 @@ class DoDownload implements ControllerProviderInterface
             $mime = 'application/zip';
         }
 
-        if(!$app['file-system']->exists($exportFile)) {
+        if(!$app['filesystem']->exists($exportFile)) {
             $app->abort(404);
         }
 
@@ -184,7 +186,7 @@ class DoDownload implements ControllerProviderInterface
             'attachment'
         );
 
-        return $response;
+        $response->send();
     }
 
 

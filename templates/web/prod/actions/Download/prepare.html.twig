@@ -2,13 +2,12 @@
 
 {% block content %}
     <h1>{% trans "Telechargement de documents" %}</h1>
-
     <div class="well-small">
-       {% if list['complete'] is not defined or not list['complete']%}
+       {% if (list['complete'] is not defined or not list['complete']) and list['count'] > 1%}
             <p>
                 {% trans "telechargement::Veuillez patienter, vos fichiers sont en train d\'etre rassembles pour le telechargement, cette operation peut prendre quelques minutes." %}
             </p>
-       {% else list['complete'] %}
+       {% elseif list['complete'] is defined and list['complete'] %}
             <p>
                 {% set url = "/download/"~ token ~"/get/" %}
                 {% trans %}
@@ -29,7 +28,7 @@
                     <th>{% trans "document:: nom" %}</th>
                     <th>{% trans "phrseanet:: sous definition" %}</th>
                     <th>{% trans "poids" %}</th>
-                    <th>{#thumbnail#}</th>
+                    <th></th>
                 </tr>
             </thead>
 
@@ -37,7 +36,7 @@
             {% for file in list["files"] %}
                 {% set size = 0 %}
                 <tr valign="middle">
-                    <td>{{ app|sbas_fom_bas(file['base_id'])|sbas_names(app) }} {{ file['base_id']|bas_names(app) }}</td>
+                    <td>{{ app|sbas_from_bas(file['base_id'])|sbas_names(app) }} {{ file['base_id']|bas_names(app) }}</td>
                     <td>{{ file['original_name'] }}</td>
                     <td>
                         {% for subdef in file['subdefs'] %}
@@ -47,17 +46,17 @@
                     </td>
                     <td>{{ size|formatOctets }}</td>
                     <td style="text-align:center;">
-                        {% set key = app|sbas_from_bas(file['base_id']) ~'_'~ file['record_id']%}
+                        {% set record_key = app|sbas_from_bas(file['base_id']) ~'_'~ file['record_id']%}
 
-                        {% if key in records|keys %}
-                            {% set record  = attribute(records, key) %}
-                            {% set thumbnail = record.getThumbnail() %}
+                        {% if record_key in records|keys %}
+                            {% set record  = attribute(records, record_key) %}
+                            {% set thumbnail = record.get_thumbnail() %}
                             {% if thumbnail.is_paysage() %}
                                 {% set w = 140 %}
-                                {% set h = (w / (thumbnail.get_widh() / thumbnail.get_height()))|round %}
+                                {% set h = (w / (thumbnail.get_width() / thumbnail.get_height()))|round %}
                             {% else %}
                                 {% set h = 105 %}
-                                {% set w = (h * (thumbnail.get_widh() / thumbnail.get_height()))|round %}
+                                {% set w = (h * (thumbnail.get_width() / thumbnail.get_height()))|round %}
                             {% endif %}
 
                             <img width="{{ w ~ 'px' }}" height="{{ h ~ 'px' }}" src="{{ thumbnail.get_url() }}" />
@@ -76,7 +75,7 @@
 
     <script type="text/javascript">
         $(document).ready(function(){
-            {% if list['complete'] is not defined or and list['count'] > 1%}
+            {% if list['complete'] is not defined and list['count'] > 1 %}
                 $.post("/include/download_prepare.exe.php", {
                     token: "{{ token }}"
                 }, function(data){
@@ -85,8 +84,9 @@
                     }
                     return false;
                 });
-            {% elseif list['complete'] %}
+            {% elseif (list['complete'] is defined and list['complete']) or list['count'] == 1 %}
                 // Get files
+                console.log("coucou");
                 $('form[name=download]').submit();
             {% else %}
                 {% set time = (total_size / (1024 * 1024 * 3))|round %}
