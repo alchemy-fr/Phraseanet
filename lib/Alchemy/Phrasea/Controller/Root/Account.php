@@ -285,7 +285,7 @@ class Account implements ControllerProviderInterface
         } catch (\Exception $e) {
             return $app->redirect('/account/reset-email/?notice=bad-password');
         }
-        if (!\PHPMailer::ValidateAddress($email)) {
+        if (!\Swift_Validate::email($email)) {
             return $app->redirect('/account/reset-email/?notice=mail-invalid');
         }
 

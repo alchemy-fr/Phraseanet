@@ -275,7 +275,7 @@ class Login implements ControllerProviderInterface
 
         \random::removeToken($app, $code);
 
-        if (\PHPMailer::ValidateAddress($user->get_email())) {
+        if (\Swift_Validate::email($user->get_email())) {
             if (count($user->ACL()->get_granted_base()) > 0) {
                 \mail::mail_confirm_registered($app, $user->get_email());
             }
@@ -313,7 +313,7 @@ class Login implements ControllerProviderInterface
     public function renewPassword(Application $app, Request $request)
     {
         if (null !== $mail = $request->request->get('mail')) {
-            if (!\PHPMailer::ValidateAddress($mail)) {
+            if (!\Swift_Validate::email($mail)) {
                 return $app->redirect($app['url_generator']->generate('login_forgot_password', array('error' => 'invalidmail')));
             }
 
@@ -573,7 +573,7 @@ class Login implements ControllerProviderInterface
             $needed['form_password'] = 'pass-invalid';
         }
 
-        if (false === \PHPMailer::ValidateAddress($email = $request->request->get('form_email'))) {
+        if (false === \Swift_Validate::email($email = $request->request->get('form_email'))) {
             $needed['form_email'] = 'mail-invalid';
         }
 
@@ -709,9 +709,9 @@ class Login implements ControllerProviderInterface
         $app['dispatcher']->dispatch(PhraseaEvents::LOGOUT, new LogoutEvent($app));
 
         $app->closeAccount();
-        
+
         $appRedirect = $request->query->get("app");
-        
+
         $response = new RedirectResponse("/login/?logged_out=user" . ($appRedirect ? sprintf("&redirect=%s", ltrim($appRedirect, '/')) : ""));
 
         $response->headers->removeCookie('persistent');

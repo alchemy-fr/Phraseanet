@@ -538,7 +538,7 @@ class Users implements ControllerProviderInterface
 
                     if ($row) {
 
-                        if (\PHPMailer::ValidateAddress($row['usr_mail'])) {
+                        if (\Swift_Validate::email($row['usr_mail'])) {
                             foreach ($bases as $bas => $isok) {
                                 if ($isok) {
                                     $accept .= '<li>' . \phrasea::bas_names($bas, $app) . "</li>\n";

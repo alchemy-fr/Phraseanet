@@ -515,7 +515,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $parm = $request->get_parms_from_serialized_datas($infos, 'user_infos');
 
-        if ($parm['email'] && !\mail::validateEmail($parm['email'])) {
+        if ($parm['email'] && !\Swift_Validate::email($parm['email'])) {
             throw new \Exception_InvalidArgument(_('Email addess is not valid'));
         }
 

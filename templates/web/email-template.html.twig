@@ -22,7 +22,7 @@
                             {% endif %}
                             </td>
                             <td width="400" height="40" valign="center" align="center" style="font-family:Tahoma,sans-serif; font-size:14px; font-weight:bold; color:#FFF;">
-                                {{ title }}
+                                {{ subject }}
                             </td>
                             <td width="160" height="40" valign="center" align="left" style="font-size:0px;"></td>
                         </tr>
@@ -40,12 +40,12 @@
                                     </tr>
                                     <tr>
                                         <td width="620" height="115" valign="center" align="left" style="font-family:sans-serif,'Lucida Console'; font-size:14px; color:#494949;">
-                                        {% if senderName is defined and senderMail is defined %}
-                                            {{ senderName }} - <a href="mailto:{{ authorMail }}" target="_blank" style="color:#FFA500; color:#FFA500 !important; text-decoration:underline; cursor:pointer;">
-                                                <span style="color:#FFA500; color:#FFA500 !important; text-decoration:underline; cursor:pointer;">{{ senderMail }}</span></a><br/>
-                                        {% endif %}
+                                            {% if senderName is defined and senderMail is defined %}
+                                                {{ senderName }} - <a href="mailto:{{ senderMail }}" target="_blank" style="color:#FFA500; color:#FFA500 !important; text-decoration:underline; cursor:pointer;">
+                                                <span style="color:#FFA500; color:#FFA500 !important; text-decoration:underline; cursor:pointer;">{{ senderMail }}</span></a><br/>
+                                            {% endif %}
                                             <br/>
-                                            {{ messageText }}
+                                            {{ messageText | nl2br }}
                                             <br/>
                                         </td>
                                     </tr>
@@ -92,8 +92,8 @@
                             <td width="710" height="50" valign="center" align="left" style="font-family:Tahoma,sans-serif; font-size:11px; font-style:italic; color:#FFF;">
                                 Si cet email contient des liens non cliquables, copiez/collez ces liens dans votre navigateur.<br/>
                                 Message automatique de Phraseanet - Pour gérer l'envoi d'email automatique, connectez-vous à
-                                <a href="{{ phraseanetUrl }}" target="_blank" style="color:#FFA500; color:#FFA500 !important; text-decoration:underline; font-weight:bold; cursor:pointer;">
-                                    <span style="color:#FFA500; color:#FFA500 !important; text-decoration:underline; font-weight:bold; cursor:pointer;">{{ phraseanetUrl }}</span>
+                                <a href="{{ phraseanetURL }}" target="_blank" style="color:#FFA500; color:#FFA500 !important; text-decoration:underline; font-weight:bold; cursor:pointer;">
+                                    <span style="color:#FFA500; color:#FFA500 !important; text-decoration:underline; font-weight:bold; cursor:pointer;">{{ phraseanetURL }}</span>
                                 </a>
                             </td>
                         </tr>

@@ -198,7 +198,7 @@ class Install extends Command
 
             do {
                 $email = $dialog->ask($output, 'Please provide a valid e-mail address : ');
-            } while (!\mail::validateEmail($email));
+            } while (!\Swift_Validate::email($email));
 
             do {
                 $password = $dialog->ask($output, 'Please provide a password (6 character min) : ');
@@ -206,7 +206,7 @@ class Install extends Command
 
             $output->writeln("\n\t<info>Email / Password successfully set</info>\n");
         } elseif ($input->getOption('email') && $input->getOption('password')) {
-            if (!\mail::validateEmail($input->getOption('email'))) {
+            if (!\Swift_Validate::email($input->getOption('email'))) {
                 throw new \RuntimeException('Invalid email addess');
             }
             $email = $input->getOption('email');

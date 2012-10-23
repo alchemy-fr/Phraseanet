@@ -146,7 +146,7 @@ class Manage extends Helper
     {
         $email = $this->request->get('value');
 
-        if (!\mail::validateEmail($email)) {
+        if ( ! \Swift_Validate::email($email)) {
             throw new \Exception_InvalidArgument(_('Invalid mail address'));
         }
 

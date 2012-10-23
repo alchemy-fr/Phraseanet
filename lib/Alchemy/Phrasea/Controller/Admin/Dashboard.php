@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
+use Alchemy\Phrasea\Notification\Receiver;
+use Alchemy\Phrasea\Notification\Mail\MailTest;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,8 +31,8 @@ class Dashboard implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->before(function(Request $request) use ($app) {
-            $app['firewall']->requireAdmin();
-        });
+                $app['firewall']->requireAdmin();
+            });
 
         /**
          * Get admin dashboard
@@ -181,8 +183,15 @@ class Dashboard implements ControllerProviderInterface
             $app->abort(400, 'Bad request missing email parameter');
         };
 
-        if (\mail::mail_test($app, $mail)) {
+        try {
+            $receiver = new Receiver(null, $mail);
+            $mail = MailTest::create($app, $receiver);
+            $app['notification.deliverer']->deliver($mail);
+            $app['swiftmailer.spooltransport']->getSpool()->flushQueue($app['swiftmailer.transport']);
+
             return $app->redirect('/admin/dashboard/?email=sent');
+        } catch (\Exception $e) {
+exit($e->getMessage());
         }
 
         return $app->redirect('/admin/dashboard/?email=error');

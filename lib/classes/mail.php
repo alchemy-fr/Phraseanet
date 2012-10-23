@@ -188,14 +188,9 @@ class mail
         return self::send_mail($app, $subject, $body, $to);
     }
 
-    public static function validateEmail($email)
-    {
-        return PHPMailer::ValidateAddress($email);
-    }
-
     public static function send_mail(Application $app, $subject, $body, $to, $from = false, $files = array(), $reading_confirm_to = false)
     {
-        if ( ! isset($to['email']) || ! PHPMailer::ValidateAddress($to['email'])) {
+        if ( ! isset($to['email']) || !\Swift_Validate::email($to['email'])) {
             return false;
         }
 

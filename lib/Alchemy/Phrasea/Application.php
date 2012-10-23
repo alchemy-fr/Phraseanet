@@ -20,6 +20,7 @@ use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationTesterServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FtpServiceProvider;
 use Alchemy\Phrasea\Core\Provider\GeonamesServiceProvider;
+use Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TaskManagerServiceProvider;
@@ -38,6 +39,7 @@ use Silex\Application as SilexApplication;
 use Silex\Provider\MonologServiceProvider;
 use Silex\Provider\SessionServiceProvider;
 use Silex\Provider\TwigServiceProvider;
+use Silex\Provider\SwiftmailerServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use Unoconv\UnoconvServiceProvider;
@@ -126,6 +128,7 @@ class Application extends SilexApplication
         $this->register(new MediaVorusServiceProvider());
         $this->register(new MonologServiceProvider());
         $this->register(new MP4BoxServiceProvider());
+        $this->register(new NotificationDelivererServiceProvider());
         $this->register(new ORMServiceProvider());
         $this->register(new PhraseanetServiceProvider());
         $this->register(new PHPExiftoolServiceProvider());
@@ -139,10 +142,41 @@ class Application extends SilexApplication
         $this->register(new UnicodeServiceProvider());
         $this->register(new ValidatorServiceProvider());
         $this->register(new XPDFServiceProvider());
+        $this->register(new SwiftmailerServiceProvider());
+
+        $this['swiftmailer.transport'] = $this->share(function ($app) {
+            $transport = new \Swift_Transport_MailTransport(
+                new \Swift_Transport_SimpleMailInvoker(),
+                $app['swiftmailer.transport.eventdispatcher']
+            );
+//            $transport = new \Swift_Transport_EsmtpTransport(
+//                    $app['swiftmailer.transport.buffer'],
+//                    array($app['swiftmailer.transport.authhandler']),
+//                    $app['swiftmailer.transport.eventdispatcher']
+//            );
+//
+//            $options = $app['swiftmailer.options'] = array_replace(array(
+//                'host'       => 'localhost',
+//                'port'       => 25,
+//                'username'   => '',
+//                'password'   => '',
+//                'encryption' => null,
+//                'auth_mode'  => null,
+//                ), $app['swiftmailer.options']);
+//
+//            $transport->setHost($options['host']);
+//            $transport->setPort($options['port']);
+//            $transport->setEncryption($options['encryption']);
+//            $transport->setUsername($options['username']);
+//            $transport->setPassword($options['password']);
+//            $transport->setAuthMode($options['auth_mode']);
+
+            return $transport;
+        });
+
 
 //        $this->register(new \Silex\Provider\HttpCacheServiceProvider());
 //        $this->register(new \Silex\Provider\SecurityServiceProvider());
-//        $this->register(new \Silex\Provider\SwiftmailerServiceProvider());
 
         $this['imagine.factory'] = $this->share(function(Application $app) {
             if ($app['phraseanet.registry']->get('GV_imagine_driver') != '') {
