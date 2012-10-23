@@ -155,6 +155,7 @@ class DoDownload implements ControllerProviderInterface
             $exportName = sprintf('%s%s.%s', $file['export_name'], $subdef['ajout'], $subdef['exportExt']);
             $exportFile = \p4string::addEndSlash($subdef['path']) . $subdef['file'];
             $mime = $subdef['mime'];
+            $list['complete'] = true;
         } else {
             $exportFile = __DIR__ . '/../../../../../tmp/download/' . $datas['value'] . '.zip';
             $mime = 'application/zip';

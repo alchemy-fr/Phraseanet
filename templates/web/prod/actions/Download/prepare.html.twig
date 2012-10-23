@@ -1,27 +1,36 @@
 {% extends "common/index_bootstrap.html.twig" %}
 
+{% block stylesheet %}
+    <style type="text/css">
+
+        #mainMenu, .publi_group {
+            background-color: #404040;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
-    <h1>{% trans "Download of documents" %}</h1>
+    <h1 style="text-align:center">{% trans "Download of documents" %}</h1>
 
     <div class="well-small">
        {% if (list['complete'] is not defined or not list['complete']) and list['count'] > 1%}
-            <p>
+            <div class="alert alert-info">
                 {% trans "Please wait while your files are being gathered for the download, this operation may take a few minutes." %}
-            </p>
+            </div>
        {% elseif list['complete'] is defined and list['complete'] %}
-            <p>
+            <div class="alert alert-success">
                 {% set url = path('document_download', {'token': token}) %}
                 {% trans %}
                     Your documents are ready. If the download does not start, <a href="{{ url }}" target="_self">click here</a>
                 {% endtrans %}
-            </p>
+            </div>
        {% endif %}
     </div>
 
     <div class="well-small">
-        <table class="table">
+        <table class="table table-bordered table-condensed">
             <caption>
-                {% trans "The file contains the following elements" %}
+                <h3>{% trans "The file contains the following elements" %}</h3>
             </caption>
             <thead>
                 <tr>
@@ -29,7 +38,7 @@
                     <th>{% trans "Name" %}</th>
                     <th>{% trans "Sub definition" %}</th>
                     <th>{% trans "Weight" %}</th>
-                    <th></th>
+                    <th>{% trans "Thumbnail" %}</th>
                 </tr>
             </thead>
 
@@ -40,10 +49,14 @@
                     <td>{{ app|sbas_from_bas(file['base_id'])|sbas_names(app) }} {{ file['base_id']|bas_names(app) }}</td>
                     <td>{{ file['original_name'] }}</td>
                     <td>
-                        {% for subdef in file['subdefs'] %}
-                            <p>{{ subdef['label'] }}</p>
-                            {% set size = size + subdef['size'] %}
-                        {% endfor %}
+                        {% if file['subdefs'] is iterable and file['subdefs']|length > 0 %}
+                            <ul class='unstyled'>
+                            {% for subdef in file['subdefs'] %}
+                                <li>{{ subdef['label'] }}</li>
+                                {% set size = size + subdef['size'] %}
+                            {% endfor %}
+                            </ul>
+                        {% endif %}
                     </td>
                     <td>{{ size|formatOctets }}</td>
                     <td style="text-align:center;">
@@ -76,7 +89,10 @@
 
     <script type="text/javascript">
         $(document).ready(function(){
-            {% if list['complete'] is not defined and list['count'] > 1 %}
+            {% set time = (total_size / (1024 * 1024 * 3))|round %}
+            {% set time = time < 1 ? 2 : (time > 10 ? 10 : time) %}
+
+            {% if list['complete'] is not defined %} {# Zip not done #}
                 $.post("{{ path('execute_download', {'token': token}) }}", function(data){
                     var data = $.parseJSON(data);
                     if(data.success) {
@@ -84,13 +100,13 @@
                     }
                     return false;
                 });
-            {% elseif (list['complete'] is defined and list['complete']) or list['count'] == 1 %}
+
+                setTimeout("location.reload()", "{{ time ~ "000" }}");
+            {% elseif (list['complete'] is defined and list['complete'])%} {# Zip done #}
                 // Get files
-                console.log("coucou");
                 $('form[name=download]').submit();
             {% else %}
-                {% set time = (total_size / (1024 * 1024 * 3))|round %}
-                {% set time = time < 1 ? 2 : (time > 10 ? 10 : time) %}
+
                 setTimeout("location.reload()", "{{ time ~ "000" }}");
             {% endif %}
         });
