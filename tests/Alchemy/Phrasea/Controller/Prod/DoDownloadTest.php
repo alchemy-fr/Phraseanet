@@ -43,6 +43,7 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['client']->request('GET', $url);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
+        unset($response);
     }
 
     /**
@@ -52,8 +53,7 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testPrepareDownloadTokenNotFound()
     {
         $token = 'AzBdisusjA';
-        $url = sprintf('/download/%s/prepare/', $token);
-        self::$DI['client']->request('GET', $url);
+        self::$DI['client']->request('GET', sprintf('/download/%s/prepare/', $token));
     }
 
     /**
@@ -63,8 +63,7 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testPrepareDownloadInvalidData()
     {
         $token = $this->getToken(array('bad_string' => base64_decode(serialize(array('fail')))));
-        $url = sprintf('/download/%s/prepare/', $token);
-        self::$DI['client']->request('GET', $url);
+        self::$DI['client']->request('GET', sprintf('/download/%s/prepare/', $token));
     }
 
     /**
@@ -72,6 +71,7 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testOneDocumentsDownload()
     {
+        $nbRowLogsBefore = $this->getNbRowLogs(self::$DI['record_1']->get_databox());
         $thumbnail = self::$DI['record_1']->get_thumbnail();
 
         $token = $this->getToken(array(
@@ -106,12 +106,16 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertRegExp('#attachment#', $response->headers->get('content-disposition'));
         $this->assertEquals( $response->headers->get('content-length'), $thumbnail->get_size());
         $this->assertEquals( $response->headers->get('content-type'), $thumbnail->get_mime());
+        $nbRowLogsAfter = $this->getNbRowLogs(self::$DI['record_1']->get_databox());
+        $this->assertGreaterThan($nbRowLogsBefore, $nbRowLogsAfter);
+        unset($response);
     }
     /**
      * @covers Alchemy\Phrasea\Controller\Prod\DoDownload::downloadDocuments
      */
     public function testTwoDocumentsDownload()
     {
+        $nbRowLogsBefore = $this->getNbRowLogs(self::$DI['record_1']->get_databox());
         $thumbnail = self::$DI['record_1']->get_thumbnail();
         $thumbnail2 = self::$DI['record_2']->get_thumbnail();
 
@@ -176,6 +180,9 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue($response->isOk());
         $this->assertRegExp('#attachment#', $response->headers->get('content-disposition'));
         $this->assertEquals('application/zip', $response->headers->get('content-type'));
+        $nbRowLogsAfter = $this->getNbRowLogs(self::$DI['record_1']->get_databox());
+        $this->assertGreaterThan($nbRowLogsBefore, $nbRowLogsAfter);
+        unset($response);
     }
 
     /**
@@ -212,6 +219,7 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['client']->request('POST', $url);
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isOk());
+        unset($response);
     }
 
     /**
@@ -221,8 +229,7 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testDocumentsDownloadTokenNotFound()
     {
         $token = 'AzBdisusjA';
-        $url = sprintf('/download/%s/get/', $token);
-        self::$DI['client']->request('POST', $url);
+        self::$DI['client']->request('POST', sprintf('/download/%s/get/', $token));
     }
 
     /**
@@ -232,8 +239,7 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testDocumentsDownloadInvalidData()
     {
         $token = $this->getToken(array('bad_string' => base64_decode(serialize(array('fail')))));
-        $url = sprintf('/download/%s/get/', $token);
-        self::$DI['client']->request('POST', $url);
+        self::$DI['client']->request('POST', sprintf('/download/%s/get/', $token));
     }
 
     /**
@@ -248,6 +254,7 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $datas = (array) json_decode($response->getContent());
         $this->assertArrayHasKey('success', $datas);
         $this->assertFalse($datas['success']);
+        unset($response);
     }
 
     /**
@@ -262,6 +269,7 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $datas = (array) json_decode($response->getContent());
         $this->assertArrayHasKey('success', $datas);
         $this->assertFalse($datas['success']);
+        unset($response);
     }
 
     /**
@@ -323,6 +331,7 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $datas = (array) json_decode($response->getContent());
         $this->assertArrayHasKey('success', $datas);
         $this->assertTrue($datas['success']);
+        unset($response);
     }
 
 
@@ -332,8 +341,18 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             self::$DI['app'],
             \random::TYPE_DOWNLOAD,
             self::$DI['user']->get_id(),
-            new \DateTime('10 seconds'), // Token lifetime
+            new \DateTime('+10 seconds'), // Token lifetime
             serialize($datas)
         );
+    }
+
+    private function getNbRowLogs(\databox $databox)
+    {
+        $stmt = $databox->get_connection()->prepare('SELECT COUNT(l.id) as nb_log FROM log_docs l WHERE l.action = "download"');
+        $stmt->execute();
+        $row = $stmt->fetch();
+        $stmt->closeCursor();
+        unset($stmt);
+        return $row['nb_log'];
     }
 }
