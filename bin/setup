@@ -16,13 +16,9 @@ namespace KonsoleKommander;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-use Alchemy\Phrasea\Core\Configuration;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Command\UpgradeDBDatas;
-use Alchemy\Phrasea\Command\RescanTechnicalDatas;
-use Alchemy\Phrasea\Command\BuildMissingSubdefs;
-use Alchemy\Phrasea\Command\RecordAdd;
-use Alchemy\Phrasea\Command\CreateCollection;
+use Alchemy\Phrasea\Command\Setup\Install;
 use Alchemy\Phrasea\CLI;
 
 require_once dirname(__FILE__) . '/../lib/bootstrap.php';
@@ -64,7 +60,7 @@ try {
     }
 
     $app->command(new \module_console_systemConfigCheck('check:system'));
-    $app->command(new \Alchemy\Phrasea\Command\Setup\Install('system:install'));
+    $app->command(new Install('system:install'));
 
     $result_code = is_int($app->run()) ? : 1;
 } catch (\Exception $e) {
