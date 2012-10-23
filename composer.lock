@@ -1,5 +1,5 @@
 {
-    "hash": "4b5f06b0e23d5a4f660d88baab26426a",
+    "hash": "a1c888150997e9946a0a84fe7117ff14",
     "packages": [
         {
             "name": "BadFaith/BadFaith",
@@ -39,14 +39,14 @@
                 "reference": "89993abd6a02b42e0b765114c34c26c4056762fa",
                 "shasum": ""
             },
-            "time": "2012-04-13 17:43:31",
             "type": "library",
             "installation-source": "source",
             "autoload": {
                 "psr-0": {
                     "Phlickr_": "./"
                 }
-            }
+            },
+            "time": "1334339011"
         },
         {
             "name": "alchemy/ghostscript",
@@ -120,14 +120,14 @@
                 "reference": "5f949209461e8f4c31e8476155188923aafa2ae5",
                 "shasum": ""
             },
-            "time": "2012-03-30 15:47:07",
             "type": "library",
             "installation-source": "source",
             "autoload": {
                 "classmap": [
                     "lib/"
                 ]
-            }
+            },
+            "time": "1333122427"
         },
         {
             "name": "alchemy/phpmailer",
@@ -137,14 +137,20 @@
                 "url": "https://github.com/alchemy-fr/PHPMailer_v5.1",
                 "reference": "baabbdc1e68947f19c86e0e9e02d40d6fb1283e4"
             },
-            "time": "2012-11-09 10:51:15",
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/alchemy-fr/PHPMailer_v5.1/zipball/3bdb8bc7a8f304c27900d7b2ddc00068c86c781f",
+                "reference": "3bdb8bc7a8f304c27900d7b2ddc00068c86c781f",
+                "shasum": ""
+            },
             "type": "library",
             "installation-source": "source",
             "autoload": {
                 "classmap": [
                     "./"
                 ]
-            }
+            },
+            "time": "1333125389"
         },
         {
             "name": "dailymotion/sdk",
@@ -175,7 +181,8 @@
                 "api",
                 "sdk",
                 "dailymotion"
-            ]
+            ],
+            "time": "1350827116"
         },
         {
             "name": "data-uri/data-uri",
@@ -300,7 +307,7 @@
                 "php": ">=5.3.2",
                 "doctrine/common": ">=2.2.0,<=2.2.99"
             },
-            "time": "2012-04-13 00:56:12",
+            "time": "2012-04-13 07:56:12",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -319,8 +326,7 @@
                 },
                 {
                     "name": "Guilherme Blanco",
-                    "email": "guilhermeblanco@gmail.com",
-                    "homepage": "http://www.instaclick.com"
+                    "email": "guilhermeblanco@gmail.com"
                 },
                 {
                     "name": "Roman Borschel",
@@ -360,7 +366,7 @@
                 "doctrine/common": ">=2.2.0,<2.2.99",
                 "doctrine/dbal": ">=2.2.1,<2.2.99"
             },
-            "time": "2012-04-13 01:02:34",
+            "time": "2012-04-13 08:02:34",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -379,8 +385,7 @@
                 },
                 {
                     "name": "Guilherme Blanco",
-                    "email": "guilhermeblanco@gmail.com",
-                    "homepage": "http://www.instaclick.com"
+                    "email": "guilhermeblanco@gmail.com"
                 },
                 {
                     "name": "Roman Borschel",
@@ -420,7 +425,6 @@
                 "doctrine/orm": ">=2.1",
                 "doctrine/mongodb-odm": "*"
             },
-            "time": "2012-11-15 16:25:16",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -452,7 +456,8 @@
                 "nestedset",
                 "sortable",
                 "timestampable"
-            ]
+            ],
+            "time": "1339767845"
         },
         {
             "name": "grom/silex-service-provider",
@@ -521,7 +526,6 @@
             "require-dev": {
                 "sami/sami": "dev-master"
             },
-            "time": "2012-12-13 18:31:18",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -547,7 +551,8 @@
                 "image processing",
                 "drawing",
                 "graphics"
-            ]
+            ],
+            "time": "1350920158"
         },
         {
             "name": "knplabs/knp-snappy",
@@ -669,7 +674,8 @@
                 "video processing",
                 "video",
                 "audio processing"
-            ]
+            ],
+            "time": "1350650300"
         },
         {
             "name": "mediavorus/mediavorus",
@@ -743,7 +749,7 @@
             "require": {
                 "php": ">=5.3.0"
             },
-            "time": "2011-10-24 02:39:02",
+            "time": "2011-10-24 09:39:02",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -867,18 +873,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/romainneutron/Sphinx-Search-API-PHP-Client",
-                "reference": "2.0.5"
+                "reference": "2.0.6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/romainneutron/Sphinx-Search-API-PHP-Client/zipball/2.0.5",
-                "reference": "2.0.5",
+                "url": "https://github.com/romainneutron/Sphinx-Search-API-PHP-Client/zipball/2.0.6",
+                "reference": "2.0.6",
                 "shasum": ""
             },
             "require": {
                 "php": ">=4"
             },
-            "time": "1350903759",
+            "time": "1350983112",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -1094,7 +1100,7 @@
                 "sami/sami": "dev-master",
                 "silex/silex": "dev-master"
             },
-            "time": "2012-10-08 13:42:14",
+            "time": "1349703734",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -1343,7 +1349,8 @@
             "homepage": "http://silex.sensiolabs.org",
             "keywords": [
                 "microframework"
-            ]
+            ],
+            "time": "1350911324"
         },
         {
             "name": "swftools/swftools",
@@ -1417,7 +1424,7 @@
             "require": {
                 "php": ">=5.2.4"
             },
-            "time": "2012-06-17 13:55:34",
+            "time": "2012-06-17 20:55:34",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1610,7 +1617,6 @@
             "require": {
                 "twig/twig": "1.*"
             },
-            "time": "2012-12-15 09:26:10",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1639,7 +1645,8 @@
                 "debug",
                 "i18n",
                 "text"
-            ]
+            ],
+            "time": "1349889206"
         },
         {
             "name": "twig/twig",
@@ -1658,7 +1665,6 @@
             "require": {
                 "php": ">=5.2.4"
             },
-            "time": "2012-12-16 07:55:06",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1689,7 +1695,8 @@
             "homepage": "http://twig.sensiolabs.org",
             "keywords": [
                 "templating"
-            ]
+            ],
+            "time": "1350737598"
         },
         {
             "name": "zend/gdata",
@@ -1708,7 +1715,6 @@
             "require": {
                 "php": ">5.2.4"
             },
-            "time": "2012-05-04 11:57:49",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -1730,7 +1736,8 @@
             "keywords": [
                 "zend",
                 "gdata"
-            ]
+            ],
+            "time": "1336132669"
         }
     ],
     "packages-dev": [
@@ -1752,15 +1759,6 @@
                 "php": ">=5.3.2",
                 "doctrine/common": ">=2.2,<2.5-dev"
             },
-            "require-dev": {
-                "doctrine/orm": ">=2.2,<2.5-dev"
-            },
-            "suggest": {
-                "doctrine/orm": "For loading ORM fixtures",
-                "doctrine/mongodb-odm": "For loading MongoDB ODM fixtures",
-                "doctrine/phpcr-odm": "For loading PHPCR ODM fixtures"
-            },
-            "time": "2012-12-03 09:46:47",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -1783,7 +1781,8 @@
             "homepage": "http://www.doctrine-project.org",
             "keywords": [
                 "database"
-            ]
+            ],
+            "time": "1350901469"
         },
         {
             "name": "fabpot/php-cs-fixer",
