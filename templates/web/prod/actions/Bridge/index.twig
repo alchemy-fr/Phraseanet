@@ -307,8 +307,10 @@ $(function() {
   });
 
   $("ul li a.account", pub_tabs).bind("click", function(){
-    $('form[name="current_datas"] input[name="account_id"]', container).val($('input[name="account_id"]', this).val());
+    $('#dialog_publicator form[name="current_datas"] input[name="account_id"]').val($('input[name="account_id"]', this).val());
   });
+
+  $("ul li.ui-tabs-selected a.account", pub_tabs).trigger("click");
 
   $('#publicator_selection .PNB10:first').selectable();
 
