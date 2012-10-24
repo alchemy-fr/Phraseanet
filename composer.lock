@@ -30,12 +30,12 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/alchemy-fr/Ghostscript-PHP.git",
-                "reference": "5ee945dd5db00f76326dc017ea8f0d77cc87370e"
+                "reference": "dfb0fa60e94cbb29558d2567223ff75207169608"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/alchemy-fr/Ghostscript-PHP/zipball/5ee945dd5db00f76326dc017ea8f0d77cc87370e",
-                "reference": "5ee945dd5db00f76326dc017ea8f0d77cc87370e",
+                "url": "https://github.com/alchemy-fr/Ghostscript-PHP/zipball/dfb0fa60e94cbb29558d2567223ff75207169608",
+                "reference": "dfb0fa60e94cbb29558d2567223ff75207169608",
                 "shasum": ""
             },
             "require": {
