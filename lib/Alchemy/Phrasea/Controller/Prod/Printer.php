@@ -49,20 +49,11 @@ class Printer implements ControllerProviderInterface
             }
             $PDF = new PDFExport($app, $printer->get_elements(), $layout);
 
-            /**
-             *
-             * Header "Pragma: public" SHOULD be present.
-             * In case it is not present, download on IE 8 and previous over HTTPS
-             * will fail.
-             *
-             * @todo : merge this shitty fix with Response object.
-             *
-             */
-            if (!headers_sent()) {
-                header("Pragma: public");
-            }
+            $response =  new Response($PDF->render(), 200, array('Content-Type' => 'application/pdf'));
+            $response->headers->set('Pragma', 'public', true);
+            $response->setMaxAge(0);
 
-            return new Response($PDF->render(), 200, array('Content-Type' => 'application/pdf'));
+            return $response;
         });
 
         return $controllers;

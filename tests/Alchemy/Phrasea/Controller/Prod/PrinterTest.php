@@ -56,6 +56,9 @@ class ControllerPrinterTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             $this->assertEquals("application/pdf", $response->headers->get("content-type"));
 
             $this->assertTrue($response->isOk());
+            $this->assertEquals(0, $response->getMaxAge());
+            $this->assertTrue($response->headers->has('pragma'));
+            $this->assertEquals('public', $response->headers->get('pragma'));
         }
     }
 }
