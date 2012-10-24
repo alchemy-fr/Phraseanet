@@ -30,10 +30,6 @@ class Download implements ControllerProviderInterface
             $app['firewall']->requireAuthentication();
         });
 
-         $controllers->get('/', function() {
-             return 'yo';
-         });
-
         /**
          * Download a set of documents
          *
