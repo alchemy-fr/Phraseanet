@@ -60,7 +60,6 @@ class SessionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     private function checkSessionReturn(\stdClass $data)
     {
-        var_dump($data);
         $this->assertObjectHasAttribute('status', $data);
         $this->assertObjectHasAttribute('message', $data);
         $this->assertObjectHasAttribute('notifications', $data);
