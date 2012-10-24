@@ -79,8 +79,8 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'count' => 1,
             'files' => array(
                 array(
-                    'base_id' => 1,
-                    'record_id' => 1,
+                    'base_id' => self::$DI['record_1']->get_base_id(),
+                    'record_id' => self::$DI['record_1']->get_record_id(),
                     'export_name' => 'my_downloads',
                     'original_name' => '0470',
                     'subdefs' => array(
@@ -124,8 +124,8 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'count' => 2,
             'files' => array(
                 array(
-                    'base_id' => 1,
-                    'record_id' => 1,
+                    'base_id' => self::$DI['record_1']->get_base_id(),
+                    'record_id' => self::$DI['record_1']->get_record_id(),
                     'export_name' => 'my_downloads',
                     'original_name' => '0470',
                     'subdefs' => array(
@@ -142,8 +142,8 @@ class DoDownloadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
                     )
                 ),
                 array(
-                    'base_id' => 1,
-                    'record_id' => 1,
+                    'base_id' => self::$DI['record_2']->get_base_id(),
+                    'record_id' => self::$DI['record_2']->get_record_id(),
                     'export_name' => 'my_downloads2',
                     'original_name' => '0471',
                     'subdefs' => array(
