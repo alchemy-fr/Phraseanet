@@ -1731,6 +1731,7 @@
             "description": "A script to automatically fix Symfony Coding Standard"
         }
     ],
+    "packages-dev": null,
     "aliases": [
 
     ],
