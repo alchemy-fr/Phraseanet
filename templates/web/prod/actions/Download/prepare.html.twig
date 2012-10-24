@@ -83,7 +83,11 @@
     </div>
 
     <div style="display:none">
-        <form name="download" action="{{ path('document_download', {'token': token}) }}" method="post" target="file_frame"></form>
+        <form name="download" action="{{ path('document_download', {'token': token}) }}" method="post" target="file_frame">
+        {% if anonymous %}
+                <input type="hidden" name="anonymous" value="1" />
+        {% endif%}
+        </form>
         <iframe name="file_frame"></iframe>
     </div>
 

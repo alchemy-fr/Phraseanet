@@ -15,7 +15,6 @@ use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\KernelEvents;
 
 class DoDownload implements ControllerProviderInterface
 {
@@ -124,7 +123,8 @@ class DoDownload implements ControllerProviderInterface
             'module'        => _('Export'),
             'list'          => $list,
             'records'       => $records,
-            'token'         => $token
+            'token'         => $token,
+            'anonymous'     => $request->query->get('anonymous', false)
         )));
     }
 
@@ -166,7 +166,13 @@ class DoDownload implements ControllerProviderInterface
         }
 
         $app->finish(function ($request, $response) use ($list, $app) {
-            \set_export::log_download($app, $list, $request->request->get('type'));
+            \set_export::log_download(
+                $app,
+                $list,
+                $request->request->get('type'),
+                (null !== $request->request->get('anonymous') ? true : false),
+                (isset($list['email']) ? $list['email'] : '')
+            );
         });
 
         $response = \set_export::stream_file(

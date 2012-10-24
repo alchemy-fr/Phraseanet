@@ -274,7 +274,7 @@ class Export implements ControllerProviderInterface
 
             $remaingEmails = $destMails;
 
-            $url = $app['phraseanet.registry']->get('GV_ServerName') . 'mail-export/' . $token . '/';
+            $url = $app['phraseanet.registry']->get('GV_ServerName') . 'download/' . $token . '/prepare/?anonymous';
 
             $from = array(
                 'name'  => $app['phraseanet.user']->get_display_name(),
