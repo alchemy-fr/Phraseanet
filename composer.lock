@@ -478,16 +478,16 @@
         },
         {
             "name": "media-alchemyst/media-alchemyst",
-            "version": "0.1.2",
+            "version": "0.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst",
-                "reference": "0.1.2"
+                "reference": "0.1.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/alchemy-fr/Media-Alchemyst/zipball/0.1.2",
-                "reference": "0.1.2",
+                "url": "https://github.com/alchemy-fr/Media-Alchemyst/zipball/0.1.3",
+                "reference": "0.1.3",
                 "shasum": ""
             },
             "require": {
@@ -563,7 +563,6 @@
                 "fabpot/php-cs-fixer": "*",
                 "silex/silex": "dev-master"
             },
-            "time": "1342615206",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -584,7 +583,8 @@
             "description": "MediaVorus",
             "keywords": [
                 "metadata"
-            ]
+            ],
+            "time": "1342615206"
         },
         {
             "name": "monolog/monolog",
@@ -808,7 +808,6 @@
                 "sami/sami": "dev-master",
                 "silex/silex": "dev-master"
             },
-            "time": "1340123615",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -835,7 +834,8 @@
             "keywords": [
                 "pdf",
                 "xpdf"
-            ]
+            ],
+            "time": "1340123615"
         },
         {
             "name": "phpexiftool/exiftool",
@@ -902,7 +902,6 @@
                 "sami/sami": "dev-master",
                 "silex/silex": "dev-master"
             },
-            "time": "1343328301",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -924,7 +923,8 @@
             "keywords": [
                 "metadata",
                 "exiftool"
-            ]
+            ],
+            "time": "1343328301"
         },
         {
             "name": "pimple/pimple",
@@ -1074,7 +1074,7 @@
                 "sami/sami": "dev-master",
                 "silex/silex": "dev-master"
             },
-            "time": "1339439296",
+            "time": "1349705213",
             "type": "library",
             "installation-source": "source",
             "autoload": {
