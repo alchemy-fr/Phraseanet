@@ -44,10 +44,14 @@
                         </table>
                     </div>
                     <div class="container PNB">
-                        {% if first_item %}
-              {% set bask_prev = first_item.get_record().get_preview() %}
-              {{thumbnail.format(bask_prev,bask_prev.get_width(),bask_prev.get_height(),'', false, false)}}
-            {% endif %}
+                    {% if first_item %}
+                        {% if app['phraseanet.user'].ACL().has_preview_grant(first_item.get_record()) %}
+                            {% set bask_prev = first_item.get_record().get_preview() %}
+                        {% else %}
+                            {% set bask_prev = first_item.get_record().get_thumbnail() %}
+                        {% endif %}
+                        {{thumbnail.format(bask_prev,bask_prev.get_width(),bask_prev.get_height(),'',session, false, false)}}
+                    {% endif %}
                     </div>
                 </div>
                 <div id="record_compare" class="PNB record_display_box">
