@@ -41,7 +41,7 @@ class Session implements ControllerProviderInterface
          *
          * return       : JSON Response
          */
-        $controllers->get('/update/', $this->call('updateSession'))
+        $controllers->post('/update/', $this->call('updateSession'))
             ->bind('update_session');
 
         return $controllers;
@@ -56,6 +56,10 @@ class Session implements ControllerProviderInterface
      */
     public function updateSession(Application $app, Request $request)
     {
+        if(!$request->isXmlHttpRequest()) {
+            $app->abort(400);
+        }
+
         $ret = array(
             'status'  => 'unknown',
             'message' => '',
