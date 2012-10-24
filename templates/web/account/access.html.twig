@@ -23,7 +23,7 @@
                             <td colspan="3" style="text-align:center;">
                                 {% trans 'login::register: acces authorise sur la collection ' %}{{ sbasId |sbas_names(app) }}
                                 {% if isTrue | trim != '' %}
-                                    <a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas={{sbasId}}&col='{{collId}}">{% trans 'login::register::CGU: lire les CGU' %}</a>
+                                    <a class="inscriptlink" href="/prod/TOU/?to_display[]={{sbasId}}">{% trans 'login::register::CGU: lire les CGU' %}</a>
                                 {% endif %}
                             </td>
                         </tr>
@@ -42,7 +42,7 @@
                         <td colspan="3" style="text-align: center;">
                             <span style="color: red;">{% trans 'login::register: acces refuse sur la collection ' %}{{ sbasId |sbas_names(app) }}</span>
                             {% if isTrue | trim != '' %}
-                                <a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas={{sbasId}}&col='{{collId}}">{% trans 'login::register::CGU: lire les CGU' %}</a>
+                                <a class="inscriptlink" href="/prod/TOU/?to_display[]={{sbasId}}">{% trans 'login::register::CGU: lire les CGU' %}</a>
                             {% endif %}
                         </td>
                     </tr>
@@ -60,7 +60,7 @@
                         <td colspan="3" style="text-align: center;">
                             <span style="color: orange;">{% trans 'login::register: en attente d\'acces sur' %} {{ sbasId |sbas_names(app) }}</span>
                             {% if isTrue | trim != '' %}
-                                <a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas={{sbasId}}&col='{{collId}}">{% trans 'login::register::CGU: lire les CGU' %}</a>
+                                <a class="inscriptlink" href="/prod/TOU/?to_display[]={{sbasId}}">{% trans 'login::register::CGU: lire les CGU' %}</a>
                             {% endif %}
                         </td>
                     </tr>
@@ -75,7 +75,7 @@
                         <td colspan="3" style="text-align: center;">
                             <span>{% trans 'login::register: acces temporaire sur' %} {{ sbasId |sbas_names(app) }}</span>
                             {% if isTrue |trim != '' %}
-                                <a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas={{sbasId}}&col='{{collId}}">{% trans 'login::register::CGU: lire les CGU' %}</a>
+                                <a class="inscriptlink" href="/prod/TOU/?to_display[]={{sbasId}}">{% trans 'login::register::CGU: lire les CGU' %}</a>
                             {% endif %}
                         </td>
                     </tr>
@@ -90,7 +90,7 @@
                         <td colspan="3" style="text-align: center;">
                             <span style="color:red;">{% trans 'login::register: acces temporaire termine sur ' %}{{ sbasId |sbas_names(app) }}</span>
                             {% if isTrue |trim != '' %}
-                                <a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas={{sbasId}}&col='{{collId}}">{% trans 'login::register::CGU: lire les CGU' %}</a>
+                                <a class="inscriptlink" href="/prod/TOU/?to_display[]={{sbasId}}">{% trans 'login::register::CGU: lire les CGU' %}</a>
                             {% endif %}
                         </td>
                     </tr>
@@ -105,7 +105,7 @@
                         <td colspan="3" style="text-align: center;">
                             <span style="color:red;">{% trans 'login::register: acces supendu sur' %} {{ sbasId |sbas_names(app) }}</span>
                             {% if isTrue |trim != '' %}
-                                <a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas={{sbasId}}&col='{{collId}}">{% trans 'login::register::CGU: lire les CGU' %}</a>
+                                <a class="inscriptlink" href="/prod/TOU/?to_display[]={{sbasId}}">{% trans 'login::register::CGU: lire les CGU' %}</a>
                             {% endif %}
                         </td>
                     </tr>

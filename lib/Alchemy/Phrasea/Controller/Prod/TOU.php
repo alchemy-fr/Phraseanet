@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Controller\Prod;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  *
@@ -26,10 +27,6 @@ class TOU implements ControllerProviderInterface
     public function connect(Application $app)
     {
         $controllers = $app['controllers_factory'];
-
-        $controllers->before(function(Request $request) use ($app) {
-            $app['firewall']->requireAuthentication();
-        });
 
         $controllers->post('/deny/{sbas_id}/', function(Application $app, Request $request, $sbas_id) {
             $ret = array('success' => false, 'message' => '');
@@ -50,13 +47,18 @@ class TOU implements ControllerProviderInterface
             }
 
             return $app->json($ret);
+        })->before(function(Request $request) use ($app) {
+            $app['firewall']->requireAuthentication();
         });
 
         $controllers->get('/', function(Application $app, Request $request) {
-
+                $toDisplay = $request->query->get('to_display', array());
                 $data = array();
 
                 foreach ($app['phraseanet.appbox']->get_databoxes() as $databox) {
+                    if(count($toDisplay) > 0 && !in_array($databox->get_sbas_id(), $toDisplay)) {
+                        continue;
+                    }
 
                     $cgus = $databox->get_cgus();
 
@@ -67,7 +69,10 @@ class TOU implements ControllerProviderInterface
                     $data[$databox->get_viewname()] = $cgus[$app['locale']]['value'];
                 }
 
-                return new Response($app['twig']->render('/prod/TOU.html.twig', array('TOUs' => $data)));
+                return new Response($app['twig']->render('/prod/TOU.html.twig', array(
+                    'TOUs' => $data,
+                    'local_title' => _('Terms of use')
+                )));
             });
 
         return $controllers;
