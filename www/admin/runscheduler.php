@@ -55,7 +55,7 @@ $descriptors[2] = array("file", $nullfile, "a+");
 
 $pipes = null;
 $cwd = $registry->get('GV_RootPath') . "bin/";
-$proc = proc_open($cmd, $descriptors, $pipes, $cwd, null, array('bypass_shell' => true));
+$proc = proc_open($cmd, $descriptors, $pipes, $cwd, $_SERVER, array('bypass_shell' => true));
 
 $pid = NULL;
 if (is_resource($proc)) {

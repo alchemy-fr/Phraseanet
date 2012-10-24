@@ -192,6 +192,9 @@ class Core extends \Pimple
                 if ($core->getRegistry()->get('swf_extract_binary')) {
                     $conf->set('SwfExtract', $core->getRegistry()->get('swf_extract_binary'));
                 }
+                if ($core->getRegistry()->get('ghostscript_binary')) {
+                    $conf->set('ghostscript', $core->getRegistry()->get('ghostscript_binary'));
+                }
 
                 $drivers = new \MediaAlchemyst\DriversContainer($conf, $core['monolog']);
 
