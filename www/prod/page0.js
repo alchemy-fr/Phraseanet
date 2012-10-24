@@ -2917,25 +2917,6 @@ function gotopage(pag)
     $('#searchForm').submit();
 }
 
-
-window.onbeforeunload = function()
-{
-
-    var xhr_object = null;
-    if(window.XMLHttpRequest) // Firefox
-        xhr_object = new XMLHttpRequest();
-    else if(window.ActiveXObject) // Internet Explorer
-        xhr_object = new ActiveXObject("Microsoft.XMLHTTP");
-    else  // XMLHttpRequest non supporte par le navigateur
-        return;
-    url= "/include/delses.php?app=1&t="+Math.random();
-    xhr_object.open("GET", url, false);
-    xhr_object.send(null);
-
-};
-
-
-
 function addFilterMulti(filter,link,sbasid)
 {
     var clone = $('#filter_multi_'+sbasid+'_'+filter);
