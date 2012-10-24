@@ -15,7 +15,7 @@
         "gedmo/doctrine-extensions": "2.2.*",
         "grom/silex-service-provider": "dev-master",
         "mediavorus/mediavorus": "dev-master",
-        "media-alchemyst/media-alchemyst": "dev-master",
+        "media-alchemyst/media-alchemyst": "0.1.3",
         "monolog/monolog": "1.0.*",
         "neutron/silex-badfaith-provider": "dev-master",
         "neutron/silex-filesystem-provider": "dev-master",
