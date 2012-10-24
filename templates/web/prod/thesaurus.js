@@ -1290,7 +1290,7 @@ function startThesaurus(){
     {% endfor %}
     {
       label:'{% trans 'prod::thesaurusTab:cmenu:Remplacer par...' %}',
-      disabled:true,
+//      disabled:true,
       onclick:function(menuItem, menu)
       {
         C_MenuOption(menuItem, menu, 'REPLACE', null);
@@ -1298,7 +1298,7 @@ function startThesaurus(){
     },
     {
       label:'{% trans 'boutton::supprimer' %}',
-      disabled:true,
+//      disabled:true,
       onclick:function(menuItem, menu)
       {
         C_MenuOption(menuItem, menu, 'DELETE', null);
