@@ -42,9 +42,13 @@
                     </div>
                     <div class="container left">
                         {% if first_item %}
-              {% set preview = first_item.get_record().get_preview() %}
-              {{thumbnail.format(preview, preview.get_width(), preview.get_height(),'',session, false, false)}}
-            {% endif %}
+                            {% if user.ACL().has_preview_grant(first_item.get_record()) %}
+                                {% set preview = first_item.get_record().get_preview() %}
+                            {% else %}
+                                {% set preview = first_item.get_record().get_thumbnail() %}
+                            {% endif %}
+                            {{thumbnail.format(preview, preview.get_width(), preview.get_height(),'',session, false, false)}}
+                        {% endif %}
                     </div>
                 </div>
                 <div id="record_compare" class="record_display_box PNBleft">
