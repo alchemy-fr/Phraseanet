@@ -9,12 +9,6 @@
                 "url": "https://github.com/winmillwill/BadFaith",
                 "reference": "9f80653350aa1f342a53a2f3a690422256686707"
             },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/winmillwill/BadFaith/zipball/9f80653350aa1f342a53a2f3a690422256686707",
-                "reference": "9f80653350aa1f342a53a2f3a690422256686707",
-                "shasum": ""
-            },
             "require": {
                 "php": ">=5.3.0"
             },
@@ -29,11 +23,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Accept-* Header parsing for PHP",
-            "support": {
-                "source": "https://github.com/winmillwill/BadFaith/tree/master",
-                "issues": "https://github.com/winmillwill/BadFaith/issues"
-            }
+            "description": "Accept-* Header parsing for PHP"
         },
         {
             "name": "alchemy/Phlickr",
@@ -57,6 +47,59 @@
                     "Phlickr_": "./"
                 }
             }
+        },
+        {
+            "name": "alchemy/ghostscript",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git://github.com/alchemy-fr/Ghostscript-PHP.git",
+                "reference": "5ee945dd5db00f76326dc017ea8f0d77cc87370e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/alchemy-fr/Ghostscript-PHP/zipball/5ee945dd5db00f76326dc017ea8f0d77cc87370e",
+                "reference": "5ee945dd5db00f76326dc017ea8f0d77cc87370e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3",
+                "symfony/process": ">=2.0,<=2.2",
+                "monolog/monolog": "1.*"
+            },
+            "require-dev": {
+                "fabpot/php-cs-fixer": "master",
+                "sami/sami": "dev-master",
+                "silex/silex": "dev-master"
+            },
+            "time": "1351010495",
+            "type": "library",
+            "installation-source": "source",
+            "autoload": {
+                "psr-0": {
+                    "Ghostscript": "src"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Romain Neutron",
+                    "email": "imprec@gmail.com",
+                    "homepage": "http://www.lickmychip.com/"
+                },
+                {
+                    "name": "Phraseanet Team",
+                    "email": "info@alchemy.fr",
+                    "homepage": "http://www.phraseanet.com/"
+                }
+            ],
+            "description": "Ghostscript PDF, a library to handle PDF through ghostscript",
+            "keywords": [
+                "pdf",
+                "ghostscript"
+            ]
         },
         {
             "name": "alchemy/oauth2php",
@@ -110,15 +153,15 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/dailymotion/dailymotion-sdk-php",
-                "reference": "02275fbf499c67e557af06cf362f6b6da9bbb6c8"
+                "reference": "9017604a49e9d999973ee98ec1471e187d1ad933"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/dailymotion/dailymotion-sdk-php/zipball/02275fbf499c67e557af06cf362f6b6da9bbb6c8",
-                "reference": "02275fbf499c67e557af06cf362f6b6da9bbb6c8",
+                "url": "https://github.com/dailymotion/dailymotion-sdk-php/zipball/9017604a49e9d999973ee98ec1471e187d1ad933",
+                "reference": "9017604a49e9d999973ee98ec1471e187d1ad933",
                 "shasum": ""
             },
-            "time": "1349828484",
+            "time": "1350827116",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -192,7 +235,7 @@
             "require": {
                 "php": ">=5.3.2"
             },
-            "time": "2012-08-28 20:04:14",
+            "time": "2012-08-29 01:04:14",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -211,7 +254,8 @@
                 },
                 {
                     "name": "Guilherme Blanco",
-                    "email": "guilhermeblanco@gmail.com"
+                    "email": "guilhermeblanco@gmail.com",
+                    "homepage": "http://www.instaclick.com"
                 },
                 {
                     "name": "Roman Borschel",
@@ -222,7 +266,7 @@
                     "email": "kontakt@beberlei.de"
                 },
                 {
-                    "name": "Johannes Schmitt",
+                    "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
                     "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
@@ -428,6 +472,7 @@
                 "knplabs/knp-snappy": "dev-master",
                 "imagine/imagine": "*"
             },
+            "time": "1338686843",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -452,8 +497,7 @@
                 "snappy",
                 "pdf",
                 "imagine"
-            ],
-            "time": "1338686843"
+            ]
         },
         {
             "name": "imagine/Imagine",
@@ -461,12 +505,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/avalanche123/Imagine",
-                "reference": "1cb89a88d68d8bc9592ddc57c1214510d349912f"
+                "reference": "2da3004b1201649598377c1aa5b24f9788abe83f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/avalanche123/Imagine/zipball/1cb89a88d68d8bc9592ddc57c1214510d349912f",
-                "reference": "1cb89a88d68d8bc9592ddc57c1214510d349912f",
+                "url": "https://github.com/avalanche123/Imagine/zipball/2da3004b1201649598377c1aa5b24f9788abe83f",
+                "reference": "2da3004b1201649598377c1aa5b24f9788abe83f",
                 "shasum": ""
             },
             "require": {
@@ -475,6 +519,7 @@
             "require-dev": {
                 "sami/sami": "dev-master"
             },
+            "time": "1350920158",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -499,8 +544,7 @@
                 "image processing",
                 "drawing",
                 "graphics"
-            ],
-            "time": "1348858156"
+            ]
         },
         {
             "name": "knplabs/knp-snappy",
@@ -522,6 +566,7 @@
             "suggest": {
                 "symfony/process": "Process Component of Symfony2."
             },
+            "time": "1348990625",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -550,8 +595,7 @@
                 "pdf",
                 "thumbnail",
                 "snapshot"
-            ],
-            "time": "1348990625"
+            ]
         },
         {
             "name": "media-alchemyst/media-alchemyst",
@@ -559,12 +603,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst",
-                "reference": "c3f4cf5943fd5a08c8e4eb5d9188a5aba357e53d"
+                "reference": "8f2c693906d14aa9a8f9896556ab501dd07498d5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/alchemy-fr/Media-Alchemyst/zipball/c3f4cf5943fd5a08c8e4eb5d9188a5aba357e53d",
-                "reference": "c3f4cf5943fd5a08c8e4eb5d9188a5aba357e53d",
+                "url": "https://github.com/alchemy-fr/Media-Alchemyst/zipball/8f2c693906d14aa9a8f9896556ab501dd07498d5",
+                "reference": "8f2c693906d14aa9a8f9896556ab501dd07498d5",
                 "shasum": ""
             },
             "require": {
@@ -577,14 +621,14 @@
                 "php": ">=5.3.3",
                 "pimple/pimple": "*",
                 "monolog/monolog": "1.0.*",
-                "symfony/dependency-injection": ">=2.0,<=2.2",
-                "symfony/console": ">=2.0,<=2.2"
+                "symfony/console": ">=2.0,<=2.2",
+                "alchemy/ghostscript": "dev-master"
             },
             "require-dev": {
                 "grom/silex-service-provider": "dev-master",
                 "phpexiftool/phpexiftool": "dev-master"
             },
-            "time": "1350326603",
+            "time": "1351081006",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -732,6 +776,7 @@
             "require-dev": {
                 "fabpot/php-cs-fixer": "master"
             },
+            "time": "1348756812",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -748,8 +793,7 @@
                     "email": "imprec@gmail.com",
                     "homepage": "http://www.lickmychip.com/"
                 }
-            ],
-            "time": "1348756812"
+            ]
         },
         {
             "name": "neutron/silex-filesystem-provider",
@@ -773,6 +817,7 @@
             "require-dev": {
                 "fabpot/php-cs-fixer": "master"
             },
+            "time": "1346932827",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -789,8 +834,7 @@
                     "email": "imprec@gmail.com",
                     "homepage": "http://www.lickmychip.com/"
                 }
-            ],
-            "time": "1346932827"
+            ]
         },
         {
             "name": "php-ffmpeg/php-ffmpeg",
@@ -816,6 +860,7 @@
                 "sami/sami": "dev-master",
                 "silex/silex": "dev-master"
             },
+            "time": "1349965750",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -848,8 +893,7 @@
                 "ffmpeg",
                 "avprobe",
                 "ffprobe"
-            ],
-            "time": "1349965750"
+            ]
         },
         {
             "name": "php-mp4box/php-mp4box",
@@ -874,6 +918,7 @@
                 "fabpot/php-cs-fixer": "dev-master",
                 "silex/silex": "dev-master"
             },
+            "time": "1349804408",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -896,8 +941,7 @@
                     "homepage": "http://www.phraseanet.com/"
                 }
             ],
-            "description": "PHP MP4Box, an Object Oriented library for easy file conversion with MP4 Box",
-            "time": "1349804408"
+            "description": "PHP MP4Box, an Object Oriented library for easy file conversion with MP4 Box"
         },
         {
             "name": "php-unoconv/php-unoconv",
@@ -922,6 +966,7 @@
                 "silex/silex": "dev-master",
                 "fabpot/php-cs-fixer": "dev-master"
             },
+            "time": "1349713000",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -944,8 +989,7 @@
                     "homepage": "http://www.phraseanet.com/"
                 }
             ],
-            "description": "Unoconv PHP, an Object Oriented library for easy file conversion with LibreOffice's unoconv",
-            "time": "1349713000"
+            "description": "Unoconv PHP, an Object Oriented library for easy file conversion with LibreOffice's unoconv"
         },
         {
             "name": "php-xpdf/php-xpdf",
@@ -1141,46 +1185,46 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/fabpot/Silex.git",
-                "reference": "ffb53a4979b731d08dde6c7b455a9374a9ddd804"
+                "reference": "271e77a8545a959d19c7acd2e98a6bf503222210"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/fabpot/Silex/zipball/ffb53a4979b731d08dde6c7b455a9374a9ddd804",
-                "reference": "ffb53a4979b731d08dde6c7b455a9374a9ddd804",
+                "url": "https://github.com/fabpot/Silex/zipball/271e77a8545a959d19c7acd2e98a6bf503222210",
+                "reference": "271e77a8545a959d19c7acd2e98a6bf503222210",
                 "shasum": ""
             },
             "require": {
-                "symfony/event-dispatcher": "2.1.*",
-                "symfony/http-foundation": "2.1.*",
-                "symfony/http-kernel": "2.1.*",
-                "symfony/routing": "2.1.*",
                 "php": ">=5.3.3",
-                "pimple/pimple": "1.*"
+                "pimple/pimple": "1.*",
+                "symfony/event-dispatcher": ">=2.1,<2.3-dev",
+                "symfony/http-foundation": ">=2.1,<2.3-dev",
+                "symfony/http-kernel": ">=2.1,<2.3-dev",
+                "symfony/routing": ">=2.1,<2.3-dev"
             },
             "require-dev": {
-                "symfony/form": "2.1.*",
-                "symfony/translation": "2.1.*",
-                "symfony/twig-bridge": "2.1.*",
-                "symfony/validator": "2.1.*",
-                "symfony/monolog-bridge": "2.1.*",
-                "symfony/browser-kit": "2.1.*",
-                "symfony/css-selector": "2.1.*",
-                "symfony/finder": "2.1.*",
-                "symfony/process": "2.1.*",
-                "symfony/security": "2.1.*",
                 "monolog/monolog": ">=1.0.0,<1.2-dev",
-                "symfony/config": "2.1.*",
-                "symfony/locale": "2.1.*",
                 "twig/twig": ">=1.8.0,<2.0-dev",
                 "swiftmailer/swiftmailer": "4.2.*",
-                "doctrine/dbal": ">=2.2.0,<2.4.0-dev"
+                "doctrine/dbal": ">=2.2.0,<2.4.0-dev",
+                "symfony/security": ">=2.1,<2.3-dev",
+                "symfony/config": ">=2.1,<2.3-dev",
+                "symfony/locale": ">=2.1,<2.3-dev",
+                "symfony/form": ">=2.1,<2.3-dev",
+                "symfony/browser-kit": ">=2.1,<2.3-dev",
+                "symfony/css-selector": ">=2.1,<2.3-dev",
+                "symfony/finder": ">=2.1,<2.3-dev",
+                "symfony/monolog-bridge": ">=2.1,<2.3-dev",
+                "symfony/process": ">=2.1,<2.3-dev",
+                "symfony/translation": ">=2.1,<2.3-dev",
+                "symfony/twig-bridge": ">=2.1,<2.3-dev",
+                "symfony/validator": ">=2.1,<2.3-dev"
             },
             "suggest": {
-                "symfony/browser-kit": "2.1.*",
-                "symfony/css-selector": "2.1.*",
-                "symfony/dom-crawler": "2.1.*"
+                "symfony/browser-kit": ">=2.1,<2.3-dev",
+                "symfony/css-selector": ">=2.1,<2.3-dev",
+                "symfony/dom-crawler": ">=2.1,<2.3-dev"
             },
-            "time": "1350048193",
+            "time": "1350911324",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1237,6 +1281,7 @@
                 "sami/sami": "dev-master",
                 "silex/silex": "dev-master"
             },
+            "time": "1349705213",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -1255,7 +1300,7 @@
                 },
                 {
                     "name": "Phraseanet Team",
-                    "email": "support@alchemy.fr",
+                    "email": "info@alchemy.fr",
                     "homepage": "http://www.phraseanet.com/"
                 }
             ],
@@ -1264,8 +1309,7 @@
                 "flash",
                 "swf",
                 "adobe flash"
-            ],
-            "time": "1349705213"
+            ]
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -1322,12 +1366,12 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/symfony/symfony.git",
-                "reference": "defccb35161e29c99cb0b2f18b6d6e97a6a1632b"
+                "reference": "28482f8216de3289f35519f32d829499a5ffb632"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/symfony/symfony/zipball/defccb35161e29c99cb0b2f18b6d6e97a6a1632b",
-                "reference": "defccb35161e29c99cb0b2f18b6d6e97a6a1632b",
+                "url": "https://github.com/symfony/symfony/zipball/28482f8216de3289f35519f32d829499a5ffb632",
+                "reference": "28482f8216de3289f35519f32d829499a5ffb632",
                 "shasum": ""
             },
             "require": {
@@ -1376,7 +1420,7 @@
                 "propel/propel1": "dev-master",
                 "monolog/monolog": "1.*"
             },
-            "time": "1350396939",
+            "time": "1350937201",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1481,6 +1525,7 @@
             "require": {
                 "twig/twig": "1.*"
             },
+            "time": "1349889206",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1508,8 +1553,7 @@
                 "debug",
                 "i18n",
                 "text"
-            ],
-            "time": "1349889206"
+            ]
         },
         {
             "name": "twig/twig",
@@ -1517,22 +1561,22 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/fabpot/Twig.git",
-                "reference": "bac6bc7851c51692af1d855065e88b564e047b3b"
+                "reference": "61393dc9fb8982110048624aa573aec4aee0b465"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/fabpot/Twig/zipball/bac6bc7851c51692af1d855065e88b564e047b3b",
-                "reference": "bac6bc7851c51692af1d855065e88b564e047b3b",
+                "url": "https://github.com/fabpot/Twig/zipball/61393dc9fb8982110048624aa573aec4aee0b465",
+                "reference": "61393dc9fb8982110048624aa573aec4aee0b465",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.2.4"
             },
-            "time": "1350391198",
+            "time": "1350737598",
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.10-dev"
+                    "dev-master": "1.11-dev"
                 }
             },
             "installation-source": "source",
@@ -1609,18 +1653,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/data-fixtures.git",
-                "reference": "v1.0.0-ALPHA3"
+                "reference": "181b71e9a19bcdc93a9bf5c19dc0ef9615656173"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/doctrine/data-fixtures/zipball/v1.0.0-ALPHA3",
-                "reference": "v1.0.0-ALPHA3",
+                "url": "https://github.com/doctrine/data-fixtures/zipball/181b71e9a19bcdc93a9bf5c19dc0ef9615656173",
+                "reference": "181b71e9a19bcdc93a9bf5c19dc0ef9615656173",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.2"
             },
-            "time": "1348136794",
+            "time": "1350901469",
             "type": "library",
             "installation-source": "source",
             "autoload": {
