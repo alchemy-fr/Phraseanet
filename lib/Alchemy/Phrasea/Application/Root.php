@@ -35,6 +35,7 @@ use Alchemy\Phrasea\Controller\Admin\Users;
 use Alchemy\Phrasea\Controller\Prod\Basket;
 use Alchemy\Phrasea\Controller\Prod\Bridge;
 use Alchemy\Phrasea\Controller\Prod\Download;
+use Alchemy\Phrasea\Controller\Prod\DoDownload;
 use Alchemy\Phrasea\Controller\Prod\Edit;
 use Alchemy\Phrasea\Controller\Prod\Export;
 use Alchemy\Phrasea\Controller\Prod\Feed;
@@ -160,6 +161,8 @@ return call_user_func(function($environment = null) {
 
     $app->mount('/user/preferences/', new Preferences());
     $app->mount('/user/notifications/', new Notifications());
+
+    $app->mount('/download/', new DoDownload());
 
     $app->error(function(\Exception $e) use ($app) {
         $request = $app['request'];
