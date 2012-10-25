@@ -85,8 +85,8 @@ function openPreview(env, pos, contId, reload){
 			pos: pos,
 			cont: contId,
 			roll: roll,
-            options_serial:options_serial,
-            query:query
+      options_serial:options_serial,
+      query:query
 		},
 		beforeSend: function(){
 			if (prevAjaxrunning)
