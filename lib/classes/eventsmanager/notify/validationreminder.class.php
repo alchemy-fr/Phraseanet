@@ -112,17 +112,6 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
                 $mailed = true;
         }
 
-        $validationParticipant = $this->app['EM']->getRepository('\Entities\ValidationParticipant')->find($params['to']);
-        /* @var $validationParticipant \Entities\ValidationParticipant */
-
-        if (null !== $validationParticipant) {
-            $validationParticipant->setReminded(new \DateTime('now'));
-
-            $this->app['EM']->persist($validationParticipant);
-
-            $this->app['EM']->flush();
-        }
-
         return $this->broker->notify($params['to'], __CLASS__, $datas, $mailed);
     }
 
