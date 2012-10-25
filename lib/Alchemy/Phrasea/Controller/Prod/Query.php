@@ -283,7 +283,7 @@ class Query implements ControllerProviderInterface
             $app->abort(400, 'Provided search engine options are not valid');
         }
 
-        $pos = (int) $request->request->get('pos', 1);
+        $pos = (int) $request->request->get('pos', 0);
         $query = $request->request->get('query', '');
 
         $record = new \record_preview($app, 'RESULT', $pos, '', '', $searchEngine, $query);
