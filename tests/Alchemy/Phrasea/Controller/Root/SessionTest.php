@@ -41,12 +41,31 @@ class SessionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$DI['app']->openAccount($auth);
 
         $this->XMLHTTPRequest('POST', '/session/update/', array(
-            'usr' => self::$DI['user']->get_id()
+            'usr' => self::$DI['user']->get_id(),
+            'module' => 1
         ));
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
         $datas = json_decode(self::$DI['client']->getResponse()->getContent());
         $this->checkSessionReturn($datas);
         $this->assertEquals('ok', $datas->status);
+    }
+
+     /**
+     * @covers \Alchemy\Phrasea\Controller\Root\Session::updateSession
+     */
+    public function testUpdSessionBadRequestMissingModuleArgument()
+    {
+        $auth = new \Session_Authentication_None(self::$DI['user']);
+        self::$DI['app']->openAccount($auth);
+
+        $this->XMLHTTPRequest('POST', '/session/update/', array(
+            'usr' => self::$DI['user']->get_id()
+        ));
+
+        $datas = json_decode(self::$DI['client']->getResponse()->getContent());
+        $datas = json_decode(self::$DI['client']->getResponse()->getContent());
+        $this->checkSessionReturn($datas);
+        $this->assertEquals('unknown', $datas->status);
     }
 
      /**

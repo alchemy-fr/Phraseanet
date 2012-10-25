@@ -79,14 +79,21 @@ class Session implements ControllerProviderInterface
             return $app->json($ret);
         }
 
+        if ($moduleId = (int) $request->request->get('module') < 1) {
+            $ret['message'] = 'Missing or Invalid `module` parameter';
+            return $app->json($ret);
+        }
+
         $session = $app['EM']->find('Entities\Session', $app['session']->get('session_id'));
 
-        if (!$session->hasModuleId($moduleId = $request->request->get('module'))) {
+        if (!$session->hasModuleId($moduleId)) {
             $module = new \Entities\SessionModule();
             $module->setModuleId($moduleId);
             $module->setSession($session);
             $app['EM']->persist($module);
             $app['EM']->persist($session);
+        } else {
+            $app['EM']->persist($session->getModuleById($moduleId)->setUpdated(new \DateTime()));
         }
 
         $ret['status'] = 'ok';
