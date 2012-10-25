@@ -117,6 +117,10 @@ class Records implements ControllerProviderInterface
         $searchEngine = null;
         $train = '';
 
+        if ('' === $env = strtoupper($request->get('env', ''))) {
+            $app->abort(400, '`env` parameter is missing');
+        }
+
         // Use $request->get as HTTP method can be POST or GET
         if ('RESULT' == $env = strtoupper($request->get('env', ''))) {
             if (null === $optionsSerial = $request->get('options_serial')) {
