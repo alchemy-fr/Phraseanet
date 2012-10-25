@@ -511,7 +511,13 @@
                     {% trans 'You must agree to the Terms of Use to continue.' %}
                 {% endset %}
 
-                alert("{{alert_message|e}}");
+                var alert = p4.Dialog.Create({
+                    size : 'Alert',
+                    closeOnEscape : true,
+                    closeButton:true,
+                }, 2);
+
+                alert.setContent("{{ alert_message|e }}");
 
                 return false;
             }
@@ -521,12 +527,14 @@
         function check_subdefs(container)
         {
             var go = required = false;
+
             $('input[name="obj[]"]', $(container)).each(function(){
                 if($(this).attr('checked'))
                 {
                     go = true;
                 }
             });
+
             $('input.required, textarea.required', container).each(function(i,n){
                 if($.trim($(n).val()) == '')
                 {
@@ -538,12 +546,20 @@
                     $(n).removeClass('error');
                 }
             });
+
             if(required)
             {
                 {% set alert_message %}
                     {% trans 'Certains champs sont obligatoires, veuillez les remplir' %}
                 {% endset %}
-                alert("{{alert_message|e}}");
+
+                var alert = p4.Dialog.Create({
+                    size : 'Alert',
+                    closeOnEscape : true,
+                    closeButton:true,
+                }, 2);
+
+                alert.setContent("{{ alert_message|e }}");
 
                 return false;
             }
@@ -552,7 +568,14 @@
                 {% set alert_message %}
                     {% trans 'Vous devez selectionner un type de sous definitions' %}
                 {% endset %}
-                alert("{{alert_message|e}}");
+
+                var alert = p4.Dialog.Create({
+                    size : 'Alert',
+                    closeOnEscape : true,
+                    closeButton:true,
+                }, 2);
+
+                alert.setContent("{{ alert_message|e }}");
 
                 return false;
             }
@@ -692,9 +715,14 @@
                             humane.info(data.message);
                             dialog.Close();
                         } else {
-                            alert(data.message);
-                        }
+                            var alert = p4.Dialog.Create({
+                                size : 'Alert',
+                                closeOnEscape : true,
+                                closeButton:true,
+                            }, 2);
 
+                            alert.setContent(data.message);
+                         }
                         return;
                     }
                     , 'json'
@@ -710,7 +738,15 @@
                     , options
                     , function(data){
                         $('#ftp .tryftp_button_loader').css('visibility','hidden');
-                        alert(data.message);
+                        var msg;
+                        var alert = p4.Dialog.Create({
+                            size : 'Alert',
+                            closeOnEscape : true,
+                            closeButton:true,
+                        }, 2);
+
+                        alert.setContent(data.message);
+
                         $this.removeAttr('disabled');
 
                         return;
