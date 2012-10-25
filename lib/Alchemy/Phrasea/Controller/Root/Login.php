@@ -879,8 +879,12 @@ class Login implements ControllerProviderInterface
                         'validate_id' => $validationSession->getId(),
                         'url'         => $app['phraseanet.registry']->get('GV_ServerName') . 'lightbox/validate/' . $basketId . '/?LOG=' . $token
                     ));
+
+                    $participant->setReminded(new \DateTime('now'));
+                    $app['EM']->persist($participant);
                 }
 
+                $app['EM']->flush();
 
                 /**
                  * IMPORTANT
