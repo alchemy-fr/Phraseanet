@@ -37,15 +37,15 @@
     },
     "repositories": [
     {
-        "type": "vcs",
+        "type": "git",
         "url": "https://github.com/alchemy-fr/oauth2-php"
     },
     {
-        "type": "vcs",
+        "type": "git",
         "url": "https://github.com/alchemy-fr/Phlickr"
     },
     {
-        "type": "vcs",
+        "type": "git",
         "url": "https://github.com/alchemy-fr/PHPMailer_v5.1"
     }
     ],
