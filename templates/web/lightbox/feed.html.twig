@@ -50,7 +50,7 @@
                         {% else %}
                             {% set bask_prev = first_item.get_record().get_thumbnail() %}
                         {% endif %}
-                        {{thumbnail.format(bask_prev,bask_prev.get_width(),bask_prev.get_height(),'',session, false, false)}}
+                        {{thumbnail.format(bask_prev,bask_prev.get_width(),bask_prev.get_height(),'', false, false)}}
                     {% endif %}
                     </div>
                 </div>

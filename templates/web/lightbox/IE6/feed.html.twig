@@ -46,7 +46,7 @@
                             {% else %}
                                 {% set preview = first_item.get_record().get_thumbnail() %}
                             {% endif %}
-                            {{thumbnail.format(preview, preview.get_width(), preview.get_height(),'',session, false, false)}}
+                            {{thumbnail.format(preview, preview.get_width(), preview.get_height(),'', false, false)}}
                         {% endif %}
                     </div>
                 </div>
