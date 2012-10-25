@@ -1,5 +1,5 @@
 {
-    "hash": "2b34a4340174fc534085a984bdb4163c",
+    "hash": "07387d765f74d6f298427a5e7104aa64",
     "packages": [
         {
             "name": "BadFaith/BadFaith",
@@ -72,7 +72,7 @@
                 "sami/sami": "dev-master",
                 "silex/silex": "dev-master"
             },
-            "time": "1351010495",
+            "time": "1351093185",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -153,15 +153,15 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/dailymotion/dailymotion-sdk-php",
-                "reference": "9017604a49e9d999973ee98ec1471e187d1ad933"
+                "reference": "a11e98742adf877497017fece69f603af578f329"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/dailymotion/dailymotion-sdk-php/zipball/9017604a49e9d999973ee98ec1471e187d1ad933",
-                "reference": "9017604a49e9d999973ee98ec1471e187d1ad933",
+                "url": "https://github.com/dailymotion/dailymotion-sdk-php/zipball/a11e98742adf877497017fece69f603af578f329",
+                "reference": "a11e98742adf877497017fece69f603af578f329",
                 "shasum": ""
             },
-            "time": "1350827116",
+            "time": "1351162376",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -472,7 +472,6 @@
                 "knplabs/knp-snappy": "dev-master",
                 "imagine/imagine": "*"
             },
-            "time": "1338686843",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -497,7 +496,8 @@
                 "snappy",
                 "pdf",
                 "imagine"
-            ]
+            ],
+            "time": "1338686843"
         },
         {
             "name": "imagine/Imagine",
@@ -566,7 +566,6 @@
             "suggest": {
                 "symfony/process": "Process Component of Symfony2."
             },
-            "time": "1348990625",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -595,40 +594,38 @@
                 "pdf",
                 "thumbnail",
                 "snapshot"
-            ]
+            ],
+            "time": "1348990625"
         },
         {
             "name": "media-alchemyst/media-alchemyst",
-            "version": "dev-master",
+            "version": "0.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst",
-                "reference": "8f2c693906d14aa9a8f9896556ab501dd07498d5"
+                "reference": "0.1.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/alchemy-fr/Media-Alchemyst/zipball/8f2c693906d14aa9a8f9896556ab501dd07498d5",
-                "reference": "8f2c693906d14aa9a8f9896556ab501dd07498d5",
+                "url": "https://github.com/alchemy-fr/Media-Alchemyst/zipball/0.1.3",
+                "reference": "0.1.3",
                 "shasum": ""
             },
             "require": {
+                "php": ">=5.3.2",
+                "pimple/pimple": "1.*",
                 "mediavorus/mediavorus": "dev-master",
                 "swftools/swftools": "dev-master",
+                "alchemy/ghostscript": "dev-master",
                 "php-ffmpeg/php-ffmpeg": "dev-master",
                 "php-unoconv/php-unoconv": "dev-master",
-                "imagine/imagine": "dev-develop",
                 "php-mp4box/php-mp4box": "dev-master",
-                "php": ">=5.3.3",
-                "pimple/pimple": "*",
-                "monolog/monolog": "1.0.*",
-                "symfony/console": ">=2.0,<=2.2",
-                "alchemy/ghostscript": "dev-master"
+                "imagine/imagine": "dev-develop",
+                "monolog/monolog": "1.*",
+                "symfony/dependency-injection": ">2.0",
+                "symfony/console": ">2.0"
             },
-            "require-dev": {
-                "grom/silex-service-provider": "dev-master",
-                "phpexiftool/phpexiftool": "dev-master"
-            },
-            "time": "1351081006",
+            "time": "2012-10-24 01:56:51",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -708,8 +705,7 @@
             "description": "MediaVorus",
             "keywords": [
                 "metadata"
-            ],
-            "time": "1342615206"
+            ]
         },
         {
             "name": "monolog/monolog",
@@ -777,7 +773,6 @@
             "require-dev": {
                 "fabpot/php-cs-fixer": "master"
             },
-            "time": "1348756812",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -794,7 +789,8 @@
                     "email": "imprec@gmail.com",
                     "homepage": "http://www.lickmychip.com/"
                 }
-            ]
+            ],
+            "time": "1348756812"
         },
         {
             "name": "neutron/silex-filesystem-provider",
@@ -818,7 +814,6 @@
             "require-dev": {
                 "fabpot/php-cs-fixer": "master"
             },
-            "time": "1346932827",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -835,7 +830,8 @@
                     "email": "imprec@gmail.com",
                     "homepage": "http://www.lickmychip.com/"
                 }
-            ]
+            ],
+            "time": "1346932827"
         },
         {
             "name": "php-ffmpeg/php-ffmpeg",
@@ -861,7 +857,6 @@
                 "sami/sami": "dev-master",
                 "silex/silex": "dev-master"
             },
-            "time": "1349965750",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -894,7 +889,8 @@
                 "ffmpeg",
                 "avprobe",
                 "ffprobe"
-            ]
+            ],
+            "time": "1349965750"
         },
         {
             "name": "php-mp4box/php-mp4box",
@@ -919,7 +915,6 @@
                 "fabpot/php-cs-fixer": "dev-master",
                 "silex/silex": "dev-master"
             },
-            "time": "1349804408",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -942,7 +937,8 @@
                     "homepage": "http://www.phraseanet.com/"
                 }
             ],
-            "description": "PHP MP4Box, an Object Oriented library for easy file conversion with MP4 Box"
+            "description": "PHP MP4Box, an Object Oriented library for easy file conversion with MP4 Box",
+            "time": "1349804408"
         },
         {
             "name": "php-unoconv/php-unoconv",
@@ -967,7 +963,6 @@
                 "silex/silex": "dev-master",
                 "fabpot/php-cs-fixer": "dev-master"
             },
-            "time": "1349713000",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -990,7 +985,8 @@
                     "homepage": "http://www.phraseanet.com/"
                 }
             ],
-            "description": "Unoconv PHP, an Object Oriented library for easy file conversion with LibreOffice's unoconv"
+            "description": "Unoconv PHP, an Object Oriented library for easy file conversion with LibreOffice's unoconv",
+            "time": "1349713000"
         },
         {
             "name": "php-xpdf/php-xpdf",
@@ -1016,7 +1012,6 @@
                 "sami/sami": "dev-master",
                 "silex/silex": "dev-master"
             },
-            "time": "1349703734",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -1044,7 +1039,7 @@
                 "pdf",
                 "xpdf"
             ],
-            "time": "1340123615"
+            "time": "1349703734"
         },
         {
             "name": "phpexiftool/exiftool",
@@ -1063,7 +1058,6 @@
             "require": {
                 "phpexiftool/phpexiftool": "*"
             },
-            "time": "1346256086",
             "type": "library",
             "installation-source": "source",
             "license": [
@@ -1080,7 +1074,8 @@
             "keywords": [
                 "exiftool",
                 "metadatas"
-            ]
+            ],
+            "time": "1346256086"
         },
         {
             "name": "phpexiftool/phpexiftool",
@@ -1111,7 +1106,6 @@
                 "sami/sami": "dev-master",
                 "silex/silex": "dev-master"
             },
-            "time": "1346681208",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -1134,7 +1128,7 @@
                 "metadata",
                 "exiftool"
             ],
-            "time": "1343328301"
+            "time": "1346681208"
         },
         {
             "name": "pimple/pimple",
@@ -1188,12 +1182,12 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/fabpot/Silex.git",
-                "reference": "271e77a8545a959d19c7acd2e98a6bf503222210"
+                "reference": "598347392b5cca74440693964ab28f7fd087abcc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/fabpot/Silex/zipball/271e77a8545a959d19c7acd2e98a6bf503222210",
-                "reference": "271e77a8545a959d19c7acd2e98a6bf503222210",
+                "url": "https://github.com/fabpot/Silex/zipball/598347392b5cca74440693964ab28f7fd087abcc",
+                "reference": "598347392b5cca74440693964ab28f7fd087abcc",
                 "shasum": ""
             },
             "require": {
@@ -1227,7 +1221,7 @@
                 "symfony/css-selector": ">=2.1,<2.3-dev",
                 "symfony/dom-crawler": ">=2.1,<2.3-dev"
             },
-            "time": "1350911324",
+            "time": "1351110265",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1284,7 +1278,6 @@
                 "sami/sami": "dev-master",
                 "silex/silex": "dev-master"
             },
-            "time": "1349705213",
             "type": "library",
             "installation-source": "source",
             "autoload": {
@@ -1312,7 +1305,8 @@
                 "flash",
                 "swf",
                 "adobe flash"
-            ]
+            ],
+            "time": "1349705213"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -1369,12 +1363,12 @@
             "source": {
                 "type": "git",
                 "url": "git://github.com/symfony/symfony.git",
-                "reference": "e7059b44c78ca8e1e892adb4d93b5a482f4eb9b3"
+                "reference": "1277e6746b2333338124ad0574fa7d5b8c77c47c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/symfony/symfony/zipball/e7059b44c78ca8e1e892adb4d93b5a482f4eb9b3",
-                "reference": "e7059b44c78ca8e1e892adb4d93b5a482f4eb9b3",
+                "url": "https://github.com/symfony/symfony/zipball/1277e6746b2333338124ad0574fa7d5b8c77c47c",
+                "reference": "1277e6746b2333338124ad0574fa7d5b8c77c47c",
                 "shasum": ""
             },
             "require": {
@@ -1423,7 +1417,7 @@
                 "propel/propel1": "dev-master",
                 "monolog/monolog": "1.*"
             },
-            "time": "1346926323",
+            "time": "1351170710",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1734,7 +1728,6 @@
             "description": "A script to automatically fix Symfony Coding Standard"
         }
     ],
-    "packages-dev": null,
     "aliases": [
 
     ],
@@ -1743,7 +1736,6 @@
         "data-uri/data-uri": 20,
         "grom/silex-service-provider": 20,
         "mediavorus/mediavorus": 20,
-        "media-alchemyst/media-alchemyst": 20,
         "neutron/silex-badfaith-provider": 20,
         "neutron/silex-filesystem-provider": 20,
         "php-xpdf/php-xpdf": 20,
