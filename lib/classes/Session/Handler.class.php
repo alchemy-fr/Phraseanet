@@ -565,7 +565,13 @@ class Session_Handler
                 'validate_id' => $validationSession->getId(),
                 'url'         => $registry->get('GV_ServerName') . 'lightbox/validate/' . $basketId . '/?LOG=' . $token
             ));
+
+            $participant->setReminded(new \DateTime('now'));
+
+            $em->persist($participant);
         }
+
+        $em->flush();
 
         return $this;
     }
