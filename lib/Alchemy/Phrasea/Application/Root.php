@@ -164,6 +164,7 @@ return call_user_func(function($environment = null) {
     $app->mount('/user/notifications/', new Notifications());
 
     $app->mount('/download/', new DoDownload());
+    $app->mount('/session/', new Session());
 
     $app->error(function(\Exception $e) use ($app) {
         $request = $app['request'];
