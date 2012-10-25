@@ -91,6 +91,7 @@ class record_preview extends record_adapter
     {
         $number = null;
         $this->env = $env;
+        $this->app = $app;
 
         switch ($env) {
             case "RESULT":
