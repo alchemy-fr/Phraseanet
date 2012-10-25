@@ -43,6 +43,8 @@
   RewriteRule ^user/preferences/.*$             /index.php [L]
   RewriteRule ^user/notifications/.*$           /index.php [L]
 
+  RewriteRule ^download/.*$                     /index.php [L]
+
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteRule ^api/v1/.*$             /api/v1/index.php [L]
   RewriteCond %{REQUEST_FILENAME} !-f

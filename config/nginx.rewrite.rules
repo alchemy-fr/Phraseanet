@@ -42,6 +42,7 @@ rewrite ^/prod/share/.*$                    /index.php last;
 rewrite ^/user/preferences/.*$              /index.php last;
 rewrite ^/user/notifications/.*$            /index.php last;
 
+rewrite ^/download/.*$                      /index.php last;
 
 rewrite ^/api/v1/.*$              /api/v1/index.php last;
 rewrite ^/api/oauthv2/.*$         /api/oauthv2/index.php last;
