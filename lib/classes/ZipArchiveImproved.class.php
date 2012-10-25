@@ -61,7 +61,7 @@ class ZipArchiveImproved extends ZipArchive
      * @param int    $flags
      * return mixed
      */
-    public function open($fileName, $flags)
+    public function open($fileName, $flags = null)
     {
         $this->_archiveFileName = $fileName;
         $this->_newAddedFilesCounter = 0;
@@ -106,26 +106,18 @@ class ZipArchiveImproved extends ZipArchive
      * @param  string [optional] $localname the name of the file in the ZIP archive
      * @return bool
      */
-    public function addFile($fileName)
+    public function addFile($fileName, $localname = null, $start = 0, $length = 0)
     {
         if ($this->_newAddedFilesCounter >= $this->_newAddedFilesSize) {
             $this->reopen();
         }
-        if (func_num_args() > 1) {
-            $flags = func_get_arg(1);
-            $added = parent::addFile($fileName, $flags);
-            if ($added) {
-                $this->_newAddedFilesCounter ++;
-            }
 
-            return $added;
-        }
-        $added = parent::addFile($fileName);
+        $added = parent::addFile($fileName, $localname, $start, $length);
+
         if ($added) {
             $this->_newAddedFilesCounter ++;
         }
 
         return $added;
     }
-// public function addFile()
 }

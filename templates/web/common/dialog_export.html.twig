@@ -106,7 +106,7 @@
             <div id="download">
                 <div style="padding:10px; text-align: center;">
                     <h4>{% trans 'export:: telechargement' %}</h4>
-                    <form method="post" target="_blank" action="{{ path('download') }}" style="text-align: left;">
+                    <form method="post" target="_blank" action="{{ path('check_download') }}" style="text-align: left;">
                         <input type="hidden" name="lst" value="{{lst}}"/>
                         <input type="hidden" name="ssttid" value="{{ssttid}}"/>
                         {% for name, values in download.get_display_download() %}
@@ -167,7 +167,7 @@
             <div id="sendmail">
                 <div style="padding:10px; text-align: center;">
                     <h4>{% trans 'export:: envoi par mail' %}</h4>
-                        <form action="/prod/export/mail/" method="post" target="sendmail_target" style="text-align: left;">
+                        <form action="{{ path('export_mail') }}" method="post" target="sendmail_target" style="text-align: left;">
                         <input type="hidden" name="lst" value="{{lst}}"/>
                         <input type="hidden" name="ssttid" value="{{ssttid}}"/>
                         <div>

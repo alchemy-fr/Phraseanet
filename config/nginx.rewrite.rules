@@ -1,10 +1,6 @@
 rewrite ^/include/minify/([a-z]=.*)           /include/minify/index.php?$1 last;
-rewrite ^/(download)/([a-zA-Z0-9]*)\/?$       /include/download_prepare.php?type=$1&token=$2 last;
-rewrite ^/(download)/([a-zA-Z0-9]*)\/get$     /include/download_prepare.php?type=$1&token=$2&get=1 last;
-rewrite ^/(mail-export)/([a-zA-Z0-9]*)\/?$    /include/download_anonymous.php?type=$1&token=$2 last;
-rewrite ^/(mail-export)/([a-zA-Z0-9]*)\/get$  /include/download_anonymous.php?type=$1&token=$2&get=1 last;
 
-rewrite ^/admin/.*$                          /index.php last;
+rewrite ^/admin/.*$                         /index.php last;
 rewrite ^/lightbox.?$                       /index.php last;
 rewrite ^/robots.txt$                       /index.php last;
 rewrite ^/feeds/.*$                         /index.php last;
@@ -44,6 +40,7 @@ rewrite ^/prod/share/.*$                    /index.php last;
 rewrite ^/user/preferences/.*$              /index.php last;
 rewrite ^/user/notifications/.*$            /index.php last;
 
+rewrite ^/download/.*$                      /index.php last;
 
 rewrite ^/api/v1/.*$              /api/v1/index.php last;
 rewrite ^/api/oauthv2/.*$         /api/oauthv2/index.php last;

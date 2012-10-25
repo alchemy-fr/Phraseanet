@@ -14,7 +14,6 @@ namespace Alchemy\Phrasea\Controller\Prod;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class Download implements ControllerProviderInterface
@@ -34,7 +33,7 @@ class Download implements ControllerProviderInterface
         /**
          * Download a set of documents
          *
-         * name         : download
+         * name         : check_download
          *
          * description  : Download a set of documents
          *
@@ -44,8 +43,8 @@ class Download implements ControllerProviderInterface
          *
          * return       : Redirect Response
          */
-        $controllers->post('/', $this->call('download'))
-            ->bind('download');
+        $controllers->post('/', $this->call('checkDownload'))
+            ->bind('check_download');
 
         return $controllers;
     }
@@ -57,7 +56,7 @@ class Download implements ControllerProviderInterface
      * @param   Request     $request
      * @return  RedirectResponse
      */
-    public function download(Application $app, Request $request)
+    public function checkDownload(Application $app, Request $request)
     {
         $lst = $request->request->get('lst');
         $ssttid = $request->request->get('ssttid', '');
@@ -99,7 +98,9 @@ class Download implements ControllerProviderInterface
             'export_file' => $download->getExportName()
         ));
 
-        return $app->redirect('/prod/download/' . $token . '/');
+        return $app->redirect($app['url_generator']->generate(
+            'prepare_download', array('token' => $token)
+        ));
     }
 
     /**
