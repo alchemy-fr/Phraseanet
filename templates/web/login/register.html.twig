@@ -287,26 +287,16 @@
         </div><!-- /form_register_table -->
 
         {% if app['phraseanet.registry'].get('GV_autoselectDB') %}
-            <div style="display: none;">
-        {% endif %}
+            <div class="well-small">
+                <p style="text-align:center">
+                    {% trans 'admin::compte-utilisateur actuellement, acces aux bases suivantes : ' %}
+                </p>
 
-            <p style="width: 600px; height: 20px; text-align: center; margin: 0 auto;">
-                {% trans 'admin::compte-utilisateur actuellement, acces aux bases suivantes : ' %}
-            </p>
-            <p class="requiredField" style="width: 600px; height: 20px; text-align: center; margin: 0 auto;">
-                {{ needed['demand'] is defined ? needed['demand'] : '' }}
-            </p>
+                <p class="requiredField" style="text-align:center">
+                    {{ needed['demand'] is defined ? needed['demand'] : '' }}
+                </p>
 
-            <div style="width: 600px; text-align: center; margin: 0 5px;">
-
-
-                <table  border="0" style="table-layout:fixed" cellspacing=0 width="590">
-                    <tr>
-                        <td  style="width:240px; text-align:right">&nbsp;</td>
-                        <td  width="25px" style="width:25px">&nbsp;</td>
-                        <td  style="width:325px;">&nbsp;</td>
-                    </tr>
-
+                <table border="0" style="width:100%">
                     {% for sbasId, baseInsc in inscriptions %}
                         {% if (baseInsc['CollsCGU'] or baseInsc['Colls']) and baseInsc['inscript'] %}
                             <tr>
@@ -319,7 +309,7 @@
                                     <tr>
                                         <td colspan="3" style="text-align: center;">
                                             {% trans 'login::register: L\'acces aux bases ci-dessous implique l\'acceptation des Conditions Generales d\'Utilisation (CGU) suivantes' %}<br/>
-                                            <a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas={{ sbasId }}">{% trans 'login::register::CGU: ouvrir dans une nouvelle fenetre' %}</a>
+                                            <a target="_blank" class="inscriptlink" href="/prod/TOU/?to_display[]={{sbasId}}">{% trans 'login::register::CGU: ouvrir dans une nouvelle fenetre' %}</a>
                                         </td>
                                     </tr>
                                 {% endif %}
@@ -327,15 +317,13 @@
                                     {% set baseId = sbasId |base_from_coll(collId, app) %}
                                     <tr>
                                         <td style="text-align: right;">{{ collName }}</td>
-                                        <td></td>
-                                        <td class="TD_R" style="width: 200px;">
+                                        <td style="text-align: left;">
                                             <input type="checkbox" class="checkbox" checked="{{ baseId in demandes ? 'checked' : '' }}" name="demand[]" value="{{ baseId }}" style="width: 15px;" >
                                             <span>{% trans 'login::register: Faire une demande d\'acces' %}</span>
                                         </td>
                                     </tr>
                                 {% endfor %}
                             {% endif %}
-
                             {% if baseInsc['CollsCGU'] %}
                                 {% for collId, collDesc in baseInsc['CollsCGU'] %}
                                     {% set baseId = sbasId |base_from_coll(collId, app) %}
@@ -347,13 +335,12 @@
                                     <tr>
                                         <td colspan="3" style="text-align:center;">
                                             {% trans 'login::register: L\'acces aux bases ci-dessous implique l\'acceptation des Conditions Generales d\'Utilisation (CGU) suivantes' %}<br/>
-                                            <a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas={{ sbasId }}&col={{ collId }}">{% trans 'login::register::CGU: ouvrir dans une nouvelle fenetre' %}</a>
+                                            <a target="_blank" class="inscriptlink" href="/prod/TOU/?to_display[]={{sbasId}}">{% trans 'login::register::CGU: ouvrir dans une nouvelle fenetre' %}</a>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="text-align: right;">{{ collDesc['name'] }}</td>
-                                        <td></td>
-                                        <td class="TD_R" style="width: 200px;">
+                                        <td style="text-align: left;">
                                             <input style="width:15px;" class="checkbox" type="checkbox" checked="{{ baseId in demandes ? 'checked' : '' }}" name="demand[]" value="{{ baseId }}" >
                                             <span>{% trans 'login::register: Faire une demande d\'acces' %}</span>
                                         </td>
@@ -362,12 +349,7 @@
                             {% endif %}
                         {% endif %}
                     {% endfor %}
-
                 </table>
-
-            </div>
-
-        {% if app['phraseanet.registry'].get('GV_autoselectDB') %}
             </div>
         {% endif %}
 

@@ -1,0 +1,23 @@
+{% extends "common/index_bootstrap.html.twig" %}
+
+{% set module = "terms" %}
+
+{% block stylesheet %}
+    <style type="text/css">
+        #mainMenu{
+            background-color: #404040;
+        }
+
+        p {
+            margin:15px;
+        }
+    </style>
+{% endblock %}
+
+
+ {% block content %}
+    <div style="width:80%; margin:0 auto; text-align: justify">
+        {% block tou %}{% endblock %}
+    </div>
+ {% endblock %}
+    
