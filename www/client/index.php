@@ -594,10 +594,10 @@ echo phrasea::getHome($app, $start_page, 'client');
         function sessionactive(){
             $.ajax({
                 type: "POST",
-                url: "/include/updses.php",
+                url: "/session/update/",
                 dataType: 'json',
                 data: {
-                    app : 2,
+                    module : 2,
                     usr : <?php echo $usr_id ?>
                 },
                 error: function(){
@@ -618,19 +618,6 @@ echo phrasea::getHome($app, $start_page, 'client');
                 }
             })
         };
-        window.onbeforeunload = function(){
-            var xhr_object = null;
-            if(window.XMLHttpRequest) // Firefox
-                xhr_object = new XMLHttpRequest();
-            else if(window.ActiveXObject) // Internet Explorer
-                xhr_object = new ActiveXObject("Microsoft.XMLHTTP");
-            else  // XMLHttpRequest non supporte par le navigateur
-
-            return;
-        url= "/include/delses.php?app=2&t="+Math.random();
-        xhr_object.open("GET", url, false);
-        xhr_object.send(null);
-    }
     </script>
     <script type="text/javascript" language="javascript">
     var lastAct = null;

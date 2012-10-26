@@ -392,6 +392,23 @@ class Session
         return $this->modules;
     }
 
+    /**
+     * Get a module by its identifier
+     *
+     * @param   integer     $moduleId
+     * @return  Entities\SessionModule|null
+     */
+    public function getModuleById($moduleId)
+    {
+        foreach ($this->getModules() as $module) {
+            if ($module->getModuleId() == $moduleId) {
+                return $module;
+            }
+        }
+
+        return null;
+    }
+
     public function hasModuleId($moduleId)
     {
         foreach ($this->getModules() as $module) {

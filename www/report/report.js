@@ -1,6 +1,6 @@
 /**
  * object language, date , and dashboard are init in all_content.twig for translation
- * 
+ *
  */
 
 var xhr_object;
@@ -20,7 +20,7 @@ var bodySize = {
 
 //#############START DOCUMENT READY ######################################//
 $(document).ready(function()
-{	
+{
   //resize window
   $(window).bind('resize',function(){
     resize();
@@ -47,7 +47,7 @@ $(document).ready(function()
 //#############END DOCUMENT READY ######################################//
 
 /**
- * 
+ *
  * Tous les binds sur le report
  */
 function bindEvents()
@@ -160,7 +160,7 @@ function showMenu()
   $(".form").slideToggle("slow", function(){
     bodySize.y = $(document).height();
     $('.answers:visible').height(Math.round(bodySize.y - $('.answers:visible').position().top  - 30));
-		
+
   });
 }
 
@@ -178,7 +178,7 @@ function submiterAction(domSubmiter)
   else
   {
     var request = form.data("request");
-		
+
     if(request && typeof(request.abort) == 'function')
     {
       request.abort();
@@ -211,7 +211,7 @@ function submiterAction(domSubmiter)
         });
       }
     });
-		
+
     form.data('request', request);
   }
 }
@@ -421,7 +421,7 @@ function changeDash(sbasid)
 }
 
 function drawCharts()
-{	
+{
   if($('#mytabledaytotal').length > 0)
   {
     $('#mytabledaytotal').gvChart({
@@ -497,7 +497,7 @@ function drawCharts()
       }
     });
   }
-		
+
   if($('#mytableadded').length > 0)
   {
     $('#mytableadded').gvChart({
@@ -526,7 +526,7 @@ function drawCharts()
           },
           showTextEvery: 4
         },
-  
+
         legend: 'none',
         lineWidth: 1,
         pointSize: 3,
@@ -536,7 +536,7 @@ function drawCharts()
       }
     });
   }
-	
+
   if($('#mytableedited').length > 0)
   {
     $('#mytableedited').gvChart({
@@ -565,7 +565,7 @@ function drawCharts()
           },
           showTextEvery: 4
         },
-  
+
         legend: 'none',
         lineWidth: 1,
         pointSize: 3,
@@ -608,7 +608,7 @@ function who()
     form.find("input[name=tbl]").val("infouser");
     //put the old in the from input
     form.find("input[name=from]").val(tbl);
-		
+
     if(col == 'user')
     {
       form.find("input[name=user]").val(usrid);
@@ -714,7 +714,7 @@ function dialog_record(form, p_message, p_title, tbl)
 function alert_dialog_filter(submit, form, p_message, p_title)
 {
   var buttons = {};
-	
+
   p_title = p_title || "";
   $('body').append("<div id='dialog'>" + p_message + "</div>");
   buttons[language.valider] = function() {
@@ -743,10 +743,10 @@ function alert_dialog_conf(submit, form, p_message, p_title)
 {
   var w = $('#mainTabs:visible').width();
   var buttons = {};
-  
+
   buttons[language.valider] = function() {
     var idChecked = new Array();
-		
+
     $("#dialog input:checked").each(function (id) {
       idChecked[id] = $(this).val();
     });
@@ -766,7 +766,7 @@ function alert_dialog_conf(submit, form, p_message, p_title)
       update_tab(submit, form, f_val);
       $(this).dialog('destroy').remove();
     }
-  };	
+  };
 
   p_title = p_title || "";
   $('body').append("<div id='dialog'>" + p_message + "</div>");
@@ -844,7 +844,7 @@ function print()
   $("a.jqprint").unbind("click").bind("click", function(){
     var $table = $(this).closest(".report-table");
     var $graph = $(this).closest(".graph");
-		
+
     if($graph.length > 0){
       $graph.jqprint();
     }else{
@@ -856,12 +856,12 @@ function print()
 function csv()
 {
   var button = $(".form_csv input[name=submit]");
-	
+
   button.unbind("click").bind("click", function(e){
     e.preventDefault();
     var $this = $(this);
     var $formm = $this.closest("form");
-		
+
     if($this.closest("#dialog").length > 0)
     {
       var $form = $("#dialog").data("dataForm");
@@ -870,7 +870,7 @@ function csv()
     {
       var $form = $this.closest(".ui-tabs-panel").find(".report_form");
     }
-		
+
     $form.find("input[name=printcsv]").val("on");
 
     if(button.data('ajaxRunning'))
@@ -878,7 +878,7 @@ function csv()
       button.data('ajaxQuery').abort();
       button.data('ajaxRunning', false);
     }
-		
+
     var query = $.ajax({
       type : "POST",
       url : "./tab.php",
@@ -899,7 +899,7 @@ function csv()
         $formm.next("div").remove();
         button.data('ajaxRunning', false);
         $form.find("input[name=printcsv]").val("off");
-				
+
         if(typeof data.rs === "object")
         {
           var $key = $this.closest("table").attr("class");
@@ -939,7 +939,7 @@ function orderArray()
     var order = 'asc';
     if(form_click.find("input[name=order]").val() == "")
       order = "asc";
-		
+
     if(form_click.find("input[name=order]").val() == "asc")
     {
       order = "desc";
@@ -954,7 +954,7 @@ function orderArray()
     form_click.find("input[name=champ]").val(champ);
     var f_val = form_click.serialize(true);
     update_tab(submit_click, form_click, f_val);
-		
+
     return false;
   });
 }
@@ -965,12 +965,12 @@ function navigation(form, prev, next, display_nav)
     form.find("input[name=prev]").hide();
   else
     form.find("input[name=prev]").show();
-	
+
   if(next == false)
     form.find("input[name=next]").hide();
   else
     form.find("input[name=next]").show();
-	
+
   if(display_nav == false || ((prev == 0) && (next == false)))
     form.hide();
 }
@@ -1013,7 +1013,7 @@ function page(form, lim, array_val)
     current_lim = 30;
     form.find("input[name=limit]").attr("value", current_lim);
   }
-	
+
   if(current_lim != lim)
   {
     form.find("input[name=page]").attr("value", "1");
@@ -1042,14 +1042,14 @@ function go(submit, form, f_val, data)
 //form is the current form
 //f_val is the serialized form
 function update_tab(submit, form, f_val)
-{	
+{
   //unserialize the form values
   var array_val = unserialize(f_val);
   //attribute the current page & check values
   page(form, save_limit, array_val);
   //attribute the current filter
   form.find("input[name=liste_filter]").attr("value", array_val["liste_filter"]);
-	
+
   var datas = form.serializeArray();
   $.ajax({
     type: "POST",
@@ -1066,7 +1066,7 @@ function update_tab(submit, form, f_val)
       submit.closest('.answers').removeClass('onload');
       //show form
       form.show();
-			
+
       //attribute the new page
       form.find("input[name=page]").attr("value", data.page);
       //attribute the new filter
@@ -1108,7 +1108,7 @@ function update_tab(submit, form, f_val)
       orderArray();
       //hide show desc or asc arrow
       arrow(form);
-      
+
       drawPlatformAndNavigatorChart(datas);
     }
   });
@@ -1144,7 +1144,7 @@ function drawPlatformAndNavigatorChart(data)
             },
           hAxis: {
             title: language.heure
-            },						
+            },
           width: 890,
           height: 300,
           backgroundColor: "#F6F2F1"
@@ -1159,17 +1159,17 @@ function resize()
 {
   bodySize.y = $('#mainContainer').innerHeight();
   bodySize.x = $('#mainContainer').innerWidth();
-	
+
   $('.answers:visible').height(Math.round(bodySize.y - $('.answers:visible').offset().top));
 };
 //update session
 function sessionactive(){
   $.ajax({
     type: "POST",
-    url: "/include/updses.php",
+    url: "/session/update/",
     dataType: 'json',
     data: {
-      app : 10,
+      module : 10,
       usr : usrId
     },
     error: function(){
@@ -1200,19 +1200,4 @@ function configure_dash()
 
 }
 
-
-window.onbeforeunload = function() 
-{ 
-  xhr_object = null;
-  if(window.XMLHttpRequest) // Firefox
-    xhr_object = new XMLHttpRequest();
-  else if(window.ActiveXObject) // Internet Explorer
-    xhr_object = new ActiveXObject("Microsoft.XMLHTTP");
-  else  // XMLHttpRequest non supporte par le navigateur
-    return;
-  url= "/include/delses.php?app=4&t="+Math.random();
-  xhr_object.open("GET", url, false);
-  xhr_object.send(null);
-	
-};
 sessionactive();

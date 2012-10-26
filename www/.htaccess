@@ -42,6 +42,7 @@
   RewriteRule ^user/notifications/.*$           /index.php [L]
 
   RewriteRule ^download/.*$                     /index.php [L]
+  RewriteRule ^session/.*$                      /index.php [L]
 
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteRule ^api/v1/.*$             /api/v1/index.php [L]
