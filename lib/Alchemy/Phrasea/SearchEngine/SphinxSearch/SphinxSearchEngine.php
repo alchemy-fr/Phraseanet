@@ -40,6 +40,8 @@ class SphinxSearchEngine implements SearchEngineInterface
      * @var \PDO
      */
     protected $rt_conn;
+    private $dateFields;
+    protected $configuration;
     protected $configurationPanel;
     protected $options;
     protected $app;
@@ -67,6 +69,52 @@ class SphinxSearchEngine implements SearchEngineInterface
         }
 
         return $this;
+    }
+
+    public function getAvailableDateFields()
+    {
+        if (!$this->dateFields) {
+            foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
+                foreach ($databox->get_meta_structure() as $databox_field) {
+                    if ($databox_field->get_type() != \databox_field::TYPE_DATE) {
+                        continue;
+                    }
+
+                    $this->dateFields[] = $databox_field->get_name();
+                }
+            }
+
+            $this->dateFields = array_unique($this->dateFields);
+        }
+
+        return $this->dateFields;
+    }
+    
+    public function getDefaultSort()
+    {
+        return 'relevance';
+    }
+
+    public function getAvailableSort()
+    {
+        return array(
+            'relevance'  => _('pertinence'),
+            'created_on' => _('date dajout'),
+            'random'     => _('aleatoire'),
+        );
+    }
+
+    public function getAvailableOrder()
+    {
+        return array(
+            'desc' => _('descendant'),
+            'asc'  => _('ascendant'),
+        );
+    }
+    
+    public function hasStemming()
+    {
+        return true;
     }
 
     public function status()
@@ -99,6 +147,15 @@ class SphinxSearchEngine implements SearchEngineInterface
         return $this->configurationPanel;
     }
 
+    public function getConfiguration()
+    {
+        if (!$this->configuration) {
+            $this->configuration = $this->configurationPanel()->getConfiguration();
+        }
+
+        return $this->configuration;
+    }
+
     public function availableTypes()
     {
         return array(self::GEM_TYPE_RECORD, self::GEM_TYPE_STORY);
@@ -121,18 +178,20 @@ class SphinxSearchEngine implements SearchEngineInterface
             }
         }
 
+        $sql_date_fields = $this->getSqlDateFields($record);
+
         foreach ($record->get_caption()->get_fields(null, true) as $field) {
             if (!$field->is_indexable()) {
                 continue;
             }
 
-            if (!$field->get_databox_field()->isBusiness()) {            
+            if (!$field->get_databox_field()->isBusiness()) {
                 $all_datas[] = $field->get_serialized_values();
             }
 
             foreach ($field->get_values() as $value) {
                 $this->rt_conn->exec("REPLACE INTO "
-                    . "metas_realtime" . $this->CRCdatabox($record->get_databox()) . " VALUES (
+                        . "metas_realtime" . $this->CRCdatabox($record->get_databox()) . " VALUES (
                     '" . $value->getId() . "'
                     ,'" . str_replace("'", "\'", $value->getValue()) . "'
                     ,'" . $value->getDatabox_field()->get_id() . "'
@@ -148,12 +207,14 @@ class SphinxSearchEngine implements SearchEngineInterface
                     ," . (int) $value->getDatabox_field()->isBusiness() . "
                     ," . sprintf("%u", crc32($record->get_collection()->get_coll_id() . '_' . (int) $value->getDatabox_field()->isBusiness())) . "
                     ," . $record->get_creation_date()->format('U') . "
-                    ,(" . implode(',', $status) . ")  )");
+                    " . $sql_date_fields . "    
+                    ,(" . implode(',', $status) . ")  
+                    )");
             }
         }
 
         $sql = "REPLACE INTO "
-            . "docs_realtime" . $this->CRCdatabox($record->get_databox()) . " VALUES (
+                . "docs_realtime" . $this->CRCdatabox($record->get_databox()) . " VALUES (
             '" . $record->get_record_id() . "'
             ,'" . str_replace("'", "\'", implode(' ', $all_datas)) . "'
             ," . $record->get_record_id() . "
@@ -165,11 +226,38 @@ class SphinxSearchEngine implements SearchEngineInterface
             ," . sprintf("%u", crc32($record->get_type())) . "
             ,0
             ," . $record->get_creation_date()->format('U') . "
-            ,(" . implode(',', $status) . ") )";
-        
+            " . $sql_date_fields . "  
+            ,(" . implode(',', $status) . ") 
+            )";
+
         $this->rt_conn->exec($sql);
-                
+
         return $this;
+    }
+
+    private function getSqlDateFields(\record_adapter $record)
+    {
+        $configuration = $this->getConfiguration();
+
+        $sql_fields = array();
+
+        foreach ($configuration['date_fields'] as $field_name) {
+
+            try {
+                $value = $record->get_caption()->get_field($field_name)->get_serialized_values();
+            } catch (\Exception $e) {
+                $value = null;
+            }
+
+            if ($value) {
+                $date = \DateTime::createFromFormat('Y/m/d H:i:s', $this->app['unicode']->parseDate($value));
+                $value = $date->format('U');
+            }
+
+            $sql_fields[] = $value ? : '-1';
+        }
+
+        return ($sql_fields ? ', ' : '') . implode(',', $sql_fields);
     }
 
     public function removeRecord(\record_adapter $record)
@@ -313,16 +401,16 @@ class SphinxSearchEngine implements SearchEngineInterface
                 foreach ($res['matches'] as $record_id => $match) {
                     try {
                         $record =
-                            new \record_adapter(
-                                $this->app,
-                                $match['attrs']['sbas_id'],
-                                $match['attrs']['record_id'],
-                                $resultOffset
+                                new \record_adapter(
+                                        $this->app,
+                                        $match['attrs']['sbas_id'],
+                                        $match['attrs']['record_id'],
+                                        $resultOffset
                         );
 
                         $results->add($record);
                     } catch (Exception $e) {
-
+                        
                     }
                     $resultOffset++;
                 }
@@ -388,12 +476,12 @@ class SphinxSearchEngine implements SearchEngineInterface
     public function CRCdatabox(\databox $databox)
     {
         return sprintf("%u", crc32(
-                str_replace(
-                    array('.', '%')
-                    , '_'
-                    , sprintf('%s_%s_%s_%s', $databox->get_host(), $databox->get_port(), $databox->get_user(), $databox->get_dbname())
-                )
-        ));
+                                str_replace(
+                                        array('.', '%')
+                                        , '_'
+                                        , sprintf('%s_%s_%s_%s', $databox->get_host(), $databox->get_port(), $databox->get_user(), $databox->get_dbname())
+                                )
+                        ));
     }
 
     /**
@@ -418,6 +506,17 @@ class SphinxSearchEngine implements SearchEngineInterface
 
         $this->sphinx->SetFilter('deleted', array(0));
         $this->sphinx->SetFilter('parent_record_id', array($options->searchType()));
+
+        if ($options->getDateFields() && ($options->getMaxDate() || $options->getMinDate())) {
+            foreach (array_unique(array_map(function(\databox_field $field) {
+                                return $field->get_name();
+                            }, $options->getDateFields())) as $field) {
+
+                $min = $options->getMinDate() ? $options->getMinDate()->format('U') : 0;
+                $max = $options->getMaxDate() ? $options->getMaxDate()->format('U') : pow(2, 32);
+                $this->sphinx->SetFilterRange(ConfigurationPanel::DATE_FIELD_PREFIX . $field, $min, $max);
+            }
+        }
 
 
         if ($options->fields()) {
@@ -756,7 +855,7 @@ class SphinxSearchEngine implements SearchEngineInterface
             $tmp_file = tempnam(sys_get_temp_dir(), 'sphinx_sugg');
 
             $cmd = $indexer . ' --config ' . $configuration . ' metadatas' . $this->CRCdatabox($databox)
-                . '  --buildstops ' . $tmp_file . ' 1000000 --buildfreqs';
+                    . '  --buildstops ' . $tmp_file . ' 1000000 --buildfreqs';
             $process = new Process($cmd);
             $process->run();
 
@@ -829,5 +928,6 @@ class SphinxSearchEngine implements SearchEngineInterface
     {
         return $this;
     }
+
 }
 

@@ -31,6 +31,16 @@ interface SearchEngineInterface
     public function status();
 
     public function configurationPanel();
+    
+    public function getAvailableDateFields();
+    
+    public function getAvailableSort();
+    
+    public function getDefaultSort();
+    
+    public function getAvailableOrder();
+    
+    public function hasStemming();
 
     /**
      *

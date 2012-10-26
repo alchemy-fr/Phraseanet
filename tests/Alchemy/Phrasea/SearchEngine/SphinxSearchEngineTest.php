@@ -23,7 +23,23 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
         self::$searchEngine = new SphinxSearchEngine($app, '127.0.0.1', 19306, '127.0.0.1', 19308);
 
         self::$config = tempnam(sys_get_temp_dir(), 'tmp_sphinx.conf');
-        $configFile = self::$searchEngine->configurationPanel()->generateSphinxConf($appbox->get_databoxes(), self::$searchEngine->configurationPanel()->getConfiguration());
+        $configuration = self::$searchEngine->configurationPanel()->getConfiguration();
+        $configuration['date_fields'] = array();
+        
+        foreach($appbox->get_databoxes() as $databox) {
+            foreach ($databox->get_meta_structure() as $databox_field) {
+                if ($databox_field->get_type() != \databox_field::TYPE_DATE) {
+                    continue;
+                }
+                $configuration['date_fields'][] = $databox_field->get_name();
+            }
+        }
+        
+        $configuration['date_fields'] = array_unique($configuration['date_fields']);
+        
+        self::$searchEngine->configurationPanel()->saveConfiguration($configuration);
+        
+        $configFile = self::$searchEngine->configurationPanel()->generateSphinxConf($appbox->get_databoxes(), $configuration);
 
         file_put_contents(self::$config, $configFile);
 
@@ -37,7 +53,7 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
 
         self::$searchd = new Process($searchd . ' -c ' . self::$config);
         self::$searchd->run();
-
+        
         self::$searchEngine = new SphinxSearchEngine($app, '127.0.0.1', 19306, '127.0.0.1', 19308);
     }
     

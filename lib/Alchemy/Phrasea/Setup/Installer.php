@@ -79,8 +79,9 @@ class Installer
             $this->app['phraseanet.registry']->set($key, $value, \registry::TYPE_STRING);
         }
 
+        // required to load GV template
         $app = $this->app;
-        require __DIR__ . '/../../../../lib/conf.d/_GV_template.inc';
+        $GV = require __DIR__ . '/../../../../lib/conf.d/_GV_template.inc';
 
         foreach ($GV as $section) {
             foreach ($section['vars'] as $var) {

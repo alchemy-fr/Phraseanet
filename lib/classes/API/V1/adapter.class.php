@@ -406,6 +406,9 @@ class API_V1_adapter extends API_V1_Abstract
                         'defaultQuery'     => $app['phraseanet.registry']->get('GV_defaultQuery'),
                         'defaultQueryType' => $app['phraseanet.registry']->get('GV_defaultQuery_type'),
                     ),
+                    /**
+                     * @todo neutron update this
+                     */
                     'sphinx'           => array(
                         'active'       => $app['phraseanet.registry']->get('GV_sphinx'),
                         'host'         => $app['phraseanet.registry']->get('GV_sphinx_host'),

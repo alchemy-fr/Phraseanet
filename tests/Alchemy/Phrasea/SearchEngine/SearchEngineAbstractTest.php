@@ -8,6 +8,8 @@ require_once __DIR__ . '/../../../PhraseanetPHPUnitAuthenticatedAbstract.class.i
 
 abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedAbstract
 {
+
+    protected  $options;
     protected static $searchEngine;
     protected static $initialized = false;
 
@@ -66,7 +68,17 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $options = new SearchEngineOptions();
         $options->onCollections($databox->get_collections());
 
+        $this->options = $options;
+        
         self::$searchEngine->setOptions($options);
+    }
+    
+    /**
+     * @return SearchEngineOptions
+     */
+    private function getOptions()
+    {
+        return $this->options;
     }
 
     abstract public function initialize();
@@ -83,7 +95,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
         self::$searchEngine->addRecord($record);
         $this->updateIndex();
-        
+
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
         $this->assertEquals(1, $results->total());
@@ -101,7 +113,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
         self::$searchEngine->addRecord($record);
         $this->updateIndex();
-        
+
         self::$searchEngine->resetCache();
         $results = self::$searchEngine->query($query_string, 0, 1);
         $this->assertEquals(1, $results->total());
@@ -114,22 +126,141 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
     public function testQueryByDateMin()
     {
-        $this->markTestSkipped('No yet implemented');
+        $record = self::$DI['record_24'];
+        $query_string = 'boomboklot' . $record->get_record_id() . 'dateMin';
+
+        $this->editRecord($query_string, $record);
+
+        $date_field = $this->editDateRecord('2012-12-21 12:12:00', $record);
+
+        if (!$date_field) {
+            $this->markTestSkipped('unable to add a date to record');
+        }
+
+        self::$searchEngine->addRecord($record);
+        $this->updateIndex();
+
+        $options = $this->getOptions();
+        $options->setDateFields(array($date_field));
+        $options->setMinDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2012-12-23 01:01:00'));
+        self::$searchEngine->setOptions($options);
+        
+        self::$searchEngine->resetCache();
+        $results = self::$searchEngine->query($query_string, 0, 1);
+        $this->assertEquals(0, $results->total());
+        
+        $options->setMinDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2012-12-20 01:01:00'));
+        self::$searchEngine->setOptions($options);
+        
+        self::$searchEngine->resetCache();
+        $results = self::$searchEngine->query($query_string, 0, 1);
+        $this->assertEquals(1, $results->total());
+    }
+
+    private function editDateRecord($date, \record_adapter $record)
+    {
+        $date_field = null;
+
+        foreach ($record->get_databox()->get_meta_structure() as $databox_field) {
+            if ($databox_field->get_type() != \databox_field::TYPE_DATE) {
+                continue;
+            }
+
+            $date_field = $databox_field;
+
+            break;
+        }
+
+        if ($date_field) {
+
+            $toupdate = array();
+
+            try {
+                $values = $record->get_caption()->get_field($databox_field->get_name())->get_values();
+                $value = array_pop($values);
+                $meta_id = $value->getId();
+            } catch (\Exception $e) {
+                $meta_id = null;
+            }
+
+            $toupdate[$databox_field->get_id()] = array(
+                'meta_id'        => $meta_id
+                , 'meta_struct_id' => $databox_field->get_id()
+                , 'value'          => $date
+            );
+
+            $record->set_metadatas($toupdate);
+        }
+
+
+        return $date_field;
     }
 
     public function testQueryByDateMax()
     {
-        $this->markTestSkipped('No yet implemented');
+        $record = self::$DI['record_24'];
+        $query_string = 'boomboklot' . $record->get_record_id() . 'dateMax';
+
+        $this->editRecord($query_string, $record);
+
+        $date_field = $this->editDateRecord('2012-12-21 12:12:00', $record);
+
+        if (!$date_field) {
+            $this->markTestSkipped('unable to add a date to record');
+        }
+
+        self::$searchEngine->addRecord($record);
+        $this->updateIndex();
+
+        $options = $this->getOptions();
+        $options->setDateFields(array($date_field));
+        $options->setMaxDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2012-12-20 01:01:00'));
+        self::$searchEngine->setOptions($options);
+        
+        self::$searchEngine->resetCache();
+        $results = self::$searchEngine->query($query_string, 0, 1);
+        $this->assertEquals(0, $results->total());
+        
+        $options->setMaxDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2012-12-23 01:01:00'));
+        self::$searchEngine->setOptions($options);
+        
+        self::$searchEngine->resetCache();
+        $results = self::$searchEngine->query($query_string, 0, 1);
+        $this->assertEquals(1, $results->total());
     }
 
     public function testQueryByDateRange()
     {
-        $this->markTestSkipped('No yet implemented');
-    }
+        $record = self::$DI['record_24'];
+        $query_string = 'boomboklot' . $record->get_record_id() . 'dateRange';
 
-    public function testQueryInField()
-    {
-        $this->markTestSkipped('No yet implemented');
+        $this->editRecord($query_string, $record);
+
+        $date_field = $this->editDateRecord('2012-12-21 12:12:00', $record);
+
+        if (!$date_field) {
+            $this->markTestSkipped('unable to add a date to record');
+        }
+
+        self::$searchEngine->addRecord($record);
+        $this->updateIndex();
+
+        $options = $this->getOptions();
+        $options->setDateFields(array($date_field));
+        $options->setMinDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2012-12-18 01:01:00'));
+        $options->setMaxDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2012-12-20 01:01:00'));
+        self::$searchEngine->setOptions($options);
+        
+        self::$searchEngine->resetCache();
+        $results = self::$searchEngine->query($query_string, 0, 1);
+        $this->assertEquals(0, $results->total());
+        
+        $options->setMaxDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2012-12-22 01:01:00'));
+        self::$searchEngine->setOptions($options);
+        
+        self::$searchEngine->resetCache();
+        $results = self::$searchEngine->query($query_string, 0, 1);
+        $this->assertEquals(1, $results->total());
     }
 
     protected function editRecord($string2add, \record_adapter &$record, $indexable = true, $business = false)

@@ -53,9 +53,11 @@ $obr = explode(';', $parm['obr']);
 $t_lng = array();
 
 if ($parm['ofm'] == 'tofiles') {
-    $t = User_Adapter::avLanguages();
-    foreach ($t as $lng_code => $lng)
+    foreach (Application::getAvailableLanguages() as $lng_code => $lng) {
+        $lng_code = explode('_', $lng_code);
+        $lng_code = $lng_code[0];
         $t_lng[] = $lng_code;
+    }
 } else {
     $t_lng[] = $parm['piv'];
 }

@@ -24,7 +24,7 @@ use Alchemy\Phrasea\Controller\Admin\Fields;
 use Alchemy\Phrasea\Controller\Admin\Publications;
 use Alchemy\Phrasea\Controller\Admin\Root;
 use Alchemy\Phrasea\Controller\Admin\Setup;
-use Alchemy\Phrasea\Controller\Admin\Sphinx;
+use Alchemy\Phrasea\Controller\Admin\SearchEngine;
 use Alchemy\Phrasea\Controller\Admin\Subdefs;
 use Alchemy\Phrasea\Controller\Admin\TaskManager;
 use Alchemy\Phrasea\Controller\Admin\Users;
@@ -123,7 +123,7 @@ return call_user_func(function($environment = null) {
     $app->mount('/admin/databox', new Databox());
     $app->mount('/admin/databoxes', new Databoxes());
     $app->mount('/admin/setup', new Setup());
-    $app->mount('/admin/sphinx', new Sphinx());
+    $app->mount('/admin/search-engine', new SearchEngine());
     $app->mount('/admin/connected-users', new ConnectedUsers());
     $app->mount('/admin/publications', new Publications());
     $app->mount('/admin/users', new Users());

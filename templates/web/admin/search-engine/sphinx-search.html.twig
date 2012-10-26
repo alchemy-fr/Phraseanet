@@ -1,9 +1,26 @@
-<form method="post">
+<h1>{% trans 'SphinxSearch search-engine configuration' %}</h1>
+
+<form method="post" action="{{ path('admin_searchengine_post') }}">
+    <div>{% trans 'Sphinx Search connection configuration' %}</div>
+    
+    <div>{% trans 'Sphinx Search server' %}</div>
+    <input type="text" name="host" value="{{ configuration['host'] | default('127.0.0.1') }}"/>
+    <input type="text" name="port" value="{{ configuration['port'] | default('93') }}"/>
+    <div>{% trans 'Sphinx Search RealTime server' %}</div>
+    <input type="text" name="rt_host" value="{{ configuration['rt_host'] }}"/>
+    <input type="text" name="rt_port" value="{{ configuration['rt_port'] }}"/>
+    
+    <div>{% trans 'Charset to use for indexation' %}</div>
     {% for charset, charsetObject in charsets %}
     <input type="checkbox" name="charset_tables[]" value="{{ charset }}" {% if charset in configuration['charset_tables'] %}checked="checked"{% endif %} > {{ charsetObject.get_name() }}
+    {% endfor %}
+    <br/><br/>
+    <div>{% trans 'Date fields available for search' %}</div>
+    {% for field in date_fields %}
+    <input type="checkbox" name="date_fields[]" value="{{ field }}" {% if field in configuration['date_fields'] %}checked="checked"{% endif %} > {{ field }}
     {% endfor %}
 
     <button type="submit">{% trans 'boutton::valider' %}</button>
 </form>
 
-<textarea style="width:100%;height:70%">{{ configfile }}</textarea>
+<textarea style="font-family: monospace;width:90%;height:70%">{{ configfile }}</textarea>

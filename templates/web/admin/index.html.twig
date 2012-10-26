@@ -119,7 +119,6 @@
 
             if(dest && dest.indexOf('#') !== 0) {
                 $('#right-ajax').empty().addClass('loading').parent().show();
-                $('#right').hide();
 
                 $.get(dest, function(data) {
                   $('#right-ajax').removeClass('loading').html(data);
@@ -145,10 +144,7 @@
         var dest = $(this).attr('href');
 
         $(this).bind('click',function(){
-        if($(this).hasClass('ajax'))
-        {
             $('#right-ajax').empty().addClass('loading').parent().show();
-            $('#right').hide();
 
             $.get(dest, function(data) {
                 $('#right-ajax').removeClass('loading').html(data);
@@ -158,13 +154,7 @@
                     enableLink($(el));
                 });
             });
-        }
-        else
-        {
-            $('#right-ajax').empty().parent().hide();
-            $('#right').show().addClass('loading').attr('src',dest);
-        }
-        $('#tree .selected').removeClass('selected');
+            $('#tree .selected').removeClass('selected');
             $(this).parent().addClass('selected');
 
             return false;
@@ -191,8 +181,6 @@
 
   function resize()
   {
-    $('#right').height($(this).height()-$('#mainMenu').height()-20);
-    $('#right').width($('#mainContent').width()-$('#left').width()-20);
     bodySize.y = $(window).height() - $('#mainMenu').outerHeight();
     bodySize.x = $(window).width();
   }
@@ -236,7 +224,6 @@
     </div>
     {% endif %}
 
-    <iframe class="right PNB10" src="about:blank;" name="right" id="right" frameborder="1" border="0" framespacing="0" style="left:260px;border:none;right:0;{{ notice ? "top:30px" : "top:0" }}"></iframe>
     <div class="right PNB" style="left:250px;overflow:auto;">
         <div id="right-ajax" class="PNB10"></div>
     </div>

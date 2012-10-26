@@ -190,8 +190,9 @@ User_Adapter::updateClientInfos($app, 5);
 <?php
 // on liste tous les drapeaux
 $jsFlags = "";
-$tlng = User_Adapter::avLanguages();
-foreach ($tlng as $lng_code => $lng) {
+foreach (Application::getAvailableLanguages() as $lng_code => $lng) {
+    $lng_code = explode('_', $lng_code);
+    $lng_code = $lng_code[0];
     if (file_exists("/skins/lng/" . $lng_code . "_flag_18.gif") && ($s = getimagesize("/skins/lng/" . $lng_code . "_flag_18.gif") )) {
         printf("\t<img id='flagMenu_%s' src='/skins/lng/%s_flag_18.gif' />\n", $lng_code, $lng_code);
 

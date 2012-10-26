@@ -2,19 +2,25 @@
 
 namespace Alchemy\Phrasea\SearchEngine\SphinxSearch;
 
-use Alchemy\Phrasea\SearchEngine\ConfigurationPanelInterface;
+use Alchemy\Phrasea\SearchEngine\AbstractConfigurationPanel;
 use Alchemy\Phrasea\Application;
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\Request;
 
-class ConfigurationPanel implements ConfigurationPanelInterface
+class ConfigurationPanel extends AbstractConfigurationPanel
 {
+    const DATE_FIELD_PREFIX = 'date_field_';
+
     protected $charsets;
     protected $searchEngine;
 
     public function __construct(SphinxSearchEngine $engine)
     {
         $this->searchEngine = $engine;
+    }
+
+    public function getName()
+    {
+        return 'sphinx-search';
     }
 
     public function get(Application $app, Request $request)
@@ -25,38 +31,75 @@ class ConfigurationPanel implements ConfigurationPanelInterface
             'configuration' => $configuration,
             'configfile'    => $this->generateSphinxConf($app['phraseanet.appbox']->get_databoxes(), $configuration),
             'charsets'      => $this->get_available_charsets(),
+            'date_fields'   => $this->getAvailableDateFields($app['phraseanet.appbox']->get_databoxes()),
         );
 
         return $app['twig']->render('admin/search-engine/sphinx-search.html.twig', $params);
-    }
-
-    public function getConfiguration()
-    {
-        $configuration = @json_decode(file_get_contents(__DIR__ . '/../../../../../config/sphinx-search.json'), true);
-
-        if ( ! is_array($configuration)) {
-            $configuration = array();
-        }
-
-        if ( ! isset($configuration['charset_tables'])) {
-            $configuration['charset_tables'] = array("common","latin");
-        }
-
-        return $configuration;
     }
 
     public function post(Application $app, Request $request)
     {
         $configuration = $this->getConfiguration();
         $configuration['charset_tables'] = array();
+        $configuration['date_fields'] = array();
 
         foreach ($request->request->get('charset_tables', array()) as $table) {
             $configuration['charset_tables'][] = $table;
         }
-
-        file_put_contents(__DIR__ . '/../../../../../config/sphinx-search.json', json_encode($configuration));
+        foreach ($request->request->get('date_fields', array()) as $field) {
+            $configuration['date_fields'][] = $field;
+        }
+        
+        $configuration['host'] = $request->request->get('host');
+        $configuration['host'] = $request->request->get('port');
+        $configuration['rt_host'] = $request->request->get('rt_host');
+        $configuration['rt_port'] = $request->request->get('rt_port');
+        
+        $this->saveConfiguration($configuration);
 
         return $app->redirect($app['url_generator']->generate('admin_searchengine_get'));
+    }
+
+    public function getConfiguration()
+    {
+        $configuration = @json_decode(file_get_contents($this->getConfigPathFile()), true);
+
+        if (!is_array($configuration)) {
+            $configuration = array();
+        }
+
+        if (!isset($configuration['charset_tables'])) {
+            $configuration['charset_tables'] = array("common", "latin");
+        }
+
+        if (!isset($configuration['date_fields'])) {
+            $configuration['date_fields'] = array();
+        }
+
+        if (!isset($configuration['host'])) {
+            $configuration['host'] = '127.0.0.1';
+        }
+
+        if (!isset($configuration['port'])) {
+            $configuration['port'] = 9306;
+        }
+
+        if (!isset($configuration['rt_host'])) {
+            $configuration['rt_host'] = '127.0.0.1';
+        }
+
+        if (!isset($configuration['rt_port'])) {
+            $configuration['rt_port'] = 9308;
+        }
+
+        return $configuration;
+    }
+    
+    public function saveConfiguration($configuration)
+    {
+        file_put_contents($this->getConfigPathFile(), json_encode($configuration));
+        
+        return $this;
     }
 
     public function get_available_charsets()
@@ -107,7 +150,7 @@ class ConfigurationPanel implements ConfigurationPanelInterface
         $charsets = explode("\n", $charsets);
         $last_detect = false;
 
-        for ($i = (count($charsets) - 1); $i >= 0; $i -- ) {
+        for ($i = (count($charsets) - 1); $i >= 0; $i--) {
             if (trim($charsets[$i]) === '') {
                 unset($charsets[$i]);
                 continue;
@@ -155,6 +198,20 @@ class ConfigurationPanel implements ConfigurationPanelInterface
         foreach ($databoxes as $databox) {
 
             $index_crc = $this->searchEngine->CRCdatabox($databox);
+
+            $date_selects = $date_left_joins = $date_fields = array();
+            foreach ($configuration['date_fields'] as $name) {
+                $field = $databox->get_meta_structure()->get_element_by_name($name);
+
+                $date_fields[] = self::DATE_FIELD_PREFIX . $name;
+
+                if ($field instanceof \databox_field) {
+                    $date_selects[] = ", UNIX_TIMESTAMP(d" . $field->get_id() . ".value) as " . self::DATE_FIELD_PREFIX . $name;
+                    $date_left_joins[] = "    LEFT JOIN metadatas d" . $field->get_id() . " ON (d" . $field->get_id() . ".record_id = r.record_id AND d" . $field->get_id() . ".meta_struct_id = " . $field->get_id() . ")";
+                } else {
+                    $date_selects[] = ", null as " . $name;
+                }
+            }
 
             $conf .= '
 
@@ -219,7 +276,9 @@ class ConfigurationPanel implements ConfigurationPanelInterface
         UNIX_TIMESTAMP(credate) as created_on, 0 as deleted, \
         CRC32(CONCAT_WS("_", r.coll_id, s.business)) as crc_coll_business, \
         s.business \
-      FROM metadatas m, metadatas_structure s, record r \
+        ' . implode(" \\\n", $date_selects) . ' \
+      FROM (metadatas m, metadatas_structure s, record r) \
+          ' . implode(" \\\n", $date_left_joins) . ' \
       WHERE m.record_id = r.record_id AND m.meta_struct_id = s.id \
         AND s.indexable = "1"
 
@@ -236,6 +295,12 @@ class ConfigurationPanel implements ConfigurationPanelInterface
     sql_attr_uint         = business
     sql_attr_uint         = crc_coll_business
     sql_attr_timestamp    = created_on
+';
+            foreach ($date_fields as $date_field) {
+                $conf.= "    sql_attr_timestamp    = $date_field\n";
+            }
+
+            $conf .= '
 
     sql_attr_multi        = uint status from query; SELECT m.id as id, \
       CRC32(CONCAT_WS("_", ' . $databox->get_sbas_id() . ', s.name)) as name \
@@ -329,7 +394,13 @@ class ConfigurationPanel implements ConfigurationPanelInterface
     rt_attr_uint          = business
     rt_attr_uint          = crc_coll_business
     rt_attr_timestamp     = created_on
-    rt_attr_multi         = status
+';
+
+            foreach ($date_fields as $date_field) {
+                $conf.= "    rt_attr_timestamp     = $date_field\n";
+            }
+
+            $conf .= '    rt_attr_multi         = status
   }
 
   #--------------------------------------
@@ -338,13 +409,16 @@ class ConfigurationPanel implements ConfigurationPanelInterface
   source src_documents' . $index_crc . ' : database_cfg' . $index_crc . '
   {
     sql_query             = \
-        SELECT r.record_id as id, record_id, r.parent_record_id, ' . $databox->get_sbas_id() . ' as sbas_id, \
+        SELECT r.record_id as id, r.record_id, r.parent_record_id, ' . $databox->get_sbas_id() . ' as sbas_id, \
             CRC32(CONCAT_WS("_", ' . $databox->get_sbas_id() . ', r.coll_id)) as crc_sbas_coll, \
             CRC32(CONCAT_WS("_", ' . $databox->get_sbas_id() . ', r.record_id)) as crc_sbas_record, \
             CONCAT_WS("_", ' . $databox->get_sbas_id() . ' , r.coll_id) as sbas_coll, \
             CRC32(r.type) as crc_type, r.coll_id, \
-            UNIX_TIMESTAMP(credate) as created_on, 0 as deleted \
-        FROM record r
+            UNIX_TIMESTAMP(r.credate) as created_on, 0 as deleted \
+            ' . implode(" \\\n", $date_selects) . ' \
+        FROM (record r) \
+        ' . implode(" \\\n", $date_left_joins) . ' \
+        WHERE 1
 
     # documents can be filtered / sorted on each sql_attr
     sql_attr_uint         = record_id
@@ -356,6 +430,12 @@ class ConfigurationPanel implements ConfigurationPanelInterface
     sql_attr_uint         = crc_type
     sql_attr_uint         = deleted
     sql_attr_timestamp    = created_on
+';
+            foreach ($date_fields as $date_field) {
+                $conf.= "    sql_attr_timestamp    = $date_field\n";
+            }
+
+            $conf .= '
 
     sql_attr_multi        = uint status from query; SELECT r.record_id as id, \
       CRC32(CONCAT_WS("_", ' . $databox->get_sbas_id() . ', s.name)) as name \
@@ -443,7 +523,13 @@ class ConfigurationPanel implements ConfigurationPanelInterface
     rt_attr_uint          = crc_type
     rt_attr_uint          = deleted
     rt_attr_timestamp     = created_on
-    rt_attr_multi         = status
+';
+
+            foreach ($date_fields as $date_field) {
+                $conf.= "    rt_attr_timestamp    = $date_field\n";
+            }
+
+            $conf .= '    rt_attr_multi         = status
   }
 
 #------------------------------------------------------------------------------

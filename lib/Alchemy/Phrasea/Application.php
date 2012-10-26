@@ -23,6 +23,7 @@ use Alchemy\Phrasea\Core\Provider\GeonamesServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
 use Alchemy\Phrasea\Core\Provider\SearchEngineServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TaskManagerServiceProvider;
+use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
 use FFMpeg\FFMpegServiceProvider;
 use Grom\Silex\ImagineServiceProvider;
 use MediaVorus\MediaVorusServiceProvider;
@@ -135,6 +136,7 @@ class Application extends SilexApplication
         $this->register(new TaskManagerServiceProvider());
         $this->register(new UnoconvServiceProvider());
         $this->register(new UrlGeneratorServiceProvider());
+        $this->register(new UnicodeServiceProvider());
         $this->register(new ValidatorServiceProvider());
         $this->register(new XPDFServiceProvider());
 

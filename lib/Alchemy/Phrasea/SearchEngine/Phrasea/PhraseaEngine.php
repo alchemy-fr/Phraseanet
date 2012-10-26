@@ -21,12 +21,15 @@ use Doctrine\Common\Collections\ArrayCollection;
 class PhraseaEngine implements SearchEngineInterface
 {
     private $initialized;
+
     /**
      *
      * @var SearchEngineOptions
      */
     private $options;
     private $app;
+    private $dateFields;
+    private $configuration;
     private $queries = array();
     private $arrayq = array();
     private $colls = array();
@@ -42,6 +45,67 @@ class PhraseaEngine implements SearchEngineInterface
     {
         $this->app = $app;
         $this->options = new SearchEngineOptions();
+    }
+
+    public function getAvailableDateFields()
+    {
+        if (!$this->dateFields) {
+            foreach ($this->app['phraseanet.appbox']->get_databoxes() as $databox) {
+                foreach ($databox->get_meta_structure() as $databox_field) {
+                    if ($databox_field->get_type() != \databox_field::TYPE_DATE) {
+                        continue;
+                    }
+
+                    $this->dateFields[] = $databox_field->get_name();
+                }
+            }
+
+            $this->dateFields = array_unique($this->dateFields);
+        }
+
+        return $this->dateFields;
+    }
+
+    public function getConfiguration()
+    {
+        if (!$this->configuration) {
+            $this->configuration = $this->configurationPanel()->getConfiguration();
+        }
+
+        return $this->configuration;
+    }
+    
+    public function getDefaultSort()
+    {
+        $configuration = $this->getConfiguration();
+        
+        return $configuration['default_sort'];
+    }
+
+    public function getAvailableSort()
+    {
+        $date_fields = $this->getAvailableDateFields();
+
+        $sort = array('' => _('No sort'));
+
+        foreach ($date_fields as $field) {
+            $sort[$field] = $field;
+        }
+        
+        return $sort;
+    }
+
+    public function getAvailableOrder()
+    {
+        return array(
+            'desc' => _('descendant'),
+            'asc'  => _('ascendant'),
+        );
+    }
+
+    public function hasStemming()
+    {
+        return false;
     }
 
     public function initialize()
@@ -284,7 +348,7 @@ class PhraseaEngine implements SearchEngineInterface
         }
 
         $res = phrasea_fetch_results(
-            $this->app['session']->get('phrasea_session_id'), $offset + 1, $perPage, false
+                $this->app['session']->get('phrasea_session_id'), $offset + 1, $perPage, false
         );
 
         $rs = array();
@@ -301,13 +365,13 @@ class PhraseaEngine implements SearchEngineInterface
         foreach ($rs as $data) {
             try {
                 $records->add(new \record_adapter(
-                        $this->app,
-                        \phrasea::sbasFromBas($this->app, $data['base_id']),
-                        $data['record_id'],
-                        $resultNumber
+                                $this->app,
+                                \phrasea::sbasFromBas($this->app, $data['base_id']),
+                                $data['record_id'],
+                                $resultNumber
                 ));
             } catch (Exception $e) {
-
+                
             }
             $resultNumber++;
         }
@@ -351,16 +415,16 @@ class PhraseaEngine implements SearchEngineInterface
             }
 
             $results = phrasea_query2(
-                $this->app['session']->get('phrasea_session_id')
-                , $sbas_id
-                , $this->colls[$sbas_id]
-                , $this->arrayq[$sbas_id]
-                , $this->app['phraseanet.registry']->get('GV_sit')
-                , $this->app['session']->get('usr_id')
-                , false
-                , $this->options->searchType() == SearchEngineOptions::RECORD_GROUPING ? PHRASEA_MULTIDOC_REGONLY : PHRASEA_MULTIDOC_DOCONLY
-                , $sort
-                , $BF
+                    $this->app['session']->get('phrasea_session_id')
+                    , $sbas_id
+                    , $this->colls[$sbas_id]
+                    , $this->arrayq[$sbas_id]
+                    , $this->app['phraseanet.registry']->get('GV_sit')
+                    , $this->app['session']->get('usr_id')
+                    , false
+                    , $this->options->searchType() == SearchEngineOptions::RECORD_GROUPING ? PHRASEA_MULTIDOC_REGONLY : PHRASEA_MULTIDOC_DOCONLY
+                    , $sort
+                    , $BF
             );
 
             if ($results) {
@@ -428,7 +492,7 @@ class PhraseaEngine implements SearchEngineInterface
         $ret = array();
 
         $res = phrasea_fetch_results(
-            $this->app['session']->get('phrasea_session_id'), ($record->get_number() + 1), 1, true, "[[em]]", "[[/em]]"
+                $this->app['session']->get('phrasea_session_id'), ($record->get_number() + 1), 1, true, "[[em]]", "[[/em]]"
         );
 
         if (!isset($res['results']) || !is_array($res['results'])) {
@@ -508,8 +572,8 @@ class PhraseaEngine implements SearchEngineInterface
             }
             if ($this->options->fields()) {
                 $this->queries[$sbas] .= ' IN (' . implode(' OR ', array_map(function(\databox_field $field) {
-                                return $field->get_name();
-                            }, $this->options->fields())) . ')';
+                                            return $field->get_name();
+                                        }, $this->options->fields())) . ')';
             }
             if (($this->options->getMinDate() || $this->options->getMaxDate()) && $this->options->getDateFields()) {
                 if ($this->options->getMinDate()) {
@@ -528,8 +592,8 @@ class PhraseaEngine implements SearchEngineInterface
         }
 
         $base_ids = array_map(function(\collection $collection) {
-                return $collection->get_base_id();
-            }, $this->options->collections());
+                    return $collection->get_base_id();
+                }, $this->options->collections());
 
         foreach ($this->options->databoxes() as $databox) {
             $sbas_id = $databox->get_sbas_id();
@@ -621,4 +685,5 @@ class PhraseaEngine implements SearchEngineInterface
 
         return $this;
     }
+
 }
