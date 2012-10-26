@@ -31,6 +31,23 @@ class Records implements ControllerProviderInterface
             $app['firewall']->requireNotGuest();
         });
 
+         /**
+         * Get  the record detailed view
+         *
+         * name         : record_details
+         *
+         * description  : Get the detailed view for a specific record
+         *
+         * method       : POST|GET
+         *
+         * parameters   : none
+         *
+         * return       : JSON Response
+         */
+        $controllers->match('/', $this->call('getRecord'))
+            ->bind('record_details')
+            ->method('GET|POST');
+
         /**
          * Delete a record or a list of records
          *
@@ -83,11 +100,107 @@ class Records implements ControllerProviderInterface
     }
 
     /**
+     * Get record detailed view
+     *
+     * @param   Application   $app
+     * @param   Request       $request
+     * @param   integer       $sbas_id
+     * @param   integer       $record_id
+     * @return  JsonResponse
+     */
+    public function getRecord(Application $app, Request $request)
+    {
+        if(!$request->isXmlHttpRequest()){
+            $app->abort(400);
+        }
+
+        $searchEngine = null;
+        $train = '';
+
+        if ('' === $env = strtoupper($request->get('env', ''))) {
+            $app->abort(400, '`env` parameter is missing');
+        }
+
+        // Use $request->get as HTTP method can be POST or GET
+        if ('RESULT' == $env = strtoupper($request->get('env', ''))) {
+            if (null === $optionsSerial = $request->get('options_serial')) {
+                $app->abort(400, 'Search engine options are missing');
+            }
+
+            if (false !== $options = unserialize($optionsSerial)) {
+                $searchEngine = new \searchEngine_adapter($app);
+                $searchEngine->set_options($options);
+            } else {
+                $app->abort(400, 'Provided search engine options are not valid');
+            }
+        }
+
+        $pos = (int) $request->get('pos', 0);
+        $query = $request->get('query', '');
+        $reloadTrain = !! $request->get('roll', false);
+
+        $record = new \record_preview(
+            $app,
+            $env,
+            $pos < 0 ? 0 : $pos,
+            $request->get('cont', ''),
+            $reloadTrain,
+            $searchEngine,
+            $query
+        );
+
+        if ($record->is_from_reg()) {
+            $train = $app['twig']->render('prod/preview/reg_train.html.twig',
+                array('record' => $record)
+            );
+        }
+
+        if ($record->is_from_basket() && $reloadTrain) {
+            $train = $app['twig']->render('prod/preview/basket_train.html.twig',
+                array('record' => $record)
+            );
+        }
+
+        if ($record->is_from_feed()) {
+            $train = $app['twig']->render('prod/preview/feed_train.html.twig',
+                array('record' => $record)
+            );
+        }
+
+        return $app->json(array(
+            "desc"          => $app['twig']->render('prod/preview/caption.html.twig', array(
+                'record'        => $record,
+                'highlight'     => $query,
+                'searchEngine'  => $searchEngine
+            )),
+            "html_preview"  => $app['twig']->render('common/preview.html.twig', array(
+                'record'        => $record
+            )),
+            "others"        => $app['twig']->render('prod/preview/appears_in.html.twig', array(
+                'parents'       => $record->get_grouping_parents(),
+                'baskets'       => $record->get_container_baskets($app['EM'], $app['phraseanet.user'])
+            )),
+            "current"       => $train,
+            "history"       => $app['twig']->render('prod/preview/short_history.html.twig', array(
+                'record'        => $record
+            )),
+            "popularity"    => $app['twig']->render('prod/preview/popularity.html.twig', array(
+                'record'        => $record
+            )),
+            "tools"         => $app['twig']->render('prod/preview/tools.html.twig', array(
+                'record'        => $record
+            )),
+            "pos"           => $record->get_number(),
+            "title"         => $record->get_title($query, $searchEngine)
+        ));
+    }
+
+    /**
      *  Delete a record or a list of records
      *
      * @param   Application     $app
      * @param   Request         $request
-     * @return  HtmlResponse
+     * @return  JsonResponse
      */
     public function doDeleteRecords(Application $app, Request $request)
     {

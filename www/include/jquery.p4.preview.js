@@ -78,10 +78,9 @@ function openPreview(env, pos, contId, reload){
 
 	prevAjax = $.ajax({
 		type: "POST",
-		url: "/client/clientFeedBack.php",
+		url: "/prod/records/",
 		dataType: 'json',
 		data: {
-			action: "PREVIEW",
 			env: env,
 			pos: pos,
 			cont: contId,
