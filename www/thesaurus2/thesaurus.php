@@ -155,10 +155,10 @@ User_Adapter::updateClientInfos($app, 5);
             function sessionactive(){
                 $.ajax({
                     type: "POST",
-                    url: "/include/updses.php",
+                    url: "/session/update/",
                     dataType: 'json',
                     data: {
-                        app : 5,
+                        module : 5,
                         usr : <?php echo $app['phraseanet.user']->get_id() ?>
                     },
                     error: function(){
@@ -178,23 +178,8 @@ User_Adapter::updateClientInfos($app, 5);
                     }
                 })
             };
-            window.onbeforeunload = function()
-            {
-                xhr_object = null;
-                if(window.XMLHttpRequest) // Firefox
-                    xhr_object = new XMLHttpRequest();
-                else if(window.ActiveXObject) // Internet Explorer
-                    xhr_object = new ActiveXObject("Microsoft.XMLHTTP");
-                else  // XMLHttpRequest non supporte par le navigateur
 
-                return;
-            url= "/include/delses.php?app=5&t="+Math.random();
-            xhr_object.open("GET", url, false);
-            xhr_object.send(null);
-
-        };
-
-        sessionactive();
+            sessionactive();
         </script>
 
     </head>
