@@ -2,7 +2,7 @@
 <html lang="{{ app['locale.I18n'] }}" style="overflow:hidden;">
     <head>
         <meta http-equiv="X-UA-Compatible" content="chrome=1">
-        <title>{% if local_title is defined%}{{local_title}} | {% endif %}{{ app['phraseanet.registry'].get('GV_homeTitle') }} - {{ module_name }} </title>
+        <title>{% if local_title is defined%}{{local_title}} | {% endif %}{{ app['phraseanet.registry'].get('GV_homeTitle') }} {% if module_name is defined %} - {{ module_name }} {% endif %}</title>
 
         <link type="text/css" rel="stylesheet" href="/skins/html5/bootstrap/css/bootstrap.min.css" />
         <link type="text/css" rel="stylesheet" href="/skins/html5/bootstrap/css/bootstrap-responsive.min.css" />

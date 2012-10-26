@@ -1,9 +1,11 @@
-<div>
-    {% for name, TOU in TOUs %}
-        <h1 style="text-align:center;font-weight:bold;font-size:16px;">{{ name }}</h1>
-        {{ TOU }}
-        {% if loop.last == false %}
-            <hr/>
-        {% endif %}
-    {% endfor %}
-</div>
+{% extends app.request.isXmlHttpRequest() ? "prod/TOU_ajax.html.twig" : "prod/TOU_base.html.twig" %}
+
+{% block tou %}
+        {% for name, TOU in TOUs %}
+            <h1 style="text-align:center;font-weight:bold;font-size:16px;">{{ name }}</h1>
+            {{ TOU }}
+            {% if loop.last == false %}
+                <hr/>
+            {% endif %}
+        {% endfor %}
+{% endblock %}
