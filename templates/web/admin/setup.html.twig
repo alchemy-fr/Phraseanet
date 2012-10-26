@@ -34,7 +34,7 @@
 {% set rules = [] %}
 {% set messages = [] %}
 
-<form id="GV_form" class="form-horizontal" method="post" action = "/admin/globals/">
+<form id="GV_form" class="form-horizontal" method="post" action = "{{ path('setup_submit_globals') }}">
     {% for section in GV %}
         <div class="section">
             <h1> {{ section['section'] }} </h1>
@@ -48,9 +48,9 @@
                     {% endif %}
                 {% endautoescape %}
 
-                {% set readonly = true %}
+                {% set readonly = false %}
                 {% if value['readonly'] is defined and value['readonly'] == true %}
-                    {% set readonly = false %}
+                    {% set readonly = true %}
                 {% endif %}
 
                 {% set currentValue = '' %}
