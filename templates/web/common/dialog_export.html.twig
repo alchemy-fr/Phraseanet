@@ -485,7 +485,7 @@
                         $('#ftp_form_selector').bind('change',function(){
                         $('#ftp .ftp_form').hide();
                         $('#ftp .ftp_form_'+$(this).val()).show();
-                            $('#dialog_dwnl .ftp_folder_check').unbind('change').bind('change', function(){
+                            $('.ftp_folder_check', p4.Dialog.get(1).getDomElement()).unbind('change').bind('change', function(){
                                 if($(this).attr('checked'))
                                     $(this).next().removeAttr('disabled');
                                 else
@@ -511,7 +511,13 @@
                     {% trans 'You must agree to the Terms of Use to continue.' %}
                 {% endset %}
 
-                alert("{{alert_message|e}}");
+                var alert = p4.Dialog.Create({
+                    size : 'Alert',
+                    closeOnEscape : true,
+                    closeButton:true,
+                }, 2);
+
+                alert.setContent("{{ alert_message|e }}");
 
                 return false;
             }
@@ -521,12 +527,14 @@
         function check_subdefs(container)
         {
             var go = required = false;
+
             $('input[name="obj[]"]', $(container)).each(function(){
                 if($(this).attr('checked'))
                 {
                     go = true;
                 }
             });
+
             $('input.required, textarea.required', container).each(function(i,n){
                 if($.trim($(n).val()) == '')
                 {
@@ -538,12 +546,20 @@
                     $(n).removeClass('error');
                 }
             });
+
             if(required)
             {
                 {% set alert_message %}
                     {% trans 'Certains champs sont obligatoires, veuillez les remplir' %}
                 {% endset %}
-                alert("{{alert_message|e}}");
+
+                var alert = p4.Dialog.Create({
+                    size : 'Alert',
+                    closeOnEscape : true,
+                    closeButton:true,
+                }, 2);
+
+                alert.setContent("{{ alert_message|e }}");
 
                 return false;
             }
@@ -552,7 +568,14 @@
                 {% set alert_message %}
                     {% trans 'Vous devez selectionner un type de sous definitions' %}
                 {% endset %}
-                alert("{{alert_message|e}}");
+
+                var alert = p4.Dialog.Create({
+                    size : 'Alert',
+                    closeOnEscape : true,
+                    closeButton:true,
+                }, 2);
+
+                alert.setContent("{{ alert_message|e }}");
 
                 return false;
             }
@@ -565,6 +588,10 @@
         {% endset %}
 
         $(document).ready(function(){
+            var dialog = p4.Dialog.get(1);
+
+            $('.tabs', dialog.getDomElement()).tabs('select',1);
+
             $('a.TOUview').bind('click', function(){
                 var options = {
                   size : 'Medium',
@@ -576,10 +603,13 @@
 
                 $.get($(this).attr('href'), function(content){$dialog.setContent(content);});
             });
+
             $('.close_button').bind('click',function(){
-                $('#dialog_dwnl').dialog('close').dialog('destroy');
+                dialog.Close();
             });
+
             initialize_geoname_field($('#command_geoname_field'));
+
             $('#download .download_button').bind('click',function(){
                 if(!check_subdefs($('#download')))
                     return false;
@@ -590,6 +620,7 @@
 
                 var total = 0;
                 var count = 0;
+
                 $('input[name="obj[]"]', $('#download')).each(function(){
                     var total_el = $('#download input[name=download_'+$(this).val()+']')
                     var count_el = $('#download input[name=count_'+$(this).val()+']')
@@ -611,26 +642,23 @@
                         {% trans 'Would you like to receive an e-mail when your download is ready ?' %}
                 {% endset %}
 
-                if(count>1 && total/1024/1024 > {{max_download}})
-                {
-                    if(confirm("{{alert_too_big_one|e('js') ~ "\\n" ~ alert_too_big_two ~ "\\n" ~ alert_too_big_three}}"))
-                    {
+                if(count>1 && total/1024/1024 > {{max_download}}) {
+                    if(confirm("{{alert_too_big_one|e('js') ~ "\\n" ~ alert_too_big_two ~ "\\n" ~ alert_too_big_three}}")) {
                         $('input[name="obj[]"]:checked', $('#download')).each(function(i,n){
                         $('input[name="obj[]"][value="'+$(n).val()+'"]', $('#sendmail')).attr('checked', true);
                         });
                         $('input[name="destmail"]', $('#sendmail')).val("{{app['phraseanet.user'].get_email()}}");
-                        $('#dialog_dwnl .tabs').tabs('select',1);
+                        $('.tabs', dialog.getDomElement()).tabs('select',1);
                     }
 
                     return;
                 }
 
                 $('#download form').submit();
-                $('#dialog_dwnl').dialog('close').dialog('destroy');
+                dialog.Close();
             });
 
             $('#order .order_button').bind('click',function(){
-
                 if (!check_TOU($('#order'))) {
                     return false;
                 }
@@ -651,7 +679,7 @@
                         if( data.success )
                         {
                             humane.info(data.msg);
-                            $('#dialog_dwnl').dialog('close').dialog('destroy');
+                            dialog.Close();
                         } else {
                             humane.error(data.msg);
                         }
@@ -675,35 +703,50 @@
                     $('#ftp .ftp_form:hidden').remove();
 
                 var $this = $(this);
-                var options = $('#ftp form').serialize()+'&action=FTP_EXPORT';
+                var options = $('#ftp form').serialize();
                 $this.attr('disabled','disabled');
-                $.post("/prod/prodFeedBack.php"
+                $.post("/prod/export/ftp/"
                     , options
                     , function(data){
                         $this.removeAttr('disabled');
                         $('#ftp .ftp_button_loader').css('visibility','hidden');
-                        alert(data.message);
-                        if(!data.error)
-                        {
-                            $('#dialog_dwnl').dialog('close').dialog('destroy');
-                        }
 
+                        if(data.success) {
+                            humane.info(data.message);
+                            dialog.Close();
+                        } else {
+                            var alert = p4.Dialog.Create({
+                                size : 'Alert',
+                                closeOnEscape : true,
+                                closeButton:true,
+                            }, 2);
+
+                            alert.setContent(data.message);
+                         }
                         return;
                     }
                     , 'json'
                 );
             });
-            $('#ftp .tryftp_button').bind('click',function(){
 
+            $('#ftp .tryftp_button').bind('click',function(){
                 $('#ftp .tryftp_button_loader').css('visibility','visible');
                 var $this = $(this);
                 $this.attr('disabled','disabled');
-                var options = $('#ftp form').serialize()+'&action=FTP_TEST';
-                $.post("/prod/prodFeedBack.php"
+                var options = $('#ftp form').serialize();
+                $.post("/prod/export/ftp/test/"
                     , options
                     , function(data){
                         $('#ftp .tryftp_button_loader').css('visibility','hidden');
-                        alert(data);
+                        var msg;
+                        var alert = p4.Dialog.Create({
+                            size : 'Alert',
+                            closeOnEscape : true,
+                            closeButton:true,
+                        }, 2);
+
+                        alert.setContent(data.message);
+
                         $this.removeAttr('disabled');
 
                         return;
@@ -712,28 +755,25 @@
             });
 
             $('#sendmail .sendmail_button').bind('click',function(){
-                if(!check_subdefs($('#sendmail')))
-                {
+                if(!check_subdefs($('#sendmail'))) {
                     return false;
                 }
 
                 if (!check_TOU($('#sendmail'))) {
                     return false;
                 }
-
-                $('#sendmail .close_button').trigger("click");
-                //$('#sendmail .sendmail_button_loader').css('visibility','visible');
-                //$(this).attr('disabled','disabled');
+                dialog.Close()
                 $('#sendmail form').submit();
             });
-            $('#dialog_dwnl .datepicker').datepicker({
+
+            $('.datepicker', dialog.getDomElement()).datepicker({
                 changeYear: true,
                 changeMonth:true,
                 dateFormat : 'yy-mm-dd'
             });
-            $('#dialog_dwnl a.undisposable_link').bind('click',function(){
-                $(this).parent().parent().find('.undisposable').slideToggle();
 
+            $('a.undisposable_link', dialog.getDomElement()).bind('click',function(){
+                $(this).parent().parent().find('.undisposable').slideToggle();
                 return false;
             });
 
@@ -741,15 +781,13 @@
 
                 var $form = $(this).closest('form');
 
-                if($('input.caption[name="obj[]"]:checked', $form).length > 0)
-                {
-                $('div.businessfields', $form).show();
-                }
-                else
-                {
-                $('div.businessfields', $form).hide();
+                if($('input.caption[name="obj[]"]:checked', $form).length > 0) {
+                    $('div.businessfields', $form).show();
+                } else {
+                    $('div.businessfields', $form).hide();
                 }
             });
         });
     </script>
 {% endif %}
+
