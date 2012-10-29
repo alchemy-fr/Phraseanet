@@ -417,7 +417,7 @@
                                                                         <option onchange="checkFilters(true);"
                                                                             class="" value="{{ field }}">{{ field }}</option>
                                                                     {% endfor %}
-                                                                    <option value="{{configuration['date_fields']|keys|join('|')}}" selected="selected">
+                                                                    <option value="{{ app['phraseanet.SE'].getAvailableDateFields()|join('|') }}" selected="selected">
                                                                         {% trans 'rechercher dans tous les champs' %}
                                                                     </option>
                                                                 </select>

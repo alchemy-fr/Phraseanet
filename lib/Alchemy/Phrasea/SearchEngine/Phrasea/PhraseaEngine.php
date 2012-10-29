@@ -577,10 +577,10 @@ class PhraseaEngine implements SearchEngineInterface
             }
             if (($this->options->getMinDate() || $this->options->getMaxDate()) && $this->options->getDateFields()) {
                 if ($this->options->getMinDate()) {
-                    $this->queries[$sbas] .= ' AND ( ' . implode(' >= ' . $this->options->getMinDate()->format('Y-m-d') . ' OR  ', $this->options->getDateFields()) . ' >= ' . $this->options->getMinDate()->format('Y-m-d') . ' ) ';
+                    $this->queries[$sbas] .= ' AND ( ' . implode(' >= ' . $this->options->getMinDate()->format('Y-m-d') . ' OR  ', array_map(function(\databox_field $field){ return $field->get_name(); }, $this->options->getDateFields())) . ' >= ' . $this->options->getMinDate()->format('Y-m-d') . ' ) ';
                 }
                 if ($this->options->getMaxDate()) {
-                    $this->queries[$sbas] .= ' AND ( ' . implode(' <= ' . $this->options->getMaxDate()->format('Y-m-d') . ' OR  ', $this->options->getDateFields()) . ' <= ' . $this->options->getMaxDate()->format('Y-m-d') . ' ) ';
+                    $this->queries[$sbas] .= ' AND ( ' . implode(' <= ' . $this->options->getMaxDate()->format('Y-m-d') . ' OR  ', array_map(function(\databox_field $field){ return $field->get_name(); }, $this->options->getDateFields())) . ' <= ' . $this->options->getMaxDate()->format('Y-m-d') . ' ) ';
                 }
             }
         }
