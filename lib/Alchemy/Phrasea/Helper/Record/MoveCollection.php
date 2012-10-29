@@ -46,6 +46,8 @@ class MoveCollection extends RecordHelper
      */
     protected $baseIdDestination;
 
+    protected $request;
+
     /**
      *
      * @param  \Alchemy\Phrasea\Core $core
@@ -55,10 +57,7 @@ class MoveCollection extends RecordHelper
     public function __construct(Core $core, Request $request)
     {
         $this->baseIdDestination = $request->get('base_id');
-
-        if ($request->get("chg_coll_son") == "1") {
-            $this->flatten_groupings = true;
-        }
+        $this->request = $request;
 
         parent::__construct($core, $request);
 
@@ -139,6 +138,18 @@ class MoveCollection extends RecordHelper
 
         foreach ($this->selection as $record) {
             $record->move_to_collection($collection, $appbox);
+        }
+
+        if ($this->request->get("chg_coll_son") == "1") {
+            foreach ($this->selection as $record) {
+                if (!$record->is_grouping()) {
+                    continue;
+                }
+
+                foreach ($record->get_children() as $child) {
+                    $child->move_to_collection($collection, $appbox);
+                }
+            }
         }
 
         return $this;
