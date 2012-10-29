@@ -289,7 +289,7 @@ if ($registry->get('GV_client_coll_ckbox') === 'popup') {
 
                                                 <input type="hidden" name="sort" value="<?php echo $registry->get('GV_phrasea_sort'); ?>"/>
 
-                                                <input type="hidden" name="ord" id="searchOrd" value="<?php echo PHRASEA_ORDER_DESC ?>" />
+                                                <input type="hidden" name="ord" id="searchOrd" value="<?php echo \searchEngine_options::SORT_MODE_DESC ?>" />
                                             </div>
                                             <div>
 

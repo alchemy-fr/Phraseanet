@@ -123,7 +123,7 @@ $options->set_sort($parm['sort'], $parm['ord']);
 $options->set_use_stemming($parm['stemme']);
 
 if ($parm['ord'] === NULL)
-    $parm['ord'] = PHRASEA_ORDER_DESC;
+    $parm['ord'] = \searchEngine_options::SORT_MODE_DESC;
 else
     $parm['ord'] = (int) $parm['ord'];
 
