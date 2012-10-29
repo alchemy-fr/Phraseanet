@@ -23,6 +23,11 @@ $registry = $appbox->get_registry();
 require($registry->get('GV_RootPath') . 'lib/classes/deprecated/countries.php');
 require_once($registry->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php');
 
+if ($registry->get('GV_captchas')
+    && trim($registry->get('GV_captcha_private_key')) !== ''
+    && trim($registry->get('GV_captcha_public_key')) !== '')
+    include($registry->get('GV_RootPath') . 'lib/vendor/recaptcha/recaptchalib.php');
+
 $register_enabled = login::register_enabled();
 
 if ( ! $register_enabled) {
@@ -68,7 +73,12 @@ $arrayVerif['form_email'] = true;
 
 $lstreceiver = array();
 
-$parm = $request->get_parms("form_login", "form_password", "form_city", "form_password_confirm", "form_gender", "form_lastname", "form_firstname", "form_email", "form_job", "form_company", 'demand', "form_activity", "form_phone", "form_fax", "form_address", "form_zip", "form_geonameid", "demand");
+$parm = $request->get_parms("form_login", "form_password", "form_city",
+        "form_password_confirm", "form_gender", "form_lastname",
+        "form_firstname", "form_email", "form_job", "form_company",
+        'demand', "form_activity", "form_phone", "form_fax",
+        "form_address", "form_zip", "form_geonameid", "demand",
+        'recaptcha_response_field', 'recaptcha_challenge_field');
 
 /**
  * @todo transactionner cette page
@@ -77,7 +87,18 @@ if ($request->has_post_datas()) {
 
     $needed = array_diff_key($arrayVerif, $request->get_post_datas());
 
-    if (sizeof($needed) === 0 || (sizeof($needed) === 1 && isset($needed['form_login']) && $needed['form_login'] === true)) {
+    $captcha = true;
+
+    if ($registry->get('GV_captchas')
+        && trim($registry->get('GV_captcha_private_key')) !== ''
+        && trim($registry->get('GV_captcha_public_key')) !== ''
+        && ! is_null($parm["recaptcha_challenge_field"])
+        && ! is_null($parm["recaptcha_response_field"])) {
+        $checkCaptcha = recaptcha_check_answer($registry->get('GV_captcha_private_key'), $_SERVER["REMOTE_ADDR"], $parm["recaptcha_challenge_field"], $parm["recaptcha_response_field"]);
+        $captcha = $checkCaptcha->is_valid;
+    }
+
+    if ($captcha && sizeof($needed) === 0 || (sizeof($needed) === 1 && isset($needed['form_login']) && $needed['form_login'] === true)) {
 
         foreach ($parm as $field => $value) {
             if (is_string($value) && isset($arrayVerif[$field]) && $arrayVerif[$field] === true) {
@@ -309,6 +330,36 @@ foreach ($arrayVerif as $ar => $ver) {
 
             initialize_geoname_field($('#form_geonameid'));
         });
+
+<?php
+
+
+$captchaSys = '';
+if ($registry->get('GV_captchas')
+    && trim($registry->get('GV_captcha_private_key')) !== ''
+    && trim($registry->get('GV_captcha_public_key')) !== '') {
+    $captchaSys = '<div style="margin:0;width:330px;">
+            <div id="recaptcha_image" style="margin:10px 0px 5px"></div>
+            <div style="text-align:left;margin:0 0px 5px;width:300px;">
+            <a href="javascript:Recaptcha.reload()" class="link">' . _('login::captcha: obtenir une autre captcha') . '</a>
+            </div>
+            <div style="text-align:left;width:300px;">
+                <span class="recaptcha_only_if_image">' . _('login::captcha: recopier les mots ci dessous') . ' : </span>
+                <input name="recaptcha_response_field" id="recaptcha_response_field" value="" type="text" style="width:180px;"/>
+            </div>' . recaptcha_get_html($registry->get('GV_captcha_public_key')) . '</div>';
+
+    ?>
+
+            var RecaptchaOptions = {
+               theme : 'custom',
+               tabindex : 3,
+               lang : '<?php echo $session->get_locale(); ?>'
+            };
+    <?php
+}
+
+?>
+
 
         </script>
         <script type="text/javascript" src="/login/geonames.js"></script>
@@ -583,6 +634,12 @@ if ($register_enabled) {
                             </tr>
 
 
+                            <tr>
+                                <td><?php echo _('Robots SPAM protection :'); ?></td>
+                                <td colspan="2">
+                                    <?php echo $captchaSys ?>
+                                </td>
+                            </tr>
                             <tr>
                                 <td colspan="3">
                                     <hr/>
