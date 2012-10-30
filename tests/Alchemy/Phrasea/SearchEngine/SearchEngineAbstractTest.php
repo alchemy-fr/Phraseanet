@@ -8,34 +8,35 @@ require_once __DIR__ . '/../../../PhraseanetPHPUnitAuthenticatedAbstract.class.i
 
 abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedAbstract
 {
+
     protected static $searchEngine;
     protected static $initialized = false;
-
-    public static function setUpBeforeClass()
-    {
-        parent::setUpBeforeClass();
-
-        foreach (self::$records['record_24']->get_databox()->get_meta_structure()->get_elements() as $field) {
-            if ( ! $field->isBusiness()) {
-                continue;
-            }
-            $found = true;
-        }
-
-        if ( ! $found) {
-            $field = \databox_field::create(self::$records['record_24']->get_databox(), 'testBusiness' . mt_rand(), false);
-            $field->set_business(true);
-            $field->save();
-        }
-    }
 
     public function setUp()
     {
         parent::setUp();
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
-        foreach ($appbox->get_databoxes() as $databox) {
-            break;
+
+        if (!self::$initialized) {
+            $found = false;
+            foreach (self::$DI['record_24']->get_databox()->get_meta_structure()->get_elements() as $field) {
+                if (!$field->isBusiness()) {
+                    continue;
+                }
+                $found = true;
+            }
+
+            if (!$found) {
+                $field = \databox_field::create(self::$DI['app'], self::$DI['record_24']->get_databox(), 'testBusiness' . mt_rand(), false);
+                $field->set_business(true);
+                $field->save();
+            }
+
+            foreach (self::$DI['app']['phraseanet.appbox']->get_databoxes() as $databox) {
+                break;
+            }
         }
+
+            $this->initialize();
 
         if (!self::$initialized) {
             $found = false;
@@ -456,10 +457,6 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $this->assertEquals(1, $results->total());
     }
 
-        self::$searchEngine->removeStory($story);
-        $this->updateIndex();
-    }
-
     public function testStatusQueryOffOverOn()
     {
         $options = $this->getDefaultOptions();
@@ -490,7 +487,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
         $record = self::$records['record_24'];
         $record->set_binary_status('00000');
-        
+
         $options->setStatus(array(4 => array('off' => array($record->get_databox()->get_sbas_id()))));
         self::$searchEngine->setOptions($options);
 
@@ -548,6 +545,8 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
         $results = self::$searchEngine->query($query_string, 0, 1);
         $fields = array();
         $foundRecord = $results->results()->first();
+
+        $this->assertInstanceOf('\record_adapter', $foundRecord);
 
         $this->assertInstanceOf('\record_adapter', $foundRecord);
 

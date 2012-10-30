@@ -110,7 +110,7 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
 
     public function testAutocomplete()
     {
-        $record = self::$records['record_24'];
+        $record = self::$DI['record_24'];
 
         $toupdate = array();
 
@@ -142,7 +142,7 @@ class SphinxSearchEngineTest extends SearchEngineAbstractTest
         $process = new Process($indexer . ' --all --rotate -c ' . self::$config);
         $process->run();
 
-        $appbox = \appbox::get_instance(self::$core);
+        $appbox = self::$DI['app']['phraseanet.appbox'];
         self::$searchEngine->buildSuggestions($appbox->get_databoxes(), self::$config, 0);
 
         $suggestions = self::$searchEngine->autoComplete('jean');
