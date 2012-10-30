@@ -713,8 +713,6 @@ class set_export extends set_abstract
 
         random::updateToken($app, $token, serialize($list));
 
-        $unicode = new \unicode();
-
         $toRemove = array();
 
         foreach ($files as $record) {
@@ -727,7 +725,7 @@ class set_export extends set_abstract
                             . $obj["ajout"]
                             . '.' . $obj["exportExt"];
 
-                        $name = $unicode->remove_diacritics($name);
+                        $name = $app['unicode']->remove_diacritics($name);
 
                         $zip->addFile($path, $name);
 

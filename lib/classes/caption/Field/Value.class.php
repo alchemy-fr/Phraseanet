@@ -352,8 +352,6 @@ class caption_Field_Value implements cache_cacheableInterface
             return $value;
         }
 
-        $unicode = new unicode();
-
         $DOM_branchs = $XPATH_thesaurus->query($tbranch);
 
         $fvalue = $value;
@@ -361,8 +359,8 @@ class caption_Field_Value implements cache_cacheableInterface
         $cleanvalue = str_replace(array("<em>", "</em>", "'"), array("", "", "&apos;"), $fvalue);
 
         list($term_noacc, $context_noacc) = $this->splitTermAndContext($cleanvalue);
-        $term_noacc = $unicode->remove_indexer_chars($term_noacc);
-        $context_noacc = $unicode->remove_indexer_chars($context_noacc);
+        $term_noacc = $this->app['unicode']->remove_indexer_chars($term_noacc);
+        $context_noacc = $this->app['unicode']->remove_indexer_chars($context_noacc);
         if ($context_noacc) {
             $q = "//sy[@w='" . $term_noacc . "' and @k='" . $context_noacc . "']";
         } else {

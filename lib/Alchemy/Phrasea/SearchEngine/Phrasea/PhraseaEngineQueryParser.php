@@ -92,13 +92,11 @@ class PhraseaEngineQueryParser
      * @var <type>
      */
     public $lng;
-    protected $unicode;
 
     public function __construct(Application $app, $lng = "???")
     {
         $this->app = $app;
         $this->lng = $lng;
-        $this->unicode = new \unicode();
 
         return $this;
     }
@@ -1845,7 +1843,7 @@ class PhraseaEngineQueryParser
                     $this->phq = $this->mb_ltrim(mb_substr($this->phq, 1, 99999, 'UTF-8'), 'UTF-8');
                     $this->phq = "";
                 }
-                $context = $this->unicode->remove_indexer_chars($context);
+                $context = $this->app['unicode']->remove_indexer_chars($context);
 
                 return(array("CLASS" => "TOK_CONTEXT", "VALUE" => $context));
                 break;
@@ -1871,10 +1869,10 @@ class PhraseaEngineQueryParser
                 $t = "";
                 $c_utf8 = "";
                 for ($i = 0; $i < $l; $i++) {
-                    if (!$this->unicode->has_indexer_bad_char(($c_utf8 = mb_substr($this->phq, $i, 1, 'UTF-8')))) {
+                    if (!$this->app['unicode']->has_indexer_bad_char(($c_utf8 = mb_substr($this->phq, $i, 1, 'UTF-8')))) {
                         //  $c = mb_strtolower($c);
                         //  $t .= isset($this->noaccent[$c]) ? $this->noaccent[$c] : $c;
-                        $t .= $this->unicode->remove_diacritics(mb_strtolower($c_utf8));
+                        $t .= $this->app['unicode']->remove_diacritics(mb_strtolower($c_utf8));
                     } else
                         break;
                 }
