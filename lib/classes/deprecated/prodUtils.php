@@ -19,6 +19,7 @@ function deleteRecord($lst, $del_children)
     $Core = bootstrap::getCore();
     $em = $Core->getEntityManager();
     $BE_repository = $em->getRepository('\Entities\BasketElement');
+    $StoryWZ_repository = $em->getRepository('\Entities\StoryWZ');
 
     $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
@@ -83,6 +84,12 @@ function deleteRecord($lst, $del_children)
                     }
                 }
                 $ret[] = $record->get_serialize_key();
+
+                $attachedStories = $StoryWZ_repository->findByRecord($record);
+
+                foreach ($attachedStories as $attachedStory) {
+                    $em->remove($attachedStory);
+                }
 
                 $basket_elements = $BE_repository->findElementsByRecord($record);
 
