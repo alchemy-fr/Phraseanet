@@ -22,8 +22,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
     {
         $app['phraseanet.SE'] = $app->share(function($app) {
             $configuration = $app['phraseanet.configuration']
-                ->getService($app['phraseanet.configuration']
-                ->getSearchEngine());
+                ->getService($app['phraseanet.configuration']->getSearchEngine());
 
             $service = Builder::create($app, $configuration);
 
