@@ -10,4 +10,12 @@ interface ConfigurationPanelInterface
     public function get(Application $app, Request $request);
 
     public function post(Application $app, Request $request);
+
+    public function getName();
+
+    public function getConfiguration();
+
+    public function saveConfiguration(array $configuration);
+
+    public function getAvailableDateFields(array $databoxes);
 }

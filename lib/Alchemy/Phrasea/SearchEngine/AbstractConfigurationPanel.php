@@ -4,14 +4,12 @@ namespace Alchemy\Phrasea\SearchEngine;
 
 abstract class AbstractConfigurationPanel implements ConfigurationPanelInterface
 {
-    abstract public function getName();
-    
     public function getConfigPathFile()
     {
         return __DIR__ . '/../../../../config/'.$this->getName().'.json';
     }
 
-    public function getAvailableDateFields($databoxes)
+    public function getAvailableDateFields(array $databoxes)
     {
         $date_fields = array();
         

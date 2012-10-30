@@ -32,8 +32,6 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
             }
             self::$updated = true;
         }
-
-        self::$initialized = true;
     }
 
     /**

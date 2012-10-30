@@ -52,7 +52,7 @@ class ConfigurationPanel extends AbstractConfigurationPanel
 
     public function getConfiguration()
     {
-        $configuration = @json_decode(file_get_contents(__DIR__ . '/../../../../../config/phrasea-engine.json'), true);
+        $configuration = @json_decode(file_get_contents($this->getConfigPathFile()), true);
 
         if (!is_array($configuration)) {
             $configuration = array();
@@ -69,4 +69,10 @@ class ConfigurationPanel extends AbstractConfigurationPanel
         return $configuration;
     }
 
+    public function saveConfiguration(array $configuration)
+    {
+        file_put_contents($this->getConfigPathFile(), json_encode($configuration));
+        
+        return $this;
+    }
 }

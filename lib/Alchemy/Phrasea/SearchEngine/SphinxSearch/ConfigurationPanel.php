@@ -5,6 +5,7 @@ namespace Alchemy\Phrasea\SearchEngine\SphinxSearch;
 use Alchemy\Phrasea\SearchEngine\AbstractConfigurationPanel;
 use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Finder\Finder;
 
 class ConfigurationPanel extends AbstractConfigurationPanel
 {
@@ -30,7 +31,7 @@ class ConfigurationPanel extends AbstractConfigurationPanel
         $params = array(
             'configuration' => $configuration,
             'configfile'    => $this->generateSphinxConf($app['phraseanet.appbox']->get_databoxes(), $configuration),
-            'charsets'      => $this->get_available_charsets(),
+            'charsets'      => $this->getAvailableCharsets(),
             'date_fields'   => $this->getAvailableDateFields($app['phraseanet.appbox']->get_databoxes()),
         );
 
@@ -95,14 +96,14 @@ class ConfigurationPanel extends AbstractConfigurationPanel
         return $configuration;
     }
     
-    public function saveConfiguration($configuration)
+    public function saveConfiguration(array $configuration)
     {
         file_put_contents($this->getConfigPathFile(), json_encode($configuration));
         
         return $this;
     }
 
-    public function get_available_charsets()
+    public function getAvailableCharsets()
     {
         if (null !== $this->charsets) {
             return $this->charsets;
@@ -110,7 +111,7 @@ class ConfigurationPanel extends AbstractConfigurationPanel
 
         $this->charsets = array();
 
-        $finder = new \Symfony\Component\Finder\Finder();
+        $finder = new Finder();
         $finder->in(__DIR__ . '/Charset/')->files()->name('*.php');
 
         foreach ($finder as $file) {
