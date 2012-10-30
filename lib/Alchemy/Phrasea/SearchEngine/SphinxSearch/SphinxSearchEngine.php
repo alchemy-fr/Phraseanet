@@ -417,7 +417,7 @@ class SphinxSearchEngine implements SearchEngineInterface
             }
 
             $suggestions = $this->getSuggestions($query);
-            $propositions = array();
+            $propositions = '';
         }
 
         return new SearchEngineResult($results, $query, $duration, $offset, $available, $total, $error, $warning, $suggestions, $propositions, $index);

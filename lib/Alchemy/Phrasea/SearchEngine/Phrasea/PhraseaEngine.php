@@ -376,8 +376,44 @@ class PhraseaEngine implements SearchEngineInterface
             $resultNumber++;
         }
 
+        $propositions = $this->getPropositions();
 
-        return new SearchEngineResult($records, $query, $row['duration'], $offset, $row['total'], $row['total'], $error, '', new ArrayCollection(), new ArrayCollection(), '');
+        return new SearchEngineResult($records, $query, $row['duration'], $offset, $row['total'], $row['total'], $error, '', new ArrayCollection(), $propositions, '');
+    }
+    
+    private function getPropositions()
+    {
+        if ($this->qp && isset($this->qp['main'])) {
+            $proposals = self::proposalsToHTML($this->qp['main']->proposals);
+            if (trim($proposals) !== '') {
+                return "<div style='height:0px; overflow:hidden'>" . $this->qp['main']->proposals["QRY"]
+                    . "</div><div class='proposals'>" . $proposals . "</div>";
+            }
+        }
+
+        return null;
+    }
+    
+    private static function proposalsToHTML($proposals)
+    {
+        $html = '';
+        $b = true;
+        foreach ($proposals["BASES"] as $zbase) {
+            if ((int) (count($proposals["BASES"]) > 1) && count($zbase["TERMS"]) > 0) {
+                $style = $b ? 'style="margin-top:0px;"' : '';
+                $b = false;
+                $html .= "<h1 $style>" . sprintf(_('reponses::propositions pour la base %s'), $zbase["NAME"]) . "</h1>";
+            }
+            $t = true;
+            foreach ($zbase["TERMS"] as $path => $props) {
+                $style = $t ? 'style="margin-top:0px;"' : '';
+                $t = false;
+                $html .= "<h2 $style>" . sprintf(_('reponses::propositions pour le terme %s'), $props["TERM"]) . "</h2>";
+                $html .= $props["HTML"];
+            }
+        }
+
+        return $html ;
     }
 
     public static function create(Application $app)

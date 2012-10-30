@@ -27,7 +27,7 @@ class SearchEngineResult
     protected $propositions;
     protected $indexes;
 
-    public function __construct(ArrayCollection $results, $query, $duration, $offsetStart, $available, $total, $error, $warning, $suggestions, $propositions, $indexes)
+    public function __construct(ArrayCollection $results, $query, $duration, $offsetStart, $available, $total, $error, $warning, ArrayCollection $suggestions, $propositions, $indexes)
     {
         $this->results = $results;
         $this->query = $query;

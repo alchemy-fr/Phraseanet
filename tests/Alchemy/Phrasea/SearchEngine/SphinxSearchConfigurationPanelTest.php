@@ -28,7 +28,10 @@ class SphinxSearchConfigurationPanelTest extends ConfigurationPanelAbstractTest
 
     public function testGenerateSphinxConf()
     {
-        $conf = $this->getPanel()->generateSphinxConf();
+        $databoxes = self::$DI['app']['phraseanet.appbox']->get_databoxes();
+        $configuration = $this->getPanel()->getConfiguration();
+        
+        $conf = $this->getPanel()->generateSphinxConf($databoxes, $configuration);
         $this->assertInternalType('string', $conf);
     }
 
