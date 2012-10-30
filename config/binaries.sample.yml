@@ -10,3 +10,4 @@ binaries:
     ffprobe_binary: ''
     mp4box_binary: ''
     pdftotext_binary: ''
+    ghostscript_binary: ''
