@@ -33,6 +33,7 @@ class task_Scheduler
 
     public function __construct(Logger $logger)
     {
+        declare(ticks = 1);
         $this->logger = $logger;
     }
 
@@ -52,6 +53,14 @@ class task_Scheduler
      * @throws Exception if scheduler is already running
      * @todo doc all possible exception
      */
+    public function sigHandler($signal)
+    {
+        $status = null;
+        $pid = pcntl_wait($status);
+        $exitstatus = pcntl_wexitstatus ( $status );
+        $this->log(sprintf("sigchild %s received from pid=%s, status=%s, exitstatus=%s\n", $signal, $pid, var_export($status, true), $exitstatus));
+    }
+
     public function run()
     {
 
@@ -73,7 +82,10 @@ class task_Scheduler
 
         if (\task_manager::isPosixPcntlSupported()) {
             // avoid <defunct> php when a task ends
-            pcntl_signal(SIGCHLD, SIG_IGN);
+            //  pcntl_signal(SIGCHLD, SIG_IGN);     // no zombies but no returnValue
+            //  pcntl_signal(SIGCHLD, SIG_DFL);     // with "declare(ticks=1)" returnValue ok but zombies
+            pcntl_signal(SIGCHLD, array($this, 'sigHandler'));    // ok
+
             $this->method = self::METHOD_FORK;
         }
 
