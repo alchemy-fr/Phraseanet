@@ -78,7 +78,9 @@ class registry implements registryInterface
             $binaries = $configuration->getBinaries();
             if (isset($binaries['binaries'])) {
                 foreach ($binaries['binaries'] as $name => $path) {
-                    $this->cache->save($name, $path);
+                    if ($path) {
+                        $this->cache->save($name, $path);
+                    }
                 }
             }
         }

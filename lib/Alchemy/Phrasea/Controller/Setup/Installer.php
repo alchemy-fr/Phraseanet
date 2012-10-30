@@ -222,6 +222,7 @@ class Installer implements ControllerProviderInterface
                         'ffmpeg_binary'      => $request->get('binary_ffmpeg'),
                         'mp4box_binary'      => $request->get('binary_MP4Box'),
                         'pdftotext_binary'   => $request->get('binary_xpdf'),
+                        'ghostscript_binary' => '',
                     );
 
                     $app['Core']->getConfiguration()->setBinaries(array('binaries' => $binaries));
