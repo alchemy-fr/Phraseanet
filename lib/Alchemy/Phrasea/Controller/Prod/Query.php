@@ -130,7 +130,7 @@ class Query implements ControllerProviderInterface
         $options->set_min_date($request->request->get('datemin'));
         $options->set_max_date($request->request->get('datemax'));
         $options->set_date_fields(explode('|', $request->request->get('datefield')));
-        $options->set_sort($request->request->get('sort'), $request->request->get('ord', PHRASEA_ORDER_DESC));
+        $options->set_sort($request->request->get('sort'), $request->request->get('ord', \searchEngine_options::SORT_MODE_DESC));
         $options->set_use_stemming($request->request->get('stemme'));
 
         $form = serialize($options);

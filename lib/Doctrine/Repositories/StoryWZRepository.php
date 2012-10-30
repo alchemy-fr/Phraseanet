@@ -104,4 +104,30 @@ class StoryWZRepository extends EntityRepository
 
         return $story;
     }
+
+    public function findByRecord(\record_adapter $Story)
+    {
+        $dql = 'SELECT s FROM Entities\StoryWZ s WHERE s.sbas_id = :sbas_id
+                AND s.record_id = :record_id';
+
+        $query = $this->_em->createQuery($dql);
+        $query->setParameters(array(
+            'sbas_id' => $Story->get_sbas_id(),
+            'record_id' => $Story->get_record_id(),
+        ));
+
+        $stories = $query->getResult();
+
+        foreach ($stories as $key => $story) {
+            try {
+                $record = $story->getRecord();
+            } catch (\Exception_Record_AdapterNotFound $e) {
+                $this->getEntityManager()->remove($story);
+                $this->getEntityManager()->flush();
+                unset($stories[$key]);
+            }
+        }
+
+        return $stories;
+    }
 }

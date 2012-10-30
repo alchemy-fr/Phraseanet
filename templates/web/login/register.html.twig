@@ -95,6 +95,15 @@
 {% endblock %}
 
 {% block content %}
+    {% if captcha_system != '' %}
+        <script type="text/javascript">
+        var RecaptchaOptions = {
+           theme : 'custom',
+           tabindex : 3,
+           lang : '{{ app['locale'] }}'
+        };
+        </script>
+    {% endif %}
     <form id="register" class="form-horizontal" name="creation" action="/login/register/" method="POST">
         <div id="form_register_table" style="font-size: 11px; margin: 0 auto;">
             <div class="control-group">
@@ -281,6 +290,14 @@
                 <div class="controls">
                     <input id="form_zip" autocomplete="off" type="text" value="{{ parms['form_zip'] is defined ? parms['form_zip'] : '' }}" class="input_element" name="form_zip" />
                     <p class="form_alert help-block">{{ needed['form_zip'] is defined ? needed['form_zip'] : '' }}</p>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="form_label control-label" for="captcha_protecion">
+                    {% trans 'Robots SPAM protection :l' %}
+                </label>
+                <div class="controls">
+                    {{ captcha_system | raw }}
                 </div>
             </div>
             <hr />

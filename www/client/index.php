@@ -105,7 +105,7 @@ $user = User_Adapter::getInstance($usr_id, $app);
             }
         </style>
     </head>
-    <body class="PNB" style="overflow:hidden;">
+    <body class="PNB" style="width:100%;height:100%;overflow:hidden;">
         <div id="container" style="position:absolute;top:0;left:0;overflow:hidden;width:100%;height:100%;">
 
 <?php
@@ -285,7 +285,7 @@ if ($app['phraseanet.registry']->get('GV_client_coll_ckbox') === 'popup') {
 
                                                 <input type="hidden" name="sort" value="<?php echo $app['phraseanet.registry']->get('GV_phrasea_sort'); ?>"/>
 
-                                                <input type="hidden" name="ord" id="searchOrd" value="<?php echo PHRASEA_ORDER_DESC ?>" />
+                                                <input type="hidden" name="ord" id="searchOrd" value="<?php echo \searchEngine_options::SORT_MODE_DESC ?>" />
                                             </div>
                                             <div>
 

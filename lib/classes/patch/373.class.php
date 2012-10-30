@@ -90,7 +90,7 @@ class patch_373 implements patchInterface
             'GV_pdftotext'     => 'pdftotext_binary',
         );
 
-        $binaries = array();
+        $binaries = array('ghostscript_binary' => '');
 
         foreach ($Regbinaries as $name) {
             $stmt->execute(array(':key' => $name));

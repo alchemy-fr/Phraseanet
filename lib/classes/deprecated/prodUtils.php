@@ -19,6 +19,7 @@ use Alchemy\Phrasea\Application;
 function deleteRecord(Application $app, $lst, $del_children)
 {
     $BE_repository = $app['EM']->getRepository('\Entities\BasketElement');
+    $StoryWZ_repository = $em->getRepository('\Entities\StoryWZ');
 
     $ACL = $app['phraseanet.user']->ACL();
 
@@ -76,6 +77,12 @@ function deleteRecord(Application $app, $lst, $del_children)
                     }
                 }
                 $ret[] = $record->get_serialize_key();
+
+                $attachedStories = $StoryWZ_repository->findByRecord($record);
+
+                foreach ($attachedStories as $attachedStory) {
+                    $em->remove($attachedStory);
+                }
 
                 $basket_elements = $BE_repository->findElementsByRecord($record);
 

@@ -443,6 +443,25 @@ class Login implements ControllerProviderInterface
      */
     public function displayRegisterForm(Application $app, Request $request)
     {
+        $captchaSys = '';
+
+        if ($app['phraseanet.registry']->get('GV_captchas')
+            && $app['phraseanet.registry']->get('GV_captcha_private_key')
+            && $app['phraseanet.registry']->get('GV_captcha_public_key')) {
+
+            require_once __DIR__ . '/../../../../../lib/vendor/recaptcha/recaptchalib.php';
+
+            $captchaSys = '<div style="margin:0;width:330px;">
+            <div id="recaptcha_image" style="margin:10px 0px 5px"></div>
+            <div style="text-align:left;margin:0 0px 5px;width:300px;">
+            <a href="javascript:Recaptcha.reload()" class="link">' . _('login::captcha: obtenir une autre captcha') . '</a>
+            </div>
+            <div style="text-align:left;width:300px;">
+                <span class="recaptcha_only_if_image">' . _('login::captcha: recopier les mots ci dessous') . ' : </span>
+                <input name="recaptcha_response_field" id="recaptcha_response_field" value="" type="text" style="width:180px;"/>
+            </div>' . recaptcha_get_html($app['phraseanet.registry']->get('GV_captcha_public_key')) . '</div>';
+        }
+
         $login = new \login();
         if (false === $login->register_enabled($app)) {
             return $app->redirect('/login/?notice=no-register-available');
@@ -482,20 +501,23 @@ class Login implements ControllerProviderInterface
             }
         }
 
+
+
         $arrayVerif = $this->getRegisterFieldConfiguration($app);
 
         return $app['twig']->render('login/register.html.twig', array(
-            'inscriptions' => giveMeBases($app),
-            'parms'        => $request->query->all(),
-            'needed'       => $needed,
-            'arrayVerif'   => $arrayVerif,
-            'demandes'     => $request->query->get('demand', array()),
-            'lng' => $app['locale']
+            'inscriptions'   => giveMeBases($app),
+            'parms'          => $request->query->all(),
+            'needed'         => $needed,
+            'arrayVerif'     => $arrayVerif,
+            'demandes'       => $request->query->get('demand', array()),
+            'lng'            => $app['locale'],
+            'captcha_system' => $captchaSys,
         ));
     }
 
     /**
-     * Get the register form
+     * Do the registration
      *
      * @param   Application     $app     A Silex application where the controller is mounted on
      * @param   Request         $request The current request
@@ -503,6 +525,28 @@ class Login implements ControllerProviderInterface
      */
     public function register(Application $app, Request $request)
     {
+        $captchaOK = true;
+
+        if ($app['phraseanet.registry']->get('GV_captchas')
+            && $request->request->get('GV_captcha_private_key')
+            && $request->request->get('GV_captcha_public_key')
+            && $request->request->get("recaptcha_challenge_field")
+            && $request->request->get("recaptcha_response_field")) {
+            $checkCaptcha = recaptcha_check_answer(
+                $app['phraseanet.registry']->get('GV_captcha_private_key'),
+                $request->server->get('REMOTE_ADDR'),
+                $request->request->get["recaptcha_challenge_field"],
+                $request->request->get["recaptcha_response_field"]
+            );
+            $captchaOK = $checkCaptcha->is_valid;
+        }
+
+        if (!$captchaOK) {
+            return $app->redirect($app['url_generator']->generate('login_register', array(
+                'error' => $captcha
+            )));
+        }
+
         $arrayVerif = $this->getRegisterFieldConfiguration($app);
 
         $parameters = $request->request->all();
@@ -555,7 +599,9 @@ class Login implements ControllerProviderInterface
         }
 
         if (sizeof($needed) > 0) {
-            return $app->redirect(sprintf('/register/?%s', http_build_query(array('needed' => $needed))));
+            return $app->redirect($app['url_generator']->generate('login_register', array(
+                'needed' => $needed
+            )));
         }
 
         require_once($app['phraseanet.registry']->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php');

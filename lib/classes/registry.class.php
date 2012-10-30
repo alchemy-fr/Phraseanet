@@ -61,7 +61,9 @@ class registry implements registryInterface
             $binaries = $app['phraseanet.configuration']->getBinaries();
             if (isset($binaries['binaries'])) {
                 foreach ($binaries['binaries'] as $name => $path) {
-                    $this->cache->save($name, $path);
+                    if ($path) {
+                        $this->cache->save($name, $path);
+                    }
                 }
             }
         }

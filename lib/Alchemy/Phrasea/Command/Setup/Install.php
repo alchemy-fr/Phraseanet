@@ -272,6 +272,7 @@ class Install extends Command
             'ffprobe_binary'       => $this->executableFinder->find('ffprobe', $this->executableFinder->find('avprobe')),
             'mp4box_binary'        => $this->executableFinder->find('MP4Box'),
             'pdftotext_binary'     => $this->executableFinder->find('pdf2text'),
+            'ghostscript_binary'   => $this->executableFinder->find('gs'),
         );
     }
 }

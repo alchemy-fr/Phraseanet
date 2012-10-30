@@ -209,6 +209,8 @@ class Records implements ControllerProviderInterface
         ));
 
         $basketElementsRepository = $app['EM']->getRepository('\Entities\BasketElement');
+        $StoryWZRepository = $app['EM']->getRepository('\Entities\StoryWZ');
+
         $deleted = array();
 
         foreach ($records as $record) {
@@ -218,6 +220,12 @@ class Records implements ControllerProviderInterface
                 foreach ($basketElements as $element) {
                     $app['EM']->remove($element);
                     $deleted[] = $element->getRecord($app)->get_serialize_key();
+                }
+
+                $attachedStories = $StoryWZRepository->findByRecord($record);
+
+                foreach ($attachedStories as $attachedStory) {
+                    $app['EM']->remove($attachedStory);
                 }
 
                 $record->delete();

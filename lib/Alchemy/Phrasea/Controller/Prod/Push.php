@@ -36,6 +36,7 @@ class Push implements ControllerProviderInterface
                 , 'lastname'     => $user->get_lastname()
                 , 'email'        => $user->get_email()
                 , 'display_name' => $user->get_display_name()
+                , 'subtitle'     => sprintf('%s, %s', $user->get_job(), $user->get_company())
             );
         };
     }
