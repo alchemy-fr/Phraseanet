@@ -9,7 +9,9 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Controller\SearchEngineRequest;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  *
@@ -20,16 +22,17 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 require_once __DIR__ . "/../../lib/bootstrap.php";
 
 $app = new Application();
+$request = Request::createFromGlobals();
 
 if ( ! isset($parm)) {
 
-    $request = http_request::getInstance();
-    $parm = $request->get_parms("mod", "bas"
+    $http_request = http_request::getInstance();
+    $parm = $http_request->get_parms("mod", "bases"
         , "pag"
-        , "qry", "search_type", "recordtype"
-        , "qryAdv", 'opAdv', 'status', 'datemin', 'datemax'
+        , "qry", "search_type", "record_type"
+        , "qryAdv", 'opAdv', 'status', 'date_min', 'date_max'
         , 'dateminfield', 'datemaxfield'
-        , 'datefield'
+        , 'date_field'
         , 'sort'
         , 'stemme'
         , 'infield'
@@ -58,7 +61,7 @@ if ($qry == '')
 $parm['qry'] = $qry;
 
 $qrySbas = array();
-if (is_null($parm['bas'])) {
+if (is_null($parm['bases'])) {
     echo 'vous devez selectionner des collections dans lesquelles chercher';
 
     return;
@@ -80,94 +83,8 @@ $mod_xy = $mod_col * $mod_row;
 
 $tbases = array();
 
-$options = new SearchEngineOptions();
-$options->disallowBusinessFields();
-
-$bas = $app['phraseanet.user']->ACL()->get_granted_base();
-
-if (is_array($parm['bas'])) {
-    $bas = array_map(function($base_id) use ($app) {
-            return \collection::get_from_base_id($app, $base_id);
-        }, $parm['bas']);
-}
-
-$databoxes = array();
-
-foreach ($bas as $collection) {
-    if (!isset($databoxes[$collection->get_sbas_id()])) {
-        $databoxes[$collection->get_sbas_id()] = $collection->get_databox();
-    }
-}
-
-if ($app['phraseanet.user']->ACL()->has_right('modifyrecord')) {
-    $BF = array_filter($bas, function($collection) use ($app) {
-            return $app['phraseanet.user']->ACL()->has_right_on_base($collection->get_base_id(), 'canmodifrecord');
-        });
-
-    $options->allowBusinessFieldsOn($BF);
-}
-
-$status = is_array($parm['status']) ? $parm['status'] : array();
-$fields = is_array($parm['infield']) ? $parm['infield'] : array();
-
-$databoxFields = array();
-
-foreach ($databoxes as $databox) {
-    foreach ($fields as $field) {
-        try {
-            $databoxField = $databox->get_meta_structure()->get_element_by_name($field);
-        } catch (\Exception $e) {
-            continue;
-        }
-        if ($databoxField) {
-            $databoxFields[] = $databoxField;
-        }
-    }
-}
-
-
-$options->setFields($databoxFields);
-$options->setStatus($status);
-$options->onCollections($bas);
-
-$options->setSearchType($parm['search_type']);
-$options->setRecordType($parm['recordtype']);
-
-$min_date = $max_date = null;
-if ($parm['datemin']) {
-    $min_date = \DateTime::createFromFormat('Y/m/d H:i:s', $parm['datemin'] . ' 00:00:00');
-}
-if ($parm['datemax']) {
-    $max_date = \DateTime::createFromFormat('Y/m/d H:i:s', $parm['datemax'] . ' 23:59:59');
-}
-
-$options->setMinDate($min_date);
-$options->setMaxDate($max_date);
-
-
-$databoxDateFields = array();
-
-foreach ($databoxes as $databox) {
-    foreach (explode('|', $parm['datefield']) as $field) {
-        try {
-            $databoxField = $databox->get_meta_structure()->get_element_by_name($field);
-        } catch (\Exception $e) {
-            continue;
-        }
-        if ($databoxField) {
-            $databoxDateFields[] = $databoxField;
-        }
-    }
-}
-
-if ($parm['ord'] === NULL)
-    $parm['ord'] = \searchEngine_options::SORT_MODE_DESC;
-else
-    $parm['ord'] = (int) $parm['ord'];
-
-$options->setDateFields($databoxDateFields);
-$options->setSort($parm['sort'], $parm['ord']);
-$options->useStemming($parm['stemme']);
+$searchRequest = SearchEngineRequest::fromRequest($app, $request);
+$options = $searchRequest->getOptions();
 
 $form = $options->serialize();
 

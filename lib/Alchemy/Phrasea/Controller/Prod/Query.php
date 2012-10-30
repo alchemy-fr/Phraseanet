@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
+use Alchemy\Phrasea\Controller\SearchEngineRequest;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -99,89 +100,9 @@ class Query implements ControllerProviderInterface
         $mod = $app['phraseanet.user']->getPrefs('view');
 
         $json = array();
-
-        $options = new SearchEngineOptions();
-        $options->disallowBusinessFields();
-
-        $bas = $app['phraseanet.user']->ACL()->get_granted_base();
-
-        if (is_array($request->request->get('bas'))) {
-            $bas = array_map(function($base_id) use ($app) {
-                    return \collection::get_from_base_id($app, $base_id);
-                }, $request->request->get('bas'));
-        }
-
-        $databoxes = array();
-
-        foreach ($bas as $collection) {
-            if (!isset($databoxes[$collection->get_sbas_id()])) {
-                $databoxes[$collection->get_sbas_id()] = $collection->get_databox();
-            }
-        }
-
-        if ($app['phraseanet.user']->ACL()->has_right('modifyrecord')) {
-            $BF = array_filter($bas, function($collection) use ($app) {
-                    return $app['phraseanet.user']->ACL()->has_right_on_base($collection->get_base_id(), 'canmodifrecord');
-                });
-
-            $options->allowBusinessFieldsOn($BF);
-        }
-
-        $status = is_array($request->request->get('status')) ? $request->request->get('status') : array();
-        $fields = is_array($request->request->get('fields')) ? $request->request->get('fields') : array();
-
-        $databoxFields = array();
-
-        foreach ($databoxes as $databox) {
-            foreach ($fields as $field) {
-                try {
-                    $databoxField = $databox->get_meta_structure()->get_element_by_name($field);
-                } catch (\Exception $e) {
-                    continue;
-                }
-                if ($databoxField) {
-                    $databoxFields[] = $databoxField;
-                }
-            }
-        }
-
-
-        $options->setFields($databoxFields);
-        $options->setStatus($status);
-        $options->onCollections($bas);
-
-        $options->setSearchType($request->request->get('search_type'));
-        $options->setRecordType($request->request->get('recordtype'));
-
-        $min_date = $max_date = null;
-        if ($request->request->get('datemin')) {
-            $min_date = \DateTime::createFromFormat('Y/m/d H:i:s', $request->request->get('datemin') . ' 00:00:00');
-        }
-        if ($request->request->get('datemax')) {
-            $max_date = \DateTime::createFromFormat('Y/m/d H:i:s', $request->request->get('datemax') . ' 23:59:59');
-        }
-
-        $options->setMinDate($min_date);
-        $options->setMaxDate($max_date);
-
-        $databoxDateFields = array();
-
-        foreach ($databoxes as $databox) {
-            foreach (explode('|', $request->request->get('datefield')) as $field) {
-                try {
-                    $databoxField = $databox->get_meta_structure()->get_element_by_name($field);
-                } catch (\Exception $e) {
-                    continue;
-                }
-                if ($databoxField) {
-                    $databoxDateFields[] = $databoxField;
-                }
-            }
-        }
-
-        $options->setDateFields($databoxDateFields);
-        $options->setSort($request->request->get('sort'), $request->request->get('ord', PHRASEA_ORDER_DESC));
-        $options->useStemming($request->request->get('stemme'));
+        
+        $SearchRequest = SearchEngineRequest::fromRequest($app, $request);
+        $options = $SearchRequest->getOptions();
 
         $form = $options->serialize();
 

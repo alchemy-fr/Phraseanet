@@ -109,7 +109,7 @@ class SearchEngineOptions
      */
     public function setLocale($locale)
     {
-        if (!preg_match('/[a-z]{2,3}/', $locale)) {
+        if ($locale && !preg_match('/[a-z]{2,3}/', $locale)) {
             throw new \InvalidArgumentException('Locale must be a valid i18n code');
         }
 
@@ -501,7 +501,7 @@ class SearchEngineOptions
             throw new \InvalidArgumentException('SearchEngineOptions data are corrupted');
         }
 
-        $options = new SearchEngineOptions();
+        $options = new static();
         $options->disallowBusinessFields();
 
         foreach ($serialized as $key => $value) {

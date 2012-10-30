@@ -265,9 +265,9 @@ function checkFilters(save)
         $('.status_filter', adv_box) .addClass('danger');
     });
 
-    search.dates.minbound 	= $('.date_filter input[name=datemin]', adv_box).val();
-    search.dates.maxbound 	= $('.date_filter input[name=datemax]', adv_box).val();
-    search.dates.field 		= $('.date_filter select[name=datefield]', adv_box).val();
+    search.dates.minbound 	= $('.date_filter input[name=date_min]', adv_box).val();
+    search.dates.maxbound 	= $('.date_filter input[name=date_max]', adv_box).val();
+    search.dates.field 		= $('.date_filter select[name=date_field]', adv_box).val();
 
     if($.trim(search.dates.minbound) || $.trim(search.dates.maxbound))
     {

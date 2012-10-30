@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Controller\SearchEngineRequest;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Attribute\Status;
 use Alchemy\Phrasea\Border\Manager as BorderManager;
-use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -1010,10 +1010,10 @@ class API_V1_adapter extends API_V1_Abstract
         $this->app['phraseanet.SE']->setOptions($options);
         $this->app['phraseanet.SE']->resetCache();
 
-        $search_result = $this->app['phraseanet.SE']->query($params['query'], $params["offset_start"], $perPage);
+        $search_result = $this->app['phraseanet.SE']->query($request->get('query'), $offsetStart, $perPage);
 
         $ret = array(
-            'offset_start'      => $params["offset_start"],
+            'offset_start'      => $offsetStart,
             'per_page'          => $perPage,
             'available_results' => $search_result->available(),
             'total_results'     => $search_result->total(),
