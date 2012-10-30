@@ -71,6 +71,9 @@ class SphinxSearchEngine implements SearchEngineInterface
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getAvailableDateFields()
     {
         if (!$this->dateFields) {
@@ -89,12 +92,18 @@ class SphinxSearchEngine implements SearchEngineInterface
 
         return $this->dateFields;
     }
-    
+
+    /**
+     * {@inheritdoc}
+     */
     public function getDefaultSort()
     {
         return 'relevance';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getAvailableSort()
     {
         return array(
@@ -104,6 +113,9 @@ class SphinxSearchEngine implements SearchEngineInterface
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getAvailableOrder()
     {
         return array(
@@ -111,12 +123,18 @@ class SphinxSearchEngine implements SearchEngineInterface
             'asc'  => _('ascendant'),
         );
     }
-    
+
+    /**
+     * {@inheritdoc}
+     */
     public function hasStemming()
     {
         return true;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function status()
     {
         if (false === $this->sphinx->Status()) {
@@ -135,8 +153,7 @@ class SphinxSearchEngine implements SearchEngineInterface
     }
 
     /**
-     *
-     * @return ConfigurationPanel
+     * {@inheritdoc}
      */
     public function configurationPanel()
     {
@@ -156,11 +173,17 @@ class SphinxSearchEngine implements SearchEngineInterface
         return $this->configuration;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function availableTypes()
     {
         return array(self::GEM_TYPE_RECORD, self::GEM_TYPE_STORY);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function addRecord(\record_adapter $record)
     {
         if (!$this->rt_conn) {
@@ -235,31 +258,9 @@ class SphinxSearchEngine implements SearchEngineInterface
         return $this;
     }
 
-    private function getSqlDateFields(\record_adapter $record)
-    {
-        $configuration = $this->getConfiguration();
-
-        $sql_fields = array();
-
-        foreach ($configuration['date_fields'] as $field_name) {
-
-            try {
-                $value = $record->get_caption()->get_field($field_name)->get_serialized_values();
-            } catch (\Exception $e) {
-                $value = null;
-            }
-
-            if ($value) {
-                $date = \DateTime::createFromFormat('Y/m/d H:i:s', $this->app['unicode']->parseDate($value));
-                $value = $date->format('U');
-            }
-
-            $sql_fields[] = $value ? : '-1';
-        }
-
-        return ($sql_fields ? ', ' : '') . implode(',', $sql_fields);
-    }
-
+    /**
+     * {@inheritdoc}
+     */
     public function removeRecord(\record_adapter $record)
     {
         if (!$this->rt_conn) {
@@ -300,48 +301,75 @@ class SphinxSearchEngine implements SearchEngineInterface
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function updateRecord(\record_adapter $record)
     {
         $this->removeRecord($record);
         $this->addRecord($record);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function addStory(\record_adapter $record)
     {
         return $this->addRecord($record);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function removeStory(\record_adapter $record)
     {
         return $this->removeRecord($record);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function updateStory(\record_adapter $record)
     {
         return $this->updateRecord($record);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function addFeedEntry(\Feed_Entry_Adapter $entry)
     {
         throw new RuntimeException('Feed Entry indexing not supported by Sphinx Search Engine');
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function removeFeedEntry(\Feed_Entry_Adapter $entry)
     {
         throw new RuntimeException('Feed Entry indexing not supported by Sphinx Search Engine');
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function updateFeedEntry(\Feed_Entry_Adapter $entry)
     {
         throw new RuntimeException('Feed Entry indexing not supported by Sphinx Search Engine');
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setOptions(SearchEngineOptions $options)
     {
         $this->options = $options;
         $this->applyOptions($options);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function resetOptions()
     {
         $this->options = new SearchEngineOptions();
@@ -354,6 +382,9 @@ class SphinxSearchEngine implements SearchEngineInterface
         $this->sphinx->ResetFilters();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function query($query, $offset, $perPage)
     {
         assert(is_int($offset));
@@ -423,6 +454,9 @@ class SphinxSearchEngine implements SearchEngineInterface
         return new SearchEngineResult($results, $query, $duration, $offset, $available, $total, $error, $warning, $suggestions, $propositions, $index);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function autocomplete($query)
     {
         $words = explode(" ", $this->cleanupQuery($query));
@@ -430,6 +464,9 @@ class SphinxSearchEngine implements SearchEngineInterface
         return $this->getSuggestions(array_pop($words));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function excerpt($query, $fields, \record_adapter $record)
     {
         $index = '';
@@ -462,6 +499,9 @@ class SphinxSearchEngine implements SearchEngineInterface
         return $this->sphinx->BuildExcerpts($fields_to_send, $index, $query, $opts);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function resetCache()
     {
         return $this;
@@ -606,6 +646,31 @@ class SphinxSearchEngine implements SearchEngineInterface
         $this->sphinx->SetGroupBy('crc_sbas_record', SPH_GROUPBY_ATTR, $sort);
 
         return $this;
+    }
+
+    private function getSqlDateFields(\record_adapter $record)
+    {
+        $configuration = $this->getConfiguration();
+
+        $sql_fields = array();
+
+        foreach ($configuration['date_fields'] as $field_name) {
+
+            try {
+                $value = $record->get_caption()->get_field($field_name)->get_serialized_values();
+            } catch (\Exception $e) {
+                $value = null;
+            }
+
+            if ($value) {
+                $date = \DateTime::createFromFormat('Y/m/d H:i:s', $this->app['unicode']->parseDate($value));
+                $value = $date->format('U');
+            }
+
+            $sql_fields[] = $value ? : '-1';
+        }
+
+        return ($sql_fields ? ', ' : '') . implode(',', $sql_fields);
     }
 
     /**

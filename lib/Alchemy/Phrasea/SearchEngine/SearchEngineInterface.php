@@ -30,16 +30,34 @@ interface SearchEngineInterface
      */
     public function status();
 
+    /**
+     * @return ConfigurationPanelInterface
+     */
     public function configurationPanel();
     
+    /**
+     * @return array an array of field names
+     */
     public function getAvailableDateFields();
     
+    /**
+     * @return array an array containing criteria values as key and criteria names as value
+     */
     public function getAvailableSort();
     
+    /**
+     * @return string The default sort 
+     */
     public function getDefaultSort();
     
+    /**
+     * @return array an array containing sort order values as key and sort order names as value
+     */
     public function getAvailableOrder();
     
+    /**
+     * @return Boolean return true if the search engine supports stemmed search
+     */
     public function hasStemming();
 
     /**
@@ -120,10 +138,30 @@ interface SearchEngineInterface
      */
     public function removeFeedEntry(\Feed_Entry_Adapter $entry);
 
+    /**
+     * Update an entry in the index
+     * 
+     * @param \Feed_Entry_Adapter $entry
+     * @return SearchEngineInterface
+     * @throws RuntimeException
+     */
     public function updateFeedEntry(\Feed_Entry_Adapter $entry);
 
+    /**
+     * Set options to search-engine
+     * 
+     * @param SearchEngineOptions $options
+     * @return SearchEngineInterface
+     * @throws RuntimeException
+     */
     public function setOptions(SearchEngineOptions $options);
 
+    /**
+     * Reset search-engine options
+     * 
+     * @return SearchEngineInterface
+     * @throws RuntimeException
+     */
     public function resetOptions();
 
     /**

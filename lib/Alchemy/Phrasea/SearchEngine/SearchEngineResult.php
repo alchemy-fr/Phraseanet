@@ -33,8 +33,8 @@ class SearchEngineResult
         $this->query = $query;
         $this->duration = (float) $duration;
         $this->offsetStart = (int) $offsetStart;
-        $this->available = (int)$available;
-        $this->total = (int)$total;
+        $this->available = (int) $available;
+        $this->total = (int) $total;
         $this->error = $error;
         $this->warning = $warning;
         $this->suggestions = $suggestions;
@@ -44,62 +44,130 @@ class SearchEngineResult
         return $this;
     }
 
+    /**
+     * An collection of results
+     * 
+     * @return ArrayCollection
+     */
     public function results()
     {
         return $this->results;
     }
 
-
+    /**
+     * The query related to these results
+     * 
+     * @return string
+     */
     public function query()
     {
         return $this->query;
     }
 
+    /**
+     * The duration of the query
+     * 
+     * @return float
+     */
     public function duration()
     {
         return $this->duration;
     }
 
+    /**
+     * Return the number of page depending on the amount displayed on each page
+     * 
+     * @param integer   $amountPerPage
+     * @return integer
+     */
     public function totalPages($amountPerPage)
     {
         return ceil($this->available / $amountPerPage);
     }
 
+    /**
+     * Return the number of the current page depending on the amount displayed 
+     * on each page
+     * 
+     * @param integer   $amountPerPage
+     * @return integer
+     */
     public function currentPage($amountPerPage)
     {
         return ceil($this->offsetStart / $amountPerPage);
     }
 
+    /**
+     * Return the number of results that can be returned by the search engine
+     * 
+     * The difference with 'total' is that this method return the actual number
+     * of results that can be fetched whereas 'total' returns the number of 
+     * results that matches the query (can be greater than available quantity)
+     * 
+     * @return int
+     */
     public function available()
     {
         return $this->available;
     }
 
+    /**
+     * Return the number of items that match the query. Some items may be not
+     * retrievable. To get the number of results that can be retrieved, use
+     * the 'available' method
+     * 
+     * @return int
+     */
     public function total()
     {
         return $this->total;
     }
 
+    /**
+     * Return an error message returned by the search engine
+     * 
+     * @return string
+     */
     public function error()
     {
         return $this->error;
     }
 
+    /**
+     * Return a warning message returned by the search engine
+     * 
+     * @return string
+     */
     public function warning()
     {
         return $this->warning;
     }
 
+    /**
+     * Return a collection of SearchEngineSuggestion
+     * 
+     * @return ArrayCollection
+     */
     public function suggestions()
     {
         return $this->suggestions;
     }
 
+    /**
+     * Return HTML proposals
+     * 
+     * @return string
+     */
     public function proposals()
     {
         return $this->propositions;
     }
 
+    /**
+     * Return the index name where the query happened
+     * 
+     * @return string
+     */
     public function indexes()
     {
         return $this->indexes;

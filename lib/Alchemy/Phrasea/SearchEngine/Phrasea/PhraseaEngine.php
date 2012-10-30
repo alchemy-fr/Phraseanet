@@ -47,6 +47,9 @@ class PhraseaEngine implements SearchEngineInterface
         $this->options = new SearchEngineOptions();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getAvailableDateFields()
     {
         if (!$this->dateFields) {
@@ -66,6 +69,9 @@ class PhraseaEngine implements SearchEngineInterface
         return $this->dateFields;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getConfiguration()
     {
         if (!$this->configuration) {
@@ -74,7 +80,10 @@ class PhraseaEngine implements SearchEngineInterface
 
         return $this->configuration;
     }
-    
+
+    /**
+     * {@inheritdoc}
+     */
     public function getDefaultSort()
     {
         $configuration = $this->getConfiguration();
@@ -82,6 +91,9 @@ class PhraseaEngine implements SearchEngineInterface
         return $configuration['default_sort'];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getAvailableSort()
     {
         $date_fields = $this->getAvailableDateFields();
@@ -95,6 +107,9 @@ class PhraseaEngine implements SearchEngineInterface
         return $sort;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getAvailableOrder()
     {
         return array(
@@ -103,6 +118,9 @@ class PhraseaEngine implements SearchEngineInterface
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function hasStemming()
     {
         return false;
@@ -168,6 +186,9 @@ class PhraseaEngine implements SearchEngineInterface
         return $status;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function configurationPanel()
     {
         if (!$this->configurationPanel) {

@@ -103,15 +103,23 @@ class SearchEngineOptions
     protected $business_fields = array();
 
     /**
+     * Defines locale code to use for query
      *
-     * @param string $locale
+     * @param string $locale An i18n locale code
      */
     public function setLocale($locale)
     {
+        if (!preg_match('/[a-z]{2,3}/', $locale)) {
+            throw new \InvalidArgumentException('Locale must be a valid i18n code');
+        }
+
         $this->i18n = $locale;
+
+        return $this;
     }
 
     /**
+     * Returns the locale value
      *
      * @return string
      */
@@ -134,6 +142,12 @@ class SearchEngineOptions
         return $this;
     }
 
+    /**
+     * Allows business fields query on the given collections
+     * 
+     * @param array $collection An array of collection
+     * @return SearchEngineOptions
+     */
     public function allowBusinessFieldsOn(Array $collection)
     {
         $this->business_fields = $collection;
@@ -141,6 +155,11 @@ class SearchEngineOptions
         return $this;
     }
 
+    /**
+     * Reset business fields settings
+     * 
+     * @return SearchEngineOptions
+     */
     public function disallowBusinessFields()
     {
         $this->business_fields = array();
@@ -148,12 +167,19 @@ class SearchEngineOptions
         return $this;
     }
 
+    /**
+     * Returns an array of collection on which business fields are allowed to 
+     * search on
+     * 
+     * @return array An array of collection
+     */
     public function businessFieldsOn()
     {
         return $this->business_fields;
     }
 
     /**
+     * Returns the sort criteria
      *
      * @return string
      */
@@ -163,6 +189,7 @@ class SearchEngineOptions
     }
 
     /**
+     * Returns the sort order
      *
      * @return string
      */
@@ -172,6 +199,7 @@ class SearchEngineOptions
     }
 
     /**
+     * Tells whether to use stemming or not 
      *
      * @param  boolean              $boolean
      * @return SearchEngineOptions
@@ -184,6 +212,7 @@ class SearchEngineOptions
     }
 
     /**
+     * Return wheter the use of stemming is enabled or not
      *
      * @return boolean
      */
@@ -193,6 +222,7 @@ class SearchEngineOptions
     }
 
     /**
+     * Set document type to search for
      *
      * @param  int                  $search_type
      * @return SearchEngineOptions
@@ -213,6 +243,7 @@ class SearchEngineOptions
     }
 
     /**
+     * Returns the type of documents type to search for
      *
      * @return int
      */
@@ -221,6 +252,12 @@ class SearchEngineOptions
         return $this->search_type;
     }
 
+    /**
+     * Set the collections where to search for
+     * 
+     * @param array $collections An array of collection
+     * @return SearchEngineOptions
+     */
     public function onCollections(Array $collections)
     {
         $this->collections = $collections;
@@ -229,14 +266,21 @@ class SearchEngineOptions
     }
 
     /**
+     * Returns the collections on which the search occurs
      *
-     * @return array
+     * @return array An array of collection
      */
     public function collections()
     {
         return $this->collections;
     }
 
+    /**
+     * Returns an array containing all the databoxes where the search will 
+     * happen
+     * 
+     * @return array
+     */
     public function databoxes()
     {
         $databoxes = array();
@@ -429,13 +473,13 @@ class SearchEngineOptions
             }
             if (in_array($key, array('date_fields', 'fields'))) {
                 $value = array_map(function(\databox_field $field) {
-                        return $field->get_databox()->get_sbas_id() . '_' . $field->get_id();
-                    }, $value);
+                            return $field->get_databox()->get_sbas_id() . '_' . $field->get_id();
+                        }, $value);
             }
             if (in_array($key, array('collections', 'business_fields'))) {
                 $value = array_map(function($collection) {
-                        return $collection->get_base_id();
-                    }, $value);
+                            return $collection->get_base_id();
+                        }, $value);
             }
 
             $ret[$key] = $value;
@@ -480,16 +524,16 @@ class SearchEngineOptions
                     break;
                 case in_array($key, array('date_fields', 'fields')):
                     $value = array_map(function($serialized) use ($app) {
-                        $data = explode('_', $serialized);
+                                $data = explode('_', $serialized);
 
-                        return \databox_field::get_instance($app, $app['phraseanet.appbox']->get_databox($data[0]), $data[1]);
-                            return \collection::get_from_base_id($app, $base_id);
-                        }, $value);
+                                return \databox_field::get_instance($app, $app['phraseanet.appbox']->get_databox($data[0]), $data[1]);
+                                return \collection::get_from_base_id($app, $base_id);
+                            }, $value);
                     break;
                 case in_array($key, array('collections', 'business_fields')):
                     $value = array_map(function($base_id) use ($app) {
-                            return \collection::get_from_base_id($app, $base_id);
-                        }, $value);
+                                return \collection::get_from_base_id($app, $base_id);
+                            }, $value);
                     break;
             }
 
@@ -512,7 +556,9 @@ class SearchEngineOptions
                     $options->setMaxDate($value);
                     break;
                 case 'i18n':
-                    $options->setLocale($value);
+                    if ($value) {
+                        $options->setLocale($value);
+                    }
                     break;
                 case 'stemming':
                     $options->useStemming($value);
@@ -539,7 +585,6 @@ class SearchEngineOptions
                     throw new \RuntimeException(sprintf('Unable to handle key `%s`', $key));
                     break;
             }
-
         }
 
         if ($sort_by) {
@@ -552,4 +597,5 @@ class SearchEngineOptions
 
         return $options;
     }
+
 }
