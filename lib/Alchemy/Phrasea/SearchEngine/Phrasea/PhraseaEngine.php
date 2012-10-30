@@ -46,7 +46,7 @@ class PhraseaEngine implements SearchEngineInterface
         $this->app = $app;
         $this->options = new SearchEngineOptions();
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -95,7 +95,7 @@ class PhraseaEngine implements SearchEngineInterface
     public function getDefaultSort()
     {
         $configuration = $this->getConfiguration();
-        
+
         return $configuration['default_sort'];
     }
 
@@ -111,7 +111,7 @@ class PhraseaEngine implements SearchEngineInterface
         foreach ($date_fields as $field) {
             $sort[$field] = $field;
         }
-        
+
         return $sort;
     }
 
@@ -136,9 +136,9 @@ class PhraseaEngine implements SearchEngineInterface
 
     /**
      * Initializes Phrasea Engine.
-     * 
+     *
      * It opens the connection and creates the session
-     * 
+     *
      * @return PhraseaEngine
      * @throws RuntimeException
      */
@@ -177,7 +177,7 @@ class PhraseaEngine implements SearchEngineInterface
 
     /**
      * Checks if the Phraseanet session is still valid. Creates a new one if required.
-     * 
+     *
      * @return PhraseaEngine
      * @throws \RuntimeException
      * @throws \Exception_InternalServerError
@@ -194,7 +194,7 @@ class PhraseaEngine implements SearchEngineInterface
             }
             $this->app['session']->set('phrasea_session_id', $ses_id);
         }
-        
+
         return $this;
     }
 
@@ -330,7 +330,7 @@ class PhraseaEngine implements SearchEngineInterface
     public function setOptions(SearchEngineOptions $options)
     {
         $this->options = $options;
-        
+
         return $this;
     }
 
@@ -340,7 +340,7 @@ class PhraseaEngine implements SearchEngineInterface
     public function resetOptions()
     {
         $this->options = new SearchEngineOptions();
-        
+
         return $this;
     }
 
@@ -421,7 +421,7 @@ class PhraseaEngine implements SearchEngineInterface
                                 $resultNumber
                 ));
             } catch (Exception $e) {
-                
+
             }
             $resultNumber++;
         }
@@ -430,10 +430,10 @@ class PhraseaEngine implements SearchEngineInterface
 
         return new SearchEngineResult($records, $query, $row['duration'], $offset, $row['total'], $row['total'], $error, '', new ArrayCollection(), $propositions, '');
     }
-    
+
     /**
      * Returns HTML Phrasea proposals
-     * 
+     *
      * @return string|null
      */
     private function getPropositions()
@@ -448,10 +448,10 @@ class PhraseaEngine implements SearchEngineInterface
 
         return null;
     }
-    
+
     /**
      * Format proposals from QueryParser to HTML
-     * 
+     *
      * @param array $proposals
      * @return string
      */
@@ -479,7 +479,7 @@ class PhraseaEngine implements SearchEngineInterface
 
     /**
      * Factory
-     * 
+     *
      * @param Application $app
      * @return PhraseaEngine
      */
@@ -490,7 +490,7 @@ class PhraseaEngine implements SearchEngineInterface
 
     /**
      * Executes the Phrasea query
-     * 
+     *
      * @param string $query
      * @return PhraseaEngine
      */
@@ -622,7 +622,7 @@ class PhraseaEngine implements SearchEngineInterface
 
     /**
      * Prepares the query
-     * 
+     *
      * @param string $query
      * @return PhraseaEngine
      */
@@ -722,7 +722,7 @@ class PhraseaEngine implements SearchEngineInterface
 
     /**
      * Parses the query for search engine
-     * 
+     *
      * @param integer $sbas
      * @param string $query
      * @return PhraseaEngine
@@ -758,7 +758,7 @@ class PhraseaEngine implements SearchEngineInterface
             phrasea_close_session($this->app['session']->get('phrasea_session_id'));
             $this->app['session']->remove('phrasea_session_id');
         }
-        
+
         return $this;
     }
 

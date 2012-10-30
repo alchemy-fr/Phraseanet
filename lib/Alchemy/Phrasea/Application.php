@@ -342,7 +342,7 @@ class Application extends SilexApplication
                 $twig->addExtension(new \Twig_Extension_Core());
                 $twig->addExtension(new \Twig_Extension_Optimizer());
                 $twig->addExtension(new \Twig_Extension_Escaper());
-                $twig->addExtension(new \Twig_Extensions_Extension_Debug());
+                
                 // add filter trans
                 $twig->addExtension(new \Twig_Extensions_Extension_I18n());
                 // add filter localizeddate
@@ -357,6 +357,7 @@ class Application extends SilexApplication
                 $twig->addFilter('stripdoublequotes', new \Twig_Filter_Function('stripdoublequotes'));
                 $twig->addFilter('get_collection_logo', new \Twig_Filter_Function('collection::getLogo'));
                 $twig->addFilter('floor', new \Twig_Filter_Function('floor'));
+                $twig->addFilter('min', new \Twig_Filter_Function('min'));
                 $twig->addFilter('bas_names', new \Twig_Filter_Function('phrasea::bas_names'));
                 $twig->addFilter('sbas_names', new \Twig_Filter_Function('phrasea::sbas_names'));
                 $twig->addFilter('sbas_from_bas', new \Twig_Filter_Function('phrasea::sbasFromBas'));

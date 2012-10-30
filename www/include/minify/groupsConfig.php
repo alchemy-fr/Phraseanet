@@ -18,6 +18,7 @@ $groups = array(
         , '//include/jslibs/json2.js'
         , '//include/jslibs/audio-player/audio-player-noswfobject.js'
         , '//include/jslibs/jquery.form.2.49.js'
+        , '//prod/jquery.Dialog.js'
         , '//client/jquery.p4client.1.0.js'
         , '//include/jquery.tooltip.js'
         , '//include/jquery.p4.preview.js'

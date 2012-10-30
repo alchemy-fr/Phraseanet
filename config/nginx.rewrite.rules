@@ -44,6 +44,9 @@ rewrite ^/user/notifications/.*$            /index.php last;
 rewrite ^/download/.*$                      /index.php last;
 rewrite ^/session/.*$                       /index.php last;
 
+rewrite ^/client/.*$                        /index.php last;
+rewrite ^/client/baskets.*$                 /index.php last;
+
 rewrite ^/api/v1/.*$              /api/v1/index.php last;
 rewrite ^/api/oauthv2/.*$         /api/oauthv2/index.php last;
 rewrite ^/api/.*$                 /api/index.php last;
