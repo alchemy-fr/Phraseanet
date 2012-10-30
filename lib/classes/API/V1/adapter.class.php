@@ -324,6 +324,12 @@ class API_V1_adapter extends API_V1_Abstract
      */
     protected function get_gv_info(Application $app)
     {
+        try {
+            $SEStatus = $app['phraseanet.SE']->status();
+        } catch (\RuntimeException $e) {
+            $SEStatus = array('error' => $e->getMessage());
+        }
+        
         return array(
             'global_values' => array(
                 'serverName'  => $app['phraseanet.registry']->get('GV_ServerName'),
@@ -405,20 +411,13 @@ class API_V1_adapter extends API_V1_Abstract
                     'configuration' => array(
                         'defaultQuery'     => $app['phraseanet.registry']->get('GV_defaultQuery'),
                         'defaultQueryType' => $app['phraseanet.registry']->get('GV_defaultQuery_type'),
+                        'minChar'          => $app['phraseanet.registry']->get('GV_min_letters_truncation'),
+                        'sort'             => $app['phraseanet.registry']->get('GV_phrasea_sort'),
                     ),
-                    /**
-                     * @todo neutron update this
-                     */
-                    'sphinx'           => array(
-                        'active'       => $app['phraseanet.registry']->get('GV_sphinx'),
-                        'host'         => $app['phraseanet.registry']->get('GV_sphinx_host'),
-                        'port'         => $app['phraseanet.registry']->get('GV_sphinx_port'),
-                        'realtimeHost' => $app['phraseanet.registry']->get('GV_sphinx_rt_host'),
-                        'realtimePort' => $app['phraseanet.registry']->get('GV_sphinx_rt_port'),
-                    ),
-                    'phrasea'      => array(
-                        'minChar' => $app['phraseanet.registry']->get('GV_min_letters_truncation'),
-                        'sort'    => $app['phraseanet.registry']->get('GV_phrasea_sort'),
+                    'engine'            => array(
+                        'type'          => $app['phraseanet.SE']->getName(),
+                        'status'        => $SEStatus,
+                        'configuration' => $app['phraseanet.SE']->configurationPanel()->getConfiguration(),
                     ),
                 ),
                 'binary'  => array(
@@ -499,7 +498,7 @@ class API_V1_adapter extends API_V1_Abstract
         $result = new API_V1_result($app['request'], $this);
 
         $ret = array_merge(
-            $this->get_config_info($app), $this->get_cache_info($app), $this->get_gv_info($app)
+                $this->get_config_info($app), $this->get_cache_info($app), $this->get_gv_info($app)
         );
 
         $result->set_datas($ret);
@@ -536,11 +535,11 @@ class API_V1_adapter extends API_V1_Abstract
         $result = new API_V1_result($request, $this);
 
         $result->set_datas(
-            array(
-                "collections" => $this->list_databox_collections(
-                    $this->app['phraseanet.appbox']->get_databox($databox_id)
+                array(
+                    "collections" => $this->list_databox_collections(
+                            $this->app['phraseanet.appbox']->get_databox($databox_id)
+                    )
                 )
-            )
         );
 
         return $result;
@@ -559,12 +558,12 @@ class API_V1_adapter extends API_V1_Abstract
         $result = new API_V1_result($request, $this);
 
         $result->set_datas(
-            array(
-                "status" =>
-                $this->list_databox_status(
-                    $this->app['phraseanet.appbox']->get_databox($databox_id)->get_statusbits()
+                array(
+                    "status" =>
+                    $this->list_databox_status(
+                            $this->app['phraseanet.appbox']->get_databox($databox_id)->get_statusbits()
+                    )
                 )
-            )
         );
 
         return $result;
@@ -583,13 +582,13 @@ class API_V1_adapter extends API_V1_Abstract
         $result = new API_V1_result($request, $this);
 
         $result->set_datas(
-            array(
-                "document_metadatas" =>
-                $this->list_databox_metadatas_fields(
-                    $this->app['phraseanet.appbox']->get_databox($databox_id)
-                        ->get_meta_structure()
+                array(
+                    "document_metadatas" =>
+                    $this->list_databox_metadatas_fields(
+                            $this->app['phraseanet.appbox']->get_databox($databox_id)
+                                    ->get_meta_structure()
+                    )
                 )
-            )
         );
 
         return $result;
@@ -608,10 +607,10 @@ class API_V1_adapter extends API_V1_Abstract
         $result = new API_V1_result($request, $this);
 
         $result->set_datas(
-            array(
-                "termsOfUse" =>
-                $this->list_databox_terms($this->app['phraseanet.appbox']->get_databox($databox_id))
-            )
+                array(
+                    "termsOfUse" =>
+                    $this->list_databox_terms($this->app['phraseanet.appbox']->get_databox($databox_id))
+                )
         );
 
         return $result;
@@ -683,16 +682,16 @@ class API_V1_adapter extends API_V1_Abstract
         $reasons = $output = null;
 
         $callback = function($element, $visa, $code) use (&$reasons, &$output) {
-                if (!$visa->isValid()) {
-                    $reasons = array();
+                    if (!$visa->isValid()) {
+                        $reasons = array();
 
-                    foreach ($visa->getResponses() as $response) {
-                        $reasons[] = $response->getMessage();
+                        foreach ($visa->getResponses() as $response) {
+                            $reasons[] = $response->getMessage();
+                        }
                     }
-                }
 
-                $output = $element;
-            };
+                    $output = $element;
+                };
 
         switch ($request->get('forceBehavior')) {
             case '0' :
@@ -745,7 +744,7 @@ class API_V1_adapter extends API_V1_Abstract
             $lazaretRepository = $app['EM']->getRepository('Entities\LazaretFile');
 
             $lazaretFiles = $lazaretRepository->findPerPage(
-                $baseIds, $offset_start, $per_page
+                    $baseIds, $offset_start, $per_page
             );
         }
 
@@ -1023,7 +1022,7 @@ class API_V1_adapter extends API_V1_Abstract
             'search_indexes'    => $search_result->indexes(),
             'suggestions'       => $search_result->suggestions()->toArray(),
             'results'           => array(),
-            'query'             => $search_result->query(),
+            'query' => $search_result->query(),
         );
 
         return array($ret, $search_result);
@@ -1081,9 +1080,9 @@ class API_V1_adapter extends API_V1_Abstract
         $record = $this->app['phraseanet.appbox']->get_databox($databox_id)->get_record($record_id);
 
         $result->set_datas(
-            array(
-                "record_metadatas" => $this->list_record_caption($record->get_caption())
-            )
+                array(
+                    "record_metadatas" => $this->list_record_caption($record->get_caption())
+                )
         );
 
         return $result;
@@ -1103,17 +1102,17 @@ class API_V1_adapter extends API_V1_Abstract
         $result = new API_V1_result($request, $this);
 
         $record = $this->app['phraseanet.appbox']
-            ->get_databox($databox_id)
-            ->get_record($record_id);
+                ->get_databox($databox_id)
+                ->get_record($record_id);
 
         $result->set_datas(
-            array(
-                "status" =>
-                $this->list_record_status(
-                    $this->app['phraseanet.appbox']->get_databox($databox_id)
-                    , $record->get_status()
+                array(
+                    "status" =>
+                    $this->list_record_status(
+                            $this->app['phraseanet.appbox']->get_databox($databox_id)
+                            , $record->get_status()
+                    )
                 )
-            )
         );
 
         return $result;
@@ -1245,7 +1244,7 @@ class API_V1_adapter extends API_V1_Abstract
             $result->set_datas(array(
                 "status" =>
                 $this->list_record_status($databox, $record->get_status())
-                )
+                    )
             );
         } catch (Exception $e) {
             $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('An error occured'));
@@ -1432,10 +1431,10 @@ class API_V1_adapter extends API_V1_Abstract
         $Basket = $repository->findUserBasket($this->app, $basket_id, $this->app['phraseanet.user'], false);
 
         $result->set_datas(
-            array(
-                "basket"          => $this->list_basket($Basket),
-                "basket_elements" => $this->list_basket_content($Basket)
-            )
+                array(
+                    "basket"          => $this->list_basket($Basket),
+                    "basket_elements" => $this->list_basket_content($Basket)
+                )
         );
 
         return $result;
@@ -1598,7 +1597,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function remove_publications(Request $request, $publication_id)
     {
-
+        
     }
 
     /**
@@ -1770,7 +1769,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function search_users(Request $request)
     {
-
+        
     }
 
     /**
@@ -1780,7 +1779,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function get_user_acces(Request $request, $usr_id)
     {
-
+        
     }
 
     /**
@@ -1789,7 +1788,7 @@ class API_V1_adapter extends API_V1_Abstract
      */
     public function add_user(Request $request)
     {
-
+        
     }
 
     /**
@@ -1937,13 +1936,13 @@ class API_V1_adapter extends API_V1_Abstract
             }
 
             $ret = array_merge(
-                array(
+                    array(
                 'validation_users'     => $users,
                 'expires_on'           => $expires_on_atom,
                 'validation_infos'     => $basket->getValidation()->getValidationString($this->app, $this->app['phraseanet.user']),
                 'validation_confirmed' => $basket->getValidation()->getParticipant($this->app['phraseanet.user'], $this->app)->getIsConfirmed(),
                 'validation_initiator' => $basket->getValidation()->isInitiator($this->app['phraseanet.user']),
-                ), $ret
+                    ), $ret
             );
         }
 
@@ -2191,4 +2190,5 @@ class API_V1_adapter extends API_V1_Abstract
 
         return $ret;
     }
+
 }

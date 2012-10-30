@@ -46,6 +46,14 @@ class PhraseaEngine implements SearchEngineInterface
         $this->app = $app;
         $this->options = new SearchEngineOptions();
     }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'Phrasea';
+    }
 
     /**
      * {@inheritdoc}

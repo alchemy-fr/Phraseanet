@@ -70,6 +70,14 @@ class SphinxSearchEngine implements SearchEngineInterface
 
         return $this;
     }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'SphinxSearch';
+    }
 
     /**
      * {@inheritdoc}

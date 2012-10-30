@@ -23,6 +23,13 @@ interface SearchEngineInterface
     const GEM_TYPE_ENTRY = 'entry';
 
     /**
+     * Returns the name of the search engine
+     *
+     * @return string The name of the search-engine
+     */
+    public function getName();
+
+    /**
      * Check the status of the search engine
      *
      * @return array An array of key/value parameters
