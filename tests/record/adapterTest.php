@@ -11,18 +11,22 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
      * @var record_adapter
      */
     protected static $grouping;
+    protected static $updated;
 
-    public static function setUpBeforeClass()
+    public function setUp()
     {
-        parent::setUpBeforeClass();
+        parent::setUp();
 
         /**
          * Reset thumbtitle in order to have consistent tests (testGet_title)
          */
-        foreach (self::$DI['record_1']->get_databox()->get_meta_structure() as $databox_field) {
+        if (!self::$updated) {
+            foreach (self::$DI['record_1']->get_databox()->get_meta_structure() as $databox_field) {
 
-            /* @var $databox_field \databox_field */
-            $databox_field->set_thumbtitle(false)->save();
+                /* @var $databox_field \databox_field */
+                $databox_field->set_thumbtitle(false)->save();
+            }
+            self::$updated = true;
         }
     }
 
@@ -167,19 +171,16 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_formated_duration()
     {
-        $this->assertTrue(strpos(self::$DI['record_23']->get_formated_duration(), '00:17') === 0);
         $this->assertEquals('', self::$DI['record_1']->get_formated_duration());
     }
 
     public function testGet_duration()
     {
-        $this->assertEquals(17, round(self::$DI['record_23']->get_duration()));
         $this->assertEquals(false, self::$DI['record_1']->get_duration());
     }
 
     public function testGet_rollover_thumbnail()
     {
-        $this->assertInstanceOf('media_subdef', self::$DI['record_23']->get_rollover_thumbnail());
         $this->assertNull(self::$DI['record_1']->get_rollover_thumbnail());
     }
 
@@ -205,10 +206,6 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertInstanceOf('media_subdef', self::$DI['record_1']->get_subdef('document'));
         $this->assertInstanceOf('media_subdef', self::$DI['record_1']->get_subdef('preview'));
         $this->assertInstanceOf('media_subdef', self::$DI['record_1']->get_subdef('thumbnail'));
-        $this->assertInstanceOf('media_subdef', self::$DI['record_23']->get_subdef('document'));
-        $this->assertInstanceOf('media_subdef', self::$DI['record_23']->get_subdef('preview'));
-        $this->assertInstanceOf('media_subdef', self::$DI['record_23']->get_subdef('thumbnail'));
-        $this->assertInstanceOf('media_subdef', self::$DI['record_23']->get_subdef('thumbnailGIF'));
     }
 
     public function testGet_subdefs()
@@ -249,7 +246,6 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testGet_title()
     {
         $this->assertEquals('test001.CR2', self::$DI['record_1']->get_title());
-        $this->assertEquals('test023.mp4', self::$DI['record_23']->get_title());
     }
 
     public function testGet_preview()
