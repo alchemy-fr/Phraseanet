@@ -470,7 +470,7 @@ class caption_Field_Value implements cache_cacheableInterface
                         break;
                     }
 
-                    $synonyms = $XPATH_thesaurus->query("sy[@lng='" . $session->usr_i18 . "']", $node->parentNode);
+                    $synonyms = $XPATH_thesaurus->query("sy[@lng='" . $session->get_I18n() . "']", $node->parentNode);
                     foreach ($synonyms as $synonym) {
                         $k = $synonym->getAttribute("k");
                         if ($synonym->getAttribute("w") != $term_noacc || $k != $context_noacc) {
