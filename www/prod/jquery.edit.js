@@ -417,7 +417,7 @@ function updateCurrentMval(meta_struct_id, HighlightValue, vocabularyId)
       + '<table><tr><td>'
       + extra
       + '<span class="value" vocabId="' + (value.getVocabularyId() ? value.getVocabularyId() : '') + '">'
-      + word
+      + $('<div/>').text(word).html()
       + "</span></td><td class='options'>"
       + '<a href="#" class="add_all"><img src="/skins/icons/plus11.png"/></a> '
       + '<a href="#" class="remove_all"><img src="/skins/icons/minus11.png"/></a>'
@@ -1288,7 +1288,7 @@ function edit_dblclickThesaurus(event)	// ondblclick dans le thesaurus
       case "TH_W":
         if(p4.edit.curField >= 0)
         {
-          var w = e.innerHTML;
+          var w = $(e).text();
           if(p4.edit.T_fields[p4.edit.curField].multi)
           {
             $("#EditTextMultiValued", p4.edit.editBox).val(w);
