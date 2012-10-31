@@ -267,16 +267,21 @@ class caption_record implements caption_interface, cache_cacheableInterface
             $ret = $searchEngine->build_excerpt($highlight, $fields, $this->record);
 
             if ($ret) {
-                $n = 0;
+                $n = -1;
 
                 foreach ($fields as $key => $value) {
-                    if ( ! isset($fields[$key]))
+                    $n++;
+                    
+                    if (!isset($fields[$key])) {
                         continue;
+                    }
+
+                    if (strpos($fields[$key]['value'], '<a class="bounce" ') !== false) {
+                        continue;
+                    }
 
                     //if(strpos($fields[$key]['value'], '<a ') === false)
                     $fields[$key]['value'] = $ret[$n];
-
-                    $n ++;
                 }
             }
         }
