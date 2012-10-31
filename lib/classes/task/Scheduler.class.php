@@ -57,7 +57,7 @@ class task_Scheduler
     {
         $status = null;
         $pid = pcntl_wait($status);
-        $exitstatus = pcntl_wexitstatus ( $status );
+        $exitstatus = pcntl_wexitstatus($status);
         $this->log(sprintf("sigchild %s received from pid=%s, status=%s, exitstatus=%s\n", $signal, $pid, var_export($status, true), $exitstatus));
     }
 
