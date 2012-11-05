@@ -323,7 +323,7 @@ class Login implements ControllerProviderInterface
             $token = \random::getUrlToken($app, \random::TYPE_PASSWORD, $user->get_id(), new \DateTime('+1 day'));
 
             if ($token) {
-                $url = $app['url_generator']->generate('login_forgot_password', array('toen' => $token), true);
+                $url = $app['url_generator']->generate('login_forgot_password', array('token' => $token), true);
 
                 if (\mail::forgot_passord($app, $mail, $user->get_login(), $url)) {
                     return $app->redirect($app['url_generator']->generate('login_forgot_password', array('sent' => 'ok')));
