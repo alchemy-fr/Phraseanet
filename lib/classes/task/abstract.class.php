@@ -227,7 +227,7 @@ abstract class task_abstract
      */
     public function setSettings($settings)
     {
-        if (@simplexml_load_string($settings) === FALSE) {
+        if (false === $sxe = simplexml_load_string($settings)) {
             throw new Exception_InvalidArgument('Bad XML');
         }
 
@@ -240,7 +240,7 @@ abstract class task_abstract
 
         $this->settings = $settings;
 
-        $this->loadSettings(simplexml_load_string($settings));
+        $this->loadSettings($sxe);
 
         return $this;
     }
@@ -360,8 +360,8 @@ abstract class task_abstract
         $this->completed_percentage = (int) $row['completed'];
         $this->settings = $row['settings'];
 
-        $sx = @simplexml_load_string($this->settings);
-        if ($sx) {
+        $sx = simplexml_load_string($this->settings);
+        if ($sx !== false) {
             $this->loadSettings($sx);
         }
     }

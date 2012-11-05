@@ -108,7 +108,7 @@ class task_period_subdef extends task_databoxAbstract
      */
     public function xml2graphic($xml, $form)
     {
-        if (($sxml = simplexml_load_string($xml)) != FALSE) {
+        if (false !== $sxml = simplexml_load_string($xml)) {
             if ((int) ($sxml->period) < 10) {
                 $sxml->period = 10;
             } elseif ((int) ($sxml->period) > 300) {

@@ -631,7 +631,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
         $xml = simplexml_load_string($string);
         libxml_clear_errors();
 
-        if ( ! $xml) {
+        if (false === $xml) {
             return false;
         }
 
@@ -723,11 +723,10 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
         $cat = array();
         $url_cat = sprintf('%s?hl=%s', self::CATEGORY_URL, $this->get_locale());
 
-        $cxml = @simplexml_load_file($url_cat);
-
-        if ( ! $cxml)
+        if (false === $cxml = simplexml_load_file($url_cat)) {
             throw new Bridge_Exception_ApiConnectorRequestFailed('Failed to retrive youtube categories');
-
+        }
+        
         $cxml->registerXPathNamespace('atom', 'http://www.w3.org/2005/Atom');
         $categories = $cxml->xpath('//atom:category');
 
