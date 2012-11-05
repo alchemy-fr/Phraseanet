@@ -669,14 +669,16 @@ function CXdblClick(e)
   {
     case "SPAN":		// term
       var li = $(x).closest('li');
-      var tid = li.attr('id');
-      if(tid.substr(0,5)=="CX_P.")
+      var field = li.closest('[field]').attr('field');
+      if(typeof(field) != "undefined")
       {
-        var sbid = tid.split(".")[1];
-        var term = $(x).text();
-        var field = li.closest('[field]').attr('field');
-
-        doThesSearch('C', sbid, term, field);
+        var tid = li.attr('id');
+        if(tid.substr(0,5)=="CX_P.")
+        {
+          var sbid = tid.split(".")[1];
+          var term = $(x).text();
+          doThesSearch('C', sbid, term, field);
+        }
       }
       break;
     default:
