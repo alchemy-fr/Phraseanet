@@ -47,7 +47,7 @@ if ($parm["ssttid"] != "") {
     /* @var $repository \Repositories\BasketRepository */
 
     $basket = $repository->findUserBasket($Request->get('ssttid'), $Core->getAuthenticatedUser(), false);
-    $exportname = str_replace(' ', '_', $basket->getName()) . "_" . date("Y-n-d");
+    $exportname = str_replace(array(' ', '\\', '/'), '_', $basket->getName()) . "_" . date("Y-n-d");
 }
 
 $list['export_name'] = $exportname . '.zip';

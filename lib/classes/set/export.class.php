@@ -82,7 +82,7 @@ class set_export extends set_abstract
                     new record_exportElement(
                         $basket_element->getRecord()->get_sbas_id(),
                         $record_id,
-                        $Basket->getName() . '/',
+                        $Basket->getName(),
                         $remain_hd[$base_id]
                 );
 
@@ -120,7 +120,7 @@ class set_export extends set_abstract
                             new record_exportElement(
                                 $child_basrec->get_sbas_id(),
                                 $record_id,
-                                $record->get_title(null, null, true) . '_' . $n . '/',
+                                $record->get_title(null, null, true) . '_' . $n,
                                 $remain_hd[$base_id]
                         );
 
@@ -555,8 +555,7 @@ class set_export extends set_abstract
                             $infos = pathinfo(p4string::addEndSlash($tmp_pathfile["path"]) .
                                 $tmp_pathfile["file"]);
 
-                            $files[$id]["subdefs"][$name]["ajout"] =
-                                $properties['class'] == 'document' ? '' : "_" . $name;
+                            $files[$id]["subdefs"][$name]["ajout"] = $name == 'document' ? '' : "_" . $name;
                             $files[$id]["subdefs"][$name]["path"] = $tmp_pathfile["path"];
                             $files[$id]["subdefs"][$name]["file"] = $tmp_pathfile["file"];
                             $files[$id]["subdefs"][$name]["label"] = $properties['label'];
