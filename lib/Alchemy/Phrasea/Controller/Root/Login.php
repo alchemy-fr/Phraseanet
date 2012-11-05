@@ -311,24 +311,24 @@ class Login implements ControllerProviderInterface
     {
         if (null !== $mail = $request->request->get('mail')) {
             if (!\PHPMailer::ValidateAddress($mail)) {
-                return $app->redirect('/login/forgot-password/?error=invalidmail');
+                return $app->redirect($app['url_generator']->generate('login_forgot_password', array('error' => 'invalidmail')));
             }
 
             try {
                 $user = \User_Adapter::getInstance(\User_Adapter::get_usr_id_from_email($app, $mail), $app);
             } catch (\Exception $e) {
-                return $app->redirect('/login/forgot-password/?error=noaccount');
+                return $app->redirect($app['url_generator']->generate('login_forgot_password', array('error' => 'noaccount')));
             }
 
             $token = \random::getUrlToken($app, \random::TYPE_PASSWORD, $user->get_id(), new \DateTime('+1 day'));
 
             if ($token) {
-                $url = sprintf('%slogin/forgot-password/?token=%s', $app['phraseanet.registry']->get('GV_ServerName'), $token);
+                $url = $app['url_generator']->generate('login_forgot_password', array('token' => $token), true);
 
                 if (\mail::forgot_passord($app, $mail, $user->get_login(), $url)) {
-                    return $app->redirect('/login/forgot-password/?sent=ok');
+                    return $app->redirect($app['url_generator']->generate('login_forgot_password', array('sent' => 'ok')));
                 } else {
-                    return $app->redirect('/login/forgot-password/?error=mailserver');
+                    return $app->redirect($app['url_generator']->generate('login_forgot_password', array('error' => 'mailserver')));
                 }
             }
         }
@@ -339,13 +339,13 @@ class Login implements ControllerProviderInterface
 
             if ($password !== $passwordConfirm) {
 
-                return $app->redirect('/login/forgot-password/?pass-error=pass-match');
+                return $app->redirect($app['url_generator']->generate('login_forgot_password', array('pass-error' => 'pass-match')));
             } elseif (strlen(trim($password)) < 8) {
 
-                return $app->redirect('/login/forgot-password/?pass-error=pass-short');
+                return $app->redirect($app['url_generator']->generate('login_forgot_password', array('pass-error' => 'pass-short')));
             } elseif (trim($password) !== str_replace(array("\r\n", "\n", "\r", "\t", " "), "_", $password)) {
 
-                return $app->redirect('/login/forgot-password/?pass-error=pass-invalid');
+                return $app->redirect($app['url_generator']->generate('login_forgot_password', array('pass-error' => 'pass-invalid')));
             }
 
             try {
@@ -358,7 +358,7 @@ class Login implements ControllerProviderInterface
 
                 return $app->redirect('/login/?notice=password-update-ok');
             } catch (\Exception_NotFound $e) {
-                return $app->redirect('/login/forgot-password/?error=token');
+                return $app->redirect($app['url_generator']->generate('login_forgot_password', array('error' => 'token')));
             }
         }
     }
@@ -506,11 +506,11 @@ class Login implements ControllerProviderInterface
         $arrayVerif = $this->getRegisterFieldConfiguration($app);
 
         return $app['twig']->render('login/register.html.twig', array(
-            'inscriptions'   => giveMeBases($app),
-            'parms'          => $request->query->all(),
-            'needed'         => $needed,
-            'arrayVerif'     => $arrayVerif,
-            'demandes'       => $request->query->get('demand', array()),
+            'inscriptions' => giveMeBases($app),
+            'parms'        => $request->query->all(),
+            'needed'       => $needed,
+            'arrayVerif'   => $arrayVerif,
+            'demandes'     => $request->query->get('demand', array()),
             'lng'            => $app['locale'],
             'captcha_system' => $captchaSys,
         ));
@@ -533,10 +533,7 @@ class Login implements ControllerProviderInterface
             && $request->request->get("recaptcha_challenge_field")
             && $request->request->get("recaptcha_response_field")) {
             $checkCaptcha = recaptcha_check_answer(
-                $app['phraseanet.registry']->get('GV_captcha_private_key'),
-                $request->server->get('REMOTE_ADDR'),
-                $request->request->get["recaptcha_challenge_field"],
-                $request->request->get["recaptcha_response_field"]
+                $app['phraseanet.registry']->get('GV_captcha_private_key'), $request->server->get('REMOTE_ADDR'), $request->request->get["recaptcha_challenge_field"], $request->request->get["recaptcha_response_field"]
             );
             $captchaOK = $checkCaptcha->is_valid;
         }
@@ -1033,9 +1030,11 @@ class Login implements ControllerProviderInterface
             } catch (\Exception_Session_BadSalinity $e) {
                 $date = new \DateTime('5 minutes');
                 $usr_id = \User_Adapter::get_usr_id_from_login($app, $request->request->get('login'));
-                $url = '/account/forgot-password/?token=' . \random::getUrlToken($app, \random::TYPE_PASSWORD, $usr_id, $date) . '&salt=1';
 
-                return $app->redirect($url);
+                return $app->redirect($app['url_generator']->generate('login_forgot_password', array(
+                    'salt'  => 1,
+                    'token' => \random::getUrlToken($app, \random::TYPE_PASSWORD, $usr_id, $date)
+                )));
             } catch (\Exception $e) {
                 return $app->redirect("/login/?redirect=" . $request->request->get('redirect') . "&error=unexpected");
             }

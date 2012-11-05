@@ -146,7 +146,7 @@ class Manage extends Helper
     {
         $email = $this->request->get('value');
 
-        if ( ! \mail::validateEmail($email)) {
+        if (!\mail::validateEmail($email)) {
             throw new \Exception_InvalidArgument(_('Invalid mail address'));
         }
 
@@ -157,9 +157,9 @@ class Manage extends Helper
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         $count = count($row);
 
-        if ( ! is_array($row) || $count == 0) {
-            $sendCredentials = ! ! $this->request->get('send_credentials', false);
-            $validateMail = ! ! $this->request->get('validate_mail', false);
+        if (!is_array($row) || $count == 0) {
+            $sendCredentials = !!$this->request->get('send_credentials', false);
+            $validateMail = !!$this->request->get('validate_mail', false);
 
             $createdUser = \User_Adapter::create($this->app, $email, \random::generatePassword(16), $email, false, false);
             /* @var $createdUser \User_Adapter */
@@ -172,7 +172,7 @@ class Manage extends Helper
                 $urlToken = \random::getUrlToken($this->app, \random::TYPE_PASSWORD, $createdUser->get_id());
 
                 if (false !== $urlToken) {
-                    $url = sprintf('%slogin/forgot-password/?token=%s', $this->app['phraseanet.registry']->get('GV_ServerName'), $urlToken);
+                    $url =  $this->app['url_generator']->generate('login_forgot_password', array('token' => $urlToken), true);
                     \mail::send_credentials($this->app, $url, $createdUser->get_login(), $createdUser->get_email());
                 }
             }
