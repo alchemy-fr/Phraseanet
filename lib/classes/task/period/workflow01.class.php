@@ -79,8 +79,7 @@ class task_period_workflow01 extends task_databoxAbstract
 
     public function xml2graphic($xml, $form)
     {
-        if (($sxml = simplexml_load_string($xml)) != FALSE) { // in fact XML IS always valid here...
-            // ... but we could check for safe values
+        if (false !== $sxml = simplexml_load_string($xml)) {
             if ((int) ($sxml->period) < 1) {
                 $sxml->period = 1;
             } elseif ((int) ($sxml->period) > 1440) { // 1 jour

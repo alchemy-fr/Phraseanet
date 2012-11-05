@@ -778,9 +778,7 @@ class setup
 
         public static function rollback(connection_pdo $conn, connection_pdo $connbas = null)
         {
-            $structure = simplexml_load_file(__DIR__ . "/../../lib/conf.d/bases_structure.xml");
-
-            if (!$structure) {
+            if (false !== $structure = simplexml_load_file(__DIR__ . "/../../lib/conf.d/bases_structure.xml")) {
                 throw new Exception('Unable to load schema');
             }
 

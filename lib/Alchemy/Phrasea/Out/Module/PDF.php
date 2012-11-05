@@ -354,8 +354,9 @@ class PDF
             $collection = \collection::get_from_base_id($rec->get_base_id());
 
             $vn = "";
-            if ($str = simplexml_load_string($collection->get_prefs()))
+            if (false !== $str = simplexml_load_string($collection->get_prefs())) {
                 $vn = (string) ($str->pdfPrintappear);
+            }
 
             if ($vn == "" || $vn == "1") {
                 $RIGHT_TEXT = \phrasea::bas_names($rec->get_base_id());

@@ -111,7 +111,7 @@ function giveMeBases($usr = null)
             $collInscript = $baseInscript;
             $defined = false;
             $cguSpec = false;
-            if ($xml = simplexml_load_string($collection->get_prefs())) {
+            if (false !== $xml = simplexml_load_string($collection->get_prefs())) {
                 $defined = true;
                 foreach ($xml->xpath('/baseprefs/caninscript') as $caninscript) {
                     $tmp = (string) $caninscript;
