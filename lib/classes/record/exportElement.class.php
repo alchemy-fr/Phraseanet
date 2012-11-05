@@ -60,6 +60,12 @@ class record_exportElement extends record_adapter
     public function __construct(Application $app, $sbas_id, $record_id, $directory = '', $remain_hd = false)
     {
         $this->directory = $directory;
+
+        if ($this->directory) {
+            $unicode = new \unicode();
+            $this->directory = $unicode->remove_nonazAZ09($this->directory) . '/';
+        }
+
         $this->remain_hd = $remain_hd;
         $this->size = array();
         parent::__construct($app, $sbas_id, $record_id);

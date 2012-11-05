@@ -62,7 +62,7 @@ class set_export extends set_abstract
 
             /* @var $repository \Repositories\BasketRepository */
             $Basket = $repository->findUserBasket($this->app, $sstid, $app['phraseanet.user'], false);
-            $this->exportName = str_replace(' ', '_', $Basket->getName()) . "_" . date("Y-n-d");
+            $this->exportName = str_replace(array(' ', '\\', '/'), '_', $Basket->getName()) . "_" . date("Y-n-d");
 
             foreach ($Basket->getElements() as $basket_element) {
                 /* @var $basket_element \Entities\BasketElement */
@@ -82,7 +82,7 @@ class set_export extends set_abstract
                         $app,
                         $basket_element->getRecord($this->app)->get_sbas_id(),
                         $record_id,
-                        $Basket->getName() . '/',
+                        $Basket->getName(),
                         $remain_hd[$base_id]
                 );
 
@@ -122,7 +122,7 @@ class set_export extends set_abstract
                                 $app,
                                 $child_basrec->get_sbas_id(),
                                 $record_id,
-                                $record->get_title(null, null, true) . '_' . $n . '/',
+                                $record->get_title(null, null, true) . '_' . $n,
                                 $remain_hd[$base_id]
                         );
 
