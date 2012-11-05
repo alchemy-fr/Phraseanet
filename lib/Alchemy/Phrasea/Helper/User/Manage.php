@@ -172,7 +172,7 @@ class Manage extends Helper
                 $urlToken = \random::getUrlToken($this->app, \random::TYPE_PASSWORD, $createdUser->get_id());
 
                 if (false !== $urlToken) {
-                    $url =  $this->app['phraseanet.registry']->get('GV_ServerName') . $this->app['url_generator']->generate('login_forgot_password', array('token' => $urlToken));
+                    $url =  $this->app['url_generator']->generate('login_forgot_password', array('token' => $urlToken), true);
                     \mail::send_credentials($this->app, $url, $createdUser->get_login(), $createdUser->get_email());
                 }
             }
