@@ -15,146 +15,239 @@
  * @link        www.phraseanet.com
  */
 require_once __DIR__ . "/../../lib/bootstrap.php";
-$registry = registry::get_instance();
 
 $request = http_request::getInstance();
 $parm = $request->get_parms(
-    'id'
+    'id', 'debug'
 );
+
+phrasea::headers(200, true, 'application/json', 'UTF-8', false);
+
+define('SEARCH_REPLACE_MAXREC', 25);
 
 $tsbas = array();
 
-$ret = array();
-
-$conn = connection::getPDOConnection();
-$unicode = new unicode();
-
-$sql = "SELECT * FROM sbas";
-$stmt = $conn->prepare($sql);
-$stmt->execute();
-$rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-$stmt->closeCursor();
-
-foreach ($rs as $row) {
-    $tsbas['b' . $row['sbas_id']] = array('sbas' => $row, 'tids' => array());
-}
+$ret = array(
+    'maxRecsUpdatable'=>SEARCH_REPLACE_MAXREC,
+    'nRecsToUpdate'=>0,
+    'nRecsUpdated'=>0,
+    'msg'=>''
+);
 
 foreach ($parm['id'] as $id) {
     $id = explode('.', $id);
-    $sbas = array_shift($id);
-    if (array_key_exists('b' . $sbas, $tsbas))
-        $tsbas['b' . $sbas]['tids'][] = implode('.', $id);
+    $sbas_id = array_shift($id);
+    if ( ! array_key_exists('b' . $sbas_id, $tsbas)) {
+        $tsbas['b' . $sbas_id] = array(
+                                        'sbas_id' => (int) $sbas_id,
+                                        'tids'    => array(),
+                                        'domct'   => null,
+                                        'tvals'   => array(),
+                                        'lid'     => '',
+                                        'trids'   => array()
+                                    );
+    }
+    $tsbas['b' . $sbas_id]['tids'][] = implode('.', $id);
 }
 
-foreach ($tsbas as $sbas) {
-    if (count($sbas['tids']) <= 0)
-        continue;
+if ($parm['debug']) {
+    var_dump($tsbas);
+}
 
-    $databox = databox::get_instance((int) $sbas['sbas']['sbas_id']);
+$appbox = \appbox::get_instance(\bootstrap::getCore());
+
+
+// first, count the number of records to update
+foreach ($tsbas as $ksbas=>$sbas) {
+
+    /* @var $databox databox */
     try {
-        $connbas = connection::getPDOConnection($sbas['sbas']['sbas_id']);
+        $databox = $appbox->get_databox($sbas['sbas_id']);
+        $connbas = $databox->get_connection();
+        // $domth = $databox->get_dom_thesaurus();
+        $tsbas[$ksbas]['domct'] = $databox->get_dom_cterms();
     } catch (Exception $e) {
         continue;
     }
 
-    $domth = $databox->get_dom_thesaurus();
-    $domct = $databox->get_dom_cterms();
-
-    if ( ! $domth || ! $domct)
+    if ( ! $tsbas[$ksbas]['domct']) {
         continue;
+    }
 
     $lid = '';
-    $tsyid = array();
-    $xpathct = new DOMXPath($domct);
+    $xpathct = new DOMXPath($tsbas[$ksbas]['domct']);
+
     foreach ($sbas['tids'] as $tid) {
         $xp = '//te[@id="' . $tid . '"]/sy';
         $nodes = $xpathct->query($xp);
         if ($nodes->length == 1) {
             $sy = $term = $nodes->item(0);
-            $w = $sy->getAttribute('w');
             $syid = str_replace('.', 'd', $sy->getAttribute('id')) . 'd';
             $lid .= ( $lid ? ',' : '') . "'" . $syid . "'";
-            $tsyid[$syid] = array('w'     => $w, 'field' => $sy->parentNode->parentNode->getAttribute('field'));
+            $field = $sy->parentNode->parentNode->getAttribute('field');
 
-            // remove candidate from cterms
-            $te = $sy->parentNode;
-            $te->parentNode->removeChild($te);
+            if ( ! array_key_exists($field, $tsbas[$ksbas]['tvals'])) {
+                $tsbas[$ksbas]['tvals'][$field] = array();
+            }
+            $tsbas[$ksbas]['tvals'][$field][] = $sy;
         }
     }
 
-    $databox->saveCterms($domct);
+    if ($lid == '') {
+        // no cterm was found
+        continue;
+    }
+    $tsbas[$ksbas]['lid'] = $lid;
 
-    $sql = 'SELECT t.record_id, r.xml, t.value
-          FROM thit AS t
-          INNER JOIN record AS r USING(record_id)
-          WHERE value IN (' . $lid . ') ORDER BY record_id';
+    // count records
+    $sql = 'SELECT DISTINCT record_id AS r'
+          .' FROM thit WHERE value IN (' . $lid . ') ORDER BY record_id';
     $stmt = $connbas->prepare($sql);
     $stmt->execute();
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    if ($parm['debug']) {
+        printf("(%d) sql: \n", __LINE__);
+        var_dump($sql);
+    }
+
+    $tsbas[$ksbas]['trids'] = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
     $stmt->closeCursor();
 
-    $t_rid = array();
-    foreach ($rs as $rowbas) {
-        $rid = $rowbas['record_id'];
-        if ( ! array_key_exists('' . $rid, $t_rid))
-            $t_rid['' . $rid] = array('xml'  => $rowbas['xml'], 'hits' => array());
-        $t_rid['' . $rid]['hits'][] = $rowbas['value'];
-    }
-
-    foreach ($t_rid as $rid => $record) {
-        $dom = new DOMDocument();
-        $dom->preserveWhiteSpace = false;
-        $dom->formatOutput = true;
-        if ( ! ($dom->loadXML($record['xml'])))
-            continue;
-        $nodetodel = array();
-        $xp = new DOMXPath($dom);
-        foreach ($record['hits'] as $value) {
-            $field = $tsyid[$value];
-            $x = '/record/description/' . $field['field'];
-            $nodes = $xp->query($x);
-            foreach ($nodes as $n) {
-                $current_value = $unicode->remove_indexer_chars($n->textContent);
-
-                if ($current_value == $field['w']) {
-                    $nodetodel[] = $n;
-                }
-            }
-        }
-        foreach ($nodetodel as $n) {
-            $n->parentNode->removeChild($n);
-        }
-
-        $sql = 'DELETE FROM idx  WHERE record_id = :record_id';
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute(array(':record_id' => $rid));
-        $stmt->closeCursor();
-
-        $sql = 'DELETE FROM prop WHERE record_id = :record_id';
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute(array(':record_id' => $rid));
-        $stmt->closeCursor();
-
-
-        $sql = 'DELETE FROM thit WHERE record_id = :record_id';
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute(array(':record_id' => $rid));
-        $stmt->closeCursor();
-
-
-        $sql = 'UPDATE record
-            SET status=(status & ~3)|4, jeton=' . (JETON_WRITE_META_DOC | JETON_WRITE_META_SUBDEF) . ',
-                xml = :xml WHERE record_id = :record_id';
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute(array(':record_id' => $rid, ':xml'       => $dom->saveXML()));
-        $stmt->closeCursor();
-    }
+    $ret['nRecsToUpdate'] += count($tsbas[$ksbas]['trids']);
 }
 
-$ret = $parm['id'];
+
+if ($parm['debug']) {
+    printf("(%d) nRecsToUpdate = %d \ntsbas: \n", __LINE__, $ret['nRecsToUpdate']);
+    print_r($tsbas);
+}
+
+
+if($ret['nRecsToUpdate'] < SEARCH_REPLACE_MAXREC)
+{
+    $unicode = new unicode;
+    foreach ($tsbas as $sbas) {
+
+        /* @var $databox databox */
+        try {
+            $databox = $appbox->get_databox($sbas['sbas_id']);
+            $connbas = $databox->get_connection();
+        } catch (Exception $e) {
+            continue;
+        }
+
+        // delete the branch from the cterms
+        if ($parm['debug']) {
+            printf("cterms before :\n%s \n", $sbas['domct']->saveXML());
+        }
+        foreach($sbas['tvals'] as $tval) {
+            foreach($tval as $sy) {
+                // remove candidate from cterms
+                $te = $sy->parentNode;
+                $te->parentNode->removeChild($te);
+            }
+        }
+        if ($parm['debug']) {
+            printf("cterms after :\n%s \n", $sbas['domct']->saveXML());
+        }
+        if ( ! $parm['debug']) {
+            $databox->saveCterms($sbas['domct']);
+        }
+
+        // fix caption of records
+        foreach ($sbas['trids'] as $rid) {
+
+            if ($parm['debug']) {
+                printf("(%d) ======== working on record_id = %d ======= \n", __LINE__, $rid);
+            }
+            try {
+                $record = $databox->get_record($rid);
+
+                $metadatask = array();  // datas to keep
+                $metadatasd = array();  // datas to delete
+
+                /* @var $field caption_field */
+                foreach ($record->get_caption()->get_fields(null, true) as $field) {
+                    $meta_struct_id = $field->get_meta_struct_id();
+                    if ($parm['debug']) {
+                        printf("(%d) field '%s'  meta_struct_id=%s \n", __LINE__, $field->get_name(), $meta_struct_id);
+                    }
+
+                    /* @var $v caption_Field_Value */
+                    $fname = $field->get_name();
+                    if(!array_key_exists($fname, $sbas['tvals'])) {
+                        foreach ($field->get_values() as $v) {
+                            if ($parm['debug']) {
+                                printf("(%d) ...v = '%s' (meta_id=%s)  keep \n", __LINE__, $v->getValue(), $v->getId());
+                            }
+                            $metadatask[] = array(
+                                'meta_struct_id' => $meta_struct_id,
+                                'meta_id'        => $v->getId(),
+                                'value'          => $v->getValue()
+                            );
+                        }
+                    }
+                    else {
+                        foreach ($field->get_values() as $v) {
+                            $keep = true;
+                            $vtxt = $unicode->remove_indexer_chars($v->getValue());
+                            foreach($sbas['tvals'][$fname] as $sy) {
+                                if ($sy->getAttribute('w') == $vtxt) {
+                                    $keep = false;
+                                }
+                            }
+
+                            if ($parm['debug']) {
+                                printf("(%d) ...v = '%s' (meta_id=%s)  %s \n", __LINE__, $v->getValue(), $v->getId(), ($keep ? '' : '!!! drop !!!'));
+                            }
+                            if ($keep) {
+                                $metadatask[] = array(
+                                    'meta_struct_id' => $meta_struct_id,
+                                    'meta_id'        => $v->getId(),
+                                    'value'          => $v->getValue()
+                                );
+                            } else {
+                                $metadatasd[] = array(
+                                    'meta_struct_id' => $meta_struct_id,
+                                    'meta_id'        => $v->getId(),
+                                    'value'          => ''
+                                );
+                            }
+                        }
+                    }
+                }
+
+                if ($parm['debug']) {
+                    printf("(%d) metadatas: \n", __LINE__);
+                    var_dump($metadatasd);
+                }
+
+                if(count($metadatasd) > 0) {
+                    if ( ! $parm['debug']) {
+//                        foreach (array('idx', 'prop', 'thit') as $t) {
+//                            $sql = 'DELETE FROM ' . $t . ' WHERE record_id = :record_id';
+//                            $stmt = $connbas->prepare($sql);
+//                            $stmt->execute(array(':record_id' => $rid));
+//                            $stmt->closeCursor();
+//                        }
+                        $record->set_metadatas($metadatasd, true);
+                        $ret['nRecsUpdated']++;
+                    }
+                }
+            } catch (\Exception $e) {
+                continue;
+            }
+        }
+    }
+}
+else {
+    // too many records to update
+    $ret['msg'] = 'too many records to update';
+}
+
+
 
 /**
  * @todo respecter les droits d'editing par collections
  */
-phrasea::headers(200, true, 'application/json', 'UTF-8', false);
 print(p4string::jsonencode($ret));

@@ -145,7 +145,7 @@ class task_period_archive extends task_abstract
     public function xml2graphic($xml, $form)
     {
         // XML should always be valid here...
-        if (($sxml = simplexml_load_string($xml)) != false) {
+        if ( ($sxml = simplexml_load_string($xml)) ) {
             // sanitize values
             if ((int) ($sxml->period) < 10) {
                 $sxml->period = 10;
@@ -298,7 +298,7 @@ class task_period_archive extends task_abstract
         $this->period = 60;
         $this->cold = 30;
 
-        if (($this->sxBasePrefs = simplexml_load_string($collection->get_prefs())) != false) {
+        if ( ($this->sxBasePrefs = simplexml_load_string($collection->get_prefs())) ) {
             $this->sxBasePrefs["id"] = $base_id;
 
             $this->period = (int) ($this->sxTaskSettings->period);
@@ -397,7 +397,7 @@ class task_period_archive extends task_abstract
 
                 $this->setLastExecTime();
                 try {
-                    if ( ! ($this->sxTaskSettings = @simplexml_load_string($this->getSettings()))) {
+                    if ( !($this->sxTaskSettings = @simplexml_load_string($this->getSettings())) ) {
                         throw new Exception(sprintf('Error fetching or reading settings of the task \'%d\'', $this->getID()));
                     } else {
                         // copy settings to task, so it's easier to get later
@@ -609,10 +609,10 @@ class task_period_archive extends task_abstract
         if ($this->movedFiles) {
 
             // something happened : a least one file has moved
-            return self::STATE_MAXRECSDONE;
+            return 'MAXRECSDONE';
         } elseif (memory_get_usage() >> 20 > 25) {
 
-            return self::STATE_MAXMEGSREACHED;
+            return 'MAXMEGSREACHED';
         } else {
 
             return 'NORECSTODO';
@@ -693,7 +693,7 @@ class task_period_archive extends task_abstract
         try {
             $listFolder = new CListFolder($path);
 
-            if (($sxDotPhrasea = @simplexml_load_file($path . '/.phrasea.xml')) != false) {
+            if ( ($sxDotPhrasea = @simplexml_load_file($path . '/.phrasea.xml')) ) {
 
                 // test for magic file
                 if (($magicfile = trim((string) ($sxDotPhrasea->magicfile))) != '') {
@@ -800,7 +800,7 @@ class task_period_archive extends task_abstract
 
             $xp = new DOMXPath($dom);
 
-            if (($sxDotPhrasea = @simplexml_load_file($path . '/.phrasea.xml')) != false) {
+            if ( ($sxDotPhrasea = @simplexml_load_file($path . '/.phrasea.xml')) ) {
 
                 // test magicfile
                 if (($magicfile = trim((string) ($sxDotPhrasea->magicfile))) != '') {
