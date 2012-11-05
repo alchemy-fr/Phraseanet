@@ -238,7 +238,13 @@ function T_replaceCandidates_OK(dlgnode)
       {
         msg = result.msg + '\n' + msg;
       }
-      alert(msg);
+
+      var alert = p4.Dialog.Create({
+        size : 'Alert',
+        closeOnEscape : true,
+        closeButton:true
+      });
+      alert.setContent(msg);
 
       for(i in result.ctermsDeleted)
       {
@@ -360,7 +366,13 @@ function C_deleteCandidates_OK(dlgnode)
       {
         msg = result.msg + '\n' + msg;
       }
-      alert(msg);
+
+      var alert = p4.Dialog.Create({
+        size : 'Alert',
+        closeOnEscape : true,
+        closeButton:true
+      });
+      alert.setContent(msg);
 
       for(i in result.ctermsDeleted)
       {
@@ -837,7 +849,7 @@ function replaceEditSel(value)
 {
   if(!p4.thesau.lastTextfocus || !p4.thesau.lastTextfocus.selectedTerm)
     return;
-  // alert(textarea.selectedTerm.start + " ; " + textarea.selectedTerm.end);
+
   p4.thesau.lastTextfocus.value = p4.thesau.lastTextfocus.value.substr(0, p4.thesau.lastTextfocus.selectedTerm.start) + value + p4.thesau.lastTextfocus.value.substr(p4.thesau.lastTextfocus.selectedTerm.end);
   if(typeof(document.selection) != 'undefined')
   {
