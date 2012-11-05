@@ -193,6 +193,16 @@ class task_manager
         return $ret;
     }
 
+    /**
+     * Returns true if Pcntl posix supported is enabled, false otherwise
+     *
+     * @return Boolean
+     */
+    public static function isPosixPcntlSupported()
+    {
+        return extension_loaded('pcntl') && extension_loaded('posix');
+    }
+
     public static function getAvailableTasks()
     {
         $taskdir = array(

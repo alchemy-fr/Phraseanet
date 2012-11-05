@@ -39,6 +39,7 @@ class setup
         , 'pcntl'
         , "PDO"
         , "phrasea2"
+        , 'posix'
         , "SimpleXML"
         , "sockets"
         , "xml"
@@ -375,7 +376,7 @@ class setup
         $constraints = array();
         foreach (self::$PHP_EXT as $ext) {
 
-            if ('pcntl' === $ext && 0 === stripos(strtolower(PHP_OS), 'win')) {
+            if (in_array($ext, array('pcntl', 'posix')) && defined('PHP_WINDOWS_VERSION_BUILD')) {
                 continue;
             }
 

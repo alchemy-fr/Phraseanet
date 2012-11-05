@@ -65,10 +65,9 @@ class task_Scheduler
             $nullfile = 'NUL';
         }
 
-        if (function_exists('pcntl_fork')) {
+        if (\task_manager::isPosixPcntlSupported()) {
             // avoid <defunct> php when a task ends
             pcntl_signal(SIGCHLD, SIG_IGN);
-
             $this->method = self::METHOD_FORK;
         }
 
