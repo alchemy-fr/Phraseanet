@@ -125,7 +125,7 @@ if ($parm['debug']) {
 }
 
 
-if($ret['nRecsToUpdate'] < SEARCH_REPLACE_MAXREC)
+if($ret['nRecsToUpdate'] <= SEARCH_REPLACE_MAXREC)
 {
     $unicode = new unicode;
     foreach ($tsbas as $sbas) {
