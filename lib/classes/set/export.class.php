@@ -555,8 +555,7 @@ class set_export extends set_abstract
                             $infos = pathinfo(p4string::addEndSlash($tmp_pathfile["path"]) .
                                 $tmp_pathfile["file"]);
 
-                            $files[$id]["subdefs"][$name]["ajout"] =
-                                $properties['class'] == 'document' ? '' : "_" . $name;
+                            $files[$id]["subdefs"][$name]["ajout"] = $name == 'document' ? '' : "_" . $name;
                             $files[$id]["subdefs"][$name]["path"] = $tmp_pathfile["path"];
                             $files[$id]["subdefs"][$name]["file"] = $tmp_pathfile["file"];
                             $files[$id]["subdefs"][$name]["label"] = $properties['label'];
