@@ -184,7 +184,7 @@ class PhraseaEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function status()
+    public function getStatus()
     {
         $status = array();
         foreach (phrasea_info() as $key => $value) {

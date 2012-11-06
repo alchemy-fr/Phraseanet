@@ -143,7 +143,7 @@ class SphinxSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function status()
+    public function getStatus()
     {
         if (false === $this->sphinx->Status()) {
             throw new RuntimeException(_('Sphinx server is offline'));

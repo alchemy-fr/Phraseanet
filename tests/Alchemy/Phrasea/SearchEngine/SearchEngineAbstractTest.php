@@ -503,7 +503,7 @@ abstract class SearchEngineAbstractTest extends \PhraseanetPHPUnitAuthenticatedA
 
     public function testStatus()
     {
-        foreach (self::$searchEngine->status() as $StatusKeyValue) {
+        foreach (self::$searchEngine->getStatus() as $StatusKeyValue) {
             $this->assertTrue(is_array($StatusKeyValue));
             $this->assertTrue(is_scalar($StatusKeyValue[0]));
             $this->assertTrue(is_scalar($StatusKeyValue[1]));

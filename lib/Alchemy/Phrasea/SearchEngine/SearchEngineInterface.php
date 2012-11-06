@@ -35,7 +35,7 @@ interface SearchEngineInterface
      * @return array An array of key/value parameters
      * @throws RuntimeException  if something is wrong
      */
-    public function status();
+    public function getStatus();
 
     /**
      * @return ConfigurationPanelInterface

@@ -325,7 +325,7 @@ class API_V1_adapter extends API_V1_Abstract
     protected function get_gv_info(Application $app)
     {
         try {
-            $SEStatus = $app['phraseanet.SE']->status();
+            $SEStatus = $app['phraseanet.SE']->getStatus();
         } catch (\RuntimeException $e) {
             $SEStatus = array('error' => $e->getMessage());
         }
