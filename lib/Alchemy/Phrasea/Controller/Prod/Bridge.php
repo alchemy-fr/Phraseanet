@@ -16,6 +16,7 @@ use Silex\ControllerProviderInterface;
 use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Alchemy\Phrasea\Helper\Record as RecordHelper;
 
 /**
@@ -114,6 +115,29 @@ class Bridge implements ControllerProviderInterface
                 $account->get_api()->get_connector()->disconnect();
 
                 return $app->redirect('/prod/bridge/adapter/' . $account_id . '/load-elements/' . $account->get_api()->get_connector()->get_default_element_type() . '/');
+            })->assert('account_id', '\d+');
+
+        $controllers->post('/adapter/{account_id}/delete/'
+            , function($account_id) use ($app) {
+                $success = false;
+                $message = '';
+                $appbox = \appbox::get_instance($app['Core']);
+                try {
+                    $account = \Bridge_Account::load_account($appbox, $account_id);
+
+                     if ($account->get_user()->get_id() !== $app['Core']->getAuthenticatedUser()->get_id()) {
+                         throw new HttpException(403, 'Access forbiden');
+                     }
+
+                    $account->delete();
+                    $success = true;
+                } catch(\Bridge_Exception_AccountNotFound $e) {
+                    $message = _('Account is not found.');
+                } catch(\Exception $e) {
+                    $message = _('Something went wrong, please contact an administrator');
+                }
+
+                return $app->json(array('success' => $success, 'message' => $message));
             })->assert('account_id', '\d+');
 
         $controllers->get('/adapter/{account_id}/load-records/'
