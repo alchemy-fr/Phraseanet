@@ -16,6 +16,7 @@ use Silex\ControllerProviderInterface;
 use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Alchemy\Phrasea\Helper\Record as RecordHelper;
 
 /**
@@ -125,7 +126,7 @@ class Bridge implements ControllerProviderInterface
                     $account = \Bridge_Account::load_account($appbox, $account_id);
 
                      if ($account->get_user()->get_id() !== $app['Core']->getAuthenticatedUser()->get_id()) {
-                         return $app->json(array('success' => false, 'message' => _('Account is not yours')));
+                         throw new HttpException(403, 'Access forbiden');
                      }
 
                     $account->delete();
