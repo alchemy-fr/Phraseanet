@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
 use Alchemy\Phrasea\Core\Service\Builder;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
@@ -22,11 +23,15 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
     {
         $app['phraseanet.SE'] = $app->share(function($app) {
             $configuration = $app['phraseanet.configuration']
-                ->getService($app['phraseanet.configuration']->getSearchEngine());
+                    ->getService($app['phraseanet.configuration']->getSearchEngine());
 
             $service = Builder::create($app, $configuration);
 
             return $service->getDriver();
+        });
+
+        $app['phraseanet.SE.logger'] = $app->share(function(Application $app) {
+            return new SearchEngineLogger($app);
         });
     }
 

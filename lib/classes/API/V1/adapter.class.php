@@ -1011,6 +1011,16 @@ class API_V1_adapter extends API_V1_Abstract
 
         $search_result = $this->app['phraseanet.SE']->query($request->get('query'), $offsetStart, $perPage);
 
+        foreach ($options->databoxes() as $databox) {
+            $colls = array_map(function(\collection $collection) {
+                return $collection->get_coll_id();
+            }, array_filter($options->collections(), function(\collection $collection) use ($databox) {
+                return $collection->get_databox()->get_sbas_id() == $databox->get_sbas_id();
+            }));
+
+            $this->app['phraseanet.SE.logger']->log($databox, $request->get('query'), $search_result->total(), $colls);
+        }
+
         $ret = array(
             'offset_start'      => $offsetStart,
             'per_page'          => $perPage,

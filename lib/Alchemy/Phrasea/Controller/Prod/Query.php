@@ -120,6 +120,16 @@ class Query implements ControllerProviderInterface
 
         $result = $app['phraseanet.SE']->query($query, (($page - 1) * $perPage), $perPage);
 
+        foreach ($options->databoxes() as $databox) {
+            $colls = array_map(function(\collection $collection) {
+                return $collection->get_coll_id();
+            }, array_filter($options->collections(), function(\collection $collection) use ($databox) {
+                return $collection->get_databox()->get_sbas_id() == $databox->get_sbas_id();
+            }));
+
+            $app['phraseanet.SE.logger']->log($databox, $query, $result->total(), $colls);
+        }
+        
         $proposals = $firstPage ? $result->proposals() : false;
 
         $npages = $result->totalPages($perPage);

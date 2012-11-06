@@ -455,7 +455,6 @@ class PhraseaEngine implements SearchEngineInterface
      */
     private function executeQuery($query)
     {
-        $dateLog = date("Y-m-d H:i:s");
         $nbanswers = $total_time = 0;
         $sort = '';
 
@@ -496,27 +495,6 @@ class PhraseaEngine implements SearchEngineInterface
                 $total_time += $results['time_all'];
                 $nbanswers += $results["nbanswers"];
             }
-
-//            $logger = $session->get_logger($this->appbox->get_databox($sbas_id));
-//
-//            $conn2 = \connection::getPDOConnection($sbas_id);
-//
-//            $sql3 = "INSERT INTO log_search
-//               (id, log_id, date, search, results, coll_id )
-//               VALUES
-//               (null, :log_id, :date, :query, :nbresults, :colls)";
-//
-//            $params = array(
-//                ':log_id'    => $logger->get_id()
-//                , ':date'      => $dateLog
-//                , ':query'     => $query
-//                , ':nbresults' => $results["nbanswers"]
-//                , ':colls'     => implode(',', $this->colls[$sbas_id])
-//            );
-//
-//            $stmt = $conn2->prepare($sql3);
-//            $stmt->execute($params);
-//            $stmt->closeCursor();
         }
 
         $sql = 'UPDATE cache
