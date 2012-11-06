@@ -243,7 +243,7 @@ if($ret['nRecsToUpdate'] <= SEARCH_REPLACE_MAXREC)
 }
 else {
     // too many records to update
-    $ret['msg'] = _('too many records to update');
+    $ret['msg'] = sprintf(_('too many (%d) records to update (limit=%d)'), $ret['nRecsToUpdate'], SEARCH_REPLACE_MAXREC);
 }
 
 

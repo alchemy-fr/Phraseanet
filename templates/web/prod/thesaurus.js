@@ -233,18 +233,16 @@ function T_replaceCandidates_OK(dlgnode)
       thesauShowWizard("wiz_0", false);
 
       $(dlgnode).dialog("close");
-      var msg = $.sprintf("{% trans 'prod::thesaurusTab:dlg: %s record(s) updated' %}", result.nRecsUpdated);
+
       if(result.msg != '')
       {
-        msg = result.msg + '\n' + msg;
+        var alert = p4.Dialog.Create({
+          size : 'Alert',
+          closeOnEscape : true,
+          closeButton:true
+        });
+        alert.setContent(result.msg);
       }
-
-      var alert = p4.Dialog.Create({
-        size : 'Alert',
-        closeOnEscape : true,
-        closeButton:true
-      });
-      alert.setContent(msg);
 
       for(i in result.ctermsDeleted)
       {
@@ -361,18 +359,15 @@ function C_deleteCandidates_OK(dlgnode)
     {
       $(dlgnode).dialog("close");
 
-      var msg = $.sprintf("{% trans 'prod::thesaurusTab:dlg: %s record(s) updated' %}", result.nRecsUpdated);
       if(result.msg != '')
       {
-        msg = result.msg + '\n' + msg;
+        var alert = p4.Dialog.Create({
+          size : 'Alert',
+          closeOnEscape : true,
+          closeButton:true
+        });
+        alert.setContent(result.msg);
       }
-
-      var alert = p4.Dialog.Create({
-        size : 'Alert',
-        closeOnEscape : true,
-        closeButton:true
-      });
-      alert.setContent(msg);
 
       for(i in result.ctermsDeleted)
       {
@@ -1133,10 +1128,6 @@ function startThesaurus(){
   p4.thesau.lastTextfocus = null;
 
   p4.thesau.lastClickedCandidate = null;
-
-  //	$("#THPD_confirm_del_dlg").remove();
-  //	$("#THPD_confirm_accept_dlg").remove();
-  //	$("#THPD_confirm_replace_dlg").remove();
 
   p4.thesau.tabs = $("#THPD_tabs");
   p4.thesau.tabs.tabs();
